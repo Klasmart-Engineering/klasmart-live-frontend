@@ -91,13 +91,15 @@ export default function NavBar() {
                     >
                         <Grid
                             container item
-                            xs={12} md={4}
+                            xs={12} md={4} lg={3}
                             direction="row"
                             justify="space-between"
                             alignItems="center"
-                            style={{ flexWrap: "nowrap", minHeight }}
+                            wrap="nowrap"
+                            style={{ minHeight }}
                         >
-                            <Grid container item xs={8} direction="row">
+                            <Grid container item xs={8} direction="row" 
+                            wrap="nowrap">
                                 <NavMenu />
                                 <ClassroomLabel classes={classes.title} />
                             </Grid>
@@ -108,13 +110,19 @@ export default function NavBar() {
                                     justify="flex-end"
                                     direction="row"
                                     alignItems="center"
-                                    style={{ flexWrap: "nowrap"}}
+                                    wrap="nowrap"
                                 >
                                     <UserSettings />
                                 </Grid>
                             </Hidden>
                         </Grid>
-                        <Grid container item xs={12} md={4} direction="row" justify="center">
+                        <Grid
+                            container item
+                            xs={12} md={4} lg={6}
+                            direction="row"
+                            justify="center"
+                            wrap="nowrap"
+                        >
                             { menuLabel.map((label: string) => {
                                 const value = label.toLowerCase();
                                 return (
@@ -135,10 +143,11 @@ export default function NavBar() {
                         <Hidden smDown>
                             <Grid
                                 container item
-                                md={4}
+                                md={4} lg={3}
                                 direction="row"
                                 justify="flex-end"
                                 alignItems="center"
+                                wrap="nowrap"
                             >
                                 <UserSettings />
                             </Grid>

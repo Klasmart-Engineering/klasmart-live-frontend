@@ -27,7 +27,7 @@ const StyledFab = withStyles({
 })(Fab);
 
 export default function StyledFAB(props: Props) {
-    const {children, className, extendedOnly, type, ...other } = props;
+    const {children, extendedOnly, type, ...other } = props;
 
     let sibling: React.ReactNode;
     React.Children.map(children, (child, index) => (

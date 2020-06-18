@@ -21,6 +21,7 @@ const useStyles = makeStyles((theme: Theme) =>
             flex: 1,
         },
         root: {
+            // height: "100%",
             padding: theme.spacing(4, 5),
             [theme.breakpoints.down("sm")]: {
                 padding: theme.spacing(2, 2),

@@ -19,11 +19,11 @@ import { RestAPIError, RestAPIErrorType } from "../../api/restapi_errors";
 import KidsloopLogo from "../../assets/img/kidsloop.svg";
 import { redirectIfAuthorized } from "../../components/authorized";
 import StyledButton from "../../components/button";
+import CenterAlignChildren from "../../components/centerAlignChildren";
 import LanguageSelect from "../../components/languageSelect";
 import Lightswitch from "../../components/lightswitch";
 import PolicyLink from "../../components/policyLinks";
 import StyledTextField from "../../components/textfield";
-import { ActionTypes } from "../../store/actions";
 import { State } from "../../store/store";
 
 const useStyles = makeStyles((theme) => createStyles({
@@ -96,10 +96,10 @@ export function Login() {
                 );
             } else if (e.toString().search("EMPTY_PASSWORD") !== -1) {
                 setPasswordError(
-                    <span style={{ display: "flex", alignItems: "center" }}>
+                    <CenterAlignChildren>
                         <ErrorIcon className={classes.errorIcon}/>
                         <FormattedMessage id="error_emptyPassword" />
-                    </span>,
+                    </CenterAlignChildren>,
                 );
             } else {
                 console.error(e);
