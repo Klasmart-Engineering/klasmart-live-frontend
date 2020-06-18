@@ -74,17 +74,7 @@ export default function NavBar() {
     const url = new URL(window.location.href);
     const [activeComponent, setActiveComponent] = useState<string>(url.searchParams.get("component") || "live");
 
-    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-    const open = Boolean(anchorEl);
     const minHeight = useMediaQuery(theme.breakpoints.up("sm")) ? 64 : 56;
-
-    const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorEl(event.currentTarget);
-    };
-
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
 
     return (
         <div className={classes.root}>
