@@ -33,8 +33,11 @@ const useStyles = makeStyles((theme) => createStyles({
             "transform": "translateY(-2px)",
             "transition": "all .4s ease",
         },
-        "minWidth": 100,
+        "minWidth": theme.spacing(12),
         "padding": theme.spacing(0.5, 2),
+        [theme.breakpoints.down("sm")]: {
+            minWidth: theme.spacing(8),
+        },
     },
 }),
 );

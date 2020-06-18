@@ -12,20 +12,21 @@ import Typography from "@material-ui/core/Typography";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import AppsIcon from "@material-ui/icons/Apps";
-import MenuIcon from "@material-ui/icons/Menu";
 import SettingsIcon from "@material-ui/icons/Settings";
 import * as QueryString from "query-string";
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import KidsloopLogo from "../../../assets/img/kidsloop.svg";
+import LearningPassLogo from "../../../assets/img/logo_learning_pass_header.png";
 import NavButton from "./navButton";
+import UserSettings from "./userSettings";
 
 const menuLabel = ["Live", "Library", "People", "Assessments"];
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         avatar: {
-            marginLeft: theme.spacing(2),
+            margin: theme.spacing(0, 1),
         },
         menuButton: {
             marginRight: theme.spacing(2),
@@ -73,14 +74,9 @@ export default function NavBar() {
     const url = new URL(window.location.href);
     const [activeComponent, setActiveComponent] = useState<string>(url.searchParams.get("component") || "live");
 
-    const [auth, setAuth] = React.useState(true);
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const minHeight = useMediaQuery(theme.breakpoints.up("sm")) ? 64 : 56;
-
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setAuth(event.target.checked);
-    };
 
     const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
@@ -101,17 +97,44 @@ export default function NavBar() {
                         alignItems="center"
                         style={{ minHeight }}
                     >
-                        <Grid container item xs={12} md={3} direction="row">
-                            <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-                                <AppsIcon />
-                            </IconButton>
-                            <ClassroomLabel classes={classes.title} />
+                        <Grid
+                            container item
+                            xs={12} md={3}
+                            direction="row"
+                            justify="space-between"
+                            alignItems="center"
+                            style={{ flexWrap: "nowrap", minHeight }}
+                        >
+                            <Grid container item xs={8} direction="row">
+                                <IconButton
+                                    edge="start"
+                                    className={classes.menuButton}
+                                    color="inherit"
+                                    aria-label="menu"
+                                >
+                                    <AppsIcon />
+                                </IconButton>
+                                <ClassroomLabel classes={classes.title} />
+                            </Grid>
+                            <Hidden mdUp>
+                                <Grid
+                                    container item
+                                    xs={4}
+                                    justify="flex-end"
+                                    direction="row"
+                                    alignItems="center"
+                                    style={{ flexWrap: "nowrap"}}
+                                >
+                                    <UserSettings />
+                                </Grid>
+                            </Hidden>
                         </Grid>
                         <Grid container item xs={12} md={6} direction="row" justify="center">
                             { menuLabel.map((label: string) => {
                                 const value = label.toLowerCase();
                                 return (
                                     <NavButton
+                                        key={`menuLabel-${value}`}
                                         onClick={() => {
                                             history.push(`/?${QueryString.stringify({ component: value })}`);
                                             setActiveComponent(value);
@@ -126,55 +149,7 @@ export default function NavBar() {
                         </Grid>
                         <Hidden smDown>
                             <Grid container item md={3} direction="row" justify="flex-end" alignItems="center">
-                                <Grid item>
-                                    <IconButton
-                                        aria-label="settings of current user"
-                                        aria-controls="menu-appbar"
-                                        aria-haspopup="true"
-                                        onClick={handleMenu}
-                                        color="inherit"
-                                    >
-                                        <SettingsIcon />
-                                    </IconButton>
-                                </Grid>
-                                <Grid item xs={6}>
-                                    <Button
-                                        aria-label="account of current user"
-                                        aria-controls="menu-appbar"
-                                        aria-haspopup="true"
-                                        className={classes.profileButton}
-                                        fullWidth
-                                        onClick={handleMenu}
-                                    >
-                                        <Grid container direction="row" justify="flex-end" alignItems="center">
-                                            <img src={KidsloopLogo} height={32} />
-                                            <Avatar
-                                                alt="Shawn Lee"
-                                                className={classes.avatar}
-                                            >
-                                                <AccountCircle />
-                                            </Avatar>
-                                        </Grid>
-                                    </Button>
-                                </Grid>
-                                <Menu
-                                    id="menu-appbar"
-                                    anchorEl={anchorEl}
-                                    anchorOrigin={{
-                                        horizontal: "center",
-                                        vertical: "bottom",
-                                    }}
-                                    keepMounted
-                                    transformOrigin={{
-                                        horizontal: "center",
-                                        vertical: "top",
-                                    }}
-                                    open={open}
-                                    onClose={handleClose}
-                                >
-                                    <MenuItem onClick={handleClose}>Profile</MenuItem>
-                                    <MenuItem onClick={handleClose}>My account</MenuItem>
-                                </Menu>
+                                <UserSettings />
                             </Grid>
                         </Hidden>
                     </Grid>
