@@ -17,6 +17,8 @@ const messages: Record<string, string> = {
     login_loginButton: "Sign In",
     login_loginPrompt: "Sign In",
 
+    navMenu_adminConsoleLabel: "Admin Console",
+
     privacy_helpLink: "Help",
     privacy_privacyLink: "Privacy",
     privacy_termsLink: "Terms",

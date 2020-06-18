@@ -19,6 +19,7 @@ import { useHistory } from "react-router-dom";
 import KidsloopLogo from "../../../assets/img/kidsloop.svg";
 import LearningPassLogo from "../../../assets/img/logo_learning_pass_header.png";
 import NavButton from "./navButton";
+import NavMenu from "./navMenu";
 import UserSettings from "./userSettings";
 
 const menuLabel = ["Live", "Library", "People", "Assessments"];
@@ -40,7 +41,8 @@ const useStyles = makeStyles((theme: Theme) =>
             flexGrow: 1,
         },
         title: {
-            flexGrow: 1,
+            flex: 1,
+            marginLeft: theme.spacing(2),
         },
     }),
 );
@@ -51,14 +53,14 @@ interface LabelProps {
 
 function ClassroomLabel(props: LabelProps) {
     return(
-        <Grid container item xs={8} direction="column" justify="flex-start" alignItems="flex-start">
-            <Grid item>
-                <Typography variant="body1" className={props.classes}>
+        <Grid container item xs={10} direction="row" justify="flex-start" alignItems="flex-start">
+            <Grid item xs={12}>
+                <Typography variant="body1" className={props.classes} noWrap>
                     Shawn @ Calm Island
                 </Typography>
             </Grid>
-            <Grid item>
-                <Typography variant="body2" className={props.classes}>
+            <Grid item xs={12}>
+                <Typography variant="body2" className={props.classes} noWrap>
                     Pre-production
                 </Typography>
             </Grid>
@@ -89,21 +91,14 @@ export default function NavBar() {
                     >
                         <Grid
                             container item
-                            xs={12} md={3}
+                            xs={12} md={4}
                             direction="row"
                             justify="space-between"
                             alignItems="center"
                             style={{ flexWrap: "nowrap", minHeight }}
                         >
                             <Grid container item xs={8} direction="row">
-                                <IconButton
-                                    edge="start"
-                                    className={classes.menuButton}
-                                    color="inherit"
-                                    aria-label="menu"
-                                >
-                                    <AppsIcon />
-                                </IconButton>
+                                <NavMenu />
                                 <ClassroomLabel classes={classes.title} />
                             </Grid>
                             <Hidden mdUp>
@@ -119,7 +114,7 @@ export default function NavBar() {
                                 </Grid>
                             </Hidden>
                         </Grid>
-                        <Grid container item xs={12} md={6} direction="row" justify="center">
+                        <Grid container item xs={12} md={4} direction="row" justify="center">
                             { menuLabel.map((label: string) => {
                                 const value = label.toLowerCase();
                                 return (
@@ -138,7 +133,13 @@ export default function NavBar() {
                             })}
                         </Grid>
                         <Hidden smDown>
-                            <Grid container item md={3} direction="row" justify="flex-end" alignItems="center">
+                            <Grid
+                                container item
+                                md={4}
+                                direction="row"
+                                justify="flex-end"
+                                alignItems="center"
+                            >
                                 <UserSettings />
                             </Grid>
                         </Hidden>

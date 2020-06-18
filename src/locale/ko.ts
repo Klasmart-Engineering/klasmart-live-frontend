@@ -17,6 +17,8 @@ const messages: Record<string, string> = {
     login_loginButton: "로그인",
     login_loginPrompt: "로그인",
 
+    navMenu_adminConsoleLabel: "Admin Console",
+
     privacy_helpLink: "도움말",
     privacy_privacyLink: "개인정보처리방침",
     privacy_termsLink: "이용약관",
