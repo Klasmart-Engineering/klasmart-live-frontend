@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => createStyles({
         "&::after": {
             borderRadius: "0.25rem 0.25rem 0 0",
             borderTop: "0.25rem solid #0E78D5",
-            bottom: "-0.125rem",
+            bottom: "0rem",
             content: "' '",
             height: 0,
             left: 0,
@@ -35,8 +35,14 @@ const useStyles = makeStyles((theme) => createStyles({
         },
         "minWidth": theme.spacing(12),
         "padding": theme.spacing(0.5, 2),
-        [theme.breakpoints.down("sm")]: {
+        [theme.breakpoints.down("lg")]: {
             minWidth: theme.spacing(8),
+        },
+        [theme.breakpoints.down("md")]: {
+            minWidth: theme.spacing(4),
+        },
+        [theme.breakpoints.down("sm")]: {
+            minWidth: theme.spacing(3),
         },
     },
 }),
@@ -49,7 +55,6 @@ export default function NavButton(props: Props) {
     return (
         <Button
             className={clsx(classes.root, isActive ? classes.active : "")}
-            style={{ minWidth: 120 }}
             {...other}
         >
             { children || "class names"}

@@ -12,29 +12,46 @@ import { FormattedMessage } from "react-intl";
 import ReactPlayer from "react-player/lazy";
 import { useHistory } from "react-router-dom";
 import Copyright from "../../components/copyright";
+import LiveLayout from "./live/live";
 import NavBar from "./navbar/navbar";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
+        layout: {
+            flex: 1,
+        },
+        root: {
+            padding: theme.spacing(4, 5),
+            [theme.breakpoints.down("sm")]: {
+                padding: theme.spacing(2, 2),
+            },
+        },
     }),
 );
 
-export function Layout() {
+export default function Layout() {
     const classes = useStyles();
     const history = useHistory();
     const theme = useTheme();
 
     return (
-        <Grid container direction="row" justify="space-between">
+        <Grid
+            container
+            direction="column"
+            justify="space-between"
+            wrap="nowrap"
+            className={classes.layout}
+        >
             <NavBar />
-            <Container
-                    disableGutters
-                    maxWidth={"lg"}
-                >
-                    Hello World!
-            </Container>
+            <Grid item xs={12}>
+                <Container
+                        disableGutters
+                        maxWidth={"lg"}
+                        className={classes.root}
+                    >
+                        <LiveLayout />
+                </Container>
+            </Grid>
         </Grid>
     );
 }
-
-export default Layout;

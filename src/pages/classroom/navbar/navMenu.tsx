@@ -33,10 +33,7 @@ createStyles({
         position: "relative",
     },
     menuButton: {
-        // marginRight: theme.spacing(2),
-        // backgroundColor: "lightblue",
         maxWidth: "90%",
-        // minHeight: 200,
         padding: theme.spacing(2),
         [theme.breakpoints.down("sm")]: {
             maxWidth: "100%",
@@ -80,7 +77,7 @@ function MenuButton(props: MenuItemProps) {
                     <Typography variant="body1">
                         {props.content.title}
                     </Typography>
-                    <Typography variant="caption">
+                    <Typography variant="caption" style={{ color: "rgba(0, 0, 0, 0.6)" }}>
                         {props.content.description}
                     </Typography>
                 </Grid>
@@ -99,7 +96,7 @@ const Motion = React.forwardRef(function Transition(
 export default function NavMenu() {
     const classes = useStyles();
     const theme = useTheme();
-    const [open, setOpen] = useState(true);
+    const [open, setOpen] = useState(false);
 
     const MENU_ITEMS: MenuItem[] = [
         {
