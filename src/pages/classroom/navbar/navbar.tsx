@@ -15,14 +15,17 @@ import AppsIcon from "@material-ui/icons/Apps";
 import SettingsIcon from "@material-ui/icons/Settings";
 import * as QueryString from "query-string";
 import React, { useState } from "react";
+import { FormattedMessage } from "react-intl";
+import { useSelector, useStore } from "react-redux";
 import { useHistory } from "react-router-dom";
 import KidsloopLogo from "../../../assets/img/kidsloop.svg";
 import LearningPassLogo from "../../../assets/img/logo_learning_pass_header.png";
+import { ActionTypes } from "../../../store/actions";
+import { State } from "../../../store/store";
+import ClassSettings from "../settings/classSettings";
+import UserSettings from "../settings/userSettings";
 import NavButton from "./navButton";
 import NavMenu from "./navMenu";
-import UserSettings from "./userSettings";
-
-const menuLabel = ["Live", "Library", "People", "Assessments"];
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -72,11 +75,17 @@ export default function NavBar() {
     const classes = useStyles();
     const theme = useTheme();
     const history = useHistory();
+    const store = useStore();
 
     const url = new URL(window.location.href);
     const [activeComponent, setActiveComponent] = useState<string>(url.searchParams.get("component") || "live");
 
+    const handleClickOpen = () => {
+        store.dispatch({ type: ActionTypes.CLASS_SETTINGS_TOGGLE, payload: true });
+    };
+
     const minHeight = useMediaQuery(theme.breakpoints.up("sm")) ? 64 : 56;
+    const menuLabel = ["Live", "Library", "People", "Assessments"];
 
     return (
         <div className={classes.root}>
@@ -98,7 +107,7 @@ export default function NavBar() {
                             wrap="nowrap"
                             style={{ minHeight }}
                         >
-                            <Grid container item xs={8} direction="row" 
+                            <Grid container item xs={8} direction="row"
                             wrap="nowrap">
                                 <NavMenu />
                                 <ClassroomLabel classes={classes.title} />
@@ -112,6 +121,18 @@ export default function NavBar() {
                                     alignItems="center"
                                     wrap="nowrap"
                                 >
+                                    <Grid item>
+                                        <IconButton
+                                            edge="start"
+                                            onClick={handleClickOpen}
+                                            color="inherit"
+                                            aria-label="settings of current user"
+                                            aria-controls="menu-appbar"
+                                            aria-haspopup="true"
+                                        >
+                                            <SettingsIcon />
+                                        </IconButton>
+                                    </Grid>
                                     <UserSettings />
                                 </Grid>
                             </Hidden>
@@ -135,7 +156,7 @@ export default function NavBar() {
                                         isActive={activeComponent === value}
                                         style={{ minHeight }}
                                     >
-                                        {label}
+                                        <FormattedMessage id={`navMenu_${value}Label`} />
                                     </NavButton>
                                 );
                             })}
@@ -149,12 +170,25 @@ export default function NavBar() {
                                 alignItems="center"
                                 wrap="nowrap"
                             >
+                                <Grid item>
+                                    <IconButton
+                                        edge="start"
+                                        onClick={handleClickOpen}
+                                        color="inherit"
+                                        aria-label="settings of current user"
+                                        aria-controls="menu-appbar"
+                                        aria-haspopup="true"
+                                    >
+                                        <SettingsIcon />
+                                    </IconButton>
+                                </Grid>
                                 <UserSettings />
                             </Grid>
                         </Hidden>
                     </Grid>
                 </Toolbar>
             </AppBar>
+            <ClassSettings />
         </div>
     );
     }

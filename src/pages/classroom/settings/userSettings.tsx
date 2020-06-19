@@ -12,6 +12,7 @@ import clsx from "clsx";
 import React, { useState } from "react";
 import KidsloopLogo from "../../../assets/img/kidsloop.svg";
 import LearningPassLogo from "../../../assets/img/logo_learning_pass_header.png";
+import ClassSettings from "./classSettings";
 
 interface Props extends ButtonProps {
     children?: React.ReactNode;
@@ -70,17 +71,6 @@ export default function UserSettings(props: Props) {
 
     return (
         <>
-            <Grid item>
-                <IconButton
-                    aria-label="settings of current user"
-                    aria-controls="menu-appbar"
-                    aria-haspopup="true"
-                    onClick={handleMenu}
-                    color="inherit"
-                >
-                    <SettingsIcon />
-                </IconButton>
-            </Grid>
             <Grid item>
                 <Button
                     aria-label="account of current user"

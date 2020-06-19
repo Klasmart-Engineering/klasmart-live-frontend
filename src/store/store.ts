@@ -3,7 +3,7 @@ import { applyMiddleware, combineReducers, createStore, Store as ReduxStore } fr
 import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { Actions } from "./actions";
-import { account, postAuthorizationRoute } from "./reducers";
+import { account, postAuthorizationRoute, ui } from "./reducers";
 
 const persistConfig = {
   key: "root",
@@ -13,7 +13,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
   account,
   postAuthorizationRoute,
-  // lesson,
+  ui,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

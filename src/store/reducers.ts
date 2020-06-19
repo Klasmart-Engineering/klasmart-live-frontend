@@ -167,19 +167,29 @@ export function accessTokenExpire(state = null, action: Actions) {
     }
 }
 
+export function classSettings(state = false, action: Actions) {
+    switch (action.type) {
+        case ActionTypes.CLASS_SETTINGS_TOGGLE:
+            return action.payload;
+        default:
+            return state;
+    }
+}
+
 export const account = combineReducers({
     accessToken,
     accessTokenExpire,
     accountId,
-    darkMode,
     deviceId,
     email,
-    locale,
     refreshToken,
     refreshTokenExpire,
     sessionId,
     userAgent,
 });
 
-// export const lesson = combineReducers({
-// });
+export const ui = combineReducers({
+    classSettings,
+    darkMode,
+    locale,
+});

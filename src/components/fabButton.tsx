@@ -1,13 +1,11 @@
-import Fab from "@material-ui/core/Fab";
+import Fab, { FabProps } from "@material-ui/core/Fab";
 import Hidden from "@material-ui/core/Hidden";
 import { withStyles } from "@material-ui/core/styles";
 import React from "react";
 
-interface Props {
+interface Props extends FabProps {
     children?: React.ReactNode;
     className?: string;
-    disabled?: boolean;
-    type?: "button" | "reset" | "submit" | undefined;
     extendedOnly?: boolean;
 }
 

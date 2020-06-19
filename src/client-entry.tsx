@@ -53,8 +53,8 @@ function ClientSide() {
 
     const testing = memos.hostName === "localhost";
 
-    const darkMode = useSelector((state: State) => state.account.darkMode);
-    const languageCode = useSelector((state: State) => state.account.locale || "");
+    const darkMode = useSelector((state: State) => state.ui.darkMode);
+    const languageCode = useSelector((state: State) => state.ui.locale || "");
     const locale = getLanguage(languageCode);
     const localeTypography = setTypography(languageCode);
 

@@ -46,6 +46,7 @@ createStyles({
         },
     },
     menuGrid: {
+        padding: theme.spacing(1),
         textAlign: "center",
     },
     title: {
@@ -221,7 +222,6 @@ export default function NavMenu() {
                     direction="row"
                     justify="space-around"
                     alignItems="stretch"
-                    spacing={4}
                     className={classes.menuContainer}
                 >
                     {

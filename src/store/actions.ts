@@ -46,6 +46,8 @@ export interface AccessTokenExpiredAction { type: ActionTypes.EXPIRED_ACCESS_TOK
 
 export type DeviceIdAction = Action<ActionTypes.DEVICE_ID, string>;
 
+export type ToggleClassSettings = Action<ActionTypes.CLASS_SETTINGS_TOGGLE, boolean>;
+
 export enum ActionTypes {
     LOCALE,
     LOGIN,
@@ -60,6 +62,7 @@ export enum ActionTypes {
     USER_AGENT,
     DEVICE_ID,
     EXPIRED_ACCESS_TOKEN,
+    CLASS_SETTINGS_TOGGLE,
 }
 
 export type Actions =
@@ -70,6 +73,7 @@ export type Actions =
     | LogoutAction
     | SignUpAction
     | SetEmailAction
+    | ToggleClassSettings
     | PostAuthorizationRouteAction
     | RefreshTokenExpiredAction
     | AccountIdAction

@@ -9,6 +9,10 @@ const messages: Record<string, string> = {
     form_emailLabel: "이메일 주소 / 휴대폰 번호",
     form_passwordLabel: "비밀번호",
 
+    live_classCodeLabel: "Class code",
+    live_liveButton: "Go Live",
+    live_liveLinkLabel: "KidsLoop <span className={classes.liveTextWrapper}>LIVE</span> link",
+
     locale_select: "언어 선택",
     locale_tooltip: "언어 변경",
 
@@ -18,6 +22,10 @@ const messages: Record<string, string> = {
     login_loginPrompt: "로그인",
 
     navMenu_adminConsoleLabel: "Admin Console",
+    navMenu_assessmentsLabel: "Assessments",
+    navMenu_libraryLabel: "Library",
+    navMenu_liveLabel: "Live",
+    navMenu_peopleLabel: "People",
 
     privacy_helpLink: "도움말",
     privacy_privacyLink: "개인정보처리방침",

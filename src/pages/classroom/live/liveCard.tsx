@@ -4,6 +4,7 @@ import Typography from "@material-ui/core/Typography";
 import FaceIcon from "@material-ui/icons/Face";
 import randomBytes from "randombytes";
 import * as React from "react";
+import { FormattedMessage } from "react-intl";
 import StudyingBackground from "../../../assets/img/studying_bg.svg";
 import CenterAlignChildren from "../../../components/centerAlignChildren";
 import StyledFAB from "../../../components/fabButton";
@@ -62,13 +63,17 @@ export default function LiveCard() {
                     </Grid>
                     <Grid item xs={12}>
                         <CenterAlignChildren>
-                            <Typography variant="h6" style={{ paddingRight: theme.spacing(2) }}>Class code: </Typography>
+                            <Typography variant="h6" style={{ paddingRight: theme.spacing(2) }}>
+                                <FormattedMessage id={"live_classCodeLabel"} />:
+                            </Typography>
                             <Typography variant="body1">{ randomBytes(6).toString("base64") }</Typography>
                         </CenterAlignChildren>
                     </Grid>
                     <Grid item xs={12}>
                         <Typography variant="h6">
-                            KidsLoop <span className={classes.liveTextWrapper}>LIVE</span> link:
+                            KidsLoop <span className={classes.liveTextWrapper}>LIVE</span>
+                            &nbsp;
+                            <FormattedMessage id={"live_liveLinkLabel"} />:
                         </Typography>
                         <Typography variant="body1">https://meet.google.com/wit-masa-dzw</Typography>
                     </Grid>
@@ -77,7 +82,7 @@ export default function LiveCard() {
             <Grid item>
                 <CenterAlignChildren>
                     <StyledFAB extendedOnly className={classes.liveButton}>
-                        Go Live
+                        <FormattedMessage id="live_liveButton" />
                     </StyledFAB>
                     <CenterAlignChildren>
                         <FaceIcon color="inherit" style={{ marginRight: theme.spacing(1) }} />
