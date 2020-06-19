@@ -176,6 +176,15 @@ export function classSettings(state = false, action: Actions) {
     }
 }
 
+export function liveClass(state = false, action: Actions) {
+    switch (action.type) {
+        case ActionTypes.LIVE_CLASS_TOGGLE:
+            return action.payload;
+        default:
+            return state;
+    }
+}
+
 export const account = combineReducers({
     accessToken,
     accessTokenExpire,
@@ -191,5 +200,6 @@ export const account = combineReducers({
 export const ui = combineReducers({
     classSettings,
     darkMode,
+    liveClass,
     locale,
 });

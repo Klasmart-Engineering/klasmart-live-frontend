@@ -18,6 +18,7 @@ import React, { useEffect, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { useSelector, useStore } from "react-redux";
 import KidsloopLogo from "../../../assets/img/kidsloop.svg";
+import DialogAppBar from "../../../components/dialogAppBar";
 import StyledFAB from "../../../components/fabButton";
 import { ActionTypes } from "../../../store/actions";
 import { State } from "../../../store/store";
@@ -65,16 +66,10 @@ const Motion = React.forwardRef(function Transition(
 
 export default function ClassSettings() {
     const classes = useStyles();
-    const theme = useTheme();
     const store = useStore();
+    const theme = useTheme();
 
-    // const [open, setOpen] = useState(false);
     const open = useSelector((state: State) => state.ui.classSettings);
-
-    const handleClickOpen = () => {
-        store.dispatch({ type: ActionTypes.CLASS_SETTINGS_TOGGLE, payload: true });
-    };
-
     const handleClose = () => {
         store.dispatch({ type: ActionTypes.CLASS_SETTINGS_TOGGLE, payload: false });
     };
@@ -89,38 +84,19 @@ export default function ClassSettings() {
                 onClose={handleClose}
                 TransitionComponent={Motion}
             >
-                <AppBar color="inherit" className={classes.appBar}>
-                    <Toolbar>
-                        <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
-                            <CloseIcon />
-                        </IconButton>
-                        <Grid container item alignItems="center">
-                            <img alt="kidsloop logo" className={classes.title} src={KidsloopLogo} height={32} />
-                            <Typography id="nav-menu-title" variant="h6">
-                                Classroom™
-                            </Typography>
-                        </Grid>
+                <DialogAppBar
+                    toolbarBtn={
                         <Hidden smDown>
                             <Grid item>
                                 <StyledFAB size="small" onClick={handleClose}>
-                                    Save <SaveIcon />
+                                    Save <SaveIcon style={{ paddingLeft: theme.spacing(1) }} />
                                 </StyledFAB>
                             </Grid>
                         </Hidden>
-                    </Toolbar>
-                </AppBar>
-                <Grid
-                    container
-                    direction="row"
-                >
-                    <Paper square style={{ flex: 1, height: "100%" }}>
-                        <Toolbar variant="dense">
-                            <Typography id="nav-menu-description" variant="body2">
-                                <FormattedMessage id="classSettings_classroomSettings" />
-                            </Typography>
-                        </Toolbar>
-                    </Paper>
-                </Grid>
+                    }
+                    handleClose={handleClose}
+                    subtitleID={"classSettings_classroomSettings"}
+                />
                 <Grid
                     container
                     direction="row"

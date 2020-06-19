@@ -48,11 +48,14 @@ export type DeviceIdAction = Action<ActionTypes.DEVICE_ID, string>;
 
 export type ToggleClassSettings = Action<ActionTypes.CLASS_SETTINGS_TOGGLE, boolean>;
 
+export type ToggleLiveClass = Action<ActionTypes.LIVE_CLASS_TOGGLE, boolean>;
+
 export enum ActionTypes {
     LOCALE,
     LOGIN,
     SIGNUP,
     LOGOUT,
+    LIVE_CLASS_TOGGLE,
     REFRESH_SESSION,
     POST_AUTHORIZATION_ROUTE,
     DARK_MODE,
@@ -80,4 +83,5 @@ export type Actions =
     | RefreshSessionAction
     | AccessTokenExpiredAction
     | DeviceIdAction
+    | ToggleLiveClass
     | never;

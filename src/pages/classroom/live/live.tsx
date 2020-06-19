@@ -4,10 +4,13 @@ import Grid from "@material-ui/core/Grid";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import * as React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FormattedMessage } from "react-intl";
+import { useSelector, useStore } from "react-redux";
 import { useHistory } from "react-router-dom";
 import StudyingBackground from "../../../assets/img/studying_bg.svg";
+import { ActionTypes } from "../../../store/actions";
+import { State } from "../../../store/store";
 import LiveCard from "./liveCard";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -35,19 +38,21 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function LiveLayout() {
     const classes = useStyles();
-    const theme = useTheme();
-    const [isLive, setLive] = useState(false);
+
     const [hasTransitioned, setHasTransitioned] = useState(false);
     const [inFlight, setInFlight] = useState(false);
 
-    function handleLiveTransition() {
-        setLive(!isLive);
-        setInFlight(true);
-        setTimeout(() => {
-            setHasTransitioned(!hasTransitioned);
-            setInFlight(false);
-        }, 5000);
-    }
+    const isLive = useSelector((state: State) => state.ui.liveClass);
+
+    useEffect(() => {
+        if (isLive) {
+            setInFlight(true);
+            setTimeout(() => {
+                setHasTransitioned(!hasTransitioned);
+                setInFlight(false);
+            }, 5000);
+        }
+    }, [isLive]);
 
     return (
         <Grid
@@ -86,9 +91,7 @@ export default function LiveLayout() {
                 </Fade>
             </Grid>
             <Grid item xs={12}>
-                <Button onClick={() => handleLiveTransition()}>
-                    Test
-                </Button>
+
             </Grid>
         </Grid>
     );

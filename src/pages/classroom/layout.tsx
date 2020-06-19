@@ -2,6 +2,8 @@ import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import * as React from "react";
+import { useStore } from "react-redux";
+import { ActionTypes } from "../../store/actions";
 import LiveLayout from "./live/live";
 import NavBar from "./navbar/navbar";
 
@@ -21,6 +23,9 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function Layout() {
     const classes = useStyles();
+    const store = useStore();
+
+    store.dispatch({ type: ActionTypes.LIVE_CLASS_TOGGLE, payload: false });
 
     return (
         <Grid

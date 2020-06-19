@@ -25,6 +25,7 @@ import TableChartTwoToneIcon from "@material-ui/icons/TableChartTwoTone";
 import React, { useState } from "react";
 import { FormattedMessage } from "react-intl";
 import KidsloopLogo from "../../../assets/img/kidsloop.svg";
+import DialogAppBar from "../../../components/dialogAppBar";
 import { MenuItem } from "../../../types/objectTypes";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -194,29 +195,10 @@ export default function NavMenu() {
                 onClose={handleClose}
                 TransitionComponent={Motion}
             >
-                <AppBar color="inherit" className={classes.appBar}>
-                    <Toolbar>
-                        <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
-                            <CloseIcon />
-                        </IconButton>
-                        <img alt="kidsloop logo" className={classes.title} src={KidsloopLogo} height={32} />
-                        <Typography id="nav-menu-title" variant="h6">
-                            Classroom™
-                        </Typography>
-                    </Toolbar>
-                </AppBar>
-                <Grid
-                    container
-                    direction="row"
-                >
-                    <Paper square style={{ flex: 1, height: "100%" }}>
-                        <Toolbar variant="dense">
-                            <Typography id="nav-menu-description" variant="body2">
-                                <FormattedMessage id="navMenu_adminConsoleLabel" />
-                            </Typography>
-                        </Toolbar>
-                    </Paper>
-                </Grid>
+                <DialogAppBar
+                    handleClose={handleClose}
+                    subtitleID={"navMenu_adminConsoleLabel"}
+                />
                 <Grid
                     container
                     direction="row"
