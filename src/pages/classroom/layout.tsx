@@ -1,6 +1,7 @@
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
+import clsx from "clsx";
 import * as React from "react";
 import { useStore } from "react-redux";
 import { ActionTypes } from "../../store/actions";
@@ -16,6 +17,15 @@ const useStyles = makeStyles((theme: Theme) =>
             padding: theme.spacing(4, 5),
             [theme.breakpoints.down("sm")]: {
                 padding: theme.spacing(2, 2),
+            },
+        },
+        safeArea: {
+            padding: theme.spacing(4, 5),
+            [theme.breakpoints.down("sm")]: {
+                paddingBottom: theme.spacing(2),
+                paddingLeft: `max(${theme.spacing(2)},env(safe-area-inset-left)`,
+                paddingRight: `max(${theme.spacing(2)},env(safe-area-inset-right)`,
+                paddingTop: theme.spacing(2),
             },
         },
     }),
@@ -40,7 +50,7 @@ export default function Layout() {
                 <Container
                         disableGutters
                         maxWidth={"lg"}
-                        className={classes.root}
+                        className={clsx(classes.root, classes.safeArea)}
                     >
                         <LiveLayout />
                 </Container>

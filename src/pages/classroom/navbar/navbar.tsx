@@ -43,6 +43,10 @@ const useStyles = makeStyles((theme: Theme) =>
         root: {
             flexGrow: 1,
         },
+        safeArea: {
+            paddingLeft: "env(safe-area-inset-left)",
+            paddingRight: "env(safe-area-inset-right)",
+        },
         title: {
             flex: 1,
             marginLeft: theme.spacing(2),
@@ -89,7 +93,7 @@ export default function NavBar() {
 
     return (
         <div className={classes.root}>
-            <AppBar color="inherit" position="sticky">
+            <AppBar color="inherit" position="sticky" className={classes.safeArea}>
                 <Toolbar>
                     <Grid
                         container

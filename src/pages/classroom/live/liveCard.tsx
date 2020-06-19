@@ -25,11 +25,11 @@ const useStyles = makeStyles((theme: Theme) =>
             padding: theme.spacing(4, 5),
             [theme.breakpoints.down("sm")]: {
                 backgroundPosition: "bottom right",
-                height: "64vw",
+                height: `min(${window.innerHeight - 20}px,56vw)`,
                 padding: theme.spacing(2, 2),
             },
             [theme.breakpoints.down("xs")]: {
-                height: "72vw",
+                height: `min(${window.innerHeight - 20}px,72vw)`,
             },
         },
         liveButton: {
