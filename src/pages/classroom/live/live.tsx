@@ -9,9 +9,11 @@ import { FormattedMessage } from "react-intl";
 import { useSelector, useStore } from "react-redux";
 import { useHistory } from "react-router-dom";
 import StudyingBackground from "../../../assets/img/studying_bg.svg";
+import StyledTextField from "../../../components/textfield";
 import { ActionTypes } from "../../../store/actions";
 import { State } from "../../../store/store";
 import LiveCard from "./liveCard";
+import LiveChatInput from "./liveChatInput";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -41,6 +43,7 @@ export default function LiveLayout() {
 
     const [hasTransitioned, setHasTransitioned] = useState(false);
     const [inFlight, setInFlight] = useState(false);
+    const [message, setMessage] = useState("");
 
     const isLive = useSelector((state: State) => state.ui.liveClass);
 
@@ -57,11 +60,12 @@ export default function LiveLayout() {
     return (
         <Grid
             container
-            direction="column"
+            direction="row"
             justify="space-between"
-            alignItems="stretch"
-            wrap="nowrap"
+            // alignItems="center"
+            // wrap="nowrap"
             className={classes.root}
+            spacing={4}
         >
             <Grid item xs={12} style={{ display: inFlight ? "unset" : "none", textAlign: "center" }}>
                 <Grid
@@ -90,8 +94,15 @@ export default function LiveLayout() {
                     </Paper>
                 </Fade>
             </Grid>
-            <Grid item xs={12}>
-
+            <Grid item xs={12} md={4}>
+                <Paper elevation={4} className={classes.paperContainer}>
+                    {"Placeholder >_<"}
+                </Paper>
+            </Grid>
+            <Grid item xs={12} md={8}>
+                <Paper elevation={4} className={classes.paperContainer}>
+                    <LiveChatInput />
+                </Paper>
             </Grid>
         </Grid>
     );

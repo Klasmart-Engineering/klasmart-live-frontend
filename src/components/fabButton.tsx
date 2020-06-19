@@ -1,6 +1,7 @@
 import Fab, { FabProps } from "@material-ui/core/Fab";
 import Hidden from "@material-ui/core/Hidden";
 import { withStyles } from "@material-ui/core/styles";
+import SendIcon from "@material-ui/icons/Send";
 import React from "react";
 
 interface Props extends FabProps {
@@ -35,17 +36,17 @@ export default function StyledFAB(props: Props) {
     return (
         extendedOnly ?
             <StyledFab variant="extended" style={{ minWidth: 120 }} {...other}>
-                { children || "class names"}
+                { children || <SendIcon />}
             </StyledFab> :
             <>
                 <Hidden smDown>
                     <StyledFab variant="extended" style={{ minWidth: 120 }} {...other}>
-                        { children || "class names"}
+                        { children || <SendIcon />}
                     </StyledFab>
                 </Hidden>
                 <Hidden mdUp>
                     <StyledFab variant="round" size="small" {...other}>
-                        { sibling || "class names" }
+                        { sibling || <SendIcon fontSize="small" /> }
                     </StyledFab>
                 </Hidden>
             </>
