@@ -209,7 +209,7 @@ export default function NavMenu() {
                     container
                     direction="row"
                 >
-                    <Paper square style={{ flex: 1 }}>
+                    <Paper square style={{ flex: 1, height: "100%" }}>
                         <Toolbar variant="dense">
                             <Typography id="nav-menu-description" variant="body2">
                                 <FormattedMessage id="navMenu_adminConsoleLabel" />
