@@ -1,16 +1,12 @@
 import { Typography } from "@material-ui/core";
 import Avatar from "@material-ui/core/Avatar";
-import Collapse from "@material-ui/core/Collapse";
 import Grid from "@material-ui/core/Grid";
 import Hidden from "@material-ui/core/Hidden";
 import Paper from "@material-ui/core/Paper";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-import TextField from "@material-ui/core/TextField";
-import AccountCircle from "@material-ui/icons/AccountCircle";
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { useState } from "react";
 import { FormattedDate, FormattedMessage, FormattedTime } from "react-intl";
-import CenterAlignChildren from "../../../components/centerAlignChildren";
-import StyledFAB from "../../../components/fabButton";
+import CalmIslandLogo from "../../../assets/img/calmisland_logo.png";
 
 const useStyles = makeStyles((theme: Theme) =>
 createStyles({
@@ -84,9 +80,8 @@ export default function LiveChatInput(props: Props) {
                         <Grid item md={1}>
                             <Avatar
                                 alt="Shawn Lee"
-                            >
-                                <AccountCircle />
-                            </Avatar>
+                                src={CalmIslandLogo}
+                            />
                         </Grid>
                     </Hidden>
                     <Grid item xs={12} md={9}>
@@ -100,10 +95,9 @@ export default function LiveChatInput(props: Props) {
                                 <Grid item>
                                     <Avatar
                                         alt="Shawn Lee"
+                                        src={CalmIslandLogo}
                                         className={classes.smallAvatar}
-                                    >
-                                        <AccountCircle />
-                                    </Avatar>
+                                    />
                                 </Grid>
                             </Hidden>
                             <Typography variant="caption" color="primary">

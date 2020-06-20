@@ -10,6 +10,7 @@ import AccountCircle from "@material-ui/icons/AccountCircle";
 import SettingsIcon from "@material-ui/icons/Settings";
 import clsx from "clsx";
 import React, { useState } from "react";
+import CalmIslandLogo from "../../../assets/img/calmisland_logo.png";
 import KidsloopLogo from "../../../assets/img/kidsloop.svg";
 import LearningPassLogo from "../../../assets/img/logo_learning_pass_header.png";
 import ClassSettings from "./classSettings";
@@ -92,10 +93,9 @@ export default function UserSettings(props: Props) {
                         </Hidden>
                         <Avatar
                             alt="Shawn Lee"
+                            src={CalmIslandLogo}
                             className={classes.avatar}
-                        >
-                            <AccountCircle />
-                        </Avatar>
+                        />
                     </Grid>
                 </Button>
             </Grid>

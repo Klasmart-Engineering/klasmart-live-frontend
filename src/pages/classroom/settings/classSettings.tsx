@@ -1,28 +1,16 @@
-import AppBar from "@material-ui/core/AppBar";
-import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import Grid from "@material-ui/core/Grid";
 import Grow from "@material-ui/core/Grow";
 import Hidden from "@material-ui/core/Hidden";
-import IconButton from "@material-ui/core/IconButton";
-import Paper from "@material-ui/core/Paper";
 import { createStyles, makeStyles, Theme, useTheme } from "@material-ui/core/styles";
-import Toolbar from "@material-ui/core/Toolbar";
 import { TransitionProps } from "@material-ui/core/transitions";
-import Typography from "@material-ui/core/Typography";
-import AppsIcon from "@material-ui/icons/Apps";
-import CloseIcon from "@material-ui/icons/Close";
 import SaveIcon from "@material-ui/icons/Save";
-import SettingsIcon from "@material-ui/icons/Settings";
-import React, { useEffect, useState } from "react";
-import { FormattedMessage } from "react-intl";
+import React from "react";
 import { useSelector, useStore } from "react-redux";
-import KidsloopLogo from "../../../assets/img/kidsloop.svg";
 import DialogAppBar from "../../../components/dialogAppBar";
 import StyledFAB from "../../../components/fabButton";
 import { ActionTypes } from "../../../store/actions";
 import { State } from "../../../store/store";
-import { MenuItem } from "../../../types/objectTypes";
 
 const useStyles = makeStyles((theme: Theme) =>
 createStyles({

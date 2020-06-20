@@ -185,6 +185,15 @@ export function liveClass(state = false, action: Actions) {
     }
 }
 
+export function activeComponentHome(state = "live", action: Actions) {
+    switch (action.type) {
+        case ActionTypes.ACTIVE_COMPONENT_HOME:
+            return action.payload;
+        default:
+            return state;
+    }
+}
+
 export const account = combineReducers({
     accessToken,
     accessTokenExpire,
@@ -198,6 +207,7 @@ export const account = combineReducers({
 });
 
 export const ui = combineReducers({
+    activeComponentHome,
     classSettings,
     darkMode,
     liveClass,

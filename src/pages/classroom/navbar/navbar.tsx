@@ -81,8 +81,10 @@ export default function NavBar() {
     const history = useHistory();
     const store = useStore();
 
-    const url = new URL(window.location.href);
-    const [activeComponent, setActiveComponent] = useState<string>(url.searchParams.get("component") || "live");
+    const activeComponent = useSelector((state: State) => state.ui.activeComponentHome);
+    const setActiveComponent = (value: string) => {
+        store.dispatch({ type: ActionTypes.ACTIVE_COMPONENT_HOME, payload: value });
+    };
 
     const handleClickOpen = () => {
         store.dispatch({ type: ActionTypes.CLASS_SETTINGS_TOGGLE, payload: true });

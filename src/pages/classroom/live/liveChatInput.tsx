@@ -5,9 +5,8 @@ import Hidden from "@material-ui/core/Hidden";
 import Paper from "@material-ui/core/Paper";
 import { createStyles, makeStyles, Theme, useTheme } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
-import AccountCircle from "@material-ui/icons/AccountCircle";
 import React, { Dispatch, SetStateAction, useState } from "react";
-import CenterAlignChildren from "../../../components/centerAlignChildren";
+import CalmIslandLogo from "../../../assets/img/calmisland_logo.png";
 import StyledFAB from "../../../components/fabButton";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -15,7 +14,7 @@ createStyles({
     cssFocused: {
         "&$cssFocused": {
             backgroundColor: "#dff0ff",
-            color: "#1896ea", // focused
+            color: "#000", // focused
         },
 
     },
@@ -34,7 +33,6 @@ createStyles({
     },
     liveChatInput: {
         borderRadius: 12,
-        // height: 500,
         padding: theme.spacing(2, 4),
         [theme.breakpoints.down("sm")]: {
             padding: theme.spacing(2, 2),
@@ -77,9 +75,8 @@ export default function LiveChatInput(props: Props) {
                         <Grid item>
                             <Avatar
                                 alt="Shawn Lee"
-                            >
-                                <AccountCircle />
-                            </Avatar>
+                                src={CalmIslandLogo}
+                            />
                         </Grid>
                     </Hidden>
                     <Grid item style={{ flex: 1 }}>
@@ -107,10 +104,9 @@ export default function LiveChatInput(props: Props) {
                                     <Grid item>
                                         <Avatar
                                             alt="Shawn Lee"
+                                            src={CalmIslandLogo}
                                             className={classes.smallAvatar}
-                                        >
-                                            <AccountCircle />
-                                        </Avatar>
+                                        />
                                     </Grid>
                                 </Hidden>
                                 <StyledFAB

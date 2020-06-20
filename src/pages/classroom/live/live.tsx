@@ -1,16 +1,10 @@
-import { Button, CircularProgress, Container, Paper, useMediaQuery, useTheme } from "@material-ui/core";
+import { CircularProgress, Paper } from "@material-ui/core";
 import Fade from "@material-ui/core/Fade";
 import Grid from "@material-ui/core/Grid";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { FormattedMessage } from "react-intl";
-import { useSelector, useStore } from "react-redux";
-import { useHistory } from "react-router-dom";
-import StudyingBackground from "../../../assets/img/studying_bg.svg";
-import StyledTextField from "../../../components/textfield";
-import { ActionTypes } from "../../../store/actions";
+import { useSelector } from "react-redux";
 import { State } from "../../../store/store";
 import LiveCard from "./liveCard";
 import LiveChatInput from "./liveChatInput";
@@ -63,8 +57,6 @@ export default function LiveLayout() {
             container
             direction="row"
             justify="space-between"
-            // alignItems="center"
-            // wrap="nowrap"
             className={classes.root}
             spacing={4}
         >

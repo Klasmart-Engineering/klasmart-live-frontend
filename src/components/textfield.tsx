@@ -1,6 +1,5 @@
-import Grid from "@material-ui/core/Grid";
 import Link from "@material-ui/core/Link";
-import { createStyles, makeStyles, Theme, WithStyles, withStyles } from "@material-ui/core/styles";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import TextField, { StandardTextFieldProps } from "@material-ui/core/TextField";
 import * as React from "react";
 import { FormattedMessage } from "react-intl";
@@ -11,7 +10,7 @@ interface Props extends StandardTextFieldProps {
     className?: string;
 }
 
-const useStyles = makeStyles((theme) => createStyles({
+const useStyles = makeStyles((theme: Theme) => createStyles({
     cssFocused: {
         "&$cssFocused": {
             color: "#1896ea", // focused
