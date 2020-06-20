@@ -2,6 +2,8 @@
 const messages: Record<string, string> = {
     classSettings_classroomSettings: "Classroom Settings",
 
+    chatMessage_today: "Today",
+
     component_switchDark: "dark",
     component_switchLight: "light",
 

@@ -14,6 +14,7 @@ import { ActionTypes } from "../../../store/actions";
 import { State } from "../../../store/store";
 import LiveCard from "./liveCard";
 import LiveChatInput from "./liveChatInput";
+import LiveChatMessage from "./liveChatMessage";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -95,14 +96,20 @@ export default function LiveLayout() {
                 </Fade>
             </Grid>
             <Grid item xs={12} md={4}>
-                <Paper elevation={4} className={classes.paperContainer}>
-                    {"Placeholder >_<"}
-                </Paper>
+                {"Placeholder >_<"}
             </Grid>
-            <Grid item xs={12} md={8}>
-                <Paper elevation={4} className={classes.paperContainer}>
-                    <LiveChatInput />
-                </Paper>
+            <Grid
+                container
+                direction="row"
+                justify="flex-start"
+                item xs={12} md={8}
+                spacing={1}
+            >
+                    <LiveChatInput message={message} setMessage={setMessage}/>
+
+                    <LiveChatMessage message={"This is a message."} timestamp={1592636284}/>
+
+                    <LiveChatMessage message={"This is a reeaaaaaaaalllllllllllllyyyyyyyyyyyyyyyyyyyyyyyy long reeaaaaaaaalllllllllllllyyyyyyyyyyyyyyyyyyyyyyyy long reeaaaaaaaalllllllllllllyyyyyyyyyyyyyyyyyyyyyyyy long reeaaaaaaaalllllllllllllyyyyyyyyyyyyyyyyyyyyyyyy long reeaaaaaaaalllllllllllllyyyyyyyyyyyyyyyyyyyyyyyy long message."} timestamp={1592636284}/>
             </Grid>
         </Grid>
     );
