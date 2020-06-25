@@ -12,23 +12,23 @@ import { useSelector, useStore } from "react-redux";
 import { useHistory } from "react-router";
 import { useRestAPI } from "../../../api/restapi";
 import { RestAPIError } from "../../../api/restapi_errors";
-import KidsloopButton from "../../../components/fabButton";
-import BadanamuTextField from "../../../components/textfield";
+import KidsloopButton from "../../../components/styled/fabButton";
+import BadanamuTextField from "../../../components/styled/textfield";
 import { ActionTypes } from "../../../store/actions";
 import { State } from "../../../store/store";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     card: {
-        display: "flex",
         alignItems: "center",
+        display: "flex",
         padding: "48px 40px !important",
+    },
+    formContainer: {
+        width: "100%",
     },
     links: {
         padding: theme.spacing(4, 0),
         textAlign: "right",
-    },
-    formContainer: {
-        width: "100%",
     },
 }),
 );

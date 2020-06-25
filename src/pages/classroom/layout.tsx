@@ -1,14 +1,10 @@
 import { Box, Typography } from "@material-ui/core";
 import Container from "@material-ui/core/Container";
-import Fade from "@material-ui/core/Fade";
 import Grid from "@material-ui/core/Grid";
 import Grow from "@material-ui/core/Grow";
-import Slide from "@material-ui/core/Slide";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-import Zoom from "@material-ui/core/Zoom";
 import clsx from "clsx";
 import * as React from "react";
-import { useState } from "react";
 import { useSelector, useStore } from "react-redux";
 import { ActionTypes } from "../../store/actions";
 import { State } from "../../store/store";

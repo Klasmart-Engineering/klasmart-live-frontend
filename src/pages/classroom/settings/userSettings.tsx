@@ -1,24 +1,13 @@
 import Avatar from "@material-ui/core/Avatar";
-import Button, { ButtonProps } from "@material-ui/core/Button";
+import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import Hidden from "@material-ui/core/Hidden";
-import IconButton from "@material-ui/core/IconButton";
 import Menu, { MenuProps } from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import { createStyles, makeStyles, withStyles } from "@material-ui/core/styles";
-import AccountCircle from "@material-ui/icons/AccountCircle";
-import SettingsIcon from "@material-ui/icons/Settings";
-import clsx from "clsx";
-import React, { useState } from "react";
+import React from "react";
 import CalmIslandLogo from "../../../assets/img/calmisland_logo.png";
 import KidsloopLogo from "../../../assets/img/kidsloop.svg";
-import LearningPassLogo from "../../../assets/img/logo_learning_pass_header.png";
-import ClassSettings from "./classSettings";
-
-interface Props extends ButtonProps {
-    children?: React.ReactNode;
-    className?: string;
-}
 
 const StyledMenu = withStyles({
     paper: {
@@ -55,12 +44,11 @@ const useStyles = makeStyles((theme) => createStyles({
     },
 }));
 
-export default function UserSettings(props: Props) {
+export default function UserSettings() {
     const classes = useStyles();
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
-    const {children, className, ...other } = props;
 
     const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);

@@ -1,7 +1,7 @@
 import Button, { ButtonProps } from "@material-ui/core/Button";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
-import React, { useState } from "react";
+import React from "react";
 
 interface Props extends ButtonProps {
     children?: React.ReactNode;
@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => createStyles({
 
 export default function NavButton(props: Props) {
     const classes = useStyles();
-    const {children, className, isActive, type, ...other } = props;
+    const {children, isActive, ...other } = props;
 
     return (
         <Button

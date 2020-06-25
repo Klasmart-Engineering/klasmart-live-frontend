@@ -2,25 +2,24 @@ import AppBar from "@material-ui/core/AppBar";
 import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
 import Paper from "@material-ui/core/Paper";
-import { createStyles, makeStyles, Theme, useTheme } from "@material-ui/core/styles";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import CloseIcon from "@material-ui/icons/Close";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { FormattedMessage } from "react-intl";
-import KidsloopLogo from "../assets/img/kidsloop.svg";
-import CenterAlignChildren from "./centerAlignChildren";
+import KidsloopLogo from "../../assets/img/kidsloop.svg";
 
 const useStyles = makeStyles((theme: Theme) =>
-createStyles({
-    appBar: {
-        position: "relative",
-    },
-    title: {
-        marginLeft: theme.spacing(2),
-        marginRight: theme.spacing(1),
-    },
-}));
+    createStyles({
+        appBar: {
+            position: "relative",
+        },
+        title: {
+            marginLeft: theme.spacing(2),
+            marginRight: theme.spacing(1),
+        },
+    }));
 
 interface Props {
     handleClose: () => void;

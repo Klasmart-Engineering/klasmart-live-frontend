@@ -14,8 +14,8 @@ import { RouteComponentProps } from "react-router";
 import { useHistory } from "react-router";
 import { useRestAPI } from "../../../api/restapi";
 import { RestAPIError } from "../../../api/restapi_errors";
-import KidsloopButton from "../../../components/fabButton";
-import BadanamuTextField from "../../../components/textfield";
+import KidsloopButton from "../../../components/styled/fabButton";
+import BadanamuTextField from "../../../components/styled/textfield";
 import { State } from "../../../store/store";
 
 // tslint:disable:object-literal-sort-keys
@@ -83,9 +83,9 @@ export function PasswordRestore(props: RouteComponentProps) {
         const id = e.getErrorMessageID();
         const errorMessage = <FormattedMessage id={id} />;
         switch (e.getErrorMessageType()) {
-            default:
-                setGeneralError(errorMessage);
-                break;
+        default:
+            setGeneralError(errorMessage);
+            break;
         }
     }
 

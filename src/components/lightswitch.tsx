@@ -1,5 +1,5 @@
 import IconButton from "@material-ui/core/IconButton";
-import { withStyles, WithStyles, withTheme } from "@material-ui/core/styles";
+import { withStyles } from "@material-ui/core/styles";
 import Switch from "@material-ui/core/Switch";
 import Brightness4Icon from "@material-ui/icons/Brightness4";
 import Brightness7Icon from "@material-ui/icons/Brightness7";
@@ -11,9 +11,7 @@ import { State } from "../store/store";
 interface Props {
     children?: React.ReactNode;
     className?: string;
-    extendedOnly?: boolean;
     iconOnly?: boolean;
-    onClick: () => void;
 }
 
 const StyledSwitch = withStyles({
@@ -56,12 +54,12 @@ const StyledSwitch = withStyles({
     track: {
         "&:after": {
             color: "white",
-            content: `"dark"`,
+            content: "\"dark\"",
             right: 4,
         },
         "&:before": {
             color: "black",
-            content: '"light"',
+            content: "\"light\"",
             left: 4,
             opacity: 0,
         },
@@ -90,10 +88,10 @@ export default function Lightswitch(props: Props) {
     }
 
     const [toggled, setToggled] = useState(darkMode === "light" ? true : false);
-    const {children, className, extendedOnly, iconOnly, onClick, ...other } = props;
+    const {children, className, iconOnly, ...other } = props;
 
     let sibling: React.ReactNode;
-    React.Children.map(children, (child, index) => (
+    React.Children.map(children, (child) => (
         typeof child !== "string" ? sibling = child : {}
     ));
 
@@ -106,6 +104,7 @@ export default function Lightswitch(props: Props) {
                     setToggled(!toggled);
                     setDarkMode(!toggled);
                 }}
+                {...other}
             >
                 { toggled ?
                     <Brightness4Icon style={{ fontSize: "inherit" }} /> :
@@ -120,6 +119,7 @@ export default function Lightswitch(props: Props) {
                     setToggled(e.target.checked);
                     setDarkMode(e.target.checked);
                 }}
+                {...other}
             />
     );
 }

@@ -4,50 +4,50 @@ import Grid from "@material-ui/core/Grid";
 import Hidden from "@material-ui/core/Hidden";
 import Paper from "@material-ui/core/Paper";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-import React, { useState } from "react";
+import React from "react";
 import { FormattedDate, FormattedMessage, FormattedTime } from "react-intl";
 import CalmIslandLogo from "../../../assets/img/calmisland_logo.png";
 
 const useStyles = makeStyles((theme: Theme) =>
-createStyles({
-    cssFocused: {
-        "&$cssFocused": {
-            backgroundColor: "#dff0ff",
-            color: "#1896ea", // focused
-        },
+    createStyles({
+        cssFocused: {
+            "&$cssFocused": {
+                backgroundColor: "#dff0ff",
+                color: "#1896ea", // focused
+            },
 
-    },
-    cssOutlinedInput: {
-        "&$cssFocused": {
-            borderColor: "#1896ea", // focused
         },
-        "&:hover:not($disabled):not($cssFocused):not($error)": {
-            backgroundColor: "#b8ddff",
-            borderColor: "#7c8084", // hovered
+        cssOutlinedInput: {
+            "&$cssFocused": {
+                borderColor: "#1896ea", // focused
+            },
+            "&:hover:not($disabled):not($cssFocused):not($error)": {
+                backgroundColor: "#b8ddff",
+                borderColor: "#7c8084", // hovered
+            },
+            "&:not(hover):not($disabled):not($cssFocused):not($error)": {
+                borderColor: "#c9caca", // default
+            },
+            "backgroundColor": "#fcfcfb",
         },
-        "&:not(hover):not($disabled):not($cssFocused):not($error)": {
-            borderColor: "#c9caca", // default
+        liveChatInput: {
+            borderRadius: 12,
+            // height: 500,
+            padding: theme.spacing(2, 4),
+            [theme.breakpoints.down("sm")]: {
+                padding: theme.spacing(2, 2),
+            },
         },
-        "backgroundColor": "#fcfcfb",
-    },
-    liveChatInput: {
-        borderRadius: 12,
-        // height: 500,
-        padding: theme.spacing(2, 4),
-        [theme.breakpoints.down("sm")]: {
-            padding: theme.spacing(2, 2),
+        paperContainer: {
+            border: "1px solid #c9caca",
+            borderRadius: 12,
         },
-    },
-    paperContainer: {
-        border: "1px solid #c9caca",
-        borderRadius: 12,
-    },
-    smallAvatar: {
-        height: theme.spacing(2),
-        marginRight: theme.spacing(1),
-        width: theme.spacing(2),
-    },
-}));
+        smallAvatar: {
+            height: theme.spacing(2),
+            marginRight: theme.spacing(1),
+            width: theme.spacing(2),
+        },
+    }));
 
 interface Props {
     message: string;
@@ -61,7 +61,6 @@ const datesAreOnSameDay = (first: Date, second: Date) =>
 
 export default function LiveChatInput(props: Props) {
     const classes = useStyles();
-    const [focusedInput, setFocusedInput] = useState(false);
     const { message, timestamp } = props;
     const today = datesAreOnSameDay(new Date(), new Date(timestamp * 1000));
 

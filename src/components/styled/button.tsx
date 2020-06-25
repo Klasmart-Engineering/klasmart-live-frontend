@@ -27,10 +27,10 @@ const StyledBtn = withStyles({
 })(Button);
 
 export default function StyledButton(props: Props) {
-    const {children, extendedOnly, type, ...other } = props;
+    const {children, extendedOnly, ...other } = props;
 
     let sibling: React.ReactNode;
-    React.Children.map(children, (child, index) => (
+    React.Children.map(children, (child) => (
         typeof child !== "string" ? sibling = child : {}
     ));
 

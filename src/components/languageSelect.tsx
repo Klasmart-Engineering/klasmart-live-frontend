@@ -66,7 +66,7 @@ export default function LanguageSelect(props: Props) {
     const classes = useStyles();
     const store = useStore();
 
-    const locale = useSelector((state: State) => state.account.locale || "");
+    const locale = useSelector((state: State) => state.ui.locale || "");
     const langText = LANGUAGES_LABEL.find((element) => element.code === locale);
     const [languageText, setLanguageText] = useState<string>(langText ? langText.text : "");
     const [languageMenuElement, setLanguageMenuElement] = useState<null | HTMLElement>(null);

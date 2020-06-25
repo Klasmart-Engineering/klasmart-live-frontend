@@ -1,25 +1,17 @@
 import AppBar from "@material-ui/core/AppBar";
-import Avatar from "@material-ui/core/Avatar";
-import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import Hidden from "@material-ui/core/Hidden";
 import IconButton from "@material-ui/core/IconButton";
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
 import { createStyles, makeStyles, Theme, useTheme } from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
-import AccountCircle from "@material-ui/icons/AccountCircle";
-import AppsIcon from "@material-ui/icons/Apps";
 import SettingsIcon from "@material-ui/icons/Settings";
 import * as QueryString from "query-string";
-import React, { useState } from "react";
+import React from "react";
 import { FormattedMessage } from "react-intl";
 import { useSelector, useStore } from "react-redux";
 import { useHistory } from "react-router-dom";
-import KidsloopLogo from "../../../assets/img/kidsloop.svg";
-import LearningPassLogo from "../../../assets/img/logo_learning_pass_header.png";
 import { ActionTypes } from "../../../store/actions";
 import { State } from "../../../store/store";
 import ClassSettings from "../settings/classSettings";
@@ -114,7 +106,7 @@ export default function NavBar() {
                             style={{ minHeight }}
                         >
                             <Grid container item xs={8} direction="row"
-                            wrap="nowrap">
+                                wrap="nowrap">
                                 <NavMenu />
                                 <ClassroomLabel classes={classes.title} />
                             </Grid>
@@ -197,4 +189,4 @@ export default function NavBar() {
             <ClassSettings />
         </div>
     );
-    }
+}

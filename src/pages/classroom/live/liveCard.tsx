@@ -7,9 +7,8 @@ import * as React from "react";
 import { FormattedMessage } from "react-intl";
 import { useSelector, useStore } from "react-redux";
 import LiveBackground from "../../../assets/img/live_bg.svg";
-import StudyingBackground from "../../../assets/img/studying_bg.svg";
 import CenterAlignChildren from "../../../components/centerAlignChildren";
-import StyledFAB from "../../../components/fabButton";
+import StyledFAB from "../../../components/styled/fabButton";
 import { ActionTypes } from "../../../store/actions";
 import { State } from "../../../store/store";
 
@@ -52,7 +51,6 @@ export default function LiveCard() {
     const classes = useStyles();
     const theme = useTheme();
     const store = useStore();
-    const isLive = useSelector((state: State) => state.ui.liveClass);
 
     const toggleLive = () => {
         store.dispatch({ type: ActionTypes.LIVE_CLASS_TOGGLE, payload: true });

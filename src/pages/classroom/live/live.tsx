@@ -97,11 +97,11 @@ export default function LiveLayout() {
                 item xs={12} md={8}
                 spacing={1}
             >
-                    <LiveChatInput message={message} setMessage={setMessage}/>
+                <LiveChatInput message={message} setMessage={setMessage}/>
 
-                    <LiveChatMessage message={"This is a message."} timestamp={1592636284}/>
+                <LiveChatMessage message={"This is a message."} timestamp={1592636284}/>
 
-                    <LiveChatMessage message={"This is a reeaaaaaaaalllllllllllllyyyyyyyyyyyyyyyyyyyyyyyy long reeaaaaaaaalllllllllllllyyyyyyyyyyyyyyyyyyyyyyyy long reeaaaaaaaalllllllllllllyyyyyyyyyyyyyyyyyyyyyyyy long reeaaaaaaaalllllllllllllyyyyyyyyyyyyyyyyyyyyyyyy long reeaaaaaaaalllllllllllllyyyyyyyyyyyyyyyyyyyyyyyy long message."} timestamp={1592636284}/>
+                <LiveChatMessage message={"This is a reeaaaaaaaalllllllllllllyyyyyyyyyyyyyyyyyyyyyyyy long reeaaaaaaaalllllllllllllyyyyyyyyyyyyyyyyyyyyyyyy long reeaaaaaaaalllllllllllllyyyyyyyyyyyyyyyyyyyyyyyy long reeaaaaaaaalllllllllllllyyyyyyyyyyyyyyyyyyyyyyyy long reeaaaaaaaalllllllllllllyyyyyyyyyyyyyyyyyyyyyyyy long message."} timestamp={1592636284}/>
             </Grid>
         </Grid>
     );

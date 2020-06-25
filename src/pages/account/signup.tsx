@@ -12,9 +12,9 @@ import { useHistory } from "react-router-dom";
 import { useRestAPI } from "../../api/restapi";
 import { RestAPIError, RestAPIErrorType } from "../../api/restapi_errors";
 import { redirectIfAuthorized } from "../../components/authorized";
-import KidsloopButton from "../../components/fabButton";
 import PolicyLink from "../../components/policyLinks";
-import BadanamuTextField from "../../components/textfield";
+import KidsloopButton from "../../components/styled/fabButton";
+import BadanamuTextField from "../../components/styled/textfield";
 import { getIdentityType, IdentityType } from "../../utils/accountType";
 
 // tslint:disable:object-literal-sort-keys
@@ -85,14 +85,14 @@ export function Signup() {
             // TODO: Get Locale
             await restApi.signup(email, password, "en");
             switch (accountType) {
-                case IdentityType.Email:
-                    history.push("/verify-email");
-                    break;
-                case IdentityType.Phone:
-                    history.push("/verify-phone");
-                    break;
-                default:
-                    throw new Error("Unknown Account Type");
+            case IdentityType.Email:
+                history.push("/verify-email");
+                break;
+            case IdentityType.Phone:
+                history.push("/verify-phone");
+                break;
+            default:
+                throw new Error("Unknown Account Type");
             }
         } catch (e) {
             handleError(e);
@@ -109,21 +109,21 @@ export function Signup() {
         const id = e.getErrorMessageID();
         const errorMessage = <FormattedMessage id={id} />;
         switch (e.getErrorMessageType()) {
-            case RestAPIErrorType.EMAIL_ALREADY_USED:
-            case RestAPIErrorType.INVALID_EMAIL_FORMAT:
-            case RestAPIErrorType.INVALID_EMAIL_HOST:
-                setEmailError(errorMessage);
-                break;
-            case RestAPIErrorType.PASSWORD_LOWERCASE_MISSING:
-            case RestAPIErrorType.PASSWORD_NUMBER_MISSING:
-            case RestAPIErrorType.PASSWORD_TOO_LONG:
-            case RestAPIErrorType.PASSWORD_TOO_SHORT:
-            case RestAPIErrorType.PASSWORD_UPPERCASE_MISSING:
-                setPasswordError(errorMessage);
-                break;
-            default:
-                setGeneralError(errorMessage);
-                break;
+        case RestAPIErrorType.EMAIL_ALREADY_USED:
+        case RestAPIErrorType.INVALID_EMAIL_FORMAT:
+        case RestAPIErrorType.INVALID_EMAIL_HOST:
+            setEmailError(errorMessage);
+            break;
+        case RestAPIErrorType.PASSWORD_LOWERCASE_MISSING:
+        case RestAPIErrorType.PASSWORD_NUMBER_MISSING:
+        case RestAPIErrorType.PASSWORD_TOO_LONG:
+        case RestAPIErrorType.PASSWORD_TOO_SHORT:
+        case RestAPIErrorType.PASSWORD_UPPERCASE_MISSING:
+            setPasswordError(errorMessage);
+            break;
+        default:
+            setGeneralError(errorMessage);
+            break;
         }
     }
 

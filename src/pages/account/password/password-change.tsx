@@ -5,26 +5,26 @@ import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { useHistory } from "react-router-dom";
 import { useRestAPI } from "../../../api/restapi";
 import { RestAPIError } from "../../../api/restapi_errors";
-import KidsloopButton from "../../../components/fabButton";
-import BadanamuTextField from "../../../components/textfield";
+import KidsloopButton from "../../../components/styled/fabButton";
+import BadanamuTextField from "../../../components/styled/textfield";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     card: {
-        display: "flex",
         alignItems: "center",
+        display: "flex",
         padding: "48px 40px !important",
+    },
+    formContainer: {
+        width: "100%",
     },
     links: {
         padding: theme.spacing(4, 0),
         textAlign: "right",
-    },
-    formContainer: {
-        width: "100%",
     },
 }),
 );
@@ -74,9 +74,9 @@ export function PasswordChange() {
         const id = e.getErrorMessageID();
         const errorMessage = <FormattedMessage id={id} />;
         switch (e.getErrorMessageType()) {
-            default:
-                setGeneralError(errorMessage);
-                break;
+        default:
+            setGeneralError(errorMessage);
+            break;
         }
     }
 

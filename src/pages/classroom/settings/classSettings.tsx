@@ -7,42 +7,42 @@ import { TransitionProps } from "@material-ui/core/transitions";
 import SaveIcon from "@material-ui/icons/Save";
 import React from "react";
 import { useSelector, useStore } from "react-redux";
-import DialogAppBar from "../../../components/dialogAppBar";
-import StyledFAB from "../../../components/fabButton";
+import DialogAppBar from "../../../components/styled/dialogAppBar";
+import StyledFAB from "../../../components/styled/fabButton";
 import { ActionTypes } from "../../../store/actions";
 import { State } from "../../../store/store";
 
 const useStyles = makeStyles((theme: Theme) =>
-createStyles({
-    appBar: {
-        position: "relative",
-    },
-    fab: {
-        bottom: theme.spacing(2),
-        position: "absolute",
-        right: theme.spacing(2),
-    },
-    menuButton: {
-        maxWidth: "90%",
-        padding: theme.spacing(2),
-        [theme.breakpoints.down("sm")]: {
-            maxWidth: "100%",
+    createStyles({
+        appBar: {
+            position: "relative",
         },
-    },
-    menuContainer: {
-        padding: theme.spacing(4, 5),
-        [theme.breakpoints.down("sm")]: {
-            padding: theme.spacing(2, 2),
+        fab: {
+            bottom: theme.spacing(2),
+            position: "absolute",
+            right: theme.spacing(2),
         },
-    },
-    menuGrid: {
-        textAlign: "center",
-    },
-    title: {
-        marginLeft: theme.spacing(2),
-        marginRight: theme.spacing(1),
-    },
-}),
+        menuButton: {
+            maxWidth: "90%",
+            padding: theme.spacing(2),
+            [theme.breakpoints.down("sm")]: {
+                maxWidth: "100%",
+            },
+        },
+        menuContainer: {
+            padding: theme.spacing(4, 5),
+            [theme.breakpoints.down("sm")]: {
+                padding: theme.spacing(2, 2),
+            },
+        },
+        menuGrid: {
+            textAlign: "center",
+        },
+        title: {
+            marginLeft: theme.spacing(2),
+            marginRight: theme.spacing(1),
+        },
+    }),
 );
 
 const Motion = React.forwardRef(function Transition(

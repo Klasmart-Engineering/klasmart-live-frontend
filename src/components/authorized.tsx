@@ -4,7 +4,6 @@ import { ActionTypes } from "../store/actions";
 import { State } from "../store/store";
 
 export function isLoggedIn() {
-    const store = useStore();
     const accessToken = useSelector((state: State) => state.account.accessToken);
     const refreshToken = useSelector((state: State) => state.account.refreshToken);
     return (accessToken === null && refreshToken === null);
@@ -39,7 +38,6 @@ export function redirectIfAuthorized(defaultRoute = "/") {
 }
 
 export function redirectIfUnverifiable(defaultRoute = "/") {
-    const store = useStore();
     const history = useHistory();
     const accountId = useSelector((state: State) => state.account.accountId);
     const accessToken = useSelector((state: State) => state.account.accessToken);

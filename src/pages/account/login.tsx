@@ -12,18 +12,18 @@ import * as QueryString from "query-string";
 import * as React from "react";
 import { useState } from "react";
 import { FormattedMessage } from "react-intl";
-import { useSelector, useStore } from "react-redux";
+import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { useRestAPI } from "../../api/restapi";
 import { RestAPIError, RestAPIErrorType } from "../../api/restapi_errors";
 import KidsloopLogo from "../../assets/img/kidsloop.svg";
 import { redirectIfAuthorized } from "../../components/authorized";
-import StyledButton from "../../components/button";
 import CenterAlignChildren from "../../components/centerAlignChildren";
 import LanguageSelect from "../../components/languageSelect";
 import Lightswitch from "../../components/lightswitch";
 import PolicyLink from "../../components/policyLinks";
-import StyledTextField from "../../components/textfield";
+import StyledButton from "../../components/styled/button";
+import StyledTextField from "../../components/styled/textfield";
 import { State } from "../../store/store";
 
 const useStyles = makeStyles((theme) => createStyles({
@@ -62,7 +62,6 @@ export function Login() {
     const [emailError, setEmailError] = useState<JSX.Element | null>(null);
     const [generalError, setGeneralError] = useState<JSX.Element | null>(null);
 
-    const store = useStore();
     const history = useHistory();
     const restApi = useRestAPI();
 
@@ -109,22 +108,22 @@ export function Login() {
         const id = e.getErrorMessageID();
         const errorMessage = <FormattedMessage id={id} />;
         switch (e.getErrorMessageType()) {
-            case RestAPIErrorType.INVALID_LOGIN:
-                setEmailError(errorMessage);
-                break;
-            case RestAPIErrorType.INVALID_PASSWORD:
-                setPasswordError(errorMessage);
-                break;
-            case RestAPIErrorType.EMAIL_NOT_VERIFIED:
-                history.push("/verify-email");
-                break;
-            case RestAPIErrorType.EMAIL_NOT_VERIFIED:
-                history.push("/verify-phone");
-                break;
-            case RestAPIErrorType.ACCOUNT_BANNED:
-            default:
-                setGeneralError(errorMessage);
-                break;
+        case RestAPIErrorType.INVALID_LOGIN:
+            setEmailError(errorMessage);
+            break;
+        case RestAPIErrorType.INVALID_PASSWORD:
+            setPasswordError(errorMessage);
+            break;
+        case RestAPIErrorType.EMAIL_NOT_VERIFIED:
+            history.push("/verify-email");
+            break;
+        case RestAPIErrorType.EMAIL_NOT_VERIFIED:
+            history.push("/verify-phone");
+            break;
+        case RestAPIErrorType.ACCOUNT_BANNED:
+        default:
+            setGeneralError(errorMessage);
+            break;
         }
     }
 
@@ -187,7 +186,6 @@ export function Login() {
                                 <StyledButton
                                     disabled={inFlight}
                                     onClick={() => {
-                                        // login()
                                         history.push(`/?${QueryString.stringify({ component: "live" })}`);
                                     }}
                                     size="medium"

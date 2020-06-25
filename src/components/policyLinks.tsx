@@ -1,7 +1,6 @@
 import Grid from "@material-ui/core/Grid";
 import Link from "@material-ui/core/Link";
 import { createStyles, Theme, WithStyles, withStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
 import * as React from "react";
 import { FormattedMessage } from "react-intl";
 

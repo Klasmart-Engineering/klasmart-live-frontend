@@ -1,30 +1,28 @@
-import AppBar from "@material-ui/core/AppBar";
-import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import Grid from "@material-ui/core/Grid";
 import Grow from "@material-ui/core/Grow";
-import { createStyles, makeStyles, Theme, useTheme } from "@material-ui/core/styles";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import { TransitionProps } from "@material-ui/core/transitions";
 import React, { useState } from "react";
-import DialogAppBar from "../../../components/dialogAppBar";
-import StyledFAB from "../../../components/fabButton";
+import DialogAppBar from "../../../components/styled/dialogAppBar";
+import StyledFAB from "../../../components/styled/fabButton";
 
 const useStyles = makeStyles((theme: Theme) =>
-createStyles({
-    appBar: {
-        position: "relative",
-    },
-    menuContainer: {
-        padding: theme.spacing(4, 5),
-        [theme.breakpoints.down("sm")]: {
-            padding: theme.spacing(2, 2),
+    createStyles({
+        appBar: {
+            position: "relative",
         },
-    },
-    title: {
-        marginLeft: theme.spacing(2),
-        marginRight: theme.spacing(1),
-    },
-}),
+        menuContainer: {
+            padding: theme.spacing(4, 5),
+            [theme.breakpoints.down("sm")]: {
+                padding: theme.spacing(2, 2),
+            },
+        },
+        title: {
+            marginLeft: theme.spacing(2),
+            marginRight: theme.spacing(1),
+        },
+    }),
 );
 
 const Motion = React.forwardRef(function Transition(
@@ -36,7 +34,6 @@ const Motion = React.forwardRef(function Transition(
 
 export default function CreateDialog() {
     const classes = useStyles();
-    const theme = useTheme();
     const [open, setOpen] = useState(false);
 
     const handleClickOpen = () => {

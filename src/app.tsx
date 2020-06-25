@@ -27,9 +27,6 @@ export function App() {
         store.dispatch({ type: ActionTypes.USER_AGENT, payload: userInformation });
     }, []);
 
-    useEffect(() => {
-    }, []);
-
     return (
         <Switch>
             <Route path="/classroom" component={Layout} />

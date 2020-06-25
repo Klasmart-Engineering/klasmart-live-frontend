@@ -7,12 +7,12 @@ import Typography from "@material-ui/core/Typography";
 import * as React from "react";
 import { FormattedMessage } from "react-intl";
 import { useHistory } from "react-router";
-import KidsloopButton from "../../../components/fabButton";
+import KidsloopButton from "../../../components/styled/fabButton";
 
 const useStyles = makeStyles((theme) => createStyles({
     card: {
-        display: "flex",
         alignItems: "center",
+        display: "flex",
         padding: "48px 40px !important",
     },
 }),

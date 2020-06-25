@@ -3,12 +3,12 @@ import Link from "@material-ui/core/Link";
 import { createStyles, Theme, WithStyles, withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import * as React from "react";
-import { FormattedMessage } from "react-intl";
 
 const styles = (theme: Theme) => createStyles({
     responsiveTypography: {
         color: "white",
         display: "inline",
+        paddingBottom: theme.spacing(2),
         textAlign: "center",
         [theme.breakpoints.down("sm")]: {
             display: "block",
@@ -16,7 +16,6 @@ const styles = (theme: Theme) => createStyles({
         [theme.breakpoints.down("xs")]: {
             textAlign: "left",
         },
-        paddingBottom: theme.spacing(2),
     },
 });
 

@@ -1,18 +1,13 @@
-import { Button, CircularProgress, Hidden, Paper, Typography } from "@material-ui/core";
-import Fade from "@material-ui/core/Fade";
+import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
+import Hidden from "@material-ui/core/Hidden";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
 import ArchiveTwoToneIcon from "@material-ui/icons/ArchiveTwoTone";
 import HourglassFullTwoToneIcon from "@material-ui/icons/HourglassFullTwoTone";
 import LocalLibraryTwoToneIcon from "@material-ui/icons/LocalLibraryTwoTone";
 import * as React from "react";
-import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import StyledButton from "../../../components/button";
-import DialogAppBar from "../../../components/dialogAppBar";
-import { State } from "../../../store/store";
 import CreateDialog from "./createDialog";
-import LessonPlanCard from "./libraryContentCard";
 import LibraryView from "./libraryView";
 
 const useStyles = makeStyles((theme: Theme) =>

@@ -1,4 +1,3 @@
-import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import CardActionArea from "@material-ui/core/CardActionArea";
 import CardActions from "@material-ui/core/CardActions";
@@ -14,7 +13,6 @@ import EditTwoToneIcon from "@material-ui/icons/EditTwoTone";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ShareTwoToneIcon from "@material-ui/icons/ShareTwoTone";
 import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
 import { ContentItem } from "../../../types/objectTypes";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -52,7 +50,6 @@ interface Props {
 
 export default function LibraryContentCard(props: Props) {
     const classes = useStyles();
-    const history = useHistory();
     const { content } = props;
     const [moreInfo, toggleMoreInfo] = useState(false);
 
