@@ -6,6 +6,7 @@ import randomBytes from "randombytes";
 import * as React from "react";
 import { FormattedMessage } from "react-intl";
 import { useSelector, useStore } from "react-redux";
+import LiveBackground from "../../../assets/img/live_bg.svg";
 import StudyingBackground from "../../../assets/img/studying_bg.svg";
 import CenterAlignChildren from "../../../components/centerAlignChildren";
 import StyledFAB from "../../../components/fabButton";
@@ -15,12 +16,12 @@ import { State } from "../../../store/store";
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         classInfoContainer: {
-            background: `url(${StudyingBackground}) no-repeat`,
-            backgroundColor: "#030D1C",
+            background: `url(${LiveBackground}) no-repeat`,
+            backgroundColor: "#f0e6cf",
             backgroundPosition: "center right",
-            backgroundSize: "50%",
+            backgroundSize: "30%",
             borderRadius: 12,
-            color: "white",
+            color: "#193d6f",
             height: 500,
             padding: theme.spacing(4, 5),
             [theme.breakpoints.down("sm")]: {
@@ -68,7 +69,7 @@ export default function LiveCard() {
             <Grid item>
                 <Grid container item spacing={2}>
                     <Grid item xs={12}>
-                        <Typography variant="h4">Shawn @ Calm Island</Typography>
+                        <Typography variant="h4">Welcome to Calm Island</Typography>
                     </Grid>
                     <Grid item xs={12}>
                         <CenterAlignChildren>

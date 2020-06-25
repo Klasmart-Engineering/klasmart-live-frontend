@@ -1,9 +1,7 @@
-import Grid from "@material-ui/core/Grid";
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import * as React from "react";
 import { useEffect } from "react";
 import { isEdge, isIE, isIOS, isMobile, isMobileSafari } from "react-device-detect";
-import { useSelector, useStore } from "react-redux";
+import { useStore } from "react-redux";
 import { Route, Switch } from "react-router-dom";
 import { Login } from "./pages/account/login";
 import { PasswordChange } from "./pages/account/password/password-change";
@@ -13,20 +11,8 @@ import { PasswordRestore } from "./pages/account/password/password-restore";
 import { Signup } from "./pages/account/signup";
 import Layout from "./pages/classroom/layout";
 import { ActionTypes } from "./store/actions";
-import { State } from "./store/store";
-
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        content: {
-            flexGrow: 1,
-            height: "100%",
-            minHeight: "calc(100vh - 24px)",
-        },
-    }),
-);
 
 export function App() {
-    const classes = useStyles();
     const store = useStore();
 
     useEffect(() => {

@@ -63,7 +63,7 @@ function ClassroomLabel(props: LabelProps) {
         <Grid container item xs={10} direction="row" justify="flex-start" alignItems="flex-start">
             <Grid item xs={12}>
                 <Typography variant="body1" className={props.classes} noWrap>
-                    Shawn @ Calm Island
+                    Welcome to Calm Island
                 </Typography>
             </Grid>
             <Grid item xs={12}>

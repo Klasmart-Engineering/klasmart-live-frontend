@@ -12,6 +12,7 @@ import { useState } from "react";
 import { useSelector, useStore } from "react-redux";
 import { ActionTypes } from "../../store/actions";
 import { State } from "../../store/store";
+import LibraryLayout from "./library/library";
 import LiveLayout from "./live/live";
 import NavBar from "./navbar/navbar";
 
@@ -67,24 +68,26 @@ export default function Layout() {
             <NavBar />
             <Grid item xs={12}>
                 <Container
-                        disableGutters
-                        maxWidth={"lg"}
-                        className={clsx(classes.root, classes.safeArea)}
-                    >
-                        <Grow in={activeComponent === "live"} timeout={timeout} mountOnEnter unmountOnExit>
-                            <Box>
-                                <LiveLayout />
-                            </Box>
-                        </Grow>
-                        <Grow in={activeComponent === "library"} timeout={timeout} mountOnEnter unmountOnExit>
-                            <Typography variant="h1">Library Layout</Typography>
-                        </Grow>
-                        <Grow in={activeComponent === "people"} timeout={timeout} mountOnEnter unmountOnExit>
-                            <Typography variant="h1">People Layout</Typography>
-                        </Grow>
-                        <Grow in={activeComponent === "assessments"} timeout={timeout} mountOnEnter unmountOnExit>
-                            <Typography variant="h1">Assessments Layout</Typography>
-                        </Grow>
+                    disableGutters
+                    maxWidth={"lg"}
+                    className={clsx(classes.root, classes.safeArea)}
+                >
+                    <Grow in={activeComponent === "live"} timeout={timeout} mountOnEnter unmountOnExit>
+                        <Box>
+                            <LiveLayout />
+                        </Box>
+                    </Grow>
+                    <Grow in={activeComponent === "library"} timeout={timeout} mountOnEnter unmountOnExit>
+                        <Box>
+                            <LibraryLayout />
+                        </Box>
+                    </Grow>
+                    <Grow in={activeComponent === "people"} timeout={timeout} mountOnEnter unmountOnExit>
+                        <Typography variant="h4">Coming soon!</Typography>
+                    </Grow>
+                    <Grow in={activeComponent === "assessments"} timeout={timeout} mountOnEnter unmountOnExit>
+                        <Typography variant="h4">Coming soon!</Typography>
+                    </Grow>
                 </Container>
             </Grid>
         </Grid>

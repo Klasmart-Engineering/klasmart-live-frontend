@@ -1,11 +1,13 @@
 import Button, { ButtonProps } from "@material-ui/core/Button";
 import Hidden from "@material-ui/core/Hidden";
 import { withStyles } from "@material-ui/core/styles";
+import SendIcon from "@material-ui/icons/Send";
 import React from "react";
 
 interface Props extends ButtonProps {
     children?: React.ReactNode;
     className?: string;
+    extendedOnly?: boolean;
 }
 
 const StyledBtn = withStyles({
@@ -25,7 +27,7 @@ const StyledBtn = withStyles({
 })(Button);
 
 export default function StyledButton(props: Props) {
-    const {children, className, type, ...other } = props;
+    const {children, extendedOnly, type, ...other } = props;
 
     let sibling: React.ReactNode;
     React.Children.map(children, (child, index) => (
@@ -33,17 +35,21 @@ export default function StyledButton(props: Props) {
     ));
 
     return (
-        <>
-            <Hidden smDown>
-                <StyledBtn style={{ minWidth: 120 }} {...other}>
-                    { children || "class names"}
-                </StyledBtn>
-            </Hidden>
-            <Hidden mdUp>
-                <StyledBtn style={{ minWidth: 80 }} {...other}>
-                    { sibling || "class names" }
-                </StyledBtn>
-            </Hidden>
-        </>
+        extendedOnly ?
+            <StyledBtn style={{ minWidth: 120 }} {...other}>
+                { children || <SendIcon />}
+            </StyledBtn> :
+            <>
+                <Hidden smDown>
+                    <StyledBtn style={{ minWidth: 120 }} {...other}>
+                        { children || <SendIcon />}
+                    </StyledBtn>
+                </Hidden>
+                <Hidden mdUp>
+                    <StyledBtn style={{ minWidth: 80 }} {...other}>
+                        { sibling || <SendIcon /> }
+                    </StyledBtn>
+                </Hidden>
+            </>
     );
 }

@@ -6,15 +6,14 @@ import "node-source-han-sans-sc/SourceHanSansSC-Regular-all.css";
 import "typeface-nanum-square-round";
 import "./assets/css/index.min.css";
 
-import Container from "@material-ui/core/Container";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { createMuiTheme, responsiveFontSizes, Theme, ThemeProvider } from "@material-ui/core/styles";
 import { PaletteOptions } from "@material-ui/core/styles/createPalette";
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import * as ReactDOM from "react-dom";
 import { RawIntlProvider } from "react-intl";
 import { Provider, useSelector } from "react-redux";
-import { BrowserRouter, HashRouter } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 import { PersistGate } from "redux-persist/integration/react";
 import App from "./app";
 import { createDefaultStore, State } from "./store/store";

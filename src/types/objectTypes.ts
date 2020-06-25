@@ -12,3 +12,11 @@ export interface MenuItem {
   logo: JSX.Element;
   title: string;
 }
+
+export interface ContentItem {
+  description: string;
+  link: string;
+  image: string;
+  title: string;
+  type?: "lesson-plan" | "lesson-material" | undefined;
+}
