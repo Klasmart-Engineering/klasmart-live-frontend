@@ -1,5 +1,8 @@
+export function isDevStage() {
+    return ("" + process.env.STAGE) === "dev"
+}
+
 export function getStage() {
-    console.log("process.env.STAGE", process.env.STAGE)
     return "" + process.env.STAGE
 }
 
@@ -36,4 +39,12 @@ export function getOrganizationEndpoint(regionId: string) {
 
 export function getCalmIslandOrgID() {
     return "" + process.env.CALM_ORG_ID
+}
+
+export function getAssessmentEndpoint() {
+    return "" + process.env.ASSESSMENT_ENDPOINT
+}
+
+export function getDefaultProgId() {
+    return "" + process.env.DEFAULT_PROG_ID
 }

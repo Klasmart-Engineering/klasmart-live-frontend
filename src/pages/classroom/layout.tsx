@@ -10,6 +10,8 @@ import { ActionTypes } from "../../store/actions";
 import { State } from "../../store/store";
 import LibraryLayout from "./library/library";
 import LiveLayout from "./live/live";
+import AssessmentsLayout from "./assessments/assessments";
+import ReportLayout from "./report/report";
 import NavBar from "./navbar/navbar";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -78,11 +80,15 @@ export default function Layout() {
                             <LibraryLayout />
                         </Box>
                     </Grow>
-                    <Grow in={activeComponent === "people"} timeout={timeout} mountOnEnter unmountOnExit>
-                        <Typography variant="h4">Coming soon!</Typography>
-                    </Grow>
                     <Grow in={activeComponent === "assessments"} timeout={timeout} mountOnEnter unmountOnExit>
-                        <Typography variant="h4">Coming soon!</Typography>
+                        <Box>
+                            <AssessmentsLayout />
+                        </Box>
+                    </Grow>
+                    <Grow in={activeComponent === "report"} timeout={timeout} mountOnEnter unmountOnExit>
+                        <Box>
+                            <ReportLayout />
+                        </Box>
                     </Grow>
                 </Container>
             </Grid>

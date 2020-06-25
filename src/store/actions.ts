@@ -52,6 +52,8 @@ export type ToggleLiveClass = Action<ActionTypes.LIVE_CLASS_TOGGLE, boolean>;
 
 export type SetActiveComponentHome = Action<ActionTypes.ACTIVE_COMPONENT_HOME, string>;
 
+export type SetAssessmentToken = Action<ActionTypes.ASSESSMENT_TOKEN, string>;
+
 export enum ActionTypes {
     LOCALE,
     LOGIN,
@@ -69,6 +71,7 @@ export enum ActionTypes {
     EXPIRED_ACCESS_TOKEN,
     CLASS_SETTINGS_TOGGLE,
     ACTIVE_COMPONENT_HOME,
+    ASSESSMENT_TOKEN
 }
 
 export type Actions =
@@ -88,4 +91,5 @@ export type Actions =
     | DeviceIdAction
     | ToggleLiveClass
     | SetActiveComponentHome
+    | SetAssessmentToken
     | never;

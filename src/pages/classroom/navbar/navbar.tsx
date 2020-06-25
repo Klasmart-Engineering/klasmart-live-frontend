@@ -51,7 +51,7 @@ interface LabelProps {
 }
 
 function ClassroomLabel(props: LabelProps) {
-    return(
+    return (
         <Grid container item xs={10} direction="row" justify="flex-start" alignItems="flex-start">
             <Grid item xs={12}>
                 <Typography variant="body1" className={props.classes} noWrap>
@@ -83,7 +83,7 @@ export default function NavBar() {
     };
 
     const minHeight = useMediaQuery(theme.breakpoints.up("sm")) ? 64 : 56;
-    const menuLabel = ["Live", "Library", "People", "Assessments"];
+    const menuLabel = ["Live", "Library", "Assessments", "Report"];
 
     return (
         <div className={classes.root}>
@@ -142,7 +142,7 @@ export default function NavBar() {
                             justify="center"
                             wrap="nowrap"
                         >
-                            { menuLabel.map((label: string) => {
+                            {menuLabel.map((label: string) => {
                                 const value = label.toLowerCase();
                                 return (
                                     <NavButton

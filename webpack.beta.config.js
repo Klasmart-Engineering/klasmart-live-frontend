@@ -52,7 +52,13 @@ module.exports = {
                         }
                     },
                 ],
-            }
+            },
+            {
+                test: /\.(woff|woff2|eot|ttf|otf)$/,
+                use: [
+                    'file-loader',
+                ],
+            },
         ],
     },
     resolve: {
@@ -80,6 +86,8 @@ module.exports = {
             "PRODUCT_ENDPOINT": "https://beta.product.badanamu.net/",
             "REGION_ENDPOINT": "https://beta.region.badanamu.net/",
             "ORGANIZATION_SEOUL_ENDPOINT": "https://seoul-beta.organization-api.badanamu.net/",
+            "ASSESSMENT_ENDPOINT": "https://seoul-beta.assessment-api.badanamu.net/",
+            "DEFAULT_PROG_ID": "KIDSLOOP-2.0"
         })
     ],
     optimization: {
@@ -108,12 +116,12 @@ module.exports = {
     },
     devServer: {
         host: "0.0.0.0",
+        historyApiFallback: true,
         proxy: {
-            '/payment': {
-                target: 'http://localhost:8092/',
+            '/h5p': {
+                target: 'https://zoo.kidsloop.net/',
                 secure: false,
                 changeOrigin: true,
-                pathRewrite: { '^/payment': '/' }
             }
         }
     },
