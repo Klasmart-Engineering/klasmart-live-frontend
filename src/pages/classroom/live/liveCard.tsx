@@ -91,6 +91,7 @@ export default function LiveCard() {
                 <CenterAlignChildren>
                     <StyledFAB
                         extendedOnly
+                        flat
                         className={classes.liveButton}
                         onClick={() => toggleLive()}>
                         <FormattedMessage id="live_liveButton" />

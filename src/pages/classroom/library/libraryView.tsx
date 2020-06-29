@@ -1,25 +1,15 @@
 import Grid from "@material-ui/core/Grid";
 import React from "react";
-import ZooBackgroundImage from "../../../assets/img/zoo_banner_web.png";
-import { ContentItem } from "../../../types/objectTypes";
+import { ContentItem, LibraryContentType } from "../../../types/objectTypes";
 import LibraryContentCard from "./libraryContentCard";
 
-export default function LibraryView() {
+interface Props {
+    content: ContentItem[];
+    type: LibraryContentType;
+}
 
-    const MENU_ITEMS: ContentItem[] = [
-        {
-            description: "In collaboration with The Zoological Society of East Anglia, join an interactive virtual world of animal fun and learning through live and self-paced classes.",
-            image: ZooBackgroundImage,
-            link: "http://0.0.0.0:8082",
-            title: "Badanamu Zoo",
-        },
-        {
-            description: "In collaboration with The Zoological Society of East Anglia, join an interactive virtual world of animal fun and learning through live and self-paced classes.",
-            image: ZooBackgroundImage,
-            link: "#",
-            title: "Badanamu Zoo",
-        },
-    ];
+export default function LibraryView(props: Props) {
+    const { content, type } = props;
 
     return (
         <>
@@ -31,15 +21,15 @@ export default function LibraryView() {
                 spacing={1}
             >
                 {
-                    MENU_ITEMS.map((menuItem) => {
+                    content.map((item) => {
                         return (
                             <Grid
-                                key={`menuItem-${menuItem.title}`}
+                                key={`item-${item.title}`}
                                 item
                                 xs={6} sm={4} md={3}
                                 style={{ textAlign: "center" }}
                             >
-                                <LibraryContentCard content={menuItem}/>
+                                <LibraryContentCard content={item} type={type} />
                             </Grid>
                         );
                     })

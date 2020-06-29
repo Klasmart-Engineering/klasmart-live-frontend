@@ -20,3 +20,5 @@ export interface ContentItem {
   title: string;
   type?: "lesson-plan" | "lesson-material" | undefined;
 }
+
+export type LibraryContentType = "OwnedContent" | "Marketplace";

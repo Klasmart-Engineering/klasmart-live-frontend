@@ -1,8 +1,9 @@
 import Dialog from "@material-ui/core/Dialog";
 import Grid from "@material-ui/core/Grid";
 import Grow from "@material-ui/core/Grow";
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
+import { createStyles, makeStyles, Theme, useTheme } from "@material-ui/core/styles";
 import { TransitionProps } from "@material-ui/core/transitions";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 import React, { useState } from "react";
 import DialogAppBar from "../../../components/styled/dialogAppBar";
 import StyledFAB from "../../../components/styled/fabButton";
@@ -34,7 +35,9 @@ const Motion = React.forwardRef(function Transition(
 
 export default function CreateDialog() {
     const classes = useStyles();
+    const theme = useTheme();
     const [open, setOpen] = useState(false);
+    const isMdDown = useMediaQuery(theme.breakpoints.down("md"));
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -48,6 +51,7 @@ export default function CreateDialog() {
         <>
             <StyledFAB
                 extendedOnly
+                size={ isMdDown ? "small" : undefined}
                 onClick={handleClickOpen}
                 aria-label="create new lesson or material button"
             >

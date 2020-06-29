@@ -8,12 +8,14 @@ import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
+import AddShoppingCartTwoToneIcon from "@material-ui/icons/AddShoppingCartTwoTone";
 import ArchiveTwoToneIcon from "@material-ui/icons/ArchiveTwoTone";
 import EditTwoToneIcon from "@material-ui/icons/EditTwoTone";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ShareTwoToneIcon from "@material-ui/icons/ShareTwoTone";
 import React, { useState } from "react";
-import { ContentItem } from "../../../types/objectTypes";
+import StyledFAB from "../../../components/styled/fabButton";
+import { ContentItem, LibraryContentType } from "../../../types/objectTypes";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles ({
@@ -46,11 +48,12 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface Props {
     content: ContentItem;
+    type: LibraryContentType;
 }
 
 export default function LibraryContentCard(props: Props) {
     const classes = useStyles();
-    const { content } = props;
+    const { content, type } = props;
     const [moreInfo, toggleMoreInfo] = useState(false);
 
     return (
@@ -99,17 +102,33 @@ export default function LibraryContentCard(props: Props) {
                     </Typography>
                 </Collapse>
             </CardContent>
-            <CardActions className={classes.cardActions}>
-                <IconButton size="small" color="primary" className={classes.iconExpand}>
-                    <ShareTwoToneIcon />
-                </IconButton>
-                <IconButton size="small" color="primary">
-                    <EditTwoToneIcon />
-                </IconButton>
-                <IconButton size="small" color="primary">
-                    <ArchiveTwoToneIcon />
-                </IconButton>
-            </CardActions>
+            { type === "OwnedContent" ?
+                <CardActions className={classes.cardActions}>
+                    <IconButton size="small" color="primary" className={classes.iconExpand}>
+                        <ShareTwoToneIcon />
+                    </IconButton>
+                    <IconButton size="small" color="primary">
+                        <EditTwoToneIcon />
+                    </IconButton>
+                    <IconButton size="small" color="primary">
+                        <ArchiveTwoToneIcon />
+                    </IconButton>
+                </CardActions> :
+                <CardActions className={classes.cardActions}>
+                    <Grid container justify="space-between" alignItems="center">
+                        <Grid item>
+                            <Typography variant="caption">
+                                ₩29,000
+                            </Typography>
+                        </Grid>
+                        <Grid item>
+                            <IconButton size="small" color="primary">
+                                <AddShoppingCartTwoToneIcon />
+                            </IconButton>
+                        </Grid>
+                    </Grid>
+                </CardActions>
+            }
         </Card>
     );
 }
