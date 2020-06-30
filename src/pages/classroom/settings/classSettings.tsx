@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         fab: {
             bottom: theme.spacing(2),
-            position: "absolute",
+            position: "fixed",
             right: theme.spacing(2),
         },
         menuButton: {
@@ -96,7 +96,7 @@ export default function ClassSettings() {
                 </Grid>
                 <Hidden mdUp>
                     <StyledFAB className={classes.fab} size="small" onClick={handleClose}>
-                        <SaveIcon fontSize="small"/>
+                        <SaveIcon fontSize="small" />
                     </StyledFAB>
                 </Hidden>
             </Dialog>

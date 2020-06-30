@@ -1,26 +1,22 @@
+import Hidden from "@material-ui/core/Hidden";
 import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
 import Grid from "@material-ui/core/Grid";
 import Grow from "@material-ui/core/Grow";
-import Tooltip from "@material-ui/core/Tooltip";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import { createStyles, makeStyles, Theme, useTheme } from "@material-ui/core/styles";
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { TransitionProps } from "@material-ui/core/transitions";
 import AddIcon from "@material-ui/icons/Add";
-import InfoIcon from '@material-ui/icons/Info';
 import ErrorIcon from "@material-ui/icons/Error";
 import React, { useState, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 
 import DialogAppBar from "../../../components/styled/dialogAppBar";
 import StyledFAB from "../../../components/styled/fabButton";
-import StyledButton from "../../../components/styled/button";
 import StyledTextField from "../../../components/styled/textfield";
 import StyledComboBox from "../../../components/styled/combobox";
-import { RestAPIError, RestAPIErrorType } from "../../../api/restapi_errors";
+import { RestAPIError } from "../../../api/restapi_errors";
 import {
     useRestAPI,
     CreateLearningOutcomeRequest,
@@ -32,6 +28,11 @@ const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         appBar: {
             position: "relative",
+        },
+        fab: {
+            bottom: theme.spacing(2),
+            position: "fixed",
+            right: theme.spacing(2),
         },
         menuContainer: {
             padding: theme.spacing(4, 5),
@@ -147,7 +148,7 @@ export default function CreateLearningOutcomeDialog() {
         }
     }
 
-    async function onSubmit() {
+    async function handleOnClickCreate() {
         setTitleError(null);
         setDevSkillError(null);
         setSkillCatError(null);
@@ -239,6 +240,15 @@ export default function CreateLearningOutcomeDialog() {
                 TransitionComponent={Motion}
             >
                 <DialogAppBar
+                    toolbarBtn={
+                        <Hidden smDown>
+                            <Grid item>
+                                <StyledFAB size="small" onClick={handleOnClickCreate}>
+                                    Create <AddIcon style={{ paddingLeft: theme.spacing(1) }} />
+                                </StyledFAB>
+                            </Grid>
+                        </Hidden>
+                    }
                     handleClose={handleClose}
                     subtitleID={"assess_createDialogTitle"}
                 />
@@ -324,11 +334,6 @@ export default function CreateLearningOutcomeDialog() {
                         />
                     </Grid>
                     <Grid container justify="space-around" item xs={isMobile ? 12 : 6}>
-                        {/* TODO: Add tooltip
-                        <Tooltip
-                                title={`Assumed Learning Outcomes are learning outcomes that will be automatically awarded through student participation,
-                            or activity completion. You will be able to review and modify ALO list, later.`}
-                            > */}
                         <FormControlLabel
                             control={
                                 <Checkbox
@@ -340,11 +345,6 @@ export default function CreateLearningOutcomeDialog() {
                             }
                             label="Assumed"
                         />
-                        {/* </Tooltip> */}
-                        {/* <Tooltip
-                            title={`Published Learning Outcomes are learning outcomes that will be listed and referenced when they are needed on other menus.
-                            These will not be editable and deletable`}
-                        > */}
                         <FormControlLabel
                             control={
                                 <Checkbox
@@ -356,22 +356,13 @@ export default function CreateLearningOutcomeDialog() {
                             }
                             label="Publish"
                         />
-                        {/* </Tooltip> */}
-                    </Grid>
-                    <Grid container justify="center" spacing={2} item>
-                        <DialogActions>
-                            <StyledButton
-                                disabled={inFlight}
-                                onClick={onSubmit}
-                            >
-                                {inFlight ?
-                                    <CircularProgress size={25} /> :
-                                    <FormattedMessage id="assess_createButton" />
-                                }
-                            </StyledButton>
-                        </DialogActions>
                     </Grid>
                 </Grid>
+                <Hidden mdUp>
+                    <StyledFAB className={classes.fab} size="small" onClick={handleOnClickCreate}>
+                        <AddIcon />
+                    </StyledFAB>
+                </Hidden>
             </Dialog>
         </>
     );

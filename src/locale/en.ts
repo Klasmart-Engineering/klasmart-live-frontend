@@ -44,6 +44,7 @@ const messages: Record<string, string> = {
     assess_libraryTitle: "Learning Outcome Library",
     assess_createDialogTitle: "Create new Learning Outcome",
     assess_viewDialogTitle: "Learning Outcome Details",
+    assess_editDialogTitle: "Edit Learning Outcome",
 
     assess_pendingTitle: "Pending Assessments",
     assess_completedTitle: "Completed Assessments",
