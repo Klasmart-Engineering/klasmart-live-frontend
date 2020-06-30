@@ -40,9 +40,8 @@ const useStyles = makeStyles((theme: Theme) =>
                 padding: theme.spacing(2, 2),
             },
         },
-        title: {
-            marginLeft: theme.spacing(2),
-            marginRight: theme.spacing(1),
+        menuGrid: {
+            padding: theme.spacing(1)
         },
         errorIcon: {
             fontSize: "1em",
@@ -257,10 +256,9 @@ export default function CreateLearningOutcomeDialog() {
                     direction="row"
                     justify="space-around"
                     alignItems="stretch"
-                    spacing={isMobile ? 1 : 3}
                     className={classes.menuContainer}
                 >
-                    <Grid item xs={isMobile ? 12 : 6}>
+                    <Grid className={classes.menuGrid} item xs={isMobile ? 12 : 6}>
                         <StyledTextField
                             required
                             fullWidth
@@ -271,7 +269,7 @@ export default function CreateLearningOutcomeDialog() {
                             onChange={(e) => setTitle(e.target.value)}
                         />
                     </Grid>
-                    <Grid item xs={isMobile ? 12 : 6}>
+                    <Grid className={classes.menuGrid} item xs={isMobile ? 12 : 6}>
                         <StyledTextField
                             disabled
                             fullWidth
@@ -279,7 +277,7 @@ export default function CreateLearningOutcomeDialog() {
                             label={"Date"}
                         />
                     </Grid>
-                    <Grid item xs={isMobile ? 12 : 6}>
+                    <Grid className={classes.menuGrid} item xs={isMobile ? 12 : 6}>
                         <StyledComboBox
                             type="single"
                             options={devSkills}
@@ -290,7 +288,7 @@ export default function CreateLearningOutcomeDialog() {
                             onChange={handleChangeDevSkill}
                         />
                     </Grid>
-                    <Grid item xs={isMobile ? 12 : 6}>
+                    <Grid className={classes.menuGrid} item xs={isMobile ? 12 : 6}>
                         <StyledComboBox
                             type="single"
                             options={skillCats}
@@ -301,7 +299,7 @@ export default function CreateLearningOutcomeDialog() {
                             onChange={handleChangeSkillCat}
                         />
                     </Grid>
-                    <Grid item xs={isMobile ? 12 : 6}>
+                    <Grid className={classes.menuGrid} item xs={isMobile ? 12 : 6}>
                         <StyledTextField
                             fullWidth
                             type="number"
@@ -312,7 +310,7 @@ export default function CreateLearningOutcomeDialog() {
                             onKeyDown={(e) => ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
                         />
                     </Grid>
-                    <Grid item xs={isMobile ? 12 : 6}>
+                    <Grid className={classes.menuGrid} item xs={isMobile ? 12 : 6}>
                         <StyledTextField
                             fullWidth
                             placeholder="Please Separate by `,`"
@@ -323,7 +321,7 @@ export default function CreateLearningOutcomeDialog() {
                             }
                         />
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid className={classes.menuGrid} item xs={12}>
                         <StyledTextField
                             fullWidth
                             multiline
@@ -333,7 +331,12 @@ export default function CreateLearningOutcomeDialog() {
                             onChange={(e) => setDescription(e.target.value)}
                         />
                     </Grid>
-                    <Grid container justify="space-around" item xs={isMobile ? 12 : 6}>
+                    <Grid
+                        className={classes.menuGrid}
+                        container justify="space-around"
+                        item
+                        xs={isMobile ? 12 : 6}
+                    >
                         <FormControlLabel
                             control={
                                 <Checkbox
