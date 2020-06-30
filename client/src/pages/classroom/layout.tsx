@@ -5,6 +5,7 @@ import Grow from "@material-ui/core/Grow";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import clsx from "clsx";
 import * as React from "react";
+import { withOrientationChange } from "react-device-detect";
 import { useSelector, useStore } from "react-redux";
 import { ActionTypes } from "../../store/actions";
 import { State } from "../../store/store";
@@ -20,7 +21,12 @@ const useStyles = makeStyles((theme: Theme) =>
             flex: 1,
         },
         root: {
-            padding: theme.spacing(4, 5),
+            width: "calc(100% - 2*1.5rem)",
+            height: "100%",
+            paddingBottom: theme.spacing(4),
+            paddingLeft: theme.spacing(5),
+            paddingRight: theme.spacing(5),
+            paddingTop: theme.spacing(4),
             [theme.breakpoints.down("sm")]: {
                 padding: theme.spacing(2, 1),
             },
@@ -40,9 +46,12 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-export default function Layout() {
+let Layout = (props: any) => {
     const classes = useStyles();
     const store = useStore();
+
+    const { isLandscape } = props;
+    console.log(isLandscape);
 
     const { isIOS } = useSelector((state: State) => state.account.userAgent);
     const activeComponent = useSelector((state: State) => state.ui.activeComponentHome);
@@ -72,7 +81,7 @@ export default function Layout() {
                 <Container
                     disableGutters
                     maxWidth={"lg"}
-                    className={clsx(classes.root, isIOS ? classes.safeArea : "" )}
+                    className={clsx(classes.root, isIOS && isLandscape ? classes.safeArea : "" )}
                 >
                     <Grow in={activeComponent === "live"} timeout={timeout} mountOnEnter unmountOnExit>
                         <Box>
@@ -98,4 +107,8 @@ export default function Layout() {
             </Grid>
         </Grid>
     );
-}
+};
+
+Layout = withOrientationChange(Layout);
+
+export { Layout };

@@ -9,7 +9,7 @@ import { PasswordChanged } from "./pages/account/password/password-changed";
 import { PasswordForgot } from "./pages/account/password/password-forgot";
 import { PasswordRestore } from "./pages/account/password/password-restore";
 import { Signup } from "./pages/account/signup";
-import Layout from "./pages/classroom/layout";
+import { Layout } from "./pages/classroom/layout";
 import { ActionTypes } from "./store/actions";
 
 export function App() {

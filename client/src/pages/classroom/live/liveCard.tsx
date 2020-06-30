@@ -21,7 +21,8 @@ const useStyles = makeStyles((theme: Theme) =>
             backgroundSize: "30%",
             borderRadius: 12,
             color: "#193d6f",
-            height: 500,
+            height: "100%",
+            minHeight: 360,
             padding: theme.spacing(4, 5),
             [theme.breakpoints.down("sm")]: {
                 backgroundPosition: "bottom right",
