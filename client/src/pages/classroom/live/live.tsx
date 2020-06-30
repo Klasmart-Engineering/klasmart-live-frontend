@@ -42,7 +42,6 @@ export default function LiveLayout() {
 
     const [hasTransitioned, setHasTransitioned] = useState(false);
     const [inFlight, setInFlight] = useState(false);
-    const [userContext, setUserContext] = useState<IUserContext>();
 
     const isLive = useSelector((state: State) => state.ui.liveClass);
 

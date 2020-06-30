@@ -8,6 +8,7 @@ import StyledButton from "../../../../../components/styled/button";
 import StyledTextField from "../../../../../components/styled/textfield";
 import { IUserContext } from "../app";
 import KidsloopLogo from "../assets/img/kidsloop.svg";
+import { FormattedMessage } from "react-intl";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -77,7 +78,7 @@ export function Join({setUserContext}: Props): JSX.Element {
                     required
                     fullWidth
                     value={user}
-                    label={"Name"}
+                    label={<FormattedMessage id="form_nameLabel" />}
                     onChange={(e) => setUser(e.target.value)}
                 />
             </Grid>

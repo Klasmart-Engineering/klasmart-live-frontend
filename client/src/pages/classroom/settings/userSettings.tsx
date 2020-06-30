@@ -6,8 +6,10 @@ import Menu, { MenuProps } from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import { createStyles, makeStyles, withStyles } from "@material-ui/core/styles";
 import React from "react";
+import { useSelector } from "react-redux";
 import CalmIslandLogo from "../../../assets/img/calmisland_logo.png";
 import KidsloopLogo from "../../../assets/img/kidsloop.svg";
+import { State } from "../../../store/store";
 
 const StyledMenu = withStyles({
     paper: {
@@ -47,6 +49,8 @@ const useStyles = makeStyles((theme) => createStyles({
 export default function UserSettings() {
     const classes = useStyles();
 
+    const isLive = useSelector((state: State) => state.ui.liveClass);
+
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
 
@@ -67,6 +71,7 @@ export default function UserSettings() {
                     aria-haspopup="true"
                     className={classes.profileButton}
                     fullWidth
+                    disabled={isLive}
                     onClick={handleMenu}
                 >
                     <Grid

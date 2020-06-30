@@ -22,15 +22,18 @@ const useStyles = makeStyles((theme: Theme) =>
         root: {
             padding: theme.spacing(4, 5),
             [theme.breakpoints.down("sm")]: {
-                padding: theme.spacing(2, 2),
+                padding: theme.spacing(2, 1),
             },
         },
         safeArea: {
-            padding: theme.spacing(4, 5),
+            paddingBottom: theme.spacing(4),
+            paddingLeft: theme.spacing(5),
+            paddingRight: theme.spacing(5),
+            paddingTop: theme.spacing(4),
             [theme.breakpoints.down("sm")]: {
                 paddingBottom: theme.spacing(2),
-                paddingLeft: `max(${theme.spacing(2)},env(safe-area-inset-left)`,
-                paddingRight: `max(${theme.spacing(2)},env(safe-area-inset-right)`,
+                paddingLeft: `max(${theme.spacing(1)}px,env(safe-area-inset-left)`,
+                paddingRight: `max(${theme.spacing(1)}px,env(safe-area-inset-right)`,
                 paddingTop: theme.spacing(2),
             },
         },
@@ -41,6 +44,7 @@ export default function Layout() {
     const classes = useStyles();
     const store = useStore();
 
+    const { isIOS } = useSelector((state: State) => state.account.userAgent);
     const activeComponent = useSelector((state: State) => state.ui.activeComponentHome);
     const setActiveComponent = (value: string) => {
         store.dispatch({ type: ActionTypes.ACTIVE_COMPONENT_HOME, payload: value });
@@ -68,7 +72,7 @@ export default function Layout() {
                 <Container
                     disableGutters
                     maxWidth={"lg"}
-                    className={clsx(classes.root, classes.safeArea)}
+                    className={clsx(classes.root, isIOS ? classes.safeArea : "" )}
                 >
                     <Grow in={activeComponent === "live"} timeout={timeout} mountOnEnter unmountOnExit>
                         <Box>

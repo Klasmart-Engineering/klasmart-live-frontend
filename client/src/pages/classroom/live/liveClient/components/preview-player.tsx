@@ -68,7 +68,7 @@ export function PreviewPlayer({ streamId, frameProps, width, height }: Props): J
     }, [ref.current, ref.current && ref.current.contentWindow]);
 
     if (loading) {return <CircularProgress />; }
-    if (error) {return <Typography><FormattedMessage id="failed_to_connect" />: {JSON.stringify(error)}</Typography>; }
+    if (error) {return <Typography><FormattedMessage id="live_failedToConnect" />: {JSON.stringify(error)}</Typography>; }
     return <div style={{ width, height }}>
         <iframe
             ref={ref}

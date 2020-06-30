@@ -21,7 +21,7 @@ export function InviteButton(): JSX.Element {
     return <>
         <Button aria-label="invite" onClick={(e) => setAnchorEl(e.currentTarget)} style={{padding: "0px"}} size="small">
             <ShareIcon />
-            <FormattedMessage id="button_invite_students" />
+            <FormattedMessage id="live_buttonInviteStudents" />
         </Button>
         <Popover
             open={Boolean(anchorEl)}

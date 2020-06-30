@@ -6,6 +6,7 @@ import Paper from "@material-ui/core/Paper";
 import { createStyles, makeStyles, Theme, useTheme } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import React, { Dispatch, SetStateAction, useState } from "react";
+import { FormattedMessage } from "react-intl";
 import CalmIslandLogo from "../../../assets/img/calmisland_logo.png";
 import StyledFAB from "../../../components/styled/fabButton";
 
@@ -113,7 +114,7 @@ export default function LiveChatInput(props: Props) {
                                     extendedOnly
                                     size="small"
                                 >
-                                    Send
+                                    <FormattedMessage id="live_buttonSend" />
                                 </StyledFAB>
                             </Grid>
                         </Collapse>

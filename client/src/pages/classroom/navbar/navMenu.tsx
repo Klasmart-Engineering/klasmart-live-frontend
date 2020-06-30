@@ -19,7 +19,9 @@ import SchoolTwoToneIcon from "@material-ui/icons/SchoolTwoTone";
 import SecurityTwoToneIcon from "@material-ui/icons/SecurityTwoTone";
 import TableChartTwoToneIcon from "@material-ui/icons/TableChartTwoTone";
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import DialogAppBar from "../../../components/styled/dialogAppBar";
+import { State } from "../../../store/store";
 import { MenuItem } from "../../../types/objectTypes";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -93,6 +95,8 @@ export default function NavMenu() {
     const classes = useStyles();
     const theme = useTheme();
     const [open, setOpen] = useState(false);
+
+    const isLive = useSelector((state: State) => state.ui.liveClass);
 
     const MENU_ITEMS: MenuItem[] = [
         {
@@ -178,6 +182,7 @@ export default function NavMenu() {
                 onClick={handleClickOpen}
                 color="inherit"
                 aria-label="menu"
+                disabled={isLive}
             >
                 <AppsIcon />
             </IconButton>

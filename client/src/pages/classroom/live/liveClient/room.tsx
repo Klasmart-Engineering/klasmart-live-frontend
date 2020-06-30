@@ -77,7 +77,7 @@ export function Room({ teacher }: Props): JSX.Element {
         variables: { roomId, name },
     });
 
-    if (error) {return <Typography ><FormattedMessage id="failed_to_connect" />{JSON.stringify(error)}</Typography>; }
+    if (error) {return <Typography ><FormattedMessage id="live_failedToConnect" />{JSON.stringify(error)}</Typography>; }
     if (loading || !content) {return <CircularProgress />; }
     return <>
         {

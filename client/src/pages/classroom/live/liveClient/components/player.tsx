@@ -73,7 +73,7 @@ export function Player({ streamId, frameProps, parentWidth, parentHeight, setPar
     }, [ref.current, ref.current && ref.current.contentWindow]);
 
     if (loading) {return <CircularProgress />; }
-    if (error) {return <Typography><FormattedMessage id="failed_to_connect" />: {JSON.stringify(error)}</Typography>; }
+    if (error) {return <Typography><FormattedMessage id="live_failedToConnect" />: {JSON.stringify(error)}</Typography>; }
     return <iframe
         ref={ref}
         style={{
