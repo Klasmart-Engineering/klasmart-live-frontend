@@ -1,28 +1,32 @@
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const webpack = require('webpack');
+const path = require("path");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const webpack = require("webpack");
 
 module.exports = {
-    mode: 'development',
-    entry: ['./src/client-entry.tsx'],
+    mode: "development",
+    entry: {
+        ui: "./src/client-entry.tsx",
+        record: "./src/pages/classroom/live/liveClient/entry-record.ts",
+        player: "./src/pages/classroom/live/liveClient/entry-player.ts"
+    },
     module: {
         rules: [
             {
                 test: /\.tsx?$/,
                 exclude: /node_modules/,
                 use: {
-                    loader: 'babel-loader',
+                    loader: "babel-loader",
                 }
             },
             {
                 test: /\.css$/i,
                 use: [
                     {
-                        loader: 'style-loader',
+                        loader: "style-loader",
                     },
-                    'css-modules-typescript-loader',
+                    "css-modules-typescript-loader",
                     {
-                        loader: 'css-loader',
+                        loader: "css-loader",
                         options: {
                             modules: true
                         }
@@ -32,9 +36,9 @@ module.exports = {
             {
                 test: /\.(gif|png|jpe?g|svg)$/i,
                 use: [
-                    'file-loader',
+                    "file-loader",
                     {
-                        loader: 'image-webpack-loader',
+                        loader: "image-webpack-loader",
                         options: {
                             // mozjpeg: {
                             //     progressive: true,
@@ -55,28 +59,25 @@ module.exports = {
             {
                 test: /\.(woff|woff2|eot|ttf|otf)$/,
                 use: [
-                    'file-loader',
+                    "file-loader",
                 ],
             },
             {
                 test: /\.mp4$/,
-                use: 'file-loader?name=videos/[name].[ext]',
+                use: "file-loader?name=videos/[name].[ext]",
             },
         ],
     },
     resolve: {
-        extensions: ['.js', '.jsx', '.tsx', '.ts'],
+        extensions: [".js", ".jsx", ".tsx", ".ts"],
     },
     output: {
-        filename: 'bundle.js',
-        path: path.resolve(__dirname, 'dist'),
+        filename: "[name].js",
+        path: path.resolve(__dirname, "dist"),
     },
     plugins: [
         new HtmlWebpackPlugin({
-            template: 'src/index.html',
-        }),
-        new webpack.ProvidePlugin({
-            //'fetch': 'imports-loader?this=>global!exports-loader?global.fetch!whatwg-fetch'
+            template: "src/index.html",
         }),
         new webpack.EnvironmentPlugin({
             "STAGE": "dev",
@@ -89,14 +90,24 @@ module.exports = {
             "ORGANIZATION_ENDPOINT": "http://localhost:8084/",
             "ASSESSMENT_ENDPOINT": "http://localhost:8065/",
             "DEFAULT_PROG_ID": "KIDSLOOP-2.0"
+        }),
+        new HtmlWebpackPlugin({
+            filename: "player.html",
+            chunks: ["player"],
+            template: "src/pages/classroom/live/liveClient/player.html"
         })
     ],
     devServer: {
         host: "0.0.0.0",
         historyApiFallback: true,
         proxy: {
-            '/h5p': {
-                target: 'https://zoo.kidsloop.net/',
+            "/graphql": {
+                target: "http://localhost:8000",
+                changeOrigin: true,
+                ws: true
+            },
+            "/h5p": {
+                target: "https://zoo.kidsloop.net/",
                 secure: false,
                 changeOrigin: true,
             },

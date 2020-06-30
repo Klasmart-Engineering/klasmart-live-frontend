@@ -11,6 +11,7 @@ const messages: Record<string, string> = {
 
     form_emailLabel: "Email or phone",
     form_passwordLabel: "Password",
+    form_nameLabel: "Name",
 
     live_classCodeLabel: "Class code",
     live_liveButton: "Go Live",

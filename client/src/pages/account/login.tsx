@@ -211,7 +211,7 @@ export function Login() {
                 </Card>
                 <Grid container direction="row" justify="space-between" alignItems="center">
                     <Grid item xs={1}>
-                        <Lightswitch iconOnly onClick={() => {}}/>
+                        <Lightswitch iconOnly />
                     </Grid>
                     <Grid item xs={5}>
                         <LanguageSelect noIcon />

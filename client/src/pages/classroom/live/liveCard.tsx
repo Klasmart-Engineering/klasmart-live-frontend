@@ -84,7 +84,7 @@ export default function LiveCard() {
                             &nbsp;
                             <FormattedMessage id={"live_liveLinkLabel"} />:
                         </Typography>
-                        <Typography variant="body1">https://meet.google.com/wit-masa-dzw</Typography>
+                        <Typography variant="body1">https://zoo.kidsloop.net/live/</Typography>
                     </Grid>
                 </Grid>
             </Grid>

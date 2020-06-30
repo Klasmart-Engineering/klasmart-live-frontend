@@ -22,3 +22,9 @@ export interface ContentItem {
 }
 
 export type LibraryContentType = "OwnedContent" | "Marketplace";
+
+export interface IUserContext {
+  roomId: string;
+  teacher: boolean;
+  name: string;
+}

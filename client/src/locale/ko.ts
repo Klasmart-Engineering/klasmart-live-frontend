@@ -10,6 +10,7 @@ const messages: Record<string, string> = {
     error_emptySkillCat: "Select a skill category",
 
     form_emailLabel: "이메일 주소 / 휴대폰 번호",
+    form_nameLabel: "Name",
     form_passwordLabel: "비밀번호",
 
     live_classCodeLabel: "Class code",

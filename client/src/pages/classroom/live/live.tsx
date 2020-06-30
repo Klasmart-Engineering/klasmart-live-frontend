@@ -5,10 +5,14 @@ import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { Route, Switch } from "react-router-dom";
 import { State } from "../../../store/store";
+import { IUserContext } from "../../../types/objectTypes";
 import LiveCard from "./liveCard";
-import LiveChatInput from "./liveChatInput";
-import LiveChatMessage from "./liveChatMessage";
+import { UserContext } from "./liveClient/app";
+import LiveClient from "./liveClient/entry";
+import { Join } from "./liveClient/pages/join";
+import { Room } from "./liveClient/room";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -38,7 +42,7 @@ export default function LiveLayout() {
 
     const [hasTransitioned, setHasTransitioned] = useState(false);
     const [inFlight, setInFlight] = useState(false);
-    const [message, setMessage] = useState("");
+    const [userContext, setUserContext] = useState<IUserContext>();
 
     const isLive = useSelector((state: State) => state.ui.liveClass);
 
@@ -48,7 +52,7 @@ export default function LiveLayout() {
             setTimeout(() => {
                 setHasTransitioned(!hasTransitioned);
                 setInFlight(false);
-            }, 5000);
+            }, 3000);
         }
     }, [isLive]);
 
@@ -83,25 +87,9 @@ export default function LiveLayout() {
                 </Fade>
                 <Fade in={isLive && hasTransitioned} unmountOnExit={true} timeout={{ enter: 1000, exit: 500 }}>
                     <Paper elevation={4} className={classes.paperContainer}>
-                        <LiveCard />
+                        <LiveClient />
                     </Paper>
                 </Fade>
-            </Grid>
-            <Grid item xs={12} md={4}>
-                {"Placeholder >_<"}
-            </Grid>
-            <Grid
-                container
-                direction="row"
-                justify="flex-start"
-                item xs={12} md={8}
-                spacing={1}
-            >
-                <LiveChatInput message={message} setMessage={setMessage}/>
-
-                <LiveChatMessage message={"This is a message."} timestamp={1592636284}/>
-
-                <LiveChatMessage message={"This is a reeaaaaaaaalllllllllllllyyyyyyyyyyyyyyyyyyyyyyyy long reeaaaaaaaalllllllllllllyyyyyyyyyyyyyyyyyyyyyyyy long reeaaaaaaaalllllllllllllyyyyyyyyyyyyyyyyyyyyyyyy long reeaaaaaaaalllllllllllllyyyyyyyyyyyyyyyyyyyyyyyy long reeaaaaaaaalllllllllllllyyyyyyyyyyyyyyyyyyyyyyyy long message."} timestamp={1592636284}/>
             </Grid>
         </Grid>
     );
