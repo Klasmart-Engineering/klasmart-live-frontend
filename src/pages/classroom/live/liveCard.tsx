@@ -62,6 +62,7 @@ export default function LiveCard() {
             direction="column"
             justify="space-between"
             alignItems="flex-start"
+            wrap="nowrap"
             className={classes.classInfoContainer}
         >
             <Grid item>
@@ -74,7 +75,7 @@ export default function LiveCard() {
                             <Typography variant="h6" style={{ paddingRight: theme.spacing(2) }}>
                                 <FormattedMessage id={"live_classCodeLabel"} />:
                             </Typography>
-                            <Typography variant="body1">{ randomBytes(6).toString("base64") }</Typography>
+                            <Typography variant="body1">{randomBytes(6).toString("base64")}</Typography>
                         </CenterAlignChildren>
                     </Grid>
                     <Grid item xs={12}>
@@ -98,7 +99,7 @@ export default function LiveCard() {
                     </StyledFAB>
                     <CenterAlignChildren>
                         <FaceIcon color="inherit" style={{ marginRight: theme.spacing(1) }} />
-                        { Math.floor(Math.random() * Math.floor(5)) }
+                        {Math.floor(Math.random() * Math.floor(5))}
                     </CenterAlignChildren>
                 </CenterAlignChildren>
             </Grid>

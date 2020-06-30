@@ -26,9 +26,22 @@ const messages: Record<string, string> = {
     navMenu_libraryLabel: "Library",
     navMenu_liveLabel: "Live",
     navMenu_peopleLabel: "People",
+    navMenu_reportLabel: "Report",
 
     privacy_helpLink: "Help",
     privacy_privacyLink: "Privacy",
     privacy_termsLink: "Terms",
+
+    // Assessments
+    assess_createButton: "Create",
+    assess_libraryButton: "Library",
+    assess_pendingButton: "Pending",
+    assess_completedButton: "Completed",
+    assess_libraryTitle: "Learning Outcome Library",
+    assess_createDialogTitle: "Create new Learning Outcome",
+    assess_viewDialogTitle: "Learning Outcome Details",
+
+    assess_pendingTitle: "Pending Assessments",
+    assess_completedTitle: "Completed Assessments",
 };
 export default messages;

@@ -87,6 +87,8 @@ module.exports = {
             "PRODUCT_ENDPOINT": "http://localhost:8044/",
             "REGION_ENDPOINT": "http://localhost:8094/",
             "ORGANIZATION_ENDPOINT": "http://localhost:8084/",
+            "ASSESSMENT_ENDPOINT": "http://localhost:8065/",
+            "DEFAULT_PROG_ID": "KIDSLOOP-2.0"
         })
     ],
     devServer: {
@@ -95,6 +97,11 @@ module.exports = {
         proxy: {
             '/h5p': {
                 target: 'https://zoo.kidsloop.net/',
+                secure: false,
+                changeOrigin: true,
+            },
+            "/v1": {
+                target: "https://seoul-beta.assessment-api.badanamu.net",
                 secure: false,
                 changeOrigin: true,
             }

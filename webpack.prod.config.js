@@ -84,6 +84,8 @@ module.exports = {
         new webpack.EnvironmentPlugin({
             "STAGE": "prod",
             "CALM_ORG_ID": "CALM-ISLAND",
+            "ASSESSMENT_ENDPOINT": "https://seoul.assessment-api.badanamu.net/",
+            "DEFAULT_PROG_ID": "KIDSLOOP-2.0"
         })
     ],
     optimization: {
