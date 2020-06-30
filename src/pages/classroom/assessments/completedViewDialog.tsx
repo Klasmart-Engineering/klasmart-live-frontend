@@ -1,35 +1,20 @@
+import Typography from "@material-ui/core/Typography";
 import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
 import Grid from "@material-ui/core/Grid";
 import Grow from "@material-ui/core/Grow";
-import Tooltip from "@material-ui/core/Tooltip";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Checkbox from "@material-ui/core/Checkbox";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import { createStyles, makeStyles, Theme, useTheme } from "@material-ui/core/styles";
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { TransitionProps } from "@material-ui/core/transitions";
-import AddIcon from "@material-ui/icons/Add";
-import InfoIcon from '@material-ui/icons/Info';
-import ErrorIcon from "@material-ui/icons/Error";
 import React, { useState, useEffect } from "react";
-import { FormattedMessage } from "react-intl";
 
 import DialogAppBar from "../../../components/styled/dialogAppBar";
-import StyledFAB from "../../../components/styled/fabButton";
-import StyledButton from "../../../components/styled/button";
-import StyledTextField from "../../../components/styled/textfield";
-import StyledComboBox from "../../../components/styled/combobox";
-import { RestAPIError, RestAPIErrorType } from "../../../api/restapi_errors";
 import {
     useRestAPI,
-    CreateLearningOutcomeRequest,
-    DevSkillResponse,
-    SkillCatResponse
+    AssessmentResponse
 } from "./api/restapi";
 
 interface Props {
-    assId: string | undefined
+    assId: string
     open: boolean
     onClose: any
 }
@@ -44,6 +29,9 @@ const useStyles = makeStyles((theme: Theme) =>
             [theme.breakpoints.down("sm")]: {
                 padding: theme.spacing(2, 2),
             },
+        },
+        menuGrid: {
+            padding: theme.spacing(1)
         },
         title: {
             marginLeft: theme.spacing(2),
@@ -64,35 +52,96 @@ const Motion = React.forwardRef(function Transition(
 });
 
 export default function CompletedViewDialog(props: Props) {
+    const { assId, open, onClose } = props;
+    const classes = useStyles();
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const api = useRestAPI();
+
+    async function fetchAssessmentInfo() {
+        const payload = await api.getAssessment(assId);
+        return payload;
+    }
+
+    const [info, setInfo] = useState<AssessmentResponse>();
+
+    useEffect(() => {
+        let prepared = true;
+
+        (async () => {
+            const info = await fetchAssessmentInfo();
+
+            if (prepared) { setInfo(info); }
+        })();
+
+        return () => { prepared = false; };
+    }, [open])
+
+    return (
+        <Dialog
+            aria-labelledby="nav-menu-title"
+            aria-describedby="nav-menu-description"
+            fullScreen
+            open={open}
+            onClose={onClose}
+            TransitionComponent={Motion}
+        >
+            <DialogAppBar
+                handleClose={onClose}
+                subtitleID={"assess_completedViewDialogTitle"}
+            />
+            <Grid
+                container
+                direction="row"
+                justify="space-around"
+                alignItems="stretch"
+                spacing={isMobile ? 1 : 3}
+                className={classes.menuContainer}
+            >
+                {info ? <AssessmentDetails ass={info} /> : "Loading..."}
+            </Grid>
+        </Dialog>
+    );
+}
+
+interface AssessmentDetailsProps {
+    ass: AssessmentResponse
+}
+
+function AssessmentDetails(props: AssessmentDetailsProps) {
+    const { ass } = props;
     const classes = useStyles();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
     return (
         <>
-            <Dialog
-                aria-labelledby="nav-menu-title"
-                aria-describedby="nav-menu-description"
-                fullScreen
-                open={props.open}
-                onClose={props.onClose}
-                TransitionComponent={Motion}
-            >
-                <DialogAppBar
-                    handleClose={props.onClose}
-                    subtitleID={"assess_viewDialogTitle"}
-                />
-                <Grid
-                    container
-                    direction="row"
-                    justify="space-around"
-                    alignItems="stretch"
-                    spacing={isMobile ? 1 : 3}
-                    className={classes.menuContainer}
-                >
-                    {props.assId}
-                </Grid>
-            </Dialog>
+            <Grid className={classes.menuGrid} item xs={12}>
+                <Typography variant="caption" color="textSecondary">Title</Typography>
+                <Typography variant="h6">{ass.name}</Typography>
+            </Grid>
+            <Grid className={classes.menuGrid} item xs={isMobile ? 12 : 6}>
+                <Typography variant="caption" color="textSecondary">Created on</Typography>
+                <Typography variant="subtitle1">{new Date(ass.createdDate).toLocaleString()}</Typography>
+            </Grid>
+            <Grid className={classes.menuGrid} item xs={isMobile ? 12 : 6}>
+                <Typography variant="caption" color="textSecondary">Assessed on</Typography>
+                <Typography variant="subtitle1">{new Date(ass.assessedDate).toLocaleString()}</Typography>
+            </Grid>
+            <Grid className={classes.menuGrid} item xs={isMobile ? 12 : 6}>
+                <Typography variant="caption" color="textSecondary">Subject</Typography>
+                <Typography variant="subtitle1">{ass.subject}</Typography>
+            </Grid>
+            <Grid className={classes.menuGrid} item xs={isMobile ? 12 : 6}>
+                <Typography variant="caption" color="textSecondary">Duration</Typography>
+                <Typography variant="subtitle1">{ass.duration}</Typography>
+            </Grid>
+            <Grid className={classes.menuGrid} item xs={isMobile ? 12 : 6}>
+                <Typography variant="caption" color="textSecondary">Awarded Students</Typography>
+                <Typography variant="subtitle1">
+                    {ass.students.length === 0 ? "-" : ass.students.join(", ")}
+                </Typography>
+            </Grid>
         </>
-    );
+    )
 }

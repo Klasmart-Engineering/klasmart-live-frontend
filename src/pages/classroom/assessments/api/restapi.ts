@@ -256,7 +256,7 @@ export class RestAPI {
         return body;
     }
 
-    public async getAssessment(assId: string): Promise<SkillCatResponse> {
+    public async getAssessment(assId: string): Promise<AssessmentResponse> {
         const result = await this.assessmentCall("GET", "v1/assessment/" + assId);
         const body = await result.json();
         return body;

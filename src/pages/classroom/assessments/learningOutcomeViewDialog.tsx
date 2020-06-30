@@ -301,7 +301,7 @@ export default function LearningOutcomeViewDialog(props: Props) {
                         </Hidden>
                     }
                     handleClose={onClose}
-                    subtitleID={editMode ? "assess_editDialogTitle" : "assess_viewDialogTitle"}
+                    subtitleID={editMode ? "assess_libraryEditDialogTitle" : "assess_libraryViewDialogTitle"}
                 />
                 <Grid
                     container

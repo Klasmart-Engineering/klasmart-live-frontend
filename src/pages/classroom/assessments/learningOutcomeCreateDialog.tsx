@@ -249,7 +249,7 @@ export default function CreateLearningOutcomeDialog() {
                         </Hidden>
                     }
                     handleClose={handleClose}
-                    subtitleID={"assess_createDialogTitle"}
+                    subtitleID={"assess_libraryCreateDialogTitle"}
                 />
                 <Grid
                     container

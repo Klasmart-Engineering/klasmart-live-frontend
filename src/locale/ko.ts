@@ -38,11 +38,12 @@ const messages: Record<string, string> = {
     assess_pendingButton: "Pending",
     assess_completedButton: "Completed",
     assess_libraryTitle: "Learning Outcome Library",
-    assess_createDialogTitle: "Create new Learning Outcome",
-    assess_viewDialogTitle: "Learning Outcome Details",
-    assess_editDialogTitle: "Edit Learning Outcome",
+    assess_libraryCreateDialogTitle: "Create new Learning Outcome",
+    assess_libraryViewDialogTitle: "Learning Outcome Details",
+    assess_libraryEditDialogTitle: "Edit Learning Outcome",
 
     assess_pendingTitle: "Pending Assessments",
     assess_completedTitle: "Completed Assessments",
+    assess_completedViewDialogTitle: "Completed Assessment",
 };
 export default messages;
