@@ -207,6 +207,37 @@ export function assessmentToken(state = JWT_TOKEN, action: Actions) {
     }
 }
 
+import Avatar from "../assets/img/zoo_teacher.jpg";
+const STUDENT_LIST = [
+    {
+        profileId: "student0",
+        profileName: "Woody",
+        iconLink: ""
+    },
+    {
+        profileId: "student1",
+        profileName: "Buzz Lightyear",
+        iconLink: ""
+    },
+    {
+        profileId: "student2",
+        profileName: "Rex",
+        iconLink: Avatar
+    },
+    {
+        profileId: "student3",
+        profileName: "Slinky Dog",
+        iconLink: ""
+    },
+]
+export function students(state = STUDENT_LIST, action: Actions) {
+    switch (action.type) {
+        case ActionTypes.STUDENTS:
+            return action.payload;
+        default:
+            return state;
+    }
+}
 
 export const account = combineReducers({
     assessmentToken,
@@ -219,6 +250,7 @@ export const account = combineReducers({
     refreshTokenExpire,
     sessionId,
     userAgent,
+    students,
 });
 
 export const ui = combineReducers({

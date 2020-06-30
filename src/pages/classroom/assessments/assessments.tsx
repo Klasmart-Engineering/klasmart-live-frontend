@@ -16,7 +16,8 @@ import { useState } from "react";
 import { FormattedMessage } from "react-intl";
 
 import CreateLearningOutcomeDialog from "./learningOutcomeCreateDialog";
-import AssessmentsLibraryView from "./assessmentsLibraryView";
+import AssessmentsLibraryView from "./learningOutcomeLibraryView";
+import AssessmentsPendingView from "./pendingView";
 import AssessmentsCompletedView from "./completedView";
 
 type AssessmentsMenuItem = {
@@ -85,7 +86,7 @@ const StyledMenu = withStyles({})((props: MenuProps) => (
 export default function AssessmentsLayout() {
     const classes = useStyles();
 
-    const [activeMenu, setActiveMenu] = useState<AssessmentsMenu>(AssessmentsMenu.LIBRARY);
+    const [activeMenu, setActiveMenu] = useState<AssessmentsMenu>(AssessmentsMenu.PENDING);
     const [inFlight, setInFlight] = useState(false);
     const [menuElement, setMenuElement] = useState<null | HTMLElement>(null);
 
@@ -222,7 +223,7 @@ function AssessmentsContent(props: { activeMenu: AssessmentsMenu }) {
                     </Grid>
                     <Grid item xs={12}>
                         <Grid container spacing={1}>
-                            PENDING
+                            <AssessmentsPendingView />
                         </Grid>
                     </Grid>
                 </>

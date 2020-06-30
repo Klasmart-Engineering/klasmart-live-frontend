@@ -17,7 +17,7 @@ import SaveAlt from "@material-ui/icons/SaveAlt";
 import Search from "@material-ui/icons/Search";
 import ViewColumn from "@material-ui/icons/ViewColumn";
 
-import CompletedViewDialog from "./completedViewDialog";
+import PendingDialog from "./pendingDialog";
 
 const tableIcons: Icons = {
     Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -48,10 +48,10 @@ interface TableProps {
 export interface TableRow {
     assId: string
     title: string
-    assessedDate: string
+    createdDate: string
 }
 
-export default function CompletedTable(props: TableProps) {
+export default function PendingTable(props: TableProps) {
     const [open, setOpen] = useState(false);
     const [selected, setSelected] = useState<string>();
 
@@ -84,7 +84,7 @@ export default function CompletedTable(props: TableProps) {
                 }}
                 onRowClick={((evt, selectedRow) => handleOnRowClick(selectedRow.assId))}
             />
-            {selected ? <CompletedViewDialog open={open} onClose={handleOnClose} assId={selected} /> : null}
+            {selected ? <PendingDialog open={open} onClose={handleOnClose} assId={selected} /> : null}
         </>
     )
 }

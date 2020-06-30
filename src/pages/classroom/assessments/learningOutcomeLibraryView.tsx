@@ -11,7 +11,7 @@ const TABLE_COLUMN_MOBILE = [
     {
         title: "Title",
         field: "title",
-        headerStyle: { minWidth: "180px" } // TODO
+        headerStyle: { minWidth: "180px" }
     },
     {
         title: "Published",
@@ -19,14 +19,12 @@ const TABLE_COLUMN_MOBILE = [
         cellStyle: { color: "#0E78D5" },
         type: "numeric"
     }
-    // { title: "", field: "actions", type: "numeric" },
 ];
 
 const TABLE_COLUMN = [
     {
         title: "Title",
         field: "title",
-        // headerStyle: { width: "50%" } // TODO
     },
     {
         title: "Assumed",
@@ -46,7 +44,6 @@ const TABLE_COLUMN = [
         type: "numeric",
         headerStyle: { minWidth: "200px" }, // TODO
     },
-    // { title: "", field: "actions", type: "numeric" },
 ];
 
 export default function AssessmentsLibraryView() {
@@ -84,8 +81,7 @@ export default function AssessmentsLibraryView() {
                     title: lo.title,
                     published: <Grid>{lo.published ? <CompleteIcon /> : null}</Grid>,
                     assumed: <Grid>{lo.assumed ? <CompleteIcon /> : null}</Grid>,
-                    createdDate: new Date(lo.createdDate).toLocaleString(),
-                    // actions: <TableActions loId={lo.loId} loTitle={lo.title} published={lo.published} />
+                    createdDate: new Date(lo.createdDate).toLocaleString()
                 })
             }
 

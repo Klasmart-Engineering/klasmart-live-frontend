@@ -136,7 +136,7 @@ function AssessmentDetails(props: AssessmentDetailsProps) {
                 <Typography variant="caption" color="textSecondary">Duration</Typography>
                 <Typography variant="subtitle1">{ass.duration}</Typography>
             </Grid>
-            <Grid className={classes.menuGrid} item xs={isMobile ? 12 : 6}>
+            <Grid className={classes.menuGrid} item xs={12}>
                 <Typography variant="caption" color="textSecondary">Awarded Students</Typography>
                 <Typography variant="subtitle1">
                     {ass.students.length === 0 ? "-" : ass.students.join(", ")}

@@ -54,6 +54,12 @@ export type SetActiveComponentHome = Action<ActionTypes.ACTIVE_COMPONENT_HOME, s
 
 export type SetAssessmentToken = Action<ActionTypes.ASSESSMENT_TOKEN, string>;
 
+export type SetStudents = Action<ActionTypes.STUDENTS, {
+    profileId: string,
+    profileName: string,
+    iconLink: string
+}[]>;
+
 export enum ActionTypes {
     LOCALE,
     LOGIN,
@@ -71,7 +77,8 @@ export enum ActionTypes {
     EXPIRED_ACCESS_TOKEN,
     CLASS_SETTINGS_TOGGLE,
     ACTIVE_COMPONENT_HOME,
-    ASSESSMENT_TOKEN
+    ASSESSMENT_TOKEN,
+    STUDENTS,
 }
 
 export type Actions =
@@ -92,4 +99,5 @@ export type Actions =
     | ToggleLiveClass
     | SetActiveComponentHome
     | SetAssessmentToken
+    | SetStudents
     | never;

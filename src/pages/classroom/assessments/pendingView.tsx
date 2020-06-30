@@ -4,7 +4,7 @@ import { useTheme } from "@material-ui/core/styles";
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import { useRestAPI, AssessmentResponse } from "./api/restapi";
-import CompletedTable, { TableRow } from "./completedTable";
+import PendingTable, { TableRow } from "./pendingTable";
 
 const TABLE_COLUMN_MOBILE = [
     {
@@ -19,13 +19,13 @@ const TABLE_COLUMN = [
         field: "title",
     },
     {
-        title: "Assessed on",
-        field: "assessedDate",
+        title: "Created on",
+        field: "createdDate",
         type: "numeric",
     }
 ];
 
-export default function AssessmentsCompletedView() {
+export default function AssessmentsPendingView() {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const api = useRestAPI();
@@ -37,7 +37,7 @@ export default function AssessmentsCompletedView() {
 
     async function fetchAssessments() {
         const payload = await api.getAssessments();
-        return payload.assessments.sort((a, b) => b.createdDate - a.createdDate).filter(ass => ass.published);
+        return payload.assessments.sort((a, b) => b.createdDate - a.createdDate).filter(ass => !ass.published);
     }
 
     useEffect(() => {
@@ -59,7 +59,7 @@ export default function AssessmentsCompletedView() {
                 tmpRows.push({
                     assId: ass.assId,
                     title: ass.name,
-                    assessedDate: new Date(ass.assessedDate).toLocaleString()
+                    createdDate: new Date(ass.createdDate).toLocaleString()
                 })
             }
 
@@ -72,7 +72,7 @@ export default function AssessmentsCompletedView() {
     return (
         <Grid container>
             <Grid item xs={12}>
-                <CompletedTable
+                <PendingTable
                     columns={columns}
                     pageSize={pageSize}
                     data={rows.map(data => Object.assign({}, data))}

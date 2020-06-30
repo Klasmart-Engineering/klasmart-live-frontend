@@ -41,9 +41,9 @@ const messages: Record<string, string> = {
     assess_libraryCreateDialogTitle: "Create new Learning Outcome",
     assess_libraryViewDialogTitle: "Learning Outcome Details",
     assess_libraryEditDialogTitle: "Edit Learning Outcome",
-
     assess_pendingTitle: "Pending Assessments",
+    assess_pendingViewDialogTitle: "Pending Assessment Details",
     assess_completedTitle: "Completed Assessments",
-    assess_completedViewDialogTitle: "Completed Assessment",
+    assess_completedViewDialogTitle: "Completed Assessment Details",
 };
 export default messages;
