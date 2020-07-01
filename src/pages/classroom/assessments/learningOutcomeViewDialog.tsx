@@ -551,7 +551,7 @@ function LearningOutcomeDetails(props: LearningOutcomeDetailsProps) {
             </Grid>
             <Grid className={classes.menuGrid} item xs={isMobile ? 12 : 6}>
                 <Typography variant="caption" color="textSecondary">Estimated Hour</Typography>
-                <Typography variant="subtitle1">{lo.estimatedDuration ? lo.estimatedDuration + " hrs" : "-"}</Typography>
+                <Typography variant="subtitle1">{lo.estimatedDuration ? lo.estimatedDuration : "-"}</Typography>
             </Grid>
             <Grid className={classes.menuGrid} item xs={isMobile ? 12 : 6}>
                 <Typography variant="caption" color="textSecondary">Tags (Keyword)</Typography>

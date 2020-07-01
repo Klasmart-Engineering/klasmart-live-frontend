@@ -37,7 +37,9 @@ export default function AssessmentsPendingView() {
 
     async function fetchAssessments() {
         const payload = await api.getAssessments();
-        return payload.assessments.sort((a, b) => b.state - a.state).filter(ass => ass.state !== 3);
+        return payload.assessments
+            .sort((a, b) => b.state - a.state)
+            .filter(ass => ass.state !== 3 && !ass.published);
     }
 
     useEffect(() => {

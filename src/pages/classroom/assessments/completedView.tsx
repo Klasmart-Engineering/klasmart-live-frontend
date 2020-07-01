@@ -35,9 +35,11 @@ export default function AssessmentsCompletedView() {
     const [rows, setRows] = useState<TableRow[]>([]);
     const [pageSize, setPageSize] = useState<number>(5);
 
-    async function fetcCompletedhAssessments() {
+    async function fetchCompletedAssessments() {
         const payload = await api.getAssessments();
-        return payload.assessments.sort((a, b) => b.createdDate - a.createdDate).filter(ass => ass.state === 3);
+        return payload.assessments
+            .sort((a, b) => b.createdDate - a.createdDate)
+            .filter(ass => ass.state === 3 && ass.published);
     }
 
     useEffect(() => {

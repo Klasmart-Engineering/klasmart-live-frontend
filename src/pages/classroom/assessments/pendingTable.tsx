@@ -17,7 +17,7 @@ import SaveAlt from "@material-ui/icons/SaveAlt";
 import Search from "@material-ui/icons/Search";
 import ViewColumn from "@material-ui/icons/ViewColumn";
 
-import PendingDialog from "./pendingDialog";
+import PendingViewDialog from "./pendingViewDialog";
 
 const tableIcons: Icons = {
     Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -84,7 +84,7 @@ export default function PendingTable(props: TableProps) {
                 }}
                 onRowClick={((evt, selectedRow) => handleOnRowClick(selectedRow.assId))}
             />
-            {selected ? <PendingDialog open={open} onClose={handleOnClose} assId={selected} /> : null}
+            {selected ? <PendingViewDialog open={open} onClose={handleOnClose} assId={selected} /> : null}
         </>
     )
 }

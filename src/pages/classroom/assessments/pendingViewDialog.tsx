@@ -95,7 +95,7 @@ const Motion = React.forwardRef(function Transition(
     return <Grow style={{ transformOrigin: "0 0 0" }} ref={ref} {...props} />;
 });
 
-export default function CompletedViewDialog(props: Props) {
+export default function PendingViewDialog(props: Props) {
     const { assId, open, onClose } = props;
     const classes = useStyles();
     const theme = useTheme();
@@ -133,12 +133,12 @@ export default function CompletedViewDialog(props: Props) {
     }
 
     // When awardMode === true
-    async function fetchLOs() {
-        const payload = await api.getLearningOutcomes();
-        return payload.learningOutcomes
-            .sort((a, b) => b.createdDate - a.createdDate)
-            .filter(lo => lo.published);
-    }
+    // async function fetchLOs() {
+    //     const payload = await api.getLearningOutcomes();
+    //     return payload.learningOutcomes
+    //         .sort((a, b) => b.createdDate - a.createdDate)
+    //         .filter(lo => lo.published);
+    // }
 
     const students = useSelector((state: State) => state.account.students);
     const [collapse, setCollapse] = useState(true);
@@ -149,17 +149,24 @@ export default function CompletedViewDialog(props: Props) {
         iconLink: string
     }[]>([]);
     const [checkedLOs, setCheckedLOs] = useState<number[]>([]);
-
     useEffect(() => {
         let prepared = true;
 
         (async () => {
-            const los = await fetchLOs();
-            if (prepared) { setLOs(los); }
+            if (!info || !info.learningOutcomes) { return; }
+            let LOs = []
+            const loIds = info.learningOutcomes.map(lo => lo.loId);
+            for (const id of loIds) {
+                const lo = await api.getLearningOutcome(id);
+                LOs.push(lo);
+            }
+            setLOs(LOs);
+
+            if (prepared) { setInfo(info); }
         })();
 
         return () => { prepared = false; };
-    }, [])
+    }, [awardMode])
 
     useEffect(() => {
         // NOTE: Purpose to handle CompleteFAB disabled
@@ -217,8 +224,8 @@ export default function CompletedViewDialog(props: Props) {
             }
             await api.updateAssessment(info.assId, assInfo);
 
-            setCheckedStudents([]);
-            setCheckedLOs([]);
+            // setCheckedStudents([]);
+            // setCheckedLOs([]);
             setAwardMode(false);
             onClose();
         } catch (e) {
@@ -235,11 +242,11 @@ export default function CompletedViewDialog(props: Props) {
         try {
             setInFlight(true);
 
-            // TODO: Need to Add CompleteAssessment
-            // const assInfo: CompleteAssessmentRequest = {
-            //     students: checkedStudents
-            // }
-            // await api.completeAssessment(info.lessonPlanId, assInfo);
+            const assInfo: UpdateAssessmentRequest = {
+                state: 3,
+                publish: true
+            }
+            await api.updateAssessment(info.lessonPlanId, assInfo);
 
             setCheckedStudents([]);
             setCheckedLOs([]);
@@ -310,7 +317,7 @@ export default function CompletedViewDialog(props: Props) {
                 alignItems="stretch"
                 className={classes.menuContainer}
             >
-                {awardMode ?
+                {awardMode && info && info.state === 2 ?
                     <Grid className={classes.menuGrid} item xs={12}>
                         <List component="nav" disablePadding>
                             <ListItem button onClick={() => setCollapse(!collapse)}>
