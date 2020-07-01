@@ -71,7 +71,6 @@
     "cookies-js": "^1.2.3",
     "date-fns": "^2.9.0",
     "fabric": "^3.6.3",
-    "gifsicle": "^5.1.0",
     "interpolate-html-plugin": "^3.0.0",
     "logrocket": "^1.0.5",
     "material-table": "^1.63.1",
