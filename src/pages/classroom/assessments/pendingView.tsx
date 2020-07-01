@@ -37,16 +37,8 @@ export default function AssessmentsPendingView() {
 
     async function fetchAssessments() {
         const payload = await api.getAssessments();
-        return payload.assessments.sort((a, b) => b.createdDate - a.createdDate).filter(ass => !ass.published);
+        return payload.assessments.sort((a, b) => b.state - a.state).filter(ass => ass.state !== 3);
     }
-
-    useEffect(() => {
-        if (isMobile) {
-            setColumns(TABLE_COLUMN_MOBILE); setPageSize(3);
-        } else {
-            setColumns(TABLE_COLUMN); setPageSize(5);
-        }
-    }, [isMobile])
 
     useEffect(() => {
         let prepared = true;
@@ -58,7 +50,7 @@ export default function AssessmentsPendingView() {
             for (const ass of assessments) {
                 tmpRows.push({
                     assId: ass.assId,
-                    title: ass.name,
+                    title: ass.name + (ass.state === 1 ? " (To Do)" : " (In Progress)"),
                     createdDate: new Date(ass.createdDate).toLocaleString()
                 })
             }
@@ -67,7 +59,15 @@ export default function AssessmentsPendingView() {
         })();
 
         return () => { prepared = false; };
-    }, [assessments])
+    }, [])
+
+    useEffect(() => {
+        if (isMobile) {
+            setColumns(TABLE_COLUMN_MOBILE); setPageSize(3);
+        } else {
+            setColumns(TABLE_COLUMN); setPageSize(5);
+        }
+    }, [isMobile])
 
     return (
         <Grid container>

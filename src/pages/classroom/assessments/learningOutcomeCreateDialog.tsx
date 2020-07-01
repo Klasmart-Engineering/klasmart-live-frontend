@@ -189,21 +189,21 @@ export default function CreateLearningOutcomeDialog() {
                 setTitleError(
                     <span style={{ display: "flex", alignItems: "center" }}>
                         <ErrorIcon className={classes.errorIcon} />
-                        <FormattedMessage id="error_emptyEmail" />
+                        <FormattedMessage id="error_emptyTitle" />
                     </span>,
                 );
             } else if (e.toString().search("EMPTY_DEVSKILL") !== -1) {
                 setDevSkillError(
                     <span style={{ display: "flex", alignItems: "center" }}>
                         <ErrorIcon className={classes.errorIcon} />
-                        <FormattedMessage id="error_emptyEmail" />
+                        <FormattedMessage id="error_emptyDevSkill" />
                     </span>,
                 );
             } else if (e.toString().search("EMPTY_SKILLCAT") !== -1) {
                 setSkillCatError(
                     <span style={{ display: "flex", alignItems: "center" }}>
                         <ErrorIcon className={classes.errorIcon} />
-                        <FormattedMessage id="error_emptyEmail" />
+                        <FormattedMessage id="error_emptySkillCat" />
                     </span>,
                 );
             } else {

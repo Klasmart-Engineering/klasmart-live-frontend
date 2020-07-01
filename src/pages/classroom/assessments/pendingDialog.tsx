@@ -12,11 +12,10 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import { createStyles, makeStyles, Theme, useTheme } from "@material-ui/core/styles";
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { TransitionProps } from "@material-ui/core/transitions";
-import ChildIcon from '@material-ui/icons/ChildCare';
+import EditIcon from '@material-ui/icons/Edit';
 import BlockIcon from '@material-ui/icons/Block';
 import SaveIcon from "@material-ui/icons/Save";
 import CompleteIcon from '@material-ui/icons/Done';
@@ -40,6 +39,7 @@ import {
     CompleteAssessmentRequest,
     CompleteAssessmentStudentsResquest
 } from "./api/restapi";
+import { students } from '../../../store/reducers';
 
 interface Props {
     assId: string
@@ -159,7 +159,7 @@ export default function CompletedViewDialog(props: Props) {
         })();
 
         return () => { prepared = false; };
-    }, [LOs])
+    }, [])
 
     useEffect(() => {
         // NOTE: Purpose to handle CompleteFAB disabled
@@ -219,9 +219,11 @@ export default function CompletedViewDialog(props: Props) {
 
             setCheckedStudents([]);
             setCheckedLOs([]);
-            location.reload();
+            setAwardMode(false);
+            onClose();
         } catch (e) {
             console.error(e);
+            setAwardMode(false);
             onClose();
         } finally {
             setInFlight(false);
@@ -241,9 +243,11 @@ export default function CompletedViewDialog(props: Props) {
 
             setCheckedStudents([]);
             setCheckedLOs([]);
-            location.reload();
+            setAwardMode(false);
+            onClose();
         } catch (e) {
             console.error(e);
+            setAwardMode(false);
             onClose();
         } finally {
             setInFlight(false);
@@ -286,11 +290,13 @@ export default function CompletedViewDialog(props: Props) {
                                 </StyledFAB>
                             </Grid>
                         </> :
-                            <Grid item>
-                                <StyledFAB size="small" onClick={handleOnClickAward}>
-                                    Award <ChildIcon style={{ paddingLeft: theme.spacing(1) }} />
-                                </StyledFAB>
-                            </Grid>
+                            (info && info.state === 1 ? null :
+                                <Grid item>
+                                    <StyledFAB size="small" onClick={handleOnClickAward}>
+                                        Award <EditIcon style={{ paddingLeft: theme.spacing(1) }} />
+                                    </StyledFAB>
+                                </Grid>
+                            )
                         }
                     </Hidden>
                 }
@@ -318,12 +324,12 @@ export default function CompletedViewDialog(props: Props) {
                                             <Avatar src={student.iconLink} />
                                         </ListItemAvatar>
                                         <ListItemText primary={student.profileName} />
-                                        <ListItemSecondaryAction>
+                                        <ListItemIcon>
                                             <Checkbox
                                                 checked={checkedStudents.indexOf(student) !== -1}
                                                 color="primary"
                                             />
-                                        </ListItemSecondaryAction>
+                                        </ListItemIcon>
                                     </ListItem>
                                 )}
                             </Collapse>
@@ -375,9 +381,11 @@ export default function CompletedViewDialog(props: Props) {
                             />
                         ))}
                     </SpeedDial> :
-                    <StyledFAB className={classes.fab} size="small" onClick={handleOnClickAward}>
-                        <ChildIcon />
-                    </StyledFAB>
+                    (info && info.state === 1 ? null :
+                        <StyledFAB className={classes.fab} size="small" onClick={handleOnClickAward}>
+                            <EditIcon />
+                        </StyledFAB>
+                    )
                 }
             </Hidden>
         </Dialog>
@@ -396,6 +404,14 @@ function AssessmentDetails(props: AssessmentDetailsProps) {
 
     return (
         <>
+            {ass.state === 1 ?
+                <Grid className={classes.menuGrid} item xs={12}>
+                    <Typography variant="subtitle2" color="primary">
+                        Assessment can be awarded after class
+                    </Typography>
+                </Grid>
+                : null
+            }
             <Grid className={classes.menuGrid} item xs={12}>
                 <Typography variant="caption" color="textSecondary">Title</Typography>
                 <Typography variant="h6">{ass.name}</Typography>
@@ -419,7 +435,7 @@ function AssessmentDetails(props: AssessmentDetailsProps) {
             <Grid className={classes.menuGrid} item xs={12}>
                 <Typography variant="caption" color="textSecondary">Awarded Students</Typography>
                 <Typography variant="subtitle1">
-                    {ass.students.length === 0 ? "-" : ass.students.join(", ")}
+                    {ass.students.length === 0 ? "-" : ass.students.map(student => student.profileName).join(", ")}
                 </Typography>
             </Grid>
         </>

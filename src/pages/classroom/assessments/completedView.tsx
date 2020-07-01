@@ -35,24 +35,16 @@ export default function AssessmentsCompletedView() {
     const [rows, setRows] = useState<TableRow[]>([]);
     const [pageSize, setPageSize] = useState<number>(5);
 
-    async function fetchAssessments() {
+    async function fetcCompletedhAssessments() {
         const payload = await api.getAssessments();
-        return payload.assessments.sort((a, b) => b.createdDate - a.createdDate).filter(ass => ass.published);
+        return payload.assessments.sort((a, b) => b.createdDate - a.createdDate).filter(ass => ass.state === 3);
     }
-
-    useEffect(() => {
-        if (isMobile) {
-            setColumns(TABLE_COLUMN_MOBILE); setPageSize(3);
-        } else {
-            setColumns(TABLE_COLUMN); setPageSize(5);
-        }
-    }, [isMobile])
 
     useEffect(() => {
         let prepared = true;
 
         (async () => {
-            const assessments = await fetchAssessments();
+            const assessments = await fetchCompletedAssessments();
 
             let tmpRows: TableRow[] = [];
             for (const ass of assessments) {
@@ -67,7 +59,15 @@ export default function AssessmentsCompletedView() {
         })();
 
         return () => { prepared = false; };
-    }, [assessments])
+    }, [])
+
+    useEffect(() => {
+        if (isMobile) {
+            setColumns(TABLE_COLUMN_MOBILE); setPageSize(3);
+        } else {
+            setColumns(TABLE_COLUMN); setPageSize(5);
+        }
+    }, [isMobile])
 
     return (
         <Grid container>

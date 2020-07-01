@@ -61,14 +61,6 @@ export default function AssessmentsLibraryView() {
     }
 
     useEffect(() => {
-        if (isMobile) {
-            setColumns(TABLE_COLUMN_MOBILE);
-        } else {
-            setColumns(TABLE_COLUMN);
-        }
-    }, [isMobile])
-
-    useEffect(() => {
         let prepared = true;
 
         (async () => {
@@ -89,7 +81,15 @@ export default function AssessmentsLibraryView() {
         })();
 
         return () => { prepared = false; };
-    }, [LOs])
+    }, [])
+
+    useEffect(() => {
+        if (isMobile) {
+            setColumns(TABLE_COLUMN_MOBILE);
+        } else {
+            setColumns(TABLE_COLUMN);
+        }
+    }, [isMobile])
 
     return (
         <Grid container>

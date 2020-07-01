@@ -5,6 +5,9 @@ const messages: Record<string, string> = {
 
     error_emptyEmail: "이메일 주소 혹은 휴대폰 번호를 입력해 주세요.",
     error_emptyPassword: "비밀번호를 입력해 주세요.",
+    error_emptyTitle: "Enter a title",
+    error_emptyDevSkill: "Select a development skill",
+    error_emptySkillCat: "Select a skill category",
 
     form_emailLabel: "이메일 주소 / 휴대폰 번호",
     form_passwordLabel: "비밀번호",
