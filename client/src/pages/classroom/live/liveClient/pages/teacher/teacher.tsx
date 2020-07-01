@@ -33,7 +33,7 @@ const useStyles = makeStyles(() =>
         },
         iframeContainer: {
             overflow: "hidden",
-            paddingTop: "56.25%",
+            // paddingTop: "56.25%",
             position: "relative",
             border: "1px solid gray",
             borderRadius: "12px 12px 0 0",
@@ -193,25 +193,20 @@ export function Teacher({users, content}: TeacherProps): JSX.Element {
                     </Grid>
                 </Grid>
                 <Grid
-                    id="iframe-container"
-                    className={classes.iframeContainer}
-                    style={{ height, width }}
+                    container item
+                    lg={8} xs={12}
+                    direction="row"
+                    justify="space-around"
+                    alignItems="center"
+                    // id="iframe-container"
+                    // className={classes.iframeContainer}
+                    // style={{ height, width }}
                 >
                     <RecordedIframe
                         contentId={contentId}
                         setStreamId={setStreamId}
-                        maxWidth={maxWidth}
-                        maxHeight={maxHeight}
-                        parentWidth={width}
-                        parentHeight={height}
-                        setParentWidth={setWidth}
-                        setParentHeight={setHeight}
-                        frameProps={{
-                            width: "100%",
-                            style: { top: "0", position: "absolute", left: "0", height: "100%" },
-                        }}
                     />
-                    <Drawer
+                    {/* <Drawer
                         anchor={"bottom"}
                         open={drawerState !== DrawerState.HIDDEN}
                         variant="persistent"
@@ -225,13 +220,6 @@ export function Teacher({users, content}: TeacherProps): JSX.Element {
                         <Grid container className={classes.parentContainerDrawer} spacing={3}>
                             <Grid container justify="flex-end" style={{ borderBottom: "1px solid #eee" }}>
                                 <Grid item>
-                                    {/* <IconButton aria-label="drawer-size" size="small">
-                                <ArrowIcon
-                                    fontSize="inherit"
-                                    style={{ transform: drawerState === DrawerState.FULL ? 'rotate(180deg)' : 'rotate(0deg)' }}
-                                    onClick={() =>  setDrawerState(drawerState === DrawerState.FULL ? DrawerState.HALF : DrawerState.FULL) }
-                                />
-                                </IconButton> */}
                                     <IconButton aria-label="close" size="small" onClick={() => setDrawerState(DrawerState.HIDDEN)}>
                                         <CloseIcon fontSize="inherit" />
                                     </IconButton>
@@ -267,12 +255,12 @@ export function Teacher({users, content}: TeacherProps): JSX.Element {
                                     )
                             }
                         </Grid>
-                    </Drawer>
+                    </Drawer> */}
                 </Grid>
                 <Grid
                     container
                     justify="space-between"
-                    style={{ maxWidth: width, margin: "0 auto", borderLeft: "1px solid gray", borderRight: "1px solid gray", borderBottom: "1px solid gray", borderRadius: "0 0 12px 12px" }}
+                    style={{ maxWidth: width, margin: "0 auto" }}
                 >
                     <Grid item>
                         <ControlButtons setDrawerState={setDrawerState} contentId={contentId} content={content} streamId={streamId} />
@@ -289,8 +277,6 @@ export function Teacher({users, content}: TeacherProps): JSX.Element {
                         </Tooltip>
                     </Grid>
                 </Grid>
-            </Grid>
-            <Grid item style={{width: "400px"}}>
             </Grid>
         </Grid>
     );

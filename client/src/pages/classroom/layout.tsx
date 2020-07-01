@@ -21,12 +21,12 @@ const useStyles = makeStyles((theme: Theme) =>
             flex: 1,
         },
         root: {
-            width: "calc(100% - 2*1.5rem)",
             height: "100%",
             paddingBottom: theme.spacing(4),
             paddingLeft: theme.spacing(5),
             paddingRight: theme.spacing(5),
             paddingTop: theme.spacing(4),
+            width: "calc(100% - 2*1.5rem)",
             [theme.breakpoints.down("sm")]: {
                 padding: theme.spacing(2, 1),
             },
@@ -49,9 +49,11 @@ const useStyles = makeStyles((theme: Theme) =>
 let Layout = (props: any) => {
     const classes = useStyles();
     const store = useStore();
+    let isLandscape = false;
 
-    const { isLandscape } = props;
-    console.log(isLandscape);
+    React.useEffect(() => {
+        isLandscape = props.isLandscape;
+    }, []);
 
     const { isIOS } = useSelector((state: State) => state.account.userAgent);
     const activeComponent = useSelector((state: State) => state.ui.activeComponentHome);
@@ -65,8 +67,6 @@ let Layout = (props: any) => {
     }
 
     const timeout = { enter: 500, exit: 100 };
-
-    store.dispatch({ type: ActionTypes.LIVE_CLASS_TOGGLE, payload: false });
 
     return (
         <Grid

@@ -49,7 +49,6 @@ const useStyles = makeStyles((theme) => createStyles({
 export default function UserSettings() {
     const classes = useStyles();
 
-    const isLive = useSelector((state: State) => state.ui.liveClass);
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
@@ -71,7 +70,7 @@ export default function UserSettings() {
                     aria-haspopup="true"
                     className={classes.profileButton}
                     fullWidth
-                    disabled={isLive}
+                    
                     onClick={handleMenu}
                 >
                     <Grid

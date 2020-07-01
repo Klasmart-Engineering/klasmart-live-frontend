@@ -4,8 +4,9 @@ import Grid from "@material-ui/core/Grid";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useStore } from "react-redux";
 import { Route, Switch } from "react-router-dom";
+import { ActionTypes } from "../../../store/actions";
 import { State } from "../../../store/store";
 import { IUserContext } from "../../../types/objectTypes";
 import LiveCard from "./liveCard";
@@ -39,6 +40,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function LiveLayout() {
     const classes = useStyles();
+    const store = useStore();
 
     const [hasTransitioned, setHasTransitioned] = useState(false);
     const [inFlight, setInFlight] = useState(false);

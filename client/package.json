@@ -78,6 +78,7 @@
     "fabric": "^3.6.3",
     "graphql": "^15.1.0",
     "graphql-request": "^2.0.0",
+    "iframe-resizer-react": "^1.0.4",
     "interpolate-html-plugin": "^3.0.0",
     "logrocket": "^1.0.5",
     "material-table": "^1.63.1",

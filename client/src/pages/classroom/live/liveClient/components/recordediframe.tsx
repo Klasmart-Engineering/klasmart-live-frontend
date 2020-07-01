@@ -1,5 +1,6 @@
 import { useMutation } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
+import IframeResizer from "iframe-resizer-react";
 import React, { Dispatch, SetStateAction, useContext, useEffect, useRef, useState } from "react";
 import { UserContext } from "../app";
 
@@ -14,70 +15,87 @@ export interface Props {
     frameProps?: React.DetailedHTMLProps<React.IframeHTMLAttributes<HTMLIFrameElement>, HTMLIFrameElement>;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     setStreamId?: (streamId: string) => any;
-    parentWidth?: any;
-    parentHeight?: any;
-    maxWidth?: number;
-    maxHeight?: number;
-    setParentWidth?: Dispatch<SetStateAction<any>>;
-    setParentHeight?: Dispatch<SetStateAction<any>>;
 }
 
 export function RecordedIframe(props: Props): JSX.Element {
-    const ref = useRef<HTMLIFrameElement>(null);
+    const ref = useRef<HTMLIFrameElement       >(null);
+    const forwardRef = useRef<HTMLIFrameElement>(null);
     const [key, setKey] = useState(Math.random());
     const {roomId} = useContext(UserContext);
-    const { contentId, frameProps, setStreamId, maxWidth, maxHeight,
-        parentWidth, parentHeight, setParentHeight, setParentWidth } = props;
+    const { contentId, frameProps, setStreamId } = props;
+    const [width, setWidth] = useState<string | number>("100%");
+    const [maxHeight, setMaxHeight] = useState<number>(window.innerHeight * 0.5);
+    const [numRenders, setRenders] = useState(0);
+
+    // console.log(`width: ${width}`);
+    // console.log(`maxHeight: ${maxHeight}`)
+
+    const fitToScreen = (width: number, height: number) => {
+        console.log("RESIZING!!!");
+        const scale = maxHeight / Number(height);
+
+        console.log(`height ${height}, width ${width}`);
+        console.log(`maxHeight ${maxHeight}`);
+        console.log(`scale ${scale}`);
+        console.log(`NUMBER OF RENDERS ${numRenders}`);
+        if (scale < 0.9) {
+            setRenders(numRenders + 1);
+            setWidth(Number(width) * scale);
+            setKey(Math.random());
+        }
+    };
 
     useEffect(() => {
-        if (!ref.current) { return; }
-        ref.current.onload = () => {
-            if (setParentWidth && setParentHeight) {
-                setParentHeight("100%");
-                setParentWidth("100%");
-            }
-            if (!ref.current || !ref.current.contentDocument) { return; }
-            const doc = ref.current.contentDocument;
-            // scaling and resize
-            const elementHeight = doc.querySelectorAll(".h5p-container")[0].clientHeight;
-            const elementWidth = doc.querySelectorAll(".h5p-container")[0].clientWidth;
-            let scale = 1;
-            if (parentHeight && parentWidth && maxWidth && maxHeight
-                && !isNaN(parentWidth) && !isNaN(parentWidth)) {
-                scale = parentHeight / elementHeight;
-                if (setParentWidth && setParentHeight) {
-                    const newParentHeight = elementHeight * scale;
-                    const newParentWidth = elementWidth * scale;
-                    setParentHeight(newParentHeight > maxHeight ? maxHeight : newParentHeight + 64);
-                    setParentWidth(newParentWidth > maxWidth ? maxWidth : newParentWidth);
-                    setKey(Math.random());
-                }
-            }
-        };
-    }, [ref.current]);
+        setWidth("100%");
+        setRenders(0);
+    }, [contentId]);
 
     useEffect(() => {
-        if (!ref.current || !ref.current.contentDocument) { return; }
-        const iframe = ref.current;
+        // window.document.getElementById("iframe-container")
+        // console.log(ref)
+        // if (!ref.current || !ref.current.contentDocument) { return }
+        // const iframe = ref.current;
+
+        const innerRef = window.document.getElementById("recordedIframe-container") as HTMLIFrameElement;
+        if (!innerRef) { return; }
+        innerRef.addEventListener("load", inject);
+
         function inject() {
             console.log("inject");
-            if (!ref.current || !ref.current.contentDocument) { return; }
-            const doc = ref.current.contentDocument;
+            if (!innerRef || !innerRef.contentDocument) { return; }
+            const doc = innerRef.contentDocument;
+            const h5pContent = doc.body.getElementsByClassName("h5p-content")[0];
+            h5pContent.setAttribute("data-iframe-height", "");
+
             const script = doc.createElement("script");
             script.setAttribute("type", "text/javascript");
             const matches = window.location.pathname.match(/^(.*\/+)([^/]*)$/);
             const prefix = matches && matches.length >= 2 ? matches[1] : "";
             script.setAttribute("src", `${prefix}record.js`);
             doc.head.appendChild(script);
+
+            const script2 = doc.createElement("script");
+            script2.setAttribute("type", "text/javascript");
+            script2.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/iframe-resizer/3.5.8/iframeResizer.contentWindow.min.js");
+            doc.head.appendChild(script2);
+
+            const script3 = doc.createElement("script");
+            script3.setAttribute("type", "text/javascript");
+            script3.setAttribute("src", "https://h5p.org/sites/all/modules/h5p/library/js/h5p-resizer.js");
+            doc.head.appendChild(script3);
         }
-        iframe.addEventListener("load", inject);
-        return () => iframe.removeEventListener("load", inject);
-    }, [key]);
+        // window.document.addEventListener('load', inject)
+        innerRef.addEventListener("load", inject);
+        return () => innerRef.removeEventListener("load", inject);
+    }, [ref.current]);
 
     const [sendStreamId] = useMutation(SET_STREAMID);
     useEffect(() => {
-        if (!ref.current || !ref.current.contentWindow) { return; }
+        console.log("sending message");
+        // if (!ref.current || !ref.current.contentWindow) { return }
         function onMessage({data}: MessageEvent) {
+            console.log("onMessage: ");
+            console.log(data);
             if (data && data.streamId) {
                 if (setStreamId) { setStreamId(data.streamId); }
                 sendStreamId({variables: {
@@ -89,7 +107,26 @@ export function RecordedIframe(props: Props): JSX.Element {
         }
         window.addEventListener("message", onMessage);
         return () => window.removeEventListener("message", onMessage);
-    }, [ref.current, ref.current && ref.current.contentWindow]);
+    }, [ref.current]);
 
-    return <iframe key={key} ref={ref} src={contentId} {...frameProps}/>;
+    return (
+        <IframeResizer
+            id="recordedIframe-container"
+            // ref={forwardRef}
+            forwardRef={ref}
+            src={contentId}
+            heightCalculationMethod="taggedElement"
+            onResized={(e) => {
+                console.log(e.height);
+                console.log(e.width);
+                setWidth(e.width);
+                if (e.height > maxHeight && numRenders < 1) {
+                    fitToScreen(e.width, e.height);
+                }
+            }}
+            // log
+            key={key}
+            style={{ width, border: "1px solid gray" }}
+        />
+    );
 }

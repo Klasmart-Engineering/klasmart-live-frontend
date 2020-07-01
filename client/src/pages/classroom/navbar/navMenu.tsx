@@ -96,7 +96,6 @@ export default function NavMenu() {
     const theme = useTheme();
     const [open, setOpen] = useState(false);
 
-    const isLive = useSelector((state: State) => state.ui.liveClass);
 
     const MENU_ITEMS: MenuItem[] = [
         {
@@ -182,7 +181,7 @@ export default function NavMenu() {
                 onClick={handleClickOpen}
                 color="inherit"
                 aria-label="menu"
-                disabled={isLive}
+                
             >
                 <AppsIcon />
             </IconButton>

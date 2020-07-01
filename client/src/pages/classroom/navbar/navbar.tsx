@@ -73,7 +73,6 @@ export default function NavBar() {
     const history = useHistory();
     const store = useStore();
 
-    const isLive = useSelector((state: State) => state.ui.liveClass);
     const activeComponent = useSelector((state: State) => state.ui.activeComponentHome);
     const setActiveComponent = (value: string) => {
         store.dispatch({ type: ActionTypes.ACTIVE_COMPONENT_HOME, payload: value });
@@ -153,7 +152,7 @@ export default function NavBar() {
                                             setActiveComponent(value);
                                         }}
                                         isActive={activeComponent === value}
-                                        disabled={isLive}
+                                        
                                         style={{ minHeight }}
                                     >
                                         <FormattedMessage id={`navMenu_${value}Label`} />
@@ -174,7 +173,7 @@ export default function NavBar() {
                                     <IconButton
                                         edge="start"
                                         onClick={handleClickOpen}
-                                        disabled={isLive}
+                                        
                                         color="inherit"
                                         aria-label="settings of current user"
                                         aria-controls="menu-appbar"
