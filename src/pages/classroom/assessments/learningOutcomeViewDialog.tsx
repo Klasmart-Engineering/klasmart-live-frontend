@@ -1,3 +1,5 @@
+import SpeedDial from '@material-ui/lab/SpeedDial';
+import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
 import Hidden from "@material-ui/core/Hidden";
 import Dialog from "@material-ui/core/Dialog";
 import Grid from "@material-ui/core/Grid";
@@ -9,8 +11,10 @@ import { createStyles, makeStyles, Theme, useTheme } from "@material-ui/core/sty
 import { TransitionProps } from "@material-ui/core/transitions";
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import EditIcon from "@material-ui/icons/Edit";
+import BlockIcon from "@material-ui/icons/Block";
 import SaveIcon from "@material-ui/icons/Save";
 import ErrorIcon from "@material-ui/icons/Error";
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 import React, { useState, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 
@@ -38,10 +42,21 @@ const useStyles = makeStyles((theme: Theme) =>
         appBar: {
             position: "relative",
         },
+        cancelButton: {
+            backgroundColor: "#ff6961",
+            color: "white",
+        },
         fab: {
-            bottom: theme.spacing(2),
             position: "fixed",
+            bottom: theme.spacing(2),
             right: theme.spacing(2),
+        },
+        speedDial: {
+            position: 'fixed',
+            '&.MuiSpeedDial-directionUp, &.MuiSpeedDial-directionLeft': {
+                bottom: theme.spacing(2),
+                right: theme.spacing(1.5),
+            },
         },
         menuContainer: {
             padding: theme.spacing(4, 5),
@@ -130,6 +145,9 @@ export default function LearningOutcomeViewDialog(props: Props) {
     const [devSkillError, setDevSkillError] = useState<JSX.Element | null>(null);
     const [skillCatError, setSkillCatError] = useState<JSX.Element | null>(null);
     const [generalError, setGeneralError] = useState<JSX.Element | null>(null);
+
+    const [speedDialOpen, setSpeedDialOpen] = useState(false);
+    const [speedDialHidden, setSpeedDialHidden] = useState(false);
 
     useEffect(() => {
         let prepared = true;
@@ -275,6 +293,20 @@ export default function LearningOutcomeViewDialog(props: Props) {
         }
     }
 
+
+    const EDITMODE_ACTIONS = [
+        { icon: <BlockIcon style={{ margin: 0 }} />, name: 'Cancel', action: () => handleOnClickCancel() },
+        { icon: <SaveIcon style={{ margin: 0 }} />, name: 'Save', action: () => handleOnClickSave() },
+    ]
+    const handleOnClickCancel = () => {
+        setEditMode(false);
+    }
+    const handleSpeedDialClose = () => {
+        setSpeedDialOpen(false);
+    };
+    const handleSpeedDialOpen = () => {
+        setSpeedDialOpen(true);
+    };
     return (
         <>
             <Dialog
@@ -288,16 +320,24 @@ export default function LearningOutcomeViewDialog(props: Props) {
                 <DialogAppBar
                     toolbarBtn={
                         <Hidden smDown>
-                            <Grid item>
-                                {editMode ?
+                            {editMode ? <>
+                                <Grid item>
+                                    <StyledFAB className={classes.cancelButton} size="small" onClick={handleOnClickCancel}>
+                                        Cancel <BlockIcon style={{ paddingLeft: theme.spacing(1) }} />
+                                    </StyledFAB>
+                                </Grid>
+                                <Grid item style={{ marginLeft: 10 }}>
                                     <StyledFAB size="small" onClick={handleOnClickSave}>
                                         Save <SaveIcon style={{ paddingLeft: theme.spacing(1) }} />
-                                    </StyledFAB> :
+                                    </StyledFAB>
+                                </Grid>
+                            </> :
+                                <Grid item>
                                     <StyledFAB disabled={publish} size="small" onClick={handleOnClickEdit}>
                                         Edit <EditIcon style={{ paddingLeft: theme.spacing(1) }} />
                                     </StyledFAB>
-                                }
-                            </Grid>
+                                </Grid>
+                            }
                         </Hidden>
                     }
                     handleClose={onClose}
@@ -407,9 +447,26 @@ export default function LearningOutcomeViewDialog(props: Props) {
                 </Grid>
                 <Hidden mdUp>
                     {editMode ?
-                        <StyledFAB className={classes.fab} size="small" onClick={handleOnClickSave}>
-                            <SaveIcon />
-                        </StyledFAB> :
+                        <SpeedDial
+                            ariaLabel="SpeedDial-edit"
+                            className={classes.speedDial}
+                            hidden={speedDialHidden}
+                            icon={<MoreVertIcon />}
+                            onClose={handleSpeedDialClose}
+                            onOpen={handleSpeedDialOpen}
+                            open={speedDialOpen}
+                            direction="up"
+                            FabProps={{ size: "small" }}
+                        >
+                            {EDITMODE_ACTIONS.map((action) => (
+                                <SpeedDialAction
+                                    key={action.name}
+                                    icon={action.icon}
+                                    tooltipTitle={action.name}
+                                    onClick={action.action}
+                                />
+                            ))}
+                        </SpeedDial> :
                         <StyledFAB className={classes.fab} disabled={publish} size="small" onClick={handleOnClickEdit}>
                             <EditIcon />
                         </StyledFAB>

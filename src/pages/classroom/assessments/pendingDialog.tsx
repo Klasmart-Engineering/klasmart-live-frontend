@@ -1,3 +1,5 @@
+import SpeedDial from '@material-ui/lab/SpeedDial';
+import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
 import Hidden from "@material-ui/core/Hidden";
 import Typography from "@material-ui/core/Typography";
 import Dialog from "@material-ui/core/Dialog";
@@ -16,7 +18,9 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { TransitionProps } from "@material-ui/core/transitions";
 import ChildIcon from '@material-ui/icons/ChildCare';
 import BlockIcon from '@material-ui/icons/Block';
+import SaveIcon from "@material-ui/icons/Save";
 import CompleteIcon from '@material-ui/icons/Done';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import React, { useState, useEffect } from "react";
@@ -57,12 +61,12 @@ const useStyles = makeStyles((theme: Theme) =>
             position: "fixed",
             right: theme.spacing(2),
         },
-        leftFab: {
-            backgroundColor: "#ff6961",
-            color: "white",
-            bottom: theme.spacing(2),
-            position: "fixed",
-            left: theme.spacing(2),
+        speedDial: {
+            position: 'fixed',
+            '&.MuiSpeedDial-directionUp, &.MuiSpeedDial-directionLeft': {
+                bottom: theme.spacing(2),
+                right: theme.spacing(1.5),
+            },
         },
         menuContainer: {
             padding: theme.spacing(4, 5),
@@ -106,6 +110,8 @@ export default function CompletedViewDialog(props: Props) {
     const [info, setInfo] = useState<AssessmentResponse>();
     const [awardMode, setAwardMode] = useState(false);
     const [inFlight, setInFlight] = useState(false);
+    const [speedDialOpen, setSpeedDialOpen] = useState(false);
+    const [speedDialHidden, setSpeedDialHidden] = useState(false);
 
     useEffect(() => {
         let prepared = true;
@@ -119,38 +125,13 @@ export default function CompletedViewDialog(props: Props) {
         return () => { prepared = false; };
     }, [open])
 
-    const handleOnClickBack = () => {
+    const handleOnClickCancel = () => {
         setAwardMode(false);
     }
     const handleOnClickAward = () => {
         setAwardMode(true);
     }
-    async function handleOnClickComplete() {
-        if (inFlight || !info) { return; }
-        try {
-            setInFlight(true);
 
-            const assInfo: UpdateAssessmentRequest = {
-                students: checkedStudents
-            }
-            await api.updateAssessment(info.assId, assInfo);
-
-            // TODO: Need to Add CompleteAssessment
-            // const lpInfo: UpdateLessonPlanRequest = {
-            //     learningOutcomes: checkedLOs
-            // }
-            // await api.updateLessonPlan(info.lessonPlanId, lpInfo);
-
-            setCheckedStudents([]);
-            setCheckedLOs([]);
-            location.reload();
-        } catch (e) {
-            console.error(e);
-            onClose();
-        } finally {
-            setInFlight(false);
-        }
-    }
     // When awardMode === true
     async function fetchLOs() {
         const payload = await api.getLearningOutcomes();
@@ -214,6 +195,60 @@ export default function CompletedViewDialog(props: Props) {
         setCheckedLOs(newChecked);
     }
 
+    const AWARDMODE_ACTIONS = [
+        { icon: <BlockIcon style={{ margin: 0 }} />, name: 'Cancel', action: () => handleOnClickCancel() },
+        { icon: <SaveIcon style={{ margin: 0 }} />, name: 'Save', action: () => handleOnClickSave() },
+        { icon: <CompleteIcon style={{ margin: 0 }} />, name: 'Complete', action: () => handleOnClickComplete() },
+    ]
+    const handleSpeedDialClose = () => {
+        setSpeedDialOpen(false);
+    };
+    const handleSpeedDialOpen = () => {
+        setSpeedDialOpen(true);
+    };
+
+    async function handleOnClickSave() {
+        if (inFlight || !info) { return; }
+        try {
+            setInFlight(true);
+
+            const assInfo: UpdateAssessmentRequest = {
+                students: checkedStudents
+            }
+            await api.updateAssessment(info.assId, assInfo);
+
+            setCheckedStudents([]);
+            setCheckedLOs([]);
+            location.reload();
+        } catch (e) {
+            console.error(e);
+            onClose();
+        } finally {
+            setInFlight(false);
+        }
+    }
+
+    async function handleOnClickComplete() {
+        if (inFlight || !info) { return; }
+        try {
+            setInFlight(true);
+
+            // TODO: Need to Add CompleteAssessment
+            // const assInfo: CompleteAssessmentRequest = {
+            //     students: checkedStudents
+            // }
+            // await api.completeAssessment(info.lessonPlanId, assInfo);
+
+            setCheckedStudents([]);
+            setCheckedLOs([]);
+            location.reload();
+        } catch (e) {
+            console.error(e);
+            onClose();
+        } finally {
+            setInFlight(false);
+        }
+    }
     return (
         <Dialog
             aria-labelledby="nav-menu-title"
@@ -228,8 +263,17 @@ export default function CompletedViewDialog(props: Props) {
                     <Hidden smDown>
                         {awardMode ? <>
                             <Grid item>
-                                <StyledFAB className={classes.cancelButton} size="small" onClick={handleOnClickBack}>
+                                <StyledFAB className={classes.cancelButton} size="small" onClick={handleOnClickCancel}>
                                     Cancel <BlockIcon style={{ paddingLeft: theme.spacing(1) }} />
+                                </StyledFAB>
+                            </Grid>
+                            <Grid item style={{ marginLeft: 10 }}>
+                                <StyledFAB
+                                    disabled={checkedStudents.length === 0 || checkedLOs.length === 0}
+                                    size="small"
+                                    onClick={handleOnClickSave}
+                                >
+                                    Save <SaveIcon style={{ paddingLeft: theme.spacing(1) }} />
                                 </StyledFAB>
                             </Grid>
                             <Grid item style={{ marginLeft: 10 }}>
@@ -310,19 +354,27 @@ export default function CompletedViewDialog(props: Props) {
                 }
             </Grid>
             <Hidden mdUp>
-                {awardMode ? <>
-                    <StyledFAB className={classes.leftFab} size="small" onClick={handleOnClickBack}>
-                        <BlockIcon />
-                    </StyledFAB>
-                    <StyledFAB
-                        disabled={checkedStudents.length === 0 || checkedLOs.length === 0}
-                        className={classes.fab}
-                        size="small"
-                        onClick={handleOnClickComplete}
+                {awardMode ?
+                    <SpeedDial
+                        ariaLabel="SpeedDial-edit"
+                        className={classes.speedDial}
+                        hidden={speedDialHidden}
+                        icon={<MoreVertIcon />}
+                        onClose={handleSpeedDialClose}
+                        onOpen={handleSpeedDialOpen}
+                        open={speedDialOpen}
+                        direction="up"
+                        FabProps={{ size: "small" }}
                     >
-                        <CompleteIcon />
-                    </StyledFAB>
-                </> :
+                        {AWARDMODE_ACTIONS.map((action) => (
+                            <SpeedDialAction
+                                key={action.name}
+                                icon={action.icon}
+                                tooltipTitle={action.name}
+                                onClick={action.action}
+                            />
+                        ))}
+                    </SpeedDial> :
                     <StyledFAB className={classes.fab} size="small" onClick={handleOnClickAward}>
                         <ChildIcon />
                     </StyledFAB>

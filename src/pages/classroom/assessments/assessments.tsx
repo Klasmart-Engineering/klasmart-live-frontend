@@ -86,7 +86,7 @@ const StyledMenu = withStyles({})((props: MenuProps) => (
 export default function AssessmentsLayout() {
     const classes = useStyles();
 
-    const [activeMenu, setActiveMenu] = useState<AssessmentsMenu>(AssessmentsMenu.PENDING);
+    const [activeMenu, setActiveMenu] = useState<AssessmentsMenu>(AssessmentsMenu.LIBRARY);
     const [inFlight, setInFlight] = useState(false);
     const [menuElement, setMenuElement] = useState<null | HTMLElement>(null);
 
