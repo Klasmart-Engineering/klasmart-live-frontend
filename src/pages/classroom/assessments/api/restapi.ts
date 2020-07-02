@@ -316,6 +316,8 @@ export class LessonMaterialResponse extends BaseInfo {
     lessonMaterialId: string;
     type: number;
     name: string;
+    externalId?: string;
+    externalType?: number;
     devSkillId: string;
     skillCatId: string;
     publicRange: number;
@@ -326,6 +328,8 @@ export class LessonMaterialResponse extends BaseInfo {
 
 export class CreateLessonMaterialRequest extends BaseCreate {
     type: number;
+    externalId?: string;
+    externalType?: number;
     name: string;
     devSkillId: string;
     skillCatId: string;
@@ -341,6 +345,8 @@ export class CreateLessonMaterialResponse {
 
 export class UpdateLessonMaterialRequest extends BaseUpdate {
     type?: number;
+    externalId?: string;
+    externalType?: number;
     name?: string;
     devSkillId?: string;
     skillCatId?: string;
@@ -367,6 +373,8 @@ export class LessonPlanListResponse {
 export class LessonPlanResponse extends BaseInfo {
     lessonPlanId: string;
     name: string;
+    externalId?: string;
+    externalType?: number;
     devSkillId: string;
     skillCatId: string;
     publicRange: number;
@@ -385,6 +393,8 @@ export class LessonMaterialLessonPlanResponse {
 
 export class CreateLessonPlanRequest extends BaseCreate {
     name: string;
+    externalId?: string;
+    externalType?: number;
     devSkillId: string;
     skillCatId: string;
     publicRange: number;
@@ -406,6 +416,8 @@ export class CreateLessonPlanResponse {
 }
 
 export class UpdateLessonPlanRequest extends BaseUpdate {
+    externalId?: string;
+    externalType?: number;
     name?: string;
     devSkillId?: string;
     skillCatId?: string;
