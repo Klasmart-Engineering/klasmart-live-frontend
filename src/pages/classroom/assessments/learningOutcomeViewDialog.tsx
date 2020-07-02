@@ -299,6 +299,7 @@ export default function LearningOutcomeViewDialog(props: Props) {
         { icon: <SaveIcon style={{ margin: 0 }} />, name: 'Save', action: () => handleOnClickSave() },
     ]
     const handleOnClickCancel = () => {
+        setPublish(false);
         setEditMode(false);
     }
     const handleSpeedDialClose = () => {
@@ -333,7 +334,7 @@ export default function LearningOutcomeViewDialog(props: Props) {
                                 </Grid>
                             </> :
                                 <Grid item>
-                                    <StyledFAB disabled={publish} size="small" onClick={handleOnClickEdit}>
+                                    <StyledFAB disabled={info && info.published} size="small" onClick={handleOnClickEdit}>
                                         Edit <EditIcon style={{ paddingLeft: theme.spacing(1) }} />
                                     </StyledFAB>
                                 </Grid>
@@ -467,7 +468,7 @@ export default function LearningOutcomeViewDialog(props: Props) {
                                 />
                             ))}
                         </SpeedDial> :
-                        <StyledFAB className={classes.fab} disabled={publish} size="small" onClick={handleOnClickEdit}>
+                        <StyledFAB className={classes.fab} disabled={info && info.published} size="small" onClick={handleOnClickEdit}>
                             <EditIcon />
                         </StyledFAB>
                     }
