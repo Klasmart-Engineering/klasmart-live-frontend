@@ -575,9 +575,15 @@ export class CreateAssessmentResponse {
 
 export class UpdateAssessmentRequest extends BaseUpdate {
     sessionId?: string;
+    awardedStudents?: Array<UpdateAssessmentAwardedStudentRequest>;
     students?: Array<UpdateAssessmentStudentRequest>;
     publish?: boolean;
     state?: number;
+}
+
+export class UpdateAssessmentAwardedStudentRequest {
+    profileId: string;
+    loId: number;
 }
 
 export class UpdateAssessmentStudentRequest {
