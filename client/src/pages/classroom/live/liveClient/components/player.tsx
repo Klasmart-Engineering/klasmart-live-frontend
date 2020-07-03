@@ -12,7 +12,7 @@ const SUB_EVENTS = gql`
             event
         }
     }
-    `;
+`;
 
 export interface Props {
     streamId: string;
@@ -28,9 +28,6 @@ export interface Props {
 export function Player({ streamId, frameProps, parentWidth, parentHeight, setParentWidth, setParentHeight }: Props): JSX.Element {
     const ref = useRef<HTMLIFrameElement>(null);
     const [{ width, height }, setWidthHeight] = useState({ width: "0", height: "0" });
-
-    console.log(parentWidth);
-    console.log(parentHeight);
 
     // Buffer events until we have a page ready to render them
     const {current: bufferedEvents} = useRef<string[]>([]);
@@ -67,13 +64,13 @@ export function Player({ streamId, frameProps, parentWidth, parentHeight, setPar
             setWidthHeight({ width: data.width, height: data.height});
             if (setParentWidth && setParentHeight) {
                 setParentWidth(data.width);
-                setParentHeight(data.height);
+                // setParentHeight(data.height)
             }
         });
     }, [ref.current, ref.current && ref.current.contentWindow]);
 
     if (loading) {return <CircularProgress />; }
-    if (error) {return <Typography><FormattedMessage id="live_failedToConnect" />: {JSON.stringify(error)}</Typography>; }
+    if (error) {return <Typography><FormattedMessage id="failed_to_connect" />: {JSON.stringify(error)}</Typography>; }
     return <iframe
         ref={ref}
         style={{
@@ -84,8 +81,6 @@ export function Player({ streamId, frameProps, parentWidth, parentHeight, setPar
         src={"player.html"}
         width={parentWidth && parentHeight !== 0 ? parentWidth : width}
         height={parentHeight && parentHeight !== 0 ? parentHeight : height}
-        // width={width}
-        // height={height}
         {...frameProps}
     />;
 }

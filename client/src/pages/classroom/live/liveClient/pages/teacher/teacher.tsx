@@ -1,128 +1,102 @@
+import { Button, Hidden, Theme} from "@material-ui/core";
+import Divider from "@material-ui/core/Divider";
 import Drawer from "@material-ui/core/Drawer";
 import Grid from "@material-ui/core/Grid";
-import IconButton from "@material-ui/core/IconButton";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
-import TextField from "@material-ui/core/TextField";
-import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
 import CloseIcon from "@material-ui/icons/Close";
-import ArrowIcon from "@material-ui/icons/ExpandLess";
-import Autocomplete from "@material-ui/lab/Autocomplete";
+import MenuOpenIcon from "@material-ui/icons/MenuOpen";
+import clsx from "clsx";
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";
-import { Player } from "../../components/player";
+import { useSelector, useStore } from "react-redux";
+import { ActionTypes } from "../../../../../../store/actions";
+import { State } from "../../../../../../store/store";
+import { LiveSessionData } from "../../../../../../types/objectTypes";
+import { InviteButton } from "../../components/invite";
 import { PreviewPlayer } from "../../components/preview-player";
 import { RecordedIframe } from "../../components/recordediframe";
 import { sessionIdContext } from "../../entry";
-import { Content, Session } from "../../room";
+import { Messages } from "../../messages";
+import { Content, Message, Session } from "../../room";
+import { SendMessage } from "../../sendMessage";
+import { MyCamera } from "../../webRTCState";
 import { ControlButtons } from "./controlButtons";
 
-const activityList = [
-    { title: "Introduction: Snow Leopards", link: "/h5p/play/5ed99fe36aad833ac89a4803" },
-    { title: "Matching", link: "/h5p/play/5ecf4e4b611e18398f7380ef" },
-    { title: "Sticker Activity", link: "/h5p/play/5ed0b64a611e18398f7380fb" },
-    { title: "Flashcards", link: "/h5p/play/5ed05dd1611e18398f7380f4" },
-];
+const drawerWidth = 340;
 
-const useStyles = makeStyles(() =>
+const useStyles = makeStyles((theme: Theme) =>
     createStyles({
-        parentContainer: {
+        root: {
+            display: "flex",
             height: "100%",
-            width: "100%",
-            // margin: "0 auto",
+        },
+        title: {
+            flexGrow: 1,
+        },
+        hide: {
+            display: "none",
+        },
+        drawer: {
+            flexShrink: 0,
+            width: drawerWidth,
+        },
+        drawerPaper: {
+            overflowX: "hidden",
+            width: drawerWidth,
+        },
+        content: {
+            flexGrow: 1,
+            marginRight: -drawerWidth,
+            padding: theme.spacing(2),
+            transition: theme.transitions.create("margin", {
+                duration: theme.transitions.duration.leavingScreen,
+                easing: theme.transitions.easing.sharp,
+            }),
+        },
+        contentShift: {
+            marginRight: 0,
+            transition: theme.transitions.create("margin", {
+                duration: theme.transitions.duration.enteringScreen,
+                easing: theme.transitions.easing.easeOut,
+            }),
         },
         iframeContainer: {
             overflow: "hidden",
+            position: "relative",
             // paddingTop: "56.25%",
-            position: "relative",
-            border: "1px solid gray",
+            margin: "0 auto",
             borderRadius: "12px 12px 0 0",
-            margin: "0 auto",
-        },
-        iframe: {
-            border: "none",
-            height: "100%",
-            left: 0,
-            position: "absolute",
-            top: 0,
-            width: "100%",
-        },
-        parentContainerDrawer: {
-            width: "100%",
-            margin: "0 auto",
-        },
-        toolbarDrawer: {
-            borderBottom: "1px solid #eee",
-            width: "100%",
-            margin: "0 auto",
-        },
-        iframeContainerDrawer: {
-            borderRadius: 5,
-            overflow: "hidden",
-            paddingTop: "56.25%",
-            position: "relative",
-            width: "100%",
-            maxHeight: 200,
-            align: "center",
-            textAlign: "center",
-            float: "left",
-        },
-        iframeDrawer: {
-            border: "none",
-            height: "100%",
-            left: 0,
-            position: "absolute",
-            top: 0,
-            width: "100%",
-            margin: "0 auto",
-        },
-        drawerCloseBtn: {
-            float: "right",
-        },
-        zoomInBtn: {
-            position: "absolute",
-            bottom: 0,
-            right: 0,
-            zIndex: 10,
-        },
-        toggleSelected: {
-            color: "white !important",
-            backgroundColor: "#3f51b5 !important",
-        },
-        gridList: {
-            flexWrap: "nowrap",
-            transform: "translateZ(0)",
-        },
-        txtfield: {
-            "& fieldset": {
-                borderRadius: 12,
-            },
-            "borderColor": "#1896ea",
         },
     }),
 );
 
-interface TeacherProps {
-    users: Map<string, Session>;
+interface Props {
     content: Content;
+    users: Map<string, Session>;
+    messages: Map<string, Message>;
 }
 
-export enum DrawerState {
-    HIDDEN = 0,
-    HALF = 1,
-    FULL = 2,
-}
-
-export function Teacher({users, content}: TeacherProps): JSX.Element {
+export function Teacher(props: Props): JSX.Element {
     const classes = useStyles();
+    const store = useStore();
+    const { content, users, messages } = props;
+
     const sessionId = useContext(sessionIdContext);
+    const [open, setOpen] = useState<boolean>(true);
     const [streamId, setStreamId] = useState<string>();
-    const [drawerState, setDrawerState] = useState<DrawerState>(DrawerState.HIDDEN);
-    const [zoominTarget, setZoominTarget] = useState<string>();
     const [width, setWidth] = useState<string | number>("100%");
     const [height, setHeight] = useState<string | number>("100%");
     const [maxWidth, setMaxWidth] = useState<number>(0);
     const [maxHeight, setMaxHeight] = useState<number>(0);
+
+    const liveData = useSelector((state: State) => state.ui.activeComponentHome);
+    const setFinishedLiveData = (value: LiveSessionData) => {
+        store.dispatch({ type: ActionTypes.FINISH_LIVE_DATA, payload: value });
+    };
+    const toggleLive = () => {
+        store.dispatch({ type: ActionTypes.LIVE_CLASS_TOGGLE, payload: false });
+    };
 
     const memos = useMemo(() => {
         const url = new URL(window.location.href);
@@ -133,10 +107,17 @@ export function Teacher({users, content}: TeacherProps): JSX.Element {
     }, []);
 
     const [contentId, setContentId] = useState(memos.activity);
-    const [value, setValue] = useState(activityList[0].title);
+    // console.log(`contentId: ${contentId}`)
 
-    console.log(`contentId: ${contentId}`);
-    console.log(`value: ${value}`);
+    useEffect(() => {
+        function test(e: MessageEvent) {
+            if (!e.data || !e.data.url) { return; }
+            setContentId(e.data.url);
+        }
+
+        window.addEventListener("message", test);
+        return () => window.removeEventListener("message", test);
+    }, []);
 
     useEffect(() => {
         const containerRef = window.document.getElementById("iframe-container");
@@ -146,138 +127,144 @@ export function Teacher({users, content}: TeacherProps): JSX.Element {
             setMaxHeight(containerRef.getBoundingClientRect().height);
             setMaxWidth(containerRef.getBoundingClientRect().width);
         }
-        const onPressESC = (event: any) => {
-            if (event.keyCode === 27) {
-                setZoominTarget(undefined);
-                setDrawerState(DrawerState.HALF);
-            }
-        };
-        window.addEventListener("keydown", onPressESC, false);
-        return () => window.removeEventListener("keydown", onPressESC, false);
     }, []);
 
     return (
-        <Grid container>
-            <Grid className={classes.parentContainer}>
-                <Grid container spacing={3}>
-                    <Grid item xs={12} style={{ margin: "10px 0px 20px 0px" }}>
-                        <Autocomplete
-                            freeSolo
-                            value={contentId}
-                            onChange={(event: any, newValue: string | { title: string; link: string; } | null) => {
-                                if (newValue) {
-                                    console.log(`newValue: ${newValue}`);
-                                    if (typeof newValue === "string") {
-                                        setContentId(activityList[activityList.findIndex((e) => e.title === newValue)].link);
-                                    } else {
-                                        setContentId(newValue.link);
-                                    }
-                                }
-                            }}
-                            inputValue={value}
-                            onInputChange={(event, newInputValue) => {
-                                console.log(`newInputValue: ${newInputValue}`);
-                                setValue(newInputValue);
-                            }}
-                            id="activity select and input"
-                            options={activityList.map((option) => option.title)}
-                            style={{ width: "100%" }}
-                            renderInput={(params) =>
-                                <TextField
-                                    {...params}
-                                    label={<FormattedMessage id="live_selectAnActivity" />}
-                                    className={classes.txtfield}
-                                    variant="outlined" />
-                            }
-                        />
-                    </Grid>
-                </Grid>
+        <div className={classes.root}>
+            <main
+                id="iframe-container"
+                className={
+                    clsx(classes.content, { [classes.contentShift]: open })
+                }
+            >
                 <Grid
-                    container item
-                    lg={8} xs={12}
-                    direction="row"
-                    justify="space-around"
-                    alignItems="center"
-                    // id="iframe-container"
-                    // className={classes.iframeContainer}
-                    // style={{ height, width }}
+                    container
+                    style={{ border: "1px solid gray", borderRadius: 12 }}
                 >
                     <RecordedIframe
                         contentId={contentId}
                         setStreamId={setStreamId}
+                        parentWidth={width}
+                        parentHeight={height}
+                        setParentWidth={setWidth}
+                        setParentHeight={setHeight}
                     />
-                    {/* <Drawer
-                        anchor={"bottom"}
-                        open={drawerState !== DrawerState.HIDDEN}
-                        variant="persistent"
-                        onClose={() => setDrawerState(DrawerState.HIDDEN)}
-                        PaperProps={{ style: { position: "absolute", minHeight: drawerState === DrawerState.FULL ? "50%" : "50%", maxHeight: "50%" } }}
-                        BackdropProps={{ style: { position: "absolute" } }}
-                        ModalProps={{
-                            container: document.getElementById("iframe-container"),
-                            style: { position: "absolute" },
-                        }}>
-                        <Grid container className={classes.parentContainerDrawer} spacing={3}>
-                            <Grid container justify="flex-end" style={{ borderBottom: "1px solid #eee" }}>
-                                <Grid item>
-                                    <IconButton aria-label="close" size="small" onClick={() => setDrawerState(DrawerState.HIDDEN)}>
-                                        <CloseIcon fontSize="inherit" />
-                                    </IconButton>
-                                </Grid>
-                            </Grid>
-                            {
-                                users.size === 0
-                                    ? <Typography>
-                                        <FormattedMessage id="live_waitingForStudents" />
-                                    </Typography>
-                                    : (zoominTarget !== undefined
-                                        ? <Grid className={classes.iframeContainerDrawer}>
-                                            <Player streamId={zoominTarget} frameProps={{ style: { top: "0", position: "absolute", left: "0", height: "100%", transform: "scale(0.8)" } }} />
-                                        </Grid>
-                                        :
-                                        <Grid container direction="row" style={{ height: "100%" }}>
-                                            {
-                                                [...users.entries()].filter(([, s]) => s.id !== sessionId).map(([id, session]) => (
-                                                    <Grid item style={{ height: 200, width: 200 }} key={id}>
-                                                        {session.streamId ?
-                                                            <PreviewPlayer
-                                                                streamId={session.streamId}
-                                                                height={200}
-                                                                width={200}
-                                                            /> : undefined}
-                                                        <Typography align="center">
-                                                            {session.name}
-                                                        </Typography>
-                                                    </Grid>
-                                                ))
-                                            }
-                                        </Grid>
-                                    )
-                            }
-                        </Grid>
-                    </Drawer> */}
-                </Grid>
-                <Grid
-                    container
-                    justify="space-between"
-                    style={{ maxWidth: width, margin: "0 auto" }}
-                >
-                    <Grid item>
-                        <ControlButtons setDrawerState={setDrawerState} contentId={contentId} content={content} streamId={streamId} />
-                    </Grid>
-                    <Grid item style={{ display: drawerState !== DrawerState.HIDDEN ? "none" : "inline-flex" }}>
-                        <Tooltip
-                            title={<FormattedMessage id="live_openPreviewDrawer" />}
-                            placement="left"
-                            aria-label="open"
+                    <Grid item xs={12}>
+                        <Grid
+                            container
+                            justify="space-between"
+                            style={{ width: "100%", margin: "0 auto", borderTop: "1px solid gray" }}
                         >
-                            <IconButton aria-label="drawer-size" size="small" onClick={() => setDrawerState(DrawerState.HALF)}>
-                                <ArrowIcon fontSize="inherit" />
-                            </IconButton>
-                        </Tooltip>
+                            <Grid item>
+                                <ControlButtons
+                                    contentId={contentId}
+                                    streamId={streamId}
+                                />
+                            </Grid>
+                            <Grid item>
+                                <Button
+                                    aria-label="invite"
+                                    size="small"
+                                    style={{
+                                        backgroundColor: "#ff6961",
+                                        color: "white",
+                                        padding: "2px 5px",
+                                        marginRight: 8,
+                                        borderRadius: 12,
+                                        margin: "4px 8px",
+                                    }}
+                                    onClick={() => {
+                                        const data: LiveSessionData = {
+                                            classId: "CalmIsland",
+                                            className: "Pre-production",
+                                            students: [{
+                                                profileId: "student0",
+                                                profileName: "Woody",
+                                                profileImage: "",
+                                            }],
+                                        };
+                                        setFinishedLiveData(data);
+                                        toggleLive();
+                                    }}
+                                >
+                                    <CloseIcon style={{ paddingRight: 5 }} />
+                                    <FormattedMessage id="live_buttonEndClass" />
+                                </Button>
+                                <InviteButton />
+                                <Hidden smDown>
+                                    <Button
+                                        aria-label="open preview drawer"
+                                        onClick={() => setOpen(!open)}
+                                        size="small"
+                                        style={{
+                                            color: "black",
+                                            padding: "2px 5px",
+                                            marginRight: 8,
+                                            borderRadius: 12,
+                                            margin: "2px 8px",
+                                        }}
+                                    >
+                                        <MenuOpenIcon style={{ paddingRight: 5 }} />
+                                        <Hidden mdDown>
+                                            <FormattedMessage id={open ? "live_closePreviewDrawer" : "live_openPreviewDrawer"} />
+                                        </Hidden>
+                                    </Button>
+                                </Hidden>
+                            </Grid>
+                        </Grid>
                     </Grid>
                 </Grid>
-            </Grid>
-        </Grid>
+
+                <SendMessage />
+                <Messages messages={messages} />
+            </main>
+            <Hidden smDown>
+                <Drawer
+                    className={classes.drawer}
+                    variant="persistent"
+                    anchor="right"
+                    open={open}
+                    classes={{
+                        paper: classes.drawerPaper,
+                    }}
+                >
+                    <div style={{ height: 64 }} />
+                    <MyCamera />
+                    <Divider />
+
+                    <Grid item>
+                        { users.size === 0 ?
+                            <Typography>
+                                <FormattedMessage id="waiting_for_students" />
+                            </Typography> :
+                            <Grid container direction="column" style={{ height: "100%", width: drawerWidth - 20, padding: 4 }}>
+                                <Typography variant="caption" align="center" color="textSecondary" gutterBottom>
+                                    Students { content.type === "Activity" ? "+ Interactive View" : "" }
+                                </Typography>
+                                {
+                                    [...users.entries()].filter(([, s]) => s.id !== sessionId).map(([id, session]) => (
+                                        <>
+                                            { content.type === "Activity" ?
+                                                <Grid item style={{ height: drawerWidth - 20, width: drawerWidth - 20, margin: "0 auto" }} key={id}>
+                                                    {
+                                                        session.streamId
+                                                            ? <PreviewPlayer streamId={session.streamId} height={drawerWidth - 20} width={drawerWidth - 20} />
+                                                            : undefined
+                                                    }
+                                                </Grid> : null }
+                                            <Grid item>
+                                                <Typography align="center">
+                                                    {session.name}
+                                                </Typography>
+                                            </Grid>
+                                        </>
+                                    ))
+                                }
+                            </Grid>
+                        }
+                    </Grid>
+                </Drawer>
+            </Hidden>
+        </div>
     );
 }

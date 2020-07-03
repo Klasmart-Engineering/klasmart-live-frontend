@@ -1,6 +1,6 @@
 import { createStyles, Grid, makeStyles, Paper, Slide, Theme, Typography } from "@material-ui/core";
 import React from "react";
-import { FormattedDate, FormattedMessage, FormattedTime } from "react-intl";
+import { FormattedDate, FormattedTime } from "react-intl";
 import { Message } from "./room";
 import { mapGenerator } from "./utils/map";
 
@@ -51,10 +51,7 @@ interface Props { messages: Map<string, Message>; }
 export function Messages({ messages }: Props): JSX.Element {
     const classes = useStyles();
 
-    if (!messages || messages.size === 0) {
-        return <Typography color="textSecondary">
-            <FormattedMessage id="live_noMessagesYet" />
-        </Typography>; }
+    if (!messages || messages.size === 0) { return <Typography style={{ color: "rgb(200,200,200)" }}>No messages yet...</Typography>; }
 
     return <>
         {

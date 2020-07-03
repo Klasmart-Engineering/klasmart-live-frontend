@@ -1,4 +1,3 @@
-import "@babel/polyfill";
 import { Replayer } from "rrweb";
 // eslint-disable-next-line no-unused-vars
 import { eventWithTime } from "rrweb/typings/types";

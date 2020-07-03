@@ -1,7 +1,11 @@
-// cn.ts
+// en.ts
 const messages: Record<string, string> = {
-    component_switchDark: "暗",
-    component_switchLight: "亮",
+    classSettings_classroomSettings: "Classroom Settings",
+
+    chatMessage_today: "Today",
+
+    component_switchDark: "dark",
+    component_switchLight: "light",
 
     error_emptyEmail: "Enter an email or phone number",
     error_emptyPassword: "Enter your password",
@@ -15,17 +19,21 @@ const messages: Record<string, string> = {
     error_emptyActivity: "Select a Activity",
 
     form_emailLabel: "Email or phone",
+    form_nameLabel: "What's your name?",
     form_passwordLabel: "Password",
-    form_nameLabel: "Name",
     button_create: "Create",
 
     live_activityLink: "Activity Link",
-    live_buttonActivity: "Activity",
+    live_buttonActivity: "Student Mode",
+    live_buttonEndClass: "End Class",
+    live_buttonInteractiveLabel: "Interactive Modes",
     live_buttonInviteStudents: "Invite",
+    live_buttonPresent: "Present",
     live_buttonSend: "Send",
     live_buttonStop: "Stop",
     live_buttonStream: "Stream",
     live_classCodeLabel: "Class code",
+    live_closePreviewDrawer: "Close Preview Drawer",
     live_errorUnknownContent: "Error: Unknown content type",
     live_failedToConnect: "Failed to connect",
     live_hello: "Hello, {name}!",
@@ -49,8 +57,8 @@ const messages: Record<string, string> = {
     library_archivedTitle: "Archived Content",
     library_createContentTitle: "Create new Content",
 
-    locale_select: "选择语言",
-    locale_tooltip: "切换语言",
+    locale_select: "Select Language",
+    locale_tooltip: "Change Language",
 
     login_createAccount: "Create an account",
     login_forgotPassword: "Forgot Password?",

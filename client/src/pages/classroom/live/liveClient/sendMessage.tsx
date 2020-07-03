@@ -2,7 +2,6 @@ import { useMutation } from "@apollo/react-hooks";
 import { Button, CircularProgress, Collapse, createStyles, Grid, makeStyles, Paper, TextField, Theme, useTheme } from "@material-ui/core";
 import { gql } from "apollo-boost";
 import React, { useContext, useState } from "react";
-import { FormattedMessage } from "react-intl";
 import { UserContext } from "./app";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -85,7 +84,7 @@ export function SendMessage(): JSX.Element {
                             <TextField
                                 fullWidth
                                 id="live-chat-input"
-                                label={<FormattedMessage id="live_shareSomethingHere" />}
+                                label="Share something here"
                                 variant="filled"
                                 value={message}
                                 onChange={(e) => setMessage(e.target.value)}
@@ -105,7 +104,7 @@ export function SendMessage(): JSX.Element {
                                         color="primary"
                                         onClick={() => send()}
                                     >
-                                        {!loading ? <FormattedMessage id="live_buttonSend" /> : <CircularProgress size={15}/>}
+                                        {!loading ? "Send" : <CircularProgress size={15}/>}
                                     </Button>
                                 </Grid>
                             </Collapse>

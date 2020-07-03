@@ -1,4 +1,4 @@
-
+import "@babel/polyfill";
 import { EventRecorderServiceBuilder } from "./builder/EventRecorderServiceBuilder";
 import { SequencedEvent, SequencedEventData } from "./events/SequencedEvent";
 import { IEventRecorderService } from "./IEventRecorderService";

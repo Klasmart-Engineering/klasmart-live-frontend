@@ -38,6 +38,7 @@ const useStyles = makeStyles((theme: Theme) =>
         safeArea: {
             paddingLeft: "env(safe-area-inset-left)",
             paddingRight: "env(safe-area-inset-right)",
+            zIndex: theme.zIndex.drawer + 1,
         },
         title: {
             flex: 1,
@@ -152,7 +153,7 @@ export default function NavBar() {
                                             setActiveComponent(value);
                                         }}
                                         isActive={activeComponent === value}
-                                        
+
                                         style={{ minHeight }}
                                     >
                                         <FormattedMessage id={`navMenu_${value}Label`} />
@@ -173,7 +174,7 @@ export default function NavBar() {
                                     <IconButton
                                         edge="start"
                                         onClick={handleClickOpen}
-                                        
+
                                         color="inherit"
                                         aria-label="settings of current user"
                                         aria-controls="menu-appbar"

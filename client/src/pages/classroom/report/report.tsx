@@ -90,7 +90,7 @@ function renderChart() {
         })();
 
         return () => { prepared = false; };
-    }, [])
+    }, []);
 
     async function getStudents() {
         if (studentInFlight) { return; }

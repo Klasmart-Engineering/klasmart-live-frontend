@@ -1,5 +1,8 @@
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
+import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
-import { createStyles, makeStyles, Theme, useTheme } from "@material-ui/core/styles";
+import { createStyles, makeStyles, useTheme } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import React, { useMemo, useState } from "react";
 import { v4 as uuid } from "uuid";
@@ -8,9 +11,8 @@ import StyledButton from "../../../../../components/styled/button";
 import StyledTextField from "../../../../../components/styled/textfield";
 import { IUserContext } from "../app";
 import KidsloopLogo from "../assets/img/kidsloop.svg";
-import { FormattedMessage } from "react-intl";
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
     createStyles({
         card: {
             alignItems: "center",
@@ -26,19 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
         pageWrapper: {
             display: "flex",
             flexGrow: 1,
-            height: 500,
-            width: "40%",
-            padding: theme.spacing(4, 5),
-            [theme.breakpoints.down("sm")]: {
-                backgroundPosition: "bottom right",
-                height: `min(${window.innerHeight - 20}px,56vw)`,
-                padding: theme.spacing(2, 2),
-                width: "50%",
-            },
-            [theme.breakpoints.down("xs")]: {
-                height: `min(${window.innerHeight - 20}px,72vw)`,
-                width: "100%",
-            },
+            height: "100vh",
         },
     }),
 );
@@ -60,44 +50,53 @@ export function Join({setUserContext}: Props): JSX.Element {
     return (
         <Grid
             container
-            direction="row"
-            justify="space-between"
+            direction="column"
+            justify="space-around"
             alignItems="center"
             className={ classes.pageWrapper }
         >
-            <Grid item xs={12}>
-                <CenterAlignChildren>
-                    <img alt="KidsLoop" src={KidsloopLogo} height="50px" />
-                    <Typography variant="h6" style={{ paddingLeft: theme.spacing(1) }}>
-                            Live
-                    </Typography>
-                </CenterAlignChildren>
-            </Grid>
-            <Grid item xs={12}>
-                <StyledTextField
-                    required
-                    fullWidth
-                    value={user}
-                    label={<FormattedMessage id="form_nameLabel" />}
-                    onChange={(e) => setUser(e.target.value)}
-                />
-            </Grid>
-            <Grid item xs={12}>
-                <StyledButton
-                    fullWidth
-                    size="large"
-                    onClick={(e) => {
-                        setUserContext({
-                            name: user,
-                            roomId: room ? room : uuid(),
-                            teacher: !room,
-                        });
-                    }}
-                >
-                    { room ? "Join Room" : "Create Room"}
-                </StyledButton>
-            </Grid>
+            <Container maxWidth="xs">
+                <Card>
+                    <CardContent className={classes.card}>
+                        <Grid container direction="row" justify="center" alignItems="center" spacing={4}>
+                            <Grid item xs={12}>
+                                <CenterAlignChildren>
+                                    <img alt="KidsLoop" src={KidsloopLogo} height="50px" />
+                                    <Typography variant="h6" style={{ paddingLeft: theme.spacing(1) }}>
+                                        Live
+                                    </Typography>
+                                </CenterAlignChildren>
+                            </Grid>
+                            <Grid item xs={12} className={classes.formContainer}>
+                                <form onSubmit={(e) => { e.preventDefault(); setUserContext({roomId: room ? room : uuid(), teacher: !room, name: user}); }}>
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={12}>
+                                            <StyledTextField
+                                                required
+                                                fullWidth
+                                                value={user}
+                                                label={"Name"}
+                                                onChange={(e) => setUser(e.target.value)}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <StyledButton
+                                                fullWidth
+                                                type="submit"
+                                                size="large"
+                                            >
+                                                <Typography>
+                                                    { room ? "Join Room" : "Create Room"}
+                                                </Typography>
+                                            </StyledButton>
+                                        </Grid>
+                                    </Grid>
+                                </form>
+                            </Grid>
+                        </Grid>
+                    </CardContent>
+                </Card>
+            </Container>
         </Grid>
     );
 }
-

@@ -102,7 +102,7 @@ module.exports = {
         historyApiFallback: true,
         proxy: {
             "/graphql": {
-                target: "http://localhost:8000",
+                target: "http://localhost:8082",
                 changeOrigin: true,
                 ws: true
             },

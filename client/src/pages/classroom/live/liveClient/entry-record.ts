@@ -1,8 +1,5 @@
-import "@babel/polyfill";
 import { GraphQLClient } from "graphql-request";
 import { record } from "rrweb";
-// eslint-disable-next-line no-unused-vars
-import { eventWithTime } from "rrweb/typings/types";
 import { v4 as uuid } from "uuid";
 import { AuthTokenProvider } from "./services/auth-token/AuthTokenProvider";
 import { EventRecorderService } from "./services/event-recorder/EventRecorderService";
@@ -10,9 +7,9 @@ import { EventStream } from "./services/event-recorder/stream/EventStream";
 import { GraphQlUploader } from "./services/event-recorder/uploader/GraphQlUploader";
 
 const POST_EVENTS = `
-    mutation postPageEvent($streamId: ID!, $pageEvents: [PageEventIn]) {
-        postPageEvent(streamId: $streamId, pageEvents: $pageEvents)
-    }
+mutation postPageEvent($streamId: ID!, $pageEvents: [PageEventIn]) {
+  postPageEvent(streamId: $streamId, pageEvents: $pageEvents)
+}
 `;
 
 const token = AuthTokenProvider.retrieveToken();
@@ -56,4 +53,3 @@ record({
         eventRecorder.uploadEvents();
     },
 });
-

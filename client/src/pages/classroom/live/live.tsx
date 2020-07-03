@@ -48,13 +48,18 @@ export default function LiveLayout() {
     const isLive = useSelector((state: State) => state.ui.liveClass);
 
     useEffect(() => {
+        console.log(`isLive: ${isLive}`);
         if (isLive) {
             setInFlight(true);
+            setHasTransitioned(true);
             setTimeout(() => {
-                setHasTransitioned(!hasTransitioned);
+                setHasTransitioned(false);
                 setInFlight(false);
             }, 3000);
         }
+
+        console.log(`hasTransitioned: ${hasTransitioned}`);
+        console.log(`inFlight: ${inFlight}`);
     }, [isLive]);
 
     return (
@@ -86,7 +91,7 @@ export default function LiveLayout() {
                         <LiveCard />
                     </Paper>
                 </Fade>
-                <Fade in={isLive && hasTransitioned} unmountOnExit={true} timeout={{ enter: 1000, exit: 500 }}>
+                <Fade in={isLive && !hasTransitioned} unmountOnExit={true} timeout={{ enter: 1000, exit: 500 }}>
                     <Paper elevation={4} className={classes.paperContainer}>
                         <LiveClient />
                     </Paper>

@@ -1,7 +1,11 @@
-// ko.ts
+// en.ts
 const messages: Record<string, string> = {
-    component_switchDark: "다크",
-    component_switchLight: "라이트",
+    classSettings_classroomSettings: "Classroom Settings",
+
+    chatMessage_today: "Today",
+
+    component_switchDark: "dark",
+    component_switchLight: "light",
 
     error_emptyEmail: "이메일 주소 혹은 휴대폰 번호를 입력해 주세요.",
     error_emptyPassword: "비밀번호를 입력해 주세요.",
@@ -26,6 +30,7 @@ const messages: Record<string, string> = {
     live_buttonStop: "Stop",
     live_buttonStream: "Stream",
     live_classCodeLabel: "Class code",
+    live_closePreviewDrawer: "Close Preview Drawer",
     live_errorUnknownContent: "Error: Unknown content type",
     live_failedToConnect: "Failed to connect",
     live_hello: "Hello, {name}!",
@@ -49,13 +54,13 @@ const messages: Record<string, string> = {
     library_archivedTitle: "Archived Content",
     library_createContentTitle: "Create new Content",
 
-    locale_select: "언어 선택",
-    locale_tooltip: "언어 변경",
+    locale_select: "Select Language",
+    locale_tooltip: "Change Language",
 
-    login_createAccount: "회원가입하기",
-    login_forgotPassword: "비밀번호 찾기?",
-    login_loginButton: "로그인",
-    login_loginPrompt: "로그인",
+    login_createAccount: "Create an account",
+    login_forgotPassword: "Forgot Password?",
+    login_loginButton: "Sign In",
+    login_loginPrompt: "Sign In",
 
     navMenu_adminConsoleLabel: "Admin Console",
     navMenu_assessmentsLabel: "Assessments",
@@ -64,9 +69,9 @@ const messages: Record<string, string> = {
     navMenu_peopleLabel: "People",
     navMenu_reportLabel: "Report",
 
-    privacy_helpLink: "도움말",
-    privacy_privacyLink: "개인정보처리방침",
-    privacy_termsLink: "이용약관",
+    privacy_helpLink: "Help",
+    privacy_privacyLink: "Privacy",
+    privacy_termsLink: "Terms",
 
     // Assessments
     assess_libraryButton: "Library",

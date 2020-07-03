@@ -41,3 +41,15 @@ export type DevSkillOption = {
   devSkillId: string;
   name: string;
 }
+
+export interface Student {
+  profileId: string;
+  profileName: string;
+  profileImage?: string;
+}
+
+export interface LiveSessionData {
+  classId: string;
+  className: string;
+  students: Student[];
+}

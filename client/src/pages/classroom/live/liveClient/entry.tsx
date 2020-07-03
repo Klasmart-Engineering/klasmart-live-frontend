@@ -1,5 +1,5 @@
-import "@babel/polyfill";
 import { ApolloProvider } from "@apollo/react-hooks";
+import "@babel/polyfill";
 import { ApolloClient, InMemoryCache } from "apollo-boost";
 import { WebSocketLink } from "apollo-link-ws";
 import React, { createContext } from "react";

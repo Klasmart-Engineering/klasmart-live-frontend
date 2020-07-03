@@ -194,7 +194,6 @@ export function activeComponentHome(state = "live", action: Actions) {
     }
 }
 
-
 // NOTE: Only requests with formatted JWT token can access current API server for assessment
 // You can parse in https://jwt.io/
 export const JWT_TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiYWRhbmFtdSBhcHAiLCJpYXQiOjE1OTE2ODU4MzgsInN1YiI6ImF1dGhvcml6YXRpb24iLCJpc3MiOiJLaWRzTG9vcENoaW5hVXNlciIsImV4cCI6MTkwODMyNTI0OSwiaWQiOiI0NSIsIm9yZ19pZCI6IjkifQ=.RawtL06bFxeJ2zMQnp0oe+LnBWNIX4lMo/F7hFW85SU";
@@ -211,12 +210,12 @@ const STUDENT_LIST = [
     {
         profileId: "student0",
         profileName: "Woody",
-        iconLink: ""
+        iconLink: "",
     },
     {
         profileId: "student1",
         profileName: "Buzz Lightyear",
-        iconLink: ""
+        iconLink: "",
     },
     {
         profileId: "student2",
@@ -226,9 +225,9 @@ const STUDENT_LIST = [
     {
         profileId: "student3",
         profileName: "Slinky Dog",
-        iconLink: ""
+        iconLink: "",
     },
-]
+];
 export function students(state = STUDENT_LIST, action: Actions) {
     switch (action.type) {
         case ActionTypes.STUDENTS:
@@ -323,36 +322,48 @@ const ACTIVITY_LIST = [
 export function activities(state = ACTIVITY_LIST, action: Actions) {
     switch (action.type) {
         case ActionTypes.ACTIVITIES:
-            return action.payload;
-        default:
-            return state;
-    }
-}
+            export function finishLiveData(state = {
+                classId: "CalmIsland",
+                className: "Pre-production",
+                students: [{
+                    profileId: "student0",
+                    profileName: "Woody",
+                    profileImage: "",
+                }],
+            }, action: Actions) {
+                switch (action.type) {
+                    case ActionTypes.FINISH_LIVE_DATA:
+                        return action.payload;
+                    default:
+                        return state;
+                }
+            }
 
-export const account = combineReducers({
-    assessmentToken,
-    accessToken,
-    accessTokenExpire,
-    accountId,
-    deviceId,
-    email,
-    refreshToken,
-    refreshTokenExpire,
-    sessionId,
-    userAgent,
-    students,
-    contentTypes,
-    publicRange,
-    suitableAges,
-    activities,
-});
+            export const account = combineReducers({
+                assessmentToken,
+                accessToken,
+                accessTokenExpire,
+                accountId,
+                deviceId,
+                email,
+                finishLiveData,
+                refreshToken,
+                refreshTokenExpire,
+                sessionId,
+                userAgent,
+                students,
+                contentTypes,
+                publicRange,
+                suitableAges,
+                activities,
+            });
 
-export const ui = combineReducers({
-    activeComponentHome,
-    classSettings,
-    darkMode,
-    liveClass,
-    locale,
-    activeLibraryMenu,
-    activeAssessmentsMenu,
-});
+            export const ui = combineReducers({
+                activeComponentHome,
+                classSettings,
+                darkMode,
+                liveClass,
+                locale,
+                activeLibraryMenu,
+                activeAssessmentsMenu,
+            });

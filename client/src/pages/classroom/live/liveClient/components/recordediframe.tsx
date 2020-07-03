@@ -15,32 +15,36 @@ export interface Props {
     frameProps?: React.DetailedHTMLProps<React.IframeHTMLAttributes<HTMLIFrameElement>, HTMLIFrameElement>;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     setStreamId?: (streamId: string) => any;
+    parentWidth?: string | number;
+    parentHeight?: string | number;
+    setParentWidth?: Dispatch<SetStateAction<any>>;
+    setParentHeight?: Dispatch<SetStateAction<any>>;
 }
 
 export function RecordedIframe(props: Props): JSX.Element {
-    const ref = useRef<HTMLIFrameElement       >(null);
-    const forwardRef = useRef<HTMLIFrameElement>(null);
+    const ref = useRef<HTMLIFrameElement>(null);
     const [key, setKey] = useState(Math.random());
     const {roomId} = useContext(UserContext);
-    const { contentId, frameProps, setStreamId } = props;
+    const { contentId, frameProps, parentWidth, parentHeight, setStreamId, setParentWidth, setParentHeight } = props;
     const [width, setWidth] = useState<string | number>("100%");
-    const [maxHeight, setMaxHeight] = useState<number>(window.innerHeight * 0.5);
+    const [maxHeight, setMaxHeight] = useState<number>(window.innerHeight * 0.8);
     const [numRenders, setRenders] = useState(0);
 
-    // console.log(`width: ${width}`);
-    // console.log(`maxHeight: ${maxHeight}`)
-
     const fitToScreen = (width: number, height: number) => {
-        console.log("RESIZING!!!");
+        // console.log("RESIZING!!!");
         const scale = maxHeight / Number(height);
 
-        console.log(`height ${height}, width ${width}`);
-        console.log(`maxHeight ${maxHeight}`);
-        console.log(`scale ${scale}`);
-        console.log(`NUMBER OF RENDERS ${numRenders}`);
+        // console.log(`height ${height}, width ${width}`);
+        // console.log(`maxHeight ${maxHeight}`);
+        // console.log(`scale ${scale}`);
+        // console.log(`NUMBER OF RENDERS ${numRenders}`);
         if (scale < 0.9) {
             setRenders(numRenders + 1);
             setWidth(Number(width) * scale);
+            if (setParentHeight && setParentWidth) {
+                setParentHeight(maxHeight);
+                setParentWidth(width);
+            }
             setKey(Math.random());
         }
     };
@@ -61,7 +65,7 @@ export function RecordedIframe(props: Props): JSX.Element {
         innerRef.addEventListener("load", inject);
 
         function inject() {
-            console.log("inject");
+            // console.log("inject");
             if (!innerRef || !innerRef.contentDocument) { return; }
             const doc = innerRef.contentDocument;
             const h5pContent = doc.body.getElementsByClassName("h5p-content")[0];
@@ -91,11 +95,11 @@ export function RecordedIframe(props: Props): JSX.Element {
 
     const [sendStreamId] = useMutation(SET_STREAMID);
     useEffect(() => {
-        console.log("sending message");
+        // console.log("sending message");
         // if (!ref.current || !ref.current.contentWindow) { return }
         function onMessage({data}: MessageEvent) {
-            console.log("onMessage: ");
-            console.log(data);
+            // console.log("onMessage: ");
+            // console.log(data);
             if (data && data.streamId) {
                 if (setStreamId) { setStreamId(data.streamId); }
                 sendStreamId({variables: {
@@ -117,8 +121,8 @@ export function RecordedIframe(props: Props): JSX.Element {
             src={contentId}
             heightCalculationMethod="taggedElement"
             onResized={(e) => {
-                console.log(e.height);
-                console.log(e.width);
+                // console.log(e.height);
+                // console.log(e.width);
                 setWidth(e.width);
                 if (e.height > maxHeight && numRenders < 1) {
                     fitToScreen(e.width, e.height);
@@ -126,7 +130,7 @@ export function RecordedIframe(props: Props): JSX.Element {
             }}
             // log
             key={key}
-            style={{ width, border: "1px solid gray" }}
+            style={{ width, margin: "0 auto" }}
         />
     );
 }

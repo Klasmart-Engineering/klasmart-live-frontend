@@ -74,7 +74,6 @@ export function PreviewPlayer({ streamId, frameProps, width, height }: Props): J
             ref={ref}
             style={{
                 visibility: loading ? "hidden" : "visible",
-                borderWidth: "1px",
                 transformOrigin: "top left",
                 transform: `scale(${scale})`,
             }}

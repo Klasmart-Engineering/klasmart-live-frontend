@@ -18,39 +18,47 @@ export function InviteButton(): JSX.Element {
     const textField = useRef<HTMLInputElement>(null);
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement>();
 
-    return <>
-        <Button aria-label="invite" onClick={(e) => setAnchorEl(e.currentTarget)} style={{padding: "0px"}} size="small">
-            <ShareIcon />
-            <FormattedMessage id="live_buttonInviteStudents" />
-        </Button>
-        <Popover
-            open={Boolean(anchorEl)}
-            anchorEl={anchorEl}
-            onClose={() => setAnchorEl(undefined)}
-            anchorOrigin={{
-                horizontal: "center",
-                vertical: "bottom",
-            }}
-            transformOrigin={{
-                horizontal: "center",
-                vertical: "top",
-            }}
-        >
-            <div style={{paddingLeft: "15px"}}>
-                <input
-                    ref={textField}
-                    value={url}
-                    readOnly
-                    onClick={(e) => {(e.target as HTMLInputElement).select(); }}
-                />
-                <IconButton aria-label="copy" onClick={() => {
-                    if (!textField.current) { return; }
-                    textField.current.select();
-                    document.execCommand("copy");
-                }}>
-                    <CopyIcon />
-                </IconButton>
-            </div>
-        </Popover>
-    </>;
+    return (
+        <>
+            <Button
+                aria-label="invite"
+                size="small"
+                onClick={(e) => setAnchorEl(e.currentTarget)}
+                style={{ marginRight: 8, padding: "2px 8px", borderRadius: 12 }}
+            >
+                <ShareIcon style={{ paddingRight: 5 }} />
+                <FormattedMessage id="live_buttonInviteStudents" />
+            </Button>
+            <Popover
+                open={Boolean(anchorEl)}
+                anchorEl={anchorEl}
+                onClose={() => setAnchorEl(undefined)}
+                anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "center",
+                }}
+                transformOrigin={{
+                    vertical: "top",
+                    horizontal: "center",
+                }}
+            >
+                <div style={{paddingLeft: "15px"}}>
+                    <input
+                        onClick={(e) => {(e.target as HTMLInputElement).select(); }}
+                        ref={textField}
+                        readOnly
+                        style={{ width: 250 }}
+                        value={url}
+                    />
+                    <IconButton aria-label="copy" onClick={() => {
+                        if (!textField.current) { return; }
+                        textField.current.select();
+                        document.execCommand("copy");
+                    }}>
+                        <CopyIcon />
+                    </IconButton>
+                </div>
+            </Popover>
+        </>
+    );
 }

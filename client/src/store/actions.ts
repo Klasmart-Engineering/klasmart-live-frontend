@@ -54,11 +54,11 @@ export type SetActiveComponentHome = Action<ActionTypes.ACTIVE_COMPONENT_HOME, s
 
 export type AssessmentToken = Action<ActionTypes.ASSESSMENT_TOKEN, string>;
 
-export type SetStudents = Action<ActionTypes.STUDENTS, {
+export type SetStudents = Action<ActionTypes.STUDENTS, Array<{
     profileId: string,
     profileName: string,
-    iconLink: string
-}[]>;
+    iconLink: string,
+}>>;
 
 export type LibraryMenu = "content" | "pending" | "archived";
 export type SetActiveLibraryMenu = Action<ActionTypes.ACTIVE_LIBRARY_MENU, LibraryMenu>;
@@ -66,7 +66,7 @@ export type SetActiveLibraryMenu = Action<ActionTypes.ACTIVE_LIBRARY_MENU, Libra
 export enum AssessmentsMenu {
     LIBRARY = "library",
     PENDING = "pending",
-    COMPLETED = "completed"
+    COMPLETED = "completed",
 }
 export type SetActiveAssessmentsMenu = Action<ActionTypes.ACTIVE_ASSESSMENTS_MENU, AssessmentsMenu>;
 
@@ -77,6 +77,15 @@ export type PublicRange = Action<ActionTypes.PUBLIC_RANGES, string[]>;
 export type SuitableAges = Action<ActionTypes.SUITABLE_AGES, string[]>;
 
 export type Activities = Action<ActionTypes.ACTIVITIES, { id: string, title: string }[]>;
+export type FinishLiveData = Action<ActionTypes.FINISH_LIVE_DATA, {
+    classId: string | any,
+    className: string | any,
+    students: Array<{
+        profileId: string,
+        profileName: string,
+        profileImage?: string,
+    }>,
+} | any | undefined>;
 
 export enum ActionTypes {
     LOCALE,
@@ -103,6 +112,7 @@ export enum ActionTypes {
     PUBLIC_RANGES,
     SUITABLE_AGES,
     ACTIVITIES,
+    FINISH_LIVE_DATA,
 }
 
 export type Actions =
@@ -130,4 +140,5 @@ export type Actions =
     | PublicRange
     | SuitableAges
     | Activities
+    | FinishLiveData
     | never;

@@ -4,10 +4,11 @@ import { gql } from "apollo-boost";
 import React, { useContext, useReducer, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { UserContext } from "./app";
-import { Messages } from "./messages";
+import Layout from "./components/liveLayout";
+import { sessionId } from "./entry";
 import { Student } from "./pages/student";
 import { Teacher } from "./pages/teacher/teacher";
-import { SendMessage } from "./sendMessage";
+import { webRTCContext, WebRTCContext } from "./webRTCState";
 
 export interface Session {
   id: string;
@@ -33,6 +34,7 @@ const SUB_ROOM = gql`
       content { type, contentId },
       join { id, name, streamId },
       leave { id }
+      session { webRTC { sessionId,offer,answer,ice } }
     }
   }
 `;
@@ -43,6 +45,7 @@ interface Props {
 
 export function Room({ teacher }: Props): JSX.Element {
     const {roomId, name} = useContext(UserContext);
+    const webRTCContextValue = WebRTCContext.useWebRTCContext(roomId);
 
     const [content, setContent] = useState<Content>();
     const [messages, addMessage] = useReducer((state: Map<string, Message>, newMessage: Message) => {
@@ -57,7 +60,12 @@ export function Room({ teacher }: Props): JSX.Element {
     const [users, updateUsers] = useReducer(
         (state: Map<string, Session>, {join, leave}: {join?: Session, leave?: Session}) => {
             const newState = new Map<string, Session>([...state]);
-            if (join) { newState.set(join.id, join); }
+            if (join) {
+                newState.set(join.id, join);
+                if (teacher && join.id !== sessionId) {
+                    webRTCContextValue.start(join.id);
+                }
+            }
             if (leave) { newState.delete(leave.id); }
             return newState;
         },
@@ -65,27 +73,26 @@ export function Room({ teacher }: Props): JSX.Element {
     );
 
     const { loading, error } = useSubscription(SUB_ROOM, {
-        onSubscriptionData: ({ subscriptionData }) => {
+        onSubscriptionData: async ({ subscriptionData }) => {
             if (!subscriptionData) { return; }
             if (!subscriptionData.data) { return; }
             if (!subscriptionData.data.room) { return; }
-            const { message, content, join, leave } = subscriptionData.data.room;
+            const { message, content, join, leave, session } = subscriptionData.data.room;
             if (message) { addMessage(message); }
             if (content) { setContent(content); }
             if (join || leave) { updateUsers(subscriptionData.data.room); }
+            if (session && session.webRTC) { await webRTCContextValue.notification(session.webRTC); }
         },
         variables: { roomId, name },
     });
 
-    if (error) {return <Typography ><FormattedMessage id="live_failedToConnect" />{JSON.stringify(error)}</Typography>; }
+    if (error) {return <Typography ><FormattedMessage id="failed_to_connect" />{JSON.stringify(error)}</Typography>; }
     if (loading || !content) {return <CircularProgress />; }
-    return <>
+    return <webRTCContext.Provider value={webRTCContextValue}>
         {
             teacher
-                ? <Teacher users={users} content={content}/>
-                : <Student content={content} />
+                ? <Teacher content={content} users={users} messages={messages}/>
+                : <Layout><Student content={content} messages={messages}/></Layout>
         }
-        <SendMessage />
-        <Messages messages={messages}/>
-    </>;
+    </webRTCContext.Provider>;
 }
