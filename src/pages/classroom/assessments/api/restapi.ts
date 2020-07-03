@@ -281,12 +281,23 @@ export class RestAPI {
     }
 
     public async completeAssessment(assId: string, assInfo: CompleteAssessmentRequest): Promise<CompleteAssessmentResponse> {
-        const result = await this.assessmentCall("POST", "v1/assessment/" + assId, JSON.stringify(assInfo));
+        console.log("assInfo", assInfo)
+        console.log("JSON.stringify(assInfo)", JSON.stringify(assInfo))
+        const result = await this.assessmentCall("POST", "v1/assessment/" + assId, JSON.stringify({
+            "students": mapToObj(assInfo.students)
+        }));
         const body = await result.json();
         return body;
     }
-
 }
+
+
+const mapToObj = (m: any) => {
+    return Array.from(m).reduce((obj: any, [key, value]) => {
+        obj[key] = value;
+        return obj;
+    }, {});
+};
 
 // ---------------- Models ----------------
 

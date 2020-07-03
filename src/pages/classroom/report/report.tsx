@@ -13,9 +13,14 @@ import BadanamuButton from "./../../../components/styled/button";
 import BadanamuTextField from "../../../components/styled/textfield";
 import { useRestAPI, ReportLearningOutcomeRequest } from "./api/restapi";
 import { FormattedMessage } from "react-intl";
-import { BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Bar } from 'recharts';
+import { BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Bar, ResponsiveContainer } from 'recharts';
 import { config } from "react-transition-group";
 import { getDefaultProgId } from "../../../config"
+import { string } from "prop-types";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import ListItemText from "@material-ui/core/ListItemText";
+import Avatar from '@material-ui/core/Avatar';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -70,24 +75,58 @@ function renderChart() {
     const [report, setReport] = useState<any | undefined>(undefined);
     const [reportError, setReportError] = useState<JSX.Element | undefined>(undefined);
     const [reportInFlight, setReportInFlight] = useState(false);
-    const [profileId, setProfileId] = useState<string>("");
-    const [classId, setClassId] = useState<string>("");
+    const [studentInFlight, setStudentInFlight] = useState(false);
+    const [studentError, setStudentError] = useState<JSX.Element | undefined>(undefined);
+    const [students, setStudents] = useState<any[]>();
+    const [selectedStudent, setSelectedStudent] = useState<any>()
 
-    async function getReport() {
+    useEffect(() => {
+        let prepared = true;
+
+        (async () => {
+            const info = await getStudents();
+
+            if (prepared) { setStudents(info); }
+        })();
+
+        return () => { prepared = false; };
+    }, [])
+
+    async function getStudents() {
+        if (studentInFlight) { return; }
+        try {
+            setStudentInFlight(true);
+            let assessmentsResponse = await restApi.getAssessments()
+            let studentMap = new Map<string, any>();
+            for (let i = 0; i < assessmentsResponse.assessments.length; ++i) {
+                for (let j = 0; j < assessmentsResponse.assessments[i].students.length; ++j) {
+                    studentMap.set(assessmentsResponse.assessments[i].students[j].profileId, assessmentsResponse.assessments[i].students[j]);
+                }
+            }
+            let studentList = []
+            for (let [key, value] of studentMap) {
+                studentList.push(value);
+            }
+            return studentList;
+        } catch (e) {
+            console.error(e)
+            setStudentError(<FormattedMessage id="ERROR_UNKOWN" />);
+        } finally {
+            setStudentInFlight(false);
+        }
+    }
+
+    async function getReport(student: any) {
         if (reportInFlight) { return; }
         try {
             setReportInFlight(true);
             let reportInfo: ReportLearningOutcomeRequest = {
-                profileId: profileId,
+                profileId: student.profileId,
                 programId: getDefaultProgId(),
-                classId: classId
+                classId: ""
             };
             let responseReport: any = {}
-            if (classId.length > 0) {
-                responseReport = await restApi.getReportLearningOutcomeClass(reportInfo);
-            } else {
-                responseReport = await restApi.getReportLearningOutcomeList(reportInfo);
-            }
+            responseReport = await restApi.getReportLearningOutcomeList(reportInfo);
             // console.log("report: ", responseReport);
             // TODO: Use get by ID list
             // let loIDs: number[] = [];
@@ -140,7 +179,8 @@ function renderChart() {
                 report.push({ name: devSkillMap.get(key).name, success: successRate, failure: failureRate })
             }
             // console.log("report: ", report)
-            setReport(report)
+            setReport(report);
+            setSelectedStudent(student);
         } catch (e) {
             console.error(e)
             setReportError(<FormattedMessage id="ERROR_UNKOWN" />);
@@ -152,46 +192,34 @@ function renderChart() {
     return (
         <Grid container item>
             <Grid item xs={12}>
-                <BadanamuTextField
-                    fullWidth
-                    value={profileId}
-                    label="profileId"
-                    type="text"
-                    onChange={(e) => setProfileId(e.target.value)} />
+                {students ? students.map((student, index) =>
+                    <ListItem key={student.profileId} button onClick={() => getReport(student)}>
+                        <ListItemAvatar>
+                            <Avatar src={student.iconLink} />
+                        </ListItemAvatar>
+                        <ListItemText primary={student.profileName} />
+                    </ListItem>
+                ) : null}
             </Grid>
             <Grid item xs={12}>
-                <BadanamuTextField
-                    fullWidth
-                    value={classId}
-                    label="classId (optional)"
-                    type="text"
-                    onChange={(e) => setClassId(e.target.value)} />
-            </Grid>
-            <Grid item xs={12}>
-                <BadanamuButton
-                    extendedOnly
-                    fullWidth
-                    onClick={getReport}
-                    size="large"
-                    disabled={reportInFlight}
-                >
-                    {
-                        reportInFlight ?
-                            <CircularProgress size={25} /> :
-                            "Report"
-                    }
-                </BadanamuButton>
-            </Grid>
-            <Grid item xs={12}>
-                {report !== undefined ? <BarChart width={730} height={400} data={report}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    <Bar dataKey="success" fill="#8884d8" />
-                    <Bar dataKey="failure" fill="#6661e8" />
-                </BarChart> : null}
+                <Grid item xs={12}>
+                    {selectedStudent !== undefined ? <h2>{selectedStudent.profileName}</h2> : null}
+                </Grid>
+                <Grid item xs={12}>
+                    {report !== undefined ?
+                        <ResponsiveContainer width="100%" height={400}>
+                            <BarChart data={report}>
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis dataKey="name" />
+                                <YAxis />
+                                <Tooltip />
+                                <Legend />
+                                <Bar dataKey="success" fill="#8884d8" />
+                                <Bar dataKey="failure" fill="#6661e8" />
+                            </BarChart>
+                        </ResponsiveContainer>
+                        : null}
+                </Grid>
             </Grid>
         </Grid>
     )

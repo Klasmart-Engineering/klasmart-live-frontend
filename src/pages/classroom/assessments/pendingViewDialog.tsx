@@ -34,12 +34,14 @@ import {
     useRestAPI,
     AssessmentResponse,
     LearningOutcomeResponse,
+    UpdateAssessmentAwardedStudentRequest,
     UpdateAssessmentRequest,
     UpdateLessonPlanRequest,
     CompleteAssessmentRequest,
     CompleteAssessmentStudentsResquest
 } from "./api/restapi";
 import { students } from '../../../store/reducers';
+import { string, number } from 'prop-types';
 
 interface Props {
     assId: string
@@ -112,21 +114,50 @@ export default function PendingViewDialog(props: Props) {
     const [inFlight, setInFlight] = useState(false);
     const [speedDialOpen, setSpeedDialOpen] = useState(false);
     const [speedDialHidden, setSpeedDialHidden] = useState(false);
+    const [checkedStudents, setCheckedStudents] = useState<{
+        profileId: string,
+        loId: number
+    }[]>([]);
 
-    useEffect(() => {
+    const resetAwards = () => {
         let prepared = true;
 
         (async () => {
             const info = await fetchAssessmentInfo();
 
-            if (prepared) { setInfo(info); }
+            if (prepared) {
+                let chkStds: {
+                    profileId: string,
+                    loId: number
+                }[] = []
+                if (info.learningOutcomes !== undefined) {
+                    let los = info.learningOutcomes
+                    for (let i = 0; i < los.length; ++i) {
+                        if (los[i].assessedStudents) {
+                            los[i].assessedStudents.map((stdId) => {
+                                chkStds.push({
+                                    profileId: stdId,
+                                    loId: los[i].loId
+                                })
+                            })
+                        }
+                    }
+                    setCheckedStudents(chkStds);
+                }
+                setInfo(info);
+            }
         })();
 
         return () => { prepared = false; };
+    }
+
+    useEffect(() => {
+        return resetAwards()
     }, [open])
 
     const handleOnClickCancel = () => {
         setAwardMode(false);
+        resetAwards();
     }
     const handleOnClickAward = () => {
         setAwardMode(true);
@@ -141,14 +172,9 @@ export default function PendingViewDialog(props: Props) {
     // }
 
     const students = useSelector((state: State) => state.account.students);
-    const [collapse, setCollapse] = useState(true);
+    const [collapseIndex, setCollapseIndex] = useState();
     const [LOs, setLOs] = useState<LearningOutcomeResponse[]>([]);
-    const [checkedStudents, setCheckedStudents] = useState<{
-        profileId: string,
-        profileName: string,
-        iconLink: string
-    }[]>([]);
-    const [checkedLOs, setCheckedLOs] = useState<number[]>([]);
+    const [awardedLOs, setAwardedLOs] = useState<number[]>([])
     useEffect(() => {
         let prepared = true;
 
@@ -170,18 +196,21 @@ export default function PendingViewDialog(props: Props) {
 
     useEffect(() => {
         // NOTE: Purpose to handle CompleteFAB disabled
-    }, [checkedStudents, checkedLOs])
+    }, [checkedStudents])
 
-    const handleOnClickStudent = (student: {
+    const handleOnClickStudent = (loId: number, student: {
         profileId: string,
         profileName: string,
         iconLink: string
     }) => {
-        const currentIndex = checkedStudents.indexOf(student);
+        const currentIndex = checkedStudents.findIndex(chkStd => chkStd.profileId === student.profileId && chkStd.loId === loId)
         const newChecked = [...checkedStudents];
 
         if (currentIndex === -1) {
-            newChecked.push(student);
+            newChecked.push({
+                loId: loId,
+                profileId: student.profileId
+            });
         } else {
             newChecked.splice(currentIndex, 1);
         }
@@ -189,17 +218,43 @@ export default function PendingViewDialog(props: Props) {
         setCheckedStudents(newChecked);
     }
 
-    const handleOnClickLO = (loId: number) => {
-        const currentIndex = checkedLOs.indexOf(loId);
-        const newChecked = [...checkedLOs];
-
-        if (currentIndex === -1) {
-            newChecked.push(loId);
+    function handleOnClickAwardAll(loId: number) {
+        let currentIndex = awardedLOs ? awardedLOs.findIndex(awardedLO => awardedLO === loId) : -1;
+        let newChecked = [...checkedStudents]
+        if (currentIndex !== -1) {
+            // Uncheck all students
+            for (let i = 0; i < students.length; ++i) {
+                for (let j = newChecked.length - 1; j >= 0; --j) {
+                    if (students[i].profileId === newChecked[j].profileId && newChecked[j].loId === loId) {
+                        newChecked.splice(j, 1)
+                    }
+                }
+            }
+            if (awardedLOs !== undefined) {
+                awardedLOs.splice(currentIndex, 1)
+            }
         } else {
-            newChecked.splice(currentIndex, 1);
+            // Check all students
+            for (let i = 0; i < students.length; ++i) {
+                let found = false
+                for (let j = 0; j < newChecked.length; ++j) {
+                    if (students[i].profileId === newChecked[j].profileId && loId === newChecked[j].loId) {
+                        found = true
+                    }
+                }
+                if (!found) {
+                    newChecked.push({
+                        profileId: students[i].profileId,
+                        loId: loId
+                    })
+                }
+            }
+            if (awardedLOs !== undefined) {
+                awardedLOs.push(loId);
+            }
         }
-
-        setCheckedLOs(newChecked);
+        setAwardedLOs(awardedLOs);
+        setCheckedStudents(newChecked);
     }
 
     const AWARDMODE_ACTIONS = [
@@ -218,14 +273,12 @@ export default function PendingViewDialog(props: Props) {
         if (inFlight || !info) { return; }
         try {
             setInFlight(true);
-
             const assInfo: UpdateAssessmentRequest = {
-                students: checkedStudents
+                state: 2,
+                awardedStudents: checkedStudents
             }
             await api.updateAssessment(info.assId, assInfo);
 
-            // setCheckedStudents([]);
-            // setCheckedLOs([]);
             setAwardMode(false);
             onClose();
         } catch (e) {
@@ -241,15 +294,55 @@ export default function PendingViewDialog(props: Props) {
         if (inFlight || !info) { return; }
         try {
             setInFlight(true);
-
             const assInfo: UpdateAssessmentRequest = {
-                state: 3,
-                publish: true
+                state: 2,
+                awardedStudents: checkedStudents
             }
-            await api.updateAssessment(info.lessonPlanId, assInfo);
+            let completedStudentMap: Map<string, CompleteAssessmentStudentsResquest> = new Map();
+            // Save the success
+            for (let j = 0; j < checkedStudents.length; ++j) {
+                let cptdStd = completedStudentMap.get(checkedStudents[j].profileId)
+                if (cptdStd === undefined) {
+                    cptdStd = {
+                        successOutcomes: [],
+                        failureOutcomes: []
+                    }
+                }
+                cptdStd.successOutcomes.push(checkedStudents[j].loId)
+                completedStudentMap.set(checkedStudents[j].profileId, cptdStd)
+            }
+            // Save the failure
+            for (let k = 0; k < LOs.length; ++k) {
+                for (let i = 0; i < students.length; ++i) {
+                    let found = false
+                    for (let j = 0; j < checkedStudents.length; ++j) {
+                        if (students[i].profileId === checkedStudents[j].profileId && checkedStudents[j].loId === LOs[k].loId) {
+                            found = true
+                        }
+                    }
+                    if (!found) {
+                        let cptdStd = completedStudentMap.get(students[i].profileId)
+                        if (cptdStd === undefined) {
+                            cptdStd = {
+                                successOutcomes: [],
+                                failureOutcomes: []
+                            }
+                        }
+                        cptdStd.failureOutcomes.push(LOs[k].loId)
+                        completedStudentMap.set(students[i].profileId, cptdStd)
+                    }
+                }
+            }
+
+            const completeAssInfo: CompleteAssessmentRequest = {
+                sessionId: "",
+                students: completedStudentMap,
+                date: 0,
+            }
+            await api.updateAssessment(info.assId, assInfo);
+            await api.completeAssessment(info.assId, completeAssInfo);
 
             setCheckedStudents([]);
-            setCheckedLOs([]);
             setAwardMode(false);
             onClose();
         } catch (e) {
@@ -280,7 +373,7 @@ export default function PendingViewDialog(props: Props) {
                             </Grid>
                             <Grid item style={{ marginLeft: 10 }}>
                                 <StyledFAB
-                                    disabled={checkedStudents.length === 0 || checkedLOs.length === 0}
+                                    disabled={checkedStudents.length === 0}
                                     size="small"
                                     onClick={handleOnClickSave}
                                 >
@@ -289,7 +382,7 @@ export default function PendingViewDialog(props: Props) {
                             </Grid>
                             <Grid item style={{ marginLeft: 10 }}>
                                 <StyledFAB
-                                    disabled={checkedStudents.length === 0 || checkedLOs.length === 0}
+                                    disabled={checkedStudents.length === 0}
                                     size="small"
                                     onClick={handleOnClickComplete}
                                 >
@@ -319,28 +412,6 @@ export default function PendingViewDialog(props: Props) {
             >
                 {awardMode && info && info.state === 2 ?
                     <Grid className={classes.menuGrid} item xs={12}>
-                        <List component="nav" disablePadding>
-                            <ListItem button onClick={() => setCollapse(!collapse)}>
-                                <ListItemText secondary="Students" />
-                                {collapse ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-                            </ListItem>
-                            <Collapse in={collapse} timeout="auto" unmountOnExit>
-                                {students.map((student, index) =>
-                                    <ListItem key={student.profileId} button onClick={() => handleOnClickStudent(student)}>
-                                        <ListItemAvatar>
-                                            <Avatar src={student.iconLink} />
-                                        </ListItemAvatar>
-                                        <ListItemText primary={student.profileName} />
-                                        <ListItemIcon>
-                                            <Checkbox
-                                                checked={checkedStudents.indexOf(student) !== -1}
-                                                color="primary"
-                                            />
-                                        </ListItemIcon>
-                                    </ListItem>
-                                )}
-                            </Collapse>
-                        </List>
                         <List
                             component="nav"
                             disablePadding
@@ -351,14 +422,31 @@ export default function PendingViewDialog(props: Props) {
                             }
                         >
                             {LOs.map((lo, index) =>
-                                <ListItem key={lo.loId} button onClick={() => handleOnClickLO(lo.loId)}>
+                                <ListItem key={lo.loId} button onClick={(e) => { setCollapseIndex(index); e.preventDefault() }}>
                                     <ListItemText primary={lo.title + (lo.assumed ? " (Assumed)" : "")} />
-                                    <ListItemIcon>
+                                    <ListItemIcon onClick={(e) => { handleOnClickAwardAll(lo.loId); e.stopPropagation() }}>
                                         <Checkbox
-                                            checked={checkedLOs.indexOf(lo.loId) !== -1}
+                                            checked={awardedLOs ? awardedLOs.findIndex(awardedLO => awardedLO === lo.loId) !== -1 : false}
                                             color="primary"
                                         />
                                     </ListItemIcon>
+                                    {collapseIndex === index ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                                    <Collapse in={collapseIndex === index} timeout="auto" unmountOnExit>
+                                        {students.map((student, index) =>
+                                            <ListItem key={student.profileId} button onClick={(e) => { handleOnClickStudent(lo.loId, student); e.preventDefault(); e.stopPropagation() }}>
+                                                <ListItemAvatar>
+                                                    <Avatar src={student.iconLink} />
+                                                </ListItemAvatar>
+                                                <ListItemText primary={student.profileName} />
+                                                <ListItemIcon>
+                                                    <Checkbox
+                                                        checked={checkedStudents.findIndex(chkStd => chkStd.profileId === student.profileId && chkStd.loId === lo.loId) !== -1}
+                                                        color="primary"
+                                                    />
+                                                </ListItemIcon>
+                                            </ListItem>
+                                        )}
+                                    </Collapse>
                                 </ListItem>
                             )}
                         </List>
@@ -440,7 +528,7 @@ function AssessmentDetails(props: AssessmentDetailsProps) {
                 <Typography variant="subtitle1">{ass.duration}</Typography>
             </Grid>
             <Grid className={classes.menuGrid} item xs={12}>
-                <Typography variant="caption" color="textSecondary">Awarded Students</Typography>
+                <Typography variant="caption" color="textSecondary">Students</Typography>
                 <Typography variant="subtitle1">
                     {ass.students.length === 0 ? "-" : ass.students.map(student => student.profileName).join(", ")}
                 </Typography>

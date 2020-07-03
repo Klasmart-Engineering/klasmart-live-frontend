@@ -137,9 +137,9 @@ function AssessmentDetails(props: AssessmentDetailsProps) {
                 <Typography variant="subtitle1">{ass.duration}</Typography>
             </Grid>
             <Grid className={classes.menuGrid} item xs={12}>
-                <Typography variant="caption" color="textSecondary">Awarded Students</Typography>
+                <Typography variant="caption" color="textSecondary">Students</Typography>
                 <Typography variant="subtitle1">
-                    {ass.students.length === 0 ? "-" : ass.students.join(", ")}
+                    {ass.students.length === 0 ? "-" : ass.students.map((std) => std.profileName).join(", ")}
                 </Typography>
             </Grid>
         </>

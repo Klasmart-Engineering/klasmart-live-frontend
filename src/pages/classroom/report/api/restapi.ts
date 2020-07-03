@@ -78,6 +78,12 @@ export class RestAPI {
         return body;
     }
 
+    public async getAssessments(): Promise<AssessmentListResponse> {
+        const result = await this.assessmentCall("GET", "v1/assessment");
+        const body = await result.json();
+        return body;
+    }
+
     public async getReportLearningOutcomeList(reportInfo: ReportLearningOutcomeRequest): Promise<ReportLearningOutcomeListResponse> {
         const result = await this.assessmentCall("POST", "v1/report/list", JSON.stringify(reportInfo));
         const body = await result.json();
@@ -151,4 +157,51 @@ export class DevSkillListResponse {
 export class DevSkillResponse extends BaseInfo {
     devSkillId: string;
     name: string;
+}
+
+export class AssessmentListResponse {
+    assessments: Array<AssessmentResponse>;
+}
+
+export class AssessmentResponse extends BaseInfo {
+    assId: string;
+    progId: string;
+    classId: string;
+    lessonPlanId: string;
+    sessionId: string;
+    name: string;
+    duration: number;
+    assessedDate: number;
+    subject: string;
+    students: Array<AssessmentStudentResponse>;
+    published: boolean;
+    lessonMaterials?: Array<LessonMaterialResponse>;
+    learningOutcomes?: Array<AssessmentLearningOutcomeResponse>;
+    state: number;
+}
+
+export class AssessmentStudentResponse {
+    profileId: string;
+    profileName: string;
+    iconLink: string;
+}
+
+export class AssessmentLearningOutcomeResponse {
+    loId: number;
+    assessedStudents: Array<string>;
+    assumed: boolean;
+}
+
+export class LessonMaterialResponse extends BaseInfo {
+    lessonMaterialId: string;
+    type: number;
+    name: string;
+    externalId?: string;
+    externalType?: number;
+    devSkillId: string;
+    skillCatId: string;
+    publicRange: number;
+    suitableAge: number;
+    description: string;
+    learningOutcomes?: Array<number>;
 }
