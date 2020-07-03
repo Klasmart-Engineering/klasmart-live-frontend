@@ -108,6 +108,12 @@ interface AssessmentDetailsProps {
     ass: AssessmentResponse
 }
 
+function msToMinutes(duration: number): number {
+    var seconds = duration / 1000 / 1000 / 1000 % 3600;
+    var minutes = seconds / 60;
+    return Math.floor(minutes);
+}
+
 function AssessmentDetails(props: AssessmentDetailsProps) {
     const { ass } = props;
     const classes = useStyles();
@@ -134,7 +140,7 @@ function AssessmentDetails(props: AssessmentDetailsProps) {
             </Grid>
             <Grid className={classes.menuGrid} item xs={isMobile ? 12 : 6}>
                 <Typography variant="caption" color="textSecondary">Duration</Typography>
-                <Typography variant="subtitle1">{ass.duration}</Typography>
+                <Typography variant="subtitle1">{ass.duration > 0 ? msToMinutes(ass.duration) + " minutes" : "-"}</Typography>
             </Grid>
             <Grid className={classes.menuGrid} item xs={12}>
                 <Typography variant="caption" color="textSecondary">Students</Typography>
