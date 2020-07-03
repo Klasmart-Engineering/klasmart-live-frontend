@@ -60,6 +60,13 @@ export type SetStudents = Action<ActionTypes.STUDENTS, {
     iconLink: string
 }[]>;
 
+export enum AssessmentsMenu {
+    LIBRARY = "library",
+    PENDING = "pending",
+    COMPLETED = "completed"
+}
+export type SetActiveAssessmentsMenu = Action<ActionTypes.ACTIVE_ASSESSMENTS_MENU, AssessmentsMenu>;
+
 export enum ActionTypes {
     LOCALE,
     LOGIN,
@@ -79,6 +86,7 @@ export enum ActionTypes {
     ACTIVE_COMPONENT_HOME,
     ASSESSMENT_TOKEN,
     STUDENTS,
+    ACTIVE_ASSESSMENTS_MENU
 }
 
 export type Actions =
@@ -100,4 +108,5 @@ export type Actions =
     | SetActiveComponentHome
     | SetAssessmentToken
     | SetStudents
+    | SetActiveAssessmentsMenu
     | never;

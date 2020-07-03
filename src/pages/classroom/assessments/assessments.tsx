@@ -11,10 +11,12 @@ import LibraryIcon from '@material-ui/icons/LocalLibraryTwoTone';
 import PendingIcon from '@material-ui/icons/HourglassFullTwoTone';
 import CompleteIcon from '@material-ui/icons/AssignmentTurnedInTwoTone';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import * as React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { FormattedMessage } from "react-intl";
+import { useSelector, useStore } from "react-redux";
 
+import { State } from "../../../store/store";
+import { ActionTypes, AssessmentsMenu } from "../../../store/actions"
 import CreateLearningOutcomeDialog from "./learningOutcomeCreateDialog";
 import AssessmentsLibraryView from "./learningOutcomeLibraryView";
 import AssessmentsPendingView from "./pendingView";
@@ -50,12 +52,6 @@ const MENU_LABEL: AssessmentsMenuItem[] = [
     },
 ];
 
-enum AssessmentsMenu {
-    LIBRARY = "library",
-    PENDING = "pending",
-    COMPLETED = "completed"
-}
-
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         menuText: {
@@ -85,8 +81,12 @@ const StyledMenu = withStyles({})((props: MenuProps) => (
 
 export default function AssessmentsLayout() {
     const classes = useStyles();
+    const store = useStore();
 
-    const [activeMenu, setActiveMenu] = useState<AssessmentsMenu>(AssessmentsMenu.LIBRARY);
+    const activeMenu = useSelector((state: State) => state.ui.activeAssessmentsMenu);
+    const setActiveMenu = (value: string) => {
+        store.dispatch({ type: ActionTypes.ACTIVE_ASSESSMENTS_MENU, payload: value });
+    };
     const [inFlight, setInFlight] = useState(false);
     const [menuElement, setMenuElement] = useState<null | HTMLElement>(null);
 

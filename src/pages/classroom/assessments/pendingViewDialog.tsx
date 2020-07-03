@@ -25,23 +25,19 @@ import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 
+import { State } from "../../../store/store";
 import Collapse from '@material-ui/core/Collapse';
 import Checkbox from "@material-ui/core/Checkbox";
-import { State } from "../../../store/store";
 import DialogAppBar from "../../../components/styled/dialogAppBar";
 import StyledFAB from "../../../components/styled/fabButton";
 import {
     useRestAPI,
     AssessmentResponse,
     LearningOutcomeResponse,
-    UpdateAssessmentAwardedStudentRequest,
     UpdateAssessmentRequest,
-    UpdateLessonPlanRequest,
     CompleteAssessmentRequest,
     CompleteAssessmentStudentsResquest
 } from "./api/restapi";
-import { students } from '../../../store/reducers';
-import { string, number } from 'prop-types';
 
 interface Props {
     assId: string
@@ -162,14 +158,6 @@ export default function PendingViewDialog(props: Props) {
     const handleOnClickAward = () => {
         setAwardMode(true);
     }
-
-    // When awardMode === true
-    // async function fetchLOs() {
-    //     const payload = await api.getLearningOutcomes();
-    //     return payload.learningOutcomes
-    //         .sort((a, b) => b.createdDate - a.createdDate)
-    //         .filter(lo => lo.published);
-    // }
 
     const students = useSelector((state: State) => state.account.students);
     const [collapseIndex, setCollapseIndex] = useState();
@@ -345,6 +333,7 @@ export default function PendingViewDialog(props: Props) {
             setCheckedStudents([]);
             setAwardMode(false);
             onClose();
+            location.reload();
         } catch (e) {
             console.error(e);
             setAwardMode(false);

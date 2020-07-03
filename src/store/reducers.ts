@@ -239,6 +239,15 @@ export function students(state = STUDENT_LIST, action: Actions) {
     }
 }
 
+export function activeAssessmentsMenu(state = "library", action: Actions) {
+    switch (action.type) {
+        case ActionTypes.ACTIVE_ASSESSMENTS_MENU:
+            return action.payload;
+        default:
+            return state;
+    }
+}
+
 export const account = combineReducers({
     assessmentToken,
     accessToken,
@@ -259,4 +268,5 @@ export const ui = combineReducers({
     darkMode,
     liveClass,
     locale,
+    activeAssessmentsMenu,
 });
