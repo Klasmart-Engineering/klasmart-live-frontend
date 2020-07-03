@@ -207,7 +207,6 @@ export function assessmentToken(state = JWT_TOKEN, action: Actions) {
     }
 }
 
-import Avatar from "../assets/img/zoo_teacher.jpg";
 const STUDENT_LIST = [
     {
         profileId: "student0",
@@ -222,7 +221,7 @@ const STUDENT_LIST = [
     {
         profileId: "student2",
         profileName: "Rex",
-        iconLink: Avatar
+        iconLink: ""
     },
     {
         profileId: "student3",
@@ -248,6 +247,36 @@ export function activeAssessmentsMenu(state = "library", action: Actions) {
     }
 }
 
+const CONTENT_TYPE_LIST = ["Activity", "Image", "Video"];
+export function contentTypes(state = CONTENT_TYPE_LIST, action: Actions) {
+    switch (action.type) {
+        case ActionTypes.CONTENT_TYPES:
+            return action.payload;
+        default:
+            return state;
+    }
+}
+
+const PUBLIC_RANGE_LIST = ["All", "Organiztion", "Private"];
+export function publicRange(state = PUBLIC_RANGE_LIST, action: Actions) {
+    switch (action.type) {
+        case ActionTypes.PUBLIC_RANGES:
+            return action.payload;
+        default:
+            return state;
+    }
+}
+
+const SUITABLE_AGE_LIST = ["12-24 months", "2-4 years", "4-7 years"];
+export function suitableAges(state = SUITABLE_AGE_LIST, action: Actions) {
+    switch (action.type) {
+        case ActionTypes.SUITABLE_AGES:
+            return action.payload;
+        default:
+            return state;
+    }
+}
+
 export const account = combineReducers({
     assessmentToken,
     accessToken,
@@ -260,6 +289,9 @@ export const account = combineReducers({
     sessionId,
     userAgent,
     students,
+    contentTypes,
+    publicRange,
+    suitableAges,
 });
 
 export const ui = combineReducers({

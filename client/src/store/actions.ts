@@ -67,6 +67,12 @@ export enum AssessmentsMenu {
 }
 export type SetActiveAssessmentsMenu = Action<ActionTypes.ACTIVE_ASSESSMENTS_MENU, AssessmentsMenu>;
 
+export type SetContentTypes = Action<ActionTypes.CONTENT_TYPES, string[]>;
+
+export type SetPublicRange = Action<ActionTypes.PUBLIC_RANGES, string[]>;
+
+export type SetSuitableAges = Action<ActionTypes.SUITABLE_AGES, string[]>;
+
 export enum ActionTypes {
     LOCALE,
     LOGIN,
@@ -86,7 +92,10 @@ export enum ActionTypes {
     ACTIVE_COMPONENT_HOME,
     ASSESSMENT_TOKEN,
     STUDENTS,
-    ACTIVE_ASSESSMENTS_MENU
+    ACTIVE_ASSESSMENTS_MENU,
+    CONTENT_TYPES,
+    PUBLIC_RANGES,
+    SUITABLE_AGES,
 }
 
 export type Actions =
@@ -109,4 +118,7 @@ export type Actions =
     | SetAssessmentToken
     | SetStudents
     | SetActiveAssessmentsMenu
+    | SetContentTypes
+    | SetPublicRange
+    | SetSuitableAges
     | never;

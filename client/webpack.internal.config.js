@@ -1,28 +1,28 @@
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const webpack = require('webpack');
+const path = require("path");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const webpack = require("webpack");
 
 module.exports = {
-    mode: 'development',
-    entry: ['./src/client-entry.tsx'],
+    mode: "development",
+    entry: ["./src/client-entry.tsx"],
     module: {
         rules: [
             {
                 test: /\.tsx?$/,
                 exclude: /node_modules/,
                 use: {
-                    loader: 'babel-loader',
+                    loader: "babel-loader",
                 }
             },
             {
                 test: /\.css$/i,
                 use: [
                     {
-                        loader: 'style-loader',
+                        loader: "style-loader",
                     },
-                    'css-modules-typescript-loader',
+                    "css-modules-typescript-loader",
                     {
-                        loader: 'css-loader',
+                        loader: "css-loader",
                         options: {
                             modules: true
                         }
@@ -32,9 +32,9 @@ module.exports = {
             {
                 test: /\.(gif|png|jpe?g|svg)$/i,
                 use: [
-                    'file-loader',
+                    "file-loader",
                     {
-                        loader: 'image-webpack-loader',
+                        loader: "image-webpack-loader",
                         options: {
                             // mozjpeg: {
                             //     progressive: true,
@@ -55,21 +55,21 @@ module.exports = {
             {
                 test: /\.(woff|woff2|eot|ttf|otf)$/,
                 use: [
-                    'file-loader',
+                    "file-loader",
                 ],
             },
         ],
     },
     resolve: {
-        extensions: ['.js', '.jsx', '.tsx', '.ts'],
+        extensions: [".js", ".jsx", ".tsx", ".ts"],
     },
     output: {
-        filename: 'bundle.js',
-        path: path.resolve(__dirname, 'dist'),
+        filename: "bundle.js",
+        path: path.resolve(__dirname, "dist"),
     },
     plugins: [
         new HtmlWebpackPlugin({
-            template: 'src/index.html',
+            template: "src/index.html",
         }),
         new webpack.ProvidePlugin({
             //'fetch': 'imports-loader?this=>global!exports-loader?global.fetch!whatwg-fetch'
@@ -91,11 +91,21 @@ module.exports = {
         host: "0.0.0.0",
         historyApiFallback: true,
         proxy: {
-            '/h5p': {
-                target: 'https://zoo.kidsloop.net/',
+            // '/h5p': {
+            //     target: 'https://zoo.kidsloop.net/',
+            //     secure: false,
+            //     changeOrigin: true,
+            // },
+            "/v1": {
+                target: "https://seoul-beta.assessment-api.badanamu.net",
                 secure: false,
                 changeOrigin: true,
-            }
+            },
+            "/h5p": {
+                target: "http://192.168.0.192:8888",
+                secure: false,
+                changeOrigin: true,
+            },
         }
     },
 };

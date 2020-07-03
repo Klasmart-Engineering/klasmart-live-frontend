@@ -12,7 +12,11 @@ const messages: Record<string, string> = {
     error_emptyTitle: "Enter a title",
     error_emptyDevSkill: "Select a development skill",
     error_emptySkillCat: "Select a skill category",
+    error_emptyType: "Select a type",
+    error_emptyPubRange: "Select a public range",
+    error_emptySuitAge: "Select a suitable age",
 
+    button_create: "Create",
     form_emailLabel: "Email or phone",
     form_nameLabel: "What's your name?",
     form_passwordLabel: "Password",
@@ -38,6 +42,8 @@ const messages: Record<string, string> = {
     live_waitingForStudents: "Waiting for students to join the room",
     live_zoomIntoActivity: "Zoom in this activity",
 
+    library_createContentTitle: "Create new Content",
+
     locale_select: "Select Language",
     locale_tooltip: "Change Language",
 
@@ -58,7 +64,6 @@ const messages: Record<string, string> = {
     privacy_termsLink: "Terms",
 
     // Assessments
-    assess_createButton: "Create",
     assess_libraryButton: "Library",
     assess_pendingButton: "Pending",
     assess_completedButton: "Completed",

@@ -12,6 +12,7 @@ import ErrorIcon from "@material-ui/icons/Error";
 import React, { useState, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 
+import { SkillCatOption, DevSkillOption } from "../../../types/objectTypes";
 import DialogAppBar from "../../../components/styled/dialogAppBar";
 import StyledFAB from "../../../components/styled/fabButton";
 import StyledTextField from "../../../components/styled/textfield";
@@ -58,33 +59,57 @@ const Motion = React.forwardRef(function Transition(
 });
 
 export default function CreateLearningOutcomeDialog() {
+    const api = useRestAPI();
+    async function fetchPublishedSkillCats() {
+        const payload = await api.getSkillCats();
+        return payload.skillCats
+            .sort((a, b) => b.createdDate - a.createdDate)
+            .filter((cat: SkillCatResponse) => cat.published);
+    }
+    async function fetchPublishedDevSkills() {
+        const payload = await api.getDevSkills();
+        return payload.devSkills
+            .sort((a, b) => b.createdDate - a.createdDate)
+            .filter((skill: DevSkillResponse) => skill.published);
+    }
+    function getAvaiableDevSkills(
+        publishedDevSkills: DevSkillResponse[],
+        publishedSkillCats: SkillCatResponse[]
+    ) {
+        let devSkillOptions: DevSkillOption[] = [];
+        const availableDevSkillIds = [...new Set(publishedSkillCats.map(cat => cat.devSkillId))];
+        for (const id of availableDevSkillIds) {
+            const target = publishedDevSkills.filter(ds => ds.devSkillId === id)[0]
+            devSkillOptions.push({
+                devSkillId: target.devSkillId,
+                name: target.name
+            });
+        }
+        return devSkillOptions
+    }
+    async function fetchPublishedLearningOutcomes() {
+        const payload = await api.getLearningOutcomes();
+        return payload.learningOutcomes
+            .sort((a, b) => b.createdDate - a.createdDate)
+            .filter(lo => lo.published);
+    }
+
     const classes = useStyles();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-    const api = useRestAPI();
-
-    async function getPublishedDevSkills() {
-        const dRes = await api.getDevSkills();
-
-        return dRes.devSkills.filter((skill: DevSkillResponse) => skill.published);
-    }
-    async function getPublishedSkillCats() {
-        const sRes = await api.getSkillCats();
-
-        return sRes.skillCats.filter((cat: SkillCatResponse) => cat.published);
-    }
 
     const [open, setOpen] = useState(false);
 
-    const [pubDevSkills, setPubDevSkills] = useState<DevSkillResponse[]>([]);
-    const [pubSkillCats, setPubSkillCats] = useState<SkillCatResponse[]>([]);
-
     const [publish, setPublish] = useState(false);
     const [title, setTitle] = useState("");
-    const [devSkills, setDevSkills] = useState<string[]>([]);
+    const [devSkillOptions, setDevSkillOptions] = useState<DevSkillOption[]>([]);
+    const [devSkillIdx, setDevSkillIdx] = useState<number>();
     const [devSkill, setDevSkill] = useState("");
-    const [skillCats, setSkillCats] = useState<string[]>([]);
+    const [allSkillCatOptions, setAllSkillCatOptions] = useState<SkillCatOption[]>([]);
+    const [skillCatOptions, setSkillCatOptions] = useState<SkillCatOption[]>([]);
+    const [skillCatIdx, setSkillCatIdx] = useState<number>();
     const [skillCat, setSkillCat] = useState("");
+    const [skillCatDisabled, setSkillCatDisabled] = useState(true);
     const [estimatedDuration, setEstimatedDuration] = useState<string>("");
     const [tags, setTags] = useState<string[]>([]);
     const [tagGuide, setTagGuide] = useState<string[]>(["Press Enter to add"]);
@@ -103,47 +128,60 @@ export default function CreateLearningOutcomeDialog() {
     const handleClose = () => { setOpen(false); };
 
     useEffect(() => {
-        if (open) {
-            setToday(new Date().toISOString().replace(/\T.*$/g, ""));
-
-            let prepared = true;
-
-            (async () => {
-                const ds = await getPublishedDevSkills();
-                const sc = await getPublishedSkillCats();
-                setPubDevSkills(ds);
-                setPubSkillCats(sc);
-
-                if (prepared) {
-                    if (ds.length > 0) {
-                        const devSkills = ds.map((skill: DevSkillResponse) => skill.name)
-                        setDevSkills(devSkills);
+        if (!open) { return; }
+        setToday(new Date().toISOString().replace(/\T.*$/g, ""));
+        let prepared = true;
+        (async () => {
+            const pubDevSkills = await fetchPublishedDevSkills();
+            const pubSkillCats = await fetchPublishedSkillCats();
+            if (prepared) {
+                const skillCatOptions = pubSkillCats.map((cat: SkillCatResponse) => {
+                    return {
+                        devSkillId: cat.devSkillId,
+                        skillCatId: cat.skillCatId,
+                        name: cat.name
                     }
-                    if (sc.length > 0) {
-                        const skillCats = sc.map((cat: SkillCatResponse) => cat.name)
-                        setSkillCats(skillCats);
-                    }
-                }
-            })();
-
-            return () => {
-                prepared = false;
-            };
-        }
+                });
+                setAllSkillCatOptions(skillCatOptions);
+                setSkillCatOptions(skillCatOptions);
+                const devSkillNames = getAvaiableDevSkills(pubDevSkills, pubSkillCats);
+                setDevSkillOptions(devSkillNames);
+            }
+        })();
+        return () => { prepared = false; };
     }, [open])
 
-    const handleChangeDevSkill = (e: any, value: string) => {
-        if (e.target.value === undefined || value === null) {
-            return setDevSkill("")
+    useEffect(() => {
+        if (devSkill === "") {
+            setSkillCatDisabled(true);
+            setSkillCat("Select Development Skill first");
         } else {
-            return setDevSkill(value);
+            setSkillCatDisabled(false);
+            setSkillCat("");
+            const devSkillId = devSkillOptions[devSkillIdx].devSkillId;
+            const skillCatList = allSkillCatOptions.filter(cat => cat.devSkillId == devSkillId);
+            setSkillCatOptions(skillCatList);
+        }
+    }, [devSkill])
+
+    const handleChangeDevSkill = (e: any, value: string) => {
+        const idx = e.target.getAttribute("data-option-index");
+        if (idx === null || value === null) {
+            setDevSkillIdx(null);
+            setDevSkill("");
+        } else {
+            setDevSkillIdx(idx);
+            setDevSkill(value);
         }
     }
     const handleChangeSkillCat = (e: any, value: string) => {
-        if (e.target.value === undefined || value === null) {
-            return setSkillCat("")
+        const idx = e.target.getAttribute("data-option-index");
+        if (idx === null || value === null) {
+            setSkillCatIdx(null);
+            setSkillCat("");
         } else {
-            return setSkillCat(value)
+            setSkillCatIdx(idx);
+            setSkillCat(value);
         }
     }
 
@@ -158,10 +196,8 @@ export default function CreateLearningOutcomeDialog() {
             if (devSkill === "") { throw new Error("EMPTY_DEVSKILL"); }
             if (skillCat === "") { throw new Error("EMPTY_SKILLCAT"); }
 
-            // TODO: Improvement logic to get each id to prevent situation about duplicated title
-            // TODO: Handle when result is undefined
-            const devSkillId = pubDevSkills.filter(skill => skill.name == devSkill)[0].devSkillId;
-            const skillCatId = pubSkillCats.filter(cat => cat.name == skillCat)[0].skillCatId;
+            const devSkillId = devSkillOptions[devSkillIdx].devSkillId;
+            const skillCatId = skillCatOptions[skillCatIdx].skillCatId;
 
             const form: CreateLearningOutcomeRequest = {
                 publish,
@@ -227,7 +263,7 @@ export default function CreateLearningOutcomeDialog() {
                 onClick={handleClickOpen}
                 aria-label="create new learning outcome button"
             >
-                <FormattedMessage id="assess_createButton" />
+                <FormattedMessage id="button_create" />
                 <AddIcon fontSize="small" />
             </StyledFAB>
             <Dialog
@@ -243,7 +279,8 @@ export default function CreateLearningOutcomeDialog() {
                         <Hidden smDown>
                             <Grid item>
                                 <StyledFAB size="small" onClick={handleOnClickCreate}>
-                                    Create <AddIcon style={{ paddingLeft: theme.spacing(1) }} />
+                                    <FormattedMessage id="button_create" />
+                                    <AddIcon style={{ paddingLeft: theme.spacing(1) }} />
                                 </StyledFAB>
                             </Grid>
                         </Hidden>
@@ -280,7 +317,7 @@ export default function CreateLearningOutcomeDialog() {
                     <Grid className={classes.menuGrid} item xs={isMobile ? 12 : 6}>
                         <StyledComboBox
                             type="single"
-                            options={devSkills}
+                            options={devSkillOptions.map(opt => opt.name)}
                             label="Development Skill"
                             value={devSkill}
                             error={devSkillError !== null}
@@ -290,8 +327,9 @@ export default function CreateLearningOutcomeDialog() {
                     </Grid>
                     <Grid className={classes.menuGrid} item xs={isMobile ? 12 : 6}>
                         <StyledComboBox
+                            disabled={skillCatDisabled}
                             type="single"
-                            options={skillCats}
+                            options={skillCatOptions.map(opt => opt.name)}
                             label="Skill Category"
                             value={skillCat}
                             error={skillCatError !== null}

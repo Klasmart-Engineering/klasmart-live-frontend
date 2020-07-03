@@ -28,3 +28,14 @@ export interface IUserContext {
   teacher: boolean;
   name: string;
 }
+
+export type SkillCatOption = {
+  devSkillId: string;
+  skillCatId: string,
+  name: string;
+}
+
+export type DevSkillOption = {
+  devSkillId: string;
+  name: string;
+}

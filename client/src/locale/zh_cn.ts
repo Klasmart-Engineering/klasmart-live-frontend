@@ -8,14 +8,20 @@ const messages: Record<string, string> = {
     error_emptyTitle: "Enter a title",
     error_emptyDevSkill: "Select a development skill",
     error_emptySkillCat: "Select a skill category",
+    error_emptyType: "Select a type",
+    error_emptyPubRange: "Select a public range",
+    error_emptySuitAge: "Select a suitable age",
 
     form_emailLabel: "Email or phone",
     form_passwordLabel: "Password",
     form_nameLabel: "Name",
+    button_create: "Create",
 
     live_classCodeLabel: "Class code",
     live_liveButton: "Go Live",
-    live_liveLinkLabel: "KidsLoop <span className={classes.liveTextWrapper}>LIVE</span> link",
+    live_liveLinkLabel: "link",
+
+    library_createContentTitle: "Create new Content",
 
     locale_select: "选择语言",
     locale_tooltip: "切换语言",
@@ -37,7 +43,6 @@ const messages: Record<string, string> = {
     privacy_termsLink: "Terms",
 
     // Assessments
-    assess_createButton: "Create",
     assess_libraryButton: "Library",
     assess_pendingButton: "Pending",
     assess_completedButton: "Completed",

@@ -9,8 +9,9 @@ interface Props extends StandardTextFieldProps {
     type: "single" | "multiple";
     label: string;
     options: string[];
-    value: string | string[],
+    value: string,
     onChange: any;
+    disabled?: boolean
 }
 
 const useStyles = makeStyles(() => ({
@@ -28,23 +29,23 @@ const useStyles = makeStyles(() => ({
 }));
 
 export default function StyledComboBox(props: Props) {
-    const { type, label, options, value, onChange, ...other } = props;
+    const { type, label, options, value, onChange, disabled, ...other } = props;
     const classes = useStyles();
 
     if (type === "single") {
         return (
             <Autocomplete
-
+                disabled={disabled ? disabled : false}
                 className={classes.root}
                 options={options}
+                filterOptions={(options, state) => options} // Always list all option
                 getOptionLabel={option => option}
                 onChange={onChange}
-                inputValue={value as string} // If it already have value, value will be autofilled by inputValue
+                inputValue={value} // If it already have value, value will be autofilled by inputValue
                 renderInput={(params) =>
                     <div ref={params.InputProps.ref}>
                         <StyledTextField
                             {...other}
-
                             {...params}
                             fullWidth
                             required
