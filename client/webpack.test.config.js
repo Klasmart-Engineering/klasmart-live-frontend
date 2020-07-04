@@ -115,6 +115,14 @@ module.exports = {
         },
     },
     devServer: {
-        host: "0.0.0.0"
+        host: "0.0.0.0",
+        historyApiFallback: true,
+        proxy: {
+            '/h5p': {
+                target: 'https://zoo.kidsloop.net/',
+                secure: false,
+                changeOrigin: true,
+            }
+        }
     },
 };
