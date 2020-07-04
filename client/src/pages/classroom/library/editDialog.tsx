@@ -1,8 +1,4 @@
 import IconButton from "@material-ui/core/IconButton";
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
 import Hidden from "@material-ui/core/Hidden";
 import Dialog from "@material-ui/core/Dialog";
 import Grid from "@material-ui/core/Grid";
@@ -17,9 +13,9 @@ import Checkbox from '@material-ui/core/Checkbox';
 import { createStyles, makeStyles, Theme, useTheme } from "@material-ui/core/styles";
 import { TransitionProps } from "@material-ui/core/transitions";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
-import AddIcon from "@material-ui/icons/Add";
 import ErrorIcon from "@material-ui/icons/Error";
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
+import DoneIcon from '@material-ui/icons/Done';
 import React, { useState, useRef, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useSelector, useStore } from "react-redux";
@@ -38,11 +34,20 @@ import {
     LearningOutcomeResponse,
     DevSkillResponse,
     SkillCatResponse,
-    CreateLessonMaterialRequest,
+    UpdateLessonMaterialRequest,
     LessonMaterialResponse,
-    CreateLessonPlanRequest,
+    UpdateLessonPlanRequest,
     CreateLessonMaterialLessonPlanRequest,
+    LessonPlanResponse,
 } from "../assessments/api/restapi";
+import { contentTypes } from "../../../store/reducers";
+
+interface Props {
+    contentId: string
+    contentType: "lesson-plan" | "lesson-material"
+    open: boolean
+    onClose: any
+}
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -84,8 +89,16 @@ const Motion = React.forwardRef(function Transition(
     return <Grow style={{ transformOrigin: "0 0 0" }} ref={ref} {...props} />;
 });
 
-export default function CreateDialog() {
+export default function EditDialog(props: Props) {
+    const { contentId, contentType, open, onClose } = props;
     const api = useRestAPI();
+    async function getContent() {
+        if (contentType === "lesson-material") {
+            return api.getLessonMaterial(contentId);
+        } else if (contentType === "lesson-plan") {
+            return api.getLessonPlan(contentId);
+        }
+    }
     async function fetchPublishedLessonMaterials() {
         const payload = await api.getLessonMaterials();
         return payload.lessonMaterials
@@ -129,7 +142,6 @@ export default function CreateDialog() {
     const classes = useStyles();
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down('sm'));
-    const isMdDown = useMediaQuery(theme.breakpoints.down("md"));
     const store = useStore();
 
     const setActiveMenu = (value: LibraryMenu) => {
@@ -140,9 +152,8 @@ export default function CreateDialog() {
     const suitAgeOptions = useSelector((state: State) => state.account.suitableAges);
     const activities = useSelector((state: State) => state.account.activities);
 
-    const [open, setOpen] = useState(false);
-    const [hide, setHide] = useState(false);
-    const [contentType, setContentType] = useState("lesson-material");
+    const [loading, setLoading] = useState(true);
+    const [info, setInfo] = useState<LessonPlanResponse | LessonMaterialResponse>();
     const [title, setTitle] = useState("");
     const [type, setType] = useState("");
     const [pubRange, setPubRange] = useState("");
@@ -178,14 +189,20 @@ export default function CreateDialog() {
     const [LMsError, setLMsError] = useState("");
 
     useEffect(() => {
+        if (!open) { return; }
         let prepared = true;
         (async () => {
+            const content = await getContent();
             const LMs = await fetchPublishedLessonMaterials();
             const pubDevSkills = await fetchPublishedDevSkills();
             const pubSkillCats = await fetchPublishedSkillCats();
             const los = await fetchPublishedLearningOutcomes();
+            let devSkillName = "", skillCatName = "";
+            if (content) {
+                devSkillName = (await api.getDevSkill(content.devSkillId)).name;
+                skillCatName = (await api.getSkillCat(content.skillCatId)).name;
+            }
             if (prepared) {
-                LMs.length === 0 ? setHide(true) : setHide(false);
                 const skillCatOptions = pubSkillCats.map((cat: SkillCatResponse) => {
                     return {
                         devSkillId: cat.devSkillId,
@@ -193,32 +210,59 @@ export default function CreateDialog() {
                         name: cat.name
                     }
                 });
+                setInfo(content);
+
+                setSkillCatDisabled(false);
                 setLMs(LMs);
                 setAllSkillCatOptions(skillCatOptions);
                 setSkillCatOptions(skillCatOptions);
                 const devSkillNames = getAvaiableDevSkills(pubDevSkills, pubSkillCats);
                 setDevSkillOptions(devSkillNames);
                 setLOs(los);
+                if (content) {
+                    setDevSkill(devSkillName);
+                    setSkillCat(skillCatName);
+                }
             }
         })();
         return () => { prepared = false; };
-    }, [])
+    }, [open])
 
     useEffect(() => {
+        if (!open) { return; }
         if (devSkill === "") {
             setSkillCatDisabled(true);
             setSkillCat("Select Development Skill first");
         } else {
             setSkillCatDisabled(false);
-            setSkillCat("");
-            const devSkillId = devSkillOptions[devSkillIdx].devSkillId;
+            const devSkillId = devSkillOptions.filter(opt => opt.name === devSkill).devSkillId;
             const skillCatList = allSkillCatOptions.filter(cat => cat.devSkillId == devSkillId);
             setSkillCatOptions(skillCatList);
         }
     }, [devSkill])
 
-    const handleOpen = () => { setOpen(true); };
-    const handleClose = () => { setOpen(false); };
+    useEffect(() => {
+        if (!info) { return; }
+        if (contentType === "lesson-material") {
+            setType(typeOptions[info.type - 1]);
+            if (info.externalId) {
+                setH5P(activities.filter(a => a.id === info.externalId)[0].title);
+                setActivityId(info.externalId);
+            } else {
+                setH5P(activities[0].title);
+                setActivityId(activities[0].id);
+            }
+        } else if (contentType === "lesson-plan") {
+            setCheckedLMs(info.lessonMaterials
+                ? info.lessonMaterials.map(m => m.lessonMaterialId)
+                : [])
+        }
+        setTitle(info.name);
+        setPubRange(pubRangeOptions[info.publicRange - 1]);
+        setSuitAge(suitAgeOptions[info.suitableAge - 1]);
+        setDescription(info.description);
+        setCheckedLOs(info.learningOutcomes ? info.learningOutcomes : []);
+    }, [info])
 
     const handleClickPlay = () => { setActivityPlay(true); }
     const handleChangeH5P = (e: any, value: string) => {
@@ -298,7 +342,7 @@ export default function CreateDialog() {
         setCheckedLMs(newChecked);
     }
 
-    async function handleOnClickCreate() {
+    async function handleOnClickSubmit() {
         setH5PError(null);
         setTitleError(null);
         setTypeError(null);
@@ -331,7 +375,7 @@ export default function CreateDialog() {
             const skillCatId = skillCatOptions[skillCatIdx].skillCatId;
 
             if (contentType === "lesson-material") {
-                const req: CreateLessonMaterialRequest = {
+                const req: UpdateLessonMaterialRequest = {
                     publish: true,
                     externalId,
                     name: title,
@@ -343,7 +387,7 @@ export default function CreateDialog() {
                     description,
                     learningOutcomes: checkedLOs
                 }
-                const lmId = await api.createLessonMaterial(req);
+                const lmId = await api.createLessonMaterial(contentId, req);
             } else if (contentType === "lesson-plan") {
                 let loList: number[] = [];
                 let details: CreateLessonMaterialLessonPlanRequest[] = [];
@@ -360,7 +404,7 @@ export default function CreateDialog() {
                     })
                 }
                 loList = [...checkedLOs];
-                const req: CreateLessonPlanRequest = {
+                const req: UpdateLessonPlanRequest = {
                     publish: false,
                     name: title,
                     publicRange: pubRangeIdx,
@@ -371,10 +415,10 @@ export default function CreateDialog() {
                     learningOutcomes: [...new Set(loList)], // Remove duplicate
                     details
                 };
-                const lpId = await api.createLessonPlan(req);
+                const lpId = await api.updateLessonPlan(contentId, req);
             }
             setActiveMenu("pending");
-            setOpen(false);
+            onClose()
             location.reload();
         } catch (e) {
             handleError(e);
@@ -457,35 +501,26 @@ export default function CreateDialog() {
 
     return (
         <>
-            <StyledFAB
-                extendedOnly
-                size={isMdDown ? "small" : undefined}
-                onClick={handleOpen}
-                aria-label="create new lesson or material button"
-            >
-                <FormattedMessage id="button_create" />
-                <AddIcon fontSize="small" />
-            </StyledFAB>
             <Dialog
                 aria-labelledby="nav-menu-title"
                 aria-describedby="nav-menu-description"
                 fullScreen
                 open={open}
-                onClose={handleClose}
+                onClose={onClose}
                 TransitionComponent={Motion}
             >
                 <DialogAppBar
                     toolbarBtn={
                         <Hidden smDown>
                             <Grid item>
-                                <StyledFAB size="small" onClick={handleOnClickCreate}>
-                                    <FormattedMessage id="button_create" />
-                                    <AddIcon style={{ paddingLeft: theme.spacing(1) }} />
+                                <StyledFAB size="small" onClick={handleOnClickSubmit}>
+                                    Submit
+                                    <DoneIcon style={{ paddingLeft: theme.spacing(1) }} />
                                 </StyledFAB>
                             </Grid>
                         </Hidden>
                     }
-                    handleClose={handleClose}
+                    handleClose={onClose}
                     subtitleID="library_createContentTitle"
                 />
                 <Grid
@@ -495,22 +530,6 @@ export default function CreateDialog() {
                     alignItems="stretch"
                     className={classes.menuContainer}
                 >
-                    {hide ? null :
-                        <Grid container justify="center" className={classes.menuGrid} item xs={12}>
-                            <FormControl component="fieldset">
-                                <RadioGroup
-                                    row={!isSmDown}
-                                    aria-label="select-content-type"
-                                    name="select-content-type"
-                                    value={contentType}
-                                    onChange={(e) => setContentType(e.target.value)}
-                                >
-                                    <FormControlLabel label="Lesson Material" value="lesson-material" control={<Radio color="primary" />} />
-                                    <FormControlLabel label="Lesson Plan" value="lesson-plan" control={<Radio color="primary" />} />
-                                </RadioGroup>
-                            </FormControl>
-                        </Grid>
-                    }
                     {contentType === "lesson-material" ?
                         <>
                             <Grid className={classes.menuGrid} item xs={12}>
@@ -528,7 +547,7 @@ export default function CreateDialog() {
                                 <Grid className={classes.menuGrid} item xs={12} container direction="row" justify="center" alignItems="center">
                                     <Typography variant="subtitle1">
                                         Do you wanna try this activity?
-                                    </Typography>
+                                </Typography>
                                     <IconButton
                                         size="small"
                                         onClick={handleClickPlay}
@@ -639,7 +658,7 @@ export default function CreateDialog() {
                             subheader={
                                 <ListSubheader className={classes.listHeader} component="div" id="nested-list-subheader">
                                     Learning Outcomes *
-                                    {LOsError === "" ? null :
+                                {LOsError === "" ? null :
                                         <span style={{ display: "flex", alignItems: "center" }}>
                                             <ErrorIcon className={classes.errorIcon} color="error" />
                                             <Typography variant="caption" color="secondary">{LOsError}</Typography>

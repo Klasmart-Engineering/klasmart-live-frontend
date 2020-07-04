@@ -14,6 +14,8 @@ export interface MenuItem {
 }
 
 export interface ContentItem {
+  published: boolean;
+  contentId: string;
   description: string;
   link: string;
   image: string;

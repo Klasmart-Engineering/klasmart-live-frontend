@@ -14,11 +14,11 @@ import EditTwoToneIcon from "@material-ui/icons/EditTwoTone";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ShareTwoToneIcon from "@material-ui/icons/ShareTwoTone";
 import React, { useState } from "react";
-import StyledFAB from "../../../components/styled/fabButton";
 import { ContentItem, LibraryContentType } from "../../../types/objectTypes";
+import EditDialog from "./EditDialog";
 
 const useStyles = makeStyles((theme: Theme) =>
-    createStyles ({
+    createStyles({
         cardActions: {
             display: "flex",
         },
@@ -55,8 +55,11 @@ export default function LibraryContentCard(props: Props) {
     const classes = useStyles();
     const { content, type } = props;
     const [moreInfo, toggleMoreInfo] = useState(false);
+    const [open, setOpen] = useState(false);
+    const handleOpen = () => { setOpen(true); };
+    const handleClose = () => { setOpen(false); };
 
-    return (
+    return (<>
         <Card className={classes.root}>
             <CardActionArea onClick={() => window.open(content.link)}>
                 <CardMedia
@@ -75,7 +78,7 @@ export default function LibraryContentCard(props: Props) {
                 >
                     <Grid item>
                         <Typography gutterBottom variant="body1" align="left">
-                            { content.title }
+                            {content.title}
                         </Typography>
                     </Grid>
                     <Grid item>
@@ -98,18 +101,20 @@ export default function LibraryContentCard(props: Props) {
                         align="left"
                         className={classes.paragraphClamp}
                     >
-                        { content.description }
+                        {content.description}
                     </Typography>
                 </Collapse>
             </CardContent>
-            { type === "OwnedContent" ?
+            {type === "OwnedContent" ?
                 <CardActions className={classes.cardActions}>
                     <IconButton size="small" color="primary" className={classes.iconExpand}>
                         <ShareTwoToneIcon />
                     </IconButton>
-                    <IconButton size="small" color="primary">
-                        <EditTwoToneIcon />
-                    </IconButton>
+                    {!content.published && content.type !== undefined ?
+                        <IconButton size="small" color="primary" onClick={handleOpen}>
+                            <EditTwoToneIcon />
+                        </IconButton> : null
+                    }
                     <IconButton size="small" color="primary">
                         <ArchiveTwoToneIcon />
                     </IconButton>
@@ -130,5 +135,8 @@ export default function LibraryContentCard(props: Props) {
                 </CardActions>
             }
         </Card>
-    );
+        {!content.published && content.type !== undefined ?
+            <EditDialog contentId={content.contentId} contentType={content.type} open={open} onClose={handleClose} /> : null
+        }
+    </>);
 }

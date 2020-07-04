@@ -52,13 +52,16 @@ export type ToggleLiveClass = Action<ActionTypes.LIVE_CLASS_TOGGLE, boolean>;
 
 export type SetActiveComponentHome = Action<ActionTypes.ACTIVE_COMPONENT_HOME, string>;
 
-export type SetAssessmentToken = Action<ActionTypes.ASSESSMENT_TOKEN, string>;
+export type AssessmentToken = Action<ActionTypes.ASSESSMENT_TOKEN, string>;
 
 export type SetStudents = Action<ActionTypes.STUDENTS, {
     profileId: string,
     profileName: string,
     iconLink: string
 }[]>;
+
+export type LibraryMenu = "content" | "pending" | "archived";
+export type SetActiveLibraryMenu = Action<ActionTypes.ACTIVE_LIBRARY_MENU, LibraryMenu>;
 
 export enum AssessmentsMenu {
     LIBRARY = "library",
@@ -67,11 +70,13 @@ export enum AssessmentsMenu {
 }
 export type SetActiveAssessmentsMenu = Action<ActionTypes.ACTIVE_ASSESSMENTS_MENU, AssessmentsMenu>;
 
-export type SetContentTypes = Action<ActionTypes.CONTENT_TYPES, string[]>;
+export type ContentTypes = Action<ActionTypes.CONTENT_TYPES, string[]>;
 
-export type SetPublicRange = Action<ActionTypes.PUBLIC_RANGES, string[]>;
+export type PublicRange = Action<ActionTypes.PUBLIC_RANGES, string[]>;
 
-export type SetSuitableAges = Action<ActionTypes.SUITABLE_AGES, string[]>;
+export type SuitableAges = Action<ActionTypes.SUITABLE_AGES, string[]>;
+
+export type Activities = Action<ActionTypes.ACTIVITIES, { id: string, title: string }[]>;
 
 export enum ActionTypes {
     LOCALE,
@@ -92,10 +97,12 @@ export enum ActionTypes {
     ACTIVE_COMPONENT_HOME,
     ASSESSMENT_TOKEN,
     STUDENTS,
+    ACTIVE_LIBRARY_MENU,
     ACTIVE_ASSESSMENTS_MENU,
     CONTENT_TYPES,
     PUBLIC_RANGES,
     SUITABLE_AGES,
+    ACTIVITIES,
 }
 
 export type Actions =
@@ -115,10 +122,12 @@ export type Actions =
     | DeviceIdAction
     | ToggleLiveClass
     | SetActiveComponentHome
-    | SetAssessmentToken
+    | AssessmentToken
     | SetStudents
+    | SetActiveLibraryMenu
     | SetActiveAssessmentsMenu
-    | SetContentTypes
-    | SetPublicRange
-    | SetSuitableAges
+    | ContentTypes
+    | PublicRange
+    | SuitableAges
+    | Activities
     | never;

@@ -1,16 +1,15 @@
 import Grid from "@material-ui/core/Grid";
 import React from "react";
-import { ContentItem, LibraryContentType } from "../../../types/objectTypes";
 import LibraryContentCard from "./libraryContentCard";
+import { ContentItem, LibraryContentType } from "../../../types/objectTypes";
 
 interface Props {
-    content: ContentItem[];
+    contents: ContentItem[];
     type: LibraryContentType;
 }
 
-export default function LibraryView(props: Props) {
-    const { content, type } = props;
-
+export default function LibraryContentItems(props: Props) {
+    const { contents, type } = props;
     return (
         <>
             <Grid
@@ -21,15 +20,18 @@ export default function LibraryView(props: Props) {
                 spacing={1}
             >
                 {
-                    content.map((item) => {
+                    contents.map((content) => {
                         return (
                             <Grid
-                                key={`item-${item.title}`}
+                                key={`item-${content.contentId}`}
                                 item
                                 xs={6} sm={4} md={3}
                                 style={{ textAlign: "center" }}
                             >
-                                <LibraryContentCard content={item} type={type} />
+                                <LibraryContentCard
+                                    content={content}
+                                    type={type}
+                                />
                             </Grid>
                         );
                     })

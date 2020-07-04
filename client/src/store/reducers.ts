@@ -238,6 +238,15 @@ export function students(state = STUDENT_LIST, action: Actions) {
     }
 }
 
+export function activeLibraryMenu(state = "content", action: Actions) {
+    switch (action.type) {
+        case ActionTypes.ACTIVE_LIBRARY_MENU:
+            return action.payload;
+        default:
+            return state;
+    }
+}
+
 export function activeAssessmentsMenu(state = "library", action: Actions) {
     switch (action.type) {
         case ActionTypes.ACTIVE_ASSESSMENTS_MENU:
@@ -247,7 +256,7 @@ export function activeAssessmentsMenu(state = "library", action: Actions) {
     }
 }
 
-const CONTENT_TYPE_LIST = ["Activity", "Image", "Video"];
+const CONTENT_TYPE_LIST = ["Activity"];
 export function contentTypes(state = CONTENT_TYPE_LIST, action: Actions) {
     switch (action.type) {
         case ActionTypes.CONTENT_TYPES:
@@ -277,6 +286,49 @@ export function suitableAges(state = SUITABLE_AGE_LIST, action: Actions) {
     }
 }
 
+const ACTIVITY_LIST = [
+    {
+        id: "5ed99fe36aad833ac89a4803",
+        title: "Snow Leopard Intro"
+    },
+    {
+        id: "5ed75e1b6aad833ac89a47fa",
+        title: "Snow Leopard Speech"
+    },
+    {
+        id: "5ed05dd1611e18398f7380f4",
+        title: "Snow Leopard Flashcards"
+    },
+    {
+        id: "5ed0b64a611e18398f7380fb",
+        title: "Snow Leopard Sticker"
+    },
+    {
+        id: "5ecf6f43611e18398f7380f0",
+        title: "Snow Leopard Hotspot"
+    },
+    {
+        id: "5ecf71d2611e18398f7380f2",
+        title: "Snow Leopard Camouflage"
+    },
+    {
+        id: "5ecf4e4b611e18398f7380ef",
+        title: "Snow Leopard Matching"
+    },
+    {
+        id: "5ed07656611e18398f7380f6",
+        title: "Snow Leopard Quiz"
+    },
+];
+export function activities(state = ACTIVITY_LIST, action: Actions) {
+    switch (action.type) {
+        case ActionTypes.ACTIVITIES:
+            return action.payload;
+        default:
+            return state;
+    }
+}
+
 export const account = combineReducers({
     assessmentToken,
     accessToken,
@@ -292,6 +344,7 @@ export const account = combineReducers({
     contentTypes,
     publicRange,
     suitableAges,
+    activities,
 });
 
 export const ui = combineReducers({
@@ -300,5 +353,6 @@ export const ui = combineReducers({
     darkMode,
     liveClass,
     locale,
+    activeLibraryMenu,
     activeAssessmentsMenu,
 });

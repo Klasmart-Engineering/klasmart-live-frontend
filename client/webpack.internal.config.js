@@ -91,18 +91,13 @@ module.exports = {
         host: "0.0.0.0",
         historyApiFallback: true,
         proxy: {
-            // '/h5p': {
-            //     target: 'https://zoo.kidsloop.net/',
-            //     secure: false,
-            //     changeOrigin: true,
-            // },
-            "/v1": {
-                target: "https://seoul-beta.assessment-api.badanamu.net",
+            "/h5p": {
+                target: "https://zoo.kidsloop.net/",
                 secure: false,
                 changeOrigin: true,
             },
-            "/h5p": {
-                target: "http://192.168.0.192:8888",
+            "/v1": {
+                target: "https://seoul-beta.assessment-api.badanamu.net",
                 secure: false,
                 changeOrigin: true,
             },

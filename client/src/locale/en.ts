@@ -10,11 +10,13 @@ const messages: Record<string, string> = {
     error_emptyEmail: "Enter an email or phone number",
     error_emptyPassword: "Enter your password",
     error_emptyTitle: "Enter a title",
+    error_emptyDescription: "Enter Description",
     error_emptyDevSkill: "Select a development skill",
     error_emptySkillCat: "Select a skill category",
     error_emptyType: "Select a type",
     error_emptyPubRange: "Select a public range",
     error_emptySuitAge: "Select a suitable age",
+    error_emptyActivity: "Select a Activity",
 
     button_create: "Create",
     form_emailLabel: "Email or phone",
@@ -42,6 +44,13 @@ const messages: Record<string, string> = {
     live_waitingForStudents: "Waiting for students to join the room",
     live_zoomIntoActivity: "Zoom in this activity",
 
+    library_contentButton: "My Content",
+    library_pendingButton: "Pending",
+    library_archivedButton: "Archived",
+    library_contentTitle: "Content Library",
+    library_contentMarketTitle: "Marketplace",
+    library_pendingTitle: "Pending Content",
+    library_archivedTitle: "Archived Content",
     library_createContentTitle: "Create new Content",
 
     locale_select: "Select Language",
