@@ -1,4 +1,4 @@
-import { Button, Hidden, Theme} from "@material-ui/core";
+import { Button, Hidden, Theme } from "@material-ui/core";
 import Divider from "@material-ui/core/Divider";
 import Drawer from "@material-ui/core/Drawer";
 import Grid from "@material-ui/core/Grid";
@@ -22,6 +22,12 @@ import { Content, Message, Session } from "../../room";
 import { SendMessage } from "../../sendMessage";
 import { MyCamera } from "../../webRTCState";
 import { ControlButtons } from "./controlButtons";
+import {
+    useRestAPI,
+    CreateAssessmentRequest,
+    UpdateAssessmentRequest,
+} from "../../../../assessments/api/restapi";
+import { getDefaultProgId } from "../../../../../../config";
 
 const drawerWidth = 340;
 
@@ -78,6 +84,8 @@ interface Props {
 }
 
 export function Teacher(props: Props): JSX.Element {
+    const api = useRestAPI();
+
     const classes = useStyles();
     const store = useStore();
     const { content, users, messages } = props;
@@ -90,7 +98,7 @@ export function Teacher(props: Props): JSX.Element {
     const [maxWidth, setMaxWidth] = useState<number>(0);
     const [maxHeight, setMaxHeight] = useState<number>(0);
 
-    const liveData = useSelector((state: State) => state.ui.activeComponentHome);
+    const liveData = useSelector((state: State) => state.account.finishLiveData);
     const setFinishedLiveData = (value: LiveSessionData) => {
         store.dispatch({ type: ActionTypes.FINISH_LIVE_DATA, payload: value });
     };
@@ -128,6 +136,45 @@ export function Teacher(props: Props): JSX.Element {
             setMaxWidth(containerRef.getBoundingClientRect().width);
         }
     }, []);
+
+    const onEndClass = () => {
+        const data: LiveSessionData = {
+            classId: liveData.classId,
+            className: liveData.className,
+            startDate: liveData.startDate,
+            students: liveData.students
+        };
+        setFinishedLiveData(data);
+        toggleLive();
+
+        uploadAssessment(data);
+    }
+
+    function uploadAssessment(data: LiveSessionData) {
+        const createAssReq: CreateAssessmentRequest = {
+            publish: false,
+            progId: getDefaultProgId(),
+            classId: liveData.classId,
+            className: liveData.className,
+            lessonPlanId: "29198079-348c-4091-a04d-eee66d1255f3",
+            sessionId: "demo-session-id",
+            startDate: liveData.startDate,
+            subject: "English",
+        }
+        const updateAssReq: UpdateAssessmentRequest = {
+            students: liveData.students,
+            state: 2
+        }
+
+        let prepared = true;
+        (async () => {
+            const res = await api.createAssessment(createAssReq);
+            if (prepared) {
+                api.updateAssessment(res.assId, updateAssReq);
+            }
+        })();
+        return () => { prepared = false; };
+    }
 
     return (
         <div className={classes.root}>
@@ -173,19 +220,7 @@ export function Teacher(props: Props): JSX.Element {
                                         borderRadius: 12,
                                         margin: "4px 8px",
                                     }}
-                                    onClick={() => {
-                                        const data: LiveSessionData = {
-                                            classId: "CalmIsland",
-                                            className: "Pre-production",
-                                            students: [{
-                                                profileId: "student0",
-                                                profileName: "Woody",
-                                                profileImage: "",
-                                            }],
-                                        };
-                                        setFinishedLiveData(data);
-                                        toggleLive();
-                                    }}
+                                    onClick={onEndClass}
                                 >
                                     <CloseIcon style={{ paddingRight: 5 }} />
                                     <FormattedMessage id="live_buttonEndClass" />
@@ -233,25 +268,25 @@ export function Teacher(props: Props): JSX.Element {
                     <Divider />
 
                     <Grid item>
-                        { users.size === 0 ?
+                        {users.size === 0 ?
                             <Typography>
                                 <FormattedMessage id="waiting_for_students" />
                             </Typography> :
                             <Grid container direction="column" style={{ height: "100%", width: drawerWidth - 20, padding: 4 }}>
                                 <Typography variant="caption" align="center" color="textSecondary" gutterBottom>
-                                    Students { content.type === "Activity" ? "+ Interactive View" : "" }
+                                    Students {content.type === "Activity" ? "+ Interactive View" : ""}
                                 </Typography>
                                 {
                                     [...users.entries()].filter(([, s]) => s.id !== sessionId).map(([id, session]) => (
                                         <>
-                                            { content.type === "Activity" ?
+                                            {content.type === "Activity" ?
                                                 <Grid item style={{ height: drawerWidth - 20, width: drawerWidth - 20, margin: "0 auto" }} key={id}>
                                                     {
                                                         session.streamId
                                                             ? <PreviewPlayer streamId={session.streamId} height={drawerWidth - 20} width={drawerWidth - 20} />
                                                             : undefined
                                                     }
-                                                </Grid> : null }
+                                                </Grid> : null}
                                             <Grid item>
                                                 <Typography align="center">
                                                     {session.name}

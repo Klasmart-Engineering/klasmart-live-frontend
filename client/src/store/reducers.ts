@@ -285,6 +285,24 @@ export function suitableAges(state = SUITABLE_AGE_LIST, action: Actions) {
     }
 }
 
+export function finishLiveData(state = {
+    classId: "CalmIsland",
+    className: "Pre-production",
+    startDate: 0,
+    students: [{
+        profileId: "student0",
+        profileName: "Woody",
+        iconLink: "",
+    }],
+}, action: Actions) {
+    switch (action.type) {
+        case ActionTypes.SUITABLE_AGES:
+            return action.payload;
+        default:
+            return state;
+    }
+}
+
 const ACTIVITY_LIST = [
     {
         id: "5ed99fe36aad833ac89a4803",
@@ -322,48 +340,37 @@ const ACTIVITY_LIST = [
 export function activities(state = ACTIVITY_LIST, action: Actions) {
     switch (action.type) {
         case ActionTypes.ACTIVITIES:
-            export function finishLiveData(state = {
-                classId: "CalmIsland",
-                className: "Pre-production",
-                students: [{
-                    profileId: "student0",
-                    profileName: "Woody",
-                    profileImage: "",
-                }],
-            }, action: Actions) {
-                switch (action.type) {
-                    case ActionTypes.FINISH_LIVE_DATA:
-                        return action.payload;
-                    default:
-                        return state;
-                }
-            }
+            return action.payload;
+        default:
+            return state;
+    }
+}
 
-            export const account = combineReducers({
-                assessmentToken,
-                accessToken,
-                accessTokenExpire,
-                accountId,
-                deviceId,
-                email,
-                finishLiveData,
-                refreshToken,
-                refreshTokenExpire,
-                sessionId,
-                userAgent,
-                students,
-                contentTypes,
-                publicRange,
-                suitableAges,
-                activities,
-            });
+export const account = combineReducers({
+    assessmentToken,
+    accessToken,
+    accessTokenExpire,
+    accountId,
+    deviceId,
+    email,
+    finishLiveData,
+    refreshToken,
+    refreshTokenExpire,
+    sessionId,
+    userAgent,
+    students,
+    contentTypes,
+    publicRange,
+    suitableAges,
+    activities,
+});
 
-            export const ui = combineReducers({
-                activeComponentHome,
-                classSettings,
-                darkMode,
-                liveClass,
-                locale,
-                activeLibraryMenu,
-                activeAssessmentsMenu,
-            });
+export const ui = combineReducers({
+    activeComponentHome,
+    classSettings,
+    darkMode,
+    liveClass,
+    locale,
+    activeLibraryMenu,
+    activeAssessmentsMenu,
+});

@@ -23,6 +23,8 @@ const messages: Record<string, string> = {
     form_passwordLabel: "Password",
     button_create: "Create",
 
+    live_classNameLabel: "Class Name",
+    live_classSelect: "Select Class",
     live_activityLink: "Activity Link",
     live_buttonActivity: "Student Mode",
     live_buttonEndClass: "End Class",

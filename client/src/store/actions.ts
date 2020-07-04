@@ -1,4 +1,4 @@
-import { UserAgent } from "../types/objectTypes";
+import { UserAgent, LiveSessionData } from "../types/objectTypes";
 
 export interface Action<T extends ActionTypes, P> {
     type: T;
@@ -77,15 +77,8 @@ export type PublicRange = Action<ActionTypes.PUBLIC_RANGES, string[]>;
 export type SuitableAges = Action<ActionTypes.SUITABLE_AGES, string[]>;
 
 export type Activities = Action<ActionTypes.ACTIVITIES, { id: string, title: string }[]>;
-export type FinishLiveData = Action<ActionTypes.FINISH_LIVE_DATA, {
-    classId: string | any,
-    className: string | any,
-    students: Array<{
-        profileId: string,
-        profileName: string,
-        profileImage?: string,
-    }>,
-} | any | undefined>;
+
+export type FinishLiveData = Action<ActionTypes.FINISH_LIVE_DATA, LiveSessionData>;
 
 export enum ActionTypes {
     LOCALE,

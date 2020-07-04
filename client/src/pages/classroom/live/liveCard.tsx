@@ -11,6 +11,7 @@ import CenterAlignChildren from "../../../components/centerAlignChildren";
 import StyledFAB from "../../../components/styled/fabButton";
 import { ActionTypes } from "../../../store/actions";
 import { State } from "../../../store/store";
+import ClassSelect from "../../../components/classSelect"
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -53,7 +54,16 @@ export default function LiveCard() {
     const theme = useTheme();
     const store = useStore();
 
+    const liveData = useSelector((state: State) => state.account.finishLiveData);
     const toggleLive = () => {
+        const value = {
+            classId: liveData.classId,
+            className: liveData.className,
+            startDate: new Date().getTime(),
+            students: liveData.students
+        }
+        console.log("value: ", value)
+        store.dispatch({ type: ActionTypes.FINISH_LIVE_DATA, payload: value });
         store.dispatch({ type: ActionTypes.LIVE_CLASS_TOGGLE, payload: true });
     };
 
@@ -74,9 +84,9 @@ export default function LiveCard() {
                     <Grid item xs={12}>
                         <CenterAlignChildren>
                             <Typography variant="h6" style={{ paddingRight: theme.spacing(2) }}>
-                                <FormattedMessage id={"live_classCodeLabel"} />:
+                                <FormattedMessage id={"live_classNameLabel"} />:
                             </Typography>
-                            <Typography variant="body1">{randomBytes(6).toString("base64")}</Typography>
+                            <ClassSelect />
                         </CenterAlignChildren>
                     </Grid>
                     <Grid item xs={12}>

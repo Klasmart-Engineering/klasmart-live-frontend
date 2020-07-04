@@ -45,11 +45,12 @@ export type DevSkillOption = {
 export interface Student {
   profileId: string;
   profileName: string;
-  profileImage?: string;
+  iconLink: string;
 }
 
 export interface LiveSessionData {
   classId: string;
   className: string;
+  startDate: number;
   students: Student[];
 }
