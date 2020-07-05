@@ -15,7 +15,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ShareTwoToneIcon from "@material-ui/icons/ShareTwoTone";
 import React, { useState } from "react";
 import { ContentItem, LibraryContentType } from "../../../types/objectTypes";
-import EditDialog from "./EditDialog";
+import EditDialog from "./editDialog";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
