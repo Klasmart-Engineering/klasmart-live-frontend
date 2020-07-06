@@ -12,6 +12,7 @@ import StyledFAB from "../../../components/styled/fabButton";
 import { ActionTypes } from "../../../store/actions";
 import { State } from "../../../store/store";
 import ClassSelect from "../../../components/classSelect"
+import { LiveSessionData } from "../../../types/objectTypes";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -55,17 +56,25 @@ export default function LiveCard() {
     const store = useStore();
 
     const liveData = useSelector((state: State) => state.account.finishLiveData);
-    const toggleLive = () => {
-        const value = {
-            classId: liveData.classId,
-            className: liveData.className,
-            startDate: new Date().getTime(),
-            students: liveData.students
-        }
-        console.log("value: ", value)
+    const setLiveData = (value: LiveSessionData) => {
         store.dispatch({ type: ActionTypes.FINISH_LIVE_DATA, payload: value });
+    };
+    const toggleLive = () => {
+        const data = initLiveData();
+        setLiveData(data);
         store.dispatch({ type: ActionTypes.LIVE_CLASS_TOGGLE, payload: true });
     };
+
+    function initLiveData() {
+        const startDate = new Date().getTime();
+        const data: LiveSessionData = {
+            classId: liveData.classId,
+            className: liveData.className,
+            startDate,
+            students: liveData.students
+        }
+        return data
+    }
 
     return (
         <Grid

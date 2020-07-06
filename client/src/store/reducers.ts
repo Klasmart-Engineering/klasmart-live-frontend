@@ -209,22 +209,22 @@ export function assessmentToken(state = JWT_TOKEN, action: Actions) {
 const STUDENT_LIST = [
     {
         profileId: "student0",
-        profileName: "Woody",
+        profileName: "Bada",
         iconLink: "",
     },
     {
         profileId: "student1",
-        profileName: "Buzz Lightyear",
+        profileName: "Pogo",
         iconLink: "",
     },
     {
         profileId: "student2",
-        profileName: "Rex",
+        profileName: "Curly",
         iconLink: ""
     },
     {
         profileId: "student3",
-        profileName: "Slinky Dog",
+        profileName: "Jess",
         iconLink: "",
     },
 ];
@@ -288,15 +288,32 @@ export function suitableAges(state = SUITABLE_AGE_LIST, action: Actions) {
 export function finishLiveData(state = {
     classId: "CalmIsland",
     className: "Pre-production",
-    startDate: 0,
-    students: [{
-        profileId: "student0",
-        profileName: "Woody",
-        iconLink: "",
-    }],
+    startDate: new Date().getTime(), // TODO: have to fix
+    students: [
+        {
+            profileId: "student0",
+            profileName: "Bada",
+            iconLink: "",
+        },
+        {
+            profileId: "student1",
+            profileName: "Pogo",
+            iconLink: "",
+        },
+        {
+            profileId: "student2",
+            profileName: "Curly",
+            iconLink: ""
+        },
+        {
+            profileId: "student3",
+            profileName: "Jess",
+            iconLink: "",
+        },
+    ],
 }, action: Actions) {
     switch (action.type) {
-        case ActionTypes.SUITABLE_AGES:
+        case ActionTypes.FINISH_LIVE_DATA:
             return action.payload;
         default:
             return state;

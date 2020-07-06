@@ -98,14 +98,20 @@ export function Teacher(props: Props): JSX.Element {
     const [maxWidth, setMaxWidth] = useState<number>(0);
     const [maxHeight, setMaxHeight] = useState<number>(0);
 
+    const isLive = useSelector((state: State) => state.ui.liveClass);
+    const toggleLive = () => {
+        store.dispatch({ type: ActionTypes.LIVE_CLASS_TOGGLE, payload: false });
+    };
     const liveData = useSelector((state: State) => state.account.finishLiveData);
     const setFinishedLiveData = (value: LiveSessionData) => {
         store.dispatch({ type: ActionTypes.FINISH_LIVE_DATA, payload: value });
     };
-    const toggleLive = () => {
-        store.dispatch({ type: ActionTypes.LIVE_CLASS_TOGGLE, payload: false });
+    const setActiveComponent = (value: string) => {
+        store.dispatch({ type: ActionTypes.ACTIVE_COMPONENT_HOME, payload: value });
     };
-
+    const setActiveAssessMenu = (value: string) => {
+        store.dispatch({ type: ActionTypes.ACTIVE_ASSESSMENTS_MENU, payload: value });
+    };
     const memos = useMemo(() => {
         const url = new URL(window.location.href);
         return {
@@ -115,7 +121,6 @@ export function Teacher(props: Props): JSX.Element {
     }, []);
 
     const [contentId, setContentId] = useState(memos.activity);
-    // console.log(`contentId: ${contentId}`)
 
     useEffect(() => {
         function test(e: MessageEvent) {
@@ -138,6 +143,7 @@ export function Teacher(props: Props): JSX.Element {
     }, []);
 
     const onEndClass = () => {
+        if (isLive) { toggleLive(); }
         const data: LiveSessionData = {
             classId: liveData.classId,
             className: liveData.className,
@@ -145,24 +151,24 @@ export function Teacher(props: Props): JSX.Element {
             students: liveData.students
         };
         setFinishedLiveData(data);
-        toggleLive();
-
         uploadAssessment(data);
+        setActiveAssessMenu("pending");
+        window.location.href = "/?component=assessments"
     }
 
     function uploadAssessment(data: LiveSessionData) {
         const createAssReq: CreateAssessmentRequest = {
             publish: false,
             progId: getDefaultProgId(),
-            classId: liveData.classId,
-            className: liveData.className,
-            lessonPlanId: "29198079-348c-4091-a04d-eee66d1255f3",
+            classId: data.classId,
+            className: data.className,
+            lessonPlanId: "5db78574-2cf3-4a91-b705-b18d78013676", // It's temp for demo 
             sessionId: "demo-session-id",
-            startDate: liveData.startDate,
+            startDate: data.startDate,
             subject: "English",
         }
         const updateAssReq: UpdateAssessmentRequest = {
-            students: liveData.students,
+            students: data.students,
             state: 2
         }
 

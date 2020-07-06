@@ -11,7 +11,7 @@ import LibraryIcon from '@material-ui/icons/LocalLibraryTwoTone';
 import PendingIcon from '@material-ui/icons/HourglassFullTwoTone';
 import CompleteIcon from '@material-ui/icons/AssignmentTurnedInTwoTone';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useSelector, useStore } from "react-redux";
 
@@ -83,6 +83,10 @@ export default function AssessmentsLayout() {
     const classes = useStyles();
     const store = useStore();
 
+    const isLive = useSelector((state: State) => state.ui.liveClass);
+    const toggleLive = () => {
+        store.dispatch({ type: ActionTypes.LIVE_CLASS_TOGGLE, payload: false });
+    };
     const activeMenu = useSelector((state: State) => state.ui.activeAssessmentsMenu);
     const setActiveMenu = (value: string) => {
         store.dispatch({ type: ActionTypes.ACTIVE_ASSESSMENTS_MENU, payload: value });
@@ -90,6 +94,9 @@ export default function AssessmentsLayout() {
     const [inFlight, setInFlight] = useState(false);
     const [menuElement, setMenuElement] = useState<null | HTMLElement>(null);
 
+    useEffect(() => {
+        if (isLive) { toggleLive(); }
+    }, [])
 
     const handleOnClickMenu = (id: string) => {
         setMenuElement(null);

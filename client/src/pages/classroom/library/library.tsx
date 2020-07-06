@@ -6,7 +6,7 @@ import Typography from "@material-ui/core/Typography";
 import ArchiveTwoToneIcon from "@material-ui/icons/ArchiveTwoTone";
 import HourglassFullTwoToneIcon from "@material-ui/icons/HourglassFullTwoTone";
 import LocalLibraryTwoToneIcon from "@material-ui/icons/LocalLibraryTwoTone";
-import React from "react";
+import React, { useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useStore, useSelector } from "react-redux";
 import { State } from "../../../store/store";
@@ -29,10 +29,18 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function LibraryLayout() {
     const classes = useStyles();
     const store = useStore();
+
     const activeMenu = useSelector((state: State) => state.ui.activeLibraryMenu);
     const setActiveMenu = (value: LibraryMenu) => {
         store.dispatch({ type: ActionTypes.ACTIVE_LIBRARY_MENU, payload: value });
     };
+    const isLive = useSelector((state: State) => state.ui.liveClass);
+    const toggleLive = () => {
+        store.dispatch({ type: ActionTypes.LIVE_CLASS_TOGGLE, payload: false });
+    };
+    useEffect(() => {
+        if (isLive) { toggleLive(); }
+    }, [])
 
     return (
         <Grid

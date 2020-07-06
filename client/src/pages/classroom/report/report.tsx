@@ -8,7 +8,9 @@ import PendingIcon from '@material-ui/icons/HourglassFullTwoTone';
 import CompleteIcon from '@material-ui/icons/AssignmentTurnedInTwoTone';
 import * as React from "react";
 import { useEffect, useState } from "react";
-
+import { useStore, useSelector } from "react-redux";
+import { State } from "../../../store/store";
+import { ActionTypes } from "../../../store/actions"
 import BadanamuButton from "./../../../components/styled/button";
 import BadanamuTextField from "../../../components/styled/textfield";
 import { useRestAPI, ReportLearningOutcomeRequest } from "./api/restapi";
@@ -35,12 +37,17 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function ReportLayout() {
     const classes = useStyles();
+    const store = useStore();
+
     const [activeMenu, setActiveMenu] = useState("");
     const [inFlight, setInFlight] = useState(false);
-
+    const isLive = useSelector((state: State) => state.ui.liveClass);
+    const toggleLive = () => {
+        store.dispatch({ type: ActionTypes.LIVE_CLASS_TOGGLE, payload: false });
+    };
     useEffect(() => {
-
-    }, []);
+        if (isLive) { toggleLive(); }
+    }, [])
 
     return (
         <Grid
