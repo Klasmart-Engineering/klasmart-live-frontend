@@ -150,6 +150,30 @@ export default function PendingViewDialog(props: Props) {
                             awardedList.push(los[i].loId)
                         }
                     }
+                    // Check if it's the first time to assess students.
+                    // If it's the first time, pre-fill assumed LOs box
+                    let assessed = false;
+                    for (let i = 0; i < los.length; ++i) {
+                        if (los[i].assessedStudents.length > 0) {
+                            assessed = true;
+                            break;
+                        }
+                    }
+                    if (!assessed && chkStds.length === 0 && awardedList.length === 0) {
+                        for (let i = 0; i < los.length; ++i) {
+                            for (let j = 0; j < students.length; ++j) {
+                                if (los[i].assumed) {
+                                    chkStds.push({
+                                        profileId: students[j].profileId,
+                                        loId: los[i].loId
+                                    })
+                                }
+                            }
+                            if (los[i].assumed) {
+                                awardedList.push(los[i].loId)
+                            }
+                        }
+                    }
                     setAwardedLOs(awardedList);
                     setCheckedStudents(chkStds);
                 }
