@@ -106,18 +106,23 @@ export default function LibraryContentCard(props: Props) {
                 </Collapse>
             </CardContent>
             {type === "OwnedContent" ?
-                <CardActions className={classes.cardActions}>
-                    <IconButton size="small" color="primary" className={classes.iconExpand}>
-                        <ShareTwoToneIcon />
-                    </IconButton>
-                    {!content.published && content.type !== undefined ?
-                        <IconButton size="small" color="primary" onClick={handleOpen}>
-                            <EditTwoToneIcon />
-                        </IconButton> : null
-                    }
-                    <IconButton size="small" color="primary">
-                        <ArchiveTwoToneIcon />
-                    </IconButton>
+                <CardActions className={classes.cardActions} style={{ justifyContent: "space-between" }}>
+                    <Typography variant="caption" color="textSecondary">
+                        {content.type === "lesson-plan" ? "Plan" : "Material"}
+                    </Typography>
+                    <Grid>
+                        <IconButton size="small" color="primary" className={classes.iconExpand}>
+                            <ShareTwoToneIcon />
+                        </IconButton>
+                        {!content.published && content.type !== undefined ?
+                            <IconButton size="small" color="primary" onClick={handleOpen}>
+                                <EditTwoToneIcon />
+                            </IconButton> : null
+                        }
+                        <IconButton size="small" color="primary">
+                            <ArchiveTwoToneIcon />
+                        </IconButton>
+                    </Grid>
                 </CardActions> :
                 <CardActions className={classes.cardActions}>
                     <Grid container justify="space-between" alignItems="center">

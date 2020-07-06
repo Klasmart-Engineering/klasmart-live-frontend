@@ -71,8 +71,8 @@ export function Student(props: Props): JSX.Element {
                             style={{ height: "100%" }}
                         >
                             <Grid item xs={12}>
-                                <Typography><FormattedMessage id={"hello"} values={{ name }} /></Typography>
-                                <Typography><FormattedMessage id={"waiting_for_class"} /></Typography>
+                                <Typography><FormattedMessage id={"live_hello"} values={{ name }} /></Typography>
+                                <Typography><FormattedMessage id={"live_failedToConnect"} /></Typography>
                             </Grid>
                             <Grid item xs={12}>
                                 <CircularProgress />

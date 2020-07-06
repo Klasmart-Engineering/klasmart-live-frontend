@@ -115,11 +115,11 @@ export default function LibraryContentView() {
                             Create or purchase content to get started on your learning adventure.
                 </Typography>
                     </Grid>
-                    <Hidden lgUp>
+                    {/* <Hidden lgUp>
                         <Grid item xs={12}>
                             <CreateDialog />
                         </Grid>
-                    </Hidden>
+                    </Hidden> */}
                 </Grid> :
                 <LibraryContentItems contents={contents} type="OwnedContent" />
             }

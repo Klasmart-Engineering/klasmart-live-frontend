@@ -201,9 +201,6 @@ function renderChart() {
             <Grid item xs={12}>
                 {students ? students.map((student, index) =>
                     <ListItem key={student.profileId} button onClick={() => getReport(student)}>
-                        <ListItemAvatar>
-                            <Avatar src={student.iconLink} />
-                        </ListItemAvatar>
                         <ListItemText primary={student.profileName} />
                     </ListItem>
                 ) : null}
@@ -221,8 +218,8 @@ function renderChart() {
                                 <YAxis />
                                 <Tooltip />
                                 <Legend />
-                                <Bar dataKey="success" fill="#8884d8" />
-                                <Bar dataKey="failure" fill="#6661e8" />
+                                <Bar dataKey="success" fill="#aed581" />
+                                <Bar dataKey="failure" fill="#ef9a9a" />
                             </BarChart>
                         </ResponsiveContainer>
                         : null}

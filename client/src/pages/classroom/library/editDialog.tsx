@@ -713,6 +713,11 @@ export default function EditDialog(props: Props) {
                         </Grid>
                     }
                 </Grid>
+                <Hidden mdUp>
+                    <StyledFAB className={classes.fab} size="small" onClick={handleOnClickSubmit}>
+                        <DoneIcon />
+                    </StyledFAB>
+                </Hidden>
             </Dialog>
         </>
     );

@@ -126,7 +126,8 @@ export default function PendingViewDialog(props: Props) {
                     profileId: string,
                     loId: number
                 }[] = []
-                if (info.learningOutcomes !== undefined) {
+                setInfo(info);
+                if (info && info.learningOutcomes !== undefined) {
                     let los = info.learningOutcomes
                     for (let i = 0; i < los.length; ++i) {
                         if (los[i].assessedStudents) {
@@ -146,7 +147,7 @@ export default function PendingViewDialog(props: Props) {
                                 entries++
                             }
                         }
-                        if (entries === students.length) {
+                        if (entries === info.students.length) {
                             awardedList.push(los[i].loId)
                         }
                     }
@@ -154,17 +155,17 @@ export default function PendingViewDialog(props: Props) {
                     // If it's the first time, pre-fill assumed LOs box
                     let assessed = false;
                     for (let i = 0; i < los.length; ++i) {
-                        if (los[i].assessedStudents.length > 0) {
+                        if (los[i].assessedStudents && los[i].assessedStudents.length > 0) {
                             assessed = true;
                             break;
                         }
                     }
                     if (!assessed && chkStds.length === 0 && awardedList.length === 0) {
                         for (let i = 0; i < los.length; ++i) {
-                            for (let j = 0; j < students.length; ++j) {
+                            for (let j = 0; j < info.students.length; ++j) {
                                 if (los[i].assumed) {
                                     chkStds.push({
-                                        profileId: students[j].profileId,
+                                        profileId: info.students[j].profileId,
                                         loId: los[i].loId
                                     })
                                 }
@@ -177,7 +178,6 @@ export default function PendingViewDialog(props: Props) {
                     setAwardedLOs(awardedList);
                     setCheckedStudents(chkStds);
                 }
-                setInfo(info);
             }
         })();
 
@@ -187,7 +187,6 @@ export default function PendingViewDialog(props: Props) {
     useEffect(() => {
         return resetAwards()
     }, [open])
-
     const handleOnClickCancel = () => {
         setAwardMode(false);
         resetAwards();
@@ -196,7 +195,7 @@ export default function PendingViewDialog(props: Props) {
         setAwardMode(true);
     }
 
-    const students = useSelector((state: State) => state.account.students);
+    // const students = useSelector((state: State) => state.account.students);
     const [collapseIndex, setCollapseIndex] = useState();
     const [LOs, setLOs] = useState<LearningOutcomeResponse[]>([]);
     const [awardedLOs, setAwardedLOs] = useState<number[]>([])
@@ -248,7 +247,7 @@ export default function PendingViewDialog(props: Props) {
             }
         })
         let newAwardedLOs = [...awardedLOs];
-        if (students.length === studentLOs.length) {
+        if (info.students.length === studentLOs.length) {
             newAwardedLOs.push(loId);
         } else {
             const loIndex = newAwardedLOs.findIndex(award => award === loId);
@@ -262,13 +261,14 @@ export default function PendingViewDialog(props: Props) {
     }
 
     function handleOnClickAwardAll(loId: number) {
+        if (!info) { return; }
         let currentIndex = awardedLOs ? awardedLOs.findIndex(awardedLO => awardedLO === loId) : -1;
         let newChecked = [...checkedStudents]
         if (currentIndex !== -1) {
             // Uncheck all students
-            for (let i = 0; i < students.length; ++i) {
+            for (let i = 0; i < info.students.length; ++i) {
                 for (let j = newChecked.length - 1; j >= 0; --j) {
-                    if (students[i].profileId === newChecked[j].profileId && newChecked[j].loId === loId) {
+                    if (info.students[i].profileId === newChecked[j].profileId && newChecked[j].loId === loId) {
                         newChecked.splice(j, 1)
                     }
                 }
@@ -278,16 +278,16 @@ export default function PendingViewDialog(props: Props) {
             }
         } else {
             // Check all students
-            for (let i = 0; i < students.length; ++i) {
+            for (let i = 0; i < info.students.length; ++i) {
                 let found = false
                 for (let j = 0; j < newChecked.length; ++j) {
-                    if (students[i].profileId === newChecked[j].profileId && loId === newChecked[j].loId) {
+                    if (info.students[i].profileId === newChecked[j].profileId && loId === newChecked[j].loId) {
                         found = true
                     }
                 }
                 if (!found) {
                     newChecked.push({
-                        profileId: students[i].profileId,
+                        profileId: info.students[i].profileId,
                         loId: loId
                     })
                 }
@@ -369,15 +369,15 @@ export default function PendingViewDialog(props: Props) {
             }
             // Save the failure
             for (let k = 0; k < LOs.length; ++k) {
-                for (let i = 0; i < students.length; ++i) {
+                for (let i = 0; i < info.students.length; ++i) {
                     let found = false
                     for (let j = 0; j < checkedStudents.length; ++j) {
-                        if (students[i].profileId === checkedStudents[j].profileId && checkedStudents[j].loId === LOs[k].loId) {
+                        if (info.students[i].profileId === checkedStudents[j].profileId && checkedStudents[j].loId === LOs[k].loId) {
                             found = true
                         }
                     }
                     if (!found) {
-                        let cptdStd = completedStudentMap.get(students[i].profileId)
+                        let cptdStd = completedStudentMap.get(info.students[i].profileId)
                         if (cptdStd === undefined) {
                             cptdStd = {
                                 successOutcomes: [],
@@ -385,7 +385,7 @@ export default function PendingViewDialog(props: Props) {
                             }
                         }
                         cptdStd.failureOutcomes.push(LOs[k].loId)
-                        completedStudentMap.set(students[i].profileId, cptdStd)
+                        completedStudentMap.set(info.students[i].profileId, cptdStd)
                     }
                 }
             }
@@ -494,11 +494,8 @@ export default function PendingViewDialog(props: Props) {
                                     </ListItemIcon>
                                     {collapseIndex === index ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                                     <Collapse in={collapseIndex === index} timeout="auto" unmountOnExit>
-                                        {students.map((student, index) =>
+                                        {info.students.map((student, index) =>
                                             <ListItem key={student.profileId} button onClick={(e) => { handleOnClickStudent(lo.loId, student); e.preventDefault(); e.stopPropagation() }}>
-                                                <ListItemAvatar>
-                                                    <Avatar src={student.iconLink} />
-                                                </ListItemAvatar>
                                                 <ListItemText primary={student.profileName} />
                                                 <ListItemIcon>
                                                     <Checkbox
@@ -564,7 +561,7 @@ function AssessmentDetails(props: AssessmentDetailsProps) {
     const classes = useStyles();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-
+    console.log(ass)
     return (
         <>
             {ass.state === 1 ?

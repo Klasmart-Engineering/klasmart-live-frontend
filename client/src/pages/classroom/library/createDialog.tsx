@@ -332,7 +332,7 @@ export default function CreateDialog() {
 
             if (contentType === "lesson-material") {
                 const req: CreateLessonMaterialRequest = {
-                    publish: true,
+                    publish: false,
                     externalId,
                     name: title,
                     type: typeIdx,
@@ -694,6 +694,11 @@ export default function CreateDialog() {
                         </Grid>
                     }
                 </Grid>
+                <Hidden mdUp>
+                    <StyledFAB className={classes.fab} size="small" onClick={handleOnClickCreate}>
+                        <AddIcon />
+                    </StyledFAB>
+                </Hidden>
             </Dialog>
         </>
     );

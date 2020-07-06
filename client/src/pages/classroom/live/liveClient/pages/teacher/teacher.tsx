@@ -276,7 +276,7 @@ export function Teacher(props: Props): JSX.Element {
                     <Grid item>
                         {users.size === 0 ?
                             <Typography>
-                                <FormattedMessage id="waiting_for_students" />
+                                <FormattedMessage id="live_waitingForStudents" />
                             </Typography> :
                             <Grid container direction="column" style={{ height: "100%", width: drawerWidth - 20, padding: 4 }}>
                                 <Typography variant="caption" align="center" color="textSecondary" gutterBottom>

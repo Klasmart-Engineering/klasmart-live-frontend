@@ -55,44 +55,42 @@ export default function LibraryLayout() {
                 justify="space-between"
                 alignItems="center"
             >
-                <Hidden mdDown>
-                    <Grid item xs={6}>
-                        <CreateDialog />
-                    </Grid>
-                    <Grid
-                        container item
-                        justify="flex-end"
-                        xs={6}
+                <Grid item xs={6}>
+                    <CreateDialog />
+                </Grid>
+                <Grid
+                    container item
+                    justify="flex-end"
+                    xs={6}
+                >
+                    <Button
+                        color="primary"
+                        className={classes.buttonSpacing}
+                        size="large"
+                        onClick={() => setActiveMenu("content")}
+                        startIcon={<LocalLibraryTwoToneIcon style={{ color: "#444" }} />}
                     >
-                        <Button
-                            color="primary"
-                            className={classes.buttonSpacing}
-                            size="large"
-                            onClick={() => setActiveMenu("content")}
-                            startIcon={<LocalLibraryTwoToneIcon style={{ color: "#444" }} />}
-                        >
-                            <FormattedMessage id="library_contentButton" />
-                        </Button>
-                        <Button
-                            color="primary"
-                            className={classes.buttonSpacing}
-                            size="large"
-                            onClick={() => setActiveMenu("pending")}
-                            startIcon={<HourglassFullTwoToneIcon style={{ color: "#444" }} />}
-                        >
-                            <FormattedMessage id="library_pendingButton" />
-                        </Button>
-                        <Button
-                            color="primary"
-                            className={classes.buttonSpacing}
-                            size="large"
-                            onClick={() => setActiveMenu("archived")}
-                            startIcon={<ArchiveTwoToneIcon style={{ color: "#444" }} />}
-                        >
-                            <FormattedMessage id="library_archivedButton" />
-                        </Button>
-                    </Grid>
-                </Hidden>
+                        <FormattedMessage id="library_contentButton" />
+                    </Button>
+                    <Button
+                        color="primary"
+                        className={classes.buttonSpacing}
+                        size="large"
+                        onClick={() => setActiveMenu("pending")}
+                        startIcon={<HourglassFullTwoToneIcon style={{ color: "#444" }} />}
+                    >
+                        <FormattedMessage id="library_pendingButton" />
+                    </Button>
+                    <Button
+                        color="primary"
+                        className={classes.buttonSpacing}
+                        size="large"
+                        onClick={() => setActiveMenu("archived")}
+                        startIcon={<ArchiveTwoToneIcon style={{ color: "#444" }} />}
+                    >
+                        <FormattedMessage id="library_archivedButton" />
+                    </Button>
+                </Grid>
             </Grid>
             <LibraryContent activeMenu={activeMenu} />
         </Grid>

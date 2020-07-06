@@ -38,8 +38,9 @@ export default function AssessmentsPendingView() {
     async function fetchAssessments() {
         const payload = await api.getAssessments();
         return payload.assessments
+            .sort((a, b) => b.createdDate - a.createdDate)
             .sort((a, b) => b.state - a.state)
-            .filter(ass => ass.state !== 3 && !ass.published);
+            .filter(ass => ass.state === 2 && !ass.published);
     }
 
     useEffect(() => {
