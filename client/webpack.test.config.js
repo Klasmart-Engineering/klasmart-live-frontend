@@ -2,11 +2,14 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const webpack = require("webpack");
 const Visualizer = require("webpack-visualizer-plugin");
-const output_file_name = "bundle.[chunkhash].js";
 
 module.exports = {
     mode: "production",
-    entry: ["./src/client-entry.tsx"],
+    entry: {
+        hubui: "./src/client-entry.tsx",
+        record: "./src/pages/classroom/live/liveClient/entry-record.ts",
+        player: "./src/pages/classroom/live/liveClient/entry-player.ts"
+    },
     module: {
         rules: [
             {
@@ -65,13 +68,20 @@ module.exports = {
         extensions: [".js", ".jsx", ".tsx", ".ts"],
     },
     output: {
-        filename: output_file_name,
-        chunkFilename: output_file_name,
+        filename: "[name].[chunkhash].js",
+        chunkFilename: "[name].[chunkhash].js",
         path: path.resolve(__dirname, "dist"),
     },
     plugins: [
         new HtmlWebpackPlugin({
+            filename: "index.html",
+            chunks: ["hubui"],
             template: "src/index_prod.html",
+        }),
+        new HtmlWebpackPlugin({
+            filename: "player.html",
+            chunks: ["player"],
+            template: "src/pages/classroom/live/liveClient/player.html"
         }),
         new webpack.ProvidePlugin({
             "fetch": "imports-loader?this=>global!exports-loader?global.fetch!whatwg-fetch"
@@ -90,30 +100,6 @@ module.exports = {
             "DEFAULT_PROG_ID": "KIDSLOOP-2.0"
         })
     ],
-    optimization: {
-        splitChunks: {
-            chunks: "async",
-            minSize: 32 * 1024,
-            maxSize: 128 * 1024,
-            minChunks: 1,
-            name: false,
-            maxAsyncRequests: 6,
-            maxInitialRequests: 4,
-            automaticNameDelimiter: "~",
-            automaticNameMaxLength: 30,
-            cacheGroups: {
-                vendors: {
-                    test: /[\\/]node_modules[\\/]/,
-                    priority: -10
-                },
-                default: {
-                    minChunks: 2,
-                    priority: -20,
-                    reuseExistingChunk: true
-                }
-            }
-        },
-    },
     devServer: {
         host: "0.0.0.0",
         historyApiFallback: true,

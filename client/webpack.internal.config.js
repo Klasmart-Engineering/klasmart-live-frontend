@@ -4,7 +4,11 @@ const webpack = require("webpack");
 
 module.exports = {
     mode: "development",
-    entry: ["./src/client-entry.tsx"],
+    entry: {
+        hubui: "./src/client-entry.tsx",
+        record: "./src/pages/classroom/live/liveClient/entry-record.ts",
+        player: "./src/pages/classroom/live/liveClient/entry-player.ts"
+    },
     module: {
         rules: [
             {
@@ -64,12 +68,20 @@ module.exports = {
         extensions: [".js", ".jsx", ".tsx", ".ts"],
     },
     output: {
-        filename: "bundle.js",
+        filename: "[name].[chunkhash].js",
+        chunkFilename: "[name].[chunkhash].js",
         path: path.resolve(__dirname, "dist"),
     },
     plugins: [
         new HtmlWebpackPlugin({
+            filename: "index.html",
+            chunks: ["hubui"],
             template: "src/index.html",
+        }),
+        new HtmlWebpackPlugin({
+            filename: "player.html",
+            chunks: ["player"],
+            template: "src/pages/classroom/live/liveClient/player.html"
         }),
         new webpack.ProvidePlugin({
             //'fetch': 'imports-loader?this=>global!exports-loader?global.fetch!whatwg-fetch'
