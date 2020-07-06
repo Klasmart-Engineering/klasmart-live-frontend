@@ -11,6 +11,7 @@ import { ContentItem, LibraryContentType } from "../../../types/objectTypes";
 import {
     useRestAPI,
 } from "../assessments/api/restapi";
+import ZooBackgroundImage from "../../../assets/img/zoo_banner_web.png";
 
 const MARKETPLACE_CONTENT: ContentItem[] = [
     {
@@ -60,8 +61,7 @@ export default function LibraryContentView() {
                         contentId: plan.lessonPlanId,
                         title: plan.name,
                         description: plan.description,
-                        // image: ZooBackgroundImage,
-                        image: "https://zoo.kidsloop.net/822942faa6be02787fbb357cdf4970c9.png",
+                        image: ZooBackgroundImage,
                         link: "https://zoo.kidsloop.net"
                     })
                 }
@@ -72,8 +72,7 @@ export default function LibraryContentView() {
                         contentId: material.lessonMaterialId,
                         title: material.name,
                         description: material.description,
-                        // image: ZooBackgroundImage,
-                        image: "https://zoo.kidsloop.net/822942faa6be02787fbb357cdf4970c9.png",
+                        image: ZooBackgroundImage,
                         link: material.externalId
                             ? `https://zoo.kidsloop.net/h5p/play/${material.externalId}`
                             : ""
