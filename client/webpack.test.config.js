@@ -1,29 +1,29 @@
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const webpack = require('webpack');
-const Visualizer = require('webpack-visualizer-plugin');
-const output_file_name = 'bundle.[chunkhash].js'
+const path = require("path");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const webpack = require("webpack");
+const Visualizer = require("webpack-visualizer-plugin");
+const output_file_name = "bundle.[chunkhash].js";
 
 module.exports = {
-    mode: 'production',
-    entry: ['./src/client-entry.tsx'],
+    mode: "production",
+    entry: ["./src/client-entry.tsx"],
     module: {
         rules: [
             {
                 test: /\.(j|t)sx?$/,
                 use: {
-                    loader: 'babel-loader',
+                    loader: "babel-loader",
                 }
             },
             {
                 test: /\.css$/i,
                 use: [
                     {
-                        loader: 'style-loader',
+                        loader: "style-loader",
                     },
-                    'css-modules-typescript-loader',
+                    "css-modules-typescript-loader",
                     {
-                        loader: 'css-loader',
+                        loader: "css-loader",
                         options: {
                             modules: true
                         }
@@ -33,9 +33,9 @@ module.exports = {
             {
                 test: /\.(gif|png|jpe?g|svg)$/i,
                 use: [
-                    'file-loader',
+                    "file-loader",
                     {
-                        loader: 'image-webpack-loader',
+                        loader: "image-webpack-loader",
                         options: {
                             // mozjpeg: {
                             //     progressive: true,
@@ -56,27 +56,27 @@ module.exports = {
             {
                 test: /\.(woff|woff2|eot|ttf|otf)$/,
                 use: [
-                    'file-loader',
+                    "file-loader",
                 ],
             },
         ],
     },
     resolve: {
-        extensions: ['.js', '.jsx', '.tsx', '.ts'],
+        extensions: [".js", ".jsx", ".tsx", ".ts"],
     },
     output: {
         filename: output_file_name,
         chunkFilename: output_file_name,
-        path: path.resolve(__dirname, 'dist'),
+        path: path.resolve(__dirname, "dist"),
     },
     plugins: [
         new HtmlWebpackPlugin({
-            template: 'src/index_prod.html',
+            template: "src/index_prod.html",
         }),
         new webpack.ProvidePlugin({
-            'fetch': 'imports-loader?this=>global!exports-loader?global.fetch!whatwg-fetch'
+            "fetch": "imports-loader?this=>global!exports-loader?global.fetch!whatwg-fetch"
         }),
-        new Visualizer({ filename: '../webpack-stats.html' }),
+        new Visualizer({ filename: "../webpack-stats.html" }),
         new webpack.EnvironmentPlugin({
             "STAGE": "prod",
             "CALM_ORG_ID": "CALM-ISLAND-QA",
@@ -92,14 +92,14 @@ module.exports = {
     ],
     optimization: {
         splitChunks: {
-            chunks: 'async',
+            chunks: "async",
             minSize: 32 * 1024,
             maxSize: 128 * 1024,
             minChunks: 1,
             name: false,
             maxAsyncRequests: 6,
             maxInitialRequests: 4,
-            automaticNameDelimiter: '~',
+            automaticNameDelimiter: "~",
             automaticNameMaxLength: 30,
             cacheGroups: {
                 vendors: {
@@ -118,8 +118,8 @@ module.exports = {
         host: "0.0.0.0",
         historyApiFallback: true,
         proxy: {
-            '/h5p': {
-                target: 'https://zoo.kidsloop.net/',
+            "/h5p": {
+                target: "https://zoo.kidsloop.net/",
                 secure: false,
                 changeOrigin: true,
             }
