@@ -82,7 +82,7 @@ const useStyles = makeStyles((theme: Theme) =>
         errorIcon: {
             fontSize: "1em",
             marginRight: theme.spacing(1),
-        },
+        }
     }),
 );
 
@@ -138,6 +138,19 @@ export default function PendingViewDialog(props: Props) {
                             })
                         }
                     }
+                    let awardedList = []
+                    for (let i = 0; i < los.length; ++i) {
+                        let entries = 0
+                        for (let j = 0; j < chkStds.length; ++j) {
+                            if (chkStds[j].loId === los[i].loId) {
+                                entries++
+                            }
+                        }
+                        if (entries === students.length) {
+                            awardedList.push(los[i].loId)
+                        }
+                    }
+                    setAwardedLOs(awardedList);
                     setCheckedStudents(chkStds);
                 }
                 setInfo(info);
@@ -203,6 +216,24 @@ export default function PendingViewDialog(props: Props) {
             newChecked.splice(currentIndex, 1);
         }
 
+        // Check if all awarded now
+        let studentLOs = new Array<string>();
+        newChecked.map((chk) => {
+            if (chk.loId === loId) {
+                studentLOs.push(chk.profileId);
+            }
+        })
+        let newAwardedLOs = [...awardedLOs];
+        if (students.length === studentLOs.length) {
+            newAwardedLOs.push(loId);
+        } else {
+            const loIndex = newAwardedLOs.findIndex(award => award === loId);
+            if (loIndex !== -1) {
+                newAwardedLOs.splice(loIndex, 1);
+            }
+        }
+
+        setAwardedLOs(newAwardedLOs);
         setCheckedStudents(newChecked);
     }
 
@@ -243,6 +274,19 @@ export default function PendingViewDialog(props: Props) {
         }
         setAwardedLOs(awardedLOs);
         setCheckedStudents(newChecked);
+    }
+
+    function getCheckState(loId: number): number {
+        const currentIndex = awardedLOs ? awardedLOs.findIndex(awardedLO => awardedLO === loId) : -1;
+        if (currentIndex === -1) {
+            for (let i = 0; i < checkedStudents.length; ++i) {
+                if (checkedStudents[i].loId === loId) {
+                    return 1;
+                }
+            }
+            return 0;
+        }
+        return 2;
     }
 
     const AWARDMODE_ACTIONS = [
@@ -411,12 +455,17 @@ export default function PendingViewDialog(props: Props) {
                             }
                         >
                             {LOs.map((lo, index) =>
-                                <ListItem key={lo.loId} button onClick={(e) => { setCollapseIndex(index); e.preventDefault() }}>
+                                <ListItem key={lo.loId} button onClick={(e) => { collapseIndex === index ? setCollapseIndex(-1) : setCollapseIndex(index); e.preventDefault() }}>
                                     <ListItemText primary={lo.title + (lo.assumed ? " (Assumed)" : "")} />
                                     <ListItemIcon onClick={(e) => { handleOnClickAwardAll(lo.loId); e.stopPropagation() }}>
                                         <Checkbox
-                                            checked={awardedLOs ? awardedLOs.findIndex(awardedLO => awardedLO === lo.loId) !== -1 : false}
-                                            color="primary"
+                                            checked={getCheckState(lo.loId) > 0}
+                                            style={getCheckState(lo.loId) === 1 ?
+                                                {
+                                                    color: "#f9a825"
+                                                } : {
+                                                    color: "#0E78D5"
+                                                }}
                                         />
                                     </ListItemIcon>
                                     {collapseIndex === index ? <ExpandLessIcon /> : <ExpandMoreIcon />}
