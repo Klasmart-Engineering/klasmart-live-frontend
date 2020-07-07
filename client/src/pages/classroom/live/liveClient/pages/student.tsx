@@ -100,14 +100,12 @@ export function Student(props: Props): JSX.Element {
                         />
 
                 </Grid> */}
-                <Grid item xs={12} md={8} style={{ height, width, margin: "0 auto", border: "5px solid green" }}>
+                <Grid item xs={8} md={8} style={{ height, width, margin: "0 auto", border: "5px solid green" }}>
                     <PreviewPlayer streamId={content.contentId} height={typeof height === "string" ? 700 : height} width={typeof width === "string" ? 700 : width} />
                 </Grid>
-                <Hidden mdDown>
-                    <Grid item md={4}>
-                        <Cameras />
-                    </Grid>
-                </Hidden>
+                <Grid item xs={4} md={4}>
+                    <Cameras />
+                </Grid>
                 <Grid item xs={12}>
                     <SendMessage />
                     <Messages messages={messages} />

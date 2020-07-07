@@ -328,6 +328,9 @@ export function Teacher(props: Props): JSX.Element {
                     </Grid>
                 </Grid>
                 <Grid item xs={12}>
+                    <Hidden mdUp>
+                        <MyCamera />
+                    </Hidden>
                     <Cameras />
                 </Grid>
 
