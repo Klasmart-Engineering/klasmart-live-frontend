@@ -178,10 +178,10 @@ function renderChart() {
                 let successRate = 0.0
                 let failureRate = 0.0
                 if (successNb > 0) {
-                    successRate = successNb / loList.length * 100.0
+                    successRate = successNb / (successNb + failureNb) * 100.0
                 }
                 if (failureNb > 0) {
-                    failureRate = failureNb / loList.length * 100.0
+                    failureRate = failureNb / (successNb + failureNb) * 100.0
                 }
                 report.push({ name: devSkillMap.get(key).name, success: successRate, failure: failureRate })
             }
