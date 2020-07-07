@@ -72,7 +72,6 @@ export function Student(props: Props): JSX.Element {
                         >
                             <Grid item xs={12}>
                                 <Typography><FormattedMessage id={"live_hello"} values={{ name }} /></Typography>
-                                <Typography><FormattedMessage id={"live_failedToConnect"} /></Typography>
                             </Grid>
                             <Grid item xs={12}>
                                 <CircularProgress />
