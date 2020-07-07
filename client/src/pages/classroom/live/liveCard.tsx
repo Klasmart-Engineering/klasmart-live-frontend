@@ -64,6 +64,7 @@ export default function LiveCard() {
     const theme = useTheme();
     const store = useStore();
 
+    const selectedLessonPlan = useSelector((state: State) => state.account.selectedLessonPlan);
     const liveData = useSelector((state: State) => state.account.finishLiveData);
     const setLiveData = (value: LiveSessionData) => {
         store.dispatch({ type: ActionTypes.FINISH_LIVE_DATA, payload: value });
@@ -129,6 +130,7 @@ export default function LiveCard() {
             <Grid item>
                 <CenterAlignChildren>
                     <StyledFAB
+                        disabled={selectedLessonPlan === ""}
                         extendedOnly
                         flat
                         className={classes.liveButton}

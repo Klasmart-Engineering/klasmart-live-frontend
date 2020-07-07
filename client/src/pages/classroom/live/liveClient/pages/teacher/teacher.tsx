@@ -35,6 +35,7 @@ import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import { materialContext as materialsContext } from "../../lessonMaterialContext";
 import { getContentId } from "../../../../../../utils/contentIdMap"
+import { activities } from "../../../../../../store/reducers";
 
 const drawerWidth = 340;
 
@@ -160,6 +161,11 @@ export function Teacher(props: Props): JSX.Element {
 
     const [contentId, setContentId] = useState(memos.activity);
     const [contentIndex, setContentIndex] = useState<number>(0);
+    useEffect(() => {
+        if (!materials || materials.length === 0) { return }
+        setContentId(materials[0].url);
+        setContentIndex(0);
+    }, [materials]);
 
     useEffect(() => {
         function test(e: MessageEvent) {
@@ -227,12 +233,13 @@ export function Teacher(props: Props): JSX.Element {
             >
                 <Grid container direction="row">
                     <Grid item xs={10} style={{ paddingRight: "10px" }}>
-                        <Select value={contentIndex} onChange={(e) => {
+                        <Select value={contentIndex} fullWidth disabled={materials.length == 0} onChange={(e) => {
+                            if (materials.length === 0) { return; }
                             const index = e.target.value as number;
                             setContentIndex(index);
                             setContentId(materials[index].url);
-                        }} fullWidth disabled={materials.length == 0}>
-                            {materials.map(({ name, url }, i) => <MenuItem value={i} key={url}>{name}</MenuItem>)}
+                        }}>
+                            {materials.map(({ name, url }, i) => <MenuItem value={i} key={`${name}-${url}`}>{name}</MenuItem>)}
                         </Select>
                     </Grid>
                     <Grid item xs={1}>
