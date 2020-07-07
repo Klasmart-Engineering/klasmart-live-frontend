@@ -130,6 +130,7 @@ export function Teacher(props: Props): JSX.Element {
     }, []);
 
     const [contentId, setContentId] = useState(memos.activity);
+    const [contentIndex, setContentIndex] = useState<number>();
 
     useEffect(() => {
         function test(e: MessageEvent) {
@@ -197,17 +198,31 @@ export function Teacher(props: Props): JSX.Element {
             >
                 <Grid container direction="row">
                     <Grid item xs={10} style={{paddingRight: "10px"}}>
-                        <Select onChange={() => null} fullWidth disabled={materials.length==0}>
-                            { materials.map(({name,url}) => <MenuItem value={url} key={url}>{name}</MenuItem>) }
+                        <Select value={contentIndex} onChange={(e) => {
+                            const index = e.target.value as number;
+                            setContentIndex(index);
+                            setContentId(materials[index].url);
+                        }} fullWidth disabled={materials.length==0}>
+                            { materials.map(({name,url},i) => <MenuItem value={i} key={url}>{name}</MenuItem>) }
                         </Select>
                     </Grid>
                     <Grid item xs={1}>
-                        <IconButton aria-label="delete" disabled={materials.length==0} color="primary">
+                        <IconButton aria-label="delete" disabled={materials.length==0} color="primary" onClick={() => {
+                            if(materials.length === 0) {return;}
+                            const newIndex = contentIndex?Math.max(0,contentIndex-1):0;
+                            setContentIndex(newIndex);
+                            setContentId(materials[newIndex].url);
+                        }}>
                             <SkipPreviousTwoToneIcon />
                         </IconButton>
                     </Grid>
                     <Grid item xs={1}>
-                        <IconButton aria-label="next" disabled={materials.length==0} color="primary">
+                        <IconButton aria-label="next" disabled={materials.length==0} color="primary" onClick={() => {
+                            if(materials.length === 0) {return;}
+                            const newIndex = contentIndex!==undefined?Math.min(materials.length-1,contentIndex+1):0;
+                            setContentIndex(newIndex);
+                            setContentId(materials[newIndex].url);
+                        }}>
                             <SkipNextTwoToneIcon />
                         </IconButton>
                     </Grid>
