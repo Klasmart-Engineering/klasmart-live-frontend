@@ -81,7 +81,7 @@ export type Activities = Action<ActionTypes.ACTIVITIES, { id: string, title: str
 
 export type FinishLiveData = Action<ActionTypes.FINISH_LIVE_DATA, LiveSessionData>;
 
-export type SelectedLessonPlan = Action<ActionTypes.SELECTED_LESSON_PLAN, LessonPlanResponse>;
+export type SelectedLessonPlan = Action<ActionTypes.SELECTED_LESSON_PLAN, string>;
 
 export enum ActionTypes {
     LOCALE,

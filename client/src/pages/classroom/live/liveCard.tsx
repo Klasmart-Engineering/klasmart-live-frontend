@@ -1,4 +1,5 @@
 import Grid from "@material-ui/core/Grid";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import { createStyles, makeStyles, Theme, useTheme, withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
@@ -80,8 +81,8 @@ export default function LiveCard() {
             className: liveData.className,
             startDate,
             students: liveData.students
-        }
-        return data
+        };
+        return data;
     }
 
     return (
@@ -244,32 +245,57 @@ function LessonPlanSelect() {
             .filter(p => p.published)
             .sort((a, b) => b.updatedDate - a.updatedDate);
     }
+    async function fetchLessonPlan(id: string) {
+        const payload = await api.getLessonPlan(id);
+        return payload
+    }
 
     const classes = useStyles();
     const store = useStore();
 
     const selectedLessonPlan = useSelector((state: State) => state.account.selectedLessonPlan);
-    const setSelectedLessonPlan = (value: LessonPlanResponse) => {
+    const setSelectedLessonPlan = (value: string) => {
         store.dispatch({ type: ActionTypes.SELECTED_LESSON_PLAN, payload: value });
     };
-    const [lessonPlanOptions, setLessonPlanOptions] = useState<LessonPlanResponse[]>([]);
+    const [lessonPlanOptions, setLessonPlanOptions] = useState<{ id: string, title: string }[]>([]);
     const [lessonPlanText, setLessonPlanText] = useState<string>("");
     const [lessonPlanMenuElement, setLessonPlanMenuElement] = useState<null | HTMLElement>(null);
+    const [lessonMaterials, setLessonMaterials] = useState<{ id: string, title: string }[]>([]);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         let prepared = true;
         (async () => {
             const plans = await fetchPublishedLessonPlans();
             if (prepared) {
-                setLessonPlanOptions(plans);
+                const options = plans.map(p => {
+                    return { id: p.lessonPlanId, title: p.name };
+                });
+                setLessonPlanOptions(options);
             }
         })();
         return () => { prepared = false; };
     }, []);
 
-    function lessonPlanSelect(plan: LessonPlanResponse) {
-        setSelectedLessonPlan(plan);
-        setLessonPlanText(plan.name);
+    useEffect(() => {
+        if (selectedLessonPlan === "" || lessonPlanText === "") { return; }
+        setLoading(true);
+
+        let prepared = true;
+        (async () => {
+            const plan = await fetchLessonPlan(selectedLessonPlan);
+            if (prepared) {
+                if (!plan.lessonMaterials) { return };
+                setLessonMaterials(plan.lessonMaterials);
+                setLoading(false);
+            }
+        })();
+        return () => { prepared = false; };
+    }, [lessonPlanText]);
+
+    function lessonPlanSelect(plan: { id: string, title: string }) {
+        setSelectedLessonPlan(plan.id);
+        setLessonPlanText(plan.title);
     }
 
     return (
@@ -302,15 +328,26 @@ function LessonPlanSelect() {
                 {
                     lessonPlanOptions.map(plan => (
                         <MenuItem
-                            key={plan.lessonPlanId}
-                            selected={selectedLessonPlan === plan}
+                            key={plan.id}
+                            selected={selectedLessonPlan === plan.id}
                             onClick={() => lessonPlanSelect(plan)}
                         >
-                            {plan.name}
+                            {plan.title}
                         </MenuItem>
                     ))
                 }
             </StyledMenu>
+            {/* <Grid item xs={12}>
+                {loading ? <CircularProgress /> :
+                    lessonMaterials.map(m => {
+                        return (
+                            <Grid key={m.id}>
+                                <Typography>{m.title}</Typography>
+                            </Grid>
+                        );
+                    })
+                }
+            </Grid> */}
         </>
     );
 }
