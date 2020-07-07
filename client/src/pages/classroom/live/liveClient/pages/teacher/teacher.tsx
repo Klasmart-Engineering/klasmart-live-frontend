@@ -28,6 +28,12 @@ import {
     UpdateAssessmentRequest,
 } from "../../../../assessments/api/restapi";
 import { getDefaultProgId } from "../../../../../../config";
+import IconButton from "@material-ui/core/IconButton";
+import SkipNextTwoToneIcon from "@material-ui/icons/SkipNextTwoTone";
+import SkipPreviousTwoToneIcon from "@material-ui/icons/SkipPreviousTwoTone";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+import { materialContext as materialsContext } from "../../lessonMaterialContext";
 
 const drawerWidth = 340;
 
@@ -89,6 +95,9 @@ export function Teacher(props: Props): JSX.Element {
     const classes = useStyles();
     const store = useStore();
     const { content, users, messages } = props;
+
+
+    const materials = useContext(materialsContext);
 
     const sessionId = useContext(sessionIdContext);
     const [open, setOpen] = useState<boolean>(true);
@@ -168,11 +177,11 @@ export function Teacher(props: Props): JSX.Element {
             sessionId: "demo-session-id",
             startDate: data.startDate,
             subject: "English",
-        }
+        };
         const updateAssReq: UpdateAssessmentRequest = {
             students: data.students,
             state: 2
-        }
+        };
 
         const res = await api.createAssessment(createAssReq);
         await api.updateAssessment(res.assId, updateAssReq);
@@ -186,6 +195,23 @@ export function Teacher(props: Props): JSX.Element {
                     clsx(classes.content, { [classes.contentShift]: open })
                 }
             >
+                <Grid container direction="row">
+                    <Grid item xs={10} style={{paddingRight: "10px"}}>
+                        <Select onChange={() => null} fullWidth disabled={materials.length==0}>
+                            { materials.map(({name,url}) => <MenuItem value={url} key={url}>{name}</MenuItem>) }
+                        </Select>
+                    </Grid>
+                    <Grid item xs={1}>
+                        <IconButton aria-label="delete" disabled={materials.length==0} color="primary">
+                            <SkipPreviousTwoToneIcon />
+                        </IconButton>
+                    </Grid>
+                    <Grid item xs={1}>
+                        <IconButton aria-label="next" disabled={materials.length==0} color="primary">
+                            <SkipNextTwoToneIcon />
+                        </IconButton>
+                    </Grid>
+                </Grid>
                 <Grid
                     container
                     style={{ border: "1px solid gray", borderRadius: 12 }}
