@@ -3,7 +3,9 @@ import Dialog from "@material-ui/core/Dialog";
 import Grid from "@material-ui/core/Grid";
 import Grow from "@material-ui/core/Grow";
 import IconButton from "@material-ui/core/IconButton";
+import Snackbar from "@material-ui/core/Snackbar";
 import { createStyles, makeStyles, Theme, useTheme } from "@material-ui/core/styles";
+import Tooltip from "@material-ui/core/Tooltip";
 import { TransitionProps } from "@material-ui/core/transitions";
 import Typography from "@material-ui/core/Typography";
 import AllInboxTwoToneIcon from "@material-ui/icons/AllInboxTwoTone";
@@ -18,6 +20,7 @@ import PhonelinkTwoToneIcon from "@material-ui/icons/PhonelinkTwoTone";
 import SchoolTwoToneIcon from "@material-ui/icons/SchoolTwoTone";
 import SecurityTwoToneIcon from "@material-ui/icons/SecurityTwoTone";
 import TableChartTwoToneIcon from "@material-ui/icons/TableChartTwoTone";
+import MuiAlert, { AlertProps } from "@material-ui/lab/Alert";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import DialogAppBar from "../../../components/styled/dialogAppBar";
@@ -57,30 +60,53 @@ interface MenuItemProps {
     content: MenuItem;
 }
 
+function Alert(props: AlertProps) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
+
 function MenuButton(props: MenuItemProps) {
     const classes = useStyles();
+
+    const [open, setOpen] = React.useState(false);
+    const handleClick = () => {
+        setOpen(true);
+    };
+    const handleClose = (event?: React.SyntheticEvent, reason?: string) => {
+        if (reason === "clickaway") {
+            return;
+        }
+        setOpen(false);
+    };
+
     return(
-        <Button fullWidth className={classes.menuButton}>
-            <Grid
-                container
-                direction="column"
-                justify="flex-start"
-                alignItems="center"
-                spacing={2}
-            >
-                <Grid item>
-                    {props.content.logo}
+        <>
+            <Button fullWidth className={classes.menuButton} onClick={handleClick}>
+                <Grid
+                    container
+                    direction="column"
+                    justify="flex-start"
+                    alignItems="center"
+                    spacing={2}
+                >
+                    <Grid item>
+                        {props.content.logo}
+                    </Grid>
+                    <Grid item>
+                        <Typography variant="body1">
+                            {props.content.title}
+                        </Typography>
+                        <Typography variant="caption" style={{ color: "rgba(0, 0, 0, 0.6)" }}>
+                            {props.content.description}
+                        </Typography>
+                    </Grid>
                 </Grid>
-                <Grid item>
-                    <Typography variant="body1">
-                        {props.content.title}
-                    </Typography>
-                    <Typography variant="caption" style={{ color: "rgba(0, 0, 0, 0.6)" }}>
-                        {props.content.description}
-                    </Typography>
-                </Grid>
-            </Grid>
-        </Button>
+            </Button>
+            <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
+                <Alert onClose={handleClose} severity="info">
+                    This is currently planned for a future release!
+                </Alert>
+            </Snackbar>
+        </>
     );
 }
 
@@ -95,7 +121,6 @@ export default function NavMenu() {
     const classes = useStyles();
     const theme = useTheme();
     const [open, setOpen] = useState(false);
-
 
     const MENU_ITEMS: MenuItem[] = [
         {
@@ -181,7 +206,7 @@ export default function NavMenu() {
                 onClick={handleClickOpen}
                 color="inherit"
                 aria-label="menu"
-                
+
             >
                 <AppsIcon />
             </IconButton>

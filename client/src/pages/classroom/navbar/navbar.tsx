@@ -56,7 +56,7 @@ function ClassroomLabel(props: LabelProps) {
         <Grid container item xs={10} direction="row" justify="flex-start" alignItems="flex-start">
             <Grid item xs={12}>
                 <Typography variant="body1" className={props.classes} noWrap>
-                    Welcome to Calm Island
+                    Calm Island
                 </Typography>
             </Grid>
             <Grid item xs={12}>
@@ -170,7 +170,7 @@ export default function NavBar() {
                                 alignItems="center"
                                 wrap="nowrap"
                             >
-                                <Grid item>
+                                {/* <Grid item>
                                     <IconButton
                                         edge="start"
                                         onClick={handleClickOpen}
@@ -182,7 +182,7 @@ export default function NavBar() {
                                     >
                                         <SettingsIcon />
                                     </IconButton>
-                                </Grid>
+                                </Grid> */}
                                 <UserSettings />
                             </Grid>
                         </Hidden>

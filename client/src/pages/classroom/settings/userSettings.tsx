@@ -5,6 +5,7 @@ import Hidden from "@material-ui/core/Hidden";
 import Menu, { MenuProps } from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import { createStyles, makeStyles, withStyles } from "@material-ui/core/styles";
+import Tooltip from "@material-ui/core/Tooltip";
 import React from "react";
 import { useSelector } from "react-redux";
 import CalmIslandLogo from "../../../assets/img/calmisland_logo.png";
@@ -49,7 +50,6 @@ const useStyles = makeStyles((theme) => createStyles({
 export default function UserSettings() {
     const classes = useStyles();
 
-
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
 
@@ -64,34 +64,36 @@ export default function UserSettings() {
     return (
         <>
             <Grid item>
-                <Button
-                    aria-label="account of current user"
-                    aria-controls="menu-appbar"
-                    aria-haspopup="true"
-                    className={classes.profileButton}
-                    fullWidth
-                    
-                    onClick={handleMenu}
-                >
-                    <Grid
-                        container
-                        direction="row"
-                        justify="flex-end"
-                        alignItems="center"
-                        style={{ flexWrap: "nowrap" }}
+                <Tooltip title="Account Settings Coming Soon" placement="bottom">
+                    <Button
+                        aria-label="account of current user"
+                        aria-controls="menu-appbar"
+                        aria-haspopup="true"
+                        className={classes.profileButton}
+                        fullWidth
+
+                        onClick={handleMenu}
                     >
-                        <Hidden xsDown>
-                            <img className={classes.avatar} src={KidsloopLogo} height={32} />
-                        </Hidden>
-                        <Avatar
-                            alt="Shawn Lee"
-                            src={CalmIslandLogo}
-                            className={classes.avatar}
-                        />
-                    </Grid>
-                </Button>
+                        <Grid
+                            container
+                            direction="row"
+                            justify="flex-end"
+                            alignItems="center"
+                            style={{ flexWrap: "nowrap" }}
+                        >
+                            <Hidden xsDown>
+                                <img className={classes.avatar} src={KidsloopLogo} height={32} />
+                            </Hidden>
+                            <Avatar
+                                alt="Shawn Lee"
+                                src={CalmIslandLogo}
+                                className={classes.avatar}
+                            />
+                        </Grid>
+                    </Button>
+                </Tooltip>
             </Grid>
-            <StyledMenu
+            {/* <StyledMenu
                 id="menu-appbar"
                 anchorEl={anchorEl}
                 keepMounted
@@ -100,7 +102,7 @@ export default function UserSettings() {
             >
                 <MenuItem onClick={handleClose}>Profile</MenuItem>
                 <MenuItem onClick={handleClose}>My account</MenuItem>
-            </StyledMenu>
+            </StyledMenu> */}
         </>
     );
 }
