@@ -1,4 +1,5 @@
 import { UserAgent, LiveSessionData } from "../types/objectTypes";
+import { LessonPlanResponse } from "../pages/classroom/assessments/api/restapi";
 
 export interface Action<T extends ActionTypes, P> {
     type: T;
@@ -80,6 +81,8 @@ export type Activities = Action<ActionTypes.ACTIVITIES, { id: string, title: str
 
 export type FinishLiveData = Action<ActionTypes.FINISH_LIVE_DATA, LiveSessionData>;
 
+export type SelectedLessonPlan = Action<ActionTypes.SELECTED_LESSON_PLAN, LessonPlanResponse>;
+
 export enum ActionTypes {
     LOCALE,
     LOGIN,
@@ -106,6 +109,7 @@ export enum ActionTypes {
     SUITABLE_AGES,
     ACTIVITIES,
     FINISH_LIVE_DATA,
+    SELECTED_LESSON_PLAN,
 }
 
 export type Actions =
@@ -134,4 +138,5 @@ export type Actions =
     | SuitableAges
     | Activities
     | FinishLiveData
+    | SelectedLessonPlan
     | never;

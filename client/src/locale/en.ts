@@ -25,6 +25,8 @@ const messages: Record<string, string> = {
 
     live_classNameLabel: "Class Name",
     live_classSelect: "Select Class",
+    live_lessonPlanLabel: "Lesson Plan",
+    live_lessonPlanSelect: "Select Lesson Plan",
     live_activityLink: "Activity Link",
     live_buttonActivity: "Activity",
     live_buttonEndClass: "End Class",

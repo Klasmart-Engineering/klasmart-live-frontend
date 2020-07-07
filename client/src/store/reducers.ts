@@ -363,6 +363,15 @@ export function activities(state = ACTIVITY_LIST, action: Actions) {
     }
 }
 
+export function selectedLessonPlan(state = {}, action: Actions) {
+    switch (action.type) {
+        case ActionTypes.SELECTED_LESSON_PLAN:
+            return action.payload;
+        default:
+            return state;
+    }
+}
+
 export const account = combineReducers({
     assessmentToken,
     accessToken,
@@ -380,6 +389,7 @@ export const account = combineReducers({
     publicRange,
     suitableAges,
     activities,
+    selectedLessonPlan,
 });
 
 export const ui = combineReducers({
