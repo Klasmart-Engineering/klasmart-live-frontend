@@ -87,6 +87,7 @@ export class WebRTCContext {
 
 export const webRTCContext  = createContext<WebRTCContext|undefined>(undefined);
 const iceServers: RTCIceServer[] = [
+    {urls: "turn:turn.kidsloop.net", username: "badanamu", credential: "WFVZ4myAi3ywy4q0BpPJWTAm8gHOfPRh", credentialType: "password"},
     {urls: "stun:stun.l.google.com:19302"},
     {urls: "stun:stun1.l.google.com:19302"},
     {urls: "stun:stun2.l.google.com:19302"},
