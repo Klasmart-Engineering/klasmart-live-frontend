@@ -221,19 +221,19 @@ export function Cameras(): JSX.Element {
     );
 }
 
-export function Camera({mediaStream}: {mediaStream: MediaStream}): JSX.Element {
+export function Camera({mediaStream, muted}: {mediaStream: MediaStream, muted?: boolean}): JSX.Element {
     const videoRef = useRef<HTMLVideoElement>(null);
     useEffect(() => {
         if (!videoRef.current) {return; }
         videoRef.current.srcObject = mediaStream;
         console.log(videoRef.current.videoHeight);
     }, [videoRef.current, mediaStream]);
-    return <video ref={videoRef} autoPlay playsInline style={{width: 340, height: 340 }}/>;
+    return <video ref={videoRef} muted={muted||false} autoPlay playsInline style={{width: 340, height: 340 }}/>;
 }
 
 export function MyCamera(): JSX.Element {
     if (WebRTCContext.stream) {
-        return <Camera mediaStream={WebRTCContext.stream} />;
+        return <Camera mediaStream={WebRTCContext.stream} muted={true} />;
     } else {
         return (
             <Grid container justify="space-between" alignItems="center" style={{ width: "100%", height: 300, backgroundColor: "#193d6f" }}>
