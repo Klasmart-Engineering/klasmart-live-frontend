@@ -2,40 +2,41 @@ import { Button, Hidden, Theme } from "@material-ui/core";
 import Divider from "@material-ui/core/Divider";
 import Drawer from "@material-ui/core/Drawer";
 import Grid from "@material-ui/core/Grid";
+import IconButton from "@material-ui/core/IconButton";
+import MenuItem from "@material-ui/core/MenuItem";
+import Select from "@material-ui/core/Select";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import CloseIcon from "@material-ui/icons/Close";
 import MenuOpenIcon from "@material-ui/icons/MenuOpen";
+import SkipNextTwoToneIcon from "@material-ui/icons/SkipNextTwoTone";
+import SkipPreviousTwoToneIcon from "@material-ui/icons/SkipPreviousTwoTone";
 import clsx from "clsx";
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { useSelector, useStore } from "react-redux";
+import { getDefaultProgId } from "../../../../../../config";
 import { ActionTypes } from "../../../../../../store/actions";
 import { State } from "../../../../../../store/store";
 import { LiveSessionData } from "../../../../../../types/objectTypes";
+import { getContentId } from "../../../../../../utils/contentIdMap";
+import {
+    CreateAssessmentRequest,
+    UpdateAssessmentRequest,
+    useRestAPI,
+} from "../../../../assessments/api/restapi";
 import { InviteButton } from "../../components/invite";
+import { Player } from "../../components/player";
 import { PreviewPlayer } from "../../components/preview-player";
 import { RecordedIframe } from "../../components/recordediframe";
 import { sessionIdContext } from "../../entry";
+import { materialContext as materialsContext } from "../../lessonMaterialContext";
 import { Messages } from "../../messages";
 import { Content, Message, Session } from "../../room";
 import { SendMessage } from "../../sendMessage";
 import { MyCamera } from "../../webRTCState";
+import { Cameras } from "../../webRTCState";
 import { ControlButtons } from "./controlButtons";
-import {
-    useRestAPI,
-    CreateAssessmentRequest,
-    UpdateAssessmentRequest,
-} from "../../../../assessments/api/restapi";
-import { getDefaultProgId } from "../../../../../../config";
-import IconButton from "@material-ui/core/IconButton";
-import SkipNextTwoToneIcon from "@material-ui/icons/SkipNextTwoTone";
-import SkipPreviousTwoToneIcon from "@material-ui/icons/SkipPreviousTwoTone";
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
-import { materialContext as materialsContext } from "../../lessonMaterialContext";
-import { getContentId } from "../../../../../../utils/contentIdMap"
-import { activities } from "../../../../../../store/reducers";
 
 const drawerWidth = 340;
 
@@ -98,14 +99,13 @@ export function Teacher(props: Props): JSX.Element {
     const store = useStore();
     const { content, users, messages } = props;
 
-
     // const materials = useContext(materialsContext);
     // console.log(materials);
-    const [materials, setLessonMaterials] = useState<{ url: string, name: string }[]>([]);
+    const [materials, setLessonMaterials] = useState<Array<{ url: string, name: string }>>([]);
 
     async function fetchLessonPlan(id: string) {
         const payload = await api.getLessonPlan(id);
-        return payload
+        return payload;
     }
     const selectedLessonPlan = useSelector((state: State) => state.account.selectedLessonPlan);
     useEffect(() => {
@@ -115,19 +115,18 @@ export function Teacher(props: Props): JSX.Element {
 
             if (prepared) {
                 if (!plan.lessonMaterials) { return; }
-                const materials = plan.lessonMaterials.map(m => {
+                const materials = plan.lessonMaterials.map((m) => {
                     const contentId = getContentId(m.lessonMaterialId);
                     return {
                         url: `h5p/play/${contentId}`,
-                        name: m.title
+                        name: m.title,
                     };
-                })
+                });
                 setLessonMaterials(materials);
             }
         })();
         return () => { prepared = false; };
     }, [selectedLessonPlan]);
-
 
     const sessionId = useContext(sessionIdContext);
     const [open, setOpen] = useState<boolean>(true);
@@ -162,7 +161,7 @@ export function Teacher(props: Props): JSX.Element {
     const [contentId, setContentId] = useState(memos.activity);
     const [contentIndex, setContentIndex] = useState<number>(0);
     useEffect(() => {
-        if (!materials || materials.length === 0) { return }
+        if (!materials || materials.length === 0) { return; }
         setContentId(materials[0].url);
         setContentIndex(0);
     }, [materials]);
@@ -188,14 +187,14 @@ export function Teacher(props: Props): JSX.Element {
     }, []);
 
     // TODO: While pending, Backdrop or simple progress bar for loading,
-    // If uploadAssessment is failed, UI for add assessment manually 
+    // If uploadAssessment is failed, UI for add assessment manually
     async function onEndClass() {
         if (isLive) { toggleLive(); }
         const data: LiveSessionData = {
             classId: liveData.classId,
             className: liveData.className,
             startDate: liveData.startDate,
-            students: liveData.students
+            students: liveData.students,
         };
         setFinishedLiveData(data);
         await uploadAssessment(data);
@@ -216,7 +215,7 @@ export function Teacher(props: Props): JSX.Element {
         };
         const updateAssReq: UpdateAssessmentRequest = {
             students: data.students,
-            state: 2
+            state: 2,
         };
 
         const res = await api.createAssessment(createAssReq);
@@ -327,6 +326,9 @@ export function Teacher(props: Props): JSX.Element {
                             </Grid>
                         </Grid>
                     </Grid>
+                </Grid>
+                <Grid item xs={12}>
+                    <Cameras />
                 </Grid>
 
                 <SendMessage />

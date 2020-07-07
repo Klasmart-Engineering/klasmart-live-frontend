@@ -59,8 +59,12 @@ export function PreviewPlayer({ streamId, frameProps, width, height }: Props): J
         window.addEventListener("message", ({ data }) => {
             if (!data || !data.width || !data.height) { return; }
             setWidthHeight({ frameWidth: data.width, frameHeight: data.height});
+            console.log("setWidthHeight");
+            console.log(data.height);
             const frameWidth = Number(data.width.replace("px", ""));
             const frameHeight = Number(data.height.replace("px", ""));
+
+            console.log(frameHeight);
             if (width && height) {
                 setScale(Math.min(width / frameWidth, height / frameHeight));
             }
@@ -79,7 +83,7 @@ export function PreviewPlayer({ streamId, frameProps, width, height }: Props): J
             }}
             src={"player.html"}
             width={frameWidth}
-            height={frameHeight}
+            height={700}
             {...frameProps}
         />
     </div>;
