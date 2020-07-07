@@ -186,7 +186,7 @@ function renderChart() {
                 if (failureNb > 0) {
                     failureRate = failureNb / (successNb + failureNb) * 100.0
                 }
-                report.push({ name: devSkillMap.get(key).name, success: successRate, failure: failureRate })
+                report.push({ name: devSkillMap.get(key).name, Achieved: successRate, NotAchieved: failureRate })
             }
             // console.log("report: ", report)
             setReport(report);
@@ -221,8 +221,8 @@ function renderChart() {
                                 <YAxis />
                                 <Tooltip />
                                 <Legend />
-                                <Bar dataKey="success" fill="#aed581" />
-                                <Bar dataKey="failure" fill="#ef9a9a" />
+                                <Bar dataKey="Achieved" fill="#aed581" />
+                                <Bar dataKey="NotAchieved" fill="#ef9a9a" />
                             </BarChart>
                         </ResponsiveContainer>
                         : null}

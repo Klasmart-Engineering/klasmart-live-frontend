@@ -65,7 +65,13 @@ let Layout = (props: any) => {
     if (url.searchParams.get("component") !== "live") {
         setActiveComponent(url.searchParams.get("component") || "live");
     }
-
+    const isLive = useSelector((state: State) => state.ui.liveClass);
+    if (url.searchParams.get("room")) { // It's for students' client
+        if (!isLive) {
+            store.dispatch({ type: ActionTypes.LIVE_CLASS_TOGGLE, payload: true });
+        }
+        setActiveComponent("live");
+    }
     const timeout = { enter: 500, exit: 100 };
 
     return (
@@ -81,7 +87,7 @@ let Layout = (props: any) => {
                 <Container
                     disableGutters
                     maxWidth={"lg"}
-                    className={clsx(classes.root, isIOS && isLandscape ? classes.safeArea : "" )}
+                    className={clsx(classes.root, isIOS && isLandscape ? classes.safeArea : "")}
                 >
                     <Grow in={activeComponent === "live"} timeout={timeout} mountOnEnter unmountOnExit>
                         <Box>
