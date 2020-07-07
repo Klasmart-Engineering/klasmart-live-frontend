@@ -228,7 +228,7 @@ export function Camera({mediaStream}: {mediaStream: MediaStream}): JSX.Element {
         videoRef.current.srcObject = mediaStream;
         console.log(videoRef.current.videoHeight);
     }, [videoRef.current, mediaStream]);
-    return <video ref={videoRef} autoPlay={true} style={{width: 340, height: 340 }}/>;
+    return <video ref={videoRef} autoPlay playsInline style={{width: 340, height: 340 }}/>;
 }
 
 export function MyCamera(): JSX.Element {
