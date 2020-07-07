@@ -8,7 +8,7 @@ import ViewIcon from "@material-ui/icons/Visibility";
 import ToggleButton from "@material-ui/lab/ToggleButton";
 import ToggleButtonGroup from "@material-ui/lab/ToggleButtonGroup";
 import { gql } from "apollo-boost";
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import CenterAlignChildren from "../../../../../../components/centerAlignChildren";
 import { UserContext } from "../../app";
@@ -62,6 +62,24 @@ export function ControlButtons({contentId, streamId}: Props): JSX.Element {
     const [showContent, {loading}] = useMutation(MUT_SHOW_CONTENT);
     const [selectedButton, setSelectedButton] = useState(0);
 
+    useEffect(()=>{
+        if (selectedButton === 0) {
+            showContent({variables: { roomId, type: "Blank", contentId: "" }});
+        }
+    },[selectedButton]);
+
+    useEffect(()=>{
+        if (selectedButton === 1) {
+            showContent({variables: { roomId, type: "Stream", contentId: streamId }});
+        }
+    },[streamId,selectedButton]);
+
+    useEffect(()=>{
+        if (selectedButton === 2) {
+            showContent({variables: { roomId, type: "Activity", contentId }});
+        }
+    },[contentId,selectedButton]);
+
     const selected = loading ? loadingSelected : toggleSelected;
     return (
         <Grid container style={{ height: "100%" }}>
@@ -81,7 +99,6 @@ export function ControlButtons({contentId, streamId}: Props): JSX.Element {
                         aria-label="left aligned"
                         style={{ padding: "2px 8px", borderRadius: 12 }}
                         classes={{ selected }}
-                        onClick={() => showContent({variables: { roomId, type: "Blank", id: "" } })}
                     >
                         <StopIcon style={{ paddingRight: 5 }} />
                         <FormattedMessage id="live_buttonStop" />
@@ -92,9 +109,6 @@ export function ControlButtons({contentId, streamId}: Props): JSX.Element {
                         style={{ padding: "2px 8px", borderRadius: 12  }}
                         classes={{ selected }}
                         disabled={streamId === undefined}
-                        onClick={() => {
-                            showContent({variables: { roomId, type: "Stream", contentId: streamId }});
-                        }}
                     >
                         <PlayIcon style={{ paddingRight: 5 }} />
                         <FormattedMessage id="live_buttonPresent" />
@@ -104,9 +118,6 @@ export function ControlButtons({contentId, streamId}: Props): JSX.Element {
                         aria-label="right aligned"
                         style={{ padding: "2px 8px", borderRadius: 12  }}
                         classes={{ selected }}
-                        onClick={() => {
-                            showContent({variables: { roomId, type: "Activity", contentId }});
-                        }}
                     >
                         <ViewIcon style={{ paddingRight: 5 }} />
                         <FormattedMessage id="live_buttonActivity" />
