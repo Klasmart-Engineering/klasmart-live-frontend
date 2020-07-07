@@ -91,7 +91,10 @@ function renderChart() {
         let prepared = true;
 
         (async () => {
-            const info = await getStudents();
+            let info = await getStudents();
+            if (info) {
+                info = info.filter((student) => student.profileName !== "Woody" && student.profileName !== "Buzz Lightyear" && student.profileName !== "Rex" && student.profileName !== "Slinky Dog")
+            }
 
             if (prepared) { setStudents(info); }
         })();

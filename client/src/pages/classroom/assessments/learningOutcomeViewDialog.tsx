@@ -273,8 +273,16 @@ export default function LearningOutcomeViewDialog(props: Props) {
             if (devSkill === "") { throw new Error("EMPTY_DEVSKILL"); }
             if (skillCat === "") { throw new Error("EMPTY_SKILLCAT"); }
 
-            const devSkillId = devSkillOptions[devSkillIdx].devSkillId;
-            const skillCatId = skillCatOptions[skillCatIdx].skillCatId;
+            let devSkillIndex = devSkillIdx;
+            if (!devSkillIndex) {
+                devSkillIndex = devSkillOptions.findIndex((devSkillOpt) => devSkillOpt.name === devSkill);
+            }
+            let skillCatIndex = skillCatIdx;
+            if (!skillCatIndex) {
+                skillCatIndex = skillCatOptions.findIndex((skillCatOpt) => skillCatOpt.name === skillCat);
+            }
+            const devSkillId = devSkillOptions[devSkillIndex].devSkillId;
+            const skillCatId = skillCatOptions[skillCatIndex].skillCatId;
 
             const form: UpdateLearningOutcomeRequest = {
                 publish,
