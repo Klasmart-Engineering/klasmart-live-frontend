@@ -142,7 +142,9 @@ export function Teacher(props: Props): JSX.Element {
         }
     }, []);
 
-    const onEndClass = () => {
+    // TODO: While pending, Backdrop or simple progress bar for loading,
+    // If uploadAssessment is failed, UI for add assessment manually 
+    async function onEndClass() {
         if (isLive) { toggleLive(); }
         const data: LiveSessionData = {
             classId: liveData.classId,
@@ -151,18 +153,18 @@ export function Teacher(props: Props): JSX.Element {
             students: liveData.students
         };
         setFinishedLiveData(data);
-        uploadAssessment(data);
+        await uploadAssessment(data);
         setActiveAssessMenu("pending");
-        window.location.href = "/?component=assessments"
+        location.href = "/?component=assessments";
     }
 
-    function uploadAssessment(data: LiveSessionData) {
+    async function uploadAssessment(data: LiveSessionData) {
         const createAssReq: CreateAssessmentRequest = {
             publish: false,
             progId: getDefaultProgId(),
             classId: data.classId,
             className: data.className,
-            lessonPlanId: "5db78574-2cf3-4a91-b705-b18d78013676", // It's temp for demo 
+            lessonPlanId: "5db78574-2cf3-4a91-b705-b18d78013676", // TODO: It's temporary for demo
             sessionId: "demo-session-id",
             startDate: data.startDate,
             subject: "English",
@@ -172,14 +174,8 @@ export function Teacher(props: Props): JSX.Element {
             state: 2
         }
 
-        let prepared = true;
-        (async () => {
-            const res = await api.createAssessment(createAssReq);
-            if (prepared) {
-                api.updateAssessment(res.assId, updateAssReq);
-            }
-        })();
-        return () => { prepared = false; };
+        const res = await api.createAssessment(createAssReq);
+        await api.updateAssessment(res.assId, updateAssReq);
     }
 
     return (
