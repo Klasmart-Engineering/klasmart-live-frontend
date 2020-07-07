@@ -277,21 +277,21 @@ function LessonPlanSelect() {
         return () => { prepared = false; };
     }, []);
 
-    useEffect(() => {
-        if (selectedLessonPlan === "" || lessonPlanText === "") { return; }
-        setLoading(true);
+    // useEffect(() => {
+    //     if (selectedLessonPlan === "" || lessonPlanText === "") { return; }
+    //     setLoading(true);
 
-        let prepared = true;
-        (async () => {
-            const plan = await fetchLessonPlan(selectedLessonPlan);
-            if (prepared) {
-                if (!plan.lessonMaterials) { return };
-                setLessonMaterials(plan.lessonMaterials);
-                setLoading(false);
-            }
-        })();
-        return () => { prepared = false; };
-    }, [lessonPlanText]);
+    //     let prepared = true;
+    //     (async () => {
+    //         const plan = await fetchLessonPlan(selectedLessonPlan);
+    //         if (prepared) {
+    //             if (!plan.lessonMaterials) { return };
+    //             setLessonMaterials(plan.lessonMaterials);
+    //             setLoading(false);
+    //         }
+    //     })();
+    //     return () => { prepared = false; };
+    // }, [lessonPlanText]);
 
     function lessonPlanSelect(plan: { id: string, title: string }) {
         setSelectedLessonPlan(plan.id);

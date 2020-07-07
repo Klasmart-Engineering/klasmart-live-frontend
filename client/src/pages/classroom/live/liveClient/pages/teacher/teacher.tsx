@@ -34,6 +34,7 @@ import SkipPreviousTwoToneIcon from "@material-ui/icons/SkipPreviousTwoTone";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import { materialContext as materialsContext } from "../../lessonMaterialContext";
+import { getContentId } from "../../../../../../utils/contentIdMap"
 
 const drawerWidth = 340;
 
@@ -97,7 +98,35 @@ export function Teacher(props: Props): JSX.Element {
     const { content, users, messages } = props;
 
 
-    const materials = useContext(materialsContext);
+    // const materials = useContext(materialsContext);
+    // console.log(materials);
+    const [materials, setLessonMaterials] = useState<{ url: string, name: string }[]>([]);
+
+    async function fetchLessonPlan(id: string) {
+        const payload = await api.getLessonPlan(id);
+        return payload
+    }
+    const selectedLessonPlan = useSelector((state: State) => state.account.selectedLessonPlan);
+    useEffect(() => {
+        let prepared = true;
+        (async () => {
+            const plan = await fetchLessonPlan(selectedLessonPlan);
+
+            if (prepared) {
+                if (!plan.lessonMaterials) { return; }
+                const materials = plan.lessonMaterials.map(m => {
+                    const contentId = getContentId(m.lessonMaterialId);
+                    return {
+                        url: `h5p/play/${contentId}`,
+                        name: m.title
+                    };
+                })
+                setLessonMaterials(materials);
+            }
+        })();
+        return () => { prepared = false; };
+    }, [selectedLessonPlan]);
+
 
     const sessionId = useContext(sessionIdContext);
     const [open, setOpen] = useState<boolean>(true);
@@ -130,7 +159,7 @@ export function Teacher(props: Props): JSX.Element {
     }, []);
 
     const [contentId, setContentId] = useState(memos.activity);
-    const [contentIndex, setContentIndex] = useState<number>();
+    const [contentIndex, setContentIndex] = useState<number>(0);
 
     useEffect(() => {
         function test(e: MessageEvent) {
@@ -197,19 +226,19 @@ export function Teacher(props: Props): JSX.Element {
                 }
             >
                 <Grid container direction="row">
-                    <Grid item xs={10} style={{paddingRight: "10px"}}>
+                    <Grid item xs={10} style={{ paddingRight: "10px" }}>
                         <Select value={contentIndex} onChange={(e) => {
                             const index = e.target.value as number;
                             setContentIndex(index);
                             setContentId(materials[index].url);
-                        }} fullWidth disabled={materials.length==0}>
-                            { materials.map(({name,url},i) => <MenuItem value={i} key={url}>{name}</MenuItem>) }
+                        }} fullWidth disabled={materials.length == 0}>
+                            {materials.map(({ name, url }, i) => <MenuItem value={i} key={url}>{name}</MenuItem>)}
                         </Select>
                     </Grid>
                     <Grid item xs={1}>
-                        <IconButton aria-label="delete" disabled={materials.length==0} color="primary" onClick={() => {
-                            if(materials.length === 0) {return;}
-                            const newIndex = contentIndex?Math.max(0,contentIndex-1):0;
+                        <IconButton aria-label="delete" disabled={materials.length == 0} color="primary" onClick={() => {
+                            if (materials.length === 0) { return; }
+                            const newIndex = contentIndex ? Math.max(0, contentIndex - 1) : 0;
                             setContentIndex(newIndex);
                             setContentId(materials[newIndex].url);
                         }}>
@@ -217,9 +246,9 @@ export function Teacher(props: Props): JSX.Element {
                         </IconButton>
                     </Grid>
                     <Grid item xs={1}>
-                        <IconButton aria-label="next" disabled={materials.length==0} color="primary" onClick={() => {
-                            if(materials.length === 0) {return;}
-                            const newIndex = contentIndex!==undefined?Math.min(materials.length-1,contentIndex+1):0;
+                        <IconButton aria-label="next" disabled={materials.length == 0} color="primary" onClick={() => {
+                            if (materials.length === 0) { return; }
+                            const newIndex = contentIndex !== undefined ? Math.min(materials.length - 1, contentIndex + 1) : 0;
                             setContentIndex(newIndex);
                             setContentId(materials[newIndex].url);
                         }}>
