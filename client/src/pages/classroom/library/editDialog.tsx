@@ -521,7 +521,7 @@ export default function EditDialog(props: Props) {
                         </Hidden>
                     }
                     handleClose={onClose}
-                    subtitleID="library_createContentTitle"
+                    subtitleID="library_editContentTitle"
                 />
                 <Grid
                     container

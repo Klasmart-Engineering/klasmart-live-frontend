@@ -48,7 +48,7 @@ interface TableProps {
 export interface TableRow {
     assId: string
     title: string
-    assessedDate: string
+    completedDate: string
 }
 
 export default function CompletedTable(props: TableProps) {

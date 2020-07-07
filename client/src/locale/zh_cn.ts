@@ -58,6 +58,7 @@ const messages: Record<string, string> = {
     library_pendingTitle: "Pending Content",
     library_archivedTitle: "Archived Content",
     library_createContentTitle: "Create new Content",
+    library_editContentTitle: "Edit Content",
 
     locale_select: "Select Language",
     locale_tooltip: "Change Language",

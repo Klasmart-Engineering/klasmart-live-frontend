@@ -19,8 +19,8 @@ const TABLE_COLUMN = [
         field: "title",
     },
     {
-        title: "Assessed on",
-        field: "assessedDate",
+        title: "Completed on",
+        field: "completedDate",
         type: "numeric",
     }
 ];
@@ -48,12 +48,12 @@ export default function AssessmentsCompletedView() {
         (async () => {
             const assessments = await fetchCompletedAssessments();
 
-            let tmpRows: TableRow[] = [];
+            const tmpRows: TableRow[] = [];
             for (const ass of assessments) {
                 tmpRows.push({
                     assId: ass.assId,
                     title: ass.name,
-                    assessedDate: new Date(ass.assessedDate).toLocaleString()
+                    completedDate: new Date(ass.updatedDate).toLocaleString()
                 })
             }
 

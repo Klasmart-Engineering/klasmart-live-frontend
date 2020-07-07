@@ -131,8 +131,8 @@ function AssessmentDetails(props: AssessmentDetailsProps) {
                 <Typography variant="subtitle1">{new Date(ass.createdDate).toLocaleString()}</Typography>
             </Grid>
             <Grid className={classes.menuGrid} item xs={isMobile ? 12 : 6}>
-                <Typography variant="caption" color="textSecondary">Assessed on</Typography>
-                <Typography variant="subtitle1">{new Date(ass.assessedDate).toLocaleString()}</Typography>
+                <Typography variant="caption" color="textSecondary">Completed on</Typography>
+                <Typography variant="subtitle1">{new Date(ass.updatedDate).toLocaleString()}</Typography>
             </Grid>
             <Grid className={classes.menuGrid} item xs={isMobile ? 12 : 6}>
                 <Typography variant="caption" color="textSecondary">Subject</Typography>
