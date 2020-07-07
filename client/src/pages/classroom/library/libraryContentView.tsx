@@ -125,7 +125,7 @@ export default function LibraryContentView() {
         </Grid>
         <Grid item xs={12} style={{ padding: "16px 0" }}>
             <Typography variant="caption" color="textSecondary">
-                <FormattedMessage id="library_contentMarketTitle" />
+                <FormattedMessage id="library_marketTitle" />
             </Typography>
         </Grid>
         <Grid item xs={12}>

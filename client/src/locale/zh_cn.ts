@@ -50,11 +50,11 @@ const messages: Record<string, string> = {
     live_waitingForStudents: "Waiting for students to join the room",
     live_zoomIntoActivity: "Zoom in this activity",
 
-    library_contentButton: "My Content",
+    library_publishedButton: "Published",
     library_pendingButton: "Pending",
     library_archivedButton: "Archived",
-    library_contentTitle: "Content Library",
-    library_contentMarketTitle: "Marketplace",
+    library_publishedTitle: "Published Content Library",
+    library_marketTitle: "Marketplace",
     library_pendingTitle: "Pending Content",
     library_archivedTitle: "Archived Content",
     library_createContentTitle: "Create new Content",
@@ -79,10 +79,10 @@ const messages: Record<string, string> = {
     privacy_termsLink: "Terms",
 
     // Assessments
-    assess_libraryButton: "Library",
+    assess_libraryButton: "Learning Outcomes",
     assess_pendingButton: "Pending",
     assess_completedButton: "Completed",
-    assess_libraryTitle: "Learning Outcome Library",
+    assess_libraryTitle: "Learning Outcomes",
     assess_libraryCreateDialogTitle: "Create new Learning Outcome",
     assess_libraryViewDialogTitle: "Learning Outcome Details",
     assess_libraryEditDialogTitle: "Edit Learning Outcome",

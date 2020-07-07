@@ -60,7 +60,7 @@ export type SetStudents = Action<ActionTypes.STUDENTS, Array<{
     iconLink: string,
 }>>;
 
-export type LibraryMenu = "content" | "pending" | "archived";
+export type LibraryMenu = "published" | "pending" | "archived";
 export type SetActiveLibraryMenu = Action<ActionTypes.ACTIVE_LIBRARY_MENU, LibraryMenu>;
 
 export enum AssessmentsMenu {

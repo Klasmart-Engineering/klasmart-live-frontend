@@ -208,22 +208,22 @@ export function assessmentToken(state = JWT_TOKEN, action: Actions) {
 
 const STUDENT_LIST = [
     {
-        profileId: "student0",
+        profileId: "Bada",
         profileName: "Bada",
         iconLink: "",
     },
     {
-        profileId: "student1",
+        profileId: "Pogo",
         profileName: "Pogo",
         iconLink: "",
     },
     {
-        profileId: "student2",
+        profileId: "Curly",
         profileName: "Curly",
         iconLink: ""
     },
     {
-        profileId: "student3",
+        profileId: "Jess",
         profileName: "Jess",
         iconLink: "",
     },
@@ -237,7 +237,7 @@ export function students(state = STUDENT_LIST, action: Actions) {
     }
 }
 
-export function activeLibraryMenu(state = "content", action: Actions) {
+export function activeLibraryMenu(state = "published", action: Actions) {
     switch (action.type) {
         case ActionTypes.ACTIVE_LIBRARY_MENU:
             return action.payload;
@@ -291,22 +291,22 @@ export function finishLiveData(state = {
     startDate: new Date().getTime(), // TODO: have to fix
     students: [
         {
-            profileId: "student0",
+            profileId: "Bada",
             profileName: "Bada",
             iconLink: "",
         },
         {
-            profileId: "student1",
+            profileId: "Pogo",
             profileName: "Pogo",
             iconLink: "",
         },
         {
-            profileId: "student2",
+            profileId: "Curly",
             profileName: "Curly",
             iconLink: ""
         },
         {
-            profileId: "student3",
+            profileId: "Jess",
             profileName: "Jess",
             iconLink: "",
         },

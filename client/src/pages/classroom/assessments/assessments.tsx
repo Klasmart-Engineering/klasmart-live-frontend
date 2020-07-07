@@ -7,10 +7,10 @@ import Menu, { MenuProps } from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import { createStyles, makeStyles, Theme, withStyles } from "@material-ui/core/styles";
-import LibraryIcon from '@material-ui/icons/LocalLibraryTwoTone';
-import PendingIcon from '@material-ui/icons/HourglassFullTwoTone';
-import CompleteIcon from '@material-ui/icons/AssignmentTurnedInTwoTone';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import LearningOutcomeIcon from "@material-ui/icons/EmojiObjectsTwoTone";
+import PendingIcon from "@material-ui/icons/HourglassFullTwoTone";
+import CompleteIcon from "@material-ui/icons/AssignmentTurnedInTwoTone";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import React, { useState, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useSelector, useStore } from "react-redux";
@@ -31,7 +31,7 @@ type AssessmentsMenuItem = {
 const MENU_LABEL: AssessmentsMenuItem[] = [
     {
         id: "library",
-        icon: <LibraryIcon style={{ color: "#444" }} />,
+        icon: <LearningOutcomeIcon style={{ color: "#444" }} />,
         text: <Typography variant="subtitle1" color="primary">
             <FormattedMessage id="assess_libraryButton" />
         </Typography>,
@@ -137,7 +137,7 @@ export default function AssessmentsLayout() {
                             size="large"
                             color="primary"
                             onClick={() => setActiveMenu(AssessmentsMenu.LIBRARY)}
-                            startIcon={<LibraryIcon style={{ color: "#444" }} />}
+                            startIcon={<LearningOutcomeIcon style={{ color: "#444" }} />}
                         >
                             <FormattedMessage id="assess_libraryButton" />
                         </Button>
@@ -157,7 +157,7 @@ export default function AssessmentsLayout() {
                             onClick={() => setActiveMenu(AssessmentsMenu.COMPLETED)}
                             startIcon={<CompleteIcon style={{ color: "#444" }} />}
                         >
-                            <FormattedMessage id={`assess_completedButton`} />
+                            <FormattedMessage id="assess_completedButton" />
                         </Button>
                     </Hidden>
                     <Hidden lgUp>
