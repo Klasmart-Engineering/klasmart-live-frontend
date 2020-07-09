@@ -488,7 +488,7 @@ export default function PendingViewDialog(props: Props) {
                                     </ListItemIcon>
                                     {collapseIndex === index ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                                     <Collapse in={collapseIndex === index} timeout="auto" unmountOnExit>
-                                        {info.students.map((student, index) =>
+                                        {info.students.map(student =>
                                             <ListItem key={student.profileId} button onClick={(e) => { handleOnClickStudent(lo.loId, student); e.preventDefault(); e.stopPropagation(); }}>
                                                 <ListItemText primary={student.profileName} />
                                                 <ListItemIcon>
