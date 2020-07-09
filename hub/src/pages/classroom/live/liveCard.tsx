@@ -1,5 +1,4 @@
 import Grid from "@material-ui/core/Grid";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import { createStyles, makeStyles, Theme, useTheme, withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
@@ -18,7 +17,7 @@ import CenterAlignChildren from "../../../components/centerAlignChildren";
 import { ActionTypes } from "../../../store/actions";
 import { State } from "../../../store/store";
 import { LiveSessionData } from "../../../types/objectTypes";
-import { useRestAPI, LessonPlanResponse } from "../../classroom/assessments/api/restapi";
+import { useRestAPI } from "../../../api/restapi";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -247,10 +246,6 @@ function LessonPlanSelect() {
             .filter(p => p.published)
             .sort((a, b) => b.updatedDate - a.updatedDate);
     }
-    async function fetchLessonPlan(id: string) {
-        const payload = await api.getLessonPlan(id);
-        return payload
-    }
 
     const classes = useStyles();
     const store = useStore();
@@ -262,8 +257,6 @@ function LessonPlanSelect() {
     const [lessonPlanOptions, setLessonPlanOptions] = useState<{ id: string, title: string }[]>([]);
     const [lessonPlanText, setLessonPlanText] = useState<string>("");
     const [lessonPlanMenuElement, setLessonPlanMenuElement] = useState<null | HTMLElement>(null);
-    const [lessonMaterials, setLessonMaterials] = useState<{ id: string, title: string }[]>([]);
-    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         let prepared = true;
@@ -278,22 +271,6 @@ function LessonPlanSelect() {
         })();
         return () => { prepared = false; };
     }, []);
-
-    // useEffect(() => {
-    //     if (selectedLessonPlan === "" || lessonPlanText === "") { return; }
-    //     setLoading(true);
-
-    //     let prepared = true;
-    //     (async () => {
-    //         const plan = await fetchLessonPlan(selectedLessonPlan);
-    //         if (prepared) {
-    //             if (!plan.lessonMaterials) { return };
-    //             setLessonMaterials(plan.lessonMaterials);
-    //             setLoading(false);
-    //         }
-    //     })();
-    //     return () => { prepared = false; };
-    // }, [lessonPlanText]);
 
     function lessonPlanSelect(plan: { id: string, title: string }) {
         setSelectedLessonPlan(plan.id);
@@ -339,17 +316,6 @@ function LessonPlanSelect() {
                     ))
                 }
             </StyledMenu>
-            {/* <Grid item xs={12}>
-                {loading ? <CircularProgress /> :
-                    lessonMaterials.map(m => {
-                        return (
-                            <Grid key={m.id}>
-                                <Typography>{m.title}</Typography>
-                            </Grid>
-                        );
-                    })
-                }
-            </Grid> */}
         </>
     );
 }

@@ -1,30 +1,19 @@
 import Grid from "@material-ui/core/Grid";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-import LibraryIcon from '@material-ui/icons/LocalLibraryTwoTone';
-import PendingIcon from '@material-ui/icons/HourglassFullTwoTone';
-import CompleteIcon from '@material-ui/icons/AssignmentTurnedInTwoTone';
+import { createStyles, makeStyles } from "@material-ui/core/styles";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { useStore, useSelector } from "react-redux";
 import { State } from "../../../store/store";
-import { ActionTypes } from "../../../store/actions"
-import BadanamuButton from "./../../../components/styled/button";
-import BadanamuTextField from "../../../components/styled/textfield";
+import { ActionTypes } from "../../../store/actions";
 import { useRestAPI, ReportLearningOutcomeRequest } from "./api/restapi";
 import { FormattedMessage } from "react-intl";
-import { BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Bar, ResponsiveContainer } from 'recharts';
-import { config } from "react-transition-group";
-import { getDefaultProgId } from "../../../config"
-import { string } from "prop-types";
+import { BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Bar, ResponsiveContainer } from "recharts";
+import { getDefaultProgId } from "../../../config";
 import ListItem from "@material-ui/core/ListItem";
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from "@material-ui/core/ListItemText";
-import Avatar from '@material-ui/core/Avatar';
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
     createStyles({
         menuBtn: {
             margin: "0 8px"
@@ -39,7 +28,6 @@ export default function ReportLayout() {
     const classes = useStyles();
     const store = useStore();
 
-    const [activeMenu, setActiveMenu] = useState("");
     const [inFlight, setInFlight] = useState(false);
     const isLive = useSelector((state: State) => state.ui.liveClass);
     const toggleLive = () => {
@@ -47,7 +35,7 @@ export default function ReportLayout() {
     };
     useEffect(() => {
         if (isLive) { toggleLive(); }
-    }, [])
+    }, []);
 
     return (
         <Grid
@@ -85,7 +73,7 @@ function renderChart() {
     const [studentInFlight, setStudentInFlight] = useState(false);
     const [studentError, setStudentError] = useState<JSX.Element | undefined>(undefined);
     const [students, setStudents] = useState<any[]>();
-    const [selectedStudent, setSelectedStudent] = useState<any>()
+    const [selectedStudent, setSelectedStudent] = useState<any>();
 
     useEffect(() => {
         let prepared = true;
@@ -93,7 +81,7 @@ function renderChart() {
         (async () => {
             let info = await getStudents();
             if (info) {
-                info = info.filter((student) => student.profileName !== "Woody" && student.profileName !== "Buzz Lightyear" && student.profileName !== "Rex" && student.profileName !== "Slinky Dog")
+                info = info.filter((student) => student.profileName !== "Woody" && student.profileName !== "Buzz Lightyear" && student.profileName !== "Rex" && student.profileName !== "Slinky Dog");
             }
 
             if (prepared) { setStudents(info); }
@@ -106,20 +94,20 @@ function renderChart() {
         if (studentInFlight) { return; }
         try {
             setStudentInFlight(true);
-            let assessmentsResponse = await restApi.getAssessments()
-            let studentMap = new Map<string, any>();
+            const assessmentsResponse = await restApi.getAssessments();
+            const studentMap = new Map<string, any>();
             for (let i = 0; i < assessmentsResponse.assessments.length; ++i) {
                 for (let j = 0; j < assessmentsResponse.assessments[i].students.length; ++j) {
                     studentMap.set(assessmentsResponse.assessments[i].students[j].profileId, assessmentsResponse.assessments[i].students[j]);
                 }
             }
-            let studentList = []
-            for (let [key, value] of studentMap) {
+            const studentList = [];
+            for (const [key, value] of studentMap) {
                 studentList.push(value);
             }
             return studentList;
         } catch (e) {
-            console.error(e)
+            console.error(e);
             setStudentError(<FormattedMessage id="ERROR_UNKOWN" />);
         } finally {
             setStudentInFlight(false);
@@ -130,12 +118,12 @@ function renderChart() {
         if (reportInFlight) { return; }
         try {
             setReportInFlight(true);
-            let reportInfo: ReportLearningOutcomeRequest = {
+            const reportInfo: ReportLearningOutcomeRequest = {
                 profileId: student.profileId,
                 programId: getDefaultProgId(),
                 classId: ""
             };
-            let responseReport: any = {}
+            let responseReport: any = {};
             responseReport = await restApi.getReportLearningOutcomeList(reportInfo);
             // console.log("report: ", responseReport);
             // TODO: Use get by ID list
@@ -144,12 +132,12 @@ function renderChart() {
             const loInfoListResponse = await restApi.getLearningOutcomes();
             // console.log("loInfoListResponse", loInfoListResponse);
             // TODO: Use get by ID list
-            let devSkillInfoListResponse = await restApi.getDevSkills();
+            const devSkillInfoListResponse = await restApi.getDevSkills();
             // console.log("devSkillInfoListResponse", devSkillInfoListResponse);
 
-            let devSkillMap: Map<string, any> = new Map<string, any>();
+            const devSkillMap: Map<string, any> = new Map<string, any>();
             for (let j = 0; j < devSkillInfoListResponse.devSkills.length; ++j) {
-                let loSkillList: number[] = [];
+                const loSkillList: number[] = [];
                 for (let i = 0; i < loInfoListResponse.learningOutcomes.length; ++i) {
                     if (devSkillInfoListResponse.devSkills[j].devSkillId === loInfoListResponse.learningOutcomes[i].devSkillId) {
                         loSkillList.push(loInfoListResponse.learningOutcomes[i].loId);
@@ -161,12 +149,12 @@ function renderChart() {
                 });
             }
 
-            let report: any[] = []
+            const report: any[] = [];
             // console.log("devSkillMap: ", devSkillMap)
-            for (let key of devSkillMap.keys()) {
+            for (const key of devSkillMap.keys()) {
                 let successNb = 0;
                 let failureNb = 0;
-                let loList = devSkillMap.get(key).loList
+                const loList = devSkillMap.get(key).loList;
                 for (let i = 0; i < loList.length; ++i) {
                     for (let j = 0; j < responseReport.learningOutcomes.length; ++j) {
                         if (loList[i] === responseReport.learningOutcomes[j].id) {
@@ -178,21 +166,21 @@ function renderChart() {
                         }
                     }
                 }
-                let successRate = 0.0
-                let failureRate = 0.0
+                let successRate = 0.0;
+                let failureRate = 0.0;
                 if (successNb > 0) {
-                    successRate = successNb / (successNb + failureNb) * 100.0
+                    successRate = successNb / (successNb + failureNb) * 100.0;
                 }
                 if (failureNb > 0) {
-                    failureRate = failureNb / (successNb + failureNb) * 100.0
+                    failureRate = failureNb / (successNb + failureNb) * 100.0;
                 }
-                report.push({ name: devSkillMap.get(key).name, Achieved: successRate, NotAchieved: failureRate })
+                report.push({ name: devSkillMap.get(key).name, Achieved: successRate, NotAchieved: failureRate });
             }
             // console.log("report: ", report)
             setReport(report);
             setSelectedStudent(student);
         } catch (e) {
-            console.error(e)
+            console.error(e);
             setReportError(<FormattedMessage id="ERROR_UNKOWN" />);
         } finally {
             setReportInFlight(false);
@@ -229,5 +217,5 @@ function renderChart() {
                 </Grid>
             </Grid>
         </Grid>
-    )
+    );
 }

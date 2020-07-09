@@ -1,14 +1,12 @@
 import React, { createContext, useState } from "react";
-import { IntlProvider } from "react-intl";
 import { Route, Switch } from "react-router-dom";
-import { en } from "./localization/en";
-import {Join} from "./pages/join";
+import { Join } from "./pages/join";
 import { Room } from "./room";
 
 export interface IUserContext {
-  roomId: string;
-  teacher: boolean;
-  name: string;
+    roomId: string;
+    teacher: boolean;
+    name: string;
 }
 
 export const UserContext = createContext<IUserContext>({teacher: false, roomId: "", name: ""});

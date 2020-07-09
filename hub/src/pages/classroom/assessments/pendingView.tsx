@@ -1,9 +1,9 @@
 import Grid from "@material-ui/core/Grid";
 import React, { useState, useEffect } from "react";
 import { useTheme } from "@material-ui/core/styles";
-import useMediaQuery from '@material-ui/core/useMediaQuery';
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
-import { useRestAPI, AssessmentResponse } from "./api/restapi";
+import { useRestAPI, AssessmentResponse } from "../../../api/restapi";
 import PendingTable, { TableRow } from "./pendingTable";
 
 const TABLE_COLUMN_MOBILE = [
@@ -11,7 +11,7 @@ const TABLE_COLUMN_MOBILE = [
         title: "Title",
         field: "title",
     }
-]
+];
 
 const TABLE_COLUMN = [
     {
@@ -27,7 +27,7 @@ const TABLE_COLUMN = [
 
 export default function AssessmentsPendingView() {
     const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
     const api = useRestAPI();
 
     const [columns, setColumns] = useState<any[]>(TABLE_COLUMN);
@@ -49,20 +49,20 @@ export default function AssessmentsPendingView() {
         (async () => {
             const assessments = await fetchAssessments();
 
-            let tmpRows: TableRow[] = [];
+            const tmpRows: TableRow[] = [];
             for (const ass of assessments) {
                 tmpRows.push({
                     assId: ass.assId,
                     title: ass.name + (ass.state === 1 ? " (To Do)" : " (In Progress)"),
                     createdDate: new Date(ass.createdDate).toLocaleString()
-                })
+                });
             }
 
             if (prepared) { setRows(tmpRows); }
         })();
 
         return () => { prepared = false; };
-    }, [])
+    }, []);
 
     useEffect(() => {
         if (isMobile) {
@@ -70,7 +70,7 @@ export default function AssessmentsPendingView() {
         } else {
             setColumns(TABLE_COLUMN); setPageSize(5);
         }
-    }, [isMobile])
+    }, [isMobile]);
 
     return (
         <Grid container>

@@ -5,7 +5,7 @@ import Grow from "@material-ui/core/Grow";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import { createStyles, makeStyles, Theme, useTheme } from "@material-ui/core/styles";
-import useMediaQuery from '@material-ui/core/useMediaQuery';
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { TransitionProps } from "@material-ui/core/transitions";
 import AddIcon from "@material-ui/icons/Add";
 import ErrorIcon from "@material-ui/icons/Error";
@@ -23,7 +23,7 @@ import {
     CreateLearningOutcomeRequest,
     DevSkillResponse,
     SkillCatResponse
-} from "./api/restapi";
+} from "../../../api/restapi";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -76,16 +76,16 @@ export default function CreateLearningOutcomeDialog() {
         publishedDevSkills: DevSkillResponse[],
         publishedSkillCats: SkillCatResponse[]
     ) {
-        let devSkillOptions: DevSkillOption[] = [];
+        const devSkillOptions: DevSkillOption[] = [];
         const availableDevSkillIds = [...new Set(publishedSkillCats.map(cat => cat.devSkillId))];
         for (const id of availableDevSkillIds) {
-            const target = publishedDevSkills.filter(ds => ds.devSkillId === id)[0]
+            const target = publishedDevSkills.filter(ds => ds.devSkillId === id)[0];
             devSkillOptions.push({
                 devSkillId: target.devSkillId,
                 name: target.name
             });
         }
-        return devSkillOptions
+        return devSkillOptions;
     }
     async function fetchPublishedLearningOutcomes() {
         const payload = await api.getLearningOutcomes();
@@ -96,7 +96,7 @@ export default function CreateLearningOutcomeDialog() {
 
     const classes = useStyles();
     const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
     const [open, setOpen] = useState(false);
 
@@ -140,7 +140,7 @@ export default function CreateLearningOutcomeDialog() {
                         devSkillId: cat.devSkillId,
                         skillCatId: cat.skillCatId,
                         name: cat.name
-                    }
+                    };
                 });
                 setAllSkillCatOptions(skillCatOptions);
                 setSkillCatOptions(skillCatOptions);
@@ -149,7 +149,7 @@ export default function CreateLearningOutcomeDialog() {
             }
         })();
         return () => { prepared = false; };
-    }, [open])
+    }, [open]);
 
     useEffect(() => {
         if (devSkill === "") {
@@ -162,7 +162,7 @@ export default function CreateLearningOutcomeDialog() {
             const skillCatList = allSkillCatOptions.filter(cat => cat.devSkillId == devSkillId);
             setSkillCatOptions(skillCatList);
         }
-    }, [devSkill])
+    }, [devSkill]);
 
     const handleChangeDevSkill = (e: any, value: string) => {
         const idx = e.target.getAttribute("data-option-index");
@@ -173,7 +173,7 @@ export default function CreateLearningOutcomeDialog() {
             setDevSkillIdx(idx);
             setDevSkill(value);
         }
-    }
+    };
     const handleChangeSkillCat = (e: any, value: string) => {
         const idx = e.target.getAttribute("data-option-index");
         if (idx === null || value === null) {
@@ -183,7 +183,7 @@ export default function CreateLearningOutcomeDialog() {
             setSkillCatIdx(idx);
             setSkillCat(value);
         }
-    }
+    };
 
     async function handleOnClickCreate() {
         setTitleError(null);
@@ -209,8 +209,8 @@ export default function CreateLearningOutcomeDialog() {
                 description,
                 estimatedDuration: estimatedDuration === "" ? 0 : Number(estimatedDuration),
                 tags,
-            }
-            await api.createLearningOutcome(form)
+            };
+            await api.createLearningOutcome(form);
             location.reload();
         } catch (e) {
             handleError(e);
@@ -250,9 +250,9 @@ export default function CreateLearningOutcomeDialog() {
         const id = e.getErrorMessageID();
         const errorMessage = <FormattedMessage id={id} />;
         switch (e.getErrorMessageType()) {
-            default:
-                setGeneralError(errorMessage);
-                break;
+        default:
+            setGeneralError(errorMessage);
+            break;
         }
     }
 

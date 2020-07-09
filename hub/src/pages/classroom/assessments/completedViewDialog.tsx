@@ -3,19 +3,17 @@ import Dialog from "@material-ui/core/Dialog";
 import Grid from "@material-ui/core/Grid";
 import Grow from "@material-ui/core/Grow";
 import { createStyles, makeStyles, Theme, useTheme } from "@material-ui/core/styles";
-import useMediaQuery from '@material-ui/core/useMediaQuery';
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { TransitionProps } from "@material-ui/core/transitions";
 import React, { useState, useEffect } from "react";
 
 import DialogAppBar from "../../../components/styled/dialogAppBar";
-import {
-    useRestAPI,
-    AssessmentResponse
-} from "./api/restapi";
+import { useRestAPI, AssessmentResponse } from "../../../api/restapi";
 
 interface Props {
     assId: string
     open: boolean
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onClose: any
 }
 
@@ -55,7 +53,7 @@ export default function CompletedViewDialog(props: Props) {
     const { assId, open, onClose } = props;
     const classes = useStyles();
     const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
     const api = useRestAPI();
 
     async function fetchAssessmentInfo() {
@@ -75,7 +73,7 @@ export default function CompletedViewDialog(props: Props) {
         })();
 
         return () => { prepared = false; };
-    }, [open])
+    }, [open]);
 
     return (
         <Dialog
@@ -109,8 +107,8 @@ interface AssessmentDetailsProps {
 }
 
 function msToMinutes(duration: number): number {
-    var seconds = duration / 1000 / 1000 / 1000 % 3600;
-    var minutes = seconds / 60;
+    const seconds = duration / 1000 / 1000 / 1000 % 3600;
+    const minutes = seconds / 60;
     return Math.floor(minutes);
 }
 
@@ -118,7 +116,7 @@ function AssessmentDetails(props: AssessmentDetailsProps) {
     const { ass } = props;
     const classes = useStyles();
     const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
     return (
         <>
@@ -149,5 +147,5 @@ function AssessmentDetails(props: AssessmentDetailsProps) {
                 </Typography>
             </Grid>
         </>
-    )
+    );
 }

@@ -1,9 +1,9 @@
 import Grid from "@material-ui/core/Grid";
 import React, { useState, useEffect } from "react";
 import { useTheme } from "@material-ui/core/styles";
-import useMediaQuery from '@material-ui/core/useMediaQuery';
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
-import { useRestAPI, AssessmentResponse } from "./api/restapi";
+import { useRestAPI } from "../../../api/restapi";
 import CompletedTable, { TableRow } from "./completedTable";
 
 const TABLE_COLUMN_MOBILE = [
@@ -11,7 +11,7 @@ const TABLE_COLUMN_MOBILE = [
         title: "Title",
         field: "title",
     }
-]
+];
 
 const TABLE_COLUMN = [
     {
@@ -27,11 +27,10 @@ const TABLE_COLUMN = [
 
 export default function AssessmentsCompletedView() {
     const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
     const api = useRestAPI();
 
     const [columns, setColumns] = useState<any[]>(TABLE_COLUMN);
-    const [assessments, _] = useState<AssessmentResponse[]>([]);
     const [rows, setRows] = useState<TableRow[]>([]);
     const [pageSize, setPageSize] = useState<number>(5);
 
@@ -54,14 +53,14 @@ export default function AssessmentsCompletedView() {
                     assId: ass.assId,
                     title: ass.name,
                     completedDate: new Date(ass.updatedDate).toLocaleString()
-                })
+                });
             }
 
             if (prepared) { setRows(tmpRows); }
         })();
 
         return () => { prepared = false; };
-    }, [])
+    }, []);
 
     useEffect(() => {
         if (isMobile) {
@@ -69,7 +68,7 @@ export default function AssessmentsCompletedView() {
         } else {
             setColumns(TABLE_COLUMN); setPageSize(5);
         }
-    }, [isMobile])
+    }, [isMobile]);
 
     return (
         <Grid container>

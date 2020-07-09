@@ -1,11 +1,11 @@
 import Grid from "@material-ui/core/Grid";
-import CompleteIcon from '@material-ui/icons/Done';
+import CompleteIcon from "@material-ui/icons/Done";
 import { useTheme } from "@material-ui/core/styles";
-import useMediaQuery from '@material-ui/core/useMediaQuery';
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 import React, { useState, useEffect } from "react";
 
 import LearningOutcomeTable, { TableRow } from "./learningOutcomeTable";
-import { useRestAPI, LearningOutcomeResponse } from "./api/restapi";
+import { useRestAPI, LearningOutcomeResponse } from "../../../api/restapi";
 
 const TABLE_COLUMN_MOBILE = [
     {
@@ -48,7 +48,7 @@ const TABLE_COLUMN = [
 
 export default function AssessmentsLibraryView() {
     const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
     const api = useRestAPI();
 
     const [columns, setColumns] = useState<any[]>(TABLE_COLUMN);
@@ -66,7 +66,7 @@ export default function AssessmentsLibraryView() {
         (async () => {
             const los = await fetchLOs();
 
-            let tmpRows: TableRow[] = [];
+            const tmpRows: TableRow[] = [];
             for (const lo of los) {
                 tmpRows.push({
                     loId: lo.loId,
@@ -74,14 +74,14 @@ export default function AssessmentsLibraryView() {
                     published: <Grid>{lo.published ? <CompleteIcon /> : null}</Grid>,
                     assumed: <Grid>{lo.assumed ? <CompleteIcon /> : null}</Grid>,
                     createdDate: new Date(lo.createdDate).toLocaleString()
-                })
+                });
             }
 
             if (prepared) { setRows(tmpRows); }
         })();
 
         return () => { prepared = false; };
-    }, [])
+    }, []);
 
     useEffect(() => {
         if (isMobile) {
@@ -89,7 +89,7 @@ export default function AssessmentsLibraryView() {
         } else {
             setColumns(TABLE_COLUMN);
         }
-    }, [isMobile])
+    }, [isMobile]);
 
     return (
         <Grid container>

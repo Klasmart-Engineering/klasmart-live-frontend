@@ -1,5 +1,5 @@
-import SpeedDial from '@material-ui/lab/SpeedDial';
-import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
+import SpeedDial from "@material-ui/lab/SpeedDial";
+import SpeedDialAction from "@material-ui/lab/SpeedDialAction";
 import Hidden from "@material-ui/core/Hidden";
 import Dialog from "@material-ui/core/Dialog";
 import Grid from "@material-ui/core/Grid";
@@ -9,12 +9,12 @@ import Checkbox from "@material-ui/core/Checkbox";
 import Typography from "@material-ui/core/Typography";
 import { createStyles, makeStyles, Theme, useTheme } from "@material-ui/core/styles";
 import { TransitionProps } from "@material-ui/core/transitions";
-import useMediaQuery from '@material-ui/core/useMediaQuery';
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 import EditIcon from "@material-ui/icons/Edit";
 import BlockIcon from "@material-ui/icons/Block";
 import SaveIcon from "@material-ui/icons/Save";
 import ErrorIcon from "@material-ui/icons/Error";
-import MoreVertIcon from '@material-ui/icons/MoreVert';
+import MoreVertIcon from "@material-ui/icons/MoreVert";
 import React, { useState, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 
@@ -30,7 +30,7 @@ import {
     DevSkillResponse,
     SkillCatResponse,
     UpdateLearningOutcomeRequest,
-} from "./api/restapi";
+} from "../../../api/restapi";
 
 interface Props {
     loId: number | undefined
@@ -53,8 +53,8 @@ const useStyles = makeStyles((theme: Theme) =>
             right: theme.spacing(2),
         },
         speedDial: {
-            position: 'fixed',
-            '&.MuiSpeedDial-directionUp, &.MuiSpeedDial-directionLeft': {
+            position: "fixed",
+            "&.MuiSpeedDial-directionUp, &.MuiSpeedDial-directionLeft": {
                 bottom: theme.spacing(2),
                 right: theme.spacing(1.5),
             },
@@ -100,16 +100,16 @@ export default function LearningOutcomeViewDialog(props: Props) {
         publishedDevSkills: DevSkillResponse[],
         publishedSkillCats: SkillCatResponse[]
     ) {
-        let devSkillOptions: DevSkillOption[] = [];
+        const devSkillOptions: DevSkillOption[] = [];
         const availableDevSkillIds = [...new Set(publishedSkillCats.map(cat => cat.devSkillId))];
         for (const id of availableDevSkillIds) {
-            const target = publishedDevSkills.filter(ds => ds.devSkillId === id)[0]
+            const target = publishedDevSkills.filter(ds => ds.devSkillId === id)[0];
             devSkillOptions.push({
                 devSkillId: target.devSkillId,
                 name: target.name
             });
         }
-        return devSkillOptions
+        return devSkillOptions;
     }
     async function fetchPublishedLearningOutcomes() {
         const payload = await api.getLearningOutcomes();
@@ -130,7 +130,7 @@ export default function LearningOutcomeViewDialog(props: Props) {
     const { loId, open, onClose } = props;
     const classes = useStyles();
     const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
     async function fetchLOInfo() {
         if (typeof loId === "number") {
@@ -143,7 +143,7 @@ export default function LearningOutcomeViewDialog(props: Props) {
 
     const handleOnClickEdit = () => {
         setEditMode(true);
-    }
+    };
 
     const [editMode, setEditMode] = useState(false);
     const [info, setInfo] = useState<LearningOutcomeResponse>();
@@ -191,7 +191,7 @@ export default function LearningOutcomeViewDialog(props: Props) {
         })();
 
         return () => { prepared = false; };
-    }, [open])
+    }, [open]);
 
 
     useEffect(() => {
@@ -202,7 +202,7 @@ export default function LearningOutcomeViewDialog(props: Props) {
         setTags(info.tags ? info.tags : []);
         setDescription(info.description);
         setAssumed(info.assumed);
-    }, [info])
+    }, [info]);
 
     useEffect(() => {
         if (!editMode) { return; }
@@ -216,7 +216,7 @@ export default function LearningOutcomeViewDialog(props: Props) {
                         devSkillId: cat.devSkillId,
                         skillCatId: cat.skillCatId,
                         name: cat.name
-                    }
+                    };
                 });
                 setAllSkillCatOptions(skillCatOptions);
                 setSkillCatOptions(skillCatOptions);
@@ -225,7 +225,7 @@ export default function LearningOutcomeViewDialog(props: Props) {
             }
         })();
         return () => { prepared = false; };
-    }, [editMode])
+    }, [editMode]);
 
     useEffect(() => {
         if (!editMode) { return; }
@@ -239,7 +239,7 @@ export default function LearningOutcomeViewDialog(props: Props) {
             const skillCatList = allSkillCatOptions.filter(cat => cat.devSkillId == devSkillId);
             setSkillCatOptions(skillCatList);
         }
-    }, [devSkill])
+    }, [devSkill]);
 
     const handleChangeDevSkill = (e: any, value: string) => {
         const idx = e.target.getAttribute("data-option-index");
@@ -250,7 +250,7 @@ export default function LearningOutcomeViewDialog(props: Props) {
             setDevSkillIdx(idx);
             setDevSkill(value);
         }
-    }
+    };
     const handleChangeSkillCat = (e: any, value: string) => {
         const idx = e.target.getAttribute("data-option-index");
         if (idx === null || value === null) {
@@ -260,7 +260,7 @@ export default function LearningOutcomeViewDialog(props: Props) {
             setSkillCatIdx(idx);
             setSkillCat(value);
         }
-    }
+    };
 
     async function handleOnClickSave() {
         setTitleError(null);
@@ -293,7 +293,7 @@ export default function LearningOutcomeViewDialog(props: Props) {
                 description,
                 estimatedDuration: estimatedDuration === "" ? 0 : Number(estimatedDuration),
                 tags,
-            }
+            };
             await api.updateLearningOutcome(info.loId, form);
             location.reload();
         } catch (e) {
@@ -334,21 +334,21 @@ export default function LearningOutcomeViewDialog(props: Props) {
         const id = e.getErrorMessageID();
         const errorMessage = <FormattedMessage id={id} />;
         switch (e.getErrorMessageType()) {
-            default:
-                setGeneralError(errorMessage);
-                break;
+        default:
+            setGeneralError(errorMessage);
+            break;
         }
     }
 
 
     const EDITMODE_ACTIONS = [
-        { icon: <BlockIcon style={{ margin: 0 }} />, name: 'Cancel', action: () => handleOnClickCancel() },
-        { icon: <SaveIcon style={{ margin: 0 }} />, name: 'Save', action: () => handleOnClickSave() },
-    ]
+        { icon: <BlockIcon style={{ margin: 0 }} />, name: "Cancel", action: () => handleOnClickCancel() },
+        { icon: <SaveIcon style={{ margin: 0 }} />, name: "Save", action: () => handleOnClickSave() },
+    ];
     const handleOnClickCancel = () => {
         setPublish(false);
         setEditMode(false);
-    }
+    };
     const handleSpeedDialClose = () => {
         setSpeedDialOpen(false);
     };
@@ -536,7 +536,7 @@ function LearningOutcomeDetails(props: LearningOutcomeDetailsProps) {
     const { lo, devSkill, skillCat } = props;
     const classes = useStyles();
     const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
     const api = useRestAPI();
 
     const [devSkillName, setDevSkillName] = useState("");
@@ -566,7 +566,7 @@ function LearningOutcomeDetails(props: LearningOutcomeDetailsProps) {
         })();
 
         return () => { prepared = false; };
-    }, [devSkillName, skillCatName])
+    }, [devSkillName, skillCatName]);
 
     return (
         <>
@@ -611,5 +611,5 @@ function LearningOutcomeDetails(props: LearningOutcomeDetailsProps) {
                 <Typography variant="subtitle1">{lo.description === "" ? "-" : lo.description}</Typography>
             </Grid>
         </>
-    )
+    );
 }

@@ -1,32 +1,27 @@
-import SpeedDial from '@material-ui/lab/SpeedDial';
-import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
+import SpeedDial from "@material-ui/lab/SpeedDial";
+import SpeedDialAction from "@material-ui/lab/SpeedDialAction";
 import Hidden from "@material-ui/core/Hidden";
 import Typography from "@material-ui/core/Typography";
 import Dialog from "@material-ui/core/Dialog";
 import Grid from "@material-ui/core/Grid";
 import Grow from "@material-ui/core/Grow";
-import Avatar from '@material-ui/core/Avatar';
 import List from "@material-ui/core/List";
-import ListSubheader from '@material-ui/core/ListSubheader';
+import ListSubheader from "@material-ui/core/ListSubheader";
 import ListItem from "@material-ui/core/ListItem";
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from "@material-ui/core/ListItemText";
-import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemIcon from "@material-ui/core/ListItemIcon";
 import { createStyles, makeStyles, Theme, useTheme } from "@material-ui/core/styles";
-import useMediaQuery from '@material-ui/core/useMediaQuery';
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { TransitionProps } from "@material-ui/core/transitions";
-import EditIcon from '@material-ui/icons/Edit';
-import BlockIcon from '@material-ui/icons/Block';
+import EditIcon from "@material-ui/icons/Edit";
+import BlockIcon from "@material-ui/icons/Block";
 import SaveIcon from "@material-ui/icons/Save";
-import CompleteIcon from '@material-ui/icons/Done';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
+import CompleteIcon from "@material-ui/icons/Done";
+import MoreVertIcon from "@material-ui/icons/MoreVert";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
-
-import { State } from "../../../store/store";
-import Collapse from '@material-ui/core/Collapse';
+import Collapse from "@material-ui/core/Collapse";
 import Checkbox from "@material-ui/core/Checkbox";
 import DialogAppBar from "../../../components/styled/dialogAppBar";
 import StyledFAB from "../../../components/styled/fabButton";
@@ -37,7 +32,7 @@ import {
     UpdateAssessmentRequest,
     CompleteAssessmentRequest,
     CompleteAssessmentStudentsResquest
-} from "./api/restapi";
+} from "../../../api/restapi";
 
 interface Props {
     assId: string
@@ -60,8 +55,8 @@ const useStyles = makeStyles((theme: Theme) =>
             right: theme.spacing(2),
         },
         speedDial: {
-            position: 'fixed',
-            '&.MuiSpeedDial-directionUp, &.MuiSpeedDial-directionLeft': {
+            position: "fixed",
+            "&.MuiSpeedDial-directionUp, &.MuiSpeedDial-directionLeft": {
                 bottom: theme.spacing(2),
                 right: theme.spacing(1.5),
             },
@@ -97,7 +92,7 @@ export default function PendingViewDialog(props: Props) {
     const { assId, open, onClose } = props;
     const classes = useStyles();
     const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
     const api = useRestAPI();
 
     async function fetchAssessmentInfo() {
@@ -122,33 +117,33 @@ export default function PendingViewDialog(props: Props) {
             const info = await fetchAssessmentInfo();
 
             if (prepared) {
-                let chkStds: {
+                const chkStds: {
                     profileId: string,
                     loId: number
-                }[] = []
+                }[] = [];
                 setInfo(info);
                 if (info && info.learningOutcomes !== undefined) {
-                    let los = info.learningOutcomes
+                    const los = info.learningOutcomes;
                     for (let i = 0; i < los.length; ++i) {
                         if (los[i].assessedStudents) {
                             los[i].assessedStudents.map((stdId) => {
                                 chkStds.push({
                                     profileId: stdId,
                                     loId: los[i].loId
-                                })
-                            })
+                                });
+                            });
                         }
                     }
-                    let awardedList = []
+                    const awardedList = [];
                     for (let i = 0; i < los.length; ++i) {
-                        let entries = 0
+                        let entries = 0;
                         for (let j = 0; j < chkStds.length; ++j) {
                             if (chkStds[j].loId === los[i].loId) {
-                                entries++
+                                entries++;
                             }
                         }
                         if (entries === info.students.length) {
-                            awardedList.push(los[i].loId)
+                            awardedList.push(los[i].loId);
                         }
                     }
                     // Check if it's the first time to assess students.
@@ -167,11 +162,11 @@ export default function PendingViewDialog(props: Props) {
                                     chkStds.push({
                                         profileId: info.students[j].profileId,
                                         loId: los[i].loId
-                                    })
+                                    });
                                 }
                             }
                             if (los[i].assumed) {
-                                awardedList.push(los[i].loId)
+                                awardedList.push(los[i].loId);
                             }
                         }
                     }
@@ -182,29 +177,29 @@ export default function PendingViewDialog(props: Props) {
         })();
 
         return () => { prepared = false; };
-    }
+    };
 
     useEffect(() => {
-        return resetAwards()
-    }, [open])
+        return resetAwards();
+    }, [open]);
     const handleOnClickCancel = () => {
         setAwardMode(false);
         resetAwards();
-    }
+    };
     const handleOnClickAward = () => {
         setAwardMode(true);
-    }
+    };
 
     // const students = useSelector((state: State) => state.account.students);
     const [collapseIndex, setCollapseIndex] = useState();
     const [LOs, setLOs] = useState<LearningOutcomeResponse[]>([]);
-    const [awardedLOs, setAwardedLOs] = useState<number[]>([])
+    const [awardedLOs, setAwardedLOs] = useState<number[]>([]);
     useEffect(() => {
         let prepared = true;
 
         (async () => {
             if (!info || !info.learningOutcomes) { return; }
-            let LOs = []
+            const LOs = [];
             const loIds = info.learningOutcomes.map(lo => lo.loId);
             for (const id of loIds) {
                 const lo = await api.getLearningOutcome(id);
@@ -216,18 +211,18 @@ export default function PendingViewDialog(props: Props) {
         })();
 
         return () => { prepared = false; };
-    }, [awardMode])
+    }, [awardMode]);
 
     useEffect(() => {
         // NOTE: Purpose to handle CompleteFAB disabled
-    }, [checkedStudents])
+    }, [checkedStudents]);
 
     const handleOnClickStudent = (loId: number, student: {
         profileId: string,
         profileName: string,
         iconLink: string
     }) => {
-        const currentIndex = checkedStudents.findIndex(chkStd => chkStd.profileId === student.profileId && chkStd.loId === loId)
+        const currentIndex = checkedStudents.findIndex(chkStd => chkStd.profileId === student.profileId && chkStd.loId === loId);
         const newChecked = [...checkedStudents];
 
         if (currentIndex === -1) {
@@ -240,13 +235,13 @@ export default function PendingViewDialog(props: Props) {
         }
 
         // Check if all awarded now
-        let studentLOs = new Array<string>();
+        const studentLOs = new Array<string>();
         newChecked.map((chk) => {
             if (chk.loId === loId) {
                 studentLOs.push(chk.profileId);
             }
-        })
-        let newAwardedLOs = [...awardedLOs];
+        });
+        const newAwardedLOs = [...awardedLOs];
         if (info.students.length === studentLOs.length) {
             newAwardedLOs.push(loId);
         } else {
@@ -258,38 +253,38 @@ export default function PendingViewDialog(props: Props) {
 
         setAwardedLOs(newAwardedLOs);
         setCheckedStudents(newChecked);
-    }
+    };
 
     function handleOnClickAwardAll(loId: number) {
         if (!info) { return; }
-        let currentIndex = awardedLOs ? awardedLOs.findIndex(awardedLO => awardedLO === loId) : -1;
-        let newChecked = [...checkedStudents]
+        const currentIndex = awardedLOs ? awardedLOs.findIndex(awardedLO => awardedLO === loId) : -1;
+        const newChecked = [...checkedStudents];
         if (currentIndex !== -1) {
             // Uncheck all students
             for (let i = 0; i < info.students.length; ++i) {
                 for (let j = newChecked.length - 1; j >= 0; --j) {
                     if (info.students[i].profileId === newChecked[j].profileId && newChecked[j].loId === loId) {
-                        newChecked.splice(j, 1)
+                        newChecked.splice(j, 1);
                     }
                 }
             }
             if (awardedLOs !== undefined) {
-                awardedLOs.splice(currentIndex, 1)
+                awardedLOs.splice(currentIndex, 1);
             }
         } else {
             // Check all students
             for (let i = 0; i < info.students.length; ++i) {
-                let found = false
+                let found = false;
                 for (let j = 0; j < newChecked.length; ++j) {
                     if (info.students[i].profileId === newChecked[j].profileId && loId === newChecked[j].loId) {
-                        found = true
+                        found = true;
                     }
                 }
                 if (!found) {
                     newChecked.push({
                         profileId: info.students[i].profileId,
                         loId: loId
-                    })
+                    });
                 }
             }
             if (awardedLOs !== undefined) {
@@ -314,10 +309,10 @@ export default function PendingViewDialog(props: Props) {
     }
 
     const AWARDMODE_ACTIONS = [
-        { icon: <BlockIcon style={{ margin: 0 }} />, name: 'Cancel', action: () => handleOnClickCancel() },
-        { icon: <SaveIcon style={{ margin: 0 }} />, name: 'Save', action: () => handleOnClickSave() },
-        { icon: <CompleteIcon style={{ margin: 0 }} />, name: 'Complete', action: () => handleOnClickComplete() },
-    ]
+        { icon: <BlockIcon style={{ margin: 0 }} />, name: "Cancel", action: () => handleOnClickCancel() },
+        { icon: <SaveIcon style={{ margin: 0 }} />, name: "Save", action: () => handleOnClickSave() },
+        { icon: <CompleteIcon style={{ margin: 0 }} />, name: "Complete", action: () => handleOnClickComplete() },
+    ];
     const handleSpeedDialClose = () => {
         setSpeedDialOpen(false);
     };
@@ -332,7 +327,7 @@ export default function PendingViewDialog(props: Props) {
             const assInfo: UpdateAssessmentRequest = {
                 state: 2,
                 awardedStudents: checkedStudents
-            }
+            };
             await api.updateAssessment(info.assId, assInfo);
 
             setAwardMode(false);
@@ -353,39 +348,39 @@ export default function PendingViewDialog(props: Props) {
             const assInfo: UpdateAssessmentRequest = {
                 state: 2,
                 awardedStudents: checkedStudents
-            }
-            let completedStudentMap: Map<string, CompleteAssessmentStudentsResquest> = new Map();
+            };
+            const completedStudentMap: Map<string, CompleteAssessmentStudentsResquest> = new Map();
             // Save the success
             for (let j = 0; j < checkedStudents.length; ++j) {
-                let cptdStd = completedStudentMap.get(checkedStudents[j].profileId)
+                let cptdStd = completedStudentMap.get(checkedStudents[j].profileId);
                 if (cptdStd === undefined) {
                     cptdStd = {
                         successOutcomes: [],
                         failureOutcomes: []
-                    }
+                    };
                 }
-                cptdStd.successOutcomes.push(checkedStudents[j].loId)
-                completedStudentMap.set(checkedStudents[j].profileId, cptdStd)
+                cptdStd.successOutcomes.push(checkedStudents[j].loId);
+                completedStudentMap.set(checkedStudents[j].profileId, cptdStd);
             }
             // Save the failure
             for (let k = 0; k < LOs.length; ++k) {
                 for (let i = 0; i < info.students.length; ++i) {
-                    let found = false
+                    let found = false;
                     for (let j = 0; j < checkedStudents.length; ++j) {
                         if (info.students[i].profileId === checkedStudents[j].profileId && checkedStudents[j].loId === LOs[k].loId) {
-                            found = true
+                            found = true;
                         }
                     }
                     if (!found) {
-                        let cptdStd = completedStudentMap.get(info.students[i].profileId)
+                        let cptdStd = completedStudentMap.get(info.students[i].profileId);
                         if (cptdStd === undefined) {
                             cptdStd = {
                                 successOutcomes: [],
                                 failureOutcomes: []
-                            }
+                            };
                         }
-                        cptdStd.failureOutcomes.push(LOs[k].loId)
-                        completedStudentMap.set(info.students[i].profileId, cptdStd)
+                        cptdStd.failureOutcomes.push(LOs[k].loId);
+                        completedStudentMap.set(info.students[i].profileId, cptdStd);
                     }
                 }
             }
@@ -394,7 +389,7 @@ export default function PendingViewDialog(props: Props) {
                 sessionId: "",
                 students: completedStudentMap,
                 date: 0,
-            }
+            };
             await api.updateAssessment(info.assId, assInfo);
             await api.completeAssessment(info.assId, completeAssInfo);
 
@@ -475,13 +470,13 @@ export default function PendingViewDialog(props: Props) {
                             subheader={
                                 <ListSubheader component="div" id="nested-list-subheader">
                                     Learning Outcomes
-                    </ListSubheader>
+                                </ListSubheader>
                             }
                         >
                             {LOs.map((lo, index) =>
-                                <ListItem key={lo.loId} button onClick={(e) => { collapseIndex === index ? setCollapseIndex(-1) : setCollapseIndex(index); e.preventDefault() }}>
+                                <ListItem key={lo.loId} button onClick={(e) => { collapseIndex === index ? setCollapseIndex(-1) : setCollapseIndex(index); e.preventDefault(); }}>
                                     <ListItemText primary={lo.title + (lo.assumed ? " (Assumed)" : "")} />
-                                    <ListItemIcon onClick={(e) => { handleOnClickAwardAll(lo.loId); e.stopPropagation() }}>
+                                    <ListItemIcon onClick={(e) => { handleOnClickAwardAll(lo.loId); e.stopPropagation(); }}>
                                         <Checkbox
                                             checked={getCheckState(lo.loId) > 0}
                                             style={getCheckState(lo.loId) === 1 ?
@@ -495,7 +490,7 @@ export default function PendingViewDialog(props: Props) {
                                     {collapseIndex === index ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                                     <Collapse in={collapseIndex === index} timeout="auto" unmountOnExit>
                                         {info.students.map((student, index) =>
-                                            <ListItem key={student.profileId} button onClick={(e) => { handleOnClickStudent(lo.loId, student); e.preventDefault(); e.stopPropagation() }}>
+                                            <ListItem key={student.profileId} button onClick={(e) => { handleOnClickStudent(lo.loId, student); e.preventDefault(); e.stopPropagation(); }}>
                                                 <ListItemText primary={student.profileName} />
                                                 <ListItemIcon>
                                                     <Checkbox
@@ -551,8 +546,8 @@ interface AssessmentDetailsProps {
 }
 
 function msToMinutes(duration: number): number {
-    var seconds = duration / 1000 / 1000 / 1000 % 3600;
-    var minutes = seconds / 60;
+    const seconds = duration / 1000 / 1000 / 1000 % 3600;
+    const minutes = seconds / 60;
     return Math.floor(minutes);
 }
 
@@ -560,8 +555,8 @@ function AssessmentDetails(props: AssessmentDetailsProps) {
     const { ass } = props;
     const classes = useStyles();
     const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-    console.log(ass)
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+    console.log(ass);
     return (
         <>
             {ass.state === 1 ?
@@ -599,5 +594,5 @@ function AssessmentDetails(props: AssessmentDetailsProps) {
                 </Typography>
             </Grid>
         </>
-    )
+    );
 }
