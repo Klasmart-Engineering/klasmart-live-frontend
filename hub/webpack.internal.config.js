@@ -94,8 +94,8 @@ module.exports = {
             "ACCOUNT_ENDPOINT": "https://account.internal.badanamu.net/",
             "PRODUCT_ENDPOINT": "https://product.internal.badanamu.net/",
             "REGION_ENDPOINT": "https://region.internal.badanamu.net/",
-            "ORGANIZATION_ENDPOINT": "https://organization-api.internal.badanamu.net",
-            "ASSESSMENT_ENDPOINT": "https://assessment-api.internal.badanamu.net",
+            "ORGANIZATION_ENDPOINT": "https://organization-api.internal.badanamu.net/",
+            "ASSESSMENT_ENDPOINT": "https://assessment-api.internal.badanamu.net/",
             "DEFAULT_PROG_ID": "KIDSLOOP-2.0"
         })
     ],
