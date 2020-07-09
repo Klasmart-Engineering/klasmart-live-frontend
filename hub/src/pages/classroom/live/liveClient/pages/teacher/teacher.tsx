@@ -206,7 +206,7 @@ export function Teacher(props: Props): JSX.Element {
             progId: getDefaultProgId(),
             classId: data.classId,
             className: data.className,
-            lessonPlanId: "5db78574-2cf3-4a91-b705-b18d78013676", // TODO: It's temporary for demo
+            lessonPlanId: selectedLessonPlan, // TODO: It's temporary for demo
             sessionId: "demo-session-id",
             startDate: data.startDate,
             subject: "English",

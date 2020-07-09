@@ -87,12 +87,6 @@ export default function CreateLearningOutcomeDialog() {
         }
         return devSkillOptions;
     }
-    async function fetchPublishedLearningOutcomes() {
-        const payload = await api.getLearningOutcomes();
-        return payload.learningOutcomes
-            .sort((a, b) => b.createdDate - a.createdDate)
-            .filter(lo => lo.published);
-    }
 
     const classes = useStyles();
     const theme = useTheme();
@@ -341,7 +335,7 @@ export default function CreateLearningOutcomeDialog() {
                         <StyledTextField
                             fullWidth
                             type="number"
-                            inputProps={{ min: "0" }} // TODO: set max value as 9999
+                            inputProps={{ min: "0", max: "9999", maxLength: 4 }} // TODO: set max value as 9999
                             value={estimatedDuration}
                             label="Estimated Hours"
                             onChange={(e) => setEstimatedDuration(e.target.value)}
