@@ -51,6 +51,10 @@ export default function StyledTextField(props: Props) {
         <>
             <TextField {...other}
                 className={classes.txtfield}
+                inputProps={type === "number" ? { min: 0, max: 9999} : { maxLength: 200 }}
+                onInput={type === "number" ? (e)=>{ 
+                    (e.target as HTMLTextAreaElement).value = Math.max(0, parseInt((e.target as HTMLTextAreaElement).value) ).toString().slice(0,4);
+                }: () => {}}
                 InputLabelProps={{
                     classes: {
                         focused: classes.cssFocused,
