@@ -20,9 +20,10 @@ import CompleteIcon from "@material-ui/icons/Done";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
-import React, { useState, useEffect } from "react";
 import Collapse from "@material-ui/core/Collapse";
 import Checkbox from "@material-ui/core/Checkbox";
+import React, { useState, useEffect } from "react";
+
 import DialogAppBar from "../../../components/styled/dialogAppBar";
 import StyledFAB from "../../../components/styled/fabButton";
 import {
@@ -92,7 +93,6 @@ export default function PendingViewDialog(props: Props) {
     const { assId, open, onClose } = props;
     const classes = useStyles();
     const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
     const api = useRestAPI();
 
     async function fetchAssessmentInfo() {
@@ -576,8 +576,8 @@ function AssessmentDetails(props: AssessmentDetailsProps) {
                 <Typography variant="subtitle1">{new Date(ass.createdDate).toLocaleString()}</Typography>
             </Grid>
             <Grid className={classes.menuGrid} item xs={isMobile ? 12 : 6}>
-                <Typography variant="caption" color="textSecondary">Assessed on</Typography>
-                <Typography variant="subtitle1">{new Date(ass.assessedDate).toLocaleString()}</Typography>
+                <Typography variant="caption" color="textSecondary">Updated on</Typography>
+                <Typography variant="subtitle1">{new Date(ass.updatedDate).toLocaleString()}</Typography>
             </Grid>
             <Grid className={classes.menuGrid} item xs={isMobile ? 12 : 6}>
                 <Typography variant="caption" color="textSecondary">Subject</Typography>

@@ -5,7 +5,8 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 import React, { useState, useEffect } from "react";
 
 import LearningOutcomeTable, { TableRow } from "./learningOutcomeTable";
-import { useRestAPI, LearningOutcomeResponse } from "../../../api/restapi";
+import { LearningOutcomeResponse } from "../../../api/restapi";
+import { TableColumns }from "../../../types/objectTypes";
 
 const TABLE_COLUMN_MOBILE = [
     {
@@ -21,7 +22,7 @@ const TABLE_COLUMN_MOBILE = [
     }
 ];
 
-const TABLE_COLUMN = [
+const TABLE_COLUMN: TableColumns = [
     {
         title: "Title",
         field: "title",
@@ -39,64 +40,53 @@ const TABLE_COLUMN = [
         cellStyle: { color: "#0E78D5", textAlign: "center" }
     },
     {
-        title: "Created on",
-        field: "createdDate",
-        type: "numeric",
-        headerStyle: { minWidth: "200px" }, // TODO
+        title: "Updated on",
+        field: "updatedDate",
+        headerStyle: { textAlign: "right" },
+        cellStyle: { textAlign: "right" },
     },
 ];
 
-export default function AssessmentsLibraryView() {
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-    const api = useRestAPI();
+interface Props {
+    data: LearningOutcomeResponse[];
+}
 
-    const [columns, setColumns] = useState<any[]>(TABLE_COLUMN);
-    const [LOs, _] = useState<LearningOutcomeResponse[]>([]);
+export default function AssessmentsLibraryView(props: Props) {
+    const { data } = props;
+
+    const theme = useTheme();
+    const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
+
+    const [columns, setColumns] = useState<TableColumns>(TABLE_COLUMN);
     const [rows, setRows] = useState<TableRow[]>([]);
 
-    async function fetchLOs() {
-        const payload = await api.getLearningOutcomes();
-        return payload.learningOutcomes.sort((a, b) => b.createdDate - a.createdDate);
-    }
-
     useEffect(() => {
-        let prepared = true;
-
-        (async () => {
-            const los = await fetchLOs();
-
-            const tmpRows: TableRow[] = [];
-            for (const lo of los) {
-                tmpRows.push({
-                    loId: lo.loId,
-                    title: lo.title,
-                    published: <Grid>{lo.published ? <CompleteIcon /> : null}</Grid>,
-                    assumed: <Grid>{lo.assumed ? <CompleteIcon /> : null}</Grid>,
-                    createdDate: new Date(lo.createdDate).toLocaleString()
-                });
-            }
-
-            if (prepared) { setRows(tmpRows); }
-        })();
-
-        return () => { prepared = false; };
+        const tmpRows: TableRow[] = [];
+        for (const lo of data) {
+            tmpRows.push({
+                loId: lo.loId,
+                title: lo.title,
+                published: <Grid>{lo.published ? <CompleteIcon /> : null}</Grid>,
+                assumed: <Grid>{lo.assumed ? <CompleteIcon /> : null}</Grid>,
+                updatedDate: new Date(lo.updatedDate).toLocaleString()
+            });
+        }
+        setRows(tmpRows);
     }, []);
 
     useEffect(() => {
-        if (isMobile) {
+        if (isSmDown) {
             setColumns(TABLE_COLUMN_MOBILE);
         } else {
             setColumns(TABLE_COLUMN);
         }
-    }, [isMobile]);
+    }, [isSmDown]);
 
     return (
         <Grid container>
             <Grid item xs={12}>
                 <LearningOutcomeTable
                     columns={columns}
-                    pageSize={isMobile ? 3 : 5} // TODO: not working
                     data={rows.map(data => Object.assign({}, data))}
                 />
             </Grid>

@@ -18,6 +18,7 @@ import Search from "@material-ui/icons/Search";
 import ViewColumn from "@material-ui/icons/ViewColumn";
 
 import LearningOutcomeViewDialog from "./learningOutcomeViewDialog";
+import { TableColumns }from "../../../types/objectTypes";
 
 const tableIcons: Icons = {
     Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -40,7 +41,7 @@ const tableIcons: Icons = {
 };
 
 interface TableProps {
-    columns: any[]
+    columns: TableColumns
     data: any[]
     pageSize?: number
 }
@@ -50,7 +51,7 @@ export interface TableRow {
     title: string
     published: JSX.Element
     assumed: JSX.Element
-    createdDate: string
+    updatedDate: string
 }
 
 export default function LearningOutcomeTable(props: TableProps) {
@@ -60,9 +61,9 @@ export default function LearningOutcomeTable(props: TableProps) {
     const handleOnRowClick = (loId: number) => {
         setSelectedLO(loId);
         setOpen(true);
-    }
+    };
 
-    const handleOnClose = () => { setOpen(false); }
+    const handleOnClose = () => { setOpen(false); };
 
     return (
         <>
@@ -81,12 +82,12 @@ export default function LearningOutcomeTable(props: TableProps) {
                     searchFieldStyle: {
                         color: "#0E78D5"
                     },
-                    pageSize: props.pageSize ? props.pageSize : 5,
-
+                    pageSize: 10,
+                    pageSizeOptions: [3, 5, 10, 20],
                 }}
                 onRowClick={((evt, selectedRow) => handleOnRowClick(selectedRow.loId))}
             />
             <LearningOutcomeViewDialog open={open} onClose={handleOnClose} loId={selectedLO} />
         </>
-    )
+    );
 }

@@ -31,6 +31,13 @@ export interface IUserContext {
   name: string;
 }
 
+export type AssessmentsMenu = "library" | "pending" | "completed";
+
+type ColumnAttr = string | { [styleAttr: string]: string } | undefined;
+export type TableColumns = {
+  [attr: string]: ColumnAttr
+}[]
+
 export type SkillCatOption = {
   devSkillId: string;
   skillCatId: string,

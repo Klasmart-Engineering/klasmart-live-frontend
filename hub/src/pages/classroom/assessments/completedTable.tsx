@@ -18,6 +18,7 @@ import Search from "@material-ui/icons/Search";
 import ViewColumn from "@material-ui/icons/ViewColumn";
 
 import CompletedViewDialog from "./completedViewDialog";
+import { TableColumns }from "../../../types/objectTypes";
 
 const tableIcons: Icons = {
     Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -40,7 +41,7 @@ const tableIcons: Icons = {
 };
 
 interface TableProps {
-    columns: any[]
+    columns: TableColumns
     data: any[]
     pageSize?: number
 }
@@ -58,9 +59,9 @@ export default function CompletedTable(props: TableProps) {
     const handleOnRowClick = (assId: string) => {
         setSelected(assId);
         setOpen(true);
-    }
+    };
 
-    const handleOnClose = () => { setOpen(false); }
+    const handleOnClose = () => { setOpen(false); };
 
     return (
         <>
@@ -79,12 +80,12 @@ export default function CompletedTable(props: TableProps) {
                     searchFieldStyle: {
                         color: "#0E78D5"
                     },
-                    pageSize: props.pageSize ? props.pageSize : 5,
-
+                    pageSize: 10,
+                    pageSizeOptions: [3, 5, 10, 20],
                 }}
                 onRowClick={((evt, selectedRow) => handleOnRowClick(selectedRow.assId))}
             />
             {selected ? <CompletedViewDialog open={open} onClose={handleOnClose} assId={selected} /> : null}
         </>
-    )
+    );
 }

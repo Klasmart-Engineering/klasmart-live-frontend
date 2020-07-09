@@ -1,13 +1,14 @@
 import { combineReducers } from "redux";
 import { getDefaultLanguageCode } from "../utils/locale";
 import { Actions, ActionTypes } from "./actions";
+import { AssessmentsMenu } from "../types/objectTypes";
 
 export function locale(state = getDefaultLanguageCode(), action: Actions) {
     switch (action.type) {
-        case ActionTypes.LOCALE:
-            return action.payload;
-        default:
-            return state;
+    case ActionTypes.LOCALE:
+        return action.payload;
+    default:
+        return state;
     }
 }
 
@@ -20,177 +21,177 @@ export function userAgent(state = {
     isMobileSafari: false,
 }, action: Actions) {
     switch (action.type) {
-        case ActionTypes.USER_AGENT:
-            return action.payload;
-        default:
-            return state;
+    case ActionTypes.USER_AGENT:
+        return action.payload;
+    default:
+        return state;
     }
 }
 
 export function darkMode(state = "light", action: Actions) {
     switch (action.type) {
-        case ActionTypes.DARK_MODE:
-            return action.payload;
-        default:
-            return state;
+    case ActionTypes.DARK_MODE:
+        return action.payload;
+    default:
+        return state;
     }
 }
 
 export function deviceId(state = null, action: Actions) {
     switch (action.type) {
-        case ActionTypes.DEVICE_ID:
-            return action.payload;
-        default:
-            return state;
+    case ActionTypes.DEVICE_ID:
+        return action.payload;
+    default:
+        return state;
     }
 }
 
 export function postAuthorizationRoute(state = null, action: Actions) {
     switch (action.type) {
-        case ActionTypes.POST_AUTHORIZATION_ROUTE:
-            return action.payload;
-        default:
-            return state;
+    case ActionTypes.POST_AUTHORIZATION_ROUTE:
+        return action.payload;
+    default:
+        return state;
     }
 }
 
 export function sessionId(state = null, action: Actions) {
     switch (action.type) {
-        case ActionTypes.LOGIN:
-            if (typeof action.payload === "object" &&
+    case ActionTypes.LOGIN:
+        if (typeof action.payload === "object" &&
                 typeof action.payload.sessionId === "string") {
-                return action.payload.sessionId;
-            }
+            return action.payload.sessionId;
+        }
         // Fall through
-        case ActionTypes.LOGOUT:
-            return null;
-        default:
-            return state;
+    case ActionTypes.LOGOUT:
+        return null;
+    default:
+        return state;
     }
 }
 
 export function accountId(state = null, action: Actions) {
     switch (action.type) {
-        case ActionTypes.LOGIN:
-        case ActionTypes.SIGNUP:
-        case ActionTypes.ACCOUNT_ID:
-            if (typeof action.payload === "object" &&
+    case ActionTypes.LOGIN:
+    case ActionTypes.SIGNUP:
+    case ActionTypes.ACCOUNT_ID:
+        if (typeof action.payload === "object" &&
                 typeof action.payload.accountId === "string") {
-                return action.payload.accountId;
-            }
-            return null;
-        case ActionTypes.LOGOUT:
-        default:
-            return state;
+            return action.payload.accountId;
+        }
+        return null;
+    case ActionTypes.LOGOUT:
+    default:
+        return state;
     }
 }
 
 export function email(state = null, action: Actions) {
     switch (action.type) {
-        case ActionTypes.LOGIN:
-            if (typeof action.payload === "object" &&
+    case ActionTypes.LOGIN:
+        if (typeof action.payload === "object" &&
                 typeof action.payload.email === "string") {
-                return action.payload.email;
-            }
-            return null;
-        case ActionTypes.EMAIL:
-            return action.payload;
-        case ActionTypes.LOGOUT:
-        default:
-            return state;
+            return action.payload.email;
+        }
+        return null;
+    case ActionTypes.EMAIL:
+        return action.payload;
+    case ActionTypes.LOGOUT:
+    default:
+        return state;
     }
 }
 
 export function refreshToken(state = null, action: Actions) {
     switch (action.type) {
-        case ActionTypes.LOGIN:
-            if (typeof action.payload === "object" &&
+    case ActionTypes.LOGIN:
+        if (typeof action.payload === "object" &&
                 typeof action.payload.refreshToken === "string") {
-                return action.payload.refreshToken;
-            }
+            return action.payload.refreshToken;
+        }
         // Fall through
-        case ActionTypes.LOGOUT:
-        case ActionTypes.EXPIRED_REFRESH_TOKEN:
-            return null;
-        default:
-            return state;
+    case ActionTypes.LOGOUT:
+    case ActionTypes.EXPIRED_REFRESH_TOKEN:
+        return null;
+    default:
+        return state;
     }
 }
 
 export function refreshTokenExpire(state = null, action: Actions) {
     switch (action.type) {
-        case ActionTypes.LOGIN:
-            if (typeof action.payload === "object" &&
+    case ActionTypes.LOGIN:
+        if (typeof action.payload === "object" &&
                 typeof action.payload.refreshTokenExpire === "number") {
-                return action.payload.refreshTokenExpire;
-            }
+            return action.payload.refreshTokenExpire;
+        }
         // Fall through
-        case ActionTypes.LOGOUT:
-        case ActionTypes.EXPIRED_REFRESH_TOKEN:
-            return null;
-        default:
-            return state;
+    case ActionTypes.LOGOUT:
+    case ActionTypes.EXPIRED_REFRESH_TOKEN:
+        return null;
+    default:
+        return state;
     }
 }
 
 export function accessToken(state = null, action: Actions) {
     switch (action.type) {
-        case ActionTypes.LOGIN:
-        case ActionTypes.REFRESH_SESSION:
-            if (typeof action.payload === "object" &&
+    case ActionTypes.LOGIN:
+    case ActionTypes.REFRESH_SESSION:
+        if (typeof action.payload === "object" &&
                 typeof action.payload.accessToken === "string") {
-                return action.payload.accessToken;
-            }
+            return action.payload.accessToken;
+        }
         // Fall Through
-        case ActionTypes.LOGOUT:
-        case ActionTypes.EXPIRED_ACCESS_TOKEN:
-            return null;
-        default:
-            return state;
+    case ActionTypes.LOGOUT:
+    case ActionTypes.EXPIRED_ACCESS_TOKEN:
+        return null;
+    default:
+        return state;
     }
 }
 
 export function accessTokenExpire(state = null, action: Actions) {
     switch (action.type) {
-        case ActionTypes.LOGIN:
-        case ActionTypes.REFRESH_SESSION:
-            if (typeof action.payload === "object" &&
+    case ActionTypes.LOGIN:
+    case ActionTypes.REFRESH_SESSION:
+        if (typeof action.payload === "object" &&
                 typeof action.payload.accessTokenExpire === "number") {
-                return action.payload.accessTokenExpire;
-            }
+            return action.payload.accessTokenExpire;
+        }
         // Fall Through
-        case ActionTypes.LOGOUT:
-        case ActionTypes.EXPIRED_ACCESS_TOKEN:
-            return null;
-        default:
-            return state;
+    case ActionTypes.LOGOUT:
+    case ActionTypes.EXPIRED_ACCESS_TOKEN:
+        return null;
+    default:
+        return state;
     }
 }
 
 export function classSettings(state = false, action: Actions) {
     switch (action.type) {
-        case ActionTypes.CLASS_SETTINGS_TOGGLE:
-            return action.payload;
-        default:
-            return state;
+    case ActionTypes.CLASS_SETTINGS_TOGGLE:
+        return action.payload;
+    default:
+        return state;
     }
 }
 
 export function liveClass(state = false, action: Actions) {
     switch (action.type) {
-        case ActionTypes.LIVE_CLASS_TOGGLE:
-            return action.payload;
-        default:
-            return state;
+    case ActionTypes.LIVE_CLASS_TOGGLE:
+        return action.payload;
+    default:
+        return state;
     }
 }
 
 export function activeComponentHome(state = "live", action: Actions) {
     switch (action.type) {
-        case ActionTypes.ACTIVE_COMPONENT_HOME:
-            return action.payload;
-        default:
-            return state;
+    case ActionTypes.ACTIVE_COMPONENT_HOME:
+        return action.payload;
+    default:
+        return state;
     }
 }
 
@@ -199,10 +200,10 @@ export function activeComponentHome(state = "live", action: Actions) {
 export const JWT_TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiYWRhbmFtdSBhcHAiLCJpYXQiOjE1OTE2ODU4MzgsInN1YiI6ImF1dGhvcml6YXRpb24iLCJpc3MiOiJLaWRzTG9vcENoaW5hVXNlciIsImV4cCI6MTkwODMyNTI0OSwiaWQiOiI0NSIsIm9yZ19pZCI6IjkifQ=.RawtL06bFxeJ2zMQnp0oe+LnBWNIX4lMo/F7hFW85SU";
 export function assessmentToken(state = JWT_TOKEN, action: Actions) {
     switch (action.type) {
-        case ActionTypes.ASSESSMENT_TOKEN:
-            return action.payload;
-        default:
-            return state;
+    case ActionTypes.ASSESSMENT_TOKEN:
+        return action.payload;
+    default:
+        return state;
     }
 }
 
@@ -230,58 +231,58 @@ const STUDENT_LIST = [
 ];
 export function students(state = STUDENT_LIST, action: Actions) {
     switch (action.type) {
-        case ActionTypes.STUDENTS:
-            return action.payload;
-        default:
-            return state;
+    case ActionTypes.STUDENTS:
+        return action.payload;
+    default:
+        return state;
     }
 }
 
 export function activeLibraryMenu(state = "published", action: Actions) {
     switch (action.type) {
-        case ActionTypes.ACTIVE_LIBRARY_MENU:
-            return action.payload;
-        default:
-            return state;
+    case ActionTypes.ACTIVE_LIBRARY_MENU:
+        return action.payload;
+    default:
+        return state;
     }
 }
 
-export function activeAssessmentsMenu(state = "library", action: Actions) {
+export function activeAssessmentsMenu(state: AssessmentsMenu = "library", action: Actions) {
     switch (action.type) {
-        case ActionTypes.ACTIVE_ASSESSMENTS_MENU:
-            return action.payload;
-        default:
-            return state;
+    case ActionTypes.ACTIVE_ASSESSMENTS_MENU:
+        return action.payload;
+    default:
+        return state;
     }
 }
 
 const CONTENT_TYPE_LIST = ["Activity"];
 export function contentTypes(state = CONTENT_TYPE_LIST, action: Actions) {
     switch (action.type) {
-        case ActionTypes.CONTENT_TYPES:
-            return action.payload;
-        default:
-            return state;
+    case ActionTypes.CONTENT_TYPES:
+        return action.payload;
+    default:
+        return state;
     }
 }
 
 const PUBLIC_RANGE_LIST = ["All", "Organiztion", "Private"];
 export function publicRange(state = PUBLIC_RANGE_LIST, action: Actions) {
     switch (action.type) {
-        case ActionTypes.PUBLIC_RANGES:
-            return action.payload;
-        default:
-            return state;
+    case ActionTypes.PUBLIC_RANGES:
+        return action.payload;
+    default:
+        return state;
     }
 }
 
 const SUITABLE_AGE_LIST = ["12-24 months", "2-4 years", "4-7 years"];
 export function suitableAges(state = SUITABLE_AGE_LIST, action: Actions) {
     switch (action.type) {
-        case ActionTypes.SUITABLE_AGES:
-            return action.payload;
-        default:
-            return state;
+    case ActionTypes.SUITABLE_AGES:
+        return action.payload;
+    default:
+        return state;
     }
 }
 
@@ -313,10 +314,10 @@ export function finishLiveData(state = {
     ],
 }, action: Actions) {
     switch (action.type) {
-        case ActionTypes.FINISH_LIVE_DATA:
-            return action.payload;
-        default:
-            return state;
+    case ActionTypes.FINISH_LIVE_DATA:
+        return action.payload;
+    default:
+        return state;
     }
 }
 
@@ -356,19 +357,19 @@ const ACTIVITY_LIST = [
 ];
 export function activities(state = ACTIVITY_LIST, action: Actions) {
     switch (action.type) {
-        case ActionTypes.ACTIVITIES:
-            return action.payload;
-        default:
-            return state;
+    case ActionTypes.ACTIVITIES:
+        return action.payload;
+    default:
+        return state;
     }
 }
 
 export function selectedLessonPlan(state = "", action: Actions) {
     switch (action.type) {
-        case ActionTypes.SELECTED_LESSON_PLAN:
-            return action.payload;
-        default:
-            return state;
+    case ActionTypes.SELECTED_LESSON_PLAN:
+        return action.payload;
+    default:
+        return state;
     }
 }
 

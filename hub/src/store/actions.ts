@@ -1,4 +1,8 @@
-import { UserAgent, LiveSessionData } from "../types/objectTypes";
+import {
+    UserAgent,
+    LiveSessionData,
+    AssessmentsMenu
+} from "../types/objectTypes";
 
 export interface Action<T extends ActionTypes, P> {
     type: T;
@@ -63,11 +67,6 @@ export type SetStudents = Action<ActionTypes.STUDENTS, Array<{
 export type LibraryMenu = "published" | "pending" | "archived";
 export type SetActiveLibraryMenu = Action<ActionTypes.ACTIVE_LIBRARY_MENU, LibraryMenu>;
 
-export enum AssessmentsMenu {
-    LIBRARY = "library",
-    PENDING = "pending",
-    COMPLETED = "completed",
-}
 export type SetActiveAssessmentsMenu = Action<ActionTypes.ACTIVE_ASSESSMENTS_MENU, AssessmentsMenu>;
 
 export type ContentTypes = Action<ActionTypes.CONTENT_TYPES, string[]>;
