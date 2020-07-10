@@ -64,7 +64,6 @@ export function Join (): JSX.Element {
                                     <Grid container spacing={2}>
                                         <Grid item xs={12}>
                                             <StyledTextField
-                                                required
                                                 fullWidth
                                                 value={user}
                                                 label={'What is your name?'}
