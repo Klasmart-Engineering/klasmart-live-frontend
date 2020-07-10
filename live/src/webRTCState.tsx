@@ -4,6 +4,7 @@ import { Typography, Grid } from '@material-ui/core'
 import { FormattedMessage } from 'react-intl'
 import { gql } from 'apollo-boost'
 import { useMutation } from '@apollo/react-hooks'
+import EventEmitter from "eventemitter3"
 
 const SEND_SIGNAL = gql`
   mutation webRTCSignal($roomId: ID!, $toSessionId: ID!, $webrtc: WebRTCIn) {
@@ -26,8 +27,12 @@ export interface WebRTC {
     ice?: string
 }
 
-navigator.mediaDevices.getUserMedia({video: true, audio: true}).then((stream) => {WebRTCContext.stream = stream});
+navigator.mediaDevices.getUserMedia({video: true, audio: true}).then((stream) => {
+    WebRTCContext.stream = stream;
+    WebRTCContext.streamEmitter.emit("rerender")
+});
 export class WebRTCContext {
+    public static streamEmitter = new EventEmitter()
     public static stream?: MediaStream
     public static useWebRTCContext(roomId: string): WebRTCContext {
         const [sendSignal] = useMutation(SEND_SIGNAL)
@@ -49,6 +54,7 @@ export class WebRTCContext {
     ) {
         this.send = send
         this.states = states
+        WebRTCContext.streamEmitter.addListener("rerender", () => this.rerender())
     }
     public async notification(webrtc: WebRTC): Promise<void> {
         console.log('recv',webrtc)
@@ -230,7 +236,8 @@ export function Camera({mediaStream}:{mediaStream: MediaStream}): JSX.Element {
 }
 
 export function MyCamera(): JSX.Element {
-    if (WebRTCContext.stream) {    
+    console.log(WebRTCContext.stream);
+    if (WebRTCContext.stream) {   
         return <Camera mediaStream={WebRTCContext.stream} />;
     } else {
         return (
