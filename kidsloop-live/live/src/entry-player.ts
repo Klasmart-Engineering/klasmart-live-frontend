@@ -6,7 +6,6 @@ const events: eventWithTime[] = []
 
 window.addEventListener('message', ({ data }) => {
   if (!data || !data.event) { return }
-  // console.log(data.event)
   try {
     const event = JSON.parse(data.event)
     if (player) {

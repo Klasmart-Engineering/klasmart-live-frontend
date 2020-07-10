@@ -25,7 +25,6 @@ if(!(window as any).kidslooplive)
   const client = new GraphQLClient(POST_URL, { headers: headers })
   
   const streamId = uuid()
-  // console.log(`streamId: ${streamId}`)
   window.parent.postMessage({ streamId }, '*')
   
   const eventStream = EventStream.builder()

@@ -33,13 +33,7 @@ export function RecordedIframe(props: Props): JSX.Element {
     const [numRenders, setRenders] = useState(0);
 
     const fitToScreen = (width: number, height: number) => {
-        console.log("RESIZING!!!");
         const scale = maxHeight / Number(height);
-
-        console.log(`height ${height}, width ${width}`);
-        console.log(`maxHeight ${maxHeight}`);
-        console.log(`scale ${scale}`);
-        console.log(`NUMBER OF RENDERS ${numRenders}`);
         if (scale < 0.9) {
             setRenders(numRenders + 1);
             setWidth(Number(width) * scale);
@@ -62,7 +56,6 @@ export function RecordedIframe(props: Props): JSX.Element {
         innerRef.addEventListener("load", inject);
 
         function inject() {
-            // console.log("inject");
             if (!innerRef || !innerRef.contentDocument) { return; }
             const doc = innerRef.contentDocument;
             const h5pContent = doc.body.getElementsByClassName("h5p-content");
@@ -93,11 +86,7 @@ export function RecordedIframe(props: Props): JSX.Element {
 
     const [sendStreamId] = useMutation(SET_STREAMID);
     useEffect(() => {
-        // console.log("sending message");
-        // if (!ref.current || !ref.current.contentWindow) { return }
         function onMessage({data}: MessageEvent) {
-            // console.log("onMessage: ");
-            // console.log(data);
             if (data && data.streamId) {
                 if (setStreamId) { setStreamId(data.streamId); }
                 sendStreamId({variables: {
@@ -130,14 +119,11 @@ export function RecordedIframe(props: Props): JSX.Element {
     return (
         <IframeResizer
             id="recordedIframe-container"
-            // ref={forwardRef}
             forwardRef={ref}
             src={contentId}
             heightCalculationMethod="taggedElement"
             onResized={(e) => {
                 startRecording()
-                // console.log(e.height);
-                // console.log(e.width);
                 setWidth(e.width);
                 if (e.height > maxHeight && numRenders < 1) {
                     fitToScreen(e.width, e.height);

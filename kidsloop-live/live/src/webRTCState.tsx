@@ -236,7 +236,6 @@ export function Camera({mediaStream}:{mediaStream: MediaStream}): JSX.Element {
 }
 
 export function MyCamera(): JSX.Element {
-    console.log(WebRTCContext.stream);
     if (WebRTCContext.stream) {   
         return <Camera mediaStream={WebRTCContext.stream} />;
     } else {
