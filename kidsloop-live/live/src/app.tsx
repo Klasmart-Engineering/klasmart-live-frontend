@@ -4,8 +4,6 @@ import { Route, Switch } from 'react-router-dom'
 import { en } from './localization/en'
 import {Join} from './pages/join'
 import { Room } from './room'
-import Layout from './components/layout'
-
 
 export interface IUserContext {
   roomId: string,
@@ -27,15 +25,13 @@ export function App (): JSX.Element {
     <IntlProvider locale="en" messages={en}>
       {
         userContext === undefined
-        ? <Join setUserContext={setUserContext}/>
-        : <Layout>
-            <UserContext.Provider value={userContext}>
-              <Switch>
-                <Route path="/teacher" render={() => <Room teacher={true} />} />
-                <Route render={() => <Room teacher={userContext.teacher} />} />
-              </Switch>
-            </UserContext.Provider>
-          </Layout>
+        ? <Join setUserContext={setUserContext}/> :
+        <UserContext.Provider value={userContext}>
+            <Switch>
+              <Route path="/teacher" render={() => <Room teacher={true} />} />
+              <Route render={() => <Room teacher={userContext.teacher} />} />
+            </Switch>
+          </UserContext.Provider>
       }
     </IntlProvider>
   )

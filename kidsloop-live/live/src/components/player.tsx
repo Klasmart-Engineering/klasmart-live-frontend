@@ -29,9 +29,6 @@ export function Player ({ streamId, frameProps, parentWidth, parentHeight, setPa
   const ref = useRef<HTMLIFrameElement>(null);
   const [{ width, height }, setWidthHeight] = useState({ width: '0', height: '0' });
 
-  console.log(parentWidth)
-  console.log(parentHeight)
-
   // Buffer events until we have a page ready to render them
   const {current: bufferedEvents} = useRef<string[]>([])
   function sendEvent(event?:string) {

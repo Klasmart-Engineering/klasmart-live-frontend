@@ -1,6 +1,6 @@
 import React, { useRef, createContext, useContext, useEffect, useState } from 'react'
 import Button from '@material-ui/core/Button'
-import { Typography } from '@material-ui/core'
+import { Typography, Grid } from '@material-ui/core'
 import { FormattedMessage } from 'react-intl'
 import { gql } from 'apollo-boost'
 import { useMutation } from '@apollo/react-hooks'
@@ -33,7 +33,7 @@ export class WebRTCContext {
         const [sendSignal] = useMutation(SEND_SIGNAL)
         const [webRTCContextValue, setWebRTCContextValue] = useState(
             new WebRTCContext((toSessionId: string, webrtc: WebRTCIn) => {
-                console.log("send",toSessionId,webrtc)
+                console.log('send',toSessionId,webrtc)
                 return sendSignal({variables: {roomId,toSessionId,webrtc}})
             })
         )
@@ -51,7 +51,7 @@ export class WebRTCContext {
         this.states = states
     }
     public async notification(webrtc: WebRTC): Promise<void> {
-        console.log("recv",webrtc)
+        console.log('recv',webrtc)
         const sessionId = webrtc.sessionId
         const state = await this.getOrCreateState(sessionId)
         await state.dispatch(webrtc)
@@ -66,7 +66,7 @@ export class WebRTCContext {
     public getMediaStreams(): Array<{sessionId: string, stream: MediaStream}> {
         const results: Array<{sessionId: string, stream: MediaStream}> = []
         for(const [sessionId, state] of this.states.entries()) {
-            if(state.remoteMediaStream && state.peer.connectionState === "connected") {
+            if(state.remoteMediaStream && state.peer.connectionState === 'connected') {
                 results.push({sessionId, stream: state.remoteMediaStream})
             }
         }
@@ -91,7 +91,7 @@ export class WebRTCContext {
 
 export const webRTCContext  = createContext<WebRTCContext|undefined>(undefined)
 const iceServers: RTCIceServer[] = [
-    {urls: "turn:turn.kidsloop.net", username: "badanamu", credential: "WFVZ4myAi3ywy4q0BpPJWTAm8gHOfPRh", credentialType: "password"},
+    {urls: 'turn:turn.kidsloop.net', username: 'badanamu', credential: 'WFVZ4myAi3ywy4q0BpPJWTAm8gHOfPRh', credentialType: 'password'},
 ]
 
 class WebRTCState {
@@ -107,7 +107,7 @@ class WebRTCState {
         this.peer = new RTCPeerConnection({iceServers})
         this.peer.onicegatheringstatechange = async () => {
             if(!this.peer) {return}
-            console.log("onicegatheringstatechange:", this.peer.iceGatheringState)
+            console.log('onicegatheringstatechange:', this.peer.iceGatheringState)
         }
         this.peer.onicecandidate = async ({candidate}) => {
             if(candidate) {
@@ -117,7 +117,7 @@ class WebRTCState {
         }
         this.peer.onconnectionstatechange = () => {
             if(!this.peer) {return}
-            console.log("onconnectionstatechange:", this.peer.connectionState)
+            console.log('onconnectionstatechange:', this.peer.connectionState)
             this.rerender()
         }
         this.peer.ontrack = ({streams}) => {
@@ -142,34 +142,34 @@ class WebRTCState {
             const {offer, answer, ice} = webrtc
             if(offer) {
                 await this.peer.setRemoteDescription(new RTCSessionDescription(JSON.parse(offer)))
-                console.log("Set remote offer")
+                console.log('Set remote offer')
 
                 const localDesc = await this.peer.createAnswer()
                 await this.peer.setLocalDescription(localDesc)
                 const answer = JSON.stringify(localDesc)
                 this.send({ answer })
-                console.log("Set local answer")
+                console.log('Set local answer')
                 while(this.pendingIceCandidates.length > 0) {
                     const candidate = this.pendingIceCandidates.shift()
                     if(!candidate) { continue }
-                    console.log("addIceCandidate2: ", this.peer.connectionState, candidate)
+                    console.log('addIceCandidate2: ', this.peer.connectionState, candidate)
                     await this.peer.addIceCandidate(candidate).catch((e) => console.error(e))
                 }
-                console.log("pendingIceCandidates Done")
+                console.log('pendingIceCandidates Done')
 
             }
             if(answer) {
                 const remoteDesc = new RTCSessionDescription(JSON.parse(answer))
                 await this.peer.setRemoteDescription(remoteDesc)
-                console.log("Set remote answer")
+                console.log('Set remote answer')
             }
             if(ice) {
                 const candidate = new RTCIceCandidate(JSON.parse(ice))
                 if(!this.peer.remoteDescription) {
-                    console.log("canidate pending")
+                    console.log('canidate pending')
                     this.pendingIceCandidates.push(candidate)
                 } else {
-                    console.log("addIceCandidate1: ", this.peer.connectionState, candidate)
+                    console.log('addIceCandidate1: ', this.peer.connectionState, candidate)
                     await this.peer.addIceCandidate(candidate) 
                 }
             }
@@ -182,7 +182,7 @@ class WebRTCState {
         const localDesc = await this.peer.createOffer()
         await this.peer.setLocalDescription(localDesc)
         const offer = JSON.stringify(localDesc)
-        console.log("Set local offer")
+        console.log('Set local offer')
         this.send({ offer })
     }
 }
@@ -190,7 +190,7 @@ class WebRTCState {
 export function Start({sessionId}:{sessionId: string}): JSX.Element {
     const states = useContext(webRTCContext)
     if(!states) {
-        console.error("RTC Start button created outside context provider")
+        console.error('RTC Start button created outside context provider')
         return <FormattedMessage id="error_no_rtc_provider" />
     }
     
@@ -203,12 +203,20 @@ export function Cameras(): JSX.Element {
     const states = useContext(webRTCContext)
     if(!states) {return <FormattedMessage id="error_webrtc_unavailable" />}
     const cameras = states.getMediaStreams().map(({sessionId,stream}) => 
-        <div key={stream.id} style={{width:200, height:200}}>
+        <Grid item key={stream.id}>
             <Camera mediaStream={stream} />
-            <Typography>{sessionId}-{stream.id}</Typography>
-        </div>
+        </Grid>
     )
-    return <>{cameras}</>
+    return (
+        <Grid
+            container
+            direction="column"
+            justify="flex-start"
+            alignItems="center"
+        >
+            {cameras}
+        </Grid>
+    )
 }
 
 export function Camera({mediaStream}:{mediaStream: MediaStream}): JSX.Element {
@@ -216,6 +224,19 @@ export function Camera({mediaStream}:{mediaStream: MediaStream}): JSX.Element {
     useEffect(() => {
         if(!videoRef.current) {return}
         videoRef.current.srcObject = mediaStream
+        console.log(videoRef.current.videoHeight);
     }, [videoRef.current, mediaStream])
-    return <video ref={videoRef} autoPlay playsInline style={{width:"100%", height:"100%"}}/>
+    return <video ref={videoRef} autoPlay={true} style={{width: 340, height: 340 }}/>
+}
+
+export function MyCamera(): JSX.Element {
+    if (WebRTCContext.stream) {    
+        return <Camera mediaStream={WebRTCContext.stream} />;
+    } else {
+        return (
+            <Grid container justify="space-between" alignItems="center" style={{ width: '100%', height: 300, backgroundColor: '#193d6f' }}>
+                <Typography style={{ margin: '0 auto', color: 'white', padding: 56 }} align="center">Sorry! Seems like we can't access your 📷.</Typography>
+            </Grid>
+        )
+    }
 }
