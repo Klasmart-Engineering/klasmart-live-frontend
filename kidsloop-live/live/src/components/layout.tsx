@@ -132,7 +132,7 @@ export default function Layout(props: Props): JSX.Element {
                                 </Button>
                                 : <CameraContainer isTeacher={isTeacher} />
                             }
-                            <Grid item xs={12} style={{ flex: 1 }}>
+                            <Grid item xs={12} style={{ flex: 1, overflowY: "auto" }}>
                                 <Messages messages={messages} />
                             </Grid>
                             <SendMessage />
