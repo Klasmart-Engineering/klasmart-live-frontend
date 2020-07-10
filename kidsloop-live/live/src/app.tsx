@@ -33,9 +33,7 @@ function parseToken() {
   } catch(e) {}
   return
 }
-const params = (window.location.hostname!=="localhost")
-  ? parseToken()
-  : {teacher: false, roomId:'test-room', name: `Developer-${Math.floor(Math.random()*100)}`, materials: [] as LessonMaterial[]} 
+const params = parseToken()
 export function App (): JSX.Element {
   if(!params) {return <Typography>Invalid token, could not connect to class</Typography>}
   const [name, setName] = useState(params.name)
