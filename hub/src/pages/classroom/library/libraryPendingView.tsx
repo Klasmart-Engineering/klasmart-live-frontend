@@ -1,17 +1,15 @@
 import { CardMedia } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
-import Hidden from "@material-ui/core/Hidden";
 import Typography from "@material-ui/core/Typography";
 import React, { useState, useEffect } from "react";
 import Void1BackgroundImage from "../../../assets/img/void1_bg.svg";
-import CreateDialog from "./createDialog";
 import LibraryContentItems from "./libraryContentItems";
 import { ContentItem, LibraryContentType } from "../../../types/objectTypes";
 import {
     useRestAPI,
     LessonPlanResponse,
     LessonMaterialResponse,
-} from "../assessments/api/restapi";
+} from "../../../api/restapi";
 import ZooBackgroundImage from "../../../assets/img/zoo_banner_web.png";
 
 interface Props {
@@ -44,7 +42,7 @@ export default function LibraryPendingView() {
             const plans = await fetchLessonPlans();
             const materials = await fetchLessonMaterials();
 
-            let contents: ContentItem[] = []
+            const contents: ContentItem[] = [];
             if (prepared) {
                 setPlans(plans);
                 setMaterials(materials);
@@ -57,7 +55,7 @@ export default function LibraryPendingView() {
                         description: plan.description,
                         image: ZooBackgroundImage,
                         link: "https://zoo.kidsloop.net"
-                    })
+                    });
                 }
                 for (const material of materials) {
                     contents.push({
@@ -70,13 +68,13 @@ export default function LibraryPendingView() {
                         link: material.externalId
                             ? `https://zoo.kidsloop.net/h5p/play/${material.externalId}`
                             : ""
-                    })
+                    });
                 }
                 setContents(contents);
             }
         })();
         return () => { prepared = false; };
-    }, [])
+    }, []);
 
     return (<>
         <Grid item xs={12}>
@@ -101,12 +99,12 @@ export default function LibraryPendingView() {
                     <Grid item xs={12}>
                         <Typography variant="body1" align="center">
                             Your library is empty!
-                </Typography>
+                        </Typography>
                     </Grid>
                     <Grid item xs={12}>
                         <Typography variant="caption" align="center" component="p">
                             Create content to get started on your learning adventure.
-                </Typography>
+                        </Typography>
                     </Grid>
                     {/* <Hidden lgUp>
                         <Grid item xs={12}>
@@ -117,5 +115,5 @@ export default function LibraryPendingView() {
                 <LibraryContentItems contents={contents} type="OwnedContent" />
             }
         </Grid>
-    </>)
+    </>);
 }

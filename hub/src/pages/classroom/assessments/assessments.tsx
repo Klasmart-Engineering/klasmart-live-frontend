@@ -16,7 +16,7 @@ import { FormattedMessage } from "react-intl";
 import { useSelector, useStore } from "react-redux";
 
 import { State } from "../../../store/store";
-import { ActionTypes, AssessmentsMenu } from "../../../store/actions"
+import { ActionTypes, AssessmentsMenu } from "../../../store/actions";
 import CreateLearningOutcomeDialog from "./learningOutcomeCreateDialog";
 import AssessmentsLibraryView from "./learningOutcomeLibraryView";
 import AssessmentsPendingView from "./pendingView";
@@ -96,12 +96,12 @@ export default function AssessmentsLayout() {
 
     useEffect(() => {
         if (isLive) { toggleLive(); }
-    }, [])
+    }, []);
 
     const handleOnClickMenu = (id: string) => {
         setMenuElement(null);
         setActiveMenu(id); // TODO: fix
-    }
+    };
 
     return (
         <Grid
@@ -204,68 +204,68 @@ export default function AssessmentsLayout() {
 
 function AssessmentsContent(props: { activeMenu: AssessmentsMenu }) {
     switch (props.activeMenu) {
-        case AssessmentsMenu.LIBRARY:
-            return (
-                <>
-                    <Grid item xs={12}>
-                        <Typography variant="caption" color="textSecondary">
-                            <FormattedMessage id="assess_libraryTitle" />
-                        </Typography>
+    case AssessmentsMenu.LIBRARY:
+        return (
+            <>
+                <Grid item xs={12}>
+                    <Typography variant="caption" color="textSecondary">
+                        <FormattedMessage id="assess_libraryTitle" />
+                    </Typography>
+                </Grid>
+                <Grid item xs={12}>
+                    <Grid container spacing={1}>
+                        <AssessmentsLibraryView />
                     </Grid>
-                    <Grid item xs={12}>
-                        <Grid container spacing={1}>
-                            <AssessmentsLibraryView />
-                        </Grid>
-                    </Grid>
-                </>
-            )
+                </Grid>
+            </>
+        );
 
-        case AssessmentsMenu.PENDING:
-            return (
-                <>
-                    <Grid item xs={12}>
-                        <Typography variant="caption" color="textSecondary">
-                            <FormattedMessage id="assess_pendingTitle" />
-                        </Typography>
+    case AssessmentsMenu.PENDING:
+        return (
+            <>
+                <Grid item xs={12}>
+                    <Typography variant="caption" color="textSecondary">
+                        <FormattedMessage id="assess_pendingTitle" />
+                    </Typography>
+                </Grid>
+                <Grid item xs={12}>
+                    <Grid container spacing={1}>
+                        <AssessmentsPendingView />
                     </Grid>
-                    <Grid item xs={12}>
-                        <Grid container spacing={1}>
-                            <AssessmentsPendingView />
-                        </Grid>
-                    </Grid>
-                </>
-            )
+                </Grid>
+            </>
+        );
 
-        case AssessmentsMenu.COMPLETED:
-            return (
-                <>
-                    <Grid item xs={12}>
-                        <Typography variant="caption" color="textSecondary">
-                            <FormattedMessage id="assess_completedTitle" />
-                        </Typography>
+    case AssessmentsMenu.COMPLETED:
+        return (
+            <>
+                <Grid item xs={12}>
+                    <Typography variant="caption" color="textSecondary">
+                        <FormattedMessage id="assess_completedTitle" />
+                    </Typography>
+                </Grid>
+                <Grid item xs={12}>
+                    <Grid container spacing={1}>
+                        <AssessmentsCompletedView />
                     </Grid>
-                    <Grid item xs={12}>
-                        <Grid container spacing={1}>
-                            <AssessmentsCompletedView />
-                        </Grid>
-                    </Grid>
-                </>
-            )
+                </Grid>
+            </>
+        );
 
-        default:
-            return (
-                <>
-                    <Grid item xs={12}>
-                        <Typography variant="caption" color="textSecondary">
-                            <FormattedMessage id="assess_libraryTitle" />
-                        </Typography>
+    default:
+        return (
+            <>
+                <Grid item xs={12}>
+                    <Typography variant="caption" color="textSecondary">
+                        <FormattedMessage id="assess_libraryTitle" />
+                    </Typography>
+                </Grid>
+                <Grid item xs={12}>
+                    <Grid container spacing={1}>
+                        <AssessmentsLibraryView />
                     </Grid>
-                    <Grid item xs={12}>
-                        <Grid container spacing={1}>
-                            <AssessmentsLibraryView />
-                        </Grid>
-                    </Grid>
-                </>
-            )
+                </Grid>
+            </>
+        );
     }
 }

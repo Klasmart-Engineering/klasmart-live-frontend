@@ -1,5 +1,4 @@
 import { UserAgent, LiveSessionData } from "../types/objectTypes";
-import { LessonPlanResponse } from "../pages/classroom/assessments/api/restapi";
 
 export interface Action<T extends ActionTypes, P> {
     type: T;

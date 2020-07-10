@@ -1,16 +1,12 @@
 import { CardMedia } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
-import Hidden from "@material-ui/core/Hidden";
 import Typography from "@material-ui/core/Typography";
 import React, { useState, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import Void1BackgroundImage from "../../../assets/img/void1_bg.svg";
-import CreateDialog from "./createDialog";
 import LibraryContentItems from "./libraryContentItems";
 import { ContentItem, LibraryContentType } from "../../../types/objectTypes";
-import {
-    useRestAPI,
-} from "../assessments/api/restapi";
+import { useRestAPI } from "../../../api/restapi";
 import ZooBackgroundImage from "../../../assets/img/zoo_banner_web.png";
 
 const MARKETPLACE_CONTENT: ContentItem[] = [
@@ -52,7 +48,7 @@ export default function LibraryContentView() {
             const plans = await fetchLessonPlans();
             const materials = await fetchLessonMaterials();
 
-            let contents: ContentItem[] = []
+            const contents: ContentItem[] = [];
             if (prepared) {
                 for (const plan of plans) {
                     contents.push({
@@ -63,7 +59,7 @@ export default function LibraryContentView() {
                         description: plan.description,
                         image: ZooBackgroundImage,
                         link: "https://zoo.kidsloop.net"
-                    })
+                    });
                 }
                 for (const material of materials) {
                     contents.push({
@@ -76,13 +72,13 @@ export default function LibraryContentView() {
                         link: material.externalId
                             ? `https://zoo.kidsloop.net/h5p/play/${material.externalId}`
                             : ""
-                    })
+                    });
                 }
                 setContents(contents);
             }
         })();
         return () => { prepared = false; };
-    }, [])
+    }, []);
 
     return (<>
         <Grid item xs={12}>
@@ -107,12 +103,12 @@ export default function LibraryContentView() {
                     <Grid item xs={12}>
                         <Typography variant="body1" align="center">
                             Your library is empty!
-                </Typography>
+                        </Typography>
                     </Grid>
                     <Grid item xs={12}>
                         <Typography variant="caption" align="center" component="p">
                             Create or purchase content to get started on your learning adventure.
-                </Typography>
+                        </Typography>
                     </Grid>
                     {/* <Hidden lgUp>
                         <Grid item xs={12}>
@@ -131,5 +127,5 @@ export default function LibraryContentView() {
         <Grid item xs={12}>
             <LibraryContentItems contents={MARKETPLACE_CONTENT} type="Marketplace" />
         </Grid>
-    </>)
+    </>);
 }

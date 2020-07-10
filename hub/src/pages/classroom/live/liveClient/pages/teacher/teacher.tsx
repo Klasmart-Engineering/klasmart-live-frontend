@@ -24,13 +24,11 @@ import {
     CreateAssessmentRequest,
     UpdateAssessmentRequest,
     useRestAPI,
-} from "../../../../assessments/api/restapi";
+} from "../../../../../../api/restapi";
 import { InviteButton } from "../../components/invite";
-import { Player } from "../../components/player";
 import { PreviewPlayer } from "../../components/preview-player";
 import { RecordedIframe } from "../../components/recordediframe";
 import { sessionIdContext } from "../../entry";
-import { materialContext as materialsContext } from "../../lessonMaterialContext";
 import { Messages } from "../../messages";
 import { Content, Message, Session } from "../../room";
 import { SendMessage } from "../../sendMessage";

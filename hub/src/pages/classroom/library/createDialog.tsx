@@ -1,26 +1,26 @@
 import IconButton from "@material-ui/core/IconButton";
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
+import Radio from "@material-ui/core/Radio";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import FormControl from "@material-ui/core/FormControl";
 import Hidden from "@material-ui/core/Hidden";
 import Dialog from "@material-ui/core/Dialog";
 import Grid from "@material-ui/core/Grid";
 import Grow from "@material-ui/core/Grow";
 import Typography from "@material-ui/core/Typography";
 import List from "@material-ui/core/List";
-import ListSubheader from '@material-ui/core/ListSubheader';
+import ListSubheader from "@material-ui/core/ListSubheader";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import Checkbox from '@material-ui/core/Checkbox';
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import Checkbox from "@material-ui/core/Checkbox";
 import { createStyles, makeStyles, Theme, useTheme } from "@material-ui/core/styles";
 import { TransitionProps } from "@material-ui/core/transitions";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import AddIcon from "@material-ui/icons/Add";
 import ErrorIcon from "@material-ui/icons/Error";
-import PlayArrowIcon from '@material-ui/icons/PlayArrow';
-import React, { useState, useRef, useEffect } from "react";
+import PlayArrowIcon from "@material-ui/icons/PlayArrow";
+import React, { useState, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useSelector, useStore } from "react-redux";
 
@@ -42,7 +42,7 @@ import {
     LessonMaterialResponse,
     CreateLessonPlanRequest,
     CreateLessonMaterialLessonPlanRequest,
-} from "../assessments/api/restapi";
+} from "../../../api/restapi";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -55,11 +55,11 @@ const useStyles = makeStyles((theme: Theme) =>
             right: theme.spacing(2),
         },
         rootList: {
-            overflow: 'auto',
+            overflow: "auto",
             maxHeight: 400,
         },
         listHeader: {
-            backgroundColor: 'white',
+            backgroundColor: "white",
         },
         menuContainer: {
             padding: theme.spacing(4, 5),
@@ -108,16 +108,16 @@ export default function CreateDialog() {
         publishedDevSkills: DevSkillResponse[],
         publishedSkillCats: SkillCatResponse[]
     ) {
-        let devSkillOptions: DevSkillOption[] = [];
+        const devSkillOptions: DevSkillOption[] = [];
         const availableDevSkillIds = [...new Set(publishedSkillCats.map(cat => cat.devSkillId))];
         for (const id of availableDevSkillIds) {
-            const target = publishedDevSkills.filter(ds => ds.devSkillId === id)[0]
+            const target = publishedDevSkills.filter(ds => ds.devSkillId === id)[0];
             devSkillOptions.push({
                 devSkillId: target.devSkillId,
                 name: target.name
             });
         }
-        return devSkillOptions
+        return devSkillOptions;
     }
     async function fetchPublishedLearningOutcomes() {
         const payload = await api.getLearningOutcomes();
@@ -128,7 +128,7 @@ export default function CreateDialog() {
 
     const classes = useStyles();
     const theme = useTheme();
-    const isSmDown = useMediaQuery(theme.breakpoints.down('sm'));
+    const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
     const isMdDown = useMediaQuery(theme.breakpoints.down("md"));
     const store = useStore();
 
@@ -191,7 +191,7 @@ export default function CreateDialog() {
                         devSkillId: cat.devSkillId,
                         skillCatId: cat.skillCatId,
                         name: cat.name
-                    }
+                    };
                 });
                 setLMs(LMs);
                 setAllSkillCatOptions(skillCatOptions);
@@ -202,7 +202,7 @@ export default function CreateDialog() {
             }
         })();
         return () => { prepared = false; };
-    }, [])
+    }, []);
 
     useEffect(() => {
         if (devSkill === "") {
@@ -215,12 +215,12 @@ export default function CreateDialog() {
             const skillCatList = allSkillCatOptions.filter(cat => cat.devSkillId == devSkillId);
             setSkillCatOptions(skillCatList);
         }
-    }, [devSkill])
+    }, [devSkill]);
 
     const handleOpen = () => { setOpen(true); };
     const handleClose = () => { setOpen(false); };
 
-    const handleClickPlay = () => { setActivityPlay(true); }
+    const handleClickPlay = () => { setActivityPlay(true); };
     const handleChangeH5P = (e: any, value: string) => {
         const idx = e.target.getAttribute("data-option-index");
         if (idx === null || value === null) {
@@ -230,7 +230,7 @@ export default function CreateDialog() {
             setActivityId(activities[idx].id);
             setH5P(value);
         }
-    }
+    };
     const handleChangeType = (e: any, value: string) => {
         const idx = e.target.getAttribute("data-option-index");
         if (idx === null || value === null) {
@@ -238,7 +238,7 @@ export default function CreateDialog() {
         } else {
             setType(value);
         }
-    }
+    };
     const handleChangePubRange = (e: any, value: string) => {
         const idx = e.target.getAttribute("data-option-index");
         if (idx === null || value === null) {
@@ -246,7 +246,7 @@ export default function CreateDialog() {
         } else {
             setPubRange(value);
         }
-    }
+    };
     const handleChangeSuitAge = (e: any, value: string) => {
         const idx = e.target.getAttribute("data-option-index");
         if (idx === null || value === null) {
@@ -254,7 +254,7 @@ export default function CreateDialog() {
         } else {
             setSuitAge(value);
         }
-    }
+    };
     const handleChangeDevSkill = (e: any, value: string) => {
         const idx = e.target.getAttribute("data-option-index");
         if (idx === null || value === null) {
@@ -264,7 +264,7 @@ export default function CreateDialog() {
             setDevSkillIdx(idx);
             setDevSkill(value);
         }
-    }
+    };
     const handleChangeSkillCat = (e: any, value: string) => {
         const idx = e.target.getAttribute("data-option-index");
         if (idx === null || value === null) {
@@ -274,7 +274,7 @@ export default function CreateDialog() {
             setSkillCatIdx(idx);
             setSkillCat(value);
         }
-    }
+    };
 
     const handleOnClickLO = (loId: number) => {
         const currentIndex = checkedLOs.indexOf(loId);
@@ -285,7 +285,7 @@ export default function CreateDialog() {
             newChecked.splice(currentIndex, 1);
         }
         setCheckedLOs(newChecked);
-    }
+    };
 
     const handleOnClickLM = (lmId: string) => {
         const currentIndex = checkedLMs.indexOf(lmId);
@@ -296,7 +296,7 @@ export default function CreateDialog() {
             newChecked.splice(currentIndex, 1);
         }
         setCheckedLMs(newChecked);
-    }
+    };
 
     async function handleOnClickCreate() {
         setH5PError(null);
@@ -342,22 +342,22 @@ export default function CreateDialog() {
                     skillCatId,
                     description,
                     learningOutcomes: checkedLOs
-                }
+                };
                 const lmId = await api.createLessonMaterial(req);
             } else if (contentType === "lesson-plan") {
                 let loList: number[] = [];
-                let details: CreateLessonMaterialLessonPlanRequest[] = [];
+                const details: CreateLessonMaterialLessonPlanRequest[] = [];
                 for (const lmId of checkedLMs) {
                     const lm = await api.getLessonMaterial(lmId);
                     if (lm.learningOutcomes) {
-                        loList = [...lm.learningOutcomes]
+                        loList = [...lm.learningOutcomes];
                     }
                     details.push({
                         lessonMaterialId: lm.lessonMaterialId,
                         title: lm.name,
                         description: lm.description,
                         duration: 1 // TODO: Figure out it is requirement
-                    })
+                    });
                 }
                 loList = [...checkedLOs];
                 const req: CreateLessonPlanRequest = {
@@ -449,9 +449,9 @@ export default function CreateDialog() {
         const id = e.getErrorMessageID();
         const errorMessage = <FormattedMessage id={id} />;
         switch (e.getErrorMessageType()) {
-            default:
-                setGeneralError(errorMessage);
-                break;
+        default:
+            setGeneralError(errorMessage);
+            break;
         }
     }
 
@@ -670,7 +670,7 @@ export default function CreateDialog() {
                                 subheader={
                                     <ListSubheader className={classes.listHeader} component="div" id="nested-list-subheader">
                                         Lesson Materials *
-                                                {LMsError === "" ? null :
+                                        {LMsError === "" ? null :
                                             <span style={{ display: "flex", alignItems: "center" }}>
                                                 <ErrorIcon className={classes.errorIcon} color="error" />
                                                 <Typography variant="caption" color="secondary">{LMsError}</Typography>

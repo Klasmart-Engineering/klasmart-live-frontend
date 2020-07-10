@@ -5,17 +5,17 @@ import Grid from "@material-ui/core/Grid";
 import Grow from "@material-ui/core/Grow";
 import Typography from "@material-ui/core/Typography";
 import List from "@material-ui/core/List";
-import ListSubheader from '@material-ui/core/ListSubheader';
+import ListSubheader from "@material-ui/core/ListSubheader";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import Checkbox from '@material-ui/core/Checkbox';
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import Checkbox from "@material-ui/core/Checkbox";
 import { createStyles, makeStyles, Theme, useTheme } from "@material-ui/core/styles";
 import { TransitionProps } from "@material-ui/core/transitions";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import ErrorIcon from "@material-ui/icons/Error";
-import PlayArrowIcon from '@material-ui/icons/PlayArrow';
-import DoneIcon from '@material-ui/icons/Done';
+import PlayArrowIcon from "@material-ui/icons/PlayArrow";
+import DoneIcon from "@material-ui/icons/Done";
 import React, { useState, useRef, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useSelector, useStore } from "react-redux";
@@ -39,8 +39,7 @@ import {
     UpdateLessonPlanRequest,
     CreateLessonMaterialLessonPlanRequest,
     LessonPlanResponse,
-} from "../assessments/api/restapi";
-import { contentTypes } from "../../../store/reducers";
+} from "../../../api/restapi";
 
 interface Props {
     contentId: string
@@ -60,11 +59,11 @@ const useStyles = makeStyles((theme: Theme) =>
             right: theme.spacing(2),
         },
         rootList: {
-            overflow: 'auto',
+            overflow: "auto",
             maxHeight: 400,
         },
         listHeader: {
-            backgroundColor: 'white',
+            backgroundColor: "white",
         },
         menuContainer: {
             padding: theme.spacing(4, 5),
@@ -121,16 +120,16 @@ export default function EditDialog(props: Props) {
         publishedDevSkills: DevSkillResponse[],
         publishedSkillCats: SkillCatResponse[]
     ) {
-        let devSkillOptions: DevSkillOption[] = [];
+        const devSkillOptions: DevSkillOption[] = [];
         const availableDevSkillIds = [...new Set(publishedSkillCats.map(cat => cat.devSkillId))];
         for (const id of availableDevSkillIds) {
-            const target = publishedDevSkills.filter(ds => ds.devSkillId === id)[0]
+            const target = publishedDevSkills.filter(ds => ds.devSkillId === id)[0];
             devSkillOptions.push({
                 devSkillId: target.devSkillId,
                 name: target.name
             });
         }
-        return devSkillOptions
+        return devSkillOptions;
     }
     async function fetchPublishedLearningOutcomes() {
         const payload = await api.getLearningOutcomes();
@@ -141,7 +140,7 @@ export default function EditDialog(props: Props) {
 
     const classes = useStyles();
     const theme = useTheme();
-    const isSmDown = useMediaQuery(theme.breakpoints.down('sm'));
+    const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
     const store = useStore();
 
     const setActiveMenu = (value: LibraryMenu) => {
@@ -208,7 +207,7 @@ export default function EditDialog(props: Props) {
                         devSkillId: cat.devSkillId,
                         skillCatId: cat.skillCatId,
                         name: cat.name
-                    }
+                    };
                 });
                 setInfo(content);
 
@@ -226,7 +225,7 @@ export default function EditDialog(props: Props) {
             }
         })();
         return () => { prepared = false; };
-    }, [open])
+    }, [open]);
 
     useEffect(() => {
         if (!open) { return; }
@@ -239,7 +238,7 @@ export default function EditDialog(props: Props) {
             const skillCatList = allSkillCatOptions.filter(cat => cat.devSkillId == devSkillId);
             setSkillCatOptions(skillCatList);
         }
-    }, [devSkill])
+    }, [devSkill]);
 
     useEffect(() => {
         if (!info) { return; }
@@ -255,16 +254,16 @@ export default function EditDialog(props: Props) {
         } else if (contentType === "lesson-plan") {
             setCheckedLMs(info.lessonMaterials
                 ? info.lessonMaterials.map(m => m.lessonMaterialId)
-                : [])
+                : []);
         }
         setTitle(info.name);
         setPubRange(pubRangeOptions[info.publicRange - 1]);
         setSuitAge(suitAgeOptions[info.suitableAge - 1]);
         setDescription(info.description);
         setCheckedLOs(info.learningOutcomes ? info.learningOutcomes : []);
-    }, [info])
+    }, [info]);
 
-    const handleClickPlay = () => { setActivityPlay(true); }
+    const handleClickPlay = () => { setActivityPlay(true); };
     const handleChangeH5P = (e: any, value: string) => {
         const idx = e.target.getAttribute("data-option-index");
         if (idx === null || value === null) {
@@ -274,7 +273,7 @@ export default function EditDialog(props: Props) {
             setActivityId(activities[idx].id);
             setH5P(value);
         }
-    }
+    };
     const handleChangeType = (e: any, value: string) => {
         const idx = e.target.getAttribute("data-option-index");
         if (idx === null || value === null) {
@@ -282,7 +281,7 @@ export default function EditDialog(props: Props) {
         } else {
             setType(value);
         }
-    }
+    };
     const handleChangePubRange = (e: any, value: string) => {
         const idx = e.target.getAttribute("data-option-index");
         if (idx === null || value === null) {
@@ -290,7 +289,7 @@ export default function EditDialog(props: Props) {
         } else {
             setPubRange(value);
         }
-    }
+    };
     const handleChangeSuitAge = (e: any, value: string) => {
         const idx = e.target.getAttribute("data-option-index");
         if (idx === null || value === null) {
@@ -298,7 +297,7 @@ export default function EditDialog(props: Props) {
         } else {
             setSuitAge(value);
         }
-    }
+    };
     const handleChangeDevSkill = (e: any, value: string) => {
         const idx = e.target.getAttribute("data-option-index");
         if (idx === null || value === null) {
@@ -308,7 +307,7 @@ export default function EditDialog(props: Props) {
             setDevSkillIdx(idx);
             setDevSkill(value);
         }
-    }
+    };
     const handleChangeSkillCat = (e: any, value: string) => {
         const idx = e.target.getAttribute("data-option-index");
         if (idx === null || value === null) {
@@ -318,7 +317,7 @@ export default function EditDialog(props: Props) {
             setSkillCatIdx(idx);
             setSkillCat(value);
         }
-    }
+    };
 
     const handleOnClickLO = (loId: number) => {
         const currentIndex = checkedLOs.indexOf(loId);
@@ -329,7 +328,7 @@ export default function EditDialog(props: Props) {
             newChecked.splice(currentIndex, 1);
         }
         setCheckedLOs(newChecked);
-    }
+    };
 
     const handleOnClickLM = (lmId: string) => {
         const currentIndex = checkedLMs.indexOf(lmId);
@@ -340,7 +339,7 @@ export default function EditDialog(props: Props) {
             newChecked.splice(currentIndex, 1);
         }
         setCheckedLMs(newChecked);
-    }
+    };
 
     async function handleOnClickSubmit() {
         setH5PError(null);
@@ -386,22 +385,22 @@ export default function EditDialog(props: Props) {
                     skillCatId,
                     description,
                     learningOutcomes: checkedLOs
-                }
+                };
                 const lmId = await api.createLessonMaterial(contentId, req);
             } else if (contentType === "lesson-plan") {
                 let loList: number[] = [];
-                let details: CreateLessonMaterialLessonPlanRequest[] = [];
+                const details: CreateLessonMaterialLessonPlanRequest[] = [];
                 for (const lmId of checkedLMs) {
                     const lm = await api.getLessonMaterial(lmId);
                     if (lm.learningOutcomes) {
-                        loList = [...lm.learningOutcomes]
+                        loList = [...lm.learningOutcomes];
                     }
                     details.push({
                         lessonMaterialId: lm.lessonMaterialId,
                         title: lm.name,
                         description: lm.description,
                         duration: 1 // TODO: Figure out it is requirement
-                    })
+                    });
                 }
                 loList = [...checkedLOs];
                 const req: UpdateLessonPlanRequest = {
@@ -418,7 +417,7 @@ export default function EditDialog(props: Props) {
                 const lpId = await api.updateLessonPlan(contentId, req);
             }
             setActiveMenu("pending");
-            onClose()
+            onClose();
             location.reload();
         } catch (e) {
             handleError(e);
@@ -493,9 +492,9 @@ export default function EditDialog(props: Props) {
         const id = e.getErrorMessageID();
         const errorMessage = <FormattedMessage id={id} />;
         switch (e.getErrorMessageType()) {
-            default:
-                setGeneralError(errorMessage);
-                break;
+        default:
+            setGeneralError(errorMessage);
+            break;
         }
     }
 
@@ -547,7 +546,7 @@ export default function EditDialog(props: Props) {
                                 <Grid className={classes.menuGrid} item xs={12} container direction="row" justify="center" alignItems="center">
                                     <Typography variant="subtitle1">
                                         Do you wanna try this activity?
-                                </Typography>
+                                    </Typography>
                                     <IconButton
                                         size="small"
                                         onClick={handleClickPlay}
@@ -658,7 +657,7 @@ export default function EditDialog(props: Props) {
                             subheader={
                                 <ListSubheader className={classes.listHeader} component="div" id="nested-list-subheader">
                                     Learning Outcomes *
-                                {LOsError === "" ? null :
+                                    {LOsError === "" ? null :
                                         <span style={{ display: "flex", alignItems: "center" }}>
                                             <ErrorIcon className={classes.errorIcon} color="error" />
                                             <Typography variant="caption" color="secondary">{LOsError}</Typography>
@@ -689,7 +688,7 @@ export default function EditDialog(props: Props) {
                                 subheader={
                                     <ListSubheader className={classes.listHeader} component="div" id="nested-list-subheader">
                                         Lesson Materials *
-                                                {LMsError === "" ? null :
+                                        {LMsError === "" ? null :
                                             <span style={{ display: "flex", alignItems: "center" }}>
                                                 <ErrorIcon className={classes.errorIcon} color="error" />
                                                 <Typography variant="caption" color="secondary">{LMsError}</Typography>
