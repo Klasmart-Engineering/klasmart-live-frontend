@@ -1,4 +1,5 @@
 import React, { useState, useContext } from 'react'
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { Button, CircularProgress, Grid, useTheme, Paper, makeStyles, Theme, createStyles, TextField, Collapse } from '@material-ui/core'
 import { useMutation } from '@apollo/react-hooks'
 import { gql } from 'apollo-boost'
@@ -42,6 +43,19 @@ createStyles({
         marginRight: theme.spacing(1),
         width: theme.spacing(4),
     },
+    root: {
+        position: "fixed",
+        width: 320,
+        bottom: theme.spacing(2),
+        right: theme.spacing(1),
+    },
+    rootMobile: {
+        position: "fixed",
+        width: `calc(100% - ${theme.spacing(2)}px)`,
+        left: theme.spacing(1),
+        bottom: theme.spacing(2),
+        right: theme.spacing(1),
+    }
 }));
 
 
@@ -56,18 +70,20 @@ const SEND_MESSAGE = gql`
 export function SendMessage (): JSX.Element {
     const classes = useStyles();
     const theme = useTheme();
+    const isSmDown = useMediaQuery(theme.breakpoints.down('sm'));
+
     const [focusedInput, setFocusedInput] = useState(false);
     const [sendMessage, { loading }] = useMutation(SEND_MESSAGE);
     const [message, setMessage] = useState('');
     const {roomId} = useContext(UserContext)
 
     function send() {
-      sendMessage({ variables: { roomId, message } })
-      setMessage('')
+        sendMessage({ variables: { roomId, message } })
+        setMessage('')
     }
 
     return (
-        <Grid item xs={12} style={{ margin: theme.spacing(3, 0) }}>
+        <Grid className={isSmDown ? classes.rootMobile : classes.root} item xs={12}>
             <Paper elevation={4} className={classes.paperContainer}>
                 <Grid
                     container
