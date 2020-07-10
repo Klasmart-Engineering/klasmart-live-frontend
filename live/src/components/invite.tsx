@@ -20,10 +20,15 @@ export function InviteButton(): JSX.Element {
 
 
   return <>
-      <Button aria-label="invite" onClick={(e) => setAnchorEl(e.currentTarget)} style={{padding: '0px'}} size='small'>
-            <ShareIcon />
-            <FormattedMessage id="button_invite_students" />
-      </Button>
+    <Button
+        aria-label="invite" 
+        size="small"
+        onClick={(e) => setAnchorEl(e.currentTarget)} 
+        style={{ marginRight: 8, padding: "2px 8px", borderRadius: 12 }}
+    >
+        <ShareIcon style={{ paddingRight: 5 }} />
+        <FormattedMessage id="button_invite_students" />
+    </Button>
       <Popover
         open={Boolean(anchorEl)}
         anchorEl={anchorEl}
@@ -38,7 +43,13 @@ export function InviteButton(): JSX.Element {
         }}
       >
         <div style={{paddingLeft: '15px'}}>
-            <input ref={textField} value={url} onClick={(e)=> {(e.target as HTMLInputElement).select()}} />
+            <input 
+                onClick={(e)=> {(e.target as HTMLInputElement).select()}} 
+                ref={textField} 
+                readOnly 
+                style={{ width: 250 }}
+                value={url} 
+            />
             <IconButton aria-label="copy" onClick={() => {
                 if(!textField.current) { return }
                 textField.current.select()

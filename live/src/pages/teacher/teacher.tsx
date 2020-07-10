@@ -1,123 +1,85 @@
 import Drawer from '@material-ui/core/Drawer'
 import Grid from '@material-ui/core/Grid'
-import IconButton from '@material-ui/core/IconButton'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
-import Tooltip from '@material-ui/core/Tooltip'
 import Typography from '@material-ui/core/Typography'
 import CloseIcon from '@material-ui/icons/Close'
-import ArrowIcon from '@material-ui/icons/ExpandLess'
 import React, { useEffect, useMemo, useState, useContext } from 'react'
 import { FormattedMessage } from 'react-intl'
-import { Player } from '../../components/player'
 import { RecordedIframe } from '../../components/recordediframe'
 import { ControlButtons } from './controlButtons'
-import { Session } from '../../room'
-import { TextField } from '@material-ui/core'
-import Autocomplete from '@material-ui/lab/Autocomplete';
+import { Session, Message, Content } from '../../room'
+import { TextField, Theme, useTheme, Button, useMediaQuery, Hidden } from '@material-ui/core'
 import { sessionIdContext } from '../../entry'
 import { PreviewPlayer } from '../../components/preview-player'
+import clsx from 'clsx';
+import Divider from '@material-ui/core/Divider';
+import MenuOpenIcon from '@material-ui/icons/MenuOpen';
+import { InviteButton } from '../../components/invite'
+import { MyCamera } from '../../webRTCState'
+import { SendMessage } from '../../sendMessage'
+import { Messages } from '../../messages'
 
-const activityList = [
-    { title: "Introduction: Snow Leopards", link: "/h5p/play/5ed99fe36aad833ac89a4803" },
-    { title: "Matching", link: "/h5p/play/5ecf4e4b611e18398f7380ef" },
-    { title: "Sticker Activity", link: "/h5p/play/5ed0b64a611e18398f7380fb" },
-    { title: "Flashcards", link: "/h5p/play/5ed05dd1611e18398f7380f4" }
-]
+const drawerWidth = 340;
 
-const useStyles = makeStyles(() =>
+const useStyles = makeStyles((theme: Theme) =>
     createStyles({
-        parentContainer: {
-            height: '100%',
-            width: '100%'
-            // margin: "0 auto",
+        root: {
+            display: 'flex',
+            height: "100%",
+        },
+        title: {
+            flexGrow: 1,
+        },
+        hide: {
+            display: 'none',
+        },
+        drawer: {
+            width: drawerWidth,
+            flexShrink: 0,
+        },
+        drawerPaper: {
+            width: drawerWidth,
+            overflowX: "hidden",
+        },
+        content: {
+            flexGrow: 1,
+            padding: theme.spacing(2),
+            transition: theme.transitions.create('margin', {
+                easing: theme.transitions.easing.sharp,
+                duration: theme.transitions.duration.leavingScreen,
+            }),
+            marginRight: -drawerWidth,
+        },
+        contentShift: {
+            transition: theme.transitions.create('margin', {
+                easing: theme.transitions.easing.easeOut,
+                duration: theme.transitions.duration.enteringScreen,
+            }),
+            marginRight: 0,
         },
         iframeContainer: {
-            overflow: 'hidden',
-            paddingTop: '56.25%',
-            position: 'relative',
-            border: '1px solid gray',
-            borderRadius: '12px 12px 0 0',
+            overflow: "hidden",
+            position: "relative",
+            // paddingTop: "56.25%",
             margin: "0 auto",
-        },
-        iframe: {
-            border: 'none',
-            height: '100%',
-            left: 0,
-            position: 'absolute',
-            top: 0,
-            width: '100%'
-        },
-        parentContainerDrawer: {
-            width: '100%',
-            margin: '0 auto'
-        },
-        toolbarDrawer: {
-            borderBottom: '1px solid #eee',
-            width: '100%',
-            margin: '0 auto'
-        },
-        iframeContainerDrawer: {
-            borderRadius: 5,
-            overflow: 'hidden',
-            paddingTop: '56.25%',
-            position: 'relative',
-            width: '100%',
-            maxHeight: 200,
-            align: 'center',
-            textAlign: 'center',
-            float: 'left'
-        },
-        iframeDrawer: {
-            border: 'none',
-            height: '100%',
-            left: 0,
-            position: 'absolute',
-            top: 0,
-            width: '100%',
-            margin: '0 auto'
-        },
-        drawerCloseBtn: {
-            float: 'right'
-        },
-        zoomInBtn: {
-            position: 'absolute',
-            bottom: 0,
-            right: 0,
-            zIndex: 10
-        },
-        toggleSelected: {
-            color: 'white !important',
-            backgroundColor: '#3f51b5 !important'
-        },
-        gridList: {
-            flexWrap: 'nowrap',
-            transform: 'translateZ(0)',
-        },
-        txtfield: {
-            "& fieldset": {
-                borderRadius: 12,
-            },
-            "borderColor": "#1896ea",
+            borderRadius: "12px 12px 0 0",
         },
     })
 )
 
-interface TeacherProps {
+interface Props {
+    content: Content;
     users: Map<string, Session>
+    messages: Map<string, Message>
 }
 
-export enum DrawerState {
-    HIDDEN = 0,
-    HALF = 1,
-    FULL = 2,
-}
+export function Teacher (props: Props): JSX.Element {
+    const classes = useStyles();
+    const { content, users, messages } = props;
 
-export function Teacher ({users}: TeacherProps): JSX.Element {
-    const classes = useStyles()
     const sessionId = useContext(sessionIdContext)
+    const [open, setOpen] = useState<boolean>(true);
     const [streamId, setStreamId] = useState<string>()
-    const [drawerState, setDrawerState] = useState<DrawerState>(DrawerState.HIDDEN)
-    const [zoominTarget, setZoominTarget] = useState<string>()
     const [width, setWidth] = useState<string | number>("100%");
     const [height, setHeight] = useState<string | number>("100%");
     const [maxWidth, setMaxWidth] = useState<number>(0);
@@ -126,167 +88,160 @@ export function Teacher ({users}: TeacherProps): JSX.Element {
     const memos = useMemo(() => {
         const url = new URL(window.location.href)
         return {
-        activity: url.searchParams.get('activity') || '',
-        hostName: url.hostname,
+            activity: url.searchParams.get('activity') || '',
+            hostName: url.hostname,
         }
     }, [])
 
     const [contentId, setContentId] = useState(memos.activity)
-    const [value, setValue] = useState(activityList[0].title);
-    
+    // console.log(`contentId: ${contentId}`)
+
+    useEffect(() => {
+        function test(e: MessageEvent) {
+            if(!e.data || !e.data.url) { return; }
+            console.log(e.data)
+            setContentId(e.data.url);
+        }
+        
+        window.addEventListener('message', test);
+        return () => window.removeEventListener('message', test);
+    }, [])
+
     useEffect(() => {
         const containerRef = window.document.getElementById("iframe-container");
+        console.log(containerRef)
         if (containerRef) {
             setHeight(containerRef.getBoundingClientRect().height);
             setWidth(containerRef.getBoundingClientRect().width);
             setMaxHeight(containerRef.getBoundingClientRect().height);
             setMaxWidth(containerRef.getBoundingClientRect().width);
+            console.log(`parentHeight: ${containerRef.getBoundingClientRect().height}`)
+            console.log(`parentWidth: ${containerRef.getBoundingClientRect().width}`)
         }
-        const onPressESC = (event: any) => {
-            if (event.keyCode === 27) {
-                setZoominTarget(undefined)
-                setDrawerState(DrawerState.HALF)
-            }
-        }
-        window.addEventListener('keydown', onPressESC, false)
-        return () => window.removeEventListener('keydown', onPressESC, false)
     }, [])
 
     return (
-        <Grid container>
-            <Grid className={classes.parentContainer}>
-                <Grid container spacing={3}>
-                    <Grid item xs={12} style={{ margin: '10px 0px 20px 0px' }}>
-                        <Autocomplete
-                            freeSolo
-                            value={contentId}
-                            onChange={(event: any, newValue: string | { title: string; link: string; } | null) => {
-                                if(newValue) {
-                                    console.log(`newValue: ${newValue}`)
-                                    if (typeof newValue === "string") {
-                                        setContentId(activityList[activityList.findIndex((e)=> e.title === newValue)].link);
-                                    } else {
-                                        setContentId(newValue.link);
-                                    }
-                                }
-                            }}
-                            inputValue={value}
-                            onInputChange={(event, newInputValue) => {
-                                console.log(`newInputValue: ${newInputValue}`)
-                                setValue(newInputValue);
-                            }}
-                            id="activity select and input"
-                            options={activityList.map((option) => option.title)}
-                            style={{ width: "100%" }}
-                            renderInput={(params) =>                                    
-                                <TextField 
-                                    {...params}
-                                    label="Select an activity or enter a link"
-                                    className={classes.txtfield}
-                                    variant="outlined" />
-                            }
-                        />
-                    </Grid>
-                </Grid>
+        <div className={classes.root}>
+            <main
+                id="iframe-container"
+                className={
+                    clsx(classes.content, { [classes.contentShift]: open })
+                }
+            >
                 <Grid 
-                    id="iframe-container" 
-                    className={classes.iframeContainer}
-                    style={{ height, width }}
+                    container
+                    style={{ border: "1px solid gray", borderRadius: 12 }}
                 >
                     <RecordedIframe
                         contentId={contentId}
                         setStreamId={setStreamId}
-                        maxWidth={maxWidth}
-                        maxHeight={maxHeight}
                         parentWidth={width}
                         parentHeight={height}
                         setParentWidth={setWidth}
                         setParentHeight={setHeight}
-                        frameProps={{ 
-                            width: '100%', 
-                            style: { top: '0', position: 'absolute', left: '0', height: '100%' } 
-                        }}
                     />
-                    <Drawer
-                        anchor={'bottom'}
-                        open={drawerState !== DrawerState.HIDDEN}
-                        variant="persistent"
-                        onClose={() => setDrawerState(DrawerState.HIDDEN)}
-                        PaperProps={{ style: { position: 'absolute', minHeight: drawerState === DrawerState.FULL ? '100%' : '40%', maxHeight: '40%' } }}
-                        BackdropProps={{ style: { position: 'absolute' } }}
-                        ModalProps={{
-                            container: document.getElementById('iframe-container'),
-                            style: { position: 'absolute' }
-                    }}>
-                    <Grid container className={classes.parentContainerDrawer} spacing={3}>
-                        <Grid container justify="flex-end" style={{ borderBottom: '1px solid #eee' }}>
+                    <Grid item xs={12}>
+                        <Grid
+                            container
+                            justify="space-between"
+                            style={{ width: "100%", margin: "0 auto", borderTop: "1px solid gray" }}
+                        >
                             <Grid item>
-                                <IconButton aria-label="drawer-size" size="small">
-                                <ArrowIcon
-                                    fontSize="inherit"
-                                    style={{ transform: drawerState === DrawerState.FULL ? 'rotate(180deg)' : 'rotate(0deg)' }}
-                                    onClick={() =>  setDrawerState(drawerState === DrawerState.FULL ? DrawerState.HALF : DrawerState.FULL) }
+                                <ControlButtons 
+                                    contentId={contentId} 
+                                    streamId={streamId} 
                                 />
-                                </IconButton>
-                                <IconButton aria-label="close" size="small" onClick={() => setDrawerState(DrawerState.HIDDEN)}>
-                                <CloseIcon fontSize="inherit" />
-                                </IconButton>
+                            </Grid>
+                            <Grid item>
+                                <Button
+                                    aria-label="invite" 
+                                    size="small"
+                                    style={{ 
+                                        backgroundColor: "#ff6961", 
+                                        color: "white", 
+                                        padding: "2px 5px", 
+                                        marginRight: 8, 
+                                        borderRadius: 12,
+                                        margin: "4px 8px",
+                                    }}
+                                >
+                                    <CloseIcon style={{ paddingRight: 5 }} />
+                                    <FormattedMessage id="live_buttonEndClass" />
+                                </Button>
+                                <InviteButton />
+                                <Hidden smDown>
+                                    <Button
+                                        aria-label="open preview drawer" 
+                                        onClick={() => setOpen(!open)}
+                                        size="small"
+                                        style={{ 
+                                            color: "black", 
+                                            padding: "2px 5px", 
+                                            marginRight: 8, 
+                                            borderRadius: 12,
+                                            margin: "2px 8px",
+                                        }}
+                                    >
+                                        <MenuOpenIcon style={{ paddingRight: 5 }} />
+                                        <Hidden mdDown>
+                                            <FormattedMessage id={open ? "close_preview_drawer" : "open_preview_drawer"} />
+                                        </Hidden>
+                                    </Button>
+                                </Hidden>
                             </Grid>
                         </Grid>
-                        {
-                        users.size === 0 
-                        ? <Typography>
-                            <FormattedMessage id="waiting_for_students" />
-                        </Typography>
-                        : (zoominTarget !== undefined
-                            ? <Grid className={classes.iframeContainerDrawer}>
-                            <Player streamId={zoominTarget} frameProps={{ style: { top: '0', position: 'absolute', left: '0', height: '100%', transform: 'scale(0.8)' } }} />
-                            </Grid>
-                            : 
-                            <Grid container direction="row" style={{ height: "100%" }}>
+                    </Grid>
+                </Grid>
+            
+                <SendMessage />
+                <Messages messages={messages} />
+            </main>
+            <Hidden smDown>
+                <Drawer
+                    className={classes.drawer}
+                    variant="persistent"
+                    anchor="right"
+                    open={open}
+                    classes={{
+                        paper: classes.drawerPaper,
+                    }}
+                >
+                    <MyCamera />
+                    <Divider />
+
+                    <Grid item>
+                        { users.size === 0 ? 
+                            <Typography>
+                                <FormattedMessage id="waiting_for_students" />
+                            </Typography> :
+                            <Grid container direction="column" style={{ height: "100%", width: drawerWidth-20, padding: 4 }}>
+                                <Typography variant="caption" align="center" color="textSecondary" gutterBottom>
+                                    Students { content.type === "Activity" ? "+ Interactive View" : "" }
+                                </Typography> 
                                 {
                                     [...users.entries()].filter(([,s]) => s.id !== sessionId).map(([id,session]) => (
-                                        <Grid item style={{ height: 200, width: 200 }} key={id}>
-                                            {
-                                                session.streamId
-                                                ? <PreviewPlayer streamId={session.streamId} height={200} width={200} />
-                                                : undefined
-                                            }
-                                            <Typography align="center">
-                                                {session.name}
-                                            </Typography>
-                                        </Grid>
+                                        <>
+                                            { content.type === "Activity" ?
+                                            <Grid item style={{ height: drawerWidth-20, width: drawerWidth-20, margin: "0 auto" }} key={id}>
+                                                {
+                                                    session.streamId
+                                                    ? <PreviewPlayer streamId={session.streamId} height={drawerWidth-20} width={drawerWidth-20} />
+                                                    : undefined
+                                                }
+                                            </Grid> : null }
+                                            <Grid item>
+                                                <Typography align="center">
+                                                    {session.name}
+                                                </Typography>
+                                            </Grid>
+                                        </>
                                     ))
                                 }
                             </Grid>
-                        )
                         }
                     </Grid>
-                    </Drawer>
-                </Grid>
-                <Grid
-                    container
-                    justify="space-between"
-                    style={{ maxWidth: width, margin: "0 auto", borderLeft: '1px solid gray', borderRight: '1px solid gray', borderBottom: '1px solid gray', borderRadius: '0 0 12px 12px' }}
-                >
-                    <Grid item>
-                        <ControlButtons setDrawerState={setDrawerState} contentId={contentId} streamId={streamId} />
-                    </Grid>
-                    <Grid item style={{ display: drawerState !== DrawerState.HIDDEN ? 'none' : 'inline-flex' }}>
-                        <Tooltip
-                            title={<FormattedMessage id="open_preview_drawer" />}
-                            placement="left"
-                            aria-label="open"
-                        >
-                            <IconButton aria-label="drawer-size" size="small">
-                            <ArrowIcon fontSize="inherit" onClick={() => setDrawerState(DrawerState.HALF)} />
-                            </IconButton>
-                        </Tooltip>
-                    </Grid>
-                </Grid>
-            </Grid>
-            <Grid item style={{width:"400px"}}>
-            </Grid>
-        </Grid>
+                </Drawer>
+            </Hidden>
+        </div>
     )
 }

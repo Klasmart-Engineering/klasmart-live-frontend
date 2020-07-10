@@ -10,6 +10,7 @@ import { Teacher } from './pages/teacher/teacher'
 import { UserContext } from './app'
 import { webRTCContext, WebRTCContext, Cameras } from './webRTCState'
 import { sessionId } from './entry'
+import Layout from './components/layout'
 
 
 
@@ -94,11 +95,8 @@ export function Room ({ teacher }: Props): JSX.Element {
   return <webRTCContext.Provider value={webRTCContextValue}>
     {
       teacher
-      ? <Teacher users={users}/>
-      : <Student content={content} />
+      ? <Teacher content={content} users={users} messages={messages}/>
+      : <Layout><Student content={content} messages={messages}/></Layout>
     }
-    <SendMessage />
-    <Cameras />
-    <Messages messages={messages}/>
   </webRTCContext.Provider>
 }

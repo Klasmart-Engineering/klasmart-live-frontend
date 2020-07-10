@@ -5,12 +5,12 @@ import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
-import StyledTextField from '../components/textfield'
-import KidsloopButton from '../components/button'
 import KidsloopLogo from "../assets/img/kidsloop.svg";
 import CenterAlignChildren from '../components/centerAlignChildren'
 import { IUserContext } from '../app'
 import { v4 as uuid } from 'uuid'
+import StyledButton from '../components/styled/button'
+import StyledTextField from '../components/styled/textfield'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -80,7 +80,7 @@ export function Join ({setUserContext}: Props): JSX.Element {
                                             />
                                         </Grid>
                                         <Grid item xs={12}>
-                                            <KidsloopButton
+                                            <StyledButton
                                                 fullWidth
                                                 type="submit"
                                                 size="large"
@@ -88,7 +88,7 @@ export function Join ({setUserContext}: Props): JSX.Element {
                                                 <Typography>
                                                 { room ? "Join Room" : "Create Room"}
                                                 </Typography>
-                                            </KidsloopButton>
+                                            </StyledButton>
                                         </Grid>
                                     </Grid>
                                 </form>

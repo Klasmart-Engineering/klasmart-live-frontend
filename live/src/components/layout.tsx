@@ -9,7 +9,7 @@ const useStyles = makeStyles((theme: Theme) =>
             flex: 1,
         },
         root: {
-            padding: theme.spacing(2, 5),
+            padding: theme.spacing(4, 5),
             [theme.breakpoints.down("sm")]: {
                 padding: theme.spacing(2, 2),
             },
@@ -35,7 +35,7 @@ export default function Layout(props: Props) {
             <Grid item xs={12}>
                 <Container
                         disableGutters
-                        maxWidth={"lg"}
+                        maxWidth={"xl"}
                         className={classes.root}
                     >
                         { props.children || null }

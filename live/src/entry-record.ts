@@ -8,6 +8,8 @@ import { EventStream } from './services/event-recorder/stream/EventStream'
 import { AuthTokenProvider } from './services/auth-token/AuthTokenProvider'
 import { v4 as uuid } from 'uuid'
 
+const POST_URL = `${window.location.origin}/graphql`
+
 const POST_EVENTS = `
 mutation postPageEvent($streamId: ID!, $pageEvents: [PageEventIn]) {
   postPageEvent(streamId: $streamId, pageEvents: $pageEvents)
@@ -18,7 +20,7 @@ const token = AuthTokenProvider.retrieveToken()
 
 const headers = token? { authorization: `Bearer ${token}` } : undefined
 
-const client = new GraphQLClient(`${window.location.origin}/graphql`, { headers: headers })
+const client = new GraphQLClient(POST_URL, { headers: headers })
 
 const streamId = uuid()
 // console.log(`streamId: ${streamId}`)
