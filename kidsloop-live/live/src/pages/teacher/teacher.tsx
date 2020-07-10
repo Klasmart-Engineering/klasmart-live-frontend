@@ -167,7 +167,7 @@ export function Teacher (props: Props): JSX.Element {
                                 />
                             </Grid>
                             <Grid item>
-                                <Button
+                                {/* <Button
                                     aria-label="invite" 
                                     size="small"
                                     style={{ 
@@ -181,8 +181,8 @@ export function Teacher (props: Props): JSX.Element {
                                 >
                                     <CloseIcon style={{ paddingRight: 5 }} />
                                     <FormattedMessage id="live_buttonEndClass" />
-                                </Button>
-                                <InviteButton />
+                                </Button> */}
+                                {/* <InviteButton /> */}
                                 <Hidden smDown>
                                     <Button
                                         aria-label="open preview drawer" 
