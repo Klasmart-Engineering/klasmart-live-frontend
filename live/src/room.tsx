@@ -13,7 +13,6 @@ import { sessionId } from './entry'
 import Layout from './components/layout'
 
 
-
 export interface Session {
   id: string,
   name?: string
@@ -49,6 +48,7 @@ interface Props {
 
 export function Room ({ teacher }: Props): JSX.Element {
   const {roomId, name} = useContext(UserContext)
+  
   const webRTCContextValue = WebRTCContext.useWebRTCContext(roomId)
 
   const [content, setContent] = useState<Content>()

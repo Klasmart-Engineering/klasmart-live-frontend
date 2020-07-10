@@ -3,12 +3,12 @@ import Grid from '@material-ui/core/Grid'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 import CloseIcon from '@material-ui/icons/Close'
-import React, { useEffect, useMemo, useState, useContext } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { FormattedMessage } from 'react-intl'
 import { RecordedIframe } from '../../components/recordediframe'
 import { ControlButtons } from './controlButtons'
 import { Session, Message, Content } from '../../room'
-import { TextField, Theme, useTheme, Button, useMediaQuery, Hidden } from '@material-ui/core'
+import { Theme, Button, Hidden, IconButton } from '@material-ui/core'
 import { sessionIdContext } from '../../entry'
 import { PreviewPlayer } from '../../components/preview-player'
 import clsx from 'clsx';
@@ -18,6 +18,11 @@ import { InviteButton } from '../../components/invite'
 import { MyCamera } from '../../webRTCState'
 import { SendMessage } from '../../sendMessage'
 import { Messages } from '../../messages'
+import MenuItem from "@material-ui/core/MenuItem"
+import Select from "@material-ui/core/Select"
+import SkipNextTwoToneIcon from "@material-ui/icons/SkipNextTwoTone"
+import SkipPreviousTwoToneIcon from "@material-ui/icons/SkipPreviousTwoTone"
+import { UserContext } from '../../app'
 
 const drawerWidth = 340;
 
@@ -73,50 +78,27 @@ interface Props {
     messages: Map<string, Message>
 }
 
-export function Teacher (props: Props): JSX.Element {
-    const classes = useStyles();
-    const { content, users, messages } = props;
 
+export function Teacher (props: Props): JSX.Element {
+    const {materials} = useContext(UserContext)
+    const { content, users, messages } = props;
+  
+    const classes = useStyles()
     const sessionId = useContext(sessionIdContext)
     const [open, setOpen] = useState<boolean>(true);
     const [streamId, setStreamId] = useState<string>()
     const [width, setWidth] = useState<string | number>("100%");
     const [height, setHeight] = useState<string | number>("100%");
-    const [maxWidth, setMaxWidth] = useState<number>(0);
-    const [maxHeight, setMaxHeight] = useState<number>(0);
 
-    const memos = useMemo(() => {
-        const url = new URL(window.location.href)
-        return {
-            activity: url.searchParams.get('activity') || '',
-            hostName: url.hostname,
-        }
-    }, [])
-
-    const [contentId, setContentId] = useState(memos.activity)
-    // console.log(`contentId: ${contentId}`)
-
-    useEffect(() => {
-        function test(e: MessageEvent) {
-            if(!e.data || !e.data.url) { return; }
-            console.log(e.data)
-            setContentId(e.data.url);
-        }
-        
-        window.addEventListener('message', test);
-        return () => window.removeEventListener('message', test);
-    }, [])
-
+    const [contentId, setContentId] = useState(materials.length === 0 ? "" : materials[0].url);
+    const [contentIndex, setContentIndex] = useState<number>(0);
+    
     useEffect(() => {
         const containerRef = window.document.getElementById("iframe-container");
         console.log(containerRef)
         if (containerRef) {
             setHeight(containerRef.getBoundingClientRect().height);
             setWidth(containerRef.getBoundingClientRect().width);
-            setMaxHeight(containerRef.getBoundingClientRect().height);
-            setMaxWidth(containerRef.getBoundingClientRect().width);
-            console.log(`parentHeight: ${containerRef.getBoundingClientRect().height}`)
-            console.log(`parentWidth: ${containerRef.getBoundingClientRect().width}`)
         }
     }, [])
 
@@ -128,6 +110,38 @@ export function Teacher (props: Props): JSX.Element {
                     clsx(classes.content, { [classes.contentShift]: open })
                 }
             >
+            <Grid container direction="row">
+                <Grid item xs={10} style={{ paddingRight: "10px" }}>
+                    <Select value={contentIndex} fullWidth disabled={materials.length == 0} onChange={(e) => {
+                        if (materials.length === 0) { return; }
+                        const index = e.target.value as number;
+                        setContentIndex(index);
+                        setContentId(materials[index].url);
+                    }}>
+                        {materials.map(({ name, url }, i) => <MenuItem value={i} key={`${name}-${url}`}>{name}</MenuItem>)}
+                    </Select>
+                </Grid>
+                <Grid item xs={1}>
+                    <IconButton aria-label="delete" disabled={materials.length == 0} color="primary" onClick={() => {
+                        if (materials.length === 0) { return; }
+                        const newIndex = contentIndex ? Math.max(0, contentIndex - 1) : 0;
+                        setContentIndex(newIndex);
+                        setContentId(materials[newIndex].url);
+                    }}>
+                        <SkipPreviousTwoToneIcon />
+                    </IconButton>
+                </Grid>
+                <Grid item xs={1}>
+                    <IconButton aria-label="next" disabled={materials.length == 0} color="primary" onClick={() => {
+                        if (materials.length === 0) { return; }
+                        const newIndex = contentIndex !== undefined ? Math.min(materials.length - 1, contentIndex + 1) : 0;
+                        setContentIndex(newIndex);
+                        setContentId(materials[newIndex].url);
+                    }}>
+                        <SkipNextTwoToneIcon />
+                    </IconButton>
+                </Grid>
+            </Grid>
                 <Grid 
                     container
                     style={{ border: "1px solid gray", borderRadius: 12 }}
