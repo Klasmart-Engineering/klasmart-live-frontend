@@ -3,6 +3,8 @@ import React from 'react'
 import { Message } from './room'
 import { FormattedDate, FormattedTime } from 'react-intl';
 import { mapGenerator } from './utils/map';
+import Tooltip from "@material-ui/core/Tooltip";
+import AccessTimeTwoToneIcon from '@material-ui/icons/AccessTimeTwoTone';
 
 const useStyles = makeStyles((theme: Theme) =>
 createStyles({
@@ -29,15 +31,18 @@ createStyles({
     liveChatInput: {
         borderRadius: 12,
         // height: 500,
-        padding: theme.spacing(2, 4),
+        padding: theme.spacing(0.5, 2),
         [theme.breakpoints.down("sm")]: {
-            padding: theme.spacing(2, 2),
+            padding: theme.spacing(0.5, 1),
         },
     },
     paperContainer: {
         border: "1px solid #c9caca",
         borderRadius: 12,
         margin: theme.spacing(1, 0),
+        [theme.breakpoints.down("sm")]: {
+            margin: theme.spacing(1, 1),
+        },
     },
     smallAvatar: {
         height: theme.spacing(2),
@@ -67,18 +72,25 @@ export function Messages ({ messages }: Props): JSX.Element {
                                 className={classes.liveChatInput}
                                 spacing={1}
                             >
-                                <Grid item xs={12} md={9}>
+                                <Grid item xs={12} md={10}>
                                     <Typography variant="body2" style={{ wordBreak: "break-word" }}>
                                         { `${m.session.name}: ${m.message}` }
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={12} md={2} style={{ textAlign: "right" }}>
                                     <Grid container item xs={12} justify="flex-end" alignItems="center">
-                                        <Typography variant="caption" color="primary">
-                                            <FormattedDate value={new Date(Number(m.id.split('-')[0]))} />
-                                            &nbsp;
-                                            <FormattedTime value={new Date(Number(m.id.split('-')[0]))} />
-                                        </Typography>
+                                        <Tooltip 
+                                            placement="left"
+                                            title={
+                                                <>
+                                                    <FormattedDate value={new Date(Number(m.id.split('-')[0]))} />
+                                                    &nbsp;
+                                                    <FormattedTime value={new Date(Number(m.id.split('-')[0]))} />
+                                                </>
+                                            }
+                                        >
+                                            <AccessTimeTwoToneIcon fontSize="small" style={{ color: "#e0e1e1" }}/>
+                                        </Tooltip>
                                     </Grid>
                                 </Grid>
                             </Grid>

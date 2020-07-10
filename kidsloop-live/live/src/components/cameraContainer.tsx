@@ -5,13 +5,13 @@ import Grid from "@material-ui/core/Grid";
 import { MyCamera, Cameras } from "../webRTCState";
 
 const drawerWidth = 340;
+const cameraHeight = 240;
 
 const useStyles = makeStyles(() =>
     createStyles({
         container: {
-            height: drawerWidth,
+            height: cameraHeight,
             width: drawerWidth,
-            padding: 4,
             flex: "none",
         },
     }),

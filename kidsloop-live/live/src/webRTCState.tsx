@@ -232,7 +232,7 @@ export function Camera({mediaStream}:{mediaStream: MediaStream}): JSX.Element {
         videoRef.current.srcObject = mediaStream
         console.log(videoRef.current.videoHeight);
     }, [videoRef.current, mediaStream])
-    return <video ref={videoRef} autoPlay={true} style={{width: 340, height: 340 }}/>
+    return <video ref={videoRef} autoPlay={true} style={{width: 340, height: 240 }}/>
 }
 
 export function MyCamera(): JSX.Element {
@@ -240,7 +240,7 @@ export function MyCamera(): JSX.Element {
         return <Camera mediaStream={WebRTCContext.stream} />;
     } else {
         return (
-            <Grid container justify="space-between" alignItems="center" style={{ width: '100%', height: 300, backgroundColor: '#193d6f' }}>
+            <Grid container justify="space-between" alignItems="center" style={{ width: '100%', height: 240, backgroundColor: '#193d6f' }}>
                 <Typography style={{ margin: '0 auto', color: 'white', padding: 56 }} align="center">Your camera turned off 📷</Typography>
             </Grid>
         )

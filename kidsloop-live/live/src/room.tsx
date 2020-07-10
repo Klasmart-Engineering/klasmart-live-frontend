@@ -108,7 +108,12 @@ export function Room ({ teacher }: Props): JSX.Element {
     >
       {
         teacher
-        ? <Teacher content={content} users={users} messages={messages}/>
+        ? <Teacher 
+            content={content} 
+            users={users} 
+            openDrawer={open}
+            setOpenDrawer={setOpenDrawer}
+          />
         : <Student 
             content={content}
             openDrawer={open}

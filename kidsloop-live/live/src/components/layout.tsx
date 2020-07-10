@@ -69,6 +69,12 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         drawerClosed: {
             height: "100%"
+        },
+        messageContainer: {
+            borderBottom: "1px solid #e0e1e1",
+            flex: 1,
+            overflowX: "hidden",
+            overflowY: "auto",
         }
     }),
 );
@@ -132,7 +138,10 @@ export default function Layout(props: Props): JSX.Element {
                                 </Button>
                                 : <CameraContainer isTeacher={isTeacher} />
                             }
-                            <Grid item xs={12} style={{ flex: 1, overflowY: "auto" }}>
+                            <Grid 
+                                item xs={12} 
+                                className={classes.messageContainer}
+                            >
                                 <Messages messages={messages} />
                             </Grid>
                             <SendMessage />

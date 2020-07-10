@@ -74,18 +74,18 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface Props {
     content: Content;
-    users: Map<string, Session>
-    messages: Map<string, Message>
+    users: Map<string, Session>;
+    openDrawer: boolean;
+    setOpenDrawer: () => void;
 }
 
 
 export function Teacher (props: Props): JSX.Element {
     const {materials} = useContext(UserContext)
-    const { content, users, messages } = props;
+    const { content, users, openDrawer, setOpenDrawer } = props;
   
     const classes = useStyles()
     const sessionId = useContext(sessionIdContext)
-    const [open, setOpen] = useState<boolean>(true);
     const [streamId, setStreamId] = useState<string>()
     const [width, setWidth] = useState<string | number>("100%");
     const [height, setHeight] = useState<string | number>("100%");
@@ -185,7 +185,7 @@ export function Teacher (props: Props): JSX.Element {
                                 <Hidden smDown>
                                     <Button
                                         aria-label="open preview drawer" 
-                                        onClick={() => setOpen(!open)}
+                                        onClick={() => setOpenDrawer()}
                                         size="small"
                                         style={{ 
                                             color: "black", 
@@ -197,7 +197,7 @@ export function Teacher (props: Props): JSX.Element {
                                     >
                                         <MenuOpenIcon style={{ paddingRight: 5 }} />
                                         <Hidden mdDown>
-                                            <FormattedMessage id={open ? "close_preview_drawer" : "open_preview_drawer"} />
+                                            <FormattedMessage id={openDrawer ? "close_preview_drawer" : "open_preview_drawer"} />
                                         </Hidden>
                                     </Button>
                                 </Hidden>
@@ -205,11 +205,39 @@ export function Teacher (props: Props): JSX.Element {
                         </Grid>
                     </Grid>
                 </Grid>
-            
-                <SendMessage />
-                <Messages messages={messages} />
+                <Grid item>
+                    { users.size === 0 ? 
+                        <Typography>
+                            <FormattedMessage id="waiting_for_students" />
+                        </Typography> :
+                        <Grid container direction="column" style={{ height: "100%", width: drawerWidth-20, padding: 4 }}>
+                            <Typography variant="caption" align="center" color="textSecondary" gutterBottom>
+                                Students { content.type === "Activity" ? "+ Interactive View" : "" }
+                            </Typography> 
+                            {
+                                [...users.entries()].filter(([,s]) => s.id !== sessionId).map(([id,session]) => (
+                                    <>
+                                        { content.type === "Activity" ?
+                                        <Grid item style={{ height: drawerWidth-20, width: drawerWidth-20, margin: "0 auto" }} key={id}>
+                                            {
+                                                session.streamId
+                                                ? <PreviewPlayer streamId={session.streamId} height={drawerWidth-20} width={drawerWidth-20} />
+                                                : undefined
+                                            }
+                                        </Grid> : null }
+                                        <Grid item>
+                                            <Typography align="center">
+                                                {session.name}
+                                            </Typography>
+                                        </Grid>
+                                    </>
+                                ))
+                            }
+                        </Grid>
+                    }
+                </Grid>
             </main>
-            <Hidden smDown>
+            {/* <Hidden smDown>
                 <Drawer
                     className={classes.drawer}
                     variant="persistent"
@@ -222,39 +250,9 @@ export function Teacher (props: Props): JSX.Element {
                     <MyCamera />
                     <Divider />
 
-                    <Grid item>
-                        { users.size === 0 ? 
-                            <Typography>
-                                <FormattedMessage id="waiting_for_students" />
-                            </Typography> :
-                            <Grid container direction="column" style={{ height: "100%", width: drawerWidth-20, padding: 4 }}>
-                                <Typography variant="caption" align="center" color="textSecondary" gutterBottom>
-                                    Students { content.type === "Activity" ? "+ Interactive View" : "" }
-                                </Typography> 
-                                {
-                                    [...users.entries()].filter(([,s]) => s.id !== sessionId).map(([id,session]) => (
-                                        <>
-                                            { content.type === "Activity" ?
-                                            <Grid item style={{ height: drawerWidth-20, width: drawerWidth-20, margin: "0 auto" }} key={id}>
-                                                {
-                                                    session.streamId
-                                                    ? <PreviewPlayer streamId={session.streamId} height={drawerWidth-20} width={drawerWidth-20} />
-                                                    : undefined
-                                                }
-                                            </Grid> : null }
-                                            <Grid item>
-                                                <Typography align="center">
-                                                    {session.name}
-                                                </Typography>
-                                            </Grid>
-                                        </>
-                                    ))
-                                }
-                            </Grid>
-                        }
-                    </Grid>
+
                 </Drawer>
-            </Hidden>
+            </Hidden> */}
         </div>
     )
 }
