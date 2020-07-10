@@ -15,7 +15,7 @@ export interface IUserContext {
   setName: React.Dispatch<React.SetStateAction<string|undefined>>
 }
 
-export const UserContext = createContext<IUserContext>(undefined as any as IUserContext)
+export const UserContext = createContext<IUserContext>({setName: () => null, roomId: '', materials: [], teacher: false} as any as IUserContext)
 
 function parseToken() {
   try {
@@ -24,10 +24,10 @@ function parseToken() {
     if(!token) {return}
       const payload = jwt_decode(token) as any
       return {
-        teacher:Boolean(payload.teacher),
+        teacher:payload.teacher?Boolean(payload.teacher):false,
         name:payload.name?String(payload.name):undefined,
         roomId:String(payload.roomid),
-        materials: payload.materials,
+        materials: payload.materials||[],
       }
   // eslint-disable-next-line no-empty
   } catch(e) {}
@@ -47,15 +47,13 @@ export function App (): JSX.Element {
 
   return (
     <IntlProvider locale="en" messages={en}>
+      <UserContext.Provider value={userContext}>
       {
         !userContext.name
-        ? <Join /> :
-        <UserContext.Provider value={userContext}>
-            <UserContext.Provider value={userContext}>
-              <Room teacher={userContext.teacher} />
-            </UserContext.Provider>
-          </UserContext.Provider>
+        ? <Join />
+        : <Room teacher={userContext.teacher} />
       }
+      </UserContext.Provider>
     </IntlProvider>
   )
 }
