@@ -241,7 +241,7 @@ export function MyCamera(): JSX.Element {
     } else {
         return (
             <Grid container justify="space-between" alignItems="center" style={{ width: '100%', height: 300, backgroundColor: '#193d6f' }}>
-                <Typography style={{ margin: '0 auto', color: 'white', padding: 56 }} align="center">Sorry! Seems like we can't access your 📷.</Typography>
+                <Typography style={{ margin: '0 auto', color: 'white', padding: 56 }} align="center">Your camera turned off 📷</Typography>
             </Grid>
         )
     }

@@ -5,7 +5,8 @@ import { gql } from 'apollo-boost'
 import { useSubscription } from '@apollo/react-hooks'
 import { FormattedMessage } from 'react-intl'
 import { CircularProgress, Typography } from '@material-ui/core'
-import { Student } from './pages/student'
+// import { Student } from './pages/student'
+import { Student } from './pages/student/student'
 import { Teacher } from './pages/teacher/teacher'
 import { UserContext } from './app'
 import { webRTCContext, WebRTCContext, Cameras } from './webRTCState'
@@ -51,6 +52,11 @@ export function Room ({ teacher }: Props): JSX.Element {
   
   const webRTCContextValue = WebRTCContext.useWebRTCContext(roomId)
 
+  const [open, setOpen] = useState<boolean>(true);
+  const setOpenDrawer = () => {
+    setOpen(!open);
+  }
+
   const [content, setContent] = useState<Content>()
   const [messages, addMessage] = useReducer((state: Map<string, Message>, newMessage: Message) => {
     const newState = new Map<string, Message>()
@@ -93,10 +99,22 @@ export function Room ({ teacher }: Props): JSX.Element {
   if(error) {return <Typography ><FormattedMessage id="failed_to_connect" />{JSON.stringify(error)}</Typography>}
   if(loading || !content) {return <CircularProgress />}
   return <webRTCContext.Provider value={webRTCContextValue}>
-    {
-      teacher
-      ? <Teacher content={content} users={users} messages={messages}/>
-      : <Layout><Student content={content} messages={messages}/></Layout>
-    }
+    <Layout
+      isTeacher={teacher}
+      users={users}
+      messages={messages}
+      openDrawer={open}
+      setOpenDrawer={setOpenDrawer}
+    >
+      {
+        teacher
+        ? <Teacher content={content} users={users} messages={messages}/>
+        : <Student 
+            content={content}
+            openDrawer={open}
+            setOpenDrawer={setOpenDrawer}
+          />
+      }
+    </Layout>
   </webRTCContext.Provider>
 }
