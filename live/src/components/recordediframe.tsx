@@ -65,8 +65,16 @@ export function RecordedIframe(props: Props): JSX.Element {
             // console.log("inject");
             if (!innerRef || !innerRef.contentDocument) { return; }
             const doc = innerRef.contentDocument;
-            const h5pContent = doc.body.getElementsByClassName("h5p-content")[0];
-            h5pContent.setAttribute("data-iframe-height", "");
+            const h5pContent = doc.body.getElementsByClassName("h5p-content");
+            const body = doc.body.getElementsByTagName("body");
+            const html = doc.body.getElementsByTagName("html");
+            if(h5pContent.length > 0) {
+                h5pContent[0].setAttribute("data-iframe-height", "");
+            } else if(body.length > 0) {
+                body[0].setAttribute("data-iframe-height", "");
+            }else if(html.length > 0) {
+                html[0].setAttribute("data-iframe-height", "");
+            }
 
             const script2 = doc.createElement("script");
             script2.setAttribute("type", "text/javascript");
