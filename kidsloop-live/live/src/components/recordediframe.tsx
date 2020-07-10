@@ -30,8 +30,9 @@ export function RecordedIframe(props: Props): JSX.Element {
     const { contentId, setStreamId, setParentWidth, setParentHeight } = props;
     const [width, setWidth] = useState<string | number>("100%");
     const [maxHeight, setMaxHeight] = useState<number>(window.innerHeight * 0.8);
+    const [minHeight, setMinHeight] = useState<number>();
     const [numRenders, setRenders] = useState(0);
-
+    
     const fitToScreen = (width: number, height: number) => {
         const scale = maxHeight / Number(height);
         if (scale < 0.9) {
@@ -59,14 +60,13 @@ export function RecordedIframe(props: Props): JSX.Element {
             if (!innerRef || !innerRef.contentDocument) { return; }
             const doc = innerRef.contentDocument;
             const h5pContent = doc.body.getElementsByClassName("h5p-content");
-            const body = doc.body.getElementsByTagName("body");
-            const html = doc.body.getElementsByTagName("html");
+            const content = doc.body.getElementsByClassName("content");
             if(h5pContent.length > 0) {
                 h5pContent[0].setAttribute("data-iframe-height", "");
-            } else if(body.length > 0) {
-                body[0].setAttribute("data-iframe-height", "");
-            }else if(html.length > 0) {
-                html[0].setAttribute("data-iframe-height", "");
+            } else if (content.length > 0) {
+                content[0].setAttribute("data-iframe-height", "");
+            } else {
+                setMinHeight(700)
             }
 
             const script2 = doc.createElement("script");
@@ -122,6 +122,7 @@ export function RecordedIframe(props: Props): JSX.Element {
             forwardRef={ref}
             src={contentId}
             heightCalculationMethod="taggedElement"
+            minHeight={minHeight}
             onResized={(e) => {
                 startRecording()
                 setWidth(e.width);
