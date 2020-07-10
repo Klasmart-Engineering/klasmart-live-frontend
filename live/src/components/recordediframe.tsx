@@ -27,7 +27,7 @@ export function RecordedIframe(props: Props): JSX.Element {
     const ref = useRef<HTMLIFrameElement>(null);
     const [key, setKey] = useState(Math.random());
     const {roomId} = useContext(UserContext);
-    const { contentId, frameProps, parentWidth, parentHeight, setStreamId, setParentWidth, setParentHeight } = props;
+    const { contentId, setStreamId, setParentWidth, setParentHeight } = props;
     const [width, setWidth] = useState<string | number>("100%");
     const [maxHeight, setMaxHeight] = useState<number>(window.innerHeight * 0.8);
     const [numRenders, setRenders] = useState(0);
@@ -57,11 +57,6 @@ export function RecordedIframe(props: Props): JSX.Element {
     }, [contentId]);
 
     useEffect(() => {
-        // window.document.getElementById("iframe-container")
-        // console.log(ref)
-        // if (!ref.current || !ref.current.contentDocument) { return }
-        // const iframe = ref.current;
-
         const innerRef = window.document.getElementById("recordedIframe-container") as HTMLIFrameElement;
         if (!innerRef) { return; }
         innerRef.addEventListener("load", inject);
@@ -72,13 +67,6 @@ export function RecordedIframe(props: Props): JSX.Element {
             const doc = innerRef.contentDocument;
             const h5pContent = doc.body.getElementsByClassName("h5p-content")[0];
             h5pContent.setAttribute("data-iframe-height", "");
-
-            const script = doc.createElement("script");
-            script.setAttribute("type", "text/javascript");
-            const matches = window.location.pathname.match(/^(.*\/+)([^/]*)$/);
-            const prefix = matches && matches.length >= 2 ? matches[1] : "";
-            script.setAttribute("src", `${prefix}record.js`);
-            doc.head.appendChild(script);
 
             const script2 = doc.createElement("script");
             script2.setAttribute("type", "text/javascript");
@@ -115,6 +103,22 @@ export function RecordedIframe(props: Props): JSX.Element {
         return () => window.removeEventListener("message", onMessage);
     }, [ref.current]);
 
+    function startRecording() {
+        const innerRef = window.document.getElementById("recordedIframe-container") as HTMLIFrameElement;
+        if (!innerRef ||
+            !innerRef.contentWindow ||
+            (innerRef.contentWindow as any).kidslooplive ||
+            !innerRef.contentDocument) { return; }
+        const doc = innerRef.contentDocument;
+
+        const script = doc.createElement("script");
+        script.setAttribute("type", "text/javascript");
+        const matches = window.location.pathname.match(/^(.*\/+)([^/]*)$/);
+        const prefix = matches && matches.length >= 2 ? matches[1] : "";
+        script.setAttribute("src", `${prefix}record.js`);
+        doc.head.appendChild(script);
+    }
+
     return (
         <IframeResizer
             id="recordedIframe-container"
@@ -123,12 +127,14 @@ export function RecordedIframe(props: Props): JSX.Element {
             src={contentId}
             heightCalculationMethod="taggedElement"
             onResized={(e) => {
+                startRecording()
                 // console.log(e.height);
                 // console.log(e.width);
                 setWidth(e.width);
                 if (e.height > maxHeight && numRenders < 1) {
                     fitToScreen(e.width, e.height);
                 }
+
             }}
             // log
             key={key}
