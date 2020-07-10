@@ -20,9 +20,9 @@ const useStyles = makeStyles((theme: Theme) =>
             flex: 1,
         },
         root: {
-            padding: theme.spacing(4, 5),
+            padding: theme.spacing(2, 2),
             [theme.breakpoints.down("sm")]: {
-                padding: theme.spacing(2, 2),
+                padding: theme.spacing(1, 1),
             },
         },
         container: {
@@ -108,7 +108,6 @@ export default function Layout(props: Props): JSX.Element {
                 <Container
                     disableGutters
                     maxWidth={"xl"}
-                    className={classes.root}
                 >
                     <div className={classes.container}>
                         <main

@@ -205,43 +205,57 @@ export function Start({sessionId}:{sessionId: string}): JSX.Element {
     </Button>
 }
 
-export function Cameras(): JSX.Element {
+export function Cameras({id}:{id?: string}): JSX.Element {
     const states = useContext(webRTCContext)
     if(!states) {return <FormattedMessage id="error_webrtc_unavailable" />}
-    const cameras = states.getMediaStreams().map(({sessionId,stream}) => 
-        <Grid item key={stream.id}>
-            <Camera mediaStream={stream} />
-        </Grid>
-    )
-    return (
-        <Grid
-            container
-            direction="column"
-            justify="flex-start"
-            alignItems="center"
-        >
-            {cameras}
-        </Grid>
-    )
+    if(id === "" || id === undefined) {
+        const cameras = states.getMediaStreams().map(({stream}) => 
+            <Grid item key={stream.id}>
+                <Camera width={340} height={240} mediaStream={stream} />
+            </Grid>
+        )
+        return (
+            <Grid
+                container
+                direction="column"
+                justify="flex-start"
+                alignItems="center"
+            >
+                {cameras}
+            </Grid>
+        )
+    } else {
+        const camera = states.getMediaStreams().filter(({sessionId}) =>
+            sessionId === id
+        )
+        return (
+            camera.length === 0 ? 
+            <Grid container justify="space-between" alignItems="center" style={{ width: '100%', height: 340, backgroundColor: '#193d6f' }}>
+                <Typography style={{ margin: '0 auto', color: 'white', padding: 56 }} align="center">Your student does not have a 📷 to display</Typography>
+            </Grid> :
+            <Grid container item justify="space-around">
+                <Camera width={220} height={120} mediaStream={camera[0].stream} />
+            </Grid>
+        )
+    }
 }
 
-export function Camera({mediaStream}:{mediaStream: MediaStream}): JSX.Element {
+export function Camera({mediaStream, height, width}:{mediaStream: MediaStream, height: number, width: number}): JSX.Element {
     const videoRef = useRef<HTMLVideoElement>(null)
     useEffect(() => {
         if(!videoRef.current) {return}
         videoRef.current.srcObject = mediaStream
-        console.log(videoRef.current.videoHeight);
     }, [videoRef.current, mediaStream])
-    return <video ref={videoRef} autoPlay={true} style={{width: 340, height: 240 }}/>
+    return <video ref={videoRef} autoPlay={true} style={{ width, height }}/>
 }
 
 export function MyCamera(): JSX.Element {
     if (WebRTCContext.stream) {   
-        return <Camera mediaStream={WebRTCContext.stream} />;
+        return <Camera mediaStream={WebRTCContext.stream} width={340} height={240} />;
     } else {
         return (
             <Grid container justify="space-between" alignItems="center" style={{ width: '100%', height: 240, backgroundColor: '#193d6f' }}>
-                <Typography style={{ margin: '0 auto', color: 'white', padding: 56 }} align="center">Your camera turned off 📷</Typography>
+                <Typography style={{ margin: '0 auto', color: 'white', padding: 56 }} align="center">Your camera is turned off 📷</Typography>
             </Grid>
         )
     }

@@ -1,15 +1,16 @@
-import React, { useState } from "react";
+import React from "react";
 
 interface Props {
+    center?: boolean;
     children?: React.ReactNode;
     className?: string;
 }
 
 export default function CenterAlignChildren(props: Props) {
-    const {children,  className, ...other } = props;
+    const { center, children,  className, ...other } = props;
 
     return (
-        <span style={{ display: "flex", alignItems: "center" }} className={className} {...other}>
+        <span style={{ display: "flex", alignItems: "center", justifyContent: center ? "center" : "normal" }} className={className} {...other}>
             { children || null}
         </span>
     );

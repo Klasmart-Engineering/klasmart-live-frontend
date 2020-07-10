@@ -3,6 +3,7 @@ import { createStyles, makeStyles } from "@material-ui/core/styles";
 import Divider from "@material-ui/core/Divider";
 import Grid from "@material-ui/core/Grid";
 import { MyCamera, Cameras } from "../webRTCState";
+import Typography from "@material-ui/core/Typography";
 
 const drawerWidth = 340;
 const cameraHeight = 240;
@@ -32,7 +33,9 @@ export default function CameraContainer(props: Props): JSX.Element {
             </Grid>
             <Divider />
             <Grid className={classes.container} container direction="column" item xs={12}>
-                <Cameras />
+                <Typography align="center">
+                    Student Info coming soon!
+                </Typography>
             </Grid>
         </> : <>
             <Grid className={classes.container} container direction="column" item xs={12}>
