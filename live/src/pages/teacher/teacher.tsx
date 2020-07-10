@@ -95,7 +95,6 @@ export function Teacher (props: Props): JSX.Element {
     
     useEffect(() => {
         const containerRef = window.document.getElementById("iframe-container");
-        console.log(containerRef)
         if (containerRef) {
             setHeight(containerRef.getBoundingClientRect().height);
             setWidth(containerRef.getBoundingClientRect().width);
