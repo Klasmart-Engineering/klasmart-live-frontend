@@ -1,6 +1,14 @@
 import React, { useRef, createContext, useContext, useEffect, useState } from 'react'
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { useTheme } from "@material-ui/core/styles";
+import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button'
-import { Typography, Grid } from '@material-ui/core'
+import IconButton from '@material-ui/core/IconButton';
+import Tooltip from '@material-ui/core/Tooltip';
+import VideocamIcon from '@material-ui/icons/Videocam';
+import VideocamOffIcon from '@material-ui/icons/VideocamOff';
+import MicIcon from '@material-ui/icons/Mic';
 import { FormattedMessage } from 'react-intl'
 import { gql } from 'apollo-boost'
 import { useMutation } from '@apollo/react-hooks'
@@ -241,12 +249,52 @@ export function Cameras({id}:{id?: string}): JSX.Element {
 }
 
 export function Camera({mediaStream, height, width}:{mediaStream: MediaStream, height: number, width: number}): JSX.Element {
+    const theme = useTheme();
+    const isSmDown = useMediaQuery(theme.breakpoints.down('sm'));
+    const [cameraTurnedOn, setCameraTurnedOn] = useState(true);
+
     const videoRef = useRef<HTMLVideoElement>(null)
     useEffect(() => {
         if(!videoRef.current) {return}
         videoRef.current.srcObject = mediaStream
     }, [videoRef.current, mediaStream])
-    return <video ref={videoRef} autoPlay={true} style={{ width, height }}/>
+
+    return (
+        <Grid
+            container
+            direction="row"
+            justify="center"
+            alignItems="center"
+        >
+            <Grid item xs={8} style={{ width, height, backgroundColor: '#193d6f' }}>
+                {cameraTurnedOn
+                    ? <video ref={videoRef} autoPlay={true} style={{ width, height }}/>
+                    : <Typography style={{ margin: '0 auto', color: 'white', padding: 56 }} align="center">
+                        Camera turned off 📷.
+                    </Typography>
+                }
+            </Grid>
+            <Grid container direction={isSmDown ? "row" : "column"} spacing={2} justify="center" item xs={4}>
+                <IconButton
+                    color="primary"
+                    aria-label="control camera"
+                    component="span"
+                    onClick={()=>setCameraTurnedOn(!cameraTurnedOn)}
+                >
+                    {cameraTurnedOn ? <VideocamIcon /> : <VideocamOffIcon color="action" />}
+                </IconButton>
+                <Tooltip title="Coming soon" aria-label="tooltip control mic">
+                    <IconButton
+                        color="primary"
+                        aria-label="control mic"
+                        component="span"
+                    >
+                        <MicIcon />
+                    </IconButton>
+                </Tooltip>
+            </Grid>
+        </Grid>
+    )
 }
 
 export function MyCamera(): JSX.Element {
@@ -255,7 +303,9 @@ export function MyCamera(): JSX.Element {
     } else {
         return (
             <Grid container justify="space-between" alignItems="center" style={{ width: '100%', height: 240, backgroundColor: '#193d6f' }}>
-                <Typography style={{ margin: '0 auto', color: 'white', padding: 56 }} align="center">Your camera is turned off 📷</Typography>
+                <Typography style={{ margin: '0 auto', color: 'white', padding: 56 }} align="center">
+                    Sorry! Seems like we can't access your 📷.
+                </Typography>
             </Grid>
         )
     }

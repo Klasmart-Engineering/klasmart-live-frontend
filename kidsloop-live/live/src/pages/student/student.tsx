@@ -125,7 +125,7 @@ export function Student(props: Props): JSX.Element {
                 </Grid>
             );
         case 'Stream':
-            return (
+            return (<>
                 <Grid
                     container
                     style={{ border: "1px solid gray", borderRadius: 12 }}
@@ -158,9 +158,9 @@ export function Student(props: Props): JSX.Element {
                             </Grid>
                         </Grid>
                     </Grid>
-                    {isSmDown ? <CameraContainer isTeacher={false} /> : null}
                 </Grid>
-            )
+                {isSmDown ? <CameraContainer isTeacher={false} /> : null}
+            </>)
         case 'Activity':
             return (<>
                 <Grid
