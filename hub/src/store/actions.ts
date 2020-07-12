@@ -1,7 +1,8 @@
 import {
     UserAgent,
     LiveSessionData,
-    AssessmentsMenu
+    LibraryMenu,
+    AssessmentsMenu,
 } from "../types/objectTypes";
 
 export interface Action<T extends ActionTypes, P> {
@@ -58,16 +59,9 @@ export type SetActiveComponentHome = Action<ActionTypes.ACTIVE_COMPONENT_HOME, s
 
 export type AssessmentToken = Action<ActionTypes.ASSESSMENT_TOKEN, string>;
 
-export type SetStudents = Action<ActionTypes.STUDENTS, Array<{
-    profileId: string,
-    profileName: string,
-    iconLink: string,
-}>>;
+export type ActiveLibraryMenu = Action<ActionTypes.ACTIVE_LIBRARY_MENU, LibraryMenu>;
 
-export type LibraryMenu = "published" | "pending" | "archived";
-export type SetActiveLibraryMenu = Action<ActionTypes.ACTIVE_LIBRARY_MENU, LibraryMenu>;
-
-export type SetActiveAssessmentsMenu = Action<ActionTypes.ACTIVE_ASSESSMENTS_MENU, AssessmentsMenu>;
+export type ActiveAssessmentsMenu = Action<ActionTypes.ACTIVE_ASSESSMENTS_MENU, AssessmentsMenu>;
 
 export type ContentTypes = Action<ActionTypes.CONTENT_TYPES, string[]>;
 
@@ -128,9 +122,8 @@ export type Actions =
     | ToggleLiveClass
     | SetActiveComponentHome
     | AssessmentToken
-    | SetStudents
-    | SetActiveLibraryMenu
-    | SetActiveAssessmentsMenu
+    | ActiveLibraryMenu
+    | ActiveAssessmentsMenu
     | ContentTypes
     | PublicRange
     | SuitableAges

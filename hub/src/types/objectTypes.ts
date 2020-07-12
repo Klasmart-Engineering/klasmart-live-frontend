@@ -31,6 +31,8 @@ export interface IUserContext {
   name: string;
 }
 
+export type LibraryMenu = "published" | "pending" | "archived";
+
 export type AssessmentsMenu = "library" | "pending" | "completed";
 
 type ColumnAttr = string | { [styleAttr: string]: string } | undefined;

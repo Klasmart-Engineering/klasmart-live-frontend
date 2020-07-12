@@ -32,10 +32,15 @@ import {
     UpdateLearningOutcomeRequest,
 } from "../../../api/restapi";
 
+const EDITMODE_ACTIONS = [
+    { icon: <BlockIcon style={{ margin: 0 }} />, name: "Cancel", action: () => handleOnClickCancel() },
+    { icon: <SaveIcon style={{ margin: 0 }} />, name: "Save", action: () => handleOnClickSave() },
+];
+
 interface Props {
     loId: number | undefined
     open: boolean
-    onClose: any
+    onClose: () => void
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -66,7 +71,7 @@ const useStyles = makeStyles((theme: Theme) =>
             },
         },
         menuGrid: {
-            padding: theme.spacing(1)
+            padding: theme.spacing(2)
         },
         errorIcon: {
             fontSize: "1em",
@@ -111,12 +116,7 @@ export default function LearningOutcomeViewDialog(props: Props) {
         }
         return devSkillOptions;
     }
-    async function fetchPublishedLearningOutcomes() {
-        const payload = await api.getLearningOutcomes();
-        return payload.learningOutcomes
-            .sort((a, b) => b.createdDate - a.createdDate)
-            .filter(lo => lo.published);
-    }
+
     async function getDevSkillName(id: string) {
         const payload = await api.getDevSkill(id);
         return payload.name;
@@ -340,16 +340,16 @@ export default function LearningOutcomeViewDialog(props: Props) {
         }
     }
 
-
-    const EDITMODE_ACTIONS = [
-        { icon: <BlockIcon style={{ margin: 0 }} />, name: "Cancel", action: () => handleOnClickCancel() },
-        { icon: <SaveIcon style={{ margin: 0 }} />, name: "Save", action: () => handleOnClickSave() },
-    ];
     const handleOnClickCancel = () => {
         setPublish(false);
         setEditMode(false);
     };
+    const handleClose = () => {
+        setEditMode(false);
+        onClose();
+    };
     const handleSpeedDialClose = () => {
+        setEditMode(false);
         setSpeedDialOpen(false);
     };
     const handleSpeedDialOpen = () => {
@@ -362,7 +362,7 @@ export default function LearningOutcomeViewDialog(props: Props) {
                 aria-describedby="nav-menu-description"
                 fullScreen
                 open={open}
-                onClose={onClose}
+                onClose={handleClose}
                 TransitionComponent={Motion}
             >
                 <DialogAppBar
@@ -379,16 +379,18 @@ export default function LearningOutcomeViewDialog(props: Props) {
                                         Save <SaveIcon style={{ paddingLeft: theme.spacing(1) }} />
                                     </StyledFAB>
                                 </Grid>
-                            </> :
-                                <Grid item>
-                                    <StyledFAB disabled={info && info.published} size="small" onClick={handleOnClickEdit}>
-                                        Edit <EditIcon style={{ paddingLeft: theme.spacing(1) }} />
-                                    </StyledFAB>
-                                </Grid>
+                            </> : 
+                                (info && info.published ? null:                                 
+                                    <Grid item>
+                                        <StyledFAB size="small" onClick={handleOnClickEdit}>
+                                            Edit <EditIcon style={{ paddingLeft: theme.spacing(1) }} />
+                                        </StyledFAB>
+                                    </Grid>
+                                )
                             }
                         </Hidden>
                     }
-                    handleClose={onClose}
+                    handleClose={handleClose}
                     subtitleID={editMode ? "assess_libraryEditDialogTitle" : "assess_libraryViewDialogTitle"}
                 />
                 <Grid
@@ -515,10 +517,12 @@ export default function LearningOutcomeViewDialog(props: Props) {
                                     onClick={action.action}
                                 />
                             ))}
-                        </SpeedDial> :
-                        <StyledFAB className={classes.fab} disabled={info && info.published} size="small" onClick={handleOnClickEdit}>
-                            <EditIcon />
-                        </StyledFAB>
+                        </SpeedDial> : (
+                            info && info.published ? null :
+                                <StyledFAB className={classes.fab} size="small" onClick={handleOnClickEdit}>
+                                    <EditIcon />
+                                </StyledFAB>
+                        )
                     }
                 </Hidden>
             </Dialog>
@@ -569,47 +573,51 @@ function LearningOutcomeDetails(props: LearningOutcomeDetailsProps) {
     }, [devSkillName, skillCatName]);
 
     return (
-        <>
+        <Grid container>
             {lo.published ?
                 <Grid className={classes.menuGrid} item xs={12}>
-                    <Typography variant="subtitle2" color="primary">
+                    <Typography variant="subtitle1" color="primary">
                         Published Learning Outcome can not be editable
                     </Typography>
                 </Grid>
                 : null
             }
             <Grid className={classes.menuGrid} item xs={12}>
-                <Typography variant="caption" color="textSecondary">Title</Typography>
-                <Typography variant="h6">{lo.title + (lo.assumed ? " (Assumed)" : "")}</Typography>
+                <Typography variant="subtitle1" color="textSecondary">Title</Typography>
+                <Grid item xs={12}>
+                    <Typography noWrap variant="h6">
+                        {lo.title + (lo.assumed ? " (Assumed)" : "")}
+                    </Typography>
+                </Grid>
             </Grid>
             <Grid className={classes.menuGrid} item xs={isMobile ? 12 : 6}>
-                <Typography variant="caption" color="textSecondary">Created on</Typography>
-                <Typography variant="subtitle1">{new Date(lo.createdDate).toLocaleString()}</Typography>
+                <Typography variant="subtitle1" color="textSecondary">Created on</Typography>
+                <Typography variant="h6">{new Date(lo.createdDate).toLocaleString()}</Typography>
             </Grid>
             <Grid className={classes.menuGrid} item xs={isMobile ? 12 : 6}>
-                <Typography variant="caption" color="textSecondary">Updated on</Typography>
-                <Typography variant="subtitle1">{new Date(lo.updatedDate).toLocaleString()}</Typography>
+                <Typography variant="subtitle1" color="textSecondary">Updated on</Typography>
+                <Typography variant="h6">{new Date(lo.updatedDate).toLocaleString()}</Typography>
             </Grid>
             <Grid className={classes.menuGrid} item xs={isMobile ? 12 : 6}>
-                <Typography variant="caption" color="textSecondary">Development Skill</Typography>
-                <Typography variant="subtitle1">{devSkill}</Typography>
+                <Typography variant="subtitle1" color="textSecondary">Development Skill</Typography>
+                <Typography variant="h6">{devSkill}</Typography>
             </Grid>
             <Grid className={classes.menuGrid} item xs={isMobile ? 12 : 6}>
-                <Typography variant="caption" color="textSecondary">Skill Category</Typography>
-                <Typography variant="subtitle1">{skillCat}</Typography>
+                <Typography variant="subtitle1" color="textSecondary">Skill Category</Typography>
+                <Typography variant="h6">{skillCat}</Typography>
             </Grid>
             <Grid className={classes.menuGrid} item xs={isMobile ? 12 : 6}>
-                <Typography variant="caption" color="textSecondary">Estimated Hour</Typography>
-                <Typography variant="subtitle1">{lo.estimatedDuration ? lo.estimatedDuration : "-"}</Typography>
+                <Typography variant="subtitle1" color="textSecondary">Estimated Hour</Typography>
+                <Typography variant="h6">{lo.estimatedDuration ? lo.estimatedDuration : "-"}</Typography>
             </Grid>
             <Grid className={classes.menuGrid} item xs={isMobile ? 12 : 6}>
-                <Typography variant="caption" color="textSecondary">Tags (Keyword)</Typography>
-                <Typography variant="subtitle1">{lo.tags === null ? "-" : lo.tags.join(", ")}</Typography>
+                <Typography variant="subtitle1" color="textSecondary">Tags (Keyword)</Typography>
+                <Typography variant="h6">{lo.tags === null ? "-" : lo.tags.join(", ")}</Typography>
             </Grid>
             <Grid className={classes.menuGrid} item xs={12}>
-                <Typography variant="caption" color="textSecondary">Description</Typography>
-                <Typography variant="subtitle1">{lo.description === "" ? "-" : lo.description}</Typography>
+                <Typography variant="subtitle1" color="textSecondary">Description</Typography>
+                <Typography variant="h6">{lo.description === "" ? "-" : lo.description}</Typography>
             </Grid>
-        </>
+        </Grid>
     );
 }

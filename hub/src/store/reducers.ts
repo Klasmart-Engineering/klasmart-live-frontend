@@ -207,37 +207,6 @@ export function assessmentToken(state = JWT_TOKEN, action: Actions) {
     }
 }
 
-const STUDENT_LIST = [
-    {
-        profileId: "Bada",
-        profileName: "Bada",
-        iconLink: "",
-    },
-    {
-        profileId: "Pogo",
-        profileName: "Pogo",
-        iconLink: "",
-    },
-    {
-        profileId: "Curly",
-        profileName: "Curly",
-        iconLink: ""
-    },
-    {
-        profileId: "Jess",
-        profileName: "Jess",
-        iconLink: "",
-    },
-];
-export function students(state = STUDENT_LIST, action: Actions) {
-    switch (action.type) {
-    case ActionTypes.STUDENTS:
-        return action.payload;
-    default:
-        return state;
-    }
-}
-
 export function activeLibraryMenu(state = "published", action: Actions) {
     switch (action.type) {
     case ActionTypes.ACTIVE_LIBRARY_MENU:
@@ -385,7 +354,6 @@ export const account = combineReducers({
     refreshTokenExpire,
     sessionId,
     userAgent,
-    students,
     contentTypes,
     publicRange,
     suitableAges,

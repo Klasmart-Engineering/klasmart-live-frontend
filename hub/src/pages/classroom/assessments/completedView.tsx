@@ -11,6 +11,7 @@ const TABLE_COLUMN_MOBILE = [
     {
         title: "Title",
         field: "title",
+        headerStyle: { maxWidth: "300px" }, // If not set maxWidth, overflowed on mobile
     }
 ];
 
@@ -43,11 +44,11 @@ export default function AssessmentsCompletedView(props: Props) {
     useEffect(() => {
         const completedAssessments = data.filter(ass => ass.state === 3 && ass.published);
         const tmpRows: TableRow[] = [];
-        for (const assessessment of completedAssessments) {
+        for (const assessment of completedAssessments) {
             tmpRows.push({
-                assId: assessessment.assId,
-                title: assessessment.name,
-                completedDate: new Date(assessessment.updatedDate).toLocaleString()
+                assId: assessment.assId,
+                title: assessment.name.length < 80 ? assessment.name : assessment.name.slice(0, 40) + "...",
+                completedDate: new Date(assessment.updatedDate).toLocaleString()
             });
         }
         setRows(tmpRows);

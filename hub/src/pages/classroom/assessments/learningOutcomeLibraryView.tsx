@@ -5,14 +5,14 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 import React, { useState, useEffect } from "react";
 
 import LearningOutcomeTable, { TableRow } from "./learningOutcomeTable";
+import { TableColumns } from "../../../types/objectTypes";
 import { LearningOutcomeResponse } from "../../../api/restapi";
-import { TableColumns }from "../../../types/objectTypes";
 
-const TABLE_COLUMN_MOBILE = [
+const TABLE_COLUMN_MOBILE: TableColumns = [
     {
         title: "Title",
         field: "title",
-        headerStyle: { minWidth: "180px" }
+        headerStyle: { maxWidth: "150px" }, // If not set maxWidth, overflowed on mobile
     },
     {
         title: "Published",
@@ -65,7 +65,7 @@ export default function AssessmentsLibraryView(props: Props) {
         for (const lo of data) {
             tmpRows.push({
                 loId: lo.loId,
-                title: lo.title,
+                title: lo.title.length < 40 ? lo.title : lo.title.slice(0, 40) + "...",
                 published: <Grid>{lo.published ? <CompleteIcon /> : null}</Grid>,
                 assumed: <Grid>{lo.assumed ? <CompleteIcon /> : null}</Grid>,
                 updatedDate: new Date(lo.updatedDate).toLocaleString()

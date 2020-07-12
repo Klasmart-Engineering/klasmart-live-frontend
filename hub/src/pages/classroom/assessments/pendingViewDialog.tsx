@@ -69,7 +69,7 @@ const useStyles = makeStyles((theme: Theme) =>
             },
         },
         menuGrid: {
-            padding: theme.spacing(1)
+            padding: theme.spacing(2)
         },
         title: {
             marginLeft: theme.spacing(2),
@@ -190,7 +190,6 @@ export default function PendingViewDialog(props: Props) {
         setAwardMode(true);
     };
 
-    // const students = useSelector((state: State) => state.account.students);
     const [collapseIndex, setCollapseIndex] = useState();
     const [LOs, setLOs] = useState<LearningOutcomeResponse[]>([]);
     const [awardedLOs, setAwardedLOs] = useState<number[]>([]);
@@ -505,7 +504,7 @@ export default function PendingViewDialog(props: Props) {
                             )}
                         </List>
                     </Grid > :
-                    (info ? <AssessmentDetails ass={info} /> : "Loading...")
+                    (info ? <AssessmentDetails assessment={info} /> : "Loading...")
                 }
             </Grid>
             <Hidden mdUp>
@@ -542,7 +541,7 @@ export default function PendingViewDialog(props: Props) {
 }
 
 interface AssessmentDetailsProps {
-    ass: AssessmentResponse
+    assessment: AssessmentResponse
 }
 
 function msToMinutes(duration: number): number {
@@ -552,47 +551,47 @@ function msToMinutes(duration: number): number {
 }
 
 function AssessmentDetails(props: AssessmentDetailsProps) {
-    const { ass } = props;
+    const { assessment } = props;
     const classes = useStyles();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-    console.log(ass);
+
     return (
-        <>
-            {ass.state === 1 ?
+        <Grid container>
+            {assessment.state === 1 ?
                 <Grid className={classes.menuGrid} item xs={12}>
-                    <Typography variant="subtitle2" color="primary">
+                    <Typography variant="subtitle1" color="primary">
                         Assessment can be awarded after class
                     </Typography>
                 </Grid>
                 : null
             }
             <Grid className={classes.menuGrid} item xs={12}>
-                <Typography variant="caption" color="textSecondary">Title</Typography>
-                <Typography variant="h6">{ass.name}</Typography>
+                <Typography variant="subtitle1" color="textSecondary">Title</Typography>
+                <Typography noWrap variant="h6">{assessment.name}</Typography>
             </Grid>
             <Grid className={classes.menuGrid} item xs={isMobile ? 12 : 6}>
-                <Typography variant="caption" color="textSecondary">Created on</Typography>
-                <Typography variant="subtitle1">{new Date(ass.createdDate).toLocaleString()}</Typography>
+                <Typography variant="subtitle1" color="textSecondary">Created on</Typography>
+                <Typography variant="h6">{new Date(assessment.createdDate).toLocaleString()}</Typography>
             </Grid>
             <Grid className={classes.menuGrid} item xs={isMobile ? 12 : 6}>
-                <Typography variant="caption" color="textSecondary">Updated on</Typography>
-                <Typography variant="subtitle1">{new Date(ass.updatedDate).toLocaleString()}</Typography>
+                <Typography variant="subtitle1" color="textSecondary">Updated on</Typography>
+                <Typography variant="h6">{new Date(assessment.updatedDate).toLocaleString()}</Typography>
             </Grid>
             <Grid className={classes.menuGrid} item xs={isMobile ? 12 : 6}>
-                <Typography variant="caption" color="textSecondary">Subject</Typography>
-                <Typography variant="subtitle1">{ass.subject}</Typography>
+                <Typography variant="subtitle1" color="textSecondary">Subject</Typography>
+                <Typography variant="h6">{assessment.subject}</Typography>
             </Grid>
             <Grid className={classes.menuGrid} item xs={isMobile ? 12 : 6}>
-                <Typography variant="caption" color="textSecondary">Duration</Typography>
-                <Typography variant="subtitle1">{ass.duration > 0 ? msToMinutes(ass.duration) + " minutes" : "-"}</Typography>
+                <Typography variant="subtitle1" color="textSecondary">Duration</Typography>
+                <Typography variant="h6">{assessment.duration > 0 ? msToMinutes(assessment.duration) + " minutes" : "-"}</Typography>
             </Grid>
             <Grid className={classes.menuGrid} item xs={12}>
-                <Typography variant="caption" color="textSecondary">Students</Typography>
-                <Typography variant="subtitle1">
-                    {ass.students.length === 0 ? "-" : ass.students.map(student => student.profileName).join(", ")}
+                <Typography variant="subtitle1" color="textSecondary">Students</Typography>
+                <Typography variant="h6">
+                    {assessment.students.length === 0 ? "-" : assessment.students.map(student => student.profileName).join(", ")}
                 </Typography>
             </Grid>
-        </>
+        </Grid>
     );
 }

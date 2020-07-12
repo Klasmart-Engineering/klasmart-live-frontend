@@ -6,22 +6,22 @@ import { Actions } from "./actions";
 import { account, postAuthorizationRoute, ui } from "./reducers";
 
 const persistConfig = {
-  key: "root",
-  storage,
+    key: "root",
+    storage,
 };
 
 const rootReducer = combineReducers({
-  account,
-  postAuthorizationRoute,
-  ui,
+    account,
+    postAuthorizationRoute,
+    ui,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export function createDefaultStore() {
-  const store = createStore(persistedReducer, applyMiddleware(LogRocket.reduxMiddleware()));
-  const persistor = persistStore(store);
-  return { store, persistor };
+    const store = createStore(persistedReducer, applyMiddleware(LogRocket.reduxMiddleware()));
+    const persistor = persistStore(store);
+    return { store, persistor };
 }
 
 export type State = ReturnType<typeof rootReducer>;

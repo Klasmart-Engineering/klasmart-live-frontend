@@ -63,13 +63,13 @@ export default function CreateLearningOutcomeDialog() {
     async function fetchPublishedSkillCats() {
         const payload = await api.getSkillCats();
         return payload.skillCats
-            .sort((a, b) => b.createdDate - a.createdDate)
+            .sort((a, b) => b.updatedDate - a.updatedDate)
             .filter((cat: SkillCatResponse) => cat.published);
     }
     async function fetchPublishedDevSkills() {
         const payload = await api.getDevSkills();
         return payload.devSkills
-            .sort((a, b) => b.createdDate - a.createdDate)
+            .sort((a, b) => b.updatedDate - a.updatedDate)
             .filter((skill: DevSkillResponse) => skill.published);
     }
     function getAvaiableDevSkills(
@@ -140,6 +140,7 @@ export default function CreateLearningOutcomeDialog() {
                 setSkillCatOptions(skillCatOptions);
                 const devSkillNames = getAvaiableDevSkills(pubDevSkills, pubSkillCats);
                 setDevSkillOptions(devSkillNames);
+                console.log(skillCatOptions, devSkillNames);
             }
         })();
         return () => { prepared = false; };
@@ -156,7 +157,7 @@ export default function CreateLearningOutcomeDialog() {
             const skillCatList = allSkillCatOptions.filter(cat => cat.devSkillId == devSkillId);
             setSkillCatOptions(skillCatList);
         }
-    }, [devSkill]);
+    }, [devSkill, devSkillIdx]);
 
     const handleChangeDevSkill = (e: any, value: string) => {
         const idx = e.target.getAttribute("data-option-index");

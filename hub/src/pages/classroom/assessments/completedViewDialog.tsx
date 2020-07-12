@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme: Theme) =>
             },
         },
         menuGrid: {
-            padding: theme.spacing(1)
+            padding: theme.spacing(2)
         },
         title: {
             marginLeft: theme.spacing(2),
@@ -96,14 +96,14 @@ export default function CompletedViewDialog(props: Props) {
                 spacing={isMobile ? 1 : 3}
                 className={classes.menuContainer}
             >
-                {info ? <AssessmentDetails ass={info} /> : "Loading..."}
+                {info ? <AssessmentDetails assessment={info} /> : "Loading..."}
             </Grid>
         </Dialog>
     );
 }
 
 interface AssessmentDetailsProps {
-    ass: AssessmentResponse
+    assessment: AssessmentResponse
 }
 
 function msToMinutes(duration: number): number {
@@ -113,39 +113,39 @@ function msToMinutes(duration: number): number {
 }
 
 function AssessmentDetails(props: AssessmentDetailsProps) {
-    const { ass } = props;
+    const { assessment } = props;
     const classes = useStyles();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
     return (
-        <>
+        <Grid container>
             <Grid className={classes.menuGrid} item xs={12}>
                 <Typography variant="caption" color="textSecondary">Title</Typography>
-                <Typography variant="h6">{ass.name}</Typography>
+                <Typography variant="h6">{assessment.name}</Typography>
             </Grid>
             <Grid className={classes.menuGrid} item xs={isMobile ? 12 : 6}>
                 <Typography variant="caption" color="textSecondary">Created on</Typography>
-                <Typography variant="subtitle1">{new Date(ass.createdDate).toLocaleString()}</Typography>
+                <Typography variant="subtitle1">{new Date(assessment.createdDate).toLocaleString()}</Typography>
             </Grid>
             <Grid className={classes.menuGrid} item xs={isMobile ? 12 : 6}>
                 <Typography variant="caption" color="textSecondary">Completed on</Typography>
-                <Typography variant="subtitle1">{new Date(ass.updatedDate).toLocaleString()}</Typography>
+                <Typography variant="subtitle1">{new Date(assessment.updatedDate).toLocaleString()}</Typography>
             </Grid>
             <Grid className={classes.menuGrid} item xs={isMobile ? 12 : 6}>
                 <Typography variant="caption" color="textSecondary">Subject</Typography>
-                <Typography variant="subtitle1">{ass.subject}</Typography>
+                <Typography variant="subtitle1">{assessment.subject}</Typography>
             </Grid>
             <Grid className={classes.menuGrid} item xs={isMobile ? 12 : 6}>
                 <Typography variant="caption" color="textSecondary">Duration</Typography>
-                <Typography variant="subtitle1">{ass.duration > 0 ? msToMinutes(ass.duration) + " minutes" : "-"}</Typography>
+                <Typography variant="subtitle1">{assessment.duration > 0 ? msToMinutes(assessment.duration) + " minutes" : "-"}</Typography>
             </Grid>
             <Grid className={classes.menuGrid} item xs={12}>
                 <Typography variant="caption" color="textSecondary">Students</Typography>
                 <Typography variant="subtitle1">
-                    {ass.students.length === 0 ? "-" : ass.students.map((std) => std.profileName).join(", ")}
+                    {assessment.students.length === 0 ? "-" : assessment.students.map((std) => std.profileName).join(", ")}
                 </Typography>
             </Grid>
-        </>
+        </Grid>
     );
 }
