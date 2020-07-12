@@ -1,10 +1,14 @@
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import CircularProgress from "@material-ui/core/CircularProgress";
+import Paper from "@material-ui/core/Paper";
+import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import { createStyles, makeStyles, useTheme, Theme } from "@material-ui/core/styles";
 import MenuOpenIcon from "@material-ui/icons/MenuOpen";
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
+import { PreviewPlayer } from "../../components/preview-player";
 import { RecordedIframe } from "../../components/recordediframe";
 import CameraContainer from "../../components/cameraContainer";
 import { sessionIdContext } from "../../entry";
@@ -17,6 +21,12 @@ const useStyles = makeStyles((theme: Theme) =>
         root: {
             display: "flex",
             height: "100%",
+        },
+        paperContainer: {
+            borderRadius: 12,
+            boxShadow: theme.palette.type === "dark" ? "0px 2px 4px -1px rgba(255, 255, 255, 0.25), 0px 4px 5px 0px rgba(255, 255, 255, 0.2), 0px 1px 10px 0px rgba(255, 255, 255, 0.16)" : "0px 2px 4px -1px rgba(0,0,0,0.2),0px 4px 5px 0px rgba(0,0,0,0.14),0px 1px 10px 0px rgba(0,0,0,0.12)",
+            height: 240, 
+            padding: theme.spacing(2),
         },
         content: {
             flexGrow: 1,
@@ -75,46 +85,123 @@ export function Student(props: Props): JSX.Element {
     const [streamId, setStreamId] = useState<string>();
     const [width, setWidth] = useState<string | number>("100%");
     const [height, setHeight] = useState<string | number>("100%");
+    const [maxWidth, setMaxWidth] = useState<number>(0);
+    const [maxHeight, setMaxHeight] = useState<number>(0);
 
-    return (<>
-        <Grid
-            container
-            style={{ border: "1px solid gray", borderRadius: 12 }}
-        >
-            <RecordedIframe
-                contentId={content.contentId}
-                setStreamId={setStreamId}
-                parentWidth={width}
-                parentHeight={height}
-                setParentWidth={setWidth}
-                setParentHeight={setHeight}
-            />
-            <Grid item xs={12}>
+    useEffect(() => {
+        const containerRef = window.document.getElementById("player-container");
+        if (containerRef) {
+            setWidth(containerRef.getBoundingClientRect().width);
+            setHeight(containerRef.getBoundingClientRect().width * 0.5625);
+            setMaxHeight(containerRef.getBoundingClientRect().height);
+            setMaxWidth(containerRef.getBoundingClientRect().width);
+        }
+    }, [])
+
+    switch (content.type) {
+        case 'Blank':
+            return (
+                <Grid container>
+                    <Grid item xs={12}>
+                        <Paper elevation={4} className={classes.paperContainer}>
+                            <Grid
+                                container
+                                direction="row"
+                                justify="space-between"
+                                alignItems="center"
+                                style={{ height: "100%" }}
+                            >
+                                <Grid item xs={12}>
+                                    <Typography><FormattedMessage id={'hello'} values={{ name }} /></Typography>
+                                    <Typography><FormattedMessage id={'waiting_for_class'} /></Typography>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <CircularProgress />
+                                </Grid>
+                            </Grid>
+                        </Paper>
+                    </Grid>
+                    {isSmDown ? <CameraContainer isTeacher={false} /> : null}
+                </Grid>
+            );
+        case 'Stream':
+            return (
                 <Grid
                     container
-                    justify="flex-end"
-                    style={{ width: "100%", margin: "0 auto", borderTop: "1px solid gray" }}
+                    style={{ border: "1px solid gray", borderRadius: 12 }}
                 >
-                    <Grid item>
-                        <Button
-                            aria-label="open preview drawer"
-                            onClick={setOpenDrawer}
-                            size="small"
-                            style={{
-                                color: "black",
-                                padding: "2px 5px",
-                                marginRight: 8,
-                                borderRadius: 12,
-                                margin: "2px 8px",
-                            }}
+                    <Grid item xs={12} md={8} style={{ height: height, width: width, margin: "0 auto", border: '5px solid green' }}>
+                        <PreviewPlayer streamId={content.contentId} height={typeof height === "string" ? 700 : height} width={typeof width === "string" ? 700 : width} />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Grid
+                            container
+                            justify="flex-end"
+                            style={{ width: "100%", margin: "0 auto", borderTop: "1px solid gray" }}
                         >
-                            <MenuOpenIcon style={{ paddingRight: 5 }} />
-                            <FormattedMessage id={openDrawer ? "close_preview_drawer" : "open_preview_drawer"} />
-                        </Button>
+                            <Grid item>
+                                <Button
+                                    aria-label="open preview drawer"
+                                    onClick={setOpenDrawer}
+                                    size="small"
+                                    style={{
+                                        color: "black",
+                                        padding: "2px 5px",
+                                        marginRight: 8,
+                                        borderRadius: 12,
+                                        margin: "2px 8px",
+                                    }}
+                                >
+                                    <MenuOpenIcon style={{ paddingRight: 5 }} />
+                                    <FormattedMessage id={openDrawer ? "close_preview_drawer" : "open_preview_drawer"} />
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                    {isSmDown ? <CameraContainer isTeacher={false} /> : null}
+                </Grid>
+            )
+        case 'Activity':
+            return (<>
+                <Grid
+                    container
+                    style={{ border: "1px solid gray", borderRadius: 12 }}
+                >
+                    <RecordedIframe
+                        contentId={content.contentId}
+                        setStreamId={setStreamId}
+                        parentWidth={width}
+                        parentHeight={height}
+                        setParentWidth={setWidth}
+                        setParentHeight={setHeight}
+                    />
+                    <Grid item xs={12}>
+                        <Grid
+                            container
+                            justify="flex-end"
+                            style={{ width: "100%", margin: "0 auto", borderTop: "1px solid gray" }}
+                        >
+                            <Grid item>
+                                <Button
+                                    aria-label="open preview drawer"
+                                    onClick={setOpenDrawer}
+                                    size="small"
+                                    style={{
+                                        color: "black",
+                                        padding: "2px 5px",
+                                        marginRight: 8,
+                                        borderRadius: 12,
+                                        margin: "2px 8px",
+                                    }}
+                                >
+                                    <MenuOpenIcon style={{ paddingRight: 5 }} />
+                                    <FormattedMessage id={openDrawer ? "close_preview_drawer" : "open_preview_drawer"} />
+                                </Button>
+                            </Grid>
+                        </Grid>
                     </Grid>
                 </Grid>
-            </Grid>
-        </Grid>
-        {isSmDown ? <CameraContainer isTeacher={false} /> : null}
-    </>)
+                {isSmDown ? <CameraContainer isTeacher={false} /> : null}
+            </>)
+    }
 }
