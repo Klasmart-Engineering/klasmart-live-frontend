@@ -1,5 +1,4 @@
 import React, { useRef, createContext, useContext, useEffect, useState } from 'react'
-import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useTheme } from "@material-ui/core/styles";
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
@@ -241,7 +240,7 @@ export function Cameras({id}:{id?: string}): JSX.Element {
         )
         return (
             camera.length === 0 ? 
-            <Grid container justify="space-between" alignItems="center" style={{ width: '100%', height: 340, backgroundColor: '#193d6f' }}>
+            <Grid container justify="space-between" alignItems="center" style={{ width: '100%', height: "100%", backgroundColor: '#193d6f' }}>
                 <Typography style={{ margin: '0 auto', color: 'white', padding: 56 }} align="center">Your student does not have a 📷 to display</Typography>
             </Grid> :
             <Grid container item justify="space-around">
@@ -251,9 +250,8 @@ export function Cameras({id}:{id?: string}): JSX.Element {
     }
 }
 
-export function Camera({mediaStream, height, width}:{mediaStream: MediaStream, height: number, width: number}): JSX.Element {
+export function Camera({mediaStream, height, width, self}:{mediaStream: MediaStream, height: number, width: number, self?: boolean}): JSX.Element {
     const theme = useTheme();
-    const isSmDown = useMediaQuery(theme.breakpoints.down('sm'));
     const [cameraTurnedOn, setCameraTurnedOn] = useState(true);
 
     const videoRef = useRef<HTMLVideoElement>(null)
@@ -264,93 +262,55 @@ export function Camera({mediaStream, height, width}:{mediaStream: MediaStream, h
 
     return (
         <Card elevation={0} square>
-            <CardMedia
-                component="video"
-                width={width}
-                height={height}
-                ref={videoRef}
-                autoPlay={true}
-            />
-            {/* <CardActions
+            { cameraTurnedOn ?
+                <CardMedia
+                    autoPlay={true}
+                    component="video"
+                    height={self ? height-32 : height}
+                    style={{ backgroundColor: "#193d6f" }}
+                    ref={videoRef}
+                    width={width}
+                /> :
+                <Typography style={{ backgroundColor: "#193d6f", height: self ? height-32 : height, margin: '0 auto', color: 'white', padding: 56 }} align="center">
+                    Your <span role="img" aria-label="camera">📷</span> is off.
+                </Typography>
+            }
+            { self ? 
+            <CardActions
                 disableSpacing
                 style={{ padding: theme.spacing(0.5) }}
             >
-                <Grid container justify="space-between" alignItems="center">
-                    <Grid item>
-                        Name
-                    </Grid>
+                <Grid container justify="space-evenly" alignItems="center">
                     <Grid item>
                         <IconButton
                             aria-label="control camera"
                             component="span"
-                            style={{ color: "black", fontSize: 12, padding: 0 }}
+                            style={{ color: "black", fontSize: 8, padding: 0 }}
                             onClick={()=>setCameraTurnedOn(!cameraTurnedOn)}
                         >
-                            {cameraTurnedOn ? <VideocamIcon /> : <VideocamOffIcon color="action" />}
-                        </IconButton>
-                        <IconButton
-                            aria-label="control mic"
-                            component="span"
-                            style={{ color: "black", fontSize: 12, padding: 0 }}
-                        >
-                            <MicIcon />
+                            {cameraTurnedOn ? <VideocamIcon color="primary" /> : <VideocamOffIcon color="secondary" />}
                         </IconButton>
                     </Grid>
+                    <Grid item>
+                        <Tooltip title="Coming soon" aria-label="tooltip control mic">
+                            <IconButton
+                                aria-label="control mic"
+                                component="span"
+                                style={{ color: "black", fontSize: 8, padding: 0 }}
+                            >
+                                <MicIcon color="primary" />
+                            </IconButton>
+                        </Tooltip>
+                    </Grid>
                 </Grid>
-            </CardActions> */}
+            </CardActions> : null }
         </Card>
-        // <Grid
-        //     container
-        //     direction="row"
-        //     justify="center"
-        //     alignItems="center"
-        // >
-        //     <Grid item xs={12} style={{ width, backgroundColor: cameraTurnedOn ? "" : "#193d6f" }}>
-        //         {cameraTurnedOn
-        //             ? <video ref={videoRef} autoPlay={true} width="100%" />
-        //             : <Typography style={{ margin: '0 auto', color: 'white', padding: 56 }} align="center">
-        //                 Your <span role="img" aria-label="camera">📷</span> is turned off.
-        //             </Typography>
-        //         }
-        //     </Grid>
-        //     <Grid 
-        //         item
-        //         // direction={isSmDown ? "row" : "column"} 
-        //         // spacing={2} 
-        //         xs={12}
-        //         style={{ position: "absolute", bottom: 0 }}
-        //     >
-        //         <Grid item>
-        //             <IconButton
-        //                 aria-label="control camera"
-        //                 component="span"
-        //                 size="small"
-        //                 style={{ color: "white", border: "1px solid white" }}
-        //                 onClick={()=>setCameraTurnedOn(!cameraTurnedOn)}
-        //             >
-        //                 {cameraTurnedOn ? <VideocamIcon /> : <VideocamOffIcon color="action" />}
-        //             </IconButton>
-        //         </Grid>
-        //         <Grid item>
-        //             <Tooltip title="Coming soon" aria-label="tooltip control mic">
-        //                 <IconButton
-        //                     aria-label="control mic"
-        //                     component="span"
-        //                     size="small"
-        //                     style={{ color: "white", border: "1px solid white" }}
-        //                 >
-        //                     <MicIcon />
-        //                 </IconButton>
-        //             </Tooltip>
-        //         </Grid>
-        //     </Grid>
-        // </Grid>
     )
 }
 
 export function MyCamera(): JSX.Element {
     if (WebRTCContext.stream) {   
-        return <Camera mediaStream={WebRTCContext.stream} width={340} height={240} />;
+        return <Camera mediaStream={WebRTCContext.stream} width={340} height={240} self />;
     } else {
         return (
             <Grid container justify="space-between" alignItems="center" style={{ width: '100%', height: 240, backgroundColor: '#193d6f' }}>
