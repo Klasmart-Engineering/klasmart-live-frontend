@@ -1,4 +1,3 @@
-import React, { useContext } from "react";
 import {Join} from "./pages/join";
 import { Room } from "./room";
 import { UserContext } from "./entry";
@@ -6,9 +5,13 @@ import { webRTCContext } from "./webRTCState";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Typography from "@material-ui/core/Typography";
 import { FormattedMessage } from "react-intl";
+import React, { useContext } from "react";
+import WhiteboardProvider from "./whiteboard/components/WhiteboardProvider";
+import { Whiteboard } from "./whiteboard/components/Whiteboard";
+import { Toolbar } from "./whiteboard/components/Toolbar";
 
 export function App (): JSX.Element {
-    const {name, teacher} = useContext(UserContext);
+    const {name, roomId, teacher, sessionId} = useContext(UserContext);
     const webrtc = useContext(webRTCContext); 
     if(!name) {return <Join />;}
     if(!webrtc.isCameraReady()) {
@@ -19,5 +22,11 @@ export function App (): JSX.Element {
             </Typography>
         );
     }
-    return <Room teacher={teacher} />;
+    return (
+        <WhiteboardProvider sessionId={sessionId} roomId={roomId}>
+            <Room teacher={teacher} />
+            <Whiteboard />
+            <Toolbar />
+        </WhiteboardProvider>
+    );
 }

@@ -3,13 +3,11 @@ import { gql } from "apollo-boost";
 import { useSubscription } from "@apollo/react-hooks";
 import { FormattedMessage } from "react-intl";
 import { CircularProgress, Typography, useTheme, useMediaQuery } from "@material-ui/core";
-// import { Student } from './pages/student'
 import { Student } from "./pages/student/student";
 import { Teacher } from "./pages/teacher/teacher";
 import { webRTCContext } from "./webRTCState";
 import { sessionId, UserContext } from "./entry";
 import Layout from "./components/layout";
-
 
 export interface Session {
     id: string,
