@@ -265,6 +265,7 @@ export function Camera({mediaStream, height, width, self, noBackground}:{mediaSt
             { cameraTurnedOn ?
                 <CardMedia
                     autoPlay={true}
+                    muted={self}
                     component="video"
                     height={self ? height-32 : height}
                     style={{ backgroundColor: noBackground ? "" : "#193d6f" }}
