@@ -61,7 +61,7 @@ module.exports = {
     extensions: ['.js', '.jsx', '.tsx', '.ts']
   },
   output: {
-    filename: '[name].js',
+    filename: '[name].[contenthash].js',
     path: path.resolve(__dirname, 'dist')
   },
   devtool: 'source-map',
