@@ -91,10 +91,13 @@ export function Student(props: Props): JSX.Element {
     useEffect(() => {
         const containerRef = window.document.getElementById("player-container");
         if (containerRef) {
-            setWidth(containerRef.getBoundingClientRect().width);
-            setHeight(containerRef.getBoundingClientRect().width * 0.5625);
-            setMaxHeight(containerRef.getBoundingClientRect().height);
-            setMaxWidth(containerRef.getBoundingClientRect().width);
+            const contWidth = containerRef.getBoundingClientRect().width;
+            const contHeight = containerRef.getBoundingClientRect().height;
+
+            setWidth(contWidth);
+            setHeight(Math.min(contWidth, contWidth*0.5625));
+            setMaxWidth(contWidth);
+            setMaxHeight(contHeight);
         }
     }, [])
 
@@ -127,11 +130,12 @@ export function Student(props: Props): JSX.Element {
         case 'Stream':
             return (<>
                 <Grid
+                    id="player-container"
                     container
-                    style={{ border: "1px solid gray", borderRadius: 12 }}
+                    style={{ border: "1px solid gray", borderRadius: 12}}
                 >
-                    <Grid item xs={12} md={8} style={{ height: height, width: width, margin: "0 auto", border: '5px solid green' }}>
-                        <PreviewPlayer streamId={content.contentId} height={typeof height === "string" ? 700 : height} width={typeof width === "string" ? 700 : width} />
+                    <Grid item xs={12} md={8} style={{ height: height, width: width, margin: "0 auto 16px auto" }}>
+                        <PreviewPlayer streamId={content.contentId} height={height} width={width} />
                     </Grid>
                     <Grid item xs={12}>
                         <Grid

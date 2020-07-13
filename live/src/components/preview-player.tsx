@@ -1,4 +1,3 @@
-import * as queryString from 'query-string'
 import React, { useEffect, useRef, useState, useMemo, Dispatch, SetStateAction } from 'react'
 import { useSubscription } from '@apollo/react-hooks'
 import { gql } from 'apollo-boost'
@@ -16,14 +15,14 @@ const SUB_EVENTS = gql`
 
 export interface Props {
     streamId: string;
-    width?: number;
-    height?: number;
+    width?: number | string;
+    height?: number | string;
     frameProps?: React.DetailedHTMLProps<React.IframeHTMLAttributes<HTMLIFrameElement>, HTMLIFrameElement>
 }
 
 export function PreviewPlayer ({ streamId, frameProps, width, height }: Props): JSX.Element {
   const ref = useRef<HTMLIFrameElement>(null);
-  const [{ frameWidth, frameHeight }, setWidthHeight] = useState({ frameWidth: '0', frameHeight: '0' });
+  const [{ frameWidth, frameHeight }, setWidthHeight] = useState({ frameWidth: 0, frameHeight: 0 });
 
   // Buffer events until we have a page ready to render them
   const {current: bufferedEvents} = useRef<string[]>([])
@@ -62,7 +61,7 @@ export function PreviewPlayer ({ streamId, frameProps, width, height }: Props): 
       const frameWidth = Number(data.width.replace("px", ""));
       const frameHeight = Number(data.height.replace("px", ""));
       if(width && height) {
-        setScale(Math.min(width/frameWidth, height/frameHeight));
+        setScale(Math.min(Number(width)/frameWidth, Number(height)/frameHeight));
       }
     })
   }, [ref.current, ref.current && ref.current.contentWindow])
