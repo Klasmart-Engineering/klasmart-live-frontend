@@ -249,7 +249,7 @@ export function Teacher (props: Props): JSX.Element {
                                 </Grid>
                                 {
                                     [...users.entries()].filter(([,s]) => s.id !== sessionId).map(([id,session]) => (
-                                        <Grid item xs={6} md={4} lg={3} xl={2} key={id}>
+                                        <Grid item xs={6} md={4} lg={2} xl={1} key={id}>
                                             <Card>
                                                 <CardContent>
                                                     <Grid item xs={12}>
