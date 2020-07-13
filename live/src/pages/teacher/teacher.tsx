@@ -1,32 +1,32 @@
-import Grid from '@material-ui/core/Grid'
-import { createStyles, makeStyles } from '@material-ui/core/styles'
-import Typography from '@material-ui/core/Typography'
-import React, { useEffect, useState, useContext } from 'react'
-import { FormattedMessage } from 'react-intl'
-import { RecordedIframe } from '../../components/recordediframe'
-import { ControlButtons } from './controlButtons'
-import { Session, Message, Content } from '../../room'
-import { Theme, Button, Hidden, IconButton, Card, Avatar, useTheme, CardContent } from '@material-ui/core'
-import { sessionIdContext } from '../../entry'
-import { PreviewPlayer } from '../../components/preview-player'
-import clsx from 'clsx';
-import MenuOpenIcon from '@material-ui/icons/MenuOpen';
-import { InviteButton } from '../../components/invite'
-import { MyCamera, Cameras } from '../../webRTCState'
-import MenuItem from "@material-ui/core/MenuItem"
-import Select from "@material-ui/core/Select"
-import SkipNextTwoToneIcon from "@material-ui/icons/SkipNextTwoTone"
-import SkipPreviousTwoToneIcon from "@material-ui/icons/SkipPreviousTwoTone"
-import { UserContext } from '../../app'
-import FaceTwoToneIcon from '@material-ui/icons/FaceTwoTone';
-import CenterAlignChildren from '../../components/centerAlignChildren'
+import Grid from "@material-ui/core/Grid";
+import { createStyles, makeStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
+import React, { useEffect, useState, useContext } from "react";
+import { FormattedMessage } from "react-intl";
+import { RecordedIframe } from "../../components/recordediframe";
+import { ControlButtons } from "./controlButtons";
+import { Session, Message, Content } from "../../room";
+import { Theme, Button, Hidden, IconButton, Card, Avatar, useTheme, CardContent } from "@material-ui/core";
+import { sessionIdContext } from "../../entry";
+import { PreviewPlayer } from "../../components/preview-player";
+import clsx from "clsx";
+import MenuOpenIcon from "@material-ui/icons/MenuOpen";
+import { InviteButton } from "../../components/invite";
+import { MyCamera, Cameras } from "../../webRTCState";
+import MenuItem from "@material-ui/core/MenuItem";
+import Select from "@material-ui/core/Select";
+import SkipNextTwoToneIcon from "@material-ui/icons/SkipNextTwoTone";
+import SkipPreviousTwoToneIcon from "@material-ui/icons/SkipPreviousTwoTone";
+import { UserContext } from "../../app";
+import FaceTwoToneIcon from "@material-ui/icons/FaceTwoTone";
+import CenterAlignChildren from "../../components/centerAlignChildren";
 
 const drawerWidth = 340;
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
-            display: 'flex',
+            display: "flex",
             height: "100%",
         },
         activityFrame: {
@@ -52,21 +52,21 @@ const useStyles = makeStyles((theme: Theme) =>
         content: {
             flexGrow: 1,
             padding: theme.spacing(2),
-            transition: theme.transitions.create('margin', {
+            transition: theme.transitions.create("margin", {
                 easing: theme.transitions.easing.sharp,
                 duration: theme.transitions.duration.leavingScreen,
             }),
             marginRight: -drawerWidth,
         },
         contentShift: {
-            transition: theme.transitions.create('margin', {
+            transition: theme.transitions.create("margin", {
                 easing: theme.transitions.easing.easeOut,
                 duration: theme.transitions.duration.enteringScreen,
             }),
             marginRight: 0,
         },
     })
-)
+);
 
 interface Props {
     content: Content;
@@ -82,8 +82,8 @@ export function Teacher (props: Props): JSX.Element {
     const {materials} = useContext(UserContext);
     const { content, users, openDrawer, setOpenDrawer } = props;
   
-    const sessionId = useContext(sessionIdContext)
-    const [streamId, setStreamId] = useState<string>()
+    const sessionId = useContext(sessionIdContext);
+    const [streamId, setStreamId] = useState<string>();
     const [width, setWidth] = useState<string | number>("100%");
     const [height, setHeight] = useState<string | number>("100%");
 
@@ -97,9 +97,9 @@ export function Teacher (props: Props): JSX.Element {
             setHeight(containerRef.getBoundingClientRect().height);
             setWidth(containerRef.getBoundingClientRect().width);
         }
-    }, [])
+    }, []);
 
-    console.log(content)
+    console.log(content);
 
 
     function Toolbar() {
@@ -137,7 +137,7 @@ export function Teacher (props: Props): JSX.Element {
                     </Grid>
                 </Grid>
             </Grid>
-        )
+        );
     }
 
 
@@ -203,12 +203,12 @@ export function Teacher (props: Props): JSX.Element {
                                                 <Grid item xs={12} style={{ height: drawerWidth, width: drawerWidth, margin: "0 auto"}}>
                                                     {
                                                         session.streamId
-                                                        ? <PreviewPlayer streamId={session.streamId} height={drawerWidth} width={drawerWidth} />
-                                                        : undefined
+                                                            ? <PreviewPlayer streamId={session.streamId} height={drawerWidth} width={drawerWidth} />
+                                                            : undefined
                                                     }
                                                 </Grid>
                                                 <Grid item xs={12}>
-                                                    <Cameras id={session.id} />
+                                                    <Cameras id={session.id} noBackground />
                                                 </Grid>
                                                 <Grid item xs={12}>
                                                     <CenterAlignChildren center>
@@ -274,5 +274,5 @@ export function Teacher (props: Props): JSX.Element {
                 }
             </main>
         </div>
-    )
+    );
 }
