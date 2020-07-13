@@ -48,7 +48,7 @@ export class WebRTCContext {
         const [sendSignal] = useMutation(SEND_SIGNAL);
         const [webRTCContextValue, setWebRTCContextValue] = useState(
             new WebRTCContext((toSessionId: string, webrtc: WebRTCIn) => {
-                console.log("send",toSessionId,webrtc);
+                // console.log("send",toSessionId,webrtc);
                 return sendSignal({variables: {roomId,toSessionId,webrtc}});
             })
         );
@@ -67,7 +67,7 @@ export class WebRTCContext {
         WebRTCContext.streamEmitter.addListener("rerender", () => this.rerender());
     }
     public async notification(webrtc: WebRTC): Promise<void> {
-        console.log("recv",webrtc);
+        // console.log("recv",webrtc);
         const sessionId = webrtc.sessionId;
         const state = await this.getOrCreateState(sessionId);
         await state.dispatch(webrtc);
@@ -123,7 +123,7 @@ class WebRTCState {
         this.peer = new RTCPeerConnection({iceServers});
         this.peer.onicegatheringstatechange = async () => {
             if(!this.peer) {return;}
-            console.log("onicegatheringstatechange:", this.peer.iceGatheringState);
+            // console.log("onicegatheringstatechange:", this.peer.iceGatheringState);
         };
         this.peer.onicecandidate = async ({candidate}) => {
             if(candidate) {
@@ -133,11 +133,11 @@ class WebRTCState {
         };
         this.peer.onconnectionstatechange = () => {
             if(!this.peer) {return;}
-            console.log("onconnectionstatechange:", this.peer.connectionState);
+            // console.log("onconnectionstatechange:", this.peer.connectionState);
             this.rerender();
         };
         this.peer.ontrack = ({streams}) => {
-            console.log(streams);
+            // console.log(streams);
             this.remoteMediaStream = streams[0];
             this.rerender();
         };
@@ -158,34 +158,34 @@ class WebRTCState {
             const {offer, answer, ice} = webrtc;
             if(offer) {
                 await this.peer.setRemoteDescription(new RTCSessionDescription(JSON.parse(offer)));
-                console.log("Set remote offer");
+                // console.log("Set remote offer");
 
                 const localDesc = await this.peer.createAnswer();
                 await this.peer.setLocalDescription(localDesc);
                 const answer = JSON.stringify(localDesc);
                 this.send({ answer });
-                console.log("Set local answer");
+                // console.log("Set local answer");
                 while(this.pendingIceCandidates.length > 0) {
                     const candidate = this.pendingIceCandidates.shift();
                     if(!candidate) { continue; }
-                    console.log("addIceCandidate2: ", this.peer.connectionState, candidate);
+                    // console.log("addIceCandidate2: ", this.peer.connectionState, candidate);
                     await this.peer.addIceCandidate(candidate).catch((e) => console.error(e));
                 }
-                console.log("pendingIceCandidates Done");
+                // console.log("pendingIceCandidates Done");
 
             }
             if(answer) {
                 const remoteDesc = new RTCSessionDescription(JSON.parse(answer));
                 await this.peer.setRemoteDescription(remoteDesc);
-                console.log("Set remote answer");
+                // console.log("Set remote answer");
             }
             if(ice) {
                 const candidate = new RTCIceCandidate(JSON.parse(ice));
                 if(!this.peer.remoteDescription) {
-                    console.log("canidate pending");
+                    // console.log("canidate pending");
                     this.pendingIceCandidates.push(candidate);
                 } else {
-                    console.log("addIceCandidate1: ", this.peer.connectionState, candidate);
+                    // console.log("addIceCandidate1: ", this.peer.connectionState, candidate);
                     await this.peer.addIceCandidate(candidate); 
                 }
             }
@@ -198,7 +198,7 @@ class WebRTCState {
         const localDesc = await this.peer.createOffer();
         await this.peer.setLocalDescription(localDesc);
         const offer = JSON.stringify(localDesc);
-        console.log("Set local offer");
+        // console.log("Set local offer");
         this.send({ offer });
     }
 }
@@ -267,7 +267,7 @@ export function Camera({mediaStream, height, width, self, noBackground}:{mediaSt
                     autoPlay={true}
                     component="video"
                     height={self ? height-32 : height}
-                    style={{ backgroundColor: noBackground ? "" : "#193d6f", borderRadius: noBackground ? 12 : 0 }}
+                    style={{ backgroundColor: noBackground ? "" : "#193d6f" }}
                     ref={videoRef}
                     width={width}
                 /> :

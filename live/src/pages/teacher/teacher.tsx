@@ -99,7 +99,7 @@ export function Teacher (props: Props): JSX.Element {
         }
     }, []);
 
-    console.log(content);
+    // console.log(content);
 
 
     function Toolbar() {
