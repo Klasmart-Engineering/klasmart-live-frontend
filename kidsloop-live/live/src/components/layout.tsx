@@ -94,8 +94,6 @@ export default function Layout(props: Props): JSX.Element {
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down('sm'));
 
-    console.log("users: ", users);
-
     return (
         <Grid
             container
