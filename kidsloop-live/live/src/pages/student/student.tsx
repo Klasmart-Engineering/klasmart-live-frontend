@@ -1,13 +1,13 @@
 import { createStyles, makeStyles, useTheme, Theme } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import MenuOpenIcon from "@material-ui/icons/MenuOpen";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { FormattedMessage } from "react-intl";
+import { UserContext } from "../../app";
 import { PreviewPlayer } from "../../components/preview-player";
 import { RecordedIframe } from "../../components/recordediframe";
 import CameraContainer from "../../components/cameraContainer";
@@ -83,6 +83,7 @@ export function Student(props: Props): JSX.Element {
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
 
+    const { name } = useContext(UserContext);
     const [streamId, setStreamId] = useState<string>();
     const [width, setWidth] = useState<string | number>("100%");
     const [height, setHeight] = useState<string | number>("100%");
@@ -118,9 +119,6 @@ export function Student(props: Props): JSX.Element {
                             <Grid item xs={12}>
                                 <Typography><FormattedMessage id={"hello"} values={{ name }} /></Typography>
                                 <Typography><FormattedMessage id={"waiting_for_class"} /></Typography>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <CircularProgress />
                             </Grid>
                         </Grid>
                     </Paper>
