@@ -6,7 +6,6 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import Typography from "@material-ui/core/Typography";
 import { FormattedMessage } from "react-intl";
 import React, { useContext } from "react";
-import WhiteboardProvider from "./whiteboard/context-provider/WhiteboardContextProvider";
 
 export function App (): JSX.Element {
     const {name, teacher} = useContext(UserContext);
@@ -20,9 +19,5 @@ export function App (): JSX.Element {
             </Typography>
         );
     }
-    return (
-        <WhiteboardProvider>
-            <Room teacher={teacher} />
-        </WhiteboardProvider>
-    );
+    return <Room teacher={teacher} />;
 }

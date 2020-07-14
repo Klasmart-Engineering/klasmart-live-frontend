@@ -26,6 +26,11 @@ export class PointerPainterController extends EventEmitter implements IPainterCo
         this.sessionId = sessionId
     }
 
+    replayEvents(): Promise<void> {
+        console.warn('not implemented')
+        return Promise.resolve()
+    }
+
     setBrush(brush: BrushParameters): void {
         this.brushParameters = brush
     }

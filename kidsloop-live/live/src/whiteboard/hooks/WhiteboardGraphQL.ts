@@ -1,9 +1,8 @@
 import { useMutation, useSubscription } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
-import { useCallback } from "react";
 import { PainterEvent } from "../types/PainterEvent";
 
-export type PainterEventFunction = (roomId: string, payload: PainterEvent) => void
+export type PainterEventFunction = (payload: PainterEvent) => void
 
 const WHITEBOARD_SEND_EVENT = gql`
   mutation whiteboardSendEvent($roomId: ID!, $event: String) {
@@ -27,17 +26,11 @@ export function useWhiteboardGraphQL(roomId: string | undefined, onEvent: Painte
   const { loading } = useSubscription(SUBSCRIBE_WHITEBOARD_EVENTS, {
     onSubscriptionData: ({ subscriptionData: { data: { whiteboardEvents }} }) => {
       if (whiteboardEvents) {
-          receiveEventHandler(whiteboardEvents)
+          onEvent(whiteboardEvents)
       }
   }, variables: { roomId } })
 
-  const receiveEventHandler = useCallback((whiteboardEvent: any) => {
-    if (roomId !== undefined) {
-      onEvent(roomId, whiteboardEvent)
-    }
-  }, [onEvent, roomId])
-
-  const sendEventAction = (roomId: string, payload: PainterEvent) => {
+  const sendEventAction = (payload: PainterEvent) => {
     sendEventMutation({ variables: { roomId, event: JSON.stringify(payload) } })
   }
 
