@@ -135,7 +135,9 @@ export function Student(props: Props): JSX.Element {
                 style={{ border: "1px solid gray", borderRadius: 12}}
             >
                 <Grid item xs={12} md={8} style={{ height: height, width: width, margin: "0 auto 16px auto" }}>
-                    <PreviewPlayer streamId={content.contentId} height={height} width={width} />
+                    <Whiteboard>
+                        <PreviewPlayer streamId={content.contentId} height={height} width={width} />
+                    </Whiteboard>
                 </Grid>
                 <Grid item xs={12}>
                     <Grid
@@ -176,14 +178,16 @@ export function Student(props: Props): JSX.Element {
                 container
                 style={{ border: "1px solid gray", borderRadius: 12 }}
             >
-                <RecordedIframe
-                    contentId={content.contentId}
-                    setStreamId={setStreamId}
-                    parentWidth={width}
-                    parentHeight={height}
-                    setParentWidth={setWidth}
-                    setParentHeight={setHeight}
-                />
+                <Whiteboard>
+                    <RecordedIframe
+                        contentId={content.contentId}
+                        setStreamId={setStreamId}
+                        parentWidth={width}
+                        parentHeight={height}
+                        setParentWidth={setWidth}
+                        setParentHeight={setHeight}
+                    />
+                </Whiteboard>
                 <Grid item xs={12}>
                     <Grid
                         container

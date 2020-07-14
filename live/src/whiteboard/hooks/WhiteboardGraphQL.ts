@@ -26,7 +26,6 @@ export function useWhiteboardGraphQL(roomId: string | undefined, onEvent: Painte
 
   const { loading } = useSubscription(SUBSCRIBE_WHITEBOARD_EVENTS, {
     onSubscriptionData: ({ subscriptionData: { data: { whiteboardEvents }} }) => {
-      console.log(whiteboardEvents)
       if (whiteboardEvents) {
           receiveEventHandler(whiteboardEvents)
       }

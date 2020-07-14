@@ -20,6 +20,7 @@ import FaceTwoToneIcon from "@material-ui/icons/FaceTwoTone";
 import CenterAlignChildren from "../../components/centerAlignChildren";
 import { gql } from "apollo-boost";
 import { useMutation } from "@apollo/react-hooks";
+import { Whiteboard } from "../../whiteboard/components/Whiteboard";
 
 const drawerWidth = 340;
 
@@ -247,14 +248,16 @@ export function Teacher (props: Props): JSX.Element {
                                 ))
                             }
                         </> :
-                        <RecordedIframe
-                            contentId={contentId}
-                            setStreamId={setStreamId}
-                            parentWidth={width}
-                            parentHeight={height}
-                            setParentWidth={setWidth}
-                            setParentHeight={setHeight}
-                        />
+                        <Whiteboard>
+                            <RecordedIframe
+                                contentId={contentId}
+                                setStreamId={setStreamId}
+                                parentWidth={width}
+                                parentHeight={height}
+                                setParentWidth={setWidth}
+                                setParentHeight={setHeight}
+                            />
+                        </Whiteboard>
                     }
                     { content.type !== "Activity" ? <Toolbar /> : null }
                 </Grid>
