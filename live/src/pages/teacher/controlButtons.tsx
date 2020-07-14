@@ -1,5 +1,5 @@
 
-import React, { useState, useContext, Dispatch } from 'react'
+import React, { useContext, Dispatch, useEffect } from 'react'
 import ToggleButton from '@material-ui/lab/ToggleButton'
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup'
 import PlayIcon from '@material-ui/icons/PlayArrow'
@@ -70,6 +70,24 @@ export function ControlButtons({contentId, streamId, selectedButton, setSelected
     console.log(`selectedButton ${selectedButton}`)
     const selected = loading ? loadingSelected : toggleSelected;
 
+    useEffect(()=>{
+        if (selectedButton === 0) {
+            showContent({variables: { roomId, type: "Blank", contentId: "" }});
+        }
+    },[selectedButton]);
+
+    useEffect(()=>{
+        if (selectedButton === 1) {
+            showContent({variables: { roomId, type: "Stream", contentId: streamId }});
+        }
+    },[streamId,selectedButton]);
+
+    useEffect(()=>{
+        if (selectedButton === 2) {
+            showContent({variables: { roomId, type: "Activity", contentId }});
+        }
+    },[contentId,selectedButton]);
+
     return (
         <Grid container style={{ height: "100%" }}>
             <CenterAlignChildren className={clsx(buttonGroup, selectedButton === 2 ? buttonGroupActivity : "")}>
@@ -88,7 +106,6 @@ export function ControlButtons({contentId, streamId, selectedButton, setSelected
                         aria-label="left aligned"
                         style={{ padding: '2px 8px', borderRadius: 12 }}
                         classes={{ selected }}
-                        onClick={() => showContent({variables: { roomId, type: "Blank", id: '' } })}
                     >
                         <StopIcon style={{ paddingRight: 5 }} />
                         <FormattedMessage id="live_buttonStop" />
@@ -99,9 +116,6 @@ export function ControlButtons({contentId, streamId, selectedButton, setSelected
                         style={{ padding: '2px 8px', borderRadius: 12  }}
                         classes={{ selected }}
                         disabled={streamId === undefined}
-                        onClick={() => {
-                            showContent({variables: { roomId, type: 'Stream', contentId: streamId }})
-                        }}
                     >
                         <PlayIcon style={{ paddingRight: 5 }} />
                         <FormattedMessage id="live_buttonPresent" />
@@ -111,9 +125,7 @@ export function ControlButtons({contentId, streamId, selectedButton, setSelected
                         aria-label="right aligned"
                         style={{ padding: '2px 8px', borderRadius: 12  }}
                         classes={{ selected }}
-                        onClick={() => {
-                            showContent({variables: { roomId, type: 'Activity', contentId }})
-                        }}
+                        disabled={contentId === undefined}
                     >
                         <ViewIcon style={{ paddingRight: 5 }} />
                         <FormattedMessage id="live_buttonActivity" />
