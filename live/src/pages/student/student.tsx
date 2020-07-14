@@ -12,6 +12,7 @@ import { PreviewPlayer } from "../../components/preview-player";
 import { RecordedIframe } from "../../components/recordediframe";
 import CameraContainer from "../../components/cameraContainer";
 import { Content } from "../../room";
+import { Whiteboard } from "../../whiteboard/components/Whiteboard";
 
 const drawerWidth = 340;
 
