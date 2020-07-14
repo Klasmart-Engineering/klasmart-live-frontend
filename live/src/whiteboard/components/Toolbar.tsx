@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { ColorResult, CompactPicker } from 'react-color'
 import { Slider, Button } from '@material-ui/core'
-import { useWhiteboard } from './WhiteboardProvider'
+import { useWhiteboard } from '../context-provider/WhiteboardContextProvider'
 
 export function Toolbar () : JSX.Element {
     const { state, actions: { clear, setBrush } } = useWhiteboard()

@@ -1,5 +1,5 @@
-import { BrushParameters } from "../services/brush/BrushParameters";
-import { Point2D } from "../services/Point2D";
+import { BrushParameters } from "../types/BrushParameters";
+import { Point2D } from "../types/Point2D";
 
 export interface IPainterController {
     on(event: 'operationBegin', listener: (id: string, params: BrushParameters) => void): this

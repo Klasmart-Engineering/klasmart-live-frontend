@@ -1,5 +1,5 @@
-import { PainterEvent, LineData, OperationData } from "../services/PainterEvent"
-import { Point2D } from "../services/Point2D"
+import { PainterEvent, LineData, OperationData } from "../types/PainterEvent"
+import { Point2D } from "../types/Point2D"
 import { EventEmitter } from 'events'
 import { IPainterController } from "./IPainterController"
 

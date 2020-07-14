@@ -1,6 +1,6 @@
 import React from 'react';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
-import { useWhiteboard } from './WhiteboardProvider';
+import { useWhiteboard } from '../context-provider/WhiteboardContextProvider';
 import { EventDrivenCanvas } from './EventDrivenCanvas';
 import { Toolbar } from './Toolbar';
 
