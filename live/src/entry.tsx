@@ -53,7 +53,7 @@ const wsLink = new WebSocketLink({
         connectionParams: {
             authToken,
             sessionId
-        }
+        },
     }
 });
 

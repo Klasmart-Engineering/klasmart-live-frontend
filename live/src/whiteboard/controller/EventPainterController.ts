@@ -5,13 +5,32 @@ import { IPainterController } from "./IPainterController"
 
 export class EventPainterController extends EventEmitter implements IPainterController  {
     readonly normalize: number
+    readonly events: PainterEvent[] = []
 
     constructor(normalize: number) {
         super()
         this.normalize = normalize
     }
 
-    handlePainterEvent(event: PainterEvent): void {
+    async replayEvents(): Promise<void> {
+        for (const event of this.events) {
+            this.parseAndEmitEvent(event)
+        }
+    }
+
+    handlePainterEvent(events: PainterEvent[]): void {
+        for (const event of events) {
+            this.events.push(event)
+
+            this.parseAndEmitEvent(event)    
+
+            if (event.type === 'painterClear') {
+                this.events.splice(0, this.events.length - 1)
+            }
+        }
+    }
+
+    private parseAndEmitEvent(event: PainterEvent) {
         // TODO: Currently the param is sent via GraphQL as a string
         // I would like to create proper type information in GraphQL 
         // instead, since this doesn't feel very reliable.

@@ -1,12 +1,14 @@
-import React, { createContext, FunctionComponent, useCallback, useContext, useEffect, useState, ReactChild, ReactChildren } from "react";
-import { BrushParameters } from "../types/BrushParameters";
-import { PointerPainterController } from "../controller/PointerPainterController";
-import { PaintEventSerializer } from "../event-serializer/PaintEventSerializer";
-import { useWhiteboardGraphQL } from "../hooks/WhiteboardGraphQL";
-import { EventPainterController } from "../controller/EventPainterController";
-import { PainterEvent } from "../types/PainterEvent";
-import { IPainterController } from "../controller/IPainterController";
-import { UserContext } from "../../entry";
+import React, { createContext, FunctionComponent, useCallback, useContext, useEffect, useState, ReactChild, ReactChildren } from 'react';
+import { BrushParameters } from '../types/BrushParameters';
+import { PointerPainterController } from '../controller/PointerPainterController';
+import { PaintEventSerializer } from '../event-serializer/PaintEventSerializer';
+import { useWhiteboardGraphQL } from '../hooks/WhiteboardGraphQL';
+import { EventPainterController } from '../controller/EventPainterController';
+import { PainterEvent } from '../types/PainterEvent';
+import { IPainterController } from '../controller/IPainterController';
+import { UserContext } from '../../entry';
+import { gql } from 'apollo-boost';
+import { useMutation, useSubscription } from '@apollo/react-hooks';
 
 interface IWhiteboardState {
   loading: boolean,
@@ -49,22 +51,37 @@ function attachEventSerializer(controller: IPainterController, serializer: Paint
     });
 }
 
+const WHITEBOARD_SEND_EVENT = gql`
+  mutation whiteboardSendEvent($roomId: ID!, $event: String) {
+    whiteboardSendEvent(roomId: $roomId, event: $event)
+  }
+`
+
+const SUBSCRIBE_WHITEBOARD_EVENTS = gql`
+  subscription whiteboardEvents($roomId: ID!) {
+    whiteboardEvents(roomId: $roomId) {
+      type
+      id
+      param
+    }
+  }
+`
+
 export const WhiteboardContextProvider: FunctionComponent<Props> = ({ children }: Props): JSX.Element => {
-    const [brushParameters, setBrushParameters] = useState<BrushParameters>(BrushParameters.default());
-    const [pointerPainter, setPointerPainter] = useState<PointerPainterController | undefined>(undefined);
-    const [remotePainter, setRemotePainter] = useState<EventPainterController|undefined>(undefined);
+  const [brushParameters, setBrushParameters] = useState<BrushParameters>(BrushParameters.default())
+  const [pointerPainter, setPointerPainter] = useState<PointerPainterController | undefined>(undefined)
+  const [remotePainter, setRemotePainter] = useState<EventPainterController | undefined>(undefined)
   
+  const [sendEventMutation] = useMutation(WHITEBOARD_SEND_EVENT)
+
   const { name, roomId } = useContext(UserContext)
 
-  const handleIncomingEvent = useCallback((roomId: string, event: PainterEvent) => {
-    if (remotePainter) {
-      remotePainter.handlePainterEvent(event)
+  const { loading } = useSubscription(SUBSCRIBE_WHITEBOARD_EVENTS, {
+    onSubscriptionData: ({ subscriptionData: { data: { whiteboardEvents } } }) => {
+      if (remotePainter) {
+        remotePainter.handlePainterEvent(whiteboardEvents)
     }
-  }, [remotePainter, roomId])
-
-  const [sendPointerEvent, loading] = useWhiteboardGraphQL(roomId, (roomId, event) => {
-    handleIncomingEvent(roomId, event)
-  })
+  }, variables: { roomId } })
 
   useEffect(() => {
     const remotePainter = new EventPainterController(NormalizeCoordinates)
@@ -81,7 +98,7 @@ export const WhiteboardContextProvider: FunctionComponent<Props> = ({ children }
     attachEventSerializer(pointerPainter, localEventSerializer)
 
     localEventSerializer.on('event', payload => {
-      sendPointerEvent(roomId, payload)
+      sendEventMutation({ variables: { roomId, event: JSON.stringify(payload) } } )
     })
 
     setPointerPainter(pointerPainter)

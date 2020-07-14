@@ -8,6 +8,7 @@ import { Teacher } from "./pages/teacher/teacher";
 import { webRTCContext } from "./webRTCState";
 import { sessionId, UserContext } from "./entry";
 import Layout from "./components/layout";
+import { WhiteboardContextProvider } from "./whiteboard/context-provider/WhiteboardContextProvider";
 
 export interface Session {
     id: string,
@@ -103,26 +104,32 @@ export function Room ({ teacher }: Props): JSX.Element {
     if(error) {return <Typography ><FormattedMessage id="failed_to_connect" />{JSON.stringify(error)}</Typography>;}
     if(loading || !content) {return <CircularProgress />;}
 
-    return <Layout
-        isTeacher={teacher}
-        users={users}
-        messages={messages}
-        openDrawer={open}
-        setOpenDrawer={setOpenDrawer}
-    >
-        {
-            teacher
-                ? <Teacher 
-                    content={content} 
-                    users={users} 
-                    openDrawer={open}
-                    setOpenDrawer={setOpenDrawer}
-                />
-                : <Student 
-                    content={content}
-                    openDrawer={open}
-                    setOpenDrawer={setOpenDrawer}
-                />
-        }
-    </Layout>;
+
+    return (
+        <WhiteboardContextProvider>
+            <Layout
+                isTeacher={teacher}
+                users={users}
+                messages={messages}
+                openDrawer={open}
+                setOpenDrawer={setOpenDrawer}
+            >
+                {
+                    teacher
+                        ? <Teacher 
+                            content={content} 
+                            users={users} 
+                            openDrawer={open}
+                            setOpenDrawer={setOpenDrawer}
+                        />
+                        : <Student 
+                            content={content}
+                            openDrawer={open}
+                            setOpenDrawer={setOpenDrawer}
+                        />
+                }
+
+            </Layout>
+        </WhiteboardContextProvider>
+    );
 }

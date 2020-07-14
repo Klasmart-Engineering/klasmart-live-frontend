@@ -11,4 +11,6 @@ export interface IPainterController {
     removeListener(event: 'operationEnd', listener: (id: string) => void): this
     removeListener(event: 'painterClear', listener: (id: string) => void): this
     removeListener(event: 'painterLine', listener: (id: string, p1: Point2D, p2: Point2D) => void): this
+
+    replayEvents(): Promise<void>
 }

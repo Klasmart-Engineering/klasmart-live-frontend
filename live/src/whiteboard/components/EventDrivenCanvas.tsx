@@ -90,6 +90,9 @@ export function EventDrivenCanvas({ children, controller, style, width, height, 
         controller.on('painterClear', handlePainterClear)
         controller.on('painterLine', handlePainterLine)
 
+        painter.painterClear()
+        controller.replayEvents()
+
         return () => {
             if (controller) {
                 controller.removeListener('operationBegin', handleOperationBegin)

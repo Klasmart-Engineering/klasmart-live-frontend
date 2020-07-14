@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
-import { ColorResult, CompactPicker } from 'react-color'
+import { ColorResult, CirclePicker } from 'react-color'
 import { Slider, Button } from '@material-ui/core'
 import { useWhiteboard } from '../context-provider/WhiteboardContextProvider'
 
-export function Toolbar () : JSX.Element {
+export default function Toolbar () : JSX.Element {
     const { state, actions: { clear, setBrush } } = useWhiteboard()
 
     const [selectColor, setSelectColor] = useState(false)
@@ -33,8 +33,8 @@ export function Toolbar () : JSX.Element {
     }
 
     return (
-        <div>
-            { selectColor ? <CompactPicker color={state.brushParameters.style} onChangeComplete={c => handleSetColor(c)}/> : <></> }
+    <div>
+            {selectColor ? <div style={{zIndex: 5, width: '840px', backgroundColor: 'rgba(80, 80, 80, 0.4)', padding: '5px', position: 'absolute'}}><CirclePicker width={'100%'}colors={['#000', '#ff0000', '#00ff00', '#0062f1', '#ffff00', 'rgb(200, 147, 68)', '#ffffff']} circleSize={100} color={state.brushParameters.style} onChangeComplete={c => handleSetColor(c)}/></div> : <></> }
         <Slider min={1.0} max={6.0} value={state.brushParameters.width} onChange={(_e, value) => handleSetLineWidth(value)} />
         <br />
         <Button color="primary" onClick={handleDisplayColor}>Color</Button>

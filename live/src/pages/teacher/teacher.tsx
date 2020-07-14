@@ -21,6 +21,7 @@ import CenterAlignChildren from "../../components/centerAlignChildren";
 import { gql } from "apollo-boost";
 import { useMutation } from "@apollo/react-hooks";
 import { Whiteboard } from "../../whiteboard/components/Whiteboard";
+import WBToolbar from "../../whiteboard/components/Toolbar";
 
 const drawerWidth = 340;
 
@@ -257,7 +258,9 @@ export function Teacher (props: Props): JSX.Element {
                                 setParentWidth={setWidth}
                                 setParentHeight={setHeight}
                             />
+                            <WBToolbar />
                         </Whiteboard>
+                        
                     }
                     { content.type !== "Activity" ? <Toolbar /> : null }
                 </Grid>
