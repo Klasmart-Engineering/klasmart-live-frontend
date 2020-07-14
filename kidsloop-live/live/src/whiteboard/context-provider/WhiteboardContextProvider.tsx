@@ -1,17 +1,17 @@
 import React, { createContext, FunctionComponent, useCallback, useContext, useEffect, useState, ReactChild, ReactChildren } from 'react';
-import { BrushParameters } from '../services/brush/BrushParameters';
+import { BrushParameters } from '../types/BrushParameters';
 import { PointerPainterController } from '../controller/PointerPainterController';
-import { EventPainterService } from '../services/EventPainterService';
+import { PaintEventSerializer } from '../event-serializer/PaintEventSerializer';
 import { useWhiteboardGraphQL } from '../hooks/WhiteboardGraphQL';
 import { EventPainterController } from '../controller/EventPainterController';
-import { PainterEvent } from '../services/PainterEvent';
+import { PainterEvent } from '../types/PainterEvent';
 
 interface IWhiteboardState {
   brushParameters: BrushParameters;
   pointerPainter?: PointerPainterController;
   remotePainter?: EventPainterController;
-  localPainterService?: EventPainterService;
-  remotePainterService?: EventPainterService
+  localEventSerializer?: PaintEventSerializer;
+  remoteEventSerializer?: PaintEventSerializer
 }
 
 interface IWhiteboardContext {
@@ -35,7 +35,7 @@ type Props = {
 // instead of 0.0333333333. Sacrificing some sub-pixel accuracy.
 const NormalizeCoordinates = 1000;
 
-export const WhiteboardProvider: FunctionComponent<Props> = ({ children, sessionId, roomId }: Props) : JSX.Element => {
+export const WhiteboardContextProvider: FunctionComponent<Props> = ({ children, sessionId, roomId }: Props) : JSX.Element => {
   const [context, setContext] = useState<IWhiteboardState>({brushParameters: BrushParameters.default()});
 
   const handleIncomingEvent = useCallback((event: PainterEvent) => {
@@ -58,48 +58,49 @@ export const WhiteboardProvider: FunctionComponent<Props> = ({ children, session
 
     const brushParameters = BrushParameters.default()
     
-    const localPainterService = new EventPainterService(NormalizeCoordinates)
+    const localEventSerializer = new PaintEventSerializer(NormalizeCoordinates)
+    
     const pointerPainter = new PointerPainterController(sessionId, true);
     pointerPainter.on('operationBegin', (id, params) => {
-      localPainterService.operationBegin(id, params)
+      localEventSerializer.operationBegin(id, params)
     })
     pointerPainter.on('operationEnd', id => {
-      localPainterService.operationEnd(id)
+      localEventSerializer.operationEnd(id)
     })
     pointerPainter.on('painterClear', id => {
-      localPainterService.painterClear(id)
+      localEventSerializer.painterClear(id)
     })
     pointerPainter.on('painterLine', (id, p1, p2) => {
-      localPainterService.painterLine(id, p1, p2)
+      localEventSerializer.painterLine(id, p1, p2)
     })
 
-    localPainterService.on('event', payload => {
+    localEventSerializer.on('event', payload => {
       sendPointerEvent(payload)
     })
 
     pointerPainter.setBrush(brushParameters);
 
-    const remotePainterService = new EventPainterService(NormalizeCoordinates)
+    const remoteEventSerializer = new PaintEventSerializer(NormalizeCoordinates)
     const remotePainter = new EventPainterController(NormalizeCoordinates)
     remotePainter.on('operationBegin', (id, params) => {
-      remotePainterService.operationBegin(id, params)
+      remoteEventSerializer.operationBegin(id, params)
     })
     remotePainter.on('operationEnd', id => {
-      remotePainterService.operationEnd(id)
+      remoteEventSerializer.operationEnd(id)
     })
     remotePainter.on('painterClear', id => {
-      remotePainterService.painterClear(id)
+      remoteEventSerializer.painterClear(id)
     })
     remotePainter.on('painterLine', (id, p1, p2) => {
-      remotePainterService.painterLine(id, p1, p2)
+      remoteEventSerializer.painterLine(id, p1, p2)
     })
 
     const context = {
       brushParameters,
       pointerPainter,
       remotePainter,
-      localPainterService,
-      remotePainterService
+      localEventSerializer,
+      remoteEventSerializer
     }
 
     setContext(context)
@@ -141,4 +142,4 @@ export function useWhiteboard(): IWhiteboardContext {
   return useContext(Context);
 }
 
-export default WhiteboardProvider
+export default WhiteboardContextProvider

@@ -1,5 +1,5 @@
 import { Point2D } from "./Point2D";
-import { BrushParameters } from "./brush/BrushParameters";
+import { BrushParameters } from "./BrushParameters";
 
 export type PainterEventType = 'operationBegin' | 'operationEnd' | 'painterClear' | 'painterLine'
 

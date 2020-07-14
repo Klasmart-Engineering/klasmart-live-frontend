@@ -1,5 +1,5 @@
-import { Point2D } from "../services/Point2D"
-import { BrushParameters } from "../services/brush/BrushParameters"
+import { Point2D } from "../types/Point2D"
+import { BrushParameters } from "../types/BrushParameters"
 import { EventEmitter } from 'events'
 import { IPainterController } from "./IPainterController"
 

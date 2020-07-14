@@ -1,6 +1,6 @@
 import { useMutation, useSubscription } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
-import { PainterEvent } from "../services/PainterEvent";
+import { PainterEvent } from "../types/PainterEvent";
 
 export type PainterEventFunction = (payload: PainterEvent) => void
 

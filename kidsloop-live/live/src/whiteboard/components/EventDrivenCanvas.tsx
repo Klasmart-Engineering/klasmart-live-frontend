@@ -1,9 +1,9 @@
 import React, { useRef, useEffect, ReactChildren, ReactChild, ReactElement } from 'react'
 import { CanvasPainterController } from '../controller/CanvasPainterController'
 import { CSSProperties } from '@material-ui/core/styles/withStyles'
-import { useWhiteboard } from './WhiteboardProvider'
-import { BrushParameters } from '../services/brush/BrushParameters'
-import { Point2D } from '../services/Point2D'
+import { useWhiteboard } from '../context-provider/WhiteboardContextProvider'
+import { BrushParameters } from '../types/BrushParameters'
+import { Point2D } from '../types/Point2D'
 import { IPainterController } from '../controller/IPainterController'
 
 type Props = {

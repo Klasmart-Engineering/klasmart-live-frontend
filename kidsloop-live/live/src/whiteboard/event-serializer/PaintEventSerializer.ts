@@ -1,6 +1,6 @@
-import { Point2D } from './Point2D'
-import { PainterEvent, LineData, OperationData } from './PainterEvent'
-import { BrushParameters } from './brush/BrushParameters'
+import { Point2D } from '../types/Point2D'
+import { PainterEvent, LineData, OperationData } from '../types/PainterEvent'
+import { BrushParameters } from '../types/BrushParameters'
 import { EventEmitter } from 'events'
 
 // TODO: This service should probably implement some sort of 
@@ -14,11 +14,11 @@ import { EventEmitter } from 'events'
 // {p1, p2} -> {p2, p3} -> {p3 p4}, etc. This is wasteful
 // and should be improved.
 
-export declare interface EventPainterService {
+export declare interface PaintEventSerializer {
     on(event: 'event', listener: (payload: PainterEvent) => void): this
 }
 
-export class EventPainterService extends EventEmitter {
+export class PaintEventSerializer extends EventEmitter {
     readonly multiplier: number
 
     constructor(multiplier: number) {
