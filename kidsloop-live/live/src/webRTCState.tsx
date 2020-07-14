@@ -49,6 +49,21 @@ export class WebRTCContext {
     }).finally(() => {
         WebRTCContext.streamEmitter.emit("rerender");
     });
+    public videoStream(enabled: boolean) {
+        for(const state of this.states.values()) {
+            for(const track of state.videoTracks) {
+                track.enabled = enabled;
+            }
+        }
+    }
+    public audioStream(enabled: boolean) {
+        for(const state of this.states.values()) {
+            for(const track of state.audioTracks) {
+                track.enabled = enabled;
+            }
+        }
+    }
+
     public static useWebRTCContext(roomId: string): WebRTCContext {
         const [sendSignal] = useMutation(SEND_SIGNAL);
         const [webRTCContextValue, setWebRTCContextValue] = useState(
@@ -119,6 +134,8 @@ const iceServers: RTCIceServer[] = [
 class WebRTCState {
     public localMediaStream?: MediaStream
     public remoteMediaStream?: MediaStream
+    public videoTracks: MediaStreamTrack[] = []
+    public audioTracks: MediaStreamTrack[] = []
     public peer: RTCPeerConnection
     private send: (webRTC: WebRTCIn) => any
     private rerender:()=>any
@@ -152,6 +169,11 @@ class WebRTCState {
         if(this.localMediaStream) {
             for(const track of this.localMediaStream.getTracks()) {
                 this.peer.addTrack(track, this.localMediaStream);
+                if (track.kind === "video") {
+                    this.videoTracks.push(track);
+                } else if (track.kind === "audio") {
+                    this.audioTracks.push(track);
+                }
             }
         }
     }
@@ -258,9 +280,26 @@ export function Cameras({noBackground, id}:{noBackground?: boolean, id?: string}
 
 export function Camera({mediaStream, height, width, self, noBackground}:{mediaStream: MediaStream, height: number, width: number, self?: boolean, noBackground?: boolean}): JSX.Element {
     const theme = useTheme();
+    const states = useContext(webRTCContext);
+    if(!states) {
+        console.error("RTC Start button created outside context provider");
+        return <FormattedMessage id="error_no_rtc_provider" />;
+    }
+
     const [cameraTurnedOn, setCameraTurnedOn] = useState(true);
 
     const videoRef = useRef<HTMLVideoElement>(null);
+
+    const closeMediaStream = () => {
+        setCameraTurnedOn(false);
+        states.videoStream(false);
+    };
+
+    const openMediaStream = () => {
+        setCameraTurnedOn(true);
+        states.videoStream(true);
+    };
+
     useEffect(() => {
         if(!videoRef.current) {return;}
         videoRef.current.srcObject = mediaStream;
@@ -293,7 +332,7 @@ export function Camera({mediaStream, height, width, self, noBackground}:{mediaSt
                                 aria-label="control camera"
                                 component="span"
                                 style={{ color: "black", fontSize: 8, padding: 0 }}
-                                onClick={()=>setCameraTurnedOn(!cameraTurnedOn)}
+                                onClick={cameraTurnedOn ? closeMediaStream : openMediaStream}
                             >
                                 {cameraTurnedOn ? <VideocamIcon color="primary" /> : <VideocamOffIcon color="secondary" />}
                             </IconButton>
