@@ -54,76 +54,75 @@ export const WhiteboardContextProvider: FunctionComponent<Props> = ({ children }
     const [pointerPainter, setPointerPainter] = useState<PointerPainterController | undefined>(undefined);
     const [remotePainter, setRemotePainter] = useState<EventPainterController|undefined>(undefined);
   
-    const { sessionId, roomId } = useContext(UserContext);
+  const { name, roomId } = useContext(UserContext)
 
-    const handleIncomingEvent = useCallback((roomId: string, event: PainterEvent) => {
-        if (remotePainter) {
-            remotePainter.handlePainterEvent(event);
-        }
-    }, [remotePainter, roomId]);
+  const handleIncomingEvent = useCallback((roomId: string, event: PainterEvent) => {
+    if (remotePainter) {
+      remotePainter.handlePainterEvent(event)
+    }
+  }, [remotePainter, roomId])
 
-    const [sendPointerEvent, loading] = useWhiteboardGraphQL(roomId, (roomId, event) => {
-        console.log(roomId, event);
-        handleIncomingEvent(roomId, event);
-    });
+  const [sendPointerEvent, loading] = useWhiteboardGraphQL(roomId, (roomId, event) => {
+    handleIncomingEvent(roomId, event)
+  })
 
-    useEffect(() => {
-        const remotePainter = new EventPainterController(NormalizeCoordinates);
+  useEffect(() => {
+    const remotePainter = new EventPainterController(NormalizeCoordinates)
 
-        setRemotePainter(remotePainter);
-    }, []);
+    setRemotePainter(remotePainter)
+  }, [])
 
-    useEffect(() => {
-        if (!sessionId || !roomId)
-            return;
+  useEffect(() => {
+    if (!name || !roomId)
+      return
 
-        const localEventSerializer = new PaintEventSerializer(NormalizeCoordinates);
-        const pointerPainter = new PointerPainterController(name, true);
-        attachEventSerializer(pointerPainter, localEventSerializer);
+    const localEventSerializer = new PaintEventSerializer(NormalizeCoordinates)
+    const pointerPainter = new PointerPainterController(name, true);
+    attachEventSerializer(pointerPainter, localEventSerializer)
 
-        localEventSerializer.on("event", payload => {
-            sendPointerEvent(roomId, payload);
-        });
+    localEventSerializer.on('event', payload => {
+      sendPointerEvent(roomId, payload)
+    })
 
-        setPointerPainter(pointerPainter);
-    }, [roomId, sessionId]);
+    setPointerPainter(pointerPainter)
+  }, [roomId, name])
 
-    useEffect(() => {
-        if (pointerPainter) {
-            pointerPainter.setBrush(brushParameters);
-        }
-    }, [pointerPainter, brushParameters]);
+  useEffect(() => {
+    if (pointerPainter) {
+      pointerPainter.setBrush(brushParameters)
+    }
+  }, [pointerPainter, brushParameters])
 
-    const setBrushAction = useCallback(
-        (brush: BrushParameters) => {
-            setBrushParameters(brush);
-        },
-        [setBrushParameters]
-    );
+  const setBrushAction = useCallback(
+    (brush: BrushParameters) => {
+      setBrushParameters(brush);
+    },
+    [setBrushParameters]
+  );
 
-    const clearAction = useCallback(() => {
-        if (pointerPainter) {
-            pointerPainter.clear();
-        }
-    }, [pointerPainter]);
+  const clearAction = useCallback(() => {
+    if (pointerPainter) {
+      pointerPainter.clear()
+    }
+  }, [pointerPainter]);
 
-    const WhiteboardProviderActions = {
-        clear: clearAction,
-        setBrush: setBrushAction,
-    };
+  const WhiteboardProviderActions = {
+    clear: clearAction,
+    setBrush: setBrushAction,
+  };
 
-    return (
-        <Context.Provider value={{
-            state: {
-                loading,
-                pointerPainter,
-                remotePainter,
-                brushParameters
-            }, actions: WhiteboardProviderActions }}>
-            {children}
-        </Context.Provider>
-    );
-};
+  return (
+    <Context.Provider value={{
+      state: {
+        loading,
+        pointerPainter,
+        remotePainter,
+        brushParameters
+    }, actions: WhiteboardProviderActions }}>
+      {children}
+    </Context.Provider>
+  );
+}
 
 export function useWhiteboard(): IWhiteboardContext {
     return useContext(Context);
