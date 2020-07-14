@@ -1,8 +1,9 @@
 import { useMutation, useSubscription } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
+import { useCallback } from "react";
 import { PainterEvent } from "../types/PainterEvent";
 
-export type PainterEventFunction = (payload: PainterEvent) => void
+export type PainterEventFunction = (roomId: string, payload: PainterEvent) => void
 
 const WHITEBOARD_SEND_EVENT = gql`
   mutation whiteboardSendEvent($roomId: ID!, $event: String) {
@@ -20,27 +21,26 @@ const SUBSCRIBE_WHITEBOARD_EVENTS = gql`
   }
 `
 
-export function useWhiteboardGraphQL(roomId: string | undefined, onEvent: PainterEventFunction): PainterEventFunction {
-    const [sendEventMutation] = useMutation(WHITEBOARD_SEND_EVENT)
+export function useWhiteboardGraphQL(roomId: string | undefined, onEvent: PainterEventFunction): [PainterEventFunction, boolean] {
+  const [sendEventMutation] = useMutation(WHITEBOARD_SEND_EVENT)
 
-    useSubscription(SUBSCRIBE_WHITEBOARD_EVENTS, {
-        onSubscriptionData: ({ subscriptionData }) => {
-            if (!subscriptionData) return
-            if (!subscriptionData.data) return
-            if (!subscriptionData.data.whiteboardEvents) return
+  const { loading } = useSubscription(SUBSCRIBE_WHITEBOARD_EVENTS, {
+    onSubscriptionData: ({ subscriptionData: { data: { whiteboardEvents }} }) => {
+      console.log(whiteboardEvents)
+      if (whiteboardEvents) {
+          receiveEventHandler(whiteboardEvents)
+      }
+  }, variables: { roomId } })
 
-            const whiteboardEvent = subscriptionData.data.whiteboardEvents
-
-            if (whiteboardEvent) {
-                onEvent(whiteboardEvent)
-            }
-        },
-        variables: { roomId }
-    })
-
-    const sendEventAction = (payload: PainterEvent) => {
-        sendEventMutation({ variables: { roomId, event: JSON.stringify(payload) } })
+  const receiveEventHandler = useCallback((whiteboardEvent: any) => {
+    if (roomId !== undefined) {
+      onEvent(roomId, whiteboardEvent)
     }
+  }, [onEvent, roomId])
 
-    return sendEventAction
+  const sendEventAction = (roomId: string, payload: PainterEvent) => {
+    sendEventMutation({ variables: { roomId, event: JSON.stringify(payload) } })
+  }
+
+  return [sendEventAction, loading]
 }

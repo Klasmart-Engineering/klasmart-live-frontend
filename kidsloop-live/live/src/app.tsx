@@ -9,7 +9,7 @@ import React, { useContext } from "react";
 import WhiteboardProvider from "./whiteboard/context-provider/WhiteboardContextProvider";
 
 export function App (): JSX.Element {
-    const {name, roomId, teacher, sessionId} = useContext(UserContext);
+    const {name, teacher} = useContext(UserContext);
     const webrtc = useContext(webRTCContext); 
     if(!name) {return <Join />;}
     if(!webrtc.isCameraReady()) {
@@ -21,7 +21,7 @@ export function App (): JSX.Element {
         );
     }
     return (
-        <WhiteboardProvider sessionId={sessionId} roomId={roomId}>
+        <WhiteboardProvider>
             <Room teacher={teacher} />
         </WhiteboardProvider>
     );
