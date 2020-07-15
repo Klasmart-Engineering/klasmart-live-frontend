@@ -318,7 +318,7 @@ export function MyCamera(): JSX.Element {
         return (
             <Grid container justify="space-between" alignItems="center" style={{ width: "100%", height: 240, backgroundColor: "#193d6f" }}>
                 <Typography style={{ margin: "0 auto", color: "white", padding: 56 }} align="center">
-                    Sorry! Seems like we can't access your 📷.
+                    <FormattedMessage id="error_camera_unavailable" />
                 </Typography>
             </Grid>
         );

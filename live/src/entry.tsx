@@ -10,7 +10,7 @@ import { v4 as uuid } from "uuid";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { createMuiTheme, responsiveFontSizes, Theme, ThemeProvider } from "@material-ui/core/styles";
 import { PaletteOptions } from "@material-ui/core/styles/createPalette";
-import { IntlProvider, FormattedMessage } from "react-intl";
+import { IntlProvider } from "react-intl";
 import jwt_decode = require("jwt-decode")
 import { LessonMaterial } from "./lessonMaterialContext";
 import Typography from "@material-ui/core/Typography";
