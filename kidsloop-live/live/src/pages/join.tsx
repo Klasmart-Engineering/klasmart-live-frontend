@@ -9,7 +9,7 @@ import KidsloopLogo from "../assets/img/kidsloop.svg";
 import CenterAlignChildren from "../components/centerAlignChildren";
 import StyledButton from "../components/styled/button";
 import StyledTextField from "../components/styled/textfield";
-import { IUserContext, UserContext } from "../app";
+import { UserContext } from "../entry";
 
 const useStyles = makeStyles(() =>
     createStyles({

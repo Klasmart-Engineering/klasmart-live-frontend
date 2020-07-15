@@ -2,7 +2,7 @@ import React, { useContext, useMemo, useRef, useState } from "react";
 import Popover from "@material-ui/core/Popover";
 import { FormattedMessage } from "react-intl";
 import { IconButton, Button } from "@material-ui/core";
-import { UserContext } from "../app";
+import { UserContext } from "../entry";
 import CopyIcon from "@material-ui/icons/FileCopyTwoTone";
 import ShareIcon from "@material-ui/icons/ShareTwoTone";
 

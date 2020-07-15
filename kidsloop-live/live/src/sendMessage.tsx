@@ -3,7 +3,7 @@ import { CircularProgress, Paper, makeStyles, Theme, createStyles, InputBase, Di
 import SendTwoToneIcon from "@material-ui/icons/SendTwoTone";
 import { useMutation } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
-import { UserContext } from "./app";
+import { UserContext } from "./entry";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

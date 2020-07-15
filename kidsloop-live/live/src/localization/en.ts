@@ -12,6 +12,7 @@ export const en = {
     open_preview_drawer: "Open Drawer",
     close_preview_drawer: "Close Drawer",
     start_activity_button: "Start Activity All",
+    waiting_for_camera: "Waiting for camera permission",
     waiting_for_class: "Waiting for class to start.",
     waiting_for_students: "Waiting for students to join the room.",
     zoom_into_activity: "Zoom in this activity",
