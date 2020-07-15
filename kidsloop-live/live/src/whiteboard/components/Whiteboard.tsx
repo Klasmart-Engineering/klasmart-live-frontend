@@ -16,15 +16,19 @@ const canvasStyle: CSSProperties = {
 type Props = {
   children?: ReactChild | ReactNode | null;
   height: string | number;
+  display?: boolean;
+  allowPainting?: boolean;
 }
 
-export function Whiteboard({ children, height }: Props): JSX.Element {
+export function Whiteboard({ children, height, display, allowPainting }: Props): JSX.Element {
     const { state } = useWhiteboard();
   
+    const pointerEvents = allowPainting ? undefined : "none";
+
     return (
-        <div style={{position:"relative", width: "100%" }}>
+        <div style={{position:"relative", width: "100%", display: "none"}}>
             <EventDrivenCanvas width="1024" height="1024" style={{ ...canvasStyle, pointerEvents: "none", height }} controller={state.remotePainter} />
-            <EventDrivenCanvas enablePointer={true} width="1024" height="1024" style={{...canvasStyle, height}} controller={state.pointerPainter} />
+            <EventDrivenCanvas enablePointer={allowPainting} width="1024" height="1024" style={{...canvasStyle, height, pointerEvents: pointerEvents}} controller={state.pointerPainter} />
             {children}
         </div>
     );
