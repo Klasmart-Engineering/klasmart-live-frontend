@@ -1,7 +1,7 @@
-import React, { useRef, useEffect, Dispatch, SetStateAction, useState, useContext } from 'react'
-import { gql } from 'apollo-boost'
-import { useMutation } from '@apollo/react-hooks'
-import { UserContext } from '../app'
+import React, { useRef, useEffect, Dispatch, SetStateAction, useState, useContext } from "react";
+import { gql } from "apollo-boost";
+import { useMutation } from "@apollo/react-hooks";
+import { UserContext } from "../app";
 import IframeResizer from "iframe-resizer-react";
 
 const SET_STREAMID = gql`
@@ -66,7 +66,7 @@ export function RecordedIframe(props: Props): JSX.Element {
             } else if (content.length > 0) {
                 content[0].setAttribute("data-iframe-height", "");
             } else {
-                setMinHeight(700)
+                setMinHeight(700);
             }
 
             const script2 = doc.createElement("script");
@@ -124,7 +124,7 @@ export function RecordedIframe(props: Props): JSX.Element {
             heightCalculationMethod="taggedElement"
             minHeight={minHeight}
             onResized={(e) => {
-                startRecording()
+                startRecording();
                 setWidth(e.width);
                 if (e.height > maxHeight && numRenders < 1) {
                     fitToScreen(e.width, e.height);
