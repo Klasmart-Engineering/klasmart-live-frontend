@@ -2,7 +2,9 @@ import React, { createContext, FunctionComponent, useCallback, useContext, useEf
 import { BrushParameters } from "../types/BrushParameters";
 import { PointerPainterController } from "../controller/PointerPainterController";
 import { PaintEventSerializer } from "../event-serializer/PaintEventSerializer";
+import { useWhiteboardGraphQL } from "../hooks/WhiteboardGraphQL";
 import { EventPainterController } from "../controller/EventPainterController";
+import { PainterEvent } from "../types/PainterEvent";
 import { IPainterController } from "../controller/IPainterController";
 import { UserContext } from "../../entry";
 import { gql } from "apollo-boost";
@@ -44,12 +46,11 @@ function attachEventSerializer(controller: IPainterController, serializer: Paint
     controller.on("operationEnd", id => {
         serializer.operationEnd(id);
     });
-    controller.on("painterClear", id => {
-        serializer.painterClear(id);
-    });
     controller.on("painterLine", (id, p1, p2) => {
         serializer.painterLine(id, p1, p2);
     });
+  
+    // NOTE: The clear event is omitted because it shouldn't be sent recursively. 
 }
 
 const WHITEBOARD_SEND_EVENT = gql`
@@ -73,6 +74,7 @@ export const WhiteboardContextProvider: FunctionComponent<Props> = ({ children, 
     const [pointerPainter, setPointerPainter] = useState<PointerPainterController | undefined>(undefined);
     const [remotePainter, setRemotePainter] = useState<EventPainterController | undefined>(undefined);
     const [display, setDisplay] = useState<boolean>(false);
+    const [eventSerializer, setEventSerializer] = useState<PaintEventSerializer | undefined>(undefined);
   
     const [sendEventMutation] = useMutation(WHITEBOARD_SEND_EVENT);
 
@@ -88,8 +90,14 @@ export const WhiteboardContextProvider: FunctionComponent<Props> = ({ children, 
     useEffect(() => {
         const remotePainter = new EventPainterController(NormalizeCoordinates);
 
+        remotePainter.on("painterClear", (_id) => {
+            if (pointerPainter) {
+                pointerPainter.clear();
+            }
+        });
+
         setRemotePainter(remotePainter);
-    }, []);
+    }, [pointerPainter]);
 
     useEffect(() => {
         if (!name || !roomId)
@@ -98,11 +106,11 @@ export const WhiteboardContextProvider: FunctionComponent<Props> = ({ children, 
         const localEventSerializer = new PaintEventSerializer(NormalizeCoordinates);
         const pointerPainter = new PointerPainterController(name, true);
         attachEventSerializer(pointerPainter, localEventSerializer);
-
         localEventSerializer.on("event", payload => {
             sendEventMutation({ variables: { roomId, event: JSON.stringify(payload) } } );
         });
 
+        setEventSerializer(localEventSerializer);
         setPointerPainter(pointerPainter);
     }, [roomId, name]);
 
@@ -123,7 +131,10 @@ export const WhiteboardContextProvider: FunctionComponent<Props> = ({ children, 
         if (pointerPainter) {
             pointerPainter.clear();
         }
-    }, [pointerPainter]);
+        if (eventSerializer) {
+            eventSerializer.painterClear(roomId);
+        }
+    }, [roomId, pointerPainter, eventSerializer]);
 
     const setDisplayAction = useCallback(
         (display: boolean) => {
