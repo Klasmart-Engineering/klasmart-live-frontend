@@ -249,7 +249,7 @@ export function Teacher (props: Props): JSX.Element {
                                 ))
                             }
                         </> :
-                        <Whiteboard height={height}>
+                        <Whiteboard height={height} allowPainting={true}>
                             <RecordedIframe
                                 contentId={contentId}
                                 setStreamId={setStreamId}

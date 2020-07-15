@@ -2,16 +2,16 @@ import React, { createContext, FunctionComponent, useCallback, useContext, useEf
 import { BrushParameters } from "../types/BrushParameters";
 import { PointerPainterController } from "../controller/PointerPainterController";
 import { PaintEventSerializer } from "../event-serializer/PaintEventSerializer";
-import { useWhiteboardGraphQL } from "../hooks/WhiteboardGraphQL";
 import { EventPainterController } from "../controller/EventPainterController";
-import { PainterEvent } from "../types/PainterEvent";
 import { IPainterController } from "../controller/IPainterController";
 import { UserContext } from "../../entry";
 import { gql } from "apollo-boost";
 import { useMutation, useSubscription } from "@apollo/react-hooks";
 
 interface IWhiteboardState {
-  loading: boolean,
+  loading: boolean;
+  display: boolean;
+  allowPaint: boolean;
   brushParameters: BrushParameters;
   pointerPainter?: PointerPainterController;
   remotePainter?: EventPainterController;
@@ -23,12 +23,13 @@ interface IWhiteboardContext {
 }
 
 const Context = createContext<IWhiteboardContext>({
-    state: {loading: true, brushParameters: BrushParameters.default()},
+    state: {loading: true, display: false, allowPaint: false, brushParameters: BrushParameters.default()},
     actions: {},
 });
 
 type Props = {
-  children?: ReactChild | ReactChildren | null
+  children?: ReactChild | ReactChildren | null;
+  allowPaint: boolean;
 }
 
 // NOTE: This is used to scale up the coordinates sent in events
@@ -67,10 +68,11 @@ const SUBSCRIBE_WHITEBOARD_EVENTS = gql`
   }
 `;
 
-export const WhiteboardContextProvider: FunctionComponent<Props> = ({ children }: Props): JSX.Element => {
+export const WhiteboardContextProvider: FunctionComponent<Props> = ({ children, allowPaint }: Props): JSX.Element => {
     const [brushParameters, setBrushParameters] = useState<BrushParameters>(BrushParameters.default());
     const [pointerPainter, setPointerPainter] = useState<PointerPainterController | undefined>(undefined);
     const [remotePainter, setRemotePainter] = useState<EventPainterController | undefined>(undefined);
+    const [display, setDisplay] = useState<boolean>(false);
   
     const [sendEventMutation] = useMutation(WHITEBOARD_SEND_EVENT);
 
@@ -123,15 +125,25 @@ export const WhiteboardContextProvider: FunctionComponent<Props> = ({ children }
         }
     }, [pointerPainter]);
 
+    const setDisplayAction = useCallback(
+        (display: boolean) => {
+            setDisplay(display);
+        },
+        [setDisplay]
+    );
+
     const WhiteboardProviderActions = {
         clear: clearAction,
         setBrush: setBrushAction,
+        display: setDisplayAction,
     };
 
     return (
         <Context.Provider value={{
             state: {
                 loading,
+                display,
+                allowPaint,
                 pointerPainter,
                 remotePainter,
                 brushParameters
