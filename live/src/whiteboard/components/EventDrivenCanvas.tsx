@@ -1,10 +1,10 @@
-import React, { useRef, useEffect, ReactChildren, ReactChild, ReactElement } from 'react'
-import { CanvasPainterController } from '../controller/CanvasPainterController'
-import { CSSProperties } from '@material-ui/core/styles/withStyles'
-import { useWhiteboard } from '../context-provider/WhiteboardContextProvider'
-import { BrushParameters } from '../types/BrushParameters'
-import { Point2D } from '../types/Point2D'
-import { IPainterController } from '../controller/IPainterController'
+import React, { useRef, useEffect, ReactChildren, ReactChild, ReactElement } from "react";
+import { CanvasPainterController } from "../controller/CanvasPainterController";
+import { CSSProperties } from "@material-ui/core/styles/withStyles";
+import { useWhiteboard } from "../context-provider/WhiteboardContextProvider";
+import { BrushParameters } from "../types/BrushParameters";
+import { Point2D } from "../types/Point2D";
+import { IPainterController } from "../controller/IPainterController";
 
 type Props = {
     children?: ReactChild | ReactChildren | null
@@ -16,7 +16,7 @@ type Props = {
 }
 
 export function EventDrivenCanvas({ children, controller, style, width, height, enablePointer }: Props): ReactElement {
-    const ref = useRef<HTMLCanvasElement>(null)
+    const ref = useRef<HTMLCanvasElement>(null);
 
     const {
         state: { pointerPainter }
@@ -24,84 +24,84 @@ export function EventDrivenCanvas({ children, controller, style, width, height, 
 
     useEffect(() => {
         if (!ref.current || !enablePointer || !pointerPainter) {
-            return
+            return;
         }
 
         const handlePointerDown = (event: PointerEvent) => {
-            pointerPainter.handlePointerDown(event)
-        }
+            pointerPainter.handlePointerDown(event);
+        };
 
         const handlePointerUp = (event: PointerEvent) => {
-            pointerPainter.handlePointerUp(event)
-        }
+            pointerPainter.handlePointerUp(event);
+        };
 
         const handlePointerCancel = (event: PointerEvent) => {
-            pointerPainter.handlePointerCancel(event)
-        }
+            pointerPainter.handlePointerCancel(event);
+        };
 
         const handlePointerMove = (event: PointerEvent) => {
-            pointerPainter.handlePointerMove(event)
-        }
+            pointerPainter.handlePointerMove(event);
+        };
 
         const handlePointerLeave = (event: PointerEvent) => {
-            pointerPainter.handlePointerLeave(event)
-        }
+            pointerPainter.handlePointerLeave(event);
+        };
 
-        const canvas = ref.current
-        canvas.addEventListener('pointerdown', handlePointerDown, false);
-        canvas.addEventListener('pointerup', handlePointerUp, false);
-        canvas.addEventListener('pointercancel', handlePointerCancel, false);
-        canvas.addEventListener('pointermove', handlePointerMove, false);
-        canvas.addEventListener('pointerleave', handlePointerLeave, false);
+        const canvas = ref.current;
+        canvas.addEventListener("pointerdown", handlePointerDown, false);
+        canvas.addEventListener("pointerup", handlePointerUp, false);
+        canvas.addEventListener("pointercancel", handlePointerCancel, false);
+        canvas.addEventListener("pointermove", handlePointerMove, false);
+        canvas.addEventListener("pointerleave", handlePointerLeave, false);
 
         return () => {
-            canvas.removeEventListener('pointerdown', handlePointerDown);
-            canvas.removeEventListener('pointerup', handlePointerUp);
-            canvas.removeEventListener('pointercancel', handlePointerCancel);
-            canvas.removeEventListener('pointermove', handlePointerMove);
-            canvas.removeEventListener('pointerleave', handlePointerLeave);
+            canvas.removeEventListener("pointerdown", handlePointerDown);
+            canvas.removeEventListener("pointerup", handlePointerUp);
+            canvas.removeEventListener("pointercancel", handlePointerCancel);
+            canvas.removeEventListener("pointermove", handlePointerMove);
+            canvas.removeEventListener("pointerleave", handlePointerLeave);
         };
-    }, [pointerPainter, enablePointer])
+    }, [pointerPainter, enablePointer]);
 
     useEffect(() => {
-        if (ref.current === null) return
-        if (controller === undefined) return
+        if (ref.current === null) return;
+        if (controller === undefined) return;
 
-        const painter = new CanvasPainterController(ref.current)
+        const painter = new CanvasPainterController(ref.current);
 
         const handleOperationBegin = (id: string, params: BrushParameters) => {
-            painter.operationBegin(id, params)
-        }
+            painter.operationBegin(id, params);
+        };
 
         const handleOperationEnd = (id: string) => {
-            painter.operationEnd(id)
-        }
+            painter.operationEnd(id);
+        };
 
         const handlePainterClear = (_id: string) => {
-            painter.painterClear()
-        }
+            painter.painterClear();
+        };
 
         const handlePainterLine = (id: string, p1: Point2D, p2: Point2D) => {
-            painter.painterLine(id, p1, p2)
-        }
+            painter.painterLine(id, p1, p2);
+        };
 
-        controller.on('operationBegin', handleOperationBegin)
-        controller.on('operationEnd', handleOperationEnd)
-        controller.on('painterClear', handlePainterClear)
-        controller.on('painterLine', handlePainterLine)
+        controller.on("operationBegin", handleOperationBegin);
+        controller.on("operationEnd", handleOperationEnd);
+        controller.on("painterClear", handlePainterClear);
+        controller.on("painterLine", handlePainterLine);
 
-        painter.painterClear()
-        controller.replayEvents()
+        painter.painterClear();
+        controller.replayEvents();
 
         return () => {
             if (controller) {
-                controller.removeListener('operationBegin', handleOperationBegin)
-                controller.removeListener('operationEnd', handleOperationEnd)
-                controller.removeListener('painterClear', handlePainterClear)
-                controller.removeListener('painterLine', handlePainterLine)
+                controller.removeListener("operationBegin", handleOperationBegin);
+                controller.removeListener("operationEnd", handleOperationEnd);
+                controller.removeListener("painterClear", handlePainterClear);
+                controller.removeListener("painterLine", handlePainterLine);
             }
-        }
-    }, [controller])
+        };
+    }, [controller]);
 
-    return <canvas width={width} height={height} ref={ref} style={style}>{children}</canvas>
+    return <canvas width={width} height={height} ref={ref} style={style}>{children}</canvas>;
 }
