@@ -8,10 +8,9 @@ import { EventDrivenCanvas } from "./EventDrivenCanvas";
 type Props = {
   children?: ReactChild | ReactNode | null;
   height: string | number;
-  allowPainting?: boolean;
 }
 
-export function Whiteboard({ children, height, allowPainting }: Props): JSX.Element {
+export function Whiteboard({ children, height }: Props): JSX.Element {
     const { state } = useWhiteboard();
 
     const canvasStyle: CSSProperties = {
@@ -23,12 +22,12 @@ export function Whiteboard({ children, height, allowPainting }: Props): JSX.Elem
         zIndex: 998,
     };
   
-    const pointerEvents = allowPainting ? undefined : "none";
+    const pointerEvents = state.allowPaint ? undefined : "none";
 
     return (
         <div style={{position:"relative", width: "100%"}}>
             <EventDrivenCanvas width="1024" height="1024" style={{ ...canvasStyle, pointerEvents: "none", height, display: state.display ? "inline-block" : "none" }} controller={state.remotePainter} />
-            <EventDrivenCanvas enablePointer={allowPainting} width="1024" height="1024" style={{...canvasStyle, height, pointerEvents: pointerEvents, display: state.display ? "inline-block" : "none"}} controller={state.pointerPainter} />
+            <EventDrivenCanvas enablePointer={state.allowPaint} width="1024" height="1024" style={{...canvasStyle, height, pointerEvents: pointerEvents, display: state.display ? "inline-block" : "none"}} controller={state.pointerPainter} />
             {children}
         </div>
     );
