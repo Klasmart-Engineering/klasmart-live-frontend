@@ -13,6 +13,7 @@ import { RecordedIframe } from "../../components/recordediframe";
 import CameraContainer from "../../components/cameraContainer";
 import { Content } from "../../room";
 import { Whiteboard } from "../../whiteboard/components/Whiteboard";
+import WBToolbar from "../../whiteboard/components/Toolbar";
 
 const drawerWidth = 340;
 
@@ -137,6 +138,7 @@ export function Student(props: Props): JSX.Element {
                 <Grid item xs={12} md={8} style={{ height: height, width: width, margin: "0 auto 16px auto" }}>
                     <Whiteboard height={height}>
                         <PreviewPlayer streamId={content.contentId} height={height} width={width} />
+                        <WBToolbar />
                     </Whiteboard>
                 </Grid>
                 <Grid item xs={12}>
@@ -187,6 +189,7 @@ export function Student(props: Props): JSX.Element {
                         setParentWidth={setWidth}
                         setParentHeight={setHeight}
                     />
+                    <WBToolbar />
                 </Whiteboard>
                 <Grid item xs={12}>
                     <Grid

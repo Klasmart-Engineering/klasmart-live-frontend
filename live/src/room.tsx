@@ -3,10 +3,10 @@ import { gql } from "apollo-boost";
 import { useSubscription } from "@apollo/react-hooks";
 import { FormattedMessage } from "react-intl";
 import { CircularProgress, Typography, useTheme, useMediaQuery } from "@material-ui/core";
+import { sessionId, UserContext } from "./entry";
 import { Student } from "./pages/student/student";
 import { Teacher } from "./pages/teacher/teacher";
-import { webRTCContext } from "./webRTCState";
-import { sessionId, UserContext } from "./entry";
+import { webRTCContext} from "./webRTCState";
 import Layout from "./components/layout";
 import { WhiteboardContextProvider } from "./whiteboard/context-provider/WhiteboardContextProvider";
 
@@ -100,13 +100,11 @@ export function Room ({ teacher }: Props): JSX.Element {
             setOpen(false);
         }
     }, [isSmDown]);
-
     if(error) {return <Typography ><FormattedMessage id="failed_to_connect" />{JSON.stringify(error)}</Typography>;}
     if(loading || !content) {return <CircularProgress />;}
 
-
     return (
-        <WhiteboardContextProvider>
+        <WhiteboardContextProvider allowPaint={teacher}>
             <Layout
                 isTeacher={teacher}
                 users={users}
@@ -128,7 +126,6 @@ export function Room ({ teacher }: Props): JSX.Element {
                             setOpenDrawer={setOpenDrawer}
                         />
                 }
-
             </Layout>
         </WhiteboardContextProvider>
     );
