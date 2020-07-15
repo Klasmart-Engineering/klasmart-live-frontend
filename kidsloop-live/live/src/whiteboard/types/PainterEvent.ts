@@ -1,7 +1,7 @@
 import { Point2D } from "./Point2D";
 import { BrushParameters } from "./BrushParameters";
 
-export type PainterEventType = 'operationBegin' | 'operationEnd' | 'painterClear' | 'painterLine'
+export type PainterEventType = "operationBegin" | "operationEnd" | "painterClear" | "painterLine"
 
 export interface OperationData {
     brush?: BrushParameters | undefined
