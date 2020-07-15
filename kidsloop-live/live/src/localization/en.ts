@@ -5,6 +5,7 @@ export const en = {
     button_stop: "Stop",
     button_stream: "Stream",
     button_invite_students: "Invite",
+    error_camera_unavailable: "Sorry! Seems like we can't access your 📷.",
     error_webrtc_unavailable: "Error: WebRTC context unavailable",
     error_unknown_content: "Error: Unknown content type",
     failed_to_connect: "Failed to connect",
