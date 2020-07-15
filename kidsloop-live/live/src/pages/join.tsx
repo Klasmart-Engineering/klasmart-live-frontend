@@ -1,28 +1,28 @@
-import React, { useState, useContext } from 'react'
-import { createStyles, makeStyles, useTheme } from '@material-ui/core/styles'
-import Container from '@material-ui/core/Container'
-import Card from '@material-ui/core/Card'
-import CardContent from '@material-ui/core/CardContent'
-import Grid from '@material-ui/core/Grid'
-import Typography from '@material-ui/core/Typography'
+import React, { useState, useContext } from "react";
+import { createStyles, makeStyles, useTheme } from "@material-ui/core/styles";
+import Container from "@material-ui/core/Container";
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
+import Grid from "@material-ui/core/Grid";
+import Typography from "@material-ui/core/Typography";
 import KidsloopLogo from "../assets/img/kidsloop.svg";
-import CenterAlignChildren from '../components/centerAlignChildren'
-import StyledButton from '../components/styled/button'
-import StyledTextField from '../components/styled/textfield'
-import { IUserContext, UserContext } from '../app'
+import CenterAlignChildren from "../components/centerAlignChildren";
+import StyledButton from "../components/styled/button";
+import StyledTextField from "../components/styled/textfield";
+import { IUserContext, UserContext } from "../app";
 
 const useStyles = makeStyles(() =>
     createStyles({
         container: {
-            margin: 'auto 0'
+            margin: "auto 0"
         },
         card: {
-            display: 'flex',
-            alignItems: 'center',
-            padding: '48px 40px !important'
+            display: "flex",
+            alignItems: "center",
+            padding: "48px 40px !important"
         },
         formContainer: {
-            width: '100%'
+            width: "100%"
         },
         pageWrapper: {
             display: "flex",
@@ -30,14 +30,14 @@ const useStyles = makeStyles(() =>
             height: "100vh",
         },
     })
-)
+);
 
 export function Join (): JSX.Element {
-    const classes = useStyles()
+    const classes = useStyles();
     const theme = useTheme();
-    const [user, setUser] = useState<string>('')
+    const [user, setUser] = useState<string>("");
 
-    const {setName} = useContext(UserContext)
+    const {setName} = useContext(UserContext);
     
     return (
         <Grid
@@ -60,13 +60,13 @@ export function Join (): JSX.Element {
                                 </CenterAlignChildren>
                             </Grid>
                             <Grid item xs={12} className={classes.formContainer}>
-                                <form onSubmit={(e) => { e.preventDefault(); setName(user) }}>
+                                <form onSubmit={(e) => { e.preventDefault(); setName(user); }}>
                                     <Grid container spacing={2}>
                                         <Grid item xs={12}>
                                             <StyledTextField
                                                 fullWidth
                                                 value={user}
-                                                label={'What is your name?'}
+                                                label={"What is your name?"}
                                                 onChange={(e) => setUser(e.target.value)}
                                             />
                                         </Grid>
@@ -89,6 +89,6 @@ export function Join (): JSX.Element {
                 </Card>
             </Container>
         </Grid>
-    )
+    );
 }
 

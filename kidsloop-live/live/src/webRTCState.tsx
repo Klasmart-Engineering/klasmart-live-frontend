@@ -40,10 +40,12 @@ export interface WebRTC {
 navigator.mediaDevices.getUserMedia({video: true, audio: true}).then((stream) => {
     WebRTCContext.stream = stream;
     WebRTCContext.streamEmitter.emit("rerender");
+}).catch(() => {
+    WebRTCContext.stream = null;
 });
 export class WebRTCContext {
     public static streamEmitter = new EventEmitter()
-    public static stream?: MediaStream
+    public static stream?: MediaStream | null
     public static useWebRTCContext(roomId: string): WebRTCContext {
         const [sendSignal] = useMutation(SEND_SIGNAL);
         const [webRTCContextValue, setWebRTCContextValue] = useState(
