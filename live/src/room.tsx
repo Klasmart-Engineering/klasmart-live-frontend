@@ -6,7 +6,7 @@ import { CircularProgress, Typography, useTheme, useMediaQuery } from "@material
 // import { Student } from './pages/student'
 import { Student } from "./pages/student/student";
 import { Teacher } from "./pages/teacher/teacher";
-import { webRTCContext, WebRTCContext } from "./webRTCState";
+import { webRTCContext } from "./webRTCState";
 import { sessionId, UserContext } from "./entry";
 import Layout from "./components/layout";
 
@@ -49,9 +49,8 @@ export function Room ({ teacher }: Props): JSX.Element {
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
 
     const {roomId, name} = useContext(UserContext);
+    const webrtc = useContext(webRTCContext);
     
-    const webRTCContextValue = WebRTCContext.useWebRTCContext(roomId);
-
     const [open, setOpen] = useState<boolean>(isSmDown ? false : true);
     const setOpenDrawer = () => {
         setOpen(!open);
@@ -74,7 +73,7 @@ export function Room ({ teacher }: Props): JSX.Element {
             if(join) {
                 newState.set(join.id, join);
                 if(teacher && join.id != sessionId) {
-                    webRTCContextValue.start(join.id);
+                    webrtc.start(join.id);
                 }
             }
             if(leave) { newState.delete(leave.id); }
@@ -92,7 +91,7 @@ export function Room ({ teacher }: Props): JSX.Element {
             if (message) { addMessage(message); }
             if (content) { setContent(content); }
             if (join || leave) { updateUsers(subscriptionData.data.room); }
-            if(session && session.webRTC) { await webRTCContextValue.notification(session.webRTC); }
+            if(session && session.webRTC) { await webrtc.notification(session.webRTC); }
         },
         variables: { roomId, name }
     });
@@ -106,28 +105,26 @@ export function Room ({ teacher }: Props): JSX.Element {
     if(error) {return <Typography ><FormattedMessage id="failed_to_connect" />{JSON.stringify(error)}</Typography>;}
     if(loading || !content) {return <CircularProgress />;}
 
-    return <webRTCContext.Provider value={webRTCContextValue}>
-        <Layout
-            isTeacher={teacher}
-            users={users}
-            messages={messages}
-            openDrawer={open}
-            setOpenDrawer={setOpenDrawer}
-        >
-            {
-                teacher
-                    ? <Teacher 
-                        content={content} 
-                        users={users} 
-                        openDrawer={open}
-                        setOpenDrawer={setOpenDrawer}
-                    />
-                    : <Student 
-                        content={content}
-                        openDrawer={open}
-                        setOpenDrawer={setOpenDrawer}
-                    />
-            }
-        </Layout>
-    </webRTCContext.Provider>;
+    return <Layout
+        isTeacher={teacher}
+        users={users}
+        messages={messages}
+        openDrawer={open}
+        setOpenDrawer={setOpenDrawer}
+    >
+        {
+            teacher
+                ? <Teacher 
+                    content={content} 
+                    users={users} 
+                    openDrawer={open}
+                    setOpenDrawer={setOpenDrawer}
+                />
+                : <Student 
+                    content={content}
+                    openDrawer={open}
+                    setOpenDrawer={setOpenDrawer}
+                />
+        }
+    </Layout>;
 }

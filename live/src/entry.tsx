@@ -15,6 +15,7 @@ import jwt_decode = require("jwt-decode")
 import { LessonMaterial } from "./lessonMaterialContext";
 import Typography from "@material-ui/core/Typography";
 import { en } from "./localization/en";
+import { webRTCContext, WebRTCContext } from "./webRTCState";
 
 
 function setTypography(languageCode: string) {
@@ -103,6 +104,16 @@ export const UserContext = createContext<IUserContext>({setName: () => null, roo
 function parseToken() {
     try {
         const url = new URL(window.location.href);
+        console.log(url);
+        if(url.hostname === "localhost") {
+            return {
+                teacher: url.searchParams.get("teacher") !== null,
+                name: url.searchParams.get("name") || `Developer-${Math.floor(Math.random()*100)}`,
+                roomId: url.searchParams.get("roomId") || "test-room",
+                materials: JSON.parse(url.searchParams.get("materials")||"[]"),
+            };
+        }
+
         const token = url.searchParams.get("token");
         if(!token) {return;}
         const payload = jwt_decode(token) as any;
@@ -128,24 +139,27 @@ function Entry() {
         teacher: params.teacher,
         materials: params.materials
     }), [name, setName, params]);
+    const webRTCContextValue = WebRTCContext.useWebRTCContext(userContext.roomId);
 
     return (
-        <ApolloProvider client={client}>
-            <HashRouter>
-                <UserContext.Provider value={userContext}>
+        <HashRouter>
+            <UserContext.Provider value={userContext}>
+                <webRTCContext.Provider value={webRTCContextValue}>
                     <IntlProvider locale="en" messages={en}>
                         <ThemeProvider theme={theme}>
                             <CssBaseline />
                             <App />
                         </ThemeProvider>
                     </IntlProvider>
-                </UserContext.Provider>
-            </HashRouter>
-        </ApolloProvider>
+                </webRTCContext.Provider>
+            </UserContext.Provider>
+        </HashRouter>
     );
 }
 
 render(
-    <Entry />,
+    <ApolloProvider client={client}>
+        <Entry />
+    </ApolloProvider>,
     document.getElementById("app")
 );
