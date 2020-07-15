@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, Dispatch, SetStateAction, useState, useContext } from "react";
 import { gql } from "apollo-boost";
 import { useMutation } from "@apollo/react-hooks";
-import { UserContext } from "../app";
+import { UserContext } from "../entry";
 import IframeResizer from "iframe-resizer-react";
 
 const SET_STREAMID = gql`

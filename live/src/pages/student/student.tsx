@@ -7,7 +7,7 @@ import Grid from "@material-ui/core/Grid";
 import MenuOpenIcon from "@material-ui/icons/MenuOpen";
 import React, { useState, useEffect, useContext } from "react";
 import { FormattedMessage } from "react-intl";
-import { UserContext } from "../../app";
+import { UserContext } from "../../entry";
 import { PreviewPlayer } from "../../components/preview-player";
 import { RecordedIframe } from "../../components/recordediframe";
 import CameraContainer from "../../components/cameraContainer";

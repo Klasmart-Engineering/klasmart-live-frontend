@@ -94,7 +94,7 @@ export class WebRTCContext {
     private async getOrCreateState(sessionId: string): Promise<WebRTCState> {
         let state = this.states.get(sessionId);
         if(!state) {
-            state = new WebRTCState((webRTC: WebRTCIn) => this.send(sessionId, webRTC), ()=> this.rerender(), WebRTCContext.stream);
+            state = new WebRTCState((webRTC: WebRTCIn) => this.send(sessionId, webRTC), ()=> this.rerender(), WebRTCContext.stream||undefined);
             this.states.set(sessionId, state);
         }
         return state;

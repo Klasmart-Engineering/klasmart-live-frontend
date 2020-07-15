@@ -83,13 +83,11 @@ interface Props {
 
 
 export function Teacher (props: Props): JSX.Element {
-    const {roomId} = useContext(UserContext);
+    const {roomId, sessionId, materials} = useContext(UserContext);
     const classes = useStyles();
     const theme = useTheme();
-    const {materials} = useContext(UserContext);
     const { content, users, openDrawer, setOpenDrawer } = props;
   
-    const sessionId = useContext(sessionIdContext);
     const [streamId, setStreamId] = useState<string>();
     const [width, setWidth] = useState<string | number>("100%");
     const [height, setHeight] = useState<string | number>("100%");

@@ -1,59 +1,22 @@
-import React, { createContext, useState, useMemo } from "react";
-import { IntlProvider } from "react-intl";
-import { en } from "./localization/en";
+import React, { useContext } from "react";
 import {Join} from "./pages/join";
 import { Room } from "./room";
-import { LessonMaterial } from "./lessonMaterialContext";
-import { Typography } from "@material-ui/core";
-import jwt_decode = require("jwt-decode")
+import { UserContext } from "./entry";
+import { WebRTCContext } from "./webRTCState";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import Typography from "@material-ui/core/Typography";
+import { FormattedMessage } from "react-intl";
 
-export interface IUserContext {
-  teacher: boolean,
-  materials: LessonMaterial[]
-  roomId: string,
-  name?: string,
-  setName: React.Dispatch<React.SetStateAction<string|undefined>>
-}
-
-export const UserContext = createContext<IUserContext>({setName: () => null, roomId: "", materials: [], teacher: false} as any as IUserContext);
-
-function parseToken() {
-    try {
-        const url = new URL(window.location.href);
-        const token = url.searchParams.get("token");
-        if(!token) {return;}
-        const payload = jwt_decode(token) as any;
-        return {
-            teacher:payload.teacher?Boolean(payload.teacher):false,
-            name:payload.name?String(payload.name):undefined,
-            roomId:String(payload.roomid),
-            materials: payload.materials||[],
-        };
-        // eslint-disable-next-line no-empty
-    } catch(e) {}
-    return;
-}
-const params = parseToken();
 export function App (): JSX.Element {
-    if(!params) {return <Typography>Invalid token, could not connect to class</Typography>;}
-    const [name, setName] = useState(params.name);
-    const userContext = useMemo<IUserContext>(() => ({
-        name,
-        setName,
-        roomId: params.roomId,
-        teacher: params.teacher,
-        materials: params.materials
-    }), [name, setName, params]);
-
-    return (
-        <IntlProvider locale="en" messages={en}>
-            <UserContext.Provider value={userContext}>
-                {
-                    !userContext.name
-                        ? <Join />
-                        : <Room teacher={userContext.teacher} />
-                }
-            </UserContext.Provider>
-        </IntlProvider>
-    );
+    const {name, teacher} = useContext(UserContext);
+    if(!name) {return <Join />;}
+    if(WebRTCContext.stream === undefined) {
+        return (
+            <Typography>
+                <FormattedMessage id="waiting_for_camera" />
+                <CircularProgress />
+            </Typography>
+        );
+    }
+    return <Room teacher={teacher} />;
 }

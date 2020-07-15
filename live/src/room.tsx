@@ -1,6 +1,4 @@
 import React, { useReducer, useState, useContext, useEffect } from "react";
-import { Messages } from "./messages";
-import { SendMessage } from "./sendMessage";
 import { gql } from "apollo-boost";
 import { useSubscription } from "@apollo/react-hooks";
 import { FormattedMessage } from "react-intl";
@@ -8,9 +6,8 @@ import { CircularProgress, Typography, useTheme, useMediaQuery } from "@material
 // import { Student } from './pages/student'
 import { Student } from "./pages/student/student";
 import { Teacher } from "./pages/teacher/teacher";
-import { UserContext } from "./app";
-import { webRTCContext, WebRTCContext, Cameras } from "./webRTCState";
-import { sessionId } from "./entry";
+import { webRTCContext, WebRTCContext } from "./webRTCState";
+import { sessionId, UserContext } from "./entry";
 import Layout from "./components/layout";
 
 
