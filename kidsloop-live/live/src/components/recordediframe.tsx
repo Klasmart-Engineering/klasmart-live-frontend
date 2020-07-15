@@ -113,6 +113,7 @@ export function RecordedIframe(props: Props): JSX.Element {
         const matches = window.location.pathname.match(/^(.*\/+)([^/]*)$/);
         const prefix = matches && matches.length >= 2 ? matches[1] : "";
         script.setAttribute("src", `${prefix}record.js`);
+        // script.setAttribute("src", "http://live.kidsloop.net/live/record.js");
         doc.head.appendChild(script);
     }
 

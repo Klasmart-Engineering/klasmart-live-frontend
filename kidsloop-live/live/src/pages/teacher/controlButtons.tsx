@@ -69,7 +69,9 @@ export function ControlButtons({setSelectedButton, loading, selectedButton, disa
                 <StyledToggleButtonGroup
                     value={selectedButton}
                     exclusive
-                    onChange={(e,v) => setSelectedButton(v)}
+                    onChange={(e,v) => {
+                        setSelectedButton(v);
+                    }}
                     size="small"
                     aria-label="text alignment"
                 >
