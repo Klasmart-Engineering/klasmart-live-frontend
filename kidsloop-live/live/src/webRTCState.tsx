@@ -37,15 +37,18 @@ export interface WebRTC {
     ice?: string
 }
 
-navigator.mediaDevices.getUserMedia({video: true, audio: true}).then((stream) => {
-    WebRTCContext.stream = stream;
-    WebRTCContext.streamEmitter.emit("rerender");
-}).catch(() => {
-    WebRTCContext.stream = null;
-});
+export const webRTCContext  = createContext<WebRTCContext>(undefined as any);
+
 export class WebRTCContext {
-    public static streamEmitter = new EventEmitter()
-    public static stream?: MediaStream | null
+    private static streamEmitter = new EventEmitter()
+    private static stream?: MediaStream | null
+    private static streamPromise = navigator.mediaDevices.getUserMedia({video: true, audio: true}).then((stream) => {
+        WebRTCContext.stream = stream;
+    }).catch(() => {
+        WebRTCContext.stream = null;
+    }).finally(() => {
+        WebRTCContext.streamEmitter.emit("rerender");
+    });
     public static useWebRTCContext(roomId: string): WebRTCContext {
         const [sendSignal] = useMutation(SEND_SIGNAL);
         const [webRTCContextValue, setWebRTCContextValue] = useState(
@@ -91,6 +94,9 @@ export class WebRTCContext {
         return results;
     }
 
+    public getCamera() {return WebRTCContext.stream;}
+    public isCameraReady() {return WebRTCContext.stream !== undefined;}
+
     private async getOrCreateState(sessionId: string): Promise<WebRTCState> {
         let state = this.states.get(sessionId);
         if(!state) {
@@ -106,8 +112,6 @@ export class WebRTCContext {
     }
 }
 
-
-export const webRTCContext  = createContext<WebRTCContext|undefined>(undefined);
 const iceServers: RTCIceServer[] = [
     {urls: "turn:turn.kidsloop.net", username: "badanamu", credential: "WFVZ4myAi3ywy4q0BpPJWTAm8gHOfPRh", credentialType: "password"},
 ];
@@ -312,8 +316,10 @@ export function Camera({mediaStream, height, width, self, noBackground}:{mediaSt
 }
 
 export function MyCamera(): JSX.Element {
-    if (WebRTCContext.stream) {   
-        return <Camera mediaStream={WebRTCContext.stream} width={340} height={240} self />;
+    const webrtc = useContext(webRTCContext); 
+    const stream = webrtc.getCamera();
+    if (stream) {   
+        return <Camera mediaStream={stream} width={340} height={240} self />;
     } else {
         return (
             <Grid container justify="space-between" alignItems="center" style={{ width: "100%", height: 240, backgroundColor: "#193d6f" }}>
