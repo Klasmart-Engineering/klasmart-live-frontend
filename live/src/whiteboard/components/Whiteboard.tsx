@@ -2,7 +2,6 @@ import React, { ReactChild, ReactNode } from "react";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
 import { useWhiteboard } from "../context-provider/WhiteboardContextProvider";
 import { EventDrivenCanvas } from "./EventDrivenCanvas";
-import zIndex from "@material-ui/core/styles/zIndex";
 
 const canvasStyle: CSSProperties = {
     border: "2px blue solid",
@@ -21,7 +20,6 @@ type Props = {
 
 export function Whiteboard({ children, height }: Props): JSX.Element {
     const { state } = useWhiteboard();
-    console.log(`height as prop: ${height}`);
   
     return (
         <div style={{position:"relative", width: "100%" }}>
