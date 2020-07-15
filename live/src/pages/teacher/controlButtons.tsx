@@ -1,49 +1,40 @@
 
-import React, { useContext, Dispatch, useEffect } from 'react'
-import ToggleButton from '@material-ui/lab/ToggleButton'
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup'
-import PlayIcon from '@material-ui/icons/PlayArrow'
-import StopIcon from '@material-ui/icons/Stop'
-import ViewIcon from '@material-ui/icons/Visibility'
-import { createStyles, makeStyles, withStyles } from '@material-ui/core/styles'
-import { FormattedMessage } from 'react-intl'
-import { gql } from 'apollo-boost'
-import { useMutation } from '@apollo/react-hooks'
-import { UserContext } from '../../app'
-import { Grid, Typography } from '@material-ui/core'
-import CenterAlignChildren from '../../components/centerAlignChildren'
-import clsx from 'clsx'
-
-const MUT_SHOW_CONTENT = gql`
-    mutation showContent($roomId: ID!, $type: ContentType!, $contentId: ID) {
-        showContent(roomId: $roomId, type: $type, contentId: $contentId)
-    }
-`
+import React from "react";
+import ToggleButton from "@material-ui/lab/ToggleButton";
+import ToggleButtonGroup from "@material-ui/lab/ToggleButtonGroup";
+import PlayIcon from "@material-ui/icons/PlayArrow";
+import StopIcon from "@material-ui/icons/Stop";
+import ViewIcon from "@material-ui/icons/Visibility";
+import { createStyles, makeStyles, withStyles } from "@material-ui/core/styles";
+import { FormattedMessage } from "react-intl";
+import { Grid, Typography } from "@material-ui/core";
+import CenterAlignChildren from "../../components/centerAlignChildren";
+import clsx from "clsx";
 
 const StyledToggleButtonGroup = withStyles((theme) => ({
     grouped: {
         // margin: theme.spacing(0.5),
-        border: 'none',
-        '&:not(:first-child)': {
+        border: "none",
+        "&:not(:first-child)": {
             borderRadius: theme.shape.borderRadius
         },
-        '&:first-child': {
+        "&:first-child": {
             borderRadius: theme.shape.borderRadius
         },
     
-        textTransform: 'capitalize'
-        }
-    }))(ToggleButtonGroup)
+        textTransform: "capitalize"
+    }
+}))(ToggleButtonGroup);
 
-    const useStyles = makeStyles(() =>
+const useStyles = makeStyles(() =>
     createStyles({
         toggleSelected: {
-            color: 'white !important',
-            backgroundColor: '#3f51b5 !important'
+            color: "white !important",
+            backgroundColor: "#3f51b5 !important"
         },
         loadingSelected: {
-            color: 'white !important',
-            backgroundColor: '#000 !important'
+            color: "white !important",
+            backgroundColor: "#000 !important"
         },
         buttonGroup: {
             backgroundColor: "#e6f3ff",
@@ -54,39 +45,20 @@ const StyledToggleButtonGroup = withStyles((theme) => ({
             borderTopLeftRadius: 12,
         },
     })
-)
+);
 
 interface Props {
-    contentId: string;
-    streamId: string|undefined;
-    selectedButton: number;
-    setSelectedButton: Dispatch<React.SetStateAction<number>>;
+    setSelectedButton: (v: number) => void
+    loading: boolean
+    selectedButton: number
+    disablePresent: boolean
+    disableActivity: boolean
+
 }
 
-export function ControlButtons({contentId, streamId, selectedButton, setSelectedButton} : Props): JSX.Element {
-    const {roomId} = useContext(UserContext)
-    const {toggleSelected,loadingSelected, buttonGroup, buttonGroupActivity} = useStyles()
-    const [showContent, {loading}] = useMutation(MUT_SHOW_CONTENT)
-    console.log(`selectedButton ${selectedButton}`)
+export function ControlButtons({setSelectedButton, loading, selectedButton, disablePresent, disableActivity} : Props): JSX.Element {
+    const {toggleSelected,loadingSelected, buttonGroup, buttonGroupActivity} = useStyles();
     const selected = loading ? loadingSelected : toggleSelected;
-
-    useEffect(()=>{
-        if (selectedButton === 0) {
-            showContent({variables: { roomId, type: "Blank", contentId: "" }});
-        }
-    },[selectedButton]);
-
-    useEffect(()=>{
-        if (selectedButton === 1) {
-            showContent({variables: { roomId, type: "Stream", contentId: streamId }});
-        }
-    },[streamId,selectedButton]);
-
-    useEffect(()=>{
-        if (selectedButton === 2) {
-            showContent({variables: { roomId, type: "Activity", contentId }});
-        }
-    },[contentId,selectedButton]);
 
     return (
         <Grid container style={{ height: "100%" }}>
@@ -104,7 +76,7 @@ export function ControlButtons({contentId, streamId, selectedButton, setSelected
                     <ToggleButton
                         value={0}
                         aria-label="left aligned"
-                        style={{ padding: '2px 8px', borderRadius: 12 }}
+                        style={{ padding: "2px 8px", borderRadius: 12 }}
                         classes={{ selected }}
                     >
                         <StopIcon style={{ paddingRight: 5 }} />
@@ -113,9 +85,9 @@ export function ControlButtons({contentId, streamId, selectedButton, setSelected
                     <ToggleButton
                         value={1}
                         aria-label="centered"
-                        style={{ padding: '2px 8px', borderRadius: 12  }}
+                        style={{ padding: "2px 8px", borderRadius: 12  }}
                         classes={{ selected }}
-                        disabled={streamId === undefined}
+                        disabled={disablePresent}
                     >
                         <PlayIcon style={{ paddingRight: 5 }} />
                         <FormattedMessage id="live_buttonPresent" />
@@ -123,9 +95,9 @@ export function ControlButtons({contentId, streamId, selectedButton, setSelected
                     <ToggleButton
                         value={2}
                         aria-label="right aligned"
-                        style={{ padding: '2px 8px', borderRadius: 12  }}
+                        style={{ padding: "2px 8px", borderRadius: 12  }}
                         classes={{ selected }}
-                        disabled={contentId === undefined}
+                        disabled={disableActivity}
                     >
                         <ViewIcon style={{ paddingRight: 5 }} />
                         <FormattedMessage id="live_buttonActivity" />
@@ -133,5 +105,5 @@ export function ControlButtons({contentId, streamId, selectedButton, setSelected
                 </StyledToggleButtonGroup>
             </CenterAlignChildren>
         </Grid>
-    )
+    );
 }

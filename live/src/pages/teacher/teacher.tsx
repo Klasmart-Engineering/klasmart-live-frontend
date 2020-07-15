@@ -20,8 +20,16 @@ import SkipPreviousTwoToneIcon from "@material-ui/icons/SkipPreviousTwoTone";
 import { UserContext } from "../../app";
 import FaceTwoToneIcon from "@material-ui/icons/FaceTwoTone";
 import CenterAlignChildren from "../../components/centerAlignChildren";
+import { gql } from "apollo-boost";
+import { useMutation } from "@apollo/react-hooks";
 
 const drawerWidth = 340;
+
+const MUT_SHOW_CONTENT = gql`
+    mutation showContent($roomId: ID!, $type: ContentType!, $contentId: ID) {
+        showContent(roomId: $roomId, type: $type, contentId: $contentId)
+    }
+`;
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -77,6 +85,7 @@ interface Props {
 
 
 export function Teacher (props: Props): JSX.Element {
+    const {roomId} = useContext(UserContext);
     const classes = useStyles();
     const theme = useTheme();
     const {materials} = useContext(UserContext);
@@ -87,7 +96,6 @@ export function Teacher (props: Props): JSX.Element {
     const [width, setWidth] = useState<string | number>("100%");
     const [height, setHeight] = useState<string | number>("100%");
 
-    const [selectedButton, setSelectedButton] = useState<number>(0);
     const [contentId, setContentId] = useState(materials.length === 0 ? "" : materials[0].url);
     const [contentIndex, setContentIndex] = useState<number>(0);
     
@@ -99,7 +107,25 @@ export function Teacher (props: Props): JSX.Element {
         }
     }, []);
 
-    // console.log(content);
+    const [selectedButton, setSelectedButton] = useState<number>(0);
+    const [showContent, {loading}] = useMutation(MUT_SHOW_CONTENT);
+    useEffect(()=>{
+        if (selectedButton === 0) {
+            showContent({variables: { roomId, type: "Blank", contentId: "" }});
+        }
+    },[roomId,selectedButton]);
+
+    useEffect(()=>{
+        if (selectedButton === 1) {
+            showContent({variables: { roomId, type: "Stream", contentId: streamId }});
+        }
+    },[roomId,selectedButton,streamId]);
+
+    useEffect(()=>{
+        if (selectedButton === 2) {
+            showContent({variables: { roomId, type: "Activity", contentId }});
+        }
+    },[roomId,selectedButton,contentId]);
 
 
     function Toolbar() {
@@ -113,10 +139,11 @@ export function Teacher (props: Props): JSX.Element {
                 >
                     <Grid item>
                         <ControlButtons 
-                            contentId={contentId} 
-                            streamId={streamId} 
-                            selectedButton={selectedButton}
                             setSelectedButton={setSelectedButton}
+                            selectedButton={selectedButton}
+                            loading={loading}
+                            disablePresent={!streamId}
+                            disableActivity={!contentId}
                         />
                     </Grid>
                     <Grid item style={{ marginLeft: "auto" }}>
