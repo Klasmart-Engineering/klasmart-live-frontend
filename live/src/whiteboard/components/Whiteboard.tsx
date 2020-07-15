@@ -1,4 +1,4 @@
-import React, { ReactChild, ReactChildren, ReactNode } from "react";
+import React, { ReactChild, ReactNode } from "react";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
 import { useWhiteboard } from "../context-provider/WhiteboardContextProvider";
 import { EventDrivenCanvas } from "./EventDrivenCanvas";
