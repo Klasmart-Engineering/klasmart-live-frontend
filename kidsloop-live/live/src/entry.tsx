@@ -106,11 +106,15 @@ function parseToken() {
         const url = new URL(window.location.href);
         console.log(url);
         if(url.hostname === "localhost") {
+            const materialsParam = url.searchParams.get("materials");
             return {
                 teacher: url.searchParams.get("teacher") !== null,
                 name: url.searchParams.get("name") || `Developer-${Math.floor(Math.random()*100)}`,
                 roomId: url.searchParams.get("roomId") || "test-room",
-                materials: JSON.parse(url.searchParams.get("materials")||"[]"),
+                materials: materialsParam ? JSON.parse(materialsParam) : [
+                    {name:"Pairs", url:"/h5p/play/5ecf4e4b611e18398f7380ef"},
+                    {name:"Video", url:"./video.mp4"},
+                ],
             };
         }
 
@@ -139,7 +143,7 @@ function Entry() {
         teacher: params.teacher,
         materials: params.materials
     }), [name, setName, params]);
-    const webRTCContextValue = WebRTCContext.useWebRTCContext(userContext.roomId);
+    const webRTCContextValue = WebRTCContext.useWebRTCContext(sessionId, userContext.roomId);
 
     return (
         <HashRouter>
