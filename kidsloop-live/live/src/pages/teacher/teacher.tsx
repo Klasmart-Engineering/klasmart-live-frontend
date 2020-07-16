@@ -6,7 +6,7 @@ import { FormattedMessage } from "react-intl";
 import { RecordedIframe } from "../../components/recordediframe";
 import { ControlButtons } from "./controlButtons";
 import { Session, Content } from "../../room";
-import { Theme, Button, Card, useTheme, CardContent } from "@material-ui/core";
+import { Theme, Button, IconButton, Card, useTheme, CardContent, useMediaQuery } from "@material-ui/core";
 import { PreviewPlayer } from "../../components/preview-player";
 import clsx from "clsx";
 import MenuOpenIcon from "@material-ui/icons/MenuOpen";
@@ -78,7 +78,11 @@ interface Props {
     content: Content;
     users: Map<string, Session>;
     openDrawer: boolean;
-    setOpenDrawer: () => void;
+    handleOpenDrawer: (open?: boolean) => void;
+    contentIndexState: {
+        contentIndex: number;
+        setContentIndex: React.Dispatch<React.SetStateAction<number>>;
+    };
 }
 
 
@@ -87,13 +91,14 @@ export function Teacher (props: Props): JSX.Element {
     const webrtc = useContext(webRTCContext);
     const classes = useStyles();
     const theme = useTheme();
-    const { content, users, openDrawer, setOpenDrawer } = props;
-  
+    const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
+    const { content, users, openDrawer, handleOpenDrawer, contentIndexState } = props;
+
     const [streamId, setStreamId] = useState<string>();
     const [width, setWidth] = useState<string | number>("100%");
     const [height, setHeight] = useState<string | number>("100%");
 
-    const [contentIndex, setContentIndex] = useState<number>(0);
+    const { contentIndex, setContentIndex } = contentIndexState;
     const material = contentIndex >= 0 && contentIndex < materials.length ? materials[contentIndex] : undefined;
     
     useEffect(() => {
@@ -128,7 +133,6 @@ export function Teacher (props: Props): JSX.Element {
         }
     },[roomId,selectedButton, material]);
 
-
     function Toolbar() {
         return (
             <Grid item xs={12} style={{ padding: 0 }}>
@@ -150,7 +154,7 @@ export function Teacher (props: Props): JSX.Element {
                     <Grid item style={{ marginLeft: "auto" }}>
                         <Button
                             aria-label="open preview drawer" 
-                            onClick={() => setOpenDrawer()}
+                            onClick={() => handleOpenDrawer()}
                             size="small"
                             style={{ 
                                 color: "black", 
@@ -205,7 +209,7 @@ export function Teacher (props: Props): JSX.Element {
                                                     }
                                                 </Grid>
                                                 <Grid item xs={12}>
-                                                    <Cameras id={session.id} noBackground />
+                                                    <Cameras id={session.id} />
                                                 </Grid>
                                                 <Grid item xs={12}>
                                                     <CenterAlignChildren center>
@@ -235,13 +239,12 @@ export function Teacher (props: Props): JSX.Element {
                                     : undefined}
                                 {material && material.video ? <BroadcastVideo src={material.video} /> : undefined}
                             </Whiteboard>
-                            <WBToolbar />
                         </>
                         
                     }
                     { content.type !== "Activity" ? <Toolbar /> : null }
                 </Grid>
-                { content.type !== "Activity" ? 
+                {/* { content.type !== "Activity" ? 
                     <Grid item>
                         { users.size === 0 ? 
                             <Typography>
@@ -277,7 +280,7 @@ export function Teacher (props: Props): JSX.Element {
                             </Grid>
                         }
                     </Grid> : null
-                }
+                } */}
             </main>
         </div>
     );

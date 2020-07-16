@@ -108,7 +108,7 @@ function parseToken() {
             const materialsParam = url.searchParams.get("materials");
             return {
                 teacher: url.searchParams.get("teacher") !== null,
-                name: url.searchParams.get("name") || `Developer-${Math.floor(Math.random()*100)}`,
+                name: url.searchParams.get("name") || undefined, // Should be undefined not null
                 roomId: url.searchParams.get("roomId") || "test-room",
                 materials: materialsParam ? JSON.parse(materialsParam) : [
                     {name:"Pairs", url:"/h5p/play/5ecf4e4b611e18398f7380ef"},

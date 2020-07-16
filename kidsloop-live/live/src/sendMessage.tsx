@@ -4,6 +4,7 @@ import SendTwoToneIcon from "@material-ui/icons/SendTwoTone";
 import { useMutation } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
 import { UserContext } from "./entry";
+import { DRAWER_WIDTH } from "./components/layout";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -11,7 +12,7 @@ const useStyles = makeStyles((theme: Theme) =>
             padding: "2px 4px",
             display: "flex",
             alignItems: "center",
-            width: 340,
+            width: DRAWER_WIDTH - theme.spacing(7),
             [theme.breakpoints.down("sm")]: {
                 width: "100%",
             },
