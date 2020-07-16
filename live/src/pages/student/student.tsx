@@ -76,12 +76,12 @@ const useStyles = makeStyles((theme: Theme) =>
 interface Props {
     content: Content;
     openDrawer: boolean;
-    setOpenDrawer: () => void;
+    handleOpenDrawer: (open?: boolean) => void;
     // teacher: any; // TODO
 }
 
 export function Student(props: Props): JSX.Element {
-    const { content, openDrawer, setOpenDrawer } = props;
+    const { content, openDrawer, handleOpenDrawer } = props;
     const classes = useStyles();
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
@@ -139,7 +139,7 @@ export function Student(props: Props): JSX.Element {
                 <Grid item xs={12} md={8} style={{ height: height, width: width, margin: "0 auto 16px auto" }}>
                     <Whiteboard height={height}>
                         <PreviewPlayer streamId={content.contentId} height={height} width={width} />
-                        <WBToolbar />
+                        {/* <WBToolbar /> */}
                     </Whiteboard>
                 </Grid>
                 <Grid item xs={12}>
@@ -151,7 +151,7 @@ export function Student(props: Props): JSX.Element {
                         <Grid item>
                             <Button
                                 aria-label="open preview drawer"
-                                onClick={setOpenDrawer}
+                                onClick={() => handleOpenDrawer()}
                                 size="small"
                                 style={{
                                     color: "black",
@@ -190,7 +190,7 @@ export function Student(props: Props): JSX.Element {
                         setParentWidth={setWidth}
                         setParentHeight={setHeight}
                     />
-                    <WBToolbar />
+                    {/* <WBToolbar /> */}
                 </Whiteboard>
                 <Grid item xs={12}>
                     <Grid
@@ -201,7 +201,7 @@ export function Student(props: Props): JSX.Element {
                         <Grid item>
                             <Button
                                 aria-label="open preview drawer"
-                                onClick={setOpenDrawer}
+                                onClick={() => handleOpenDrawer()}
                                 size="small"
                                 style={{
                                     color: "black",

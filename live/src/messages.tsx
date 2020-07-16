@@ -1,62 +1,62 @@
-import { Typography, Slide, makeStyles, Theme, createStyles, Grid, Paper } from '@material-ui/core'
-import React from 'react'
-import { Message } from './room'
-import { FormattedDate, FormattedTime } from 'react-intl';
-import { mapGenerator } from './utils/map';
+import { Typography, Slide, makeStyles, Theme, createStyles, Grid, Paper } from "@material-ui/core";
+import React from "react";
+import { Message } from "./room";
+import { FormattedDate, FormattedTime } from "react-intl";
+import { mapGenerator } from "./utils/map";
 import Tooltip from "@material-ui/core/Tooltip";
-import AccessTimeTwoToneIcon from '@material-ui/icons/AccessTimeTwoTone';
+import AccessTimeTwoToneIcon from "@material-ui/icons/AccessTimeTwoTone";
 
 const useStyles = makeStyles((theme: Theme) =>
-createStyles({
-    cssFocused: {
-        "&$cssFocused": {
-            backgroundColor: "#dff0ff",
-            color: "#1896ea", // focused
-        },
+    createStyles({
+        cssFocused: {
+            "&$cssFocused": {
+                backgroundColor: "#dff0ff",
+                color: "#1896ea", // focused
+            },
 
-    },
-    cssOutlinedInput: {
-        "&$cssFocused": {
-            borderColor: "#1896ea", // focused
         },
-        "&:hover:not($disabled):not($cssFocused):not($error)": {
-            backgroundColor: "#b8ddff",
-            borderColor: "#7c8084", // hovered
+        cssOutlinedInput: {
+            "&$cssFocused": {
+                borderColor: "#1896ea", // focused
+            },
+            "&:hover:not($disabled):not($cssFocused):not($error)": {
+                backgroundColor: "#b8ddff",
+                borderColor: "#7c8084", // hovered
+            },
+            "&:not(hover):not($disabled):not($cssFocused):not($error)": {
+                borderColor: "#c9caca", // default
+            },
+            "backgroundColor": "#fcfcfb",
         },
-        "&:not(hover):not($disabled):not($cssFocused):not($error)": {
-            borderColor: "#c9caca", // default
+        liveChatInput: {
+            borderRadius: 12,
+            // height: 500,
+            padding: theme.spacing(0.5, 2),
+            [theme.breakpoints.down("sm")]: {
+                padding: theme.spacing(0.5, 1),
+            },
         },
-        "backgroundColor": "#fcfcfb",
-    },
-    liveChatInput: {
-        borderRadius: 12,
-        // height: 500,
-        padding: theme.spacing(0.5, 2),
-        [theme.breakpoints.down("sm")]: {
-            padding: theme.spacing(0.5, 1),
+        paperContainer: {
+            border: "1px solid #c9caca",
+            borderRadius: 12,
+            margin: theme.spacing(0.5),
+            [theme.breakpoints.down("sm")]: {
+                margin: theme.spacing(0.5),
+            },
         },
-    },
-    paperContainer: {
-        border: "1px solid #c9caca",
-        borderRadius: 12,
-        margin: theme.spacing(1, 0),
-        [theme.breakpoints.down("sm")]: {
-            margin: theme.spacing(1, 1),
+        smallAvatar: {
+            height: theme.spacing(2),
+            marginRight: theme.spacing(1),
+            width: theme.spacing(2),
         },
-    },
-    smallAvatar: {
-        height: theme.spacing(2),
-        marginRight: theme.spacing(1),
-        width: theme.spacing(2),
-    },
-}));
+    }));
 
 interface Props { messages: Map<string, Message> }
 
 export function Messages ({ messages }: Props): JSX.Element {
     const classes = useStyles();
 
-    if (!messages || messages.size === 0) { return <Typography style={{ color: 'rgb(200,200,200)' }}>No messages yet...</Typography> }
+    if (!messages || messages.size === 0) { return <Typography style={{ color: "rgb(200,200,200)", padding: 4 }}>No messages yet...</Typography>; }
 
     return <>
         {
@@ -70,7 +70,6 @@ export function Messages ({ messages }: Props): JSX.Element {
                                 justify="space-between"
                                 alignItems="center"
                                 className={classes.liveChatInput}
-                                spacing={1}
                             >
                                 <Grid item xs={12} md={10}>
                                     <Typography variant="body2" style={{ wordBreak: "break-word" }}>
@@ -83,9 +82,9 @@ export function Messages ({ messages }: Props): JSX.Element {
                                             placement="left"
                                             title={
                                                 <>
-                                                    <FormattedDate value={new Date(Number(m.id.split('-')[0]))} />
+                                                    <FormattedDate value={new Date(Number(m.id.split("-")[0]))} />
                                                     &nbsp;
-                                                    <FormattedTime value={new Date(Number(m.id.split('-')[0]))} />
+                                                    <FormattedTime value={new Date(Number(m.id.split("-")[0]))} />
                                                 </>
                                             }
                                         >
@@ -99,5 +98,5 @@ export function Messages ({ messages }: Props): JSX.Element {
                 </Slide>
             ))]
         }
-    </>
+    </>;
 }

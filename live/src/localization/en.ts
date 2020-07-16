@@ -1,4 +1,5 @@
 export const en = {
+    loading: "Give us a sec while we get things ready!",
     activity_link: "Activity Link",
     button_activity: "Activity",
     button_camera_start: "Start",
@@ -24,4 +25,10 @@ export const en = {
     live_buttonEndClass: "End Class",
     student_stream_mode: "Your teacher is currently presenting",
     student_activity_mode: "Please follow your teacher's intruction",
+    create_room: "Create Room",
+    join_room: "Join Room",
+    select_camera: "Select your 📷",
+    no_device_available: "No devices available",
+    select_device: "Select {device}",
+    connect_camera: "Connect your 📷",
 };
