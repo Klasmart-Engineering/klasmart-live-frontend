@@ -14,6 +14,7 @@ import CameraContainer from "../../components/cameraContainer";
 import { Content } from "../../room";
 import { Whiteboard } from "../../whiteboard/components/Whiteboard";
 import WBToolbar from "../../whiteboard/components/Toolbar";
+import {Stream} from "../../webRTCState";
 
 const drawerWidth = 340;
 
@@ -224,5 +225,7 @@ export function Student(props: Props): JSX.Element {
             </Grid>
             {isSmDown ? <CameraContainer isTeacher={false} /> : null}
         </>);
+    case "Video":
+        return <Stream sessionId={content.contentId} index={1} />;
     }
 }

@@ -25,16 +25,14 @@ const SEND_SIGNAL = gql`
 
 
 export interface WebRTCIn {
-    offer?: string
-    answer?: string
+    description?: string
     ice?: string
 }
 
 
 export interface WebRTC {
     sessionId: string
-    offer?: string
-    answer?: string
+    description?: string
     ice?: string
 }
 
@@ -82,26 +80,29 @@ export class WebRTCContext {
         return this.audioTrackEnabled;
     }
 
-    public static useWebRTCContext(roomId: string): WebRTCContext {
+    public static useWebRTCContext(mySessionId: string,roomId: string): WebRTCContext {
         const [sendSignal] = useMutation(SEND_SIGNAL);
         const [webRTCContextValue, setWebRTCContextValue] = useState(
-            new WebRTCContext((toSessionId: string, webrtc: WebRTCIn) => {
-                // console.log("send",toSessionId,webrtc);
+            new WebRTCContext(mySessionId, (toSessionId: string, webrtc: WebRTCIn) => {
                 return sendSignal({variables: {roomId,toSessionId,webrtc}});
             })
         );
         webRTCContextValue.set=setWebRTCContextValue;
         return webRTCContextValue;
     }
+
+    private mySessionId: string
     private set?: React.Dispatch<React.SetStateAction<WebRTCContext>>
     private send: (sessionId:string, webRTC: WebRTCIn) => Promise<any>
     private states: Map<string, WebRTCState>
     private constructor(
+        mySessionId: string,
         send: (sessionId:string, webRTC: WebRTCIn) => Promise<any>,
         states = new Map<string, WebRTCState>(),
         videoTrackEnabled = true,
         audioTrackEnabled = true,
     ) {
+        this.mySessionId = mySessionId;
         this.send = send;
         this.states = states;
         this.videoTrackEnabled = videoTrackEnabled;
@@ -109,23 +110,30 @@ export class WebRTCContext {
         WebRTCContext.streamEmitter.addListener("rerender", () => this.rerender());
     }
     public async notification(webrtc: WebRTC): Promise<void> {
-        // console.log("recv",webrtc);
         const sessionId = webrtc.sessionId;
         const state = await this.getOrCreateState(sessionId);
         await state.dispatch(webrtc);
         this.rerender();
     }
 
-    public async start(sessionId: string): Promise<void> {
+    public async sendOffer(sessionId: string): Promise<void> {
         const state = await this.getOrCreateState(sessionId);        
-        return state.start();
+        return state.sendOffer();
+    }
+
+    public getMediaStream(sessionId: string) {
+        const state = this.states.get(sessionId);
+        if(!state) { return; }
+        return state.remoteMediaStreams;
     }
 
     public getMediaStreams(): Array<{sessionId: string, stream: MediaStream}> {
         const results: Array<{sessionId: string, stream: MediaStream}> = [];
         for(const [sessionId, state] of this.states.entries()) {
-            if(state.remoteMediaStream && state.peer.connectionState === "connected") {
-                results.push({sessionId, stream: state.remoteMediaStream});
+            if(state.remoteMediaStreams && state.peer.connectionState === "connected") {
+                for(const stream of state.remoteMediaStreams) {
+                    results.push({sessionId, stream});
+                }
             }
         }
         return results;
@@ -137,7 +145,7 @@ export class WebRTCContext {
     private async getOrCreateState(sessionId: string): Promise<WebRTCState> {
         let state = this.states.get(sessionId);
         if(!state) {
-            state = new WebRTCState((webRTC: WebRTCIn) => this.send(sessionId, webRTC), ()=> this.rerender(), WebRTCContext.stream||undefined);
+            state = new WebRTCState(this.mySessionId < sessionId, (webRTC: WebRTCIn) => this.send(sessionId, webRTC), ()=> this.rerender(), WebRTCContext.stream||undefined);
             this.states.set(sessionId, state);
         }
         return state;
@@ -145,7 +153,7 @@ export class WebRTCContext {
 
     private rerender() {
         if(!this.set) { return; }
-        this.set(new WebRTCContext(this.send, this.states, this.videoTrackEnabled, this.audioTrackEnabled));
+        this.set(new WebRTCContext(this.mySessionId, this.send, this.states, this.videoTrackEnabled, this.audioTrackEnabled));
     }
 }
 
@@ -155,20 +163,20 @@ const iceServers: RTCIceServer[] = [
 
 class WebRTCState {
     public localMediaStream?: MediaStream;
-    public remoteMediaStream?: MediaStream;
+    public remoteMediaStreams?: readonly MediaStream[] = []
     public videoTracks: MediaStreamTrack[] = [];
     public audioTracks: MediaStreamTrack[] = [];
     public peer: RTCPeerConnection;
     private send: (webRTC: WebRTCIn) => any;
     private rerender:() => any;
 
-    public constructor(send: (webRTC: WebRTCIn) => any, rerender:()=>any, stream?: MediaStream) {
+    public constructor(polite: boolean, send: (webRTC: WebRTCIn) => any, rerender:()=>any, stream?: MediaStream) {
+        this.polite = polite;
         this.rerender = rerender;
         this.send = send;
         this.peer = new RTCPeerConnection({iceServers});
         this.peer.onicegatheringstatechange = async () => {
             if(!this.peer) {return;}
-            // console.log("onicegatheringstatechange:", this.peer.iceGatheringState);
         };
         this.peer.onicecandidate = async ({candidate}) => {
             if(candidate) {
@@ -178,15 +186,18 @@ class WebRTCState {
         };
         this.peer.onconnectionstatechange = () => {
             if(!this.peer) {return;}
-            // console.log("onconnectionstatechange:", this.peer.connectionState);
             this.rerender();
         };
         this.peer.ontrack = ({streams}) => {
-            // console.log(streams);
-            this.remoteMediaStream = streams[0];
+            this.remoteMediaStreams = streams;
             this.rerender();
         };
-        
+        this.peer.onnegotiationneeded = async () => {
+            const offer = await this.peer.createOffer();
+            if (this.peer.signalingState != "stable") return;
+            await this.peer.setLocalDescription(offer);
+            this.send({description: JSON.stringify(offer)});
+        };      
         this.localMediaStream = stream;
         if(this.localMediaStream) {
             for(const track of this.localMediaStream.getTracks()) {
@@ -200,43 +211,35 @@ class WebRTCState {
         }
     }
 
-    private queue: WebRTCIn[] = []
-    private pendingIceCandidates: RTCIceCandidate[] = []
+    //https://www.w3.org/TR/webrtc/#perfect-negotiation-example
+    //https://blog.mozilla.org/webrtc/perfect-negotiation-in-webrtc/
+    //"Perfect" signaling example does not work on safari, due to required argument in setLocalDescription
+    //https://caniuse.com/#feat=mdn-api_rtcpeerconnection_setlocaldescription_optional_description
+    private polite: boolean
+    private makingOffer = false
+    private ignoringdOffer = false
     public async dispatch(webrtc: WebRTCIn): Promise<void> {
         try {
             if(!webrtc) { return; }
-            const {offer, answer, ice} = webrtc;
-            if(offer) {
-                await this.peer.setRemoteDescription(new RTCSessionDescription(JSON.parse(offer)));
-                // console.log("Set remote offer");
-
-                const localDesc = await this.peer.createAnswer();
-                await this.peer.setLocalDescription(localDesc);
-                const answer = JSON.stringify(localDesc);
-                this.send({ answer });
-                // console.log("Set local answer");
-                while(this.pendingIceCandidates.length > 0) {
-                    const candidate = this.pendingIceCandidates.shift();
-                    if(!candidate) { continue; }
-                    // console.log("addIceCandidate2: ", this.peer.connectionState, candidate);
-                    await this.peer.addIceCandidate(candidate).catch((e) => console.error(e));
+            const {description, ice} = webrtc;
+            if(description) {
+                const remoteDescription = new RTCSessionDescription(JSON.parse(description));
+                const collision = (remoteDescription.type == "offer") && (this.peer.signalingState != "stable" || this.makingOffer);
+                this.ignoringdOffer = !this.polite && collision;
+                if(!this.ignoringdOffer)  {
+                    await this.peer.setRemoteDescription(remoteDescription);
+                    if(remoteDescription.type === "offer") {
+                        await this.peer.setLocalDescription(await this.peer.createAnswer());
+                        this.send({description: JSON.stringify(this.peer.localDescription)});
+                    }
                 }
-                // console.log("pendingIceCandidates Done");
-
-            }
-            if(answer) {
-                const remoteDesc = new RTCSessionDescription(JSON.parse(answer));
-                await this.peer.setRemoteDescription(remoteDesc);
-                // console.log("Set remote answer");
             }
             if(ice) {
                 const candidate = new RTCIceCandidate(JSON.parse(ice));
-                if(!this.peer.remoteDescription) {
-                    // console.log("canidate pending");
-                    this.pendingIceCandidates.push(candidate);
-                } else {
-                    // console.log("addIceCandidate1: ", this.peer.connectionState, candidate);
+                try {
                     await this.peer.addIceCandidate(candidate); 
+                } catch(e) {
+                    if (!this.ignoringdOffer) throw e;
                 }
             }
         } catch(e) {
@@ -244,36 +247,25 @@ class WebRTCState {
         }
     }
 
-    public async start() {
-        const localDesc = await this.peer.createOffer();
-        await this.peer.setLocalDescription(localDesc);
-        const offer = JSON.stringify(localDesc);
-        // console.log("Set local offer");
-        this.send({ offer });
+    public async sendOffer() {
+        try {
+            this.makingOffer = true;
+            console.log("Sendings offers");
+            const offer = await this.peer.createOffer();
+            await this.peer.setLocalDescription(offer); //Incorrect Typescript types
+            this.send({ description: JSON.stringify(this.peer.localDescription) });
+        } catch(e) {
+            console.error(e);
+        } finally {
+            this.makingOffer = false;
+        }
     }
-}
-
-export function Start({sessionId}:{sessionId: string}): JSX.Element {
-    const states = useContext(webRTCContext);
-    if(!states) {
-        console.error("RTC Start button created outside context provider");
-        return <FormattedMessage id="error_no_rtc_provider" />;
-    }
-    
-    return <Button onClick={() => states?states.start(sessionId):undefined}>
-        <FormattedMessage id="button_camera_start" />
-    </Button>;
 }
 
 export function Cameras({noBackground, id}:{noBackground?: boolean, id?: string}): JSX.Element {
     const states = useContext(webRTCContext);
     if(!states) {return <FormattedMessage id="error_webrtc_unavailable" />;}
-    if(id === "" || id === undefined) {
-        const cameras = states.getMediaStreams().map(({stream}) => 
-            <Grid item key={stream.id}>
-                <Camera width={340} height={240} mediaStream={stream} />
-            </Grid>
-        );
+    if(!id) {
         return (
             <Grid
                 container
@@ -281,23 +273,28 @@ export function Cameras({noBackground, id}:{noBackground?: boolean, id?: string}
                 justify="flex-start"
                 alignItems="center"
             >
-                {cameras}
+                {states.getMediaStreams().map(({stream}) => 
+                    <Grid item key={stream.id}>
+                        <Camera width={340} height={240} mediaStream={stream} />
+                    </Grid>
+                )}
             </Grid>
         );
-    } else {
-        const camera = states.getMediaStreams().filter(({sessionId}) =>
-            sessionId === id
-        );
+    } 
+    const camera = states.getMediaStream(id);
+    if(camera) {
         return (
-            camera.length === 0 ? 
-                <Grid container justify="space-between" alignItems="center" style={{ width: "100%", height: "100%" }}>
-                    <Typography style={{ margin: "0 auto" }} variant="caption" align="center"><VideocamOffIcon /></Typography>
-                </Grid> :
-                <Grid container item justify="space-around">
-                    <Camera width={220} height={120} mediaStream={camera[0].stream} noBackground={noBackground} />
-                </Grid>
+            <Grid container item justify="space-around">
+                <Camera width={220} height={120} mediaStream={camera[0]} noBackground={noBackground} />
+            </Grid>
         );
     }
+    return (
+        <Grid container justify="space-between" alignItems="center" style={{ width: "100%", height: "100%" }}>
+            <Typography style={{ margin: "0 auto" }} variant="caption" align="center"><VideocamOffIcon /></Typography>
+        </Grid> 
+    );
+
 }
 
 export function Camera({mediaStream, height, width, self, noBackground}:{mediaStream: MediaStream, height: number, width: number, self?: boolean, noBackground?: boolean}): JSX.Element {
@@ -331,7 +328,7 @@ export function Camera({mediaStream, height, width, self, noBackground}:{mediaSt
 
     return (
         <Card elevation={0} square>
-            { mediaStream.getVideoTracks().some((t) => t.enabled) ?
+            { mediaStream && mediaStream.getVideoTracks().some((t) => t.enabled) ?
                 <CardMedia
                     autoPlay={true}
                     muted={self}
@@ -393,4 +390,20 @@ export function MyCamera(): JSX.Element {
             </Grid>
         );
     }
+}
+
+export function Stream(props:{sessionId:string, index:number}): JSX.Element {
+    const {index, sessionId} = props;
+    const webrtc = useContext(webRTCContext);
+    const videoRef = useRef<HTMLVideoElement>(null);
+    useEffect(() => {
+        if(!videoRef.current) {return;}
+        const streams = webrtc.getMediaStream(sessionId);
+        if(!streams) {return;}
+        if(index >= 0 && index < streams.length) {
+            videoRef.current.srcObject = streams[index];
+        }
+    }, [videoRef.current, webrtc]);
+    return <video ref={videoRef}/>;
+
 }
