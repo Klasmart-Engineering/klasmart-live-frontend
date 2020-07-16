@@ -47,12 +47,18 @@ export function Room ({ teacher }: Props): JSX.Element {
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
 
-    const {roomId, name} = useContext(UserContext);
+    const {roomId, materials, name} = useContext(UserContext);
     const webrtc = useContext(webRTCContext);
     
-    const [open, setOpen] = useState<boolean>(isSmDown ? false : true);
-    const setOpenDrawer = () => {
-        setOpen(!open);
+    const [contentIndex, setContentIndex] = useState<number>(0);
+
+    const [openDrawer, setOpenDrawer] = useState<boolean>(isSmDown ? false : true);
+    const handleOpenDrawer = (open?: boolean) => {
+        if (open !== null && open !== undefined) {
+            setOpenDrawer(open);
+        } else {
+            setOpenDrawer(!openDrawer);
+        }
     };
 
     const [content, setContent] = useState<Content>();
@@ -97,7 +103,7 @@ export function Room ({ teacher }: Props): JSX.Element {
     
     useEffect(() => {
         if (isSmDown) {
-            setOpen(false);
+            setOpenDrawer(false);
         }
     }, [isSmDown]);
     if(error) {return <Typography ><FormattedMessage id="failed_to_connect" />{JSON.stringify(error)}</Typography>;}
@@ -109,21 +115,23 @@ export function Room ({ teacher }: Props): JSX.Element {
                 isTeacher={teacher}
                 users={users}
                 messages={messages}
-                openDrawer={open}
-                setOpenDrawer={setOpenDrawer}
+                openDrawer={openDrawer}
+                handleOpenDrawer={handleOpenDrawer}
+                contentIndexState={{ contentIndex, setContentIndex }}
             >
                 {
                     teacher
                         ? <Teacher 
                             content={content} 
                             users={users} 
-                            openDrawer={open}
-                            setOpenDrawer={setOpenDrawer}
+                            openDrawer={openDrawer}
+                            handleOpenDrawer={handleOpenDrawer}
+                            contentIndexState={{ contentIndex, setContentIndex }}
                         />
                         : <Student 
                             content={content}
-                            openDrawer={open}
-                            setOpenDrawer={setOpenDrawer}
+                            openDrawer={openDrawer}
+                            handleOpenDrawer={handleOpenDrawer}
                         />
                 }
             </Layout>

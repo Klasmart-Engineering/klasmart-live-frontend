@@ -1,0 +1,63 @@
+import React from "react";
+import { FormattedMessage } from "react-intl";
+import { createStyles, makeStyles } from "@material-ui/core/styles";
+import InputLabel from "@material-ui/core/InputLabel";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormControl from "@material-ui/core/FormControl";
+import VideocamIcon from "@material-ui/icons/Videocam";
+import MicIcon from "@material-ui/icons/Mic";
+
+const useStyles = makeStyles(() =>
+    createStyles({
+        formControl: {
+            width: "100%"
+        }
+    }),
+);
+
+interface Props {
+    disabled: boolean;
+    deviceType: "video" | "audio";
+    deviceId: string;
+    devices: MediaDeviceInfo[];
+    onChange: ((event: React.ChangeEvent<{ name?: string | undefined; value: unknown; }>, child: React.ReactNode) => void) | undefined; 
+}
+
+export default function StyledSelect(props: Props) {
+    const { disabled, deviceType, deviceId, devices, onChange } = props;
+    const classes = useStyles();
+
+    return (
+        <FormControl className={classes.formControl}>
+            <InputLabel>
+                {disabled ? <FormattedMessage id="no_device_available" /> :
+                    <FormattedMessage
+                        id="select_device"
+                        values={{ device: deviceType === "video" ? "Camera" : "Audio" }}
+                    />
+                }
+            </InputLabel>
+            <Select
+                disabled={disabled}
+                IconComponent={deviceType === "video"
+                    ? () => <VideocamIcon color={disabled ? "disabled" : "primary"} />
+                    : () => <MicIcon color={disabled ? "disabled" : "primary"} />
+                }
+                onChange={onChange}
+                value={deviceId}
+            >
+                {
+                    devices.map((device: MediaDeviceInfo) => (
+                        <MenuItem
+                            key={device.kind + ":" + device.label + ":" + device.deviceId}
+                            value={device.deviceId}
+                        >
+                            {(device.label ? device.label.charAt(0).toUpperCase() + device.label.slice(1) : "Unknown Device")}
+                        </MenuItem>
+                    ))
+                }
+            </Select>
+        </FormControl>
+    );
+}
