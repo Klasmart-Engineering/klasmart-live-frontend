@@ -41,8 +41,8 @@ export const webRTCContext  = createContext<WebRTCContext>(undefined as any);
 
 export class WebRTCContext {
     private static streamEmitter = new EventEmitter()
-    private static stream?: MediaStream | null
-    private static streamPromise = navigator.mediaDevices.getUserMedia({video: true, audio: true}).then((stream) => {
+    private static stream?: MediaStream | null = navigator.mediaDevices ? undefined : null
+    private static streamPromise = navigator.mediaDevices && navigator.mediaDevices.getUserMedia({video: true, audio: true}).then((stream) => {
         WebRTCContext.stream = stream;
     }).catch(() => {
         WebRTCContext.stream = null;
