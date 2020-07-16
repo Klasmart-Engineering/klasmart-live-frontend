@@ -7,6 +7,7 @@ import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 import VideocamIcon from "@material-ui/icons/Videocam";
 import VideocamOffIcon from "@material-ui/icons/VideocamOff";
+import MicOffIcon from "@material-ui/icons/MicOff";
 import MicIcon from "@material-ui/icons/Mic";
 import { FormattedMessage } from "react-intl";
 import { gql } from "apollo-boost";
@@ -49,19 +50,36 @@ export class WebRTCContext {
     }).finally(() => {
         WebRTCContext.streamEmitter.emit("rerender");
     });
-    public videoStream(enabled: boolean) {
+    public videoTrackEnabled: boolean;
+    public audioTrackEnabled: boolean;
+
+    public setVideoStreamState(enabled: boolean) {
+        this.videoTrackEnabled = enabled;
         for(const state of this.states.values()) {
-            for(const track of state.videoTracks) {
+            if (!state.localMediaStream) { continue; }
+            for(const track of state.localMediaStream.getVideoTracks()) {
                 track.enabled = enabled;
             }
         }
+        this.rerender();
     }
-    public audioStream(enabled: boolean) {
+    public setAudioStreamState(enabled: boolean) {
+        console.log(`setAudioStreamState: ${enabled}`);
+        this.audioTrackEnabled = enabled;
         for(const state of this.states.values()) {
             for(const track of state.audioTracks) {
                 track.enabled = enabled;
             }
         }
+        this.rerender();
+    }
+
+    public getVideoStreamState() {
+        return this.videoTrackEnabled;
+    }
+
+    public getAudioStreamState() {
+        return this.audioTrackEnabled;
     }
 
     public static useWebRTCContext(roomId: string): WebRTCContext {
@@ -80,10 +98,14 @@ export class WebRTCContext {
     private states: Map<string, WebRTCState>
     private constructor(
         send: (sessionId:string, webRTC: WebRTCIn) => Promise<any>,
-        states = new Map<string, WebRTCState>()
+        states = new Map<string, WebRTCState>(),
+        videoTrackEnabled = true,
+        audioTrackEnabled = true,
     ) {
         this.send = send;
         this.states = states;
+        this.videoTrackEnabled = videoTrackEnabled;
+        this.audioTrackEnabled = audioTrackEnabled;
         WebRTCContext.streamEmitter.addListener("rerender", () => this.rerender());
     }
     public async notification(webrtc: WebRTC): Promise<void> {
@@ -123,7 +145,7 @@ export class WebRTCContext {
 
     private rerender() {
         if(!this.set) { return; }
-        this.set(new WebRTCContext(this.send, this.states));
+        this.set(new WebRTCContext(this.send, this.states, this.videoTrackEnabled, this.audioTrackEnabled));
     }
 }
 
@@ -132,13 +154,13 @@ const iceServers: RTCIceServer[] = [
 ];
 
 class WebRTCState {
-    public localMediaStream?: MediaStream
-    public remoteMediaStream?: MediaStream
-    public videoTracks: MediaStreamTrack[] = []
-    public audioTracks: MediaStreamTrack[] = []
-    public peer: RTCPeerConnection
-    private send: (webRTC: WebRTCIn) => any
-    private rerender:()=>any
+    public localMediaStream?: MediaStream;
+    public remoteMediaStream?: MediaStream;
+    public videoTracks: MediaStreamTrack[] = [];
+    public audioTracks: MediaStreamTrack[] = [];
+    public peer: RTCPeerConnection;
+    private send: (webRTC: WebRTCIn) => any;
+    private rerender:() => any;
 
     public constructor(send: (webRTC: WebRTCIn) => any, rerender:()=>any, stream?: MediaStream) {
         this.rerender = rerender;
@@ -268,8 +290,8 @@ export function Cameras({noBackground, id}:{noBackground?: boolean, id?: string}
         );
         return (
             camera.length === 0 ? 
-                <Grid container justify="space-between" alignItems="center" style={{ width: "100%", height: "100%", backgroundColor: "#193d6f" }}>
-                    <Typography style={{ margin: "0 auto", color: "white", padding: 56 }} align="center">Your student does not have a 📷 to display</Typography>
+                <Grid container justify="space-between" alignItems="center" style={{ width: "100%", height: "100%" }}>
+                    <Typography style={{ margin: "0 auto" }} variant="caption" align="center"><VideocamOffIcon /></Typography>
                 </Grid> :
                 <Grid container item justify="space-around">
                     <Camera width={220} height={120} mediaStream={camera[0].stream} noBackground={noBackground} />
@@ -286,18 +308,20 @@ export function Camera({mediaStream, height, width, self, noBackground}:{mediaSt
         return <FormattedMessage id="error_no_rtc_provider" />;
     }
 
-    const [cameraTurnedOn, setCameraTurnedOn] = useState(true);
-
     const videoRef = useRef<HTMLVideoElement>(null);
 
-    const closeMediaStream = () => {
-        setCameraTurnedOn(false);
-        states.videoStream(false);
+    const toggleVideoState = () => {
+        const videoState = states.getVideoStreamState();
+        console.log(videoState);
+        console.log("toggled video");
+        states.setVideoStreamState(!videoState);
     };
 
-    const openMediaStream = () => {
-        setCameraTurnedOn(true);
-        states.videoStream(true);
+    const toggleAudioState = () => {
+        const audioState = states.getAudioStreamState();
+        console.log(audioState);
+        console.log("toggled audio");
+        states.setAudioStreamState(!audioState);
     };
 
     useEffect(() => {
@@ -307,7 +331,7 @@ export function Camera({mediaStream, height, width, self, noBackground}:{mediaSt
 
     return (
         <Card elevation={0} square>
-            { cameraTurnedOn ?
+            { mediaStream.getVideoTracks().some((t) => t.enabled) ?
                 <CardMedia
                     autoPlay={true}
                     muted={self}
@@ -317,8 +341,8 @@ export function Camera({mediaStream, height, width, self, noBackground}:{mediaSt
                     ref={videoRef}
                     width={width}
                 /> :
-                <Typography style={{ backgroundColor: "#193d6f", height: self ? height-32 : height, margin: "0 auto", color: "white", padding: 56 }} align="center">
-                    Your <span role="img" aria-label="camera">📷</span> is off.
+                <Typography style={{ backgroundColor: "#193d6f", height: self ? height-32 : height, margin: "0 auto", color: "white" }} align="center">
+                    <VideocamOffIcon />
                 </Typography>
             }
             { self ? 
@@ -332,9 +356,9 @@ export function Camera({mediaStream, height, width, self, noBackground}:{mediaSt
                                 aria-label="control camera"
                                 component="span"
                                 style={{ color: "black", fontSize: 8, padding: 0 }}
-                                onClick={cameraTurnedOn ? closeMediaStream : openMediaStream}
+                                onClick={toggleVideoState}
                             >
-                                {cameraTurnedOn ? <VideocamIcon color="primary" /> : <VideocamOffIcon color="secondary" />}
+                                {mediaStream.getVideoTracks().some((t) => t.enabled) ? <VideocamIcon color="primary" /> : <VideocamOffIcon color="secondary" />}
                             </IconButton>
                         </Grid>
                         <Grid item>
@@ -343,8 +367,9 @@ export function Camera({mediaStream, height, width, self, noBackground}:{mediaSt
                                     aria-label="control mic"
                                     component="span"
                                     style={{ color: "black", fontSize: 8, padding: 0 }}
+                                    onClick={toggleAudioState}
                                 >
-                                    <MicIcon color="primary" />
+                                    {mediaStream.getAudioTracks().some((t) => t.enabled) ? <MicIcon color="primary" /> : <MicOffIcon color="secondary" />}
                                 </IconButton>
                             </Tooltip>
                         </Grid>
