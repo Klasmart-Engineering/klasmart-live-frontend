@@ -31,7 +31,7 @@ const Context = createContext<IWhiteboardContext>({
 
 type Props = {
   children?: ReactChild | ReactChildren | null;
-  allowPaint: boolean;
+  defaultAllowPaint: boolean;
 }
 
 // NOTE: This is used to scale up the coordinates sent in events
@@ -59,6 +59,12 @@ const WHITEBOARD_SEND_EVENT = gql`
   }
 `;
 
+const WHITEBOARD_SEND_DISPLAY = gql`
+  mutation whiteboardSendDisplay($roomId: ID!, $display: Boolean) {
+      whiteboardSendDisplay(roomId: $roomId, display: $display)
+  }
+`;
+
 const SUBSCRIBE_WHITEBOARD_EVENTS = gql`
   subscription whiteboardEvents($roomId: ID!) {
     whiteboardEvents(roomId: $roomId) {
@@ -69,14 +75,24 @@ const SUBSCRIBE_WHITEBOARD_EVENTS = gql`
   }
 `;
 
-export const WhiteboardContextProvider: FunctionComponent<Props> = ({ children, allowPaint }: Props): JSX.Element => {
+const SUBSCRIBE_WHITEBOARD_STATE = gql`
+  subscription whiteboardState($roomId: ID!) {
+      whiteboardState(roomId: $roomId) {
+          display
+          onlyTeacherDraw
+      }
+  }`;
+
+export const WhiteboardContextProvider: FunctionComponent<Props> = ({ children, defaultAllowPaint }: Props): JSX.Element => {
     const [brushParameters, setBrushParameters] = useState<BrushParameters>(BrushParameters.default());
     const [pointerPainter, setPointerPainter] = useState<PointerPainterController | undefined>(undefined);
     const [remotePainter, setRemotePainter] = useState<EventPainterController | undefined>(undefined);
     const [display, setDisplay] = useState<boolean>(false);
+    const [allowPaint, setAllowPaint] = useState<boolean>(defaultAllowPaint);
     const [eventSerializer, setEventSerializer] = useState<PaintEventSerializer | undefined>(undefined);
   
     const [sendEventMutation] = useMutation(WHITEBOARD_SEND_EVENT);
+    const [sendDisplayMutation] = useMutation(WHITEBOARD_SEND_DISPLAY);
 
     const { name, roomId } = useContext(UserContext);
 
@@ -86,6 +102,14 @@ export const WhiteboardContextProvider: FunctionComponent<Props> = ({ children, 
                 remotePainter.handlePainterEvent(whiteboardEvents);
             }
         }, variables: { roomId } });
+
+    useSubscription(SUBSCRIBE_WHITEBOARD_STATE, {
+        onSubscriptionData: ({ subscriptionData: { data: { whiteboardState }}}) => {
+            if (whiteboardState) {
+                setDisplay(whiteboardState.display);
+                setAllowPaint(defaultAllowPaint || !whiteboardState.onlyTeacherDraw);
+            }
+        }, variables: {roomId}});
 
     useEffect(() => {
         const remotePainter = new EventPainterController(NormalizeCoordinates);
@@ -138,6 +162,7 @@ export const WhiteboardContextProvider: FunctionComponent<Props> = ({ children, 
 
     const setDisplayAction = useCallback(
         (display: boolean) => {
+            sendDisplayMutation({ variables: { roomId: roomId, display: display }});
             setDisplay(display);
         },
         [setDisplay]

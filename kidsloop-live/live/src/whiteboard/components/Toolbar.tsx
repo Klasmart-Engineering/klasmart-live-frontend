@@ -58,7 +58,7 @@ export default function Toolbar () : JSX.Element {
     );
     
     const hidden: JSX.Element = (
-        <Button color="primary" onClick={display}>Show Whiteboard</Button>
+        <Button color="primary" onClick={() => display(true)}>Show Whiteboard</Button>
     );
 
     return (
