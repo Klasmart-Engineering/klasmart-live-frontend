@@ -1,4 +1,5 @@
 export interface LessonMaterial {
     name:string
-    url:string
+    url?:string
+    video?:string
 }

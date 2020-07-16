@@ -6,15 +6,11 @@ import { FormattedMessage } from "react-intl";
 import { RecordedIframe } from "../../components/recordediframe";
 import { ControlButtons } from "./controlButtons";
 import { Session, Content } from "../../room";
-import { Theme, Button, IconButton, Card, useTheme, CardContent } from "@material-ui/core";
+import { Theme, Button, Card, useTheme, CardContent } from "@material-ui/core";
 import { PreviewPlayer } from "../../components/preview-player";
 import clsx from "clsx";
 import MenuOpenIcon from "@material-ui/icons/MenuOpen";
 import { Cameras } from "../../webRTCState";
-import MenuItem from "@material-ui/core/MenuItem";
-import Select from "@material-ui/core/Select";
-import SkipNextTwoToneIcon from "@material-ui/icons/SkipNextTwoTone";
-import SkipPreviousTwoToneIcon from "@material-ui/icons/SkipPreviousTwoTone";
 import { UserContext } from "../../entry";
 import FaceTwoToneIcon from "@material-ui/icons/FaceTwoTone";
 import CenterAlignChildren from "../../components/centerAlignChildren";
@@ -22,6 +18,7 @@ import { gql } from "apollo-boost";
 import { useMutation } from "@apollo/react-hooks";
 import { Whiteboard } from "../../whiteboard/components/Whiteboard";
 import WBToolbar from "../../whiteboard/components/Toolbar";
+import { MaterialSelection } from "./materialSelection";
 
 const drawerWidth = 340;
 
@@ -94,8 +91,8 @@ export function Teacher (props: Props): JSX.Element {
     const [width, setWidth] = useState<string | number>("100%");
     const [height, setHeight] = useState<string | number>("100%");
 
-    const [contentId, setContentId] = useState(materials.length === 0 ? "" : materials[0].url);
     const [contentIndex, setContentIndex] = useState<number>(0);
+    const material = contentIndex >= 0 && contentIndex < materials.length ? materials[contentIndex] : undefined;
     
     useEffect(() => {
         const containerRef = window.document.getElementById("iframe-container");
@@ -120,10 +117,10 @@ export function Teacher (props: Props): JSX.Element {
     },[roomId,selectedButton,streamId]);
 
     useEffect(()=>{
-        if (selectedButton === 2) {
-            showContent({variables: { roomId, type: "Activity", contentId }});
+        if (selectedButton === 2 && material && material.url) {
+            showContent({variables: { roomId, type: "Activity", contentId: material.url }});
         }
-    },[roomId,selectedButton,contentId]);
+    },[roomId,selectedButton, material]);
 
 
     function Toolbar() {
@@ -141,7 +138,7 @@ export function Teacher (props: Props): JSX.Element {
                             selectedButton={selectedButton}
                             loading={loading}
                             disablePresent={!streamId}
-                            disableActivity={!contentId}
+                            disableActivity={!material}
                         />
                     </Grid>
                     <Grid item style={{ marginLeft: "auto" }}>
@@ -174,38 +171,7 @@ export function Teacher (props: Props): JSX.Element {
                     clsx(classes.content, { [classes.contentShift]: open })
                 }
             >
-                <Grid container direction="row">
-                    <Grid item xs={10} style={{ paddingRight: "10px" }}>
-                        <Select value={contentIndex} fullWidth disabled={materials.length == 0} onChange={(e) => {
-                            if (materials.length === 0) { return; }
-                            const index = e.target.value as number;
-                            setContentIndex(index);
-                            setContentId(materials[index].url);
-                        }}>
-                            {materials.map(({ name, url }, i) => <MenuItem value={i} key={`${name}-${url}`}>{name}</MenuItem>)}
-                        </Select>
-                    </Grid>
-                    <Grid item xs={1}>
-                        <IconButton aria-label="delete" disabled={materials.length == 0} color="primary" onClick={() => {
-                            if (materials.length === 0) { return; }
-                            const newIndex = contentIndex ? Math.max(0, contentIndex - 1) : 0;
-                            setContentIndex(newIndex);
-                            setContentId(materials[newIndex].url);
-                        }}>
-                            <SkipPreviousTwoToneIcon />
-                        </IconButton>
-                    </Grid>
-                    <Grid item xs={1}>
-                        <IconButton aria-label="next" disabled={materials.length == 0} color="primary" onClick={() => {
-                            if (materials.length === 0) { return; }
-                            const newIndex = contentIndex !== undefined ? Math.min(materials.length - 1, contentIndex + 1) : 0;
-                            setContentIndex(newIndex);
-                            setContentId(materials[newIndex].url);
-                        }}>
-                            <SkipNextTwoToneIcon />
-                        </IconButton>
-                    </Grid>
-                </Grid>
+                <MaterialSelection materials={materials} contentIndex={contentIndex} setContentIndex={setContentIndex} />
                 { content.type === "Activity" ? <Toolbar /> : null }
                 <Grid 
                     container 
@@ -250,14 +216,20 @@ export function Teacher (props: Props): JSX.Element {
                             }
                         </> :
                         <Whiteboard height={height}>
-                            <RecordedIframe
-                                contentId={contentId}
-                                setStreamId={setStreamId}
-                                parentWidth={width}
-                                parentHeight={height}
-                                setParentWidth={setWidth}
-                                setParentHeight={setHeight}
-                            />
+                            {
+                                !material ?
+                                    undefined :
+                                    material.url ?
+                                        <RecordedIframe
+                                            contentId={material.url}
+                                            setStreamId={setStreamId}
+                                            parentWidth={width}
+                                            parentHeight={height}
+                                            setParentWidth={setWidth}
+                                            setParentHeight={setHeight}
+                                        /> :
+                                        <video src={material.video} />
+                            }
                             <WBToolbar />
                         </Whiteboard>
                         

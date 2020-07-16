@@ -17,7 +17,7 @@ export interface Session {
 }
 
 export interface Content {
-    type: "Blank" | "Stream" | "Activity",
+    type: "Blank" | "Stream" | "Activity" | "Video",
     contentId: string,
 }
 
@@ -34,7 +34,7 @@ const SUB_ROOM = gql`
         content { type, contentId },
         join { id, name, streamId },
         leave { id }
-        session { webRTC { sessionId,offer,answer,ice } }
+        session { webRTC { sessionId,description, ice } }
         }
     }
 `;
@@ -71,9 +71,7 @@ export function Room ({ teacher }: Props): JSX.Element {
             const newState = new Map<string, Session>([...state]);
             if(join) {
                 newState.set(join.id, join);
-                if(teacher && join.id != sessionId) {
-                    webrtc.start(join.id);
-                }
+                webrtc.sendOffer(join.id);
             }
             if(leave) { newState.delete(leave.id); }
             return newState;
