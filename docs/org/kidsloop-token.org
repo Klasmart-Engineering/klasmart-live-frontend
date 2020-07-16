@@ -1,0 +1,134 @@
+#+TITLE: KidsLoop JWT Token
+#+Author: Axel Wettervik
+#+options: {}^
+#+SETUPFILE: https://fniessen.github.io/org-html-themes/setup/theme-readtheorg.setup
+
+* Token Format
+The KidsLoop token is a JWT token with some additional fields. A good
+resource where developers can experiment with JWT tokens is:
+https://jwt.io.
+
+** Token payload
+
+#+BEGIN_SRC js
+{
+    // Standard JWT fields:
+    sub: string // subject -> not specified yet
+    iss: string // issuer -> Used to identify who created this token. Will be used during verification process.
+    aud: string // audience -> not specified yet
+    exp: number // expire time -> Used to detect if token is expired during verification process.
+    nbf: number // not before -> Used to detect if token isn't valid yet during verification process.
+    iat: number // issued at -> The time token was issued.
+
+    // KidsLoop fields:
+    name: string // user name
+    roomid: string // which room the user is allowed to participate in using this token.
+    userid: string // unique identifier for the user.
+    teacher: boolean // indicates if the user is a teacher or not.
+    org: string // indicates which organization this user is part of.
+}
+#+END_SRC
+
+** Token credentials
+Each organization or entity wanting to generate KidsLoop compatible
+tokens have to register some information the KidsLoop servers will use
+to verify the token and authenticate the user. Currently this
+registration will happen manually but in the future we want to have an
+online service for this.
+
+The credentials should not be shared with end- users or be available to
+any client (web application).
+
+#+BEGIN_SRC js
+{
+    id: string // Issuer ID -> This field should be the same value as the 'iss' field in token payload. Server will use this ID to find the correct credentials.
+    issuer: string | string[] // Array of allowed issuers. Currently this will likely always be the same value as the 'id' field.
+    algorithms: Algorithm[] // Array of allowed encryption algorithms. Should just contain the algorithms used when creating the signed token data.
+    certificate: string | Buffer // The public key used to verify the token signature (might be different based on algorithm used).
+}
+#+END_SRC
+
+* Client (Web Application)
+The client will try to receive the token either from URL search
+parameters or from `localStorage`. The key in localStorage or search
+parameters should be `token`.
+
+** Examples
+Example token: _ABCD_
+
+*** Setting token
+**** URL Search Parameters
+https://live.kidsloop.net/?token=ABCD
+
+
+**** Local Storage
+#+BEGIN_SRC js
+localStorage.setItem('token', 'ABCD');
+#+END_SRC
+
+
+*** Reading token
+
+**** URL Search Parameters
+#+BEGIN_SRC js
+let url = new URL(window.location.href);
+let token = url.searchParams.get('token');
+#+END_SRC
+
+**** Local Storage
+#+BEGIN_SRC js
+let token = localStorage.getItem('token');
+#+END_SRC
+
+**** Helper Function
+Reading the token can also be done using a helper function in the
+AuthTokenProvider class. The AuthTokenProvider exists in the KidsLoop
+web application source code. The helper function will try to retrieve
+the token from both URL and local storage. It will prefer URL if token
+exists in both places.
+
+#+BEGIN_SRC js
+let token = new AuthTokenProvider()
+                    .retrieveToken();
+#+END_SRC
+
+* Server
+
+The server will read the token from the HTTP request authorization
+header. It will expect the authorization header to contain the token
+in bearer format; 'Authorization: Bearer <token>'.
+
+After receiving a token the server will try to parse and verify the
+token. An immutable data container will be created by the server which
+can be passed around and used to get information about the user.
+
+#+BEGIN_SRC js
+class UserInformation {
+    id: string
+    name: string
+    isTeacher: boolean
+    organization: string | undefined
+}
+
+class RoomInformation {
+    roomId: string
+}
+
+interface IDecodedToken {
+    isValid () : boolean
+    isExpired () : boolean
+
+    getSubject () : string
+    getAudience () : string
+
+    userInformation () : UserInformation | undefined
+    roomInformation () : RoomInformation | undefined
+}
+#+END_SRC
+
+The decoded token data is kept around even if the token wasn't
+verified properly. The reason for that is server might want to return
+some specific error based on the data that failed to verify. For
+example a different response if the token is expired or if the user
+isn't allowed in the requested room.
+
