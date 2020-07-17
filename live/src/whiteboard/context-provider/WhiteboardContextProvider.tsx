@@ -2,18 +2,16 @@ import React, { createContext, FunctionComponent, useCallback, useContext, useEf
 import { BrushParameters } from "../types/BrushParameters";
 import { PointerPainterController } from "../controller/PointerPainterController";
 import { PaintEventSerializer } from "../event-serializer/PaintEventSerializer";
-import { useWhiteboardGraphQL } from "../hooks/WhiteboardGraphQL";
 import { EventPainterController } from "../controller/EventPainterController";
-import { PainterEvent } from "../types/PainterEvent";
 import { IPainterController } from "../controller/IPainterController";
 import { UserContext } from "../../entry";
 import { gql } from "apollo-boost";
 import { useMutation, useSubscription } from "@apollo/react-hooks";
+import { Permissions, createPermissions, createEmptyPermissions } from "../types/Permissions";
 
 interface IWhiteboardState {
-  loading: boolean;
   display: boolean;
-  allowPaint: boolean;
+  permissions: Permissions;
   brushParameters: BrushParameters;
   pointerPainter?: PointerPainterController;
   remotePainter?: EventPainterController;
@@ -25,13 +23,12 @@ interface IWhiteboardContext {
 }
 
 const Context = createContext<IWhiteboardContext>({
-    state: {loading: true, display: false, allowPaint: false, brushParameters: BrushParameters.default()},
+    state: {display: false, permissions: createEmptyPermissions(), brushParameters: BrushParameters.default()},
     actions: {},
 });
 
 type Props = {
   children?: ReactChild | ReactChildren | null;
-  defaultAllowPaint: boolean;
 }
 
 // NOTE: This is used to scale up the coordinates sent in events
@@ -79,24 +76,31 @@ const SUBSCRIBE_WHITEBOARD_STATE = gql`
   subscription whiteboardState($roomId: ID!) {
       whiteboardState(roomId: $roomId) {
           display
-          onlyTeacherDraw
       }
   }`;
 
-export const WhiteboardContextProvider: FunctionComponent<Props> = ({ children, defaultAllowPaint }: Props): JSX.Element => {
+const SUBSCRIBE_WHITEBOARD_PERMISSIONS = gql`
+  subscription whiteboardPermissions($roomId: ID! $userId: ID!) {
+      whiteboardPermissions(roomId: $roomId, userId: $userId) {
+          permissions
+      }
+  }`;
+
+export const WhiteboardContextProvider: FunctionComponent<Props> = ({ children }: Props): JSX.Element => {
     const [brushParameters, setBrushParameters] = useState<BrushParameters>(BrushParameters.default());
     const [pointerPainter, setPointerPainter] = useState<PointerPainterController | undefined>(undefined);
     const [remotePainter, setRemotePainter] = useState<EventPainterController | undefined>(undefined);
     const [display, setDisplay] = useState<boolean>(false);
-    const [allowPaint, setAllowPaint] = useState<boolean>(defaultAllowPaint);
     const [eventSerializer, setEventSerializer] = useState<PaintEventSerializer | undefined>(undefined);
   
     const [sendEventMutation] = useMutation(WHITEBOARD_SEND_EVENT);
     const [sendDisplayMutation] = useMutation(WHITEBOARD_SEND_DISPLAY);
 
-    const { name, roomId } = useContext(UserContext);
+    const { name, roomId, teacher } = useContext(UserContext);
 
-    const { loading } = useSubscription(SUBSCRIBE_WHITEBOARD_EVENTS, {
+    const [permissions, setPermissions] = useState<Permissions>(createPermissions(teacher));
+
+    useSubscription(SUBSCRIBE_WHITEBOARD_EVENTS, {
         onSubscriptionData: ({ subscriptionData: { data: { whiteboardEvents } } }) => {
             if (remotePainter) {
                 remotePainter.handlePainterEvent(whiteboardEvents);
@@ -107,9 +111,16 @@ export const WhiteboardContextProvider: FunctionComponent<Props> = ({ children, 
         onSubscriptionData: ({ subscriptionData: { data: { whiteboardState }}}) => {
             if (whiteboardState) {
                 setDisplay(whiteboardState.display);
-                setAllowPaint(defaultAllowPaint || !whiteboardState.onlyTeacherDraw);
             }
         }, variables: {roomId}});
+
+    useSubscription(SUBSCRIBE_WHITEBOARD_PERMISSIONS, {
+        onSubscriptionData: ( {subscriptionData: { data: { whiteboardPermissions }}}) => {
+            console.log(whiteboardPermissions);
+            if (whiteboardPermissions) {
+                setPermissions(JSON.parse(whiteboardPermissions as string));
+            }
+        }, variables: {roomId, userId: name}});
 
     useEffect(() => {
         const remotePainter = new EventPainterController(NormalizeCoordinates);
@@ -177,9 +188,8 @@ export const WhiteboardContextProvider: FunctionComponent<Props> = ({ children, 
     return (
         <Context.Provider value={{
             state: {
-                loading,
                 display,
-                allowPaint,
+                permissions,
                 pointerPainter,
                 remotePainter,
                 brushParameters

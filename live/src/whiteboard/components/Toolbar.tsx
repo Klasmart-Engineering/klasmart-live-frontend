@@ -34,7 +34,7 @@ export default function Toolbar () : JSX.Element {
 
     const paintingControls: JSX.Element = (
         <>
-            { state.allowPaint ? 
+            { state.permissions.allowCreateShapes ? 
                 <>              
                     { selectColor ? 
                         <div style={{zIndex: 5, width: "840px", backgroundColor: "rgba(80, 80, 80, 0.4)", padding: "5px", position: "absolute"}}>
@@ -44,8 +44,10 @@ export default function Toolbar () : JSX.Element {
                     <Slider min={1.0} max={6.0} value={state.brushParameters.width} onChange={(_e, value) => handleSetLineWidth(value)} />
                     <br />
                     <Button color="primary" onClick={handleDisplayColor}>Color</Button>
-                    <Button color="primary" onClick={clear}>Clear</Button> 
                 </> : <></>
+            }
+            { state.permissions.allowDeleteShapes.others ? 
+                <Button color="primary" onClick={clear}>Clear</Button> : <></>
             }
         </>
     );
@@ -53,12 +55,20 @@ export default function Toolbar () : JSX.Element {
     const displayed: JSX.Element = (
         <>
             {paintingControls}
-            <Button color="primary" onClick={() => display(false)}>Hide Whiteboard</Button>
+            { state.permissions.allowShowHide ?
+                <Button color="primary" onClick={() => display(false)}>Hide Whiteboard</Button>
+                : <></>
+            }
         </>
     );
     
     const hidden: JSX.Element = (
-        <Button color="primary" onClick={() => display(true)}>Show Whiteboard</Button>
+        <>
+            { state.permissions.allowShowHide ?
+                <Button color="primary" onClick={() => display(true)}>Show Whiteboard</Button>
+                : <></>
+            }
+        </>
     );
 
     return (
