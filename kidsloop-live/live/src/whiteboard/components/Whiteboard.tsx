@@ -22,12 +22,12 @@ export function Whiteboard({ children, height }: Props): JSX.Element {
         zIndex: 998,
     };
   
-    const pointerEvents = state.allowPaint ? undefined : "none";
+    const pointerEvents = state.permissions.allowCreateShapes ? undefined : "none";
 
     return (
         <div style={{position:"relative", width: "100%"}}>
             <EventDrivenCanvas width="1024" height="1024" style={{ ...canvasStyle, pointerEvents: "none", height, display: state.display ? "inline-block" : "none" }} controller={state.remotePainter} />
-            <EventDrivenCanvas enablePointer={state.allowPaint} width="1024" height="1024" style={{...canvasStyle, height, pointerEvents: pointerEvents, display: state.display ? "inline-block" : "none"}} controller={state.pointerPainter} />
+            <EventDrivenCanvas enablePointer={state.permissions.allowCreateShapes} width="1024" height="1024" style={{...canvasStyle, height, pointerEvents: pointerEvents, display: state.display ? "inline-block" : "none"}} controller={state.pointerPainter} />
             {children}
         </div>
     );
