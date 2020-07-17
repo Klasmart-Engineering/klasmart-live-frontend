@@ -81,9 +81,7 @@ const SUBSCRIBE_WHITEBOARD_STATE = gql`
 
 const SUBSCRIBE_WHITEBOARD_PERMISSIONS = gql`
   subscription whiteboardPermissions($roomId: ID! $userId: ID!) {
-      whiteboardPermissions(roomId: $roomId, userId: $userId) {
-          permissions
-      }
+      whiteboardPermissions(roomId: $roomId, userId: $userId)
   }`;
 
 export const WhiteboardContextProvider: FunctionComponent<Props> = ({ children }: Props): JSX.Element => {
@@ -116,7 +114,6 @@ export const WhiteboardContextProvider: FunctionComponent<Props> = ({ children }
 
     useSubscription(SUBSCRIBE_WHITEBOARD_PERMISSIONS, {
         onSubscriptionData: ( {subscriptionData: { data: { whiteboardPermissions }}}) => {
-            console.log(whiteboardPermissions);
             if (whiteboardPermissions) {
                 setPermissions(JSON.parse(whiteboardPermissions as string));
             }
