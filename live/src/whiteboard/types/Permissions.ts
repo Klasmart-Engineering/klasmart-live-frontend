@@ -53,7 +53,7 @@ export const createTeacherPermissions = (): Permissions => {
 export const createStudentPermissions = (): Permissions => {
     return {
         allowShowHide: false,
-        allowCreateShapes: true,
+        allowCreateShapes: false,
         allowEditShapes: {
             own: true,
             others: false

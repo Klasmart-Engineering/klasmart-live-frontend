@@ -20,6 +20,7 @@ import { Whiteboard } from "../../whiteboard/components/Whiteboard";
 import WBToolbar from "../../whiteboard/components/Toolbar";
 import { MaterialSelection } from "./materialSelection";
 import { BroadcastVideo } from "./broadcastVideo";
+import PermissionControls from "../../whiteboard/components/PermissionControls";
 
 const drawerWidth = 340;
 
@@ -272,6 +273,12 @@ export function Teacher (props: Props): JSX.Element {
                                                             </Typography>
                                                         </CenterAlignChildren>
                                                     </Grid>
+                                                    { session.name ? 
+                                                        <Grid item xs={12}>
+                                                            <PermissionControls otherUserId={session.name} />
+                                                        </Grid>
+                                                        : <></> 
+                                                    }
                                                 </CardContent>
                                             </Card>
                                         </Grid>
