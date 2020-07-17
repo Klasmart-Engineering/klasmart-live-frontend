@@ -110,7 +110,7 @@ export function Room ({ teacher }: Props): JSX.Element {
     if(loading || !content) {return <CircularProgress />;}
 
     return (
-        <WhiteboardContextProvider defaultAllowPaint={teacher}>
+        <WhiteboardContextProvider>
             <Layout
                 isTeacher={teacher}
                 users={users}
