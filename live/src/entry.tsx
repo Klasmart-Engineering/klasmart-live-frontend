@@ -104,7 +104,6 @@ export const UserContext = createContext<IUserContext>({setName: () => null, roo
 function parseToken() {
     try {
         const url = new URL(window.location.href);
-        console.log(url);
         if(url.hostname === "localhost") {
             const materialsParam = url.searchParams.get("materials");
             return {
@@ -113,7 +112,7 @@ function parseToken() {
                 roomId: url.searchParams.get("roomId") || "test-room",
                 materials: materialsParam ? JSON.parse(materialsParam) : [
                     {name:"Pairs", url:"/h5p/play/5ecf4e4b611e18398f7380ef"},
-                    {name:"Video", url:"./video.mp4"},
+                    {name:"Video", video:"./video.mp4"},
                 ],
             };
         }

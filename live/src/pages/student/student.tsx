@@ -226,6 +226,11 @@ export function Student(props: Props): JSX.Element {
             {isSmDown ? <CameraContainer isTeacher={false} /> : null}
         </>);
     case "Video":
-        return <Stream sessionId={content.contentId} index={1} />;
+        return <>
+            <Whiteboard height={height}>
+                <Stream sessionId={content.contentId} />
+            </Whiteboard>
+            <WBToolbar />
+        </>;
     }
 }
