@@ -2,7 +2,6 @@ import React, { useRef, createContext, useContext, useEffect, useState } from "r
 import { useTheme } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
-import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 import VideocamIcon from "@material-ui/icons/Videocam";
@@ -12,7 +11,6 @@ import MicIcon from "@material-ui/icons/Mic";
 import { FormattedMessage } from "react-intl";
 import { gql } from "apollo-boost";
 import { useMutation } from "@apollo/react-hooks";
-import EventEmitter from "eventemitter3";
 import Card from "@material-ui/core/Card";
 import CardMedia from "@material-ui/core/CardMedia";
 import CardActions from "@material-ui/core/CardActions";
@@ -27,45 +25,32 @@ const SEND_SIGNAL = gql`
 export interface WebRTCIn {
     description?: string
     ice?: string
+
+    stream?: {name: string, streamId: string}
 }
 
 
-export interface WebRTC {
-    sessionId: string
-    description?: string
-    ice?: string
-}
+export type WebRTC = WebRTCIn & { sessionId: string }
 
 export const webRTCContext  = createContext<WebRTCContext>(undefined as any);
 
 export class WebRTCContext {
-    private static streamEmitter = new EventEmitter()
-    private static stream?: MediaStream | null = navigator.mediaDevices ? undefined : null
-    private static streamPromise = navigator.mediaDevices && navigator.mediaDevices.getUserMedia({video: true, audio: true}).then((stream) => {
-        WebRTCContext.stream = stream;
-    }).catch(() => {
-        WebRTCContext.stream = null;
-    }).finally(() => {
-        WebRTCContext.streamEmitter.emit("rerender");
-    });
     public videoTrackEnabled: boolean;
     public audioTrackEnabled: boolean;
 
     public setVideoStreamState(enabled: boolean) {
         this.videoTrackEnabled = enabled;
-        for(const state of this.states.values()) {
-            if (!state.localMediaStream) { continue; }
-            for(const track of state.localMediaStream.getVideoTracks()) {
+        if(this.localCamera) {
+            for(const track of this.localCamera.getVideoTracks()) {
                 track.enabled = enabled;
             }
         }
         this.rerender();
     }
     public setAudioStreamState(enabled: boolean) {
-        console.log(`setAudioStreamState: ${enabled}`);
         this.audioTrackEnabled = enabled;
-        for(const state of this.states.values()) {
-            for(const track of state.audioTracks) {
+        if(this.localCamera) {
+            for(const track of this.localCamera.getAudioTracks()) {
                 track.enabled = enabled;
             }
         }
@@ -83,9 +68,12 @@ export class WebRTCContext {
     public static useWebRTCContext(mySessionId: string,roomId: string): WebRTCContext {
         const [sendSignal] = useMutation(SEND_SIGNAL);
         const [webRTCContextValue, setWebRTCContextValue] = useState(
-            new WebRTCContext(mySessionId, (toSessionId: string, webrtc: WebRTCIn) => {
-                return sendSignal({variables: {roomId,toSessionId,webrtc}});
-            })
+            new WebRTCContext(
+                mySessionId,
+                (toSessionId: string, webrtc: WebRTCIn) => {
+                    setImmediate(() => sendSignal({variables: {roomId,toSessionId,webrtc}}));
+                }
+            )
         );
         webRTCContextValue.set=setWebRTCContextValue;
         return webRTCContextValue;
@@ -93,45 +81,57 @@ export class WebRTCContext {
 
     private mySessionId: string
     private set?: React.Dispatch<React.SetStateAction<WebRTCContext>>
-    private send: (sessionId:string, webRTC: WebRTCIn) => Promise<any>
+    private send: (sessionId:string, webRTC: WebRTCIn) => any
     private states: Map<string, WebRTCState>
+    private localCamera?: MediaStream;
+    private localAux?: MediaStream
+
     private constructor(
         mySessionId: string,
-        send: (sessionId:string, webRTC: WebRTCIn) => Promise<any>,
+        send: (sessionId:string, webRTC: WebRTCIn) => any,
         states = new Map<string, WebRTCState>(),
         videoTrackEnabled = true,
         audioTrackEnabled = true,
+        localCamera?: MediaStream,
+        localAux?: MediaStream,
     ) {
         this.mySessionId = mySessionId;
         this.send = send;
         this.states = states;
         this.videoTrackEnabled = videoTrackEnabled;
         this.audioTrackEnabled = audioTrackEnabled;
-        WebRTCContext.streamEmitter.addListener("rerender", () => this.rerender());
+        this.localCamera = localCamera;
+        this.localAux = localAux;
     }
+
     public async notification(webrtc: WebRTC): Promise<void> {
         const sessionId = webrtc.sessionId;
         const state = await this.getOrCreateState(sessionId);
         await state.dispatch(webrtc);
-        this.rerender();
     }
 
     public async sendOffer(sessionId: string): Promise<void> {
+        if(this.mySessionId===sessionId) {return;}
         const state = await this.getOrCreateState(sessionId);        
         return state.sendOffer();
     }
-
-    public getMediaStream(sessionId: string) {
+    public getCameraStream(sessionId: string) {
         const state = this.states.get(sessionId);
-        if(!state) { return; }
-        return state.remoteMediaStreams;
+        if(!state) {return;}
+        return state.getStream("camera");
+    }
+
+    public getAuxStream(sessionId: string) {
+        const state = this.states.get(sessionId);
+        if(!state) {return;}
+        return state.getStream("aux");
     }
 
     public getMediaStreams(): Array<{sessionId: string, stream: MediaStream}> {
         const results: Array<{sessionId: string, stream: MediaStream}> = [];
         for(const [sessionId, state] of this.states.entries()) {
             if(state.remoteMediaStreams && state.peer.connectionState === "connected") {
-                for(const stream of state.remoteMediaStreams) {
+                for(const stream of state.remoteMediaStreams.values()) {
                     results.push({sessionId, stream});
                 }
             }
@@ -139,13 +139,33 @@ export class WebRTCContext {
         return results;
     }
 
-    public getCamera() {return WebRTCContext.stream;}
-    public isCameraReady() {return WebRTCContext.stream !== undefined;}
+
+    public setCamera(stream: MediaStream) {
+        this.localCamera = stream;
+        for(const state of this.states.values()) {
+            state.attachStream("camera", this.localCamera);
+        }
+    }
+    public getCamera() {return this.localCamera;}
+
+    public setAux(stream: MediaStream) {
+        this.localAux = stream;
+        for(const state of this.states.values()) {
+            state.attachStream("aux", this.localAux);
+        }
+    }
+    public getAux() {return this.localAux;}
 
     private async getOrCreateState(sessionId: string): Promise<WebRTCState> {
         let state = this.states.get(sessionId);
         if(!state) {
-            state = new WebRTCState(this.mySessionId < sessionId, (webRTC: WebRTCIn) => this.send(sessionId, webRTC), ()=> this.rerender(), WebRTCContext.stream||undefined);
+            state = new WebRTCState(
+                this.mySessionId < sessionId,
+                (webRTC: WebRTCIn) => this.send(sessionId, webRTC),
+                ()=> this.rerender(),
+                this.localCamera,
+                this.localAux,
+            );
             this.states.set(sessionId, state);
         }
         return state;
@@ -153,7 +173,17 @@ export class WebRTCContext {
 
     private rerender() {
         if(!this.set) { return; }
-        this.set(new WebRTCContext(this.mySessionId, this.send, this.states, this.videoTrackEnabled, this.audioTrackEnabled));
+        this.set(
+            new WebRTCContext(
+                this.mySessionId,
+                this.send,
+                this.states,
+                this.videoTrackEnabled,
+                this.audioTrackEnabled,
+                this.localCamera,
+                this.localAux,
+            )
+        );
     }
 }
 
@@ -162,52 +192,64 @@ const iceServers: RTCIceServer[] = [
 ];
 
 class WebRTCState {
-    public localMediaStream?: MediaStream;
-    public remoteMediaStreams?: readonly MediaStream[] = []
-    public videoTracks: MediaStreamTrack[] = [];
-    public audioTracks: MediaStreamTrack[] = [];
+    public remoteMediaStreams: Map<string,MediaStream> = new Map<string, MediaStream>()
     public peer: RTCPeerConnection;
     private send: (webRTC: WebRTCIn) => any;
     private rerender:() => any;
+    private senderMap = new Map<string, RTCRtpSender>()
+    private remoteStreamNames = new Map<string, string>()
+    private localStreamNames = new Map<string, MediaStream>()
 
-    public constructor(polite: boolean, send: (webRTC: WebRTCIn) => any, rerender:()=>any, stream?: MediaStream) {
+    public constructor(polite: boolean, send: (webRTC: WebRTCIn) => any, rerender:()=>any, cameraStream?: MediaStream, auxStream?: MediaStream) {
         this.polite = polite;
         this.rerender = rerender;
         this.send = send;
         this.peer = new RTCPeerConnection({iceServers});
-        this.peer.onicegatheringstatechange = async () => {
-            if(!this.peer) {return;}
-        };
         this.peer.onicecandidate = async ({candidate}) => {
             if(candidate) {
                 const ice = JSON.stringify(candidate);
                 this.send({ ice });
             }
         };
-        this.peer.onconnectionstatechange = () => {
-            if(!this.peer) {return;}
-            this.rerender();
-        };
-        this.peer.ontrack = ({streams}) => {
-            this.remoteMediaStreams = streams;
-            this.rerender();
+        this.peer.ontrack = (e) => {
+            const {streams} = e;
+            for(const stream of streams) {
+                this.remoteMediaStreams.set(stream.id, stream);
+            }
+            this.rerender();//TODO: Fix capture of old state
         };
         this.peer.onnegotiationneeded = async () => {
-            const offer = await this.peer.createOffer();
-            if (this.peer.signalingState != "stable") return;
-            await this.peer.setLocalDescription(offer);
-            this.send({description: JSON.stringify(offer)});
-        };      
-        this.localMediaStream = stream;
-        if(this.localMediaStream) {
-            for(const track of this.localMediaStream.getTracks()) {
-                this.peer.addTrack(track, this.localMediaStream);
-                if (track.kind === "video") {
-                    this.videoTracks.push(track);
-                } else if (track.kind === "audio") {
-                    this.audioTracks.push(track);
-                }
+            try {
+                this.makingOffer = true;
+                const offer = await this.peer.createOffer();
+                if (this.peer.signalingState != "stable") return;
+                await this.peer.setLocalDescription(offer);
+                this.send({description: JSON.stringify(this.peer.localDescription)});
+            } catch(e) {
+                console.error(e);
+            } finally {
+                this.makingOffer = false;
             }
+        };
+        if(cameraStream) { this.attachStream("camera", cameraStream); }
+        if(auxStream) { this.attachStream("aux", auxStream); }
+    }
+
+    public attachStream(name: string, stream: MediaStream) {
+        const previousStream = this.localStreamNames.get(name);
+        if(previousStream) {
+            for(const track of previousStream.getTracks()) {
+                const sender = this.senderMap.get(track.id);
+                if(sender) { this.peer.removeTrack(sender); }
+            }
+        }
+        if(!previousStream || previousStream.id !== stream.id) {
+            this.send({stream: {name, streamId: stream.id}});
+        }
+        this.localStreamNames.set("name", stream);
+        for(const track of stream.getTracks()) {
+            const sender = this.peer.addTrack(track, stream);
+            this.senderMap.set(track.id, sender);
         }
     }
 
@@ -221,7 +263,7 @@ class WebRTCState {
     public async dispatch(webrtc: WebRTCIn): Promise<void> {
         try {
             if(!webrtc) { return; }
-            const {description, ice} = webrtc;
+            const {description, ice, stream} = webrtc;
             if(description) {
                 const remoteDescription = new RTCSessionDescription(JSON.parse(description));
                 const collision = (remoteDescription.type == "offer") && (this.peer.signalingState != "stable" || this.makingOffer);
@@ -242,6 +284,9 @@ class WebRTCState {
                     if (!this.ignoringdOffer) throw e;
                 }
             }
+            if(stream) {
+                this.remoteStreamNames.set(stream.name, stream.streamId);
+            }
         } catch(e) {
             console.error(e); 
         }
@@ -250,15 +295,21 @@ class WebRTCState {
     public async sendOffer() {
         try {
             this.makingOffer = true;
-            console.log("Sendings offers");
             const offer = await this.peer.createOffer();
-            await this.peer.setLocalDescription(offer); //Incorrect Typescript types
+            await this.peer.setLocalDescription(offer);
             this.send({ description: JSON.stringify(this.peer.localDescription) });
         } catch(e) {
             console.error(e);
         } finally {
             this.makingOffer = false;
         }
+    }
+
+    public getStream(name: string) {
+        const id = this.remoteStreamNames.get(name);
+        if(!id) {return;}
+        const stream = this.remoteMediaStreams.get(id);
+        return stream;
     }
 }
 
@@ -281,11 +332,11 @@ export function Cameras({noBackground, id}:{noBackground?: boolean, id?: string}
             </Grid>
         );
     } 
-    const camera = states.getMediaStream(id);
+    const camera = states.getCameraStream(id);
     if(camera) {
         return (
             <Grid container item justify="space-around">
-                <Camera width={220} height={120} mediaStream={camera[0]} noBackground={noBackground} />
+                <Camera width={220} height={120} mediaStream={camera} noBackground={noBackground} />
             </Grid>
         );
     }
@@ -309,15 +360,11 @@ export function Camera({mediaStream, height, width, self, noBackground}:{mediaSt
 
     const toggleVideoState = () => {
         const videoState = states.getVideoStreamState();
-        console.log(videoState);
-        console.log("toggled video");
         states.setVideoStreamState(!videoState);
     };
 
     const toggleAudioState = () => {
         const audioState = states.getAudioStreamState();
-        console.log(audioState);
-        console.log("toggled audio");
         states.setAudioStreamState(!audioState);
     };
 
@@ -392,18 +439,18 @@ export function MyCamera(): JSX.Element {
     }
 }
 
-export function Stream(props:{sessionId:string, index:number}): JSX.Element {
-    const {index, sessionId} = props;
+export function Stream(props:{sessionId:string}): JSX.Element {
+    const {sessionId} = props;
     const webrtc = useContext(webRTCContext);
     const videoRef = useRef<HTMLVideoElement>(null);
     useEffect(() => {
         if(!videoRef.current) {return;}
-        const streams = webrtc.getMediaStream(sessionId);
-        if(!streams) {return;}
-        if(index >= 0 && index < streams.length) {
-            videoRef.current.srcObject = streams[index];
-        }
-    }, [videoRef.current, webrtc]);
-    return <video ref={videoRef}/>;
+        const stream = webrtc.getAuxStream(sessionId);
+        if(!stream) {return;}
+        videoRef.current.srcObject = stream;
+    }, [videoRef.current,webrtc]);
+    return <>
+        <video style={{width: "100%"}} ref={videoRef} autoPlay playsInline/>
+    </>;
 
 }
