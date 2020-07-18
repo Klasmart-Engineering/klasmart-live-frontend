@@ -1,7 +1,7 @@
 import Grid from "@material-ui/core/Grid";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useRef } from "react";
 import { FormattedMessage } from "react-intl";
 import { RecordedIframe } from "../../components/recordediframe";
 import { ControlButtons } from "./controlButtons";
@@ -10,7 +10,7 @@ import { Theme, Button, Card, useTheme, CardContent } from "@material-ui/core";
 import { PreviewPlayer } from "../../components/preview-player";
 import clsx from "clsx";
 import MenuOpenIcon from "@material-ui/icons/MenuOpen";
-import { Cameras } from "../../webRTCState";
+import { Cameras, webRTCContext } from "../../webRTCState";
 import { UserContext } from "../../entry";
 import FaceTwoToneIcon from "@material-ui/icons/FaceTwoTone";
 import CenterAlignChildren from "../../components/centerAlignChildren";
@@ -19,6 +19,7 @@ import { useMutation } from "@apollo/react-hooks";
 import { Whiteboard } from "../../whiteboard/components/Whiteboard";
 import WBToolbar from "../../whiteboard/components/Toolbar";
 import { MaterialSelection } from "./materialSelection";
+import { BroadcastVideo } from "./broadcastVideo";
 
 const drawerWidth = 340;
 
@@ -83,6 +84,7 @@ interface Props {
 
 export function Teacher (props: Props): JSX.Element {
     const {roomId, sessionId, materials} = useContext(UserContext);
+    const webrtc = useContext(webRTCContext);
     const classes = useStyles();
     const theme = useTheme();
     const { content, users, openDrawer, setOpenDrawer } = props;
@@ -111,10 +113,14 @@ export function Teacher (props: Props): JSX.Element {
     },[roomId,selectedButton]);
 
     useEffect(()=>{
-        if (selectedButton === 1) {
-            showContent({variables: { roomId, type: "Stream", contentId: streamId }});
+        if (selectedButton === 1 && material) {
+            if(material.video) {
+                showContent({variables: { roomId, type: "Video", contentId: sessionId }});
+            } else if(material.url) {
+                showContent({variables: { roomId, type: "Stream", contentId: streamId }});
+            }
         }
-    },[roomId,selectedButton,streamId]);
+    },[roomId,selectedButton,material,streamId]);
 
     useEffect(()=>{
         if (selectedButton === 2 && material && material.url) {
@@ -137,8 +143,8 @@ export function Teacher (props: Props): JSX.Element {
                             setSelectedButton={setSelectedButton}
                             selectedButton={selectedButton}
                             loading={loading}
-                            disablePresent={!streamId}
-                            disableActivity={!material}
+                            disablePresent={!(streamId || (material && material.video))}
+                            disableActivity={!(material && material.url)}
                         />
                     </Grid>
                     <Grid item style={{ marginLeft: "auto" }}>
@@ -215,23 +221,22 @@ export function Teacher (props: Props): JSX.Element {
                                 ))
                             }
                         </> :
-                        <Whiteboard height={height}>
-                            {
-                                !material ?
-                                    undefined :
-                                    material.url ?
-                                        <RecordedIframe
-                                            contentId={material.url}
-                                            setStreamId={setStreamId}
-                                            parentWidth={width}
-                                            parentHeight={height}
-                                            setParentWidth={setWidth}
-                                            setParentHeight={setHeight}
-                                        /> :
-                                        <video src={material.video} />
-                            }
+                        <>
+                            <Whiteboard height="100%">
+                                {material && material.url ?
+                                    <RecordedIframe
+                                        contentId={material.url}
+                                        setStreamId={setStreamId}
+                                        parentWidth={width}
+                                        parentHeight={height}
+                                        setParentWidth={setWidth}
+                                        setParentHeight={setHeight}
+                                    /> 
+                                    : undefined}
+                                {material && material.video ? <BroadcastVideo src={material.video} /> : undefined}
+                            </Whiteboard>
                             <WBToolbar />
-                        </Whiteboard>
+                        </>
                         
                     }
                     { content.type !== "Activity" ? <Toolbar /> : null }
