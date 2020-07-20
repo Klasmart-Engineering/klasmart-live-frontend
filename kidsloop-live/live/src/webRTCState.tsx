@@ -367,8 +367,6 @@ export function Camera(props: {
     const { mediaStream, controls, muted, backgroundColor, square } = props;
     const theme = useTheme();
 
-    const height = controls && typeof props.height === "number" ? props.height-32 : props.height;
-
     const states = useContext(webRTCContext);
     if(!states) {
         console.error("RTC Start button created outside context provider");
@@ -382,41 +380,40 @@ export function Camera(props: {
     }, [videoRef.current, mediaStream]);
 
     return (
-        <>
+        <Paper 
+            component="div" 
+            elevation={2} 
+            style={{
+                backgroundColor: "#193d6f",
+                borderRadius: square ? 0 : 12, 
+                height: 0,
+                marginBottom: controls ? 0 : theme.spacing(2),
+                position: "relative", 
+                paddingBottom: square ? "75%" : "56.25%" 
+            }}
+        >
             { mediaStream && mediaStream.getVideoTracks().some((t) => t.enabled) ?
-                <Paper 
-                    component="div" 
-                    elevation={2} 
-                    style={{ 
+                <video 
+                    autoPlay={true} 
+                    muted={muted}
+                    playsInline
+                    style={{
+                        backgroundColor: backgroundColor || "#193d6f", 
                         borderRadius: square ? 0 : 12, 
-                        height: 0,
-                        marginBottom: controls ? 0 : theme.spacing(2),
-                        position: "relative", 
-                        paddingBottom: square ? "75%" : "56.25%" 
-                    }}
-                >
-                    <video 
-                        autoPlay={true} 
-                        muted={muted}
-                        playsInline
-                        style={{
-                            backgroundColor: backgroundColor || "#193d6f", 
-                            borderRadius: square ? 0 : 12, 
-                            objectFit: "cover", 
-                            position: "absolute", 
-                            top: 0, 
-                            left: 0, 
-                            height: "100%",
-                            width: "100%", 
-                        }} 
-                        ref={videoRef} 
-                    />
-                </Paper> :
-                <Typography style={{ backgroundColor: "#193d6f", height, margin: "0 auto", color: "white" }} align="center">
+                        objectFit: "cover", 
+                        position: "absolute", 
+                        top: 0, 
+                        left: 0, 
+                        height: "100%",
+                        width: "100%", 
+                    }} 
+                    ref={videoRef} 
+                /> :
+                <Typography style={{ backgroundColor: "#193d6f", margin: "0 auto", color: "white" }} align="center">
                     <VideocamOffIcon />
                 </Typography>
             }
-        </>
+        </Paper>
     );
 }
 
