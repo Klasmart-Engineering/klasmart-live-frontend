@@ -136,6 +136,6 @@ export class PointerPainterController extends EventEmitter implements IPainterCo
     }
 
     private generateOperationId(): string {
-        return `${this.sessionId}-${this.operationSequence++}`;
+        return `${this.sessionId}:${this.operationSequence++}`;
     }
 }

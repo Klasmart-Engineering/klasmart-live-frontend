@@ -1,26 +1,26 @@
-import React, { useRef, useEffect, ReactChildren, ReactChild, ReactElement } from "react";
-import { CanvasEventRenderer } from "../renderer/CanvasEventRenderer";
+import React, { useRef, useEffect, ReactChildren, ReactChild, ReactElement, useState, useCallback } from "react";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
 import { useWhiteboard } from "../context-provider/WhiteboardContextProvider";
-import { BrushParameters } from "../types/BrushParameters";
-import { Point2D } from "../types/Point2D";
-import { IPainterController } from "../controller/IPainterController";
+import { Line, Shape } from "../composition/ShapesRepository";
+import { CanvasShapeRenderer } from "../renderer/CanvasShapeRenderer";
 
 type Props = {
     children?: ReactChild | ReactChildren | null
-    controller?: IPainterController
     style: CSSProperties
     width: string
     height: string
     enablePointer?: boolean
+    filterUsers?: string[]
 }
 
-export function EventDrivenCanvas({ children, controller, style, width, height, enablePointer }: Props): ReactElement {
+export function ShapeDrivenCanvas({ children, style, width, height, enablePointer, filterUsers }: Props): ReactElement {
     const ref = useRef<HTMLCanvasElement>(null);
 
     const {
-        state: { pointerPainter }
+        state: { pointerPainter, shapesRepository }
     } = useWhiteboard();
+
+    const [renderer, setRenderer] = useState<CanvasShapeRenderer | undefined>(undefined);
 
     useEffect(() => {
         if (!ref.current || !enablePointer || !pointerPainter) {
@@ -63,45 +63,42 @@ export function EventDrivenCanvas({ children, controller, style, width, height, 
         };
     }, [pointerPainter, enablePointer]);
 
+    const redraw = useCallback((shapes: Shape[]) => {
+        if (renderer === undefined) return;
+
+        renderer.clear();
+
+        shapes.forEach(shape => {
+            renderer.drawLine(shape as Line);
+        });
+    }, [renderer]);
+
     useEffect(() => {
-        if (ref.current === null) return;
-        if (controller === undefined) return;
+        if (shapesRepository === undefined) return;
+        if (renderer === undefined) return;
 
-        const painter = new CanvasEventRenderer(ref.current);
+        const drawShapes = () => {
+            let shapes = shapesRepository.getOrderedShapes();
 
-        const handleOperationBegin = (id: string, params: BrushParameters) => {
-            painter.operationBegin(id, params);
+            if (filterUsers !== undefined) {
+                shapes = shapes.filter(shape => filterUsers.includes(shape.id.user));
+            }
+
+            redraw(shapes); 
         };
 
-        const handleOperationEnd = (id: string) => {
-            painter.operationEnd(id);
-        };
-
-        const handlePainterClear = (_id: string) => {
-            painter.painterClear();
-        };
-
-        const handlePainterLine = (id: string, p1: Point2D, p2: Point2D) => {
-            painter.painterLine(id, p1, p2);
-        };
-
-        controller.on("operationBegin", handleOperationBegin);
-        controller.on("operationEnd", handleOperationEnd);
-        controller.on("painterClear", handlePainterClear);
-        controller.on("painterLine", handlePainterLine);
-
-        painter.painterClear();
-        controller.replayEvents();
+        const interval = setInterval(drawShapes, 20);
 
         return () => {
-            if (controller) {
-                controller.removeListener("operationBegin", handleOperationBegin);
-                controller.removeListener("operationEnd", handleOperationEnd);
-                controller.removeListener("painterClear", handlePainterClear);
-                controller.removeListener("painterLine", handlePainterLine);
-            }
+            clearInterval(interval);
         };
-    }, [controller]);
+    }, [shapesRepository, redraw]);
+
+    useEffect(() => {
+        if (ref.current === null) return;
+
+        setRenderer(new CanvasShapeRenderer(ref.current));
+    }, [setRenderer]);
 
     return <canvas width={width} height={height} ref={ref} style={style}>{children}</canvas>;
 }
