@@ -8,27 +8,30 @@ import { UserContext } from "../../entry";
 import { gql } from "apollo-boost";
 import { useMutation, useSubscription } from "@apollo/react-hooks";
 import { Permissions, createPermissions, createEmptyPermissions } from "../types/Permissions";
+import { ShapesRepository } from "../composition/ShapesRepository";
+import { Point2D } from "../types/Point2D";
 
 interface IWhiteboardState {
-  display: boolean;
-  permissions: Permissions;
-  brushParameters: BrushParameters;
-  pointerPainter?: PointerPainterController;
-  remotePainter?: EventPainterController;
+    display: boolean;
+    permissions: Permissions;
+    brushParameters: BrushParameters;
+    pointerPainter?: PointerPainterController;
+    remotePainter?: EventPainterController;
+    shapesRepository?: ShapesRepository;
 }
 
 interface IWhiteboardContext {
-  state: IWhiteboardState;
-  actions: any;
+    state: IWhiteboardState;
+    actions: any;
 }
 
 const Context = createContext<IWhiteboardContext>({
-    state: {display: false, permissions: createEmptyPermissions(), brushParameters: BrushParameters.default()},
+    state: { display: false, permissions: createEmptyPermissions(), brushParameters: BrushParameters.default() },
     actions: {},
 });
 
 type Props = {
-  children?: ReactChild | ReactChildren | null;
+    children?: ReactChild | ReactChildren | null;
 }
 
 // NOTE: This is used to scale up the coordinates sent in events
@@ -46,8 +49,9 @@ function attachEventSerializer(controller: IPainterController, serializer: Paint
     controller.on("painterLine", (id, p1, p2) => {
         serializer.painterLine(id, p1, p2);
     });
-  
-    // NOTE: The clear event is omitted because it shouldn't be sent recursively. 
+    controller.on("painterClear", id => {
+        serializer.painterClear(id);
+    })
 }
 
 const WHITEBOARD_SEND_EVENT = gql`
@@ -90,11 +94,12 @@ export const WhiteboardContextProvider: FunctionComponent<Props> = ({ children }
     const [remotePainter, setRemotePainter] = useState<EventPainterController | undefined>(undefined);
     const [display, setDisplay] = useState<boolean>(false);
     const [eventSerializer, setEventSerializer] = useState<PaintEventSerializer | undefined>(undefined);
-  
+    const [shapesRepository] = useState<ShapesRepository>(new ShapesRepository());
+
     const [sendEventMutation] = useMutation(WHITEBOARD_SEND_EVENT);
     const [sendDisplayMutation] = useMutation(WHITEBOARD_SEND_DISPLAY);
 
-    const { name, roomId, teacher } = useContext(UserContext);
+    const { sessionId, roomId, teacher } = useContext(UserContext);
 
     const [permissions, setPermissions] = useState<Permissions>(createPermissions(teacher));
 
@@ -103,48 +108,93 @@ export const WhiteboardContextProvider: FunctionComponent<Props> = ({ children }
             if (remotePainter) {
                 remotePainter.handlePainterEvent(whiteboardEvents);
             }
-        }, variables: { roomId } });
+        }, variables: { roomId }
+    });
 
     useSubscription(SUBSCRIBE_WHITEBOARD_STATE, {
-        onSubscriptionData: ({ subscriptionData: { data: { whiteboardState }}}) => {
+        onSubscriptionData: ({ subscriptionData: { data: { whiteboardState } } }) => {
             if (whiteboardState) {
                 setDisplay(whiteboardState.display);
             }
-        }, variables: {roomId}});
+        }, variables: { roomId }
+    });
 
     useSubscription(SUBSCRIBE_WHITEBOARD_PERMISSIONS, {
-        onSubscriptionData: ( {subscriptionData: { data: { whiteboardPermissions }}}) => {
+        onSubscriptionData: ({ subscriptionData: { data: { whiteboardPermissions } } }) => {
             if (whiteboardPermissions) {
                 setPermissions(JSON.parse(whiteboardPermissions as string));
             }
-        }, variables: {roomId, userId: name}});
+        }, variables: { roomId, userId: sessionId }
+    });
 
     useEffect(() => {
-        const remotePainter = new EventPainterController(NormalizeCoordinates);
+        if (!sessionId) return;
 
-        remotePainter.on("painterClear", (_id) => {
-            if (pointerPainter) {
-                pointerPainter.clear();
-            }
-        });
+        const remotePainter = new EventPainterController(sessionId, NormalizeCoordinates);
 
         setRemotePainter(remotePainter);
-    }, [pointerPainter]);
+    }, [sessionId]);
 
     useEffect(() => {
-        if (!name || !roomId)
+        if (remotePainter === undefined || eventSerializer === undefined) {
+            return;
+        }
+
+        // TODO: Any way this filtering can be improved. I dislike running it
+        // for each event coming through. It would be better if it can be dealt
+        // with somewhere else.
+        const handleOperationBegin = (id: string, params: BrushParameters) => {
+            if (!eventSerializer.didSerializeEvent(id)) {
+                shapesRepository.createShape(id, params);
+            }
+        };
+
+        const handlePainterClear = (id: string) => {
+            if (!eventSerializer.didSerializeEvent(id)) {
+                shapesRepository.clear(id);
+            }
+        };
+
+        const handlePainterLine = (id: string, p1: Point2D, p2: Point2D) => {
+            if (!eventSerializer.didSerializeEvent(id)) {
+                shapesRepository.appendLine(id, [p1, p2]);
+            }
+        };
+
+        remotePainter.on("operationBegin", handleOperationBegin);
+        remotePainter.on("painterClear", handlePainterClear);
+        remotePainter.on("painterLine", handlePainterLine);
+
+        shapesRepository.clearAll();
+        remotePainter.replayEvents();
+
+        return () => {
+            remotePainter.removeListener("operationBegin", handleOperationBegin);
+            remotePainter.removeListener("painterClear", handlePainterClear);
+            remotePainter.removeListener("painterLine", handlePainterLine);
+        };
+
+    }, [remotePainter, shapesRepository, eventSerializer]);
+
+    useEffect(() => {
+        if (!sessionId || !roomId)
             return;
 
+        const pointerPainter = new PointerPainterController(sessionId, true);
+        pointerPainter.on("operationBegin", (id: string, params: BrushParameters) => shapesRepository.createShape(id, params));
+        pointerPainter.on("painterClear", id => shapesRepository.clear(id));
+        pointerPainter.on("painterLine", (id, p1, p2) => shapesRepository.appendLine(id, [p1, p2]));
+
         const localEventSerializer = new PaintEventSerializer(NormalizeCoordinates);
-        const pointerPainter = new PointerPainterController(name, true);
         attachEventSerializer(pointerPainter, localEventSerializer);
+
         localEventSerializer.on("event", payload => {
-            sendEventMutation({ variables: { roomId, event: JSON.stringify(payload) } } );
+            sendEventMutation({ variables: { roomId, event: JSON.stringify(payload) } });
         });
 
         setEventSerializer(localEventSerializer);
         setPointerPainter(pointerPainter);
-    }, [roomId, name]);
+    }, [roomId, sessionId]);
 
     useEffect(() => {
         if (pointerPainter) {
@@ -163,14 +213,24 @@ export const WhiteboardContextProvider: FunctionComponent<Props> = ({ children }
         if (pointerPainter) {
             pointerPainter.clear();
         }
-        if (eventSerializer) {
-            eventSerializer.painterClear(roomId);
+    }, [pointerPainter]);
+
+    const clearOtherAction = useCallback((otherId: string) => {
+        if (!shapesRepository || !eventSerializer) {
+            return;
         }
-    }, [roomId, pointerPainter, eventSerializer]);
+
+        // NOTE: Clear the local repository (optimistically).
+        shapesRepository.clear(otherId);
+
+        // NOTE: Serialize clear event to send to others.
+        eventSerializer.painterClear(otherId);
+
+    }, [shapesRepository, eventSerializer]);
 
     const setDisplayAction = useCallback(
         (display: boolean) => {
-            sendDisplayMutation({ variables: { roomId: roomId, display: display }});
+            sendDisplayMutation({ variables: { roomId: roomId, display: display } });
             setDisplay(display);
         },
         [setDisplay]
@@ -178,6 +238,7 @@ export const WhiteboardContextProvider: FunctionComponent<Props> = ({ children }
 
     const WhiteboardProviderActions = {
         clear: clearAction,
+        clearOther: clearOtherAction,
         setBrush: setBrushAction,
         display: setDisplayAction,
     };
@@ -189,8 +250,10 @@ export const WhiteboardContextProvider: FunctionComponent<Props> = ({ children }
                 permissions,
                 pointerPainter,
                 remotePainter,
-                brushParameters
-            }, actions: WhiteboardProviderActions }}>
+                brushParameters,
+                shapesRepository
+            }, actions: WhiteboardProviderActions
+        }}>
             {children}
         </Context.Provider>
     );

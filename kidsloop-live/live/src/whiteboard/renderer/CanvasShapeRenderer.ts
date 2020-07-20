@@ -1,12 +1,11 @@
 
 import { Point2D } from "../types/Point2D";
 import { BrushParameters } from "../types/BrushParameters";
+import { Line } from "../composition/ShapesRepository";
 
-export class CanvasPainterController {
+export class CanvasShapeRenderer {
     private canvas: HTMLCanvasElement
     private context: CanvasRenderingContext2D
-
-    private brushParameterLookup = new Map<string, BrushParameters>()
 
     constructor(canvas: HTMLCanvasElement) {
         this.canvas = canvas;
@@ -19,21 +18,7 @@ export class CanvasPainterController {
         this.context.lineJoin = "round";
     }
 
-    operationBegin(id: string, brushParameters: BrushParameters): void {
-        if (this.brushParameterLookup.has(id)) {
-            console.warn(`Overwriting parameters for operation with ID: ${id} which is already started.`);
-        }
-
-        this.brushParameterLookup.set(id, brushParameters);
-    }
-
-    operationEnd(id: string): void {
-        if (!this.brushParameterLookup.delete(id)) {
-            console.warn(`Trying to end operation with ID: ${id} which hasn't been started.`);
-        }
-    }
-
-    painterClear(): void {
+    clear(): void {
         const width = this.canvas.width;
         const height = this.canvas.height;
 
@@ -41,22 +26,21 @@ export class CanvasPainterController {
         this.context.clearRect(0, 0, width, height);
     }
 
-    painterLine(id: string, p1: Point2D, p2: Point2D): void {
-        p1 = this.transformPoint(p1);
-        p2 = this.transformPoint(p2);
+    drawLine(line: Line) {
+        this.applyBrushParameters(line.brushParameters);
 
-        if (id !== undefined) {
-            const brush = this.brushParameterLookup.get(id);
-            if (brush) {
-                this.applyBrushParameters(brush);
-            } else {
-                console.warn(`Couldn't find brush parameters for operation with ID: ${id}`);
-            }
-        }
+        const transformed_points = line.points.map(p => this.transformPoint(p));
 
         this.context.beginPath();
-        this.context.moveTo(p1.x, p1.y);
-        this.context.lineTo(p2.x, p2.y);
+
+        for (let pi = 1; pi < transformed_points.length; ++pi) {
+            const p1 = transformed_points[pi-1];
+            const p2 = transformed_points[pi];
+
+            this.context.moveTo(p1.x, p1.y);
+            this.context.lineTo(p2.x, p2.y);
+        }
+
         this.context.stroke();
     }
 

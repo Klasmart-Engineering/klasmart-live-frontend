@@ -38,6 +38,7 @@ import { ControlButtons } from "../pages/teacher/controlButtons";
 import Messages from "../messages";
 import { SendMessage } from "../sendMessage";
 import Collapse from "@material-ui/core/Collapse";
+import PermissionControls from "../whiteboard/components/PermissionControls";
 
 export const DRAWER_WIDTH = 380;
 
@@ -248,6 +249,7 @@ function TabInnerContent({ contentIndexState, title }: { contentIndexState?: Con
                                     </Grid>
                                     <Grid item xs={3}>
                                         <CameraControls global={teacher} sessionId={id} />
+                                        {teacher && id !== sessionId ? <PermissionControls otherUserId={session.id} /> : <></>}
                                     </Grid>
                                 </Grid>
                                 <Grid container direction="row" justify="flex-start" alignItems="center">

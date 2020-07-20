@@ -20,6 +20,7 @@ export declare interface PaintEventSerializer {
 
 export class PaintEventSerializer extends EventEmitter {
     readonly multiplier: number
+    readonly serializedEventIDs: string[] = []
 
     constructor(multiplier: number) {
         super();
@@ -37,6 +38,7 @@ export class PaintEventSerializer extends EventEmitter {
             param: JSON.stringify(data),
         };
 
+        this.serializedEventIDs.push(id);
         this.emit("event", event);
     }
 
@@ -46,6 +48,7 @@ export class PaintEventSerializer extends EventEmitter {
             id: id
         };
 
+        this.serializedEventIDs.push(id);
         this.emit("event", event);
     }
 
@@ -55,6 +58,7 @@ export class PaintEventSerializer extends EventEmitter {
             id: id
         };
 
+        this.serializedEventIDs.push(id);
         this.emit("event", event);
     }
 
@@ -70,6 +74,11 @@ export class PaintEventSerializer extends EventEmitter {
             id: id
         };
 
+        this.serializedEventIDs.push(id);
         this.emit("event", event);
+    }
+
+    didSerializeEvent(id: string) {
+        return this.serializedEventIDs.findIndex(id2 => id2 === id) !== -1;
     }
 }

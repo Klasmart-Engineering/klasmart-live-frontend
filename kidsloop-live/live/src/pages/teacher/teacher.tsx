@@ -71,8 +71,8 @@ interface Props {
 }
 
 
-export function Teacher (props: Props): JSX.Element {
-    const {roomId, sessionId, materials} = useContext(UserContext);
+export function Teacher(props: Props): JSX.Element {
+    const { roomId, sessionId, materials, name } = useContext(UserContext);
     const webrtc = useContext(webRTCContext);
     const screenShare = useContext(ScreenShareContext);
 
@@ -88,7 +88,7 @@ export function Teacher (props: Props): JSX.Element {
     const { interactiveMode, setInteractiveMode } = interactiveModeState;
     const { contentIndex, setContentIndex } = contentIndexState;
     const material = contentIndex >= 0 && contentIndex < materials.length ? materials[contentIndex] : undefined;
-    
+
     useEffect(() => {
         const containerRef = window.document.getElementById("iframe-container");
         if (containerRef) {
@@ -97,60 +97,62 @@ export function Teacher (props: Props): JSX.Element {
         }
     }, []);
 
-    const [showContent, {loading}] = useMutation(MUT_SHOW_CONTENT);
-    useEffect(()=>{
+    const [showContent, { loading }] = useMutation(MUT_SHOW_CONTENT);
+    useEffect(() => {
         if (!interactiveMode) {
-            showContent({variables: { roomId, type: "Blank", contentId: "" }});
+            showContent({ variables: { roomId, type: "Blank", contentId: "" } });
         }
-    },[roomId,interactiveMode]);
+    }, [roomId, interactiveMode]);
 
-    useEffect(()=>{
+    useEffect(() => {
         if (interactiveMode === 1 && material) {
-            if(material.video) {
-                showContent({variables: { roomId, type: "Video", contentId: sessionId }});
-            } else if(material.url) {
-                showContent({variables: { roomId, type: "Stream", contentId: streamId }});
+            if (material.video) {
+                showContent({ variables: { roomId, type: "Video", contentId: sessionId } });
+            } else if (material.url) {
+                showContent({ variables: { roomId, type: "Stream", contentId: streamId } });
             }
         }
-    },[roomId,interactiveMode,material,streamId]);
+    }, [roomId, interactiveMode, material, streamId]);
 
-    useEffect(()=>{
+    useEffect(() => {
         if (interactiveMode === 2 && material && material.url) {
-            showContent({variables: { roomId, type: "Activity", contentId: material.url }});
+            showContent({ variables: { roomId, type: "Activity", contentId: material.url } });
         }
-    },[roomId,interactiveMode, material]);
+    }, [roomId, interactiveMode, material]);
 
-    useEffect(()=>{
+    useEffect(() => {
         if (interactiveMode === 3) {
-            showContent({variables: { roomId, type: "Video", contentId: sessionId }});
+            showContent({ variables: { roomId, type: "Video", contentId: sessionId } });
         }
-    },[roomId,interactiveMode,sessionId]);
+    }, [roomId, interactiveMode, sessionId]);
 
     return (
         <div className={classes.root}>
             <MaterialSelection materials={materials} contentIndex={contentIndex} setContentIndex={setContentIndex} />
-            <Grid 
-                container 
+            <Grid
+                container
                 direction="row"
                 className={content.type === "Activity" ? "" : classes.activityFrame}
                 spacing={1}
             >
-                { content.type === "Activity" ?
+                {content.type === "Activity" ?
                     <>
                         <Grid item xs={12}>
                             <Typography variant="caption" color="textSecondary" gutterBottom>
                                 Interactive View
-                            </Typography> 
+                            </Typography>
                         </Grid>
                         {
-                            [...users.entries()].filter(([,s]) => s.id !== sessionId).map(([id,session]) => (
+                            [...users.entries()].filter(([, s]) => s.id !== sessionId).map(([id, session]) => (
                                 <Grid item xs={12} md={6} key={id}>
                                     <Card>
                                         <CardContent>
-                                            <Grid item xs={12} style={{ height: drawerWidth, width: drawerWidth, margin: "0 auto"}}>
+                                            <Grid item xs={12} style={{ height: drawerWidth, width: drawerWidth, margin: "0 auto" }}>
                                                 {
                                                     session.streamId
-                                                        ? <PreviewPlayer streamId={session.streamId} height={drawerWidth} width={drawerWidth} />
+                                                        ? <Whiteboard width={drawerWidth} height={drawerWidth} filterUsers={[sessionId, session.id]}>
+                                                            <PreviewPlayer streamId={session.streamId} height={drawerWidth} width={drawerWidth} />
+                                                        </Whiteboard>
                                                         : undefined
                                                 }
                                             </Grid>
@@ -174,7 +176,7 @@ export function Teacher (props: Props): JSX.Element {
                     <Whiteboard height="100%">
                         {
                             //TODO: tidy up the conditions of what to render
-                            interactiveMode === 3?
+                            interactiveMode === 3 ?
                                 <Stream stream={screenShare.getStream()} /> :
                                 <>
                                     {content.type !== "Video" && material && material.url ?
@@ -185,7 +187,7 @@ export function Teacher (props: Props): JSX.Element {
                                             parentHeight={height}
                                             setParentWidth={setWidth}
                                             setParentHeight={setHeight}
-                                        /> 
+                                        />
                                         : undefined}
                                     {material && material.video ? <BroadcastVideo src={material.video} /> : undefined}
                                 </>
