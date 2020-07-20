@@ -28,7 +28,7 @@ import CreateTwoToneIcon from "@material-ui/icons/CreateTwoTone";
 import { UserContext } from "../entry";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
-import { Cameras, MyCamera } from "../webRTCState";
+import { Cameras, MyCamera, CameraControls } from "../webRTCState";
 import CenterAlignChildren from "./centerAlignChildren";
 import FaceTwoToneIcon from "@material-ui/icons/FaceTwoTone";
 import Toolbar from "../whiteboard/components/Toolbar";
@@ -188,10 +188,13 @@ function TabInnerContent({ contentIndexState, title }: {contentIndexState?: Cont
                                 <Grid item xs={6}>
                                     <MyCamera />
                                 </Grid>
-                                <Grid item xs={6}>
+                                <Grid item xs={3}>
                                     <Typography variant="body2" align="left">
                                         You
                                     </Typography>
+                                </Grid>
+                                <Grid item xs={3}>
+                                    <CameraControls />
                                 </Grid>
                             </Grid>
                             <Grid container direction="row" justify="flex-start" alignItems="center">

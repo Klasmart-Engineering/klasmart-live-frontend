@@ -13,10 +13,10 @@ import StyledButton from "../components/styled/button";
 import StyledTextField from "../components/styled/textfield";
 import { UserContext } from "../entry";
 import { webRTCContext, Camera } from "../webRTCState";
-import Loading from "../components/loading";
 import NoCamera from "../components/noCamera";
 import StyledSelect from "../components/selectMediaDevice";
 import { Room } from "../room";
+import { CircularProgress } from "@material-ui/core";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -48,84 +48,62 @@ export function Join(): JSX.Element {
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
     const states = useContext(webRTCContext);
-    const {teacher, name, setName} = useContext(UserContext);
+    const {name, setName} = useContext(UserContext);
 
-    const [loading, setLoading] = useState(false);
     const [user, setUser] = useState<string>("");
-
-    const videoRef = useRef<HTMLVideoElement>(null);
-    const [videoDisabled, setVideoDisabled] = useState(false);
-    const [videoDeviceOptions, setVideoDeviceOptions] = useState<MediaDeviceInfo[]>([]);
-    const [videoDeviceId, setVideoDeviceId] = useState<string>("");
-    const [videoStream, setVideoStream] = useState<MediaStream>();
-    const [audioDisabled, setAudioDisabled] = useState(false);
-    const [audioDeviceOptions, setAudioDeviceOptions] = useState<MediaDeviceInfo[]>([]);
-    const [audioDeviceId, setAudioDeviceId] = useState<string>("");
-
+    
+    const [nameError, setNameError] = useState<boolean>(false);
+    const [error, setError] = useState<boolean>(false);
+    const [videoDevices, setVideoDeviceOptions] = useState<MediaDeviceInfo[]>([]);
+    const [audioDevices, setAudioDeviceOptions] = useState<MediaDeviceInfo[]>([]);
+    const [videoDeviceId, setVideoDeviceId] = useState<string>();
+    const [audioDeviceId, setAudioDeviceId] = useState<string>();
+    const [stream, setStream] = useState<MediaStream>();
+    
     async function detectDevices() {
-        return navigator.mediaDevices.enumerateDevices();
+        try {
+            console.log("enumerating");
+            const devices = await navigator.mediaDevices.enumerateDevices();
+            console.log(devices);
+
+            const videoDevices = devices.filter((d) => d.kind == "videoinput");
+            const audioDevices = devices.filter((d) => d.kind == "audioinput");
+
+            setAudioDeviceOptions(audioDevices);
+            setVideoDeviceOptions(videoDevices);
+
+            setAudioDeviceId(audioDevices.length > 0 ? audioDevices[0].deviceId : undefined);
+            setVideoDeviceId(videoDevices.length > 0 ? videoDevices[0].deviceId : undefined);
+        } catch(err) {
+            setError(true);
+            console.log("ERROR: ", err.name + ": " + err.message); // TODO: It cannot handle permission issue
+        }
     }
 
-    // TODO: UI don't rerender by listener when connecting and disconnecting the device.
-    // useEffect(() => {
-    //     navigator.mediaDevices.addEventListener("devicechange", (e) => detectDevices());
-    //     return () => { navigator.mediaDevices.removeEventListener("devicechange", (e) => detectDevices()); };
-    // }, [it should be once]);
-
     useEffect(() => {
-        let prepared = true;
-        (async () => {
-            setLoading(true);
-            const devices = await detectDevices();
-            // No device ID should not be selected
-            const videoDevices = devices.filter(d => d.kind == "videoinput").filter(d => d.deviceId !== "");
-            const audioDevices = devices.filter(d => d.kind == "audioinput").filter(d => d.deviceId !== "");
-            if (videoDevices.length === 0 || audioDevices.length === 0) {
-                setVideoDisabled(videoDevices.length === 0);
-                setAudioDisabled(audioDevices.length === 0);
-            } else {
-                // console.log("devices: ", devices);
-                // console.log("videoDevices: ", videoDevices);
-                // console.log("audioDevices: ", audioDevices);
-                setVideoDeviceOptions(videoDevices);
-                setVideoDeviceId(videoDevices[0].deviceId);
-                setAudioDeviceOptions(audioDevices);
-                setAudioDeviceId(audioDevices[0].deviceId);
-            }
-            if (prepared) { setLoading(false); }
-        })();
-        return () => { prepared = false; };
+        navigator.mediaDevices.addEventListener("devicechange", (e) => detectDevices());
+        return () => { navigator.mediaDevices.removeEventListener("devicechange", (e) => detectDevices()); };
     }, []);
 
+
     useEffect(() => {
-        setVideoStream(undefined);
-        const stream = navigator.mediaDevices.getUserMedia({
-            audio: false,
-            video: { deviceId: videoDeviceId }
-        });
+        if(videoDeviceId === undefined && audioDeviceId === undefined) {
+            navigator.mediaDevices.getUserMedia({video: true, audio: true}).then(() => detectDevices()); 
+            return;
+        }
+        setStream(undefined);
+        const stream = navigator.mediaDevices.getUserMedia({ video: { deviceId: videoDeviceId }, audio: { deviceId: audioDeviceId } });
         stream
-            .then((s) => { setVideoStream(s); })
-            .catch((e) => { console.error(e); });
+            .then((s) => { setStream(s); })
+            .catch((e) => { setError(true); console.error(e); });
+    }, [videoDeviceId,audioDeviceId ]);
 
-        return () => {
-            stream.then((s) => { for (const track of s.getTracks()) { track.stop(); } });
-        };
-    }, [videoDeviceId]);
-
-    useEffect(() => {
-        if (!videoRef.current || !videoStream) { return; }
-        videoRef.current.srcObject = videoStream.active ? videoStream : null;
-    }, [videoStream, videoRef.current]);
-
-    async function join(e: React.FormEvent<HTMLFormElement>) {
+    function join(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
+        console.log(stream);
+        if(!user) { setNameError(true); }
         if (!name) { setName(user); }
-        const stream = await navigator.mediaDevices.getUserMedia({
-            audio: { deviceId: audioDeviceId },
-            video: { deviceId: videoDeviceId },
-        });
-        states.setCamera(stream);
-        return <Room teacher={false} />;
+        states.setCamera(stream||null);
     }
 
     return (
@@ -146,14 +124,13 @@ export function Join(): JSX.Element {
                             alignItems="center"
                             spacing={4}
                         >
-                            <Grid item xs={12} md={8}>
-                                {loading ? <Loading /> :
-                                    <>
-                                        {videoStream
-                                            ? <Camera mediaStream={videoStream}/>
-                                            : <NoCamera messageId={videoDisabled ? "connect_camera" : "select_camera"} />
-                                        }
-                                    </>
+                            <Grid item xs={12} md={8} style={{ width: "100%" }}>
+                                {
+                                    stream && stream.getVideoTracks().length > 0 && stream.getVideoTracks().every((t) => t.readyState === "live") && stream.active
+                                        ? <Camera mediaStream={stream} muted={true}/>
+                                        : error
+                                            ? <NoCamera messageId={"connect_camera"} />
+                                            : <CircularProgress />
                                 }
                             </Grid>
                             <Grid item xs={12} md={4}>
@@ -177,33 +154,34 @@ export function Join(): JSX.Element {
                                                         <StyledTextField
                                                             fullWidth
                                                             value={user}
-                                                            label={"What is your name?"}
-                                                            onChange={(e) => setUser(e.target.value)}
+                                                            error={nameError}
+                                                            label={!nameError?<FormattedMessage id="what_is_your_name"/>:undefined}
+                                                            helperText={nameError?<FormattedMessage id="error_empty_name"/>:undefined}
+                                                            onChange={(e) => {
+                                                                setUser(e.target.value);
+                                                                if(e.target.value) {setNameError(false);}
+                                                            }}
                                                         />
                                                     }
                                                 </Grid>
-                                                { loading ?  <Loading /> :
-                                                    <>
-                                                        <Grid item xs={12}>
-                                                            <StyledSelect
-                                                                disabled={videoDisabled}
-                                                                deviceType="video"
-                                                                deviceId={videoDeviceId}
-                                                                devices={videoDeviceOptions}
-                                                                onChange={(e) => setVideoDeviceId(e.target.value as string)}
-                                                            />
-                                                        </Grid>
-                                                        <Grid item xs={12}>
-                                                            <StyledSelect
-                                                                disabled={audioDisabled}
-                                                                deviceType="audio"
-                                                                deviceId={audioDeviceId}
-                                                                devices={audioDeviceOptions}
-                                                                onChange={(e) => setAudioDeviceId(e.target.value as string)}
-                                                            />
-                                                        </Grid>
-                                                    </>
-                                                }
+                                                <Grid item xs={12}>
+                                                    <StyledSelect
+                                                        disabled={videoDevices.length <= 1}
+                                                        deviceType="video"
+                                                        deviceId={videoDeviceId}
+                                                        devices={videoDevices}
+                                                        onChange={(e) => setVideoDeviceId(e.target.value as string)}
+                                                    />
+                                                </Grid>
+                                                <Grid item xs={12}>
+                                                    <StyledSelect
+                                                        disabled={audioDevices.length <= 1}
+                                                        deviceType="audio"
+                                                        deviceId={audioDeviceId}
+                                                        devices={audioDevices}
+                                                        onChange={(e) => setAudioDeviceId(e.target.value as string)}
+                                                    />
+                                                </Grid>
                                                 <Grid item xs={12}>
                                                     <StyledButton
                                                         fullWidth
@@ -211,7 +189,7 @@ export function Join(): JSX.Element {
                                                         size="large"
                                                     >
                                                         <Typography>
-                                                            {teacher ? <FormattedMessage id="create_room" /> : <FormattedMessage id="join_room" />}
+                                                            <FormattedMessage id="join_room" />
                                                         </Typography>
                                                     </StyledButton>
                                                 </Grid>

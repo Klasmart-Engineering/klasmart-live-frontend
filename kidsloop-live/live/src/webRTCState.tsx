@@ -41,20 +41,20 @@ export class WebRTCContext {
     public videoTrackEnabled: boolean;
     public audioTrackEnabled: boolean;
 
-    public setVideoStreamState(enabled: boolean) {
-        this.videoTrackEnabled = enabled;
+    public setVideoStreamState(enabled?: boolean) {
+        this.videoTrackEnabled = enabled !== undefined ? enabled : !this.videoTrackEnabled;
         if(this.localCamera) {
             for(const track of this.localCamera.getVideoTracks()) {
-                track.enabled = enabled;
+                track.enabled = this.videoTrackEnabled;
             }
         }
         this.rerender();
     }
-    public setAudioStreamState(enabled: boolean) {
-        this.audioTrackEnabled = enabled;
+    public setAudioStreamState(enabled?: boolean) {
+        this.audioTrackEnabled = enabled !== undefined ? enabled : !this.audioTrackEnabled;
         if(this.localCamera) {
             for(const track of this.localCamera.getAudioTracks()) {
-                track.enabled = enabled;
+                track.enabled = this.audioTrackEnabled;
             }
         }
         this.rerender();
@@ -86,7 +86,7 @@ export class WebRTCContext {
     private set?: React.Dispatch<React.SetStateAction<WebRTCContext>>
     private send: (sessionId:string, webRTC: WebRTCIn) => any
     private states: Map<string, WebRTCState>
-    private localCamera?: MediaStream;
+    private localCamera?: MediaStream | null;
     private localAux?: MediaStream
 
     private constructor(
@@ -142,11 +142,14 @@ export class WebRTCContext {
         return results;
     }
 
-    public setCamera(stream: MediaStream) {
+    public setCamera(stream: MediaStream | null) {
         this.localCamera = stream;
-        for(const state of this.states.values()) {
-            state.attachStream("camera", this.localCamera);
+        if(stream) {
+            for(const state of this.states.values()) {
+                state.attachStream("camera", stream);
+            }
         }
+        this.rerender();
     }
 
     public getCamera() {return this.localCamera;}
@@ -156,6 +159,7 @@ export class WebRTCContext {
         for(const state of this.states.values()) {
             state.attachStream("aux", this.localAux);
         }
+        this.rerender();
     }
 
     public getAux() {return this.localAux;}
@@ -167,7 +171,7 @@ export class WebRTCContext {
                 this.mySessionId < sessionId,
                 (webRTC: WebRTCIn) => this.send(sessionId, webRTC),
                 ()=> this.rerender(),
-                this.localCamera,
+                this.localCamera||undefined,
                 this.localAux,
             );
             this.states.set(sessionId, state);
@@ -184,7 +188,7 @@ export class WebRTCContext {
                 this.states,
                 this.videoTrackEnabled,
                 this.audioTrackEnabled,
-                this.localCamera,
+                this.localCamera||undefined,
                 this.localAux,
             )
         );
@@ -388,14 +392,14 @@ export function Camera(props: {
                         height: 0,
                         marginBottom: controls ? 0 : theme.spacing(2),
                         position: "relative", 
-                        paddingBottom: "56.25%" 
+                        paddingBottom: square ? "75%" : "56.25%" 
                     }}
                 >
                     <video 
                         autoPlay={true} 
                         muted={muted}
                         playsInline
-                        style={{ 
+                        style={{
                             backgroundColor: backgroundColor || "#193d6f", 
                             borderRadius: square ? 0 : 12, 
                             objectFit: "cover", 
@@ -412,32 +416,8 @@ export function Camera(props: {
                     <VideocamOffIcon />
                 </Typography>
             }
-            {controls ? <CameraControls mediaStream={mediaStream} /> : null}
         </>
     );
-}
-
-export function MyCamera({ width, height }: {
-    width?: number, 
-    height?: number,
-    changedStream?: MediaStream
-}): JSX.Element {
-    const WIDTH = 340, HEIGHT = 240;
-    const webrtc = useContext(webRTCContext); 
-    const stream = webrtc.getCamera();
-    if (stream) {   
-        return (
-            <Camera
-                muted
-                controls
-                mediaStream={stream}
-                height={height ? height : HEIGHT}
-                square
-            />
-        );
-    } else {
-        return <NoCamera messageId="error_camera_unavailable" />;
-    }
 }
 
 export function Stream(props:{sessionId:string}): JSX.Element {
@@ -455,23 +435,12 @@ export function Stream(props:{sessionId:string}): JSX.Element {
     </>;
 }
 
-function CameraControls({ mediaStream }: { mediaStream: MediaStream }): JSX.Element {
-    const theme = useTheme();
+export function CameraControls(): JSX.Element {
     const states = useContext(webRTCContext);
 
-    const toggleVideoState = () => {
-        const videoState = states.getVideoStreamState();
-        console.log(videoState);
-        console.log("toggled video");
-        states.setVideoStreamState(!videoState);
-    };
+    const toggleVideoState = () => states.setVideoStreamState();
 
-    const toggleAudioState = () => {
-        const audioState = states.getAudioStreamState();
-        console.log(audioState);
-        console.log("toggled audio");
-        states.setAudioStreamState(!audioState);
-    };
+    const toggleAudioState = () =>  states.setAudioStreamState();
 
     return (
         <Grid container justify="space-evenly" alignItems="center">
@@ -482,21 +451,50 @@ function CameraControls({ mediaStream }: { mediaStream: MediaStream }): JSX.Elem
                     style={{ color: "black", fontSize: 8, padding: 0 }}
                     onClick={toggleVideoState}
                 >
-                    {mediaStream.getVideoTracks().some((t) => t.enabled) ? <VideocamIcon color="primary" /> : <VideocamOffIcon color="secondary" />}
+                    {states.getVideoStreamState()
+                        ? <VideocamIcon color="primary" />
+                        : <VideocamOffIcon color="secondary" />
+                    }
                 </IconButton>
             </Grid>
             <Grid item>
-                <Tooltip title="Coming soon" aria-label="tooltip control mic">
-                    <IconButton
-                        aria-label="control mic"
-                        component="span"
-                        style={{ color: "black", fontSize: 8, padding: 0 }}
-                        onClick={toggleAudioState}
-                    >
-                        {mediaStream.getAudioTracks().some((t) => t.enabled) ? <MicIcon color="primary" /> : <MicOffIcon color="secondary" />}
-                    </IconButton>
-                </Tooltip>
+                <IconButton
+                    aria-label="control mic"
+                    component="span"
+                    style={{ color: "black", fontSize: 8, padding: 0 }}
+                    onClick={toggleAudioState}
+                >
+                    {states.getAudioStreamState()
+                        ? <MicIcon color="primary" />
+                        : <MicOffIcon color="secondary" />
+                    }
+                </IconButton>
             </Grid>
         </Grid>
     );
+}
+
+export function MyCamera({ height }: {
+    height?: number
+}): JSX.Element {
+    const HEIGHT = 240;
+    const webrtc = useContext(webRTCContext);
+    const stream = webrtc.getCamera();
+    if (stream) {   
+        return (
+            <Grid container direction="row" justify="space-between">
+                <Grid item xs={8}>
+                    <Camera
+                        muted
+                        controls
+                        mediaStream={stream}
+                        height={height ? height : HEIGHT}
+                        square
+                    />
+                </Grid>
+            </Grid>
+        );
+    } else {
+        return <NoCamera messageId="error_camera_unavailable" />;
+    }
 }
