@@ -3,7 +3,6 @@ import { useTheme } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
-import Tooltip from "@material-ui/core/Tooltip";
 import VideocamIcon from "@material-ui/icons/Videocam";
 import VideocamOffIcon from "@material-ui/icons/VideocamOff";
 import MicOffIcon from "@material-ui/icons/MicOff";
@@ -11,11 +10,7 @@ import MicIcon from "@material-ui/icons/Mic";
 import { FormattedMessage } from "react-intl";
 import { gql } from "apollo-boost";
 import { useMutation } from "@apollo/react-hooks";
-import Card from "@material-ui/core/Card";
-import CardMedia from "@material-ui/core/CardMedia";
-import CardActions from "@material-ui/core/CardActions";
 import NoCamera from "./components/noCamera";
-import CardContent from "@material-ui/core/CardContent";
 import Paper from "@material-ui/core/Paper";
 
 const SEND_SIGNAL = gql`
