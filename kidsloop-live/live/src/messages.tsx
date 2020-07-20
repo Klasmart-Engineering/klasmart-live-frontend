@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface Props { messages: Map<string, Message> }
 
-export function Messages ({ messages }: Props): JSX.Element {
+function Messages ({ messages }: Props): JSX.Element {
     const classes = useStyles();
 
     if (!messages || messages.size === 0) { return <Typography style={{ color: "rgb(200,200,200)", padding: 4 }}>No messages yet...</Typography>; }
@@ -100,3 +100,5 @@ export function Messages ({ messages }: Props): JSX.Element {
         }
     </>;
 }
+
+export { Messages as default };
