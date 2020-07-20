@@ -4,18 +4,15 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 import Drawer from "@material-ui/core/Drawer";
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
-import { createStyles, makeStyles, useTheme, Theme, withStyles } from "@material-ui/core/styles";
+import { createStyles, makeStyles, useTheme, Theme } from "@material-ui/core/styles";
 import * as React from "react";
-import CameraContainer from "./cameraContainer";
 import { Session, Message } from "../room";
 import { Messages } from "../messages";
 import { SendMessage } from "../sendMessage";
 import IconButton from "@material-ui/core/IconButton";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Typography from "@material-ui/core/Typography";
-import Box from "@material-ui/core/Box";
 import { useState, createContext, useContext } from "react";
 import Divider from "@material-ui/core/Divider";
 import CloseTwoToneIcon from "@material-ui/icons/CloseTwoTone";
@@ -26,11 +23,7 @@ import SettingsTwoToneIcon from "@material-ui/icons/SettingsTwoTone";
 import Tooltip from "@material-ui/core/Tooltip";
 import CreateTwoToneIcon from "@material-ui/icons/CreateTwoTone";
 import { UserContext } from "../entry";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import { Cameras, MyCamera, CameraControls } from "../webRTCState";
-import CenterAlignChildren from "./centerAlignChildren";
-import FaceTwoToneIcon from "@material-ui/icons/FaceTwoTone";
+import { webRTCContext, Camera, MyCamera, CameraControls } from "../webRTCState";
 import Toolbar from "../whiteboard/components/Toolbar";
 import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
@@ -179,41 +172,36 @@ function TabInnerContent({ contentIndexState, title }: {contentIndexState?: Cont
     switch(title) {
     case "Participants":
         const users = useContext(UsersContext);
+        const webrtc = useContext(webRTCContext);
         return (
             <Grid container direction="column" justify="flex-start" alignItems="center">
                 {
-                    [...users.entries()].filter(([,s]) => s.id === sessionId).map(([id,session]) => (
+                    [...users.entries()].map(([id,session]) => (
                         <React.Fragment key={id}>
                             <Grid container direction="row" justify="flex-start" alignItems="center" spacing={2}>
                                 <Grid item xs={6}>
-                                    <MyCamera />
+                                    {
+                                        id === sessionId ?
+                                            <MyCamera />:
+                                            <Grid container direction="row" justify="space-between">
+                                                <Grid item xs={8}>
+                                                    <Camera
+                                                        muted
+                                                        controls
+                                                        mediaStream={webrtc.getCameraStream(id)}
+                                                        square
+                                                    />
+                                                </Grid>
+                                            </Grid>
+                                    }
                                 </Grid>
                                 <Grid item xs={3}>
                                     <Typography variant="body2" align="left">
-                                        You
+                                        {id === sessionId ? "You" : session.name}
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={3}>
-                                    <CameraControls />
-                                </Grid>
-                            </Grid>
-                            <Grid container direction="row" justify="flex-start" alignItems="center">
-                                <Grid item xs={12}><Divider /></Grid>
-                            </Grid>
-                        </React.Fragment>
-                    ))
-                }
-                {
-                    [...users.entries()].filter(([,s]) => s.id !== sessionId).map(([id,session]) => (
-                        <React.Fragment key={id}>
-                            <Grid container key={id} direction="row" justify="flex-start" alignItems="center" spacing={2}>
-                                <Grid item xs={4}>
-                                    <Cameras id={session.id} />
-                                </Grid>
-                                <Grid item xs={8}>
-                                    <Typography variant="body2" align="left">
-                                        {session.name}
-                                    </Typography>
+                                    {id === sessionId ? <CameraControls /> : undefined}
                                 </Grid>
                             </Grid>
                             <Grid container direction="row" justify="flex-start" alignItems="center">

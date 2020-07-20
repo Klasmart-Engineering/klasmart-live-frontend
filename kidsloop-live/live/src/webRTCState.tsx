@@ -357,7 +357,7 @@ export function Cameras({backgroundColor, id}:{backgroundColor?: string, id?: st
 }
 
 export function Camera(props: {
-    mediaStream: MediaStream,
+    mediaStream?: MediaStream,
     height?: number | string,
     controls?: boolean,
     muted?: boolean,
@@ -366,16 +366,9 @@ export function Camera(props: {
 }): JSX.Element {
     const { mediaStream, controls, muted, backgroundColor, square } = props;
     const theme = useTheme();
-
-    const states = useContext(webRTCContext);
-    if(!states) {
-        console.error("RTC Start button created outside context provider");
-        return <FormattedMessage id="error_no_rtc_provider" />;
-    }
-
     const videoRef = useRef<HTMLVideoElement>(null);
     useEffect(() => {
-        if(!videoRef.current) {return;}
+        if(!videoRef.current || !mediaStream) {return;}
         videoRef.current.srcObject = mediaStream;
     }, [videoRef.current, mediaStream]);
 
