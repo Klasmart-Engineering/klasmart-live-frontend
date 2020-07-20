@@ -62,9 +62,7 @@ export function Join(): JSX.Element {
     
     async function detectDevices() {
         try {
-            console.log("enumerating");
             const devices = await navigator.mediaDevices.enumerateDevices();
-            console.log(devices);
 
             const videoDevices = devices.filter((d) => d.kind == "videoinput");
             const audioDevices = devices.filter((d) => d.kind == "audioinput");
@@ -100,7 +98,6 @@ export function Join(): JSX.Element {
 
     function join(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
-        console.log(stream);
         if(!user) { setNameError(true); }
         if (!name) { setName(user); }
         states.setCamera(stream||null);
