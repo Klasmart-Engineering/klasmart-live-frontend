@@ -2,14 +2,17 @@ import { PainterEvent, LineData, OperationData } from "../types/PainterEvent";
 import { Point2D } from "../types/Point2D";
 import { EventEmitter } from "events";
 import { IPainterController } from "./IPainterController";
+import { ShapeID } from "../composition/ShapeID";
 
 export class EventPainterController extends EventEmitter implements IPainterController {
     readonly normalize: number
     readonly events: PainterEvent[] = []
+    readonly userId: string
 
-    constructor(normalize: number) {
+    constructor(userId: string, normalize: number) {
         super();
         this.normalize = normalize;
+        this.userId = userId;
     }
 
     async replayEvents(): Promise<void> {
