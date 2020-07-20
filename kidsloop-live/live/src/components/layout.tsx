@@ -28,6 +28,11 @@ import Toolbar from "../whiteboard/components/Toolbar";
 import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
+import Hidden from "@material-ui/core/Hidden";
+import BottomNavigation from "@material-ui/core/BottomNavigation";
+import BottomNavigationAction from "@material-ui/core/BottomNavigationAction";
+import VideocamOffTwoToneIcon from "@material-ui/icons/VideocamOffTwoTone";
+import MicOffTwoToneIcon from "@material-ui/icons/MicOffTwoTone";
 
 export const DRAWER_WIDTH = 380;
 
@@ -45,6 +50,11 @@ const useStyles = makeStyles((theme: Theme) =>
             backgroundColor: "#0E78D5",
             width: "0.25rem",
             borderRadius: "0.25rem 0 0 0.25rem",
+        },
+        bottomNav: {
+            width: "100%",
+            position: "fixed",
+            bottom: 0,
         },
         layout: {
             flex: 1,
@@ -153,8 +163,8 @@ function TabPanel(props: TabPanelProps) {
             >
                 <Grid item className={classes.toolbar}>
                     <Typography variant="body1">{tab.title}</Typography>
-                    <IconButton>
-                        <CloseTwoToneIcon onClick={() => handleOpenDrawer(false)}/>
+                    <IconButton aria-label="minimize drawer" onClick={() => handleOpenDrawer(false)}>
+                        <CloseTwoToneIcon />
                     </IconButton>
                 </Grid>
                 <Divider />
@@ -174,9 +184,43 @@ function TabInnerContent({ contentIndexState, title }: {contentIndexState?: Cont
         const webrtc = useContext(webRTCContext);
         return (
             <Grid container direction="column" justify="flex-start" alignItems="center">
+                <Grid container direction="row" justify="center" alignItems="center" spacing={2} style={{ padding: theme.spacing(1.5) }}>
+                    <Grid item xs={12}>
+                        <Typography variant="caption">
+                            Quick Toggles
+                        </Typography>
+                    </Grid>
+                    <Grid container item xs={6} style={{ textAlign: "center" }}>
+                        <Grid item xs={12}>
+                            <IconButton color={"primary"} style={{ backgroundColor: "#f6fafe" }}>
+                                <VideocamOffTwoToneIcon fontSize="large"/>
+                            </IconButton>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Typography variant="caption" color="textSecondary">
+                                All Cameras Off
+                            </Typography>
+                        </Grid>
+                    </Grid>
+                    <Grid container item xs={6} style={{ textAlign: "center" }}>
+                        <Grid item xs={12}>
+                            <IconButton color={"primary"} style={{ backgroundColor: "#f6fafe" }}>
+                                <MicOffTwoToneIcon fontSize="large"/>
+                            </IconButton>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Typography variant="caption" color="textSecondary">
+                                Mute All
+                            </Typography>
+                        </Grid>
+                    </Grid>
+                </Grid>
                 {
                     [...users.entries()].map(([id,session]) => (
                         <React.Fragment key={id}>
+                            <Grid container direction="row" justify="flex-start" alignItems="center">
+                                <Grid item xs={12}><Divider /></Grid>
+                            </Grid>
                             <Grid container direction="row" justify="flex-start" alignItems="center" spacing={2}>
                                 <Grid item xs={6}>
                                     {
@@ -389,6 +433,14 @@ export default function Layout(props: Props): JSX.Element {
                                 </Grid>
                             </Grid>
                         </Drawer>
+                        {/* <Hidden mdUp>
+                            <BottomNavigation value={value} onChange={handleChange} className={classes.bottomNav}>
+                                <BottomNavigationAction label="Recents" value={0} icon={<PeopleAltTwoToneIcon />} />
+                                <BottomNavigationAction label="Favorites" value={1} icon={<LibraryBooksTwoToneIcon />} />
+                                <BottomNavigationAction label="Nearby" value={2} icon={<ForumTwoToneIcon />} />
+                                <BottomNavigationAction label="Folder" value={3} icon={<CreateTwoToneIcon />} />
+                            </BottomNavigation>
+                        </Hidden> */}
                     </div>
                 </Container>
             </Grid>
