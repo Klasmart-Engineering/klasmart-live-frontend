@@ -104,7 +104,7 @@ export const UserContext = createContext<IUserContext>({setName: () => null, roo
 function parseToken() {
     try {
         const url = new URL(window.location.href);
-        if(url.hostname === "localhost") {
+        if(url.hostname === "localhost" || url.hostname === "live.kidsloop.net") {
             const materialsParam = url.searchParams.get("materials");
             return {
                 teacher: url.searchParams.get("teacher") !== null,
