@@ -8,7 +8,7 @@ export function App (): JSX.Element {
     const {name, teacher} = useContext(UserContext);
     const webrtc = useContext(webRTCContext);
 
-    if(!name) {return <Join />;}
+    if(!name || webrtc.getCamera() === undefined) {return <Join />;}
 
     return <Room teacher={teacher} />;
 }

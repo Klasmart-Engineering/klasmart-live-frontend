@@ -16,6 +16,7 @@ export default function NoCamera({messageId}: {
             justify="space-between"
             alignItems="center"
             style={{
+                borderRadius: 12,
                 position: "relative",
                 width: "100%",
                 backgroundColor: "#193d6f",

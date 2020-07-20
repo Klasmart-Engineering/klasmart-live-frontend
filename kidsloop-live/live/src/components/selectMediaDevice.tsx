@@ -19,7 +19,7 @@ const useStyles = makeStyles(() =>
 interface Props {
     disabled: boolean;
     deviceType: "video" | "audio";
-    deviceId: string;
+    deviceId?: string;
     devices: MediaDeviceInfo[];
     onChange: ((event: React.ChangeEvent<{ name?: string | undefined; value: unknown; }>, child: React.ReactNode) => void) | undefined; 
 }
@@ -45,7 +45,7 @@ export default function StyledSelect(props: Props) {
                     : () => <MicIcon color={disabled ? "disabled" : "primary"} />
                 }
                 onChange={onChange}
-                value={deviceId}
+                value={deviceId||""}
             >
                 {
                     devices.map((device: MediaDeviceInfo) => (
@@ -53,7 +53,7 @@ export default function StyledSelect(props: Props) {
                             key={device.kind + ":" + device.label + ":" + device.deviceId}
                             value={device.deviceId}
                         >
-                            {(device.label ? device.label.charAt(0).toUpperCase() + device.label.slice(1) : "Unknown Device")}
+                            {`${device.label ? device.label.charAt(0).toUpperCase() + device.label.slice(1) : "Unknown Device"}(${device.deviceId.slice(0, 4)})`}
                         </MenuItem>
                     ))
                 }
