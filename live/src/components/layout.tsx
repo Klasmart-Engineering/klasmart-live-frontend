@@ -7,7 +7,6 @@ import Grid from "@material-ui/core/Grid";
 import { createStyles, makeStyles, useTheme, Theme } from "@material-ui/core/styles";
 import * as React from "react";
 import { Session, Message } from "../room";
-import { Messages } from "../messages";
 import { SendMessage } from "../sendMessage";
 import IconButton from "@material-ui/core/IconButton";
 import Tabs from "@material-ui/core/Tabs";
@@ -33,6 +32,7 @@ import BottomNavigation from "@material-ui/core/BottomNavigation";
 import BottomNavigationAction from "@material-ui/core/BottomNavigationAction";
 import VideocamOffTwoToneIcon from "@material-ui/icons/VideocamOffTwoTone";
 import MicOffTwoToneIcon from "@material-ui/icons/MicOffTwoTone";
+import Skeleton from "@material-ui/lab/Skeleton";
 
 export const DRAWER_WIDTH = 380;
 
@@ -107,10 +107,13 @@ const useStyles = makeStyles((theme: Theme) =>
                 duration: theme.transitions.duration.leavingScreen,
             }),
         },
-        messageContainer: {
+        scrollContainer: {
             flex: 1,
             overflowY: "auto",
             overflowX: "hidden",
+            maxHeight: `calc(100vh - ${theme.spacing(6)}px)`,
+        },
+        messageContainer: {
             maxHeight: `calc(100vh - ${theme.spacing(12)}px)`,
         },
         step: {
@@ -121,7 +124,7 @@ const useStyles = makeStyles((theme: Theme) =>
             alignItems: "center",
             justifyContent: "space-between",
             height: 48,
-            paddingLeft: theme.spacing(1.5),
+            paddingLeft: theme.spacing(2),
         },
         tabRoot: {
             minWidth: "auto",
@@ -177,6 +180,7 @@ function TabPanel(props: TabPanelProps) {
 function TabInnerContent({ contentIndexState, title }: {contentIndexState?: ContentIndexState, title: string}) {
     const classes = useStyles();
     const {sessionId, materials} = useContext(UserContext);
+    const theme = useTheme();
 
     switch(title) {
     case "Participants":
@@ -184,7 +188,7 @@ function TabInnerContent({ contentIndexState, title }: {contentIndexState?: Cont
         const webrtc = useContext(webRTCContext);
         return (
             <Grid container direction="column" justify="flex-start" alignItems="center">
-                <Grid container direction="row" justify="center" alignItems="center" spacing={2} style={{ padding: theme.spacing(1.5) }}>
+                <Grid container direction="row" justify="center" alignItems="center" spacing={2} style={{ padding: theme.spacing(2) }}>
                     <Grid item xs={12}>
                         <Typography variant="caption">
                             Quick Toggles
@@ -193,7 +197,7 @@ function TabInnerContent({ contentIndexState, title }: {contentIndexState?: Cont
                     <Grid container item xs={6} style={{ textAlign: "center" }}>
                         <Grid item xs={12}>
                             <IconButton color={"primary"} style={{ backgroundColor: "#f6fafe" }}>
-                                <VideocamOffTwoToneIcon fontSize="large"/>
+                                <VideocamOffTwoToneIcon />
                             </IconButton>
                         </Grid>
                         <Grid item xs={12}>
@@ -205,7 +209,7 @@ function TabInnerContent({ contentIndexState, title }: {contentIndexState?: Cont
                     <Grid container item xs={6} style={{ textAlign: "center" }}>
                         <Grid item xs={12}>
                             <IconButton color={"primary"} style={{ backgroundColor: "#f6fafe" }}>
-                                <MicOffTwoToneIcon fontSize="large"/>
+                                <MicOffTwoToneIcon />
                             </IconButton>
                         </Grid>
                         <Grid item xs={12}>
@@ -222,28 +226,28 @@ function TabInnerContent({ contentIndexState, title }: {contentIndexState?: Cont
                                 <Grid item xs={12}><Divider /></Grid>
                             </Grid>
                             <Grid container direction="row" justify="flex-start" alignItems="center" spacing={2}>
-                                <Grid item xs={6}>
-                                    {
-                                        id === sessionId ?
-                                            <MyCamera />:
-                                            <Grid container direction="row" justify="space-between">
-                                                <Grid item xs={8}>
-                                                    <Camera
-                                                        controls
-                                                        mediaStream={webrtc.getCameraStream(id)}
-                                                        square
-                                                    />
-                                                </Grid>
-                                            </Grid>
-                                    }
+                                <Grid item xs={5}>
+                                    <Grid container direction="row" justify="space-between">
+                                        <Grid item xs={12}>
+                                            { id === sessionId ? 
+                                                <MyCamera /> :
+                                                <Camera
+                                                    controls
+                                                    mediaStream={webrtc.getCameraStream(id)}
+                                                    square
+                                                />
+                                            }
+                                        </Grid>
+                                    </Grid>
                                 </Grid>
-                                <Grid item xs={3}>
+                                <Grid item xs={4}>
                                     <Typography variant="body2" align="left">
                                         {id === sessionId ? "You" : session.name}
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={3}>
-                                    {id === sessionId ? <CameraControls /> : undefined}
+                                    <CameraControls />
+                                    {/* {id === sessionId ? <CameraControls /> : undefined} */}
                                 </Grid>
                             </Grid>
                             <Grid container direction="row" justify="flex-start" alignItems="center">
@@ -258,22 +262,24 @@ function TabInnerContent({ contentIndexState, title }: {contentIndexState?: Cont
         if (contentIndexState) {
             const { contentIndex, setContentIndex } = contentIndexState;
             return (
-                <Stepper
-                    style={{ overflowX: "hidden", overflowY: "auto" }}
-                    activeStep={contentIndex}
-                    orientation="vertical"
-                >
-                    {materials.map((material, index) => (
-                        <Step
-                            key={`step-${material.name}`}
-                            onClick={() => setContentIndex(index)}
-                            disabled={false}
-                            className={classes.step}
-                        >
-                            <StepLabel key={`label-${material.name}`}>{material.name}</StepLabel>
-                        </Step>
-                    ))}
-                </Stepper>
+                <Grid item className={classes.scrollContainer}>
+                    <Stepper
+                        style={{ overflowX: "hidden", overflowY: "auto" }}
+                        activeStep={contentIndex}
+                        orientation="vertical"
+                    >
+                        {materials.map((material, index) => (
+                            <Step
+                                key={`step-${material.name}`}
+                                onClick={() => setContentIndex(index)}
+                                disabled={false}
+                                className={classes.step}
+                            >
+                                <StepLabel key={`label-${material.name}`}>{material.name}</StepLabel>
+                            </Step>
+                        ))}
+                    </Stepper>
+                </Grid>
             );
         }
         else {
@@ -282,7 +288,9 @@ function TabInnerContent({ contentIndexState, title }: {contentIndexState?: Cont
             );
         }
     case "Chat":
+        const Messages = React.lazy(() => import("../messages"));
         const messages = useContext(MessageContext);
+
         return (
             <Grid 
                 container
@@ -290,9 +298,11 @@ function TabInnerContent({ contentIndexState, title }: {contentIndexState?: Cont
                 justify="flex-end"
                 style={{ overflow: "hidden" }}
             >
-                <Grid item className={classes.messageContainer}>
-                    <Messages messages={messages} />
-                </Grid>
+                <React.Suspense fallback={<Typography variant="body2"><Skeleton variant="text" /></Typography>}>
+                    <Grid item className={clsx(classes.scrollContainer, classes.messageContainer)}>
+                        <Messages messages={messages} />
+                    </Grid>
+                </React.Suspense>
                 <Grid item alignItems="flex-end" style={{ position: "absolute", bottom: 0 }}>
                     <SendMessage />
                 </Grid>

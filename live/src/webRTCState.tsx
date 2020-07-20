@@ -387,7 +387,17 @@ export function Camera(props: {
                     }} 
                     ref={videoRef} 
                 /> :
-                <Typography style={{ backgroundColor: "#193d6f", margin: "0 auto", color: "white" }} align="center">
+                <Typography 
+                    align="center"
+                    style={{ 
+                        color: "white",
+                        top: "50%",
+                        left: "50%",
+                        marginRight: "-50%",
+                        position: "absolute",
+                        transform: "translate(-50%, -50%)",
+                    }} 
+                >
                     <VideocamOffIcon />
                 </Typography>
             }
@@ -423,8 +433,8 @@ export function CameraControls(): JSX.Element {
                 <IconButton
                     aria-label="control camera"
                     component="span"
-                    style={{ color: "black", fontSize: 8, padding: 0 }}
                     onClick={toggleVideoState}
+                    size="small"
                 >
                     {states.getVideoStreamState()
                         ? <VideocamIcon color="primary" />
@@ -436,8 +446,8 @@ export function CameraControls(): JSX.Element {
                 <IconButton
                     aria-label="control mic"
                     component="span"
-                    style={{ color: "black", fontSize: 8, padding: 0 }}
                     onClick={toggleAudioState}
+                    size="small"
                 >
                     {states.getAudioStreamState()
                         ? <MicIcon color="primary" />
@@ -452,22 +462,18 @@ export function CameraControls(): JSX.Element {
 export function MyCamera({ height }: {
     height?: number
 }): JSX.Element {
-    const HEIGHT = 240;
+    const HEIGHT = 120;
     const webrtc = useContext(webRTCContext);
     const stream = webrtc.getCamera();
     if (stream) {   
         return (
-            <Grid container direction="row" justify="space-between">
-                <Grid item xs={8}>
-                    <Camera
-                        muted
-                        controls
-                        mediaStream={stream}
-                        height={height ? height : HEIGHT}
-                        square
-                    />
-                </Grid>
-            </Grid>
+            <Camera
+                muted
+                controls
+                mediaStream={stream}
+                height={height ? height : HEIGHT}
+                square
+            />
         );
     } else {
         return <NoCamera messageId="error_camera_unavailable" />;
