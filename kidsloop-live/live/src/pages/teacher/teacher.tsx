@@ -1,12 +1,12 @@
 import Grid from "@material-ui/core/Grid";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import React, { useEffect, useState, useContext, useRef } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { FormattedMessage } from "react-intl";
 import { RecordedIframe } from "../../components/recordediframe";
 import { ControlButtons } from "./controlButtons";
 import { Session, Content } from "../../room";
-import { Theme, Button, IconButton, Card, useTheme, CardContent, useMediaQuery } from "@material-ui/core";
+import { Theme, Button, Card, useTheme, CardContent, useMediaQuery } from "@material-ui/core";
 import { PreviewPlayer } from "../../components/preview-player";
 import clsx from "clsx";
 import MenuOpenIcon from "@material-ui/icons/MenuOpen";
@@ -17,14 +17,13 @@ import CenterAlignChildren from "../../components/centerAlignChildren";
 import { gql } from "apollo-boost";
 import { useMutation } from "@apollo/react-hooks";
 import { Whiteboard } from "../../whiteboard/components/Whiteboard";
-import WBToolbar from "../../whiteboard/components/Toolbar";
 import { MaterialSelection } from "./materialSelection";
 import { BroadcastVideo } from "./broadcastVideo";
 import PermissionControls from "../../whiteboard/components/PermissionControls";
 
 const drawerWidth = 340;
 
-const MUT_SHOW_CONTENT = gql`
+export const MUT_SHOW_CONTENT = gql`
     mutation showContent($roomId: ID!, $type: ContentType!, $contentId: ID) {
         showContent(roomId: $roomId, type: $type, contentId: $contentId)
     }
