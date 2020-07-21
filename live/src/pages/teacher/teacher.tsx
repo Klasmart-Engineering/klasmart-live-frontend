@@ -34,6 +34,7 @@ const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
             display: "flex",
+            flexDirection: "column",
             height: "100%",
         },
         activityFrame: {
@@ -55,22 +56,6 @@ const useStyles = makeStyles((theme: Theme) =>
         drawer: {
             width: drawerWidth,
             flexShrink: 0,
-        },
-        content: {
-            flexGrow: 1,
-            padding: theme.spacing(2),
-            transition: theme.transitions.create("margin", {
-                easing: theme.transitions.easing.sharp,
-                duration: theme.transitions.duration.leavingScreen,
-            }),
-            marginRight: -drawerWidth,
-        },
-        contentShift: {
-            transition: theme.transitions.create("margin", {
-                easing: theme.transitions.easing.easeOut,
-                duration: theme.transitions.duration.enteringScreen,
-            }),
-            marginRight: 0,
         },
     })
 );
@@ -176,76 +161,70 @@ export function Teacher (props: Props): JSX.Element {
 
     return (
         <div className={classes.root}>
-            <main
-                id="iframe-container"
-                className={
-                    clsx(classes.content, { [classes.contentShift]: open })
-                }
+            <MaterialSelection materials={materials} contentIndex={contentIndex} setContentIndex={setContentIndex} />
+            { content.type === "Activity" ? <Toolbar /> : null }
+            <Grid 
+                container 
+                direction="row"
+                className={content.type === "Activity" ? "" : classes.activityFrame}
+                spacing={1}
             >
-                <MaterialSelection materials={materials} contentIndex={contentIndex} setContentIndex={setContentIndex} />
-                { content.type === "Activity" ? <Toolbar /> : null }
-                <Grid 
-                    container 
-                    direction="row"
-                    className={content.type === "Activity" ? "" : classes.activityFrame}
-                    spacing={1}
-                >
-                    { content.type === "Activity" ?
-                        <>
-                            <Grid item xs={12}>
-                                <Typography variant="caption" color="textSecondary" gutterBottom>
+                { content.type === "Activity" ?
+                    <>
+                        <Grid item xs={12}>
+                            <Typography variant="caption" color="textSecondary" gutterBottom>
                                     Interactive View
-                                </Typography> 
-                            </Grid>
-                            {
-                                [...users.entries()].filter(([,s]) => s.id !== sessionId).map(([id,session]) => (
-                                    <Grid item xs={12} md={6} key={id}>
-                                        <Card>
-                                            <CardContent>
-                                                <Grid item xs={12} style={{ height: drawerWidth, width: drawerWidth, margin: "0 auto"}}>
-                                                    {
-                                                        session.streamId
-                                                            ? <PreviewPlayer streamId={session.streamId} height={drawerWidth} width={drawerWidth} />
-                                                            : undefined
-                                                    }
-                                                </Grid>
-                                                <Grid item xs={12}>
-                                                    <Cameras id={session.id} />
-                                                </Grid>
-                                                <Grid item xs={12}>
-                                                    <CenterAlignChildren center>
-                                                        <FaceTwoToneIcon style={{ marginRight: theme.spacing(1) }} />
-                                                        <Typography variant="body2" align="center">
-                                                            {session.name}
-                                                        </Typography>
-                                                    </CenterAlignChildren>
-                                                </Grid>
-                                            </CardContent>
-                                        </Card>
-                                    </Grid>
-                                ))
-                            }
-                        </> :
-                        <>
-                            <Whiteboard height="100%">
-                                {material && material.url ?
-                                    <RecordedIframe
-                                        contentId={material.url}
-                                        setStreamId={setStreamId}
-                                        parentWidth={width}
-                                        parentHeight={height}
-                                        setParentWidth={setWidth}
-                                        setParentHeight={setHeight}
-                                    /> 
-                                    : undefined}
-                                {material && material.video ? <BroadcastVideo src={material.video} /> : undefined}
-                            </Whiteboard>
-                        </>
+                            </Typography> 
+                        </Grid>
+                        {
+                            [...users.entries()].filter(([,s]) => s.id !== sessionId).map(([id,session]) => (
+                                <Grid item xs={12} md={6} key={id}>
+                                    <Card>
+                                        <CardContent>
+                                            <Grid item xs={12} style={{ height: drawerWidth, width: drawerWidth, margin: "0 auto"}}>
+                                                {
+                                                    session.streamId
+                                                        ? <PreviewPlayer streamId={session.streamId} height={drawerWidth} width={drawerWidth} />
+                                                        : undefined
+                                                }
+                                            </Grid>
+                                            <Grid item xs={12}>
+                                                <Cameras id={session.id} />
+                                            </Grid>
+                                            <Grid item xs={12}>
+                                                <CenterAlignChildren center>
+                                                    <FaceTwoToneIcon style={{ marginRight: theme.spacing(1) }} />
+                                                    <Typography variant="body2" align="center">
+                                                        {session.name}
+                                                    </Typography>
+                                                </CenterAlignChildren>
+                                            </Grid>
+                                        </CardContent>
+                                    </Card>
+                                </Grid>
+                            ))
+                        }
+                    </> :
+                    <>
+                        <Whiteboard height="100%">
+                            {material && material.url ?
+                                <RecordedIframe
+                                    contentId={material.url}
+                                    setStreamId={setStreamId}
+                                    parentWidth={width}
+                                    parentHeight={height}
+                                    setParentWidth={setWidth}
+                                    setParentHeight={setHeight}
+                                /> 
+                                : undefined}
+                            {material && material.video ? <BroadcastVideo src={material.video} /> : undefined}
+                        </Whiteboard>
+                    </>
                         
-                    }
-                    { content.type !== "Activity" ? <Toolbar /> : null }
-                </Grid>
-                {/* { content.type !== "Activity" ? 
+                }
+                { content.type !== "Activity" ? <Toolbar /> : null }
+            </Grid>
+            {/* { content.type !== "Activity" ? 
                     <Grid item>
                         { users.size === 0 ? 
                             <Typography>
@@ -288,7 +267,6 @@ export function Teacher (props: Props): JSX.Element {
                         }
                     </Grid> : null
                 } */}
-            </main>
         </div>
     );
 }
