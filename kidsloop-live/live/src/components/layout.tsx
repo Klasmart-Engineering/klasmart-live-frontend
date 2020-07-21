@@ -166,8 +166,7 @@ function TabPanel(props: TabPanelProps) {
 
 function TabInnerContent({ contentIndexState, title }: {contentIndexState?: ContentIndexState, title: string}) {
     const classes = useStyles();
-    const theme = useTheme();
-    const {roomId, sessionId, materials} = useContext(UserContext);
+    const {sessionId, materials} = useContext(UserContext);
 
     switch(title) {
     case "Participants":
@@ -186,7 +185,6 @@ function TabInnerContent({ contentIndexState, title }: {contentIndexState?: Cont
                                             <Grid container direction="row" justify="space-between">
                                                 <Grid item xs={8}>
                                                     <Camera
-                                                        muted
                                                         controls
                                                         mediaStream={webrtc.getCameraStream(id)}
                                                         square
