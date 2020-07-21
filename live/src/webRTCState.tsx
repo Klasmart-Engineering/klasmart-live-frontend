@@ -1,4 +1,4 @@
-import React, { useRef, createContext, useContext, useEffect, useState } from "react";
+import React, { useRef, createContext, useContext, useEffect, useState, useReducer } from "react";
 import { useTheme } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
@@ -70,20 +70,21 @@ export class WebRTCContext {
 
     public static useWebRTCContext(mySessionId: string,roomId: string): WebRTCContext {
         const [sendSignal] = useMutation(SEND_SIGNAL);
-        const [webRTCContextValue, setWebRTCContextValue] = useState(
-            new WebRTCContext(
-                mySessionId,
-                (toSessionId: string, webrtc: WebRTCIn) => {
-                    setImmediate(() => sendSignal({variables: {roomId,toSessionId,webrtc}}));
-                }
-            )
+        const [state, rerender] = useReducer(
+            ({value}) => ({value}),
+            {
+                value: new WebRTCContext(
+                    mySessionId,
+                    (toSessionId: string, webrtc: WebRTCIn) => setImmediate(() => sendSignal({variables: {roomId,toSessionId,webrtc}}))
+                )
+            }
         );
-        webRTCContextValue.set=setWebRTCContextValue;
-        return webRTCContextValue;
+        state.value._rerender=rerender;
+        return state.value;
     }
 
     private mySessionId: string
-    private set?: React.Dispatch<React.SetStateAction<WebRTCContext>>
+    private _rerender?: React.DispatchWithoutAction
     private send: (sessionId:string, webRTC: WebRTCIn) => any
     private states: Map<string, WebRTCState>
     private localCamera?: MediaStream | null;
@@ -180,18 +181,7 @@ export class WebRTCContext {
     }
 
     private rerender() {
-        if(!this.set) { return; }
-        this.set(
-            new WebRTCContext(
-                this.mySessionId,
-                this.send,
-                this.states,
-                this.videoTrackEnabled,
-                this.audioTrackEnabled,
-                this.localCamera||undefined,
-                this.localAux,
-            )
-        );
+        if(this._rerender) { this._rerender(); }
     }
 }
 
