@@ -29,13 +29,15 @@ export function RecordedIframe(props: Props): JSX.Element {
     const {roomId} = useContext(UserContext);
     const { contentId, setStreamId, setParentWidth, setParentHeight } = props;
     const [width, setWidth] = useState<string | number>("100%");
+    const [height, setHeight] = useState<string | number>("100%");
     const [maxHeight, setMaxHeight] = useState<number>(window.innerHeight * 0.8);
     const [minHeight, setMinHeight] = useState<number>();
     const [numRenders, setRenders] = useState(0);
     
     const fitToScreen = (width: number, height: number) => {
         const scale = maxHeight / Number(height);
-        if (scale < 0.9) {
+        // console.log(scale);
+        if (scale < 1) {
             setRenders(numRenders + 1);
             setWidth(Number(width) * scale);
             if(setParentHeight && setParentWidth) {
@@ -44,11 +46,14 @@ export function RecordedIframe(props: Props): JSX.Element {
             }
             setKey(Math.random());
         }
+        setRenders(0); // Since setRenders(0) below doesn't work, so call it from here.
     };
 
     useEffect(() => {
+        // setRenders(0); // It doesn't init numRenders
         setWidth("100%");
-        setRenders(0);
+        console.log(width);
+        fitToScreen(Number(width), Number(height)); // Resizing is required whenever the Lesson Material changes.
     }, [contentId]);
 
     useEffect(() => {
@@ -127,10 +132,10 @@ export function RecordedIframe(props: Props): JSX.Element {
             onResized={(e) => {
                 startRecording();
                 setWidth(e.width);
+                setHeight(e.height);
                 if (e.height > maxHeight && numRenders < 1) {
                     fitToScreen(e.width, e.height);
                 }
-
             }}
             // log
             key={key}
