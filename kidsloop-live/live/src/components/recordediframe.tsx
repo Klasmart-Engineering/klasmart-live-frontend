@@ -52,7 +52,6 @@ export function RecordedIframe(props: Props): JSX.Element {
     useEffect(() => {
         // setRenders(0); // It doesn't init numRenders
         setWidth("100%");
-        console.log(width);
         fitToScreen(Number(width), Number(height)); // Resizing is required whenever the Lesson Material changes.
     }, [contentId]);
 
