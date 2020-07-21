@@ -184,10 +184,12 @@ export class WebRTCContext {
 
     public getCamera() {return this.localCamera;}
 
-    public setAux(stream: MediaStream) {
+    public setAux(stream?: MediaStream) {
         this.localAux = stream;
-        for(const state of this.states.values()) {
-            state.attachStream("aux", this.localAux);
+        if(stream) {
+            for(const state of this.states.values()) {
+                state.attachStream("aux", stream);
+            }
         }
         this.rerender();
     }

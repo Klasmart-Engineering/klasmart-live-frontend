@@ -10,6 +10,7 @@ import { FormattedMessage } from "react-intl";
 import { Grid, Typography } from "@material-ui/core";
 import CenterAlignChildren from "../../components/centerAlignChildren";
 import clsx from "clsx";
+import { ShareScreenButton } from "./screenShareButton";
 
 const StyledToggleButtonGroup = withStyles((theme) => ({
     grouped: {
@@ -105,6 +106,7 @@ export function ControlButtons({setSelectedButton, loading, selectedButton, disa
                         <FormattedMessage id="live_buttonActivity" />
                     </ToggleButton>
                 </StyledToggleButtonGroup>
+                <ShareScreenButton/>
             </CenterAlignChildren>
         </Grid>
     );
