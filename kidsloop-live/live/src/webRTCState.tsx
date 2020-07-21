@@ -12,6 +12,7 @@ import { gql } from "apollo-boost";
 import { useMutation } from "@apollo/react-hooks";
 import NoCamera from "./components/noCamera";
 import Paper from "@material-ui/core/Paper";
+import { UserContext } from "./entry";
 
 const SEND_SIGNAL = gql`
   mutation webRTCSignal($roomId: ID!, $toSessionId: ID!, $webrtc: WebRTCIn) {
@@ -36,31 +37,53 @@ export class WebRTCContext {
     public videoTrackEnabled: boolean;
     public audioTrackEnabled: boolean;
 
-    public setVideoStreamState(enabled?: boolean) {
-        this.videoTrackEnabled = enabled !== undefined ? enabled : !this.videoTrackEnabled;
-        if(this.localCamera) {
-            for(const track of this.localCamera.getVideoTracks()) {
-                track.enabled = this.videoTrackEnabled;
+    public setVideoStreamState(sessionId?: string, enabled?: boolean) {
+        if(sessionId && sessionId !== this.mySessionId) {
+            const state = this.states.get(sessionId);
+            if (!state) { return; }
+            state.muteCamera(undefined, enabled);
+        } else {
+            this.videoTrackEnabled = typeof enabled === "boolean" ? enabled : !this.videoTrackEnabled;
+            if(this.localCamera) {
+                for(const track of this.localCamera.getVideoTracks()) {
+                    track.enabled = this.videoTrackEnabled;
+                }
             }
         }
         this.rerender();
     }
-    public setAudioStreamState(enabled?: boolean) {
-        this.audioTrackEnabled = enabled !== undefined ? enabled : !this.audioTrackEnabled;
-        if(this.localCamera) {
-            for(const track of this.localCamera.getAudioTracks()) {
-                track.enabled = this.audioTrackEnabled;
+    public setAudioStreamState(sessionId?: string, enabled?: boolean) {
+        if(sessionId && sessionId !== this.mySessionId) {
+            const state = this.states.get(sessionId);
+            if (!state) { return; }
+            state.muteCamera(enabled, undefined);
+        } else {
+            this.audioTrackEnabled = typeof enabled === "boolean" ? enabled : !this.audioTrackEnabled;
+            if(this.localCamera) {
+                for(const track of this.localCamera.getAudioTracks()) {
+                    track.enabled = this.audioTrackEnabled;
+                }
             }
         }
         this.rerender();
     }
 
-    public getVideoStreamState() {
-        return this.videoTrackEnabled;
+    public getVideoStreamState(sessionId?: string) {
+        if (!sessionId || sessionId === this.mySessionId) { return this.videoTrackEnabled; }
+
+        const state = this.states.get(sessionId);
+        if (!state) { return; }
+
+        return state.videoTrackEnabled;
     }
 
-    public getAudioStreamState() {
-        return this.audioTrackEnabled;
+    public getAudioStreamState(sessionId?: string) {
+        if (!sessionId || sessionId === this.mySessionId) { return this.audioTrackEnabled; }
+
+        const state = this.states.get(sessionId);
+        if (!state) { return; }
+
+        return state.audioTrackEnabled;
     }
 
     public static useWebRTCContext(mySessionId: string,roomId: string): WebRTCContext {
@@ -106,7 +129,7 @@ export class WebRTCContext {
     public mute(sessionId: string, audio?: boolean, video?: boolean) {
         const state = this.states.get(sessionId);
         if(!state) {return;} //TODO how to handle late connects?
-        state.muteStream("camera",audio,video); 
+        state.muteCamera(audio, video); 
     }
 
     public async notification(webrtc: WebRTC): Promise<void> {
@@ -200,6 +223,9 @@ class WebRTCState {
     private remoteStreamNames = new Map<string, string>()
     private localStreamNames = new Map<string, MediaStream>()
 
+    public videoTrackEnabled = true;
+    public audioTrackEnabled = true;
+
     public constructor(polite: boolean, send: (webRTC: WebRTCIn) => any, rerender:()=>any, cameraStream?: MediaStream, auxStream?: MediaStream) {
         this.polite = polite;
         this.rerender = rerender;
@@ -214,6 +240,10 @@ class WebRTCState {
         this.peer.ontrack = (e) => {
             const {streams} = e;
             for(const stream of streams) {
+                for(const track of stream.getTracks()) {
+                    track.onunmute = () => this.rerender();
+                    track.onmute = () => this.rerender();
+                }
                 this.remoteMediaStreams.set(stream.id, stream);
             }
             this.rerender();//TODO: Fix capture of old state
@@ -248,6 +278,9 @@ class WebRTCState {
         }
         this.localStreamNames.set("name", stream);
         for(const track of stream.getTracks()) {
+            if (track.kind === "video") { track.enabled = this.videoTrackEnabled; }
+            if (track.kind === "audio") { track.enabled = this.audioTrackEnabled; }
+
             const sender = this.peer.addTrack(track, stream);
             this.senderMap.set(track.id, sender);
         }
@@ -313,19 +346,23 @@ class WebRTCState {
         return stream;
     }
     
-    public muteStream(streamName: string,audio?: boolean, video?: boolean) {
-        const camera = this.getStream(streamName);
-        if(!camera) {return;} //TODO: How to handle late camera
-        if(audio !== undefined) {
+    public muteCamera(audio?: boolean, video?: boolean) {
+        const camera = this.getStream("camera");
+        if(!camera) { return; }
+
+        if(typeof audio === "boolean") {
+            this.audioTrackEnabled = audio;
             for(const track of camera.getAudioTracks()) {
                 track.enabled = audio;
             }
         }
-        if(video !== undefined) {
+        if(typeof video === "boolean") {
+            this.videoTrackEnabled = video;
             for(const track of camera.getVideoTracks()) {
                 track.enabled = video;
             }
         }
+        this.rerender();
     }
 }
 
@@ -393,7 +430,7 @@ export function Camera(props: {
                 paddingBottom: square ? "75%" : "56.25%" 
             }}
         >
-            { mediaStream && mediaStream.getVideoTracks().some((t) => t.enabled) ?
+            { mediaStream ?
                 <video 
                     autoPlay={true} 
                     muted={muted}
@@ -443,12 +480,40 @@ export function Stream(props:{sessionId:string}): JSX.Element {
     </>;
 }
 
-export function CameraControls(): JSX.Element {
+export function CameraControls(props:{global?: boolean, sessionId?: string}): JSX.Element {
+    const { global, sessionId } = props;
+    const {sessionId: mySessionId} = useContext(UserContext);
+    const [mute, {loading, error}] = useMutation(gql`
+        mutation mute($roomId: ID!, $sessionId: ID!, $audio: Boolean, $video: Boolean) {
+            mute(roomId: $roomId, sessionId: $sessionId, audio: $audio, video: $video)
+        }
+    `);
+
     const states = useContext(webRTCContext);
+    const { roomId } = useContext(UserContext);
 
-    const toggleVideoState = () => states.setVideoStreamState();
-
-    const toggleAudioState = () =>  states.setAudioStreamState();
+    function toggleVideoState() {
+        if (global && sessionId !== mySessionId) {
+            mute({variables: { 
+                roomId, 
+                sessionId, 
+                video: !states.getVideoStreamState(sessionId),
+            }});
+        } else {
+            states.setVideoStreamState(sessionId);
+        }
+    }
+    function toggleAudioState() {
+        if (global && sessionId !== mySessionId) {
+            mute({variables: { 
+                roomId, 
+                sessionId, 
+                audio: !states.getAudioStreamState(sessionId),
+            }});
+        } else {
+            states.setAudioStreamState(sessionId);
+        }
+    }
 
     return (
         <Grid container justify="space-evenly" alignItems="center">
@@ -459,7 +524,7 @@ export function CameraControls(): JSX.Element {
                     onClick={toggleVideoState}
                     size="small"
                 >
-                    {states.getVideoStreamState()
+                    {states.getVideoStreamState(sessionId)
                         ? <VideocamIcon color="primary" />
                         : <VideocamOffIcon color="secondary" />
                     }
@@ -472,7 +537,7 @@ export function CameraControls(): JSX.Element {
                     onClick={toggleAudioState}
                     size="small"
                 >
-                    {states.getAudioStreamState()
+                    {states.getAudioStreamState(sessionId)
                         ? <MicIcon color="primary" />
                         : <MicOffIcon color="secondary" />
                     }
