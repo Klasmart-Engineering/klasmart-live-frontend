@@ -23,6 +23,7 @@ export const en = {
     zoom_into_activity: "Zoom in this activity",
     live_buttonInteractiveLabel: "Interactive Modes",
     live_buttonStop: "Stop",
+    live_buttonScreen: "Share Screen",
     live_buttonPresent: "Present",
     live_buttonActivity: "Student Mode",
     live_buttonEndClass: "End Class",
