@@ -13,6 +13,10 @@ import { useMutation } from "@apollo/react-hooks";
 import NoCamera from "./components/noCamera";
 import Paper from "@material-ui/core/Paper";
 import { UserContext } from "./entry";
+import VideocamOffTwoToneIcon from "@material-ui/icons/VideocamOffTwoTone";
+import VideocamTwoToneIcon from "@material-ui/icons/VideocamTwoTone";
+import MicTwoToneIcon from "@material-ui/icons/MicTwoTone";
+import MicOffTwoToneIcon from "@material-ui/icons/MicOffTwoTone";
 
 const SEND_SIGNAL = gql`
   mutation webRTCSignal($roomId: ID!, $toSessionId: ID!, $webrtc: WebRTCIn) {
@@ -41,7 +45,7 @@ export class WebRTCContext {
         if(sessionId && sessionId !== this.mySessionId) {
             const state = this.states.get(sessionId);
             if (!state) { return; }
-            state.muteCamera(undefined, enabled);
+            state.muteCamera(undefined, typeof enabled === "boolean" ? enabled : !state.videoTrackEnabled);
         } else {
             this.videoTrackEnabled = typeof enabled === "boolean" ? enabled : !this.videoTrackEnabled;
             if(this.localCamera) {
@@ -56,7 +60,7 @@ export class WebRTCContext {
         if(sessionId && sessionId !== this.mySessionId) {
             const state = this.states.get(sessionId);
             if (!state) { return; }
-            state.muteCamera(enabled, undefined);
+            state.muteCamera(typeof enabled === "boolean" ? enabled : !state.audioTrackEnabled, undefined);
         } else {
             this.audioTrackEnabled = typeof enabled === "boolean" ? enabled : !this.audioTrackEnabled;
             if(this.localCamera) {
@@ -362,6 +366,7 @@ class WebRTCState {
                 track.enabled = video;
             }
         }
+
         this.rerender();
     }
 }
@@ -478,6 +483,88 @@ export function Stream(props:{sessionId:string}): JSX.Element {
     return <>
         <video style={{width: "100%"}} ref={videoRef} autoPlay playsInline/>
     </>;
+}
+
+export function GlobalCameraControl(): JSX.Element {
+    const theme = useTheme();
+    const [camerasOn, setCamerasOn] = useState(true);
+    const [micsOn, setMicsOn] = useState(true);
+
+    const [mute, {loading, error}] = useMutation(gql`
+        mutation mute($roomId: ID!, $sessionId: ID!, $audio: Boolean, $video: Boolean) {
+            mute(roomId: $roomId, sessionId: $sessionId, audio: $audio, video: $video)
+        }
+    `);
+    
+    const states = useContext(webRTCContext);
+    const mediaStreams = states.getMediaStreams();
+    const { roomId } = useContext(UserContext);
+
+    function toggleVideoStates() {
+        for(const { sessionId } of mediaStreams) {
+            mute({variables: { 
+                roomId, 
+                sessionId,
+                video: !camerasOn,
+            }});
+            states.setVideoStreamState(sessionId, !camerasOn);
+        }
+        setCamerasOn(!camerasOn);
+    }
+
+    function toggleAudioStates() {
+        for(const { sessionId } of mediaStreams) {
+            mute({variables: { 
+                roomId, 
+                sessionId,
+                audio: !micsOn,
+            }});
+            states.setAudioStreamState(sessionId, !micsOn);
+        }
+        setMicsOn(!micsOn);
+    }
+
+    return(
+        <Grid container direction="row" justify="center" alignItems="center" spacing={2} style={{ padding: theme.spacing(2) }}>
+            <Grid item xs={12}>
+                <Typography variant="caption">
+                    Quick Toggles
+                </Typography>
+            </Grid>
+            <Grid container item xs={6} style={{ textAlign: "center" }}>
+                <Grid item xs={12}>
+                    <IconButton 
+                        color={camerasOn ? "primary" : "secondary"} 
+                        style={{ backgroundColor: camerasOn ? "#f6fafe" : "#fef5f9" }} 
+                        onClick={toggleVideoStates}
+                    >
+                        { camerasOn ? <VideocamOffTwoToneIcon /> : <VideocamTwoToneIcon /> }
+                    </IconButton>
+                </Grid>
+                <Grid item xs={12}>
+                    <Typography variant="caption" color="textSecondary">
+                        { camerasOn ? "Set Cameras Off" : "Set Cameras On" }
+                    </Typography>
+                </Grid>
+            </Grid>
+            <Grid container item xs={6} style={{ textAlign: "center" }}>
+                <Grid item xs={12}>
+                    <IconButton 
+                        color={micsOn ? "primary" : "secondary"} 
+                        style={{ backgroundColor: micsOn ? "#f6fafe" : "#fef5f9" }} 
+                        onClick={toggleAudioStates}
+                    >
+                        { micsOn ? <MicOffTwoToneIcon /> : <MicTwoToneIcon /> }
+                    </IconButton>
+                </Grid>
+                <Grid item xs={12}>
+                    <Typography variant="caption" color="textSecondary">
+                        { micsOn ? "Mute All" : "Unmute All" }
+                    </Typography>
+                </Grid>
+            </Grid>
+        </Grid>
+    );
 }
 
 export function CameraControls(props:{global?: boolean, sessionId?: string}): JSX.Element {
