@@ -77,7 +77,6 @@ interface Props {
     content: Content;
     openDrawer: boolean;
     handleOpenDrawer: (open?: boolean) => void;
-    // teacher: any; // TODO
 }
 
 export function Student(props: Props): JSX.Element {
@@ -98,13 +97,17 @@ export function Student(props: Props): JSX.Element {
         if (containerRef) {
             const contWidth = containerRef.getBoundingClientRect().width;
             const contHeight = containerRef.getBoundingClientRect().height;
-
+            // console.log("11111. Parent - contWidth, contHeight: ", contWidth, contHeight);
             setWidth(contWidth);
             setHeight(Math.min(contWidth, contWidth*0.5625));
             setMaxWidth(contWidth);
             setMaxHeight(contHeight);
         }
     }, []);
+
+    useEffect(()=>{
+        // console.log("22222. Parent - width, height: ", width, height);
+    }, [width, height]);
 
     switch (content.type) {
     case "Blank":
@@ -131,18 +134,14 @@ export function Student(props: Props): JSX.Element {
         );
     case "Stream":
         return (<>
-            <Grid
-                id="player-container"
-                container
-                style={{ border: "1px solid gray", borderRadius: 12}}
-            >
-                <Grid item xs={12} md={8} style={{ height: height, width: width, margin: "0 auto 16px auto" }}>
-                    <Whiteboard height={height}>
+            <div id="player-container" style={{ border: "1px solid gray", borderRadius: 12}}>
+                <div style={{ width: width, height: height }}>
+                    <Whiteboard width={width} height={height}>
                         <PreviewPlayer streamId={content.contentId} height={height} width={width} />
                         {/* <WBToolbar /> */}
                     </Whiteboard>
-                </Grid>
-                <Grid item xs={12}>
+                </div>
+                <Grid container item xs={12}>
                     <Grid
                         container
                         justify="flex-end"
@@ -167,7 +166,7 @@ export function Student(props: Props): JSX.Element {
                         </Grid>
                     </Grid>
                 </Grid>
-            </Grid>
+            </div>
             <Grid className={classes.textMargin} container justify="center" item xs={12}>
                 <Typography variant="caption" color="primary" align="center" style={{ margin: "0 auto" }}>
                     <FormattedMessage id="student_stream_mode" />
