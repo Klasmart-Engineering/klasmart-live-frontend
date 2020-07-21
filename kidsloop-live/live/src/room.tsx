@@ -6,7 +6,7 @@ import { CircularProgress, Typography, useTheme, useMediaQuery } from "@material
 import { sessionId, UserContext } from "./entry";
 import { Student } from "./pages/student/student";
 import { Teacher } from "./pages/teacher/teacher";
-import { webRTCContext, WebRTC} from "./webRTCState";
+import { webRTCContext } from "./webRTCState";
 import Layout from "./components/layout";
 import { WhiteboardContextProvider } from "./whiteboard/context-provider/WhiteboardContextProvider";
 
@@ -92,11 +92,12 @@ export function Room ({ teacher }: Props): JSX.Element {
             if (!subscriptionData) { return; }
             if (!subscriptionData.data) { return; }
             if (!subscriptionData.data.room) { return; }
-            const { message, content, join, leave, session } = subscriptionData.data.room;
+            const { message, content, join, leave, session, mute } = subscriptionData.data.room;
             if (message) { addMessage(message); }
             if (content) { setContent(content); }
             if (join || leave) { updateUsers(subscriptionData.data.room); }
             if(session && session.webRTC) { webrtc.notification(session.webRTC); }
+            if(mute) { webrtc.mute(mute.sessionId, mute.audio, mute.video); }
         },
         variables: { roomId, name }
     });

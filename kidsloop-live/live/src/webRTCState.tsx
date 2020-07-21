@@ -103,6 +103,12 @@ export class WebRTCContext {
         this.localAux = localAux;
     }
 
+    public mute(sessionId: string, audio?: boolean, video?: boolean) {
+        const state = this.states.get(sessionId);
+        if(!state) {return;} //TODO how to handle late connects?
+        state.muteStream("camera",audio,video); 
+    }
+
     public async notification(webrtc: WebRTC): Promise<void> {
         const sessionId = webrtc.sessionId;
         const state = await this.getOrCreateState(sessionId);
@@ -114,6 +120,7 @@ export class WebRTCContext {
         const state = await this.getOrCreateState(sessionId);        
         return state.sendOffer();
     }
+
     public getCameraStream(sessionId: string) {
         const state = this.states.get(sessionId);
         if(!state) {return;}
@@ -285,6 +292,7 @@ class WebRTCState {
         }
     }
 
+
     public async sendOffer() {
         try {
             this.makingOffer = true;
@@ -303,6 +311,21 @@ class WebRTCState {
         if(!id) {return;}
         const stream = this.remoteMediaStreams.get(id);
         return stream;
+    }
+    
+    public muteStream(streamName: string,audio?: boolean, video?: boolean) {
+        const camera = this.getStream(streamName);
+        if(!camera) {return;} //TODO: How to handle late camera
+        if(audio !== undefined) {
+            for(const track of camera.getAudioTracks()) {
+                track.enabled = audio;
+            }
+        }
+        if(video !== undefined) {
+            for(const track of camera.getVideoTracks()) {
+                track.enabled = video;
+            }
+        }
     }
 }
 
