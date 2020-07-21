@@ -22,7 +22,7 @@ import SettingsTwoToneIcon from "@material-ui/icons/SettingsTwoTone";
 import Tooltip from "@material-ui/core/Tooltip";
 import CreateTwoToneIcon from "@material-ui/icons/CreateTwoTone";
 import { UserContext } from "../entry";
-import { webRTCContext, Camera, MyCamera, CameraControls } from "../webRTCState";
+import { webRTCContext, Camera, MyCamera, CameraControls, GlobalCameraControl } from "../webRTCState";
 import Toolbar from "../whiteboard/components/Toolbar";
 import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
@@ -188,37 +188,7 @@ function TabInnerContent({ contentIndexState, title }: {contentIndexState?: Cont
         const webrtc = useContext(webRTCContext);
         return (
             <Grid container direction="column" justify="flex-start" alignItems="center">
-                <Grid container direction="row" justify="center" alignItems="center" spacing={2} style={{ padding: theme.spacing(2) }}>
-                    <Grid item xs={12}>
-                        <Typography variant="caption">
-                            Quick Toggles
-                        </Typography>
-                    </Grid>
-                    <Grid container item xs={6} style={{ textAlign: "center" }}>
-                        <Grid item xs={12}>
-                            <IconButton color={"primary"} style={{ backgroundColor: "#f6fafe" }}>
-                                <VideocamOffTwoToneIcon />
-                            </IconButton>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Typography variant="caption" color="textSecondary">
-                                All Cameras Off
-                            </Typography>
-                        </Grid>
-                    </Grid>
-                    <Grid container item xs={6} style={{ textAlign: "center" }}>
-                        <Grid item xs={12}>
-                            <IconButton color={"primary"} style={{ backgroundColor: "#f6fafe" }}>
-                                <MicOffTwoToneIcon />
-                            </IconButton>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Typography variant="caption" color="textSecondary">
-                                Mute All
-                            </Typography>
-                        </Grid>
-                    </Grid>
-                </Grid>
+                { teacher ? <GlobalCameraControl /> : null }
                 {
                     [...users.entries()].map(([id,session]) => (
                         <React.Fragment key={id}>
