@@ -179,7 +179,7 @@ function TabPanel(props: TabPanelProps) {
 
 function TabInnerContent({ contentIndexState, title }: {contentIndexState?: ContentIndexState, title: string}) {
     const classes = useStyles();
-    const {sessionId, materials} = useContext(UserContext);
+    const {sessionId, materials, teacher} = useContext(UserContext);
     const theme = useTheme();
 
     switch(title) {
@@ -246,8 +246,7 @@ function TabInnerContent({ contentIndexState, title }: {contentIndexState?: Cont
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={3}>
-                                    <CameraControls />
-                                    {/* {id === sessionId ? <CameraControls /> : undefined} */}
+                                    <CameraControls global={teacher} sessionId={id} />
                                 </Grid>
                             </Grid>
                             <Grid container direction="row" justify="flex-start" alignItems="center">

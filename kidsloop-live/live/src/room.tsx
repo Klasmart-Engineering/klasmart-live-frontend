@@ -33,8 +33,9 @@ const SUB_ROOM = gql`
         message { id, message, session { name } },
         content { type, contentId },
         join { id, name, streamId },
-        leave { id }
-        session { webRTC { sessionId, description, ice, stream { name, streamId } } }
+        leave { id },
+        session { webRTC { sessionId, description, ice, stream { name, streamId } } },
+        mute { sessionId, audio, video },
         }
     }
 `;
