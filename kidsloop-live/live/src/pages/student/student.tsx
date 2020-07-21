@@ -22,6 +22,7 @@ const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
             display: "flex",
+            flexDirection: "column",
             height: "100%",
         },
         paperContainer: {
@@ -30,42 +31,9 @@ const useStyles = makeStyles((theme: Theme) =>
             height: 240, 
             padding: theme.spacing(2),
         },
-        content: {
-            flexGrow: 1,
-            marginRight: -drawerWidth,
-            padding: theme.spacing(2),
-            transition: theme.transitions.create("margin", {
-                duration: theme.transitions.duration.leavingScreen,
-                easing: theme.transitions.easing.sharp,
-            }),
-        },
-        contentShift: {
-            marginRight: 0,
-            transition: theme.transitions.create("margin", {
-                duration: theme.transitions.duration.enteringScreen,
-                easing: theme.transitions.easing.easeOut,
-            }),
-        },
-        drawer: {
-            flexShrink: 0,
-            width: drawerWidth,
-            overflowX: "hidden",
-        },
-        drawerPaper: {
-            width: drawerWidth,
-        },
-        drawerMobile: {
-            flexShrink: 0,
-            width: "100%",
-            overflowX: "hidden",
-        },
-        drawerPaperMobile: {
-            overflowY: "auto",
-            width: "100%",
-            height: "100%",
-        },
-        drawerRoot: {
-            height: 0
+        activityFrame: {
+            border: "1px solid gray",
+            borderRadius: 12,
         },
         textMargin: {
             margin: "16px 0"
@@ -97,7 +65,6 @@ export function Student(props: Props): JSX.Element {
         if (containerRef) {
             const contWidth = containerRef.getBoundingClientRect().width;
             const contHeight = containerRef.getBoundingClientRect().height;
-            // console.log("11111. Parent - contWidth, contHeight: ", contWidth, contHeight);
             setWidth(contWidth);
             setHeight(Math.min(contWidth, contWidth*0.5625));
             setMaxWidth(contWidth);
@@ -105,14 +72,10 @@ export function Student(props: Props): JSX.Element {
         }
     }, []);
 
-    useEffect(()=>{
-        // console.log("22222. Parent - width, height: ", width, height);
-    }, [width, height]);
-
     switch (content.type) {
     case "Blank":
         return (
-            <Grid container>
+            <div className={classes.root}>
                 <Grid item xs={12}>
                     <Paper elevation={4} className={classes.paperContainer}>
                         <Grid
@@ -130,11 +93,11 @@ export function Student(props: Props): JSX.Element {
                     </Paper>
                 </Grid>
                 {isSmDown ? <CameraContainer isTeacher={false} /> : null}
-            </Grid>
+            </div>
         );
     case "Stream":
         return (<>
-            <div id="player-container" style={{ border: "1px solid gray", borderRadius: 12}}>
+            <div id="player-container" className={classes.activityFrame}>
                 <div style={{ width: width, height: height }}>
                     <Whiteboard width={width} height={height}>
                         <PreviewPlayer streamId={content.contentId} height={height} width={width} />
@@ -178,7 +141,9 @@ export function Student(props: Props): JSX.Element {
         return (<>
             <Grid
                 container
-                style={{ border: "1px solid gray", borderRadius: 12 }}
+                direction="row"
+                className={classes.activityFrame}
+                spacing={1}
             >
                 <Whiteboard height={height}>
                     <RecordedIframe
