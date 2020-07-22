@@ -10,7 +10,7 @@ import { Theme, Button, Card, useTheme, CardContent, useMediaQuery } from "@mate
 import { PreviewPlayer } from "../../components/preview-player";
 import clsx from "clsx";
 import MenuOpenIcon from "@material-ui/icons/MenuOpen";
-import { Cameras, webRTCContext } from "../../webRTCState";
+import { Cameras, webRTCContext, Stream } from "../../webRTCState";
 import { UserContext } from "../../entry";
 import FaceTwoToneIcon from "@material-ui/icons/FaceTwoTone";
 import CenterAlignChildren from "../../components/centerAlignChildren";
@@ -20,6 +20,7 @@ import { Whiteboard } from "../../whiteboard/components/Whiteboard";
 import { MaterialSelection } from "./materialSelection";
 import { BroadcastVideo } from "./broadcastVideo";
 import PermissionControls from "../../whiteboard/components/PermissionControls";
+import { ScreenShareContext } from "./screenShareProvider";
 
 const drawerWidth = 340;
 
@@ -74,6 +75,8 @@ interface Props {
 export function Teacher (props: Props): JSX.Element {
     const {roomId, sessionId, materials} = useContext(UserContext);
     const webrtc = useContext(webRTCContext);
+    const screenShare = useContext(ScreenShareContext);
+
     const classes = useStyles();
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
@@ -117,6 +120,12 @@ export function Teacher (props: Props): JSX.Element {
             showContent({variables: { roomId, type: "Activity", contentId: material.url }});
         }
     },[roomId,selectedButton, material]);
+
+    useEffect(()=>{
+        if (selectedButton === 3) {
+            showContent({variables: { roomId, type: "Video", contentId: sessionId }});
+        }
+    },[roomId,selectedButton,sessionId]);
 
     function Toolbar() {
         return (
@@ -204,21 +213,26 @@ export function Teacher (props: Props): JSX.Element {
                             ))
                         }
                     </> :
-                    <>
-                        <Whiteboard height="100%">
-                            {material && material.url ?
-                                <RecordedIframe
-                                    contentId={material.url}
-                                    setStreamId={setStreamId}
-                                    parentWidth={width}
-                                    parentHeight={height}
-                                    setParentWidth={setWidth}
-                                    setParentHeight={setHeight}
-                                /> 
-                                : undefined}
-                            {material && material.video ? <BroadcastVideo src={material.video} /> : undefined}
-                        </Whiteboard>
-                    </>
+                    <Whiteboard height="100%">
+                        {
+                            //TODO: tidy up the conditions of what to render
+                            selectedButton === 3?
+                                <Stream stream={screenShare.getStream()} /> :
+                                <>
+                                    {content.type !== "Video" && material && material.url ?
+                                        <RecordedIframe
+                                            contentId={material.url}
+                                            setStreamId={setStreamId}
+                                            parentWidth={width}
+                                            parentHeight={height}
+                                            setParentWidth={setWidth}
+                                            setParentHeight={setHeight}
+                                        /> 
+                                        : undefined}
+                                    {material && material.video ? <BroadcastVideo src={material.video} /> : undefined}
+                                </>
+                        }
+                    </Whiteboard>
                         
                 }
                 { content.type !== "Activity" ? <Toolbar /> : null }
