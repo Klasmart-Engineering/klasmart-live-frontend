@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useContext } from "react";
 import ToggleButton from "@material-ui/lab/ToggleButton";
 import ToggleButtonGroup from "@material-ui/lab/ToggleButtonGroup";
 import PlayIcon from "@material-ui/icons/PlayArrow";
@@ -10,7 +10,11 @@ import { FormattedMessage } from "react-intl";
 import { Grid, Typography } from "@material-ui/core";
 import CenterAlignChildren from "../../components/centerAlignChildren";
 import clsx from "clsx";
-import { ShareScreenButton } from "./screenShareButton";
+import { ScreenShareContext } from "./screenShareProvider";
+import ScreenShareTwoToneIcon from "@material-ui/icons/ScreenShareTwoTone";
+import StopScreenShareTwoToneIcon from "@material-ui/icons/StopScreenShareTwoTone";
+import { webRTCContext } from "../../webRTCState";
+
 
 const StyledToggleButtonGroup = withStyles((theme) => ({
     grouped: {
@@ -59,6 +63,9 @@ interface Props {
 
 export function ControlButtons({setSelectedButton, loading, selectedButton, disablePresent, disableActivity} : Props): JSX.Element {
     const {toggleSelected,loadingSelected, buttonGroup, buttonGroupActivity} = useStyles();
+    const screenShare = useContext(ScreenShareContext);
+    const webrtc = useContext(webRTCContext);
+
     const selected = loading ? loadingSelected : toggleSelected;
 
     return (
@@ -105,8 +112,30 @@ export function ControlButtons({setSelectedButton, loading, selectedButton, disa
                         <ViewIcon style={{ paddingRight: 5 }} />
                         <FormattedMessage id="live_buttonActivity" />
                     </ToggleButton>
+                    <ToggleButton
+                        value={3}
+                        aria-label="right aligned"
+                        style={{ padding: "2px 8px", borderRadius: 12  }}
+                        classes={{ selected }}
+                        disabled={!navigator.mediaDevices || !(navigator.mediaDevices as any).getDisplayMedia}
+                        onClick={() => {
+                            if(screenShare.getStream() && selectedButton === 3) {
+                                screenShare.stop(webrtc);
+                            }
+                            if(!screenShare.getStream() && selectedButton !== 3)
+                            {
+                                screenShare.start(webrtc);
+                            }
+                        }}
+                    >
+                        {
+                            screenShare.getStream() ?
+                                <StopScreenShareTwoToneIcon style={{ paddingRight: 5 }} />:
+                                <ScreenShareTwoToneIcon style={{ paddingRight: 5 }} /> 
+                        }
+                        <FormattedMessage id="live_buttonScreen" />
+                    </ToggleButton>
                 </StyledToggleButtonGroup>
-                <ShareScreenButton/>
             </CenterAlignChildren>
         </Grid>
     );
