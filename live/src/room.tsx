@@ -27,6 +27,21 @@ export interface Message {
     session: Session,
 }
 
+export interface ContentIndexState {
+    contentIndex: number;
+    setContentIndex: React.Dispatch<React.SetStateAction<number>>;
+}
+
+export interface InteractiveModeState {
+    interactiveMode: number;
+    setInteractiveMode: React.Dispatch<React.SetStateAction<number>>;
+}
+
+export interface StreamIdState {
+    streamId: string | undefined;
+    setStreamId: React.Dispatch<React.SetStateAction<string | undefined>>;
+}
+
 const SUB_ROOM = gql`
     subscription room($roomId: ID!, $name: String) {
         room(roomId: $roomId, name: $name) {
@@ -52,6 +67,8 @@ export function Room ({ teacher }: Props): JSX.Element {
     const webrtc = useContext(webRTCContext);
     
     const [contentIndex, setContentIndex] = useState<number>(0);
+    const [interactiveMode, setInteractiveMode] = useState<number>(0);
+    const [streamId, setStreamId] = useState<string>();
 
     const [openDrawer, setOpenDrawer] = useState<boolean>(isSmDown ? false : true);
     const handleOpenDrawer = (open?: boolean) => {
@@ -120,6 +137,8 @@ export function Room ({ teacher }: Props): JSX.Element {
                 openDrawer={openDrawer}
                 handleOpenDrawer={handleOpenDrawer}
                 contentIndexState={{ contentIndex, setContentIndex }}
+                interactiveModeState={{ interactiveMode, setInteractiveMode }}
+                streamIdState={{ streamId, setStreamId }}
             >
                 {
                     teacher
@@ -129,6 +148,8 @@ export function Room ({ teacher }: Props): JSX.Element {
                             openDrawer={openDrawer}
                             handleOpenDrawer={handleOpenDrawer}
                             contentIndexState={{ contentIndex, setContentIndex }}
+                            interactiveModeState={{ interactiveMode, setInteractiveMode }}
+                            streamIdState={{ streamId, setStreamId }}
                         />
                         : <Student 
                             content={content}
