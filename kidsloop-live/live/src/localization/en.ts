@@ -1,6 +1,6 @@
 export const en = {
-    loading: "Give us a sec while we get things ready!",
     activity_link: "Activity Link",
+    allow_media_permission: "Please allow microphone and camera permissions",
     button_activity: "Activity",
     button_camera_start: "Start",
     button_stop: "Stop",
@@ -25,6 +25,7 @@ export const en = {
     live_buttonPresent: "Present",
     live_buttonActivity: "Student Mode",
     live_buttonEndClass: "End Class",
+    loading: "Give us a sec while we get things ready!",
     student_stream_mode: "Your teacher is currently presenting",
     student_activity_mode: "Please follow your teacher's intruction",
     join_room: "Join Room",
