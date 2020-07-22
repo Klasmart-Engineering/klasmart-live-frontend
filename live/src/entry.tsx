@@ -16,6 +16,7 @@ import { LessonMaterial } from "./lessonMaterialContext";
 import Typography from "@material-ui/core/Typography";
 import { en } from "./localization/en";
 import { webRTCContext, WebRTCContext } from "./webRTCState";
+import { ScreenShare } from "./pages/teacher/screenShareProvider";
 
 
 function setTypography(languageCode: string) {
@@ -148,12 +149,14 @@ function Entry() {
         <HashRouter>
             <UserContext.Provider value={userContext}>
                 <webRTCContext.Provider value={webRTCContextValue}>
-                    <IntlProvider locale="en" messages={en}>
-                        <ThemeProvider theme={theme}>
-                            <CssBaseline />
-                            <App />
-                        </ThemeProvider>
-                    </IntlProvider>
+                    <ScreenShare.Provider>
+                        <IntlProvider locale="en" messages={en}>
+                            <ThemeProvider theme={theme}>
+                                <CssBaseline />
+                                <App />
+                            </ThemeProvider>
+                        </IntlProvider>
+                    </ScreenShare.Provider>
                 </webRTCContext.Provider>
             </UserContext.Provider>
         </HashRouter>
