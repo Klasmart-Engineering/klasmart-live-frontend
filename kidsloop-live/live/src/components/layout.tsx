@@ -182,7 +182,7 @@ function TabPanel(props: TabPanelProps) {
 function TabInnerContent({ contentIndexState, title }: {contentIndexState?: ContentIndexState, title: string}) {
     const classes = useStyles();
     const {sessionId, materials, teacher} = useContext(UserContext);
-    const theme = useTheme();
+    const {name} = useContext(UserContext);
 
     switch(title) {
     case "Participants":
@@ -213,9 +213,11 @@ function TabInnerContent({ contentIndexState, title }: {contentIndexState?: Cont
                                     </Grid>
                                 </Grid>
                                 <Grid item xs={4}>
-                                    <Typography variant="body2" align="left">
-                                        {id === sessionId ? "You" : session.name}
-                                    </Typography>
+                                    <Tooltip placement="left" title={id === sessionId ? name || "" : session.name || ""}>
+                                        <Typography variant="body2" align="left" noWrap>
+                                            {id === sessionId ? "You" : session.name}
+                                        </Typography>
+                                    </Tooltip>
                                 </Grid>
                                 <Grid item xs={3}>
                                     <CameraControls global={teacher} sessionId={id} />
