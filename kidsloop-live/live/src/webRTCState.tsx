@@ -282,7 +282,7 @@ class WebRTCState {
         if(!previousStream || previousStream.id !== stream.id) {
             this.send({stream: {name, streamId: stream.id}});
         }
-        this.localStreamNames.set("name", stream);
+        this.localStreamNames.set(name, stream);
         for(const track of stream.getTracks()) {
             if (track.kind === "video") { track.enabled = this.videoTrackEnabled; }
             if (track.kind === "audio") { track.enabled = this.audioTrackEnabled; }
