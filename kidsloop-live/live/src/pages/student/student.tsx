@@ -14,7 +14,8 @@ import CameraContainer from "../../components/cameraContainer";
 import { Content } from "../../room";
 import { Whiteboard } from "../../whiteboard/components/Whiteboard";
 import WBToolbar from "../../whiteboard/components/Toolbar";
-import {Stream} from "../../webRTCState";
+import {Stream, webRTCContext} from "../../webRTCState";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const drawerWidth = 340;
 
@@ -54,6 +55,7 @@ export function Student(props: Props): JSX.Element {
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
 
     const { name } = useContext(UserContext);
+    const webrtc = useContext(webRTCContext);
     const [streamId, setStreamId] = useState<string>();
     const [width, setWidth] = useState<string | number>("100%");
     const [height, setHeight] = useState<string | number>("100%");
@@ -190,11 +192,16 @@ export function Student(props: Props): JSX.Element {
             {isSmDown ? <CameraContainer isTeacher={false} /> : null}
         </>);
     case "Video":
+    {
+        const stream = webrtc.getAuxStream(content.contentId);
+        if(!stream) {return <CircularProgress />;}
         return <>
             <Whiteboard height={height}>
-                <Stream sessionId={content.contentId} />
+                <Stream stream={webrtc.getAuxStream(content.contentId)} />
             </Whiteboard>
             <WBToolbar />
         </>;
+        
+    }
     }
 }

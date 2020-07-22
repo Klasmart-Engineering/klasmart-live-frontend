@@ -472,19 +472,15 @@ export function Camera(props: {
     );
 }
 
-export function Stream(props:{sessionId:string}): JSX.Element {
-    const {sessionId} = props;
-    const webrtc = useContext(webRTCContext);
+export function Stream(props:{stream?:MediaStream}): JSX.Element {
+    const {stream} = props;
     const videoRef = useRef<HTMLVideoElement>(null);
     useEffect(() => {
         if(!videoRef.current) {return;}
-        const stream = webrtc.getAuxStream(sessionId);
         if(!stream) {return;}
         videoRef.current.srcObject = stream;
-    }, [videoRef.current,webrtc]);
-    return <>
-        <video style={{width: "100%"}} ref={videoRef} autoPlay playsInline/>
-    </>;
+    }, [videoRef.current,stream]);
+    return <video style={{width: "100%"}} ref={videoRef} autoPlay playsInline/>;
 }
 
 export function GlobalCameraControl(): JSX.Element {
