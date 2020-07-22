@@ -32,9 +32,11 @@ import MicOffTwoToneIcon from "@material-ui/icons/MicOffTwoTone";
 
 import { webRTCContext, Camera, MyCamera, CameraControls, GlobalCameraControl } from "../webRTCState";
 import { UserContext } from "../entry";
-import { Session, Message } from "../room";
-import { SendMessage } from "../sendMessage";
+import { Session, Message, ContentIndexState, InteractiveModeState, StreamIdState } from "../room";
 import Toolbar from "../whiteboard/components/Toolbar";
+import { ControlButtons } from "../pages/teacher/controlButtons";
+import Messages from "../messages";
+import { SendMessage } from "../sendMessage";
 
 export const DRAWER_WIDTH = 380;
 
@@ -96,8 +98,8 @@ const useStyles = makeStyles((theme: Theme) =>
             overflowX: "hidden",
             overflowY: "auto",
             transition: theme.transitions.create("width", {
-                easing: theme.transitions.easing.sharp,
                 duration: theme.transitions.duration.enteringScreen,
+                easing: theme.transitions.easing.sharp,
             }),
         },
         drawerClose: {
@@ -105,8 +107,8 @@ const useStyles = makeStyles((theme: Theme) =>
             overflowY: "auto",
             width: theme.spacing(7),
             transition: theme.transitions.create("width", {
-                easing: theme.transitions.easing.sharp,
                 duration: theme.transitions.duration.leavingScreen,
+                easing: theme.transitions.easing.sharp,
             }),
         },
         scrollContainer: {
@@ -128,17 +130,36 @@ const useStyles = makeStyles((theme: Theme) =>
             height: 48,
             paddingLeft: theme.spacing(2),
         },
+        tabIndicator: {
+            backgroundColor: "#0E78D5",
+            width: "0.25rem",
+            borderRadius: "0.25rem 0 0 0.25rem",
+        },
         tabRoot: {
             minWidth: "auto",
             padding: 0,
+            "&:hover": {
+                color: "#0E78D5",
+                opacity: 1,
+                transform: "translateX(-2px)",
+            },
+            "&$tabSelected": {
+                color: "#0E78D5",
+                opacity: 1,
+            },
+            "&:focus": {
+                color: "#0E78D5"
+            },
+            "-webkit-transition": "all .4s ease",
+            transition: "all .4s ease",
+        },
+        tabSelected: {
+            color: "#0E78D5",
+            opacity: 1,
         },
         tabs: {
-            borderRight: `1px solid ${theme.palette.divider}`,
             height: "100%",
         },
-        tabcontent: {
-            // width: DRAWER_WIDTH - theme.spacing(7) - 1,
-        }
     }),
 );
 
@@ -294,6 +315,7 @@ function TabInnerContent({ contentIndexState, title }: {contentIndexState?: Cont
 
 interface StyledTabProps {
     children: React.ReactElement;
+    className: string;
     handlers: {
         handleOpenDrawer: (open?: boolean) => void;
         setValue: React.Dispatch<React.SetStateAction<number>>;
@@ -304,7 +326,7 @@ interface StyledTabProps {
 
 function StyledTab(props: StyledTabProps) {
     const classes = useStyles();
-    const {children, handlers, value, title} = props;
+    const {children, className, handlers, value, title} = props;
 
     const a11yProps = () => {
         return {
@@ -315,7 +337,8 @@ function StyledTab(props: StyledTabProps) {
 
     return (
         <Tab 
-            className={classes.tabRoot}
+            classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
+            className={className}
             label={<Tooltip arrow placement="left" title={title}>{children}</Tooltip>} 
             onClick={() => {
                 handlers.handleOpenDrawer(true);
@@ -327,11 +350,6 @@ function StyledTab(props: StyledTabProps) {
     );
 }
 
-interface ContentIndexState {
-    contentIndex: number;
-    setContentIndex: React.Dispatch<React.SetStateAction<number>>;
-}
-
 interface Props {
     children?: React.ReactNode;
     isTeacher: boolean;
@@ -340,13 +358,22 @@ interface Props {
     openDrawer: boolean;
     handleOpenDrawer: (open?: boolean) => void;
     contentIndexState: ContentIndexState;
+    interactiveModeState: InteractiveModeState;
+    streamIdState: StreamIdState;
 }
 
 export default function Layout(props: Props): JSX.Element {
-    const { children, isTeacher, users, messages, openDrawer, handleOpenDrawer, contentIndexState } = props;
+    const { children, isTeacher, users, messages, openDrawer, handleOpenDrawer, contentIndexState, interactiveModeState, streamIdState } = props;
     const classes = useStyles();
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
+    const { sessionId, materials } = useContext(UserContext);
+
+    const { streamId, setStreamId } = streamIdState;
+    const { contentIndex, setContentIndex } = contentIndexState;
+
+    const material = contentIndex >= 0 && contentIndex < materials.length ? materials[contentIndex] : undefined;
+
     const [value, setValue] = useState(0);
     const handleChange = (event: React.ChangeEvent<unknown>, newValue: number) => {
         setValue(newValue);
@@ -389,22 +416,38 @@ export default function Layout(props: Props): JSX.Element {
                         >
                             <Grid container direction="row" style={{ flexGrow: 1, overflow: "hidden" }}>
                                 <Grid item xs={!openDrawer ? 12 : 2} style={{ flexGrow: 1 }}>
-                                    <Tabs
-                                        aria-label="vertical tabs"
-                                        orientation="vertical"
-                                        variant="fullWidth"
-                                        value={value}
-                                        onChange={handleChange}
-                                        className={classes.tabs}
-                                        classes={{
-                                            indicator: classes.active
-                                        }}
+                                    <Grid 
+                                        container
+                                        direction="column"
+                                        justify="space-between"
+                                        style={{ borderRight: `1px solid ${theme.palette.divider}`, height: "100%" }}
                                     >
-                                        { isTeacher ? 
-                                            TABS.filter((t) => t.userType !== 1).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} title={tab.title} handlers={{handleOpenDrawer, setValue}} value={index}>{tab.icon}</StyledTab>) :
-                                            TABS.filter((t) => t.userType !== 0).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} title={tab.title} handlers={{handleOpenDrawer, setValue}} value={index}>{tab.icon}</StyledTab>)
-                                        }
-                                    </Tabs>
+                                        <Grid item>
+                                            <Tabs
+                                                aria-label="vertical tabs"
+                                                orientation="vertical"
+                                                variant="fullWidth"
+                                                value={value}
+                                                onChange={handleChange}
+                                                className={classes.tabs}
+                                                classes={{
+                                                    indicator: classes.tabIndicator
+                                                }}
+                                            >
+                                                { isTeacher ? 
+                                                    TABS.filter((t) => t.userType !== 1).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} className={index === value ? classes.tabSelected : ""} title={tab.title} handlers={{handleOpenDrawer, setValue}} value={index}>{tab.icon}</StyledTab>) :
+                                                    TABS.filter((t) => t.userType !== 0).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} className={index === value ? classes.tabSelected : ""} title={tab.title} handlers={{handleOpenDrawer, setValue}} value={index}>{tab.icon}</StyledTab>)
+                                                }
+                                            </Tabs>
+                                        </Grid>
+                                        <Grid item hidden={!isTeacher}>
+                                            <ControlButtons 
+                                                interactiveModeState={interactiveModeState}
+                                                disablePresent={!(streamId || (material && material.video))}
+                                                disableActivity={!(material && material.url)}
+                                            />
+                                        </Grid>
+                                    </Grid>
                                 </Grid>
                                 <Grid item xs={10} hidden={!openDrawer} style={{ flexGrow: 1 }}>
                                     <UsersContext.Provider value={users}>
