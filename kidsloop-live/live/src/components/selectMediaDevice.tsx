@@ -24,14 +24,14 @@ interface Props {
     onChange: ((event: React.ChangeEvent<{ name?: string | undefined; value: unknown; }>, child: React.ReactNode) => void) | undefined; 
 }
 
-export default function StyledSelect(props: Props) {
+export default function SelectMediaDevice(props: Props) {
     const { disabled, deviceType, deviceId, devices, onChange } = props;
     const classes = useStyles();
 
     return (
         <FormControl className={classes.formControl}>
             <InputLabel>
-                {disabled ? <FormattedMessage id="no_device_available" /> :
+                {disabled && !deviceId ? <FormattedMessage id="no_device_available" /> :
                     <FormattedMessage
                         id="select_device"
                         values={{ device: deviceType === "video" ? "Camera" : "Audio" }}
