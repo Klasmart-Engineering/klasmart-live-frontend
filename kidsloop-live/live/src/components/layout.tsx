@@ -1,38 +1,40 @@
 /* eslint-disable no-case-declarations */
+import React, { useState, createContext, useContext } from "react";
+import { FormattedMessage } from "react-intl";
 import clsx from "clsx";
+import { createStyles, makeStyles, useTheme, Theme } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import Drawer from "@material-ui/core/Drawer";
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
-import { createStyles, makeStyles, useTheme, Theme } from "@material-ui/core/styles";
-import * as React from "react";
-import { Session, Message } from "../room";
-import { SendMessage } from "../sendMessage";
 import IconButton from "@material-ui/core/IconButton";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Typography from "@material-ui/core/Typography";
-import { useState, createContext, useContext } from "react";
 import Divider from "@material-ui/core/Divider";
+import Tooltip from "@material-ui/core/Tooltip";
+import Stepper from "@material-ui/core/Stepper";
+import Step from "@material-ui/core/Step";
+import StepLabel from "@material-ui/core/StepLabel";
+import Skeleton from "@material-ui/lab/Skeleton";
+import CreateTwoToneIcon from "@material-ui/icons/CreateTwoTone";
 import CloseTwoToneIcon from "@material-ui/icons/CloseTwoTone";
 import PeopleAltTwoToneIcon from "@material-ui/icons/PeopleAltTwoTone";
 import LibraryBooksTwoToneIcon from "@material-ui/icons/LibraryBooksTwoTone";
 import ForumTwoToneIcon from "@material-ui/icons/ForumTwoTone";
 import SettingsTwoToneIcon from "@material-ui/icons/SettingsTwoTone";
-import Tooltip from "@material-ui/core/Tooltip";
-import CreateTwoToneIcon from "@material-ui/icons/CreateTwoTone";
-import { UserContext } from "../entry";
-import { webRTCContext, Camera, MyCamera, CameraControls, GlobalCameraControl } from "../webRTCState";
-import Toolbar from "../whiteboard/components/Toolbar";
-import Stepper from "@material-ui/core/Stepper";
-import Step from "@material-ui/core/Step";
-import StepLabel from "@material-ui/core/StepLabel";
+
 import Hidden from "@material-ui/core/Hidden";
 import BottomNavigation from "@material-ui/core/BottomNavigation";
 import BottomNavigationAction from "@material-ui/core/BottomNavigationAction";
 import VideocamOffTwoToneIcon from "@material-ui/icons/VideocamOffTwoTone";
 import MicOffTwoToneIcon from "@material-ui/icons/MicOffTwoTone";
-import Skeleton from "@material-ui/lab/Skeleton";
+
+import { webRTCContext, Camera, MyCamera, CameraControls, GlobalCameraControl } from "../webRTCState";
+import { UserContext } from "../entry";
+import { Session, Message } from "../room";
+import { SendMessage } from "../sendMessage";
+import Toolbar from "../whiteboard/components/Toolbar";
 
 export const DRAWER_WIDTH = 380;
 
@@ -253,7 +255,9 @@ function TabInnerContent({ contentIndexState, title }: {contentIndexState?: Cont
         }
         else {
             return (
-                <Typography>Oops! Something went wrong.</Typography>
+                <Typography>
+                    <FormattedMessage id="error_unknown_error" />
+                </Typography>
             );
         }
     case "Chat":
