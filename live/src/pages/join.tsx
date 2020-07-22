@@ -83,12 +83,14 @@ export function Join(): JSX.Element {
     }
 
     useEffect(() => {
+        if(!navigator.mediaDevices) {return;}
         navigator.mediaDevices.addEventListener("devicechange", (e) => detectDevices());
         return () => { navigator.mediaDevices.removeEventListener("devicechange", (e) => detectDevices()); };
     }, []);
 
 
     useEffect(() => {
+        if(!navigator.mediaDevices) {return;}
         if(videoDeviceId === undefined && audioDeviceId === undefined) {
             navigator.mediaDevices.getUserMedia({video: true, audio: true}).then(() => detectDevices()); 
             return;
