@@ -2,8 +2,9 @@ import React from "react";
 import { FormattedMessage } from "react-intl";
 import Grid from "@material-ui/core/Grid";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import Typography from "@material-ui/core/Typography";
 
-export default function Loading() {
+export default function Loading({ messageId }: { messageId: string }) {
     return (
         <Grid item xs={12} style={{ textAlign: "center" }}>
             <Grid
@@ -16,7 +17,9 @@ export default function Loading() {
                     <CircularProgress />
                 </Grid>
                 <Grid item xs={12}>
-                    <FormattedMessage id="loading" />
+                    <Typography variant="subtitle2">
+                        <FormattedMessage id={messageId} />
+                    </Typography>
                 </Grid>
             </Grid>
         </Grid>

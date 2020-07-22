@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useRef } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { createStyles, makeStyles, useTheme, Theme } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
@@ -7,16 +7,16 @@ import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
+import ErrorIcon from "@material-ui/icons/Error";
 import KidsloopLogo from "../assets/img/kidsloop.svg";
 import CenterAlignChildren from "../components/centerAlignChildren";
 import StyledButton from "../components/styled/button";
 import StyledTextField from "../components/styled/textfield";
 import { UserContext } from "../entry";
 import { webRTCContext, Camera } from "../webRTCState";
+import Loading from "../components/loading";
 import NoCamera from "../components/noCamera";
-import StyledSelect from "../components/selectMediaDevice";
-import { Room } from "../room";
-import { CircularProgress } from "@material-ui/core";
+import SelectMediaDevice from "../components/selectMediaDevice";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -40,6 +40,10 @@ const useStyles = makeStyles((theme: Theme) =>
             flexGrow: 1,
             height: "100vh",
         },
+        errorIcon: {
+            fontSize: "1em",
+            marginRight: theme.spacing(1),
+        },
     })
 );
 
@@ -52,7 +56,7 @@ export function Join(): JSX.Element {
 
     const [user, setUser] = useState<string>("");
     
-    const [nameError, setNameError] = useState<boolean>(false);
+    const [nameError, setNameError] = useState<JSX.Element | null>(null);
     const [error, setError] = useState<boolean>(false);
     const [videoDevices, setVideoDeviceOptions] = useState<MediaDeviceInfo[]>([]);
     const [audioDevices, setAudioDeviceOptions] = useState<MediaDeviceInfo[]>([]);
@@ -98,7 +102,15 @@ export function Join(): JSX.Element {
 
     function join(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
-        if(!user) { setNameError(true); }
+        setNameError(null);
+        if(!user) {
+            setNameError(
+                <span style={{ display: "flex", alignItems: "center" }}>
+                    <ErrorIcon className={classes.errorIcon}/>
+                    <FormattedMessage id="error_empty_name" />
+                </span>
+            );
+        }
         if (!name) { setName(user); }
         states.setCamera(stream||null);
     }
@@ -127,7 +139,7 @@ export function Join(): JSX.Element {
                                         ? <Camera mediaStream={stream} muted={true}/>
                                         : error
                                             ? <NoCamera messageId={"connect_camera"} />
-                                            : <CircularProgress />
+                                            : <Loading messageId="allow_media_permission" />
                                 }
                             </Grid>
                             <Grid item xs={12} md={4}>
@@ -150,19 +162,16 @@ export function Join(): JSX.Element {
                                                         </Typography> : 
                                                         <StyledTextField
                                                             fullWidth
+                                                            label={<FormattedMessage id="what_is_your_name"/>}
                                                             value={user}
-                                                            error={nameError}
-                                                            label={!nameError?<FormattedMessage id="what_is_your_name"/>:undefined}
-                                                            helperText={nameError?<FormattedMessage id="error_empty_name"/>:undefined}
-                                                            onChange={(e) => {
-                                                                setUser(e.target.value);
-                                                                if(e.target.value) {setNameError(false);}
-                                                            }}
+                                                            error={nameError !== null}
+                                                            helperText={nameError}
+                                                            onChange={(e) => setUser(e.target.value)}
                                                         />
                                                     }
                                                 </Grid>
                                                 <Grid item xs={12}>
-                                                    <StyledSelect
+                                                    <SelectMediaDevice
                                                         disabled={videoDevices.length <= 1}
                                                         deviceType="video"
                                                         deviceId={videoDeviceId}
@@ -171,7 +180,7 @@ export function Join(): JSX.Element {
                                                     />
                                                 </Grid>
                                                 <Grid item xs={12}>
-                                                    <StyledSelect
+                                                    <SelectMediaDevice
                                                         disabled={audioDevices.length <= 1}
                                                         deviceType="audio"
                                                         deviceId={audioDeviceId}
