@@ -97,7 +97,7 @@ export function Teacher (props: Props): JSX.Element {
     const [selectedButton, setSelectedButton] = useState<number>(0);
     const [showContent, {loading}] = useMutation(MUT_SHOW_CONTENT);
     useEffect(()=>{
-        if (selectedButton === 0) {
+        if (!selectedButton) {
             showContent({variables: { roomId, type: "Blank", contentId: "" }});
         }
     },[roomId,selectedButton]);
