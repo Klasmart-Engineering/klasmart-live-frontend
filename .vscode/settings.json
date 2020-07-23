@@ -6,6 +6,6 @@
     "editor.codeActionsOnSave": {
         "source.fixAll.eslint": true // To fix automatically by eslint on save
     },
-    "editor.formatOnSave": false, //  To prevent rewrite with new rule after linting
+    "editor.formatOnSave": true,
     "typescript.tsdk": "./node_modules/typescript/lib"
 }
