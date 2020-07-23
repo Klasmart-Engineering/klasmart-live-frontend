@@ -42,11 +42,11 @@ import Collapse from "@material-ui/core/Collapse";
 export const DRAWER_WIDTH = 380;
 
 const TABS = [
-    { icon: <PeopleAltTwoToneIcon/>, title: "Participants", userType: 2 },
-    { icon: <LibraryBooksTwoToneIcon/>, title: "Lesson Plan", userType: 0 },
-    { icon: <ForumTwoToneIcon/>, title: "Chat", userType: 2 },
-    { icon: <CreateTwoToneIcon/>, title: "Whiteboard", userType: 2 },
-    { icon: <SettingsTwoToneIcon/>, title: "Settings", userType: 0 },
+    { icon: <PeopleAltTwoToneIcon />, title: "Participants", userType: 2 },
+    { icon: <LibraryBooksTwoToneIcon />, title: "Lesson Plan", userType: 0 },
+    { icon: <ForumTwoToneIcon />, title: "Chat", userType: 2 },
+    { icon: <CreateTwoToneIcon />, title: "Whiteboard", userType: 2 },
+    { icon: <SettingsTwoToneIcon />, title: "Settings", userType: 0 },
 ];
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -206,116 +206,116 @@ function TabPanel(props: TabPanelProps) {
     );
 }
 
-function TabInnerContent({ contentIndexState, title }: {contentIndexState?: ContentIndexState, title: string}) {
+function TabInnerContent({ contentIndexState, title }: { contentIndexState?: ContentIndexState, title: string }) {
     const classes = useStyles();
-    const {sessionId, materials, teacher} = useContext(UserContext);
-    const {name} = useContext(UserContext);
+    const { sessionId, materials, teacher } = useContext(UserContext);
+    const { name } = useContext(UserContext);
 
-    switch(title) {
-    case "Participants":
-        const users = useContext(UsersContext);
-        const webrtc = useContext(webRTCContext);
-        return (
-            <Grid container direction="column" justify="flex-start" alignItems="center">
-                { teacher ? <GlobalCameraControl /> : null }
-                {
-                    [...users.entries()].map(([id,session]) => (
-                        <React.Fragment key={id}>
-                            <Grid container direction="row" justify="flex-start" alignItems="center">
-                                <Grid item xs={12}><Divider /></Grid>
-                            </Grid>
-                            <Grid container direction="row" justify="flex-start" alignItems="center" spacing={2}>
-                                <Grid item xs={5}>
-                                    <Grid container direction="row" justify="space-between">
-                                        <Grid item xs={12}>
-                                            { id === sessionId ? 
-                                                <MyCamera /> :
-                                                <Camera
-                                                    controls
-                                                    mediaStream={webrtc.getCameraStream(id)}
-                                                    square
-                                                />
-                                            }
+    switch (title) {
+        case "Participants":
+            const users = useContext(UsersContext);
+            const webrtc = useContext(webRTCContext);
+            return (
+                <Grid container direction="column" justify="flex-start" alignItems="center">
+                    {teacher ? <GlobalCameraControl /> : null}
+                    {
+                        [...users.entries()].map(([id, session]) => (
+                            <React.Fragment key={id}>
+                                <Grid container direction="row" justify="flex-start" alignItems="center">
+                                    <Grid item xs={12}><Divider /></Grid>
+                                </Grid>
+                                <Grid container direction="row" justify="flex-start" alignItems="center" spacing={2}>
+                                    <Grid item xs={5}>
+                                        <Grid container direction="row" justify="space-between">
+                                            <Grid item xs={12}>
+                                                {id === sessionId ?
+                                                    <MyCamera /> :
+                                                    <Camera
+                                                        controls
+                                                        mediaStream={webrtc.getCameraStream(id)}
+                                                        square
+                                                    />
+                                                }
+                                            </Grid>
                                         </Grid>
                                     </Grid>
+                                    <Grid item xs={4}>
+                                        <Tooltip placement="left" title={id === sessionId ? name || "" : session.name || ""}>
+                                            <Typography variant="body2" align="left" noWrap>
+                                                {id === sessionId ? "You" : session.name}
+                                            </Typography>
+                                        </Tooltip>
+                                    </Grid>
+                                    <Grid item xs={3}>
+                                        <CameraControls global={teacher} sessionId={id} />
+                                    </Grid>
                                 </Grid>
-                                <Grid item xs={4}>
-                                    <Tooltip placement="left" title={id === sessionId ? name || "" : session.name || ""}>
-                                        <Typography variant="body2" align="left" noWrap>
-                                            {id === sessionId ? "You" : session.name}
-                                        </Typography>
-                                    </Tooltip>
+                                <Grid container direction="row" justify="flex-start" alignItems="center">
+                                    <Grid item xs={12}><Divider /></Grid>
                                 </Grid>
-                                <Grid item xs={3}>
-                                    <CameraControls global={teacher} sessionId={id} />
-                                </Grid>
-                            </Grid>
-                            <Grid container direction="row" justify="flex-start" alignItems="center">
-                                <Grid item xs={12}><Divider /></Grid>
-                            </Grid>
-                        </React.Fragment>
-                    ))
-                }
-            </Grid>
-        );
-    case "Lesson Plan":
-        if (contentIndexState) {
-            const { contentIndex, setContentIndex } = contentIndexState;
-            return (
-                <Grid item className={classes.scrollContainer}>
-                    <Stepper
-                        style={{ overflowX: "hidden", overflowY: "auto" }}
-                        activeStep={contentIndex}
-                        orientation="vertical"
-                    >
-                        {materials.map((material, index) => (
-                            <Step
-                                key={`step-${material.name}`}
-                                onClick={() => setContentIndex(index)}
-                                disabled={false}
-                                className={classes.step}
-                            >
-                                <StepLabel key={`label-${material.name}`}>{material.name}</StepLabel>
-                            </Step>
-                        ))}
-                    </Stepper>
+                            </React.Fragment>
+                        ))
+                    }
                 </Grid>
             );
-        }
-        else {
-            return (
-                <Typography>
-                    <FormattedMessage id="error_unknown_error" />
-                </Typography>
-            );
-        }
-    case "Chat":
-        const Messages = React.lazy(() => import("../messages"));
-        const messages = useContext(MessageContext);
-
-        return (
-            <Grid 
-                container
-                direction="column"
-                justify="flex-end"
-                style={{ overflow: "hidden" }}
-            >
-                <React.Suspense fallback={<Typography variant="body2"><Skeleton variant="text" /></Typography>}>
-                    <Grid item className={clsx(classes.scrollContainer, classes.messageContainer)}>
-                        <Messages messages={messages} />
+        case "Lesson Plan":
+            if (contentIndexState) {
+                const { contentIndex, setContentIndex } = contentIndexState;
+                return (
+                    <Grid item className={classes.scrollContainer}>
+                        <Stepper
+                            style={{ overflowX: "hidden", overflowY: "auto" }}
+                            activeStep={contentIndex}
+                            orientation="vertical"
+                        >
+                            {materials.map((material, index) => (
+                                <Step
+                                    key={`step-${material.name}`}
+                                    onClick={() => setContentIndex(index)}
+                                    disabled={false}
+                                    className={classes.step}
+                                >
+                                    <StepLabel key={`label-${material.name}`}>{material.name}</StepLabel>
+                                </Step>
+                            ))}
+                        </Stepper>
                     </Grid>
-                </React.Suspense>
-                <Grid item alignItems="flex-end" style={{ position: "absolute", bottom: 0 }}>
-                    <SendMessage />
+                );
+            }
+            else {
+                return (
+                    <Typography>
+                        <FormattedMessage id="error_unknown_error" />
+                    </Typography>
+                );
+            }
+        case "Chat":
+            const Messages = React.lazy(() => import("../messages"));
+            const messages = useContext(MessageContext);
+
+            return (
+                <Grid
+                    container
+                    direction="column"
+                    justify="flex-end"
+                    style={{ overflow: "hidden" }}
+                >
+                    <React.Suspense fallback={<Typography variant="body2"><Skeleton variant="text" /></Typography>}>
+                        <Grid item className={clsx(classes.scrollContainer, classes.messageContainer)}>
+                            <Messages messages={messages} />
+                        </Grid>
+                    </React.Suspense>
+                    <Grid item alignItems="flex-end" style={{ position: "absolute", bottom: 0 }}>
+                        <SendMessage />
+                    </Grid>
                 </Grid>
-            </Grid>
-        );
-    case "Whiteboard":
-        return (<Toolbar />);
-    case "Settings":
-        return (<Typography>Item {title}</Typography>);
-    default:
-        return (<Typography>Item {title}</Typography>);
+            );
+        case "Whiteboard":
+            return (<Toolbar />);
+        case "Settings":
+            return (<Typography>Item {title}</Typography>);
+        default:
+            return (<Typography>Item {title}</Typography>);
     }
 }
 
@@ -333,7 +333,7 @@ interface StyledTabProps {
 
 function StyledTab(props: StyledTabProps) {
     const classes = useStyles();
-    const {children, className, handlers, mobile, value, title} = props;
+    const { children, className, handlers, mobile, value, title } = props;
 
     const a11yProps = () => {
         return {
@@ -343,14 +343,14 @@ function StyledTab(props: StyledTabProps) {
     };
 
     return (
-        <Tab 
+        <Tab
             classes={{ root: mobile ? "" : classes.tabRoot, selected: mobile ? "" : classes.tabSelected }}
             className={className}
-            label={mobile ? children : <Tooltip arrow placement="left" title={title}>{children}</Tooltip>} 
+            label={mobile ? children : <Tooltip arrow placement="left" title={title}>{children}</Tooltip>}
             onClick={() => {
                 handlers.handleOpenDrawer(true);
                 handlers.setValue(value);
-            }} 
+            }}
             value={value}
             style={{ backgroundColor: "white", opacity: 1 }}
             {...a11yProps}
@@ -405,7 +405,7 @@ export default function Layout(props: Props): JSX.Element {
                             id="iframe-container"
                             className={classes.content}
                         >
-                            { children || null }
+                            {children || null}
                         </main>
                         <Drawer
                             anchor="right"
@@ -424,7 +424,7 @@ export default function Layout(props: Props): JSX.Element {
                         >
                             <Grid container direction="row" style={{ flexGrow: 1, overflow: "hidden" }}>
                                 <Grid item xs={!openDrawer ? 12 : 2} style={{ flexGrow: 1 }}>
-                                    <Grid 
+                                    <Grid
                                         container
                                         direction="column"
                                         justify="space-between"
@@ -442,14 +442,14 @@ export default function Layout(props: Props): JSX.Element {
                                                     indicator: classes.tabIndicator
                                                 }}
                                             >
-                                                { isTeacher ? 
-                                                    TABS.filter((t) => t.userType !== 1).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} className={index === value ? classes.tabSelected : ""} title={tab.title} handlers={{handleOpenDrawer, setValue}} value={index}>{tab.icon}</StyledTab>) :
-                                                    TABS.filter((t) => t.userType !== 0).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} className={index === value ? classes.tabSelected : ""} title={tab.title} handlers={{handleOpenDrawer, setValue}} value={index}>{tab.icon}</StyledTab>)
+                                                {isTeacher ?
+                                                    TABS.filter((t) => t.userType !== 1).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} className={index === value ? classes.tabSelected : ""} title={tab.title} handlers={{ handleOpenDrawer, setValue }} value={index}>{tab.icon}</StyledTab>) :
+                                                    TABS.filter((t) => t.userType !== 0).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} className={index === value ? classes.tabSelected : ""} title={tab.title} handlers={{ handleOpenDrawer, setValue }} value={index}>{tab.icon}</StyledTab>)
                                                 }
                                             </Tabs>
                                         </Grid>
                                         <Grid item hidden={!isTeacher}>
-                                            <ControlButtons 
+                                            <ControlButtons
                                                 interactiveModeState={interactiveModeState}
                                                 disablePresent={!(streamId || (material && material.video))}
                                                 disableActivity={!(material && material.url)}
@@ -460,9 +460,9 @@ export default function Layout(props: Props): JSX.Element {
                                 <Grid item xs={10} hidden={!openDrawer} style={{ flexGrow: 1 }}>
                                     <UsersContext.Provider value={users}>
                                         <MessageContext.Provider value={messages}>
-                                            { isTeacher ? 
-                                                TABS.filter((t) => t.userType !== 1).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} contentIndexState={contentIndexState} handleOpenDrawer={handleOpenDrawer} index={index} tab={tab} value={value}/>) :
-                                                TABS.filter((t) => t.userType !== 0).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} handleOpenDrawer={handleOpenDrawer} index={index} tab={tab} value={value}/>)
+                                            {isTeacher ?
+                                                TABS.filter((t) => t.userType !== 1).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} contentIndexState={contentIndexState} handleOpenDrawer={handleOpenDrawer} index={index} tab={tab} value={value} />) :
+                                                TABS.filter((t) => t.userType !== 0).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} handleOpenDrawer={handleOpenDrawer} index={index} tab={tab} value={value} />)
                                             }
                                         </MessageContext.Provider>
                                     </UsersContext.Provider>
@@ -483,18 +483,18 @@ export default function Layout(props: Props): JSX.Element {
                                     }}
                                     centered
                                 >
-                                    { isTeacher ? 
-                                        TABS.filter((t) => t.userType !== 1).map((tab, index) => <StyledTab mobile key={`tab-button-${tab.title}`} className={index === value ? classes.tabSelected : ""} title={tab.title} handlers={{handleOpenDrawer, setValue}} value={index}>{tab.icon}</StyledTab>) :
-                                        TABS.filter((t) => t.userType !== 0).map((tab, index) => <StyledTab mobile key={`tab-button-${tab.title}`} className={index === value ? classes.tabSelected : ""} title={tab.title} handlers={{handleOpenDrawer, setValue}} value={index}>{tab.icon}</StyledTab>)
+                                    {isTeacher ?
+                                        TABS.filter((t) => t.userType !== 1).map((tab, index) => <StyledTab mobile key={`tab-button-${tab.title}`} className={index === value ? classes.tabSelected : ""} title={tab.title} handlers={{ handleOpenDrawer, setValue }} value={index}>{tab.icon}</StyledTab>) :
+                                        TABS.filter((t) => t.userType !== 0).map((tab, index) => <StyledTab mobile key={`tab-button-${tab.title}`} className={index === value ? classes.tabSelected : ""} title={tab.title} handlers={{ handleOpenDrawer, setValue }} value={index}>{tab.icon}</StyledTab>)
                                     }
                                 </Tabs>
                                 <Collapse in={openDrawer}>
                                     <Grid xs={12} style={{ backgroundColor: "white" }}>
                                         <UsersContext.Provider value={users}>
                                             <MessageContext.Provider value={messages}>
-                                                { isTeacher ? 
-                                                    TABS.filter((t) => t.userType !== 1).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} contentIndexState={contentIndexState} handleOpenDrawer={handleOpenDrawer} index={index} tab={tab} value={value}/>) :
-                                                    TABS.filter((t) => t.userType !== 0).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} handleOpenDrawer={handleOpenDrawer} index={index} tab={tab} value={value}/>)
+                                                {isTeacher ?
+                                                    TABS.filter((t) => t.userType !== 1).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} contentIndexState={contentIndexState} handleOpenDrawer={handleOpenDrawer} index={index} tab={tab} value={value} />) :
+                                                    TABS.filter((t) => t.userType !== 0).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} handleOpenDrawer={handleOpenDrawer} index={index} tab={tab} value={value} />)
                                                 }
                                             </MessageContext.Provider>
                                         </UsersContext.Provider>

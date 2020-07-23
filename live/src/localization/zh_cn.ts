@@ -1,4 +1,4 @@
-// en.ts
+// zh_cn.ts
 const messages: Record<string, string> = {
     activity_link: "Activity Link",
     allow_media_permission: "Please allow microphone and camera permissions if you want to use media devices.",
