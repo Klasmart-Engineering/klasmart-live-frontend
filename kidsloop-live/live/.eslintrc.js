@@ -29,6 +29,7 @@ module.exports = {
         "indent": [
             "error",
             4,
+            { indentSwitchCase: false } // To prevent conflict with "editor.formatOnSave" in settings.json
         ],
         "linebreak-style": [
             "error",
