@@ -18,8 +18,15 @@ import { LessonMaterial } from "./lessonMaterialContext";
 import { AuthTokenProvider } from "./services/auth-token/AuthTokenProvider";
 import { getLanguage } from "./utils/locale";
 
-// It's a temporary that sending a locale value as a url parameter.
-const languageCode = new URL(window.location.href).searchParams.get("lang") || "en";
+const url = new URL(window.location.href)
+
+/************
+ * UI START *
+ ************/
+// It's a temporary that sending a ui value as a url parameter.
+// Later we may be able to send the hub UI's redux value like <Live lang={lang} theme={theme} />
+const languageCode = url.searchParams.get("lang") || "en";
+const themeMode = url.searchParams.get("theme") || "light";
 const locale = getLanguage(languageCode);
 
 function setTypography(languageCode: string) {
@@ -47,6 +54,63 @@ function setTypography(languageCode: string) {
     return { localeFontFamily, localeWeightLight, localeWeightMedium, localeWeightRegular, localeWeightBold };
 }
 
+const localeTypography = setTypography("en");
+const typography = {
+    button: {
+        textTransform: "none",
+    },
+    fontFamily: localeTypography.localeFontFamily,
+    fontWeightBold: localeTypography.localeWeightBold,
+    fontWeightLight: localeTypography.localeWeightLight,
+    fontWeightMedium: localeTypography.localeWeightMedium,
+    fontWeightRegular: localeTypography.localeWeightRegular,
+} as any;
+
+const overrides = {
+    MuiAppBar: {
+        root: {
+            backgroundColor: themeMode === "light" ? "#fafafa" : "#041125",
+        },
+    },
+    MuiTable: {
+        root: {
+            backgroundColor: themeMode === "light" ? "#fff" : "#05152e",
+        },
+    },
+    MuiTableCell: {
+        stickyHeader: {
+            backgroundColor: themeMode === "light" ? "#fafafa" : "#041125",
+        },
+    },
+};
+
+const palette: PaletteOptions = {
+    background: {
+        default: themeMode === "light" ? "#fafafa" : "#030D1C",
+        paper: themeMode === "light" ? "#fff" : "#030D1C",
+    },
+    primary: {
+        contrastText: "#fff",
+        dark: "#1896ea",
+        light: "#0E78D5",
+        main: "#0E78D5",
+    },
+};
+
+let theme: Theme;
+if (themeMode === "light") {
+    palette.type = "light";
+    palette.background = { default: "white" };
+    theme = createMuiTheme({ overrides, palette, typography });
+} else {
+    palette.type = "dark";
+    theme = createMuiTheme({ overrides, palette, typography });
+}
+theme = responsiveFontSizes(theme);
+/**********
+ * UI END *
+ **********/
+
 export const sessionId = uuid();
 
 const authToken = AuthTokenProvider.retrieveToken();
@@ -66,34 +130,6 @@ const client = new ApolloClient({
     link: wsLink
 } as any);
 
-const palette: PaletteOptions = {
-    primary: {
-        contrastText: "#fff",
-        dark: "#1896ea",
-        light: "#0E78D5",
-        main: "#0E78D5",
-    },
-};
-
-const localeTypography = setTypography("en");
-const typography = {
-    button: {
-        textTransform: "none",
-    },
-    fontFamily: localeTypography.localeFontFamily,
-    fontWeightBold: localeTypography.localeWeightBold,
-    fontWeightLight: localeTypography.localeWeightLight,
-    fontWeightMedium: localeTypography.localeWeightMedium,
-    fontWeightRegular: localeTypography.localeWeightRegular,
-} as any;
-
-let theme: Theme;
-palette.type = "light";
-palette.background = { default: "white" };
-theme = createMuiTheme({ palette, typography });
-theme = responsiveFontSizes(theme);
-
-
 export interface IUserContext {
     teacher: boolean,
     materials: LessonMaterial[]
@@ -107,7 +143,6 @@ export const UserContext = createContext<IUserContext>({ setName: () => null, ro
 
 function parseToken() {
     try {
-        const url = new URL(window.location.href);
         if (url.hostname === "localhost" || url.hostname === "live.kidsloop.net") {
             const materialsParam = url.searchParams.get("materials");
             return {
