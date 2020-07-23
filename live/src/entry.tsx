@@ -82,6 +82,27 @@ const overrides = {
             backgroundColor: themeMode === "light" ? "#fafafa" : "#041125",
         },
     },
+    MuiTab: {
+        root: {
+            backgroundColor: themeMode === "light" ? "#fafafa" : "#041125 !important",
+        },
+    },
+    MuiIconButton: {
+        colorPrimary: {
+            color: themeMode === "light" ? "#0E78D5" : "#fafafa !important", // TODO: Confirm color
+            backgroundColor: themeMode === "light" ? "#f6fafe" : "#0E78D5 !important", // TODO: Confirm color
+        },
+    },
+    MuiInputBase: {
+        input: {
+            color: themeMode === "light" ? "#0E78D5" : "#1896ea", // TODO: Confirm color
+        },
+    },
+    MuiToggleButton: {
+        root: {
+            color: themeMode === "light" ? "#fafafa" : "#0E78D5", // TODO: Confirm color
+        },
+    }
 };
 
 const palette: PaletteOptions = {
