@@ -40,12 +40,12 @@ const SEND_MESSAGE = gql`
         }
     }
 `;
-export function SendMessage (): JSX.Element {
+export function SendMessage(): JSX.Element {
     const classes = useStyles();
 
     const [sendMessage, { loading }] = useMutation(SEND_MESSAGE);
     const [message, setMessage] = useState("");
-    const {roomId} = useContext(UserContext);
+    const { roomId } = useContext(UserContext);
 
     function send() {
         sendMessage({ variables: { roomId, message } });
@@ -53,10 +53,10 @@ export function SendMessage (): JSX.Element {
     }
 
     return (
-        <Paper 
+        <Paper
             component="form"
             className={classes.root}
-            onSubmit={(e) => { e.preventDefault(); send();}}
+            onSubmit={(e) => { e.preventDefault(); send(); }}
         >
             <InputBase
                 className={classes.input}
@@ -66,14 +66,13 @@ export function SendMessage (): JSX.Element {
                 value={message}
             />
             <Divider className={classes.divider} orientation="vertical" />
-            <IconButton 
+            <IconButton
                 aria-label="send"
-                className={classes.iconButton} 
-                color="primary"
+                className={classes.iconButton}
                 onClick={() => send()}
                 type="submit"
             >
-                {!loading ? <SendTwoToneIcon />: <CircularProgress size={12}/>}
+                {!loading ? <SendTwoToneIcon color="primary" /> : <CircularProgress size={12} />}
             </IconButton>
         </Paper>
     );
