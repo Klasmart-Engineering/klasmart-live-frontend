@@ -37,6 +37,7 @@ import Toolbar from "../whiteboard/components/Toolbar";
 import { ControlButtons } from "../pages/teacher/controlButtons";
 import Messages from "../messages";
 import { SendMessage } from "../sendMessage";
+import Collapse from "@material-ui/core/Collapse";
 
 export const DRAWER_WIDTH = 380;
 
@@ -59,6 +60,7 @@ const useStyles = makeStyles((theme: Theme) =>
             width: "100%",
             position: "fixed",
             bottom: 0,
+            zIndex: 999,
         },
         layout: {
             flex: 1,
@@ -134,6 +136,10 @@ const useStyles = makeStyles((theme: Theme) =>
             backgroundColor: "#0E78D5",
             width: "0.25rem",
             borderRadius: "0.25rem 0 0 0.25rem",
+            [theme.breakpoints.down("sm")]: {
+                borderRadius: "0.25rem 0.25rem 0 0",
+                height: "0.25rem",
+            },
         },
         tabRoot: {
             minWidth: "auto",
@@ -320,13 +326,14 @@ interface StyledTabProps {
         handleOpenDrawer: (open?: boolean) => void;
         setValue: React.Dispatch<React.SetStateAction<number>>;
     }
+    mobile?: boolean;
     value: number;
     title: string;
 }
 
 function StyledTab(props: StyledTabProps) {
     const classes = useStyles();
-    const {children, className, handlers, value, title} = props;
+    const {children, className, handlers, mobile, value, title} = props;
 
     const a11yProps = () => {
         return {
@@ -337,14 +344,15 @@ function StyledTab(props: StyledTabProps) {
 
     return (
         <Tab 
-            classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
+            classes={{ root: mobile ? "" : classes.tabRoot, selected: mobile ? "" : classes.tabSelected }}
             className={className}
-            label={<Tooltip arrow placement="left" title={title}>{children}</Tooltip>} 
+            label={mobile ? children : <Tooltip arrow placement="left" title={title}>{children}</Tooltip>} 
             onClick={() => {
                 handlers.handleOpenDrawer(true);
                 handlers.setValue(value);
             }} 
             value={value}
+            style={{ backgroundColor: "white", opacity: 1 }}
             {...a11yProps}
         />
     );
@@ -461,14 +469,39 @@ export default function Layout(props: Props): JSX.Element {
                                 </Grid>
                             </Grid>
                         </Drawer>
-                        {/* <Hidden mdUp>
-                            <BottomNavigation value={value} onChange={handleChange} className={classes.bottomNav}>
-                                <BottomNavigationAction label="Recents" value={0} icon={<PeopleAltTwoToneIcon />} />
-                                <BottomNavigationAction label="Favorites" value={1} icon={<LibraryBooksTwoToneIcon />} />
-                                <BottomNavigationAction label="Nearby" value={2} icon={<ForumTwoToneIcon />} />
-                                <BottomNavigationAction label="Folder" value={3} icon={<CreateTwoToneIcon />} />
-                            </BottomNavigation>
-                        </Hidden> */}
+                        <Hidden mdUp>
+                            <Grid xs={12} className={classes.bottomNav}>
+                                <Tabs
+                                    aria-label="horizontal tabs"
+                                    orientation="horizontal"
+                                    variant="fullWidth"
+                                    value={value}
+                                    onChange={handleChange}
+                                    // className={clsx(classes.tabs)}
+                                    classes={{
+                                        indicator: classes.tabIndicator
+                                    }}
+                                    centered
+                                >
+                                    { isTeacher ? 
+                                        TABS.filter((t) => t.userType !== 1).map((tab, index) => <StyledTab mobile key={`tab-button-${tab.title}`} className={index === value ? classes.tabSelected : ""} title={tab.title} handlers={{handleOpenDrawer, setValue}} value={index}>{tab.icon}</StyledTab>) :
+                                        TABS.filter((t) => t.userType !== 0).map((tab, index) => <StyledTab mobile key={`tab-button-${tab.title}`} className={index === value ? classes.tabSelected : ""} title={tab.title} handlers={{handleOpenDrawer, setValue}} value={index}>{tab.icon}</StyledTab>)
+                                    }
+                                </Tabs>
+                                <Collapse in={openDrawer}>
+                                    <Grid xs={12} style={{ backgroundColor: "white" }}>
+                                        <UsersContext.Provider value={users}>
+                                            <MessageContext.Provider value={messages}>
+                                                { isTeacher ? 
+                                                    TABS.filter((t) => t.userType !== 1).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} contentIndexState={contentIndexState} handleOpenDrawer={handleOpenDrawer} index={index} tab={tab} value={value}/>) :
+                                                    TABS.filter((t) => t.userType !== 0).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} handleOpenDrawer={handleOpenDrawer} index={index} tab={tab} value={value}/>)
+                                                }
+                                            </MessageContext.Provider>
+                                        </UsersContext.Provider>
+                                    </Grid>
+                                </Collapse>
+                            </Grid>
+                        </Hidden>
                     </div>
                 </Container>
             </Grid>
