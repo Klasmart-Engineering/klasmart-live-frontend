@@ -21,10 +21,10 @@ interface Props {
     deviceType: "video" | "audio";
     deviceId?: string;
     devices: MediaDeviceInfo[];
-    onChange: ((event: React.ChangeEvent<{ name?: string | undefined; value: unknown; }>, child: React.ReactNode) => void) | undefined; 
+    onChange: ((event: React.ChangeEvent<{ name?: string | undefined; value: unknown; }>, child: React.ReactNode) => void) | undefined;
 }
 
-export default function SelectMediaDevice(props: Props) {
+export default function MediaDeviceSelect(props: Props) {
     const { disabled, deviceType, deviceId, devices, onChange } = props;
     const classes = useStyles();
 
@@ -45,7 +45,7 @@ export default function SelectMediaDevice(props: Props) {
                     : () => <MicIcon color={disabled ? "disabled" : "primary"} />
                 }
                 onChange={onChange}
-                value={deviceId||""}
+                value={deviceId || ""}
             >
                 {
                     devices.map((device: MediaDeviceInfo) => (
