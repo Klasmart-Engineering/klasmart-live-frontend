@@ -16,7 +16,7 @@ import { UserContext } from "../entry";
 import { webRTCContext, Camera } from "../webRTCState";
 import Loading from "../components/loading";
 import NoCamera from "../components/noCamera";
-import SelectMediaDevice from "../components/selectMediaDevice";
+import MediaDeviceSelect from "../components/mediaDeviceSelect";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -52,10 +52,10 @@ export function Join(): JSX.Element {
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
     const states = useContext(webRTCContext);
-    const {name, setName} = useContext(UserContext);
+    const { name, setName } = useContext(UserContext);
 
     const [user, setUser] = useState<string>("");
-    
+
     const [nameError, setNameError] = useState<JSX.Element | null>(null);
     const [error, setError] = useState<boolean>(false);
     const [videoDevices, setVideoDeviceOptions] = useState<MediaDeviceInfo[]>([]);
@@ -63,7 +63,7 @@ export function Join(): JSX.Element {
     const [videoDeviceId, setVideoDeviceId] = useState<string>();
     const [audioDeviceId, setAudioDeviceId] = useState<string>();
     const [stream, setStream] = useState<MediaStream>();
-    
+
     async function detectDevices() {
         try {
             const devices = await navigator.mediaDevices.enumerateDevices();
@@ -76,23 +76,23 @@ export function Join(): JSX.Element {
 
             setAudioDeviceId(audioDevices.length > 0 ? audioDevices[0].deviceId : undefined);
             setVideoDeviceId(videoDevices.length > 0 ? videoDevices[0].deviceId : undefined);
-        } catch(err) {
+        } catch (err) {
             setError(true);
             console.log("ERROR: ", err.name + ": " + err.message); // TODO: It cannot handle permission issue
         }
     }
 
     useEffect(() => {
-        if(!navigator.mediaDevices) {return;}
+        if (!navigator.mediaDevices) { return; }
         navigator.mediaDevices.addEventListener("devicechange", (e) => detectDevices());
         return () => { navigator.mediaDevices.removeEventListener("devicechange", (e) => detectDevices()); };
     }, []);
 
 
     useEffect(() => {
-        if(!navigator.mediaDevices) {return;}
-        if(videoDeviceId === undefined && audioDeviceId === undefined) {
-            navigator.mediaDevices.getUserMedia({video: true, audio: true}).then(() => detectDevices()); 
+        if (!navigator.mediaDevices) { return; }
+        if (videoDeviceId === undefined && audioDeviceId === undefined) {
+            navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(() => detectDevices());
             return;
         }
         setStream(undefined);
@@ -100,21 +100,21 @@ export function Join(): JSX.Element {
         stream
             .then((s) => { setStream(s); })
             .catch((e) => { setError(true); console.error(e); });
-    }, [videoDeviceId,audioDeviceId ]);
+    }, [videoDeviceId, audioDeviceId]);
 
     function join(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         setNameError(null);
-        if(!user) {
+        if (!user) {
             setNameError(
                 <span style={{ display: "flex", alignItems: "center" }}>
-                    <ErrorIcon className={classes.errorIcon}/>
+                    <ErrorIcon className={classes.errorIcon} />
                     <FormattedMessage id="error_empty_name" />
                 </span>
             );
         }
         if (!name) { setName(user); }
-        states.setCamera(stream||null);
+        states.setCamera(stream || null);
     }
 
     return (
@@ -123,7 +123,7 @@ export function Join(): JSX.Element {
             direction="column"
             justify="space-around"
             alignItems="center"
-            className={ classes.pageWrapper }
+            className={classes.pageWrapper}
         >
             <Container maxWidth="lg">
                 <Card>
@@ -138,7 +138,7 @@ export function Join(): JSX.Element {
                             <Grid item xs={12} md={8} style={{ width: "100%" }}>
                                 {
                                     stream && stream.getVideoTracks().length > 0 && stream.getVideoTracks().every((t) => t.readyState === "live") && stream.active
-                                        ? <Camera mediaStream={stream} muted={true}/>
+                                        ? <Camera mediaStream={stream} muted={true} />
                                         : error
                                             ? <NoCamera messageId={"connect_camera"} />
                                             : <Loading messageId="allow_media_permission" />
@@ -161,10 +161,10 @@ export function Join(): JSX.Element {
                                                     {name ?
                                                         <Typography align="center" variant="body1">
                                                             <FormattedMessage id="hello" values={{ name }} />
-                                                        </Typography> : 
+                                                        </Typography> :
                                                         <StyledTextField
                                                             fullWidth
-                                                            label={<FormattedMessage id="what_is_your_name"/>}
+                                                            label={<FormattedMessage id="what_is_your_name" />}
                                                             value={user}
                                                             error={nameError !== null}
                                                             helperText={nameError}
@@ -173,7 +173,7 @@ export function Join(): JSX.Element {
                                                     }
                                                 </Grid>
                                                 <Grid item xs={12}>
-                                                    <SelectMediaDevice
+                                                    <MediaDeviceSelect
                                                         disabled={videoDevices.length <= 1}
                                                         deviceType="video"
                                                         deviceId={videoDeviceId}
@@ -182,7 +182,7 @@ export function Join(): JSX.Element {
                                                     />
                                                 </Grid>
                                                 <Grid item xs={12}>
-                                                    <SelectMediaDevice
+                                                    <MediaDeviceSelect
                                                         disabled={audioDevices.length <= 1}
                                                         deviceType="audio"
                                                         deviceId={audioDeviceId}
