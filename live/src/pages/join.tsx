@@ -7,6 +7,7 @@ import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
+import Tooltip from "@material-ui/core/Tooltip";
 import ErrorIcon from "@material-ui/icons/Error";
 import KidsloopLogo from "../assets/img/kidsloop.svg";
 import CenterAlignChildren from "../components/centerAlignChildren";
@@ -159,9 +160,11 @@ export function Join(): JSX.Element {
                                             <Grid container spacing={2}>
                                                 <Grid item xs={12}>
                                                     {name ?
-                                                        <Typography align="center" variant="body1">
-                                                            <FormattedMessage id="hello" values={{ name }} />
-                                                        </Typography> :
+                                                        <Tooltip placement="top" title={name}>
+                                                            <Typography align="center" variant="body1" noWrap>
+                                                                <FormattedMessage id="hello" values={{ name }} />
+                                                            </Typography>
+                                                        </Tooltip> :
                                                         <StyledTextField
                                                             fullWidth
                                                             label={<FormattedMessage id="what_is_your_name" />}
