@@ -35,10 +35,6 @@ const StyledToggleButtonGroup = withStyles((theme) => ({
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
-        label: {
-            writingMode: "vertical-rl",
-            transform: "rotate(-180deg)",
-        },
         divider: {
             height: 1,
             marginTop: theme.spacing(2),
@@ -57,6 +53,10 @@ const useStyles = makeStyles((theme: Theme) =>
         selectedButton: {
             color: "white !important",
             backgroundColor: "#0E78D5 !important",
+        },
+        screenSharingButton: {
+            color: "white !important",
+            backgroundColor: "#f50057 !important",
         },
         buttonGroup: {
             backgroundColor: "#e6f3ff",
@@ -80,7 +80,7 @@ interface Props {
 }
 
 export function ControlButtons({interactiveModeState, disablePresent, disableActivity} : Props): JSX.Element {
-    const {selectedButton, buttonRoot, buttonGroup, divider, helpButton, label} = useStyles();
+    const {selectedButton, buttonRoot, buttonGroup, divider, helpButton, screenSharingButton} = useStyles();
     const screenShare = useContext(ScreenShareContext);
     const webrtc = useContext(webRTCContext);
     
@@ -172,7 +172,7 @@ export function ControlButtons({interactiveModeState, disablePresent, disableAct
                             value={3}
                             aria-label="present screen"
                             classes={{ root: buttonRoot }}
-                            className={ interactiveMode === 3 ? selectedButton : "" }
+                            className={ (interactiveMode === 3 || screenShare.getStream()) ? screenSharingButton : "" }
                             disabled={!navigator.mediaDevices || !(navigator.mediaDevices as any).getDisplayMedia}
                             onClick={() => {
                                 if(screenShare.getStream() && interactiveMode === 3) {

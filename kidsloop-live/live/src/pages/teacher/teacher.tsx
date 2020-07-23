@@ -135,71 +135,63 @@ export function Teacher (props: Props): JSX.Element {
                 className={content.type === "Activity" ? "" : classes.activityFrame}
                 spacing={1}
             >
-                <MaterialSelection materials={materials} contentIndex={contentIndex} setContentIndex={setContentIndex} />
-                <Grid 
-                    container 
-                    direction="row"
-                    className={content.type === "Activity" ? "" : classes.activityFrame}
-                    spacing={1}
-                >
-                    { content.type === "Activity" ?
-                        <>
-                            <Grid item xs={12}>
-                                <Typography variant="caption" color="textSecondary" gutterBottom>
-                                    Interactive View
-                                </Typography> 
-                            </Grid>
-                            {
-                                [...users.entries()].filter(([,s]) => s.id !== sessionId).map(([id,session]) => (
-                                    <Grid item xs={12} md={6} key={id}>
-                                        <Card>
-                                            <CardContent>
-                                                <Grid item xs={12} style={{ height: drawerWidth, width: drawerWidth, margin: "0 auto"}}>
-                                                    {
-                                                        session.streamId
-                                                            ? <PreviewPlayer streamId={session.streamId} height={drawerWidth} width={drawerWidth} />
-                                                            : undefined
-                                                    }
-                                                </Grid>
-                                                <Grid item xs={12}>
-                                                    <Cameras id={session.id} />
-                                                </Grid>
-                                                <Grid item xs={12}>
-                                                    <CenterAlignChildren center>
-                                                        <FaceTwoToneIcon style={{ marginRight: theme.spacing(1) }} />
-                                                        <Typography variant="body2" align="center">
-                                                            {session.name}
-                                                        </Typography>
-                                                    </CenterAlignChildren>
-                                                </Grid>
-                                            </CardContent>
-                                        </Card>
-                                    </Grid>
-                                ))
-                            }
-                        </> :
-                        <Whiteboard height="100%">
-                            {
-                                //TODO: tidy up the conditions of what to render
-                                interactiveMode === 3?
-                                    <Stream stream={screenShare.getStream()} /> :
-                                    <>
-                                        {content.type !== "Video" && material && material.url ?
-                                            <RecordedIframe
-                                                contentId={material.url}
-                                                setStreamId={setStreamId}
-                                                parentWidth={width}
-                                                parentHeight={height}
-                                                setParentWidth={setWidth}
-                                                setParentHeight={setHeight}
-                                            /> 
-                                            : undefined}
-                                        {material && material.video ? <BroadcastVideo src={material.video} /> : undefined}
-                                    </>
-                            }
-                        </Whiteboard>
-                    }
-                </Grid>
+                { content.type === "Activity" ?
+                    <>
+                        <Grid item xs={12}>
+                            <Typography variant="caption" color="textSecondary" gutterBottom>
+                                Interactive View
+                            </Typography> 
+                        </Grid>
+                        {
+                            [...users.entries()].filter(([,s]) => s.id !== sessionId).map(([id,session]) => (
+                                <Grid item xs={12} md={6} key={id}>
+                                    <Card>
+                                        <CardContent>
+                                            <Grid item xs={12} style={{ height: drawerWidth, width: drawerWidth, margin: "0 auto"}}>
+                                                {
+                                                    session.streamId
+                                                        ? <PreviewPlayer streamId={session.streamId} height={drawerWidth} width={drawerWidth} />
+                                                        : undefined
+                                                }
+                                            </Grid>
+                                            <Grid item xs={12}>
+                                                <Cameras id={session.id} />
+                                            </Grid>
+                                            <Grid item xs={12}>
+                                                <CenterAlignChildren center>
+                                                    <FaceTwoToneIcon style={{ marginRight: theme.spacing(1) }} />
+                                                    <Typography variant="body2" align="center">
+                                                        {session.name}
+                                                    </Typography>
+                                                </CenterAlignChildren>
+                                            </Grid>
+                                        </CardContent>
+                                    </Card>
+                                </Grid>
+                            ))
+                        }
+                    </> :
+                    <Whiteboard height="100%">
+                        {
+                            //TODO: tidy up the conditions of what to render
+                            interactiveMode === 3?
+                                <Stream stream={screenShare.getStream()} /> :
+                                <>
+                                    {content.type !== "Video" && material && material.url ?
+                                        <RecordedIframe
+                                            contentId={material.url}
+                                            setStreamId={setStreamId}
+                                            parentWidth={width}
+                                            parentHeight={height}
+                                            setParentWidth={setWidth}
+                                            setParentHeight={setHeight}
+                                        /> 
+                                        : undefined}
+                                    {material && material.video ? <BroadcastVideo src={material.video} /> : undefined}
+                                </>
+                        }
+                    </Whiteboard>
+                }
             </Grid>
         </div>
     );
