@@ -11,8 +11,6 @@ const messages: Record<string, string> = {
     error_unknown_error: "Oops! Something went wrong.",
     failed_to_connect: "Failed to connect.",
     hello: "Hello, {name}!",
-    open_preview_drawer: "Open Drawer",
-    close_preview_drawer: "Close Drawer",
     waiting_for_class: "Waiting for class to start.",
     what_is_your_name: "What is your name?",
     live_buttonStop: "Stop",
