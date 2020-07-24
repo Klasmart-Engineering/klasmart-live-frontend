@@ -11,8 +11,6 @@ const messages: Record<string, string> = {
     error_unknown_error: "죄송합니다! 문제가 발생했습니다.",
     failed_to_connect: "연결에 실패했습니다.",
     hello: "안녕, {name}!",
-    open_preview_drawer: "Open Drawer",
-    close_preview_drawer: "Close Drawer",
     waiting_for_class: "수업 시작을 기다리는 중입니다.",
     what_is_your_name: "이름이 무엇입니까?",
     live_buttonStop: "정지",
