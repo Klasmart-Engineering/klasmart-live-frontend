@@ -1,5 +1,11 @@
 import React, { useState, useContext } from "react";
-import { CircularProgress, Paper, makeStyles, Theme, createStyles, InputBase, Divider, IconButton } from "@material-ui/core";
+// import { FormattedMessage } from "react-intl";
+import { makeStyles, Theme, createStyles } from "@material-ui/core";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import Paper from "@material-ui/core/Paper";
+import InputBase from "@material-ui/core/InputBase";
+import Divider from "@material-ui/core/Divider";
+import IconButton from "@material-ui/core/IconButton";
 import SendTwoToneIcon from "@material-ui/icons/SendTwoTone";
 import { useMutation } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
@@ -61,7 +67,10 @@ export function SendMessage(): JSX.Element {
             <InputBase
                 className={classes.input}
                 placeholder="Share something here"
-                inputProps={{ "aria-label": "input a message here" }}
+                // placeholder={<FormattedMessage id="share_something_here" />} // TODO: localization
+                inputProps={{
+                    "aria-label": "input a message here"
+                }}
                 onChange={(e) => setMessage(e.target.value)}
                 value={message}
             />
