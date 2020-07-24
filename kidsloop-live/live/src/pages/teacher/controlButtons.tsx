@@ -74,21 +74,22 @@ interface Props {
     setKey: React.Dispatch<React.SetStateAction<number>>;
 }
 
-export function ControlButtons({interactiveModeState, disablePresent, disableActivity, setKey} : Props): JSX.Element {
-    const {selectedButton, buttonRoot, buttonGroup, divider, helpButton, screenSharingButton} = useStyles();
+export function ControlButtons({ interactiveModeState, disablePresent, disableActivity, setKey }: Props): JSX.Element {
+    const { selectedButton, buttonRoot, buttonGroup, divider, helpButton, screenSharingButton } = useStyles();
     const screenShare = useContext(ScreenShareContext);
     const webrtc = useContext(webRTCContext);
-    
+
     const { interactiveMode, setInteractiveMode } = interactiveModeState;
     const [{ openStopTooltip, openPresentTooltip, openActivityTooltip, openScreenTooltip }, setOpenTooltip] = useState({
-        openStopTooltip: false, openPresentTooltip: false, openActivityTooltip: false, openScreenTooltip: false });
+        openStopTooltip: false, openPresentTooltip: false, openActivityTooltip: false, openScreenTooltip: false
+    });
 
     const toggleTooltip = (
-        openStopTooltip: boolean, 
-        openPresentTooltip: boolean, 
-        openActivityTooltip: boolean, 
+        openStopTooltip: boolean,
+        openPresentTooltip: boolean,
+        openActivityTooltip: boolean,
         openScreenTooltip: boolean
-    ) => { setOpenTooltip({openStopTooltip, openPresentTooltip, openActivityTooltip, openScreenTooltip}); };
+    ) => { setOpenTooltip({ openStopTooltip, openPresentTooltip, openActivityTooltip, openScreenTooltip }); };
 
     return (
         <Grid container direction="column" justify="center" alignContent="center" className={buttonGroup}>
@@ -97,92 +98,91 @@ export function ControlButtons({interactiveModeState, disablePresent, disableAct
                     orientation="vertical"
                     value={interactiveMode}
                     exclusive
-                    onChange={(e,v) => {
+                    onChange={(e, v) => {
                         setInteractiveMode(v);
                     }}
                     aria-label="interactive mode buttons"
                 >
-                    <Tooltip 
-                        arrow 
-                        open={openStopTooltip} 
+                    <Tooltip
+                        arrow
+                        open={openStopTooltip}
                         onClose={() => toggleTooltip(false, false, false, false)}
                         onOpen={() => toggleTooltip(true, false, false, false)}
                         placement="left"
-                        title={<FormattedMessage id ="live_buttonStop"/>}
+                        title={<FormattedMessage id="live_buttonStop" />}
                     >
                         <ToggleButton
                             aria-label="blank"
                             classes={{ root: buttonRoot }}
-                            className={ !interactiveMode ? selectedButton : "" }
+                            className={!interactiveMode ? selectedButton : ""}
                             value={0}
                         >
                             <StopIcon />
                         </ToggleButton>
                     </Tooltip>
-                    <Tooltip 
-                        arrow 
-                        open={openPresentTooltip} 
+                    <Tooltip
+                        arrow
+                        open={openPresentTooltip}
                         onClose={() => toggleTooltip(false, false, false, false)}
                         onOpen={() => toggleTooltip(false, true, false, false)}
                         placement="left"
-                        title={<FormattedMessage id ="live_buttonPresent"/>}
+                        title={<FormattedMessage id="live_buttonPresent" />}
                     >
                         <ToggleButton
                             aria-label="present"
                             classes={{ root: buttonRoot }}
-                            className={ interactiveMode === 1 ? selectedButton : "" }
+                            className={interactiveMode === 1 ? selectedButton : ""}
                             disabled={disablePresent}
                             value={1}
                         >
                             <PlayIcon />
                         </ToggleButton>
                     </Tooltip>
-                    <Tooltip 
-                        arrow 
-                        open={openActivityTooltip} 
+                    <Tooltip
+                        arrow
+                        open={openActivityTooltip}
                         onClose={() => toggleTooltip(false, false, false, false)}
                         onOpen={() => toggleTooltip(false, false, true, false)}
                         placement="left"
-                        title={<FormattedMessage id ="live_buttonActivity"/>}
+                        title={<FormattedMessage id="live_buttonActivity" />}
                     >
                         <ToggleButton
                             aria-label="student mode"
                             classes={{ root: buttonRoot }}
-                            className={ interactiveMode === 2 ? selectedButton : "" }
+                            className={interactiveMode === 2 ? selectedButton : ""}
                             disabled={disableActivity}
                             value={2}
                         >
                             <ViewIcon />
                         </ToggleButton>
                     </Tooltip>
-                    <Tooltip 
-                        arrow 
-                        open={openScreenTooltip} 
+                    <Tooltip
+                        arrow
+                        open={openScreenTooltip}
                         onClose={() => toggleTooltip(false, false, false, false)}
                         onOpen={() => toggleTooltip(false, false, false, true)}
                         placement="left"
-                        title={ interactiveMode === 3 ? "Stop Presenting" : <FormattedMessage id="live_buttonScreen" />}
+                        title={interactiveMode === 3 ? "Stop Presenting" : <FormattedMessage id="live_buttonScreen" />}
                     >
                         <ToggleButton
                             value={3}
                             aria-label="present screen"
                             classes={{ root: buttonRoot }}
-                            className={ (interactiveMode === 3 || screenShare.getStream()) ? screenSharingButton : "" }
+                            className={(interactiveMode === 3 || screenShare.getStream()) ? screenSharingButton : ""}
                             disabled={!navigator.mediaDevices || !(navigator.mediaDevices as any).getDisplayMedia}
                             onClick={() => {
-                                if(screenShare.getStream() && interactiveMode === 3) {
+                                if (screenShare.getStream() && interactiveMode === 3) {
                                     screenShare.stop(webrtc);
                                 }
-                                if(!screenShare.getStream() && interactiveMode !== 3)
-                                {
+                                if (!screenShare.getStream() && interactiveMode !== 3) {
                                     screenShare.start(webrtc);
                                 }
                             }}
                         >
                             {
                                 screenShare.getStream() ?
-                                    <StopScreenShareIcon />:
-                                    <ScreenShareIcon /> 
+                                    <StopScreenShareIcon /> :
+                                    <ScreenShareIcon />
                             }
                         </ToggleButton>
                     </Tooltip>
@@ -191,11 +191,11 @@ export function ControlButtons({interactiveModeState, disablePresent, disableAct
             <Divider flexItem className={divider} />
             <Grid item xs={12}>
                 <Typography align="center">
-                    <Tooltip arrow placement="left" title="What's This?">
-                        <IconButton 
+                    <Tooltip arrow placement="left" title={<FormattedMessage id="what_is_this" />}>
+                        <IconButton
                             size="small"
                             className={helpButton}
-                            onClick={() => {(openStopTooltip || openPresentTooltip || openActivityTooltip || openScreenTooltip) ? toggleTooltip(false, false, false, false) : toggleTooltip(true, true, true, true);}}
+                            onClick={() => { (openStopTooltip || openPresentTooltip || openActivityTooltip || openScreenTooltip) ? toggleTooltip(false, false, false, false) : toggleTooltip(true, true, true, true); }}
                         >
                             <HelpTwoToneIcon />
                         </IconButton>
@@ -205,7 +205,7 @@ export function ControlButtons({interactiveModeState, disablePresent, disableAct
             <Grid item xs={12}>
                 <Typography align="center">
                     <Tooltip arrow placement="left" title="Refresh Activity">
-                        <IconButton 
+                        <IconButton
                             size="small"
                             className={helpButton}
                             onClick={() => setKey(Math.random())}

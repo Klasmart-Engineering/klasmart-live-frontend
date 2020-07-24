@@ -43,11 +43,11 @@ import PermissionControls from "../whiteboard/components/PermissionControls";
 export const DRAWER_WIDTH = 380;
 
 const TABS = [
-    { icon: <PeopleAltTwoToneIcon />, title: "Participants", userType: 2 },
-    { icon: <LibraryBooksTwoToneIcon />, title: "Lesson Plan", userType: 0 },
-    { icon: <ForumTwoToneIcon />, title: "Chat", userType: 2 },
-    { icon: <CreateTwoToneIcon />, title: "Whiteboard", userType: 2 },
-    { icon: <SettingsTwoToneIcon />, title: "Settings", userType: 0 },
+    { icon: <PeopleAltTwoToneIcon />, title: "title_participants", userType: 2 },
+    { icon: <LibraryBooksTwoToneIcon />, title: "title_lesson_plan", userType: 0 },
+    { icon: <ForumTwoToneIcon />, title: "title_chat", userType: 2 },
+    { icon: <CreateTwoToneIcon />, title: "title_whiteboard", userType: 2 },
+    { icon: <SettingsTwoToneIcon />, title: "title_settings", userType: 0 },
 ];
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -167,6 +167,11 @@ const useStyles = makeStyles((theme: Theme) =>
         tabs: {
             height: "100%",
         },
+        sendMessageContainer: {
+            width: "100%",
+            position: "absolute",
+            bottom: 0,
+        }
     }),
 );
 
@@ -184,6 +189,8 @@ interface TabPanelProps {
 function TabPanel(props: TabPanelProps) {
     const { contentIndexState, handleOpenDrawer, index, tab, value, ...other } = props;
     const classes = useStyles();
+    const theme = useTheme();
+    const isMdDown = useMediaQuery(theme.breakpoints.down("md"));
 
     return (
         <>
@@ -195,9 +202,11 @@ function TabPanel(props: TabPanelProps) {
                 {...other}
             >
                 <Grid item className={classes.toolbar}>
-                    <Typography variant="body1">{tab.title}</Typography>
+                    <Typography variant="body1" style={{ fontSize: isMdDown ? "unset" : "1rem" }}>
+                        <FormattedMessage id={tab.title} />
+                    </Typography>
                     <IconButton aria-label="minimize drawer" onClick={() => handleOpenDrawer(false)}>
-                        <CloseTwoToneIcon />
+                        <CloseTwoToneIcon fontSize={isMdDown ? "small" : "inherit"} />
                     </IconButton>
                 </Grid>
                 <Divider />
@@ -213,7 +222,7 @@ function TabInnerContent({ contentIndexState, title }: { contentIndexState?: Con
     const { name } = useContext(UserContext);
 
     switch (title) {
-        case "Participants":
+        case "title_participants":
             const users = useContext(UsersContext);
             const webrtc = useContext(webRTCContext);
             return (
@@ -260,7 +269,7 @@ function TabInnerContent({ contentIndexState, title }: { contentIndexState?: Con
                     }
                 </Grid>
             );
-        case "Lesson Plan":
+        case "title_lesson_plan":
             if (contentIndexState) {
                 const { contentIndex, setContentIndex } = contentIndexState;
                 return (
@@ -291,7 +300,7 @@ function TabInnerContent({ contentIndexState, title }: { contentIndexState?: Con
                     </Typography>
                 );
             }
-        case "Chat":
+        case "title_chat":
             const Messages = React.lazy(() => import("../messages"));
             const messages = useContext(MessageContext);
 
@@ -307,17 +316,17 @@ function TabInnerContent({ contentIndexState, title }: { contentIndexState?: Con
                             <Messages messages={messages} />
                         </Grid>
                     </React.Suspense>
-                    <Grid item alignItems="flex-end" style={{ position: "absolute", bottom: 0 }}>
+                    <Grid item alignItems="flex-end" style={{ width: "100%", position: "absolute", bottom: 0 }}>
                         <SendMessage />
                     </Grid>
                 </Grid>
             );
-        case "Whiteboard":
+        case "title_whiteboard":
             return (<Toolbar />);
-        case "Settings":
-            return (<Typography>Item {title}</Typography>);
+        case "title_settings":
+            return (<Typography>Item <FormattedMessage id={title} /></Typography>);
         default:
-            return (<Typography>Item {title}</Typography>);
+            return (<Typography>Item <FormattedMessage id={title} /></Typography>);
     }
 }
 
@@ -348,7 +357,7 @@ function StyledTab(props: StyledTabProps) {
         <Tab
             classes={{ root: mobile ? "" : classes.tabRoot, selected: mobile ? "" : classes.tabSelected }}
             className={className}
-            label={mobile ? children : <Tooltip arrow placement="left" title={title}>{children}</Tooltip>}
+            label={mobile ? children : <Tooltip arrow placement="left" title={<FormattedMessage id={title} />}>{children}</Tooltip>}
             onClick={() => {
                 handlers.handleOpenDrawer(true);
                 handlers.setValue(value);
