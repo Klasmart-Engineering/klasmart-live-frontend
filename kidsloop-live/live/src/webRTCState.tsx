@@ -1,4 +1,5 @@
 import React, { useRef, createContext, useContext, useEffect, useState, useReducer } from "react";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { useTheme } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
@@ -485,6 +486,7 @@ export function Stream(props: { stream?: MediaStream }): JSX.Element {
 
 export function GlobalCameraControl(): JSX.Element {
     const theme = useTheme();
+    const isMdDown = useMediaQuery(theme.breakpoints.down("md"));
     const [camerasOn, setCamerasOn] = useState(true);
     const [micsOn, setMicsOn] = useState(true);
 
@@ -540,7 +542,10 @@ export function GlobalCameraControl(): JSX.Element {
                         style={{ backgroundColor: camerasOn ? "#f6fafe" : "#fef5f9" }}
                         onClick={toggleVideoStates}
                     >
-                        {camerasOn ? <VideocamOffTwoToneIcon /> : <VideocamTwoToneIcon />}
+                        {camerasOn
+                            ? <VideocamOffTwoToneIcon fontSize={isMdDown ? "small" : "inherit"} />
+                            : <VideocamTwoToneIcon fontSize={isMdDown ? "small" : "inherit"} />
+                        }
                     </IconButton>
                 </Grid>
                 <Grid item xs={12}>
@@ -559,7 +564,10 @@ export function GlobalCameraControl(): JSX.Element {
                         style={{ backgroundColor: micsOn ? "#f6fafe" : "#fef5f9" }}
                         onClick={toggleAudioStates}
                     >
-                        {micsOn ? <MicOffTwoToneIcon /> : <MicTwoToneIcon />}
+                        {micsOn
+                            ? <MicOffTwoToneIcon fontSize={isMdDown ? "small" : "inherit"} />
+                            : <MicTwoToneIcon fontSize={isMdDown ? "small" : "inherit"} />
+                        }
                     </IconButton>
                 </Grid>
                 <Grid item xs={12}>
