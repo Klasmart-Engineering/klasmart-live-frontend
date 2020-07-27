@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme: Theme) =>
         input: {
             marginLeft: theme.spacing(1),
             flex: 1,
-            color: "#000", // focused
+            // color: "#000", // focused
         },
         iconButton: {
             padding: 10,
