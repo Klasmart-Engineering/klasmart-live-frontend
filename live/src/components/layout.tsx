@@ -16,6 +16,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
+import Hidden from "@material-ui/core/Hidden";
 import Skeleton from "@material-ui/lab/Skeleton";
 import CreateTwoToneIcon from "@material-ui/icons/CreateTwoTone";
 import CloseTwoToneIcon from "@material-ui/icons/CloseTwoTone";
@@ -24,7 +25,6 @@ import LibraryBooksTwoToneIcon from "@material-ui/icons/LibraryBooksTwoTone";
 import ForumTwoToneIcon from "@material-ui/icons/ForumTwoTone";
 import SettingsTwoToneIcon from "@material-ui/icons/SettingsTwoTone";
 
-import Hidden from "@material-ui/core/Hidden";
 import BottomNavigation from "@material-ui/core/BottomNavigation";
 import BottomNavigationAction from "@material-ui/core/BottomNavigationAction";
 import VideocamOffTwoToneIcon from "@material-ui/icons/VideocamOffTwoTone";
@@ -171,7 +171,12 @@ const useStyles = makeStyles((theme: Theme) =>
             width: "100%",
             position: "absolute",
             bottom: 0,
-        }
+        },
+        toolbarContainer: {
+            width: "100%",
+            position: "absolute",
+            bottom: 48,
+        },
     }),
 );
 
@@ -315,7 +320,7 @@ function TabInnerContent({ contentIndexState, title }: { contentIndexState?: Con
                             <Messages messages={messages} />
                         </Grid>
                     </React.Suspense>
-                    <Grid item alignItems="flex-end" style={{ width: "100%", position: "absolute", bottom: 0 }}>
+                    <Grid container alignItems="flex-end" item style={{ width: "100%", position: "absolute", bottom: 0 }}>
                         <SendMessage />
                     </Grid>
                 </Grid>
@@ -398,8 +403,7 @@ export default function Layout(props: Props): JSX.Element {
         setValue(newValue);
     };
 
-    console.log(key)
-    return (
+    return (<>
         <Grid
             container
             direction="column"
@@ -467,6 +471,7 @@ export default function Layout(props: Props): JSX.Element {
                                                 disablePresent={!(streamId || (material && material.video))}
                                                 disableActivity={!(material && material.url)}
                                                 setKey={setKey}
+                                                orientation="vertical"
                                             />
                                         </Grid>
                                     </Grid>
@@ -484,7 +489,7 @@ export default function Layout(props: Props): JSX.Element {
                             </Grid>
                         </Drawer>
                         <Hidden mdUp>
-                            <Grid xs={12} className={classes.bottomNav}>
+                            <Grid item xs={12} className={classes.bottomNav}>
                                 <Tabs
                                     aria-label="horizontal tabs"
                                     orientation="horizontal"
@@ -503,7 +508,7 @@ export default function Layout(props: Props): JSX.Element {
                                     }
                                 </Tabs>
                                 <Collapse in={openDrawer}>
-                                    <Grid xs={12} style={{ backgroundColor: "white" }}>
+                                    <Grid item xs={12} style={{ backgroundColor: "white" }}>
                                         <UsersContext.Provider value={users}>
                                             <MessageContext.Provider value={messages}>
                                                 {isTeacher ?
@@ -520,5 +525,17 @@ export default function Layout(props: Props): JSX.Element {
                 </Container>
             </Grid>
         </Grid>
-    );
+        {isTeacher ?
+            <Hidden mdUp>
+                <Grid className={classes.toolbarContainer}>
+                    <ControlButtons
+                        interactiveModeState={interactiveModeState}
+                        disablePresent={!(streamId || (material && material.video))}
+                        disableActivity={!(material && material.url)}
+                        setKey={setKey}
+                        orientation="horizontal"
+                    />
+                </Grid>
+            </Hidden> : null}
+    </>);
 }
