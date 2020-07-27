@@ -18,6 +18,7 @@ import { InteractiveModeState } from "../../room";
 import IconButton from "@material-ui/core/IconButton";
 import Divider from "@material-ui/core/Divider";
 import Tooltip from "@material-ui/core/Tooltip";
+import RefreshIcon from '@material-ui/icons/Refresh';
 
 const StyledToggleButtonGroup = withStyles((theme) => ({
     grouped: {
@@ -40,32 +41,26 @@ const useStyles = makeStyles((theme: Theme) =>
             marginTop: theme.spacing(2),
         },
         buttonRoot: {
-            backgroundColor: "white",
             "&:hover": {
-                "-webkit-transition": "all .4s ease",
-                color: "white",
-                backgroundColor: "#1B365D",
-                "box-shadow": "0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08)",
                 "transform": "translateX(-2px)",
-                "transition": "all .4s ease",
             },
         },
         selectedButton: {
-            color: "white !important",
-            backgroundColor: "#0E78D5 !important",
+            color: theme.palette.type === "light" ? "white !important" : "#030D1C !important",
+            backgroundColor: theme.palette.type === "light" ? "#0E78D5 !important" : "white !important",
         },
         screenSharingButton: {
             color: "white !important",
             backgroundColor: "#f50057 !important",
         },
         buttonGroup: {
-            backgroundColor: "#e6f3ff",
+            backgroundColor: theme.palette.type === "light" ? "#e6f3ff" : "#2a78d5",
             margin: "0 auto",
             paddingTop: theme.spacing(2),
             // width: "100%",
         },
         helpButton: {
-            color: theme.palette.primary.main,
+            color: theme.palette.type === "light" ? "#2a78d5" : "#030D1C",
             height: 48,
             width: 48,
         }
@@ -76,10 +71,10 @@ interface Props {
     interactiveModeState: InteractiveModeState;
     disablePresent: boolean
     disableActivity: boolean
-
+    setKey: React.Dispatch<React.SetStateAction<number>>;
 }
 
-export function ControlButtons({interactiveModeState, disablePresent, disableActivity} : Props): JSX.Element {
+export function ControlButtons({interactiveModeState, disablePresent, disableActivity, setKey} : Props): JSX.Element {
     const {selectedButton, buttonRoot, buttonGroup, divider, helpButton, screenSharingButton} = useStyles();
     const screenShare = useContext(ScreenShareContext);
     const webrtc = useContext(webRTCContext);
@@ -203,6 +198,19 @@ export function ControlButtons({interactiveModeState, disablePresent, disableAct
                             onClick={() => {(openStopTooltip || openPresentTooltip || openActivityTooltip || openScreenTooltip) ? toggleTooltip(false, false, false, false) : toggleTooltip(true, true, true, true);}}
                         >
                             <HelpTwoToneIcon />
+                        </IconButton>
+                    </Tooltip>
+                </Typography>
+            </Grid>
+            <Grid item xs={12}>
+                <Typography align="center">
+                    <Tooltip arrow placement="left" title="Refresh Activity">
+                        <IconButton 
+                            size="small"
+                            className={helpButton}
+                            onClick={() => setKey(Math.random())}
+                        >
+                            <RefreshIcon />
                         </IconButton>
                     </Tooltip>
                 </Typography>
