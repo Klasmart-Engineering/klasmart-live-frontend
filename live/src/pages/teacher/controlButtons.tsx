@@ -23,7 +23,7 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 const StyledToggleButtonGroup = withStyles((theme) => ({
     grouped: {
         [theme.breakpoints.down("md")]: {
-            marginRight: theme.spacing(3),
+            marginRight: theme.spacing(2),
         },
         margin: theme.spacing(0.5),
         border: "none",
@@ -100,6 +100,7 @@ export function ControlButtons({ interactiveModeState, disablePresent, disableAc
             container
             direction={orientation === "horizontal" ? "row" : "column"}
             justify="center"
+            alignItems="center"
             alignContent="center"
             className={buttonGroup}
             style={orientation === "horizontal" ? { padding: 16 } : {}}
@@ -200,7 +201,7 @@ export function ControlButtons({ interactiveModeState, disablePresent, disableAc
                 </StyledToggleButtonGroup>
             </Grid>
             <Divider flexItem className={divider} />
-            <Grid container justify="flex-end" alignItems="center" item xs={2} md={12}>
+            <Grid container justify="center" alignItems="center" item xs={2} md={12}>
                 <Typography align="center">
                     <Tooltip arrow placement="left" title={<FormattedMessage id="what_is_this" />}>
                         <IconButton
@@ -212,8 +213,6 @@ export function ControlButtons({ interactiveModeState, disablePresent, disableAc
                         </IconButton>
                     </Tooltip>
                 </Typography>
-            </Grid>
-            <Grid item xs={12}>
                 <Typography align="center">
                     <Tooltip arrow placement="left" title="Refresh Activity">
                         <IconButton
