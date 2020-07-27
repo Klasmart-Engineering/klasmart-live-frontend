@@ -379,6 +379,7 @@ export default function Layout(props: Props): JSX.Element {
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
     const { sessionId, materials } = useContext(UserContext);
 
+    const [key, setKey] = useState(Math.random())
     const { streamId, setStreamId } = streamIdState;
     const { contentIndex, setContentIndex } = contentIndexState;
 
@@ -389,6 +390,7 @@ export default function Layout(props: Props): JSX.Element {
         setValue(newValue);
     };
 
+    console.log(key)
     return (
         <Grid
             container
@@ -406,6 +408,7 @@ export default function Layout(props: Props): JSX.Element {
                         <main
                             id="iframe-container"
                             className={classes.content}
+                            key={key}
                         >
                             {children || null}
                         </main>
@@ -455,6 +458,7 @@ export default function Layout(props: Props): JSX.Element {
                                                 interactiveModeState={interactiveModeState}
                                                 disablePresent={!(streamId || (material && material.video))}
                                                 disableActivity={!(material && material.url)}
+                                                setKey={setKey}
                                             />
                                         </Grid>
                                     </Grid>
