@@ -93,14 +93,17 @@ const overrides = {
             backgroundColor: themeMode === "light" ? "#f6fafe" : "#0E78D5 !important", // TODO: Confirm color
         },
     },
-    MuiInputBase: {
-        input: {
-            color: themeMode === "light" ? "#0E78D5" : "#1896ea", // TODO: Confirm color
-        },
-    },
     MuiToggleButton: {
         root: {
-            color: themeMode === "light" ? "#fafafa" : "#0E78D5", // TODO: Confirm color
+            color: themeMode === "light" ? "#1B365D" : "white",
+            backgroundColor: themeMode === "light" ? "white" : "#1B365D",
+            "&:hover": {
+                "-webkit-transition": "all .4s ease",
+                color: themeMode === "light" ? "white" : "#030D1C",
+                backgroundColor: themeMode === "light" ? "#1B365D" : "white",
+                "box-shadow": "0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08)",
+                "transition": "all .4s ease",
+            },
         },
     }
 };
