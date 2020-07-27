@@ -1,7 +1,6 @@
 import React from "react";
 import { FormattedMessage } from "react-intl";
-import { createStyles, makeStyles, useTheme } from "@material-ui/core/styles";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { createStyles, makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 
@@ -10,7 +9,7 @@ const useStyles = makeStyles(() =>
         root: {
             position: "relative",
             width: "100%",
-            backgroundColor: "#193d6f",    
+            backgroundColor: "#193d6f",
         },
         centeredText: {
             color: "white",
@@ -24,23 +23,17 @@ const useStyles = makeStyles(() =>
     })
 );
 
-export default function NoCamera({messageId}: { messageId: string }) {
+export default function NoCamera({ messageId }: { messageId: string }) {
     const classes = useStyles();
-    const theme = useTheme();
-    const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
     return (
         <Grid
             className={classes.root}
             container
             justify="space-between"
             alignItems="center"
-            style={{ paddingTop: isSmDown ? "100%" : "75%" }} // Desktop = 4:3 / Mobile = 1:1
+            style={{ paddingTop: "75%" }}
         >
-            <Typography
-                className={classes.centeredText}
-                variant="caption"
-                align="center"
-            >
+            <Typography className={classes.centeredText} variant="caption" align="center">
                 <FormattedMessage id={messageId} />
             </Typography>
         </Grid>
