@@ -22,6 +22,9 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 
 const StyledToggleButtonGroup = withStyles((theme) => ({
     grouped: {
+        [theme.breakpoints.down("md")]: {
+            marginRight: theme.spacing(3),
+        },
         margin: theme.spacing(0.5),
         border: "none",
         "&:not(:first-child)": {
@@ -72,9 +75,10 @@ interface Props {
     disablePresent: boolean
     disableActivity: boolean
     setKey: React.Dispatch<React.SetStateAction<number>>;
+    orientation: "horizontal" | "vertical"
 }
 
-export function ControlButtons({ interactiveModeState, disablePresent, disableActivity, setKey }: Props): JSX.Element {
+export function ControlButtons({ interactiveModeState, disablePresent, disableActivity, setKey, orientation }: Props): JSX.Element {
     const { selectedButton, buttonRoot, buttonGroup, divider, helpButton, screenSharingButton } = useStyles();
     const screenShare = useContext(ScreenShareContext);
     const webrtc = useContext(webRTCContext);
@@ -92,10 +96,17 @@ export function ControlButtons({ interactiveModeState, disablePresent, disableAc
     ) => { setOpenTooltip({ openStopTooltip, openPresentTooltip, openActivityTooltip, openScreenTooltip }); };
 
     return (
-        <Grid container direction="column" justify="center" alignContent="center" className={buttonGroup}>
-            <Grid item xs={12}>
+        <Grid
+            container
+            direction={orientation === "horizontal" ? "row" : "column"}
+            justify="center"
+            alignContent="center"
+            className={buttonGroup}
+            style={orientation === "horizontal" ? { padding: 16 } : {}}
+        >
+            <Grid item xs={10} md={12}>
                 <StyledToggleButtonGroup
-                    orientation="vertical"
+                    orientation={orientation}
                     value={interactiveMode}
                     exclusive
                     onChange={(e, v) => {
@@ -189,7 +200,7 @@ export function ControlButtons({ interactiveModeState, disablePresent, disableAc
                 </StyledToggleButtonGroup>
             </Grid>
             <Divider flexItem className={divider} />
-            <Grid item xs={12}>
+            <Grid container justify="flex-end" alignItems="center" item xs={2} md={12}>
                 <Typography align="center">
                     <Tooltip arrow placement="left" title={<FormattedMessage id="what_is_this" />}>
                         <IconButton
