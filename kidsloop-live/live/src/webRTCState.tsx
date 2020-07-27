@@ -584,6 +584,9 @@ export function GlobalCameraControl(): JSX.Element {
 }
 
 export function CameraControls(props: { global?: boolean, sessionId?: string }): JSX.Element {
+    const theme = useTheme();
+    const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
+
     const { global, sessionId } = props;
     const { sessionId: mySessionId } = useContext(UserContext);
     const [mute, { loading, error }] = useMutation(gql`
@@ -632,8 +635,8 @@ export function CameraControls(props: { global?: boolean, sessionId?: string }):
                     size="small"
                 >
                     {states.getVideoStreamState(sessionId)
-                        ? <VideocamIcon color="primary" />
-                        : <VideocamOffIcon color="secondary" />
+                        ? <VideocamIcon color="primary" fontSize={isSmDown ? "small" : "default"} />
+                        : <VideocamOffIcon color="secondary" fontSize={isSmDown ? "small" : "default"} />
                     }
                 </IconButton>
             </Grid>
@@ -645,8 +648,8 @@ export function CameraControls(props: { global?: boolean, sessionId?: string }):
                     size="small"
                 >
                     {states.getAudioStreamState(sessionId)
-                        ? <MicIcon color="primary" />
-                        : <MicOffIcon color="secondary" />
+                        ? <MicIcon color="primary" fontSize={isSmDown ? "small" : "default"} />
+                        : <MicOffIcon color="secondary" fontSize={isSmDown ? "small" : "default"} />
                     }
                 </IconButton>
             </Grid>
