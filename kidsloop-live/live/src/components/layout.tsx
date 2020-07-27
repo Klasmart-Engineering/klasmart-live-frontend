@@ -218,6 +218,8 @@ function TabPanel(props: TabPanelProps) {
 
 function TabInnerContent({ contentIndexState, title }: { contentIndexState?: ContentIndexState, title: string }) {
     const classes = useStyles();
+    const theme = useTheme();
+    const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
     const { sessionId, materials, teacher } = useContext(UserContext);
     const { name } = useContext(UserContext);
 
@@ -226,16 +228,16 @@ function TabInnerContent({ contentIndexState, title }: { contentIndexState?: Con
             const users = useContext(UsersContext);
             const webrtc = useContext(webRTCContext);
             return (
-                <Grid container direction="column" justify="flex-start" alignItems="center">
+                <Grid container direction={isSmDown ? "row" : "column"} justify="flex-start" alignItems="center" item xs={12}>
                     {teacher ? <GlobalCameraControl /> : null}
                     {
                         [...users.entries()].map(([id, session]) => (
-                            <React.Fragment key={id}>
+                            <Grid key={id} container direction={isSmDown ? "column" : "row"} item xs={6} lg={12}>
                                 <Grid container direction="row" justify="flex-start" alignItems="center">
                                     <Grid item xs={12}><Divider /></Grid>
                                 </Grid>
-                                <Grid container direction="row" justify="flex-start" alignItems="center" spacing={2}>
-                                    <Grid item xs={5}>
+                                <Grid container direction="row" justify="flex-start" alignItems="center" spacing={isSmDown ? 0 : 2} item xs={12}>
+                                    <Grid item xs={12} lg={5}>
                                         <Grid container direction="row" justify="space-between">
                                             <Grid item xs={12}>
                                                 {id === sessionId ?
@@ -249,22 +251,19 @@ function TabInnerContent({ contentIndexState, title }: { contentIndexState?: Con
                                             </Grid>
                                         </Grid>
                                     </Grid>
-                                    <Grid item xs={4}>
+                                    <Grid item xs={6} lg={4}>
                                         <Tooltip placement="left" title={id === sessionId ? name || "" : session.name || ""}>
-                                            <Typography variant="body2" align="left" noWrap>
+                                            <Typography variant={isSmDown ? "caption" : "body2"} align="left" noWrap>
                                                 {id === sessionId ? "You" : session.name}
                                             </Typography>
                                         </Tooltip>
                                     </Grid>
-                                    <Grid item xs={3}>
+                                    <Grid item xs={6} lg={3}>
                                         <CameraControls global={teacher} sessionId={id} />
                                         {teacher && id !== sessionId ? <PermissionControls otherUserId={session.id} /> : <></>}
                                     </Grid>
                                 </Grid>
-                                <Grid container direction="row" justify="flex-start" alignItems="center">
-                                    <Grid item xs={12}><Divider /></Grid>
-                                </Grid>
-                            </React.Fragment>
+                            </Grid>
                         ))
                     }
                 </Grid>
