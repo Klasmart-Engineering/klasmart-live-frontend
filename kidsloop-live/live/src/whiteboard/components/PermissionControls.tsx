@@ -67,7 +67,7 @@ export default function PermissionControls({ children, otherUserId }: Props): JS
     }, [otherUserId]);
 
     return (
-        <Grid container justify="space-evenly" alignItems="center">
+        <Grid container justify="space-evenly" alignItems="center" item xs={6}>
             <Grid item>
                 <IconButton
                     aria-label="control canvas permission"
@@ -77,7 +77,7 @@ export default function PermissionControls({ children, otherUserId }: Props): JS
                 >
                     {otherUserPermissions.allowCreateShapes
                         ? <InvertColorsIcon color="primary" fontSize={isSmDown ? "small" : "inherit"} />
-                        : <InvertColorsOffIcon color="primary" fontSize={isSmDown ? "small" : "inherit"} />
+                        : <InvertColorsOffIcon color="secondary" fontSize={isSmDown ? "small" : "inherit"} />
                     }
                 </IconButton>
             </Grid>
