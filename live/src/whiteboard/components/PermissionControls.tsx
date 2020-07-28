@@ -1,11 +1,16 @@
-import { useMutation, useSubscription } from "@apollo/react-hooks";
-import Button from "@material-ui/core/Button";
-import { gql } from "apollo-boost";
 import React, { ReactChild, ReactChildren, useCallback, useContext, useState } from "react";
-import { UserContext } from "../../entry";
-import { Permissions, createEmptyPermissions } from "../types/Permissions";
+import { gql } from "apollo-boost";
+import { useMutation, useSubscription } from "@apollo/react-hooks";
+import { useTheme } from "@material-ui/core/styles";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 import Grid from "@material-ui/core/Grid/Grid";
+import IconButton from "@material-ui/core/IconButton";
+import InvertColorsIcon from '@material-ui/icons/InvertColors';
+import InvertColorsOffIcon from '@material-ui/icons/InvertColorsOff';
+import ClearAllIcon from '@material-ui/icons/ClearAll';
+import { Permissions, createEmptyPermissions } from "../types/Permissions";
 import { useWhiteboard } from "../context-provider/WhiteboardContextProvider";
+import { UserContext } from "../../entry";
 
 const WHITEBOARD_SEND_PERMISSIONS = gql`
   mutation whiteboardSendPermissions($roomId: ID!, $userId: ID!, $permissions: String) {
@@ -24,6 +29,9 @@ type Props = {
 }
 
 export default function PermissionControls({ children, otherUserId }: Props): JSX.Element {
+    const theme = useTheme();
+    const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
+
     const [sendPermissionsMutation] = useMutation(WHITEBOARD_SEND_PERMISSIONS);
     const [otherUserPermissions, setOtherUserPermissions] = useState<Permissions>(createEmptyPermissions());
 
@@ -61,10 +69,27 @@ export default function PermissionControls({ children, otherUserId }: Props): JS
     return (
         <Grid container justify="space-evenly" alignItems="center">
             <Grid item>
-                <Button onClick={() => toggleAllowCreateShapes()}>{otherUserPermissions.allowCreateShapes ? "[P]" : "[X]"}</Button>
+                <IconButton
+                    aria-label="control canvas permission"
+                    component="span"
+                    onClick={toggleAllowCreateShapes}
+                    size="small"
+                >
+                    {otherUserPermissions.allowCreateShapes
+                        ? <InvertColorsIcon color="primary" fontSize={isSmDown ? "small" : "inherit"} />
+                        : <InvertColorsOffIcon color="primary" fontSize={isSmDown ? "small" : "inherit"} />
+                    }
+                </IconButton>
             </Grid>
             <Grid item>
-                <Button onClick={() => clearUserWhiteboard()}>{"[C]"}</Button>
+                <IconButton
+                    aria-label="control canvas permission"
+                    component="span"
+                    onClick={clearUserWhiteboard}
+                    size="small"
+                >
+                    <ClearAllIcon color="primary" fontSize={isSmDown ? "small" : "inherit"} />
+                </IconButton>
             </Grid>
             {children}
         </Grid>
