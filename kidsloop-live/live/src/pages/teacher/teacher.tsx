@@ -19,6 +19,7 @@ import { MaterialSelection } from "./materialSelection";
 import { BroadcastVideo } from "./broadcastVideo";
 import PermissionControls from "../../whiteboard/components/PermissionControls";
 import { ScreenShareContext } from "./screenShareProvider";
+import { ReplicatedVideo } from "../synchronized-video";
 
 import { MenuOpen as MenuOpenIcon } from "@styled-icons/material/MenuOpen";
 import { Face as FaceIcon } from "@styled-icons/material/Face";
@@ -190,7 +191,12 @@ export function Teacher(props: Props): JSX.Element {
                                             setParentHeight={setHeight}
                                         />
                                         : undefined}
-                                    {material && material.video ? <BroadcastVideo src={material.video} /> : undefined}
+                                        {material && material.video ?
+                                            <ReplicatedVideo
+                                                src={material.video}
+                                                style={{width:"100%"}}
+                                            />
+                                            : undefined}
                                 </>
                         }
                     </Whiteboard>
