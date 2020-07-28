@@ -626,7 +626,7 @@ export function CameraControls(props: { global?: boolean, sessionId?: string }):
     }
 
     return (
-        <Grid container justify="space-evenly" alignItems="center">
+        <Grid container justify="space-evenly" alignItems="center" item xs={6}>
             <Grid item>
                 <IconButton
                     aria-label="control camera"
