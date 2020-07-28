@@ -15,6 +15,8 @@ import { PreviewPlayer } from "../../components/preview-player";
 import { RecordedIframe } from "../../components/recordediframe";
 import CameraContainer from "../../components/cameraContainer";
 import Loading from "../../components/loading";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import { ReplicaVideo } from "../synchronized-video";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -133,17 +135,12 @@ export function Student(props: Props): JSX.Element {
                     </Typography>
                 </Grid>
             </>);
-        case "Video":
-            {
-                const stream = webrtc.getAuxStream(content.contentId);
-                if (!stream) { return <Loading messageId="loading" />; }
+            case "Video":
                 return <>
                     <Whiteboard height={height}>
-                        <Stream stream={webrtc.getAuxStream(content.contentId)} />
+                        <ReplicaVideo style={{width:"100%"}} sessionId={content.contentId}/>
                     </Whiteboard>
                     <WBToolbar />
                 </>;
-
-            }
     }
 }
