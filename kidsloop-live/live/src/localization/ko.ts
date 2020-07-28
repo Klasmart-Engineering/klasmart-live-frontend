@@ -23,6 +23,7 @@ const messages: Record<string, string> = {
     connect_camera: "📷를 연결하십시오.",
 
     // Drawer
+    refresh_activity: "액티비티 새로고침",
     what_is_this: "이건 어떤 기능인가요?",
     live_buttonStop: "정지",
     live_buttonPresent: "수업 진행",

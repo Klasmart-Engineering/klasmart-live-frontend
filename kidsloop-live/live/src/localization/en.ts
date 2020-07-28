@@ -23,6 +23,7 @@ const messages: Record<string, string> = {
     connect_camera: "Connect your 📷",
 
     // Drawer
+    refresh_activity: "Refresh Activity",
     what_is_this: "What is This?",
     live_buttonStop: "Stop",
     live_buttonPresent: "Present",
