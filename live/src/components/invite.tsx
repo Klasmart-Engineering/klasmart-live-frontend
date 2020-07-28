@@ -1,62 +1,59 @@
-import React, { useContext, useMemo, useRef, useState } from "react";
-import Popover from "@material-ui/core/Popover";
+import React, { useContext, useMemo, useRef } from "react";
 import { FormattedMessage } from "react-intl";
-import { IconButton, Button } from "@material-ui/core";
+import { useTheme } from "@material-ui/core/styles";
+import Grid from "@material-ui/core/Grid";
+import IconButton from "@material-ui/core/IconButton";
+import { ContentCopy as CopyIcon } from "@styled-icons/material/ContentCopy";
 import { UserContext } from "../entry";
-import { ContentCopy as CopyIcon, Share as ShareIcon } from "@styled-icons/material";
+import StyledTextField from "../components/styled/textfield"
 
-export function InviteButton(): JSX.Element {
-    const {roomId} = useContext(UserContext);
+export default function InviteButton(): JSX.Element {
+    const theme = useTheme();
+
+    const { roomId } = useContext(UserContext);
     const url = useMemo(() => {
-        const url = new URL(window.location.href);
-        url.hash = "";
-        url.searchParams.set("room", roomId);
+        let url = new URL(window.location.href);
+        url.href = url.origin + url.pathname;
+        url.searchParams.set("roomId", roomId);
         return url.toString();
-    },[window.location.href,roomId]);
+    }, [window.location.href, roomId]);
 
     const textField = useRef<HTMLInputElement>(null);
-    const [anchorEl, setAnchorEl] = useState<HTMLButtonElement>();
 
-
-    return <>
-        <Button
-            aria-label="invite" 
-            size="small"
-            onClick={(e) => setAnchorEl(e.currentTarget)} 
-            style={{ marginRight: 8, padding: "2px 8px", borderRadius: 12 }}
+    return (
+        <Grid
+            container
+            direction="row"
+            justify="space-between"
+            alignItems="center"
+            item
+            xs={12}
+            style={{ padding: theme.spacing(2, 2, 0, 2) }}
         >
-            <ShareIcon />
-            <FormattedMessage id="button_invite_students" />
-        </Button>
-        <Popover
-            open={Boolean(anchorEl)}
-            anchorEl={anchorEl}
-            onClose={() => setAnchorEl(undefined)}
-            anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "center",
-            }}
-            transformOrigin={{
-                vertical: "top",
-                horizontal: "center",
-            }}
-        >
-            <div style={{paddingLeft: "15px"}}>
-                <input 
-                    onClick={(e)=> {(e.target as HTMLInputElement).select();}} 
-                    ref={textField} 
-                    readOnly 
-                    style={{ width: 250 }}
-                    value={url} 
+            <Grid item xs={10}>
+                <StyledTextField
+                    fullWidth
+                    margin="dense"
+                    ref={textField}
+                    label={<FormattedMessage id="invite_students" />}
+                    value={url}
+                    onClick={(e) => { (e.target as HTMLInputElement).select(); }}
+                    InputProps={{ readOnly: true }}
+                    style={{ padding: 0 }}
                 />
-                <IconButton aria-label="copy" onClick={() => {
-                    if(!textField.current) { return; }
-                    textField.current.select();
-                    document.execCommand("copy");
-                }}>
-                    <CopyIcon />
+            </Grid>
+            <Grid container justify="flex-end" item xs={2}>
+                <IconButton
+                    aria-label="copy"
+                    onClick={() => {
+                        if (!textField.current) { return; }
+                        textField.current.select();
+                        document.execCommand("copy");
+                    }}
+                >
+                    <CopyIcon color="primary" size="1.25rem" />
                 </IconButton>
-            </div>
-        </Popover>
-    </>;
+            </Grid>
+        </Grid>
+    );
 }
