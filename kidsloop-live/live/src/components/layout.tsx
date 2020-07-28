@@ -17,6 +17,7 @@ import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
 import Hidden from "@material-ui/core/Hidden";
+import Collapse from "@material-ui/core/Collapse";
 import Skeleton from "@material-ui/lab/Skeleton";
 import CreateTwoToneIcon from "@material-ui/icons/CreateTwoTone";
 import CloseTwoToneIcon from "@material-ui/icons/CloseTwoTone";
@@ -34,11 +35,10 @@ import { webRTCContext, Camera, MyCamera, CameraControls, GlobalCameraControl } 
 import { UserContext } from "../entry";
 import { Session, Message, ContentIndexState, InteractiveModeState, StreamIdState } from "../room";
 import Toolbar from "../whiteboard/components/Toolbar";
+import PermissionControls from "../whiteboard/components/PermissionControls";
 import { ControlButtons } from "../pages/teacher/controlButtons";
 import Messages from "../messages";
 import { SendMessage } from "../sendMessage";
-import Collapse from "@material-ui/core/Collapse";
-import PermissionControls from "../whiteboard/components/PermissionControls";
 
 export const DRAWER_WIDTH = 380;
 
@@ -195,7 +195,7 @@ function TabPanel(props: TabPanelProps) {
     const { contentIndexState, handleOpenDrawer, index, tab, value, ...other } = props;
     const classes = useStyles();
     const theme = useTheme();
-    const isMdDown = useMediaQuery(theme.breakpoints.down("md"));
+    const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
 
     return (
         <>
@@ -207,11 +207,11 @@ function TabPanel(props: TabPanelProps) {
                 {...other}
             >
                 <Grid item className={classes.toolbar}>
-                    <Typography variant="body1" style={{ fontSize: isMdDown ? "unset" : "1rem" }}>
+                    <Typography variant="body1" style={{ fontSize: isSmDown ? "unset" : "1rem" }}>
                         <FormattedMessage id={tab.title} />
                     </Typography>
                     <IconButton aria-label="minimize drawer" onClick={() => handleOpenDrawer(false)}>
-                        <CloseTwoToneIcon fontSize={isMdDown ? "small" : "inherit"} />
+                        <CloseTwoToneIcon fontSize={isSmDown ? "small" : "inherit"} />
                     </IconButton>
                 </Grid>
                 <Divider />
@@ -237,12 +237,12 @@ function TabInnerContent({ contentIndexState, title }: { contentIndexState?: Con
                     {teacher ? <GlobalCameraControl /> : null}
                     {
                         [...users.entries()].map(([id, session]) => (
-                            <Grid key={id} container direction={isSmDown ? "column" : "row"} item xs={6} lg={12}>
+                            <Grid key={id} container direction={isSmDown ? "column" : "row"} item xs={6} md={12}>
                                 <Grid container direction="row" justify="flex-start" alignItems="center">
                                     <Grid item xs={12}><Divider /></Grid>
                                 </Grid>
                                 <Grid container direction="row" justify="flex-start" alignItems="center" spacing={isSmDown ? 0 : 2} item xs={12}>
-                                    <Grid item xs={12} lg={5}>
+                                    <Grid item xs={12} md={5}>
                                         <Grid container direction="row" justify="space-between">
                                             <Grid item xs={12}>
                                                 {id === sessionId ?
@@ -256,14 +256,14 @@ function TabInnerContent({ contentIndexState, title }: { contentIndexState?: Con
                                             </Grid>
                                         </Grid>
                                     </Grid>
-                                    <Grid item xs={6} lg={4}>
+                                    <Grid item xs={6} md={4}>
                                         <Tooltip placement="left" title={id === sessionId ? name || "" : session.name || ""}>
                                             <Typography variant={isSmDown ? "caption" : "body2"} align="left" noWrap>
                                                 {id === sessionId ? "You" : session.name}
                                             </Typography>
                                         </Tooltip>
                                     </Grid>
-                                    <Grid item xs={6} lg={3}>
+                                    <Grid item xs={6} md={3}>
                                         <CameraControls global={teacher} sessionId={id} />
                                         {teacher && id !== sessionId ? <PermissionControls otherUserId={session.id} /> : <></>}
                                     </Grid>
