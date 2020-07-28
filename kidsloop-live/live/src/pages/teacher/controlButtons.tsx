@@ -23,7 +23,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 
 const StyledToggleButtonGroup = withStyles((theme) => ({
     grouped: {
-        [theme.breakpoints.down("md")]: {
+        [theme.breakpoints.down("sm")]: {
             marginRight: theme.spacing(2),
         },
         margin: theme.spacing(0.5),
@@ -40,7 +40,7 @@ const StyledToggleButtonGroup = withStyles((theme) => ({
 
 const StyledTooltip = withStyles((theme) => ({
     popper: {
-        [theme.breakpoints.down("md")]: {
+        [theme.breakpoints.down("sm")]: {
             // TODO: Vertical Tooltip
             // transformOrigin: "-50% 0%",
             // transform: "rotate(-90deg)",
@@ -93,7 +93,7 @@ interface Props {
 
 export function ControlButtons({ interactiveModeState, disablePresent, disableActivity, setKey, orientation }: Props): JSX.Element {
     const theme = useTheme();
-    const isMdDown = useMediaQuery(theme.breakpoints.down("md"));
+    const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
     const { selectedButton, buttonRoot, buttonGroup, divider, helpButton, screenSharingButton } = useStyles();
     const screenShare = useContext(ScreenShareContext);
     const webrtc = useContext(webRTCContext);
@@ -135,7 +135,7 @@ export function ControlButtons({ interactiveModeState, disablePresent, disableAc
                         open={openStopTooltip}
                         onClose={() => toggleTooltip(false, false, false, false)}
                         onOpen={() => toggleTooltip(true, false, false, false)}
-                        placement={isMdDown ? "top" : "left"}
+                        placement={isSmDown ? "top" : "left"}
                         title={<FormattedMessage id="live_buttonStop" />}
                     >
                         <ToggleButton
@@ -152,7 +152,7 @@ export function ControlButtons({ interactiveModeState, disablePresent, disableAc
                         open={openPresentTooltip}
                         onClose={() => toggleTooltip(false, false, false, false)}
                         onOpen={() => toggleTooltip(false, true, false, false)}
-                        placement={isMdDown ? "top" : "left"}
+                        placement={isSmDown ? "top" : "left"}
                         title={<FormattedMessage id="live_buttonPresent" />}
                     >
                         <ToggleButton
@@ -170,7 +170,7 @@ export function ControlButtons({ interactiveModeState, disablePresent, disableAc
                         open={openActivityTooltip}
                         onClose={() => toggleTooltip(false, false, false, false)}
                         onOpen={() => toggleTooltip(false, false, true, false)}
-                        placement={isMdDown ? "top" : "left"}
+                        placement={isSmDown ? "top" : "left"}
                         title={<FormattedMessage id="live_buttonActivity" />}
                     >
                         <ToggleButton
@@ -188,7 +188,7 @@ export function ControlButtons({ interactiveModeState, disablePresent, disableAc
                         open={openScreenTooltip}
                         onClose={() => toggleTooltip(false, false, false, false)}
                         onOpen={() => toggleTooltip(false, false, false, true)}
-                        placement={isMdDown ? "top" : "left"}
+                        placement={isSmDown ? "top" : "left"}
                         title={interactiveMode === 3 ? "Stop Presenting" : <FormattedMessage id="live_buttonScreen" />}
                     >
                         <ToggleButton
@@ -219,7 +219,7 @@ export function ControlButtons({ interactiveModeState, disablePresent, disableAc
             <Divider flexItem className={divider} />
             <Grid container justify="center" alignItems="center" item xs={1} md={12}>
                 <Typography align="center">
-                    <Tooltip id="what_is_this" arrow placement={isMdDown ? "top" : "left"} title={<FormattedMessage id="what_is_this" />}>
+                    <Tooltip id="what_is_this" arrow placement={isSmDown ? "top" : "left"} title={<FormattedMessage id="what_is_this" />}>
                         <IconButton
                             size="small"
                             className={helpButton}
@@ -232,7 +232,7 @@ export function ControlButtons({ interactiveModeState, disablePresent, disableAc
             </Grid>
             <Grid container justify="center" alignItems="center" item xs={1} md={12}>
                 <Typography align="center">
-                    <Tooltip arrow placement={isMdDown ? "top" : "left"} title={<FormattedMessage id="refresh_activity" />}>
+                    <Tooltip arrow placement={isSmDown ? "top" : "left"} title={<FormattedMessage id="refresh_activity" />}>
                         <IconButton
                             size="small"
                             className={helpButton}

@@ -486,7 +486,7 @@ export function Stream(props: { stream?: MediaStream }): JSX.Element {
 
 export function GlobalCameraControl(): JSX.Element {
     const theme = useTheme();
-    const isMdDown = useMediaQuery(theme.breakpoints.down("md"));
+    const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
     const [camerasOn, setCamerasOn] = useState(true);
     const [micsOn, setMicsOn] = useState(true);
 
@@ -530,12 +530,12 @@ export function GlobalCameraControl(): JSX.Element {
 
     return (
         <Grid container direction="row" justify="center" alignItems="center" spacing={2} style={{ padding: theme.spacing(2) }}>
-            <Grid item xs={12}>
+            <Grid item xs={4} md={12}>
                 <Typography variant="caption">
                     <FormattedMessage id="quick_toggles" />
                 </Typography>
             </Grid>
-            <Grid container item xs={6} style={{ textAlign: "center" }}>
+            <Grid container item xs={4} md={6} style={{ textAlign: "center" }}>
                 <Grid item xs={12}>
                     <IconButton
                         color={camerasOn ? "primary" : "secondary"}
@@ -543,8 +543,8 @@ export function GlobalCameraControl(): JSX.Element {
                         onClick={toggleVideoStates}
                     >
                         {camerasOn
-                            ? <VideocamOffTwoToneIcon fontSize={isMdDown ? "small" : "inherit"} />
-                            : <VideocamTwoToneIcon fontSize={isMdDown ? "small" : "inherit"} />
+                            ? <VideocamOffTwoToneIcon fontSize={isSmDown ? "small" : "inherit"} />
+                            : <VideocamTwoToneIcon fontSize={isSmDown ? "small" : "inherit"} />
                         }
                     </IconButton>
                 </Grid>
@@ -557,7 +557,7 @@ export function GlobalCameraControl(): JSX.Element {
                     </Typography>
                 </Grid>
             </Grid>
-            <Grid container item xs={6} style={{ textAlign: "center" }}>
+            <Grid container item xs={4} md={6} style={{ textAlign: "center" }}>
                 <Grid item xs={12}>
                     <IconButton
                         color={micsOn ? "primary" : "secondary"}
@@ -565,8 +565,8 @@ export function GlobalCameraControl(): JSX.Element {
                         onClick={toggleAudioStates}
                     >
                         {micsOn
-                            ? <MicOffTwoToneIcon fontSize={isMdDown ? "small" : "inherit"} />
-                            : <MicTwoToneIcon fontSize={isMdDown ? "small" : "inherit"} />
+                            ? <MicOffTwoToneIcon fontSize={isSmDown ? "small" : "inherit"} />
+                            : <MicTwoToneIcon fontSize={isSmDown ? "small" : "inherit"} />
                         }
                     </IconButton>
                 </Grid>
