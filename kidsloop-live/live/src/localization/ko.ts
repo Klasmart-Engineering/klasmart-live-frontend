@@ -2,7 +2,6 @@
 const messages: Record<string, string> = {
     activity_link: "액티비티 링크",
     allow_media_permission: "미디어 장치를 사용하려면 마이크 및 카메라 권한을 허용하십시오.",
-    button_invite_students: "초대",
     error_camera_unavailable: "📷에 액세스 할 수 없습니다.",
     error_empty_name: "이름을 입력하십시오.",
     error_invaild_token: "권한이 없으므로 수업에 참여할 수 없습니다.",
@@ -34,6 +33,7 @@ const messages: Record<string, string> = {
     title_chat: "채팅",
     title_whiteboard: "화이트보드",
     title_settings: "설정",
+    invite_students: "초대",
     quick_toggles: "빠른 조작",
     set_cameras_off: "카메라 모두 끄기",
     set_cameras_on: "카메라 모두 켜기",

@@ -2,7 +2,6 @@
 const messages: Record<string, string> = {
     activity_link: "Activity Link",
     allow_media_permission: "Please allow microphone and camera permissions if you want to use media devices.",
-    button_invite_students: "Invite",
     error_camera_unavailable: "Can not access your 📷",
     error_empty_name: "Please enter your name.",
     error_invaild_token: "Invalid token, could not connect to class.",
@@ -34,6 +33,7 @@ const messages: Record<string, string> = {
     title_chat: "Chat",
     title_whiteboard: "Whiteboard",
     title_settings: "Settings",
+    invite_students: "Invite",
     quick_toggles: "Quick Toggles",
     set_cameras_off: "Set Cameras Off",
     set_cameras_on: "Set Cameras On",

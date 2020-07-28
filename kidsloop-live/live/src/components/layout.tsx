@@ -35,6 +35,7 @@ import PermissionControls from "../whiteboard/components/PermissionControls";
 import { ControlButtons } from "../pages/teacher/controlButtons";
 import Messages from "../messages";
 import { SendMessage } from "../sendMessage";
+import InviteButton from "./invite";
 
 export const DRAWER_WIDTH = 380;
 
@@ -229,8 +230,12 @@ function TabInnerContent({ contentIndexState, title }: { contentIndexState?: Con
             const users = useContext(UsersContext);
             const webrtc = useContext(webRTCContext);
             return (
-                <Grid container direction={isSmDown ? "row" : "column"} justify="flex-start" alignItems="center" item xs={12}>
-                    {teacher ? <GlobalCameraControl /> : null}
+                <Grid container direction="column" justify="flex-start" alignItems="center">
+                    {teacher ? <>
+                        <InviteButton />
+                        <GlobalCameraControl />
+                    </> : null
+                    }
                     {
                         [...users.entries()].map(([id, session]) => (
                             <Grid key={id} container direction={isSmDown ? "column" : "row"} item xs={6} md={12}>
