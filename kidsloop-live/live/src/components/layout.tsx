@@ -263,7 +263,7 @@ function TabInnerContent({ contentIndexState, title }: { contentIndexState?: Con
                                             </Typography>
                                         </Tooltip>
                                     </Grid>
-                                    <Grid item xs={6} md={3}>
+                                    <Grid container justify="space-evenly" item xs={6} md={3}>
                                         <CameraControls global={teacher} sessionId={id} />
                                         {teacher && id !== sessionId ? <PermissionControls otherUserId={session.id} /> : <></>}
                                     </Grid>
