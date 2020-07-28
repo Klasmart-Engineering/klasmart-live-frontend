@@ -2,12 +2,15 @@ import React, { useReducer, useState, useContext, useEffect } from "react";
 import { gql } from "apollo-boost";
 import { useSubscription } from "@apollo/react-hooks";
 import { FormattedMessage } from "react-intl";
-import { CircularProgress, Typography, useTheme, useMediaQuery } from "@material-ui/core";
+import { useTheme, useMediaQuery } from "@material-ui/core";
+import Typography from "@material-ui/core/Typography";
+import Grid from "@material-ui/core/Grid";
 import { sessionId, UserContext } from "./entry";
 import { Student } from "./pages/student/student";
 import { Teacher } from "./pages/teacher/teacher";
 import { webRTCContext } from "./webRTCState";
 import Layout from "./components/layout";
+import Loading from "./components/loading";
 import { WhiteboardContextProvider } from "./whiteboard/context-provider/WhiteboardContextProvider";
 
 export interface Session {
@@ -125,8 +128,9 @@ export function Room({ teacher }: Props): JSX.Element {
             setOpenDrawer(false);
         }
     }, [isSmDown]);
-    if (error) { return <Typography ><FormattedMessage id="failed_to_connect" />{JSON.stringify(error)}</Typography>; }
-    if (loading || !content) { return <CircularProgress />; }
+
+    if (error) { return <Typography><FormattedMessage id="failed_to_connect" />{JSON.stringify(error)}</Typography>; }
+    if (loading || !content) { return <Grid container alignItems="center" style={{ height: "100%" }}><Loading messageId="loading" /></Grid>; }
 
     return (
         <WhiteboardContextProvider>
