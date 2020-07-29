@@ -77,8 +77,8 @@ export default function PermissionControls({ children, otherUserId }: Props): JS
                     size="small"
                 >
                     {otherUserPermissions.allowCreateShapes
-                        ? <InvertColorsIcon color="primary" fontSize={isSmDown ? "small" : "inherit"} />
-                        : <InvertColorsOffIcon color="secondary" fontSize={isSmDown ? "small" : "inherit"} />
+                        ? <InvertColorsIcon size={isSmDown ? "1rem" : "1.25rem"} color="#0E78D5" />
+                        : <InvertColorsOffIcon size={isSmDown ? "1rem" : "1.25rem"} color="#F44336" />
                     }
                 </IconButton>
             </Grid>
@@ -89,7 +89,7 @@ export default function PermissionControls({ children, otherUserId }: Props): JS
                     onClick={clearUserWhiteboard}
                     size="small"
                 >
-                    <ClearAllIcon color="primary" fontSize={isSmDown ? "small" : "inherit"} />
+                    <ClearAllIcon size={isSmDown ? "1rem" : "1.25rem"} color="#0E78D5" />
                 </IconButton>
             </Grid>
             {children}

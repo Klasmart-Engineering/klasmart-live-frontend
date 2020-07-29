@@ -230,48 +230,47 @@ function TabInnerContent({ contentIndexState, title }: { contentIndexState?: Con
             const users = useContext(UsersContext);
             const webrtc = useContext(webRTCContext);
             return (
-                <Grid container direction="column" justify="flex-start" alignItems="center">
+                <Grid container direction="row" justify="flex-start" alignItems="center">
                     {teacher ? <>
                         <InviteButton />
                         <GlobalCameraControl />
-                    </> : null
-                    }
-                    {
-                        [...users.entries()].map(([id, session]) => (
-                            <Grid key={id} container direction={isSmDown ? "column" : "row"} item xs={6} md={12}>
-                                <Grid container direction="row" justify="flex-start" alignItems="center">
-                                    <Grid item xs={12}><Divider /></Grid>
-                                </Grid>
-                                <Grid container direction="row" justify="flex-start" alignItems="center" spacing={isSmDown ? 0 : 2} item xs={12}>
-                                    <Grid item xs={12} md={5}>
-                                        <Grid container direction="row" justify="space-between">
-                                            <Grid item xs={12}>
-                                                {id === sessionId ?
-                                                    <MyCamera /> :
-                                                    <Camera
-                                                        controls
-                                                        mediaStream={webrtc.getCameraStream(id)}
-                                                        square
-                                                    />
-                                                }
-                                            </Grid>
+                        <Grid item xs={12}><Divider /></Grid>
+                    </> : null}
+                    {[...users.entries()].map(([id, session]) => (
+                        <Grid key={id} container justify="flex-start" item xs={6} md={12}>
+                            <Grid container alignItems="center" spacing={isSmDown ? 0 : 2} item xs={12}>
+                                <Grid item xs={12} md={5}>
+                                    <Grid container direction="row" justify="space-between">
+                                        <Grid item xs={12}>
+                                            {id === sessionId ?
+                                                <MyCamera /> :
+                                                <Camera
+                                                    controls
+                                                    mediaStream={webrtc.getCameraStream(id)}
+                                                    square
+                                                />
+                                            }
                                         </Grid>
                                     </Grid>
-                                    <Grid item xs={6} md={4}>
-                                        <Tooltip placement="left" title={id === sessionId ? name || "" : session.name || ""}>
-                                            <Typography variant={isSmDown ? "caption" : "body2"} align="left" noWrap>
-                                                {id === sessionId ? "You" : session.name}
-                                            </Typography>
-                                        </Tooltip>
-                                    </Grid>
-                                    <Grid container justify="space-evenly" item xs={6} md={3}>
-                                        <CameraControls global={teacher} sessionId={id} />
-                                        {teacher && id !== sessionId ? <PermissionControls otherUserId={session.id} /> : <></>}
-                                    </Grid>
+                                </Grid>
+                                <Grid item xs={6} md={4}>
+                                    <Tooltip placement="left" title={id === sessionId ? name || "" : session.name || ""}>
+                                        <Typography variant={isSmDown ? "caption" : "body2"} align="left" noWrap>
+                                            {id === sessionId ? "You" : session.name}
+                                        </Typography>
+                                    </Tooltip>
+                                </Grid>
+                                <Grid container justify="space-evenly" item xs={6} md={3}>
+                                    <CameraControls global={teacher} sessionId={id} />
+                                    {teacher && id !== sessionId ? <PermissionControls otherUserId={session.id} /> : <></>}
                                 </Grid>
                             </Grid>
-                        ))
-                    }
+                            <Grid item xs={12}>
+                                {/* TODO: On mobile, Divider is not visible */}
+                                <Divider orientation={isSmDown ? "vertical" : "horizontal"} />
+                            </Grid>
+                        </Grid>
+                    ))}
                 </Grid>
             );
         case "title_lesson_plan":
