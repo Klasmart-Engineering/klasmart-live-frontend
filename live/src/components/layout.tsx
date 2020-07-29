@@ -39,11 +39,11 @@ import { SendMessage } from "../sendMessage";
 export const DRAWER_WIDTH = 380;
 
 const TABS = [
-    { icon: <PeopleIcon role="img" size="1.5rem" />, title: "Participants", userType: 2 },
-    { icon: <LessonPlanIcon role="img" size="1.5rem" />, title: "Lesson Plan", userType: 0 },
-    { icon: <ChatIcon role="img" size="1.5rem" />, title: "Chat", userType: 2 },
-    { icon: <CreateIcon role="img" size="1.5rem" />, title: "Whiteboard", userType: 2 },
-    { icon: <SettingsIcon role="img" size="1.5rem" />, title: "Settings", userType: 0 },
+    { icon: <PeopleIcon role="img" size="1.5rem" />, title: "title_participants", userType: 2 },
+    { icon: <LessonPlanIcon role="img" size="1.5rem" />, title: "title_lesson_plan", userType: 0 },
+    { icon: <ChatIcon role="img" size="1.5rem" />, title: "title_chat", userType: 2 },
+    { icon: <CreateIcon role="img" size="1.5rem" />, title: "title_whiteboard", userType: 2 },
+    { icon: <SettingsIcon role="img" size="1.5rem" />, title: "title_settings", userType: 0 },
 ];
 
 const useStyles = makeStyles((theme: Theme) =>
