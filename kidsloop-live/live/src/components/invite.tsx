@@ -3,8 +3,7 @@ import Popover from "@material-ui/core/Popover";
 import { FormattedMessage } from "react-intl";
 import { IconButton, Button } from "@material-ui/core";
 import { UserContext } from "../entry";
-import CopyIcon from "@material-ui/icons/FileCopyTwoTone";
-import ShareIcon from "@material-ui/icons/ShareTwoTone";
+import { ContentCopy as CopyIcon, Share as ShareIcon } from "@styled-icons/material";
 
 export function InviteButton(): JSX.Element {
     const {roomId} = useContext(UserContext);
@@ -26,7 +25,7 @@ export function InviteButton(): JSX.Element {
             onClick={(e) => setAnchorEl(e.currentTarget)} 
             style={{ marginRight: 8, padding: "2px 8px", borderRadius: 12 }}
         >
-            <ShareIcon style={{ paddingRight: 5 }} />
+            <ShareIcon />
             <FormattedMessage id="button_invite_students" />
         </Button>
         <Popover

@@ -6,7 +6,7 @@ import Paper from "@material-ui/core/Paper";
 import InputBase from "@material-ui/core/InputBase";
 import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
-import SendTwoToneIcon from "@material-ui/icons/SendTwoTone";
+import { Send as SendIcon } from "@styled-icons/material-twotone/Send";
 import { useMutation } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
 import { UserContext } from "./entry";
@@ -81,7 +81,7 @@ export function SendMessage(): JSX.Element {
                 onClick={() => send()}
                 type="submit"
             >
-                {!loading ? <SendTwoToneIcon color="primary" /> : <CircularProgress size={12} />}
+                {!loading ? <SendIcon color="#0E78D5" size="1.25rem" /> : <CircularProgress size={12} />}
             </IconButton>
         </Paper>
     );

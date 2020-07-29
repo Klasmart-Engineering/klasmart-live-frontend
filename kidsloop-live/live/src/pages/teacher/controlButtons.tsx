@@ -2,13 +2,6 @@
 import React, { useContext, useState } from "react";
 import ToggleButton from "@material-ui/lab/ToggleButton";
 import ToggleButtonGroup from "@material-ui/lab/ToggleButtonGroup";
-import PlayIcon from "@material-ui/icons/PlayArrow";
-import StopIcon from "@material-ui/icons/Stop";
-import ViewIcon from "@material-ui/icons/Visibility";
-import ScreenShareIcon from "@material-ui/icons/ScreenShare";
-import StopScreenShareIcon from "@material-ui/icons/StopScreenShare";
-import HelpTwoToneIcon from "@material-ui/icons/HelpTwoTone";
-import RefreshIcon from '@material-ui/icons/Refresh';
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
@@ -20,6 +13,14 @@ import { InteractiveModeState } from "../../room";
 import IconButton from "@material-ui/core/IconButton";
 import Divider from "@material-ui/core/Divider";
 import Tooltip from "@material-ui/core/Tooltip";
+
+import { Visibility as ViewIcon } from "@styled-icons/material/Visibility";
+import { HelpOutline as HelpIcon } from "@styled-icons/material/HelpOutline";
+import { PlayArrow as PlayIcon } from "@styled-icons/material/PlayArrow";
+import { Stop as StopIcon } from "@styled-icons/material/Stop";
+import { ScreenShare as ScreenShareIcon } from "@styled-icons/material/ScreenShare";
+import { StopScreenShare as StopScreenShareIcon } from "@styled-icons/material/StopScreenShare";
+import { Refresh as RefreshIcon } from "@styled-icons/material/Refresh";
 
 const StyledToggleButtonGroup = withStyles((theme) => ({
     grouped: {
@@ -144,7 +145,7 @@ export function ControlButtons({ interactiveModeState, disablePresent, disableAc
                             className={!interactiveMode ? selectedButton : ""}
                             value={0}
                         >
-                            <StopIcon />
+                            <StopIcon size="1.5rem" />
                         </ToggleButton>
                     </StyledTooltip>
                     <StyledTooltip
@@ -162,7 +163,7 @@ export function ControlButtons({ interactiveModeState, disablePresent, disableAc
                             disabled={disablePresent}
                             value={1}
                         >
-                            <PlayIcon />
+                            <PlayIcon size="1.5rem" />
                         </ToggleButton>
                     </StyledTooltip>
                     <StyledTooltip
@@ -180,7 +181,7 @@ export function ControlButtons({ interactiveModeState, disablePresent, disableAc
                             disabled={disableActivity}
                             value={2}
                         >
-                            <ViewIcon />
+                            <ViewIcon size="1.5rem" />
                         </ToggleButton>
                     </StyledTooltip>
                     <StyledTooltip
@@ -209,8 +210,8 @@ export function ControlButtons({ interactiveModeState, disablePresent, disableAc
                         >
                             {
                                 screenShare.getStream() ?
-                                    <StopScreenShareIcon /> :
-                                    <ScreenShareIcon />
+                                    <StopScreenShareIcon size="1.5rem" />:
+                                    <ScreenShareIcon size="1.5rem" /> 
                             }
                         </ToggleButton>
                     </StyledTooltip>
@@ -225,7 +226,7 @@ export function ControlButtons({ interactiveModeState, disablePresent, disableAc
                             className={helpButton}
                             onClick={() => { (openStopTooltip || openPresentTooltip || openActivityTooltip || openScreenTooltip) ? toggleTooltip(false, false, false, false) : toggleTooltip(true, true, true, true); }}
                         >
-                            <HelpTwoToneIcon />
+                            <HelpIcon size="1.25rem" />
                         </IconButton>
                     </Tooltip>
                 </Typography>
@@ -238,7 +239,7 @@ export function ControlButtons({ interactiveModeState, disablePresent, disableAc
                             className={helpButton}
                             onClick={() => setKey(Math.random())}
                         >
-                            <RefreshIcon />
+                            <RefreshIcon size="1.25rem" />
                         </IconButton>
                     </Tooltip>
                 </Typography>

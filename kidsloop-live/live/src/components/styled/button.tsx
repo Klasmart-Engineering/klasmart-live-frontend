@@ -1,8 +1,9 @@
 import Button, { ButtonProps } from "@material-ui/core/Button";
 import Hidden from "@material-ui/core/Hidden";
 import { withStyles } from "@material-ui/core/styles";
-import SendIcon from "@material-ui/icons/Send";
 import React from "react";
+
+import { Send as SendIcon } from "@styled-icons/material/Send";
 
 interface Props extends ButtonProps {
     children?: React.ReactNode;

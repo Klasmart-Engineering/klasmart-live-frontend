@@ -3,6 +3,7 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
+import { MenuOpen as MenuOpenIcon } from "@styled-icons/material/MenuOpen";
 import React, { useState, useEffect, useContext } from "react";
 import { FormattedMessage } from "react-intl";
 import { UserContext } from "../../entry";

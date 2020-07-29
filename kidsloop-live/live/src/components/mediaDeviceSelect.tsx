@@ -5,8 +5,9 @@ import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
-import VideocamIcon from "@material-ui/icons/Videocam";
-import MicIcon from "@material-ui/icons/Mic";
+
+import { Videocam as CameraIcon } from "@styled-icons/material/Videocam";
+import { Mic as MicIcon } from "@styled-icons/material/Mic";
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -41,8 +42,8 @@ export default function MediaDeviceSelect(props: Props) {
             <Select
                 disabled={disabled}
                 IconComponent={deviceType === "video"
-                    ? () => <VideocamIcon color={disabled ? "disabled" : "primary"} />
-                    : () => <MicIcon color={disabled ? "disabled" : "primary"} />
+                    ? () => <CameraIcon size="2rem" color={disabled ? "disabled" : "primary"} />
+                    : () => <MicIcon size="2rem" color={disabled ? "disabled" : "primary"} />
                 }
                 onChange={onChange}
                 value={deviceId || ""}

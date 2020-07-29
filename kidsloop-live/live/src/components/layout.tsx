@@ -16,20 +16,16 @@ import Tooltip from "@material-ui/core/Tooltip";
 import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
-import Hidden from "@material-ui/core/Hidden";
 import Collapse from "@material-ui/core/Collapse";
 import Skeleton from "@material-ui/lab/Skeleton";
-import CreateTwoToneIcon from "@material-ui/icons/CreateTwoTone";
-import CloseTwoToneIcon from "@material-ui/icons/CloseTwoTone";
-import PeopleAltTwoToneIcon from "@material-ui/icons/PeopleAltTwoTone";
-import LibraryBooksTwoToneIcon from "@material-ui/icons/LibraryBooksTwoTone";
-import ForumTwoToneIcon from "@material-ui/icons/ForumTwoTone";
-import SettingsTwoToneIcon from "@material-ui/icons/SettingsTwoTone";
+import Hidden from "@material-ui/core/Hidden";
 
-import BottomNavigation from "@material-ui/core/BottomNavigation";
-import BottomNavigationAction from "@material-ui/core/BottomNavigationAction";
-import VideocamOffTwoToneIcon from "@material-ui/icons/VideocamOffTwoTone";
-import MicOffTwoToneIcon from "@material-ui/icons/MicOffTwoTone";
+import { Create as CreateIcon } from "@styled-icons/material-twotone/Create";
+import { People as PeopleIcon } from "@styled-icons/material-twotone/People";
+import { LibraryBooks as LessonPlanIcon } from "@styled-icons/material-twotone/LibraryBooks";
+import { Forum as ChatIcon } from "@styled-icons/material-twotone/Forum";
+import { Settings as SettingsIcon } from "@styled-icons/material-twotone/Settings";
+import { Close as CloseIcon } from "@styled-icons/material/Close";
 
 import { webRTCContext, Camera, MyCamera, CameraControls, GlobalCameraControl } from "../webRTCState";
 import { UserContext } from "../entry";
@@ -43,11 +39,11 @@ import { SendMessage } from "../sendMessage";
 export const DRAWER_WIDTH = 380;
 
 const TABS = [
-    { icon: <PeopleAltTwoToneIcon />, title: "title_participants", userType: 2 },
-    { icon: <LibraryBooksTwoToneIcon />, title: "title_lesson_plan", userType: 0 },
-    { icon: <ForumTwoToneIcon />, title: "title_chat", userType: 2 },
-    { icon: <CreateTwoToneIcon />, title: "title_whiteboard", userType: 2 },
-    { icon: <SettingsTwoToneIcon />, title: "title_settings", userType: 0 },
+    { icon: <PeopleIcon role="img" size="1.5rem" />, title: "Participants", userType: 2 },
+    { icon: <LessonPlanIcon role="img" size="1.5rem" />, title: "Lesson Plan", userType: 0 },
+    { icon: <ChatIcon role="img" size="1.5rem" />, title: "Chat", userType: 2 },
+    { icon: <CreateIcon role="img" size="1.5rem" />, title: "Whiteboard", userType: 2 },
+    { icon: <SettingsIcon role="img" size="1.5rem" />, title: "Settings", userType: 0 },
 ];
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -211,7 +207,7 @@ function TabPanel(props: TabPanelProps) {
                         <FormattedMessage id={tab.title} />
                     </Typography>
                     <IconButton aria-label="minimize drawer" onClick={() => handleOpenDrawer(false)}>
-                        <CloseTwoToneIcon fontSize={isSmDown ? "small" : "inherit"} />
+                        <CloseIcon size="1.25rem" />
                     </IconButton>
                 </Grid>
                 <Divider />

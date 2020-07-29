@@ -2,12 +2,12 @@ import React from "react";
 import Grid from "@material-ui/core/Grid";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
-import SkipNextTwoToneIcon from "@material-ui/icons/SkipNextTwoTone";
-import SkipPreviousTwoToneIcon from "@material-ui/icons/SkipPreviousTwoTone";
 import { LessonMaterial } from "../../lessonMaterialContext";
 import IconButton from "@material-ui/core/IconButton";
 import Hidden from "@material-ui/core/Hidden";
 
+import { NavigateNext as NextIcon } from "@styled-icons/material/NavigateNext";
+import { NavigateBefore as BeforeIcon } from "@styled-icons/material/NavigateBefore";
 
 interface Props {
     contentIndex: number
@@ -35,7 +35,7 @@ export function MaterialSelection(props: Props) {
                         const newIndex = contentIndex ? Math.max(0, contentIndex - 1) : 0;
                         setContentIndex(newIndex);
                     }}>
-                        <SkipPreviousTwoToneIcon />
+                        <BeforeIcon />
                     </IconButton>
                 </Grid>
                 <Grid item xs={1}>
@@ -44,7 +44,7 @@ export function MaterialSelection(props: Props) {
                         const newIndex = contentIndex !== undefined ? Math.min(materials.length - 1, contentIndex + 1) : 0;
                         setContentIndex(newIndex);
                     }}>
-                        <SkipNextTwoToneIcon />
+                        <NextIcon />
                     </IconButton>
                 </Grid>
             </Grid>

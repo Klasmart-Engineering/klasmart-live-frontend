@@ -5,7 +5,7 @@ import Paper from "@material-ui/core/Paper";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
-import CloseIcon from "@material-ui/icons/Close";
+import { Close as CloseIcon } from "@styled-icons/material/Close";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 import KidsloopLogo from "../../assets/img/kidsloop.svg";
