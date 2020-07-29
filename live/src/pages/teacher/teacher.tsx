@@ -14,8 +14,9 @@ import { useMutation } from "@apollo/react-hooks";
 import { Whiteboard } from "../../whiteboard/components/Whiteboard";
 import { MaterialSelection } from "./materialSelection";
 import { ScreenShareContext } from "./screenShareProvider";
-import { ReplicatedVideo } from "../synchronized-video";
+import { ReplicatedMedia } from "../synchronized-video";
 import { Face as FaceIcon } from "@styled-icons/material/Face";
+import { MaterialTypename } from "../../lessonMaterialContext";
 
 const drawerWidth = 340;
 
@@ -101,7 +102,7 @@ export function Teacher(props: Props): JSX.Element {
 
     useEffect(() => {
         if (interactiveMode === 1 && material) {
-            if (material.video) {
+            if (material.__typename === MaterialTypename.Video || (material.__typename === undefined && material.video)) {
                 showContent({ variables: { roomId, type: "Video", contentId: sessionId } });
             } else if (material.url) {
                 showContent({ variables: { roomId, type: "Stream", contentId: streamId } });
@@ -174,22 +175,32 @@ export function Teacher(props: Props): JSX.Element {
                             interactiveMode === 3 ?
                                 <Stream stream={screenShare.getStream()} /> :
                                 <>
-                                    {content.type !== "Video" && material && material.url ?
-                                        <RecordedIframe
-                                            contentId={material.url}
-                                            setStreamId={setStreamId}
-                                            parentWidth={width}
-                                            parentHeight={height}
-                                            setParentWidth={setWidth}
-                                            setParentHeight={setHeight}
-                                        />
-                                        : undefined}
-                                        {material && material.video ?
-                                            <ReplicatedVideo
-                                                src={material.video}
-                                                style={{width:"100%"}}
-                                            />
-                                            : undefined}
+                                        {material ?
+                                            material.__typename === MaterialTypename.Image ?
+                                                <img
+                                                    style={{width:"100%"}}
+                                                    src={material.url}
+                                                /> :
+                                            material.__typename === MaterialTypename.Video ||
+                                            material.__typename === MaterialTypename.Audio ||
+                                            (material.__typename === undefined && material.video) ? //Legacy Format TODO: Deprecate
+                                                <ReplicatedMedia
+                                                    type={material.__typename||MaterialTypename.Video}
+                                                    src={(material.__typename === undefined && material.video)||material.url}
+                                                    style={{width:"100%"}}
+                                                /> :
+                                            (material.__typename === MaterialTypename.Iframe || material.__typename === undefined) && material.url ? //Legacy Format TODO: Deprecate
+                                            <RecordedIframe
+                                                contentId={material.url}
+                                                setStreamId={setStreamId}
+                                                parentWidth={width}
+                                                parentHeight={height}
+                                                setParentWidth={setWidth}
+                                                setParentHeight={setHeight}
+                                            />:
+                                            undefined : //Unknown Material
+                                            undefined //No Material
+                                        }
                                 </>
                         }
                     </Whiteboard>
