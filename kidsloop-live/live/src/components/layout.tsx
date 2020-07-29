@@ -171,7 +171,7 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         toolbarContainer: {
             width: "100%",
-            position: "absolute",
+            position: "fixed",
             bottom: 48,
         },
     }),
