@@ -2,13 +2,10 @@ import Grid from "@material-ui/core/Grid";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import React, { useEffect, useState, useContext } from "react";
-import { FormattedMessage } from "react-intl";
 import { RecordedIframe } from "../../components/recordediframe";
-import { ControlButtons } from "./controlButtons";
 import { Session, Content, ContentIndexState, InteractiveModeState, StreamIdState } from "../../room";
-import { Theme, Button, IconButton, Card, useTheme, CardContent, useMediaQuery } from "@material-ui/core";
+import { Theme, Card, useTheme, CardContent, useMediaQuery } from "@material-ui/core";
 import { PreviewPlayer } from "../../components/preview-player";
-import clsx from "clsx";
 import { Cameras, webRTCContext, Stream } from "../../webRTCState";
 import { UserContext } from "../../entry";
 import CenterAlignChildren from "../../components/centerAlignChildren";
@@ -16,12 +13,8 @@ import { gql } from "apollo-boost";
 import { useMutation } from "@apollo/react-hooks";
 import { Whiteboard } from "../../whiteboard/components/Whiteboard";
 import { MaterialSelection } from "./materialSelection";
-import { BroadcastVideo } from "./broadcastVideo";
-import PermissionControls from "../../whiteboard/components/PermissionControls";
 import { ScreenShareContext } from "./screenShareProvider";
 import { ReplicatedVideo } from "../synchronized-video";
-
-import { MenuOpen as MenuOpenIcon } from "@styled-icons/material/MenuOpen";
 import { Face as FaceIcon } from "@styled-icons/material/Face";
 
 const drawerWidth = 340;
