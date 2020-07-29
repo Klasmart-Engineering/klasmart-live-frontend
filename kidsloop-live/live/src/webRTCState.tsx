@@ -4,20 +4,17 @@ import { useTheme } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
-import VideocamIcon from "@material-ui/icons/Videocam";
-import VideocamOffIcon from "@material-ui/icons/VideocamOff";
-import MicOffIcon from "@material-ui/icons/MicOff";
-import MicIcon from "@material-ui/icons/Mic";
 import { FormattedMessage } from "react-intl";
 import { gql } from "apollo-boost";
 import { useMutation } from "@apollo/react-hooks";
 import NoCamera from "./components/noCamera";
 import Paper from "@material-ui/core/Paper";
 import { UserContext } from "./entry";
-import VideocamOffTwoToneIcon from "@material-ui/icons/VideocamOffTwoTone";
-import VideocamTwoToneIcon from "@material-ui/icons/VideocamTwoTone";
-import MicTwoToneIcon from "@material-ui/icons/MicTwoTone";
-import MicOffTwoToneIcon from "@material-ui/icons/MicOffTwoTone";
+
+import { Videocam as CameraIcon } from "@styled-icons/material-twotone/Videocam";
+import { VideocamOff as CameraOffIcon } from "@styled-icons/material-twotone/VideocamOff";
+import { Mic as MicIcon } from "@styled-icons/material-twotone/Mic";
+import { MicOff as MicOffIcon } from "@styled-icons/material-twotone/MicOff";
 
 const SEND_SIGNAL = gql`
   mutation webRTCSignal($roomId: ID!, $toSessionId: ID!, $webrtc: WebRTCIn) {
@@ -403,7 +400,7 @@ export function Cameras({ backgroundColor, id }: { backgroundColor?: string, id?
     }
     return (
         <Grid container justify="space-between" alignItems="center" style={{ width: "100%", height: "100%" }}>
-            <Typography style={{ margin: "0 auto" }} variant="caption" align="center"><VideocamOffIcon /></Typography>
+            <Typography style={{ margin: "0 auto" }} variant="caption" align="center"><CameraOffIcon /></Typography>
         </Grid>
     );
 
@@ -466,7 +463,7 @@ export function Camera(props: {
                         transform: "translate(-50%, -50%)",
                     }}
                 >
-                    <VideocamOffIcon />
+                    <CameraOffIcon />
                 </Typography>
             }
         </Paper>
@@ -542,10 +539,7 @@ export function GlobalCameraControl(): JSX.Element {
                         style={{ backgroundColor: camerasOn ? "#f6fafe" : "#fef5f9" }}
                         onClick={toggleVideoStates}
                     >
-                        {camerasOn
-                            ? <VideocamOffTwoToneIcon fontSize={isSmDown ? "small" : "inherit"} />
-                            : <VideocamTwoToneIcon fontSize={isSmDown ? "small" : "inherit"} />
-                        }
+                        {camerasOn ? <CameraOffIcon size="1.5rem" /> : <CameraIcon size="1.5rem" />}
                     </IconButton>
                 </Grid>
                 <Grid item xs={12}>
@@ -564,10 +558,7 @@ export function GlobalCameraControl(): JSX.Element {
                         style={{ backgroundColor: micsOn ? "#f6fafe" : "#fef5f9" }}
                         onClick={toggleAudioStates}
                     >
-                        {micsOn
-                            ? <MicOffTwoToneIcon fontSize={isSmDown ? "small" : "inherit"} />
-                            : <MicTwoToneIcon fontSize={isSmDown ? "small" : "inherit"} />
-                        }
+                        {micsOn ? <MicOffIcon size="1.5rem" /> : <MicIcon size="1.5rem" />}
                     </IconButton>
                 </Grid>
                 <Grid item xs={12}>
@@ -635,8 +626,8 @@ export function CameraControls(props: { global?: boolean, sessionId?: string }):
                     size="small"
                 >
                     {states.getVideoStreamState(sessionId)
-                        ? <VideocamIcon color="primary" fontSize={isSmDown ? "small" : "default"} />
-                        : <VideocamOffIcon color="secondary" fontSize={isSmDown ? "small" : "default"} />
+                        ? <CameraIcon color="primary" />
+                        : <CameraOffIcon color="secondary" />
                     }
                 </IconButton>
             </Grid>

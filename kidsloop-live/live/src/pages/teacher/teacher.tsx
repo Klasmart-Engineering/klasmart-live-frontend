@@ -9,10 +9,8 @@ import { Session, Content, ContentIndexState, InteractiveModeState, StreamIdStat
 import { Theme, Button, IconButton, Card, useTheme, CardContent, useMediaQuery } from "@material-ui/core";
 import { PreviewPlayer } from "../../components/preview-player";
 import clsx from "clsx";
-import MenuOpenIcon from "@material-ui/icons/MenuOpen";
 import { Cameras, webRTCContext, Stream } from "../../webRTCState";
 import { UserContext } from "../../entry";
-import FaceTwoToneIcon from "@material-ui/icons/FaceTwoTone";
 import CenterAlignChildren from "../../components/centerAlignChildren";
 import { gql } from "apollo-boost";
 import { useMutation } from "@apollo/react-hooks";
@@ -21,6 +19,9 @@ import { MaterialSelection } from "./materialSelection";
 import { BroadcastVideo } from "./broadcastVideo";
 import PermissionControls from "../../whiteboard/components/PermissionControls";
 import { ScreenShareContext } from "./screenShareProvider";
+
+import { MenuOpen as MenuOpenIcon } from "@styled-icons/material/MenuOpen";
+import { Face as FaceIcon } from "@styled-icons/material/Face";
 
 const drawerWidth = 340;
 
@@ -161,7 +162,7 @@ export function Teacher(props: Props): JSX.Element {
                                             </Grid>
                                             <Grid item xs={12}>
                                                 <CenterAlignChildren center>
-                                                    <FaceTwoToneIcon style={{ marginRight: theme.spacing(1) }} />
+                                                    <FaceIcon style={{ marginRight: theme.spacing(1) }} />
                                                     <Typography variant="body2" align="center">
                                                         {session.name}
                                                     </Typography>

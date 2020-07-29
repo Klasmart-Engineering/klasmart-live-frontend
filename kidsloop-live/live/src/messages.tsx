@@ -4,7 +4,7 @@ import { Message } from "./room";
 import { FormattedMessage, FormattedDate, FormattedTime } from "react-intl";
 import { mapGenerator } from "./utils/map";
 import Tooltip from "@material-ui/core/Tooltip";
-import AccessTimeTwoToneIcon from "@material-ui/icons/AccessTimeTwoTone";
+import { AccessTime as TimestampIcon } from "@styled-icons/material-twotone/AccessTime";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -98,7 +98,7 @@ function Messages ({ messages }: Props): JSX.Element {
                                             </>
                                         }
                                     >
-                                        <AccessTimeTwoToneIcon fontSize="small" style={{ color: "#e0e1e1" }}/>
+                                        <TimestampIcon fontSize="small" style={{ color: "#e0e1e1" }}/>
                                     </Tooltip>
                                 </Grid>
                             </Grid>
