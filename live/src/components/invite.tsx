@@ -55,7 +55,7 @@ export default function InviteButton(): JSX.Element {
                             toggleSnackbar(true);
                         }}
                     >
-                        <CopyIcon color="primary" size="1.25rem" />
+                        <CopyIcon size="1.25rem" color="#0E78D5" />
                     </IconButton>
                 </Grid>
             </Grid>
@@ -67,7 +67,7 @@ export default function InviteButton(): JSX.Element {
                 open={openSnackbar}
                 autoHideDuration={3000}
                 onClose={() => toggleSnackbar(false)}
-                message="Copied to clipboard!"
+                message={<FormattedMessage id="copy_clipboard" />}
             />
         </>
     );
