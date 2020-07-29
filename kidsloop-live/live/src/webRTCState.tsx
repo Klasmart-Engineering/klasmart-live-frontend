@@ -463,7 +463,7 @@ export function Camera(props: {
                         transform: "translate(-50%, -50%)",
                     }}
                 >
-                    <CameraOffIcon />
+                    <CameraOffIcon size="1.5rem" />
                 </Typography>
             }
         </Paper>
@@ -539,7 +539,7 @@ export function GlobalCameraControl(): JSX.Element {
                         style={{ backgroundColor: camerasOn ? "#f6fafe" : "#fef5f9" }}
                         onClick={toggleVideoStates}
                     >
-                        {camerasOn ? <CameraOffIcon size="1.5rem" /> : <CameraIcon size="1.5rem" />}
+                        {camerasOn ? <CameraIcon size="1.5rem" /> : <CameraOffIcon size="1.5rem" />}
                     </IconButton>
                 </Grid>
                 <Grid item xs={12}>
@@ -558,7 +558,7 @@ export function GlobalCameraControl(): JSX.Element {
                         style={{ backgroundColor: micsOn ? "#f6fafe" : "#fef5f9" }}
                         onClick={toggleAudioStates}
                     >
-                        {micsOn ? <MicOffIcon size="1.5rem" /> : <MicIcon size="1.5rem" />}
+                        {micsOn ? <MicIcon size="1.5rem" /> : <MicOffIcon size="1.5rem" />}
                     </IconButton>
                 </Grid>
                 <Grid item xs={12}>
@@ -626,8 +626,8 @@ export function CameraControls(props: { global?: boolean, sessionId?: string }):
                     size="small"
                 >
                     {states.getVideoStreamState(sessionId)
-                        ? <CameraIcon color="primary" />
-                        : <CameraOffIcon color="secondary" />
+                        ? <CameraIcon size={isSmDown ? "1rem" : "1.25rem"} color="#0E78D5" />
+                        : <CameraOffIcon size={isSmDown ? "1rem" : "1.25rem"} color="#F44336" />
                     }
                 </IconButton>
             </Grid>
@@ -639,8 +639,8 @@ export function CameraControls(props: { global?: boolean, sessionId?: string }):
                     size="small"
                 >
                     {states.getAudioStreamState(sessionId)
-                        ? <MicIcon color="primary" fontSize={isSmDown ? "small" : "default"} />
-                        : <MicOffIcon color="secondary" fontSize={isSmDown ? "small" : "default"} />
+                        ? <MicIcon size={isSmDown ? "1rem" : "1.25rem"} color="#0E78D5" />
+                        : <MicOffIcon size={isSmDown ? "1rem" : "1.25rem"} color="#F44336" />
                     }
                 </IconButton>
             </Grid>

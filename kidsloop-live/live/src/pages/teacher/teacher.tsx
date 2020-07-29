@@ -129,7 +129,7 @@ export function Teacher(props: Props): JSX.Element {
 
     return (
         <div className={classes.root}>
-            <MaterialSelection materials={materials} contentIndex={contentIndex} setContentIndex={setContentIndex} />
+            {/* <MaterialSelection materials={materials} contentIndex={contentIndex} setContentIndex={setContentIndex} /> */}
             <Grid
                 container
                 direction="row"

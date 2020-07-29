@@ -34,6 +34,7 @@ const messages: Record<string, string> = {
     title_whiteboard: "Whiteboard",
     title_settings: "Settings",
     invite_students: "Invite",
+    copy_clipboard: "Copied to clipboard!",
     quick_toggles: "Quick Toggles",
     set_cameras_off: "Set Cameras Off",
     set_cameras_on: "Set Cameras On",

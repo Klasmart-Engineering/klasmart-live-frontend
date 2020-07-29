@@ -34,6 +34,7 @@ const messages: Record<string, string> = {
     title_whiteboard: "화이트보드",
     title_settings: "설정",
     invite_students: "초대",
+    copy_clipboard: "클립 보드에 복사했습니다!",
     quick_toggles: "빠른 조작",
     set_cameras_off: "카메라 모두 끄기",
     set_cameras_on: "카메라 모두 켜기",
