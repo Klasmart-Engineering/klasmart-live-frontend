@@ -89,7 +89,6 @@ export function Student(props: Props): JSX.Element {
                             </Grid>
                         </Paper>
                     </Grid>
-                    {isSmDown ? <CameraContainer isTeacher={false} /> : null}
                 </div>
             );
         case "Stream":
