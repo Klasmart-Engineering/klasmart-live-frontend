@@ -34,7 +34,7 @@ export default function InviteButton(): JSX.Element {
                 <StyledTextField
                     fullWidth
                     margin="dense"
-                    ref={textField}
+                    inputRef={textField}
                     label={<FormattedMessage id="invite_students" />}
                     value={url}
                     onClick={(e) => { (e.target as HTMLInputElement).select(); }}
