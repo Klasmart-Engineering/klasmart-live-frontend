@@ -3,20 +3,18 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
-import { MenuOpen as MenuOpenIcon } from "@styled-icons/material/MenuOpen";
 import React, { useState, useEffect, useContext } from "react";
 import { FormattedMessage } from "react-intl";
 import { UserContext } from "../../entry";
 import { Content } from "../../room";
 import { Whiteboard } from "../../whiteboard/components/Whiteboard";
 import WBToolbar from "../../whiteboard/components/Toolbar";
-import { Stream, webRTCContext } from "../../webRTCState";
+import { webRTCContext } from "../../webRTCState";
 import { PreviewPlayer } from "../../components/preview-player";
 import { RecordedIframe } from "../../components/recordediframe";
 import CameraContainer from "../../components/cameraContainer";
-import Loading from "../../components/loading";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import { ReplicaVideo } from "../synchronized-video";
+import { ReplicaMedia } from "../synchronized-video";
+import { MaterialTypename } from "../../lessonMaterialContext";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -138,7 +136,7 @@ export function Student(props: Props): JSX.Element {
             case "Video":
                 return <>
                     <Whiteboard height={height}>
-                        <ReplicaVideo style={{width:"100%"}} sessionId={content.contentId}/>
+                        <ReplicaMedia type={MaterialTypename.Video} style={{width:"100%"}} sessionId={content.contentId}/>
                     </Whiteboard>
                     <WBToolbar />
                 </>;

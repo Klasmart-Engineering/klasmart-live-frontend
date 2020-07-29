@@ -3,6 +3,7 @@ import { useSubscription, useMutation } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
 import { CircularProgress, Typography } from "@material-ui/core";
 import { UserContext } from "../entry";
+import { MaterialTypename, LessonMaterial } from "../lessonMaterialContext";
 
 interface VideoSynchronize {
     src?: string
@@ -12,17 +13,18 @@ interface VideoSynchronize {
 
 interface ReplicaVideoProps {
     sessionId: string
+    type: MaterialTypename.Video | MaterialTypename.Audio
 }
 
-export function ReplicaVideo(props: React.VideoHTMLAttributes<HTMLVideoElement> & ReplicaVideoProps) {
-    const {sessionId, ...videoProps} = props
+export function ReplicaMedia(props: React.VideoHTMLAttributes<HTMLMediaElement> & ReplicaVideoProps) {
+    const {sessionId, type, ...mediaProps} = props
     const srcRef = useRef<string>();
     const playingRef = useRef<boolean>();
     const timeRef = useRef<number>();
 
     const {roomId} = useContext(UserContext);
 
-    const ref = useRef<HTMLVideoElement>(null);
+    const ref = useRef<HTMLMediaElement>(null);
     const {loading, error} = useSubscription(
         gql`
             subscription video($roomId: ID!, $sessionId: ID!) {
@@ -67,22 +69,44 @@ export function ReplicaVideo(props: React.VideoHTMLAttributes<HTMLVideoElement> 
 
     if(loading) {return <CircularProgress />;}
     if(error) {return <Typography>{error}</Typography>;}
-    return <video
-        ref={ref}
-        src={srcRef.current}
-        crossOrigin="anonymous"
-        controls={false}
-        controlsList="nodownload"
-        preload="auto"
-        playsInline
-        onContextMenu={(e) => e.preventDefault() }
-        {...videoProps}
-    />;
+    switch(type) {
+        case MaterialTypename.Audio:
+            return <audio
+            ref={ref}
+            src={srcRef.current}
+            crossOrigin="anonymous"
+            controls={false}
+            controlsList="nodownload"
+            preload="auto"
+            playsInline
+            onContextMenu={(e) => e.preventDefault() }
+            {...mediaProps}
+        />;
+
+        case MaterialTypename.Video:
+        default:
+            return <video
+                ref={ref as React.RefObject<HTMLVideoElement>}
+                src={srcRef.current}
+                crossOrigin="anonymous"
+                controls={false}
+                controlsList="nodownload"
+                preload="auto"
+                playsInline
+                onContextMenu={(e) => e.preventDefault() }
+                {...mediaProps}
+            />;
+    }
 }
 
-export function ReplicatedVideo(videoProps: React.VideoHTMLAttributes<HTMLVideoElement>) {
-    const ref = useRef<HTMLVideoElement>(null);
-    const src = videoProps.src;
+interface ReplicatedMediaProps {
+    type: MaterialTypename.Video | MaterialTypename.Audio
+}
+
+export function ReplicatedMedia(props: React.VideoHTMLAttributes<HTMLMediaElement> & ReplicatedMediaProps) {
+    const {type, src, ...mediaProps} = props
+
+    const ref = useRef<HTMLMediaElement>(null);
     const {roomId, sessionId} = useContext(UserContext);
 
     const [send,{loading, error}] = useMutation(
@@ -129,14 +153,34 @@ export function ReplicatedVideo(videoProps: React.VideoHTMLAttributes<HTMLVideoE
 
     // if(loading) {return <CircularProgress />;}
     if(error) {return <Typography>{error}</Typography>;}
-    return <video
-        ref={ref}
-        crossOrigin="anonymous"
-        controls
-        controlsList="nodownload"
-        preload="auto"
-        playsInline
-        onContextMenu={(e) => e.preventDefault() }
-        {...videoProps}
-    />;
+
+    switch(type) {
+        case MaterialTypename.Audio:
+            return <audio
+            ref={ref}
+            src={src}
+            crossOrigin="anonymous"
+            controls
+            controlsList="nodownload"
+            preload="auto"
+            playsInline
+            onContextMenu={(e) => e.preventDefault() }
+            {...mediaProps}
+        />;
+
+        case MaterialTypename.Video:
+        default:
+            return <video
+            ref={ref as React.RefObject<HTMLVideoElement>}
+            src={src}
+            crossOrigin="anonymous"
+            controls
+            controlsList="nodownload"
+            preload="auto"
+            playsInline
+            onContextMenu={(e) => e.preventDefault() }
+            {...mediaProps}
+        />;
+    }
+
 }
