@@ -135,6 +135,7 @@ export function ReplicatedVideo(videoProps: React.VideoHTMLAttributes<HTMLVideoE
         controlsList="nodownload"
         preload="auto"
         playsInline
+        onClick={(e) => { if(e.button !== 0) {e.preventDefault()} }}
         {...videoProps}
     />;
 }
