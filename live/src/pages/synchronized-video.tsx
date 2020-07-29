@@ -15,6 +15,7 @@ interface ReplicaVideoProps {
 }
 
 export function ReplicaVideo(props: React.VideoHTMLAttributes<HTMLVideoElement> & ReplicaVideoProps) {
+    const {sessionId, ...videoProps} = props
     const srcRef = useRef<string>();
     const playingRef = useRef<boolean>();
     const timeRef = useRef<number>();
@@ -51,7 +52,7 @@ export function ReplicaVideo(props: React.VideoHTMLAttributes<HTMLVideoElement> 
                 if(play === false) { ref.current.pause(); }
 
             },
-            variables: {roomId, sessionId: props.sessionId}
+            variables: {roomId, sessionId}
         }
     );
 
@@ -69,15 +70,17 @@ export function ReplicaVideo(props: React.VideoHTMLAttributes<HTMLVideoElement> 
         ref={ref}
         src={srcRef.current}
         crossOrigin="anonymous"
+        controls={false}
         controlsList="nodownload"
         preload="auto"
-        {...props}
+        playsInline
+        {...videoProps}
     />;
 }
 
-export function ReplicatedVideo(props: React.VideoHTMLAttributes<HTMLVideoElement>) {
+export function ReplicatedVideo(videoProps: React.VideoHTMLAttributes<HTMLVideoElement>) {
     const ref = useRef<HTMLVideoElement>(null);
-    const src = props.src;
+    const src = videoProps.src;
     const {roomId, sessionId} = useContext(UserContext);
 
     const [send,{loading, error}] = useMutation(
@@ -94,6 +97,8 @@ export function ReplicatedVideo(props: React.VideoHTMLAttributes<HTMLVideoElemen
                 roomId,
                 sessionId,
                 src,
+                play: false,
+                offset: ref.current && Number.isFinite(ref.current.currentTime)?ref.current.currentTime:0,
             }
         });
     },[src]);
@@ -128,6 +133,7 @@ export function ReplicatedVideo(props: React.VideoHTMLAttributes<HTMLVideoElemen
         controls
         controlsList="nodownload"
         preload="auto"
-        {...props}
+        playsInline
+        {...videoProps}
     />;
 }
