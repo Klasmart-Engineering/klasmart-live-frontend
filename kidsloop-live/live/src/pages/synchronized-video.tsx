@@ -74,6 +74,7 @@ export function ReplicaVideo(props: React.VideoHTMLAttributes<HTMLVideoElement> 
         controlsList="nodownload"
         preload="auto"
         playsInline
+        onClick={(e) => e.preventDefault()}
         {...videoProps}
     />;
 }
