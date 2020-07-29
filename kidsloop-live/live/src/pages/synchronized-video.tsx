@@ -74,7 +74,7 @@ export function ReplicaVideo(props: React.VideoHTMLAttributes<HTMLVideoElement> 
         controlsList="nodownload"
         preload="auto"
         playsInline
-        onClick={(e) => e.preventDefault()}
+        onContextMenu={(e) => e.preventDefault() }
         {...videoProps}
     />;
 }
@@ -135,7 +135,7 @@ export function ReplicatedVideo(videoProps: React.VideoHTMLAttributes<HTMLVideoE
         controlsList="nodownload"
         preload="auto"
         playsInline
-        onClick={(e) => { if(e.button !== 0) {e.preventDefault()} }}
+        onContextMenu={(e) => e.preventDefault() }
         {...videoProps}
     />;
 }
