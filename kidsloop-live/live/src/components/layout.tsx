@@ -36,6 +36,7 @@ import { ControlButtons } from "../pages/teacher/controlButtons";
 import Messages from "../messages";
 import { SendMessage } from "../sendMessage";
 import InviteButton from "./invite";
+import { MaterialTypename } from "../lessonMaterialContext";
 
 export const DRAWER_WIDTH = 380;
 
@@ -468,8 +469,16 @@ export default function Layout(props: Props): JSX.Element {
                                         <Grid item hidden={!isTeacher}>
                                             <ControlButtons
                                                 interactiveModeState={interactiveModeState}
-                                                disablePresent={!(streamId || (material && material.video))}
-                                                disableActivity={!(material && material.url)}
+                                                disablePresent={!(
+                                                    streamId ||
+                                                    (material && material.__typename === undefined && Boolean(material.video)) || //Enable for legacy video
+                                                    (material && material.__typename !== MaterialTypename.Iframe) //Enable for Image, Audio, Video
+                                                )}
+                                                disableActivity={!(
+                                                    !material || 
+                                                    material.__typename === MaterialTypename.Iframe || //Enable for iframe
+                                                    (material.__typename === undefined && !!material.url) //Enable for legacy iframe
+                                                )}
                                                 setKey={setKey}
                                                 orientation="vertical"
                                             />
@@ -530,8 +539,16 @@ export default function Layout(props: Props): JSX.Element {
                 <Grid className={classes.toolbarContainer}>
                     <ControlButtons
                         interactiveModeState={interactiveModeState}
-                        disablePresent={!(streamId || (material && material.video))}
-                        disableActivity={!(material && material.url)}
+                        disablePresent={!(
+                            streamId ||
+                            (material && material.__typename === undefined && Boolean(material.video)) || //Enable for legacy video
+                            (material && material.__typename !== MaterialTypename.Iframe) //Enable for Image, Audio, Video
+                        )}
+                        disableActivity={!(
+                            !material || 
+                            material.__typename === MaterialTypename.Iframe || //Enable for iframe
+                            (material.__typename === undefined && !!material.url) //Enable for legacy iframe
+                        )}
                         setKey={setKey}
                         orientation="horizontal"
                     />
