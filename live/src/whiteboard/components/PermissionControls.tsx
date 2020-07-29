@@ -5,12 +5,13 @@ import { useTheme } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import Grid from "@material-ui/core/Grid/Grid";
 import IconButton from "@material-ui/core/IconButton";
-import InvertColorsIcon from '@material-ui/icons/InvertColors';
-import InvertColorsOffIcon from '@material-ui/icons/InvertColorsOff';
-import ClearAllIcon from '@material-ui/icons/ClearAll';
 import { Permissions, createEmptyPermissions } from "../types/Permissions";
 import { useWhiteboard } from "../context-provider/WhiteboardContextProvider";
 import { UserContext } from "../../entry";
+
+import { ClearAll as ClearAllIcon } from "@styled-icons/material/ClearAll";
+import { InvertColors as InvertColorsIcon } from "@styled-icons/material/InvertColors";
+import { InvertColorsOff as InvertColorsOffIcon } from "@styled-icons/material/InvertColorsOff";
 
 const WHITEBOARD_SEND_PERMISSIONS = gql`
   mutation whiteboardSendPermissions($roomId: ID!, $userId: ID!, $permissions: String) {

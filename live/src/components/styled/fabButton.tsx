@@ -1,7 +1,7 @@
 import Fab, { FabProps } from "@material-ui/core/Fab";
 import Hidden from "@material-ui/core/Hidden";
 import { withStyles } from "@material-ui/core/styles";
-import SendIcon from "@material-ui/icons/Send";
+import { Send as SendIcon } from "@styled-icons/material/Send";
 import React from "react";
 
 interface Props extends FabProps {

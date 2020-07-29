@@ -8,7 +8,6 @@ import CardContent from "@material-ui/core/CardContent";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Tooltip from "@material-ui/core/Tooltip";
-import ErrorIcon from "@material-ui/icons/Error";
 import KidsloopLogo from "../assets/img/kidsloop.svg";
 import CenterAlignChildren from "../components/centerAlignChildren";
 import StyledButton from "../components/styled/button";
@@ -18,6 +17,8 @@ import { webRTCContext, Camera } from "../webRTCState";
 import Loading from "../components/loading";
 import NoCamera from "../components/noCamera";
 import MediaDeviceSelect from "../components/mediaDeviceSelect";
+
+import { Error as ErrorIcon } from "@styled-icons/material/Error";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -54,6 +55,8 @@ export function Join(): JSX.Element {
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
     const states = useContext(webRTCContext);
     const { name, setName } = useContext(UserContext);
+
+    const url = new URL(window.location.href);
 
     const [user, setUser] = useState<string>("");
 
@@ -151,7 +154,7 @@ export function Join(): JSX.Element {
                                         <CenterAlignChildren center>
                                             <img alt="KidsLoop" src={KidsloopLogo} height="50px" />
                                             <Typography variant="h6" style={{ paddingLeft: theme.spacing(1) }}>
-                                                Live
+                                                Live <Typography variant="body2" component="span">{ (url.searchParams.get("teacher") !== null) ? <sub>for Teachers</sub> : <sub>for Students</sub> }</Typography>
                                             </Typography>
                                         </CenterAlignChildren>
                                     </Grid>
