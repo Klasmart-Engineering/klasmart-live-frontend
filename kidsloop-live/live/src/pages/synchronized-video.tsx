@@ -109,8 +109,8 @@ export function ReplicatedVideo(props: React.VideoHTMLAttributes<HTMLVideoElemen
         if(!ref.current) {return;}
         const video = ref.current;
 
-        function pause() { send({variables: {roomId, sessionId, offset: video.currentTime, play: false}}); }
-        function play() { send({variables: {roomId, sessionId, offset: video.currentTime, play: true}}); }
+        function pause() { send({variables: {roomId, sessionId, offset: Number.isFinite(video.currentTime)?video.currentTime:undefined, play: false}}); }
+        function play() { send({variables: {roomId, sessionId, offset: Number.isFinite(video.currentTime)?video.currentTime:undefined, play: true}}); }
 
         video.addEventListener("play", () => play());
         video.addEventListener("playing", () => play());
