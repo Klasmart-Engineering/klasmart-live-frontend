@@ -58,16 +58,9 @@ export function ReplicaVideo(props: React.VideoHTMLAttributes<HTMLVideoElement> 
     useEffect(() => {
         if(!ref.current) {return;}
         const video = ref.current;
-        if(typeof timeRef.current === "number") {video.currentTime = timeRef.current;}
+        if(timeRef.current && Number.isFinite(timeRef.current)) {video.currentTime = timeRef.current;}
+        if(playingRef.current === true) {video.play().catch(() => {});}
         if(playingRef.current === false) {video.pause();}
-
-        function apply() {
-            if(playingRef.current) {
-                video.play();
-            }
-        }
-        video.addEventListener("canplay", () => apply());
-        return () => video.removeEventListener("canplay", () => apply());
     }, [ref.current]);
 
     if(loading) {return <CircularProgress />;}
