@@ -230,7 +230,7 @@ function TabInnerContent({ contentIndexState, title }: { contentIndexState?: Con
             const users = useContext(UsersContext);
             const webrtc = useContext(webRTCContext);
             return (
-                <Grid container direction="row" justify="flex-start" alignItems="center">
+                <Grid container direction="row" justify="flex-start" alignItems="center" className={classes.scrollContainer}>
                     {teacher ? <>
                         <InviteButton />
                         <GlobalCameraControl />
