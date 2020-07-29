@@ -13,5 +13,6 @@ export function BroadcastVideo(props: {src: string}) {
         onLoadedData={(e) => {
             webrtc.setAux((e.target as any).captureStream());
         }}
+        onContextMenu={() => {return false;}}
     />;
 }
