@@ -8,6 +8,7 @@ import { useHistory } from "react-router-dom";
 interface Props extends StandardTextFieldProps {
     children?: React.ReactNode;
     className?: string;
+    // ref?: React.RefObject<HTMLInputElement>;
 }
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
