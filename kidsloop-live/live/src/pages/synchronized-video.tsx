@@ -59,6 +59,7 @@ export function ReplicaVideo(props: React.VideoHTMLAttributes<HTMLVideoElement> 
     useEffect(() => {
         if(!ref.current) {return;}
         const video = ref.current;
+        if(srcRef.current !== undefined) {video.src = srcRef.current;}
         if(timeRef.current !== undefined && Number.isFinite(timeRef.current)) {video.currentTime = timeRef.current;}
         if(playingRef.current === true) {video.play().catch(() => {});}
         if(playingRef.current === false) {video.pause();}
