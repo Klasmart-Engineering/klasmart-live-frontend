@@ -96,7 +96,7 @@ export function Teacher(props: Props): JSX.Element {
     const [showContent, { loading }] = useMutation(MUT_SHOW_CONTENT);
     useEffect(() => {
         if (!interactiveMode) {
-            showContent({ variables: { roomId, type: "Blank", contentId: "" } });
+            showContent({ variables: { roomId, type: "Camera", contentId: sessionId } });
         }
     }, [roomId, interactiveMode]);
 
@@ -104,7 +104,11 @@ export function Teacher(props: Props): JSX.Element {
         if (interactiveMode === 1 && material) {
             if (material.__typename === MaterialTypename.Video || (material.__typename === undefined && material.video)) {
                 showContent({ variables: { roomId, type: "Video", contentId: sessionId } });
-            } else if (material.url) {
+            } else if(material.__typename === MaterialTypename.Audio) {
+                showContent({ variables: { roomId, type: "Audio", contentId: sessionId } });
+            } else if(material.__typename === MaterialTypename.Image) {
+                showContent({ variables: { roomId, type: "Image", contentId: material.url } });
+            } else if ((material.__typename === MaterialTypename.Iframe || material.__typename === undefined) && material.url) {
                 showContent({ variables: { roomId, type: "Stream", contentId: streamId } });
             }
         }
