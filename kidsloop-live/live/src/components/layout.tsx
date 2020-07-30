@@ -368,7 +368,7 @@ function StyledTab(props: StyledTabProps) {
                 handlers.setValue(value);
             }}
             value={value}
-            style={{ backgroundColor: "white", opacity: 1 }}
+            style={{ backgroundColor: "#FFF", opacity: 1 }}
             {...a11yProps}
         />
     );
@@ -509,7 +509,7 @@ export default function Layout(props: Props): JSX.Element {
                                     }
                                 </Tabs>
                                 <Collapse in={openDrawer}>
-                                    <Grid item xs={12} style={{ backgroundColor: "white" }}>
+                                    <Grid item xs={12} style={{ backgroundColor: "#FFF" }}>
                                         <UsersContext.Provider value={users}>
                                             <MessageContext.Provider value={messages}>
                                                 {isTeacher ?

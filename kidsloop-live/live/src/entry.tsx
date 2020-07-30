@@ -95,12 +95,12 @@ const overrides = {
     },
     MuiToggleButton: {
         root: {
-            color: themeMode === "light" ? "#1B365D" : "white",
-            backgroundColor: themeMode === "light" ? "white" : "#1B365D",
+            color: themeMode === "light" ? "#1B365D" : "#FFF",
+            backgroundColor: themeMode === "light" ? "#FFF" : "#1B365D",
             "&:hover": {
                 "-webkit-transition": "all .4s ease",
-                color: themeMode === "light" ? "white" : "#030D1C",
-                backgroundColor: themeMode === "light" ? "#1B365D" : "white",
+                color: themeMode === "light" ? "#FFF" : "#030D1C",
+                backgroundColor: themeMode === "light" ? "#1B365D" : "#FFF",
                 "box-shadow": "0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08)",
                 "transition": "all .4s ease",
             },
@@ -111,10 +111,10 @@ const overrides = {
 const palette: PaletteOptions = {
     background: {
         default: themeMode === "light" ? "#fafafa" : "#030D1C",
-        paper: themeMode === "light" ? "#fff" : "#030D1C",
+        paper: themeMode === "light" ? "#FFF" : "#030D1C",
     },
     primary: {
-        contrastText: "#fff",
+        contrastText: "#FFF",
         dark: "#1896ea",
         light: "#0E78D5",
         main: "#0E78D5",
@@ -124,7 +124,7 @@ const palette: PaletteOptions = {
 let theme: Theme;
 if (themeMode === "light") {
     palette.type = "light";
-    palette.background = { default: "white" };
+    palette.background = { default: "#FFF" };
     theme = createMuiTheme({ overrides, palette, typography });
 } else {
     palette.type = "dark";
