@@ -73,7 +73,7 @@ export function ReplicaMedia(props: React.VideoHTMLAttributes<HTMLMediaElement> 
     switch(type) {
         case MaterialTypename.Audio:
             return <>
-            <FFT input={ref.current} style={{width:"100%"}} width={1000} height={500}/>
+            <FFT input={ref.current} output={true} style={{width:"100%"}} width={1000} height={500}/>
             <audio
                 ref={ref}
                 src={srcRef.current}
