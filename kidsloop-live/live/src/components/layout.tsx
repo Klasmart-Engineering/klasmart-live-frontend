@@ -174,6 +174,10 @@ const useStyles = makeStyles((theme: Theme) =>
             position: "fixed",
             bottom: 48,
         },
+        scrollVideoContainer: {
+            flexGrow: 1,
+            overflow: "hidden auto",
+        },
     }),
 );
 
@@ -230,47 +234,60 @@ function TabInnerContent({ contentIndexState, title }: { contentIndexState?: Con
             const users = useContext(UsersContext);
             const webrtc = useContext(webRTCContext);
             return (
-                <Grid container direction="row" justify="flex-start" alignItems="center" className={classes.scrollContainer}>
+                <Grid container direction="row" justify="flex-start" alignItems="center" style={{ flex: 1 }}>
                     {teacher ? <>
                         <InviteButton />
                         <GlobalCameraControl />
                         <Grid item xs={12}><Divider /></Grid>
                     </> : null}
-                    {[...users.entries()].map(([id, session]) => (
-                        <Grid key={id} container justify="flex-start" item xs={6} md={12}>
-                            <Grid container alignItems="center" spacing={isSmDown ? 0 : 2} item xs={12}>
-                                <Grid item xs={12} md={5}>
-                                    <Grid container direction="row" justify="space-between">
-                                        <Grid item xs={12}>
-                                            {id === sessionId ?
-                                                <MyCamera /> :
-                                                <Camera
-                                                    controls
-                                                    mediaStream={webrtc.getCameraStream(id)}
-                                                    square
-                                                />
-                                            }
+                    <Grid
+                        container
+                        direction="row"
+                        justify="flex-start"
+                        alignContent="flex-start"
+                        item
+                        xs={12}
+                        className={classes.scrollVideoContainer}
+                        style={isSmDown ? { maxHeight: `calc(100vh - ${theme.spacing(33)}px)` } : {
+                            height: teacher ? `calc(100vh - ${theme.spacing(33)}px)` : "100vh", // Because student side has no <InviteButton /> and <GlobalCameraControl />
+                        }}
+                    >
+                        {[...users.entries()].map(([id, session]) => (
+                            <Grid key={id} item xs={6} md={12}>
+                                <Grid container alignItems="center" spacing={isSmDown ? 0 : 2} item xs={12}>
+                                    <Grid item xs={12} md={5}>
+                                        <Grid container direction="row" justify="space-between">
+                                            <Grid item xs={12}>
+                                                {id === sessionId ?
+                                                    <MyCamera /> :
+                                                    <Camera
+                                                        controls
+                                                        mediaStream={webrtc.getCameraStream(id)}
+                                                        square
+                                                    />
+                                                }
+                                            </Grid>
                                         </Grid>
                                     </Grid>
+                                    <Grid item xs={6} md={4}>
+                                        <Tooltip placement="left" title={id === sessionId ? name || "" : session.name || ""}>
+                                            <Typography variant={isSmDown ? "caption" : "body2"} align="left" noWrap>
+                                                {id === sessionId ? "You" : session.name}
+                                            </Typography>
+                                        </Tooltip>
+                                    </Grid>
+                                    <Grid container justify="space-evenly" item xs={6} md={3}>
+                                        <CameraControls global={teacher} sessionId={id} />
+                                        {teacher && id !== sessionId ? <PermissionControls otherUserId={session.id} /> : <></>}
+                                    </Grid>
                                 </Grid>
-                                <Grid item xs={6} md={4}>
-                                    <Tooltip placement="left" title={id === sessionId ? name || "" : session.name || ""}>
-                                        <Typography variant={isSmDown ? "caption" : "body2"} align="left" noWrap>
-                                            {id === sessionId ? "You" : session.name}
-                                        </Typography>
-                                    </Tooltip>
-                                </Grid>
-                                <Grid container justify="space-evenly" item xs={6} md={3}>
-                                    <CameraControls global={teacher} sessionId={id} />
-                                    {teacher && id !== sessionId ? <PermissionControls otherUserId={session.id} /> : <></>}
+                                <Grid item xs={12}>
+                                    {/* TODO: On mobile, Divider is not visible */}
+                                    <Divider orientation={isSmDown ? "vertical" : "horizontal"} />
                                 </Grid>
                             </Grid>
-                            <Grid item xs={12}>
-                                {/* TODO: On mobile, Divider is not visible */}
-                                <Divider orientation={isSmDown ? "vertical" : "horizontal"} />
-                            </Grid>
-                        </Grid>
-                    ))}
+                        ))}
+                    </Grid>
                 </Grid>
             );
         case "title_lesson_plan":
