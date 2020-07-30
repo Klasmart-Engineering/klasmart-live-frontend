@@ -526,7 +526,7 @@ export function GlobalCameraControl(): JSX.Element {
     }
 
     return (
-        <Grid container direction="row" justify="center" alignItems="center" spacing={2} style={{ padding: theme.spacing(2) }}>
+        <Grid container direction="row" justify="center" alignItems="center" spacing={2} style={{ flexGrow: 0, padding: theme.spacing(2) }}>
             <Grid item xs={4} md={12}>
                 <Typography variant="caption">
                     <FormattedMessage id="quick_toggles" />

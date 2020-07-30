@@ -31,7 +31,7 @@ export default function InviteButton(): JSX.Element {
                 alignItems="center"
                 item
                 xs={12}
-                style={{ padding: theme.spacing(2, 2, 0, 2) }}
+                style={{ flexGrow: 0, padding: theme.spacing(2, 2, 0, 2) }}
             >
                 <Grid item xs={10}>
                     <StyledTextField

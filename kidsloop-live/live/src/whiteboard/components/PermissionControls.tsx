@@ -9,7 +9,7 @@ import { Permissions, createEmptyPermissions } from "../types/Permissions";
 import { useWhiteboard } from "../context-provider/WhiteboardContextProvider";
 import { UserContext } from "../../entry";
 
-import { ClearAll as ClearAllIcon } from "@styled-icons/material/ClearAll";
+import { Eraser as EraserIcon } from "@styled-icons/boxicons-solid/Eraser";
 import { InvertColors as InvertColorsIcon } from "@styled-icons/material/InvertColors";
 import { InvertColorsOff as InvertColorsOffIcon } from "@styled-icons/material/InvertColorsOff";
 
@@ -89,7 +89,7 @@ export default function PermissionControls({ children, otherUserId }: Props): JS
                     onClick={clearUserWhiteboard}
                     size="small"
                 >
-                    <ClearAllIcon size={isSmDown ? "1rem" : "1.25rem"} color="#0E78D5" />
+                    <EraserIcon size={isSmDown ? "1rem" : "1.25rem"} color="#0E78D5" />
                 </IconButton>
             </Grid>
             {children}
