@@ -2,11 +2,12 @@ import React, { useEffect, useRef, useMemo } from "react";
 
 interface Props {
     input?: MediaStream | HTMLMediaElement | null
+    output?: boolean
     raw?: boolean
 }
 
 export function FFT(props: Props & React.CanvasHTMLAttributes<HTMLCanvasElement>) {
-    const {input, raw, ...canvasProps} = props;
+    const {input, output, raw, ...canvasProps} = props;
     const canvas = useRef<HTMLCanvasElement>(null);
     
     const audioContext = useMemo(() => new AudioContext(), []);
@@ -19,6 +20,15 @@ export function FFT(props: Props & React.CanvasHTMLAttributes<HTMLCanvasElement>
         if(input instanceof MediaStream) { return audioContext.createMediaStreamSource(input) } 
         if(input instanceof HTMLMediaElement) { return audioContext.createMediaElementSource(input) }
     }, [input]);
+    useEffect(() => {
+        if(!source || !output) {return}
+        source.connect(audioContext.destination);
+        const s = source, d = audioContext.destination;
+        return () => s.disconnect(d);
+    }, [source]);
+
+
+
     const merger = useMemo(() => audioContext.createChannelMerger(1), []);
     useEffect(() => {
         if(!source) {return}
@@ -49,12 +59,11 @@ export function FFT(props: Props & React.CanvasHTMLAttributes<HTMLCanvasElement>
             const [re] = fft(e.inputBuffer.getChannelData(0));
             ctx.beginPath();
             ctx.moveTo(0, height);
-            for (let i = 0; i < re.length/2; i++) {
-                const x = width * ((i+1) / (1+re.length/2));
-                const index = !raw ? i : i & 1 ? re.length - (i >> 1) : (i >> 1);
+            for (let i = 0; i < 2*re.length/3; i++) {
+                const x = width * ((i+1) / (1+2*re.length/3));
+                const index = raw ? i : i & 1 ? re.length - (i >> 1) : (i >> 1);
                 ctx.lineTo(x, height-0.1*height*Math.sqrt(Math.abs(re[index])));
             }
-            // ctx.lineTo(width, height);
             ctx.stroke();
         }
         processor.addEventListener("audioprocess", process);
