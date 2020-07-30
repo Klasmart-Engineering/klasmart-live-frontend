@@ -143,7 +143,7 @@ export function Join(): JSX.Element {
                                 {
                                     stream && stream.getVideoTracks().length > 0 && stream.getVideoTracks().every((t) => t.readyState === "live") && stream.active
                                         ? <>
-                                            <FFT stream={stream} width={700} height={150}/>
+                                            <FFT input={stream} width={700} height={150}/>
                                             <Camera mediaStream={stream} muted={true}/>
                                         </>
                                         : error
