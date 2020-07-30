@@ -4,6 +4,7 @@ import { gql } from "apollo-boost";
 import { CircularProgress, Typography } from "@material-ui/core";
 import { UserContext } from "../entry";
 import { MaterialTypename, LessonMaterial } from "../lessonMaterialContext";
+import { FFT } from "../components/fft";
 
 interface VideoSynchronize {
     src?: string
@@ -71,17 +72,20 @@ export function ReplicaMedia(props: React.VideoHTMLAttributes<HTMLMediaElement> 
     if(error) {return <Typography>{error}</Typography>;}
     switch(type) {
         case MaterialTypename.Audio:
-            return <audio
-            ref={ref}
-            src={srcRef.current}
-            crossOrigin="anonymous"
-            controls={false}
-            controlsList="nodownload"
-            preload="auto"
-            playsInline
-            onContextMenu={(e) => e.preventDefault() }
-            {...mediaProps}
-        />;
+            return <>
+            <FFT input={ref.current} style={{width:"100%"}} width={1000} height={500}/>
+            <audio
+                ref={ref}
+                src={srcRef.current}
+                crossOrigin="anonymous"
+                controls={false}
+                controlsList="nodownload"
+                preload="auto"
+                playsInline
+                onContextMenu={(e) => e.preventDefault() }
+                {...mediaProps}
+            />
+        </>;
 
         case MaterialTypename.Video:
         default:

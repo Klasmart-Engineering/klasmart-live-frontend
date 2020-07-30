@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useMemo } from "react";
 
 interface Props {
-    stream: MediaStream
+    input?: MediaStream | HTMLMediaElement | null
     raw?: boolean
 }
 
 export function FFT(props: Props & React.CanvasHTMLAttributes<HTMLCanvasElement>) {
-    const {stream, raw, ...canvasProps} = props;
+    const {input, raw, ...canvasProps} = props;
     const canvas = useRef<HTMLCanvasElement>(null);
     
     const audioContext = useMemo(() => new AudioContext(), []);
@@ -14,9 +14,14 @@ export function FFT(props: Props & React.CanvasHTMLAttributes<HTMLCanvasElement>
         return () => {audioContext.close();}; //Destroy audio context when this component is destroyed
     }, []);
 
-    const source = useMemo(() => audioContext.createMediaStreamSource(stream), [stream]);
+    const source = useMemo(() => {
+        if(!input) { return }
+        if(input instanceof MediaStream) { return audioContext.createMediaStreamSource(input) } 
+        if(input instanceof HTMLMediaElement) { return audioContext.createMediaElementSource(input) }
+    }, [input]);
     const merger = useMemo(() => audioContext.createChannelMerger(1), []);
     useEffect(() => {
+        if(!source) {return}
         source.connect(merger);
         const s = source, m = merger;
         return () => s.disconnect(m);
@@ -42,11 +47,10 @@ export function FFT(props: Props & React.CanvasHTMLAttributes<HTMLCanvasElement>
             const height = canvas.current.height;
             ctx.clearRect(0,0,width,canvas.current.height);
             const [re] = fft(e.inputBuffer.getChannelData(0));
-            // console.log(re);
             ctx.beginPath();
             ctx.moveTo(0, height);
-            for (let i = 0; i < re.length/3; i++) {
-                const x = width * (i / (re.length/3));
+            for (let i = 0; i < re.length/2; i++) {
+                const x = width * ((i+1) / (1+re.length/2));
                 const index = !raw ? i : i & 1 ? re.length - (i >> 1) : (i >> 1);
                 ctx.lineTo(x, height-0.1*height*Math.sqrt(Math.abs(re[index])));
             }
