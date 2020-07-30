@@ -21,7 +21,7 @@ const StyledFab = withStyles({
             "transition": "all .4s ease",
         },
         "background": "#0E78D5",
-        "color": "white",
+        "color": "#FFF",
 
     },
 })(Fab);

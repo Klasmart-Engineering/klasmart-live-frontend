@@ -22,7 +22,7 @@ const StyledBtn = withStyles({
         },
         "background": "#0E78D5",
         "borderRadius": 12,
-        "color": "white",
+        "color": "#FFF",
 
     },
 })(Button);
