@@ -14,7 +14,7 @@ import Typography from "@material-ui/core/Typography";
 import { App } from "./app";
 import { webRTCContext, WebRTCContext } from "./webRTCState";
 import { ScreenShare } from "./pages/teacher/screenShareProvider";
-import { LessonMaterial } from "./lessonMaterialContext";
+import { LessonMaterial, MaterialTypename } from "./lessonMaterialContext";
 import { AuthTokenProvider } from "./services/auth-token/AuthTokenProvider";
 import { getLanguage } from "./utils/locale";
 
@@ -174,8 +174,12 @@ function parseToken() {
                 name: url.searchParams.get("name") || undefined, // Should be undefined not null
                 roomId: url.searchParams.get("roomId") || "test-room",
                 materials: materialsParam ? JSON.parse(materialsParam) : [
-                    { name: "Pairs", url: "/h5p/play/5ecf4e4b611e18398f7380ef" },
-                    { name: "Video", video: "./video.mp4" },
+                    { __typename: MaterialTypename.Iframe, name: "Pairs", url: "/h5p/play/5ecf4e4b611e18398f7380ef" },
+                    { __typename: MaterialTypename.Video, name: "Video", url: "./video.mp4" },
+                    { __typename: MaterialTypename.Audio, name: "Audio", url: "./audio.m4a" },
+                    { __typename: MaterialTypename.Image, name: "Image", url: "./image.jpg" },
+                    { name: "Pairs - Legacy", url: "/h5p/play/5ecf4e4b611e18398f7380ef" },
+                    { name: "Video - Legacy", video: "./video.mp4" },
                 ],
             };
         }
