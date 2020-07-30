@@ -20,7 +20,7 @@ export interface Session {
 }
 
 export interface Content {
-    type: "Blank" | "Stream" | "Activity" | "Video",
+    type: "Blank" | "Stream" | "Activity" | "Video" | "Audio" | "Image" | "Camera",
     contentId: string,
 }
 
@@ -155,7 +155,10 @@ export function Room({ teacher }: Props): JSX.Element {
                             interactiveModeState={{ interactiveMode, setInteractiveMode }}
                             streamIdState={{ streamId, setStreamId }}
                         />
-                        : <Student content={content} />
+                        : <Student
+                            content={content}
+                            users={users}
+                        />
                 }
             </Layout>
         </WhiteboardContextProvider>

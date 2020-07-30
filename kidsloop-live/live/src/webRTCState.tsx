@@ -470,15 +470,15 @@ export function Camera(props: {
     );
 }
 
-export function Stream(props: { stream?: MediaStream }): JSX.Element {
-    const { stream } = props;
+export function Stream(props: { stream?: MediaStream } & React.VideoHTMLAttributes<HTMLMediaElement>): JSX.Element {
+    const { stream, ...videoProps } = props;
     const videoRef = useRef<HTMLVideoElement>(null);
     useEffect(() => {
         if (!videoRef.current) { return; }
         if (!stream) { return; }
         videoRef.current.srcObject = stream;
     }, [videoRef.current, stream]);
-    return <video style={{ width: "100%" }} ref={videoRef} autoPlay playsInline />;
+    return <video style={{ width: "100%" }} ref={videoRef} autoPlay playsInline  {...videoProps} />;
 }
 
 export function GlobalCameraControl(): JSX.Element {
