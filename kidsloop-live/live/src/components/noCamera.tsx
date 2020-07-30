@@ -12,7 +12,7 @@ const useStyles = makeStyles(() =>
             backgroundColor: "#193d6f",
         },
         centeredText: {
-            color: "white",
+            color: "#FFF",
             position: "absolute",
             top: "50%",
             left: "50%",

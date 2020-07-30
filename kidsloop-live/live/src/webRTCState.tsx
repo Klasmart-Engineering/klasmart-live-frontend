@@ -455,7 +455,7 @@ export function Camera(props: {
                 <Typography
                     align="center"
                     style={{
-                        color: "white",
+                        color: "#FFF",
                         top: "50%",
                         left: "50%",
                         marginRight: "-50%",

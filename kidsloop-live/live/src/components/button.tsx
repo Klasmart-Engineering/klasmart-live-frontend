@@ -11,7 +11,7 @@ const styles = (theme: Theme) => createStyles({
         },
         "background": "#1896ea",
         "border-radius": "12px",
-        "color": "white",
+        "color": "#FFF",
         "margin": theme.spacing(3, 0, 2),
         "padding": theme.spacing(1, 2),
     },
