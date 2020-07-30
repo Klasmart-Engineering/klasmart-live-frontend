@@ -17,8 +17,8 @@ import { webRTCContext, Camera } from "../webRTCState";
 import Loading from "../components/loading";
 import NoCamera from "../components/noCamera";
 import MediaDeviceSelect from "../components/mediaDeviceSelect";
-
 import { Error as ErrorIcon } from "@styled-icons/material/Error";
+import { FFT } from "../components/fft";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -142,7 +142,10 @@ export function Join(): JSX.Element {
                             <Grid item xs={12} md={8} style={{ width: "100%" }}>
                                 {
                                     stream && stream.getVideoTracks().length > 0 && stream.getVideoTracks().every((t) => t.readyState === "live") && stream.active
-                                        ? <Camera mediaStream={stream} muted={true} />
+                                        ? <>
+                                            <FFT stream={stream} width={700} height={150}/>
+                                            <Camera mediaStream={stream} muted={true}/>
+                                        </>
                                         : error
                                             ? <NoCamera messageId={"connect_camera"} />
                                             : <Loading messageId="allow_media_permission" />
