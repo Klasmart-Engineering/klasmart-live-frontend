@@ -4,7 +4,7 @@ import Typography from "@material-ui/core/Typography";
 import React, { useEffect, useState, useContext } from "react";
 import { RecordedIframe } from "../../components/recordediframe";
 import { Session, Content, ContentIndexState, InteractiveModeState, StreamIdState } from "../../room";
-import { Theme, Card, useTheme, CardContent, useMediaQuery } from "@material-ui/core";
+import { Theme, Card, useTheme, CardContent, useMediaQuery, Divider } from "@material-ui/core";
 import { PreviewPlayer } from "../../components/preview-player";
 import { Cameras, webRTCContext, Stream } from "../../webRTCState";
 import { UserContext } from "../../entry";
@@ -36,6 +36,14 @@ const useStyles = makeStyles((theme: Theme) =>
         activityFrame: {
             border: "1px solid gray",
             borderRadius: 12,
+        },
+        imageFrame: {
+            zIndex: 999,
+            maxWidth: "99%",
+            maxHeight: `calc(100vh - ${theme.spacing(5)}px)`,
+            margin: "0 auto",
+            backdropFilter: "blur(8px)",
+            WebkitBackdropFilter: "blur(8px)",
         },
         toolbar: {
             margin: "0 auto",
@@ -132,7 +140,7 @@ export function Teacher(props: Props): JSX.Element {
             <Grid
                 container
                 direction="row"
-                className={content.type === "Activity" ? "" : classes.activityFrame}
+                className={(material && material.__typename === MaterialTypename.Iframe) ? classes.activityFrame : "" }
                 spacing={1}
             >
                 {content.type === "Activity" ?
@@ -181,10 +189,27 @@ export function Teacher(props: Props): JSX.Element {
                                 <>
                                         {material ?
                                             material.__typename === MaterialTypename.Image ?
-                                                <img
-                                                    style={{width:"100%"}}
-                                                    src={material.url}
-                                                /> :
+                                                <Grid container>
+                                                    <Grid container item style={{
+                                                            height: "100%",
+                                                            position: "absolute",
+                                                            left: 0,
+                                                            right: 0,
+                                                            zIndex: 1,
+                                                            // display: "block",
+                                                            backgroundImage: `url(${material.url})`,
+                                                            filter: "blur(8px)",
+                                                            WebkitFilter: "blur(8px)",
+                                                            backgroundPosition: "center",
+                                                            backgroundRepeat: "no-repeat",
+                                                            backgroundSize: "cover",
+                                                        }}
+                                                    />
+                                                    <img
+                                                        className={classes.imageFrame}
+                                                        src={material.url}
+                                                    />
+                                                </Grid> :
                                             material.__typename === MaterialTypename.Video ||
                                             material.__typename === MaterialTypename.Audio ||
                                             (material.__typename === undefined && material.video) ? //Legacy Format TODO: Deprecate

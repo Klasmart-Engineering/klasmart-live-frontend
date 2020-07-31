@@ -18,6 +18,11 @@ import { LessonMaterial, MaterialTypename } from "./lessonMaterialContext";
 import { AuthTokenProvider } from "./services/auth-token/AuthTokenProvider";
 import { getLanguage } from "./utils/locale";
 
+import testAudio from "./assets/audio/test_audio.m4a";
+import testImageLandscape from "./assets/img/test_image_landsape.jpg";
+import testImagePortrait from "./assets/img/test_image_portrait.jpg";
+import testVideo from "./assets/img/test_video.mp4";
+
 const url = new URL(window.location.href)
 
 /************
@@ -175,11 +180,12 @@ function parseToken() {
                 roomId: url.searchParams.get("roomId") || "test-room",
                 materials: materialsParam ? JSON.parse(materialsParam) : [
                     { __typename: MaterialTypename.Iframe, name: "Pairs", url: "/h5p/play/5ecf4e4b611e18398f7380ef" },
-                    { __typename: MaterialTypename.Video, name: "Video", url: "./video.mp4" },
-                    { __typename: MaterialTypename.Audio, name: "Audio", url: "./audio.m4a" },
-                    { __typename: MaterialTypename.Image, name: "Image", url: "./image.jpg" },
+                    { __typename: MaterialTypename.Video, name: "Video", url: "./test_video.mp4" },
+                    { __typename: MaterialTypename.Audio, name: "Audio", url: "./test_audio.m4a" },
+                    { __typename: MaterialTypename.Image, name: "Portrait Image", url: "./test_image_portrait.jpg" },
+                    { __typename: MaterialTypename.Image, name: "Landscape Image", url: "./test_image_landscape.jpg" },
                     { name: "Pairs - Legacy", url: "/h5p/play/5ecf4e4b611e18398f7380ef" },
-                    { name: "Video - Legacy", video: "./video.mp4" },
+                    { name: "Video - Legacy", video: "./test_video.mp4" },
                 ],
             };
         }

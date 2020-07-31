@@ -33,6 +33,14 @@ const useStyles = makeStyles((theme: Theme) =>
             border: "1px solid gray",
             borderRadius: 12,
         },
+        imageFrame: {
+            zIndex: 999,
+            maxWidth: "99%",
+            maxHeight: `calc(100vh - ${theme.spacing(5)}px)`,
+            margin: "0 auto",
+            backdropFilter: "blur(8px)",
+            WebkitBackdropFilter: "blur(8px)",
+        },
         textMargin: {
             margin: "16px 0"
         }
@@ -145,7 +153,27 @@ export function Student(props: Props): JSX.Element {
         case "Image":
             return <>
                 <Whiteboard height={height}>
-                    <img style={{width:"100%"}} src={content.contentId} />
+                    <Grid container>
+                        <Grid container item style={{
+                                height: "100%",
+                                position: "absolute",
+                                left: 0,
+                                right: 0,
+                                zIndex: 1,
+                                // display: "block",
+                                backgroundImage: `url(${content.contentId})`,
+                                filter: "blur(8px)",
+                                WebkitFilter: "blur(8px)",
+                                backgroundPosition: "center",
+                                backgroundRepeat: "no-repeat",
+                                backgroundSize: "cover",
+                            }}
+                        />
+                        <img
+                            className={classes.imageFrame}
+                            src={content.contentId}
+                        />
+                    </Grid>
                 </Whiteboard>
                 <WBToolbar />
             </>;
