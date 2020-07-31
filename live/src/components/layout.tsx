@@ -76,7 +76,6 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         content: {
             flexGrow: 1,
-            padding: theme.spacing(3),
             transition: theme.transitions.create("margin", {
                 duration: theme.transitions.duration.leavingScreen,
                 easing: theme.transitions.easing.sharp,
@@ -421,6 +420,10 @@ export default function Layout(props: Props): JSX.Element {
                         <main
                             id="iframe-container"
                             className={classes.content}
+                            style={{
+                                height: (material && material.__typename === MaterialTypename.Video) ? "100vh" : "",
+                                backgroundColor: (material && material.__typename === MaterialTypename.Video) ? "#000" : "",
+                                padding: (material && material.__typename === MaterialTypename.Video) ? "" : theme.spacing(3) }}
                             key={key}
                         >
                             {children || null}
