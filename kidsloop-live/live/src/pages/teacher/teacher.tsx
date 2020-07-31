@@ -122,7 +122,7 @@ export function Teacher(props: Props): JSX.Element {
 
     useEffect(() => {
         if (interactiveMode === 3) {
-            showContent({ variables: { roomId, type: "Video", contentId: sessionId } });
+            showContent({ variables: { roomId, type: "Screen", contentId: sessionId } });
         }
     }, [roomId, interactiveMode, sessionId]);
 

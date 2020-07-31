@@ -160,5 +160,16 @@ export function Student(props: Props): JSX.Element {
                 <WBToolbar />
             </>;
             }
+        case "Screen":
+            {
+                const session = users.get(content.contentId)
+                return <>
+                <Typography variant="h6" align="center">{session?session.name:undefined}</Typography>
+                <Whiteboard height={height}>
+                    <Stream stream={webrtc.getAuxStream(content.contentId)}/>
+                </Whiteboard>
+                <WBToolbar />
+            </>;
+            }
     }
 }
