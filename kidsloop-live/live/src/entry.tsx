@@ -136,7 +136,7 @@ function parseToken() {
         return {
             teacher: payload.teacher ? Boolean(payload.teacher) : false,
             name: payload.name ? String(payload.name) : undefined,
-            roomId: String(payload.roomid),
+            roomId: String(payload.roomid || ""),
             materials: payload.materials || [],
         };
         // eslint-disable-next-line no-empty
