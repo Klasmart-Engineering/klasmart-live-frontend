@@ -142,10 +142,10 @@ export function Join(): JSX.Element {
                             <Grid item xs={12} md={8} style={{ width: "100%" }}>
                                 {
                                     stream && stream.getVideoTracks().length > 0 && stream.getVideoTracks().every((t) => t.readyState === "live") && stream.active
-                                        ? <>
-                                            {/* <FFT input={stream} output={false} width={700} height={150}/> */}
+                                        ? <div style={{ position: "relative" }}>
                                             <Camera mediaStream={stream} muted={true}/>
-                                        </>
+                                            <FFT input={stream} output={false} width={700} height={150} color={"#fff"} style={{ position: "absolute", bottom: 12, left: 0, width: "100%", height: 150 }} />
+                                        </div>
                                         : error
                                             ? <NoCamera messageId={"connect_camera"} />
                                             : <Loading messageId="allow_media_permission" />
