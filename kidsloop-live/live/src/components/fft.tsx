@@ -2,13 +2,14 @@ import React, { useEffect, useRef, useMemo } from "react";
 import { useTheme } from "@material-ui/core/styles";
 
 interface Props {
+    color?: string
     input?: MediaStream | HTMLMediaElement | null
     output?: boolean
     raw?: boolean
 }
 
 export function FFT(props: Props & React.CanvasHTMLAttributes<HTMLCanvasElement>) {
-    const {input, output, raw, ...canvasProps} = props;
+    const {color, input, output, raw, ...canvasProps} = props;
     const canvas = useRef<HTMLCanvasElement>(null);
     const theme = useTheme();
     
@@ -54,7 +55,7 @@ export function FFT(props: Props & React.CanvasHTMLAttributes<HTMLCanvasElement>
             if(!canvas.current) {return;}
             const ctx = canvas.current.getContext("2d");
             if(!ctx) {return;}
-            ctx.strokeStyle = theme.palette.type === "dark" ? "#fff" : "#000";
+            ctx.strokeStyle = color ? color : (theme.palette.type === "dark" ? "#fff" : "#000");
             const width = canvas.current.width;
             const height = canvas.current.height;
             ctx.clearRect(0,0,width,canvas.current.height);
