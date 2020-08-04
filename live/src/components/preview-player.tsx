@@ -1,8 +1,9 @@
-import React, { useEffect, useRef, useState, useMemo, Dispatch, SetStateAction } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { FormattedMessage } from "react-intl";
 import { useSubscription } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
-import { CircularProgress, Typography } from "@material-ui/core";
-import { FormattedMessage } from "react-intl";
+import Typography from "@material-ui/core/Typography";
+import Loading from "./loading";
 
 const SUB_EVENTS = gql`
   subscription stream($streamId: ID!) {
@@ -20,20 +21,20 @@ export interface Props {
     frameProps?: React.DetailedHTMLProps<React.IframeHTMLAttributes<HTMLIFrameElement>, HTMLIFrameElement>
 }
 
-export function PreviewPlayer ({ streamId, frameProps, width, height }: Props): JSX.Element {
+export function PreviewPlayer({ streamId, frameProps, width, height }: Props): JSX.Element {
     const ref = useRef<HTMLIFrameElement>(null);
     const [{ frameWidth, frameHeight }, setWidthHeight] = useState({ frameWidth: 0, frameHeight: 0 });
 
     // Buffer events until we have a page ready to render them
-    const {current: bufferedEvents} = useRef<string[]>([]);
-    function sendEvent(event?:string) {
-        if (ref.current && ref.current.contentWindow && ((ref.current.contentWindow as any).PLAYER_READY)) { 
+    const { current: bufferedEvents } = useRef<string[]>([]);
+    function sendEvent(event?: string) {
+        if (ref.current && ref.current.contentWindow && ((ref.current.contentWindow as any).PLAYER_READY)) {
             while (bufferedEvents.length > 0) {
                 const event = bufferedEvents.shift();
                 ref.current.contentWindow.postMessage({ event }, "*");
             }
-            if(event) {ref.current.contentWindow.postMessage({ event }, "*");}
-        } else if(event) {
+            if (event) { ref.current.contentWindow.postMessage({ event }, "*"); }
+        } else if (event) {
             bufferedEvents.push(event);
         }
     }
@@ -42,7 +43,7 @@ export function PreviewPlayer ({ streamId, frameProps, width, height }: Props): 
     useEffect(() => {
         if (!ref.current || !ref.current.contentWindow || !ref.current.contentWindow) { return; }
         const iframeWindow = ref.current.contentWindow;
-        const listener = (e: MessageEvent) => {if(e.data === "ready") {sendEvent();}};
+        const listener = (e: MessageEvent) => { if (e.data === "ready") { sendEvent(); } };
         iframeWindow.addEventListener("message", listener);
         return () => iframeWindow.removeEventListener("message", listener);
     });
@@ -57,20 +58,23 @@ export function PreviewPlayer ({ streamId, frameProps, width, height }: Props): 
         if (ref.current == null || ref.current.contentWindow == null) { return; }
         window.addEventListener("message", ({ data }) => {
             if (!data || !data.width || !data.height) { return; }
-            setWidthHeight({ frameWidth: data.width, frameHeight: data.height});
-            const frameWidth = Number(data.width.replace("px", ""));
-            const frameHeight = Number(data.height.replace("px", ""));
-            // console.log("Preview Player message start"");
-            // console.log("width, height", width, height);
-            // console.log("frameWidth, frameHeight", frameWidth, frameHeight);
-            if(width && height) {
-                setScale(Math.min(Number(width)/frameWidth, Number(height)/frameHeight));
+            const fWidth = Number(data.width.replace("px", ""));
+            const fHeight = Number(data.height.replace("px", ""));
+            setWidthHeight({ frameWidth: fWidth, frameHeight: fHeight });
+            if (width && height) {
+                setScale(Math.min(Number(width) / fWidth, Number(height) / fHeight));
             }
         });
     }, [ref.current, ref.current && ref.current.contentWindow]);
 
-    if(loading) {return <CircularProgress />;}
-    if(error) {return <Typography><FormattedMessage id="failed_to_connect" />: {JSON.stringify(error)}</Typography>;}
+    useEffect(() => {
+        if (typeof width === "number" && typeof height === "number") {
+            setScale(Math.min(width / frameWidth, height / frameHeight));
+        }
+    }, [width, height]);
+
+    if (loading) { return <Loading />; }
+    if (error) { return <Typography><FormattedMessage id="failed_to_connect" />: {JSON.stringify(error)}</Typography>; }
     return <div id="preview-iframe-container" style={{ width, height }}>
         <iframe
             ref={ref}
