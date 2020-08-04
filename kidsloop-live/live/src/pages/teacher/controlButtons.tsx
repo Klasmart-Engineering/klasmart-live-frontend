@@ -172,7 +172,7 @@ export function ControlButtons({ interactiveModeState, disablePresent, disableAc
                         onClose={() => toggleTooltip(false, false, false, false)}
                         onOpen={() => toggleTooltip(false, false, true, false)}
                         placement={isSmDown ? "top" : "left"}
-                        title={<FormattedMessage id="live_buttonActivity" />}
+                        title={<FormattedMessage id="student_mode" />}
                     >
                         <ToggleButton
                             aria-label="student mode"
@@ -210,8 +210,8 @@ export function ControlButtons({ interactiveModeState, disablePresent, disableAc
                         >
                             {
                                 screenShare.getStream() ?
-                                    <StopScreenShareIcon size="1.5rem" />:
-                                    <ScreenShareIcon size="1.5rem" /> 
+                                    <StopScreenShareIcon size="1.5rem" /> :
+                                    <ScreenShareIcon size="1.5rem" />
                             }
                         </ToggleButton>
                     </StyledTooltip>
