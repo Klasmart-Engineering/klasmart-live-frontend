@@ -28,7 +28,7 @@ import { Settings as SettingsIcon } from "@styled-icons/material-twotone/Setting
 import { Close as CloseIcon } from "@styled-icons/material/Close";
 
 import { webRTCContext, Camera, MyCamera, CameraControls, GlobalCameraControl } from "../webRTCState";
-import { UserContext } from "../entry";
+import { UserContext, ThemeContext } from "../entry";
 import { Session, Message, ContentIndexState, InteractiveModeState, StreamIdState } from "../room";
 import Toolbar from "../whiteboard/components/Toolbar";
 import PermissionControls from "../whiteboard/components/PermissionControls";
@@ -37,6 +37,8 @@ import Messages from "../messages";
 import { SendMessage } from "../sendMessage";
 import InviteButton from "./invite";
 import { MaterialTypename } from "../lessonMaterialContext";
+import Lightswitch from "./lightswitch";
+import LanguageSelect from "./languageSelect";
 
 export const DRAWER_WIDTH = 380;
 
@@ -345,13 +347,27 @@ function TabInnerContent({ contentIndexState, title }: { contentIndexState?: Con
         case "title_whiteboard":
             return (<Toolbar />);
         case "title_settings":
-            // const [themeMode, setThemeMode] = getGlobalState('themeMode');
-            return (<Typography>Item <FormattedMessage id={title} /></Typography>);
-            // return (
-            //     <IconButton onClick={() => { setThemeMode("dark") }}>
-            //         <CloseIcon size="1.25rem" />
-            //     </IconButton>
-            // );
+            return (
+                <Grid
+                    container
+                    direction="row"
+                    justify="space-between"
+                    style={{ overflow: "hidden", padding: theme.spacing(2) }}
+                >
+                    <Grid item xs={6}>
+                        <Typography>Set theme color</Typography>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Lightswitch />
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Typography>Language select</Typography>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <LanguageSelect />
+                    </Grid>
+                </Grid>
+            );
         default:
             return (<Typography>Item <FormattedMessage id={title} /></Typography>);
     }

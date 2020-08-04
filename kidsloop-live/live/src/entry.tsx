@@ -63,6 +63,13 @@ const client = new ApolloClient({
     link: wsLink
 } as any);
 
+export interface IThemeContext {
+    themeMode: string,
+    languageCode: string,
+    setThemeMode: React.Dispatch<React.SetStateAction<string>>
+    setLanguageCode: React.Dispatch<React.SetStateAction<string>>
+}
+
 export interface IUserContext {
     teacher: boolean,
     materials: LessonMaterial[]
@@ -72,6 +79,7 @@ export interface IUserContext {
     setName: React.Dispatch<React.SetStateAction<string | undefined>>
 }
 
+export const ThemeContext = createContext<IThemeContext>({ themeMode: "", setThemeMode: () => null, languageCode: "", setLanguageCode: () => null } as any as IThemeContext);
 export const UserContext = createContext<IUserContext>({ setName: () => null, roomId: "", materials: [], teacher: false } as any as IUserContext);
 
 function parseToken() {
@@ -115,6 +123,13 @@ function Entry() {
     const [themeMode, setThemeMode] = useState(url.searchParams.get("theme") || "light");
     const locale = getLanguage(languageCode);
 
+    const themeContext = useMemo<IThemeContext>(() => ({
+        themeMode,
+        setThemeMode,
+        languageCode,
+        setLanguageCode,
+    }), [themeMode, setThemeMode, languageCode, setLanguageCode]);
+
     const userContext = useMemo<IUserContext>(() => ({
         name,
         setName,
@@ -127,18 +142,20 @@ function Entry() {
 
     return (
         <HashRouter>
-            <UserContext.Provider value={userContext}>
-                <webRTCContext.Provider value={webRTCContextValue}>
-                    <ScreenShare.Provider>
-                        <RawIntlProvider value={locale}>
-                            <ThemeProvider theme={themeProvider(languageCode, themeMode)}>
-                                <CssBaseline />
-                                <App />
-                            </ThemeProvider>
-                        </RawIntlProvider>
-                    </ScreenShare.Provider>
-                </webRTCContext.Provider>
-            </UserContext.Provider>
+            <ThemeContext.Provider value={themeContext}>
+                <UserContext.Provider value={userContext}>
+                    <webRTCContext.Provider value={webRTCContextValue}>
+                        <ScreenShare.Provider>
+                            <RawIntlProvider value={locale}>
+                                <ThemeProvider theme={themeProvider(languageCode, themeMode)}>
+                                    <CssBaseline />
+                                    <App />
+                                </ThemeProvider>
+                            </RawIntlProvider>
+                        </ScreenShare.Provider>
+                    </webRTCContext.Provider>
+                </UserContext.Provider>
+            </ThemeContext.Provider>
         </HashRouter>
     );
 }
