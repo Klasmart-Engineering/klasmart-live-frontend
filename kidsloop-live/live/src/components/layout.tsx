@@ -345,7 +345,13 @@ function TabInnerContent({ contentIndexState, title }: { contentIndexState?: Con
         case "title_whiteboard":
             return (<Toolbar />);
         case "title_settings":
+            // const [themeMode, setThemeMode] = getGlobalState('themeMode');
             return (<Typography>Item <FormattedMessage id={title} /></Typography>);
+            // return (
+            //     <IconButton onClick={() => { setThemeMode("dark") }}>
+            //         <CloseIcon size="1.25rem" />
+            //     </IconButton>
+            // );
         default:
             return (<Typography>Item <FormattedMessage id={title} /></Typography>);
     }
@@ -427,6 +433,7 @@ export default function Layout(props: Props): JSX.Element {
             justify="space-between"
             wrap="nowrap"
             className={classes.layout}
+            style={{ backgroundColor: (material && material.__typename === MaterialTypename.Video) ? "#000" : "" }}
         >
             <Grid item xs={12}>
                 <Container
@@ -439,8 +446,8 @@ export default function Layout(props: Props): JSX.Element {
                             className={classes.content}
                             style={{
                                 height: (material && material.__typename === MaterialTypename.Video) ? "100vh" : "",
-                                backgroundColor: (material && material.__typename === MaterialTypename.Video) ? "#000" : "",
-                                padding: (material && material.__typename === MaterialTypename.Video) ? "" : theme.spacing(3) }}
+                                padding: (material && material.__typename === MaterialTypename.Video) ? "" : theme.spacing(3) 
+                            }}
                             key={key}
                         >
                             {children || null}
