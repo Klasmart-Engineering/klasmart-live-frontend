@@ -19,6 +19,9 @@ import StepLabel from "@material-ui/core/StepLabel";
 import Collapse from "@material-ui/core/Collapse";
 import Skeleton from "@material-ui/lab/Skeleton";
 import Hidden from "@material-ui/core/Hidden";
+import FormControl from "@material-ui/core/FormControl/FormControl";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
 
 import { Create as CreateIcon } from "@styled-icons/material-twotone/Create";
 import { People as PeopleIcon } from "@styled-icons/material-twotone/People";
@@ -49,6 +52,12 @@ const TABS = [
     { icon: <CreateIcon role="img" size="1.5rem" />, title: "title_whiteboard", userType: 2 },
     { icon: <SettingsIcon role="img" size="1.5rem" />, title: "title_settings", userType: 0 },
 ];
+
+const OPTION_NUMCOL = [
+    { id: "option-numcol-2", title: "2 columns", value: 2 },
+    { id: "option-numcol-4", title: "4 columns", value: 4 },
+    { id: "option-numcol-6", title: "6 columns", value: 6 },
+]
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -192,10 +201,12 @@ interface TabPanelProps {
     index: any;
     tab: { icon: JSX.Element, title: string };
     value: any;
+    numColState?: number;
+    setNumColState?: React.Dispatch<React.SetStateAction<number>>;
 }
 
 function TabPanel(props: TabPanelProps) {
-    const { contentIndexState, handleOpenDrawer, index, tab, value, ...other } = props;
+    const { contentIndexState, handleOpenDrawer, index, tab, value, numColState, setNumColState, ...other } = props;
     const classes = useStyles();
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
@@ -218,18 +229,27 @@ function TabPanel(props: TabPanelProps) {
                     </IconButton>
                 </Grid>
                 <Divider />
-                <TabInnerContent contentIndexState={contentIndexState} title={tab.title} />
+                <TabInnerContent contentIndexState={contentIndexState} title={tab.title} numColState={numColState} setNumColState={setNumColState} />
             </div>
         </>
     );
 }
 
-function TabInnerContent({ contentIndexState, title }: { contentIndexState?: ContentIndexState, title: string }) {
+function TabInnerContent({ contentIndexState, title, numColState, setNumColState }: {
+    contentIndexState?: ContentIndexState,
+    title: string,
+    numColState?: number,
+    setNumColState?: React.Dispatch<React.SetStateAction<number>>,
+}) {
     const classes = useStyles();
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
     const { sessionId, materials, teacher } = useContext(UserContext);
     const { name } = useContext(UserContext);
+    const changeNumColState = (num: number) => {
+        if (!setNumColState) { return; }
+        setNumColState(num);
+    };
 
     switch (title) {
         case "title_participants":
@@ -362,6 +382,19 @@ function TabInnerContent({ contentIndexState, title }: { contentIndexState?: Con
                             <LanguageSelect />
                         </Grid>
                     </Grid>
+                    <Grid item xs={12}>
+                        <Typography variant="caption" color="textSecondary"># of student views per row</Typography>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <FormControl style={{ width: "100%" }}>
+                            <Select
+                                value={numColState ? numColState : 2}
+                                onChange={(e) => changeNumColState(Number(e.target.value))}
+                            >
+                                {OPTION_NUMCOL.map((option) => <MenuItem key={option.id} value={option.value}>{option.title}</MenuItem>)}
+                            </Select>
+                        </FormControl>
+                    </Grid>
                 </Grid>
             );
         default:
@@ -418,10 +451,12 @@ interface Props {
     contentIndexState: ContentIndexState;
     interactiveModeState: InteractiveModeState;
     streamIdState: StreamIdState;
+    numColState: number;
+    setNumColState: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export default function Layout(props: Props): JSX.Element {
-    const { children, isTeacher, users, messages, openDrawer, handleOpenDrawer, contentIndexState, interactiveModeState, streamIdState } = props;
+    const { children, isTeacher, users, messages, openDrawer, handleOpenDrawer, contentIndexState, interactiveModeState, streamIdState, numColState, setNumColState } = props;
     const classes = useStyles();
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
@@ -458,7 +493,7 @@ export default function Layout(props: Props): JSX.Element {
                             className={classes.content}
                             style={{
                                 height: (material && material.__typename === MaterialTypename.Video) ? "100vh" : "",
-                                padding: (material && material.__typename === MaterialTypename.Video) ? "" : theme.spacing(3) 
+                                padding: (material && material.__typename === MaterialTypename.Video) ? "" : theme.spacing(3)
                             }}
                             key={key}
                         >
@@ -514,7 +549,7 @@ export default function Layout(props: Props): JSX.Element {
                                                     (material && material.__typename !== MaterialTypename.Iframe) //Enable for Image, Audio, Video
                                                 )}
                                                 disableActivity={!(
-                                                    !material || 
+                                                    !material ||
                                                     material.__typename === MaterialTypename.Iframe || //Enable for iframe
                                                     (material.__typename === undefined && !!material.url) //Enable for legacy iframe
                                                 )}
@@ -528,7 +563,7 @@ export default function Layout(props: Props): JSX.Element {
                                     <UsersContext.Provider value={users}>
                                         <MessageContext.Provider value={messages}>
                                             {isTeacher ?
-                                                TABS.filter((t) => t.userType !== 1).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} contentIndexState={contentIndexState} handleOpenDrawer={handleOpenDrawer} index={index} tab={tab} value={value} />) :
+                                                TABS.filter((t) => t.userType !== 1).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} contentIndexState={contentIndexState} handleOpenDrawer={handleOpenDrawer} index={index} tab={tab} value={value} numColState={numColState} setNumColState={setNumColState} />) :
                                                 TABS.filter((t) => t.userType !== 0).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} handleOpenDrawer={handleOpenDrawer} index={index} tab={tab} value={value} />)
                                             }
                                         </MessageContext.Provider>
@@ -584,7 +619,7 @@ export default function Layout(props: Props): JSX.Element {
                             (material && material.__typename !== MaterialTypename.Iframe) //Enable for Image, Audio, Video
                         )}
                         disableActivity={!(
-                            !material || 
+                            !material ||
                             material.__typename === MaterialTypename.Iframe || //Enable for iframe
                             (material.__typename === undefined && !!material.url) //Enable for legacy iframe
                         )}

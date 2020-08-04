@@ -72,6 +72,7 @@ export function Room({ teacher }: Props): JSX.Element {
     const [contentIndex, setContentIndex] = useState<number>(0);
     const [interactiveMode, setInteractiveMode] = useState<number>(0);
     const [streamId, setStreamId] = useState<string>();
+    const [numColState, setNumColState] = useState(2)
 
     const [openDrawer, setOpenDrawer] = useState<boolean>(isSmDown ? false : true);
     const handleOpenDrawer = (open?: boolean) => {
@@ -131,7 +132,6 @@ export function Room({ teacher }: Props): JSX.Element {
 
     if (error) { return <Typography><FormattedMessage id="failed_to_connect" />{JSON.stringify(error)}</Typography>; }
     if (loading || !content) { return <Grid container alignItems="center" style={{ height: "100%" }}><Loading messageId="loading" /></Grid>; }
-
     return (
         <WhiteboardContextProvider>
             <Layout
@@ -143,6 +143,8 @@ export function Room({ teacher }: Props): JSX.Element {
                 contentIndexState={{ contentIndex, setContentIndex }}
                 interactiveModeState={{ interactiveMode, setInteractiveMode }}
                 streamIdState={{ streamId, setStreamId }}
+                numColState={numColState}
+                setNumColState={setNumColState}
             >
                 {
                     teacher
@@ -154,6 +156,7 @@ export function Room({ teacher }: Props): JSX.Element {
                             contentIndexState={{ contentIndex, setContentIndex }}
                             interactiveModeState={{ interactiveMode, setInteractiveMode }}
                             streamIdState={{ streamId, setStreamId }}
+                            numColState={numColState}
                         />
                         : <Student
                             content={content}
