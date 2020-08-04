@@ -22,123 +22,27 @@ import testAudio from "./assets/audio/test_audio.m4a";
 import testImageLandscape from "./assets/img/test_image_landsape.jpg";
 import testImagePortrait from "./assets/img/test_image_portrait.jpg";
 import testVideo from "./assets/img/test_video.mp4";
+import { themeProvider } from "./themeProvider";
 
 const url = new URL(window.location.href)
 
-/************
- * UI START *
- ************/
 // It's a temporary that sending a ui value as a url parameter.
 // Later we may be able to send the hub UI's redux value like <Live lang={lang} theme={theme} />
-const languageCode = url.searchParams.get("lang") || "en";
-const themeMode = url.searchParams.get("theme") || "light";
-const locale = getLanguage(languageCode);
-
-function setTypography(languageCode: string) {
-    let localeFontFamily = "CircularStd";
-    const localeWeightLight = 400;
-    const localeWeightMedium = 600;
-    let localeWeightRegular = 400;
-    const localeWeightBold = 700;
-
-    switch (languageCode) {
-        case "en":
-            localeFontFamily = "CircularStd";
-            break;
-        case "ko":
-            localeFontFamily = "NanumSquareRound";
-            localeWeightRegular = 600;
-            break;
-        case "zh-CN":
-            localeFontFamily = "Source Han Sans SC";
-            break;
-        default:
-            break;
+function getDefaultLanguageCode() {
+    const localeCodes = ["en", "ko"]
+    const languages = navigator.languages || [
+        (navigator as any).language,
+        (navigator as any).browerLanguage,
+        (navigator as any).userLanguage,
+        (navigator as any).systemLanguage,
+    ];
+    for (const language of languages) {
+        if (localeCodes.indexOf(language) !== -1) {
+            return language;
+        }
     }
-    localeFontFamily = [localeFontFamily, "-apple-system", "Segoe UI", "Helvetica", "sans-serif"].join(",");
-    return { localeFontFamily, localeWeightLight, localeWeightMedium, localeWeightRegular, localeWeightBold };
+    return "en";
 }
-
-const localeTypography = setTypography("en");
-const typography = {
-    button: {
-        textTransform: "none",
-    },
-    fontFamily: localeTypography.localeFontFamily,
-    fontWeightBold: localeTypography.localeWeightBold,
-    fontWeightLight: localeTypography.localeWeightLight,
-    fontWeightMedium: localeTypography.localeWeightMedium,
-    fontWeightRegular: localeTypography.localeWeightRegular,
-} as any;
-
-const overrides = {
-    MuiAppBar: {
-        root: {
-            backgroundColor: themeMode === "light" ? "#fafafa" : "#041125",
-        },
-    },
-    MuiTable: {
-        root: {
-            backgroundColor: themeMode === "light" ? "#fff" : "#05152e",
-        },
-    },
-    MuiTableCell: {
-        stickyHeader: {
-            backgroundColor: themeMode === "light" ? "#fafafa" : "#041125",
-        },
-    },
-    MuiTab: {
-        root: {
-            backgroundColor: themeMode === "light" ? "#fafafa" : "#041125 !important",
-        },
-    },
-    MuiIconButton: {
-        colorPrimary: {
-            color: themeMode === "light" ? "#0E78D5" : "#fafafa !important", // TODO: Confirm color
-            backgroundColor: themeMode === "light" ? "#f6fafe" : "#0E78D5 !important", // TODO: Confirm color
-        },
-    },
-    MuiToggleButton: {
-        root: {
-            color: themeMode === "light" ? "#1B365D" : "#FFF",
-            backgroundColor: themeMode === "light" ? "#FFF" : "#1B365D",
-            "&:hover": {
-                "-webkit-transition": "all .4s ease",
-                color: themeMode === "light" ? "#FFF" : "#030D1C",
-                backgroundColor: themeMode === "light" ? "#1B365D" : "#FFF",
-                "box-shadow": "0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08)",
-                "transition": "all .4s ease",
-            },
-        },
-    }
-};
-
-const palette: PaletteOptions = {
-    background: {
-        default: themeMode === "light" ? "#fafafa" : "#030D1C",
-        paper: themeMode === "light" ? "#FFF" : "#030D1C",
-    },
-    primary: {
-        contrastText: "#FFF",
-        dark: "#1896ea",
-        light: "#0E78D5",
-        main: "#0E78D5",
-    },
-};
-
-let theme: Theme;
-if (themeMode === "light") {
-    palette.type = "light";
-    palette.background = { default: "#FFF" };
-    theme = createMuiTheme({ overrides, palette, typography });
-} else {
-    palette.type = "dark";
-    theme = createMuiTheme({ overrides, palette, typography });
-}
-theme = responsiveFontSizes(theme);
-/**********
- * UI END *
- **********/
 
 export const sessionId = uuid();
 
@@ -207,6 +111,10 @@ const params = parseToken();
 function Entry() {
     if (!params) { return <Typography><FormattedMessage id="error_invaild_token" /></Typography>; }
     const [name, setName] = useState(params.name);
+    const [languageCode, setLanguageCode] = useState(url.searchParams.get("lang") || getDefaultLanguageCode());
+    const [themeMode, setThemeMode] = useState(url.searchParams.get("theme") || "light");
+    const locale = getLanguage(languageCode);
+
     const userContext = useMemo<IUserContext>(() => ({
         name,
         setName,
@@ -223,7 +131,7 @@ function Entry() {
                 <webRTCContext.Provider value={webRTCContextValue}>
                     <ScreenShare.Provider>
                         <RawIntlProvider value={locale}>
-                            <ThemeProvider theme={theme}>
+                            <ThemeProvider theme={themeProvider(languageCode, themeMode)}>
                                 <CssBaseline />
                                 <App />
                             </ThemeProvider>
