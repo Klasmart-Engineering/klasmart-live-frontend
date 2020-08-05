@@ -94,7 +94,7 @@ export default function LanguageSelect(props: Props) {
                             languageText
                         }
                     </span>
-                    <ExpandMoreIcon fontSize="small" />
+                    <ExpandMoreIcon size="1em" />
                 </Button>
             </Tooltip>
             <StyledMenu
