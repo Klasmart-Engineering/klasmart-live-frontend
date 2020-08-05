@@ -54,9 +54,9 @@ const TABS = [
 ];
 
 const OPTION_NUMCOL = [
-    { id: "option-numcol-2", title: "2 columns", value: 2 },
-    { id: "option-numcol-4", title: "4 columns", value: 4 },
-    { id: "option-numcol-6", title: "6 columns", value: 6 },
+    { id: "option-numcol-2", title: <FormattedMessage id="two_columns" />, value: 2 },
+    { id: "option-numcol-4", title: <FormattedMessage id="four_columns" />, value: 4 },
+    { id: "option-numcol-6", title: <FormattedMessage id="six_columns" />, value: 6 },
 ]
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -376,14 +376,19 @@ function TabInnerContent({ contentIndexState, title, numColState, setNumColState
                     <Lightswitch type="text" />
                     <Grid container direction="row" alignItems="center">
                         <Grid item xs={6}>
-                            <Typography variant="body2">Language</Typography>
+                            <Typography variant="body2">
+                                <FormattedMessage id="language" />
+                            </Typography>
                         </Grid>
                         <Grid item xs={6} style={{ textAlign: "right" }}>
                             <LanguageSelect />
                         </Grid>
                     </Grid>
+                    <div className={classes.toolbar} />
                     <Grid item xs={12}>
-                        <Typography variant="caption" color="textSecondary"># of student views per row</Typography>
+                        <Typography variant="caption" color="textSecondary">
+                            <FormattedMessage id="num_views_per_row" />
+                        </Typography>
                     </Grid>
                     <Grid item xs={12}>
                         <FormControl style={{ width: "100%" }}>

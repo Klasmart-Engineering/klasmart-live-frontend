@@ -1,12 +1,16 @@
-import IconButton from "@material-ui/core/IconButton";
-import { withStyles } from "@material-ui/core/styles";
-import Switch from "@material-ui/core/Switch";
 import React, { useState, useContext } from "react";
+import { FormattedMessage } from "react-intl";
+import { withStyles } from "@material-ui/core/styles";
+import IconButton from "@material-ui/core/IconButton";
+import Switch from "@material-ui/core/Switch";
+import Typography from "@material-ui/core/Typography";
+import Grid from "@material-ui/core/Grid";
+import Checkbox from "@material-ui/core/Checkbox";
+
 import { ThemeContext } from "../entry";
 
 import { Brightness4 as Brightness4Icon } from "@styled-icons/material/Brightness4";
 import { Brightness7 as Brightness7Icon } from "@styled-icons/material/Brightness7";
-import { Typography, Grid, Checkbox } from "@material-ui/core";
 
 interface Props {
     children?: React.ReactNode;
@@ -87,7 +91,7 @@ export default function Lightswitch(props: Props) {
     }
 
     const [toggled, setToggled] = useState(themeMode === "light" ? true : false);
-    const {children, className, type, ...other } = props;
+    const { children, className, type, ...other } = props;
 
     let sibling: React.ReactNode;
     React.Children.map(children, (child) => (
@@ -106,7 +110,7 @@ export default function Lightswitch(props: Props) {
                     }}
                     {...other}
                 >
-                    { toggled ?
+                    {toggled ?
                         <Brightness4Icon size="1rem" /> :
                         <Brightness7Icon size="1rem" />
                     }
@@ -114,14 +118,14 @@ export default function Lightswitch(props: Props) {
             )
         case "text":
             return (
-                <Grid 
-                    container 
+                <Grid
+                    container
                     direction="row"
-                    alignItems="center" 
+                    alignItems="center"
                 >
                     <Grid item xs={10}>
                         <Typography variant="body2">
-                            Enable dark mode
+                            <FormattedMessage id="enable_dark_mode" />
                         </Typography>
                     </Grid>
                     <Grid item xs={2}>
