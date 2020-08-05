@@ -6,11 +6,12 @@ import { ThemeContext } from "../entry";
 
 import { Brightness4 as Brightness4Icon } from "@styled-icons/material/Brightness4";
 import { Brightness7 as Brightness7Icon } from "@styled-icons/material/Brightness7";
+import { Typography, Grid, Checkbox } from "@material-ui/core";
 
 interface Props {
     children?: React.ReactNode;
     className?: string;
-    iconOnly?: boolean;
+    type?: "icon" | "text" | "switch" | "default" | undefined;
 }
 
 const StyledSwitch = withStyles({
@@ -86,38 +87,68 @@ export default function Lightswitch(props: Props) {
     }
 
     const [toggled, setToggled] = useState(themeMode === "light" ? true : false);
-    const {children, className, iconOnly, ...other } = props;
-    
+    const {children, className, type, ...other } = props;
+
     let sibling: React.ReactNode;
     React.Children.map(children, (child) => (
         typeof child !== "string" ? sibling = child : {}
     ));
 
-    return (
-        iconOnly ?
-            <IconButton
-                aria-label="set dark mode"
-                style={{ color: "inherit", fontSize: "inherit" }}
-                onClick={() => {
-                    setToggled(!toggled);
-                    setDarkMode(!toggled);
-                }}
-                {...other}
-            >
-                { toggled ?
-                    <Brightness4Icon size="1rem" /> :
-                    <Brightness7Icon size="1rem" />
-                }
-            </IconButton>
-            :
-            <StyledSwitch
-                checked={toggled}
-                className={className}
-                onChange={(e) => {
-                    setToggled(e.target.checked);
-                    setDarkMode(e.target.checked);
-                }}
-                {...other}
-            />
-    );
+    switch (type) {
+        case "icon":
+            return (
+                <IconButton
+                    aria-label="set dark mode"
+                    style={{ color: "inherit", fontSize: "inherit" }}
+                    onClick={() => {
+                        setToggled(!toggled);
+                        setDarkMode(!toggled);
+                    }}
+                    {...other}
+                >
+                    { toggled ?
+                        <Brightness4Icon size="1rem" /> :
+                        <Brightness7Icon size="1rem" />
+                    }
+                </IconButton>
+            )
+        case "text":
+            return (
+                <Grid 
+                    container 
+                    direction="row"
+                    alignItems="center" 
+                >
+                    <Grid item xs={10}>
+                        <Typography variant="body2">
+                            Enable dark mode
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={2}>
+                        <Checkbox
+                            checked={!toggled}
+                            onClick={() => {
+                                setToggled(!toggled);
+                                setDarkMode(!toggled);
+                            }}
+                            color="primary"
+                            style={{ backgroundColor: "transparent" }}
+                            inputProps={{ 'aria-label': 'set dark mode' }}
+                        />
+                    </Grid>
+                </Grid>
+            )
+        default:
+            return (
+                <StyledSwitch
+                    checked={toggled}
+                    className={className}
+                    onChange={(e) => {
+                        setToggled(e.target.checked);
+                        setDarkMode(e.target.checked);
+                    }}
+                    {...other}
+                />
+            )
+    }
 }

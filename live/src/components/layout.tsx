@@ -350,21 +350,17 @@ function TabInnerContent({ contentIndexState, title }: { contentIndexState?: Con
             return (
                 <Grid
                     container
-                    direction="row"
-                    justify="space-between"
+                    direction="column"
                     style={{ overflow: "hidden", padding: theme.spacing(2) }}
                 >
-                    <Grid item xs={6}>
-                        <Typography>Set theme color</Typography>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Lightswitch />
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Typography>Language select</Typography>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <LanguageSelect />
+                    <Lightswitch type="text" />
+                    <Grid container direction="row" alignItems="center">
+                        <Grid item xs={6}>
+                            <Typography variant="body2">Language</Typography>
+                        </Grid>
+                        <Grid item xs={6} style={{ textAlign: "right" }}>
+                            <LanguageSelect />
+                        </Grid>
                     </Grid>
                 </Grid>
             );
@@ -560,7 +556,7 @@ export default function Layout(props: Props): JSX.Element {
                                     }
                                 </Tabs>
                                 <Collapse in={openDrawer}>
-                                    <Grid item xs={12} style={{ backgroundColor: "#FFF" }}>
+                                    <Grid item xs={12} style={{ backgroundColor: theme.palette.type === "light" ? "#FFF" : "#030D1C" }}>
                                         <UsersContext.Provider value={users}>
                                             <MessageContext.Provider value={messages}>
                                                 {isTeacher ?
