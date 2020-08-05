@@ -42,6 +42,12 @@ const messages: Record<string, string> = {
     mute_all: "Mute All",
     unmute_all: "Unmute All",
     share_something_here: "Share something here",
+    enable_dark_mode: "Enable dark mode",
+    language: "Language",
+    two_columns: "2 columns",
+    four_columns: "4 columns",
+    six_columns: "6 columns",
+    num_views_per_row: "# of student views per row",
 
     // Whiteboard
     whiteboard_color: "Color",
