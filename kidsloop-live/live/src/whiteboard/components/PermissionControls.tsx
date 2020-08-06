@@ -1,6 +1,4 @@
-import React, { ReactChild, ReactChildren, useCallback, useContext, useState } from "react";
-import { gql } from "apollo-boost";
-import { useMutation, useSubscription } from "@apollo/react-hooks";
+import React, { ReactChild, ReactChildren, useCallback } from "react";
 import { useTheme } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import Grid from "@material-ui/core/Grid/Grid";
@@ -10,9 +8,6 @@ import List from "@material-ui/core/List";
 import ListSubheader from '@material-ui/core/ListSubheader';
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import { Permissions, createEmptyPermissions } from "../types/Permissions";
-import { useWhiteboard } from "../context-provider/WhiteboardContextProvider";
-import { UserContext } from "../../entry";
 
 import { Eraser as EraserIcon } from "@styled-icons/boxicons-solid/Eraser";
 import { InvertColors as InvertColorsIcon } from "@styled-icons/material/InvertColors";
@@ -20,16 +15,8 @@ import { InvertColorsOff as InvertColorsOffIcon } from "@styled-icons/material/I
 
 import StyledIcon from "../../components/styled/icon";
 
-const WHITEBOARD_SEND_PERMISSIONS = gql`
-  mutation whiteboardSendPermissions($roomId: ID!, $userId: ID!, $permissions: String) {
-      whiteboardSendPermissions(roomId: $roomId, userId: $userId, permissions: $permissions)
-  }
-`;
-
-const SUBSCRIBE_WHITEBOARD_PERMISSIONS = gql`
-  subscription whiteboardPermissions($roomId: ID! $userId: ID!) {
-      whiteboardPermissions(roomId: $roomId, userId: $userId)
-  }`;
+import { useSynchronizedState } from "../context-providers/SynchronizedStateProvider";
+import { useToolbarContext } from "kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
 
 type Props = {
     children?: ReactChild | ReactChildren | null
@@ -42,38 +29,28 @@ export default function PermissionControls({ children, selfUserId, otherUserId, 
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
 
-    const [sendPermissionsMutation] = useMutation(WHITEBOARD_SEND_PERMISSIONS);
-    const [otherUserPermissions, setOtherUserPermissions] = useState<Permissions>(createEmptyPermissions());
+    const { state: { display }, actions: { setDisplay, setPermissions, getPermissions } } = useSynchronizedState();
+    const { actions: { clear } } = useToolbarContext();
 
-    const { roomId } = useContext(UserContext);
-    const { actions: { clear } } = useWhiteboard();
-
-    useSubscription(SUBSCRIBE_WHITEBOARD_PERMISSIONS, {
-        onSubscriptionData: ({ subscriptionData: { data: { whiteboardPermissions } } }) => {
-            if (whiteboardPermissions) {
-                setOtherUserPermissions(JSON.parse(whiteboardPermissions as string));
-            }
-        }, variables: { roomId, userId: otherUserId }
-    });
+    const permissions = getPermissions(otherUserId);
 
     const toggleAllowCreateShapes = useCallback(() => {
         const newPermissions = {
-            ...otherUserPermissions,
-            allowCreateShapes: !otherUserPermissions.allowCreateShapes,
+            ...permissions,
+            allowCreateShapes: !permissions.allowCreateShapes,
         };
+        setPermissions(otherUserId, newPermissions)
 
-        setOtherUserPermissions(newPermissions);
+    }, [permissions, setPermissions, otherUserId]);
 
-        sendPermissionsMutation({
-            variables: {
-                roomId, userId: otherUserId, permissions: JSON.stringify(newPermissions)
-            }
-        });
-    }, [otherUserPermissions, sendPermissionsMutation, otherUserId]);
+    const toggleDisplay = useCallback(() => {
+        const newDisplay = !display;
+        setDisplay(newDisplay);
+    }, [display, setDisplay]);
 
     const clearUserWhiteboard = useCallback(() => {
-        clear(otherUserId);
-    }, [otherUserId]);
+        clear([otherUserId]);
+    }, [otherUserId, clear]);
 
     return (miniMode ?
         <Grid container justify="space-evenly" alignItems="center" item xs={6}>
@@ -85,7 +62,7 @@ export default function PermissionControls({ children, selfUserId, otherUserId, 
                         onClick={toggleAllowCreateShapes}
                         size="small"
                     >
-                        {otherUserPermissions.allowCreateShapes
+                        {permissions.allowCreateShapes
                             ? <InvertColorsIcon size={isSmDown ? "1rem" : "1.25rem"} color="#0E78D5" />
                             : <InvertColorsOffIcon size={isSmDown ? "1rem" : "1.25rem"} color="#F44336" />
                         }
@@ -108,12 +85,12 @@ export default function PermissionControls({ children, selfUserId, otherUserId, 
             <MenuItem onClick={toggleAllowCreateShapes}>
                 <ListItemIcon>
                     <StyledIcon
-                        icon={otherUserPermissions.allowCreateShapes ? <InvertColorsIcon /> : <InvertColorsOffIcon />}
+                        icon={permissions.allowCreateShapes ? <InvertColorsIcon /> : <InvertColorsOffIcon />}
                         size="medium"
-                        color={otherUserPermissions.allowCreateShapes ? "#0E78D5" : "#dc004e"}
+                        color={permissions.allowCreateShapes ? "#0E78D5" : "#dc004e"}
                     />
                 </ListItemIcon>
-                <ListItemText primary={otherUserPermissions.allowCreateShapes ? "Disallow drawing" : "Allow drawing"} />
+                <ListItemText primary={permissions.allowCreateShapes ? "Disallow drawing" : "Allow drawing"} />
             </MenuItem>
             <MenuItem onClick={clearUserWhiteboard}>
                 <ListItemIcon>

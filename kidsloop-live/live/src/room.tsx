@@ -10,10 +10,10 @@ import { Student } from "./pages/student/student";
 import { Teacher } from "./pages/teacher/teacher";
 import Layout from "./components/layout";
 import Loading from "./components/loading";
-import { WhiteboardContextProvider } from "./whiteboard/context-provider/WhiteboardContextProvider";
 import { EventEmitter } from "eventemitter3"
 import { WebRTCSFUContext } from "./webrtc/sfu";
 import { ScreenShare } from "./pages/teacher/screenShareProvider";
+import { GlobalWhiteboardContext } from "./whiteboard/context-providers/GlobalWhiteboardContext";
 
 export interface Session {
     id: string,
@@ -78,7 +78,7 @@ export function Room({ teacher }: Props): JSX.Element {
     return (
         <WebRTCSFUContext.Provide>
             <ScreenShare.Provide>
-                <WhiteboardContextProvider>
+                <GlobalWhiteboardContext>
                     <Layout
                         isTeacher={teacher}
                         openDrawer={openDrawer}
@@ -88,21 +88,21 @@ export function Room({ teacher }: Props): JSX.Element {
                         streamIdState={{ streamId, setStreamId }}
                         numColState={numColState}
                         setNumColState={setNumColState}
-                        >
+                    >
                         {
                             teacher
-                            ? <Teacher
-                                openDrawer={openDrawer}
-                                handleOpenDrawer={handleOpenDrawer}
-                                contentIndexState={{ contentIndex, setContentIndex }}
-                                interactiveModeState={{ interactiveMode, setInteractiveMode }}
-                                streamIdState={{ streamId, setStreamId }}
-                                numColState={numColState}
-                            />
-                            : <Student openDrawer={openDrawer} />
+                                ? <Teacher
+                                    openDrawer={openDrawer}
+                                    handleOpenDrawer={handleOpenDrawer}
+                                    contentIndexState={{ contentIndex, setContentIndex }}
+                                    interactiveModeState={{ interactiveMode, setInteractiveMode }}
+                                    streamIdState={{ streamId, setStreamId }}
+                                    numColState={numColState}
+                                />
+                                : <Student openDrawer={openDrawer} />
                         }
                     </Layout>
-                </WhiteboardContextProvider>
+                </GlobalWhiteboardContext>
             </ScreenShare.Provide>
         </WebRTCSFUContext.Provide>
     );
@@ -125,12 +125,12 @@ const SUB_ROOM = gql`
 
 const context = createContext<{ value: RoomContext }>(undefined as any);
 export class RoomContext {
-    public static Provide(props: {children?: JSX.Element | JSX.Element[]}) {
+    public static Provide(props: { children?: JSX.Element | JSX.Element[] }) {
         const { roomId, name } = useContext(UserContext);
 
         const ref = useRef<RoomContext>(undefined as any)
-        const [value, rerender] = useReducer(() => ({value:ref.current}),{value:ref.current})
-        if(!ref.current) { ref.current = new RoomContext(rerender, roomId) }
+        const [value, rerender] = useReducer(() => ({ value: ref.current }), { value: ref.current })
+        if (!ref.current) { ref.current = new RoomContext(rerender, roomId) }
 
         const { loading, error } = useSubscription(SUB_ROOM, {
             onSubscriptionData: ({ subscriptionData }) => {
