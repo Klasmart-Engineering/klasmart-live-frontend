@@ -30,7 +30,7 @@ import { Forum as ChatIcon } from "@styled-icons/material-twotone/Forum";
 import { Settings as SettingsIcon } from "@styled-icons/material-twotone/Settings";
 import { Close as CloseIcon } from "@styled-icons/material/Close";
 import { Grid as GridIcon } from "@styled-icons/evaicons-solid/Grid";
-import { List as ListIcon } from "@styled-icons/ionicons-solid/List";
+import { ViewList as ListIcon } from "@styled-icons/material/ViewList";
 
 import { webRTCContext, Camera, MyCamera, CameraControls, GlobalCameraControl } from "../webRTCState";
 import { UserContext } from "../entry";
