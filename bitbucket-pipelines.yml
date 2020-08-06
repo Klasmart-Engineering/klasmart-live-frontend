@@ -1,4 +1,4 @@
-image: node:10.15.3
+image: node:14.5.0
 
 pipelines:
   default:
@@ -6,7 +6,6 @@ pipelines:
         caches:
           - node
         script:
-          - cd hub
+          - cd live
           - npm install
           - npm run build
-          - npm run build:prod
