@@ -1,9 +1,8 @@
-import { createStyles, makeStyles, useTheme, Theme } from "@material-ui/core/styles";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { FormattedMessage } from "react-intl";
 import { UserContext } from "../../entry";
 import { Content, Session } from "../../room";
@@ -12,7 +11,6 @@ import WBToolbar from "../../whiteboard/components/Toolbar";
 import { webRTCContext, Stream } from "../../webRTCState";
 import { PreviewPlayer } from "../../components/preview-player";
 import { RecordedIframe } from "../../components/recordediframe";
-import CameraContainer from "../../components/cameraContainer";
 import { ReplicaMedia } from "../synchronized-video";
 import { MaterialTypename } from "../../lessonMaterialContext";
 
@@ -49,34 +47,27 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface Props {
     content: Content;
-    users: Map<string,Session>
+    users: Map<string, Session>
 }
 
 export function Student(props: Props): JSX.Element {
     const { content, users } = props;
     const classes = useStyles();
-    const theme = useTheme();
-    const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
 
-    const { name,  } = useContext(UserContext);
+    const { name } = useContext(UserContext);
     const webrtc = useContext(webRTCContext);
     const [streamId, setStreamId] = useState<string>();
+    const divRef = useRef<HTMLDivElement>(null);
     const [width, setWidth] = useState<string | number>("100%");
     const [height, setHeight] = useState<string | number>("100%");
-    const [maxWidth, setMaxWidth] = useState<number>(0);
-    const [maxHeight, setMaxHeight] = useState<number>(0);
 
     useEffect(() => {
-        const containerRef = window.document.getElementById("player-container");
-        if (containerRef) {
-            const contWidth = containerRef.getBoundingClientRect().width;
-            const contHeight = containerRef.getBoundingClientRect().height;
-            setWidth(contWidth);
-            setHeight(Math.min(contWidth, contWidth * 0.5625));
-            setMaxWidth(contWidth);
-            setMaxHeight(contHeight);
-        }
-    }, []);
+        if (!divRef || !divRef.current) { return; }
+        const contWidth = divRef.current.getBoundingClientRect().width;
+        const contHeight = divRef.current.getBoundingClientRect().height;
+        setWidth(contWidth);
+        setHeight(Math.min(contWidth, contWidth * 0.5625));
+    }, [divRef.current]);
 
     switch (content.type) {
         case "Blank":
@@ -102,7 +93,7 @@ export function Student(props: Props): JSX.Element {
             );
         case "Stream":
             return (<>
-                <div id="player-container" className={classes.activityFrame}>
+                <div ref={divRef} id="player-container" className={classes.activityFrame}>
                     <div style={{ width: width, height: height }}>
                         <Whiteboard width={width} height={height}>
                             <PreviewPlayer streamId={content.contentId} height={height} width={width} />
@@ -146,7 +137,7 @@ export function Student(props: Props): JSX.Element {
         case "Video":
             return <>
                 <Whiteboard height={height}>
-                    <ReplicaMedia type={content.type === "Video"?MaterialTypename.Video:MaterialTypename.Audio} style={{width:"100%"}} sessionId={content.contentId}/>
+                    <ReplicaMedia type={content.type === "Video" ? MaterialTypename.Video : MaterialTypename.Audio} style={{ width: "100%" }} sessionId={content.contentId} />
                 </Whiteboard>
                 <WBToolbar />
             </>;
@@ -155,19 +146,19 @@ export function Student(props: Props): JSX.Element {
                 <Whiteboard height={height}>
                     <Grid container>
                         <Grid container item style={{
-                                height: "100%",
-                                position: "absolute",
-                                left: 0,
-                                right: 0,
-                                zIndex: 1,
-                                // display: "block",
-                                backgroundImage: `url(${content.contentId})`,
-                                filter: "blur(8px)",
-                                WebkitFilter: "blur(8px)",
-                                backgroundPosition: "center",
-                                backgroundRepeat: "no-repeat",
-                                backgroundSize: "cover",
-                            }}
+                            height: "100%",
+                            position: "absolute",
+                            left: 0,
+                            right: 0,
+                            zIndex: 1,
+                            // display: "block",
+                            backgroundImage: `url(${content.contentId})`,
+                            filter: "blur(8px)",
+                            WebkitFilter: "blur(8px)",
+                            backgroundPosition: "center",
+                            backgroundRepeat: "no-repeat",
+                            backgroundSize: "cover",
+                        }}
                         />
                         <img
                             className={classes.imageFrame}
@@ -181,23 +172,23 @@ export function Student(props: Props): JSX.Element {
             {
                 const session = users.get(content.contentId)
                 return <>
-                <Typography variant="h6" align="center">{session?session.name:undefined}</Typography>
-                <Whiteboard height={height}>
-                    <Stream stream={webrtc.getCameraStream(content.contentId)}/>
-                </Whiteboard>
-                <WBToolbar />
-            </>;
+                    <Typography variant="h6" align="center">{session ? session.name : undefined}</Typography>
+                    <Whiteboard height={height}>
+                        <Stream stream={webrtc.getCameraStream(content.contentId)} />
+                    </Whiteboard>
+                    <WBToolbar />
+                </>;
             }
         case "Screen":
             {
                 const session = users.get(content.contentId)
                 return <>
-                <Typography variant="h6" align="center">{session?session.name:undefined}</Typography>
-                <Whiteboard height={height}>
-                    <Stream stream={webrtc.getAuxStream(content.contentId)}/>
-                </Whiteboard>
-                <WBToolbar />
-            </>;
+                    <Typography variant="h6" align="center">{session ? session.name : undefined}</Typography>
+                    <Whiteboard height={height}>
+                        <Stream stream={webrtc.getAuxStream(content.contentId)} />
+                    </Whiteboard>
+                    <WBToolbar />
+                </>;
             }
     }
 }
