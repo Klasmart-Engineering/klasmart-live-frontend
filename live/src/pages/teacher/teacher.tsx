@@ -235,6 +235,12 @@ function StudentPreviewCard({ sessionId, session, numColState }: { sessionId: st
         }
     }, [cardConRef.current, zoomin, numColState]);
 
+    const handleOnClickZoom = () => {
+        // Automatically scroll top when clicking Zoom In
+        if (!zoomin) { window.scrollTo(0, 0) }
+        setZoomin(!zoomin)
+    }
+
     return (
         <Grid item xs={12} md={zoomin ? 12 : (12 / numColState as (2 | 4 | 6))} style={{ order: zoomin ? -1 : 0 }}>
             <Card>
@@ -261,7 +267,7 @@ function StudentPreviewCard({ sessionId, session, numColState }: { sessionId: st
                     }
                     <Hidden mdDown>
                         <Grid>
-                            <IconButton aria-label="Zoom In student screen" onClick={() => setZoomin(!zoomin)}>
+                            <IconButton aria-label="Zoom In student screen" onClick={handleOnClickZoom}>
                                 {zoomin
                                     ? <ZoomOutIcon size="1.25rem" color="#0E78D5" />
                                     : <ZoomInIcon size="1.25rem" color="#0E78D5" />
