@@ -29,14 +29,15 @@ import { LibraryBooks as LessonPlanIcon } from "@styled-icons/material-twotone/L
 import { Forum as ChatIcon } from "@styled-icons/material-twotone/Forum";
 import { Settings as SettingsIcon } from "@styled-icons/material-twotone/Settings";
 import { Close as CloseIcon } from "@styled-icons/material/Close";
+import { Grid as GridIcon } from "@styled-icons/evaicons-solid/Grid";
+import { List as ListIcon } from "@styled-icons/ionicons-solid/List";
 
 import { webRTCContext, Camera, MyCamera, CameraControls, GlobalCameraControl } from "../webRTCState";
-import { UserContext, ThemeContext } from "../entry";
+import { UserContext } from "../entry";
 import { Session, Message, ContentIndexState, InteractiveModeState, StreamIdState } from "../room";
 import Toolbar from "../whiteboard/components/Toolbar";
 import PermissionControls from "../whiteboard/components/PermissionControls";
 import { ControlButtons } from "../pages/teacher/controlButtons";
-import Messages from "../messages";
 import { SendMessage } from "../sendMessage";
 import InviteButton from "./invite";
 import { MaterialTypename } from "../lessonMaterialContext";
@@ -251,6 +252,8 @@ function TabInnerContent({ contentIndexState, title, numColState, setNumColState
         setNumColState(num);
     };
 
+    const [gridView, setGridView] = useState(false)
+
     switch (title) {
         case "title_participants":
             const users = useContext(UsersContext);
@@ -260,8 +263,17 @@ function TabInnerContent({ contentIndexState, title, numColState, setNumColState
                     {teacher ? <>
                         <InviteButton />
                         <GlobalCameraControl />
-                        <Grid item xs={12}><Divider /></Grid>
                     </> : null}
+                    {isSmDown ? null :
+                        <Grid container justify="flex-end" item xs={12}>
+                            <IconButton aria-label="switch grid view" size="small" onClick={() => setGridView(true)}>
+                                <GridIcon role="img" size={isSmDown ? "1rem" : "1.25rem"} />
+                            </IconButton>
+                            <IconButton aria-label="switch list view" size="small" onClick={() => setGridView(false)}>
+                                <ListIcon role="img" size={isSmDown ? "1rem" : "1.25rem"} />
+                            </IconButton>
+                        </Grid>
+                    }
                     <Grid
                         container
                         direction="row"
@@ -271,13 +283,14 @@ function TabInnerContent({ contentIndexState, title, numColState, setNumColState
                         xs={12}
                         className={classes.scrollVideoContainer}
                         style={isSmDown ? { maxHeight: `calc(100vh - ${theme.spacing(33)}px)` } : {
-                            height: teacher ? `calc(100vh - ${theme.spacing(33)}px)` : "100vh", // Because student side has no <InviteButton /> and <GlobalCameraControl />
+                            height: teacher ? `calc(100vh - ${theme.spacing(36)}px)` : "100vh", // Because student side has no <InviteButton /> and <GlobalCameraControl />
                         }}
                     >
+                        <Grid item xs={12}><Divider /></Grid>
                         {[...users.entries()].map(([id, session]) => (
                             <Grid key={id} item xs={6} md={12}>
-                                <Grid container alignItems="center" spacing={isSmDown ? 0 : 2} item xs={12}>
-                                    <Grid item xs={12} md={5}>
+                                <Grid container alignItems="center" spacing={isSmDown || gridView ? 0 : 2} item xs={12}>
+                                    <Grid item xs={12} md={gridView ? 12 : 5}>
                                         <Grid container direction="row" justify="space-between">
                                             <Grid item xs={12}>
                                                 {id === sessionId ?
@@ -291,14 +304,14 @@ function TabInnerContent({ contentIndexState, title, numColState, setNumColState
                                             </Grid>
                                         </Grid>
                                     </Grid>
-                                    <Grid item xs={6} md={4}>
+                                    <Grid item xs={6} md={gridView ? 6 : 4}>
                                         <Tooltip placement="left" title={id === sessionId ? name || "" : session.name || ""}>
                                             <Typography variant={isSmDown ? "caption" : "body2"} align="left" noWrap>
                                                 {id === sessionId ? "You" : session.name}
                                             </Typography>
                                         </Tooltip>
                                     </Grid>
-                                    <Grid container justify="space-evenly" item xs={6} md={3}>
+                                    <Grid container justify="space-evenly" item xs={6} md={gridView ? 6 : 3}>
                                         <CameraControls global={teacher} sessionId={id} />
                                         {teacher && id !== sessionId ? <PermissionControls otherUserId={session.id} /> : <></>}
                                     </Grid>
