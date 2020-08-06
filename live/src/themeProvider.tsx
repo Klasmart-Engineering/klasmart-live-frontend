@@ -55,9 +55,14 @@ export function themeProvider(languageCode: string, themeMode: string) {
                 backgroundColor: themeMode === "light" ? "#fafafa" : "#041125",
             },
         },
+        MuiTabs: {
+            root: {
+                backgroundColor: themeMode === "light" ? "#FFF" : "#030D1C",
+            },
+        },
         MuiTab: {
             root: {
-                backgroundColor: themeMode === "light" ? "#fafafa" : "#041125 !important",
+                backgroundColor: themeMode === "light" ? "#fafafa" : "#030D1C !important",
             },
         },
         MuiIconButton: {
