@@ -1,8 +1,9 @@
-import React, { ReactChild, ReactNode } from "react";
+import React, { ReactChild, ReactNode, useContext } from "react";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
-import { useWhiteboard } from "../context-provider/WhiteboardContextProvider";
-import { ShapeDrivenCanvas } from "./ShapeDrivenCanvas";
 import { whiteboard } from "../../utils/layerValues";
+import { useSynchronizedState } from "../context-providers/SynchronizedStateProvider";
+import { WhiteboardCanvas } from "kidsloop-canvas/lib/domain/whiteboard/WhiteboardCanvas";
+import { UserContext } from "../../entry";
 
 type Props = {
     children?: ReactChild | ReactNode | null;
@@ -12,7 +13,9 @@ type Props = {
 }
 
 export function Whiteboard({ children, width, height, filterUsers }: Props): JSX.Element {
-    const { state } = useWhiteboard();
+    const { state: { permissions, display } } = useSynchronizedState();
+
+    const { sessionId } = useContext(UserContext);
 
     const canvasStyle: CSSProperties = {
         border: "2px blue solid",
@@ -21,9 +24,11 @@ export function Whiteboard({ children, width, height, filterUsers }: Props): JSX
         left: "0px",
         width: "100%",
         zIndex: whiteboard,
+        height: "100%",
     };
 
-    const pointerEvents = state.permissions.allowCreateShapes ? undefined : "none";
+    // TODO: Proper resolution/aspect ratio/size support. May have to
+    // poll the parent element size to proper calculate and set it.
 
     return (
         <div
@@ -37,11 +42,20 @@ export function Whiteboard({ children, width, height, filterUsers }: Props): JSX
                 width: width ? width : "100%",
             }}
         >
-            <ShapeDrivenCanvas enablePointer={state.permissions.allowCreateShapes}
-                width="1024" height="1024"
-                style={{ ...canvasStyle, height, pointerEvents: pointerEvents, display: state.display ? "inline-block" : "none" }}
-                filterUsers={filterUsers} />
+            <WhiteboardCanvas instanceId={`canvas:user:${sessionId}`}
+                userId={sessionId}
+                pointerEvents={permissions.allowCreateShapes}
+                initialStyle={canvasStyle}
+                filterUsers={filterUsers}
+                pixelWidth={1024}
+                pixelHeight={1024}
+                display={display}
+                scaleMode={"ScaleToFit"}
+                centerHorizontally={true}
+                centerVertically={false}
+            />
             {children}
+
         </div>
     );
 }

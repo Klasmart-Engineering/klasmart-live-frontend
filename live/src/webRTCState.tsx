@@ -14,14 +14,16 @@ import { Videocam as CameraIcon } from "@styled-icons/material-twotone/Videocam"
 import { VideocamOff as CameraOffIcon } from "@styled-icons/material-twotone/VideocamOff";
 import { Mic as MicIcon } from "@styled-icons/material-twotone/Mic";
 import { MicOff as MicOffIcon } from "@styled-icons/material-twotone/MicOff";
+import { GridOn as CanvasIcon } from "@styled-icons/material-twotone/GridOn";
+import { GridOff as CanvasOffIcon } from "@styled-icons/material-twotone/GridOff";
 import { Eraser as EraserIcon } from "@styled-icons/boxicons-solid/Eraser";
 
 import { UserContext } from "./entry";
 import { Session } from "./room";
 import StyledIcon from "./components/styled/icon";
 import NoCamera from "./components/noCamera";
-import { useWhiteboard } from "./whiteboard/context-provider/WhiteboardContextProvider";
 import MoreControls from "./components/moreControls";
+import { useToolbarContext } from "kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
 
 import { getRandomKind } from './components/trophies/trophyKind';
 import { Star as StarIcon } from "@styled-icons/material/Star";
@@ -29,6 +31,7 @@ import { EmojiEvents as TrophyIcon } from "@styled-icons/material/EmojiEvents";
 import { Favorite as HeartIcon } from "@styled-icons/material/Favorite";
 import { ThumbUp as EncourageIcon } from "@styled-icons/material/ThumbUp";
 import { WebRTCSFUContext } from "./webrtc/sfu";
+import { useSynchronizedState } from "./whiteboard/context-providers/SynchronizedStateProvider";
 
 const SEND_SIGNAL = gql`
   mutation webRTCSignal($roomId: ID!, $toSessionId: ID!, $webrtc: WebRTCIn) {
@@ -157,7 +160,12 @@ export function GlobalCameraControl(): JSX.Element {
     const [rewardTrophyMutation] = useMutation(MUTATION_REWARD_TROPHY);
     const rewardTrophy = (user: string, kind: string) => rewardTrophyMutation({ variables: { roomId, user, kind } });
 
-    const { actions: { clear } } = useWhiteboard();
+    const { actions: { clear } } = useToolbarContext();
+
+    const {
+        state: { display },
+        actions: { setDisplay },
+    } = useSynchronizedState();
 
     function toggleVideoStates() {
         for (const { sessionId } of mediaStreams) {
@@ -228,6 +236,25 @@ export function GlobalCameraControl(): JSX.Element {
                         {micsOn
                             ? <FormattedMessage id="mute_all" />
                             : <FormattedMessage id="unmute_all" />
+                        }
+                    </Typography>
+                </Grid>
+            </Grid>
+            <Grid container item xs={4} md={4} style={{ textAlign: "center" }}>
+                <Grid item xs={12}>
+                    <IconButton
+                        color={display ? "primary" : "secondary"}
+                        style={{ backgroundColor: display ? "#f6fafe" : "#fef5f9" }}
+                        onClick={() => { setDisplay(!display); }}
+                    >
+                        {display ? <CanvasIcon size="1.5rem" /> : <CanvasOffIcon size="1.5rem" />}
+                    </IconButton>
+                </Grid>
+                <Grid item xs={12}>
+                    <Typography variant="caption" color="textSecondary">
+                        {display
+                            ? "Hide Whiteboard"
+                            : "Show Whiteboard"
                         }
                     </Typography>
                 </Grid>

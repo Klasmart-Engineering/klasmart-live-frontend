@@ -1,88 +1,92 @@
-import React, { useState } from "react";
-import { ColorResult, CirclePicker } from "react-color";
-import { Slider, Button } from "@material-ui/core";
-import { useWhiteboard } from "../context-provider/WhiteboardContextProvider";
-import { FormattedMessage } from "react-intl";
+import React, { FunctionComponent, ReactChild, ReactChildren, useCallback, useContext } from "react";
+import { useSynchronizedState } from "../context-providers/SynchronizedStateProvider";
+import Grid from "@material-ui/core/Grid/Grid";
+import useTheme from "@material-ui/core/styles/useTheme";
+import { useToolbarContext } from "kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
+import { IconButton } from "@material-ui/core";
+import { Move as MoveIcon } from "@styled-icons/boxicons-regular/Move";
+import { Brush as BrushIcon } from "@styled-icons/material/Brush";
+import { TextFields as TextIcon } from "@styled-icons/material/TextFields";
+import { Eraser as EraserIcon } from "@styled-icons/boxicons-solid/Eraser";
+import { Trash as TrashIcon } from "@styled-icons/boxicons-solid/Trash";
+import { UserContext } from "../../entry";
 
-export default function Toolbar(): JSX.Element {
-    const { state, actions: { clear, setBrush, display } } = useWhiteboard();
 
-    const [selectColor, setSelectColor] = useState(false);
+type Props = {
+    children?: ReactChild | ReactChildren | null | any;
+}
 
-    const handleSetColor = (color: ColorResult) => {
-        const newBrush = { ...state.brushParameters };
+export const Toolbar: FunctionComponent<Props> = ({ children }: Props): JSX.Element => {
+    const {
+        state: { display, permissions },
+    } = useSynchronizedState();
 
-        setSelectColor(false);
+    const {
+        state: { tools }, actions: { selectTool, selectColorByValue, clear }
+    } = useToolbarContext();
 
-        newBrush.style = color.hex;
-        setBrush(newBrush);
-    };
+    const { sessionId } = useContext(UserContext);
 
-    const handleSetLineWidth = (value: number | number[]) => {
-        if (typeof value !== "number") {
-            return;
+    const theme = useTheme();
+
+    const selectObjectEraser = useCallback(() => {
+        const eraserOptions = tools.eraser.options;
+        if (eraserOptions) {
+            selectTool("eraser", eraserOptions[0]);
         }
+    }, [selectTool, tools.eraser.options]);
 
-        const newBrush = { ...state.brushParameters };
-
-        newBrush.width = value;
-        setBrush(newBrush);
-    };
-
-    const handleDisplayColor = () => {
-        setSelectColor(!selectColor);
-    };
-
-    const paintingControls: JSX.Element = (
-        <>
-            {state.permissions.allowCreateShapes ?
-                <>
-                    {selectColor ?
-                        <div style={{ zIndex: 5, width: "840px", backgroundColor: "rgba(80, 80, 80, 0.4)", padding: "5px", position: "absolute" }}>
-                            <CirclePicker width={"100%"} colors={["#000", "#ff0000", "#00ff00", "#0062f1", "#ffff00", "rgb(200, 147, 68)", "#ffffff"]} circleSize={100} color={state.brushParameters.style} onChangeComplete={c => handleSetColor(c)} />
-                        </div> : <></>
-                    }
-                    <Slider min={1.0} max={6.0} value={state.brushParameters.width} onChange={(_e, value) => handleSetLineWidth(value)} />
-                    <br />
-                    <Button color="primary" onClick={handleDisplayColor}>
-                        <FormattedMessage id="whiteboard_color" />
-                    </Button>
-                </> : <></>
-            }
-            {state.permissions.allowDeleteShapes.others ?
-                <Button color="primary" onClick={() => { clear(); }}>
-                    <FormattedMessage id="whiteboard_clear" />
-                </Button> : <></>
-            }
-        </>
+    const ColorButton = ({ colorValue }: { colorValue: string }) => (
+        <Grid container item xs={2} md={2} style={{ textAlign: "center" }}>
+            <Grid item xs={6}>
+                <IconButton
+                    color={"primary"}
+                    style={{ backgroundColor: colorValue }}
+                    onClick={() => { selectColorByValue(colorValue); }}
+                >
+                </IconButton>
+            </Grid>
+        </Grid>
     );
 
-    const displayed: JSX.Element = (
-        <>
-            {paintingControls}
-            {state.permissions.allowShowHide ?
-                <Button color="primary" onClick={() => display(false)}>
-                    <FormattedMessage id="whiteboard_hide" />
-                </Button>
-                : <></>
-            }
-        </>
+    type ToolButtonOnClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+
+    const ToolButton = ({ children, clicked }: { children: any, clicked: ToolButtonOnClick }) => (
+        <Grid container item xs={2} md={2} style={{ textAlign: "center" }}>
+            <Grid item xs={6}>
+                <IconButton
+                    color={"primary"}
+                    style={{ backgroundColor: "#f6fafe" }}
+                    onClick={clicked}
+                >
+                    {children}
+                </IconButton>
+            </Grid>
+        </Grid>
     );
 
-    const hidden: JSX.Element = (
-        <>
-            {state.permissions.allowShowHide ?
-                <Button color="primary" onClick={() => display(true)}>
-                    <FormattedMessage id="whiteboard_show" />
-                </Button>
-                : <></>
-            }
-        </>
-    );
-
-    return (
-        <div>
-            {state.display ? displayed : hidden}
+    const VisibleToolbar = () => (
+        <div id={"toolbar"}>
+            <Grid container direction="row" justify="center" alignItems="center" spacing={1} style={{ flexGrow: 0, padding: theme.spacing(2) }}>
+                <ToolButton clicked={() => selectTool("move")}><MoveIcon size="1.5rem" /></ToolButton>
+                <ToolButton clicked={() => selectTool("line")}><BrushIcon size="1.5rem" /></ToolButton>
+                <ToolButton clicked={() => selectTool("text")}><TextIcon size="1.5rem" /></ToolButton>
+                <ToolButton clicked={() => selectObjectEraser()}><EraserIcon size="1.5rem" /></ToolButton>
+                <ToolButton clicked={() => clear([sessionId])}><TrashIcon size="1.5rem" /></ToolButton>
+            </Grid>
+            <Grid container direction="row" justify="center" alignItems="center" spacing={1} style={{ flexGrow: 0, padding: theme.spacing(2) }}>
+                <ColorButton colorValue={"#ff0000"} />
+                <ColorButton colorValue={"#00ff00"} />
+                <ColorButton colorValue={"#0000ff"} />
+                <ColorButton colorValue={"#000000"} />
+                <ColorButton colorValue={"#8880fc"} />
+                <ColorButton colorValue={"#fbe739"} />
+            </Grid>
+            {children}
         </div>
     );
+
+    return display && permissions.allowCreateShapes ? <VisibleToolbar /> : <></>
 }
+
+export default Toolbar;
