@@ -14,7 +14,7 @@ const messages: Record<string, string> = {
     waiting_for_class: "수업 시작을 기다리는 중입니다.",
     what_is_your_name: "이름이 무엇입니까?",
     loading: "준비하는 동안 잠시만 기다려주세요!",
-    student_stream_mode: "선생님이 현재 수업 진행 중입니다.",
+    student_stream_mode: "현재 선생님이 수업을 진행하고 있습니다.",
     student_activity_mode: "선생님의 지시에 따르십시오.",
     join_room: "수업 참여",
     no_device_available: "사용 가능한 장치가 없습니다.",
