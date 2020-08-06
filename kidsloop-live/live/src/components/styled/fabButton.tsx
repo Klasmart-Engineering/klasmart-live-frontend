@@ -5,7 +5,7 @@ import { Send as SendIcon } from "@styled-icons/material/Send";
 import React from "react";
 
 interface Props extends FabProps {
-    children?: React.ReactNode;
+    // children?: React.ReactNode;
     className?: string;
     extendedOnly?: boolean;
     flat?: boolean;
