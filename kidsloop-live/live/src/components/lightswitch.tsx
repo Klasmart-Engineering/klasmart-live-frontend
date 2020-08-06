@@ -128,7 +128,7 @@ export default function Lightswitch(props: Props) {
                             <FormattedMessage id="enable_dark_mode" />
                         </Typography>
                     </Grid>
-                    <Grid item xs={2}>
+                    <Grid container justify="flex-end" item xs={2}>
                         <Checkbox
                             checked={!toggled}
                             onClick={() => {
