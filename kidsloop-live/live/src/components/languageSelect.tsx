@@ -19,10 +19,10 @@ const LANGUAGES_LABEL: Language[] = [
         code: "ko",
         text: "한국어",
     },
-    // {
-    //     code: "zh-CN",
-    //     text: "汉语 (简体)",
-    // },
+    {
+        code: "zh-CN",
+        text: "汉语 (简体)",
+    },
 ];
 
 interface Props {
@@ -75,7 +75,7 @@ export default function LanguageSelect(props: Props) {
         setLanguageMenuElement(null);
     }
 
-    return(
+    return (
         <React.Fragment>
             <Tooltip title={<FormattedMessage id="locale_tooltip" />} enterDelay={300}>
                 <Button
@@ -87,9 +87,9 @@ export default function LanguageSelect(props: Props) {
                     onClick={(e) => setLanguageMenuElement(e.currentTarget)}
                     size="small"
                 >
-                    { props.noIcon ? null : <LanguageIcon fontSize="inherit" />}
+                    {props.noIcon ? null : <LanguageIcon fontSize="inherit" />}
                     <span className={classes.language}>
-                        { locale === "" ?
+                        {locale === "" ?
                             <FormattedMessage id="locale_select" /> :
                             languageText
                         }

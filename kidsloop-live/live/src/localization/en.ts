@@ -4,7 +4,7 @@ const messages: Record<string, string> = {
     allow_media_permission: "Please allow microphone and camera permissions if you want to use media devices.",
     error_camera_unavailable: "Can not access your 📷",
     error_empty_name: "Please enter your name.",
-    error_invaild_token: "Invalid token, could not connect to class.",
+    error_invaild_token: "Invalid token could not connect to class.",
     error_webrtc_unavailable: "Error: WebRTC context unavailable",
     error_unknown_content: "Error: Unknown content type",
     error_unknown_error: "Oops! Something went wrong.",
@@ -22,7 +22,6 @@ const messages: Record<string, string> = {
     select_device: "Select {device}",
     connect_camera: "Connect your 📷",
 
-    // Drawer
     refresh_activity: "Refresh Activity",
     what_is_this: "What is This?",
     live_buttonStop: "Stop",
@@ -49,10 +48,10 @@ const messages: Record<string, string> = {
     six_columns: "6 columns",
     num_views_per_row: "# of student views per row",
 
-    // Whiteboard
     whiteboard_color: "Color",
     whiteboard_clear: "Clear",
     whiteboard_hide: "Hide",
     whiteboard_show: "Show",
+
 };
 export default messages;
