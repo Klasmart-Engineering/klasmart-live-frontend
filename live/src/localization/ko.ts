@@ -5,8 +5,8 @@ const messages: Record<string, string> = {
     error_camera_unavailable: "📷에 액세스 할 수 없습니다.",
     error_empty_name: "이름을 입력하십시오.",
     error_invaild_token: "권한이 없으므로 수업에 참여할 수 없습니다.",
-    error_webrtc_unavailable: "Error: WebRTC context unavailable",
-    error_unknown_content: "Error: Unknown content type",
+    error_webrtc_unavailable: "Error : WebRTC 컨텍스트를 사용할 수 없습니다.",
+    error_unknown_content: "Error: 콘텐츠 유형을 알 수 없습니다.",
     error_unknown_error: "죄송합니다! 문제가 발생했습니다.",
     error_unknown_user: "알 수 없는 유저",
     failed_to_connect: "연결에 실패했습니다.",
@@ -22,7 +22,6 @@ const messages: Record<string, string> = {
     select_device: "{device} 선택",
     connect_camera: "📷를 연결하십시오.",
 
-    // Drawer
     refresh_activity: "액티비티 새로고침",
     what_is_this: "이건 어떤 기능인가요?",
     live_buttonStop: "정지",
@@ -49,10 +48,10 @@ const messages: Record<string, string> = {
     six_columns: "6 개",
     num_views_per_row: "한 줄에 표시할 학생 화면 수",
 
-    // Whiteboard
     whiteboard_color: "색깔",
     whiteboard_clear: "지우기",
     whiteboard_hide: "숨기기",
     whiteboard_show: "보기",
+
 };
 export default messages;
