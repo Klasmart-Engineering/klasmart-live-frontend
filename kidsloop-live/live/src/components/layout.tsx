@@ -282,8 +282,8 @@ function TabInnerContent({ contentIndexState, title, numColState, setNumColState
                         item
                         xs={12}
                         className={classes.scrollVideoContainer}
-                        style={isSmDown ? { maxHeight: `calc(100vh - ${theme.spacing(33)}px)` } : {
-                            height: teacher ? `calc(100vh - ${theme.spacing(36)}px)` : "100vh", // Because student side has no <InviteButton /> and <GlobalCameraControl />
+                        style={isSmDown ? { maxHeight: `calc(100vh - ${theme.spacing(35)}px)` } : {
+                            height: teacher ? `calc(100vh - ${theme.spacing(35)}px)` : `calc(100vh - ${theme.spacing(9)}px)`, // Because student side has no <InviteButton /> and <GlobalCameraControl />
                         }}
                     >
                         <Grid item xs={12}><Divider /></Grid>
