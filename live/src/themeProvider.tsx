@@ -1,9 +1,13 @@
+import "node-source-han-sans-sc/SourceHanSansSC-Regular-all.css";
+import "typeface-nanum-square-round";
+import "./assets/css/index.min.css";
+
 import { PaletteOptions } from "@material-ui/core/styles/createPalette";
 import { Theme, createMuiTheme, responsiveFontSizes } from "@material-ui/core/styles";
 
 export function themeProvider(languageCode: string, themeMode: string) {
     function setTypography(languageCode: string) {
-        let localeFontFamily = "CircularStd";
+        let localeFontFamily = "Source Sans Pro";
         const localeWeightLight = 400;
         const localeWeightMedium = 600;
         let localeWeightRegular = 400;
@@ -11,7 +15,8 @@ export function themeProvider(languageCode: string, themeMode: string) {
 
         switch (languageCode) {
             case "en":
-                localeFontFamily = "CircularStd";
+                localeFontFamily = "Source Sans Pro";
+                localeWeightRegular = 600;
                 break;
             case "ko":
                 localeFontFamily = "NanumSquareRound";

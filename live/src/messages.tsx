@@ -73,7 +73,7 @@ function Messages ({ messages }: Props): JSX.Element {
                                             </>
                                         }
                                     >
-                                        <TimestampIcon fontSize="small" style={{ color: "#e0e1e1" }}/>
+                                        <TimestampIcon size="1rem" style={{ color: "#e0e1e1" }}/>
                                     </Tooltip>
                                 </Grid>
                             </Grid>
