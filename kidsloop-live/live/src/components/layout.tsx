@@ -44,6 +44,7 @@ import { MaterialTypename } from "../lessonMaterialContext";
 import Lightswitch from "./lightswitch";
 import LanguageSelect from "./languageSelect";
 import TrophyControls from "./trophies/trophyControls";
+import StyledIcon from "./styled/icon";
 
 export const DRAWER_WIDTH = 380;
 
@@ -227,6 +228,7 @@ function TabPanel(props: TabPanelProps) {
                         <FormattedMessage id={tab.title} />
                     </Typography>
                     <IconButton aria-label="minimize drawer" onClick={() => handleOpenDrawer(false)}>
+                        {/* <StyledIcon icon={<CloseIcon />} size="medium" /> */}
                         <CloseIcon size="1.25rem" />
                     </IconButton>
                 </Grid>
