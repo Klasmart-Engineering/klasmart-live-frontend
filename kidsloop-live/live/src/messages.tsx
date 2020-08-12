@@ -8,26 +8,6 @@ import { AccessTime as TimestampIcon } from "@styled-icons/material-twotone/Acce
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
-        cssFocused: {
-            "&$cssFocused": {
-                backgroundColor: "#dff0ff",
-                color: "#1896ea", // focused
-            },
-
-        },
-        cssOutlinedInput: {
-            "&$cssFocused": {
-                borderColor: "#1896ea", // focused
-            },
-            "&:hover:not($disabled):not($cssFocused):not($error)": {
-                backgroundColor: "#b8ddff",
-                borderColor: "#7c8084", // hovered
-            },
-            "&:not(hover):not($disabled):not($cssFocused):not($error)": {
-                borderColor: "#c9caca", // default
-            },
-            "backgroundColor": "#fcfcfb",
-        },
         liveChatInput: {
             borderRadius: 12,
             // height: 500,
@@ -43,11 +23,6 @@ const useStyles = makeStyles((theme: Theme) =>
             [theme.breakpoints.down("sm")]: {
                 margin: theme.spacing(0.5),
             },
-        },
-        smallAvatar: {
-            height: theme.spacing(2),
-            marginRight: theme.spacing(1),
-            width: theme.spacing(2),
         },
         wrappedText: {
             whiteSpace: "pre-line",

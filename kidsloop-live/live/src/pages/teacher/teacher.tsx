@@ -8,9 +8,9 @@ import React, { useEffect, useState, useContext, useRef } from "react";
 import { FormattedMessage } from "react-intl";
 import { RecordedIframe } from "../../components/recordediframe";
 import { Session, Content, ContentIndexState, InteractiveModeState, StreamIdState } from "../../room";
-import { Theme, Card, useTheme, CardContent, useMediaQuery, Hidden } from "@material-ui/core";
+import { Theme, Card, useTheme, CardContent, Hidden } from "@material-ui/core";
 import { PreviewPlayer } from "../../components/preview-player";
-import { webRTCContext, Stream } from "../../webRTCState";
+import { Stream } from "../../webRTCState";
 import { UserContext } from "../../entry";
 import { gql } from "apollo-boost";
 import { useMutation } from "@apollo/react-hooks";
@@ -37,10 +37,6 @@ const useStyles = makeStyles((theme: Theme) =>
             display: "flex",
             flexDirection: "column",
             height: "100%",
-        },
-        activityFrame: {
-            border: "1px solid gray",
-            borderRadius: 12,
         },
         imageFrame: {
             zIndex: 999,
@@ -82,28 +78,25 @@ interface Props {
 
 export function Teacher(props: Props): JSX.Element {
     const { roomId, sessionId, materials, name } = useContext(UserContext);
-    const webrtc = useContext(webRTCContext);
     const screenShare = useContext(ScreenShareContext);
 
     const classes = useStyles();
-    const theme = useTheme();
-    const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
     const { content, users, openDrawer, handleOpenDrawer, contentIndexState, interactiveModeState, streamIdState, numColState } = props;
-    const [width, setWidth] = useState<string | number>("100%");
-    const [height, setHeight] = useState<string | number>("100%");
 
     const { streamId, setStreamId } = streamIdState;
-    const { interactiveMode, setInteractiveMode } = interactiveModeState;
-    const { contentIndex, setContentIndex } = contentIndexState;
+    const { interactiveMode } = interactiveModeState;
+    const { contentIndex } = contentIndexState;
     const material = contentIndex >= 0 && contentIndex < materials.length ? materials[contentIndex] : undefined;
 
+    const rootDivRef = useRef<HTMLDivElement>(null);
+    const [rootDivWidth, setRootDivWidth] = useState<number>(0);
+    const [rootDivHeight, setRootDivHeight] = useState<number>(0);
+
     useEffect(() => {
-        const containerRef = window.document.getElementById("iframe-container");
-        if (containerRef) {
-            setHeight(containerRef.getBoundingClientRect().height);
-            setWidth(containerRef.getBoundingClientRect().width);
-        }
-    }, []);
+        if (!rootDivRef || !rootDivRef.current) { return; }
+        setRootDivWidth(rootDivRef.current.clientWidth);
+        setRootDivHeight(rootDivRef.current.clientHeight);
+    }, [rootDivRef]);
 
     const [showContent, { loading }] = useMutation(MUT_SHOW_CONTENT);
     useEffect(() => {
@@ -139,81 +132,70 @@ export function Teacher(props: Props): JSX.Element {
     }, [roomId, interactiveMode, sessionId]);
 
     return (
-        <div className={classes.root}>
-            {/* <MaterialSelection materials={materials} contentIndex={contentIndex} setContentIndex={setContentIndex} /> */}
-            <Grid
-                container
-                direction="row"
-                className={(material && material.__typename === MaterialTypename.Iframe) ? classes.activityFrame : ""}
-                spacing={1}
-            >
-                {content.type === "Activity" ?
-                    <>
-                        <Grid item xs={12}>
-                            <Typography variant="caption" color="textSecondary" gutterBottom>
-                                <FormattedMessage id="student_mode" />
-                            </Typography>
-                        </Grid>
-                        <Grid container direction="row" spacing={1} item xs={12}>
-                            {[...users.entries()].filter(([, s]) => s.id !== sessionId).map(([id, session]) =>
-                                <StudentPreviewCard key={id} sessionId={sessionId} session={session} numColState={numColState} />
-                            )}
-                        </Grid>
-                    </> :
-                    <Whiteboard height="100%">
-                        {
-                            //TODO: tidy up the conditions of what to render
-                            interactiveMode === 3 ?
-                                <Stream stream={screenShare.getStream()} /> :
-                                <>
-                                    {material ?
-                                        material.__typename === MaterialTypename.Image ?
-                                            <Grid container>
-                                                <Grid container item style={{
-                                                    height: "100%",
-                                                    position: "absolute",
-                                                    left: 0,
-                                                    right: 0,
-                                                    zIndex: 1,
-                                                    // display: "block",
-                                                    backgroundImage: `url(${material.url})`,
-                                                    filter: "blur(8px)",
-                                                    WebkitFilter: "blur(8px)",
-                                                    backgroundPosition: "center",
-                                                    backgroundRepeat: "no-repeat",
-                                                    backgroundSize: "cover",
-                                                }}
-                                                />
-                                                <img
-                                                    className={classes.imageFrame}
-                                                    src={material.url}
-                                                />
-                                            </Grid> :
-                                            material.__typename === MaterialTypename.Video ||
-                                                material.__typename === MaterialTypename.Audio ||
-                                                (material.__typename === undefined && material.video) ? //Legacy Format TODO: Deprecate
-                                                <ReplicatedMedia
-                                                    type={material.__typename || MaterialTypename.Video}
-                                                    src={(material.__typename === undefined && material.video) || material.url}
-                                                    style={{ width: "100%" }}
-                                                /> :
-                                                (material.__typename === MaterialTypename.Iframe || material.__typename === undefined) && material.url ? //Legacy Format TODO: Deprecate
+        <div ref={rootDivRef} className={classes.root}>
+            {content.type === "Activity" ?
+                <>
+                    <Typography variant="caption" color="textSecondary" gutterBottom>
+                        <FormattedMessage id="student_mode" />
+                    </Typography>
+                    <Grid container direction="row" spacing={1} item xs={12}>
+                        {[...users.entries()].filter(([, s]) => s.id !== sessionId).map(([id, session]) =>
+                            <StudentPreviewCard key={id} sessionId={sessionId} session={session} numColState={numColState} />
+                        )}
+                    </Grid>
+                </> :
+                <Whiteboard height={rootDivHeight}>
+                    {
+                        //TODO: tidy up the conditions of what to render
+                        interactiveMode === 3 ?
+                            <Stream stream={screenShare.getStream()} /> :
+                            <>
+                                {material ?
+                                    material.__typename === MaterialTypename.Image ?
+                                        <Grid container>
+                                            <Grid container item style={{
+                                                height: "100%",
+                                                position: "absolute",
+                                                left: 0,
+                                                right: 0,
+                                                zIndex: 1,
+                                                // display: "block",
+                                                backgroundImage: `url(${material.url})`,
+                                                filter: "blur(8px)",
+                                                WebkitFilter: "blur(8px)",
+                                                backgroundPosition: "center",
+                                                backgroundRepeat: "no-repeat",
+                                                backgroundSize: "cover",
+                                            }}
+                                            />
+                                            <img
+                                                className={classes.imageFrame}
+                                                src={material.url}
+                                            />
+                                        </Grid> :
+                                        material.__typename === MaterialTypename.Video ||
+                                            material.__typename === MaterialTypename.Audio ||
+                                            (material.__typename === undefined && material.video) ? //Legacy Format TODO: Deprecate
+                                            <ReplicatedMedia
+                                                type={material.__typename || MaterialTypename.Video}
+                                                src={(material.__typename === undefined && material.video) || material.url}
+                                                style={{ width: "100%" }}
+                                            /> :
+                                            (material.__typename === MaterialTypename.Iframe || material.__typename === undefined) && material.url ? //Legacy Format TODO: Deprecate
+                                                (rootDivWidth && rootDivWidth) ?
                                                     <RecordedIframe
                                                         contentId={material.url}
                                                         setStreamId={setStreamId}
-                                                        parentWidth={width}
-                                                        parentHeight={height}
-                                                        setParentWidth={setWidth}
-                                                        setParentHeight={setHeight}
-                                                    /> :
-                                                    undefined : //Unknown Material
-                                        undefined //No Material
-                                    }
-                                </>
-                        }
-                    </Whiteboard>
-                }
-            </Grid>
+                                                        parentWidth={rootDivWidth}
+                                                        parentHeight={rootDivHeight}
+                                                    /> : undefined
+                                                : undefined : //Unknown Material
+                                    undefined //No Material
+                                }
+                            </>
+                    }
+                </Whiteboard>
+            }
         </div >
     );
 }

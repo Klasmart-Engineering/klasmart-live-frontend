@@ -25,7 +25,16 @@ export function Whiteboard({ children, width, height, filterUsers }: Props): JSX
     const pointerEvents = state.permissions.allowCreateShapes ? undefined : "none";
 
     return (
-        <div style={{ position: "relative", width: width ? width : "100%" }}>
+        <div
+            style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center", // Center <IframeResizer />
+                height,
+                position: "relative",
+                width: width ? width : "100%",
+            }}
+        >
             <ShapeDrivenCanvas enablePointer={state.permissions.allowCreateShapes}
                 width="1024" height="1024"
                 style={{ ...canvasStyle, height, pointerEvents: pointerEvents, display: state.display ? "inline-block" : "none" }}
