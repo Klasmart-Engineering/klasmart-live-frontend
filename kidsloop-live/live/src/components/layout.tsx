@@ -228,7 +228,6 @@ function TabPanel(props: TabPanelProps) {
                         <FormattedMessage id={tab.title} />
                     </Typography>
                     <IconButton aria-label="minimize drawer" onClick={() => handleOpenDrawer(false)}>
-                        {/* <StyledIcon icon={<CloseIcon />} size="medium" /> */}
                         <CloseIcon size="1.25rem" />
                     </IconButton>
                 </Grid>

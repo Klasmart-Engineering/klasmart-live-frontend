@@ -15,6 +15,8 @@ import { Videocam as CameraIcon } from "@styled-icons/material-twotone/Videocam"
 import { VideocamOff as CameraOffIcon } from "@styled-icons/material-twotone/VideocamOff";
 import { Mic as MicIcon } from "@styled-icons/material-twotone/Mic";
 import { MicOff as MicOffIcon } from "@styled-icons/material-twotone/MicOff";
+import { Eraser as EraserIcon } from "@styled-icons/boxicons-solid/Eraser";
+import StyledIcon from "./components/styled/icon";
 
 const SEND_SIGNAL = gql`
   mutation webRTCSignal($roomId: ID!, $toSessionId: ID!, $webrtc: WebRTCIn) {
@@ -527,12 +529,12 @@ export function GlobalCameraControl(): JSX.Element {
 
     return (
         <Grid container direction="row" justify="center" alignItems="center" spacing={2} style={{ flexGrow: 0, padding: theme.spacing(2) }}>
-            <Grid item xs={4} md={12}>
+            <Grid item xs={12}>
                 <Typography variant="caption">
                     <FormattedMessage id="quick_toggles" />
                 </Typography>
             </Grid>
-            <Grid container item xs={4} md={6} style={{ textAlign: "center" }}>
+            <Grid container item xs={4} md={4} style={{ textAlign: "center" }}>
                 <Grid item xs={12}>
                     <IconButton
                         color={camerasOn ? "primary" : "secondary"}
@@ -551,7 +553,7 @@ export function GlobalCameraControl(): JSX.Element {
                     </Typography>
                 </Grid>
             </Grid>
-            <Grid container item xs={4} md={6} style={{ textAlign: "center" }}>
+            <Grid container item xs={4} md={4} style={{ textAlign: "center" }}>
                 <Grid item xs={12}>
                     <IconButton
                         color={micsOn ? "primary" : "secondary"}
@@ -567,6 +569,22 @@ export function GlobalCameraControl(): JSX.Element {
                             ? <FormattedMessage id="mute_all" />
                             : <FormattedMessage id="unmute_all" />
                         }
+                    </Typography>
+                </Grid>
+            </Grid>
+            <Grid container item xs={4} md={4} style={{ textAlign: "center" }}>
+                <Grid item xs={12}>
+                    <IconButton
+                        color={"primary"}
+                        style={{ backgroundColor: "#f6fafe" }}
+                        onClick={() => {}} /* TODO: clear all whiteboard on teacher side here */
+                    >
+                        <EraserIcon size="1.5rem" />
+                    </IconButton>
+                </Grid>
+                <Grid item xs={12}>
+                    <Typography variant="caption" color="textSecondary">
+                        Clear Whiteboard
                     </Typography>
                 </Grid>
             </Grid>
@@ -626,8 +644,8 @@ export function CameraControls(props: { global?: boolean, sessionId?: string }):
                     size="small"
                 >
                     {states.getVideoStreamState(sessionId)
-                        ? <CameraIcon size={isSmDown ? "1rem" : "1.25rem"} color="#0E78D5" />
-                        : <CameraOffIcon size={isSmDown ? "1rem" : "1.25rem"} color="#F44336" />
+                        ? <StyledIcon icon={<CameraIcon />} size={isSmDown ? "small" : "medium"} color="#0E78D5" />
+                        : <StyledIcon icon={<CameraOffIcon />} size={isSmDown ? "small" : "medium"} color="#F44336" />
                     }
                 </IconButton>
             </Grid>
@@ -639,8 +657,8 @@ export function CameraControls(props: { global?: boolean, sessionId?: string }):
                     size="small"
                 >
                     {states.getAudioStreamState(sessionId)
-                        ? <MicIcon size={isSmDown ? "1rem" : "1.25rem"} color="#0E78D5" />
-                        : <MicOffIcon size={isSmDown ? "1rem" : "1.25rem"} color="#F44336" />
+                        ? <StyledIcon icon={<MicIcon />} size={isSmDown ? "small" : "medium"} color="#0E78D5" />
+                        : <StyledIcon icon={<MicOffIcon />} size={isSmDown ? "small" : "medium"} color="#F44336" />
                     }
                 </IconButton>
             </Grid>
