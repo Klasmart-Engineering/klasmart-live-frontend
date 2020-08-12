@@ -78,7 +78,6 @@ export function Trophy(props: Props): JSX.Element {
     useEffect(() => {
         document.addEventListener('keydown', (evt) => {
             if (evt.code === 'KeyT') {
-                updateLightAngle();
                 setAppearAt(locationOfElementWithId(appearAtId));
                 setDisappearAt(locationOfElementWithId(disappearAtId));
                 setDisplay(true);
@@ -86,17 +85,19 @@ export function Trophy(props: Props): JSX.Element {
         });
     }, []);
 
-    const updateLightAngle = useCallback(() => {
-        if (!containerRef.current) return;
+    useEffect(() => {
+        if (!containerRef.current || !display) return;
 
         const width = containerRef.current.clientWidth;
         const height = containerRef.current.clientHeight;
 
         const angleDegrees = Math.atan2(height, width) * 180 / Math.PI;
 
+        console.log(angleDegrees);
+
         setLightAngle(angleDegrees);
 
-    }, [containerRef])
+    }, [containerRef, display])
 
     const entering = useCallback(() => {
         play();
@@ -128,7 +129,7 @@ export function Trophy(props: Props): JSX.Element {
     }, [setDisplay, setShowReward]);
 
     return (
-        <Transition in={display} timeout={TIMINGS.enterDuration} onEntering={entering} onEntered={entered}>
+        <Transition in={display} timeout={TIMINGS.enterDuration} onEntering={entering} onEntered={entered} mountOnEnter={true} unmountOnExit={true}>
             { state => (
                 <div ref={containerRef} className="trophy-container" style={{ ...containerStyle, ...containerTransitionStates[state] }}>
                     <Lights display={showLights} enterDuration={TIMINGS.lights.enterDuration} angle={lightAngle} />
