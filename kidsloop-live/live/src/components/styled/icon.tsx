@@ -7,8 +7,8 @@ import Tooltip, { TooltipProps } from "@material-ui/core/Tooltip";
 interface Props {
     className?: string;
     color?: string;
-    icon: StyledIcon;
-    size?: "small" | "medium" | "large" | string;
+    icon: React.ReactElement;
+    size?: "small" | "medium" | "large" | "xlarge" | string;
     tooltip?: TooltipProps;
 }
 
@@ -24,6 +24,8 @@ export default function StyledIcon(props: Props) {
                 return "1.25rem";
             case "large":
                 return "1.5rem";
+            case "xlarge":
+                return "2rem";
             default:
                 if (size) {
                     return size;
@@ -32,9 +34,16 @@ export default function StyledIcon(props: Props) {
     }
 
 
-    const BaseIcon = styled(icon)`
-        color: ${color ? color : "#000"}
-        size: ${() => getSize()};
+    const BaseIcon = styled.span`
+        color: ${color ? color : "#000"};
+        display: inline-grid;
+        height: ${() => getSize()};
+        width: ${() => getSize()};
+        &:hover {
+            color: ${theme.palette.type === "light" ? "#1B365D" : "#FFF"};
+            -webkit-transition: all .4s ease;
+            transition: all .4s ease;
+        }
     `
 
     return (
@@ -45,8 +54,12 @@ export default function StyledIcon(props: Props) {
                 placement={tooltip.placement || "left"}
                 title={tooltip.title || ""}
             >
-                <BaseIcon />
+                <BaseIcon>
+                    {icon}
+                </BaseIcon>
             </Tooltip> :
-            <BaseIcon />
+            <BaseIcon>
+                {icon}
+            </BaseIcon>
     );
 }
