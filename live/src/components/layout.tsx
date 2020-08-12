@@ -509,10 +509,10 @@ export default function Layout(props: Props): JSX.Element {
                 >
                     <div className={classes.container}>
                         <main
-                            id="iframe-container"
+                            id="main-container"
                             className={classes.content}
                             style={{
-                                height: (material && material.__typename === MaterialTypename.Video) ? "100vh" : "",
+                                height: "100vh",
                                 padding: (material && material.__typename === MaterialTypename.Video) ? "" : theme.spacing(3)
                             }}
                             key={key}
