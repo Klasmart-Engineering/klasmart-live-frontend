@@ -1,4 +1,4 @@
-import React, { CSSProperties, useCallback, useEffect, useRef, useState } from 'react'
+import React, { CSSProperties, useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { Transition } from 'react-transition-group';
 import { TransitionStatus } from 'react-transition-group/Transition';
 
@@ -8,6 +8,8 @@ import TIMINGS from './trophyTimings';
 
 import rewardSound from '../../assets/audio/trophies/reward1.mp3';
 import useSound from 'use-sound';
+import useTrophyReward from './trophyRewardProvider';
+import { UserContext } from '../../entry';
 
 type Props = {
     children?: React.ReactNode;
@@ -48,6 +50,9 @@ const CenteredLocation = {
 export function Trophy(props: Props): JSX.Element {
     const { children, appearAtId, disappearAtId } = props;
 
+    const { actions: { rewardTrophy } } = useTrophyReward();
+    const { roomId, name } = useContext(UserContext);
+
     const [display, setDisplay] = useState(false);
     const [showLights, setShowLights] = useState(false);
     const [showReward, setShowReward] = useState(false);
@@ -78,6 +83,8 @@ export function Trophy(props: Props): JSX.Element {
     useEffect(() => {
         document.addEventListener('keydown', (evt) => {
             if (evt.code === 'KeyT') {
+                rewardTrophy(name);
+
                 setAppearAt(locationOfElementWithId(appearAtId));
                 setDisappearAt(locationOfElementWithId(disappearAtId));
                 setDisplay(true);
