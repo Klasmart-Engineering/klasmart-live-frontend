@@ -24,6 +24,7 @@ export function ConfettiRain(props: Props): JSX.Element {
 
         transition: `opacity ${enterDuration}ms ease-in-out`,
         opacity: 0,
+        zIndex: 2001,
     }
 
     const confettiTransitionStates: Record<TransitionStatus, any> = {
@@ -35,10 +36,10 @@ export function ConfettiRain(props: Props): JSX.Element {
     }
 
     return (
-        <Transition in={display} timeout={enterDuration}>
+        <Transition in={display} timeout={enterDuration} mountOnEnter={true} unmountOnExit={true}>
             { state => (
                 <div className="trophy-confetti" style={{ ...confettiContainerStyle, ...confettiTransitionStates[state] }}>
-                    <Confetti width={width} height={height} />
+                    <Confetti width={width} height={height} recycle={false} numberOfPieces={200}/>
                     {children}
                 </div>
             )}
