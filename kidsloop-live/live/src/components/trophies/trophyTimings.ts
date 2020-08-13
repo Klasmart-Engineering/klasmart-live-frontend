@@ -5,11 +5,11 @@ const TIMINGS = {
 
     lights: {
         enterDuration: 400,
-        displayAfter: 0,
-        displayDuration: 2000,
+        displayAfter: 1000,
+        displayDuration: 1200,
     },
     reward: {
-        enterDuration: 500,
+        enterDuration: 400,
         displayAfter: 600,
         displayDuration: 1500,
     }

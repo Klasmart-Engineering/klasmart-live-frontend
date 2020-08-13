@@ -8,7 +8,7 @@ import TIMINGS from './trophyTimings';
 
 import rewardSound from '../../assets/audio/trophies/reward1.mp3';
 import useSound from 'use-sound';
-import useTrophyReward from './trophyRewardProvider';
+import useTrophyReward, { Trophy } from './trophyRewardProvider';
 import { UserContext } from '../../entry';
 
 type Props = {
@@ -50,8 +50,8 @@ const CenteredLocation = {
 export function Trophy(props: Props): JSX.Element {
     const { children, appearAtId, disappearAtId } = props;
 
-    const { actions: { rewardTrophy } } = useTrophyReward();
-    const { roomId, name } = useContext(UserContext);
+    const { actions: { rewardTrophy, registerHandler, removeHandler } } = useTrophyReward();
+    const { name, sessionId } = useContext(UserContext);
 
     const [display, setDisplay] = useState(false);
     const [showLights, setShowLights] = useState(false);
@@ -81,16 +81,50 @@ export function Trophy(props: Props): JSX.Element {
     }
 
     useEffect(() => {
-        document.addEventListener('keydown', (evt) => {
-            if (evt.code === 'KeyT') {
-                rewardTrophy(name);
+        const keyDownHandler = (evt: KeyboardEvent) => {
+            if (evt.code === 'KeyT' && rewardTrophy && name) {
+                const trophy: Trophy = {
+                    from: sessionId,
+                    user: name,
+                    kind: ""
+                }
 
-                setAppearAt(locationOfElementWithId(appearAtId));
-                setDisappearAt(locationOfElementWithId(disappearAtId));
-                setDisplay(true);
+                displayTrophy(trophy)
+
+                rewardTrophy(trophy.user, trophy.kind);
             }
-        });
-    }, []);
+        };
+
+        document.addEventListener('keydown', keyDownHandler);
+
+        return () => {
+            document.removeEventListener('keydown', keyDownHandler);
+        }
+    }, [name, rewardTrophy, sessionId]);
+
+    const displayTrophy = useCallback((trophy: Trophy) => {
+        // TODO: appear/disappear AtId based on trophy user.
+        setAppearAt(locationOfElementWithId(appearAtId));
+        setDisappearAt(locationOfElementWithId(disappearAtId));
+        setDisplay(true);
+
+    }, [setAppearAt, setDisappearAt, setDisplay])
+
+    useEffect(() => {
+        const handleTrophy = (trophy: Trophy) => {
+            if (trophy.from !== sessionId) {
+                displayTrophy(trophy);
+            }
+        }
+
+        if (registerHandler && removeHandler) {
+            registerHandler(handleTrophy);
+
+            return () => {
+                removeHandler(handleTrophy);
+            }
+        }
+    }, [registerHandler, removeHandler, sessionId])
 
     useEffect(() => {
         if (!containerRef.current || !display) return;
@@ -99,8 +133,6 @@ export function Trophy(props: Props): JSX.Element {
         const height = containerRef.current.clientHeight;
 
         const angleDegrees = Math.atan2(height, width) * 180 / Math.PI;
-
-        console.log(angleDegrees);
 
         setLightAngle(angleDegrees);
 
