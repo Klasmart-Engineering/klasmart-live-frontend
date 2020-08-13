@@ -50,8 +50,7 @@ const CenteredLocation = {
 export function Trophy(props: Props): JSX.Element {
     const { children } = props;
 
-    const { actions: { rewardTrophy, registerHandler, removeHandler } } = useTrophyReward();
-    const { name, sessionId } = useContext(UserContext);
+    const { actions: { registerHandler, removeHandler } } = useTrophyReward();
 
     const [display, setDisplay] = useState(false);
     const [showLights, setShowLights] = useState(false);
@@ -82,20 +81,6 @@ export function Trophy(props: Props): JSX.Element {
         }
     }
 
-    useEffect(() => {
-        const keyDownHandler = (evt: KeyboardEvent) => {
-            if (evt.code === 'KeyT' && rewardTrophy && name) {
-                rewardTrophy(sessionId, getRandomKind());
-            }
-        };
-
-        document.addEventListener('keydown', keyDownHandler);
-
-        return () => {
-            document.removeEventListener('keydown', keyDownHandler);
-        }
-    }, [name, rewardTrophy, sessionId]);
-
     const displayTrophy = useCallback((trophy: Trophy) => {
         setAppearAt(locationOfElement(`participant:${trophy.from}`));
         setDisappearAt(locationOfElement(`participant:${trophy.user}`));
@@ -120,7 +105,7 @@ export function Trophy(props: Props): JSX.Element {
                 removeHandler(handleTrophy);
             }
         }
-    }, [registerHandler, removeHandler, sessionId])
+    }, [registerHandler, removeHandler])
 
     useEffect(() => {
         if (!containerRef.current || !display) return;
