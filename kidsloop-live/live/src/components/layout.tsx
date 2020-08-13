@@ -43,6 +43,7 @@ import InviteButton from "./invite";
 import { MaterialTypename } from "../lessonMaterialContext";
 import Lightswitch from "./lightswitch";
 import LanguageSelect from "./languageSelect";
+import TrophyControls from "./trophies/trophyControls";
 
 export const DRAWER_WIDTH = 380;
 
@@ -314,6 +315,7 @@ function TabInnerContent({ contentIndexState, title, numColState, setNumColState
                                     <Grid container justify="space-evenly" item xs={6} md={gridView ? 6 : 3}>
                                         <CameraControls global={teacher} sessionId={id} />
                                         {teacher && id !== sessionId ? <PermissionControls otherUserId={session.id} /> : <></>}
+                                        {teacher && id !== sessionId ? <TrophyControls otherUserId={session.id} /> : <></>}
                                     </Grid>
                                 </Grid>
                                 <Grid item xs={12}>

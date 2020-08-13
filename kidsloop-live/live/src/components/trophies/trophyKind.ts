@@ -5,6 +5,7 @@ import rewardSound2 from '../../assets/audio/trophies/reward2.mp3';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
 
 export type TrophyKind = {
+    name: string,
     image: string,
     audio: string,
     style: CSSProperties,
@@ -12,6 +13,7 @@ export type TrophyKind = {
 
 const TrophyKinds: Record<string, TrophyKind> = {
     'default': {
+        name: "Star",
         image: star3,
         audio: rewardSound2,
         style: {
@@ -19,6 +21,7 @@ const TrophyKinds: Record<string, TrophyKind> = {
         }
     },
     'heart2': {
+        name: "Heart",
         image: heart2,
         audio: rewardSound1,
         style: {
