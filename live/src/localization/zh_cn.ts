@@ -13,12 +13,14 @@ const messages: Record<string, string> = {
     hello: "你好，{name}！",
     waiting_for_class: "等待课程开始",
     what_is_your_name: "你叫什么名字",
-    loading: "正在准备请稍等！",
+    loading: "Loading",
+    loading_text: "正在准备请稍等！",
     student_stream_mode: "老师目前正在上课",
     student_activity_mode: "请遵照老师的指示",
     join_room: "进入教室",
     no_device_available: "没有可用的设备",
     no_messages: "目前没有信息...",
+    no_participants: "No one has join the class yet...",
     select_device: "选择{device}",
     connect_camera: "访问你的摄像头📷",
 
@@ -38,6 +40,7 @@ const messages: Record<string, string> = {
     quick_toggles: "快速操作",
     set_cameras_off: "设置摄像头关闭",
     set_cameras_on: "设置摄像头打开",
+    clear_whiteboard: "Clear Whiteboard",
     mute_all: "全部静音",
     unmute_all: "解除静音",
     share_something_here: "上传你想分享的内容",
@@ -52,6 +55,15 @@ const messages: Record<string, string> = {
     whiteboard_clear: "清除",
     whiteboard_hide: "隐藏",
     whiteboard_show: "展示",
+
+    turn_off_camera: "Turn off camera",
+    turn_on_camera: "Turn on camera",
+    turn_off_mic: "Turn off microphone",
+    turn_on_mic: "Turn on microphone",
+
+    browser_guide_title: "Kidsloop Live supports Chrome only.",
+    browser_guide_title_ios: "Kidsloop Live supports Safari only on iOS.",
+    browser_guide_body: "Please download {browserName} browser and try again.",
 
 };
 export default messages;

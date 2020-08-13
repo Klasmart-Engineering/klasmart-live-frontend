@@ -13,12 +13,14 @@ const messages: Record<string, string> = {
     hello: "Hello, {name}!",
     waiting_for_class: "Waiting for class to start.",
     what_is_your_name: "What is your name?",
-    loading: "Give us a sec while we get things ready!",
+    loading: "Loading",
+    loading_text: "Give us a sec while we get things ready!",
     student_stream_mode: "Your teacher is currently presenting.",
     student_activity_mode: "Please follow your teacher's intruction.",
     join_room: "Join Room",
     no_device_available: "No devices available",
     no_messages: "No messages yet...",
+    no_participants: "No one has join the class yet...",
     select_device: "Select {device}",
     connect_camera: "Connect your 📷",
 
@@ -38,6 +40,7 @@ const messages: Record<string, string> = {
     quick_toggles: "Quick Toggles",
     set_cameras_off: "Set Cameras Off",
     set_cameras_on: "Set Cameras On",
+    clear_whiteboard: "Clear Whiteboard",
     mute_all: "Mute All",
     unmute_all: "Unmute All",
     share_something_here: "Share something here",
@@ -52,6 +55,15 @@ const messages: Record<string, string> = {
     whiteboard_clear: "Clear",
     whiteboard_hide: "Hide",
     whiteboard_show: "Show",
+
+    turn_off_camera: "Turn off camera",
+    turn_on_camera: "Turn on camera",
+    turn_off_mic: "Turn off microphone",
+    turn_on_mic: "Turn on microphone",
+
+    browser_guide_title: "Kidsloop Live supports Chrome only.",
+    browser_guide_title_ios: "Kidsloop Live supports Safari only on iOS.",
+    browser_guide_body: "Please download {browserName} browser and try again.",
 
 };
 export default messages;

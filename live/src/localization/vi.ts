@@ -13,12 +13,14 @@ const messages: Record<string, string> = {
     hello: "Xin chào {name}!",
     waiting_for_class: "Chờ lớp học bắt đầu.",
     what_is_your_name: "Bạn tên gì?",
-    loading: "Vui lòng chờ trong giây lát!",
+    loading: "Loading",
+    loading_text: "Vui lòng chờ trong giây lát!",
     student_stream_mode: "Giáo viên của bạn đang trình bày.",
     student_activity_mode: "Vui lòng làm theo hướng dẫn của giáo viên.",
     join_room: "Vào lớp",
     no_device_available: "Không có thiết bị",
     no_messages: "Hiện tại chưa có thông tin...",
+    no_participants: "No one has join the class yet...",
     select_device: "Chọn {device}",
     connect_camera: "Kết nối 📷",
 
@@ -38,6 +40,7 @@ const messages: Record<string, string> = {
     quick_toggles: "Chuyển đổi nhanh",
     set_cameras_off: "Tắt máy ảnh",
     set_cameras_on: "Bật máy ảnh",
+    clear_whiteboard: "Clear Whiteboard",
     mute_all: "Tắt tiếng",
     unmute_all: "Bật tiếng",
     share_something_here: "Trò chuyện tại đây",
@@ -52,6 +55,15 @@ const messages: Record<string, string> = {
     whiteboard_clear: "Xóa",
     whiteboard_hide: "Ẩn",
     whiteboard_show: "Hiện",
+
+    turn_off_camera: "Turn off camera",
+    turn_on_camera: "Turn on camera",
+    turn_off_mic: "Turn off microphone",
+    turn_on_mic: "Turn on microphone",
+
+    browser_guide_title: "Kidsloop Live supports Chrome only.",
+    browser_guide_title_ios: "Kidsloop Live supports Safari only on iOS.",
+    browser_guide_body: "Please download {browserName} browser and try again.",
 
 };
 export default messages;

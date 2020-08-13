@@ -37,6 +37,12 @@ const useStyles = makeStyles((theme: Theme) =>
             display: "flex",
             flexDirection: "column",
             height: "100%",
+            position: "relative",
+        },
+        test: {
+            backgroundColor: "#fffb7d",
+            border: "2px solid black",
+            paddingTop: "56.25%",
         },
         imageFrame: {
             zIndex: 999,

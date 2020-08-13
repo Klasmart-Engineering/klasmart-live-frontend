@@ -34,7 +34,7 @@ export default function TrophyControls({ children, otherUserId }: Props): JSX.El
     const rewardTrophy = (user: string, kind: string) => rewardTrophyMutation({ variables: { roomId, user, kind } });
 
     return (
-        <Grid container justify="space-evenly" alignItems="center" item xs={12}>
+        <Grid container justify="space-between" alignItems="center" item xs={12}>
             <Grid item>
                 <IconButton
                     aria-label="control star reward"

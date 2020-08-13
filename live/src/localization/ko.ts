@@ -13,12 +13,14 @@ const messages: Record<string, string> = {
     hello: "안녕, {name}!",
     waiting_for_class: "수업 시작을 기다리는 중입니다.",
     what_is_your_name: "이름이 무엇입니까?",
-    loading: "준비하는 동안 잠시만 기다려주세요!",
+    loading: "로딩중",
+    loading_text: "준비하는 동안 잠시만 기다려주세요!",
     student_stream_mode: "현재 선생님이 수업을 진행하고 있습니다.",
     student_activity_mode: "선생님의 지시에 따르십시오.",
     join_room: "수업 참여",
     no_device_available: "사용 가능한 장치가 없습니다.",
     no_messages: "아직 메시지가 없습니다...",
+    no_participants: "아직 수업에 참여한 사람이 없습니다 ...",
     select_device: "{device} 선택",
     connect_camera: "📷를 연결하십시오.",
 
@@ -38,6 +40,7 @@ const messages: Record<string, string> = {
     quick_toggles: "빠른 조작",
     set_cameras_off: "카메라 모두 끄기",
     set_cameras_on: "카메라 모두 켜기",
+    clear_whiteboard: "화이트보드 지우기",
     mute_all: "모두 음소거",
     unmute_all: "모두 음소거 해제",
     share_something_here: "공유하고 싶은 것을 올려보세요",
@@ -52,6 +55,15 @@ const messages: Record<string, string> = {
     whiteboard_clear: "지우기",
     whiteboard_hide: "숨기기",
     whiteboard_show: "보기",
+
+    turn_off_camera: "카메라 끄기",
+    turn_on_camera: "카메라 켜기",
+    turn_off_mic: "마이크 끄기",
+    turn_on_mic: "마이크 켜기",
+
+    browser_guide_title: "Kidsloop Live는 Chrome만 지원합니다.",
+    browser_guide_title_ios: "Kidsloop Live는 iOS에서 Safari만 지원합니다.",
+    browser_guide_body: "{browserName} 브라우저를 다운로드하고 다시 시도해주세요.",
 
 };
 export default messages;

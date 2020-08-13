@@ -1,4 +1,4 @@
-import React, { createContext, useState, useMemo, useEffect } from "react";
+import React, { createContext, useState, useMemo } from "react";
 import * as Sentry from '@sentry/react';
 import { RewriteFrames } from '@sentry/integrations';
 import { render } from "react-dom";
@@ -8,22 +8,26 @@ import { ApolloClient, InMemoryCache } from "apollo-boost";
 import { WebSocketLink } from "apollo-link-ws";
 import jwt_decode from "jwt-decode";
 import { v4 as uuid } from "uuid";
-import { createMuiTheme, responsiveFontSizes, Theme, ThemeProvider } from "@material-ui/core/styles";
-import { PaletteOptions } from "@material-ui/core/styles/createPalette";
+import { ThemeProvider } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Typography from "@material-ui/core/Typography";
+import Grid from "@material-ui/core/Grid";
+
 import { App } from "./app";
 import { webRTCContext, WebRTCContext } from "./webRTCState";
 import { ScreenShare } from "./pages/teacher/screenShareProvider";
 import { LessonMaterial, MaterialTypename } from "./lessonMaterialContext";
 import { AuthTokenProvider } from "./services/auth-token/AuthTokenProvider";
-import { getLanguage } from "./utils/locale";
+import { themeProvider } from "./themeProvider";
+import { getLanguage, getDefaultLanguageCode } from "./utils/locale";
+import { isIOS, whichBrowser } from "./utils/userAgent";
 
 import testAudio from "./assets/audio/test_audio.m4a";
 import testImageLandscape from "./assets/img/test_image_landsape.jpg";
 import testImagePortrait from "./assets/img/test_image_portrait.jpg";
 import testVideo from "./assets/img/test_video.mp4";
-import { themeProvider } from "./themeProvider";
+import ChromeLogo from "./assets/img/browser/chrome_logo.svg";
+import SafariLogo from "./assets/img/browser/safari_logo.png";
 
 Sentry.init({
     dsn: "https://9f4fca35be3b4b7ca970a126f26a5e54@o412774.ingest.sentry.io/5388813",
@@ -31,26 +35,6 @@ Sentry.init({
     release: process.env.APP_GIT_REV ? `${process.env.npm_package_version}@${process.env.APP_GIT_REV}` : 'kidsloop-live@' + process.env.npm_package_version,
     integrations: [new RewriteFrames()]
 });
-
-const url = new URL(window.location.href)
-
-// It's a temporary that sending a ui value as a url parameter.
-// Later we may be able to send the hub UI's redux value like <Live lang={lang} theme={theme} />
-function getDefaultLanguageCode() {
-    const localeCodes = ["en", "ko"]
-    const languages = navigator.languages || [
-        (navigator as any).language,
-        (navigator as any).browerLanguage,
-        (navigator as any).userLanguage,
-        (navigator as any).systemLanguage,
-    ];
-    for (const language of languages) {
-        if (localeCodes.indexOf(language) !== -1) {
-            return language;
-        }
-    }
-    return "en";
-}
 
 export const sessionId = uuid();
 
@@ -90,9 +74,11 @@ export interface IUserContext {
 export const ThemeContext = createContext<IThemeContext>({ themeMode: "", setThemeMode: () => null, languageCode: "", setLanguageCode: () => null } as any as IThemeContext);
 export const UserContext = createContext<IUserContext>({ setName: () => null, roomId: "", materials: [], teacher: false } as any as IUserContext);
 
+const url = new URL(window.location.href)
 if (url.hostname !== "localhost" && url.hostname !== "live.kidsloop.net") {
     window.addEventListener("contextmenu", (e: MouseEvent) => { e.preventDefault() }, false);
 }
+
 function parseToken() {
     try {
         if (url.hostname === "localhost" || url.hostname === "live.kidsloop.net") {
@@ -170,9 +156,66 @@ function Entry() {
     );
 }
 
+const iOS = isIOS(), browser = whichBrowser();
+let renderComponent: JSX.Element;
+if ((iOS && browser === "Safari") || (!iOS && browser === "Chrome")) {
+    renderComponent = (
+        <ApolloProvider client={client}>
+            <Entry />
+        </ApolloProvider>
+    )
+} else {
+    renderComponent = <BrowserGuide />
+}
 render(
-    <ApolloProvider client={client}>
-        <Entry />
-    </ApolloProvider>,
+    renderComponent,
     document.getElementById("app")
 );
+
+function BrowserGuide() {
+    return (
+        <Grid
+            container
+            justify="center"
+            alignItems="center"
+            style={{
+                display: "flex",
+                flexGrow: 1,
+                height: "100vh"
+            }}
+        >
+            <GuideContent />
+        </Grid>
+    )
+}
+
+function GuideContent() {
+    const browserName = iOS ? "Safari" : "Chrome";
+    const [languageCode, _] = useState(url.searchParams.get("lang") || getDefaultLanguageCode());
+    const locale = getLanguage(languageCode);
+    return (
+        <RawIntlProvider value={locale}>
+            <Grid
+                container
+                direction="column"
+                alignItems="center"
+                alignContent="center"
+                spacing={1}
+            >
+                <Grid item>
+                    <img src={iOS ? SafariLogo : ChromeLogo} height={80} />
+                </Grid>
+                <Grid item>
+                    <Typography variant="subtitle1">
+                        {iOS ? <FormattedMessage id="browser_guide_title_ios" /> : <FormattedMessage id="browser_guide_title" />}
+                    </Typography>
+                </Grid>
+                <Grid item>
+                    <Typography variant="subtitle2">
+                        <FormattedMessage id="browser_guide_body" values={{ browserName }} />
+                    </Typography>
+                </Grid>
+            </Grid>
+        </RawIntlProvider>
+    )
+}
