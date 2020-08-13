@@ -62,7 +62,7 @@ export function Trophy(props: Props): JSX.Element {
     const [appearAt, setAppearAt] = useState<RewardLocation>(CenteredLocation);
     const [disappearAt, setDisappearAt] = useState<RewardLocation>(CenteredLocation);
 
-    const [trophyKind, setTrophyKind] = useState<TrophyKind>(TrophyKinds.default)
+    const [trophyKind, setTrophyKind] = useState<TrophyKind>(TrophyKinds.trophy)
 
     const [play] = useSound(trophyKind.audio);
 
