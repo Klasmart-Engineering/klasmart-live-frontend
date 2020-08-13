@@ -1,4 +1,5 @@
 import React, { createContext, useState, useMemo } from "react";
+import * as Sentry from '@sentry/react';
 import { render } from "react-dom";
 import { HashRouter } from "react-router-dom";
 import { RawIntlProvider, FormattedMessage } from "react-intl";
@@ -23,6 +24,12 @@ import testImageLandscape from "./assets/img/test_image_landsape.jpg";
 import testImagePortrait from "./assets/img/test_image_portrait.jpg";
 import testVideo from "./assets/img/test_video.mp4";
 import { themeProvider } from "./themeProvider";
+
+Sentry.init({
+    dsn: "https://9f4fca35be3b4b7ca970a126f26a5e54@o412774.ingest.sentry.io/5388813",
+    environment: process.env.NODE_ENV || "not-specified",
+    release: 'kidsloop-live@' + process.env.npm_package_version,
+});
 
 const url = new URL(window.location.href)
 
