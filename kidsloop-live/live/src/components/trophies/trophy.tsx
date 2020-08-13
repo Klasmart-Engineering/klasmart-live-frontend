@@ -27,6 +27,8 @@ const containerStyle: CSSProperties = {
 
     transition: `opacity ${TIMINGS.enterDuration}ms ease-in-out`,
     opacity: 0,
+
+    zIndex: 2000,
 }
 
 const containerTransitionStates: Record<TransitionStatus, any> = {
@@ -68,17 +70,17 @@ export function Trophy(props: Props): JSX.Element {
 
     const containerRef = useRef<HTMLDivElement>(null);
 
-    const locationOfElementWithId = function (elementId?: string): { x: number | string, y: number | string } {
+    const locationOfElement = function (elementId?: string): { x: number | string, y: number | string } {
         if (!elementId) return CenteredLocation;
 
-        const element = document.getElementById(elementId);
+        const element = document.getElementById(elementId)
         if (!element) return CenteredLocation;
 
         const rect = element.getBoundingClientRect();
 
         return {
-            x: rect.x,
-            y: rect.y,
+            x: rect.x + (rect.right - rect.left) / 2,
+            y: rect.y + (rect.bottom - rect.top) / 2,
         }
     }
 
@@ -87,7 +89,7 @@ export function Trophy(props: Props): JSX.Element {
             if (evt.code === 'KeyT' && rewardTrophy && name) {
                 const trophy: Trophy = {
                     from: sessionId,
-                    user: name,
+                    user: sessionId,
                     kind: getRandomKind(),
                 }
 
@@ -105,9 +107,8 @@ export function Trophy(props: Props): JSX.Element {
     }, [name, rewardTrophy, sessionId]);
 
     const displayTrophy = useCallback((trophy: Trophy) => {
-        // TODO: appear/disappear AtId based on trophy user.
-        setAppearAt(locationOfElementWithId(appearAtId));
-        setDisappearAt(locationOfElementWithId(disappearAtId));
+        setAppearAt(locationOfElement(`participant:${trophy.from}`));
+        setDisappearAt(locationOfElement(`participant:${trophy.user}`));
 
         if (TrophyKinds[trophy.kind]) {
             setTrophyKind(TrophyKinds[trophy.kind]);

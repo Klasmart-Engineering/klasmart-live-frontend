@@ -286,9 +286,9 @@ function TabInnerContent({ contentIndexState, title, numColState, setNumColState
                             height: teacher ? `calc(100vh - ${theme.spacing(35)}px)` : `calc(100vh - ${theme.spacing(9)}px)`, // Because student side has no <InviteButton /> and <GlobalCameraControl />
                         }}
                     >
-                        <Grid item xs={12}><Divider /></Grid>
+                        <Grid id={"participant-listing"} item xs={12}><Divider /></Grid>
                         {[...users.entries()].map(([id, session]) => (
-                            <Grid key={id} item xs={6} md={12}>
+                            <Grid key={id} id={`participant:${id}`} item xs={6} md={12}>
                                 <Grid container alignItems="center" spacing={isSmDown || gridView ? 0 : 2} item xs={12}>
                                     <Grid item xs={12} md={gridView ? 12 : 5}>
                                         <Grid container direction="row" justify="space-between">
