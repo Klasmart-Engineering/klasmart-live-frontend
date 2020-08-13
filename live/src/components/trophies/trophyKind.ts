@@ -15,6 +15,7 @@ export type TrophyKind = {
     image: string,
     audio: string,
     style: CSSProperties,
+    confetti?: boolean,
 }
 
 const TrophyKinds: Record<string, TrophyKind> = {
@@ -22,6 +23,7 @@ const TrophyKinds: Record<string, TrophyKind> = {
         name: "Trophy",
         image: trophy,
         audio: rewardSound1,
+        confetti: true,
         style: {
             width: 360,
         }
@@ -30,6 +32,7 @@ const TrophyKinds: Record<string, TrophyKind> = {
         name: "Star",
         image: star3,
         audio: rewardSound1,
+        confetti: true,
         style: {
             width: 420,
         }
@@ -38,6 +41,7 @@ const TrophyKinds: Record<string, TrophyKind> = {
         name: "Gold Medal",
         image: goldMedal,
         audio: rewardSound1,
+        confetti: true,
         style: {
             width: 380,
         }
@@ -46,6 +50,7 @@ const TrophyKinds: Record<string, TrophyKind> = {
         name: "Heart",
         image: heart2,
         audio: rewardSound1,
+        confetti: true,
         style: {
             width: 380,
         }
