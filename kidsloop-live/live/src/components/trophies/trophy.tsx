@@ -10,6 +10,7 @@ import TrophyKinds, { TrophyKind, getRandomKind } from './trophyKind';
 import useSound from 'use-sound';
 import useTrophyReward, { Trophy } from './trophyRewardProvider';
 import { UserContext } from '../../entry';
+import { ConfettiRain } from './confettiRain';
 
 type Props = {
     children?: React.ReactNode;
@@ -55,7 +56,10 @@ export function Trophy(props: Props): JSX.Element {
     const [display, setDisplay] = useState(false);
     const [showLights, setShowLights] = useState(false);
     const [showReward, setShowReward] = useState(false);
+    const [showConfetti, setShowConfetti] = useState(false);
 
+    const [containerWidth, setContainerWidth] = useState<number>(0);
+    const [containerHeight, setContainerHeight] = useState<number>(0);
     const [lightAngle, setLightAngle] = useState<number>(45);
 
     const [appearAt, setAppearAt] = useState<RewardLocation>(CenteredLocation);
@@ -113,6 +117,9 @@ export function Trophy(props: Props): JSX.Element {
         const width = containerRef.current.clientWidth;
         const height = containerRef.current.clientHeight;
 
+        setContainerWidth(width);
+        setContainerHeight(height);
+
         const angleDegrees = Math.atan2(height, width) * 180 / Math.PI;
 
         setLightAngle(angleDegrees);
@@ -137,7 +144,6 @@ export function Trophy(props: Props): JSX.Element {
             setShowLights(false)
         }, hideLightsAfter);
 
-
         const hideRewardAfter = TIMINGS.reward.displayAfter + TIMINGS.reward.displayDuration;
         setTimeout(() => {
             setShowReward(false)
@@ -146,13 +152,25 @@ export function Trophy(props: Props): JSX.Element {
         setTimeout(() => {
             setDisplay(false);
         }, TIMINGS.displayDuration);
-    }, [setDisplay, setShowReward]);
+
+        if (trophyKind.confetti) {
+            setTimeout(() => {
+                setShowConfetti(true);
+            }, TIMINGS.confetti.displayAfter);
+
+            const hideConfettiAfter = TIMINGS.confetti.displayAfter + TIMINGS.confetti.displayDuration;
+            setTimeout(() => {
+                setShowConfetti(false);
+            }, hideConfettiAfter);
+        }
+    }, [setDisplay, setShowReward, trophyKind]);
 
     return (
         <Transition in={display} timeout={TIMINGS.enterDuration} onEntering={entering} onEntered={entered} mountOnEnter={true} unmountOnExit={true}>
             { state => (
                 <div ref={containerRef} className="trophy-container" style={{ ...containerStyle, ...containerTransitionStates[state] }}>
                     <Lights display={showLights} enterDuration={TIMINGS.lights.enterDuration} angle={lightAngle} />
+                    <ConfettiRain display={showConfetti} width={containerWidth} height={containerHeight} enterDuration={TIMINGS.confetti.enterDuration} />
                     <Reward
                         display={showReward}
                         enterDuration={TIMINGS.reward.enterDuration}
