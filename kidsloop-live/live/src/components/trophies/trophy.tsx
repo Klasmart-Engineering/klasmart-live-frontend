@@ -13,8 +13,6 @@ import { UserContext } from '../../entry';
 
 type Props = {
     children?: React.ReactNode;
-    appearAtId?: string;
-    disappearAtId?: string;
 };
 
 const containerStyle: CSSProperties = {
@@ -50,7 +48,7 @@ const CenteredLocation = {
 }
 
 export function Trophy(props: Props): JSX.Element {
-    const { children, appearAtId, disappearAtId } = props;
+    const { children } = props;
 
     const { actions: { rewardTrophy, registerHandler, removeHandler } } = useTrophyReward();
     const { name, sessionId } = useContext(UserContext);
@@ -87,15 +85,7 @@ export function Trophy(props: Props): JSX.Element {
     useEffect(() => {
         const keyDownHandler = (evt: KeyboardEvent) => {
             if (evt.code === 'KeyT' && rewardTrophy && name) {
-                const trophy: Trophy = {
-                    from: sessionId,
-                    user: sessionId,
-                    kind: getRandomKind(),
-                }
-
-                displayTrophy(trophy)
-
-                rewardTrophy(trophy.user, trophy.kind);
+                rewardTrophy(sessionId, getRandomKind());
             }
         };
 
@@ -120,9 +110,7 @@ export function Trophy(props: Props): JSX.Element {
 
     useEffect(() => {
         const handleTrophy = (trophy: Trophy) => {
-            if (trophy.from !== sessionId) {
-                displayTrophy(trophy);
-            }
+            displayTrophy(trophy);
         }
 
         if (registerHandler && removeHandler) {
