@@ -253,7 +253,7 @@ function TabInnerContent({ contentIndexState, title, numColState, setNumColState
         setNumColState(num);
     };
 
-    const [gridView, setGridView] = useState(false)
+    const [gridView, setGridView] = useState(true)
 
     switch (title) {
         case "title_participants":
