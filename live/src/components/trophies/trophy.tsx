@@ -169,7 +169,7 @@ export function Trophy(props: Props): JSX.Element {
     }, [setDisplay, setShowReward, trophyKind]);
 
     return (
-        <>
+        <div style={{pointerEvents: "none"}}>
         <Transition in={display} timeout={TIMINGS.enterDuration} onEntering={entering} onEntered={entered} mountOnEnter={true} unmountOnExit={true}>
             { state => (
                 <div ref={containerRef} className="trophy-container" style={{ ...containerStyle, ...containerTransitionStates[state] }}>
@@ -187,6 +187,6 @@ export function Trophy(props: Props): JSX.Element {
             )}
         </Transition>
         <ConfettiRain display={showConfetti} width={containerWidth} height={containerHeight} enterDuration={TIMINGS.confetti.enterDuration} />
-        </>
+        </div>
     )
 }
