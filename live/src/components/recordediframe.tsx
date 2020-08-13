@@ -3,6 +3,21 @@ import { gql } from "apollo-boost";
 import { useMutation } from "@apollo/react-hooks";
 import { UserContext } from "../entry";
 import IframeResizer from "iframe-resizer-react";
+import Grid from "@material-ui/core/Grid";
+import Dialog from "@material-ui/core/Dialog";
+import { useTheme } from "@material-ui/core/styles";
+import { DRAWER_WIDTH } from "./layout";
+import Typography from "@material-ui/core/Typography";
+import StyledFAB from "./styled/fabButton";
+
+import CatSpinner from "../assets/img/spinner/cat_spinner.gif"
+import BlueCatSpinner from "../assets/img/spinner/blue_cat_spinner.gif"
+import GhostSpinner from "../assets/img/spinner/ghost_spinner.gif"
+import PigSpinner from "../assets/img/spinner/pig_spinner.gif"
+
+const SPINNER = [CatSpinner, BlueCatSpinner, PigSpinner];
+
+import { Refresh as RefreshIcon } from "@styled-icons/material/Refresh";
 
 const SET_STREAMID = gql`
     mutation setSessionStreamId($roomId: ID!, $streamId: ID!) {
@@ -19,6 +34,7 @@ export interface Props {
 
 export function RecordedIframe(props: Props): JSX.Element {
     const iframeRef = useRef<HTMLIFrameElement>(null);
+    const theme = useTheme();
     const { roomId } = useContext(UserContext);
     const { contentId, setStreamId, parentWidth, parentHeight } = props;
     const [sendStreamId] = useMutation(SET_STREAMID);
@@ -30,6 +46,20 @@ export function RecordedIframe(props: Props): JSX.Element {
     const [minHeight, setMinHeight] = useState<number>();
     const [numRenders, setNumRenders] = useState(0);
     const [key, setKey] = useState(Math.random());
+    const [openDialog, setOpenDialog] = useState(true);
+    const [seconds, setSeconds] = useState(10);
+    const [spinner, setSpinner] = useState(Math.floor(Math.random() * Math.floor(SPINNER.length)));
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            let newTime = seconds - 1;
+            setSeconds(newTime);
+            console.log(newTime);
+        }, 1000);
+        
+        if (seconds <= 0) { clearTimeout(timer); }
+        return () => clearTimeout(timer);
+    });
 
     const scaleToFitParent = (iframeWidth: number, iframeHeight: number) => {
         const scale = parentHeight / iframeHeight;
@@ -111,27 +141,79 @@ export function RecordedIframe(props: Props): JSX.Element {
     }
 
     return (
-        <IframeResizer
-            // log
-            id="recordediframe"
-            src={contentId}
-            forwardRef={iframeRef}
-            heightCalculationMethod="taggedElement"
-            minHeight={minHeight}
-            onResized={(e) => {
-                setNumRenders(numRenders + 1);
-                startRecording();
-                const width = Number(e.width), height = Number(e.height);
-                if (numRenders < 1) {
-                    scaleToFitParent(width, height)
-                }
-            }}
-            style={{
-                width: widthHeight.width,
-                height: widthHeight.height
-                // As long as it is the <Whiteboard />'s children, it cannot be centered with margin: "0 auto".
-            }}
-            key={key}
-        />
+        <React.Fragment>
+            <Dialog
+                fullScreen 
+                open={openDialog}
+                onClose={() => setOpenDialog(false)} 
+                style={{
+                    marginRight: DRAWER_WIDTH,
+                    zIndex: theme.zIndex.drawer-1
+                }}
+            >
+                <Grid 
+                    container
+                    direction="column"
+                    justify="center"
+                    alignItems="center"
+                    style={{ flexGrow: 1 }}
+                >
+                    <Grid item>
+                        <img src={seconds ? SPINNER[spinner] : GhostSpinner} height={80} />    
+                    </Grid>
+                    <Grid item>
+                        <Typography variant="h6" align="center" gutterBottom>
+                            { seconds ? 
+                                "Loading the lesson material!" : 
+                                "Sorry, something went wrong!"
+                            }
+                        </Typography> 
+                    </Grid>
+                    <Grid item>
+                        <Typography variant="caption" align="center" gutterBottom>
+                            { seconds ? 
+                                `If you still see this screen after ${seconds} seconds, click Reload below.` : 
+                                "Please click the Reload button."
+                            }
+                        </Typography>  
+                    </Grid>
+                    <Grid item style={{ paddingTop: theme.spacing(2) }}>
+                        <StyledFAB
+                            disabled={seconds !== 0}
+                            onClick={() => {
+                                setKey(Math.random());
+                                setSeconds(10);
+                                setSpinner(Math.floor(Math.random() * Math.floor(SPINNER.length)));
+                            }}
+                        >
+                            Reload <RefreshIcon size="1rem" style={{ marginLeft: 4 }}/>
+                        </StyledFAB>    
+                    </Grid>
+                </Grid>
+            </Dialog>
+            <IframeResizer
+                // log
+                id="recordediframe"
+                src={contentId}
+                forwardRef={iframeRef}
+                heightCalculationMethod="taggedElement"
+                minHeight={minHeight}
+                onResized={(e) => {
+                    setNumRenders(numRenders + 1);
+                    startRecording();
+                    const width = Number(e.width), height = Number(e.height);
+                    if (numRenders < 1) {
+                        scaleToFitParent(width, height)
+                    }
+                    setOpenDialog(false);
+                }}
+                style={{
+                    width: widthHeight.width,
+                    height: widthHeight.height
+                    // As long as it is the <Whiteboard />'s children, it cannot be centered with margin: "0 auto".
+                }}
+                key={key}
+            />
+        </React.Fragment>
     );
 }
