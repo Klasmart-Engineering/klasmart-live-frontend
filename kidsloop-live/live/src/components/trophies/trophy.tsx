@@ -79,6 +79,9 @@ export function Trophy(props: Props): JSX.Element {
 
         const rect = element.getBoundingClientRect();
 
+        if (rect.width === 0 && rect.height === 0)
+            return CenteredLocation;
+
         return {
             x: rect.x + (rect.right - rect.left) / 2,
             y: rect.y + (rect.bottom - rect.top) / 2,
@@ -166,14 +169,15 @@ export function Trophy(props: Props): JSX.Element {
     }, [setDisplay, setShowReward, trophyKind]);
 
     return (
+        <>
         <Transition in={display} timeout={TIMINGS.enterDuration} onEntering={entering} onEntered={entered} mountOnEnter={true} unmountOnExit={true}>
             { state => (
                 <div ref={containerRef} className="trophy-container" style={{ ...containerStyle, ...containerTransitionStates[state] }}>
                     <Lights display={showLights} enterDuration={TIMINGS.lights.enterDuration} angle={lightAngle} />
-                    <ConfettiRain display={showConfetti} width={containerWidth} height={containerHeight} enterDuration={TIMINGS.confetti.enterDuration} />
                     <Reward
                         display={showReward}
                         enterDuration={TIMINGS.reward.enterDuration}
+                        leaveDuration={TIMINGS.reward.leaveDuration}
                         enterLocation={appearAt}
                         exitLocation={disappearAt}
                         kind={trophyKind}
@@ -182,5 +186,7 @@ export function Trophy(props: Props): JSX.Element {
                 </div>
             )}
         </Transition>
+        <ConfettiRain display={showConfetti} width={containerWidth} height={containerHeight} enterDuration={TIMINGS.confetti.enterDuration} />
+        </>
     )
 }
