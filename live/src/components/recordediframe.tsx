@@ -47,14 +47,13 @@ export function RecordedIframe(props: Props): JSX.Element {
     const [numRenders, setNumRenders] = useState(0);
     const [key, setKey] = useState(Math.random());
     const [openDialog, setOpenDialog] = useState(true);
-    const [seconds, setSeconds] = useState(10);
+    const [seconds, setSeconds] = useState(60);
     const [spinner, setSpinner] = useState(Math.floor(Math.random() * Math.floor(SPINNER.length)));
 
     useEffect(() => {
         const timer = setTimeout(() => {
             let newTime = seconds - 1;
             setSeconds(newTime);
-            console.log(newTime);
         }, 1000);
         
         if (seconds <= 0) { clearTimeout(timer); }
@@ -143,9 +142,13 @@ export function RecordedIframe(props: Props): JSX.Element {
     return (
         <React.Fragment>
             <Dialog
-                fullScreen 
+                fullScreen
+                hideBackdrop
                 open={openDialog}
-                onClose={() => setOpenDialog(false)} 
+                onClose={() => setOpenDialog(false)}
+                PaperProps={{
+                    style: { backgroundColor: "rgba(255,255,255,0.6)" },
+                }}
                 style={{
                     marginRight: DRAWER_WIDTH,
                     zIndex: theme.zIndex.drawer-1
@@ -182,7 +185,7 @@ export function RecordedIframe(props: Props): JSX.Element {
                             disabled={seconds !== 0}
                             onClick={() => {
                                 setKey(Math.random());
-                                setSeconds(10);
+                                setSeconds(60);
                                 setSpinner(Math.floor(Math.random() * Math.floor(SPINNER.length)));
                             }}
                         >
