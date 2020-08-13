@@ -1,7 +1,7 @@
 import React, { CSSProperties } from 'react';
 import { Transition } from 'react-transition-group';
 import { TransitionStatus } from 'react-transition-group/Transition';
-import rewardImage from '../../assets/img/trophies/star3.png';
+import { TrophyKind } from './trophyKind';
 
 type Props = {
     children?: React.ReactNode;
@@ -9,10 +9,11 @@ type Props = {
     enterDuration: number;
     enterLocation: { x: number | string, y: number | string };
     exitLocation: { x: number | string, y: number | string };
+    kind: TrophyKind;
 };
 
 export function Reward(props: Props): JSX.Element {
-    const { children, display, enterDuration, enterLocation, exitLocation } = props;
+    const { children, display, enterDuration, enterLocation, exitLocation, kind } = props;
 
     const rewardStyle: CSSProperties = {
         position: 'absolute',
@@ -38,7 +39,7 @@ export function Reward(props: Props): JSX.Element {
         <Transition in={display} timeout={enterDuration}>
             { state => (
                 <div className="trophy-reward" style={{ ...rewardStyle, ...rewardTransitionStates[state] }}>
-                    <img alt="trophy" src={rewardImage} />
+                    <img alt="trophy" style={{...kind.style}} src={kind.image} />
                     {children}
                 </div>
             )}

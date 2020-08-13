@@ -5,8 +5,8 @@ import { TransitionStatus } from 'react-transition-group/Transition';
 import { Lights } from './lights';
 import { Reward } from './reward';
 import TIMINGS from './trophyTimings';
+import TrophyKinds, { TrophyKind, getRandomKind } from './trophyKind';
 
-import rewardSound from '../../assets/audio/trophies/reward1.mp3';
 import useSound from 'use-sound';
 import useTrophyReward, { Trophy } from './trophyRewardProvider';
 import { UserContext } from '../../entry';
@@ -62,7 +62,9 @@ export function Trophy(props: Props): JSX.Element {
     const [appearAt, setAppearAt] = useState<RewardLocation>(CenteredLocation);
     const [disappearAt, setDisappearAt] = useState<RewardLocation>(CenteredLocation);
 
-    const [play] = useSound(rewardSound);
+    const [trophyKind, setTrophyKind] = useState<TrophyKind>(TrophyKinds.default)
+
+    const [play] = useSound(trophyKind.audio);
 
     const containerRef = useRef<HTMLDivElement>(null);
 
@@ -86,7 +88,7 @@ export function Trophy(props: Props): JSX.Element {
                 const trophy: Trophy = {
                     from: sessionId,
                     user: name,
-                    kind: ""
+                    kind: getRandomKind(),
                 }
 
                 displayTrophy(trophy)
@@ -106,6 +108,11 @@ export function Trophy(props: Props): JSX.Element {
         // TODO: appear/disappear AtId based on trophy user.
         setAppearAt(locationOfElementWithId(appearAtId));
         setDisappearAt(locationOfElementWithId(disappearAtId));
+
+        if (TrophyKinds[trophy.kind]) {
+            setTrophyKind(TrophyKinds[trophy.kind]);
+        }
+
         setDisplay(true);
 
     }, [setAppearAt, setDisappearAt, setDisplay])
@@ -177,6 +184,7 @@ export function Trophy(props: Props): JSX.Element {
                         enterDuration={TIMINGS.reward.enterDuration}
                         enterLocation={appearAt}
                         exitLocation={disappearAt}
+                        kind={trophyKind}
                     />
                     {children}
                 </div>
