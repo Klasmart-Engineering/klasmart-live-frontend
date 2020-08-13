@@ -12,6 +12,11 @@ const TIMINGS = {
         enterDuration: 400,
         displayAfter: 600,
         displayDuration: 1500,
+    },
+    confetti: {
+        enterDuration: 200,
+        displayAfter: 100,
+        displayDuration: 3000,
     }
 }
 
