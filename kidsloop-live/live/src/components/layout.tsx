@@ -32,19 +32,17 @@ import { Close as CloseIcon } from "@styled-icons/material/Close";
 import { Grid as GridIcon } from "@styled-icons/evaicons-solid/Grid";
 import { ViewList as ListIcon } from "@styled-icons/material/ViewList";
 
-import { webRTCContext, Camera, MyCamera, CameraControls, GlobalCameraControl } from "../webRTCState";
+import { webRTCContext, Camera, GlobalCameraControl } from "../webRTCState";
 import { UserContext } from "../entry";
 import { Session, Message, ContentIndexState, InteractiveModeState, StreamIdState, RoomContext } from "../room";
 import Toolbar from "../whiteboard/components/Toolbar";
-import PermissionControls from "../whiteboard/components/PermissionControls";
 import { ControlButtons } from "../pages/teacher/controlButtons";
 import { SendMessage } from "../sendMessage";
 import InviteButton from "./invite";
 import { MaterialTypename } from "../lessonMaterialContext";
 import Lightswitch from "./lightswitch";
 import LanguageSelect from "./languageSelect";
-import TrophyControls from "./trophies/trophyControls";
-import StyledIcon from "./styled/icon";
+import MoreControls from "./moreControls";
 
 export const DRAWER_WIDTH = 380;
 
@@ -193,7 +191,7 @@ const useStyles = makeStyles((theme: Theme) =>
             position: "fixed",
             bottom: 48,
         },
-        scrollVideoContainer: {
+        scrollCameraContainer: {
             flexGrow: 1,
             overflow: "hidden auto",
         },
@@ -233,6 +231,7 @@ function TabPanel(props: TabPanelProps) {
                         <FormattedMessage id={tab.title} />
                     </Typography>
                     <IconButton aria-label="minimize drawer" onClick={() => handleOpenDrawer(false)}>
+                        {/* <StyledIcon icon={<CloseIcon />} size="medium" /> */}
                         <CloseIcon size="1.25rem" />
                     </IconButton>
                 </Grid>
@@ -241,6 +240,68 @@ function TabPanel(props: TabPanelProps) {
             </div>
         </>
     );
+}
+
+function ToggleCameraViewMode({ isSmDown, setGridMode }: {
+    isSmDown: boolean,
+    setGridMode: React.Dispatch<React.SetStateAction<boolean>>
+}) {
+    return (
+        <Grid container justify="flex-end" item xs={12}>
+            <IconButton aria-label="switch grid view" size="small" onClick={() => setGridMode(true)}>
+                <GridIcon role="img" size={isSmDown ? "1rem" : "1.25rem"} />
+            </IconButton>
+            <IconButton aria-label="switch list view" size="small" onClick={() => setGridMode(false)}>
+                <ListIcon role="img" size={isSmDown ? "1rem" : "1.25rem"} />
+            </IconButton>
+        </Grid>
+    )
+}
+
+function CameraInterface({ isTeacher, isSmDown, gridMode, sessionId, id, session, mediaStream }: {
+    isTeacher?: boolean,
+    isSmDown: boolean,
+    gridMode: boolean,
+    sessionId: string,
+    id: string,
+    session: Session,
+    mediaStream: MediaStream | undefined,
+}) {
+    const isSelf = id === sessionId;
+    let idx = 0;
+    if (isSelf) { idx = -1; }
+
+    return (
+        <Grid id={`participant:${id}`} item xs={6} md={12} style={{ order: idx }}>
+            <Grid container alignItems="center" spacing={isSmDown || gridMode ? 0 : 1} item xs={12}>
+                <Grid item xs={gridMode ? 12 : 6}>
+                    <Camera
+                        muted={isSelf}
+                        session={session}
+                        controls={true}
+                        miniMode={!gridMode}
+                        mediaStream={mediaStream}
+                        square
+                    />
+                </Grid>
+                {!gridMode && !isSmDown ?
+                    <Grid container direction="row" alignItems="center" item xs={6}>
+                        <Grid item xs={9}>
+                            <Tooltip placement="left" title={session.name ? session.name : ""}>
+                                <Typography variant="body2" align="left" noWrap>
+                                    {isSelf ? "You" : session.name}
+                                </Typography>
+                            </Tooltip>
+                        </Grid>
+                        {isTeacher && (id !== sessionId) ?
+                            <Grid item xs={3}>
+                                <MoreControls session={session} selfUserId={sessionId} />
+                            </Grid> : null}
+                    </Grid> : null}
+            </Grid>
+            <Grid item xs={12}><Divider /></Grid>
+        </Grid>
+    )
 }
 
 function TabInnerContent({ contentIndexState, title, numColState, setNumColState }: {
@@ -253,34 +314,43 @@ function TabInnerContent({ contentIndexState, title, numColState, setNumColState
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
     const { sessionId, materials, teacher } = useContext(UserContext);
-    const { name } = useContext(UserContext);
     const changeNumColState = (num: number) => {
         if (!setNumColState) { return; }
         setNumColState(num);
     };
 
-    const [gridView, setGridView] = useState(true)
+    const [gridMode, setGridMode] = useState(true)
 
     switch (title) {
         case "title_participants":
-            const users = useContext(UsersContext);
             const webrtc = useContext(webRTCContext);
+            const stream = webrtc.getCamera();
+            const users = useContext(UsersContext);
+            // TODO: Improve performance as order in flexbox instead of .filter()
+            const userEntries = [...users.entries()];
+            const selfUser = userEntries.filter(([id]) => id === sessionId);
+            const otherUsers = userEntries.filter(([id]) => id !== sessionId);
+
             return (
                 <Grid container direction="row" justify="flex-start" alignItems="center" style={{ flex: 1 }}>
-                    {teacher ? <>
+                    {teacher ? (isSmDown ? <>
                         <InviteButton />
                         <GlobalCameraControl />
-                    </> : null}
-                    {isSmDown ? null :
-                        <Grid container justify="flex-end" item xs={12}>
-                            <IconButton aria-label="switch grid view" size="small" onClick={() => setGridView(true)}>
-                                <GridIcon role="img" size={isSmDown ? "1rem" : "1.25rem"} />
-                            </IconButton>
-                            <IconButton aria-label="switch list view" size="small" onClick={() => setGridView(false)}>
-                                <ListIcon role="img" size={isSmDown ? "1rem" : "1.25rem"} />
-                            </IconButton>
-                        </Grid>
-                    }
+                    </> : <>
+                            {selfUser.map(([id, session]) =>
+                                <Camera
+                                    key={id}
+                                    muted={true}
+                                    session={session}
+                                    controls={true}
+                                    mediaStream={stream !== null ? stream : undefined}
+                                    square
+                                />
+                            )}
+                            <InviteButton />
+                            <GlobalCameraControl />
+                        </>) : null}
+                    {isSmDown ? null : <ToggleCameraViewMode isSmDown={isSmDown} setGridMode={setGridMode} />}
                     <Grid
                         container
                         direction="row"
@@ -288,48 +358,46 @@ function TabInnerContent({ contentIndexState, title, numColState, setNumColState
                         alignContent="flex-start"
                         item
                         xs={12}
-                        className={classes.scrollVideoContainer}
-                        style={isSmDown ? { maxHeight: `calc(100vh - ${theme.spacing(35)}px)` } : {
-                            height: teacher ? `calc(100vh - ${theme.spacing(35)}px)` : `calc(100vh - ${theme.spacing(9)}px)`, // Because student side has no <InviteButton /> and <GlobalCameraControl />
+                        className={classes.scrollCameraContainer}
+                        style={isSmDown ? { maxHeight: `calc(100vh - ${theme.spacing(65)}px)` } : {
+                            height: teacher ? `calc(100vh - ${theme.spacing(65)}px)` : `calc(100vh - ${theme.spacing(9)}px)`, // Because student side has no <InviteButton /> and <GlobalCameraControl />
                         }}
                     >
                         <Grid id={"participant-listing"} item xs={12}><Divider /></Grid>
-                        {[...users.entries()].map(([id, session]) => (
-                            <Grid key={id} id={`participant:${id}`} item xs={6} md={12}>
-                                <Grid container alignItems="center" spacing={isSmDown || gridView ? 0 : 2} item xs={12}>
-                                    <Grid item xs={12} md={gridView ? 12 : 5}>
-                                        <Grid container direction="row" justify="space-between">
-                                            <Grid item xs={12}>
-                                                {id === sessionId ?
-                                                    <MyCamera /> :
-                                                    <Camera
-                                                        controls
-                                                        mediaStream={webrtc.getCameraStream(id)}
-                                                        square
-                                                    />
-                                                }
-                                            </Grid>
-                                        </Grid>
-                                    </Grid>
-                                    <Grid item xs={6} md={gridView ? 6 : 4}>
-                                        <Tooltip placement="left" title={id === sessionId ? name || "" : session.name || ""}>
-                                            <Typography variant={isSmDown ? "caption" : "body2"} align="left" noWrap>
-                                                {id === sessionId ? "You" : session.name}
-                                            </Typography>
-                                        </Tooltip>
-                                    </Grid>
-                                    <Grid container justify="space-evenly" item xs={6} md={gridView ? 6 : 3}>
-                                        <CameraControls global={teacher} sessionId={id} />
-                                        {teacher ? <PermissionControls selfUserId={sessionId} otherUserId={session.id} /> : <></>}
-                                        {teacher && id !== sessionId ? <TrophyControls otherUserId={session.id} /> : <></>}
-                                    </Grid>
-                                </Grid>
-                                <Grid item xs={12}>
-                                    {/* TODO: On mobile, Divider is not visible */}
-                                    <Divider orientation={isSmDown ? "vertical" : "horizontal"} />
-                                </Grid>
-                            </Grid>
-                        ))}
+                        {teacher && !isSmDown && otherUsers.length === 0 ?
+                            <Typography style={{ color: "rgb(200,200,200)", padding: 4 }}>
+                                <FormattedMessage id="no_participants" />
+                            </Typography> : (teacher ?
+                                otherUsers.map(([id, session]) =>
+                                    <CameraInterface
+                                        key={id}
+                                        isTeacher={teacher}
+                                        isSmDown={isSmDown}
+                                        gridMode={gridMode}
+                                        sessionId={sessionId}
+                                        id={id}
+                                        session={session}
+                                        mediaStream={id === sessionId && stream !== null ?
+                                            stream : webrtc.getCameraStream(id)
+                                        }
+                                    />) :
+                                userEntries.map(([id, session]) => {
+                                    return (
+                                        <CameraInterface
+                                            key={id}
+                                            isSmDown={isSmDown}
+                                            gridMode={gridMode}
+                                            sessionId={sessionId}
+                                            id={id}
+                                            session={session}
+                                            mediaStream={id === sessionId && stream !== null ?
+                                                stream : webrtc.getCameraStream(id)
+                                            }
+                                        />
+                                    )
+                                })
+                            )
+                        }
                     </Grid>
                 </Grid>
             );

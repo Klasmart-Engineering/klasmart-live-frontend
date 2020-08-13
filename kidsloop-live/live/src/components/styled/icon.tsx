@@ -17,7 +17,7 @@ export default function StyledIcon(props: Props) {
     const theme = useTheme();
 
     const getSize = () => {
-        switch(size) {
+        switch (size) {
             case "small":
                 return "1rem";
             case "medium":
@@ -48,8 +48,8 @@ export default function StyledIcon(props: Props) {
 
     return (
         tooltip ?
-            <Tooltip 
-                aria-label={tooltip["aria-label"]} 
+            <Tooltip
+                aria-label={tooltip["aria-label"]}
                 arrow
                 placement={tooltip.placement || "left"}
                 title={tooltip.title || ""}

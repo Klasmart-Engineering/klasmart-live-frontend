@@ -1,23 +1,27 @@
 import React, { useRef, createContext, useContext, useEffect, useState, useReducer } from "react";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
-import { useTheme } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
-import Grid from "@material-ui/core/Grid";
-import IconButton from "@material-ui/core/IconButton";
 import { FormattedMessage } from "react-intl";
 import { gql } from "apollo-boost";
 import { useMutation } from "@apollo/react-hooks";
-import NoCamera from "./components/noCamera";
+import { Theme, useTheme, createStyles, makeStyles } from "@material-ui/core/styles";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
+import Grid from "@material-ui/core/Grid";
+import Typography from "@material-ui/core/Typography";
+import IconButton from "@material-ui/core/IconButton";
 import Paper from "@material-ui/core/Paper";
-import { UserContext } from "./entry";
+import Tooltip from "@material-ui/core/Tooltip";
 
 import { Videocam as CameraIcon } from "@styled-icons/material-twotone/Videocam";
 import { VideocamOff as CameraOffIcon } from "@styled-icons/material-twotone/VideocamOff";
 import { Mic as MicIcon } from "@styled-icons/material-twotone/Mic";
 import { MicOff as MicOffIcon } from "@styled-icons/material-twotone/MicOff";
 import { Eraser as EraserIcon } from "@styled-icons/boxicons-solid/Eraser";
+
+import { UserContext } from "./entry";
+import { Session } from "./room";
 import StyledIcon from "./components/styled/icon";
+import NoCamera from "./components/noCamera";
 import { useWhiteboard } from "./whiteboard/context-provider/WhiteboardContextProvider";
+import MoreControls from "./components/moreControls";
 
 import { getRandomKind } from './components/trophies/trophyKind';
 import { Star as StarIcon } from "@styled-icons/material/Star";
@@ -380,50 +384,17 @@ class WebRTCState {
     }
 }
 
-export function Cameras({ backgroundColor, id }: { backgroundColor?: string, id?: string }): JSX.Element {
-    const states = useContext(webRTCContext);
-    if (!states) { return <FormattedMessage id="error_webrtc_unavailable" />; }
-    if (!id) {
-        return (
-            <Grid
-                container
-                direction="column"
-                justify="flex-start"
-                alignItems="center"
-            >
-                {states.getMediaStreams().map(({ stream }) =>
-                    <Grid item key={stream.id}>
-                        <Camera height={240} mediaStream={stream} />
-                    </Grid>
-                )}
-            </Grid>
-        );
-    }
-    const camera = states.getCameraStream(id);
-    if (camera) {
-        return (
-            <Grid container item justify="space-around">
-                <Camera height={120} mediaStream={camera} backgroundColor={backgroundColor} />
-            </Grid>
-        );
-    }
-    return (
-        <Grid container justify="space-between" alignItems="center" style={{ width: "100%", height: "100%" }}>
-            <Typography style={{ margin: "0 auto" }} variant="caption" align="center"><CameraOffIcon /></Typography>
-        </Grid>
-    );
-
-}
-
 export function Camera(props: {
+    session?: Session,
+    controls?: boolean,
+    miniMode?: boolean,
     mediaStream?: MediaStream,
     height?: number | string,
-    controls?: boolean,
     muted?: boolean,
     backgroundColor?: string,
     square?: boolean,
 }): JSX.Element {
-    const { mediaStream, controls, muted, backgroundColor, square } = props;
+    const { session, controls, miniMode, mediaStream, muted, backgroundColor, square } = props;
     const theme = useTheme();
     const videoRef = useRef<HTMLVideoElement>(null);
     useEffect(() => {
@@ -432,50 +403,55 @@ export function Camera(props: {
     }, [videoRef.current, mediaStream]);
 
     return (
-        <Paper
-            component="div"
-            elevation={2}
-            style={{
-                backgroundColor: "#193d6f",
-                borderRadius: square ? 0 : 12,
-                height: 0,
-                marginBottom: controls ? 0 : theme.spacing(2),
-                position: "relative",
-                paddingBottom: square ? "75%" : "56.25%"
-            }}
-        >
-            {mediaStream ?
-                <video
-                    autoPlay={true}
-                    muted={muted}
-                    playsInline
-                    style={{
-                        backgroundColor: backgroundColor || "#193d6f",
-                        borderRadius: square ? 0 : 12,
-                        objectFit: "cover",
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        height: "100%",
-                        width: "100%",
-                    }}
-                    ref={videoRef}
-                /> :
-                <Typography
-                    align="center"
-                    style={{
-                        color: "#FFF",
-                        top: "50%",
-                        left: "50%",
-                        marginRight: "-50%",
-                        position: "absolute",
-                        transform: "translate(-50%, -50%)",
-                    }}
-                >
-                    <CameraOffIcon size="1.5rem" />
-                </Typography>
-            }
-        </Paper>
+        // <CameraOverlay /> needs the parent div that has position: "relative"
+        <div style={{ position: "relative", width: "100%" }}>
+            <Paper
+                component="div"
+                elevation={2}
+                style={{
+                    backgroundColor: "#193d6f",
+                    borderRadius: square ? 0 : 12,
+                    height: 0,
+                    marginBottom: controls ? 0 : theme.spacing(2),
+                    position: "relative",
+                    paddingBottom: square ? "75%" : "56.25%",
+                    margin: "unset"
+                }}
+            >
+                {mediaStream ?
+                    <video
+                        autoPlay={true}
+                        muted={muted}
+                        playsInline
+                        style={{
+                            backgroundColor: backgroundColor || "#193d6f",
+                            borderRadius: square ? 0 : 12,
+                            objectFit: "cover",
+                            position: "absolute",
+                            top: 0,
+                            left: 0,
+                            height: "100%",
+                            width: "100%",
+                        }}
+                        ref={videoRef}
+                    /> :
+                    <Typography
+                        align="center"
+                        style={{
+                            color: "#FFF",
+                            top: "50%",
+                            left: "50%",
+                            marginRight: "-50%",
+                            position: "absolute",
+                            transform: "translate(-50%, -50%)",
+                        }}
+                    >
+                        <CameraOffIcon size="1.5rem" />
+                    </Typography>
+                }
+            </Paper>
+            {mediaStream && controls && session ? <CameraOverlay session={session} miniMode={miniMode} /> : null}
+        </div>
     );
 }
 
@@ -498,7 +474,6 @@ mutation rewardTrophy($roomId: ID!, $user: ID!, $kind: String) {
 
 export function GlobalCameraControl(): JSX.Element {
     const theme = useTheme();
-    const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
     const [camerasOn, setCamerasOn] = useState(true);
     const [micsOn, setMicsOn] = useState(true);
 
@@ -673,6 +648,7 @@ export function GlobalCameraControl(): JSX.Element {
     );
 }
 
+// TODO: It would be great to integrate with CameraControls in CameraOverlay and reuse as components.
 export function CameraControls(props: { global?: boolean, sessionId?: string }): JSX.Element {
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
@@ -716,7 +692,14 @@ export function CameraControls(props: { global?: boolean, sessionId?: string }):
     }
 
     return (
-        <Grid container justify="space-evenly" alignItems="center" item xs={6}>
+        <Grid
+            container
+            direction="row"
+            justify="space-between"
+            alignItems="center"
+            item
+            xs={8}
+        >
             <Grid item>
                 <IconButton
                     aria-label="control camera"
@@ -747,23 +730,241 @@ export function CameraControls(props: { global?: boolean, sessionId?: string }):
     );
 }
 
-export function MyCamera({ height }: {
-    height?: number
-}): JSX.Element {
-    const HEIGHT = 120;
-    const webrtc = useContext(webRTCContext);
-    const stream = webrtc.getCamera();
-    if (stream) {
-        return (
-            <Camera
-                muted
-                controls
-                mediaStream={stream}
-                height={height ? height : HEIGHT}
-                square
-            />
-        );
-    } else {
-        return <NoCamera messageId="error_camera_unavailable" />;
+/**
+ * CameraOverlay style detail
+ *         | Info spacing | Controls spacing | Button |  Icon  |
+ * Desktop |       1      |         2        | medium | medium |   
+ * Tablet  |      0.5     |         1        | medium | medium |
+ * Mobile  |      0.5     |         1        |  small |  small |
+ */
+const useStyles = makeStyles((theme: Theme) =>
+    createStyles({
+        root: {
+            background: `linear-gradient(
+                rgba(0, 0, 0, 0.3),
+                rgba(0, 0, 0, 0) 16%,
+                rgba(0, 0, 0, 0.3))
+            `,
+            position: "absolute",
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: "100%",
+            width: "100%",
+        },
+        iconBtn: {
+            border: "1px solid white",
+            margin: theme.spacing(0, 2),
+            [theme.breakpoints.down("sm")]: {
+                margin: theme.spacing(0, 1),
+            },
+        },
+        iconOffBtn: {
+            border: "1px solid #dc004e",
+            margin: theme.spacing(0, 2),
+            [theme.breakpoints.down("sm")]: {
+                margin: theme.spacing(0, 1),
+            },
+        },
+        icon: {
+            "&:hover": {
+                color: "white"
+            }
+        },
+        iconOff: {
+            "&:hover": {
+                color: "red"
+            }
+        },
+        infoContainer: {
+            textAlign: "center",
+            height: "15%",
+            padding: theme.spacing(1),
+            [theme.breakpoints.down("sm")]: {
+                padding: theme.spacing(0.5),
+            },
+        },
+        controlsContainer: {
+            height: "85%",
+            padding: theme.spacing(2),
+            [theme.breakpoints.down("sm")]: {
+                padding: theme.spacing(1),
+            },
+            opacity: 0,
+            transition: ".3s ease",
+            "&:hover": {
+                opacity: 1
+            }
+        },
+    })
+);
+
+export default function CameraOverlay({ session, miniMode, global }: {
+    session: Session;
+    miniMode?: boolean;
+    global?: boolean;
+}) {
+    const theme = useTheme();
+    const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
+    const isSmUp = useMediaQuery(theme.breakpoints.up("sm"));
+    const { root, iconBtn, iconOffBtn, icon, iconOff, infoContainer, controlsContainer } = useStyles();
+
+    const { roomId, teacher, sessionId: mySessionId } = useContext(UserContext);
+    const [mute, { loading, error }] = useMutation(gql`
+    mutation mute($roomId: ID!, $sessionId: ID!, $audio: Boolean, $video: Boolean) {
+        mute(roomId: $roomId, sessionId: $sessionId, audio: $audio, video: $video)
     }
+    `);
+    const states = useContext(webRTCContext);
+    const isSelf = session.id === mySessionId;
+
+    function toggleVideoState() {
+        if (global && session.id !== mySessionId) {
+            mute({
+                variables: {
+                    roomId,
+                    sessionId: session.id,
+                    video: !states.getVideoStreamState(session.id),
+                }
+            });
+        } else {
+            states.setVideoStreamState(session.id);
+        }
+    }
+
+    function toggleAudioState() {
+        if (global && session.id !== mySessionId) {
+            mute({
+                variables: {
+                    roomId,
+                    sessionId: session.id,
+                    audio: !states.getAudioStreamState(session.id),
+                }
+            });
+        } else {
+            states.setAudioStreamState(session.id);
+        }
+    }
+
+    return (
+        <div className={root}>
+            <Grid
+                container
+                direction="row"
+                justify="space-between"
+                style={{ height: "100%" }}
+            >
+                {/* User name */}
+                <Grid item xs={12} className={infoContainer}>
+                    {miniMode ? null :
+                        <Tooltip
+                            arrow
+                            aria-label="user name tooltip"
+                            placement={"top"}
+                            title={session.name ? session.name : <FormattedMessage id="error_unknown_user" />}
+                        >
+                            <Typography
+                                component="p"
+                                variant={isSmDown ? "caption" : "body1"}
+                                noWrap
+                                style={{ color: "white" }}
+                            >
+                                {!session.name ? <FormattedMessage id="error_unknown_user" /> : (
+                                    isSelf ? "You" : session.name
+                                )}
+                            </Typography>
+                        </Tooltip>
+                    }
+                </Grid>
+
+                {/* Camera Controls */}
+                <Grid
+                    container
+                    direction="column"
+                    justify={miniMode ? "flex-start" : "flex-end"}
+                    item
+                    xs={12}
+                    className={controlsContainer}
+                    style={miniMode ? {
+                        padding: theme.spacing(1),
+                        paddingTop: theme.spacing(2),
+                    } : undefined}
+                >
+                    <Grid container justify="center" item>
+                        <Tooltip
+                            arrow
+                            aria-label="camera control button tooltip"
+                            placement={"top"}
+                            title={states.getVideoStreamState(session.id)
+                                ? <FormattedMessage id="turn_off_camera" />
+                                : <FormattedMessage id="turn_on_camera" />
+                            }
+                        >
+                            <IconButton
+                                aria-label="camera control button"
+                                onClick={toggleVideoState}
+                                size={isSmUp ? "medium" : "small"}
+                                className={states.getVideoStreamState(session.id) ? iconBtn : iconOffBtn}
+                                style={miniMode ? {
+                                    margin: theme.spacing(1),
+                                    padding: theme.spacing(0.5)
+                                } : undefined}
+                            >
+                                {states.getVideoStreamState(session.id) ?
+                                    <StyledIcon
+                                        icon={<CameraIcon className={icon} />}
+                                        size={isSmUp ? "medium" : "small"}
+                                        color="white"
+                                    /> :
+                                    <StyledIcon
+                                        icon={<CameraOffIcon className={iconOff} />}
+                                        size={isSmUp ? "medium" : "small"}
+                                        color="red"
+                                    />
+                                }
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip
+                            arrow
+                            aria-label="mic control button tooltip"
+                            placement="top"
+                            title={states.getAudioStreamState(session.id)
+                                ? <FormattedMessage id="turn_off_mic" />
+                                : <FormattedMessage id="turn_on_mic" />
+                            }
+                        >
+                            <IconButton
+                                aria-label="mic control button"
+                                onClick={toggleAudioState}
+                                size={isSmUp ? "medium" : "small"}
+                                className={states.getAudioStreamState(session.id) ? iconBtn : iconOffBtn}
+                                style={miniMode ? {
+                                    margin: theme.spacing(1),
+                                    padding: theme.spacing(0.5)
+                                } : undefined}
+                            >
+                                {states.getAudioStreamState(session.id) ?
+                                    <StyledIcon
+                                        icon={<MicIcon className={icon} />}
+                                        size={isSmUp ? "medium" : "small"}
+                                        color="white"
+                                    /> :
+                                    <StyledIcon
+                                        icon={<MicOffIcon className={iconOff} />}
+                                        size={isSmUp ? "medium" : "small"}
+                                        color="red"
+                                    />
+                                }
+                            </IconButton>
+                        </Tooltip>
+
+                        {(!teacher || isSelf || miniMode) ? null :
+                            <MoreControls session={session} selfUserId={mySessionId} forOverlay={true} />
+                        }
+                    </Grid>
+                </Grid>
+            </Grid>
+        </div>
+    )
 }
