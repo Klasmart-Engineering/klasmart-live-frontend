@@ -6,17 +6,18 @@ const TIMINGS = {
     lights: {
         enterDuration: 400,
         displayAfter: 1000,
-        displayDuration: 1200,
+        displayDuration: 800,
     },
     reward: {
         enterDuration: 400,
+        leaveDuration: 1200,
         displayAfter: 600,
         displayDuration: 1500,
     },
     confetti: {
         enterDuration: 200,
         displayAfter: 100,
-        displayDuration: 3000,
+        displayDuration: 5000,
     }
 }
 
