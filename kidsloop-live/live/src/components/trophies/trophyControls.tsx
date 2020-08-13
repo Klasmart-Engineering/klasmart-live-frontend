@@ -4,11 +4,12 @@ import useTheme from '@material-ui/core/styles/useTheme';
 import useMediaQuery from '@material-ui/core/useMediaQuery/useMediaQuery';
 import React, { ReactChild, ReactChildren, useCallback } from 'react';
 import useTrophyReward from './trophyRewardProvider';
+import { getRandomKind } from './trophyKind';
+
 import { Star as StarIcon } from "@styled-icons/material/Star";
 import { EmojiEvents as TrophyIcon } from "@styled-icons/material/EmojiEvents";
 import { Favorite as HeartIcon } from "@styled-icons/material/Favorite";
 import { ThumbUp as EncourageIcon } from "@styled-icons/material/ThumbUp";
-import { getRandomKind } from './trophyKind';
 
 type Props = {
     children?: ReactChild | ReactChildren | null
@@ -46,7 +47,7 @@ export default function TrophyControls({ children, otherUserId }: Props): JSX.El
     }, [otherUserId, rewardTrophy]);
 
     return (
-        <Grid container justify="space-evenly" alignItems="center" item xs={6}>
+        <Grid container justify="space-evenly" alignItems="center" item xs={12}>
             <Grid item>
                 <IconButton
                     aria-label="control trophy reward"
