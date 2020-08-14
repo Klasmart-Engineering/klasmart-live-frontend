@@ -17,6 +17,7 @@ import { Mic as MicIcon } from "@styled-icons/material-twotone/Mic";
 import { MicOff as MicOffIcon } from "@styled-icons/material-twotone/MicOff";
 import { Eraser as EraserIcon } from "@styled-icons/boxicons-solid/Eraser";
 import StyledIcon from "./components/styled/icon";
+import { useWhiteboard } from "./whiteboard/context-provider/WhiteboardContextProvider";
 
 const SEND_SIGNAL = gql`
   mutation webRTCSignal($roomId: ID!, $toSessionId: ID!, $webrtc: WebRTCIn) {
@@ -499,6 +500,8 @@ export function GlobalCameraControl(): JSX.Element {
     const mediaStreams = states.getMediaStreams();
     const { roomId } = useContext(UserContext);
 
+    const { actions: { clear }} = useWhiteboard();
+
     function toggleVideoStates() {
         for (const { sessionId } of mediaStreams) {
             mute({
@@ -577,7 +580,7 @@ export function GlobalCameraControl(): JSX.Element {
                     <IconButton
                         color={"primary"}
                         style={{ backgroundColor: "#f6fafe" }}
-                        onClick={() => {}} /* TODO: clear all whiteboard on teacher side here */
+                        onClick={() => { clear(); }}
                     >
                         <EraserIcon size="1.5rem" />
                     </IconButton>
