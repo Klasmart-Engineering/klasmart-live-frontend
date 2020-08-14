@@ -23,6 +23,10 @@ const LANGUAGES_LABEL: Language[] = [
         code: "zh-CN",
         text: "汉语 (简体)",
     },
+    {
+        code: "vi",
+        text: "Tiếng Việt",
+    },
 ];
 
 interface Props {
