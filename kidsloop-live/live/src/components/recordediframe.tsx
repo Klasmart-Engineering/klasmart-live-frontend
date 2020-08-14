@@ -77,7 +77,10 @@ export function RecordedIframe(props: Props): JSX.Element {
         const contentWindow = iframeElement.contentWindow
         const contentDoc = iframeElement.contentDocument
         if (!contentWindow || !contentDoc) { return; }
-        contentWindow.addEventListener("contextmenu", function (e) { e.preventDefault(); }, false); // Prevent content distribution
+        // IP Protection
+        const blockRightClick = (e: MouseEvent) => { e.preventDefault() }
+        contentWindow.addEventListener("contextmenu", (e) => blockRightClick(e), false);
+
         const h5pDivCollection = contentDoc.body.getElementsByClassName("h5p-content");
         // TODO: Is it possible to handle all non-h5p content with this line?
         const contentDivCollection = contentDoc.body.getElementsByClassName("content");
@@ -99,6 +102,8 @@ export function RecordedIframe(props: Props): JSX.Element {
         h5pResizerScript.setAttribute("type", "text/javascript");
         h5pResizerScript.setAttribute("src", "https://h5p.org/sites/all/modules/h5p/library/js/h5p-resizer.js");
         contentDoc.head.appendChild(h5pResizerScript);
+
+        return contentWindow.removeEventListener("contextmenu", (e) => blockRightClick(e), false);
     }
 
     useEffect(() => {

@@ -149,7 +149,10 @@ function Entry() {
     const webRTCContextValue = WebRTCContext.useWebRTCContext(sessionId, userContext.roomId);
 
     useEffect(() => {
-        window.addEventListener("contextmenu", function (e) { e.preventDefault(); }, false); // IP Protection
+        // IP Protection
+        const blockRightClick = (e: MouseEvent) => { e.preventDefault() }
+        window.addEventListener("contextmenu", (e) => blockRightClick(e), false);
+        return window.removeEventListener("contextmenu", (e) => blockRightClick(e), false);
     }, [])
 
     return (
