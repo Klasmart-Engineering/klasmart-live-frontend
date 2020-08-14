@@ -18,6 +18,7 @@ import PigSpinner from "../assets/img/spinner/pig_spinner.gif"
 const SPINNER = [CatSpinner, BlueCatSpinner, PigSpinner];
 
 import { Refresh as RefreshIcon } from "@styled-icons/material/Refresh";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 const SET_STREAMID = gql`
     mutation setSessionStreamId($roomId: ID!, $streamId: ID!) {
@@ -35,6 +36,8 @@ export interface Props {
 export function RecordedIframe(props: Props): JSX.Element {
     const iframeRef = useRef<HTMLIFrameElement>(null);
     const theme = useTheme();
+    const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
+
     const { roomId } = useContext(UserContext);
     const { contentId, setStreamId, parentWidth, parentHeight } = props;
     const [sendStreamId] = useMutation(SET_STREAMID);
@@ -150,7 +153,7 @@ export function RecordedIframe(props: Props): JSX.Element {
                     style: { backgroundColor: "rgba(255,255,255,0.6)" },
                 }}
                 style={{
-                    marginRight: DRAWER_WIDTH,
+                    marginRight: isSmDown ? "" : DRAWER_WIDTH,
                     zIndex: theme.zIndex.drawer-1
                 }}
             >
@@ -189,7 +192,7 @@ export function RecordedIframe(props: Props): JSX.Element {
                                 setSpinner(Math.floor(Math.random() * Math.floor(SPINNER.length)));
                             }}
                         >
-                            Reload <RefreshIcon size="1rem" style={{ marginLeft: 4 }}/>
+                            Reload <RefreshIcon size="1rem" style={{ marginLeft: isSmDown ? 0 : 4 }}/>
                         </StyledFAB>    
                     </Grid>
                 </Grid>
