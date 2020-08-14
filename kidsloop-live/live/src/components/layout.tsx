@@ -94,6 +94,10 @@ const useStyles = makeStyles((theme: Theme) =>
                 duration: theme.transitions.duration.leavingScreen,
                 easing: theme.transitions.easing.sharp,
             }),
+            height: "100vh",
+            [theme.breakpoints.down("md")]: {
+                height: `calc(100vh - ${theme.spacing(16)}px)`,
+            },
         },
         contentShift: {
             marginRight: 0,
@@ -184,6 +188,7 @@ const useStyles = makeStyles((theme: Theme) =>
             bottom: 0,
         },
         toolbarContainer: {
+            zIndex: 998,
             width: "100%",
             position: "fixed",
             bottom: 48,
@@ -513,8 +518,8 @@ export default function Layout(props: Props): JSX.Element {
                             id="main-container"
                             className={classes.content}
                             style={{
-                                height: "100vh",
-                                padding: (material && material.__typename === MaterialTypename.Video) ? "" : theme.spacing(3)
+                                padding: (material && material.__typename === MaterialTypename.Video)
+                                    ? theme.spacing(1) : theme.spacing(3)
                             }}
                             key={key}
                         >
