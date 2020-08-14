@@ -50,7 +50,7 @@ export default function Toolbar(): JSX.Element {
                 </> : <></>
             }
             {state.permissions.allowDeleteShapes.others ?
-                <Button color="primary" onClick={clear}>
+                <Button color="primary" onClick={() => { clear(); }}>
                     <FormattedMessage id="whiteboard_clear" />
                 </Button> : <></>
             }

@@ -57,12 +57,17 @@ export class ShapesRepository {
         this.shapes.clear();
     }
 
-    clear(id: string) {
-        const userId = new ShapeID(id);
-
-        // NOTE: Remove all shapes belonging to user.
-        Array.from(this.shapes.values()).filter(shape => shape.id.user === userId.user).forEach(s => {
-            this.shapes.delete(s.id.full);
-        });
+    clear(user?: string) {
+        if (user) {
+            // NOTE: Remove all shapes belonging to user.
+            Array.from(this.shapes.values()).filter(shape => shape.id.user === user).forEach(s => {
+                this.shapes.delete(s.id.full);
+            });
+        } else {
+            // NOTE: Remove all shapes.
+            Array.from(this.shapes.values()).forEach(s => {
+                this.shapes.delete(s.id.full);
+            });
+        }
     }
 }

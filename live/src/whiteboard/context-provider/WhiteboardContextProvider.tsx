@@ -49,8 +49,8 @@ function attachEventSerializer(controller: IPainterController, serializer: Paint
     controller.on("painterLine", (id, p1, p2) => {
         serializer.painterLine(id, p1, p2);
     });
-    controller.on("painterClear", id => {
-        serializer.painterClear(id);
+    controller.on("painterClear", (id, user) => {
+        serializer.painterClear(id, user);
     })
 }
 
@@ -149,9 +149,9 @@ export const WhiteboardContextProvider: FunctionComponent<Props> = ({ children }
             }
         };
 
-        const handlePainterClear = (id: string) => {
+        const handlePainterClear = (id: string, user?: string) => {
             if (!eventSerializer.didSerializeEvent(id)) {
-                shapesRepository.clear(id);
+                shapesRepository.clear(user);
             }
         };
 
@@ -182,7 +182,7 @@ export const WhiteboardContextProvider: FunctionComponent<Props> = ({ children }
 
         const pointerPainter = new PointerPainterController(sessionId, true);
         pointerPainter.on("operationBegin", (id: string, params: BrushParameters) => shapesRepository.createShape(id, params));
-        pointerPainter.on("painterClear", id => shapesRepository.clear(id));
+        pointerPainter.on("painterClear", (_id, user) => shapesRepository.clear(user));
         pointerPainter.on("painterLine", (id, p1, p2) => shapesRepository.appendLine(id, [p1, p2]));
 
         const localEventSerializer = new PaintEventSerializer(NormalizeCoordinates);
@@ -209,24 +209,11 @@ export const WhiteboardContextProvider: FunctionComponent<Props> = ({ children }
         [setBrushParameters]
     );
 
-    const clearAction = useCallback(() => {
+    const clearAction = useCallback((user?: string) => {
         if (pointerPainter) {
-            pointerPainter.clear();
+            pointerPainter.clear(user);
         }
     }, [pointerPainter]);
-
-    const clearOtherAction = useCallback((otherId: string) => {
-        if (!shapesRepository || !eventSerializer) {
-            return;
-        }
-
-        // NOTE: Clear the local repository (optimistically).
-        shapesRepository.clear(otherId);
-
-        // NOTE: Serialize clear event to send to others.
-        eventSerializer.painterClear(otherId);
-
-    }, [shapesRepository, eventSerializer]);
 
     const setDisplayAction = useCallback(
         (display: boolean) => {
@@ -238,7 +225,6 @@ export const WhiteboardContextProvider: FunctionComponent<Props> = ({ children }
 
     const WhiteboardProviderActions = {
         clear: clearAction,
-        clearOther: clearOtherAction,
         setBrush: setBrushAction,
         display: setDisplayAction,
     };
