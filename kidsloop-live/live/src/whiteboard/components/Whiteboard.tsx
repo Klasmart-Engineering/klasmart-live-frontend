@@ -19,7 +19,7 @@ export function Whiteboard({ children, width, height, filterUsers }: Props): JSX
         top: "0px",
         left: "0px",
         width: "100%",
-        zIndex: 998,
+        zIndex: 997,
     };
 
     const pointerEvents = state.permissions.allowCreateShapes ? undefined : "none";
@@ -29,6 +29,7 @@ export function Whiteboard({ children, width, height, filterUsers }: Props): JSX
             style={{
                 display: "flex",
                 flexDirection: "column",
+                justifyContent: "flex-start",
                 alignItems: "center", // Center <IframeResizer />
                 height,
                 position: "relative",
