@@ -1,4 +1,4 @@
-import React, { createContext, useState, useMemo } from "react";
+import React, { createContext, useState, useMemo, useEffect } from "react";
 import * as Sentry from '@sentry/react';
 import { render } from "react-dom";
 import { HashRouter } from "react-router-dom";
@@ -147,6 +147,10 @@ function Entry() {
         materials: params.materials
     }), [name, setName, params]);
     const webRTCContextValue = WebRTCContext.useWebRTCContext(sessionId, userContext.roomId);
+
+    useEffect(() => {
+        window.addEventListener("contextmenu", function (e) { e.preventDefault(); }, false); // IP Protection
+    }, [])
 
     return (
         <HashRouter>

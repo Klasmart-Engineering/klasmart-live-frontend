@@ -58,7 +58,7 @@ export function RecordedIframe(props: Props): JSX.Element {
             let newTime = seconds - 1;
             setSeconds(newTime);
         }, 1000);
-        
+
         if (seconds <= 0) { clearTimeout(timer); }
         return () => clearTimeout(timer);
     });
@@ -74,8 +74,10 @@ export function RecordedIframe(props: Props): JSX.Element {
     }
 
     function inject(iframeElement: HTMLIFrameElement) {
+        const contentWindow = iframeElement.contentWindow
         const contentDoc = iframeElement.contentDocument
-        if (!contentDoc) { return; }
+        if (!contentWindow || !contentDoc) { return; }
+        contentWindow.addEventListener("contextmenu", function (e) { e.preventDefault(); }, false); // Prevent content distribution
         const h5pDivCollection = contentDoc.body.getElementsByClassName("h5p-content");
         // TODO: Is it possible to handle all non-h5p content with this line?
         const contentDivCollection = contentDoc.body.getElementsByClassName("content");
@@ -154,10 +156,10 @@ export function RecordedIframe(props: Props): JSX.Element {
                 }}
                 style={{
                     marginRight: isSmDown ? "" : DRAWER_WIDTH,
-                    zIndex: theme.zIndex.drawer-1
+                    zIndex: theme.zIndex.drawer - 1
                 }}
             >
-                <Grid 
+                <Grid
                     container
                     direction="column"
                     justify="center"
@@ -165,23 +167,23 @@ export function RecordedIframe(props: Props): JSX.Element {
                     style={{ flexGrow: 1 }}
                 >
                     <Grid item>
-                        <img src={seconds ? SPINNER[spinner] : GhostSpinner} height={80} />    
+                        <img src={seconds ? SPINNER[spinner] : GhostSpinner} height={80} />
                     </Grid>
                     <Grid item>
                         <Typography variant="h6" align="center" gutterBottom>
-                            { seconds ? 
-                                "Loading the lesson material!" : 
+                            {seconds ?
+                                "Loading the lesson material!" :
                                 "Sorry, something went wrong!"
                             }
-                        </Typography> 
+                        </Typography>
                     </Grid>
                     <Grid item>
                         <Typography variant="caption" align="center" gutterBottom>
-                            { seconds ? 
-                                `If you still see this screen after ${seconds} seconds, click Reload below.` : 
+                            {seconds ?
+                                `If you still see this screen after ${seconds} seconds, click Reload below.` :
                                 "Please click the Reload button."
                             }
-                        </Typography>  
+                        </Typography>
                     </Grid>
                     <Grid item style={{ paddingTop: theme.spacing(2) }}>
                         <StyledFAB
@@ -192,8 +194,8 @@ export function RecordedIframe(props: Props): JSX.Element {
                                 setSpinner(Math.floor(Math.random() * Math.floor(SPINNER.length)));
                             }}
                         >
-                            Reload <RefreshIcon size="1rem" style={{ marginLeft: isSmDown ? 0 : 4 }}/>
-                        </StyledFAB>    
+                            Reload <RefreshIcon size="1rem" style={{ marginLeft: isSmDown ? 0 : 4 }} />
+                        </StyledFAB>
                     </Grid>
                 </Grid>
             </Dialog>
