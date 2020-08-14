@@ -11,6 +11,10 @@ export interface LineData {
     points: Point2D[]
 }
 
+export interface ClearData {
+    user?: string
+}
+
 export interface PainterEvent {
     // The event type.
     type: PainterEventType
@@ -19,5 +23,5 @@ export interface PainterEvent {
     id: string
 
     // Optional parameters for this event.
-    param?: LineData | OperationData | string | undefined
+    param?: ClearData | LineData | OperationData | string | undefined
 }

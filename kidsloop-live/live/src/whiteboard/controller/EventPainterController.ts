@@ -1,4 +1,4 @@
-import { PainterEvent, LineData, OperationData } from "../types/PainterEvent";
+import { PainterEvent, LineData, OperationData, ClearData } from "../types/PainterEvent";
 import { Point2D } from "../types/Point2D";
 import { EventEmitter } from "events";
 import { IPainterController } from "./IPainterController";
@@ -37,7 +37,7 @@ export class EventPainterController extends EventEmitter implements IPainterCont
         // TODO: Currently the param is sent via GraphQL as a string
         // I would like to create proper type information in GraphQL 
         // instead, since this doesn't feel very reliable.
-        let parsedParam: string | LineData | OperationData = "{}";
+        let parsedParam: string | LineData | OperationData | ClearData = "{}";
         if (event.param) {
             parsedParam = JSON.parse(event.param as string);
         }
@@ -45,7 +45,7 @@ export class EventPainterController extends EventEmitter implements IPainterCont
         switch (event.type) {
         case "operationBegin": this.beginOperation(parsedParam as OperationData, event.id); break;
         case "operationEnd": this.endOperation(event.id); break;
-        case "painterClear": this.clear(event.id); break;
+        case "painterClear": this.clear(event.id, parsedParam as ClearData); break;
         case "painterLine": this.line(event.id, parsedParam as LineData); break;
         }
     }
@@ -70,8 +70,8 @@ export class EventPainterController extends EventEmitter implements IPainterCont
         this.emit("operationEnd", id);
     }
 
-    private clear(id: string) {
-        this.emit("painterClear", id);
+    private clear(id: string, clear: ClearData) {
+        this.emit("painterClear", id, clear.user);
     }
 
     private line(id: string, line: LineData) {

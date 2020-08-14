@@ -1,5 +1,5 @@
 import { Point2D } from "../types/Point2D";
-import { PainterEvent, LineData, OperationData } from "../types/PainterEvent";
+import { PainterEvent, LineData, OperationData, ClearData } from "../types/PainterEvent";
 import { BrushParameters } from "../types/BrushParameters";
 import { EventEmitter } from "events";
 
@@ -52,10 +52,11 @@ export class PaintEventSerializer extends EventEmitter {
         this.emit("event", event);
     }
 
-    painterClear(id: string): void {
+    painterClear(id: string, user?: string): void {
         const event: PainterEvent = {
             type: "painterClear",
-            id: id
+            id: id,
+            param: JSON.stringify({user})
         };
 
         this.serializedEventIDs.push(id);

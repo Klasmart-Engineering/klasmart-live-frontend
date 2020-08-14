@@ -35,8 +35,8 @@ export class PointerPainterController extends EventEmitter implements IPainterCo
         this.brushParameters = brush;
     }
 
-    clear(): void {
-        this.emit("painterClear", this.generateOperationId());
+    clear(user?: string): void {
+        this.emit("painterClear", this.generateOperationId(), user);
     }
 
     handlePointerDown(event: PointerEvent): void {
