@@ -26,10 +26,11 @@ const SUBSCRIBE_WHITEBOARD_PERMISSIONS = gql`
 
 type Props = {
     children?: ReactChild | ReactChildren | null
+    selfUserId: string
     otherUserId: string
 }
 
-export default function PermissionControls({ children, otherUserId }: Props): JSX.Element {
+export default function PermissionControls({ children, selfUserId, otherUserId }: Props): JSX.Element {
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -37,7 +38,7 @@ export default function PermissionControls({ children, otherUserId }: Props): JS
     const [otherUserPermissions, setOtherUserPermissions] = useState<Permissions>(createEmptyPermissions());
 
     const { roomId } = useContext(UserContext);
-    const { actions: { clearOther } } = useWhiteboard();
+    const { actions: { clear } } = useWhiteboard();
 
     useSubscription(SUBSCRIBE_WHITEBOARD_PERMISSIONS, {
         onSubscriptionData: ({ subscriptionData: { data: { whiteboardPermissions } } }) => {
@@ -64,24 +65,27 @@ export default function PermissionControls({ children, otherUserId }: Props): JS
     }, [otherUserPermissions, sendPermissionsMutation, otherUserId]);
 
     const clearUserWhiteboard = useCallback(() => {
-        clearOther(otherUserId);
+        clear(otherUserId);
     }, [otherUserId]);
 
     return (
         <Grid container justify="space-evenly" alignItems="center" item xs={6}>
-            <Grid item>
-                <IconButton
-                    aria-label="control canvas permission"
-                    component="span"
-                    onClick={toggleAllowCreateShapes}
-                    size="small"
-                >
-                    {otherUserPermissions.allowCreateShapes
-                        ? <InvertColorsIcon size={isSmDown ? "1rem" : "1.25rem"} color="#0E78D5" />
-                        : <InvertColorsOffIcon size={isSmDown ? "1rem" : "1.25rem"} color="#F44336" />
-                    }
-                </IconButton>
-            </Grid>
+            { selfUserId !== otherUserId ?
+                <Grid item>
+                    <IconButton
+                        aria-label="control canvas permission"
+                        component="span"
+                        onClick={toggleAllowCreateShapes}
+                        size="small"
+                    >
+                        {otherUserPermissions.allowCreateShapes
+                            ? <InvertColorsIcon size={isSmDown ? "1rem" : "1.25rem"} color="#0E78D5" />
+                            : <InvertColorsOffIcon size={isSmDown ? "1rem" : "1.25rem"} color="#F44336" />
+                        }
+                    </IconButton>
+                </Grid>
+                : <></>
+            }
             <Grid item>
                 <IconButton
                     aria-label="control canvas permission"

@@ -315,7 +315,7 @@ function TabInnerContent({ contentIndexState, title, numColState, setNumColState
                                     </Grid>
                                     <Grid container justify="space-evenly" item xs={6} md={gridView ? 6 : 3}>
                                         <CameraControls global={teacher} sessionId={id} />
-                                        {teacher && id !== sessionId ? <PermissionControls otherUserId={session.id} /> : <></>}
+                                        {teacher ? <PermissionControls selfUserId={sessionId} otherUserId={session.id} /> : <></>}
                                         {teacher && id !== sessionId ? <TrophyControls otherUserId={session.id} /> : <></>}
                                     </Grid>
                                 </Grid>
