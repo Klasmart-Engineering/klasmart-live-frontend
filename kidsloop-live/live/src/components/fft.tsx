@@ -9,6 +9,7 @@ interface Props {
 }
 
 export function FFT(props: Props & React.CanvasHTMLAttributes<HTMLCanvasElement>) {
+    if(!window.AudioContext) {return <></>}
     const {color, input, output, raw, ...canvasProps} = props;
     const canvas = useRef<HTMLCanvasElement>(null);
     const theme = useTheme();
@@ -74,7 +75,9 @@ export function FFT(props: Props & React.CanvasHTMLAttributes<HTMLCanvasElement>
         return () => {
             p.removeEventListener("audioprocess", process);
             p.disconnect(d);
-            a.suspend();
+            if(a.state === "running") {
+                a.suspend();
+            }
         };
     }, [processor]);
     
