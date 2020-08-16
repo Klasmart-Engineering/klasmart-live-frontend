@@ -89,6 +89,9 @@ export interface IUserContext {
 export const ThemeContext = createContext<IThemeContext>({ themeMode: "", setThemeMode: () => null, languageCode: "", setLanguageCode: () => null } as any as IThemeContext);
 export const UserContext = createContext<IUserContext>({ setName: () => null, roomId: "", materials: [], teacher: false } as any as IUserContext);
 
+if (url.hostname !== "localhost" && url.hostname !== "live.kidsloop.net") {
+    window.addEventListener("contextmenu", (e: MouseEvent) => { e.preventDefault() }, false);
+}
 function parseToken() {
     try {
         if (url.hostname === "localhost" || url.hostname === "live.kidsloop.net") {
@@ -147,13 +150,6 @@ function Entry() {
         materials: params.materials
     }), [name, setName, params]);
     const webRTCContextValue = WebRTCContext.useWebRTCContext(sessionId, userContext.roomId);
-
-    useEffect(() => {
-        // IP Protection
-        const blockRightClick = (e: MouseEvent) => { e.preventDefault() }
-        window.addEventListener("contextmenu", (e) => blockRightClick(e), false);
-        return window.removeEventListener("contextmenu", (e) => blockRightClick(e), false);
-    }, [])
 
     return (
         <HashRouter>
