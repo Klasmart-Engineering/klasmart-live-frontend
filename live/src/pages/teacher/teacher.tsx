@@ -113,7 +113,7 @@ export function Teacher(props: Props): JSX.Element {
                 showContent({ variables: { roomId, type: "Audio", contentId: sessionId } });
             } else if (material.__typename === MaterialTypename.Image) {
                 showContent({ variables: { roomId, type: "Image", contentId: material.url } });
-            } else if ((material.__typename === MaterialTypename.Iframe || material.__typename === undefined) && material.url) {
+            } else if ((material.__typename === MaterialTypename.Iframe || (material.__typename === undefined && material.url)) && streamId) {
                 showContent({ variables: { roomId, type: "Stream", contentId: streamId } });
             }
         }
