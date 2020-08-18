@@ -147,6 +147,9 @@ function parseToken() {
     return;
 }
 const params = parseToken();
+if(params && params.name) {
+    LogRocket.identify(params.name, {sessionId})
+}
 function Entry() {
     if (!params) { return <Typography><FormattedMessage id="error_invaild_token" /></Typography>; }
     const [camera, setCamera] = useState<MediaStream | null>();

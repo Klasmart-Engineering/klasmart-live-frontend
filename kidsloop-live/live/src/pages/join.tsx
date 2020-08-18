@@ -1,3 +1,4 @@
+import LogRocket from 'logrocket';
 import React, { useState, useContext, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { createStyles, makeStyles, useTheme, Theme } from "@material-ui/core/styles";
@@ -56,7 +57,7 @@ export function Join(): JSX.Element {
     const classes = useStyles();
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
-    const { camera, setCamera, name, setName } = useContext(UserContext);
+    const { camera, setCamera, name, setName, sessionId } = useContext(UserContext);
 
     const url = new URL(window.location.href);
 
@@ -128,7 +129,10 @@ export function Join(): JSX.Element {
                 </span>
             );
         }
-        if (!name) { setName(user); }
+        if (!name) {
+            setName(user);
+            LogRocket.identify(user, {sessionId})
+        }
         setCamera(stream || null);
     }
 
