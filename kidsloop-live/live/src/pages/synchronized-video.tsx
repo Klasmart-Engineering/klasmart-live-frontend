@@ -57,10 +57,10 @@ export function ReplicaMedia(props: React.VideoHTMLAttributes<HTMLMediaElement> 
 
     const reactPlayerError = useCallback(() => {
         // NOTE: Fallback to original src if there's an error.
-        if (srcRef.current) {
+        if (srcRef.current && videoSources !== srcRef.current) {
             setVideoSources(srcRef.current);
         }
-    }, [srcRef.current, setVideoSources]);
+    }, [srcRef.current, videoSources, setVideoSources]);
 
     const { loading, error } = useSubscription(
         gql`
@@ -270,10 +270,10 @@ export function ReplicatedMedia(props: React.VideoHTMLAttributes<HTMLMediaElemen
 
     const reactPlayerError = useCallback(() => {
         // NOTE: Fallback to original src if there's an error.
-        if (src) {
+        if (src && videoSources !== src) {
             setVideoSources(src);
         }
-    }, [src, setVideoSources]);
+    }, [src, setVideoSources, videoSources]);
 
     // if(loading) {return <CircularProgress />;}
     if (error) { return <Typography>{error}</Typography>; }
