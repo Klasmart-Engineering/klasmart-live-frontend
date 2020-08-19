@@ -1,5 +1,7 @@
 import LogRocket from 'logrocket';
-LogRocket.init('8acm62/kidsloop-live-prod');
+LogRocket.init('8acm62/kidsloop-live-prod',{
+    mergeIframes: true,
+});
 
 import { v4 as uuid } from "uuid";
 export const sessionId = uuid();
