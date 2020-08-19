@@ -93,11 +93,11 @@ export function Student(props: Props): JSX.Element {
                         <PreviewPlayer streamId={content.contentId} width={rootDivWidth} height={rootDivHeight} />
                         {/* <WBToolbar /> */}
                     </Whiteboard>
-                    <Grid className={classes.textMargin} container justify="center" item xs={12}>
+                    {/* <Grid className={classes.textMargin} container justify="center" item xs={12}>
                         <Typography variant="caption" color="primary" align="center" style={{ margin: "0 auto" }}>
                             <FormattedMessage id="student_stream_mode" />
                         </Typography>
-                    </Grid>
+                    </Grid> */}
                 </div>
             );
         case "Activity":
@@ -113,11 +113,11 @@ export function Student(props: Props): JSX.Element {
                             /> : undefined}
                         {/* <WBToolbar /> */}
                     </Whiteboard>
-                    <Grid className={classes.textMargin} container justify="center" item xs={12}>
+                    {/* <Grid className={classes.textMargin} container justify="center" item xs={12}>
                         <Typography variant="caption" color="primary" align="center" style={{ margin: "0 auto" }}>
                             <FormattedMessage id="student_activity_mode" />
                         </Typography>
-                    </Grid>
+                    </Grid> */}
                 </div>
             );
         case "Audio":
