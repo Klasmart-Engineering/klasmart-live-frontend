@@ -25,12 +25,12 @@ const createHlsDashUrlFromSrc = (src: string): string[] => {
     const pathName = new URL(src).pathname;
     const mp4exp = /(?=\w+\.\w{3}$).+/
 
-    const matches = mp4exp.exec(pathName)
+    let matches = mp4exp.exec(pathName);
 
     if (!matches || matches.length === 0) return []
 
-    // NOTE: Remove the .mp4 extension (4 characters).
-    const files = matches.map(s => s.slice(0, -4));
+    // NOTE: Remove any files not ending wth .mp4, then remove the .mp4 extension.
+    const files = matches.filter(s => s.endsWith(".mp4")).map(s => s.slice(0, -4));
 
     // NOTE: Create urls for HLS playlist files.
     let urls = files.map(s => `${PLAYLIST_FILE_HOST}/${s}/${PLAYLIST_FILE_NAME}.m3u8`);
@@ -54,6 +54,13 @@ export function ReplicaMedia(props: React.VideoHTMLAttributes<HTMLMediaElement> 
 
     const [videoSources, setVideoSources] = useState<string | string[] | undefined>(undefined);
     const [videoReady, setVideoReady] = useState<boolean>(false);
+
+    const reactPlayerError = useCallback(() => {
+        // NOTE: Fallback to original src if there's an error.
+        if (srcRef.current) {
+            setVideoSources(srcRef.current);
+        }
+    }, [srcRef.current, setVideoSources]);
 
     const { loading, error } = useSubscription(
         gql`
@@ -85,10 +92,9 @@ export function ReplicaMedia(props: React.VideoHTMLAttributes<HTMLMediaElement> 
 
                         sources.push(src);
 
-                        if (sources.length === 1) {
-                            setVideoSources(sources[0])
-                        } else {
-                            setVideoSources(sources);
+                        const playable = sources.filter(s => ReactPlayer.canPlay(s));
+                        if (playable.length > 0) {
+                            setVideoSources(playable[0]);
                         }
                     } else {
                         setVideoSources(undefined);
@@ -160,6 +166,7 @@ export function ReplicaMedia(props: React.VideoHTMLAttributes<HTMLMediaElement> 
                     }
                 }}
                 onReady={() => setVideoReady(true)}
+                onError={() => reactPlayerError()}
             />;
     }
 }
@@ -193,10 +200,9 @@ export function ReplicatedMedia(props: React.VideoHTMLAttributes<HTMLMediaElemen
 
             sources.push(src);
 
-            if (sources.length === 1) {
-                setVideoSources(sources[0])
-            } else {
-                setVideoSources(sources);
+            const playable = sources.filter(s => ReactPlayer.canPlay(s));
+            if (playable.length > 0) {
+                setVideoSources(playable[0]);
             }
         } else {
             setVideoSources(undefined);
@@ -262,6 +268,13 @@ export function ReplicatedMedia(props: React.VideoHTMLAttributes<HTMLMediaElemen
 
     }, [send, reactPlayerRef.current, playing]);
 
+    const reactPlayerError = useCallback(() => {
+        // NOTE: Fallback to original src if there's an error.
+        if (src) {
+            setVideoSources(src);
+        }
+    }, [src, setVideoSources]);
+
     // if(loading) {return <CircularProgress />;}
     if (error) { return <Typography>{error}</Typography>; }
 
@@ -303,6 +316,7 @@ export function ReplicatedMedia(props: React.VideoHTMLAttributes<HTMLMediaElemen
                 onPlay={() => { reactPlayerSynchronizeState(true); }}
                 onPause={() => { reactPlayerSynchronizeState(false); }}
                 onSeek={() => { reactPlayerSynchronizeState(); }}
+                onError={() => { reactPlayerError(); }}
             />
     }
 
