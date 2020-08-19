@@ -18,6 +18,29 @@ interface ReplicaVideoProps {
     type: MaterialTypename.Video | MaterialTypename.Audio
 }
 
+const PLAYLIST_FILE_NAME = "master";
+const PLAYLIST_FILE_HOST = "https://assets.kidsloop.net/2";
+
+const createHlsDashUrlFromSrc = (src: string): string[] => {
+    const pathName = new URL(src).pathname;
+    const mp4exp = /(?=\w+\.\w{3}$).+/
+
+    const matches = mp4exp.exec(pathName)
+
+    if (!matches || matches.length === 0) return []
+
+    // NOTE: Remove the .mp4 extension (4 characters).
+    const files = matches.map(s => s.slice(0, -4));
+
+    // NOTE: Create urls for HLS playlist files.
+    let urls = files.map(s => `${PLAYLIST_FILE_HOST}/${s}/${PLAYLIST_FILE_NAME}.m3u8`);
+
+    // NOTE: Create urls for DASH Playlist files.
+    urls = urls.concat(files.map(s => `${PLAYLIST_FILE_HOST}/${s}/${PLAYLIST_FILE_NAME}.mpd`));
+
+    return urls;
+}
+
 export function ReplicaMedia(props: React.VideoHTMLAttributes<HTMLMediaElement> & ReplicaVideoProps) {
     const { sessionId, type, ...mediaProps } = props
     const srcRef = useRef<string>();
@@ -29,6 +52,7 @@ export function ReplicaMedia(props: React.VideoHTMLAttributes<HTMLMediaElement> 
     const ref = useRef<HTMLMediaElement>(null);
     const reactPlayerRef = useRef<ReactPlayer>(null);
 
+    const [videoSources, setVideoSources] = useState<string | string[] | undefined>(undefined);
     const [videoReady, setVideoReady] = useState<boolean>(false);
 
     const { loading, error } = useSubscription(
@@ -53,7 +77,23 @@ export function ReplicaMedia(props: React.VideoHTMLAttributes<HTMLMediaElement> 
                     setVideoReady(false);
                 }
 
-                if (src) { srcRef.current = src; }
+                if (src) {
+                    srcRef.current = src;
+
+                    if (type !== MaterialTypename.Audio) {
+                        const sources = createHlsDashUrlFromSrc(src);
+
+                        sources.push(src);
+
+                        if (sources.length === 1) {
+                            setVideoSources(sources[0])
+                        } else {
+                            setVideoSources(sources);
+                        }
+                    } else {
+                        setVideoSources(undefined);
+                    }
+                }
 
                 if (play !== undefined) setPlaying(play)
                 if (offset !== undefined) { timeRef.current = offset; }
@@ -108,7 +148,7 @@ export function ReplicaMedia(props: React.VideoHTMLAttributes<HTMLMediaElement> 
                 controls={false}
                 playing={videoReady && playing}
                 playsinline
-                url={srcRef.current}
+                url={videoSources}
                 config={{
                     file: {
                         attributes: {
@@ -134,6 +174,7 @@ export function ReplicatedMedia(props: React.VideoHTMLAttributes<HTMLMediaElemen
     const ref = useRef<HTMLMediaElement>(null);
 
     const reactPlayerRef = useRef<ReactPlayer>(null);
+    const [videoSources, setVideoSources] = useState<string | string[] | undefined>(undefined);
     const [playing, setPlaying] = useState<boolean>(false);
 
     const { roomId, sessionId } = useContext(UserContext);
@@ -147,9 +188,19 @@ export function ReplicatedMedia(props: React.VideoHTMLAttributes<HTMLMediaElemen
     );
 
     useEffect(() => {
-        // TODO: Transform the src to use hls/dash instead of mp4.
-        console.log(src)
-        console.log(type)
+        if (type !== MaterialTypename.Audio && src) {
+            const sources = createHlsDashUrlFromSrc(src);
+
+            sources.push(src);
+
+            if (sources.length === 1) {
+                setVideoSources(sources[0])
+            } else {
+                setVideoSources(sources);
+            }
+        } else {
+            setVideoSources(undefined);
+        }
 
         let currentTime = 0
         if (ref.current) {
@@ -234,7 +285,7 @@ export function ReplicatedMedia(props: React.VideoHTMLAttributes<HTMLMediaElemen
                 ref={reactPlayerRef as React.RefObject<ReactPlayer>}
                 controls
                 playsinline
-                url={src}
+                url={videoSources}
                 config={{
                     file: {
                         attributes: {
@@ -244,13 +295,15 @@ export function ReplicatedMedia(props: React.VideoHTMLAttributes<HTMLMediaElemen
                             ...mediaProps,
                         }
                     }
-                }}
-                onReady={() => { reactPlayerSynchronizeState(); }}
+                }
+                }
+                onReady={() => { reactPlayerSynchronizeState(); }
+                }
                 onStart={() => { reactPlayerSynchronizeState(true); }}
                 onPlay={() => { reactPlayerSynchronizeState(true); }}
                 onPause={() => { reactPlayerSynchronizeState(false); }}
                 onSeek={() => { reactPlayerSynchronizeState(); }}
-            />;
+            />
     }
 
 }
