@@ -27,7 +27,7 @@ export function ReplicaMedia(props: React.VideoHTMLAttributes<HTMLMediaElement> 
     const { roomId } = useContext(UserContext);
 
     const ref = useRef<HTMLMediaElement>(null);
-    const videoRef = useRef<ReactPlayer>(null);
+    const reactPlayerRef = useRef<ReactPlayer>(null);
 
     const [videoReady, setVideoReady] = useState<boolean>(false);
 
@@ -49,6 +49,10 @@ export function ReplicaMedia(props: React.VideoHTMLAttributes<HTMLMediaElement> 
 
                 const { src, play, offset } = subscriptionData.data.video as VideoSynchronize;
 
+                if (src && srcRef.current !== src) {
+                    setVideoReady(false);
+                }
+
                 if (src) { srcRef.current = src; }
 
                 if (play !== undefined) setPlaying(play)
@@ -61,8 +65,8 @@ export function ReplicaMedia(props: React.VideoHTMLAttributes<HTMLMediaElement> 
                     if (play === false) { ref.current.pause(); }
                 }
 
-                if (videoRef.current && videoReady) {
-                    if (offset !== undefined) { videoRef.current.seekTo(offset); }
+                if (reactPlayerRef.current && videoReady) {
+                    if (offset !== undefined) { reactPlayerRef.current.seekTo(offset); }
                 }
             },
             variables: { roomId, sessionId }
@@ -100,7 +104,7 @@ export function ReplicaMedia(props: React.VideoHTMLAttributes<HTMLMediaElement> 
         case MaterialTypename.Video:
         default:
             return <ReactPlayer
-                ref={videoRef as React.RefObject<ReactPlayer>}
+                ref={reactPlayerRef as React.RefObject<ReactPlayer>}
                 controls={false}
                 playing={videoReady && playing}
                 playsinline
@@ -128,7 +132,9 @@ export function ReplicatedMedia(props: React.VideoHTMLAttributes<HTMLMediaElemen
     const { type, src, ...mediaProps } = props
 
     const ref = useRef<HTMLMediaElement>(null);
-    const videoRef = useRef<ReactPlayer>(null);
+
+    const reactPlayerRef = useRef<ReactPlayer>(null);
+    const [playing, setPlaying] = useState<boolean>(false);
 
     const { roomId, sessionId } = useContext(UserContext);
 
@@ -148,8 +154,8 @@ export function ReplicatedMedia(props: React.VideoHTMLAttributes<HTMLMediaElemen
         let currentTime = 0
         if (ref.current) {
             currentTime = ref.current.currentTime;
-        } else if(videoRef.current) {
-            currentTime = videoRef.current.getCurrentTime();
+        } else if (reactPlayerRef.current) {
+            currentTime = reactPlayerRef.current.getCurrentTime();
         }
 
         send({
@@ -186,22 +192,24 @@ export function ReplicatedMedia(props: React.VideoHTMLAttributes<HTMLMediaElemen
         };
     }, [ref.current]);
 
-    const reactPlayerOnPlay = useCallback(() => {
-        const player = videoRef.current;
-        if (!player) return;
+    const reactPlayerSynchronizeState = useCallback((isPlaying?: boolean) => {
+        const player = reactPlayerRef.current;
+        if (!player) {
+            send({ variables: { roomId, sessionId, offset: undefined, play: false } });
+            return;
+        }
 
+        let currentPlay = playing;
         const currentTime = player.getCurrentTime();
-        send({ variables: { roomId, sessionId, offset: Number.isFinite(currentTime) ? currentTime : undefined, play: true } })
 
-    }, [send, videoRef.current]);
+        if (isPlaying !== undefined) {
+            setPlaying(isPlaying);
+            currentPlay = isPlaying;
+        }
 
-    const reactPlayerOnPause = useCallback(() => {
-        const player = videoRef.current;
-        if (!player) return;
+        send({ variables: { roomId, sessionId, offset: Number.isFinite(currentTime) ? currentTime : undefined, play: currentPlay } })
 
-        const currentTime = player.getCurrentTime();
-        send({ variables: { roomId, sessionId, offset: Number.isFinite(currentTime) ? currentTime : undefined, play: false } })
-    }, [send, videoRef.current]);
+    }, [send, reactPlayerRef.current, playing]);
 
     // if(loading) {return <CircularProgress />;}
     if (error) { return <Typography>{error}</Typography>; }
@@ -223,7 +231,7 @@ export function ReplicatedMedia(props: React.VideoHTMLAttributes<HTMLMediaElemen
         case MaterialTypename.Video:
         default:
             return <ReactPlayer
-                ref={videoRef as React.RefObject<ReactPlayer>}
+                ref={reactPlayerRef as React.RefObject<ReactPlayer>}
                 controls
                 playsinline
                 url={src}
@@ -237,11 +245,11 @@ export function ReplicatedMedia(props: React.VideoHTMLAttributes<HTMLMediaElemen
                         }
                     }
                 }}
-                onStart={reactPlayerOnPlay}
-                onPlay={reactPlayerOnPlay}
-                onReady={reactPlayerOnPause}
-                onPause={reactPlayerOnPause}
-                onSeek={reactPlayerOnPause}
+                onReady={() => { reactPlayerSynchronizeState(); }}
+                onStart={() => { reactPlayerSynchronizeState(true); }}
+                onPlay={() => { reactPlayerSynchronizeState(true); }}
+                onPause={() => { reactPlayerSynchronizeState(false); }}
+                onSeek={() => { reactPlayerSynchronizeState(); }}
             />;
     }
 
