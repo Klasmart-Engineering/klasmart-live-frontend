@@ -102,7 +102,6 @@ export function Join(): JSX.Element {
             navigator.mediaDevices.getUserMedia({ video: true, audio: true })
                 .then(() => detectDevices())
                 .catch(e => {
-                    console.log('@@@ caught error with empty gum', e);
                     logger({ logType: 'join.tsx initial check for permissions error', error: e && e.toString ? e.toString() : e });
                 });
             return;
