@@ -19,6 +19,7 @@ import NoCamera from "../components/noCamera";
 import MediaDeviceSelect from "../components/mediaDeviceSelect";
 import { Error as ErrorIcon } from "@styled-icons/material/Error";
 import { FFT } from "../components/fft";
+import logger from "../services/logger/Logger";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -80,6 +81,8 @@ export function Join(): JSX.Element {
 
             setAudioDeviceId(audioDevices.length > 0 ? audioDevices[0].deviceId : undefined);
             setVideoDeviceId(videoDevices.length > 0 ? videoDevices[0].deviceId : undefined);
+
+            logger({ logType: 'join.tsx detect devices devices list test6', devices });
         } catch (err) {
             setError(true);
             console.log("ERROR: ", err.name + ": " + err.message); // TODO: It cannot handle permission issue
@@ -100,6 +103,7 @@ export function Join(): JSX.Element {
             return;
         }
         setStream(undefined);
+        console.log('call gum from join use effect');
         const stream = navigator.mediaDevices.getUserMedia({ video: { deviceId: videoDeviceId }, audio: { deviceId: audioDeviceId } });
         stream
             .then((s) => { setStream(s); })
@@ -143,7 +147,7 @@ export function Join(): JSX.Element {
                                 {
                                     stream && stream.getVideoTracks().length > 0 && stream.getVideoTracks().every((t) => t.readyState === "live") && stream.active
                                         ? <div style={{ position: "relative" }}>
-                                            <Camera mediaStream={stream} muted={true}/>
+                                            <Camera mediaStream={stream} muted={true} />
                                             <FFT input={stream} output={false} width={700} height={150} color={"#fff"} style={{ position: "absolute", bottom: 12, left: 0, width: "100%", height: 150 }} />
                                         </div>
                                         : error
@@ -157,7 +161,7 @@ export function Join(): JSX.Element {
                                         <CenterAlignChildren center>
                                             <img alt="KidsLoop" src={KidsloopLogo} height="50px" />
                                             <Typography variant="h6" style={{ paddingLeft: theme.spacing(1) }}>
-                                                Live <Typography variant="body2" component="span">{ (url.searchParams.get("teacher") !== null) ? <sub>for Teachers</sub> : <sub>for Students</sub> }</Typography>
+                                                Live <Typography variant="body2" component="span">{(url.searchParams.get("teacher") !== null) ? <sub>for Teachers</sub> : <sub>for Students</sub>}</Typography>
                                             </Typography>
                                         </CenterAlignChildren>
                                     </Grid>
