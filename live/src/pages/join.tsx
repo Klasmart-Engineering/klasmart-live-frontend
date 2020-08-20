@@ -105,12 +105,6 @@ export function Join(): JSX.Element {
         setStream(undefined);
 
         getAndSetStream(videoDeviceId, audioDeviceId);
-
-
-
-        if (stream) {
-            setStream(stream);
-        }
     }, [videoDeviceId, audioDeviceId]);
 
     async function getAndSetStream(videoDeviceId: string | undefined, audioDeviceId: string | undefined): Promise<MediaStream | null> {
