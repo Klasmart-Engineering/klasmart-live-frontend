@@ -99,7 +99,12 @@ export function Join(): JSX.Element {
     useEffect(() => {
         if (!navigator.mediaDevices) { return; }
         if (videoDeviceId === undefined && audioDeviceId === undefined) {
-            navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(() => detectDevices());
+            navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+                .then(() => detectDevices())
+                .catch(e => {
+                    console.log('@@@ caught error with empty gum', e);
+                    logger({ logType: 'join.tsx initial check for permissions error', error: e && e.toString ? e.toString() : e });
+                });
             return;
         }
         setStream(undefined);
@@ -131,6 +136,7 @@ export function Join(): JSX.Element {
             return null;
         }
         catch (e) {
+            console.log('@@@ got an error in getAndSetStream');
             setError(true);
             console.error(e);
             return null;
@@ -154,6 +160,7 @@ export function Join(): JSX.Element {
             return stream || null;
         }
         catch (e) {
+            console.log('@@@ got error in get stream')
             console.error(e);
             return null;
         }
