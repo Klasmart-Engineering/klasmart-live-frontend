@@ -1,4 +1,10 @@
-import React, { useRef, useEffect, useContext, useCallback, useState } from "react";
+import React, {
+    useRef,
+    useEffect,
+    useContext,
+    useCallback,
+    useState,
+} from "react";
 import { useSubscription, useMutation } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
 import { CircularProgress, Typography } from "@material-ui/core";
@@ -8,14 +14,14 @@ import { FFT } from "../components/fft";
 import ReactPlayer from "react-player/lazy";
 
 interface VideoSynchronize {
-    src?: string
-    play?: boolean
-    offset?: number
+    src?: string;
+    play?: boolean;
+    offset?: number;
 }
 
 interface ReplicaVideoProps {
-    sessionId: string
-    type: MaterialTypename.Video | MaterialTypename.Audio
+    sessionId: string;
+    type: MaterialTypename.Video | MaterialTypename.Audio;
 }
 
 const PLAYLIST_FILE_NAME = "master";
@@ -23,26 +29,34 @@ const PLAYLIST_FILE_HOST = "https://d2y6zpgsom6b5m.cloudfront.net/2";
 
 const createHlsDashUrlFromSrc = (src: string): string[] => {
     const pathName = new URL(src).pathname;
-    const mp4exp = /(?=\w+\.\w{3}$).+/
+    const mp4exp = /(?=\w+\.\w{3}$).+/;
 
-    let matches = mp4exp.exec(pathName);
+    const matches = mp4exp.exec(pathName);
 
-    if (!matches || matches.length === 0) return []
+    if (!matches || matches.length === 0) return [];
 
     // NOTE: Remove any files not ending wth .mp4, then remove the .mp4 extension.
-    const files = matches.filter(s => s.endsWith(".mp4")).map(s => s.slice(0, -4));
+    const files = matches
+        .filter((s) => s.endsWith(".mp4"))
+        .map((s) => s.slice(0, -4));
 
     // NOTE: Create urls for HLS playlist files.
-    let urls = files.map(s => `${PLAYLIST_FILE_HOST}/${s}/${PLAYLIST_FILE_NAME}.m3u8`);
+    let urls = files.map(
+        (s) => `${PLAYLIST_FILE_HOST}/${s}/${PLAYLIST_FILE_NAME}.m3u8`
+    );
 
     // NOTE: Create urls for DASH Playlist files.
-    urls = urls.concat(files.map(s => `${PLAYLIST_FILE_HOST}/${s}/${PLAYLIST_FILE_NAME}.mpd`));
+    urls = urls.concat(
+        files.map((s) => `${PLAYLIST_FILE_HOST}/${s}/${PLAYLIST_FILE_NAME}.mpd`)
+    );
 
     return urls;
-}
+};
 
-export function ReplicaMedia(props: React.VideoHTMLAttributes<HTMLMediaElement> & ReplicaVideoProps) {
-    const { sessionId, type, ...mediaProps } = props
+export function ReplicaMedia(
+    props: React.VideoHTMLAttributes<HTMLMediaElement> & ReplicaVideoProps
+) {
+    const { sessionId, type, ...mediaProps } = props;
     const srcRef = useRef<string>();
     const [playing, setPlaying] = useState<boolean>(false);
     const timeRef = useRef<number>();
@@ -52,7 +66,9 @@ export function ReplicaMedia(props: React.VideoHTMLAttributes<HTMLMediaElement> 
     const ref = useRef<HTMLMediaElement>(null);
     const reactPlayerRef = useRef<ReactPlayer>(null);
 
-    const [videoSources, setVideoSources] = useState<string | string[] | undefined>(undefined);
+    const [videoSources, setVideoSources] = useState<
+        string | string[] | undefined
+    >(undefined);
     const [videoReady, setVideoReady] = useState<boolean>(false);
 
     const reactPlayerError = useCallback(() => {
@@ -64,21 +80,28 @@ export function ReplicaMedia(props: React.VideoHTMLAttributes<HTMLMediaElement> 
 
     const { loading, error } = useSubscription(
         gql`
-            subscription video($roomId: ID!, $sessionId: ID!) {
-                video(roomId: $roomId, sessionId: $sessionId) {
-                    src,
-                    play,
-                    offset,
-                }
-            }
-        `,
+      subscription video($roomId: ID!, $sessionId: ID!) {
+        video(roomId: $roomId, sessionId: $sessionId) {
+          src
+          play
+          offset
+        }
+      }
+    `,
         {
             onSubscriptionData: ({ subscriptionData }) => {
-                if (!subscriptionData) { return; }
-                if (!subscriptionData.data) { return; }
-                if (!subscriptionData.data.video) { return; }
+                if (!subscriptionData) {
+                    return;
+                }
+                if (!subscriptionData.data) {
+                    return;
+                }
+                if (!subscriptionData.data.video) {
+                    return;
+                }
 
-                const { src, play, offset } = subscriptionData.data.video as VideoSynchronize;
+                const { src, play, offset } = subscriptionData.data
+                    .video as VideoSynchronize;
 
                 if (src && srcRef.current !== src) {
                     setVideoReady(false);
@@ -92,7 +115,7 @@ export function ReplicaMedia(props: React.VideoHTMLAttributes<HTMLMediaElement> 
 
                         sources.push(src);
 
-                        const playable = sources.filter(s => ReactPlayer.canPlay(s));
+                        const playable = sources.filter((s) => ReactPlayer.canPlay(s));
                         if (playable.length > 0) {
                             setVideoSources(playable[0]);
                         }
@@ -101,97 +124,149 @@ export function ReplicaMedia(props: React.VideoHTMLAttributes<HTMLMediaElement> 
                     }
                 }
 
-                if (play !== undefined) setPlaying(play)
-                if (offset !== undefined) { timeRef.current = offset; }
+                if (play !== undefined) setPlaying(play);
+                if (offset !== undefined) {
+                    timeRef.current = offset;
+                }
 
                 if (ref.current) {
-                    if (src) { ref.current.src = src; }
-                    if (offset !== undefined) { ref.current.currentTime = offset; }
-                    if (play === true) { ref.current.play().catch((e) => { }); }
-                    if (play === false) { ref.current.pause(); }
+                    if (src) {
+                        ref.current.src = src;
+                    }
+                    if (offset !== undefined) {
+                        ref.current.currentTime = offset;
+                    }
+                    if (play === true) {
+                        ref.current.play().catch((e) => { });
+                    }
+                    if (play === false) {
+                        ref.current.pause();
+                    }
                 }
 
                 if (reactPlayerRef.current && videoReady) {
-                    if (offset !== undefined) { reactPlayerRef.current.seekTo(offset); }
+                    if (offset !== undefined) {
+                        reactPlayerRef.current.seekTo(offset);
+                    }
                 }
             },
-            variables: { roomId, sessionId }
+            variables: { roomId, sessionId },
         }
     );
 
     useEffect(() => {
-        if (!ref.current) { return; }
+        if (!ref.current) {
+            return;
+        }
         const video = ref.current;
-        if (srcRef.current !== undefined) { video.src = srcRef.current; }
-        if (timeRef.current !== undefined && Number.isFinite(timeRef.current)) { video.currentTime = timeRef.current; }
-        if (playing === true) { video.play().catch(() => { }); }
-        if (playing === false) { video.pause(); }
+        if (srcRef.current !== undefined) {
+            video.src = srcRef.current;
+        }
+        if (timeRef.current !== undefined && Number.isFinite(timeRef.current)) {
+            video.currentTime = timeRef.current;
+        }
+        if (playing === true) {
+            video.play().catch(() => { });
+        }
+        if (playing === false) {
+            video.pause();
+        }
     }, [ref.current]);
 
-    if (loading) { return <CircularProgress />; }
-    if (error) { return <Typography>{error}</Typography>; }
+    if (loading) {
+        return <CircularProgress />;
+    }
+    if (error) {
+        return <Typography>{error}</Typography>;
+    }
     switch (type) {
         case MaterialTypename.Audio:
-            return <>
-                <FFT input={ref.current} output={true} style={{ width: "100%" }} width={1000} height={500} />
-                <audio
-                    ref={ref}
-                    src={srcRef.current}
-                    crossOrigin="anonymous"
-                    controls={false}
-                    controlsList="nodownload"
-                    preload="auto"
-                    playsInline
-                    onContextMenu={(e) => e.preventDefault()}
-                    {...mediaProps}
-                />
-            </>;
+            return (
+                <>
+                    <FFT
+                        input={ref.current}
+                        output={true}
+                        style={{ width: "100%" }}
+                        width={1000}
+                        height={500}
+                    />
+                    <audio
+                        ref={ref}
+                        src={srcRef.current}
+                        crossOrigin="anonymous"
+                        controls={false}
+                        controlsList="nodownload"
+                        preload="auto"
+                        playsInline
+                        onContextMenu={(e) => e.preventDefault()}
+                        {...mediaProps}
+                    />
+                </>
+            );
 
         case MaterialTypename.Video:
         default:
-            return <ReactPlayer
-                ref={reactPlayerRef as React.RefObject<ReactPlayer>}
-                controls={false}
-                playing={videoReady && playing}
-                playsinline
-                url={videoSources}
-                config={{
-                    file: {
-                        attributes: {
-                            crossOrigin: "anonymous",
-                            controlsList: "nodownload",
-                            onContextMenu: (e: Event) => e.preventDefault(),
-                            ...mediaProps,
-                        }
-                    }
-                }}
-                onReady={() => setVideoReady(true)}
-                onError={() => reactPlayerError()}
-            />;
+            return (
+                <ReactPlayer
+                    ref={reactPlayerRef as React.RefObject<ReactPlayer>}
+                    controls={false}
+                    playing={videoReady && playing}
+                    playsinline
+                    url={videoSources}
+                    config={{
+                        file: {
+                            attributes: {
+                                crossOrigin: "anonymous",
+                                controlsList: "nodownload",
+                                onContextMenu: (e: Event) => e.preventDefault(),
+                                ...mediaProps,
+                            },
+                        },
+                    }}
+                    onReady={() => setVideoReady(true)}
+                    onError={() => reactPlayerError()}
+                />
+            );
     }
 }
 
 interface ReplicatedMediaProps {
-    type: MaterialTypename.Video | MaterialTypename.Audio
+    type: MaterialTypename.Video | MaterialTypename.Audio;
 }
 
-export function ReplicatedMedia(props: React.VideoHTMLAttributes<HTMLMediaElement> & ReplicatedMediaProps) {
-    const { type, src, ...mediaProps } = props
+export function ReplicatedMedia(
+    props: React.VideoHTMLAttributes<HTMLMediaElement> & ReplicatedMediaProps
+) {
+    const { type, src, ...mediaProps } = props;
 
     const ref = useRef<HTMLMediaElement>(null);
 
     const reactPlayerRef = useRef<ReactPlayer>(null);
-    const [videoSources, setVideoSources] = useState<string | string[] | undefined>(undefined);
+    const [videoSources, setVideoSources] = useState<
+        string | string[] | undefined
+    >(undefined);
     const [playing, setPlaying] = useState<boolean>(false);
 
     const { roomId, sessionId } = useContext(UserContext);
 
     const [send, { loading, error }] = useMutation(
         gql`
-            mutation sendMessage($roomId: ID!, $sessionId: ID!, $src: String, $play: Boolean, $offset: Float) {
-                video(roomId: $roomId, sessionId: $sessionId, src: $src, play: $play, offset: $offset)
-            }
-        `
+      mutation sendMessage(
+        $roomId: ID!
+        $sessionId: ID!
+        $src: String
+        $play: Boolean
+        $offset: Float
+      ) {
+        video(
+          roomId: $roomId
+          sessionId: $sessionId
+          src: $src
+          play: $play
+          offset: $offset
+        )
+      }
+    `
     );
 
     useEffect(() => {
@@ -200,7 +275,7 @@ export function ReplicatedMedia(props: React.VideoHTMLAttributes<HTMLMediaElemen
 
             sources.push(src);
 
-            const playable = sources.filter(s => ReactPlayer.canPlay(s));
+            const playable = sources.filter((s) => ReactPlayer.canPlay(s));
             if (playable.length > 0) {
                 setVideoSources(playable[0]);
             }
@@ -208,7 +283,7 @@ export function ReplicatedMedia(props: React.VideoHTMLAttributes<HTMLMediaElemen
             setVideoSources(undefined);
         }
 
-        let currentTime = 0
+        let currentTime = 0;
         if (ref.current) {
             currentTime = ref.current.currentTime;
         } else if (reactPlayerRef.current) {
@@ -222,7 +297,7 @@ export function ReplicatedMedia(props: React.VideoHTMLAttributes<HTMLMediaElemen
                 src,
                 play: false,
                 offset: Number.isFinite(currentTime) ? currentTime : 0,
-            }
+            },
         });
     }, [src]);
 
@@ -230,15 +305,36 @@ export function ReplicatedMedia(props: React.VideoHTMLAttributes<HTMLMediaElemen
         if (!ref.current) return;
         const video = ref.current;
 
-        function pause() { send({ variables: { roomId, sessionId, offset: Number.isFinite(video.currentTime) ? video.currentTime : undefined, play: false } }); }
-        function play() { send({ variables: { roomId, sessionId, offset: Number.isFinite(video.currentTime) ? video.currentTime : undefined, play: true } }); }
+        function pause() {
+            send({
+                variables: {
+                    roomId,
+                    sessionId,
+                    offset: Number.isFinite(video.currentTime)
+                        ? video.currentTime
+                        : undefined,
+                    play: false,
+                },
+            });
+        }
+        function play() {
+            send({
+                variables: {
+                    roomId,
+                    sessionId,
+                    offset: Number.isFinite(video.currentTime)
+                        ? video.currentTime
+                        : undefined,
+                    play: true,
+                },
+            });
+        }
 
         video.addEventListener("play", () => play());
         video.addEventListener("playing", () => play());
         video.addEventListener("pause", () => pause());
         video.addEventListener("seeked", () => pause());
         video.addEventListener("seeking", () => pause());
-
 
         return () => {
             video.removeEventListener("play", () => play());
@@ -249,24 +345,35 @@ export function ReplicatedMedia(props: React.VideoHTMLAttributes<HTMLMediaElemen
         };
     }, [ref.current]);
 
-    const reactPlayerSynchronizeState = useCallback((isPlaying?: boolean) => {
-        const player = reactPlayerRef.current;
-        if (!player) {
-            send({ variables: { roomId, sessionId, offset: undefined, play: false } });
-            return;
-        }
+    const reactPlayerSynchronizeState = useCallback(
+        (isPlaying?: boolean) => {
+            const player = reactPlayerRef.current;
+            if (!player) {
+                send({
+                    variables: { roomId, sessionId, offset: undefined, play: false },
+                });
+                return;
+            }
 
-        let currentPlay = playing;
-        const currentTime = player.getCurrentTime();
+            let currentPlay = playing;
+            const currentTime = player.getCurrentTime();
 
-        if (isPlaying !== undefined) {
-            setPlaying(isPlaying);
-            currentPlay = isPlaying;
-        }
+            if (isPlaying !== undefined) {
+                setPlaying(isPlaying);
+                currentPlay = isPlaying;
+            }
 
-        send({ variables: { roomId, sessionId, offset: Number.isFinite(currentTime) ? currentTime : undefined, play: currentPlay } })
-
-    }, [send, reactPlayerRef.current, playing]);
+            send({
+                variables: {
+                    roomId,
+                    sessionId,
+                    offset: Number.isFinite(currentTime) ? currentTime : undefined,
+                    play: currentPlay,
+                },
+            });
+        },
+        [send, reactPlayerRef.current, playing]
+    );
 
     const reactPlayerError = useCallback(() => {
         // NOTE: Fallback to original src if there's an error.
@@ -276,48 +383,63 @@ export function ReplicatedMedia(props: React.VideoHTMLAttributes<HTMLMediaElemen
     }, [src, setVideoSources, videoSources]);
 
     // if(loading) {return <CircularProgress />;}
-    if (error) { return <Typography>{error}</Typography>; }
+    if (error) {
+        return <Typography>{error}</Typography>;
+    }
 
     switch (type) {
         case MaterialTypename.Audio:
-            return <audio
-                ref={ref}
-                src={src}
-                crossOrigin="anonymous"
-                controls
-                controlsList="nodownload"
-                preload="auto"
-                playsInline
-                onContextMenu={(e) => e.preventDefault()}
-                {...mediaProps}
-            />;
+            return (
+                <audio
+                    ref={ref}
+                    src={src}
+                    crossOrigin="anonymous"
+                    controls
+                    controlsList="nodownload"
+                    preload="auto"
+                    playsInline
+                    onContextMenu={(e) => e.preventDefault()}
+                    {...mediaProps}
+                />
+            );
 
         case MaterialTypename.Video:
         default:
-            return <ReactPlayer
-                ref={reactPlayerRef as React.RefObject<ReactPlayer>}
-                controls
-                playsinline
-                url={videoSources}
-                config={{
-                    file: {
-                        attributes: {
-                            crossOrigin: "anonymous",
-                            controlsList: "nodownload",
-                            onContextMenu: (e: Event) => e.preventDefault(),
-                            ...mediaProps,
-                        }
-                    }
-                }
-                }
-                onReady={() => { reactPlayerSynchronizeState(); }
-                }
-                onStart={() => { reactPlayerSynchronizeState(true); }}
-                onPlay={() => { reactPlayerSynchronizeState(true); }}
-                onPause={() => { reactPlayerSynchronizeState(false); }}
-                onSeek={() => { reactPlayerSynchronizeState(); }}
-                onError={() => { reactPlayerError(); }}
-            />
+            return (
+                <ReactPlayer
+                    ref={reactPlayerRef as React.RefObject<ReactPlayer>}
+                    controls
+                    playsinline
+                    url={videoSources}
+                    config={{
+                        file: {
+                            attributes: {
+                                crossOrigin: "anonymous",
+                                controlsList: "nodownload",
+                                onContextMenu: (e: Event) => e.preventDefault(),
+                                ...mediaProps,
+                            },
+                        },
+                    }}
+                    onReady={() => {
+                        reactPlayerSynchronizeState();
+                    }}
+                    onStart={() => {
+                        reactPlayerSynchronizeState(true);
+                    }}
+                    onPlay={() => {
+                        reactPlayerSynchronizeState(true);
+                    }}
+                    onPause={() => {
+                        reactPlayerSynchronizeState(false);
+                    }}
+                    onSeek={() => {
+                        reactPlayerSynchronizeState();
+                    }}
+                    onError={() => {
+                        reactPlayerError();
+                    }}
+                />
+            );
     }
-
 }
