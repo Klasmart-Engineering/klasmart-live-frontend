@@ -7,8 +7,7 @@ import Typography from "@material-ui/core/Typography";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { createStyles, makeStyles, withStyles, Theme, useTheme } from "@material-ui/core/styles";
 import { FormattedMessage } from "react-intl";
-import { ScreenShareContext } from "./screenShareProvider";
-import { webRTCContext } from "../../webRTCState";
+import { ScreenShare } from "./screenShareProvider";
 import { InteractiveModeState } from "../../room";
 import IconButton from "@material-ui/core/IconButton";
 import Divider from "@material-ui/core/Divider";
@@ -96,8 +95,7 @@ export function ControlButtons({ interactiveModeState, disablePresent, disableAc
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
     const { selectedButton, buttonRoot, buttonGroup, divider, helpButton, screenSharingButton } = useStyles();
-    const screenShare = useContext(ScreenShareContext);
-    const webrtc = useContext(webRTCContext);
+    const screenShare = ScreenShare.Consume()
 
     const { interactiveMode, setInteractiveMode } = interactiveModeState;
     const [{ openStopTooltip, openPresentTooltip, openActivityTooltip, openScreenTooltip }, setOpenTooltip] = useState({
@@ -201,10 +199,10 @@ export function ControlButtons({ interactiveModeState, disablePresent, disableAc
                             disabled={!navigator.mediaDevices || !(navigator.mediaDevices as any).getDisplayMedia}
                             onClick={() => {
                                 if (screenShare.getStream() && interactiveMode === 3) {
-                                    screenShare.stop(webrtc);
+                                    screenShare.stop();
                                 }
                                 if (!screenShare.getStream() && interactiveMode !== 3) {
-                                    screenShare.start(webrtc);
+                                    screenShare.start();
                                 }
                             }}
                         >

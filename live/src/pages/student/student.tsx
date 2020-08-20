@@ -8,12 +8,13 @@ import { UserContext } from "../../entry";
 import { RoomContext } from "../../room";
 import { Whiteboard } from "../../whiteboard/components/Whiteboard";
 import WBToolbar from "../../whiteboard/components/Toolbar";
-import { webRTCContext, Stream } from "../../webRTCState";
+import { Stream } from "../../webRTCState";
 import { ReplicaMedia } from "../synchronized-video";
 import { MaterialTypename } from "../../lessonMaterialContext";
 import { PreviewPlayer } from "../../components/preview-player";
 import { RecordedIframe } from "../../components/recordediframe";
 import { imageFrame } from "../../utils/layerValues";
+import { WebRTCSFUContext } from "../../webrtc/sfu";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -49,7 +50,7 @@ export function Student({ openDrawer }: {
     const classes = useStyles();
 
     const { name } = useContext(UserContext);
-    const webrtc = useContext(webRTCContext);
+    const webrtc = WebRTCSFUContext.Consume()
     const [streamId, setStreamId] = useState<string>();
 
     const rootDivRef = useRef<HTMLDivElement>(null);

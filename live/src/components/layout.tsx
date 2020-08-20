@@ -34,7 +34,7 @@ import { Grid as GridIcon } from "@styled-icons/evaicons-solid/Grid";
 import { ViewList as ListIcon } from "@styled-icons/material/ViewList";
 import { Share as ShareIcon } from "@styled-icons/material/Share";
 
-import { webRTCContext, Camera, GlobalCameraControl } from "../webRTCState";
+import { Camera, GlobalCameraControl } from "../webRTCState";
 import { UserContext } from "../entry";
 import { Session, Message, ContentIndexState, InteractiveModeState, StreamIdState, RoomContext } from "../room";
 import Toolbar from "../whiteboard/components/Toolbar";
@@ -47,6 +47,7 @@ import LanguageSelect from "./languageSelect";
 import MoreControls from "./moreControls";
 import CenterAlignChildren from "./centerAlignChildren";
 import { bottomNav, modePanel } from "../utils/layerValues";
+import { WebRTCSFUContext } from "../webrtc/sfu";
 
 export const DRAWER_WIDTH = 380;
 
@@ -351,7 +352,7 @@ function TabInnerContent({ contentIndexState, title, numColState, setNumColState
     const classes = useStyles();
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
-    const { sessionId, materials, teacher } = useContext(UserContext);
+    const { camera, sessionId, materials, teacher } = useContext(UserContext);
     const isMdUpTeacher = teacher && !isSmDown;
 
     const changeNumColState = (num: number) => {
@@ -363,8 +364,7 @@ function TabInnerContent({ contentIndexState, title, numColState, setNumColState
 
     switch (title) {
         case "title_participants":
-            const webrtc = useContext(webRTCContext);
-            const stream = webrtc.getCamera();
+            const webrtc = WebRTCSFUContext.Consume()
             const users = useContext(UsersContext);
             // TODO: Improve performance as order in flexbox instead of .filter()
             const userEntries = [...users.entries()];
@@ -380,7 +380,7 @@ function TabInnerContent({ contentIndexState, title, numColState, setNumColState
                                 muted={true}
                                 session={session}
                                 controls={true}
-                                mediaStream={stream !== null ? stream : undefined}
+                                mediaStream={camera !== null ? camera : undefined}
                                 square
                             />
                         )}
@@ -413,8 +413,8 @@ function TabInnerContent({ contentIndexState, title, numColState, setNumColState
                                         sessionId={sessionId}
                                         id={id}
                                         session={session}
-                                        mediaStream={id === sessionId && stream !== null ?
-                                            stream : webrtc.getCameraStream(id)
+                                        mediaStream={id === sessionId && camera !== null ?
+                                            camera : webrtc.getCameraStream(id)
                                         }
                                     />) :
                                 userEntries.map(([id, session]) => {
@@ -426,8 +426,8 @@ function TabInnerContent({ contentIndexState, title, numColState, setNumColState
                                             sessionId={sessionId}
                                             id={id}
                                             session={session}
-                                            mediaStream={id === sessionId && stream !== null ?
-                                                stream : webrtc.getCameraStream(id)
+                                            mediaStream={id === sessionId && camera !== null ?
+                                                camera : webrtc.getCameraStream(id)
                                             }
                                         />
                                     )

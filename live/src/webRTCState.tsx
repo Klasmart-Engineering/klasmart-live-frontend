@@ -28,6 +28,7 @@ import { Star as StarIcon } from "@styled-icons/material/Star";
 import { EmojiEvents as TrophyIcon } from "@styled-icons/material/EmojiEvents";
 import { Favorite as HeartIcon } from "@styled-icons/material/Favorite";
 import { ThumbUp as EncourageIcon } from "@styled-icons/material/ThumbUp";
+import { WebRTCSFUContext } from "./webrtc/sfu";
 
 const SEND_SIGNAL = gql`
   mutation webRTCSignal($roomId: ID!, $toSessionId: ID!, $webrtc: WebRTCIn) {
@@ -46,343 +47,10 @@ export interface WebRTCIn {
 
 export type WebRTC = WebRTCIn & { sessionId: string }
 
-export const webRTCContext = createContext<WebRTCContext>(undefined as any);
-
-export class WebRTCContext {
-    public videoTrackEnabled: boolean;
-    public audioTrackEnabled: boolean;
-
-    public setVideoStreamState(sessionId?: string, enabled?: boolean) {
-        if (sessionId && sessionId !== this.mySessionId) {
-            const state = this.states.get(sessionId);
-            if (!state) { return; }
-            state.muteCamera(undefined, typeof enabled === "boolean" ? enabled : !state.videoTrackEnabled);
-        } else {
-            this.videoTrackEnabled = typeof enabled === "boolean" ? enabled : !this.videoTrackEnabled;
-            if (this.localCamera) {
-                for (const track of this.localCamera.getVideoTracks()) {
-                    track.enabled = this.videoTrackEnabled;
-                }
-            }
-        }
-        this.rerender();
-    }
-    public setAudioStreamState(sessionId?: string, enabled?: boolean) {
-        if (sessionId && sessionId !== this.mySessionId) {
-            const state = this.states.get(sessionId);
-            if (!state) { return; }
-            state.muteCamera(typeof enabled === "boolean" ? enabled : !state.audioTrackEnabled, undefined);
-        } else {
-            this.audioTrackEnabled = typeof enabled === "boolean" ? enabled : !this.audioTrackEnabled;
-            if (this.localCamera) {
-                for (const track of this.localCamera.getAudioTracks()) {
-                    track.enabled = this.audioTrackEnabled;
-                }
-            }
-        }
-        this.rerender();
-    }
-
-    public getVideoStreamState(sessionId?: string) {
-        if (!sessionId || sessionId === this.mySessionId) { return this.videoTrackEnabled; }
-
-        const state = this.states.get(sessionId);
-        if (!state) { return; }
-
-        return state.videoTrackEnabled;
-    }
-
-    public getAudioStreamState(sessionId?: string) {
-        if (!sessionId || sessionId === this.mySessionId) { return this.audioTrackEnabled; }
-
-        const state = this.states.get(sessionId);
-        if (!state) { return; }
-
-        return state.audioTrackEnabled;
-    }
-
-    public static useWebRTCContext(mySessionId: string, roomId: string): WebRTCContext {
-        const [sendSignal] = useMutation(SEND_SIGNAL);
-        const [state, rerender] = useReducer(
-            ({ value }) => ({ value }),
-            {
-                value: new WebRTCContext(
-                    mySessionId,
-                    (toSessionId: string, webrtc: WebRTCIn) => setImmediate(() => sendSignal({ variables: { roomId, toSessionId, webrtc } }))
-                )
-            }
-        );
-        state.value._rerender = rerender;
-        return state.value;
-    }
-
-    private mySessionId: string
-    private _rerender?: React.DispatchWithoutAction
-    private send: (sessionId: string, webRTC: WebRTCIn) => any
-    private states: Map<string, WebRTCState>
-    private localCamera?: MediaStream | null;
-    private localAux?: MediaStream
-
-    private constructor(
-        mySessionId: string,
-        send: (sessionId: string, webRTC: WebRTCIn) => any,
-        states = new Map<string, WebRTCState>(),
-        videoTrackEnabled = true,
-        audioTrackEnabled = true,
-        localCamera?: MediaStream,
-        localAux?: MediaStream,
-    ) {
-        this.mySessionId = mySessionId;
-        this.send = send;
-        this.states = states;
-        this.videoTrackEnabled = videoTrackEnabled;
-        this.audioTrackEnabled = audioTrackEnabled;
-        this.localCamera = localCamera;
-        this.localAux = localAux;
-    }
-
-    public mute(sessionId: string, audio?: boolean, video?: boolean) {
-        const state = this.states.get(sessionId);
-        if (!state) { return; } //TODO how to handle late connects?
-        state.muteCamera(audio, video);
-    }
-
-    public async notification(webrtc: WebRTC): Promise<void> {
-        const sessionId = webrtc.sessionId;
-        const state = await this.getOrCreateState(sessionId);
-        await state.dispatch(webrtc);
-    }
-
-    public async sendOffer(sessionId: string): Promise<void> {
-        if (this.mySessionId === sessionId) { return; }
-        const state = await this.getOrCreateState(sessionId);
-        return state.sendOffer();
-    }
-
-    public getCameraStream(sessionId: string) {
-        const state = this.states.get(sessionId);
-        if (!state) { return; }
-        return state.getStream("camera");
-    }
-
-    public getAuxStream(sessionId: string) {
-        const state = this.states.get(sessionId);
-        if (!state) { return; }
-        return state.getStream("aux");
-    }
-
-    public getMediaStreams(): Array<{ sessionId: string, stream: MediaStream }> {
-        const results: Array<{ sessionId: string, stream: MediaStream }> = [];
-        for (const [sessionId, state] of this.states.entries()) {
-            if (state.remoteMediaStreams && state.peer.connectionState === "connected") {
-                for (const stream of state.remoteMediaStreams.values()) {
-                    results.push({ sessionId, stream });
-                }
-            }
-        }
-        return results;
-    }
-
-    public setCamera(stream: MediaStream | null) {
-        this.localCamera = stream;
-        if (stream) {
-            for (const state of this.states.values()) {
-                state.attachStream("camera", stream);
-            }
-        }
-        this.rerender();
-    }
-
-    public getCamera() { return this.localCamera; }
-
-    public setAux(stream?: MediaStream) {
-        this.localAux = stream;
-        if (stream) {
-            for (const state of this.states.values()) {
-                state.attachStream("aux", stream);
-            }
-        }
-        this.rerender();
-    }
-
-    public getAux() { return this.localAux; }
-
-    private async getOrCreateState(sessionId: string): Promise<WebRTCState> {
-        let state = this.states.get(sessionId);
-        if (!state) {
-            state = new WebRTCState(
-                this.mySessionId < sessionId,
-                (webRTC: WebRTCIn) => this.send(sessionId, webRTC),
-                () => this.rerender(),
-                this.localCamera || undefined,
-                this.localAux,
-            );
-            this.states.set(sessionId, state);
-        }
-        return state;
-    }
-
-    private rerender() {
-        if (this._rerender) { this._rerender(); }
-    }
-}
-
 const iceServers: RTCIceServer[] = [
     { urls: "turn:turn.kidsloop.net", username: "badanamu", credential: "WFVZ4myAi3ywy4q0BpPJWTAm8gHOfPRh", credentialType: "password" },
 ];
 
-class WebRTCState {
-    public remoteMediaStreams: Map<string, MediaStream> = new Map<string, MediaStream>()
-    public peer: RTCPeerConnection;
-    private send: (webRTC: WebRTCIn) => any;
-    private rerender: () => any;
-    private senderMap = new Map<string, RTCRtpSender>()
-    private remoteStreamNames = new Map<string, string>()
-    private localStreamNames = new Map<string, MediaStream>()
-
-    public videoTrackEnabled = true;
-    public audioTrackEnabled = true;
-
-    public constructor(polite: boolean, send: (webRTC: WebRTCIn) => any, rerender: () => any, cameraStream?: MediaStream, auxStream?: MediaStream) {
-        this.polite = polite;
-        this.rerender = rerender;
-        this.send = send;
-        this.peer = new RTCPeerConnection({ iceServers });
-        this.peer.onicecandidate = async ({ candidate }) => {
-            if (candidate) {
-                const ice = JSON.stringify(candidate);
-                this.send({ ice });
-            }
-        };
-        this.peer.ontrack = (e) => {
-            const { streams } = e;
-            for (const stream of streams) {
-                for (const track of stream.getTracks()) {
-                    track.onunmute = () => this.rerender();
-                    track.onmute = () => this.rerender();
-                }
-                this.remoteMediaStreams.set(stream.id, stream);
-            }
-            this.rerender();//TODO: Fix capture of old state
-        };
-        this.peer.onnegotiationneeded = async () => {
-            try {
-                this.makingOffer = true;
-                const offer = await this.peer.createOffer();
-                if (this.peer.signalingState != "stable") return;
-                await this.peer.setLocalDescription(offer);
-                this.send({ description: JSON.stringify(this.peer.localDescription) });
-            } catch (e) {
-                console.error(e);
-            } finally {
-                this.makingOffer = false;
-            }
-        };
-        if (cameraStream) { this.attachStream("camera", cameraStream); }
-        if (auxStream) { this.attachStream("aux", auxStream); }
-    }
-
-    public attachStream(name: string, stream: MediaStream) {
-        const previousStream = this.localStreamNames.get(name);
-        if (previousStream) {
-            for (const track of previousStream.getTracks()) {
-                const sender = this.senderMap.get(track.id);
-                if (sender) { this.peer.removeTrack(sender); }
-            }
-        }
-        if (!previousStream || previousStream.id !== stream.id) {
-            this.send({ stream: { name, streamId: stream.id } });
-        }
-        this.localStreamNames.set(name, stream);
-        for (const track of stream.getTracks()) {
-            if (track.kind === "video") { track.enabled = this.videoTrackEnabled; }
-            if (track.kind === "audio") { track.enabled = this.audioTrackEnabled; }
-
-            const sender = this.peer.addTrack(track, stream);
-            this.senderMap.set(track.id, sender);
-        }
-    }
-
-    //https://www.w3.org/TR/webrtc/#perfect-negotiation-example
-    //https://blog.mozilla.org/webrtc/perfect-negotiation-in-webrtc/
-    //"Perfect" signaling example does not work on safari, due to required argument in setLocalDescription
-    //https://caniuse.com/#feat=mdn-api_rtcpeerconnection_setlocaldescription_optional_description
-    private polite: boolean
-    private makingOffer = false
-    private ignoringdOffer = false
-    public async dispatch(webrtc: WebRTCIn): Promise<void> {
-        try {
-            if (!webrtc) { return; }
-            const { description, ice, stream } = webrtc;
-            if (description) {
-                const remoteDescription = new RTCSessionDescription(JSON.parse(description));
-                const collision = (remoteDescription.type == "offer") && (this.peer.signalingState != "stable" || this.makingOffer);
-                this.ignoringdOffer = !this.polite && collision;
-                if (!this.ignoringdOffer) {
-                    await this.peer.setRemoteDescription(remoteDescription);
-                    if (remoteDescription.type === "offer") {
-                        await this.peer.setLocalDescription(await this.peer.createAnswer());
-                        this.send({ description: JSON.stringify(this.peer.localDescription) });
-                    }
-                }
-            }
-            if (ice) {
-                const candidate = new RTCIceCandidate(JSON.parse(ice));
-                try {
-                    await this.peer.addIceCandidate(candidate);
-                } catch (e) {
-                    if (!this.ignoringdOffer) throw e;
-                }
-            }
-            if (stream) {
-                this.remoteStreamNames.set(stream.name, stream.streamId);
-            }
-        } catch (e) {
-            console.error(e);
-        }
-    }
-
-
-    public async sendOffer() {
-        try {
-            this.makingOffer = true;
-            const offer = await this.peer.createOffer();
-            await this.peer.setLocalDescription(offer);
-            this.send({ description: JSON.stringify(this.peer.localDescription) });
-        } catch (e) {
-            console.error(e);
-        } finally {
-            this.makingOffer = false;
-        }
-    }
-
-    public getStream(name: string) {
-        const id = this.remoteStreamNames.get(name);
-        if (!id) { return; }
-        const stream = this.remoteMediaStreams.get(id);
-        return stream;
-    }
-
-    public muteCamera(audio?: boolean, video?: boolean) {
-        const camera = this.getStream("camera");
-        if (!camera) { return; }
-
-        if (typeof audio === "boolean") {
-            this.audioTrackEnabled = audio;
-            for (const track of camera.getAudioTracks()) {
-                track.enabled = audio;
-            }
-        }
-        if (typeof video === "boolean") {
-            this.videoTrackEnabled = video;
-            for (const track of camera.getVideoTracks()) {
-                track.enabled = video;
-            }
-        }
-
-        this.rerender();
-    }
-}
 
 export function Camera(props: {
     session?: Session,
@@ -483,8 +151,8 @@ export function GlobalCameraControl(): JSX.Element {
         }
     `);
 
-    const states = useContext(webRTCContext);
-    const mediaStreams = states.getMediaStreams();
+    const states = WebRTCSFUContext.Consume()
+    const mediaStreams = states.getAllInboundTracks();
     const { roomId, sessionId } = useContext(UserContext);
     const [rewardTrophyMutation] = useMutation(MUTATION_REWARD_TROPHY);
     const rewardTrophy = (user: string, kind: string) => rewardTrophyMutation({ variables: { roomId, user, kind } });
@@ -500,7 +168,7 @@ export function GlobalCameraControl(): JSX.Element {
                     video: !camerasOn,
                 }
             });
-            states.setVideoStreamState(sessionId, !camerasOn);
+            states.localVideoEnable(sessionId, !camerasOn);
         }
         setCamerasOn(!camerasOn);
     }
@@ -514,7 +182,7 @@ export function GlobalCameraControl(): JSX.Element {
                     audio: !micsOn,
                 }
             });
-            states.setAudioStreamState(sessionId, !micsOn);
+            states.localAudioEnable(sessionId, !micsOn);
         }
         setMicsOn(!micsOn);
     }
@@ -661,33 +329,33 @@ export function CameraControls(props: { global?: boolean, sessionId?: string }):
         }
     `);
 
-    const states = useContext(webRTCContext);
+    const states = WebRTCSFUContext.Consume();
     const { roomId } = useContext(UserContext);
 
     function toggleVideoState() {
-        if (global && sessionId !== mySessionId) {
+        if (global && sessionId && sessionId !== mySessionId) {
             mute({
                 variables: {
                     roomId,
                     sessionId,
-                    video: !states.getVideoStreamState(sessionId),
+                    video: !states.isLocalVideoEnabled(sessionId),
                 }
             });
         } else {
-            states.setVideoStreamState(sessionId);
+            states.localVideoToggle(sessionId);
         }
     }
     function toggleAudioState() {
-        if (global && sessionId !== mySessionId) {
+        if (global && sessionId && sessionId !== mySessionId) {
             mute({
                 variables: {
                     roomId,
                     sessionId,
-                    audio: !states.getAudioStreamState(sessionId),
+                    audio: !states.isLocalAudioEnabled(sessionId),
                 }
             });
         } else {
-            states.setAudioStreamState(sessionId);
+            states.localAudioToggle(sessionId);
         }
     }
 
@@ -707,7 +375,7 @@ export function CameraControls(props: { global?: boolean, sessionId?: string }):
                     onClick={toggleVideoState}
                     size="small"
                 >
-                    {states.getVideoStreamState(sessionId)
+                    {states.isLocalVideoEnabled(sessionId)
                         ? <StyledIcon icon={<CameraIcon />} size={isSmDown ? "small" : "medium"} color="#0E78D5" />
                         : <StyledIcon icon={<CameraOffIcon />} size={isSmDown ? "small" : "medium"} color="#F44336" />
                     }
@@ -720,7 +388,7 @@ export function CameraControls(props: { global?: boolean, sessionId?: string }):
                     onClick={toggleAudioState}
                     size="small"
                 >
-                    {states.getAudioStreamState(sessionId)
+                    {states.isLocalAudioEnabled(sessionId)
                         ? <StyledIcon icon={<MicIcon />} size={isSmDown ? "small" : "medium"} color="#0E78D5" />
                         : <StyledIcon icon={<MicOffIcon />} size={isSmDown ? "small" : "medium"} color="#F44336" />
                     }
@@ -817,7 +485,7 @@ export default function CameraOverlay({ mediaStream, session, miniMode, global }
         mute(roomId: $roomId, sessionId: $sessionId, audio: $audio, video: $video)
     }
     `);
-    const states = useContext(webRTCContext);
+    const states = WebRTCSFUContext.Consume()
     const isSelf = session.id === mySessionId;
 
     function toggleVideoState() {
@@ -826,11 +494,11 @@ export default function CameraOverlay({ mediaStream, session, miniMode, global }
                 variables: {
                     roomId,
                     sessionId: session.id,
-                    video: !states.getVideoStreamState(session.id),
+                    video: !states.isLocalVideoEnabled(session.id),
                 }
             });
         } else {
-            states.setVideoStreamState(session.id);
+            states.localVideoToggle(session.id);
         }
     }
 
@@ -840,11 +508,11 @@ export default function CameraOverlay({ mediaStream, session, miniMode, global }
                 variables: {
                     roomId,
                     sessionId: session.id,
-                    audio: !states.getAudioStreamState(session.id),
+                    audio: !states.isLocalAudioEnabled(session.id),
                 }
             });
         } else {
-            states.setAudioStreamState(session.id);
+            states.localAudioToggle(session.id);
         }
     }
 
@@ -898,7 +566,7 @@ export default function CameraOverlay({ mediaStream, session, miniMode, global }
                                 arrow
                                 aria-label="camera control button tooltip"
                                 placement={"top"}
-                                title={states.getVideoStreamState(session.id)
+                                title={states.isLocalVideoEnabled(session.id)
                                     ? <FormattedMessage id="turn_off_camera" />
                                     : <FormattedMessage id="turn_on_camera" />
                                 }
@@ -907,13 +575,13 @@ export default function CameraOverlay({ mediaStream, session, miniMode, global }
                                     aria-label="camera control button"
                                     onClick={toggleVideoState}
                                     size={isSmUp ? "medium" : "small"}
-                                    className={states.getVideoStreamState(session.id) ? iconBtn : iconOffBtn}
+                                    className={states.isLocalVideoEnabled(session.id) ? iconBtn : iconOffBtn}
                                     style={miniMode ? {
                                         margin: theme.spacing(1),
                                         padding: theme.spacing(0.5)
                                     } : undefined}
                                 >
-                                    {states.getVideoStreamState(session.id) ?
+                                    {states.isLocalVideoEnabled(session.id) ?
                                         <StyledIcon
                                             icon={<CameraIcon className={icon} />}
                                             size={isSmUp ? "medium" : "small"}
@@ -931,7 +599,7 @@ export default function CameraOverlay({ mediaStream, session, miniMode, global }
                                 arrow
                                 aria-label="mic control button tooltip"
                                 placement="top"
-                                title={states.getAudioStreamState(session.id)
+                                title={states.isLocalAudioEnabled(session.id)
                                     ? <FormattedMessage id="turn_off_mic" />
                                     : <FormattedMessage id="turn_on_mic" />
                                 }
@@ -940,13 +608,13 @@ export default function CameraOverlay({ mediaStream, session, miniMode, global }
                                     aria-label="mic control button"
                                     onClick={toggleAudioState}
                                     size={isSmUp ? "medium" : "small"}
-                                    className={states.getAudioStreamState(session.id) ? iconBtn : iconOffBtn}
+                                    className={states.isLocalAudioEnabled(session.id) ? iconBtn : iconOffBtn}
                                     style={miniMode ? {
                                         margin: theme.spacing(1),
                                         padding: theme.spacing(0.5)
                                     } : undefined}
                                 >
-                                    {states.getAudioStreamState(session.id) ?
+                                    {states.isLocalAudioEnabled(session.id) ?
                                         <StyledIcon
                                             icon={<MicIcon className={icon} />}
                                             size={isSmUp ? "medium" : "small"}

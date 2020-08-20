@@ -100,6 +100,11 @@ module.exports = {
                 changeOrigin: true,
                 ws: true
             },
+            "/sfu": {
+                target: "http://localhost:8002",
+                changeOrigin: true,
+                ws: true,
+            },
             "/h5p": {
                 target: "https://zoo.kidsloop.net",
                 changeOrigin: true

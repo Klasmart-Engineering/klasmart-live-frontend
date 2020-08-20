@@ -13,7 +13,7 @@ import CenterAlignChildren from "../components/centerAlignChildren";
 import StyledButton from "../components/styled/button";
 import StyledTextField from "../components/styled/textfield";
 import { UserContext } from "../entry";
-import { webRTCContext, Camera } from "../webRTCState";
+import { Camera } from "../webRTCState";
 import Loading from "../components/loading";
 import NoCamera from "../components/noCamera";
 import MediaDeviceSelect from "../components/mediaDeviceSelect";
@@ -54,8 +54,7 @@ export function Join(): JSX.Element {
     const classes = useStyles();
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
-    const states = useContext(webRTCContext);
-    const { name, setName } = useContext(UserContext);
+    const { camera, setCamera, name, setName } = useContext(UserContext);
 
     const url = new URL(window.location.href);
 
@@ -175,7 +174,7 @@ export function Join(): JSX.Element {
             );
         }
         if (!name) { setName(user); }
-        states.setCamera(stream || null);
+        setCamera(stream || null);
     }
 
     return (
