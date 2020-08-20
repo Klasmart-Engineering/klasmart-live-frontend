@@ -1,15 +1,13 @@
 import { Join } from "./pages/join";
 import { Room, RoomContext } from "./room";
 import { UserContext } from "./entry";
-import { webRTCContext } from "./webRTCState";
 import React, { useContext } from "react";
 import { Trophy } from "./components/trophies/trophy";
 
 export function App(): JSX.Element {
-    const { name, teacher } = useContext(UserContext);
-    const webrtc = useContext(webRTCContext);
+    const { camera, name, teacher } = useContext(UserContext);
 
-    if (!name || webrtc.getCamera() === undefined) { return <Join />; }
+    if (!name || camera === undefined) { return <Join />; }
 
     return <RoomContext.Provide>
         <Room teacher={teacher} />
