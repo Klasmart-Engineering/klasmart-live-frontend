@@ -103,7 +103,6 @@ export function Join(): JSX.Element {
             return;
         }
         setStream(undefined);
-        console.log('call gum from join use effect');
         const stream = navigator.mediaDevices.getUserMedia({ video: { deviceId: videoDeviceId }, audio: { deviceId: audioDeviceId } });
         stream
             .then((s) => { setStream(s); })
