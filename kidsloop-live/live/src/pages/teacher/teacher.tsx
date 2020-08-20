@@ -15,7 +15,7 @@ import { UserContext } from "../../entry";
 import { gql } from "apollo-boost";
 import { useMutation } from "@apollo/react-hooks";
 import { Whiteboard } from "../../whiteboard/components/Whiteboard";
-import { ScreenShareContext } from "./screenShareProvider";
+import { ScreenShare } from "./screenShareProvider";
 import { ReplicatedMedia } from "../synchronized-video";
 import { Face as FaceIcon } from "@styled-icons/material/Face";
 import { ZoomIn as ZoomInIcon } from "@styled-icons/material/ZoomIn";
@@ -83,7 +83,7 @@ interface Props {
 
 export function Teacher(props: Props): JSX.Element {
     const { roomId, sessionId, materials, name } = useContext(UserContext);
-    const screenShare = useContext(ScreenShareContext);
+    const screenShare = ScreenShare.Consume()
     const { content, users } = RoomContext.Consume()
 
     const classes = useStyles();

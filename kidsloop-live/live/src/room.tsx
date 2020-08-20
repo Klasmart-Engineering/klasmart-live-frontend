@@ -8,11 +8,12 @@ import Grid from "@material-ui/core/Grid";
 import { sessionId, UserContext } from "./entry";
 import { Student } from "./pages/student/student";
 import { Teacher } from "./pages/teacher/teacher";
-import { webRTCContext } from "./webRTCState";
 import Layout from "./components/layout";
 import Loading from "./components/loading";
 import { WhiteboardContextProvider } from "./whiteboard/context-provider/WhiteboardContextProvider";
 import { EventEmitter } from "eventemitter3"
+import { WebRTCSFUContext } from "./webrtc/sfu";
+import { ScreenShare } from "./pages/teacher/screenShareProvider";
 
 export interface Session {
     id: string,
@@ -75,31 +76,35 @@ export function Room({ teacher }: Props): JSX.Element {
     }, [isSmDown]);
 
     return (
-        <WhiteboardContextProvider>
-            <Layout
-                isTeacher={teacher}
-                openDrawer={openDrawer}
-                handleOpenDrawer={handleOpenDrawer}
-                contentIndexState={{ contentIndex, setContentIndex }}
-                interactiveModeState={{ interactiveMode, setInteractiveMode }}
-                streamIdState={{ streamId, setStreamId }}
-                numColState={numColState}
-                setNumColState={setNumColState}
-            >
-                {
-                    teacher
-                        ? <Teacher
-                            openDrawer={openDrawer}
-                            handleOpenDrawer={handleOpenDrawer}
-                            contentIndexState={{ contentIndex, setContentIndex }}
-                            interactiveModeState={{ interactiveMode, setInteractiveMode }}
-                            streamIdState={{ streamId, setStreamId }}
-                            numColState={numColState}
-                        />
-                        : <Student openDrawer={openDrawer} />
-                }
-            </Layout>
-        </WhiteboardContextProvider>
+        <WebRTCSFUContext.Provide>
+            <ScreenShare.Provide>
+                <WhiteboardContextProvider>
+                    <Layout
+                        isTeacher={teacher}
+                        openDrawer={openDrawer}
+                        handleOpenDrawer={handleOpenDrawer}
+                        contentIndexState={{ contentIndex, setContentIndex }}
+                        interactiveModeState={{ interactiveMode, setInteractiveMode }}
+                        streamIdState={{ streamId, setStreamId }}
+                        numColState={numColState}
+                        setNumColState={setNumColState}
+                        >
+                        {
+                            teacher
+                            ? <Teacher
+                                openDrawer={openDrawer}
+                                handleOpenDrawer={handleOpenDrawer}
+                                contentIndexState={{ contentIndex, setContentIndex }}
+                                interactiveModeState={{ interactiveMode, setInteractiveMode }}
+                                streamIdState={{ streamId, setStreamId }}
+                                numColState={numColState}
+                            />
+                            : <Student openDrawer={openDrawer} />
+                        }
+                    </Layout>
+                </WhiteboardContextProvider>
+            </ScreenShare.Provide>
+        </WebRTCSFUContext.Provide>
     );
 }
 
@@ -112,7 +117,7 @@ const SUB_ROOM = gql`
             join { id, name, streamId },
             leave { id },
             session { webRTC { sessionId, description, ice, stream { name, streamId } } },
-            mute { sessionId, audio, video },
+            sfu,
             trophy { from, user, kind },
         }
     }
@@ -120,30 +125,24 @@ const SUB_ROOM = gql`
 
 const context = createContext<{ value: RoomContext }>(undefined as any);
 export class RoomContext {
-    public static Provide(props: { children?: JSX.Element | JSX.Element[] }) {
-        const ref = useRef<RoomContext>(undefined as any)
-        const [value, rerender] = useReducer(() => ({ value: ref.current }), { value: ref.current })
-        if (!ref.current) { ref.current = new RoomContext(rerender) }
-
+    public static Provide(props: {children?: JSX.Element | JSX.Element[]}) {
         const { roomId, name } = useContext(UserContext);
-        const webrtc = useContext(webRTCContext);
+
+        const ref = useRef<RoomContext>(undefined as any)
+        const [value, rerender] = useReducer(() => ({value:ref.current}),{value:ref.current})
+        if(!ref.current) { ref.current = new RoomContext(rerender, roomId) }
+
         const { loading, error } = useSubscription(SUB_ROOM, {
             onSubscriptionData: ({ subscriptionData }) => {
                 if (!subscriptionData) { return; }
                 if (!subscriptionData.data) { return; }
                 if (!subscriptionData.data.room) { return; }
-                const { message, content, join, leave, session, mute, trophy } = subscriptionData.data.room;
+                const { message, content, join, leave, session, sfu, trophy } = subscriptionData.data.room;
                 if (message) { ref.current.addMessage(message); }
                 if (content) { ref.current.setContent(content); }
-                if (join) {
-                    ref.current.userJoin(join)
-                    if (sessionId < join.id) {
-                        webrtc.sendOffer(join.id);
-                    }
-                }
+                if (join) { ref.current.userJoin(join) }
                 if (leave) { ref.current.userLeave(leave) }
-                if (session && session.webRTC) { webrtc.notification(session.webRTC); }
-                if (mute) { webrtc.mute(mute.sessionId, mute.audio, mute.video); }
+                if (sfu) { ref.current.sfuAddress = sfu; rerender(); }
                 if (trophy) {
                     if (trophy.from === trophy.user || trophy.user === sessionId || trophy.from === sessionId) {
                         ref.current.emitter.emit("trophy", trophy);
@@ -165,9 +164,12 @@ export class RoomContext {
         return useContext(context).value
     }
 
+    public roomId: string
+    public sfuAddress?: string
     private rerender: React.DispatchWithoutAction
-    private constructor(rerender: React.DispatchWithoutAction) {
+    private constructor(rerender: React.DispatchWithoutAction, roomId: string) {
         this.rerender = rerender
+        this.roomId = roomId
     }
 
     public messages = new Map<string, Message>();

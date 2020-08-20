@@ -68,6 +68,7 @@
     "graphql-request": "^2.0.0",
     "iframe-resizer-react": "^1.0.4",
     "jwt-decode": "^2.2.0",
+    "mediasoup-client": "^3.6.12",
     "node-source-han-sans-sc": "^1.1.0-2.001R",
     "query-string": "^6.13.0",
     "react": "^16.13.1",

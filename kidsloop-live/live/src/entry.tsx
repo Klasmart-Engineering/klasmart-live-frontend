@@ -1,3 +1,6 @@
+import { v4 as uuid } from "uuid";
+export const sessionId = uuid();
+
 import React, { createContext, useState, useMemo } from "react";
 import * as Sentry from '@sentry/react';
 import { render } from "react-dom";
@@ -6,7 +9,6 @@ import { ApolloProvider } from "@apollo/react-hooks";
 import { ApolloClient, InMemoryCache } from "apollo-boost";
 import { WebSocketLink } from "apollo-link-ws";
 import jwt_decode from "jwt-decode";
-import { v4 as uuid } from "uuid";
 import { ThemeProvider } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Typography from "@material-ui/core/Typography";
@@ -20,8 +22,6 @@ import {
 } from "react-device-detect";
 
 import { App } from "./app";
-import { webRTCContext, WebRTCContext } from "./webRTCState";
-import { ScreenShare } from "./pages/teacher/screenShareProvider";
 import { LessonMaterial, MaterialTypename } from "./lessonMaterialContext";
 import { AuthTokenProvider } from "./services/auth-token/AuthTokenProvider";
 import { themeProvider } from "./themeProvider";
@@ -39,7 +39,6 @@ Sentry.init({
     environment: process.env.NODE_ENV || "not-specified",
 });
 
-export const sessionId = uuid();
 
 const authToken = AuthTokenProvider.retrieveToken();
 const wsLink = new WebSocketLink({
@@ -72,6 +71,8 @@ export interface IUserContext {
     sessionId: string,
     name?: string,
     setName: React.Dispatch<React.SetStateAction<string | undefined>>
+    camera?: MediaStream | null,
+    setCamera: React.Dispatch<React.SetStateAction<MediaStream | undefined | null>>,
 }
 
 export const ThemeContext = createContext<IThemeContext>({ themeMode: "", setThemeMode: () => null, languageCode: "", setLanguageCode: () => null } as any as IThemeContext);
@@ -84,7 +85,7 @@ if (url.hostname !== "localhost" && url.hostname !== "live.kidsloop.net") {
 
 function parseToken() {
     try {
-        if (url.hostname === "localhost" || url.hostname === "live.kidsloop.net") {
+        if (url.hostname === "localhost" || url.hostname === "live.kidsloop.net" || url.hostname === "be6c5a3a43ad.jp.ngrok.io") {
             const materialsParam = url.searchParams.get("materials");
             return {
                 teacher: url.searchParams.get("teacher") !== null,
@@ -123,6 +124,7 @@ function parseToken() {
 const params = parseToken();
 function Entry() {
     if (!params) { return <Typography><FormattedMessage id="error_invaild_token" /></Typography>; }
+    const [camera, setCamera] = useState<MediaStream|null>();
     const [name, setName] = useState(params.name);
     const [languageCode, setLanguageCode] = useState(url.searchParams.get("lang") || getDefaultLanguageCode());
     const [themeMode, setThemeMode] = useState(url.searchParams.get("theme") || "light");
@@ -136,28 +138,25 @@ function Entry() {
     }), [themeMode, setThemeMode, languageCode, setLanguageCode]);
 
     const userContext = useMemo<IUserContext>(() => ({
+        camera,
+        setCamera,
         name,
         setName,
         sessionId,
         roomId: params.roomId,
         teacher: params.teacher,
         materials: params.materials
-    }), [name, setName, params]);
-    const webRTCContextValue = WebRTCContext.useWebRTCContext(sessionId, userContext.roomId);
+    }), [camera, setCamera, name, setName, params]);
 
     return (
         <ThemeContext.Provider value={themeContext}>
             <UserContext.Provider value={userContext}>
-                <webRTCContext.Provider value={webRTCContextValue}>
-                    <ScreenShare.Provider>
-                        <RawIntlProvider value={locale}>
-                            <ThemeProvider theme={themeProvider(languageCode, themeMode)}>
-                                <CssBaseline />
-                                <App />
-                            </ThemeProvider>
-                        </RawIntlProvider>
-                    </ScreenShare.Provider>
-                </webRTCContext.Provider>
+                <RawIntlProvider value={locale}>
+                    <ThemeProvider theme={themeProvider(languageCode, themeMode)}>
+                        <CssBaseline />
+                        <App />
+                    </ThemeProvider>
+                </RawIntlProvider>
             </UserContext.Provider>
         </ThemeContext.Provider>
     );
