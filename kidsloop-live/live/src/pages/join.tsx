@@ -135,7 +135,6 @@ export function Join(): JSX.Element {
             return null;
         }
         catch (e) {
-            console.log('@@@ got an error in getAndSetStream');
             setError(true);
             console.error(e);
             return null;
@@ -159,7 +158,6 @@ export function Join(): JSX.Element {
             return stream || null;
         }
         catch (e) {
-            console.log('@@@ got error in get stream')
             console.error(e);
             return null;
         }
