@@ -19,7 +19,7 @@ interface ReplicaVideoProps {
 }
 
 const PLAYLIST_FILE_NAME = "master";
-const PLAYLIST_FILE_HOST = "https://assets.kidsloop.net/2";
+const PLAYLIST_FILE_HOST = "https://d2y6zpgsom6b5m.cloudfront.net/2";
 
 const createHlsDashUrlFromSrc = (src: string): string[] => {
     const pathName = new URL(src).pathname;
