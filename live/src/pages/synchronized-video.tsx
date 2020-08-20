@@ -28,27 +28,32 @@ const PLAYLIST_FILE_NAME = "master";
 const PLAYLIST_FILE_HOST = "https://d2y6zpgsom6b5m.cloudfront.net/2";
 
 const createHlsDashUrlFromSrc = (src: string): string[] => {
-    const pathName = new URL(src).pathname;
-    const mp4exp = /(?=\w+\.\w{3}$).+/;
+    let urls: string[] = []
+    try {
+        const pathName = new URL(src).pathname;
+        const mp4exp = /(?=\w+\.\w{3}$).+/;
 
-    const matches = mp4exp.exec(pathName);
+        const matches = mp4exp.exec(pathName);
 
-    if (!matches || matches.length === 0) return [];
+        if (!matches || matches.length === 0) return [];
 
-    // NOTE: Remove any files not ending wth .mp4, then remove the .mp4 extension.
-    const files = matches
-        .filter((s) => s.endsWith(".mp4"))
-        .map((s) => s.slice(0, -4));
+        // NOTE: Remove any files not ending wth .mp4, then remove the .mp4 extension.
+        const files = matches
+            .filter((s) => s.endsWith(".mp4"))
+            .map((s) => s.slice(0, -4));
 
-    // NOTE: Create urls for HLS playlist files.
-    let urls = files.map(
-        (s) => `${PLAYLIST_FILE_HOST}/${s}/${PLAYLIST_FILE_NAME}.m3u8`
-    );
+        // NOTE: Create urls for HLS playlist files.
+        urls = files.map(
+            (s) => `${PLAYLIST_FILE_HOST}/${s}/${PLAYLIST_FILE_NAME}.m3u8`
+        );
 
-    // NOTE: Create urls for DASH Playlist files.
-    urls = urls.concat(
-        files.map((s) => `${PLAYLIST_FILE_HOST}/${s}/${PLAYLIST_FILE_NAME}.mpd`)
-    );
+        // NOTE: Create urls for DASH Playlist files.
+        urls = urls.concat(
+            files.map((s) => `${PLAYLIST_FILE_HOST}/${s}/${PLAYLIST_FILE_NAME}.mpd`)
+        );
+    } catch {
+        return []
+    }
 
     return urls;
 };
