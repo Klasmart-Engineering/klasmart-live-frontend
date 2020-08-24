@@ -74,6 +74,7 @@ export function Player ({ streamId, frameProps, parentWidth, parentHeight, setPa
   if(error) {return <Typography><FormattedMessage id="failed_to_connect" />: {JSON.stringify(error)}</Typography>}
   return <iframe
       ref={ref}
+      key={streamId}
       style={{
         visibility: loading ? 'hidden' : 'visible',
         borderWidth: '1px',
