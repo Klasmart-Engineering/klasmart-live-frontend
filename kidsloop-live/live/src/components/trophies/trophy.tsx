@@ -75,6 +75,7 @@ export function Trophy(props: Props): JSX.Element {
     const [showLights, setShowLights] = useState(false);
     const [showReward, setShowReward] = useState(false);
     const [showConfetti, setShowConfetti] = useState(false);
+    const [withAudio, setWithAudio] = useState(false);
 
     const [containerWidth, setContainerWidth] = useState<number>(0);
     const [containerHeight, setContainerHeight] = useState<number>(0);
@@ -91,8 +92,11 @@ export function Trophy(props: Props): JSX.Element {
 
     useEffect(() => {
         function handleTrophy(trophy: Trophy) {
+            setWithAudio(trophy.from === trophy.user);
+
             setAppearAt(locationOfElement(`participant:${trophy.from}`));
-            setDisappearAt(locationOfElement(`participant:${trophy.user}`));
+        
+            setDisappearAt(locationOfElement(trophy.from !== trophy.user?`participant:${trophy.user}`:undefined));
     
             if (TrophyKinds[trophy.kind]) {
                 setTrophyKind(TrophyKinds[trophy.kind]);
@@ -123,8 +127,8 @@ export function Trophy(props: Props): JSX.Element {
     }, [containerRef, display])
 
     const entering = useCallback(() => {
-        play();
-    }, [play]);
+        if (withAudio) play();
+    }, [play, withAudio]);
 
     const entered = useCallback(() => {
         setTimeout(() => {
