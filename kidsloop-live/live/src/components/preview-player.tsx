@@ -77,6 +77,7 @@ export function PreviewPlayer({ streamId, frameProps, width, height }: Props): J
     if (error) { return <Typography><FormattedMessage id="failed_to_connect" />: {JSON.stringify(error)}</Typography>; }
     return <div id="preview-iframe-container" style={{ width, height }}>
         <iframe
+            key={streamId}
             ref={ref}
             style={{
                 visibility: loading ? "hidden" : "visible",
