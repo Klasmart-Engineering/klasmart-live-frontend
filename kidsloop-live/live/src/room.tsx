@@ -144,7 +144,11 @@ export class RoomContext {
                 if (leave) { ref.current.userLeave(leave) }
                 if (session && session.webRTC) { webrtc.notification(session.webRTC); }
                 if (mute) { webrtc.mute(mute.sessionId, mute.audio, mute.video); }
-                if (trophy) { ref.current.emitter.emit("trophy",trophy); }
+                if (trophy) {
+                    if(trophy.from === trophy.user || trophy.user === sessionId || trophy.from === sessionId) {
+                        ref.current.emitter.emit("trophy",trophy); 
+                    }
+                }
             },
             variables: { roomId, name }
         });
