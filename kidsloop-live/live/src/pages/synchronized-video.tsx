@@ -230,6 +230,7 @@ export function ReplicaMedia(
                     }}
                     onReady={() => setVideoReady(true)}
                     onError={() => reactPlayerError()}
+                    width="100%"
                 />
             );
     }
@@ -416,6 +417,7 @@ export function ReplicatedMedia(
                     controls
                     playsinline
                     url={videoSources}
+                    width="100%"
                     config={{
                         file: {
                             attributes: {
