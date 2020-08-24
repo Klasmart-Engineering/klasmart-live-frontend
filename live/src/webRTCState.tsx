@@ -19,6 +19,12 @@ import { Eraser as EraserIcon } from "@styled-icons/boxicons-solid/Eraser";
 import StyledIcon from "./components/styled/icon";
 import { useWhiteboard } from "./whiteboard/context-provider/WhiteboardContextProvider";
 
+import { getRandomKind } from './components/trophies/trophyKind';
+import { Star as StarIcon } from "@styled-icons/material/Star";
+import { EmojiEvents as TrophyIcon } from "@styled-icons/material/EmojiEvents";
+import { Favorite as HeartIcon } from "@styled-icons/material/Favorite";
+import { ThumbUp as EncourageIcon } from "@styled-icons/material/ThumbUp";
+
 const SEND_SIGNAL = gql`
   mutation webRTCSignal($roomId: ID!, $toSessionId: ID!, $webrtc: WebRTCIn) {
     webRTCSignal(roomId: $roomId, toSessionId: $toSessionId, webrtc: $webrtc)
@@ -484,6 +490,12 @@ export function Stream(props: { stream?: MediaStream } & React.VideoHTMLAttribut
     return <video style={{ width: "100%" }} ref={videoRef} autoPlay playsInline  {...videoProps} />;
 }
 
+const MUTATION_REWARD_TROPHY = gql`
+mutation rewardTrophy($roomId: ID!, $user: ID!, $kind: String) {
+    rewardTrophy(roomId: $roomId, user: $user, kind: $kind)
+}
+`;
+
 export function GlobalCameraControl(): JSX.Element {
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
@@ -498,9 +510,11 @@ export function GlobalCameraControl(): JSX.Element {
 
     const states = useContext(webRTCContext);
     const mediaStreams = states.getMediaStreams();
-    const { roomId } = useContext(UserContext);
+    const { roomId, sessionId } = useContext(UserContext);
+    const [rewardTrophyMutation] = useMutation(MUTATION_REWARD_TROPHY);
+    const rewardTrophy = (user: string, kind: string) => rewardTrophyMutation({ variables: { roomId, user, kind } });
 
-    const { actions: { clear }} = useWhiteboard();
+    const { actions: { clear } } = useWhiteboard();
 
     function toggleVideoStates() {
         for (const { sessionId } of mediaStreams) {
@@ -588,6 +602,70 @@ export function GlobalCameraControl(): JSX.Element {
                 <Grid item xs={12}>
                     <Typography variant="caption" color="textSecondary">
                         Clear Whiteboard
+                    </Typography>
+                </Grid>
+            </Grid>
+            <Grid container item xs={4} md={4} style={{ textAlign: "center" }}>
+                <Grid item xs={12}>
+                    <IconButton
+                        color={"primary"}
+                        style={{ backgroundColor: "#f6fafe" }}
+                        onClick={() => { rewardTrophy(sessionId, "star"); }}
+                    >
+                        <StarIcon size="1.5rem" />
+                    </IconButton>
+                </Grid>
+                <Grid item xs={12}>
+                    <Typography variant="caption" color="textSecondary">
+                        Reward Star
+                    </Typography>
+                </Grid>
+            </Grid>
+            <Grid container item xs={4} md={4} style={{ textAlign: "center" }}>
+                <Grid item xs={12}>
+                    <IconButton
+                        color={"primary"}
+                        style={{ backgroundColor: "#f6fafe" }}
+                        onClick={() => { rewardTrophy(sessionId, "trophy"); }}
+                    >
+                        <TrophyIcon size="1.5rem" />
+                    </IconButton>
+                </Grid>
+                <Grid item xs={12}>
+                    <Typography variant="caption" color="textSecondary">
+                        Reward Trophy
+                    </Typography>
+                </Grid>
+            </Grid>
+            <Grid container item xs={4} md={4} style={{ textAlign: "center" }}>
+                <Grid item xs={12}>
+                    <IconButton
+                        color={"primary"}
+                        style={{ backgroundColor: "#f6fafe" }}
+                        onClick={() => { rewardTrophy(sessionId, "heart"); }}
+                    >
+                        <HeartIcon size="1.5rem" />
+                    </IconButton>
+                </Grid>
+                <Grid item xs={12}>
+                    <Typography variant="caption" color="textSecondary">
+                        Reward Heart
+                    </Typography>
+                </Grid>
+            </Grid>
+            <Grid container item xs={4} md={4} style={{ textAlign: "center" }}>
+                <Grid item xs={12}>
+                    <IconButton
+                        color={"primary"}
+                        style={{ backgroundColor: "#f6fafe" }}
+                        onClick={() => { rewardTrophy(sessionId, getRandomKind(["awesome", "looks_great", "well_done", "great_job"])); }}
+                    >
+                        <EncourageIcon size="1.5rem" />
+                    </IconButton>
+                </Grid>
+                <Grid item xs={12}>
+                    <Typography variant="caption" color="textSecondary">
+                        Encourage
                     </Typography>
                 </Grid>
             </Grid>
