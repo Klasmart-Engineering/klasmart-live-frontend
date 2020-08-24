@@ -1,7 +1,6 @@
 import React, { createContext, useState, useMemo, useEffect } from "react";
 import * as Sentry from '@sentry/react';
 import { render } from "react-dom";
-import { HashRouter } from "react-router-dom";
 import { RawIntlProvider, FormattedMessage } from "react-intl";
 import { ApolloProvider } from "@apollo/react-hooks";
 import { ApolloClient, InMemoryCache } from "apollo-boost";
@@ -152,22 +151,20 @@ function Entry() {
     const webRTCContextValue = WebRTCContext.useWebRTCContext(sessionId, userContext.roomId);
 
     return (
-        <HashRouter>
-            <ThemeContext.Provider value={themeContext}>
-                <UserContext.Provider value={userContext}>
-                    <webRTCContext.Provider value={webRTCContextValue}>
-                        <ScreenShare.Provider>
-                            <RawIntlProvider value={locale}>
-                                <ThemeProvider theme={themeProvider(languageCode, themeMode)}>
-                                    <CssBaseline />
-                                    <App />
-                                </ThemeProvider>
-                            </RawIntlProvider>
-                        </ScreenShare.Provider>
-                    </webRTCContext.Provider>
-                </UserContext.Provider>
-            </ThemeContext.Provider>
-        </HashRouter>
+        <ThemeContext.Provider value={themeContext}>
+            <UserContext.Provider value={userContext}>
+                <webRTCContext.Provider value={webRTCContextValue}>
+                    <ScreenShare.Provider>
+                        <RawIntlProvider value={locale}>
+                            <ThemeProvider theme={themeProvider(languageCode, themeMode)}>
+                                <CssBaseline />
+                                <App />
+                            </ThemeProvider>
+                        </RawIntlProvider>
+                    </ScreenShare.Provider>
+                </webRTCContext.Provider>
+            </UserContext.Provider>
+        </ThemeContext.Provider>
     );
 }
 
