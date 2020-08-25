@@ -8,9 +8,10 @@ import TIMINGS from './trophyTimings';
 import TrophyKinds, { TrophyKind, getRandomKind } from './trophyKind';
 
 import useSound from 'use-sound';
-import useTrophyReward, { Trophy } from './trophyRewardProvider';
-import { UserContext } from '../../entry';
 import { ConfettiRain } from './confettiRain';
+import { RoomContext } from '../../room';
+
+export type Trophy = { from: string, user: string, kind: string };
 
 type Props = {
     children?: React.ReactNode;
@@ -48,10 +49,27 @@ const CenteredLocation = {
     y: '50%',
 }
 
+
+function locationOfElement(elementId?: string): { x: number | string, y: number | string } {
+    if (!elementId) return CenteredLocation;
+
+    const element = document.getElementById(elementId)
+    if (!element) return CenteredLocation;
+
+    const rect = element.getBoundingClientRect();
+
+    if (rect.width === 0 && rect.height === 0)
+        return CenteredLocation;
+
+    return {
+        x: rect.x + (rect.right - rect.left) / 2,
+        y: rect.y + (rect.bottom - rect.top) / 2,
+    }
+}
+
 export function Trophy(props: Props): JSX.Element {
     const { children } = props;
-
-    const { actions: { registerHandler, removeHandler } } = useTrophyReward();
+    const room = RoomContext.Consume()
 
     const [display, setDisplay] = useState(false);
     const [showLights, setShowLights] = useState(false);
@@ -71,48 +89,23 @@ export function Trophy(props: Props): JSX.Element {
 
     const containerRef = useRef<HTMLDivElement>(null);
 
-    const locationOfElement = function (elementId?: string): { x: number | string, y: number | string } {
-        if (!elementId) return CenteredLocation;
-
-        const element = document.getElementById(elementId)
-        if (!element) return CenteredLocation;
-
-        const rect = element.getBoundingClientRect();
-
-        if (rect.width === 0 && rect.height === 0)
-            return CenteredLocation;
-
-        return {
-            x: rect.x + (rect.right - rect.left) / 2,
-            y: rect.y + (rect.bottom - rect.top) / 2,
-        }
-    }
-
-    const displayTrophy = useCallback((trophy: Trophy) => {
-        setAppearAt(locationOfElement(`participant:${trophy.from}`));
-        setDisappearAt(locationOfElement(`participant:${trophy.user}`));
-
-        if (TrophyKinds[trophy.kind]) {
-            setTrophyKind(TrophyKinds[trophy.kind]);
-        }
-
-        setDisplay(true);
-
-    }, [setAppearAt, setDisappearAt, setDisplay])
-
     useEffect(() => {
-        const handleTrophy = (trophy: Trophy) => {
-            displayTrophy(trophy);
-        }
-
-        if (registerHandler && removeHandler) {
-            registerHandler(handleTrophy);
-
-            return () => {
-                removeHandler(handleTrophy);
+        function handleTrophy(trophy: Trophy) {
+            setAppearAt(locationOfElement(`participant:${trophy.from}`));
+            setDisappearAt(locationOfElement(`participant:${trophy.user}`));
+    
+            if (TrophyKinds[trophy.kind]) {
+                setTrophyKind(TrophyKinds[trophy.kind]);
             }
+    
+            setDisplay(true);
         }
-    }, [registerHandler, removeHandler])
+
+        room.emitter.addListener("trophy", handleTrophy)
+        return () => { room.emitter.removeListener("trophy", handleTrophy) }
+    }, [room.emitter, setAppearAt, setDisappearAt, setDisplay])
+
+
 
     useEffect(() => {
         if (!containerRef.current || !display) return;
