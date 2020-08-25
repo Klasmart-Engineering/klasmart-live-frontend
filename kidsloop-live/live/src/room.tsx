@@ -1,4 +1,4 @@
-import React, { useReducer, useState, useContext, useEffect } from "react";
+import React, { useReducer, useState, useContext, useEffect, useMemo, createContext, useRef } from "react";
 import { gql } from "apollo-boost";
 import { useSubscription } from "@apollo/react-hooks";
 import { FormattedMessage } from "react-intl";
@@ -45,19 +45,6 @@ export interface StreamIdState {
     setStreamId: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
-const SUB_ROOM = gql`
-    subscription room($roomId: ID!, $name: String) {
-        room(roomId: $roomId, name: $name) {
-        message { id, message, session { name } },
-        content { type, contentId },
-        join { id, name, streamId },
-        leave { id },
-        session { webRTC { sessionId, description, ice, stream { name, streamId } } },
-        mute { sessionId, audio, video },
-        }
-    }
-`;
-
 interface Props {
     teacher: boolean
 }
@@ -65,9 +52,6 @@ interface Props {
 export function Room({ teacher }: Props): JSX.Element {
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
-
-    const { roomId, name } = useContext(UserContext);
-    const webrtc = useContext(webRTCContext);
 
     const [contentIndex, setContentIndex] = useState<number>(0);
     const [interactiveMode, setInteractiveMode] = useState<number>(0);
@@ -83,74 +67,28 @@ export function Room({ teacher }: Props): JSX.Element {
         }
     };
 
-    const [content, setContent] = useState<Content>();
-    const [messages, addMessage] = useReducer((state: Map<string, Message>, newMessage: Message) => {
-        const newState = new Map<string, Message>();
-        newState.set(newMessage.id, newMessage);
-        for (const [id, message] of state) {
-            if (newState.size >= 32) { break; }
-            newState.set(id, message);
-        }
-        return newState;
-    }, new Map<string, Message>());
-
-    const [users, updateUsers] = useReducer(
-        (state: Map<string, Session>, { join, leave }: { join?: Session, leave?: Session }) => {
-            const newState = new Map<string, Session>([...state]);
-            if (join) {
-                newState.set(join.id, join);
-                if (sessionId < join.id) {
-                    webrtc.sendOffer(join.id);
-                }
-            }
-            if (leave) { newState.delete(leave.id); }
-            return newState;
-        },
-        new Map<string, Session>()
-    );
-
-    const { loading, error } = useSubscription(SUB_ROOM, {
-        onSubscriptionData: ({ subscriptionData }) => {
-            if (!subscriptionData) { return; }
-            if (!subscriptionData.data) { return; }
-            if (!subscriptionData.data.room) { return; }
-            const { message, content, join, leave, session, mute } = subscriptionData.data.room;
-            if (message) { addMessage(message); }
-            if (content) { setContent(content); }
-            if (join || leave) { updateUsers(subscriptionData.data.room); }
-            if (session && session.webRTC) { webrtc.notification(session.webRTC); }
-            if (mute) { webrtc.mute(mute.sessionId, mute.audio, mute.video); }
-        },
-        variables: { roomId, name }
-    });
-
     useEffect(() => {
         if (isSmDown) {
             setOpenDrawer(false);
         }
     }, [isSmDown]);
 
-    if (error) { return <Typography><FormattedMessage id="failed_to_connect" />{JSON.stringify(error)}</Typography>; }
-    if (loading || !content) { return <Grid container alignItems="center" style={{ height: "100%" }}><Loading messageId="loading" /></Grid>; }
     return (
-        <WhiteboardContextProvider>
-            <Layout
-                isTeacher={teacher}
-                users={users}
-                messages={messages}
-                openDrawer={openDrawer}
-                handleOpenDrawer={handleOpenDrawer}
-                contentIndexState={{ contentIndex, setContentIndex }}
-                interactiveModeState={{ interactiveMode, setInteractiveMode }}
-                streamIdState={{ streamId, setStreamId }}
-                numColState={numColState}
-                setNumColState={setNumColState}
-            >
-                {
-                    teacher
+        <RoomContext.Provide>
+            <WhiteboardContextProvider>
+                <Layout
+                    isTeacher={teacher}
+                    openDrawer={openDrawer}
+                    handleOpenDrawer={handleOpenDrawer}
+                    contentIndexState={{ contentIndex, setContentIndex }}
+                    interactiveModeState={{ interactiveMode, setInteractiveMode }}
+                    streamIdState={{ streamId, setStreamId }}
+                    numColState={numColState}
+                    setNumColState={setNumColState}
+                    >
+                    {
+                        teacher
                         ? <Teacher
-                            content={content}
-                            users={users}
                             openDrawer={openDrawer}
                             handleOpenDrawer={handleOpenDrawer}
                             contentIndexState={{ contentIndex, setContentIndex }}
@@ -158,12 +96,98 @@ export function Room({ teacher }: Props): JSX.Element {
                             streamIdState={{ streamId, setStreamId }}
                             numColState={numColState}
                         />
-                        : <Student
-                            content={content}
-                            users={users}
-                        />
-                }
-            </Layout>
-        </WhiteboardContextProvider>
+                        : <Student />
+                    }
+                </Layout>
+            </WhiteboardContextProvider>
+        </RoomContext.Provide>
     );
+}
+
+
+const SUB_ROOM = gql`
+    subscription room($roomId: ID!, $name: String) {
+        room(roomId: $roomId, name: $name) {
+            message { id, message, session { name } },
+            content { type, contentId },
+            join { id, name, streamId },
+            leave { id },
+            session { webRTC { sessionId, description, ice, stream { name, streamId } } },
+            mute { sessionId, audio, video },
+        }
+    }
+`;
+
+const context = createContext<{value: RoomContext}>(undefined as any);
+export class RoomContext {
+    public static Provide(props: {children?: JSX.Element | JSX.Element[]}) {
+        const ref = useRef<RoomContext>(undefined as any)
+        const [value, rerender] = useReducer(() => ({value:ref.current}),{value:ref.current})
+        if(!ref.current) { ref.current = new RoomContext(rerender) }
+
+        const { roomId, name } = useContext(UserContext);
+        const webrtc = useContext(webRTCContext);
+        const { loading, error } = useSubscription(SUB_ROOM, {
+            onSubscriptionData: ({ subscriptionData }) => {
+                if (!subscriptionData) { return; }
+                if (!subscriptionData.data) { return; }
+                if (!subscriptionData.data.room) { return; }
+                const { message, content, join, leave, session, mute } = subscriptionData.data.room;
+                if (message) { ref.current.addMessage(message); }
+                if (content) { ref.current.setContent(content); }
+                if (join) { 
+                    ref.current.userJoin(join)
+                    if (sessionId < join.id) {
+                        webrtc.sendOffer(join.id);
+                    }
+                }
+                if (leave) { ref.current.userLeave(leave) }
+                if (session && session.webRTC) { webrtc.notification(session.webRTC); }
+                if (mute) { webrtc.mute(mute.sessionId, mute.audio, mute.video); }
+            },
+            variables: { roomId, name }
+        });
+
+        
+        if (loading || !ref.current.content) { return <Grid container alignItems="center" style={{ height: "100%" }}><Loading messageId="loading" /></Grid>; }
+        if (error) { return <Typography><FormattedMessage id="failed_to_connect" />{JSON.stringify(error)}</Typography>; }
+        return <context.Provider value={value} >
+            {props.children}
+        </context.Provider>
+    }
+
+    public static Consume() {
+        return useContext(context).value
+    }
+
+    private rerender: React.DispatchWithoutAction
+    private constructor(rerender: React.DispatchWithoutAction) {
+        this.rerender = rerender
+    }
+
+    public messages = new Map<string, Message>();
+    private addMessage(newMessage: Message) {
+        for (const id of this.messages.keys()) {
+            if (this.messages.size < 32) { break; }
+            this.messages.delete(id);
+        }
+        this.messages.set(newMessage.id, newMessage);
+        this.rerender()
+    }
+    
+    public content?: Content
+    private setContent(content: Content) {
+        this.content = content
+        this.rerender()
+    }
+
+    public users = new Map<string, Session>()
+    private userJoin(join: Session) {
+        this.users.set(join.id, join);
+        this.rerender()
+    }
+    private userLeave(leave: Session) {
+        this.users.delete(leave.id);
+        this.rerender()
+    }
 }

@@ -34,7 +34,7 @@ import { ViewList as ListIcon } from "@styled-icons/material/ViewList";
 
 import { webRTCContext, Camera, MyCamera, CameraControls, GlobalCameraControl } from "../webRTCState";
 import { UserContext } from "../entry";
-import { Session, Message, ContentIndexState, InteractiveModeState, StreamIdState } from "../room";
+import { Session, Message, ContentIndexState, InteractiveModeState, StreamIdState, RoomContext } from "../room";
 import Toolbar from "../whiteboard/components/Toolbar";
 import PermissionControls from "../whiteboard/components/PermissionControls";
 import { ControlButtons } from "../pages/teacher/controlButtons";
@@ -470,8 +470,6 @@ function StyledTab(props: StyledTabProps) {
 interface Props {
     children?: React.ReactNode;
     isTeacher: boolean;
-    users: Map<string, Session>;
-    messages: Map<string, Message>;
     openDrawer: boolean;
     handleOpenDrawer: (open?: boolean) => void;
     contentIndexState: ContentIndexState;
@@ -482,7 +480,8 @@ interface Props {
 }
 
 export default function Layout(props: Props): JSX.Element {
-    const { children, isTeacher, users, messages, openDrawer, handleOpenDrawer, contentIndexState, interactiveModeState, streamIdState, numColState, setNumColState } = props;
+    const {users, messages} = RoomContext.Consume()
+    const { children, isTeacher, openDrawer, handleOpenDrawer, contentIndexState, interactiveModeState, streamIdState, numColState, setNumColState } = props;
     const classes = useStyles();
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
