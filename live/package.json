@@ -15,6 +15,7 @@
   "devDependencies": {
     "@types/chai": "^4.2.11",
     "@types/chai-as-promised": "^7.1.2",
+    "@types/eventemitter3": "^2.0.2",
     "@types/mocha": "^7.0.2",
     "@types/react-color": "^3.0.4",
     "@types/react-dom": "^16.9.8",
@@ -60,7 +61,7 @@
     "apollo-link-context": "^1.0.20",
     "apollo-link-ws": "^1.0.20",
     "clsx": "^1.1.1",
-    "eventemitter3": "^4.0.4",
+    "eventemitter3": "^4.0.5",
     "graphql": "^15.1.0",
     "graphql-request": "^2.0.0",
     "iframe-resizer-react": "git+https://github.com/lgiraudel/iframe-resizer-react.git#patch-1",

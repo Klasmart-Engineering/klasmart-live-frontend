@@ -12,6 +12,7 @@ import { webRTCContext } from "./webRTCState";
 import Layout from "./components/layout";
 import Loading from "./components/loading";
 import { WhiteboardContextProvider } from "./whiteboard/context-provider/WhiteboardContextProvider";
+import { EventEmitter } from "eventemitter3"
 
 export interface Session {
     id: string,
@@ -74,33 +75,31 @@ export function Room({ teacher }: Props): JSX.Element {
     }, [isSmDown]);
 
     return (
-        <RoomContext.Provide>
-            <WhiteboardContextProvider>
-                <Layout
-                    isTeacher={teacher}
-                    openDrawer={openDrawer}
-                    handleOpenDrawer={handleOpenDrawer}
-                    contentIndexState={{ contentIndex, setContentIndex }}
-                    interactiveModeState={{ interactiveMode, setInteractiveMode }}
-                    streamIdState={{ streamId, setStreamId }}
-                    numColState={numColState}
-                    setNumColState={setNumColState}
-                    >
-                    {
-                        teacher
-                        ? <Teacher
-                            openDrawer={openDrawer}
-                            handleOpenDrawer={handleOpenDrawer}
-                            contentIndexState={{ contentIndex, setContentIndex }}
-                            interactiveModeState={{ interactiveMode, setInteractiveMode }}
-                            streamIdState={{ streamId, setStreamId }}
-                            numColState={numColState}
-                        />
-                        : <Student />
-                    }
-                </Layout>
-            </WhiteboardContextProvider>
-        </RoomContext.Provide>
+        <WhiteboardContextProvider>
+            <Layout
+                isTeacher={teacher}
+                openDrawer={openDrawer}
+                handleOpenDrawer={handleOpenDrawer}
+                contentIndexState={{ contentIndex, setContentIndex }}
+                interactiveModeState={{ interactiveMode, setInteractiveMode }}
+                streamIdState={{ streamId, setStreamId }}
+                numColState={numColState}
+                setNumColState={setNumColState}
+                >
+                {
+                    teacher
+                    ? <Teacher
+                        openDrawer={openDrawer}
+                        handleOpenDrawer={handleOpenDrawer}
+                        contentIndexState={{ contentIndex, setContentIndex }}
+                        interactiveModeState={{ interactiveMode, setInteractiveMode }}
+                        streamIdState={{ streamId, setStreamId }}
+                        numColState={numColState}
+                    />
+                    : <Student />
+                }
+            </Layout>
+        </WhiteboardContextProvider>
     );
 }
 
@@ -114,6 +113,7 @@ const SUB_ROOM = gql`
             leave { id },
             session { webRTC { sessionId, description, ice, stream { name, streamId } } },
             mute { sessionId, audio, video },
+            trophy { from, user, kind },
         }
     }
 `;
@@ -132,7 +132,7 @@ export class RoomContext {
                 if (!subscriptionData) { return; }
                 if (!subscriptionData.data) { return; }
                 if (!subscriptionData.data.room) { return; }
-                const { message, content, join, leave, session, mute } = subscriptionData.data.room;
+                const { message, content, join, leave, session, mute, trophy } = subscriptionData.data.room;
                 if (message) { ref.current.addMessage(message); }
                 if (content) { ref.current.setContent(content); }
                 if (join) { 
@@ -144,6 +144,7 @@ export class RoomContext {
                 if (leave) { ref.current.userLeave(leave) }
                 if (session && session.webRTC) { webrtc.notification(session.webRTC); }
                 if (mute) { webrtc.mute(mute.sessionId, mute.audio, mute.video); }
+                if (trophy) { ref.current.emitter.emit("trophy",trophy); }
             },
             variables: { roomId, name }
         });
@@ -190,4 +191,6 @@ export class RoomContext {
         this.users.delete(leave.id);
         this.rerender()
     }
+
+    public emitter = new EventEmitter()
 }
