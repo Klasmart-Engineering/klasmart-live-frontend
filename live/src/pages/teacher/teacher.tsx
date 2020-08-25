@@ -7,7 +7,7 @@ import CardActions from "@material-ui/core/CardActions";
 import React, { useEffect, useState, useContext, useRef } from "react";
 import { FormattedMessage } from "react-intl";
 import { RecordedIframe } from "../../components/recordediframe";
-import { Session, Content, ContentIndexState, InteractiveModeState, StreamIdState } from "../../room";
+import { Session, Content, ContentIndexState, InteractiveModeState, StreamIdState, RoomContext } from "../../room";
 import { Theme, Card, useTheme, CardContent, Hidden } from "@material-ui/core";
 import { PreviewPlayer } from "../../components/preview-player";
 import { Stream } from "../../webRTCState";
@@ -66,8 +66,6 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface Props {
-    content: Content;
-    users: Map<string, Session>;
     openDrawer: boolean;
     handleOpenDrawer: (open?: boolean) => void;
     contentIndexState: ContentIndexState;
@@ -79,9 +77,10 @@ interface Props {
 export function Teacher(props: Props): JSX.Element {
     const { roomId, sessionId, materials, name } = useContext(UserContext);
     const screenShare = useContext(ScreenShareContext);
+    const { content, users } = RoomContext.Consume()
 
     const classes = useStyles();
-    const { content, users, openDrawer, handleOpenDrawer, contentIndexState, interactiveModeState, streamIdState, numColState } = props;
+    const { openDrawer, handleOpenDrawer, contentIndexState, interactiveModeState, streamIdState, numColState } = props;
 
     const { streamId, setStreamId } = streamIdState;
     const { interactiveMode } = interactiveModeState;
@@ -133,7 +132,7 @@ export function Teacher(props: Props): JSX.Element {
 
     return (
         <div ref={rootDivRef} className={classes.root}>
-            {content.type === "Activity" ?
+            {content && content.type === "Activity" ?
                 <>
                     <Typography variant="caption" color="textSecondary" gutterBottom>
                         <FormattedMessage id="student_mode" />
