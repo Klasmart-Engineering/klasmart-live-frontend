@@ -64,7 +64,7 @@
     "eventemitter3": "^4.0.5",
     "graphql": "^15.1.0",
     "graphql-request": "^2.0.0",
-    "iframe-resizer-react": "git+https://github.com/lgiraudel/iframe-resizer-react.git#patch-1",
+    "iframe-resizer-react": "^1.0.4",
     "jwt-decode": "^2.2.0",
     "node-source-han-sans-sc": "^1.1.0-2.001R",
     "query-string": "^6.13.0",

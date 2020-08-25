@@ -15,6 +15,12 @@ import BlueCatSpinner from "../assets/img/spinner/blue_cat_spinner.gif"
 import GhostSpinner from "../assets/img/spinner/ghost_spinner.gif"
 import PigSpinner from "../assets/img/spinner/pig_spinner.gif"
 
+interface NewProps extends IframeResizer.IframeResizerProps{
+    forwardRef: any
+}
+
+const IframeResizerNew = IframeResizer as React.FC<NewProps>
+
 const SPINNER = [CatSpinner, BlueCatSpinner, PigSpinner];
 
 import { Refresh as RefreshIcon } from "@styled-icons/material/Refresh";
@@ -204,7 +210,7 @@ export function RecordedIframe(props: Props): JSX.Element {
                     </Grid>
                 </Grid>
             </Dialog>
-            <IframeResizer
+            <IframeResizerNew
                 // log
                 id="recordediframe"
                 src={contentId}
@@ -226,6 +232,7 @@ export function RecordedIframe(props: Props): JSX.Element {
                     // As long as it is the <Whiteboard />'s children, it cannot be centered with margin: "0 auto".
                 }}
                 key={key}
+                checkOrigin={false}
             />
         </React.Fragment>
     );
