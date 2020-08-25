@@ -5,7 +5,7 @@ import Grid from "@material-ui/core/Grid";
 import React, { useState, useEffect, useContext, useRef } from "react";
 import { FormattedMessage } from "react-intl";
 import { UserContext } from "../../entry";
-import { Content, Session } from "../../room";
+import { RoomContext } from "../../room";
 import { Whiteboard } from "../../whiteboard/components/Whiteboard";
 import WBToolbar from "../../whiteboard/components/Toolbar";
 import { webRTCContext, Stream } from "../../webRTCState";
@@ -41,13 +41,8 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-interface Props {
-    content: Content;
-    users: Map<string, Session>
-}
-
-export function Student(props: Props): JSX.Element {
-    const { content, users } = props;
+export function Student(): JSX.Element {
+    const { content, users } = RoomContext.Consume();
     const classes = useStyles();
 
     const { name } = useContext(UserContext);
@@ -64,8 +59,7 @@ export function Student(props: Props): JSX.Element {
         setRootDivHeight(rootDivRef.current.clientHeight);
     }, [rootDivRef]);
 
-    switch (content.type) {
-        case "Blank":
+    if(!content || content.type == "Blank") {
             return (
                 <div ref={rootDivRef} className={classes.root}>
                     <Grid item xs={12}>
@@ -86,6 +80,9 @@ export function Student(props: Props): JSX.Element {
                     </Grid>
                 </div>
             );
+    }
+
+    switch (content.type) {
         case "Stream":
             return (
                 <div ref={rootDivRef} id="player-container" className={classes.root}>
