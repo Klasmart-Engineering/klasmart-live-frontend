@@ -9,8 +9,8 @@ if (!(window as any).kidslooplive) {
   (window as any).kidslooplive = true
 
 
-  const POST_URL = `${window.location.origin}/graphql`
 
+  const POST_URL = `${process.env.ENDPOINT_GQL || window.location.origin}/graphql`
   const POST_EVENTS = `
   mutation postPageEvent($streamId: ID!, $pageEvents: [PageEventIn]) {
     postPageEvent(streamId: $streamId, pageEvents: $pageEvents)

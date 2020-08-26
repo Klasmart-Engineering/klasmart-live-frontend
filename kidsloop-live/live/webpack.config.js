@@ -1,3 +1,4 @@
+const webpack = require('webpack');
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
@@ -79,6 +80,7 @@ module.exports = {
     },
     devtool: "source-map",
     plugins: [
+        new webpack.EnvironmentPlugin(["NODE_ENV"], ["ENDPOINT_GQL"], ["ENDPOINT_H5P"], ["ENDPOINT_TEST_ASSETS_S3"], ["ENDPOINT_WEBSOCKET"], ["APP_GIT_REV"]),
         new HtmlWebpackPlugin({
             filename: "index.html",
             chunks: ["ui"],
