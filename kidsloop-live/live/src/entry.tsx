@@ -102,12 +102,12 @@ function parseToken() {
                 materials: materialsParam ? JSON.parse(materialsParam) : [
                     { __typename: MaterialTypename.Iframe, name: "Pairs", url: "/h5p/play/5ecf4e4b611e18398f7380ef" },
                     { __typename: MaterialTypename.Iframe, name: "Flashcards", url: "/h5p/play/5ed05dd1611e18398f7380f4" },
-                    { __typename: MaterialTypename.Video, name: "Video", url: "./test_video.mp4" },
-                    { __typename: MaterialTypename.Audio, name: "Audio", url: "./test_audio.m4a" },
-                    { __typename: MaterialTypename.Image, name: "Portrait Image", url: "./test_image_portrait.jpg" },
-                    { __typename: MaterialTypename.Image, name: "Landscape Image", url: "./test_image_landscape.jpg" },
-                    { name: "Pairs - Legacy", url: "/h5p/play/5ecf4e4b611e18398f7380ef" },
-                    { name: "Video - Legacy", video: "./test_video.mp4" },
+                    { __typename: MaterialTypename.Video, name: "Video", url: `${process.env.ENDPOINT_TEST_ASSETS_S3 || "."}/test_video.mp4` },
+                    { __typename: MaterialTypename.Audio, name: "Audio", url: `${process.env.ENDPOINT_TEST_ASSETS_S3 || "."}/test_audio.m4a` },
+                    { __typename: MaterialTypename.Image, name: "Portrait Image", url: `${process.env.ENDPOINT_TEST_ASSETS_S3 || "."}/test_image_portrait.jpg` },
+                    { __typename: MaterialTypename.Image, name: "Landscape Image", url: `${process.env.ENDPOINT_TEST_ASSETS_S3 || "."}/test_image_landscape.jpg` },
+                    { name: "Pairs - Legacy", url: `/h5p/play/5ecf4e4b611e18398f7380ef` },
+                    { name: "Video - Legacy", video: `${process.env.ENDPOINT_TEST_ASSETS_S3 || "."}/test_video.mp4` },
                 ],
             };
         }
