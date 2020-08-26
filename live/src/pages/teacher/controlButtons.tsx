@@ -14,10 +14,10 @@ import IconButton from "@material-ui/core/IconButton";
 import Divider from "@material-ui/core/Divider";
 import Tooltip from "@material-ui/core/Tooltip";
 
-import { Visibility as ViewIcon } from "@styled-icons/material/Visibility";
+import { Preview as ViewIcon } from "@styled-icons/material/Preview";
 import { HelpOutline as HelpIcon } from "@styled-icons/material/HelpOutline";
-import { PlayArrow as PlayIcon } from "@styled-icons/material/PlayArrow";
-import { Stop as StopIcon } from "@styled-icons/material/Stop";
+import { PresentToAll as PresentIcon } from "@styled-icons/material/PresentToAll";
+import { Videocam as VideoIcon } from "@styled-icons/material/Videocam";
 import { ScreenShare as ScreenShareIcon } from "@styled-icons/material/ScreenShare";
 import { StopScreenShare as StopScreenShareIcon } from "@styled-icons/material/StopScreenShare";
 import { Refresh as RefreshIcon } from "@styled-icons/material/Refresh";
@@ -145,7 +145,7 @@ export function ControlButtons({ interactiveModeState, disablePresent, disableAc
                             className={!interactiveMode ? selectedButton : ""}
                             value={0}
                         >
-                            <StopIcon size="1.5rem" />
+                            <VideoIcon size="1.5rem" />
                         </ToggleButton>
                     </StyledTooltip>
                     <StyledTooltip
@@ -163,7 +163,7 @@ export function ControlButtons({ interactiveModeState, disablePresent, disableAc
                             disabled={disablePresent}
                             value={1}
                         >
-                            <PlayIcon size="1.5rem" />
+                            <PresentIcon size="1.5rem" />
                         </ToggleButton>
                     </StyledTooltip>
                     <StyledTooltip
@@ -172,7 +172,7 @@ export function ControlButtons({ interactiveModeState, disablePresent, disableAc
                         onClose={() => toggleTooltip(false, false, false, false)}
                         onOpen={() => toggleTooltip(false, false, true, false)}
                         placement={isSmDown ? "top" : "left"}
-                        title={<FormattedMessage id="student_mode" />}
+                        title={<FormattedMessage id="live_buttonObserve" />}
                     >
                         <ToggleButton
                             aria-label="student mode"
