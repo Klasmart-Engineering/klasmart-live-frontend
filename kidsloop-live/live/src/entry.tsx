@@ -1,5 +1,6 @@
 import React, { createContext, useState, useMemo, useEffect } from "react";
 import * as Sentry from '@sentry/react';
+import { RewriteFrames } from '@sentry/integrations';
 import { render } from "react-dom";
 import { RawIntlProvider, FormattedMessage } from "react-intl";
 import { ApolloProvider } from "@apollo/react-hooks";
@@ -27,7 +28,8 @@ import { themeProvider } from "./themeProvider";
 Sentry.init({
     dsn: "https://9f4fca35be3b4b7ca970a126f26a5e54@o412774.ingest.sentry.io/5388813",
     environment: process.env.NODE_ENV || "not-specified",
-    release: 'kidsloop-live@' + process.env.npm_package_version,
+    release: process.env.APP_GIT_REV ? `${process.env.npm_package_version}@${process.env.APP_GIT_REV}` : 'kidsloop-live@' + process.env.npm_package_version,
+    integrations: [new RewriteFrames()]
 });
 
 const url = new URL(window.location.href)
@@ -54,7 +56,7 @@ export const sessionId = uuid();
 
 const authToken = AuthTokenProvider.retrieveToken();
 const wsLink = new WebSocketLink({
-    uri: `${window.location.protocol === "https:" ? "wss" : "ws"}://${window.location.host}/graphql`,
+    uri: process.env.ENDPOINT_WEBSOCKET || `${window.location.protocol === "https:" ? "wss" : "ws"}://${window.location.host}/graphql`,
     options: {
         reconnect: true,
         connectionParams: {
