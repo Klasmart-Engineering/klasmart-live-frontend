@@ -31,6 +31,7 @@ import { Settings as SettingsIcon } from "@styled-icons/material-twotone/Setting
 import { Close as CloseIcon } from "@styled-icons/material/Close";
 import { Grid as GridIcon } from "@styled-icons/evaicons-solid/Grid";
 import { ViewList as ListIcon } from "@styled-icons/material/ViewList";
+import { Share as ShareIcon } from "@styled-icons/material/Share";
 
 import { webRTCContext, Camera, GlobalCameraControl } from "../webRTCState";
 import { UserContext } from "../entry";
@@ -43,6 +44,10 @@ import { MaterialTypename } from "../lessonMaterialContext";
 import Lightswitch from "./lightswitch";
 import LanguageSelect from "./languageSelect";
 import MoreControls from "./moreControls";
+import TrophyControls from "./trophies/trophyControls";
+import StyledIcon from "./styled/icon";
+import Popover from "@material-ui/core/Popover";
+import CenterAlignChildren from "./centerAlignChildren";
 
 export const DRAWER_WIDTH = 380;
 
@@ -216,6 +221,15 @@ function TabPanel(props: TabPanelProps) {
     const classes = useStyles();
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
+    const { teacher } = useContext(UserContext);
+    const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setAnchorEl(event.currentTarget);
+    }
+    const handleClose = () => { setAnchorEl(null); }
+    const open = Boolean(anchorEl);
+    const id = open ? "share-popover" : undefined;
 
     return (
         <>
@@ -228,7 +242,14 @@ function TabPanel(props: TabPanelProps) {
             >
                 <Grid item className={classes.toolbar}>
                     <Typography variant="body1" style={{ fontSize: isSmDown ? "unset" : "1rem" }}>
-                        <FormattedMessage id={tab.title} />
+                        <CenterAlignChildren>
+                            <FormattedMessage id={tab.title} />
+                            { teacher && tab.title === "title_participants" ?
+                                <IconButton aria-label="share popover" onClick={handleClick}>
+                                    <ShareIcon size="1rem" />
+                                </IconButton>: null
+                            }
+                        </CenterAlignChildren>
                     </Typography>
                     <IconButton aria-label="minimize drawer" onClick={() => handleOpenDrawer(false)}>
                         {/* <StyledIcon icon={<CloseIcon />} size="medium" /> */}
@@ -238,6 +259,22 @@ function TabPanel(props: TabPanelProps) {
                 <Divider />
                 <TabInnerContent contentIndexState={contentIndexState} title={tab.title} numColState={numColState} setNumColState={setNumColState} />
             </div>
+            <Popover
+                id={id}
+                open={open}
+                anchorEl={anchorEl}
+                onClose={handleClose}
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'center',
+                }}
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                }}
+            >
+                <InviteButton />
+            </Popover>
         </>
     );
 }
@@ -334,7 +371,6 @@ function TabInnerContent({ contentIndexState, title, numColState, setNumColState
             return (
                 <Grid container direction="row" justify="flex-start" alignItems="center" style={{ flex: 1 }}>
                     {teacher ? (isSmDown ? <>
-                        <InviteButton />
                         <GlobalCameraControl />
                     </> : <>
                             {selfUser.map(([id, session]) =>
@@ -347,7 +383,6 @@ function TabInnerContent({ contentIndexState, title, numColState, setNumColState
                                     square
                                 />
                             )}
-                            <InviteButton />
                             <GlobalCameraControl />
                         </>) : null}
                     {isSmDown ? null : <ToggleCameraViewMode isSmDown={isSmDown} setGridMode={setGridMode} />}

@@ -7,6 +7,7 @@ import { ContentCopy as CopyIcon } from "@styled-icons/material/ContentCopy";
 import { UserContext } from "../entry";
 import StyledTextField from "../components/styled/textfield"
 import Snackbar from "@material-ui/core/Snackbar";
+import Tooltip from "@material-ui/core/Tooltip";
 
 export default function InviteButton(): JSX.Element {
     const theme = useTheme();
@@ -31,33 +32,34 @@ export default function InviteButton(): JSX.Element {
                 alignItems="center"
                 item
                 xs={12}
-                style={{ flexGrow: 0, padding: theme.spacing(2, 2, 0, 2) }}
+                style={{ flexGrow: 0 }}
             >
-                <Grid item xs={10}>
-                    <StyledTextField
-                        fullWidth
-                        margin="dense"
-                        inputRef={textField}
-                        label={<FormattedMessage id="invite_students" />}
-                        value={url}
-                        onClick={(e) => { (e.target as HTMLInputElement).select(); }}
-                        InputProps={{ readOnly: true }}
-                        style={{ padding: 0 }}
-                    />
-                </Grid>
-                <Grid container justify="flex-end" item xs={2}>
-                    <IconButton
-                        aria-label="copy"
-                        onClick={() => {
-                            if (!textField.current) { return; }
-                            textField.current.select();
-                            document.execCommand("copy");
-                            toggleSnackbar(true);
-                        }}
-                    >
-                        <CopyIcon size="1.25rem" color="#0E78D5" />
-                    </IconButton>
-                </Grid>
+                <StyledTextField
+                    fullWidth
+                    margin="dense"
+                    label={<FormattedMessage id="invite_students" />}
+                    inputRef={textField}
+                    value={url}
+                    onClick={(e) => { (e.target as HTMLInputElement).select(); }}
+                    inputProps={{ style: { verticalAlign: "center", fontFamily: "monospace" } }}
+                    InputProps={{
+                        endAdornment:
+                            <Tooltip placement="bottom" title="Copy to clipboard">
+                                <IconButton
+                                    aria-label="copy"
+                                    onClick={() => {
+                                        if (!textField.current) { return; }
+                                        textField.current.select();
+                                        document.execCommand("copy");
+                                        toggleSnackbar(true);
+                                    }}
+                                >
+                                    <CopyIcon size="1rem" color="#0E78D5" />
+                                </IconButton>
+                            </Tooltip>,
+                        readOnly: true,
+                    }}
+                />
             </Grid>
             <Snackbar
                 anchorOrigin={{

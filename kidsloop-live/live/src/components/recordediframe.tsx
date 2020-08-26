@@ -10,10 +10,13 @@ import { DRAWER_WIDTH } from "./layout";
 import Typography from "@material-ui/core/Typography";
 import StyledFAB from "./styled/fabButton";
 
-import CatSpinner from "../assets/img/spinner/cat_spinner.gif"
-import BlueCatSpinner from "../assets/img/spinner/blue_cat_spinner.gif"
+import CurlySpinner1 from "../assets/img/spinner/curly1_spinner.gif"
+import CurlySpinner2 from "../assets/img/spinner/curly2_spinner.gif"
+import EccoSpinner1 from "../assets/img/spinner/ecco1_spinner.gif"
+import EccoSpinner2 from "../assets/img/spinner/ecco2_spinner.gif"
+import JessSpinner1 from "../assets/img/spinner/jess1_spinner.gif"
+import MimiSpinner1 from "../assets/img/spinner/mimi1_spinner.gif"
 import GhostSpinner from "../assets/img/spinner/ghost_spinner.gif"
-import PigSpinner from "../assets/img/spinner/pig_spinner.gif"
 
 interface NewProps extends IframeResizer.IframeResizerProps{
     forwardRef: any
@@ -21,7 +24,7 @@ interface NewProps extends IframeResizer.IframeResizerProps{
 
 const IframeResizerNew = IframeResizer as React.FC<NewProps>
 
-const SPINNER = [CatSpinner, BlueCatSpinner, PigSpinner];
+const SPINNER = [CurlySpinner1, CurlySpinner2, EccoSpinner1, EccoSpinner2, JessSpinner1, MimiSpinner1];
 
 import { Refresh as RefreshIcon } from "@styled-icons/material/Refresh";
 import useMediaQuery from "@material-ui/core/useMediaQuery";

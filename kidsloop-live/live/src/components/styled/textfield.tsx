@@ -62,13 +62,6 @@ export default function StyledTextField(props: Props) {
                         root: classes.cssLabel,
                     },
                 }}
-                InputProps={{
-                    classes: {
-                        focused: classes.cssFocused,
-                        notchedOutline: classes.notchedOutline,
-                        root: classes.cssOutlinedInput,
-                    },
-                }}
                 type={type}
                 variant="outlined"
             />
