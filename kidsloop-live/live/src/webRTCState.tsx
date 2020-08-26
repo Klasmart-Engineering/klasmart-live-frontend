@@ -580,62 +580,62 @@ export function GlobalCameraControl(): JSX.Element {
                     </Typography>
                 </Grid>
             </Grid>
-            <Grid container item xs={4} md={4} style={{ textAlign: "center" }}>
+            <Grid container item xs={3} style={{ textAlign: "center" }}>
                 <Grid item xs={12}>
                     <IconButton
                         color={"primary"}
                         style={{ backgroundColor: "#f6fafe" }}
                         onClick={() => { rewardTrophy(sessionId, "star"); }}
                     >
-                        <StarIcon size="1.5rem" />
+                        <StarIcon size="1rem" />
                     </IconButton>
                 </Grid>
                 <Grid item xs={12}>
                     <Typography variant="caption" color="textSecondary">
-                        Reward Star
+                        Give Star
                     </Typography>
                 </Grid>
             </Grid>
-            <Grid container item xs={4} md={4} style={{ textAlign: "center" }}>
+            <Grid container item xs={3} style={{ textAlign: "center" }}>
                 <Grid item xs={12}>
                     <IconButton
                         color={"primary"}
                         style={{ backgroundColor: "#f6fafe" }}
                         onClick={() => { rewardTrophy(sessionId, "trophy"); }}
                     >
-                        <TrophyIcon size="1.5rem" />
+                        <TrophyIcon size="1rem" />
                     </IconButton>
                 </Grid>
                 <Grid item xs={12}>
                     <Typography variant="caption" color="textSecondary">
-                        Reward Trophy
+                        Give Trophy
                     </Typography>
                 </Grid>
             </Grid>
-            <Grid container item xs={4} md={4} style={{ textAlign: "center" }}>
+            <Grid container item xs={3} style={{ textAlign: "center" }}>
                 <Grid item xs={12}>
                     <IconButton
                         color={"primary"}
                         style={{ backgroundColor: "#f6fafe" }}
                         onClick={() => { rewardTrophy(sessionId, "heart"); }}
                     >
-                        <HeartIcon size="1.5rem" />
+                        <HeartIcon size="1rem" />
                     </IconButton>
                 </Grid>
                 <Grid item xs={12}>
                     <Typography variant="caption" color="textSecondary">
-                        Reward Heart
+                        Give Heart
                     </Typography>
                 </Grid>
             </Grid>
-            <Grid container item xs={4} md={4} style={{ textAlign: "center" }}>
+            <Grid container item xs={3} style={{ textAlign: "center" }}>
                 <Grid item xs={12}>
                     <IconButton
                         color={"primary"}
                         style={{ backgroundColor: "#f6fafe" }}
                         onClick={() => { rewardTrophy(sessionId, getRandomKind(["awesome", "looks_great", "well_done", "great_job"])); }}
                     >
-                        <EncourageIcon size="1.5rem" />
+                        <EncourageIcon size="1rem" />
                     </IconButton>
                 </Grid>
                 <Grid item xs={12}>
