@@ -62,8 +62,8 @@ const messages: Record<string, string> = {
     turn_on_mic: "Turn on microphone",
 
     browser_guide_title: "Kidsloop Live supports Chrome only.",
+    browser_guide_title_macos: "Kidsloop Live supports Safari and Chrome only on Mac OS.",
     browser_guide_title_ios: "Kidsloop Live supports Safari only on iOS.",
-    browser_guide_body: "Please download {browserName} browser and try again.",
-
+    browser_guide_body: "Please download a supported browser and try again.",
 };
 export default messages;
