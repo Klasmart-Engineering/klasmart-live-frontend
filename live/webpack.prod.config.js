@@ -1,6 +1,9 @@
 const webpack = require('webpack')
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const SentryWebpackPlugin = require("@sentry/webpack-plugin")
+
+require('dotenv').config()
 
 module.exports = {
   mode: 'production',
@@ -89,6 +92,11 @@ module.exports = {
       filename: 'player.html',
       chunks: ['player'],
       template: 'src/player.html'
-    })
+    }),
+    new SentryWebpackPlugin({
+      include: ".",
+      ignoreFile: ".sentrycliignore",
+      ignore: ["node_modules", "webpack.config.js", "webpack.prod.config.js"],
+    }),    
   ]
 }
