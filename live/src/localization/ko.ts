@@ -65,9 +65,9 @@ const messages: Record<string, string> = {
     turn_off_mic: "마이크 끄기",
     turn_on_mic: "마이크 켜기",
 
-    browser_guide_title: "Kidsloop Live는 Chrome만 지원합니다.",
-    browser_guide_title_ios: "Kidsloop Live는 iOS에서 Safari만 지원합니다.",
-    browser_guide_body: "{browserName} 브라우저를 다운로드하고 다시 시도해주세요.",
-
+    browser_guide_title: "Kidsloop Live는 Chrome 브라우저만을 지원합니다.",
+    browser_guide_title_macos: "Kidsloop Live는 Mac OS에서 Safari와 Chrome 브라우저를 지원합니다.",
+    browser_guide_title_ios: "Kidsloop Live는 iOS에서 Safari 브라우저만을 지원합니다.",
+    browser_guide_body: "지원하는 브라우저를 다운로드 받고 다시 시도해 주세요.",
 };
 export default messages;
