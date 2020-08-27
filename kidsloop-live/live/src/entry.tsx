@@ -1,6 +1,5 @@
 import React, { createContext, useState, useMemo } from "react";
 import * as Sentry from '@sentry/react';
-import { RewriteFrames } from '@sentry/integrations';
 import { render } from "react-dom";
 import { RawIntlProvider, FormattedMessage } from "react-intl";
 import { ApolloProvider } from "@apollo/react-hooks";
@@ -38,8 +37,6 @@ import SafariLogo from "./assets/img/browser/safari_logo.png";
 Sentry.init({
     dsn: "https://9f4fca35be3b4b7ca970a126f26a5e54@o412774.ingest.sentry.io/5388813",
     environment: process.env.NODE_ENV || "not-specified",
-    release: process.env.APP_GIT_REV ? `${process.env.npm_package_version}@${process.env.APP_GIT_REV}` : 'kidsloop-live@' + process.env.npm_package_version,
-    integrations: [new RewriteFrames()]
 });
 
 export const sessionId = uuid();
