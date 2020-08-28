@@ -1,8 +1,27 @@
 import styled from "styled-components"
 import { StyledIcon } from "styled-icons/types"
-import React from "react";
-import { useTheme } from "@material-ui/core/styles";
+import React, { useState, useEffect } from "react";
+import { useTheme, Theme } from "@material-ui/core/styles";
 import Tooltip, { TooltipProps } from "@material-ui/core/Tooltip";
+
+// How to use props in styled-component: https://styled-components.com/docs/advanced
+interface BaseIconProps {
+    theme: Theme;
+    size: "small" | "medium" | "large" | "xlarge" | string;
+    color?: string;
+}
+
+const BaseIcon = styled.span`
+    color: ${(props: BaseIconProps) => props.color || "#000"};
+    width: ${(props: BaseIconProps) => props.size || "1rem"};
+    height: ${(props: BaseIconProps) => props.size || "1rem"};
+    display: inline-grid;
+    &:hover {
+        color: ${(props: BaseIconProps) => props.theme.palette.type === "light" ? "#1B365D" : "#FFF"};
+        -webkit-transition: all .4s ease;
+        transition: all .4s ease;
+    }
+`
 
 interface Props {
     className?: string;
@@ -33,33 +52,27 @@ export default function StyledIcon(props: Props) {
         }
     }
 
+    const [determinedSize, setDeterminedSize] = useState("1rem");
+    useEffect(() => {
+        const size = getSize();
+        setDeterminedSize(size);
+    }, [])
 
-    const BaseIcon = styled.span`
-        color: ${color ? color : "#000"};
-        display: inline-grid;
-        height: ${() => getSize()};
-        width: ${() => getSize()};
-        &:hover {
-            color: ${theme.palette.type === "light" ? "#1B365D" : "#FFF"};
-            -webkit-transition: all .4s ease;
-            transition: all .4s ease;
-        }
-    `
-
-    return (
-        tooltip ?
-            <Tooltip
-                aria-label={tooltip["aria-label"]}
-                arrow
-                placement={tooltip.placement || "left"}
-                title={tooltip.title || ""}
-            >
-                <BaseIcon>
-                    {icon}
-                </BaseIcon>
-            </Tooltip> :
-            <BaseIcon>
+    return (tooltip ? (
+        <Tooltip
+            aria-label={tooltip["aria-label"]}
+            arrow
+            placement={tooltip.placement || "left"}
+            title={tooltip.title || ""}
+        >
+            <BaseIcon theme={theme} color={color} size={determinedSize}>
                 {icon}
             </BaseIcon>
+        </Tooltip>
+    ) : (
+            <BaseIcon theme={theme} color={color} size={determinedSize}>
+                {icon}
+            </BaseIcon>
+        )
     );
 }
