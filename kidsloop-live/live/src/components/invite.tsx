@@ -1,4 +1,4 @@
-import React, { useContext, useMemo, useRef, useState } from "react";
+import React, { useContext, useMemo, useRef, useState, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useTheme } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
@@ -23,6 +23,17 @@ export default function InviteButton(): JSX.Element {
 
     const textField = useRef<HTMLInputElement>(null);
 
+    const selectShareLinkText = async (e: MouseEvent) => {
+        const inputEl = e.target as HTMLInputElement;
+        inputEl.select();
+    }
+
+    useEffect(() => {
+        if (!textField.current) { return; }
+        textField.current.addEventListener("click", selectShareLinkText);
+        return textField.current.removeEventListener("click", selectShareLinkText);
+    }, [textField.current])
+
     return (
         <>
             <Grid
@@ -40,7 +51,6 @@ export default function InviteButton(): JSX.Element {
                     label={<FormattedMessage id="invite_students" />}
                     inputRef={textField}
                     value={url}
-                    onClick={(e) => { (e.target as HTMLInputElement).select(); }}
                     inputProps={{ style: { verticalAlign: "center", fontFamily: "monospace" } }}
                     InputProps={{
                         endAdornment:
