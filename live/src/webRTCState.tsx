@@ -450,7 +450,7 @@ export function Camera(props: {
                     </Typography>
                 }
             </Paper>
-            {mediaStream && controls && session ? <CameraOverlay session={session} miniMode={miniMode} /> : null}
+            {controls && session ? <CameraOverlay mediaStream={mediaStream} session={session} miniMode={miniMode} /> : null}
         </div>
     );
 }
@@ -800,7 +800,8 @@ const useStyles = makeStyles((theme: Theme) =>
     })
 );
 
-export default function CameraOverlay({ session, miniMode, global }: {
+export default function CameraOverlay({ mediaStream, session, miniMode, global }: {
+    mediaStream: MediaStream | undefined;
     session: Session;
     miniMode?: boolean;
     global?: boolean;
@@ -892,72 +893,74 @@ export default function CameraOverlay({ session, miniMode, global }: {
                     } : undefined}
                 >
                     <Grid container justify="center" item>
-                        <Tooltip
-                            arrow
-                            aria-label="camera control button tooltip"
-                            placement={"top"}
-                            title={states.getVideoStreamState(session.id)
-                                ? <FormattedMessage id="turn_off_camera" />
-                                : <FormattedMessage id="turn_on_camera" />
-                            }
-                        >
-                            <IconButton
-                                aria-label="camera control button"
-                                onClick={toggleVideoState}
-                                size={isSmUp ? "medium" : "small"}
-                                className={states.getVideoStreamState(session.id) ? iconBtn : iconOffBtn}
-                                style={miniMode ? {
-                                    margin: theme.spacing(1),
-                                    padding: theme.spacing(0.5)
-                                } : undefined}
-                            >
-                                {states.getVideoStreamState(session.id) ?
-                                    <StyledIcon
-                                        icon={<CameraIcon className={icon} />}
-                                        size={isSmUp ? "medium" : "small"}
-                                        color="white"
-                                    /> :
-                                    <StyledIcon
-                                        icon={<CameraOffIcon className={iconOff} />}
-                                        size={isSmUp ? "medium" : "small"}
-                                        color="red"
-                                    />
+                        {mediaStream ? <>
+                            <Tooltip
+                                arrow
+                                aria-label="camera control button tooltip"
+                                placement={"top"}
+                                title={states.getVideoStreamState(session.id)
+                                    ? <FormattedMessage id="turn_off_camera" />
+                                    : <FormattedMessage id="turn_on_camera" />
                                 }
-                            </IconButton>
-                        </Tooltip>
-                        <Tooltip
-                            arrow
-                            aria-label="mic control button tooltip"
-                            placement="top"
-                            title={states.getAudioStreamState(session.id)
-                                ? <FormattedMessage id="turn_off_mic" />
-                                : <FormattedMessage id="turn_on_mic" />
-                            }
-                        >
-                            <IconButton
-                                aria-label="mic control button"
-                                onClick={toggleAudioState}
-                                size={isSmUp ? "medium" : "small"}
-                                className={states.getAudioStreamState(session.id) ? iconBtn : iconOffBtn}
-                                style={miniMode ? {
-                                    margin: theme.spacing(1),
-                                    padding: theme.spacing(0.5)
-                                } : undefined}
                             >
-                                {states.getAudioStreamState(session.id) ?
-                                    <StyledIcon
-                                        icon={<MicIcon className={icon} />}
-                                        size={isSmUp ? "medium" : "small"}
-                                        color="white"
-                                    /> :
-                                    <StyledIcon
-                                        icon={<MicOffIcon className={iconOff} />}
-                                        size={isSmUp ? "medium" : "small"}
-                                        color="red"
-                                    />
+                                <IconButton
+                                    aria-label="camera control button"
+                                    onClick={toggleVideoState}
+                                    size={isSmUp ? "medium" : "small"}
+                                    className={states.getVideoStreamState(session.id) ? iconBtn : iconOffBtn}
+                                    style={miniMode ? {
+                                        margin: theme.spacing(1),
+                                        padding: theme.spacing(0.5)
+                                    } : undefined}
+                                >
+                                    {states.getVideoStreamState(session.id) ?
+                                        <StyledIcon
+                                            icon={<CameraIcon className={icon} />}
+                                            size={isSmUp ? "medium" : "small"}
+                                            color="white"
+                                        /> :
+                                        <StyledIcon
+                                            icon={<CameraOffIcon className={iconOff} />}
+                                            size={isSmUp ? "medium" : "small"}
+                                            color="red"
+                                        />
+                                    }
+                                </IconButton>
+                            </Tooltip>
+                            <Tooltip
+                                arrow
+                                aria-label="mic control button tooltip"
+                                placement="top"
+                                title={states.getAudioStreamState(session.id)
+                                    ? <FormattedMessage id="turn_off_mic" />
+                                    : <FormattedMessage id="turn_on_mic" />
                                 }
-                            </IconButton>
-                        </Tooltip>
+                            >
+                                <IconButton
+                                    aria-label="mic control button"
+                                    onClick={toggleAudioState}
+                                    size={isSmUp ? "medium" : "small"}
+                                    className={states.getAudioStreamState(session.id) ? iconBtn : iconOffBtn}
+                                    style={miniMode ? {
+                                        margin: theme.spacing(1),
+                                        padding: theme.spacing(0.5)
+                                    } : undefined}
+                                >
+                                    {states.getAudioStreamState(session.id) ?
+                                        <StyledIcon
+                                            icon={<MicIcon className={icon} />}
+                                            size={isSmUp ? "medium" : "small"}
+                                            color="white"
+                                        /> :
+                                        <StyledIcon
+                                            icon={<MicOffIcon className={iconOff} />}
+                                            size={isSmUp ? "medium" : "small"}
+                                            color="red"
+                                        />
+                                    }
+                                </IconButton>
+                            </Tooltip>
+                        </> : null}
 
                         {(!teacher || isSelf || miniMode) ? null :
                             <MoreControls session={session} selfUserId={mySessionId} forOverlay={true} />
