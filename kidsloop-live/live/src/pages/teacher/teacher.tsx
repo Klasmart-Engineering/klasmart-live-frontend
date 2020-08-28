@@ -193,6 +193,7 @@ export function Teacher(props: Props): JSX.Element {
                                                         setStreamId={setStreamId}
                                                         parentWidth={rootDivWidth}
                                                         parentHeight={rootDivHeight}
+                                                        openDrawer={openDrawer}
                                                     /> : undefined
                                                 : undefined : //Unknown Material
                                     undefined //No Material
