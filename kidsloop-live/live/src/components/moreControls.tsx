@@ -97,7 +97,15 @@ export default function MoreControls({ session, selfUserId, forOverlay }: {
             onClose={handleMoreClose}
             MenuListProps={{ onMouseLeave: handleMoreClose }}
         >
-            <PermissionControls selfUserId={selfUserId} otherUserId={session.id} />
+            <List
+                subheader={
+                    <ListSubheader component="div" id="nested-list-subheader">
+                        Whiteboard
+                </ListSubheader>
+                }
+            >
+                <PermissionControls selfUserId={selfUserId} otherUserId={session.id} miniMode={false} />
+            </List>
             <List
                 subheader={
                     <ListSubheader component="div" id="nested-list-subheader">
