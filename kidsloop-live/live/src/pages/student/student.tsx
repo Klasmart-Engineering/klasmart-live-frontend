@@ -41,7 +41,9 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-export function Student(): JSX.Element {
+export function Student({ openDrawer }: {
+    openDrawer: boolean
+}): JSX.Element {
     const { content, users } = RoomContext.Consume();
     const classes = useStyles();
 
@@ -59,27 +61,27 @@ export function Student(): JSX.Element {
         setRootDivHeight(rootDivRef.current.clientHeight);
     }, [rootDivRef]);
 
-    if(!content || content.type == "Blank") {
-            return (
-                <div ref={rootDivRef} className={classes.root}>
-                    <Grid item xs={12}>
-                        <Paper elevation={4} className={classes.paperContainer}>
-                            <Grid
-                                container
-                                direction="row"
-                                justify="space-between"
-                                alignItems="center"
-                                style={{ height: "100%" }}
-                            >
-                                <Grid item xs={12}>
-                                    <Typography><FormattedMessage id={"hello"} values={{ name }} /></Typography>
-                                    <Typography><FormattedMessage id={"waiting_for_class"} /></Typography>
-                                </Grid>
+    if (!content || content.type == "Blank") {
+        return (
+            <div ref={rootDivRef} className={classes.root}>
+                <Grid item xs={12}>
+                    <Paper elevation={4} className={classes.paperContainer}>
+                        <Grid
+                            container
+                            direction="row"
+                            justify="space-between"
+                            alignItems="center"
+                            style={{ height: "100%" }}
+                        >
+                            <Grid item xs={12}>
+                                <Typography><FormattedMessage id={"hello"} values={{ name }} /></Typography>
+                                <Typography><FormattedMessage id={"waiting_for_class"} /></Typography>
                             </Grid>
-                        </Paper>
-                    </Grid>
-                </div>
-            );
+                        </Grid>
+                    </Paper>
+                </Grid>
+            </div>
+        );
     }
 
     switch (content.type) {
@@ -107,6 +109,7 @@ export function Student(): JSX.Element {
                                 setStreamId={setStreamId}
                                 parentWidth={rootDivWidth}
                                 parentHeight={rootDivHeight}
+                                openDrawer={openDrawer}
                             /> : undefined}
                         {/* <WBToolbar /> */}
                     </Whiteboard>

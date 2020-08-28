@@ -18,7 +18,7 @@ import JessSpinner1 from "../assets/img/spinner/jess1_spinner.gif"
 import MimiSpinner1 from "../assets/img/spinner/mimi1_spinner.gif"
 import GhostSpinner from "../assets/img/spinner/ghost_spinner.gif"
 
-interface NewProps extends IframeResizer.IframeResizerProps{
+interface NewProps extends IframeResizer.IframeResizerProps {
     forwardRef: any
 }
 
@@ -40,6 +40,7 @@ export interface Props {
     setStreamId: React.Dispatch<React.SetStateAction<string | undefined>>;
     parentWidth: number;
     parentHeight: number;
+    openDrawer: boolean;
 }
 
 export function RecordedIframe(props: Props): JSX.Element {
@@ -48,7 +49,7 @@ export function RecordedIframe(props: Props): JSX.Element {
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
 
     const { roomId } = useContext(UserContext);
-    const { contentId, setStreamId, parentWidth, parentHeight } = props;
+    const { contentId, setStreamId, parentWidth, parentHeight, openDrawer } = props;
     const [sendStreamId] = useMutation(SET_STREAMID);
 
     const [widthHeight, setWidthHeight] = useState<{
@@ -169,8 +170,8 @@ export function RecordedIframe(props: Props): JSX.Element {
                     style: { backgroundColor: "rgba(255,255,255,0.6)" },
                 }}
                 style={{
-                    marginRight: isSmDown ? "" : DRAWER_WIDTH,
-                    zIndex: theme.zIndex.drawer - 1
+                    paddingRight: (isSmDown || !openDrawer) ? "" : DRAWER_WIDTH,
+                    zIndex: 997
                 }}
             >
                 <Grid
