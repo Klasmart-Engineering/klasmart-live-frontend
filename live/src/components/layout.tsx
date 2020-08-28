@@ -44,8 +44,6 @@ import { MaterialTypename } from "../lessonMaterialContext";
 import Lightswitch from "./lightswitch";
 import LanguageSelect from "./languageSelect";
 import MoreControls from "./moreControls";
-import TrophyControls from "./trophies/trophyControls";
-import StyledIcon from "./styled/icon";
 import Popover from "@material-ui/core/Popover";
 import CenterAlignChildren from "./centerAlignChildren";
 
@@ -244,10 +242,10 @@ function TabPanel(props: TabPanelProps) {
                     <Typography variant="body1" style={{ fontSize: isSmDown ? "unset" : "1rem" }}>
                         <CenterAlignChildren>
                             <FormattedMessage id={tab.title} />
-                            { teacher && tab.title === "title_participants" ?
+                            {teacher && tab.title === "title_participants" ?
                                 <IconButton aria-label="share popover" onClick={handleClick}>
                                     <ShareIcon size="1rem" />
-                                </IconButton>: null
+                                </IconButton> : null
                             }
                         </CenterAlignChildren>
                     </Typography>
@@ -583,7 +581,7 @@ interface Props {
 }
 
 export default function Layout(props: Props): JSX.Element {
-    const {users, messages} = RoomContext.Consume()
+    const { users, messages } = RoomContext.Consume()
     const { children, isTeacher, openDrawer, handleOpenDrawer, contentIndexState, interactiveModeState, streamIdState, numColState, setNumColState } = props;
     const classes = useStyles();
     const theme = useTheme();
