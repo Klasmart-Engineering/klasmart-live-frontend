@@ -85,18 +85,18 @@ export function Room({ teacher }: Props): JSX.Element {
                 streamIdState={{ streamId, setStreamId }}
                 numColState={numColState}
                 setNumColState={setNumColState}
-                >
+            >
                 {
                     teacher
-                    ? <Teacher
-                        openDrawer={openDrawer}
-                        handleOpenDrawer={handleOpenDrawer}
-                        contentIndexState={{ contentIndex, setContentIndex }}
-                        interactiveModeState={{ interactiveMode, setInteractiveMode }}
-                        streamIdState={{ streamId, setStreamId }}
-                        numColState={numColState}
-                    />
-                    : <Student />
+                        ? <Teacher
+                            openDrawer={openDrawer}
+                            handleOpenDrawer={handleOpenDrawer}
+                            contentIndexState={{ contentIndex, setContentIndex }}
+                            interactiveModeState={{ interactiveMode, setInteractiveMode }}
+                            streamIdState={{ streamId, setStreamId }}
+                            numColState={numColState}
+                        />
+                        : <Student openDrawer={openDrawer} />
                 }
             </Layout>
         </WhiteboardContextProvider>
@@ -118,12 +118,12 @@ const SUB_ROOM = gql`
     }
 `;
 
-const context = createContext<{value: RoomContext}>(undefined as any);
+const context = createContext<{ value: RoomContext }>(undefined as any);
 export class RoomContext {
-    public static Provide(props: {children?: JSX.Element | JSX.Element[]}) {
+    public static Provide(props: { children?: JSX.Element | JSX.Element[] }) {
         const ref = useRef<RoomContext>(undefined as any)
-        const [value, rerender] = useReducer(() => ({value:ref.current}),{value:ref.current})
-        if(!ref.current) { ref.current = new RoomContext(rerender) }
+        const [value, rerender] = useReducer(() => ({ value: ref.current }), { value: ref.current })
+        if (!ref.current) { ref.current = new RoomContext(rerender) }
 
         const { roomId, name } = useContext(UserContext);
         const webrtc = useContext(webRTCContext);
@@ -135,7 +135,7 @@ export class RoomContext {
                 const { message, content, join, leave, session, mute, trophy } = subscriptionData.data.room;
                 if (message) { ref.current.addMessage(message); }
                 if (content) { ref.current.setContent(content); }
-                if (join) { 
+                if (join) {
                     ref.current.userJoin(join)
                     if (sessionId < join.id) {
                         webrtc.sendOffer(join.id);
@@ -145,15 +145,15 @@ export class RoomContext {
                 if (session && session.webRTC) { webrtc.notification(session.webRTC); }
                 if (mute) { webrtc.mute(mute.sessionId, mute.audio, mute.video); }
                 if (trophy) {
-                    if(trophy.from === trophy.user || trophy.user === sessionId || trophy.from === sessionId) {
-                        ref.current.emitter.emit("trophy",trophy); 
+                    if (trophy.from === trophy.user || trophy.user === sessionId || trophy.from === sessionId) {
+                        ref.current.emitter.emit("trophy", trophy);
                     }
                 }
             },
             variables: { roomId, name }
         });
 
-        
+
         if (loading || !ref.current.content) { return <Grid container alignItems="center" style={{ height: "100%" }}><Loading messageId="loading" /></Grid>; }
         if (error) { return <Typography><FormattedMessage id="failed_to_connect" />{JSON.stringify(error)}</Typography>; }
         return <context.Provider value={value} >
@@ -179,7 +179,7 @@ export class RoomContext {
         this.messages.set(newMessage.id, newMessage);
         this.rerender()
     }
-    
+
     public content?: Content
     private setContent(content: Content) {
         this.content = content

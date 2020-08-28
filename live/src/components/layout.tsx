@@ -96,7 +96,7 @@ const useStyles = makeStyles((theme: Theme) =>
                 easing: theme.transitions.easing.sharp,
             }),
             height: "100vh",
-            [theme.breakpoints.down("md")]: {
+            [theme.breakpoints.down("sm")]: {
                 height: `calc(100vh - ${theme.spacing(16)}px)`,
             },
         },
