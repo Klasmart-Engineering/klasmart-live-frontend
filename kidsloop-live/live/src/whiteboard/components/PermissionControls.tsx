@@ -104,14 +104,7 @@ export default function PermissionControls({ children, selfUserId, otherUserId, 
                 </IconButton>
             </Grid>
             {children}
-        </Grid> :
-        <List
-            subheader={
-                <ListSubheader component="div" id="nested-list-subheader">
-                    Whiteboard
-                </ListSubheader>
-            }
-        >
+        </Grid> : <>
             <MenuItem onClick={toggleAllowCreateShapes}>
                 <ListItemIcon>
                     <StyledIcon
@@ -128,6 +121,6 @@ export default function PermissionControls({ children, selfUserId, otherUserId, 
                 </ListItemIcon>
                 <ListItemText primary="Clear Whiteboard" />
             </MenuItem>
-        </List>
+        </>
     );
 }
