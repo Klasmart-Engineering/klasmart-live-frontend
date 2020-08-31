@@ -253,7 +253,7 @@ function StudentPreviewCard({ sessionId, session, numColState }: { sessionId: st
                             <FormattedMessage id="error_unknown_user" />
                         </Typography>
                     }
-                    <Hidden mdDown>
+                    <Hidden smDown>
                         <Grid>
                             <IconButton aria-label="Zoom In student screen" onClick={handleOnClickZoom}>
                                 {zoomin
