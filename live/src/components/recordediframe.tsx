@@ -216,6 +216,7 @@ export function RecordedIframe(props: Props): JSX.Element {
             </Dialog>
             <IframeResizerNew
                 // log
+                draggable
                 id="recordediframe"
                 src={contentId}
                 forwardRef={iframeRef}
