@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const StyledMoreMenu = withStyles({
     paper: {
-        width: 280,
+        width: 250,
         border: "1px solid lightgrey",
     },
 })((props: MenuProps) => (
@@ -48,12 +48,12 @@ const StyledMoreMenu = withStyles({
         elevation={0}
         getContentAnchorEl={null}
         anchorOrigin={{
-            vertical: -210,
-            horizontal: "left", // TODO: Adjust
+            vertical: -200,
+            horizontal: "left",
         }}
         transformOrigin={{
             vertical: "top",
-            horizontal: "left", // TODO: Adjust
+            horizontal: "left",
         }}
         {...props}
     />
@@ -69,23 +69,23 @@ export default function MoreControls({ session, selfUserId, forOverlay }: {
     const { moreBtn, icon, trophiesMenuItem } = useStyles();
 
     const [moreEl, setMoreEl] = useState<null | HTMLElement>(null);
-    const handleMoreClick = (event: React.MouseEvent<HTMLElement>) => { setMoreEl(event.currentTarget); };
+    const handleMoreOpen = (event: React.SyntheticEvent<HTMLAnchorElement>) => { setMoreEl(event.currentTarget); };
     const handleMoreClose = () => { setMoreEl(null); };
 
     return (<>
         <IconButton
+            component="a"
             aria-label="more button"
             aria-controls="more-controls-menu"
             aria-haspopup="true"
-            component="span"
             size={isSmUp ? "medium" : "small"}
             className={forOverlay ? moreBtn : undefined}
-            onClick={handleMoreClick}
-            onMouseOver={handleMoreClick}
+            onClick={handleMoreOpen}
+            onPointerEnter={handleMoreOpen}
         >
             <StyledIcon
                 icon={<MoreIcon className={forOverlay ? icon : undefined} />}
-                size={isSmUp ? "medium" : "small"}
+                size="medium"
                 color={forOverlay ? "white" : "#0E78D5"}
             />
         </IconButton>
@@ -95,18 +95,20 @@ export default function MoreControls({ session, selfUserId, forOverlay }: {
             anchorEl={moreEl}
             open={Boolean(moreEl)}
             onClose={handleMoreClose}
-            MenuListProps={{ onMouseLeave: handleMoreClose }}
+            MenuListProps={{ onPointerLeave: handleMoreClose }}
         >
             <List
+                disablePadding
                 subheader={
                     <ListSubheader component="div" id="nested-list-subheader">
                         Whiteboard
-                </ListSubheader>
+                    </ListSubheader>
                 }
             >
                 <PermissionControls selfUserId={selfUserId} otherUserId={session.id} miniMode={false} />
             </List>
             <List
+                disablePadding
                 subheader={
                     <ListSubheader component="div" id="nested-list-subheader">
                         Trophies
