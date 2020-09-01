@@ -12,6 +12,7 @@ import { ThumbUp as EncourageIcon } from "@styled-icons/material/ThumbUp";
 import { gql } from 'apollo-boost';
 import { useMutation } from '@apollo/react-hooks';
 import { UserContext } from '../../entry';
+import StyledIcon from "../../components/styled/icon";
 
 type Props = {
     children?: ReactChild | ReactChildren | null
@@ -42,7 +43,11 @@ export default function TrophyControls({ children, otherUserId }: Props): JSX.El
                     onClick={() => rewardTrophy(otherUserId, "star")}
                     size="small"
                 >
-                    <StarIcon size={isSmDown ? "1rem" : "1.25rem"} color="#0E78D5" />
+                    <StyledIcon
+                        icon={<StarIcon />}
+                        size={isSmDown ? "small" : "medium"}
+                        color="#0E78D5"
+                    />
                 </IconButton>
             </Grid>
             <Grid item>
@@ -52,7 +57,11 @@ export default function TrophyControls({ children, otherUserId }: Props): JSX.El
                     onClick={() => rewardTrophy(otherUserId, "trophy")}
                     size="small"
                 >
-                    <TrophyIcon size={isSmDown ? "1rem" : "1.25rem"} color="#0E78D5" />
+                    <StyledIcon
+                        icon={<TrophyIcon />}
+                        size={isSmDown ? "small" : "medium"}
+                        color="#0E78D5"
+                    />
                 </IconButton>
             </Grid>
             <Grid item>
@@ -62,7 +71,11 @@ export default function TrophyControls({ children, otherUserId }: Props): JSX.El
                     onClick={() => rewardTrophy(otherUserId, "heart")}
                     size="small"
                 >
-                    <HeartIcon size={isSmDown ? "1rem" : "1.25rem"} color="#0E78D5" />
+                    <StyledIcon
+                        icon={<HeartIcon />}
+                        size={isSmDown ? "small" : "medium"}
+                        color="#0E78D5"
+                    />
                 </IconButton>
             </Grid>
             <Grid item>
@@ -72,7 +85,11 @@ export default function TrophyControls({ children, otherUserId }: Props): JSX.El
                     onClick={() => rewardTrophy(otherUserId, getRandomKind(["awesome", "looks_great", "well_done", "great_job"]))}
                     size="small"
                 >
-                    <EncourageIcon size={isSmDown ? "1rem" : "1.25rem"} color="#0E78D5" />
+                    <StyledIcon
+                        icon={<EncourageIcon />}
+                        size={isSmDown ? "small" : "medium"}
+                        color="#0E78D5"
+                    />
                 </IconButton>
             </Grid>
             {children}

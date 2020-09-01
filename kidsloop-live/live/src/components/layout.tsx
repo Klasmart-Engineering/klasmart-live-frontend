@@ -303,8 +303,9 @@ function CameraInterface({ isTeacher, isSmDown, gridMode, sessionId, id, session
     mediaStream: MediaStream | undefined,
 }) {
     const isSelf = id === sessionId;
-    let idx = 0;
-    if (isSelf) { idx = -1; }
+    let idx = 1;
+    // if (isTeacher) { idx = -1; } // TODO: After server side work, user will know who is the host teacher
+    if (isSelf) { idx = 0; }
 
     return (
         <Grid id={`participant:${id}`} item xs={6} md={12} style={{ order: idx }}>
@@ -349,6 +350,8 @@ function TabInnerContent({ contentIndexState, title, numColState, setNumColState
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
     const { sessionId, materials, teacher } = useContext(UserContext);
+    const isMdUpTeacher = teacher && !isSmDown;
+
     const changeNumColState = (num: number) => {
         if (!setNumColState) { return; }
         setNumColState(num);
@@ -368,21 +371,19 @@ function TabInnerContent({ contentIndexState, title, numColState, setNumColState
 
             return (
                 <Grid container direction="row" justify="flex-start" alignItems="center" style={{ flex: 1 }}>
-                    {teacher ? (isSmDown ? <>
-                        <GlobalCameraControl />
-                    </> : <>
-                            {selfUser.map(([id, session]) =>
-                                <Camera
-                                    key={id}
-                                    muted={true}
-                                    session={session}
-                                    controls={true}
-                                    mediaStream={stream !== null ? stream : undefined}
-                                    square
-                                />
-                            )}
-                            <GlobalCameraControl />
-                        </>) : null}
+                    {isMdUpTeacher ? <>
+                        {selfUser.map(([id, session]) =>
+                            <Camera
+                                key={id}
+                                muted={true}
+                                session={session}
+                                controls={true}
+                                mediaStream={stream !== null ? stream : undefined}
+                                square
+                            />
+                        )}
+                    </> : null}
+                    {teacher ? <GlobalCameraControl /> : null}
                     {isSmDown ? null : <ToggleCameraViewMode isSmDown={isSmDown} setGridMode={setGridMode} />}
                     <Grid
                         container
@@ -397,10 +398,10 @@ function TabInnerContent({ contentIndexState, title, numColState, setNumColState
                         }}
                     >
                         <Grid id={"participant-listing"} item xs={12}><Divider /></Grid>
-                        {teacher && !isSmDown && otherUsers.length === 0 ?
+                        {isMdUpTeacher && otherUsers.length === 0 ?
                             <Typography style={{ color: "rgb(200,200,200)", padding: 4 }}>
                                 <FormattedMessage id="no_participants" />
-                            </Typography> : (teacher ?
+                            </Typography> : (isMdUpTeacher ?
                                 otherUsers.map(([id, session]) =>
                                     <CameraInterface
                                         key={id}
