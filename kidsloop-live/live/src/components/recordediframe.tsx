@@ -9,6 +9,7 @@ import { useTheme } from "@material-ui/core/styles";
 import { DRAWER_WIDTH } from "./layout";
 import Typography from "@material-ui/core/Typography";
 import StyledFAB from "./styled/fabButton";
+import { loadingActivity } from "../utils/layerValues";
 
 import CurlySpinner1 from "../assets/img/spinner/curly1_spinner.gif"
 import CurlySpinner2 from "../assets/img/spinner/curly2_spinner.gif"
@@ -171,7 +172,7 @@ export function RecordedIframe(props: Props): JSX.Element {
                 }}
                 style={{
                     paddingRight: (isSmDown || !openDrawer) ? "" : DRAWER_WIDTH,
-                    zIndex: 997
+                    zIndex: loadingActivity
                 }}
             >
                 <Grid

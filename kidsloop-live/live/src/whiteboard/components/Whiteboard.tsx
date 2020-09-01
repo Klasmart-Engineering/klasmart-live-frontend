@@ -2,6 +2,7 @@ import React, { ReactChild, ReactNode } from "react";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
 import { useWhiteboard } from "../context-provider/WhiteboardContextProvider";
 import { ShapeDrivenCanvas } from "./ShapeDrivenCanvas";
+import { whiteboard } from "../../utils/layerValues";
 
 type Props = {
     children?: ReactChild | ReactNode | null;
@@ -19,7 +20,7 @@ export function Whiteboard({ children, width, height, filterUsers }: Props): JSX
         top: "0px",
         left: "0px",
         width: "100%",
-        zIndex: 997,
+        zIndex: whiteboard,
     };
 
     const pointerEvents = state.permissions.allowCreateShapes ? undefined : "none";
