@@ -849,7 +849,7 @@ export default function CameraOverlay({ mediaStream, session, miniMode, global }
     }
 
     return (
-        <div className={root}>
+        <div className={root} style={!mediaStream ? { background: "transparent" } : undefined}>
             <Grid
                 container
                 direction="row"
@@ -962,11 +962,10 @@ export default function CameraOverlay({ mediaStream, session, miniMode, global }
                             </Tooltip>
                         </> : null}
 
-                        {(!teacher || isSelf || miniMode) ? null :
-                            <MoreControls session={session} selfUserId={mySessionId} forOverlay={true} />
-                        }
                     </Grid>
                 </Grid>
+                {(!teacher || isSelf || miniMode) ? null :
+                    <MoreControls session={session} selfUserId={mySessionId} forOverlay={true} />}
             </Grid>
         </div>
     )
