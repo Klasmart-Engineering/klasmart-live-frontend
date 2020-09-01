@@ -22,6 +22,7 @@ import { ZoomIn as ZoomInIcon } from "@styled-icons/material/ZoomIn";
 import { ZoomOut as ZoomOutIcon } from "@styled-icons/material/ZoomOut";
 import { QuestionMarkCircleOutline as QuestionIcon } from "@styled-icons/evaicons-outline/QuestionMarkCircleOutline";
 import { MaterialTypename } from "../../lessonMaterialContext";
+import { imageFrame } from "../../utils/layerValues";
 
 const drawerWidth = 340;
 
@@ -45,7 +46,7 @@ const useStyles = makeStyles((theme: Theme) =>
             paddingTop: "56.25%",
         },
         imageFrame: {
-            zIndex: 999,
+            zIndex: imageFrame,
             maxWidth: "99%",
             maxHeight: `calc(100vh - ${theme.spacing(5)}px)`,
             margin: "0 auto",

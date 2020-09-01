@@ -13,6 +13,7 @@ import { ReplicaMedia } from "../synchronized-video";
 import { MaterialTypename } from "../../lessonMaterialContext";
 import { PreviewPlayer } from "../../components/preview-player";
 import { RecordedIframe } from "../../components/recordediframe";
+import { imageFrame } from "../../utils/layerValues";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -28,7 +29,7 @@ const useStyles = makeStyles((theme: Theme) =>
             padding: theme.spacing(2),
         },
         imageFrame: {
-            zIndex: 999,
+            zIndex: imageFrame,
             maxWidth: "99%",
             maxHeight: `calc(100vh - ${theme.spacing(5)}px)`,
             margin: "0 auto",
