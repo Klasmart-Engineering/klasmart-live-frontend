@@ -22,6 +22,7 @@ import Hidden from "@material-ui/core/Hidden";
 import FormControl from "@material-ui/core/FormControl/FormControl";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
+import Popover from "@material-ui/core/Popover";
 
 import { Create as CreateIcon } from "@styled-icons/material-twotone/Create";
 import { People as PeopleIcon } from "@styled-icons/material-twotone/People";
@@ -44,8 +45,8 @@ import { MaterialTypename } from "../lessonMaterialContext";
 import Lightswitch from "./lightswitch";
 import LanguageSelect from "./languageSelect";
 import MoreControls from "./moreControls";
-import Popover from "@material-ui/core/Popover";
 import CenterAlignChildren from "./centerAlignChildren";
+import { bottomNav, modePanel } from "../utils/layerValues";
 
 export const DRAWER_WIDTH = 380;
 
@@ -74,7 +75,7 @@ const useStyles = makeStyles((theme: Theme) =>
             width: "100%",
             position: "fixed",
             bottom: 0,
-            zIndex: 999,
+            zIndex: bottomNav,
         },
         layout: {
             flex: 1,
@@ -189,7 +190,7 @@ const useStyles = makeStyles((theme: Theme) =>
             bottom: 0,
         },
         toolbarContainer: {
-            zIndex: 998,
+            zIndex: modePanel,
             width: "100%",
             position: "fixed",
             bottom: 48,
