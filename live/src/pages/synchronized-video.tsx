@@ -58,6 +58,9 @@ const createHlsDashUrlFromSrc = (src: string): string[] => {
     return urls;
 };
 
+// Reference: https://stackoverflow.com/a/23522755
+const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
 export function ReplicaMedia(
     props: React.VideoHTMLAttributes<HTMLMediaElement> & ReplicaVideoProps
 ) {
@@ -65,6 +68,8 @@ export function ReplicaMedia(
     const srcRef = useRef<string>();
     const [playing, setPlaying] = useState<boolean>(false);
     const timeRef = useRef<number>();
+
+    const [muted, setMuted] = useState<boolean>(isSafari);
 
     const { roomId } = useContext(UserContext);
 
@@ -76,7 +81,8 @@ export function ReplicaMedia(
     >(undefined);
     const [videoReady, setVideoReady] = useState<boolean>(false);
 
-    const reactPlayerError = useCallback(() => {
+    const reactPlayerError = useCallback((reason) => {
+        console.log(reason);
         // NOTE: Fallback to original src if there's an error.
         if (srcRef.current && videoSources !== srcRef.current) {
             setVideoSources(srcRef.current);
@@ -109,7 +115,13 @@ export function ReplicaMedia(
                     .video as VideoSynchronize;
 
                 if (src && srcRef.current !== src) {
+                    setPlaying(false);
                     setVideoReady(false);
+
+                    // TODO: If we could have one <video> element which is reused for all videos this
+                    // setMuted wouldn't be necessary. The user would only have to interact with video
+                    // once before it can be played.
+                    setMuted(isSafari);
                 }
 
                 if (src) {
@@ -212,26 +224,42 @@ export function ReplicaMedia(
         case MaterialTypename.Video:
         default:
             return (
-                <ReactPlayer
-                    ref={reactPlayerRef as React.RefObject<ReactPlayer>}
-                    controls={false}
-                    playing={videoReady && playing}
-                    playsinline
-                    url={videoSources}
-                    config={{
-                        file: {
-                            attributes: {
-                                crossOrigin: "anonymous",
-                                controlsList: "nodownload",
-                                onContextMenu: (e: Event) => e.preventDefault(),
-                                ...mediaProps,
+                <>
+                    <ReactPlayer
+                        ref={reactPlayerRef as React.RefObject<ReactPlayer>}
+                        controls={false}
+                        playing={videoReady && playing}
+                        playsinline
+                        url={videoSources}
+                        muted={muted}
+                        config={{
+                            file: {
+                                attributes: {
+                                    crossOrigin: "anonymous",
+                                    controlsList: "nodownload",
+                                    onContextMenu: (e: Event) => e.preventDefault(),
+                                    ...mediaProps,
+                                },
                             },
-                        },
-                    }}
-                    onReady={() => setVideoReady(true)}
-                    onError={() => reactPlayerError()}
-                    width="100%"
-                />
+                        }}
+                        onReady={() => {
+                            if (!videoReady && reactPlayerRef.current) {
+                                reactPlayerRef.current.seekTo(timeRef.current || 0.0);
+                            }
+
+                            setVideoReady(true);
+
+                        }}
+                        onError={(_, reason) => reactPlayerError(reason)}
+                        width="100%"
+                    >
+                    </ReactPlayer>
+                    <button onClick={() => {
+                        setMuted(false);
+                    }}>
+                        Unmute
+                    </button>
+                </>
             );
     }
 }
@@ -276,6 +304,9 @@ export function ReplicatedMedia(
     );
 
     useEffect(() => {
+        // NOTE: Reset playing to false when the source changes.
+        setPlaying(false);
+
         if (type !== MaterialTypename.Audio && src) {
             const sources = createHlsDashUrlFromSrc(src);
 
@@ -293,7 +324,7 @@ export function ReplicatedMedia(
         if (ref.current) {
             currentTime = ref.current.currentTime;
         } else if (reactPlayerRef.current) {
-            currentTime = reactPlayerRef.current.getCurrentTime();
+            currentTime = 0;
         }
 
         send({
@@ -302,7 +333,7 @@ export function ReplicatedMedia(
                 sessionId,
                 src,
                 play: false,
-                offset: Number.isFinite(currentTime) ? currentTime : 0,
+                offset: currentTime,
             },
         });
     }, [src]);
