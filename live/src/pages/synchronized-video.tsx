@@ -7,11 +7,12 @@ import React, {
 } from "react";
 import { useSubscription, useMutation } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
-import { CircularProgress, Typography } from "@material-ui/core";
+import { CircularProgress, Typography, IconButton } from "@material-ui/core";
 import { UserContext } from "../entry";
 import { MaterialTypename } from "../lessonMaterialContext";
 import { FFT } from "../components/fft";
 import ReactPlayer from "react-player/lazy";
+import { VolumeMute as AudioOffIcon } from "@styled-icons/boxicons-regular/VolumeMute";
 
 interface VideoSynchronize {
     src?: string;
@@ -252,13 +253,20 @@ export function ReplicaMedia(
                         }}
                         onError={(_, reason) => reactPlayerError(reason)}
                         width="100%"
-                    >
-                    </ReactPlayer>
-                    <button onClick={() => {
-                        setMuted(false);
-                    }}>
-                        Unmute
-                    </button>
+                    />
+                    {videoReady && muted ?
+                        <div id="video-unmute-overlay" style={{ position: "absolute", width: "100%", height: "100%" }}>
+                            <IconButton
+                                color={"primary"}
+                                style={{ marginLeft: "20px", marginTop: "20px", backgroundColor: "#f6fafe" }}
+                                onClick={() => {
+                                    setMuted(false);
+                                }}
+                            >
+                                <AudioOffIcon size="3.5rem" />
+                            </IconButton>
+                        </div> : <></>
+                    }
                 </>
             );
     }
