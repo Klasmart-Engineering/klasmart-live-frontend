@@ -70,6 +70,9 @@ module.exports = {
     },
     resolve: {
         extensions: [".js", ".jsx", ".tsx", ".ts"],
+        alias: {
+            react: path.resolve("./node_modules/react"),
+        },
     },
     output: {
         filename: "[name].js",
@@ -101,11 +104,6 @@ module.exports = {
         host: "0.0.0.0",
         historyApiFallback: true,
         proxy: {
-            "/graphql": {
-                target: "http://localhost:8000",
-                changeOrigin: true,
-                ws: true
-            },
             "/h5p": {
                 target: "https://zoo.kidsloop.net/",
                 secure: false,

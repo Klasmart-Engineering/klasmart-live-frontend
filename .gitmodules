@@ -1,0 +1,3 @@
+[submodule "hub/src/pages/cms/cms-frontend-web"]
+	path = hub/src/pages/cms/cms-frontend-web
+	url = git@bitbucket.org:calmisland/cms-frontend-web.git

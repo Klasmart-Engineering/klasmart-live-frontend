@@ -15,6 +15,8 @@ import AssessmentsLayout from "./assessments/assessments";
 import ReportLayout from "./report/report";
 import NavBar from "./navbar/navbar";
 
+import MyContentList from "../cms/cms-frontend-web/src/pages/MyContentList";
+
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         layout: {
@@ -96,7 +98,9 @@ let Layout = (props: any) => {
                     </Grow>
                     <Grow in={activeComponent === "library"} timeout={timeout} mountOnEnter unmountOnExit>
                         <Box>
-                            <LibraryLayout />
+                            <MyContentList />
+                            ㅇㅅㅇ
+                            {/* <LibraryLayout /> */}
                         </Box>
                     </Grow>
                     <Grow in={activeComponent === "assessments"} timeout={timeout} mountOnEnter unmountOnExit>
