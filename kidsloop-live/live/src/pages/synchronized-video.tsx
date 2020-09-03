@@ -83,7 +83,6 @@ export function ReplicaMedia(
     const [videoReady, setVideoReady] = useState<boolean>(false);
 
     const reactPlayerError = useCallback((reason) => {
-        console.log(reason);
         // NOTE: Fallback to original src if there's an error.
         if (srcRef.current && videoSources !== srcRef.current) {
             setVideoSources(srcRef.current);
