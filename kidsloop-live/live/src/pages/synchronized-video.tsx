@@ -341,7 +341,7 @@ export function ReplicatedMedia(
                 sessionId,
                 src,
                 play: false,
-                offset: currentTime,
+                offset: Number.isFinite(currentTime) ? currentTime : undefined,
             },
         });
     }, [src]);
