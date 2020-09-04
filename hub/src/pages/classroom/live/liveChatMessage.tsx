@@ -85,7 +85,7 @@ export default function LiveChatInput(props: Props) {
                     </Hidden>
                     <Grid item xs={12} md={9}>
                         <Typography variant="body2" style={{ wordBreak: "break-word" }}>
-                            { message }
+                            {message}
                         </Typography>
                     </Grid>
                     <Grid item xs={12} md={2} style={{ textAlign: "right" }}>
@@ -100,7 +100,7 @@ export default function LiveChatInput(props: Props) {
                                 </Grid>
                             </Hidden>
                             <Typography variant="caption" color="primary">
-                                { today ?
+                                {today ?
                                     <FormattedMessage id="chatMessage_today" /> :
                                     <FormattedDate value={new Date(timestamp * 1000)} />
                                 } &nbsp;

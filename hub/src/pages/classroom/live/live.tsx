@@ -5,15 +5,8 @@ import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { useSelector, useStore } from "react-redux";
-import { Route, Switch } from "react-router-dom";
-import { ActionTypes } from "../../../store/actions";
 import { State } from "../../../store/store";
-import { IUserContext } from "../../../types/objectTypes";
 import LiveCard from "./liveCard";
-import { UserContext } from "./liveClient/app";
-import LiveClient from "./liveClient/entry";
-import { Join } from "./liveClient/pages/join";
-import { Room } from "./liveClient/room";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -89,11 +82,6 @@ export default function LiveLayout() {
                 <Fade in={!isLive && !hasTransitioned} unmountOnExit={true} timeout={{ enter: 1000, exit: 500 }}>
                     <Paper elevation={4} className={classes.paperContainer}>
                         <LiveCard />
-                    </Paper>
-                </Fade>
-                <Fade in={isLive && !hasTransitioned} unmountOnExit={true} timeout={{ enter: 1000, exit: 500 }}>
-                    <Paper elevation={4} className={classes.paperContainer}>
-                        <LiveClient />
                     </Paper>
                 </Fade>
             </Grid>

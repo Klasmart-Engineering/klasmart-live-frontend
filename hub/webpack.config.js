@@ -6,8 +6,6 @@ module.exports = {
     mode: "development",
     entry: {
         ui: "./src/client-entry.tsx",
-        record: "./src/pages/classroom/live/liveClient/entry-record.ts",
-        player: "./src/pages/classroom/live/liveClient/entry-player.ts"
     },
     module: {
         rules: [
@@ -93,11 +91,6 @@ module.exports = {
             "ORGANIZATION_ENDPOINT": "http://localhost:8084/",
             "ASSESSMENT_ENDPOINT": "http://localhost:8065/",
             "DEFAULT_PROG_ID": "KIDSLOOP-2.0"
-        }),
-        new HtmlWebpackPlugin({
-            filename: "player.html",
-            chunks: ["player"],
-            template: "src/pages/classroom/live/liveClient/player.html"
         })
     ],
     devServer: {

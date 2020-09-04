@@ -99,7 +99,6 @@ let Layout = (props: any) => {
                     <Grow in={activeComponent === "library"} timeout={timeout} mountOnEnter unmountOnExit>
                         <Box>
                             <MyContentList />
-                            ㅇㅅㅇ
                             {/* <LibraryLayout /> */}
                         </Box>
                     </Grow>

@@ -27,18 +27,18 @@ function setTypography(languageCode: string) {
     const localeWeightBold = 700;
 
     switch (languageCode) {
-    case "en":
-        localeFontFamily = "CircularStd";
-        break;
-    case "ko":
-        localeFontFamily = "NanumSquareRound";
-        localeWeightRegular = 600;
-        break;
-    case "zh-CN":
-        localeFontFamily = "Source Han Sans SC";
-        break;
-    default:
-        break;
+        case "en":
+            localeFontFamily = "CircularStd";
+            break;
+        case "ko":
+            localeFontFamily = "NanumSquareRound";
+            localeWeightRegular = 600;
+            break;
+        case "zh-CN":
+            localeFontFamily = "Source Han Sans SC";
+            break;
+        default:
+            break;
     }
     localeFontFamily = [localeFontFamily, "-apple-system", "Segoe UI", "Helvetica", "sans-serif"].join(",");
     return { localeFontFamily, localeWeightLight, localeWeightMedium, localeWeightRegular, localeWeightBold };
