@@ -2,7 +2,7 @@ module.exports = function (api) {
     api.cache(true);
     const presets = [
         [
-            '@babel/preset-env',
+            "@babel/preset-env",
             {
                 "targets": {
                     "edge": "17",
@@ -13,7 +13,7 @@ module.exports = function (api) {
                 }
             }
         ],
-        '@babel/preset-react',
+        "@babel/preset-react",
         "@babel/preset-typescript",
     ];
 
@@ -21,6 +21,7 @@ module.exports = function (api) {
         "@babel/proposal-class-properties",
         "@babel/proposal-object-rest-spread",
         "@babel/plugin-transform-object-assign",
+        "@babel/plugin-proposal-optional-chaining",
     ];
 
     return {
