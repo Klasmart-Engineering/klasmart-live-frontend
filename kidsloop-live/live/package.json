@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "rm dist/*; webpack; mv dist/record*.js dist/record.js",
-    "build:prod": "rm dist/*;webpack --config webpack.prod.config.js; mv dist/record*.js dist/record.js",
+    "build": "rm -rf dist/*; webpack; mv dist/record*.js dist/record.js",
+    "build:prod": "rm -rf dist/*;webpack --config webpack.prod.config.js; mv dist/record*.js dist/record.js",
     "start": "webpack-dev-server",
     "test": "mocha -r ts-node/register tests/**/*[Tt]est.ts",
     "coverage": "nyc -r lcov -e .ts -x \"*[Tt]est.ts\" npm run test"
