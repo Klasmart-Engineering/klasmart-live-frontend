@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+npm i
 npm run build:prod
 aws s3 sync dist s3://kidsloop-live-production/live
 aws s3 sync dist s3://kidsloop-live-production/class-live
