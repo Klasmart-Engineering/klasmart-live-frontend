@@ -102,7 +102,7 @@ export function Teacher(props: Props): JSX.Element {
         if (!rootDivRef || !rootDivRef.current) { return; }
         setRootDivWidth(rootDivRef.current.clientWidth);
         setRootDivHeight(rootDivRef.current.clientHeight);
-    }, [rootDivRef]);
+    }, [rootDivRef.current]);
 
     const [showContent, { loading }] = useMutation(MUT_SHOW_CONTENT);
     useEffect(() => {
