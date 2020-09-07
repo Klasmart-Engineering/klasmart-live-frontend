@@ -181,7 +181,14 @@ export class WebRTCSFUContext implements WebRTCContext {
         const producers = []
         for(const track of tracks) {
             console.log(`Wait for producer`)
-            const producer  = await transport.produce({track})
+            const producer  = await transport.produce({
+                track,
+                encodings: [
+                    { maxBitrate: 100000 },
+                    { maxBitrate: 300000 },
+                    { maxBitrate: 900000 },
+                ],
+            })
             this.destructors.set(producer.id, () => producer.close())
             producers.push(producer)
         }
