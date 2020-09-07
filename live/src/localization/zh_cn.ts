@@ -28,7 +28,7 @@ const messages: Record<string, string> = {
     what_is_this: "这是什么？",
     live_buttonStop: "停止",
     live_buttonPresent: "课程演示",
-    student_mode: "学生模式",
+    live_buttonObserve: "学生模式",
     live_buttonScreen: "共享屏幕",
     title_participants: "参加人员",
     title_lesson_plan: "教学计划",

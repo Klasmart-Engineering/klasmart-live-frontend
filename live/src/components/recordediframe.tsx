@@ -53,16 +53,23 @@ export function RecordedIframe(props: Props): JSX.Element {
     const { contentId, setStreamId, parentWidth, parentHeight, openDrawer } = props;
     const [sendStreamId] = useMutation(SET_STREAMID);
 
-    const [widthHeight, setWidthHeight] = useState<{
-        width: number | string,
-        height: number
-    }>({ width: "100%", height: 700 });
+    const [isFlashCards, setIsFlashCards] = useState(false);
+    const [iframeWidth, setIframeWidth] = useState<number | string>("100%");
+    const [iframeHeight, setIframeHeight] = useState<number | string>(700);
     const [minHeight, setMinHeight] = useState<number>();
     const [numRenders, setNumRenders] = useState(0);
     const [key, setKey] = useState(Math.random());
     const [openDialog, setOpenDialog] = useState(true);
     const [seconds, setSeconds] = useState(60);
     const [spinner, setSpinner] = useState(Math.floor(Math.random() * Math.floor(SPINNER.length)));
+
+    // Whenever the content changes, dialog is displayed and width is initialized.
+    useEffect(() => {
+        setIsFlashCards(false);
+        setOpenDialog(true);
+        setKey(Math.random());
+        setIframeWidth("100%");
+    }, [contentId]);
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -76,10 +83,11 @@ export function RecordedIframe(props: Props): JSX.Element {
 
     const scaleToFitParent = (iframeWidth: number, iframeHeight: number) => {
         const scale = parentHeight / iframeHeight;
-        if (scale < 1) {
+        if (scale < 0.9) {
             const width = iframeWidth * scale;
             const height = iframeHeight * scale;
-            setWidthHeight({ width: width, height: height })
+            setIframeWidth(width);
+            setIframeHeight(height);
             setKey(Math.random());
         }
     }
@@ -92,11 +100,14 @@ export function RecordedIframe(props: Props): JSX.Element {
         const blockRightClick = (e: MouseEvent) => { e.preventDefault() }
         contentWindow.addEventListener("contextmenu", (e) => blockRightClick(e), false);
 
+        const isFlashCards = contentDoc.body.getElementsByClassName("h5p-flashcards").length >= 1;
+        setIsFlashCards(isFlashCards);
         const h5pDivCollection = contentDoc.body.getElementsByClassName("h5p-content");
         // TODO: Is it possible to handle all non-h5p content with this line?
         const contentDivCollection = contentDoc.body.getElementsByClassName("content");
         if (h5pDivCollection.length > 0) {
-            const h5pContainer = h5pDivCollection[0]
+            const h5pContainer = h5pDivCollection[0] as HTMLDivElement;
+            h5pContainer.style.overflow = isFlashCards ? "auto" : "hidden";
             h5pContainer.setAttribute("data-iframe-height", "");
         } else if (contentDivCollection.length > 0) {
             contentDivCollection[0].setAttribute("data-iframe-height", "");
@@ -122,12 +133,7 @@ export function RecordedIframe(props: Props): JSX.Element {
         if (!iRef) { return; }
         iRef.addEventListener("load", () => inject(iRef));
         return () => iRef.removeEventListener("load", () => inject(iRef));
-    }, [iframeRef, key])
-
-    useEffect(() => {
-        setWidthHeight({ width: "100%", height: widthHeight.height });
-        // TODO: Might be need to add scaleToFitParent() here.
-    }, [contentId]);
+    }, [key])
 
     useEffect(() => {
         function onMessage({ data }: MessageEvent) {
@@ -168,7 +174,7 @@ export function RecordedIframe(props: Props): JSX.Element {
                 open={openDialog}
                 onClose={() => setOpenDialog(false)}
                 PaperProps={{
-                    style: { backgroundColor: "rgba(255,255,255,0.6)" },
+                    style: { backgroundColor: "rgba(255,255,255,0.7)" },
                 }}
                 style={{
                     paddingRight: (isSmDown || !openDrawer) ? "" : DRAWER_WIDTH,
@@ -217,6 +223,7 @@ export function RecordedIframe(props: Props): JSX.Element {
             </Dialog>
             <IframeResizerNew
                 // log
+                scrolling={isFlashCards ? true : false}
                 draggable
                 id="recordediframe"
                 src={contentId}
@@ -225,16 +232,24 @@ export function RecordedIframe(props: Props): JSX.Element {
                 minHeight={minHeight}
                 onResized={(e) => {
                     setNumRenders(numRenders + 1);
-                    startRecording();
                     const width = Number(e.width), height = Number(e.height);
-                    if (height > parentHeight && numRenders < 3) {
+                    if (isFlashCards) {
+                        setIframeHeight(height)
+                    } else if (height > parentHeight && numRenders < 2 && !isFlashCards) {
                         scaleToFitParent(width, height)
                     }
+                }}
+                onInit={(iframe) => {
+                    // After resizing is complete.                        
+                    setIframeWidth("100%");
+                    startRecording();
+                    setNumRenders(0);
+                    setIsFlashCards(false);
                     setOpenDialog(false);
                 }}
                 style={{
-                    width: widthHeight.width,
-                    height: widthHeight.height
+                    width: iframeWidth,
+                    height: iframeHeight,
                     // As long as it is the <Whiteboard />'s children, it cannot be centered with margin: "0 auto".
                 }}
                 key={key}
