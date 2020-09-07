@@ -8,7 +8,7 @@ import EC2 from "aws-sdk/clients/ec2"
 import ECS from "aws-sdk/clients/ecs"
 // @ts-ignore
 import checkIp = require("check-ip")
-import { setDockerId, setAvailable } from "./reporting";
+import { setDockerId, setAvailable, setGraphQLConnections, setClusterId } from "./reporting";
 
 
 export interface Context {
@@ -27,6 +27,7 @@ async function getECSTaskENIPublicIP() {
     const ecsMetadata = await response.json()
     setDockerId(ecsMetadata.DockerId)
     const clusterARN = ecsMetadata.Labels && ecsMetadata.Labels["com.amazonaws.ecs.cluster"] as string
+    setClusterId(clusterARN)
     const taskARN = ecsMetadata.Labels && ecsMetadata.Labels["com.amazonaws.ecs.task-arn"] as string
     if (!taskARN) { return }
     const tasks = await ECSClient.describeTasks({ cluster: clusterARN, tasks: [taskARN] }).promise()
@@ -85,6 +86,7 @@ async function main() {
                 keepAlive: 1000,
                 onConnect: async ({ roomId, sessionId }: any, _webSocket, connectionData: any) => {
                     connectionCount++
+                    setGraphQLConnections(connectionCount)
                     stopServerTimeout()
                     console.log(`Connection(${connectionCount}) from ${sessionId}`)
                     connectionData.counted = true
@@ -95,6 +97,7 @@ async function main() {
                 onDisconnect: (websocket, connectionData) => {
                     if (!(connectionData as any).counted) { return }
                     connectionCount--
+                    setGraphQLConnections(connectionCount)
                     if (connectionCount <= 0) { startServerTimeout() }
                     const { sessionId } = connectionData as any
                     console.log(`Disconnection(${connectionCount}) from ${sessionId}`)

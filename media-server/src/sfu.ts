@@ -8,7 +8,13 @@ import { Client, Stream } from "./client";
 import { Context, startServerTimeout } from "./entry";
 import Redis = require("ioredis")
 import { RedisKeys } from "./redisKeys";
-import { setAvailable } from "./reporting";
+import {
+    setAvailable,
+    incrementConsumerCount,
+    decrementConsumerCount,
+    incrementProducerCount,
+    decrementProducerCount,
+} from "./reporting";
 
 export class SFU {
     public static async create(ip: string, uri: string): Promise<SFU> {
@@ -190,12 +196,20 @@ observer.on("newworker", (worker) => {
             console.log("new transport created [worker.pid:%d, router.id:%s, transport.id:%s]", worker.pid, router.id, transport.id);
             transport.observer.on("close", () => console.log("transport closed [transport.id:%s]", transport.id));
             transport.observer.on("newproducer", (producer: MediaSoup.Producer) => {
+                incrementProducerCount()
                 console.log("new producer created [worker.pid:%d, router.id:%s, transport.id:%s, producer.id:%s]", worker.pid, router.id, transport.id, producer.id);
-                producer.observer.on("close", () => console.log("producer closed [producer.id:%s]", producer.id));
+                producer.observer.on("close", () => {
+                    decrementProducerCount()
+                    console.log("producer closed [producer.id:%s]", producer.id)
+                });
             });
             transport.observer.on("newconsumer", (consumer: MediaSoup.Consumer) => {
+                incrementConsumerCount()
                 console.log("new consumer created [worker.pid:%d, router.id:%s, transport.id:%s, consumer.id:%s]", worker.pid, router.id, transport.id, consumer.id);
-                consumer.observer.on("close", () => console.log("consumer closed [consumer.id:%s]", consumer.id));
+                consumer.observer.on("close", () => {
+                    decrementConsumerCount()
+                    console.log("consumer closed [consumer.id:%s]", consumer.id)
+                });
             });
             transport.observer.on("newdataproducer", (dataProducer: MediaSoup.DataProducer) => {
                 console.log("new data producer created [worker.pid:%d, router.id:%s, transport.id:%s, dataProducer.id:%s]", worker.pid, router.id, transport.id, dataProducer.id);
