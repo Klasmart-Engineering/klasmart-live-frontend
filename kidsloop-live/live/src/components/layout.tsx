@@ -72,7 +72,7 @@ const useStyles = makeStyles((theme: Theme) =>
             borderRadius: "0.25rem 0 0 0.25rem",
         },
         bottomNav: {
-            width: "100%",
+            width: "100vw",
             position: "fixed",
             bottom: 0,
             zIndex: bottomNav,

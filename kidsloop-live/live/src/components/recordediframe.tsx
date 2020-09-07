@@ -227,7 +227,7 @@ export function RecordedIframe(props: Props): JSX.Element {
                     setNumRenders(numRenders + 1);
                     startRecording();
                     const width = Number(e.width), height = Number(e.height);
-                    if (numRenders < 1) {
+                    if (height > parentHeight && numRenders < 3) {
                         scaleToFitParent(width, height)
                     }
                     setOpenDialog(false);
