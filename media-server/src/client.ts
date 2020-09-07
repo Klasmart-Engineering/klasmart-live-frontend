@@ -13,7 +13,7 @@ export interface Stream {
 
 export class Client {
     public static async create(id: string, router: MediaSoup.Router, listenIps: MediaSoup.TransportListenIp[]) {
-        try{
+        try {
             const producerTransport = await router.createWebRtcTransport({
                 listenIps,
                 enableTcp: true,
@@ -27,7 +27,7 @@ export class Client {
                 preferUdp: true,
             })
             return new Client(id, router, producerTransport, consumerTransport)
-        } catch(e) {
+        } catch (e) {
             console.error(e)
             throw e
         }
@@ -55,7 +55,7 @@ export class Client {
     public getStreams() {
         return this.streams.values()
     }
-    
+
     public async forwardStream(stream: Stream) {
         console.log(`forward Stream(${stream.sessionId}_${stream.id})(${stream.producers.length}) to Client(${this.id})`)
         const forwardPromises = stream.producers.map((p) => this.forward(p).catch((e) => console.error(e)))
@@ -65,7 +65,7 @@ export class Client {
         console.log(`Publish Stream(${stream.sessionId}_${stream.id})`, producerIds)
         this.channel.publish("stream", {
             media: {
-                stream: {   
+                stream: {
                     id: stream.id,
                     sessionId: stream.sessionId,
                     producerIds,
@@ -83,7 +83,7 @@ export class Client {
                 rtpCapabilities
             }
             console.log(`forward can consume`)
-            if(!this.router.canConsume(producerParams)) {
+            if (!this.router.canConsume(producerParams)) {
                 console.error(`Client(${this.id}) could not consume producer(${producer.kind},${producer.id})`, producer.consumableRtpParameters)
                 return
             }
@@ -97,14 +97,14 @@ export class Client {
             consumer.on("transportclose", () => {
                 this.consumers.delete(consumer.id)
                 this.channel.publish("close", { media: { close: consumer.id } })
-                
+
             })
             consumer.on("producerclose", () => {
                 this.consumers.delete(consumer.id)
                 this.channel.publish("close", { media: { close: consumer.id } })
             })
-            
-            this.channel.publish("consumer", { 
+
+            this.channel.publish("consumer", {
                 media: {
                     consumer: JSON.stringify({
                         id: consumer.id,
@@ -112,17 +112,17 @@ export class Client {
                         kind: consumer.kind,
                         rtpParameters: consumer.rtpParameters,
                         appData: undefined
-                    }) 
+                    })
                 }
             })
-        } catch(e) {
+        } catch (e) {
             console.error(e)
         }
     }
 
     public async rtpCapabilitiesMessage(message: string) {
         const rtpCapabilities = JSON.parse(message)
-        if(this._rtpCapabilities) { console.error("rtpCapabilities is already set... overiding") }
+        if (this._rtpCapabilities) { console.error("rtpCapabilities is already set... overiding") }
         const { resolver } = await this.rtpCapabilitiesPrePromise
         this._rtpCapabilities = rtpCapabilities
         console.log(`rtpCapabilities initialized`)
@@ -133,7 +133,7 @@ export class Client {
     public async transportMessage(producer: boolean, message: string) {
         console.log("transport")
         const params = JSON.parse(message)
-        if(producer) {
+        if (producer) {
             await this.producerTransport.connect(params)
         } else {
             await this.consumerTransport.connect(params)
@@ -151,16 +151,16 @@ export class Client {
             this.channel.publish("close", { media: { close: producer.id } })
         })
         this.producers.set(producer.id, producer)
-        console.log("producer message - ret" )
+        console.log("producer message - ret")
         return producer.id
     }
-    
+
     public consumerMessage(id: string, pause?: boolean) {
         console.log("consumer message")
-        if(pause === undefined) { return }
+        if (pause === undefined) { return }
         const consumer = this.consumers.get(id)
-        if(!consumer) {console.error(`Unable to pause missing Consumer(${id})`); return;}
-        if(pause) {
+        if (!consumer) { console.error(`Unable to pause missing Consumer(${id})`); return; }
+        if (pause) {
             consumer.pause()
         } else {
             consumer.resume()
@@ -171,9 +171,9 @@ export class Client {
     public streamMessage(id: string, producerIds: string[]) {
         console.log(`StreamMessage(${id}) to Client(${this.id}) contains ${producerIds.map((id) => `Producer(${id})`).join(" ")}`)
         const producers = []
-        for(const producerId of producerIds) {
+        for (const producerId of producerIds) {
             const producer = this.producers.get(producerId)
-            if(!producer) {
+            if (!producer) {
                 console.error(`Client(${this.id}).Stream(${id}) could not locate Producer(${producerId})`)
                 continue
             }
@@ -186,21 +186,21 @@ export class Client {
         }
         this.streams.set(id, stream)
         console.log(`Emit Stream(${this.id}_${id})(${producers.length})`)
-        this.emitter.emit("stream",stream)
+        this.emitter.emit("stream", stream)
         return true
     }
     public async closeMessage(id: string) {
         const destructor = this.destructors.get(id)
-        if(!destructor) { console.error(`Client(${this.id}).Destructor(${id}) could not be found`); return; }
+        if (!destructor) { console.error(`Client(${this.id}).Destructor(${id}) could not be found`); return; }
         destructor()
         return true
     }
 
     public emitter = new EventEmitter()
-    private destructors = new Map<string, ()=>unknown>()
-    private streams = new Map<string,Stream>()
-    private producers = new Map<string,MediaSoup.Producer>()
-    private consumers = new Map<string,MediaSoup.Consumer>()
+    private destructors = new Map<string, () => unknown>()
+    private streams = new Map<string, Stream>()
+    private producers = new Map<string, MediaSoup.Producer>()
+    private consumers = new Map<string, MediaSoup.Consumer>()
     private channel = new PubSub()
     private id: string
     private router: MediaSoup.Router
@@ -219,18 +219,18 @@ export class Client {
         producerTransport.on("routerclose", () => {
             this.channel.publish("close", { media: { close: producerTransport.id } })
         })
-        this.destructors.set(producerTransport.id, ()=>producerTransport.close())
-        
+        this.destructors.set(producerTransport.id, () => producerTransport.close())
+
         this.consumerTransport = consumerTransport
         consumerTransport.on("routerclose", () => {
             this.channel.publish("close", { media: { close: consumerTransport.id } })
         })
-        this.destructors.set(consumerTransport.id, ()=>consumerTransport.close())
+        this.destructors.set(consumerTransport.id, () => consumerTransport.close())
     }
 
     private async produce(produce: MediaSoup.ProducerOptions) {
         const producer = await this.consumerTransport.produce(produce)
-        this.destructors.set(producer.id, ()=>producer.close())
+        this.destructors.set(producer.id, () => producer.close())
         this.producers.set(producer.id, producer)
         return producer.id
     }

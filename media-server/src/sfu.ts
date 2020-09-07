@@ -18,23 +18,23 @@ export class SFU {
         console.log("🎥 Mediasoup worker initalized");
         const mediaCodecs: MediaSoup.RtpCodecCapability[] = [
             {
-              kind        : "audio",
-              mimeType    : "audio/opus",
-              clockRate   : 48000,
-              channels    : 2
+                kind: "audio",
+                mimeType: "audio/opus",
+                clockRate: 48000,
+                channels: 2
             },
             {
-              kind       : "video",
-              mimeType   : "video/H264",
-              clockRate  : 90000,
-              parameters :
-              {
-                "packetization-mode"      : 1,
-                "profile-level-id"        : "42e01f",
-                "level-asymmetry-allowed" : 1
-              }
+                kind: "video",
+                mimeType: "video/H264",
+                clockRate: 90000,
+                parameters:
+                {
+                    "packetization-mode": 1,
+                    "profile-level-id": "42e01f",
+                    "level-asymmetry-allowed": 1
+                }
             }
-          ];
+        ];
         const router = await worker.createRouter({ mediaCodecs })
         console.log("💠 Mediasoup router created");
 
@@ -51,7 +51,7 @@ export class SFU {
 
 
     public async subscribe({ sessionId }: Context) {
-        if(!sessionId) { console.error("Can not initiate subscription without sessionId"); return }
+        if (!sessionId) { console.error("Can not initiate subscription without sessionId"); return }
         console.log(`Subscription from ${sessionId}`)
         const client = await this.getOrCreateClient(sessionId)
         return client.subscribe()
@@ -59,38 +59,38 @@ export class SFU {
 
     public async rtpCapabilitiesMessage(context: Context, rtpCapabilities: string) {
         console.log(`rtpCapabilitiesMessage from ${context.sessionId}`)
-        if(!context.sessionId) { return false }
+        if (!context.sessionId) { return false }
         const client = await this.getOrCreateClient(context.sessionId)
         return client.rtpCapabilitiesMessage(rtpCapabilities)
     }
     public async transportMessage(context: Context, producer: boolean, params: string) {
         console.log(`transportMessage(${producer}) from ${context.sessionId}`)
-        if(!context.sessionId) { return false }
+        if (!context.sessionId) { return false }
         const client = await this.getOrCreateClient(context.sessionId)
         return client.transportMessage(producer, params)
     }
     public async producerMessage(context: Context, params: string) {
         console.log(`producerMessage from ${context.sessionId}`)
-        if(!context.sessionId) { return false }
+        if (!context.sessionId) { return false }
         const client = await this.getOrCreateClient(context.sessionId)
         return client.producerMessage(params)
     }
     public async consumerMessage(context: Context, id: string, pause?: boolean) {
         console.log(`consumerMessage from ${context.sessionId}`)
-        if(!context.sessionId) { return false }
+        if (!context.sessionId) { return false }
         const client = await this.getOrCreateClient(context.sessionId)
         return client.consumerMessage(id, pause)
     }
     public async streamMessage(context: Context, id: string, producerIds: string[]) {
         console.log(`streamMessage from ${context.sessionId}`)
-        if(!context.sessionId) { return false }
+        if (!context.sessionId) { return false }
         const client = await this.getOrCreateClient(context.sessionId)
         return client.streamMessage(id, producerIds)
     }
 
     public async closeMessage(context: Context, id: string) {
         console.log(`closeMessage from ${context.sessionId}`)
-        if(!context.sessionId) { return false }
+        if (!context.sessionId) { return false }
         const client = await this.getOrCreateClient(context.sessionId)
         return client.closeMessage(id)
     }
@@ -106,7 +106,7 @@ export class SFU {
     private router: MediaSoup.Router
     private constructor(ip: string, uri: string, redis: Redis.Redis, worker: MediaSoup.Worker, router: MediaSoup.Router) {
         this.externalIp = ip
-        this.listenIps = [{ip: "0.0.0.0", announcedIp: process.env.PUBLIC_ADDRESS||ip}]
+        this.listenIps = [{ ip: "0.0.0.0", announcedIp: process.env.PUBLIC_ADDRESS || ip }]
         this.address = uri
         this.redis = redis
         this.worker = worker
@@ -117,13 +117,13 @@ export class SFU {
     private async claimRoom() {
         let roomId: string
         let claimed: "OK" | null = null
-        let sfu = {key: "", ttl: 0}
+        let sfu = { key: "", ttl: 0 }
         do {
-            [,roomId] = await this.redis.blpop("sfu:request",0)
-            if(!roomId) {continue}
+            [, roomId] = await this.redis.blpop("sfu:request", 0)
+            if (!roomId) { continue }
             sfu = RedisKeys.roomSfu(roomId)
             claimed = await this.redis.set(sfu.key, this.address, "EX", sfu.ttl, "NX")
-        } while(claimed !== "OK")
+        } while (claimed !== "OK")
         this.roomId = roomId
 
         console.log(`Assigned to Room(${roomId})`)
@@ -138,9 +138,9 @@ export class SFU {
         let value: string | null
         do {
             await this.redis.set(sfu.key, this.address, "EX", sfu.ttl, "XX")
-            await new Promise((resolve) => setTimeout(resolve, sfu.ttl/2))
+            await new Promise((resolve) => setTimeout(resolve, sfu.ttl / 2))
             value = await this.redis.get(sfu.key)
-        } while(value === this.address)
+        } while (value === this.address)
 
         console.error(`Room(${roomId})::SFU was '${value}' but expected '${this.address}', terminating SFU`)
         process.exit(-2)
@@ -148,11 +148,11 @@ export class SFU {
 
     private async getOrCreateClient(id: string): Promise<Client> {
         let client = this.clients.get(id)
-        if(!client) {
+        if (!client) {
             client = await Client.create(id, this.router, this.listenIps)
             console.log(`New Client(${id})`)
-            for(const [otherId, otherClient] of this.clients) {
-                for(const stream of otherClient.getStreams()) {
+            for (const [otherId, otherClient] of this.clients) {
+                for (const stream of otherClient.getStreams()) {
                     client.forwardStream(stream).then(() => {
                         console.log(`Forwarding Stream(${stream.sessionId}_${stream.id}) from Client(${otherId}) to Client(${id})`)
                     })
@@ -167,8 +167,8 @@ export class SFU {
     private async newStream(stream: Stream) {
         console.log(`New Stream(${stream.sessionId}_${stream.id})`)
         const forwardPromises = []
-        for(const [id, client] of this.clients) {
-            if(id === stream.sessionId) {continue}
+        for (const [id, client] of this.clients) {
+            if (id === stream.sessionId) { continue }
             const forwardPromise = client.forwardStream(stream)
             forwardPromise.then(() => {
                 console.log(`Forwarding new Stream(${stream.sessionId}_${stream.id}) to Client(${id})`)
@@ -180,30 +180,30 @@ export class SFU {
 }
 
 observer.on("newworker", (worker) => {
-  console.log("new worker created [worke.pid:%d]", worker.pid);
-  worker.observer.on("close", () => console.log("worker closed [worker.pid:%d]", worker.pid));
-  worker.observer.on("newrouter", (router: MediaSoup.Router) => {
-    console.log("new router created [worker.pid:%d, router.id:%s]", worker.pid, router.id);
-    router.observer.on("close", () => console.log("router closed [router.id:%s]", router.id));
-    router.observer.on("newtransport", (transport: MediaSoup.Transport) => {
-      console.log("new transport created [worker.pid:%d, router.id:%s, transport.id:%s]",worker.pid, router.id, transport.id);
-      transport.observer.on("close", () => console.log("transport closed [transport.id:%s]", transport.id));
-      transport.observer.on("newproducer", (producer: MediaSoup.Producer) => {
-        console.log("new producer created [worker.pid:%d, router.id:%s, transport.id:%s, producer.id:%s]", worker.pid, router.id, transport.id, producer.id);
-        producer.observer.on("close", () => console.log("producer closed [producer.id:%s]", producer.id));
-      });
-      transport.observer.on("newconsumer", (consumer: MediaSoup.Consumer) => {
-        console.log("new consumer created [worker.pid:%d, router.id:%s, transport.id:%s, consumer.id:%s]", worker.pid, router.id, transport.id, consumer.id);
-        consumer.observer.on("close", () => console.log("consumer closed [consumer.id:%s]", consumer.id));
-      });
-      transport.observer.on("newdataproducer", (dataProducer: MediaSoup.DataProducer) => {
-        console.log("new data producer created [worker.pid:%d, router.id:%s, transport.id:%s, dataProducer.id:%s]", worker.pid, router.id, transport.id, dataProducer.id);
-        dataProducer.observer.on("close", () => console.log("data producer closed [dataProducer.id:%s]", dataProducer.id));
-      });
-      transport.observer.on("newdataconsumer", (dataConsumer: MediaSoup.DataConsumer) => {
-        console.log("new data consumer created [worker.pid:%d, router.id:%s, transport.id:%s, dataConsumer.id:%s]", worker.pid, router.id, transport.id, dataConsumer.id);
-        dataConsumer.observer.on("close", () => console.log("data consumer closed [dataConsumer.id:%s]", dataConsumer.id));
-      });
+    console.log("new worker created [worke.pid:%d]", worker.pid);
+    worker.observer.on("close", () => console.log("worker closed [worker.pid:%d]", worker.pid));
+    worker.observer.on("newrouter", (router: MediaSoup.Router) => {
+        console.log("new router created [worker.pid:%d, router.id:%s]", worker.pid, router.id);
+        router.observer.on("close", () => console.log("router closed [router.id:%s]", router.id));
+        router.observer.on("newtransport", (transport: MediaSoup.Transport) => {
+            console.log("new transport created [worker.pid:%d, router.id:%s, transport.id:%s]", worker.pid, router.id, transport.id);
+            transport.observer.on("close", () => console.log("transport closed [transport.id:%s]", transport.id));
+            transport.observer.on("newproducer", (producer: MediaSoup.Producer) => {
+                console.log("new producer created [worker.pid:%d, router.id:%s, transport.id:%s, producer.id:%s]", worker.pid, router.id, transport.id, producer.id);
+                producer.observer.on("close", () => console.log("producer closed [producer.id:%s]", producer.id));
+            });
+            transport.observer.on("newconsumer", (consumer: MediaSoup.Consumer) => {
+                console.log("new consumer created [worker.pid:%d, router.id:%s, transport.id:%s, consumer.id:%s]", worker.pid, router.id, transport.id, consumer.id);
+                consumer.observer.on("close", () => console.log("consumer closed [consumer.id:%s]", consumer.id));
+            });
+            transport.observer.on("newdataproducer", (dataProducer: MediaSoup.DataProducer) => {
+                console.log("new data producer created [worker.pid:%d, router.id:%s, transport.id:%s, dataProducer.id:%s]", worker.pid, router.id, transport.id, dataProducer.id);
+                dataProducer.observer.on("close", () => console.log("data producer closed [dataProducer.id:%s]", dataProducer.id));
+            });
+            transport.observer.on("newdataconsumer", (dataConsumer: MediaSoup.DataConsumer) => {
+                console.log("new data consumer created [worker.pid:%d, router.id:%s, transport.id:%s, dataConsumer.id:%s]", worker.pid, router.id, transport.id, dataConsumer.id);
+                dataConsumer.observer.on("close", () => console.log("data consumer closed [dataConsumer.id:%s]", dataConsumer.id));
+            });
+        });
     });
-  });
 });

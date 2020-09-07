@@ -20,29 +20,29 @@ const EC2Client = new EC2()
 
 async function getECSTaskENIPublicIP() {
     const ecsMetadataURI = process.env.ECS_CONTAINER_METADATA_URI_V4 || process.env.ECS_CONTAINER_METADATA_URI
-    if(!ecsMetadataURI) { return }
+    if (!ecsMetadataURI) { return }
     console.log(ecsMetadataURI)
     const response = await fetch(`${ecsMetadataURI}`)
     const ecsMetadata = await response.json()
     const clusterARN = ecsMetadata.Labels && ecsMetadata.Labels["com.amazonaws.ecs.cluster"] as string
     const taskARN = ecsMetadata.Labels && ecsMetadata.Labels["com.amazonaws.ecs.task-arn"] as string
-    if(!taskARN) { return }
-    const tasks = await ECSClient.describeTasks({cluster: clusterARN, tasks: [taskARN]}).promise()
-    if(!tasks.tasks) { return }
-    for(const task of tasks.tasks) {
-        if(!task.attachments) { continue }
-        for(const attachment of task.attachments) {
-            if(attachment.type !== "ElasticNetworkInterface") { continue }
-            if(attachment.status === "DELETED") { continue }
-            if(!attachment.details) { continue }
-            for(const detail of attachment.details) {
-                if(detail.name !== "networkInterfaceId") { continue }
-                if(!detail.value) { continue }
-                const enis = await EC2Client.describeNetworkInterfaces({NetworkInterfaceIds: [detail.value]}).promise()
-                if(!enis.NetworkInterfaces) { continue }
-                for(const eni of enis.NetworkInterfaces) {
-                    if(!eni.Association) { continue }
-                    if(!eni.Association.PublicIp) { continue }
+    if (!taskARN) { return }
+    const tasks = await ECSClient.describeTasks({ cluster: clusterARN, tasks: [taskARN] }).promise()
+    if (!tasks.tasks) { return }
+    for (const task of tasks.tasks) {
+        if (!task.attachments) { continue }
+        for (const attachment of task.attachments) {
+            if (attachment.type !== "ElasticNetworkInterface") { continue }
+            if (attachment.status === "DELETED") { continue }
+            if (!attachment.details) { continue }
+            for (const detail of attachment.details) {
+                if (detail.name !== "networkInterfaceId") { continue }
+                if (!detail.value) { continue }
+                const enis = await EC2Client.describeNetworkInterfaces({ NetworkInterfaceIds: [detail.value] }).promise()
+                if (!enis.NetworkInterfaces) { continue }
+                for (const eni of enis.NetworkInterfaces) {
+                    if (!eni.Association) { continue }
+                    if (!eni.Association.PublicIp) { continue }
                     return eni.Association.PublicIp
                 }
             }
@@ -55,15 +55,15 @@ function getIPAddress() {
     function scoreInterface(info: NetworkInterfaceInfo) {
         const check: any = checkIp(info.address)
         let score = 0
-        if(check.isPublic) { score += 4 }
-        if(!info.internal) { score += 2 }
-        if(info.family === "IPv4") {score += 1}
+        if (check.isPublic) { score += 4 }
+        if (!info.internal) { score += 2 }
+        if (info.family === "IPv4") { score += 1 }
         return score
     }
     const interfaces = getNetworkInterfaceInfo()
-    interfaces.sort((a,b) => scoreInterface(b) - scoreInterface(a))
+    interfaces.sort((a, b) => scoreInterface(b) - scoreInterface(a))
     console.log(interfaces)
-    if(interfaces.length <= 0) { return }
+    if (interfaces.length <= 0) { return }
     return interfaces[0].address
 }
 
@@ -71,14 +71,14 @@ async function main() {
     try {
         const port = process.env.PORT || 8080;//+Math.floor(128*Math.random());
         const ip = (await getECSTaskENIPublicIP()) || getIPAddress()
-        if(!ip) { console.error("No network interface found"); process.exit(-4) }
+        if (!ip) { console.error("No network interface found"); process.exit(-4) }
         console.log("ip address", ip)
         const uri = `${ip}:${port}/graphql`
         const sfu = await SFU.create(ip, uri)
         let connectionCount = 0
 
         const server = new ApolloServer({
-            typeDefs: schema,            
+            typeDefs: schema,
             subscriptions: {
                 keepAlive: 1000,
                 onConnect: async ({ roomId, sessionId }: any, _webSocket, connectionData: any) => {
@@ -91,10 +91,10 @@ async function main() {
                     return { roomId, sessionId } as Context;
                 },
                 onDisconnect: (websocket, connectionData) => {
-                    if(!(connectionData as any).counted) { return }
+                    if (!(connectionData as any).counted) { return }
                     connectionCount--
-                    if(connectionCount <= 0) { startServerTimeout() } 
-                    const {sessionId} = connectionData as any
+                    if (connectionCount <= 0) { startServerTimeout() }
+                    const { sessionId } = connectionData as any
                     console.log(`Disconnection(${connectionCount}) from ${sessionId}`)
                 }
             },
@@ -120,7 +120,7 @@ async function main() {
                 if (connection) {
                     return connection.context;
                 } else {
-                    return { };
+                    return {};
                 }
             }
         });
@@ -130,15 +130,15 @@ async function main() {
                     { address: ip, family: "IPv4" },
                     ...getNetworkInterfaceInfo(),
                 ].map((info) => `\thttp://${
-                    info.family==="IPv6"
+                    info.family === "IPv6"
                         ? `[${info.address}]`
                         : info.address
-                }:${port}${server.graphqlPath}`)
-                .join("\n")
-            }`
+                    }:${port}${server.graphqlPath}`)
+                    .join("\n")
+                }`
             );
         })
-    } catch(e) {
+    } catch (e) {
         console.error(e)
         process.exit(-1)
     }
@@ -146,15 +146,15 @@ async function main() {
 
 let timeout: NodeJS.Timeout | undefined
 export function startServerTimeout() {
-    if(timeout) { clearTimeout(timeout) }
+    if (timeout) { clearTimeout(timeout) }
     timeout = setTimeout(() => {
         console.error("There have been no new connections after 5 minutes, shutting down")
         process.exit(-1)
-    }, 1000*60*5)
+    }, 1000 * 60 * 5)
 }
 
 function stopServerTimeout() {
-    if(timeout) {
+    if (timeout) {
         clearTimeout(timeout)
         timeout = undefined
     }
