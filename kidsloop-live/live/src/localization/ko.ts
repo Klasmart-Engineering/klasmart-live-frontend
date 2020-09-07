@@ -28,7 +28,7 @@ const messages: Record<string, string> = {
     what_is_this: "이건 어떤 기능인가요?",
     live_buttonStop: "정지",
     live_buttonPresent: "수업 진행",
-    live_buttonObserve: "학생 모드",
+    live_buttonObserve: "관찰 모드",
     live_buttonScreen: "화면 공유",
     live_buttonStopFull: "Webcam Mode",
     live_buttonPresentFull: "Presenter Mode",
