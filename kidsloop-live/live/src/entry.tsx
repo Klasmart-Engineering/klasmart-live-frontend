@@ -85,7 +85,7 @@ if (url.hostname !== "localhost" && url.hostname !== "live.kidsloop.net") {
 
 function parseToken() {
     try {
-        if (url.hostname === "localhost" || url.hostname === "live.kidsloop.net" || url.hostname === "be6c5a3a43ad.jp.ngrok.io") {
+        if (url.hostname === "localhost" || url.hostname === "live.kidsloop.net" || url.hostname.includes("ngrok.io")) {
             const materialsParam = url.searchParams.get("materials");
             return {
                 teacher: url.searchParams.get("teacher") !== null,
