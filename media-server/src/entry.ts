@@ -8,6 +8,7 @@ import EC2 from "aws-sdk/clients/ec2"
 import ECS from "aws-sdk/clients/ecs"
 // @ts-ignore
 import checkIp = require("check-ip")
+import { setDockerId, setAvailable } from "./reporting";
 
 
 export interface Context {
@@ -24,6 +25,7 @@ async function getECSTaskENIPublicIP() {
     console.log(ecsMetadataURI)
     const response = await fetch(`${ecsMetadataURI}`)
     const ecsMetadata = await response.json()
+    setDockerId(ecsMetadata.DockerId)
     const clusterARN = ecsMetadata.Labels && ecsMetadata.Labels["com.amazonaws.ecs.cluster"] as string
     const taskARN = ecsMetadata.Labels && ecsMetadata.Labels["com.amazonaws.ecs.task-arn"] as string
     if (!taskARN) { return }
@@ -69,7 +71,7 @@ function getIPAddress() {
 
 async function main() {
     try {
-        const port = process.env.PORT || 8080;//+Math.floor(128*Math.random());
+        const port = process.env.PORT || 8000 + Math.floor(128 * Math.random());
         const ip = (await getECSTaskENIPublicIP()) || getIPAddress()
         if (!ip) { console.error("No network interface found"); process.exit(-4) }
         console.log("ip address", ip)
@@ -137,6 +139,7 @@ async function main() {
                     .join("\n")
                 }`
             );
+            setAvailable(true)
         })
     } catch (e) {
         console.error(e)

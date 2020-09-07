@@ -6,9 +6,9 @@ import {
 } from "mediasoup";
 import { Client, Stream } from "./client";
 import { Context, startServerTimeout } from "./entry";
-import { getNetworkInterfaceInfo } from "./networkInterfaces";
 import Redis = require("ioredis")
 import { RedisKeys } from "./redisKeys";
+import { setAvailable } from "./reporting";
 
 export class SFU {
     public static async create(ip: string, uri: string): Promise<SFU> {
@@ -125,6 +125,7 @@ export class SFU {
             claimed = await this.redis.set(sfu.key, this.address, "EX", sfu.ttl, "NX")
         } while (claimed !== "OK")
         this.roomId = roomId
+        setAvailable(false)
 
         console.log(`Assigned to Room(${roomId})`)
         startServerTimeout()
