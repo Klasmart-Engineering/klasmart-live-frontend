@@ -11,6 +11,7 @@ import { PasswordRestore } from "./pages/account/password/password-restore";
 import { Signup } from "./pages/account/signup";
 import { Layout } from "./pages/classroom/layout";
 import { ActionTypes } from "./store/actions";
+import { App as CMS } from "./pages/cms/cms-frontend-web/src/App";
 
 export function App() {
     const store = useStore();
@@ -29,6 +30,8 @@ export function App() {
 
     return (
         <Switch>
+            <Route path="/home" component={Layout} />
+            <Route path="/library" component={CMS} />
             <Route path="/classroom" component={Layout} />
             <Route path="/password-change" component={PasswordChange} />
             <Route path="/password-changed" component={PasswordChanged} />

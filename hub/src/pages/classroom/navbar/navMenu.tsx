@@ -22,6 +22,7 @@ import SecurityTwoToneIcon from "@material-ui/icons/SecurityTwoTone";
 import TableChartTwoToneIcon from "@material-ui/icons/TableChartTwoTone";
 import MuiAlert, { AlertProps } from "@material-ui/lab/Alert";
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import DialogAppBar from "../../../components/styled/dialogAppBar";
 import { State } from "../../../store/store";
@@ -78,7 +79,7 @@ function MenuButton(props: MenuItemProps) {
         setOpen(false);
     };
 
-    return(
+    return (
         <>
             <Button fullWidth className={classes.menuButton} onClick={handleClick}>
                 <Grid
@@ -137,7 +138,7 @@ export default function NavMenu() {
         },
         {
             description: "Approve, manage, and view your content library",
-            link: "#",
+            link: "/library",
             logo: <AllInboxTwoToneIcon style={{ color: "#1f94e8", fontSize: 48 }} />,
             title: "Content Library",
         },
@@ -239,7 +240,13 @@ export default function NavMenu() {
                                     style={{ textAlign: "center" }}
                                     className={classes.menuGrid}
                                 >
-                                    <MenuButton content={menuItem} />
+                                    <Link
+                                        to={menuItem.link}
+                                        onClick={menuItem.link !== "#" ? () => setOpen(false) : undefined}
+                                        style={{ textDecoration: "none" }}
+                                    >
+                                        <MenuButton content={menuItem} />
+                                    </Link>
                                 </Grid>
                             );
                         })
