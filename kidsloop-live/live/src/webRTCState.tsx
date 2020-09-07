@@ -18,7 +18,6 @@ import { GridOn as CanvasIcon } from "@styled-icons/material-twotone/GridOn";
 import { GridOff as CanvasOffIcon } from "@styled-icons/material-twotone/GridOff";
 import { Eraser as EraserIcon } from "@styled-icons/boxicons-solid/Eraser";
 
-import { UserContext } from "./entry";
 import { Session } from "./room";
 import StyledIcon from "./components/styled/icon";
 import NoCamera from "./components/noCamera";
