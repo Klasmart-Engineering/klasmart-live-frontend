@@ -155,10 +155,12 @@ async function main() {
 let timeout: NodeJS.Timeout | undefined
 export function startServerTimeout() {
     if (timeout) { clearTimeout(timeout) }
+    let startServerTimeoutEnvVar = parseInt(process.env.START_SERVER_TIMEOUT !== undefined ? process.env.START_SERVER_TIMEOUT : '')
+    let startServerTimeout = startServerTimeoutEnvVar !== NaN ? startServerTimeoutEnvVar : 5
     timeout = setTimeout(() => {
-        console.error("There have been no new connections after 5 minutes, shutting down")
+        console.error(`There have been no new connections after ${startServerTimeout} minutes, shutting down`)
         process.exit(-1)
-    }, 1000 * 60 * 5)
+    }, 1000 * 60 * startServerTimeout)
 }
 
 function stopServerTimeout() {
