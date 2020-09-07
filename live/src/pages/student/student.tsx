@@ -58,9 +58,10 @@ export function Student({ openDrawer }: {
 
     useEffect(() => {
         if (!rootDivRef || !rootDivRef.current) { return; }
+        // console.log("rootDivRef.current.clientWidth: ", rootDivRef.current.clientWidth)
         setRootDivWidth(rootDivRef.current.clientWidth);
         setRootDivHeight(rootDivRef.current.clientHeight);
-    }, [rootDivRef]);
+    }, [rootDivRef.current]);
 
     if (!content || content.type == "Blank") {
         return (
@@ -84,6 +85,9 @@ export function Student({ openDrawer }: {
             </div>
         );
     }
+    // useEffect(() => {
+    //     console.log("rootDivWidth, rootDivHeight: ", rootDivWidth, rootDivHeight)
+    // }, [rootDivWidth, rootDivHeight])
 
     switch (content.type) {
         case "Stream":
