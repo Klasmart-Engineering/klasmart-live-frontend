@@ -31,6 +31,7 @@ import { Favorite as HeartIcon } from "@styled-icons/material/Favorite";
 import { ThumbUp as EncourageIcon } from "@styled-icons/material/ThumbUp";
 import { WebRTCSFUContext } from "./webrtc/sfu";
 import { useSynchronizedState } from "./whiteboard/context-providers/SynchronizedStateProvider";
+import { UserContext } from "./entry";
 
 const SEND_SIGNAL = gql`
   mutation webRTCSignal($roomId: ID!, $toSessionId: ID!, $webrtc: WebRTCIn) {
