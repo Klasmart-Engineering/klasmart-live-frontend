@@ -49,8 +49,12 @@ export function Player ({ streamId, frameProps, parentWidth, parentHeight, setPa
     const iframeWindow = ref.current.contentWindow
     const listener = (e: MessageEvent) => {if(e.data === "ready") {sendEvent()}}
     iframeWindow.addEventListener('message', listener)
-    return () => iframeWindow.removeEventListener('message', listener)
-  })
+    return () => {
+      if(iframeWindow&&iframeWindow.removeEventListener) {
+          iframeWindow.removeEventListener("message", listener);
+      }
+  }
+}, [ref.current, ref.current && ref.current.contentWindow]);
 
   const { loading, error } = useSubscription(SUB_EVENTS, {
     onSubscriptionData: e => sendEvent(e.subscriptionData.data.stream.event),
