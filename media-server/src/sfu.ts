@@ -55,7 +55,16 @@ export class SFU {
         return new SFU(ip, uri, redis, worker, router)
     }
 
-
+    public connect(sessionId: string) {
+        const client = this.clients.get(sessionId)
+        if(!client) { return }
+        client.connect()
+    }
+    public disconnect(sessionId: string) {
+        const client = this.clients.get(sessionId)
+        if(!client) { return }
+        client.disconnect()
+    }
     public async subscribe({ sessionId }: Context) {
         if (!sessionId) { console.error("Can not initiate subscription without sessionId"); return }
         console.log(`Subscription from ${sessionId}`)
@@ -156,7 +165,12 @@ export class SFU {
     private async getOrCreateClient(id: string): Promise<Client> {
         let client = this.clients.get(id)
         if (!client) {
-            client = await Client.create(id, this.router, this.listenIps)
+            client = await Client.create(
+                id,
+                this.router,
+                this.listenIps,
+                () => this.clients.delete(id),
+            )
             console.log(`New Client(${id})`)
             for (const [otherId, otherClient] of this.clients) {
                 for (const stream of otherClient.getStreams()) {

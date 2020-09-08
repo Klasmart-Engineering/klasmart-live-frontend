@@ -12,7 +12,7 @@ export interface Stream {
 }
 
 export class Client {
-    public static async create(id: string, router: MediaSoup.Router, listenIps: MediaSoup.TransportListenIp[]) {
+    public static async create(id: string, router: MediaSoup.Router, listenIps: MediaSoup.TransportListenIp[], closeCallback: () => unknown) {
         try {
             const producerTransport = await router.createWebRtcTransport({
                 listenIps,
@@ -26,11 +26,25 @@ export class Client {
                 enableUdp: true,
                 preferUdp: true,
             })
-            return new Client(id, router, producerTransport, consumerTransport)
+            return new Client(id, router, producerTransport, consumerTransport, closeCallback)
         } catch (e) {
             console.error(e)
             throw e
         }
+    }
+
+    public connect() {
+        if (!this.timeout) { return }
+        clearTimeout(this.timeout)
+        this.timeout = undefined
+    }
+
+    public disconnect() {
+        if (this.timeout) { clearTimeout(this.timeout) }
+        this.timeout = setTimeout(() => {
+            console.log(`User(${this.id}) has timed out`)
+            this.close()
+        }, 1000 * 60)
     }
 
     public subscribe() {
@@ -206,11 +220,15 @@ export class Client {
     private router: MediaSoup.Router
     private producerTransport: MediaSoup.WebRtcTransport
     private consumerTransport: MediaSoup.WebRtcTransport
+    private timeout?: NodeJS.Timeout
+    private closeCallback: () => unknown
+
     private constructor(
         id: string,
         router: MediaSoup.Router,
         producerTransport: MediaSoup.WebRtcTransport,
         consumerTransport: MediaSoup.WebRtcTransport,
+        closeCallback: () => unknown,
     ) {
         this.id = id
         this.router = router
@@ -226,6 +244,7 @@ export class Client {
             this.channel.publish("close", { media: { close: consumerTransport.id } })
         })
         this.destructors.set(consumerTransport.id, () => consumerTransport.close())
+        this.closeCallback = closeCallback
     }
 
     private async produce(produce: MediaSoup.ProducerOptions) {
@@ -241,6 +260,14 @@ export class Client {
         if (this._rtpCapabilities) { return this._rtpCapabilities }
         const { promise } = await this.rtpCapabilitiesPrePromise
         return promise
+    }
+
+    private close() {
+        console.log(`Client(${this.id}) cleanup`)
+        this.closeCallback()
+        for(const destructor of this.destructors.values()) {
+            destructor()
+        }
     }
 }
 

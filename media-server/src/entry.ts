@@ -70,6 +70,8 @@ function getIPAddress() {
     return interfaces[0].address
 }
 
+
+export const connectionCount = new Map<string,number>()
 async function main() {
     try {
         const port = process.env.PORT || 8000 + Math.floor(128 * Math.random());
