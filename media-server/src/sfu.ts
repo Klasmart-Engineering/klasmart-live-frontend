@@ -21,7 +21,7 @@ export class SFU {
         const worker = await createWorker({
             logLevel: "warn",
         })
-        console.log("🎥 Mediasoup worker initalized");
+        console.log("🎥 Mediasoup worker initialized");
         const mediaCodecs: MediaSoup.RtpCodecCapability[] = [
             {
                 kind: "audio",
@@ -30,11 +30,44 @@ export class SFU {
                 channels: 2
             },
             {
+                kind: 'video',
+                mimeType: 'video/VP8',
+                clockRate: 90000,
+                parameters: {
+
+                },
+            },
+            {
+                kind: 'video',
+                mimeType: 'video/VP9',
+                clockRate: 90000,
+                parameters: {
+                    'profile-id': 0
+                },
+            },
+            {
+                kind: 'video',
+                mimeType: 'video/VP9',
+                clockRate: 90000,
+                parameters: {
+                    'profile-id': 2
+                },
+            },
+            {
+                kind: 'video',
+                mimeType: 'video/H264',
+                clockRate: 90000,
+                parameters: {
+                    'packetization-mode': 1,
+                    'profile-level-id': '4d0032',
+                    'level-asymmetry-allowed': 1,
+                }
+            },
+            {
                 kind: "video",
                 mimeType: "video/H264",
                 clockRate: 90000,
-                parameters:
-                {
+                parameters: {
                     "packetization-mode": 1,
                     "profile-level-id": "42e01f",
                     "level-asymmetry-allowed": 1
@@ -201,7 +234,7 @@ export class SFU {
 }
 
 observer.on("newworker", (worker) => {
-    console.log("new worker created [worke.pid:%d]", worker.pid);
+    console.log("new worker created [worker.pid:%d]", worker.pid);
     worker.observer.on("close", () => {
         console.log("worker closed [worker.pid:%d]", worker.pid);
         console.log("Will shutdown due to worker close");
