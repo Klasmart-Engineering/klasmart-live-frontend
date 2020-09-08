@@ -184,9 +184,12 @@ export class WebRTCSFUContext implements WebRTCContext {
             const producer  = await transport.produce({
                 track,
                 encodings: [
-                    { maxBitrate: 100000 },
-                    { maxBitrate: 300000 },
-                    { maxBitrate: 900000 },
+                    // Simulcast encodings
+                    { maxBitrate: 100000, scaleResolutionDownBy: 4, rid: 'q' },
+                    { maxBitrate: 300000, scaleResolutionDownBy: 2, rid: 'h' },
+                    { maxBitrate: 900000, scaleResolutionDownBy: 1, rid: 'f' },
+                    // SVC encodings, see https://w3c.github.io/webrtc-svc/#scalabilitymodes*
+                    { maxBitrate: 1800000, scalabilityMode: 'L2T3', rid: 'svc'}
                 ],
             })
             this.destructors.set(producer.id, () => producer.close())
