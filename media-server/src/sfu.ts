@@ -188,10 +188,18 @@ export class SFU {
 
 observer.on("newworker", (worker) => {
     console.log("new worker created [worke.pid:%d]", worker.pid);
-    worker.observer.on("close", () => console.log("worker closed [worker.pid:%d]", worker.pid));
+    worker.observer.on("close", () => {
+        console.log("worker closed [worker.pid:%d]", worker.pid);
+        console.log("Will shutdown due to worker close");
+        process.exit(-1)
+    })
     worker.observer.on("newrouter", (router: MediaSoup.Router) => {
         console.log("new router created [worker.pid:%d, router.id:%s]", worker.pid, router.id);
-        router.observer.on("close", () => console.log("router closed [router.id:%s]", router.id));
+        router.observer.on("close", () => {
+            console.log("router closed [router.id:%s]", router.id)
+            console.log("Will shutdown due to router close");
+            process.exit(-1)
+        });
         router.observer.on("newtransport", (transport: MediaSoup.Transport) => {
             console.log("new transport created [worker.pid:%d, router.id:%s, transport.id:%s]", worker.pid, router.id, transport.id);
             transport.observer.on("close", () => console.log("transport closed [transport.id:%s]", transport.id));
