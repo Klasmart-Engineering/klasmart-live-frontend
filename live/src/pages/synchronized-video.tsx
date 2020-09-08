@@ -11,7 +11,7 @@ import { CircularProgress, Typography, IconButton } from "@material-ui/core";
 import { UserContext } from "../entry";
 import { MaterialTypename } from "../lessonMaterialContext";
 import { FFT } from "../components/fft";
-import ReactPlayer from "react-player/lazy";
+import ReactPlayer from "../components/react-player/lazy";
 import { VolumeMute as AudioOffIcon } from "@styled-icons/boxicons-regular/VolumeMute";
 
 interface VideoSynchronize {
