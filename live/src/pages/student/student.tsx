@@ -58,7 +58,6 @@ export function Student({ openDrawer }: {
 
     useEffect(() => {
         if (!rootDivRef || !rootDivRef.current) { return; }
-        // console.log("rootDivRef.current.clientWidth: ", rootDivRef.current.clientWidth)
         setRootDivWidth(rootDivRef.current.clientWidth);
         setRootDivHeight(rootDivRef.current.clientHeight);
     }, [rootDivRef.current]);
@@ -85,15 +84,12 @@ export function Student({ openDrawer }: {
             </div>
         );
     }
-    // useEffect(() => {
-    //     console.log("rootDivWidth, rootDivHeight: ", rootDivWidth, rootDivHeight)
-    // }, [rootDivWidth, rootDivHeight])
 
     switch (content.type) {
         case "Stream":
             return (
                 <div ref={rootDivRef} id="player-container" className={classes.root}>
-                    <Whiteboard height={rootDivHeight}>
+                    <Whiteboard width="100%" height="100%">
                         <PreviewPlayer streamId={content.contentId} width={rootDivWidth} height={rootDivHeight} />
                         {/* <WBToolbar /> */}
                     </Whiteboard>
@@ -107,7 +103,7 @@ export function Student({ openDrawer }: {
         case "Activity":
             return (
                 <div ref={rootDivRef} className={classes.root}>
-                    <Whiteboard height={rootDivHeight}>
+                    <Whiteboard width="100%" height="100%">
                         {(rootDivRef && rootDivHeight) ?
                             <RecordedIframe
                                 contentId={content.contentId}
@@ -129,7 +125,7 @@ export function Student({ openDrawer }: {
         case "Video":
             return (
                 <div ref={rootDivRef} className={classes.root}>
-                    <Whiteboard height={rootDivHeight}>
+                    <Whiteboard width="100%" height="100%">
                         <ReplicaMedia type={content.type === "Video" ? MaterialTypename.Video : MaterialTypename.Audio} style={{ width: "100%" }} sessionId={content.contentId} />
                     </Whiteboard>
                     <WBToolbar />
@@ -137,7 +133,7 @@ export function Student({ openDrawer }: {
             );
         case "Image":
             return <div ref={rootDivRef} className={classes.root}>
-                <Whiteboard height={rootDivHeight}>
+                <Whiteboard width="100%" height="100%">
                     <Grid container>
                         <Grid container item style={{
                             height: "100%",
@@ -167,7 +163,7 @@ export function Student({ openDrawer }: {
                 const session = users.get(content.contentId)
                 return <div ref={rootDivRef} className={classes.root}>
                     <Typography variant="caption" align="center">{session ? session.name : undefined}</Typography>
-                    <Whiteboard height={rootDivHeight}>
+                    <Whiteboard width="100%" height="100%">
                         <Stream stream={webrtc.getCameraStream(content.contentId)} />
                     </Whiteboard>
                     <WBToolbar />
@@ -178,7 +174,7 @@ export function Student({ openDrawer }: {
                 const session = users.get(content.contentId)
                 return <div ref={rootDivRef} className={classes.root}>
                     <Typography variant="caption" align="center">{session ? session.name : undefined}</Typography>
-                    <Whiteboard height={rootDivHeight}>
+                    <Whiteboard width="100%" height="100%">
                         <Stream stream={webrtc.getAuxStream(content.contentId)} />
                     </Whiteboard>
                     <WBToolbar />
