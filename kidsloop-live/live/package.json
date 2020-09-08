@@ -74,7 +74,7 @@
     "mediasoup-client": "^3.6.12",
     "node-source-han-sans-sc": "^1.1.0-2.001R",
     "query-string": "^6.13.0",
-    "kidsloop-canvas": "git+git@bitbucket.org:calmisland/kidsloop-canvas.git#fix/resubmit-events-when-canvas-load",
+    "kidsloop-canvas": "git+git@bitbucket.org:calmisland/kidsloop-canvas.git#release/npm",
     "react": "^16.13.1",
     "react-color": "^2.18.1",
     "react-confetti": "^6.0.0",
