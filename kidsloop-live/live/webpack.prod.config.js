@@ -82,7 +82,15 @@ module.exports = {
     path: path.resolve(__dirname, 'dist')
   },
   plugins: [
-    new webpack.EnvironmentPlugin(['NODE_ENV'], ['ENDPOINT_GQL'], ['ENDPOINT_H5P'], ['ENDPOINT_TEST_ASSETS_S3'], ['ENDPOINT_WEBSOCKET'], ['APP_GIT_REV']),
+    new webpack.EnvironmentPlugin(
+      ["NODE_ENV"],
+      ["ENDPOINT_GQL"],
+      ["ENDPOINT_H5P"],
+      ["ENDPOINT_TEST_ASSETS_S3"],
+      ["ENDPOINT_WEBSOCKET"],
+      ["APP_GIT_REV"],
+      ["CALLSTATS_ENABLE"],
+    ),
     new HtmlWebpackPlugin({
       filename: 'index.html',
       chunks: ['ui'],

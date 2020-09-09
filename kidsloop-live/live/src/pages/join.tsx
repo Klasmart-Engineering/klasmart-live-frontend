@@ -106,7 +106,11 @@ export function Join(): JSX.Element {
         }
 
         navigator.mediaDevices.getUserMedia({ 
-            video: { deviceId: videoDeviceId },
+            video: {
+                deviceId: videoDeviceId,
+                width: { ideal: 4096 },
+                height: { ideal: 2160 },
+            },
             audio: { deviceId: audioDeviceId },
         })
             .then((s) => { setStream(s); })

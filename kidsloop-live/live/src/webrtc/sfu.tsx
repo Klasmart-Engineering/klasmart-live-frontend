@@ -1,3 +1,5 @@
+// @ts-ignore
+const callstats: any = require('callstats-js/callstats.min');
 import { WebRTCContext } from "./webrtc";
 import {
     Device,
@@ -103,6 +105,7 @@ export class WebRTCSFUContext implements WebRTCContext {
         if(!sfu.current) { sfu.current = new WebRTCSFUContext(rerender,rtpCapabilities,transport,producer,consumer,stream) }
         
         const { roomId } = RoomContext.Consume();
+        const { name } = useContext(UserContext);
         useSubscription(SUBSCRIBE, {
             onSubscriptionData: ({ subscriptionData }) => {
                 if (!subscriptionData) { return; }
@@ -117,17 +120,22 @@ export class WebRTCSFUContext implements WebRTCContext {
                     close,
                 } = subscriptionData.data.media
                 if(rtpCapabilities) { sfu.current.rtpCapabilitiesMessage(rtpCapabilities) }
-                if(producerTransport) { sfu.current.producerTransportMessage(producerTransport) }
-                if(consumerTransport) { sfu.current.consumerTransportMessage(consumerTransport) }
+                if(producerTransport) { sfu.current.producerTransportMessage(producerTransport, roomId) }
+                if(consumerTransport) { sfu.current.consumerTransportMessage(consumerTransport, roomId) }
                 if(consumer) { sfu.current.consumerMessage(consumer) }
                 if(stream) { sfu.current.streamMessage(stream) }
                 if(close) { sfu.current.closeMessage(close) }
             },
             variables: { roomId }
         })
-        
 
         const { camera } = useContext(UserContext);
+
+        useEffect(() => {
+            callstats.initialize("881714000", "OV6YSSRJ0fOA:vr7quqij46jLPMpaBXTAF50F2wFTqP4acrxXWVs9BIk=", name + ":" + sessionId)
+        }, [name, sessionId])
+
+
         useEffect(() => {
             if(!camera) { return }
             const promise = sfu.current.transmitStream("camera", camera)
@@ -182,21 +190,40 @@ export class WebRTCSFUContext implements WebRTCContext {
         const producers = []
         let producer: Producer
         for(const track of tracks) {
-            console.log(`Wait for producer`)
             let params: ProducerOptions
             if (track.kind === "video") {
-                params = {
-                    track,
-                    encodings: [
-                        { ssrc: 111110, maxBitrate: 2000000, scaleResolutionDownBy: 4, scalabilityMode: 'S1T1' },
-                        { ssrc: 111111, maxBitrate: 4000000, scaleResolutionDownBy: 2, scalabilityMode: 'S1T1' },
-                        { ssrc: 111112, maxBitrate: 6000000, scaleResolutionDownBy: 1, scalabilityMode: 'S1T1' },
-                    ]
+                // Check if simulcast is needed
+                const settings = track.getSettings()
+                const trackWidth = settings.width || 640
+                const trackHeight = settings.height || 480
+                if (trackWidth <= 640 || trackHeight <= 480) {
+                    params = {
+                        track,
+                        encodings: [
+                            // These should be ordered from lowest bitrate to highest bitrate
+                            // rid will be automatically assigned in the order of this array from "r0" to "rN-1"
+                            { maxBitrate: 1000000, scaleResolutionDownBy: 2, scalabilityMode: 'S1T1' },
+                            { maxBitrate: 2000000, scaleResolutionDownBy: 1, scalabilityMode: 'S1T1' },
+                        ]
+                    }
+                } else {
+                    params = {
+                        track,
+                        encodings: [
+                            // These should be ordered from lowest bitrate to highest bitrate
+                            // rid will be automatically assigned in the order of this array from "r0" to "rN-1"
+                            { maxBitrate: 1000000, scaleResolutionDownBy: 4, scalabilityMode: 'S1T1' },
+                            { maxBitrate: 2000000, scaleResolutionDownBy: 2, scalabilityMode: 'S1T1' },
+                            { maxBitrate: 4000000, scaleResolutionDownBy: 1, scalabilityMode: 'S1T1' },
+                        ]
+                    }
                 }
+                console.log(`Wait for producer`)
                 producer  = await transport.produce(params)
                 await producer.setMaxSpatialLayer(2)
             } else {
                 params = { track }
+                console.log(`Wait for producer`)
                 producer  = await transport.produce(params)
             }
             this.destructors.set(producer.id, () => producer.close())
@@ -411,7 +438,7 @@ export class WebRTCSFUContext implements WebRTCContext {
         resolver(this._device)
     }
 
-    private async producerTransportMessage(message: string) {
+    private async producerTransportMessage(message: string, roomId: string) {
         const params = JSON.parse(message)
         if(this._producerTransport) {console.error("Producer transport already initialized"); return;}
         if(this._producerTransport === null) {console.error("Producer transport is being initialized"); return;}
@@ -421,7 +448,14 @@ export class WebRTCSFUContext implements WebRTCContext {
         const device = await this.device()
         console.log("Producer: wait send transport", params)
         const transport = await device.createSendTransport(params)
-        this.destructors.set(transport.id, () => transport.close())
+
+        WebRTCSFUContext.attachCallstatsFabric(transport, params, roomId, callstats.transmissionDirection.sendonly)
+
+        this.destructors.set(transport.id, () => {
+            WebRTCSFUContext.terminateCallstatsFabric(transport, roomId)
+            transport.close()
+        })
+
         transport.on("connect", async (connectParams, callback, errback) => {
             try {                
                 const { errors } = await this.transport({
@@ -433,6 +467,7 @@ export class WebRTCSFUContext implements WebRTCContext {
                 if(errors) { throw errors }
                 callback()
             } catch (error) {
+                WebRTCSFUContext.attachCallstatsError(transport, roomId, error)
                 errback(error)
             }
         })
@@ -447,6 +482,7 @@ export class WebRTCSFUContext implements WebRTCContext {
                     if(errors) { throw errors }
                     callback({ id: data.producer })
                 } catch (error) {
+                    WebRTCSFUContext.attachCallstatsError(transport, roomId, error)
                     errback(error)
                 }
             }
@@ -459,7 +495,7 @@ export class WebRTCSFUContext implements WebRTCContext {
         console.log("Producer: resolved")
     }
     
-    private async consumerTransportMessage(message: string) {
+    private async consumerTransportMessage(message: string, roomId: string) {
         const params = JSON.parse(message)
         if(this._consumerTransport) {console.error("Consumer transport already initialized"); return;}
         if(this._consumerTransport === null) {console.error("Consumer transport is being initialized"); return;}
@@ -469,7 +505,14 @@ export class WebRTCSFUContext implements WebRTCContext {
         const device = await this.device()
         console.log("Consumer: create recv transport")
         const transport = await device.createRecvTransport(params)
-        this.destructors.set(transport.id, () => transport.close())
+
+        WebRTCSFUContext.attachCallstatsFabric(transport, params, roomId, callstats.transmissionDirection.receiveonly);
+
+        this.destructors.set(transport.id, () => {
+            WebRTCSFUContext.terminateCallstatsFabric(transport, roomId)
+            transport.close()
+        })
+
         transport.on("connect", async (connectParams, callback, errback) => {
             console.log("Consumer: connect")
             try {
@@ -482,6 +525,7 @@ export class WebRTCSFUContext implements WebRTCContext {
                 if(errors) { throw errors }
                 callback()
             } catch (error) {
+                WebRTCSFUContext.attachCallstatsError(transport, roomId, error)
                 errback(error)
             }
         })
@@ -490,6 +534,52 @@ export class WebRTCSFUContext implements WebRTCContext {
         const { resolver } = await this.consumerTransportPrePromise
         this._consumerTransport = transport
         resolver(this._consumerTransport)
+    }
+
+    private static attachCallstatsFabric(transport: MediaSoup.Transport, params: any, roomId: string, direction: any) {
+        if (process.env.CALLSTATS_ENABLE !== "TRUE") {
+            return
+        }
+        // Experimental, may not work on all browsers
+        if (transport["_handler"] !== undefined) {
+            const handler = transport["_handler"]
+            if (handler["_pc"] !== undefined) {
+                const pc = handler["_pc"]
+                const fabricAttributes = {
+                    remoteEndpointType: callstats.endpointType.server,
+                    fabricTransmissionDirection: direction
+                }
+                callstats.addNewFabric(pc, params.id, callstats.fabricUsage.multiplex, roomId, fabricAttributes)
+            }
+        }
+    }
+
+    private static attachCallstatsError(transport: MediaSoup.Transport, roomId: string, err: any) {
+        if (process.env.CALLSTATS_ENABLE !== "TRUE") {
+            return
+        }
+        // Experimental, may not work on all browsers
+        if (transport["_handler"] !== undefined) {
+            const handler = transport["_handler"]
+            if (handler["_pc"] !== undefined) {
+                const pc = handler["_pc"]
+                callstats.reportError(pc, roomId, callstats.webRTCFunctions.applicationLog, err)
+            }
+        }
+    }
+
+    private static terminateCallstatsFabric(transport: MediaSoup.Transport, roomId: string) {
+        if (process.env.CALLSTATS_ENABLE !== "TRUE") {
+            return
+        }
+        // Experimental, may not work on all browsers
+        if (transport["_handler"] !== undefined) {
+            const handler = transport["_handler"]
+            if (handler["_pc"] !== undefined) {
+                const pc = handler["_pc"]
+                callstats.sendFabricEvent(pc, callstats.fabricEvent.fabricTerminated, roomId)
+            }
+        }
     }
 
     private async consumerMessage(consumerParams: string) {
