@@ -12,7 +12,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.tsx?$/,
+        test: /\.tsx?$/i,
         exclude: /node_modules/,
         use: {
           loader: "ts-loader",
@@ -34,7 +34,7 @@ module.exports = {
         ],
       },
       {
-        test: /\.(woff|woff2|eot|ttf|TTF|otf)$/,
+        test: /\.(woff|woff2|eot|ttf|otf)$/i,
         use: ["file-loader"],
       },
       {
@@ -61,7 +61,7 @@ module.exports = {
         ],
       },
       {
-        test: /\.mp3$/,
+        test: /\.mp3$/i,
         loader: "file-loader",
         query: {
           name: "static/media/[name].[hash:8].[ext]",
