@@ -150,7 +150,7 @@ export function Teacher(props: Props): JSX.Element {
                         )}
                     </Grid>
                 </> :
-                <Whiteboard height={rootDivHeight}>
+                <Whiteboard uniqueId="global" height={rootDivHeight}>
                     {
                         //TODO: tidy up the conditions of what to render
                         interactiveMode === 3 ?
@@ -236,7 +236,7 @@ function StudentPreviewCard({ sessionId, session, numColState }: { sessionId: st
                 <CardContent >
                     <Grid ref={cardConRef} item xs={12} style={{ margin: "0 auto" }}>
                         {session.streamId ?
-                            <Whiteboard width={width} height={height} filterUsers={[sessionId, session.id]}>
+                            <Whiteboard uniqueId={session.id} width={width} height={height} filterUsers={[sessionId, session.id]}>
                                 <PreviewPlayer width={width} height={height} streamId={session.streamId} />
                             </Whiteboard> : undefined
                         }
