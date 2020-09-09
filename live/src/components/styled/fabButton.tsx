@@ -5,7 +5,7 @@ import { Send as SendIcon } from "@styled-icons/material/Send";
 import React from "react";
 
 interface Props extends FabProps {
-    children?: React.ReactNode;
+    // children?: React.ReactNode;
     className?: string;
     extendedOnly?: boolean;
     flat?: boolean;
@@ -27,7 +27,7 @@ const StyledFab = withStyles({
 })(Fab);
 
 export default function StyledFAB(props: Props) {
-    const {children, extendedOnly, flat, ...other } = props;
+    const { children, extendedOnly, flat, ...other } = props;
 
     let sibling: React.ReactNode;
     React.Children.map(children, (child) => (
@@ -37,17 +37,17 @@ export default function StyledFAB(props: Props) {
     return (
         extendedOnly ?
             <StyledFab variant="extended" style={{ minWidth: 120, boxShadow: flat ? "none" : "0px 3px 5px -1px rgba(0,0,0,0.2), 0px 6px 10px 0px rgba(0,0,0,0.14), 0px 1px 18px 0px rgba(0,0,0,0.12)" }} {...other}>
-                { children || <SendIcon />}
+                {children || <SendIcon />}
             </StyledFab> :
             <>
                 <Hidden smDown>
                     <StyledFab variant="extended" style={{ minWidth: 120, boxShadow: flat ? "none" : "0px 3px 5px -1px rgba(0,0,0,0.2), 0px 6px 10px 0px rgba(0,0,0,0.14), 0px 1px 18px 0px rgba(0,0,0,0.12)" }} {...other}>
-                        { children || <SendIcon />}
+                        {children || <SendIcon />}
                     </StyledFab>
                 </Hidden>
                 <Hidden mdUp>
                     <StyledFab variant="round" size="small" {...other}>
-                        { sibling || <SendIcon fontSize="small" /> }
+                        {sibling || <SendIcon fontSize="small" />}
                     </StyledFab>
                 </Hidden>
             </>
