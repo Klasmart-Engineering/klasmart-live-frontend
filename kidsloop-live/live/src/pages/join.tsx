@@ -112,8 +112,8 @@ export function Join(): JSX.Element {
 
     async function getAndSetStream(videoDeviceId: string | undefined, audioDeviceId: string | undefined): Promise<MediaStream | null> {
         try {
-            let stream = await getStream({ videoDeviceId, audioDeviceId, width: 320, height: 180, frameRate: 15 });
-            if (!stream) stream = await getStream({ videoDeviceId, audioDeviceId, width: 320, height: 180 });
+            let stream = await getStream({ videoDeviceId, audioDeviceId, width: 1920, height: 1080, frameRate: 15 });
+            if (!stream) stream = await getStream({ videoDeviceId, audioDeviceId, width: 1280, height: 720 });
             if (!stream) stream = await getStream({ videoDeviceId, audioDeviceId });
 
             if (stream) {
