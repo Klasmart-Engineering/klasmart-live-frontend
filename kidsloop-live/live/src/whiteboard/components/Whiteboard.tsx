@@ -11,9 +11,11 @@ type Props = {
     width?: string | number; // In student case, activity's width should be passed
     height: string | number;
     filterUsers?: string[];
+    centerHorizontally?: boolean;
+    centerVertically?: boolean;
 }
 
-export function Whiteboard({ children, width, height, filterUsers, uniqueId }: Props): JSX.Element {
+export function Whiteboard({ children, width, height, filterUsers, uniqueId, centerHorizontally, centerVertically }: Props): JSX.Element {
     const { state: { permissions, display } } = useSynchronizedState();
 
     const { sessionId } = useContext(UserContext);
@@ -41,6 +43,7 @@ export function Whiteboard({ children, width, height, filterUsers, uniqueId }: P
                 height,
                 position: "relative",
                 width: width ? width : "100%",
+                overflow: "hidden",
             }}
         >
             <WhiteboardCanvas instanceId={`canvas:user:${sessionId}:${uniqueId}`}
@@ -51,9 +54,9 @@ export function Whiteboard({ children, width, height, filterUsers, uniqueId }: P
                 pixelWidth={1024}
                 pixelHeight={1024}
                 display={display}
-                scaleMode={"ScaleToFit"}
-                centerHorizontally={true}
-                centerVertically={false}
+                scaleMode={"ScaleFitHorizontally"}
+                centerHorizontally={centerHorizontally !== undefined ? centerHorizontally : true}
+                centerVertically={centerVertically !== undefined ? centerVertically : false}
             />
             {children}
 
