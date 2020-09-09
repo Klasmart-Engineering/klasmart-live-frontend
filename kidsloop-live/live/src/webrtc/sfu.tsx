@@ -12,6 +12,7 @@ import { Resolver, PrePromise } from "../resolver";
 import { WebSocketLink } from "apollo-link-ws";
 import { sessionId, UserContext } from "../entry";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import {Producer, ProducerOptions} from "mediasoup-client/lib/Producer";
 
 
 
@@ -179,19 +180,25 @@ export class WebRTCSFUContext implements WebRTCContext {
         console.log(`Transport`)
         const tracks = stream.getTracks()
         const producers = []
+        let producer: Producer
         for(const track of tracks) {
             console.log(`Wait for producer`)
-            const producer  = await transport.produce({
-                track,
-                encodings: [
-                    // Simulcast encodings
-                    { maxBitrate: 100000, scaleResolutionDownBy: 4, rid: 'q' },
-                    { maxBitrate: 300000, scaleResolutionDownBy: 2, rid: 'h' },
-                    { maxBitrate: 900000, scaleResolutionDownBy: 1, rid: 'f' },
-                    // SVC encodings, see https://w3c.github.io/webrtc-svc/#scalabilitymodes*
-                    { maxBitrate: 1800000, scalabilityMode: 'L2T3', rid: 'svc'}
-                ],
-            })
+            let params: ProducerOptions
+            if (track.kind === "video") {
+                params = {
+                    track,
+                    encodings: [
+                        { ssrc: 111110, maxBitrate: 2000000, scaleResolutionDownBy: 4, scalabilityMode: 'S1T1' },
+                        { ssrc: 111111, maxBitrate: 4000000, scaleResolutionDownBy: 2, scalabilityMode: 'S1T1' },
+                        { ssrc: 111112, maxBitrate: 6000000, scaleResolutionDownBy: 1, scalabilityMode: 'S1T1' },
+                    ]
+                }
+                producer  = await transport.produce(params)
+                await producer.setMaxSpatialLayer(2)
+            } else {
+                params = { track }
+                producer  = await transport.produce(params)
+            }
             this.destructors.set(producer.id, () => producer.close())
             producers.push(producer)
         }
