@@ -100,67 +100,16 @@ export function Join(): JSX.Element {
         if (videoDeviceId === undefined && audioDeviceId === undefined) {
             navigator.mediaDevices.getUserMedia({ video: true, audio: true })
                 .then(() => detectDevices())
-                .catch(e => {
-                    logger({ logType: 'join.tsx initial check for permissions error', error: e && e.toString ? e.toString() : e });
-                });
-            return;
+                .catch((e) => { setError(true); console.error(e); });
         }
-        setStream(undefined);
 
-        getAndSetStream(videoDeviceId, audioDeviceId);
+        navigator.mediaDevices.getUserMedia({ 
+            video: { deviceId: videoDeviceId },
+            audio: { deviceId: audioDeviceId },
+        })
+            .then((s) => { setStream(s); })
+            .catch((e) => { setError(true); console.error(e); });
     }, [videoDeviceId, audioDeviceId]);
-
-    async function getAndSetStream(videoDeviceId: string | undefined, audioDeviceId: string | undefined): Promise<MediaStream | null> {
-        try {
-            let stream = await getStream({ videoDeviceId, audioDeviceId, width: 1920, height: 1080, frameRate: 15 });
-            if (!stream) stream = await getStream({ videoDeviceId, audioDeviceId, width: 1280, height: 720 });
-            if (!stream) stream = await getStream({ videoDeviceId, audioDeviceId });
-
-            if (stream) {
-                setStream(stream);
-
-                if (stream.getVideoTracks) {
-                    const tracks = stream.getVideoTracks();
-                    if (tracks && tracks.forEach) {
-                        tracks.forEach((track, i) => {
-                            if (track && track.getSettings) {
-                                logger({ logType: 'join.tsx video track settings', trackSettings: track.getSettings(), videoTrackIndex: i });
-                            }
-                        })
-                    }
-                }
-            }
-
-            return null;
-        }
-        catch (e) {
-            setError(true);
-            console.error(e);
-            return null;
-        }
-    }
-
-    async function getStream(params: any): Promise<MediaStream | null> {
-        try {
-            const { videoDeviceId, audioDeviceId, width, height, frameRate } = params;
-            let stream = await navigator.mediaDevices.getUserMedia({
-                video: {
-                    deviceId: videoDeviceId || undefined,
-                    width: width ? { ideal: width } : undefined,
-                    height: height ? { ideal: height } : undefined,
-                    frameRate: frameRate ? { ideal: frameRate } : undefined
-                },
-                audio: {
-                    deviceId: audioDeviceId || undefined
-                }
-            });
-            return stream || null;
-        }
-        catch (e) {
-            console.error(e);
-            return null;
-        }
-    }
 
     function join(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
