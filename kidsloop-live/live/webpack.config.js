@@ -78,6 +78,7 @@ module.exports = {
   },
   devtool: "source-map",
   plugins: [
+    new webpack.EnvironmentPlugin(["NODE_ENV"], ["ENDPOINT_GQL"], ["ENDPOINT_H5P"], ["ENDPOINT_TEST_ASSETS_S3"], ["ENDPOINT_WEBSOCKET"], ["APP_GIT_REV"]),
     new HtmlWebpackPlugin({
       filename: "index.html",
       chunks: ["ui"],
@@ -97,58 +98,16 @@ module.exports = {
         changeOrigin: true,
         ws: true,
       },
+      "/sfu": {
+        target: "http://localhost:8002",
+        changeOrigin: true,
+        ws: true,
+      },
       "/h5p": {
         target: "https://zoo.kidsloop.net",
-        changeOrigin: true,
-      },
+        changeOrigin: true
+      }
     },
-    resolve: {
-      extensions: [".js", ".jsx", ".tsx", ".ts"],
-    },
-    output: {
-      filename: "[name].js",
-      path: path.resolve(__dirname, "dist"),
-    },
-    devtool: "source-map",
-    plugins: [
-      new webpack.EnvironmentPlugin(
-        ["NODE_ENV"],
-        ["ENDPOINT_GQL"],
-        ["ENDPOINT_H5P"],
-        ["ENDPOINT_TEST_ASSETS_S3"],
-        ["ENDPOINT_WEBSOCKET"],
-        ["APP_GIT_REV"]
-      ),
-      new HtmlWebpackPlugin({
-        filename: "index.html",
-        chunks: ["ui"],
-        template: "src/index.html",
-      }),
-      new HtmlWebpackPlugin({
-        filename: "player.html",
-        chunks: ["player"],
-        template: "src/player.html",
-      }),
-    ],
-    devServer: {
-      host: "0.0.0.0",
-      proxy: {
-        "/graphql": {
-          target: "http://localhost:8000",
-          changeOrigin: true,
-          ws: true,
-        },
-        "/sfu": {
-          target: "http://localhost:8002",
-          changeOrigin: true,
-          ws: true,
-        },
-        "/h5p": {
-          target: "https://zoo.kidsloop.net",
-          changeOrigin: true,
-        },
-      },
-      disableHostCheck: true,
-    },
-  },
+    disableHostCheck: true
+  }
 };
