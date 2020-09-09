@@ -6,13 +6,14 @@ import { WhiteboardCanvas } from "kidsloop-canvas/lib/domain/whiteboard/Whiteboa
 import { UserContext } from "../../entry";
 
 type Props = {
+    uniqueId: string;
     children?: ReactChild | ReactNode | null;
     width?: string | number; // In student case, activity's width should be passed
     height: string | number;
     filterUsers?: string[];
 }
 
-export function Whiteboard({ children, width, height, filterUsers }: Props): JSX.Element {
+export function Whiteboard({ children, width, height, filterUsers, uniqueId }: Props): JSX.Element {
     const { state: { permissions, display } } = useSynchronizedState();
 
     const { sessionId } = useContext(UserContext);
@@ -42,7 +43,7 @@ export function Whiteboard({ children, width, height, filterUsers }: Props): JSX
                 width: width ? width : "100%",
             }}
         >
-            <WhiteboardCanvas instanceId={`canvas:user:${sessionId}`}
+            <WhiteboardCanvas instanceId={`canvas:user:${sessionId}:${uniqueId}`}
                 userId={sessionId}
                 pointerEvents={permissions.allowCreateShapes}
                 initialStyle={canvasStyle}
