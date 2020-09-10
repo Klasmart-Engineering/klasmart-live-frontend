@@ -4,18 +4,16 @@ import Grid from "@material-ui/core/Grid";
 import Grow from "@material-ui/core/Grow";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import clsx from "clsx";
+import * as QueryString from "query-string";
 import * as React from "react";
 import { withOrientationChange } from "react-device-detect";
 import { useSelector, useStore } from "react-redux";
 import { ActionTypes } from "../../store/actions";
 import { State } from "../../store/store";
+import AssessmentsLayout from "./assessments/assessments";
 import LibraryLayout from "./library/library";
 import LiveLayout from "./live/live";
-import AssessmentsLayout from "./assessments/assessments";
 import ReportLayout from "./report/report";
-import NavBar from "./navbar/navbar";
-
-import MyContentList from "../cms/cms-frontend-web/src/pages/MyContentList";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -48,14 +46,9 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-let Layout = (props: any) => {
+export default function Home() {
     const classes = useStyles();
     const store = useStore();
-    let isLandscape = false;
-
-    React.useEffect(() => {
-        isLandscape = props.isLandscape;
-    }, []);
 
     const { isIOS } = useSelector((state: State) => state.account.userAgent);
     const activeComponent = useSelector((state: State) => state.ui.activeComponentHome);
@@ -75,48 +68,31 @@ let Layout = (props: any) => {
         setActiveComponent("live");
     }
     const timeout = { enter: 500, exit: 100 };
-
     return (
-        <Grid
-            container
-            direction="column"
-            justify="space-between"
-            wrap="nowrap"
-            className={classes.layout}
+        <Container
+            disableGutters
+            maxWidth={"lg"}
         >
-            <NavBar />
-            <Grid item xs={12}>
-                <Container
-                    disableGutters
-                    maxWidth={"lg"}
-                    className={clsx(classes.root, isIOS && isLandscape ? classes.safeArea : "")}
-                >
-                    <Grow in={activeComponent === "live"} timeout={timeout} mountOnEnter unmountOnExit>
-                        <Box>
-                            <LiveLayout />
-                        </Box>
-                    </Grow>
-                    <Grow in={activeComponent === "library"} timeout={timeout} mountOnEnter unmountOnExit>
-                        <Box>
-                            <LibraryLayout />
-                        </Box>
-                    </Grow>
-                    <Grow in={activeComponent === "assessments"} timeout={timeout} mountOnEnter unmountOnExit>
-                        <Box>
-                            <AssessmentsLayout />
-                        </Box>
-                    </Grow>
-                    <Grow in={activeComponent === "report"} timeout={timeout} mountOnEnter unmountOnExit>
-                        <Box>
-                            <ReportLayout />
-                        </Box>
-                    </Grow>
-                </Container>
-            </Grid>
-        </Grid>
+            <Grow in={activeComponent === "live"} timeout={timeout} mountOnEnter unmountOnExit>
+                <Box>
+                    <LiveLayout />
+                </Box>
+            </Grow>
+            <Grow in={activeComponent === "library"} timeout={timeout} mountOnEnter unmountOnExit>
+                <Box>
+                    <LibraryLayout />
+                </Box>
+            </Grow>
+            <Grow in={activeComponent === "assessments"} timeout={timeout} mountOnEnter unmountOnExit>
+                <Box>
+                    <AssessmentsLayout />
+                </Box>
+            </Grow>
+            <Grow in={activeComponent === "report"} timeout={timeout} mountOnEnter unmountOnExit>
+                <Box>
+                    <ReportLayout />
+                </Box>
+            </Grow>
+        </Container>
     );
-};
-
-Layout = withOrientationChange(Layout);
-
-export { Layout };
+}

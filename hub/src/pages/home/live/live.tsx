@@ -41,7 +41,6 @@ export default function LiveLayout() {
     const isLive = useSelector((state: State) => state.ui.liveClass);
 
     useEffect(() => {
-        console.log(`isLive: ${isLive}`);
         if (isLive) {
             setInFlight(true);
             setHasTransitioned(true);
@@ -50,9 +49,6 @@ export default function LiveLayout() {
                 setInFlight(false);
             }, 3000);
         }
-
-        console.log(`hasTransitioned: ${hasTransitioned}`);
-        console.log(`inFlight: ${inFlight}`);
     }, [isLive]);
 
     return (

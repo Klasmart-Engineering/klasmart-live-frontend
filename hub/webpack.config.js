@@ -102,8 +102,13 @@ module.exports = {
                 secure: false,
                 changeOrigin: true,
             },
+            // "/v1": {
+            //     target: "https://seoul-beta.assessment-api.badanamu.net",
+            //     secure: false,
+            //     changeOrigin: true,
+            // },
             "/v1": {
-                target: "https://seoul-beta.assessment-api.badanamu.net",
+                target: "https://kl2-test.kidsloop.net/",
                 secure: false,
                 changeOrigin: true,
             }

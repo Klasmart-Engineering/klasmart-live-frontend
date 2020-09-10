@@ -14,10 +14,10 @@ import { useSelector, useStore } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { ActionTypes } from "../../../store/actions";
 import { State } from "../../../store/store";
-import ClassSettings from "../settings/classSettings";
-import UserSettings from "../settings/userSettings";
 import NavButton from "./navButton";
 import NavMenu from "./navMenu";
+import ClassSettings from "./settings/classSettings";
+import UserSettings from "./settings/userSettings";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -47,6 +47,41 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
+interface MenuButtonProps {
+    labels: Array<{ name: string; path: string; }>;
+}
+
+function MenuButtons(props: MenuButtonProps) {
+    const history = useHistory();
+    const store = useStore();
+    const theme = useTheme();
+    const { labels } = props;
+
+    const activeComponent = useSelector((state: State) => state.ui.activeComponentHome);
+    const setActiveComponent = (value: string) => {
+        store.dispatch({ type: ActionTypes.ACTIVE_COMPONENT_HOME, payload: value });
+    };
+
+    const minHeight = useMediaQuery(theme.breakpoints.up("sm")) ? 64 : 56;
+
+    return (
+        labels.map((value: { name: string; path: string; }) => (
+            <NavButton
+                key={`menuLabel-${value.name}`}
+                onClick={() => {
+                    history.push(value.path);
+                    setActiveComponent(value.name);
+                }}
+                isActive={activeComponent === value.name}
+
+                style={{ minHeight }}
+            >
+                <FormattedMessage id={`navMenu_${value.name}Label`} />
+            </NavButton>
+        ))
+    );
+}
+
 interface LabelProps {
     classes: string;
 }
@@ -68,23 +103,21 @@ function ClassroomLabel(props: LabelProps) {
     );
 }
 
-export default function NavBar() {
-    const classes = useStyles();
-    const theme = useTheme();
-    const history = useHistory();
-    const store = useStore();
+interface Props {
+    menuLabels?: Array<{ name: string; path: string; }>;
+}
 
-    const activeComponent = useSelector((state: State) => state.ui.activeComponentHome);
-    const setActiveComponent = (value: string) => {
-        store.dispatch({ type: ActionTypes.ACTIVE_COMPONENT_HOME, payload: value });
-    };
+export default function NavBar(props: Props) {
+    const classes = useStyles();
+    const store = useStore();
+    const theme = useTheme();
+    const { menuLabels } = props;
+
+    const minHeight = useMediaQuery(theme.breakpoints.up("sm")) ? 64 : 56;
 
     const handleClickOpen = () => {
         store.dispatch({ type: ActionTypes.CLASS_SETTINGS_TOGGLE, payload: true });
     };
-
-    const minHeight = useMediaQuery(theme.breakpoints.up("sm")) ? 64 : 56;
-    const menuLabel = ["Live", "Library", "Assessments", "Report"];
 
     return (
         <div className={classes.root}>
@@ -143,23 +176,7 @@ export default function NavBar() {
                             justify="center"
                             wrap="nowrap"
                         >
-                            {menuLabel.map((label: string) => {
-                                const value = label.toLowerCase();
-                                return (
-                                    <NavButton
-                                        key={`menuLabel-${value}`}
-                                        onClick={() => {
-                                            history.push(`/?${QueryString.stringify({ component: value })}`);
-                                            setActiveComponent(value);
-                                        }}
-                                        isActive={activeComponent === value}
-
-                                        style={{ minHeight }}
-                                    >
-                                        <FormattedMessage id={`navMenu_${value}Label`} />
-                                    </NavButton>
-                                );
-                            })}
+                            { menuLabels ? <MenuButtons labels={menuLabels} /> : null }
                         </Grid>
                         <Hidden smDown>
                             <Grid
