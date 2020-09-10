@@ -90,7 +90,8 @@ module.exports = {
             "REGION_ENDPOINT": "http://localhost:8094/",
             "ORGANIZATION_ENDPOINT": "http://localhost:8084/",
             "ASSESSMENT_ENDPOINT": "http://localhost:8065/",
-            "DEFAULT_PROG_ID": "KIDSLOOP-2.0"
+            "DEFAULT_PROG_ID": "KIDSLOOP-2.0",
+            "REACT_APP_BASE_API": "/v1",
         })
     ],
     devServer: {
@@ -109,7 +110,7 @@ module.exports = {
             // },
             "/v1": {
                 target: "https://kl2-test.kidsloop.net/",
-                secure: false,
+                secure: true,
                 changeOrigin: true,
             }
         }

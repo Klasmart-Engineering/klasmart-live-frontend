@@ -1,23 +1,25 @@
-import Grid from "@material-ui/core/Grid";
-import { createStyles, makeStyles, Theme, useTheme, withStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
+import Grid from "@material-ui/core/Grid";
 import Menu, { MenuProps } from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
+import { createStyles, makeStyles, Theme, useTheme, withStyles } from "@material-ui/core/styles";
 import Tooltip from "@material-ui/core/Tooltip";
-import FaceIcon from "@material-ui/icons/Face";
+import Typography from "@material-ui/core/Typography";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import React, { useState, useEffect } from "react";
+import FaceIcon from "@material-ui/icons/Face";
+import React, { useEffect, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { useSelector, useStore } from "react-redux";
 
+import { FormControlLabel, Radio, RadioGroup } from "@material-ui/core";
+import { useRestAPI } from "../../../api/restapi";
 import LiveBackground from "../../../assets/img/live_bg.svg";
-import StyledFAB from "../../../components/styled/fabButton";
 import CenterAlignChildren from "../../../components/centerAlignChildren";
+import StyledFAB from "../../../components/styled/fabButton";
+import StyledTextField from "../../../components/styled/textfield";
 import { ActionTypes } from "../../../store/actions";
 import { State } from "../../../store/store";
 import { LiveSessionData } from "../../../types/objectTypes";
-import { useRestAPI } from "../../../api/restapi";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -29,7 +31,7 @@ const useStyles = makeStyles((theme: Theme) =>
             borderRadius: 12,
             color: "#193d6f",
             height: "100%",
-            minHeight: 360,
+            minHeight: 440,
             padding: theme.spacing(4, 5),
             [theme.breakpoints.down("sm")]: {
                 backgroundPosition: "bottom right",
@@ -63,6 +65,10 @@ export default function LiveCard() {
     const theme = useTheme();
     const store = useStore();
 
+    const [className, setClassName] = useState("");
+    const [userName, setUserName] = useState("");
+    const [userType, setUserType] = useState("student");
+
     const selectedLessonPlan = useSelector((state: State) => state.account.selectedLessonPlan);
     const liveData = useSelector((state: State) => state.account.finishLiveData);
     const setLiveData = (value: LiveSessionData) => {
@@ -80,7 +86,7 @@ export default function LiveCard() {
             classId: liveData.classId,
             className: liveData.className,
             startDate,
-            students: liveData.students
+            students: liveData.students,
         };
         return data;
     }
@@ -97,23 +103,46 @@ export default function LiveCard() {
             <Grid item>
                 <Grid container item spacing={2}>
                     <Grid item xs={12}>
-                        <Typography variant="h4">Welcome to Calm Island</Typography>
+                        <Typography variant="h4">Welcome to KidsLoop</Typography>
                     </Grid>
                     <Grid item xs={12}>
-                        <CenterAlignChildren>
-                            <Typography variant="h6" style={{ paddingRight: theme.spacing(2) }}>
-                                <FormattedMessage id={"live_classNameLabel"} />:
-                            </Typography>
-                            <ClassSelect />
-                        </CenterAlignChildren>
+                        <StyledTextField
+                            id="class-name-input"
+                            label={<FormattedMessage id={"live_classNameLabel"} />}
+                            onChange={(e) => setClassName(e.target.value)}
+                            value={className}
+                        />
                     </Grid>
                     <Grid item xs={12}>
-                        <Typography variant="h6">
-                            KidsLoop <span className={classes.liveTextWrapper}>LIVE</span>
-                            &nbsp;
-                            <FormattedMessage id={"live_liveLinkLabel"} />:
-                        </Typography>
-                        <Typography variant="body1">https://zoo.kidsloop.net/live/</Typography>
+                        <StyledTextField
+                            id="user-name-input"
+                            label={<FormattedMessage id={"live_userNameLabel"} />}
+                            onChange={(e) => setUserName(e.target.value)}
+                            value={userName}
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <RadioGroup
+                            aria-label="type of user"
+                            defaultValue={"student"}
+                            name="Type of User"
+                            onChange={(e) => setUserType((e.target as HTMLInputElement).value)}
+                            value={userType}
+                            row
+                        >
+                            <FormControlLabel
+                                value="teacher"
+                                control={<Radio color="primary" style={{ backgroundColor: "transparent" }}/>}
+                                label="Teacher"
+                                labelPlacement="end"
+                            />
+                            <FormControlLabel
+                                value="student"
+                                control={<Radio color="primary" style={{ backgroundColor: "transparent" }}/>}
+                                label="Student"
+                                labelPlacement="end"
+                            />
+                        </RadioGroup>
                     </Grid>
                     <Grid item xs={12}>
                         <CenterAlignChildren>
@@ -133,13 +162,9 @@ export default function LiveCard() {
                         extendedOnly
                         flat
                         className={classes.liveButton}
-                        onClick={() => toggleLive()}>
+                        onClick={() => {}}>
                         <FormattedMessage id="live_liveButton" />
                     </StyledFAB>
-                    <CenterAlignChildren>
-                        <FaceIcon color="inherit" style={{ marginRight: theme.spacing(1) }} />
-                        {Math.floor(Math.random() * Math.floor(5))}
-                    </CenterAlignChildren>
                 </CenterAlignChildren>
             </Grid>
         </Grid>
@@ -188,7 +213,7 @@ function ClassSelect() {
             classId: classInfo.classId,
             className: classInfo.className,
             startDate: liveData.students,
-            students: liveData.students
+            students: liveData.students,
         };
         store.dispatch({ type: ActionTypes.FINISH_LIVE_DATA, payload: value });
         setClassName(classInfo.className);
@@ -243,7 +268,7 @@ function LessonPlanSelect() {
     async function fetchPublishedLessonPlans() {
         const payload = await api.getLessonPlans();
         return payload.lessonPlans
-            .filter(p => p.published)
+            .filter((p) => p.published)
             .sort((a, b) => b.updatedDate - a.updatedDate);
     }
 
@@ -254,7 +279,7 @@ function LessonPlanSelect() {
     const setSelectedLessonPlan = (value: string) => {
         store.dispatch({ type: ActionTypes.SELECTED_LESSON_PLAN, payload: value });
     };
-    const [lessonPlanOptions, setLessonPlanOptions] = useState<{ id: string, title: string }[]>([]);
+    const [lessonPlanOptions, setLessonPlanOptions] = useState<Array<{ id: string, title: string }>>([]);
     const [lessonPlanText, setLessonPlanText] = useState<string>("");
     const [lessonPlanMenuElement, setLessonPlanMenuElement] = useState<null | HTMLElement>(null);
 
@@ -263,7 +288,7 @@ function LessonPlanSelect() {
         (async () => {
             const plans = await fetchPublishedLessonPlans();
             if (prepared) {
-                const options = plans.map(p => {
+                const options = plans.map((p) => {
                     return { id: p.lessonPlanId, title: p.name };
                 });
                 setLessonPlanOptions(options);
@@ -305,7 +330,7 @@ function LessonPlanSelect() {
                 onClose={() => setLessonPlanMenuElement(null)}
             >
                 {
-                    lessonPlanOptions.map(plan => (
+                    lessonPlanOptions.map((plan) => (
                         <MenuItem
                             key={plan.id}
                             selected={selectedLessonPlan === plan.id}
