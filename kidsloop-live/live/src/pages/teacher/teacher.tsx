@@ -4,7 +4,7 @@ import IconButton from "@material-ui/core/IconButton";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import CardActions from "@material-ui/core/CardActions";
-import React, { useEffect, useState, useContext, useRef } from "react";
+import React, { useEffect, useState, useContext, useRef, useMemo } from "react";
 import { FormattedMessage } from "react-intl";
 import { RecordedIframe } from "../../components/recordediframe";
 import { Session, Content, ContentIndexState, InteractiveModeState, StreamIdState, RoomContext } from "../../room";
@@ -215,6 +215,10 @@ function StudentPreviewCard({ sessionId, session, numColState }: { sessionId: st
     const [width, setWidth] = useState<string | number>("100%");
     const [height, setHeight] = useState<string | number>("100%");
 
+    const filterGroups = useMemo(() => {
+        return [session.id];
+    }, [session]);
+
     useEffect(() => {
         if (cardConRef.current) {
             const contWidth = cardConRef.current.offsetWidth;
@@ -236,7 +240,7 @@ function StudentPreviewCard({ sessionId, session, numColState }: { sessionId: st
                 <CardContent >
                     <Grid ref={cardConRef} item xs={12} style={{ margin: "0 auto" }}>
                         {session.streamId ?
-                            <Whiteboard uniqueId={session.id} width={width} height={height} filterUsers={[sessionId, session.id]}>
+                            <Whiteboard group={session.id} uniqueId={session.id} width={width} height={height} filterGroups={filterGroups}>
                                 <PreviewPlayer width={width} height={height} streamId={session.streamId} />
                             </Whiteboard> : undefined
                         }

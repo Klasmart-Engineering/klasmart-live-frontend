@@ -1,4 +1,4 @@
-import React, { ReactChild, ReactNode, useContext } from "react";
+import React, { ReactChild, ReactNode, useContext, useMemo } from "react";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
 import { whiteboard } from "../../utils/layerValues";
 import { useSynchronizedState } from "../context-providers/SynchronizedStateProvider";
@@ -7,18 +7,29 @@ import { UserContext } from "../../entry";
 
 type Props = {
     uniqueId: string;
+    group?: string;
     children?: ReactChild | ReactNode | null;
     width?: string | number; // In student case, activity's width should be passed
     height: string | number;
     filterUsers?: string[];
+    filterGroups?: string[];
     centerHorizontally?: boolean;
     centerVertically?: boolean;
 }
 
-export function Whiteboard({ children, width, height, filterUsers, uniqueId, centerHorizontally, centerVertically }: Props): JSX.Element {
+export function Whiteboard({ group, children, width, height, filterUsers, filterGroups, uniqueId, centerHorizontally, centerVertically }: Props): JSX.Element {
     const { state: { permissions, display } } = useSynchronizedState();
 
     const { sessionId } = useContext(UserContext);
+
+    const canvasUserId = useMemo(() => {
+        if (group) {
+            return `${sessionId}:${group}`;
+        } else {
+            return sessionId;
+        }
+
+    }, [sessionId, group]);
 
     const canvasStyle: CSSProperties = {
         border: "2px blue solid",
@@ -47,10 +58,11 @@ export function Whiteboard({ children, width, height, filterUsers, uniqueId, cen
             }}
         >
             <WhiteboardCanvas instanceId={`canvas:user:${sessionId}:${uniqueId}`}
-                userId={sessionId}
+                userId={canvasUserId}
                 pointerEvents={permissions.allowCreateShapes}
                 initialStyle={canvasStyle}
                 filterUsers={filterUsers}
+                filterGroups={filterGroups}
                 pixelWidth={1024}
                 pixelHeight={1024}
                 display={display}

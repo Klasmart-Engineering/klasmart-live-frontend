@@ -2,7 +2,7 @@ import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
-import React, { useState, useEffect, useContext, useRef } from "react";
+import React, { useState, useEffect, useContext, useRef, useMemo } from "react";
 import { FormattedMessage } from "react-intl";
 import { UserContext } from "../../entry";
 import { RoomContext } from "../../room";
@@ -49,13 +49,17 @@ export function Student({ openDrawer }: {
     const { content, users } = RoomContext.Consume();
     const classes = useStyles();
 
-    const { name } = useContext(UserContext);
+    const { name, sessionId } = useContext(UserContext);
     const webrtc = WebRTCSFUContext.Consume()
     const [streamId, setStreamId] = useState<string>();
 
     const rootDivRef = useRef<HTMLDivElement>(null);
     const [rootDivWidth, setRootDivWidth] = useState<number>(0);
     const [rootDivHeight, setRootDivHeight] = useState<number>(0);
+
+    const studentModeFilterGroups = useMemo(() => {
+        return [sessionId];
+    }, [sessionId]);
 
     useEffect(() => {
         if (!rootDivRef || !rootDivRef.current) { return; }
@@ -104,7 +108,7 @@ export function Student({ openDrawer }: {
         case "Activity":
             return (
                 <div ref={rootDivRef} className={classes.root}>
-                    <Whiteboard uniqueId="student" height={rootDivHeight}>
+                    <Whiteboard group={sessionId} uniqueId="student" height={rootDivHeight} filterGroups={studentModeFilterGroups}>
                         {(rootDivRef && rootDivHeight) ?
                             <RecordedIframe
                                 contentId={content.contentId}
