@@ -202,141 +202,149 @@ export function GlobalCameraControl(): JSX.Element {
                     <FormattedMessage id="quick_toggles" />
                 </Typography>
             </Grid>
-            <Grid container item xs={4} md={4} style={{ textAlign: "center" }}>
+            <Grid container item xs={3} md={3} style={{ textAlign: "center" }}>
                 <Grid item xs={12}>
-                    <IconButton
-                        color={camerasOn ? "primary" : "secondary"}
-                        style={{ backgroundColor: camerasOn ? "#f6fafe" : "#fef5f9" }}
-                        onClick={toggleVideoStates}
-                    >
-                        {camerasOn ? <CameraIcon size="1.5rem" /> : <CameraOffIcon size="1.5rem" />}
-                    </IconButton>
-                </Grid>
-                <Grid item xs={12}>
-                    <Typography variant="caption" color="textSecondary">
-                        {camerasOn
+                    <Tooltip
+                        arrow
+                        placement="top"
+                        title={camerasOn
                             ? <FormattedMessage id="set_cameras_off" />
                             : <FormattedMessage id="set_cameras_on" />
                         }
-                    </Typography>
+                    >
+                        <IconButton
+                            color={camerasOn ? "primary" : "secondary"}
+                            style={{ backgroundColor: camerasOn ? "#f6fafe" : "#fef5f9" }}
+                            onClick={toggleVideoStates}
+                        >
+                            {camerasOn ? <CameraIcon size="1rem" /> : <CameraOffIcon size="1rem" />}
+                        </IconButton>
+                    </Tooltip>
                 </Grid>
             </Grid>
-            <Grid container item xs={4} md={4} style={{ textAlign: "center" }}>
+            <Grid container item xs={3} md={3} style={{ textAlign: "center" }}>
                 <Grid item xs={12}>
-                    <IconButton
-                        color={micsOn ? "primary" : "secondary"}
-                        style={{ backgroundColor: micsOn ? "#f6fafe" : "#fef5f9" }}
-                        onClick={toggleAudioStates}
-                    >
-                        {micsOn ? <MicIcon size="1.5rem" /> : <MicOffIcon size="1.5rem" />}
-                    </IconButton>
-                </Grid>
-                <Grid item xs={12}>
-                    <Typography variant="caption" color="textSecondary">
-                        {micsOn
+                    <Tooltip
+                        arrow
+                        placement="top"
+                        title={micsOn
                             ? <FormattedMessage id="mute_all" />
                             : <FormattedMessage id="unmute_all" />
                         }
-                    </Typography>
+                    >
+                        <IconButton
+                            color={micsOn ? "primary" : "secondary"}
+                            style={{ backgroundColor: micsOn ? "#f6fafe" : "#fef5f9" }}
+                            onClick={toggleAudioStates}
+                        >
+                            {micsOn ? <MicIcon size="1rem" /> : <MicOffIcon size="1rem" />}
+                        </IconButton>
+                    </Tooltip>
                 </Grid>
             </Grid>
-            <Grid container item xs={4} md={4} style={{ textAlign: "center" }}>
+            <Grid container item xs={3} md={3} style={{ textAlign: "center" }}>
                 <Grid item xs={12}>
-                    <IconButton
-                        color={display ? "primary" : "secondary"}
-                        style={{ backgroundColor: display ? "#f6fafe" : "#fef5f9" }}
-                        onClick={() => { setDisplay(!display); }}
-                    >
-                        {display ? <CanvasIcon size="1.5rem" /> : <CanvasOffIcon size="1.5rem" />}
-                    </IconButton>
-                </Grid>
-                <Grid item xs={12}>
-                    <Typography variant="caption" color="textSecondary">
-                        {display
-                            ? "Hide Whiteboard"
-                            : "Show Whiteboard"
+                    <Tooltip
+                        arrow
+                        placement="top"
+                        title={display
+                            ? <FormattedMessage id="hide_whiteboard" />
+                            : <FormattedMessage id="show_whiteboard" />
                         }
-                    </Typography>
+                    >
+                        <IconButton
+                            color={display ? "primary" : "secondary"}
+                            style={{ backgroundColor: display ? "#f6fafe" : "#fef5f9" }}
+                            onClick={() => { setDisplay(!display); }}
+                        >
+                            {display ? <CanvasIcon size="1rem" /> : <CanvasOffIcon size="1rem" />}
+                        </IconButton>
+                    </Tooltip>
                 </Grid>
             </Grid>
-            <Grid container item xs={4} md={4} style={{ textAlign: "center" }}>
+            <Grid container item xs={3} md={3} style={{ textAlign: "center" }}>
                 <Grid item xs={12}>
-                    <IconButton
-                        color={"primary"}
-                        style={{ backgroundColor: "#f6fafe" }}
-                        onClick={() => { clear(); }}
+                    <Tooltip
+                        arrow
+                        placement="top"
+                        title={<FormattedMessage id="clear_whiteboard" />}
                     >
-                        <EraserIcon size="1.5rem" />
-                    </IconButton>
-                </Grid>
-                <Grid item xs={12}>
-                    <Typography variant="caption" color="textSecondary">
-                        Clear Whiteboard
-                    </Typography>
-                </Grid>
-            </Grid>
-            <Grid container item xs={3} style={{ textAlign: "center" }}>
-                <Grid item xs={12}>
-                    <IconButton
-                        color={"primary"}
-                        style={{ backgroundColor: "#f6fafe" }}
-                        onClick={() => { rewardTrophy(sessionId, "star"); }}
-                    >
-                        <StarIcon size="1rem" />
-                    </IconButton>
-                </Grid>
-                <Grid item xs={12}>
-                    <Typography variant="caption" color="textSecondary">
-                        Give Star
-                    </Typography>
+                        <IconButton
+                            color={"primary"}
+                            style={{ backgroundColor: "#f6fafe" }}
+                            onClick={() => { clear(); }}
+                        >
+                            <EraserIcon size="1rem" />
+                        </IconButton>
+                    </Tooltip>
                 </Grid>
             </Grid>
             <Grid container item xs={3} style={{ textAlign: "center" }}>
                 <Grid item xs={12}>
-                    <IconButton
-                        color={"primary"}
-                        style={{ backgroundColor: "#f6fafe" }}
-                        onClick={() => { rewardTrophy(sessionId, "trophy"); }}
+                    <Tooltip
+                        arrow
+                        placement="top"
+                        title={<FormattedMessage id="give_star" />}
                     >
-                        <TrophyIcon size="1rem" />
-                    </IconButton>
-                </Grid>
-                <Grid item xs={12}>
-                    <Typography variant="caption" color="textSecondary">
-                        Give Trophy
-                    </Typography>
+                        <IconButton
+                            color={"primary"}
+                            style={{ backgroundColor: "#f6fafe" }}
+                            onClick={() => { rewardTrophy(sessionId, "star"); }}
+                        >
+                            <StarIcon size="1rem" />
+                        </IconButton>
+                    </Tooltip>
                 </Grid>
             </Grid>
             <Grid container item xs={3} style={{ textAlign: "center" }}>
                 <Grid item xs={12}>
-                    <IconButton
-                        color={"primary"}
-                        style={{ backgroundColor: "#f6fafe" }}
-                        onClick={() => { rewardTrophy(sessionId, "heart"); }}
+                    <Tooltip
+                        arrow
+                        placement="top"
+                        title={<FormattedMessage id="give_trophy" />}
                     >
-                        <HeartIcon size="1rem" />
-                    </IconButton>
-                </Grid>
-                <Grid item xs={12}>
-                    <Typography variant="caption" color="textSecondary">
-                        Give Heart
-                    </Typography>
+                        <IconButton
+                            color={"primary"}
+                            style={{ backgroundColor: "#f6fafe" }}
+                            onClick={() => { rewardTrophy(sessionId, "trophy"); }}
+                        >
+                            <TrophyIcon size="1rem" />
+                        </IconButton>
+                    </Tooltip>
                 </Grid>
             </Grid>
             <Grid container item xs={3} style={{ textAlign: "center" }}>
                 <Grid item xs={12}>
-                    <IconButton
-                        color={"primary"}
-                        style={{ backgroundColor: "#f6fafe" }}
-                        onClick={() => { rewardTrophy(sessionId, getRandomKind(["awesome", "looks_great", "well_done", "great_job"])); }}
+                    <Tooltip
+                        arrow
+                        placement="top"
+                        title={<FormattedMessage id="give_heart" />}
                     >
-                        <EncourageIcon size="1rem" />
-                    </IconButton>
+                        <IconButton
+                            color={"primary"}
+                            style={{ backgroundColor: "#f6fafe" }}
+                            onClick={() => { rewardTrophy(sessionId, "heart"); }}
+                        >
+                            <HeartIcon size="1rem" />
+                        </IconButton>
+                    </Tooltip>
                 </Grid>
+            </Grid>
+            <Grid container item xs={3} style={{ textAlign: "center" }}>
                 <Grid item xs={12}>
-                    <Typography variant="caption" color="textSecondary">
-                        Encourage
-                    </Typography>
+                    <Tooltip
+                        arrow
+                        placement="top"
+                        title={<FormattedMessage id="encourage" />}
+                    >
+                        <IconButton
+                            color={"primary"}
+                            style={{ backgroundColor: "#f6fafe" }}
+                            onClick={() => { rewardTrophy(sessionId, getRandomKind(["awesome", "looks_great", "well_done", "great_job"])); }}
+                        >
+                            <EncourageIcon size="1rem" />
+                        </IconButton>
+                    </Tooltip>
                 </Grid>
             </Grid>
         </Grid>
