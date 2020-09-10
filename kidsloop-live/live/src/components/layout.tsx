@@ -396,7 +396,7 @@ function TabInnerContent({ contentIndexState, title, numColState, setNumColState
                         xs={12}
                         className={classes.scrollCameraContainer}
                         style={isSmDown ? { maxHeight: `calc(100vh - ${theme.spacing(65)}px)` } : {
-                            height: teacher ? `calc(100vh - ${theme.spacing(65)}px)` : `calc(100vh - ${theme.spacing(9)}px)`, // Because student side has no <InviteButton /> and <GlobalCameraControl />
+                            height: teacher ? `calc(100vh - ${theme.spacing(60)}px)` : `calc(100vh - ${theme.spacing(9)}px)`, // Because student side has no <InviteButton /> and <GlobalCameraControl />
                         }}
                     >
                         <Grid id={"participant-listing"} item xs={12}><Divider /></Grid>
