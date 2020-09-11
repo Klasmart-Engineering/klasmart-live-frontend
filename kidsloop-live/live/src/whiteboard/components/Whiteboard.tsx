@@ -32,7 +32,6 @@ export function Whiteboard({ group, children, width, height, filterUsers, filter
     }, [sessionId, group]);
 
     const canvasStyle: CSSProperties = {
-        border: "2px blue solid",
         position: "absolute",
         top: "0px",
         left: "0px",
