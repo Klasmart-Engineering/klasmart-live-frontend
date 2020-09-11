@@ -52,27 +52,22 @@ interface MenuButtonProps {
 }
 
 function MenuButtons(props: MenuButtonProps) {
+    const url = new URL(window.location.href);
+    const component = url.searchParams.get("component") || "live";
+
     const history = useHistory();
-    const store = useStore();
     const theme = useTheme();
     const { labels } = props;
-
-    const activeComponent = useSelector((state: State) => state.ui.activeComponentHome);
-    const setActiveComponent = (value: string) => {
-        store.dispatch({ type: ActionTypes.ACTIVE_COMPONENT_HOME, payload: value });
-    };
 
     const minHeight = useMediaQuery(theme.breakpoints.up("sm")) ? 64 : 56;
 
     return (
         labels.map((value: { name: string; path: string; }) => (
             <NavButton
+                disabled={value.name === "assessments" || value.name === "report"}
                 key={`menuLabel-${value.name}`}
-                onClick={() => {
-                    history.push(value.path);
-                    setActiveComponent(value.name);
-                }}
-                isActive={activeComponent === value.name}
+                onClick={() => history.push(value.path)}
+                isActive={component === value.name}
 
                 style={{ minHeight }}
             >
@@ -176,7 +171,7 @@ export default function NavBar(props: Props) {
                             justify="center"
                             wrap="nowrap"
                         >
-                            { menuLabels ? <MenuButtons labels={menuLabels} /> : null }
+                            {menuLabels ? <MenuButtons labels={menuLabels} /> : null}
                         </Grid>
                         <Hidden smDown>
                             <Grid

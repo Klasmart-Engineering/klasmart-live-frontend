@@ -73,6 +73,7 @@ const messages: Record<string, string> = {
 
     navMenu_adminConsoleLabel: "Admin Console",
     navMenu_assessmentsLabel: "Assessments",
+    navMenu_scheduleLabel: "Schedule",
     navMenu_libraryLabel: "Library",
     navMenu_liveLabel: "Live",
     navMenu_peopleLabel: "People",

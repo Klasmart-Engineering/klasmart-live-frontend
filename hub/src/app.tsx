@@ -21,7 +21,7 @@ export function App() {
     const location = useLocation();
 
     useEffect(() => {
-        console.log(location);
+        // console.log(location)
     }, [location]);
 
     useEffect(() => {
@@ -37,29 +37,40 @@ export function App() {
     }, []);
 
     const navigation = new Map([
+        // TODO: Add and adjust during Schedule integration
         ["home", [{
             name: "live",
-            path: `/?${QueryString.stringify({ component: "live" })}`,
+            path: `/home?${QueryString.stringify({ component: "live" })}`,
         }, {
             name: "library",
-            path: `/?${QueryString.stringify({ component: "library" })}`,
+            path: `/home?${QueryString.stringify({ component: "library" })}`,
+        }, {
+            name: "schedule",
+            path: `/home?${QueryString.stringify({ component: "schedule" })}`,
         }, {
             name: "assessments",
-            path: `/?${QueryString.stringify({ component: "assessments" })}`,
+            path: `/home?${QueryString.stringify({ component: "assessments" })}`,
         }, {
             name: "report",
-            path: `/?${QueryString.stringify({ component: "report" })}`,
+            path: `/home?${QueryString.stringify({ component: "report" })}`,
         }]],
         ["library", []],
     ]);
 
     const path = location.pathname === "/" ? "home" : location.pathname.substring(1);
 
+    function redirectSubmodule() {
+        const searchParams = new URLSearchParams(location.search);
+        const activeNavMenu = searchParams.get("component") ? searchParams.get("component") : "live";
+        if (activeNavMenu === "library") { return <CMS /> }
+        return <Home />
+    }
+
     return (
         <>
-            <NavBar menuLabels={navigation.get(path)}/>
+            <NavBar menuLabels={navigation.get(path)} />
             <Switch>
-                <Route path="/home" component={Home} />
+                <Route path="/home" render={() => redirectSubmodule()} />
                 <Route path="/library" component={CMS} />
                 <Route path="/classroom" component={Layout} />
                 <Route path="/password-change" component={PasswordChange} />
@@ -68,7 +79,7 @@ export function App() {
                 <Route path="/password-restore" component={PasswordRestore} />
                 <Route path="/signup" component={Signup} />
                 <Route path="/login" component={Login} />
-                <Route path="/" component={Home} />
+                <Route path="/" render={() => redirectSubmodule()} />
             </Switch>
         </>
     );

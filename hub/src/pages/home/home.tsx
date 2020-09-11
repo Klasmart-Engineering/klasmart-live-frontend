@@ -57,31 +57,29 @@ export default function Home() {
     };
 
     const url = new URL(window.location.href);
-    if (url.searchParams.get("component") !== "live") {
-        setActiveComponent(url.searchParams.get("component") || "live");
-    }
-    const timeout = { enter: 500, exit: 100 };
+    const component = url.searchParams.get("component") || "live";
+
     return (
         <Container
             disableGutters
             maxWidth={"lg"}
         >
-            <Grow in={activeComponent === "live"} timeout={timeout} mountOnEnter unmountOnExit>
+            <Grow in={component === "live"} mountOnEnter unmountOnExit>
                 <Box>
                     <LiveLayout />
                 </Box>
             </Grow>
-            <Grow in={activeComponent === "library"} timeout={timeout} mountOnEnter unmountOnExit>
+            <Grow in={component === "schedule"} mountOnEnter unmountOnExit>
                 <Box>
-                    <LibraryLayout />
+                    Coming Soon
                 </Box>
             </Grow>
-            <Grow in={activeComponent === "assessments"} timeout={timeout} mountOnEnter unmountOnExit>
+            <Grow in={component === "assessments"} mountOnEnter unmountOnExit>
                 <Box>
                     <AssessmentsLayout />
                 </Box>
             </Grow>
-            <Grow in={activeComponent === "report"} timeout={timeout} mountOnEnter unmountOnExit>
+            <Grow in={component === "report"} mountOnEnter unmountOnExit>
                 <Box>
                     <ReportLayout />
                 </Box>
