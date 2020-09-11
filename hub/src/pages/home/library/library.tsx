@@ -14,7 +14,8 @@ import React, { useState, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useStore, useSelector } from "react-redux";
 import { State } from "../../../store/store";
-import { ActionTypes, LibraryMenu } from "../../../store/actions"
+import { ActionTypes } from "../../../store/actions";
+import { LibraryMenu } from "../../../types/objectTypes";
 import CreateDialog from "./createDialog";
 import LibraryContentView from "./libraryContentView";
 import LibraryPendingView from "./libraryPendingView";
@@ -87,15 +88,7 @@ export default function LibraryLayout() {
     const setActiveMenu = (value: LibraryMenu) => {
         store.dispatch({ type: ActionTypes.ACTIVE_LIBRARY_MENU, payload: value });
     };
-    const isLive = useSelector((state: State) => state.ui.liveClass);
-    const toggleLive = () => {
-        store.dispatch({ type: ActionTypes.LIVE_CLASS_TOGGLE, payload: false });
-    };
     const [menuElement, setMenuElement] = useState<null | HTMLElement>(null);
-
-    useEffect(() => {
-        if (isLive) { toggleLive(); }
-    }, [])
 
     const handleOnClickMenu = (id: string) => {
         setMenuElement(null);

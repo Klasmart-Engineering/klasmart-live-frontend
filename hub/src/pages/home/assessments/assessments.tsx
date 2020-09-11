@@ -97,10 +97,6 @@ export default function AssessmentsLayout() {
     const classes = useStyles();
     const store = useStore();
 
-    const isLive = useSelector((state: State) => state.ui.liveClass);
-    const toggleLive = () => {
-        store.dispatch({ type: ActionTypes.LIVE_CLASS_TOGGLE, payload: false });
-    };
     const activeMenu = useSelector((state: State) => state.ui.activeAssessmentsMenu);
     const setActiveMenu = (value: string) => {
         store.dispatch({ type: ActionTypes.ACTIVE_ASSESSMENTS_MENU, payload: value });
@@ -111,7 +107,6 @@ export default function AssessmentsLayout() {
     const [assessments, setAssessments] = useState<AssessmentResponse[]>([]);
 
     useEffect(() => {
-        if (isLive) { toggleLive(); }
         let prepared = true;
 
         (async () => {
@@ -212,7 +207,7 @@ export default function AssessmentsLayout() {
                     </Hidden>
                 </Grid>
             </Grid>
-            {loading ? 
+            {loading ?
                 <Grid item xs={12} style={{ textAlign: "center" }}>
                     <Grid
                         container item
@@ -246,68 +241,68 @@ interface Props {
 function AssessmentsContent(props: Props) {
     const { activeMenu, los, assessments } = props;
     switch (activeMenu) {
-    case "library":
-        return (
-            <>
-                <Grid item xs={12}>
-                    <Typography variant="caption" color="textSecondary">
-                        <FormattedMessage id="assess_libraryTitle" />
-                    </Typography>
-                </Grid>
-                <Grid item xs={12}>
-                    <Grid container spacing={1}>
-                        <AssessmentsLibraryView data={los} />
+        case "library":
+            return (
+                <>
+                    <Grid item xs={12}>
+                        <Typography variant="caption" color="textSecondary">
+                            <FormattedMessage id="assess_libraryTitle" />
+                        </Typography>
                     </Grid>
-                </Grid>
-            </>
-        );
+                    <Grid item xs={12}>
+                        <Grid container spacing={1}>
+                            <AssessmentsLibraryView data={los} />
+                        </Grid>
+                    </Grid>
+                </>
+            );
 
-    case "pending":
-        return (
-            <>
-                <Grid item xs={12}>
-                    <Typography variant="caption" color="textSecondary">
-                        <FormattedMessage id="assess_pendingTitle" />
-                    </Typography>
-                </Grid>
-                <Grid item xs={12}>
-                    <Grid container spacing={1}>
-                        <AssessmentsPendingView data={assessments} />
+        case "pending":
+            return (
+                <>
+                    <Grid item xs={12}>
+                        <Typography variant="caption" color="textSecondary">
+                            <FormattedMessage id="assess_pendingTitle" />
+                        </Typography>
                     </Grid>
-                </Grid>
-            </>
-        );
+                    <Grid item xs={12}>
+                        <Grid container spacing={1}>
+                            <AssessmentsPendingView data={assessments} />
+                        </Grid>
+                    </Grid>
+                </>
+            );
 
-    case "completed":
-        return (
-            <>
-                <Grid item xs={12}>
-                    <Typography variant="caption" color="textSecondary">
-                        <FormattedMessage id="assess_completedTitle" />
-                    </Typography>
-                </Grid>
-                <Grid item xs={12}>
-                    <Grid container spacing={1}>
-                        <AssessmentsCompletedView data={assessments} />
+        case "completed":
+            return (
+                <>
+                    <Grid item xs={12}>
+                        <Typography variant="caption" color="textSecondary">
+                            <FormattedMessage id="assess_completedTitle" />
+                        </Typography>
                     </Grid>
-                </Grid>
-            </>
-        );
+                    <Grid item xs={12}>
+                        <Grid container spacing={1}>
+                            <AssessmentsCompletedView data={assessments} />
+                        </Grid>
+                    </Grid>
+                </>
+            );
 
-    default:
-        return (
-            <>
-                <Grid item xs={12}>
-                    <Typography variant="caption" color="textSecondary">
-                        <FormattedMessage id="assess_libraryTitle" />
-                    </Typography>
-                </Grid>
-                <Grid item xs={12}>
-                    <Grid container spacing={1}>
-                        <AssessmentsLibraryView data={los} />
+        default:
+            return (
+                <>
+                    <Grid item xs={12}>
+                        <Typography variant="caption" color="textSecondary">
+                            <FormattedMessage id="assess_libraryTitle" />
+                        </Typography>
                     </Grid>
-                </Grid>
-            </>
-        );
+                    <Grid item xs={12}>
+                        <Grid container spacing={1}>
+                            <AssessmentsLibraryView data={los} />
+                        </Grid>
+                    </Grid>
+                </>
+            );
     }
 }

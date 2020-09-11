@@ -38,19 +38,6 @@ export default function LiveLayout() {
     const [hasTransitioned, setHasTransitioned] = useState(false);
     const [inFlight, setInFlight] = useState(false);
 
-    const isLive = useSelector((state: State) => state.ui.liveClass);
-
-    useEffect(() => {
-        if (isLive) {
-            setInFlight(true);
-            setHasTransitioned(true);
-            setTimeout(() => {
-                setHasTransitioned(false);
-                setInFlight(false);
-            }, 3000);
-        }
-    }, [isLive]);
-
     return (
         <Grid
             container
@@ -59,27 +46,10 @@ export default function LiveLayout() {
             className={classes.root}
             spacing={4}
         >
-            <Grid item xs={12} style={{ display: inFlight ? "unset" : "none", textAlign: "center" }}>
-                <Grid
-                    container item
-                    direction="row"
-                    alignItems="center"
-                    spacing={2}
-                >
-                    <Grid item xs={12}>
-                        <CircularProgress />
-                    </Grid>
-                    <Grid item xs={12}>
-                        Give us a sec while we get things ready!
-                    </Grid>
-                </Grid>
-            </Grid>
             <Grid item xs={12}>
-                <Fade in={!isLive && !hasTransitioned} unmountOnExit={true} timeout={{ enter: 1000, exit: 500 }}>
-                    <Paper elevation={4} className={classes.paperContainer}>
-                        <LiveCard />
-                    </Paper>
-                </Fade>
+                <Paper elevation={4} className={classes.paperContainer}>
+                    <LiveCard />
+                </Paper>
             </Grid>
         </Grid>
     );

@@ -74,11 +74,6 @@ export default function LiveCard() {
     const setLiveData = (value: LiveSessionData) => {
         store.dispatch({ type: ActionTypes.FINISH_LIVE_DATA, payload: value });
     };
-    const toggleLive = () => {
-        const data = initLiveData();
-        setLiveData(data);
-        store.dispatch({ type: ActionTypes.LIVE_CLASS_TOGGLE, payload: true });
-    };
 
     function initLiveData() {
         const startDate = new Date().getTime();
@@ -132,13 +127,13 @@ export default function LiveCard() {
                         >
                             <FormControlLabel
                                 value="teacher"
-                                control={<Radio color="primary" style={{ backgroundColor: "transparent" }}/>}
+                                control={<Radio color="primary" style={{ backgroundColor: "transparent" }} />}
                                 label="Teacher"
                                 labelPlacement="end"
                             />
                             <FormControlLabel
                                 value="student"
-                                control={<Radio color="primary" style={{ backgroundColor: "transparent" }}/>}
+                                control={<Radio color="primary" style={{ backgroundColor: "transparent" }} />}
                                 label="Student"
                                 labelPlacement="end"
                             />
@@ -162,7 +157,7 @@ export default function LiveCard() {
                         extendedOnly
                         flat
                         className={classes.liveButton}
-                        onClick={() => {}}>
+                        onClick={() => { }}>
                         <FormattedMessage id="live_liveButton" />
                     </StyledFAB>
                 </CenterAlignChildren>

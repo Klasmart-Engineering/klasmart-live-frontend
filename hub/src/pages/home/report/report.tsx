@@ -29,13 +29,6 @@ export default function ReportLayout() {
     const store = useStore();
 
     const [inFlight, setInFlight] = useState(false);
-    const isLive = useSelector((state: State) => state.ui.liveClass);
-    const toggleLive = () => {
-        store.dispatch({ type: ActionTypes.LIVE_CLASS_TOGGLE, payload: false });
-    };
-    useEffect(() => {
-        if (isLive) { toggleLive(); }
-    }, []);
 
     return (
         <Grid
