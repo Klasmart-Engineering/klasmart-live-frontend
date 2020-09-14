@@ -20,6 +20,26 @@ import { ActionTypes } from "../../../store/actions";
 import { State } from "../../../store/store";
 import { LiveSessionData } from "../../../types/objectTypes";
 
+const DEMO_LESSON_PLANS = [
+    {
+        id: "demo-lesson-plan01", title: "Badanamu Zoo: Snow Leopard"
+    }
+]
+
+const DEMO_LESSON_MATERIALS = [
+    { name: "Introduction", url: "/h5p/play/5ed99fe36aad833ac89a4803" },
+    { name: "Sticker Activity", url: "/h5p/play/5ed0b64a611e18398f7380fb" },
+    { name: "Hotspot Cat Family 1", url: "/h5p/play/5ecf6f43611e18398f7380f0" },
+    { name: "Hotspot Cat Family 2", url: "/h5p/play/5ed0a79d611e18398f7380f7" },
+    { name: "Snow Leopard Camouflage 1", url: "/h5p/play/5ecf71d2611e18398f7380f2" },
+    { name: "Snow Leopard Camouflage 2", url: "/h5p/play/5ed0a79d611e18398f7380f7" },
+    { name: "Snow Leopard Camouflage 3", url: "/h5p/play/5ed0a7d6611e18398f7380f8" },
+    { name: "Snow Leopard Camouflage 4", url: "/h5p/play/5ed0a7f8611e18398f7380f9" },
+    { name: "Snow Leopard Camouflage 5", url: "/h5p/play/5ed0a823611e18398f7380fa" },
+    { name: "Matching", url: "/h5p/play/5ecf4e4b611e18398f7380ef" },
+    { name: "Quiz", url: "/h5p/play/5ed07656611e18398f7380f6" },
+]
+
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         classInfoContainer: {
@@ -67,6 +87,7 @@ export default function LiveCard() {
     const [className, setClassName] = useState("");
     const [userName, setUserName] = useState("");
     const [userType, setUserType] = useState("teacher");
+    const [lessonPlan, setLessonPlan] = useState("");
 
     const selectedLessonPlan = useSelector((state: State) => state.account.selectedLessonPlan);
     const liveData = useSelector((state: State) => state.account.finishLiveData);
@@ -86,15 +107,9 @@ export default function LiveCard() {
     }
 
     function goLive() {
-        const materials = [
-            { name: "Fluffy Intro", url: "/videos/zoo_s01_ep001_intro.mp4" },
-            { __typename: "Iframe", name: "Introduction", url: "/h5p/play/5ed99fe36aad833ac89a4803" },
-            { name: "Main Animation", url: "/videos/zoo_s01_ep001_3d_main.mp4" },
-            { __typename: "Iframe", name: "Sticker Activity", url: "/h5p/play/5ed0b64a611e18398f7380fb" },
-        ]
         let params = `name=${userName}&roomId=${className}`;
         if (userType === "teacher") {
-            params += `&teacher&materials=${JSON.stringify(materials)}`
+            params += `&teacher&materials=${JSON.stringify(DEMO_LESSON_MATERIALS)}`
         }
         const liveLink = `https://live.kidsloop.net/live/?${params}`
 
@@ -160,7 +175,7 @@ export default function LiveCard() {
                                 <Typography variant="h6" style={{ paddingRight: theme.spacing(2) }}>
                                     <FormattedMessage id={"live_lessonPlanLabel"} />:
                             </Typography>
-                                <LessonPlanSelect />
+                                <LessonPlanSelect lessonPlan={lessonPlan} setLessonPlan={setLessonPlan} />
                             </CenterAlignChildren>
                         </Grid>
                         : null}
@@ -169,7 +184,7 @@ export default function LiveCard() {
             <Grid item>
                 <CenterAlignChildren>
                     <StyledFAB
-                        disabled={className === "" || userName === "" || selectedLessonPlan === ""}
+                        disabled={className === "" || userName === "" || (userType === "teacher" && lessonPlan === "")}
                         extendedOnly
                         flat
                         className={classes.liveButton}
@@ -273,49 +288,14 @@ function ClassSelect() {
     );
 }
 
-function LessonPlanSelect() {
-    const api = useRestAPI();
-    async function fetchPublishedLessonPlans() {
-        const payload = await api.getLessonPlans();
-        return payload.lessonPlans
-            .filter((p) => p.published)
-            .sort((a, b) => b.updatedDate - a.updatedDate);
-    }
-
+function LessonPlanSelect({ lessonPlan, setLessonPlan }: {
+    lessonPlan: string,
+    setLessonPlan: React.Dispatch<React.SetStateAction<string>>
+}) {
     const classes = useStyles();
-    const store = useStore();
 
-    const selectedLessonPlan = useSelector((state: State) => state.account.selectedLessonPlan);
-    const setSelectedLessonPlan = (value: string) => {
-        store.dispatch({ type: ActionTypes.SELECTED_LESSON_PLAN, payload: value });
-    };
-    const [lessonPlanOptions, setLessonPlanOptions] = useState<Array<{ id: string, title: string }>>([
-        {
-            id: "demo-lesson-plan01", title: "Badanamu Zoo: Snow Leopard"
-        }
-    ]);
-    const [lessonPlanText, setLessonPlanText] = useState<string>("");
+    const [lessonPlanOptions, _] = useState<Array<{ id: string, title: string }>>(DEMO_LESSON_PLANS);
     const [lessonPlanMenuElement, setLessonPlanMenuElement] = useState<null | HTMLElement>(null);
-
-    useEffect(() => {
-        let prepared = true;
-        (async () => {
-            const plans = await fetchPublishedLessonPlans();
-            if (prepared) {
-                const options = plans.map((p) => {
-                    return { id: p.lessonPlanId, title: p.name };
-                });
-                setLessonPlanOptions(options);
-                setLessonPlanMenuElement(null);
-            }
-        })();
-        return () => { prepared = false; };
-    }, []);
-
-    function lessonPlanSelect(plan: { id: string, title: string }) {
-        setSelectedLessonPlan(plan.id);
-        setLessonPlanText(plan.title);
-    }
 
     return (
         <>
@@ -329,9 +309,9 @@ function LessonPlanSelect() {
                     onClick={(e) => setLessonPlanMenuElement(e.currentTarget)}
                 >
                     <span className={classes.select}>
-                        {lessonPlanText === ""
+                        {lessonPlan === ""
                             ? <FormattedMessage id="live_lessonPlanSelect" />
-                            : lessonPlanText
+                            : lessonPlan
                         }
                     </span>
                     <ExpandMoreIcon fontSize="small" />
@@ -348,8 +328,8 @@ function LessonPlanSelect() {
                     lessonPlanOptions.map((plan) => (
                         <MenuItem
                             key={plan.id}
-                            selected={selectedLessonPlan === plan.id}
-                            onClick={() => lessonPlanSelect(plan)}
+                            selected={lessonPlan === plan.title}
+                            onClick={() => setLessonPlan(plan.title)}
                         >
                             {plan.title}
                         </MenuItem>
