@@ -6,7 +6,6 @@ import { createStyles, makeStyles, Theme, useTheme, withStyles } from "@material
 import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import FaceIcon from "@material-ui/icons/Face";
 import React, { useEffect, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { useSelector, useStore } from "react-redux";
@@ -67,7 +66,7 @@ export default function LiveCard() {
 
     const [className, setClassName] = useState("");
     const [userName, setUserName] = useState("");
-    const [userType, setUserType] = useState("student");
+    const [userType, setUserType] = useState("teacher");
 
     const selectedLessonPlan = useSelector((state: State) => state.account.selectedLessonPlan);
     const liveData = useSelector((state: State) => state.account.finishLiveData);
@@ -84,6 +83,22 @@ export default function LiveCard() {
             students: liveData.students,
         };
         return data;
+    }
+
+    function goLive() {
+        const materials = [
+            { name: "Fluffy Intro", url: "/videos/zoo_s01_ep001_intro.mp4" },
+            { __typename: "Iframe", name: "Introduction", url: "/h5p/play/5ed99fe36aad833ac89a4803" },
+            { name: "Main Animation", url: "/videos/zoo_s01_ep001_3d_main.mp4" },
+            { __typename: "Iframe", name: "Sticker Activity", url: "/h5p/play/5ed0b64a611e18398f7380fb" },
+        ]
+        let params = `name=${userName}&roomId=${className}`;
+        if (userType === "teacher") {
+            params += `&teacher&materials=${JSON.stringify(materials)}`
+        }
+        const liveLink = `https://live.kidsloop.net/live/?${params}`
+
+        window.open(liveLink)
     }
 
     return (
@@ -139,25 +154,26 @@ export default function LiveCard() {
                             />
                         </RadioGroup>
                     </Grid>
-                    <Grid item xs={12}>
-                        <CenterAlignChildren>
-                            <Typography variant="h6" style={{ paddingRight: theme.spacing(2) }}>
-                                <FormattedMessage id={"live_lessonPlanLabel"} />:
+                    {userType === "teacher" ?
+                        <Grid item xs={12}>
+                            <CenterAlignChildren>
+                                <Typography variant="h6" style={{ paddingRight: theme.spacing(2) }}>
+                                    <FormattedMessage id={"live_lessonPlanLabel"} />:
                             </Typography>
-                            <LessonPlanSelect />
-                        </CenterAlignChildren>
-
-                    </Grid>
+                                <LessonPlanSelect />
+                            </CenterAlignChildren>
+                        </Grid>
+                        : null}
                 </Grid>
             </Grid>
             <Grid item>
                 <CenterAlignChildren>
                     <StyledFAB
-                        disabled={selectedLessonPlan === ""}
+                        disabled={className === "" || userName === "" || selectedLessonPlan === ""}
                         extendedOnly
                         flat
                         className={classes.liveButton}
-                        onClick={() => { }}>
+                        onClick={() => goLive()}>
                         <FormattedMessage id="live_liveButton" />
                     </StyledFAB>
                 </CenterAlignChildren>
@@ -212,7 +228,6 @@ function ClassSelect() {
         };
         store.dispatch({ type: ActionTypes.FINISH_LIVE_DATA, payload: value });
         setClassName(classInfo.className);
-        setClassNameMenuElement(null);
     }
 
     return (
@@ -274,7 +289,11 @@ function LessonPlanSelect() {
     const setSelectedLessonPlan = (value: string) => {
         store.dispatch({ type: ActionTypes.SELECTED_LESSON_PLAN, payload: value });
     };
-    const [lessonPlanOptions, setLessonPlanOptions] = useState<Array<{ id: string, title: string }>>([]);
+    const [lessonPlanOptions, setLessonPlanOptions] = useState<Array<{ id: string, title: string }>>([
+        {
+            id: "demo-lesson-plan01", title: "Badanamu Zoo: Snow Leopard"
+        }
+    ]);
     const [lessonPlanText, setLessonPlanText] = useState<string>("");
     const [lessonPlanMenuElement, setLessonPlanMenuElement] = useState<null | HTMLElement>(null);
 
@@ -287,6 +306,7 @@ function LessonPlanSelect() {
                     return { id: p.lessonPlanId, title: p.name };
                 });
                 setLessonPlanOptions(options);
+                setLessonPlanMenuElement(null);
             }
         })();
         return () => { prepared = false; };
