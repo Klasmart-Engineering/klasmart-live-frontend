@@ -8,8 +8,6 @@ module.exports = {
     mode: "production",
     entry: {
         hubui: "./src/client-entry.tsx",
-        record: "./src/pages/classroom/live/liveClient/entry-record.ts",
-        player: "./src/pages/classroom/live/liveClient/entry-player.ts"
     },
     module: {
         rules: [
@@ -71,6 +69,9 @@ module.exports = {
     },
     resolve: {
         extensions: [".js", ".jsx", ".tsx", ".ts"],
+        alias: {
+            ReactDOM: path.resolve(__dirname, './node_modules/react-dom/')
+        }
     },
     output: {
         filename: "[name].[chunkhash].js",
@@ -83,31 +84,37 @@ module.exports = {
             chunks: ["hubui"],
             template: "src/index_prod.html",
         }),
-        new HtmlWebpackPlugin({
-            filename: "player.html",
-            chunks: ["player"],
-            template: "src/pages/classroom/live/liveClient/player.html"
-        }),
-        new webpack.ProvidePlugin({
-            "fetch": "imports-loader?this=>global!exports-loader?global.fetch!whatwg-fetch"
-        }),
-        new Visualizer({ filename: "../webpack-stats.html" }),
+        // new webpack.ProvidePlugin({
+        //     "fetch": "imports-loader?this=>global!exports-loader?global.fetch!whatwg-fetch"
+        // }),
+        // new Visualizer({ filename: "../webpack-stats.html" }),
         new webpack.EnvironmentPlugin({
             "STAGE": "prod",
             "CALM_ORG_ID": "CALM-ISLAND",
             "ASSESSMENT_ENDPOINT": "https://seoul.assessment-api.badanamu.net/",
-            "DEFAULT_PROG_ID": "KIDSLOOP-2.0"
+            "DEFAULT_PROG_ID": "KIDSLOOP-2.0",
+            "REACT_APP_BASE_API": "/v1",
         })
     ],
-    devServer: {
-        host: "0.0.0.0",
-        historyApiFallback: true,
-        proxy: {
-            "/h5p": {
-                target: "https://zoo.kidsloop.net/",
-                secure: false,
-                changeOrigin: true,
-            }
-        }
-    },
+    // devServer: {
+    //     host: "0.0.0.0",
+    //     historyApiFallback: true,
+    //     proxy: {
+    //         // "/v1": {
+    //         //     target: "https://seoul-beta.assessment-api.badanamu.net",
+    //         //     secure: false,
+    //         //     changeOrigin: true,
+    //         // },
+    //         "/v1": {
+    //             target: "https://kl2-test.kidsloop.net/",
+    //             secure: true,
+    //             changeOrigin: true,
+    //         },
+    //         "/h5p": {
+    //             target: "https://kl2-test.kidsloop.net/",
+    //             secure: true,
+    //             changeOrigin: true,
+    //         }
+    //     }
+    // },
 };

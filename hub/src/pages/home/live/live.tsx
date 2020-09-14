@@ -1,4 +1,4 @@
-import { CircularProgress, Paper } from "@material-ui/core";
+import { CircularProgress, Paper, Container, Box } from "@material-ui/core";
 import Fade from "@material-ui/core/Fade";
 import Grid from "@material-ui/core/Grid";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
@@ -7,6 +7,8 @@ import { useEffect, useState } from "react";
 import { useSelector, useStore } from "react-redux";
 import { State } from "../../../store/store";
 import LiveCard from "./liveCard";
+import NavBar from "../../../components/styled/navbar/navbar";
+import { mainNavBar } from "../../../app";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -38,19 +40,27 @@ export default function LiveLayout() {
     const [hasTransitioned, setHasTransitioned] = useState(false);
     const [inFlight, setInFlight] = useState(false);
 
-    return (
-        <Grid
-            container
-            direction="row"
-            justify="space-between"
-            className={classes.root}
-            spacing={4}
+    return (<>
+        <NavBar menuLabels={mainNavBar} />
+        <Container
+            disableGutters
+            maxWidth={"lg"}
         >
-            <Grid item xs={12}>
-                <Paper elevation={4} className={classes.paperContainer}>
-                    <LiveCard />
-                </Paper>
-            </Grid>
-        </Grid>
-    );
+            <Box>
+                <Grid
+                    container
+                    direction="row"
+                    justify="space-between"
+                    className={classes.root}
+                    spacing={4}
+                >
+                    <Grid item xs={12}>
+                        <Paper elevation={4} className={classes.paperContainer}>
+                            <LiveCard />
+                        </Paper>
+                    </Grid>
+                </Grid>
+            </Box>
+        </Container>
+    </>);
 }

@@ -12,6 +12,10 @@ import { BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Bar, Responsive
 import { getDefaultProgId } from "../../../config";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
+import NavBar from "../../../components/styled/navbar/navbar";
+import Container from "@material-ui/core/Container";
+import Box from "@material-ui/core/Box";
+import { mainNavBar } from "../../../app";
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -30,32 +34,40 @@ export default function ReportLayout() {
 
     const [inFlight, setInFlight] = useState(false);
 
-    return (
-        <Grid
-            container
-            direction="row"
-            justify="space-between"
-            className={classes.root}
-            spacing={4}
+    return (<>
+        <NavBar menuLabels={mainNavBar} />
+        <Container
+            disableGutters
+            maxWidth={"lg"}
         >
-            <Grid item xs={12} style={{ display: inFlight ? "unset" : "none", textAlign: "center" }}>
+            <Box>
                 <Grid
-                    container item
+                    container
                     direction="row"
-                    alignItems="center"
-                    spacing={2}
+                    justify="space-between"
+                    className={classes.root}
+                    spacing={4}
                 >
-                    <Grid item xs={12}>
-                        <CircularProgress />
+                    <Grid item xs={12} style={{ display: inFlight ? "unset" : "none", textAlign: "center" }}>
+                        <Grid
+                            container item
+                            direction="row"
+                            alignItems="center"
+                            spacing={2}
+                        >
+                            <Grid item xs={12}>
+                                <CircularProgress />
+                            </Grid>
+                            <Grid item xs={12}>
+                                Give us a sec while we get things ready!
                     </Grid>
-                    <Grid item xs={12}>
-                        Give us a sec while we get things ready!
+                        </Grid>
                     </Grid>
-                </Grid>
-            </Grid>
-            {renderChart()}
-        </Grid >
-    );
+                    {renderChart()}
+                </Grid >
+            </Box>
+        </Container>
+    </>);
 }
 
 function renderChart() {

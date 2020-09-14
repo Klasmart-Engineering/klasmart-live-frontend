@@ -14,6 +14,7 @@ import AssessmentsLayout from "./assessments/assessments";
 import LibraryLayout from "./library/library";
 import LiveLayout from "./live/live";
 import ReportLayout from "./report/report";
+import { Switch } from "react-router-dom";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -64,26 +65,26 @@ export default function Home() {
             disableGutters
             maxWidth={"lg"}
         >
-            <Grow in={component === "live"} mountOnEnter unmountOnExit>
-                <Box>
+            <Switch>
+            </Switch>
+            {/* <Grow in={component === "live"} mountOnEnter unmountOnExit>
                     <LiveLayout />
-                </Box>
             </Grow>
             <Grow in={component === "schedule"} mountOnEnter unmountOnExit>
                 <Box>
-                    Coming Soon
+                    
                 </Box>
             </Grow>
-            <Grow in={component === "assessments"} mountOnEnter unmountOnExit>
+            <Grow in={component === ""} mountOnEnter unmountOnExit>
                 <Box>
-                    <AssessmentsLayout />
+                    < />
                 </Box>
             </Grow>
-            <Grow in={component === "report"} mountOnEnter unmountOnExit>
+            <Grow in={component === ""} mountOnEnter unmountOnExit>
                 <Box>
-                    <ReportLayout />
+                    < />
                 </Box>
-            </Grow>
+            </Grow> */}
         </Container>
     );
 }

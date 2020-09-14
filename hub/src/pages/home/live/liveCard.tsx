@@ -37,8 +37,16 @@ const DEMO_LESSON_MATERIALS = [
     { name: "Snow Leopard Camouflage 4", url: "/h5p/play/5ed0a7f8611e18398f7380f9" },
     { name: "Snow Leopard Camouflage 5", url: "/h5p/play/5ed0a823611e18398f7380fa" },
     { name: "Matching", url: "/h5p/play/5ecf4e4b611e18398f7380ef" },
+    { __typename: "Video", name: "Video", url: `${process.env.ENDPOINT_TEST_ASSETS_S3 || "."}/test_video.mp4` },
+    { __typename: "Audio", name: "Audio", url: `${process.env.ENDPOINT_TEST_ASSETS_S3 || "."}/test_audio.m4a` },
     { name: "Quiz", url: "/h5p/play/5ed07656611e18398f7380f6" },
 ]
+
+interface LessonPlanData {
+    id: string;
+    title: string;
+    data?: any;
+}
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -87,24 +95,43 @@ export default function LiveCard() {
     const [className, setClassName] = useState("");
     const [userName, setUserName] = useState("");
     const [userType, setUserType] = useState("teacher");
-    const [lessonPlan, setLessonPlan] = useState("");
+    const [lessonPlan, setLessonPlan] = useState<LessonPlanData>({ id: "", title: "" });
+    const [lessonPlans, setLessonPlans] = useState<LessonPlanData[]>([]);
 
-    const selectedLessonPlan = useSelector((state: State) => state.account.selectedLessonPlan);
-    const liveData = useSelector((state: State) => state.account.finishLiveData);
-    const setLiveData = (value: LiveSessionData) => {
-        store.dispatch({ type: ActionTypes.FINISH_LIVE_DATA, payload: value });
-    };
-
-    function initLiveData() {
-        const startDate = new Date().getTime();
-        const data: LiveSessionData = {
-            classId: liveData.classId,
-            className: liveData.className,
-            startDate,
-            students: liveData.students,
-        };
-        return data;
+    async function fetchPublishedLessonPlans() {
+        const headers = new Headers();
+        headers.append("Accept", "application/json");
+        headers.append("Content-Type", "application/json");
+        const response = await fetch(`/v1/contents?publish_status=published&content_type=2`, {
+            headers,
+            method: "GET"
+        })
+        if (response.status === 200) { return response.json(); }
     }
+
+    useEffect(() => {
+        let prepared = true;
+        (async () => {
+            const json = await fetchPublishedLessonPlans();
+            if (prepared) {
+                if (json && json.list) {
+                    console.log("json: ", json, json.list)
+                    const lpList = json.list.map((lp: any) => {
+                        return { id: lp.id, title: lp.name, data: lp.data };
+                    });
+                    setLessonPlans(lpList);
+                } else {
+                    setLessonPlans(DEMO_LESSON_PLANS);
+                }
+            }
+        })();
+        return () => { prepared = false; };
+    }, []);
+
+    useEffect(() => {
+        // console.log("selected lp: ", lessonPlan)
+        // console.log("selected metarials: ", lessonPlan.data)
+    }, [lessonPlan])
 
     function goLive() {
         let params = `name=${userName}&roomId=${className}`;
@@ -175,7 +202,7 @@ export default function LiveCard() {
                                 <Typography variant="h6" style={{ paddingRight: theme.spacing(2) }}>
                                     <FormattedMessage id={"live_lessonPlanLabel"} />:
                             </Typography>
-                                <LessonPlanSelect lessonPlan={lessonPlan} setLessonPlan={setLessonPlan} />
+                                <LessonPlanSelect lessonPlans={lessonPlans} lessonPlan={lessonPlan} setLessonPlan={setLessonPlan} />
                             </CenterAlignChildren>
                         </Grid>
                         : null}
@@ -184,7 +211,7 @@ export default function LiveCard() {
             <Grid item>
                 <CenterAlignChildren>
                     <StyledFAB
-                        disabled={className === "" || userName === "" || (userType === "teacher" && lessonPlan === "")}
+                        disabled={className === "" || userName === "" || (userType === "teacher" && lessonPlan.id === "")}
                         extendedOnly
                         flat
                         className={classes.liveButton}
@@ -225,72 +252,73 @@ const StyledMenu = withStyles({})((props: MenuProps) => (
     />
 ));
 
-function ClassSelect() {
-    const classes = useStyles();
-    const store = useStore();
+// function ClassSelect() {
+//     const classes = useStyles();
+//     const store = useStore();
 
-    const liveData = useSelector((state: State) => state.account.finishLiveData);
-    const classInfo = CLASS_LIST.find((element) => element.classId === liveData.classId);
-    const [className, setClassName] = useState<string>(classInfo ? classInfo.className : "");
-    const [classNameMenuElement, setClassNameMenuElement] = useState<null | HTMLElement>(null);
+//     const liveData = useSelector((state: State) => state.account.finishLiveData);
+//     const classInfo = CLASS_LIST.find((element) => element.classId === liveData.classId);
+//     const [className, setClassName] = useState<string>(classInfo ? classInfo.className : "");
+//     const [classNameMenuElement, setClassNameMenuElement] = useState<null | HTMLElement>(null);
 
-    function classSelect(classInfo: ClassInfo) {
-        const value = {
-            classId: classInfo.classId,
-            className: classInfo.className,
-            startDate: liveData.students,
-            students: liveData.students,
-        };
-        store.dispatch({ type: ActionTypes.FINISH_LIVE_DATA, payload: value });
-        setClassName(classInfo.className);
-    }
+//     function classSelect(classInfo: ClassInfo) {
+//         const value = {
+//             classId: classInfo.classId,
+//             className: classInfo.className,
+//             startDate: liveData.students,
+//             students: liveData.students,
+//         };
+//         store.dispatch({ type: ActionTypes.FINISH_LIVE_DATA, payload: value });
+//         setClassName(classInfo.className);
+//     }
 
-    return (
-        <>
-            <Tooltip title={<FormattedMessage id="live_classSelect" />} enterDelay={300}>
-                <Button
-                    color="inherit"
-                    aria-owns={classNameMenuElement ? "classSelect-menu" : undefined}
-                    aria-haspopup="true"
-                    data-ga-event-category="AppBar"
-                    data-ga-event-action="classSelect"
-                    onClick={(e) => setClassNameMenuElement(e.currentTarget)}
-                >
-                    <span className={classes.select}>
-                        {liveData.classId === "" ?
-                            <FormattedMessage id="live_classSelect" /> :
-                            className
-                        }
-                    </span>
-                    <ExpandMoreIcon fontSize="small" />
-                </Button>
-            </Tooltip>
-            <StyledMenu
-                id="classSelect-menu"
-                anchorEl={classNameMenuElement}
-                keepMounted
-                open={Boolean(classNameMenuElement)}
-                onClose={() => setClassNameMenuElement(null)}
-            >
-                {
-                    CLASS_LIST.map((classInfo) => (
-                        <MenuItem
-                            key={classInfo.classId}
-                            selected={liveData.classId === classInfo.classId}
-                            onClick={() => classSelect(classInfo)}
-                        >
-                            {classInfo.className}
-                        </MenuItem>
-                    ))
-                }
-            </StyledMenu>
-        </>
-    );
-}
+//     return (
+//         <>
+//             <Tooltip title={<FormattedMessage id="live_classSelect" />} enterDelay={300}>
+//                 <Button
+//                     color="inherit"
+//                     aria-owns={classNameMenuElement ? "classSelect-menu" : undefined}
+//                     aria-haspopup="true"
+//                     data-ga-event-category="AppBar"
+//                     data-ga-event-action="classSelect"
+//                     onClick={(e) => setClassNameMenuElement(e.currentTarget)}
+//                 >
+//                     <span className={classes.select}>
+//                         {liveData.classId === "" ?
+//                             <FormattedMessage id="live_classSelect" /> :
+//                             className
+//                         }
+//                     </span>
+//                     <ExpandMoreIcon fontSize="small" />
+//                 </Button>
+//             </Tooltip>
+//             <StyledMenu
+//                 id="classSelect-menu"
+//                 anchorEl={classNameMenuElement}
+//                 keepMounted
+//                 open={Boolean(classNameMenuElement)}
+//                 onClose={() => setClassNameMenuElement(null)}
+//             >
+//                 {
+//                     CLASS_LIST.map((classInfo) => (
+//                         <MenuItem
+//                             key={classInfo.classId}
+//                             selected={liveData.classId === classInfo.classId}
+//                             onClick={() => classSelect(classInfo)}
+//                         >
+//                             {classInfo.className}
+//                         </MenuItem>
+//                     ))
+//                 }
+//             </StyledMenu>
+//         </>
+//     );
+// }
 
-function LessonPlanSelect({ lessonPlan, setLessonPlan }: {
-    lessonPlan: string,
-    setLessonPlan: React.Dispatch<React.SetStateAction<string>>
+function LessonPlanSelect({ lessonPlans, lessonPlan, setLessonPlan }: {
+    lessonPlans: LessonPlanData[],
+    lessonPlan: LessonPlanData,
+    setLessonPlan: React.Dispatch<React.SetStateAction<LessonPlanData>>
 }) {
     const classes = useStyles();
 
@@ -309,9 +337,9 @@ function LessonPlanSelect({ lessonPlan, setLessonPlan }: {
                     onClick={(e) => setLessonPlanMenuElement(e.currentTarget)}
                 >
                     <span className={classes.select}>
-                        {lessonPlan === ""
+                        {lessonPlan.title === ""
                             ? <FormattedMessage id="live_lessonPlanSelect" />
-                            : lessonPlan
+                            : lessonPlan.title
                         }
                     </span>
                     <ExpandMoreIcon fontSize="small" />
@@ -325,13 +353,13 @@ function LessonPlanSelect({ lessonPlan, setLessonPlan }: {
                 onClose={() => setLessonPlanMenuElement(null)}
             >
                 {
-                    lessonPlanOptions.map((plan) => (
+                    lessonPlanOptions.map((lp) => (
                         <MenuItem
-                            key={plan.id}
-                            selected={lessonPlan === plan.title}
-                            onClick={() => setLessonPlan(plan.title)}
+                            key={lp.id}
+                            selected={lessonPlan.id === lp.id}
+                            onClick={() => setLessonPlan(lp)}
                         >
-                            {plan.title}
+                            {lp.title}
                         </MenuItem>
                     ))
                 }

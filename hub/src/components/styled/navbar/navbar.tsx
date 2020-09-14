@@ -8,7 +8,7 @@ import Typography from "@material-ui/core/Typography";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import SettingsIcon from "@material-ui/icons/Settings";
 import * as QueryString from "query-string";
-import React from "react";
+import React, { useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { useSelector, useStore } from "react-redux";
 import { useHistory } from "react-router-dom";
@@ -52,23 +52,24 @@ interface MenuButtonProps {
 }
 
 function MenuButtons(props: MenuButtonProps) {
-    const url = new URL(window.location.href);
-    const component = url.searchParams.get("component") || "live";
-
     const history = useHistory();
     const theme = useTheme();
     const { labels } = props;
 
     const minHeight = useMediaQuery(theme.breakpoints.up("sm")) ? 64 : 56;
 
+    const [activeComponent, setActiveComponent] = useState("live");
+
     return (
         labels.map((value: { name: string; path: string; }) => (
             <NavButton
                 disabled={value.name === "assessments" || value.name === "report"}
                 key={`menuLabel-${value.name}`}
-                onClick={() => history.push(value.path)}
-                isActive={component === value.name}
-
+                onClick={() => {
+                    setActiveComponent(value.name)
+                    history.push(value.path)
+                }}
+                isActive={activeComponent === value.path.split("/").filter(x => x)[0]}
                 style={{ minHeight }}
             >
                 <FormattedMessage id={`navMenu_${value.name}Label`} />

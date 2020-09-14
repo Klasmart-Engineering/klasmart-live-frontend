@@ -12,7 +12,7 @@ import React, { useMemo } from "react";
 import * as ReactDOM from "react-dom";
 import { RawIntlProvider } from "react-intl";
 import { Provider, useSelector } from "react-redux";
-import { BrowserRouter } from "react-router-dom";
+import { HashRouter } from "react-router-dom";
 import { PersistGate } from "redux-persist/integration/react";
 import { Layout } from "./layout";
 import { createDefaultStore, State } from "./store/store";
@@ -50,13 +50,13 @@ async function main() {
 
     const div = document.getElementById("app");
     ReactDOM.render(
-        <BrowserRouter>
+        <HashRouter>
             <Provider store={store}>
                 <PersistGate loading={null} persistor={persistor}>
                     <ClientSide />
                 </PersistGate>
             </Provider>
-        </BrowserRouter>,
+        </HashRouter>,
         div);
 }
 
