@@ -83,13 +83,7 @@ module.exports = {
   },
   plugins: [
     new webpack.EnvironmentPlugin(
-      ["NODE_ENV"],
-      ["ENDPOINT_GQL"],
-      ["ENDPOINT_H5P"],
-      ["ENDPOINT_TEST_ASSETS_S3"],
-      ["ENDPOINT_WEBSOCKET"],
-      ["APP_GIT_REV"],
-      ["CALLSTATS_ENABLE"],
+      { "CALLSTATS_ENABLE": "TRUE" },
     ),
     new HtmlWebpackPlugin({
       filename: 'index.html',
