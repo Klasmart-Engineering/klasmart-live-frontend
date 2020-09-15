@@ -40,7 +40,7 @@ export function App() {
     const location = useLocation();
 
     useEffect(() => {
-        console.log(location)
+        // console.log(location)
     }, [location]);
 
     useEffect(() => {

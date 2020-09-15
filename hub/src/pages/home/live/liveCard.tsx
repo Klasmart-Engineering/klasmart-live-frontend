@@ -1,3 +1,5 @@
+import { v4 as uuid } from "uuid";
+const classId = uuid().substr(0, 5)
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import Menu, { MenuProps } from "@material-ui/core/Menu";
@@ -5,20 +7,19 @@ import MenuItem from "@material-ui/core/MenuItem";
 import { createStyles, makeStyles, Theme, useTheme, withStyles } from "@material-ui/core/styles";
 import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Radio from "@material-ui/core/Radio";
+import RadioGroup from "@material-ui/core/RadioGroup";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import InfoIcon from "@material-ui/icons/InfoOutlined";
 import React, { useEffect, useState } from "react";
 import { FormattedMessage } from "react-intl";
-import { useSelector, useStore } from "react-redux";
+import { useStore } from "react-redux";
 
-import { FormControlLabel, Radio, RadioGroup } from "@material-ui/core";
-import { useRestAPI } from "../../../api/restapi";
 import LiveBackground from "../../../assets/img/live_bg.svg";
 import CenterAlignChildren from "../../../components/centerAlignChildren";
 import StyledFAB from "../../../components/styled/fabButton";
 import StyledTextField from "../../../components/styled/textfield";
-import { ActionTypes } from "../../../store/actions";
-import { State } from "../../../store/store";
-import { LiveSessionData } from "../../../types/objectTypes";
 
 const DEMO_LESSON_PLANS = [
     {
@@ -92,9 +93,9 @@ export default function LiveCard() {
     const theme = useTheme();
     const store = useStore();
 
-    const [className, setClassName] = useState("");
-    const [userName, setUserName] = useState("");
     const [userType, setUserType] = useState("teacher");
+    const [className, setClassName] = useState(classId);
+    const [userName, setUserName] = useState("");
     const [lessonPlan, setLessonPlan] = useState<LessonPlanData>({ id: "", title: "" });
     const [lessonPlans, setLessonPlans] = useState<LessonPlanData[]>([]);
 
@@ -115,7 +116,7 @@ export default function LiveCard() {
             const json = await fetchPublishedLessonPlans();
             if (prepared) {
                 if (json && json.list) {
-                    console.log("json: ", json, json.list)
+                    // console.log("json: ", json, json.list)
                     const lpList = json.list.map((lp: any) => {
                         return { id: lp.id, title: lp.name, data: lp.data };
                     });
@@ -132,6 +133,11 @@ export default function LiveCard() {
         // console.log("selected lp: ", lessonPlan)
         // console.log("selected metarials: ", lessonPlan.data)
     }, [lessonPlan])
+
+    useEffect(() => {
+        if (userType === "student") { setClassName("") }
+        if (userType === "teacher") { setClassName(classId) }
+    }, [userType])
 
     function goLive() {
         let params = `name=${userName}&roomId=${className}`;
@@ -157,13 +163,19 @@ export default function LiveCard() {
                     <Grid item xs={12}>
                         <Typography variant="h4">Welcome to KidsLoop</Typography>
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid container direction="row" alignItems="center" item xs={12}>
                         <StyledTextField
+                            disabled={userType === "teacher"}
                             id="class-name-input"
                             label={<FormattedMessage id={"live_classNameLabel"} />}
                             onChange={(e) => setClassName(e.target.value)}
                             value={className}
                         />
+                        {userType === "teacher" ? null :
+                            <Tooltip arrow placement="right" title="Please enter the 5-character class name from your teacher">
+                                <InfoIcon fontSize="small" style={{ marginLeft: 12 }} />
+                            </Tooltip>
+                        }
                     </Grid>
                     <Grid item xs={12}>
                         <StyledTextField
