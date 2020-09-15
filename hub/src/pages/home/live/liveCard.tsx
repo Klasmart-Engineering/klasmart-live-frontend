@@ -1,5 +1,5 @@
 import { v4 as uuid } from "uuid";
-const classId = uuid().substr(0, 5)
+const classId = uuid().substr(0, 5);
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import Menu, { MenuProps } from "@material-ui/core/Menu";
@@ -25,7 +25,7 @@ const DEMO_LESSON_PLANS = [
     {
         id: "demo-lesson-plan01", title: "Badanamu Zoo: Snow Leopard"
     }
-]
+];
 
 const DEMO_LESSON_MATERIALS = [
     { name: "Introduction", url: "/h5p/play/5ed99fe36aad833ac89a4803" },
@@ -38,10 +38,8 @@ const DEMO_LESSON_MATERIALS = [
     { name: "Snow Leopard Camouflage 4", url: "/h5p/play/5ed0a7f8611e18398f7380f9" },
     { name: "Snow Leopard Camouflage 5", url: "/h5p/play/5ed0a823611e18398f7380fa" },
     { name: "Matching", url: "/h5p/play/5ecf4e4b611e18398f7380ef" },
-    { __typename: "Video", name: "Video", url: `${process.env.ENDPOINT_TEST_ASSETS_S3 || "."}/test_video.mp4` },
-    { __typename: "Audio", name: "Audio", url: `${process.env.ENDPOINT_TEST_ASSETS_S3 || "."}/test_audio.m4a` },
     { name: "Quiz", url: "/h5p/play/5ed07656611e18398f7380f6" },
-]
+];
 
 interface LessonPlanData {
     id: string;
@@ -99,54 +97,54 @@ export default function LiveCard() {
     const [lessonPlan, setLessonPlan] = useState<LessonPlanData>({ id: "", title: "" });
     const [lessonPlans, setLessonPlans] = useState<LessonPlanData[]>([]);
 
-    async function fetchPublishedLessonPlans() {
-        const headers = new Headers();
-        headers.append("Accept", "application/json");
-        headers.append("Content-Type", "application/json");
-        const response = await fetch(`/v1/contents?publish_status=published&content_type=2`, {
-            headers,
-            method: "GET"
-        })
-        if (response.status === 200) { return response.json(); }
-    }
+    // async function fetchPublishedLessonPlans() {
+    //     const headers = new Headers();
+    //     headers.append("Accept", "application/json");
+    //     headers.append("Content-Type", "application/json");
+    //     const response = await fetch(`/v1/contents?publish_status=published&content_type=2`, {
+    //         headers,
+    //         method: "GET"
+    //     })
+    //     if (response.status === 200) { return response.json(); }
+    // }
 
-    useEffect(() => {
-        let prepared = true;
-        (async () => {
-            const json = await fetchPublishedLessonPlans();
-            if (prepared) {
-                if (json && json.list) {
-                    // console.log("json: ", json, json.list)
-                    const lpList = json.list.map((lp: any) => {
-                        return { id: lp.id, title: lp.name, data: lp.data };
-                    });
-                    setLessonPlans(lpList);
-                } else {
-                    setLessonPlans(DEMO_LESSON_PLANS);
-                }
-            }
-        })();
-        return () => { prepared = false; };
-    }, []);
+    // useEffect(() => {
+    //     let prepared = true;
+    //     (async () => {
+    //         const json = await fetchPublishedLessonPlans();
+    //         if (prepared) {
+    //             if (json && json.list) {
+    //                 // console.log("json: ", json, json.list)
+    //                 const lpList = json.list.map((lp: any) => {
+    //                     return { id: lp.id, title: lp.name, data: lp.data };
+    //                 });
+    //                 setLessonPlans(lpList);
+    //             } else {
+    //                 setLessonPlans(DEMO_LESSON_PLANS);
+    //             }
+    //         }
+    //     })();
+    //     return () => { prepared = false; };
+    // }, []);
 
     useEffect(() => {
         // console.log("selected lp: ", lessonPlan)
         // console.log("selected metarials: ", lessonPlan.data)
-    }, [lessonPlan])
+    }, [lessonPlan]);
 
     useEffect(() => {
-        if (userType === "student") { setClassName("") }
-        if (userType === "teacher") { setClassName(classId) }
-    }, [userType])
+        if (userType === "student") { setClassName(""); }
+        if (userType === "teacher") { setClassName(classId); }
+    }, [userType]);
 
     function goLive() {
         let params = `name=${userName}&roomId=${className}`;
         if (userType === "teacher") {
-            params += `&teacher&materials=${JSON.stringify(DEMO_LESSON_MATERIALS)}`
+            params += `&teacher&materials=${JSON.stringify(DEMO_LESSON_MATERIALS)}`;
         }
-        const liveLink = `https://live.kidsloop.net/live/?${params}`
+        const liveLink = `https://live.kidsloop.net/live/?${params}`;
 
-        window.open(liveLink)
+        window.open(liveLink);
     }
 
     return (
@@ -213,7 +211,7 @@ export default function LiveCard() {
                             <CenterAlignChildren>
                                 <Typography variant="h6" style={{ paddingRight: theme.spacing(2) }}>
                                     <FormattedMessage id={"live_lessonPlanLabel"} />:
-                            </Typography>
+                                </Typography>
                                 <LessonPlanSelect lessonPlans={lessonPlans} lessonPlan={lessonPlan} setLessonPlan={setLessonPlan} />
                             </CenterAlignChildren>
                         </Grid>

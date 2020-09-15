@@ -55,19 +55,23 @@ function MenuButtons(props: MenuButtonProps) {
     const history = useHistory();
     const theme = useTheme();
     const { labels } = props;
-
     const minHeight = useMediaQuery(theme.breakpoints.up("sm")) ? 64 : 56;
 
-    const [activeComponent, setActiveComponent] = useState("live");
+    const store = useStore();
+    const activeComponent = useSelector((state: State) => state.ui.activeComponentHome);
+    const setActiveComponent = (value: string) => {
+        store.dispatch({ type: ActionTypes.ACTIVE_COMPONENT_HOME, payload: value });
+    };
+    // const [activeComponent, setActiveComponent] = useState("live");
 
     return (
         labels.map((value: { name: string; path: string; }) => (
             <NavButton
-                disabled={value.name === "assessments" || value.name === "report"}
+                disabled={value.name === "schedule" || value.name === "assessments" || value.name === "report"}
                 key={`menuLabel-${value.name}`}
                 onClick={() => {
-                    setActiveComponent(value.name)
-                    history.push(value.path)
+                    setActiveComponent(value.name);
+                    history.push(value.path);
                 }}
                 isActive={activeComponent === value.path.split("/").filter(x => x)[0]}
                 style={{ minHeight }}
@@ -137,7 +141,7 @@ export default function NavBar(props: Props) {
                         >
                             <Grid container item xs={8} direction="row"
                                 wrap="nowrap">
-                                <NavMenu />
+                                {/* <NavMenu /> */}
                                 <ClassroomLabel classes={classes.title} />
                             </Grid>
                             <Hidden mdUp>

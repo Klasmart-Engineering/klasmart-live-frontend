@@ -70,8 +70,8 @@ module.exports = {
     resolve: {
         extensions: [".js", ".jsx", ".tsx", ".ts"],
         alias: {
-            ReactDOM: path.resolve(__dirname, './node_modules/react-dom/')
-        }
+            react: path.resolve("./node_modules/react"),
+        },
     },
     output: {
         filename: "[name].[chunkhash].js",
