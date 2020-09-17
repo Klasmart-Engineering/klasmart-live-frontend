@@ -89,11 +89,22 @@ function parseToken() {
             const token = url.searchParams.get("token");
             if (token) {
                 const payload = jwt_decode(token) as any;
+                const parsedMaterials = payload.materials.map((mat: any) => {
+                    if (mat.__typename === "Iframe") {
+                        return { __typename: 0, name: mat.name, url: mat.url };
+                    } else if (mat.__typename === "Video") {
+                        return { __typename: 1, name: mat.name, url: mat.url };
+                    } else if (mat.__typename === "Audio") {
+                        return { __typename: 2, name: mat.name, url: mat.url };
+                    } else if (mat.__typename === "Image") {
+                        return { __typename: 3, name: mat.name, url: mat.url };
+                    }
+                });
                 return {
                     teacher: payload.teacher ? Boolean(payload.teacher) : false,
                     name: payload.name ? String(payload.name) : undefined,
                     roomId: String(payload.roomid),
-                    materials: payload.materials || [],
+                    materials: parsedMaterials || [],
                 };
             } else {
                 const materialsParam = url.searchParams.get("materials");
