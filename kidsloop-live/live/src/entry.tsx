@@ -84,7 +84,7 @@ export const ThemeContext = createContext<IThemeContext>({ themeMode: "", setThe
 export const UserContext = createContext<IUserContext>({ setName: () => null, roomId: "", materials: [], teacher: false } as any as IUserContext);
 
 const url = new URL(window.location.href)
-if (url.hostname !== "localhost" && url.hostname !== "live.kidsloop.net") {
+if (url.hostname !== "localhost" && url.hostname !== "live.beta.kidsloop.net") {
     window.addEventListener("contextmenu", (e: MouseEvent) => { e.preventDefault() }, false);
 }
 
