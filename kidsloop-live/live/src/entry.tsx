@@ -1,5 +1,5 @@
 import LogRocket from 'logrocket';
-LogRocket.init('8acm62/kidsloop-live-prod',{
+LogRocket.init('8acm62/kidsloop-live-prod', {
     mergeIframes: true,
 });
 
@@ -136,6 +136,14 @@ function parseToken() {
         }
 
         const token = url.searchParams.get("token");
+        if (url.hostname === "live.kidsloop.net" && !token) {
+            return {
+                teacher: null,
+                name: url.searchParams.get("name") || undefined, // Should be undefined not null
+                roomId: url.searchParams.get("roomId") || "test-room",
+            };
+        }
+
         if (!token) { return; }
         const payload = jwt_decode(token) as any;
         return {
@@ -149,8 +157,8 @@ function parseToken() {
     return;
 }
 const params = parseToken();
-if(params && params.name) {
-    LogRocket.identify(params.name, {sessionId})
+if (params && params.name) {
+    LogRocket.identify(params.name, { sessionId })
 }
 function Entry() {
     if (!params) { return <Typography><FormattedMessage id="error_invaild_token" /></Typography>; }
