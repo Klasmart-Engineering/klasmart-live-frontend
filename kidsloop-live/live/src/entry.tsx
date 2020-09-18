@@ -134,25 +134,6 @@ function parseToken() {
                 };
             }
         }
-
-        const token = url.searchParams.get("token");
-        if (url.hostname === "live.kidsloop.net" && !token) {
-            return {
-                teacher: null,
-                name: url.searchParams.get("name") || undefined, // Should be undefined not null
-                roomId: url.searchParams.get("roomId") || "test-room",
-            };
-        }
-
-        if (!token) { return; }
-        const payload = jwt_decode(token) as any;
-        return {
-            teacher: payload.teacher ? Boolean(payload.teacher) : false,
-            name: payload.name ? String(payload.name) : undefined,
-            roomId: String(payload.roomid || ""),
-            materials: payload.materials || [],
-        };
-        // eslint-disable-next-line no-empty
     } catch (e) { }
     return;
 }
