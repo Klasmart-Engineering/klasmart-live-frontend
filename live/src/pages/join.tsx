@@ -9,6 +9,8 @@ import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Tooltip from "@material-ui/core/Tooltip";
 import KidsloopLogo from "../assets/img/kidsloop.svg";
+import KidsLoopTeachers from "../assets/img/kidsloop_live_teachers.svg";
+import KidsLoopStudents from "../assets/img/kidsloop_live_students.svg";
 import CenterAlignChildren from "../components/centerAlignChildren";
 import StyledButton from "../components/styled/button";
 import StyledTextField from "../components/styled/textfield";
@@ -159,12 +161,7 @@ export function Join(): JSX.Element {
                             <Grid item xs={12} md={4}>
                                 <Grid container direction="row" justify="center" alignItems="center" spacing={4}>
                                     <Grid item xs={12}>
-                                        <CenterAlignChildren center>
-                                            <img alt="KidsLoop" src={KidsloopLogo} height="50px" />
-                                            <Typography variant="h6" style={{ paddingLeft: theme.spacing(1) }}>
-                                                Live <Typography variant="body2" component="span">{(url.searchParams.get("teacher") !== null) ? <sub>for Teachers</sub> : <sub>for Students</sub>}</Typography>
-                                            </Typography>
-                                        </CenterAlignChildren>
+                                        <img alt="KidsLoop Live" src={(url.searchParams.get("teacher") !== null) ? KidsLoopTeachers : KidsLoopStudents} height="64px" style={{ display: "block", margin: "0 auto" }}/>
                                     </Grid>
                                     <Grid item xs={12} className={classes.formContainer}>
                                         <form onSubmit={join}>
