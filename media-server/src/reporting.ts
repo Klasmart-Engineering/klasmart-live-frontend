@@ -1,3 +1,4 @@
+import { sendGauge } from './utils/statsd-exporter-client'
 import Cloudwatch from "aws-sdk/clients/cloudwatch"
 const CloudwatchClient = new Cloudwatch({
     region: process.env.AWS_REGION
@@ -15,16 +16,16 @@ export function setClusterId(clusterId: string) {
     _cluster = clusterId
 }
 
-let _graphQlConnections = 0
+let _graphQlConnections: number = 0
 export function setGraphQLConnections(count: number) {
     _graphQlConnections = count
 }
 
-let producersCreated = 0
+let producersCreated: number = 0
 export function incrementProducerCount() { producersCreated++ }
 export function decrementProducerCount() { producersCreated-- }
 
-let consumersCreated = 0
+let consumersCreated: number = 0
 export function incrementConsumerCount() { consumersCreated++ }
 export function decrementConsumerCount() { consumersCreated-- }
 
@@ -86,6 +87,7 @@ async function reporting(invokeTime = Date.now()) {
                 },
             ]
         }).promise()
+
     } catch (e) {
         console.error(e)
     } finally {
@@ -96,4 +98,32 @@ async function reporting(invokeTime = Date.now()) {
 
 if (process.env.REPORT_CLOUDWATCH_METRICS) {
     setTimeout(() => reporting(), reportIntervalMs)
+}
+
+
+const reportStatsdIntervalMs = parseInt(process.env.STATSD_EXPORTER_METRICS_REPORT_INTERVAL_MS || '10000');
+const reportingToStatsd = async () => {
+    // statsd-exporter 
+    try {
+        await sendGauge({
+            metricName: 'graphql_connections', value: _graphQlConnections,
+            tags: { clusterId: _cluster, dockerId: _dockerId }
+        });
+        await sendGauge({
+            metricName: 'graphql_producers', value: producersCreated,
+            tags: { clusterId: _cluster, dockerId: _dockerId }
+        });
+        await sendGauge({
+            metricName: 'graphql_consumers', value: consumersCreated,
+            tags: { clusterId: _cluster, dockerId: _dockerId }
+        });
+    } catch (e) {
+        console.error(e)
+    } finally {
+        setTimeout(() => reportingToStatsd(), reportStatsdIntervalMs)
+    }
+}
+
+if (process.env.STATSD_EXPORTER_METRICS_USE) {
+    setTimeout(reportingToStatsd, reportStatsdIntervalMs)
 }
