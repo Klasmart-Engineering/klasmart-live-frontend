@@ -26,7 +26,7 @@ interface ReplicaVideoProps {
 }
 
 const PLAYLIST_FILE_NAME = "master";
-const PLAYLIST_FILE_HOST = "https://d2y6zpgsom6b5m.cloudfront.net/2";
+const PLAYLIST_FILE_HOST = "/video";
 
 const createHlsDashUrlFromSrc = (src: string): string[] => {
     let urls: string[] = []
