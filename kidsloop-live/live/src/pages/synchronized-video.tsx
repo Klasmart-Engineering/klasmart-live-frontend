@@ -13,6 +13,7 @@ import { MaterialTypename } from "../lessonMaterialContext";
 import { FFT } from "../components/fft";
 import ReactPlayer from "../components/react-player/lazy";
 import { VolumeMute as AudioOffIcon } from "@styled-icons/boxicons-regular/VolumeMute";
+import { videoUnmuteOverlay } from "../utils/layerValues";
 
 interface VideoSynchronize {
     src?: string;
@@ -254,7 +255,7 @@ export function ReplicaMedia(
                         width="100%"
                     />
                     {videoReady && muted ?
-                        <div id="video-unmute-overlay" style={{ position: "absolute", width: "100%", height: "100%" }}>
+                        <div id="video-unmute-overlay" style={{ position: "absolute", width: "100%", height: "100%", zIndex: videoUnmuteOverlay }}>
                             <IconButton
                                 color={"primary"}
                                 style={{ marginLeft: "20px", marginTop: "20px", backgroundColor: "#f6fafe" }}
