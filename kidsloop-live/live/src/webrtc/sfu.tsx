@@ -1,4 +1,6 @@
 // @ts-ignore
+import {AuthTokenProvider} from "../services/auth-token/AuthTokenProvider";
+
 const callstats: any = require('callstats-js/callstats.min');
 import { WebRTCContext } from "./webrtc";
 import {
@@ -69,6 +71,7 @@ export class WebRTCSFUContext implements WebRTCContext {
         const ref = useRef<WebRTCSFUContext>(undefined as any)
         const [value, rerender] = useReducer(() => ({ref}),{ref})
         const { roomId } = RoomContext.Consume();
+        const token = AuthTokenProvider.retrieveToken();
         
         const apolloClient = useMemo(() =>
             new ApolloClient({
@@ -77,7 +80,7 @@ export class WebRTCSFUContext implements WebRTCContext {
                     uri: `${window.location.protocol === "https:" ? "wss" : "ws"}://${window.location.host}/sfu/${roomId}`,
                     options: {
                         reconnect: true,
-                        connectionParams: { sessionId },
+                        connectionParams: { sessionId, authToken: token },
                     },
                 })
             } as any),
@@ -189,7 +192,7 @@ export class WebRTCSFUContext implements WebRTCContext {
         const tracks = stream.getTracks()
         const producers = []
         let producer: Producer
-        for(const track of tracks) {
+        for (const track of tracks) {
             let params: ProducerOptions
             if (track.kind === "video") {
                 // Check if simulcast is needed
