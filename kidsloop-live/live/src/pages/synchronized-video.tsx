@@ -227,6 +227,7 @@ export function ReplicaMedia(
             return (
                 <>
                     <ReactPlayer
+                        key={srcRef.current}
                         ref={reactPlayerRef as React.RefObject<ReactPlayer>}
                         controls={false}
                         playing={videoReady && playing}
