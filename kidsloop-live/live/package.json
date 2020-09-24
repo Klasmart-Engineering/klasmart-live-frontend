@@ -6,6 +6,7 @@
   "scripts": {
     "build": "rm -rf dist/*; webpack; mv dist/record*.js dist/record.js",
     "build:prod": "rm -rf dist/*;webpack --config webpack.prod.config.js; mv dist/record*.js dist/record.js",
+    "build:app": "webpack --config webpack.cordova.config.js",
     "start": "webpack-dev-server",
     "test": "mocha -r ts-node/register tests/**/*[Tt]est.ts",
     "coverage": "nyc -r lcov -e .ts -x \"*[Tt]est.ts\" npm run test"
@@ -28,6 +29,10 @@
     "@typescript-eslint/parser": "^3.2.0",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
+    "cordova-android": "^9.0.0",
+    "cordova-browser": "^6.0.0",
+    "cordova-plugin-camera": "^5.0.0",
+    "cordova-plugin-whitelist": "^1.3.4",
     "css-loader": "^4.2.1",
     "css-modules-typescript-loader": "^4.0.0",
     "dotenv": "^8.2.0",
@@ -43,8 +48,8 @@
     "image-webpack-loader": "^6.0.0",
     "mocha": "^8.1.1",
     "nyc": "^15.1.0",
-    "style-loader": "^1.2.1",
     "react-app": "^1.1.2",
+    "style-loader": "^1.2.1",
     "ts-loader": "^7.0.5",
     "ts-mockito": "^2.6.1",
     "ts-node": "^8.10.2",
@@ -95,5 +100,17 @@
     "use-sound": "^1.0.2",
     "uuid": "^8.1.0",
     "uuidv4": "^6.1.0"
+  },
+  "cordova": {
+    "plugins": {
+      "cordova-plugin-whitelist": {},
+      "cordova-plugin-camera": {
+        "ANDROID_SUPPORT_V4_VERSION": "27.+"
+      }
+    },
+    "platforms": [
+      "browser",
+      "android"
+    ]
   }
 }
