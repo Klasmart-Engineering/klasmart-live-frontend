@@ -85,7 +85,8 @@ if (url.hostname !== "localhost" && url.hostname !== "live.kidsloop.net") {
 
 function parseToken() {
     try {
-        if (url.hostname === "localhost" || url.hostname === "live.kidsloop.net" || url.hostname.includes("ngrok.io")) {
+        const useTestToken = process.env.USE_TEST_TOKEN || false;
+        if (useTestToken || url.hostname === "localhost" || url.hostname === "live.kidsloop.net" || url.hostname.includes("ngrok.io")) {
             const token = url.searchParams.get("token");
             if (token) {
                 const payload = jwt_decode(token) as any;
@@ -145,12 +146,16 @@ function parseToken() {
 }
 const params = parseToken();
 function Entry() {
-    if (!params) { return <Typography><FormattedMessage id="error_invaild_token" /></Typography>; }
+    const [languageCode, setLanguageCode] = useState(url.searchParams.get("lang") || getDefaultLanguageCode());
+    const locale = getLanguage(languageCode);
+
+    if (!params) {
+        return <RawIntlProvider value={locale}><Typography><FormattedMessage id="error_invaild_token" /></Typography></RawIntlProvider>;
+    }
+
     const [camera, setCamera] = useState<MediaStream | null>();
     const [name, setName] = useState(params.name);
-    const [languageCode, setLanguageCode] = useState(url.searchParams.get("lang") || getDefaultLanguageCode());
     const [themeMode, setThemeMode] = useState(url.searchParams.get("theme") || "light");
-    const locale = getLanguage(languageCode);
 
     const themeContext = useMemo<IThemeContext>(() => ({
         themeMode,
@@ -184,12 +189,14 @@ function Entry() {
     );
 }
 
+const DisableBrowserGuide = process.env.DISABLE_BROWSER_GUIDE || false;
+
 let renderComponent: JSX.Element;
-if (
+if (DisableBrowserGuide || (
     isMacOs && (isSafari || isChrome) // Support Safari and Chrome in MacOS
     || (isIOS || isIOS13) && isSafari // Support only Safari in iOS
     || (!isIOS || !isIOS13) && isChrome // Support only Chrome in other OS
-) {
+)) {
     renderComponent = (
         <ApolloProvider client={client}>
             <Entry />
