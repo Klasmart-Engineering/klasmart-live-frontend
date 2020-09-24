@@ -1,0 +1,26 @@
+{
+    "regions": [
+        { 
+            "id": "seoul-dev", 
+            "name": "Development Seoul", 
+            "development": true, 
+            "services": {
+                "auth": "https://auth.kidsloop.net",
+                "live": "https://live.kidsloop.net",
+                "scheduler": "https://kl2-test.kidsloop.net",
+                "sfu": "https://live.kidsloop.net/sfu"
+            }
+        },
+        { 
+            "id": "seoul-prod", 
+            "name": "Production Seoul", 
+            "development": false, 
+            "services": {
+                "auth": "https://auth.kidsloop.net",
+                "live": "https://live.kidsloop.net",
+                "scheduler": "https://kl2-test.kidsloop.net",
+                "sfu": "https://live.kidsloop.net/sfu"
+            } 
+        }
+    ]
+}
