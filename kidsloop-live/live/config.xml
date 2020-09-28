@@ -37,4 +37,12 @@
             <application android:usesCleartextTraffic="true" />
         </edit-config>
     </platform>
+    <platform name="android">
+        <icon density="ldpi" background="res/android/drawable-ldpi/ic_app_adaptive_bg.png" foreground="res/android/drawable-ldpi/ic_app_adaptive_fg.png" src="res/android/drawable-ldpi/ic_app_legacy.png" />
+        <icon density="mdpi" background="res/android/drawable-mdpi/ic_app_adaptive_bg.png" foreground="res/android/drawable-mdpi/ic_app_adaptive_fg.png" src="res/android/drawable-mdpi/ic_app_legacy.png"/>
+        <icon density="hdpi" background="res/android/drawable-hdpi/ic_app_adaptive_bg.png" foreground="res/android/drawable-hdpi/ic_app_adaptive_fg.png" src="res/android/drawable-hdpi/ic_app_legacy.png" />
+        <icon density="xhdpi" background="res/android/drawable-xhdpi/ic_app_adaptive_bg.png" foreground="res/android/drawable-xhdpi/ic_app_adaptive_fg.png" src="res/android/drawable-xhdpi/ic_app_legacy.png" />
+        <icon density="xxhdpi" background="res/android/drawable-xxhdpi/ic_app_adaptive_bg.png" foreground="res/android/drawable-xxhdpi/ic_app_adaptive_fg.png" src="res/android/drawable-xxhdpi/ic_app_legacy.png" />
+        <icon density="xxxhdpi" background="res/android/drawable-xxxhdpi/ic_app_adaptive_bg.png" foreground="res/android/drawable-xxxhdpi/ic_app_adaptive_fg.png" src="res/android/drawable-xxxhdpi/ic_app_legacy.png" />
+    </platform>
 </widget>
