@@ -7,16 +7,17 @@ import {
     Device,
     types as MediaSoup,
 } from "mediasoup-client"
-import React, {createContext, useReducer, useRef, useContext, useEffect, useMemo} from "react";
-import {RoomContext} from "../room";
-import {gql, ExecutionResult, ApolloClient, InMemoryCache} from "apollo-boost";
-import {useMutation, useSubscription, ApolloProvider} from "@apollo/react-hooks";
-import {MutationFunctionOptions} from "@apollo/react-common/lib/types/types";
-import {Resolver, PrePromise} from "../resolver";
-import {WebSocketLink} from "apollo-link-ws";
-import {sessionId, UserContext} from "../entry";
+
+import React, {createContext, useReducer, useRef, useContext, useEffect, useMemo } from "react";
+import { RoomContext } from "../room";
+import { gql, ExecutionResult, ApolloClient, InMemoryCache } from "apollo-boost";
+import { useMutation, useSubscription, ApolloProvider } from "@apollo/react-hooks";
+import { MutationFunctionOptions } from "@apollo/react-common/lib/types/types";
+import { Resolver, PrePromise } from "../resolver";
+import { WebSocketLink } from "apollo-link-ws";
+import { sessionId, UserContext } from "../entry";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import {Producer, ProducerOptions} from "mediasoup-client/lib/Producer";
+import { Producer, ProducerOptions } from "mediasoup-client/lib/Producer";
 
 const SEND_RTP_CAPABILITIES = gql`
     mutation rtpCapabilities($rtpCapabilities: String!) {
@@ -86,11 +87,13 @@ export class WebRTCSFUContext implements WebRTCContext {
         const {roomId} = RoomContext.Consume();
         const token = AuthTokenProvider.retrieveToken();
 
+        const SfuEndpoint = process.env.ENDPOINT_SFU || `${window.location.protocol === "https:" ? "wss" : "ws"}://${window.location.host}/sfu`;
+
         const apolloClient = useMemo(() =>
                 new ApolloClient({
                     cache: new InMemoryCache(),
                     link: new WebSocketLink({
-                        uri: `${window.location.protocol === "https:" ? "wss" : "ws"}://${window.location.host}/sfu/${roomId}`,
+                        uri: `${SfuEndpoint}/${roomId}`,
                         options: {
                             reconnect: true,
                             connectionParams: {sessionId, authToken: token},
@@ -106,7 +109,7 @@ export class WebRTCSFUContext implements WebRTCContext {
         return (
             <>
                 <ApolloProvider client={apolloClient}>
-                    <WebRTCSFUContext.InternalProvider sfu={ref} rerender={rerender}/>
+                    <WebRTCSFUContext.InternalProvider sfu={ref} rerender={rerender} />
                 </ApolloProvider>
                 <context.Provider value={value}>
                     {children}
@@ -114,8 +117,8 @@ export class WebRTCSFUContext implements WebRTCContext {
             </>
         )
     }
-
-    private static InternalProvider({sfu, rerender}: { sfu: React.MutableRefObject<WebRTCSFUContext>, rerender: React.DispatchWithoutAction }) {
+    
+    private static InternalProvider({ sfu, rerender }: { sfu: React.MutableRefObject<WebRTCSFUContext>, rerender: React.DispatchWithoutAction }) {
         const [rtpCapabilities] = useMutation(SEND_RTP_CAPABILITIES);
         const [transport] = useMutation(TRANSPORT);
         const [producer] = useMutation(PRODUCER);
@@ -537,7 +540,7 @@ export class WebRTCSFUContext implements WebRTCContext {
             prePromise = Resolver<MediaSoup.Consumer>()
             this.consumerPrePromises.set(producerId, prePromise)
         }
-        const {promise} = await prePromise
+        const { promise } = await prePromise
         return promise
     }
 
@@ -555,7 +558,7 @@ export class WebRTCSFUContext implements WebRTCContext {
         this._device = null
 
         const device = new Device()
-        await device.load({routerRtpCapabilities})
+        await device.load({ routerRtpCapabilities })
         const rtpCapabilities = JSON.stringify(device.rtpCapabilities)
         await this.rtpCapabilities({variables: {rtpCapabilities}})
         const {resolver} = await this.devicePrePromise
@@ -620,8 +623,8 @@ export class WebRTCSFUContext implements WebRTCContext {
                 } catch (error) {
                     WebRTCSFUContext.attachCallstatsError(transport, roomId, error)
                     errback(error)
-                }
             }
+        }
         )
 
         console.log("Producer: resolve")
