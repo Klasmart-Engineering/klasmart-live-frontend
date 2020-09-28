@@ -76,6 +76,7 @@ module.exports = {
       ["ENDPOINT_GQL"],
       ["ENDPOINT_H5P"],
       ["ENDPOINT_TEST_ASSETS_S3"],
+      ["ENDPOINT_SFU"],
       ["ENDPOINT_WEBSOCKET"],
       ["APP_GIT_REV"],
       ["DISABLE_BROWSER_GUIDE"],
