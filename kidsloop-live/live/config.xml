@@ -7,7 +7,7 @@
     <author email="info@calmid.com" href="https://www.kidsloop.net">
         Calm Island KidsLoop 
     </author>
-    <content src="dist/index.html" />
+    <content src="index.html" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
@@ -21,6 +21,12 @@
     <platform name="ios">
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
+        <edit-config file="*-Info.plist" mode="merge" target="NSCameraUsageDescription">
+            <string>KidsLoop Live wants to have camera permission for classroom video conference.</string>
+        </edit-config>
+        <edit-config file="*-Info.plist" mode="merge" target="NSMicrophoneUsageDescription">
+            <string>KidsLoop Live wants to have microphone permission for classroom video conference.</string>
+        </edit-config>
     </platform>
     <platform name="android">
         <config-file target="AndroidManifest.xml" parent="/*" mode="merge">
