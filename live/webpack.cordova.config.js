@@ -66,7 +66,7 @@ module.exports = {
   },
   output: {
     filename: "[name].js",
-    path: path.resolve(__dirname, "www/dist"),
+    path: path.resolve(__dirname, "www"),
     publicPath: "",
   },
   devtool: "source-map",
@@ -85,12 +85,12 @@ module.exports = {
     new HtmlWebpackPlugin({
       filename: "index.html",
       chunks: ["ui"],
-      template: "src/index.html",
+      template: "src/index.cordova.html",
     }),
     new HtmlWebpackPlugin({
       filename: "player.html",
       chunks: ["player"],
-      template: "src/player.html",
+      template: "src/player.cordova.html",
     }),
   ],
   devServer: {
