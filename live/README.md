@@ -84,7 +84,7 @@ create the `apk` file.
 
 #### Example Building Webpack
 
-\$ `ENDPOINT_SFU=ws://192.168.200.158:8002/sfu ENDPOINT_WEBSOCKET=ws://192.168.200.158:8000/graphql ENDPOINT_GQL=http://192.168.200.158:8000/graphql ENDPOINT_H5P=https://zoo.kidsloop.net/h5p USE_TEST_TOKEN=1 DISABLE_BROWSER_GUIDE=1 npm run build:app`
+\$ `ENDPOINT_SFU=wss://live.kidsloop.net/sfu ENDPOINT_WEBSOCKET=wss://live.kidsloop.net/graphql ENDPOINT_GQL=https://live.kidsloop.net/graphql ENDPOINT_H5P=https://zoo.kidsloop.net/h5p USE_TEST_TOKEN=1 DISABLE_BROWSER_GUIDE=1 npm run build:app`
 
 #### Example Running
 
