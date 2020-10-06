@@ -104,6 +104,7 @@ export function Camera(props: {
                             height: "100%",
                             width: "100%",
                         }}
+                        webkit-playsinline
                         ref={videoRef}
                     /> :
                     <Typography
@@ -134,7 +135,7 @@ export function Stream(props: { stream?: MediaStream } & React.VideoHTMLAttribut
         if (!stream) { return; }
         videoRef.current.srcObject = stream;
     }, [videoRef.current, stream]);
-    return <video style={{ width: "100%" }} ref={videoRef} autoPlay playsInline  {...videoProps} />;
+    return <video style={{ width: "100%" }} ref={videoRef} autoPlay playsInline webkit-playsinline  {...videoProps} />;
 }
 
 const MUTATION_REWARD_TROPHY = gql`

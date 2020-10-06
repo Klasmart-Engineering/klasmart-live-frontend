@@ -19,6 +19,15 @@
         <allow-intent href="market:*" />
     </platform>
     <platform name="ios">
+        <preference name="AllowNewWindows" value="false" />
+        <preference name="AllowsAirPlayForMediaPlayback" value="false" />
+        <preference name="MediaPlaybackAllowsAirPlay" value="false" />
+        <preference name="AllowBackForwardNavigationGestures" value="false" />
+        <preference name="Allow3DTouchLinkPreview" value="false" />
+        <preference name="AutoHideSplashScreen" value="true" />
+        <preference name="EnableViewportScale" value="true" />
+        <preference name="MediaTypesRequiringUserActionForPlayback" value="none"/>
+        <preference name="AllowInlineMediaPlayback" value="true"/>
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
         <edit-config file="*-Info.plist" mode="merge" target="NSCameraUsageDescription">
