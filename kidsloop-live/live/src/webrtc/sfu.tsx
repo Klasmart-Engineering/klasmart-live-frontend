@@ -557,7 +557,7 @@ export class WebRTCSFUContext implements WebRTCContext {
         }
         this._device = null
 
-        const device = new Device()
+        const device = new Device({ handlerName: "Safari11" })
         await device.load({ routerRtpCapabilities })
         const rtpCapabilities = JSON.stringify(device.rtpCapabilities)
         await this.rtpCapabilities({variables: {rtpCapabilities}})
