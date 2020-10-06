@@ -9,20 +9,19 @@ import CardContent from "@material-ui/core/CardContent";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Tooltip from "@material-ui/core/Tooltip";
-import KidsloopLogo from "../assets/img/kidsloop.svg";
-import KidsLoopTeachers from "../assets/img/kidsloop_live_teachers.svg";
-import KidsLoopStudents from "../assets/img/kidsloop_live_students.svg";
-import CenterAlignChildren from "../components/centerAlignChildren";
-import StyledButton from "../components/styled/button";
-import StyledTextField from "../components/styled/textfield";
-import { UserContext } from "../entry";
-import { Camera } from "../webRTCState";
-import Loading from "../components/loading";
-import NoCamera from "../components/noCamera";
-import MediaDeviceSelect from "../components/mediaDeviceSelect";
+
 import { Error as ErrorIcon } from "@styled-icons/material/Error";
-import { FFT } from "../components/fft";
-import logger from "../services/logger/Logger";
+
+import KidsLoopTeachers from "../../assets/img/kidsloop_live_teachers.svg";
+import KidsLoopStudents from "../../assets/img/kidsloop_live_students.svg";
+import { UserContext } from "../../entry";
+import StyledButton from "../../components/styled/button";
+import StyledTextField from "../../components/styled/textfield";
+import Camera from "../../components/media/camera";
+import FFT from "../../components/media/fft";
+import MediaDeviceSelect from "../../components/media/mediaDeviceSelect";
+import Loading from "../../components/loading";
+import logger from "../../services/logger/Logger";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -169,7 +168,7 @@ export function Join(): JSX.Element {
                             <Grid item xs={12} md={4}>
                                 <Grid container direction="row" justify="center" alignItems="center" spacing={4}>
                                     <Grid item xs={12}>
-                                        <img alt="KidsLoop Live" src={(url.searchParams.get("teacher") !== null) ? KidsLoopTeachers : KidsLoopStudents} height="64px" style={{ display: "block", margin: "0 auto" }}/>
+                                        <img alt="KidsLoop Live" src={(url.searchParams.get("teacher") !== null) ? KidsLoopTeachers : KidsLoopStudents} height="64px" style={{ display: "block", margin: "0 auto" }} />
                                     </Grid>
                                     <Grid item xs={12} className={classes.formContainer}>
                                         <form onSubmit={join}>
@@ -229,6 +228,38 @@ export function Join(): JSX.Element {
                     </CardContent>
                 </Card>
             </Container>
+        </Grid>
+    );
+}
+
+function NoCamera({ messageId }: { messageId: string }) {
+    return (
+        <Grid
+            container
+            justify="space-between"
+            alignItems="center"
+            style={{
+                position: "relative",
+                width: "100%",
+                paddingTop: "56.25%",
+                backgroundColor: "#193d6f"
+            }}
+        >
+            <Typography
+                variant="caption"
+                align="center"
+                style={{
+                    color: "#FFF",
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    whiteSpace: "pre-line",
+                    wordBreak: "break-word"
+                }}
+            >
+                <FormattedMessage id={messageId} />
+            </Typography>
         </Grid>
     );
 }

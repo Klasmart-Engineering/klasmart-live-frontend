@@ -3,7 +3,7 @@ import { FormattedMessage } from "react-intl";
 import { useSubscription } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
 import Typography from "@material-ui/core/Typography";
-import Loading from "./loading";
+import Loading from "../loading";
 
 const SUB_EVENTS = gql`
   subscription stream($streamId: ID!) {
@@ -46,7 +46,7 @@ export function PreviewPlayer({ streamId, frameProps, width, height }: Props): J
         const listener = (e: MessageEvent) => { if (e.data === "ready") { sendEvent(); } };
         iframeWindow.addEventListener("message", listener);
         return () => {
-            if(iframeWindow&&iframeWindow.removeEventListener) {
+            if (iframeWindow && iframeWindow.removeEventListener) {
                 iframeWindow.removeEventListener("message", listener);
             }
         }

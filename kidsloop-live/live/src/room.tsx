@@ -1,4 +1,4 @@
-import React, { useReducer, useState, useContext, useEffect, useMemo, createContext, useRef } from "react";
+import React, { useReducer, useState, useContext, useEffect, createContext, useRef } from "react";
 import { gql } from "apollo-boost";
 import { useSubscription } from "@apollo/react-hooks";
 import { FormattedMessage } from "react-intl";
@@ -8,12 +8,13 @@ import Grid from "@material-ui/core/Grid";
 import { sessionId, UserContext } from "./entry";
 import { Student } from "./pages/student/student";
 import { Teacher } from "./pages/teacher/teacher";
-import Layout from "./components/layout";
+import Layout from "./pages/layout";
 import Loading from "./components/loading";
 import { EventEmitter } from "eventemitter3"
 import { WebRTCSFUContext } from "./webrtc/sfu";
 import { ScreenShare } from "./pages/teacher/screenShareProvider";
 import { GlobalWhiteboardContext } from "./whiteboard/context-providers/GlobalWhiteboardContext";
+import NewLayout from "./pages/layout-new";
 
 export interface Session {
     id: string,
@@ -79,7 +80,28 @@ export function Room({ teacher }: Props): JSX.Element {
         <WebRTCSFUContext.Provide>
             <ScreenShare.Provide>
                 <GlobalWhiteboardContext>
-                    <Layout
+                    <NewLayout
+                        isTeacher={teacher}
+                        contentIndexState={{ contentIndex, setContentIndex }}
+                        interactiveModeState={{ interactiveMode, setInteractiveMode }}
+                        streamIdState={{ streamId, setStreamId }}
+                        numColState={numColState}
+                        setNumColState={setNumColState}
+                    >
+                        {
+                            teacher
+                                ? <Teacher
+                                    openDrawer={openDrawer}
+                                    handleOpenDrawer={handleOpenDrawer}
+                                    contentIndexState={{ contentIndex, setContentIndex }}
+                                    interactiveModeState={{ interactiveMode, setInteractiveMode }}
+                                    streamIdState={{ streamId, setStreamId }}
+                                    numColState={numColState}
+                                />
+                                : <Student openDrawer={openDrawer} />
+                        }
+                    </NewLayout>
+                    {/* <Layout
                         isTeacher={teacher}
                         openDrawer={openDrawer}
                         handleOpenDrawer={handleOpenDrawer}
@@ -101,7 +123,7 @@ export function Room({ teacher }: Props): JSX.Element {
                                 />
                                 : <Student openDrawer={openDrawer} />
                         }
-                    </Layout>
+                    </Layout> */}
                 </GlobalWhiteboardContext>
             </ScreenShare.Provide>
         </WebRTCSFUContext.Provide>

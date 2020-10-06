@@ -1,23 +1,23 @@
 import React, { useRef, useEffect, useState, useContext } from "react";
 import { gql } from "apollo-boost";
 import { useMutation } from "@apollo/react-hooks";
-import { UserContext } from "../entry";
+import { UserContext } from "../../entry";
 import IframeResizer from "iframe-resizer-react";
 import Grid from "@material-ui/core/Grid";
 import Dialog from "@material-ui/core/Dialog";
 import { useTheme } from "@material-ui/core/styles";
-import { DRAWER_WIDTH } from "./layout";
+import { DRAWER_WIDTH } from "../../pages/layout";
 import Typography from "@material-ui/core/Typography";
-import StyledFAB from "./styled/fabButton";
-import { loadingActivity } from "../utils/layerValues";
+import StyledFAB from "../styled/fabButton";
+import { loadingActivity } from "../../utils/layerValues";
 
-import CurlySpinner1 from "../assets/img/spinner/curly1_spinner.gif"
-import CurlySpinner2 from "../assets/img/spinner/curly2_spinner.gif"
-import EccoSpinner1 from "../assets/img/spinner/ecco1_spinner.gif"
-import EccoSpinner2 from "../assets/img/spinner/ecco2_spinner.gif"
-import JessSpinner1 from "../assets/img/spinner/jess1_spinner.gif"
-import MimiSpinner1 from "../assets/img/spinner/mimi1_spinner.gif"
-import GhostSpinner from "../assets/img/spinner/ghost_spinner.gif"
+import CurlySpinner1 from "../../assets/img/spinner/curly1_spinner.gif"
+import CurlySpinner2 from "../../assets/img/spinner/curly2_spinner.gif"
+import EccoSpinner1 from "../../assets/img/spinner/ecco1_spinner.gif"
+import EccoSpinner2 from "../../assets/img/spinner/ecco2_spinner.gif"
+import JessSpinner1 from "../../assets/img/spinner/jess1_spinner.gif"
+import MimiSpinner1 from "../../assets/img/spinner/mimi1_spinner.gif"
+import GhostSpinner from "../../assets/img/spinner/ghost_spinner.gif"
 
 interface NewProps extends IframeResizer.IframeResizerProps {
     forwardRef: any
