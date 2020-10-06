@@ -52,6 +52,8 @@ Student: http://localhost:8080/?token=eyJhbGciOiJIUzI1NiJ9.eyJ0ZWFjaGVyIjpmYWxzZ
 
 ### Building
 
+After cloning the repository some of the platforms, plugins, or directorys required by cordova might not be there. The `cordova prepare` command can be used to prepare the cordova project.
+
 First ensure that the required platform is installed. This can be verified using cordova CLI.
 
 \$ `cordova platform ls`\
@@ -97,3 +99,14 @@ create the `apk` file.
 ### Running
 
 The permissions required to access camera is defined in the Android manifest, but the application doesn't ask for permission automatically yet. So before running those permissions will have to be granted in the app settings. Otherwise the camra and microphone wont be visible.
+
+
+### Troubleshooting
+
+#### Current working directory is not a Cordova-based project.
+This issue usually happens after cloning the repository. Cordova try to find the `www` folder when preparing or building. If the `www` folder isn't present this error will happen.
+
+##### Solution
+Create the `www` folder and try again.
+
+\$ `mkdir www`
