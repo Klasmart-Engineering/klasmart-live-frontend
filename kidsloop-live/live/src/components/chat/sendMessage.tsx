@@ -9,8 +9,8 @@ import IconButton from "@material-ui/core/IconButton";
 import { Send as SendIcon } from "@styled-icons/material-twotone/Send";
 import { useMutation } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
-import { UserContext } from "./entry";
-import { DRAWER_WIDTH } from "./components/layout";
+import { UserContext } from "../../entry";
+import { DRAWER_WIDTH } from "../../pages/layout";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

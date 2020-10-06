@@ -1,10 +1,27 @@
 import { v4 as uuid } from "uuid";
 export const sessionId = uuid();
 
-import React, { createContext, useState, useMemo } from "react";
+import React, { createContext, useState, useMemo, useContext, useEffect } from "react";
 // import * as Sentry from '@sentry/react';
 import { render } from "react-dom";
 import { RawIntlProvider, FormattedMessage } from "react-intl";
+import { Provider, useStore } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
+import {
+    isMobileOnly,
+    isTablet,
+    isBrowser,
+    isSmartTV,
+    isAndroid,
+    isIOS,
+    isChrome,
+    isFirefox,
+    isSafari,
+    isIE,
+    isEdge,
+    isChromium,
+    isMobileSafari,
+} from "react-device-detect";
 import { ApolloProvider } from "@apollo/react-hooks";
 import { ApolloClient, InMemoryCache } from "apollo-boost";
 import { WebSocketLink } from "apollo-link-ws";
@@ -12,27 +29,17 @@ import jwt_decode from "jwt-decode";
 import { ThemeProvider } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Typography from "@material-ui/core/Typography";
-import Grid from "@material-ui/core/Grid";
-import {
-    isMacOs,
-    isIOS,
-    isIOS13,
-    isChrome,
-    isSafari
-} from "react-device-detect";
 
-import { App } from "./app";
+import { ActionTypes } from "./store/actions"
+import { createDefaultStore } from "./store/store";
 import { LessonMaterial, MaterialTypename } from "./lessonMaterialContext";
 import { AuthTokenProvider } from "./services/auth-token/AuthTokenProvider";
 import { themeProvider } from "./themeProvider";
+import { Room, RoomContext } from "./room";
+import { Trophy } from "./components/trophies/trophy";
+import { Join } from "./pages/join/join";
+import BrowserList, { detectIE } from "./pages/browserList";
 import { getLanguage, getDefaultLanguageCode } from "./utils/locale";
-
-import testAudio from "./assets/audio/test_audio.m4a";
-import testImageLandscape from "./assets/img/test_image_landsape.jpg";
-import testImagePortrait from "./assets/img/test_image_portrait.jpg";
-import testVideo from "./assets/img/test_video.mp4";
-import ChromeLogo from "./assets/img/browser/chrome_logo.svg";
-import SafariLogo from "./assets/img/browser/safari_logo.png";
 
 /*
 Sentry.init({
@@ -40,7 +47,6 @@ Sentry.init({
     environment: process.env.NODE_ENV || "not-specified",
 });
 */
-
 
 const authToken = AuthTokenProvider.retrieveToken();
 const wsLink = new WebSocketLink({
@@ -178,6 +184,27 @@ function Entry() {
         materials: params.materials
     }), [camera, setCamera, name, setName, params]);
 
+    const store = useStore();
+    useEffect(() => {
+        const userAgent = {
+            isMobileOnly,
+            isTablet,
+            isBrowser,
+            isSmartTV,
+            isAndroid,
+            isIOS,
+            isChrome,
+            isFirefox,
+            isSafari,
+            isIE,
+            isEdge,
+            isChromium,
+            isMobileSafari,
+        };
+        console.log("userAgent: ", userAgent)
+        store.dispatch({ type: ActionTypes.USER_AGENT, payload: userAgent });
+    }, []);
+
     return (
         <ThemeContext.Provider value={themeContext}>
             <UserContext.Provider value={userContext}>
@@ -192,75 +219,45 @@ function Entry() {
     );
 }
 
-const DisableBrowserGuide = process.env.DISABLE_BROWSER_GUIDE || false;
+function App(): JSX.Element {
+    const { camera, name, teacher } = useContext(UserContext);
 
-let renderComponent: JSX.Element;
-if (DisableBrowserGuide || (
-    isMacOs && (isSafari || isChrome) // Support Safari and Chrome in MacOS
-    || (isIOS || isIOS13) && isSafari // Support only Safari in iOS
-    || (!isIOS || !isIOS13) && isChrome // Support only Chrome in other OS
-)) {
-    renderComponent = (
-        <ApolloProvider client={client}>
-            <Entry />
-        </ApolloProvider>
-    )
-} else {
-    renderComponent = <BrowserGuide />
-}
-render(
-    renderComponent,
-    document.getElementById("app")
-);
-
-function BrowserGuide() {
-    return (
-        <Grid
-            container
-            justify="center"
-            alignItems="center"
-            style={{
-                display: "flex",
-                flexGrow: 1,
-                height: "100vh"
-            }}
-        >
-            <GuideContent />
-        </Grid>
-    )
+    if (!name || camera === undefined) { return <Join />; }
+    return <RoomContext.Provide>
+        <Room teacher={teacher} />
+        <Trophy />
+    </RoomContext.Provide>
 }
 
-function GuideContent() {
-    // const browserName = iOS ? "Safari" : "Chrome";
-    const apple = isMacOs || isIOS || isIOS13;
-    const [languageCode, _] = useState(url.searchParams.get("lang") || getDefaultLanguageCode());
-    const locale = getLanguage(languageCode);
-    return (
-        <RawIntlProvider value={locale}>
-            <Grid
-                container
-                direction="column"
-                alignItems="center"
-                alignContent="center"
-                spacing={1}
-            >
-                <Grid item>
-                    <img src={apple ? SafariLogo : ChromeLogo} height={80} />
-                </Grid>
-                <Grid item>
-                    <Typography variant="subtitle1">
-                        {apple ? (isMacOs ?
-                            <FormattedMessage id="browser_guide_title_macos" /> :
-                            <FormattedMessage id="browser_guide_title_ios" />
-                        ) : <FormattedMessage id="browser_guide_title" />}
-                    </Typography>
-                </Grid>
-                <Grid item>
-                    <Typography variant="subtitle2">
-                        <FormattedMessage id="browser_guide_body" />
-                    </Typography>
-                </Grid>
-            </Grid>
-        </RawIntlProvider>
-    )
+async function main() {
+    const { store, persistor } = createDefaultStore();
+    const isIE = detectIE();
+
+    let renderComponent: JSX.Element;
+    if (isIE <= 11 && isIE !== false) {
+        renderComponent = <BrowserList />
+    } else if (
+        (!isMobileOnly && (isChrome || isSafari || isFirefox)) || // !isMobileOnly == Desktop
+        (isIOS && isSafari) ||
+        (isAndroid && isChrome)
+    ) {
+        renderComponent = (
+            <Provider store={store}>
+                <PersistGate loading={null} persistor={persistor}>
+                    <ApolloProvider client={client}>
+                        <Entry />
+                    </ApolloProvider>
+                </PersistGate>
+            </Provider>
+        )
+    } else {
+        renderComponent = <BrowserList />
+    }
+
+    render(
+        renderComponent,
+        document.getElementById("app")
+    );
 }
+
+main();

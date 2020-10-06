@@ -1,21 +1,22 @@
+import React, { useState, useEffect, useContext, useRef, useMemo } from "react";
+import { FormattedMessage } from "react-intl";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
-import React, { useState, useEffect, useContext, useRef, useMemo } from "react";
-import { FormattedMessage } from "react-intl";
+
 import { UserContext } from "../../entry";
 import { RoomContext } from "../../room";
-import { Whiteboard } from "../../whiteboard/components/Whiteboard";
-import WBToolbar from "../../whiteboard/components/Toolbar";
-import { Stream } from "../../webRTCState";
-import { ReplicaMedia } from "../synchronized-video";
 import { MaterialTypename } from "../../lessonMaterialContext";
-import { PreviewPlayer } from "../../components/preview-player";
-import { RecordedIframe } from "../../components/recordediframe";
+import { PreviewPlayer } from "../../components/h5p/preview-player";
+import { RecordedIframe } from "../../components/h5p/recordediframe";
+import { ReplicaMedia } from "../../components/media/synchronized-video";
+import VideoStream from "../../components/media/videoStream";
 import { imageFrame } from "../../utils/layerValues";
 import { WebRTCSFUContext } from "../../webrtc/sfu";
 import { useContentToHref } from "../../utils/contentUtils";
+import { Whiteboard } from "../../whiteboard/components/Whiteboard";
+import WBToolbar from "../../whiteboard/components/Toolbar";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -172,7 +173,7 @@ export function Student({ openDrawer }: {
                 return <div ref={rootDivRef} className={classes.root}>
                     <Typography variant="caption" align="center">{session ? session.name : undefined}</Typography>
                     <Whiteboard uniqueId="student" height={rootDivHeight}>
-                        <Stream stream={webrtc.getCameraStream(content.contentId)} />
+                        <VideoStream stream={webrtc.getCameraStream(content.contentId)} />
                     </Whiteboard>
                     <WBToolbar />
                 </div>;
@@ -183,7 +184,7 @@ export function Student({ openDrawer }: {
                 return <div ref={rootDivRef} className={classes.root}>
                     <Typography variant="caption" align="center">{session ? session.name : undefined}</Typography>
                     <Whiteboard uniqueId="student" height={rootDivHeight}>
-                        <Stream stream={webrtc.getAuxStream(content.contentId)} />
+                        <VideoStream stream={webrtc.getAuxStream(content.contentId)} />
                     </Whiteboard>
                     <WBToolbar />
                 </div>;

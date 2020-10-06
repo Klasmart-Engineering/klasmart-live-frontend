@@ -9,10 +9,10 @@ import ListSubheader from '@material-ui/core/ListSubheader';
 
 import { MoreVert as MoreIcon } from "@styled-icons/material/MoreVert"
 
-import StyledIcon from "./styled/icon";
-import TrophyControls from "./trophies/trophyControls"
-import { Session } from "../room";
-import PermissionControls from "../whiteboard/components/PermissionControls";
+import StyledIcon from "../styled/icon";
+import TrophyControls from "../trophies/trophyControls"
+import { Session } from "../../room";
+import PermissionControls from "../../whiteboard/components/PermissionControls";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

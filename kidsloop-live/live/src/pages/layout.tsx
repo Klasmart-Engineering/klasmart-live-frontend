@@ -34,20 +34,21 @@ import { Grid as GridIcon } from "@styled-icons/evaicons-solid/Grid";
 import { ViewList as ListIcon } from "@styled-icons/material/ViewList";
 import { Share as ShareIcon } from "@styled-icons/material/Share";
 
-import { Camera, GlobalCameraControl } from "../webRTCState";
 import { UserContext } from "../entry";
 import { Session, Message, ContentIndexState, InteractiveModeState, StreamIdState, RoomContext } from "../room";
+import ModeControls from "./teacher/modeControls";
+import GlobalControls from "./teacher/globalControls";
+import { SendMessage } from "../components/chat/sendMessage";
 import Toolbar from "../whiteboard/components/Toolbar";
-import { ControlButtons } from "../pages/teacher/controlButtons";
-import { SendMessage } from "../sendMessage";
-import InviteButton from "./invite";
 import { MaterialTypename } from "../lessonMaterialContext";
-import Lightswitch from "./lightswitch";
-import LanguageSelect from "./languageSelect";
-import MoreControls from "./moreControls";
-import CenterAlignChildren from "./centerAlignChildren";
 import { bottomNav, modePanel } from "../utils/layerValues";
 import { WebRTCSFUContext } from "../webrtc/sfu";
+import Camera from "../components/media/camera";
+import MoreControls from "../components/media/moreControls";
+import InviteButton from "./teacher/invite";
+import Lightswitch from "../components/lightswitch";
+import LanguageSelect from "../components/languageSelect";
+import CenterAlignChildren from "../components/centerAlignChildren";
 
 export const DRAWER_WIDTH = 380;
 
@@ -389,7 +390,7 @@ function TabInnerContent({ contentIndexState, title, numColState, setNumColState
                             />
                         )}
                     </> : null}
-                    {teacher ? <GlobalCameraControl /> : null}
+                    {teacher ? <GlobalControls /> : null}
                     {isSmDown ? null : <ToggleCameraViewMode isSmDown={isSmDown} setGridMode={setGridMode} />}
                     <Grid
                         container
@@ -400,7 +401,7 @@ function TabInnerContent({ contentIndexState, title, numColState, setNumColState
                         xs={12}
                         className={classes.scrollCameraContainer}
                         style={isSmDown ? { maxHeight: `calc(100vh - ${theme.spacing(65)}px)` } : {
-                            height: teacher ? `calc(100vh - ${theme.spacing(60)}px)` : `calc(100vh - ${theme.spacing(9)}px)`, // Because student side has no <InviteButton /> and <GlobalCameraControl />
+                            height: teacher ? `calc(100vh - ${theme.spacing(60)}px)` : `calc(100vh - ${theme.spacing(9)}px)`, // Because student side has no <InviteButton /> and <GlobalControls />
                         }}
                     >
                         <Grid id={"participant-listing"} item xs={12}><Divider /></Grid>
@@ -473,7 +474,7 @@ function TabInnerContent({ contentIndexState, title, numColState, setNumColState
                 );
             }
         case "title_chat":
-            const Messages = React.lazy(() => import("../messages"));
+            const Messages = React.lazy(() => import("../components/chat/messages"));
             const messages = useContext(MessageContext);
 
             return (
@@ -577,12 +578,12 @@ function StyledTab(props: StyledTabProps) {
 
 interface Props {
     children?: React.ReactNode;
-    isTeacher: boolean;
+    isTeacher: boolean; // TODO: Redux
     openDrawer: boolean;
     handleOpenDrawer: (open?: boolean) => void;
-    contentIndexState: ContentIndexState;
-    interactiveModeState: InteractiveModeState;
-    streamIdState: StreamIdState;
+    contentIndexState: ContentIndexState; // TODO: Redux
+    interactiveModeState: InteractiveModeState; // TODO: Redux
+    streamIdState: StreamIdState; // TODO: Redux - Session
     numColState: number;
     setNumColState: React.Dispatch<React.SetStateAction<number>>;
 }
@@ -674,7 +675,7 @@ export default function Layout(props: Props): JSX.Element {
                                             </Tabs>
                                         </Grid>
                                         <Grid item hidden={!isTeacher}>
-                                            <ControlButtons
+                                            <ModeControls
                                                 interactiveModeState={interactiveModeState}
                                                 disablePresent={!(
                                                     streamId ||
@@ -744,7 +745,7 @@ export default function Layout(props: Props): JSX.Element {
         {isTeacher ?
             <Hidden mdUp>
                 <Grid className={classes.toolbarContainer}>
-                    <ControlButtons
+                    <ModeControls
                         interactiveModeState={interactiveModeState}
                         disablePresent={!(
                             streamId ||

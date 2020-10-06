@@ -3,11 +3,13 @@ import { FormattedMessage } from "react-intl";
 import { useTheme } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
-import { ContentCopy as CopyIcon } from "@styled-icons/material/ContentCopy";
-import { UserContext } from "../entry";
-import StyledTextField from "../components/styled/textfield"
 import Snackbar from "@material-ui/core/Snackbar";
 import Tooltip from "@material-ui/core/Tooltip";
+
+import { ContentCopy as CopyIcon } from "@styled-icons/material/ContentCopy";
+
+import { UserContext } from "../../entry";
+import StyledTextField from "../../components/styled/textfield"
 
 export default function InviteButton(): JSX.Element {
     const theme = useTheme();
