@@ -6,10 +6,10 @@ import { Trophy } from "./components/trophies/trophy";
 import useCordovaInitialize from "./cordova-initialize";
 
 export function App(): JSX.Element {
-    const [cordovaReady] = useCordovaInitialize();
+    const [cordovaReady, permissions] = useCordovaInitialize();
     const { camera, name, teacher } = useContext(UserContext);
 
-    if (!cordovaReady) { return <>Loading...</> }
+    if (!cordovaReady || !permissions) { return <>Loading...</> }
     if (!name || camera === undefined) { return <Join /> }
 
     return <RoomContext.Provide>
