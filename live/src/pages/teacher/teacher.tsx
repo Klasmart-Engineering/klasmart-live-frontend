@@ -1,29 +1,31 @@
+import React, { useEffect, useState, useContext, useRef, useMemo } from "react";
+import { FormattedMessage } from "react-intl";
+import { gql } from "apollo-boost";
+import { useMutation } from "@apollo/react-hooks";
+import { Theme, Card, useTheme, CardContent, Hidden } from "@material-ui/core";
+import { createStyles, makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Tooltip from "@material-ui/core/Tooltip";
 import IconButton from "@material-ui/core/IconButton";
-import { createStyles, makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import CardActions from "@material-ui/core/CardActions";
-import React, { useEffect, useState, useContext, useRef, useMemo } from "react";
-import { FormattedMessage } from "react-intl";
-import { RecordedIframe } from "../../components/recordediframe";
-import { Session, Content, ContentIndexState, InteractiveModeState, StreamIdState, RoomContext } from "../../room";
-import { Theme, Card, useTheme, CardContent, Hidden } from "@material-ui/core";
-import { PreviewPlayer } from "../../components/preview-player";
-import { Stream } from "../../webRTCState";
-import { UserContext } from "../../entry";
-import { gql } from "apollo-boost";
-import { useMutation } from "@apollo/react-hooks";
-import { Whiteboard } from "../../whiteboard/components/Whiteboard";
-import { ScreenShare } from "./screenShareProvider";
-import { ReplicatedMedia } from "../synchronized-video";
+
 import { Face as FaceIcon } from "@styled-icons/material/Face";
 import { ZoomIn as ZoomInIcon } from "@styled-icons/material/ZoomIn";
 import { ZoomOut as ZoomOutIcon } from "@styled-icons/material/ZoomOut";
 import { QuestionMarkCircleOutline as QuestionIcon } from "@styled-icons/evaicons-outline/QuestionMarkCircleOutline";
+
+import { ScreenShare } from "./screenShareProvider";
+import { UserContext } from "../../entry";
+import { Session, ContentIndexState, InteractiveModeState, StreamIdState, RoomContext } from "../../room";
 import { MaterialTypename } from "../../lessonMaterialContext";
+import { RecordedIframe } from "../../components/h5p/recordediframe";
+import { PreviewPlayer } from "../../components/h5p/preview-player";
+import { ReplicatedMedia } from "../../components/media/synchronized-video";
+import VideoStream from "../../components/media/videoStream";
 import { imageFrame } from "../../utils/layerValues";
 import { useMaterialToHref } from "../../utils/contentUtils";
+import { Whiteboard } from "../../whiteboard/components/Whiteboard";
 
 const drawerWidth = 340;
 
@@ -157,7 +159,7 @@ export function Teacher(props: Props): JSX.Element {
                     {
                         //TODO: tidy up the conditions of what to render
                         interactiveMode === 3 ?
-                            <Stream stream={screenShare.getStream()} /> :
+                            <VideoStream stream={screenShare.getStream()} /> :
                             <>
                                 {material ?
                                     material.__typename === MaterialTypename.Image ?

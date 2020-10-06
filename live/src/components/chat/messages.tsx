@@ -1,10 +1,12 @@
-import { Typography, makeStyles, Theme, createStyles, Grid, Paper } from "@material-ui/core";
 import React from "react";
-import { Message } from "./room";
 import { FormattedMessage, FormattedDate, FormattedTime } from "react-intl";
-import { mapGenerator } from "./utils/map";
+import { Typography, makeStyles, Theme, createStyles, Grid, Paper } from "@material-ui/core";
 import Tooltip from "@material-ui/core/Tooltip";
+
 import { AccessTime as TimestampIcon } from "@styled-icons/material-twotone/AccessTime";
+
+import { Message } from "../../room";
+import { mapGenerator } from "../../utils/map";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -32,7 +34,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface Props { messages: Map<string, Message> }
 
-function Messages ({ messages }: Props): JSX.Element {
+function Messages({ messages }: Props): JSX.Element {
     const classes = useStyles();
 
     if (!messages || messages.size === 0) {
@@ -45,7 +47,7 @@ function Messages ({ messages }: Props): JSX.Element {
 
     return <>
         {
-            [...mapGenerator(messages, ([,m], i) => (
+            [...mapGenerator(messages, ([, m], i) => (
                 // TODO: Animation for chat messages
                 <Grid item xs={12}>
                     <Paper elevation={0} className={classes.paperContainer}>
@@ -63,7 +65,7 @@ function Messages ({ messages }: Props): JSX.Element {
                             </Grid>
                             <Grid item xs={12} md={1} style={{ textAlign: "right" }}>
                                 <Grid container item xs={12} justify="flex-end" alignItems="center">
-                                    <Tooltip 
+                                    <Tooltip
                                         placement="left"
                                         title={
                                             <>
@@ -73,7 +75,7 @@ function Messages ({ messages }: Props): JSX.Element {
                                             </>
                                         }
                                     >
-                                        <TimestampIcon size="1rem" style={{ color: "#e0e1e1" }}/>
+                                        <TimestampIcon size="1rem" style={{ color: "#e0e1e1" }} />
                                     </Tooltip>
                                 </Grid>
                             </Grid>

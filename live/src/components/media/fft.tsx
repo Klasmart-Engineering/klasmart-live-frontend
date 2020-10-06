@@ -8,24 +8,24 @@ interface Props {
     raw?: boolean
 }
 
-export function FFT(props: Props & React.CanvasHTMLAttributes<HTMLCanvasElement>) {
-    if(!window.AudioContext) {return <></>}
-    const {color, input, output, raw, ...canvasProps} = props;
+export default function FFT(props: Props & React.CanvasHTMLAttributes<HTMLCanvasElement>) {
+    if (!window.AudioContext) { return <></> }
+    const { color, input, output, raw, ...canvasProps } = props;
     const canvas = useRef<HTMLCanvasElement>(null);
     const theme = useTheme();
-    
+
     const audioContext = useMemo(() => new AudioContext(), []);
     useEffect(() => {
-        return () => {audioContext.close();}; //Destroy audio context when this component is destroyed
+        return () => { audioContext.close(); }; //Destroy audio context when this component is destroyed
     }, []);
 
     const source = useMemo(() => {
-        if(!input) { return }
-        if(input instanceof MediaStream) { return audioContext.createMediaStreamSource(input) } 
-        if(input instanceof HTMLMediaElement) { return audioContext.createMediaElementSource(input) }
+        if (!input) { return }
+        if (input instanceof MediaStream) { return audioContext.createMediaStreamSource(input) }
+        if (input instanceof HTMLMediaElement) { return audioContext.createMediaElementSource(input) }
     }, [input]);
     useEffect(() => {
-        if(!source || !output) {return}
+        if (!source || !output) { return }
         source.connect(audioContext.destination);
         const s = source, d = audioContext.destination;
         return () => s.disconnect(d);
@@ -35,7 +35,7 @@ export function FFT(props: Props & React.CanvasHTMLAttributes<HTMLCanvasElement>
 
     const merger = useMemo(() => audioContext.createChannelMerger(1), []);
     useEffect(() => {
-        if(!source) {return}
+        if (!source) { return }
         source.connect(merger);
         const s = source, m = merger;
         return () => s.disconnect(m);
@@ -43,30 +43,30 @@ export function FFT(props: Props & React.CanvasHTMLAttributes<HTMLCanvasElement>
 
 
     const processor = useMemo(() => audioContext.createScriptProcessor(1024, 1, 1), []);
-    useEffect(()=>{
+    useEffect(() => {
         merger.connect(processor);
         const m = merger, p = processor;
         return () => m.disconnect(p);
-    },[merger,processor]);
+    }, [merger, processor]);
 
     useEffect(() => {
         processor.connect(audioContext.destination);
         audioContext.resume();
         function process(e: AudioProcessingEvent) {
-            if(!canvas.current) {return;}
+            if (!canvas.current) { return; }
             const ctx = canvas.current.getContext("2d");
-            if(!ctx) {return;}
+            if (!ctx) { return; }
             ctx.strokeStyle = color ? color : (theme.palette.type === "dark" ? "#fff" : "#000");
             const width = canvas.current.width;
             const height = canvas.current.height;
-            ctx.clearRect(0,0,width,canvas.current.height);
+            ctx.clearRect(0, 0, width, canvas.current.height);
             const [re] = fft(e.inputBuffer.getChannelData(0));
             ctx.beginPath();
             ctx.moveTo(0, height);
-            for (let i = 0; i < 2*re.length/3; i++) {
-                const x = width * ((i+1) / (1+2*re.length/3));
+            for (let i = 0; i < 2 * re.length / 3; i++) {
+                const x = width * ((i + 1) / (1 + 2 * re.length / 3));
                 const index = raw ? i : i & 1 ? re.length - (i >> 1) : (i >> 1);
-                ctx.lineTo(x, height-0.1*height*Math.sqrt(Math.abs(re[index])));
+                ctx.lineTo(x, height - 0.1 * height * Math.sqrt(Math.abs(re[index])));
             }
             ctx.stroke();
         }
@@ -75,13 +75,13 @@ export function FFT(props: Props & React.CanvasHTMLAttributes<HTMLCanvasElement>
         return () => {
             p.removeEventListener("audioprocess", process);
             p.disconnect(d);
-            if(a.state === "running") {
+            if (a.state === "running") {
                 a.suspend();
             }
         };
     }, [processor]);
-    
-    return <canvas ref={canvas} {...canvasProps}/>;
+
+    return <canvas ref={canvas} {...canvasProps} />;
 }
 
 function fft(signal: Float32Array) {
