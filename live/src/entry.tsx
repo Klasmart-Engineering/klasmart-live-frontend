@@ -2,7 +2,7 @@ import { v4 as uuid } from "uuid";
 export const sessionId = uuid();
 
 import React, { createContext, useState, useMemo } from "react";
-import * as Sentry from '@sentry/react';
+// import * as Sentry from '@sentry/react';
 import { render } from "react-dom";
 import { RawIntlProvider, FormattedMessage } from "react-intl";
 import { ApolloProvider } from "@apollo/react-hooks";
@@ -34,10 +34,12 @@ import testVideo from "./assets/img/test_video.mp4";
 import ChromeLogo from "./assets/img/browser/chrome_logo.svg";
 import SafariLogo from "./assets/img/browser/safari_logo.png";
 
+/*
 Sentry.init({
     dsn: "https://9f4fca35be3b4b7ca970a126f26a5e54@o412774.ingest.sentry.io/5388813",
     environment: process.env.NODE_ENV || "not-specified",
 });
+*/
 
 
 const authToken = AuthTokenProvider.retrieveToken();
@@ -109,16 +111,18 @@ function parseToken() {
                 };
             } else {
                 const materialsParam = url.searchParams.get("materials");
+                const h5p = process.env.ENDPOINT_H5P || "/h5p";
+
                 return {
                     teacher: url.searchParams.get("teacher") !== null,
                     name: url.searchParams.get("name") || undefined, // Should be undefined not null
                     roomId: url.searchParams.get("roomId") || "cordova-room",
                     materials: materialsParam ? JSON.parse(materialsParam) : [
-                        { __typename: MaterialTypename.Iframe, name: "Pairs", url: "/h5p/play/5ecf4e4b611e18398f7380ef" },
-                        { __typename: MaterialTypename.Iframe, name: "Flashcards", url: "/h5p/play/5ed05dd1611e18398f7380f4" },
-                        { __typename: MaterialTypename.Iframe, name: "Drag and Drop", url: "/h5p/play/5ed0b64a611e18398f7380fb" },
-                        { __typename: MaterialTypename.Iframe, name: "Hot Spot 1", url: "/h5p/play/5ecf6f43611e18398f7380f0" },
-                        { __typename: MaterialTypename.Iframe, name: "Hot Spot 2", url: "/h5p/play/5ed0a79d611e18398f7380f7" },
+                        { __typename: MaterialTypename.Iframe, name: "Pairs", url: `${h5p}/play/5ecf4e4b611e18398f7380ef` },
+                        { __typename: MaterialTypename.Iframe, name: "Flashcards", url: `${h5p}/play/5ed05dd1611e18398f7380f4` },
+                        { __typename: MaterialTypename.Iframe, name: "Drag and Drop", url: `${h5p}/play/5ed0b64a611e18398f7380fb` },
+                        { __typename: MaterialTypename.Iframe, name: "Hot Spot 1", url: `${h5p}/play/5ecf6f43611e18398f7380f0` },
+                        { __typename: MaterialTypename.Iframe, name: "Hot Spot 2", url: `${h5p}/play/5ed0a79d611e18398f7380f7` },
                         { __typename: MaterialTypename.Video, name: "Video", url: `${process.env.ENDPOINT_TEST_ASSETS_S3 || "."}/test_video.mp4` },
                         { __typename: MaterialTypename.Audio, name: "Audio", url: `${process.env.ENDPOINT_TEST_ASSETS_S3 || "."}/test_audio.m4a` },
                         { __typename: MaterialTypename.Image, name: "Portrait Image", url: `${process.env.ENDPOINT_TEST_ASSETS_S3 || "."}/test_image_portrait.jpg` },
