@@ -403,7 +403,14 @@ export class WebRTCSFUContext implements WebRTCContext {
         if (this._device === null) { console.error("WebRTC device is being initialized"); return; }
         this._device = null
 
-        const device = new Device({ handlerName: "Safari11" })
+        let device: Device;
+
+        if (process.env.WEBRTC_DEVICE_HANDLER_NAME) {
+            device = new Device({ handlerName: process.env.WEBRTC_DEVICE_HANDLER_NAME as any });
+        } else {
+            device = new Device();
+        }
+
         await device.load({ routerRtpCapabilities })
         const rtpCapabilities = JSON.stringify(device.rtpCapabilities)
         await this.rtpCapabilities({ variables: { rtpCapabilities } })
