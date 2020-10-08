@@ -93,8 +93,11 @@ export function RecordedIframe(props: Props): JSX.Element {
     }
 
     function inject(iframeElement: HTMLIFrameElement) {
+        console.log("trying to inject scripts into iframe.");
+
         const contentWindow = iframeElement.contentWindow
         const contentDoc = iframeElement.contentDocument
+
         if (!contentWindow || !contentDoc) { return; }
         // IP Protection
         const blockRightClick = (e: MouseEvent) => { e.preventDefault() }
@@ -115,11 +118,13 @@ export function RecordedIframe(props: Props): JSX.Element {
             setMinHeight(700);
         }
 
+        console.log("attaching iframeResizer script");
         const cdnResizerScript = contentDoc.createElement("script");
         cdnResizerScript.setAttribute("type", "text/javascript");
         cdnResizerScript.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/iframe-resizer/3.5.8/iframeResizer.contentWindow.min.js");
         contentDoc.head.appendChild(cdnResizerScript);
 
+        console.log("attaching h5p resizer script");
         const h5pResizerScript = contentDoc.createElement("script");
         h5pResizerScript.setAttribute("type", "text/javascript");
         h5pResizerScript.setAttribute("src", "https://h5p.org/sites/all/modules/h5p/library/js/h5p-resizer.js");
@@ -131,8 +136,13 @@ export function RecordedIframe(props: Props): JSX.Element {
     useEffect(() => {
         const iRef = window.document.getElementById("recordediframe") as HTMLIFrameElement;
         if (!iRef) { return; }
-        iRef.addEventListener("load", () => inject(iRef));
-        return () => iRef.removeEventListener("load", () => inject(iRef));
+
+        const onIframeLoad = () => {
+            inject(iRef);
+        }
+
+        iRef.addEventListener("load", onIframeLoad);
+        return () => iRef.removeEventListener("load", onIframeLoad);
     }, [key])
 
     useEffect(() => {
