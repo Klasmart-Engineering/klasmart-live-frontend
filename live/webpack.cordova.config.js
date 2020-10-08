@@ -80,7 +80,8 @@ module.exports = {
       ["ENDPOINT_WEBSOCKET"],
       ["APP_GIT_REV"],
       ["DISABLE_BROWSER_GUIDE"],
-      ["USE_TEST_TOKEN"]
+      ["USE_TEST_TOKEN"],
+      ["WEBRTC_DEVICE_HANDLER_NAME"]
     ),
     new HtmlWebpackPlugin({
       filename: "index.html",
