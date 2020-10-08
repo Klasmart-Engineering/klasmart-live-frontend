@@ -80,6 +80,7 @@ List of variables:
 - ENDPOINT_SFU -- Where to connect to SFU.
 - USE_TEST_TOKEN -- Use the test token (until we've added login/qr page).
 - DISABLE_BROWSER_GUIDE -- Don't display the browser guide page.
+- WEBRTC_DEVICE_HANDLER_NAME -- Used to manually specify which device handler should be used. (Chrome74, Chrome70, Chrome67, Chrome55, Firefox60, Safari12, Safari11, Edge11, ReactNative)
 
 After defining these variables the `build:app` npm command can run. This will only do the webpack build step. Once complete, cordova `build android` command can be run to
 create the `apk` file.
