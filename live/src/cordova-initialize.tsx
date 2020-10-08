@@ -12,6 +12,8 @@ const useCordovaInitialize = () => {
                 console.log("Permissions: ", approved ? "Granted" : "Rejected");
                 setPermissions(approved);
             });
+        } else {
+            setPermissions(true);
         }
     }, [setPermissions]);
 
