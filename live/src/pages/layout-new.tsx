@@ -47,17 +47,17 @@ import Lightswitch from "../components/lightswitch";
 import LanguageSelect from "../components/languageSelect";
 import CenterAlignChildren from "../components/centerAlignChildren";
 import { State } from "../store/store";
-import { ActionTypes } from "../store/actions";
+import { ActionTypes, ClassType } from "../store/actions";
 
 const MessageContext = createContext(new Map<string, Message>());
 const UsersContext = createContext(new Map<string, Session>());
 
 const TABS = [
-    { icon: <PeopleIcon role="img" size="1.5rem" />, title: "title_participants", userType: 2 },
-    { icon: <LessonPlanIcon role="img" size="1.5rem" />, title: "title_lesson_plan", userType: 0 },
-    { icon: <ChatIcon role="img" size="1.5rem" />, title: "title_chat", userType: 2 },
-    { icon: <CreateIcon role="img" size="1.5rem" />, title: "title_whiteboard", userType: 2 },
-    { icon: <SettingsIcon role="img" size="1.5rem" />, title: "title_settings", userType: 0 },
+    { icon: <PeopleIcon role="img" size="1.5rem" />, title: "title_participants", userType: 2, classType: ClassType.LIVE },
+    { icon: <LessonPlanIcon role="img" size="1.5rem" />, title: "title_lesson_plan", userType: 0, classType: ClassType.HOMEWORK },
+    { icon: <ChatIcon role="img" size="1.5rem" />, title: "title_chat", userType: 2, classType: ClassType.LIVE },
+    { icon: <CreateIcon role="img" size="1.5rem" />, title: "title_whiteboard", userType: 2, classType: ClassType.HOMEWORK },
+    { icon: <SettingsIcon role="img" size="1.5rem" />, title: "title_settings", userType: 0, classType: ClassType.HOMEWORK },
 ];
 
 const OPTION_NUMCOL = [
@@ -270,10 +270,11 @@ function DrawerContainer({ isTeacher, interactiveModeState, material, openDrawer
     const { users, messages } = RoomContext.Consume()
 
     const store = useStore();
-    const ref = useRef<HTMLDivElement>(null);
     function setDrawerWidth(width: number) {
         store.dispatch({ type: ActionTypes.DRAWER_WIDTH, payload: width });
     }
+    const classType = useSelector((state: State) => state.session.classType);
+    const ref = useRef<HTMLDivElement>(null);
     useEffect(() => {
         if (!ref || !ref.current) { return; }
         setDrawerWidth(ref.current.offsetWidth);
@@ -283,10 +284,12 @@ function DrawerContainer({ isTeacher, interactiveModeState, material, openDrawer
         <Grid ref={ref} item xs={openDrawer ? 3 : undefined} style={{ position: "relative" }}>
             <UsersContext.Provider value={users}>
                 <MessageContext.Provider value={messages}>
-                    {isTeacher ?
+                    {classType === ClassType.HOMEWORK ? (
+                        TABS.filter((t) => t.classType === ClassType.HOMEWORK).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} contentIndexState={contentIndexState} openDrawer={openDrawer} handleOpenDrawer={handleOpenDrawer} index={index} tab={tab} value={tabIndex} numColState={numColState} setNumColState={setNumColState} />)
+                    ) : (isTeacher ?
                         TABS.filter((t) => t.userType !== 1).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} contentIndexState={contentIndexState} openDrawer={openDrawer} handleOpenDrawer={handleOpenDrawer} index={index} tab={tab} value={tabIndex} numColState={numColState} setNumColState={setNumColState} />) :
                         TABS.filter((t) => t.userType !== 0).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} openDrawer={openDrawer} handleOpenDrawer={handleOpenDrawer} index={index} tab={tab} value={tabIndex} />)
-                    }
+                        )}
                 </MessageContext.Provider>
             </UsersContext.Provider>
             <DrawerToolbar isTeacher={isTeacher} interactiveModeState={interactiveModeState} material={material} handleOpenDrawer={handleOpenDrawer} tabIndex={tabIndex} setTabIndex={setTabIndex} setMaterialKey={setMaterialKey} />
@@ -306,6 +309,7 @@ function DrawerToolbar({ isTeacher, interactiveModeState, material, handleOpenDr
     const classes = useStyles()
     const theme = useTheme();
 
+    const classType = useSelector((state: State) => state.session.classType);
     const streamId = useSelector((state: State) => state.session.streamId);
 
     const handleTabIndexChange = (event: React.ChangeEvent<unknown>, newValue: number) => {
@@ -340,13 +344,15 @@ function DrawerToolbar({ isTeacher, interactiveModeState, material, handleOpenDr
                         indicator: classes.tabIndicator
                     }}
                 >
-                    {isTeacher ?
-                        TABS.filter((t) => t.userType !== 1).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} className={index === tabIndex ? classes.tabSelected : ""} title={tab.title} handlers={{ handleOpenDrawer, setTabIndex }} value={index}>{tab.icon}</StyledTab>) :
-                        TABS.filter((t) => t.userType !== 0).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} className={index === tabIndex ? classes.tabSelected : ""} title={tab.title} handlers={{ handleOpenDrawer, setTabIndex }} value={index}>{tab.icon}</StyledTab>)
+                    {classType === ClassType.HOMEWORK ? (
+                        TABS.filter((t) => t.classType === ClassType.HOMEWORK).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} className={index === tabIndex ? classes.tabSelected : ""} title={tab.title} handlers={{ handleOpenDrawer, setTabIndex }} value={index}>{tab.icon}</StyledTab>)
+                    ) : isTeacher ?
+                            TABS.filter((t) => t.userType !== 1).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} className={index === tabIndex ? classes.tabSelected : ""} title={tab.title} handlers={{ handleOpenDrawer, setTabIndex }} value={index}>{tab.icon}</StyledTab>) :
+                            TABS.filter((t) => t.userType !== 0).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} className={index === tabIndex ? classes.tabSelected : ""} title={tab.title} handlers={{ handleOpenDrawer, setTabIndex }} value={index}>{tab.icon}</StyledTab>)
                     }
                 </Tabs>
             </Grid>
-            <Grid item hidden={!isTeacher}>
+            <Grid item hidden={classType === ClassType.HOMEWORK || !isTeacher}>
                 <ModeControls
                     interactiveModeState={interactiveModeState}
                     disablePresent={!(
