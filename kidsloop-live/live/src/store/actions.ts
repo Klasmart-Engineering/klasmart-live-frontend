@@ -4,9 +4,11 @@ export enum ActionTypes {
     CLASS_TYPE,
     USER_AGENT,
     USER_TYPE,
+    STREAM_ID,
     LOCALE,
     DARK_MODE,
     DRAWER_OPEN,
+    DRAWER_WIDTH,
 }
 export interface Action<T extends ActionTypes, P> { type: T; payload: P; }
 
@@ -46,16 +48,21 @@ export enum UserType {
 }
 export type SetUserType = Action<ActionTypes.USER_TYPE, UserType>;
 
+export type SetStreamId = Action<ActionTypes.STREAM_ID, string>;
+
 // UI
 export type SetLocale = Action<ActionTypes.LOCALE, string>;
 export type SetDarkMode = Action<ActionTypes.DARK_MODE, string>;
 export type SetDrawerOpen = Action<ActionTypes.DRAWER_OPEN, boolean>;
+export type SetDrawerWidth = Action<ActionTypes.DRAWER_WIDTH, number>;
 
 export type Actions =
     | SetClassType
     | SetUserAgent
     | SetUserType
+    | SetStreamId
     | SetLocale
     | SetDarkMode
     | SetDrawerOpen
+    | SetDrawerWidth
     | never;

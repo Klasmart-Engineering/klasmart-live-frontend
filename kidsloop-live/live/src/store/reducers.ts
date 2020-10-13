@@ -51,6 +51,15 @@ export function userType(state: UserType = UserType.STUDENT, action: Actions) {
     }
 }
 
+export function streamId(state = "", action: Actions) {
+    switch (action.type) {
+        case ActionTypes.USER_TYPE:
+            return action.payload;
+        default:
+            return state;
+    }
+}
+
 export function locale(state = getDefaultLanguageCode(), action: Actions) {
     switch (action.type) {
         case ActionTypes.LOCALE:
@@ -69,8 +78,27 @@ export function darkMode(state = "light", action: Actions) {
     }
 }
 
-export const data = combineReducers({
+export function drawerOpen(state = true, action: Actions) {
+    switch (action.type) {
+        case ActionTypes.DRAWER_OPEN:
+            return action.payload;
+        default:
+            return state;
+    }
+}
 
+export function drawerWidth(state = 0, action: Actions) {
+    switch (action.type) {
+        case ActionTypes.DRAWER_WIDTH:
+            return action.payload;
+        default:
+            return state;
+    }
+}
+
+export const data = combineReducers({
+    drawerOpen,
+    drawerWidth,
 });
 
 export const communication = combineReducers({
@@ -83,10 +111,12 @@ export const control = combineReducers({
 
 export const session = combineReducers({
     classType,
-    darkMode,
-    locale,
     userAgent,
     userType,
+    streamId,
+    locale,
+
+    darkMode, // is it session?
 });
 
 export const location = combineReducers({

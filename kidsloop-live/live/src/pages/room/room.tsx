@@ -1,4 +1,4 @@
-import React, { useReducer, useState, useContext, useEffect, createContext, useRef } from "react";
+import React, { useReducer, useState, useContext, createContext, useRef } from "react";
 import { gql } from "apollo-boost";
 import { useSubscription } from "@apollo/react-hooks";
 import { FormattedMessage } from "react-intl";
@@ -8,7 +8,6 @@ import Grid from "@material-ui/core/Grid";
 import { sessionId, UserContext } from "../../entry";
 import { Student } from "../student/student";
 import { Teacher } from "../teacher/teacher";
-import Layout from "../layout";
 import Loading from "../../components/loading";
 import { EventEmitter } from "eventemitter3"
 import { WebRTCSFUContext } from "../../webrtc/sfu";
@@ -44,36 +43,17 @@ export interface InteractiveModeState {
     setInteractiveMode: React.Dispatch<React.SetStateAction<number>>;
 }
 
-export interface StreamIdState {
-    streamId: string | undefined;
-    setStreamId: React.Dispatch<React.SetStateAction<string | undefined>>;
-}
-
 export function Room(): JSX.Element {
     const theme = useTheme();
-    const { teacher } = useContext(UserContext);
-    
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
+
+    const { teacher } = useContext(UserContext);
 
     const [contentIndex, setContentIndex] = useState<number>(0);
     const [interactiveMode, setInteractiveMode] = useState<number>(0);
-    const [streamId, setStreamId] = useState<string>();
     const [numColState, setNumColState] = useState(2)
 
-    const [openDrawer, setOpenDrawer] = useState<boolean>(isSmDown ? false : true);
-    const handleOpenDrawer = (open?: boolean) => {
-        if (open !== null && open !== undefined) {
-            setOpenDrawer(open);
-        } else {
-            setOpenDrawer(!openDrawer);
-        }
-    };
-
-    useEffect(() => {
-        if (isSmDown) {
-            setOpenDrawer(false);
-        }
-    }, [isSmDown]);
+    const [openDrawer, _] = useState<boolean>(true); // TODO: Redux?
 
     return (
         <RoomContext.Provide>
@@ -84,7 +64,6 @@ export function Room(): JSX.Element {
                             isTeacher={teacher}
                             contentIndexState={{ contentIndex, setContentIndex }}
                             interactiveModeState={{ interactiveMode, setInteractiveMode }}
-                            streamIdState={{ streamId, setStreamId }}
                             numColState={numColState}
                             setNumColState={setNumColState}
                         >
@@ -92,38 +71,13 @@ export function Room(): JSX.Element {
                                 teacher
                                     ? <Teacher
                                         openDrawer={openDrawer}
-                                        handleOpenDrawer={handleOpenDrawer}
                                         contentIndexState={{ contentIndex, setContentIndex }}
                                         interactiveModeState={{ interactiveMode, setInteractiveMode }}
-                                        streamIdState={{ streamId, setStreamId }}
                                         numColState={numColState}
                                     />
                                     : <Student openDrawer={openDrawer} />
                             }
                         </NewLayout>
-                        {/* <Layout
-                            isTeacher={teacher}
-                            openDrawer={openDrawer}
-                            handleOpenDrawer={handleOpenDrawer}
-                            contentIndexState={{ contentIndex, setContentIndex }}
-                            interactiveModeState={{ interactiveMode, setInteractiveMode }}
-                            streamIdState={{ streamId, setStreamId }}
-                            numColState={numColState}
-                            setNumColState={setNumColState}
-                        >
-                            {
-                                teacher
-                                    ? <Teacher
-                                        openDrawer={openDrawer}
-                                        handleOpenDrawer={handleOpenDrawer}
-                                        contentIndexState={{ contentIndex, setContentIndex }}
-                                        interactiveModeState={{ interactiveMode, setInteractiveMode }}
-                                        streamIdState={{ streamId, setStreamId }}
-                                        numColState={numColState}
-                                    />
-                                    : <Student openDrawer={openDrawer} />
-                            }
-                        </Layout> */}
                     </GlobalWhiteboardContext>
                 </ScreenShare.Provide>
             </WebRTCSFUContext.Provide>
