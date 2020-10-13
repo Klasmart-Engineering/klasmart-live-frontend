@@ -9,7 +9,7 @@ import TrophyKinds, { TrophyKind, getRandomKind } from './trophyKind';
 
 import useSound from 'use-sound';
 import { ConfettiRain } from './confettiRain';
-import { RoomContext } from '../../room';
+import { RoomContext } from '../../pages/room/room';
 
 export type Trophy = { from: string, user: string, kind: string };
 

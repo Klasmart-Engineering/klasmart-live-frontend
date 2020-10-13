@@ -5,7 +5,7 @@ import React, { createContext, useState, useMemo, useContext, useEffect } from "
 // import * as Sentry from '@sentry/react';
 import { render } from "react-dom";
 import { RawIntlProvider, FormattedMessage } from "react-intl";
-import { Provider, useStore } from "react-redux";
+import { Provider, useSelector, useStore } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import {
     isMobileOnly,
@@ -31,15 +31,22 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import Typography from "@material-ui/core/Typography";
 
 import { ActionTypes } from "./store/actions"
-import { createDefaultStore } from "./store/store";
+import { createDefaultStore, State } from "./store/store";
 import { LessonMaterial, MaterialTypename } from "./lessonMaterialContext";
 import { AuthTokenProvider } from "./services/auth-token/AuthTokenProvider";
 import { themeProvider } from "./themeProvider";
-import { Room, RoomContext } from "./room";
+import { Room, RoomContext } from "./pages/room/room";
 import { Trophy } from "./components/trophies/trophy";
 import { Join } from "./pages/join/join";
 import BrowserList, { detectIE } from "./pages/browserList";
 import { getLanguage, getDefaultLanguageCode } from "./utils/locale";
+import { HashRouter, Route, Switch } from "react-router-dom";
+import { Signup } from "./pages/account/signup";
+import { Signin } from "./pages/account/signin";
+import { PasswordChange } from "./pages/account/password/password-change";
+import { PasswordChanged } from "./pages/account/password/password-changed";
+import { PasswordForgot } from "./pages/account/password/password-forgot";
+import { PasswordRestore } from "./pages/account/password/password-restore";
 
 /*
 Sentry.init({
@@ -155,7 +162,9 @@ function parseToken() {
 }
 const params = parseToken();
 function Entry() {
-    const [languageCode, setLanguageCode] = useState(url.searchParams.get("lang") || getDefaultLanguageCode());
+    const store = useStore();
+    const themeMode = useSelector((state: State) => state.session.darkMode);
+    const languageCode = useSelector((state: State) => state.session.locale);
     const locale = getLanguage(languageCode);
 
     if (!params) {
@@ -164,14 +173,6 @@ function Entry() {
 
     const [camera, setCamera] = useState<MediaStream | null>();
     const [name, setName] = useState(params.name);
-    const [themeMode, setThemeMode] = useState(url.searchParams.get("theme") || "light");
-
-    const themeContext = useMemo<IThemeContext>(() => ({
-        themeMode,
-        setThemeMode,
-        languageCode,
-        setLanguageCode,
-    }), [themeMode, setThemeMode, languageCode, setLanguageCode]);
 
     const userContext = useMemo<IUserContext>(() => ({
         camera,
@@ -184,7 +185,6 @@ function Entry() {
         materials: params.materials
     }), [camera, setCamera, name, setName, params]);
 
-    const store = useStore();
     useEffect(() => {
         const userAgent = {
             isMobileOnly,
@@ -206,27 +206,26 @@ function Entry() {
     }, []);
 
     return (
-        <ThemeContext.Provider value={themeContext}>
-            <UserContext.Provider value={userContext}>
-                <RawIntlProvider value={locale}>
-                    <ThemeProvider theme={themeProvider(languageCode, themeMode)}>
-                        <CssBaseline />
-                        <App />
-                    </ThemeProvider>
-                </RawIntlProvider>
-            </UserContext.Provider>
-        </ThemeContext.Provider>
+        <UserContext.Provider value={userContext}>
+            <RawIntlProvider value={locale}>
+                <ThemeProvider theme={themeProvider(languageCode, themeMode)}>
+                    <CssBaseline />
+                    <HashRouter>
+                        <Switch>
+                            <Route path="/password-change" component={PasswordChange} />
+                            <Route path="/password-changed" component={PasswordChanged} />
+                            <Route path="/password-forgot" component={PasswordForgot} />
+                            <Route path="/password-restore" component={PasswordRestore} />
+                            <Route path="/room" component={Room} />
+                            <Route path="/signup" component={Signup} />
+                            <Route path="/signin" component={Signin} />
+                            <Route path="/" component={Join} />
+                        </Switch>
+                    </HashRouter>
+                </ThemeProvider>
+            </RawIntlProvider>
+        </UserContext.Provider>
     );
-}
-
-function App(): JSX.Element {
-    const { camera, name, teacher } = useContext(UserContext);
-
-    if (!name || camera === undefined) { return <Join />; }
-    return <RoomContext.Provide>
-        <Room teacher={teacher} />
-        <Trophy />
-    </RoomContext.Provide>
 }
 
 async function main() {

@@ -18,7 +18,7 @@ import { MicOff as MicOffIcon } from "@styled-icons/material-twotone/MicOff";
 import StyledIcon from "../styled/icon";
 import MoreControls from "./moreControls";
 import { UserContext } from "../../entry";
-import { Session } from "../../room";
+import { Session } from "../../pages/room/room";
 import { WebRTCSFUContext } from "../../webrtc/sfu";
 
 export default function Camera({ mediaStream, session, muted, controls, square, miniMode }: {

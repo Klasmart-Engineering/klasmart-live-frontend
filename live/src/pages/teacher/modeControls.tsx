@@ -8,7 +8,7 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { createStyles, makeStyles, withStyles, Theme, useTheme } from "@material-ui/core/styles";
 import { FormattedMessage } from "react-intl";
 import { ScreenShare } from "./screenShareProvider";
-import { InteractiveModeState } from "../../room";
+import { InteractiveModeState } from "../room/room";
 import IconButton from "@material-ui/core/IconButton";
 import Divider from "@material-ui/core/Divider";
 import Tooltip from "@material-ui/core/Tooltip";

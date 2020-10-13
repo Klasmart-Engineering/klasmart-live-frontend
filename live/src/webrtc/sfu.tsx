@@ -4,7 +4,7 @@ import {
     types as MediaSoup,
 } from "mediasoup-client"
 import React, { createContext, useReducer, useRef, useContext, useEffect, useMemo, useState, useCallback } from "react";
-import { RoomContext } from "../room";
+import { RoomContext } from "../pages/room/room";
 import { gql, ExecutionResult, ApolloClient, InMemoryCache } from "apollo-boost";
 import { useMutation, useSubscription, ApolloProvider } from "@apollo/react-hooks";
 import { MutationFunctionOptions } from "@apollo/react-common/lib/types/types";

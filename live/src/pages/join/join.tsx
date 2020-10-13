@@ -21,6 +21,7 @@ import FFT from "../../components/media/fft";
 import MediaDeviceSelect from "../../components/media/mediaDeviceSelect";
 import Loading from "../../components/loading";
 import logger from "../../services/logger/Logger";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -54,10 +55,10 @@ const useStyles = makeStyles((theme: Theme) =>
 export function Join(): JSX.Element {
     const classes = useStyles();
     const theme = useTheme();
-    const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
-    const { setCamera, name, setName } = useContext(UserContext);
+    const history = useHistory();
 
-    const url = new URL(window.location.href);
+    const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
+    const { setCamera, name, setName, teacher } = useContext(UserContext);
 
     const [user, setUser] = useState<string>("");
 
@@ -125,6 +126,7 @@ export function Join(): JSX.Element {
         }
         if (!name) { setName(user); }
         setCamera(stream || null);
+        history.push(`/room`);
     }
 
     return (
@@ -160,7 +162,7 @@ export function Join(): JSX.Element {
                             <Grid item xs={12} md={4}>
                                 <Grid container direction="row" justify="center" alignItems="center" spacing={4}>
                                     <Grid item xs={12}>
-                                        <img alt="KidsLoop Live" src={(url.searchParams.get("teacher") !== null) ? KidsLoopTeachers : KidsLoopStudents} height="64px" style={{ display: "block", margin: "0 auto" }} />
+                                        <img alt="KidsLoop Live" src={ teacher ? KidsLoopTeachers : KidsLoopStudents} height="64px" style={{ display: "block", margin: "0 auto" }} />
                                     </Grid>
                                     <Grid item xs={12} className={classes.formContainer}>
                                         <form onSubmit={join}>

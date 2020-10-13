@@ -83,6 +83,8 @@ export const control = combineReducers({
 
 export const session = combineReducers({
     classType,
+    darkMode,
+    locale,
     userAgent,
     userType,
 });

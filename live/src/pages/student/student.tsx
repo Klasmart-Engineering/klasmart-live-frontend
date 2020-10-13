@@ -6,7 +6,7 @@ import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 
 import { UserContext } from "../../entry";
-import { RoomContext } from "../../room";
+import { RoomContext } from "../room/room";
 import { MaterialTypename } from "../../lessonMaterialContext";
 import { PreviewPlayer } from "../../components/h5p/preview-player";
 import { RecordedIframe } from "../../components/h5p/recordediframe";

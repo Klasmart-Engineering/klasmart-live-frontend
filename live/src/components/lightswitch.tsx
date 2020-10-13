@@ -12,6 +12,10 @@ import { ThemeContext } from "../entry";
 import { Brightness4 as Brightness4Icon } from "@styled-icons/material/Brightness4";
 import { Brightness7 as Brightness7Icon } from "@styled-icons/material/Brightness7";
 
+import { useSelector, useStore } from "react-redux";
+import { ActionTypes } from "../store/actions";
+import { State } from "../store/store";
+
 interface Props {
     children?: React.ReactNode;
     className?: string;
@@ -83,11 +87,12 @@ const StyledSwitch = withStyles({
 })(Switch);
 
 export default function Lightswitch(props: Props) {
-    const { themeMode, setThemeMode } = useContext(ThemeContext);
+    const store = useStore();
+    const themeMode = useSelector((state: State) => state.session.darkMode);
 
     function setDarkMode(toggle: boolean) {
         const mode = toggle ? "light" : "dark";
-        setThemeMode(mode);
+        store.dispatch({ type: ActionTypes.DARK_MODE, payload: mode });
     }
 
     const [toggled, setToggled] = useState(themeMode === "light" ? true : false);
