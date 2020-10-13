@@ -12,7 +12,7 @@ import { MoreVert as MoreIcon } from "@styled-icons/material/MoreVert"
 import StyledIcon from "../styled/icon";
 import TrophyControls from "../trophies/trophyControls"
 import { Session } from "../../pages/room/room";
-import PermissionControls from "../../whiteboard/components/PermissionControls";
+import WBPermissionControls from "../../whiteboard/components/WBPermissionControls";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -105,7 +105,7 @@ export default function MoreControls({ session, selfUserId, forOverlay }: {
                     </ListSubheader>
                 }
             >
-                <PermissionControls selfUserId={selfUserId} otherUserId={session.id} miniMode={false} />
+                <WBPermissionControls otherUserId={session.id} />
             </List>
             <List
                 disablePadding

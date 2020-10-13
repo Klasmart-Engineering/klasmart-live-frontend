@@ -323,7 +323,7 @@ function CameraInterface({ isTeacher, isSmDown, gridMode, sessionId, id, session
                         muted={isSelf}
                         session={session}
                         controls={true}
-                        miniMode={!gridMode}
+                        bottomControls={!gridMode}
                         mediaStream={mediaStream}
                         square
                     />
