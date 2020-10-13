@@ -5,16 +5,17 @@ import { FormattedMessage } from "react-intl";
 import { useTheme, useMediaQuery } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
-import { sessionId, UserContext } from "./entry";
-import { Student } from "./pages/student/student";
-import { Teacher } from "./pages/teacher/teacher";
-import Layout from "./pages/layout";
-import Loading from "./components/loading";
+import { sessionId, UserContext } from "../../entry";
+import { Student } from "../student/student";
+import { Teacher } from "../teacher/teacher";
+import Layout from "../layout";
+import Loading from "../../components/loading";
 import { EventEmitter } from "eventemitter3"
-import { WebRTCSFUContext } from "./webrtc/sfu";
-import { ScreenShare } from "./pages/teacher/screenShareProvider";
-import { GlobalWhiteboardContext } from "./whiteboard/context-providers/GlobalWhiteboardContext";
-import NewLayout from "./pages/layout-new";
+import { WebRTCSFUContext } from "../../webrtc/sfu";
+import { ScreenShare } from "../teacher/screenShareProvider";
+import { GlobalWhiteboardContext } from "../../whiteboard/context-providers/GlobalWhiteboardContext";
+import NewLayout from "../layout-new";
+import { Trophy } from "../../components/trophies/trophy";
 
 export interface Session {
     id: string,
@@ -48,12 +49,10 @@ export interface StreamIdState {
     setStreamId: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
-interface Props {
-    teacher: boolean
-}
-
-export function Room({ teacher }: Props): JSX.Element {
+export function Room(): JSX.Element {
     const theme = useTheme();
+    const { teacher } = useContext(UserContext);
+    
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
 
     const [contentIndex, setContentIndex] = useState<number>(0);
@@ -77,56 +76,59 @@ export function Room({ teacher }: Props): JSX.Element {
     }, [isSmDown]);
 
     return (
-        <WebRTCSFUContext.Provide>
-            <ScreenShare.Provide>
-                <GlobalWhiteboardContext>
-                    <NewLayout
-                        isTeacher={teacher}
-                        contentIndexState={{ contentIndex, setContentIndex }}
-                        interactiveModeState={{ interactiveMode, setInteractiveMode }}
-                        streamIdState={{ streamId, setStreamId }}
-                        numColState={numColState}
-                        setNumColState={setNumColState}
-                    >
-                        {
-                            teacher
-                                ? <Teacher
-                                    openDrawer={openDrawer}
-                                    handleOpenDrawer={handleOpenDrawer}
-                                    contentIndexState={{ contentIndex, setContentIndex }}
-                                    interactiveModeState={{ interactiveMode, setInteractiveMode }}
-                                    streamIdState={{ streamId, setStreamId }}
-                                    numColState={numColState}
-                                />
-                                : <Student openDrawer={openDrawer} />
-                        }
-                    </NewLayout>
-                    {/* <Layout
-                        isTeacher={teacher}
-                        openDrawer={openDrawer}
-                        handleOpenDrawer={handleOpenDrawer}
-                        contentIndexState={{ contentIndex, setContentIndex }}
-                        interactiveModeState={{ interactiveMode, setInteractiveMode }}
-                        streamIdState={{ streamId, setStreamId }}
-                        numColState={numColState}
-                        setNumColState={setNumColState}
-                    >
-                        {
-                            teacher
-                                ? <Teacher
-                                    openDrawer={openDrawer}
-                                    handleOpenDrawer={handleOpenDrawer}
-                                    contentIndexState={{ contentIndex, setContentIndex }}
-                                    interactiveModeState={{ interactiveMode, setInteractiveMode }}
-                                    streamIdState={{ streamId, setStreamId }}
-                                    numColState={numColState}
-                                />
-                                : <Student openDrawer={openDrawer} />
-                        }
-                    </Layout> */}
-                </GlobalWhiteboardContext>
-            </ScreenShare.Provide>
-        </WebRTCSFUContext.Provide>
+        <RoomContext.Provide>
+            <WebRTCSFUContext.Provide>
+                <ScreenShare.Provide>
+                    <GlobalWhiteboardContext>
+                        <NewLayout
+                            isTeacher={teacher}
+                            contentIndexState={{ contentIndex, setContentIndex }}
+                            interactiveModeState={{ interactiveMode, setInteractiveMode }}
+                            streamIdState={{ streamId, setStreamId }}
+                            numColState={numColState}
+                            setNumColState={setNumColState}
+                        >
+                            {
+                                teacher
+                                    ? <Teacher
+                                        openDrawer={openDrawer}
+                                        handleOpenDrawer={handleOpenDrawer}
+                                        contentIndexState={{ contentIndex, setContentIndex }}
+                                        interactiveModeState={{ interactiveMode, setInteractiveMode }}
+                                        streamIdState={{ streamId, setStreamId }}
+                                        numColState={numColState}
+                                    />
+                                    : <Student openDrawer={openDrawer} />
+                            }
+                        </NewLayout>
+                        {/* <Layout
+                            isTeacher={teacher}
+                            openDrawer={openDrawer}
+                            handleOpenDrawer={handleOpenDrawer}
+                            contentIndexState={{ contentIndex, setContentIndex }}
+                            interactiveModeState={{ interactiveMode, setInteractiveMode }}
+                            streamIdState={{ streamId, setStreamId }}
+                            numColState={numColState}
+                            setNumColState={setNumColState}
+                        >
+                            {
+                                teacher
+                                    ? <Teacher
+                                        openDrawer={openDrawer}
+                                        handleOpenDrawer={handleOpenDrawer}
+                                        contentIndexState={{ contentIndex, setContentIndex }}
+                                        interactiveModeState={{ interactiveMode, setInteractiveMode }}
+                                        streamIdState={{ streamId, setStreamId }}
+                                        numColState={numColState}
+                                    />
+                                    : <Student openDrawer={openDrawer} />
+                            }
+                        </Layout> */}
+                    </GlobalWhiteboardContext>
+                </ScreenShare.Provide>
+            </WebRTCSFUContext.Provide>
+            <Trophy />
+        </RoomContext.Provide>
     );
 }
 
