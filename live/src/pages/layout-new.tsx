@@ -1,7 +1,7 @@
 /* eslint-disable no-case-declarations */
-import React, { useState, createContext, useContext, useEffect } from "react";
+import React, { useState, createContext, useContext, useEffect, useRef } from "react";
 import { FormattedMessage } from "react-intl";
-import { useSelector } from "react-redux";
+import { useStore, useSelector } from "react-redux";
 import clsx from "clsx";
 import { createStyles, makeStyles, useTheme, Theme } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
@@ -32,14 +32,14 @@ import { ViewList as ListIcon } from "@styled-icons/material/ViewList";
 import { Share as ShareIcon } from "@styled-icons/material/Share";
 
 import { UserContext } from "../entry";
-import { Session, Message, ContentIndexState, InteractiveModeState, StreamIdState, RoomContext } from "./room/room";
+import { Session, Message, ContentIndexState, InteractiveModeState, RoomContext } from "./room/room";
 import ModeControls from "./teacher/modeControls";
 import GlobalControls from "./teacher/globalControls";
 import StyledIcon from "../components/styled/icon";
 import { SendMessage } from "../components/chat/sendMessage";
 import Toolbar from "../whiteboard/components/Toolbar";
 import { MaterialTypename, LessonMaterial } from "../lessonMaterialContext";
-import { bottomNav, modePanel } from "../utils/layerValues";
+import { modePanel } from "../utils/layerValues";
 import { WebRTCSFUContext } from "../webrtc/sfu";
 import Camera from "../components/media/camera";
 import InviteButton from "./teacher/invite";
@@ -47,6 +47,7 @@ import Lightswitch from "../components/lightswitch";
 import LanguageSelect from "../components/languageSelect";
 import CenterAlignChildren from "../components/centerAlignChildren";
 import { State } from "../store/store";
+import { ActionTypes } from "../store/actions";
 
 const MessageContext = createContext(new Map<string, Message>());
 const UsersContext = createContext(new Map<string, Session>());
@@ -65,33 +66,15 @@ const OPTION_NUMCOL = [
     { id: "option-numcol-6", title: <FormattedMessage id="six_columns" />, value: 6 },
 ]
 
-const DRAWER_TOOLBAR_WIDTH = 64;
+export const DRAWER_TOOLBAR_WIDTH = 64;
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
-        active: {
-            backgroundColor: "#0E78D5",
-            width: "0.25rem",
-            borderRadius: "0.25rem 0 0 0.25rem",
-        },
-        bottomNav: {
-            width: "100vw",
-            position: "fixed",
-            bottom: 0,
-            zIndex: bottomNav,
-        },
-        layout: {
-            flex: 1,
-        },
         root: {
             padding: theme.spacing(2, 2),
             [theme.breakpoints.down("sm")]: {
                 padding: theme.spacing(1, 1),
             },
-        },
-        container: {
-            display: "flex",
-            height: "100%",
         },
         content: {
             flexGrow: 1,
@@ -206,15 +189,13 @@ interface LayoutProps {
     isTeacher: boolean; // TODO: Redux
     contentIndexState: ContentIndexState; // TODO: Redux
     interactiveModeState: InteractiveModeState; // TODO: Redux
-    streamIdState: StreamIdState; // TODO: Redux - Session
     numColState: number;
     setNumColState: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export default function NewLayout(props: LayoutProps): JSX.Element {
-    const { children, isTeacher, contentIndexState, interactiveModeState, streamIdState, numColState, setNumColState } = props;
+    const { children, isTeacher, contentIndexState, interactiveModeState, numColState, setNumColState } = props;
     const { materials } = useContext(UserContext);
-    const { streamId } = streamIdState;
     const { contentIndex } = contentIndexState;
     const material = contentIndex >= 0 && contentIndex < materials.length ? materials[contentIndex] : undefined;
 
@@ -235,17 +216,13 @@ export default function NewLayout(props: LayoutProps): JSX.Element {
             direction="row"
             justify="flex-start"
             wrap="nowrap"
-            style={{
-                height: "100%",
-                border: "5px solid lime",
-            }}
+            style={{ height: "100%" }}
         >
             <MainContainer classContent={children} openDrawer={openDrawer} materialKey={materialKey} />
             <DrawerContainer
                 isTeacher={isTeacher}
                 interactiveModeState={interactiveModeState}
                 material={material}
-                streamId={streamId}
                 openDrawer={openDrawer}
                 handleOpenDrawer={handleOpenDrawer}
                 tabIndex={tabIndex}
@@ -266,24 +243,21 @@ function MainContainer({ classContent, openDrawer, materialKey }: { classContent
             item xs={openDrawer ? 9 : 12}
             id="main-container"
             component="main"
+            key={materialKey}
             style={{
                 padding: theme.spacing(4),
                 paddingRight: theme.spacing(4) + DRAWER_TOOLBAR_WIDTH,
-
-                backgroundColor: "red",
             }}
-            key={materialKey}
         >
             {classContent || null}
         </Grid>
     )
 }
 
-function DrawerContainer({ isTeacher, interactiveModeState, material, streamId, openDrawer, handleOpenDrawer, tabIndex, setTabIndex, contentIndexState, numColState, setNumColState, setMaterialKey }: {
+function DrawerContainer({ isTeacher, interactiveModeState, material, openDrawer, handleOpenDrawer, tabIndex, setTabIndex, contentIndexState, numColState, setNumColState, setMaterialKey }: {
     isTeacher: boolean,
     interactiveModeState: InteractiveModeState,
     material: LessonMaterial | undefined,
-    streamId: string | undefined, // TODO: Redux - Session
     openDrawer: boolean,
     handleOpenDrawer: (open?: boolean) => void,
     tabIndex: number,
@@ -295,12 +269,18 @@ function DrawerContainer({ isTeacher, interactiveModeState, material, streamId, 
 }) {
     const { users, messages } = RoomContext.Consume()
 
+    const store = useStore();
+    const ref = useRef<HTMLDivElement>(null);
+    function setDrawerWidth(width: number) {
+        store.dispatch({ type: ActionTypes.DRAWER_WIDTH, payload: width });
+    }
     useEffect(() => {
-        console.log("openDrawer: ", openDrawer)
-    }, [openDrawer])
+        if (!ref || !ref.current) { return; }
+        setDrawerWidth(ref.current.offsetWidth);
+    }, [ref.current]);
 
     return (
-        <Grid item xs={openDrawer ? 3 : undefined} style={{ position: "relative" }}>
+        <Grid ref={ref} item xs={openDrawer ? 3 : undefined} style={{ position: "relative" }}>
             <UsersContext.Provider value={users}>
                 <MessageContext.Provider value={messages}>
                     {isTeacher ?
@@ -309,16 +289,15 @@ function DrawerContainer({ isTeacher, interactiveModeState, material, streamId, 
                     }
                 </MessageContext.Provider>
             </UsersContext.Provider>
-            <DrawerToolbar isTeacher={isTeacher} interactiveModeState={interactiveModeState} material={material} streamId={streamId} handleOpenDrawer={handleOpenDrawer} tabIndex={tabIndex} setTabIndex={setTabIndex} setMaterialKey={setMaterialKey} />
+            <DrawerToolbar isTeacher={isTeacher} interactiveModeState={interactiveModeState} material={material} handleOpenDrawer={handleOpenDrawer} tabIndex={tabIndex} setTabIndex={setTabIndex} setMaterialKey={setMaterialKey} />
         </Grid>
     )
 }
 
-function DrawerToolbar({ isTeacher, interactiveModeState, material, streamId, handleOpenDrawer, tabIndex, setTabIndex, setMaterialKey }: {
+function DrawerToolbar({ isTeacher, interactiveModeState, material, handleOpenDrawer, tabIndex, setTabIndex, setMaterialKey }: {
     isTeacher: boolean,
     interactiveModeState: InteractiveModeState, // TODO: Redux
     material: LessonMaterial | undefined,
-    streamId: string | undefined, // TODO: Redux - Session
     handleOpenDrawer: (open?: boolean) => void,
     tabIndex: number,
     setTabIndex: React.Dispatch<React.SetStateAction<number>>,
@@ -326,6 +305,8 @@ function DrawerToolbar({ isTeacher, interactiveModeState, material, streamId, ha
 }) {
     const classes = useStyles()
     const theme = useTheme();
+
+    const streamId = useSelector((state: State) => state.session.streamId);
 
     const handleTabIndexChange = (event: React.ChangeEvent<unknown>, newValue: number) => {
         setTabIndex(newValue);
@@ -344,6 +325,7 @@ function DrawerToolbar({ isTeacher, interactiveModeState, material, streamId, ha
                 width: DRAWER_TOOLBAR_WIDTH,
                 height: "100%",
                 backgroundColor: theme.palette.background.paper,
+                borderLeft: `1px solid ${theme.palette.divider}`,
                 borderRight: `1px solid ${theme.palette.divider}`,
             }}
         >

@@ -10,7 +10,6 @@ import { Send as SendIcon } from "@styled-icons/material-twotone/Send";
 import { useMutation } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
 import { UserContext } from "../../entry";
-import { DRAWER_WIDTH } from "../../pages/layout";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -18,7 +17,7 @@ const useStyles = makeStyles((theme: Theme) =>
             padding: "2px 4px",
             display: "flex",
             alignItems: "center",
-            width: DRAWER_WIDTH - theme.spacing(7),
+            width: "100%",
             [theme.breakpoints.down("sm")]: {
                 width: "100%",
             },

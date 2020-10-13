@@ -1,15 +1,20 @@
 import React, { useRef, useEffect, useState, useContext } from "react";
+import { useSelector, useStore } from "react-redux";
 import { gql } from "apollo-boost";
 import { useMutation } from "@apollo/react-hooks";
-import { UserContext } from "../../entry";
 import IframeResizer from "iframe-resizer-react";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 import Grid from "@material-ui/core/Grid";
 import Dialog from "@material-ui/core/Dialog";
 import { useTheme } from "@material-ui/core/styles";
-import { DRAWER_WIDTH } from "../../pages/layout";
 import Typography from "@material-ui/core/Typography";
+import { Refresh as RefreshIcon } from "@styled-icons/material/Refresh";
+
 import StyledFAB from "../styled/fabButton";
+import { UserContext } from "../../entry";
+import { DRAWER_TOOLBAR_WIDTH } from "../../pages/layout-new";
 import { loadingActivity } from "../../utils/layerValues";
+import { ActionTypes } from "../../store/actions";
 
 import CurlySpinner1 from "../../assets/img/spinner/curly1_spinner.gif"
 import CurlySpinner2 from "../../assets/img/spinner/curly2_spinner.gif"
@@ -18,17 +23,14 @@ import EccoSpinner2 from "../../assets/img/spinner/ecco2_spinner.gif"
 import JessSpinner1 from "../../assets/img/spinner/jess1_spinner.gif"
 import MimiSpinner1 from "../../assets/img/spinner/mimi1_spinner.gif"
 import GhostSpinner from "../../assets/img/spinner/ghost_spinner.gif"
+import { State } from "../../store/store";
 
 interface NewProps extends IframeResizer.IframeResizerProps {
     forwardRef: any
 }
-
 const IframeResizerNew = IframeResizer as React.FC<NewProps>
 
 const SPINNER = [CurlySpinner1, CurlySpinner2, EccoSpinner1, EccoSpinner2, JessSpinner1, MimiSpinner1];
-
-import { Refresh as RefreshIcon } from "@styled-icons/material/Refresh";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 const SET_STREAMID = gql`
     mutation setSessionStreamId($roomId: ID!, $streamId: ID!) {
@@ -38,7 +40,6 @@ const SET_STREAMID = gql`
 
 export interface Props {
     contentId: string;
-    setStreamId: React.Dispatch<React.SetStateAction<string | undefined>>;
     parentWidth: number;
     parentHeight: number;
     openDrawer: boolean;
@@ -49,8 +50,14 @@ export function RecordedIframe(props: Props): JSX.Element {
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
 
+    const drawerWidth = useSelector((state: State) => state.data.drawerWidth);
+    const store = useStore();
+    function setStreamId(streamId: string) {
+        store.dispatch({ type: ActionTypes.STREAM_ID, payload: streamId });
+    }
+
     const { roomId } = useContext(UserContext);
-    const { contentId, setStreamId, parentWidth, parentHeight, openDrawer } = props;
+    const { contentId, parentWidth, parentHeight, openDrawer } = props;
     const [sendStreamId] = useMutation(SET_STREAMID);
 
     const [isFlashCards, setIsFlashCards] = useState(false);
@@ -204,7 +211,7 @@ export function RecordedIframe(props: Props): JSX.Element {
                     style: { backgroundColor: "rgba(255,255,255,0.7)" },
                 }}
                 style={{
-                    paddingRight: (isSmDown || !openDrawer) ? "" : DRAWER_WIDTH,
+                    paddingRight: (isSmDown || !openDrawer) ? "" : drawerWidth + DRAWER_TOOLBAR_WIDTH,
                     zIndex: loadingActivity
                 }}
             >

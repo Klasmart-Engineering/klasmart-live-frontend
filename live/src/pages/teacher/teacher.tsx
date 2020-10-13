@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useContext, useRef, useMemo } from "react";
 import { FormattedMessage } from "react-intl";
+import { useSelector } from "react-redux";
 import { gql } from "apollo-boost";
 import { useMutation } from "@apollo/react-hooks";
 import { Theme, Card, useTheme, CardContent, Hidden } from "@material-ui/core";
@@ -17,7 +18,7 @@ import { QuestionMarkCircleOutline as QuestionIcon } from "@styled-icons/evaicon
 
 import { ScreenShare } from "./screenShareProvider";
 import { UserContext } from "../../entry";
-import { Session, ContentIndexState, InteractiveModeState, StreamIdState, RoomContext } from "../room/room";
+import { Session, ContentIndexState, InteractiveModeState, RoomContext } from "../room/room";
 import { MaterialTypename } from "../../lessonMaterialContext";
 import { RecordedIframe } from "../../components/h5p/recordediframe";
 import { PreviewPlayer } from "../../components/h5p/preview-player";
@@ -26,6 +27,7 @@ import VideoStream from "../../components/media/videoStream";
 import { imageFrame } from "../../utils/layerValues";
 import { useMaterialToHref } from "../../utils/contentUtils";
 import { Whiteboard } from "../../whiteboard/components/Whiteboard";
+import { State } from "../../store/store";
 
 const drawerWidth = 340;
 
@@ -77,10 +79,8 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface Props {
     openDrawer: boolean;
-    handleOpenDrawer: (open?: boolean) => void;
     contentIndexState: ContentIndexState;
     interactiveModeState: InteractiveModeState;
-    streamIdState: StreamIdState;
     numColState: number;
 }
 
@@ -90,13 +90,12 @@ export function Teacher(props: Props): JSX.Element {
     const { content, users } = RoomContext.Consume()
 
     const classes = useStyles();
-    const { openDrawer, handleOpenDrawer, contentIndexState, interactiveModeState, streamIdState, numColState } = props;
-
-    const { streamId, setStreamId } = streamIdState;
+    const { openDrawer, contentIndexState, interactiveModeState, numColState } = props;
     const { interactiveMode } = interactiveModeState;
     const { contentIndex } = contentIndexState;
     const material = contentIndex >= 0 && contentIndex < materials.length ? materials[contentIndex] : undefined;
 
+    const streamId = useSelector((state: State) => state.session.streamId);
     const rootDivRef = useRef<HTMLDivElement>(null);
     const [rootDivWidth, setRootDivWidth] = useState<number>(0);
     const [rootDivHeight, setRootDivHeight] = useState<number>(0);
