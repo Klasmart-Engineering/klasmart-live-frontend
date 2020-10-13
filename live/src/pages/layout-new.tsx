@@ -1,11 +1,10 @@
 /* eslint-disable no-case-declarations */
 import React, { useState, createContext, useContext, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
+import { useSelector } from "react-redux";
 import clsx from "clsx";
 import { createStyles, makeStyles, useTheme, Theme } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
-import Container from "@material-ui/core/Container";
-import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
 import Tabs from "@material-ui/core/Tabs";
@@ -16,10 +15,8 @@ import Tooltip from "@material-ui/core/Tooltip";
 import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
-import Collapse from "@material-ui/core/Collapse";
 import Skeleton from "@material-ui/lab/Skeleton";
-import Hidden from "@material-ui/core/Hidden";
-import FormControl from "@material-ui/core/FormControl/FormControl";
+import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import Popover from "@material-ui/core/Popover";
@@ -38,17 +35,18 @@ import { UserContext } from "../entry";
 import { Session, Message, ContentIndexState, InteractiveModeState, StreamIdState, RoomContext } from "./room/room";
 import ModeControls from "./teacher/modeControls";
 import GlobalControls from "./teacher/globalControls";
+import StyledIcon from "../components/styled/icon";
 import { SendMessage } from "../components/chat/sendMessage";
 import Toolbar from "../whiteboard/components/Toolbar";
 import { MaterialTypename } from "../lessonMaterialContext";
 import { bottomNav, modePanel } from "../utils/layerValues";
 import { WebRTCSFUContext } from "../webrtc/sfu";
 import Camera from "../components/media/camera";
-import MoreControls from "../components/media/moreControls";
 import InviteButton from "./teacher/invite";
 import Lightswitch from "../components/lightswitch";
 import LanguageSelect from "../components/languageSelect";
 import CenterAlignChildren from "../components/centerAlignChildren";
+import { State } from "../store/store";
 
 const MessageContext = createContext(new Map<string, Message>());
 const UsersContext = createContext(new Map<string, Session>());
@@ -69,30 +67,6 @@ const OPTION_NUMCOL = [
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
-        // root: {
-        //     display: "flex",
-        //     backgroundColor: "lightgrey",
-        //     height: "100%",
-        //     paddingBottom: theme.spacing(4),
-        //     paddingLeft: theme.spacing(5),
-        //     paddingRight: theme.spacing(5),
-        //     paddingTop: theme.spacing(4),
-        //     [theme.breakpoints.down("sm")]: {
-        //         padding: theme.spacing(2, 1),
-        //     },
-        // },
-        // safeArea: {
-        //     paddingBottom: theme.spacing(4),
-        //     paddingLeft: theme.spacing(5),
-        //     paddingRight: theme.spacing(5),
-        //     paddingTop: theme.spacing(4),
-        //     [theme.breakpoints.down("sm")]: {
-        //         paddingBottom: theme.spacing(2),
-        //         paddingLeft: `max(${theme.spacing(1)}px,env(safe-area-inset-left)`,
-        //         paddingRight: `max(${theme.spacing(1)}px,env(safe-area-inset-right)`,
-        //         paddingTop: theme.spacing(2),
-        //     },
-        // },
         active: {
             backgroundColor: "#0E78D5",
             width: "0.25rem",
@@ -262,7 +236,6 @@ export default function NewLayout(props: LayoutProps): JSX.Element {
             wrap="nowrap"
             style={{
                 height: "100%",
-                backgroundColor: "lightgrey",
                 border: "5px solid lime",
             }}
         >
@@ -402,6 +375,7 @@ function DrawerContainer({ isTeacher, openDrawer, handleOpenDrawer, tabIndex, co
     numColState: number;
     setNumColState: React.Dispatch<React.SetStateAction<number>>;
 }) {
+    const theme = useTheme();
     const { users, messages } = RoomContext.Consume()
 
     useEffect(() => {
@@ -410,11 +384,10 @@ function DrawerContainer({ isTeacher, openDrawer, handleOpenDrawer, tabIndex, co
 
     return (
         <Grid
-            item xs={3}
             hidden={!openDrawer}
-            style={{
-                backgroundColor: "white", // TODO:
-            }}
+            item
+            xs={3}
+            style={{ backgroundColor: theme.palette.background.paper }}
         >
             <UsersContext.Provider value={users}>
                 <MessageContext.Provider value={messages}>
@@ -467,49 +440,27 @@ function StyledTab(props: StyledTabProps) {
     );
 }
 
-function CameraInterface({ isTeacher, isSmDown, gridMode, sessionId, id, session, mediaStream }: {
-    isTeacher?: boolean,
-    isSmDown: boolean,
-    gridMode: boolean,
+function ParticipantCamera({ mediaStream, session, sessionId, id, gridMode }: {
+    mediaStream: MediaStream | undefined,
+    session: Session,
     sessionId: string,
     id: string,
-    session: Session,
-    mediaStream: MediaStream | undefined,
+    gridMode: boolean,
 }) {
     const isSelf = id === sessionId;
     let idx = 1;
-    // if (isTeacher) { idx = -1; } // TODO: After server side work, user will know who is the host teacher
     if (isSelf) { idx = 0; }
 
     return (
-        <Grid id={`participant:${id}`} item xs={6} md={12} style={{ order: idx }}>
-            <Grid container alignItems="center" spacing={isSmDown || gridMode ? 0 : 1} item xs={12}>
-                <Grid item xs={gridMode ? 12 : 6}>
-                    <Camera
-                        muted={isSelf}
-                        session={session}
-                        controls={true}
-                        miniMode={!gridMode}
-                        mediaStream={mediaStream}
-                        square
-                    />
-                </Grid>
-                {!gridMode && !isSmDown ?
-                    <Grid container direction="row" alignItems="center" item xs={6}>
-                        <Grid item xs={9}>
-                            <Tooltip placement="left" title={session.name ? session.name : ""}>
-                                <Typography variant="body2" align="left" noWrap>
-                                    {isSelf ? "You" : session.name}
-                                </Typography>
-                            </Tooltip>
-                        </Grid>
-                        {isTeacher && (id !== sessionId) ?
-                            <Grid item xs={3}>
-                                <MoreControls session={session} selfUserId={sessionId} />
-                            </Grid> : null}
-                    </Grid> : null}
-            </Grid>
-            <Grid item xs={12}><Divider /></Grid>
+        <Grid id={`participant:${id}`} item xs={gridMode ? 6 : 12} style={{ order: idx }}>
+            <Camera
+                mediaStream={mediaStream}
+                session={session}
+                muted={isSelf}
+                controls={true}
+                bottomControls={!gridMode}
+                square
+            />
         </Grid>
     )
 }
@@ -522,9 +473,8 @@ function TabInnerContent({ contentIndexState, title, numColState, setNumColState
 }) {
     const classes = useStyles();
     const theme = useTheme();
-    const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
+    const isMobileOnly = useSelector((state: State) => state.session.userAgent.isMobileOnly);
     const { camera, sessionId, materials, teacher } = useContext(UserContext);
-    const isMdUpTeacher = teacher && !isSmDown;
 
     const changeNumColState = (num: number) => {
         if (!setNumColState) { return; }
@@ -538,26 +488,27 @@ function TabInnerContent({ contentIndexState, title, numColState, setNumColState
             const webrtc = WebRTCSFUContext.Consume()
             const users = useContext(UsersContext);
             // TODO: Improve performance as order in flexbox instead of .filter()
-            const userEntries = [...users.entries()];
-            const selfUser = userEntries.filter(([id]) => id === sessionId);
-            const otherUsers = userEntries.filter(([id]) => id !== sessionId);
+            const allUsers = [...users.entries()];
+            const selfUser = allUsers.filter(([id]) => id === sessionId);
+            const otherUsers = allUsers.filter(([id]) => id !== sessionId);
 
             return (
                 <Grid container direction="row" justify="flex-start" alignItems="center" style={{ flex: 1 }}>
-                    {isMdUpTeacher ? <>
+                    {teacher ? <>
                         {selfUser.map(([id, session]) =>
                             <Camera
                                 key={id}
-                                muted={true}
-                                session={session}
-                                controls={true}
                                 mediaStream={camera !== null ? camera : undefined}
-                                square
+                                session={session}
+                                muted={true}
+                                controls={true}
+                                bottomControls={true}
                             />
                         )}
+                        <GlobalControls />
                     </> : null}
-                    {teacher ? <GlobalControls /> : null}
-                    {isSmDown ? null : <ToggleCameraViewMode isSmDown={isSmDown} setGridMode={setGridMode} />}
+                    {!isMobileOnly ? <ToggleCameraViewMode setGridMode={setGridMode} /> : null}
+                    <Grid item xs={12}><Divider /></Grid>
                     <Grid
                         container
                         direction="row"
@@ -565,44 +516,34 @@ function TabInnerContent({ contentIndexState, title, numColState, setNumColState
                         alignContent="flex-start"
                         item
                         xs={12}
-                        className={classes.scrollCameraContainer}
-                    // style={isSmDown ? { maxHeight: `calc(100vh - ${theme.spacing(65)}px)` } : {
-                    //     height: teacher ? `calc(100vh - ${theme.spacing(60)}px)` : `calc(100vh - ${theme.spacing(9)}px)`, // Because student side has no <InviteButton /> and <GlobalControls />
-                    // }}
+                        style={{
+                            flexGrow: 1,
+                            overflowY: "auto",
+                            // TODO: below
+                            // height: teacher ? `calc(100% - ${theme.spacing(60)}px)` : `calc(100% - ${theme.spacing(9)}px)`, // Because student side has no <InviteButton /> and <GlobalControls />
+                        }}
                     >
-                        <Grid id={"participant-listing"} item xs={12}><Divider /></Grid>
-                        {isMdUpTeacher && otherUsers.length === 0 ?
-                            <Typography style={{ color: "rgb(200,200,200)", padding: 4 }}>
-                                <FormattedMessage id="no_participants" />
-                            </Typography> : (isMdUpTeacher ?
-                                otherUsers.map(([id, session]) =>
-                                    <CameraInterface
-                                        key={id}
-                                        isTeacher={teacher}
-                                        isSmDown={isSmDown}
-                                        gridMode={gridMode}
-                                        sessionId={sessionId}
-                                        id={id}
-                                        session={session}
-                                        mediaStream={id === sessionId && camera !== null ?
-                                            camera : webrtc.getCameraStream(id)
-                                        }
-                                    />) :
-                                userEntries.map(([id, session]) => {
-                                    return (
-                                        <CameraInterface
-                                            key={id}
-                                            isSmDown={isSmDown}
-                                            gridMode={gridMode}
-                                            sessionId={sessionId}
-                                            id={id}
-                                            session={session}
-                                            mediaStream={id === sessionId && camera !== null ?
-                                                camera : webrtc.getCameraStream(id)
-                                            }
-                                        />
-                                    )
-                                })
+                        {teacher ? (otherUsers.length === 0 ?
+                            <Typography style={{ color: "rgb(200,200,200)", padding: 4 }}><FormattedMessage id="no_participants" /></Typography> :
+                            otherUsers.map(([id, session]) =>
+                                <ParticipantCamera
+                                    key={id}
+                                    gridMode={gridMode}
+                                    sessionId={sessionId}
+                                    id={id}
+                                    session={session}
+                                    mediaStream={id === sessionId && camera !== null ? camera : webrtc.getCameraStream(id)}
+                                />
+                            )) :
+                            allUsers.map(([id, session]) =>
+                                <ParticipantCamera
+                                    key={id}
+                                    gridMode={gridMode}
+                                    sessionId={sessionId}
+                                    id={id}
+                                    session={session}
+                                    mediaStream={id === sessionId && camera !== null ? camera : webrtc.getCameraStream(id)}
+                                />
                             )
                         }
                     </Grid>
@@ -776,17 +717,14 @@ function TabPanel(props: TabPanelProps) {
     );
 }
 
-function ToggleCameraViewMode({ isSmDown, setGridMode }: {
-    isSmDown: boolean,
-    setGridMode: React.Dispatch<React.SetStateAction<boolean>>
-}) {
+function ToggleCameraViewMode({ setGridMode }: { setGridMode: React.Dispatch<React.SetStateAction<boolean>> }) {
     return (
         <Grid container justify="flex-end" item xs={12}>
             <IconButton aria-label="switch grid view" size="small" onClick={() => setGridMode(true)}>
-                <GridIcon role="img" size={isSmDown ? "1rem" : "1.25rem"} />
+                <StyledIcon icon={<GridIcon />} size="medium" />
             </IconButton>
             <IconButton aria-label="switch list view" size="small" onClick={() => setGridMode(false)}>
-                <ListIcon role="img" size={isSmDown ? "1rem" : "1.25rem"} />
+                <StyledIcon icon={<ListIcon />} size="medium" />
             </IconButton>
         </Grid>
     )

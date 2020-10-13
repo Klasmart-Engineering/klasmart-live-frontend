@@ -1,9 +1,9 @@
 import React, { useRef, useContext, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
+import { useSelector } from "react-redux";
 import { gql } from "apollo-boost";
 import { useMutation } from "@apollo/react-hooks";
 import { Theme, useTheme, createStyles, makeStyles } from "@material-ui/core/styles";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
@@ -20,14 +20,15 @@ import MoreControls from "./moreControls";
 import { UserContext } from "../../entry";
 import { Session } from "../../pages/room/room";
 import { WebRTCSFUContext } from "../../webrtc/sfu";
+import { State } from "../../store/store";
 
-export default function Camera({ mediaStream, session, muted, controls, square, miniMode }: {
+export default function Camera({ mediaStream, session, muted, controls, square, bottomControls }: {
     mediaStream?: MediaStream,
     session?: Session,
     muted?: boolean,
     controls?: boolean,
     square?: boolean,
-    miniMode?: boolean,
+    bottomControls?: boolean,
 }): JSX.Element {
     const theme = useTheme();
 
@@ -85,18 +86,11 @@ export default function Camera({ mediaStream, session, muted, controls, square, 
                     </Typography>
                 }
             </Paper>
-            {controls && session ? <CameraOverlay mediaStream={mediaStream} session={session} miniMode={miniMode} /> : null}
+            {controls && session ? <CameraOverlay mediaStream={mediaStream} session={session} bottomControls={bottomControls} square={square} /> : null}
         </div>
     );
 }
 
-/**
- * CameraOverlay style detail
- *         | Info spacing | Controls spacing | Button |  Icon  |
- * Desktop |       1      |         2        | medium | medium |   
- * Tablet  |      0.5     |         1        | medium | medium |
- * Mobile  |      0.5     |         1        |  small |  small |
- */
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
@@ -160,14 +154,16 @@ const useStyles = makeStyles((theme: Theme) =>
     })
 );
 
-function CameraOverlay({ mediaStream, session, miniMode }: {
+function CameraOverlay({ mediaStream, session, bottomControls, square }: {
     mediaStream: MediaStream | undefined;
     session: Session;
-    miniMode?: boolean;
+    bottomControls?: boolean;
+    square: boolean | undefined;
 }) {
     const theme = useTheme();
-    const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
-    const isSmUp = useMediaQuery(theme.breakpoints.up("sm"));
+    const isMobileOnly = useSelector((state: State) => state.session.userAgent.isMobileOnly);
+    const isTablet = useSelector((state: State) => state.session.userAgent.isTablet);
+    const isTabletCenteredControls = isTablet && !bottomControls;
     const { root, iconBtn, iconOffBtn, icon, iconOff, infoContainer, controlsContainer } = useStyles();
 
     const { roomId, teacher, sessionId: mySessionId } = useContext(UserContext);
@@ -208,38 +204,44 @@ function CameraOverlay({ mediaStream, session, miniMode }: {
     }
 
     return (
-        <div className={root} style={!mediaStream ? { background: "transparent" } : undefined}>
+        <div
+            className={root}
+            style={!mediaStream ? { background: "transparent" } :
+                (!square ? { borderRadius: 12 } : undefined)
+            }
+        >
             <Grid container direction="row" justify="space-between" style={{ height: "100%" }}>
                 {/* User name */}
                 <Grid item xs={12} className={infoContainer}>
-                    {miniMode ? null :
-                        <Tooltip
-                            arrow
-                            aria-label="user name tooltip"
-                            placement={"top"}
-                            title={session.name ? session.name : <FormattedMessage id="error_unknown_user" />}
+                    <Tooltip
+                        arrow
+                        aria-label="user name tooltip"
+                        placement={"top"}
+                        title={session.name ? session.name : <FormattedMessage id="error_unknown_user" />}
+                    >
+                        <Typography
+                            component="p"
+                            variant={isMobileOnly || isTablet ? "caption" : "body1"}
+                            noWrap
+                            style={{ color: "white" }}
                         >
-                            <Typography
-                                component="p"
-                                variant={isSmDown ? "caption" : "body1"}
-                                noWrap
-                                style={{ color: "white" }}
-                            >
-                                {!session.name ? <FormattedMessage id="error_unknown_user" /> : (isSelf ? "You" : session.name)}
-                            </Typography>
-                        </Tooltip>
-                    }
+                            {!session.name ? <FormattedMessage id="error_unknown_user" /> : (isSelf ? "You" : session.name)}
+                        </Typography>
+                    </Tooltip>
                 </Grid>
 
                 {/* Camera Controls */}
                 <Grid
                     container
                     direction="column"
-                    justify={miniMode ? "flex-start" : "flex-end"}
+                    justify={bottomControls ? "flex-end" : "flex-start"}
                     item
                     xs={12}
                     className={controlsContainer}
-                    style={miniMode ? { padding: theme.spacing(1), paddingTop: theme.spacing(2) } : undefined}
+                    style={bottomControls ? undefined : (isMobileOnly ?
+                        { padding: "6% 0px 0px 0px" } : // TODO: Vertical center alignment for controls is unstable.
+                        { padding: `${isTablet ? "10%" : "18%"} 0px 0px 0px` } // TODO: Vertical center alignment for controls is unstable.
+                    )}
                 >
                     <Grid container justify="center" item>
                         {mediaStream ? <>
@@ -247,25 +249,24 @@ function CameraOverlay({ mediaStream, session, miniMode }: {
                                 arrow
                                 aria-label="camera control button tooltip"
                                 placement={"top"}
-                                title={states.isLocalVideoEnabled(session.id)
-                                    ? <FormattedMessage id="turn_off_camera" /> : <FormattedMessage id="turn_on_camera" />}
+                                title={states.isLocalVideoEnabled(session.id) ? <FormattedMessage id="turn_off_camera" /> : <FormattedMessage id="turn_on_camera" />}
                             >
                                 <IconButton
                                     aria-label="camera control button"
                                     onClick={toggleVideoState}
-                                    size={isSmUp ? "medium" : "small"}
+                                    size={isMobileOnly || isTabletCenteredControls ? "small" : "medium"}
                                     className={states.isLocalVideoEnabled(session.id) ? iconBtn : iconOffBtn}
-                                    style={miniMode ? { margin: theme.spacing(1), padding: theme.spacing(0.5) } : undefined}
+                                    style={isMobileOnly || isTabletCenteredControls ? { margin: theme.spacing(1), padding: theme.spacing(0.5) } : undefined}
                                 >
                                     {states.isLocalVideoEnabled(session.id) ?
                                         <StyledIcon
                                             icon={<CameraIcon className={icon} />}
-                                            size={isSmUp ? "medium" : "small"}
+                                            size={isMobileOnly || isTabletCenteredControls ? "small" : "medium"}
                                             color="white"
                                         /> :
                                         <StyledIcon
                                             icon={<CameraOffIcon className={iconOff} />}
-                                            size={isSmUp ? "medium" : "small"}
+                                            size={isMobileOnly || isTabletCenteredControls ? "small" : "medium"}
                                             color="red"
                                         />
                                     }
@@ -281,19 +282,19 @@ function CameraOverlay({ mediaStream, session, miniMode }: {
                                 <IconButton
                                     aria-label="mic control button"
                                     onClick={toggleAudioState}
-                                    size={isSmUp ? "medium" : "small"}
+                                    size={isMobileOnly || isTabletCenteredControls ? "small" : "medium"}
                                     className={states.isLocalAudioEnabled(session.id) ? iconBtn : iconOffBtn}
-                                    style={miniMode ? { margin: theme.spacing(1), padding: theme.spacing(0.5) } : undefined}
+                                    style={isMobileOnly || isTabletCenteredControls ? { margin: theme.spacing(1), padding: theme.spacing(0.5) } : undefined}
                                 >
                                     {states.isLocalAudioEnabled(session.id) ?
                                         <StyledIcon
                                             icon={<MicIcon className={icon} />}
-                                            size={isSmUp ? "medium" : "small"}
+                                            size={isMobileOnly || isTabletCenteredControls ? "small" : "medium"}
                                             color="white"
                                         /> :
                                         <StyledIcon
                                             icon={<MicOffIcon className={iconOff} />}
-                                            size={isSmUp ? "medium" : "small"}
+                                            size={isMobileOnly || isTabletCenteredControls ? "small" : "medium"}
                                             color="red"
                                         />
                                     }
@@ -302,7 +303,7 @@ function CameraOverlay({ mediaStream, session, miniMode }: {
                         </> : null}
                     </Grid>
                 </Grid>
-                {(!teacher || isSelf || miniMode) ? null : <MoreControls session={session} selfUserId={mySessionId} forOverlay={true} />}
+                {(!teacher || isSelf) ? null : <MoreControls session={session} selfUserId={mySessionId} forOverlay={true} />}
             </Grid>
         </div>
     )
