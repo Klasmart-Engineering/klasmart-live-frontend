@@ -38,7 +38,7 @@ import GlobalControls from "./teacher/globalControls";
 import StyledIcon from "../components/styled/icon";
 import { SendMessage } from "../components/chat/sendMessage";
 import Toolbar from "../whiteboard/components/Toolbar";
-import { MaterialTypename } from "../lessonMaterialContext";
+import { MaterialTypename, LessonMaterial } from "../lessonMaterialContext";
 import { bottomNav, modePanel } from "../utils/layerValues";
 import { WebRTCSFUContext } from "../webrtc/sfu";
 import Camera from "../components/media/camera";
@@ -64,6 +64,8 @@ const OPTION_NUMCOL = [
     { id: "option-numcol-4", title: <FormattedMessage id="four_columns" />, value: 4 },
     { id: "option-numcol-6", title: <FormattedMessage id="six_columns" />, value: 6 },
 ]
+
+const DRAWER_TOOLBAR_WIDTH = 64;
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -211,12 +213,13 @@ interface LayoutProps {
 
 export default function NewLayout(props: LayoutProps): JSX.Element {
     const { children, isTeacher, contentIndexState, interactiveModeState, streamIdState, numColState, setNumColState } = props;
-    const classes = useStyles()
-    const { sessionId, materials } = useContext(UserContext);
-    const { streamId, setStreamId } = streamIdState;
-    const { contentIndex, setContentIndex } = contentIndexState;
+    const { materials } = useContext(UserContext);
+    const { streamId } = streamIdState;
+    const { contentIndex } = contentIndexState;
     const material = contentIndex >= 0 && contentIndex < materials.length ? materials[contentIndex] : undefined;
 
+    const [tabIndex, setTabIndex] = useState(0);
+    const [materialKey, setMaterialKey] = useState(Math.random())
     const [openDrawer, setOpenDrawer] = useState(true);
     const handleOpenDrawer = (open?: boolean) => {
         if (open !== null && open !== undefined) {
@@ -225,8 +228,6 @@ export default function NewLayout(props: LayoutProps): JSX.Element {
             setOpenDrawer(!openDrawer);
         }
     };
-
-    const [tabIndex, setTabIndex] = useState(0);
 
     return (
         <Grid
@@ -239,8 +240,8 @@ export default function NewLayout(props: LayoutProps): JSX.Element {
                 border: "5px solid lime",
             }}
         >
-            <MainContainer
-                classContent={children}
+            <MainContainer classContent={children} openDrawer={openDrawer} materialKey={materialKey} />
+            <DrawerContainer
                 isTeacher={isTeacher}
                 interactiveModeState={interactiveModeState}
                 material={material}
@@ -248,134 +249,50 @@ export default function NewLayout(props: LayoutProps): JSX.Element {
                 openDrawer={openDrawer}
                 handleOpenDrawer={handleOpenDrawer}
                 tabIndex={tabIndex}
-                setTabIndex={setTabIndex}
-            />
-            <DrawerContainer
-                isTeacher={isTeacher}
-                openDrawer={openDrawer}
-                handleOpenDrawer={handleOpenDrawer}
-                tabIndex={tabIndex}
                 contentIndexState={contentIndexState}
                 numColState={numColState}
                 setNumColState={setNumColState}
+                setTabIndex={setTabIndex}
+                setMaterialKey={setMaterialKey}
             />
         </Grid>
     )
 }
 
-function MainContainer({ classContent, isTeacher, interactiveModeState, material, streamId, openDrawer, handleOpenDrawer, tabIndex, setTabIndex }: {
-    classContent?: React.ReactNode,
-    isTeacher: boolean,
-    interactiveModeState: InteractiveModeState, // TODO: Redux
-    material: { // TODO: Type
-        __typename: MaterialTypename;
-        name: string;
-        url: string;
-    } | {
-        __typename: undefined;
-        name: string;
-        url?: string | undefined;
-        video?: string | undefined;
-    } | undefined,
-    streamId: string | undefined, // TODO: Redux - Session
-    openDrawer: boolean,
-    handleOpenDrawer: (open?: boolean) => void,
-    tabIndex: number,
-    setTabIndex: React.Dispatch<React.SetStateAction<number>>,
-}) {
-    const classes = useStyles()
+function MainContainer({ classContent, openDrawer, materialKey }: { classContent?: React.ReactNode, openDrawer: boolean, materialKey: number }) {
     const theme = useTheme();
-    const TOOLBAR_WIDTH = theme.spacing(8);
-
-    const [key, setKey] = useState(Math.random())
-
-    const handleTabIndexChange = (event: React.ChangeEvent<unknown>, newValue: number) => {
-        setTabIndex(newValue);
-    };
-
     return (
         <Grid
             item xs={openDrawer ? 9 : 12}
             id="main-container"
             component="main"
             style={{
-                position: "relative",
-                padding: theme.spacing(4), // TODO? in mobile, less padding? with Redux work?
-                paddingRight: theme.spacing(4) + TOOLBAR_WIDTH,
+                padding: theme.spacing(4),
+                paddingRight: theme.spacing(4) + DRAWER_TOOLBAR_WIDTH,
 
                 backgroundColor: "red",
             }}
-            key={key}
+            key={materialKey}
         >
             {classContent || null}
-
-            {/* Drawer Toolbar */}
-            <Grid
-                id="drawer-toolbar"
-                container
-                direction="column"
-                justify="space-between"
-                style={{
-                    position: "absolute",
-                    top: 0,
-                    right: 0,
-                    width: TOOLBAR_WIDTH,
-                    height: "100%",
-                    backgroundColor: theme.palette.background.paper,
-                    borderRight: `1px solid ${theme.palette.divider}`,
-                }}
-            >
-                <Grid item>
-                    <Tabs
-                        aria-label="drawer vertical tabs"
-                        orientation="vertical"
-                        // variant="fullWidth" // TODO: need it?
-                        value={tabIndex}
-                        onChange={handleTabIndexChange}
-                        className={classes.tabs}
-                        classes={{
-                            indicator: classes.tabIndicator
-                        }}
-                    >
-                        {isTeacher ?
-                            TABS.filter((t) => t.userType !== 1).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} className={index === tabIndex ? classes.tabSelected : ""} title={tab.title} handlers={{ handleOpenDrawer, setTabIndex }} value={index}>{tab.icon}</StyledTab>) :
-                            TABS.filter((t) => t.userType !== 0).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} className={index === tabIndex ? classes.tabSelected : ""} title={tab.title} handlers={{ handleOpenDrawer, setTabIndex }} value={index}>{tab.icon}</StyledTab>)
-                        }
-                    </Tabs>
-                </Grid>
-                <Grid item hidden={!isTeacher}>
-                    <ModeControls
-                        interactiveModeState={interactiveModeState}
-                        disablePresent={!(
-                            streamId ||
-                            (material && material.__typename === undefined && Boolean(material.video)) || //Enable for legacy video
-                            (material && material.__typename !== MaterialTypename.Iframe) //Enable for Image, Audio, Video
-                        )}
-                        disableActivity={!(
-                            !material ||
-                            material.__typename === MaterialTypename.Iframe || //Enable for iframe
-                            (material.__typename === undefined && !!material.url) //Enable for legacy iframe
-                        )}
-                        setKey={setKey}
-                        orientation="vertical"
-                    />
-                </Grid>
-            </Grid>
         </Grid>
     )
 }
 
-// TODO: isTeacher Redux
-function DrawerContainer({ isTeacher, openDrawer, handleOpenDrawer, tabIndex, contentIndexState, numColState, setNumColState }: {
+function DrawerContainer({ isTeacher, interactiveModeState, material, streamId, openDrawer, handleOpenDrawer, tabIndex, setTabIndex, contentIndexState, numColState, setNumColState, setMaterialKey }: {
     isTeacher: boolean,
+    interactiveModeState: InteractiveModeState,
+    material: LessonMaterial | undefined,
+    streamId: string | undefined, // TODO: Redux - Session
     openDrawer: boolean,
     handleOpenDrawer: (open?: boolean) => void,
     tabIndex: number,
+    setTabIndex: React.Dispatch<React.SetStateAction<number>>,
     contentIndexState: ContentIndexState,
-    numColState: number;
-    setNumColState: React.Dispatch<React.SetStateAction<number>>;
+    numColState: number,
+    setNumColState: React.Dispatch<React.SetStateAction<number>>,
+    setMaterialKey: React.Dispatch<React.SetStateAction<number>>,
 }) {
-    const theme = useTheme();
     const { users, messages } = RoomContext.Consume()
 
     useEffect(() => {
@@ -383,20 +300,87 @@ function DrawerContainer({ isTeacher, openDrawer, handleOpenDrawer, tabIndex, co
     }, [openDrawer])
 
     return (
-        <Grid
-            hidden={!openDrawer}
-            item
-            xs={3}
-            style={{ backgroundColor: theme.palette.background.paper }}
-        >
+        <Grid item xs={openDrawer ? 3 : undefined} style={{ position: "relative" }}>
             <UsersContext.Provider value={users}>
                 <MessageContext.Provider value={messages}>
                     {isTeacher ?
-                        TABS.filter((t) => t.userType !== 1).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} contentIndexState={contentIndexState} handleOpenDrawer={handleOpenDrawer} index={index} tab={tab} value={tabIndex} numColState={numColState} setNumColState={setNumColState} />) :
-                        TABS.filter((t) => t.userType !== 0).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} handleOpenDrawer={handleOpenDrawer} index={index} tab={tab} value={tabIndex} />)
+                        TABS.filter((t) => t.userType !== 1).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} contentIndexState={contentIndexState} openDrawer={openDrawer} handleOpenDrawer={handleOpenDrawer} index={index} tab={tab} value={tabIndex} numColState={numColState} setNumColState={setNumColState} />) :
+                        TABS.filter((t) => t.userType !== 0).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} openDrawer={openDrawer} handleOpenDrawer={handleOpenDrawer} index={index} tab={tab} value={tabIndex} />)
                     }
                 </MessageContext.Provider>
             </UsersContext.Provider>
+            <DrawerToolbar isTeacher={isTeacher} interactiveModeState={interactiveModeState} material={material} streamId={streamId} handleOpenDrawer={handleOpenDrawer} tabIndex={tabIndex} setTabIndex={setTabIndex} setMaterialKey={setMaterialKey} />
+        </Grid>
+    )
+}
+
+function DrawerToolbar({ isTeacher, interactiveModeState, material, streamId, handleOpenDrawer, tabIndex, setTabIndex, setMaterialKey }: {
+    isTeacher: boolean,
+    interactiveModeState: InteractiveModeState, // TODO: Redux
+    material: LessonMaterial | undefined,
+    streamId: string | undefined, // TODO: Redux - Session
+    handleOpenDrawer: (open?: boolean) => void,
+    tabIndex: number,
+    setTabIndex: React.Dispatch<React.SetStateAction<number>>,
+    setMaterialKey: React.Dispatch<React.SetStateAction<number>>,
+}) {
+    const classes = useStyles()
+    const theme = useTheme();
+
+    const handleTabIndexChange = (event: React.ChangeEvent<unknown>, newValue: number) => {
+        setTabIndex(newValue);
+    };
+
+    return (
+        <Grid
+            id="drawer-toolbar"
+            container
+            direction="column"
+            justify="space-between"
+            style={{
+                position: "absolute",
+                top: 0,
+                left: -DRAWER_TOOLBAR_WIDTH,
+                width: DRAWER_TOOLBAR_WIDTH,
+                height: "100%",
+                backgroundColor: theme.palette.background.paper,
+                borderRight: `1px solid ${theme.palette.divider}`,
+            }}
+        >
+            <Grid item>
+                <Tabs
+                    aria-label="drawer vertical tabs"
+                    orientation="vertical"
+                    value={tabIndex}
+                    onChange={handleTabIndexChange}
+                    className={classes.tabs}
+                    classes={{
+                        indicator: classes.tabIndicator
+                    }}
+                >
+                    {isTeacher ?
+                        TABS.filter((t) => t.userType !== 1).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} className={index === tabIndex ? classes.tabSelected : ""} title={tab.title} handlers={{ handleOpenDrawer, setTabIndex }} value={index}>{tab.icon}</StyledTab>) :
+                        TABS.filter((t) => t.userType !== 0).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} className={index === tabIndex ? classes.tabSelected : ""} title={tab.title} handlers={{ handleOpenDrawer, setTabIndex }} value={index}>{tab.icon}</StyledTab>)
+                    }
+                </Tabs>
+            </Grid>
+            <Grid item hidden={!isTeacher}>
+                <ModeControls
+                    interactiveModeState={interactiveModeState}
+                    disablePresent={!(
+                        streamId ||
+                        (material && material.__typename === undefined && Boolean(material.video)) || //Enable for legacy video
+                        (material && material.__typename !== MaterialTypename.Iframe) //Enable for Image, Audio, Video
+                    )}
+                    disableActivity={!(
+                        !material ||
+                        material.__typename === MaterialTypename.Iframe || //Enable for iframe
+                        (material.__typename === undefined && !!material.url) //Enable for legacy iframe
+                    )}
+                    setKey={setMaterialKey}
+                    orientation="vertical"
+                />
+            </Grid>
         </Grid>
     )
 }
@@ -646,6 +630,7 @@ function TabInnerContent({ contentIndexState, title, numColState, setNumColState
 
 interface TabPanelProps {
     contentIndexState?: ContentIndexState;
+    openDrawer: boolean;
     handleOpenDrawer: (open?: boolean) => void;
     index: any;
     tab: { icon: JSX.Element, title: string };
@@ -655,7 +640,7 @@ interface TabPanelProps {
 }
 
 function TabPanel(props: TabPanelProps) {
-    const { contentIndexState, handleOpenDrawer, index, tab, value, numColState, setNumColState, ...other } = props;
+    const { contentIndexState, openDrawer, handleOpenDrawer, index, tab, value, numColState, setNumColState, ...other } = props;
     const classes = useStyles();
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
@@ -674,7 +659,7 @@ function TabPanel(props: TabPanelProps) {
             <div
                 aria-labelledby={`vertical-tab-${index}`}
                 id={`vertical-tabpanel-${index}`}
-                hidden={value !== index}
+                hidden={!openDrawer || (value !== index)}
                 role="tabpanel"
                 {...other}
             >
