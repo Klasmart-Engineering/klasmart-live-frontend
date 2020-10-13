@@ -5,7 +5,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 
 import { AccessTime as TimestampIcon } from "@styled-icons/material-twotone/AccessTime";
 
-import { Message } from "../../room";
+import { Message } from "../../pages/room/room";
 import { mapGenerator } from "../../utils/map";
 
 const useStyles = makeStyles((theme: Theme) =>

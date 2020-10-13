@@ -35,7 +35,7 @@ import { ViewList as ListIcon } from "@styled-icons/material/ViewList";
 import { Share as ShareIcon } from "@styled-icons/material/Share";
 
 import { UserContext } from "../entry";
-import { Session, Message, ContentIndexState, InteractiveModeState, StreamIdState, RoomContext } from "../room";
+import { Session, Message, ContentIndexState, InteractiveModeState, StreamIdState, RoomContext } from "./room/room";
 import ModeControls from "./teacher/modeControls";
 import GlobalControls from "./teacher/globalControls";
 import { SendMessage } from "../components/chat/sendMessage";

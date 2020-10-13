@@ -17,7 +17,7 @@ import { QuestionMarkCircleOutline as QuestionIcon } from "@styled-icons/evaicon
 
 import { ScreenShare } from "./screenShareProvider";
 import { UserContext } from "../../entry";
-import { Session, ContentIndexState, InteractiveModeState, StreamIdState, RoomContext } from "../../room";
+import { Session, ContentIndexState, InteractiveModeState, StreamIdState, RoomContext } from "../room/room";
 import { MaterialTypename } from "../../lessonMaterialContext";
 import { RecordedIframe } from "../../components/h5p/recordediframe";
 import { PreviewPlayer } from "../../components/h5p/preview-player";
