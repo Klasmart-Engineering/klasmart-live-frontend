@@ -53,7 +53,6 @@ export function Student({ openDrawer }: {
 
     const { name, sessionId } = useContext(UserContext);
     const webrtc = WebRTCSFUContext.Consume()
-    const [streamId, setStreamId] = useState<string>();
 
     const rootDivRef = useRef<HTMLDivElement>(null);
     const [rootDivWidth, setRootDivWidth] = useState<number>(0);
