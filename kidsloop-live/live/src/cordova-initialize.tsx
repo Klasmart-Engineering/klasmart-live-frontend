@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 
-const useCordovaInitialize = () => {
+const useCordovaInitialize = (backExitApplication?: boolean, callbackBackButton?: () => void) => {
     const [cordovaReady, setCordovaReady] = useState(false);
     const [permissions, setPermissions] = useState(false);
 
@@ -85,6 +85,25 @@ const useCordovaInitialize = () => {
             document.removeEventListener("deviceready", onDeviceReady);
         }
     }, []);
+
+    useEffect(() => {
+        const onBackButton = (e: Event) => {
+            if (!backExitApplication) {
+                e.preventDefault();
+            }
+
+            if (callbackBackButton) {
+                callbackBackButton();
+            }
+        };
+
+        document.addEventListener("backbutton", onBackButton, false);
+
+        return () => {
+            document.removeEventListener("backbutton", onBackButton);
+        }
+
+    }, [backExitApplication, callbackBackButton]);
 
     return [cordovaReady, permissions, requestPermissions];
 };
