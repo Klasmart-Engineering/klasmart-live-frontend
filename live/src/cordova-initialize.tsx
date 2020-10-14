@@ -21,6 +21,8 @@ const useCordovaInitialize = () => {
         if (!cordovaReady) return;
 
         const cordova = (window as any).cordova;
+        if (!cordova || !cordova.plugins || !cordova.plugins.iosrtc) return;
+
         const refreshVideos = setInterval(() => {
             // NOTE: This function must be called when any video element layout changes. Because on iOS
             // the videos is just overlayed on top of the page content. Commented for now because it 
