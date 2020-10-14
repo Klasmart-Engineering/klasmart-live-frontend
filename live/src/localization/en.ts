@@ -57,9 +57,11 @@ const messages: Record<string, string> = {
     enable_dark_mode: "Enable dark mode",
     language: "Language",
     two_columns: "2 columns",
+    three_columns: "3 columns",
     four_columns: "4 columns",
     six_columns: "6 columns",
-    num_views_per_row: "# of student views per row",
+    cols_camera_per_row: "# of cameras per row",
+    cols_observe_per_row: "# of student views per row",
 
     whiteboard_color: "Color",
     whiteboard_clear: "Clear",

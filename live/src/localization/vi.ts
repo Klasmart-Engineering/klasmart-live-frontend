@@ -57,9 +57,11 @@ const messages: Record<string, string> = {
     enable_dark_mode: "Bật chế độ nền tối",
     language: "Ngôn ngữ",
     two_columns: "2 cột",
+    three_columns: "3 cột",
     four_columns: "4 cột",
     six_columns: "6 cột",
-    num_views_per_row: "Số lượng màn hình học viên được hiển thị trên một hàng",
+    cols_camera_per_row: "# of cameras per row",
+    cols_observe_per_row: "Số lượng màn hình học viên được hiển thị trên một hàng",
 
     whiteboard_color: "Màu",
     whiteboard_clear: "Xóa",

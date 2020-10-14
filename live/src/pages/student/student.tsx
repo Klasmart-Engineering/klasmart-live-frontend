@@ -45,9 +45,7 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-export function Student({ openDrawer }: {
-    openDrawer: boolean
-}): JSX.Element {
+export function Student(): JSX.Element {
     const { content, users } = RoomContext.Consume();
     const classes = useStyles();
 
@@ -101,11 +99,6 @@ export function Student({ openDrawer }: {
                         <PreviewPlayer streamId={content.contentId} width={rootDivWidth} height={rootDivHeight} />
                         {/* <WBToolbar /> */}
                     </Whiteboard>
-                    {/* <Grid className={classes.textMargin} container justify="center" item xs={12}>
-                        <Typography variant="caption" color="primary" align="center" style={{ margin: "0 auto" }}>
-                            <FormattedMessage id="student_stream_mode" />
-                        </Typography>
-                    </Grid> */}
                 </div>
             );
         case "Activity":
@@ -118,15 +111,9 @@ export function Student({ openDrawer }: {
                                 setStreamId={setStreamId}
                                 parentWidth={rootDivWidth}
                                 parentHeight={rootDivHeight}
-                                openDrawer={openDrawer}
                             /> : undefined}
                         {/* <WBToolbar /> */}
                     </Whiteboard>
-                    {/* <Grid className={classes.textMargin} container justify="center" item xs={12}>
-                        <Typography variant="caption" color="primary" align="center" style={{ margin: "0 auto" }}>
-                            <FormattedMessage id="student_activity_mode" />
-                        </Typography>
-                    </Grid> */}
                 </div>
             );
         case "Audio":

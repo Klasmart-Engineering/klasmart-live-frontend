@@ -88,7 +88,7 @@ const StyledSwitch = withStyles({
 
 export default function Lightswitch(props: Props) {
     const store = useStore();
-    const themeMode = useSelector((state: State) => state.session.darkMode);
+    const themeMode = useSelector((state: State) => state.control.darkMode);
 
     function setDarkMode(toggle: boolean) {
         const mode = toggle ? "light" : "dark";

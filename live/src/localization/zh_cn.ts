@@ -53,9 +53,11 @@ const messages: Record<string, string> = {
     enable_dark_mode: "使用深色模式",
     language: "语言",
     two_columns: "2列",
+    three_columns: "3列",
     four_columns: "4列",
     six_columns: "6列",
-    num_views_per_row: "一行中显示的学生屏幕数量",
+    cols_camera_per_row: "# of cameras per row",
+    cols_observe_per_row: "一行中显示的学生屏幕数量",
 
     whiteboard_color: "颜色",
     whiteboard_clear: "清除",
