@@ -116,7 +116,7 @@ function parseToken() {
                 return {
                     teacher: url.searchParams.get("teacher") !== null,
                     name: url.searchParams.get("name") || undefined, // Should be undefined not null
-                    roomId: url.searchParams.get("roomId") || "cordova-room",
+                    roomId: url.searchParams.get("roomId") || "app-room",
                     materials: materialsParam ? JSON.parse(materialsParam) : [
                         { __typename: MaterialTypename.Iframe, name: "Pairs", url: `${h5p}/play/5ecf4e4b611e18398f7380ef` },
                         { __typename: MaterialTypename.Iframe, name: "Flashcards", url: `${h5p}/play/5ed05dd1611e18398f7380f4` },
