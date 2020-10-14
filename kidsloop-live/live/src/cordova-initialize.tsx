@@ -6,12 +6,38 @@ const useCordovaInitialize = () => {
 
     const requestPermissions = useCallback((camera: boolean, mic: boolean) => {
         const cordova = (window as any).cordova;
-        if (cordova && cordova.plugins && cordova.plugins.iosrtc) {
+        if (!cordova || !cordova.plugins) return;
+
+        if (cordova.plugins.iosrtc) {
             console.log("Requesting iosrtc permissions...")
             cordova.plugins.iosrtc.requestPermission(mic, camera, (approved: boolean) => {
                 console.log("Permissions: ", approved ? "Granted" : "Rejected");
                 setPermissions(approved);
             });
+        } else if (cordova.plugins.permissions) {
+            console.log("Requesting android permissions...")
+            const permissions = cordova.plugins.permissions;
+
+            const permissionsList: string[] = [];
+            if (camera) {
+                permissionsList.push(permissions.CAMERA);
+            }
+
+            if (mic) {
+                permissionsList.push(permissions.RECORD_AUDIO);
+                permissionsList.push(permissions.MODIFY_AUDIO_SETTINGS);
+            }
+
+            const onRequestError = () => {
+                console.error(`Couldn't request permissions: ${permissionsList}`)
+            };
+
+            const onRequestSuccess = (status: { hasPermission: boolean }) => {
+                console.log(`Successfully requested permissions: ${JSON.stringify(permissionsList)} ${status.hasPermission}`);
+                setPermissions(status.hasPermission);
+            };
+
+            permissions.requestPermissions(permissionsList, onRequestSuccess, onRequestError);
         } else {
             setPermissions(true);
         }
