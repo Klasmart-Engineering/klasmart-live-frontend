@@ -78,19 +78,17 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface Props {
-    openDrawer: boolean;
     contentIndexState: ContentIndexState;
     interactiveModeState: InteractiveModeState;
-    numColState: number;
 }
 
 export function Teacher(props: Props): JSX.Element {
-    const { roomId, sessionId, materials, name } = useContext(UserContext);
+    const { roomId, sessionId, materials } = useContext(UserContext);
     const screenShare = ScreenShare.Consume()
     const { content, users } = RoomContext.Consume()
 
     const classes = useStyles();
-    const { openDrawer, contentIndexState, interactiveModeState, numColState } = props;
+    const { contentIndexState, interactiveModeState } = props;
     const { interactiveMode } = interactiveModeState;
     const { contentIndex } = contentIndexState;
     const material = contentIndex >= 0 && contentIndex < materials.length ? materials[contentIndex] : undefined;
@@ -150,7 +148,7 @@ export function Teacher(props: Props): JSX.Element {
                     </Typography>
                     <Grid container direction="row" spacing={1} item xs={12}>
                         {[...users.entries()].filter(([, s]) => s.id !== sessionId).map(([id, session]) =>
-                            <StudentPreviewCard key={id} sessionId={sessionId} session={session} numColState={numColState} />
+                            <StudentPreviewCard key={id} sessionId={sessionId} session={session} />
                         )}
                     </Grid>
                 </> :
@@ -198,7 +196,6 @@ export function Teacher(props: Props): JSX.Element {
                                                         setStreamId={setStreamId}
                                                         parentWidth={rootDivWidth}
                                                         parentHeight={rootDivHeight}
-                                                        openDrawer={openDrawer}
                                                     /> : undefined
                                                 : undefined : //Unknown Material
                                     undefined //No Material
@@ -211,8 +208,10 @@ export function Teacher(props: Props): JSX.Element {
     );
 }
 
-function StudentPreviewCard({ sessionId, session, numColState }: { sessionId: string, session: Session, numColState: number }) {
+function StudentPreviewCard({ sessionId, session }: { sessionId: string, session: Session }) {
     const theme = useTheme();
+
+    const colsObserve = useSelector((state: State) => state.control.colsObserve);
 
     const cardConRef = useRef<HTMLDivElement>(null);
     const [zoomin, setZoomin] = useState(false);
@@ -230,7 +229,7 @@ function StudentPreviewCard({ sessionId, session, numColState }: { sessionId: st
             setWidth(contWidth);
             setHeight(Math.min(contWidth, contWidth * 0.5625));
         }
-    }, [cardConRef.current, zoomin, numColState]);
+    }, [cardConRef.current, zoomin, colsObserve]);
 
     const handleOnClickZoom = () => {
         // Automatically scroll top when clicking Zoom In
@@ -239,7 +238,7 @@ function StudentPreviewCard({ sessionId, session, numColState }: { sessionId: st
     }
 
     return (
-        <Grid item xs={12} md={zoomin ? 12 : (12 / numColState as (2 | 4 | 6))} style={{ order: zoomin ? -1 : 0 }}>
+        <Grid item xs={12} md={zoomin ? 12 : (12 / colsObserve as (2 | 4 | 6))} style={{ order: zoomin ? -1 : 0 }}>
             <Card>
                 <CardContent >
                     <Grid ref={cardConRef} item xs={12} style={{ margin: "0 auto" }}>

@@ -44,16 +44,9 @@ export interface InteractiveModeState {
 }
 
 export function Room(): JSX.Element {
-    const theme = useTheme();
-    const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
-
     const { teacher } = useContext(UserContext);
-
     const [contentIndex, setContentIndex] = useState<number>(0);
     const [interactiveMode, setInteractiveMode] = useState<number>(0);
-    const [numColState, setNumColState] = useState(2)
-
-    const [openDrawer, _] = useState<boolean>(true); // TODO: Redux?
 
     return (
         <RoomContext.Provide>
@@ -64,18 +57,10 @@ export function Room(): JSX.Element {
                             isTeacher={teacher}
                             contentIndexState={{ contentIndex, setContentIndex }}
                             interactiveModeState={{ interactiveMode, setInteractiveMode }}
-                            numColState={numColState}
-                            setNumColState={setNumColState}
                         >
-                            {
-                                teacher
-                                    ? <Teacher
-                                        openDrawer={openDrawer}
-                                        contentIndexState={{ contentIndex, setContentIndex }}
-                                        interactiveModeState={{ interactiveMode, setInteractiveMode }}
-                                        numColState={numColState}
-                                    />
-                                    : <Student openDrawer={openDrawer} />
+                            {teacher
+                                ? <Teacher contentIndexState={{ contentIndex, setContentIndex }} interactiveModeState={{ interactiveMode, setInteractiveMode }} />
+                                : <Student />
                             }
                         </NewLayout>
                     </GlobalWhiteboardContext>

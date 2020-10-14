@@ -27,8 +27,6 @@ import { LibraryBooks as LessonPlanIcon } from "@styled-icons/material-twotone/L
 import { Forum as ChatIcon } from "@styled-icons/material-twotone/Forum";
 import { Settings as SettingsIcon } from "@styled-icons/material-twotone/Settings";
 import { Close as CloseIcon } from "@styled-icons/material/Close";
-import { Grid as GridIcon } from "@styled-icons/evaicons-solid/Grid";
-import { ViewList as ListIcon } from "@styled-icons/material/ViewList";
 import { Share as ShareIcon } from "@styled-icons/material/Share";
 
 import { UserContext } from "../entry";
@@ -60,10 +58,16 @@ const TABS = [
     { icon: <SettingsIcon role="img" size="1.5rem" />, title: "title_settings", userType: 0, classType: ClassType.HOMEWORK },
 ];
 
-const OPTION_NUMCOL = [
-    { id: "option-numcol-2", title: <FormattedMessage id="two_columns" />, value: 2 },
-    { id: "option-numcol-4", title: <FormattedMessage id="four_columns" />, value: 4 },
-    { id: "option-numcol-6", title: <FormattedMessage id="six_columns" />, value: 6 },
+const OPTION_COLS_CAMERA = [
+    { id: "option-cols-camera-2", title: <FormattedMessage id="two_columns" />, value: 2 },
+    { id: "option-cols-camera-3", title: <FormattedMessage id="three_columns" />, value: 3 },
+    // { id: "option-cols-camera-4", title: <FormattedMessage id="four_columns" />, value: 4 }, // Future feature
+]
+
+const OPTION_COLS_OBSERVE = [
+    { id: "option-cols-observe-2", title: <FormattedMessage id="two_columns" />, value: 2 },
+    { id: "option-cols-observe-4", title: <FormattedMessage id="four_columns" />, value: 4 },
+    { id: "option-cols-observe-6", title: <FormattedMessage id="six_columns" />, value: 6 },
 ]
 
 export const DRAWER_TOOLBAR_WIDTH = 64;
@@ -189,26 +193,19 @@ interface LayoutProps {
     isTeacher: boolean; // TODO: Redux
     contentIndexState: ContentIndexState; // TODO: Redux
     interactiveModeState: InteractiveModeState; // TODO: Redux
-    numColState: number;
-    setNumColState: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export default function NewLayout(props: LayoutProps): JSX.Element {
-    const { children, isTeacher, contentIndexState, interactiveModeState, numColState, setNumColState } = props;
+    const { children, isTeacher, contentIndexState, interactiveModeState } = props;
     const { materials } = useContext(UserContext);
     const { contentIndex } = contentIndexState;
     const material = contentIndex >= 0 && contentIndex < materials.length ? materials[contentIndex] : undefined;
 
+    const store = useStore();
+    store.dispatch({ type: ActionTypes.DRAWER_OPEN, payload: true }); // Initialize as true
+
     const [tabIndex, setTabIndex] = useState(0);
     const [materialKey, setMaterialKey] = useState(Math.random())
-    const [openDrawer, setOpenDrawer] = useState(true);
-    const handleOpenDrawer = (open?: boolean) => {
-        if (open !== null && open !== undefined) {
-            setOpenDrawer(open);
-        } else {
-            setOpenDrawer(!openDrawer);
-        }
-    };
 
     return (
         <Grid
@@ -218,17 +215,13 @@ export default function NewLayout(props: LayoutProps): JSX.Element {
             wrap="nowrap"
             style={{ height: "100%" }}
         >
-            <MainContainer classContent={children} openDrawer={openDrawer} materialKey={materialKey} />
+            <MainContainer classContent={children} materialKey={materialKey} />
             <DrawerContainer
                 isTeacher={isTeacher}
                 interactiveModeState={interactiveModeState}
                 material={material}
-                openDrawer={openDrawer}
-                handleOpenDrawer={handleOpenDrawer}
                 tabIndex={tabIndex}
                 contentIndexState={contentIndexState}
-                numColState={numColState}
-                setNumColState={setNumColState}
                 setTabIndex={setTabIndex}
                 setMaterialKey={setMaterialKey}
             />
@@ -236,11 +229,12 @@ export default function NewLayout(props: LayoutProps): JSX.Element {
     )
 }
 
-function MainContainer({ classContent, openDrawer, materialKey }: { classContent?: React.ReactNode, openDrawer: boolean, materialKey: number }) {
+function MainContainer({ classContent, materialKey }: { classContent?: React.ReactNode, materialKey: number }) {
     const theme = useTheme();
+    const drawerOpen = useSelector((state: State) => state.control.drawerOpen);
     return (
         <Grid
-            item xs={openDrawer ? 9 : 12}
+            item xs={drawerOpen ? 9 : 12}
             id="main-container"
             component="main"
             key={materialKey}
@@ -254,17 +248,13 @@ function MainContainer({ classContent, openDrawer, materialKey }: { classContent
     )
 }
 
-function DrawerContainer({ isTeacher, interactiveModeState, material, openDrawer, handleOpenDrawer, tabIndex, setTabIndex, contentIndexState, numColState, setNumColState, setMaterialKey }: {
+function DrawerContainer({ isTeacher, interactiveModeState, material, tabIndex, setTabIndex, contentIndexState, setMaterialKey }: {
     isTeacher: boolean,
     interactiveModeState: InteractiveModeState,
     material: LessonMaterial | undefined,
-    openDrawer: boolean,
-    handleOpenDrawer: (open?: boolean) => void,
     tabIndex: number,
     setTabIndex: React.Dispatch<React.SetStateAction<number>>,
     contentIndexState: ContentIndexState,
-    numColState: number,
-    setNumColState: React.Dispatch<React.SetStateAction<number>>,
     setMaterialKey: React.Dispatch<React.SetStateAction<number>>,
 }) {
     const { users, messages } = RoomContext.Consume()
@@ -274,6 +264,8 @@ function DrawerContainer({ isTeacher, interactiveModeState, material, openDrawer
         store.dispatch({ type: ActionTypes.DRAWER_WIDTH, payload: width });
     }
     const classType = useSelector((state: State) => state.session.classType);
+    const drawerOpen = useSelector((state: State) => state.control.drawerOpen);
+
     const ref = useRef<HTMLDivElement>(null);
     useEffect(() => {
         if (!ref || !ref.current) { return; }
@@ -281,27 +273,26 @@ function DrawerContainer({ isTeacher, interactiveModeState, material, openDrawer
     }, [ref.current]);
 
     return (
-        <Grid ref={ref} item xs={openDrawer ? 3 : undefined} style={{ position: "relative" }}>
+        <Grid ref={ref} item xs={drawerOpen ? 3 : undefined} style={{ position: "relative" }}>
             <UsersContext.Provider value={users}>
                 <MessageContext.Provider value={messages}>
                     {classType === ClassType.HOMEWORK ? (
-                        TABS.filter((t) => t.classType === ClassType.HOMEWORK).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} contentIndexState={contentIndexState} openDrawer={openDrawer} handleOpenDrawer={handleOpenDrawer} index={index} tab={tab} value={tabIndex} numColState={numColState} setNumColState={setNumColState} />)
+                        TABS.filter((t) => t.classType === ClassType.HOMEWORK).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} contentIndexState={contentIndexState} index={index} tab={tab} value={tabIndex} />)
                     ) : (isTeacher ?
-                        TABS.filter((t) => t.userType !== 1).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} contentIndexState={contentIndexState} openDrawer={openDrawer} handleOpenDrawer={handleOpenDrawer} index={index} tab={tab} value={tabIndex} numColState={numColState} setNumColState={setNumColState} />) :
-                        TABS.filter((t) => t.userType !== 0).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} openDrawer={openDrawer} handleOpenDrawer={handleOpenDrawer} index={index} tab={tab} value={tabIndex} />)
+                        TABS.filter((t) => t.userType !== 1).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} contentIndexState={contentIndexState} index={index} tab={tab} value={tabIndex} />) :
+                        TABS.filter((t) => t.userType !== 0).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} index={index} tab={tab} value={tabIndex} />)
                         )}
                 </MessageContext.Provider>
             </UsersContext.Provider>
-            <DrawerToolbar isTeacher={isTeacher} interactiveModeState={interactiveModeState} material={material} handleOpenDrawer={handleOpenDrawer} tabIndex={tabIndex} setTabIndex={setTabIndex} setMaterialKey={setMaterialKey} />
+            <DrawerToolbar isTeacher={isTeacher} interactiveModeState={interactiveModeState} material={material} tabIndex={tabIndex} setTabIndex={setTabIndex} setMaterialKey={setMaterialKey} />
         </Grid>
     )
 }
 
-function DrawerToolbar({ isTeacher, interactiveModeState, material, handleOpenDrawer, tabIndex, setTabIndex, setMaterialKey }: {
+function DrawerToolbar({ isTeacher, interactiveModeState, material, tabIndex, setTabIndex, setMaterialKey }: {
     isTeacher: boolean,
     interactiveModeState: InteractiveModeState, // TODO: Redux
     material: LessonMaterial | undefined,
-    handleOpenDrawer: (open?: boolean) => void,
     tabIndex: number,
     setTabIndex: React.Dispatch<React.SetStateAction<number>>,
     setMaterialKey: React.Dispatch<React.SetStateAction<number>>,
@@ -309,6 +300,10 @@ function DrawerToolbar({ isTeacher, interactiveModeState, material, handleOpenDr
     const classes = useStyles()
     const theme = useTheme();
 
+    const store = useStore();
+    function setDrawerOpen(open: boolean) {
+        store.dispatch({ type: ActionTypes.DRAWER_OPEN, payload: open });
+    }
     const classType = useSelector((state: State) => state.session.classType);
     const streamId = useSelector((state: State) => state.session.streamId);
 
@@ -345,10 +340,10 @@ function DrawerToolbar({ isTeacher, interactiveModeState, material, handleOpenDr
                     }}
                 >
                     {classType === ClassType.HOMEWORK ? (
-                        TABS.filter((t) => t.classType === ClassType.HOMEWORK).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} className={index === tabIndex ? classes.tabSelected : ""} title={tab.title} handlers={{ handleOpenDrawer, setTabIndex }} value={index}>{tab.icon}</StyledTab>)
+                        TABS.filter((t) => t.classType === ClassType.HOMEWORK).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} className={index === tabIndex ? classes.tabSelected : ""} title={tab.title} handlers={{ setDrawerOpen, setTabIndex }} value={index}>{tab.icon}</StyledTab>)
                     ) : isTeacher ?
-                            TABS.filter((t) => t.userType !== 1).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} className={index === tabIndex ? classes.tabSelected : ""} title={tab.title} handlers={{ handleOpenDrawer, setTabIndex }} value={index}>{tab.icon}</StyledTab>) :
-                            TABS.filter((t) => t.userType !== 0).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} className={index === tabIndex ? classes.tabSelected : ""} title={tab.title} handlers={{ handleOpenDrawer, setTabIndex }} value={index}>{tab.icon}</StyledTab>)
+                            TABS.filter((t) => t.userType !== 1).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} className={index === tabIndex ? classes.tabSelected : ""} title={tab.title} handlers={{ setDrawerOpen, setTabIndex }} value={index}>{tab.icon}</StyledTab>) :
+                            TABS.filter((t) => t.userType !== 0).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} className={index === tabIndex ? classes.tabSelected : ""} title={tab.title} handlers={{ setDrawerOpen, setTabIndex }} value={index}>{tab.icon}</StyledTab>)
                     }
                 </Tabs>
             </Grid>
@@ -377,7 +372,7 @@ interface StyledTabProps {
     children: React.ReactElement;
     className: string;
     handlers: {
-        handleOpenDrawer: (open?: boolean) => void;
+        setDrawerOpen: (open: boolean) => void;
         setTabIndex: React.Dispatch<React.SetStateAction<number>>;
     }
     mobile?: boolean;
@@ -402,7 +397,7 @@ function StyledTab(props: StyledTabProps) {
             className={className}
             label={mobile ? children : <Tooltip arrow placement="left" title={<FormattedMessage id={title} />}>{children}</Tooltip>}
             onClick={() => {
-                handlers.handleOpenDrawer(true);
+                handlers.setDrawerOpen(true);
                 handlers.setTabIndex(value);
             }}
             value={value}
@@ -419,12 +414,19 @@ function ParticipantCamera({ mediaStream, session, sessionId, id, gridMode }: {
     id: string,
     gridMode: boolean,
 }) {
+    const isMobileOnly = useSelector((store: State) => store.session.userAgent.isMobileOnly)
+    const colsCamera = useSelector((store: State) => store.control.colsCamera)
+    let xs: boolean | "auto" | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | undefined
+    if (colsCamera === 3) { xs = 4 }
+    else if (colsCamera === 4) { xs = 3 }
+    else { xs = 6 }
+
     const isSelf = id === sessionId;
     let idx = 1;
     if (isSelf) { idx = 0; }
 
     return (
-        <Grid id={`participant:${id}`} item xs={gridMode ? 6 : 12} style={{ order: idx }}>
+        <Grid id={`participant:${id}`} item xs={isMobileOnly ? 6 : xs} style={{ order: idx }}>
             <Camera
                 mediaStream={mediaStream}
                 session={session}
@@ -437,22 +439,25 @@ function ParticipantCamera({ mediaStream, session, sessionId, id, gridMode }: {
     )
 }
 
-function TabInnerContent({ contentIndexState, title, numColState, setNumColState }: {
+function TabInnerContent({ contentIndexState, title }: {
     contentIndexState?: ContentIndexState,
     title: string,
-    numColState?: number,
-    setNumColState?: React.Dispatch<React.SetStateAction<number>>,
 }) {
     const classes = useStyles();
     const theme = useTheme();
-    const isMobileOnly = useSelector((state: State) => state.session.userAgent.isMobileOnly);
+
+    const store = useStore();
+    const colsCamera = useSelector((state: State) => state.control.colsCamera);
+    function setColsCamera(cols: number) {
+        store.dispatch({ type: ActionTypes.COLS_CAMERA, payload: cols });
+    }
+    const colsObserve = useSelector((state: State) => state.control.colsObserve);
+    function setColsObserve(cols: number) {
+        store.dispatch({ type: ActionTypes.COLS_OBSERVE, payload: cols });
+    }
+    const isMobileOnly = useSelector((store: State) => store.session.userAgent.isMobileOnly)
+
     const { camera, sessionId, materials, teacher } = useContext(UserContext);
-
-    const changeNumColState = (num: number) => {
-        if (!setNumColState) { return; }
-        setNumColState(num);
-    };
-
     const [gridMode, setGridMode] = useState(true)
 
     switch (title) {
@@ -479,7 +484,6 @@ function TabInnerContent({ contentIndexState, title, numColState, setNumColState
                         )}
                         <GlobalControls />
                     </> : null}
-                    {!isMobileOnly ? <ToggleCameraViewMode setGridMode={setGridMode} /> : null}
                     <Grid item xs={12}><Divider /></Grid>
                     <Grid
                         container
@@ -593,19 +597,37 @@ function TabInnerContent({ contentIndexState, title, numColState, setNumColState
                             <LanguageSelect />
                         </Grid>
                     </Grid>
+                    {isMobileOnly ? null : <>
+                        <div className={classes.toolbar} />
+                        <Grid item xs={12}>
+                            <Typography variant="caption" color="textSecondary">
+                                <FormattedMessage id="cols_camera_per_row" />
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <FormControl style={{ width: "100%" }}>
+                                <Select
+                                    value={colsCamera}
+                                    onChange={(e) => setColsCamera(Number(e.target.value))}
+                                >
+                                    {OPTION_COLS_CAMERA.map((option) => <MenuItem key={option.id} value={option.value}>{option.title}</MenuItem>)}
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                    </>}
                     <div className={classes.toolbar} />
                     <Grid item xs={12}>
                         <Typography variant="caption" color="textSecondary">
-                            <FormattedMessage id="num_views_per_row" />
+                            <FormattedMessage id="cols_observe_per_row" />
                         </Typography>
                     </Grid>
                     <Grid item xs={12}>
                         <FormControl style={{ width: "100%" }}>
                             <Select
-                                value={numColState ? numColState : 2}
-                                onChange={(e) => changeNumColState(Number(e.target.value))}
+                                value={colsObserve}
+                                onChange={(e) => setColsObserve(Number(e.target.value))}
                             >
-                                {OPTION_NUMCOL.map((option) => <MenuItem key={option.id} value={option.value}>{option.title}</MenuItem>)}
+                                {OPTION_COLS_OBSERVE.map((option) => <MenuItem key={option.id} value={option.value}>{option.title}</MenuItem>)}
                             </Select>
                         </FormControl>
                     </Grid>
@@ -618,23 +640,25 @@ function TabInnerContent({ contentIndexState, title, numColState, setNumColState
 
 interface TabPanelProps {
     contentIndexState?: ContentIndexState;
-    openDrawer: boolean;
-    handleOpenDrawer: (open?: boolean) => void;
-    index: any;
+    index: number;
     tab: { icon: JSX.Element, title: string };
-    value: any;
-    numColState?: number;
-    setNumColState?: React.Dispatch<React.SetStateAction<number>>;
+    value: number;
 }
 
 function TabPanel(props: TabPanelProps) {
-    const { contentIndexState, openDrawer, handleOpenDrawer, index, tab, value, numColState, setNumColState, ...other } = props;
+    const { contentIndexState, index, tab, value, ...other } = props;
     const classes = useStyles();
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
     const { teacher } = useContext(UserContext);
-    const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
+    const store = useStore();
+    function setDrawerOpen(open: boolean) {
+        store.dispatch({ type: ActionTypes.DRAWER_OPEN, payload: open });
+    }
+    const drawerOpen = useSelector((state: State) => state.control.drawerOpen);
+
+    const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
     }
@@ -647,7 +671,7 @@ function TabPanel(props: TabPanelProps) {
             <div
                 aria-labelledby={`vertical-tab-${index}`}
                 id={`vertical-tabpanel-${index}`}
-                hidden={!openDrawer || (value !== index)}
+                hidden={!drawerOpen || (value !== index)}
                 role="tabpanel"
                 {...other}
             >
@@ -662,13 +686,13 @@ function TabPanel(props: TabPanelProps) {
                             }
                         </CenterAlignChildren>
                     </Typography>
-                    <IconButton aria-label="minimize drawer" onClick={() => handleOpenDrawer(false)}>
+                    <IconButton aria-label="minimize drawer" onClick={() => setDrawerOpen(false)}>
                         {/* <StyledIcon icon={<CloseIcon />} size="medium" /> */}
                         <CloseIcon size="1.25rem" />
                     </IconButton>
                 </Grid>
                 <Divider />
-                <TabInnerContent contentIndexState={contentIndexState} title={tab.title} numColState={numColState} setNumColState={setNumColState} />
+                <TabInnerContent contentIndexState={contentIndexState} title={tab.title} />
             </div>
             <Popover
                 id={id}
@@ -688,17 +712,4 @@ function TabPanel(props: TabPanelProps) {
             </Popover>
         </>
     );
-}
-
-function ToggleCameraViewMode({ setGridMode }: { setGridMode: React.Dispatch<React.SetStateAction<boolean>> }) {
-    return (
-        <Grid container justify="flex-end" item xs={12}>
-            <IconButton aria-label="switch grid view" size="small" onClick={() => setGridMode(true)}>
-                <StyledIcon icon={<GridIcon />} size="medium" />
-            </IconButton>
-            <IconButton aria-label="switch list view" size="small" onClick={() => setGridMode(false)}>
-                <StyledIcon icon={<ListIcon />} size="medium" />
-            </IconButton>
-        </Grid>
-    )
 }

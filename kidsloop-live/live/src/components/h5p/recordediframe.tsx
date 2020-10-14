@@ -42,7 +42,6 @@ export interface Props {
     contentId: string;
     parentWidth: number;
     parentHeight: number;
-    openDrawer: boolean;
 }
 
 export function RecordedIframe(props: Props): JSX.Element {
@@ -50,14 +49,15 @@ export function RecordedIframe(props: Props): JSX.Element {
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
 
-    const drawerWidth = useSelector((state: State) => state.data.drawerWidth);
+    const drawerOpen = useSelector((state: State) => state.control.drawerOpen);
+    const drawerWidth = useSelector((state: State) => state.control.drawerWidth);
     const store = useStore();
     function setStreamId(streamId: string) {
         store.dispatch({ type: ActionTypes.STREAM_ID, payload: streamId });
     }
 
     const { roomId } = useContext(UserContext);
-    const { contentId, parentWidth, parentHeight, openDrawer } = props;
+    const { contentId, parentWidth, parentHeight } = props;
     const [sendStreamId] = useMutation(SET_STREAMID);
 
     const [isFlashCards, setIsFlashCards] = useState(false);
@@ -211,7 +211,7 @@ export function RecordedIframe(props: Props): JSX.Element {
                     style: { backgroundColor: "rgba(255,255,255,0.7)" },
                 }}
                 style={{
-                    paddingRight: (isSmDown || !openDrawer) ? "" : drawerWidth + DRAWER_TOOLBAR_WIDTH,
+                    paddingRight: (isSmDown || !drawerOpen) ? "" : drawerWidth + DRAWER_TOOLBAR_WIDTH,
                     zIndex: loadingActivity
                 }}
             >

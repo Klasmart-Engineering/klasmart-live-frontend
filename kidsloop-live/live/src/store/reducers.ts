@@ -8,6 +8,7 @@ import {
     UserType,
 } from "./actions";
 
+// Session
 export function classType(state: ClassType = ClassType.LIVE, action: Actions) {
     switch (action.type) {
         case ActionTypes.CLASS_TYPE:
@@ -16,7 +17,6 @@ export function classType(state: ClassType = ClassType.LIVE, action: Actions) {
             return state;
     }
 }
-
 export function userAgent(state: UserAgent = {
     isLandscape: false,
     isPortrait: false,
@@ -41,7 +41,6 @@ export function userAgent(state: UserAgent = {
             return state;
     }
 }
-
 export function userType(state: UserType = UserType.STUDENT, action: Actions) {
     switch (action.type) {
         case ActionTypes.USER_TYPE:
@@ -50,7 +49,14 @@ export function userType(state: UserType = UserType.STUDENT, action: Actions) {
             return state;
     }
 }
-
+export function locale(state = getDefaultLanguageCode(), action: Actions) {
+    switch (action.type) {
+        case ActionTypes.LOCALE:
+            return action.payload;
+        default:
+            return state;
+    }
+}
 export function streamId(state = "", action: Actions) {
     switch (action.type) {
         case ActionTypes.USER_TYPE:
@@ -60,15 +66,7 @@ export function streamId(state = "", action: Actions) {
     }
 }
 
-export function locale(state = getDefaultLanguageCode(), action: Actions) {
-    switch (action.type) {
-        case ActionTypes.LOCALE:
-            return action.payload;
-        default:
-            return state;
-    }
-}
-
+// Control
 export function darkMode(state = "light", action: Actions) {
     switch (action.type) {
         case ActionTypes.DARK_MODE:
@@ -77,7 +75,6 @@ export function darkMode(state = "light", action: Actions) {
             return state;
     }
 }
-
 export function drawerOpen(state = true, action: Actions) {
     switch (action.type) {
         case ActionTypes.DRAWER_OPEN:
@@ -86,7 +83,6 @@ export function drawerOpen(state = true, action: Actions) {
             return state;
     }
 }
-
 export function drawerWidth(state = 0, action: Actions) {
     switch (action.type) {
         case ActionTypes.DRAWER_WIDTH:
@@ -95,10 +91,25 @@ export function drawerWidth(state = 0, action: Actions) {
             return state;
     }
 }
+export function colsCamera(state = 2, action: Actions) {
+    switch (action.type) {
+        case ActionTypes.COLS_CAMERA:
+            return action.payload;
+        default:
+            return state;
+    }
+}
+export function colsObserve(state = 2, action: Actions) {
+    switch (action.type) {
+        case ActionTypes.COLS_OBSERVE:
+            return action.payload;
+        default:
+            return state;
+    }
+}
 
 export const data = combineReducers({
-    drawerOpen,
-    drawerWidth,
+
 });
 
 export const communication = combineReducers({
@@ -106,17 +117,19 @@ export const communication = combineReducers({
 });
 
 export const control = combineReducers({
-
+    darkMode,
+    drawerOpen,
+    drawerWidth,
+    colsCamera,
+    colsObserve,
 });
 
 export const session = combineReducers({
     classType,
     userAgent,
     userType,
-    streamId,
     locale,
-
-    darkMode, // is it session?
+    streamId,
 });
 
 export const location = combineReducers({
