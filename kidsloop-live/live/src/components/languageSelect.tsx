@@ -81,7 +81,7 @@ export default function LanguageSelect(props: Props) {
 
     return (
         <React.Fragment>
-            <Tooltip title={<FormattedMessage id="locale_tooltip" />} enterDelay={300}>
+            <Tooltip title={<FormattedMessage id="language" />} enterDelay={300}>
                 <Button
                     color="inherit"
                     aria-owns={languageMenuElement ? "language-menu" : undefined}
@@ -94,7 +94,7 @@ export default function LanguageSelect(props: Props) {
                     {props.noIcon ? null : <LanguageIcon fontSize="inherit" />}
                     <span className={classes.language}>
                         {locale === "" ?
-                            <FormattedMessage id="locale_select" /> :
+                            <FormattedMessage id="language" /> :
                             languageText
                         }
                     </span>

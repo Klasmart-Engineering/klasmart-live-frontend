@@ -57,9 +57,11 @@ const messages: Record<string, string> = {
     enable_dark_mode: "다크 모드 켜기",
     language: "언어",
     two_columns: "2 개",
+    three_columns: "3 개",
     four_columns: "4 개",
     six_columns: "6 개",
-    num_views_per_row: "한 줄에 표시할 학생 화면 수",
+    cols_camera_per_row: "한 줄에 표시할 카메라 수",
+    cols_observe_per_row: "한 줄에 표시할 학생 화면 수",
 
     whiteboard_color: "색깔",
     whiteboard_clear: "지우기",
