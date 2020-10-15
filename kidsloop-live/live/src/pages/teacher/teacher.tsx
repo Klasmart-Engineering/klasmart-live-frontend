@@ -23,6 +23,7 @@ import { ZoomOut as ZoomOutIcon } from "@styled-icons/material/ZoomOut";
 import { QuestionMarkCircleOutline as QuestionIcon } from "@styled-icons/evaicons-outline/QuestionMarkCircleOutline";
 import { MaterialTypename } from "../../lessonMaterialContext";
 import { imageFrame } from "../../utils/layerValues";
+import { useMaterialToHref } from "../../utils/contentUtils";
 
 const drawerWidth = 340;
 
@@ -98,6 +99,8 @@ export function Teacher(props: Props): JSX.Element {
     const [rootDivWidth, setRootDivWidth] = useState<number>(0);
     const [rootDivHeight, setRootDivHeight] = useState<number>(0);
 
+    const [contentHref] = useMaterialToHref(material);
+
     useEffect(() => {
         if (!rootDivRef || !rootDivRef.current) { return; }
         setRootDivWidth(rootDivRef.current.clientWidth);
@@ -166,7 +169,7 @@ export function Teacher(props: Props): JSX.Element {
                                                 right: 0,
                                                 zIndex: 1,
                                                 // display: "block",
-                                                backgroundImage: `url(${material.url})`,
+                                                backgroundImage: `url(${contentHref})`,
                                                 filter: "blur(8px)",
                                                 WebkitFilter: "blur(8px)",
                                                 backgroundPosition: "center",
@@ -176,7 +179,7 @@ export function Teacher(props: Props): JSX.Element {
                                             />
                                             <img
                                                 className={classes.imageFrame}
-                                                src={material.url}
+                                                src={contentHref}
                                             />
                                         </Grid> :
                                         material.__typename === MaterialTypename.Video ||
@@ -184,13 +187,13 @@ export function Teacher(props: Props): JSX.Element {
                                             (material.__typename === undefined && material.video) ? //Legacy Format TODO: Deprecate
                                             <ReplicatedMedia
                                                 type={material.__typename || MaterialTypename.Video}
-                                                src={(material.__typename === undefined && material.video) || material.url}
+                                                src={contentHref}
                                                 style={{ width: "100%" }}
                                             /> :
                                             (material.__typename === MaterialTypename.Iframe || material.__typename === undefined) && material.url ? //Legacy Format TODO: Deprecate
                                                 (rootDivWidth && rootDivWidth) ?
                                                     <RecordedIframe
-                                                        contentId={material.url}
+                                                        contentId={contentHref}
                                                         setStreamId={setStreamId}
                                                         parentWidth={rootDivWidth}
                                                         parentHeight={rootDivHeight}
