@@ -76,7 +76,7 @@ List of variables:
 
 - ENDPOINT_WEBSOCKET -- Where to connect to graphql websocket.
 - ENDPOINT_GQL -- Where to connect to graphql.
-- ENDPOINT_H5P -- Where to retrieve H5P activities.
+- ENDPOINT_CONTENT -- Where to retrieve content from.
 - ENDPOINT_SFU -- Where to connect to SFU.
 - USE_TEST_TOKEN -- Use the test token (until we've added login/qr page).
 - DISABLE_BROWSER_GUIDE -- Don't display the browser guide page.
@@ -87,7 +87,7 @@ create the `apk` file.
 
 #### Example Building Webpack
 
-\$ `ENDPOINT_SFU=wss://live.kidsloop.net/sfu ENDPOINT_WEBSOCKET=wss://live.kidsloop.net/graphql ENDPOINT_GQL=https://live.kidsloop.net/graphql ENDPOINT_H5P=https://live.kidsloop.net/h5p USE_TEST_TOKEN=1 DISABLE_BROWSER_GUIDE=1 npm run build:app`
+\$ `ENDPOINT_SFU=wss://live.kidsloop.net/sfu ENDPOINT_WEBSOCKET=wss://live.kidsloop.net/graphql ENDPOINT_GQL=https://live.kidsloop.net/graphql ENDPOINT_CONTENT=https://live.kidsloop.net/ USE_TEST_TOKEN=1 DISABLE_BROWSER_GUIDE=1 npm run build:app`
 
 #### Example Running
 
