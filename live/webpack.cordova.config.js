@@ -74,10 +74,9 @@ module.exports = {
     new webpack.EnvironmentPlugin(
       ["NODE_ENV"],
       ["ENDPOINT_GQL"],
-      ["ENDPOINT_H5P"],
-      ["ENDPOINT_TEST_ASSETS_S3"],
       ["ENDPOINT_SFU"],
       ["ENDPOINT_WEBSOCKET"],
+      ["ENDPOINT_CONTENT"],
       ["APP_GIT_REV"],
       ["DISABLE_BROWSER_GUIDE"],
       ["USE_TEST_TOKEN"],

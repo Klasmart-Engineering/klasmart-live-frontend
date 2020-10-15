@@ -15,6 +15,7 @@ import { PreviewPlayer } from "../../components/preview-player";
 import { RecordedIframe } from "../../components/recordediframe";
 import { imageFrame } from "../../utils/layerValues";
 import { WebRTCSFUContext } from "../../webrtc/sfu";
+import useContentIdToHref from "../../utils/contentUtils";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -56,6 +57,8 @@ export function Student({ openDrawer }: {
     const rootDivRef = useRef<HTMLDivElement>(null);
     const [rootDivWidth, setRootDivWidth] = useState<number>(0);
     const [rootDivHeight, setRootDivHeight] = useState<number>(0);
+
+    const [contentHref] = useContentIdToHref(content?.contentId);
 
     const studentModeFilterGroups = useMemo(() => {
         return [sessionId];
@@ -111,7 +114,7 @@ export function Student({ openDrawer }: {
                     <Whiteboard group={sessionId} uniqueId="student" height={rootDivHeight} filterGroups={studentModeFilterGroups}>
                         {(rootDivRef && rootDivHeight) ?
                             <RecordedIframe
-                                contentId={content.contentId}
+                                contentId={contentHref}
                                 setStreamId={setStreamId}
                                 parentWidth={rootDivWidth}
                                 parentHeight={rootDivHeight}
@@ -147,7 +150,7 @@ export function Student({ openDrawer }: {
                             right: 0,
                             zIndex: 1,
                             // display: "block",
-                            backgroundImage: `url(${content.contentId})`,
+                            backgroundImage: `url(${contentHref})`,
                             filter: "blur(8px)",
                             WebkitFilter: "blur(8px)",
                             backgroundPosition: "center",
@@ -157,7 +160,7 @@ export function Student({ openDrawer }: {
                         />
                         <img
                             className={classes.imageFrame}
-                            src={content.contentId}
+                            src={contentHref}
                         />
                     </Grid>
                 </Whiteboard>
