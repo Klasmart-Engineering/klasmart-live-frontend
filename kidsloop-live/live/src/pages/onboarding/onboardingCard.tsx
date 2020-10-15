@@ -12,27 +12,24 @@ import { FormattedMessage } from "react-intl";
 
 import Asset11 from "../../assets/img/background/Asset11.svg"
 import { OnboardingScreen } from "./onboarding";
+import Paper from "@material-ui/core/Paper";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
-        classInfoContainer: {
-            background: `url(${Asset11}) no-repeat`,
-            backgroundColor: "#f0e6cf",
-            backgroundPosition: "center right",
-            backgroundSize: "30%",
+        onboardingCard: {
+            height: "calc(100% - 16px)",
+            borderRadius: 12, 
+            margin: theme.spacing(0),
+            [theme.breakpoints.down("sm")]: {
+                margin: theme.spacing(1),
+            },
+        },
+        onboardingCardInfo: {
+            backgroundSize: "100%",
             borderRadius: 12,
             color: "#193d6f",
             height: "100%",
-            minHeight: 360,
             padding: theme.spacing(4, 5),
-            [theme.breakpoints.down("sm")]: {
-                backgroundPosition: "bottom right",
-                height: `min(${window.innerHeight - 20}px,56vw)`,
-                padding: theme.spacing(2, 2),
-            },
-            [theme.breakpoints.down("xs")]: {
-                height: `min(${window.innerHeight - 20}px,72vw)`,
-            },
         },
         liveButton: {
             backgroundColor: "#ff6961",
@@ -53,30 +50,32 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface Props {
-    screen: OnboardingScreen
+    fullScreen: boolean,
+    screen: OnboardingScreen,
 }
 
 export default function OnboardingCard(props: Props) {
     const classes = useStyles();
     const theme = useTheme();
-    const { screen } = props;
+    const { fullScreen, screen } = props;
 
     return (
-        <Grid
-            container
-            direction="column"
-            justify="space-between"
-            alignItems="flex-start"
-            wrap="nowrap"
-            className={classes.classInfoContainer}
-        >
-            <Grid item>
-                <Grid container item spacing={2}>
-                    <Grid item xs={12}>
-                        <Typography variant="h4">{screen.title}</Typography>
-                    </Grid>
+        <Paper elevation={fullScreen ? 4 : 0} className={classes.onboardingCard}>
+            <Grid
+                container
+                direction="row"
+                style={{ 
+                    background: `url(${screen.backgroundImg}) no-repeat`,
+                    backgroundPosition: screen.backgroundPosition || "bottom center",
+                    backgroundSize: fullScreen ? (screen.backgroundSize || "200%") : "125%",
+                }}
+                className={classes.onboardingCardInfo}
+            >
+                <Grid item xs={12}>
+                    <Typography variant="h4" align="center" style={{ paddingBottom: theme.spacing(2) }}>{screen.title}</Typography>
+                    <Typography variant="subtitle2" align="center">{screen.subtitle}</Typography>
                 </Grid>
             </Grid>
-        </Grid>
+        </Paper>
     );
 }

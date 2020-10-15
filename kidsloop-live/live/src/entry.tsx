@@ -161,8 +161,8 @@ if (params && params.name) {
 }
 function Entry() {
     const store = useStore();
-    const themeMode = useSelector((state: State) => state.session.darkMode);
     const languageCode = useSelector((state: State) => state.session.locale);
+    const themeMode = useSelector((state: State) => state.control.darkMode);
     const locale = getLanguage(languageCode);
 
     if (!params) {
