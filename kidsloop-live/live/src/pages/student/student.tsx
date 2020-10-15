@@ -15,7 +15,7 @@ import { PreviewPlayer } from "../../components/preview-player";
 import { RecordedIframe } from "../../components/recordediframe";
 import { imageFrame } from "../../utils/layerValues";
 import { WebRTCSFUContext } from "../../webrtc/sfu";
-import useContentIdToHref from "../../utils/contentUtils";
+import { useContentToHref } from "../../utils/contentUtils";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -58,7 +58,7 @@ export function Student({ openDrawer }: {
     const [rootDivWidth, setRootDivWidth] = useState<number>(0);
     const [rootDivHeight, setRootDivHeight] = useState<number>(0);
 
-    const [contentHref] = useContentIdToHref(content?.contentId);
+    const [contentHref] = useContentToHref(content);
 
     const studentModeFilterGroups = useMemo(() => {
         return [sessionId];
