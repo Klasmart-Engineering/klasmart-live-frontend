@@ -8,9 +8,7 @@ import { v4 as uuid } from 'uuid'
 if (!(window as any).kidslooplive) {
   (window as any).kidslooplive = true
 
-
-
-  const POST_URL = `${process.env.ENDPOINT_GQL || window.location.origin}/graphql`
+  const POST_URL = process.env.ENDPOINT_GQL || `${window.location.origin}/graphql`
   const POST_EVENTS = `
   mutation postPageEvent($streamId: ID!, $pageEvents: [PageEventIn]) {
     postPageEvent(streamId: $streamId, pageEvents: $pageEvents)
@@ -24,6 +22,7 @@ if (!(window as any).kidslooplive) {
   const client = new GraphQLClient(POST_URL, { headers: headers })
 
   const streamId = uuid()
+
   window.parent.postMessage({ streamId }, '*')
 
   const eventStream = EventStream.builder()
