@@ -18,15 +18,16 @@ import { QuestionMarkCircleOutline as QuestionIcon } from "@styled-icons/evaicon
 
 import { ScreenShare } from "./screenShareProvider";
 import { UserContext } from "../../entry";
-import { Session, ContentIndexState, InteractiveModeState, RoomContext } from "../room/room";
+import { Session, InteractiveModeState, StreamIdState, RoomContext } from "../room/room";
 import { MaterialTypename } from "../../lessonMaterialContext";
 import { RecordedIframe } from "../../components/h5p/recordediframe";
-import { PreviewPlayer } from "../../components/h5p/preview-player";
+import PreviewPlayer from "../../components/h5p/preview-player";
 import { ReplicatedMedia } from "../../components/media/synchronized-video";
 import VideoStream from "../../components/media/videoStream";
 import { imageFrame } from "../../utils/layerValues";
 import { useMaterialToHref } from "../../utils/contentUtils";
 import { Whiteboard } from "../../whiteboard/components/Whiteboard";
+import Loading from "../../components/loading";
 import { State } from "../../store/store";
 
 const drawerWidth = 340;
@@ -40,10 +41,9 @@ export const MUT_SHOW_CONTENT = gql`
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
-            display: "flex",
-            flexDirection: "column",
-            height: "100%",
             position: "relative",
+            height: "100%",
+            margin: "0px auto",
         },
         test: {
             backgroundColor: "#fffb7d",
@@ -78,32 +78,35 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface Props {
-    contentIndexState: ContentIndexState;
     interactiveModeState: InteractiveModeState;
+    streamIdState: StreamIdState;
 }
 
 export function Teacher(props: Props): JSX.Element {
+    const classes = useStyles();
+    const { interactiveModeState, streamIdState } = props;
+    const { interactiveMode } = interactiveModeState;
+    const { streamId, setStreamId } = streamIdState;
+
+    const contentIndex = useSelector((store: State) => store.control.contentIndex);
     const { roomId, sessionId, materials } = useContext(UserContext);
+    const material = contentIndex >= 0 && contentIndex < materials.length ? materials[contentIndex] : undefined;
+
     const screenShare = ScreenShare.Consume()
     const { content, users } = RoomContext.Consume()
 
-    const classes = useStyles();
-    const { contentIndexState, interactiveModeState } = props;
-    const { interactiveMode } = interactiveModeState;
-    const { contentIndex } = contentIndexState;
-    const material = contentIndex >= 0 && contentIndex < materials.length ? materials[contentIndex] : undefined;
-
-    const streamId = useSelector((state: State) => state.session.streamId);
     const rootDivRef = useRef<HTMLDivElement>(null);
-    const [rootDivWidth, setRootDivWidth] = useState<number>(0);
-    const [rootDivHeight, setRootDivHeight] = useState<number>(0);
+    const [squareSize, setSquareSize] = useState<number>(0);
 
     const [contentHref] = useMaterialToHref(material);
 
     useEffect(() => {
         if (!rootDivRef || !rootDivRef.current) { return; }
-        setRootDivWidth(rootDivRef.current.clientWidth);
-        setRootDivHeight(rootDivRef.current.clientHeight);
+        const width = rootDivRef.current.clientWidth;
+        const height = rootDivRef.current.clientHeight;
+        if (!width || !height) { return; }
+        else if (width > height) { setSquareSize(height); }
+        else { setSquareSize(width); }
     }, [rootDivRef.current]);
 
     const [showContent, { loading }] = useMutation(MUT_SHOW_CONTENT);
@@ -140,19 +143,23 @@ export function Teacher(props: Props): JSX.Element {
     }, [roomId, interactiveMode, sessionId]);
 
     return (
-        <div ref={rootDivRef} className={classes.root}>
+        <Grid
+            id="teacher-class-content-container"
+            ref={rootDivRef}
+            container
+            direction="column"
+            item
+            xs={12}
+            className={classes.root}
+            style={squareSize ? { width: squareSize, height: squareSize } : undefined}
+        >
             {content && content.type === "Activity" ?
+                <Grid container direction="row" justify="flex-start" spacing={1} item xs={12}>
+                    {[...users.entries()].filter(([, s]) => s.id !== sessionId)
+                        .map(([id, session]) => <StudentPreviewCard key={id} session={session} />)}
+                </Grid> :
                 <>
-                    <Typography variant="caption" color="textSecondary" gutterBottom>
-                        <FormattedMessage id="student_mode" />
-                    </Typography>
-                    <Grid container direction="row" spacing={1} item xs={12}>
-                        {[...users.entries()].filter(([, s]) => s.id !== sessionId).map(([id, session]) =>
-                            <StudentPreviewCard key={id} sessionId={sessionId} session={session} />
-                        )}
-                    </Grid>
-                </> :
-                <Whiteboard uniqueId="global" height={rootDivHeight}>
+                    <Whiteboard uniqueId="global" />
                     {
                         //TODO: tidy up the conditions of what to render
                         interactiveMode === 3 ?
@@ -190,63 +197,62 @@ export function Teacher(props: Props): JSX.Element {
                                                 style={{ width: "100%" }}
                                             /> :
                                             (material.__typename === MaterialTypename.Iframe || material.__typename === undefined) && material.url ? //Legacy Format TODO: Deprecate
-                                                (rootDivWidth && rootDivWidth) ?
+                                                (squareSize ?
                                                     <RecordedIframe
                                                         contentId={contentHref}
                                                         setStreamId={setStreamId}
-                                                        parentWidth={rootDivWidth}
-                                                        parentHeight={rootDivHeight}
+                                                        parentWidth={squareSize}
+                                                        parentHeight={squareSize}
                                                     /> : undefined
-                                                : undefined : //Unknown Material
+                                                ) : undefined : //Unknown Material
                                     undefined //No Material
                                 }
                             </>
                     }
-                </Whiteboard>
+                </>
             }
-        </div >
+        </Grid>
     );
 }
 
-function StudentPreviewCard({ sessionId, session }: { sessionId: string, session: Session }) {
+function StudentPreviewCard({ session }: { session: Session }) {
     const theme = useTheme();
 
     const colsObserve = useSelector((state: State) => state.control.colsObserve);
 
     const cardConRef = useRef<HTMLDivElement>(null);
     const [zoomin, setZoomin] = useState(false);
-    const [width, setWidth] = useState<string | number>("100%");
-    const [height, setHeight] = useState<string | number>("100%");
+    const [squareSize, setSquareSize] = useState<number>(0);
 
     const filterGroups = useMemo(() => {
         return [session.id];
     }, [session]);
 
     useEffect(() => {
-        if (cardConRef.current) {
-            const contWidth = cardConRef.current.offsetWidth;
-            const contHeight = cardConRef.current.offsetHeight;
-            setWidth(contWidth);
-            setHeight(Math.min(contWidth, contWidth * 0.5625));
-        }
+        if (!cardConRef || !cardConRef.current) { return; }
+        const width = cardConRef.current.clientWidth;
+        if (!width) { return; }
+        setSquareSize(width);
     }, [cardConRef.current, zoomin, colsObserve]);
 
     const handleOnClickZoom = () => {
         // Automatically scroll top when clicking Zoom In
-        if (!zoomin) { window.scrollTo(0, 0) }
+        if (!zoomin) {
+            const objDiv = document.getElementById("class-content-container");
+            if (objDiv) { objDiv.scroll(0, 0) }
+        }
         setZoomin(!zoomin)
     }
 
     return (
-        <Grid item xs={12} md={zoomin ? 12 : (12 / colsObserve as (2 | 4 | 6))} style={{ order: zoomin ? -1 : 0 }}>
+        <Grid item xs={12} md={zoomin ? 12 : (12 / colsObserve as (2 | 4 | 6))} style={{ order: zoomin ? 0 : 1 }}>
             <Card>
-                <CardContent >
-                    <Grid ref={cardConRef} item xs={12} style={{ margin: "0 auto" }}>
-                        {session.streamId ?
-                            <Whiteboard group={session.id} uniqueId={session.id} width={width} height={height} filterGroups={filterGroups}>
-                                <PreviewPlayer width={width} height={height} streamId={session.streamId} />
-                            </Whiteboard> : undefined
-                        }
+                <CardContent>
+                    <Grid ref={cardConRef} container alignItems="center" item xs={12} style={{ position: "relative", height: squareSize }}>
+                        {session && session.streamId ? <>
+                            <Whiteboard group={session.id} uniqueId={session.id} filterGroups={filterGroups} />
+                            <PreviewPlayer streamId={session.streamId} parentWidth={squareSize} parentHeight={squareSize} />
+                        </> : <Loading messageId="loading" />}
                     </Grid>
                 </CardContent>
                 <CardActions style={{ display: "flex", justifyContent: "space-between" }}>

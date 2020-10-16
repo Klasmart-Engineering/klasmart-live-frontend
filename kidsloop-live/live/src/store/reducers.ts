@@ -9,7 +9,7 @@ import {
 } from "./actions";
 
 // Session
-export function classType(state: ClassType = ClassType.LIVE, action: Actions) {
+export function classType(state: ClassType = ClassType.HOMEWORK, action: Actions) {
     switch (action.type) {
         case ActionTypes.CLASS_TYPE:
             return action.payload;
@@ -57,14 +57,6 @@ export function locale(state = getDefaultLanguageCode(), action: Actions) {
             return state;
     }
 }
-export function streamId(state = "", action: Actions) {
-    switch (action.type) {
-        case ActionTypes.USER_TYPE:
-            return action.payload;
-        default:
-            return state;
-    }
-}
 
 // Control
 export function darkMode(state = "light", action: Actions) {
@@ -107,14 +99,18 @@ export function colsObserve(state = 2, action: Actions) {
             return state;
     }
 }
+export function contentIndex(state = 0, action: Actions) {
+    switch (action.type) {
+        case ActionTypes.CONTENT_INDEX:
+            return action.payload;
+        default:
+            return state;
+    }
+}
 
-export const data = combineReducers({
+export const data = combineReducers({});
 
-});
-
-export const communication = combineReducers({
-
-});
+export const communication = combineReducers({});
 
 export const control = combineReducers({
     darkMode,
@@ -122,6 +118,7 @@ export const control = combineReducers({
     drawerWidth,
     colsCamera,
     colsObserve,
+    contentIndex
 });
 
 export const session = combineReducers({
@@ -129,9 +126,6 @@ export const session = combineReducers({
     userAgent,
     userType,
     locale,
-    streamId,
 });
 
-export const location = combineReducers({
-
-});
+export const location = combineReducers({});
