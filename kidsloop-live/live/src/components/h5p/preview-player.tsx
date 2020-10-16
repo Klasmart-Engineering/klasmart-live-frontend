@@ -6,26 +6,24 @@ import Typography from "@material-ui/core/Typography";
 import Loading from "../loading";
 
 const SUB_EVENTS = gql`
-  subscription stream($streamId: ID!) {
+subscription stream($streamId: ID!) {
     stream(streamId: $streamId) {
-      id,
-      event
+        id,
+        event
     }
-  }
+}
 `;
 
-export interface Props {
+export default function PreviewPlayer({ streamId, frameProps, parentWidth, parentHeight }: {
     streamId: string;
-    width?: number | string;
-    height?: number | string;
+    parentWidth: number;
+    parentHeight: number;
     frameProps?: React.DetailedHTMLProps<React.IframeHTMLAttributes<HTMLIFrameElement>, HTMLIFrameElement>
-}
-
-export function PreviewPlayer({ streamId, frameProps, width, height }: Props): JSX.Element {
+}): JSX.Element {
     const ref = useRef<HTMLIFrameElement>(null);
-    const [{ frameWidth, frameHeight }, setWidthHeight] = useState({ frameWidth: 0, frameHeight: 0 });
+    const [frameWidth, setFrameWidth] = useState(0);
+    const [frameHeight, setFrameHeight] = useState(0);
 
-    // Buffer events until we have a page ready to render them
     const { current: bufferedEvents } = useRef<string[]>([]);
     function sendEvent(event?: string) {
         if (ref.current && ref.current.contentWindow && ((ref.current.contentWindow as any).PLAYER_READY)) {
@@ -38,20 +36,6 @@ export function PreviewPlayer({ streamId, frameProps, width, height }: Props): J
             bufferedEvents.push(event);
         }
     }
-
-    // When the page is ready, start sending buffered events
-    useEffect(() => {
-        if (!ref.current || !ref.current.contentWindow || !ref.current.contentWindow) { return; }
-        const iframeWindow = ref.current.contentWindow;
-        const listener = (e: MessageEvent) => { if (e.data === "ready") { sendEvent(); } };
-        iframeWindow.addEventListener("message", listener);
-        return () => {
-            if (iframeWindow && iframeWindow.removeEventListener) {
-                iframeWindow.removeEventListener("message", listener);
-            }
-        }
-    }, [ref.current, ref.current && ref.current.contentWindow]);
-
     const { loading, error } = useSubscription(SUB_EVENTS, {
         onSubscriptionData: e => sendEvent(e.subscriptionData.data.stream.event),
         variables: { streamId },
@@ -64,34 +48,40 @@ export function PreviewPlayer({ streamId, frameProps, width, height }: Props): J
             if (!data || !data.width || !data.height) { return; }
             const fWidth = Number(data.width.replace("px", ""));
             const fHeight = Number(data.height.replace("px", ""));
-            setWidthHeight({ frameWidth: fWidth, frameHeight: fHeight });
-            if (width && height) {
-                setScale(Math.min(Number(width) / fWidth, Number(height) / fHeight));
-            }
+            setFrameWidth(fWidth);
+            setFrameHeight(fHeight)
+            setScale(parentWidth / fWidth);
         });
     }, [ref.current, ref.current && ref.current.contentWindow]);
 
-    useEffect(() => {
-        if (typeof width === "number" && typeof height === "number") {
-            setScale(Math.min(width / frameWidth, height / frameHeight));
-        }
-    }, [width, height]);
+    // Need it?
+    // useEffect(() => {
+    //     if (frameWidth) { setScale(parentWidth / frameWidth); }
+    // }, [parentWidth]);
 
     if (loading) { return <Loading />; }
     if (error) { return <Typography><FormattedMessage id="failed_to_connect" />: {JSON.stringify(error)}</Typography>; }
-    return <div id="preview-iframe-container" style={{ width, height }}>
-        <iframe
-            key={streamId}
-            ref={ref}
+    return (
+        <div
+            id="preview-iframe-container"
             style={{
-                visibility: loading ? "hidden" : "visible",
-                transformOrigin: "top left",
-                transform: `scale(${scale})`
+                width: parentWidth,
+                height: parentHeight,
             }}
-            src={"player.html"}
-            width={frameWidth}
-            height={frameHeight}
-            {...frameProps}
-        />
-    </div>;
+        >
+            <iframe
+                key={streamId}
+                ref={ref}
+                style={{
+                    visibility: loading ? "hidden" : "visible",
+                    transformOrigin: "top left",
+                    transform: `scale(${scale})`
+                }}
+                src={"player.html"}
+                width={frameWidth}
+                height={frameHeight}
+                {...frameProps}
+            />
+        </div>
+    );
 }

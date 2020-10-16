@@ -1,3 +1,7 @@
+import React, { useState } from "react";
+import { FormattedMessage } from "react-intl";
+import { useSelector, useStore } from "react-redux";
+
 import Button from "@material-ui/core/Button";
 import Menu, { MenuProps } from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -5,10 +9,9 @@ import { createStyles, makeStyles, Theme, withStyles } from "@material-ui/core/s
 import Tooltip from "@material-ui/core/Tooltip";
 import { ExpandMore as ExpandMoreIcon } from "@styled-icons/material/ExpandMore";
 import { Translate as LanguageIcon } from "@styled-icons/material/Translate";
-import { useState, useContext } from "react";
-import * as React from "react";
-import { FormattedMessage } from "react-intl";
-import { ThemeContext } from "../entry";
+
+import { State } from "../store/store";
+import { ActionTypes } from "../store/actions";
 
 const LANGUAGES_LABEL: Language[] = [
     {
@@ -70,7 +73,12 @@ const StyledMenu = withStyles({})((props: MenuProps) => (
 
 export default function LanguageSelect(props: Props) {
     const classes = useStyles();
-    const { languageCode, setLanguageCode } = useContext(ThemeContext);
+
+    const store = useStore();
+    function setLanguageCode(langCode: string) {
+        store.dispatch({ type: ActionTypes.LOCALE, payload: langCode });
+    }
+    const languageCode = useSelector((state: State) => state.session.locale);
 
     const locale = languageCode;
     const langText = LANGUAGES_LABEL.find((element) => element.code === languageCode);

@@ -1,4 +1,3 @@
-// ko.ts
 const messages: Record<string, string> = {
     activity_link: "액티비티 링크",
     allow_media_permission: "미디어 장치를 사용하려면 마이크 및 카메라 권한을 허용하십시오.",

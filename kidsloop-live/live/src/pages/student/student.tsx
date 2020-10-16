@@ -8,7 +8,7 @@ import Grid from "@material-ui/core/Grid";
 import { UserContext } from "../../entry";
 import { RoomContext } from "../room/room";
 import { MaterialTypename } from "../../lessonMaterialContext";
-import { PreviewPlayer } from "../../components/h5p/preview-player";
+import PreviewPlayer from "../../components/h5p/preview-player";
 import { RecordedIframe } from "../../components/h5p/recordediframe";
 import { ReplicaMedia } from "../../components/media/synchronized-video";
 import VideoStream from "../../components/media/videoStream";
@@ -16,14 +16,13 @@ import { imageFrame } from "../../utils/layerValues";
 import { WebRTCSFUContext } from "../../webrtc/sfu";
 import { useContentToHref } from "../../utils/contentUtils";
 import { Whiteboard } from "../../whiteboard/components/Whiteboard";
-import WBToolbar from "../../whiteboard/components/Toolbar";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
-            display: "flex",
-            flexDirection: "column",
+            position: "relative",
             height: "100%",
+            margin: "0px auto",
         },
         paperContainer: {
             borderRadius: 12,
@@ -34,7 +33,8 @@ const useStyles = makeStyles((theme: Theme) =>
         imageFrame: {
             zIndex: imageFrame,
             maxWidth: "99%",
-            maxHeight: `calc(100vh - ${theme.spacing(5)}px)`,
+            maxHeight: "99%",
+            // maxHeight: `calc(100vh - ${theme.spacing(5)}px)`,
             margin: "0 auto",
             backdropFilter: "blur(8px)",
             WebkitBackdropFilter: "blur(8px)",
@@ -51,10 +51,10 @@ export function Student(): JSX.Element {
 
     const { name, sessionId } = useContext(UserContext);
     const webrtc = WebRTCSFUContext.Consume()
+    const [streamId, setStreamId] = useState<string>();
 
     const rootDivRef = useRef<HTMLDivElement>(null);
-    const [rootDivWidth, setRootDivWidth] = useState<number>(0);
-    const [rootDivHeight, setRootDivHeight] = useState<number>(0);
+    const [squareSize, setSquareSize] = useState<number>(0);
 
     const [contentHref] = useContentToHref(content);
 
@@ -64,116 +64,150 @@ export function Student(): JSX.Element {
 
     useEffect(() => {
         if (!rootDivRef || !rootDivRef.current) { return; }
-        setRootDivWidth(rootDivRef.current.clientWidth);
-        setRootDivHeight(rootDivRef.current.clientHeight);
+        const width = rootDivRef.current.clientWidth;
+        const height = rootDivRef.current.clientHeight;
+        if (!width || !height) { return; }
+        else if (width > height) { setSquareSize(height); }
+        else { setSquareSize(width); }
     }, [rootDivRef.current]);
 
     if (!content || content.type == "Blank") {
         return (
-            <div ref={rootDivRef} className={classes.root}>
-                <Grid item xs={12}>
-                    <Paper elevation={4} className={classes.paperContainer}>
-                        <Grid
-                            container
-                            direction="row"
-                            justify="space-between"
-                            alignItems="center"
-                            style={{ height: "100%" }}
-                        >
-                            <Grid item xs={12}>
-                                <Typography><FormattedMessage id={"hello"} values={{ name }} /></Typography>
-                                <Typography><FormattedMessage id={"waiting_for_class"} /></Typography>
-                            </Grid>
+            <Grid item xs={12}>
+                <Paper elevation={4} className={classes.paperContainer}>
+                    <Grid
+                        container
+                        direction="row"
+                        justify="space-between"
+                        alignItems="center"
+                        style={{ height: "100%" }}
+                    >
+                        <Grid item xs={12}>
+                            <Typography><FormattedMessage id={"hello"} values={{ name }} /></Typography>
+                            <Typography><FormattedMessage id={"waiting_for_class"} /></Typography>
                         </Grid>
-                    </Paper>
-                </Grid>
-            </div>
+                    </Grid>
+                </Paper>
+            </Grid>
         );
-    }
-
-    switch (content.type) {
-        case "Stream":
-            return (
-                <div ref={rootDivRef} id="player-container" className={classes.root}>
-                    <Whiteboard uniqueId="student" height={rootDivHeight}>
-                        <PreviewPlayer streamId={content.contentId} width={rootDivWidth} height={rootDivHeight} />
-                        {/* <WBToolbar /> */}
-                    </Whiteboard>
-                </div>
-            );
-        case "Activity":
-            return (
-                <div ref={rootDivRef} className={classes.root}>
-                    <Whiteboard group={sessionId} uniqueId="student" height={rootDivHeight} filterGroups={studentModeFilterGroups}>
-                        {(rootDivRef && rootDivHeight) ?
+    } else {
+        switch (content.type) {
+            case "Stream":
+                return (
+                    <Grid
+                        id="student-class-content-container"
+                        ref={rootDivRef}
+                        container direction="column"
+                        item xs={12}
+                        className={classes.root}
+                        style={squareSize ? { width: squareSize, height: squareSize } : undefined}
+                    >
+                        <Whiteboard uniqueId="student" />
+                        <PreviewPlayer streamId={content.contentId} parentWidth={squareSize} parentHeight={squareSize} />
+                    </Grid>
+                );
+            case "Activity":
+                return (
+                    <Grid
+                        id="student-class-content-container"
+                        ref={rootDivRef}
+                        container direction="column"
+                        item xs={12}
+                        className={classes.root}
+                        style={squareSize ? { width: squareSize, height: squareSize } : undefined}
+                    >
+                        <Whiteboard group={sessionId} uniqueId="student" filterGroups={studentModeFilterGroups} />
+                        {(rootDivRef && squareSize) ?
                             <RecordedIframe
                                 contentId={contentHref}
                                 setStreamId={setStreamId}
-                                parentWidth={rootDivWidth}
-                                parentHeight={rootDivHeight}
+                                parentWidth={squareSize}
+                                parentHeight={squareSize}
                             /> : undefined}
-                        {/* <WBToolbar /> */}
-                    </Whiteboard>
-                </div>
-            );
-        case "Audio":
-        case "Video":
-            return (
-                <div ref={rootDivRef} className={classes.root}>
-                    <Whiteboard uniqueId="student" height={rootDivHeight}>
-                        <ReplicaMedia type={content.type === "Video" ? MaterialTypename.Video : MaterialTypename.Audio} style={{ width: "100%" }} sessionId={content.contentId} />
-                    </Whiteboard>
-                    <WBToolbar />
-                </div>
-            );
-        case "Image":
-            return <div ref={rootDivRef} className={classes.root}>
-                <Whiteboard uniqueId="student" height={rootDivHeight}>
-                    <Grid container>
-                        <Grid container item style={{
-                            height: "100%",
-                            position: "absolute",
-                            left: 0,
-                            right: 0,
-                            zIndex: 1,
-                            // display: "block",
-                            backgroundImage: `url(${contentHref})`,
-                            filter: "blur(8px)",
-                            WebkitFilter: "blur(8px)",
-                            backgroundPosition: "center",
-                            backgroundRepeat: "no-repeat",
-                            backgroundSize: "cover",
-                        }}
-                        />
-                        <img
-                            className={classes.imageFrame}
-                            src={contentHref}
-                        />
                     </Grid>
-                </Whiteboard>
-                <WBToolbar />
-            </div>;
-        case "Camera":
-            {
-                const session = users.get(content.contentId)
-                return <div ref={rootDivRef} className={classes.root}>
-                    <Typography variant="caption" align="center">{session ? session.name : undefined}</Typography>
-                    <Whiteboard uniqueId="student" height={rootDivHeight}>
-                        <VideoStream stream={webrtc.getCameraStream(content.contentId)} />
-                    </Whiteboard>
-                    <WBToolbar />
-                </div>;
-            }
-        case "Screen":
-            {
-                const session = users.get(content.contentId)
-                return <div ref={rootDivRef} className={classes.root}>
-                    <Typography variant="caption" align="center">{session ? session.name : undefined}</Typography>
-                    <Whiteboard uniqueId="student" height={rootDivHeight}>
-                        <VideoStream stream={webrtc.getAuxStream(content.contentId)} />
-                    </Whiteboard>
-                    <WBToolbar />
-                </div>;
-            }
+                );
+            case "Audio":
+            case "Video":
+                return (
+                    <Grid
+                        id="student-class-content-container"
+                        ref={rootDivRef}
+                        container direction="column"
+                        item xs={12}
+                        className={classes.root}
+                        style={squareSize ? { width: squareSize, height: squareSize } : undefined}
+                    >
+                        <Whiteboard uniqueId="student" />
+                        <ReplicaMedia type={content.type === "Video" ? MaterialTypename.Video : MaterialTypename.Audio} style={{ width: "100%" }} sessionId={content.contentId} />
+                    </Grid >
+                );
+            case "Image":
+                return (
+                    <Grid
+                        id="student-class-content-container"
+                        ref={rootDivRef}
+                        container direction="column"
+                        item xs={12}
+                        className={classes.root}
+                        style={squareSize ? { width: squareSize, height: squareSize } : undefined}
+                    >
+                        <Whiteboard uniqueId="student" />
+                        <Grid container>
+                            <Grid container item style={{
+                                height: "100%",
+                                position: "absolute",
+                                left: 0,
+                                right: 0,
+                                zIndex: 1,
+                                // display: "block",
+                                backgroundImage: `url(${content.contentId})`,
+                                filter: "blur(8px)",
+                                WebkitFilter: "blur(8px)",
+                                backgroundPosition: "center",
+                                backgroundRepeat: "no-repeat",
+                                backgroundSize: "cover",
+                            }}
+                            />
+                            <img className={classes.imageFrame} src={content.contentId} />
+                        </Grid>
+                    </Grid>
+                );
+            case "Camera":
+                {
+                    const session = users.get(content.contentId)
+                    return (
+                        <Grid
+                            id="student-class-content-container"
+                            ref={rootDivRef}
+                            container direction="column"
+                            item xs={12}
+                            className={classes.root}
+                            style={squareSize ? { width: squareSize, height: squareSize } : undefined}
+                        >
+                            <Typography variant="caption" align="center">{session ? session.name : undefined}</Typography>
+                            <Whiteboard uniqueId="student" />
+                            <VideoStream stream={webrtc.getCameraStream(content.contentId)} />
+                        </Grid>
+                    );
+                }
+            case "Screen":
+                {
+                    const session = users.get(content.contentId)
+                    return (
+                        <Grid
+                            id="student-class-content-container"
+                            ref={rootDivRef}
+                            container direction="column"
+                            item xs={12}
+                            className={classes.root}
+                            style={squareSize ? { width: squareSize, height: squareSize } : undefined}
+                        >
+                            <Typography variant="caption" align="center">{session ? session.name : undefined}</Typography>
+                            <Whiteboard uniqueId="student" />
+                            <VideoStream stream={webrtc.getAuxStream(content.contentId)} />
+                        </Grid>
+                    );
+                }
+        }
     }
 }

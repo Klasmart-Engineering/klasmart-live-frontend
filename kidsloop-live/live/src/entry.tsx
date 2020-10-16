@@ -199,7 +199,6 @@ function Entry() {
             isChromium,
             isMobileSafari,
         };
-        console.log("userAgent: ", userAgent)
         store.dispatch({ type: ActionTypes.USER_AGENT, payload: userAgent });
     }, []);
 

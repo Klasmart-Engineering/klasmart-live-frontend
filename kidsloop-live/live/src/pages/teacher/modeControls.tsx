@@ -92,8 +92,6 @@ interface Props {
 }
 
 export default function ModeControls({ interactiveModeState, disablePresent, disableActivity, setKey, orientation }: Props): JSX.Element {
-    const theme = useTheme();
-    const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
     const { selectedButton, buttonRoot, buttonGroup, divider, helpButton, screenSharingButton } = useStyles();
     const screenShare = ScreenShare.Consume()
 
@@ -134,7 +132,7 @@ export default function ModeControls({ interactiveModeState, disablePresent, dis
                         open={openStopTooltip}
                         onClose={() => toggleTooltip(false, false, false, false)}
                         onOpen={() => toggleTooltip(true, false, false, false)}
-                        placement={isSmDown ? "top" : "left"}
+                        placement="left"
                         title={<FormattedMessage id="live_buttonStop" />}
                     >
                         <ToggleButton
@@ -151,7 +149,7 @@ export default function ModeControls({ interactiveModeState, disablePresent, dis
                         open={openPresentTooltip}
                         onClose={() => toggleTooltip(false, false, false, false)}
                         onOpen={() => toggleTooltip(false, true, false, false)}
-                        placement={isSmDown ? "top" : "left"}
+                        placement="left"
                         title={<FormattedMessage id="live_buttonPresent" />}
                     >
                         <ToggleButton
@@ -169,11 +167,11 @@ export default function ModeControls({ interactiveModeState, disablePresent, dis
                         open={openActivityTooltip}
                         onClose={() => toggleTooltip(false, false, false, false)}
                         onOpen={() => toggleTooltip(false, false, true, false)}
-                        placement={isSmDown ? "top" : "left"}
+                        placement="left"
                         title={<FormattedMessage id="live_buttonObserve" />}
                     >
                         <ToggleButton
-                            aria-label="student mode"
+                            aria-label="observe mode"
                             classes={{ root: buttonRoot }}
                             className={interactiveMode === 2 ? selectedButton : ""}
                             disabled={disableActivity}
@@ -188,7 +186,7 @@ export default function ModeControls({ interactiveModeState, disablePresent, dis
                             open={openScreenTooltip}
                             onClose={() => toggleTooltip(false, false, false, false)}
                             onOpen={() => toggleTooltip(false, false, false, true)}
-                            placement={isSmDown ? "top" : "left"}
+                            placement={"left"}
                             title={interactiveMode === 3 ? "Stop Presenting" : <FormattedMessage id="live_buttonScreen" />}
                         >
                             <ToggleButton
@@ -220,7 +218,7 @@ export default function ModeControls({ interactiveModeState, disablePresent, dis
             <Divider flexItem className={divider} />
             <Grid container justify="center" alignItems="center" item xs={1} md={12}>
                 <Typography align="center">
-                    <Tooltip id="what_is_this" arrow placement={isSmDown ? "top" : "left"} title={<FormattedMessage id="what_is_this" />}>
+                    <Tooltip id="what_is_this" arrow placement="left" title={<FormattedMessage id="what_is_this" />}>
                         <IconButton
                             size="small"
                             className={helpButton}
@@ -233,7 +231,7 @@ export default function ModeControls({ interactiveModeState, disablePresent, dis
             </Grid>
             <Grid container justify="center" alignItems="center" item xs={1} md={12}>
                 <Typography align="center">
-                    <Tooltip arrow placement={isSmDown ? "top" : "left"} title={<FormattedMessage id="refresh_activity" />}>
+                    <Tooltip arrow placement="left" title={<FormattedMessage id="refresh_activity" />}>
                         <IconButton
                             size="small"
                             className={helpButton}

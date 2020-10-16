@@ -12,7 +12,7 @@ import { Refresh as RefreshIcon } from "@styled-icons/material/Refresh";
 
 import StyledFAB from "../styled/fabButton";
 import { UserContext } from "../../entry";
-import { DRAWER_TOOLBAR_WIDTH } from "../../pages/layout-new";
+import { DRAWER_TOOLBAR_WIDTH } from "../../pages/layout";
 import { loadingActivity } from "../../utils/layerValues";
 import { ActionTypes } from "../../store/actions";
 
@@ -40,6 +40,7 @@ const SET_STREAMID = gql`
 
 export interface Props {
     contentId: string;
+    setStreamId: React.Dispatch<React.SetStateAction<string | undefined>>;
     parentWidth: number;
     parentHeight: number;
 }
@@ -51,13 +52,9 @@ export function RecordedIframe(props: Props): JSX.Element {
 
     const drawerOpen = useSelector((state: State) => state.control.drawerOpen);
     const drawerWidth = useSelector((state: State) => state.control.drawerWidth);
-    const store = useStore();
-    function setStreamId(streamId: string) {
-        store.dispatch({ type: ActionTypes.STREAM_ID, payload: streamId });
-    }
 
     const { roomId } = useContext(UserContext);
-    const { contentId, parentWidth, parentHeight } = props;
+    const { contentId, setStreamId, parentWidth, parentHeight } = props;
     const [sendStreamId] = useMutation(SET_STREAMID);
 
     const [isFlashCards, setIsFlashCards] = useState(false);
@@ -211,7 +208,7 @@ export function RecordedIframe(props: Props): JSX.Element {
                     style: { backgroundColor: "rgba(255,255,255,0.7)" },
                 }}
                 style={{
-                    paddingRight: (isSmDown || !drawerOpen) ? "" : drawerWidth + DRAWER_TOOLBAR_WIDTH,
+                    paddingRight: !drawerOpen ? "" : drawerWidth + DRAWER_TOOLBAR_WIDTH,
                     zIndex: loadingActivity
                 }}
             >
