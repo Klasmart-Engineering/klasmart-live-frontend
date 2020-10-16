@@ -79,6 +79,7 @@ module.exports = {
       ["ENDPOINT_CONTENT"],
       ["APP_GIT_REV"],
       ["DISABLE_BROWSER_GUIDE"],
+      ["DISABLE_SCREEN_SHARE"],
       ["USE_TEST_TOKEN"],
       ["WEBRTC_DEVICE_HANDLER_NAME"]
     ),
