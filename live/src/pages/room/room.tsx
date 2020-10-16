@@ -1,11 +1,12 @@
 import React, { useReducer, useState, useContext, createContext, useRef } from "react";
+import { useSelector } from "react-redux";
 import { gql } from "apollo-boost";
 import { useSubscription } from "@apollo/react-hooks";
 import { FormattedMessage } from "react-intl";
-import { useTheme, useMediaQuery } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import { sessionId, UserContext } from "../../entry";
+import Homework from "../student/homework";
 import { Student } from "../student/student";
 import { Teacher } from "../teacher/teacher";
 import Loading from "../../components/loading";
@@ -13,8 +14,10 @@ import { EventEmitter } from "eventemitter3"
 import { WebRTCSFUContext } from "../../webrtc/sfu";
 import { ScreenShare } from "../teacher/screenShareProvider";
 import { GlobalWhiteboardContext } from "../../whiteboard/context-providers/GlobalWhiteboardContext";
-import NewLayout from "../layout-new";
+import Layout from "../layout";
 import { Trophy } from "../../components/trophies/trophy";
+import { State } from "../../store/store";
+import { ClassType } from "../../store/actions";
 
 export interface Session {
     id: string,
@@ -33,44 +36,46 @@ export interface Message {
     session: Session,
 }
 
-export interface ContentIndexState {
-    contentIndex: number;
-    setContentIndex: React.Dispatch<React.SetStateAction<number>>;
-}
-
 export interface InteractiveModeState {
     interactiveMode: number;
     setInteractiveMode: React.Dispatch<React.SetStateAction<number>>;
 }
 
+export interface StreamIdState {
+    streamId: string | undefined;
+    setStreamId: React.Dispatch<React.SetStateAction<string | undefined>>;
+}
+
 export function Room(): JSX.Element {
+    const classType = useSelector((state: State) => state.session.classType);
     const { teacher } = useContext(UserContext);
-    const [contentIndex, setContentIndex] = useState<number>(0);
     const [interactiveMode, setInteractiveMode] = useState<number>(0);
+    const [streamId, setStreamId] = useState<string>();
 
     return (
         <RoomContext.Provide>
-            <WebRTCSFUContext.Provide>
-                <ScreenShare.Provide>
-                    <GlobalWhiteboardContext>
-                        <NewLayout
-                            isTeacher={teacher}
-                            contentIndexState={{ contentIndex, setContentIndex }}
-                            interactiveModeState={{ interactiveMode, setInteractiveMode }}
-                        >
-                            {teacher
-                                ? <Teacher contentIndexState={{ contentIndex, setContentIndex }} interactiveModeState={{ interactiveMode, setInteractiveMode }} />
-                                : <Student />
-                            }
-                        </NewLayout>
-                    </GlobalWhiteboardContext>
-                </ScreenShare.Provide>
-            </WebRTCSFUContext.Provide>
-            <Trophy />
+            {classType === ClassType.LIVE ? <>
+                <WebRTCSFUContext.Provide>
+                    <ScreenShare.Provide>
+                        <GlobalWhiteboardContext>
+                            <Layout interactiveModeState={{ interactiveMode, setInteractiveMode }} streamIdState={{ streamId, setStreamId }}>
+                                {teacher
+                                    ? <Teacher interactiveModeState={{ interactiveMode, setInteractiveMode }} streamIdState={{ streamId, setStreamId }} />
+                                    : <Student />
+                                }
+                            </Layout>
+                        </GlobalWhiteboardContext>
+                    </ScreenShare.Provide>
+                </WebRTCSFUContext.Provide>
+                <Trophy />
+            </> :
+                <Layout interactiveModeState={{ interactiveMode: 1, setInteractiveMode }} streamIdState={{ streamId, setStreamId }}>
+                    <Homework />
+                </Layout>
+            }
         </RoomContext.Provide>
     );
 }
-
 
 const SUB_ROOM = gql`
     subscription room($roomId: ID!, $name: String) {

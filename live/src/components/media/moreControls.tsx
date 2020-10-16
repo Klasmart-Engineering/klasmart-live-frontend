@@ -21,8 +21,8 @@ const useStyles = makeStyles((theme: Theme) =>
             bottom: theme.spacing(2),
             right: theme.spacing(2),
             [theme.breakpoints.down("sm")]: {
-                bottom: theme.spacing(1),
-                right: theme.spacing(1),
+                bottom: theme.spacing(0),
+                right: theme.spacing(0),
             },
         },
         icon: {
@@ -64,8 +64,6 @@ export default function MoreControls({ session, selfUserId, forOverlay }: {
     selfUserId: string
     forOverlay?: boolean,
 }) {
-    const theme = useTheme();
-    const isSmUp = useMediaQuery(theme.breakpoints.up("sm"));
     const { moreBtn, icon, trophiesMenuItem } = useStyles();
 
     const [moreEl, setMoreEl] = useState<null | HTMLElement>(null);
@@ -78,14 +76,14 @@ export default function MoreControls({ session, selfUserId, forOverlay }: {
             aria-label="more button"
             aria-controls="more-controls-menu"
             aria-haspopup="true"
-            size={isSmUp ? "medium" : "small"}
+            size="small"
             className={forOverlay ? moreBtn : undefined}
             onClick={handleMoreOpen}
             onPointerEnter={handleMoreOpen}
         >
             <StyledIcon
                 icon={<MoreIcon className={forOverlay ? icon : undefined} />}
-                size="medium"
+                size="small"
                 color={forOverlay ? "white" : "#0E78D5"}
             />
         </IconButton>

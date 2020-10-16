@@ -5,15 +5,18 @@ export enum ActionTypes {
     USER_AGENT,
     USER_TYPE,
     LOCALE,
-    STREAM_ID,
 
     DARK_MODE,
     DRAWER_OPEN,
     DRAWER_WIDTH,
     COLS_CAMERA,
     COLS_OBSERVE,
+    CONTENT_INDEX,
 }
-export interface Action<T extends ActionTypes, P> { type: T; payload: P; }
+export interface Action<T extends ActionTypes, P> {
+    type: T;
+    payload: P;
+}
 
 export enum ClassType {
     LIVE = 0,
@@ -52,25 +55,23 @@ export enum UserType {
 }
 export type SetUserType = Action<ActionTypes.USER_TYPE, UserType>;
 export type SetLocale = Action<ActionTypes.LOCALE, string>;
-export type SetStreamId = Action<ActionTypes.STREAM_ID, string>;
 
-// UI
 export type SetDarkMode = Action<ActionTypes.DARK_MODE, string>;
 export type SetDrawerOpen = Action<ActionTypes.DRAWER_OPEN, boolean>;
 export type SetDrawerWidth = Action<ActionTypes.DRAWER_WIDTH, number>;
 export type SetColsCamera = Action<ActionTypes.COLS_CAMERA, number>;
 export type SetColsObserve = Action<ActionTypes.COLS_OBSERVE, number>;
+export type SetContentIndex = Action<ActionTypes.CONTENT_INDEX, number>;
 
 export type Actions =
     | SetClassType
     | SetUserAgent
     | SetUserType
     | SetLocale
-    | SetStreamId
-
     | SetDarkMode
     | SetDrawerOpen
     | SetDrawerWidth
     | SetColsCamera
     | SetColsObserve
+    | SetContentIndex
     | never;
