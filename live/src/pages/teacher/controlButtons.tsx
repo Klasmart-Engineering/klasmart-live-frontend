@@ -182,37 +182,39 @@ export function ControlButtons({ interactiveModeState, disablePresent, disableAc
                             <ViewIcon size="1.5rem" />
                         </ToggleButton>
                     </StyledTooltip>
-                    <StyledTooltip
-                        arrow
-                        open={openScreenTooltip}
-                        onClose={() => toggleTooltip(false, false, false, false)}
-                        onOpen={() => toggleTooltip(false, false, false, true)}
-                        placement={isSmDown ? "top" : "left"}
-                        title={interactiveMode === 3 ? "Stop Presenting" : <FormattedMessage id="live_buttonScreen" />}
-                    >
-                        <ToggleButton
-                            style={{ whiteSpace: 'pre-line' }}
-                            value={3}
-                            aria-label="present screen"
-                            classes={{ root: buttonRoot }}
-                            className={(interactiveMode === 3 || screenShare.getStream()) ? screenSharingButton : ""}
-                            disabled={!navigator.mediaDevices || !(navigator.mediaDevices as any).getDisplayMedia}
-                            onClick={() => {
-                                if (screenShare.getStream() && interactiveMode === 3) {
-                                    screenShare.stop();
-                                }
-                                if (!screenShare.getStream() && interactiveMode !== 3) {
-                                    screenShare.start();
-                                }
-                            }}
+                    {process.env.DISABLE_SCREEN_SHARE === undefined ?
+                        <StyledTooltip
+                            arrow
+                            open={openScreenTooltip}
+                            onClose={() => toggleTooltip(false, false, false, false)}
+                            onOpen={() => toggleTooltip(false, false, false, true)}
+                            placement={isSmDown ? "top" : "left"}
+                            title={interactiveMode === 3 ? "Stop Presenting" : <FormattedMessage id="live_buttonScreen" />}
                         >
-                            {
-                                screenShare.getStream() ?
-                                    <StopScreenShareIcon size="1.5rem" /> :
-                                    <ScreenShareIcon size="1.5rem" />
-                            }
-                        </ToggleButton>
-                    </StyledTooltip>
+                            <ToggleButton
+                                style={{ whiteSpace: 'pre-line' }}
+                                value={3}
+                                aria-label="present screen"
+                                classes={{ root: buttonRoot }}
+                                className={(interactiveMode === 3 || screenShare.getStream()) ? screenSharingButton : ""}
+                                disabled={!navigator.mediaDevices || !(navigator.mediaDevices as any).getDisplayMedia}
+                                onClick={() => {
+                                    if (screenShare.getStream() && interactiveMode === 3) {
+                                        screenShare.stop();
+                                    }
+                                    if (!screenShare.getStream() && interactiveMode !== 3) {
+                                        screenShare.start();
+                                    }
+                                }}
+                            >
+                                {
+                                    screenShare.getStream() ?
+                                        <StopScreenShareIcon size="1.5rem" /> :
+                                        <ScreenShareIcon size="1.5rem" />
+                                }
+                            </ToggleButton>
+                        </StyledTooltip> : <></>
+                    }
                 </StyledToggleButtonGroup>
             </Grid>
             <Divider flexItem className={divider} />
