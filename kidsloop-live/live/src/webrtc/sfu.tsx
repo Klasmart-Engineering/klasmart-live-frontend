@@ -8,7 +8,7 @@ import {
     types as MediaSoup,
 } from "mediasoup-client"
 
-import React, {createContext, useReducer, useRef, useContext, useEffect, useMemo } from "react";
+import React, {createContext, useReducer, useRef, useContext, useEffect, useMemo, useState, useCallback } from "react";
 import { RoomContext } from "../room";
 import { gql, ExecutionResult, ApolloClient, InMemoryCache } from "apollo-boost";
 import { useMutation, useSubscription, ApolloProvider } from "@apollo/react-hooks";
@@ -18,6 +18,7 @@ import { WebSocketLink } from "apollo-link-ws";
 import { sessionId, UserContext } from "../entry";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { Producer, ProducerOptions } from "mediasoup-client/lib/Producer";
+import useCordovaObservePause from "../cordova-observe-pause";
 
 const SEND_RTP_CAPABILITIES = gql`
     mutation rtpCapabilities($rtpCapabilities: String!) {
@@ -198,6 +199,29 @@ export class WebRTCSFUContext implements WebRTCContext {
                 }))
             }
         }, [camera])
+
+        // NOTE: Handle cordova pause/resume events.
+        const [stateBeforePause, setStateBeforePause] = useState<{ camera: boolean | undefined, mic: boolean | undefined }>({ camera: false, mic: false });
+
+        const onPauseStateChanged = useCallback((paused: boolean) => {
+            const states = sfu.current;
+            if (paused) {
+                const beforePause = {
+                    camera: states.isLocalVideoEnabled(),
+                    mic: states.isLocalAudioEnabled(),
+                };
+
+                setStateBeforePause(beforePause);
+
+                states.localVideoEnable(undefined, false);
+                states.localAudioEnable(undefined, false);
+            } else {
+                states.localVideoEnable(undefined, stateBeforePause.camera);
+                states.localAudioEnable(undefined, stateBeforePause.mic);
+            }
+        }, [stateBeforePause, setStateBeforePause]);
+
+        useCordovaObservePause(onPauseStateChanged);
 
         return <></>
     }
