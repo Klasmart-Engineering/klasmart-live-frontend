@@ -52,12 +52,12 @@ export default function MediaDeviceSelect(props: Props) {
                 value={deviceId || ""}
             >
                 {
-                    devices.map((device: MediaDeviceInfo) => (
+                    devices.map((device: MediaDeviceInfo, index: number) => (
                         <MenuItem
                             key={device.kind + ":" + device.label + ":" + device.deviceId}
                             value={device.deviceId}
                         >
-                            {`${device.label ? device.label.charAt(0).toUpperCase() + device.label.slice(1) : "Unknown Device"}(${device.deviceId.slice(0, 4)})`}
+                            {`${device.label ? device.label.charAt(0).toUpperCase() + device.label.slice(1) : deviceType === "video" ? "Camera " + (index + 1) : "Microphone " + (index + 1)}`}
                         </MenuItem>
                     ))
                 }
