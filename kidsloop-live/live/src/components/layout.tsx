@@ -1,5 +1,5 @@
 /* eslint-disable no-case-declarations */
-import React, { useState, createContext, useContext } from "react";
+import React, { useState, createContext, useContext, useMemo } from "react";
 import { FormattedMessage } from "react-intl";
 import clsx from "clsx";
 import { createStyles, makeStyles, useTheme, Theme } from "@material-ui/core/styles";
@@ -232,6 +232,10 @@ function TabPanel(props: TabPanelProps) {
     const open = Boolean(anchorEl);
     const id = open ? "share-popover" : undefined;
 
+    const isLocalFile = useMemo<boolean>(() => {
+        return new URL(window.location.href).origin === 'file://';
+    }, [window.location.href]);
+
     return (
         <>
             <div
@@ -245,7 +249,7 @@ function TabPanel(props: TabPanelProps) {
                     <Typography variant="body1" style={{ fontSize: isSmDown ? "unset" : "1rem" }}>
                         <CenterAlignChildren>
                             <FormattedMessage id={tab.title} />
-                            {teacher && tab.title === "title_participants" ?
+                            {teacher && tab.title === "title_participants" && !isLocalFile ?
                                 <IconButton aria-label="share popover" onClick={handleClick}>
                                     <ShareIcon size="1rem" />
                                 </IconButton> : null
