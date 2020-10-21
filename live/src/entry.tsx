@@ -30,6 +30,7 @@ import { ThemeProvider } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Typography from "@material-ui/core/Typography";
 
+import { App } from "./app";
 import { ActionTypes } from "./store/actions"
 import { createDefaultStore, State } from "./store/store";
 import { LessonMaterial, MaterialTypename } from "./lessonMaterialContext";
@@ -209,18 +210,7 @@ function Entry() {
             <RawIntlProvider value={locale}>
                 <ThemeProvider theme={themeProvider(languageCode, themeMode)}>
                     <CssBaseline />
-                    <HashRouter>
-                        <Switch>
-                            <Route path="/password-change" component={PasswordChange} />
-                            <Route path="/password-changed" component={PasswordChanged} />
-                            <Route path="/password-forgot" component={PasswordForgot} />
-                            <Route path="/password-restore" component={PasswordRestore} />
-                            <Route path="/room" component={Room} />
-                            <Route path="/signup" component={Signup} />
-                            <Route path="/signin" component={Signin} />
-                            <Route path="/" component={Join} />
-                        </Switch>
-                    </HashRouter>
+                    <App />
                 </ThemeProvider>
             </RawIntlProvider>
         </UserContext.Provider>
