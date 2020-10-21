@@ -224,10 +224,10 @@ async function main() {
     let renderComponent: JSX.Element;
     if (isIE <= 11 && isIE !== false) {
         renderComponent = <BrowserList />
-    } else if (
+    } else if ((process.env.DISABLE_BROWSER_GUIDE) || (
         (!isMobileOnly && (isChrome || isSafari || isFirefox)) || // !isMobileOnly == Desktop
         (isIOS && isSafari) ||
-        (isAndroid && isChrome)
+        (isAndroid && isChrome))
     ) {
         renderComponent = (
             <Provider store={store}>
