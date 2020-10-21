@@ -15,7 +15,8 @@ export function App(): JSX.Element {
     const [cordovaReady, permissions] = useCordovaInitialize();
     const { camera, name, teacher } = useContext(UserContext);
 
-    if (!cordovaReady || !permissions) { return <>Loading...</> }
+    if (!cordovaReady) { return <>Loading...</> }
+    if (!permissions) { return <>Camera and Microphone premissions required. Please grant the permissions and restart application.</> }
     if (!name || camera === undefined) { return <Join /> }
 
     return (
