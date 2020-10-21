@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { LessonMaterial } from "../lessonMaterialContext";
-import { Content } from "../room";
+import { Content } from "../pages/room/room";
 
 export const useMaterialToHref = function (material?: LessonMaterial) {
     const [href, setHref] = useState<string>("");
