@@ -14,7 +14,9 @@ export class AuthTokenProvider {
                     candidate = storedToken
                 }
             }
-        } catch(e) { }
+        } catch(e) {
+            console.log(e)
+        }
 
         return candidate
     }
