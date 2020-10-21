@@ -9,7 +9,7 @@ import {
 } from "./actions";
 
 // Session
-export function classType(state: ClassType = ClassType.HOMEWORK, action: Actions) {
+export function classType(state: ClassType = ClassType.LIVE, action: Actions) {
     switch (action.type) {
         case ActionTypes.CLASS_TYPE:
             return action.payload;

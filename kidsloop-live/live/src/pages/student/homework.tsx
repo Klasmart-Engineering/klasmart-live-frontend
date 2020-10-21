@@ -40,9 +40,6 @@ export default function Homework(): JSX.Element {
     const { materials } = useContext(UserContext);
     const mats = materials.filter(mat => mat.__typename !== undefined && mat.__typename !== MaterialTypename.Image)
     const contentIndex = useSelector((store: State) => store.control.contentIndex)
-    console.log("content: ", content)
-    console.log("mats: ", mats)
-
     const iframeRef = useRef<HTMLIFrameElement>(null);
 
     // TODO
