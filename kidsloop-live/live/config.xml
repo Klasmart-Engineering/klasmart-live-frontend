@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.calmid.kidsloop_live" version="1.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
-    <name>KidsLoop Live</name>
+<widget id="com.kidsloop.platform.student" version="0.1.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+    <name>KidsLoop</name>
     <description>
         An interactive live platform for teachers and students.
     </description>
@@ -41,7 +41,6 @@
     </platform>
     <platform name="android">
         <config-file target="AndroidManifest.xml" parent="/*" mode="merge">
-            <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="28" />
             <uses-permission android:name="android.permission.CAMERA" />
             <uses-permission android:name="android.permission.RECORD_AUDIO" />
             <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
@@ -55,7 +54,7 @@
         </edit-config>
     </platform>
     <platform name="android">
-        <icon density="ldpi" background="res/android/drawable-ldpi/ic_app_adaptive_bg.png" foreground="res/android/drawable-ldpi/ic_app_adaptive_fg.png" src="res/android/drawable-ldpi/ic_app_legacy.png" />
+        <icon density="ldpi" background="res/android/drawable-ldpi/ic_app_adaptive_bg.png" foreground="res/android/drawable-ldpi/ic_app_adaptive_fg.png" src="res/android/drawable-ldpi/ic_app_legacy.png"/>
         <icon density="mdpi" background="res/android/drawable-mdpi/ic_app_adaptive_bg.png" foreground="res/android/drawable-mdpi/ic_app_adaptive_fg.png" src="res/android/drawable-mdpi/ic_app_legacy.png"/>
         <icon density="hdpi" background="res/android/drawable-hdpi/ic_app_adaptive_bg.png" foreground="res/android/drawable-hdpi/ic_app_adaptive_fg.png" src="res/android/drawable-hdpi/ic_app_legacy.png" />
         <icon density="xhdpi" background="res/android/drawable-xhdpi/ic_app_adaptive_bg.png" foreground="res/android/drawable-xhdpi/ic_app_adaptive_fg.png" src="res/android/drawable-xhdpi/ic_app_legacy.png" />
