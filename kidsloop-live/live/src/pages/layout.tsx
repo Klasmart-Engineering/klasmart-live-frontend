@@ -694,6 +694,10 @@ function TabPanel(props: TabPanelProps) {
     const open = Boolean(anchorEl);
     const id = open ? "share-popover" : undefined;
 
+    const isLocalFile = useMemo<boolean>(() => {
+        return new URL(window.location.href).origin === 'file://';
+    }, [window.location.href]);
+
     return (
         <>
             <div
