@@ -20,7 +20,6 @@ import { Eraser as EraserIcon } from "@styled-icons/boxicons-solid/Eraser";
 
 import { Session } from "./room";
 import StyledIcon from "./components/styled/icon";
-import NoCamera from "./components/noCamera";
 import MoreControls from "./components/moreControls";
 import { useToolbarContext } from "kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
 
@@ -29,7 +28,7 @@ import { Star as StarIcon } from "@styled-icons/material/Star";
 import { EmojiEvents as TrophyIcon } from "@styled-icons/material/EmojiEvents";
 import { Favorite as HeartIcon } from "@styled-icons/material/Favorite";
 import { ThumbUp as EncourageIcon } from "@styled-icons/material/ThumbUp";
-import { WebRTCSFUContext } from "./webrtc/sfu";
+import { MuteNotification, WebRTCSFUContext} from "./webrtc/sfu";
 import { useSynchronizedState } from "./whiteboard/context-providers/SynchronizedStateProvider";
 import { UserContext } from "./entry";
 
@@ -148,12 +147,6 @@ export function GlobalCameraControl(): JSX.Element {
     const [camerasOn, setCamerasOn] = useState(true);
     const [micsOn, setMicsOn] = useState(true);
 
-    const [mute, { loading, error }] = useMutation(gql`
-        mutation mute($roomId: ID!, $sessionId: ID!, $audio: Boolean, $video: Boolean) {
-            mute(roomId: $roomId, sessionId: $sessionId, audio: $audio, video: $video)
-        }
-    `);
-
     const states = WebRTCSFUContext.Consume()
     const mediaStreams = states.getAllInboundTracks();
     const { roomId, sessionId } = useContext(UserContext);
@@ -168,28 +161,42 @@ export function GlobalCameraControl(): JSX.Element {
     } = useSynchronizedState();
 
     function toggleVideoStates() {
-        for (const { sessionId } of mediaStreams) {
-            mute({
-                variables: {
-                    roomId,
-                    sessionId,
-                    video: !camerasOn,
+        for (const { sessionId, stream } of mediaStreams) {
+            if (stream) {
+                let videoTracks = stream.getVideoTracks()
+                if (videoTracks && videoTracks.length > 0) {
+                    for (const consumerId of videoTracks.map((t) => t.id)) {
+                        let notification: MuteNotification = {
+                            roomId,
+                            sessionId,
+                            consumerId,
+                            video: !camerasOn
+                        }
+                        states.sendMute(notification);
+                    }
                 }
-            });
+            }
             states.localVideoEnable(sessionId, !camerasOn);
         }
         setCamerasOn(!camerasOn);
     }
 
     function toggleAudioStates() {
-        for (const { sessionId } of mediaStreams) {
-            mute({
-                variables: {
-                    roomId,
-                    sessionId,
-                    audio: !micsOn,
+        for (const { sessionId, stream } of mediaStreams) {
+            if (stream) {
+                let audioTracks = stream.getAudioTracks()
+                if (audioTracks && audioTracks.length > 0) {
+                    for (const consumerId of audioTracks.map((t) => t.id)) {
+                        let notification: MuteNotification = {
+                            roomId,
+                            sessionId,
+                            consumerId,
+                            audio: !micsOn
+                        }
+                        states.sendMute(notification);
+                    }
                 }
-            });
+            }
             states.localAudioEnable(sessionId, !micsOn);
         }
         setMicsOn(!micsOn);
@@ -351,88 +358,6 @@ export function GlobalCameraControl(): JSX.Element {
     );
 }
 
-// TODO: It would be great to integrate with CameraControls in CameraOverlay and reuse as components.
-export function CameraControls(props: { global?: boolean, sessionId?: string }): JSX.Element {
-    const theme = useTheme();
-    const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
-
-    const { global, sessionId } = props;
-    const { sessionId: mySessionId } = useContext(UserContext);
-    const [mute, { loading, error }] = useMutation(gql`
-        mutation mute($roomId: ID!, $sessionId: ID!, $audio: Boolean, $video: Boolean) {
-            mute(roomId: $roomId, sessionId: $sessionId, audio: $audio, video: $video)
-        }
-    `);
-
-    const states = WebRTCSFUContext.Consume();
-    const { roomId } = useContext(UserContext);
-
-    function toggleVideoState() {
-        if (global && sessionId && sessionId !== mySessionId) {
-            mute({
-                variables: {
-                    roomId,
-                    sessionId,
-                    video: !states.isLocalVideoEnabled(sessionId),
-                }
-            });
-        } else {
-            states.localVideoToggle(sessionId);
-        }
-    }
-    function toggleAudioState() {
-        if (global && sessionId && sessionId !== mySessionId) {
-            mute({
-                variables: {
-                    roomId,
-                    sessionId,
-                    audio: !states.isLocalAudioEnabled(sessionId),
-                }
-            });
-        } else {
-            states.localAudioToggle(sessionId);
-        }
-    }
-
-    return (
-        <Grid
-            container
-            direction="row"
-            justify="space-between"
-            alignItems="center"
-            item
-            xs={8}
-        >
-            <Grid item>
-                <IconButton
-                    aria-label="control camera"
-                    component="span"
-                    onClick={toggleVideoState}
-                    size="small"
-                >
-                    {states.isLocalVideoEnabled(sessionId)
-                        ? <StyledIcon icon={<CameraIcon />} size={isSmDown ? "small" : "medium"} color="#0E78D5" />
-                        : <StyledIcon icon={<CameraOffIcon />} size={isSmDown ? "small" : "medium"} color="#F44336" />
-                    }
-                </IconButton>
-            </Grid>
-            <Grid item>
-                <IconButton
-                    aria-label="control mic"
-                    component="span"
-                    onClick={toggleAudioState}
-                    size="small"
-                >
-                    {states.isLocalAudioEnabled(sessionId)
-                        ? <StyledIcon icon={<MicIcon />} size={isSmDown ? "small" : "medium"} color="#0E78D5" />
-                        : <StyledIcon icon={<MicOffIcon />} size={isSmDown ? "small" : "medium"} color="#F44336" />
-                    }
-                </IconButton>
-            </Grid>
-        </Grid>
-    );
-}
-
 /**
  * CameraOverlay style detail
  *         | Info spacing | Controls spacing | Button |  Icon  |
@@ -503,11 +428,10 @@ const useStyles = makeStyles((theme: Theme) =>
     })
 );
 
-export default function CameraOverlay({ mediaStream, session, miniMode, global }: {
+export default function CameraOverlay({ mediaStream, session, miniMode }: {
     mediaStream: MediaStream | undefined;
     session: Session;
     miniMode?: boolean;
-    global?: boolean;
 }) {
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
@@ -515,40 +439,77 @@ export default function CameraOverlay({ mediaStream, session, miniMode, global }
     const { root, iconBtn, iconOffBtn, icon, iconOff, infoContainer, controlsContainer } = useStyles();
 
     const { roomId, teacher, sessionId: mySessionId } = useContext(UserContext);
-    const [mute, { loading, error }] = useMutation(gql`
-    mutation mute($roomId: ID!, $sessionId: ID!, $audio: Boolean, $video: Boolean) {
-        mute(roomId: $roomId, sessionId: $sessionId, audio: $audio, video: $video)
-    }
-    `);
     const states = WebRTCSFUContext.Consume()
     const isSelf = session.id === mySessionId;
 
     function toggleVideoState() {
-        if (global && session.id !== mySessionId) {
-            mute({
-                variables: {
-                    roomId,
-                    sessionId: session.id,
-                    video: !states.isLocalVideoEnabled(session.id),
+        let stream = states.getCameraStream(session.id)
+        if (stream) {
+            // Inbound stream
+            let tracks = stream.getVideoTracks()
+            if (tracks && tracks.length > 0) {
+                for (const consumerId of tracks.map((t) => t.id)) {
+                    let notification: MuteNotification = {
+                        roomId,
+                        sessionId: session.id,
+                        consumerId,
+                        video: !states.isLocalVideoEnabled(session.id)
+                    }
+                    states.sendMute(notification);
                 }
-            });
+            }
         } else {
-            states.localVideoToggle(session.id);
+            // Outbound stream
+            let producers = states.getOutboundCameraStream()
+                if (producers) {
+                    let video = producers.producers.find((a) => a.kind === "video")
+                    if (video) {
+                        let notification: MuteNotification = {
+                            roomId,
+                            sessionId: session.id,
+                            producerId: video.id,
+                            video: !states.isLocalVideoEnabled(session.id)
+                        }
+                        states.sendMute(notification)
+                    }
+                }
         }
+        states.localVideoToggle(session.id);
     }
 
     function toggleAudioState() {
-        if (global && session.id !== mySessionId) {
-            mute({
-                variables: {
-                    roomId,
-                    sessionId: session.id,
-                    audio: !states.isLocalAudioEnabled(session.id),
+        let stream = states.getCameraStream(session.id)
+        if (stream) {
+            // Inbound stream
+            let tracks = stream.getAudioTracks()
+            if (tracks && tracks.length > 0) {
+                for (const consumerId of tracks.map((t) => t.id)) {
+                    let notification: MuteNotification = {
+                        roomId,
+                        sessionId: session.id,
+                        consumerId,
+                        audio: !states.isLocalAudioEnabled(session.id)
+                    }
+                    states.sendMute(notification);
                 }
-            });
+            }
         } else {
-            states.localAudioToggle(session.id);
+            // Outbound stream
+            let producers = states.getOutboundCameraStream()
+            if (producers) {
+                let audio = producers.producers.find((a) => a.kind === "audio")
+                if (audio) {
+                    let notification: MuteNotification = {
+                        roomId,
+                        sessionId: session.id,
+                        producerId: audio.id,
+                        audio: !states.isLocalAudioEnabled(session.id)
+                    }
+                    states.sendMute(notification)
+                }
+            }
         }
+        states.localAudioToggle(session.id);
     }
 
     return (

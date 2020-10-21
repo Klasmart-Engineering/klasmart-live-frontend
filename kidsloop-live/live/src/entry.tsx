@@ -32,10 +32,6 @@ import { AuthTokenProvider } from "./services/auth-token/AuthTokenProvider";
 import { themeProvider } from "./themeProvider";
 import { getLanguage, getDefaultLanguageCode } from "./utils/locale";
 
-import testAudio from "./assets/audio/test_audio.m4a";
-import testImageLandscape from "./assets/img/test_image_landsape.jpg";
-import testImagePortrait from "./assets/img/test_image_portrait.jpg";
-import testVideo from "./assets/img/test_video.mp4";
 import ChromeLogo from "./assets/img/browser/chrome_logo.svg";
 import SafariLogo from "./assets/img/browser/safari_logo.png";
 
