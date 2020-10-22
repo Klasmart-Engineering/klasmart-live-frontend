@@ -12,6 +12,8 @@ export enum ActionTypes {
     COLS_CAMERA,
     COLS_OBSERVE,
     CONTENT_INDEX,
+
+    DEVICE_ORIENTATION,
 }
 export interface Action<T extends ActionTypes, P> {
     type: T;
@@ -63,6 +65,12 @@ export type SetColsCamera = Action<ActionTypes.COLS_CAMERA, number>;
 export type SetColsObserve = Action<ActionTypes.COLS_OBSERVE, number>;
 export type SetContentIndex = Action<ActionTypes.CONTENT_INDEX, number>;
 
+export enum OrientationType {
+    PORTRAIT = "portrait",
+    LANDSCAPE = "landscape",
+}
+export type SetDeviceOrientation = Action<ActionTypes.DEVICE_ORIENTATION, OrientationType>;
+
 export type Actions =
     | SetClassType
     | SetUserAgent
@@ -74,4 +82,5 @@ export type Actions =
     | SetColsCamera
     | SetColsObserve
     | SetContentIndex
+    | SetDeviceOrientation
     | never;
