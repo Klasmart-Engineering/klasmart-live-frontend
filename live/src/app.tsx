@@ -1,5 +1,6 @@
 import { UserContext } from "./entry";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
+import { useSelector } from "react-redux";
 import useCordovaInitialize from "./cordova-initialize";
 import { HashRouter, Route, Switch } from "react-router-dom";
 import { Signup } from "./pages/account/signup";
@@ -10,14 +11,24 @@ import { PasswordForgot } from "./pages/account/password/password-forgot";
 import { PasswordRestore } from "./pages/account/password/password-restore";
 import { Room } from "./pages/room/room";
 import { Join } from "./pages/join/join";
+import { State } from "./store/store";
+import { OrientationType } from "./store/actions";
 
 export function App(): JSX.Element {
+    const deviceOrientation = useSelector((state: State) => state.location.deviceOrientation);
+
     const [cordovaReady, permissions] = useCordovaInitialize();
     const { camera, name, teacher } = useContext(UserContext);
 
     if (!cordovaReady) { return <>Loading...</> }
     if (!permissions) { return <>Camera and Microphone premissions required. Please grant the permissions and restart application.</> }
     if (!name || camera === undefined) { return <Join /> }
+
+    useEffect(() => {
+        if (deviceOrientation === OrientationType.LANDSCAPE) {
+            screen.orientation.lock("portrait");
+        }
+    }, [])
 
     return (
         <HashRouter>

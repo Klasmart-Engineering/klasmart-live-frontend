@@ -6,6 +6,7 @@ import {
     ClassType,
     UserAgent,
     UserType,
+    OrientationType,
 } from "./actions";
 
 // Session
@@ -108,6 +109,16 @@ export function contentIndex(state = 0, action: Actions) {
     }
 }
 
+// location
+export function deviceOrientation(state: OrientationType = OrientationType.PORTRAIT, action: Actions) {
+    switch (action.type) {
+        case ActionTypes.DEVICE_ORIENTATION:
+            return action.payload;
+        default:
+            return state;
+    }
+}
+
 export const data = combineReducers({});
 
 export const communication = combineReducers({});
@@ -128,4 +139,6 @@ export const session = combineReducers({
     locale,
 });
 
-export const location = combineReducers({});
+export const location = combineReducers({
+    deviceOrientation,
+});
