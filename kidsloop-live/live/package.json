@@ -122,7 +122,8 @@
       "cordova-plugin-iosrtc": {
         "MANUAL_INIT_AUDIO_DEVICE": "FALSE"
       },
-      "cordova-plugin-android-permissions": {}
+      "cordova-plugin-android-permissions": {},
+      "cordova-plugin-screen-orientation": {}
     },
     "platforms": [
       "browser",

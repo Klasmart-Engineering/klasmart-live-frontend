@@ -1,4 +1,4 @@
-import React, { useReducer, useState, useContext, createContext, useRef } from "react";
+import React, { useReducer, useState, useContext, createContext, useRef, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { gql } from "apollo-boost";
 import { useSubscription } from "@apollo/react-hooks";
@@ -17,7 +17,7 @@ import { GlobalWhiteboardContext } from "../../whiteboard/context-providers/Glob
 import Layout from "../layout";
 import { Trophy } from "../../components/trophies/trophy";
 import { State } from "../../store/store";
-import { ClassType } from "../../store/actions";
+import { ClassType, OrientationType } from "../../store/actions";
 
 export interface Session {
     id: string,
@@ -48,9 +48,17 @@ export interface StreamIdState {
 
 export function Room(): JSX.Element {
     const classType = useSelector((state: State) => state.session.classType);
+    const deviceOrientation = useSelector((state: State) => state.location.deviceOrientation);
+
     const { teacher } = useContext(UserContext);
     const [interactiveMode, setInteractiveMode] = useState<number>(0);
     const [streamId, setStreamId] = useState<string>();
+
+    useEffect(() => {
+        if (deviceOrientation === OrientationType.PORTRAIT) {
+            screen.orientation.lock("landscape");
+        }
+    }, [])
 
     return (
         <RoomContext.Provide>

@@ -34,6 +34,7 @@ import jwt_decode from "jwt-decode";
 import { ThemeProvider } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Typography from "@material-ui/core/Typography";
+import Alert from "@material-ui/lab/Alert/Alert";
 
 import { App } from "./app";
 import { ActionTypes } from "./store/actions"
@@ -41,18 +42,8 @@ import { createDefaultStore, State } from "./store/store";
 import { LessonMaterial, MaterialTypename } from "./lessonMaterialContext";
 import { AuthTokenProvider } from "./services/auth-token/AuthTokenProvider";
 import { themeProvider } from "./themeProvider";
-import { Room, RoomContext } from "./pages/room/room";
-import { Trophy } from "./components/trophies/trophy";
-import { Join } from "./pages/join/join";
 import BrowserList, { detectIE } from "./pages/browserList";
-import { getLanguage, getDefaultLanguageCode } from "./utils/locale";
-import { HashRouter, Route, Switch } from "react-router-dom";
-import { Signup } from "./pages/account/signup";
-import { Signin } from "./pages/account/signin";
-import { PasswordChange } from "./pages/account/password/password-change";
-import { PasswordChanged } from "./pages/account/password/password-changed";
-import { PasswordForgot } from "./pages/account/password/password-forgot";
-import { PasswordRestore } from "./pages/account/password/password-restore";
+import { getLanguage } from "./utils/locale";
 
 /*
 Sentry.init({
@@ -203,7 +194,7 @@ function Entry() {
         store.dispatch({ type: ActionTypes.USER_AGENT, payload: userAgent });
     }, []);
 
-    return (
+    return (<>
         <UserContext.Provider value={userContext}>
             <RawIntlProvider value={locale}>
                 <ThemeProvider theme={themeProvider(languageCode, themeMode)}>
@@ -212,7 +203,11 @@ function Entry() {
                 </ThemeProvider>
             </RawIntlProvider>
         </UserContext.Provider>
-    );
+        {/* {isMobileOnly ?
+            <Alert variant="filled" severity="warning" style={{ position: "fixed", bottom: 0 }}>
+                {`Your experience might be limited on this unsupported device.For a better Kidsloop experience, please join the class on a tablet, laptop, or desktop. Thank you!`}
+            </Alert> : null} */}
+    </>);
 }
 
 async function main() {
