@@ -2,6 +2,23 @@ import { useEffect, useState } from "react";
 import { LessonMaterial } from "../lessonMaterialContext";
 import { Content } from "../pages/room/room";
 
+export const getContentHref = function (path: string) {
+    let result = path;
+    try {
+        // new URL will combine the url and base if url is relative. Otherwise it will
+        // ignore the base component. This allow the contentId to be both absolute and
+        // relative paths.
+        const url = new URL(path, process.env.ENDPOINT_CONTENT);
+
+        result = url.href;
+    } catch (err) {
+        console.error(err);
+        result = path;
+    }
+
+    return result;
+};
+
 export const useMaterialToHref = function (material?: LessonMaterial) {
     const [href, setHref] = useState<string>("");
 
