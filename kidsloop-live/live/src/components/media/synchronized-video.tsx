@@ -13,7 +13,8 @@ import { MaterialTypename } from "../../lessonMaterialContext";
 import FFT from "./fft";
 import ReactPlayer from "../react-player/lazy";
 import { VolumeMute as AudioOffIcon } from "@styled-icons/boxicons-regular/VolumeMute";
-import { videoUnmuteOverlay } from "../utils/layerValues";
+import { videoUnmuteOverlay } from "../../utils/layerValues";
+import { getContentHref } from "../../utils/contentUtils";
 
 interface VideoSynchronize {
     src?: string;
@@ -125,13 +126,18 @@ export function ReplicaMedia(
                     setMuted(isSafari);
                 }
 
+                let contentHref: string | undefined;
                 if (src) {
-                    srcRef.current = src;
+                    contentHref = getContentHref(src);
+                }
+
+                if (contentHref) {
+                    srcRef.current = contentHref;
 
                     if (type !== MaterialTypename.Audio) {
-                        const sources = createHlsDashUrlFromSrc(src);
+                        const sources = createHlsDashUrlFromSrc(contentHref);
 
-                        sources.push(src);
+                        sources.push(contentHref);
 
                         const playable = sources.filter((s) => ReactPlayer.canPlay(s));
                         if (playable.length > 0) {
@@ -148,8 +154,8 @@ export function ReplicaMedia(
                 }
 
                 if (ref.current) {
-                    if (src) {
-                        ref.current.src = src;
+                    if (contentHref) {
+                        ref.current.src = contentHref;
                     }
                     if (offset !== undefined) {
                         ref.current.currentTime = offset;
