@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "rm dist/*;webpack --config webpack.config.js",
     "start": "webpack-dev-server"
   },
   "author": "",

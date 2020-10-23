@@ -8,7 +8,7 @@ import { createStyles, makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import ErrorIcon from "@material-ui/icons/Error";
 import * as React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { useHistory } from "react-router";
 import * as restApi from "./restapi";
@@ -60,13 +60,25 @@ export function Login() {
     const [passwordError, setPasswordError] = useState<JSX.Element | null>(null);
     const [emailError, setEmailError] = useState<JSX.Element | null>(null);
     const [generalError, setGeneralError] = useState<JSX.Element | null>(null);
+    const [success, setSuccess] = useState(false);
 
     const history = useHistory();
+
+    useEffect(() => {
+        if (passwordError || emailError || generalError) {
+            console.log("error found")
+            return;
+        } else if (success) {
+            console.log("success")
+            handleSuccess();
+        }
+    }, [passwordError, emailError, generalError, success])
 
     async function login() {
         setEmailError(null);
         setPasswordError(null);
         if (inFlight) { return; }
+
         try {
             setInFlight(true);
             if (email === "") { throw new Error("EMPTY_EMAIL"); }
@@ -76,16 +88,18 @@ export function Login() {
             handleError(e);
         } finally {
             setInFlight(false);
+            setSuccess(true);
         }
+        return;
     }
 
     function googleLoginSuccess(response: GoogleLoginResponse | GoogleLoginResponseOffline) {
         if(!("tokenId" in response)) { return }
-        transferLogin(response.tokenId)
+        transferLogin(response.tokenId);
     }
 
     function googleLoginFailure(error: any) {
-        console.error(error)
+        console.error(error);
     }
 
     async function transferLogin(token: string) {
@@ -97,7 +111,20 @@ export function Login() {
             headers,
             method: "POST",
         });
-        console.log(response)
+        console.log(response);
+        handleSuccess();
+    }
+
+    function handleSuccess() {
+        const url = new URL(window.location.href)
+        const continueParam = url.searchParams.get("continue");
+        console.log("continueParam " + continueParam)
+        console.log("document.referrer " + document.referrer)
+        if (continueParam) { window.location.replace(continueParam); }
+        if (document.referrer) { window.location.replace(document.referrer); }
+        window.location.replace("https://live.kidsloop.net")
+
+        return;
     }
 
     function handleError(e: RestAPIError | Error) {
@@ -201,9 +228,7 @@ export function Login() {
                             <Grid item xs={6} className={classes.link}>
                                 <StyledButton
                                     disabled={inFlight}
-                                    onClick={() => {
-                                        login()
-                                    }}
+                                    onClick={() =>  login() }
                                     size="medium"
                                     type="submit"
                                 >
