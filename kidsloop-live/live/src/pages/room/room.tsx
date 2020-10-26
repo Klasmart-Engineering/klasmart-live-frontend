@@ -56,6 +56,7 @@ export function Room(): JSX.Element {
 
     useEffect(() => {
         if (deviceOrientation === OrientationType.PORTRAIT) {
+            screen.orientation.unlock();
             screen.orientation.lock("landscape");
         }
     }, [])
