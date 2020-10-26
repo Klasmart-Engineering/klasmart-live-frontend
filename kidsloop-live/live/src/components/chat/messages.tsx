@@ -49,7 +49,7 @@ function Messages({ messages }: Props): JSX.Element {
         {
             [...mapGenerator(messages, ([, m], i) => (
                 // TODO: Animation for chat messages
-                <Grid item xs={12}>
+                <Grid key={m.id} item xs={12}>
                     <Paper elevation={0} className={classes.paperContainer}>
                         <Grid
                             container
