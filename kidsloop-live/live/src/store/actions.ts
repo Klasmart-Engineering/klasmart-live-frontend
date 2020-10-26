@@ -1,6 +1,15 @@
 // TODO: Move types to correct file
 
 export enum ActionTypes {
+    SCHEDULES,
+
+    SUCCESS,
+    FAILURE,
+    RETRIEVING,
+    CREATING,
+    UPDATING,
+    DELETING,
+
     CLASS_TYPE,
     USER_AGENT,
     USER_TYPE,
@@ -20,10 +29,23 @@ export interface Action<T extends ActionTypes, P> {
     payload: P;
 }
 
+export interface Payload {
+    total: number;
+    data: any[]
+}
+export type SetSchedules = Action<ActionTypes.SCHEDULES, Payload>;
+
+export type SetSuccess = Action<ActionTypes.SUCCESS, boolean>;
+export type SetFailure = Action<ActionTypes.FAILURE, boolean>;
+export type SetRetrieving = Action<ActionTypes.RETRIEVING, boolean>;
+export type SetCreating = Action<ActionTypes.CREATING, boolean>;
+export type SetUpdating = Action<ActionTypes.UPDATING, boolean>;
+export type SetDeleting = Action<ActionTypes.DELETING, boolean>;
+
 export enum ClassType {
     LIVE = 0,
     // CLASS = 1,
-    HOMEWORK = 2,
+    STUDY = 2,
 }
 export type SetClassType = Action<ActionTypes.CLASS_TYPE, ClassType>;
 
@@ -72,6 +94,13 @@ export enum OrientationType {
 export type SetDeviceOrientation = Action<ActionTypes.DEVICE_ORIENTATION, OrientationType>;
 
 export type Actions =
+    | SetSchedules
+    | SetSuccess
+    | SetFailure
+    | SetRetrieving
+    | SetCreating
+    | SetUpdating
+    | SetDeleting
     | SetClassType
     | SetUserAgent
     | SetUserType

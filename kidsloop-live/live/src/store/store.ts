@@ -1,12 +1,19 @@
-import LogRocket from "logrocket";
-import { applyMiddleware, combineReducers, createStore, Store as ReduxStore } from "redux";
+import { combineReducers, Store as ReduxStore } from "redux";
+import { configureStore } from "@reduxjs/toolkit";
 import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
+import logger from "redux-logger";
+import thunk from "redux-thunk";
+
 import { Actions } from "./actions";
-import { data, communication, control, session, location } from "./reducers";
+import data from "./reducers/data";
+import communication from "./reducers/communication";
+import control from "./reducers/control";
+import session from "./reducers/session";
+import location from "./reducers/location";
 
 const persistConfig = {
-    key: "live",
+    key: "kidsloop",
     storage,
 };
 
@@ -21,7 +28,7 @@ const rootReducer = combineReducers({
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export function createDefaultStore() {
-    const store = createStore(persistedReducer, applyMiddleware(LogRocket.reduxMiddleware()));
+    const store = configureStore({ reducer: persistedReducer, middleware: [thunk, logger] })
     const persistor = persistStore(store);
     return { store, persistor };
 }

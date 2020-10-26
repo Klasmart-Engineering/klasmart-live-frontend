@@ -92,6 +92,7 @@ module.exports = {
   ],
   devServer: {
     host: "0.0.0.0",
+    historyApiFallback: true,
     proxy: {
       "/graphql": {
         target: "http://localhost:8000",
@@ -105,8 +106,24 @@ module.exports = {
       },
       "/h5p": {
         target: "https://zoo.kidsloop.net",
+        // target: "https://kl2-test.kidsloop.net/",
         changeOrigin: true
-      }
+      },
+      "/auth": {
+        target: "https://prod.auth.badanamu.net/",
+        changeOrigin: true,
+        pathRewrite: { '^/auth': '' },
+      },
+      "/account": {
+        target: "https://prod.account.badanamu.net/",
+        changeOrigin: true,
+        pathRewrite: { '^/account': '' },
+      },
+      "/v1": {
+        target: "https://kl2-test.kidsloop.net/",
+        secure: true,
+        changeOrigin: true,
+      },
     },
     disableHostCheck: true
   }
