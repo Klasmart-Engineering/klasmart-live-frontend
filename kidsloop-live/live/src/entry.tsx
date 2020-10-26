@@ -90,7 +90,8 @@ function parseToken() {
             const token = url.searchParams.get("token");
             if (token) {
                 const payload = jwt_decode(token) as any;
-                const parsedMaterials = payload.materials.map((mat: any) => {
+                const materials = payload.materials ? payload.materials : []
+                const parsedMaterials = materials.map((mat: any) => {
                     if (mat.__typename === "Iframe") {
                         return { __typename: MaterialTypename.Iframe, name: mat.name, url: mat.url };
                     } else if (mat.__typename === "Video") {
