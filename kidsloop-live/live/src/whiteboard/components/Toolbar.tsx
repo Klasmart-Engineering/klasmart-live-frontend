@@ -25,6 +25,9 @@ import RedCrayon from "../../assets/img/canvas/crayons/red.svg";
 import PinkCrayon from "../../assets/img/canvas/crayons/pink.svg";
 import PurpleCrayon from "../../assets/img/canvas/crayons/purple.svg";
 import BrownCrayon from "../../assets/img/canvas/crayons/brown.svg";
+import { useSelector } from "react-redux";
+import { State } from "../../store/store";
+import { ClassType } from "../../store/actions";
 
 type Props = {
     children?: ReactChild | ReactChildren | null | any;
@@ -33,6 +36,7 @@ type Props = {
 export const WBToolbar: FunctionComponent<Props> = ({ children }: Props): JSX.Element => {
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down('sm'));
+    const classType = useSelector((store: State) => store.session.classType);
 
     const { state: { display, permissions } } = useSynchronizedState();
     const { state: { tools }, actions: { selectTool, selectColorByValue, clear } } = useToolbarContext();
@@ -124,33 +128,37 @@ export const WBToolbar: FunctionComponent<Props> = ({ children }: Props): JSX.El
         </Grid>
     );
 
-    const VisibleToolbar = () => (teacher ? (
-        <Grid id="wb-toolbar-teacher" container direction="row" justify="space-between" alignItems="center" spacing={2} item style={{ flex: 1 }}>
-            <Grid container direction="row" justify="space-between" alignItems="center" alignContent="center" item style={{ flex: 2 }}>
+    const VisibleToolbar = () => (classType !== ClassType.LIVE || !teacher ? (
+        <Grid id="wb-toolbar-student" container direction="row" justify="center" alignItems="center" spacing={2} item style={{ flex: 1 }}>
+            <Grid container direction="row" justify="space-between" alignItems="center" alignContent="center" item style={{ flex: 1 }}>
                 <ColorPicker />
             </Grid>
-            <Grid container direction="row" justify="space-between" alignItems="center" alignContent="center" item style={{ flex: 1 }}>
-                <ToolButton clicked={selectLine} actived={activedTool.line}><BrushIcon size={isSmDown ? "1rem" : "1.5rem"} /></ToolButton>
-                <ToolButton clicked={selectText} actived={activedTool.text}><TextIcon size={isSmDown ? "1rem" : "1.5rem"} /></ToolButton>
-                <ToolButton clicked={selectMove} actived={activedTool.move}><MoveIcon size={isSmDown ? "1rem" : "1.5rem"} /></ToolButton>
+            <Grid item style={{ flex: 0 }}>
                 <ToolButton clicked={selectObjectEraser} actived={activedTool.erase}><EraserIcon size={isSmDown ? "1rem" : "1.5rem"} /></ToolButton>
-                <ToolButton clicked={selectClear} actived={activedTool.clear}><TrashIcon size={isSmDown ? "1rem" : "1.5rem"} /></ToolButton>
             </Grid>
             {children}
         </Grid>
     ) : (
-            <Grid id="wb-toolbar-student" container direction="row" justify="center" alignItems="center" spacing={2} item style={{ flex: 1 }}>
-                <Grid container direction="row" justify="space-between" alignItems="center" alignContent="center" item style={{ flex: 1 }}>
+            <Grid id="wb-toolbar-teacher" container direction="row" justify="space-between" alignItems="center" spacing={2} item style={{ flex: 1 }}>
+                <Grid container direction="row" justify="space-between" alignItems="center" alignContent="center" item style={{ flex: 2 }}>
                     <ColorPicker />
                 </Grid>
-                <Grid item style={{ flex: 0 }}>
+                <Grid container direction="row" justify="space-between" alignItems="center" alignContent="center" item style={{ flex: 1 }}>
+                    <ToolButton clicked={selectLine} actived={activedTool.line}><BrushIcon size={isSmDown ? "1rem" : "1.5rem"} /></ToolButton>
+                    <ToolButton clicked={selectText} actived={activedTool.text}><TextIcon size={isSmDown ? "1rem" : "1.5rem"} /></ToolButton>
+                    <ToolButton clicked={selectMove} actived={activedTool.move}><MoveIcon size={isSmDown ? "1rem" : "1.5rem"} /></ToolButton>
                     <ToolButton clicked={selectObjectEraser} actived={activedTool.erase}><EraserIcon size={isSmDown ? "1rem" : "1.5rem"} /></ToolButton>
+                    <ToolButton clicked={selectClear} actived={activedTool.clear}><TrashIcon size={isSmDown ? "1rem" : "1.5rem"} /></ToolButton>
                 </Grid>
                 {children}
             </Grid>
         ));
 
-    return display && permissions.allowCreateShapes ? <VisibleToolbar /> : <></>
+    if (classType === ClassType.LIVE) {
+        return display && permissions.allowCreateShapes ? <VisibleToolbar /> : <></>
+    } else {
+        return <VisibleToolbar />
+    }
 }
 
 export default WBToolbar;

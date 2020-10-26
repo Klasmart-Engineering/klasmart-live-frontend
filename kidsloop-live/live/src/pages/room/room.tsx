@@ -6,7 +6,7 @@ import { FormattedMessage } from "react-intl";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import { sessionId, UserContext } from "../../entry";
-import Homework from "../student/homework";
+import Study from "../student/study";
 import { Student } from "../student/student";
 import { Teacher } from "../teacher/teacher";
 import Loading from "../../components/loading";
@@ -56,32 +56,37 @@ export function Room(): JSX.Element {
 
     useEffect(() => {
         if (deviceOrientation === OrientationType.PORTRAIT) {
-            screen.orientation.unlock();
-            screen.orientation.lock("landscape");
+            if (screen.orientation && screen.orientation.lock) {
+                screen.orientation.unlock();
+                screen.orientation.lock("landscape").catch((err) => {
+                    console.log("screen.orientation.lock() is not available on this device.");
+                });
+                return;
+            }
         }
     }, [])
 
     return (
         <RoomContext.Provide>
-            {classType === ClassType.LIVE ? <>
-                <WebRTCSFUContext.Provide>
-                    <ScreenShare.Provide>
-                        <GlobalWhiteboardContext>
+            <GlobalWhiteboardContext>
+                {classType === ClassType.LIVE ? <>
+                    <WebRTCSFUContext.Provide>
+                        <ScreenShare.Provide>
                             <Layout interactiveModeState={{ interactiveMode, setInteractiveMode }} streamIdState={{ streamId, setStreamId }}>
                                 {teacher
                                     ? <Teacher interactiveModeState={{ interactiveMode, setInteractiveMode }} streamIdState={{ streamId, setStreamId }} />
                                     : <Student />
                                 }
                             </Layout>
-                        </GlobalWhiteboardContext>
-                    </ScreenShare.Provide>
-                </WebRTCSFUContext.Provide>
-                <Trophy />
-            </> :
-                <Layout interactiveModeState={{ interactiveMode: 1, setInteractiveMode }} streamIdState={{ streamId, setStreamId }}>
-                    <Homework />
-                </Layout>
-            }
+                        </ScreenShare.Provide>
+                    </WebRTCSFUContext.Provide>
+                    <Trophy />
+                </> :
+                    <Layout interactiveModeState={{ interactiveMode: 1, setInteractiveMode }} streamIdState={{ streamId, setStreamId }}>
+                        <Study />
+                    </Layout>
+                }
+            </GlobalWhiteboardContext>
         </RoomContext.Provide>
     );
 }

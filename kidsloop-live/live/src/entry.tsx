@@ -6,11 +6,11 @@ LogRocket.init('8acm62/kidsloop-live-prod', {
 import { v4 as uuid } from "uuid";
 export const sessionId = uuid();
 
-import React, { createContext, useState, useMemo, useContext, useEffect, useCallback } from "react";
+import React, { createContext, useState, useMemo, useEffect } from "react";
 // import * as Sentry from '@sentry/react';
 import { render } from "react-dom";
 import { RawIntlProvider, FormattedMessage } from "react-intl";
-import { Provider, useSelector, useStore } from "react-redux";
+import { Provider, useDispatch, useSelector } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import {
     isMobileOnly,
@@ -34,10 +34,14 @@ import jwt_decode from "jwt-decode";
 import { ThemeProvider } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Typography from "@material-ui/core/Typography";
+import Collapse from "@material-ui/core/Collapse";
+import IconButton from "@material-ui/core/IconButton";
+import Alert from "@material-ui/lab/Alert";
+import CloseIcon from '@material-ui/icons/Close';
 
 import { App } from "./app";
-import { ActionTypes } from "./store/actions"
 import { createDefaultStore, State } from "./store/store";
+import { setUserAgent } from "./store/reducers/session";
 import { LessonMaterial, MaterialTypename } from "./lessonMaterialContext";
 import { AuthTokenProvider } from "./services/auth-token/AuthTokenProvider";
 import { themeProvider } from "./themeProvider";
@@ -155,9 +159,9 @@ if (params && params.name) {
     LogRocket.identify(params.name, { sessionId })
 }
 function Entry() {
-    const store = useStore();
+    const dispatch = useDispatch();
     const languageCode = useSelector((state: State) => state.session.locale);
-    const themeMode = useSelector((state: State) => state.control.darkMode);
+    const themeMode = useSelector((state: State) => state.control.themeMode);
     const locale = getLanguage(languageCode);
 
     if (!params) {
@@ -179,7 +183,7 @@ function Entry() {
     }), [camera, setCamera, name, setName, params]);
 
     useEffect(() => {
-        const userAgent = {
+        dispatch(setUserAgent({
             isMobileOnly,
             isTablet,
             isBrowser,
@@ -193,13 +197,13 @@ function Entry() {
             isEdge,
             isChromium,
             isMobileSafari,
-        };
-        store.dispatch({ type: ActionTypes.USER_AGENT, payload: userAgent });
+        }));
     }, []);
 
+    const isMobileBrowser = isMobileOnly && (isChrome || isFirefox || isSafari || isIE || isEdge || isChromium || isMobileSafari);
+    const [alert, setAlert] = useState<boolean>(isMobileBrowser);
     const { cordovaReady, permissions } = useCordovaInitialize();
     const { authReady, authenticated, refresh } = useAuthenticatedCheck(cordovaReady);
-
     if (!cordovaReady) { return <>Loading...</> }
     if (!permissions) { return <>Camera and Microphone premissions required. Please grant the permissions and restart application.</> }
     if (!authReady) { return <>Loading...</> }
@@ -216,10 +220,25 @@ function Entry() {
                 </RawIntlProvider>
             </CameraContextProvider>
         </UserContext.Provider>
-        {/* {isMobileOnly ?
-            <Alert variant="filled" severity="warning" style={{ position: "fixed", bottom: 0 }}>
+        <Collapse in={alert}>
+            <Alert
+                variant="filled"
+                severity="warning"
+                action={
+                    <IconButton
+                        aria-label="warning alert close"
+                        color="inherit"
+                        size="small"
+                        onClick={() => setAlert(false)}
+                    >
+                        <CloseIcon fontSize="inherit" />
+                    </IconButton>
+                }
+                style={{ position: "fixed", bottom: 0, width: "100%" }}
+            >
                 {`Your experience might be limited on this unsupported device.For a better Kidsloop experience, please join the class on a tablet, laptop, or desktop. Thank you!`}
-            </Alert> : null} */}
+            </Alert>
+        </Collapse>
     </>);
 }
 

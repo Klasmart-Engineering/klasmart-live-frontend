@@ -1,7 +1,7 @@
 /* eslint-disable no-case-declarations */
 import React, { useState, createContext, useContext, useEffect, useRef, useMemo } from "react";
 import { FormattedMessage } from "react-intl";
-import { useStore, useSelector } from "react-redux";
+import { useStore, useSelector, useDispatch } from "react-redux";
 import clsx from "clsx";
 import { createStyles, makeStyles, useTheme, Theme } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
@@ -21,6 +21,7 @@ import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import Popover from "@material-ui/core/Popover";
 import Fab from "@material-ui/core/Fab";
+import Paper from "@material-ui/core/Paper";
 
 import { People as PeopleIcon } from "@styled-icons/material-twotone/People";
 import { LibraryBooks as LessonPlanIcon } from "@styled-icons/material-twotone/LibraryBooks";
@@ -49,18 +50,25 @@ import Lightswitch from "../components/lightswitch";
 import LanguageSelect from "../components/languageSelect";
 import CenterAlignChildren from "../components/centerAlignChildren";
 import { State } from "../store/store";
-import { ActionTypes, ClassType } from "../store/actions";
-import Paper from "@material-ui/core/Paper";
 import { useCameraContext } from "../components/media/useCameraContext";
+import { ClassType } from "../store/actions";
+import { setClassType } from "../store/reducers/session";
+import {
+    setDrawerOpen,
+    setDrawerWidth,
+    setColsCamera,
+    setColsObserve,
+    setContentIndex
+} from "../store/reducers/control";
 
 const MessageContext = createContext(new Map<string, Message>());
 const UsersContext = createContext(new Map<string, Session>());
 
 const TABS = [
     { icon: <PeopleIcon role="img" size="1.5rem" />, title: "title_participants", userType: 2, classType: ClassType.LIVE },
-    { icon: <LessonPlanIcon role="img" size="1.5rem" />, title: "title_lesson_plan", userType: 0, classType: ClassType.HOMEWORK },
+    { icon: <LessonPlanIcon role="img" size="1.5rem" />, title: "title_lesson_plan", userType: 0, classType: ClassType.LIVE },
     { icon: <ChatIcon role="img" size="1.5rem" />, title: "title_chat", userType: 2, classType: ClassType.LIVE },
-    { icon: <SettingsIcon role="img" size="1.5rem" />, title: "title_settings", userType: 0, classType: ClassType.HOMEWORK },
+    { icon: <SettingsIcon role="img" size="1.5rem" />, title: "title_settings", userType: 0, classType: ClassType.STUDY },
 ];
 
 const OPTION_COLS_CAMERA = [
@@ -161,14 +169,23 @@ interface LayoutProps {
 export default function Layout(props: LayoutProps): JSX.Element {
     const { children, interactiveModeState, streamIdState } = props;
     const { materials } = useContext(UserContext);
+
+    const dispatch = useDispatch();
+    const classType = useSelector((store: State) => store.session.classType);
     const contentIndex = useSelector((store: State) => store.control.contentIndex);
     const material = contentIndex >= 0 && contentIndex < materials.length ? materials[contentIndex] : undefined;
 
-    const store = useStore();
-    store.dispatch({ type: ActionTypes.DRAWER_OPEN, payload: true }); // Initialize as true
     const [tabIndex, setTabIndex] = useState(0);
     const [materialKey, setMaterialKey] = useState(Math.random());
     const { streamId } = streamIdState;
+
+    useEffect(() => {
+        if (classType === ClassType.LIVE) {
+            dispatch(setDrawerOpen(true));
+        } else {
+            dispatch(setDrawerOpen(false));
+        }
+    }, [])
 
     return (
         <Grid
@@ -241,51 +258,74 @@ function WBToolbarOpener() {
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down('sm'));
 
-    const { teacher } = useContext(UserContext);
-    const { state: { display, permissions } } = useSynchronizedState();
-    const enableWB = !teacher ? display && permissions.allowCreateShapes : display;
-
+    const { teacher, sessionId } = useContext(UserContext);
+    const { state: { display, permissions }, actions: { setDisplay, getPermissions, setPermissions } } = useSynchronizedState();
+    const classType = useSelector((store: State) => store.session.classType);
+    const enableWB = classType === ClassType.LIVE ? (!teacher ? display && permissions.allowCreateShapes : display) : true;
     const [open, setOpen] = useState(false);
-    const handleOpenWBToolbar = (e: React.MouseEvent<HTMLButtonElement>) => { setOpen(true) };
-    const handleCloseWBToolbar = () => { setOpen(false) };
+
+    const handleOpenWBToolbar = (e: React.MouseEvent<HTMLButtonElement>) => {
+        setOpen(true);
+        if (classType !== ClassType.LIVE) {
+            setDisplay(true);
+            const permissions = getPermissions(sessionId);
+            const newPermissions = {
+                ...permissions,
+                allowCreateShapes: true,
+            };
+            setPermissions(sessionId, newPermissions)
+        }
+    };
+    const handleCloseWBToolbar = () => {
+        setOpen(false);
+        if (classType !== ClassType.LIVE) {
+            setDisplay(false);
+            const permissions = getPermissions(sessionId);
+            const newPermissions = {
+                ...permissions,
+                allowCreateShapes: false,
+            };
+            setPermissions(sessionId, newPermissions)
+        }
+    };
     return (
         <Grid item xs={12} style={{ position: "relative", height: isSmDown ? MOBILE_WB_TOOLBAR_MAX_HEIGHT : WB_TOOLBAR_MAX_HEIGHT }}>
-            {teacher ? (
+            {classType !== ClassType.LIVE || !teacher ? (
                 <Fab
-                    aria-label="teacher whiteboard toolbar opener"
+                    aria-label="student whiteboard toolbar opener"
                     disabled={!enableWB}
-                    variant="extended"
                     onClick={handleOpenWBToolbar}
-                    size="small"
+                    size={isSmDown ? "small" : "large"}
                     color="primary"
                     style={{
-                        zIndex: WB_EXPAND_BUTTON,
                         display: open ? "none" : "flex",
-                        width: TEACHER_FAB_WIDTH,
-                        height: TEACHER_FAB_HEIGHT,
+                        zIndex: WB_EXPAND_BUTTON,
                         position: "absolute",
                         bottom: 0,
-                        left: `calc(50% - ${TEACHER_FAB_WIDTH}px)`,
+                        left: 0,
                     }}
                 >
-                    <StyledIcon icon={<ArrowUpIcon />} size="medium" color="white" />
+                    <StyledIcon icon={<WBIcon />} size={isSmDown ? "small" : "large"} color="white" />
                 </Fab>
             ) : (
                     <Fab
-                        aria-label="student whiteboard toolbar opener"
+                        aria-label="teacher whiteboard toolbar opener"
                         disabled={!enableWB}
+                        variant="extended"
                         onClick={handleOpenWBToolbar}
-                        size={isSmDown ? "small" : "large"}
+                        size="small"
                         color="primary"
                         style={{
-                            display: open ? "none" : "flex",
                             zIndex: WB_EXPAND_BUTTON,
+                            display: open ? "none" : "flex",
+                            width: TEACHER_FAB_WIDTH,
+                            height: TEACHER_FAB_HEIGHT,
                             position: "absolute",
                             bottom: 0,
-                            left: 0,
+                            left: `calc(50% - ${TEACHER_FAB_WIDTH}px)`,
                         }}
                     >
-                        <StyledIcon icon={<WBIcon />} size={isSmDown ? "small" : "large"} color="white" />
+                        <StyledIcon icon={<ArrowUpIcon />} size="medium" color="white" />
                     </Fab>
                 )
             }
@@ -328,17 +368,14 @@ function DrawerContainer({ interactiveModeState, streamId, material, tabIndex, s
     setTabIndex: React.Dispatch<React.SetStateAction<number>>,
     setMaterialKey: React.Dispatch<React.SetStateAction<number>>,
 }) {
-    const store = useStore();
-    function setDrawerWidth(width: number) {
-        store.dispatch({ type: ActionTypes.DRAWER_WIDTH, payload: width });
-    }
+    const dispatch = useDispatch();
     const drawerOpen = useSelector((state: State) => state.control.drawerOpen);
     const classType = useSelector((state: State) => state.session.classType);
 
     const ref = useRef<HTMLDivElement>(null);
     useEffect(() => {
         if (!ref || !ref.current) { return; }
-        setDrawerWidth(ref.current.offsetWidth);
+        dispatch(setDrawerWidth(ref.current.offsetWidth));
     }, [ref.current]);
 
     if (classType === ClassType.LIVE) {
@@ -361,7 +398,7 @@ function DrawerContainer({ interactiveModeState, streamId, material, tabIndex, s
         const teacher = false;
         return (
             <Grid id="drawer-container" ref={ref} item xs={drawerOpen ? 3 : undefined} style={{ position: "relative" }}>
-                {TABS.filter((t) => t.classType === ClassType.HOMEWORK).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} index={index} tab={tab} value={tabIndex} />)}
+                {TABS.filter((t) => t.classType === ClassType.STUDY).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} index={index} tab={tab} value={tabIndex} />)}
                 <DrawerToolbar isTeacher={teacher} interactiveModeState={interactiveModeState} streamId={streamId} material={material} tabIndex={tabIndex} setTabIndex={setTabIndex} setMaterialKey={setMaterialKey} />
             </Grid>
         )
@@ -380,10 +417,8 @@ function DrawerToolbar({ isTeacher, interactiveModeState, streamId, material, ta
     const classes = useStyles()
     const theme = useTheme();
 
-    const store = useStore();
-    function setDrawerOpen(open: boolean) {
-        store.dispatch({ type: ActionTypes.DRAWER_OPEN, payload: open });
-    }
+    const dispatch = useDispatch();
+    // const setDrawerOpen = (open: boolean) => { dispatch(setDrawerOpen(open)); }
     const classType = useSelector((state: State) => state.session.classType);
 
     const handleTabIndexChange = (event: React.ChangeEvent<unknown>, newValue: number) => {
@@ -418,15 +453,15 @@ function DrawerToolbar({ isTeacher, interactiveModeState, streamId, material, ta
                         indicator: classes.tabIndicator
                     }}
                 >
-                    {classType === ClassType.HOMEWORK ? (
-                        TABS.filter((t) => t.classType === ClassType.HOMEWORK).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} className={index === tabIndex ? classes.tabSelected : ""} title={tab.title} handlers={{ setDrawerOpen, setTabIndex }} value={index}>{tab.icon}</StyledTab>)
+                    {classType === ClassType.STUDY ? (
+                        TABS.filter((t) => t.classType === ClassType.STUDY).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} className={index === tabIndex ? classes.tabSelected : ""} title={tab.title} handlers={{ setDrawerOpen: (open: boolean) => dispatch(setDrawerOpen(open)), setTabIndex }} value={index}>{tab.icon}</StyledTab>)
                     ) : isTeacher ?
-                            TABS.filter((t) => t.userType !== 1).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} className={index === tabIndex ? classes.tabSelected : ""} title={tab.title} handlers={{ setDrawerOpen, setTabIndex }} value={index}>{tab.icon}</StyledTab>) :
-                            TABS.filter((t) => t.userType !== 0).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} className={index === tabIndex ? classes.tabSelected : ""} title={tab.title} handlers={{ setDrawerOpen, setTabIndex }} value={index}>{tab.icon}</StyledTab>)
+                            TABS.filter((t) => t.userType !== 1).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} className={index === tabIndex ? classes.tabSelected : ""} title={tab.title} handlers={{ setDrawerOpen: (open: boolean) => dispatch(setDrawerOpen(open)), setTabIndex }} value={index}>{tab.icon}</StyledTab>) :
+                            TABS.filter((t) => t.userType !== 0).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} className={index === tabIndex ? classes.tabSelected : ""} title={tab.title} handlers={{ setDrawerOpen: (open: boolean) => dispatch(setDrawerOpen(open)), setTabIndex }} value={index}>{tab.icon}</StyledTab>)
                     }
                 </Tabs>
             </Grid>
-            {classType === ClassType.HOMEWORK || !isTeacher ? null :
+            {classType === ClassType.STUDY || !isTeacher ? null :
                 <Grid item>
                     <ModeControls
                         interactiveModeState={interactiveModeState}
@@ -524,10 +559,7 @@ function TabInnerContent({ title }: {
     title: string,
 }) {
     const classes = useStyles();
-    const store = useStore();
-    function setContentIndex(contentIndex: number) {
-        store.dispatch({ type: ActionTypes.CONTENT_INDEX, payload: contentIndex })
-    }
+    const dispatch = useDispatch();
     const classType = useSelector((state: State) => state.session.classType);
     const contentIndex = useSelector((store: State) => store.control.contentIndex);
 
@@ -620,7 +652,7 @@ function TabInnerContent({ title }: {
                             materials.map((material, index) => (
                                 <Step
                                     key={`step-${material.name}`}
-                                    onClick={() => setContentIndex(index)}
+                                    onClick={() => dispatch(setContentIndex(index))}
                                     disabled={false}
                                     className={classes.step}
                                 >
@@ -632,7 +664,7 @@ function TabInnerContent({ title }: {
                                 .map((material, index) => (
                                     <Step
                                         key={`step-${material.name}`}
-                                        onClick={() => setContentIndex(index)}
+                                        onClick={() => dispatch(setContentIndex(index))}
                                         disabled={false}
                                         className={classes.step}
                                     >
@@ -684,9 +716,8 @@ function TabPanel(props: TabPanelProps) {
     const { teacher } = useContext(UserContext);
 
     const store = useStore();
-    function setDrawerOpen(open: boolean) {
-        store.dispatch({ type: ActionTypes.DRAWER_OPEN, payload: open });
-    }
+    const dispatch = useDispatch();
+    const isMobileOnly = useSelector((state: State) => state.session.userAgent.isMobileOnly);
     const drawerOpen = useSelector((state: State) => state.control.drawerOpen);
 
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
@@ -721,10 +752,11 @@ function TabPanel(props: TabPanelProps) {
                             }
                         </CenterAlignChildren>
                     </Typography>
-                    <IconButton aria-label="minimize drawer" onClick={() => setDrawerOpen(false)}>
-                        {/* <StyledIcon icon={<CloseIcon />} size="medium" /> */}
-                        <CloseIcon size="1.25rem" />
-                    </IconButton>
+                    {isMobileOnly ? null :
+                        <IconButton aria-label="minimize drawer" onClick={() => dispatch(setDrawerOpen(false))}>
+                            <StyledIcon icon={<CloseIcon />} size="medium" color={"#000"} />
+                        </IconButton>
+                    }
                 </Grid>
                 <Divider />
                 <TabInnerContent title={tab.title} />
@@ -752,22 +784,16 @@ function TabPanel(props: TabPanelProps) {
 function Settings() {
     const classes = useStyles();
     const theme = useTheme();
-    const store = useStore();
+    const dispatch = useDispatch();
     const colsCamera = useSelector((state: State) => state.control.colsCamera);
-    function setColsCamera(cols: number) {
-        store.dispatch({ type: ActionTypes.COLS_CAMERA, payload: cols });
-    }
     const colsObserve = useSelector((state: State) => state.control.colsObserve);
-    function setColsObserve(cols: number) {
-        store.dispatch({ type: ActionTypes.COLS_OBSERVE, payload: cols });
-    }
     const isMobileOnly = useSelector((store: State) => store.session.userAgent.isMobileOnly)
 
     const classType = useSelector((store: State) => store.session.classType)
     function toggleClassType() {
         classType === ClassType.LIVE
-            ? store.dispatch({ type: ActionTypes.CLASS_TYPE, payload: ClassType.HOMEWORK })
-            : store.dispatch({ type: ActionTypes.CLASS_TYPE, payload: ClassType.LIVE })
+            ? dispatch(setClassType(ClassType.STUDY))
+            : dispatch(setClassType(ClassType.LIVE));
     }
 
     return (
@@ -802,7 +828,7 @@ function Settings() {
                         <FormControl style={{ width: "100%" }}>
                             <Select
                                 value={colsCamera}
-                                onChange={(e) => setColsCamera(Number(e.target.value))}
+                                onChange={(e) => dispatch(setColsCamera(Number(e.target.value)))}
                             >
                                 {OPTION_COLS_CAMERA.map((option) => <MenuItem key={option.id} value={option.value}>{option.title}</MenuItem>)}
                             </Select>
@@ -819,7 +845,7 @@ function Settings() {
                     <FormControl style={{ width: "100%" }}>
                         <Select
                             value={colsObserve}
-                            onChange={(e) => setColsObserve(Number(e.target.value))}
+                            onChange={(e) => dispatch(setColsObserve(Number(e.target.value)))}
                         >
                             {OPTION_COLS_OBSERVE.map((option) => <MenuItem key={option.id} value={option.value}>{option.title}</MenuItem>)}
                         </Select>

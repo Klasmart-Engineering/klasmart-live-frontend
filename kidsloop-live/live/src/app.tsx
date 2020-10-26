@@ -10,6 +10,9 @@ import { PasswordForgot } from "./pages/account/password/password-forgot";
 import { PasswordRestore } from "./pages/account/password/password-restore";
 import { Room } from "./pages/room/room";
 import { Join } from "./pages/join/join";
+import { Schedule } from "./pages/schedule/schedule";
+import { State } from "./store/store";
+import { OrientationType } from "./store/actions";
 import { createHashHistory } from 'history'
 
 export function App(): JSX.Element {
@@ -18,14 +21,16 @@ export function App(): JSX.Element {
     return (
         <Router history={history}>
             <Switch>
+                <Route path="/schedule" component={Schedule} />
+                <Route path="/join" component={Join} />
+                <Route path="/room" component={Room} />
                 <Route path="/password-change" component={PasswordChange} />
                 <Route path="/password-changed" component={PasswordChanged} />
                 <Route path="/password-forgot" component={PasswordForgot} />
                 <Route path="/password-restore" component={PasswordRestore} />
-                <Route path="/room" component={Room} />
                 <Route path="/signup" component={Signup} />
                 <Route path="/signin" component={Signin} />
-                <Route path="/" component={Join} />
+                <Route path="/" component={Schedule} />
             </Switch>
         </Router>
     )
