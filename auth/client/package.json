@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "rm dist/*;webpack --config webpack.config.js",
+    "build:prod": "rm dist/*;webpack --config webpack.prod.config.js",
     "start": "webpack-dev-server"
   },
   "author": "",
