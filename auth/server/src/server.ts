@@ -13,7 +13,8 @@ import { RefreshTokenManager } from "./refreshToken";
 import { validateString } from "./util/validate";
 import cookieParser from "cookie-parser";
 
-const domain = process.env.DOMAIN;
+const domain = process.env.DOMAIN
+const routePrefix = process.env.ROUTE_PREFIX || ""
 
 export class AuthServer {
 	public static async create() {
@@ -22,11 +23,12 @@ export class AuthServer {
 
 		const jsonParser = bodyParser.json();
 
-		const app = express();
-		app.use(cookieParser());
-		app.use(jsonParser);
-		app.post("/transfer", (req, res) => server.transfer(req, res));
-		app.get("/refresh", (req, res) => server.refresh(req, res));
+        const app = express()
+        app.use(cookieParser())
+        app.use(jsonParser)
+        app.get('/.well-known/express/server-health', (req, res) => { res.status(200); res.end() })
+        app.post(`${routePrefix}/transfer`, (req, res) => server.transfer(req, res))
+        app.get(`${routePrefix}/refresh`, (req, res) => server.refresh(req, res))
 
 		return new Promise<AuthServer>((resolve, reject) => {
 			const port = process.env.PORT || 8080;
