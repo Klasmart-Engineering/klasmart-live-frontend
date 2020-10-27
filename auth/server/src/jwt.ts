@@ -204,6 +204,35 @@ class GoogleIssuerConfig implements IssuerConfig {
     }
 }
 
+class BadanamuIssuerConfig implements IssuerConfig {
+    private publicKeyOrSecret: Secret
+    private namespace: string
+
+    constructor(publicKeyOrSecret: Secret, issuer = "") {
+        this.namespace = v5(issuer, v5.DNS)
+        this.publicKeyOrSecret = publicKeyOrSecret
+    }
+    public async getPublicKeyOrSecret(keyId?: string) {
+        return this.publicKeyOrSecret
+    }
+    public createToken(token: any) {
+        function email() {
+            if (typeof token.em === "string") { return token.em }
+            return undefined
+        }
+        function name() {
+            if (typeof token.name === "string") { return token.name }
+            return undefined
+        }
+
+        return {
+            id: v5(email(), this.namespace),
+            email: email(),
+            name: name(),
+        }
+    }
+}
+
 class StandardIssuerConfig implements IssuerConfig {
     private publicKeyOrSecret: Secret
     private namespace: string
@@ -234,10 +263,11 @@ class StandardIssuerConfig implements IssuerConfig {
 }
 
 
+
 const issuers = new Map<string, IssuerConfig>([
     ["accounts.google.com", new GoogleIssuerConfig(domain)],
     ["Badanamu AMS",
-        new StandardIssuerConfig(
+        new BadanamuIssuerConfig(
             `-----BEGIN PUBLIC KEY-----
 MIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgHGWLk3zzoWJ6nJhHEE7LtM9LCa1
 8OSdVQPwvrFxBUTRHz0Hl+qdNMNHJIJkj9NEjL+kaRo0XxsGdrR6NGxL2/WiX3Zf
