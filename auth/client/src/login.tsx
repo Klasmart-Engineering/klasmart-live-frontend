@@ -19,6 +19,7 @@ import PolicyLink from "./policyLinks";
 import StyledButton from "./button";
 import StyledTextField from "./textfield";
 import { GoogleLogin, GoogleLoginResponse, GoogleLoginResponseOffline } from "react-google-login";
+import Divider from '@material-ui/core/Divider';
 
 // import { useSelector } from "react-redux";
 // import { State } from "../../store/store";
@@ -99,7 +100,8 @@ export function Login() {
     }
 
     function googleLoginFailure(error: any) {
-        console.error(error);
+        console.error(error)
+        setInFlight(false)
     }
 
     async function transferLogin(token: string) {
@@ -182,16 +184,39 @@ export function Login() {
                 <Card>
                     <CardContent className={classes.card}>
                         <Grid container direction="row" justify="center" alignItems="center" spacing={4}>
-                            <Grid item xs={12}>
-                                <img alt="KidsLoop Logo" src={KidsloopLogo} height="50px" />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Typography variant="h5">
+                            <Grid item xs={8}>
+                                <Typography variant="h4">
                                     <FormattedMessage
                                         id={"login_loginPrompt"}
                                         values={{ b: (...chunks: any[]) => <strong>{chunks}</strong> }}
                                     />
                                 </Typography>
+                            </Grid>
+                            <Grid item xs={4}>
+                                <img alt="KidsLoop Logo" src={KidsloopLogo} height="50px" />
+                            </Grid>
+                            <Grid item>
+                                <GoogleLogin
+                                    clientId="544374117288-uc6pcgmrvend0thu01p530590ob672j5.apps.googleusercontent.com"
+                                    accessType="online"
+                                    onRequest={() => setInFlight(true)}
+                                    onSuccess={googleLoginSuccess}
+                                    onFailure={googleLoginFailure}
+                                />
+                            </Grid>
+                            <Grid container alignItems="center">
+                                <Grid item xs={5}>
+                                    <Divider  />
+                                </Grid>
+
+                                <Grid item xs={2}>
+                                    <Typography align="center">
+                                        OR
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={5}>
+                                    <Divider  />
+                                </Grid>
                             </Grid>
                             <Grid item xs={12}>
                                 <StyledTextField
@@ -246,16 +271,6 @@ export function Login() {
                                             {generalError}
                                         </Typography>
                                 }
-                            </Grid>
-                            <Grid item>
-                                <GoogleLogin
-                                    clientId="544374117288-uc6pcgmrvend0thu01p530590ob672j5.apps.googleusercontent.com"
-                                    accessType="online"
-                                    onSuccess={googleLoginSuccess}
-                                    onFailure={googleLoginFailure}
-                                    // cookiePolicy={'single_host_origin'}
-                                    // uxMode="redirect"
-                                />
                             </Grid>
                         </Grid>
                     </CardContent>
