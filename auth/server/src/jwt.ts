@@ -138,7 +138,6 @@ export async function transferToken(encodedToken: string): Promise<IdToken> {
     const key = await config.getPublicKeyOrSecret(keyId)
     if (!key) { throw new Error(`Unable to get verification secret or public key for Issuer(${payload.iss}) and KeyId(${header.kid})`) }
 
-    console.log(key)
     return new Promise<IdToken>((resolve, reject) => {
         verify(
             encodedToken,
@@ -183,7 +182,6 @@ class GoogleIssuerConfig implements IssuerConfig {
         return response.getPublicKey()
     }
     public createToken(token: any) {
-        console.log(token)
         function email() {
             if (typeof token.email === "string") { return token.email }
             return undefined
@@ -218,7 +216,6 @@ class StandardIssuerConfig implements IssuerConfig {
         return this.publicKeyOrSecret
     }
     public createToken(token: any) {
-        console.log(token)
         function email() {
             if (typeof token.email === "string") { return token.email }
             return undefined

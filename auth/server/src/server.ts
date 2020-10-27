@@ -75,10 +75,7 @@ export class AuthServer {
 	private async refresh(req: Request, res: Response) {
 		try {
 			const session_name = req.get("User-Agent") || "Unkown Device";
-			console.log("refresh", session_name);
-			console.log(req.cookies.refresh);
 			const encodedToken = validateString(req.cookies.refresh);
-			console.log(encodedToken);
 			if (!encodedToken) {
 				throw new Error("No token");
 			}
