@@ -65,16 +65,6 @@ export function Login() {
 
     const history = useHistory();
 
-    useEffect(() => {
-        if (passwordError || emailError || generalError) {
-            console.log("error found")
-            return;
-        } else if (success) {
-            console.log("success")
-            handleSuccess();
-        }
-    }, [passwordError, emailError, generalError, success])
-
     async function login() {
         setEmailError(null);
         setPasswordError(null);
@@ -84,19 +74,19 @@ export function Login() {
             setInFlight(true);
             if (email === "") { throw new Error("EMPTY_EMAIL"); }
             if (password === "") { throw new Error("EMPTY_PASSWORD"); }
-            await restApi.login(email, password);
+            const token = await restApi.login(email, password);
+            await transferLogin(token);
         } catch (e) {
             handleError(e);
         } finally {
             setInFlight(false);
-            setSuccess(true);
         }
         return;
     }
 
-    function googleLoginSuccess(response: GoogleLoginResponse | GoogleLoginResponseOffline) {
+    async function googleLoginSuccess(response: GoogleLoginResponse | GoogleLoginResponseOffline) {
         if(!("tokenId" in response)) { return }
-        transferLogin(response.tokenId);
+        const result = await transferLogin(response.tokenId);
     }
 
     function googleLoginFailure(error: any) {
@@ -114,7 +104,13 @@ export function Login() {
             method: "POST",
         });
         console.log(response);
-        handleSuccess();
+        await response.text()
+        if(response.ok) {
+            handleSuccess();
+            return true
+        }
+        return false
+        
     }
 
     function handleSuccess() {
@@ -122,6 +118,7 @@ export function Login() {
         const continueParam = url.searchParams.get("continue");
         console.log("continueParam " + continueParam)
         console.log("document.referrer " + document.referrer)
+        //TODO validate continue param
         if (continueParam) { window.location.replace(continueParam); }
         if (document.referrer) { window.location.replace(document.referrer); }
         window.location.replace("https://live.kidsloop.net")
