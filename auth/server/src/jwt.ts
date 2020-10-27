@@ -2,7 +2,7 @@ import { sign, Secret, SignOptions } from "jsonwebtoken"
 import { readFileSync } from "fs"
 import { v5 } from "uuid"
 
-import jwksClient, { JwksClient } from "jwks-rsa"
+import jwksClient from "jwks-rsa"
 import { decode, JwtHeader, verify, VerifyErrors } from "jsonwebtoken"
 
 export const accessTokenDuration = Number(process.env.JWT_ACCESS_TOKEN_DURATION) || 300
@@ -10,13 +10,14 @@ export const refreshTokenDuration = Number(process.env.JWT_REFRESH_TOKEN_DURATIO
 export const httpsOnlyCookie = process.env.JWT_COOKIE_ALLOW_HTTP === undefined
 
 const issuer = process.env.JWT_ISSUER
+const domain = process.env.DOMAIN
 const config = jwtInit()
 
 export function verifyRefreshToken(encodedToken: string) {
     return new Promise((resolve, reject) => {
         verify(
             encodedToken,
-            config.secret,
+            config.secretOrPublicKey,
             config.refreshTokenOptions,
             (err, decoded)=>{
                 if(err) { reject(err); return }
@@ -27,11 +28,11 @@ export function verifyRefreshToken(encodedToken: string) {
     })
 }
 export function signAccessToken(token: IdToken) {
-    return signJWT(token, config.secret, config.accessTokenOptions)
+    return signJWT(token, config.secretOrPrivateKey, config.accessTokenOptions)
 }
 
 export function signRefreshToken(refreshToken: object) {
-    return signJWT(refreshToken, config.secret, config.refreshTokenOptions)
+    return signJWT(refreshToken, config.secretOrPrivateKey, config.refreshTokenOptions)
 }
 
 export async function signJWT(token: Object, secret: Secret, options: SignOptions) {
@@ -46,7 +47,7 @@ export async function signJWT(token: Object, secret: Secret, options: SignOption
     })
 }
 
-function jwtInit(): { secret: Secret, accessTokenOptions: SignOptions, refreshTokenOptions: SignOptions } {
+function jwtInit(): { secretOrPrivateKey: Secret, accessTokenOptions: SignOptions, secretOrPublicKey: Secret, refreshTokenOptions: SignOptions } {
     const algorithm = process.env.JWT_ALGORITHM
 
 
@@ -73,8 +74,9 @@ function jwtInit(): { secret: Secret, accessTokenOptions: SignOptions, refreshTo
             }
             if (process.env.JWT_SECRET) {
                 return {
-                    secret: process.env.JWT_SECRET,
+                    secretOrPrivateKey: process.env.JWT_SECRET,
                     accessTokenOptions,
+                    secretOrPublicKey: process.env.JWT_SECRET,
                     refreshTokenOptions,
                 }
             }
@@ -93,23 +95,25 @@ function jwtInit(): { secret: Secret, accessTokenOptions: SignOptions, refreshTo
             if (process.env.JWT_PRIVATE_KEY && process.env.JWT_PRIVATE_KEY_FILENAME) {
                 throw new Error(`JWT configuration error - please use either JWT_PRIVATE_KEY or JWT_PRIVATE_KEY_FILENAME not both`)
             }
-            if (process.env.JWT_PRIVATE_KEY_FILENAME) {
-                return {
-                    secret: readFileSync(process.env.JWT_PRIVATE_KEY_FILENAME),
-
-                    accessTokenOptions,
-                    refreshTokenOptions,
-                }
+            if (process.env.JWT_PUBLIC_KEY_FILENAME && process.env.JWT_PUBLIC_KEY) {
+                throw new Error(`JWT configuration error - please use either JWT_PUBLIC_KEY_FILENAME or JWT_PUBLIC_KEY not both`)
             }
-            if (process.env.JWT_PRIVATE_KEY) {
-                return {
-                    secret: process.env.JWT_PRIVATE_KEY,
-
-                    accessTokenOptions,
-                    refreshTokenOptions,
-                }
+            const privateKey = process.env.JWT_PRIVATE_KEY_FILENAME ? readFileSync(process.env.JWT_PRIVATE_KEY_FILENAME) : process.env.JWT_PRIVATE_KEY
+            if (!privateKey) {
+                throw new Error(`JWT configuration error - please use either JWT_PRIVATE_KEY or JWT_PRIVATE_KEY_FILENAME to specify private key`)
             }
-            throw new Error(`JWT configuration error - need jwt private key, please set JWT_PRIVATE_KEY or JWT_PRIVATE_KEY_FILENAME enviroment variable`)
+            const publicKey =  process.env.JWT_PUBLIC_KEY_FILENAME ? readFileSync(process.env.JWT_PUBLIC_KEY_FILENAME) : process.env.JWT_PUBLIC_KEY
+            if(!publicKey) {
+                throw new Error(`JWT configuration error - please use either JWT_PUBLIC_KEY_FILENAME or JWT_PUBLIC_KEY to specify public key`)
+            }
+            return {
+                secretOrPrivateKey: process.env.JWT_PRIVATE_KEY_PASSPHRASE
+                    ? { key: privateKey, passphrase: process.env.JWT_PRIVATE_KEY_PASSPHRASE }
+                    : privateKey,
+                accessTokenOptions,
+                secretOrPublicKey: publicKey,
+                refreshTokenOptions,
+            }
         default:
             throw new Error("JWT Token not configured")
     }
@@ -168,7 +172,10 @@ class GoogleIssuerConfig implements IssuerConfig {
         strictSsl: true,
         jwksUri: "https://www.googleapis.com/oauth2/v3/certs",
     })
-    private namespace = v5("accounts.google.com", v5.DNS)
+    private namespace: string
+    constructor(namespace = "accounts.google.com") {
+        this.namespace = v5(namespace, v5.DNS)
+    }
 
     public async getPublicKeyOrSecret(keyId?: string) {
         if (!keyId) { throw new Error(`Unable to get public key for Issuer(accounts.google.com) due to missing keyId(${keyId})`) }
@@ -192,15 +199,62 @@ class GoogleIssuerConfig implements IssuerConfig {
         }
 
         return {
-            id: v5("", this.namespace),
+            id: v5(email(), this.namespace),
             email: email(),
             name: name(),
         }
     }
 }
 
+class StandardIssuerConfig implements IssuerConfig {
+    private publicKeyOrSecret: Secret
+    private namespace: string
+
+    constructor(publicKeyOrSecret: Secret, issuer = "") {
+        this.namespace = v5(issuer, v5.DNS)
+        this.publicKeyOrSecret = publicKeyOrSecret
+    }
+    public async getPublicKeyOrSecret(keyId?: string) {
+        return this.publicKeyOrSecret
+    }
+    public createToken(token: any) {
+        console.log(token)
+        function email() {
+            if (typeof token.email === "string") { return token.email }
+            return undefined
+        }
+        function name() {
+            if (typeof token.name === "string") { return token.name }
+            return undefined
+        }
+
+        return {
+            id: v5(email(), this.namespace),
+            email: email(),
+            name: name(),
+        }
+    }
+}
+
+
 const issuers = new Map<string, IssuerConfig>([
-    ["accounts.google.com", new GoogleIssuerConfig()],
+    ["accounts.google.com", new GoogleIssuerConfig(domain)],
+    ["badanamu AMS",
+    new StandardIssuerConfig(
+        `MIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgHGWLk3zzoWJ6nJhHEE7LtM9LCa1
+8OSdVQPwvrFxBUTRHz0Hl+qdNMNHJIJkj9NEjL+kaRo0XxsGdrR6NGxL2/WiX3Zf
+H+xCTJ4Wl3pIc3Lrjc8SJ7OcS5PmLc0uXpb0bDGen9KcI3oVe770y6mT8PWIgqjP
+wTT7osO/AOfbIsktAgMBAAE=`,
+        domain
+    )],
+    ["KidsLoopChinaUser-live",
+    new StandardIssuerConfig(
+        `MIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgHGWLk3zzoWJ6nJhHEE7LtM9LCa1
+8OSdVQPwvrFxBUTRHz0Hl+qdNMNHJIJkj9NEjL+kaRo0XxsGdrR6NGxL2/WiX3Zf
+H+xCTJ4Wl3pIc3Lrjc8SJ7OcS5PmLc0uXpb0bDGen9KcI3oVe770y6mT8PWIgqjP
+wTT7osO/AOfbIsktAgMBAAE=`,
+        domain,
+    )]
     /*
     ["KidsLoopChinaUser-live"]
     "-----BEGIN PUBLIC KEY-----",
