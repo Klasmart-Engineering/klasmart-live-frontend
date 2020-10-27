@@ -39,6 +39,11 @@ const useStyles = makeStyles((theme) => createStyles({
     formContainer: {
         width: "100%",
     },
+    googleSSO: {
+        justifyContent: "center",
+        width: "100%",
+        fontFamily: "inherit !important",
+    },
     link: {
         textAlign: "right",
     },
@@ -61,7 +66,6 @@ export function Login() {
     const [passwordError, setPasswordError] = useState<JSX.Element | null>(null);
     const [emailError, setEmailError] = useState<JSX.Element | null>(null);
     const [generalError, setGeneralError] = useState<JSX.Element | null>(null);
-    const [success, setSuccess] = useState(false);
 
     const history = useHistory();
 
@@ -85,7 +89,7 @@ export function Login() {
     }
 
     async function googleLoginSuccess(response: GoogleLoginResponse | GoogleLoginResponseOffline) {
-        if(!("tokenId" in response)) { return }
+        if (!("tokenId" in response)) { return }
         const result = await transferLogin(response.tokenId);
     }
 
@@ -99,18 +103,18 @@ export function Login() {
         headers.append("Accept", "application/json");
         headers.append("Content-Type", "application/json");
         const response = await fetch("/transfer", {
-            body: JSON.stringify({token}),
+            body: JSON.stringify({ token }),
             headers,
             method: "POST",
         });
         console.log(response);
         await response.text()
-        if(response.ok) {
+        if (response.ok) {
             handleSuccess();
             return true
         }
         return false
-        
+
     }
 
     function handleSuccess() {
@@ -119,7 +123,11 @@ export function Login() {
         console.log("continueParam " + continueParam)
         console.log("document.referrer " + document.referrer)
         //TODO validate continue param
-        if (continueParam) { window.location.replace(continueParam); }
+        if (continueParam) {
+            const regex = RegExp(`((https?:\/\/(.+?\.))?kidsloop\.net(\/[A-Za-z0-9\-\._~:\/\?#\[\]@!$&'\(\)\*\+,;\=]*)?)`);
+            if (regex.test(continueParam)) { window.location.replace(continueParam); }
+            else { alert("Not a kidsloop.net domain"); return; }
+        }
         if (document.referrer) { window.location.replace(document.referrer); }
         window.location.replace("https://live.kidsloop.net")
 
@@ -131,14 +139,14 @@ export function Login() {
             if (e.toString().search("EMPTY_EMAIL") !== -1) {
                 setEmailError(
                     <span style={{ display: "flex", alignItems: "center" }}>
-                        <ErrorIcon className={classes.errorIcon}/>
+                        <ErrorIcon className={classes.errorIcon} />
                         <FormattedMessage id="error_emptyEmail" />
                     </span>,
                 );
             } else if (e.toString().search("EMPTY_PASSWORD") !== -1) {
                 setPasswordError(
                     <CenterAlignChildren>
-                        <ErrorIcon className={classes.errorIcon}/>
+                        <ErrorIcon className={classes.errorIcon} />
                         <FormattedMessage id="error_emptyPassword" />
                     </CenterAlignChildren>,
                 );
@@ -150,22 +158,22 @@ export function Login() {
         const id = e.getErrorMessageID();
         const errorMessage = <FormattedMessage id={id} />;
         switch (e.getErrorMessageType()) {
-        case RestAPIErrorType.INVALID_LOGIN:
-            setEmailError(errorMessage);
-            break;
-        case RestAPIErrorType.INVALID_PASSWORD:
-            setPasswordError(errorMessage);
-            break;
-        case RestAPIErrorType.EMAIL_NOT_VERIFIED:
-            history.push("/verify-email");
-            break;
-        case RestAPIErrorType.EMAIL_NOT_VERIFIED:
-            history.push("/verify-phone");
-            break;
-        case RestAPIErrorType.ACCOUNT_BANNED:
-        default:
-            setGeneralError(errorMessage);
-            break;
+            case RestAPIErrorType.INVALID_LOGIN:
+                setEmailError(errorMessage);
+                break;
+            case RestAPIErrorType.INVALID_PASSWORD:
+                setPasswordError(errorMessage);
+                break;
+            case RestAPIErrorType.EMAIL_NOT_VERIFIED:
+                history.push("/verify-email");
+                break;
+            case RestAPIErrorType.EMAIL_NOT_VERIFIED:
+                history.push("/verify-phone");
+                break;
+            case RestAPIErrorType.ACCOUNT_BANNED:
+            default:
+                setGeneralError(errorMessage);
+                break;
         }
     }
 
@@ -175,7 +183,7 @@ export function Login() {
             direction="column"
             justify="space-around"
             alignItems="center"
-            className={ classes.pageWrapper }
+            className={classes.pageWrapper}
         >
             <Container maxWidth="xs">
                 <Card>
@@ -192,18 +200,19 @@ export function Login() {
                             <Grid item xs={4}>
                                 <img alt="KidsLoop Logo" src={KidsloopLogo} height="50px" />
                             </Grid>
-                            <Grid item>
+                            <Grid item xs={12}>
                                 <GoogleLogin
                                     clientId="544374117288-uc6pcgmrvend0thu01p530590ob672j5.apps.googleusercontent.com"
                                     accessType="online"
                                     onRequest={() => setInFlight(true)}
                                     onSuccess={googleLoginSuccess}
                                     onFailure={googleLoginFailure}
+                                    className={classes.googleSSO}
                                 />
                             </Grid>
                             <Grid container alignItems="center">
                                 <Grid item xs={5}>
-                                    <Divider  />
+                                    <Divider />
                                 </Grid>
 
                                 <Grid item xs={2}>
@@ -212,7 +221,7 @@ export function Login() {
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={5}>
-                                    <Divider  />
+                                    <Divider />
                                 </Grid>
                             </Grid>
                             <Grid item xs={12}>
@@ -250,7 +259,7 @@ export function Login() {
                             <Grid item xs={6} className={classes.link}>
                                 <StyledButton
                                     disabled={inFlight}
-                                    onClick={() =>  login() }
+                                    onClick={() => login()}
                                     size="medium"
                                     type="submit"
                                 >
