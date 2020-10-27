@@ -19,9 +19,9 @@ export function verifyRefreshToken(encodedToken: string) {
             encodedToken,
             config.secretOrPublicKey,
             config.refreshTokenOptions,
-            (err, decoded)=>{
-                if(err) { reject(err); return }
-                if(decoded) { resolve(decoded); return }
+            (err, decoded) => {
+                if (err) { reject(err); return }
+                if (decoded) { resolve(decoded); return }
                 reject("Unexpected error, token validation did not succeed but did not return an error")
             }
         )
@@ -102,8 +102,8 @@ function jwtInit(): { secretOrPrivateKey: Secret, accessTokenOptions: SignOption
             if (!privateKey) {
                 throw new Error(`JWT configuration error - please use either JWT_PRIVATE_KEY or JWT_PRIVATE_KEY_FILENAME to specify private key`)
             }
-            const publicKey =  process.env.JWT_PUBLIC_KEY_FILENAME ? readFileSync(process.env.JWT_PUBLIC_KEY_FILENAME) : process.env.JWT_PUBLIC_KEY
-            if(!publicKey) {
+            const publicKey = process.env.JWT_PUBLIC_KEY_FILENAME ? readFileSync(process.env.JWT_PUBLIC_KEY_FILENAME) : process.env.JWT_PUBLIC_KEY
+            if (!publicKey) {
                 throw new Error(`JWT configuration error - please use either JWT_PUBLIC_KEY_FILENAME or JWT_PUBLIC_KEY to specify public key`)
             }
             return {
@@ -143,7 +143,7 @@ export async function transferToken(encodedToken: string): Promise<IdToken> {
         verify(
             encodedToken,
             key,
-            {},
+            {}, //TODO ALGORITHMS
             (err: VerifyErrors | null, decoded: object | undefined) => {
                 if (err) { reject(err); return }
                 if (decoded) {
@@ -239,22 +239,26 @@ class StandardIssuerConfig implements IssuerConfig {
 
 const issuers = new Map<string, IssuerConfig>([
     ["accounts.google.com", new GoogleIssuerConfig(domain)],
-    ["badanamu AMS",
-    new StandardIssuerConfig(
-        `MIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgHGWLk3zzoWJ6nJhHEE7LtM9LCa1
+    ["Badanamu AMS",
+        new StandardIssuerConfig(
+            `-----BEGIN PUBLIC KEY-----
+MIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgHGWLk3zzoWJ6nJhHEE7LtM9LCa1
 8OSdVQPwvrFxBUTRHz0Hl+qdNMNHJIJkj9NEjL+kaRo0XxsGdrR6NGxL2/WiX3Zf
 H+xCTJ4Wl3pIc3Lrjc8SJ7OcS5PmLc0uXpb0bDGen9KcI3oVe770y6mT8PWIgqjP
-wTT7osO/AOfbIsktAgMBAAE=`,
-        domain
-    )],
+wTT7osO/AOfbIsktAgMBAAE=
+-----END PUBLIC KEY-----`,
+            domain
+        )],
     ["KidsLoopChinaUser-live",
-    new StandardIssuerConfig(
-        `MIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgHGWLk3zzoWJ6nJhHEE7LtM9LCa1
-8OSdVQPwvrFxBUTRHz0Hl+qdNMNHJIJkj9NEjL+kaRo0XxsGdrR6NGxL2/WiX3Zf
-H+xCTJ4Wl3pIc3Lrjc8SJ7OcS5PmLc0uXpb0bDGen9KcI3oVe770y6mT8PWIgqjP
-wTT7osO/AOfbIsktAgMBAAE=`,
-        domain,
-    )]
+        new StandardIssuerConfig(
+            `-----BEGIN PUBLIC KEY-----
+MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDAGN9KAcc61KBz8EQAH54bFwGK
+6PEQNVXXlsObwFd3Zos83bRm+3grzP0pKWniZ6TL/y7ZgFh4OlUMh9qJjIt6Lpz9
+l4uDxkgDDrKHn8IrflBxjJKq0OyXqwIYChnFoi/HGjcRtJhi8oTFToSvKMqIeUuL
+mWmLA8nXdDnMl7zwoQIDAQAB
+-----END PUBLIC KEY-----`,
+            domain,
+        )]
     /*
     ["KidsLoopChinaUser-live"]
     "-----BEGIN PUBLIC KEY-----",
