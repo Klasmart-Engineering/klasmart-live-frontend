@@ -18,7 +18,7 @@ import StyledButton from "../../components/styled/button";
 import StyledTextField from "../../components/styled/textfield";
 import Camera from "../../components/media/camera";
 import FFT from "../../components/media/fft";
-import MediaDeviceSelect from "../../components/media/mediaDeviceSelect";
+import MediaDeviceSelect, { DeviceInfo } from "../../components/media/mediaDeviceSelect";
 import Loading from "../../components/loading";
 import logger from "../../services/logger/Logger";
 import { useHistory } from "react-router-dom";
@@ -64,26 +64,29 @@ export function Join(): JSX.Element {
 
     const [nameError, setNameError] = useState<JSX.Element | null>(null);
     const [error, setError] = useState<boolean>(false);
-    const [videoDevices, setVideoDeviceOptions] = useState<MediaDeviceInfo[]>([]);
-    const [audioDevices, setAudioDeviceOptions] = useState<MediaDeviceInfo[]>([]);
+
+    const [videoDevices, setVideoDeviceOptions] = useState<DeviceInfo[]>([]);
+    const [audioDevices, setAudioDeviceOptions] = useState<DeviceInfo[]>([]);
+
     const [videoDeviceId, setVideoDeviceId] = useState<string>();
     const [audioDeviceId, setAudioDeviceId] = useState<string>();
+
     const [stream, setStream] = useState<MediaStream>();
 
     async function detectDevices() {
         try {
             const devices = await navigator.mediaDevices.enumerateDevices();
 
-            const videoDevices = devices.filter((d) => d.kind == "videoinput");
-            const audioDevices = devices.filter((d) => d.kind == "audioinput");
+            const videoDevices = devices.filter((d) => d.kind == "videoinput").map(d => { return { id: d.deviceId, label: d.label, kind: d.kind } });
+            const audioDevices = devices.filter((d) => d.kind == "audioinput").map(d => { return { id: d.deviceId, label: d.label, kind: d.kind } });
 
             setAudioDeviceOptions(audioDevices);
             setVideoDeviceOptions(videoDevices);
 
-            setAudioDeviceId(audioDevices.length > 0 ? audioDevices[0].deviceId : undefined);
-            setVideoDeviceId(videoDevices.length > 0 ? videoDevices[0].deviceId : undefined);
+            setAudioDeviceId(audioDevices.length > 0 ? audioDevices[0].id : undefined);
+            setVideoDeviceId(videoDevices.length > 0 ? videoDevices[0].id : undefined);
 
-            logger({ logType: 'join.tsx detect devices devices list test6', devices });
+            console.log(`detected devices: ${JSON.stringify(devices)}`);
         } catch (err) {
             setError(true);
             console.log("ERROR: ", err.name + ": " + err.message); // TODO: It cannot handle permission issue
@@ -92,8 +95,13 @@ export function Join(): JSX.Element {
 
     useEffect(() => {
         if (!navigator.mediaDevices) { return; }
-        navigator.mediaDevices.addEventListener("devicechange", (e) => detectDevices());
-        return () => { navigator.mediaDevices.removeEventListener("devicechange", (e) => detectDevices()); };
+
+        const onDeviceChange = () => {
+            detectDevices();
+        }
+
+        navigator.mediaDevices.addEventListener("devicechange", onDeviceChange);
+        return () => { navigator.mediaDevices.removeEventListener("devicechange", onDeviceChange); };
     }, []);
 
 
@@ -103,6 +111,14 @@ export function Join(): JSX.Element {
             navigator.mediaDevices.getUserMedia({ video: true, audio: true })
                 .then(() => detectDevices())
                 .catch((e) => { setError(true); console.error(e); });
+        }
+
+        if (stream) {
+            stream.getTracks().forEach(tr => {
+                tr.stop();
+            });
+
+            setStream(undefined);
         }
 
         navigator.mediaDevices.getUserMedia({

@@ -18,11 +18,17 @@ const useStyles = makeStyles(() =>
     }),
 );
 
+export interface DeviceInfo {
+    id: string,
+    label: string,
+    kind: string,
+}
+
 interface Props {
     disabled: boolean;
     deviceType: "video" | "audio";
     deviceId?: string;
-    devices: MediaDeviceInfo[];
+    devices: DeviceInfo[];
     onChange: ((event: React.ChangeEvent<{ name?: string | undefined; value: unknown; }>, child: React.ReactNode) => void) | undefined;
 }
 
@@ -52,10 +58,10 @@ export default function MediaDeviceSelect(props: Props) {
                 value={deviceId || ""}
             >
                 {
-                    devices.map((device: MediaDeviceInfo, index: number) => (
+                    devices.map((device: DeviceInfo, index: number) => (
                         <MenuItem
-                            key={device.kind + ":" + device.label + ":" + device.deviceId}
-                            value={device.deviceId}
+                            key={device.kind + ":" + device.label + ":" + device.id}
+                            value={device.id}
                         >
                             {`${device.label ? device.label.charAt(0).toUpperCase() + device.label.slice(1) : deviceType === "video" ? "Camera " + (index + 1) : "Microphone " + (index + 1)}`}
                         </MenuItem>
