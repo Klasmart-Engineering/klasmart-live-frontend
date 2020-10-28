@@ -35,6 +35,7 @@ export default function Camera({ mediaStream, session, muted, controls, square, 
     const videoRef = useRef<HTMLVideoElement>(null);
     useEffect(() => {
         if (!videoRef.current || !mediaStream) { return; }
+        videoRef.current.pause();
         videoRef.current.srcObject = mediaStream;
     }, [videoRef.current, mediaStream]);
 
