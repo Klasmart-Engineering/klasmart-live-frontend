@@ -9,14 +9,27 @@ import { ThemeProvider } from "@material-ui/core/styles";
 import React, { useMemo } from "react";
 import * as ReactDOM from "react-dom";
 import { RawIntlProvider } from "react-intl";
-import { HashRouter } from "react-router-dom";
+import { HashRouter, Route, Switch } from "react-router-dom";
 import { themeProvider } from "./themeProvider";
-import { getLanguage } from "./locale";
-import { Login } from "./login";
+import { SignIn } from "./pages/signin";
+import { getLanguage } from "./locale/locale";
+import { Continue } from "./pages/continue";
+import { Layout } from "./pages/layout";
+import { SignUp } from "./pages/signup";
+import { Verify } from "./pages/verify";
+import { ResetPassword } from "./pages/resetPassword";
 
-// import { Provider, useSelector } from "react-redux";
-// import { PersistGate } from "redux-persist/integration/react";
-// import { createDefaultStore, State } from "./store/store";
+const routes = [
+    { path: "/reset", Component: ResetPassword},
+    { path: "/verify", Component: Verify },
+    { path: "/signup", Component: SignUp },
+    { path: "/signin", Component: SignIn },
+    { path: "/login", Component: SignIn },
+    { path: "/continue", Component: Continue },
+    { path: "/", Component: SignIn },
+]
+
+
 function ClientSide() {
     const memos = useMemo(() => {
         const url = new URL(window.location.href);
@@ -25,22 +38,30 @@ function ClientSide() {
 
     const testing = memos.hostName === "localhost";
 
-    const languageCode = "en"//useSelector((state: State) => state.ui.locale || "");
+    const languageCode = "en"
     const locale = getLanguage(languageCode);
 
     return (
         <RawIntlProvider value={locale}>
             <ThemeProvider theme={themeProvider()}>
                 <CssBaseline />
-                <Login />
+                <Layout>
+                    <Switch>
+                    { routes.map(({ path, Component }) => (
+                        <Route key={path} exact path={path}>
+                            {({ match }) => (
+                                <Component />
+                            )}
+                        </Route>
+                    ))}
+                    </Switch>
+                </Layout>
             </ThemeProvider>
         </RawIntlProvider>
     );
 }
 
 async function main() {
-    // const { store, persistor } = createDefaultStore();
-
     const div = document.getElementById("app");
     ReactDOM.render(
         <HashRouter>

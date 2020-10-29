@@ -8,6 +8,8 @@ import LanguageIcon from "@material-ui/icons/Translate";
 import { useState } from "react";
 import * as React from "react";
 import { FormattedMessage } from "react-intl";
+import Cookies from "js-cookie";
+import { getDefaultLanguageCode } from "../locale/locale";
 
 // import { useSelector, useStore } from "react-redux";
 // import { ActionTypes } from "../store/actions";
@@ -65,15 +67,20 @@ const StyledMenu = withStyles({})((props: MenuProps) => (
 
 export default function LanguageSelect(props: Props) {
     const classes = useStyles();
-    const store = useStore();
 
-    const locale = useSelector((state: State) => state.ui.locale || "");
+    const url = new URL(window.location.href);
+    const localeParam = url.searchParams.get("iso");
+    const locale = localeParam || Cookies.get("locale") || getDefaultLanguageCode();
+    // set expires, path, domain
+    if (!Cookies.get("locale")) {
+        Cookies.set("locale", locale);
+    }
     const langText = LANGUAGES_LABEL.find((element) => element.code === locale);
     const [languageText, setLanguageText] = useState<string>(langText ? langText.text : "");
     const [languageMenuElement, setLanguageMenuElement] = useState<null | HTMLElement>(null);
 
     function languageSelect(language: { code: string, text: string }) {
-        store.dispatch({ type: ActionTypes.LOCALE, payload: language.code });
+        Cookies.set('locale', language.code);
         setLanguageText(language.text);
         setLanguageMenuElement(null);
     }
