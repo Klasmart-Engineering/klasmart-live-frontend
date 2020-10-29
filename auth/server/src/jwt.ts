@@ -5,8 +5,8 @@ import { v5 } from "uuid"
 import jwksClient from "jwks-rsa"
 import { decode, JwtHeader, verify, VerifyErrors } from "jsonwebtoken"
 
-export const accessTokenDuration = Number(process.env.JWT_ACCESS_TOKEN_DURATION) || 300
-export const refreshTokenDuration = Number(process.env.JWT_REFRESH_TOKEN_DURATION) || 1209600
+export const accessTokenDuration = Number(process.env.JWT_ACCESS_TOKEN_DURATION) || 15*60*1000
+export const refreshTokenDuration = Number(process.env.JWT_REFRESH_TOKEN_DURATION) || 14*24*60*60*1000
 export const httpsOnlyCookie = process.env.JWT_COOKIE_ALLOW_HTTP === undefined
 
 const issuer = process.env.JWT_ISSUER
