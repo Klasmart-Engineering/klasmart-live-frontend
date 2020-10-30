@@ -10,10 +10,11 @@ import { useMutation, useSubscription, ApolloProvider } from "@apollo/react-hook
 import { MutationFunctionOptions } from "@apollo/react-common/lib/types/types";
 import { Resolver, PrePromise } from "../resolver";
 import { WebSocketLink } from "apollo-link-ws";
-import { sessionId, UserContext } from "../entry";
+import { sessionId } from "../entry";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { Producer, ProducerOptions } from "mediasoup-client/lib/Producer";
 import useCordovaObservePause from "../cordova-observe-pause";
+import { useCameraContext } from "../components/media/useCameraContext";
 
 
 
@@ -129,17 +130,17 @@ export class WebRTCSFUContext implements WebRTCContext {
             variables: { roomId }
         })
 
+        const camera = useCameraContext();
 
-        const { camera } = useContext(UserContext);
         useEffect(() => {
-            if (!camera) { return }
-            const promise = sfu.current.transmitStream("camera", camera)
+            if (!camera.stream) { return }
+            const promise = sfu.current.transmitStream("camera", camera.stream)
             return () => {
                 promise.then((producers) => producers.forEach(producer => {
                     if (producer) { producer.close() }
                 }))
             }
-        }, [camera])
+        }, [camera.stream])
 
         // NOTE: Handle cordova pause/resume events.
         const [stateBeforePause, setStateBeforePause] = useState<{ camera: boolean | undefined, mic: boolean | undefined }>({ camera: false, mic: false });
