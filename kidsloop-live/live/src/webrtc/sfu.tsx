@@ -43,9 +43,14 @@ const STREAM = gql`
         stream(id: $id, producerIds: $producerIds)
     }
 `;
-export const MUTE = gql`
+const MUTE = gql`
     mutation mute($roomId: String!, $sessionId: String!, $producerId: String, $consumerId: String, $audio: Boolean, $video: Boolean) {
         mute(roomId: $roomId, sessionId: $sessionId, producerId: $producerId, consumerId: $consumerId, audio: $audio, video: $video)
+    }
+`;
+export const ENDCLASS = gql`
+    mutation endClass($roomId: String) {
+        endClass(roomId: $roomId)
     }
 `;
 const SUBSCRIBE = gql`
@@ -117,9 +122,10 @@ export class WebRTCSFUContext implements WebRTCContext {
         const [consumer] = useMutation(CONSUMER);
         const [stream] = useMutation(STREAM);
         const [mute] = useMutation(MUTE);
+        const [endClass] = useMutation(ENDCLASS);
 
         if (!sfu.current) {
-            sfu.current = new WebRTCSFUContext(rerender, rtpCapabilities, transport, producer, consumer, stream, mute)
+            sfu.current = new WebRTCSFUContext(rerender, rtpCapabilities, transport, producer, consumer, stream, mute, endClass)
         }
 
         const {roomId} = RoomContext.Consume();
@@ -464,6 +470,7 @@ export class WebRTCSFUContext implements WebRTCContext {
     private consumer: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>
     private stream: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>
     private mute: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>
+    private endClass: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>
 
     private constructor(
         rerender: React.DispatchWithoutAction,
@@ -473,6 +480,7 @@ export class WebRTCSFUContext implements WebRTCContext {
         consumer: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>,
         stream: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>,
         mute: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>,
+        endClass: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>,
     ) {
         this.rerender = rerender
         this.rtpCapabilities = rtpCapabilities
@@ -481,6 +489,7 @@ export class WebRTCSFUContext implements WebRTCContext {
         this.consumer = consumer
         this.stream = stream
         this.mute = mute
+        this.endClass = endClass
     }
 
     private _device?: Device | null
