@@ -29,6 +29,10 @@ const messages: Record<string, string> = {
     login_loginButton: "Sign In",
     login_loginPrompt: "Sign In",
 
+    notFound_notFoundPrompt: "Oops! Broken link.",
+    notFound_notFoundDescription: "Let's take you home.",
+    notFound_homeButton: "Home",
+
     signup_createAccount: "Create your account",
     signup_signIn: "Sign in instead",
     signup_signUpNextButton: "Next",

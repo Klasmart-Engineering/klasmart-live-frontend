@@ -26,6 +26,7 @@ const useStyles = makeStyles((theme) => createStyles({
 );
 
 interface Props {
+    centerLogo: boolean;
     children: React.ReactNode;
 }
 
@@ -44,7 +45,7 @@ export function Layout(props: Props) {
                 <Card>
                     <CardContent className={classes.card}>
                         <Grid container direction="row" justify="center" alignItems="center" spacing={4}>
-                            <Grid item xs={12}>
+                            <Grid item xs={12} style={{ textAlign: props.centerLogo ? "center" : "left" }}>
                                 <img alt="KidsLoop Logo" src={KidsloopIcon} height="50px" />
                             </Grid>
                             { props.children }

@@ -18,6 +18,8 @@ import { Layout } from "./pages/layout";
 import { SignUp } from "./pages/signup";
 import { Verify } from "./pages/verify";
 import { ResetPassword } from "./pages/resetPassword";
+import { NotFound } from "./pages/notFound";
+import { redirectIfUnauthorized } from "./utils/accountUtils";
 
 const routes = [
     { path: "/reset", Component: ResetPassword},
@@ -37,6 +39,7 @@ function ClientSide() {
     }, []);
 
     const testing = memos.hostName === "localhost";
+    redirectIfUnauthorized();
 
     const languageCode = "en"
     const locale = getLanguage(languageCode);
@@ -45,17 +48,22 @@ function ClientSide() {
         <RawIntlProvider value={locale}>
             <ThemeProvider theme={themeProvider()}>
                 <CssBaseline />
-                <Layout>
                     <Switch>
-                    { routes.map(({ path, Component }) => (
-                        <Route key={path} exact path={path}>
-                            {({ match }) => (
-                                <Component />
-                            )}
+                        { routes.map(({ path, Component }) => (
+                            <Route key={path} exact path={path}>
+                                {({ match }) => (
+                                    <Layout centerLogo={path === "/continue"}>
+                                        <Component />
+                                    </Layout>
+                                )}
+                            </Route>
+                        ))}
+                        <Route>
+                            <Layout centerLogo={true}>
+                                <NotFound />
+                            </Layout>
                         </Route>
-                    ))}
                     </Switch>
-                </Layout>
             </ThemeProvider>
         </RawIntlProvider>
     );

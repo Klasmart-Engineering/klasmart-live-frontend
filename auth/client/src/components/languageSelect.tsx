@@ -10,10 +10,7 @@ import * as React from "react";
 import { FormattedMessage } from "react-intl";
 import Cookies from "js-cookie";
 import { getDefaultLanguageCode } from "../locale/locale";
-
-// import { useSelector, useStore } from "react-redux";
-// import { ActionTypes } from "../store/actions";
-// import { State } from "../store/store";
+import clsx from "clsx";
 
 const LANGUAGES_LABEL: Language[] = [
     {
@@ -39,13 +36,21 @@ export interface Language {
     text: string;
 }
 
-// tslint:disable:object-literal-sort-keys
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
+        expand: {
+            transform: 'rotate(0deg)',
+            transition: theme.transitions.create("transform", {
+                duration: theme.transitions.duration.shortest,
+            }),
+        },
+        expandOpen: {
+            transform: "rotate(180deg)",
+        },
         language: {
             margin: theme.spacing(0, 0.5, 0, 1),
             display: "block",
-        },
+        }
     }),
 );
 
@@ -71,16 +76,15 @@ export default function LanguageSelect(props: Props) {
     const url = new URL(window.location.href);
     const localeParam = url.searchParams.get("iso");
     const locale = localeParam || Cookies.get("locale") || getDefaultLanguageCode();
-    // set expires, path, domain
     if (!Cookies.get("locale")) {
-        Cookies.set("locale", locale);
+        Cookies.set("locale", locale, { path: "/", domain: ".kidsloop.net" });
     }
     const langText = LANGUAGES_LABEL.find((element) => element.code === locale);
     const [languageText, setLanguageText] = useState<string>(langText ? langText.text : "");
     const [languageMenuElement, setLanguageMenuElement] = useState<null | HTMLElement>(null);
 
     function languageSelect(language: { code: string, text: string }) {
-        Cookies.set('locale', language.code);
+        Cookies.set('locale', language.code, { path: "/", domain: "kidsloop.net" });
         setLanguageText(language.text);
         setLanguageMenuElement(null);
     }
@@ -104,7 +108,12 @@ export default function LanguageSelect(props: Props) {
                             languageText
                         }
                     </span>
-                    <ExpandMoreIcon fontSize="small" />
+                    <ExpandMoreIcon
+                        fontSize="small"
+                        className={clsx(classes.expand, {
+                            [classes.expandOpen]: languageMenuElement !== null,
+                        })}
+                    />
                 </Button>
             </Tooltip>
             <StyledMenu
