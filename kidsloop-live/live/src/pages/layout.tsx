@@ -51,6 +51,7 @@ import CenterAlignChildren from "../components/centerAlignChildren";
 import { State } from "../store/store";
 import { ActionTypes, ClassType } from "../store/actions";
 import Paper from "@material-ui/core/Paper";
+import { useCameraContext } from "../components/media/useCameraContext";
 
 const MessageContext = createContext(new Map<string, Message>());
 const UsersContext = createContext(new Map<string, Session>());
@@ -530,7 +531,9 @@ function TabInnerContent({ title }: {
     const classType = useSelector((state: State) => state.session.classType);
     const contentIndex = useSelector((store: State) => store.control.contentIndex);
 
-    const { camera, sessionId, materials, teacher } = useContext(UserContext);
+    const camera = useCameraContext();
+
+    const { sessionId, materials, teacher } = useContext(UserContext);
     const [gridMode, setGridMode] = useState(true)
 
     switch (title) {
@@ -554,7 +557,7 @@ function TabInnerContent({ title }: {
                         {selfUser.map(([id, session]) =>
                             <Camera
                                 key={id}
-                                mediaStream={camera !== null ? camera : undefined}
+                                mediaStream={camera.stream}
                                 session={session}
                                 muted={true}
                                 controls={true}
@@ -588,7 +591,7 @@ function TabInnerContent({ title }: {
                                     sessionId={sessionId}
                                     id={id}
                                     session={session}
-                                    mediaStream={id === sessionId && camera !== null ? camera : webrtc.getCameraStream(id)}
+                                    mediaStream={id === sessionId && camera.stream ? camera.stream : webrtc.getCameraStream(id)}
                                 />
                             )) :
                             allUsers.map(([id, session]) =>
@@ -598,7 +601,7 @@ function TabInnerContent({ title }: {
                                     sessionId={sessionId}
                                     id={id}
                                     session={session}
-                                    mediaStream={id === sessionId && camera !== null ? camera : webrtc.getCameraStream(id)}
+                                    mediaStream={id === sessionId && camera.stream ? camera.stream : webrtc.getCameraStream(id)}
                                 />
                             )
                         }

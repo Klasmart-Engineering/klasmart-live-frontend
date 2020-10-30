@@ -22,6 +22,7 @@ import FFT from "../../components/media/fft";
 import MediaDeviceSelect, { DeviceInfo } from "../../components/media/mediaDeviceSelect";
 import Loading from "../../components/loading";
 import { useHistory } from "react-router-dom";
+import { FacingType, useCameraContext } from "../../components/media/useCameraContext";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -56,82 +57,27 @@ export function Join(): JSX.Element {
     const classes = useStyles();
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
-    const { setCamera, name, setName, teacher, sessionId } = useContext(UserContext);
-
+    const { name, setName, teacher, sessionId, setCamera } = useContext(UserContext);
     const history = useHistory();
 
     const [user, setUser] = useState<string>("");
 
     const [nameError, setNameError] = useState<JSX.Element | null>(null);
-    const [error, setError] = useState<boolean>(false);
 
-    const [videoDevices, setVideoDeviceOptions] = useState<DeviceInfo[]>([]);
-    const [audioDevices, setAudioDeviceOptions] = useState<DeviceInfo[]>([]);
+    // TODO: If moving to using just front/back camera device for mobile
+    // app devices we may not need these arrays. Since they would be constant
+    // front/back always (would need to figure out how to determine available
+    // cameras though).
+    const [videoDevices] = useState<DeviceInfo[]>([
+        { label: "Front Facing", kind: "videoinput", id: FacingType.User as string, },
+        { label: "Back Facing", kind: "videoinput", id: FacingType.Environment as string }
+    ]);
+    const [audioDevices] = useState<DeviceInfo[]>([
+        { label: "Front Facing", kind: "audioinput", id: FacingType.User as string, },
+        { label: "Back Facing", kind: "audioinput", id: FacingType.Environment as string }
+    ]);
 
-    const [videoDeviceId, setVideoDeviceId] = useState<string>();
-    const [audioDeviceId, setAudioDeviceId] = useState<string>();
-
-    const [stream, setStream] = useState<MediaStream>();
-
-    async function detectDevices() {
-        try {
-            const devices = await navigator.mediaDevices.enumerateDevices();
-
-            const videoDevices = devices.filter((d) => d.kind == "videoinput").map(d => { return { id: d.deviceId, label: d.label, kind: d.kind } });
-            const audioDevices = devices.filter((d) => d.kind == "audioinput").map(d => { return { id: d.deviceId, label: d.label, kind: d.kind } });
-
-            setAudioDeviceOptions(audioDevices);
-            setVideoDeviceOptions(videoDevices);
-
-            setAudioDeviceId(audioDevices.length > 0 ? audioDevices[0].id : undefined);
-            setVideoDeviceId(videoDevices.length > 0 ? videoDevices[0].id : undefined);
-
-            console.log(`detected devices: ${JSON.stringify(devices)}`);
-        } catch (err) {
-            setError(true);
-            console.log("ERROR: ", err.name + ": " + err.message); // TODO: It cannot handle permission issue
-        }
-    }
-
-    useEffect(() => {
-        if (!navigator.mediaDevices) { return; }
-
-        const onDeviceChange = () => {
-            detectDevices();
-        }
-
-        navigator.mediaDevices.addEventListener("devicechange", onDeviceChange);
-        return () => { navigator.mediaDevices.removeEventListener("devicechange", onDeviceChange); };
-    }, []);
-
-
-    useEffect(() => {
-        if (!navigator.mediaDevices) { return; }
-        if (videoDeviceId === undefined && audioDeviceId === undefined) {
-            navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-                .then(() => detectDevices())
-                .catch((e) => { setError(true); console.error(e); });
-        }
-
-        if (stream) {
-            stream.getTracks().forEach(tr => {
-                tr.stop();
-            });
-
-            setStream(undefined);
-        }
-
-        navigator.mediaDevices.getUserMedia({
-            video: {
-                deviceId: videoDeviceId,
-                width: { ideal: 4096 },
-                height: { ideal: 2160 },
-            },
-            audio: { deviceId: audioDeviceId },
-        })
-            .then((s) => { setStream(s); })
-            .catch((e) => { setError(true); console.error(e); });
-    }, [videoDeviceId, audioDeviceId]);
+    const { error, stream, facing, setFacing } = useCameraContext();
 
     function join(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -185,7 +131,7 @@ export function Join(): JSX.Element {
                             <Grid item xs={12} md={4}>
                                 <Grid container direction="row" justify="center" alignItems="center" spacing={4}>
                                     <Grid item xs={12}>
-                                        <img alt="KidsLoop Live" src={ teacher ? KidsLoopTeachers : KidsLoopStudents} height="64px" style={{ display: "block", margin: "0 auto" }} />
+                                        <img alt="KidsLoop Live" src={teacher ? KidsLoopTeachers : KidsLoopStudents} height="64px" style={{ display: "block", margin: "0 auto" }} />
                                     </Grid>
                                     <Grid item xs={12} className={classes.formContainer}>
                                         <form onSubmit={join}>
@@ -211,18 +157,18 @@ export function Join(): JSX.Element {
                                                     <MediaDeviceSelect
                                                         disabled={videoDevices.length <= 1}
                                                         deviceType="video"
-                                                        deviceId={videoDeviceId}
+                                                        deviceId={facing as string}
                                                         devices={videoDevices}
-                                                        onChange={(e) => setVideoDeviceId(e.target.value as string)}
+                                                        onChange={(e) => setFacing(e.target.value as FacingType)}
                                                     />
                                                 </Grid>
                                                 <Grid item xs={12}>
                                                     <MediaDeviceSelect
                                                         disabled={audioDevices.length <= 1}
                                                         deviceType="audio"
-                                                        deviceId={audioDeviceId}
+                                                        deviceId={facing as string}
                                                         devices={audioDevices}
-                                                        onChange={(e) => setAudioDeviceId(e.target.value as string)}
+                                                        onChange={(e) => setFacing(e.target.value as FacingType)}
                                                     />
                                                 </Grid>
                                                 <Grid item xs={12}>
