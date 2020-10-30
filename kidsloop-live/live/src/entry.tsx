@@ -1,7 +1,7 @@
 import { v4 as uuid } from "uuid";
 export const sessionId = uuid();
 
-import React, { createContext, useState, useMemo, useContext, useEffect } from "react";
+import React, { createContext, useState, useMemo, useContext, useEffect, useCallback } from "react";
 // import * as Sentry from '@sentry/react';
 import { render } from "react-dom";
 import { RawIntlProvider, FormattedMessage } from "react-intl";
@@ -29,7 +29,6 @@ import jwt_decode from "jwt-decode";
 import { ThemeProvider } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Typography from "@material-ui/core/Typography";
-import Alert from "@material-ui/lab/Alert/Alert";
 
 import { App } from "./app";
 import { ActionTypes } from "./store/actions"
@@ -39,6 +38,8 @@ import { AuthTokenProvider } from "./services/auth-token/AuthTokenProvider";
 import { themeProvider } from "./themeProvider";
 import BrowserList, { detectIE } from "./pages/browserList";
 import { getLanguage } from "./utils/locale";
+import { CameraContextProvider } from "./components/media/useCameraContext";
+import useCordovaInitialize from "./cordova-initialize";
 
 /*
 Sentry.init({
@@ -78,8 +79,6 @@ export interface IUserContext {
     sessionId: string,
     name?: string,
     setName: React.Dispatch<React.SetStateAction<string | undefined>>
-    camera?: MediaStream | null,
-    setCamera: React.Dispatch<React.SetStateAction<MediaStream | undefined | null>>,
 }
 
 export const ThemeContext = createContext<IThemeContext>({ themeMode: "", setThemeMode: () => null, languageCode: "", setLanguageCode: () => null } as any as IThemeContext);
@@ -163,8 +162,8 @@ function Entry() {
         return <RawIntlProvider value={locale}><Typography><FormattedMessage id="error_invaild_token" /></Typography></RawIntlProvider>;
     }
 
-    const [camera, setCamera] = useState<MediaStream | null>();
     const [name, setName] = useState(params.name);
+    const [camera, setCamera] = useState<MediaStream>();
 
     const userContext = useMemo<IUserContext>(() => ({
         camera,
@@ -196,14 +195,21 @@ function Entry() {
         store.dispatch({ type: ActionTypes.USER_AGENT, payload: userAgent });
     }, []);
 
+    const [cordovaReady, permissions] = useCordovaInitialize();
+
+    if (!cordovaReady) { return <>Loading...</> }
+    if (!permissions) { return <>Camera and Microphone premissions required. Please grant the permissions and restart application.</> }
+
     return (<>
         <UserContext.Provider value={userContext}>
-            <RawIntlProvider value={locale}>
-                <ThemeProvider theme={themeProvider(languageCode, themeMode)}>
-                    <CssBaseline />
-                    <App />
-                </ThemeProvider>
-            </RawIntlProvider>
+            <CameraContextProvider>
+                <RawIntlProvider value={locale}>
+                    <ThemeProvider theme={themeProvider(languageCode, themeMode)}>
+                        <CssBaseline />
+                        <App />
+                    </ThemeProvider>
+                </RawIntlProvider>
+            </CameraContextProvider>
         </UserContext.Provider>
         {/* {isMobileOnly ?
             <Alert variant="filled" severity="warning" style={{ position: "fixed", bottom: 0 }}>
