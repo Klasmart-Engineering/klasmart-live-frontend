@@ -46,9 +46,8 @@ export function Continue() {
 
     const url = new URL(window.location.href)
     const [continueLink, setContinueLink] = useState(url.searchParams.get("continue") || DEFAULT_REDIRECT_LINK);
-    const [seconds, setSeconds] = useState(5);
+    const [seconds, setSeconds] = useState(10);
 
-    const [generalError, setGeneralError] = useState<JSX.Element | null>(null);
     const [continueError, setContinueError] = useState<JSX.Element | null>(null);
 
     const regex = /((https?:\/\/(.+?\.))?kidsloop\.net(\/[A-Za-z0-9\-\._~:\/\?#\[\]@!$&'\(\)\*\+,;\=]*)?)/;
@@ -78,6 +77,8 @@ export function Continue() {
             setSeconds(seconds - 1);
         }, 1000);
 
+        if (seconds === 5) { handleSuccess() }
+
         return () => clearInterval(interval);
     }, [seconds])
 
@@ -85,8 +86,12 @@ export function Continue() {
         console.log("continueLink " + continueLink)
         console.log("document.referrer " + document.referrer)
 
-        if (document.referrer) { window.location.replace(document.referrer); }
-        window.location.replace(continueLink);
+        if (window.self !== window.top) {
+            window.parent.postMessage("message", "*");
+        } else {
+            if (document.referrer) { window.location.replace(document.referrer); }
+            window.location.replace(continueLink);
+        }
 
         return;
     }
@@ -129,7 +134,7 @@ export function Continue() {
                     extendedOnly
                     size="medium"
                     type="submit"
-                    onClick={() => {window.location.replace(continueLink)}}
+                    onClick={() => {handleSuccess}}
                 >
                     <FormattedMessage id="button_continue" />
                 </StyledButton>
