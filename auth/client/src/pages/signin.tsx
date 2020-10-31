@@ -71,7 +71,7 @@ export function SignIn() {
             if (email === "") { throw new Error("EMPTY_EMAIL"); }
             if (password === "") { throw new Error("EMPTY_PASSWORD"); }
             const token = await restApi.login(email, password);
-            await transferLogin(token);
+            await transferLogin(token.accessToken);
         } catch (e) {
             handleError(e);
         } finally {
