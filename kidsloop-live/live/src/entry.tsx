@@ -197,8 +197,8 @@ function Entry() {
         store.dispatch({ type: ActionTypes.USER_AGENT, payload: userAgent });
     }, []);
 
-    const [cordovaReady, permissions] = useCordovaInitialize();
-    const { authReady, authenticated, refresh } = useAuthenticatedCheck();
+    const { cordovaReady, permissions } = useCordovaInitialize();
+    const { authReady, authenticated, refresh } = useAuthenticatedCheck(cordovaReady);
 
     if (!cordovaReady) { return <>Loading...</> }
     if (!permissions) { return <>Camera and Microphone premissions required. Please grant the permissions and restart application.</> }

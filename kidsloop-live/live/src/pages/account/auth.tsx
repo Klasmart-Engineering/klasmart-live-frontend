@@ -13,7 +13,7 @@ const useStyles = makeStyles((_theme) => createStyles({
 }),
 );
 
-const AuthEndpoint = "https://auth.kidsloop.net/";
+const AuthEndpoint = "https://auth.kidsloop.net";
 
 interface Props {
     refresh: () => void;
@@ -32,9 +32,10 @@ export function Auth({ refresh }: Props) {
         const onMessage = (event: MessageEvent) => {
             const { data, origin } = event;
 
-            // TODO: Verify data/origin before refreshing.
-            console.log(`data: ${JSON.stringify(data)}, origin: ${origin}`);
+            // TODO: Remove the message print once we're sure correct data arrives.
+            console.log(`data: ${JSON.stringify(data)} origin: ${JSON.stringify(origin)}`);
 
+            // TODO: Verify data/origin before refreshing.
             if (origin === AuthEndpoint && data === "message") {
                 refresh();
             }
