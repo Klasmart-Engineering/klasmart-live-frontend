@@ -7,7 +7,7 @@ interface User {
     user_name: string,
 }
 
-export async function redirectIfUnauthorized() {
+export async function redirectIfUnauthorized(continueParam?: string) {
     const GET_SELF = `query {
         me { 
             avatar
@@ -34,12 +34,10 @@ export async function redirectIfUnauthorized() {
             console.log(me);
             if (me === null) {
                 if (window.location.origin === "https://auth.kidsloop.net") { return; }
-
-                const continueParam = queryString.stringify({ continue: window.location.href });
-                window.location.href = `https://auth.kidsloop.net/?${continueParam}#/`
+                const stringifiedQuery = queryString.stringify({ continue: continueParam ? continueParam : window.location.href });
+                window.location.href = `https://auth.kidsloop.net/?${stringifiedQuery}#/`
             }
             return;
         });
-
 }
 
