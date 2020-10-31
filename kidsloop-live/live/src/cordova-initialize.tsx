@@ -105,7 +105,7 @@ const useCordovaInitialize = (backExitApplication?: boolean, callbackBackButton?
 
     }, [backExitApplication, callbackBackButton]);
 
-    return [cordovaReady, permissions, requestPermissions];
+    return { cordovaReady, permissions, requestPermissions };
 };
 
 export default useCordovaInitialize;
