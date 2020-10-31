@@ -45,6 +45,9 @@ import BrowserList, { detectIE } from "./pages/browserList";
 import { getLanguage } from "./utils/locale";
 import { CameraContextProvider } from "./components/media/useCameraContext";
 import useCordovaInitialize from "./cordova-initialize";
+import { redirectIfUnauthorized } from "./utils/accountUtils";
+import { useAuthenticatedCheck } from "./utils/useAuthenticatedCheck";
+import { Auth } from "./pages/account/auth";
 
 /*
 Sentry.init({
@@ -146,6 +149,7 @@ function parseToken() {
     } catch (e) { }
     return;
 }
+
 const params = parseToken();
 if (params && params.name) {
     LogRocket.identify(params.name, { sessionId })
@@ -194,9 +198,12 @@ function Entry() {
     }, []);
 
     const [cordovaReady, permissions] = useCordovaInitialize();
+    const { authReady, authenticated, refresh } = useAuthenticatedCheck();
 
     if (!cordovaReady) { return <>Loading...</> }
     if (!permissions) { return <>Camera and Microphone premissions required. Please grant the permissions and restart application.</> }
+    if (!authReady) { return <>Loading...</> }
+    if (!authenticated) { return <Auth refresh={refresh} /> }
 
     return (<>
         <UserContext.Provider value={userContext}>

@@ -89,7 +89,7 @@
     "mediasoup-client": "^3.6.12",
     "logrocket": "^1.0.14",
     "node-source-han-sans-sc": "^1.1.0-2.001R",
-    "query-string": "^6.13.0",
+    "query-string": "^6.13.6",
     "react": "^16.13.1",
     "react-color": "^2.18.1",
     "react-confetti": "^6.0.0",
