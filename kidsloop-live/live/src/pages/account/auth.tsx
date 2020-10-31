@@ -17,9 +17,10 @@ const AuthEndpoint = "https://auth.kidsloop.net";
 
 interface Props {
     refresh: () => void;
+    useInAppBrowser: boolean;
 }
 
-export function Auth({ refresh }: Props) {
+export function Auth({ refresh, useInAppBrowser }: Props) {
     const classes = useStyles();
     const frameRef = useRef<HTMLIFrameElement>(null);
 
@@ -48,9 +49,41 @@ export function Auth({ refresh }: Props) {
         }
     }, [frameRef.current]);
 
-    return (
-        <div className={classes.container}>
-            <iframe ref={frameRef} width="100%" height="100%" frameBorder="0" src={AuthEndpoint}></iframe>
-        </div>
-    );
+    useEffect(() => {
+        if (!useInAppBrowser) return;
+
+        const cordova = (window as any).cordova;
+        if (!cordova) return;
+
+        const browser = cordova.InAppBrowser.open(AuthEndpoint, '_blank', 'location=no,zoom=no');
+
+        const onStop = () => {
+            refresh();
+        };
+
+        // params = InAppBrowserEvent
+        const onMessage = (params: any) => {
+            const messageData = params.data;
+            if (messageData === "message") {
+                refresh();
+
+                browser.close();
+            }
+        };
+
+        browser.addEventListener("stop", onStop, false);
+        browser.addEventListener("message", onMessage, false);
+    }, []);
+
+    if (useInAppBrowser) {
+        return (
+            <>Waiting for authentication...</>
+        );
+    } else {
+        return (
+            <div className={classes.container}>
+                <iframe ref={frameRef} width="100%" height="100%" frameBorder="0" src={AuthEndpoint}></iframe>
+            </div>
+        );
+    }
 }
