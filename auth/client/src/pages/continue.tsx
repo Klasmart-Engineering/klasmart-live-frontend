@@ -87,7 +87,7 @@ export function Continue() {
         console.log("document.referrer " + document.referrer)
 
         if (window.self !== window.top) {
-            window.parent.postMessage("message", "*");
+            window.parent.postMessage({message: "message"}, "*");
         } else {
             if (document.referrer) { window.location.replace(document.referrer); }
             window.location.replace(continueLink);
