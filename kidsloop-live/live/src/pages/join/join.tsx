@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
+import { useSelector } from "react-redux";
 import { createStyles, makeStyles, useTheme, Theme } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import Container from "@material-ui/core/Container";
@@ -13,6 +14,7 @@ import { Error as ErrorIcon } from "@styled-icons/material/Error";
 
 import KidsLoopTeachers from "../../assets/img/kidsloop_live_teachers.svg";
 import KidsLoopStudents from "../../assets/img/kidsloop_live_students.svg";
+import KidsLoopStudy from "../../assets/img/kidsloop_study_students.svg";
 import { UserContext } from "../../entry";
 import StyledButton from "../../components/styled/button";
 import StyledTextField from "../../components/styled/textfield";
@@ -23,6 +25,8 @@ import Loading from "../../components/loading";
 import logger from "../../services/logger/Logger";
 import { useHistory } from "react-router-dom";
 import { FacingType, useCameraContext } from "../../components/media/useCameraContext";
+import { State } from "../../store/store";
+import { ClassType } from "../../store/actions";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -57,6 +61,7 @@ export function Join(): JSX.Element {
     const classes = useStyles();
     const theme = useTheme();
     const history = useHistory();
+    const classType = useSelector((store: State) => store.session.classType);
 
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
     const { name, setName, teacher } = useContext(UserContext);
@@ -125,7 +130,9 @@ export function Join(): JSX.Element {
                             <Grid item xs={12} md={4}>
                                 <Grid container direction="row" justify="center" alignItems="center" spacing={4}>
                                     <Grid item xs={12}>
-                                        <img alt="KidsLoop Live" src={teacher ? KidsLoopTeachers : KidsLoopStudents} height="64px" style={{ display: "block", margin: "0 auto" }} />
+                                        {classType === ClassType.LIVE ?
+                                            <img alt="KidsLoop Live" src={teacher ? KidsLoopTeachers : KidsLoopStudents} height="64px" style={{ display: "block", margin: "0 auto" }} /> :
+                                            <img alt="KidsLoop Live" src={KidsLoopStudy} height="64px" style={{ display: "block", margin: "0 auto" }} />}
                                     </Grid>
                                     <Grid item xs={12} className={classes.formContainer}>
                                         <form onSubmit={join}>
