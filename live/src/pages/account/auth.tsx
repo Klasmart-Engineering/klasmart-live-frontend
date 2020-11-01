@@ -30,22 +30,22 @@ export function Auth({ refresh, useInAppBrowser }: Props) {
         const contentWindow = frameRef.current.contentWindow;
         if (!contentWindow) return;
 
+        const parent = contentWindow.parent;
+        if (!parent) return;
+
         const onMessage = (event: MessageEvent) => {
             const { data, origin } = event;
 
-            // TODO: Remove the message print once we're sure correct data arrives.
-            console.log(`data: ${JSON.stringify(data)} origin: ${JSON.stringify(origin)}`);
-
-            // TODO: Verify data/origin before refreshing.
-            if (origin === AuthEndpoint && data === "message") {
+            if (origin === AuthEndpoint && data.message === "message") {
+                console.log('refreshing auth status');
                 refresh();
             }
         };
 
-        contentWindow.addEventListener("message", onMessage, false);
+        parent.addEventListener("message", onMessage, false);
 
         return () => {
-            contentWindow.removeEventListener("message", onMessage);
+            parent.removeEventListener("message", onMessage);
         }
     }, [frameRef.current]);
 
