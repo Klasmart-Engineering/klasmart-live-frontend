@@ -24,10 +24,9 @@ export async function checkUserAuthenticated(): Promise<boolean> {
         method: "POST",
     });
 
-    const { me } = await response.json();
-    console.log(`me: ${JSON.stringify(me)}`);
+    const { data } = await response.json();
 
-    return me !== null && me !== undefined;
+    return data && data.me !== null;
 }
 
 export async function redirectIfUnauthorized(continueParam?: string) {
