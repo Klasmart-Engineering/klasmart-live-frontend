@@ -57,21 +57,21 @@ export function Auth({ refresh, useInAppBrowser }: Props) {
 
         const browser = cordova.InAppBrowser.open(AuthEndpoint, '_blank', 'location=no,zoom=no');
 
-        const onStop = () => {
+        const onExit = () => {
             refresh();
         };
 
         // params = InAppBrowserEvent
         const onMessage = (params: any) => {
             const messageData = params.data;
-            if (messageData === "message") {
+            if (messageData.message === "message") {
                 refresh();
 
                 browser.close();
             }
         };
 
-        browser.addEventListener("stop", onStop, false);
+        browser.addEventListener("exit", onExit, false);
         browser.addEventListener("message", onMessage, false);
     }, []);
 

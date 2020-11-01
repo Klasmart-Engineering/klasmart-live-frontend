@@ -10,8 +10,8 @@ export const useAuthenticatedCheck = (cookiesReady: boolean) => {
 
         checkUserAuthenticated()
             .then((auth) => {
-                setAuthReady(true);
                 setAuthenticated(auth);
+                setAuthReady(true);
             });
     }, []);
 
