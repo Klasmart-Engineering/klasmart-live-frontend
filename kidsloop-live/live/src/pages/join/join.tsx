@@ -72,10 +72,6 @@ export function Join(): JSX.Element {
         { label: "Front Facing", kind: "videoinput", id: FacingType.User as string, },
         { label: "Back Facing", kind: "videoinput", id: FacingType.Environment as string }
     ]);
-    const [audioDevices] = useState<DeviceInfo[]>([
-        { label: "Front Facing", kind: "audioinput", id: FacingType.User as string, },
-        { label: "Back Facing", kind: "audioinput", id: FacingType.Environment as string }
-    ]);
 
     const { error, stream, facing, setFacing } = useCameraContext();
 
@@ -159,15 +155,6 @@ export function Join(): JSX.Element {
                                                         deviceType="video"
                                                         deviceId={facing as string}
                                                         devices={videoDevices}
-                                                        onChange={(e) => setFacing(e.target.value as FacingType)}
-                                                    />
-                                                </Grid>
-                                                <Grid item xs={12}>
-                                                    <MediaDeviceSelect
-                                                        disabled={audioDevices.length <= 1}
-                                                        deviceType="audio"
-                                                        deviceId={facing as string}
-                                                        devices={audioDevices}
                                                         onChange={(e) => setFacing(e.target.value as FacingType)}
                                                     />
                                                 </Grid>
