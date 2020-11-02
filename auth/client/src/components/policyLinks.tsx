@@ -1,58 +1,115 @@
+import useMediaQuery from "@material-ui/core/useMediaQuery"
+import DialogContent from "@material-ui/core/DialogContent"
+import DialogContentText from "@material-ui/core/DialogContentText"
+import Dialog from "@material-ui/core/Dialog";
 import Grid from "@material-ui/core/Grid";
+import Grow from "@material-ui/core/Grow";
 import Link from "@material-ui/core/Link";
-import { createStyles, Theme, WithStyles, withStyles } from "@material-ui/core/styles";
+import { createStyles, makeStyles, Theme, useTheme } from "@material-ui/core/styles";
+import { TransitionProps } from "@material-ui/core/transitions";
 import * as React from "react";
+import { useEffect, useRef, useState } from "react";
 import { FormattedMessage } from "react-intl";
+import PrivacyNotice from "../pages/policies/privacy";
+import DialogAppBar from "./dialogAppBar";
 
-const styles = (theme: Theme) => createStyles({
-    links: {
-        padding: theme.spacing(4, 0),
-        textAlign: "right",
-        [theme.breakpoints.down("sm")]: {
-            textAlign: "center",
+const useStyles = makeStyles((theme: Theme) =>
+    createStyles({
+        links: {
+            padding: theme.spacing(4, 0),
+            textAlign: "right",
+            [theme.breakpoints.down("sm")]: {
+                textAlign: "center",
+            },
         },
-    },
+    }),
+);
+
+const Motion = React.forwardRef(function Transition(
+    props: TransitionProps & { children?: React.ReactElement },
+    ref: React.Ref<unknown>,
+) {
+    return <Grow style={{ transformOrigin: "0 0 0" }} ref={ref} {...props} />;
 });
 
-type Props = WithStyles<typeof styles>;
+export default function PolicyLinks() {
+    const classes = useStyles();
+    const theme = useTheme();
 
-class PolicyLink extends React.PureComponent<Props, any> {
-    public render() {
-        return (
-            <Grid container spacing={2} justify="flex-end" className={this.props.classes.links}>
-                <Grid item xs={4}>
+    const [open, setOpen] = useState(false);
+    const [title, setTitle] = useState("Privacy Notice");
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const descriptionElementRef = useRef<HTMLElement>(null);
+    useEffect(() => {
+        if (open) {
+            const { current: descriptionElement } = descriptionElementRef;
+            if (descriptionElement !== null) {
+                descriptionElement.focus();
+            }
+        }
+    }, [open]);
+
+    return (
+        <>
+            <Grid container spacing={2} justify="flex-end" className={classes.links}>
+                {/* <Grid item xs={4}>
                     <Link
                         color="inherit"
-                        href="https://kidsloop.net/en/faq"
-                        target="_blank"
                         variant="caption"
+                        onClick={() => { 
+                            setOpen(true);
+                        }}
                     >
                         <FormattedMessage id="privacy_helpLink" />
                     </Link>
-                </Grid>
+                </Grid> */}
                 <Grid item xs={4}>
                     <Link
                         color="inherit"
-                        href="https://kidsloop.net/en/policies/privacy-notice"
-                        target="_blank"
                         variant="caption"
+                        onClick={() => { 
+                            setOpen(true);
+                            setTitle("Privacy Notice")
+                        }}
+                        style={{ cursor: "pointer" }}
                     >
                         <FormattedMessage id="privacy_privacyLink" />
                     </Link>
                 </Grid>
-                <Grid item xs={4}>
+                {/* <Grid item xs={4}>
                     <Link
                         color="inherit"
-                        href="https://kidsloop.net/en/policies/terms"
-                        target="_blank"
                         variant="caption"
+                        onClick={() => { 
+                            setOpen(true);
+                        }}
                     >
                         <FormattedMessage id="privacy_termsLink" />
                     </Link>
-                </Grid>
+                </Grid> */}
             </Grid>
-        );
-    }
+            <Dialog
+                aria-labelledby="policy-external-link"
+                fullScreen={useMediaQuery(theme.breakpoints.down("sm"))}
+                open={open}
+                onClose={handleClose}
+                scroll="paper"
+                TransitionComponent={Motion}
+            >
+                <DialogAppBar handleClose={handleClose} titleID={title}/>
+                <DialogContent dividers>
+                    <DialogContentText
+                        id="scroll-content"
+                        ref={descriptionElementRef}
+                        tabIndex={-1}
+                    >
+                        <PrivacyNotice/>
+                    </DialogContentText>
+                </DialogContent>
+            </Dialog>
+        </>
+    );
 }
-
-export default withStyles(styles)(PolicyLink);

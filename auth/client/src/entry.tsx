@@ -39,7 +39,9 @@ function ClientSide() {
     }, []);
 
     const testing = memos.hostName === "localhost";
-    redirectIfUnauthorized();
+    if (!testing) {
+        redirectIfUnauthorized();
+    }
 
     const languageCode = "en"
     const locale = getLanguage(languageCode);
