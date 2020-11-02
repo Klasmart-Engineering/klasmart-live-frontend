@@ -22,28 +22,56 @@ export default function Study(): JSX.Element {
     const dispatch = useDispatch();
 
     const { materials } = useContext(UserContext);
-    const mats = materials.filter(mat => mat.__typename !== undefined && mat.__typename === MaterialTypename.Iframe)
+    const mats = useSelector((store: State) => store.data.materials)
     const contentIndex = useSelector((store: State) => store.control.contentIndex)
     const iframeRef = useRef<HTMLIFrameElement>(null);
 
     const rootDivRef = useRef<HTMLDivElement>(null);
     const [squareSize, setSquareSize] = useState<number>(0);
-    const [prevContentIdx, setPrevContentIdx] = useState<number>(contentIndex);
-    const [shuffledMaterials, setShuffledMaterials] = useState<LessonMaterial[]>(mats)
+    const [recommandUrl, setRecommandUrl] = useState<string>("");
 
-    // Temporary feature - It will be not used after implementing recommand logic
-    const shuffle = (array: LessonMaterial[]) => {
-        for (let i = array.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * i);
-            const temp = array[i];
-            array[i] = array[j];
-            array[j] = temp;
-        }
-    };
+    function ramdomInt(min: number, max: number) {
+        return Math.floor(Math.random() * (max - min)) + min;
+    }
+
+    async function getAllLessonMaterials() {
+        const headers = new Headers();
+        headers.append("Accept", "application/json");
+        headers.append("Content-Type", "application/json");
+        const response = await fetch(`v1/contents?publish_status=published&content_type=1`, {
+            headers,
+            method: "GET",
+        });
+        if (response.status === 200) { return response.json(); }
+    }
 
     useEffect(() => {
-        shuffle(mats);
-        setShuffledMaterials(mats);
+        async function fetchEverything() {
+            async function fetchAllLessonMaterials() {
+                const payload = await getAllLessonMaterials();
+                const matList = payload.list;
+                const dnds = matList.filter((mat: any) => {
+                    const obj = JSON.parse(mat.data)
+                    return obj.file_type === 5
+                })
+                let randomIdx: number
+                if (dnds.length === 0) {
+                    randomIdx = ramdomInt(0, matList.length - 1);
+                    const data = JSON.parse(matList[randomIdx].data);
+                    setRecommandUrl(`/h5p/play/${data.source}`);
+                } else {
+                    randomIdx = ramdomInt(0, dnds.length - 1);
+                    const data = JSON.parse(dnds[randomIdx].data);
+                    setRecommandUrl(`/h5p/play/${data.source}`);
+                }
+            }
+            try {
+                await Promise.all([fetchAllLessonMaterials()])
+            } catch (err) {
+                console.error(`Fail to fetchAllLessonMaterials: ${err}`)
+            } finally { }
+        }
+        fetchEverything();
     }, [])
 
     useEffect(() => {
@@ -86,14 +114,21 @@ export default function Study(): JSX.Element {
                     }
                 }>
                 <Whiteboard uniqueId="student" />
-                <IframeResizerNew
-                    forwardRef={iframeRef}
-                    src={shuffledMaterials[contentIndex].url}
-                    style={{ width: "100%", height: "100%" }}
-                />
+                {contentIndex === mats.length ?
+                    <IframeResizerNew
+                        forwardRef={iframeRef}
+                        src={recommandUrl}
+                        style={{ width: "100%", height: "100%" }}
+                    /> :
+                    <IframeResizerNew
+                        forwardRef={iframeRef}
+                        src={mats[contentIndex].url}
+                        style={{ width: "100%", height: "100%" }}
+                    />
+                }
             </Grid>
             <Grid item>
-                <IconButton disabled={contentIndex >= mats.length - 1} aria-label="go to next activity" onClick={() => dispatch(setContentIndex(contentIndex + 1))}>
+                <IconButton disabled={contentIndex >= mats.length} aria-label="go to next activity" onClick={() => dispatch(setContentIndex(contentIndex + 1))}>
                     <ArrowForwardIcon fontSize="large" />
                 </IconButton>
             </Grid>

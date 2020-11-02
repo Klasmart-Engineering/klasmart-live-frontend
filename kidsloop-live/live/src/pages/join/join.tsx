@@ -1,7 +1,7 @@
 import LogRocket from 'logrocket';
 import React, { useState, useContext, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createStyles, makeStyles, useTheme, Theme } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import Container from "@material-ui/core/Container";
@@ -27,6 +27,8 @@ import { useHistory } from "react-router-dom";
 import { FacingType, useCameraContext } from "../../components/media/useCameraContext";
 import { State } from "../../store/store";
 import { ClassType } from "../../store/actions";
+import { setMaterials } from "../../store/reducers/data"
+import { LessonMaterial, MaterialTypename } from "../../lessonMaterialContext";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -60,11 +62,12 @@ const useStyles = makeStyles((theme: Theme) =>
 export function Join(): JSX.Element {
     const classes = useStyles();
     const theme = useTheme();
+    const history = useHistory();
+    const dispatch = useDispatch();
     const classType = useSelector((store: State) => store.session.classType);
 
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
     const { name, setName, teacher, sessionId, setCamera } = useContext(UserContext);
-    const history = useHistory();
 
     const [user, setUser] = useState<string>("");
 
@@ -80,6 +83,61 @@ export function Join(): JSX.Element {
     ]);
 
     const { error, stream, facing, setFacing } = useCameraContext();
+
+    const contentId = useSelector((store: State) => store.data.selectedLessonPlan);
+
+    async function getLessonPlanInfo() {
+        const headers = new Headers();
+        headers.append("Accept", "application/json");
+        headers.append("Content-Type", "application/json");
+        const response = await fetch(`/v1/contents/${contentId}`, {
+            headers,
+            method: "GET",
+        });
+        if (response.status === 200) { return response.json(); }
+    }
+
+    function sortLessonMaterials(obj: any) {
+        let mats: LessonMaterial[] = [];
+        let target: any = obj;
+        let hasNext = true;
+        while (hasNext) {
+            const data = JSON.parse(target.material.data);
+            // console.log("data: ", data)
+            mats.push({
+                __typename: MaterialTypename.Iframe,
+                url: `/h5p/play/${data.source}`,
+                name: target.material.name
+            })
+            if (target.next.length === 0) {
+                hasNext = false;
+            } else {
+                target = target.next[0]
+            }
+        }
+        return mats;
+    }
+
+    useEffect(() => {
+        if (classType !== ClassType.LIVE) {
+            async function fetchEverything() {
+                async function fetchLessonMaterials() {
+                    const lp = await getLessonPlanInfo();
+                    const objLp = JSON.parse(lp.data)
+                    // console.log("objLp: ", objLp)
+                    const mats = sortLessonMaterials(objLp);
+                    // console.log("mats: ", mats)
+                    dispatch(setMaterials(mats));
+                }
+                try {
+                    await Promise.all([fetchLessonMaterials()])
+                } catch (err) {
+                    console.error(`Fail to fetchLessonMaterials: ${err}`)
+                } finally { }
+            }
+            fetchEverything();
+        }
+    }, [])
 
     function join(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
