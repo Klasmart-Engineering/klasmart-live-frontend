@@ -18,7 +18,7 @@ import StyledIcon from "../../components/styled/icon";
 import Loading from "../../components/loading";
 import { State } from "../../store/store";
 import { ClassType } from "../../store/actions";
-import { Schedule, setSchedule, setSchedulePage } from "../../store/reducers/data";
+import { Schedule, setSchedule, setSchedulePage, setSelectedPlan } from "../../store/reducers/data";
 import { setInFlight, setFailure } from "../../store/reducers/communication";
 
 import SchedulePopcorn from "../../assets/img/schedule_popcorn.svg";
@@ -51,12 +51,12 @@ export function Schedule() {
     const { total } = useSelector((state: State) => state.data.schedule);
 
     const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1).getTime();
-    const timeZoneOffset = now.getTimezoneOffset() * 60 // to make seconds
+    const timeZoneOffset = now.getTimezoneOffset() * 60 * -1 // to make seconds
     async function getScheduleTimeViews(timeAt: number, timeZoneOffset: number) {
         const headers = new Headers();
         headers.append("Accept", "application/json");
         headers.append("Content-Type", "application/json");
-        const response = await fetch(`/v1/schedules_time_view?view_type=month&time_at=${timeAt}&time_zone_offset=${-1 * timeZoneOffset}`, {
+        const response = await fetch(`/v1/schedules_time_view?view_type=month&time_at=${timeAt}&time_zone_offset=${timeZoneOffset}`, {
             headers,
             method: "GET",
         });
@@ -236,12 +236,12 @@ function ScheduleItem({ classType, schedule, primaryText }: {
 
     const [info, setInfo] = useState<Schedule>();
     const [teachers, setTeachers] = useState<string>("");
-    const [planId, setPlanId] = useState<string>("");
 
     async function getScheduleInfo() {
         const headers = new Headers();
         headers.append("Accept", "application/json");
         headers.append("Content-Type", "application/json");
+        // console.log(schedule.id)
         const response = await fetch(`/v1/schedules/${schedule.id}`, {
             headers,
             method: "GET",
@@ -255,7 +255,7 @@ function ScheduleItem({ classType, schedule, primaryText }: {
                 const schedule = await getScheduleInfo();
                 // console.log("schedule: ", schedule)
                 setInfo(schedule);
-                setPlanId(schedule.lesson_plan.id)
+                dispatch(setSelectedPlan(schedule.lesson_plan.id));
                 const teachers = schedule.teachers
                 if (teachers.length > 0) {
                     let teacherList = []
@@ -275,7 +275,7 @@ function ScheduleItem({ classType, schedule, primaryText }: {
     }, [])
 
     const goToJoin = () => {
-        history.push(`join`);
+        history.push("join")
     }
 
     return (classType === ClassType.LIVE ?

@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { LessonMaterial } from "../../lessonMaterialContext";
 
 type ScheduleStatus = "NotStart" | "Started" | "Closed";
 type ScheduleTimeView<D> = {
@@ -52,7 +53,9 @@ type DataState = {
         today: Schedule[],
         tomorrow: Schedule[],
         upcoming: Schedule[]
-    }
+    },
+    selectedLessonPlan: string,
+    materials: LessonMaterial[],
 }
 
 const initialDataState: DataState = {
@@ -65,7 +68,9 @@ const initialDataState: DataState = {
         today: [],
         tomorrow: [],
         upcoming: []
-    }
+    },
+    selectedLessonPlan: "",
+    materials: []
 }
 
 const dataSlice = createSlice({
@@ -77,13 +82,21 @@ const dataSlice = createSlice({
         },
         setSchedulePage(state, action) {
             return { ...state, schedulePage: action.payload }
-        }
+        },
+        setSelectedPlan(state, action) {
+            return { ...state, selectedLessonPlan: action.payload }
+        },
+        setMaterials(state, action) {
+            return { ...state, materials: action.payload }
+        },
     }
 })
 
 export const {
     setSchedule,
-    setSchedulePage
+    setSchedulePage,
+    setSelectedPlan,
+    setMaterials,
 } = dataSlice.actions
 
 export default dataSlice.reducer
