@@ -162,30 +162,34 @@ export function SignIn() {
                     />
                 </Typography>
             </Grid>
-            <Grid item xs={12}>
-                <GoogleLogin
-                    clientId="544374117288-uc6pcgmrvend0thu01p530590ob672j5.apps.googleusercontent.com"
-                    accessType="online"
-                    onRequest={() => setInFlight(true)}
-                    onSuccess={googleLoginSuccess}
-                    onFailure={googleLoginFailure}
-                    className={classes.googleSSO}
-                />
-            </Grid>
-            <Grid container alignItems="center">
-                <Grid item xs={5}>
-                    <Divider />
-                </Grid>
+            { navigator.userAgent.includes("Cordova") || navigator.userAgent.includes("cordova") ? null :
+                <>
+                    <Grid item xs={12}>
+                        <GoogleLogin
+                            clientId="544374117288-uc6pcgmrvend0thu01p530590ob672j5.apps.googleusercontent.com"
+                            accessType="online"
+                            onRequest={() => setInFlight(true)}
+                            onSuccess={googleLoginSuccess}
+                            onFailure={googleLoginFailure}
+                            className={classes.googleSSO}   
+                        />
+                    </Grid>
+                    <Grid container alignItems="center">
+                        <Grid item xs={5}>
+                            <Divider />
+                        </Grid>
 
-                <Grid item xs={2}>
-                    <Typography variant="body2" align="center">
-                        OR
-                    </Typography>
-                </Grid>
-                <Grid item xs={5}>
-                    <Divider />
-                </Grid>
-            </Grid>
+                        <Grid item xs={2}>
+                            <Typography variant="body2" align="center">
+                                OR
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={5}>
+                            <Divider />
+                        </Grid>
+                    </Grid>
+                </>
+            }
             <Grid item xs={12}>
                 <StyledTextField
                     autoComplete="email"
