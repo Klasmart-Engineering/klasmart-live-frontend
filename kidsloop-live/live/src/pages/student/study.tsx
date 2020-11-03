@@ -13,6 +13,8 @@ import { Whiteboard } from "../../whiteboard/components/Whiteboard";
 import { State } from "../../store/store";
 import { setContentIndex } from "../../store/reducers/control";
 
+const CMS_ENDPOINT = process.env.ENDPOINT_KL2 !== undefined ? process.env.ENDPOINT_KL2 : "";
+
 interface NewProps extends IframeResizer.IframeResizerProps {
     forwardRef: any
 }
@@ -38,7 +40,7 @@ export default function Study(): JSX.Element {
         const headers = new Headers();
         headers.append("Accept", "application/json");
         headers.append("Content-Type", "application/json");
-        const response = await fetch(`v1/contents?publish_status=published&content_type=1`, {
+        const response = await fetch(`${CMS_ENDPOINT}/v1/contents?publish_status=published&content_type=1`, {
             headers,
             method: "GET",
         });
