@@ -20,7 +20,7 @@ const messages: Record<string, string> = {
     join_room: "수업 참여",
     no_device_available: "사용 가능한 장치가 없습니다.",
     no_messages: "아직 메시지가 없습니다...",
-    no_participants: "아직 수업에 참여한 사람이 없습니다 ...",
+    no_participants: "아직 수업에 참여한 사람이 없습니다...",
     select_device: "{device} 선택",
     connect_camera: "📷를 연결하십시오.",
 
@@ -28,12 +28,12 @@ const messages: Record<string, string> = {
     what_is_this: "이건 어떤 기능인가요?",
     live_buttonStop: "정지",
     live_buttonPresent: "수업 진행",
-    live_buttonObserve: "관찰 모드",
+    live_buttonObserve: "관찰",
     live_buttonScreen: "화면 공유",
-    live_buttonStopFull: "Webcam Mode",
-    live_buttonPresentFull: "Presenter Mode",
-    live_buttonObserveFull: "Observation Mode",
-    live_buttonScreenFull: "Share Screen",
+    live_buttonStopFull: "웹캠 모드",
+    live_buttonPresentFull: "발표자 모드",
+    live_buttonObserveFull: "관찰 모드",
+    live_buttonScreenFull: "화면 공유",
     title_participants: "수업 참가자",
     title_lesson_plan: "수업 계획",
     title_chat: "채팅",
@@ -57,9 +57,11 @@ const messages: Record<string, string> = {
     enable_dark_mode: "다크 모드 켜기",
     language: "언어",
     two_columns: "2 개",
+    three_columns: "3 개",
     four_columns: "4 개",
     six_columns: "6 개",
-    num_views_per_row: "한 줄에 표시할 학생 화면 수",
+    cols_camera_per_row: "한 줄에 표시할 카메라 수",
+    cols_observe_per_row: "한 줄에 표시할 학생 화면 수",
 
     whiteboard_color: "색깔",
     whiteboard_clear: "지우기",
@@ -75,5 +77,6 @@ const messages: Record<string, string> = {
     browser_guide_title_macos: "Kidsloop Live는 Mac OS에서 Safari와 Chrome 브라우저를 지원합니다.",
     browser_guide_title_ios: "Kidsloop Live는 iOS에서 Safari 브라우저만을 지원합니다.",
     browser_guide_body: "지원하는 브라우저를 다운로드 받고 다시 시도해 주세요.",
+
 };
 export default messages;
