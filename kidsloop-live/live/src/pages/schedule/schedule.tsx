@@ -44,6 +44,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     }
 }));
 
+const ENDPOINT_SCHEDULER = process.env.ENDPOINT_KL2 !== undefined ? process.env.ENDPOINT_KL2 : "";
+
 export function Schedule() {
     const theme = useTheme();
     const dispatch = useDispatch();
@@ -56,7 +58,7 @@ export function Schedule() {
         const headers = new Headers();
         headers.append("Accept", "application/json");
         headers.append("Content-Type", "application/json");
-        const response = await fetch(`/v1/schedules_time_view?view_type=month&time_at=${timeAt}&time_zone_offset=${timeZoneOffset}`, {
+        const response = await fetch(`${ENDPOINT_SCHEDULER}/v1/schedules_time_view?view_type=month&time_at=${timeAt}&time_zone_offset=${timeZoneOffset}`, {
             headers,
             method: "GET",
         });
@@ -242,7 +244,7 @@ function ScheduleItem({ classType, schedule, primaryText }: {
         headers.append("Accept", "application/json");
         headers.append("Content-Type", "application/json");
         // console.log(schedule.id)
-        const response = await fetch(`/v1/schedules/${schedule.id}`, {
+        const response = await fetch(`${ENDPOINT_SCHEDULER}/v1/schedules/${schedule.id}`, {
             headers,
             method: "GET",
         });

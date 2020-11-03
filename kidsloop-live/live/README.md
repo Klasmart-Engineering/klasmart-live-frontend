@@ -82,6 +82,7 @@ List of variables:
 - DISABLE_BROWSER_GUIDE -- Don't display the browser guide page.
 - DISABLE_SCREEN_SHARE -- Don't display the screen share button.
 - WEBRTC_DEVICE_HANDLER_NAME -- Used to manually specify which device handler should be used. (Chrome74, Chrome70, Chrome67, Chrome55, Firefox60, Safari12, Safari11, Edge11, ReactNative)
+- ENDPOINT_KL2 -- KL2 Endpoint
 
 After defining these variables the `build:app` npm command can run. This will only do the webpack build step. Once complete, cordova `build android` command can be run to
 create the `apk` file.
