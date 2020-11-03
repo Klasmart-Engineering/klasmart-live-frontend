@@ -10,7 +10,7 @@ const messages: Record<string, string> = {
     error_unknown_error: "Oops! Something went wrong.",
     error_unknown_user: "Unknown user",
     failed_to_connect: "Failed to connect.",
-    hello: "Hello, {name}!",
+    hello: "Hello {name}!",
     waiting_for_class: "Waiting for class to start.",
     what_is_your_name: "What is your name?",
     loading: "Loading",
@@ -26,7 +26,7 @@ const messages: Record<string, string> = {
 
     refresh_activity: "Refresh Activity",
     what_is_this: "What is This?",
-    live_buttonStop: "Show Webcam",
+    live_buttonStop: "Stop",
     live_buttonPresent: "Present",
     live_buttonObserve: "Observe",
     live_buttonScreen: "Share Screen",
@@ -57,9 +57,11 @@ const messages: Record<string, string> = {
     enable_dark_mode: "Enable dark mode",
     language: "Language",
     two_columns: "2 columns",
+    three_columns: "3 columns",
     four_columns: "4 columns",
     six_columns: "6 columns",
-    num_views_per_row: "# of student views per row",
+    cols_camera_per_row: "# of cameras per row",
+    cols_observe_per_row: "# of student views per row",
 
     whiteboard_color: "Color",
     whiteboard_clear: "Clear",
@@ -75,5 +77,6 @@ const messages: Record<string, string> = {
     browser_guide_title_macos: "Kidsloop Live supports Safari and Chrome only on Mac OS.",
     browser_guide_title_ios: "Kidsloop Live supports Safari only on iOS.",
     browser_guide_body: "Please download a supported browser and try again.",
+
 };
 export default messages;
