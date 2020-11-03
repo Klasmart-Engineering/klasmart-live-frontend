@@ -14,6 +14,7 @@ import { State } from "../../store/store";
 import { setContentIndex } from "../../store/reducers/control";
 
 const CMS_ENDPOINT = process.env.ENDPOINT_KL2 !== undefined ? process.env.ENDPOINT_KL2 : "";
+const LIVE_ENDPOINT = process.env.ENDPOINT_CONTENT !== undefined ? process.env.ENDPOINT_CONTENT : "";
 
 interface NewProps extends IframeResizer.IframeResizerProps {
     forwardRef: any
@@ -119,12 +120,12 @@ export default function Study(): JSX.Element {
                 {contentIndex === mats.length ?
                     <IframeResizerNew
                         forwardRef={iframeRef}
-                        src={recommandUrl}
+                        src={`${LIVE_ENDPOINT}${recommandUrl}`}
                         style={{ width: "100%", height: "100%" }}
                     /> :
                     <IframeResizerNew
                         forwardRef={iframeRef}
-                        src={mats[contentIndex].url}
+                        src={`${LIVE_ENDPOINT}${mats[contentIndex].url}`}
                         style={{ width: "100%", height: "100%" }}
                     />
                 }
