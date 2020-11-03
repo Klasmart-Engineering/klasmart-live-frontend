@@ -100,3 +100,14 @@ export async function redirectIfUnauthorized(continueParam?: string) {
 
 //     return me
 // }
+
+function iWannaGoHome(org: any): boolean {
+    if (org === null) {
+        return false
+    } else {
+        if (org.length > 1) {
+
+        }
+        return true
+    }
+}

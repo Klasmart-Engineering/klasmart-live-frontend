@@ -1,5 +1,16 @@
 // cn.ts
 const messages: Record<string, string> = {
+    err_400_title: "Bad Request",
+    err_400_description: "The server could not understand the request due to invalid syntax",
+    err_401_title: "Unauthorized",
+    err_401_description: "Please check if you are signed in",
+    err_403_title: "Forbidden",
+    err_403_description: "You don't have permission to access",
+    err_404_title: "Not Found",
+    err_404_description: "The requested URL was not found",
+    err_500_title: "Internal Server Error",
+    err_500_description: "Oops! Something went wrong",
+
     activity_link: "活动链接",
     allow_media_permission: "如果您想要使用媒体设备，请授权允许使用你的话筒和相机",
     error_camera_unavailable: "📷摄像头无法访问",

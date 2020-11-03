@@ -1,4 +1,15 @@
 const messages: Record<string, string> = {
+    err_400_title: "Bad Request",
+    err_400_description: "잘못된 요청으로 인해 서버가 처리할 수 없습니다",
+    err_401_title: "Unauthorized",
+    err_401_description: "로그인된 상태인지 확인해 주세요",
+    err_403_title: "Forbidden",
+    err_403_description: "접근 권한이 없습니다",
+    err_404_title: "Not Found",
+    err_404_description: "요청한 URL을 찾을 수 없습니다",
+    err_500_title: "Internal Server Error",
+    err_500_description: "알 수 없는 문제가 발생했습니다",
+
     activity_link: "액티비티 링크",
     allow_media_permission: "미디어 장치를 사용하려면 마이크 및 카메라 권한을 허용하십시오.",
     error_camera_unavailable: "📷에 액세스 할 수 없습니다.",

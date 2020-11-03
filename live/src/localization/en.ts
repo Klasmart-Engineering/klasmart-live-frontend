@@ -1,5 +1,16 @@
 // en.ts
 const messages: Record<string, string> = {
+    err_400_title: "Bad Request",
+    err_400_description: "The server could not understand the request due to invalid syntax",
+    err_401_title: "Unauthorized",
+    err_401_description: "Please check if you are signed in",
+    err_403_title: "Forbidden",
+    err_403_description: "You don't have permission to access",
+    err_404_title: "Not Found",
+    err_404_description: "The requested URL was not found",
+    err_500_title: "Internal Server Error",
+    err_500_description: "Oops! Something went wrong",
+
     activity_link: "Activity Link",
     allow_media_permission: "Please allow microphone and camera permissions if you want to use media devices.",
     error_camera_unavailable: "Can not access your 📷",
