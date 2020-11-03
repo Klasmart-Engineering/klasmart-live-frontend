@@ -16,6 +16,12 @@ import StyledTextField from "../components/textfield";
 import { GoogleLogin, GoogleLoginResponse, GoogleLoginResponseOffline } from "react-google-login";
 import Divider from '@material-ui/core/Divider';
 import useTheme from "@material-ui/core/styles/useTheme";
+import Checkbox from "@material-ui/core/Checkbox";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
+import CheckBoxIcon from '@material-ui/icons/CheckBox';
+import withStyles from "@material-ui/core/styles/withStyles";
+import { CheckboxProps } from "@material-ui/core/Checkbox/Checkbox";
 
 const useStyles = makeStyles((theme) => createStyles({
     card: {
@@ -46,11 +52,22 @@ const useStyles = makeStyles((theme) => createStyles({
 }),
 );
 
+const StyledCheckbox = withStyles({
+    root: {
+        color: "#0E78D5",
+        '&$checked': {
+            color: "#0E78D5",
+        },
+    },
+    checked: {},
+})((props: CheckboxProps) => <Checkbox color="default" {...props} />);
+
 export function SignIn() {
     const classes = useStyles();
     const theme = useTheme();
 
     const [inFlight, setInFlight] = useState(false);
+    const [checked, setChecked] = useState(false);
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -58,18 +75,29 @@ export function SignIn() {
     const [passwordError, setPasswordError] = useState<JSX.Element | null>(null);
     const [emailError, setEmailError] = useState<JSX.Element | null>(null);
     const [generalError, setGeneralError] = useState<JSX.Element | null>(null);
+    const [checkmarkError, setCheckmarkError] = useState<JSX.Element | null>(null);
 
     const history = useHistory();
 
     async function login() {
         setEmailError(null);
         setPasswordError(null);
+        setCheckmarkError(null);
         if (inFlight) { return; }
 
         try {
             setInFlight(true);
             if (email === "") { throw new Error("EMPTY_EMAIL"); }
             if (password === "") { throw new Error("EMPTY_PASSWORD"); }
+            if (!checked) {
+                setCheckmarkError(
+                    <CenterAlignChildren>
+                        <ErrorIcon className={classes.errorIcon} />
+                        <FormattedMessage id={"Please accept the Privacy Policy to sign in."} />
+                    </CenterAlignChildren>
+                );
+                return;
+            }
             const token = await restApi.login(email, password);
             await transferLogin(token.accessToken);
         } catch (e) {
@@ -213,14 +241,35 @@ export function SignIn() {
                     value={password}
                 />
             </Grid>
+            <Grid item xs={12} style={{ paddingTop: 0, paddingBottom: 0 }}>
+                <FormControlLabel
+                    control={
+                        <StyledCheckbox
+                            checked={checked}
+                            checkedIcon={<CheckBoxIcon fontSize="small" />}
+                            icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
+                            inputProps={{ 'aria-label': 'policy-checkbox' }}
+                            onChange={() => setChecked(!checked)}
+                        />
+                    }
+                    label={<Typography variant="caption">I accept to the Kidsloop Privacy Policy</Typography>}
+                />
+                <Grid item xs={12}>
+                    { checkmarkError === null ? null :
+                            <Typography align="left" color="error" variant="caption">
+                                {checkmarkError}
+                            </Typography>
+                    }
+                </Grid>
+            </Grid>
             <Grid item xs={6}>
-                <Link
+                {/* <Link
                     href="#"
                     variant="subtitle2"
                     onClick={(e: React.MouseEvent) => { history.push("/signup"); e.preventDefault(); }}
                 >
                     <FormattedMessage id="login_createAccount" />
-                </Link>
+                </Link> */}
             </Grid>
             <Grid item xs={6} className={classes.link}>
                 <StyledButton

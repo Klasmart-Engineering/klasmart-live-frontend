@@ -299,6 +299,123 @@ export default function PrivacyNotice() {
             <List>
                 To take measures to prevent forgery or alteration of access records
             </List>
+            <Title>
+                Children
+            </Title>
+            <Paragraph>
+                In principle, Kidsloop does not collect any information from children under 13 or those considered to be below of age under law. However, if Kidsloop collects any personal information of children under 13 or those considered to be below of age under relevant law for the services provided by Kidsloop, including without limitation the Learning Lab, KidsLoop, various application services and Social Feed services. It will comply with the following procedures for the protection of children’s personal information (under GDPR 8):
+            </Paragraph>
+            <List>
+                To verify if a child is subject to the guardian’s consent and such guardian is authorized, within the scope of reasonable efforts
+            </List>
+            <List>
+                To have consent from a child’s parent or guardian to collect the child’s personal information or to provide the child with product information and Kidsloop’s services directly
+            </List>
+            <List>
+                To notify parents or the guardian of Kidsloop’s privacy policy for children, including the items, purpose and disclosure of collected personal information
+            </List>
+            <List>
+                To grant a child’s legal representative the right to access, correct, delete, or temporarily suspend the processing of the child’s personal information or the right to withdraw the prior consent of the representative
+            </List>
+            <List>
+                To limit the collection of personal information to the extent solely required for participation in online activities
+            </List>
+            <Title>
+                Profiling
+            </Title>
+            <Paragraph>
+                Kidsloop may use users’ personal information to create individual or collective profiles (hereinafter referred to as “profiling”) for the purpose of identifying how to provide the users with better KidsLoop services; for example, this would include providing the users with customized content of KidsLoop services by analyzing what attracts the users most regarding Kidsloop and the KidsLoop services rendered by Kidsloop, and how the users use the services. In addition, Kidsloop uses personal data for the following purposes: to create user clusters to identify users’ interest in the Kidsloop products and/or services, to analyze the market and statistics, or to enhance Kidsloop’s services (all websites, etc.). It may integrate the data provided by all its websites and applications with the users’ personal data provided by the Learning Lab. The processing of personal data for profiling is carried out in compliance with that specified in applicable laws (under GDPR 22).
+            </Paragraph>
+            <Title>
+                Data Retention
+            </Title>
+            <Paragraph>
+                Kidsloop will keep personal information in a form which permits identification of data subjects for no longer than is necessary for the purposes for which personal data is processed. Once this time period has expired, Kidsloop will delete personal information within one year from the expiration. Personal data may be stored for longer periods insofar as the personal data is processed solely for archiving purposes in the public interest, scientific or historical research purposes, or statistical purposes subject to implementation of the appropriate technical and organisational measures required by this regulation in order to safeguard the rights and freedom of the data subject (under GDPR 5(1)(e)).
+            </Paragraph>
+            <Title>
+                Data Retention
+            </Title>
+            <Paragraph>
+                Kidsloop will keep personal information in a form which permits identification of data subjects for no longer than is necessary for the purposes for which personal data is processed. Once this time period has expired, Kidsloop will delete personal information within one year from the expiration. Personal data may be stored for longer periods insofar as the personal data is processed solely for archiving purposes in the public interest, scientific or historical research purposes, or statistical purposes subject to implementation of the appropriate technical and organisational measures required by this regulation in order to safeguard the rights and freedom of the data subject (under GDPR 5(1)(e)).
+            </Paragraph>
+            <Title>
+                Modification of Privacy Notice
+            </Title>
+            <Paragraph>
+                Kidsloop has the right to amend or modify this privacy notice from time to time, in which case, Kidsloop will make a public notice through the website (or through individual notice in writing or by fax or email) and obtain consent from the users when required by relevant laws.
+            </Paragraph>
+            <Title>
+                Cookies and Internet Advertising
+            </Title>
+            <Paragraph>
+                Kidsloop may collect collective and impersonal information through cookies or web beacons. Cookies are substantially small text files sent to the users’ browser by the server used for the operation of the Kidsloop’s websites and are stored in hard-disks of the users’ computers. Web beacons are a small quantity of code which exists on websites and email. By using web beacons, we can identify whether a user has interacted with certain websites or contents of email. These functions are used for evaluating, improving services and customizing user experience so that Kidsloop can provide enhanced KidsLoop services to users.
+            </Paragraph>
+            <Paragraph>
+                Cookies collected by Kidsloop and the purpose of such collection are as follows:
+            </Paragraph>
+            <List>
+                Required cookies: These are necessary for users to use the functions of Kidsloop’s website. No services, such as shopping cart or electronic bill payment, can be provided for a user unless he or she accepts these cookies. These cookies do not collect any information which can be used for marketing purposes, nor do they store the sites that users have visited.
+                <List>
+                    To retain the information entered in an order form while searching other webpages during the web browser session
+                </List>
+                <List>
+                    To retain information regarding purchased services within the product and checkout webpages
+                </List>
+                <List>
+                    To verify whether a user logs in to the website
+                </List>
+                <List>
+                    To ensure that a user is connected to the correct service on Kidsloop’s website if Kidsloop makes any changes in the operation of the Kidsloop website
+                </List>
+                <List>
+                    To connect users to certain applications or the server of the services
+                </List>
+            </List>
+            <List>
+                Performance cookies: These collect information of how the users use Kidsloop’s website, such as webpages most frequently visited by the users. Such data helps Kidsloop optimize its website so that the users can search more conveniently. Such cookies do not collect any information regarding users’ identification. All or any information collected by performance cookies is anonymous since the information is collectively processed.
+                <List>
+                    Web analysis: to provide statistical data on how the website is used
+                </List>
+                <List>
+                    Advertisement response: to confirm the effect of Kidsloop’s advertisement
+                </List>
+                <List>
+                    Tracing affiliates: to provide Kidsloop’s affiliates with feedback of anonymous information that one of the visitors of Kidsloop’s website has visited an affiliate’s website
+                </List>
+                <List>
+                    Error management: to identify errors which have occurred in order to improve Kidsloop’s website
+                </List>
+                <List>
+                    Design testing: to test other designs of Kidsloop’s website
+                </List>
+            </List>
+            <List>
+                Functionality cookies: These are used to store configurations so as to provide services and improve user experience. No information collected by these cookies identifies individual users.
+                <List>
+                    To store changed configurations such as layout, text size, colors
+                </List>
+                <List>
+                    To store surveys conducted by Kidsloop and completed by the users
+                </List>
+            </List>
+            <List>
+                Target cookies: These are connected with services provided by third parties such as the buttons for ‘likes’ and ‘share’. The third party recognizes the users’ visit to Kidsloop’s website to provide such services.
+                <List>
+                    To allow social network connected to such cookies to use the users’ visit information, thus placing advertisements targeting the users
+                </List>
+                <List>
+                    To provide the users’ visit information for advertisement agencies so that the agencies can suggest tailored ads which can attract the interest of the users
+                </List>
+            </List>
+            <Paragraph>
+                The users have options for enabling cookies: accepting all cookies, confirming whenever a cookie is saved, or refusing the storage of all cookies. However, such refusal by a user may result in limited access to parts of Kidsloop’s services.
+            </Paragraph>
+            <Paragraph>
+                <br/>
+            </Paragraph>
+            <Paragraph>
+                Last updated: 2020-10-21
+            </Paragraph>
         </Grid>
     );
 }

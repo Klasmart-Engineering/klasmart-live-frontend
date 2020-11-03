@@ -22,9 +22,9 @@ import { NotFound } from "./pages/notFound";
 import { redirectIfUnauthorized } from "./utils/accountUtils";
 
 const routes = [
-    { path: "/reset", Component: ResetPassword},
-    { path: "/verify", Component: Verify },
-    { path: "/signup", Component: SignUp },
+    // { path: "/reset", Component: ResetPassword},
+    // { path: "/verify", Component: Verify },
+    // { path: "/signup", Component: SignUp },
     { path: "/signin", Component: SignIn },
     { path: "/login", Component: SignIn },
     { path: "/continue", Component: Continue },

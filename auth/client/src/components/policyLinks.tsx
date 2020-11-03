@@ -16,7 +16,7 @@ import DialogAppBar from "./dialogAppBar";
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         links: {
-            padding: theme.spacing(4, 0),
+            padding: theme.spacing(2, 0),
             textAlign: "right",
             [theme.breakpoints.down("sm")]: {
                 textAlign: "center",

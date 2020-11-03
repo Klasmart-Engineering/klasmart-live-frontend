@@ -8,6 +8,7 @@ import { useHistory } from "react-router";
 import StyledButton from "../components/button";
 import Alert from "@material-ui/lab/Alert";
 import useTheme from "@material-ui/core/styles/useTheme";
+import { redirectIfUnauthorized } from "../utils/accountUtils";
 
 const DEFAULT_REDIRECT_LINK = "https://kidsloop.net";
 
@@ -67,8 +68,6 @@ export function Continue() {
             </Alert>
         )    
     }
-
-    const history = useHistory();
 
     useEffect(() => {
         if (!seconds) return;

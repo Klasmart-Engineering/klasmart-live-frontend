@@ -71,7 +71,7 @@ export default function StyledTextField(props: Props) {
                 type={type}
                 variant="outlined"
             />
-            { type === "password" ?
+            {/* { type === "password" ?
                 <Link
                     href="#"
                     variant="subtitle2"
@@ -82,7 +82,7 @@ export default function StyledTextField(props: Props) {
                 >
                     <FormattedMessage id="login_forgotPassword" />
                 </Link> : ""
-            }
+            } */}
         </>
     );
 }
