@@ -80,7 +80,8 @@ module.exports = {
       ["DISABLE_BROWSER_GUIDE"],
       ["DISABLE_SCREEN_SHARE"],
       ["USE_TEST_TOKEN"],
-      ["WEBRTC_DEVICE_HANDLER_NAME"]
+      ["WEBRTC_DEVICE_HANDLER_NAME"],
+      ["ENDPOINT_KL2"],
     ),
     new HtmlWebpackPlugin({
       filename: "index.html",
