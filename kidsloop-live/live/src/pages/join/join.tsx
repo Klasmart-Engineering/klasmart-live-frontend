@@ -30,6 +30,8 @@ import { ClassType } from "../../store/actions";
 import { setMaterials } from "../../store/reducers/data"
 import { LessonMaterial, MaterialTypename } from "../../lessonMaterialContext";
 
+const CMS_ENDPOINT = process.env.ENDPOINT_KL2 !== undefined ? process.env.ENDPOINT_KL2 : "";
+
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         container: {
@@ -90,7 +92,7 @@ export function Join(): JSX.Element {
         const headers = new Headers();
         headers.append("Accept", "application/json");
         headers.append("Content-Type", "application/json");
-        const response = await fetch(`/v1/contents/${contentId}`, {
+        const response = await fetch(`${CMS_ENDPOINT}/v1/contents/${contentId}`, {
             headers,
             method: "GET",
         });
