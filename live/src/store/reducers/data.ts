@@ -8,7 +8,7 @@ type ScheduleTimeView<D> = {
     start_at: number;
     end_at: number;
     is_repeat: boolean;
-    lesson_plan_id: boolean;
+    lesson_plan_id: string;
     class_type: boolean;
     status: ScheduleStatus;
     detail?: D
