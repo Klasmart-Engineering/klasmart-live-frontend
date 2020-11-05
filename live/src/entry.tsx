@@ -43,6 +43,7 @@ import { AuthTokenProvider } from "./services/auth-token/AuthTokenProvider";
 import { themeProvider } from "./themeProvider";
 import BrowserList, { detectIE } from "./pages/browserList";
 import { getLanguage } from "./utils/locale";
+import Loading from "./components/loading";
 import { CameraContextProvider } from "./components/media/useCameraContext";
 import useCordovaInitialize from "./cordova-initialize";
 import { redirectIfUnauthorized } from "./utils/accountUtils";
@@ -186,6 +187,7 @@ function Entry() {
     }), [camera, setCamera, name, setName, params]);
 
     useEffect(() => {
+        dispatch(setHistory([]));
         dispatch(setUserAgent({
             isMobileOnly,
             isTablet,
@@ -216,9 +218,9 @@ function Entry() {
     const [alert, setAlert] = useState<boolean>(isMobileBrowser);
     const { cordovaReady, permissions } = useCordovaInitialize();
     const { authReady, authenticated, refresh } = useAuthenticatedCheck(cordovaReady);
-    if (!cordovaReady) { return <>Loading...</> }
-    if (!permissions) { return <>Camera and Microphone premissions required. Please grant the permissions and restart application.</> }
-    if (!authReady) { return <>Loading...</> }
+    if (!cordovaReady) { return <Loading rawText="Loading..." /> }
+    if (!permissions) { return <Loading rawText="Camera and Microphone premissions required. Please grant the permissions and restart application." /> }
+    if (!authReady) { return <Loading rawText="Checking user authentication..." /> }
     if (!authenticated) { return <Auth refresh={refresh} useInAppBrowser={false} /> }
 
     return (<>

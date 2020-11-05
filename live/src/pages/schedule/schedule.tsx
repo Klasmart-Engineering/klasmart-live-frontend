@@ -27,6 +27,9 @@ import StudyHouse from "../../assets/img/study_house.svg";
 const now = new Date();
 const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
 
+// console.log("now: ", now)
+// console.log("today: ", today)
+
 const useStyles = makeStyles((theme: Theme) => ({
     listRoot: {
         width: "100%",
@@ -91,36 +94,29 @@ export function Schedule() {
         fetchEverything();
     }, [])
 
-    return (
+    return (<>
+        {inFlight ? <Loading /> : (
+            <Grid
+                wrap="nowrap"
+                container
+                direction="column"
+                justify="flex-start"
+                item
+                style={{ maxHeight: `calc(100% - ${theme.spacing(10)})`, flexGrow: 1, overflowX: "hidden", overflowY: "auto" }}
+            >
+                <ScheduleList />
+            </Grid>
+        )}
         <Grid
             container
-            direction="column"
+            direction="row"
             justify="space-between"
-            style={{ height: "100%", overflow: "hidden" }}
+            item
+            style={{ position: "fixed", bottom: 0, flexGrow: 0, height: theme.spacing(10) }}
         >
-            {inFlight ? <Loading /> : (
-                <Grid
-                    wrap="nowrap"
-                    container
-                    direction="column"
-                    justify="flex-start"
-                    item
-                    style={{ maxHeight: `calc(100% - ${theme.spacing(10)})`, flexGrow: 1, overflowX: "hidden", overflowY: "auto" }}
-                >
-                    <ScheduleList />
-                </Grid>
-            )}
-            <Grid
-                container
-                direction="row"
-                justify="space-between"
-                item
-                style={{ position: "fixed", bottom: 0, flexGrow: 0, height: theme.spacing(10) }}
-            >
-                <SwitchClassType />
-            </Grid>
+            <SwitchClassType />
         </Grid>
-    )
+    </>)
 }
 
 function ScheduleList() {

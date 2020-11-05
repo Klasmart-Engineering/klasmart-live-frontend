@@ -12,7 +12,10 @@ import MimiSpinner1 from "../assets/img/spinner/mimi1_spinner.gif"
 
 const SPINNER = [CurlySpinner1, CurlySpinner2, EccoSpinner1, EccoSpinner2, JessSpinner1, MimiSpinner1];
 
-export default function Loading({ messageId }: { messageId?: string }) {
+export default function Loading({ messageId, rawText }: {
+    messageId?: string
+    rawText?: string
+}) {
     const [spinner, _] = useState(Math.floor(Math.random() * Math.floor(SPINNER.length)));
 
     return (
@@ -21,19 +24,17 @@ export default function Loading({ messageId }: { messageId?: string }) {
             direction="column"
             justify="center"
             alignItems="center"
-            style={{ flex: 1 }}
+            style={{ flex: 1, height: "100%" }}
             item
         >
             <Grid item>
                 <img src={SPINNER[spinner]} height={80} />
             </Grid>
-            {messageId ? (
-                <Grid item>
-                    <Typography variant="h6" align="center" gutterBottom>
-                        <FormattedMessage id={messageId} />
-                    </Typography>
-                </Grid>
-            ) : null}
+            <Grid item>
+                <Typography variant="subtitle1" align="center" gutterBottom>
+                    {messageId ? <FormattedMessage id={messageId} /> : (rawText ? rawText : null)}
+                </Typography>
+            </Grid>
         </Grid>
     );
 }
