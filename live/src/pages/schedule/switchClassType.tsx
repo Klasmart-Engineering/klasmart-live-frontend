@@ -24,7 +24,10 @@ export default function SwitchClassType() {
     const classType = useSelector((state: State) => state.session.classType);
 
     return (<>
-        <Grid item xs={6} style={{ backgroundColor: classType === ClassType.LIVE ? "#C5E9FB" : theme.palette.background.paper }}>
+        <Grid item xs={6} style={{
+            backgroundColor: classType === ClassType.LIVE ? "#C5E9FB" : theme.palette.background.paper,
+            borderTop: `1px solid ${theme.palette.divider}`
+        }}>
             <Button fullWidth onClick={handleClickLiveTab}>
                 <Grid container direction="column" justify="center" alignItems="center">
                     <Grid item>
@@ -36,7 +39,10 @@ export default function SwitchClassType() {
                 </Grid>
             </Button>
         </Grid>
-        <Grid item xs={6} style={{ backgroundColor: classType === ClassType.STUDY ? "#C5E9FB" : theme.palette.background.paper }}>
+        <Grid item xs={6} style={{
+            backgroundColor: classType === ClassType.STUDY ? "#C5E9FB" : theme.palette.background.paper,
+            borderTop: `1px solid ${theme.palette.divider}`
+        }}>
             <Button fullWidth onClick={handleClickStudyTab}>
                 <Grid container direction="column" justify="center" alignItems="center">
                     <Grid item>

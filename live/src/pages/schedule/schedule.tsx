@@ -276,12 +276,12 @@ function ScheduleItem({ classType, schedule, primaryText }: {
         fetchEverything();
     }, [])
 
-    const goToJoin = () => {
+    const goJoin = () => {
         history.push("join")
     }
 
     return (classType === ClassType.LIVE ?
-        <ListItem button onClick={goToJoin}>
+        <ListItem button onClick={goJoin}>
             <ListItemAvatar>
                 <Avatar className={listItemAvatar}>
                     <img src={SchedulePopcorn} height={24} />
@@ -293,7 +293,7 @@ function ScheduleItem({ classType, schedule, primaryText }: {
                 secondary={<Typography variant="caption" color="textSecondary">{`${dddd} ${startAt} - ${endAt}`}</Typography>}
             />
         </ListItem> :
-        <ListItem button onClick={goToJoin}>
+        <ListItem button onClick={goJoin}>
             <ListItemAvatar>
                 <Avatar className={listItemAvatar}>
                     <img src={StudyHouse} height={24} />
