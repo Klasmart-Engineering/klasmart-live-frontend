@@ -133,7 +133,7 @@ export function Continue() {
                     extendedOnly
                     size="medium"
                     type="submit"
-                    onClick={() => {handleSuccess}}
+                    onClick={() => {handleSuccess()}}
                 >
                     <FormattedMessage id="button_continue" />
                 </StyledButton>

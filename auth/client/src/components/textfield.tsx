@@ -45,16 +45,16 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 export default function StyledTextField(props: Props) {
     const classes = useStyles();
     const history = useHistory();
-    const {children, className, type, ...other} = props;
+    const { children, className, type, ...other } = props;
 
     return (
         <>
             <TextField {...other}
                 className={classes.txtfield}
-                inputProps={type === "number" ? { min: 0, max: 9999} : { maxLength: 200 }}
-                onInput={type === "number" ? (e)=>{ 
-                    (e.target as HTMLTextAreaElement).value = Math.max(0, parseInt((e.target as HTMLTextAreaElement).value) ).toString().slice(0,4);
-                }: () => {}}
+                inputProps={type === "number" ? { min: 0, max: 9999 } : { maxLength: 200 }}
+                onInput={type === "number" ? (e) => {
+                    (e.target as HTMLTextAreaElement).value = Math.max(0, parseInt((e.target as HTMLTextAreaElement).value)).toString().slice(0, 4);
+                } : () => { }}
                 InputLabelProps={{
                     classes: {
                         focused: classes.cssFocused,
@@ -71,18 +71,6 @@ export default function StyledTextField(props: Props) {
                 type={type}
                 variant="outlined"
             />
-            {/* { type === "password" ?
-                <Link
-                    href="#"
-                    variant="subtitle2"
-                    onClick={(e: React.MouseEvent) => {
-                        history.push("/password-forgot");
-                        e.preventDefault();
-                    }}
-                >
-                    <FormattedMessage id="login_forgotPassword" />
-                </Link> : ""
-            } */}
         </>
     );
 }
