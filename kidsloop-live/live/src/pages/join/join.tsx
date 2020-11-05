@@ -50,9 +50,7 @@ const useStyles = makeStyles((theme: Theme) =>
             width: "100%"
         },
         pageWrapper: {
-            display: "flex",
-            flexGrow: 1,
-            height: "100vh",
+            flexGrow: 1
         },
         errorIcon: {
             fontSize: "1em",

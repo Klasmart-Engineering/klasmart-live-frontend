@@ -16,7 +16,7 @@ import KidsloopLogo from "../assets/img/kidsloop_icon.svg";
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
-            flexGrow: 1,
+            flexGrow: 0,
             borderBottom: `1px solid ${theme.palette.divider}`
         },
         safeArea: {
@@ -70,11 +70,6 @@ function MenuButton() {
 export function Header() {
     const { root, safeArea } = useStyles();
     const theme = useTheme();
-
-    // useEffect(() => {
-    //     // console.log(`header: ${location.pathname}, ${location}`)
-
-    // }, [location])
 
     return (
         <div className={root}>
