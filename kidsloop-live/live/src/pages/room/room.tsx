@@ -141,7 +141,7 @@ export class RoomContext {
         });
 
 
-        if (loading || !ref.current.content) { return <Grid container alignItems="center" style={{ height: "100%" }}><Loading messageId="loading" /></Grid>; }
+        if (loading || !ref.current.content) { return <Loading messageId="loading" /> }
         if (error) { return <Typography><FormattedMessage id="failed_to_connect" />{JSON.stringify(error)}</Typography>; }
         return <context.Provider value={value} >
             {props.children}

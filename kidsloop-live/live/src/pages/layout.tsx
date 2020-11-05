@@ -193,7 +193,7 @@ export default function Layout(props: LayoutProps): JSX.Element {
             direction="row"
             justify="flex-start"
             wrap="nowrap"
-            style={{ height: "100%", overflow: "hidden" }}
+            style={{ flexGrow: 1, overflow: "hidden" }}
         >
             <MainContainer classContent={children} materialKey={materialKey} interactiveModeState={interactiveModeState} />
             <DrawerContainer

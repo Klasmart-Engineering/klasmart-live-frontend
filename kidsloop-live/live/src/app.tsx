@@ -1,8 +1,8 @@
-import { UserContext } from "./entry";
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Router, HashRouter, Route, Switch, useHistory } from "react-router-dom";
+import { Router, Route, Switch } from "react-router-dom";
 import { createHashHistory } from 'history'
+import Grid from "@material-ui/core/Grid";
 import { Header } from "./components/header";
 import { Signup } from "./pages/account/signup";
 import { Signin } from "./pages/account/signin";
@@ -38,21 +38,28 @@ export function App(): JSX.Element {
         }
     }, [])
 
-    return (<>
-        <Header />
-        <Router history={history}>
-            <Switch>
-                <Route path="/schedule" component={Schedule} />
-                <Route path="/join" component={Join} />
-                <Route path="/room" component={Room} />
-                <Route path="/password-change" component={PasswordChange} />
-                <Route path="/password-changed" component={PasswordChanged} />
-                <Route path="/password-forgot" component={PasswordForgot} />
-                <Route path="/password-restore" component={PasswordRestore} />
-                <Route path="/signup" component={Signup} />
-                <Route path="/signin" component={Signin} />
-                <Route path="/" component={Schedule} />
-            </Switch>
-        </Router>
-    </>)
+    return (
+        <Grid
+            container
+            direction="column"
+            justify="space-between"
+            style={{ height: "100%", overflow: "hidden" }}
+        >
+            <Header />
+            <Router history={history}>
+                <Switch>
+                    <Route path="/schedule" component={Schedule} />
+                    <Route path="/join" component={Join} />
+                    <Route path="/room" component={Room} />
+                    <Route path="/password-change" component={PasswordChange} />
+                    <Route path="/password-changed" component={PasswordChanged} />
+                    <Route path="/password-forgot" component={PasswordForgot} />
+                    <Route path="/password-restore" component={PasswordRestore} />
+                    <Route path="/signup" component={Signup} />
+                    <Route path="/signin" component={Signin} />
+                    <Route path="/" component={Schedule} />
+                </Switch>
+            </Router>
+        </Grid>
+    )
 }
