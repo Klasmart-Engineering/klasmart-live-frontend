@@ -37,6 +37,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import { App } from "./app";
 import { createDefaultStore, State } from "./store/store";
 import { setUserAgent } from "./store/reducers/session";
+import { setHistory } from "./store/reducers/location";
 import { LessonMaterial, MaterialTypename } from "./lessonMaterialContext";
 import { AuthTokenProvider } from "./services/auth-token/AuthTokenProvider";
 import { themeProvider } from "./themeProvider";
@@ -201,6 +202,15 @@ function Entry() {
             isMobileSafari,
         }));
     }, []);
+
+    const history = useSelector((state: State) => state.location.history);
+    useEffect(() => {
+        const path = location.hash;
+        let historyCopy = history.slice();
+        if (history.length >= 10) { historyCopy.shift(); }
+        historyCopy.push(path)
+        dispatch(setHistory(historyCopy));
+    }, [location.hash])
 
     const isMobileBrowser = isMobileOnly && (isChrome || isFirefox || isSafari || isIE || isEdge || isChromium || isMobileSafari);
     const [alert, setAlert] = useState<boolean>(isMobileBrowser);
