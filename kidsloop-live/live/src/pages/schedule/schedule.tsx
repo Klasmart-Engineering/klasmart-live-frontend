@@ -24,11 +24,28 @@ import { setInFlight, setFailure } from "../../store/reducers/communication";
 import SchedulePopcorn from "../../assets/img/schedule_popcorn.svg";
 import StudyHouse from "../../assets/img/study_house.svg";
 
+// NOTE: China API server(Go lang) accept 10 digits timestamp
 const now = new Date();
-const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+const todayTimeStamp = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime() / 1000;
+const nextMonthTimeStamp = new Date(now.getFullYear(), now.getMonth() + 1, 1).getTime() / 1000;
+const timeZoneOffset = now.getTimezoneOffset() * 60 * -1 // to make seconds
+let tomorrow = new Date(todayTimeStamp * 1000); tomorrow.setDate(tomorrow.getDate() + 1);
+const tomorrowTimeStamp = tomorrow.getTime() / 1000
+let endOfTomorrow = new Date(tomorrowTimeStamp * 1000); endOfTomorrow.setHours(23, 59, 59);
+const endOfTomorrowTimeStamp = endOfTomorrow.getTime() / 1000;
+const todayStr = dateFormat(now, "fullDate", false, false);
+const tomorrowStr = dateFormat(tomorrow, "fullDate", false, false);
 
-// console.log("now: ", now)
-// console.log("today: ", today)
+// console.log("today: ", new Date(now.getFullYear(), now.getMonth(), now.getDate()))
+// console.log("todayTimeStamp: ", todayTimeStamp)
+// console.log("nextMonthTimeStamp: ", new Date(now.getFullYear(), now.getMonth() + 1, 1))
+// console.log("timeZoneOffset: ", timeZoneOffset)
+// console.log("tomorrow: ", tomorrow)
+// console.log("tomorrowTimeStamp: ", tomorrowTimeStamp)
+// console.log("endOfTomorrow: ", endOfTomorrow)
+// console.log("endOfTomorrowTimeStamp: ", endOfTomorrowTimeStamp)
+// console.log("todayStr: ", todayStr)
+// console.log("tomorrowStr: ", tomorrowStr)
 
 const useStyles = makeStyles((theme: Theme) => ({
     listRoot: {
@@ -53,10 +70,8 @@ export function Schedule() {
     const theme = useTheme();
     const dispatch = useDispatch();
     const inFlight = useSelector((state: State) => state.communication.inFlight);
-    const { total } = useSelector((state: State) => state.data.schedule);
+    const { total, live, study } = useSelector((state: State) => state.data.schedule);
 
-    const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1).getTime();
-    const timeZoneOffset = now.getTimezoneOffset() * 60 * -1 // to make seconds
     async function getScheduleTimeViews(timeAt: number, timeZoneOffset: number) {
         const headers = new Headers();
         headers.append("Accept", "application/json");
@@ -65,14 +80,18 @@ export function Schedule() {
             headers,
             method: "GET",
         });
-        if (response.status === 200) { return response.json(); }
+        if (response.status === 200) {
+            return response.json();
+        } else {
+            return [];
+        }
     }
 
     useEffect(() => {
         async function fetchEverything() {
             async function fetchScheduleTimeViews() {
-                const thisMonthSchedules = await getScheduleTimeViews(today / 1000, timeZoneOffset);
-                const nextMonthSchedules = await getScheduleTimeViews(nextMonth / 1000, timeZoneOffset);
+                const thisMonthSchedules = await getScheduleTimeViews(todayTimeStamp, timeZoneOffset);
+                const nextMonthSchedules = await getScheduleTimeViews(nextMonthTimeStamp, timeZoneOffset);
                 const totalSchedules = thisMonthSchedules.concat(nextMonthSchedules);
                 // console.log("totalSchedules: ", totalSchedules)
                 const liveSchedules = totalSchedules.filter((s: any) => s.class_type === "OnlineClass")
@@ -84,6 +103,7 @@ export function Schedule() {
                 await Promise.all([fetchScheduleTimeViews()])
                 // console.log("total, live, study: ", total, live, study)
             } catch (err) {
+                dispatch(setSchedule({ total: [], live: [], study: [] }))
                 console.error(`Fail to fetchScheduleTimeViews: ${err}`)
                 // dispatch(setFailure(true));
             } finally {
@@ -104,7 +124,7 @@ export function Schedule() {
                 item
                 style={{ maxHeight: `calc(100% - ${theme.spacing(10)})`, flexGrow: 1, overflowX: "hidden", overflowY: "auto" }}
             >
-                <ScheduleList />
+                <ScheduleList total={total} live={live} study={study} />
             </Grid>
         )}
         <Grid
@@ -119,21 +139,14 @@ export function Schedule() {
     </>)
 }
 
-function ScheduleList() {
+function ScheduleList({ total, live, study }: {
+    total: Schedule[],
+    live: Schedule[],
+    study: Schedule[]
+}) {
     const { listRoot, listSubheaderText } = useStyles();
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
-    const startOfToday = today / 1000;
-    let tomorrow = new Date(now);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    const startOfTomorrow = (new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate()).getTime()) / 1000;
-    const endOfTomorrow = (new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate() + 1).getTime()) / 1000;
-
-    const todayStr = dateFormat(now, "fullDate", false, false);
-    const tomorrowStr = dateFormat(tomorrow, "fullDate", false, false);
 
     const classType = useSelector((state: State) => state.session.classType);
-    const { live, study } = useSelector((state: State) => state.data.schedule);
-
     const [todaySchedules, setTodaySchedules] = useState<Schedule[]>([]);
     const [tomorrowSchedules, setTomorrowSchedules] = useState<Schedule[]>([]);
     const [upcomingSchedules, setUpcomingSchedules] = useState<Schedule[]>([]);
@@ -141,16 +154,16 @@ function ScheduleList() {
     useEffect(() => {
         if (classType === ClassType.LIVE) {
             if (live.length === 0) { return; }
-            const todaySchedules = live.filter(s => s.start_at >= startOfToday && s.end_at < startOfTomorrow);
-            const tomorrowSchedules = live.filter(s => s.start_at >= startOfTomorrow && s.end_at < endOfTomorrow);
-            const upcomingSchedules = live.filter(s => s.start_at >= endOfTomorrow);
+            const todaySchedules = live.filter(s => s.start_at >= todayTimeStamp && s.end_at < tomorrowTimeStamp);
+            const tomorrowSchedules = live.filter(s => s.start_at >= tomorrowTimeStamp && s.end_at <= endOfTomorrowTimeStamp);
+            const upcomingSchedules = live.filter(s => s.start_at > endOfTomorrowTimeStamp);
             setTodaySchedules(todaySchedules);
             setTomorrowSchedules(tomorrowSchedules);
             setUpcomingSchedules(upcomingSchedules);
         } else if (classType === ClassType.STUDY) {
-            const todaySchedules = study.filter(s => s.start_at >= startOfToday && s.end_at < startOfTomorrow);
-            const tomorrowSchedules = study.filter(s => s.start_at >= startOfTomorrow && s.end_at < endOfTomorrow);
-            const upcomingSchedules = study.filter(s => s.start_at >= endOfTomorrow);
+            const todaySchedules = study.filter(s => s.start_at >= todayTimeStamp && s.end_at < tomorrowTimeStamp);
+            const tomorrowSchedules = study.filter(s => s.start_at >= tomorrowTimeStamp && s.end_at <= endOfTomorrowTimeStamp);
+            const upcomingSchedules = study.filter(s => s.start_at > endOfTomorrowTimeStamp);
             setTodaySchedules(todaySchedules);
             setTomorrowSchedules(tomorrowSchedules);
             setUpcomingSchedules(upcomingSchedules);
@@ -224,7 +237,6 @@ function ScheduleItem({ classType, schedule, primaryText }: {
 }) {
     const { listItemAvatar, listItemTextPrimary } = useStyles();
     const dispatch = useDispatch();
-    const history = useHistory();
 
     // const re = /(,\s).*$/g; // Fix regex
     const mmmmdyyyy = primaryText.substr(primaryText.indexOf(",") + 2);
@@ -234,6 +246,7 @@ function ScheduleItem({ classType, schedule, primaryText }: {
 
     const [info, setInfo] = useState<Schedule>();
     const [teachers, setTeachers] = useState<string>("");
+    const [liveToken, setLiveToken] = useState<string>("");
 
     async function getScheduleInfo() {
         const headers = new Headers();
@@ -272,8 +285,37 @@ function ScheduleItem({ classType, schedule, primaryText }: {
         fetchEverything();
     }, [])
 
+    async function getScheduleLiveToken(lessonPlanId: string) {
+        const headers = new Headers();
+        headers.append("Accept", "application/json");
+        headers.append("Content-Type", "application/json");
+        const response = await fetch(`${CMS_ENDPOINT}/v1/schedules/${lessonPlanId}/live/token`, {
+            headers,
+            method: "GET",
+        });
+        if (response.status === 200) { return response.json(); }
+    }
+
+    useEffect(() => {
+        async function fetchEverything(lessonPlanId: string) {
+            async function fetchScheduleLiveToken() {
+                const { token } = await getScheduleLiveToken(lessonPlanId);
+                setLiveToken(token);
+            }
+            try {
+                await Promise.all([fetchScheduleLiveToken()])
+            } catch (err) {
+                console.error(`Fail to fetchScheduleInfo: ${err}`)
+            } finally { }
+        }
+        if (info && info.lesson_plan_id) {
+            fetchEverything(info.lesson_plan_id);
+        }
+    }, [liveToken])
+
     const goJoin = () => {
-        history.push("join")
+        const search = classType === ClassType.LIVE ? `/?token=${liveToken}` : ""
+        location.href = `join${search}`
     }
 
     return (classType === ClassType.LIVE ?

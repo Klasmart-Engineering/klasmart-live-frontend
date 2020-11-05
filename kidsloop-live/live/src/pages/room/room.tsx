@@ -140,7 +140,6 @@ export class RoomContext {
             variables: { roomId, name }
         });
 
-
         if (loading || !ref.current.content) { return <Loading messageId="loading" /> }
         if (error) { return <Typography><FormattedMessage id="failed_to_connect" />{JSON.stringify(error)}</Typography>; }
         return <context.Provider value={value} >
