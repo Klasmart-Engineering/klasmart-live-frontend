@@ -1,5 +1,5 @@
 import React, { useReducer, useState, useContext, createContext, useRef, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { gql } from "apollo-boost";
 import { useSubscription } from "@apollo/react-hooks";
 import { FormattedMessage } from "react-intl";
@@ -18,6 +18,7 @@ import Layout from "../layout";
 import { Trophy } from "../../components/trophies/trophy";
 import { State } from "../../store/store";
 import { ClassType, OrientationType } from "../../store/actions";
+import { setDeviceOrientation } from "../../store/reducers/location";
 
 export interface Session {
     id: string,
@@ -47,6 +48,7 @@ export interface StreamIdState {
 }
 
 export function Room(): JSX.Element {
+    const dispatch = useDispatch();
     const classType = useSelector((state: State) => state.session.classType);
     const deviceOrientation = useSelector((state: State) => state.location.deviceOrientation);
 
@@ -58,9 +60,13 @@ export function Room(): JSX.Element {
         if (deviceOrientation === OrientationType.PORTRAIT) {
             if (screen.orientation && screen.orientation.lock) {
                 screen.orientation.unlock();
-                screen.orientation.lock("landscape").catch((err) => {
-                    console.log("screen.orientation.lock() is not available on this device.");
-                });
+                screen.orientation.lock("landscape")
+                    .then(() => {
+                        dispatch(setDeviceOrientation(OrientationType.LANDSCAPE));
+                    })
+                    .catch((err) => {
+                        console.log("screen.orientation.lock() is not available on this device.");
+                    });
                 return;
             }
         }
