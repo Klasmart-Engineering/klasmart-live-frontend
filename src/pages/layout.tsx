@@ -582,9 +582,10 @@ function TabInnerContent({ title }: {
     const { sessionId, materials, teacher } = useUserContext();
     const [gridMode, setGridMode] = useState(true)
 
+    const webrtc = WebRTCSFUContext.Consume()
+
     switch (title) {
         case "title_participants":
-            const webrtc = WebRTCSFUContext.Consume()
             const users = useContext(UsersContext);
             // TODO: Improve performance as order in flexbox instead of .filter()
             const allUsers = [...users.entries()];
@@ -812,6 +813,7 @@ function Settings() {
 
     const [openDialog, setOpenDialog] = useState(false);
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
+    const webrtc = WebRTCSFUContext.Consume()
 
     return (
         <Grid
@@ -892,7 +894,10 @@ function Settings() {
                     <Button onClick={() => setOpenDialog(false)} color="primary">
                         <FormattedMessage id="button_cancel" />
                     </Button>
-                    <Button onClick={() => setOpenDialog(false)} color="primary">
+                    <Button onClick={() => {
+                            setOpenDialog(false)
+                            if (webrtc) { webrtc.endCurrentClass(); }
+                        }} color="primary">
                         <FormattedMessage id="button_confirm" />
                     </Button>
                 </DialogActions>
