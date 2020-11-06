@@ -32,6 +32,7 @@ import { Share as ShareIcon } from "@styled-icons/material/Share";
 import { ExpandLess as ArrowUpIcon } from "@styled-icons/material/ExpandLess";
 import { ExpandMore as ArrowDownIcon } from "@styled-icons/material/ExpandMore";
 import { PencilAlt as WBIcon } from "@styled-icons/fa-solid/PencilAlt";
+import { ExitToApp as ExitIcon } from "@styled-icons/material-twotone/ExitToApp";
 
 import { Session, Message, InteractiveModeState, StreamIdState, RoomContext } from "./room/room";
 import ModeControls from "./teacher/modeControls";
@@ -60,9 +61,22 @@ import {
     setContentIndex
 } from "../store/reducers/control";
 import { useUserContext } from "../context-provider/user-context";
+import StyledButton from "../components/styled/button";
+import Dialog from "@material-ui/core/Dialog";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogActions from "@material-ui/core/DialogActions";
+import Button from "@material-ui/core/Button";
 
 const MessageContext = createContext(new Map<string, Message>());
 const UsersContext = createContext(new Map<string, Session>());
+
+enum UserType {
+    TeacherOnly = 0,
+    StudentOnly = 1,
+    Both = 2
+}
 
 const TABS = [
     { icon: <PeopleIcon role="img" size="1.5rem" />, title: "title_participants", userType: 2, classType: ClassType.LIVE },
@@ -796,6 +810,9 @@ function Settings() {
             : dispatch(setClassType(ClassType.LIVE));
     }
 
+    const [openDialog, setOpenDialog] = useState(false);
+    const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
+
     return (
         <Grid
             container
@@ -851,7 +868,35 @@ function Settings() {
                         </Select>
                     </FormControl>
                 </Grid>
+                <div className={classes.toolbar} />
+                <Grid item xs={12}>
+                    <StyledButton onClick={() => setOpenDialog(true)} style={{ backgroundColor: "#f50057" }} fullWidth>
+                        End Class
+                            <ExitIcon size="1rem" style={{ marginLeft: isSmDown ? 0 : 4 }} />
+                    </StyledButton>
+                </Grid>
             </>) : null}
+            <Dialog
+                open={openDialog}
+                onClose={() => setOpenDialog(false)}
+                aria-labelledby="end-class-dialog-title"
+                aria-describedby="end-class-dialog-description"
+            >
+                <DialogTitle id="end-class-dialog-title">{<FormattedMessage id="end_class_title" />}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="end-class-dialog-description">
+                        This will end the live session for all users in the classroom.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setOpenDialog(false)} color="primary">
+                        <FormattedMessage id="button_cancel" />
+                    </Button>
+                    <Button onClick={() => setOpenDialog(false)} color="primary">
+                        <FormattedMessage id="button_confirm" />
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Grid>
     )
 }

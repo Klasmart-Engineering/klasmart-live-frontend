@@ -57,6 +57,7 @@ const messages: Record<string, string> = {
     title_chat: "채팅",
     title_whiteboard: "화이트보드",
     title_settings: "설정",
+    title_end_class: "End Class",
     invite_students: "초대",
     copy_clipboard: "클립 보드에 복사했습니다!",
     quick_toggles: "빠른 조작",

@@ -58,6 +58,7 @@ const messages: Record<string, string> = {
     title_chat: "Trò chuyện",
     title_whiteboard: "Bảng",
     title_settings: "Cài đặt",
+    title_end_class: "End Class",
     invite_students: "Mời",
     copy_clipboard: "Sao chép vào bảng tạm!",
     quick_toggles: "Chuyển đổi nhanh",
