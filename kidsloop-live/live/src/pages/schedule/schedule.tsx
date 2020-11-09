@@ -315,7 +315,7 @@ function ScheduleItem({ classType, schedule, primaryText }: {
 
     const goJoin = () => {
         const search = classType === ClassType.LIVE ? `/?token=${liveToken}` : ""
-        location.href = `join${search}`
+        location.href = `${search}#/join`
     }
 
     return (classType === ClassType.LIVE ?
