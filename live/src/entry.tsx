@@ -42,7 +42,7 @@ import { LessonMaterial, MaterialTypename } from "./lessonMaterialContext";
 import { AuthTokenProvider } from "./services/auth-token/AuthTokenProvider";
 import { themeProvider } from "./themeProvider";
 import BrowserList, { detectIE } from "./pages/browserList";
-import Error from "./pages/error";
+import { Error } from "./pages/error";
 import { getLanguage } from "./utils/locale";
 import Loading from "./components/loading";
 import { CameraContextProvider } from "./components/media/useCameraContext";
@@ -230,8 +230,8 @@ function Entry() {
                 <RawIntlProvider value={locale}>
                     <ThemeProvider theme={themeProvider(languageCode, themeMode)}>
                         <CssBaseline />
-                        {/* <App /> */}
-                        <Error code={401} />
+                        <App />
+                        {/* <Error errCode={404} /> */}
                     </ThemeProvider>
                 </RawIntlProvider>
             </CameraContextProvider>
