@@ -1,16 +1,19 @@
-import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import React, { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { createStyles, makeStyles, Theme, useTheme } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
+import Tooltip from "@material-ui/core/Tooltip";
 
+import { Close as CloseIcon } from "@styled-icons/material/Close";
 import { ArrowBackIos as ArrowBackIcon } from "@styled-icons/material/ArrowBackIos";
 import { Lock as LockIcon } from "@styled-icons/material/Lock";
 
 import StyledIcon from "./styled/icon";
 import { State } from "../store/store";
+import { setSelectOrgOpen } from "../store/reducers/control";
 import KidsloopLogo from "../assets/img/kidsloop_icon.svg";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -30,46 +33,10 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-function GoBackButton() {
-    const { iconButton } = useStyles();
-    const history = useSelector((state: State) => state.location.history);
-    const idx = history.lastIndexOf(location.hash);
-    console.log("idx", idx)
-    const [lastIdx, setLastIdx] = useState<number>(history.lastIndexOf(location.hash));
-
-    function goBack() {
-        if (lastIdx <= 0) { return; }
-        return location.href = history[lastIdx - 1];
-    }
-
-    return (
-        <IconButton
-            onClick={goBack}
-            size="medium"
-            className={iconButton}
-            style={{ visibility: lastIdx <= 0 ? "hidden" : "visible" }}
-        >
-            <StyledIcon icon={<ArrowBackIcon />} size="medium" />
-        </IconButton>
-    );
-}
-
-function MenuButton() {
-    const { iconButton } = useStyles();
-
-    return (
-        <IconButton
-            size="medium"
-            className={iconButton}
-        >
-            <StyledIcon icon={<LockIcon />} size="medium" />
-        </IconButton>
-    );
-}
-
 export function Header() {
     const { root, safeArea } = useStyles();
     const theme = useTheme();
+    const open = useSelector((state: State) => state.control.selectOrgOpen);
 
     return (
         <div className={root}>
@@ -94,13 +61,13 @@ export function Header() {
                             alignItems="center"
                             wrap="nowrap"
                         >
-                            <Grid item>
-                                <GoBackButton />
+                            <Grid item style={{ flexGrow: 0 }}>
+                                {open ? <CloseSelectOrg /> : <GoBack />}
                             </Grid>
-                            <Grid item>
+                            <Grid item style={{ flexGrow: 1, textAlign: "center" }}>
                                 <img alt="KidsLoop Logo" src={KidsloopLogo} height={32} />
                             </Grid>
-                            <Grid item>
+                            <Grid item style={{ flexGrow: 0 }}>
                                 <MenuButton />
                             </Grid>
                         </Grid>
@@ -108,5 +75,62 @@ export function Header() {
                 </Toolbar>
             </AppBar>
         </div>
+    );
+}
+
+function CloseSelectOrg() {
+    const { iconButton } = useStyles();
+    const dispatch = useDispatch();
+    return (
+        <IconButton
+            onClick={() => dispatch(setSelectOrgOpen(false))}
+            size="medium"
+            className={iconButton}
+        >
+            <StyledIcon icon={<CloseIcon />} size="medium" />
+        </IconButton>
+    );
+}
+
+function GoBack() {
+    const { iconButton } = useStyles();
+    const dispatch = useDispatch();
+    const history = useSelector((state: State) => state.location.history);
+    const [lastIdx, setLastIdx] = useState<number>(history.lastIndexOf(location.hash));
+
+    function goBack() {
+        if (location.hash === "#/" || location.hash === "#/schedule") {
+            return dispatch(setSelectOrgOpen(true));
+        } else if (lastIdx <= 0) { return; }
+        return location.href = history[lastIdx - 1];
+    }
+
+    return (
+        <IconButton
+            onClick={goBack}
+            size="medium"
+            className={iconButton}
+        >
+            <StyledIcon icon={<ArrowBackIcon />} size="medium" />
+        </IconButton>
+    );
+}
+
+function MenuButton() {
+    const { iconButton } = useStyles();
+    const open = useSelector((state: State) => state.control.selectOrgOpen);
+    const [tootipOpen, setTooltipOpen] = useState(false);
+
+    return (
+        <Tooltip placement="bottom" title="Coming soon" open={tootipOpen} onClose={() => setTooltipOpen(false)}>
+            <IconButton
+                onClick={() => setTooltipOpen(true)}
+                size="medium"
+                className={iconButton}
+                style={{ visibility: open ? "hidden" : "visible" }}
+            >
+                <StyledIcon icon={<LockIcon />} size="medium" />
+            </IconButton>
+        </Tooltip>
     );
 }

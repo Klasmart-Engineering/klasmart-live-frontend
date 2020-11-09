@@ -10,6 +10,8 @@ const messages: Record<string, string> = {
     err_500_title: "Internal Server Error",
     err_500_description: "알 수 없는 문제가 발생했습니다",
 
+    selectOrg_buttonSelect: "선택",
+
     activity_link: "액티비티 링크",
     allow_media_permission: "미디어 장치를 사용하려면 마이크 및 카메라 권한을 허용하십시오.",
     error_camera_unavailable: "📷에 액세스 할 수 없습니다.",

@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 type ControlState = {
     themeMode: "light" | "dark";
+    selectOrgOpen: boolean;
     drawerOpen: boolean;
     drawerWidth: number;
     colsCamera: 1 | 2 | 3 | 4;
@@ -11,6 +12,7 @@ type ControlState = {
 
 const initialControlState: ControlState = {
     themeMode: "light",
+    selectOrgOpen: false,
     drawerOpen: true,
     drawerWidth: 0,
     colsCamera: 2,
@@ -24,6 +26,9 @@ const controlSlice = createSlice({
     reducers: {
         setThemeMode(state, action) {
             return { ...state, themeMode: action.payload }
+        },
+        setSelectOrgOpen(state, action) {
+            return { ...state, selectOrgOpen: action.payload }
         },
         setDrawerOpen(state, action) {
             return { ...state, drawerOpen: action.payload }
@@ -45,6 +50,7 @@ const controlSlice = createSlice({
 
 export const {
     setThemeMode,
+    setSelectOrgOpen,
     setDrawerOpen,
     setDrawerWidth,
     setColsCamera,

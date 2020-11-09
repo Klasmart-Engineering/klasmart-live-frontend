@@ -11,6 +11,8 @@ const messages: Record<string, string> = {
     err_500_title: "Internal Server Error",
     err_500_description: "Oops! Something went wrong",
 
+    selectOrg_buttonSelect: "Select",
+
     activity_link: "Đường dẫn đến Hoạt động",
     allow_media_permission: "Nếu bạn muốn sử dụng các thiết bị truyền thông, vui lòng cho phép sử dụng micrô và máy ảnh của bạn.",
     error_camera_unavailable: "Không thể truy cập 📷",

@@ -4,6 +4,7 @@ import { Router, Route, Switch } from "react-router-dom";
 import { createHashHistory } from 'history'
 import Grid from "@material-ui/core/Grid";
 import { Header } from "./components/header";
+import { SelectOrgDialog } from "./pages/account/selectOrgDialog";
 import { Signup } from "./pages/account/signup";
 import { Signin } from "./pages/account/signin";
 import { PasswordChange } from "./pages/account/password/password-change";
@@ -60,6 +61,7 @@ export function App(): JSX.Element {
                     <Route path="/" component={Schedule} />
                 </Switch>
             </Router>
+            <SelectOrgDialog />
         </Grid>
     )
 }

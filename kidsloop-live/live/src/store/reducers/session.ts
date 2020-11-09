@@ -2,11 +2,34 @@ import { createSlice } from "@reduxjs/toolkit";
 import { ClassType, UserAgent, UserType } from "../actions";
 import { getDefaultLanguageCode } from "../../utils/locale";
 
+export type Organization = {
+    organization_id: string,
+    organization_name: string
+}
+
+type Role = {
+    role_id: string,
+    role_name: string,
+    organization: Organization
+}
+
+type UserInfo = {
+    user_id: string
+    email: string
+    user_name: string | null
+    family_name: string | null
+    given_name: string | null
+    avatar: string | null
+    roles: Role[]
+} | null
+
 type SessionState = {
     classType: ClassType;
     userAgent: UserAgent;
     userType: UserType;
     locale: string;
+    user: UserInfo;
+    selectedOrg: Organization;
 }
 
 const initialSessionState: SessionState = {
@@ -29,7 +52,12 @@ const initialSessionState: SessionState = {
         isMobileSafari: false,
     },
     userType: UserType.STUDENT,
-    locale: getDefaultLanguageCode()
+    locale: getDefaultLanguageCode(),
+    user: null,
+    selectedOrg: {
+        organization_id: "",
+        organization_name: ""
+    }
 }
 
 const sessionSlice = createSlice({
@@ -47,7 +75,13 @@ const sessionSlice = createSlice({
         },
         setLocale(state, action) {
             return { ...state, locale: action.payload }
-        }
+        },
+        setUser(state, action) {
+            return { ...state, user: action.payload }
+        },
+        setSelectedOrg(state, action) {
+            return { ...state, selectedOrg: action.payload }
+        },
     }
 })
 
@@ -55,7 +89,9 @@ export const {
     setClassType,
     setUserAgent,
     setUserType,
-    setLocale
+    setLocale,
+    setUser,
+    setSelectedOrg
 } = sessionSlice.actions
 
 export default sessionSlice.reducer

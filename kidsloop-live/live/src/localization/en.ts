@@ -11,6 +11,8 @@ const messages: Record<string, string> = {
     err_500_title: "Internal Server Error",
     err_500_description: "Oops! Something went wrong",
 
+    selectOrg_buttonSelect: "Select",
+
     activity_link: "Activity Link",
     allow_media_permission: "Please allow microphone and camera permissions if you want to use media devices.",
     error_camera_unavailable: "Can not access your 📷",
