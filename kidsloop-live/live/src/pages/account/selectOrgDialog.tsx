@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { FormattedMessage } from "react-intl";
 import { makeStyles, Theme, useTheme } from '@material-ui/core/styles';
@@ -19,16 +19,8 @@ import { State } from "../../store/store";
 import { Organization, setSelectedOrg } from "../../store/reducers/session";
 import { setSelectOrgOpen } from "../../store/reducers/control";
 import DefaultOrganization from "../../assets/img/avatars/Avatar_Student_01.jpg";
-
-const ORGANIZATIONS = [
-    { organization_id: "org1", organization_name: "Organization1" },
-    { organization_id: "org2", organization_name: "Organization2" },
-    { organization_id: "org3", organization_name: "Organization3" },
-    { organization_id: "org4", organization_name: "Organization4" },
-    { organization_id: "org5", organization_name: "Organization5" },
-    { organization_id: "org6", organization_name: "Organization6" },
-    { organization_id: "org7", organization_name: "Organization7" },
-]
+import { isRoleTeacher, useUserInformation } from "../../context-provider/user-information-context";
+import { isMobile } from "react-device-detect";
 
 const useStyles = makeStyles((theme: Theme) => ({
     noPadding: {
@@ -38,15 +30,69 @@ const useStyles = makeStyles((theme: Theme) => ({
         "&:hover": {
             color: "white"
         }
-    },
-    defaultColor: {
-        color: "white",
-        backgroundColor: "transparent",
-    },
-    defaultImg: {
-        backgroundImage: `url(${DefaultOrganization})`
     }
 }));
+
+export function useShouldSelectOrganization() {
+    const dispatch = useDispatch();
+    const { information } = useUserInformation();
+    const selectedOrganization = useSelector((state: State) => state.session.selectedOrg);
+    const [selectOrganization, setSelectOrganization] = useState<boolean>(false);
+    const [errorCode, setErrorCode] = useState<number | undefined>(undefined);
+
+    useEffect(() => {
+        if (!information) return;
+
+        if (selectedOrganization && selectedOrganization.organization_id) {
+            // NOTE: Ensure user is a member of the selected organization.
+            const organization = information.organizations.find((org => {
+                org.id === selectedOrganization.organization_id;
+            }));
+
+            if (!organization) {
+                dispatch(setSelectedOrg(null));
+                return;
+            }
+
+            const { roles } = organization;
+            if (roles.length === 1) {
+                const isTeacher = isRoleTeacher(roles[0].name);
+                if (isMobile && isTeacher) {
+                    setErrorCode(401);
+                    return;
+                }
+            } else if (roles.length > 1) {
+                const someRolesAreStudent = roles.some(role => !isRoleTeacher(role.name));
+                if (isMobile && !someRolesAreStudent) {
+                    setErrorCode(401);
+                    return;
+                }
+            }
+
+            // NOTE: The selected organization is OK.
+            setSelectOrganization(false);
+            setErrorCode(undefined);
+
+            return;
+        } else { // NOTE: Organization isn't selected
+            if (information.organizations.length === 0) {
+                setSelectOrganization(false);
+                setErrorCode(401);
+            } else if (information.organizations.length === 1) {
+                const { name, id } = information.organizations[0];
+                dispatch(setSelectedOrg({ organization_id: id, organization_name: name }));
+            } else {
+                setSelectOrganization(true);
+                setErrorCode(undefined);
+            }
+        }
+    }, [information, selectedOrganization]);
+
+    return {
+        selectOrganization,
+        errorCode,
+    }
+}
 
 export function SelectOrgDialog() {
     const theme = useTheme();
@@ -55,6 +101,18 @@ export function SelectOrgDialog() {
     const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
     const open = useSelector((state: State) => state.control.selectOrgOpen);
     const [org, setOrg] = useState<Organization>(selectedOrg);
+    const { information } = useUserInformation();
+
+    const organizations = useMemo(() => {
+        if (!information) return [];
+
+        return information.organizations.map(o => {
+            return {
+                organization_id: o.id,
+                organization_name: o.name,
+            }
+        })
+    }, [information]);
 
     const handleClickSelect = () => {
         dispatch(setSelectedOrg(org));
@@ -86,7 +144,7 @@ export function SelectOrgDialog() {
                         <FormattedMessage id="selectOrg_title" />
                     </Typography>
                 </Grid>
-                <OrgList handler={{ org, setOrg }} />
+                <OrgList handler={{ org, setOrg }} organizations={organizations} />
             </DialogContent>
             <DialogActions className={noPadding}>
                 <Grid item xs={12}>
@@ -107,13 +165,15 @@ export function SelectOrgDialog() {
     )
 }
 
-function OrgList({ handler }: {
+
+
+function OrgList({ handler, organizations }: {
     handler: {
         org: Organization,
         setOrg: React.Dispatch<React.SetStateAction<Organization>>
-    }
+    },
+    organizations: Organization[]
 }) {
-
     return (
         <Grid
             container
@@ -123,7 +183,7 @@ function OrgList({ handler }: {
             alignContent="center"
             spacing={3}
         >
-            {ORGANIZATIONS.map((o) =>
+            {organizations.map((o) =>
                 <OrgCard
                     key={o.organization_id}
                     org={o}
@@ -142,7 +202,6 @@ function OrgCard({ org, checked, setOrg }: {
 }) {
     const theme = useTheme();
     const square = theme.spacing(15)
-    const { defaultColor, defaultImg } = useStyles();
 
     useEffect(() => {
         console.log(org.organization_name)
