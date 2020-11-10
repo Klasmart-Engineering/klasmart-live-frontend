@@ -50,6 +50,7 @@ import useCordovaInitialize from "./cordova-initialize";
 import { redirectIfUnauthorized } from "./utils/accountUtils";
 import { useAuthenticatedCheck } from "./utils/useAuthenticatedCheck";
 import { Auth } from "./pages/account/auth";
+import { UserInformationContextProvider } from "./context-provider/user-information-context";
 
 /*
 Sentry.init({
@@ -208,6 +209,8 @@ function Entry() {
 
     const history = useSelector((state: State) => state.location.history);
     useEffect(() => {
+        if (!history) return;
+
         const path = location.hash;
         let historyCopy = history.slice();
         if (history.length >= 10) { historyCopy.shift(); }
@@ -226,15 +229,17 @@ function Entry() {
 
     return (<>
         <UserContext.Provider value={userContext}>
-            <CameraContextProvider>
-                <RawIntlProvider value={locale}>
-                    <ThemeProvider theme={themeProvider(languageCode, themeMode)}>
-                        <CssBaseline />
-                        <App />
-                        {/* <Error errCode={404} /> */}
-                    </ThemeProvider>
-                </RawIntlProvider>
-            </CameraContextProvider>
+            <UserInformationContextProvider>
+                <CameraContextProvider>
+                    <RawIntlProvider value={locale}>
+                        <ThemeProvider theme={themeProvider(languageCode, themeMode)}>
+                            <CssBaseline />
+                            <App />
+                            {/* <Error errCode={404} /> */}
+                        </ThemeProvider>
+                    </RawIntlProvider>
+                </CameraContextProvider>
+            </UserInformationContextProvider>
         </UserContext.Provider>
         <Collapse in={alert}>
             <Alert
