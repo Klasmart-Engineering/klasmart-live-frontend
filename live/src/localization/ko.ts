@@ -10,6 +10,7 @@ const messages: Record<string, string> = {
     err_500_title: "Internal Server Error",
     err_500_description: "알 수 없는 문제가 발생했습니다",
 
+    selectOrg_title: "기관을 선택해 주세요",
     selectOrg_buttonSelect: "선택",
 
     activity_link: "액티비티 링크",
