@@ -43,20 +43,19 @@ import { App } from "./app";
 import { createDefaultStore, State } from "./store/store";
 import { setUserAgent } from "./store/reducers/session";
 import { setErrCode } from "./store/reducers/communication";
-import { setHistory } from "./store/reducers/location";
+import { pushReplaceHistory, setHistory } from "./store/reducers/location";
 import { LessonMaterial, MaterialTypename } from "./lessonMaterialContext";
 import { AuthTokenProvider } from "./services/auth-token/AuthTokenProvider";
 import { themeProvider } from "./themeProvider";
 import BrowserList, { detectIE } from "./pages/browserList";
-import { Error } from "./pages/error";
 import { getLanguage } from "./utils/locale";
 import Loading from "./components/loading";
 import { CameraContextProvider } from "./components/media/useCameraContext";
 import useCordovaInitialize from "./cordova-initialize";
-import { redirectIfUnauthorized } from "./utils/accountUtils";
 import { useAuthenticatedCheck } from "./utils/useAuthenticatedCheck";
 import { Auth } from "./pages/account/auth";
 import { UserInformationContextProvider } from "./context-provider/user-information-context";
+import { useGoBack } from "./utils/goBack";
 
 /*
 Sentry.init({
@@ -207,21 +206,40 @@ function Entry() {
         }));
     }, []);
 
-    const history = useSelector((state: State) => state.location.history);
     useEffect(() => {
         if (!history) return;
 
         const path = location.hash;
-        let historyCopy = history.slice();
-        if (history.length >= 10) { historyCopy.shift(); }
-        historyCopy.push(path)
-        dispatch(setHistory(historyCopy));
+
+        // NOTE: This will always treat the history as a stack where each 
+        // the current page will replace itself in the history stack. This
+        // will prevent endless recursion where user get stuck going back 
+        // between two pages. This can be improved if we manually insert
+        // pages to the stack on user navigation, instead of just observing
+        // the location.hash. 
+
+        // Examples (using pushReplaceHistory):
+        //   1. Page A -> Page B -> Page C (A, B, C)
+        //   2. Page A -> Page B -> Page C -> Page B (A, B)
+        // In first case, if user press back they will return to B page. 
+        // In seconds case, if user press back they will return to A page (not C).
+
+        // Examples (using pushHistory):
+        //   1. Page A -> Page B -> Page C (A, B, C)
+        //   2. Page A -> Page B -> Page C -> Page B (A, B, C, B)
+        // In first case, if user press back they will return to B page. 
+        // In seconds case, if user press back they will return to C page.
+
+        dispatch(pushReplaceHistory(path));
     }, [location.hash])
+
+    const { goBack } = useGoBack();
 
     const isMobileBrowser = isMobileOnly && (isChrome || isFirefox || isSafari || isIE || isEdge || isChromium || isMobileSafari);
     const [alert, setAlert] = useState<boolean>(isMobileBrowser);
-    const { cordovaReady, permissions } = useCordovaInitialize();
+    const { cordovaReady, permissions } = useCordovaInitialize(false, () => { goBack(); });
     const { authReady, authenticated, refresh } = useAuthenticatedCheck(cordovaReady);
+
     if (!cordovaReady) { return <Loading rawText="Loading..." /> }
     if (!permissions) { return <Loading rawText="Camera and Microphone premissions required. Please grant the permissions and restart application." /> }
     if (!authReady) { return <Loading rawText="Checking user authentication..." /> }
