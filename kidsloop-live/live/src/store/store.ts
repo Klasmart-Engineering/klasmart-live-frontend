@@ -11,6 +11,7 @@ import communication from "./reducers/communication";
 import control from "./reducers/control";
 import session from "./reducers/session";
 import location from "./reducers/location";
+import settings from "./reducers/settings";
 
 const persistConfig = {
     key: "kidsloop",
@@ -22,7 +23,8 @@ const rootReducer = combineReducers({
     communication,
     control,
     session,
-    location
+    location,
+    settings
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
