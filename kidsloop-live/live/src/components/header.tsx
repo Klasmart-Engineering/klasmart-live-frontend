@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createStyles, makeStyles, Theme, useTheme } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
@@ -19,7 +19,7 @@ import { useShouldSelectOrganization } from "../pages/account/selectOrgDialog";
 
 import KidsloopLogo from "../assets/img/kidsloop_icon.svg";
 import DefaultOrganization from "../assets/img/avatars/Avatar_Student_01.jpg";
-import { popHistory } from "../store/reducers/location";
+import { useGoBack } from "../utils/goBack";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -37,6 +37,41 @@ const useStyles = makeStyles((theme: Theme) =>
         },
     }),
 );
+
+function GoBackButton() {
+    const { iconButton } = useStyles();
+    const { canGoBack, goBack } = useGoBack();
+
+    return (
+        <IconButton
+            onClick={() => { goBack(); }}
+            size="medium"
+            className={iconButton}
+            style={{ visibility: canGoBack ? "visible" : "hidden" }}
+        >
+            <StyledIcon icon={<ArrowBackIcon />} size="medium" />
+        </IconButton >
+    );
+}
+
+function MenuButton() {
+    const { iconButton } = useStyles();
+    const open = useSelector((state: State) => state.control.selectOrgDialogOpen);
+    const [tootipOpen, setTooltipOpen] = useState(false);
+
+    return (
+        <Tooltip placement="bottom" title="Coming soon" open={tootipOpen} onClose={() => setTooltipOpen(false)}>
+            <IconButton
+                onClick={() => setTooltipOpen(true)}
+                size="medium"
+                className={iconButton}
+                style={{ visibility: open ? "hidden" : "visible" }}
+            >
+                <StyledIcon icon={<LockIcon />} size="medium" />
+            </IconButton>
+        </Tooltip>
+    );
+}
 
 export function Header() {
     const { root, safeArea } = useStyles();
@@ -99,56 +134,5 @@ function SelectOrgButton() {
         >
             {open ? <StyledIcon icon={<CloseIcon />} size="medium" /> : <Avatar alt="Organization's thumbnail" src={DefaultOrganization} />}
         </IconButton>
-    );
-}
-
-function GoBackButton() {
-    const { iconButton } = useStyles();
-    const history = useSelector((state: State) => state.location.history);
-    const [haveHistory, setHaveHistory] = useState<boolean>(history.length > 1);
-
-    const dispatch = useDispatch();
-
-    const goBack = useCallback(() => {
-        if (!history) return;
-        if (history.length <= 1) return;
-
-        // NOTE: current page = history[history.length - 1];
-        const previousPage = history[history.length - 2];
-        setHaveHistory(history.length > 2);
-
-        dispatch(popHistory({}));
-
-        location.href = previousPage;
-    }, [history]);
-
-    return (
-        <IconButton
-            onClick={goBack}
-            size="medium"
-            className={iconButton}
-            style={{ visibility: haveHistory ? "visible" : "hidden" }}
-        >
-            <StyledIcon icon={<ArrowBackIcon />} size="medium" />
-        </IconButton>
-    );
-}
-
-function MenuButton() {
-    const { iconButton } = useStyles();
-    const open = useSelector((state: State) => state.control.selectOrgDialogOpen);
-    const [tootipOpen, setTooltipOpen] = useState(false);
-
-    return (
-        <Tooltip placement="bottom" title="Coming soon" open={tootipOpen} onClose={() => setTooltipOpen(false)}>
-            <IconButton
-                onClick={() => setTooltipOpen(true)}
-                size="medium"
-                className={iconButton}
-                style={{ visibility: open ? "hidden" : "visible" }}
-            >
-                <StyledIcon icon={<LockIcon />} size="medium" />
-            </IconButton>
-        </Tooltip>
     );
 }
