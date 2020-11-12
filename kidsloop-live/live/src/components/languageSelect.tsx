@@ -27,6 +27,10 @@ const LANGUAGES_LABEL: Language[] = [
         code: "vi",
         text: "Tiếng Việt",
     },
+    {
+        code: "id",
+        text: "Indonesian",
+    },
 ];
 
 interface Props {

@@ -3,8 +3,9 @@ import english from "./en";
 import korean from "./ko";
 import chinese from "./zh_cn";
 import vietnamese from "./vi";
+import indonesian from "./id";
 
-export const localeCodes = ["en", "ko", "zh-CN", "vi"];
+export const localeCodes = ["en", "ko", "zh-CN", "vi", "id"];
 
 const intlCache = createIntlCache();
 export const fallbackLocale = createIntl({ locale: "en", messages: english }, intlCache);
@@ -18,5 +19,7 @@ export function getIntl(locale: string) {
             return createIntl({ locale: "zh-CN", messages: chinese }, intlCache);
         case "vi":
             return createIntl({ locale: "vi", messages: vietnamese }, intlCache);
+        case "id":
+            return createIntl({ locale: "id", messages: indonesian }, intlCache);
     }
 }
