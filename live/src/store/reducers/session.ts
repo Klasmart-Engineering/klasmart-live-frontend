@@ -54,10 +54,7 @@ const initialSessionState: SessionState = {
     userType: UserType.STUDENT,
     locale: getDefaultLanguageCode(),
     user: null,
-    selectedOrg: {
-        organization_id: "",
-        organization_name: ""
-    }
+    selectedOrg: { organization_id: "", organization_name: "" }
 }
 
 const sessionSlice = createSlice({
