@@ -15,6 +15,8 @@ import ReactPlayer from "../react-player/lazy";
 import { VolumeMute as AudioOffIcon } from "@styled-icons/boxicons-regular/VolumeMute";
 import { videoUnmuteOverlay } from "../../utils/layerValues";
 import { getContentHref } from "../../utils/contentUtils";
+import { useSelector } from "react-redux";
+import { State } from "../../store/store";
 
 interface VideoSynchronize {
     src?: string;
@@ -74,10 +76,17 @@ export function ReplicaMedia(
 
     const [muted, setMuted] = useState<boolean>(isSafari);
 
+    const volume = useSelector((state: State) => state.settings.volumeVod);
+
     const { roomId } = useContext(UserContext);
 
     const ref = useRef<HTMLMediaElement>(null);
     const reactPlayerRef = useRef<ReactPlayer>(null);
+
+    useEffect(() => {
+        if (!ref.current) { return; }
+        ref.current.volume = volume;
+    }, [ref.current, volume]);
 
     const [videoSources, setVideoSources] = useState<
         string | string[] | undefined
@@ -236,6 +245,7 @@ export function ReplicaMedia(
                         key={srcRef.current}
                         ref={reactPlayerRef as React.RefObject<ReactPlayer>}
                         controls={false}
+                        volume={volume}
                         playing={videoReady && playing}
                         playsinline
                         url={videoSources}
@@ -295,6 +305,13 @@ export function ReplicatedMedia(
         string | string[] | undefined
     >(undefined);
     const [playing, setPlaying] = useState<boolean>(false);
+
+    const volume = useSelector((state: State) => state.settings.volumeVod);
+
+    useEffect(() => {
+        if (!ref.current) { return; }
+        ref.current.volume = volume;
+    }, [ref.current, volume]);
 
     const { roomId, sessionId } = useContext(UserContext);
 
@@ -462,6 +479,7 @@ export function ReplicatedMedia(
                     ref={reactPlayerRef as React.RefObject<ReactPlayer>}
                     controls
                     playsinline
+                    volume={volume}
                     url={videoSources}
                     width="100%"
                     config={{

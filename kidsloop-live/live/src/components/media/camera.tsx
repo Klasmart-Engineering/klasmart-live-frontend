@@ -39,6 +39,13 @@ export default function Camera({ mediaStream, session, muted, controls, square, 
         videoRef.current.srcObject = mediaStream;
     }, [videoRef.current, mediaStream]);
 
+    const volume = useSelector((state: State) => state.settings.volumeVoice);
+
+    useEffect(() => {
+        if (!videoRef.current) { return; }
+        videoRef.current.volume = volume;
+    }, [videoRef.current, volume]);
+
     return (
         // CameraOverlay needs the parent div that has `position: "relative"`
         <div style={{ position: "relative", width: "100%" }}>
