@@ -42,6 +42,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import { App } from "./app";
 import { createDefaultStore, State } from "./store/store";
 import { setUserAgent } from "./store/reducers/session";
+import { setErrCode } from "./store/reducers/communication";
 import { setHistory } from "./store/reducers/location";
 import { LessonMaterial, MaterialTypename } from "./lessonMaterialContext";
 import { AuthTokenProvider } from "./services/auth-token/AuthTokenProvider";
@@ -187,6 +188,7 @@ function Entry() {
     }), [camera, setCamera, name, setName, params]);
 
     useEffect(() => {
+        dispatch(setErrCode(null));
         dispatch(setHistory([]));
         dispatch(setUserAgent({
             isMobileOnly,
@@ -233,7 +235,6 @@ function Entry() {
                         <ThemeProvider theme={themeProvider(languageCode, themeMode)}>
                             <CssBaseline />
                             <App />
-                            {/* <Error errCode={404} /> */}
                         </ThemeProvider>
                     </RawIntlProvider>
                 </CameraContextProvider>

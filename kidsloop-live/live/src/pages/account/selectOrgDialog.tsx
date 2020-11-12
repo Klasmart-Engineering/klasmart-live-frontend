@@ -12,15 +12,15 @@ import Typography from '@material-ui/core/Typography';
 
 import { Check as CheckIcon } from "@styled-icons/fa-solid/Check";
 
+import { isRoleTeacher, useUserInformation } from "../../context-provider/user-information-context";
 import { Header } from "../../components/header";
 import StyledButton from "../../components/styled/button";
 import StyledIcon from "../../components/styled/icon";
 import { State } from "../../store/store";
 import { Organization, setSelectedOrg } from "../../store/reducers/session";
-import { setSelectOrgOpen } from "../../store/reducers/control";
+import { setErrCode } from "../../store/reducers/communication";
+import { setSelectOrgDialogOpen } from "../../store/reducers/control";
 import DefaultOrganization from "../../assets/img/avatars/Avatar_Student_01.jpg";
-import { isRoleTeacher, useUserInformation } from "../../context-provider/user-information-context";
-import { isMobile } from "react-device-detect";
 
 const useStyles = makeStyles((theme: Theme) => ({
     noPadding: {
@@ -36,13 +36,15 @@ const useStyles = makeStyles((theme: Theme) => ({
 export function useShouldSelectOrganization() {
     const dispatch = useDispatch();
     const { information } = useUserInformation();
+    const isMobileOnly = useSelector((state: State) => state.session.userAgent.isMobileOnly);
+    const isTablet = useSelector((state: State) => state.session.userAgent.isTablet);
+    const isMobile = isMobileOnly || isTablet
     const selectedOrganization = useSelector((state: State) => state.session.selectedOrg);
-    const [selectOrganization, setSelectOrganization] = useState<boolean>(false);
-    const [errorCode, setErrorCode] = useState<number | undefined>(undefined);
+    const errCode = useSelector((state: State) => state.communication.errCode);
+    const [shouldSelect, setShouldSelect] = useState<boolean>(false);
 
     useEffect(() => {
         if (!information) return;
-
         if (selectedOrganization && selectedOrganization.organization_id) {
             // NOTE: Ensure user is a member of the selected organization.
             const organization = information.organizations.find((org => {
@@ -58,40 +60,36 @@ export function useShouldSelectOrganization() {
             if (roles.length === 1) {
                 const isTeacher = isRoleTeacher(roles[0].name);
                 if (isMobile && isTeacher) {
-                    setErrorCode(401);
+                    dispatch(setErrCode(403));
                     return;
                 }
             } else if (roles.length > 1) {
                 const someRolesAreStudent = roles.some(role => !isRoleTeacher(role.name));
                 if (isMobile && !someRolesAreStudent) {
-                    setErrorCode(401);
+                    dispatch(setErrCode(403));
                     return;
                 }
             }
 
             // NOTE: The selected organization is OK.
-            setSelectOrganization(false);
-            setErrorCode(undefined);
-
+            setShouldSelect(false);
+            dispatch(setErrCode(null));
             return;
         } else { // NOTE: Organization isn't selected
             if (information.organizations.length === 0) {
-                setSelectOrganization(false);
-                setErrorCode(401);
+                setShouldSelect(false);
+                dispatch(setErrCode(403));
             } else if (information.organizations.length === 1) {
                 const { name, id } = information.organizations[0];
                 dispatch(setSelectedOrg({ organization_id: id, organization_name: name }));
             } else {
-                setSelectOrganization(true);
-                setErrorCode(undefined);
+                setShouldSelect(true);
+                dispatch(setErrCode(null));
             }
         }
-    }, [information, selectedOrganization]);
+    }, [information]);
 
-    return {
-        selectOrganization,
-        errorCode,
-    }
+    return { errCode, shouldSelect }
 }
 
 export function SelectOrgDialog() {
@@ -99,8 +97,8 @@ export function SelectOrgDialog() {
     const { noPadding } = useStyles();
     const dispatch = useDispatch();
     const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
-    const open = useSelector((state: State) => state.control.selectOrgOpen);
-    const [org, setOrg] = useState<Organization>(selectedOrg);
+    const open = useSelector((state: State) => state.control.selectOrgDialogOpen);
+    const [org, setOrg] = useState<Organization>(selectedOrg ? selectedOrg : { organization_id: "", organization_name: "" });
     const { information } = useUserInformation();
 
     const organizations = useMemo(() => {
@@ -116,20 +114,15 @@ export function SelectOrgDialog() {
 
     const handleClickSelect = () => {
         dispatch(setSelectedOrg(org));
-        dispatch(setSelectOrgOpen(false));
+        dispatch(setSelectOrgDialogOpen(false));
     }
-
-    useEffect(() => {
-        console.log(org)
-        console.log(selectedOrg)
-    }, [org, selectedOrg])
 
     return (
         <Dialog
             aria-labelledby="select-org-dialog"
             fullScreen
             open={open}
-            onClose={() => dispatch(setSelectOrgOpen(false))}
+            onClose={() => dispatch(setSelectOrgDialogOpen(false))}
         >
             <DialogTitle
                 id="select-org-dialog"
@@ -168,10 +161,7 @@ export function SelectOrgDialog() {
 
 
 function OrgList({ handler, organizations }: {
-    handler: {
-        org: Organization,
-        setOrg: React.Dispatch<React.SetStateAction<Organization>>
-    },
+    handler: { org: Organization, setOrg: React.Dispatch<React.SetStateAction<Organization>> },
     organizations: Organization[]
 }) {
     return (
@@ -183,7 +173,7 @@ function OrgList({ handler, organizations }: {
             alignContent="center"
             spacing={3}
         >
-            {organizations.map((o) =>
+            {organizations.length === 0 ? null : organizations.map((o) =>
                 <OrgCard
                     key={o.organization_id}
                     org={o}

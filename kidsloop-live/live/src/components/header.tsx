@@ -6,6 +6,7 @@ import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
+import Avatar from "@material-ui/core/Avatar";
 
 import { Close as CloseIcon } from "@styled-icons/material/Close";
 import { ArrowBackIos as ArrowBackIcon } from "@styled-icons/material/ArrowBackIos";
@@ -13,8 +14,11 @@ import { Lock as LockIcon } from "@styled-icons/material/Lock";
 
 import StyledIcon from "./styled/icon";
 import { State } from "../store/store";
-import { setSelectOrgOpen } from "../store/reducers/control";
+import { setSelectOrgDialogOpen } from "../store/reducers/control";
+import { useShouldSelectOrganization } from "../pages/account/selectOrgDialog";
+
 import KidsloopLogo from "../assets/img/kidsloop_icon.svg";
+import DefaultOrganization from "../assets/img/avatars/Avatar_Student_01.jpg";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -36,9 +40,10 @@ const useStyles = makeStyles((theme: Theme) =>
 export function Header() {
     const { root, safeArea } = useStyles();
     const theme = useTheme();
-    const open = useSelector((state: State) => state.control.selectOrgOpen);
+    const errCode = useSelector((state: State) => state.communication.errCode);
+    const isSchedulePage = location.hash === "#/" || location.hash === "#/schedule";
 
-    return (
+    return (errCode ? <></> :
         <div className={root}>
             <AppBar
                 position="sticky"
@@ -62,7 +67,7 @@ export function Header() {
                             wrap="nowrap"
                         >
                             <Grid item style={{ flexGrow: 0 }}>
-                                {open ? <CloseSelectOrg /> : <GoBack />}
+                                {isSchedulePage ? <SelectOrgButton /> : <GoBackButton />}
                             </Grid>
                             <Grid item style={{ flexGrow: 1, textAlign: "center" }}>
                                 <img alt="KidsLoop Logo" src={KidsloopLogo} height={32} />
@@ -78,30 +83,31 @@ export function Header() {
     );
 }
 
-function CloseSelectOrg() {
+function SelectOrgButton() {
     const { iconButton } = useStyles();
     const dispatch = useDispatch();
+    const open = useSelector((state: State) => state.control.selectOrgDialogOpen);
+    const { shouldSelect } = useShouldSelectOrganization();
+
     return (
         <IconButton
-            onClick={() => dispatch(setSelectOrgOpen(false))}
+            onClick={() => dispatch(setSelectOrgDialogOpen(!open))}
             size="medium"
             className={iconButton}
+            style={!open ? { padding: 0 } : { visibility: shouldSelect ? "hidden" : "visible" }}
         >
-            <StyledIcon icon={<CloseIcon />} size="medium" />
+            {open ? <StyledIcon icon={<CloseIcon />} size="medium" /> : <Avatar alt="Organization's thumbnail" src={DefaultOrganization} />}
         </IconButton>
     );
 }
 
-function GoBack() {
+function GoBackButton() {
     const { iconButton } = useStyles();
-    const dispatch = useDispatch();
     const history = useSelector((state: State) => state.location.history);
     const [lastIdx, setLastIdx] = useState<number>(history.lastIndexOf(location.hash));
 
     function goBack() {
-        if (location.hash === "#/" || location.hash === "#/schedule") {
-            return dispatch(setSelectOrgOpen(true));
-        } else if (lastIdx <= 0) { return; }
+        if (lastIdx <= 0) { return; }
         return location.href = history[lastIdx - 1];
     }
 
@@ -118,7 +124,7 @@ function GoBack() {
 
 function MenuButton() {
     const { iconButton } = useStyles();
-    const open = useSelector((state: State) => state.control.selectOrgOpen);
+    const open = useSelector((state: State) => state.control.selectOrgDialogOpen);
     const [tootipOpen, setTooltipOpen] = useState(false);
 
     return (

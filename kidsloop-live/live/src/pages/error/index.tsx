@@ -1,5 +1,4 @@
 import * as React from "react";
-import { useHistory } from "react-router";
 import { FormattedMessage } from "react-intl";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
@@ -10,13 +9,19 @@ import Typography from "@material-ui/core/Typography";
 
 import StyledButton from "../../components/styled/button";
 import KidsloopIcon from "../../assets/img/kidsloop_icon.svg";
+import Error1 from "../../assets/img/error/1.png";
 import Error2 from "../../assets/img/error/2.png";
+import Error3 from "../../assets/img/error/3.png";
+import Error4 from "../../assets/img/error/4.png";
+
+const ERROR_IMAGES = [Error1, Error2, Error3, Error4];
+export const DESCRIPTION_403 = "Please check if your organization is not created or selected."
 
 const useStyles = makeStyles((theme) => createStyles({
     pageWrapper: {
         display: "flex",
         flexGrow: 1,
-        height: "100vh",
+        height: "100vh"
     },
     card: {
         alignItems: "center",
@@ -29,9 +34,10 @@ const useStyles = makeStyles((theme) => createStyles({
 }),
 );
 
-export function Error({ errCode }: { errCode?: number | string }) {
+// TODO: Mapping description by errCode
+export function Error({ errCode, description }: { errCode: string | number | null, description?: string }) {
     const classes = useStyles();
-    const code = errCode === undefined ? "500" :
+    const code = errCode === null ? "500" :
         (typeof errCode === "number" ? errCode.toString() : errCode);
 
     return (
@@ -54,11 +60,12 @@ export function Error({ errCode }: { errCode?: number | string }) {
                                     {code + " "}<FormattedMessage id={`err_${code}_title`} />
                                 </Typography>
                                 <Typography variant="h6" align="center">
-                                    <FormattedMessage id={`err_${code}_description`} />
-                                </Typography>
+                                    <FormattedMessage id={`err_${code}_subtitle`} />
+                                </Typography><br />
+                                {description ? <Typography variant="body2" align="center">{description}</Typography> : null}
                             </Grid>
                             <Grid item xs={12} style={{ textAlign: "center" }}>
-                                <img src={Error2} width={250} height={250} />
+                                <img src={ERROR_IMAGES[((Math.floor(Math.random() * 10)) % ERROR_IMAGES.length)]} width={250} height={250} />
                             </Grid>
                             <Grid item xs={12} className={classes.link}>
                                 <StyledButton
@@ -67,7 +74,7 @@ export function Error({ errCode }: { errCode?: number | string }) {
                                     type="submit"
                                     onClick={() => { location.href = "/" }} // TODO: Decide which link to go to
                                 >
-                                    HOME
+                                    BACK
                                 </StyledButton>
                             </Grid>
                         </Grid>
