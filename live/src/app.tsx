@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Router, Route, Switch } from "react-router-dom";
 import { createHashHistory } from 'history'
@@ -14,17 +14,24 @@ import { PasswordRestore } from "./pages/account/password/password-restore";
 import { Room } from "./pages/room/room";
 import { Join } from "./pages/join/join";
 import { Schedule } from "./pages/schedule/schedule";
+import { Error, DESCRIPTION_403 } from "./pages/error";
 import { State } from "./store/store";
 import { OrientationType } from "./store/actions";
+import { setSelectOrgDialogOpen } from "./store/reducers/control";
 import { setDeviceOrientation } from "./store/reducers/location";
-import { Error } from "./pages/error/index";
 
 export function App(): JSX.Element {
     const dispatch = useDispatch();
     const history = createHashHistory();
     const deviceOrientation = useSelector((state: State) => state.location.deviceOrientation);
+    const eCode = useSelector((state: State) => state.communication.errCode);
+    // TODO: Clean up
+    const eDescription = eCode === 403 ? DESCRIPTION_403 : undefined;
+
+    const { errCode, shouldSelect } = useShouldSelectOrganization();
 
     useEffect(() => {
+        if (shouldSelect) { dispatch(setSelectOrgDialogOpen(true)) }
         if (deviceOrientation === OrientationType.LANDSCAPE) {
             if (screen.orientation && screen.orientation.lock) {
                 screen.orientation.unlock();
@@ -40,8 +47,7 @@ export function App(): JSX.Element {
         }
     }, [])
 
-    const { errorCode, selectOrganization } = useShouldSelectOrganization();
-
+    if (errCode !== null) { return <Error errCode={eCode} description={eDescription} />; }
     return (
         <Grid
             container
@@ -50,23 +56,21 @@ export function App(): JSX.Element {
             style={{ height: "100%", overflow: "hidden" }}
         >
             <Header />
-            { errorCode ? <Error errCode={errorCode}></Error> :
-                (selectOrganization ? <SelectOrgDialog /> :
-                    <Router history={history}>
-                        <Switch>
-                            <Route path="/schedule" component={Schedule} />
-                            <Route path="/join" component={Join} />
-                            <Route path="/room" component={Room} />
-                            <Route path="/password-change" component={PasswordChange} />
-                            <Route path="/password-changed" component={PasswordChanged} />
-                            <Route path="/password-forgot" component={PasswordForgot} />
-                            <Route path="/password-restore" component={PasswordRestore} />
-                            <Route path="/signup" component={Signup} />
-                            <Route path="/signin" component={Signin} />
-                            <Route path="/" component={Schedule} />
-                        </Switch>
-                    </Router>
-                )}
+            <Router history={history}>
+                <Switch>
+                    <Route path="/schedule" component={Schedule} />
+                    <Route path="/join" component={Join} />
+                    <Route path="/room" component={Room} />
+                    <Route path="/password-change" component={PasswordChange} />
+                    <Route path="/password-changed" component={PasswordChanged} />
+                    <Route path="/password-forgot" component={PasswordForgot} />
+                    <Route path="/password-restore" component={PasswordRestore} />
+                    <Route path="/signup" component={Signup} />
+                    <Route path="/signin" component={Signin} />
+                    <Route path="/" component={Schedule} />
+                </Switch>
+            </Router>
+            <SelectOrgDialog />
         </Grid>
     )
 }

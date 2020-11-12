@@ -1,4 +1,6 @@
 import React, { createContext, ReactChild, ReactChildren, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { useDispatch } from "react-redux";
+import { setErrCode } from "../store/reducers/communication";
 
 // TODO (Axel): All of this context can be combined with the user-context from 
 // the combined master branch. This would be preferred since they share
@@ -76,6 +78,7 @@ export function isRoleTeacher(role: string) {
 }
 
 export function UserInformationContextProvider({ children }: Props) {
+    const dispatch = useDispatch();
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<boolean>(false);
     const [information, setInformation] = useState<UserInformation | undefined>(undefined);
@@ -97,7 +100,7 @@ export function UserInformationContextProvider({ children }: Props) {
                 name: my_org.organization_name,
                 roles: [{
                     id: "",
-                    name: "Seed Admin"
+                    name: "Organization Admin"
                 }]
             });
         }
@@ -152,6 +155,7 @@ export function UserInformationContextProvider({ children }: Props) {
             if (!data || data.me === null) {
                 setInformation(undefined);
                 setError(true);
+                dispatch(setErrCode(401));
             } else {
                 setInformation(userInformationFromResponseData(data.me));
             }
@@ -160,6 +164,7 @@ export function UserInformationContextProvider({ children }: Props) {
         }).catch(err => {
             console.error(err);
             setError(true);
+            dispatch(setErrCode(500));
             setLoading(false);
         });
     }, []);

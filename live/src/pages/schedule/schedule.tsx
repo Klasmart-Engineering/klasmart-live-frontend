@@ -14,12 +14,13 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Typography from "@material-ui/core/Typography";
 
 import SwitchClassType from "./switchClassType";
+import { Error, DESCRIPTION_403 } from "../error";
 import StyledIcon from "../../components/styled/icon";
 import Loading from "../../components/loading";
 import { State } from "../../store/store";
 import { ClassType } from "../../store/actions";
-import { Schedule, setSchedule, setSchedulePage, setSelectedPlan } from "../../store/reducers/data";
-import { setInFlight, setFailure } from "../../store/reducers/communication";
+import { Schedule, setSchedule, setSelectedPlan } from "../../store/reducers/data";
+import { setInFlight, setErrCode } from "../../store/reducers/communication";
 
 import SchedulePopcorn from "../../assets/img/schedule_popcorn.svg";
 import StudyHouse from "../../assets/img/study_house.svg";
@@ -69,6 +70,7 @@ const CMS_ENDPOINT = process.env.ENDPOINT_KL2 !== undefined ? process.env.ENDPOI
 export function Schedule() {
     const theme = useTheme();
     const dispatch = useDispatch();
+    const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
     const inFlight = useSelector((state: State) => state.communication.inFlight);
     const { total, live, study } = useSelector((state: State) => state.data.schedule);
 
@@ -76,7 +78,7 @@ export function Schedule() {
         const headers = new Headers();
         headers.append("Accept", "application/json");
         headers.append("Content-Type", "application/json");
-        const response = await fetch(`${CMS_ENDPOINT}/v1/schedules_time_view?view_type=month&time_at=${timeAt}&time_zone_offset=${timeZoneOffset}`, {
+        const response = await fetch(`${CMS_ENDPOINT}/v1/schedules_time_view?view_type=month&time_at=${timeAt}&time_zone_offset=${timeZoneOffset}&org_id=${selectedOrg.organization_id}`, {
             headers,
             method: "GET",
         });
@@ -88,34 +90,41 @@ export function Schedule() {
     }
 
     useEffect(() => {
-        async function fetchEverything() {
-            async function fetchScheduleTimeViews() {
-                const thisMonthSchedules = await getScheduleTimeViews(todayTimeStamp, timeZoneOffset);
-                const nextMonthSchedules = await getScheduleTimeViews(nextMonthTimeStamp, timeZoneOffset);
-                const totalSchedules = thisMonthSchedules.concat(nextMonthSchedules);
-                // console.log("totalSchedules: ", totalSchedules)
-                const liveSchedules = totalSchedules.filter((s: any) => s.class_type === "OnlineClass")
-                const studySchedules = totalSchedules.filter((s: any) => s.class_type === "Homework")
-                dispatch(setSchedule({ total: totalSchedules, live: liveSchedules, study: studySchedules }))
-            }
+        if (!selectedOrg) {
+            dispatch(setErrCode(403));
+        } else {
+            async function fetchEverything() {
+                async function fetchScheduleTimeViews() {
+                    const thisMonthSchedules = await getScheduleTimeViews(todayTimeStamp, timeZoneOffset);
+                    const nextMonthSchedules = await getScheduleTimeViews(nextMonthTimeStamp, timeZoneOffset);
+                    const totalSchedules = thisMonthSchedules.concat(nextMonthSchedules);
+                    // console.log("totalSchedules: ", totalSchedules)
+                    const liveSchedules = totalSchedules.filter((s: any) => s.class_type === "OnlineClass")
+                    const studySchedules = totalSchedules.filter((s: any) => s.class_type === "Homework")
+                    dispatch(setSchedule({ total: totalSchedules, live: liveSchedules, study: studySchedules }))
+                }
 
-            try {
-                await Promise.all([fetchScheduleTimeViews()])
-                // console.log("total, live, study: ", total, live, study)
-            } catch (err) {
-                dispatch(setSchedule({ total: [], live: [], study: [] }))
-                console.error(`Fail to fetchScheduleTimeViews: ${err}`)
-                // dispatch(setFailure(true));
-            } finally {
-                dispatch(setInFlight(false));
+                try {
+                    await Promise.all([fetchScheduleTimeViews()])
+                    // console.log("total, live, study: ", total, live, study)
+                } catch (err) {
+                    dispatch(setSchedule({ total: [], live: [], study: [] }))
+                    console.error(`Fail to fetchScheduleTimeViews: ${err}`)
+                    // dispatch(setFailure(true));
+                } finally {
+                    dispatch(setInFlight(false));
+                }
+            }
+            if (selectedOrg && selectedOrg.organization_id) {
+                dispatch(setInFlight(true));
+                fetchEverything();
             }
         }
-        dispatch(setInFlight(true));
-        fetchEverything();
-    }, [])
+    }, [selectedOrg])
 
+    if (!selectedOrg) { return <Error errCode={403} description={DESCRIPTION_403} />; }
     return (<>
-        {inFlight ? <Loading /> : (
+        {inFlight ? <Loading /> :
             <Grid
                 wrap="nowrap"
                 container
@@ -126,7 +135,7 @@ export function Schedule() {
             >
                 <ScheduleList total={total} live={live} study={study} />
             </Grid>
-        )}
+        }
         <Grid
             container
             direction="row"
