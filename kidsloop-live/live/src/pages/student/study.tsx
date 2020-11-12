@@ -25,6 +25,7 @@ export default function Study(): JSX.Element {
     const dispatch = useDispatch();
 
     const { materials } = useContext(UserContext);
+    const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
     const mats = useSelector((store: State) => store.data.materials)
     const contentIndex = useSelector((store: State) => store.control.contentIndex)
     const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -41,7 +42,8 @@ export default function Study(): JSX.Element {
         const headers = new Headers();
         headers.append("Accept", "application/json");
         headers.append("Content-Type", "application/json");
-        const response = await fetch(`${CMS_ENDPOINT}/v1/contents?publish_status=published&content_type=1`, {
+        // TODO: Check
+        const response = await fetch(`${CMS_ENDPOINT}/v1/contents?publish_status=published&content_type=1&org_id=${selectedOrg.organization_id}`, {
             headers,
             method: "GET",
         });

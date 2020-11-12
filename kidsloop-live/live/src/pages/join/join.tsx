@@ -65,6 +65,7 @@ export function Join(): JSX.Element {
     const history = useHistory();
     const dispatch = useDispatch();
     const classType = useSelector((store: State) => store.session.classType);
+    const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
 
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
     const { name, setName, teacher, sessionId, setCamera } = useContext(UserContext);
@@ -90,7 +91,8 @@ export function Join(): JSX.Element {
         const headers = new Headers();
         headers.append("Accept", "application/json");
         headers.append("Content-Type", "application/json");
-        const response = await fetch(`${CMS_ENDPOINT}/v1/contents/${contentId}`, {
+        // TODO: Check
+        const response = await fetch(`${CMS_ENDPOINT}/v1/contents/${contentId}/?org_id=${selectedOrg.organization_id}`, {
             headers,
             method: "GET",
         });
