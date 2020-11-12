@@ -72,7 +72,7 @@ export function Schedule() {
     const dispatch = useDispatch();
     const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
     const inFlight = useSelector((state: State) => state.communication.inFlight);
-    const { total, live, study } = useSelector((state: State) => state.data.schedule);
+    const { live, study } = useSelector((state: State) => state.data.schedule);
 
     async function getScheduleTimeViews(timeAt: number, timeZoneOffset: number) {
         const headers = new Headers();
@@ -133,7 +133,7 @@ export function Schedule() {
                 item
                 style={{ maxHeight: `calc(100% - ${theme.spacing(10)})`, flexGrow: 1, overflowX: "hidden", overflowY: "auto" }}
             >
-                <ScheduleList total={total} live={live} study={study} />
+                <ScheduleList live={live} study={study} />
             </Grid>
         }
         <Grid
@@ -148,11 +148,7 @@ export function Schedule() {
     </>)
 }
 
-function ScheduleList({ total, live, study }: {
-    total: Schedule[],
-    live: Schedule[],
-    study: Schedule[]
-}) {
+function ScheduleList({ live, study }: { live: Schedule[], study: Schedule[] }) {
     const { listRoot, listSubheaderText } = useStyles();
 
     const classType = useSelector((state: State) => state.session.classType);
@@ -246,8 +242,7 @@ function ScheduleItem({ classType, schedule, primaryText }: {
 }) {
     const { listItemAvatar, listItemTextPrimary } = useStyles();
     const dispatch = useDispatch();
-
-    // const re = /(,\s).*$/g; // Fix regex
+    const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
     const mmmmdyyyy = primaryText.substr(primaryText.indexOf(",") + 2);
     const dddd = primaryText.split(" ")[0];
     const startAt = dateFormat(schedule.start_at, "shortTime");
@@ -261,8 +256,8 @@ function ScheduleItem({ classType, schedule, primaryText }: {
         const headers = new Headers();
         headers.append("Accept", "application/json");
         headers.append("Content-Type", "application/json");
-        // console.log(schedule.id)
-        const response = await fetch(`${CMS_ENDPOINT}/v1/schedules/${schedule.id}`, {
+        // TODO: Check
+        const response = await fetch(`${CMS_ENDPOINT}/v1/schedules/${schedule.id}/?org_id=${selectedOrg.organization_id}`, {
             headers,
             method: "GET",
         });
@@ -298,7 +293,8 @@ function ScheduleItem({ classType, schedule, primaryText }: {
         const headers = new Headers();
         headers.append("Accept", "application/json");
         headers.append("Content-Type", "application/json");
-        const response = await fetch(`${CMS_ENDPOINT}/v1/schedules/${lessonPlanId}/live/token`, {
+        // TODO: Check
+        const response = await fetch(`${CMS_ENDPOINT}/v1/schedules/${lessonPlanId}/live/token/?org_id=${selectedOrg.organization_id}`, {
             headers,
             method: "GET",
         });
