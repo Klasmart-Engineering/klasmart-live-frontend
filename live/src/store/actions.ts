@@ -23,6 +23,9 @@ export enum ActionTypes {
     CONTENT_INDEX,
 
     DEVICE_ORIENTATION,
+
+    VOLUME_VOD,
+    VOLUME_VOICE,
 }
 export interface Action<T extends ActionTypes, P> {
     type: T;
@@ -93,6 +96,9 @@ export enum OrientationType {
 }
 export type SetDeviceOrientation = Action<ActionTypes.DEVICE_ORIENTATION, OrientationType>;
 
+export type SetVolumeVod = Action<ActionTypes.VOLUME_VOD, number>;
+export type SetVolumeVoice = Action<ActionTypes.VOLUME_VOICE, number>;
+
 export type Actions =
     | SetSchedules
     | SetSuccess
@@ -112,4 +118,6 @@ export type Actions =
     | SetColsObserve
     | SetContentIndex
     | SetDeviceOrientation
+    | SetVolumeVod
+    | SetVolumeVoice
     | never;
