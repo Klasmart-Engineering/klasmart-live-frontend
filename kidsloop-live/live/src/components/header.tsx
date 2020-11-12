@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React, { useCallback, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { createStyles, makeStyles, Theme, useTheme } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import AppBar from "@material-ui/core/AppBar";
@@ -19,6 +19,7 @@ import { useShouldSelectOrganization } from "../pages/account/selectOrgDialog";
 
 import KidsloopLogo from "../assets/img/kidsloop_icon.svg";
 import DefaultOrganization from "../assets/img/avatars/Avatar_Student_01.jpg";
+import { popHistory } from "../store/reducers/location";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -104,18 +105,29 @@ function SelectOrgButton() {
 function GoBackButton() {
     const { iconButton } = useStyles();
     const history = useSelector((state: State) => state.location.history);
-    const [lastIdx, setLastIdx] = useState<number>(history.lastIndexOf(location.hash));
+    const [haveHistory, setHaveHistory] = useState<boolean>(history.length > 1);
 
-    function goBack() {
-        if (lastIdx <= 0) { return; }
-        return location.href = history[lastIdx - 1];
-    }
+    const dispatch = useDispatch();
+
+    const goBack = useCallback(() => {
+        if (!history) return;
+        if (history.length <= 1) return;
+
+        // NOTE: current page = history[history.length - 1];
+        const previousPage = history[history.length - 2];
+        setHaveHistory(history.length > 2);
+
+        dispatch(popHistory({}));
+
+        location.href = previousPage;
+    }, [history]);
 
     return (
         <IconButton
             onClick={goBack}
             size="medium"
             className={iconButton}
+            style={{ visibility: haveHistory ? "visible" : "hidden" }}
         >
             <StyledIcon icon={<ArrowBackIcon />} size="medium" />
         </IconButton>
