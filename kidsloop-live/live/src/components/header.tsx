@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createStyles, makeStyles, Theme, useTheme } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
@@ -19,7 +19,7 @@ import { useShouldSelectOrganization } from "../pages/account/selectOrgDialog";
 
 import KidsloopLogo from "../assets/img/kidsloop_icon.svg";
 import DefaultOrganization from "../assets/img/avatars/Avatar_Student_01.jpg";
-import { useGoBack } from "../utils/goBack";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -40,11 +40,27 @@ const useStyles = makeStyles((theme: Theme) =>
 
 function GoBackButton() {
     const { iconButton } = useStyles();
-    const { canGoBack, goBack } = useGoBack();
+    const history = useHistory();
+
+    const [canGoBack, _setCanGoBack] = useState<boolean>(true);
+
+    useEffect(() => {
+        if (!history) return;
+
+        const unlisten = history.listen(() => {
+            // TODO: This history doesn't have any index field, so can't determine
+            // if application is on top of the history stack. 
+            // setCanGoBack(history.index > 0);
+        });
+
+        return () => {
+            unlisten();
+        }
+    }, [history]);
 
     return (
         <IconButton
-            onClick={() => { goBack(); }}
+            onClick={() => { history.goBack(); }}
             size="medium"
             className={iconButton}
             style={{ visibility: canGoBack ? "visible" : "hidden" }}
