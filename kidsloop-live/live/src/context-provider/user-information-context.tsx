@@ -13,10 +13,6 @@ const QUERY_ME = `
             user_id
             email
             user_name
-            my_organization {
-                organization_id
-                organization_name
-            }
             memberships {
                 roles {
                     role_id
@@ -92,18 +88,6 @@ export function UserInformationContextProvider({ children }: Props) {
         }
 
         let organizations = new Map<string, Organization>();
-
-        const my_org = me.my_organization;
-        if (my_org) {
-            organizations.set(my_org.id, {
-                id: my_org.organization_id,
-                name: my_org.organization_name,
-                roles: [{
-                    id: "",
-                    name: "Organization Admin"
-                }]
-            });
-        }
 
         const memberships = me.memberships;
 
