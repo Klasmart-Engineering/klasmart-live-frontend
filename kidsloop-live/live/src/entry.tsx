@@ -38,7 +38,7 @@ import { App } from "./app";
 import { createDefaultStore, State } from "./store/store";
 import { setUserAgent } from "./store/reducers/session";
 import { setErrCode } from "./store/reducers/communication";
-import { pushReplaceHistory, setHistory } from "./store/reducers/location";
+import { setHistory } from "./store/reducers/location";
 import { LessonMaterial, MaterialTypename } from "./lessonMaterialContext";
 import { AuthTokenProvider } from "./services/auth-token/AuthTokenProvider";
 import { themeProvider } from "./themeProvider";
@@ -50,7 +50,7 @@ import useCordovaInitialize from "./cordova-initialize";
 import { useAuthenticatedCheck } from "./utils/useAuthenticatedCheck";
 import { Auth } from "./pages/account/auth";
 import { UserInformationContextProvider } from "./context-provider/user-information-context";
-import { useGoBack } from "./utils/goBack";
+import { createHashHistory } from 'history'
 
 /*
 Sentry.init({
@@ -208,6 +208,16 @@ function Entry() {
         }));
     }, []);
 
+    const history = createHashHistory();
+
+    // TODO: The following effect doesn't seem to run when the location hash changes
+    // instead back navigation and history stack will be tracked using the 
+    // hash history object for now. This should cover the application for 
+    // now because the navigations is very simple still. Later we may want
+    // to have a more complication navigation graph, where state can be 
+    // restored or reset appropriatly.
+
+    /* 
     useEffect(() => {
         if (!history) return;
 
@@ -232,14 +242,14 @@ function Entry() {
         // In first case, if user press back they will return to B page. 
         // In seconds case, if user press back they will return to C page.
 
+        console.log(`push history: ${path}`);
         dispatch(pushReplaceHistory(path));
     }, [location.hash])
-
-    const { goBack } = useGoBack();
+    */
 
     const isMobileBrowser = isMobileOnly && (isChrome || isFirefox || isSafari || isIE || isEdge || isChromium || isMobileSafari);
     const [alert, setAlert] = useState<boolean>(isMobileBrowser);
-    const { cordovaReady, permissions } = useCordovaInitialize(false, () => { goBack(); });
+    const { cordovaReady, permissions } = useCordovaInitialize(false, () => { history.goBack(); });
     const { authReady, authenticated, refresh } = useAuthenticatedCheck(cordovaReady);
 
     if (!cordovaReady) { return <Loading rawText="Loading..." /> }
@@ -254,7 +264,7 @@ function Entry() {
                     <RawIntlProvider value={locale}>
                         <ThemeProvider theme={themeProvider(languageCode, themeMode)}>
                             <CssBaseline />
-                            <App />
+                            <App history={history} />
                         </ThemeProvider>
                     </RawIntlProvider>
                 </CameraContextProvider>
