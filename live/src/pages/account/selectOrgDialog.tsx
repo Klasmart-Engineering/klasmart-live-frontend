@@ -57,6 +57,7 @@ export function useShouldSelectOrganization() {
             }
 
             const { roles } = organization;
+
             if (roles.length === 1) {
                 const isTeacher = isRoleTeacher(roles[0].name);
                 if (isMobile && isTeacher) {
