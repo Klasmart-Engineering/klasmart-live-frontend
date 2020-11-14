@@ -1,3 +1,4 @@
+const qs = require("qs");
 import React, { useState, useEffect, useContext, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import IframeResizer from "iframe-resizer-react";
@@ -8,7 +9,6 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBackIos';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForwardIos';
 
 import { UserContext } from "../../entry";
-import { LessonMaterial, MaterialTypename } from "../../lessonMaterialContext";
 import { Whiteboard } from "../../whiteboard/components/Whiteboard";
 import { State } from "../../store/store";
 import { setContentIndex } from "../../store/reducers/control";
@@ -38,12 +38,18 @@ export default function Study(): JSX.Element {
         return Math.floor(Math.random() * (max - min)) + min;
     }
 
+    // https://swagger-ui.kidsloop.net/#/content/searchContents
     async function getAllLessonMaterials() {
         const headers = new Headers();
         headers.append("Accept", "application/json");
         headers.append("Content-Type", "application/json");
-        // TODO: Check
-        const response = await fetch(`${CMS_ENDPOINT}/v1/contents?publish_status=published&content_type=1&org_id=${selectedOrg.organization_id}`, {
+        const encodedParams = qs.stringify({
+            publish_status: "published",
+            order_by: "update_at",
+            content_type: 1,
+            org_id: selectedOrg.organization_id
+        }, { encodeValuesOnly: true });
+        const response = await fetch(`${CMS_ENDPOINT}/v1/contents?${encodedParams}`, {
             headers,
             method: "GET",
         });

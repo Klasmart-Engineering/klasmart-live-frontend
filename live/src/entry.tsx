@@ -10,7 +10,6 @@ import { PersistGate } from "redux-persist/integration/react";
 import {
     isMobileOnly,
     isTablet,
-    isBrowser,
     isSmartTV,
     isAndroid,
     isIOS,
@@ -165,6 +164,7 @@ function parseToken() {
 
 const params = parseToken();
 function Entry() {
+    const isCordova = navigator.userAgent.includes("Cordova");
     const dispatch = useDispatch();
     const languageCode = useSelector((state: State) => state.session.locale);
     const themeMode = useSelector((state: State) => state.control.themeMode);
@@ -194,7 +194,7 @@ function Entry() {
         dispatch(setUserAgent({
             isMobileOnly,
             isTablet,
-            isBrowser,
+            isBrowser: !isCordova,
             isSmartTV,
             isAndroid,
             isIOS,
@@ -247,15 +247,16 @@ function Entry() {
     }, [location.hash])
     */
 
-    const isMobileBrowser = isMobileOnly && (isChrome || isFirefox || isSafari || isIE || isEdge || isChromium || isMobileSafari);
-    const [alert, setAlert] = useState<boolean>(isMobileBrowser);
-    const { cordovaReady, permissions } = useCordovaInitialize(false, () => { history.goBack(); });
-    const { authReady, authenticated, refresh } = useAuthenticatedCheck(cordovaReady);
+    const [alert, setAlert] = useState<boolean>(!isCordova && isMobileOnly);
+    if (isCordova) {
+        const { cordovaReady, permissions } = useCordovaInitialize(false, () => { history.goBack(); });
+        const { authReady, authenticated, refresh } = useAuthenticatedCheck(cordovaReady);
 
-    if (!cordovaReady) { return <Loading rawText="Loading..." /> }
-    if (!permissions) { return <Loading rawText="Camera and Microphone premissions required. Please grant the permissions and restart application." /> }
-    if (!authReady) { return <Loading rawText="Checking user authentication..." /> }
-    if (!authenticated) { return <Auth refresh={refresh} useInAppBrowser={false} /> }
+        if (!cordovaReady) { return <Loading rawText="Loading..." /> }
+        if (!permissions) { return <Loading rawText="Camera and Microphone premissions required. Please grant the permissions and restart application." /> }
+        if (!authReady) { return <Loading rawText="Checking user authentication..." /> }
+        if (!authenticated) { return <Auth refresh={refresh} useInAppBrowser={false} /> }
+    }
 
     return (<>
         <UserContext.Provider value={userContext}>
@@ -286,7 +287,7 @@ function Entry() {
                 }
                 style={{ position: "fixed", bottom: 0, width: "100%" }}
             >
-                {`Your experience might be limited on this unsupported device.For a better Kidsloop experience, please join the class on a tablet, laptop, or desktop. Thank you!`}
+                {`Your experience might be limited on this unsupported device. For a better Kidsloop experience, please join the class on a tablet, laptop, or desktop. Thank you!`}
             </Alert>
         </Collapse>
     </>);
