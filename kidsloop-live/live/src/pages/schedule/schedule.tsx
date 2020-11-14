@@ -1,13 +1,12 @@
-const dateFormat = require('dateformat');
+const dateFormat = require("dateformat");
+const qs = require("qs");
 import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
-import { useDispatch, useSelector, useStore } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { makeStyles, Theme, useTheme } from '@material-ui/core/styles';
 import Grid from "@material-ui/core/Grid";
 import ListSubheader from '@material-ui/core/ListSubheader';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
@@ -15,15 +14,14 @@ import Typography from "@material-ui/core/Typography";
 
 import SwitchClassType from "./switchClassType";
 import { Error, DESCRIPTION_403 } from "../error";
-import StyledIcon from "../../components/styled/icon";
 import Loading from "../../components/loading";
 import { State } from "../../store/store";
 import { ClassType } from "../../store/actions";
 import { Schedule, setSchedule, setSelectedPlan } from "../../store/reducers/data";
 import { setInFlight, setErrCode } from "../../store/reducers/communication";
 
-import SchedulePopcorn from "../../assets/img/schedule_popcorn.svg";
-import StudyHouse from "../../assets/img/study_house.svg";
+import LiveSchedulePopcorn from "../../assets/img/schedule_popcorn.svg";
+import StudyScheduleHouse from "../../assets/img/study_house.svg";
 
 // NOTE: China API server(Go lang) accept 10 digits timestamp
 const now = new Date();
@@ -74,11 +72,18 @@ export function Schedule() {
     const inFlight = useSelector((state: State) => state.communication.inFlight);
     const { live, study } = useSelector((state: State) => state.data.schedule);
 
+    // https://swagger-ui.kidsloop.net/#/schedule/getScheduleTimeView
     async function getScheduleTimeViews(timeAt: number, timeZoneOffset: number) {
         const headers = new Headers();
         headers.append("Accept", "application/json");
         headers.append("Content-Type", "application/json");
-        const response = await fetch(`${CMS_ENDPOINT}/v1/schedules_time_view?view_type=month&time_at=${timeAt}&time_zone_offset=${timeZoneOffset}&org_id=${selectedOrg.organization_id}`, {
+        const encodedParams = qs.stringify({
+            view_type: "month",
+            time_at: timeAt,
+            time_zone_offset: timeZoneOffset,
+            org_id: selectedOrg.organization_id
+        }, { encodeValuesOnly: true });
+        const response = await fetch(`${CMS_ENDPOINT}/v1/schedules_time_view?${encodedParams}`, {
             headers,
             method: "GET",
         });
@@ -98,7 +103,6 @@ export function Schedule() {
                     const thisMonthSchedules = await getScheduleTimeViews(todayTimeStamp, timeZoneOffset);
                     const nextMonthSchedules = await getScheduleTimeViews(nextMonthTimeStamp, timeZoneOffset);
                     const totalSchedules = thisMonthSchedules.concat(nextMonthSchedules);
-                    // console.log("totalSchedules: ", totalSchedules)
                     const liveSchedules = totalSchedules.filter((s: any) => s.class_type === "OnlineClass")
                     const studySchedules = totalSchedules.filter((s: any) => s.class_type === "Homework")
                     dispatch(setSchedule({ total: totalSchedules, live: liveSchedules, study: studySchedules }))
@@ -106,11 +110,9 @@ export function Schedule() {
 
                 try {
                     await Promise.all([fetchScheduleTimeViews()])
-                    // console.log("total, live, study: ", total, live, study)
                 } catch (err) {
                     dispatch(setSchedule({ total: [], live: [], study: [] }))
                     console.error(`Fail to fetchScheduleTimeViews: ${err}`)
-                    // dispatch(setFailure(true));
                 } finally {
                     dispatch(setInFlight(false));
                 }
@@ -252,12 +254,13 @@ function ScheduleItem({ classType, schedule, primaryText }: {
     const [teachers, setTeachers] = useState<string>("");
     const [liveToken, setLiveToken] = useState<string>("");
 
+    // https://swagger-ui.kidsloop.net/#/schedule/getScheduleByID
     async function getScheduleInfo() {
         const headers = new Headers();
         headers.append("Accept", "application/json");
         headers.append("Content-Type", "application/json");
-        // TODO: Check
-        const response = await fetch(`${CMS_ENDPOINT}/v1/schedules/${schedule.id}/?org_id=${selectedOrg.organization_id}`, {
+        const encodedParams = qs.stringify({ org_id: selectedOrg.organization_id }, { encodeValuesOnly: true });
+        const response = await fetch(`${CMS_ENDPOINT}/v1/schedules/${schedule.id}?${encodedParams}`, {
             headers,
             method: "GET",
         });
@@ -268,7 +271,6 @@ function ScheduleItem({ classType, schedule, primaryText }: {
         async function fetchEverything() {
             async function fetchScheduleInfo() {
                 const schedule = await getScheduleInfo();
-                // console.log("schedule: ", schedule)
                 setInfo(schedule);
                 dispatch(setSelectedPlan(schedule.lesson_plan.id));
                 const teachers = schedule.teachers
@@ -289,12 +291,13 @@ function ScheduleItem({ classType, schedule, primaryText }: {
         fetchEverything();
     }, [])
 
-    async function getScheduleLiveToken(lessonPlanId: string) {
+    // https://swagger-ui.kidsloop.net/#/schedule/getScheduleLiveToken
+    async function getScheduleLiveToken() {
         const headers = new Headers();
         headers.append("Accept", "application/json");
         headers.append("Content-Type", "application/json");
-        // TODO: Check
-        const response = await fetch(`${CMS_ENDPOINT}/v1/schedules/${lessonPlanId}/live/token/?org_id=${selectedOrg.organization_id}`, {
+        const encodedParams = qs.stringify({ org_id: selectedOrg.organization_id }, { encodeValuesOnly: true });
+        const response = await fetch(`${CMS_ENDPOINT}/v1/schedules/${schedule.id}/live/token?${encodedParams}`, {
             headers,
             method: "GET",
         });
@@ -302,9 +305,9 @@ function ScheduleItem({ classType, schedule, primaryText }: {
     }
 
     useEffect(() => {
-        async function fetchEverything(lessonPlanId: string) {
+        async function fetchEverything() {
             async function fetchScheduleLiveToken() {
-                const { token } = await getScheduleLiveToken(lessonPlanId);
+                const { token } = await getScheduleLiveToken();
                 setLiveToken(token);
             }
             try {
@@ -313,22 +316,18 @@ function ScheduleItem({ classType, schedule, primaryText }: {
                 console.error(`Fail to fetchScheduleInfo: ${err}`)
             } finally { }
         }
-        if (info && info.lesson_plan_id) {
-            fetchEverything(info.lesson_plan_id);
-        }
+        fetchEverything();
     }, [liveToken])
 
     const goJoin = () => {
-        const search = classType === ClassType.LIVE ? `/?token=${liveToken}` : ""
-        location.href = `${search}#/join`
+        const search = classType === ClassType.LIVE ? `/?token=${liveToken}` : "";
+        location.href = `${search}#/join`;
     }
 
     return (classType === ClassType.LIVE ?
         <ListItem button onClick={goJoin}>
             <ListItemAvatar>
-                <Avatar className={listItemAvatar}>
-                    <img src={SchedulePopcorn} height={24} />
-                </Avatar>
+                <Avatar alt="Live schedule" src={LiveSchedulePopcorn} className={listItemAvatar} />
             </ListItemAvatar>
             <ListItemText
                 disableTypography
@@ -338,16 +337,13 @@ function ScheduleItem({ classType, schedule, primaryText }: {
         </ListItem> :
         <ListItem button onClick={goJoin}>
             <ListItemAvatar>
-                <Avatar className={listItemAvatar}>
-                    <img src={StudyHouse} height={24} />
-                </Avatar>
+                <Avatar alt="Study schedule" src={StudyScheduleHouse} className={listItemAvatar} />
             </ListItemAvatar>
             <ListItemText
                 disableTypography
                 primary={<Typography variant="body1" className={listItemTextPrimary}>{schedule.title}</Typography>}
                 secondary={info && info.detail ? <>
                     <Typography variant="caption" color="textSecondary">{teachers === "" ? "" : `Assigned by: ${info.detail.teachers[0].name}`}</Typography>
-                    {/* <Typography variant="caption" color="textSecondary">{"Isu Ahn, Potential Destructor, Bug Creator"}</Typography> */}
                     <Typography variant="caption" color="textSecondary" style={{ fontStyle: "italic" }}>{` - ${info.detail.program.name}`}</Typography>
                 </> : undefined}
             />

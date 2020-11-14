@@ -1,4 +1,5 @@
 import LogRocket from 'logrocket';
+const qs = require("qs");
 import React, { useState, useContext, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useDispatch, useSelector } from "react-redux";
@@ -87,12 +88,13 @@ export function Join(): JSX.Element {
 
     const contentId = useSelector((store: State) => store.data.selectedLessonPlan);
 
+    // https://swagger-ui.kidsloop.net/#/content/getContentById
     async function getLessonPlanInfo() {
         const headers = new Headers();
         headers.append("Accept", "application/json");
         headers.append("Content-Type", "application/json");
-        // TODO: Check
-        const response = await fetch(`${CMS_ENDPOINT}/v1/contents/${contentId}/?org_id=${selectedOrg.organization_id}`, {
+        const encodedParams = qs.stringify({ org_id: selectedOrg.organization_id }, { encodeValuesOnly: true });
+        const response = await fetch(`${CMS_ENDPOINT}/v1/contents/${contentId}?org_id=${encodedParams}`, {
             headers,
             method: "GET",
         });
@@ -126,9 +128,7 @@ export function Join(): JSX.Element {
                 async function fetchLessonMaterials() {
                     const lp = await getLessonPlanInfo();
                     const objLp = JSON.parse(lp.data)
-                    // console.log("objLp: ", objLp)
                     const mats = sortLessonMaterials(objLp);
-                    // console.log("mats: ", mats)
                     dispatch(setMaterials(mats));
                 }
                 try {

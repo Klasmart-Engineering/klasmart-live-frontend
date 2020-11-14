@@ -7,29 +7,51 @@ import { setErrCode } from "../store/reducers/communication";
 // the same responsibilities. Not using the same name at this point to
 // prevent conflicts later when integrating.
 
+// const QUERY_ME = `
+//     query { 
+//         me {
+//             user_id
+//             email
+//             user_name
+//             my_organization {
+//                 organization_id
+//                 organization_name
+//             }
+//             memberships {
+//                 roles {
+//                     role_id
+//                     role_name
+//                     organization {
+//                         organization_id
+//                         organization_name
+//                     }
+//                 }
+//             }
+//         }
+//     }
+// `;
+
 const QUERY_ME = `
-    query { 
+    query {
         me {
-            user_id
-            email
-            user_name
-            my_organization {
-                organization_id
-                organization_name
-            }
-            memberships {
-                roles {
-                    role_id
-                    role_name
-                    organization {
-                        organization_id
-                        organization_name
-                    }
+            organizationsWithPermission(permission_name: "attend_live_class_as_a_student_187") {
+                organization {
+                    organization_id
+                    organization_name
                 }
+            }
+            schoolsWithPermission(permission_name: "attend_live_class_as_a_student_187") {
+                school {
+                    school_id
+                    school_name
+                }
+            }
+            classesStudying {
+                class_id
             }
         }
     }
-`;
+`
 
 type Props = {
     children?: ReactChild | ReactChildren | null
@@ -151,7 +173,29 @@ export function UserInformationContextProvider({ children }: Props) {
             headers,
             method: "POST",
         }).then(async (response) => {
-            const { data } = await response.json();
+            // const { data } = await response.json();
+            const { data } = {
+                data: {
+                    me: {
+                        organizationsWithPermission: [
+                            {
+                                organization: {
+                                    organization_id: "10f38ce9-5152-4049-b4e7-6d2e2ba884e6",
+                                    organization_name: "Badanamu HQ"
+                                }
+                            },
+                            {
+                                organization: {
+                                    organization_id: "72e47ef0-92bf-4429-a06f-2014e3d3df4b",
+                                    organization_name: "KidsLoop QA"
+                                }
+                            }
+                        ],
+                        schoolsWithPermission: [],
+                        classesStudying: []
+                    }
+                }
+            }
             if (!data || data.me === null) {
                 setInformation(undefined);
                 setError(true);

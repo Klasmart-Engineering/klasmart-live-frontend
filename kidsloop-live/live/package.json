@@ -76,6 +76,7 @@
     "@sentry/react": "^5.21.1",
     "@types/dateformat": "^3.0.1",
     "@types/jwt-decode": "^2.2.1",
+    "@types/qs": "^6.9.5",
     "@types/react-redux": "^7.1.9",
     "@types/redux-logger": "^3.0.8",
     "apollo-boost": "^0.4.9",
@@ -93,6 +94,7 @@
     "mediasoup-client": "^3.6.12",
     "logrocket": "^1.0.14",
     "node-source-han-sans-sc": "^1.1.0-2.001R",
+    "qs": "^6.9.4",
     "query-string": "^6.13.6",
     "react": "^16.13.1",
     "react-color": "^2.18.1",
@@ -130,9 +132,8 @@
       "cordova-plugin-inappbrowser": {}
     },
     "platforms": [
-      "browser",
-      "android",
-      "ios"
+      "ios",
+      "browser"
     ]
   }
 }
