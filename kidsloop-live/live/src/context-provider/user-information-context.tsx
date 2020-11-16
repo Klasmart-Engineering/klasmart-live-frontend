@@ -7,40 +7,64 @@ import { setErrCode } from "../store/reducers/communication";
 // the same responsibilities. Not using the same name at this point to
 // prevent conflicts later when integrating.
 
-// const QUERY_ME = `
-//     query { 
-//         me {
-//             user_id
-//             email
-//             user_name
-//             my_organization {
-//                 organization_id
-//                 organization_name
-//             }
-//             memberships {
-//                 roles {
-//                     role_id
-//                     role_name
-//                     organization {
-//                         organization_id
-//                         organization_name
-//                     }
-//                 }
-//             }
-//         }
-//     }
-// `;
+type OrganizationPayload = {
+    organization_id: string,
+    organization_name: string,
+    owner: { email: string }
+}
+
+type SchoolPayload = {
+    school_id: string,
+    school_name: string
+}
+
+type RolePayload = {
+    role_id: string,
+    role_name: string
+}
+
+type ClassPayload = {
+    class_id: string,
+    class_name: string
+}
+
+type MePayload = {
+    user_id: string,
+    email: string,
+    user_name: string | null,
+    given_name: string | null,
+    family_name: string | null,
+    avatar: string | null,
+    organizationsWithPermission: { organization: OrganizationPayload, roles: RolePayload[] }[],
+    schoolsWithPermission: { school: SchoolPayload, roles: RolePayload[] }[],
+    classesStudying: ClassPayload[]
+}
 
 const QUERY_ME = `
     query {
         me {
+            user_id
+            email
+            user_name
+            given_name
+            family_name
+            avatars
             organizationsWithPermission(permission_name: "attend_live_class_as_a_student_187") {
+                roles {
+                    role_id
+                    role_name
+                }
                 organization {
                     organization_id
                     organization_name
+                    owner { email }
                 }
             }
             schoolsWithPermission(permission_name: "attend_live_class_as_a_student_187") {
+                roles {
+                    role_id
+                    role_name
+                }
                 school {
                     school_id
                     school_name
@@ -48,11 +72,11 @@ const QUERY_ME = `
             }
             classesStudying {
                 class_id
+                class_name
             }
         }
     }
 `
-
 type Props = {
     children?: ReactChild | ReactChildren | null
 }
@@ -63,16 +87,18 @@ type Role = {
 }
 
 type Organization = {
-    id: string,
-    name: string,
-    roles: Role[],
+    organization: OrganizationPayload,
+    roles: RolePayload[]
 }
 
 type UserInformation = {
     id: string
     email: string
-    fullName: string
-    organizations: Organization[]
+    name: string,
+    firstName: string
+    lastName: string
+    avatar: string
+    organizations: Organization[],
 }
 
 type UserInformationActions = {
@@ -105,56 +131,17 @@ export function UserInformationContextProvider({ children }: Props) {
     const [error, setError] = useState<boolean>(false);
     const [information, setInformation] = useState<UserInformation | undefined>(undefined);
 
-    const userInformationFromResponseData = (me: any) => {
+    const userInformationFromResponseData = (me: MePayload) => {
         const information: UserInformation = {
             id: me.user_id,
             email: me.email,
-            fullName: me.user_name,
-            organizations: [],
+            name: me.user_name ? me.user_name : "",
+            firstName: me.given_name ? me.given_name : "",
+            lastName: me.family_name ? me.family_name : "",
+            avatar: me.avatar ? me.avatar : "",
+            organizations: me.organizationsWithPermission,
+            // TODO (Isu): schoolsWithPermission also needs to be considered in the future.
         }
-
-        let organizations = new Map<string, Organization>();
-
-        const my_org = me.my_organization;
-        if (my_org) {
-            organizations.set(my_org.id, {
-                id: my_org.organization_id,
-                name: my_org.organization_name,
-                roles: [{
-                    id: "",
-                    name: "Organization Admin"
-                }]
-            });
-        }
-
-        const memberships = me.memberships;
-
-        if (memberships) {
-            memberships.forEach((membership: any) => {
-                if (!membership.roles) return;
-
-                membership.roles.forEach((membership_role: any) => {
-                    const { organization_id, organization_name } = membership_role.organization;
-                    let org = organizations.get(membership_role.organization.organization_id);
-                    if (!org) {
-                        org = {
-                            id: organization_id,
-                            name: organization_name,
-                            roles: [],
-                        };
-
-                        organizations.set(organization_id, org);
-                    }
-
-                    org.roles.push({
-                        id: membership_role.role_id,
-                        name: membership_role.role_name,
-                    });
-                });
-            });
-        }
-
-        information.organizations = Array.from(organizations.values());
 
         return information;
     }
@@ -173,33 +160,10 @@ export function UserInformationContextProvider({ children }: Props) {
             headers,
             method: "POST",
         }).then(async (response) => {
-            // const { data } = await response.json();
-            const { data } = {
-                data: {
-                    me: {
-                        organizationsWithPermission: [
-                            {
-                                organization: {
-                                    organization_id: "10f38ce9-5152-4049-b4e7-6d2e2ba884e6",
-                                    organization_name: "Badanamu HQ"
-                                }
-                            },
-                            {
-                                organization: {
-                                    organization_id: "72e47ef0-92bf-4429-a06f-2014e3d3df4b",
-                                    organization_name: "KidsLoop QA"
-                                }
-                            }
-                        ],
-                        schoolsWithPermission: [],
-                        classesStudying: []
-                    }
-                }
-            }
+            const { data }: { data: { me: MePayload } } = await response.json();
             if (!data || data.me === null) {
                 setInformation(undefined);
                 setError(true);
-                dispatch(setErrCode(401));
             } else {
                 setInformation(userInformationFromResponseData(data.me));
             }
@@ -208,7 +172,6 @@ export function UserInformationContextProvider({ children }: Props) {
         }).catch(err => {
             console.error(err);
             setError(true);
-            dispatch(setErrCode(500));
             setLoading(false);
         });
     }, []);
