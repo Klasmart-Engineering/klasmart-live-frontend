@@ -293,29 +293,15 @@ function Entry() {
 
 async function main() {
     const { store, persistor } = createDefaultStore();
-    const isIE = detectIE();
-
-    let renderComponent: JSX.Element;
-    if (isIE <= 11 && isIE !== false) {
-        renderComponent = <BrowserList />
-    } else if ((process.env.DISABLE_BROWSER_GUIDE) || (
-        (!isMobileOnly && (isChrome || isSafari || isFirefox)) || // !isMobileOnly == Desktop
-        (isIOS && isSafari) ||
-        (isAndroid && isChrome))
-    ) {
-        renderComponent = (
-            <Provider store={store}>
-                <PersistGate loading={null} persistor={persistor}>
-                    <ApolloProvider client={client}>
-                        <Entry />
-                    </ApolloProvider>
-                </PersistGate>
-            </Provider>
-        )
-    } else {
-        renderComponent = <BrowserList />
-    }
-
+    const renderComponent = (
+        <Provider store={store}>
+            <PersistGate loading={null} persistor={persistor}>
+                <ApolloProvider client={client}>
+                    <Entry />
+                </ApolloProvider>
+            </PersistGate>
+        </Provider>
+    )
     render(
         renderComponent,
         document.getElementById("app")

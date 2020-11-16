@@ -40,15 +40,15 @@ export function useShouldSelectOrganization() {
     const isTablet = useSelector((state: State) => state.session.userAgent.isTablet);
     const isMobile = isMobileOnly || isTablet
     const selectedOrganization = useSelector((state: State) => state.session.selectedOrg);
-    const errCode = useSelector((state: State) => state.communication.errCode);
     const [shouldSelect, setShouldSelect] = useState<boolean>(false);
+    const [errCode, setErrCode] = useState<number | null>(null);
 
     useEffect(() => {
         if (!information) return;
         if (selectedOrganization && selectedOrganization.organization_id) {
             // NOTE: Ensure user is a member of the selected organization.
             const organization = information.organizations.find((org => {
-                org.id === selectedOrganization.organization_id;
+                org.organization.organization_id === selectedOrganization.organization_id;
             }));
 
             if (!organization) {
@@ -58,33 +58,33 @@ export function useShouldSelectOrganization() {
 
             const { roles } = organization;
             if (roles.length === 1) {
-                const isTeacher = isRoleTeacher(roles[0].name);
+                const isTeacher = isRoleTeacher(roles[0].role_name);
                 if (isMobile && isTeacher) {
-                    dispatch(setErrCode(403));
+                    setErrCode(403)
                     return;
                 }
             } else if (roles.length > 1) {
-                const someRolesAreStudent = roles.some(role => !isRoleTeacher(role.name));
+                const someRolesAreStudent = roles.some(role => !isRoleTeacher(role.role_name));
                 if (isMobile && !someRolesAreStudent) {
-                    dispatch(setErrCode(403));
+                    setErrCode(403)
                     return;
                 }
             }
 
             // NOTE: The selected organization is OK.
             setShouldSelect(false);
-            dispatch(setErrCode(null));
+            setErrCode(null)
             return;
         } else { // NOTE: Organization isn't selected
             if (information.organizations.length === 0) {
                 setShouldSelect(false);
-                dispatch(setErrCode(403));
+                setErrCode(403)
             } else if (information.organizations.length === 1) {
-                const { name, id } = information.organizations[0];
-                dispatch(setSelectedOrg({ organization_id: id, organization_name: name }));
+                const { organization_id, organization_name } = information.organizations[0].organization;
+                dispatch(setSelectedOrg({ organization_id, organization_name }));
             } else {
                 setShouldSelect(true);
-                dispatch(setErrCode(null));
+                setErrCode(null)
             }
         }
     }, [information]);
@@ -106,8 +106,8 @@ export function SelectOrgDialog() {
 
         return information.organizations.map(o => {
             return {
-                organization_id: o.id,
-                organization_name: o.name,
+                organization_id: o.organization.organization_id,
+                organization_name: o.organization.organization_name,
             }
         })
     }, [information]);
