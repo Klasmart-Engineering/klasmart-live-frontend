@@ -133,6 +133,7 @@
     },
     "platforms": [
       "ios",
+      "android",
       "browser"
     ]
   }
