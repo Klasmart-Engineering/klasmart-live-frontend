@@ -32,7 +32,6 @@ export function App({ history }: { history: any }): JSX.Element {
         if (shouldSelect) { dispatch(setSelectOrgDialogOpen(true)) }
         if (deviceOrientation === OrientationType.LANDSCAPE) {
             if (screen.orientation && screen.orientation.lock) {
-                screen.orientation.unlock();
                 screen.orientation.lock("portrait")
                     .then(() => {
                         dispatch(setDeviceOrientation(OrientationType.PORTRAIT));
