@@ -247,7 +247,7 @@ function Entry() {
     }, [location.hash])
     */
 
-    const [alert, setAlert] = useState<boolean>(!isCordova && isMobileOnly);
+    const [alertMobileBrowser, setAlertMobileBrowser] = useState<boolean>(!isCordova && isMobileOnly);
     if (isCordova) {
         const { cordovaReady, permissions } = useCordovaInitialize(false, () => { history.goBack(); });
         const { authReady, authenticated, refresh } = useAuthenticatedCheck(cordovaReady);
@@ -271,7 +271,7 @@ function Entry() {
                 </CameraContextProvider>
             </UserInformationContextProvider>
         </UserContext.Provider>
-        <Collapse in={alert}>
+        <Collapse in={alertMobileBrowser}>
             <Alert
                 variant="filled"
                 severity="warning"
@@ -280,7 +280,7 @@ function Entry() {
                         aria-label="warning alert close"
                         color="inherit"
                         size="small"
-                        onClick={() => setAlert(false)}
+                        onClick={() => setAlertMobileBrowser(false)}
                     >
                         <CloseIcon fontSize="inherit" />
                     </IconButton>

@@ -57,18 +57,15 @@ export function Room(): JSX.Element {
     const [streamId, setStreamId] = useState<string>();
 
     useEffect(() => {
-        if (deviceOrientation === OrientationType.PORTRAIT) {
-            if (screen.orientation && screen.orientation.lock) {
-                screen.orientation.unlock();
-                screen.orientation.lock("landscape")
-                    .then(() => {
-                        dispatch(setDeviceOrientation(OrientationType.LANDSCAPE));
-                    })
-                    .catch((err) => {
-                        console.log("screen.orientation.lock() is not available on this device.");
-                    });
-                return;
-            }
+        if (screen.orientation && screen.orientation.lock) {
+            screen.orientation.lock("landscape")
+                .then(() => {
+                    dispatch(setDeviceOrientation(OrientationType.LANDSCAPE));
+                })
+                .catch((err) => {
+                    console.log("screen.orientation.lock() is not available on this device.");
+                });
+            return;
         }
     }, [])
 
