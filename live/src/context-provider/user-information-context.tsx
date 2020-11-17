@@ -48,7 +48,7 @@ const QUERY_ME = `
             user_name
             given_name
             family_name
-            avatars
+            avatar
             organizationsWithPermission(permission_name: "attend_live_class_as_a_student_187") {
                 roles {
                     role_id
@@ -126,7 +126,6 @@ export function isRoleTeacher(role: string) {
 }
 
 export function UserInformationContextProvider({ children }: Props) {
-    const dispatch = useDispatch();
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<boolean>(false);
     const [information, setInformation] = useState<UserInformation | undefined>(undefined);
