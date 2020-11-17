@@ -48,7 +48,7 @@ export function useShouldSelectOrganization() {
         if (selectedOrganization && selectedOrganization.organization_id) {
             // NOTE: Ensure user is a member of the selected organization.
             const organization = information.organizations.find((org => {
-                org.organization.organization_id === selectedOrganization.organization_id;
+                return org.organization.organization_id === selectedOrganization.organization_id;
             }));
 
             if (!organization) {
@@ -82,6 +82,7 @@ export function useShouldSelectOrganization() {
             } else if (information.organizations.length === 1) {
                 const { organization_id, organization_name } = information.organizations[0].organization;
                 dispatch(setSelectedOrg({ organization_id, organization_name }));
+                dispatch(setErrCode(null));
             } else {
                 setShouldSelect(true);
                 setErrCode(null)
