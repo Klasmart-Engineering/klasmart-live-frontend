@@ -1,5 +1,10 @@
 // cn.ts
 const messages: Record<string, string> = {
+    err_button_home: "Home",
+    err_button_signin: "Sign In",
+    err_button_confirm: "Comfirm",
+    err_not_supported_title: "Not Supported",
+    err_not_supported_description: "Please use the web browser to start a live as a teacher.",
     err_400_title: "Bad Request",
     err_400_subtitle: "The server could not understand the request due to invalid syntax",
     err_401_title: "Unauthorized",

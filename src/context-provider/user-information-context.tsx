@@ -18,7 +18,7 @@ type SchoolPayload = {
     school_name: string
 }
 
-type RolePayload = {
+export type RolePayload = {
     role_id: string,
     role_name: string
 }
@@ -185,7 +185,7 @@ export function UserInformationContextProvider({ children }: Props) {
 
     return (
         <UserInformationContext.Provider value={context}>
-            { children}
+            {children}
         </UserInformationContext.Provider >
     )
 }

@@ -18,7 +18,6 @@ import StyledButton from "../../components/styled/button";
 import StyledIcon from "../../components/styled/icon";
 import { State } from "../../store/store";
 import { Organization, setSelectedOrg } from "../../store/reducers/session";
-import { setErrCode } from "../../store/reducers/communication";
 import { setSelectOrgDialogOpen } from "../../store/reducers/control";
 import DefaultOrganization from "../../assets/img/avatars/Avatar_Student_01.jpg";
 
@@ -39,54 +38,43 @@ export function useShouldSelectOrganization() {
     const isMobileOnly = useSelector((state: State) => state.session.userAgent.isMobileOnly);
     const isTablet = useSelector((state: State) => state.session.userAgent.isTablet);
     const isMobile = isMobileOnly || isTablet
-    const selectedOrganization = useSelector((state: State) => state.session.selectedOrg);
     const [shouldSelect, setShouldSelect] = useState<boolean>(false);
     const [errCode, setErrCode] = useState<number | null>(null);
 
     useEffect(() => {
-        if (!information) return;
-        if (selectedOrganization && selectedOrganization.organization_id) {
-            // NOTE: Ensure user is a member of the selected organization.
-            const organization = information.organizations.find((org => {
-                return org.organization.organization_id === selectedOrganization.organization_id;
-            }));
+        // 1. information returns undefined
+        if (!information) {
+            setShouldSelect(false);
+            setErrCode(401);
+            return;
+        }
 
-            if (!organization) {
-                dispatch(setSelectedOrg(null));
-                return;
-            }
-
-            const { roles } = organization;
+        // 1. information exists
+        if (information.organizations.length === 0) { // 2. User has no organization
+            setShouldSelect(false);
+            setErrCode(403)
+        } else if (information.organizations.length === 1) { // 2. User has 1 organization
+            setShouldSelect(false);
+            const { organization_id, organization_name } = information.organizations[0].organization;
+            const roles = information.organizations[0].roles;
             if (roles.length === 1) {
                 const isTeacher = isRoleTeacher(roles[0].role_name);
                 if (isMobile && isTeacher) {
-                    setErrCode(403)
+                    setErrCode(403);
                     return;
                 }
             } else if (roles.length > 1) {
                 const someRolesAreStudent = roles.some(role => !isRoleTeacher(role.role_name));
                 if (isMobile && !someRolesAreStudent) {
-                    setErrCode(403)
+                    setErrCode(403);
                     return;
                 }
             }
-
-            // NOTE: The selected organization is OK.
-            setShouldSelect(false);
             setErrCode(null)
-            return;
-        } else { // NOTE: Organization isn't selected
-            if (information.organizations.length === 0) {
-                setShouldSelect(false);
-                setErrCode(403)
-            } else if (information.organizations.length === 1) {
-                const { organization_id, organization_name } = information.organizations[0].organization;
-                dispatch(setSelectedOrg({ organization_id, organization_name }));
-                dispatch(setErrCode(null));
-            } else {
-                setShouldSelect(true);
-                setErrCode(null)
-            }
+            dispatch(setSelectedOrg({ organization_id, organization_name }));
+        } else { // 2. User has more than 2 organizations
+            setShouldSelect(true);
+            setErrCode(null);
         }
     }, [information]);
 

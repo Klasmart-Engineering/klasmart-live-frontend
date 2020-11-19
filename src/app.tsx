@@ -4,6 +4,7 @@ import { Router, Route, Switch } from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
 import { Header } from "./components/header";
 import { SelectOrgDialog, useShouldSelectOrganization } from "./pages/account/selectOrgDialog";
+import { Auth } from "./pages/account/auth";
 import { Signup } from "./pages/account/signup";
 import { Signin } from "./pages/account/signin";
 import { PasswordChange } from "./pages/account/password/password-change";
@@ -13,18 +14,18 @@ import { PasswordRestore } from "./pages/account/password/password-restore";
 import { Room } from "./pages/room/room";
 import { Join } from "./pages/join/join";
 import { Schedule } from "./pages/schedule/schedule";
-import { Error, DESCRIPTION_403 } from "./pages/error";
+import { Fallback } from "./pages/error";
 import { State } from "./store/store";
 import { OrientationType } from "./store/actions";
 import { setSelectOrgDialogOpen } from "./store/reducers/control";
 import { setDeviceOrientation } from "./store/reducers/location";
 
-export function App({ history }: { history: any }): JSX.Element {
+export function App({ history, refresh }: {
+    history: any;
+    refresh: () => void;
+}): JSX.Element {
     const dispatch = useDispatch();
     const deviceOrientation = useSelector((state: State) => state.location.deviceOrientation);
-    const eCode = useSelector((state: State) => state.communication.errCode);
-    // TODO: Clean up
-    const eDescription = eCode === 403 ? DESCRIPTION_403 : undefined;
 
     const { errCode, shouldSelect } = useShouldSelectOrganization();
 
@@ -44,9 +45,28 @@ export function App({ history }: { history: any }): JSX.Element {
         }
     }, [])
 
-    if (errCode !== null) { return <Error errCode={eCode} description={eDescription} />; }
+    // TODO (Isu): There is a problem with this logic, so disable it for a while.
+    // if (errCode === 401) {
+    //     return (
+    //         <Fallback
+    //             titleMsgId="err_401_title"
+    //             subtitleMsgId="err_401_subtitle"
+    //             errCode={`${errCode.toString()}`}
+    //         />
+    //     );
+    // } else if (errCode === 403) {
+    //     return (
+    //         <Fallback
+    //             titleMsgId="err_403_title"
+    //             subtitleMsgId="err_403_subtitle"
+    //             errCode={`${errCode.toString()}`}
+    //         />
+    //     );
+    // }
+
     return (
         <Grid
+            wrap="nowrap"
             container
             direction="column"
             justify="space-between"
@@ -64,6 +84,7 @@ export function App({ history }: { history: any }): JSX.Element {
                     <Route path="/password-restore" component={PasswordRestore} />
                     <Route path="/signup" component={Signup} />
                     <Route path="/signin" component={Signin} />
+                    <Route path="/auth" render={() => <Auth refresh={refresh} useInAppBrowser={false} />} />
                     <Route path="/" component={Schedule} />
                 </Switch>
             </Router>

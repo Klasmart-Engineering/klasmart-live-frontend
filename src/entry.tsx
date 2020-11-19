@@ -46,7 +46,6 @@ import { setHistory } from "./store/reducers/location";
 import { LessonMaterial, MaterialTypename } from "./lessonMaterialContext";
 import { AuthTokenProvider } from "./services/auth-token/AuthTokenProvider";
 import { themeProvider } from "./themeProvider";
-import BrowserList, { detectIE } from "./pages/browserList";
 import { getLanguage } from "./utils/locale";
 import Loading from "./components/loading";
 import { CameraContextProvider } from "./components/media/useCameraContext";
@@ -246,10 +245,10 @@ function Entry() {
     */
 
     const [alertMobileBrowser, setAlertMobileBrowser] = useState<boolean>(!isCordova && isMobileOnly);
-    if (isCordova) {
-        const { cordovaReady, permissions } = useCordovaInitialize(false, () => { history.goBack(); });
-        const { authReady, authenticated, refresh } = useAuthenticatedCheck(cordovaReady);
+    const { cordovaReady, permissions } = useCordovaInitialize(false, () => { history.goBack(); });
+    const { authReady, authenticated, refresh } = useAuthenticatedCheck(cordovaReady);
 
+    if (isCordova) {
         if (!cordovaReady) { return <Loading rawText="Loading..." /> }
         if (!permissions) { return <Loading rawText="Camera and Microphone premissions required. Please grant the permissions and restart application." /> }
         if (!authReady) { return <Loading rawText="Checking user authentication..." /> }
@@ -263,7 +262,7 @@ function Entry() {
                     <RawIntlProvider value={locale}>
                         <ThemeProvider theme={themeProvider(languageCode, themeMode)}>
                             <CssBaseline />
-                            <App history={history} />
+                            <App history={history} refresh={refresh} />
                         </ThemeProvider>
                     </RawIntlProvider>
                 </CameraContextProvider>

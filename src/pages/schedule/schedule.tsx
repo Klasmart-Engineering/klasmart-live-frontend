@@ -2,6 +2,7 @@ const dateFormat = require("dateformat");
 const qs = require("qs");
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { FormattedMessage } from "react-intl";
 import { makeStyles, Theme, useTheme } from '@material-ui/core/styles';
 import Grid from "@material-ui/core/Grid";
 import ListSubheader from '@material-ui/core/ListSubheader';
@@ -11,13 +12,14 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Typography from "@material-ui/core/Typography";
+import Snackbar from "@material-ui/core/Snackbar";
+import Alert from "@material-ui/lab/Alert";
 
 import SwitchClassType from "./switchClassType";
-import { Error, DESCRIPTION_403 } from "../error";
 import Loading from "../../components/loading";
 import { State } from "../../store/store";
 import { ClassType } from "../../store/actions";
-import { Schedule, setSchedule, setSelectedPlan } from "../../store/reducers/data";
+import { Schedule, ScheduleDetail, setSchedule, setSelectedPlan } from "../../store/reducers/data";
 import { setInFlight, setErrCode } from "../../store/reducers/communication";
 
 import LiveSchedulePopcorn from "../../assets/img/schedule_popcorn.svg";
@@ -70,7 +72,6 @@ export function Schedule() {
     const dispatch = useDispatch();
     const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
     const inFlight = useSelector((state: State) => state.communication.inFlight);
-    const { live, study } = useSelector((state: State) => state.data.schedule);
 
     // https://swagger-ui.kidsloop.net/#/schedule/getScheduleTimeView
     async function getScheduleTimeViews(timeAt: number, timeZoneOffset: number) {
@@ -95,36 +96,31 @@ export function Schedule() {
     }
 
     useEffect(() => {
-        if (!selectedOrg) {
-            dispatch(setErrCode(403));
-        } else {
-            async function fetchEverything() {
-                async function fetchScheduleTimeViews() {
-                    const thisMonthSchedules = await getScheduleTimeViews(todayTimeStamp, timeZoneOffset);
-                    const nextMonthSchedules = await getScheduleTimeViews(nextMonthTimeStamp, timeZoneOffset);
-                    const totalSchedules = thisMonthSchedules.concat(nextMonthSchedules);
-                    const liveSchedules = totalSchedules.filter((s: any) => s.class_type === "OnlineClass")
-                    const studySchedules = totalSchedules.filter((s: any) => s.class_type === "Homework")
-                    dispatch(setSchedule({ total: totalSchedules, live: liveSchedules, study: studySchedules }))
-                }
+        async function fetchEverything() {
+            async function fetchScheduleTimeViews() {
+                const thisMonthSchedules = await getScheduleTimeViews(todayTimeStamp, timeZoneOffset);
+                const nextMonthSchedules = await getScheduleTimeViews(nextMonthTimeStamp, timeZoneOffset);
+                const totalSchedules = thisMonthSchedules.concat(nextMonthSchedules);
+                const liveSchedules = totalSchedules.filter((s: any) => s.class_type === "OnlineClass")
+                const studySchedules = totalSchedules.filter((s: any) => s.class_type === "Homework")
+                dispatch(setSchedule({ total: totalSchedules, live: liveSchedules, study: studySchedules }))
+            }
 
-                try {
-                    await Promise.all([fetchScheduleTimeViews()])
-                } catch (err) {
-                    dispatch(setSchedule({ total: [], live: [], study: [] }))
-                    console.error(`Fail to fetchScheduleTimeViews: ${err}`)
-                } finally {
-                    dispatch(setInFlight(false));
-                }
+            try {
+                await Promise.all([fetchScheduleTimeViews()])
+            } catch (err) {
+                dispatch(setSchedule({ total: [], live: [], study: [] }))
+                console.error(`Fail to fetchScheduleTimeViews: ${err}`)
+            } finally {
+                dispatch(setInFlight(false));
             }
-            if (selectedOrg && selectedOrg.organization_id) {
-                dispatch(setInFlight(true));
-                fetchEverything();
-            }
+        }
+        if (selectedOrg && selectedOrg.organization_id) {
+            dispatch(setInFlight(true));
+            fetchEverything();
         }
     }, [selectedOrg])
 
-    if (!selectedOrg) { return <Error errCode={403} description={DESCRIPTION_403} />; }
     return (<>
         {inFlight ? <Loading /> :
             <Grid
@@ -133,9 +129,9 @@ export function Schedule() {
                 direction="column"
                 justify="flex-start"
                 item
-                style={{ maxHeight: `calc(100% - ${theme.spacing(10)})`, flexGrow: 1, overflowX: "hidden", overflowY: "auto" }}
+                style={{ flexGrow: 1, overflowY: "auto" }}
             >
-                <ScheduleList live={live} study={study} />
+                <ScheduleList />
             </Grid>
         }
         <Grid
@@ -143,43 +139,46 @@ export function Schedule() {
             direction="row"
             justify="space-between"
             item
-            style={{ position: "fixed", bottom: 0, flexGrow: 0, height: theme.spacing(10) }}
+            style={{ flexGrow: 0, height: theme.spacing(10) }}
         >
             <SwitchClassType />
         </Grid>
     </>)
 }
 
-function ScheduleList({ live, study }: { live: Schedule[], study: Schedule[] }) {
+function ScheduleList() {
     const { listRoot, listSubheaderText } = useStyles();
-
     const classType = useSelector((state: State) => state.session.classType);
+    const { live, study } = useSelector((state: State) => state.data.schedule);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [total, setTotal] = useState<Schedule[]>([]);
     const [todaySchedules, setTodaySchedules] = useState<Schedule[]>([]);
     const [tomorrowSchedules, setTomorrowSchedules] = useState<Schedule[]>([]);
     const [upcomingSchedules, setUpcomingSchedules] = useState<Schedule[]>([]);
 
     useEffect(() => {
-        if (classType === ClassType.LIVE) {
-            if (live.length === 0) { return; }
-            const todaySchedules = live.filter(s => s.start_at >= todayTimeStamp && s.end_at < tomorrowTimeStamp);
-            const tomorrowSchedules = live.filter(s => s.start_at >= tomorrowTimeStamp && s.end_at <= endOfTomorrowTimeStamp);
-            const upcomingSchedules = live.filter(s => s.start_at > endOfTomorrowTimeStamp);
-            setTodaySchedules(todaySchedules);
-            setTomorrowSchedules(tomorrowSchedules);
-            setUpcomingSchedules(upcomingSchedules);
-        } else if (classType === ClassType.STUDY) {
-            const todaySchedules = study.filter(s => s.start_at >= todayTimeStamp && s.end_at < tomorrowTimeStamp);
-            const tomorrowSchedules = study.filter(s => s.start_at >= tomorrowTimeStamp && s.end_at <= endOfTomorrowTimeStamp);
-            const upcomingSchedules = study.filter(s => s.start_at > endOfTomorrowTimeStamp);
-            setTodaySchedules(todaySchedules);
-            setTomorrowSchedules(tomorrowSchedules);
-            setUpcomingSchedules(upcomingSchedules);
-        } else {
-            return
-        }
-    }, [])
+        classType === ClassType.LIVE ? setTotal(live) : setTotal(study);
+    }, [classType])
 
-    return (<>
+    useEffect(() => {
+        if (total.length > 0) {
+            const todaySchedules = total.filter(s => s.start_at >= todayTimeStamp && s.end_at < tomorrowTimeStamp);
+            const tomorrowSchedules = total.filter(s => s.start_at >= tomorrowTimeStamp && s.end_at <= endOfTomorrowTimeStamp);
+            const upcomingSchedules = total.filter(s => s.start_at > endOfTomorrowTimeStamp);
+            setTodaySchedules(todaySchedules);
+            setTomorrowSchedules(tomorrowSchedules);
+            setUpcomingSchedules(upcomingSchedules);
+        }
+        setLoading(false);
+    }, [total])
+
+    const [openAlert, setOpenAlert] = useState(false);
+    const handleClose = (event?: React.SyntheticEvent, reason?: string) => {
+        if (reason === "clickaway") { return; }
+        setOpenAlert(false);
+    };
+
+    return (loading ? <Loading /> : <>
         <Grid item>
             <List
                 component="nav"
@@ -193,7 +192,7 @@ function ScheduleList({ live, study }: { live: Schedule[], study: Schedule[] }) 
             >
                 {todaySchedules.length === 0 ? <ListItem><Typography variant="body2" color="textSecondary">Nothing scheduled</Typography></ListItem> :
                     todaySchedules.map((schedule: Schedule, i) =>
-                        <ScheduleItem key={`${schedule.id}-${i}`} classType={classType} schedule={schedule} primaryText={todayStr} />
+                        <ScheduleItem key={`${schedule.id}-${i}`} classType={classType} schedule={schedule} primaryText={todayStr} setOpenAlert={setOpenAlert} />
                     )
                 }
             </List>
@@ -211,7 +210,7 @@ function ScheduleList({ live, study }: { live: Schedule[], study: Schedule[] }) 
             >
                 {tomorrowSchedules.length === 0 ? <ListItem><Typography variant="body2" color="textSecondary">Nothing scheduled</Typography></ListItem> :
                     tomorrowSchedules.map((schedule: any, i, a) =>
-                        <ScheduleItem key={schedule.id} classType={classType} schedule={schedule} primaryText={tomorrowStr} />
+                        <ScheduleItem key={schedule.id} classType={classType} schedule={schedule} primaryText={tomorrowStr} setOpenAlert={setOpenAlert} />
                     )
                 }
             </List>
@@ -229,18 +228,24 @@ function ScheduleList({ live, study }: { live: Schedule[], study: Schedule[] }) 
             >
                 {upcomingSchedules.length === 0 ? <ListItem><Typography variant="body2" color="textSecondary">Nothing scheduled</Typography></ListItem> :
                     upcomingSchedules.map((schedule: any, i, a) =>
-                        <ScheduleItem key={schedule.id} classType={classType} schedule={schedule} primaryText={tomorrowStr} />
+                        <ScheduleItem key={schedule.id} classType={classType} schedule={schedule} primaryText={tomorrowStr} setOpenAlert={setOpenAlert} />
                     )
                 }
             </List>
         </Grid>
+        <Snackbar open={openAlert} autoHideDuration={3500} onClose={handleClose}>
+            <Alert onClose={handleClose} variant="filled" severity="error">
+                <FormattedMessage id="error_unknown_error" />
+            </Alert>
+        </Snackbar>
     </>)
 }
 
-function ScheduleItem({ classType, schedule, primaryText }: {
+function ScheduleItem({ classType, schedule, primaryText, setOpenAlert }: {
     classType: ClassType,
-    schedule: any,
+    schedule: Schedule,
     primaryText: string,
+    setOpenAlert: React.Dispatch<React.SetStateAction<boolean>>
 }) {
     const { listItemAvatar, listItemTextPrimary } = useStyles();
     const dispatch = useDispatch();
@@ -252,7 +257,6 @@ function ScheduleItem({ classType, schedule, primaryText }: {
 
     const [info, setInfo] = useState<Schedule>();
     const [teachers, setTeachers] = useState<string>("");
-    const [liveToken, setLiveToken] = useState<string>("");
 
     // https://swagger-ui.kidsloop.net/#/schedule/getScheduleByID
     async function getScheduleInfo() {
@@ -270,17 +274,11 @@ function ScheduleItem({ classType, schedule, primaryText }: {
     useEffect(() => {
         async function fetchEverything() {
             async function fetchScheduleInfo() {
-                const schedule = await getScheduleInfo();
-                setInfo(schedule);
-                dispatch(setSelectedPlan(schedule.lesson_plan.id));
-                const teachers = schedule.teachers
-                if (teachers.length > 0) {
-                    let teacherList = []
-                    for (const teacher of teachers) {
-                        teacherList.push(teacher.name);
-                    }
-                    setTeachers(teacherList.join(", "))
-                }
+                const detail: ScheduleDetail = await getScheduleInfo();
+                setInfo({
+                    ...schedule,
+                    detail: detail
+                });
             }
             try {
                 await Promise.all([fetchScheduleInfo()])
@@ -291,6 +289,17 @@ function ScheduleItem({ classType, schedule, primaryText }: {
         fetchEverything();
     }, [])
 
+    useEffect(() => {
+        if (!info || !info.detail) { return; }
+        const teachers = info.detail.teachers
+        if (teachers.length > 0) {
+            let teacherList = []
+            for (const teacher of teachers) {
+                teacherList.push(teacher.name);
+            }
+            setTeachers(teacherList.join(", "))
+        }
+    }, [info])
     // https://swagger-ui.kidsloop.net/#/schedule/getScheduleLiveToken
     async function getScheduleLiveToken() {
         const headers = new Headers();
@@ -304,30 +313,27 @@ function ScheduleItem({ classType, schedule, primaryText }: {
         if (response.status === 200) { return response.json(); }
     }
 
-    useEffect(() => {
-        async function fetchEverything() {
-            async function fetchScheduleLiveToken() {
-                const { token } = await getScheduleLiveToken();
-                setLiveToken(token);
-            }
-            try {
-                await Promise.all([fetchScheduleLiveToken()])
-            } catch (err) {
-                console.error(`Fail to fetchScheduleInfo: ${err}`)
-            } finally { }
-        }
-        fetchEverything();
-    }, [liveToken])
-
     const goJoin = () => {
-        const search = classType === ClassType.LIVE ? `?token=${liveToken}` : "";
-        location.href = `#/join${search}`;
+        if (!info || !info.detail) { return; }
+        dispatch(setSelectedPlan(info.detail.lesson_plan.id));
+        if (classType === ClassType.LIVE) {
+            getScheduleLiveToken().then((res) => {
+                if (res.token) {
+                    location.href = `#/join?token=${res.token}`;
+                } else {
+                    setOpenAlert(true); return;
+                }
+            })
+        } else {
+            location.href = `#/join`;
+        }
     }
 
     return (classType === ClassType.LIVE ?
         <ListItem button onClick={goJoin}>
+            {/* TODO: Adjust src size */}
             <ListItemAvatar>
-                <Avatar alt="Live schedule" src={LiveSchedulePopcorn} className={listItemAvatar} />
+                <Avatar alt="Live schedule" src={LiveSchedulePopcorn} imgProps={{ height: 24 }} className={listItemAvatar} />
             </ListItemAvatar>
             <ListItemText
                 disableTypography
@@ -336,8 +342,9 @@ function ScheduleItem({ classType, schedule, primaryText }: {
             />
         </ListItem> :
         <ListItem button onClick={goJoin}>
+            {/* TODO: Adjust src size */}
             <ListItemAvatar>
-                <Avatar alt="Study schedule" src={StudyScheduleHouse} className={listItemAvatar} />
+                <Avatar alt="Study schedule" src={StudyScheduleHouse} imgProps={{ height: 24 }} className={listItemAvatar} />
             </ListItemAvatar>
             <ListItemText
                 disableTypography
