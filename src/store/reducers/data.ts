@@ -26,7 +26,7 @@ type Repeat = {
     monthly: RepeatDetail,
     yearly: RepeatDetail
 }
-type ScheduleDetail = {
+export type ScheduleDetail = {
     attachment: ForeignIdName,
     org_id: string,
     due_at: number,

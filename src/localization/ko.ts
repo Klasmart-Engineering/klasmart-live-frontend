@@ -1,4 +1,9 @@
 const messages: Record<string, string> = {
+    err_button_home: "홈",
+    err_button_signin: "로그인",
+    err_button_confirm: "확인",
+    err_not_supported_title: "지원하지 않음",
+    err_not_supported_description: "교사 계정으로 수업을 시작하려면 웹 브라우저를 사용하십시오.",
     err_400_title: "Bad Request",
     err_400_subtitle: "잘못된 요청으로 인해 서버가 처리할 수 없습니다",
     err_401_title: "Unauthorized",

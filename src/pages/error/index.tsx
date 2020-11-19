@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
@@ -34,11 +34,59 @@ const useStyles = makeStyles((theme) => createStyles({
 }),
 );
 
+type ErrorCode = "400" | "401" | "403" | "404" | "500" | string;
+
+interface FallbackProps {
+    titleMsgId: string;
+    subtitleMsgId?: string;
+    descriptionMsgId?: string;
+    errCode?: ErrorCode;
+}
+
 // TODO: Mapping description by errCode
-export function Error({ errCode, description }: { errCode: string | number | null, description?: string }) {
+export function Fallback({ titleMsgId, subtitleMsgId, descriptionMsgId, errCode }: FallbackProps) {
     const classes = useStyles();
-    const code = errCode === null ? "500" :
-        (typeof errCode === "number" ? errCode.toString() : errCode);
+    const [shouldSignOut, setShouldSignOut] = useState<boolean>(false);
+    const [buttonText, setButtonText] = useState<JSX.Element>(<FormattedMessage id="err_button_home" />);
+
+    useEffect(() => {
+        if (errCode === "401") {
+            setButtonText(<FormattedMessage id="err_button_signin" />)
+        } else if (errCode === "403") {
+            setShouldSignOut(true)
+            setButtonText(<FormattedMessage id="err_button_confirm" />)
+        }
+    }, [])
+
+    async function handleSignOut() {
+        try {
+            const headers = new Headers();
+            headers.append("Accept", "application/json");
+            headers.append("Content-Type", "application/json");
+            await fetch("https://auth.kidsloop.net/signout", {
+                credentials: "include",
+                headers,
+                method: "GET",
+            })
+                .then(() => {
+                    location.href = "/";
+                });
+        } catch (e) {
+            console.error("Fail to handleSignOut: ", e);
+        }
+    }
+
+    const handleClick = () => {
+        if (!shouldSignOut) {
+            if (errCode === "401") {
+                location.href = "/auth"
+            }
+            location.href = "/"
+        } else {
+            console.log("Call signout")
+            handleSignOut();
+        }
+    }
 
     return (
         <Grid
@@ -57,12 +105,18 @@ export function Error({ errCode, description }: { errCode: string | number | nul
                             </Grid>
                             <Grid item xs={12}>
                                 <Typography variant="h4" align="center">
-                                    {code + " "}<FormattedMessage id={`err_${code}_title`} />
+                                    <FormattedMessage id={titleMsgId} />
                                 </Typography>
-                                <Typography variant="h6" align="center">
-                                    <FormattedMessage id={`err_${code}_subtitle`} />
-                                </Typography><br />
-                                {description ? <Typography variant="body2" align="center">{description}</Typography> : null}
+                                {subtitleMsgId ? (
+                                    <Typography variant="h6" align="center">
+                                        <FormattedMessage id={subtitleMsgId} />
+                                    </Typography>
+                                ) : null}
+                                <br />
+                                {descriptionMsgId ? (
+                                    <Typography variant="body2" align="center">
+                                        <FormattedMessage id={descriptionMsgId} />
+                                    </Typography>) : null}
                             </Grid>
                             <Grid item xs={12} style={{ textAlign: "center" }}>
                                 <img src={ERROR_IMAGES[((Math.floor(Math.random() * 10)) % ERROR_IMAGES.length)]} width={250} height={250} />
@@ -72,9 +126,12 @@ export function Error({ errCode, description }: { errCode: string | number | nul
                                     extendedOnly
                                     size="medium"
                                     type="submit"
-                                    onClick={() => { location.href = "/" }} // TODO: Decide which link to go to
+                                    onClick={handleClick}
                                 >
-                                    BACK
+                                    <Typography variant="button">
+                                        {buttonText}
+                                        {/* {shouldSignOut ? <FormattedMessage id="err_button_confirm" /> : <FormattedMessage id="err_button_home" />} */}
+                                    </Typography>
                                 </StyledButton>
                             </Grid>
                         </Grid>
