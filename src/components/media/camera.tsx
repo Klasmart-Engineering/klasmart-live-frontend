@@ -17,10 +17,10 @@ import { MicOff as MicOffIcon } from "@styled-icons/material-twotone/MicOff";
 
 import StyledIcon from "../styled/icon";
 import MoreControls from "./moreControls";
-import { UserContext } from "../../entry";
 import { Session } from "../../pages/room/room";
 import { WebRTCSFUContext } from "../../webrtc/sfu";
 import { State } from "../../store/store";
+import { useUserContext } from "../../context-provider/user-context";
 
 export default function Camera({ mediaStream, session, muted, controls, square, bottomControls }: {
     mediaStream?: MediaStream,
@@ -174,7 +174,7 @@ function CameraOverlay({ mediaStream, session, bottomControls, square }: {
     const isTabletCenteredControls = isTablet && !bottomControls;
     const { root, iconBtn, iconOffBtn, icon, iconOff, infoContainer, controlsContainer } = useStyles();
 
-    const { roomId, teacher, sessionId: mySessionId } = useContext(UserContext);
+    const { roomId, teacher, sessionId: mySessionId } = useUserContext();
     const [mute, { loading, error }] = useMutation(gql`
     mutation mute($roomId: ID!, $sessionId: ID!, $audio: Boolean, $video: Boolean) {
         mute(roomId: $roomId, sessionId: $sessionId, audio: $audio, video: $video)

@@ -21,10 +21,10 @@ import { Favorite as HeartIcon } from "@styled-icons/material/Favorite";
 import { ThumbUp as EncourageIcon } from "@styled-icons/material/ThumbUp";
 
 import { useToolbarContext } from "kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
-import { UserContext } from "../../entry";
 import { getRandomKind } from '../../components/trophies/trophyKind';
 import { WebRTCSFUContext } from "../../webrtc/sfu";
 import { useSynchronizedState } from "../../whiteboard/context-providers/SynchronizedStateProvider";
+import { useUserContext } from "../../context-provider/user-context";
 
 const MUTATION_MUTE = gql`
 mutation mute($roomId: ID!, $sessionId: ID!, $audio: Boolean, $video: Boolean) {
@@ -47,7 +47,7 @@ export default function GlobalControls(): JSX.Element {
 
     const states = WebRTCSFUContext.Consume()
     const mediaStreams = states.getAllInboundTracks();
-    const { roomId, sessionId } = useContext(UserContext);
+    const { roomId, sessionId } = useUserContext();
     const [rewardTrophyMutation] = useMutation(MUTATION_REWARD_TROPHY);
     const rewardTrophy = (user: string, kind: string) => rewardTrophyMutation({ variables: { roomId, user, kind } });
 

@@ -24,6 +24,7 @@ import { setInFlight, setErrCode } from "../../store/reducers/communication";
 
 import LiveSchedulePopcorn from "../../assets/img/schedule_popcorn.svg";
 import StudyScheduleHouse from "../../assets/img/study_house.svg";
+import { useUserContext } from "../../context-provider/user-context";
 
 // NOTE: China API server(Go lang) accept 10 digits timestamp
 const now = new Date();
@@ -258,6 +259,8 @@ function ScheduleItem({ classType, schedule, primaryText, setOpenAlert }: {
     const [info, setInfo] = useState<Schedule>();
     const [teachers, setTeachers] = useState<string>("");
 
+    const { setToken } = useUserContext();
+
     // https://swagger-ui.kidsloop.net/#/schedule/getScheduleByID
     async function getScheduleInfo() {
         const headers = new Headers();
@@ -319,6 +322,10 @@ function ScheduleItem({ classType, schedule, primaryText, setOpenAlert }: {
         if (classType === ClassType.LIVE) {
             getScheduleLiveToken().then((res) => {
                 if (res.token) {
+                    setToken(res.token);
+
+                    // TODO: Can we get rid of the token query parameter and just use
+                    // react component state for keeping and parsing the token instead?
                     location.href = `#/join?token=${res.token}`;
                 } else {
                     setOpenAlert(true); return;

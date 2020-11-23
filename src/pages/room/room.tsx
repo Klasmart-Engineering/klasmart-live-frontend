@@ -4,8 +4,6 @@ import { gql } from "apollo-boost";
 import { useSubscription } from "@apollo/react-hooks";
 import { FormattedMessage } from "react-intl";
 import Typography from "@material-ui/core/Typography";
-import Grid from "@material-ui/core/Grid";
-import { sessionId, UserContext } from "../../entry";
 import Study from "../student/study";
 import { Student } from "../student/student";
 import { Teacher } from "../teacher/teacher";
@@ -19,6 +17,7 @@ import { Trophy } from "../../components/trophies/trophy";
 import { State } from "../../store/store";
 import { ClassType, OrientationType } from "../../store/actions";
 import { setDeviceOrientation } from "../../store/reducers/location";
+import { useUserContext } from "../../context-provider/user-context";
 
 export interface Session {
     id: string,
@@ -52,7 +51,7 @@ export function Room(): JSX.Element {
     const classType = useSelector((state: State) => state.session.classType);
     const deviceOrientation = useSelector((state: State) => state.location.deviceOrientation);
 
-    const { teacher } = useContext(UserContext);
+    const { teacher } = useUserContext();
     const [interactiveMode, setInteractiveMode] = useState<number>(0);
     const [streamId, setStreamId] = useState<string>();
 
@@ -111,7 +110,7 @@ const SUB_ROOM = gql`
 const context = createContext<{ value: RoomContext }>(undefined as any);
 export class RoomContext {
     public static Provide(props: { children?: JSX.Element | JSX.Element[] }) {
-        const { roomId, name } = useContext(UserContext);
+        const { roomId, name, sessionId } = useUserContext();
 
         const ref = useRef<RoomContext>(undefined as any)
         const [value, rerender] = useReducer(() => ({ value: ref.current }), { value: ref.current })

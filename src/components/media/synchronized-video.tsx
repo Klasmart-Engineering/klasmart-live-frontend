@@ -8,7 +8,6 @@ import React, {
 import { useSubscription, useMutation } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
 import { CircularProgress, Typography, IconButton } from "@material-ui/core";
-import { UserContext } from "../../entry";
 import { MaterialTypename } from "../../lessonMaterialContext";
 import FFT from "./fft";
 import ReactPlayer from "../react-player/lazy";
@@ -17,6 +16,7 @@ import { videoUnmuteOverlay } from "../../utils/layerValues";
 import { getContentHref } from "../../utils/contentUtils";
 import { useSelector } from "react-redux";
 import { State } from "../../store/store";
+import { useUserContext } from "../../context-provider/user-context";
 
 interface VideoSynchronize {
     src?: string;
@@ -78,7 +78,7 @@ export function ReplicaMedia(
 
     const volume = useSelector((state: State) => state.settings.volumeVod);
 
-    const { roomId } = useContext(UserContext);
+    const { roomId } = useUserContext();
 
     const ref = useRef<HTMLMediaElement>(null);
     const reactPlayerRef = useRef<ReactPlayer>(null);
@@ -313,7 +313,7 @@ export function ReplicatedMedia(
         ref.current.volume = volume;
     }, [ref.current, volume]);
 
-    const { roomId, sessionId } = useContext(UserContext);
+    const { roomId, sessionId } = useUserContext();
 
     const [send, { loading, error }] = useMutation(
         gql`

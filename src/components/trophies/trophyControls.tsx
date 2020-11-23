@@ -11,8 +11,8 @@ import { Favorite as HeartIcon } from "@styled-icons/material/Favorite";
 import { ThumbUp as EncourageIcon } from "@styled-icons/material/ThumbUp";
 import { gql } from 'apollo-boost';
 import { useMutation } from '@apollo/react-hooks';
-import { UserContext } from '../../entry';
 import StyledIcon from "../../components/styled/icon";
+import { useUserContext } from '../../context-provider/user-context';
 
 type Props = {
     children?: ReactChild | ReactChildren | null
@@ -30,7 +30,7 @@ export default function TrophyControls({ children, otherUserId }: Props): JSX.El
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
 
-    const { roomId } = useContext(UserContext);
+    const { roomId } = useUserContext();
     const [rewardTrophyMutation] = useMutation(MUTATION_REWARD_TROPHY);
     const rewardTrophy = (user: string, kind: string) => rewardTrophyMutation({ variables: { roomId, user, kind } });
 

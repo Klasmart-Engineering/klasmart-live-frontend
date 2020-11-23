@@ -17,7 +17,6 @@ import { Error as ErrorIcon } from "@styled-icons/material/Error";
 import KidsLoopTeachers from "../../assets/img/kidsloop_live_teachers.svg";
 import KidsLoopStudents from "../../assets/img/kidsloop_live_students.svg";
 import KidsLoopStudy from "../../assets/img/kidsloop_study_students.svg";
-import { UserContext } from "../../entry";
 import StyledButton from "../../components/styled/button";
 import StyledTextField from "../../components/styled/textfield";
 import Camera from "../../components/media/camera";
@@ -30,6 +29,8 @@ import { State } from "../../store/store";
 import { ClassType } from "../../store/actions";
 import { setMaterials } from "../../store/reducers/data"
 import { LessonMaterial, MaterialTypename } from "../../lessonMaterialContext";
+import { useUserContext } from "../../context-provider/user-context";
+import { useUserInformation } from "../../context-provider/user-information-context";
 
 const CMS_ENDPOINT = process.env.ENDPOINT_KL2 !== undefined ? process.env.ENDPOINT_KL2 : "";
 
@@ -69,7 +70,8 @@ export function Join(): JSX.Element {
     const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
 
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
-    const { name, setName, teacher, sessionId, setCamera } = useContext(UserContext);
+    const { name, setName, teacher } = useUserContext();
+    const { information: myInformation } = useUserInformation();
 
     const [user, setUser] = useState<string>("");
 
@@ -87,6 +89,20 @@ export function Join(): JSX.Element {
     const { error, stream, facing, setFacing } = useCameraContext();
 
     const contentId = useSelector((store: State) => store.data.selectedLessonPlan);
+
+    // NOTE: This effect will set the customizable name based on the 
+    // information from /me query. This will prepopulate the input
+    // field for the user name but still allow it to be customized.
+    useEffect(() => {
+        if (!myInformation) return;
+
+        if (myInformation.firstName) {
+            setUser(myInformation.firstName);
+        } else if(myInformation.name) {
+            setUser(myInformation.name);
+        }
+
+    }, [myInformation]);
 
     // https://swagger-ui.kidsloop.net/#/content/getContentById
     async function getLessonPlanInfo() {
@@ -152,11 +168,17 @@ export function Join(): JSX.Element {
                 </span>
             );
         }
-        if (!name) {
-            setName(user);
-            LogRocket.identify(user, {sessionId})
-        }
-        setCamera(stream || null);
+
+        // TODO: Using this conditional here will prioritize the name
+        // coming from token first. And disallow setting any other name.
+        // User also wont be able to set their name after it's been set 
+        // once, unless the page is reloaded (name setting is not persistent)
+        // there's also name information related to the /me query which
+        // currently will be used optionally if the token name isn't set. We
+        // may want to change the priorities used when selecting name and
+        // determining if user can set a custom name or not in the future.
+        if (!name) { setName(user); }
+
         history.push(`/room`);
     }
 

@@ -11,7 +11,6 @@ import Typography from "@material-ui/core/Typography";
 import { Refresh as RefreshIcon } from "@styled-icons/material/Refresh";
 
 import StyledFAB from "../styled/fabButton";
-import { UserContext } from "../../entry";
 import { DRAWER_TOOLBAR_WIDTH } from "../../pages/layout";
 import { loadingActivity } from "../../utils/layerValues";
 import { ActionTypes } from "../../store/actions";
@@ -24,6 +23,7 @@ import JessSpinner1 from "../../assets/img/spinner/jess1_spinner.gif"
 import MimiSpinner1 from "../../assets/img/spinner/mimi1_spinner.gif"
 import GhostSpinner from "../../assets/img/spinner/ghost_spinner.gif"
 import { State } from "../../store/store";
+import { useUserContext } from "../../context-provider/user-context";
 
 interface NewProps extends IframeResizer.IframeResizerProps {
     forwardRef: any
@@ -53,7 +53,7 @@ export function RecordedIframe(props: Props): JSX.Element {
     const drawerOpen = useSelector((state: State) => state.control.drawerOpen);
     const drawerWidth = useSelector((state: State) => state.control.drawerWidth);
 
-    const { roomId } = useContext(UserContext);
+    const { roomId } = useUserContext();
     const { contentId, setStreamId, parentWidth, parentHeight } = props;
     const [sendStreamId] = useMutation(SET_STREAMID);
 

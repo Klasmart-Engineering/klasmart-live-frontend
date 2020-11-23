@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 // import { FormattedMessage } from "react-intl";
 import { makeStyles, Theme, createStyles } from "@material-ui/core";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -9,7 +9,7 @@ import IconButton from "@material-ui/core/IconButton";
 import { Send as SendIcon } from "@styled-icons/material-twotone/Send";
 import { useMutation } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
-import { UserContext } from "../../entry";
+import { useUserContext } from "../../context-provider/user-context";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -50,7 +50,7 @@ export function SendMessage(): JSX.Element {
 
     const [sendMessage, { loading }] = useMutation(SEND_MESSAGE);
     const [message, setMessage] = useState("");
-    const { roomId } = useContext(UserContext);
+    const { roomId } = useUserContext();
 
     function send() {
         sendMessage({ variables: { roomId, message } });
