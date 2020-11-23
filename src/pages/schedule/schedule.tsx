@@ -354,9 +354,10 @@ function ScheduleItem({ classType, schedule, setOpenAlert }: {
 
     return (classType === ClassType.LIVE ?
         <ListItem button onClick={goJoin}>
-            {/* TODO: Adjust src size */}
             <ListItemAvatar>
-                <Avatar alt="Live schedule" src={LiveSchedulePopcorn} imgProps={{ height: 24 }} className={listItemAvatar} />
+                <Avatar alt="Live schedule" className={listItemAvatar}>
+                    <img src={LiveSchedulePopcorn} height={24} />
+                </Avatar>
             </ListItemAvatar>
             <ListItemText
                 disableTypography
@@ -365,9 +366,10 @@ function ScheduleItem({ classType, schedule, setOpenAlert }: {
             />
         </ListItem> :
         <ListItem button onClick={goJoin}>
-            {/* TODO: Adjust src size */}
             <ListItemAvatar>
-                <Avatar alt="Study schedule" src={StudyScheduleHouse} imgProps={{ height: 24 }} className={listItemAvatar} />
+                <Avatar alt="Study schedule" className={listItemAvatar}>
+                    <img src={StudyScheduleHouse} height={24} />
+                </Avatar>
             </ListItemAvatar>
             <ListItemText
                 disableTypography

@@ -1,35 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { OrganizationPayload, UserInformation } from "../../context-provider/user-information-context";
 import { ClassType, UserAgent, UserType } from "../actions";
 import { getDefaultLanguageCode } from "../../utils/locale";
-
-export type Organization = {
-    organization_id: string,
-    organization_name: string
-}
-
-type Role = {
-    role_id: string,
-    role_name: string,
-    organization: Organization
-}
-
-type UserInfo = {
-    user_id: string
-    email: string
-    user_name: string | null
-    family_name: string | null
-    given_name: string | null
-    avatar: string | null
-    roles: Role[]
-} | null
 
 type SessionState = {
     classType: ClassType;
     userAgent: UserAgent;
     userType: UserType;
     locale: string;
-    user: UserInfo;
-    selectedOrg: Organization;
+    user: UserInformation;
+    selectedOrg: OrganizationPayload;
 }
 
 const initialSessionState: SessionState = {
@@ -53,7 +33,16 @@ const initialSessionState: SessionState = {
     },
     userType: UserType.STUDENT,
     locale: getDefaultLanguageCode(),
-    user: null,
+    user: {
+        id: "",
+        email: "",
+        name: "",
+        givenName: "",
+        familyName: "",
+        avatar: "",
+        organizations: [],
+        classes: [],
+    },
     selectedOrg: { organization_id: "", organization_name: "" }
 }
 
