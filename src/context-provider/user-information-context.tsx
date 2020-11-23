@@ -1,5 +1,6 @@
 import React, { createContext, ReactChild, ReactChildren, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
+import { setUser } from "../store/reducers/session";
 import { setErrCode } from "../store/reducers/communication";
 
 // TODO (Axel): All of this context can be combined with the user-context from 
@@ -7,10 +8,10 @@ import { setErrCode } from "../store/reducers/communication";
 // the same responsibilities. Not using the same name at this point to
 // prevent conflicts later when integrating.
 
-type OrganizationPayload = {
+export type OrganizationPayload = {
     organization_id: string,
     organization_name: string,
-    owner: { email: string }
+    owner?: { email: string }
 }
 
 type SchoolPayload = {
@@ -25,7 +26,8 @@ export type RolePayload = {
 
 type ClassPayload = {
     class_id: string,
-    class_name: string
+    class_name: string,
+    organization: OrganizationPayload
 }
 
 type MePayload = {
@@ -73,6 +75,10 @@ const QUERY_ME = `
             classesStudying {
                 class_id
                 class_name
+                organization {
+                    organization_id
+                    organization_name
+                }
             }
         }
     }
@@ -91,14 +97,15 @@ type Organization = {
     roles: RolePayload[]
 }
 
-type UserInformation = {
-    id: string
-    email: string
+export type UserInformation = {
+    id: string,
+    email: string,
     name: string,
-    firstName: string
-    lastName: string
-    avatar: string
+    givenName: string,
+    familyName: string,
+    avatar: string,
     organizations: Organization[],
+    classes: ClassPayload[],
 }
 
 type UserInformationActions = {
@@ -126,20 +133,21 @@ export function isRoleTeacher(role: string) {
 }
 
 export function UserInformationContextProvider({ children }: Props) {
+    const dispatch = useDispatch();
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<boolean>(false);
     const [information, setInformation] = useState<UserInformation | undefined>(undefined);
 
     const userInformationFromResponseData = (me: MePayload) => {
         const information: UserInformation = {
-            id: me.user_id,
-            email: me.email,
-            name: me.user_name ? me.user_name : "",
-            firstName: me.given_name ? me.given_name : "",
-            lastName: me.family_name ? me.family_name : "",
-            avatar: me.avatar ? me.avatar : "",
-            organizations: me.organizationsWithPermission,
-            // TODO (Isu): schoolsWithPermission also needs to be considered in the future.
+            id: me.user_id || "",
+            email: me.email || "",
+            name: me.user_name || "",
+            givenName: me.given_name || "",
+            familyName: me.family_name || "",
+            avatar: me.avatar || "",
+            organizations: me.organizationsWithPermission || [], // TODO (Isu): schoolsWithPermission also needs to be considered in the future.
+            classes: me.classesStudying || [],
         }
 
         return information;
@@ -160,11 +168,14 @@ export function UserInformationContextProvider({ children }: Props) {
             method: "POST",
         }).then(async (response) => {
             const { data }: { data: { me: MePayload } } = await response.json();
+            // console.log(JSON.stringify(data))
             if (!data || data.me === null) {
                 setInformation(undefined);
                 setError(true);
             } else {
-                setInformation(userInformationFromResponseData(data.me));
+                const userInfo = userInformationFromResponseData(data.me)
+                dispatch(setUser(userInfo));
+                setInformation(userInfo);
             }
 
             setLoading(false);
