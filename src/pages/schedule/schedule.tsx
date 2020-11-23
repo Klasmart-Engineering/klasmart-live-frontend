@@ -35,8 +35,6 @@ let tomorrow = new Date(todayTimeStamp * 1000); tomorrow.setDate(tomorrow.getDat
 const tomorrowTimeStamp = tomorrow.getTime() / 1000
 let endOfTomorrow = new Date(tomorrowTimeStamp * 1000); endOfTomorrow.setHours(23, 59, 59);
 const endOfTomorrowTimeStamp = endOfTomorrow.getTime() / 1000;
-const todayStr = dateFormat(now, "fullDate", false, false);
-const tomorrowStr = dateFormat(tomorrow, "fullDate", false, false);
 
 // console.log("today: ", new Date(now.getFullYear(), now.getMonth(), now.getDate()))
 // console.log("todayTimeStamp: ", todayTimeStamp)
@@ -46,8 +44,6 @@ const tomorrowStr = dateFormat(tomorrow, "fullDate", false, false);
 // console.log("tomorrowTimeStamp: ", tomorrowTimeStamp)
 // console.log("endOfTomorrow: ", endOfTomorrow)
 // console.log("endOfTomorrowTimeStamp: ", endOfTomorrowTimeStamp)
-// console.log("todayStr: ", todayStr)
-// console.log("tomorrowStr: ", tomorrowStr)
 
 const useStyles = makeStyles((theme: Theme) => ({
     listRoot: {
@@ -193,7 +189,7 @@ function ScheduleList() {
             >
                 {todaySchedules.length === 0 ? <ListItem><Typography variant="body2" color="textSecondary">Nothing scheduled</Typography></ListItem> :
                     todaySchedules.map((schedule: Schedule, i) =>
-                        <ScheduleItem key={`${schedule.id}-${i}`} classType={classType} schedule={schedule} primaryText={todayStr} setOpenAlert={setOpenAlert} />
+                        <ScheduleItem key={`${schedule.id}-${i}`} classType={classType} schedule={schedule} setOpenAlert={setOpenAlert} />
                     )
                 }
             </List>
@@ -210,8 +206,8 @@ function ScheduleList() {
                 className={listRoot}
             >
                 {tomorrowSchedules.length === 0 ? <ListItem><Typography variant="body2" color="textSecondary">Nothing scheduled</Typography></ListItem> :
-                    tomorrowSchedules.map((schedule: any, i, a) =>
-                        <ScheduleItem key={schedule.id} classType={classType} schedule={schedule} primaryText={tomorrowStr} setOpenAlert={setOpenAlert} />
+                    tomorrowSchedules.map((schedule: Schedule, i, a) =>
+                        <ScheduleItem key={schedule.id} classType={classType} schedule={schedule} setOpenAlert={setOpenAlert} />
                     )
                 }
             </List>
@@ -228,8 +224,8 @@ function ScheduleList() {
                 className={listRoot}
             >
                 {upcomingSchedules.length === 0 ? <ListItem><Typography variant="body2" color="textSecondary">Nothing scheduled</Typography></ListItem> :
-                    upcomingSchedules.map((schedule: any, i, a) =>
-                        <ScheduleItem key={schedule.id} classType={classType} schedule={schedule} primaryText={tomorrowStr} setOpenAlert={setOpenAlert} />
+                    upcomingSchedules.map((schedule: Schedule, i, a) =>
+                        <ScheduleItem key={schedule.id} classType={classType} schedule={schedule} setOpenAlert={setOpenAlert} />
                     )
                 }
             </List>
@@ -242,21 +238,18 @@ function ScheduleList() {
     </>)
 }
 
-function ScheduleItem({ classType, schedule, primaryText, setOpenAlert }: {
+function ScheduleItem({ classType, schedule, setOpenAlert }: {
     classType: ClassType,
     schedule: Schedule,
-    primaryText: string,
     setOpenAlert: React.Dispatch<React.SetStateAction<boolean>>
 }) {
     const { listItemAvatar, listItemTextPrimary } = useStyles();
     const dispatch = useDispatch();
     const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
-    const mmmmdyyyy = primaryText.substr(primaryText.indexOf(",") + 2);
-    const dddd = primaryText.split(" ")[0];
-    const startAt = dateFormat(schedule.start_at, "shortTime");
-    const endAt = dateFormat(schedule.end_at, "shortTime");
 
     const [info, setInfo] = useState<Schedule>();
+    const [livePrimaryText, setLivePrimaryText] = useState<string>("");
+    const [liveSecondaryText, setLiveSecondaryText] = useState<string>("");
     const [teachers, setTeachers] = useState<string>("");
 
     const { setToken } = useUserContext();
@@ -290,19 +283,35 @@ function ScheduleItem({ classType, schedule, primaryText, setOpenAlert }: {
             } finally { }
         }
         fetchEverything();
-    }, [])
+    }, [classType])
 
     useEffect(() => {
         if (!info || !info.detail) { return; }
-        const teachers = info.detail.teachers
-        if (teachers.length > 0) {
-            let teacherList = []
-            for (const teacher of teachers) {
-                teacherList.push(teacher.name);
+        if (classType === ClassType.LIVE) {
+            const fullDateStr = dateFormat(new Date(schedule.start_at * 1000), "fullDate", false, false);
+            const monthDDYYYY: string = fullDateStr.substr(fullDateStr.indexOf(",") + 2); // TODO (Isu): Use regex
+            setLivePrimaryText(monthDDYYYY);
+            // TODO (Isu): Use regex
+            // const reDayOfWeek = /^(Sun|Mon|(T(ues|hurs))|Fri)(day|\.)?$|Wed(\.|nesday)?$|Sat(\.|urday)?$|T((ue?)|(hu?r?))\.?$/i
+            // const reResult = monthDDYYYY.match(reDayOfWeek);
+            // const dayOfWeekStr = reResult !== null ? reResult[0] + ", " : "" // ex) `Monday, ` | ""
+            const dayOfWeekStr = fullDateStr.split(" ")[0];
+            const startAtStr = dateFormat(new Date(info.start_at * 1000), "shortTime", false, false);
+            const endAtStr = dateFormat(new Date(info.end_at * 1000), "shortTime", false, false);
+            const fullSecondaryText = dayOfWeekStr + startAtStr + " - " + endAtStr;
+            setLiveSecondaryText(fullSecondaryText);
+        } else {
+            const teachers = info.detail.teachers
+            if (teachers.length > 0) {
+                let teacherList = []
+                for (const teacher of teachers) {
+                    teacherList.push(teacher.name);
+                }
+                setTeachers(teacherList.join(", "))
             }
-            setTeachers(teacherList.join(", "))
         }
     }, [info])
+
     // https://swagger-ui.kidsloop.net/#/schedule/getScheduleLiveToken
     async function getScheduleLiveToken() {
         const headers = new Headers();
@@ -344,8 +353,8 @@ function ScheduleItem({ classType, schedule, primaryText, setOpenAlert }: {
             </ListItemAvatar>
             <ListItemText
                 disableTypography
-                primary={<Typography variant="body1" className={listItemTextPrimary}>{mmmmdyyyy}</Typography>}
-                secondary={<Typography variant="caption" color="textSecondary">{`${dddd} ${startAt} - ${endAt}`}</Typography>}
+                primary={<Typography variant="body1" className={listItemTextPrimary}>{livePrimaryText}</Typography>}
+                secondary={<Typography variant="caption" color="textSecondary">{liveSecondaryText}</Typography>}
             />
         </ListItem> :
         <ListItem button onClick={goJoin}>
