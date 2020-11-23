@@ -13,7 +13,6 @@ import { Trash as TrashIcon } from "@styled-icons/boxicons-solid/Trash";
 
 import { useToolbarContext } from "kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
 import { useSynchronizedState } from "../context-providers/SynchronizedStateProvider";
-import { UserContext } from "../../entry";
 
 import BlackCrayon from "../../assets/img/canvas/crayons/black.svg";
 import BlueCrayon from "../../assets/img/canvas/crayons/blue.svg";
@@ -28,6 +27,7 @@ import BrownCrayon from "../../assets/img/canvas/crayons/brown.svg";
 import { useSelector } from "react-redux";
 import { State } from "../../store/store";
 import { ClassType } from "../../store/actions";
+import { useUserContext } from "../../context-provider/user-context";
 
 type Props = {
     children?: ReactChild | ReactChildren | null | any;
@@ -41,7 +41,7 @@ export const WBToolbar: FunctionComponent<Props> = ({ children }: Props): JSX.El
     const { state: { display, permissions } } = useSynchronizedState();
     const { state: { tools }, actions: { selectTool, selectColorByValue, clear } } = useToolbarContext();
 
-    const { teacher, sessionId } = useContext(UserContext);
+    const { teacher, sessionId } = useUserContext();
     const [activedColor, setActivedColor] = useState({ black: false, blue: false, qingse: false, green: false, orange: false, red: false, yellow: false, pink: false, purple: false, brown: false });
     const [activedTool, setActivedTool] = useState({ move: false, line: false, text: false, erase: false, clear: false });
 

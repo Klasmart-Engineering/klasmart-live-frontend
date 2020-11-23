@@ -33,7 +33,6 @@ import { ExpandLess as ArrowUpIcon } from "@styled-icons/material/ExpandLess";
 import { ExpandMore as ArrowDownIcon } from "@styled-icons/material/ExpandMore";
 import { PencilAlt as WBIcon } from "@styled-icons/fa-solid/PencilAlt";
 
-import { UserContext } from "../entry";
 import { Session, Message, InteractiveModeState, StreamIdState, RoomContext } from "./room/room";
 import ModeControls from "./teacher/modeControls";
 import GlobalControls from "./teacher/globalControls";
@@ -60,6 +59,7 @@ import {
     setColsObserve,
     setContentIndex
 } from "../store/reducers/control";
+import { useUserContext } from "../context-provider/user-context";
 
 const MessageContext = createContext(new Map<string, Message>());
 const UsersContext = createContext(new Map<string, Session>());
@@ -168,7 +168,7 @@ interface LayoutProps {
 
 export default function Layout(props: LayoutProps): JSX.Element {
     const { children, interactiveModeState, streamIdState } = props;
-    const { materials } = useContext(UserContext);
+    const { materials } = useUserContext();
 
     const dispatch = useDispatch();
     const classType = useSelector((store: State) => store.session.classType);
@@ -258,7 +258,7 @@ function WBToolbarOpener() {
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down('sm'));
 
-    const { teacher, sessionId } = useContext(UserContext);
+    const { teacher, sessionId } = useUserContext();
     const { state: { display, permissions }, actions: { setDisplay, getPermissions, setPermissions } } = useSynchronizedState();
     const classType = useSelector((store: State) => store.session.classType);
     const enableWB = classType === ClassType.LIVE ? (!teacher ? display && permissions.allowCreateShapes : display) : true;
@@ -379,7 +379,7 @@ function DrawerContainer({ interactiveModeState, streamId, material, tabIndex, s
     }, [ref.current]);
 
     if (classType === ClassType.LIVE) {
-        const { teacher } = useContext(UserContext);
+        const { teacher } = useUserContext();
         const { users, messages } = RoomContext.Consume()
         return (
             <Grid id="drawer-container" ref={ref} item xs={drawerOpen ? 3 : undefined} style={{ position: "relative" }}>
@@ -565,7 +565,7 @@ function TabInnerContent({ title }: {
 
     const camera = useCameraContext();
 
-    const { sessionId, materials, teacher } = useContext(UserContext);
+    const { sessionId, materials, teacher } = useUserContext();
     const [gridMode, setGridMode] = useState(true)
 
     switch (title) {
@@ -713,7 +713,7 @@ function TabPanel(props: TabPanelProps) {
     const classes = useStyles();
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
-    const { teacher } = useContext(UserContext);
+    const { teacher } = useUserContext();
 
     const store = useStore();
     const dispatch = useDispatch();

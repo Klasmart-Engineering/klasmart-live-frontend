@@ -8,12 +8,12 @@ import React, {
     useEffect,
     useState
 } from "react";
-import { useMutation, useSubscription, useQuery } from "@apollo/react-hooks";
-import { gql, NetworkStatus } from "apollo-boost";
+import { useMutation, useSubscription } from "@apollo/react-hooks";
+import { gql } from "apollo-boost";
 import { PainterEvent } from "kidsloop-canvas/lib/domain/whiteboard/event-serializer/PainterEvent";
 import { useSharedEventSerializer } from "kidsloop-canvas/lib/domain/whiteboard/SharedEventSerializerProvider"
-import { UserContext } from "../../entry";
 import { Permissions, createPermissions, createEmptyPermissions } from "../types/Permissions";
+import { useUserContext } from "../../context-provider/user-context";
 
 export type PainterEventFunction = (payload: PainterEvent) => void
 
@@ -90,7 +90,7 @@ type Props = {
 export const SynchronizedStateProvider: FunctionComponent<Props> = ({
     children,
 }: Props): JSX.Element => {
-    const { sessionId, roomId, teacher } = useContext(UserContext);
+    const { sessionId, roomId, teacher } = useUserContext();
 
     const [events] = useState<PainterEvent[]>([]);
 

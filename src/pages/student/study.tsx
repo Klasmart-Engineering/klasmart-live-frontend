@@ -8,10 +8,10 @@ import IconButton from "@material-ui/core/IconButton";
 import ArrowBackIcon from '@material-ui/icons/ArrowBackIos';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForwardIos';
 
-import { UserContext } from "../../entry";
 import { Whiteboard } from "../../whiteboard/components/Whiteboard";
 import { State } from "../../store/store";
 import { setContentIndex } from "../../store/reducers/control";
+import { useUserContext } from "../../context-provider/user-context";
 
 const CMS_ENDPOINT = process.env.ENDPOINT_KL2 !== undefined ? process.env.ENDPOINT_KL2 : "";
 const LIVE_ENDPOINT = process.env.ENDPOINT_CONTENT !== undefined ? process.env.ENDPOINT_CONTENT : "";
@@ -24,7 +24,7 @@ const IframeResizerNew = IframeResizer as React.FC<NewProps>
 export default function Study(): JSX.Element {
     const dispatch = useDispatch();
 
-    const { materials } = useContext(UserContext);
+    const { materials } = useUserContext();
     const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
     const mats = useSelector((store: State) => store.data.materials)
     const contentIndex = useSelector((store: State) => store.control.contentIndex)

@@ -5,7 +5,6 @@ import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 
-import { UserContext } from "../../entry";
 import { RoomContext } from "../room/room";
 import { MaterialTypename } from "../../lessonMaterialContext";
 import PreviewPlayer from "../../components/h5p/preview-player";
@@ -16,6 +15,7 @@ import { imageFrame } from "../../utils/layerValues";
 import { WebRTCSFUContext } from "../../webrtc/sfu";
 import { useContentToHref } from "../../utils/contentUtils";
 import { Whiteboard } from "../../whiteboard/components/Whiteboard";
+import { useUserContext } from "../../context-provider/user-context";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -49,7 +49,7 @@ export function Student(): JSX.Element {
     const { content, users } = RoomContext.Consume();
     const classes = useStyles();
 
-    const { name, sessionId } = useContext(UserContext);
+    const { name, sessionId } = useUserContext();
     const webrtc = WebRTCSFUContext.Consume()
     const [streamId, setStreamId] = useState<string>();
 

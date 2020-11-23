@@ -1,4 +1,4 @@
-import React, { useContext, useMemo, useRef, useState, useEffect } from "react";
+import React, { useMemo, useRef, useState, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useTheme } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
@@ -8,14 +8,14 @@ import Tooltip from "@material-ui/core/Tooltip";
 
 import { ContentCopy as CopyIcon } from "@styled-icons/material/ContentCopy";
 
-import { UserContext } from "../../entry";
 import StyledTextField from "../../components/styled/textfield"
+import { useUserContext } from "../../context-provider/user-context";
 
 export default function InviteButton(): JSX.Element {
     const theme = useTheme();
     const [openSnackbar, toggleSnackbar] = useState(false);
 
-    const { roomId } = useContext(UserContext);
+    const { roomId } = useUserContext();
     const url = useMemo(() => {
         let url = new URL(window.location.href);
         url.href = url.origin + url.pathname;

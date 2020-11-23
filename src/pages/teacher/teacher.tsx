@@ -17,7 +17,6 @@ import { ZoomOut as ZoomOutIcon } from "@styled-icons/material/ZoomOut";
 import { QuestionMarkCircleOutline as QuestionIcon } from "@styled-icons/evaicons-outline/QuestionMarkCircleOutline";
 
 import { ScreenShare } from "./screenShareProvider";
-import { UserContext } from "../../entry";
 import { Session, InteractiveModeState, StreamIdState, RoomContext } from "../room/room";
 import { MaterialTypename } from "../../lessonMaterialContext";
 import { RecordedIframe } from "../../components/h5p/recordediframe";
@@ -29,6 +28,7 @@ import { useMaterialToHref } from "../../utils/contentUtils";
 import { Whiteboard } from "../../whiteboard/components/Whiteboard";
 import Loading from "../../components/loading";
 import { State } from "../../store/store";
+import { useUserContext } from "../../context-provider/user-context";
 
 const drawerWidth = 340;
 
@@ -89,7 +89,7 @@ export function Teacher(props: Props): JSX.Element {
     const { streamId, setStreamId } = streamIdState;
 
     const contentIndex = useSelector((store: State) => store.control.contentIndex);
-    const { roomId, sessionId, materials } = useContext(UserContext);
+    const { roomId, sessionId, materials } = useUserContext();
     const material = contentIndex >= 0 && contentIndex < materials.length ? materials[contentIndex] : undefined;
 
     const screenShare = ScreenShare.Consume()
