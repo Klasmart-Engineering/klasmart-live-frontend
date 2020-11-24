@@ -77,7 +77,7 @@ export function parseTokenParams(token?: string) {
         token = url.searchParams.get("token") || undefined;
     }
 
-    if (shouldUseTestToken() && token === null) {
+    if (shouldUseTestToken() && token === undefined) {
         return parseParamsFromUrlQuery();
     }
 
