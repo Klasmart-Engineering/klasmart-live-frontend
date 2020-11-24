@@ -1,6 +1,19 @@
 import jwt_decode from "jwt-decode";
 import { MaterialTypename } from "../lessonMaterialContext";
 
+type MaterialDto = {
+    __typename: "Iframe" | "Video" | "Audio" | "Image"
+    name: string,
+    url: string,
+}
+
+type TokenDto = {
+    name?: string,
+    roomid?: string,
+    teacher?: boolean,
+    materials: MaterialDto[],
+}
+
 const url = new URL(window.location.href)
 
 function shouldUseTestToken() {
@@ -36,8 +49,8 @@ function parseParamsFromToken(token?: string) {
     if (!token) { return; }
 
     try {
-        const payload = jwt_decode(token) as any;
-        const parsedMaterials = payload.materials.map((mat: any) => {
+        const payload = jwt_decode<TokenDto>(token);
+        const parsedMaterials = payload.materials.map((mat: MaterialDto) => {
             if (mat.__typename === "Iframe") {
                 return { __typename: MaterialTypename.Iframe, name: mat.name, url: mat.url };
             } else if (mat.__typename === "Video") {
