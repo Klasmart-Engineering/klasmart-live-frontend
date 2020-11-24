@@ -12,7 +12,7 @@ export interface IUserContext {
     setToken: React.Dispatch<React.SetStateAction<string | undefined>>
 }
 
-const UserContext = createContext<IUserContext>({ setName: () => null, setToken: () => null, roomId: "", materials: [], teacher: false } as any as IUserContext);
+const UserContext = createContext<IUserContext>({ setName: () => null, setToken: () => null, roomId: "", materials: [], teacher: false, sessionId: "" });
 
 type Props = {
     children?: ReactChild | ReactChildren | null
