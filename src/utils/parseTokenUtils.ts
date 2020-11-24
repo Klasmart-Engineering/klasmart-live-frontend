@@ -32,7 +32,7 @@ function parseParamsFromUrlQuery() {
     };
 }
 
-function parseParamsFromToken(token: string | undefined) {
+function parseParamsFromToken(token?: string) {
     if (!token) { return; }
 
     try {
