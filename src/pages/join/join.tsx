@@ -13,9 +13,8 @@ import Tooltip from "@material-ui/core/Tooltip";
 
 import { Error as ErrorIcon } from "@styled-icons/material/Error";
 
-import KidsLoopTeachers from "../../assets/img/kidsloop_live_teachers.svg";
-import KidsLoopStudents from "../../assets/img/kidsloop_live_students.svg";
-import KidsLoopStudy from "../../assets/img/kidsloop_study_students.svg";
+import { UserContext } from "../../entry";
+import { Header } from "../../components/header";
 import StyledButton from "../../components/styled/button";
 import StyledTextField from "../../components/styled/textfield";
 import Camera from "../../components/media/camera";
@@ -25,11 +24,16 @@ import Loading from "../../components/loading";
 import { useHistory } from "react-router-dom";
 import { FacingType, useCameraContext } from "../../components/media/useCameraContext";
 import { State } from "../../store/store";
-import { ClassType } from "../../store/actions";
+import { ClassType, OrientationType } from "../../store/actions";
 import { setMaterials } from "../../store/reducers/data"
 import { LessonMaterial, MaterialTypename } from "../../lessonMaterialContext";
 import { useUserContext } from "../../context-provider/user-context";
 import { useUserInformation } from "../../context-provider/user-information-context";
+import { lockOrientation } from "../../utils/screenUtils";
+
+import KidsLoopTeachers from "../../assets/img/kidsloop_live_teachers.svg";
+import KidsLoopStudents from "../../assets/img/kidsloop_live_students.svg";
+import KidsLoopStudy from "../../assets/img/kidsloop_study_students.svg";
 
 const CMS_ENDPOINT = process.env.ENDPOINT_KL2 !== undefined ? process.env.ENDPOINT_KL2 : "";
 
@@ -138,6 +142,8 @@ export function Join(): JSX.Element {
     }
 
     useEffect(() => {
+        lockOrientation(OrientationType.PORTRAIT, dispatch);
+    
         if (classType !== ClassType.LIVE) {
             async function fetchEverything() {
                 async function fetchLessonMaterials() {
@@ -181,7 +187,8 @@ export function Join(): JSX.Element {
         history.push(`/room`);
     }
 
-    return (
+    return (<>
+        <Header />
         <Grid
             container
             direction="column"
@@ -199,18 +206,19 @@ export function Join(): JSX.Element {
                             alignItems="center"
                             spacing={4}
                         >
-                            <Grid item xs={12} md={8} style={{ width: "100%" }}>
-                                {
-                                    stream && stream.getVideoTracks().length > 0 && stream.getVideoTracks().every((t) => t.readyState === "live") && stream.active
-                                        ? <div style={{ position: "relative" }}>
-                                            <Camera mediaStream={stream} muted={true} />
-                                            <FFT input={stream} output={false} width={700} height={150} color={"#fff"} style={{ position: "absolute", bottom: 12, left: 0, width: "100%", height: 150 }} />
-                                        </div>
-                                        : error
-                                            ? <NoCamera messageId={"connect_camera"} />
-                                            : <Loading messageId="allow_media_permission" />
-                                }
-                            </Grid>
+                            {classType === ClassType.STUDY ? null : (
+                                <Grid item xs={12} md={8} style={{ width: "100%" }}>
+                                    {
+                                        stream && stream.getVideoTracks().length > 0 && stream.getVideoTracks().every((t) => t.readyState === "live") && stream.active
+                                            ? <div style={{ position: "relative" }}>
+                                                <Camera mediaStream={stream} muted={true} />
+                                                <FFT input={stream} output={false} width={700} height={150} color={"#fff"} style={{ position: "absolute", bottom: 12, left: 0, width: "100%", height: 150 }} />
+                                            </div>
+                                            : error
+                                                ? <NoCamera messageId={"connect_camera"} /> : <Loading messageId="allow_media_permission" />
+                                    }
+                                </Grid>
+                            )}
                             <Grid item xs={12} md={4}>
                                 <Grid container direction="row" justify="center" alignItems="center" spacing={4}>
                                     <Grid item xs={12}>
@@ -238,15 +246,17 @@ export function Join(): JSX.Element {
                                                         />
                                                     }
                                                 </Grid>
-                                                <Grid item xs={12}>
-                                                    <MediaDeviceSelect
-                                                        disabled={videoDevices.length <= 1}
-                                                        deviceType="video"
-                                                        deviceId={facing as string}
-                                                        devices={videoDevices}
-                                                        onChange={(e) => setFacing(e.target.value as FacingType)}
-                                                    />
-                                                </Grid>
+                                                {classType === ClassType.STUDY ? null : (
+                                                    <Grid item xs={12}>
+                                                        <MediaDeviceSelect
+                                                            disabled={videoDevices.length <= 1}
+                                                            deviceType="video"
+                                                            deviceId={facing as string}
+                                                            devices={videoDevices}
+                                                            onChange={(e) => setFacing(e.target.value as FacingType)}
+                                                        />
+                                                    </Grid>
+                                                )}
                                                 <Grid item xs={12}>
                                                     <StyledButton
                                                         fullWidth
@@ -268,7 +278,7 @@ export function Join(): JSX.Element {
                 </Card>
             </Container>
         </Grid>
-    );
+    </>);
 }
 
 function NoCamera({ messageId }: { messageId: string }) {

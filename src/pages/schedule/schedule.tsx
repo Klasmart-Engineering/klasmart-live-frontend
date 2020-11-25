@@ -16,11 +16,13 @@ import Snackbar from "@material-ui/core/Snackbar";
 import Alert from "@material-ui/lab/Alert";
 
 import SwitchClassType from "./switchClassType";
+import { Header } from "../../components/header";
 import Loading from "../../components/loading";
 import { State } from "../../store/store";
-import { ClassType } from "../../store/actions";
+import { ClassType, OrientationType } from "../../store/actions";
 import { Schedule, ScheduleDetail, setSchedule, setSelectedPlan } from "../../store/reducers/data";
 import { setInFlight, setErrCode } from "../../store/reducers/communication";
+import { lockOrientation } from "../../utils/screenUtils";
 
 import LiveSchedulePopcorn from "../../assets/img/schedule_popcorn.svg";
 import StudyScheduleHouse from "../../assets/img/study_house.svg";
@@ -69,6 +71,10 @@ export function Schedule() {
     const dispatch = useDispatch();
     const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
     const inFlight = useSelector((state: State) => state.communication.inFlight);
+
+    useEffect(() => {
+        lockOrientation(OrientationType.PORTRAIT, dispatch);
+    }, [])
 
     // https://swagger-ui.kidsloop.net/#/schedule/getScheduleTimeView
     async function getScheduleTimeViews(timeAt: number, timeZoneOffset: number) {
@@ -119,6 +125,7 @@ export function Schedule() {
     }, [selectedOrg])
 
     return (<>
+        <Header isHomeRoute />
         {inFlight ? <Loading /> :
             <Grid
                 wrap="nowrap"
