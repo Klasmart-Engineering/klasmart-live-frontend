@@ -822,7 +822,7 @@ export class WebRTCSFUContext implements WebRTCContext {
             } else if (video === false && this.isLocalVideoEnabled(muteNotification.sessionId)) {
                 this.localVideoToggle(muteNotification.sessionId)
             }
-        } else if (sessionId === muteNotification.sessionId) {
+        } else if (this.sessionId === muteNotification.sessionId) {
             if (audio && !this.isLocalAudioEnabled()) {
                 this.localAudioToggle()
             } else if (audio === false && this.isLocalAudioEnabled()) {
