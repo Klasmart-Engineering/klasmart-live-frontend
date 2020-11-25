@@ -65,7 +65,7 @@
     "apollo-boost": "^0.4.9",
     "apollo-link-context": "^1.0.20",
     "apollo-link-ws": "^1.0.20",
-    "callstats-js": "^3.64.3",
+    "callstats-js": "^3.67.0",
     "clsx": "^1.1.1",
     "eventemitter3": "^4.0.5",
     "graphql": "^15.1.0",
