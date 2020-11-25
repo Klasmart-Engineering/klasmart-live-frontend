@@ -14,7 +14,6 @@ import Tooltip from "@material-ui/core/Tooltip";
 
 import { Error as ErrorIcon } from "@styled-icons/material/Error";
 
-import { UserContext } from "../../entry";
 import { Header } from "../../components/header";
 import StyledButton from "../../components/styled/button";
 import StyledTextField from "../../components/styled/textfield";
@@ -100,8 +99,8 @@ export function Join(): JSX.Element {
     useEffect(() => {
         if (!myInformation) return;
 
-        if (myInformation.firstName) {
-            setUser(myInformation.firstName);
+        if (myInformation.givenName) {
+            setUser(myInformation.givenName);
         } else if(myInformation.name) {
             setUser(myInformation.name);
         }
@@ -114,7 +113,7 @@ export function Join(): JSX.Element {
         headers.append("Accept", "application/json");
         headers.append("Content-Type", "application/json");
         const encodedParams = qs.stringify({ org_id: selectedOrg.organization_id }, { encodeValuesOnly: true });
-        const response = await fetch(`${CMS_ENDPOINT}/v1/contents/${contentId}?org_id=${encodedParams}`, {
+        const response = await fetch(`${CMS_ENDPOINT}/v1/contents/${contentId}?${encodedParams}`, {
             headers,
             method: "GET",
         });
