@@ -79,10 +79,10 @@ enum UserType {
 }
 
 const TABS = [
-    { icon: <PeopleIcon role="img" size="1.5rem" />, title: "title_participants", userType: 2, classType: ClassType.LIVE },
-    { icon: <LessonPlanIcon role="img" size="1.5rem" />, title: "title_lesson_plan", userType: 0, classType: ClassType.LIVE },
-    { icon: <ChatIcon role="img" size="1.5rem" />, title: "title_chat", userType: 2, classType: ClassType.LIVE },
-    { icon: <SettingsIcon role="img" size="1.5rem" />, title: "title_settings", userType: 0, classType: ClassType.STUDY },
+    { icon: <PeopleIcon role="img" size="1.5rem" />, title: "title_participants", userType: UserType.Both, classType: ClassType.LIVE },
+    { icon: <LessonPlanIcon role="img" size="1.5rem" />, title: "title_lesson_plan", userType: UserType.TeacherOnly, classType: ClassType.LIVE },
+    { icon: <ChatIcon role="img" size="1.5rem" />, title: "title_chat", userType: UserType.Both, classType: ClassType.LIVE },
+    { icon: <SettingsIcon role="img" size="1.5rem" />, title: "title_settings", userType: UserType.TeacherOnly, classType: ClassType.STUDY },
 ];
 
 const OPTION_COLS_CAMERA = [
