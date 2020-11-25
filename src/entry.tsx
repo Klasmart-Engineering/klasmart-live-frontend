@@ -7,7 +7,7 @@ import { v4 as uuid } from "uuid";
 export const sessionId = uuid();
 
 import React, { createContext, useState, useMemo, useEffect } from "react";
-// import * as Sentry from '@sentry/react';
+import * as Sentry from '@sentry/react';
 import { render } from "react-dom";
 import { RawIntlProvider, FormattedMessage } from "react-intl";
 import { Provider, useDispatch, useSelector } from "react-redux";
@@ -53,12 +53,11 @@ import { Auth } from "./pages/account/auth";
 import { UserInformationContextProvider } from "./context-provider/user-information-context";
 import { createHashHistory } from 'history'
 import { UserContextProvider } from "./context-provider/user-context";
-/*
+
 Sentry.init({
     dsn: "https://9f4fca35be3b4b7ca970a126f26a5e54@o412774.ingest.sentry.io/5388813",
     environment: process.env.NODE_ENV || "not-specified",
 });
-*/
 
 const authToken = AuthTokenProvider.retrieveToken();
 const wsLink = new WebSocketLink({
@@ -76,15 +75,6 @@ const client = new ApolloClient({
     cache: new InMemoryCache(),
     link: wsLink
 } as any);
-
-export interface IThemeContext {
-    themeMode: string,
-    languageCode: string,
-    setThemeMode: React.Dispatch<React.SetStateAction<string>>
-    setLanguageCode: React.Dispatch<React.SetStateAction<string>>
-}
-
-export const ThemeContext = createContext<IThemeContext>({ themeMode: "", setThemeMode: () => null, languageCode: "", setLanguageCode: () => null } as any as IThemeContext);
 
 const url = new URL(window.location.href)
 if (url.hostname !== "localhost" && url.hostname !== "live.beta.kidsloop.net") {

@@ -5,7 +5,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 module.exports = {
   mode: "production",
   entry: {
-    ui: "./src/entry.tsx",
+    ui: "./src/entry-cordova.tsx",
     record: "./src/entry-record.ts",
     player: "./src/entry-player.ts",
   },

@@ -14,12 +14,11 @@ import { useMutation, useSubscription, ApolloProvider } from "@apollo/react-hook
 import { MutationFunctionOptions } from "@apollo/react-common/lib/types/types";
 import { Resolver, PrePromise } from "../resolver";
 import { WebSocketLink } from "apollo-link-ws";
-import { sessionId } from "../entry";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { Producer, ProducerOptions } from "mediasoup-client/lib/Producer";
 import useCordovaObservePause from "../cordova-observe-pause";
 import { useCameraContext } from "../components/media/useCameraContext";
-import { UserContext } from "../entry";
+import { useUserContext } from "../context-provider/user-context";
 
 const SEND_RTP_CAPABILITIES = gql`
     mutation rtpCapabilities($rtpCapabilities: String!) {
@@ -134,7 +133,8 @@ export class WebRTCSFUContext implements WebRTCContext {
         }
 
         const {roomId} = RoomContext.Consume();
-        const {name} = useContext(UserContext);
+        const {name} = useUserContext();
+
         useSubscription(SUBSCRIBE, {
             onSubscriptionData: ({subscriptionData}) => {
                 if (!subscriptionData) {
