@@ -87,6 +87,7 @@ export class WebRTCSFUContext implements WebRTCContext {
         const [value, rerender] = useReducer(() => ({ref}), {ref})
         const {roomId} = RoomContext.Consume();
         const token = AuthTokenProvider.retrieveToken();
+        const { sessionId } = useUserContext();
 
         const SfuEndpoint = process.env.ENDPOINT_SFU || `${window.location.protocol === "https:" ? "wss" : "ws"}://${window.location.host}/sfu`;
 
@@ -128,12 +129,14 @@ export class WebRTCSFUContext implements WebRTCContext {
         const [mute] = useMutation(MUTE);
         const [endClass] = useMutation(ENDCLASS);
 
+        const { name, sessionId } = useUserContext();
+
         if (!sfu.current) {
-            sfu.current = new WebRTCSFUContext(rerender, rtpCapabilities, transport, producer, consumer, stream, mute, endClass)
+            sfu.current = new WebRTCSFUContext(rerender, rtpCapabilities, transport, producer, consumer, stream, mute, endClass, sessionId)
         }
 
         const {roomId} = RoomContext.Consume();
-        const {name} = useUserContext();
+        
 
         useSubscription(SUBSCRIBE, {
             onSubscriptionData: ({subscriptionData}) => {
@@ -348,7 +351,7 @@ export class WebRTCSFUContext implements WebRTCContext {
     }
 
     public isLocalAudioEnabled(id?: string) {
-        const stream = id === undefined || id === sessionId
+        const stream = id === undefined || id === this.sessionId
             ? this.outboundStreams.get("camera")
             : this.inboundStreams.get(`${id}_camera`)
         if (!stream) {
@@ -358,7 +361,7 @@ export class WebRTCSFUContext implements WebRTCContext {
     }
 
     public localAudioEnable(id?: string, enabled?: boolean) {
-        if (id === undefined || id === sessionId) {
+        if (id === undefined || id === this.sessionId) {
             // My Camera
             const stream = this.outboundStreams.get("camera")
             if (!stream) {
@@ -413,7 +416,7 @@ export class WebRTCSFUContext implements WebRTCContext {
     }
 
     public isLocalVideoEnabled(id?: string) {
-        const stream = id === undefined || id === sessionId
+        const stream = id === undefined || id === this.sessionId
             ? this.outboundStreams.get("camera")
             : this.inboundStreams.get(`${id}_camera`)
         if (!stream) {
@@ -423,7 +426,7 @@ export class WebRTCSFUContext implements WebRTCContext {
     }
 
     public localVideoEnable(id?: string, enabled?: boolean) {
-        if (id === undefined || id === sessionId) {
+        if (id === undefined || id === this.sessionId) {
             // My Camera
             const stream = this.outboundStreams.get("camera")
             console.log("stream", stream, this.outboundStreams)
@@ -496,7 +499,8 @@ export class WebRTCSFUContext implements WebRTCContext {
     private stream: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>
     private mute: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>
     private endClass: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>
-
+    private sessionId: string
+    
     private constructor(
         rerender: React.DispatchWithoutAction,
         rtpCapabilities: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>,
@@ -506,6 +510,7 @@ export class WebRTCSFUContext implements WebRTCContext {
         stream: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>,
         mute: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>,
         endClass: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>,
+        sessionId: string
     ) {
         this.rerender = rerender
         this.rtpCapabilities = rtpCapabilities
@@ -515,6 +520,7 @@ export class WebRTCSFUContext implements WebRTCContext {
         this.stream = stream
         this.mute = mute
         this.endClass = endClass
+        this.sessionId = sessionId
     }
 
     private _device?: Device | null
