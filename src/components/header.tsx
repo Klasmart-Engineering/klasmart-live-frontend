@@ -89,11 +89,10 @@ function MenuButton() {
     );
 }
 
-export function Header() {
+export function Header({ isHomeRoute }:{ isHomeRoute?: boolean }) {
     const { root, safeArea } = useStyles();
     const theme = useTheme();
     const errCode = useSelector((state: State) => state.communication.errCode);
-    const isSchedulePage = location.hash === "#/" || location.hash === "#/schedule";
 
     return (errCode ? <></> :
         <div className={root}>
@@ -119,7 +118,7 @@ export function Header() {
                             wrap="nowrap"
                         >
                             <Grid item style={{ flexGrow: 0 }}>
-                                {isSchedulePage ? <SelectOrgButton /> : <GoBackButton />}
+                                {isHomeRoute ? <SelectOrgButton /> : <GoBackButton />}
                             </Grid>
                             <Grid item style={{ flexGrow: 1, textAlign: "center" }}>
                                 <img alt="KidsLoop Logo" src={KidsloopLogo} height={32} />

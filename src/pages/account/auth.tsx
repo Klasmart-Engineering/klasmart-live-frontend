@@ -1,6 +1,9 @@
 import createStyles from "@material-ui/core/styles/createStyles";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import React, { useEffect, useRef } from "react";
+import { useDispatch } from "react-redux";
+import { OrientationType } from "../../store/actions";
+import { lockOrientation } from "../../utils/screenUtils";
 
 const useStyles = makeStyles((_theme) => createStyles({
     container: {
@@ -22,6 +25,7 @@ interface Props {
 
 export function Auth({ refresh, useInAppBrowser }: Props) {
     const classes = useStyles();
+    const dispatch = useDispatch();
     const frameRef = useRef<HTMLIFrameElement>(null);
 
     useEffect(() => {
@@ -50,6 +54,7 @@ export function Auth({ refresh, useInAppBrowser }: Props) {
     }, [frameRef.current]);
 
     useEffect(() => {
+        lockOrientation(OrientationType.PORTRAIT, dispatch);
         if (!useInAppBrowser) return;
 
         const cordova = (window as any).cordova;

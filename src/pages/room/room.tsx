@@ -16,8 +16,8 @@ import Layout from "../layout";
 import { Trophy } from "../../components/trophies/trophy";
 import { State } from "../../store/store";
 import { ClassType, OrientationType } from "../../store/actions";
-import { setDeviceOrientation } from "../../store/reducers/location";
 import { useUserContext } from "../../context-provider/user-context";
+import { lockOrientation } from "../../utils/screenUtils";
 
 export interface Session {
     id: string,
@@ -56,16 +56,7 @@ export function Room(): JSX.Element {
     const [streamId, setStreamId] = useState<string>();
 
     useEffect(() => {
-        if (screen.orientation && screen.orientation.lock) {
-            screen.orientation.lock("landscape")
-                .then(() => {
-                    dispatch(setDeviceOrientation(OrientationType.LANDSCAPE));
-                })
-                .catch((err) => {
-                    console.log("screen.orientation.lock() is not available on this device.");
-                });
-            return;
-        }
+        lockOrientation(OrientationType.LANDSCAPE, dispatch);
     }, [])
 
     return (
