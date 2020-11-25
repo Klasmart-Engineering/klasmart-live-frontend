@@ -108,7 +108,6 @@ export function Schedule() {
                 const studySchedules = totalSchedules.filter((s: any) => s.class_type === "Homework")
                 dispatch(setSchedule({ total: totalSchedules, live: liveSchedules, study: studySchedules }))
             }
-
             try {
                 await Promise.all([fetchScheduleTimeViews()])
             } catch (err) {
@@ -118,8 +117,8 @@ export function Schedule() {
                 dispatch(setInFlight(false));
             }
         }
+        dispatch(setInFlight(true));
         if (selectedOrg && selectedOrg.organization_id) {
-            dispatch(setInFlight(true));
             fetchEverything();
         }
     }, [selectedOrg])
@@ -153,28 +152,36 @@ export function Schedule() {
 function ScheduleList() {
     const { listRoot, listSubheaderText } = useStyles();
     const classType = useSelector((state: State) => state.session.classType);
-    const { live, study } = useSelector((state: State) => state.data.schedule);
+    const total = useSelector((state: State) => state.data.schedule.total);
+    const live = useSelector((state: State) => state.data.schedule.live);
+    const study = useSelector((state: State) => state.data.schedule.study);
     const [loading, setLoading] = useState<boolean>(true);
-    const [total, setTotal] = useState<Schedule[]>([]);
     const [todaySchedules, setTodaySchedules] = useState<Schedule[]>([]);
     const [tomorrowSchedules, setTomorrowSchedules] = useState<Schedule[]>([]);
     const [upcomingSchedules, setUpcomingSchedules] = useState<Schedule[]>([]);
 
     useEffect(() => {
-        classType === ClassType.LIVE ? setTotal(live) : setTotal(study);
-    }, [classType])
+        if (total.length === 0) { setLoading(false); return; }
 
-    useEffect(() => {
-        if (total.length > 0) {
-            const todaySchedules = total.filter(s => s.start_at >= todayTimeStamp && s.end_at < tomorrowTimeStamp);
-            const tomorrowSchedules = total.filter(s => s.start_at >= tomorrowTimeStamp && s.end_at <= endOfTomorrowTimeStamp);
-            const upcomingSchedules = total.filter(s => s.start_at > endOfTomorrowTimeStamp);
-            setTodaySchedules(todaySchedules);
-            setTomorrowSchedules(tomorrowSchedules);
-            setUpcomingSchedules(upcomingSchedules);
+        let todaySchedules: Schedule[] = [];
+        let tomorrowSchedules: Schedule[] = [];
+        let upcomingSchedules: Schedule[] = [];
+
+        if (classType === ClassType.LIVE) {
+            todaySchedules = live.filter(s => s.start_at >= todayTimeStamp && s.end_at < tomorrowTimeStamp);
+            tomorrowSchedules = live.filter(s => s.start_at >= tomorrowTimeStamp && s.end_at <= endOfTomorrowTimeStamp);
+            upcomingSchedules = live.filter(s => s.start_at > endOfTomorrowTimeStamp);
+        } else if (classType === ClassType.STUDY) {
+            todaySchedules = study.filter(s => s.start_at >= todayTimeStamp && s.end_at < tomorrowTimeStamp);
+            tomorrowSchedules = study.filter(s => s.start_at >= tomorrowTimeStamp && s.end_at <= endOfTomorrowTimeStamp);
+            upcomingSchedules = study.filter(s => s.start_at > endOfTomorrowTimeStamp);
         }
+
+        setTodaySchedules(todaySchedules);
+        setTomorrowSchedules(tomorrowSchedules);
+        setUpcomingSchedules(upcomingSchedules);
         setLoading(false);
-    }, [total])
+    }, [classType])
 
     const [openAlert, setOpenAlert] = useState(false);
     const handleClose = (event?: React.SyntheticEvent, reason?: string) => {
