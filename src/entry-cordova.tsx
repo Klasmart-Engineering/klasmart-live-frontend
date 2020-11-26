@@ -33,7 +33,7 @@ import { setErrCode } from "./store/reducers/communication";
 import { setHistory } from "./store/reducers/location";
 import { AuthTokenProvider } from "./services/auth-token/AuthTokenProvider";
 import { themeProvider } from "./themeProvider";
-import { getLanguage } from "./utils/locale";
+import { getLanguage, useLocaleLanguage } from "./utils/locale";
 import Loading from "./components/loading";
 import { CameraContextProvider } from "./components/media/useCameraContext";
 import useCordovaInitialize from "./cordova-initialize";
@@ -68,9 +68,8 @@ const client = new ApolloClient({
 
 function Entry() {
     const dispatch = useDispatch();
-    const languageCode = useSelector((state: State) => state.session.locale);
     const themeMode = useSelector((state: State) => state.control.themeMode);
-    const locale = getLanguage(languageCode);
+    const { language, languageCode, languageFromCookieLocale } = useLocaleLanguage();
 
     useEffect(() => {
         dispatch(setErrCode(null));
@@ -97,6 +96,11 @@ function Entry() {
     const { cordovaReady, permissions } = useCordovaInitialize(false, () => { history.goBack(); });
     const { authReady, authenticated, refresh } = useAuthenticatedCheck(cordovaReady);
 
+    useEffect(() => {
+        if (!authReady) return;
+        languageFromCookieLocale();
+    }, [authReady, languageFromCookieLocale]);
+
     if (!cordovaReady) { return <Loading rawText="Loading..." /> }
     if (!permissions) { return <Loading rawText="Camera and Microphone premissions required. Please grant the permissions and restart application." /> }
     if (!authReady) { return <Loading rawText="Checking user authentication..." /> }
@@ -106,7 +110,7 @@ function Entry() {
         <UserContextProvider sessionId={sessionId}>
             <UserInformationContextProvider>
                 <CameraContextProvider>
-                    <RawIntlProvider value={locale}>
+                    <RawIntlProvider value={language}>
                         <ThemeProvider theme={themeProvider(languageCode, themeMode)}>
                             <CssBaseline />
                             <App history={history} refresh={refresh} />
