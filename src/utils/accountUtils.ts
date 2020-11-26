@@ -7,6 +7,20 @@ interface User {
     user_name: string,
 }
 
+export async function refreshAuthenticationToken(): Promise<boolean> {
+    const headers = new Headers();
+    headers.append("Accept", "application/json");
+    headers.append("Content-Type", "application/json");
+
+    const response = await fetch("https://auth.kidsloop.net/refresh", {
+        credentials: "include",
+        headers,
+        method: "GET",
+    });
+
+    return response.ok;
+}
+
 export async function checkUserAuthenticated(): Promise<boolean> {
     const GET_SELF = `query {
         me { 
