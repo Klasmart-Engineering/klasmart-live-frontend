@@ -4,6 +4,7 @@ import React, { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { OrientationType } from "../../store/actions";
 import { lockOrientation } from "../../utils/screenUtils";
+import Loading from "../../components/loading";
 
 const useStyles = makeStyles((_theme) => createStyles({
     container: {
@@ -88,13 +89,15 @@ export function Auth({ refresh, useInAppBrowser }: Props) {
             }
         };
 
-        browser.addEventListener("exit", onExit, false);
-        browser.addEventListener("message", onMessage, false);
+        if (browser) {
+            browser.addEventListener("exit", onExit, false);
+            browser.addEventListener("message", onMessage, false);
+        }
     }, []);
 
     if (useInAppBrowser) {
         return (
-            <>Waiting for authentication...</>
+            <Loading rawText="Waiting for authentication..."></Loading>
         );
     } else {
         return (

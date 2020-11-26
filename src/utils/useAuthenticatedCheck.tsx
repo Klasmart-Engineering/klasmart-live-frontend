@@ -18,6 +18,29 @@ export const useAuthenticatedCheck = (cookiesReady: boolean) => {
     useEffect(() => {
         if (!cookiesReady) return;
 
+        const openUrlHandler = (url: URL) => {
+            console.log(`openUrlHandler: ${url}`);
+
+            if (url.searchParams) {
+                const languageCode = url.searchParams.get("iso");
+                if (languageCode) {
+                    // TODO: Set the language code redux state.
+                }
+
+                const token = url.searchParams.get("token");
+                if (token) {
+                    // TODO: Set the necessary cookies and continue to refresh.
+                }
+            }
+
+            refresh();
+        };
+
+        (window as any).handleOpenURL = (url: URL) => {
+            // NOTE: Using setImmediate to prevent handleOpenURL from blocking app launch.
+            setImmediate(() => openUrlHandler(url));
+        };
+
         refresh();
     }, [cookiesReady])
 
