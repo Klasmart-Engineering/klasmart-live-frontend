@@ -8,6 +8,7 @@ export interface IUserContext {
     roomId: string,
     sessionId: string,
     name?: string,
+    token?: string,
     setName: React.Dispatch<React.SetStateAction<string | undefined>>
     setToken: React.Dispatch<React.SetStateAction<string | undefined>>
 }
@@ -50,6 +51,7 @@ export function UserContextProvider({ children, sessionId }: Props) {
             setCamera: setSelectedCamera,
             name: selectedName,
             setName: setSelectedName,
+            token,
             sessionId,
             setToken,
         };
