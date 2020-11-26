@@ -20,6 +20,21 @@ export async function transferToken(token: string): Promise<boolean> {
         method: "POST",
     });
     await response.text()
+
+    return response.ok;
+}
+
+export async function refreshAuthenticationToken(): Promise<boolean> {
+    const headers = new Headers();
+    headers.append("Accept", "application/json");
+    headers.append("Content-Type", "application/json");
+
+    const response = await fetch(`${AUTH_ENDPOINT}/refresh`, {
+        credentials: "include",
+        headers,
+        method: "GET",
+    });
+
     return response.ok;
 }
 

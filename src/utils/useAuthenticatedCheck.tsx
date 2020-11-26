@@ -1,7 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { setLocale } from "../store/reducers/session";
-import { checkUserAuthenticated, transferToken } from "./accountUtils";
+import { checkUserAuthenticated, refreshAuthenticationToken, transferToken } from "./accountUtils";
+
+// NOTE: Minutes * 60 * 1000
+const TOKEN_REFRESH_TIMEOUT_MS = 10 * 60 * 1000;
 
 export const useAuthenticatedCheck = (cookiesReady: boolean) => {
     const [authReady, setAuthReady] = useState<boolean>(false);
@@ -10,16 +13,38 @@ export const useAuthenticatedCheck = (cookiesReady: boolean) => {
 
     const dispatch = useDispatch();
 
-    const refresh = useCallback(() => {
+    const refresh = useCallback(async () => {
         setAuthReady(false);
         setAuthError(false);
 
-        checkUserAuthenticated()
-            .then((auth) => {
-                setAuthenticated(auth);
-                setAuthReady(true);
-            });
+        const gotValidToken = await refreshAuthenticationToken();
+        if (!gotValidToken) {
+            setAuthenticated(false);
+            setAuthReady(true);
+            return;
+        }
+
+        const gotValidUser = await checkUserAuthenticated();
+        setAuthenticated(gotValidUser);
+        setAuthReady(true);
     }, []);
+
+    useEffect(() => {
+        if (!authenticated) return;
+
+        const repeatedTokenRefresh = setInterval(() => {
+            refreshAuthenticationToken()
+                .then((authenticated) => {
+                    if (!authenticated) {
+                        setAuthenticated(false);
+                    }
+                });
+        }, TOKEN_REFRESH_TIMEOUT_MS);
+
+        return () => {
+            clearInterval(repeatedTokenRefresh);
+        }
+    }, [authenticated]);
 
     useEffect(() => {
         if (!cookiesReady) return;
