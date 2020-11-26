@@ -86,8 +86,7 @@ export class WebRTCSFUContext implements WebRTCContext {
         const ref = useRef<WebRTCSFUContext>(undefined as any)
         const [value, rerender] = useReducer(() => ({ ref }), { ref })
         const { roomId } = RoomContext.Consume();
-        const token = AuthTokenProvider.retrieveToken();
-        const { sessionId } = useUserContext();
+        const { sessionId, token } = useUserContext();
 
         const SfuEndpoint = process.env.ENDPOINT_SFU || `${window.location.protocol === "https:" ? "wss" : "ws"}://${window.location.host}/sfu`;
 
@@ -102,7 +101,7 @@ export class WebRTCSFUContext implements WebRTCContext {
                         },
                     })
                 } as any),
-            [roomId])
+            [roomId, token])
 
         if (!apolloClient) {
             return <CircularProgress />
