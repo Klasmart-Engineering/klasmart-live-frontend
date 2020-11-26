@@ -53,6 +53,7 @@
         <edit-config file="AndroidManifest.xml" mode="merge" target="/manifest/application">
             <application android:usesCleartextTraffic="true" />
         </edit-config>
+        <preference name="Fullscreen" value="true" />
     </platform>
     <platform name="android">
         <icon density="ldpi" background="res/android/drawable-ldpi/ic_app_adaptive_bg.png" foreground="res/android/drawable-ldpi/ic_app_adaptive_fg.png" src="res/android/drawable-ldpi/ic_app_legacy.png"/>

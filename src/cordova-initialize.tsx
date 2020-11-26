@@ -8,6 +8,16 @@ const useCordovaInitialize = (backExitApplication?: boolean, callbackBackButton?
         const cordova = (window as any).cordova;
         if (!cordova || !cordova.plugins) return;
 
+        // cordova-plugin-fullscreen
+        const AndroidFullScreen = (window as any).AndroidFullScreen;
+        if (AndroidFullScreen) {
+            AndroidFullScreen.immersiveMode(() => {
+                console.log("Successfully set immersiveMode");
+            }, () => {
+                console.error("Failed to set immersiveMode");
+            });
+        }
+
         if (cordova.plugins.iosrtc) {
             console.log("Requesting iosrtc permissions...")
             cordova.plugins.iosrtc.requestPermission(mic, camera, (approved: boolean) => {
