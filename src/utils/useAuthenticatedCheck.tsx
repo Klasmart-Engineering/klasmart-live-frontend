@@ -24,8 +24,8 @@ export const useAuthenticatedCheck = (cookiesReady: boolean) => {
     useEffect(() => {
         if (!cookiesReady) return;
 
-        const openUrlHandler = (url: URL) => {
-            console.log(`openUrlHandler: ${url}`);
+        const openUrlHandler = (urlString: string) => {
+            const url = new URL(urlString);
 
             if (url.searchParams) {
                 const languageCode = url.searchParams.get("iso");
@@ -45,7 +45,7 @@ export const useAuthenticatedCheck = (cookiesReady: boolean) => {
             }
         };
 
-        (window as any).handleOpenURL = (url: URL) => {
+        (window as any).handleOpenURL = (url: string) => {
             // NOTE: Using setImmediate to prevent handleOpenURL from blocking app launch.
             setImmediate(() => openUrlHandler(url));
         };
