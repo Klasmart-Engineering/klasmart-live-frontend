@@ -33,7 +33,7 @@ import { setErrCode } from "./store/reducers/communication";
 import { setHistory } from "./store/reducers/location";
 import { AuthTokenProvider } from "./services/auth-token/AuthTokenProvider";
 import { themeProvider } from "./themeProvider";
-import { getLanguage, useLocaleLanguage } from "./utils/locale";
+import { useLocaleCookie } from "./utils/locale";
 import Loading from "./components/loading";
 import { CameraContextProvider } from "./components/media/useCameraContext";
 import useCordovaInitialize from "./cordova-initialize";
@@ -69,7 +69,8 @@ const client = new ApolloClient({
 function Entry() {
     const dispatch = useDispatch();
     const themeMode = useSelector((state: State) => state.control.themeMode);
-    const { language, languageCode, languageFromCookieLocale } = useLocaleLanguage();
+    const [ language, setLanguageFromCookie ] = useLocaleCookie();
+    const languageCode = useSelector((state: State) => state.session.locale);
 
     useEffect(() => {
         dispatch(setErrCode(null));
@@ -98,8 +99,8 @@ function Entry() {
 
     useEffect(() => {
         if (!authReady) return;
-        languageFromCookieLocale();
-    }, [authReady, languageFromCookieLocale]);
+        setLanguageFromCookie();
+    }, [authReady, setLanguageFromCookie]);
 
     if (!cordovaReady) { return <Loading rawText="Loading..." /> }
     if (!permissions) { return <Loading rawText="Camera and Microphone premissions required. Please grant the permissions and restart application." /> }
