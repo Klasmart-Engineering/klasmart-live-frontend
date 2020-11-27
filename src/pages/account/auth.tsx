@@ -66,7 +66,7 @@ export function Auth({ refresh, useInAppBrowser }: Props) {
                 browser = cordova.InAppBrowser.open(AuthEndpoint, '_system', 'location=no,zoom=no');
             } else {
                 cordova.plugins.browsertab.openUrl(
-                    AuthEndpoint,
+                    `${AuthEndpoint}?ua=cordova`,
                     (successResp: any) => { console.log(successResp) },
                     (failureResp: any) => {
                         console.error("no browser tab available");
