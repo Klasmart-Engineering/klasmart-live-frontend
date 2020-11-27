@@ -1,12 +1,18 @@
 import { useCallback, useEffect, useState } from "react";
-import { checkUserAuthenticated } from "./accountUtils";
+import { useDispatch } from "react-redux";
+import { setLocale } from "../store/reducers/session";
+import { checkUserAuthenticated, transferToken } from "./accountUtils";
 
 export const useAuthenticatedCheck = (cookiesReady: boolean) => {
     const [authReady, setAuthReady] = useState<boolean>(false);
     const [authenticated, setAuthenticated] = useState<boolean>(false);
+    const [authError, setAuthError] = useState<boolean>(false);
+
+    const dispatch = useDispatch();
 
     const refresh = useCallback(() => {
         setAuthReady(false);
+        setAuthError(false);
 
         checkUserAuthenticated()
             .then((auth) => {
@@ -24,16 +30,19 @@ export const useAuthenticatedCheck = (cookiesReady: boolean) => {
             if (url.searchParams) {
                 const languageCode = url.searchParams.get("iso");
                 if (languageCode) {
-                    // TODO: Set the language code redux state.
+                    dispatch(setLocale(languageCode))
                 }
 
                 const token = url.searchParams.get("token");
                 if (token) {
-                    // TODO: Set the necessary cookies and continue to refresh.
+                    transferToken(token).then(() => {
+                        refresh();
+                    }).catch(err => {
+                        console.error(err);
+                        setAuthError(true);
+                    });
                 }
             }
-
-            refresh();
         };
 
         (window as any).handleOpenURL = (url: URL) => {
@@ -44,5 +53,5 @@ export const useAuthenticatedCheck = (cookiesReady: boolean) => {
         refresh();
     }, [cookiesReady])
 
-    return { authReady, authenticated, refresh };
+    return { authReady, authError, authenticated, refresh };
 }

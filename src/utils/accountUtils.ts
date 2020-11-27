@@ -7,6 +7,22 @@ interface User {
     user_name: string,
 }
 
+const AUTH_ENDPOINT = "https://auth.kidsloop.net";
+const USER_ENDPOINT = "https://api.kidsloop.net";
+
+export async function transferToken(token: string): Promise<boolean> {
+    const headers = new Headers();
+    headers.append("Accept", "application/json");
+    headers.append("Content-Type", "application/json");
+    const response = await fetch(`${AUTH_ENDPOINT}/transfer`, {
+        body: JSON.stringify({ token }),
+        headers,
+        method: "POST",
+    });
+    await response.text()
+    return response.ok;
+}
+
 export async function checkUserAuthenticated(): Promise<boolean> {
     const GET_SELF = `query {
         me { 
@@ -17,7 +33,7 @@ export async function checkUserAuthenticated(): Promise<boolean> {
     const headers = new Headers();
     headers.append("Accept", "application/json");
     headers.append("Content-Type", "application/json");
-    const response = await fetch("https://api.kidsloop.net/user/", {
+    const response = await fetch(`${USER_ENDPOINT}/user/`, {
         body: JSON.stringify({ query: GET_SELF }),
         credentials: "include",
         headers,
@@ -42,7 +58,7 @@ export async function redirectIfUnauthorized(continueParam?: string) {
     const headers = new Headers();
     headers.append("Accept", "application/json");
     headers.append("Content-Type", "application/json");
-    const response = await fetch("https://api.kidsloop.net/user/", {
+    const response = await fetch(`${USER_ENDPOINT}/user/`, {
         body: JSON.stringify({ query: GET_SELF }),
         credentials: "include",
         headers,
@@ -55,9 +71,9 @@ export async function redirectIfUnauthorized(continueParam?: string) {
             const me: User = response.data.me;
             // console.log("redirectIfUnauthorized me: ", me);
             if (me === null) {
-                if (window.location.origin === "https://auth.kidsloop.net") { return; }
+                if (window.location.origin === AUTH_ENDPOINT) { return; }
                 const stringifiedQuery = queryString.stringify({ continue: continueParam ? continueParam : window.location.href });
-                window.location.href = `https://auth.kidsloop.net/?${stringifiedQuery}#/`
+                window.location.href = `${AUTH_ENDPOINT}/?${stringifiedQuery}#/`
             }
             return;
         });
