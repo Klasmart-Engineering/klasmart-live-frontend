@@ -24,7 +24,7 @@ export function useLocaleLanguage() {
     }, [languageCode]);
 
     const languageFromCookieLocale = useCallback((excplicitLanguageCode?: string) => {
-        var selectedLanguageCode = excplicitLanguageCode || Cookies.get("locale") || languageCode;
+        const selectedLanguageCode = excplicitLanguageCode || Cookies.get("locale") || languageCode;
         dispatch(setLocale(selectedLanguageCode))
     }, []);
 
