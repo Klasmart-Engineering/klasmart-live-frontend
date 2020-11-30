@@ -16,12 +16,15 @@ type Props = {
     token?: string
     endpoint: string
     sessionId: string
+    offline?: boolean
 }
 
-export function LiveSessionLinkProvider({ children, sessionId, endpoint, token }: Props) {
+export function LiveSessionLinkProvider({ children, sessionId, endpoint, token, offline }: Props) {
     const [apolloClient, setApolloClient] = useState<ApolloClient<unknown>>();
 
     useEffect(() => {
+        if (offline) return;
+
         const subscriptionClient = new SubscriptionClient(endpoint, {
             reconnect: true,
             connectionParams: {
@@ -45,11 +48,15 @@ export function LiveSessionLinkProvider({ children, sessionId, endpoint, token }
         }
     }, [token, sessionId]);
 
-    // TODO: Any way to prevent having to do apolloClient as any when providing the client prop?
+    if (offline) {
+        return <>{ children }</>
+    }
 
     if (!apolloClient) {
         return (<Loading rawText={"Joining live..."} />)
     }
+
+    // TODO: Any way to prevent having to do apolloClient as any when providing the client prop?
 
     return (
         <ApolloProvider client={apolloClient as any}>
