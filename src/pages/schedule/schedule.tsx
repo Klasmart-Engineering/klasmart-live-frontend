@@ -23,10 +23,12 @@ import { ClassType, OrientationType } from "../../store/actions";
 import { Schedule, ScheduleDetail, setSchedule, setSelectedPlan } from "../../store/reducers/data";
 import { setInFlight, setErrCode } from "../../store/reducers/communication";
 import { lockOrientation } from "../../utils/screenUtils";
+import { useShouldSelectOrganization } from "../account/selectOrgDialog";
 
 import LiveSchedulePopcorn from "../../assets/img/schedule_popcorn.svg";
 import StudyScheduleHouse from "../../assets/img/study_house.svg";
 import { useUserContext } from "../../context-provider/user-context";
+import { setSelectOrgDialogOpen } from "../../store/reducers/control";
 
 // NOTE: China API server(Go lang) accept 10 digits timestamp
 const now = new Date();
@@ -71,6 +73,8 @@ export function Schedule() {
     const dispatch = useDispatch();
     const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
     const inFlight = useSelector((state: State) => state.communication.inFlight);
+
+    const { shouldSelect } = useShouldSelectOrganization();
 
     useEffect(() => {
         lockOrientation(OrientationType.PORTRAIT, dispatch);
@@ -118,11 +122,14 @@ export function Schedule() {
             }
         }
         dispatch(setInFlight(true));
+
         if (selectedOrg && selectedOrg.organization_id) {
             fetchEverything();
+        } else if (shouldSelect) {
+            dispatch(setSelectOrgDialogOpen(true));
         }
         console.log("selectedOrg: ", selectedOrg);
-    }, [selectedOrg])
+    }, [shouldSelect, selectedOrg])
 
     return (<>
         <Header isHomeRoute />

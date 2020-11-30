@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Router, Route, Switch } from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
-import { SelectOrgDialog, useShouldSelectOrganization } from "./pages/account/selectOrgDialog";
+import { SelectOrgDialog } from "./pages/account/selectOrgDialog";
 import { Auth } from "./pages/account/auth";
 import { Room } from "./pages/room/room";
 import { Join } from "./pages/join/join";
@@ -17,13 +17,7 @@ export function App({ history, refresh }: {
 }): JSX.Element {
     const dispatch = useDispatch();
     const deviceOrientation = useSelector((state: State) => state.location.deviceOrientation);
-
-    const { errCode, shouldSelect } = useShouldSelectOrganization();
-
-    useEffect(() => {
-        if (shouldSelect) { dispatch(setSelectOrgDialogOpen(true)) }
-    }, [])
-
+    
     // TODO (Isu): There is a problem with this logic, so disable it for a while.
     // if (errCode === 401) {
     //     return (
