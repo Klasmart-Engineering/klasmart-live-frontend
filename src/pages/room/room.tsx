@@ -64,7 +64,7 @@ export function Room(): JSX.Element {
     }, [])
 
     return (
-        <LiveSessionLinkProvider offline={classType !== ClassType.LIVE} sessionId={sessionId} token={token} endpoint={LIVE_ENDPOINT_WS}>
+        <LiveSessionLinkProvider sessionId={sessionId} token={token} endpoint={LIVE_ENDPOINT_WS}>
             <RoomContext.Provide>
                 <GlobalWhiteboardContext>
                     {classType === ClassType.LIVE ? <>
