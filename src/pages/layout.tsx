@@ -194,11 +194,7 @@ export default function Layout(props: LayoutProps): JSX.Element {
     const { streamId } = streamIdState;
 
     useEffect(() => {
-        if (classType === ClassType.LIVE) {
-            dispatch(setDrawerOpen(true));
-        } else {
-            dispatch(setDrawerOpen(false));
-        }
+        dispatch(setDrawerOpen(classType === ClassType.STUDY ? false : true));
     }, [])
 
     return (
@@ -210,14 +206,16 @@ export default function Layout(props: LayoutProps): JSX.Element {
             style={{ flexGrow: 1, overflow: "hidden" }}
         >
             <MainContainer classContent={children} materialKey={materialKey} interactiveModeState={interactiveModeState} />
-            <DrawerContainer
-                interactiveModeState={interactiveModeState}
-                streamId={streamId}
-                material={material}
-                tabIndex={tabIndex}
-                setTabIndex={setTabIndex}
-                setMaterialKey={setMaterialKey}
-            />
+            {classType === ClassType.STUDY ? null :
+                <DrawerContainer
+                    interactiveModeState={interactiveModeState}
+                    streamId={streamId}
+                    material={material}
+                    tabIndex={tabIndex}
+                    setTabIndex={setTabIndex}
+                    setMaterialKey={setMaterialKey}
+                />
+            }
         </Grid>
     )
 }
@@ -229,6 +227,7 @@ function MainContainer({ classContent, materialKey, interactiveModeState }: {
 }) {
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down('sm'));
+    const classType = useSelector((store: State) => store.session.classType);
     const drawerOpen = useSelector((state: State) => state.control.drawerOpen);
     const { interactiveMode } = interactiveModeState;
 
@@ -244,7 +243,7 @@ function MainContainer({ classContent, materialKey, interactiveModeState }: {
             key={materialKey}
             style={{
                 padding: isSmDown ? theme.spacing(1) : theme.spacing(2),
-                paddingRight: (isSmDown ? theme.spacing(1) : theme.spacing(2)) + DRAWER_TOOLBAR_WIDTH,
+                paddingRight: (isSmDown ? theme.spacing(1) : theme.spacing(2)) + (classType === ClassType.STUDY ? 0 : DRAWER_TOOLBAR_WIDTH),
             }}
         >
             <Grid
@@ -895,9 +894,9 @@ function Settings() {
                         <FormattedMessage id="button_cancel" />
                     </Button>
                     <Button onClick={() => {
-                            setOpenDialog(false)
-                            if (webrtc) { webrtc.endCurrentClass(); }
-                        }} color="primary">
+                        setOpenDialog(false)
+                        if (webrtc) { webrtc.endCurrentClass(); }
+                    }} color="primary">
                         <FormattedMessage id="button_confirm" />
                     </Button>
                 </DialogActions>
