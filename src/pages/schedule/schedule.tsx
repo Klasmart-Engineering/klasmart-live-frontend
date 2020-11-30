@@ -121,11 +121,12 @@ export function Schedule() {
         if (selectedOrg && selectedOrg.organization_id) {
             fetchEverything();
         }
+        console.log("selectedOrg: ", selectedOrg);
     }, [selectedOrg])
 
     return (<>
         <Header isHomeRoute />
-        {inFlight ? <Loading /> :
+        {inFlight ? <Loading rawText="Please select an organization to view your schedule!"/> :
             <Grid
                 wrap="nowrap"
                 container
@@ -189,7 +190,7 @@ function ScheduleList() {
         setOpenAlert(false);
     };
 
-    return (loading ? <Loading /> : <>
+    return (loading ? <Loading rawText="Please select an organization to view your schedule!"/> : <>
         <Grid item>
             <List
                 component="nav"
