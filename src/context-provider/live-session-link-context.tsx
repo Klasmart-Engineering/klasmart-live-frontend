@@ -1,8 +1,10 @@
 import { ApolloProvider } from "@apollo/react-hooks";
 import { ApolloClient, InMemoryCache } from "apollo-boost";
-import { WebSocketLink } from "apollo-link-ws/lib/webSocketLink";
+import { SubscriptionClient } from "subscriptions-transport-ws";
+import { WebSocketLink } from "apollo-link-ws";
 import React, { createContext, ReactChild, ReactChildren, useContext, useEffect, useState } from "react";
 import Loading from "../components/loading";
+
 
 export interface ILiveSessionContext { 
     client?: ApolloClient<unknown>
@@ -22,28 +24,25 @@ export function LiveSessionLinkProvider({ children, sessionId, endpoint, token }
     const [apolloClient, setApolloClient] = useState<ApolloClient<unknown>>();
 
     useEffect(() => {
-        const linkOptions = {
+        const subscriptionClient = new SubscriptionClient(endpoint, {
             reconnect: true,
             connectionParams: {
                 authToken: token,
                 sessionId
-            },
-        }
-
-        const link = new WebSocketLink({
-            uri: endpoint, 
-            options: linkOptions,
+            }
         });
 
         const client = new ApolloClient({
             cache: new InMemoryCache(),
-            link
+            link: new WebSocketLink(subscriptionClient)
         });
 
         setApolloClient(client);
 
         return () => {
             client.stop();
+            subscriptionClient.close();
+
             setApolloClient(undefined);
         }
     }, [token, sessionId]);
