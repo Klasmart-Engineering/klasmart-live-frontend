@@ -9,10 +9,8 @@ import CardContent from "@material-ui/core/CardContent";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Tooltip from "@material-ui/core/Tooltip";
-import KidsloopLogo from "../assets/img/kidsloop.svg";
 import KidsLoopTeachers from "../assets/img/kidsloop_live_teachers.svg";
 import KidsLoopStudents from "../assets/img/kidsloop_live_students.svg";
-import CenterAlignChildren from "../components/centerAlignChildren";
 import StyledButton from "../components/styled/button";
 import StyledTextField from "../components/styled/textfield";
 import { UserContext } from "../entry";
@@ -57,9 +55,7 @@ export function Join(): JSX.Element {
     const classes = useStyles();
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
-    const { camera, setCamera, name, setName, sessionId } = useContext(UserContext);
-
-    const url = new URL(window.location.href);
+    const { camera, setCamera, name, setName, sessionId, teacher } = useContext(UserContext);
 
     const [user, setUser] = useState<string>("");
 
@@ -169,7 +165,7 @@ export function Join(): JSX.Element {
                             <Grid item xs={12} md={4}>
                                 <Grid container direction="row" justify="center" alignItems="center" spacing={4}>
                                     <Grid item xs={12}>
-                                        <img alt="KidsLoop Live" src={(url.searchParams.get("teacher") !== null) ? KidsLoopTeachers : KidsLoopStudents} height="64px" style={{ display: "block", margin: "0 auto" }}/>
+                                        <img alt="KidsLoop Live" src={teacher ? KidsLoopTeachers : KidsLoopStudents} height="64px" style={{ display: "block", margin: "0 auto" }}/>
                                     </Grid>
                                     <Grid item xs={12} className={classes.formContainer}>
                                         <form onSubmit={join}>
