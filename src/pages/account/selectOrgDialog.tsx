@@ -54,7 +54,7 @@ export function useShouldSelectOrganization() {
             setShouldSelect(false);
             setErrCode(403)
         } else if (information.organizations.length === 1) { // 2. User has 1 organization
-            setShouldSelect(false);
+            setShouldSelect(true);
             const { organization_id, organization_name } = information.organizations[0].organization;
             const roles = information.organizations[0].roles;
             if (roles.length === 1) {
