@@ -6,10 +6,10 @@ LogRocket.init('8acm62/kidsloop-live-prod', {
 import { v4 as uuid } from "uuid";
 export const sessionId = uuid();
 
-import React, { createContext, useState, useMemo, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import * as Sentry from '@sentry/react';
 import { render } from "react-dom";
-import { RawIntlProvider, FormattedMessage } from "react-intl";
+import { RawIntlProvider } from "react-intl";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import {
@@ -58,23 +58,6 @@ Sentry.init({
     dsn: "https://9f4fca35be3b4b7ca970a126f26a5e54@o412774.ingest.sentry.io/5388813",
     environment: process.env.NODE_ENV || "not-specified",
 });
-
-const authToken = AuthTokenProvider.retrieveToken();
-const wsLink = new WebSocketLink({
-    uri: process.env.ENDPOINT_WEBSOCKET || `${window.location.protocol === "https:" ? "wss" : "ws"}://${window.location.host}/graphql`,
-    options: {
-        reconnect: true,
-        connectionParams: {
-            authToken,
-            sessionId
-        },
-    }
-});
-
-const client = new ApolloClient({
-    cache: new InMemoryCache(),
-    link: wsLink
-} as any);
 
 const url = new URL(window.location.href)
 if (url.hostname !== "localhost" && url.hostname !== "live.beta.kidsloop.net") {
@@ -204,9 +187,7 @@ async function main() {
     const renderComponent = (
         <Provider store={store}>
             <PersistGate loading={null} persistor={persistor}>
-                <ApolloProvider client={client}>
                     <Entry />
-                </ApolloProvider>
             </PersistGate>
         </Provider>
     )

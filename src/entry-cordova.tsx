@@ -1,7 +1,7 @@
 import { v4 as uuid } from "uuid";
 export const sessionId = uuid();
 
-import React, { createContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import { render } from "react-dom";
 import { RawIntlProvider } from "react-intl";
 import { Provider, useDispatch, useSelector } from "react-redux";
@@ -42,29 +42,6 @@ import { Auth } from "./pages/account/auth";
 import { UserInformationContextProvider } from "./context-provider/user-information-context";
 import { createHashHistory } from 'history'
 import { UserContextProvider } from "./context-provider/user-context";
-
-// TODO: This code was written using the assumption page would always reload
-// after the token had been set. Since we schedule pick and join button the
-// token required here might not be set before page was loaded, instead it 
-// would be set when user pick a class to join. This is different from how
-// the live website works since token is always set before user enter the 
-// live website.
-const authToken = AuthTokenProvider.retrieveToken();
-const wsLink = new WebSocketLink({
-    uri: process.env.ENDPOINT_WEBSOCKET || `${window.location.protocol === "https:" ? "wss" : "ws"}://${window.location.host}/graphql`,
-    options: {
-        reconnect: true,
-        connectionParams: {
-            authToken,
-            sessionId
-        },
-    }
-});
-
-const client = new ApolloClient({
-    cache: new InMemoryCache(),
-    link: wsLink
-} as any);
 
 function Entry() {
     const dispatch = useDispatch();
@@ -128,9 +105,7 @@ async function main() {
     const renderComponent = (
         <Provider store={store}>
             <PersistGate loading={null} persistor={persistor}>
-                <ApolloProvider client={client}>
                     <Entry />
-                </ApolloProvider>
             </PersistGate>
         </Provider>
     )

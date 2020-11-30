@@ -18,6 +18,7 @@ import { State } from "../../store/store";
 import { ClassType, OrientationType } from "../../store/actions";
 import { useUserContext } from "../../context-provider/user-context";
 import { lockOrientation } from "../../utils/screenUtils";
+import { LiveSessionLinkProvider } from "../../context-provider/live-session-link-context";
 
 export interface Session {
     id: string,
@@ -46,12 +47,15 @@ export interface StreamIdState {
     setStreamId: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
+const LIVE_ENDPOINT_WS = process.env.ENDPOINT_WEBSOCKET || `${window.location.protocol === "https:" ? "wss" : "ws"}://${window.location.host}/graphql`;
+
 export function Room(): JSX.Element {
     const dispatch = useDispatch();
     const classType = useSelector((state: State) => state.session.classType);
     const deviceOrientation = useSelector((state: State) => state.location.deviceOrientation);
 
-    const { teacher } = useUserContext();
+    const { teacher, sessionId, token } = useUserContext();
+
     const [interactiveMode, setInteractiveMode] = useState<number>(0);
     const [streamId, setStreamId] = useState<string>();
 
@@ -60,27 +64,29 @@ export function Room(): JSX.Element {
     }, [])
 
     return (
-        <RoomContext.Provide>
-            <GlobalWhiteboardContext>
-                {classType === ClassType.LIVE ? <>
-                    <WebRTCSFUContext.Provide>
-                        <ScreenShare.Provide>
-                            <Layout interactiveModeState={{ interactiveMode, setInteractiveMode }} streamIdState={{ streamId, setStreamId }}>
-                                {teacher
-                                    ? <Teacher interactiveModeState={{ interactiveMode, setInteractiveMode }} streamIdState={{ streamId, setStreamId }} />
-                                    : <Student />
-                                }
-                            </Layout>
-                        </ScreenShare.Provide>
-                    </WebRTCSFUContext.Provide>
-                    <Trophy />
-                </> :
-                    <Layout interactiveModeState={{ interactiveMode: 1, setInteractiveMode }} streamIdState={{ streamId, setStreamId }}>
-                        <Study />
-                    </Layout>
-                }
-            </GlobalWhiteboardContext>
-        </RoomContext.Provide>
+        <LiveSessionLinkProvider sessionId={sessionId} token={token} endpoint={LIVE_ENDPOINT_WS}>
+            <RoomContext.Provide>
+                <GlobalWhiteboardContext>
+                    {classType === ClassType.LIVE ? <>
+                        <WebRTCSFUContext.Provide>
+                            <ScreenShare.Provide>
+                                <Layout interactiveModeState={{ interactiveMode, setInteractiveMode }} streamIdState={{ streamId, setStreamId }}>
+                                    {teacher
+                                        ? <Teacher interactiveModeState={{ interactiveMode, setInteractiveMode }} streamIdState={{ streamId, setStreamId }} />
+                                        : <Student />
+                                    }
+                                </Layout>
+                            </ScreenShare.Provide>
+                        </WebRTCSFUContext.Provide>
+                        <Trophy />
+                    </> :
+                        <Layout interactiveModeState={{ interactiveMode: 1, setInteractiveMode }} streamIdState={{ streamId, setStreamId }}>
+                            <Study />
+                        </Layout>
+                    }
+                </GlobalWhiteboardContext>
+            </RoomContext.Provide>
+        </LiveSessionLinkProvider>
     );
 }
 
