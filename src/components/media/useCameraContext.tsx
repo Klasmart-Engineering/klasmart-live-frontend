@@ -11,6 +11,7 @@ export interface ICameraContext {
     facing: FacingType,
     setFacing: React.Dispatch<React.SetStateAction<FacingType>>,
     toggleFacing: () => void,
+    refreshCameras: () => void,
     error: boolean,
 }
 
@@ -49,6 +50,11 @@ export const CameraContextProvider = ({ children }: Props) => {
 
     }, [facing, releaseCameraDevice]);
 
+    const refreshCameras = useCallback(() => {
+        releaseCameraDevice();
+        reacquireCameraDevice();
+    }, []);
+
     useEffect(() => {
         reacquireCameraDevice();
 
@@ -79,7 +85,7 @@ export const CameraContextProvider = ({ children }: Props) => {
     useCordovaObservePause(onPauseStateChanged);
 
     return (
-        <CameraContext.Provider value={{ stream: cameraStream, facing, setFacing, toggleFacing, error }}>
+        <CameraContext.Provider value={{ stream: cameraStream, facing, setFacing, toggleFacing, error, refreshCameras }}>
             {children}
         </CameraContext.Provider >
     )

@@ -89,7 +89,7 @@ export function Join(): JSX.Element {
         { label: "Back Facing", kind: "videoinput", id: FacingType.Environment as string }
     ]);
 
-    const { error, stream, facing, setFacing } = useCameraContext();
+    const { error, stream, facing, setFacing, refreshCameras } = useCameraContext();
 
     const contentId = useSelector((store: State) => store.data.selectedLessonPlan);
 
@@ -161,6 +161,10 @@ export function Join(): JSX.Element {
             fetchEverything();
         }
     }, [])
+
+    useEffect(() => {
+        refreshCameras();
+    }, [refreshCameras]);
 
     function join(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
