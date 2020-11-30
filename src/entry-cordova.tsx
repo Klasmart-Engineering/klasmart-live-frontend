@@ -1,7 +1,7 @@
 import { v4 as uuid } from "uuid";
 export const sessionId = uuid();
 
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { render } from "react-dom";
 import { RawIntlProvider } from "react-intl";
 import { Provider, useDispatch, useSelector } from "react-redux";
@@ -20,9 +20,6 @@ import {
     isChromium,
     isMobileSafari,
 } from "react-device-detect";
-import { ApolloProvider } from "@apollo/react-hooks";
-import { ApolloClient, InMemoryCache } from "apollo-boost";
-import { WebSocketLink } from "apollo-link-ws";
 import { ThemeProvider } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 
@@ -31,7 +28,6 @@ import { createDefaultStore, State } from "./store/store";
 import { setUserAgent } from "./store/reducers/session";
 import { setErrCode } from "./store/reducers/communication";
 import { setHistory } from "./store/reducers/location";
-import { AuthTokenProvider } from "./services/auth-token/AuthTokenProvider";
 import { themeProvider } from "./themeProvider";
 import { useLocaleCookie } from "./utils/locale";
 import Loading from "./components/loading";
@@ -71,7 +67,17 @@ function Entry() {
 
     const history = createHashHistory();
 
-    const { cordovaReady, permissions } = useCordovaInitialize(false, () => { history.goBack(); });
+    const restart = useCallback(() => {
+        (navigator as any).app.loadUrl("file:///android_asset/www/index.html", { wait: 0, loadingDialog: "Wait,Loading App", loadUrlTimeoutValue: 60000 });
+    }, []);
+
+    const { cordovaReady, permissions } = useCordovaInitialize(false, () => { 
+        if (window.location.href.includes("/room")) {
+            restart();
+        } else {
+            history.goBack(); 
+        }
+    });
     const { authReady, authenticated, refresh } = useAuthenticatedCheck(cordovaReady);
 
     useEffect(() => {
