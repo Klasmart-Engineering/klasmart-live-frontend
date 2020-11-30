@@ -133,7 +133,7 @@ export function Schedule() {
 
     return (<>
         <Header isHomeRoute />
-        {inFlight ? <Loading rawText="Please select an organization to view your schedule!"/> :
+        {inFlight ? <Loading rawText="Please select an organization first by tapping the top-left corner!"/> :
             <Grid
                 wrap="nowrap"
                 container
@@ -197,7 +197,7 @@ function ScheduleList() {
         setOpenAlert(false);
     };
 
-    return (loading ? <Loading rawText="Please select an organization to view your schedule!"/> : <>
+    return (loading ? <Loading rawText="Please select an organization first by tapping the top-left corner!"/> : <>
         <Grid item>
             <List
                 component="nav"
