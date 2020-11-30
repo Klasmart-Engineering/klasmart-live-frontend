@@ -5,7 +5,6 @@ import { WebSocketLink } from "apollo-link-ws";
 import React, { createContext, ReactChild, ReactChildren, useContext, useEffect, useState } from "react";
 import Loading from "../components/loading";
 
-
 export interface ILiveSessionContext { 
     client?: ApolloClient<unknown>
 }
@@ -19,7 +18,6 @@ type Props = {
     sessionId: string
 }
 
-// process.env.ENDPOINT_WEBSOCKET || `${window.location.protocol === "https:" ? "wss" : "ws"}://${window.location.host}/graphql`,
 export function LiveSessionLinkProvider({ children, sessionId, endpoint, token }: Props) {
     const [apolloClient, setApolloClient] = useState<ApolloClient<unknown>>();
 
