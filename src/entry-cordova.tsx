@@ -88,7 +88,7 @@ function Entry() {
     if (!cordovaReady) { return <Loading rawText="Loading..." /> }
     if (!permissions) { return <Loading rawText="Camera and Microphone premissions required. Please grant the permissions and restart application." /> }
     if (!authReady) { return <Loading rawText="Checking user authentication..." /> }
-    if (!authenticated) { return <Auth refresh={refresh} useInAppBrowser={false} /> }
+    if (!authenticated) { return <Auth refresh={refresh} useInAppBrowser={true} /> }
 
     return (<>
         <UserContextProvider sessionId={sessionId}>
