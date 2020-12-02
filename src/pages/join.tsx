@@ -102,7 +102,7 @@ export function Join(): JSX.Element {
                 .catch((e) => { setError(true); console.error(e); });
         }
 
-        navigator.mediaDevices.getUserMedia({ 
+        navigator.mediaDevices.getUserMedia({
             video: {
                 deviceId: videoDeviceId,
                 width: { ideal: 4096 },
@@ -127,7 +127,7 @@ export function Join(): JSX.Element {
         }
         if (!name) {
             setName(user);
-            LogRocket.identify(user, {sessionId})
+            LogRocket.identify(user, { sessionId })
         }
         setCamera(stream || null);
     }
@@ -165,7 +165,7 @@ export function Join(): JSX.Element {
                             <Grid item xs={12} md={4}>
                                 <Grid container direction="row" justify="center" alignItems="center" spacing={4}>
                                     <Grid item xs={12}>
-                                        <img alt="KidsLoop Live" src={teacher ? KidsLoopTeachers : KidsLoopStudents} height="64px" style={{ display: "block", margin: "0 auto" }}/>
+                                        <img alt="KidsLoop Live" src={teacher ? KidsLoopTeachers : KidsLoopStudents} height="64px" style={{ display: "block", margin: "0 auto" }} />
                                     </Grid>
                                     <Grid item xs={12} className={classes.formContainer}>
                                         <form onSubmit={join}>

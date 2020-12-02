@@ -9,7 +9,7 @@ import TrophyKinds, { TrophyKind, getRandomKind } from './trophyKind';
 
 import useSound from 'use-sound';
 import { ConfettiRain } from './confettiRain';
-import { RoomContext } from '../../room';
+import { RoomContext } from '../../pages/room/room';
 
 export type Trophy = { from: string, user: string, kind: string };
 
@@ -95,13 +95,13 @@ export function Trophy(props: Props): JSX.Element {
             setWithAudio(trophy.from === trophy.user);
 
             setAppearAt(locationOfElement(`participant:${trophy.from}`));
-        
-            setDisappearAt(locationOfElement(trophy.from !== trophy.user?`participant:${trophy.user}`:undefined));
-    
+
+            setDisappearAt(locationOfElement(trophy.from !== trophy.user ? `participant:${trophy.user}` : undefined));
+
             if (TrophyKinds[trophy.kind]) {
                 setTrophyKind(TrophyKinds[trophy.kind]);
             }
-    
+
             setDisplay(true);
         }
 
@@ -166,24 +166,24 @@ export function Trophy(props: Props): JSX.Element {
     }, [setDisplay, setShowReward, trophyKind]);
 
     return (
-        <div style={{pointerEvents: "none"}}>
-        <Transition in={display} timeout={TIMINGS.enterDuration} onEntering={entering} onEntered={entered} mountOnEnter={true} unmountOnExit={true}>
-            { state => (
-                <div ref={containerRef} className="trophy-container" style={{ ...containerStyle, ...containerTransitionStates[state] }}>
-                    <Lights display={showLights} enterDuration={TIMINGS.lights.enterDuration} angle={lightAngle} />
-                    <Reward
-                        display={showReward}
-                        enterDuration={TIMINGS.reward.enterDuration}
-                        leaveDuration={TIMINGS.reward.leaveDuration}
-                        enterLocation={appearAt}
-                        exitLocation={disappearAt}
-                        kind={trophyKind}
-                    />
-                    {children}
-                </div>
-            )}
-        </Transition>
-        <ConfettiRain display={showConfetti} width={containerWidth} height={containerHeight} enterDuration={TIMINGS.confetti.enterDuration} />
+        <div style={{ pointerEvents: "none" }}>
+            <Transition in={display} timeout={TIMINGS.enterDuration} onEntering={entering} onEntered={entered} mountOnEnter={true} unmountOnExit={true}>
+                {state => (
+                    <div ref={containerRef} className="trophy-container" style={{ ...containerStyle, ...containerTransitionStates[state] }}>
+                        <Lights display={showLights} enterDuration={TIMINGS.lights.enterDuration} angle={lightAngle} />
+                        <Reward
+                            display={showReward}
+                            enterDuration={TIMINGS.reward.enterDuration}
+                            leaveDuration={TIMINGS.reward.leaveDuration}
+                            enterLocation={appearAt}
+                            exitLocation={disappearAt}
+                            kind={trophyKind}
+                        />
+                        {children}
+                    </div>
+                )}
+            </Transition>
+            <ConfettiRain display={showConfetti} width={containerWidth} height={containerHeight} enterDuration={TIMINGS.confetti.enterDuration} />
         </div>
     )
 }

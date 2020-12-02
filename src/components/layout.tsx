@@ -36,9 +36,9 @@ import { Share as ShareIcon } from "@styled-icons/material/Share";
 
 import { Camera, GlobalCameraControl } from "../webRTCState";
 import { UserContext } from "../entry";
-import { Session, Message, ContentIndexState, InteractiveModeState, StreamIdState, RoomContext } from "../room";
+import { Session, Message, ContentIndexState, InteractiveModeState, StreamIdState, RoomContext } from "../pages/room/room";
 import Toolbar from "../whiteboard/components/Toolbar";
-import { ControlButtons } from "../pages/teacher/controlButtons";
+import ModeControls from "../pages/teacher/modeControls";
 import { SendMessage } from "../sendMessage";
 import InviteButton from "./invite";
 import { MaterialTypename } from "../lessonMaterialContext";
@@ -334,7 +334,7 @@ function CameraInterface({ isTeacher, isSmDown, gridMode, sessionId, id, session
                         </Grid>
                         {isTeacher && (id !== sessionId) ?
                             <Grid item xs={3}>
-                                <MoreControls session={session} selfUserId={sessionId} />
+                                <MoreControls session={session} />
                             </Grid> : null}
                     </Grid> : null}
             </Grid>
@@ -670,7 +670,7 @@ export default function Layout(props: Props): JSX.Element {
                                             </Tabs>
                                         </Grid>
                                         <Grid item hidden={!isTeacher}>
-                                            <ControlButtons
+                                            <ModeControls
                                                 interactiveModeState={interactiveModeState}
                                                 disablePresent={!(
                                                     streamId ||
@@ -740,7 +740,7 @@ export default function Layout(props: Props): JSX.Element {
         {isTeacher ?
             <Hidden mdUp>
                 <Grid className={classes.toolbarContainer}>
-                    <ControlButtons
+                    <ModeControls
                         interactiveModeState={interactiveModeState}
                         disablePresent={!(
                             streamId ||

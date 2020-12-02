@@ -1,5 +1,5 @@
 import { Join } from "./pages/join";
-import { Room, RoomContext } from "./room";
+import { Room, RoomContext } from "./pages/room/room";
 import { UserContext } from "./entry";
 import React, { useContext } from "react";
 import { Trophy } from "./components/trophies/trophy";

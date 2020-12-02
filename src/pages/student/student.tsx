@@ -5,7 +5,7 @@ import Grid from "@material-ui/core/Grid";
 import React, { useState, useEffect, useContext, useRef, useMemo } from "react";
 import { FormattedMessage } from "react-intl";
 import { UserContext } from "../../entry";
-import { RoomContext } from "../../room";
+import { RoomContext } from "../room/room";
 import { Whiteboard } from "../../whiteboard/components/Whiteboard";
 import WBToolbar from "../../whiteboard/components/Toolbar";
 import { Stream } from "../../webRTCState";
