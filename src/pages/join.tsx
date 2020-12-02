@@ -21,6 +21,7 @@ import MediaDeviceSelect from "../components/mediaDeviceSelect";
 import { Error as ErrorIcon } from "@styled-icons/material/Error";
 import { FFT } from "../components/fft";
 import logger from "../services/logger/Logger";
+import { ClassType } from '../store/actions';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -55,7 +56,7 @@ export function Join(): JSX.Element {
     const classes = useStyles();
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
-    const { camera, setCamera, name, setName, sessionId, teacher } = useContext(UserContext);
+    const { classType, camera, setCamera, name, setName, sessionId, teacher } = useContext(UserContext);
 
     const [user, setUser] = useState<string>("");
 
@@ -150,18 +151,20 @@ export function Join(): JSX.Element {
                             alignItems="center"
                             spacing={4}
                         >
-                            <Grid item xs={12} md={8} style={{ width: "100%" }}>
-                                {
-                                    stream && stream.getVideoTracks().length > 0 && stream.getVideoTracks().every((t) => t.readyState === "live") && stream.active
-                                        ? <div style={{ position: "relative" }}>
-                                            <Camera mediaStream={stream} muted={true} />
-                                            <FFT input={stream} output={false} width={700} height={150} color={"#fff"} style={{ position: "absolute", bottom: 12, left: 0, width: "100%", height: 150 }} />
-                                        </div>
-                                        : error
-                                            ? <NoCamera messageId={"connect_camera"} />
-                                            : <Loading messageId="allow_media_permission" />
-                                }
-                            </Grid>
+                            {classType !== ClassType.LIVE ? null :
+                                <Grid item xs={12} md={8} style={{ width: "100%" }}>
+                                    {
+                                        stream && stream.getVideoTracks().length > 0 && stream.getVideoTracks().every((t) => t.readyState === "live") && stream.active
+                                            ? <div style={{ position: "relative" }}>
+                                                <Camera mediaStream={stream} muted={true} />
+                                                <FFT input={stream} output={false} width={700} height={150} color={"#fff"} style={{ position: "absolute", bottom: 12, left: 0, width: "100%", height: 150 }} />
+                                            </div>
+                                            : error
+                                                ? <NoCamera messageId={"connect_camera"} />
+                                                : <Loading messageId="allow_media_permission" />
+                                    }
+                                </Grid>
+                            }
                             <Grid item xs={12} md={4}>
                                 <Grid container direction="row" justify="center" alignItems="center" spacing={4}>
                                     <Grid item xs={12}>
@@ -187,24 +190,26 @@ export function Join(): JSX.Element {
                                                         />
                                                     }
                                                 </Grid>
-                                                <Grid item xs={12}>
-                                                    <MediaDeviceSelect
-                                                        disabled={videoDevices.length <= 1}
-                                                        deviceType="video"
-                                                        deviceId={videoDeviceId}
-                                                        devices={videoDevices}
-                                                        onChange={(e) => setVideoDeviceId(e.target.value as string)}
-                                                    />
-                                                </Grid>
-                                                <Grid item xs={12}>
-                                                    <MediaDeviceSelect
-                                                        disabled={audioDevices.length <= 1}
-                                                        deviceType="audio"
-                                                        deviceId={audioDeviceId}
-                                                        devices={audioDevices}
-                                                        onChange={(e) => setAudioDeviceId(e.target.value as string)}
-                                                    />
-                                                </Grid>
+                                                {classType !== ClassType.LIVE ? null : <>
+                                                    <Grid item xs={12}>
+                                                        <MediaDeviceSelect
+                                                            disabled={videoDevices.length <= 1}
+                                                            deviceType="video"
+                                                            deviceId={videoDeviceId}
+                                                            devices={videoDevices}
+                                                            onChange={(e) => setVideoDeviceId(e.target.value as string)}
+                                                        />
+                                                    </Grid>
+                                                    <Grid item xs={12}>
+                                                        <MediaDeviceSelect
+                                                            disabled={audioDevices.length <= 1}
+                                                            deviceType="audio"
+                                                            deviceId={audioDeviceId}
+                                                            devices={audioDevices}
+                                                            onChange={(e) => setAudioDeviceId(e.target.value as string)}
+                                                        />
+                                                    </Grid>
+                                                </>}
                                                 <Grid item xs={12}>
                                                     <StyledButton
                                                         fullWidth
