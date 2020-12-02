@@ -5,6 +5,8 @@ import { useDispatch } from "react-redux";
 import { OrientationType } from "../../store/actions";
 import { lockOrientation } from "../../utils/screenUtils";
 import Loading from "../../components/loading";
+import { useState } from "react";
+import Button from "@material-ui/core/Button";
 
 const useStyles = makeStyles((_theme) => createStyles({
     container: {
@@ -28,6 +30,7 @@ export function Auth({ refresh, useInAppBrowser }: Props) {
     const classes = useStyles();
     const dispatch = useDispatch();
     const frameRef = useRef<HTMLIFrameElement>(null);
+    const [key, setKey] = useState(Math.random().toString(36));
 
     useEffect(() => {
         if (!frameRef.current) return;
@@ -93,11 +96,15 @@ export function Auth({ refresh, useInAppBrowser }: Props) {
             browser.addEventListener("exit", onExit, false);
             browser.addEventListener("message", onMessage, false);
         }
-    }, []);
+    }, [key]);
 
     if (useInAppBrowser) {
         return (
-            <Loading rawText="Waiting for authentication..."></Loading>
+            <>
+                <Loading rawText="Waiting for authentication...">
+                    <Button onClick={() => setKey(Math.random().toString(36))}>Try again</Button>
+                </Loading>
+            </>
         );
     } else {
         return (
