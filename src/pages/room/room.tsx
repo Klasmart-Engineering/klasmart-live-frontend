@@ -1,19 +1,15 @@
-import React, { useReducer, useState, useContext, useEffect, useMemo, createContext, useRef } from "react";
+import React, { useReducer, useState, useContext, useEffect, createContext, useRef } from "react";
 import { gql } from "apollo-boost";
 import { useSubscription } from "@apollo/react-hooks";
 import { FormattedMessage } from "react-intl";
 import { useTheme, useMediaQuery } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
-import { sessionId, UserContext } from "./entry";
-import { Student } from "./pages/student/student";
-import { Teacher } from "./pages/teacher/teacher";
-import Layout from "./components/layout";
-import Loading from "./components/loading";
+import { sessionId, UserContext } from "../../entry";
+import { Live } from "./live";
+import { Classes } from "./classes";
+import Loading from "../../components/loading";
 import { EventEmitter } from "eventemitter3"
-import { WebRTCSFUContext } from "./webrtc/sfu";
-import { ScreenShare } from "./pages/teacher/screenShareProvider";
-import { GlobalWhiteboardContext } from "./whiteboard/context-providers/GlobalWhiteboardContext";
 
 export interface Session {
     id: string,
@@ -52,6 +48,8 @@ interface Props {
 }
 
 export function Room({ teacher }: Props): JSX.Element {
+    const { classType } = useContext(UserContext);
+
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -75,39 +73,29 @@ export function Room({ teacher }: Props): JSX.Element {
         }
     }, [isSmDown]);
 
-    return (
-        <WebRTCSFUContext.Provide>
-            <ScreenShare.Provide>
-                <GlobalWhiteboardContext>
-                    <Layout
-                        isTeacher={teacher}
-                        openDrawer={openDrawer}
-                        handleOpenDrawer={handleOpenDrawer}
-                        contentIndexState={{ contentIndex, setContentIndex }}
-                        interactiveModeState={{ interactiveMode, setInteractiveMode }}
-                        streamIdState={{ streamId, setStreamId }}
-                        numColState={numColState}
-                        setNumColState={setNumColState}
-                    >
-                        {
-                            teacher
-                                ? <Teacher
-                                    openDrawer={openDrawer}
-                                    handleOpenDrawer={handleOpenDrawer}
-                                    contentIndexState={{ contentIndex, setContentIndex }}
-                                    interactiveModeState={{ interactiveMode, setInteractiveMode }}
-                                    streamIdState={{ streamId, setStreamId }}
-                                    numColState={numColState}
-                                />
-                                : <Student openDrawer={openDrawer} />
-                        }
-                    </Layout>
-                </GlobalWhiteboardContext>
-            </ScreenShare.Provide>
-        </WebRTCSFUContext.Provide>
-    );
+    switch (classType) {
+        case "class":
+            return (
+                <Classes
+                    interactiveModeState={{ interactiveMode: 1, setInteractiveMode }}
+                    streamIdState={{ streamId, setStreamId }}
+                />
+            )
+        default:
+            return (
+                <Live
+                    teacher={teacher}
+                    openDrawer={openDrawer}
+                    handleOpenDrawer={handleOpenDrawer}
+                    contentIndexState={{ contentIndex, setContentIndex }}
+                    interactiveModeState={{ interactiveMode, setInteractiveMode }}
+                    streamIdState={{ streamId, setStreamId }}
+                    numColState={numColState}
+                    setNumColState={setNumColState}
+                />
+            );
+    }
 }
-
 
 const SUB_ROOM = gql`
     subscription room($roomId: ID!, $name: String) {

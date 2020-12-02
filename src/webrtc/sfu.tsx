@@ -1,22 +1,22 @@
 // @ts-ignore
-import {AuthTokenProvider} from "../services/auth-token/AuthTokenProvider";
+import { AuthTokenProvider } from "../services/auth-token/AuthTokenProvider";
 
 const callstats: any = require('callstats-js/callstats.min');
-import {WebRTCContext} from "./webrtc";
+import { WebRTCContext } from "./webrtc";
 import {
     Device,
     types as MediaSoup,
 } from "mediasoup-client"
-import React, {createContext, useReducer, useRef, useContext, useEffect, useMemo} from "react";
-import {RoomContext} from "../room";
-import {gql, ExecutionResult, ApolloClient, InMemoryCache} from "apollo-boost";
-import {useMutation, useSubscription, ApolloProvider} from "@apollo/react-hooks";
-import {MutationFunctionOptions} from "@apollo/react-common/lib/types/types";
-import {Resolver, PrePromise} from "../resolver";
-import {WebSocketLink} from "apollo-link-ws";
-import {sessionId, UserContext} from "../entry";
+import React, { createContext, useReducer, useRef, useContext, useEffect, useMemo } from "react";
+import { RoomContext } from "../pages/room/room";
+import { gql, ExecutionResult, ApolloClient, InMemoryCache } from "apollo-boost";
+import { useMutation, useSubscription, ApolloProvider } from "@apollo/react-hooks";
+import { MutationFunctionOptions } from "@apollo/react-common/lib/types/types";
+import { Resolver, PrePromise } from "../resolver";
+import { WebSocketLink } from "apollo-link-ws";
+import { sessionId, UserContext } from "../entry";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import {Producer, ProducerOptions} from "mediasoup-client/lib/Producer";
+import { Producer, ProducerOptions } from "mediasoup-client/lib/Producer";
 
 const SEND_RTP_CAPABILITIES = gql`
     mutation rtpCapabilities($rtpCapabilities: String!) {
@@ -80,33 +80,33 @@ const SUBSCRIBE = gql`
 const context = createContext<{ ref: React.MutableRefObject<WebRTCSFUContext> }>(undefined as any);
 
 export class WebRTCSFUContext implements WebRTCContext {
-    public static Provide({children}: { children: JSX.Element[] | JSX.Element }) {
+    public static Provide({ children }: { children: JSX.Element[] | JSX.Element }) {
         const ref = useRef<WebRTCSFUContext>(undefined as any)
-        const [value, rerender] = useReducer(() => ({ref}), {ref})
-        const {roomId} = RoomContext.Consume();
+        const [value, rerender] = useReducer(() => ({ ref }), { ref })
+        const { roomId } = RoomContext.Consume();
         const token = AuthTokenProvider.retrieveToken();
 
         const apolloClient = useMemo(() =>
-                new ApolloClient({
-                    cache: new InMemoryCache(),
-                    link: new WebSocketLink({
-                        uri: `${window.location.protocol === "https:" ? "wss" : "ws"}://${window.location.host}/sfu/${roomId}`,
-                        options: {
-                            reconnect: true,
-                            connectionParams: {sessionId, authToken: token},
-                        },
-                    })
-                } as any),
+            new ApolloClient({
+                cache: new InMemoryCache(),
+                link: new WebSocketLink({
+                    uri: `${window.location.protocol === "https:" ? "wss" : "ws"}://${window.location.host}/sfu/${roomId}`,
+                    options: {
+                        reconnect: true,
+                        connectionParams: { sessionId, authToken: token },
+                    },
+                })
+            } as any),
             [roomId])
 
         if (!apolloClient) {
-            return <CircularProgress/>
+            return <CircularProgress />
         }
 
         return (
             <>
                 <ApolloProvider client={apolloClient}>
-                    <WebRTCSFUContext.InternalProvider sfu={ref} rerender={rerender}/>
+                    <WebRTCSFUContext.InternalProvider sfu={ref} rerender={rerender} />
                 </ApolloProvider>
                 <context.Provider value={value}>
                     {children}
@@ -115,7 +115,7 @@ export class WebRTCSFUContext implements WebRTCContext {
         )
     }
 
-    private static InternalProvider({sfu, rerender}: { sfu: React.MutableRefObject<WebRTCSFUContext>, rerender: React.DispatchWithoutAction }) {
+    private static InternalProvider({ sfu, rerender }: { sfu: React.MutableRefObject<WebRTCSFUContext>, rerender: React.DispatchWithoutAction }) {
         const [rtpCapabilities] = useMutation(SEND_RTP_CAPABILITIES);
         const [transport] = useMutation(TRANSPORT);
         const [producer] = useMutation(PRODUCER);
@@ -128,10 +128,10 @@ export class WebRTCSFUContext implements WebRTCContext {
             sfu.current = new WebRTCSFUContext(rerender, rtpCapabilities, transport, producer, consumer, stream, mute, endClass)
         }
 
-        const {roomId} = RoomContext.Consume();
-        const {name} = useContext(UserContext);
+        const { roomId } = RoomContext.Consume();
+        const { name } = useContext(UserContext);
         useSubscription(SUBSCRIBE, {
-            onSubscriptionData: ({subscriptionData}) => {
+            onSubscriptionData: ({ subscriptionData }) => {
                 if (!subscriptionData) {
                     return;
                 }
@@ -172,10 +172,10 @@ export class WebRTCSFUContext implements WebRTCContext {
                     sfu.current.muteMessage(mute)
                 }
             },
-            variables: {roomId}
+            variables: { roomId }
         })
 
-        const {camera} = useContext(UserContext);
+        const { camera } = useContext(UserContext);
 
         useEffect(() => {
             callstats.initialize("881714000", "OV6YSSRJ0fOA:vr7quqij46jLPMpaBXTAF50F2wFTqP4acrxXWVs9BIk=", name + ":" + sessionId)
@@ -260,8 +260,8 @@ export class WebRTCSFUContext implements WebRTCContext {
                         encodings: [
                             // These should be ordered from lowest bitrate to highest bitrate
                             // rid will be automatically assigned in the order of this array from "r0" to "rN-1"
-                            {maxBitrate: 1000000, scaleResolutionDownBy: 2, scalabilityMode: 'S1T1'},
-                            {maxBitrate: 2000000, scaleResolutionDownBy: 1, scalabilityMode: 'S1T1'},
+                            { maxBitrate: 1000000, scaleResolutionDownBy: 2, scalabilityMode: 'S1T1' },
+                            { maxBitrate: 2000000, scaleResolutionDownBy: 1, scalabilityMode: 'S1T1' },
                         ]
                     }
                 } else {
@@ -270,9 +270,9 @@ export class WebRTCSFUContext implements WebRTCContext {
                         encodings: [
                             // These should be ordered from lowest bitrate to highest bitrate
                             // rid will be automatically assigned in the order of this array from "r0" to "rN-1"
-                            {maxBitrate: 1000000, scaleResolutionDownBy: 4, scalabilityMode: 'S1T1'},
-                            {maxBitrate: 2000000, scaleResolutionDownBy: 2, scalabilityMode: 'S1T1'},
-                            {maxBitrate: 4000000, scaleResolutionDownBy: 1, scalabilityMode: 'S1T1'},
+                            { maxBitrate: 1000000, scaleResolutionDownBy: 4, scalabilityMode: 'S1T1' },
+                            { maxBitrate: 2000000, scaleResolutionDownBy: 2, scalabilityMode: 'S1T1' },
+                            { maxBitrate: 4000000, scaleResolutionDownBy: 1, scalabilityMode: 'S1T1' },
                         ]
                     }
                 }
@@ -280,7 +280,7 @@ export class WebRTCSFUContext implements WebRTCContext {
                 producer = await transport.produce(params)
                 await producer.setMaxSpatialLayer(2)
             } else {
-                params = {track}
+                params = { track }
                 console.log(`Wait for producer`)
                 producer = await transport.produce(params)
             }
@@ -305,7 +305,7 @@ export class WebRTCSFUContext implements WebRTCContext {
             throw new Error("No producers")
         }
         console.log(`Stream()(${producerIds})`)
-        const {errors} = await this.stream({variables: {id, producerIds}})
+        const { errors } = await this.stream({ variables: { id, producerIds } })
         if (errors) {
             throw errors
         }
@@ -315,7 +315,7 @@ export class WebRTCSFUContext implements WebRTCContext {
 
     public async sendMute(muteNotification: MuteNotification) {
         console.log(`${JSON.stringify(muteNotification)}`)
-        await this.mute( {variables: muteNotification })
+        await this.mute({ variables: muteNotification })
     }
 
     public localAudioToggle(id?: string) {
@@ -499,7 +499,7 @@ export class WebRTCSFUContext implements WebRTCContext {
         if (this._device) {
             return this._device
         }
-        const {promise} = await this.devicePrePromise
+        const { promise } = await this.devicePrePromise
         return promise
     }
 
@@ -510,7 +510,7 @@ export class WebRTCSFUContext implements WebRTCContext {
         if (this._producerTransport) {
             return this._producerTransport
         }
-        const {promise} = await this.producerPrePromise
+        const { promise } = await this.producerPrePromise
         return promise
     }
 
@@ -521,7 +521,7 @@ export class WebRTCSFUContext implements WebRTCContext {
         if (this._consumerTransport) {
             return this._consumerTransport
         }
-        const {promise} = await this.consumerTransportPrePromise
+        const { promise } = await this.consumerTransportPrePromise
         return promise
     }
 
@@ -537,7 +537,7 @@ export class WebRTCSFUContext implements WebRTCContext {
             prePromise = Resolver<MediaSoup.Consumer>()
             this.consumerPrePromises.set(producerId, prePromise)
         }
-        const {promise} = await prePromise
+        const { promise } = await prePromise
         return promise
     }
 
@@ -555,10 +555,10 @@ export class WebRTCSFUContext implements WebRTCContext {
         this._device = null
 
         const device = new Device()
-        await device.load({routerRtpCapabilities})
+        await device.load({ routerRtpCapabilities })
         const rtpCapabilities = JSON.stringify(device.rtpCapabilities)
-        await this.rtpCapabilities({variables: {rtpCapabilities}})
-        const {resolver} = await this.devicePrePromise
+        await this.rtpCapabilities({ variables: { rtpCapabilities } })
+        const { resolver } = await this.devicePrePromise
 
         this._device = device
         resolver(this._device)
@@ -590,7 +590,7 @@ export class WebRTCSFUContext implements WebRTCContext {
 
         transport.on("connect", async (connectParams, callback, errback) => {
             try {
-                const {errors} = await this.transport({
+                const { errors } = await this.transport({
                     variables: {
                         producer: true,
                         params: JSON.stringify(connectParams),
@@ -606,26 +606,26 @@ export class WebRTCSFUContext implements WebRTCContext {
             }
         })
         transport.on("produce", async (produceParams, callback, errback) => {
-                try {
-                    const params = JSON.stringify(
-                        Object.assign({transportId: transport.id}, produceParams)
-                    )
-                    const {data, errors} = await this.producer({
-                        variables: {params},
-                    })
-                    if (errors) {
-                        throw errors
-                    }
-                    callback({id: data.producer})
-                } catch (error) {
-                    WebRTCSFUContext.attachCallstatsError(transport, roomId, error)
-                    errback(error)
+            try {
+                const params = JSON.stringify(
+                    Object.assign({ transportId: transport.id }, produceParams)
+                )
+                const { data, errors } = await this.producer({
+                    variables: { params },
+                })
+                if (errors) {
+                    throw errors
                 }
+                callback({ id: data.producer })
+            } catch (error) {
+                WebRTCSFUContext.attachCallstatsError(transport, roomId, error)
+                errback(error)
             }
+        }
         )
 
         console.log("Producer: resolve")
-        const {resolver} = await this.producerPrePromise
+        const { resolver } = await this.producerPrePromise
         this._producerTransport = transport
         resolver(this._producerTransport)
         console.log("Producer: resolved")
@@ -658,7 +658,7 @@ export class WebRTCSFUContext implements WebRTCContext {
         transport.on("connect", async (connectParams, callback, errback) => {
             console.log("Consumer: connect")
             try {
-                const {errors} = await this.transport({
+                const { errors } = await this.transport({
                     variables: {
                         producer: false,
                         params: JSON.stringify(connectParams),
@@ -675,7 +675,7 @@ export class WebRTCSFUContext implements WebRTCContext {
         })
 
         console.log("Consumer: resolve")
-        const {resolver} = await this.consumerTransportPrePromise
+        const { resolver } = await this.consumerTransportPrePromise
         this._consumerTransport = transport
         resolver(this._consumerTransport)
     }
@@ -736,12 +736,12 @@ export class WebRTCSFUContext implements WebRTCContext {
         const consumer = await transport.consume(params)
         this.destructors.set(consumer.id, () => consumer.close())
         console.log("Consumer unpause")
-        this.consumer({variables: {id: consumer.id, pause: false}})
+        this.consumer({ variables: { id: consumer.id, pause: false } })
         this.tracks.set(consumer.producerId, consumer.track)
         this.consumers.set(consumer.producerId, consumer)
         let prePromise = this.consumerPrePromises.get(consumer.producerId)
         if (prePromise) {
-            const {resolver} = await prePromise
+            const { resolver } = await prePromise
             resolver(consumer)
         }
         console.log("Consumer done")
@@ -754,7 +754,7 @@ export class WebRTCSFUContext implements WebRTCContext {
             sessionId,
             producerIds
         } = stream
-        Object.assign(stream, {videoEnabled: true, audioEnabled: true})
+        Object.assign(stream, { videoEnabled: true, audioEnabled: true })
         this.inboundStreams.set(`${sessionId}_${id}`, stream)
         const tracks = [] as MediaStreamTrack[]
         for (const producerId of producerIds) {

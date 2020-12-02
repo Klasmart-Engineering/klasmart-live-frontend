@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { Theme, useTheme, createStyles, makeStyles, withStyles } from "@material-ui/core/styles";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { Theme, createStyles, makeStyles, withStyles } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
 import Menu, { MenuProps } from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -11,8 +10,8 @@ import { MoreVert as MoreIcon } from "@styled-icons/material/MoreVert"
 
 import StyledIcon from "./styled/icon";
 import TrophyControls from "./trophies/trophyControls"
-import { Session } from "../room";
-import PermissionControls from "../whiteboard/components/PermissionControls";
+import { Session } from "../pages/room/room";
+import PermissionControls from "../whiteboard/components/WBPermissionControls";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -21,8 +20,8 @@ const useStyles = makeStyles((theme: Theme) =>
             bottom: theme.spacing(2),
             right: theme.spacing(2),
             [theme.breakpoints.down("sm")]: {
-                bottom: theme.spacing(1),
-                right: theme.spacing(1),
+                bottom: theme.spacing(0),
+                right: theme.spacing(0),
             },
         },
         icon: {
@@ -59,13 +58,10 @@ const StyledMoreMenu = withStyles({
     />
 ));
 
-export default function MoreControls({ session, selfUserId, forOverlay }: {
+export default function MoreControls({ session, forOverlay }: {
     session: Session,
-    selfUserId: string
     forOverlay?: boolean,
 }) {
-    const theme = useTheme();
-    const isSmUp = useMediaQuery(theme.breakpoints.up("sm"));
     const { moreBtn, icon, trophiesMenuItem } = useStyles();
 
     const [moreEl, setMoreEl] = useState<null | HTMLElement>(null);
@@ -78,14 +74,14 @@ export default function MoreControls({ session, selfUserId, forOverlay }: {
             aria-label="more button"
             aria-controls="more-controls-menu"
             aria-haspopup="true"
-            size={isSmUp ? "medium" : "small"}
+            size="small"
             className={forOverlay ? moreBtn : undefined}
             onClick={handleMoreOpen}
             onPointerEnter={handleMoreOpen}
         >
             <StyledIcon
                 icon={<MoreIcon className={forOverlay ? icon : undefined} />}
-                size="medium"
+                size="small"
                 color={forOverlay ? "white" : "#0E78D5"}
             />
         </IconButton>
@@ -105,7 +101,7 @@ export default function MoreControls({ session, selfUserId, forOverlay }: {
                     </ListSubheader>
                 }
             >
-                <PermissionControls selfUserId={selfUserId} otherUserId={session.id} miniMode={false} />
+                <PermissionControls otherUserId={session.id} />
             </List>
             <List
                 disablePadding

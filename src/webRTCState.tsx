@@ -18,7 +18,7 @@ import { GridOn as CanvasIcon } from "@styled-icons/material-twotone/GridOn";
 import { GridOff as CanvasOffIcon } from "@styled-icons/material-twotone/GridOff";
 import { Eraser as EraserIcon } from "@styled-icons/boxicons-solid/Eraser";
 
-import { Session } from "./room";
+import { Session } from "./pages/room/room";
 import StyledIcon from "./components/styled/icon";
 import MoreControls from "./components/moreControls";
 import { useToolbarContext } from "kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
@@ -28,7 +28,7 @@ import { Star as StarIcon } from "@styled-icons/material/Star";
 import { EmojiEvents as TrophyIcon } from "@styled-icons/material/EmojiEvents";
 import { Favorite as HeartIcon } from "@styled-icons/material/Favorite";
 import { ThumbUp as EncourageIcon } from "@styled-icons/material/ThumbUp";
-import { MuteNotification, WebRTCSFUContext} from "./webrtc/sfu";
+import { MuteNotification, WebRTCSFUContext } from "./webrtc/sfu";
 import { useSynchronizedState } from "./whiteboard/context-providers/SynchronizedStateProvider";
 import { UserContext } from "./entry";
 
@@ -461,18 +461,18 @@ export default function CameraOverlay({ mediaStream, session, miniMode }: {
         } else {
             // Outbound stream
             let producers = states.getOutboundCameraStream()
-                if (producers) {
-                    let video = producers.producers.find((a) => a.kind === "video")
-                    if (video) {
-                        let notification: MuteNotification = {
-                            roomId,
-                            sessionId: session.id,
-                            producerId: video.id,
-                            video: !states.isLocalVideoEnabled(session.id)
-                        }
-                        states.sendMute(notification)
+            if (producers) {
+                let video = producers.producers.find((a) => a.kind === "video")
+                if (video) {
+                    let notification: MuteNotification = {
+                        roomId,
+                        sessionId: session.id,
+                        producerId: video.id,
+                        video: !states.isLocalVideoEnabled(session.id)
                     }
+                    states.sendMute(notification)
                 }
+            }
         }
         states.localVideoToggle(session.id);
     }
@@ -629,7 +629,7 @@ export default function CameraOverlay({ mediaStream, session, miniMode }: {
                     </Grid>
                 </Grid>
                 {(!teacher || isSelf || miniMode) ? null :
-                    <MoreControls session={session} selfUserId={mySessionId} forOverlay={true} />}
+                    <MoreControls session={session} forOverlay={true} />}
             </Grid>
         </div>
     )

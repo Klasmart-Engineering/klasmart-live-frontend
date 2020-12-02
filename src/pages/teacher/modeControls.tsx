@@ -1,14 +1,12 @@
-
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import ToggleButton from "@material-ui/lab/ToggleButton";
 import ToggleButtonGroup from "@material-ui/lab/ToggleButtonGroup";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { createStyles, makeStyles, withStyles, Theme, useTheme } from "@material-ui/core/styles";
 import { FormattedMessage } from "react-intl";
 import { ScreenShare } from "./screenShareProvider";
-import { InteractiveModeState } from "../../room";
+import { InteractiveModeState } from "../room/room";
 import IconButton from "@material-ui/core/IconButton";
 import Divider from "@material-ui/core/Divider";
 import Tooltip from "@material-ui/core/Tooltip";
@@ -41,9 +39,6 @@ const StyledToggleButtonGroup = withStyles((theme) => ({
 const StyledTooltip = withStyles((theme) => ({
     popper: {
         [theme.breakpoints.down("sm")]: {
-            // TODO: Vertical Tooltip
-            // transformOrigin: "-50% 0%",
-            // transform: "rotate(-90deg)",
             maxWidth: 56,
             textAlign: "center"
         }
@@ -73,7 +68,6 @@ const useStyles = makeStyles((theme: Theme) =>
             backgroundColor: theme.palette.type === "light" ? "#e6f3ff" : "#2a78d5",
             margin: "0 auto",
             paddingTop: theme.spacing(2),
-            // width: "100%",
         },
         helpButton: {
             color: theme.palette.type === "light" ? "#2a78d5" : "#030D1C",
@@ -91,9 +85,7 @@ interface Props {
     orientation: "horizontal" | "vertical"
 }
 
-export function ControlButtons({ interactiveModeState, disablePresent, disableActivity, setKey, orientation }: Props): JSX.Element {
-    const theme = useTheme();
-    const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
+export default function ModeControls({ interactiveModeState, disablePresent, disableActivity, setKey, orientation }: Props): JSX.Element {
     const { selectedButton, buttonRoot, buttonGroup, divider, helpButton, screenSharingButton } = useStyles();
     const screenShare = ScreenShare.Consume()
 
@@ -134,7 +126,7 @@ export function ControlButtons({ interactiveModeState, disablePresent, disableAc
                         open={openStopTooltip}
                         onClose={() => toggleTooltip(false, false, false, false)}
                         onOpen={() => toggleTooltip(true, false, false, false)}
-                        placement={isSmDown ? "top" : "left"}
+                        placement="left"
                         title={<FormattedMessage id="live_buttonStop" />}
                     >
                         <ToggleButton
@@ -151,7 +143,7 @@ export function ControlButtons({ interactiveModeState, disablePresent, disableAc
                         open={openPresentTooltip}
                         onClose={() => toggleTooltip(false, false, false, false)}
                         onOpen={() => toggleTooltip(false, true, false, false)}
-                        placement={isSmDown ? "top" : "left"}
+                        placement="left"
                         title={<FormattedMessage id="live_buttonPresent" />}
                     >
                         <ToggleButton
@@ -169,11 +161,11 @@ export function ControlButtons({ interactiveModeState, disablePresent, disableAc
                         open={openActivityTooltip}
                         onClose={() => toggleTooltip(false, false, false, false)}
                         onOpen={() => toggleTooltip(false, false, true, false)}
-                        placement={isSmDown ? "top" : "left"}
+                        placement="left"
                         title={<FormattedMessage id="live_buttonObserve" />}
                     >
                         <ToggleButton
-                            aria-label="student mode"
+                            aria-label="observe mode"
                             classes={{ root: buttonRoot }}
                             className={interactiveMode === 2 ? selectedButton : ""}
                             disabled={disableActivity}
@@ -182,43 +174,45 @@ export function ControlButtons({ interactiveModeState, disablePresent, disableAc
                             <ViewIcon size="1.5rem" />
                         </ToggleButton>
                     </StyledTooltip>
-                    <StyledTooltip
-                        arrow
-                        open={openScreenTooltip}
-                        onClose={() => toggleTooltip(false, false, false, false)}
-                        onOpen={() => toggleTooltip(false, false, false, true)}
-                        placement={isSmDown ? "top" : "left"}
-                        title={interactiveMode === 3 ? "Stop Presenting" : <FormattedMessage id="live_buttonScreen" />}
-                    >
-                        <ToggleButton
-                            style={{ whiteSpace: 'pre-line' }}
-                            value={3}
-                            aria-label="present screen"
-                            classes={{ root: buttonRoot }}
-                            className={(interactiveMode === 3 || screenShare.getStream()) ? screenSharingButton : ""}
-                            disabled={!navigator.mediaDevices || !(navigator.mediaDevices as any).getDisplayMedia}
-                            onClick={() => {
-                                if (screenShare.getStream() && interactiveMode === 3) {
-                                    screenShare.stop();
-                                }
-                                if (!screenShare.getStream() && interactiveMode !== 3) {
-                                    screenShare.start();
-                                }
-                            }}
+                    {process.env.DISABLE_SCREEN_SHARE === undefined ?
+                        <StyledTooltip
+                            arrow
+                            open={openScreenTooltip}
+                            onClose={() => toggleTooltip(false, false, false, false)}
+                            onOpen={() => toggleTooltip(false, false, false, true)}
+                            placement={"left"}
+                            title={interactiveMode === 3 ? "Stop Presenting" : <FormattedMessage id="live_buttonScreen" />}
                         >
-                            {
-                                screenShare.getStream() ?
-                                    <StopScreenShareIcon size="1.5rem" /> :
-                                    <ScreenShareIcon size="1.5rem" />
-                            }
-                        </ToggleButton>
-                    </StyledTooltip>
+                            <ToggleButton
+                                style={{ whiteSpace: 'pre-line' }}
+                                value={3}
+                                aria-label="present screen"
+                                classes={{ root: buttonRoot }}
+                                className={(interactiveMode === 3 || screenShare.getStream()) ? screenSharingButton : ""}
+                                disabled={!navigator.mediaDevices || !(navigator.mediaDevices as any).getDisplayMedia}
+                                onClick={() => {
+                                    if (screenShare.getStream() && interactiveMode === 3) {
+                                        screenShare.stop();
+                                    }
+                                    if (!screenShare.getStream() && interactiveMode !== 3) {
+                                        screenShare.start();
+                                    }
+                                }}
+                            >
+                                {
+                                    screenShare.getStream() ?
+                                        <StopScreenShareIcon size="1.5rem" /> :
+                                        <ScreenShareIcon size="1.5rem" />
+                                }
+                            </ToggleButton>
+                        </StyledTooltip> : <></>
+                    }
                 </StyledToggleButtonGroup>
             </Grid>
             <Divider flexItem className={divider} />
             <Grid container justify="center" alignItems="center" item xs={1} md={12}>
                 <Typography align="center">
-                    <Tooltip id="what_is_this" arrow placement={isSmDown ? "top" : "left"} title={<FormattedMessage id="what_is_this" />}>
+                    <Tooltip id="what_is_this" arrow placement="left" title={<FormattedMessage id="what_is_this" />}>
                         <IconButton
                             size="small"
                             className={helpButton}
@@ -231,7 +225,7 @@ export function ControlButtons({ interactiveModeState, disablePresent, disableAc
             </Grid>
             <Grid container justify="center" alignItems="center" item xs={1} md={12}>
                 <Typography align="center">
-                    <Tooltip arrow placement={isSmDown ? "top" : "left"} title={<FormattedMessage id="refresh_activity" />}>
+                    <Tooltip arrow placement="left" title={<FormattedMessage id="refresh_activity" />}>
                         <IconButton
                             size="small"
                             className={helpButton}

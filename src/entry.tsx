@@ -6,7 +6,9 @@ LogRocket.init('8acm62/kidsloop-live-prod', {
 import { v4 as uuid } from "uuid";
 export const sessionId = uuid();
 
-import React, { createContext, useState, useMemo } from "react";
+import React, { createContext, useState, useMemo, useEffect } from "react";
+import { Provider, useDispatch } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
 import * as Sentry from '@sentry/react';
 import { render } from "react-dom";
 import { RawIntlProvider, FormattedMessage } from "react-intl";
@@ -19,18 +21,28 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import {
-    isMacOs,
+    isMobileOnly,
+    isTablet,
+    isSmartTV,
+    isAndroid,
     isIOS,
-    isIOS13,
     isChrome,
-    isSafari
+    isFirefox,
+    isSafari,
+    isIE,
+    isEdge,
+    isChromium,
+    isMobileSafari,
+    isMacOs,
+    isIOS13
 } from "react-device-detect";
-
 import { App } from "./app";
+import { createDefaultStore } from "./store/store";
 import { LessonMaterial, MaterialTypename } from "./lessonMaterialContext";
 import { AuthTokenProvider } from "./services/auth-token/AuthTokenProvider";
 import { themeProvider } from "./themeProvider";
 import { getLanguage, getDefaultLanguageCode } from "./utils/locale";
+import { setUserAgent } from "./store/reducers/session";
 
 import ChromeLogo from "./assets/img/browser/chrome_logo.svg";
 import SafariLogo from "./assets/img/browser/safari_logo.png";
@@ -66,8 +78,9 @@ export interface IThemeContext {
 }
 
 export interface IUserContext {
+    classType: string, // "live" | "class" | "study" | "task" | ""
     teacher: boolean,
-    materials: LessonMaterial[]
+    materials: LessonMaterial[],
     roomId: string,
     sessionId: string,
     name?: string,
@@ -103,6 +116,7 @@ function parseToken() {
                     }
                 });
                 return {
+                    classType: payload.classType ? String(payload.classType) : "",
                     teacher: payload.teacher ? Boolean(payload.teacher) : false,
                     name: payload.name ? String(payload.name) : undefined,
                     roomId: String(payload.roomid),
@@ -111,6 +125,7 @@ function parseToken() {
             } else {
                 const materialsParam = url.searchParams.get("materials");
                 return {
+                    classType: url.searchParams.get("classType") || "",
                     teacher: url.searchParams.get("teacher") !== null,
                     name: url.searchParams.get("name") || undefined, // Should be undefined not null
                     roomId: url.searchParams.get("roomId") || "test-room",
@@ -126,7 +141,6 @@ function parseToken() {
                         { __typename: MaterialTypename.Image, name: "Landscape Image", url: `${process.env.ENDPOINT_TEST_ASSETS_S3 || "."}/test_image_landscape.jpg` },
                         { name: "Pairs - Legacy", url: `/h5p/play/5ecf4e4b611e18398f7380ef` },
                         { name: "Video - Legacy", video: `${process.env.ENDPOINT_TEST_ASSETS_S3 || "."}/test_video.mp4` },
-                        { __typename: MaterialTypename.Iframe, name: "Quiz", url: "/h5p/play/5ed07656611e18398f7380f6" },
                     ],
                 };
             }
@@ -153,6 +167,7 @@ function Entry() {
     }), [themeMode, setThemeMode, languageCode, setLanguageCode]);
 
     const userContext = useMemo<IUserContext>(() => ({
+        classType: params ? params.classType : "",
         camera,
         setCamera,
         name,
@@ -163,16 +178,32 @@ function Entry() {
         materials: params ? params.materials : null
     }), [camera, setCamera, name, setName, params]);
 
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(setUserAgent({
+            isMobileOnly,
+            isTablet,
+            isBrowser: true,
+            isSmartTV,
+            isAndroid,
+            isIOS,
+            isChrome,
+            isFirefox,
+            isSafari,
+            isIE,
+            isEdge,
+            isChromium,
+            isMobileSafari,
+        }));
+    }, []);
+
     return (
         <ThemeContext.Provider value={themeContext}>
             <UserContext.Provider value={userContext}>
                 <RawIntlProvider value={locale}>
                     <ThemeProvider theme={themeProvider(languageCode, themeMode)}>
                         <CssBaseline />
-                        { !params ?
-                            <Typography><FormattedMessage id="error_invaild_token" /></Typography> : 
-                            <App />
-                        }
+                        {!params ? <Typography><FormattedMessage id="error_invaild_token" /></Typography> : <App />}
                     </ThemeProvider>
                 </RawIntlProvider>
             </UserContext.Provider>
@@ -186,10 +217,15 @@ if (
     || (isIOS || isIOS13) && isSafari // Support only Safari in iOS
     || (!isIOS || !isIOS13) && isChrome // Support only Chrome in other OS
 ) {
+    const { store, persistor } = createDefaultStore();
     renderComponent = (
-        <ApolloProvider client={client}>
-            <Entry />
-        </ApolloProvider>
+        <Provider store={store}>
+            <PersistGate loading={null} persistor={persistor}>
+                <ApolloProvider client={client}>
+                    <Entry />
+                </ApolloProvider>
+            </PersistGate>
+        </Provider>
     )
 } else {
     renderComponent = <BrowserGuide />
