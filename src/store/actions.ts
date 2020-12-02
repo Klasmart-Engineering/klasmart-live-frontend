@@ -1,15 +1,6 @@
 // TODO: Move types to correct file
 
 export enum ActionTypes {
-    SCHEDULES,
-
-    SUCCESS,
-    FAILURE,
-    RETRIEVING,
-    CREATING,
-    UPDATING,
-    DELETING,
-
     CLASS_TYPE,
     USER_AGENT,
     USER_TYPE,
@@ -21,11 +12,6 @@ export enum ActionTypes {
     COLS_CAMERA,
     COLS_OBSERVE,
     CONTENT_INDEX,
-
-    DEVICE_ORIENTATION,
-
-    VOLUME_VOD,
-    VOLUME_VOICE,
 }
 export interface Action<T extends ActionTypes, P> {
     type: T;
@@ -36,14 +22,6 @@ export interface Payload {
     total: number;
     data: any[]
 }
-export type SetSchedules = Action<ActionTypes.SCHEDULES, Payload>;
-
-export type SetSuccess = Action<ActionTypes.SUCCESS, boolean>;
-export type SetFailure = Action<ActionTypes.FAILURE, boolean>;
-export type SetRetrieving = Action<ActionTypes.RETRIEVING, boolean>;
-export type SetCreating = Action<ActionTypes.CREATING, boolean>;
-export type SetUpdating = Action<ActionTypes.UPDATING, boolean>;
-export type SetDeleting = Action<ActionTypes.DELETING, boolean>;
 
 export enum ClassType {
     LIVE = "live",
@@ -91,23 +69,7 @@ export type SetColsCamera = Action<ActionTypes.COLS_CAMERA, number>;
 export type SetColsObserve = Action<ActionTypes.COLS_OBSERVE, number>;
 export type SetContentIndex = Action<ActionTypes.CONTENT_INDEX, number>;
 
-export enum OrientationType {
-    PORTRAIT = "portrait",
-    LANDSCAPE = "landscape",
-}
-export type SetDeviceOrientation = Action<ActionTypes.DEVICE_ORIENTATION, OrientationType>;
-
-export type SetVolumeVod = Action<ActionTypes.VOLUME_VOD, number>;
-export type SetVolumeVoice = Action<ActionTypes.VOLUME_VOICE, number>;
-
 export type Actions =
-    | SetSchedules
-    | SetSuccess
-    | SetFailure
-    | SetRetrieving
-    | SetCreating
-    | SetUpdating
-    | SetDeleting
     | SetClassType
     | SetUserAgent
     | SetUserType
@@ -118,7 +80,4 @@ export type Actions =
     | SetColsCamera
     | SetColsObserve
     | SetContentIndex
-    | SetDeviceOrientation
-    | SetVolumeVod
-    | SetVolumeVoice
     | never;

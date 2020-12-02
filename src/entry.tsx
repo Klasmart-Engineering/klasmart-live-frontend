@@ -78,7 +78,7 @@ export interface IThemeContext {
 }
 
 export interface IUserContext {
-    classType: string, // "live" | "class" | "study" | "task" | ""
+    classType: string, // "live" | "class" | "study" | "task"
     teacher: boolean,
     materials: LessonMaterial[],
     roomId: string,
@@ -116,7 +116,7 @@ function parseToken() {
                     }
                 });
                 return {
-                    classType: payload.classType ? String(payload.classType) : "",
+                    classType: payload.classType ? String(payload.classType) : "live",
                     teacher: payload.teacher ? Boolean(payload.teacher) : false,
                     name: payload.name ? String(payload.name) : undefined,
                     roomId: String(payload.roomid),
@@ -125,7 +125,7 @@ function parseToken() {
             } else {
                 const materialsParam = url.searchParams.get("materials");
                 return {
-                    classType: url.searchParams.get("classType") || "",
+                    classType: url.searchParams.get("classType") || "live",
                     teacher: url.searchParams.get("teacher") !== null,
                     name: url.searchParams.get("name") || undefined, // Should be undefined not null
                     roomId: url.searchParams.get("roomId") || "test-room",
@@ -167,7 +167,7 @@ function Entry() {
     }), [themeMode, setThemeMode, languageCode, setLanguageCode]);
 
     const userContext = useMemo<IUserContext>(() => ({
-        classType: params ? params.classType : "",
+        classType: params ? params.classType : "live",
         camera,
         setCamera,
         name,
