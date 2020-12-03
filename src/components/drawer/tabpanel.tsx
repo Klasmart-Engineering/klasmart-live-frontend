@@ -125,7 +125,7 @@ export function TabPanel(props: TabPanelProps) {
 }
 
 function TabInnerContent({ title }: { title: string }) {
-    const { classType, materials } = useContext(UserContext);
+    const { classtype, materials } = useContext(UserContext);
     const classes = useStyles();
     const dispatch = useDispatch();
     const contentIndex = useSelector((store: State) => store.control.contentIndex);
@@ -139,7 +139,7 @@ function TabInnerContent({ title }: { title: string }) {
                         activeStep={contentIndex}
                         orientation="vertical"
                     >
-                        {classType === ClassType.LIVE ?
+                        {classtype === ClassType.LIVE ?
                             materials.map((material, index) => (
                                 <Step
                                     key={`step-${material.name}`}

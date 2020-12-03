@@ -6,8 +6,9 @@ import { useTheme, useMediaQuery } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import { sessionId, UserContext } from "../../entry";
-import { Live } from "./live";
+import { Study } from "./study";
 import { Classes } from "./classes";
+import { Live } from "./live";
 import Loading from "../../components/loading";
 import { EventEmitter } from "eventemitter3"
 
@@ -48,7 +49,7 @@ interface Props {
 }
 
 export function Room({ teacher }: Props): JSX.Element {
-    const { classType } = useContext(UserContext);
+    const { classtype } = useContext(UserContext);
 
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
@@ -73,7 +74,14 @@ export function Room({ teacher }: Props): JSX.Element {
         }
     }, [isSmDown]);
 
-    switch (classType) {
+    switch (classtype) {
+        case "study":
+            return (
+                <Study
+                    interactiveModeState={{ interactiveMode: 1, setInteractiveMode }}
+                    streamIdState={{ streamId, setStreamId }}
+                />
+            )
         case "class":
             return (
                 <Classes

@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme: Theme) =>
 export function Settings() {
     const theme = useTheme();
     const { spacing, formControlSelect } = useStyles();
-    const { classType, teacher } = useContext(UserContext);
+    const { classtype, teacher } = useContext(UserContext);
     const dispatch = useDispatch();
     const colsCamera = useSelector((state: State) => state.control.colsCamera);
     const colsObserve = useSelector((state: State) => state.control.colsObserve);
@@ -57,7 +57,7 @@ export function Settings() {
             style={{ overflow: "hidden", padding: theme.spacing(2) }}
         >
             {/* Toggle button for testing in dev environment */}
-            {/* {new URL(window.location.href).hostname === "localhost" ? <button onClick={toggleClassType}>Toggle classType for Testing</button> : null} */}
+            {/* {new URL(window.location.href).hostname === "localhost" ? <button onClick={toggleClassType}>Toggle classtype for Testing</button> : null} */}
 
             <Lightswitch type="text" />
 
@@ -72,7 +72,7 @@ export function Settings() {
                 </Grid>
             </Grid>
 
-            {classType !== ClassType.LIVE ? null : <>
+            {classtype !== ClassType.LIVE ? null : <>
                 {/* Mobile always display 2 Cameras per row */}
                 {isMobileOnly ? null : <>
                     <div className={spacing} />

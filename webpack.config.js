@@ -118,6 +118,10 @@ module.exports = {
         target: "https://live.kidsloop.net",
         changeOrigin: true,
       },
+      "/v1": {
+        target: "https://kl2-test.kidsloop.net",
+        changeOrigin: true,
+      }
     },
     disableHostCheck: true,
   },

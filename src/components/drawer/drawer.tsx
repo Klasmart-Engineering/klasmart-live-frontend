@@ -27,10 +27,10 @@ enum UserType {
 }
 
 const TABS = [
-    { icon: <PeopleIcon role="img" size="1.5rem" />, title: "title_participants", userType: UserType.Both, classType: ClassType.LIVE },
-    { icon: <LessonPlanIcon role="img" size="1.5rem" />, title: "title_lesson_plan", userType: UserType.TeacherOnly, classType: ClassType.CLASSES },
-    { icon: <ChatIcon role="img" size="1.5rem" />, title: "title_chat", userType: UserType.Both, classType: ClassType.LIVE },
-    { icon: <SettingsIcon role="img" size="1.5rem" />, title: "title_settings", userType: UserType.TeacherOnly, classType: ClassType.CLASSES },
+    { icon: <PeopleIcon role="img" size="1.5rem" />, title: "title_participants", userType: UserType.Both, cType: ClassType.LIVE },
+    { icon: <LessonPlanIcon role="img" size="1.5rem" />, title: "title_lesson_plan", userType: UserType.TeacherOnly, cType: ClassType.CLASSES },
+    { icon: <ChatIcon role="img" size="1.5rem" />, title: "title_chat", userType: UserType.Both, cType: ClassType.LIVE },
+    { icon: <SettingsIcon role="img" size="1.5rem" />, title: "title_settings", userType: UserType.TeacherOnly, cType: ClassType.CLASSES },
 ];
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -73,7 +73,7 @@ export function DrawerContainer({ interactiveModeState, streamId, material, tabI
 
     return (
         <Grid id="drawer-container" ref={ref} item xs={drawerOpen ? 3 : undefined} style={{ position: "relative" }}>
-            {TABS.filter((t) => t.classType === ClassType.CLASSES).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} index={index} tab={tab} value={tabIndex} />)}
+            {TABS.filter((t) => t.cType === ClassType.CLASSES).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} index={index} tab={tab} value={tabIndex} />)}
             <DrawerToolbar interactiveModeState={interactiveModeState} streamId={streamId} material={material} tabIndex={tabIndex} setTabIndex={setTabIndex} setMaterialKey={setMaterialKey} />
         </Grid>
     )
@@ -87,7 +87,7 @@ function DrawerToolbar({ interactiveModeState, streamId, material, tabIndex, set
     setTabIndex: React.Dispatch<React.SetStateAction<number>>,
     setMaterialKey: React.Dispatch<React.SetStateAction<number>>,
 }) {
-    const { classType, teacher } = useContext(UserContext);
+    const { classtype, teacher } = useContext(UserContext);
     const classes = useStyles();
     const theme = useTheme();
     const dispatch = useDispatch();
@@ -124,8 +124,8 @@ function DrawerToolbar({ interactiveModeState, streamId, material, tabIndex, set
                         indicator: classes.tabIndicator
                     }}
                 >
-                    {classType === ClassType.CLASSES ? (
-                        TABS.filter((t) => t.classType === ClassType.CLASSES).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} className={index === tabIndex ? classes.tabSelected : ""} title={tab.title} handlers={{ setDrawerOpen: (open: boolean) => dispatch(setDrawerOpen(open)), setTabIndex }} value={index}>{tab.icon}</StyledTab>)
+                    {classtype === ClassType.CLASSES ? (
+                        TABS.filter((t) => t.cType === ClassType.CLASSES).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} className={index === tabIndex ? classes.tabSelected : ""} title={tab.title} handlers={{ setDrawerOpen: (open: boolean) => dispatch(setDrawerOpen(open)), setTabIndex }} value={index}>{tab.icon}</StyledTab>)
                     ) : teacher ?
                             TABS.filter((t) => t.userType !== 1).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} className={index === tabIndex ? classes.tabSelected : ""} title={tab.title} handlers={{ setDrawerOpen: (open: boolean) => dispatch(setDrawerOpen(open)), setTabIndex }} value={index}>{tab.icon}</StyledTab>) :
                             TABS.filter((t) => t.userType !== 0).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} className={index === tabIndex ? classes.tabSelected : ""} title={tab.title} handlers={{ setDrawerOpen: (open: boolean) => dispatch(setDrawerOpen(open)), setTabIndex }} value={index}>{tab.icon}</StyledTab>)
