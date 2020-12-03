@@ -141,7 +141,7 @@ export function Join(): JSX.Element {
             alignItems="center"
             className={classes.pageWrapper}
         >
-            <Container maxWidth="lg">
+            <Container maxWidth={classType === ClassType.CLASSES ? "xs" : "lg"}>
                 <Card>
                     <CardContent className={classes.card}>
                         <Grid
@@ -165,10 +165,10 @@ export function Join(): JSX.Element {
                                     }
                                 </Grid>
                             }
-                            <Grid item xs={12} md={4}>
+                            <Grid item xs={12} md={classType === ClassType.CLASSES ? undefined : 4}>
                                 <Grid container direction="row" justify="center" alignItems="center" spacing={4}>
                                     <Grid item xs={12}>
-                                        <img alt="KidsLoop Live" src={teacher ? KidsLoopTeachers : KidsLoopStudents} height="64px" style={{ display: "block", margin: "0 auto" }} />
+                                        <img alt="KidsLoop Live" src={(classType === ClassType.CLASSES || teacher) ? KidsLoopTeachers : KidsLoopStudents} height="64px" style={{ display: "block", margin: "0 auto" }} />
                                     </Grid>
                                     <Grid item xs={12} className={classes.formContainer}>
                                         <form onSubmit={join}>
