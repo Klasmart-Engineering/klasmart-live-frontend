@@ -22,20 +22,17 @@ export const WB_TOOLBAR_MAX_HEIGHT = 80; // 64 + 16(padding top)
 export const MOBILE_WB_TOOLBAR_MAX_HEIGHT = 46; // 38 + 8(padding top)
 
 export function WBToolbarContainer() {
-    const TEACHER_FAB_WIDTH = 80;
-    const TEACHER_FAB_HEIGHT = 18;
-
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down('sm'));
 
-    const { teacher, sessionId, classType } = useContext(UserContext);
+    const { classtype, teacher, sessionId } = useContext(UserContext);
     const { state: { display, permissions }, actions: { setDisplay, getPermissions, setPermissions } } = useSynchronizedState();
-    const enableWB = classType === ClassType.LIVE ? (!teacher ? display && permissions.allowCreateShapes : display) : true;
+    const enableWB = classtype === ClassType.LIVE ? (!teacher ? display && permissions.allowCreateShapes : display) : true;
     const [open, setOpen] = useState(false);
 
     const handleOpenWBToolbar = (e: React.MouseEvent<HTMLButtonElement>) => {
         setOpen(true);
-        if (classType !== ClassType.LIVE) {
+        if (classtype !== ClassType.LIVE) {
             setDisplay(true);
             const permissions = getPermissions(sessionId);
             const newPermissions = {
@@ -47,7 +44,7 @@ export function WBToolbarContainer() {
     };
     const handleCloseWBToolbar = () => {
         setOpen(false);
-        if (classType !== ClassType.LIVE) {
+        if (classtype !== ClassType.LIVE) {
             setDisplay(false);
             const permissions = getPermissions(sessionId);
             const newPermissions = {
@@ -58,46 +55,23 @@ export function WBToolbarContainer() {
         }
     };
     return (
-        <Grid item xs={12} style={{ position: "relative", height: isSmDown ? MOBILE_WB_TOOLBAR_MAX_HEIGHT : WB_TOOLBAR_MAX_HEIGHT }}>
-            {classType !== ClassType.LIVE || !teacher ? (
-                <Fab
-                    aria-label="student whiteboard toolbar opener"
-                    disabled={!enableWB}
-                    onClick={handleOpenWBToolbar}
-                    size={isSmDown ? "small" : "large"}
-                    color="primary"
-                    style={{
-                        display: open ? "none" : "flex",
-                        zIndex: WB_EXPAND_BUTTON,
-                        position: "absolute",
-                        bottom: 0,
-                        left: 0,
-                    }}
-                >
-                    <StyledIcon icon={<WBIcon />} size={isSmDown ? "small" : "large"} color="white" />
-                </Fab>
-            ) : (
-                    <Fab
-                        aria-label="teacher whiteboard toolbar opener"
-                        disabled={!enableWB}
-                        variant="extended"
-                        onClick={handleOpenWBToolbar}
-                        size="small"
-                        color="primary"
-                        style={{
-                            zIndex: WB_EXPAND_BUTTON,
-                            display: open ? "none" : "flex",
-                            width: TEACHER_FAB_WIDTH,
-                            height: TEACHER_FAB_HEIGHT,
-                            position: "absolute",
-                            bottom: 0,
-                            left: `calc(50% - ${TEACHER_FAB_WIDTH}px)`,
-                        }}
-                    >
-                        <StyledIcon icon={<ArrowUpIcon />} size="medium" color="white" />
-                    </Fab>
-                )
-            }
+        <Grid item xs={12} style={{ position: "relative", height: WB_TOOLBAR_MAX_HEIGHT }}>
+            <Fab
+                aria-label="whiteboard toolbar opener"
+                disabled={!enableWB}
+                onClick={handleOpenWBToolbar}
+                size="large"
+                color="primary"
+                style={{
+                    display: open ? "none" : "flex",
+                    zIndex: WB_EXPAND_BUTTON,
+                    position: "absolute",
+                    bottom: 0,
+                    left: 0,
+                }}
+            >
+                <StyledIcon icon={<WBIcon />} size="large" color="white" />
+            </Fab>
             <Paper
                 aria-label="whiteboard toolbar"
                 elevation={2}
@@ -115,11 +89,11 @@ export function WBToolbarContainer() {
                 <Grid container direction="row" justify="space-between" alignItems="center">
                     <Grid item style={{ flex: 0 }}>
                         <IconButton
-                            size={isSmDown ? "small" : "medium"}
+                            size={"medium"}
                             style={{ backgroundColor: theme.palette.background.paper }}
                             onClick={handleCloseWBToolbar}
                         >
-                            <StyledIcon icon={teacher ? <ArrowDownIcon /> : <CloseIcon />} size={isSmDown ? "small" : "large"} />
+                            <StyledIcon icon={teacher ? <ArrowDownIcon /> : <CloseIcon />} size="large" />
                         </IconButton>
                     </Grid>
                     <WBToolbar />

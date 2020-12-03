@@ -1,4 +1,4 @@
-import { Join } from "./pages/join";
+import { Join } from "./pages/join/join";
 import { Room, RoomContext } from "./pages/room/room";
 import { UserContext } from "./entry";
 import React, { useContext } from "react";

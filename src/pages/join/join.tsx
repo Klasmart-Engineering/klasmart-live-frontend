@@ -9,19 +9,21 @@ import CardContent from "@material-ui/core/CardContent";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Tooltip from "@material-ui/core/Tooltip";
-import KidsLoopTeachers from "../assets/img/kidsloop_live_teachers.svg";
-import KidsLoopStudents from "../assets/img/kidsloop_live_students.svg";
-import StyledButton from "../components/styled/button";
-import StyledTextField from "../components/styled/textfield";
-import { UserContext } from "../entry";
-import { Camera } from "../webRTCState";
-import Loading from "../components/loading";
-import NoCamera from "../components/noCamera";
-import MediaDeviceSelect from "../components/mediaDeviceSelect";
+import StyledButton from "../../components/styled/button";
+import StyledTextField from "../../components/styled/textfield";
+import { UserContext } from "../../entry";
+import { Camera } from "../../webRTCState";
+import Loading from "../../components/loading";
+import NoCamera from "../../components/noCamera";
+import MediaDeviceSelect from "../../components/mediaDeviceSelect";
 import { Error as ErrorIcon } from "@styled-icons/material/Error";
-import { FFT } from "../components/fft";
-import logger from "../services/logger/Logger";
-import { ClassType } from '../store/actions';
+import { FFT } from "../../components/fft";
+import logger from "../../services/logger/Logger";
+import { ClassType } from '../../store/actions';
+
+import KidsLoopTeachers from "../../assets/img/kidsloop_live_teachers.svg";
+import KidsLoopStudents from "../../assets/img/kidsloop_live_students.svg";
+import KidsLoopStudyStudents from "../../assets/img/kidsloop_study_students.svg";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -56,7 +58,7 @@ export function Join(): JSX.Element {
     const classes = useStyles();
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
-    const { classType, camera, setCamera, name, setName, sessionId, teacher } = useContext(UserContext);
+    const { classtype, camera, setCamera, name, setName, sessionId, teacher } = useContext(UserContext);
 
     const [user, setUser] = useState<string>("");
 
@@ -102,17 +104,24 @@ export function Join(): JSX.Element {
                 .then(() => detectDevices())
                 .catch((e) => { setError(true); console.error(e); });
         }
-
-        navigator.mediaDevices.getUserMedia({
-            video: {
-                deviceId: videoDeviceId,
-                width: { ideal: 4096 },
-                height: { ideal: 2160 },
-            },
-            audio: { deviceId: audioDeviceId },
-        })
-            .then((s) => { setStream(s); })
-            .catch((e) => { setError(true); console.error(e); });
+        if (classtype === ClassType.LIVE) {
+            navigator.mediaDevices.getUserMedia({
+                video: {
+                    deviceId: videoDeviceId,
+                    width: { ideal: 4096 },
+                    height: { ideal: 2160 },
+                },
+                audio: { deviceId: audioDeviceId },
+            })
+                .then((s) => { setStream(s); })
+                .catch((e) => { setError(true); console.error(e); });
+        } else {
+            navigator.mediaDevices.getUserMedia({
+                audio: { deviceId: audioDeviceId }
+            })
+                .then((s) => { setStream(s); })
+                .catch((e) => { setError(true); console.error(e); });
+        }
     }, [videoDeviceId, audioDeviceId]);
 
     function join(e: React.FormEvent<HTMLFormElement>) {
@@ -141,7 +150,7 @@ export function Join(): JSX.Element {
             alignItems="center"
             className={classes.pageWrapper}
         >
-            <Container maxWidth={classType === ClassType.CLASSES ? "xs" : "lg"}>
+            <Container maxWidth={classtype === ClassType.LIVE ? "lg" : "xs"}>
                 <Card>
                     <CardContent className={classes.card}>
                         <Grid
@@ -151,7 +160,7 @@ export function Join(): JSX.Element {
                             alignItems="center"
                             spacing={4}
                         >
-                            {classType !== ClassType.LIVE ? null :
+                            {classtype !== ClassType.LIVE ? null :
                                 <Grid item xs={12} md={8} style={{ width: "100%" }}>
                                     {
                                         stream && stream.getVideoTracks().length > 0 && stream.getVideoTracks().every((t) => t.readyState === "live") && stream.active
@@ -165,10 +174,13 @@ export function Join(): JSX.Element {
                                     }
                                 </Grid>
                             }
-                            <Grid item xs={12} md={classType === ClassType.CLASSES ? undefined : 4}>
+                            <Grid item xs={12} md={classtype === ClassType.LIVE ? 4 : undefined}>
                                 <Grid container direction="row" justify="center" alignItems="center" spacing={4}>
                                     <Grid item xs={12}>
-                                        <img alt="KidsLoop Live" src={(classType === ClassType.CLASSES || teacher) ? KidsLoopTeachers : KidsLoopStudents} height="64px" style={{ display: "block", margin: "0 auto" }} />
+                                        {classtype === ClassType.LIVE
+                                            ? <img alt="KidsLoop Live" src={teacher ? KidsLoopTeachers : KidsLoopStudents} height="64px" style={{ display: "block", margin: "0 auto" }} />
+                                            : <img alt="KidsLoop Live" src={classtype === ClassType.CLASSES ? KidsLoopTeachers : KidsLoopStudyStudents} height="64px" style={{ display: "block", margin: "0 auto" }} />
+                                        }
                                     </Grid>
                                     <Grid item xs={12} className={classes.formContainer}>
                                         <form onSubmit={join}>
@@ -190,7 +202,7 @@ export function Join(): JSX.Element {
                                                         />
                                                     }
                                                 </Grid>
-                                                {classType !== ClassType.LIVE ? null : <>
+                                                {classtype !== ClassType.LIVE ? null :
                                                     <Grid item xs={12}>
                                                         <MediaDeviceSelect
                                                             disabled={videoDevices.length <= 1}
@@ -200,16 +212,16 @@ export function Join(): JSX.Element {
                                                             onChange={(e) => setVideoDeviceId(e.target.value as string)}
                                                         />
                                                     </Grid>
-                                                    <Grid item xs={12}>
-                                                        <MediaDeviceSelect
-                                                            disabled={audioDevices.length <= 1}
-                                                            deviceType="audio"
-                                                            deviceId={audioDeviceId}
-                                                            devices={audioDevices}
-                                                            onChange={(e) => setAudioDeviceId(e.target.value as string)}
-                                                        />
-                                                    </Grid>
-                                                </>}
+                                                }
+                                                <Grid item xs={12}>
+                                                    <MediaDeviceSelect
+                                                        disabled={audioDevices.length <= 1}
+                                                        deviceType="audio"
+                                                        deviceId={audioDeviceId}
+                                                        devices={audioDevices}
+                                                        onChange={(e) => setAudioDeviceId(e.target.value as string)}
+                                                    />
+                                                </Grid>
                                                 <Grid item xs={12}>
                                                     <StyledButton
                                                         fullWidth
