@@ -72,9 +72,15 @@ function Entry() {
     }, []);
 
     const { cordovaReady, permissions } = useCordovaInitialize(false, () => { 
+        const isRootPage = window.location.href.includes("/schedule") || window.location.hash === "#/";
         if (window.location.href.includes("/room")) {
             restart();
-        } else {
+        } else if (isRootPage) {
+            // TODO (Axel): Do nothing for now, but in the future we could show a prompt
+            // asking the user if they want to quit the application or not. And then quit
+            // based on the users response.
+        } 
+        else {
             history.goBack(); 
         }
     });
