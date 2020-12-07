@@ -29,6 +29,7 @@ import LiveSchedulePopcorn from "../../assets/img/schedule_popcorn.svg";
 import StudyScheduleHouse from "../../assets/img/study_house.svg";
 import { useUserContext } from "../../context-provider/user-context";
 import { setSelectOrgDialogOpen } from "../../store/reducers/control";
+import { useUserInformation } from "../../context-provider/user-information-context";
 
 // NOTE: China API server(Go lang) accept 10 digits timestamp
 const now = new Date();
@@ -74,39 +75,21 @@ export function Schedule() {
     const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
     const inFlight = useSelector((state: State) => state.communication.inFlight);
 
+    const { schedulerService } = useUserInformation();
+
     const { shouldSelect } = useShouldSelectOrganization();
 
     useEffect(() => {
         lockOrientation(OrientationType.PORTRAIT, dispatch);
     }, [])
 
-    // https://swagger-ui.kidsloop.net/#/schedule/getScheduleTimeView
-    async function getScheduleTimeViews(timeAt: number, timeZoneOffset: number) {
-        const headers = new Headers();
-        headers.append("Accept", "application/json");
-        headers.append("Content-Type", "application/json");
-        const encodedParams = qs.stringify({
-            view_type: "month",
-            time_at: timeAt,
-            time_zone_offset: timeZoneOffset,
-            org_id: selectedOrg.organization_id
-        }, { encodeValuesOnly: true });
-        const response = await fetch(`${CMS_ENDPOINT}/v1/schedules_time_view?${encodedParams}`, {
-            headers,
-            method: "GET",
-        });
-        if (response.status === 200) {
-            return response.json();
-        } else {
-            return [];
-        }
-    }
-
     useEffect(() => {
         async function fetchEverything() {
             async function fetchScheduleTimeViews() {
-                const thisMonthSchedules = await getScheduleTimeViews(todayTimeStamp, timeZoneOffset);
-                const nextMonthSchedules = await getScheduleTimeViews(nextMonthTimeStamp, timeZoneOffset);
+                if (!schedulerService) return Promise.reject();
+
+                const thisMonthSchedules = await schedulerService.getScheduleTimeViews(selectedOrg.organization_id, "month", todayTimeStamp, timeZoneOffset);
+                const nextMonthSchedules = await schedulerService.getScheduleTimeViews(selectedOrg.organization_id, "month", nextMonthTimeStamp, timeZoneOffset);
                 const totalSchedules = thisMonthSchedules.concat(nextMonthSchedules);
                 const liveSchedules = totalSchedules.filter((s: any) => s.class_type === "OnlineClass")
                 const studySchedules = totalSchedules.filter((s: any) => s.class_type === "Homework")
@@ -129,7 +112,7 @@ export function Schedule() {
             dispatch(setSelectOrgDialogOpen(true));
         }
         console.log("selectedOrg: ", selectedOrg);
-    }, [shouldSelect, selectedOrg])
+    }, [shouldSelect, selectedOrg, schedulerService])
 
     return (<>
         <Header isHomeRoute />

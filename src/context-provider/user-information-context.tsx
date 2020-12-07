@@ -2,6 +2,8 @@ import React, { createContext, ReactChild, ReactChildren, useCallback, useContex
 import { useDispatch } from "react-redux";
 import { setUser } from "../store/reducers/session";
 import { setErrCode } from "../store/reducers/communication";
+import { SchedulerService } from "../services/scheduler/SchedulerService";
+import { ISchedulerService } from "../services/scheduler/ISchedulerService";
 
 // TODO (Axel): All of this context can be combined with the user-context from 
 // the combined master branch. This would be preferred since they share
@@ -115,12 +117,15 @@ type UserInformationActions = {
 type UserInformationContext = {
     loading: boolean,
     error: boolean,
-    information?: UserInformation
+    information?: UserInformation,
+    schedulerService?: ISchedulerService,
     actions?: UserInformationActions
 }
 
 const UserInformationEndpoint = "https://api.kidsloop.net/user/";
 const UserInformationContext = createContext<UserInformationContext>({ loading: true, error: false, information: undefined, actions: undefined });
+
+const SchedulerServiceEndpoint = process.env.ENDPOINT_KL2 !== undefined ? process.env.ENDPOINT_KL2 : "";
 
 export function isRoleTeacher(role: string) {
     const teacherRoleNames = [
@@ -137,6 +142,10 @@ export function UserInformationContextProvider({ children }: Props) {
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<boolean>(false);
     const [information, setInformation] = useState<UserInformation | undefined>(undefined);
+
+    const schedulerService = useMemo(() => {
+        return new SchedulerService(SchedulerServiceEndpoint);
+    }, []);
 
     const userInformationFromResponseData = (me: MePayload) => {
         const information: UserInformation = {
@@ -187,8 +196,8 @@ export function UserInformationContextProvider({ children }: Props) {
     }, []);
 
     const context = useMemo<UserInformationContext>(() => {
-        return { loading, error, information, actions: { refresh: fetchInformation } }
-    }, [information, loading, error, fetchInformation])
+        return { loading, error, information, schedulerService, actions: { refresh: fetchInformation } }
+    }, [information, loading, error, fetchInformation, schedulerService])
 
     useEffect(() => {
         fetchInformation();
