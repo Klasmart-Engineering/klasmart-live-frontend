@@ -38,6 +38,7 @@ import { Auth } from "./pages/account/auth";
 import { UserInformationContextProvider } from "./context-provider/user-information-context";
 import { createHashHistory } from 'history'
 import { UserContextProvider } from "./context-provider/user-context";
+import { useLocation } from "react-router-dom";
 
 function Entry() {
     const dispatch = useDispatch();
@@ -71,9 +72,11 @@ function Entry() {
         (navigator as any).app.loadUrl("file:///android_asset/www/index.html", { wait: 0, loadingDialog: "Wait,Loading App", loadUrlTimeoutValue: 60000 });
     }, []);
 
+    const location = useLocation();
+
     const { cordovaReady, permissions } = useCordovaInitialize(false, () => { 
-        const isRootPage = window.location.href.includes("/schedule") || window.location.hash === "#/";
-        if (window.location.href.includes("/room")) {
+        const isRootPage = location.hash.includes("/schedule") || location.hash === "#/";
+        if (location.hash.includes("/room")) {
             restart();
         } else if (isRootPage) {
             // TODO (Axel): Do nothing for now, but in the future we could show a prompt
