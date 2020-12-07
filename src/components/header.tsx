@@ -15,7 +15,6 @@ import { Lock as LockIcon } from "@styled-icons/material/Lock";
 import StyledIcon from "./styled/icon";
 import { State } from "../store/store";
 import { setSelectOrgDialogOpen } from "../store/reducers/control";
-import { useShouldSelectOrganization } from "../pages/account/selectOrgDialog";
 
 import KidsloopLogo from "../assets/img/kidsloop_icon.svg";
 import DefaultOrganization from "../assets/img/avatars/Avatar_Student_01.jpg";
@@ -37,6 +36,85 @@ const useStyles = makeStyles((theme: Theme) =>
         },
     }),
 );
+
+export function Header({ isHomeRoute }: { isHomeRoute?: boolean }) {
+    const { root, safeArea } = useStyles();
+    const theme = useTheme();
+    const errCode = useSelector((state: State) => state.communication.errCode);
+    const selectOrgDialogOpen = useSelector((state: State) => state.control.selectOrgDialogOpen);
+
+    return (errCode ? <></> :
+        <div className={root}>
+            <AppBar
+                position="sticky"
+                elevation={0}
+                className={safeArea}
+            >
+                <Toolbar style={{ padding: theme.spacing(0, 1) }}>
+                    <Grid
+                        container
+                        direction="row"
+                        justify="space-between"
+                        alignItems="center"
+                    >
+                        <Grid
+                            container
+                            item
+                            xs={12}
+                            direction="row"
+                            justify="space-between"
+                            alignItems="center"
+                            wrap="nowrap"
+                        >
+                            <Grid item style={{ flexGrow: 0 }}>
+                                {selectOrgDialogOpen ? <CloseSelectOrgButton /> : (
+                                    isHomeRoute ? <OpenSelectOrgButton /> : <GoBackButton />
+                                )}
+                            </Grid>
+                            <Grid item style={{ flexGrow: 1, textAlign: "center" }}>
+                                <img alt="KidsLoop Logo" src={KidsloopLogo} height={32} />
+                            </Grid>
+                            <Grid item style={{ flexGrow: 0 }}>
+                                <MenuButton />
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Toolbar>
+            </AppBar>
+        </div>
+    );
+}
+
+function CloseSelectOrgButton() {
+    const { iconButton } = useStyles();
+    const dispatch = useDispatch();
+
+    return (
+        <IconButton
+            onClick={() => dispatch(setSelectOrgDialogOpen(false))}
+            size="medium"
+            className={iconButton}
+        >
+            <StyledIcon icon={<CloseIcon />} size="medium" />
+        </IconButton>
+    );
+}
+
+function OpenSelectOrgButton() {
+    const { iconButton } = useStyles();
+    const dispatch = useDispatch();
+
+    return (
+        <IconButton
+            onClick={() => dispatch(setSelectOrgDialogOpen(true))}
+            size="medium"
+            className={iconButton}
+            style={{ padding: 0 }}
+        >
+            <Avatar alt="Organization's thumbnail" src={DefaultOrganization} />
+        </IconButton>
+    );
+}
 
 function GoBackButton() {
     const { iconButton } = useStyles();
@@ -70,9 +148,10 @@ function GoBackButton() {
     );
 }
 
+// TODO (Isu): Will be changed to <RefreshButton /> that force Schedule component to rerender
 function MenuButton() {
     const { iconButton } = useStyles();
-    const open = useSelector((state: State) => state.control.selectOrgDialogOpen);
+    const selectOrgDialogOpen = useSelector((state: State) => state.control.selectOrgDialogOpen);
     const [tootipOpen, setTooltipOpen] = useState(false);
 
     return (
@@ -81,73 +160,10 @@ function MenuButton() {
                 onClick={() => setTooltipOpen(true)}
                 size="medium"
                 className={iconButton}
-                style={{ visibility: open ? "hidden" : "visible" }}
+                style={{ visibility: selectOrgDialogOpen ? "hidden" : "visible" }}
             >
                 <StyledIcon icon={<LockIcon />} size="medium" />
             </IconButton>
         </Tooltip>
-    );
-}
-
-export function Header({ isHomeRoute }:{ isHomeRoute?: boolean }) {
-    const { root, safeArea } = useStyles();
-    const theme = useTheme();
-    const errCode = useSelector((state: State) => state.communication.errCode);
-
-    return (errCode ? <></> :
-        <div className={root}>
-            <AppBar
-                position="sticky"
-                elevation={0}
-                className={safeArea}
-            >
-                <Toolbar style={{ padding: theme.spacing(0, 1) }}>
-                    <Grid
-                        container
-                        direction="row"
-                        justify="space-between"
-                        alignItems="center"
-                    >
-                        <Grid
-                            container
-                            item
-                            xs={12}
-                            direction="row"
-                            justify="space-between"
-                            alignItems="center"
-                            wrap="nowrap"
-                        >
-                            <Grid item style={{ flexGrow: 0 }}>
-                                {isHomeRoute ? <SelectOrgButton /> : <GoBackButton />}
-                            </Grid>
-                            <Grid item style={{ flexGrow: 1, textAlign: "center" }}>
-                                <img alt="KidsLoop Logo" src={KidsloopLogo} height={32} />
-                            </Grid>
-                            <Grid item style={{ flexGrow: 0 }}>
-                                <MenuButton />
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                </Toolbar>
-            </AppBar>
-        </div>
-    );
-}
-
-function SelectOrgButton() {
-    const { iconButton } = useStyles();
-    const dispatch = useDispatch();
-    const open = useSelector((state: State) => state.control.selectOrgDialogOpen);
-    const { shouldSelect } = useShouldSelectOrganization();
-
-    return (
-        <IconButton
-            onClick={() => dispatch(setSelectOrgDialogOpen(!open))}
-            size="medium"
-            className={iconButton}
-            style={!open ? { padding: 0 } : { visibility: shouldSelect ? "hidden" : "visible" }}
-        >
-            {open ? <StyledIcon icon={<CloseIcon />} size="medium" /> : <Avatar alt="Organization's thumbnail" src={DefaultOrganization} />}
-        </IconButton>
     );
 }
