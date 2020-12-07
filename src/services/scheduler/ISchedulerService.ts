@@ -1,8 +1,34 @@
+import { ScheduleDetail } from "../../store/reducers/data";
 
 export type TimeView = "day" | "work_week" | "week" | "month";
 
+export type ScheduleTimeViewResponse = {
+    class_id: string,
+    class_type: string,
+    end_at: number,
+    id: string,
+    is_repeat: boolean,
+    lesson_plan_id: string,
+    start_at: number,
+    status: string,
+    title: string
+}
+
+export type ScheduleLiveTokenResponse = {
+    token: string
+}
+
+/**
+ * Client side API interface for: https://swagger-ui.kidsloop.net/#/schedule
+ */
 export interface ISchedulerService {
     // TODO (Axel): Implement parameters to comply with: https://swagger-ui.kidsloop.net/#/schedule/getScheduleTimeView
-    // TODO (Axel): Implement proper return type.
-    getScheduleTimeViews(organizationId: string, viewType: TimeView, timeAt: number, timeZoneOffset: number): Promise<any>
+    getScheduleTimeViews(organizationId: string, viewType: TimeView, timeAt: number, timeZoneOffset: number): Promise<ScheduleTimeViewResponse[]>
+
+    // TODO (Axel): Implement full response type.
+    // TODO (Axel): Is the organization ID necessary here? Looks like it's not used in the swagger api spec.
+    getScheduleInfo(orgnaizationId: string, scheduleId: string): Promise<ScheduleDetail>;
+
+    // TODO (Axel): Is the organization ID necessary here? Looks like it's not used in the swagger api spec.
+    getScheduleLiveToken(organizationId: string, scheduleId: string): Promise<ScheduleLiveTokenResponse>;
 }

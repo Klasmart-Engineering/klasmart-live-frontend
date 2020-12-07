@@ -1,5 +1,4 @@
 const dateFormat = require("dateformat");
-const qs = require("qs");
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FormattedMessage } from "react-intl";
@@ -20,8 +19,8 @@ import { Header } from "../../components/header";
 import Loading from "../../components/loading";
 import { State } from "../../store/store";
 import { ClassType, OrientationType } from "../../store/actions";
-import { Schedule, ScheduleDetail, setSchedule, setSelectedPlan } from "../../store/reducers/data";
-import { setInFlight, setErrCode } from "../../store/reducers/communication";
+import { Schedule, setSchedule, setSelectedPlan } from "../../store/reducers/data";
+import { setInFlight } from "../../store/reducers/communication";
 import { lockOrientation } from "../../utils/screenUtils";
 import { useShouldSelectOrganization } from "../account/selectOrgDialog";
 
@@ -66,8 +65,6 @@ const useStyles = makeStyles((theme: Theme) => ({
         fontWeight: 900
     }
 }));
-
-const CMS_ENDPOINT = process.env.ENDPOINT_KL2 !== undefined ? process.env.ENDPOINT_KL2 : "";
 
 export function Schedule() {
     const theme = useTheme();
@@ -258,24 +255,16 @@ function ScheduleItem({ classType, schedule, setOpenAlert }: {
     const [teachers, setTeachers] = useState<string>("");
 
     const { setToken } = useUserContext();
-
-    // https://swagger-ui.kidsloop.net/#/schedule/getScheduleByID
-    async function getScheduleInfo() {
-        const headers = new Headers();
-        headers.append("Accept", "application/json");
-        headers.append("Content-Type", "application/json");
-        const encodedParams = qs.stringify({ org_id: selectedOrg.organization_id }, { encodeValuesOnly: true });
-        const response = await fetch(`${CMS_ENDPOINT}/v1/schedules/${schedule.id}?${encodedParams}`, {
-            headers,
-            method: "GET",
-        });
-        if (response.status === 200) { return response.json(); }
-    }
+    const { schedulerService } = useUserInformation();
 
     useEffect(() => {
         async function fetchEverything() {
             async function fetchScheduleInfo() {
-                const detail: ScheduleDetail = await getScheduleInfo();
+                if (!schedulerService) {
+                    throw new Error("Scheduler service not available.");
+                }
+
+                const detail = await schedulerService.getScheduleInfo(selectedOrg.organization_id, schedule.id);
                 setInfo({
                     ...schedule,
                     detail: detail
@@ -317,24 +306,12 @@ function ScheduleItem({ classType, schedule, setOpenAlert }: {
         }
     }, [info])
 
-    // https://swagger-ui.kidsloop.net/#/schedule/getScheduleLiveToken
-    async function getScheduleLiveToken() {
-        const headers = new Headers();
-        headers.append("Accept", "application/json");
-        headers.append("Content-Type", "application/json");
-        const encodedParams = qs.stringify({ org_id: selectedOrg.organization_id }, { encodeValuesOnly: true });
-        const response = await fetch(`${CMS_ENDPOINT}/v1/schedules/${schedule.id}/live/token?${encodedParams}`, {
-            headers,
-            method: "GET",
-        });
-        if (response.status === 200) { return response.json(); }
-    }
-
     const goJoin = () => {
+        if (!schedulerService) { return; }
         if (!info || !info.detail) { return; }
         dispatch(setSelectedPlan(info.detail.lesson_plan.id));
         if (classType === ClassType.LIVE) {
-            getScheduleLiveToken().then((res) => {
+            schedulerService.getScheduleLiveToken(selectedOrg.organization_id, schedule.id).then((res) => {
                 if (res.token) {
                     setToken(res.token);
 
