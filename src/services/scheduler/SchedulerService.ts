@@ -1,8 +1,9 @@
 import qs from "qs";
 import { ScheduleDetail } from "../../store/reducers/data";
+import { refreshAuthenticationToken } from "../../utils/accountUtils";
 import { ISchedulerService, ScheduleLiveTokenResponse, ScheduleTimeViewResponse, TimeView } from "./ISchedulerService";
 
-function fetchJsonData(url: string, method: string, parameters?: any): Promise<Response> {
+async function fetchJsonData(url: string, method: string, parameters?: any): Promise<Response> {
     const headers = new Headers();
     headers.append("Accept", "application/json");
     headers.append("Content-Type", "application/json");
@@ -16,7 +17,15 @@ function fetchJsonData(url: string, method: string, parameters?: any): Promise<R
         method
     };
 
-    return fetch(url, init);
+    let response = await fetch(url, init);
+    if (response.status === 401) {
+        const refreshed = await refreshAuthenticationToken();
+        if (refreshed) {
+            response = await fetch(url, init);
+        }
+    }
+
+    return response;
 }
 
 /**
@@ -39,10 +48,6 @@ export class SchedulerService implements ISchedulerService {
         });
 
         if (!response.ok) {
-            if (response.status === 401) {
-                // TODO (Axel): Try refreshing token if authentication error.
-            }
-
             throw new Error(response.statusText);
         }
 
@@ -56,10 +61,6 @@ export class SchedulerService implements ISchedulerService {
         });
 
         if (!response.ok) {
-            if (response.status === 401) {
-                // TODO (Axel): Try refreshing token if authentication error.
-            }
-
             throw new Error(response.statusText);
         }
 
@@ -73,10 +74,6 @@ export class SchedulerService implements ISchedulerService {
         });
 
         if (!response.ok) {
-            if (response.status === 401) {
-                // TODO (Axel): Try refreshing token if authentication error.
-            }
-
             throw new Error(response.statusText);
         }
         
