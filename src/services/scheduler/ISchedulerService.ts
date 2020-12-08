@@ -26,9 +26,7 @@ export interface ISchedulerService {
     getScheduleTimeViews(organizationId: string, viewType: TimeView, timeAt: number, timeZoneOffset: number): Promise<ScheduleTimeViewResponse[]>
 
     // TODO (Axel): Implement full response type.
-    // TODO (Axel): Is the organization ID necessary here? Looks like it's not used in the swagger api spec.
     getScheduleInfo(orgnaizationId: string, scheduleId: string): Promise<ScheduleDetail>;
 
-    // TODO (Axel): Is the organization ID necessary here? Looks like it's not used in the swagger api spec.
     getScheduleLiveToken(organizationId: string, scheduleId: string): Promise<ScheduleLiveTokenResponse>;
 }
