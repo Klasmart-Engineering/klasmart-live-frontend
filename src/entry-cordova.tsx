@@ -1,7 +1,7 @@
 import { v4 as uuid } from "uuid";
 export const sessionId = uuid();
 
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { render } from "react-dom";
 import { RawIntlProvider } from "react-intl";
 import { Provider, useDispatch, useSelector } from "react-redux";
@@ -39,6 +39,7 @@ import { UserInformationContextProvider } from "./context-provider/user-informat
 import { createHashHistory } from 'history'
 import { UserContextProvider } from "./context-provider/user-context";
 import { useLocation } from "react-router-dom";
+import { ExitDialog } from "./components/exitDialog";
 
 function Entry() {
     const dispatch = useDispatch();
@@ -72,16 +73,20 @@ function Entry() {
         (navigator as any).app.loadUrl("file:///android_asset/www/index.html", { wait: 0, loadingDialog: "Wait,Loading App", loadUrlTimeoutValue: 60000 });
     }, []);
 
-    const location = useLocation();
+    const quit = useCallback(() => {
+        (navigator as any).app.exitApp();
+    }, []);
 
     const { cordovaReady, permissions } = useCordovaInitialize(false, () => { 
-        const isRootPage = location.hash.includes("/schedule") || location.hash === "#/";
-        if (location.hash.includes("/room")) {
+        const isRootPage = window.location.hash.includes("/schedule") || window.location.hash === "#/";
+        if (window.location.hash.includes("/room")) {
             restart();
         } else if (isRootPage) {
-            // TODO (Axel): Do nothing for now, but in the future we could show a prompt
-            // asking the user if they want to quit the application or not. And then quit
-            // based on the users response.
+            if (displayExitDialogue) {
+                quit();
+            } else {
+                setDisplayExitDialogue(true);
+            }
         } 
         else {
             history.goBack(); 
@@ -93,6 +98,8 @@ function Entry() {
         if (!authReady) return;
         setLanguageFromCookie();
     }, [authReady, setLanguageFromCookie]);
+
+    const [displayExitDialogue, setDisplayExitDialogue] = useState<boolean>(false);
 
     if (!cordovaReady) { return <Loading rawText="Loading..." /> }
     if (!permissions) { return <Loading rawText="Camera and Microphone premissions required. Please grant the permissions and restart application." /> }
@@ -107,6 +114,7 @@ function Entry() {
                         <ThemeProvider theme={themeProvider(languageCode, themeMode)}>
                             <CssBaseline />
                             <App history={history} refresh={refresh} />
+                            <ExitDialog visible={displayExitDialogue} onCancel={() => setDisplayExitDialogue(false)} onConfirm={() => quit()} />
                         </ThemeProvider>
                     </RawIntlProvider>
                 </CameraContextProvider>
