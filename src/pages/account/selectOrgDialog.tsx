@@ -40,11 +40,13 @@ export function useShouldSelectOrganization() {
     const isMobile = isMobileOnly || isTablet
     const [shouldSelect, setShouldSelect] = useState<boolean>(false);
     const [errCode, setErrCode] = useState<number | null>(null);
+    const [hasStudentRole, setHasStudentRole] = useState<boolean | null>(null);
 
     useEffect(() => {
         // 1. information returns undefined
         if (!information) {
             setShouldSelect(false);
+            setHasStudentRole(null);
             setErrCode(401);
             return;
         }
@@ -52,6 +54,7 @@ export function useShouldSelectOrganization() {
         // 1. information exists
         if (information.organizations.length === 0) { // 2. User has no organization
             setShouldSelect(false);
+            setHasStudentRole(null);
             setErrCode(403)
         } else if (information.organizations.length === 1) { // 2. User has 1 organization
             setShouldSelect(false);
@@ -60,25 +63,39 @@ export function useShouldSelectOrganization() {
             if (roles.length === 1) {
                 const isTeacher = isRoleTeacher(roles[0].role_name);
                 if (isMobile && isTeacher) {
+                    setHasStudentRole(false);
                     setErrCode(403);
                     return;
                 }
             } else if (roles.length > 1) {
                 const someRolesAreStudent = roles.some(role => !isRoleTeacher(role.role_name));
                 if (isMobile && !someRolesAreStudent) {
+                    setHasStudentRole(false);
                     setErrCode(403);
                     return;
                 }
             }
+            setHasStudentRole(true);
             setErrCode(null)
             dispatch(setSelectedOrg({ organization_id, organization_name }));
         } else { // 2. User has more than 2 organizations
             setShouldSelect(true);
+            setHasStudentRole(true);
             setErrCode(null);
         }
     }, [information]);
 
-    return { errCode, shouldSelect }
+    /** 
+     * ABOUT hasStudentRole (Isu)
+     * When saving account information in user-information-context.tsx,
+     * it retrieves only
+     * 1. organizations with student permission 
+     * 2. and classes that can be attended with student permission.
+     * Therefore, hasStudentRole does not need to be used to verify initial login permissions.
+     * But it was added because it can be used in the future.
+     * For more information, see QUERY_ME at user-information-context.tsx.
+     */
+    return { errCode, shouldSelect, hasStudentRole }
 }
 
 export function SelectOrgDialog() {

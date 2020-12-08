@@ -1,41 +1,44 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useState } from "react";
 import { Router, Route, Switch } from "react-router-dom";
+import { useSelector } from "react-redux";
 import Grid from "@material-ui/core/Grid";
-import { SelectOrgDialog } from "./pages/account/selectOrgDialog";
+import { SelectOrgDialog, useShouldSelectOrganization } from "./pages/account/selectOrgDialog";
 import { Auth } from "./pages/account/auth";
 import { Room } from "./pages/room/room";
 import { Join } from "./pages/join/join";
 import { Schedule } from "./pages/schedule/schedule";
-import { Fallback } from "./pages/error";
+import { Fallback } from "./pages/fallback";
 import { State } from "./store/store";
-import { setSelectOrgDialogOpen } from "./store/reducers/control";
 
 export function App({ history, refresh }: {
     history: any;
     refresh: () => void;
 }): JSX.Element {
-    const dispatch = useDispatch();
-    const deviceOrientation = useSelector((state: State) => state.location.deviceOrientation);
-    
-    // TODO (Isu): There is a problem with this logic, so disable it for a while.
-    // if (errCode === 401) {
-    //     return (
-    //         <Fallback
-    //             titleMsgId="err_401_title"
-    //             subtitleMsgId="err_401_subtitle"
-    //             errCode={`${errCode.toString()}`}
-    //         />
-    //     );
-    // } else if (errCode === 403) {
-    //     return (
-    //         <Fallback
-    //             titleMsgId="err_403_title"
-    //             subtitleMsgId="err_403_subtitle"
-    //             errCode={`${errCode.toString()}`}
-    //         />
-    //     );
-    // }
+    const { errCode } = useShouldSelectOrganization();
+    const user = useSelector((state: State) => state.session.user);
+    const [hasOrg, _] = useState(Boolean(user.organizations.length));
+
+    if (errCode && errCode !== 401) {
+        const code = `${errCode}`;
+        if (code === "403" && !hasOrg) {
+            return (
+                <Fallback
+                    errCode={code}
+                    titleMsgId={"err_403_title_not_supported"}
+                    subtitleMsgId={"err_403_subtitle_not_supported"}
+                    descriptionMsgId={"err_403_description_not_supported"}
+                />
+            );
+        } else {
+            return (
+                <Fallback
+                    errCode={code}
+                    titleMsgId={`err_${code}_title`}
+                    subtitleMsgId={`err_${code}_subtitle`}
+                />
+            );
+        }
+    }
 
     return (
         <Grid
