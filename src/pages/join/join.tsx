@@ -1,4 +1,3 @@
-const qs = require("qs");
 import React, { useState, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useDispatch, useSelector } from "react-redux";
@@ -33,6 +32,7 @@ import { lockOrientation } from "../../utils/screenUtils";
 import KidsLoopTeachers from "../../assets/img/kidsloop_live_teachers.svg";
 import KidsLoopStudents from "../../assets/img/kidsloop_live_students.svg";
 import KidsLoopStudy from "../../assets/img/kidsloop_study_students.svg";
+import { useServices } from "../../context-provider/services-provider";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -71,7 +71,8 @@ export function Join(): JSX.Element {
 
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
     const { name, setName, teacher } = useUserContext();
-    const { information: myInformation, contentService } = useUserInformation();
+    const { information: myInformation } = useUserInformation();
+    const { contentService } = useServices();
 
     const [user, setUser] = useState<string>("");
 

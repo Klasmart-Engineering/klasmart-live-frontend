@@ -1,5 +1,4 @@
-const qs = require("qs");
-import React, { useState, useEffect, useContext, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import IframeResizer from "iframe-resizer-react";
 import Grid from "@material-ui/core/Grid";
@@ -11,8 +10,8 @@ import ArrowForwardIcon from '@material-ui/icons/ArrowForwardIos';
 import { Whiteboard } from "../../whiteboard/components/Whiteboard";
 import { State } from "../../store/store";
 import { setContentIndex } from "../../store/reducers/control";
-import { useUserInformation } from "../../context-provider/user-information-context";
 import { useHttpEndpoint } from "../../context-provider/region-select-context";
+import { useServices } from "../../context-provider/services-provider";
 
 interface NewProps extends IframeResizer.IframeResizerProps {
     forwardRef: any
@@ -22,7 +21,7 @@ const IframeResizerNew = IframeResizer as React.FC<NewProps>
 export default function Study(): JSX.Element {
     const dispatch = useDispatch();
 
-    const { contentService } = useUserInformation();
+    const { contentService } = useServices();
     const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
     const mats = useSelector((store: State) => store.data.materials)
     const contentIndex = useSelector((store: State) => store.control.contentIndex)

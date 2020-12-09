@@ -28,7 +28,7 @@ import LiveSchedulePopcorn from "../../assets/img/schedule_popcorn.svg";
 import StudyScheduleHouse from "../../assets/img/study_house.svg";
 import { useUserContext } from "../../context-provider/user-context";
 import { setSelectOrgDialogOpen } from "../../store/reducers/control";
-import { useUserInformation } from "../../context-provider/user-information-context";
+import { useServices } from "../../context-provider/services-provider";
 
 // NOTE: China API server(Go lang) accept 10 digits timestamp
 const now = new Date();
@@ -63,7 +63,7 @@ export function Schedule() {
     const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
     const inFlight = useSelector((state: State) => state.communication.inFlight);
 
-    const { schedulerService } = useUserInformation();
+    const { schedulerService } = useServices();
 
     const { shouldSelect } = useShouldSelectOrganization();
 
@@ -250,7 +250,7 @@ function ScheduleItem({ classType, schedule, setOpenAlert }: {
     const [teachers, setTeachers] = useState<string>("");
 
     const { setToken } = useUserContext();
-    const { schedulerService } = useUserInformation();
+    const { schedulerService } = useServices();
 
     useEffect(() => {
         async function fetchEverything() {
