@@ -8,7 +8,6 @@ import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 
 import StyledButton from "../../components/styled/button";
-import { useAuthenticatedCheck } from "../../utils/useAuthenticatedCheck";
 
 import KidsloopIcon from "../../assets/img/kidsloop_icon.svg";
 import Error1 from "../../assets/img/error/1.png";
@@ -16,6 +15,7 @@ import Error2 from "../../assets/img/error/2.png";
 import Error3 from "../../assets/img/error/3.png";
 import Error4 from "../../assets/img/error/4.png";
 import { useServices } from "../../context-provider/services-provider";
+import { useUserInformation } from "../../context-provider/user-information-context";
 
 const ERROR_IMAGES = [Error1, Error2, Error3, Error4];
 export const DESCRIPTION_403 = "Please check if your organization is not created or selected."
@@ -95,7 +95,7 @@ export function Fallback({ titleMsgId, subtitleMsgId, descriptionMsgId, errCode 
 }
 
 function NextStepButton({ errCode }: { errCode: string }) {
-    const { refresh } = useAuthenticatedCheck(true);
+    const { actions } = useUserInformation();
     const [shouldSignOut, setShouldSignOut] = useState<boolean>(false);
     const [btnTitle, setBtnTitle] = useState<JSX.Element>(<FormattedMessage id="err_button_home" />);
 
@@ -115,10 +115,10 @@ function NextStepButton({ errCode }: { errCode: string }) {
     const handleClick = () => {
         if (shouldSignOut) {
             handleSignOut()
-                .then(() => { refresh(); })
+                .then(() => { actions?.refreshAuthenticationToken(); })
                 .catch((e) => console.error(`Fail to signout: ${e}`))
         } else {
-            refresh(); // TODO (Isu): It's temporary and needs to be implemented more detail
+            actions?.refreshAuthenticationToken(); // TODO (Isu): It's temporary and needs to be implemented more detail
         }
     }
 

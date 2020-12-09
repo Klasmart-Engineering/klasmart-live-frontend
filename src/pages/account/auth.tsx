@@ -8,6 +8,8 @@ import Loading from "../../components/loading";
 import { useState } from "react";
 import Button from "@material-ui/core/Button";
 import { useHttpEndpoint } from "../../context-provider/region-select-context";
+import { useUserInformation } from "../../context-provider/user-information-context";
+import { Redirect } from "react-router-dom";
 
 const useStyles = makeStyles((_theme) => createStyles({
     container: {
@@ -21,17 +23,18 @@ const useStyles = makeStyles((_theme) => createStyles({
 );
 
 interface Props {
-    refresh: () => void;
     useInAppBrowser: boolean;
 }
 
-export function Auth({ refresh, useInAppBrowser }: Props) {
+export function Auth({ useInAppBrowser }: Props) {
     const classes = useStyles();
     const dispatch = useDispatch();
     const frameRef = useRef<HTMLIFrameElement>(null);
     const [key, setKey] = useState(Math.random().toString(36));
 
     const authEndpoint = useHttpEndpoint("auth");
+
+    const { loading, authenticated, actions } = useUserInformation();
 
     useEffect(() => {
         if (!frameRef.current) return;
@@ -47,7 +50,7 @@ export function Auth({ refresh, useInAppBrowser }: Props) {
 
             if (origin === authEndpoint && data.message === "message") {
                 console.log('refreshing auth status');
-                refresh();
+                actions?.refreshAuthenticationToken();
             }
         };
 
@@ -59,6 +62,9 @@ export function Auth({ refresh, useInAppBrowser }: Props) {
     }, [frameRef.current]);
 
     useEffect(() => {
+        if (loading) return;
+        if (authenticated) return;
+
         lockOrientation(OrientationType.PORTRAIT, dispatch);
         if (!useInAppBrowser) return;
 
@@ -80,14 +86,14 @@ export function Auth({ refresh, useInAppBrowser }: Props) {
         });
                 
         const onExit = () => {
-            refresh();
+            actions?.refreshAuthenticationToken();
         };
 
         // params = InAppBrowserEvent
         const onMessage = (params: any) => {
             const messageData = params.data;
             if (messageData.message === "message") {
-                refresh();
+                actions?.refreshAuthenticationToken();
 
                 browser.close();
             }
@@ -97,7 +103,7 @@ export function Auth({ refresh, useInAppBrowser }: Props) {
             browser.addEventListener("exit", onExit, false);
             browser.addEventListener("message", onMessage, false);
         }
-    }, [key]);
+    }, [key, authenticated, loading]);
 
     if (useInAppBrowser) {
         return (
@@ -105,6 +111,7 @@ export function Auth({ refresh, useInAppBrowser }: Props) {
                 <Loading rawText="Waiting for authentication...">
                     <Button onClick={() => setKey(Math.random().toString(36))}>Try again</Button>
                 </Loading>
+                { authenticated ? <Redirect to="/" /> : <></> }
             </>
         );
     } else {

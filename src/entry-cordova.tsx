@@ -1,7 +1,7 @@
 import { v4 as uuid } from "uuid";
 export const sessionId = uuid();
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { render } from "react-dom";
 import { RawIntlProvider } from "react-intl";
 import { Provider, useDispatch, useSelector } from "react-redux";
@@ -30,15 +30,10 @@ import { setErrCode } from "./store/reducers/communication";
 import { setHistory } from "./store/reducers/location";
 import { themeProvider } from "./themeProvider";
 import { useLocaleCookie } from "./utils/locale";
-import Loading from "./components/loading";
 import { CameraContextProvider } from "./components/media/useCameraContext";
-import useCordovaInitialize from "./cordova-initialize";
-import { useAuthenticatedCheck } from "./utils/useAuthenticatedCheck";
-import { Auth } from "./pages/account/auth";
 import { UserInformationContextProvider } from "./context-provider/user-information-context";
 import { createHashHistory } from 'history'
 import { UserContextProvider } from "./context-provider/user-context";
-import { ExitDialog } from "./components/exitDialog";
 
 function Entry() {
     const dispatch = useDispatch();
@@ -67,59 +62,21 @@ function Entry() {
     }, []);
 
     const history = createHashHistory();
-
-    const restart = useCallback(() => {
-        (navigator as any).app.loadUrl("file:///android_asset/www/index.html", { wait: 0, loadingDialog: "Wait,Loading App", loadUrlTimeoutValue: 60000 });
-    }, []);
-
-    const quit = useCallback(() => {
-        (navigator as any).app.exitApp();
-    }, []);
-
-    const { cordovaReady, permissions } = useCordovaInitialize(false, () => { 
-        const isRootPage = window.location.hash.includes("/schedule") || window.location.hash === "#/";
-        if (window.location.hash.includes("/room")) {
-            restart();
-        } else if (isRootPage) {
-            if (displayExitDialogue) {
-                quit();
-            } else {
-                setDisplayExitDialogue(true);
-            }
-        } 
-        else {
-            history.goBack(); 
-        }
-    });
-    const { authReady, authenticated, refresh } = useAuthenticatedCheck(cordovaReady);
-
-    useEffect(() => {
-        if (!authReady) return;
-        setLanguageFromCookie();
-    }, [authReady, setLanguageFromCookie]);
-
-    const [displayExitDialogue, setDisplayExitDialogue] = useState<boolean>(false);
-
-    if (!cordovaReady) { return <Loading rawText="Loading..." /> }
-    if (!permissions) { return <Loading rawText="Camera and Microphone premissions required. Please grant the permissions and restart application." /> }
-    if (!authReady) { return <Loading rawText="Checking user authentication..." /> }
-    if (!authenticated) { return <Auth refresh={refresh} useInAppBrowser={true} /> }
-
-    return (<>
+    
+    return (
         <UserContextProvider sessionId={sessionId}>
             <UserInformationContextProvider>
                 <CameraContextProvider>
                     <RawIntlProvider value={language}>
                         <ThemeProvider theme={themeProvider(languageCode, themeMode)}>
                             <CssBaseline />
-                            <App history={history} refresh={refresh} />
-                            <ExitDialog visible={displayExitDialogue} onCancel={() => setDisplayExitDialogue(false)} onConfirm={() => quit()} />
+                            <App history={history} />
                         </ThemeProvider>
                     </RawIntlProvider>
                 </CameraContextProvider>
             </UserInformationContextProvider>
         </UserContextProvider>
-    </>);
+    );
 }
 
 async function main() {

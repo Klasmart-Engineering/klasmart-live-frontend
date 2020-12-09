@@ -9,10 +9,10 @@ import { Join } from "./pages/join/join";
 import { Schedule } from "./pages/schedule/schedule";
 import { Fallback } from "./pages/fallback";
 import { State } from "./store/store";
+import { UserRoute } from "./components/userRoute";
 
-export function App({ history, refresh }: {
+export function App({ history }: {
     history: any;
-    refresh: () => void;
 }): JSX.Element {
     const { errCode } = useShouldSelectOrganization();
     const user = useSelector((state: State) => state.session.user);
@@ -50,11 +50,11 @@ export function App({ history, refresh }: {
         >
             <Router history={history}>
                 <Switch>
-                    <Route path="/schedule" component={Schedule} />
-                    <Route path="/join" component={Join} />
-                    <Route path="/room" component={Room} />
-                    <Route path="/auth" render={() => <Auth refresh={refresh} useInAppBrowser={false} />} />
-                    <Route path="/" component={Schedule} />
+                    <UserRoute path="/schedule" component={Schedule} />
+                    <UserRoute path="/join" component={Join} />
+                    <UserRoute path="/room" component={Room} />
+                    <Route path="/auth" render={() => <Auth useInAppBrowser={true} />} />
+                    <UserRoute path="/" component={Schedule} />
                 </Switch>
             </Router>
             <SelectOrgDialog />

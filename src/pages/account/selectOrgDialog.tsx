@@ -12,7 +12,7 @@ import Typography from '@material-ui/core/Typography';
 
 import { Check as CheckIcon } from "@styled-icons/fa-solid/Check";
 
-import { OrganizationPayload, isRoleTeacher, useUserInformation } from "../../context-provider/user-information-context";
+import { isRoleTeacher, useUserInformation } from "../../context-provider/user-information-context";
 import { Header } from "../../components/header";
 import StyledButton from "../../components/styled/button";
 import StyledIcon from "../../components/styled/icon";
@@ -20,6 +20,7 @@ import { State } from "../../store/store";
 import { setSelectedOrg } from "../../store/reducers/session";
 import { setSelectOrgDialogOpen } from "../../store/reducers/control";
 import DefaultOrganization from "../../assets/img/avatars/Avatar_Student_01.jpg";
+import { OrganizationResponse } from "../../services/user/IUserInformationService";
 
 const useStyles = makeStyles((theme: Theme) => ({
     noPadding: {
@@ -107,7 +108,7 @@ export function SelectOrgDialog() {
     const dispatch = useDispatch();
     const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
     const open = useSelector((state: State) => state.control.selectOrgDialogOpen);
-    const [org, setOrg] = useState<OrganizationPayload>(selectedOrg ? selectedOrg : { organization_id: "", organization_name: "" });
+    const [org, setOrg] = useState<OrganizationResponse>(selectedOrg ? selectedOrg : { organization_id: "", organization_name: "" });
     const { information } = useUserInformation();
 
     const organizations = useMemo(() => {
@@ -170,8 +171,8 @@ export function SelectOrgDialog() {
 
 
 function OrgList({ handler, organizations }: {
-    handler: { org: OrganizationPayload, setOrg: React.Dispatch<React.SetStateAction<OrganizationPayload>> },
-    organizations: OrganizationPayload[]
+    handler: { org: OrganizationResponse, setOrg: React.Dispatch<React.SetStateAction<OrganizationResponse>> },
+    organizations: OrganizationResponse[]
 }) {
     return (
         <Grid
@@ -195,9 +196,9 @@ function OrgList({ handler, organizations }: {
 }
 
 function OrgCard({ org, checked, setOrg }: {
-    org: OrganizationPayload,
+    org: OrganizationResponse,
     checked: boolean,
-    setOrg: React.Dispatch<React.SetStateAction<OrganizationPayload>>
+    setOrg: React.Dispatch<React.SetStateAction<OrganizationResponse>>
 }) {
     const theme = useTheme();
     const square = theme.spacing(15);

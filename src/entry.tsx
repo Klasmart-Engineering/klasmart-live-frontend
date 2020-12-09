@@ -42,14 +42,10 @@ import { createDefaultStore, State } from "./store/store";
 import { setUserAgent } from "./store/reducers/session";
 import { setErrCode } from "./store/reducers/communication";
 import { setHistory } from "./store/reducers/location";
-import { AuthTokenProvider } from "./services/auth-token/AuthTokenProvider";
 import { themeProvider } from "./themeProvider";
 import { getLanguage } from "./utils/locale";
-import Loading from "./components/loading";
 import { CameraContextProvider } from "./components/media/useCameraContext";
 import useCordovaInitialize from "./cordova-initialize";
-import { useAuthenticatedCheck } from "./utils/useAuthenticatedCheck";
-import { Auth } from "./pages/account/auth";
 import { UserInformationContextProvider } from "./context-provider/user-information-context";
 import { createHashHistory } from 'history'
 import { UserContextProvider } from "./context-provider/user-context";
@@ -137,15 +133,6 @@ function Entry() {
     */
 
     const [alertMobileBrowser, setAlertMobileBrowser] = useState<boolean>(!isCordova && isMobileOnly);
-    const { cordovaReady, permissions } = useCordovaInitialize(false, () => { history.goBack(); });
-    const { authReady, authenticated, refresh } = useAuthenticatedCheck(cordovaReady);
-
-    if (isCordova) {
-        if (!cordovaReady) { return <Loading rawText="Loading..." /> }
-        if (!permissions) { return <Loading rawText="Camera and Microphone premissions required. Please grant the permissions and restart application." /> }
-        if (!authReady) { return <Loading rawText="Checking user authentication..." /> }
-        if (!authenticated) { return <Auth refresh={refresh} useInAppBrowser={true} /> }
-    }
 
     return (<>
         <UserContextProvider sessionId={sessionId}>
@@ -154,7 +141,7 @@ function Entry() {
                     <RawIntlProvider value={locale}>
                         <ThemeProvider theme={themeProvider(languageCode, themeMode)}>
                             <CssBaseline />
-                            <App history={history} refresh={refresh} />
+                            <App history={history} />
                         </ThemeProvider>
                     </RawIntlProvider>
                 </CameraContextProvider>

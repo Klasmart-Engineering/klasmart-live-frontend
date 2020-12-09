@@ -5,6 +5,8 @@ import { ContentService } from "../services/cms/ContentService";
 import { IContentService } from "../services/cms/IContentService";
 import { ISchedulerService } from "../services/cms/ISchedulerService";
 import { SchedulerService } from "../services/cms/SchedulerService";
+import { IUserInformationService } from "../services/user/IUserInformationService";
+import { UserInformationService } from "../services/user/UserInformationService";
 import { useHttpEndpoint } from "./region-select-context";
 
 type Props = {
@@ -15,6 +17,7 @@ type ServicesContext = {
     authenticationService?: IAuthenticationService,
     schedulerService?: ISchedulerService,
     contentService?: IContentService,
+    userInformationService?: IUserInformationService,
 }
 
 const ServicesContext = createContext<ServicesContext>({});
@@ -22,6 +25,7 @@ const ServicesContext = createContext<ServicesContext>({});
 export function ServicesProvider({ children }: Props) {
     const authenticationServiceEndpoint = useHttpEndpoint("auth");
     const cmsServiceEndpoint = useHttpEndpoint("cms");
+    const userInformationEndpoint = useHttpEndpoint("user-information");
 
     const authenticationService = useMemo(() => {
         return new AuthenticationService(authenticationServiceEndpoint);
@@ -35,8 +39,12 @@ export function ServicesProvider({ children }: Props) {
         return new ContentService(cmsServiceEndpoint, authenticationService);
     }, [cmsServiceEndpoint, authenticationService]);
 
+    const userInformationService = useMemo(() => {
+        return new UserInformationService(userInformationEndpoint, authenticationService);
+    }, [userInformationEndpoint, authenticationService]);
+
     return (
-        <ServicesContext.Provider value={{ authenticationService, schedulerService, contentService }}>
+        <ServicesContext.Provider value={{ authenticationService, schedulerService, contentService, userInformationService }}>
             { children }
         </ServicesContext.Provider>
     );

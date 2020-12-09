@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { OrganizationPayload, UserInformation } from "../../context-provider/user-information-context";
 import { ClassType, UserAgent, UserType } from "../actions";
 import { getDefaultLanguageCode } from "../../utils/locale";
+import { OrganizationResponse, UserInformation } from "../../services/user/IUserInformationService";
 
 type SessionState = {
     classType: ClassType;
@@ -9,7 +9,7 @@ type SessionState = {
     userType: UserType;
     locale: string;
     user: UserInformation;
-    selectedOrg: OrganizationPayload;
+    selectedOrg: OrganizationResponse;
 }
 
 const initialSessionState: SessionState = {
