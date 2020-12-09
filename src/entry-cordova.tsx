@@ -38,7 +38,6 @@ import { Auth } from "./pages/account/auth";
 import { UserInformationContextProvider } from "./context-provider/user-information-context";
 import { createHashHistory } from 'history'
 import { UserContextProvider } from "./context-provider/user-context";
-import { useLocation } from "react-router-dom";
 import { ExitDialog } from "./components/exitDialog";
 
 function Entry() {

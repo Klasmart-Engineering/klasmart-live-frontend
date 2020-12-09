@@ -17,6 +17,7 @@ import { getContentHref } from "../../utils/contentUtils";
 import { useSelector } from "react-redux";
 import { State } from "../../store/store";
 import { useUserContext } from "../../context-provider/user-context";
+import { useHttpEndpoint } from "../../context-provider/region-select-context";
 
 interface VideoSynchronize {
     src?: string;
@@ -100,6 +101,8 @@ export function ReplicaMedia(
         }
     }, [srcRef.current, videoSources, setVideoSources]);
 
+    const contentEndpoint = useHttpEndpoint("live");
+
     const { loading, error } = useSubscription(
         gql`
       subscription video($roomId: ID!, $sessionId: ID!) {
@@ -137,7 +140,7 @@ export function ReplicaMedia(
 
                 let contentHref: string | undefined;
                 if (src) {
-                    contentHref = getContentHref(src);
+                    contentHref = getContentHref(src, contentEndpoint);
                 }
 
                 if (contentHref) {

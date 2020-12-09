@@ -1,11 +1,7 @@
 import React, { createContext, ReactChild, ReactChildren, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
 import { setUser } from "../store/reducers/session";
-import { SchedulerService } from "../services/cms/SchedulerService";
-import { ISchedulerService } from "../services/cms/ISchedulerService";
 import { useHttpEndpoint } from "./region-select-context";
-import { IContentService } from "../services/cms/IContentService";
-import { ContentService } from "../services/cms/ContentService";
 
 // TODO (Axel): All of this context can be combined with the user-context from 
 // the combined master branch. This would be preferred since they share

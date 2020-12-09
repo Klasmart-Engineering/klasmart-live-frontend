@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
+import { useHttpEndpoint } from "../context-provider/region-select-context";
 import { LessonMaterial } from "../lessonMaterialContext";
 import { Content } from "../pages/room/room";
 
-export const getContentHref = function (path: string) {
+export const getContentHref = function (path: string, endpoint: string) {
     let result = path;
     try {
         // new URL will combine the url and base if url is relative. Otherwise it will
         // ignore the base component. This allow the contentId to be both absolute and
         // relative paths.
-        const url = new URL(path, process.env.ENDPOINT_CONTENT);
+        const url = new URL(path, endpoint);
 
         result = url.href;
     } catch (err) {
@@ -21,6 +22,7 @@ export const getContentHref = function (path: string) {
 
 export const useMaterialToHref = function (material?: LessonMaterial) {
     const [href, setHref] = useState<string>("");
+    const contentEndpoint = useHttpEndpoint("live");
 
     useEffect(() => {
         if (material === undefined) {
@@ -38,20 +40,21 @@ export const useMaterialToHref = function (material?: LessonMaterial) {
             // new URL will combine the url and base if url is relative. Otherwise it will
             // ignore the base component. This allow the contentId to be both absolute and
             // relative paths.
-            const result = new URL(contentUrl, process.env.ENDPOINT_CONTENT);
+            const result = new URL(contentUrl, contentEndpoint);
 
             setHref(result.href);
         } catch (err) {
             console.error(err);
             setHref(contentUrl);
         }
-    }, [material]);
+    }, [material, contentEndpoint]);
 
     return [href];
 }
 
 export const useContentToHref = function (content?: Content) {
     const [href, setHref] = useState<string>("");
+    const contentEndpoint = useHttpEndpoint("live");
 
     useEffect(() => {
         if (content === undefined) {
@@ -63,14 +66,14 @@ export const useContentToHref = function (content?: Content) {
             // new URL will combine the url and base if url is relative. Otherwise it will
             // ignore the base component. This allow the contentId to be both absolute and
             // relative paths.
-            const result = new URL(content.contentId, process.env.ENDPOINT_CONTENT);
+            const result = new URL(content.contentId, contentEndpoint);
 
             setHref(result.href);
         } catch (err) {
             console.error(err);
             setHref(content.contentId);
         }
-    }, [content]);
+    }, [content, contentEndpoint]);
 
     return [href];
 }
