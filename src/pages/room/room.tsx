@@ -47,8 +47,6 @@ export interface StreamIdState {
     setStreamId: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
-const LIVE_ENDPOINT_WS = process.env.ENDPOINT_WEBSOCKET || `${window.location.protocol === "https:" ? "wss" : "ws"}://${window.location.host}/graphql`;
-
 export function Room(): JSX.Element {
     const dispatch = useDispatch();
     const classType = useSelector((state: State) => state.session.classType);
@@ -64,7 +62,7 @@ export function Room(): JSX.Element {
     }, [])
 
     return (
-        <LiveSessionLinkProvider sessionId={sessionId} token={token} endpoint={LIVE_ENDPOINT_WS}>
+        <LiveSessionLinkProvider sessionId={sessionId} token={token}>
             <RoomContext.Provide>
                 <GlobalWhiteboardContext>
                     {classType === ClassType.LIVE ? <>

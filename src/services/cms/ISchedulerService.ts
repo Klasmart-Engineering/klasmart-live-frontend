@@ -26,7 +26,7 @@ export interface ISchedulerService {
     getScheduleTimeViews(organizationId: string, viewType: TimeView, timeAt: number, timeZoneOffset: number): Promise<ScheduleTimeViewResponse[]>
 
     // TODO (Axel): Implement full response type.
-    getScheduleInfo(orgnaizationId: string, scheduleId: string): Promise<ScheduleDetail>;
+    getScheduleInfo(organizationId: string, scheduleId: string): Promise<ScheduleDetail>;
 
     getScheduleLiveToken(organizationId: string, scheduleId: string): Promise<ScheduleLiveTokenResponse>;
 }

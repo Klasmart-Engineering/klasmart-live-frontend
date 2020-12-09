@@ -19,6 +19,7 @@ import { Producer, ProducerOptions } from "mediasoup-client/lib/Producer";
 import useCordovaObservePause from "../cordova-observe-pause";
 import { useCameraContext } from "../components/media/useCameraContext";
 import { useUserContext } from "../context-provider/user-context";
+import { useWebsocketEndpoint } from "../context-provider/region-select-context";
 
 const SEND_RTP_CAPABILITIES = gql`
     mutation rtpCapabilities($rtpCapabilities: String!) {
@@ -88,13 +89,13 @@ export class WebRTCSFUContext implements WebRTCContext {
         const { roomId } = RoomContext.Consume();
         const { sessionId, token } = useUserContext();
 
-        const SfuEndpoint = process.env.ENDPOINT_SFU || `${window.location.protocol === "https:" ? "wss" : "ws"}://${window.location.host}/sfu`;
+        const sfuEndpoint = useWebsocketEndpoint("sfu");
 
         const apolloClient = useMemo(() =>
                 new ApolloClient({
                     cache: new InMemoryCache(),
                     link: new WebSocketLink({
-                        uri: `${SfuEndpoint}/${roomId}`,
+                        uri: `${sfuEndpoint}/${roomId}`,
                         options: {
                             reconnect: true,
                             connectionParams: {sessionId, authToken: token},

@@ -11,10 +11,8 @@ import ArrowForwardIcon from '@material-ui/icons/ArrowForwardIos';
 import { Whiteboard } from "../../whiteboard/components/Whiteboard";
 import { State } from "../../store/store";
 import { setContentIndex } from "../../store/reducers/control";
-import { useUserContext } from "../../context-provider/user-context";
-
-const CMS_ENDPOINT = process.env.ENDPOINT_KL2 !== undefined ? process.env.ENDPOINT_KL2 : "";
-const LIVE_ENDPOINT = process.env.ENDPOINT_CONTENT !== undefined ? process.env.ENDPOINT_CONTENT : "";
+import { useUserInformation } from "../../context-provider/user-information-context";
+import { useHttpEndpoint } from "../../context-provider/region-select-context";
 
 interface NewProps extends IframeResizer.IframeResizerProps {
     forwardRef: any
@@ -24,7 +22,7 @@ const IframeResizerNew = IframeResizer as React.FC<NewProps>
 export default function Study(): JSX.Element {
     const dispatch = useDispatch();
 
-    const { materials } = useUserContext();
+    const { contentService } = useUserInformation();
     const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
     const mats = useSelector((store: State) => store.data.materials)
     const contentIndex = useSelector((store: State) => store.control.contentIndex)
@@ -34,32 +32,18 @@ export default function Study(): JSX.Element {
     const [squareSize, setSquareSize] = useState<number>(0);
     const [recommandUrl, setRecommandUrl] = useState<string>("");
 
+    const liveContentEndpoint = useHttpEndpoint("live");
+
     function ramdomInt(min: number, max: number) {
         return Math.floor(Math.random() * (max - min)) + min;
-    }
-
-    // https://swagger-ui.kidsloop.net/#/content/searchContents
-    async function getAllLessonMaterials() {
-        const headers = new Headers();
-        headers.append("Accept", "application/json");
-        headers.append("Content-Type", "application/json");
-        const encodedParams = qs.stringify({
-            publish_status: "published",
-            order_by: "update_at",
-            content_type: 1,
-            org_id: selectedOrg.organization_id
-        }, { encodeValuesOnly: true });
-        const response = await fetch(`${CMS_ENDPOINT}/v1/contents?${encodedParams}`, {
-            headers,
-            method: "GET",
-        });
-        if (response.status === 200) { return response.json(); }
     }
 
     useEffect(() => {
         async function fetchEverything() {
             async function fetchAllLessonMaterials() {
-                const payload = await getAllLessonMaterials();
+                if (!contentService) return;
+
+                const payload = await contentService.searchContents(selectedOrg.organization_id, "published", "update_at", 1);
                 const matList = payload.list;
                 const dnds = matList.filter((mat: any) => {
                     const obj = JSON.parse(mat.data)
@@ -83,7 +67,7 @@ export default function Study(): JSX.Element {
             } finally { }
         }
         fetchEverything();
-    }, [])
+    }, [contentService])
 
     useEffect(() => {
         if (!rootDivRef || !rootDivRef.current) { return; }
@@ -128,12 +112,12 @@ export default function Study(): JSX.Element {
                 {contentIndex === mats.length ?
                     <IframeResizerNew
                         forwardRef={iframeRef}
-                        src={`${LIVE_ENDPOINT}${recommandUrl}`}
+                        src={`${liveContentEndpoint}${recommandUrl}`}
                         style={{ width: "100%", height: "100%" }}
                     /> :
                     <IframeResizerNew
                         forwardRef={iframeRef}
-                        src={`${LIVE_ENDPOINT}${mats[contentIndex].url}`}
+                        src={`${liveContentEndpoint}${mats[contentIndex].url}`}
                         style={{ width: "100%", height: "100%" }}
                     />
                 }

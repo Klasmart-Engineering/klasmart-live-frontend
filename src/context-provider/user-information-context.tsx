@@ -1,9 +1,11 @@
 import React, { createContext, ReactChild, ReactChildren, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
 import { setUser } from "../store/reducers/session";
-import { setErrCode } from "../store/reducers/communication";
-import { SchedulerService } from "../services/scheduler/SchedulerService";
-import { ISchedulerService } from "../services/scheduler/ISchedulerService";
+import { SchedulerService } from "../services/cms/SchedulerService";
+import { ISchedulerService } from "../services/cms/ISchedulerService";
+import { useHttpEndpoint } from "./region-select-context";
+import { IContentService } from "../services/cms/IContentService";
+import { ContentService } from "../services/cms/ContentService";
 
 // TODO (Axel): All of this context can be combined with the user-context from 
 // the combined master branch. This would be preferred since they share
@@ -118,14 +120,10 @@ type UserInformationContext = {
     loading: boolean,
     error: boolean,
     information?: UserInformation,
-    schedulerService?: ISchedulerService,
     actions?: UserInformationActions
 }
 
-const UserInformationEndpoint = "https://api.kidsloop.net/user/";
 const UserInformationContext = createContext<UserInformationContext>({ loading: true, error: false, information: undefined, actions: undefined });
-
-const SchedulerServiceEndpoint = process.env.ENDPOINT_KL2 !== undefined ? process.env.ENDPOINT_KL2 : "";
 
 export function isRoleTeacher(role: string) {
     const teacherRoleNames = [
@@ -143,9 +141,7 @@ export function UserInformationContextProvider({ children }: Props) {
     const [error, setError] = useState<boolean>(false);
     const [information, setInformation] = useState<UserInformation | undefined>(undefined);
 
-    const schedulerService = useMemo(() => {
-        return new SchedulerService(SchedulerServiceEndpoint);
-    }, []);
+    const userInformationEndpoint = useHttpEndpoint("user-information");
 
     const userInformationFromResponseData = (me: MePayload) => {
         const information: UserInformation = {
@@ -170,14 +166,13 @@ export function UserInformationContextProvider({ children }: Props) {
         headers.append("Accept", "application/json");
         headers.append("Content-Type", "application/json");
 
-        fetch(UserInformationEndpoint, {
+        fetch(userInformationEndpoint, {
             body: JSON.stringify({ query: QUERY_ME }),
             credentials: "include",
             headers,
             method: "POST",
         }).then(async (response) => {
             const { data }: { data: { me: MePayload } } = await response.json();
-            // console.log(JSON.stringify(data))
             if (!data || data.me === null) {
                 setInformation(undefined);
                 setError(true);
@@ -196,8 +191,8 @@ export function UserInformationContextProvider({ children }: Props) {
     }, []);
 
     const context = useMemo<UserInformationContext>(() => {
-        return { loading, error, information, schedulerService, actions: { refresh: fetchInformation } }
-    }, [information, loading, error, fetchInformation, schedulerService])
+        return { loading, error, information, actions: { refresh: fetchInformation } }
+    }, [information, loading, error, fetchInformation])
 
     useEffect(() => {
         fetchInformation();

@@ -4,6 +4,7 @@ import { SubscriptionClient } from "subscriptions-transport-ws";
 import { WebSocketLink } from "apollo-link-ws";
 import React, { createContext, ReactChild, ReactChildren, useContext, useEffect, useState } from "react";
 import Loading from "../components/loading";
+import { useWebsocketEndpoint } from "./region-select-context";
 
 export interface ILiveSessionContext { 
     client?: ApolloClient<unknown>
@@ -14,12 +15,13 @@ const LiveSessionContext = createContext<ILiveSessionContext>({});
 type Props = {
     children?: ReactChild | ReactChildren | null
     token?: string
-    endpoint: string
     sessionId: string
 }
 
-export function LiveSessionLinkProvider({ children, sessionId, endpoint, token }: Props) {
+export function LiveSessionLinkProvider({ children, sessionId, token }: Props) {
     const [apolloClient, setApolloClient] = useState<ApolloClient<unknown>>();
+
+    const endpoint = useWebsocketEndpoint("live");
 
     useEffect(() => {
         const subscriptionClient = new SubscriptionClient(endpoint, {
@@ -43,7 +45,7 @@ export function LiveSessionLinkProvider({ children, sessionId, endpoint, token }
 
             setApolloClient(undefined);
         }
-    }, [token, sessionId]);
+    }, [token, sessionId, endpoint]);
 
     if (!apolloClient) {
         return (<Loading rawText={"Joining live..."} />)

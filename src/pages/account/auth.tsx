@@ -7,6 +7,7 @@ import { lockOrientation } from "../../utils/screenUtils";
 import Loading from "../../components/loading";
 import { useState } from "react";
 import Button from "@material-ui/core/Button";
+import { useHttpEndpoint } from "../../context-provider/region-select-context";
 
 const useStyles = makeStyles((_theme) => createStyles({
     container: {
@@ -19,8 +20,6 @@ const useStyles = makeStyles((_theme) => createStyles({
 }),
 );
 
-const AuthEndpoint = "https://auth.kidsloop.net";
-
 interface Props {
     refresh: () => void;
     useInAppBrowser: boolean;
@@ -31,6 +30,8 @@ export function Auth({ refresh, useInAppBrowser }: Props) {
     const dispatch = useDispatch();
     const frameRef = useRef<HTMLIFrameElement>(null);
     const [key, setKey] = useState(Math.random().toString(36));
+
+    const authEndpoint = useHttpEndpoint("auth");
 
     useEffect(() => {
         if (!frameRef.current) return;
@@ -44,7 +45,7 @@ export function Auth({ refresh, useInAppBrowser }: Props) {
         const onMessage = (event: MessageEvent) => {
             const { data, origin } = event;
 
-            if (origin === AuthEndpoint && data.message === "message") {
+            if (origin === authEndpoint && data.message === "message") {
                 console.log('refreshing auth status');
                 refresh();
             }
@@ -66,10 +67,10 @@ export function Auth({ refresh, useInAppBrowser }: Props) {
         if (!cordova) return;
         cordova.plugins.browsertab.isAvailable((result: any) => {
             if (!result) {
-                browser = cordova.InAppBrowser.open(AuthEndpoint, '_system', 'location=no,zoom=no');
+                browser = cordova.InAppBrowser.open(authEndpoint, '_system', 'location=no,zoom=no');
             } else {
                 cordova.plugins.browsertab.openUrl(
-                    `${AuthEndpoint}/?ua=cordova#/`,
+                    `${authEndpoint}/?ua=cordova#/`,
                     (successResp: any) => { console.log(successResp) },
                     (failureResp: any) => {
                         console.error("no browser tab available");
@@ -109,7 +110,7 @@ export function Auth({ refresh, useInAppBrowser }: Props) {
     } else {
         return (
             <div className={classes.container}>
-                <iframe ref={frameRef} width="100%" height="100%" frameBorder="0" src={AuthEndpoint}></iframe>
+                <iframe ref={frameRef} width="100%" height="100%" frameBorder="0" src={authEndpoint}></iframe>
             </div>
         );
     }

@@ -1,6 +1,5 @@
-import LogRocket from 'logrocket';
 const qs = require("qs");
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useDispatch, useSelector } from "react-redux";
 import { createStyles, makeStyles, useTheme, Theme } from "@material-ui/core/styles";
@@ -34,8 +33,6 @@ import { lockOrientation } from "../../utils/screenUtils";
 import KidsLoopTeachers from "../../assets/img/kidsloop_live_teachers.svg";
 import KidsLoopStudents from "../../assets/img/kidsloop_live_students.svg";
 import KidsLoopStudy from "../../assets/img/kidsloop_study_students.svg";
-
-const CMS_ENDPOINT = process.env.ENDPOINT_KL2 !== undefined ? process.env.ENDPOINT_KL2 : "";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -74,7 +71,7 @@ export function Join(): JSX.Element {
 
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
     const { name, setName, teacher } = useUserContext();
-    const { information: myInformation } = useUserInformation();
+    const { information: myInformation, contentService } = useUserInformation();
 
     const [user, setUser] = useState<string>("");
 
@@ -107,26 +104,12 @@ export function Join(): JSX.Element {
 
     }, [myInformation]);
 
-    // https://swagger-ui.kidsloop.net/#/content/getContentById
-    async function getLessonPlanInfo() {
-        const headers = new Headers();
-        headers.append("Accept", "application/json");
-        headers.append("Content-Type", "application/json");
-        const encodedParams = qs.stringify({ org_id: selectedOrg.organization_id }, { encodeValuesOnly: true });
-        const response = await fetch(`${CMS_ENDPOINT}/v1/contents/${contentId}?${encodedParams}`, {
-            headers,
-            method: "GET",
-        });
-        if (response.status === 200) { return response.json(); }
-    }
-
     function sortLessonMaterials(obj: any) {
         let mats: LessonMaterial[] = [];
         let target: any = obj;
         let hasNext = true;
         while (hasNext) {
             const data = JSON.parse(target.material.data);
-            // console.log("data: ", data)
             mats.push({
                 __typename: MaterialTypename.Iframe,
                 url: `/h5p/play/${data.source}`,
@@ -147,7 +130,9 @@ export function Join(): JSX.Element {
         if (classType !== ClassType.LIVE) {
             async function fetchEverything() {
                 async function fetchLessonMaterials() {
-                    const lp = await getLessonPlanInfo();
+                    if (!contentService) return;
+
+                    const lp = await contentService.getContentById(selectedOrg.organization_id, contentId);
                     const objLp = JSON.parse(lp.data)
                     const mats = sortLessonMaterials(objLp);
                     dispatch(setMaterials(mats));
@@ -160,7 +145,7 @@ export function Join(): JSX.Element {
             }
             fetchEverything();
         }
-    }, [])
+    }, [contentService])
 
     useEffect(() => {
         refreshCameras();
