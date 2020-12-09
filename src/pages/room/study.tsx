@@ -36,7 +36,7 @@ export function Study({
 
     // https://swagger-ui.kidsloop.net/#/content/searchContents
     async function getAllLessonMaterials() {
-        const CMS_ENDPOINT = new URL(window.location.href).hostname === "localhost" ? "" : "https://kl2-test.kidsloop.net";
+        const CMS_ENDPOINT = new URL(window.location.href).hostname === "localhost" ? "" : "https://kl2.kidsloop.net";
         const headers = new Headers();
         headers.append("Accept", "application/json");
         headers.append("Content-Type", "application/json");
