@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { FormattedMessage } from "react-intl";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
@@ -15,6 +15,7 @@ import Error1 from "../../assets/img/error/1.png";
 import Error2 from "../../assets/img/error/2.png";
 import Error3 from "../../assets/img/error/3.png";
 import Error4 from "../../assets/img/error/4.png";
+import { useServices } from "../../context-provider/services-provider";
 
 const ERROR_IMAGES = [Error1, Error2, Error3, Error4];
 export const DESCRIPTION_403 = "Please check if your organization is not created or selected."
@@ -98,23 +99,18 @@ function NextStepButton({ errCode }: { errCode: string }) {
     const [shouldSignOut, setShouldSignOut] = useState<boolean>(false);
     const [btnTitle, setBtnTitle] = useState<JSX.Element>(<FormattedMessage id="err_button_home" />);
 
-    async function handleSignOut() {
-        try {
-            const headers = new Headers();
-            headers.append("Accept", "application/json");
-            headers.append("Content-Type", "application/json");
-            await fetch("https://auth.kidsloop.net/signout", {
-                credentials: "include",
-                headers,
-                method: "GET",
-            })
-                .then(() => {
-                    location.href = "/";
-                });
-        } catch (e) {
-            console.error("Fail to handleSignOut: ", e);
-        }
-    }
+    const { authenticationService } = useServices();
+
+    const handleSignOut = useCallback(async () => {
+        if (!authenticationService) return;
+
+        await authenticationService.signout().then(() => {
+            location.href = "/";
+        }).catch(error => {
+            console.error("Fail to handleSignOut: ", error);
+        })
+
+    }, [authenticationService]);
 
     const handleClick = () => {
         if (shouldSignOut) {
