@@ -43,6 +43,9 @@ export function useShouldSelectOrganization() {
     const [hasStudentRole, setHasStudentRole] = useState<boolean | null>(null);
 
     useEffect(() => {
+        // Initialize selected organization
+        dispatch(setSelectedOrg({ organization_id: "", organization_name: "" }));
+
         // 1. information returns undefined
         if (!information) {
             setShouldSelect(false);
@@ -75,8 +78,8 @@ export function useShouldSelectOrganization() {
                     return;
                 }
             }
+            setErrCode(null);
             setHasStudentRole(true);
-            setErrCode(null)
             dispatch(setSelectedOrg({ organization_id, organization_name }));
         } else { // 2. User has more than 2 organizations
             setShouldSelect(true);
@@ -152,9 +155,9 @@ export function SelectOrgDialog() {
                         extendedOnly
                         size="large"
                         onClick={handleClickSelect}
-                        style={{ color: "white", backgroundColor: "#0E78D5", borderRadius: 0 }}
+                        style={{ height: theme.spacing(8), color: "white", backgroundColor: "#0E78D5", borderRadius: 0 }}
                     >
-                        <Typography variant="button">
+                        <Typography variant="h5">
                             <FormattedMessage id="selectOrg_buttonSelect" />
                         </Typography>
                     </StyledButton>
@@ -197,11 +200,8 @@ function OrgCard({ org, checked, setOrg }: {
     setOrg: React.Dispatch<React.SetStateAction<OrganizationPayload>>
 }) {
     const theme = useTheme();
-    const square = theme.spacing(15)
+    const square = theme.spacing(15);
 
-    useEffect(() => {
-        console.log(org.organization_name)
-    }, [checked === true])
     return (
         <Grid container direction="column" justify="space-between" alignItems="center" spacing={1} item xs={6}>
             <Grid item >

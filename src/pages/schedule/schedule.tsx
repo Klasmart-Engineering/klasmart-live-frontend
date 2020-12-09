@@ -40,15 +40,6 @@ const tomorrowTimeStamp = tomorrow.getTime() / 1000
 let endOfTomorrow = new Date(tomorrowTimeStamp * 1000); endOfTomorrow.setHours(23, 59, 59);
 const endOfTomorrowTimeStamp = endOfTomorrow.getTime() / 1000;
 
-// console.log("today: ", new Date(now.getFullYear(), now.getMonth(), now.getDate()))
-// console.log("todayTimeStamp: ", todayTimeStamp)
-// console.log("nextMonthTimeStamp: ", new Date(now.getFullYear(), now.getMonth() + 1, 1))
-// console.log("timeZoneOffset: ", timeZoneOffset)
-// console.log("tomorrow: ", tomorrow)
-// console.log("tomorrowTimeStamp: ", tomorrowTimeStamp)
-// console.log("endOfTomorrow: ", endOfTomorrow)
-// console.log("endOfTomorrowTimeStamp: ", endOfTomorrowTimeStamp)
-
 const useStyles = makeStyles((theme: Theme) => ({
     listRoot: {
         width: "100%",
@@ -103,17 +94,21 @@ export function Schedule() {
         }
         dispatch(setInFlight(true));
 
-        if (selectedOrg && selectedOrg.organization_id) {
-            fetchEverything();
-        } else if (shouldSelect) {
+        if (shouldSelect) {
             dispatch(setSelectOrgDialogOpen(true));
+        } else {
+            dispatch(setSelectOrgDialogOpen(false));
         }
-        console.log("selectedOrg: ", selectedOrg);
+
+        if (selectedOrg && selectedOrg.organization_id !== "") {
+            fetchEverything();
+        }
+
     }, [shouldSelect, selectedOrg, schedulerService])
 
     return (<>
         <Header isHomeRoute />
-        {inFlight ? <Loading rawText="Please select an organization first by tapping the top-left corner!"/> :
+        {inFlight ? <Loading rawText="Please select an organization first by tapping the top-left corner!" /> :
             <Grid
                 wrap="nowrap"
                 container
@@ -177,7 +172,7 @@ function ScheduleList() {
         setOpenAlert(false);
     };
 
-    return (loading ? <Loading rawText="Please select an organization first by tapping the top-left corner!"/> : <>
+    return (loading ? <Loading rawText="Please select an organization first by tapping the top-left corner!" /> : <>
         <Grid item>
             <List
                 component="nav"
