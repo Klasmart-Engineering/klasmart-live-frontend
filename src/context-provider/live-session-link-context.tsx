@@ -24,7 +24,7 @@ export function LiveSessionLinkProvider({ children, sessionId, token }: Props) {
     const endpoint = useWebsocketEndpoint("live");
 
     useEffect(() => {
-        const subscriptionClient = new SubscriptionClient(endpoint, {
+        const subscriptionClient = new SubscriptionClient(`${endpoint}/graphql`, {
             reconnect: true,
             connectionParams: {
                 authToken: token,

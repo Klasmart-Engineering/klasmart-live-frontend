@@ -1,6 +1,6 @@
 import React, { createContext, ReactChild, ReactChildren, useCallback, useContext, useEffect, useMemo, useState } from "react"
 
-export type Service = "auth" | "live" | "cms" | "sfu" | "user-information"
+export type Service = "auth" | "live" | "cms" | "sfu" | "user"
 
 export type Region = {
     id: string,
@@ -18,18 +18,47 @@ export interface IRegionSelectContext {
 
 type Props = {
     children?: ReactChild | ReactChildren | null;
-    regionsUrl: string
+    regionsUrl?: string
 }
 
-const RegionSelectContext = createContext<IRegionSelectContext>({loading: false});
+const RegionSelectContext = createContext<IRegionSelectContext>({ loading: false });
+
+const DefaultRegions: Region[] = [
+    {
+        id: "prod",
+        name: "Production",
+        development: false,
+        services: {
+            auth: "https://auth.kidsloop.net",
+            live: "https://live.kidsloop.net",
+            cms: "https://kl2.kidsloop.net",
+            sfu: "https://live.kidsloop.net/sfu",
+            user: "https://api.kidsloop.net/user/"
+        }
+    },
+    {
+        id: "dev",
+        name: "Development",
+        development: true,
+        services: {
+            auth: "https://auth.kidsloop.net",
+            live: "https://live.kidsloop.net",
+            cms: "https://kl2.kidsloop.net",
+            sfu: "https://live.kidsloop.net/sfu",
+            user: "https://api.kidsloop.net/user/"
+        }
+    }
+];
 
 export function RegionSelectProvider({ children, regionsUrl }: Props) {
-    const [regions, setRegions] = useState<Region[]>();
-    const [region, setRegion] = useState<Region>();
+    const [regions, setRegions] = useState<Region[]>(DefaultRegions);
+    const [region, setRegion] = useState<Region>(DefaultRegions[0]);
 
     const [loading, setLoading] = useState<boolean>(false);
 
     const fetchRegions = useCallback(async () => {
+        if (!regionsUrl) return;
+
         setLoading(true);
 
         const headers = new Headers();
@@ -69,8 +98,8 @@ export function RegionSelectProvider({ children, regionsUrl }: Props) {
     }, [regionsUrl]);
 
     return (
-        <RegionSelectContext.Provider value={{regions, region, selectRegion, loading}}>
-            { children }
+        <RegionSelectContext.Provider value={{ regions, region, selectRegion, loading }}>
+            { children}
         </RegionSelectContext.Provider>
     );
 }

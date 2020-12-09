@@ -25,7 +25,7 @@ const ServicesContext = createContext<ServicesContext>({});
 export function ServicesProvider({ children }: Props) {
     const authenticationServiceEndpoint = useHttpEndpoint("auth");
     const cmsServiceEndpoint = useHttpEndpoint("cms");
-    const userInformationEndpoint = useHttpEndpoint("user-information");
+    const userInformationEndpoint = useHttpEndpoint("user");
 
     const authenticationService = useMemo(() => {
         return new AuthenticationService(authenticationServiceEndpoint);

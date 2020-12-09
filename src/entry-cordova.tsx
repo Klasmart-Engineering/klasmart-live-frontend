@@ -34,11 +34,14 @@ import { CameraContextProvider } from "./components/media/useCameraContext";
 import { UserInformationContextProvider } from "./context-provider/user-information-context";
 import { createHashHistory } from 'history'
 import { UserContextProvider } from "./context-provider/user-context";
+import { RegionSelectProvider } from "./context-provider/region-select-context";
+import { ServicesProvider } from "./context-provider/services-provider";
+import { CordovaSystemProvider } from "./context-provider/cordova-system-context";
 
 function Entry() {
     const dispatch = useDispatch();
     const themeMode = useSelector((state: State) => state.control.themeMode);
-    const [ language, setLanguageFromCookie ] = useLocaleCookie();
+    const [language, setLanguageFromCookie] = useLocaleCookie();
     const languageCode = useSelector((state: State) => state.session.locale);
 
     useEffect(() => {
@@ -62,20 +65,26 @@ function Entry() {
     }, []);
 
     const history = createHashHistory();
-    
+
     return (
-        <UserContextProvider sessionId={sessionId}>
-            <UserInformationContextProvider>
-                <CameraContextProvider>
-                    <RawIntlProvider value={language}>
-                        <ThemeProvider theme={themeProvider(languageCode, themeMode)}>
-                            <CssBaseline />
-                            <App history={history} />
-                        </ThemeProvider>
-                    </RawIntlProvider>
-                </CameraContextProvider>
-            </UserInformationContextProvider>
-        </UserContextProvider>
+        <CordovaSystemProvider history={history}>
+            <RegionSelectProvider>
+                <ServicesProvider>
+                    <UserContextProvider sessionId={sessionId}>
+                        <UserInformationContextProvider>
+                            <CameraContextProvider>
+                                <RawIntlProvider value={language}>
+                                    <ThemeProvider theme={themeProvider(languageCode, themeMode)}>
+                                        <CssBaseline />
+                                        <App history={history} />
+                                    </ThemeProvider>
+                                </RawIntlProvider>
+                            </CameraContextProvider>
+                        </UserInformationContextProvider>
+                    </UserContextProvider>
+                </ServicesProvider>
+            </RegionSelectProvider>
+        </CordovaSystemProvider>
     );
 }
 
@@ -84,7 +93,7 @@ async function main() {
     const renderComponent = (
         <Provider store={store}>
             <PersistGate loading={null} persistor={persistor}>
-                    <Entry />
+                <Entry />
             </PersistGate>
         </Provider>
     )

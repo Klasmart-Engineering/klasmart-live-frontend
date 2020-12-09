@@ -1,6 +1,9 @@
 import { IAuthenticationService } from "../auth/IAuthenticationService";
 import { ClassResponse, IUserInformationService, OrganizationResponse, RoleResponse, UserInformation } from "./IUserInformationService";
 
+// TODO (Axel): SOC: We may want to create a separate context for the authentication, to make the code
+// easier to maintain and understand.
+
 const QUERY_ME = `
     query {
         me {
