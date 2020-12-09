@@ -45,12 +45,24 @@ export function CordovaSystemProvider({ children, history }: Props) {
         }
     });
 
-    return (
-        <CordovaSystemContext.Provider value={{ready: cordovaReady, devicePermissions: permissions, restart, quit}}>
-            { !cordovaReady ? <Loading rawText="Loading..." /> : <></> }
-            { !permissions ? <Loading rawText="Camera and Microphone premissions required. Please grant the permissions and restart application." /> : <></> }
+    const LoadingCordova = () => {
+        return <Loading rawText="Loading..." />;
+    }
+
+    const LoadingPermissions = () => {
+        return <Loading rawText="Camera and Microphone premissions required. Please grant the permissions and restart application." />;
+    }
+
+    const Content = () => {
+        return <>
             { children }
             <ExitDialog visible={displayExitDialogue} onCancel={() => setDisplayExitDialogue(false)} onConfirm={() => quit()} />
+        </>
+    }
+
+    return (
+        <CordovaSystemContext.Provider value={{ready: cordovaReady, devicePermissions: permissions, restart, quit}}>
+            { !cordovaReady ? <LoadingCordova /> : (!permissions ? <LoadingPermissions /> : <Content />) }
         </CordovaSystemContext.Provider>
     )
 }

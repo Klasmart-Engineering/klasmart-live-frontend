@@ -30,18 +30,14 @@ import { setErrCode } from "./store/reducers/communication";
 import { setHistory } from "./store/reducers/location";
 import { themeProvider } from "./themeProvider";
 import { useLocaleCookie } from "./utils/locale";
-import { CameraContextProvider } from "./components/media/useCameraContext";
-import { UserInformationContextProvider } from "./context-provider/user-information-context";
 import { createHashHistory } from 'history'
-import { UserContextProvider } from "./context-provider/user-context";
-import { RegionSelectProvider } from "./context-provider/region-select-context";
-import { ServicesProvider } from "./context-provider/services-provider";
 import { CordovaSystemProvider } from "./context-provider/cordova-system-context";
+import { CompositionRoot } from "./context-provider/composition-root";
 
 function Entry() {
     const dispatch = useDispatch();
     const themeMode = useSelector((state: State) => state.control.themeMode);
-    const [language, setLanguageFromCookie] = useLocaleCookie();
+    const [language] = useLocaleCookie();
     const languageCode = useSelector((state: State) => state.session.locale);
 
     useEffect(() => {
@@ -68,22 +64,14 @@ function Entry() {
 
     return (
         <CordovaSystemProvider history={history}>
-            <RegionSelectProvider>
-                <ServicesProvider>
-                    <UserContextProvider sessionId={sessionId}>
-                        <UserInformationContextProvider>
-                            <CameraContextProvider>
-                                <RawIntlProvider value={language}>
-                                    <ThemeProvider theme={themeProvider(languageCode, themeMode)}>
-                                        <CssBaseline />
-                                        <App history={history} />
-                                    </ThemeProvider>
-                                </RawIntlProvider>
-                            </CameraContextProvider>
-                        </UserInformationContextProvider>
-                    </UserContextProvider>
-                </ServicesProvider>
-            </RegionSelectProvider>
+            <CompositionRoot sessionId={sessionId}>
+                <RawIntlProvider value={language}>
+                    <ThemeProvider theme={themeProvider(languageCode, themeMode)}>
+                        <CssBaseline />
+                        <App history={history} />
+                    </ThemeProvider>
+                </RawIntlProvider>
+            </CompositionRoot>
         </CordovaSystemProvider>
     );
 }
