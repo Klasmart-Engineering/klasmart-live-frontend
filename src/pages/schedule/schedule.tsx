@@ -29,6 +29,7 @@ import StudyScheduleHouse from "../../assets/img/study_house.svg";
 import { useUserContext } from "../../context-provider/user-context";
 import { setSelectOrgDialogOpen } from "../../store/reducers/control";
 import { useServices } from "../../context-provider/services-provider";
+import { Fallback } from "../fallback";
 
 // NOTE: China API server(Go lang) accept 10 digits timestamp
 const now = new Date();
@@ -65,7 +66,7 @@ export function Schedule() {
 
     const { schedulerService } = useServices();
 
-    const { shouldSelect } = useShouldSelectOrganization();
+    const { shouldSelect, errCode } = useShouldSelectOrganization();
 
     useEffect(() => {
         lockOrientation(OrientationType.PORTRAIT, dispatch);
@@ -105,6 +106,31 @@ export function Schedule() {
         }
 
     }, [shouldSelect, selectedOrg, schedulerService])
+
+    const user = useSelector((state: State) => state.session.user);
+    const [hasOrg, _] = useState(Boolean(user.organizations.length));
+
+    if (errCode && errCode !== 401) {
+        const code = `${errCode}`;
+        if (code === "403" && !hasOrg) {
+            return (
+                <Fallback
+                    errCode={code}
+                    titleMsgId={"err_403_title_not_supported"}
+                    subtitleMsgId={"err_403_subtitle_not_supported"}
+                    descriptionMsgId={"err_403_description_not_supported"}
+                />
+            );
+        } else {
+            return (
+                <Fallback
+                    errCode={code}
+                    titleMsgId={`err_${code}_title`}
+                    subtitleMsgId={`err_${code}_subtitle`}
+                />
+            );
+        }
+    }
 
     return (<>
         <Header isHomeRoute />

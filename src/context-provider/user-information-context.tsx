@@ -2,7 +2,6 @@ import React, { createContext, ReactChild, ReactChildren, useCallback, useContex
 import { useDispatch } from "react-redux";
 import { UserInformation } from "../services/user/IUserInformationService";
 import { setLocale, setUser } from "../store/reducers/session";
-import { useHttpEndpoint } from "./region-select-context";
 import { useServices } from "./services-provider";
 
 // TODO (Axel): All of this context can be combined with the user-context from 
@@ -15,6 +14,7 @@ type Props = {
 }
 
 type UserInformationActions = {
+    signOutUser: () => void
     refreshAuthenticationToken: () => void
     refreshUserInformation: () => void
 }
@@ -42,10 +42,11 @@ export function isRoleTeacher(role: string) {
 // NOTE: Minutes * 60 * 1000
 const TOKEN_REFRESH_TIMEOUT_MS = 10 * 60 * 1000;
 
-const useAuthenticatedCheck = () => {
+const useAuthentication = () => {
     const [authReady, setAuthReady] = useState<boolean>(false);
     const [authenticated, setAuthenticated] = useState<boolean>(false);
     const [authError, setAuthError] = useState<boolean>(false);
+    const [signedOut, setSignedOut] = useState<boolean>(false);
 
     const { authenticationService } = useServices();
 
@@ -53,6 +54,7 @@ const useAuthenticatedCheck = () => {
 
     const refresh = useCallback(async () => {
         if (!authenticationService) return;
+        if (signedOut) return;
 
         setAuthReady(false);
         setAuthError(false);
@@ -61,6 +63,19 @@ const useAuthenticatedCheck = () => {
 
         setAuthenticated(gotValidToken);
         setAuthReady(true);
+    }, []);
+
+    const signOut = useCallback(() => {
+        if (!authenticationService) return;
+        if (signedOut) return;
+
+        authenticationService.signout().then(() => {
+            setSignedOut(true);
+        }).catch(error => {
+            console.error(error);
+        }).finally(() => {
+            setAuthenticated(false);
+        });
     }, []);
 
     useEffect(() => {
@@ -96,6 +111,7 @@ const useAuthenticatedCheck = () => {
                 const token = url.searchParams.get("token");
                 if (token) {
                     authenticationService.transfer(token).then(() => {
+                        setSignedOut(false);
                         refresh();
                     }).catch(err => {
                         console.error(err);
@@ -113,7 +129,7 @@ const useAuthenticatedCheck = () => {
         refresh();
     }, [])
 
-    return { authReady, authError, authenticated, refresh };
+    return { authReady, authError, authenticated, refresh, signOut };
 }
 
 export function UserInformationContextProvider({ children }: Props) {
@@ -124,7 +140,7 @@ export function UserInformationContextProvider({ children }: Props) {
     const [informationLoading, setInformationLoading] = useState<boolean>(false);
     const [information, setInformation] = useState<UserInformation>();
 
-    const { authenticated, refresh, authReady } = useAuthenticatedCheck();
+    const { authenticated, refresh, authReady, signOut } = useAuthentication();
 
     const { userInformationService } = useServices();
 
@@ -147,7 +163,7 @@ export function UserInformationContextProvider({ children }: Props) {
     }, [userInformationService]);
 
     const context = useMemo<UserInformationContext>(() => {
-        return { authenticated, loading: informationLoading || !authReady, error, information, actions: { refreshUserInformation: fetchInformation, refreshAuthenticationToken: refresh } }
+        return { authenticated, loading: informationLoading || !authReady, error, information, actions: { signOutUser: signOut, refreshUserInformation: fetchInformation, refreshAuthenticationToken: refresh } }
     }, [information, informationLoading, authReady, error, fetchInformation, authenticated])
 
     useEffect(() => {

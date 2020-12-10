@@ -20,7 +20,7 @@ import { State } from "../../store/store";
 import { setSelectedOrg } from "../../store/reducers/session";
 import { setSelectOrgDialogOpen } from "../../store/reducers/control";
 import DefaultOrganization from "../../assets/img/avatars/Avatar_Student_01.jpg";
-import { OrganizationResponse } from "../../services/user/IUserInformationService";
+import { Organization, OrganizationResponse } from "../../services/user/IUserInformationService";
 
 const useStyles = makeStyles((theme: Theme) => ({
     noPadding: {
@@ -42,43 +42,62 @@ export function useShouldSelectOrganization() {
     const [shouldSelect, setShouldSelect] = useState<boolean>(false);
     const [errCode, setErrCode] = useState<number | null>(null);
     const [hasStudentRole, setHasStudentRole] = useState<boolean | null>(null);
+    const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
+
+    const setErrorState = (errorCode: number) => {
+        setShouldSelect(false);
+        setHasStudentRole(null);
+        setErrCode(errorCode);
+    };
+
+    const verifyOrganizationStudentRole = (organization: Organization) => {
+        const roles = organization.roles;
+        if (roles.length === 1) {
+            const isTeacher = isRoleTeacher(roles[0].role_name);
+            if (isMobile && isTeacher) {
+                return false;
+            }
+        } else if (roles.length > 1) {
+            const someRolesAreStudent = roles.some(role => !isRoleTeacher(role.role_name));
+            if (isMobile && !someRolesAreStudent) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 
     useEffect(() => {
-        // Initialize selected organization
-        dispatch(setSelectedOrg({ organization_id: "", organization_name: "" }));
-
         // 1. information returns undefined
         if (!information) {
-            setShouldSelect(false);
-            setHasStudentRole(null);
-            setErrCode(401);
+            setErrorState(401);
             return;
+        }
+
+        // NOTE: User already selected organization.
+        if (selectedOrg) {
+            const selected = information.organizations.find(o => o.organization.organization_id === selectedOrg.organization_id);
+            if (selected && verifyOrganizationStudentRole(selected)) {
+                setHasStudentRole(true);
+                setShouldSelect(false);
+                setErrCode(null);
+                return;
+            }
         }
 
         // 1. information exists
         if (information.organizations.length === 0) { // 2. User has no organization
-            setShouldSelect(false);
-            setHasStudentRole(null);
-            setErrCode(403)
+            setErrorState(403);
         } else if (information.organizations.length === 1) { // 2. User has 1 organization
             setShouldSelect(false);
             const { organization_id, organization_name } = information.organizations[0].organization;
-            const roles = information.organizations[0].roles;
-            if (roles.length === 1) {
-                const isTeacher = isRoleTeacher(roles[0].role_name);
-                if (isMobile && isTeacher) {
-                    setHasStudentRole(false);
-                    setErrCode(403);
-                    return;
-                }
-            } else if (roles.length > 1) {
-                const someRolesAreStudent = roles.some(role => !isRoleTeacher(role.role_name));
-                if (isMobile && !someRolesAreStudent) {
-                    setHasStudentRole(false);
-                    setErrCode(403);
-                    return;
-                }
+
+            if (!verifyOrganizationStudentRole(information.organizations[0])) {
+                setHasStudentRole(false);
+                setErrCode(403);
+                return;
             }
+            
             setErrCode(null);
             setHasStudentRole(true);
             dispatch(setSelectedOrg({ organization_id, organization_name }));
@@ -87,7 +106,7 @@ export function useShouldSelectOrganization() {
             setHasStudentRole(true);
             setErrCode(null);
         }
-    }, [information]);
+    }, [information, selectedOrg]);
 
     /** 
      * ABOUT hasStudentRole (Isu)

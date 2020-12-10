@@ -16,6 +16,7 @@ import Error3 from "../../assets/img/error/3.png";
 import Error4 from "../../assets/img/error/4.png";
 import { useServices } from "../../context-provider/services-provider";
 import { useUserInformation } from "../../context-provider/user-information-context";
+import { useHistory, useLocation } from "react-router-dom";
 
 const ERROR_IMAGES = [Error1, Error2, Error3, Error4];
 export const DESCRIPTION_403 = "Please check if your organization is not created or selected."
@@ -99,24 +100,9 @@ function NextStepButton({ errCode }: { errCode: string }) {
     const [shouldSignOut, setShouldSignOut] = useState<boolean>(false);
     const [btnTitle, setBtnTitle] = useState<JSX.Element>(<FormattedMessage id="err_button_home" />);
 
-    const { authenticationService } = useServices();
-
-    const handleSignOut = useCallback(async () => {
-        if (!authenticationService) return;
-
-        await authenticationService.signout().then(() => {
-            location.href = "/";
-        }).catch(error => {
-            console.error("Fail to handleSignOut: ", error);
-        })
-
-    }, [authenticationService]);
-
     const handleClick = () => {
         if (shouldSignOut) {
-            handleSignOut()
-                .then(() => { actions?.refreshAuthenticationToken(); })
-                .catch((e) => console.error(`Fail to signout: ${e}`))
+            actions?.signOutUser();
         } else {
             actions?.refreshAuthenticationToken(); // TODO (Isu): It's temporary and needs to be implemented more detail
         }
