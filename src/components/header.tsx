@@ -7,10 +7,13 @@ import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 import Avatar from "@material-ui/core/Avatar";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 import { Close as CloseIcon } from "@styled-icons/material/Close";
 import { ArrowBackIos as ArrowBackIcon } from "@styled-icons/material/ArrowBackIos";
 import { Lock as LockIcon } from "@styled-icons/material/Lock";
+import { CloudDone as CloudDoneIcon } from "@styled-icons/material/CloudDone";
+import { Refresh as RefreshIcon } from "@styled-icons/material/Refresh";
 
 import StyledIcon from "./styled/icon";
 import { State } from "../store/store";
@@ -19,6 +22,9 @@ import { setSelectOrgDialogOpen } from "../store/reducers/control";
 import KidsloopLogo from "../assets/img/kidsloop_icon.svg";
 import DefaultOrganization from "../assets/img/avatars/Avatar_Student_01.jpg";
 import { useHistory } from "react-router-dom";
+import { useUserInformation } from "../context-provider/user-information-context";
+import { setSchedule } from "../store/reducers/data";
+import { setInFlight } from "../store/reducers/communication";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -37,7 +43,7 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-export function Header({ isHomeRoute }: { isHomeRoute?: boolean }) {
+export function Header({ isHomeRoute, setKey }: { isHomeRoute?: boolean, setKey?: React.Dispatch<React.SetStateAction<string>> }) {
     const { root, safeArea } = useStyles();
     const theme = useTheme();
     const errCode = useSelector((state: State) => state.communication.errCode);
@@ -75,7 +81,7 @@ export function Header({ isHomeRoute }: { isHomeRoute?: boolean }) {
                                 <img alt="KidsLoop Logo" src={KidsloopLogo} height={32} />
                             </Grid>
                             <Grid item style={{ flexGrow: 0 }}>
-                                <MenuButton />
+                                <MenuButton setKey={setKey} />
                             </Grid>
                         </Grid>
                     </Grid>
@@ -149,21 +155,20 @@ function GoBackButton() {
 }
 
 // TODO (Isu): Will be changed to <RefreshButton /> that force Schedule component to rerender
-function MenuButton() {
+function MenuButton({ setKey }: { setKey?: React.Dispatch<React.SetStateAction<string>> }) {
     const { iconButton } = useStyles();
+    
     const selectOrgDialogOpen = useSelector((state: State) => state.control.selectOrgDialogOpen);
-    const [tootipOpen, setTooltipOpen] = useState(false);
+    const inFlight = useSelector((state: State) => state.communication.inFlight);
 
     return (
-        <Tooltip placement="bottom" title="Coming soon" open={tootipOpen} onClose={() => setTooltipOpen(false)}>
-            <IconButton
-                onClick={() => setTooltipOpen(true)}
-                size="medium"
-                className={iconButton}
-                style={{ visibility: selectOrgDialogOpen ? "hidden" : "visible" }}
-            >
-                <StyledIcon icon={<LockIcon />} size="medium" />
-            </IconButton>
-        </Tooltip>
+        <IconButton
+            onClick={() => setKey && setKey(Math.random().toString(36))}
+            size="medium"
+            className={iconButton}
+            style={{ visibility: selectOrgDialogOpen ? "hidden" : "visible" }}
+        >
+            <StyledIcon icon={inFlight ? <CircularProgress size={16} /> : <RefreshIcon />} size="medium" />
+        </IconButton>
     );
 }

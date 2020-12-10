@@ -61,6 +61,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 export function Schedule() {
     const theme = useTheme();
     const dispatch = useDispatch();
+    const [key, setKey] = useState(Math.random().toString(36))
     const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
     const inFlight = useSelector((state: State) => state.communication.inFlight);
 
@@ -105,7 +106,7 @@ export function Schedule() {
             fetchEverything();
         }
 
-    }, [shouldSelect, selectedOrg, schedulerService])
+    }, [shouldSelect, selectedOrg, schedulerService, key])
 
     const user = useSelector((state: State) => state.session.user);
     const [hasOrg, _] = useState(Boolean(user.organizations.length));
@@ -133,8 +134,8 @@ export function Schedule() {
     }
 
     return (<>
-        <Header isHomeRoute />
-        {inFlight ? <Loading rawText="Please select an organization first by tapping the top-left corner!" /> :
+        <Header isHomeRoute setKey={setKey} />
+        {inFlight ? <Loading rawText={ selectedOrg.organization_id === "" ? "Please select an organization first by tapping the top-left corner!" : "" } /> :
             <Grid
                 wrap="nowrap"
                 container
