@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from "react";
+import React, { useMemo } from "react";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
 import { whiteboard } from "../../utils/layerValues";
 import { useSynchronizedState } from "../context-providers/SynchronizedStateProvider";
@@ -40,7 +40,6 @@ export function Whiteboard({ group, width, height, filterUsers, filterGroups, un
         <div
             id="whiteboard-container"
             style={{
-                // zIndex: whiteboard + 1, // need it?
                 display: display ? "block" : "none",
                 position: "absolute",
                 top: 0,

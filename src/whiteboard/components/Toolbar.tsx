@@ -83,8 +83,8 @@ export const WBToolbar: FunctionComponent<Props> = ({ children }: Props): JSX.El
             <Grid item style={{ flex: 1, textAlign: "center" }}>
                 <IconButton
                     style={{
-                        width: isSmDown ? "1.5rem" : "3rem",
-                        height: isSmDown ? "1.5rem" : "3rem",
+                        width: "3rem",
+                        height: "3rem",
                         backgroundColor: crayon ? "transparent" : colorValue,
                         border: actived ? `${isSmDown ? 2 : 5}px solid ${"#1B365D"}` : 0
                     }} // TODO: Handle when Dark mode
@@ -93,7 +93,7 @@ export const WBToolbar: FunctionComponent<Props> = ({ children }: Props): JSX.El
                         selectTool("line");
                     }}
                 >
-                    {crayon ? <img alt={`crayon ${colorValue}`} src={crayon} height={isSmDown ? 16 : 32} /> : null}
+                    {crayon ? <img alt={`crayon ${colorValue}`} src={crayon} height={32} /> : null}
                 </IconButton>
             </Grid>
         );
@@ -116,7 +116,7 @@ export const WBToolbar: FunctionComponent<Props> = ({ children }: Props): JSX.El
         <Grid item style={{ flex: 0, textAlign: "center" }}>
             <IconButton
                 color="primary"
-                size={isSmDown ? "small" : "medium"}
+                size="medium"
                 onClick={clicked}
                 style={{
                     color: actived ? "white" : undefined,
@@ -134,7 +134,7 @@ export const WBToolbar: FunctionComponent<Props> = ({ children }: Props): JSX.El
                 <ColorPicker />
             </Grid>
             <Grid item style={{ flex: 0 }}>
-                <ToolButton clicked={selectObjectEraser} actived={activedTool.erase}><EraserIcon size={isSmDown ? "1rem" : "1.5rem"} /></ToolButton>
+                <ToolButton clicked={selectObjectEraser} actived={activedTool.erase}><EraserIcon size="1.5rem" /></ToolButton>
             </Grid>
             {children}
         </Grid>
@@ -144,11 +144,11 @@ export const WBToolbar: FunctionComponent<Props> = ({ children }: Props): JSX.El
                     <ColorPicker />
                 </Grid>
                 <Grid container direction="row" justify="space-between" alignItems="center" alignContent="center" item style={{ flex: 1 }}>
-                    <ToolButton clicked={selectLine} actived={activedTool.line}><BrushIcon size={isSmDown ? "1rem" : "1.5rem"} /></ToolButton>
-                    <ToolButton clicked={selectText} actived={activedTool.text}><TextIcon size={isSmDown ? "1rem" : "1.5rem"} /></ToolButton>
-                    <ToolButton clicked={selectMove} actived={activedTool.move}><MoveIcon size={isSmDown ? "1rem" : "1.5rem"} /></ToolButton>
-                    <ToolButton clicked={selectObjectEraser} actived={activedTool.erase}><EraserIcon size={isSmDown ? "1rem" : "1.5rem"} /></ToolButton>
-                    <ToolButton clicked={selectClear} actived={activedTool.clear}><TrashIcon size={isSmDown ? "1rem" : "1.5rem"} /></ToolButton>
+                    <ToolButton clicked={selectLine} actived={activedTool.line}><BrushIcon size="1.5rem" /></ToolButton>
+                    <ToolButton clicked={selectText} actived={activedTool.text}><TextIcon size="1.5rem" /></ToolButton>
+                    <ToolButton clicked={selectMove} actived={activedTool.move}><MoveIcon size="1.5rem" /></ToolButton>
+                    <ToolButton clicked={selectObjectEraser} actived={activedTool.erase}><EraserIcon size="1.5rem" /></ToolButton>
+                    <ToolButton clicked={selectClear} actived={activedTool.clear}><TrashIcon size="1.5rem" /></ToolButton>
                 </Grid>
                 {children}
             </Grid>

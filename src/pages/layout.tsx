@@ -242,8 +242,9 @@ function MainContainer({ classContent, materialKey, interactiveModeState }: {
             item xs={drawerOpen ? 9 : 12}
             key={materialKey}
             style={{
-                padding: isSmDown ? theme.spacing(1) : theme.spacing(2),
-                paddingRight: (isSmDown ? theme.spacing(1) : theme.spacing(2)) + (classType === ClassType.STUDY ? 0 : DRAWER_TOOLBAR_WIDTH),
+                position: "relative",
+                padding: isSmDown ? theme.spacing(0.5) : theme.spacing(2),
+                paddingRight: (isSmDown ? theme.spacing(0.5) : theme.spacing(2)) + (classType === ClassType.STUDY ? 0 : DRAWER_TOOLBAR_WIDTH),
             }}
         >
             <Grid
@@ -251,8 +252,8 @@ function MainContainer({ classContent, materialKey, interactiveModeState }: {
                 item xs={12}
                 style={{
                     maxWidth: "100%",
-                    height: `calc(100% - ${isSmDown ? MOBILE_WB_TOOLBAR_MAX_HEIGHT : WB_TOOLBAR_MAX_HEIGHT}px)`,
-                    maxHeight: `calc(100% - ${isSmDown ? MOBILE_WB_TOOLBAR_MAX_HEIGHT : WB_TOOLBAR_MAX_HEIGHT}px)`,
+                    height: "100%",
+                    maxHeight: "100%",
                     overflow: "hidden",
                     overflowY: interactiveMode === 2 ? "auto" : "hidden" // For Observe mode
                 }}
@@ -265,12 +266,7 @@ function MainContainer({ classContent, materialKey, interactiveModeState }: {
 }
 
 function WBToolbarOpener() {
-    const TEACHER_FAB_WIDTH = 80;
-    const TEACHER_FAB_HEIGHT = 18;
-
     const theme = useTheme();
-    const isSmDown = useMediaQuery(theme.breakpoints.down('sm'));
-
     const { teacher, sessionId } = useUserContext();
     const { state: { display, permissions }, actions: { setDisplay, getPermissions, setPermissions } } = useSynchronizedState();
     const classType = useSelector((store: State) => store.session.classType);
@@ -301,76 +297,52 @@ function WBToolbarOpener() {
             setPermissions(sessionId, newPermissions)
         }
     };
-    return (
-        <Grid item xs={12} style={{ position: "relative", height: isSmDown ? MOBILE_WB_TOOLBAR_MAX_HEIGHT : WB_TOOLBAR_MAX_HEIGHT }}>
-            {classType !== ClassType.LIVE || !teacher ? (
-                <Fab
-                    aria-label="student whiteboard toolbar opener"
-                    disabled={!enableWB}
-                    onClick={handleOpenWBToolbar}
-                    size={isSmDown ? "small" : "large"}
-                    color="primary"
-                    style={{
-                        display: open ? "none" : "flex",
-                        zIndex: WB_EXPAND_BUTTON,
-                        position: "absolute",
-                        bottom: 0,
-                        left: 0,
-                    }}
-                >
-                    <StyledIcon icon={<WBIcon />} size={isSmDown ? "small" : "large"} color="white" />
-                </Fab>
-            ) : (
-                    <Fab
-                        aria-label="teacher whiteboard toolbar opener"
-                        disabled={!enableWB}
-                        variant="extended"
-                        onClick={handleOpenWBToolbar}
-                        size="small"
-                        color="primary"
-                        style={{
-                            zIndex: WB_EXPAND_BUTTON,
-                            display: open ? "none" : "flex",
-                            width: TEACHER_FAB_WIDTH,
-                            height: TEACHER_FAB_HEIGHT,
-                            position: "absolute",
-                            bottom: 0,
-                            left: `calc(50% - ${TEACHER_FAB_WIDTH}px)`,
-                        }}
+    return (<>
+        <Fab
+            aria-label="student whiteboard toolbar opener"
+            disabled={!enableWB}
+            onClick={handleOpenWBToolbar}
+            size="large"
+            color="primary"
+            style={{
+                display: open ? "none" : "flex",
+                zIndex: WB_EXPAND_BUTTON,
+                position: "absolute",
+                bottom: theme.spacing(1),
+                left: theme.spacing(1),
+            }}
+        >
+            <StyledIcon icon={<WBIcon />} size="large" color="white" />
+        </Fab>
+        <Paper
+            aria-label="whiteboard toolbar"
+            elevation={2}
+            style={{
+                zIndex: WB_TOOLBAR,
+                display: open ? "flex" : "none",
+                padding: theme.spacing(0.5),
+                width: `calc(100% - ${theme.spacing(2)}px)`,
+                position: "absolute",
+                bottom: theme.spacing(1),
+                left: theme.spacing(1),
+                borderRadius: 32,
+                overflowY: "hidden",
+            }}
+        >
+            <Grid container direction="row" justify="space-between" alignItems="center">
+                <Grid item style={{ flex: 0 }}>
+                    <IconButton
+                        size="medium"
+                        style={{ backgroundColor: theme.palette.background.paper }}
+                        onClick={handleCloseWBToolbar}
                     >
-                        <StyledIcon icon={<ArrowUpIcon />} size="medium" color="white" />
-                    </Fab>
-                )
-            }
-            <Paper
-                aria-label="whiteboard toolbar"
-                elevation={2}
-                style={{
-                    zIndex: WB_TOOLBAR,
-                    display: open ? "flex" : "none",
-                    padding: isSmDown ? theme.spacing(0.5) : theme.spacing(1),
-                    width: "100%",
-                    position: "absolute",
-                    bottom: 0,
-                    borderRadius: 32,
-                    overflowY: "hidden",
-                }}
-            >
-                <Grid container direction="row" justify="space-between" alignItems="center">
-                    <Grid item style={{ flex: 0 }}>
-                        <IconButton
-                            size={isSmDown ? "small" : "medium"}
-                            style={{ backgroundColor: theme.palette.background.paper }}
-                            onClick={handleCloseWBToolbar}
-                        >
-                            <StyledIcon icon={teacher ? <ArrowDownIcon /> : <CloseIcon />} size={isSmDown ? "small" : "large"} />
-                        </IconButton>
-                    </Grid>
-                    <WBToolbar />
+                        <StyledIcon icon={teacher ? <ArrowDownIcon /> : <CloseIcon />} size="large" />
+                    </IconButton>
                 </Grid>
-            </Paper>
-        </Grid>
-    )
+                <WBToolbar />
+            </Grid>
+        </Paper>
+    </>)
 }
 
 function DrawerContainer({ interactiveModeState, streamId, material, tabIndex, setTabIndex, setMaterialKey }: {
