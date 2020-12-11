@@ -83,17 +83,18 @@ export const WBToolbar: FunctionComponent<Props> = ({ children }: Props): JSX.El
             <Grid item style={{ flex: 1, textAlign: "center" }}>
                 <IconButton
                     style={{
-                        width: "3rem",
-                        height: "3rem",
+                        width: "4rem",
+                        height: "4rem",
+                        padding: 0,
                         backgroundColor: crayon ? "transparent" : colorValue,
-                        border: actived ? `${isSmDown ? 2 : 5}px solid ${"#1B365D"}` : 0
+                        border: actived ? `${isSmDown ? 3 : 5}px solid ${"#1B365D"}` : 0
                     }} // TODO: Handle when Dark mode
                     onClick={teacher ? onClick : (e) => {
                         onClick(e);
                         selectTool("line");
                     }}
                 >
-                    {crayon ? <img alt={`crayon ${colorValue}`} src={crayon} height={32} /> : null}
+                    {crayon ? <img alt={`crayon ${colorValue}`} src={crayon} height={48} /> : null}
                 </IconButton>
             </Grid>
         );
@@ -130,11 +131,11 @@ export const WBToolbar: FunctionComponent<Props> = ({ children }: Props): JSX.El
 
     const VisibleToolbar = () => (classType !== ClassType.LIVE || !teacher ? (
         <Grid id="wb-toolbar-student" container direction="row" justify="center" alignItems="center" spacing={2} item style={{ flex: 1 }}>
-            <Grid container direction="row" justify="space-between" alignItems="center" alignContent="center" item style={{ flex: 1 }}>
+            <Grid container direction="row" justify="space-between" alignItems="center" alignContent="center" item style={{ flex: 1, padding: 0 }}>
                 <ColorPicker />
             </Grid>
             <Grid item style={{ flex: 0 }}>
-                <ToolButton clicked={selectObjectEraser} actived={activedTool.erase}><EraserIcon size="1.5rem" /></ToolButton>
+                <ToolButton clicked={selectObjectEraser} actived={activedTool.erase}><EraserIcon size="3rem" /></ToolButton>
             </Grid>
             {children}
         </Grid>

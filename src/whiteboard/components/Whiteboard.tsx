@@ -40,6 +40,7 @@ export function Whiteboard({ group, width, height, filterUsers, filterGroups, un
         <div
             id="whiteboard-container"
             style={{
+                zIndex: whiteboard + 1,
                 display: display ? "block" : "none",
                 position: "absolute",
                 top: 0,

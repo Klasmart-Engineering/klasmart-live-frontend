@@ -305,6 +305,8 @@ function WBToolbarOpener() {
             size="large"
             color="primary"
             style={{
+                width: "5rem",
+                height: "5rem",
                 display: open ? "none" : "flex",
                 zIndex: WB_EXPAND_BUTTON,
                 position: "absolute",
@@ -312,7 +314,7 @@ function WBToolbarOpener() {
                 left: theme.spacing(1),
             }}
         >
-            <StyledIcon icon={<WBIcon />} size="large" color="white" />
+            <StyledIcon icon={<WBIcon />} size="3rem" color="white" />
         </Fab>
         <Paper
             aria-label="whiteboard toolbar"
@@ -325,7 +327,7 @@ function WBToolbarOpener() {
                 position: "absolute",
                 bottom: theme.spacing(1),
                 left: theme.spacing(1),
-                borderRadius: 32,
+                borderRadius: 64,
                 overflowY: "hidden",
             }}
         >
@@ -336,7 +338,7 @@ function WBToolbarOpener() {
                         style={{ backgroundColor: theme.palette.background.paper }}
                         onClick={handleCloseWBToolbar}
                     >
-                        <StyledIcon icon={teacher ? <ArrowDownIcon /> : <CloseIcon />} size="large" />
+                        <StyledIcon icon={teacher ? <ArrowDownIcon /> : <CloseIcon />} size="3rem" />
                     </IconButton>
                 </Grid>
                 <WBToolbar />
