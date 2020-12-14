@@ -37,7 +37,7 @@ export class SchedulerService implements ISchedulerService {
         return result;
     }
 
-    async getScheduleLiveToken(organizationId: string, scheduleId: string): Promise<ScheduleLiveTokenResponse> {
+    async getScheduleToken(organizationId: string, scheduleId: string): Promise<ScheduleLiveTokenResponse> {
         const url = `${this.endpoint}/v1/schedules/${scheduleId}/live/token`;
         const result = await fetchJsonData<ScheduleLiveTokenResponse>(url, "GET", {
             org_id: organizationId
