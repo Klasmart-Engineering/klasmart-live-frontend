@@ -326,21 +326,16 @@ function ScheduleItem({ classType, schedule, setOpenAlert }: {
         if (!schedulerService) { return; }
         if (!info || !info.detail) { return; }
         dispatch(setSelectedPlan(info.detail.lesson_plan.id));
-        if (classType === ClassType.LIVE) {
-            schedulerService.getScheduleLiveToken(selectedOrg.organization_id, schedule.id).then((res) => {
-                if (res.token) {
-                    setToken(res.token);
-
-                    // TODO: Can we get rid of the token query parameter and just use
-                    // react component state for keeping and parsing the token instead?
-                    location.href = `#/join?token=${res.token}`;
-                } else {
-                    setOpenAlert(true); return;
-                }
-            })
-        } else {
-            location.href = `#/join`;
-        }
+        schedulerService.getScheduleToken(selectedOrg.organization_id, schedule.id).then((res) => {
+            if (res.token) {
+                setToken(res.token);
+                // TODO: Can we get rid of the token query parameter and just use
+                // react component state for keeping and parsing the token instead?
+                location.href = `#/join?token=${res.token}`;
+            } else {
+                setOpenAlert(true); return;
+            }
+        })
     }
 
     return (

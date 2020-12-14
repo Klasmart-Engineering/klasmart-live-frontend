@@ -13,6 +13,7 @@ import { State } from "../../store/store";
 import { setContentIndex } from "../../store/reducers/control";
 import { useHttpEndpoint } from "../../context-provider/region-select-context";
 import { useServices } from "../../context-provider/services-provider";
+import { useUserContext } from "../../context-provider/user-context";
 
 interface NewProps extends IframeResizer.IframeResizerProps {
     forwardRef: any
@@ -21,10 +22,11 @@ const IframeResizerNew = IframeResizer as React.FC<NewProps>
 
 export default function Study(): JSX.Element {
     const dispatch = useDispatch();
+    const { materials } = useUserContext();
 
     const { contentService } = useServices();
     const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
-    const mats = useSelector((store: State) => store.data.materials)
+    // const mats = useSelector((store: State) => store.data.materials)
     const contentIndex = useSelector((store: State) => store.control.contentIndex)
 
     const rootDivRef = useRef<HTMLDivElement>(null);
@@ -108,15 +110,15 @@ export default function Study(): JSX.Element {
                 {contentWidth && contentHeight ? (
                     <ResizedIframe
                         parentHeight={contentHeight}
-                        contentUrl={contentIndex === mats.length
+                        contentUrl={contentIndex === materials.length
                             ? `${liveContentEndpoint}${recommandUrl}`
-                            : `${liveContentEndpoint}${mats[contentIndex].url}`
+                            : `${liveContentEndpoint}${materials[contentIndex].url}`
                         }
                     />
                 ) : <Loading rawText={"Loading the lesson material!"} />}
             </Grid>
             <Grid item xs={1}>
-                <IconButton disabled={contentIndex >= mats.length} aria-label="go to next activity" onClick={() => dispatch(setContentIndex(contentIndex + 1))}>
+                <IconButton disabled={contentIndex >= materials.length} aria-label="go to next activity" onClick={() => dispatch(setContentIndex(contentIndex + 1))}>
                     <ArrowForwardIcon fontSize="large" />
                 </IconButton>
             </Grid>

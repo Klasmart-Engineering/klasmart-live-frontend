@@ -89,8 +89,6 @@ export function Join(): JSX.Element {
 
     const { error, stream, facing, setFacing, refreshCameras } = useCameraContext();
 
-    const contentId = useSelector((store: State) => store.data.selectedLessonPlan);
-
     // NOTE: This effect will set the customizable name based on the 
     // information from /me query. This will prepopulate the input
     // field for the user name but still allow it to be customized.
@@ -99,54 +97,15 @@ export function Join(): JSX.Element {
 
         if (myInformation.givenName) {
             setUser(myInformation.givenName);
-        } else if(myInformation.name) {
+        } else if (myInformation.name) {
             setUser(myInformation.name);
         }
 
     }, [myInformation]);
 
-    function sortLessonMaterials(obj: any) {
-        let mats: LessonMaterial[] = [];
-        let target: any = obj;
-        let hasNext = true;
-        while (hasNext) {
-            const data = JSON.parse(target.material.data);
-            mats.push({
-                __typename: MaterialTypename.Iframe,
-                url: `/h5p/play/${data.source}`,
-                name: target.material.name
-            })
-            if (target.next.length === 0) {
-                hasNext = false;
-            } else {
-                target = target.next[0]
-            }
-        }
-        return mats;
-    }
-
     useEffect(() => {
         lockOrientation(OrientationType.PORTRAIT, dispatch);
-    
-        if (classType !== ClassType.LIVE) {
-            async function fetchEverything() {
-                async function fetchLessonMaterials() {
-                    if (!contentService) return;
-
-                    const lp = await contentService.getContentById(selectedOrg.organization_id, contentId);
-                    const objLp = JSON.parse(lp.data)
-                    const mats = sortLessonMaterials(objLp);
-                    dispatch(setMaterials(mats));
-                }
-                try {
-                    await Promise.all([fetchLessonMaterials()])
-                } catch (err) {
-                    console.error(`Fail to fetchLessonMaterials: ${err}`)
-                } finally { }
-            }
-            fetchEverything();
-        }
-    }, [contentService])
+    }, [])
 
     useEffect(() => {
         refreshCameras();

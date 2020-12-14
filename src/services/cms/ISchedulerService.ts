@@ -28,5 +28,5 @@ export interface ISchedulerService {
     // TODO (Axel): Implement full response type.
     getScheduleInfo(organizationId: string, scheduleId: string): Promise<ScheduleDetail>;
 
-    getScheduleLiveToken(organizationId: string, scheduleId: string): Promise<ScheduleLiveTokenResponse>;
+    getScheduleToken(organizationId: string, scheduleId: string): Promise<ScheduleLiveTokenResponse>;
 }

@@ -132,8 +132,6 @@ function Entry() {
     }, [location.hash])
     */
 
-    const [alertMobileBrowser, setAlertMobileBrowser] = useState<boolean>(!isCordova && isMobileOnly);
-
     return (<>
         <UserContextProvider sessionId={sessionId}>
             <UserInformationContextProvider>
@@ -147,25 +145,6 @@ function Entry() {
                 </CameraContextProvider>
             </UserInformationContextProvider>
         </UserContextProvider>
-        <Collapse in={alertMobileBrowser}>
-            <Alert
-                variant="filled"
-                severity="warning"
-                action={
-                    <IconButton
-                        aria-label="warning alert close"
-                        color="inherit"
-                        size="small"
-                        onClick={() => setAlertMobileBrowser(false)}
-                    >
-                        <CloseIcon fontSize="inherit" />
-                    </IconButton>
-                }
-                style={{ position: "fixed", bottom: 0, width: "100%" }}
-            >
-                {`Your experience might be limited on this unsupported device. For a better Kidsloop experience, please join the class on a tablet, laptop, or desktop. Thank you!`}
-            </Alert>
-        </Collapse>
     </>);
 }
 
@@ -174,7 +153,7 @@ async function main() {
     const renderComponent = (
         <Provider store={store}>
             <PersistGate loading={null} persistor={persistor}>
-                    <Entry />
+                <Entry />
             </PersistGate>
         </Provider>
     )
