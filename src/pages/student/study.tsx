@@ -14,6 +14,7 @@ import { setContentIndex } from "../../store/reducers/control";
 import { useHttpEndpoint } from "../../context-provider/region-select-context";
 import { useServices } from "../../context-provider/services-provider";
 import { useUserContext } from "../../context-provider/user-context";
+import { MaterialTypename } from "../../lessonMaterialContext";
 
 interface NewProps extends IframeResizer.IframeResizerProps {
     forwardRef: any
@@ -26,12 +27,12 @@ export default function Study(): JSX.Element {
 
     const { contentService } = useServices();
     const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
-    // const mats = useSelector((store: State) => store.data.materials)
     const contentIndex = useSelector((store: State) => store.control.contentIndex)
 
     const rootDivRef = useRef<HTMLDivElement>(null);
     const [contentWidth, setContentWidth] = useState<number>(0);
     const [contentHeight, setContentHeight] = useState<number>(0);
+    const [contentUrl, setContentUrl] = useState<string>("");
     const [recommandUrl, setRecommandUrl] = useState<string>("");
 
     const liveContentEndpoint = useHttpEndpoint("live");
@@ -39,6 +40,10 @@ export default function Study(): JSX.Element {
     function ramdomInt(min: number, max: number) {
         return Math.floor(Math.random() * (max - min)) + min;
     }
+
+    useEffect(() => {
+        dispatch(setContentIndex(0));
+    }, [])
 
     useEffect(() => {
         async function fetchEverything() {
@@ -80,6 +85,14 @@ export default function Study(): JSX.Element {
         setContentHeight(height);
     }, [rootDivRef.current]);
 
+    useEffect(() => {
+        if (materials[contentIndex].__typename === MaterialTypename.Iframe) {
+            setContentUrl(contentIndex === materials.length ? `${liveContentEndpoint}${recommandUrl}` : `${liveContentEndpoint}${materials[contentIndex].url}`);
+        } else {
+            setContentUrl(`${materials[contentIndex].url}`);
+        }
+    }, [contentIndex])
+
     return (
         <Grid
             id="study-content-container"
@@ -110,10 +123,7 @@ export default function Study(): JSX.Element {
                 {contentWidth && contentHeight ? (
                     <ResizedIframe
                         parentHeight={contentHeight}
-                        contentUrl={contentIndex === materials.length
-                            ? `${liveContentEndpoint}${recommandUrl}`
-                            : `${liveContentEndpoint}${materials[contentIndex].url}`
-                        }
+                        contentUrl={contentUrl}
                     />
                 ) : <Loading rawText={"Loading the lesson material!"} />}
             </Grid>
