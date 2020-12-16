@@ -636,29 +636,16 @@ function TabInnerContent({ title }: {
                         activeStep={contentIndex}
                         orientation="vertical"
                     >
-                        {classType === ClassType.LIVE ?
-                            materials.map((material, index) => (
-                                <Step
-                                    key={`step-${material.name}`}
-                                    onClick={() => dispatch(setContentIndex(index))}
-                                    disabled={false}
-                                    className={classes.step}
-                                >
-                                    <StepLabel key={`label-${material.name}`}>{material.name}</StepLabel>
-                                </Step>
-                            )) :
-                            materials
-                                .filter(mat => mat.__typename !== undefined && mat.__typename !== MaterialTypename.Image)
-                                .map((material, index) => (
-                                    <Step
-                                        key={`step-${material.name}`}
-                                        onClick={() => dispatch(setContentIndex(index))}
-                                        disabled={false}
-                                        className={classes.step}
-                                    >
-                                        <StepLabel key={`label-${material.name}`}>{material.name}</StepLabel>
-                                    </Step>
-                                ))}
+                        {materials.map((material, index) => (
+                            <Step
+                                key={`step-${material.name}`}
+                                onClick={() => dispatch(setContentIndex(index))}
+                                disabled={false}
+                                className={classes.step}
+                            >
+                                <StepLabel key={`label-${material.name}`}>{material.name}</StepLabel>
+                            </Step>
+                        ))}
                     </Stepper>
                 </Grid>
             );
