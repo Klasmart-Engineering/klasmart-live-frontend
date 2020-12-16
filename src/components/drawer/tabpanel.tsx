@@ -151,7 +151,6 @@ function TabInnerContent({ title }: { title: string }) {
                                 </Step>
                             )) :
                             materials
-                                .filter(mat => mat.__typename !== undefined && mat.__typename !== MaterialTypename.Image)
                                 .map((material, index) => (
                                     <Step
                                         key={`step-${material.name}`}

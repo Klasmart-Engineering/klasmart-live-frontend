@@ -1,28 +1,29 @@
 const qs = require("qs");
 import React, { useState, useEffect, useContext } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import Grid from "@material-ui/core/Grid";
 
-import { RoomContext, InteractiveModeState, StreamIdState } from "./room";
+import { RoomContext, InteractiveModeState, StreamIdState, ContentIndexState } from "./room";
 import { Layout } from "./layout-new";
 import { UserContext } from "../../entry";
 import { GlobalWhiteboardContext } from "../../whiteboard/context-providers/GlobalWhiteboardContext";
-import { State } from "../../store/store";
 import { ClassType } from "../../store/actions";
 import { setDrawerOpen } from "../../store/reducers/control";
 
 interface StudyProps {
+    contentIndexState: ContentIndexState;
     interactiveModeState: InteractiveModeState;
     streamIdState: StreamIdState;
 }
 
 export function Study({
+    contentIndexState,
     interactiveModeState,
     streamIdState,
 }: StudyProps): JSX.Element {
     const { classtype, org_id, materials } = useContext(UserContext);
     const dispatch = useDispatch();
-    const contentIndex = useSelector((store: State) => store.control.contentIndex);
+    const { contentIndex } = contentIndexState;
     const material = contentIndex >= 0 && contentIndex < materials.length ? materials[contentIndex] : undefined;
 
     const { streamId } = streamIdState;
@@ -36,7 +37,7 @@ export function Study({
 
     // https://swagger-ui.kidsloop.net/#/content/searchContents
     async function getAllLessonMaterials() {
-        const CMS_ENDPOINT = new URL(window.location.href).hostname === "localhost" ? "" : "https://kl2.kidsloop.net";
+        const CMS_ENDPOINT = `${process.env.ENDPOINT_CMS}`;
         const headers = new Headers();
         headers.append("Accept", "application/json");
         headers.append("Content-Type", "application/json");
@@ -98,6 +99,7 @@ export function Study({
                     style={{ flexGrow: 1, overflow: "hidden", height: "100%" }}
                 >
                     <Layout
+                        contentIndexState={contentIndexState}
                         interactiveModeState={interactiveModeState}
                         streamIdState={streamIdState}
                         material={material}

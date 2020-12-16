@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useTheme } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import IframeResizer from "iframe-resizer-react";
@@ -13,12 +13,13 @@ import { WBToolbarContainer, WB_TOOLBAR_MAX_HEIGHT } from "./WBToolbar"
 import { UserContext } from "../../entry";
 import { State } from "../../store/store";
 import { ClassType } from "../../store/actions";
-import { setContentIndex } from "../../store/reducers/control";
 import { Whiteboard } from "../../whiteboard/components/Whiteboard-new";
+import { ContentIndexState } from "../../pages/room/room";
 
 export const DRAWER_TOOLBAR_WIDTH = 64;
 
-export function ClassContentContainer({ materialKey, recommandUrl }: {
+export function ClassContentContainer({ contentIndexState, materialKey, recommandUrl }: {
+    contentIndexState: ContentIndexState;
     materialKey: number,
     recommandUrl?: string,
 }) {
@@ -42,7 +43,7 @@ export function ClassContentContainer({ materialKey, recommandUrl }: {
                 paddingRight: (isSmDown ? theme.spacing(1) : theme.spacing(2)) + (classtype === ClassType.STUDY ? 0 : DRAWER_TOOLBAR_WIDTH),
             }}
         >
-            <ClassContent recommandUrl={recommandUrl} />
+            <ClassContent contentIndexState={contentIndexState} recommandUrl={recommandUrl} />
             <WBToolbarContainer />
         </Grid>
     )
@@ -51,10 +52,13 @@ export function ClassContentContainer({ materialKey, recommandUrl }: {
 interface NewProps extends IframeResizer.IframeResizerProps { forwardRef: any }
 const IframeResizerNew = IframeResizer as React.FC<NewProps>
 
-function ClassContent({ recommandUrl }: { recommandUrl?: string }) {
-    const dispatch = useDispatch();
+function ClassContent({ contentIndexState, recommandUrl }: {
+    contentIndexState: ContentIndexState,
+    recommandUrl?: string
+}) {
     const { classtype, teacher, materials } = useContext(UserContext);
-    const contentIndex = useSelector((store: State) => store.control.contentIndex)
+    const { contentIndex, setContentIndex } = contentIndexState;
+    console.log(classtype, teacher, materials, contentIndex)
     const iframeRef = useRef<HTMLIFrameElement>(null);
 
     const rootDivRef = useRef<HTMLDivElement>(null);
@@ -71,10 +75,6 @@ function ClassContent({ recommandUrl }: { recommandUrl?: string }) {
         else { setSquareSize(width); }
     }, [rootDivRef.current]);
 
-    useEffect(() => {
-        console.log(typeof recommandUrl)
-        console.log(recommandUrl)
-    }, [recommandUrl])
     return (
         <Grid
             id="class-content"
@@ -100,7 +100,7 @@ function ClassContent({ recommandUrl }: { recommandUrl?: string }) {
                 style={{ width: "100%", height: "100%" }}
             >
                 <Grid item xs={1}>
-                    <IconButton disabled={contentIndex <= 0} aria-label="go to prev activity" onClick={() => dispatch(setContentIndex(contentIndex - 1))}>
+                    <IconButton disabled={contentIndex <= 0} aria-label="go to prev activity" onClick={() => setContentIndex(contentIndex - 1)}>
                         <ArrowBackIcon fontSize="large" />
                     </IconButton>
                 </Grid>
@@ -137,7 +137,7 @@ function ClassContent({ recommandUrl }: { recommandUrl?: string }) {
                     }
                 </Grid>
                 <Grid item xs={1}>
-                    <IconButton disabled={contentIndex >= (recommandUrl ? materials.length : materials.length - 1)} aria-label="go to next activity" onClick={() => dispatch(setContentIndex(contentIndex + 1))}>
+                    <IconButton disabled={contentIndex >= (recommandUrl ? materials.length : materials.length - 1)} aria-label="go to next activity" onClick={() => setContentIndex(contentIndex + 1)}>
                         <ArrowForwardIcon fontSize="large" />
                     </IconButton>
                 </Grid>
