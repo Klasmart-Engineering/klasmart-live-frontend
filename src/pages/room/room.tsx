@@ -78,6 +78,7 @@ export function Room({ teacher }: Props): JSX.Element {
         case "study":
             return (
                 <Study
+                    contentIndexState={{ contentIndex, setContentIndex }}
                     interactiveModeState={{ interactiveMode: 1, setInteractiveMode }}
                     streamIdState={{ streamId, setStreamId }}
                 />
@@ -85,6 +86,7 @@ export function Room({ teacher }: Props): JSX.Element {
         case "class":
             return (
                 <Classes
+                    contentIndexState={{ contentIndex, setContentIndex }}
                     interactiveModeState={{ interactiveMode: 1, setInteractiveMode }}
                     streamIdState={{ streamId, setStreamId }}
                 />

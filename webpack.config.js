@@ -84,7 +84,8 @@ module.exports = {
       ["ENDPOINT_H5P"],
       ["ENDPOINT_TEST_ASSETS_S3"],
       ["ENDPOINT_WEBSOCKET"],
-      ["APP_GIT_REV"]
+      ["APP_GIT_REV"],
+      { "ENDPOINT_CMS": "https://kl2-test.kidsloop.net" },
     ),
     new HtmlWebpackPlugin({
       filename: "index.html",
@@ -119,7 +120,7 @@ module.exports = {
         changeOrigin: true,
       },
       "/v1": {
-        target: "https://kl2.kidsloop.net",
+        target: "https://kl2-test.kidsloop.net",
         changeOrigin: true,
       }
     },
