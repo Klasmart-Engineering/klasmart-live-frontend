@@ -24,6 +24,7 @@ import MimiSpinner1 from "../../assets/img/spinner/mimi1_spinner.gif"
 import GhostSpinner from "../../assets/img/spinner/ghost_spinner.gif"
 import { State } from "../../store/store";
 import { useUserContext } from "../../context-provider/user-context";
+import { getAbsoluteScriptPath, injectIframeScript } from "../../utils/injectIframeScript";
 
 interface NewProps extends IframeResizer.IframeResizerProps {
     forwardRef: any
@@ -167,34 +168,13 @@ export function RecordedIframe(props: Props): JSX.Element {
             !iRef.contentWindow ||
             (iRef.contentWindow as any).kidslooplive ||
             !iRef.contentDocument) { return; }
-        const doc = iRef.contentDocument;
-        const script = doc.createElement("script");
-        script.setAttribute("type", "text/javascript");
-        const matches = window.location.pathname.match(/^(.*\/+)([^/]*)$/);
-        const prefix = matches && matches.length >= 2 ? matches[1] : "";
-
-        const recorderScript = `file://${prefix}record.js`;
 
         // HACK: In chromium (android) there's error when trying to load
         // set src to local file path. Instead the file text is loaded and
         // then set as the text content of script node.
         // script.setAttribute("src", recorderScript);
 
-        loadTextFromFile(recorderScript, (text) => {
-            script.text = text;
-            doc.head.appendChild(script);
-        });
-    }
-
-    function loadTextFromFile(path: string, callback: (result: string) => void) {
-        var req = new XMLHttpRequest();
-        req.open('GET', path);
-        req.onreadystatechange = () => {
-            if (req.readyState == XMLHttpRequest.DONE) {
-                callback(req.responseText);
-            }
-        }
-        req.send();
+        injectIframeScript(iRef, "record");
     }
 
     return (
