@@ -135,7 +135,7 @@ export function Schedule() {
 
     return (<>
         <Header isHomeRoute setKey={setKey} />
-        {inFlight ? <Loading rawText={ selectedOrg.organization_id === "" ? "Please select an organization first by tapping the top-left corner!" : "" } /> :
+        {inFlight ? <Loading rawText={selectedOrg.organization_id === "" ? "Please select an organization first by tapping the top-left corner!" : ""} /> :
             <Grid
                 wrap="nowrap"
                 container
@@ -272,8 +272,8 @@ function ScheduleItem({ classType, schedule, setOpenAlert }: {
     const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
 
     const [info, setInfo] = useState<Schedule>();
-    const [livePrimaryText, setLivePrimaryText] = useState<string>("");
-    const [liveSecondaryText, setLiveSecondaryText] = useState<string>("");
+    const [liveDate, setLiveDate] = useState<string>("");
+    const [liveTime, setLiveTime] = useState<string>("");
     const [teachers, setTeachers] = useState<string>("");
 
     const { setToken } = useUserContext();
@@ -305,17 +305,11 @@ function ScheduleItem({ classType, schedule, setOpenAlert }: {
         if (!info || !info.detail) { return; }
         if (classType === ClassType.LIVE) {
             const fullDateStr = dateFormat(new Date(schedule.start_at * 1000), "fullDate", false, false);
-            const monthDDYYYY: string = fullDateStr.substr(fullDateStr.indexOf(",") + 2); // TODO (Isu): Use regex
-            setLivePrimaryText(monthDDYYYY);
-            // TODO (Isu): Use regex
-            // const reDayOfWeek = /^(Sun|Mon|(T(ues|hurs))|Fri)(day|\.)?$|Wed(\.|nesday)?$|Sat(\.|urday)?$|T((ue?)|(hu?r?))\.?$/i
-            // const reResult = monthDDYYYY.match(reDayOfWeek);
-            // const dayOfWeekStr = reResult !== null ? reResult[0] + ", " : "" // ex) `Monday, ` | ""
-            const dayOfWeekStr = fullDateStr.split(" ")[0];
+            setLiveDate(fullDateStr);
             const startAtStr = dateFormat(new Date(info.start_at * 1000), "shortTime", false, false);
             const endAtStr = dateFormat(new Date(info.end_at * 1000), "shortTime", false, false);
-            const fullSecondaryText = dayOfWeekStr + startAtStr + " - " + endAtStr;
-            setLiveSecondaryText(fullSecondaryText);
+            const timeStr = startAtStr + " - " + endAtStr;
+            setLiveTime(timeStr);
         } else {
             const teachers = info.detail.teachers
             if (teachers.length > 0) {
@@ -349,32 +343,24 @@ function ScheduleItem({ classType, schedule, setOpenAlert }: {
         }
     }
 
-    return (classType === ClassType.LIVE ?
+    return (
         <ListItem button onClick={goJoin}>
             <ListItemAvatar>
-                <Avatar alt="Live schedule" className={listItemAvatar}>
-                    <img src={LiveSchedulePopcorn} height={24} />
-                </Avatar>
-            </ListItemAvatar>
-            <ListItemText
-                disableTypography
-                primary={<Typography variant="body1" className={listItemTextPrimary}>{livePrimaryText}</Typography>}
-                secondary={<Typography variant="caption" color="textSecondary">{liveSecondaryText}</Typography>}
-            />
-        </ListItem> :
-        <ListItem button onClick={goJoin}>
-            <ListItemAvatar>
-                <Avatar alt="Study schedule" className={listItemAvatar}>
-                    <img src={StudyScheduleHouse} height={24} />
+                <Avatar alt={classType === ClassType.LIVE ? "Live schedule" : "Study schedule"} className={listItemAvatar}>
+                    <img src={classType === ClassType.LIVE ? LiveSchedulePopcorn : StudyScheduleHouse} height={24} />
                 </Avatar>
             </ListItemAvatar>
             <ListItemText
                 disableTypography
                 primary={<Typography variant="body1" className={listItemTextPrimary}>{schedule.title}</Typography>}
-                secondary={info && info.detail ? <>
-                    <Typography variant="caption" color="textSecondary">{teachers === "" ? "" : `Assigned by: ${info.detail.teachers[0].name}`}</Typography>
-                    <Typography variant="caption" color="textSecondary" style={{ fontStyle: "italic" }}>{` - ${info.detail.program.name}`}</Typography>
-                </> : undefined}
+                secondary={info && info.detail ?
+                    classType === ClassType.LIVE
+                        ? <Typography variant="caption" color="textSecondary">{`${liveTime}, ${liveDate}`}</Typography>
+                        : <>
+                            <Typography variant="caption" color="textSecondary">{teachers === "" ? "" : `Assigned by: ${info.detail.teachers[0].name}`}</Typography>
+                            <Typography variant="caption" color="textSecondary" style={{ fontStyle: "italic" }}>{` - ${info.detail.program.name}`}</Typography>
+                        </>
+                    : undefined}
             />
         </ListItem>
     )
