@@ -261,6 +261,7 @@ export function RecordedIframe(props: Props): JSX.Element {
                 forwardRef={iframeRef}
                 heightCalculationMethod="taggedElement"
                 minHeight={minHeight}
+                allow="microphone"
                 onResized={(e) => {
                     setNumRenders(numRenders + 1);
                     const width = Number(e.width), height = Number(e.height);

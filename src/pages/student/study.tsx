@@ -205,6 +205,7 @@ function ResizedIframe({ parentHeight, contentUrl }: { parentHeight: number, con
     return (
         <IframeResizerNew
             id="resized-iframe"
+            allow="microphone"
             forwardRef={iframeRef}
             src={contentUrl}
             checkOrigin={false}
