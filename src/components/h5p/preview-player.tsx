@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { useSubscription } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
@@ -25,12 +25,23 @@ export default function PreviewPlayer({ streamId, frameProps, parentWidth, paren
     const [frameHeight, setFrameHeight] = useState(0);
 
     const { current: bufferedEvents } = useRef<string[]>([]);
+
+    const sendBufferedEvents = useCallback(() => {
+        if (!ref.current) return;
+
+        const contentWindow = ref.current.contentWindow;
+        if (!contentWindow) return;
+
+        while (bufferedEvents.length > 0) {
+            const event = bufferedEvents.shift();
+            contentWindow.postMessage({ event }, "*");
+        }
+    }, [bufferedEvents, ref.current]);
+
     function sendEvent(event?: string) {
         if (ref.current && ref.current.contentWindow && ((ref.current.contentWindow as any).PLAYER_READY)) {
-            while (bufferedEvents.length > 0) {
-                const event = bufferedEvents.shift();
-                ref.current.contentWindow.postMessage({ event }, "*");
-            }
+            sendBufferedEvents();
+
             if (event) { ref.current.contentWindow.postMessage({ event }, "*"); }
         } else if (event) {
             bufferedEvents.push(event);
@@ -42,22 +53,28 @@ export default function PreviewPlayer({ streamId, frameProps, parentWidth, paren
     });
 
     const [scale, setScale] = useState(1);
-    useEffect(() => {
-        if (ref.current == null || ref.current.contentWindow == null) { return; }
-        window.addEventListener("message", ({ data }) => {
-            if (!data || !data.width || !data.height) { return; }
-            const fWidth = Number(data.width.replace("px", ""));
-            const fHeight = Number(data.height.replace("px", ""));
-            setFrameWidth(fWidth);
-            setFrameHeight(fHeight)
-            setScale(parentWidth / fWidth);
-        });
-    }, [ref.current, ref.current && ref.current.contentWindow]);
 
-    // Need it?
-    // useEffect(() => {
-    //     if (frameWidth) { setScale(parentWidth / frameWidth); }
-    // }, [parentWidth]);
+    useEffect(() => {
+        if (!ref.current) return;
+
+        const handleMessage = ({ data }: MessageEvent) => {
+            if (data === 'ready') {
+                sendBufferedEvents();
+            } else if (data.width && data.height) {
+                const fWidth = Number(data.width.replace("px", ""));
+                const fHeight = Number(data.height.replace("px", ""));
+                setFrameWidth(fWidth);
+                setFrameHeight(fHeight)
+                setScale(parentWidth / fWidth);
+            }
+        };
+
+        window.addEventListener("message", handleMessage);
+
+        return () => {
+            window.removeEventListener("message", handleMessage);
+        }
+    }, [ref.current, sendBufferedEvents]);
 
     if (loading) { return <Loading />; }
     if (error) { return <Typography><FormattedMessage id="failed_to_connect" />: {JSON.stringify(error)}</Typography>; }
