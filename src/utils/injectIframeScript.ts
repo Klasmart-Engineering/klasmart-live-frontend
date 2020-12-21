@@ -1,24 +1,12 @@
 
-const loadTextFromFile = (path: string) => new Promise<string>((resolve, reject) => {
-    const request = new XMLHttpRequest();
-    request.open('GET', path);
-
-    request.onreadystatechange = () => {
-        if (request.readyState === XMLHttpRequest.DONE) {
-            resolve(request.responseText);
-        }
-    };
-
-    request.onerror = () => {
-        reject(request.statusText);
+async function loadTextFromFile(path: string) {
+    const response = await fetch(path);
+    if (!response.ok) {
+        throw new Error(response.statusText);
     }
 
-    request.ontimeout = () => {
-        reject(`timeout`);
-    }
-
-    request.send();
-})
+    return await response.text();
+}
 
 export function getAbsoluteScriptPath(scriptFile: string) {
     const matches = window.location.pathname.match(/^(.*\/+)([^/]*)$/);
@@ -48,5 +36,6 @@ export function injectIframeScript(iframe: HTMLIFrameElement, scriptFile: string
 
     }).catch(error => {
         console.error(error);
+        throw error;
     })
 }
