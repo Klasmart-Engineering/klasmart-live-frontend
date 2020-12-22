@@ -48,5 +48,6 @@ export function injectIframeScript(iframe: HTMLIFrameElement, scriptFile: string
 
     }).catch(error => {
         console.error(error);
+        throw error;
     })
 }
