@@ -119,7 +119,7 @@ export function Student(): JSX.Element {
                         <Whiteboard group={sessionId} uniqueId="student" filterGroups={studentModeFilterGroups} />
                         {(rootDivRef && squareSize) ?
                             <RecordedIframe
-                                contentId={contentHref}
+                                contentHref={contentHref}
                                 setStreamId={setStreamId}
                                 parentWidth={squareSize}
                                 parentHeight={squareSize}

@@ -199,7 +199,7 @@ export function Teacher(props: Props): JSX.Element {
                                             (material.__typename === MaterialTypename.Iframe || material.__typename === undefined) && material.url ? //Legacy Format TODO: Deprecate
                                                 (squareSize ?
                                                     <RecordedIframe
-                                                        contentId={contentHref}
+                                                        contentHref={contentHref}
                                                         setStreamId={setStreamId}
                                                         parentWidth={squareSize}
                                                         parentHeight={squareSize}

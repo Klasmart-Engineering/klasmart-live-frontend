@@ -73,7 +73,6 @@ module.exports = {
   plugins: [
     new webpack.EnvironmentPlugin(
       ["NODE_ENV"],
-      ["ENDPOINT_GQL"],
       ["APP_GIT_REV"],
       ["DISABLE_BROWSER_GUIDE"],
       ["DISABLE_SCREEN_SHARE"],

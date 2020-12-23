@@ -1,5 +1,5 @@
-import React, { useRef, useEffect, useState, useContext } from "react";
-import { useSelector, useStore } from "react-redux";
+import React, { useRef, useEffect, useState, useMemo } from "react";
+import { useSelector } from "react-redux";
 import { gql } from "apollo-boost";
 import { useMutation } from "@apollo/react-hooks";
 import IframeResizer from "iframe-resizer-react";
@@ -13,7 +13,6 @@ import { Refresh as RefreshIcon } from "@styled-icons/material/Refresh";
 import StyledFAB from "../styled/fabButton";
 import { DRAWER_TOOLBAR_WIDTH } from "../../pages/layout";
 import { loadingActivity } from "../../utils/layerValues";
-import { ActionTypes } from "../../store/actions";
 
 import CurlySpinner1 from "../../assets/img/spinner/curly1_spinner.gif"
 import CurlySpinner2 from "../../assets/img/spinner/curly2_spinner.gif"
@@ -24,7 +23,8 @@ import MimiSpinner1 from "../../assets/img/spinner/mimi1_spinner.gif"
 import GhostSpinner from "../../assets/img/spinner/ghost_spinner.gif"
 import { State } from "../../store/store";
 import { useUserContext } from "../../context-provider/user-context";
-import { getAbsoluteScriptPath, injectIframeScript } from "../../utils/injectIframeScript";
+import { injectIframeScript } from "../../utils/injectIframeScript";
+import { useHttpEndpoint } from "../../context-provider/region-select-context";
 
 interface NewProps extends IframeResizer.IframeResizerProps {
     forwardRef: any
@@ -40,13 +40,13 @@ const SET_STREAMID = gql`
 `;
 
 export interface Props {
-    contentId: string;
+    contentHref: string;
     setStreamId: React.Dispatch<React.SetStateAction<string | undefined>>;
     parentWidth: number;
     parentHeight: number;
 }
 
-export function RecordedIframe(props: Props): JSX.Element {
+export function RecordedIframe({ contentHref, setStreamId, parentHeight }: Props): JSX.Element {
     const iframeRef = useRef<HTMLIFrameElement>(null);
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
@@ -54,8 +54,7 @@ export function RecordedIframe(props: Props): JSX.Element {
     const drawerOpen = useSelector((state: State) => state.control.drawerOpen);
     const drawerWidth = useSelector((state: State) => state.control.drawerWidth);
 
-    const { roomId } = useUserContext();
-    const { contentId, setStreamId, parentWidth, parentHeight } = props;
+    const { roomId, token } = useUserContext();
     const [sendStreamId] = useMutation(SET_STREAMID);
 
     const [isFlashCards, setIsFlashCards] = useState(false);
@@ -68,13 +67,20 @@ export function RecordedIframe(props: Props): JSX.Element {
     const [seconds, setSeconds] = useState(60);
     const [spinner, setSpinner] = useState(Math.floor(Math.random() * Math.floor(SPINNER.length)));
 
+    const recorderEndpoint = useHttpEndpoint("live");
+
+    const contentHrefWithToken = useMemo<string>(() => {
+        const encodedEndpoint = encodeURIComponent(recorderEndpoint);
+        return `${contentHref}?token=${token}&endpoint=${encodedEndpoint}`;
+    }, [contentHref, token, recorderEndpoint]);
+
     // Whenever the content changes, dialog is displayed and width is initialized.
     useEffect(() => {
         setIsFlashCards(false);
         setOpenDialog(true);
         setKey(Math.random());
         setIframeWidth("100%");
-    }, [contentId]);
+    }, [contentHrefWithToken]);
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -237,7 +243,7 @@ export function RecordedIframe(props: Props): JSX.Element {
                 scrolling={isFlashCards ? true : false}
                 draggable
                 id="recordediframe"
-                src={contentId}
+                src={contentHrefWithToken}
                 forwardRef={iframeRef}
                 heightCalculationMethod="taggedElement"
                 minHeight={minHeight}

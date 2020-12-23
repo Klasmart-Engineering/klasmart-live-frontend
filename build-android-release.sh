@@ -1,7 +1,6 @@
 #!/bin/sh
 
 # Configure Environment
-export ENDPOINT_GQL=https://live.kidsloop.net/graphql
 export DISABLE_BROWSER_GUIDE=1
 export DISABLE_SCREEN_SHARE=1
 export USE_TEST_TOKEN=1
