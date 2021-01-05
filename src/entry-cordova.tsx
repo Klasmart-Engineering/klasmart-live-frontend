@@ -33,6 +33,7 @@ import { useLocaleCookie } from "./utils/locale";
 import { createHashHistory } from 'history'
 import { CordovaSystemProvider } from "./context-provider/cordova-system-context";
 import { CompositionRoot } from "./context-provider/composition-root";
+import { setSchedule } from "./store/reducers/data";
 
 function Entry() {
     const dispatch = useDispatch();
@@ -58,6 +59,7 @@ function Entry() {
             isChromium,
             isMobileSafari,
         }));
+        dispatch(setSchedule({ total: [], live: [], study: [] }));
     }, []);
 
     const history = createHashHistory();
