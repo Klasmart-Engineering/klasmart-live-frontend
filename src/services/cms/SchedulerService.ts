@@ -2,7 +2,13 @@
 import { ScheduleDetail } from "../../store/reducers/data";
 import { fetchJsonData } from "../../utils/requestUtils";
 import { IAuthenticationService } from "../auth/IAuthenticationService";
-import { ISchedulerService, ScheduleLiveTokenResponse, ScheduleTimeViewResponse, TimeView } from "./ISchedulerService";
+import {
+    ISchedulerService,
+    ScheduleLiveTokenResponse,
+    ScheduleTimeViewResponse,
+    TimeView,
+    ScheduleLiveTokenType,
+} from "./ISchedulerService";
 
 /**
  * Client side API implementation for: https://swagger-ui.kidsloop.net/#/schedule
@@ -40,7 +46,9 @@ export class SchedulerService implements ISchedulerService {
     async getScheduleToken(organizationId: string, scheduleId: string): Promise<ScheduleLiveTokenResponse> {
         const url = `${this.endpoint}/v1/schedules/${scheduleId}/live/token`;
         const result = await fetchJsonData<ScheduleLiveTokenResponse>(url, "GET", {
-            org_id: organizationId
+            org_id: organizationId,
+            schedule_id: scheduleId,
+            live_token_type: ScheduleLiveTokenType.live
         }, this.auth);
 
         return result;

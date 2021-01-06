@@ -14,6 +14,11 @@ export type ScheduleTimeViewResponse = {
     title: string
 }
 
+export enum ScheduleLiveTokenType {
+    "live" = "live",
+    "preview" = "preview"
+}
+
 export type ScheduleLiveTokenResponse = {
     token: string
 }
