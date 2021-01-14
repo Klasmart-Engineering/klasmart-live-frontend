@@ -9,7 +9,7 @@ export const sessionId = uuid();
 import React, { createContext, useState, useMemo, useEffect } from "react";
 import { Provider, useDispatch } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
-import * as Sentry from '@sentry/react';
+// import * as Sentry from '@sentry/react';
 import { render } from "react-dom";
 import { RawIntlProvider, FormattedMessage } from "react-intl";
 import { ApolloProvider } from "@apollo/react-hooks";
@@ -47,10 +47,10 @@ import { setUserAgent } from "./store/reducers/session";
 import ChromeLogo from "./assets/img/browser/chrome_logo.svg";
 import SafariLogo from "./assets/img/browser/safari_logo.png";
 
-Sentry.init({
-    dsn: "https://9f4fca35be3b4b7ca970a126f26a5e54@o412774.ingest.sentry.io/5388813",
-    environment: process.env.NODE_ENV || "not-specified",
-});
+// Sentry.init({
+//     dsn: "https://9f4fca35be3b4b7ca970a126f26a5e54@o412774.ingest.sentry.io/5388813",
+//     environment: process.env.NODE_ENV || "not-specified",
+// });
 
 
 const authToken = AuthTokenProvider.retrieveToken();
