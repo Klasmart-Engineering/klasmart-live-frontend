@@ -100,7 +100,7 @@ if (url.hostname !== "localhost" && url.hostname !== "live.beta.kidsloop.net") {
 
 function parseToken() {
     try {
-        if (url.hostname === "localhost" || url.hostname === "live.kidsloop.net" || url.hostname.includes("ngrok.io")) {
+        if (url.hostname === "localhost" || url.hostname === "live.kidsloop.net" || url.hostname === "live-test.kidsloop.cn" || url.hostname.includes("ngrok.io")) {
             const token = url.searchParams.get("token");
             if (token) {
                 const payload = jwt_decode(token) as any;
