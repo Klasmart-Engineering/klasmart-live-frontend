@@ -8,7 +8,8 @@
     "build:prod": "rm -rf dist/*;webpack --config webpack.prod.config.js; mv dist/record*.js dist/record.js",
     "start": "webpack-dev-server",
     "test": "mocha -r ts-node/register tests/**/*[Tt]est.ts",
-    "coverage": "nyc -r lcov -e .ts -x \"*[Tt]est.ts\" npm run test"
+    "coverage": "nyc -r lcov -e .ts -x \"*[Tt]est.ts\" npm run test",
+    "build:docker": "DOCKER_BUILDKIT=1 docker build --no-cache --ssh default -t kidsloop-live-frontend ."
   },
   "author": "",
   "license": "ISC",
@@ -73,7 +74,7 @@
     "eventemitter3": "^4.0.5",
     "graphql": "^15.1.0",
     "graphql-request": "^2.0.0",
-    "iframe-resizer-react": "^1.0.4",
+    "iframe-resizer-react": "^1.1.0",
     "jwt-decode": "^2.2.0",
     "kidsloop-canvas": "git+git@bitbucket.org:calmisland/kidsloop-canvas.git#release/npm",
     "logrocket": "^1.0.12",
