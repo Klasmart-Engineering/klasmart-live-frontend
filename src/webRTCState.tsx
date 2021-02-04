@@ -66,10 +66,15 @@ export function Camera(props: {
 }): JSX.Element {
     const { session, controls, miniMode, mediaStream, muted, backgroundColor, square } = props;
     const theme = useTheme();
+    const audioRef = useRef<HTMLAudioElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
     useEffect(() => {
-        if (!videoRef.current || !mediaStream) { return; }
-        videoRef.current.srcObject = mediaStream;
+        if (audioRef.current) {
+            audioRef.current.srcObject = mediaStream? mediaStream: null;
+        }
+        if (videoRef.current) { 
+            videoRef.current.srcObject = mediaStream? mediaStream: null;
+         }
     }, [videoRef.current, mediaStream]);
 
     return (
@@ -89,22 +94,30 @@ export function Camera(props: {
                 }}
             >
                 {mediaStream ?
-                    <video
-                        autoPlay={true}
-                        muted={muted}
-                        playsInline
-                        style={{
-                            backgroundColor: backgroundColor || "#193d6f",
-                            borderRadius: square ? 0 : 12,
-                            objectFit: "cover",
-                            position: "absolute",
-                            top: 0,
-                            left: 0,
-                            height: "100%",
-                            width: "100%",
-                        }}
-                        ref={videoRef}
-                    /> :
+                    <>
+                        <video
+                            autoPlay={true}
+                            muted={true}
+                            playsInline
+                            style={{
+                                backgroundColor: backgroundColor || "#000",
+                                borderRadius: square ? 0 : 12,
+                                objectFit: "cover",
+                                position: "absolute",
+                                top: 0,
+                                left: 0,
+                                height: "100%",
+                                width: "100%",
+                            }}
+                            ref={videoRef}
+                        />
+                        <audio
+                            autoPlay={true}
+                            muted={muted}
+                            ref={audioRef}
+                        />
+                    </>
+                    :
                     <Typography
                         align="center"
                         style={{
