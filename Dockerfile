@@ -3,6 +3,8 @@ WORKDIR /usr/src/app
 COPY ./package*.json ./
 RUN mkdir -p -m 0600 ~/.ssh && ssh-keyscan bitbucket.org >> ~/.ssh/known_hosts
 RUN git config --global url.ssh://git@bitbucket.org.insteadof https://bitbucket.org
+ARG CI
+RUN if [ "$CI" = "TRUE" ] ; then npm i ../canvas ; fi
 RUN --mount=type=ssh npm i
 COPY ./src ./src
 COPY ./tsconfig.json .
