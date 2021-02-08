@@ -4,7 +4,7 @@ COPY ./package*.json ./
 RUN mkdir -p -m 0600 ~/.ssh && ssh-keyscan bitbucket.org >> ~/.ssh/known_hosts
 RUN git config --global url.ssh://git@bitbucket.org.insteadof https://bitbucket.org
 ARG NODE_MODULES
-COPY $NODE_MODULES .
+COPY $NODE_MODULES ./node_modules
 RUN --mount=type=ssh if [ -z $NODE_MODULES ] ; then npm i ; fi
 COPY ./src ./src
 COPY ./tsconfig.json .
