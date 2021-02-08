@@ -1,4 +1,25 @@
-FROM node:14
+FROM node:14-alpine
+RUN apk add --update \
+    openssl \
+    sed \
+    ca-certificates \
+    bash \
+    openssh \
+    make \
+    git \
+    jq \
+    libstdc++ \
+    libpng-dev \
+    nasm \
+    build-base \
+    python2 \
+    python2-dev \
+    # Fix problem with some dependencies: https://github.com/ymedlop/npm-cache-resource/issues/39
+    libtool \
+    automake \
+    autoconf \
+    nasm \
+  && rm -rf /var/cache/apk/*
 WORKDIR /usr/src/app
 COPY ./package*.json ./
 RUN mkdir -p -m 0600 ~/.ssh && ssh-keyscan bitbucket.org >> ~/.ssh/known_hosts
