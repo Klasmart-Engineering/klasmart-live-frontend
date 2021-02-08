@@ -9,7 +9,7 @@
     "start": "webpack-dev-server",
     "test": "mocha -r ts-node/register tests/**/*[Tt]est.ts",
     "coverage": "nyc -r lcov -e .ts -x \"*[Tt]est.ts\" npm run test",
-    "build:docker": "mkdir .dummy; DOCKER_BUILDKIT=1 docker build --build-arg NODE_MODULES=.dummy --no-cache --ssh default -t kidsloop-live-frontend .; rm -rf .dummy"
+    "build:docker": "DOCKER_BUILDKIT=1 docker build --no-cache --ssh default -t kidsloop-live-frontend ."
   },
   "author": "",
   "license": "ISC",
@@ -72,7 +72,7 @@
     "callstats-js": "^3.68.1",
     "clsx": "^1.1.1",
     "eventemitter3": "^4.0.5",
-    "graphql": "^15.1.0",
+    "graphql": "^15.5.0",
     "graphql-request": "^2.0.0",
     "iframe-resizer-react": "^1.1.0",
     "jwt-decode": "^2.2.0",
