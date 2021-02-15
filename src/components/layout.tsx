@@ -296,8 +296,7 @@ function ToggleCameraViewMode({ isSmDown, setGridMode }: {
     )
 }
 
-function CameraInterface({ isTeacher, isSmDown, gridMode, sessionId, id, session, mediaStream }: {
-    isTeacher?: boolean,
+function CameraInterface({ isSmDown, gridMode, sessionId, id, session, mediaStream }: {
     isSmDown: boolean,
     gridMode: boolean,
     sessionId: string,
@@ -307,7 +306,7 @@ function CameraInterface({ isTeacher, isSmDown, gridMode, sessionId, id, session
 }) {
     const isSelf = id === sessionId;
     let idx = 1;
-    // if (isTeacher) { idx = -1; } // TODO: After server side work, user will know who is the host teacher
+    if (session.isTeacher) { idx = -1; }
     if (isSelf) { idx = 0; }
 
     return (
@@ -332,7 +331,7 @@ function CameraInterface({ isTeacher, isSmDown, gridMode, sessionId, id, session
                                 </Typography>
                             </Tooltip>
                         </Grid>
-                        {isTeacher && (id !== sessionId) ?
+                        {session.isTeacher && !isSelf ?
                             <Grid item xs={3}>
                                 <MoreControls session={session} />
                             </Grid> : null}
@@ -407,7 +406,6 @@ function TabInnerContent({ contentIndexState, title, numColState, setNumColState
                                 otherUsers.map(([id, session]) =>
                                     <CameraInterface
                                         key={id}
-                                        isTeacher={teacher}
                                         isSmDown={isSmDown}
                                         gridMode={gridMode}
                                         sessionId={sessionId}
