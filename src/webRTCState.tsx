@@ -31,6 +31,7 @@ import { ThumbUp as EncourageIcon } from "@styled-icons/material/ThumbUp";
 import { MuteNotification, WebRTCSFUContext } from "./webrtc/sfu";
 import { useSynchronizedState } from "./whiteboard/context-providers/SynchronizedStateProvider";
 import { UserContext } from "./entry";
+import { isElementInViewport } from "./utils/viewport";
 
 const SEND_SIGNAL = gql`
   mutation webRTCSignal($roomId: ID!, $toSessionId: ID!, $webrtc: WebRTCIn) {
@@ -68,18 +69,21 @@ export function Camera(props: {
     const theme = useTheme();
     const audioRef = useRef<HTMLAudioElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
+    const cameraRef = useRef<HTMLDivElement>(null);
+    const isCameraVisible = isElementInViewport(cameraRef)
+
     useEffect(() => {
         if (audioRef.current) {
             audioRef.current.srcObject = mediaStream? mediaStream: null;
         }
         if (videoRef.current) { 
             videoRef.current.srcObject = mediaStream? mediaStream: null;
-         }
+        }
     }, [videoRef.current, mediaStream]);
 
     return (
         // <CameraOverlay /> needs the parent div that has position: "relative"
-        <div style={{ position: "relative", width: "100%" }}>
+        <div ref={cameraRef} style={{ position: "relative", width: "100%" }}>
             <Paper
                 component="div"
                 elevation={2}
@@ -133,7 +137,10 @@ export function Camera(props: {
                     </Typography>
                 }
             </Paper>
-            {controls && session ? <CameraOverlay mediaStream={mediaStream} session={session} miniMode={miniMode} /> : null}
+            {controls && session
+                ? <CameraOverlay mediaStream={mediaStream} session={session} miniMode={miniMode} isVisible={isCameraVisible} />
+                : null
+            }
         </div>
     );
 }
@@ -441,10 +448,11 @@ const useStyles = makeStyles((theme: Theme) =>
     })
 );
 
-export default function CameraOverlay({ mediaStream, session, miniMode }: {
+export default function CameraOverlay({ mediaStream, session, miniMode, isVisible }: {
     mediaStream: MediaStream | undefined;
     session: Session;
     miniMode?: boolean;
+    isVisible?: boolean;
 }) {
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
@@ -454,6 +462,12 @@ export default function CameraOverlay({ mediaStream, session, miniMode }: {
     const { roomId, teacher, sessionId: mySessionId } = useContext(UserContext);
     const states = WebRTCSFUContext.Consume()
     const isSelf = session.id === mySessionId;
+
+    useEffect(() => {
+        if (isVisible !== states.isLocalVideoEnabled(session.id)) {
+            toggleVideoState()
+        }
+    }, [isVisible]);
 
     function toggleVideoState() {
         let stream = states.getCameraStream(session.id)
