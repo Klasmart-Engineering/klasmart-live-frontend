@@ -34,7 +34,7 @@ import { Grid as GridIcon } from "@styled-icons/evaicons-solid/Grid";
 import { ViewList as ListIcon } from "@styled-icons/material/ViewList";
 import { Share as ShareIcon } from "@styled-icons/material/Share";
 
-import { Camera, GlobalCameraControl } from "../webRTCState";
+import { GlobalCameraControl } from "../webRTCState";
 import { UserContext } from "../entry";
 import { Session, Message, ContentIndexState, InteractiveModeState, StreamIdState, RoomContext } from "../pages/room/room";
 import Toolbar from "../whiteboard/components/Toolbar";
@@ -44,10 +44,10 @@ import InviteButton from "./invite";
 import { MaterialTypename } from "../lessonMaterialContext";
 import Lightswitch from "./lightswitch";
 import LanguageSelect from "./languageSelect";
-import MoreControls from "./moreControls";
 import CenterAlignChildren from "./centerAlignChildren";
 import { bottomNav, modePanel } from "../utils/layerValues";
 import { WebRTCSFUContext } from "../webrtc/sfu";
+import Camera from "../components/media/camera";
 
 export const DRAWER_WIDTH = 380;
 
@@ -316,28 +316,11 @@ function CameraInterface({ isSmDown, gridMode, sessionId, id, session, mediaStre
                     <Camera
                         muted={isSelf}
                         session={session}
-                        controls={true}
-                        miniMode={!gridMode}
                         mediaStream={mediaStream}
                         square
                     />
                 </Grid>
-                {!gridMode && !isSmDown ?
-                    <Grid container direction="row" alignItems="center" item xs={6}>
-                        <Grid item xs={9}>
-                            <Tooltip placement="left" title={session.name ? session.name : ""}>
-                                <Typography variant="body2" align="left" noWrap>
-                                    {isSelf ? "You" : session.name}
-                                </Typography>
-                            </Tooltip>
-                        </Grid>
-                        {session.isTeacher && !isSelf ?
-                            <Grid item xs={3}>
-                                <MoreControls session={session} />
-                            </Grid> : null}
-                    </Grid> : null}
             </Grid>
-            <Grid item xs={12}><Divider /></Grid>
         </Grid>
     )
 }
@@ -372,20 +355,17 @@ function TabInnerContent({ contentIndexState, title, numColState, setNumColState
 
             return (
                 <Grid container direction="row" justify="flex-start" alignItems="center" style={{ flex: 1 }}>
-                    {isMdUpTeacher ? <>
-                        {selfUser.map(([id, session]) =>
-                            <Camera
-                                key={id}
-                                muted={true}
-                                session={session}
-                                controls={true}
-                                mediaStream={camera !== null ? camera : undefined}
-                                square
-                            />
-                        )}
-                    </> : null}
+                    {selfUser.map(([id, session]) =>
+                        <Camera
+                            key={id}
+                            session={session}
+                            mediaStream={camera !== null ? camera : undefined}
+                            muted={true}
+                            square={teacher ? false : true}
+                        />
+                    )}
                     {teacher ? <GlobalCameraControl /> : null}
-                    {isSmDown ? null : <ToggleCameraViewMode isSmDown={isSmDown} setGridMode={setGridMode} />}
+                    {/* {isSmDown ? null : <ToggleCameraViewMode isSmDown={isSmDown} setGridMode={setGridMode} />} */}
                     <Grid
                         container
                         direction="row"
@@ -398,39 +378,17 @@ function TabInnerContent({ contentIndexState, title, numColState, setNumColState
                             height: teacher ? `calc(100vh - ${theme.spacing(60)}px)` : `calc(100vh - ${theme.spacing(9)}px)`, // Because student side has no <InviteButton /> and <GlobalCameraControl />
                         }}
                     >
-                        <Grid id={"participant-listing"} item xs={12}><Divider /></Grid>
-                        {isMdUpTeacher && otherUsers.length === 0 ?
+                        {teacher && otherUsers.length === 0 ?
                             <Typography style={{ color: "rgb(200,200,200)", padding: 4 }}>
                                 <FormattedMessage id="no_participants" />
-                            </Typography> : (isMdUpTeacher ?
-                                otherUsers.map(([id, session]) =>
-                                    <CameraInterface
-                                        key={id}
-                                        isSmDown={isSmDown}
-                                        gridMode={gridMode}
-                                        sessionId={sessionId}
-                                        id={id}
-                                        session={session}
-                                        mediaStream={id === sessionId && camera !== null ?
-                                            camera : webrtc.getCameraStream(id)
-                                        }
-                                    />) :
-                                userEntries.map(([id, session]) => {
-                                    return (
-                                        <CameraInterface
-                                            key={id}
-                                            isSmDown={isSmDown}
-                                            gridMode={gridMode}
-                                            sessionId={sessionId}
-                                            id={id}
-                                            session={session}
-                                            mediaStream={id === sessionId && camera !== null ?
-                                                camera : webrtc.getCameraStream(id)
-                                            }
-                                        />
-                                    )
-                                })
-                            )
+                            </Typography> :
+                            otherUsers.map(([id, session]) =>
+                                <Camera
+                                    key={id}
+                                    session={session}
+                                    mediaStream={id === sessionId && camera !== null ? camera : webrtc.getCameraStream(id)}
+                                    square={true}
+                                />)
                         }
                     </Grid>
                 </Grid>
@@ -510,7 +468,7 @@ function TabInnerContent({ contentIndexState, title, numColState, setNumColState
                     <div className={classes.toolbar} />
                     <Grid item xs={12}>
                         <Typography variant="caption" color="textSecondary">
-                            <FormattedMessage id="num_views_per_row" />
+                            <FormattedMessage id="cols_observe_per_row" />
                         </Typography>
                     </Grid>
                     <Grid item xs={12}>
