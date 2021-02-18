@@ -13,7 +13,7 @@ import Loading from "../../components/loading";
 import { EventEmitter } from "eventemitter3"
 
 export interface Session {
-    id: string,
+    id: string
     name?: string
     streamId?: string
     isTeacher?: boolean
