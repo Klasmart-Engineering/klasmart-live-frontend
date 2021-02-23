@@ -108,8 +108,9 @@ export function Join(): JSX.Element {
             navigator.mediaDevices.getUserMedia({
                 video: {
                     deviceId: videoDeviceId,
-                    width: { ideal: 4096 },
-                    height: { ideal: 2160 },
+                    width: { min: 1024, ideal: 1280, max: 1920 },
+                    height: { min: 576, ideal: 720, max: 1080 },
+                    facingMode: "user" // the front camera (if one is available)
                 },
                 audio: { deviceId: audioDeviceId },
             })
