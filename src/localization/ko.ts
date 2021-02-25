@@ -1,8 +1,14 @@
 // ko.ts
 const messages: Record<string, string> = {
+    join_CameraPreviewFallback_allowMediaPermissions: "미디어 장치 권한을 허용하십시오.",
+    join_PermissionAlertDialog_DialogTitle: "Kidsloop Live에서 미디어 장치를 사용하도록 허용하기",
+    join_PermissionAlertDialog_DialogContentText_live: "다른 수업 참가자들이 내 모습을 보고 음성을 들으려면 Kidsloop Live에서 카메라와 마이크에 액세스 할 수 있어야 합니다.",
+    join_PermissionAlertDialog_DialogContentText_classes_study: "수업 중 인터랙티브 콘텐츠를 사용하기 위해 Kidsloop Live에서 마이크에 액세스 할 수 있어야 합니다.",
+    join_PermissionAlertDialog_Button_close: "닫기",
+
     activity_link: "액티비티 링크",
     allow_media_permission: "미디어 장치를 사용하려면 마이크 및 카메라 권한을 허용하십시오.",
-    error_camera_unavailable: "📷에 액세스 할 수 없습니다.",
+    error_camera_unavailable: "📷 에 액세스 할 수 없습니다.",
     error_empty_name: "이름을 입력하십시오.",
     error_invaild_token: "권한이 없으므로 수업에 참여할 수 없습니다.",
     error_webrtc_unavailable: "Error : WebRTC 컨텍스트를 사용할 수 없습니다.",
@@ -22,7 +28,7 @@ const messages: Record<string, string> = {
     no_messages: "아직 메시지가 없습니다...",
     no_participants: "아직 수업에 참여한 사람이 없습니다...",
     select_device: "{device} 선택",
-    connect_camera: "📷를 연결하십시오.",
+    connect_camera: "📷 를 연결하십시오.",
 
     refresh_activity: "액티비티 새로고침",
     what_is_this: "이건 어떤 기능인가요?",
