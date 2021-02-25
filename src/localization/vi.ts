@@ -1,5 +1,11 @@
 // vi.ts
 const messages: Record<string, string> = {
+    join_CameraPreviewFallback_allowMediaPermissions: "Allow media device permissions",
+    join_PermissionAlertDialog_DialogTitle: "Allow to use your media device for Kidsloop Live",
+    join_PermissionAlertDialog_DialogContentText_live: "Kidsloop Live needs access to the camera and microphone in order for other class participants to see you and hear you.",
+    join_PermissionAlertDialog_DialogContentText_classes_study: "Kidsloop Live needs access to the microphone for in-class interactive contents.",
+    join_PermissionAlertDialog_Button_close: "Close",
+
     activity_link: "Đường dẫn đến Hoạt động",
     allow_media_permission: "Nếu bạn muốn sử dụng các thiết bị truyền thông, vui lòng cho phép sử dụng micrô và máy ảnh của bạn.",
     error_camera_unavailable: "Không thể truy cập 📷",
