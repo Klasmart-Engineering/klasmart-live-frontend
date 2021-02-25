@@ -16,7 +16,7 @@ import StyledIcon from "../../components/styled/icon";
 import { UserContext } from "../../entry";
 import StyledButton from "../../components/styled/button";
 import StyledTextField from "../../components/styled/textfield";
-import Camera from "../../components/media/video";
+import Camera from "../../components/media/camera";
 import Loading from "../../components/loading";
 import MediaDeviceSelect from "../../components/mediaDeviceSelect";
 import logger from "../../services/logger/Logger";
@@ -50,7 +50,7 @@ export default function Join(): JSX.Element {
     const { classtype } = useContext(UserContext);
 
     const [permissionError, setPermissionError] = useState<boolean>(false);
-    const [error, setError] = useState<boolean>(false);
+    const [loadError, setLoadError] = useState<boolean>(false);
     const [audioDeviceOptions, setAudioDeviceOptions] = useState<MediaDeviceInfo[]>([]);
     const [videoDeviceOptions, setVideoDeviceOptions] = useState<MediaDeviceInfo[]>([]);
     const [audioDeviceId, setAudioDeviceId] = useState<string>("");
@@ -59,36 +59,33 @@ export default function Join(): JSX.Element {
 
     useEffect(() => {
         if (!navigator.mediaDevices) { return; }
-        getMediaPermissions()
-            .then(() => loadMediaDevices())
-            .catch((e) => {
-                console.error(`Error while preparing the media devices - ${e}`);
-                setError(true);
-            });
+
+        const getMediaPermissions = async () => {
+            try {
+                /**
+                 * Specification
+                 * Even if it's not a live class(classtype !== ClassType.LIVE), application needs a microphone.
+                 * This is because some H5P content requires a microphone.
+                 */
+                await navigator.mediaDevices.getUserMedia({ audio: true });
+                // Live class requires the cameras also.
+                if (classtype === ClassType.LIVE) {
+                    await navigator.mediaDevices.getUserMedia({ video: true });
+                }
+                setPermissionError(false);
+
+                await loadMediaDevices();
+            } catch (e) {
+                console.error(`getMediaPermissions Error - ${e}`);
+                setPermissionError(true);
+            }
+        }
+        getMediaPermissions();
 
         // When user disconnect or connect a media device, the media devices that connected to computer are reloaded.
         navigator.mediaDevices.addEventListener("devicechange", loadMediaDevices);
         return () => { navigator.mediaDevices.removeEventListener("devicechange", loadMediaDevices); };
     }, []);
-
-    async function getMediaPermissions() {
-        try {
-            /**
-             * Specification
-             * Even if it's not a live class(classtype !== ClassType.LIVE), application needs a microphone.
-             * This is because some H5P content requires a microphone.
-             */
-            await navigator.mediaDevices.getUserMedia({ audio: true });
-            // Live class requires the cameras also.
-            if (classtype === ClassType.LIVE) {
-                await navigator.mediaDevices.getUserMedia({ video: true });
-            }
-            setPermissionError(false);
-        } catch (e) {
-            console.error(`getMediaPermissions Error - ${e}`);
-            setPermissionError(true);
-        }
-    }
 
     async function loadMediaDevices() {
         try {
@@ -116,10 +113,11 @@ export default function Join(): JSX.Element {
                 }
             }
 
+            // Please take a look Logger.tsx
             logger({ logType: 'join.tsx detect devices devices list test6', devices });
         } catch (e) {
             console.error(`loadMediaDevices Error - ${e}`);
-            setError(true);
+            setLoadError(true);
         }
     }
 
@@ -128,11 +126,11 @@ export default function Join(): JSX.Element {
             audio: { deviceId }
         }).then((s) => {
             setStream(s);
-            setError(false);
+            setLoadError(false);
         }).catch((e) => {
             console.error(`getMicStream Error - ${e}`);
             setStream(undefined);
-            setError(true);
+            setLoadError(true);
         });
     }
 
@@ -147,11 +145,11 @@ export default function Join(): JSX.Element {
             }
         }).then((s) => {
             setStream(s);
-            setError(false);
+            setLoadError(false);
         }).catch((e) => {
             console.error(`getCamStream Error - ${e}`);
             setStream(undefined);
-            setError(true);
+            setLoadError(true);
         });
     }
 
@@ -202,7 +200,7 @@ export default function Join(): JSX.Element {
                                 </Grid>
                                 <Grid item xs={12}>
                                     <JoinRoomForm
-                                        mediaDeviceError={error || permissionError}
+                                        mediaDeviceError={permissionError || loadError}
                                         stream={stream}
                                         audioDeviceOptions={audioDeviceOptions}
                                         audioDeviceIdHandler={{ audioDeviceId, setAudioDeviceId }}
