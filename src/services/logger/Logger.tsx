@@ -1,3 +1,10 @@
+/** 
+ * If anyone knows if we're actually using this logger service, please let me know.
+ * It was written by a previous developer(Daniel), and this function is only using in join.tsx.
+ * So I'd like to delete it if not needed.
+ * From. Isu Ahn
+ */
+
 import jwt_decode from "jwt-decode";
 import { AuthTokenProvider } from "../auth-token/AuthTokenProvider";
 
