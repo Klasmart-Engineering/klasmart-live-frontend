@@ -440,47 +440,55 @@ function ToggleCamera({ sessionId, sfuState, cameraRef }: {
     const { noHoverIcon, moreControlsMenuItem } = useStyles();
     const { roomId } = useContext(UserContext);
 
-    const [cameraOn, setCameraOn] = useState<boolean>(false);
-    useEffect(() => {
-        setCameraOn(sfuState.isLocalVideoEnabled(sessionId));
-    }, [cameraOn]);
+    const [cameraOn, setCameraOn] = useState<boolean>(sfuState.isLocalVideoEnabled(sessionId));
+    const [isVideoManuallyDisabled, setIsVideoManuallyDisabled] = useState(false);
 
     const isCameraVisible = isElementInViewport(cameraRef);
     useEffect(() => {
-        if (isCameraVisible !== cameraOn) {
-            toggleVideoState();
+        if (isCameraVisible !== sfuState.isLocalVideoEnabled(sessionId)) {
+            if ((isCameraVisible && !sfuState.isLocalVideoEnabled(sessionId) && !isVideoManuallyDisabled) ||
+                (!isCameraVisible && sfuState.isLocalVideoEnabled(sessionId))) {
+                    toggleVideoState()
+                }
         }
     }, [isCameraVisible]);
 
+    const manuallyToggleVideoState = (): void => {
+        toggleVideoState()
+        setIsVideoManuallyDisabled(!sfuState.isLocalVideoEnabled(sessionId))
+    }
+
     function toggleVideoState() {
-        let stream = sfuState.getCameraStream(sessionId)
+        const stream = sfuState.getCameraStream(sessionId)
         if (stream) {
             // Inbound stream
-            let tracks = stream.getVideoTracks()
+            const tracks = stream.getVideoTracks()
             if (tracks && tracks.length > 0) {
                 for (const consumerId of tracks.map((t) => t.id)) {
-                    let notification: MuteNotification = {
+                    const notification: MuteNotification = {
                         roomId,
                         sessionId,
                         consumerId,
                         video: !cameraOn
                     }
                     sfuState.sendMute(notification);
+                    setCameraOn(!cameraOn)
                 }
             }
         } else {
             // Outbound stream
-            let producers = sfuState.getOutboundCameraStream()
+            const producers = sfuState.getOutboundCameraStream()
             if (producers) {
-                let video = producers.producers.find((a) => a.kind === "video")
+                const video = producers.producers.find((a) => a.kind === "video")
                 if (video) {
-                    let notification: MuteNotification = {
+                    const notification: MuteNotification = {
                         roomId,
                         sessionId,
                         producerId: video.id,
                         video: !cameraOn
                     }
                     sfuState.sendMute(notification)
+                    setCameraOn(!cameraOn)
                 }
             }
         }
@@ -488,7 +496,7 @@ function ToggleCamera({ sessionId, sfuState, cameraRef }: {
     }
 
     return (
-        <MenuItem onClick={toggleVideoState} className={moreControlsMenuItem}>
+        <MenuItem onClick={manuallyToggleVideoState} className={moreControlsMenuItem}>
             <ListItemIcon>
                 <StyledIcon icon={cameraOn ? <VideoOnIcon className={noHoverIcon} /> : <VideoOffIcon className={noHoverIcon} />} size="medium" color={cameraOn ? PRIMARY_COLOR : SECONDARY_COLOR} />
             </ListItemIcon>
@@ -508,41 +516,39 @@ function ToggleMic({ sessionId, sfuState }: {
 }): JSX.Element {
     const { noHoverIcon, moreControlsMenuItem } = useStyles();
     const { roomId } = useContext(UserContext);
-
-    const [micOn, setMicOn] = useState<boolean>(false);
-    useEffect(() => {
-        setMicOn(sfuState.isLocalAudioEnabled(sessionId));
-    }, [micOn]);
+    const [micOn, setMicOn] = useState<boolean>(sfuState.isLocalAudioEnabled(sessionId));
 
     function toggleAudioState() {
-        let stream = sfuState.getCameraStream(sessionId)
+        const stream = sfuState.getCameraStream(sessionId)
         if (stream) {
             // Inbound stream
-            let tracks = stream.getAudioTracks()
+            const tracks = stream.getAudioTracks()
             if (tracks && tracks.length > 0) {
                 for (const consumerId of tracks.map((t) => t.id)) {
-                    let notification: MuteNotification = {
+                    const notification: MuteNotification = {
                         roomId,
                         sessionId,
                         consumerId,
                         audio: !micOn
                     }
                     sfuState.sendMute(notification);
+                    setMicOn(!micOn)
                 }
             }
         } else {
             // Outbound stream
-            let producers = sfuState.getOutboundCameraStream()
+            const producers = sfuState.getOutboundCameraStream()
             if (producers) {
-                let audio = producers.producers.find((a) => a.kind === "audio")
+                const audio = producers.producers.find((a) => a.kind === "audio")
                 if (audio) {
-                    let notification: MuteNotification = {
+                    const notification: MuteNotification = {
                         roomId,
                         sessionId,
                         producerId: audio.id,
                         audio: !micOn
                     }
                     sfuState.sendMute(notification)
+                    setMicOn(!micOn)
                 }
             }
         }
