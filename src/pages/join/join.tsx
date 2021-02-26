@@ -25,7 +25,6 @@ import StyledTextField from "../../components/styled/textfield";
 import Camera from "../../components/media/camera";
 import Loading from "../../components/loading";
 import MediaDeviceSelect from "../../components/mediaDeviceSelect";
-import logger from "../../services/logger/Logger";
 import { ClassType } from '../../store/actions';
 
 import KidsLoopLiveTeachers from "../../assets/img/kidsloop_live_teachers.svg";
@@ -120,9 +119,6 @@ export default function Join(): JSX.Element {
                     setVideoDeviceId("");
                 }
             }
-
-            // Please take a look Logger.tsx
-            logger({ logType: 'join.tsx detect devices devices list test6', devices });
         } catch (e) {
             console.error(`loadMediaDevices Error - ${e}`);
             setLoadError(true);
@@ -147,9 +143,8 @@ export default function Join(): JSX.Element {
             audio: { deviceId: audioDeviceId },
             video: {
                 deviceId: videoDeviceId,
-                width: { min: 1024, ideal: 1280, max: 1920 },
-                height: { min: 576, ideal: 720, max: 1080 },
-                facingMode: "user" // the front camera (if one is available)
+                width: { ideal: 1280 },
+                height: { ideal: 720 }
             }
         }).then((s) => {
             setStream(s);
