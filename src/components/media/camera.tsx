@@ -58,12 +58,23 @@ const useStyles = makeStyles((theme: Theme) =>
     })
 );
 
+export enum CameraOrder {
+    DEFAULT = 0,
+    // HOST_TEACHER = 1, // TODO
+    TEACHER = 2,
+    // SPEAKING_STUDENT = 3, // TODO: https://calmisland.atlassian.net/browse/KL-3907
+    SELF_STUDENT = 4,
+    STUDENT = 5,
+}
+
 interface CameraProps {
     session?: Session;
     mediaStream?: MediaStream;
     muted?: boolean;
     square?: boolean;
     noBorderRadius?: boolean;
+    order?: CameraOrder;
+    hidden?: boolean; // Maybe this prop will be deleted after classroom layout renewal.
 }
 
 export default function Camera({ session, mediaStream, muted, square, noBorderRadius }: CameraProps): JSX.Element {
@@ -72,7 +83,6 @@ export default function Camera({ session, mediaStream, muted, square, noBorderRa
         ? session.id === userSelfSessionId
         : true; // e.g. <Camera /> without session in join.tsx
 
-    const theme = useTheme();
     const audioRef = useRef<HTMLAudioElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -97,7 +107,6 @@ export default function Camera({ session, mediaStream, muted, square, noBorderRa
                 backgroundColor: "#193d6f",
                 borderRadius: noBorderRadius ? 0 : 12,
                 height: 0,
-                margin: theme.spacing(0.5),
                 paddingBottom: square ? "75%" : "56.25%",
             }}
         >
@@ -258,7 +267,6 @@ function MediaIndicators({ sessionId }: { sessionId: string }) {
 }
 
 function FullScreenCameraButton({ sessionId }: { sessionId: string }): JSX.Element {
-    const theme = useTheme();
     const toggleBtnId = `toggle-fullscreen-camera-button:${sessionId}`
     const videoId = `camera:${sessionId}`
 

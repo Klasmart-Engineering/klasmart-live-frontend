@@ -47,7 +47,7 @@ import LanguageSelect from "./languageSelect";
 import CenterAlignChildren from "./centerAlignChildren";
 import { bottomNav, modePanel } from "../utils/layerValues";
 import { WebRTCSFUContext } from "../webrtc/sfu";
-import Camera from "../components/media/camera";
+import Camera, { CameraOrder } from "../components/media/camera";
 import { gql } from "apollo-boost";
 import { useMutation } from "@apollo/react-hooks";
 import { useDispatch, useSelector } from "react-redux";
@@ -284,52 +284,7 @@ function TabPanel(props: TabPanelProps) {
     );
 }
 
-function ToggleCameraViewMode({ isSmDown, setGridMode }: {
-    isSmDown: boolean,
-    setGridMode: React.Dispatch<React.SetStateAction<boolean>>
-}) {
-    return (
-        <Grid container justify="flex-end" item xs={12}>
-            <IconButton aria-label="switch grid view" size="small" onClick={() => setGridMode(true)}>
-                <GridIcon role="img" size={isSmDown ? "1rem" : "1.25rem"} />
-            </IconButton>
-            <IconButton aria-label="switch list view" size="small" onClick={() => setGridMode(false)}>
-                <ListIcon role="img" size={isSmDown ? "1rem" : "1.25rem"} />
-            </IconButton>
-        </Grid>
-    )
-}
-
-function CameraInterface({ isSmDown, gridMode, sessionId, id, session, mediaStream }: {
-    isSmDown: boolean,
-    gridMode: boolean,
-    sessionId: string,
-    id: string,
-    session: Session,
-    mediaStream: MediaStream | undefined,
-}) {
-    const isSelf = id === sessionId;
-    let idx = 1;
-    if (session.isTeacher) { idx = -1; }
-    if (isSelf) { idx = 0; }
-
-    return (
-        <Grid id={`participant:${id}`} item xs={6} md={12} style={{ order: idx }}>
-            <Grid container alignItems="center" spacing={isSmDown || gridMode ? 0 : 1} item xs={12}>
-                <Grid item xs={gridMode ? 12 : 6}>
-                    <Camera
-                        muted={isSelf}
-                        session={session}
-                        mediaStream={mediaStream}
-                        square
-                    />
-                </Grid>
-            </Grid>
-        </Grid>
-    )
-}
-
-const MUTATION_SET_HOST= gql`
+const MUTATION_SET_HOST = gql`
     mutation setHost($roomId: ID!, $hostId: ID!) {
         setHost(roomId: $roomId, hostId: $hostId)
     }
@@ -360,6 +315,25 @@ function TabInnerContent({ title, numColState, setNumColState }: {
         }
     }, [sessions, sessions.size])
 
+    type GridItemXS = 1 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
+    const [camGridItemXS, setCamGridItemXS] = useState<GridItemXS>(6);
+
+    useEffect(() => {
+        if (!numColState) return;
+        switch (numColState) {
+            case 1:
+                return setCamGridItemXS(12);
+            case 2:
+                return setCamGridItemXS(6);
+            case 3:
+                return setCamGridItemXS(4);
+            case 4:
+                return setCamGridItemXS(3);
+            default:
+                return setCamGridItemXS(6);
+        }
+    }, [camGridItemXS])
+
     const changeNumColState = (num: number) => {
         if (!setNumColState) { return; }
         setNumColState(num);
@@ -368,20 +342,21 @@ function TabInnerContent({ title, numColState, setNumColState }: {
     switch (title) {
         case "title_participants":
             const webrtc = WebRTCSFUContext.Consume()
+
             // TODO: Improve performance as order in flexbox instead of .filter()
             const localSession = sessions.get(localSessionId);
             const otherSessions = [...sessions.values()].filter(session => session.id !== localSessionId);
 
             return (
                 <Grid container direction="row" justify="flex-start" alignItems="center" style={{ flex: 1 }}>
-                    {localSession?
+                    {localSession ?
                         <Camera
                             key={localSession.id}
                             session={localSession}
                             mediaStream={camera !== null ? camera : undefined}
                             muted={true}
                             square={!isLocalUserTeacher}
-                        /> 
+                        />
                         :
                         null
                     }
@@ -548,7 +523,7 @@ interface Props {
 }
 
 export default function Layout(props: Props): JSX.Element {
-    const { sessions , messages } = RoomContext.Consume()
+    const { sessions, messages } = RoomContext.Consume()
     const { children, isTeacher, interactiveModeState, streamIdState, numColState, setNumColState } = props;
     const classes = useStyles();
     const theme = useTheme();
