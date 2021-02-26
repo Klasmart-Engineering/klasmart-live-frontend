@@ -384,30 +384,32 @@ export function MoreControlsButton({ sessionId, isSelf, cameraRef }: {
                 1. isSelf: User do not have to control user's own permissions.
                 2. !teacher: If User are not teacher, user cannot control other's permissions.
             */}
-            {isSelf || !teacher ? null : <>
-                <List
-                    disablePadding
-                    subheader={
-                        <ListSubheader>
-                            Give Whiteboard Controls {/* TODO: Localization */}
-                        </ListSubheader>
-                    }
-                >
-                    <PermissionControls otherUserId={sessionId} />
+            {isSelf || !teacher ? null :
+                <List>
+                    <List
+                        disablePadding
+                        subheader={
+                            <ListSubheader>
+                                Give Whiteboard Controls {/* TODO: Localization */}
+                            </ListSubheader>
+                        }
+                    >
+                        <PermissionControls otherUserId={sessionId} />
+                    </List>
+                    <List
+                        disablePadding
+                        subheader={
+                            <ListSubheader>
+                                Give Trophy {/* TODO: Localization */}
+                            </ListSubheader>
+                        }
+                    >
+                        <MenuItem className={moreControlsMenuItem}>
+                            <TrophyControls otherUserId={sessionId} />
+                        </MenuItem>
+                    </List>
                 </List>
-                <List
-                    disablePadding
-                    subheader={
-                        <ListSubheader>
-                            Give Trophy {/* TODO: Localization */}
-                        </ListSubheader>
-                    }
-                >
-                    <MenuItem className={moreControlsMenuItem}>
-                        <TrophyControls otherUserId={sessionId} />
-                    </MenuItem>
-                </List>
-            </>}
+            }
 
             {/* Camera & Microphone */}
             <List
