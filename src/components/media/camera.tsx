@@ -440,8 +440,8 @@ function ToggleCamera({ sessionId, sfuState, cameraRef }: {
     const { noHoverIcon, moreControlsMenuItem } = useStyles();
     const { roomId } = useContext(UserContext);
 
-    const [cameraOn, setCameraOn] = useState<boolean>(sfuState.isLocalVideoEnabled(sessionId));
-    const [isVideoManuallyDisabled, setIsVideoManuallyDisabled] = useState(false);
+    const [cameraOn, setCameraOn] = useState<boolean>(false);
+    const [isVideoManuallyDisabled, setIsVideoManuallyDisabled] = useState<boolean>(false);
 
     const isCameraVisible = isElementInViewport(cameraRef);
     useEffect(() => {
@@ -452,6 +452,10 @@ function ToggleCamera({ sessionId, sfuState, cameraRef }: {
                 }
         }
     }, [isCameraVisible]);
+
+    useEffect(() => {
+        setCameraOn(sfuState.isLocalVideoEnabled(sessionId))
+    }, [sfuState.isLocalVideoEnabled(sessionId)])
 
     const manuallyToggleVideoState = (): void => {
         toggleVideoState()
@@ -516,7 +520,11 @@ function ToggleMic({ sessionId, sfuState }: {
 }): JSX.Element {
     const { noHoverIcon, moreControlsMenuItem } = useStyles();
     const { roomId } = useContext(UserContext);
-    const [micOn, setMicOn] = useState<boolean>(sfuState.isLocalAudioEnabled(sessionId));
+    const [micOn, setMicOn] = useState<boolean>(false);
+
+    useEffect(() => {
+        setMicOn(sfuState.isLocalAudioEnabled(sessionId))
+    }, [sfuState.isLocalAudioEnabled(sessionId)])
 
     function toggleAudioState() {
         const stream = sfuState.getCameraStream(sessionId)
