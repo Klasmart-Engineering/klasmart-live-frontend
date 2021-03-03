@@ -9,7 +9,7 @@ import { FormattedMessage } from "react-intl";
 import { RecordedIframe } from "../../components/recordediframe";
 import { Session, ContentIndexState, InteractiveModeState, StreamIdState, RoomContext } from "../room/room";
 import { Theme, Card, useTheme, CardContent, Hidden } from "@material-ui/core";
-import { PreviewPlayer } from "../../components/preview-player";
+import { PreviewPlayer } from "../../components/previewPlayer";
 import { Stream } from "../../webRTCState";
 import { UserContext } from "../../entry";
 import { gql } from "apollo-boost";
@@ -150,7 +150,7 @@ export function Teacher(props: Props): JSX.Element {
                         )}
                     </Grid>
                 </> :
-                <Whiteboard uniqueId="global" height={rootDivHeight}>
+                <Whiteboard uniqueId="global">
                     {
                         //TODO: tidy up the conditions of what to render
                         interactiveMode === 3 ?
@@ -212,8 +212,8 @@ function StudentPreviewCard({ sessionId, session, numColState }: { sessionId: st
 
     const cardConRef = useRef<HTMLDivElement>(null);
     const [zoomin, setZoomin] = useState(false);
-    const [width, setWidth] = useState<string | number>("100%");
-    const [height, setHeight] = useState<string | number>("100%");
+    const [width, setWidth] = useState<number>(0);
+    const [height, setHeight] = useState<number>(0);
 
     const filterGroups = useMemo(() => {
         return [session.id];
@@ -222,7 +222,6 @@ function StudentPreviewCard({ sessionId, session, numColState }: { sessionId: st
     useEffect(() => {
         if (cardConRef.current) {
             const contWidth = cardConRef.current.offsetWidth;
-            const contHeight = cardConRef.current.offsetHeight;
             setWidth(contWidth);
             setHeight(Math.min(contWidth, contWidth * 0.5625));
         }
@@ -240,7 +239,7 @@ function StudentPreviewCard({ sessionId, session, numColState }: { sessionId: st
                 <CardContent >
                     <Grid ref={cardConRef} item xs={12} style={{ margin: "0 auto" }}>
                         {session.streamId ?
-                            <Whiteboard group={session.id} uniqueId={session.id} width={width} height={height} filterGroups={filterGroups}>
+                            <Whiteboard group={session.id} uniqueId={session.id} filterGroups={filterGroups}>
                                 <PreviewPlayer width={width} height={height} streamId={session.streamId} />
                             </Whiteboard> : undefined
                         }

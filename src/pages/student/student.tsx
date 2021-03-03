@@ -11,7 +11,7 @@ import WBToolbar from "../../whiteboard/components/Toolbar";
 import { Stream } from "../../webRTCState";
 import { ReplicaMedia } from "../synchronized-video";
 import { MaterialTypename } from "../../lessonMaterialContext";
-import { PreviewPlayer } from "../../components/preview-player";
+import { PreviewPlayer } from "../../components/previewPlayer";
 import { RecordedIframe } from "../../components/recordediframe";
 import { imageFrame } from "../../utils/layerValues";
 import { WebRTCSFUContext } from "../../webrtc/sfu";
@@ -94,7 +94,7 @@ export function Student({ openDrawer }: {
         case "Stream":
             return (
                 <div ref={rootDivRef} id="player-container" className={classes.root}>
-                    <Whiteboard uniqueId="student" height={rootDivHeight}>
+                    <Whiteboard uniqueId="student">
                         <PreviewPlayer streamId={content.contentId} width={rootDivWidth} height={rootDivHeight} />
                         {/* <WBToolbar /> */}
                     </Whiteboard>
@@ -108,7 +108,7 @@ export function Student({ openDrawer }: {
         case "Activity":
             return (
                 <div ref={rootDivRef} className={classes.root}>
-                    <Whiteboard group={sessionId} uniqueId="student" height={rootDivHeight} filterGroups={studentModeFilterGroups}>
+                    <Whiteboard group={sessionId} uniqueId="student" filterGroups={studentModeFilterGroups}>
                         {(rootDivRef && rootDivHeight) ?
                             <RecordedIframe
                                 contentId={content.contentId}
@@ -130,7 +130,7 @@ export function Student({ openDrawer }: {
         case "Video":
             return (
                 <div ref={rootDivRef} className={classes.root}>
-                    <Whiteboard uniqueId="student" height={rootDivHeight}>
+                    <Whiteboard uniqueId="student">
                         <ReplicaMedia type={content.type === "Video" ? MaterialTypename.Video : MaterialTypename.Audio} style={{ width: "100%" }} sessionId={content.contentId} />
                     </Whiteboard>
                     <WBToolbar />
@@ -138,7 +138,7 @@ export function Student({ openDrawer }: {
             );
         case "Image":
             return <div ref={rootDivRef} className={classes.root}>
-                <Whiteboard uniqueId="student" height={rootDivHeight}>
+                <Whiteboard uniqueId="student">
                     <Grid container>
                         <Grid container item style={{
                             height: "100%",
@@ -168,7 +168,7 @@ export function Student({ openDrawer }: {
                 const session = users.get(content.contentId)
                 return <div ref={rootDivRef} className={classes.root}>
                     <Typography variant="caption" align="center">{session ? session.name : undefined}</Typography>
-                    <Whiteboard uniqueId="student" height={rootDivHeight}>
+                    <Whiteboard uniqueId="student">
                         <Stream stream={webrtc.getCameraStream(content.contentId)} />
                     </Whiteboard>
                     <WBToolbar />
@@ -179,7 +179,7 @@ export function Student({ openDrawer }: {
                 const session = users.get(content.contentId)
                 return <div ref={rootDivRef} className={classes.root}>
                     <Typography variant="caption" align="center">{session ? session.name : undefined}</Typography>
-                    <Whiteboard uniqueId="student" height={rootDivHeight}>
+                    <Whiteboard uniqueId="student">
                         <Stream stream={webrtc.getAuxStream(content.contentId)} />
                     </Whiteboard>
                     <WBToolbar />
