@@ -1,5 +1,5 @@
 /* eslint-disable no-case-declarations */
-import React, { useState, createContext, useContext } from "react";
+import React, { useState, createContext, useContext, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import clsx from "clsx";
 import { createStyles, makeStyles, useTheme, Theme } from "@material-ui/core/styles";
@@ -48,6 +48,8 @@ import CenterAlignChildren from "./centerAlignChildren";
 import { bottomNav, modePanel } from "../utils/layerValues";
 import { WebRTCSFUContext } from "../webrtc/sfu";
 import Camera from "../components/media/camera";
+import { gql } from "apollo-boost";
+import { useMutation } from "@apollo/react-hooks";
 
 export const DRAWER_WIDTH = 380;
 
@@ -325,6 +327,12 @@ function CameraInterface({ isSmDown, gridMode, sessionId, id, session, mediaStre
     )
 }
 
+const MUTATION_SET_HOST= gql`
+    mutation setHost($roomId: ID!, $hostId: ID!) {
+        setHost(roomId: $roomId, hostId: $hostId)
+    }
+`;
+
 function TabInnerContent({ contentIndexState, title, numColState, setNumColState }: {
     contentIndexState?: ContentIndexState,
     title: string,
@@ -334,37 +342,51 @@ function TabInnerContent({ contentIndexState, title, numColState, setNumColState
     const classes = useStyles();
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
-    const { camera, sessionId, materials, teacher } = useContext(UserContext);
-    const isMdUpTeacher = teacher && !isSmDown;
+    const { camera, roomId, sessionId: localSessionId, materials, teacher: isLocalUserTeacher } = useContext(UserContext);
+    const users = useContext(UsersContext);
+    const isMdUpTeacher = isLocalUserTeacher && !isSmDown;
+    const [gridMode, setGridMode] = useState(true)
+    const [hostMutation] = useMutation(MUTATION_SET_HOST);
+    const setHost = (roomId: string) => {
+        const sessions = [...users.values()]
+        const teachers = sessions.filter(session => session.isTeacher === true).sort((a, b) => a.joinedAt - b.joinedAt);
+        const host = teachers.find(session => session.isHost === true);
+        if (!host && teachers.length) {
+            const hostId = teachers[0].id;
+            hostMutation({ variables: { roomId, hostId } })
+        }
+    }
+    useEffect(() => {
+        setHost(roomId)
+    }, [users, users.size])
 
     const changeNumColState = (num: number) => {
         if (!setNumColState) { return; }
         setNumColState(num);
     };
 
-    const [gridMode, setGridMode] = useState(true)
-
     switch (title) {
         case "title_participants":
             const webrtc = WebRTCSFUContext.Consume()
-            const users = useContext(UsersContext);
             // TODO: Improve performance as order in flexbox instead of .filter()
-            const userEntries = [...users.entries()];
-            const selfUser = userEntries.filter(([id]) => id === sessionId);
-            const otherUsers = userEntries.filter(([id]) => id !== sessionId);
+            const localSession = users.get(localSessionId);
+            const sessions = [...users.values()]
+            const otherSessions = sessions.filter(session => session.id !== localSessionId);
 
             return (
                 <Grid container direction="row" justify="flex-start" alignItems="center" style={{ flex: 1 }}>
-                    {selfUser.map(([id, session]) =>
+                    {localSession?
                         <Camera
-                            key={id}
-                            session={session}
+                            key={localSession.id}
+                            session={localSession}
                             mediaStream={camera !== null ? camera : undefined}
                             muted={true}
-                            square={teacher ? false : true}
-                        />
-                    )}
-                    {teacher ? <GlobalCameraControl /> : null}
+                            square={!isLocalUserTeacher}
+                        /> 
+                        :
+                        null
+                    }
+                    {localSession && localSession.isTeacher && localSession.isHost ? <GlobalCameraControl /> : null}
                     {/* {isSmDown ? null : <ToggleCameraViewMode isSmDown={isSmDown} setGridMode={setGridMode} />} */}
                     <Grid
                         container
@@ -375,18 +397,18 @@ function TabInnerContent({ contentIndexState, title, numColState, setNumColState
                         xs={12}
                         className={classes.scrollCameraContainer}
                         style={isSmDown ? { maxHeight: `calc(100vh - ${theme.spacing(65)}px)` } : {
-                            height: teacher ? `calc(100vh - ${theme.spacing(60)}px)` : `calc(100vh - ${theme.spacing(9)}px)`, // Because student side has no <InviteButton /> and <GlobalCameraControl />
+                            height: isLocalUserTeacher ? `calc(100vh - ${theme.spacing(60)}px)` : `calc(100vh - ${theme.spacing(9)}px)`, // Because student side has no <InviteButton /> and <GlobalCameraControl />
                         }}
                     >
-                        {teacher && otherUsers.length === 0 ?
+                        {isLocalUserTeacher && otherSessions.length === 0 ?
                             <Typography style={{ color: "rgb(200,200,200)", padding: 4 }}>
                                 <FormattedMessage id="no_participants" />
                             </Typography> :
-                            otherUsers.map(([id, session]) =>
+                            otherSessions.map(session =>
                                 <Camera
-                                    key={id}
+                                    key={session.id}
                                     session={session}
-                                    mediaStream={id === sessionId && camera !== null ? camera : webrtc.getCameraStream(id)}
+                                    mediaStream={webrtc.getCameraStream(session.id)}
                                     square={true}
                                 />)
                         }

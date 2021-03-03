@@ -17,6 +17,8 @@ export interface Session {
     name?: string
     streamId?: string
     isTeacher?: boolean
+    isHost?: boolean
+    joinedAt: number
 }
 
 export interface Content {
@@ -113,7 +115,7 @@ const SUB_ROOM = gql`
         room(roomId: $roomId, name: $name) {
             message { id, message, session { name } },
             content { type, contentId },
-            join { id, name, streamId, isTeacher },
+            join { id, name, streamId, isTeacher, isHost, joinedAt },
             leave { id },
             session { webRTC { sessionId, description, ice, stream { name, streamId } } },
             sfu,
