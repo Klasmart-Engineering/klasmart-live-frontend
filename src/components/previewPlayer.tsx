@@ -4,6 +4,7 @@ import { useSubscription } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
 import Typography from "@material-ui/core/Typography";
 import Loading from "./loading";
+import { h5pStaticSize } from "../utils/h5pActivityAttr";
 
 const SUB_EVENTS = gql`
   subscription stream($streamId: ID!) {
@@ -16,13 +17,14 @@ const SUB_EVENTS = gql`
 
 export interface Props {
     streamId: string;
-    width?: number | string;
-    height?: number | string;
+    width: number;
+    height: number;
     frameProps?: React.DetailedHTMLProps<React.IframeHTMLAttributes<HTMLIFrameElement>, HTMLIFrameElement>
 }
 
 export function PreviewPlayer({ streamId, frameProps, width, height }: Props): JSX.Element {
     const ref = useRef<HTMLIFrameElement>(null);
+    const [scale, setScale] = useState(1);
     const [{ frameWidth, frameHeight }, setWidthHeight] = useState({ frameWidth: 0, frameHeight: 0 });
 
     // Buffer events until we have a page ready to render them
@@ -57,7 +59,6 @@ export function PreviewPlayer({ streamId, frameProps, width, height }: Props): J
         variables: { streamId },
     });
 
-    const [scale, setScale] = useState(1);
     useEffect(() => {
         if (ref.current == null || ref.current.contentWindow == null) { return; }
         window.addEventListener("message", ({ data }) => {
@@ -65,17 +66,11 @@ export function PreviewPlayer({ streamId, frameProps, width, height }: Props): J
             const fWidth = Number(data.width.replace("px", ""));
             const fHeight = Number(data.height.replace("px", ""));
             setWidthHeight({ frameWidth: fWidth, frameHeight: fHeight });
-            if (width && height) {
-                setScale(Math.min(Number(width) / fWidth, Number(height) / fHeight));
-            }
+            const shrinkRatioX = (width/ h5pStaticSize.default.width) > 1 ? 1 : width/ h5pStaticSize.default.width;
+            const shrinkRatioY = (height / h5pStaticSize.default.height) > 1 ? 1 : height / h5pStaticSize.default.height;
+            setScale(Math.min(shrinkRatioX, shrinkRatioY));
         });
     }, [ref.current, ref.current && ref.current.contentWindow]);
-
-    useEffect(() => {
-        if (typeof width === "number" && typeof height === "number") {
-            setScale(Math.min(width / frameWidth, height / frameHeight));
-        }
-    }, [width, height]);
 
     if (loading) { return <Loading />; }
     if (error) { return <Typography><FormattedMessage id="failed_to_connect" />: {JSON.stringify(error)}</Typography>; }

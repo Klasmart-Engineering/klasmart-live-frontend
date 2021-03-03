@@ -10,7 +10,7 @@ type Props = {
     group?: string;
     children?: ReactChild | ReactNode | null;
     width?: string | number; // In student case, activity's width should be passed
-    height: string | number;
+    height?: string | number;
     filterUsers?: string[];
     filterGroups?: string[];
     centerHorizontally?: boolean;
@@ -49,9 +49,8 @@ export function Whiteboard({ group, children, width, height, filterUsers, filter
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "flex-start",
-                alignItems: "center", // Center <IframeResizer />
-                height,
                 position: "relative",
+                height: height ? height : "100%",
                 width: width ? width : "100%",
                 overflow: "hidden",
             }}
