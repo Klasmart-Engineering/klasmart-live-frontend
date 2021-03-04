@@ -7,7 +7,7 @@ import CardActions from "@material-ui/core/CardActions";
 import React, { useEffect, useState, useContext, useRef, useMemo } from "react";
 import { FormattedMessage } from "react-intl";
 import { RecordedIframe } from "../../components/recordediframe";
-import { Session, ContentIndexState, InteractiveModeState, StreamIdState, RoomContext } from "../room/room";
+import { Session, ContentIndexState, InteractiveModeState, StreamIdState, RoomContext, InteractiveMode, ContentType } from "../room/room";
 import { Theme, Card, useTheme, CardContent, Hidden } from "@material-ui/core";
 import { PreviewPlayer } from "../../components/previewPlayer";
 import { Stream } from "../../webRTCState";
@@ -105,41 +105,30 @@ export function Teacher(props: Props): JSX.Element {
     }, [rootDivRef.current]);
 
     const [showContent, { loading }] = useMutation(MUT_SHOW_CONTENT);
-    useEffect(() => {
-        if (!interactiveMode) {
-            showContent({ variables: { roomId, type: "Camera", contentId: sessionId } });
-        }
-    }, [roomId, interactiveMode]);
 
     useEffect(() => {
-        if (interactiveMode === 1 && material) {
+        if (interactiveMode === InteractiveMode.Blank) {
+            showContent({ variables: { roomId, type: ContentType.Camera, contentId: sessionId } });
+        } else if (interactiveMode === InteractiveMode.Present && material) {
             if (material.__typename === MaterialTypename.Video || (material.__typename === undefined && material.video)) {
-                showContent({ variables: { roomId, type: "Video", contentId: sessionId } });
+                showContent({ variables: { roomId, type: ContentType.Video, contentId: sessionId } });
             } else if (material.__typename === MaterialTypename.Audio) {
-                showContent({ variables: { roomId, type: "Audio", contentId: sessionId } });
+                showContent({ variables: { roomId, type: ContentType.Audio, contentId: sessionId } });
             } else if (material.__typename === MaterialTypename.Image) {
-                showContent({ variables: { roomId, type: "Image", contentId: material.url } });
+                showContent({ variables: { roomId, type: ContentType.Image, contentId: material.url } });
             } else if ((material.__typename === MaterialTypename.Iframe || (material.__typename === undefined && material.url)) && streamId) {
-                showContent({ variables: { roomId, type: "Stream", contentId: streamId } });
+                showContent({ variables: { roomId, type: ContentType.Stream, contentId: streamId } });
             }
+        } else if (interactiveMode === InteractiveMode.Observe && material && material.url) {
+            showContent({ variables: { roomId, type: ContentType.Activity, contentId: material.url } });
+        } else if (interactiveMode === InteractiveMode.ShareScreen) {
+            showContent({ variables: { roomId, type: ContentType.Screen, contentId: sessionId } });
         }
-    }, [roomId, interactiveMode, material, streamId]);
-
-    useEffect(() => {
-        if (interactiveMode === 2 && material && material.url) {
-            showContent({ variables: { roomId, type: "Activity", contentId: material.url } });
-        }
-    }, [roomId, interactiveMode, material]);
-
-    useEffect(() => {
-        if (interactiveMode === 3) {
-            showContent({ variables: { roomId, type: "Screen", contentId: sessionId } });
-        }
-    }, [roomId, interactiveMode, sessionId]);
+    }, [roomId, interactiveMode, material, streamId, sessionId]);
 
     return (
         <div ref={rootDivRef} className={classes.root}>
-            {content && content.type === "Activity" ?
+            {content && content.type === ContentType.Activity ?
                 <>
                     <Typography variant="caption" color="textSecondary" gutterBottom>
                         <FormattedMessage id="student_mode" />
@@ -153,7 +142,7 @@ export function Teacher(props: Props): JSX.Element {
                 <Whiteboard uniqueId="global">
                     {
                         //TODO: tidy up the conditions of what to render
-                        interactiveMode === 3 ?
+                        interactiveMode === InteractiveMode.ShareScreen ?
                             <Stream stream={screenShare.getStream()} /> :
                             <>
                                 {material ?
