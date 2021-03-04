@@ -330,9 +330,10 @@ function MicIndicator({ sessionId }: { sessionId: string }) {
     const sfuState = WebRTCSFUContext.Consume();
 
     const [micOn, setMicOn] = useState<boolean>(false);
+
     useEffect(() => {
-        setMicOn(sfuState.isLocalAudioEnabled(sessionId));
-    }, [micOn]);
+        setMicOn(sfuState.isLocalAudioEnabled(sessionId))
+    }, [sfuState.isLocalAudioEnabled(sessionId)])
 
     return (
         <Grid
