@@ -59,27 +59,27 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export enum CameraOrder {
-    DEFAULT = 0,
-    HOST_TEACHER = 1,
-    TEACHER_SELF = 2,
-    TEACHER = 3,
-    // STUDENT_SPEAKING = 4, // TODO: https://calmisland.atlassian.net/browse/KL-3907
-    STUDENT_SELF = 9,
-    STUDENT = 10,
+    Default = 0,
+    HostTeacher = 1,
+    TeacherSelf = 2,
+    Teacher = 3,
+    // StudentSpeaking = 4, // TODO: https://calmisland.atlassian.net/browse/KL-3907
+    StudentSelf = 9,
+    Student = 10,
 }
 
 export function getCameraOrder(userSession: Session, isLocalUser: boolean): CameraOrder {
     let order: CameraOrder;
     if (userSession.isHost)
-        order = CameraOrder.HOST_TEACHER;
+        order = CameraOrder.HostTeacher;
     else if (userSession.isTeacher && isLocalUser)
-        order = CameraOrder.TEACHER_SELF;
+        order = CameraOrder.TeacherSelf;
     else if (userSession.isTeacher)
-        order = CameraOrder.TEACHER;
+        order = CameraOrder.Teacher;
     else if (isLocalUser)
-        order = CameraOrder.STUDENT_SELF;
+        order = CameraOrder.StudentSelf;
     else
-        order = CameraOrder.STUDENT
+        order = CameraOrder.Student
     return order;
 }
 
@@ -234,6 +234,7 @@ function ParticipantInfo({ session, isSelf }: { session: Session, isSelf: boolea
                         icon={<ChalkboardIcon />}
                         size="small"
                         color="#FFF"
+                        // TODO: Tooltip is not working because of z-index
                         tooltip={{
                             children: <ChalkboardIcon />,
                             placement: "top",
@@ -251,6 +252,7 @@ function ParticipantInfo({ session, isSelf }: { session: Session, isSelf: boolea
                         icon={<CrownIcon />}
                         size="small"
                         color="#C9940D"
+                        // TODO: Tooltip is not working because of z-index
                         tooltip={{
                             children: <CrownIcon />,
                             placement: "top",
@@ -335,14 +337,18 @@ function MicIndicator({ sessionId }: { sessionId: string }) {
         setMicOn(sfuState.isLocalAudioEnabled(sessionId))
     }, [sfuState.isLocalAudioEnabled(sessionId)])
 
-    return (
+    return (micOn ? <></> :
         <Grid
             item
             className={iconGrid}
             style={{ padding: 0 }}
         >
             <StyledIcon
-                icon={micOn ? <CircleIcon className={noHoverIcon} /> : <MicrophoneOffIcon className={noHoverIcon} />}
+                icon={micOn ?
+                    // <CircleIcon className={noHoverIcon} /> : TODO: https://calmisland.atlassian.net/browse/KL-3509
+                    <></> :
+                    <MicrophoneOffIcon className={noHoverIcon} />
+                }
                 size="small"
                 color={micOn ? "#2EE2D8" : "#FFF"}
             />

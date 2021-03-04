@@ -30,13 +30,11 @@ import { LibraryBooks as LessonPlanIcon } from "@styled-icons/material-twotone/L
 import { Forum as ChatIcon } from "@styled-icons/material-twotone/Forum";
 import { Settings as SettingsIcon } from "@styled-icons/material-twotone/Settings";
 import { Close as CloseIcon } from "@styled-icons/material/Close";
-import { Grid as GridIcon } from "@styled-icons/evaicons-solid/Grid";
-import { ViewList as ListIcon } from "@styled-icons/material/ViewList";
 import { Share as ShareIcon } from "@styled-icons/material/Share";
 
 import { GlobalCameraControl } from "../webRTCState";
 import { LocalSessionContext } from "../entry";
-import { Session, Message, ContentIndexState, InteractiveModeState, StreamIdState, RoomContext } from "../pages/room/room";
+import { Session, Message, InteractiveModeState, StreamIdState, RoomContext } from "../pages/room/room";
 import Toolbar from "../whiteboard/components/Toolbar";
 import ModeControls from "../pages/teacher/modeControls";
 import { SendMessage } from "../sendMessage";
@@ -245,7 +243,7 @@ function TabPanel(props: TabPanelProps) {
                 role="tabpanel"
                 {...other}
             >
-                <Grid item className={classes.toolbar}>
+                <Grid item xs={12} className={classes.toolbar}>
                     <Typography variant="body1" style={{ fontSize: isSmDown ? "unset" : "1rem" }}>
                         <CenterAlignChildren>
                             <FormattedMessage id={tab.title} />
@@ -278,6 +276,7 @@ function TabPanel(props: TabPanelProps) {
                     horizontal: 'center',
                 }}
             >
+                {/* TODO: <StyledIcon icon={<InviteIcon />} size="medium" /> */}
                 <InviteButton />
             </Popover>
         </>
@@ -298,12 +297,10 @@ function TabInnerContent({ title, numColState, setNumColState }: {
     const classes = useStyles();
     const theme = useTheme();
     const dispatch = useDispatch();
-    const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
     const { camera, roomId, sessionId: localSessionId, materials, isTeacher: isLocalUserTeacher } = useContext(LocalSessionContext);
     const sessions = useContext(SessionsContext);
     const contentIndex = useSelector((store: State) => store.control.contentIndex);
-    const isMdUpTeacher = isLocalUserTeacher && !isSmDown;
-    const [gridMode, setGridMode] = useState(true)
+    const colsCamera = useSelector((store: State) => store.control.colsCamera);
     const [hostMutation] = useMutation(MUTATION_SET_HOST);
 
     useEffect(() => {
@@ -315,24 +312,15 @@ function TabInnerContent({ title, numColState, setNumColState }: {
         }
     }, [sessions, sessions.size])
 
-    type GridItemXS = 1 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
-    const [camGridItemXS, setCamGridItemXS] = useState<GridItemXS>(6);
-
-    useEffect(() => {
-        if (!numColState) return;
-        switch (numColState) {
-            case 1:
-                return setCamGridItemXS(12);
-            case 2:
-                return setCamGridItemXS(6);
-            case 3:
-                return setCamGridItemXS(4);
-            case 4:
-                return setCamGridItemXS(3);
-            default:
-                return setCamGridItemXS(6);
-        }
-    }, [camGridItemXS])
+    // type GridItemXS = 3 | 4 | 6 | 12;
+    // const [camGridItemXS, setCamGridItemXS] = useState<GridItemXS>(6);
+    // useEffect(() => {
+    //     if (1 <= colsCamera && colsCamera <= 4) {
+    //         setCamGridItemXS((12 / colsCamera) as GridItemXS);
+    //     } else {
+    //         setCamGridItemXS(6);
+    //     }
+    // }, [camGridItemXS])
 
     const changeNumColState = (num: number) => {
         if (!setNumColState) { return; }
@@ -349,19 +337,18 @@ function TabInnerContent({ title, numColState, setNumColState }: {
 
             return (
                 <Grid container direction="row" justify="flex-start" alignItems="center" style={{ flex: 1 }}>
-                    {localSession ?
+                    {(localSession && isLocalUserTeacher) && (
                         <Camera
-                            key={localSession.id}
                             session={localSession}
-                            mediaStream={camera !== null ? camera : undefined}
-                            muted={true}
-                            square={!isLocalUserTeacher}
+                            mediaStream={camera}
+                            muted
+                            // GridProps - You can find related props by searching the keyword '...other' in camera.tsx
+
+                            item xs={12}
+                            style={{ padding: theme.spacing(0.5) }}
                         />
-                        :
-                        null
-                    }
+                    )}
                     {localSession?.isTeacher && localSession?.isHost && <GlobalCameraControl />}
-                    {/* {isSmDown ? null : <ToggleCameraViewMode isSmDown={isSmDown} setGridMode={setGridMode} />} */}
                     <Grid
                         container
                         direction="row"
@@ -370,21 +357,50 @@ function TabInnerContent({ title, numColState, setNumColState }: {
                         item
                         xs={12}
                         className={classes.scrollCameraContainer}
-                        style={isSmDown ? { maxHeight: `calc(100vh - ${theme.spacing(65)}px)` } : {
-                            height: isLocalUserTeacher ? `calc(100vh - ${theme.spacing(60)}px)` : `calc(100vh - ${theme.spacing(9)}px)`, // Because student side has no <InviteButton /> and <GlobalCameraControl />
+                        style={{
+                            flexGrow: 1,
+                            overflow: "hidden auto",
+                            // Because student side has no <InviteButton /> and <GlobalCameraControl />
+                            maxHeight: isLocalUserTeacher ? `calc(100vh - ${theme.spacing(49)}px)` : `calc(100vh - ${theme.spacing(6)}px)`,
                         }}
                     >
+                        {localSession && !isLocalUserTeacher && (
+                            <Camera
+                                session={localSession}
+                                mediaStream={camera}
+                                muted
+                                square
+
+                                // GridProps - You can find related props by searching the keyword '...other' in camera.tsx
+                                item xs={12}
+                                style={{
+                                    padding: theme.spacing(0.5),
+                                    order: getCameraOrder(localSession, true)
+                                }}
+                            />
+                        )}
                         {isLocalUserTeacher && otherSessions.length === 0 ?
                             <Typography style={{ color: "rgb(200,200,200)", padding: 4 }}>
                                 <FormattedMessage id="no_participants" />
                             </Typography> :
-                            otherSessions.map(session =>
-                                <Camera
-                                    key={session.id}
-                                    session={session}
-                                    mediaStream={webrtc.getCameraStream(session.id)}
-                                    square={true}
-                                />)
+                            otherSessions.map(session => {
+                                return (
+                                    <Camera
+                                        key={session.id}
+                                        session={session}
+                                        mediaStream={webrtc.getCameraStream(session.id)}
+                                        square
+
+                                        // GridProps - You can find related props by searching the keyword '...other' in camera.tsx
+                                        item xs={12}
+                                        // xs={camGridItemXS} // TODO (Isu): This is planned by design.
+                                        style={{
+                                            padding: theme.spacing(0.5),
+                                            order: getCameraOrder(session, false)
+                                        }}
+                                    />
+                                )
+                            })
                         }
                     </Grid>
                 </Grid>
