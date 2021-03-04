@@ -47,7 +47,7 @@ import LanguageSelect from "./languageSelect";
 import CenterAlignChildren from "./centerAlignChildren";
 import { bottomNav, modePanel } from "../utils/layerValues";
 import { WebRTCSFUContext } from "../webrtc/sfu";
-import Camera, { CameraOrder } from "../components/media/camera";
+import Camera, { getCameraOrder } from "../components/media/camera";
 import { gql } from "apollo-boost";
 import { useMutation } from "@apollo/react-hooks";
 import { useDispatch, useSelector } from "react-redux";
