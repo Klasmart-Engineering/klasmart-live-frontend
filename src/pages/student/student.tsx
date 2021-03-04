@@ -5,7 +5,7 @@ import Grid from "@material-ui/core/Grid";
 import React, { useState, useEffect, useContext, useRef, useMemo } from "react";
 import { FormattedMessage } from "react-intl";
 import { LocalSession } from "../../entry";
-import { RoomContext } from "../room/room";
+import { ContentType, RoomContext, Session } from "../room/room";
 import { Whiteboard } from "../../whiteboard/components/Whiteboard";
 import WBToolbar from "../../whiteboard/components/Toolbar";
 import { Stream } from "../../webRTCState";
@@ -56,6 +56,7 @@ export function Student({ openDrawer }: {
     const rootDivRef = useRef<HTMLDivElement>(null);
     const [rootDivWidth, setRootDivWidth] = useState<number>(0);
     const [rootDivHeight, setRootDivHeight] = useState<number>(0);
+    const [session, setSession] = useState<Session>();
 
     const studentModeFilterGroups = useMemo(() => {
         return [sessionId];
@@ -67,32 +68,38 @@ export function Student({ openDrawer }: {
         setRootDivHeight(rootDivRef.current.clientHeight);
     }, [rootDivRef.current]);
 
-    if (!content || content.type == "Blank") {
-        return (
-            <div ref={rootDivRef} className={classes.root}>
-                <Grid item xs={12}>
-                    <Paper elevation={4} className={classes.paperContainer}>
-                        <Grid
-                            container
-                            direction="row"
-                            justify="space-between"
-                            alignItems="center"
-                            style={{ height: "100%" }}
-                        >
-                            <Grid item xs={12}>
-                                <Typography><FormattedMessage id={"hello"} values={{ name }} /></Typography>
-                                <Typography><FormattedMessage id={"waiting_for_class"} /></Typography>
-                            </Grid>
-                        </Grid>
-                    </Paper>
-                </Grid>
-            </div>
-        );
-    }
+    useEffect(() => {
+        if (content) {
+            const studentSession = sessions.get(content.contentId);
+            if (studentSession) {
+                setSession(studentSession);
+            }
+        }
+    }, [content]);
 
-    switch (content.type) {
-        case "Stream":
-            return (
+    return (
+        <>
+            {!content || content.type === ContentType.Blank &&
+                <div ref={rootDivRef} className={classes.root}>
+                    <Grid item xs={12}>
+                        <Paper elevation={4} className={classes.paperContainer}>
+                            <Grid
+                                container
+                                direction="row"
+                                justify="space-between"
+                                alignItems="center"
+                                style={{ height: "100%" }}
+                            >
+                                <Grid item xs={12}>
+                                    <Typography><FormattedMessage id={"hello"} values={{ name }} /></Typography>
+                                    <Typography><FormattedMessage id={"waiting_for_class"} /></Typography>
+                                </Grid>
+                            </Grid>
+                        </Paper>
+                    </Grid>
+                </div>
+            }
+            {content && content.type === ContentType.Stream &&
                 <div ref={rootDivRef} id="player-container" className={classes.root}>
                     <Whiteboard uniqueId="student">
                         <PreviewPlayer streamId={content.contentId} width={rootDivWidth} height={rootDivHeight} />
@@ -104,9 +111,8 @@ export function Student({ openDrawer }: {
                         </Typography>
                     </Grid> */}
                 </div>
-            );
-        case "Activity":
-            return (
+            }
+            {content && content.type === ContentType.Activity &&
                 <div ref={rootDivRef} className={classes.root}>
                     <Whiteboard group={sessionId} uniqueId="student" filterGroups={studentModeFilterGroups}>
                         {(rootDivRef && rootDivHeight) ?
@@ -125,65 +131,63 @@ export function Student({ openDrawer }: {
                         </Typography>
                     </Grid> */}
                 </div>
-            );
-        case "Audio":
-        case "Video":
-            return (
+            }
+            {/* {content && content.type === ContentType.Audio ? null : null } */}
+            {content && content.type === ContentType.Video &&
                 <div ref={rootDivRef} className={classes.root}>
                     <Whiteboard uniqueId="student">
                         <ReplicaMedia type={content.type === "Video" ? MaterialTypename.Video : MaterialTypename.Audio} style={{ width: "100%" }} sessionId={content.contentId} />
                     </Whiteboard>
                     <WBToolbar />
                 </div>
-            );
-        case "Image":
-            return <div ref={rootDivRef} className={classes.root}>
-                <Whiteboard uniqueId="student">
-                    <Grid container>
-                        <Grid container item style={{
-                            height: "100%",
-                            position: "absolute",
-                            left: 0,
-                            right: 0,
-                            zIndex: 1,
-                            // display: "block",
-                            backgroundImage: `url(${content.contentId})`,
-                            filter: "blur(8px)",
-                            WebkitFilter: "blur(8px)",
-                            backgroundPosition: "center",
-                            backgroundRepeat: "no-repeat",
-                            backgroundSize: "cover",
-                        }}
-                        />
-                        <img
-                            className={classes.imageFrame}
-                            src={content.contentId}
-                        />
-                    </Grid>
-                </Whiteboard>
-                <WBToolbar />
-            </div>;
-        case "Camera":
-            {
-                const session = sessions.get(content.contentId)
-                return <div ref={rootDivRef} className={classes.root}>
+            }
+            {content && content.type === ContentType.Image &&
+                <div ref={rootDivRef} className={classes.root}>
+                    <Whiteboard uniqueId="student">
+                        <Grid container>
+                            <Grid container item style={{
+                                height: "100%",
+                                position: "absolute",
+                                left: 0,
+                                right: 0,
+                                zIndex: 1,
+                                // display: "block",
+                                backgroundImage: `url(${content.contentId})`,
+                                filter: "blur(8px)",
+                                WebkitFilter: "blur(8px)",
+                                backgroundPosition: "center",
+                                backgroundRepeat: "no-repeat",
+                                backgroundSize: "cover",
+                            }}
+                            />
+                            <img
+                                className={classes.imageFrame}
+                                src={content.contentId}
+                            />
+                        </Grid>
+                    </Whiteboard>
+                    <WBToolbar />
+                </div>
+            }
+            {content && content.type === ContentType.Camera  &&
+                <div ref={rootDivRef} className={classes.root}>
                     <Typography variant="caption" align="center">{session ? session.name : undefined}</Typography>
                     <Whiteboard uniqueId="student">
                         <Stream stream={webrtc.getCameraStream(content.contentId)} />
                     </Whiteboard>
                     <WBToolbar />
-                </div>;
+                </div>
             }
-        case "Screen":
-            {
-                const session = sessions.get(content.contentId)
-                return <div ref={rootDivRef} className={classes.root}>
+            {content && content.type === ContentType.Screen &&
+                <div ref={rootDivRef} className={classes.root}>
                     <Typography variant="caption" align="center">{session ? session.name : undefined}</Typography>
                     <Whiteboard uniqueId="student">
                         <Stream stream={webrtc.getAuxStream(content.contentId)} />
                     </Whiteboard>
                     <WBToolbar />
-                </div>;
+                </div>
             }
-    }
+
+        </>
+    );
 }
