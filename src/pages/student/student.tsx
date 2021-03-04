@@ -4,7 +4,7 @@ import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import React, { useState, useEffect, useContext, useRef, useMemo } from "react";
 import { FormattedMessage } from "react-intl";
-import { UserContext } from "../../entry";
+import { LocalSession } from "../../entry";
 import { RoomContext } from "../room/room";
 import { Whiteboard } from "../../whiteboard/components/Whiteboard";
 import WBToolbar from "../../whiteboard/components/Toolbar";
@@ -46,10 +46,10 @@ const useStyles = makeStyles((theme: Theme) =>
 export function Student({ openDrawer }: {
     openDrawer: boolean
 }): JSX.Element {
-    const { content, users } = RoomContext.Consume();
+    const { content, sessions } = RoomContext.Consume();
     const classes = useStyles();
 
-    const { name, sessionId } = useContext(UserContext);
+    const { name, sessionId } = useContext(LocalSession);
     const webrtc = WebRTCSFUContext.Consume()
     const [streamId, setStreamId] = useState<string>();
 
@@ -165,7 +165,7 @@ export function Student({ openDrawer }: {
             </div>;
         case "Camera":
             {
-                const session = users.get(content.contentId)
+                const session = sessions.get(content.contentId)
                 return <div ref={rootDivRef} className={classes.root}>
                     <Typography variant="caption" align="center">{session ? session.name : undefined}</Typography>
                     <Whiteboard uniqueId="student">
@@ -176,7 +176,7 @@ export function Student({ openDrawer }: {
             }
         case "Screen":
             {
-                const session = users.get(content.contentId)
+                const session = sessions.get(content.contentId)
                 return <div ref={rootDivRef} className={classes.root}>
                     <Typography variant="caption" align="center">{session ? session.name : undefined}</Typography>
                     <Whiteboard uniqueId="student">

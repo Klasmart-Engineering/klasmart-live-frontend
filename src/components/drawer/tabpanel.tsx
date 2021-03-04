@@ -19,7 +19,7 @@ import { Settings } from "./settings";
 import InviteButton from "../invite";
 import StyledIcon from "../../components/styled/icon";
 import CenterAlignChildren from "../../components/centerAlignChildren";
-import { UserContext } from "../../entry";
+import { LocalSession } from "../../entry";
 import { MaterialTypename } from "../../lessonMaterialContext";
 import { State } from "../../store/store";
 import { ClassType } from "../../store/actions";
@@ -57,7 +57,7 @@ export function TabPanel(props: TabPanelProps) {
     const classes = useStyles();
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
-    const { teacher } = useContext(UserContext);
+    const { isTeacher } = useContext(LocalSession);
 
     const dispatch = useDispatch();
     const isMobileOnly = useSelector((state: State) => state.session.userAgent.isMobileOnly);
@@ -88,7 +88,7 @@ export function TabPanel(props: TabPanelProps) {
                     <Typography variant="body1" style={{ fontSize: isSmDown ? "unset" : "1rem" }}>
                         <CenterAlignChildren>
                             <FormattedMessage id={tab.title} />
-                            {teacher && tab.title === "title_participants" && !isLocalFile ?
+                            {isTeacher && tab.title === "title_participants" && !isLocalFile ?
                                 <IconButton aria-label="share popover" onClick={handleClick}>
                                     <ShareIcon size="1rem" />
                                 </IconButton> : null
@@ -125,7 +125,7 @@ export function TabPanel(props: TabPanelProps) {
 }
 
 function TabInnerContent({ title }: { title: string }) {
-    const { classtype, materials } = useContext(UserContext);
+    const { classtype, materials } = useContext(LocalSession);
     const classes = useStyles();
     const dispatch = useDispatch();
     const contentIndex = useSelector((store: State) => store.control.contentIndex);

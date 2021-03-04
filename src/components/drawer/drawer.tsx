@@ -16,7 +16,7 @@ import { InteractiveModeState } from "../../pages/room/room";
 import { State } from "../../store/store";
 import { ClassType } from "../../store/actions";
 import { setDrawerWidth, setDrawerOpen } from "../../store/reducers/control";
-import { UserContext } from "../../entry";
+import { LocalSession } from "../../entry";
 
 export const DRAWER_TOOLBAR_WIDTH = 64;
 
@@ -87,7 +87,7 @@ function DrawerToolbar({ interactiveModeState, streamId, material, tabIndex, set
     setTabIndex: React.Dispatch<React.SetStateAction<number>>,
     setMaterialKey: React.Dispatch<React.SetStateAction<number>>,
 }) {
-    const { classtype, teacher } = useContext(UserContext);
+    const { classtype, isTeacher } = useContext(LocalSession);
     const classes = useStyles();
     const theme = useTheme();
     const dispatch = useDispatch();
@@ -126,7 +126,7 @@ function DrawerToolbar({ interactiveModeState, streamId, material, tabIndex, set
                 >
                     {classtype === ClassType.CLASSES ? (
                         TABS.filter((t) => t.cType === ClassType.CLASSES).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} className={index === tabIndex ? classes.tabSelected : ""} title={tab.title} handlers={{ setDrawerOpen: (open: boolean) => dispatch(setDrawerOpen(open)), setTabIndex }} value={index}>{tab.icon}</StyledTab>)
-                    ) : teacher ?
+                    ) : isTeacher ?
                             TABS.filter((t) => t.userType !== 1).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} className={index === tabIndex ? classes.tabSelected : ""} title={tab.title} handlers={{ setDrawerOpen: (open: boolean) => dispatch(setDrawerOpen(open)), setTabIndex }} value={index}>{tab.icon}</StyledTab>) :
                             TABS.filter((t) => t.userType !== 0).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} className={index === tabIndex ? classes.tabSelected : ""} title={tab.title} handlers={{ setDrawerOpen: (open: boolean) => dispatch(setDrawerOpen(open)), setTabIndex }} value={index}>{tab.icon}</StyledTab>)
                     }

@@ -11,7 +11,7 @@ import { Session, ContentIndexState, InteractiveModeState, StreamIdState, RoomCo
 import { Theme, Card, useTheme, CardContent, Hidden } from "@material-ui/core";
 import { PreviewPlayer } from "../../components/previewPlayer";
 import { Stream } from "../../webRTCState";
-import { UserContext } from "../../entry";
+import { LocalSession } from "../../entry";
 import { gql } from "apollo-boost";
 import { useMutation } from "@apollo/react-hooks";
 import { Whiteboard } from "../../whiteboard/components/Whiteboard";
@@ -82,9 +82,9 @@ interface Props {
 }
 
 export function Teacher(props: Props): JSX.Element {
-    const { roomId, sessionId, materials, name } = useContext(UserContext);
+    const { roomId, sessionId, materials, name } = useContext(LocalSession);
     const screenShare = ScreenShare.Consume()
-    const { content, users } = RoomContext.Consume()
+    const { content, sessions } = RoomContext.Consume()
 
     const classes = useStyles();
     const { openDrawer, handleOpenDrawer, contentIndexState, interactiveModeState, streamIdState, numColState } = props;
@@ -145,8 +145,8 @@ export function Teacher(props: Props): JSX.Element {
                         <FormattedMessage id="student_mode" />
                     </Typography>
                     <Grid container direction="row" spacing={1} item xs={12}>
-                        {[...users.entries()].filter(([, s]) => s.id !== sessionId).map(([id, session]) =>
-                            <StudentPreviewCard key={id} sessionId={sessionId} session={session} numColState={numColState} />
+                        {[...sessions.values()].filter(s => s.id !== sessionId).map(session =>
+                            <StudentPreviewCard key={session.id} sessionId={sessionId} session={session} numColState={numColState} />
                         )}
                     </Grid>
                 </> :

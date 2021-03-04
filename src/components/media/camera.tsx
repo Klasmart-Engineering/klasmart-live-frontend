@@ -27,7 +27,7 @@ import { Circle as CircleIcon } from "@styled-icons/boxicons-solid/Circle"
 import { MuteNotification, WebRTCSFUContext } from "../../webrtc/sfu";
 import { Session } from "../../pages/room/room";
 import StyledIcon from "../styled/icon";
-import { UserContext } from "../../entry";
+import { LocalSession } from "../../entry";
 import { isElementInViewport } from "../../utils/viewport";
 import PermissionControls from "../../whiteboard/components/WBPermissionControls";
 import TrophyControls from "../trophies/trophyControls";
@@ -67,7 +67,7 @@ interface CameraProps {
 }
 
 export default function Camera({ session, mediaStream, muted, square, noBorderRadius }: CameraProps): JSX.Element {
-    const { sessionId: userSelfSessionId } = useContext(UserContext);
+    const { sessionId: userSelfSessionId } = useContext(LocalSession);
     const isSelf = session
         ? session.id === userSelfSessionId
         : true; // e.g. <Camera /> without session in join.tsx
@@ -348,7 +348,7 @@ export function MoreControlsButton({ sessionId, isSelf, cameraRef }: {
     const { moreControlsMenuItem } = useStyles();
     const theme = useTheme();
 
-    const { teacher } = useContext(UserContext);
+    const { isTeacher } = useContext(LocalSession);
     const sfuState = WebRTCSFUContext.Consume();
 
     const [moreEl, setMoreEl] = useState<null | HTMLElement>(null);
@@ -384,7 +384,7 @@ export function MoreControlsButton({ sessionId, isSelf, cameraRef }: {
                 1. isSelf: User do not have to control user's own permissions.
                 2. !teacher: If User are not teacher, user cannot control other's permissions.
             */}
-            {isSelf || !teacher ? null :
+            {isSelf || !isTeacher ? null :
                 <List>
                     <List
                         disablePadding
@@ -438,7 +438,7 @@ function ToggleCamera({ sessionId, sfuState, cameraRef }: {
     cameraRef: React.RefObject<HTMLElement>
 }): JSX.Element {
     const { noHoverIcon, moreControlsMenuItem } = useStyles();
-    const { roomId } = useContext(UserContext);
+    const { roomId } = useContext(LocalSession);
 
     const [cameraOn, setCameraOn] = useState<boolean>(false);
     const [isVideoManuallyDisabled, setIsVideoManuallyDisabled] = useState<boolean>(false);
@@ -519,7 +519,7 @@ function ToggleMic({ sessionId, sfuState }: {
     sfuState: WebRTCSFUContext
 }): JSX.Element {
     const { noHoverIcon, moreControlsMenuItem } = useStyles();
-    const { roomId } = useContext(UserContext);
+    const { roomId } = useContext(LocalSession);
     const [micOn, setMicOn] = useState<boolean>(false);
 
     useEffect(() => {

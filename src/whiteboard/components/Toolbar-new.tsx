@@ -28,7 +28,7 @@ import PurpleCrayon from "../../assets/img/canvas/crayons/purple.svg";
 import BrownCrayon from "../../assets/img/canvas/crayons/brown.svg";
 import Eraser from "../../assets/img/canvas/eraser.svg";
 import { ClassType } from "../../store/actions";
-import { UserContext } from "../../entry";
+import { LocalSession } from "../../entry";
 
 type Props = {
     children?: ReactChild | ReactChildren | null | any;
@@ -41,10 +41,10 @@ export const WBToolbar: FunctionComponent<Props> = ({ children }: Props): JSX.El
     const { state: { display, permissions } } = useSynchronizedState();
     const { state: { tools }, actions: { selectTool, selectColorByValue, clear } } = useToolbarContext();
 
-    const { classtype, teacher, sessionId } = useContext(UserContext);
+    const { classtype, isTeacher, sessionId } = useContext(LocalSession);
     const [activedColor, setActivedColor] = useState({ black: false, blue: false, qingse: false, green: false, orange: false, red: false, yellow: false, pink: false, purple: false, brown: false });
     const [activedTool, setActivedTool] = useState({ move: false, line: false, text: false, erase: false, clear: false });
-    const forStudent = classtype === ClassType.STUDY || !teacher;
+    const forStudent = classtype === ClassType.STUDY || !isTeacher;
 
     useEffect(() => {
         selectLine();
@@ -91,7 +91,7 @@ export const WBToolbar: FunctionComponent<Props> = ({ children }: Props): JSX.El
                         backgroundColor: crayon ? "transparent" : colorValue,
                         border: actived ? `${isSmDown ? 2 : 5}px solid ${"#1B365D"}` : 0
                     }} // TODO: Handle when Dark mode
-                    onClick={teacher ? onClick : (e) => {
+                    onClick={isTeacher ? onClick : (e) => {
                         onClick(e);
                         selectTool("line");
                     }}

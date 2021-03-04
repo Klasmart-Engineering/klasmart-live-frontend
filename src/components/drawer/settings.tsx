@@ -13,7 +13,7 @@ import LanguageSelect from "../../components/languageSelect";
 import { State } from "../../store/store";
 import { ClassType } from "../../store/actions";
 import { setColsCamera, setColsObserve } from "../../store/reducers/control";
-import { UserContext } from "../../entry";
+import { LocalSession } from "../../entry";
 
 const OPTION_COLS_CAMERA = [
     { id: "option-cols-camera-2", title: <FormattedMessage id="two_columns" />, value: 2 },
@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme: Theme) =>
 export function Settings() {
     const theme = useTheme();
     const { spacing, formControlSelect } = useStyles();
-    const { classtype, teacher } = useContext(UserContext);
+    const { classtype, isTeacher } = useContext(LocalSession);
     const dispatch = useDispatch();
     const colsCamera = useSelector((state: State) => state.control.colsCamera);
     const colsObserve = useSelector((state: State) => state.control.colsObserve);
@@ -93,7 +93,7 @@ export function Settings() {
                     </Grid>
                 </>}
 
-                {!teacher ? null : <>
+                {!isTeacher ? null : <>
                     <div className={spacing} />
                     <Grid item xs={12}>
                         <Typography variant="caption" color="textSecondary">

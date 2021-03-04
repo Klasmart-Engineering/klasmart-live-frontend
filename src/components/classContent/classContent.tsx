@@ -10,7 +10,7 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBackIos';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForwardIos';
 
 import { WBToolbarContainer, WB_TOOLBAR_MAX_HEIGHT } from "./WBToolbar"
-import { UserContext } from "../../entry";
+import { LocalSession } from "../../entry";
 import { State } from "../../store/store";
 import { ClassType } from "../../store/actions";
 import { Whiteboard } from "../../whiteboard/components/Whiteboard-new";
@@ -23,7 +23,7 @@ export function ClassContentContainer({ contentIndexState, materialKey, recomman
     materialKey: number,
     recommandUrl?: string,
 }) {
-    const { classtype } = useContext(UserContext);
+    const { classtype } = useContext(LocalSession);
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down('sm'));
     const drawerOpen = useSelector((state: State) => state.control.drawerOpen);
@@ -56,15 +56,15 @@ function ClassContent({ contentIndexState, recommandUrl }: {
     contentIndexState: ContentIndexState,
     recommandUrl?: string
 }) {
-    const { classtype, teacher, materials } = useContext(UserContext);
+    const { classtype, isTeacher, materials } = useContext(LocalSession);
     const { contentIndex, setContentIndex } = contentIndexState;
-    console.log(classtype, teacher, materials, contentIndex)
+    console.log(classtype, isTeacher, materials, contentIndex)
     const iframeRef = useRef<HTMLIFrameElement>(null);
 
     const rootDivRef = useRef<HTMLDivElement>(null);
     const [squareSize, setSquareSize] = useState<number>(0);
 
-    const forStudent = classtype === ClassType.STUDY || !teacher;
+    const forStudent = classtype === ClassType.STUDY || !isTeacher;
 
     useEffect(() => {
         if (!rootDivRef || !rootDivRef.current) { return; }

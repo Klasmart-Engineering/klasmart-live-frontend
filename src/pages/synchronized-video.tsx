@@ -8,7 +8,7 @@ import React, {
 import { useSubscription, useMutation } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
 import { CircularProgress, Typography, IconButton } from "@material-ui/core";
-import { UserContext } from "../entry";
+import { LocalSession } from "../entry";
 import { MaterialTypename } from "../lessonMaterialContext";
 import { FFT } from "../components/fft";
 import ReactPlayer from "../components/react-player/lazy";
@@ -73,7 +73,7 @@ export function ReplicaMedia(
 
     const [muted, setMuted] = useState<boolean>(isSafari);
 
-    const { roomId } = useContext(UserContext);
+    const { roomId } = useContext(LocalSession);
 
     const ref = useRef<HTMLMediaElement>(null);
     const reactPlayerRef = useRef<ReactPlayer>(null);
@@ -290,7 +290,7 @@ export function ReplicatedMedia(
     >(undefined);
     const [playing, setPlaying] = useState<boolean>(false);
 
-    const { roomId, sessionId } = useContext(UserContext);
+    const { roomId, sessionId } = useContext(LocalSession);
 
     const [send, { loading, error }] = useMutation(
         gql`
