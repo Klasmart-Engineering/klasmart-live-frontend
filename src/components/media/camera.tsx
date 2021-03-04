@@ -2,7 +2,7 @@ import React, { useRef, useContext, useEffect, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { Theme, useTheme, createStyles, makeStyles, withStyles } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
-import Grid from "@material-ui/core/Grid";
+import Grid, { GridProps } from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import Tooltip from "@material-ui/core/Tooltip";
@@ -60,24 +60,48 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export enum CameraOrder {
     DEFAULT = 0,
-    // HOST_TEACHER = 1, // TODO
-    TEACHER = 2,
-    // SPEAKING_STUDENT = 3, // TODO: https://calmisland.atlassian.net/browse/KL-3907
-    SELF_STUDENT = 4,
-    STUDENT = 5,
+    HOST_TEACHER = 1,
+    TEACHER_SELF = 2,
+    TEACHER = 3,
+    // STUDENT_SPEAKING = 4, // TODO: https://calmisland.atlassian.net/browse/KL-3907
+    STUDENT_SELF = 9,
+    STUDENT = 10,
 }
 
-interface CameraProps {
+export function getCameraOrder(userSession: Session, isLocalUser: boolean): CameraOrder {
+    let order: CameraOrder;
+    if (userSession.isHost)
+        order = CameraOrder.HOST_TEACHER;
+    else if (userSession.isTeacher && isLocalUser)
+        order = CameraOrder.TEACHER_SELF;
+    else if (userSession.isTeacher)
+        order = CameraOrder.TEACHER;
+    else if (isLocalUser)
+        order = CameraOrder.STUDENT_SELF;
+    else
+        order = CameraOrder.STUDENT
+    return order;
+}
+
+interface CameraProps extends GridProps {
     session?: Session;
     mediaStream?: MediaStream;
     muted?: boolean;
     square?: boolean;
     noBorderRadius?: boolean;
-    order?: CameraOrder;
     hidden?: boolean; // Maybe this prop will be deleted after classroom layout renewal.
 }
 
-export default function Camera({ session, mediaStream, muted, square, noBorderRadius }: CameraProps): JSX.Element {
+export default function Camera({
+    session,
+    mediaStream,
+    muted,
+    square,
+    noBorderRadius,
+    ...other
+}: CameraProps): JSX.Element {
+    const theme = useTheme();
+
     const { sessionId: userSelfSessionId } = useContext(LocalSessionContext);
     const isSelf = session
         ? session.id === userSelfSessionId
@@ -97,64 +121,66 @@ export default function Camera({ session, mediaStream, muted, square, noBorderRa
 
     const cameraRef = useRef<HTMLDivElement>(null);
     return (
-        <Paper
-            ref={cameraRef}
-            component="div"
-            elevation={2}
-            style={{
-                position: "relative",
-                width: "100%",
-                backgroundColor: "#193d6f",
-                borderRadius: noBorderRadius ? 0 : 12,
-                height: 0,
-                paddingBottom: square ? "75%" : "56.25%",
-            }}
-        >
-            {session ? <ParticipantInfo session={session} isSelf={isSelf} /> : null}
-            {mediaStream ?
-                <>
-                    {session ? <>
-                        <MediaIndicators sessionId={session.id} />
-                        <MoreControlsButton sessionId={session.id} isSelf={isSelf} cameraRef={cameraRef} />
-                    </> : null}
-                    <video
-                        id={session ? `camera:${session.id}` : undefined}
-                        autoPlay={true}
-                        muted={true}
-                        playsInline
+        <Grid {...other}>
+            <Paper
+                ref={cameraRef}
+                component="div"
+                elevation={2}
+                style={{
+                    position: "relative",
+                    width: "100%",
+                    backgroundColor: "#193d6f",
+                    borderRadius: noBorderRadius ? 0 : 12,
+                    height: 0,
+                    paddingBottom: square ? "75%" : "56.25%",
+                }}
+            >
+                {session ? <ParticipantInfo session={session} isSelf={isSelf} /> : null}
+                {mediaStream ?
+                    <>
+                        {session ? <>
+                            <MediaIndicators sessionId={session.id} />
+                            <MoreControlsButton sessionId={session.id} isSelf={isSelf} cameraRef={cameraRef} />
+                        </> : null}
+                        <video
+                            id={session ? `camera:${session.id}` : undefined}
+                            autoPlay={true}
+                            muted={true}
+                            playsInline
+                            style={{
+                                backgroundColor: "#000",
+                                borderRadius: 12,
+                                objectFit: "cover",
+                                position: "absolute",
+                                top: 0,
+                                left: 0,
+                                width: "100%",
+                                height: "100%",
+                            }}
+                            ref={videoRef}
+                        />
+                        <audio
+                            autoPlay={true}
+                            muted={muted}
+                            ref={audioRef}
+                        />
+                    </> :
+                    <Typography
+                        align="center"
                         style={{
-                            backgroundColor: "#000",
-                            borderRadius: 12,
-                            objectFit: "cover",
+                            color: "#FFF",
+                            top: "50%",
+                            left: "50%",
+                            marginRight: "-50%",
                             position: "absolute",
-                            top: 0,
-                            left: 0,
-                            width: "100%",
-                            height: "100%",
+                            transform: "translate(-50%, -50%)",
                         }}
-                        ref={videoRef}
-                    />
-                    <audio
-                        autoPlay={true}
-                        muted={muted}
-                        ref={audioRef}
-                    />
-                </> :
-                <Typography
-                    align="center"
-                    style={{
-                        color: "#FFF",
-                        top: "50%",
-                        left: "50%",
-                        marginRight: "-50%",
-                        position: "absolute",
-                        transform: "translate(-50%, -50%)",
-                    }}
-                >
-                    <CameraOffIcon size="1.5rem" />
-                </Typography>
-            }
-        </Paper>
+                    >
+                        <CameraOffIcon size="1.5rem" />
+                    </Typography>
+                }
+            </Paper>
+        </Grid>
     );
 }
 
@@ -218,27 +244,21 @@ function ParticipantInfo({ session, isSelf }: { session: Session, isSelf: boolea
             }
 
             {/* CrownIcon for host teacher */}
-            {/* 
-                TODO: Host - teacher who can control the classroom(like toggle classroom mode, grant mic/cam permission, whiteboard permission, etc.)
-                As of now, there is no way to know who is the host teacher. Feb 18, 2021
-                https://calmisland.atlassian.net/browse/KL-3508
-            */}
-            {/* 
-                {session.isTeacher && session.isHost ?
-                    <Grid item className={iconGrid}>
-                        <StyledIcon
-                            icon={<CrownIcon />}
-                            size="small"
-                            color="#C9940D"
-                            tooltip={{
-                                children: <CrownIcon />,
-                                placement: "top",
-                                title: <FormattedMessage id="camera_participantInfo_crownIcon_tooltip" />,
-                            }}
-                        />
-                    </Grid> : null
-                }
-            */}
+            {/* host: teacher who can control the classroom(like toggle classroom mode, grant mic/cam permission, whiteboard permission, etc.) */}
+            {session.isTeacher && session.isHost ?
+                <Grid item className={iconGrid}>
+                    <StyledIcon
+                        icon={<CrownIcon />}
+                        size="small"
+                        color="#C9940D"
+                        tooltip={{
+                            children: <CrownIcon />,
+                            placement: "top",
+                            title: <FormattedMessage id="camera_participantInfo_crownIcon_tooltip" />
+                        }}
+                    />
+                </Grid> : null
+            }
         </Grid>
     )
 }
