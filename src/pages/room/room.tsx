@@ -40,7 +40,7 @@ export interface Session {
 }
 
 export interface Content {
-    type: "Blank" | "Stream" | "Activity" | "Video" | "Audio" | "Image" | "Camera" | "Screen",
+    type: ContentType,
     contentId: string,
 }
 
