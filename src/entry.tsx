@@ -86,8 +86,8 @@ export interface ILocalSessionContext {
     sessionId: string,
     name?: string,
     setName: React.Dispatch<React.SetStateAction<string | undefined>>
-    camera?: MediaStream | null,
-    setCamera: React.Dispatch<React.SetStateAction<MediaStream | undefined | null>>,
+    camera?: MediaStream,
+    setCamera: React.Dispatch<React.SetStateAction<MediaStream | undefined>>,
 }
 
 export const ThemeContext = createContext<IThemeContext>({ themeMode: "", setThemeMode: () => null, languageCode: "", setLanguageCode: () => null } as any as IThemeContext);
@@ -157,7 +157,7 @@ if (params && params.name) {
     LogRocket.identify(params.name, { sessionId })
 }
 function Entry() {
-    const [camera, setCamera] = useState<MediaStream | null>();
+    const [camera, setCamera] = useState<MediaStream>();
     const [name, setName] = useState(params ? params.name : "");
     const [languageCode, setLanguageCode] = useState(url.searchParams.get("lang") || getDefaultLanguageCode());
     const [themeMode, setThemeMode] = useState(url.searchParams.get("theme") || "light");

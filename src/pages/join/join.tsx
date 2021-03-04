@@ -143,8 +143,8 @@ export default function Join(): JSX.Element {
             audio: { deviceId: audioDeviceId },
             video: {
                 deviceId: videoDeviceId,
-                width: { ideal: 1280 },
-                height: { ideal: 720 }
+                width: { ideal: 1024 },
+                height: { ideal: 576 }
             }
         }).then((s) => {
             setStream(s);
@@ -336,7 +336,7 @@ function JoinRoomForm({
             setName(user);
             LogRocket.identify(user, { sessionId })
         }
-        setCamera(stream || null);
+        setCamera(stream);
     }
 
     return (
