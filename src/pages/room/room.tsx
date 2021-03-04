@@ -12,6 +12,24 @@ import { Live } from "./live";
 import Loading from "../../components/loading";
 import { EventEmitter } from "eventemitter3"
 
+export enum ContentType {
+    Blank = "Blank",
+    Stream = "Stream",
+    Activity = "Activity",
+    Video = "Video",
+    Audio = "Audio",
+    Image = "Image",
+    Camera = "Camera",
+    Screen = "Screen",
+}
+
+// TODO create a new file for enums
+export enum InteractiveMode {
+    Blank,
+    Present,
+    Observe,
+    ShareScreen,
+}
 export interface Session {
     id: string
     name?: string
