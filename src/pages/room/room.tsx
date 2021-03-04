@@ -5,7 +5,7 @@ import { FormattedMessage } from "react-intl";
 import { useTheme, useMediaQuery } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
-import { sessionId, UserContext } from "../../entry";
+import { sessionId, LocalSession } from "../../entry";
 import { Study } from "./study";
 import { Classes } from "./classes";
 import { Live } from "./live";
@@ -48,11 +48,11 @@ export interface StreamIdState {
 }
 
 interface Props {
-    teacher: boolean
+    isTeacher: boolean
 }
 
-export function Room({ teacher }: Props): JSX.Element {
-    const { classtype } = useContext(UserContext);
+export function Room({ isTeacher }: Props): JSX.Element {
+    const { classtype } = useContext(LocalSession);
 
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
@@ -97,7 +97,7 @@ export function Room({ teacher }: Props): JSX.Element {
         default:
             return (
                 <Live
-                    teacher={teacher}
+                    isTeacher={isTeacher}
                     openDrawer={openDrawer}
                     handleOpenDrawer={handleOpenDrawer}
                     contentIndexState={{ contentIndex, setContentIndex }}
@@ -127,7 +127,7 @@ const SUB_ROOM = gql`
 const context = createContext<{ value: RoomContext }>(undefined as any);
 export class RoomContext {
     public static Provide(props: { children?: JSX.Element | JSX.Element[] }) {
-        const { roomId, name } = useContext(UserContext);
+        const { roomId, name } = useContext(LocalSession);
 
         const ref = useRef<RoomContext>(undefined as any)
         const [value, rerender] = useReducer(() => ({ value: ref.current }), { value: ref.current })
@@ -189,13 +189,13 @@ export class RoomContext {
         this.rerender()
     }
 
-    public users = new Map<string, Session>()
+    public sessions = new Map<string, Session>()
     private userJoin(join: Session) {
-        this.users.set(join.id, join);
+        this.sessions.set(join.id, join);
         this.rerender()
     }
     private userLeave(leave: Session) {
-        this.users.delete(leave.id);
+        this.sessions.delete(leave.id);
         this.rerender()
     }
 

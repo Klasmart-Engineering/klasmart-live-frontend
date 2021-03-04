@@ -77,10 +77,10 @@ export interface IThemeContext {
     setLanguageCode: React.Dispatch<React.SetStateAction<string>>
 }
 
-export interface IUserContext {
+export interface ILocalSession {
     classtype: string, // "live" | "class" | "study" | "task"
     org_id: string,
-    teacher: boolean,
+    isTeacher: boolean,
     materials: LessonMaterial[],
     roomId: string,
     sessionId: string,
@@ -91,7 +91,7 @@ export interface IUserContext {
 }
 
 export const ThemeContext = createContext<IThemeContext>({ themeMode: "", setThemeMode: () => null, languageCode: "", setLanguageCode: () => null } as any as IThemeContext);
-export const UserContext = createContext<IUserContext>({ setName: () => null, roomId: "", materials: [], teacher: false } as any as IUserContext);
+export const LocalSession = createContext<ILocalSession>({ setName: () => null, roomId: "", materials: [], isTeacher: false } as any as ILocalSession);
 
 const url = new URL(window.location.href)
 if (url.hostname !== "localhost" && url.hostname !== "live.beta.kidsloop.net") {
@@ -118,7 +118,7 @@ function parseToken() {
             return {
                 classtype: payload.classtype ? String(payload.classtype) : "live",
                 org_id: payload.org_id ? String(payload.org_id) : "",
-                teacher: payload.teacher ? Boolean(payload.teacher) : false,
+                isTeacher: payload.teacher ? Boolean(payload.teacher) : false,
                 name: payload.name ? String(payload.name) : undefined,
                 roomId: String(payload.roomid),
                 materials: parsedMaterials || [],
@@ -145,7 +145,7 @@ function Entry() {
         setLanguageCode,
     }), [themeMode, setThemeMode, languageCode, setLanguageCode]);
 
-    const userContext = useMemo<IUserContext>(() => ({
+    const localSession = useMemo<ILocalSession>(() => ({
         classtype: params ? params.classtype : "live",
         org_id: params ? params.org_id : "",
         camera,
@@ -154,7 +154,7 @@ function Entry() {
         setName,
         sessionId,
         roomId: params ? params.roomId : "",
-        teacher: params ? params.teacher : false,
+        isTeacher: params ? params.isTeacher : false,
         materials: params ? params.materials : null
     }), [camera, setCamera, name, setName, params]);
 
@@ -179,14 +179,14 @@ function Entry() {
 
     return (
         <ThemeContext.Provider value={themeContext}>
-            <UserContext.Provider value={userContext}>
+            <LocalSession.Provider value={localSession}>
                 <RawIntlProvider value={locale}>
                     <ThemeProvider theme={themeProvider(languageCode, themeMode)}>
                         <CssBaseline />
                         {!params ? <Typography><FormattedMessage id="error_invaild_token" /></Typography> : <App />}
                     </ThemeProvider>
                 </RawIntlProvider>
-            </UserContext.Provider>
+            </LocalSession.Provider>
         </ThemeContext.Provider>
     );
 }

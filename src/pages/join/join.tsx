@@ -19,7 +19,7 @@ import Button from '@material-ui/core/Button';
 import { InfoCircle as InfoCircleIcon } from "@styled-icons/boxicons-solid/InfoCircle";
 import StyledIcon from "../../components/styled/icon";
 
-import { UserContext } from "../../entry";
+import { LocalSession } from "../../entry";
 import StyledButton from "../../components/styled/button";
 import StyledTextField from "../../components/styled/textfield";
 import Camera from "../../components/media/camera";
@@ -52,7 +52,7 @@ export default function Join(): JSX.Element {
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
 
-    const { classtype } = useContext(UserContext);
+    const { classtype } = useContext(LocalSession);
 
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
     const handleDialogClose = () => setDialogOpen(false);
@@ -279,11 +279,11 @@ function CameraPreviewFallback({ permissionError }: { permissionError: boolean }
 
 function KidsLoopLogo(): JSX.Element {
     const { logo } = useStyles();
-    const { classtype, teacher } = useContext(UserContext);
+    const { classtype, isTeacher } = useContext(LocalSession);
     const IMG_HEIGHT = "64px";
     // TODO: Logo asset for ClassType.CLASSES
     return (classtype === ClassType.LIVE
-        ? <img alt="KidsLoop Live" src={teacher ? KidsLoopLiveTeachers : KidsLoopLiveStudents} height={IMG_HEIGHT} className={logo} />
+        ? <img alt="KidsLoop Live" src={isTeacher ? KidsLoopLiveTeachers : KidsLoopLiveStudents} height={IMG_HEIGHT} className={logo} />
         : <img alt="KidsLoop Live" src={classtype === ClassType.CLASSES ? KidsLoopLiveTeachers : KidsLoopStudyStudents} height={IMG_HEIGHT} className={logo} />
     )
 }
@@ -311,7 +311,7 @@ function JoinRoomForm({
     audioDeviceIdHandler,
     videoDeviceIdHandler
 }: JoinRoomFormProps): JSX.Element {
-    const { classtype, setCamera, name, setName, sessionId } = useContext(UserContext);
+    const { classtype, setCamera, name, setName, sessionId } = useContext(LocalSession);
 
     const { audioDeviceId, setAudioDeviceId } = audioDeviceIdHandler;
     const { videoDeviceId, setVideoDeviceId } = videoDeviceIdHandler;
@@ -402,7 +402,7 @@ function PermissionAlertDialog({ dialogOpenHandler }: {
         handleDialogClose: () => void
     }
 }) {
-    const { classtype } = useContext(UserContext);
+    const { classtype } = useContext(LocalSession);
     const { dialogOpen, handleDialogClose } = dialogOpenHandler;
 
     return (

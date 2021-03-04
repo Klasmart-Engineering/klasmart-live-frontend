@@ -8,7 +8,7 @@ import { WebRTCSFUContext } from "../../webrtc/sfu";
 import { GlobalWhiteboardContext } from "../../whiteboard/context-providers/GlobalWhiteboardContext";
 
 interface LiveProps {
-    teacher: boolean;
+    isTeacher: boolean;
     openDrawer: boolean;
     handleOpenDrawer: (open?: boolean) => void;
     contentIndexState: ContentIndexState;
@@ -19,7 +19,7 @@ interface LiveProps {
 }
 
 export function Live({
-    teacher,
+    isTeacher,
     openDrawer,
     handleOpenDrawer,
     contentIndexState,
@@ -33,7 +33,7 @@ export function Live({
             <ScreenShare.Provide>
                 <GlobalWhiteboardContext>
                     <Layout
-                        isTeacher={teacher}
+                        isTeacher={isTeacher}
                         openDrawer={openDrawer}
                         handleOpenDrawer={handleOpenDrawer}
                         contentIndexState={contentIndexState}
@@ -43,7 +43,7 @@ export function Live({
                         setNumColState={setNumColState}
                     >
                         {
-                            teacher
+                            isTeacher
                                 ? <Teacher
                                     openDrawer={openDrawer}
                                     handleOpenDrawer={handleOpenDrawer}

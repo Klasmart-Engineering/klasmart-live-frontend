@@ -3,7 +3,7 @@ import { CSSProperties } from "@material-ui/core/styles/withStyles";
 import { whiteboard } from "../../utils/layerValues";
 import { useSynchronizedState } from "../context-providers/SynchronizedStateProvider";
 import { WhiteboardCanvas } from "kidsloop-canvas/lib/domain/whiteboard/WhiteboardCanvas";
-import { UserContext } from "../../entry";
+import { LocalSession } from "../../entry";
 
 type Props = {
     uniqueId: string;
@@ -20,7 +20,7 @@ type Props = {
 export function Whiteboard({ group, children, width, height, filterUsers, filterGroups, uniqueId, centerHorizontally, centerVertically }: Props): JSX.Element {
     const { state: { permissions, display } } = useSynchronizedState();
 
-    const { sessionId } = useContext(UserContext);
+    const { sessionId } = useContext(LocalSession);
 
     const canvasUserId = useMemo(() => {
         if (group) {

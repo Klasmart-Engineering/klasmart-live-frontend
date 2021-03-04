@@ -35,7 +35,7 @@ import { ViewList as ListIcon } from "@styled-icons/material/ViewList";
 import { Share as ShareIcon } from "@styled-icons/material/Share";
 
 import { GlobalCameraControl } from "../webRTCState";
-import { UserContext } from "../entry";
+import { LocalSession } from "../entry";
 import { Session, Message, ContentIndexState, InteractiveModeState, StreamIdState, RoomContext } from "../pages/room/room";
 import Toolbar from "../whiteboard/components/Toolbar";
 import ModeControls from "../pages/teacher/modeControls";
@@ -207,7 +207,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const MessageContext = createContext(new Map<string, Message>());
-const UsersContext = createContext(new Map<string, Session>());
+const SessionsContext = createContext(new Map<string, Session>());
 
 interface TabPanelProps {
     contentIndexState?: ContentIndexState;
@@ -224,7 +224,7 @@ function TabPanel(props: TabPanelProps) {
     const classes = useStyles();
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
-    const { teacher } = useContext(UserContext);
+    const { isTeacher } = useContext(LocalSession);
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -247,7 +247,7 @@ function TabPanel(props: TabPanelProps) {
                     <Typography variant="body1" style={{ fontSize: isSmDown ? "unset" : "1rem" }}>
                         <CenterAlignChildren>
                             <FormattedMessage id={tab.title} />
-                            {teacher && tab.title === "title_participants" ?
+                            {isTeacher && tab.title === "title_participants" ?
                                 <IconButton aria-label="share popover" onClick={handleClick}>
                                     <ShareIcon size="1rem" />
                                 </IconButton> : null
@@ -342,23 +342,20 @@ function TabInnerContent({ contentIndexState, title, numColState, setNumColState
     const classes = useStyles();
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
-    const { camera, roomId, sessionId: localSessionId, materials, teacher: isLocalUserTeacher } = useContext(UserContext);
-    const users = useContext(UsersContext);
+    const { camera, roomId, sessionId: localSessionId, materials, isTeacher: isLocalUserTeacher } = useContext(LocalSession);
+    const sessions = useContext(SessionsContext);
     const isMdUpTeacher = isLocalUserTeacher && !isSmDown;
     const [gridMode, setGridMode] = useState(true)
     const [hostMutation] = useMutation(MUTATION_SET_HOST);
-    const setHost = (roomId: string) => {
-        const sessions = [...users.values()]
-        const teachers = sessions.filter(session => session.isTeacher === true).sort((a, b) => a.joinedAt - b.joinedAt);
+
+    useEffect(() => {
+        const teachers = [...sessions.values()].filter(session => session.isTeacher === true).sort((a, b) => a.joinedAt - b.joinedAt);
         const host = teachers.find(session => session.isHost === true);
         if (!host && teachers.length) {
             const hostId = teachers[0].id;
             hostMutation({ variables: { roomId, hostId } })
         }
-    }
-    useEffect(() => {
-        setHost(roomId)
-    }, [users, users.size])
+    }, [sessions, sessions.size])
 
     const changeNumColState = (num: number) => {
         if (!setNumColState) { return; }
@@ -369,9 +366,8 @@ function TabInnerContent({ contentIndexState, title, numColState, setNumColState
         case "title_participants":
             const webrtc = WebRTCSFUContext.Consume()
             // TODO: Improve performance as order in flexbox instead of .filter()
-            const localSession = users.get(localSessionId);
-            const sessions = [...users.values()]
-            const otherSessions = sessions.filter(session => session.id !== localSessionId);
+            const localSession = sessions.get(localSessionId);
+            const otherSessions = [...sessions.values()].filter(session => session.id !== localSessionId);
 
             return (
                 <Grid container direction="row" justify="flex-start" alignItems="center" style={{ flex: 1 }}>
@@ -562,12 +558,12 @@ interface Props {
 }
 
 export default function Layout(props: Props): JSX.Element {
-    const { users, messages } = RoomContext.Consume()
+    const { sessions , messages } = RoomContext.Consume()
     const { children, isTeacher, openDrawer, handleOpenDrawer, contentIndexState, interactiveModeState, streamIdState, numColState, setNumColState } = props;
     const classes = useStyles();
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
-    const { sessionId, materials } = useContext(UserContext);
+    const { sessionId, materials } = useContext(LocalSession);
 
     const [key, setKey] = useState(Math.random())
     const { streamId, setStreamId } = streamIdState;
@@ -667,14 +663,14 @@ export default function Layout(props: Props): JSX.Element {
                                     </Grid>
                                 </Grid>
                                 <Grid item xs={10} hidden={!openDrawer} style={{ flexGrow: 1 }}>
-                                    <UsersContext.Provider value={users}>
+                                    <SessionsContext.Provider value={sessions}>
                                         <MessageContext.Provider value={messages}>
                                             {isTeacher ?
                                                 TABS.filter((t) => t.userType !== 1).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} contentIndexState={contentIndexState} handleOpenDrawer={handleOpenDrawer} index={index} tab={tab} value={value} numColState={numColState} setNumColState={setNumColState} />) :
                                                 TABS.filter((t) => t.userType !== 0).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} handleOpenDrawer={handleOpenDrawer} index={index} tab={tab} value={value} />)
                                             }
                                         </MessageContext.Provider>
-                                    </UsersContext.Provider>
+                                    </SessionsContext.Provider>
                                 </Grid>
                             </Grid>
                         </Drawer>
@@ -699,14 +695,14 @@ export default function Layout(props: Props): JSX.Element {
                                 </Tabs>
                                 <Collapse in={openDrawer}>
                                     <Grid item xs={12} style={{ backgroundColor: theme.palette.type === "light" ? "#FFF" : "#030D1C" }}>
-                                        <UsersContext.Provider value={users}>
+                                        <SessionsContext.Provider value={sessions}>
                                             <MessageContext.Provider value={messages}>
                                                 {isTeacher ?
                                                     TABS.filter((t) => t.userType !== 1).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} contentIndexState={contentIndexState} handleOpenDrawer={handleOpenDrawer} index={index} tab={tab} value={value} />) :
                                                     TABS.filter((t) => t.userType !== 0).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} handleOpenDrawer={handleOpenDrawer} index={index} tab={tab} value={value} />)
                                                 }
                                             </MessageContext.Provider>
-                                        </UsersContext.Provider>
+                                        </SessionsContext.Provider>
                                     </Grid>
                                 </Collapse>
                             </Grid>

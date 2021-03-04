@@ -12,7 +12,7 @@ import { useMutation, useSubscription, useQuery } from "@apollo/react-hooks";
 import { gql, NetworkStatus } from "apollo-boost";
 import { PainterEvent } from "kidsloop-canvas/lib/domain/whiteboard/event-serializer/PainterEvent";
 import { useSharedEventSerializer } from "kidsloop-canvas/lib/domain/whiteboard/SharedEventSerializerProvider"
-import { UserContext } from "../../entry";
+import { LocalSession } from "../../entry";
 import { Permissions, createPermissions, createEmptyPermissions } from "../types/Permissions";
 
 export type PainterEventFunction = (payload: PainterEvent) => void
@@ -90,7 +90,7 @@ type Props = {
 export const SynchronizedStateProvider: FunctionComponent<Props> = ({
     children,
 }: Props): JSX.Element => {
-    const { sessionId, roomId, teacher } = useContext(UserContext);
+    const { sessionId, roomId, isTeacher } = useContext(LocalSession);
 
     const [events] = useState<PainterEvent[]>([]);
 
@@ -152,7 +152,7 @@ export const SynchronizedStateProvider: FunctionComponent<Props> = ({
     }, [eventController, refetchEvents]);
 
     const [display, setDisplay] = useState<boolean>(false);
-    const [selfPermissions, setSelfPermissions] = useState<Permissions>(createPermissions(teacher));
+    const [selfPermissions, setSelfPermissions] = useState<Permissions>(createPermissions(isTeacher));
     const [userPermissions, setUserPermissions] = useState<Map<string, Permissions>>(new Map());
 
     const sendEventAction = useCallback((payload: PainterEvent) => {
@@ -196,12 +196,12 @@ export const SynchronizedStateProvider: FunctionComponent<Props> = ({
             return userPermissions.get(userId)!;
         }
 
-        const permissions = createPermissions(userId === sessionId && teacher);
+        const permissions = createPermissions(userId === sessionId && isTeacher);
         userPermissions.set(userId, permissions);
         setUserPermissions(userPermissions);
 
         return permissions;
-    }, [userPermissions, setUserPermissions, teacher, sessionId]);
+    }, [userPermissions, setUserPermissions, isTeacher, sessionId]);
 
     const SynchronizedStateProviderActions = {
         setDisplay: setDisplayAction,

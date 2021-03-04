@@ -5,7 +5,7 @@ import { LessonMaterial } from "../../lessonMaterialContext"
 import { ContentIndexState, InteractiveModeState, StreamIdState } from "./room";
 import { ClassContentContainer } from "../../components/classContent/classContent";
 import { DrawerContainer } from "../../components/drawer/drawer";
-import { UserContext } from "../../entry";
+import { LocalSession } from "../../entry";
 import { ClassType } from "../../store/actions";
 import { setDrawerOpen } from "../../store/reducers/control";
 
@@ -32,7 +32,7 @@ export function Layout({
     setTabIndex,
     recommandUrl,
 }: LayoutProps): JSX.Element {
-    const { classtype } = useContext(UserContext);
+    const { classtype } = useContext(LocalSession);
     const dispatch = useDispatch();
     const { streamId } = streamIdState;
 
