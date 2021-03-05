@@ -1,4 +1,5 @@
 import React, { useCallback } from "react";
+import { FormattedMessage } from "react-intl";
 import MenuItem from "@material-ui/core/MenuItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
@@ -40,13 +41,18 @@ export default function PermissionControls({ otherUserId }: { otherUserId: strin
                     color={permissions.allowCreateShapes ? "#0E78D5" : "#dc004e"}
                 />
             </ListItemIcon>
-            <ListItemText primary={permissions.allowCreateShapes ? "Disallow drawing" : "Allow drawing"} />
+            <ListItemText
+                primary={permissions.allowCreateShapes ?
+                    <FormattedMessage id="whiteboard_PermissionControls_ListItemText_disallow" /> :
+                    <FormattedMessage id="whiteboard_PermissionControls_ListItemText_allow" />
+                }
+            />
         </MenuItem>
         <MenuItem onClick={clearUserWhiteboard}>
             <ListItemIcon>
                 <StyledIcon icon={<EraserIcon />} size={"medium"} color="#0E78D5" />
             </ListItemIcon>
-            <ListItemText primary="Clear Whiteboard" />
+            <ListItemText primary={<FormattedMessage id="whiteboard_PermissionControls_ListItemText_clear" />} />
         </MenuItem>
     </>);
 }

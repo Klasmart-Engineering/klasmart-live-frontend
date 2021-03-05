@@ -6,6 +6,17 @@ const messages: Record<string, string> = {
     join_PermissionAlertDialog_DialogContentText_classes_study: "수업 중 인터랙티브 콘텐츠를 사용하기 위해 Kidsloop Live에서 마이크에 액세스 할 수 있어야 합니다.",
     join_PermissionAlertDialog_Button_close: "닫기",
 
+    camera_ParticipantInfo_ChalkboardIcon_tooltip: "{name}은 선생님 입니다",
+    camera_ParticipantInfo_CrownIcon_tooltip: "{name} 선생님이 발표 중입니다",
+    camera_FullScreenCameraButton_tooltip: "카메라 전체화면",
+    camera_MoreControlsButton_ListSubheader_whiteboard: "화이트보드 보여주기",
+    camera_MoreControlsButton_ListSubheader_trophy: "트로피 주기",
+    camera_MoreControlsButton_ListSubheader_toggleCamMic: "카메라 / 마이크 전환",
+
+    whiteboard_PermissionControls_ListItemText_disallow: "그리기 비활성",
+    whiteboard_PermissionControls_ListItemText_allow: "그리기 활성",
+    whiteboard_PermissionControls_ListItemText_clear: "모두 지우기",
+
     activity_link: "액티비티 링크",
     allow_media_permission: "미디어 장치를 사용하려면 마이크 및 카메라 권한을 허용하십시오.",
     error_camera_unavailable: "📷 에 액세스 할 수 없습니다.",

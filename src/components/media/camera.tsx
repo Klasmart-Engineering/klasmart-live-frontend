@@ -202,7 +202,7 @@ function ParticipantInfo({ session, isSelf }: { session: Session, isSelf: boolea
                         tooltip={{
                             children: <ChalkboardIcon />,
                             placement: "top",
-                            title: `${name} is teacher`,
+                            title: <FormattedMessage id="camera_ParticipantInfo_ChalkboardIcon_tooltip" />,
                         }}
                     />
                 </Grid> : null
@@ -224,7 +224,7 @@ function ParticipantInfo({ session, isSelf }: { session: Session, isSelf: boolea
                             tooltip={{
                                 children: <CrownIcon />,
                                 placement: "top",
-                                title: `${name} is host teacher`,
+                                title: <FormattedMessage id="camera_ParticipantInfo_CrownIcon_tooltip" />,
                             }}
                         />
                     </Grid> : null
@@ -289,7 +289,7 @@ function FullScreenCameraButton({ sessionId }: { sessionId: string }): JSX.Eleme
                 tooltip={{
                     children: <BoxArrowUpLeftIcon />,
                     placement: "top",
-                    title: "Full screen", // TODO: Localization
+                    title: <FormattedMessage id="camera_FullScreenCameraButton_tooltip" />
                 }}
             />
         </IconButton>
@@ -390,7 +390,7 @@ export function MoreControlsButton({ sessionId, isSelf, cameraRef }: {
                         disablePadding
                         subheader={
                             <ListSubheader>
-                                Give Whiteboard Controls {/* TODO: Localization */}
+                                <FormattedMessage id="camera_MoreControlsButton_ListSubheader_whiteboard" />
                             </ListSubheader>
                         }
                     >
@@ -400,7 +400,7 @@ export function MoreControlsButton({ sessionId, isSelf, cameraRef }: {
                         disablePadding
                         subheader={
                             <ListSubheader>
-                                Give Trophy {/* TODO: Localization */}
+                                <FormattedMessage id="camera_MoreControlsButton_ListSubheader_trophy" />
                             </ListSubheader>
                         }
                     >
@@ -416,7 +416,7 @@ export function MoreControlsButton({ sessionId, isSelf, cameraRef }: {
                 disablePadding
                 subheader={
                     <ListSubheader>
-                        Toggle Camera / Microphone {/* TODO: Localization */}
+                        <FormattedMessage id="camera_MoreControlsButton_ListSubheader_toggleCamMic" />
                     </ListSubheader>
                 }
             >
@@ -448,8 +448,8 @@ function ToggleCamera({ sessionId, sfuState, cameraRef }: {
         if (isCameraVisible !== sfuState.isLocalVideoEnabled(sessionId)) {
             if ((isCameraVisible && !sfuState.isLocalVideoEnabled(sessionId) && !isVideoManuallyDisabled) ||
                 (!isCameraVisible && sfuState.isLocalVideoEnabled(sessionId))) {
-                    toggleVideoState()
-                }
+                toggleVideoState()
+            }
         }
     }, [isCameraVisible]);
 
