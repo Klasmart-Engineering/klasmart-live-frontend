@@ -34,9 +34,6 @@ export function Live({
                 <GlobalWhiteboardContext>
                     <Layout
                         isTeacher={isTeacher}
-                        openDrawer={openDrawer}
-                        handleOpenDrawer={handleOpenDrawer}
-                        contentIndexState={contentIndexState}
                         interactiveModeState={interactiveModeState}
                         streamIdState={streamIdState}
                         numColState={numColState}
@@ -45,7 +42,6 @@ export function Live({
                         {
                             isTeacher
                                 ? <Teacher
-                                    contentIndexState={contentIndexState}
                                     interactiveModeState={interactiveModeState}
                                     streamIdState={streamIdState}
                                     numColState={numColState}

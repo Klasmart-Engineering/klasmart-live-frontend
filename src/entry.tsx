@@ -180,7 +180,7 @@ function Entry() {
         setName,
         sessionId,
         roomId: params ? params.roomId : "",
-        isTeacher: params ? params.isTeacher : false,
+        isTeacher: params && params.isTeacher ? params.isTeacher : false,
         materials: params ? params.materials : null
     }), [camera, setCamera, name, setName, params]);
 
