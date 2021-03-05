@@ -6,6 +6,17 @@ const messages: Record<string, string> = {
     join_PermissionAlertDialog_DialogContentText_classes_study: "Kidsloop Live needs access to the microphone for in-class interactive contents.",
     join_PermissionAlertDialog_Button_close: "Close",
 
+    camera_ParticipantInfo_ChalkboardIcon_tooltip: "{name} is teacher",
+    camera_ParticipantInfo_CrownIcon_tooltip: "Teacher {name} is presenting",
+    camera_FullScreenCameraButton_tooltip: "Full screen camera",
+    camera_MoreControlsButton_ListSubheader_whiteboard: "Give Whiteboard Controls",
+    camera_MoreControlsButton_ListSubheader_trophy: "Give Trophy",
+    camera_MoreControlsButton_ListSubheader_toggleCamMic: "Toggle Camera / Microphone",
+
+    whiteboard_PermissionControls_ListItemText_disallow: "Disallow drawing",
+    whiteboard_PermissionControls_ListItemText_allow: "Allow drawing",
+    whiteboard_PermissionControls_ListItemText_clear: "Clear",
+
     activity_link: "活动链接",
     allow_media_permission: "如果您想要使用媒体设备，请授权允许使用你的话筒和相机",
     error_camera_unavailable: "📷摄像头无法访问",
