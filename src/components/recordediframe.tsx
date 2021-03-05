@@ -20,6 +20,8 @@ import { Refresh as RefreshIcon } from "@styled-icons/material/Refresh";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { useWindowSize } from "../utils/viewport";
 import { h5pStaticSize } from "../utils/h5pActivityAttr";
+import { useSelector } from "react-redux";
+import { State } from "../store/store";
 
 const SET_STREAMID = gql`
     mutation setSessionStreamId($roomId: ID!, $streamId: ID!) {
@@ -46,6 +48,7 @@ export function RecordedIframe(props: Props): JSX.Element {
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
 
     const { roomId } = useContext(LocalSession);
+    const drawerOpen = useSelector((state: State) => state.control.drawerOpen);
     const { contentId, setStreamId } = props;
     const [sendStreamId] = useMutation(SET_STREAMID);
 
@@ -59,6 +62,11 @@ export function RecordedIframe(props: Props): JSX.Element {
     useEffect(() => {
         scale()
     }, [size])
+
+    useEffect(() => {
+        // TODO gotta find a way to resize the h5p activity when the drawer gets opened.
+        // window.dispatchEvent(new Event('resize'));
+    }, [drawerOpen])
 
     useEffect(() => {
         setSeconds(MAX_LOADING_COUNT)

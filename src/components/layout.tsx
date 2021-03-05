@@ -50,6 +50,9 @@ import { WebRTCSFUContext } from "../webrtc/sfu";
 import Camera from "../components/media/camera";
 import { gql } from "apollo-boost";
 import { useMutation } from "@apollo/react-hooks";
+import { useDispatch, useSelector } from "react-redux";
+import { State } from "../store/store";
+import { setContentIndex, setDrawerOpen } from "../store/reducers/control";
 
 export const DRAWER_WIDTH = 380;
 
@@ -210,8 +213,6 @@ const MessageContext = createContext(new Map<string, Message>());
 const SessionsContext = createContext(new Map<string, Session>());
 
 interface TabPanelProps {
-    contentIndexState?: ContentIndexState;
-    handleOpenDrawer: (open?: boolean) => void;
     index: any;
     tab: { icon: JSX.Element, title: string };
     value: any;
@@ -220,9 +221,10 @@ interface TabPanelProps {
 }
 
 function TabPanel(props: TabPanelProps) {
-    const { contentIndexState, handleOpenDrawer, index, tab, value, numColState, setNumColState, ...other } = props;
+    const { index, tab, value, numColState, setNumColState, ...other } = props;
     const classes = useStyles();
     const theme = useTheme();
+    const dispatch = useDispatch();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
     const { isTeacher } = useContext(LocalSession);
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
@@ -254,13 +256,13 @@ function TabPanel(props: TabPanelProps) {
                             }
                         </CenterAlignChildren>
                     </Typography>
-                    <IconButton aria-label="minimize drawer" onClick={() => handleOpenDrawer(false)}>
+                    <IconButton aria-label="minimize drawer" onClick={() => dispatch(setDrawerOpen(false))}>
                         {/* <StyledIcon icon={<CloseIcon />} size="medium" /> */}
                         <CloseIcon size="1.25rem" />
                     </IconButton>
                 </Grid>
                 <Divider />
-                <TabInnerContent contentIndexState={contentIndexState} title={tab.title} numColState={numColState} setNumColState={setNumColState} />
+                <TabInnerContent title={tab.title} numColState={numColState} setNumColState={setNumColState} />
             </div>
             <Popover
                 id={id}
@@ -333,17 +335,18 @@ const MUTATION_SET_HOST= gql`
     }
 `;
 
-function TabInnerContent({ contentIndexState, title, numColState, setNumColState }: {
-    contentIndexState?: ContentIndexState,
+function TabInnerContent({ title, numColState, setNumColState }: {
     title: string,
     numColState?: number,
     setNumColState?: React.Dispatch<React.SetStateAction<number>>,
 }) {
     const classes = useStyles();
     const theme = useTheme();
+    const dispatch = useDispatch();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
     const { camera, roomId, sessionId: localSessionId, materials, isTeacher: isLocalUserTeacher } = useContext(LocalSession);
     const sessions = useContext(SessionsContext);
+    const contentIndex = useSelector((store: State) => store.control.contentIndex);
     const isMdUpTeacher = isLocalUserTeacher && !isSmDown;
     const [gridMode, setGridMode] = useState(true)
     const [hostMutation] = useMutation(MUTATION_SET_HOST);
@@ -412,36 +415,26 @@ function TabInnerContent({ contentIndexState, title, numColState, setNumColState
                 </Grid>
             );
         case "title_lesson_plan":
-            if (contentIndexState) {
-                const { contentIndex, setContentIndex } = contentIndexState;
-                return (
-                    <Grid item className={classes.scrollContainer}>
-                        <Stepper
-                            style={{ overflowX: "hidden", overflowY: "auto" }}
-                            activeStep={contentIndex}
-                            orientation="vertical"
-                        >
-                            {materials.map((material, index) => (
-                                <Step
-                                    key={`step-${material.name}`}
-                                    onClick={() => setContentIndex(index)}
-                                    disabled={false}
-                                    className={classes.step}
-                                >
-                                    <StepLabel key={`label-${material.name}`}>{material.name}</StepLabel>
-                                </Step>
-                            ))}
-                        </Stepper>
-                    </Grid>
-                );
-            }
-            else {
-                return (
-                    <Typography>
-                        <FormattedMessage id="error_unknown_error" />
-                    </Typography>
-                );
-            }
+            return (
+                <Grid item className={classes.scrollContainer}>
+                    <Stepper
+                        style={{ overflowX: "hidden", overflowY: "auto" }}
+                        activeStep={contentIndex}
+                        orientation="vertical"
+                    >
+                        {materials.map((material, index) => (
+                            <Step
+                                key={`step-${material.name}`}
+                                onClick={() => dispatch(setContentIndex((index)))}
+                                disabled={false}
+                                className={classes.step}
+                            >
+                                <StepLabel key={`label-${material.name}`}>{material.name}</StepLabel>
+                            </Step>
+                        ))}
+                    </Stepper>
+                </Grid>
+            );
         case "title_chat":
             const Messages = React.lazy(() => import("../messages"));
             const messages = useContext(MessageContext);
@@ -510,7 +503,6 @@ interface StyledTabProps {
     children: React.ReactElement;
     className: string;
     handlers: {
-        handleOpenDrawer: (open?: boolean) => void;
         setValue: React.Dispatch<React.SetStateAction<number>>;
     }
     mobile?: boolean;
@@ -520,6 +512,7 @@ interface StyledTabProps {
 
 function StyledTab(props: StyledTabProps) {
     const classes = useStyles();
+    const dispatch = useDispatch();
     const { children, className, handlers, mobile, value, title } = props;
 
     const a11yProps = () => {
@@ -535,7 +528,7 @@ function StyledTab(props: StyledTabProps) {
             className={className}
             label={mobile ? children : <Tooltip arrow placement="left" title={<FormattedMessage id={title} />}>{children}</Tooltip>}
             onClick={() => {
-                handlers.handleOpenDrawer(true);
+                dispatch(setDrawerOpen(true));
                 handlers.setValue(value);
             }}
             value={value}
@@ -548,9 +541,6 @@ function StyledTab(props: StyledTabProps) {
 interface Props {
     children?: React.ReactNode;
     isTeacher: boolean;
-    openDrawer: boolean;
-    handleOpenDrawer: (open?: boolean) => void;
-    contentIndexState: ContentIndexState;
     interactiveModeState: InteractiveModeState;
     streamIdState: StreamIdState;
     numColState: number;
@@ -559,16 +549,16 @@ interface Props {
 
 export default function Layout(props: Props): JSX.Element {
     const { sessions , messages } = RoomContext.Consume()
-    const { children, isTeacher, openDrawer, handleOpenDrawer, contentIndexState, interactiveModeState, streamIdState, numColState, setNumColState } = props;
+    const { children, isTeacher, interactiveModeState, streamIdState, numColState, setNumColState } = props;
     const classes = useStyles();
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
     const { sessionId, materials } = useContext(LocalSession);
+    const drawerOpen = useSelector((state: State) => state.control.drawerOpen);
+    const contentIndex = useSelector((store: State) => store.control.contentIndex);
 
     const [key, setKey] = useState(Math.random())
     const { streamId, setStreamId } = streamIdState;
-    const { contentIndex, setContentIndex } = contentIndexState;
-
     const material = contentIndex >= 0 && contentIndex < materials.length ? materials[contentIndex] : undefined;
 
     const [value, setValue] = useState(0);
@@ -605,20 +595,20 @@ export default function Layout(props: Props): JSX.Element {
                         <Drawer
                             anchor="right"
                             className={clsx(classes.drawer, {
-                                [classes.drawerOpen]: openDrawer,
-                                [classes.drawerClose]: !openDrawer,
+                                [classes.drawerOpen]: drawerOpen,
+                                [classes.drawerClose]: !drawerOpen,
                             })}
                             classes={{
                                 paper: clsx({
-                                    [classes.drawerOpen]: openDrawer,
-                                    [classes.drawerClose]: !openDrawer,
+                                    [classes.drawerOpen]: drawerOpen,
+                                    [classes.drawerClose]: !drawerOpen,
                                 }),
                             }}
                             hidden={isSmDown}
                             variant="permanent"
                         >
                             <Grid container direction="row" style={{ flexGrow: 1, overflow: "hidden" }}>
-                                <Grid item xs={!openDrawer ? 12 : 2} style={{ flexGrow: 1 }}>
+                                <Grid item xs={!drawerOpen ? 12 : 2} style={{ flexGrow: 1 }}>
                                     <Grid
                                         container
                                         direction="column"
@@ -638,8 +628,8 @@ export default function Layout(props: Props): JSX.Element {
                                                 }}
                                             >
                                                 {isTeacher ?
-                                                    TABS.filter((t) => t.userType !== 1).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} className={index === value ? classes.tabSelected : ""} title={tab.title} handlers={{ handleOpenDrawer, setValue }} value={index}>{tab.icon}</StyledTab>) :
-                                                    TABS.filter((t) => t.userType !== 0).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} className={index === value ? classes.tabSelected : ""} title={tab.title} handlers={{ handleOpenDrawer, setValue }} value={index}>{tab.icon}</StyledTab>)
+                                                    TABS.filter((t) => t.userType !== 1).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} className={index === value ? classes.tabSelected : ""} title={tab.title} handlers={{ setValue }} value={index}>{tab.icon}</StyledTab>) :
+                                                    TABS.filter((t) => t.userType !== 0).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} className={index === value ? classes.tabSelected : ""} title={tab.title} handlers={{ setValue }} value={index}>{tab.icon}</StyledTab>)
                                                 }
                                             </Tabs>
                                         </Grid>
@@ -662,12 +652,12 @@ export default function Layout(props: Props): JSX.Element {
                                         </Grid>
                                     </Grid>
                                 </Grid>
-                                <Grid item xs={10} hidden={!openDrawer} style={{ flexGrow: 1 }}>
+                                <Grid item xs={10} hidden={!drawerOpen} style={{ flexGrow: 1 }}>
                                     <SessionsContext.Provider value={sessions}>
                                         <MessageContext.Provider value={messages}>
                                             {isTeacher ?
-                                                TABS.filter((t) => t.userType !== 1).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} contentIndexState={contentIndexState} handleOpenDrawer={handleOpenDrawer} index={index} tab={tab} value={value} numColState={numColState} setNumColState={setNumColState} />) :
-                                                TABS.filter((t) => t.userType !== 0).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} handleOpenDrawer={handleOpenDrawer} index={index} tab={tab} value={value} />)
+                                                TABS.filter((t) => t.userType !== 1).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} index={index} tab={tab} value={value} numColState={numColState} setNumColState={setNumColState} />) :
+                                                TABS.filter((t) => t.userType !== 0).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} index={index} tab={tab} value={value} />)
                                             }
                                         </MessageContext.Provider>
                                     </SessionsContext.Provider>
@@ -689,17 +679,17 @@ export default function Layout(props: Props): JSX.Element {
                                     centered
                                 >
                                     {isTeacher ?
-                                        TABS.filter((t) => t.userType !== 1).map((tab, index) => <StyledTab mobile key={`tab-button-${tab.title}`} className={index === value ? classes.tabSelected : ""} title={tab.title} handlers={{ handleOpenDrawer, setValue }} value={index}>{tab.icon}</StyledTab>) :
-                                        TABS.filter((t) => t.userType !== 0).map((tab, index) => <StyledTab mobile key={`tab-button-${tab.title}`} className={index === value ? classes.tabSelected : ""} title={tab.title} handlers={{ handleOpenDrawer, setValue }} value={index}>{tab.icon}</StyledTab>)
+                                        TABS.filter((t) => t.userType !== 1).map((tab, index) => <StyledTab mobile key={`tab-button-${tab.title}`} className={index === value ? classes.tabSelected : ""} title={tab.title} handlers={{ setValue }} value={index}>{tab.icon}</StyledTab>) :
+                                        TABS.filter((t) => t.userType !== 0).map((tab, index) => <StyledTab mobile key={`tab-button-${tab.title}`} className={index === value ? classes.tabSelected : ""} title={tab.title} handlers={{ setValue }} value={index}>{tab.icon}</StyledTab>)
                                     }
                                 </Tabs>
-                                <Collapse in={openDrawer}>
+                                <Collapse in={drawerOpen}>
                                     <Grid item xs={12} style={{ backgroundColor: theme.palette.type === "light" ? "#FFF" : "#030D1C" }}>
                                         <SessionsContext.Provider value={sessions}>
                                             <MessageContext.Provider value={messages}>
                                                 {isTeacher ?
-                                                    TABS.filter((t) => t.userType !== 1).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} contentIndexState={contentIndexState} handleOpenDrawer={handleOpenDrawer} index={index} tab={tab} value={value} />) :
-                                                    TABS.filter((t) => t.userType !== 0).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} handleOpenDrawer={handleOpenDrawer} index={index} tab={tab} value={value} />)
+                                                    TABS.filter((t) => t.userType !== 1).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} index={index} tab={tab} value={value} />) :
+                                                    TABS.filter((t) => t.userType !== 0).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} index={index} tab={tab} value={value} />)
                                                 }
                                             </MessageContext.Provider>
                                         </SessionsContext.Provider>

@@ -23,6 +23,8 @@ import { ZoomOut as ZoomOutIcon } from "@styled-icons/material/ZoomOut";
 import { QuestionMarkCircleOutline as QuestionIcon } from "@styled-icons/evaicons-outline/QuestionMarkCircleOutline";
 import { MaterialTypename } from "../../lessonMaterialContext";
 import { imageFrame } from "../../utils/layerValues";
+import { State } from "../../store/store";
+import { useSelector } from "react-redux";
 
 const drawerWidth = 340;
 
@@ -73,7 +75,6 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface Props {
-    contentIndexState: ContentIndexState;
     interactiveModeState: InteractiveModeState;
     streamIdState: StreamIdState;
     numColState: number;
@@ -83,13 +84,13 @@ export function Teacher(props: Props): JSX.Element {
     const { roomId, sessionId, materials, name } = useContext(LocalSession);
     const screenShare = ScreenShare.Consume()
     const { content, sessions } = RoomContext.Consume()
+    const contentIndex = useSelector((store: State) => store.control.contentIndex);
 
     const classes = useStyles();
-    const { contentIndexState, interactiveModeState, streamIdState, numColState } = props;
+    const { interactiveModeState, streamIdState, numColState } = props;
 
     const { streamId, setStreamId } = streamIdState;
     const { interactiveMode } = interactiveModeState;
-    const { contentIndex } = contentIndexState;
     const material = contentIndex >= 0 && contentIndex < materials.length ? materials[contentIndex] : undefined;
 
     const rootDivRef = useRef<HTMLDivElement>(null);
