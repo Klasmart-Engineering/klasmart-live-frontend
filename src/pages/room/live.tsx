@@ -45,14 +45,12 @@ export function Live({
                         {
                             isTeacher
                                 ? <Teacher
-                                    openDrawer={openDrawer}
-                                    handleOpenDrawer={handleOpenDrawer}
                                     contentIndexState={contentIndexState}
                                     interactiveModeState={interactiveModeState}
                                     streamIdState={streamIdState}
                                     numColState={numColState}
                                 />
-                                : <Student openDrawer={openDrawer} />
+                                : <Student />
                         }
                     </Layout>
                 </GlobalWhiteboardContext>

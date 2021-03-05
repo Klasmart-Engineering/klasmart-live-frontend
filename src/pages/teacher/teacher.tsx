@@ -73,8 +73,6 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface Props {
-    openDrawer: boolean;
-    handleOpenDrawer: (open?: boolean) => void;
     contentIndexState: ContentIndexState;
     interactiveModeState: InteractiveModeState;
     streamIdState: StreamIdState;
@@ -87,7 +85,7 @@ export function Teacher(props: Props): JSX.Element {
     const { content, sessions } = RoomContext.Consume()
 
     const classes = useStyles();
-    const { openDrawer, handleOpenDrawer, contentIndexState, interactiveModeState, streamIdState, numColState } = props;
+    const { contentIndexState, interactiveModeState, streamIdState, numColState } = props;
 
     const { streamId, setStreamId } = streamIdState;
     const { interactiveMode } = interactiveModeState;
@@ -135,7 +133,7 @@ export function Teacher(props: Props): JSX.Element {
                     </Typography>
                     <Grid container direction="row" spacing={1} item xs={12}>
                         {[...sessions.values()].filter(s => s.id !== sessionId).map(session =>
-                            <StudentPreviewCard key={session.id} sessionId={sessionId} session={session} numColState={numColState} />
+                            <StudentPreviewCard key={session.id} session={session} numColState={numColState} />
                         )}
                     </Grid>
                 </> :
@@ -181,9 +179,6 @@ export function Teacher(props: Props): JSX.Element {
                                                     <RecordedIframe
                                                         contentId={material.url}
                                                         setStreamId={setStreamId}
-                                                        parentWidth={rootDivWidth}
-                                                        parentHeight={rootDivHeight}
-                                                        openDrawer={openDrawer}
                                                     /> : undefined
                                                 : undefined : //Unknown Material
                                     undefined //No Material
@@ -196,7 +191,7 @@ export function Teacher(props: Props): JSX.Element {
     );
 }
 
-function StudentPreviewCard({ sessionId, session, numColState }: { sessionId: string, session: Session, numColState: number }) {
+function StudentPreviewCard({ session, numColState }: { session: Session, numColState: number }) {
     const theme = useTheme();
 
     const cardConRef = useRef<HTMLDivElement>(null);
