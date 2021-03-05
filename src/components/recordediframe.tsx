@@ -5,7 +5,6 @@ import { LocalSession } from "../entry";
 import Grid from "@material-ui/core/Grid";
 import Dialog from "@material-ui/core/Dialog";
 import { useTheme } from "@material-ui/core/styles";
-import { DRAWER_WIDTH } from "./layout";
 import Typography from "@material-ui/core/Typography";
 import StyledFAB from "./styled/fabButton";
 import { loadingActivity } from "../utils/layerValues";
@@ -31,9 +30,6 @@ const SET_STREAMID = gql`
 export interface Props {
     contentId: string;
     setStreamId: React.Dispatch<React.SetStateAction<string | undefined>>;
-    parentWidth: number;
-    parentHeight: number;
-    openDrawer: boolean;
 }
 
 enum LoadStatus{
@@ -50,7 +46,7 @@ export function RecordedIframe(props: Props): JSX.Element {
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
 
     const { roomId } = useContext(LocalSession);
-    const { contentId, setStreamId, parentWidth, parentHeight, openDrawer} = props;
+    const { contentId, setStreamId } = props;
     const [sendStreamId] = useMutation(SET_STREAMID);
 
     const [transformScale, setTransformScale] = useState<number>(1);
@@ -180,7 +176,6 @@ export function RecordedIframe(props: Props): JSX.Element {
                     style: { backgroundColor: "rgba(255,255,255,0.7)" },
                 }}
                 style={{
-                    paddingRight: isSmDown || !openDrawer ? "" : DRAWER_WIDTH,
                     zIndex: loadingActivity,
                 }}
             >

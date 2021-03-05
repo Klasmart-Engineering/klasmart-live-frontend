@@ -43,9 +43,7 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-export function Student({ openDrawer }: {
-    openDrawer: boolean
-}): JSX.Element {
+export function Student(): JSX.Element {
     const { content, sessions } = RoomContext.Consume();
     const classes = useStyles();
 
@@ -119,9 +117,6 @@ export function Student({ openDrawer }: {
                             <RecordedIframe
                                 contentId={content.contentId}
                                 setStreamId={setStreamId}
-                                parentWidth={rootDivWidth}
-                                parentHeight={rootDivHeight}
-                                openDrawer={openDrawer}
                             /> : undefined}
                         {/* <WBToolbar /> */}
                     </Whiteboard>
