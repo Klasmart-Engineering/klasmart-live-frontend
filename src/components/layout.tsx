@@ -385,7 +385,7 @@ function TabInnerContent({ title, numColState, setNumColState }: {
                         :
                         null
                     }
-                    {localSession && localSession.isTeacher && localSession.isHost ? <GlobalCameraControl /> : null}
+                    {localSession?.isTeacher && localSession?.isHost && <GlobalCameraControl />}
                     {/* {isSmDown ? null : <ToggleCameraViewMode isSmDown={isSmDown} setGridMode={setGridMode} />} */}
                     <Grid
                         container
@@ -585,8 +585,8 @@ export default function Layout(props: Props): JSX.Element {
                             id="main-container"
                             className={classes.content}
                             style={{
-                                padding: (material && material.__typename === MaterialTypename.Video)
-                                    ? theme.spacing(1) : theme.spacing(3)
+                                padding: (material?.__typename === MaterialTypename.Video)
+                                    ? theme.spacing(1) : theme.spacing(0)
                             }}
                             key={key}
                         >
