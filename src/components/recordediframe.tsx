@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState, useContext } from "react";
 import { gql } from "apollo-boost";
 import { useMutation } from "@apollo/react-hooks";
-import { LocalSession } from "../entry";
+import { LocalSessionContext } from "../entry";
 import Grid from "@material-ui/core/Grid";
 import Dialog from "@material-ui/core/Dialog";
 import { useTheme } from "@material-ui/core/styles";
@@ -47,7 +47,7 @@ export function RecordedIframe(props: Props): JSX.Element {
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
 
-    const { roomId } = useContext(LocalSession);
+    const { roomId } = useContext(LocalSessionContext);
     const drawerOpen = useSelector((state: State) => state.control.drawerOpen);
     const { contentId, setStreamId } = props;
     const [sendStreamId] = useMutation(SET_STREAMID);

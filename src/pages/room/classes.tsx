@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { RoomContext, InteractiveModeState, StreamIdState, ContentIndexState } from "./room";
 import { Layout } from "./layout-new";
-import { LocalSession } from "../../entry";
+import { LocalSessionContext } from "../../entry";
 import { GlobalWhiteboardContext } from "../../whiteboard/context-providers/GlobalWhiteboardContext";
 
 interface ClassesProps {
@@ -15,7 +15,7 @@ export function Classes({
     interactiveModeState,
     streamIdState,
 }: ClassesProps): JSX.Element {
-    const { materials } = useContext(LocalSession);
+    const { materials } = useContext(LocalSessionContext);
     const { contentIndex } = contentIndexState;
     const material = contentIndex >= 0 && contentIndex < materials.length ? materials[contentIndex] : undefined;
     const [tabIndex, setTabIndex] = useState(0);

@@ -35,7 +35,7 @@ import { ViewList as ListIcon } from "@styled-icons/material/ViewList";
 import { Share as ShareIcon } from "@styled-icons/material/Share";
 
 import { GlobalCameraControl } from "../webRTCState";
-import { LocalSession } from "../entry";
+import { LocalSessionContext } from "../entry";
 import { Session, Message, ContentIndexState, InteractiveModeState, StreamIdState, RoomContext } from "../pages/room/room";
 import Toolbar from "../whiteboard/components/Toolbar";
 import ModeControls from "../pages/teacher/modeControls";
@@ -226,7 +226,7 @@ function TabPanel(props: TabPanelProps) {
     const theme = useTheme();
     const dispatch = useDispatch();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
-    const { isTeacher } = useContext(LocalSession);
+    const { isTeacher } = useContext(LocalSessionContext);
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -344,7 +344,7 @@ function TabInnerContent({ title, numColState, setNumColState }: {
     const theme = useTheme();
     const dispatch = useDispatch();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
-    const { camera, roomId, sessionId: localSessionId, materials, isTeacher: isLocalUserTeacher } = useContext(LocalSession);
+    const { camera, roomId, sessionId: localSessionId, materials, isTeacher: isLocalUserTeacher } = useContext(LocalSessionContext);
     const sessions = useContext(SessionsContext);
     const contentIndex = useSelector((store: State) => store.control.contentIndex);
     const isMdUpTeacher = isLocalUserTeacher && !isSmDown;
@@ -553,7 +553,7 @@ export default function Layout(props: Props): JSX.Element {
     const classes = useStyles();
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
-    const { sessionId, materials } = useContext(LocalSession);
+    const { sessionId, materials } = useContext(LocalSessionContext);
     const drawerOpen = useSelector((state: State) => state.control.drawerOpen);
     const contentIndex = useSelector((store: State) => store.control.contentIndex);
 

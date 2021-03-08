@@ -19,7 +19,7 @@ import { Settings } from "./settings";
 import InviteButton from "../invite";
 import StyledIcon from "../../components/styled/icon";
 import CenterAlignChildren from "../../components/centerAlignChildren";
-import { LocalSession } from "../../entry";
+import { LocalSessionContext } from "../../entry";
 import { MaterialTypename } from "../../lessonMaterialContext";
 import { State } from "../../store/store";
 import { ClassType } from "../../store/actions";
@@ -57,7 +57,7 @@ export function TabPanel(props: TabPanelProps) {
     const classes = useStyles();
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
-    const { isTeacher } = useContext(LocalSession);
+    const { isTeacher } = useContext(LocalSessionContext);
 
     const dispatch = useDispatch();
     const isMobileOnly = useSelector((state: State) => state.session.userAgent.isMobileOnly);
@@ -125,7 +125,7 @@ export function TabPanel(props: TabPanelProps) {
 }
 
 function TabInnerContent({ title }: { title: string }) {
-    const { classtype, materials } = useContext(LocalSession);
+    const { classtype, materials } = useContext(LocalSessionContext);
     const classes = useStyles();
     const dispatch = useDispatch();
     const contentIndex = useSelector((store: State) => store.control.contentIndex);

@@ -4,7 +4,7 @@ import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import React, { useState, useEffect, useContext, useRef, useMemo } from "react";
 import { FormattedMessage } from "react-intl";
-import { LocalSession } from "../../entry";
+import { LocalSessionContext } from "../../entry";
 import { ContentType, RoomContext, Session } from "../room/room";
 import { Whiteboard } from "../../whiteboard/components/Whiteboard";
 import WBToolbar from "../../whiteboard/components/Toolbar";
@@ -47,7 +47,7 @@ export function Student(): JSX.Element {
     const { content, sessions } = RoomContext.Consume();
     const classes = useStyles();
 
-    const { name, sessionId } = useContext(LocalSession);
+    const { name, sessionId } = useContext(LocalSessionContext);
     const webrtc = WebRTCSFUContext.Consume()
     const [streamId, setStreamId] = useState<string>();
 

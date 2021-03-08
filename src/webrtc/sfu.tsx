@@ -14,7 +14,7 @@ import { useMutation, useSubscription, ApolloProvider } from "@apollo/react-hook
 import { MutationFunctionOptions } from "@apollo/react-common/lib/types/types";
 import { Resolver, PrePromise } from "../resolver";
 import { WebSocketLink } from "apollo-link-ws";
-import { sessionId, LocalSession } from "../entry";
+import { sessionId, LocalSessionContext } from "../entry";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { Producer, ProducerOptions } from "mediasoup-client/lib/Producer";
 
@@ -129,7 +129,7 @@ export class WebRTCSFUContext implements WebRTCContext {
         }
 
         const { roomId } = RoomContext.Consume();
-        const { name } = useContext(LocalSession);
+        const { name } = useContext(LocalSessionContext);
         useSubscription(SUBSCRIBE, {
             onSubscriptionData: ({ subscriptionData }) => {
                 if (!subscriptionData) {
@@ -175,7 +175,7 @@ export class WebRTCSFUContext implements WebRTCContext {
             variables: { roomId }
         })
 
-        const { camera } = useContext(LocalSession);
+        const { camera } = useContext(LocalSessionContext);
 
         useEffect(() => {
             callstats.initialize("881714000", "OV6YSSRJ0fOA:vr7quqij46jLPMpaBXTAF50F2wFTqP4acrxXWVs9BIk=", name + ":" + sessionId)

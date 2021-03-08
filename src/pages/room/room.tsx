@@ -5,7 +5,7 @@ import { FormattedMessage } from "react-intl";
 import { useTheme, useMediaQuery } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
-import { sessionId, LocalSession } from "../../entry";
+import { sessionId, LocalSessionContext } from "../../entry";
 import { Study } from "./study";
 import { Classes } from "./classes";
 import { Live } from "./live";
@@ -70,7 +70,7 @@ interface Props {
 }
 
 export function Room({ isTeacher }: Props): JSX.Element {
-    const { classtype } = useContext(LocalSession);
+    const { classtype } = useContext(LocalSessionContext);
 
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
@@ -145,7 +145,7 @@ const SUB_ROOM = gql`
 const context = createContext<{ value: RoomContext }>(undefined as any);
 export class RoomContext {
     public static Provide(props: { children?: JSX.Element | JSX.Element[] }) {
-        const { roomId, name } = useContext(LocalSession);
+        const { roomId, name } = useContext(LocalSessionContext);
 
         const ref = useRef<RoomContext>(undefined as any)
         const [value, rerender] = useReducer(() => ({ value: ref.current }), { value: ref.current })

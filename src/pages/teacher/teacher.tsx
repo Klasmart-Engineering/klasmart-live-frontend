@@ -11,7 +11,7 @@ import { Session, ContentIndexState, InteractiveModeState, StreamIdState, RoomCo
 import { Theme, Card, useTheme, CardContent, Hidden } from "@material-ui/core";
 import { PreviewPlayer } from "../../components/previewPlayer";
 import { Stream } from "../../webRTCState";
-import { LocalSession } from "../../entry";
+import { LocalSessionContext } from "../../entry";
 import { gql } from "apollo-boost";
 import { useMutation } from "@apollo/react-hooks";
 import { Whiteboard } from "../../whiteboard/components/Whiteboard";
@@ -81,7 +81,7 @@ interface Props {
 }
 
 export function Teacher(props: Props): JSX.Element {
-    const { roomId, sessionId, materials, name } = useContext(LocalSession);
+    const { roomId, sessionId, materials, name } = useContext(LocalSessionContext);
     const screenShare = ScreenShare.Consume()
     const { content, sessions } = RoomContext.Consume()
     const contentIndex = useSelector((store: State) => store.control.contentIndex);

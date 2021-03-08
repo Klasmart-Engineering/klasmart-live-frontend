@@ -4,7 +4,7 @@ import { useTheme } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
 import { ContentCopy as CopyIcon } from "@styled-icons/material/ContentCopy";
-import { LocalSession } from "../entry";
+import { LocalSessionContext } from "../entry";
 import StyledTextField from "../components/styled/textfield"
 import Snackbar from "@material-ui/core/Snackbar";
 import Tooltip from "@material-ui/core/Tooltip";
@@ -13,7 +13,7 @@ export default function InviteButton(): JSX.Element {
     const theme = useTheme();
     const [openSnackbar, toggleSnackbar] = useState(false);
 
-    const { roomId } = useContext(LocalSession);
+    const { roomId } = useContext(LocalSessionContext);
     const url = useMemo(() => {
         let url = new URL(window.location.href);
         url.href = url.origin + url.pathname;
