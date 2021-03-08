@@ -30,7 +30,7 @@ import { Favorite as HeartIcon } from "@styled-icons/material/Favorite";
 import { ThumbUp as EncourageIcon } from "@styled-icons/material/ThumbUp";
 import { MuteNotification, WebRTCSFUContext } from "./webrtc/sfu";
 import { useSynchronizedState } from "./whiteboard/context-providers/SynchronizedStateProvider";
-import { LocalSession } from "./entry";
+import { LocalSessionContext } from "./entry";
 import { isElementInViewport } from "./utils/viewport";
 
 const SEND_SIGNAL = gql`
@@ -78,7 +78,7 @@ export function GlobalCameraControl(): JSX.Element {
 
     const states = WebRTCSFUContext.Consume()
     const mediaStreams = states.getAllInboundTracks();
-    const { roomId, sessionId } = useContext(LocalSession);
+    const { roomId, sessionId } = useContext(LocalSessionContext);
     const [rewardTrophyMutation] = useMutation(MUTATION_REWARD_TROPHY);
     const rewardTrophy = (user: string, kind: string) => rewardTrophyMutation({ variables: { roomId, user, kind } });
 

@@ -1,11 +1,11 @@
 import Join from "./pages/join/join";
 import { Room, RoomContext } from "./pages/room/room";
-import { LocalSession } from "./entry";
+import { LocalSessionContext } from "./entry";
 import React, { useContext } from "react";
 import { Trophy } from "./components/trophies/trophy";
 
 export function App(): JSX.Element {
-    const { camera, name, isTeacher } = useContext(LocalSession);
+    const { camera, name, isTeacher } = useContext(LocalSessionContext);
 
     if (!name || camera === undefined) { return <Join />; }
 

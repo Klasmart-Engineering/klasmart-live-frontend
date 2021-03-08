@@ -77,7 +77,7 @@ export interface IThemeContext {
     setLanguageCode: React.Dispatch<React.SetStateAction<string>>
 }
 
-export interface ILocalSession {
+export interface ILocalSessionContext {
     classtype: string, // "live" | "class" | "study" | "task"
     org_id: string,
     isTeacher: boolean,
@@ -91,7 +91,7 @@ export interface ILocalSession {
 }
 
 export const ThemeContext = createContext<IThemeContext>({ themeMode: "", setThemeMode: () => null, languageCode: "", setLanguageCode: () => null } as any as IThemeContext);
-export const LocalSession = createContext<ILocalSession>({ setName: () => null, roomId: "", materials: [], isTeacher: false } as any as ILocalSession);
+export const LocalSessionContext = createContext<ILocalSessionContext>({ setName: () => null, roomId: "", materials: [], isTeacher: false } as any as ILocalSessionContext);
 
 const url = new URL(window.location.href)
 if (url.hostname !== "localhost" && url.hostname !== "live.beta.kidsloop.net") {
@@ -171,7 +171,7 @@ function Entry() {
         setLanguageCode,
     }), [themeMode, setThemeMode, languageCode, setLanguageCode]);
 
-    const localSession = useMemo<ILocalSession>(() => ({
+    const localSession = useMemo<ILocalSessionContext>(() => ({
         classtype: params ? params.classtype : "live",
         org_id: params ? params.org_id : "",
         camera,
@@ -205,14 +205,14 @@ function Entry() {
 
     return (
         <ThemeContext.Provider value={themeContext}>
-            <LocalSession.Provider value={localSession}>
+            <LocalSessionContext.Provider value={localSession}>
                 <RawIntlProvider value={locale}>
                     <ThemeProvider theme={themeProvider(languageCode, themeMode)}>
                         <CssBaseline />
                         {!params ? <Typography><FormattedMessage id="error_invaild_token" /></Typography> : <App />}
                     </ThemeProvider>
                 </RawIntlProvider>
-            </LocalSession.Provider>
+            </LocalSessionContext.Provider>
         </ThemeContext.Provider>
     );
 }

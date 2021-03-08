@@ -10,7 +10,7 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBackIos';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForwardIos';
 
 import { WBToolbarContainer, WB_TOOLBAR_MAX_HEIGHT } from "./WBToolbar"
-import { LocalSession } from "../../entry";
+import { LocalSessionContext } from "../../entry";
 import { State } from "../../store/store";
 import { ClassType } from "../../store/actions";
 import { Whiteboard } from "../../whiteboard/components/Whiteboard-new";
@@ -23,7 +23,7 @@ export function ClassContentContainer({ contentIndexState, materialKey, recomman
     materialKey: number,
     recommandUrl?: string,
 }) {
-    const { classtype } = useContext(LocalSession);
+    const { classtype } = useContext(LocalSessionContext);
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down('sm'));
     const drawerOpen = useSelector((state: State) => state.control.drawerOpen);
@@ -56,7 +56,7 @@ function ClassContent({ contentIndexState, recommandUrl }: {
     contentIndexState: ContentIndexState,
     recommandUrl?: string
 }) {
-    const { classtype, isTeacher, materials } = useContext(LocalSession);
+    const { classtype, isTeacher, materials } = useContext(LocalSessionContext);
     const { contentIndex, setContentIndex } = contentIndexState;
     console.log(classtype, isTeacher, materials, contentIndex)
     const iframeRef = useRef<HTMLIFrameElement>(null);

@@ -5,7 +5,7 @@ import Grid from "@material-ui/core/Grid";
 
 import { RoomContext, InteractiveModeState, StreamIdState, ContentIndexState } from "./room";
 import { Layout } from "./layout-new";
-import { LocalSession } from "../../entry";
+import { LocalSessionContext } from "../../entry";
 import { GlobalWhiteboardContext } from "../../whiteboard/context-providers/GlobalWhiteboardContext";
 import { ClassType } from "../../store/actions";
 import { setDrawerOpen } from "../../store/reducers/control";
@@ -21,7 +21,7 @@ export function Study({
     interactiveModeState,
     streamIdState,
 }: StudyProps): JSX.Element {
-    const { classtype, org_id, materials } = useContext(LocalSession);
+    const { classtype, org_id, materials } = useContext(LocalSessionContext);
     const dispatch = useDispatch();
     const { contentIndex } = contentIndexState;
     const material = contentIndex >= 0 && contentIndex < materials.length ? materials[contentIndex] : undefined;
