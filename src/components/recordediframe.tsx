@@ -103,7 +103,7 @@ export function RecordedIframe(props: Props): JSX.Element {
             const shrinkRatioX = (currentWidth / h5pStaticSize.default.width) > 1 ? 1 : currentWidth / h5pStaticSize.default.width;
             const shrinkRatioY = (currentHeight / h5pStaticSize.default.height) > 1 ? 1 : currentHeight / h5pStaticSize.default.height;
             const shrinkRatio = Math.min(shrinkRatioX, shrinkRatioY);
-            setTransformScale(shrinkRatio * 0.9);
+            setTransformScale(shrinkRatio);
         }
     }
 
