@@ -202,7 +202,7 @@ function ParticipantInfo({ session, isSelf }: { session: Session, isSelf: boolea
                         tooltip={{
                             children: <ChalkboardIcon />,
                             placement: "top",
-                            title: <FormattedMessage id="camera_ParticipantInfo_ChalkboardIcon_tooltip" />,
+                            title: <FormattedMessage id="camera_participantInfo_chalkboardIcon_tooltip" />,
                         }}
                     />
                 </Grid> : null
@@ -224,7 +224,7 @@ function ParticipantInfo({ session, isSelf }: { session: Session, isSelf: boolea
                             tooltip={{
                                 children: <CrownIcon />,
                                 placement: "top",
-                                title: <FormattedMessage id="camera_ParticipantInfo_CrownIcon_tooltip" />,
+                                title: <FormattedMessage id="camera_participantInfo_crownIcon_tooltip" />,
                             }}
                         />
                     </Grid> : null
@@ -289,7 +289,7 @@ function FullScreenCameraButton({ sessionId }: { sessionId: string }): JSX.Eleme
                 tooltip={{
                     children: <BoxArrowUpLeftIcon />,
                     placement: "top",
-                    title: <FormattedMessage id="camera_FullScreenCameraButton_tooltip" />
+                    title: <FormattedMessage id="camera_fullScreenCameraButton_tooltip" />
                 }}
             />
         </IconButton>
@@ -390,7 +390,7 @@ export function MoreControlsButton({ sessionId, isSelf, cameraRef }: {
                         disablePadding
                         subheader={
                             <ListSubheader>
-                                <FormattedMessage id="camera_MoreControlsButton_ListSubheader_whiteboard" />
+                                <FormattedMessage id="camera_moreControlsButton_listSubheader_whiteboard" />
                             </ListSubheader>
                         }
                     >
@@ -400,7 +400,7 @@ export function MoreControlsButton({ sessionId, isSelf, cameraRef }: {
                         disablePadding
                         subheader={
                             <ListSubheader>
-                                <FormattedMessage id="camera_MoreControlsButton_ListSubheader_trophy" />
+                                <FormattedMessage id="camera_moreControlsButton_listSubheader_trophy" />
                             </ListSubheader>
                         }
                     >
@@ -416,7 +416,7 @@ export function MoreControlsButton({ sessionId, isSelf, cameraRef }: {
                 disablePadding
                 subheader={
                     <ListSubheader>
-                        <FormattedMessage id="camera_MoreControlsButton_ListSubheader_toggleCamMic" />
+                        <FormattedMessage id="camera_moreControlsButton_listSubheader_toggleCamMic" />
                     </ListSubheader>
                 }
             >
