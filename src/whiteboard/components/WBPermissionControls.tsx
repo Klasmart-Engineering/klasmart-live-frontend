@@ -43,8 +43,8 @@ export default function PermissionControls({ otherUserId }: { otherUserId: strin
             </ListItemIcon>
             <ListItemText
                 primary={permissions.allowCreateShapes ?
-                    <FormattedMessage id="whiteboard_PermissionControls_ListItemText_disallow" /> :
-                    <FormattedMessage id="whiteboard_PermissionControls_ListItemText_allow" />
+                    <FormattedMessage id="whiteboard_permissionControls_listItemText_disallow" /> :
+                    <FormattedMessage id="whiteboard_permissionControls_listItemText_allow" />
                 }
             />
         </MenuItem>
@@ -52,7 +52,7 @@ export default function PermissionControls({ otherUserId }: { otherUserId: strin
             <ListItemIcon>
                 <StyledIcon icon={<EraserIcon />} size={"medium"} color="#0E78D5" />
             </ListItemIcon>
-            <ListItemText primary={<FormattedMessage id="whiteboard_PermissionControls_ListItemText_clear" />} />
+            <ListItemText primary={<FormattedMessage id="whiteboard_permissionControls_listItemText_clear" />} />
         </MenuItem>
     </>);
 }

@@ -269,7 +269,7 @@ function CameraPreviewFallback({ permissionError }: { permissionError: boolean }
                 }}
             >
                 {permissionError ?
-                    <FormattedMessage id="join_CameraPreviewFallback_allowMediaPermissions" /> :
+                    <FormattedMessage id="join_cameraPreviewFallback_allowMediaPermissions" /> :
                     <FormattedMessage id="connect_camera" />
                 }
             </Typography>
@@ -413,19 +413,19 @@ function PermissionAlertDialog({ dialogOpenHandler }: {
             aria-describedby="media-permission-alert-description"
         >
             <DialogTitle id="media-permission-alert-title">
-                <FormattedMessage id="join_PermissionAlertDialog_DialogTitle" />
+                <FormattedMessage id="join_permissionAlertDialog_title" />
             </DialogTitle>
             <DialogContent>
                 <DialogContentText id="media-permission-alert-description">
                     {classtype === ClassType.LIVE ?
-                        <FormattedMessage id="join_PermissionAlertDialog_DialogContentText_live" /> :
-                        <FormattedMessage id="join_PermissionAlertDialog_DialogContentText_classes_study" />
+                        <FormattedMessage id="join_permissionAlertDialog_contentText_live" /> :
+                        <FormattedMessage id="join_permissionAlertDialog_contentText_classesStudy" />
                     }
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleDialogClose} color="primary">
-                    <FormattedMessage id="join_PermissionAlertDialog_Button_close" />
+                    <FormattedMessage id="join_permissionAlertDialog_action_close" />
                 </Button>
             </DialogActions>
         </Dialog>
