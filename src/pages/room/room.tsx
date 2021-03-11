@@ -65,11 +65,7 @@ export interface StreamIdState {
     setStreamId: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
-interface Props {
-    isTeacher: boolean
-}
-
-export function Room({ isTeacher }: Props): JSX.Element {
+export function Room(): JSX.Element {
     const { classtype } = useContext(LocalSessionContext);
 
     const theme = useTheme();
@@ -115,10 +111,6 @@ export function Room({ isTeacher }: Props): JSX.Element {
         default:
             return (
                 <Live
-                    isTeacher={isTeacher}
-                    openDrawer={openDrawer}
-                    handleOpenDrawer={handleOpenDrawer}
-                    contentIndexState={{ contentIndex, setContentIndex }}
                     interactiveModeState={{ interactiveMode, setInteractiveMode }}
                     streamIdState={{ streamId, setStreamId }}
                     numColState={numColState}

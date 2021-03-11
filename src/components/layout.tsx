@@ -296,6 +296,7 @@ function TabInnerContent({ title, numColState, setNumColState }: {
 }) {
     const classes = useStyles();
     const theme = useTheme();
+    const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
     const dispatch = useDispatch();
     const { camera, roomId, sessionId: localSessionId, materials, isTeacher: isLocalUserTeacher } = useContext(LocalSessionContext);
     const sessions = useContext(SessionsContext);
@@ -337,18 +338,18 @@ function TabInnerContent({ title, numColState, setNumColState }: {
 
             return (
                 <Grid container direction="row" justify="flex-start" alignItems="center" style={{ flex: 1 }}>
-                    {(localSession && isLocalUserTeacher) && (
+                    {localSession?.isTeacher && localSession?.isHost && <>
                         <Camera
                             session={localSession}
-                            mediaStream={camera}
+                            mediaStream={camera !== null ? camera : undefined}
                             muted
                             // GridProps - You can find related props by searching the keyword '...other' in camera.tsx
 
                             item xs={12}
                             style={{ padding: theme.spacing(0.5) }}
                         />
-                    )}
-                    {localSession?.isTeacher && localSession?.isHost && <GlobalCameraControl />}
+                        <GlobalCameraControl />
+                    </>}
                     <Grid
                         container
                         direction="row"
@@ -361,18 +362,19 @@ function TabInnerContent({ title, numColState, setNumColState }: {
                             flexGrow: 1,
                             overflow: "hidden auto",
                             // Because student side has no <InviteButton /> and <GlobalCameraControl />
-                            maxHeight: isLocalUserTeacher ? `calc(100vh - ${theme.spacing(49)}px)` : `calc(100vh - ${theme.spacing(6)}px)`,
+                            maxHeight: isSmDown ? `calc(100vh - ${theme.spacing(54)}px)` :
+                                localSession?.isTeacher && localSession?.isHost ? `calc(100vh - ${theme.spacing(49)}px)` : `calc(100vh - ${theme.spacing(6)}px)`,
                         }}
                     >
-                        {localSession && !isLocalUserTeacher && (
+                        {localSession && !(localSession?.isTeacher && localSession?.isHost) && (
                             <Camera
                                 session={localSession}
-                                mediaStream={camera}
+                                mediaStream={camera !== null ? camera : undefined}
                                 muted
                                 square
 
                                 // GridProps - You can find related props by searching the keyword '...other' in camera.tsx
-                                item xs={12}
+                                item xs={isSmDown ? 3 : 12}
                                 style={{
                                     padding: theme.spacing(0.5),
                                     order: getCameraOrder(localSession, true)
@@ -392,7 +394,7 @@ function TabInnerContent({ title, numColState, setNumColState }: {
                                         square
 
                                         // GridProps - You can find related props by searching the keyword '...other' in camera.tsx
-                                        item xs={12}
+                                        item xs={isSmDown ? 3 : 12}
                                         // xs={camGridItemXS} // TODO (Isu): This is planned by design.
                                         style={{
                                             padding: theme.spacing(0.5),
@@ -531,7 +533,6 @@ function StyledTab(props: StyledTabProps) {
 
 interface Props {
     children?: React.ReactNode;
-    isTeacher: boolean;
     interactiveModeState: InteractiveModeState;
     streamIdState: StreamIdState;
     numColState: number;
@@ -540,11 +541,14 @@ interface Props {
 
 export default function Layout(props: Props): JSX.Element {
     const { sessions, messages } = RoomContext.Consume()
-    const { children, isTeacher, interactiveModeState, streamIdState, numColState, setNumColState } = props;
+    const { materials, isTeacher, sessionId: localSessionId } = useContext(LocalSessionContext);
+    const localSession = sessions.get(localSessionId);
+    const isHostTeacher = localSession?.isTeacher && localSession?.isHost;
+
+    const { children, interactiveModeState, streamIdState, numColState, setNumColState } = props;
     const classes = useStyles();
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
-    const { sessionId, materials } = useContext(LocalSessionContext);
     const drawerOpen = useSelector((state: State) => state.control.drawerOpen);
     const contentIndex = useSelector((store: State) => store.control.contentIndex);
 
@@ -618,13 +622,13 @@ export default function Layout(props: Props): JSX.Element {
                                                     indicator: classes.tabIndicator
                                                 }}
                                             >
-                                                {isTeacher ?
+                                                {isHostTeacher ?
                                                     TABS.filter((t) => t.userType !== 1).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} className={index === value ? classes.tabSelected : ""} title={tab.title} handlers={{ setValue }} value={index}>{tab.icon}</StyledTab>) :
                                                     TABS.filter((t) => t.userType !== 0).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} className={index === value ? classes.tabSelected : ""} title={tab.title} handlers={{ setValue }} value={index}>{tab.icon}</StyledTab>)
                                                 }
                                             </Tabs>
                                         </Grid>
-                                        <Grid item hidden={!isTeacher}>
+                                        <Grid item hidden={!isHostTeacher}>
                                             <ModeControls
                                                 interactiveModeState={interactiveModeState}
                                                 disablePresent={!(

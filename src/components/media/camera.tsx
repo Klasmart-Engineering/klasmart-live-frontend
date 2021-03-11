@@ -238,7 +238,7 @@ function ParticipantInfo({ session, isSelf }: { session: Session, isSelf: boolea
                         tooltip={{
                             children: <ChalkboardIcon />,
                             placement: "top",
-                            title: <FormattedMessage id="camera_participantInfo_chalkboardIcon_tooltip" />,
+                            title: <FormattedMessage id="camera_participantInfo_chalkboardIcon_tooltip" values={{ name }} />,
                         }}
                     />
                 </Grid> : null
@@ -256,7 +256,7 @@ function ParticipantInfo({ session, isSelf }: { session: Session, isSelf: boolea
                         tooltip={{
                             children: <CrownIcon />,
                             placement: "top",
-                            title: <FormattedMessage id="camera_participantInfo_crownIcon_tooltip" />
+                            title: <FormattedMessage id="camera_participantInfo_crownIcon_tooltip" values={{ name }} />
                         }}
                     />
                 </Grid> : null

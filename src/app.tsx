@@ -5,12 +5,12 @@ import React, { useContext } from "react";
 import { Trophy } from "./components/trophies/trophy";
 
 export function App(): JSX.Element {
-    const { camera, name, isTeacher } = useContext(LocalSessionContext);
+    const { camera, name } = useContext(LocalSessionContext);
 
     if (!name || camera === undefined) { return <Join />; }
 
     return <RoomContext.Provide>
-        <Room isTeacher={isTeacher} />
+        <Room />
         <Trophy />
     </RoomContext.Provide>
 }
