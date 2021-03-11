@@ -255,7 +255,9 @@ function TabPanel(props: TabPanelProps) {
                         </CenterAlignChildren>
                     </Typography>
                     <IconButton aria-label="minimize drawer" onClick={() => dispatch(setDrawerOpen(false))}>
-                        {/* <StyledIcon icon={<CloseIcon />} size="medium" /> */}
+                        {/* TODO: https://calmisland.atlassian.net/browse/KL-4066
+                            <StyledIcon icon={<CloseIcon />} size="medium" />
+                        */}
                         <CloseIcon size="1.25rem" />
                     </IconButton>
                 </Grid>
@@ -276,7 +278,9 @@ function TabPanel(props: TabPanelProps) {
                     horizontal: 'center',
                 }}
             >
-                {/* TODO: <StyledIcon icon={<InviteIcon />} size="medium" /> */}
+                {/* TODO: https://calmisland.atlassian.net/browse/KL-4066
+                    <StyledIcon icon={<InviteIcon />} size="medium" />
+                */}
                 <InviteButton />
             </Popover>
         </>

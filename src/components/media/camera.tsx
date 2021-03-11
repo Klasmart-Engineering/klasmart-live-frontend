@@ -234,7 +234,7 @@ function ParticipantInfo({ session, isSelf }: { session: Session, isSelf: boolea
                         icon={<ChalkboardIcon />}
                         size="small"
                         color="#FFF"
-                        // TODO: Tooltip is not working because of z-index
+                        // TODO: https://calmisland.atlassian.net/browse/KL-4029
                         tooltip={{
                             children: <ChalkboardIcon />,
                             placement: "top",
@@ -252,7 +252,7 @@ function ParticipantInfo({ session, isSelf }: { session: Session, isSelf: boolea
                         icon={<CrownIcon />}
                         size="small"
                         color="#C9940D"
-                        // TODO: Tooltip is not working because of z-index
+                        // TODO: https://calmisland.atlassian.net/browse/KL-4029
                         tooltip={{
                             children: <CrownIcon />,
                             placement: "top",
