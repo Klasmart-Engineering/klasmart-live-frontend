@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { ContentIndexState, InteractiveModeState, StreamIdState } from "./room";
 import Layout from "../../components/layout";
 import { Student } from "../student/student";
@@ -6,12 +6,9 @@ import { Teacher } from "../teacher/teacher";
 import { ScreenShare } from "../teacher/screenShareProvider";
 import { WebRTCSFUContext } from "../../webrtc/sfu";
 import { GlobalWhiteboardContext } from "../../whiteboard/context-providers/GlobalWhiteboardContext";
+import { LocalSessionContext } from "../../entry";
 
 interface LiveProps {
-    isTeacher: boolean;
-    openDrawer: boolean;
-    handleOpenDrawer: (open?: boolean) => void;
-    contentIndexState: ContentIndexState;
     interactiveModeState: InteractiveModeState;
     streamIdState: StreamIdState;
     numColState: number;
@@ -19,21 +16,17 @@ interface LiveProps {
 }
 
 export function Live({
-    isTeacher,
-    openDrawer,
-    handleOpenDrawer,
-    contentIndexState,
     interactiveModeState,
     streamIdState,
     numColState,
     setNumColState,
 }: LiveProps): JSX.Element {
+    const { isTeacher } = useContext(LocalSessionContext);
     return (
         <WebRTCSFUContext.Provide>
             <ScreenShare.Provide>
                 <GlobalWhiteboardContext>
                     <Layout
-                        isTeacher={isTeacher}
                         interactiveModeState={interactiveModeState}
                         streamIdState={streamIdState}
                         numColState={numColState}
