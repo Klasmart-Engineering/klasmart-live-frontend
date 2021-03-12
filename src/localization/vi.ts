@@ -1,23 +1,24 @@
 // vi.ts
 const messages: Record<string, string> = {
-    join_cameraPreviewFallback_allowMediaPermissions: "Allow media device permissions",
-    join_permissionAlertDialog_title: "Allow to use your media device for Kidsloop Live",
-    join_permissionAlertDialog_contentText_live: "Kidsloop Live needs access to the camera and microphone in order for other class participants to see you and hear you.",
-    join_permissionAlertDialog_contentText_classesStudy: "Kidsloop Live needs access to the microphone for in-class interactive contents.",
-    join_permissionAlertDialog_action_close: "Close",
-
-    camera_participantInfo_chalkboardIcon_tooltip: "{name} is teacher",
-    camera_participantInfo_crownIcon_tooltip: "Teacher {name} is presenting",
-    camera_fullScreenCameraButton_tooltip: "Full screen camera",
-    camera_moreControlsButton_listSubheader_whiteboard: "Give Whiteboard Controls",
-    camera_moreControlsButton_listSubheader_trophy: "Give Trophy",
-    camera_moreControlsButton_listSubheader_toggleCamMic: "Toggle Camera / Microphone",
-
-    whiteboard_permissionControls_listItemText_disallow: "Disallow drawing",
-    whiteboard_permissionControls_listItemText_allow: "Allow drawing",
-    whiteboard_permissionControls_listItemText_clear: "Clear",
-
     activity_link: "Đường dẫn đến Hoạt động",
+
+    join_cameraPreviewFallback_allowMediaPermissions: "Cho phép truy máy ảnh",
+    join_permissionAlertDialog_title: "Cho phép KidsLoop Live truy cập phương tiện truyền thông của bạn",
+    join_permissionAlertDialog_contentText_live: "Kidsloop Live cần truy cập vào máy ảnh và micrô để những người tham gia lớp học khác có thể nhìn thấy bạn và nghe thấy bạn.",
+    join_permissionAlertDialog_contentText_classesStudy: "Kidsloop Live cần truy cập vào micrô cho nội dung của lớp học tương tác",
+    join_permissionAlertDialog_action_close: "Đóng",
+
+    camera_participantInfo_chalkboardIcon_tooltip: "{tên} là giáo viên",
+    camera_participantInfo_crownIcon_tooltip: "Giáo viên {tên} đang có mặt",
+    camera_fullScreenCameraButton_tooltip: "Toàn màn hình",
+    camera_moreControlsButton_listSubheader_whiteboard: "Cho phép sử dụng bảng trắng",
+    camera_moreControlsButton_listSubheader_trophy: "Trao cúp thưởng",
+    camera_moreControlsButton_listSubheader_toggleCamMic: "Chuyển đổi máy ảnh / micrô",
+
+    whiteboard_permissionControls_listItemText_disallow: "Không cho phép vẽ",
+    whiteboard_permissionControls_listItemText_allow: "Cho phép vẽ",
+    whiteboard_permissionControls_listItemText_clear: "Xóa",
+
     allow_media_permission: "Nếu bạn muốn sử dụng các thiết bị truyền thông, vui lòng cho phép sử dụng micrô và máy ảnh của bạn.",
     error_camera_unavailable: "Không thể truy cập 📷",
     error_empty_name: "Vui lòng nhập tên.",

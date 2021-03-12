@@ -1,23 +1,24 @@
 // cn.ts
 const messages: Record<string, string> = {
-    join_cameraPreviewFallback_allowMediaPermissions: "Allow media device permissions",
-    join_permissionAlertDialog_title: "Allow to use your media device for Kidsloop Live",
-    join_permissionAlertDialog_contentText_live: "Kidsloop Live needs access to the camera and microphone in order for other class participants to see you and hear you.",
-    join_permissionAlertDialog_contentText_classesStudy: "Kidsloop Live needs access to the microphone for in-class interactive contents.",
-    join_permissionAlertDialog_action_close: "Close",
-
-    camera_participantInfo_chalkboardIcon_tooltip: "{name} is teacher",
-    camera_participantInfo_crownIcon_tooltip: "Teacher {name} is presenting",
-    camera_fullScreenCameraButton_tooltip: "Full screen camera",
-    camera_moreControlsButton_listSubheader_whiteboard: "Give Whiteboard Controls",
-    camera_moreControlsButton_listSubheader_trophy: "Give Trophy",
-    camera_moreControlsButton_listSubheader_toggleCamMic: "Toggle Camera / Microphone",
-
-    whiteboard_permissionControls_listItemText_disallow: "Disallow drawing",
-    whiteboard_permissionControls_listItemText_allow: "Allow drawing",
-    whiteboard_permissionControls_listItemText_clear: "Clear",
-
     activity_link: "活动链接",
+
+    join_cameraPreviewFallback_allowMediaPermissions: "允许媒体设备权限",
+    join_permissionAlertDialog_title: "允许Kidsloop 直播访问你的媒体设备",
+    join_permissionAlertDialog_contentText_live: "Kidsloop Live需要接入摄像头和麦克风，以便其他参与者能够看到你并听到你的声音",
+    join_permissionAlertDialog_contentText_classesStudy: "Kidsloop直播需要接入麦克风，进行课内互动内容",
+    join_permissionAlertDialog_action_close: "关闭",
+
+    camera_participantInfo_chalkboardIcon_tooltip: "老师是 {}",
+    camera_participantInfo_crownIcon_tooltip: "老师 {} 正在演示",
+    camera_fullScreenCameraButton_tooltip: "摄像头全屏",
+    camera_moreControlsButton_listSubheader_whiteboard: "给予白板控制权",
+    camera_moreControlsButton_listSubheader_trophy: "赠送奖杯",
+    camera_moreControlsButton_listSubheader_toggleCamMic: "切换摄像头/麦克风",
+
+    whiteboard_permissionControls_listItemText_disallow: "禁止绘画",
+    whiteboard_permissionControls_listItemText_allow: "允许绘画",
+    whiteboard_permissionControls_listItemText_clear: "清除",
+
     allow_media_permission: "如果您想要使用媒体设备，请授权允许使用你的话筒和相机",
     error_camera_unavailable: "📷摄像头无法访问",
     error_empty_name: "请输入你的名字",
