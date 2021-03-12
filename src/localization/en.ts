@@ -1,5 +1,7 @@
 // en.ts
 const messages: Record<string, string> = {
+    activity_link: "Activity Link",
+
     join_cameraPreviewFallback_allowMediaPermissions: "Allow media device permissions",
     join_permissionAlertDialog_title: "Allow to use your media device for Kidsloop Live",
     join_permissionAlertDialog_contentText_live: "Kidsloop Live needs access to the camera and microphone in order for other class participants to see you and hear you.",
@@ -17,7 +19,6 @@ const messages: Record<string, string> = {
     whiteboard_permissionControls_listItemText_allow: "Allow drawing",
     whiteboard_permissionControls_listItemText_clear: "Clear",
 
-    activity_link: "Activity Link",
     allow_media_permission: "Please allow microphone and camera permissions if you want to use media devices.",
     error_camera_unavailable: "Can not access your 📷",
     error_empty_name: "Please enter your name.",

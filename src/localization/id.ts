@@ -1,23 +1,24 @@
 // id.ts
 const messages: Record<string, string> = {
-    join_cameraPreviewFallback_allowMediaPermissions: "Allow media device permissions",
-    join_permissionAlertDialog_title: "Allow to use your media device for Kidsloop Live",
-    join_permissionAlertDialog_contentText_live: "Kidsloop Live needs access to the camera and microphone in order for other class participants to see you and hear you.",
-    join_permissionAlertDialog_contentText_classesStudy: "Kidsloop Live needs access to the microphone for in-class interactive contents.",
-    join_permissionAlertDialog_action_close: "Close",
-
-    camera_participantInfo_chalkboardIcon_tooltip: "{name} is teacher",
-    camera_participantInfo_crownIcon_tooltip: "Teacher {name} is presenting",
-    camera_fullScreenCameraButton_tooltip: "Full screen camera",
-    camera_moreControlsButton_listSubheader_whiteboard: "Give Whiteboard Controls",
-    camera_moreControlsButton_listSubheader_trophy: "Give Trophy",
-    camera_moreControlsButton_listSubheader_toggleCamMic: "Toggle Camera / Microphone",
-
-    whiteboard_permissionControls_listItemText_disallow: "Disallow drawing",
-    whiteboard_permissionControls_listItemText_allow: "Allow drawing",
-    whiteboard_permissionControls_listItemText_clear: "Clear",
-
     activity_link: "link Aktivitas",
+
+    join_cameraPreviewFallback_allowMediaPermissions: "Izinkan penggunaan perangkat media",
+    join_permissionAlertDialog_title: "Izinkan penggunaan perangkat media untuk KidsLoop Live",
+    join_permissionAlertDialog_contentText_live: "KidslLoop Live butuh akses ke kamera dan mikrofon agar partisipan kelas dapat melihat dan mendengar Anda.",
+    join_permissionAlertDialog_contentText_classesStudy: "KidsLoop Live butuh akses ke mikrofon untuk konten interaktif di kelas.",
+    join_permissionAlertDialog_action_close: "Tutup",
+
+    camera_participantInfo_chalkboardIcon_tooltip: "{name} adalah guru",
+    camera_participantInfo_crownIcon_tooltip: "Guru {name} sedang presentasi",
+    camera_fullScreenCameraButton_tooltip: "Kamera full screen",
+    camera_moreControlsButton_listSubheader_whiteboard: "Beri Kendali Papan Tulis",
+    camera_moreControlsButton_listSubheader_trophy: "Beri Piala",
+    camera_moreControlsButton_listSubheader_toggleCamMic: "Alihkan Kamera/Mikrofon",
+
+    whiteboard_permissionControls_listItemText_disallow: "Larang menggambar",
+    whiteboard_permissionControls_listItemText_allow: "Izinkan menggambar",
+    whiteboard_permissionControls_listItemText_clear: "Hapus",
+
     allow_media_permission: "silahkan izinkan mikrofon dan kamera jika Anda ingin menggunakan perangkat media.",
     error_camera_unavailable: "Tidak dapat mengakses 📷  Anda",
     error_empty_name: "Silahkan masukan nama anda.",
