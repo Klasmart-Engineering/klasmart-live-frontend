@@ -139,14 +139,18 @@ export default function Join(): JSX.Element {
     }
 
     function getCamStream(audioDeviceId: string, videoDeviceId: string) {
+        const videoConstraints = {
+            width: { ideal: 640 },
+            height: { ideal: 360 },
+            frameRate: { max: 24 }
+        };
+
         navigator.mediaDevices.getUserMedia({
             audio: { deviceId: audioDeviceId },
-            video: {
-                deviceId: videoDeviceId,
-                width: { ideal: 1024 },
-                height: { ideal: 576 }
-            }
+            video: { deviceId: videoDeviceId }
         }).then((s) => {
+            const track = s.getVideoTracks()[0];
+            track.applyConstraints(videoConstraints);
             setStream(s);
             setLoadError(false);
         }).catch((e) => {
