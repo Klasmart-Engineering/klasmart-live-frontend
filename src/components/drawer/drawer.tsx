@@ -20,17 +20,16 @@ import { LocalSessionContext } from "../../entry";
 
 export const DRAWER_TOOLBAR_WIDTH = 64;
 
-enum UserType {
-    TeacherOnly = 0,
-    StudentOnly = 1,
-    Both = 2
+enum ClassroomMenuType {
+    ForHostOnly = 0,
+    ForAll = 2
 }
 
 const TABS = [
-    { icon: <PeopleIcon role="img" size="1.5rem" />, title: "title_participants", userType: UserType.Both, cType: ClassType.LIVE },
-    { icon: <LessonPlanIcon role="img" size="1.5rem" />, title: "title_lesson_plan", userType: UserType.TeacherOnly, cType: ClassType.CLASSES },
-    { icon: <ChatIcon role="img" size="1.5rem" />, title: "title_chat", userType: UserType.Both, cType: ClassType.LIVE },
-    { icon: <SettingsIcon role="img" size="1.5rem" />, title: "title_settings", userType: UserType.TeacherOnly, cType: ClassType.CLASSES },
+    { icon: <PeopleIcon role="img" size="1.5rem" />, title: "title_participants", menuType: ClassroomMenuType.ForAll, cType: ClassType.LIVE },
+    { icon: <LessonPlanIcon role="img" size="1.5rem" />, title: "title_lesson_plan", menuType: ClassroomMenuType.ForHostOnly, cType: ClassType.CLASSES },
+    { icon: <ChatIcon role="img" size="1.5rem" />, title: "title_chat", menuType: ClassroomMenuType.ForAll, cType: ClassType.LIVE },
+    { icon: <SettingsIcon role="img" size="1.5rem" />, title: "title_settings", menuType: ClassroomMenuType.ForHostOnly, cType: ClassType.CLASSES },
 ];
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -127,8 +126,8 @@ function DrawerToolbar({ interactiveModeState, streamId, material, tabIndex, set
                     {classtype === ClassType.CLASSES ? (
                         TABS.filter((t) => t.cType === ClassType.CLASSES).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} className={index === tabIndex ? classes.tabSelected : ""} title={tab.title} handlers={{ setDrawerOpen: (open: boolean) => dispatch(setDrawerOpen(open)), setTabIndex }} value={index}>{tab.icon}</StyledTab>)
                     ) : isTeacher ?
-                            TABS.filter((t) => t.userType !== 1).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} className={index === tabIndex ? classes.tabSelected : ""} title={tab.title} handlers={{ setDrawerOpen: (open: boolean) => dispatch(setDrawerOpen(open)), setTabIndex }} value={index}>{tab.icon}</StyledTab>) :
-                            TABS.filter((t) => t.userType !== 0).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} className={index === tabIndex ? classes.tabSelected : ""} title={tab.title} handlers={{ setDrawerOpen: (open: boolean) => dispatch(setDrawerOpen(open)), setTabIndex }} value={index}>{tab.icon}</StyledTab>)
+                        TABS.filter((t) => t.menuType !== 1).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} className={index === tabIndex ? classes.tabSelected : ""} title={tab.title} handlers={{ setDrawerOpen: (open: boolean) => dispatch(setDrawerOpen(open)), setTabIndex }} value={index}>{tab.icon}</StyledTab>) :
+                        TABS.filter((t) => t.menuType !== 0).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} className={index === tabIndex ? classes.tabSelected : ""} title={tab.title} handlers={{ setDrawerOpen: (open: boolean) => dispatch(setDrawerOpen(open)), setTabIndex }} value={index}>{tab.icon}</StyledTab>)
                     }
                 </Tabs>
             </Grid>
