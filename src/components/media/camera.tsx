@@ -479,59 +479,61 @@ function ToggleCamera({ sessionId, sfuState, cameraRef }: {
     const [isVideoManuallyDisabled, setIsVideoManuallyDisabled] = useState<boolean>(false);
 
     const isCameraVisible = isElementInViewport(cameraRef);
+
     useEffect(() => {
-        if (isCameraVisible !== sfuState.isLocalVideoEnabled(sessionId)) {
-            if ((isCameraVisible && !sfuState.isLocalVideoEnabled(sessionId) && !isVideoManuallyDisabled) ||
-                (!isCameraVisible && sfuState.isLocalVideoEnabled(sessionId))) {
-                toggleVideoState()
-            }
+        if ((isCameraVisible && !sfuState.isLocalVideoEnabled(sessionId) && !isVideoManuallyDisabled) ||
+            (!isCameraVisible && sfuState.isLocalVideoEnabled(sessionId))) {
+            const stream = sfuState.getCameraStream(sessionId);
+            toggleInboundVideoState(stream);
         }
     }, [isCameraVisible]);
 
     useEffect(() => {
-        setCameraOn(sfuState.isLocalVideoEnabled(sessionId))
+        setCameraOn(sfuState.isLocalVideoEnabled(sessionId));
     }, [sfuState.isLocalVideoEnabled(sessionId)])
 
-    const manuallyToggleVideoState = (): void => {
-        toggleVideoState()
-        setIsVideoManuallyDisabled(!sfuState.isLocalVideoEnabled(sessionId))
+    function toggleInboundVideoState(stream: MediaStream | undefined) {
+        const tracks = stream?.getVideoTracks() ?? [];
+        for (const track of tracks) {
+            const consumerId = track.id;
+            const notification: MuteNotification = {
+                roomId,
+                sessionId,
+                consumerId,
+                video: !cameraOn
+            }
+            sfuState.sendMute(notification);
+        }
+        sfuState.localVideoToggle(sessionId);
+    }
+
+    function toggleOutboundVideoState() {
+        const producers = sfuState.getOutboundCameraStream()
+        const video = producers?.producers?.find((a) => a.kind === "video")
+        if (video) {
+            const notification: MuteNotification = {
+                roomId,
+                sessionId,
+                producerId: video.id,
+                video: !cameraOn
+            }
+            sfuState.sendMute(notification)
+        }
+        sfuState.localVideoToggle(sessionId);
     }
 
     function toggleVideoState() {
         const stream = sfuState.getCameraStream(sessionId)
         if (stream) {
-            // Inbound stream
-            const tracks = stream.getVideoTracks()
-            if (tracks && tracks.length > 0) {
-                for (const consumerId of tracks.map((t) => t.id)) {
-                    const notification: MuteNotification = {
-                        roomId,
-                        sessionId,
-                        consumerId,
-                        video: !cameraOn
-                    }
-                    sfuState.sendMute(notification);
-                    setCameraOn(!cameraOn)
-                }
-            }
+            toggleInboundVideoState(stream);
         } else {
-            // Outbound stream
-            const producers = sfuState.getOutboundCameraStream()
-            if (producers) {
-                const video = producers.producers.find((a) => a.kind === "video")
-                if (video) {
-                    const notification: MuteNotification = {
-                        roomId,
-                        sessionId,
-                        producerId: video.id,
-                        video: !cameraOn
-                    }
-                    sfuState.sendMute(notification)
-                    setCameraOn(!cameraOn)
-                }
-            }
+            toggleOutboundVideoState();
         }
-        sfuState.localVideoToggle(sessionId);
+    }
+
+    function manuallyToggleVideoState(): void {
+        toggleVideoState();
+        setIsVideoManuallyDisabled(!sfuState.isLocalVideoEnabled(sessionId));
     }
 
     return (
@@ -565,34 +567,31 @@ function ToggleMic({ sessionId, sfuState }: {
         const stream = sfuState.getCameraStream(sessionId)
         if (stream) {
             // Inbound stream
-            const tracks = stream.getAudioTracks()
-            if (tracks && tracks.length > 0) {
-                for (const consumerId of tracks.map((t) => t.id)) {
-                    const notification: MuteNotification = {
-                        roomId,
-                        sessionId,
-                        consumerId,
-                        audio: !micOn
-                    }
-                    sfuState.sendMute(notification);
-                    setMicOn(!micOn)
+            const tracks = stream.getAudioTracks();
+            for (const track of tracks) {
+                const consumerId = track.id;
+                const notification: MuteNotification = {
+                    roomId,
+                    sessionId,
+                    consumerId,
+                    audio: !micOn
                 }
+                sfuState.sendMute(notification);
+                setMicOn(!micOn)
             }
         } else {
             // Outbound stream
-            const producers = sfuState.getOutboundCameraStream()
-            if (producers) {
-                const audio = producers.producers.find((a) => a.kind === "audio")
-                if (audio) {
-                    const notification: MuteNotification = {
-                        roomId,
-                        sessionId,
-                        producerId: audio.id,
-                        audio: !micOn
-                    }
-                    sfuState.sendMute(notification)
-                    setMicOn(!micOn)
+            const producers = sfuState.getOutboundCameraStream();
+            const audio = producers?.producers?.find((a) => a.kind === "audio")
+            if (audio) {
+                const notification: MuteNotification = {
+                    roomId,
+                    sessionId,
+                    producerId: audio.id,
+                    audio: !micOn
                 }
+                sfuState.sendMute(notification)
+                setMicOn(!micOn)
             }
         }
         sfuState.localAudioToggle(sessionId);

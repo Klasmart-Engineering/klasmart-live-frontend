@@ -91,19 +91,16 @@ export function GlobalCameraControl(): JSX.Element {
 
     function toggleVideoStates() {
         for (const { sessionId, stream } of mediaStreams) {
-            if (stream) {
-                let videoTracks = stream.getVideoTracks()
-                if (videoTracks && videoTracks.length > 0) {
-                    for (const consumerId of videoTracks.map((t) => t.id)) {
-                        let notification: MuteNotification = {
-                            roomId,
-                            sessionId,
-                            consumerId,
-                            video: !camerasOn
-                        }
-                        states.sendMute(notification);
-                    }
+            const videoTracks = stream?.getVideoTracks() ?? [];
+            for (const videoTrack of videoTracks) {
+                const consumerId = videoTrack.id;
+                const notification: MuteNotification = {
+                    roomId,
+                    sessionId,
+                    consumerId,
+                    video: !camerasOn
                 }
+                states.sendMute(notification);
             }
             states.localVideoEnable(sessionId, !camerasOn);
         }
@@ -112,19 +109,16 @@ export function GlobalCameraControl(): JSX.Element {
 
     function toggleAudioStates() {
         for (const { sessionId, stream } of mediaStreams) {
-            if (stream) {
-                let audioTracks = stream.getAudioTracks()
-                if (audioTracks && audioTracks.length > 0) {
-                    for (const consumerId of audioTracks.map((t) => t.id)) {
-                        let notification: MuteNotification = {
-                            roomId,
-                            sessionId,
-                            consumerId,
-                            audio: !micsOn
-                        }
-                        states.sendMute(notification);
-                    }
+            const audioTracks = stream?.getAudioTracks() ?? [];
+            for (const audioTrack of audioTracks) {
+                const consumerId = audioTrack.id;
+                const notification: MuteNotification = {
+                    roomId,
+                    sessionId,
+                    consumerId,
+                    audio: !micsOn
                 }
+                states.sendMute(notification);
             }
             states.localAudioEnable(sessionId, !micsOn);
         }
