@@ -54,12 +54,17 @@ import { setContentIndex, setDrawerOpen } from "../store/reducers/control";
 
 export const DRAWER_WIDTH = 380;
 
+enum ClassroomMenuType {
+    ForHostOnly = 0,
+    ForAll = 2
+}
+
 const TABS = [
-    { icon: <PeopleIcon role="img" size="1.5rem" />, title: "title_participants", userType: 2 },
-    { icon: <LessonPlanIcon role="img" size="1.5rem" />, title: "title_lesson_plan", userType: 0 },
-    { icon: <ChatIcon role="img" size="1.5rem" />, title: "title_chat", userType: 2 },
-    { icon: <CreateIcon role="img" size="1.5rem" />, title: "title_whiteboard", userType: 2 },
-    { icon: <SettingsIcon role="img" size="1.5rem" />, title: "title_settings", userType: 0 },
+    { icon: <PeopleIcon role="img" size="1.5rem" />, title: "title_participants", menuType: ClassroomMenuType.ForAll },
+    { icon: <LessonPlanIcon role="img" size="1.5rem" />, title: "title_lesson_plan", menuType: ClassroomMenuType.ForHostOnly },
+    { icon: <ChatIcon role="img" size="1.5rem" />, title: "title_chat", menuType: ClassroomMenuType.ForAll },
+    { icon: <CreateIcon role="img" size="1.5rem" />, title: "title_whiteboard", menuType: ClassroomMenuType.ForAll },
+    { icon: <SettingsIcon role="img" size="1.5rem" />, title: "title_settings", menuType: ClassroomMenuType.ForHostOnly }
 ];
 
 const OPTION_NUMCOL = [
@@ -627,8 +632,8 @@ export default function Layout(props: Props): JSX.Element {
                                                 }}
                                             >
                                                 {isHostTeacher ?
-                                                    TABS.filter((t) => t.userType !== 1).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} className={index === value ? classes.tabSelected : ""} title={tab.title} handlers={{ setValue }} value={index}>{tab.icon}</StyledTab>) :
-                                                    TABS.filter((t) => t.userType !== 0).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} className={index === value ? classes.tabSelected : ""} title={tab.title} handlers={{ setValue }} value={index}>{tab.icon}</StyledTab>)
+                                                    TABS.filter((t) => t.menuType !== 1).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} className={index === value ? classes.tabSelected : ""} title={tab.title} handlers={{ setValue }} value={index}>{tab.icon}</StyledTab>) :
+                                                    TABS.filter((t) => t.menuType !== 0).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} className={index === value ? classes.tabSelected : ""} title={tab.title} handlers={{ setValue }} value={index}>{tab.icon}</StyledTab>)
                                                 }
                                             </Tabs>
                                         </Grid>
@@ -654,9 +659,9 @@ export default function Layout(props: Props): JSX.Element {
                                 <Grid item xs={10} hidden={!drawerOpen} style={{ flexGrow: 1 }}>
                                     <SessionsContext.Provider value={sessions}>
                                         <MessageContext.Provider value={messages}>
-                                            {isTeacher ?
-                                                TABS.filter((t) => t.userType !== 1).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} index={index} tab={tab} value={value} numColState={numColState} setNumColState={setNumColState} />) :
-                                                TABS.filter((t) => t.userType !== 0).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} index={index} tab={tab} value={value} />)
+                                            {isHostTeacher ?
+                                                TABS.filter((t) => t.menuType !== 1).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} index={index} tab={tab} value={value} numColState={numColState} setNumColState={setNumColState} />) :
+                                                TABS.filter((t) => t.menuType !== 0).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} index={index} tab={tab} value={value} />)
                                             }
                                         </MessageContext.Provider>
                                     </SessionsContext.Provider>
@@ -677,18 +682,18 @@ export default function Layout(props: Props): JSX.Element {
                                     }}
                                     centered
                                 >
-                                    {isTeacher ?
-                                        TABS.filter((t) => t.userType !== 1).map((tab, index) => <StyledTab mobile key={`tab-button-${tab.title}`} className={index === value ? classes.tabSelected : ""} title={tab.title} handlers={{ setValue }} value={index}>{tab.icon}</StyledTab>) :
-                                        TABS.filter((t) => t.userType !== 0).map((tab, index) => <StyledTab mobile key={`tab-button-${tab.title}`} className={index === value ? classes.tabSelected : ""} title={tab.title} handlers={{ setValue }} value={index}>{tab.icon}</StyledTab>)
+                                    {isHostTeacher ?
+                                        TABS.filter((t) => t.menuType !== 1).map((tab, index) => <StyledTab mobile key={`tab-button-${tab.title}`} className={index === value ? classes.tabSelected : ""} title={tab.title} handlers={{ setValue }} value={index}>{tab.icon}</StyledTab>) :
+                                        TABS.filter((t) => t.menuType !== 0).map((tab, index) => <StyledTab mobile key={`tab-button-${tab.title}`} className={index === value ? classes.tabSelected : ""} title={tab.title} handlers={{ setValue }} value={index}>{tab.icon}</StyledTab>)
                                     }
                                 </Tabs>
                                 <Collapse in={drawerOpen}>
                                     <Grid item xs={12} style={{ backgroundColor: theme.palette.type === "light" ? "#FFF" : "#030D1C" }}>
                                         <SessionsContext.Provider value={sessions}>
                                             <MessageContext.Provider value={messages}>
-                                                {isTeacher ?
-                                                    TABS.filter((t) => t.userType !== 1).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} index={index} tab={tab} value={value} />) :
-                                                    TABS.filter((t) => t.userType !== 0).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} index={index} tab={tab} value={value} />)
+                                                {isHostTeacher ?
+                                                    TABS.filter((t) => t.menuType !== 1).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} index={index} tab={tab} value={value} />) :
+                                                    TABS.filter((t) => t.menuType !== 0).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} index={index} tab={tab} value={value} />)
                                                 }
                                             </MessageContext.Provider>
                                         </SessionsContext.Provider>
@@ -700,7 +705,7 @@ export default function Layout(props: Props): JSX.Element {
                 </Container>
             </Grid>
         </Grid>
-        {isTeacher ?
+        {isHostTeacher ?
             <Hidden mdUp>
                 <Grid className={classes.toolbarContainer}>
                     <ModeControls
