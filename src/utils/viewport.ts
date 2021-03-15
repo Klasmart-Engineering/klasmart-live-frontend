@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react"
-import { useSelector } from "react-redux"
-import { State } from "../store/store";
 
 export function isElementInViewport(ref: React.RefObject<HTMLElement>): boolean {
-    const drawerTabIndex = useSelector((store: State) => store.control.drawerTabIndex);
 
     const [isIntersecting, setIntersecting] = useState(false)
     const observer = new IntersectionObserver(
@@ -20,7 +17,7 @@ export function isElementInViewport(ref: React.RefObject<HTMLElement>): boolean 
         }
     }, [])
 
-    return drawerTabIndex !== 0 ? true : isIntersecting;
+    return isIntersecting
 }
 
 export function useWindowSize() {
