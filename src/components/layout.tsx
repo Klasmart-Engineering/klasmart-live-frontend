@@ -50,7 +50,7 @@ import { gql } from "apollo-boost";
 import { useMutation } from "@apollo/react-hooks";
 import { useDispatch, useSelector } from "react-redux";
 import { State } from "../store/store";
-import { setContentIndex, setDrawerOpen } from "../store/reducers/control";
+import { setContentIndex, setDrawerOpen, setDrawerTabIndex } from "../store/reducers/control";
 
 export const DRAWER_WIDTH = 380;
 
@@ -504,9 +504,6 @@ function TabInnerContent({ title, numColState, setNumColState }: {
 interface StyledTabProps {
     children: React.ReactElement;
     className: string;
-    handlers: {
-        setValue: React.Dispatch<React.SetStateAction<number>>;
-    }
     mobile?: boolean;
     value: number;
     title: string;
@@ -515,7 +512,7 @@ interface StyledTabProps {
 function StyledTab(props: StyledTabProps) {
     const classes = useStyles();
     const dispatch = useDispatch();
-    const { children, className, handlers, mobile, value, title } = props;
+    const { children, className, mobile, value, title } = props;
 
     const a11yProps = () => {
         return {
@@ -531,7 +528,7 @@ function StyledTab(props: StyledTabProps) {
             label={mobile ? children : <Tooltip arrow placement="left" title={<FormattedMessage id={title} />}>{children}</Tooltip>}
             onClick={() => {
                 dispatch(setDrawerOpen(true));
-                handlers.setValue(value);
+                dispatch(setDrawerTabIndex(value));
             }}
             value={value}
             style={{ backgroundColor: "#FFF", opacity: 1 }}
@@ -549,6 +546,12 @@ interface Props {
 }
 
 export default function Layout(props: Props): JSX.Element {
+    const dispatch = useDispatch();
+    useEffect(() => {
+        // Intialize to point Participants tab menu 
+        dispatch(setDrawerTabIndex(0));
+    }, [])
+
     const { sessions, messages } = RoomContext.Consume()
     const { materials, isTeacher, sessionId: localSessionId } = useContext(LocalSessionContext);
     const localSession = sessions.get(localSessionId);
@@ -559,15 +562,15 @@ export default function Layout(props: Props): JSX.Element {
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
     const drawerOpen = useSelector((state: State) => state.control.drawerOpen);
+    const drawerTabIndex = useSelector((state: State) => state.control.drawerTabIndex);
     const contentIndex = useSelector((store: State) => store.control.contentIndex);
 
-    const [key, setKey] = useState(Math.random())
+    const [key, setKey] = useState(Math.random());
     const { streamId, setStreamId } = streamIdState;
     const material = contentIndex >= 0 && contentIndex < materials.length ? materials[contentIndex] : undefined;
 
-    const [value, setValue] = useState(0);
     const handleChange = (event: React.ChangeEvent<unknown>, newValue: number) => {
-        setValue(newValue);
+        dispatch(setDrawerTabIndex(newValue));
     };
 
     return (<>
@@ -624,7 +627,7 @@ export default function Layout(props: Props): JSX.Element {
                                                 aria-label="vertical tabs"
                                                 orientation="vertical"
                                                 variant="fullWidth"
-                                                value={value}
+                                                value={drawerTabIndex}
                                                 onChange={handleChange}
                                                 className={classes.tabs}
                                                 classes={{
@@ -632,8 +635,8 @@ export default function Layout(props: Props): JSX.Element {
                                                 }}
                                             >
                                                 {isHostTeacher ?
-                                                    TABS.filter((t) => t.menuType !== 1).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} className={index === value ? classes.tabSelected : ""} title={tab.title} handlers={{ setValue }} value={index}>{tab.icon}</StyledTab>) :
-                                                    TABS.filter((t) => t.menuType !== 0).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} className={index === value ? classes.tabSelected : ""} title={tab.title} handlers={{ setValue }} value={index}>{tab.icon}</StyledTab>)
+                                                    TABS.filter((t) => t.menuType !== 1).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} className={index === drawerTabIndex ? classes.tabSelected : ""} title={tab.title} value={index}>{tab.icon}</StyledTab>) :
+                                                    TABS.filter((t) => t.menuType !== 0).map((tab, index) => <StyledTab key={`tab-button-${tab.title}`} className={index === drawerTabIndex ? classes.tabSelected : ""} title={tab.title} value={index}>{tab.icon}</StyledTab>)
                                                 }
                                             </Tabs>
                                         </Grid>
@@ -660,8 +663,8 @@ export default function Layout(props: Props): JSX.Element {
                                     <SessionsContext.Provider value={sessions}>
                                         <MessageContext.Provider value={messages}>
                                             {isHostTeacher ?
-                                                TABS.filter((t) => t.menuType !== 1).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} index={index} tab={tab} value={value} numColState={numColState} setNumColState={setNumColState} />) :
-                                                TABS.filter((t) => t.menuType !== 0).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} index={index} tab={tab} value={value} />)
+                                                TABS.filter((t) => t.menuType !== 1).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} index={index} tab={tab} value={drawerTabIndex} numColState={numColState} setNumColState={setNumColState} />) :
+                                                TABS.filter((t) => t.menuType !== 0).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} index={index} tab={tab} value={drawerTabIndex} />)
                                             }
                                         </MessageContext.Provider>
                                     </SessionsContext.Provider>
@@ -674,7 +677,7 @@ export default function Layout(props: Props): JSX.Element {
                                     aria-label="horizontal tabs"
                                     orientation="horizontal"
                                     variant="fullWidth"
-                                    value={value}
+                                    value={drawerTabIndex}
                                     onChange={handleChange}
                                     // className={clsx(classes.tabs)}
                                     classes={{
@@ -683,8 +686,8 @@ export default function Layout(props: Props): JSX.Element {
                                     centered
                                 >
                                     {isHostTeacher ?
-                                        TABS.filter((t) => t.menuType !== 1).map((tab, index) => <StyledTab mobile key={`tab-button-${tab.title}`} className={index === value ? classes.tabSelected : ""} title={tab.title} handlers={{ setValue }} value={index}>{tab.icon}</StyledTab>) :
-                                        TABS.filter((t) => t.menuType !== 0).map((tab, index) => <StyledTab mobile key={`tab-button-${tab.title}`} className={index === value ? classes.tabSelected : ""} title={tab.title} handlers={{ setValue }} value={index}>{tab.icon}</StyledTab>)
+                                        TABS.filter((t) => t.menuType !== 1).map((tab, index) => <StyledTab mobile key={`tab-button-${tab.title}`} className={index === drawerTabIndex ? classes.tabSelected : ""} title={tab.title} value={index}>{tab.icon}</StyledTab>) :
+                                        TABS.filter((t) => t.menuType !== 0).map((tab, index) => <StyledTab mobile key={`tab-button-${tab.title}`} className={index === drawerTabIndex ? classes.tabSelected : ""} title={tab.title} value={index}>{tab.icon}</StyledTab>)
                                     }
                                 </Tabs>
                                 <Collapse in={drawerOpen}>
@@ -692,8 +695,8 @@ export default function Layout(props: Props): JSX.Element {
                                         <SessionsContext.Provider value={sessions}>
                                             <MessageContext.Provider value={messages}>
                                                 {isHostTeacher ?
-                                                    TABS.filter((t) => t.menuType !== 1).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} index={index} tab={tab} value={value} />) :
-                                                    TABS.filter((t) => t.menuType !== 0).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} index={index} tab={tab} value={value} />)
+                                                    TABS.filter((t) => t.menuType !== 1).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} index={index} tab={tab} value={drawerTabIndex} />) :
+                                                    TABS.filter((t) => t.menuType !== 0).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} index={index} tab={tab} value={drawerTabIndex} />)
                                                 }
                                             </MessageContext.Provider>
                                         </SessionsContext.Provider>
