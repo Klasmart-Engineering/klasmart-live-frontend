@@ -483,7 +483,7 @@ function ToggleCamera({ sessionId, sfuState, cameraRef }: {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [isVideoManuallyDisabled, setIsVideoManuallyDisabled] = useState<boolean>(false);
 
-    const isCameraVisible = isElementInViewport(cameraRef);
+    let isCameraVisible = isElementInViewport(cameraRef);
 
     useEffect(() => {
         if (isLoading && sfuState.isLocalVideoEnabled(sessionId)) {
@@ -492,7 +492,10 @@ function ToggleCamera({ sessionId, sfuState, cameraRef }: {
     }, [sfuState.isLocalVideoEnabled(sessionId)])
 
     useEffect(() => {
-        if (isLoading || drawerTabIndex !== 0) { return; }
+        if (isLoading) { return; }
+        if (drawerTabIndex !== 0) {
+            isCameraVisible = true;
+        }
         if ((isCameraVisible && !sfuState.isLocalVideoEnabled(sessionId) && !isVideoManuallyDisabled) ||
             (!isCameraVisible && sfuState.isLocalVideoEnabled(sessionId))) {
             const stream = sfuState.getCameraStream(sessionId);
