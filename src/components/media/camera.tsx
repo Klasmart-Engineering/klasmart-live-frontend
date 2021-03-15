@@ -1,5 +1,6 @@
 import React, { useRef, useContext, useEffect, useState } from "react";
 import { FormattedMessage } from "react-intl";
+import { useSelector } from "react-redux";
 import { Theme, useTheme, createStyles, makeStyles, withStyles } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import Grid, { GridProps } from "@material-ui/core/Grid";
@@ -31,6 +32,7 @@ import { LocalSessionContext } from "../../entry";
 import { isElementInViewport } from "../../utils/viewport";
 import PermissionControls from "../../whiteboard/components/WBPermissionControls";
 import TrophyControls from "../trophies/trophyControls";
+import { State } from "../../store/store";
 
 const PARTICIPANT_INFO_ZINDEX = 1;
 const ICON_ZINDEX = 2;
@@ -475,6 +477,8 @@ function ToggleCamera({ sessionId, sfuState, cameraRef }: {
     const { noHoverIcon, moreControlsMenuItem } = useStyles();
     const { roomId } = useContext(LocalSessionContext);
 
+    const drawerTabIndex = useSelector((state: State) => state.control.drawerTabIndex);
+
     const [cameraOn, setCameraOn] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [isVideoManuallyDisabled, setIsVideoManuallyDisabled] = useState<boolean>(false);
@@ -488,7 +492,7 @@ function ToggleCamera({ sessionId, sfuState, cameraRef }: {
     }, [sfuState.isLocalVideoEnabled(sessionId)])
 
     useEffect(() => {
-        if (isLoading) {return;}
+        if (isLoading || drawerTabIndex !== 0) { return; }
         if ((isCameraVisible && !sfuState.isLocalVideoEnabled(sessionId) && !isVideoManuallyDisabled) ||
             (!isCameraVisible && sfuState.isLocalVideoEnabled(sessionId))) {
             const stream = sfuState.getCameraStream(sessionId);
