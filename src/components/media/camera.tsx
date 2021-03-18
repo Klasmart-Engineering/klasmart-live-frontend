@@ -137,13 +137,13 @@ export default function Camera({
                     paddingBottom: square ? "75%" : "56.25%",
                 }}
             >
-                {session ? <ParticipantInfo session={session} isSelf={isSelf} /> : null}
+                {session && <ParticipantInfo session={session} isSelf={isSelf} />}
                 {mediaStream ?
                     <>
-                        {session ? <>
+                        {session && <>
                             <MediaIndicators sessionId={session.id} />
                             <MoreControlsButton sessionId={session.id} isSelf={isSelf} cameraRef={cameraRef} />
-                        </> : null}
+                        </>}
                         <video
                             id={session ? `camera:${session.id}` : undefined}
                             autoPlay={true}
@@ -166,7 +166,8 @@ export default function Camera({
                             muted={muted}
                             ref={audioRef}
                         />
-                    </> :
+                    </>
+                    :
                     <Typography
                         align="center"
                         style={{
@@ -392,76 +393,86 @@ export function MoreControlsButton({ sessionId, isSelf, cameraRef }: {
     const handleMoreOpen = (event: React.SyntheticEvent<HTMLAnchorElement>) => { setMoreEl(event.currentTarget); };
     const handleMoreClose = () => { setMoreEl(null); };
 
-    return (<>
-        <IconButton
-            component="a"
-            aria-label="More controls button"
-            aria-controls="more-controls-popover"
-            aria-haspopup="true"
-            size="small"
-            onClick={handleMoreOpen}
+    return (
+        <Grid
+            container
+            justify="flex-start"
+            alignItems="center"
             style={{
                 zIndex: ICON_ZINDEX,
                 position: "absolute",
-                bottom: theme.spacing(0.5),
-                left: theme.spacing(0.5)
+                bottom: 0,
+                left: 0,
+                width: "100%",
+                padding: theme.spacing(0.5),
+                background: "linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3)",
+                borderRadius: "0 0 12px 12px",
             }}
         >
-            <StyledIcon icon={<DotsVerticalRoundedIcon />} size="small" color="#FFF" />
-        </IconButton>
-        <MoreControlsPopover
-            id="more-controls-popover"
-            keepMounted
-            anchorEl={moreEl}
-            open={Boolean(moreEl)}
-            onClose={handleMoreClose}
-            MenuListProps={{ onPointerLeave: handleMoreClose }}
-        >
-            {/* Whiteboard & Trophy permissions
+            <IconButton
+                component="a"
+                aria-label="More controls button"
+                aria-controls="more-controls-popover"
+                aria-haspopup="true"
+                size="small"
+                onClick={handleMoreOpen}
+            >
+                <StyledIcon icon={<DotsVerticalRoundedIcon />} size="small" color="#FFF" />
+            </IconButton>
+            <MoreControlsPopover
+                id="more-controls-popover"
+                keepMounted
+                anchorEl={moreEl}
+                open={Boolean(moreEl)}
+                onClose={handleMoreClose}
+                MenuListProps={{ onPointerLeave: handleMoreClose }}
+            >
+                {/* Whiteboard & Trophy permissions
                 1. isSelf: User do not have to control user's own permissions.
                 2. !teacher: If User are not teacher, user cannot control other's permissions.
             */}
-            {isSelf || !isTeacher ? null :
-                <List>
-                    <List
-                        disablePadding
-                        subheader={
-                            <ListSubheader>
-                                <FormattedMessage id="camera_moreControlsButton_listSubheader_whiteboard" />
-                            </ListSubheader>
-                        }
-                    >
-                        <PermissionControls otherUserId={sessionId} />
+                {isSelf || !isTeacher ? null :
+                    <List>
+                        <List
+                            disablePadding
+                            subheader={
+                                <ListSubheader>
+                                    <FormattedMessage id="camera_moreControlsButton_listSubheader_whiteboard" />
+                                </ListSubheader>
+                            }
+                        >
+                            <PermissionControls otherUserId={sessionId} />
+                        </List>
+                        <List
+                            disablePadding
+                            subheader={
+                                <ListSubheader>
+                                    <FormattedMessage id="camera_moreControlsButton_listSubheader_trophy" />
+                                </ListSubheader>
+                            }
+                        >
+                            <MenuItem className={moreControlsMenuItem}>
+                                <TrophyControls otherUserId={sessionId} />
+                            </MenuItem>
+                        </List>
                     </List>
-                    <List
-                        disablePadding
-                        subheader={
-                            <ListSubheader>
-                                <FormattedMessage id="camera_moreControlsButton_listSubheader_trophy" />
-                            </ListSubheader>
-                        }
-                    >
-                        <MenuItem className={moreControlsMenuItem}>
-                            <TrophyControls otherUserId={sessionId} />
-                        </MenuItem>
-                    </List>
-                </List>
-            }
-
-            {/* Camera & Microphone */}
-            <List
-                disablePadding
-                subheader={
-                    <ListSubheader>
-                        <FormattedMessage id="camera_moreControlsButton_listSubheader_toggleCamMic" />
-                    </ListSubheader>
                 }
-            >
-                <ToggleCamera sessionId={sessionId} sfuState={sfuState} cameraRef={cameraRef} />
-                <ToggleMic sessionId={sessionId} sfuState={sfuState} />
-            </List>
-        </MoreControlsPopover>
-    </>)
+
+                {/* Camera & Microphone */}
+                <List
+                    disablePadding
+                    subheader={
+                        <ListSubheader>
+                            <FormattedMessage id="camera_moreControlsButton_listSubheader_toggleCamMic" />
+                        </ListSubheader>
+                    }
+                >
+                    <ToggleCamera sessionId={sessionId} sfuState={sfuState} cameraRef={cameraRef} />
+                    <ToggleMic sessionId={sessionId} sfuState={sfuState} />
+                </List>
+            </MoreControlsPopover>
+        </Grid>
+    )
 }
 
 /**
