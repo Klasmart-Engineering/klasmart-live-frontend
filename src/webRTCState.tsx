@@ -31,7 +31,6 @@ import { ThumbUp as EncourageIcon } from "@styled-icons/material/ThumbUp";
 import { MuteNotification, WebRTCSFUContext } from "./webrtc/sfu";
 import { useSynchronizedState } from "./whiteboard/context-providers/SynchronizedStateProvider";
 import { LocalSessionContext } from "./entry";
-import { isElementInViewport } from "./utils/viewport";
 
 const SEND_SIGNAL = gql`
   mutation webRTCSignal($roomId: ID!, $toSessionId: ID!, $webrtc: WebRTCIn) {
