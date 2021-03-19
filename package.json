@@ -6,6 +6,7 @@
   "scripts": {
     "build": "rm -rf dist/*; webpack; mv dist/record*.js dist/record.js",
     "build:alpha": "rm -rf dist/*;webpack --config webpack.alpha.config.js; mv dist/record*.js dist/record.js",
+    "build:prod-india": "rm -rf dist/*;webpack --config webpack.prod.india.config.js; mv dist/record*.js dist/record.js",
     "build:prod": "rm -rf dist/*;webpack --config webpack.prod.config.js; mv dist/record*.js dist/record.js",
     "start": "webpack-dev-server",
     "test": "mocha -r ts-node/register tests/**/*[Tt]est.ts",
