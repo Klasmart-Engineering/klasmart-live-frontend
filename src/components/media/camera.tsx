@@ -494,22 +494,35 @@ function ToggleCamera({ sessionId, sfuState, cameraRef }: {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [isVideoManuallyDisabled, setIsVideoManuallyDisabled] = useState<boolean>(false);
 
-    const isCameraVisible = useIsElementInViewport(cameraRef);
+    // NOTE: This is the logic for the frontend performance. If this logic goes well, we will restore it again.
+    // const isCameraVisible = useIsElementInViewport(cameraRef);
 
     useEffect(() => {
         if (isLoading && sfuState.isLocalVideoEnabled(sessionId)) {
             setIsLoading(false)
         }
     }, [sfuState.isLocalVideoEnabled(sessionId)])
+
     useEffect(() => {
         if (isLoading) { return; }
-        const isVisible = drawerTabIndex !== 0 || isCameraVisible;
-        if ((isVisible && !sfuState.isLocalVideoEnabled(sessionId) && !isVideoManuallyDisabled) ||
-            (!isCameraVisible && sfuState.isLocalVideoEnabled(sessionId))) {
+        if ((!sfuState.isLocalVideoEnabled(sessionId) && !isVideoManuallyDisabled) ||
+            (sfuState.isLocalVideoEnabled(sessionId))) {
             const stream = sfuState.getCameraStream(sessionId);
             toggleInboundVideoState(stream);
         }
-    }, [isCameraVisible, drawerTabIndex]);
+    }, []);
+
+    // NOTE: This is the logic for the frontend performance. If this logic goes well, we will restore it again.
+    // useEffect(() => {
+    //     if (isLoading) { return; }
+    //     const isVisible = drawerTabIndex !== 0 || isCameraVisible;
+    //     if ((isVisible && !sfuState.isLocalVideoEnabled(sessionId) && !isVideoManuallyDisabled) ||
+    //         (!isCameraVisible && sfuState.isLocalVideoEnabled(sessionId))) {
+    //         const stream = sfuState.getCameraStream(sessionId);
+    //         toggleInboundVideoState(stream);
+    //     }
+    // }, [isCameraVisible, drawerTabIndex]);
+
     useEffect(() => {
         setCameraOn(sfuState.isLocalVideoEnabled(sessionId));
     }, [sfuState.isLocalVideoEnabled(sessionId)])
