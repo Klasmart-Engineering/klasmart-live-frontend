@@ -503,15 +503,6 @@ function ToggleCamera({ sessionId, sfuState, cameraRef }: {
         }
     }, [sfuState.isLocalVideoEnabled(sessionId)])
 
-    useEffect(() => {
-        if (isLoading) { return; }
-        if ((!sfuState.isLocalVideoEnabled(sessionId) && !isVideoManuallyDisabled) ||
-            (sfuState.isLocalVideoEnabled(sessionId))) {
-            const stream = sfuState.getCameraStream(sessionId);
-            toggleInboundVideoState(stream);
-        }
-    }, []);
-
     // NOTE: This is the logic for the frontend performance. If this logic goes well, we will restore it again.
     // useEffect(() => {
     //     if (isLoading) { return; }
