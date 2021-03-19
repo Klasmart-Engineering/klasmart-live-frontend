@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 
-export function isElementInViewport(ref: React.RefObject<HTMLElement>): boolean {
+export function useIsElementInViewport(ref: React.RefObject<HTMLElement>): boolean {
 
     const [isIntersecting, setIntersecting] = useState(false)
     const observer = new IntersectionObserver(
