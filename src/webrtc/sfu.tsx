@@ -240,7 +240,7 @@ export class WebRTCSFUContext implements WebRTCContext {
         return this.inboundStreams.values()
     }
 
-    public async transmitStream(id: string, stream: MediaStream) {
+    public async transmitStream(id: string, stream: MediaStream, simulcast = true) {
         console.log(`Transmit ${id}`)
         const transport = await this.producerTransport()
         console.log(`Transport`)
@@ -248,40 +248,41 @@ export class WebRTCSFUContext implements WebRTCContext {
         const producers = []
         let producer: Producer
         for (const track of tracks) {
-            let params: ProducerOptions
+            const params = {track} as ProducerOptions
             if (track.kind === "video") {
-                // Check if simulcast is needed
-                const settings = track.getSettings()
-                const trackWidth = settings.width || 640
-                const trackHeight = settings.height || 480
-                if (trackWidth <= 640 || trackHeight <= 480) {
-                    params = {
-                        track,
-                        encodings: [
-                            // These should be ordered from lowest bitrate to highest bitrate
-                            // rid will be automatically assigned in the order of this array from "r0" to "rN-1"
-                            { maxBitrate: 1000000, scaleResolutionDownBy: 2, scalabilityMode: 'S1T1' },
-                            { maxBitrate: 2000000, scaleResolutionDownBy: 1, scalabilityMode: 'S1T1' },
-                        ]
-                    }
+                const scalabilityMode = getSvcScalabilityMode()
+                const codecs = (await this.device()).rtpCapabilities?.codecs
+                const vp9support = codecs?.find((c) => c.mimeType.toLowerCase() === 'video/vp9');
+                if(scalabilityMode && !vp9support) { console.log(`Can not use scalability mode '${scalabilityMode}' as vp9 codec does not seem to be supported`) } 
+                if(scalabilityMode && vp9support) {
+                    params.codec = {
+                        kind: 'video',
+                        mimeType: 'video/VP9',
+                        clockRate: 90000,
+                        parameters: {
+                            'profile-id': 2
+                        },
+                    };
+                    params.encodings = [ { scalabilityMode, dtx: true } ];
+                } else if(simulcast) {
+                    // These should be ordered from lowest bitrate to highest bitrate
+                    // rid will be automatically assigned in the order of this array from "r0" to "rN-1"
+                    params.encodings = [
+                        { maxBitrate: 1000000, scaleResolutionDownBy: 4, scalabilityMode: 'S1T1', dtx: true },
+                        { maxBitrate: 2000000, scaleResolutionDownBy: 2, scalabilityMode: 'S1T1', dtx: true },
+                        { maxBitrate: 4000000, scaleResolutionDownBy: 1, scalabilityMode: 'S1T1', dtx: true },
+                    ];
                 } else {
-                    params = {
-                        track,
-                        encodings: [
-                            // These should be ordered from lowest bitrate to highest bitrate
-                            // rid will be automatically assigned in the order of this array from "r0" to "rN-1"
-                            { maxBitrate: 1000000, scaleResolutionDownBy: 4, scalabilityMode: 'S1T1' },
-                            { maxBitrate: 2000000, scaleResolutionDownBy: 2, scalabilityMode: 'S1T1' },
-                            { maxBitrate: 4000000, scaleResolutionDownBy: 1, scalabilityMode: 'S1T1' },
-                        ]
-                    }
+                    params.encodings = [
+                        { dtx: true },
+                    ];
                 }
-                console.log(`Wait for producer`)
+                console.log(`Wait for video producer`)
                 producer = await transport.produce(params)
-                await producer.setMaxSpatialLayer(2)
+                if(simulcast && !scalabilityMode) { await producer.setMaxSpatialLayer(2) }
             } else {
-                params = { track }
-                console.log(`Wait for producer`)
+                console.log(`Wait for audio producer`)
+                params.encodings = [{ dtx: true }]
                 producer = await transport.produce(params)
             }
             this.destructors.set(producer.id, () => producer.close())
@@ -831,4 +832,55 @@ export interface MuteNotification {
     consumerId?: string
     audio?: boolean
     video?: boolean
+}
+
+function getSvcScalabilityMode() {
+    const getParameters = new URLSearchParams(window.location.search);
+    const mode = getParameters.get("svc")
+    if(!mode) {return }
+    switch(mode) {
+        case "L1T2":
+        case "L1T2h":
+        case "L1T3":
+        case "L1T3h":
+        case "L2T1":
+        case "L2T1h":
+        case "L2T1_KEY":
+        case "L2T2":
+        case "L2T2h":
+        case "L2T2_KEY":
+        case "L2T2_KEY_SHIFT":
+        case "L2T3":
+        case "L2T3h":
+        case "L2T3_KEY":
+        case "L2T3_KEY_SHIFT":
+        case "L3T1":
+        case "L3T1h":
+        case "L3T1_KEY":
+        case "L3T2":
+        case "L3T2h":
+        case "L3T2_KEY":
+        case "L3T2_KEY_SHIFT":
+        case "L3T3":
+        case "L3T3h":
+        case "L3T3_KEY":
+        case "L3T3_KEY_SHIFT":
+        case "S2T1":
+        case "S2T1h":
+        case "S2T2":
+        case "S2T2h":
+        case "S2T3":
+        case "S2T3h":
+        case "S3T1":
+        case "S3T1h":
+        case "S3T2":
+        case "S3T2h":
+        case "S3T3":
+        case "S3T3h":
+            console.log(`Using scalable video codec mode '${mode}'`)
+            return mode
+        default:
+            console.log(`Unknown video codec scalability mode '${mode}' defaulting to 'L3T3_KEY_SHIFT'`)
+            return "L3T3_KEY_SHIFT"
+    }
 }
