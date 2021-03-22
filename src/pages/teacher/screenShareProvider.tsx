@@ -37,7 +37,7 @@ export class ScreenShare {
             await this.stop();
             const stream = await ((navigator.mediaDevices as any).getDisplayMedia({audio: true, video: true}) as Promise<MediaStream>);
             this.setStream(stream)
-            this.producers = await this.sfu.transmitStream("aux", stream)
+            this.producers = await this.sfu.transmitStream("aux", stream, false)
         } finally {
             this.starting = false;
         }
