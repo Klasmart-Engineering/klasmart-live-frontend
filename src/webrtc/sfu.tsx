@@ -71,7 +71,9 @@ const SUBSCRIBE = gql`
                 producerId,
                 consumerId,
                 audio,
-                video
+                video,
+                audioGloballyMuted,
+                videoGloballyDisabled,
             }
         }
     }
@@ -132,13 +134,7 @@ export class WebRTCSFUContext implements WebRTCContext {
         const { name } = useContext(LocalSessionContext);
         useSubscription(SUBSCRIBE, {
             onSubscriptionData: ({ subscriptionData }) => {
-                if (!subscriptionData) {
-                    return;
-                }
-                if (!subscriptionData.data) {
-                    return;
-                }
-                if (!subscriptionData.data.media) {
+                if (!subscriptionData?.data?.media) {
                     return;
                 }
                 const {
@@ -465,6 +461,8 @@ export class WebRTCSFUContext implements WebRTCContext {
     private outboundStreams = new Map<string, Stream>()
     private destructors = new Map<string, () => unknown>()
     private rerender: React.DispatchWithoutAction
+    private _audioGloballyMuted: boolean = false;
+    private _videoGloballyDisabled: boolean = false;
     private rtpCapabilities: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>
     private transport: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>
     private producer: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>
@@ -773,7 +771,7 @@ export class WebRTCSFUContext implements WebRTCContext {
             video
         } = muteNotification
 
-        let stream = this.inboundStreams.get(`${muteNotification.sessionId}_camera`)
+        const stream = this.inboundStreams.get(`${muteNotification.sessionId}_camera`)
         if (stream) {
             if (audio && !this.isLocalAudioEnabled(muteNotification.sessionId)) {
                 this.localAudioToggle(muteNotification.sessionId)
@@ -797,6 +795,16 @@ export class WebRTCSFUContext implements WebRTCContext {
                 this.localVideoToggle()
             }
         }
+        this._audioGloballyMuted = muteNotification.audioGloballyMuted ?? this._audioGloballyMuted;
+        this._videoGloballyDisabled = muteNotification.videoGloballyDisabled ?? this._videoGloballyDisabled;
+    }
+
+    get audioGloballyMuted(): boolean {
+        return this._audioGloballyMuted;
+    }
+
+    get videoGloballyDisabled(): boolean {
+        return this._videoGloballyDisabled;
     }
 
     private async closeMessage(id: string) {
@@ -832,8 +840,9 @@ export interface MuteNotification {
     consumerId?: string
     audio?: boolean
     video?: boolean
+    audioGloballyMuted?: boolean,
+    videoGloballyDisabled?: boolean,
 }
-
 function getSvcScalabilityMode() {
     const getParameters = new URLSearchParams(window.location.search);
     const mode = getParameters.get("svc")

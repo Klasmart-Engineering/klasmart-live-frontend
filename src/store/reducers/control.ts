@@ -49,7 +49,7 @@ const controlSlice = createSlice({
         },
         setContentIndex(state, action) {
             return { ...state, contentIndex: action.payload }
-        }
+        },
     }
 })
 
@@ -61,7 +61,7 @@ export const {
     setDrawerTabIndex,
     setColsCamera,
     setColsObserve,
-    setContentIndex
+    setContentIndex,
 } = controlSlice.actions
 
 export default controlSlice.reducer

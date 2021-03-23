@@ -142,7 +142,7 @@ export default function Camera({
                     <>
                         {session && <>
                             <MediaIndicators sessionId={session.id} />
-                            <MoreControlsButton sessionId={session.id} isSelf={isSelf} cameraRef={cameraRef} />
+                            <MoreControlsButton session={session} isSelf={isSelf} cameraRef={cameraRef} />
                         </>}
                         <video
                             id={session ? `camera:${session.id}` : undefined}
@@ -378,8 +378,8 @@ const MoreControlsPopover = withStyles({
     />
 ));
 
-export function MoreControlsButton({ sessionId, isSelf, cameraRef }: {
-    sessionId: string,
+export function MoreControlsButton({ session, isSelf, cameraRef }: {
+    session: Session,
     isSelf: boolean,
     cameraRef: React.RefObject<HTMLElement>
 }): JSX.Element {
@@ -441,7 +441,7 @@ export function MoreControlsButton({ sessionId, isSelf, cameraRef }: {
                                 </ListSubheader>
                             }
                         >
-                            <PermissionControls otherUserId={sessionId} />
+                            <PermissionControls otherUserId={session.id} />
                         </List>
                         <List
                             disablePadding
@@ -452,7 +452,7 @@ export function MoreControlsButton({ sessionId, isSelf, cameraRef }: {
                             }
                         >
                             <MenuItem className={moreControlsMenuItem}>
-                                <TrophyControls otherUserId={sessionId} />
+                                <TrophyControls otherUserId={session.id} />
                             </MenuItem>
                         </List>
                     </List>
@@ -467,8 +467,8 @@ export function MoreControlsButton({ sessionId, isSelf, cameraRef }: {
                         </ListSubheader>
                     }
                 >
-                    <ToggleCamera sessionId={sessionId} sfuState={sfuState} cameraRef={cameraRef} />
-                    <ToggleMic sessionId={sessionId} sfuState={sfuState} />
+                    <ToggleCamera session={session} sfuState={sfuState} cameraRef={cameraRef} />
+                    <ToggleMic session={session} sfuState={sfuState} />
                 </List>
             </MoreControlsPopover>
         </Grid>
@@ -480,8 +480,8 @@ export function MoreControlsButton({ sessionId, isSelf, cameraRef }: {
  * 1. Separate local / global
  * 2. Property for UI type - IconButton & MenuItem
  */
-function ToggleCamera({ sessionId, sfuState, cameraRef }: {
-    sessionId: string,
+function ToggleCamera({ session, sfuState, cameraRef }: {
+    session: Session,
     sfuState: WebRTCSFUContext,
     cameraRef: React.RefObject<HTMLElement>
 }): JSX.Element {
@@ -489,7 +489,6 @@ function ToggleCamera({ sessionId, sfuState, cameraRef }: {
     const { roomId } = useContext(LocalSessionContext);
 
     const drawerTabIndex = useSelector((state: State) => state.control.drawerTabIndex);
-
     const [cameraOn, setCameraOn] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [isVideoManuallyDisabled, setIsVideoManuallyDisabled] = useState<boolean>(false);
@@ -498,10 +497,10 @@ function ToggleCamera({ sessionId, sfuState, cameraRef }: {
     // const isCameraVisible = useIsElementInViewport(cameraRef);
 
     useEffect(() => {
-        if (isLoading && sfuState.isLocalVideoEnabled(sessionId)) {
-            setIsLoading(false)
+        if (isLoading && sfuState.isLocalVideoEnabled(session.id)) {
+            setIsLoading(false);
         }
-    }, [sfuState.isLocalVideoEnabled(sessionId)])
+    }, [sfuState.isLocalVideoEnabled(session.id)])
 
     // NOTE: This is the logic for the frontend performance. If this logic goes well, we will restore it again.
     // useEffect(() => {
@@ -515,8 +514,8 @@ function ToggleCamera({ sessionId, sfuState, cameraRef }: {
     // }, [isCameraVisible, drawerTabIndex]);
 
     useEffect(() => {
-        setCameraOn(sfuState.isLocalVideoEnabled(sessionId));
-    }, [sfuState.isLocalVideoEnabled(sessionId)])
+        setCameraOn(sfuState.isLocalVideoEnabled(session.id));
+    }, [sfuState.isLocalVideoEnabled(session.id)])
 
     function toggleInboundVideoState(stream: MediaStream | undefined) {
         const tracks = stream?.getVideoTracks() ?? [];
@@ -524,46 +523,45 @@ function ToggleCamera({ sessionId, sfuState, cameraRef }: {
             const consumerId = track.id;
             const notification: MuteNotification = {
                 roomId,
-                sessionId,
+                sessionId: session.id,
                 consumerId,
                 video: !cameraOn
             }
             sfuState.sendMute(notification);
         }
-        sfuState.localVideoToggle(sessionId);
+        sfuState.localVideoToggle(session.id);
     }
 
     function toggleOutboundVideoState() {
-        const producers = sfuState.getOutboundCameraStream()
-        const video = producers?.producers?.find((a) => a.kind === "video")
+        const producers = sfuState.getOutboundCameraStream();
+        const video = producers?.producers?.find((a) => a.kind === "video");
         if (video) {
             const notification: MuteNotification = {
                 roomId,
-                sessionId,
+                sessionId: session.id,
                 producerId: video.id,
                 video: !cameraOn
             }
-            sfuState.sendMute(notification)
+            sfuState.sendMute(notification);
         }
-        sfuState.localVideoToggle(sessionId);
+        sfuState.localVideoToggle(session.id);
     }
 
-    function toggleVideoState() {
-        const stream = sfuState.getCameraStream(sessionId)
+    function toggleVideoState(): void {
+        const stream = sfuState.getCameraStream(session.id);
         if (stream) {
             toggleInboundVideoState(stream);
         } else {
+            if (sfuState.videoGloballyDisabled && !session.isHost) {
+                return;
+            }
             toggleOutboundVideoState();
         }
-    }
-
-    function manuallyToggleVideoState(): void {
-        toggleVideoState();
-        setIsVideoManuallyDisabled(!sfuState.isLocalVideoEnabled(sessionId));
+        setIsVideoManuallyDisabled(!sfuState.isLocalVideoEnabled(session.id));
     }
 
     return (
-        <MenuItem onClick={manuallyToggleVideoState} className={moreControlsMenuItem}>
+        <MenuItem onClick={toggleVideoState} className={moreControlsMenuItem}>
             <ListItemIcon>
                 <StyledIcon icon={cameraOn ? <VideoOnIcon className={noHoverIcon} /> : <VideoOffIcon className={noHoverIcon} />} size="medium" color={cameraOn ? PRIMARY_COLOR : SECONDARY_COLOR} />
             </ListItemIcon>
@@ -577,8 +575,8 @@ function ToggleCamera({ sessionId, sfuState, cameraRef }: {
  * 1. Separate local / global
  * 2. Property for UI type - IconButton & MenuItem
  */
-function ToggleMic({ sessionId, sfuState }: {
-    sessionId: string,
+function ToggleMic({ session, sfuState }: {
+    session: Session,
     sfuState: WebRTCSFUContext
 }): JSX.Element {
     const { noHoverIcon, moreControlsMenuItem } = useStyles();
@@ -586,11 +584,11 @@ function ToggleMic({ sessionId, sfuState }: {
     const [micOn, setMicOn] = useState<boolean>(false);
 
     useEffect(() => {
-        setMicOn(sfuState.isLocalAudioEnabled(sessionId))
-    }, [sfuState.isLocalAudioEnabled(sessionId)])
+        setMicOn(sfuState.isLocalAudioEnabled(session.id))
+    }, [sfuState.isLocalAudioEnabled(session.id)])
 
     function toggleAudioState() {
-        const stream = sfuState.getCameraStream(sessionId)
+        const stream = sfuState.getCameraStream(session.id)
         if (stream) {
             // Inbound stream
             const tracks = stream.getAudioTracks();
@@ -598,29 +596,33 @@ function ToggleMic({ sessionId, sfuState }: {
                 const consumerId = track.id;
                 const notification: MuteNotification = {
                     roomId,
-                    sessionId,
+                    sessionId: session.id,
                     consumerId,
                     audio: !micOn
                 }
                 sfuState.sendMute(notification);
                 setMicOn(!micOn)
             }
+            sfuState.localAudioToggle(session.id);
         } else {
             // Outbound stream
+            if (sfuState.audioGloballyMuted && !session.isHost) {
+                return;
+            }
             const producers = sfuState.getOutboundCameraStream();
             const audio = producers?.producers?.find((a) => a.kind === "audio")
             if (audio) {
                 const notification: MuteNotification = {
                     roomId,
-                    sessionId,
+                    sessionId: session.id,
                     producerId: audio.id,
                     audio: !micOn
                 }
                 sfuState.sendMute(notification)
                 setMicOn(!micOn)
             }
+            sfuState.localAudioToggle(session.id);
         }
-        sfuState.localAudioToggle(sessionId);
     }
 
     return (
