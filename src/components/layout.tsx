@@ -427,7 +427,7 @@ function TabInnerContent({ title, numColState, setNumColState }: {
                         {materials.map((material, index) => (
                             <Step
                                 key={`step-${material.name}`}
-                                onClick={() => dispatch(setContentIndex((index)))}
+                                onClick={() => dispatch(setContentIndex(index))}
                                 disabled={false}
                                 className={classes.step}
                             >

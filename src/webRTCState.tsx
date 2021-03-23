@@ -87,7 +87,7 @@ export function GlobalCameraControl(): JSX.Element {
         state: { display },
         actions: { setDisplay },
     } = useSynchronizedState();
-
+    
     function toggleVideoStates() {
         for (const { sessionId, stream } of mediaStreams) {
             const videoTracks = stream?.getVideoTracks() ?? [];
