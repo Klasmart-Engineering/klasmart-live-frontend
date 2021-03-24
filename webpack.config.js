@@ -112,7 +112,7 @@ module.exports = {
         ws: true,
       },
       "/h5p": {
-        target: "https://zoo.kidsloop.net",
+        target: "https://live.kidsloop.net",
         changeOrigin: true,
       },
       "/video": {
