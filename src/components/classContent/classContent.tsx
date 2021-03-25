@@ -66,8 +66,6 @@ function ClassContent({ recommandUrl }: {
     const dispatch = useDispatch();
     const contentIndex = useSelector((store: State) => store.control.contentIndex);
 
-    console.log(classtype, isTeacher, materials, contentIndex)
-
     useEffect(() => {
         if (!rootDivRef || !rootDivRef.current) { return; }
         const width = rootDivRef.current.clientWidth;
