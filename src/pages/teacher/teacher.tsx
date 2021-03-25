@@ -7,7 +7,7 @@ import CardActions from "@material-ui/core/CardActions";
 import React, { useEffect, useState, useContext, useRef, useMemo } from "react";
 import { FormattedMessage } from "react-intl";
 import { RecordedIframe } from "../../components/recordediframe";
-import { Session, ContentIndexState, InteractiveModeState, StreamIdState, RoomContext, InteractiveMode, ContentType } from "../room/room";
+import { Session, InteractiveModeState, StreamIdState, RoomContext, InteractiveMode, ContentType } from "../room/room";
 import { Theme, Card, useTheme, CardContent, Hidden } from "@material-ui/core";
 import { PreviewPlayer } from "../../components/previewPlayer";
 import { Stream } from "../../webRTCState";

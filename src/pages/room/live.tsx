@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { ContentIndexState, InteractiveModeState, StreamIdState } from "./room";
+import { InteractiveModeState, StreamIdState } from "./room";
 import Layout from "../../components/layout";
 import { Student } from "../student/student";
 import { Teacher } from "../teacher/teacher";
