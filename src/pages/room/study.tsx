@@ -1,29 +1,28 @@
 const qs = require("qs");
 import React, { useState, useEffect, useContext } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Grid from "@material-ui/core/Grid";
 
-import { RoomContext, InteractiveModeState, StreamIdState, ContentIndexState } from "./room";
+import { RoomContext, InteractiveModeState, StreamIdState } from "./room";
 import { Layout } from "./layout-new";
 import { LocalSessionContext } from "../../entry";
 import { GlobalWhiteboardContext } from "../../whiteboard/context-providers/GlobalWhiteboardContext";
 import { ClassType } from "../../store/actions";
 import { setDrawerOpen } from "../../store/reducers/control";
+import { State } from "../../store/store";
 
 interface StudyProps {
-    contentIndexState: ContentIndexState;
     interactiveModeState: InteractiveModeState;
     streamIdState: StreamIdState;
 }
 
 export function Study({
-    contentIndexState,
     interactiveModeState,
     streamIdState,
 }: StudyProps): JSX.Element {
     const { classtype, org_id, materials } = useContext(LocalSessionContext);
     const dispatch = useDispatch();
-    const { contentIndex } = contentIndexState;
+    const contentIndex = useSelector((store: State) => store.control.contentIndex);
     const material = contentIndex >= 0 && contentIndex < materials.length ? materials[contentIndex] : undefined;
 
     const { streamId } = streamIdState;
@@ -99,7 +98,6 @@ export function Study({
                     style={{ flexGrow: 1, overflow: "hidden", height: "100%" }}
                 >
                     <Layout
-                        contentIndexState={contentIndexState}
                         interactiveModeState={interactiveModeState}
                         streamIdState={streamIdState}
                         material={material}

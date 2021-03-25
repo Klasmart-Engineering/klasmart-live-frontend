@@ -11,6 +11,8 @@ import { Classes } from "./classes";
 import { Live } from "./live";
 import Loading from "../../components/loading";
 import { EventEmitter } from "eventemitter3"
+import { useDispatch } from "react-redux";
+import { setContentIndex } from "../../store/reducers/control";
 
 export enum ContentType {
     Blank = "Blank",
@@ -49,12 +51,6 @@ export interface Message {
     message: string,
     session: Session,
 }
-
-export interface ContentIndexState {
-    contentIndex: number;
-    setContentIndex: React.Dispatch<React.SetStateAction<number>>;
-}
-
 export interface InteractiveModeState {
     interactiveMode: number;
     setInteractiveMode: React.Dispatch<React.SetStateAction<number>>;
@@ -67,11 +63,11 @@ export interface StreamIdState {
 
 export function Room(): JSX.Element {
     const { classtype } = useContext(LocalSessionContext);
+    const dispatch = useDispatch();
 
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
 
-    const [contentIndex, setContentIndex] = useState<number>(0);
     const [interactiveMode, setInteractiveMode] = useState<number>(0);
     const [streamId, setStreamId] = useState<string>();
     const [numColState, setNumColState] = useState(2)
@@ -91,11 +87,14 @@ export function Room(): JSX.Element {
         }
     }, [isSmDown]);
 
+    useEffect(() => {
+        dispatch(setContentIndex(0))
+    }, []);
+
     switch (classtype) {
         case "study":
             return (
                 <Study
-                    contentIndexState={{ contentIndex, setContentIndex }}
                     interactiveModeState={{ interactiveMode: 1, setInteractiveMode }}
                     streamIdState={{ streamId, setStreamId }}
                 />
@@ -103,7 +102,6 @@ export function Room(): JSX.Element {
         case "class":
             return (
                 <Classes
-                    contentIndexState={{ contentIndex, setContentIndex }}
                     interactiveModeState={{ interactiveMode: 1, setInteractiveMode }}
                     streamIdState={{ streamId, setStreamId }}
                 />
