@@ -1,22 +1,22 @@
 import React, { useState, useContext } from "react";
-import { RoomContext, InteractiveModeState, StreamIdState, ContentIndexState } from "./room";
+import { RoomContext, InteractiveModeState, StreamIdState } from "./room";
+import { useSelector } from "react-redux";
+import { State } from "../../store/store";
 import { Layout } from "./layout-new";
 import { LocalSessionContext } from "../../entry";
 import { GlobalWhiteboardContext } from "../../whiteboard/context-providers/GlobalWhiteboardContext";
 
 interface ClassesProps {
-    contentIndexState: ContentIndexState;
     interactiveModeState: InteractiveModeState;
     streamIdState: StreamIdState;
 }
 
 export function Classes({
-    contentIndexState,
     interactiveModeState,
     streamIdState,
 }: ClassesProps): JSX.Element {
     const { materials } = useContext(LocalSessionContext);
-    const { contentIndex } = contentIndexState;
+    const contentIndex = useSelector((store: State) => store.control.contentIndex);
     const material = contentIndex >= 0 && contentIndex < materials.length ? materials[contentIndex] : undefined;
     const [tabIndex, setTabIndex] = useState(0);
     const [materialKey, setMaterialKey] = useState(Math.random());
@@ -25,7 +25,6 @@ export function Classes({
         <RoomContext.Provide>
             <GlobalWhiteboardContext>
                 <Layout
-                    contentIndexState={contentIndexState}
                     interactiveModeState={interactiveModeState}
                     streamIdState={streamIdState}
                     material={material}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useTheme } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import IframeResizer from "iframe-resizer-react";
@@ -14,12 +14,11 @@ import { LocalSessionContext } from "../../entry";
 import { State } from "../../store/store";
 import { ClassType } from "../../store/actions";
 import { Whiteboard } from "../../whiteboard/components/Whiteboard-new";
-import { ContentIndexState } from "../../pages/room/room";
+import { setContentIndex } from "../../store/reducers/control";
 
 export const DRAWER_TOOLBAR_WIDTH = 64;
 
-export function ClassContentContainer({ contentIndexState, materialKey, recommandUrl }: {
-    contentIndexState: ContentIndexState;
+export function ClassContentContainer({ materialKey, recommandUrl }: {
     materialKey: number,
     recommandUrl?: string,
 }) {
@@ -43,7 +42,7 @@ export function ClassContentContainer({ contentIndexState, materialKey, recomman
                 paddingRight: (isSmDown ? theme.spacing(1) : theme.spacing(2)) + (classtype === ClassType.STUDY ? 0 : DRAWER_TOOLBAR_WIDTH),
             }}
         >
-            <ClassContent contentIndexState={contentIndexState} recommandUrl={recommandUrl} />
+            <ClassContent recommandUrl={recommandUrl} />
             <WBToolbarContainer />
         </Grid>
     )
@@ -52,19 +51,22 @@ export function ClassContentContainer({ contentIndexState, materialKey, recomman
 interface NewProps extends IframeResizer.IframeResizerProps { forwardRef: any }
 const IframeResizerNew = IframeResizer as React.FC<NewProps>
 
-function ClassContent({ contentIndexState, recommandUrl }: {
-    contentIndexState: ContentIndexState,
+function ClassContent({ recommandUrl }: {
     recommandUrl?: string
 }) {
     const { classtype, isTeacher, materials } = useContext(LocalSessionContext);
-    const { contentIndex, setContentIndex } = contentIndexState;
-    console.log(classtype, isTeacher, materials, contentIndex)
+
     const iframeRef = useRef<HTMLIFrameElement>(null);
 
     const rootDivRef = useRef<HTMLDivElement>(null);
     const [squareSize, setSquareSize] = useState<number>(0);
 
     const forStudent = classtype === ClassType.STUDY || !isTeacher;
+
+    const dispatch = useDispatch();
+    const contentIndex = useSelector((store: State) => store.control.contentIndex);
+
+    console.log(classtype, isTeacher, materials, contentIndex)
 
     useEffect(() => {
         if (!rootDivRef || !rootDivRef.current) { return; }
@@ -100,7 +102,7 @@ function ClassContent({ contentIndexState, recommandUrl }: {
                 style={{ width: "100%", height: "100%" }}
             >
                 <Grid item xs={1}>
-                    <IconButton disabled={contentIndex <= 0} aria-label="go to prev activity" onClick={() => setContentIndex(contentIndex - 1)}>
+                    <IconButton disabled={contentIndex <= 0} aria-label="go to prev activity" onClick={() => dispatch(setContentIndex(contentIndex - 1))}>
                         <ArrowBackIcon fontSize="large" />
                     </IconButton>
                 </Grid>
@@ -137,7 +139,7 @@ function ClassContent({ contentIndexState, recommandUrl }: {
                     }
                 </Grid>
                 <Grid item xs={1}>
-                    <IconButton disabled={contentIndex >= (recommandUrl ? materials.length : materials.length - 1)} aria-label="go to next activity" onClick={() => setContentIndex(contentIndex + 1)}>
+                    <IconButton disabled={contentIndex >= (recommandUrl ? materials.length : materials.length - 1)} aria-label="go to next activity" onClick={() => dispatch(setContentIndex(contentIndex + 1))}>
                         <ArrowForwardIcon fontSize="large" />
                     </IconButton>
                 </Grid>
