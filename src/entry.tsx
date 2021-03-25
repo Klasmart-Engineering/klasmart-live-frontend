@@ -121,21 +121,7 @@ function parseToken() {
                 isTeacher: payload.teacher ? Boolean(payload.teacher) : false,
                 name: payload.name ? String(payload.name) : undefined,
                 roomId: String(payload.roomid),
-                // TODO: Back to below
-                // materials: parsedMaterials || [],
-                materials: [
-                    { __typename: MaterialTypename.Iframe, name: "Interactive video", url: "/h5p/play/60588e7475aa32001244926f" },
-                    { __typename: MaterialTypename.Iframe, name: "Course Presentation", url: "/h5p/play/60588da62af9710014707a2d" },
-                    { __typename: MaterialTypename.Iframe, name: "Drag and drop", url: "/h5p/play/60589f9375aa32001244928a" },
-                    { __typename: MaterialTypename.Iframe, name: "Memory Game", url: "/h5p/play/605891d02af9710014707a44" },
-                    { __typename: MaterialTypename.Iframe, name: "Fruit", url: "/h5p/play/604afe4c75aa320012448fca" },
-                    { __typename: MaterialTypename.Video, name: "Video", url: `${process.env.ENDPOINT_TEST_ASSETS_S3 || "."}/test_video.mp4` },
-                    { __typename: MaterialTypename.Audio, name: "Audio", url: `${process.env.ENDPOINT_TEST_ASSETS_S3 || "."}/test_audio.m4a` },
-                    { __typename: MaterialTypename.Image, name: "Portrait Image", url: `${process.env.ENDPOINT_TEST_ASSETS_S3 || "."}/test_image_portrait.jpg` },
-                    { __typename: MaterialTypename.Image, name: "Landscape Image", url: `${process.env.ENDPOINT_TEST_ASSETS_S3 || "."}/test_image_landscape.jpg` },
-                    { name: "Pairs - Legacy", url: `/h5p/play/5ecf4e4b611e18398f7380ef` },
-                    { name: "Video - Legacy", video: `${process.env.ENDPOINT_TEST_ASSETS_S3 || "."}/test_video.mp4` }
-                ],
+                materials: parsedMaterials || [],
             };
         }
         // TODO think of a better way to set up the debug environment
