@@ -1,8 +1,7 @@
+import { gql, useSubscription } from "@apollo/client";
+import Typography from "@material-ui/core/Typography";
 import React, { useEffect, useRef, useState } from "react";
 import { FormattedMessage } from "react-intl";
-import { useSubscription } from "@apollo/react-hooks";
-import { gql } from "apollo-boost";
-import Typography from "@material-ui/core/Typography";
 import Loading from "./loading";
 
 const SUB_EVENTS = gql`

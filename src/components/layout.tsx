@@ -1,5 +1,5 @@
 /* eslint-disable no-case-declarations */
-import { useMutation } from "@apollo/react-hooks";
+import { gql, useMutation } from "@apollo/client";
 import Collapse from "@material-ui/core/Collapse";
 import Container from "@material-ui/core/Container";
 import Divider from "@material-ui/core/Divider";
@@ -28,7 +28,6 @@ import { People as PeopleIcon } from "@styled-icons/material-twotone/People";
 import { Settings as SettingsIcon } from "@styled-icons/material-twotone/Settings";
 import { Close as CloseIcon } from "@styled-icons/material/Close";
 import { Share as ShareIcon } from "@styled-icons/material/Share";
-import { gql } from "apollo-boost";
 import clsx from "clsx";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { FormattedMessage } from "react-intl";

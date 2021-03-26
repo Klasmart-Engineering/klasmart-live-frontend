@@ -1,8 +1,6 @@
-import * as queryString from 'query-string'
-import React, { useEffect, useRef, useState, useMemo, Dispatch, SetStateAction } from 'react'
-import { useSubscription } from '@apollo/react-hooks'
-import { gql } from 'apollo-boost'
+import { gql, useSubscription } from '@apollo/client'
 import { CircularProgress, Typography } from '@material-ui/core'
+import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
 import { FormattedMessage } from 'react-intl'
 
 const SUB_EVENTS = gql`

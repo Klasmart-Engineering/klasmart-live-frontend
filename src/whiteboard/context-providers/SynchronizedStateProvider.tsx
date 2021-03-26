@@ -1,3 +1,6 @@
+import { gql, useMutation, useSubscription } from "@apollo/client";
+import { PainterEvent } from "kidsloop-canvas/lib/domain/whiteboard/event-serializer/PainterEvent";
+import { useSharedEventSerializer } from "kidsloop-canvas/lib/domain/whiteboard/SharedEventSerializerProvider";
 import React, {
     createContext,
     FunctionComponent,
@@ -8,12 +11,8 @@ import React, {
     useEffect,
     useState
 } from "react";
-import { useMutation, useSubscription, useQuery } from "@apollo/react-hooks";
-import { gql, NetworkStatus } from "apollo-boost";
-import { PainterEvent } from "kidsloop-canvas/lib/domain/whiteboard/event-serializer/PainterEvent";
-import { useSharedEventSerializer } from "kidsloop-canvas/lib/domain/whiteboard/SharedEventSerializerProvider"
 import { LocalSessionContext } from "../../entry";
-import { Permissions, createPermissions, createEmptyPermissions } from "../types/Permissions";
+import { createEmptyPermissions, createPermissions, Permissions } from "../types/Permissions";
 
 export type PainterEventFunction = (payload: PainterEvent) => void
 

@@ -1,4 +1,4 @@
-import { useMutation } from "@apollo/react-hooks";
+import { gql, useMutation } from "@apollo/client";
 import { Card, CardContent, Hidden, Theme, useTheme } from "@material-ui/core";
 import CardActions from "@material-ui/core/CardActions";
 import Grid from "@material-ui/core/Grid";
@@ -10,7 +10,6 @@ import { QuestionMarkCircleOutline as QuestionIcon } from "@styled-icons/evaicon
 import { Face as FaceIcon } from "@styled-icons/material/Face";
 import { ZoomIn as ZoomInIcon } from "@styled-icons/material/ZoomIn";
 import { ZoomOut as ZoomOutIcon } from "@styled-icons/material/ZoomOut";
-import { gql } from "apollo-boost";
 import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { useSelector } from "react-redux";

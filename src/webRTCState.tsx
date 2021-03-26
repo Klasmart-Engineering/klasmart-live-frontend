@@ -1,4 +1,4 @@
-import { useMutation, useSubscription } from "@apollo/react-hooks";
+import { gql, useMutation, useSubscription } from "@apollo/client";
 import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
 import { useTheme } from "@material-ui/core/styles";
@@ -15,20 +15,19 @@ import { EmojiEvents as TrophyIcon } from "@styled-icons/material/EmojiEvents";
 import { Favorite as HeartIcon } from "@styled-icons/material/Favorite";
 import { Star as StarIcon } from "@styled-icons/material/Star";
 import { ThumbUp as EncourageIcon } from "@styled-icons/material/ThumbUp";
-import { gql } from "apollo-boost";
 import { useToolbarContext } from "kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
-import { default as React, default as React, useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { getRandomKind } from './components/trophies/trophyKind';
 import { LocalSessionContext } from "./entry";
 import { GlobalMuteNotification, WebRTCContext } from "./providers/WebRTCContext";
 import { useSynchronizedState } from "./whiteboard/context-providers/SynchronizedStateProvider";
 
-const SEND_SIGNAL = gql`
-  mutation webRTCSignal($roomId: ID!, $toSessionId: ID!, $webrtc: WebRTCIn) {
-    webRTCSignal(roomId: $roomId, toSessionId: $toSessionId, webrtc: $webrtc)
-  }
-`;
+// const SEND_SIGNAL = gql`
+//   mutation webRTCSignal($roomId: ID!, $toSessionId: ID!, $webrtc: WebRTCIn) {
+//     webRTCSignal(roomId: $roomId, toSessionId: $toSessionId, webrtc: $webrtc)
+//   }
+// `;
 
 export const SUBSCRIBE_GLOBAL_MUTE = gql`
     subscription media($roomId: ID!) {

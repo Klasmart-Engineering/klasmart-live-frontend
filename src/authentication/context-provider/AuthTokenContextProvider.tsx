@@ -1,6 +1,5 @@
+import { gql, useQuery } from "@apollo/client";
 import React, { createContext, FunctionComponent, ReactChild, ReactChildren, useContext } from "react";
-import { useQuery } from "@apollo/react-hooks";
-import { gql } from "apollo-boost";
 
 
 const QUERY_VERIFY_TOKEN = gql`

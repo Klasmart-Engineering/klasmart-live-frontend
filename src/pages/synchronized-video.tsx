@@ -1,18 +1,14 @@
+import { gql, useMutation, useSubscription } from "@apollo/client";
+import { CircularProgress, IconButton, Typography } from "@material-ui/core";
+import { VolumeMute as AudioOffIcon } from "@styled-icons/boxicons-regular/VolumeMute";
 import React, {
-    useRef,
-    useEffect,
-    useContext,
-    useCallback,
-    useState,
+    useCallback, useContext, useEffect, useRef,
+    useState
 } from "react";
-import { useSubscription, useMutation } from "@apollo/react-hooks";
-import { gql } from "apollo-boost";
-import { CircularProgress, Typography, IconButton } from "@material-ui/core";
-import { LocalSessionContext } from "../entry";
-import { MaterialTypename } from "../lessonMaterialContext";
 import { FFT } from "../components/fft";
 import ReactPlayer from "../components/react-player/lazy";
-import { VolumeMute as AudioOffIcon } from "@styled-icons/boxicons-regular/VolumeMute";
+import { LocalSessionContext } from "../entry";
+import { MaterialTypename } from "../lessonMaterialContext";
 import { videoUnmuteOverlay } from "../utils/layerValues";
 
 interface VideoSynchronize {
