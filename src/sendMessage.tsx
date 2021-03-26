@@ -1,16 +1,15 @@
-import React, { useState, useContext } from "react";
+import { gql, useMutation } from "@apollo/client";
 // import { FormattedMessage } from "react-intl";
-import { makeStyles, Theme, createStyles } from "@material-ui/core";
+import { createStyles, makeStyles, Theme } from "@material-ui/core";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import Paper from "@material-ui/core/Paper";
-import InputBase from "@material-ui/core/InputBase";
 import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
+import InputBase from "@material-ui/core/InputBase";
+import Paper from "@material-ui/core/Paper";
 import { Send as SendIcon } from "@styled-icons/material-twotone/Send";
-import { useMutation } from "@apollo/react-hooks";
-import { gql } from "apollo-boost";
-import { LocalSessionContext } from "./entry";
+import React, { useContext, useState } from "react";
 import { DRAWER_WIDTH } from "./components/layout";
+import { LocalSessionContext } from "./entry";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

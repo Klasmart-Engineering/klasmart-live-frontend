@@ -1,51 +1,41 @@
+import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
+import { WebSocketLink } from "@apollo/client/link/ws";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import Grid from "@material-ui/core/Grid";
+import { ThemeProvider } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
+import * as Sentry from '@sentry/react';
+import jwt_decode from "jwt-decode";
 import LogRocket from 'logrocket';
+import React, { createContext, useEffect, useMemo, useState } from "react";
+import {
+    isAndroid,
+    isChrome,
+    isChromium, isEdge, isFirefox,
+    isIE, isIOS,
+    isIOS13, isMacOs, isMobileOnly,
+    isMobileSafari, isSafari, isSmartTV, isTablet
+} from "react-device-detect";
+import { render } from "react-dom";
+import { FormattedMessage, RawIntlProvider } from "react-intl";
+import { Provider, useDispatch } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
+import { v4 as uuid } from "uuid";
+import { App } from "./app";
+import ChromeLogo from "./assets/img/browser/chrome_logo.svg";
+import SafariLogo from "./assets/img/browser/safari_logo.png";
+import { LessonMaterial, MaterialTypename } from "./lessonMaterialContext";
+import { AuthTokenProvider } from "./services/auth-token/AuthTokenProvider";
+import { setUserAgent } from "./store/reducers/session";
+import { createDefaultStore } from "./store/store";
+import { themeProvider } from "./themeProvider";
+import { getDefaultLanguageCode, getLanguage } from "./utils/locale";
 LogRocket.init('8acm62/kidsloop-live-prod', {
     mergeIframes: true,
 });
 
-import { v4 as uuid } from "uuid";
 export const sessionId = uuid();
 
-import React, { createContext, useState, useMemo, useEffect } from "react";
-import { Provider, useDispatch } from "react-redux";
-import { PersistGate } from "redux-persist/integration/react";
-import * as Sentry from '@sentry/react';
-import { render } from "react-dom";
-import { RawIntlProvider, FormattedMessage } from "react-intl";
-import { ApolloProvider } from "@apollo/react-hooks";
-import { ApolloClient, InMemoryCache } from "apollo-boost";
-import { WebSocketLink } from "apollo-link-ws";
-import jwt_decode from "jwt-decode";
-import { ThemeProvider } from "@material-ui/core/styles";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Typography from "@material-ui/core/Typography";
-import Grid from "@material-ui/core/Grid";
-import {
-    isMobileOnly,
-    isTablet,
-    isSmartTV,
-    isAndroid,
-    isIOS,
-    isChrome,
-    isFirefox,
-    isSafari,
-    isIE,
-    isEdge,
-    isChromium,
-    isMobileSafari,
-    isMacOs,
-    isIOS13
-} from "react-device-detect";
-import { App } from "./app";
-import { createDefaultStore } from "./store/store";
-import { LessonMaterial, MaterialTypename } from "./lessonMaterialContext";
-import { AuthTokenProvider } from "./services/auth-token/AuthTokenProvider";
-import { themeProvider } from "./themeProvider";
-import { getLanguage, getDefaultLanguageCode } from "./utils/locale";
-import { setUserAgent } from "./store/reducers/session";
-
-import ChromeLogo from "./assets/img/browser/chrome_logo.svg";
-import SafariLogo from "./assets/img/browser/safari_logo.png";
 
 Sentry.init({
     dsn: "https://9f4fca35be3b4b7ca970a126f26a5e54@o412774.ingest.sentry.io/5388813",

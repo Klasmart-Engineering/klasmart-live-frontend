@@ -1,22 +1,20 @@
 // @ts-ignore
-import { AuthTokenProvider } from "../services/auth-token/AuthTokenProvider";
-
-const callstats: any = require('callstats-js/callstats.min');
-import { WebRTCContext } from "./webrtc";
+import { ApolloClient, ApolloProvider, gql, InMemoryCache, MutationFunctionOptions, useMutation, useSubscription } from "@apollo/client";
+import { WebSocketLink } from "@apollo/client/link/ws";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import {
     Device,
-    types as MediaSoup,
-} from "mediasoup-client"
-import React, { createContext, useReducer, useRef, useContext, useEffect, useMemo } from "react";
-import { RoomContext } from "../pages/room/room";
-import { gql, ExecutionResult, ApolloClient, InMemoryCache } from "apollo-boost";
-import { useMutation, useSubscription, ApolloProvider } from "@apollo/react-hooks";
-import { MutationFunctionOptions } from "@apollo/react-common/lib/types/types";
-import { Resolver, PrePromise } from "../resolver";
-import { WebSocketLink } from "apollo-link-ws";
-import { sessionId, LocalSessionContext } from "../entry";
-import CircularProgress from "@material-ui/core/CircularProgress";
+    types as MediaSoup
+} from "mediasoup-client";
 import { Producer, ProducerOptions } from "mediasoup-client/lib/Producer";
+import React, { createContext, useContext, useEffect, useMemo, useReducer, useRef } from "react";
+import { LocalSessionContext, sessionId } from "../entry";
+import { RoomContext } from "../pages/room/room";
+import { PrePromise, Resolver } from "../resolver";
+import { AuthTokenProvider } from "../services/auth-token/AuthTokenProvider";
+import { WebRTCContext } from "./webrtc";
+
+const callstats: any = require('callstats-js/callstats.min');
 
 const SEND_RTP_CAPABILITIES = gql`
     mutation rtpCapabilities($rtpCapabilities: String!) {
@@ -74,9 +72,49 @@ const SUBSCRIBE = gql`
         }
     }
 `;
-    InternalProvider() {
-        const { roomId } = useContext(RoomContext);
-        const { name, sessionId } = useContext(LocalSessionContext);
+
+const context = createContext<{ ref: React.MutableRefObject<WebRTCSFUContext> }>(undefined as any);
+
+export class WebRTCSFUContext implements WebRTCContext {
+    public static Provide({ children }: { children: JSX.Element[] | JSX.Element }) {
+        const ref = useRef<WebRTCSFUContext>(undefined as any)
+        const [value, rerender] = useReducer(() => ({ ref }), { ref })
+        const { roomId } = RoomContext.Consume();
+        const authToken = AuthTokenProvider.retrieveToken();
+
+        const apolloClient = useMemo(() =>
+            new ApolloClient({
+                cache: new InMemoryCache(),
+                link: new WebSocketLink({
+                    uri: `${window.location.protocol === "https:" ? "wss" : "ws"}://${window.location.host}/sfu/${roomId}`,
+                    options: {
+                        reconnect: true,
+                        connectionParams: {
+                            authToken,
+                            sessionId
+                        },
+                    },
+                })
+            } as any),
+            [roomId])
+
+        if (!apolloClient) {
+            return <CircularProgress />
+        }
+
+        return (
+            <>
+                <ApolloProvider client={apolloClient}>
+                    <WebRTCSFUContext.InternalProvider sfu={ref} rerender={rerender} />
+                </ApolloProvider>
+                <context.Provider value={value}>
+                    {children}
+                </context.Provider>
+            </>
+        )
+    }
+
+    private static InternalProvider({ sfu, rerender }: { sfu: React.MutableRefObject<WebRTCSFUContext>, rerender: React.DispatchWithoutAction }) {
         const [rtpCapabilities] = useMutation(SEND_RTP_CAPABILITIES);
         const [transport] = useMutation(TRANSPORT);
         const [producer] = useMutation(PRODUCER);

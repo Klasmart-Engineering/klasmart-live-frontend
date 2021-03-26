@@ -1,26 +1,24 @@
-import React, { useRef, useEffect, useState, useContext } from "react";
-import { gql } from "apollo-boost";
-import { useMutation } from "@apollo/react-hooks";
-import { LocalSessionContext } from "../entry";
-import Grid from "@material-ui/core/Grid";
+import { gql, useMutation } from "@apollo/client";
 import Dialog from "@material-ui/core/Dialog";
+import Grid from "@material-ui/core/Grid";
 import { useTheme } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import StyledFAB from "./styled/fabButton";
-import { loadingActivity } from "../utils/layerValues";
-
-import CurlySpinner1 from "../assets/img/spinner/curly1_spinner.gif"
-import CurlySpinner2 from "../assets/img/spinner/curly2_spinner.gif"
-import EccoSpinner1 from "../assets/img/spinner/ecco1_spinner.gif"
-import EccoSpinner2 from "../assets/img/spinner/ecco2_spinner.gif"
-import JessSpinner1 from "../assets/img/spinner/jess1_spinner.gif"
-import MimiSpinner1 from "../assets/img/spinner/mimi1_spinner.gif"
-import GhostSpinner from "../assets/img/spinner/ghost_spinner.gif"
-import { Refresh as RefreshIcon } from "@styled-icons/material/Refresh";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
-import { useWindowSize } from "../utils/viewport";
+import { Refresh as RefreshIcon } from "@styled-icons/material/Refresh";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
+import CurlySpinner1 from "../assets/img/spinner/curly1_spinner.gif";
+import CurlySpinner2 from "../assets/img/spinner/curly2_spinner.gif";
+import EccoSpinner1 from "../assets/img/spinner/ecco1_spinner.gif";
+import EccoSpinner2 from "../assets/img/spinner/ecco2_spinner.gif";
+import GhostSpinner from "../assets/img/spinner/ghost_spinner.gif";
+import JessSpinner1 from "../assets/img/spinner/jess1_spinner.gif";
+import MimiSpinner1 from "../assets/img/spinner/mimi1_spinner.gif";
+import { LocalSessionContext } from "../entry";
 import { State } from "../store/store";
+import { loadingActivity } from "../utils/layerValues";
+import { useWindowSize } from "../utils/viewport";
+import StyledFAB from "./styled/fabButton";
 
 const SET_STREAMID = gql`
     mutation setSessionStreamId($roomId: ID!, $streamId: ID!) {

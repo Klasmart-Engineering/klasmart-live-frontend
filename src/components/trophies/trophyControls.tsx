@@ -1,19 +1,17 @@
+import { useMutation } from '@apollo/client';
 import Grid from '@material-ui/core/Grid/Grid';
 import IconButton from '@material-ui/core/IconButton/IconButton';
 import useTheme from '@material-ui/core/styles/useTheme';
 import useMediaQuery from '@material-ui/core/useMediaQuery/useMediaQuery';
-import React, { ReactChild, ReactChildren, useCallback, useContext } from 'react';
-import { getRandomKind } from './trophyKind';
-
-import { Star as StarIcon } from "@styled-icons/material/Star";
 import { EmojiEvents as TrophyIcon } from "@styled-icons/material/EmojiEvents";
 import { Favorite as HeartIcon } from "@styled-icons/material/Favorite";
+import { Star as StarIcon } from "@styled-icons/material/Star";
 import { ThumbUp as EncourageIcon } from "@styled-icons/material/ThumbUp";
-import { gql } from 'apollo-boost';
-import { useMutation } from '@apollo/react-hooks';
-import { LocalSessionContext } from '../../entry';
+import React, { ReactChild, ReactChildren, useContext } from 'react';
 import StyledIcon from "../../components/styled/icon";
+import { LocalSessionContext } from '../../entry';
 import { MUTATION_REWARD_TROPHY } from '../../webRTCState';
+import { getRandomKind } from './trophyKind';
 
 type Props = {
     children?: ReactChild | ReactChildren | null
