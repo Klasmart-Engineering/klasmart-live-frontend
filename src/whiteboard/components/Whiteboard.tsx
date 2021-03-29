@@ -31,7 +31,6 @@ export function Whiteboard({ group, width, height, filterUsers, filterGroups, un
     }, [sessionId, group]);
 
     const canvasStyle: CSSProperties = {
-        backgroundColor: "rgba(0,0,0,0.3)", // TODO: Erase
         zIndex: whiteboard,
         width: "100%",
         height: "100%"
@@ -41,7 +40,6 @@ export function Whiteboard({ group, width, height, filterUsers, filterGroups, un
         <div
             id="whiteboard-container"
             style={{
-                backgroundColor: "rgba(0,0,0,0.1)", // TODO: Erase
                 zIndex: whiteboard + 1,
                 display: display ? "block" : "none",
                 position: "absolute",
