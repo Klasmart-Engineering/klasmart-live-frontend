@@ -147,7 +147,6 @@ export function Teacher(props: Props): JSX.Element {
                     </Grid>
                 </> : <div
                     style={{
-                        border: "1px solid red", // TODO: Erase
                         display: "flex",
                         position: "relative", // For "absolute" position of <Whiteboard />
                         width: square,
