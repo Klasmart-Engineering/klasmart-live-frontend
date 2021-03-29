@@ -31,6 +31,7 @@ const SET_STREAMID = gql`
 export interface Props {
     contentId: string;
     setStreamId: React.Dispatch<React.SetStateAction<string | undefined>>;
+    square?: number;
 }
 
 enum LoadStatus {
@@ -48,7 +49,7 @@ export function RecordedIframe(props: Props): JSX.Element {
 
     const { roomId } = useContext(LocalSessionContext);
     const drawerOpen = useSelector((state: State) => state.control.drawerOpen);
-    const { contentId, setStreamId } = props;
+    const { contentId, setStreamId, square } = props;
     const [sendStreamId] = useMutation(SET_STREAMID);
 
     const [transformScale, setTransformScale] = useState<number>(1);
@@ -96,15 +97,26 @@ export function RecordedIframe(props: Props): JSX.Element {
     }, [loadStatus]);
 
     const scale = (innerWidth: number, innerHeight: number) => {
-        const iRef = window.document.getElementById("main-container") as HTMLIFrameElement;
-        if (iRef) {
-            const currentWidth = iRef.getBoundingClientRect().width;
-            const currentHeight = iRef.getBoundingClientRect().height;
-            const shrinkRatioX = (currentWidth / innerWidth) > 1 ? 1 : currentWidth / innerWidth;
-            const shrinkRatioY = (currentHeight / innerHeight) > 1 ? 1 : currentHeight / innerHeight;
-            const shrinkRatio = Math.min(shrinkRatioX, shrinkRatioY);
-            setTransformScale(shrinkRatio);
+        let currentWidth: number = size.width, currentHeight: number = size.height;
+
+        if (square) {
+            /**
+             * For exact synchronization of <Whiteboard /> drawing position,
+             * Square should be required when classtype === Classtype.LIVE.
+             */
+            currentWidth = square, currentHeight = square;
+        } else {
+            const iRef = window.document.getElementById("main-container") as HTMLIFrameElement;
+            if (iRef) {
+                currentWidth = iRef.getBoundingClientRect().width;
+                currentHeight = iRef.getBoundingClientRect().height;
+            }
         }
+
+        const shrinkRatioX = (currentWidth / innerWidth) > 1 ? 1 : currentWidth / innerWidth;
+        const shrinkRatioY = (currentHeight / innerHeight) > 1 ? 1 : currentHeight / innerHeight;
+        const shrinkRatio = Math.min(shrinkRatioX, shrinkRatioY);
+        setTransformScale(shrinkRatio);
     }
 
     function onLoad() {
@@ -114,7 +126,8 @@ export function RecordedIframe(props: Props): JSX.Element {
         const contentWindow = iframeElement.contentWindow
         const contentDoc = iframeElement.contentDocument
         if (!contentWindow || !contentDoc) { return; }
-        // IP Protection
+
+        // IP Protection: Contents should not be able to be downloaded by right-clicking.
         const blockRightClick = (e: MouseEvent) => { e.preventDefault() }
         contentWindow.addEventListener("contextmenu", (e) => blockRightClick(e), false);
         const h5pDivCollection = contentDoc.body.getElementsByClassName("h5p-content");

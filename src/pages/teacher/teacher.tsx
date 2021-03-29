@@ -25,6 +25,7 @@ import { MaterialTypename } from "../../lessonMaterialContext";
 import { imageFrame } from "../../utils/layerValues";
 import { State } from "../../store/store";
 import { useSelector } from "react-redux";
+import { useWindowSize } from "../../utils/viewport";
 
 const drawerWidth = 340;
 
@@ -81,6 +82,13 @@ interface Props {
 }
 
 export function Teacher(props: Props): JSX.Element {
+    const size = useWindowSize();
+    const [square, setSquare] = useState(size.width > size.height ? size.height : size.width);
+
+    useEffect(() => {
+        setSquare(size.width > size.height ? size.height : size.width);
+    }, [size])
+
     const { roomId, sessionId, materials, name } = useContext(LocalSessionContext);
     const screenShare = ScreenShare.Consume()
     const { content, sessions } = RoomContext.Consume()
@@ -137,7 +145,15 @@ export function Teacher(props: Props): JSX.Element {
                             <StudentPreviewCard key={session.id} session={session} numColState={numColState} />
                         )}
                     </Grid>
-                </> : <>
+                </> : <div
+                    style={{
+                        border: "1px solid red", // TODO: Erase
+                        display: "flex",
+                        position: "relative", // For "absolute" position of <Whiteboard />
+                        width: square,
+                        height: square
+                    }}
+                >
                     <Whiteboard uniqueId="global" />
                     {
                         //TODO: tidy up the conditions of what to render
@@ -180,15 +196,16 @@ export function Teacher(props: Props): JSX.Element {
                                                     <RecordedIframe
                                                         contentId={material.url}
                                                         setStreamId={setStreamId}
+                                                        square={square}
                                                     /> : undefined
                                                 : undefined : //Unknown Material
                                     undefined //No Material
                                 }
                             </>
                     }
-                </>
+                </div>
             }
-        </div >
+        </div>
     );
 }
 
