@@ -137,8 +137,8 @@ export function Teacher(props: Props): JSX.Element {
                             <StudentPreviewCard key={session.id} session={session} numColState={numColState} />
                         )}
                     </Grid>
-                </> :
-                <Whiteboard uniqueId="global">
+                </> : <>
+                    <Whiteboard uniqueId="global" />
                     {
                         //TODO: tidy up the conditions of what to render
                         interactiveMode === InteractiveMode.ShareScreen ?
@@ -186,7 +186,7 @@ export function Teacher(props: Props): JSX.Element {
                                 }
                             </>
                     }
-                </Whiteboard>
+                </>
             }
         </div >
     );
@@ -223,11 +223,10 @@ function StudentPreviewCard({ session, numColState }: { session: Session, numCol
             <Card>
                 <CardContent >
                     <Grid ref={cardConRef} item xs={12} style={{ margin: "0 auto" }}>
-                        {session.streamId ?
-                            <Whiteboard group={session.id} uniqueId={session.id} filterGroups={filterGroups}>
-                                <PreviewPlayer width={width} height={height} streamId={session.streamId} />
-                            </Whiteboard> : undefined
-                        }
+                        {session.streamId && <>
+                            <Whiteboard group={session.id} uniqueId={session.id} filterGroups={filterGroups} />
+                            <PreviewPlayer width={width} height={height} streamId={session.streamId} />
+                        </>}
                     </Grid>
                 </CardContent>
                 <CardActions style={{ display: "flex", justifyContent: "space-between" }}>

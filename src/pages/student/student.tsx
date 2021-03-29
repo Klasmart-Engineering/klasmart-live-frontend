@@ -99,10 +99,9 @@ export function Student(): JSX.Element {
             }
             {content && content.type === ContentType.Stream &&
                 <div ref={rootDivRef} id="player-container" className={classes.root}>
-                    <Whiteboard uniqueId="student">
-                        <PreviewPlayer streamId={content.contentId} width={rootDivWidth} height={rootDivHeight} />
-                        {/* <WBToolbar /> */}
-                    </Whiteboard>
+                    <Whiteboard uniqueId="student" />
+                    <PreviewPlayer streamId={content.contentId} width={rootDivWidth} height={rootDivHeight} />
+                    {/* <WBToolbar /> */}
                     {/* <Grid className={classes.textMargin} container justify="center" item xs={12}>
                         <Typography variant="caption" color="primary" align="center" style={{ margin: "0 auto" }}>
                             <FormattedMessage id="student_stream_mode" />
@@ -112,14 +111,13 @@ export function Student(): JSX.Element {
             }
             {content && content.type === ContentType.Activity &&
                 <div ref={rootDivRef} className={classes.root}>
-                    <Whiteboard group={sessionId} uniqueId="student" filterGroups={studentModeFilterGroups}>
-                        {(rootDivRef && rootDivHeight) ?
-                            <RecordedIframe
-                                contentId={content.contentId}
-                                setStreamId={setStreamId}
-                            /> : undefined}
-                        {/* <WBToolbar /> */}
-                    </Whiteboard>
+                    <Whiteboard group={sessionId} uniqueId="student" filterGroups={studentModeFilterGroups} />
+                    {(rootDivRef && rootDivHeight) ?
+                        <RecordedIframe
+                            contentId={content.contentId}
+                            setStreamId={setStreamId}
+                        /> : undefined}
+                    {/* <WBToolbar /> */}
                     {/* <Grid className={classes.textMargin} container justify="center" item xs={12}>
                         <Typography variant="caption" color="primary" align="center" style={{ margin: "0 auto" }}>
                             <FormattedMessage id="student_activity_mode" />
@@ -130,55 +128,51 @@ export function Student(): JSX.Element {
             {/* {content && content.type === ContentType.Audio ? null : null } */}
             {content && content.type === ContentType.Video &&
                 <div ref={rootDivRef} className={classes.root}>
-                    <Whiteboard uniqueId="student">
-                        <ReplicaMedia type={content.type === "Video" ? MaterialTypename.Video : MaterialTypename.Audio} style={{ width: "100%" }} sessionId={content.contentId} />
-                    </Whiteboard>
+                    <Whiteboard uniqueId="student" />
+                    <ReplicaMedia type={content.type === "Video" ? MaterialTypename.Video : MaterialTypename.Audio} style={{ width: "100%" }} sessionId={content.contentId} />
                     <WBToolbar />
                 </div>
             }
             {content && content.type === ContentType.Image &&
                 <div ref={rootDivRef} className={classes.root}>
-                    <Whiteboard uniqueId="student">
-                        <Grid container>
-                            <Grid container item style={{
-                                height: "100%",
-                                position: "absolute",
-                                left: 0,
-                                right: 0,
-                                zIndex: 1,
-                                // display: "block",
-                                backgroundImage: `url(${content.contentId})`,
-                                filter: "blur(8px)",
-                                WebkitFilter: "blur(8px)",
-                                backgroundPosition: "center",
-                                backgroundRepeat: "no-repeat",
-                                backgroundSize: "cover",
-                            }}
-                            />
-                            <img
-                                className={classes.imageFrame}
-                                src={content.contentId}
-                            />
-                        </Grid>
-                    </Whiteboard>
+                    <Whiteboard uniqueId="student" />
+                    <Grid container>
+                        <Grid container item style={{
+                            height: "100%",
+                            position: "absolute",
+                            left: 0,
+                            right: 0,
+                            zIndex: 1,
+                            // display: "block",
+                            backgroundImage: `url(${content.contentId})`,
+                            filter: "blur(8px)",
+                            WebkitFilter: "blur(8px)",
+                            backgroundPosition: "center",
+                            backgroundRepeat: "no-repeat",
+                            backgroundSize: "cover",
+                        }}
+                        />
+                        <img
+                            className={classes.imageFrame}
+                            src={content.contentId}
+                        />
+                    </Grid>
                     <WBToolbar />
                 </div>
             }
-            {content && content.type === ContentType.Camera  &&
+            {content && content.type === ContentType.Camera &&
                 <div ref={rootDivRef} className={classes.root}>
                     <Typography variant="caption" align="center">{session ? session.name : undefined}</Typography>
-                    <Whiteboard uniqueId="student">
-                        <Stream stream={webrtc.getCameraStream(content.contentId)} />
-                    </Whiteboard>
+                    <Whiteboard uniqueId="student" />
+                    <Stream stream={webrtc.getCameraStream(content.contentId)} />
                     <WBToolbar />
                 </div>
             }
             {content && content.type === ContentType.Screen &&
                 <div ref={rootDivRef} className={classes.root}>
                     <Typography variant="caption" align="center">{session ? session.name : undefined}</Typography>
-                    <Whiteboard uniqueId="student">
-                        <Stream stream={webrtc.getAuxStream(content.contentId)} />
-                    </Whiteboard>
+                    <Whiteboard uniqueId="student" />
+                    <Stream stream={webrtc.getAuxStream(content.contentId)} />
                     <WBToolbar />
                 </div>
             }
