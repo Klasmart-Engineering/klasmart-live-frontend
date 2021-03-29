@@ -1,4 +1,4 @@
-import React, { ReactChild, ReactNode, useContext, useMemo } from "react";
+import React, { useContext, useMemo } from "react";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
 import { whiteboard } from "../../utils/layerValues";
 import { useSynchronizedState } from "../context-providers/SynchronizedStateProvider";
@@ -8,7 +8,6 @@ import { LocalSessionContext } from "../../entry";
 type Props = {
     uniqueId: string;
     group?: string;
-    children?: ReactChild | ReactNode | null;
     width?: string | number; // In student case, activity's width should be passed
     height?: string | number;
     filterUsers?: string[];
@@ -17,7 +16,7 @@ type Props = {
     centerVertically?: boolean;
 }
 
-export function Whiteboard({ group, children, width, height, filterUsers, filterGroups, uniqueId, centerHorizontally, centerVertically }: Props): JSX.Element {
+export function Whiteboard({ group, width, height, filterUsers, filterGroups, uniqueId, centerHorizontally, centerVertically }: Props): JSX.Element {
     const { state: { permissions, display } } = useSynchronizedState();
 
     const { sessionId } = useContext(LocalSessionContext);
@@ -32,30 +31,30 @@ export function Whiteboard({ group, children, width, height, filterUsers, filter
     }, [sessionId, group]);
 
     const canvasStyle: CSSProperties = {
-        position: "absolute",
-        top: "0px",
-        left: "0px",
-        width: "100%",
+        backgroundColor: "rgba(0,0,0,0.3)", // TODO: Erase
         zIndex: whiteboard,
-        height: "100%",
+        width: "100%",
+        height: "100%"
     };
-
-    // TODO: Proper resolution/aspect ratio/size support. May have to
-    // poll the parent element size to proper calculate and set it.
 
     return (
         <div
+            id="whiteboard-container"
             style={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "flex-start",
-                position: "relative",
-                height: height ? height : "100%",
+                backgroundColor: "rgba(0,0,0,0.1)", // TODO: Erase
+                zIndex: whiteboard + 1,
+                display: display ? "block" : "none",
+                position: "absolute",
+                top: 0,
+                bottom: 0,
+                left: 0,
+                right: 0,
                 width: width ? width : "100%",
-                overflow: "hidden",
+                height: height ? height : "100%",
             }}
         >
-            <WhiteboardCanvas instanceId={`canvas:user:${sessionId}:${uniqueId}`}
+            <WhiteboardCanvas
+                instanceId={`canvas:user:${sessionId}:${uniqueId}`}
                 userId={canvasUserId}
                 pointerEvents={permissions.allowCreateShapes}
                 initialStyle={canvasStyle}
@@ -64,12 +63,10 @@ export function Whiteboard({ group, children, width, height, filterUsers, filter
                 pixelWidth={1024}
                 pixelHeight={1024}
                 display={display}
-                scaleMode={"ScaleFitHorizontally"}
+                scaleMode={"ScaleToFill"}
                 centerHorizontally={centerHorizontally !== undefined ? centerHorizontally : true}
                 centerVertically={centerVertically !== undefined ? centerVertically : false}
             />
-            {children}
-
         </div>
     );
 }
