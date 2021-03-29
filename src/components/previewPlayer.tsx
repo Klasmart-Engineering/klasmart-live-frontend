@@ -4,7 +4,6 @@ import { useSubscription } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
 import Typography from "@material-ui/core/Typography";
 import Loading from "./loading";
-import { h5pStaticSize } from "../utils/h5pActivityAttr";
 
 const SUB_EVENTS = gql`
   subscription stream($streamId: ID!) {
@@ -48,7 +47,7 @@ export function PreviewPlayer({ streamId, frameProps, width, height }: Props): J
         const listener = (e: MessageEvent) => { if (e.data === "ready") { sendEvent(); } };
         iframeWindow.addEventListener("message", listener);
         return () => {
-            if(iframeWindow&&iframeWindow.removeEventListener) {
+            if (iframeWindow && iframeWindow.removeEventListener) {
                 iframeWindow.removeEventListener("message", listener);
             }
         }
@@ -66,8 +65,8 @@ export function PreviewPlayer({ streamId, frameProps, width, height }: Props): J
             const fWidth = Number(data.width.replace("px", ""));
             const fHeight = Number(data.height.replace("px", ""));
             setWidthHeight({ frameWidth: fWidth, frameHeight: fHeight });
-            const shrinkRatioX = (width/ h5pStaticSize.default.width) > 1 ? 1 : width/ h5pStaticSize.default.width;
-            const shrinkRatioY = (height / h5pStaticSize.default.height) > 1 ? 1 : height / h5pStaticSize.default.height;
+            const shrinkRatioX = (width / fWidth) > 1 ? 1 : width / fWidth;
+            const shrinkRatioY = (height / fHeight) > 1 ? 1 : height / fHeight;
             setScale(Math.min(shrinkRatioX, shrinkRatioY));
         });
     }, [ref.current, ref.current && ref.current.contentWindow]);

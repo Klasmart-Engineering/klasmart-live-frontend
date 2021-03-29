@@ -223,9 +223,9 @@ function StudentPreviewCard({ session, numColState }: { session: Session, numCol
 
     useEffect(() => {
         if (cardConRef.current) {
-            const contWidth = cardConRef.current.offsetWidth;
+            const contWidth = cardConRef.current.getBoundingClientRect().width;
             setWidth(contWidth);
-            setHeight(Math.min(contWidth, contWidth * 0.5625));
+            setHeight(contWidth);
         }
     }, [cardConRef.current, zoomin, numColState]);
 
@@ -239,7 +239,7 @@ function StudentPreviewCard({ session, numColState }: { session: Session, numCol
         <Grid item xs={12} md={zoomin ? 12 : (12 / numColState as (2 | 4 | 6))} style={{ order: zoomin ? -1 : 0 }}>
             <Card>
                 <CardContent >
-                    <Grid ref={cardConRef} item xs={12} style={{ margin: "0 auto" }}>
+                    <Grid ref={cardConRef} item xs={12} style={{ position: "relative", margin: "0 auto" }}>
                         {session.streamId && <>
                             <Whiteboard group={session.id} uniqueId={session.id} filterGroups={filterGroups} />
                             <PreviewPlayer width={width} height={height} streamId={session.streamId} />
