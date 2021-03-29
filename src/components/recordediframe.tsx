@@ -19,7 +19,6 @@ import GhostSpinner from "../assets/img/spinner/ghost_spinner.gif"
 import { Refresh as RefreshIcon } from "@styled-icons/material/Refresh";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { useWindowSize } from "../utils/viewport";
-import { h5pStaticSize } from "../utils/h5pActivityAttr";
 import { useSelector } from "react-redux";
 import { State } from "../store/store";
 
@@ -34,7 +33,7 @@ export interface Props {
     setStreamId: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
-enum LoadStatus{
+enum LoadStatus {
     Error,
     Loading,
     Finished,
@@ -57,10 +56,12 @@ export function RecordedIframe(props: Props): JSX.Element {
     const [seconds, setSeconds] = useState(MAX_LOADING_COUNT);
     const [loadStatus, setLoadStatus] = useState(LoadStatus.Loading);
     const [intervalId, setIntervalId] = useState<number>();
+    const [contentWidth, setContentWidth] = useState(1600);
+    const [contentHeight, setContentHeight] = useState(1400);
     const size = useWindowSize();
 
     useEffect(() => {
-        scale()
+        scale(contentWidth, contentHeight);
     }, [size])
 
     useEffect(() => {
@@ -83,25 +84,24 @@ export function RecordedIframe(props: Props): JSX.Element {
                 setSeconds(seconds => seconds - 1);
             }, 1000);
             setIntervalId(interval)
-        } else if (loadStatus === LoadStatus.Finished){
+        } else if (loadStatus === LoadStatus.Finished) {
             setOpenDialog(false);
             clearInterval(intervalId);
             onLoad()
-            scale()
             startRecording()
         } else if (seconds <= 0 || loadStatus === LoadStatus.Error) {
             clearInterval(intervalId);
         }
         return () => clearInterval(intervalId);
-      }, [loadStatus]);
+    }, [loadStatus]);
 
-    const scale = () => {
+    const scale = (innerWidth: number, innerHeight: number) => {
         const iRef = window.document.getElementById("main-container") as HTMLIFrameElement;
         if (iRef) {
             const currentWidth = iRef.getBoundingClientRect().width;
             const currentHeight = iRef.getBoundingClientRect().height;
-            const shrinkRatioX = (currentWidth / h5pStaticSize.default.width) > 1 ? 1 : currentWidth / h5pStaticSize.default.width;
-            const shrinkRatioY = (currentHeight / h5pStaticSize.default.height) > 1 ? 1 : currentHeight / h5pStaticSize.default.height;
+            const shrinkRatioX = (currentWidth / innerWidth) > 1 ? 1 : currentWidth / innerWidth;
+            const shrinkRatioY = (currentHeight / innerHeight) > 1 ? 1 : currentHeight / innerHeight;
             const shrinkRatio = Math.min(shrinkRatioX, shrinkRatioY);
             setTransformScale(shrinkRatio);
         }
@@ -110,7 +110,7 @@ export function RecordedIframe(props: Props): JSX.Element {
     function onLoad() {
         // TODO the client-side rendering version of H5P is ready! we can probably delete this function and the scale function above
         // if we switch over to it! Ask me (Daiki) about the details.
-        const iframeElement= window.document.getElementById("recordediframe") as HTMLIFrameElement;
+        const iframeElement = window.document.getElementById("recordediframe") as HTMLIFrameElement;
         const contentWindow = iframeElement.contentWindow
         const contentDoc = iframeElement.contentDocument
         if (!contentWindow || !contentDoc) { return; }
@@ -118,25 +118,15 @@ export function RecordedIframe(props: Props): JSX.Element {
         const blockRightClick = (e: MouseEvent) => { e.preventDefault() }
         contentWindow.addEventListener("contextmenu", (e) => blockRightClick(e), false);
         const h5pDivCollection = contentDoc.body.getElementsByClassName("h5p-content");
-        // TODO: Is it possible to handle all non-h5p content with this line?
-        const contentDivCollection = contentDoc.body.getElementsByClassName("content");
         if (h5pDivCollection.length > 0) {
             const h5pContainer = h5pDivCollection[0] as HTMLDivElement;
             h5pContainer.setAttribute("data-iframe-height", "");
-        } else if (contentDivCollection.length > 0) {
-            contentDivCollection[0].setAttribute("data-iframe-height", "");
+            const h5pWidth = h5pContainer.getBoundingClientRect().width;
+            const h5pHeight = h5pContainer.getBoundingClientRect().height;
+            setContentWidth(h5pWidth);
+            setContentHeight(h5pHeight);
+            scale(h5pWidth, h5pHeight);
         }
-
-        const cdnResizerScript = contentDoc.createElement("script");
-        cdnResizerScript.setAttribute("type", "text/javascript");
-        cdnResizerScript.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/iframe-resizer/3.5.8/iframeResizer.contentWindow.min.js");
-        contentDoc.head.appendChild(cdnResizerScript);
-
-        const h5pResizerScript = contentDoc.createElement("script");
-        h5pResizerScript.setAttribute("type", "text/javascript");
-        h5pResizerScript.setAttribute("src", "https://h5p.org/sites/all/modules/h5p/library/js/h5p-resizer.js");
-        contentDoc.head.appendChild(h5pResizerScript);
-        return contentWindow.removeEventListener("contextmenu", (e) => blockRightClick(e), false);
     }
 
     useEffect(() => {
@@ -170,10 +160,10 @@ export function RecordedIframe(props: Props): JSX.Element {
         doc.head.appendChild(script);
     }
 
-    const getRandomSpinner = () : string => SPINNER[Math.floor(Math.random() * SPINNER.length)];
+    const getRandomSpinner = (): string => SPINNER[Math.floor(Math.random() * SPINNER.length)];
 
-    const getSpinner = () : string => loadStatus === LoadStatus.Loading ? getRandomSpinner() : GhostSpinner;
-    
+    const getSpinner = (): string => loadStatus === LoadStatus.Loading ? getRandomSpinner() : GhostSpinner;
+
     return (
         <React.Fragment>
             <Dialog
@@ -240,8 +230,8 @@ export function RecordedIframe(props: Props): JSX.Element {
                 src={contentId}
                 ref={iframeRef}
                 style={{
-                    width: h5pStaticSize.default.width,
-                    height: h5pStaticSize.default.height,
+                    width: contentWidth,
+                    height: contentHeight,
                     position: `absolute`,
                     top: 0,
                     left: 0,
