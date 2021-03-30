@@ -844,10 +844,12 @@ export interface MuteNotification {
     videoGloballyDisabled?: boolean,
 }
 function getSvcScalabilityMode() {
+    const defaultMode = "L3T3_KEY_SHIFT"
     const getParameters = new URLSearchParams(window.location.search);
     const mode = getParameters.get("svc")
-    if(!mode) {return }
     switch(mode) {
+        case "none":
+            return
         case "L1T2":
         case "L1T2h":
         case "L1T3":
@@ -888,8 +890,12 @@ function getSvcScalabilityMode() {
         case "S3T3h":
             console.log(`Using scalable video codec mode '${mode}'`)
             return mode
+        case undefined:
+        case null:
+            console.log(`Unspecified video codec scalability mode defaulting to '${defaultMode}'`)
+            return defaultMode
         default:
-            console.log(`Unknown video codec scalability mode '${mode}' defaulting to 'L3T3_KEY_SHIFT'`)
-            return "L3T3_KEY_SHIFT"
+            console.log(`Unknown video codec scalability mode '${mode}' defaulting to '${defaultMode}'`)
+            return defaultMode
     }
 }
