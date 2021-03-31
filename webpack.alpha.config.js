@@ -9,7 +9,7 @@ module.exports = {
   mode: 'production',
   entry: {
     ui: './src/entry.tsx',
-    record: './src/entry-record.ts',
+    "record-e44f2b3": './src/entry-record.ts',
     player: './src/entry-player.ts'
   },
   module: {
