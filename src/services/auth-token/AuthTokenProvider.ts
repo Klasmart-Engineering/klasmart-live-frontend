@@ -7,6 +7,10 @@ export class AuthTokenProvider {
         // tried though.
         const url = new URL(window.location.href)
         let candidate = url.searchParams.get('token')
+        if(!candidate && window.parent) {
+            const url = new URL(window.parent.location.href)
+            candidate = url.searchParams.get('token')
+        }
         try {
             if (!candidate) {
                 const storedToken = localStorage.getItem('token')
