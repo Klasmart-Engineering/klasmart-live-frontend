@@ -76,8 +76,12 @@ function getApolloClient(roomId: string) {
 =======
 import ChromeLogo from "./assets/img/browser/chrome_logo.svg";
 import SafariLogo from "./assets/img/browser/safari_logo.png";
+<<<<<<< HEAD
 import NewUIEntry from './newuiupdate/newUIEntry';
 >>>>>>> stater (recoil + new entry base)
+=======
+import NewUIEntry from './newuiupdate/entry';
+>>>>>>> starting blank template for new UI
 
 Sentry.init({
     dsn: "https://9f4fca35be3b4b7ca970a126f26a5e54@o412774.ingest.sentry.io/5388813",
@@ -242,13 +246,8 @@ if (
     renderComponent = (
         <Provider store={store}>
             <PersistGate loading={null} persistor={persistor}>
-<<<<<<< HEAD
                 <ApolloProvider client={apolloClient}>
                     <Entry />
-=======
-                <ApolloProvider client={client}>
-                    <NewUIEntry />
->>>>>>> stater (recoil + new entry base)
                 </ApolloProvider>
             </PersistGate>
         </Provider>

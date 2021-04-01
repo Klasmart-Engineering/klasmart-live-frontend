@@ -1,15 +1,19 @@
+import { Grid } from '@material-ui/core';
 import React from 'react'
-import { useRecoilState} from 'recoil';
+import Main from './components/main';
+import Sidebar from './components/sidebar';
 
-import { themeState } from "./states/layoutAtoms"
 
 function Layout() {
-    const [theme, setTheme] = useRecoilState(themeState);
-
     return (
-        <div>
-            {theme}
-        </div>
+        <Grid container>
+			<Grid item xs>
+				<Main />
+			</Grid>
+			<Grid item>
+                <Sidebar />
+			</Grid>
+		</Grid>
     )
 }
 
