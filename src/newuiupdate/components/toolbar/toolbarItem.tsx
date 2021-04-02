@@ -1,17 +1,13 @@
 import React from "react";
-import Layout from "./components/Layout";
-import { themeProvider } from "./themeProvider";
 import clsx from "clsx";
-import { selectLayout } from "./features/layoutSlice";
-import { useSelector } from "react-redux";
-import { makeStyles, useTheme, Box, Grid } from "@material-ui/core";
+import { makeStyles, useTheme, Box, Grid, Theme } from "@material-ui/core";
 
-const useStyles = makeStyles((theme: themeProvider) => ({
+const useStyles = makeStyles((theme: Theme) => ({
 	root: {
 		display: "flex",
 		flexDirection: "column",
 		alignItems: "center",
-		fontSize: "0.6em",
+		fontSize: "0.75em",
 		borderRadius: 12,
 		cursor: "pointer",
 		padding: 15,
@@ -22,6 +18,9 @@ const useStyles = makeStyles((theme: themeProvider) => ({
 	},
 	active: {
 		backgroundColor: "#B4CDED",
+		"&:hover": {
+			backgroundColor: "#B4CDED",
+		},
 	},
 	disabled: {
 		opacity: 0.4,
