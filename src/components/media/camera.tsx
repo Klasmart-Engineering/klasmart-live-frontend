@@ -517,6 +517,12 @@ function ToggleCamera({ session, sfuState, cameraRef }: {
         setCameraOn(sfuState.isLocalVideoEnabled(session.id));
     }, [sfuState.isLocalVideoEnabled(session.id)])
 
+    useEffect(() => {
+        if (sfuState.videoGloballyDisabled && sfuState.isLocalVideoEnabled(session.id)) {
+            toggleOutboundVideoState();
+        }
+    }, [sfuState.videoGloballyDisabled])
+
     function toggleInboundVideoState(stream: MediaStream | undefined) {
         const tracks = stream?.getVideoTracks() ?? [];
         for (const track of tracks) {
@@ -533,6 +539,9 @@ function ToggleCamera({ session, sfuState, cameraRef }: {
     }
 
     function toggleOutboundVideoState() {
+        if (sfuState.videoGloballyDisabled && !session.isHost) {
+            return;
+        }
         const producers = sfuState.getOutboundCameraStream();
         const video = producers?.producers?.find((a) => a.kind === "video");
         if (video) {
@@ -552,9 +561,6 @@ function ToggleCamera({ session, sfuState, cameraRef }: {
         if (stream) {
             toggleInboundVideoState(stream);
         } else {
-            if (sfuState.videoGloballyDisabled && !session.isHost) {
-                return;
-            }
             toggleOutboundVideoState();
         }
         setIsVideoManuallyDisabled(!sfuState.isLocalVideoEnabled(session.id));
@@ -584,44 +590,56 @@ function ToggleMic({ session, sfuState }: {
     const [micOn, setMicOn] = useState<boolean>(false);
 
     useEffect(() => {
-        setMicOn(sfuState.isLocalAudioEnabled(session.id))
+        setMicOn(sfuState.isLocalAudioEnabled(session.id));
     }, [sfuState.isLocalAudioEnabled(session.id)])
+
+    useEffect(() => {
+        if (sfuState.audioGloballyMuted && sfuState.isLocalAudioEnabled(session.id)) {
+            toggleOutboundAudioState();
+        }
+    }, [sfuState.audioGloballyMuted])
+
+    function toggleInboundAudioState(stream: MediaStream | undefined) {
+        const tracks = stream?.getAudioTracks() ?? [];
+        for (const track of tracks) {
+            const consumerId = track.id;
+            const notification: MuteNotification = {
+                roomId,
+                sessionId: session.id,
+                consumerId,
+                audio: !micOn
+            }
+            sfuState.sendMute(notification);
+            setMicOn(!micOn)
+        }
+        sfuState.localAudioToggle(session.id);
+    }
+
+    function toggleOutboundAudioState() {
+        if (sfuState.audioGloballyMuted && !session.isHost) {
+            return;
+        }
+        const producers = sfuState.getOutboundCameraStream();
+        const audio = producers?.producers?.find((a) => a.kind === "audio")
+        if (audio) {
+            const notification: MuteNotification = {
+                roomId,
+                sessionId: session.id,
+                producerId: audio.id,
+                audio: !micOn
+            }
+            sfuState.sendMute(notification)
+            setMicOn(!micOn)
+        }
+        sfuState.localAudioToggle(session.id);
+    }
 
     function toggleAudioState() {
         const stream = sfuState.getCameraStream(session.id)
         if (stream) {
-            // Inbound stream
-            const tracks = stream.getAudioTracks();
-            for (const track of tracks) {
-                const consumerId = track.id;
-                const notification: MuteNotification = {
-                    roomId,
-                    sessionId: session.id,
-                    consumerId,
-                    audio: !micOn
-                }
-                sfuState.sendMute(notification);
-                setMicOn(!micOn)
-            }
-            sfuState.localAudioToggle(session.id);
+            toggleInboundAudioState(stream);
         } else {
-            // Outbound stream
-            if (sfuState.audioGloballyMuted && !session.isHost) {
-                return;
-            }
-            const producers = sfuState.getOutboundCameraStream();
-            const audio = producers?.producers?.find((a) => a.kind === "audio")
-            if (audio) {
-                const notification: MuteNotification = {
-                    roomId,
-                    sessionId: session.id,
-                    producerId: audio.id,
-                    audio: !micOn
-                }
-                sfuState.sendMute(notification)
-                setMicOn(!micOn)
-            }
-            sfuState.localAudioToggle(session.id);
+            toggleOutboundAudioState();
         }
     }
 
