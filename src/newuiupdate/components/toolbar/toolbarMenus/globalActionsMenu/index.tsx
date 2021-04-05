@@ -2,7 +2,7 @@ import React from "react";
 
 import { makeStyles, Grid, Theme } from "@material-ui/core";
 
-import { ScreenShare as ScreenShareIcon } from "@styled-icons/material-twotone/ScreenShare";
+import { TvFill as ScreenShareIcon } from "@styled-icons/bootstrap/TvFill";
 import { Pencil as PencilIcon } from "@styled-icons/boxicons-solid/Pencil";
 import { MicFill as MicFillIcon } from "@styled-icons/bootstrap/MicFill";
 import { CameraVideoFill as CameraVideoFillIcon } from "@styled-icons/bootstrap/CameraVideoFill";

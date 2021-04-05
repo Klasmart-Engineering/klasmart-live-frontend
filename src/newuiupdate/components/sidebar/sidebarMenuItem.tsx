@@ -12,6 +12,10 @@ const useStyles = makeStyles((theme: Theme) => ({
 		borderRadius: 0,
 		color: theme.palette.grey[500],
 		position: "relative",
+		"& svg":{
+			height: 24,
+			width: 24,
+		},
 		"&:after": {
 			content: "''",
 			zIndex: 10,
