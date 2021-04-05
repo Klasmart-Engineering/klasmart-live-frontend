@@ -1,20 +1,24 @@
 import React from "react";
 import clsx from "clsx";
-import { makeStyles, useTheme, Box, Grid, Theme } from "@material-ui/core";
+import { makeStyles, useTheme, Box, Grid, Theme, Typography } from "@material-ui/core";
 
 const useStyles = makeStyles((theme: Theme) => ({
 	root: {
 		display: "flex",
 		flexDirection: "column",
 		alignItems: "center",
-		fontSize: "0.75em",
 		borderRadius: 12,
 		cursor: "pointer",
 		padding: 15,
+		margin: "0 4px",
 		transition: "all 100ms ease-in-out",
+		color: theme.palette.text.primary,
 		"&:hover": {
 			backgroundColor: "#e2e7ec",
 		},
+		"& svg":{
+			height: 25,
+		}
 	},
 	active: {
 		backgroundColor: "#B4CDED",
@@ -29,6 +33,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 	},
 	label: {
 		marginTop: 10,
+		fontSize: "0.75em",
 	},
 }));
 
@@ -55,7 +60,7 @@ function ToolbarItem(props: ToolbarItemProps) {
 			onClick={onClick}
 		>
 			{icon}
-			{label && <Box className={classes.label}>{label}</Box>}
+			{label && <Typography className={classes.label}>{label}</Typography>}
 		</Box>
 	);
 }

@@ -1,18 +1,36 @@
 import React from "react";
 
-import { makeStyles, useTheme, Box, Grid, Theme } from "@material-ui/core";
-
-const useStyles = makeStyles((theme: Theme) => ({}));
+import PinUser from "./pinUser/pinUser";
+import Chat from "./chat/chat";
+import LessonPlan from "./lessonPlan/lessonPlan";
+import { useRecoilState } from "recoil";
+import {
+	isChatOpenState,
+	isLessonPlanOpenState,
+	isPinUserOpenState,
+} from "../../states/layoutAtoms";
+import { StyledDrawer } from "../utils";
 
 function MainDrawer() {
-	const classes = useStyles();
+	const [isPinUserOpen, setIsPinUserOpen] = useRecoilState(isPinUserOpenState);
+	const [isChatOpen, setIsChatOpen] = useRecoilState(isChatOpenState);
+	const [isLessonPlanOpen, setIsLessonPlanOpen] = useRecoilState(
+		isLessonPlanOpenState
+	);
 
 	return (
 		<>
-			<Box>Chat drawer</Box>
-			<Box>Pin User drawer</Box>
-			<Box>Lesson Material drawer</Box>
-			<Box>Teacher manual drawer</Box>
+			<StyledDrawer active={isPinUserOpen}>
+				<PinUser />
+			</StyledDrawer>
+
+			<StyledDrawer active={isChatOpen}>
+				<Chat />
+			</StyledDrawer>
+
+			<StyledDrawer active={isLessonPlanOpen}>
+				<LessonPlan />
+			</StyledDrawer>
 		</>
 	);
 }
