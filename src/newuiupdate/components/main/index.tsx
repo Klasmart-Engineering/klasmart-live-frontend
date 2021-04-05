@@ -1,6 +1,6 @@
 import React from "react";
 
-import { makeStyles, Grid, Theme } from "@material-ui/core";
+import { makeStyles, Grid, Theme, Box } from "@material-ui/core";
 import MainView from "./mainView";
 import MainDrawer from "./mainDrawer";
 import Toolbar from "../toolbar";
@@ -8,9 +8,13 @@ import Toolbar from "../toolbar";
 const useStyles = makeStyles((theme: Theme) => ({
 	fullHeight: {},
 	mainViewContainer: {
-		height: "100%",
+		display: "flex",
+	},
+	mainView: {
 		padding: 10,
 		overflow: "hidden",
+		display: "flex",
+		flex: 1,
 	},
 	mainViewDrawer: {
 		position: "relative",
@@ -22,15 +26,17 @@ function Main() {
 
 	return (
 		<Grid container direction="column" style={{ height: "100vh" }}>
-			<Grid item xs>
-				<Grid container className={classes.mainViewContainer}>
-					<Grid item xs>
-						<MainView />
+			<Grid item xs className={classes.mainViewContainer}>
+				<Box className={classes.mainView}>
+					<Grid container id="main-content">
+						<Grid item xs>
+							<MainView />
+						</Grid>
+						<Grid item className={classes.mainViewDrawer}>
+							<MainDrawer />
+						</Grid>
 					</Grid>
-					<Grid item className={classes.mainViewDrawer}>
-						<MainDrawer />
-					</Grid>
-				</Grid>
+				</Box>
 			</Grid>
 			<Grid item>
 				<Toolbar />

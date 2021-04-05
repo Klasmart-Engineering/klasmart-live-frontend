@@ -29,6 +29,10 @@ const useStyles = makeStyles((theme: Theme) => ({
 		"&:hover": {
 			transform: "scale(1.1)",
 		},
+		"& svg" : {
+			width: '1.25em',
+    		height: '1.25em',
+		}
 	},
 	disabled: {
 		opacity: 0.4,

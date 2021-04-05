@@ -54,7 +54,7 @@ export function themeProvider(languageCode: string, themeMode: string) {
 		fontWeightLight: localeTypography.localeWeightLight,
 		fontWeightMedium: localeTypography.localeWeightMedium,
 		fontWeightRegular: localeTypography.localeWeightRegular,
-		fontSize: 14,
+		fontSize: 12,
 	} as any;
 
 	const overrides = {
@@ -76,7 +76,7 @@ export function themeProvider(languageCode: string, themeMode: string) {
 		},
 		MuiTab: {
 			root: {
-				// minWidth: "0 !important",
+				minWidth: "0 !important",
 				minHeight: "0 !important",
 				padding: "6px 18px",
 				transition: 'opacity 100ms ease-in-out',

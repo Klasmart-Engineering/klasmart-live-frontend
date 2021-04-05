@@ -33,6 +33,10 @@ const useStyles = makeStyles((theme: Theme) => ({
 		"&:hover": {
 			backgroundColor: "#e2e7ec",
 		},
+		"& svg" : {
+			width: '1.25em',
+    		height: '1.25em',
+		}
 	},
 	active: {
 		color: "inherit",

@@ -17,7 +17,7 @@ function MainView() {
 	const classes = useStyles();
 
 	return (
-		<Grid container className={classes.root} id="main-content">
+		<Grid container className={classes.root}>
 			<Grid item>main view</Grid>
 		</Grid>
 	);

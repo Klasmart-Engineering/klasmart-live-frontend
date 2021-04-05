@@ -4,6 +4,10 @@ import { makeStyles, Box, Grid, Drawer, Theme } from "@material-ui/core";
 import { useRecoilState } from "recoil";
 import { activeTabState } from "../../states/layoutAtoms";
 
+import { PeopleOutline as ParticipantsIcon } from "@styled-icons/evaicons-outline/PeopleOutline";
+import { Grid as MosaicIcon } from "@styled-icons/bootstrap/Grid";
+import { UserSettings as SettingsIcon } from "@styled-icons/remix-line/UserSettings";
+
 import PeopleIcon from "@material-ui/icons/People";
 import ViewComfyIcon from "@material-ui/icons/ViewComfy";
 import SettingsIcon from "@material-ui/icons/Settings";
@@ -42,13 +46,13 @@ const sidebarTabs = [
 	{
 		id: 1,
 		name: "participants",
-		icon: <PeopleIcon />,
+		icon: <ParticipantsIcon />,
 		content: <TabParticipants />,
 	},
 	{
 		id: 2,
 		name: "mosaic",
-		icon: <ViewComfyIcon />,
+		icon: <MosaicIcon />,
 		content: <TabMosaic />,
 	},
 	{

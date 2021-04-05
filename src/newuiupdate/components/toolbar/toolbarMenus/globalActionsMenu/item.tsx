@@ -17,7 +17,7 @@ interface GlobaActionsMenuProps {
 const useStyles = makeStyles((theme: Theme) => ({
 	root: {},
 	item: {
-		padding: "6px 12px",
+		padding: "8px 16px",
 		margin: "0 4px",
 		cursor: "pointer",
 		borderRadius: 10,
@@ -40,6 +40,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 	divider: {
 		width: 1,
 		backgroundColor: theme.palette.grey[200],
+		margin: "0 4px",
 	},
 	icon: {
 		display: "flex",

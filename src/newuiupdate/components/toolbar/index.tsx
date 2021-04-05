@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 import { makeStyles, Grid, Theme } from "@material-ui/core";
 
@@ -10,15 +10,12 @@ import { ChevronBottom as ViewModesIcon } from "@styled-icons/open-iconic/Chevro
 import { UserPin as PinUserIcon } from "@styled-icons/boxicons-regular/UserPin";
 import { ChatSquareDotsFill as ChatIcon } from "@styled-icons/bootstrap/ChatSquareDotsFill";
 
+import { UserVoice as OnStageIcon } from "@styled-icons/boxicons-solid/UserVoice";
+import { Eye as ObserveIcon } from "@styled-icons/fa-regular/Eye";
+import { PresentationChartBar as PresentIcon } from "@styled-icons/heroicons-solid/PresentationChartBar";
 
-
-
-
-// import HelpIcon from "@material-ui/icons/Help";
-import CreateIcon from "@material-ui/icons/Create";
 import PhoneInTalkIcon from "@material-ui/icons/PhoneInTalk";
-import ChatRoundedIcon from "@material-ui/icons/ChatRounded";
-import LibraryBooksRoundedIcon from "@material-ui/icons/LibraryBooksRounded";
+
 
 import ToolbarItem from "./toolbarItem";
 import ToolbarItemCall from "./toolbarItemCall";
@@ -39,6 +36,7 @@ import {
 	isViewModesOpenState,
 	isCanvasOpenState,
 	isClassDetailsOpenState,
+	viewModeState,
 } from "../../states/layoutAtoms";
 import ViewModesMenu from "./toolbarMenus/viewModesMenu";
 
@@ -78,6 +76,7 @@ function Toolbar() {
 		isClassDetailsOpenState
 	);
 	const [isCanvasOpen, setIsCanvasOpen] = useRecoilState(isCanvasOpenState);
+	const [viewMode, setViewModeState] = useRecoilState(viewModeState);
 
 	const [
 		globalActionsEl,
@@ -105,6 +104,19 @@ function Toolbar() {
 		setIsGlobalActionsOpen(false);
 		setIsViewModesOpen(false);
 	};
+
+	let viewModesBadge = <OnStageIcon />;
+	switch (viewMode) {
+		case 'onstage':
+			viewModesBadge = <OnStageIcon />;
+			break;
+		case 'observer':
+			viewModesBadge = <ObserveIcon />;
+			break;
+		case 'present':
+			viewModesBadge = <PresentIcon />;
+			break;
+	}
 
 	return (
 		<>
@@ -167,6 +179,7 @@ function Toolbar() {
 						icon={<ViewModesIcon />}
 						label="View modes"
 						active={isViewModesOpen}
+						badge={viewModesBadge}
 						onClick={(e) => {
 							resetDrawers();
 							setViewModesEl(e.currentTarget);
@@ -185,6 +198,7 @@ function Toolbar() {
 					<ToolbarItem
 						icon={<ChatIcon />}
 						label="Chat"
+						badge={2}
 						active={isChatOpen}
 						onClick={() => {
 							resetDrawers();
