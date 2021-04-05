@@ -1,19 +1,20 @@
 import React from "react";
 
-import { makeStyles, Grid, Theme, Paper, Fade } from "@material-ui/core";
-import Popper, { PopperPlacementType } from "@material-ui/core/Popper";
+import {
+	makeStyles,
+	Theme,
+	Paper,
+	Box,
+	Typography,
+	Tabs,
+	Tab,
+} from "@material-ui/core";
 
-import { ScreenShare as ScreenShareIcon } from "@styled-icons/material-twotone/ScreenShare";
-import { Pencil as PencilIcon } from "@styled-icons/boxicons-solid/Pencil";
-import { MicFill as MicFillIcon } from "@styled-icons/bootstrap/MicFill";
-import { CameraVideoFill as CameraVideoFillIcon } from "@styled-icons/bootstrap/CameraVideoFill";
-import { TrophyFill as TrophyFillIcon } from "@styled-icons/bootstrap/TrophyFill";
-import { HandThumbsUpFill as HandThumbsUpFillIcon } from "@styled-icons/bootstrap/HandThumbsUpFill";
-import { StarFill as StarFillIcon } from "@styled-icons/bootstrap/StarFill";
-import { HeartFill as HeartFillIcon } from "@styled-icons/bootstrap/HeartFill";
 
 import { useRecoilState } from "recoil";
 import { isClassDetailsOpenState } from "../../../states/layoutAtoms";
+
+import { StyledPopper } from "../../utils";
 
 const useStyles = makeStyles((theme: Theme) => ({
 	root: {
@@ -23,7 +24,16 @@ const useStyles = makeStyles((theme: Theme) => ({
 	iconGroup: {
 		display: "flex",
 		alignItems: "center",
-	},
+	}, 
+	detailsLabel:{
+		color: theme.palette.text.primary,
+		paddingRight: 30,
+		paddingBottom: 10,
+	}, 
+	detailsValue:{
+		color: theme.palette.grey[500],
+		paddingBottom: 10,
+	}
 }));
 
 interface GlobaActionsMenuProps {
@@ -38,24 +48,63 @@ function ClassDetailsMenu(props: GlobaActionsMenuProps) {
 		isClassDetailsOpenState
 	);
 
+	const [value, setValue] = React.useState(0);
+
+	const handleChange = (event, newValue) => {
+		setValue(newValue);
+	};
+
 	return (
-		<Popper
-			open={isClassDetailsOpen}
-			anchorEl={anchor}
-			disablePortal={false}
-			placement="top"
-			transition
-			modifiers={{
-				preventOverflow: {
-					boundariesElement: document.getElementById("main-content"),
-				},
-			}}
-		>
-			<Fade in={isClassDetailsOpen}>
-				<Paper>ClassDetails</Paper>
-			</Fade>
-		</Popper>
+		<StyledPopper open={isClassDetailsOpen} anchorEl={anchor}>
+			<Tabs
+				value={value}
+				onChange={handleChange}
+				aria-label="simple tabs example"
+			>
+				<Tab label="Class details" disableRipple />
+				<Tab label="Item Two" disableRipple />
+			</Tabs>
+			<TabPanel value={value} index={0}>
+				<table>
+					<tr>
+						<td className={classes.detailsLabel}><Typography>Class Name</Typography></td>
+						<td className={classes.detailsValue}><Typography>Class Name</Typography></td>
+					</tr>
+					<tr>
+					<td className={classes.detailsLabel}><Typography>Lesson Name</Typography></td>
+						<td className={classes.detailsValue}><Typography>Animals</Typography></td>
+					</tr>
+					<tr>
+					<td className={classes.detailsLabel}><Typography>Room ID</Typography></td>
+						<td className={classes.detailsValue}><Typography>AD01</Typography></td>
+					</tr>
+				</table>
+			</TabPanel>
+			<TabPanel value={value} index={1}>
+				Item Two
+			</TabPanel>
+		</StyledPopper>
 	);
 }
 
 export default ClassDetailsMenu;
+
+function TabPanel(props) {
+	const { children, value, index, ...other } = props;
+
+	return (
+		<div
+			role="tabpanel"
+			hidden={value !== index}
+			id={`simple-tabpanel-${index}`}
+			aria-labelledby={`simple-tab-${index}`}
+			{...other}
+		>
+			{value === index && (
+				<Box p={3}>
+					{children}
+				</Box>
+			)}
+		</div>
+	);
+}

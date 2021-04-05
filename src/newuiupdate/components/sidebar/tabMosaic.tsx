@@ -1,12 +1,8 @@
 import React from "react";
 
-import { makeStyles, useTheme, Box, Grid, Theme } from "@material-ui/core";
-
-const useStyles = makeStyles((theme: Theme) => ({}));
+import { Grid } from "@material-ui/core";
 
 function TabMosaic() {
-	const classes = useStyles();
-
 	return (
 		<Grid container>
 			<Grid item xs>
