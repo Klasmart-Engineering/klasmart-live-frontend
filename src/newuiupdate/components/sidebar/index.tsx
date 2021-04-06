@@ -8,10 +8,6 @@ import { PeopleOutline as ParticipantsIcon } from "@styled-icons/evaicons-outlin
 import { Grid as MosaicIcon } from "@styled-icons/bootstrap/Grid";
 import { UserSettings as SettingsIcon } from "@styled-icons/remix-line/UserSettings";
 
-import PeopleIcon from "@material-ui/icons/People";
-import ViewComfyIcon from "@material-ui/icons/ViewComfy";
-import SettingsIcon from "@material-ui/icons/Settings";
-
 import SidebarMenuItem from "./sidebarMenuItem";
 
 import TabParticipants from "./tabParticipants";

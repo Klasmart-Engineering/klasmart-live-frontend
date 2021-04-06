@@ -81,18 +81,18 @@ function Toolbar() {
 	const [
 		globalActionsEl,
 		setGlobalActionsEl,
-	] = React.useState<HTMLButtonElement | null>(null);
-	const [canvasEl, setCanvasEl] = React.useState<HTMLButtonElement | null>(
+	] = React.useState<any | null>(null);
+	const [canvasEl, setCanvasEl] = React.useState<any | null>(
 		null
 	);
 	const [
 		classDetailsEl,
 		setClassDetailsEl,
-	] = React.useState<HTMLButtonElement | null>(null);
+	] = React.useState<any | null>(null);
 	const [
 		viewModesEl,
 		setViewModesEl,
-	] = React.useState<HTMLButtonElement | null>(null);
+	] = React.useState<any | null>(null);
 
 	const resetDrawers = () => {
 		setIsGlobalActionsOpen(false);
@@ -126,7 +126,7 @@ function Toolbar() {
 						icon={<InfoIcon />}
 						label="Class Name"
 						active={isClassDetailsOpen}
-						onClick={(e) => {
+						onClick={(e: Event) => {
 							resetDrawers();
 							setClassDetailsEl(e.currentTarget);
 							setIsClassDetailsOpen(!isClassDetailsOpen);
@@ -136,7 +136,7 @@ function Toolbar() {
 						icon={<CanvasIcon />}
 						label="Canvas"
 						active={isCanvasOpen}
-						onClick={(e) => {
+						onClick={(e: Event) => {
 							resetDrawers();
 							setCanvasEl(e.currentTarget);
 							setIsCanvasOpen(!isCanvasOpen);
@@ -152,6 +152,7 @@ function Toolbar() {
 					<ToolbarItemCamera
 						active={activeCamera}
 						locked
+						tooltip="The teacher has disabled your camera"
 						onClick={() => setActiveCamera(!activeCamera)}
 					/>
 				</Grid>
@@ -160,7 +161,7 @@ function Toolbar() {
 						icon={<GlobalActionsIcon />}
 						label="Global actions"
 						active={isGlobalActionsOpen}
-						onClick={(e) => {
+						onClick={(e: Event) => {
 							resetDrawers();
 							setGlobalActionsEl(e.currentTarget);
 							setIsGlobalActionsOpen(!isGlobalActionsOpen);
@@ -180,7 +181,7 @@ function Toolbar() {
 						label="View modes"
 						active={isViewModesOpen}
 						badge={viewModesBadge}
-						onClick={(e) => {
+						onClick={(e: Event) => {
 							resetDrawers();
 							setViewModesEl(e.currentTarget);
 							setIsViewModesOpen(!isViewModesOpen);

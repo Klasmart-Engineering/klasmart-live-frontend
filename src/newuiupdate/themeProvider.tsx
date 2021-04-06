@@ -54,7 +54,7 @@ export function themeProvider(languageCode: string, themeMode: string) {
 		fontWeightLight: localeTypography.localeWeightLight,
 		fontWeightMedium: localeTypography.localeWeightMedium,
 		fontWeightRegular: localeTypography.localeWeightRegular,
-		fontSize: 12,
+		
 	} as any;
 
 	const overrides = {
@@ -68,10 +68,6 @@ export function themeProvider(languageCode: string, themeMode: string) {
 				backgroundColor: "#B4CDED",
 				height: "100%",
 				borderRadius: 40,
-			},
-			flexContainer: {
-				zIndex: 5,
-				position: "relative",
 			},
 		},
 		MuiTab: {
