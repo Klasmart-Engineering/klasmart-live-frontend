@@ -28,7 +28,7 @@ import { Star as StarIcon } from "@styled-icons/material/Star";
 import { EmojiEvents as TrophyIcon } from "@styled-icons/material/EmojiEvents";
 import { Favorite as HeartIcon } from "@styled-icons/material/Favorite";
 import { ThumbUp as EncourageIcon } from "@styled-icons/material/ThumbUp";
-import { MuteNotification, WebRTCSFUContext } from "./webrtc/sfu";
+import { GlobalMuteNotification, MuteNotification, WebRTCSFUContext } from "./webrtc/sfu";
 import { useSynchronizedState } from "./whiteboard/context-providers/SynchronizedStateProvider";
 import { LocalSessionContext } from "./entry";
 
@@ -76,8 +76,7 @@ export function GlobalCameraControl(): JSX.Element {
     const [micsOn, setMicsOn] = useState(true);
 
     const states = WebRTCSFUContext.Consume()
-    const mediaStreams = states.getAllInboundTracks();
-    const { roomId, sessionId } = useContext(LocalSessionContext);
+    const { roomId, sessionId: localSessionId } = useContext(LocalSessionContext);
     const [rewardTrophyMutation] = useMutation(MUTATION_REWARD_TROPHY);
     const rewardTrophy = (user: string, kind: string) => rewardTrophyMutation({ variables: { roomId, user, kind } });
 
@@ -89,38 +88,22 @@ export function GlobalCameraControl(): JSX.Element {
     } = useSynchronizedState();
     
     function toggleVideoStates() {
-        for (const { sessionId, stream } of mediaStreams) {
-            const videoTracks = stream?.getVideoTracks() ?? [];
-            for (const videoTrack of videoTracks) {
-                const consumerId = videoTrack.id;
-                const notification: MuteNotification = {
-                    roomId,
-                    sessionId,
-                    consumerId,
-                    video: !camerasOn
-                }
-                states.sendMute(notification);
-            }
-            states.localVideoEnable(sessionId, !camerasOn);
+        const notification: GlobalMuteNotification = {
+            roomId,
+            audioGloballyMuted: undefined,
+            videoGloballyDisabled: camerasOn,
         }
+        states.sendGlobalMute(notification);
         setCamerasOn(!camerasOn);
     }
 
     function toggleAudioStates() {
-        for (const { sessionId, stream } of mediaStreams) {
-            const audioTracks = stream?.getAudioTracks() ?? [];
-            for (const audioTrack of audioTracks) {
-                const consumerId = audioTrack.id;
-                const notification: MuteNotification = {
-                    roomId,
-                    sessionId,
-                    consumerId,
-                    audio: !micsOn
-                }
-                states.sendMute(notification);
-            }
-            states.localAudioEnable(sessionId, !micsOn);
+        const notification: GlobalMuteNotification = {
+            roomId,
+            audioGloballyMuted: micsOn,
+            videoGloballyDisabled: undefined,
         }
+        states.sendGlobalMute(notification);
         setMicsOn(!micsOn);
     }
 
@@ -218,7 +201,7 @@ export function GlobalCameraControl(): JSX.Element {
                         <IconButton
                             color={"primary"}
                             style={{ backgroundColor: "#f6fafe" }}
-                            onClick={() => { rewardTrophy(sessionId, "star"); }}
+                            onClick={() => { rewardTrophy(localSessionId, "star"); }}
                         >
                             <StarIcon size="1rem" />
                         </IconButton>
@@ -235,7 +218,7 @@ export function GlobalCameraControl(): JSX.Element {
                         <IconButton
                             color={"primary"}
                             style={{ backgroundColor: "#f6fafe" }}
-                            onClick={() => { rewardTrophy(sessionId, "trophy"); }}
+                            onClick={() => { rewardTrophy(localSessionId, "trophy"); }}
                         >
                             <TrophyIcon size="1rem" />
                         </IconButton>
@@ -252,7 +235,7 @@ export function GlobalCameraControl(): JSX.Element {
                         <IconButton
                             color={"primary"}
                             style={{ backgroundColor: "#f6fafe" }}
-                            onClick={() => { rewardTrophy(sessionId, "heart"); }}
+                            onClick={() => { rewardTrophy(localSessionId, "heart"); }}
                         >
                             <HeartIcon size="1rem" />
                         </IconButton>
@@ -269,7 +252,7 @@ export function GlobalCameraControl(): JSX.Element {
                         <IconButton
                             color={"primary"}
                             style={{ backgroundColor: "#f6fafe" }}
-                            onClick={() => { rewardTrophy(sessionId, getRandomKind(["awesome", "looks_great", "well_done", "great_job"])); }}
+                            onClick={() => { rewardTrophy(localSessionId, getRandomKind(["awesome", "looks_great", "well_done", "great_job"])); }}
                         >
                             <EncourageIcon size="1rem" />
                         </IconButton>

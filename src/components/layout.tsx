@@ -213,7 +213,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const MessageContext = createContext(new Map<string, Message>());
-const SessionsContext = createContext(new Map<string, Session>());
+export const SessionsContext = createContext(new Map<string, Session>());
 
 interface TabPanelProps {
     index: any;
