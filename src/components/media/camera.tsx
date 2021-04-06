@@ -33,6 +33,7 @@ import { useIsElementInViewport } from "../../utils/viewport";
 import PermissionControls from "../../whiteboard/components/WBPermissionControls";
 import TrophyControls from "../trophies/trophyControls";
 import { State } from "../../store/store";
+import { SessionsContext } from "../layout";
 
 const PARTICIPANT_INFO_ZINDEX = 1;
 const ICON_ZINDEX = 2;
@@ -467,8 +468,8 @@ export function MoreControlsButton({ session, isSelf, cameraRef }: {
                         </ListSubheader>
                     }
                 >
-                    <ToggleCamera session={session} sfuState={sfuState} cameraRef={cameraRef} />
-                    <ToggleMic session={session} sfuState={sfuState} />
+                    <ToggleCamera session={session} sfuState={sfuState} isSelf={isSelf} cameraRef={cameraRef} />
+                    <ToggleMic session={session} sfuState={sfuState}  isSelf={isSelf}/>
                 </List>
             </MoreControlsPopover>
         </Grid>
@@ -480,13 +481,15 @@ export function MoreControlsButton({ session, isSelf, cameraRef }: {
  * 1. Separate local / global
  * 2. Property for UI type - IconButton & MenuItem
  */
-function ToggleCamera({ session, sfuState, cameraRef }: {
+function ToggleCamera({ session, sfuState, isSelf, cameraRef }: {
     session: Session,
     sfuState: WebRTCSFUContext,
+    isSelf: boolean,
     cameraRef: React.RefObject<HTMLElement>
 }): JSX.Element {
     const { noHoverIcon, moreControlsMenuItem } = useStyles();
-    const { roomId } = useContext(LocalSessionContext);
+    const { roomId, sessionId: localSessionId } = useContext(LocalSessionContext);
+    const sessions = useContext(SessionsContext);
 
     const drawerTabIndex = useSelector((state: State) => state.control.drawerTabIndex);
     const [cameraOn, setCameraOn] = useState<boolean>(false);
@@ -518,50 +521,43 @@ function ToggleCamera({ session, sfuState, cameraRef }: {
     }, [sfuState.isLocalVideoEnabled(session.id)])
 
     useEffect(() => {
-        if (sfuState.videoGloballyDisabled && sfuState.isLocalVideoEnabled(session.id)) {
-            toggleOutboundVideoState();
-        }
+        setCameraOn(!sfuState.videoGloballyDisabled);
     }, [sfuState.videoGloballyDisabled])
 
-    function toggleInboundVideoState(stream: MediaStream | undefined) {
-        const tracks = stream?.getVideoTracks() ?? [];
-        for (const track of tracks) {
-            const consumerId = track.id;
+    // My another user's mute state
+    function toggleInboundVideoState() {
+        const localSession = sessions.get(localSessionId);
+        if (localSession?.isHost) {
             const notification: MuteNotification = {
                 roomId,
                 sessionId: session.id,
-                consumerId,
                 video: !cameraOn
             }
             sfuState.sendMute(notification);
         }
-        sfuState.localVideoToggle(session.id);
+       sfuState.localVideoToggle(session.id);
     }
 
+    // My own mute state
     function toggleOutboundVideoState() {
-        if (sfuState.videoGloballyDisabled && !session.isHost) {
+        const localSession = sessions.get(localSessionId);
+        if (sfuState.videoGloballyDisabled && !localSession?.isHost) {
             return;
         }
-        const producers = sfuState.getOutboundCameraStream();
-        const video = producers?.producers?.find((a) => a.kind === "video");
-        if (video) {
-            const notification: MuteNotification = {
-                roomId,
-                sessionId: session.id,
-                producerId: video.id,
-                video: !cameraOn
-            }
-            sfuState.sendMute(notification);
+        const notification: MuteNotification = {
+            roomId,
+            sessionId: session.id,
+            video: !cameraOn
         }
+        sfuState.sendMute(notification);
         sfuState.localVideoToggle(session.id);
     }
 
     function toggleVideoState(): void {
-        const stream = sfuState.getCameraStream(session.id);
-        if (stream) {
-            toggleInboundVideoState(stream);
-        } else {
+        if (isSelf) {
             toggleOutboundVideoState();
+        } else {
+            toggleInboundVideoState();
         }
         setIsVideoManuallyDisabled(!sfuState.isLocalVideoEnabled(session.id));
     }
@@ -581,12 +577,14 @@ function ToggleCamera({ session, sfuState, cameraRef }: {
  * 1. Separate local / global
  * 2. Property for UI type - IconButton & MenuItem
  */
-function ToggleMic({ session, sfuState }: {
+function ToggleMic({ session, sfuState, isSelf }: {
     session: Session,
-    sfuState: WebRTCSFUContext
+    sfuState: WebRTCSFUContext,
+    isSelf: boolean,
 }): JSX.Element {
     const { noHoverIcon, moreControlsMenuItem } = useStyles();
-    const { roomId } = useContext(LocalSessionContext);
+    const { roomId, sessionId: localSessionId } = useContext(LocalSessionContext);
+    const sessions = useContext(SessionsContext);
     const [micOn, setMicOn] = useState<boolean>(false);
 
     useEffect(() => {
@@ -594,52 +592,41 @@ function ToggleMic({ session, sfuState }: {
     }, [sfuState.isLocalAudioEnabled(session.id)])
 
     useEffect(() => {
-        if (sfuState.audioGloballyMuted && sfuState.isLocalAudioEnabled(session.id)) {
-            toggleOutboundAudioState();
-        }
+        setMicOn(!sfuState.audioGloballyMuted);
     }, [sfuState.audioGloballyMuted])
 
-    function toggleInboundAudioState(stream: MediaStream | undefined) {
-        const tracks = stream?.getAudioTracks() ?? [];
-        for (const track of tracks) {
-            const consumerId = track.id;
+    function toggleInboundAudioState() {
+    const localSession = sessions.get(localSessionId);
+        if (localSession?.isHost) {
             const notification: MuteNotification = {
                 roomId,
                 sessionId: session.id,
-                consumerId,
                 audio: !micOn
             }
             sfuState.sendMute(notification);
-            setMicOn(!micOn)
         }
         sfuState.localAudioToggle(session.id);
     }
 
     function toggleOutboundAudioState() {
-        if (sfuState.audioGloballyMuted && !session.isHost) {
+        const localSession = sessions.get(localSessionId);
+        if (sfuState.audioGloballyMuted && !localSession?.isHost) {
             return;
         }
-        const producers = sfuState.getOutboundCameraStream();
-        const audio = producers?.producers?.find((a) => a.kind === "audio")
-        if (audio) {
-            const notification: MuteNotification = {
-                roomId,
-                sessionId: session.id,
-                producerId: audio.id,
-                audio: !micOn
-            }
-            sfuState.sendMute(notification)
-            setMicOn(!micOn)
+        const notification: MuteNotification = {
+            roomId,
+            sessionId: session.id,
+            audio: !micOn
         }
+        sfuState.sendMute(notification)
         sfuState.localAudioToggle(session.id);
     }
 
     function toggleAudioState() {
-        const stream = sfuState.getCameraStream(session.id)
-        if (stream) {
-            toggleInboundAudioState(stream);
-        } else {
+        if (isSelf) {
             toggleOutboundAudioState();
+        } else {
+            toggleInboundAudioState();
         }
     }
 

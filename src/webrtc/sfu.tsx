@@ -44,8 +44,13 @@ const STREAM = gql`
     }
 `;
 const MUTE = gql`
-    mutation mute($roomId: String!, $sessionId: String!, $producerId: String, $consumerId: String, $audio: Boolean, $video: Boolean) {
-        mute(roomId: $roomId, sessionId: $sessionId, producerId: $producerId, consumerId: $consumerId, audio: $audio, video: $video)
+    mutation mute($roomId: String!, $sessionId: String!, $audio: Boolean, $video: Boolean) {
+        mute(roomId: $roomId, sessionId: $sessionId, audio: $audio, video: $video)
+    }
+`;
+const GLOBAL_MUTE = gql`
+    mutation globalMute($roomId: String!, $audioGloballyMuted: Boolean, $videoGloballyDisabled: Boolean) {
+        globalMute(roomId: $roomId, audioGloballyMuted: $audioGloballyMuted, videoGloballyDisabled: $videoGloballyDisabled)
     }
 `;
 export const ENDCLASS = gql`
@@ -68,13 +73,14 @@ const SUBSCRIBE = gql`
             mute {
                 roomId,
                 sessionId,
-                producerId,
-                consumerId,
                 audio,
                 video,
+            },
+            globalMute {
+                roomId,
                 audioGloballyMuted,
                 videoGloballyDisabled,
-            }
+            },
         }
     }
 `;
@@ -124,10 +130,11 @@ export class WebRTCSFUContext implements WebRTCContext {
         const [consumer] = useMutation(CONSUMER);
         const [stream] = useMutation(STREAM);
         const [mute] = useMutation(MUTE);
+        const [globalMute] = useMutation(GLOBAL_MUTE);
         const [endClass] = useMutation(ENDCLASS);
 
         if (!sfu.current) {
-            sfu.current = new WebRTCSFUContext(rerender, rtpCapabilities, transport, producer, consumer, stream, mute, endClass)
+            sfu.current = new WebRTCSFUContext(rerender, rtpCapabilities, transport, producer, consumer, stream, mute, globalMute, endClass)
         }
 
         const { roomId } = RoomContext.Consume();
@@ -144,7 +151,8 @@ export class WebRTCSFUContext implements WebRTCContext {
                     consumer,
                     stream,
                     close,
-                    mute
+                    mute,
+                    globalMute
                 } = subscriptionData.data.media
                 if (rtpCapabilities) {
                     sfu.current.rtpCapabilitiesMessage(rtpCapabilities)
@@ -166,6 +174,9 @@ export class WebRTCSFUContext implements WebRTCContext {
                 }
                 if (mute) {
                     sfu.current.muteMessage(mute)
+                }
+                if (globalMute) {
+                    sfu.current.globalMuteMessage(globalMute)
                 }
             },
             variables: { roomId }
@@ -313,6 +324,11 @@ export class WebRTCSFUContext implements WebRTCContext {
     public async sendMute(muteNotification: MuteNotification) {
         console.log(`${JSON.stringify(muteNotification)}`)
         await this.mute({ variables: muteNotification })
+    }
+
+    public async sendGlobalMute(globalMuteNotification: GlobalMuteNotification) {
+        console.log(`${JSON.stringify(globalMuteNotification)}`)
+        await this.globalMute({ variables: globalMuteNotification })
     }
 
     public localAudioToggle(id?: string) {
@@ -463,23 +479,17 @@ export class WebRTCSFUContext implements WebRTCContext {
     private rerender: React.DispatchWithoutAction
     private _audioGloballyMuted: boolean = false;
     private _videoGloballyDisabled: boolean = false;
-    private rtpCapabilities: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>
-    private transport: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>
-    private producer: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>
-    private consumer: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>
-    private stream: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>
-    private mute: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>
-    private endClass: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>
 
     private constructor(
         rerender: React.DispatchWithoutAction,
-        rtpCapabilities: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>,
-        transport: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>,
-        producer: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>,
-        consumer: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>,
-        stream: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>,
-        mute: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>,
-        endClass: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>,
+        private rtpCapabilities: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>,
+        private transport: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>,
+        private producer: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>,
+        private consumer: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>,
+        private stream: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>,
+        private mute: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>,
+        private globalMute: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>,
+        private endClass: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>,
     ) {
         this.rerender = rerender
         this.rtpCapabilities = rtpCapabilities
@@ -488,6 +498,7 @@ export class WebRTCSFUContext implements WebRTCContext {
         this.consumer = consumer
         this.stream = stream
         this.mute = mute
+        this.globalMute = globalMute
         this.endClass = endClass
     }
 
@@ -795,8 +806,11 @@ export class WebRTCSFUContext implements WebRTCContext {
                 this.localVideoToggle()
             }
         }
-        this._audioGloballyMuted = muteNotification.audioGloballyMuted ?? this._audioGloballyMuted;
-        this._videoGloballyDisabled = muteNotification.videoGloballyDisabled ?? this._videoGloballyDisabled;
+    }
+
+    private globalMuteMessage(globalMuteMessage: GlobalMuteNotification): void {
+        this._audioGloballyMuted = globalMuteMessage.audioGloballyMuted ?? this._audioGloballyMuted;
+        this._videoGloballyDisabled = globalMuteMessage.videoGloballyDisabled ?? this._videoGloballyDisabled;
     }
 
     get audioGloballyMuted(): boolean {
@@ -836,10 +850,12 @@ interface Stream {
 export interface MuteNotification {
     roomId: string
     sessionId: string
-    producerId?: string
-    consumerId?: string
     audio?: boolean
     video?: boolean
+}
+
+export interface GlobalMuteNotification {
+    roomId: string
     audioGloballyMuted?: boolean,
     videoGloballyDisabled?: boolean,
 }
