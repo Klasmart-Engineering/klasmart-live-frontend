@@ -36,6 +36,9 @@ const useStyles = makeStyles((theme: Theme) => ({
 	styledDrawerInner: {
 		padding: 10,
 	},
+	popperRoot:{
+		zIndex: 99,
+	},
 	popperPapper: {
 		borderRadius: 12,
 		overflow: 'hidden'
@@ -96,6 +99,7 @@ function StyledPopper(props: StyledPopperProps) {
 					boundariesElement: document.getElementById("main-content"),
 				},
 			}}
+			className={classes.popperRoot}
 		>
 			<Fade in={open}>
 				<Paper elevation={3} className={classes.popperPapper}>{children}</Paper>

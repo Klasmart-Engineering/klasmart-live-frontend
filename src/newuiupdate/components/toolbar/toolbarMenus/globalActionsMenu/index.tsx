@@ -3,7 +3,7 @@ import React from "react";
 import { makeStyles, Grid, Theme } from "@material-ui/core";
 
 import { TvFill as ScreenShareIcon } from "@styled-icons/bootstrap/TvFill";
-import { Pencil as PencilIcon } from "@styled-icons/boxicons-solid/Pencil";
+import { PencilFill as CanvasIcon } from "@styled-icons/bootstrap/PencilFill";
 import { MicFill as MicFillIcon } from "@styled-icons/bootstrap/MicFill";
 import { CameraVideoFill as CameraVideoFillIcon } from "@styled-icons/bootstrap/CameraVideoFill";
 import { TrophyFill as TrophyFillIcon } from "@styled-icons/bootstrap/TrophyFill";
@@ -22,6 +22,7 @@ import {
 	isActiveGlobalCanvasState,
 	isActiveGlobalMuteAudioState,
 	isActiveGlobalMuteVideoState,
+
 	isGlobalActionsOpenState,
 } from "../../../../states/layoutAtoms";
 
@@ -64,18 +65,6 @@ function GlobalActionsMenu(props: GlobaActionsMenuProps) {
 			variant: 'blue',
 			isActive: activeGlobalScreenshare,
 			onClick: () => setActiveGlobalScreenshare(!activeGlobalScreenshare),
-		},
-		{
-			id: "1b",
-			type: "divider",
-		},
-		{
-			id: "2",
-			title: "Canvas",
-			icon: <PencilIcon size="1.7rem" />,
-			variant: 'blue',
-			isActive: activeGlobalCanvas,
-			onClick: () => setActiveGlobalCanvas(!activeGlobalCanvas),
 		},
 		{
 			id: "3",

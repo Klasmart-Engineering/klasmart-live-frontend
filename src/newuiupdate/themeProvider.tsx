@@ -63,6 +63,10 @@ export function themeProvider(languageCode: string, themeMode: string) {
 				minHeight: 0,
 				padding: 10,
 				borderBottom: "1px solid lightgrey",
+				"& .MuiTabs-flexContainer": {
+					zIndex: 5,
+					position: "relative",
+				},
 			},
 			indicator: {
 				backgroundColor: "#B4CDED",
@@ -75,6 +79,7 @@ export function themeProvider(languageCode: string, themeMode: string) {
 				minWidth: "0 !important",
 				minHeight: "0 !important",
 				padding: "6px 18px",
+				fontSize: '0.85rem',
 				transition: 'opacity 100ms ease-in-out',
 				"&:hover": {
 					opacity: 1

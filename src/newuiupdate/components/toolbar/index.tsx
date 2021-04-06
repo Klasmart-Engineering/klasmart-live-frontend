@@ -9,21 +9,19 @@ import { FilePaper as LessonPlanIcon } from "@styled-icons/remix-fill/FilePaper"
 import { ChevronBottom as ViewModesIcon } from "@styled-icons/open-iconic/ChevronBottom";
 import { UserPin as PinUserIcon } from "@styled-icons/boxicons-regular/UserPin";
 import { ChatSquareDotsFill as ChatIcon } from "@styled-icons/bootstrap/ChatSquareDotsFill";
-
 import { UserVoice as OnStageIcon } from "@styled-icons/boxicons-solid/UserVoice";
 import { Eye as ObserveIcon } from "@styled-icons/fa-regular/Eye";
 import { PresentationChartBar as PresentIcon } from "@styled-icons/heroicons-solid/PresentationChartBar";
-
 import PhoneInTalkIcon from "@material-ui/icons/PhoneInTalk";
-
 
 import ToolbarItem from "./toolbarItem";
 import ToolbarItemCall from "./toolbarItemCall";
 import ToolbarItemMicrophone from "./toolbarItemMicrophone";
 import ToolbarItemCamera from "./toolbarItemCamera";
-import GlobalActionsMenu from "./toolbarMenus/globalActionsMenu/index";
 import CanvasMenu from "./toolbarMenus/canvasMenu";
-import ClassDetailsMenu from "./toolbarMenus/classDetailsMenu";
+import GlobalActionsMenu from "./toolbarMenus/globalActionsMenu";
+import ClassDetailsMenu from "./toolbarMenus/classDetailsMenu/index";
+import ViewModesMenu from "./toolbarMenus/viewModesMenu";
 
 import { useRecoilState } from "recoil";
 import {
@@ -38,7 +36,7 @@ import {
 	isClassDetailsOpenState,
 	viewModeState,
 } from "../../states/layoutAtoms";
-import ViewModesMenu from "./toolbarMenus/viewModesMenu";
+
 
 const useStyles = makeStyles((theme: Theme) => ({
 	root: {
