@@ -13,7 +13,6 @@ import { HeartFill as HeartFillIcon } from "@styled-icons/bootstrap/HeartFill";
 
 import { useRecoilState } from "recoil";
 
-import amber from "@material-ui/core/colors/amber";
 import GlobalActionsMenuItem from "./item";
 
 import { StyledPopper } from "../../../utils";
@@ -62,7 +61,7 @@ function GlobalActionsMenu(props: GlobaActionsMenuProps) {
 			id: "1",
 			title: "Screenshare",
 			icon: <ScreenShareIcon size="1.7rem" />,
-			color: amber[500],
+			variant: 'blue',
 			isActive: activeGlobalScreenshare,
 			onClick: () => setActiveGlobalScreenshare(!activeGlobalScreenshare),
 		},
@@ -74,7 +73,7 @@ function GlobalActionsMenu(props: GlobaActionsMenuProps) {
 			id: "2",
 			title: "Canvas",
 			icon: <PencilIcon size="1.7rem" />,
-			color: amber[500],
+			variant: 'blue',
 			isActive: activeGlobalCanvas,
 			onClick: () => setActiveGlobalCanvas(!activeGlobalCanvas),
 		},
@@ -86,7 +85,7 @@ function GlobalActionsMenu(props: GlobaActionsMenuProps) {
 			id: "4",
 			title: "Mute All",
 			icon: <MicFillIcon size="1.4rem" />,
-			color: amber[500],
+			variant: 'blue',
 			isActive: activeGlobalMuteAudio,
 			onClick: () => setActiveGlobalMuteAudio(!activeGlobalMuteAudio),
 		},
@@ -94,7 +93,7 @@ function GlobalActionsMenu(props: GlobaActionsMenuProps) {
 			id: "5",
 			title: "Hide all cameras",
 			icon: <CameraVideoFillIcon size="1.4rem" />,
-			color: amber[500],
+			variant: 'blue',
 			isActive: activeGlobalMuteVideo,
 			onClick: () => setActiveGlobalMuteVideo(!activeGlobalMuteVideo),
 		},
@@ -106,25 +105,22 @@ function GlobalActionsMenu(props: GlobaActionsMenuProps) {
 			id: "7",
 			title: "Send trophy",
 			icon: <TrophyFillIcon size="1.4rem" />,
-			color: amber[500],
 		},
 		{
 			id: "8",
 			title: "Send thumbs up",
 			icon: <HandThumbsUpFillIcon size="1.4rem" />,
-			color: amber[500],
 		},
 		{
 			id: "9",
 			title: "Send star",
 			icon: <StarFillIcon size="1.4rem" />,
-			color: amber[500],
 		},
 		{
 			id: "10",
 			title: "Send heart",
 			icon: <HeartFillIcon size="1.4rem" />,
-			color: amber[500],
+			variant: 'red',
 		},
 	];
 
@@ -137,7 +133,7 @@ function GlobalActionsMenu(props: GlobaActionsMenuProps) {
 						title={item.title}
 						icon={item.icon}
 						type={item.type}
-						color={item.color}
+						variant={item.variant}
 						active={item.isActive}
 						onClick={item.onClick}
 					/>

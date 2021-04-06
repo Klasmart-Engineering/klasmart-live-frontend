@@ -84,9 +84,9 @@ function ViewModesMenu(props:ViewModesMenuProps) {
 
 	return (
 		<StyledPopper open={isViewModesOpen} anchorEl={anchor}>
-			<Grid container alignItems="stretch">
+			<Grid container alignItems="stretch" >
 				{items.map(item => (
-				<div>
+				<Grid key={item.id} item>
 					<Grid container direction="column" alignItems="center" className={clsx(classes.item, item.isActive && classes.active)} onClick={item.onClick}>
 						<Grid item>
 							<Box className={classes.itemIcon}>{item.icon}</Box>
@@ -95,7 +95,7 @@ function ViewModesMenu(props:ViewModesMenuProps) {
 							<Typography>{item.title}</Typography>
 						</Grid>
 					</Grid>
-				</div>
+				</Grid>
 				))}
 			</Grid>
 		</StyledPopper>

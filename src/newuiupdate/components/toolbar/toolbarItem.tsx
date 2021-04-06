@@ -1,6 +1,6 @@
 import React from "react";
 import clsx from "clsx";
-import { makeStyles, useTheme, Box, Grid, Theme, Typography, Badge } from "@material-ui/core";
+import { makeStyles, useTheme, Box, Grid, Theme, Typography, Badge, Tooltip } from "@material-ui/core";
 
 import amber from "@material-ui/core/colors/amber";
 
@@ -69,31 +69,37 @@ interface ToolbarItemProps {
 	disabled?: boolean;
 	active?: boolean;
 	badge?: any;
+	tooltip?: string;
 }
 
 function ToolbarItem(props: ToolbarItemProps) {
-	const { icon, label, onClick, disabled, active,  badge} = props;
+	const { icon, label, onClick, disabled, active, badge, tooltip = false} = props;
 	const classes = useStyles();
+	const hasTooltip = tooltip ? true : false;
 
 	return (
-		<Box
-			className={clsx(
-				classes.root,
-				disabled && classes.disabled,
-				active && classes.active
-			)}
-			onClick={onClick}
-		>
-			{badge && (
-				<Badge
-					classes={{ badge: classes.badge, root: classes.badgeRoot }}
-					badgeContent={<Box className={classes.badgeContent}>{badge}</Box>}
-				></Badge>
-			)}
+		<>
+			<Tooltip title={tooltip} disableFocusListener={!hasTooltip} disableHoverListener={!hasTooltip} disableTouchListener={!hasTooltip}>
+				<Box
+					className={clsx(
+						classes.root,
+						disabled && classes.disabled,
+						active && classes.active
+					)}
+					onClick={onClick}
+				>
+					{badge && (
+						<Badge
+							classes={{ badge: classes.badge, root: classes.badgeRoot }}
+							badgeContent={<Box className={classes.badgeContent}>{badge}</Box>}
+						></Badge>
+					)}
 
-			{icon}
-			{label && <Typography className={classes.label}>{label}</Typography>}
-		</Box>
+					{icon}
+					{label && <Typography className={classes.label}>{label}</Typography>}
+				</Box>
+			</Tooltip>
+		</>
 	);
 }
 

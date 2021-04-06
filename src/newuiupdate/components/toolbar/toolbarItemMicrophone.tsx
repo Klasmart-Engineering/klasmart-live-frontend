@@ -7,6 +7,7 @@ import {
 	Grid,
 	Badge,
 	Theme,
+	Tooltip,
 } from "@material-ui/core";
 import red from "@material-ui/core/colors/red";
 import LockIcon from "@material-ui/icons/Lock";
@@ -77,33 +78,39 @@ interface ToolbarItemMicrophoneProps {
 	disabled?: boolean;
 	active?: boolean;
 	locked?: boolean;
+	tooltip?: string;
 }
 
 function ToolbarItemMicrophone(props: ToolbarItemMicrophoneProps) {
-	const { icon, onClick, disabled, active, locked } = props;
+	const { icon, onClick, disabled, active, locked, tooltip = false } = props;
 	const classes = useStyles();
+	const hasTooltip = tooltip ? true : false;
 
 	return (
-		<Box className={classes.itemRoot}>
-			{locked && (
-				<Badge
-					classes={{ badge: classes.badge, root: classes.badgeRoot }}
-					badgeContent={<LockIcon className={classes.badgeContent} />}
-				></Badge>
-			)}
+		<>
+			<Tooltip title={tooltip} disableFocusListener={!hasTooltip} disableHoverListener={!hasTooltip} disableTouchListener={!hasTooltip}>
+				<Box className={classes.itemRoot}>
+					{locked && (
+						<Badge
+							classes={{ badge: classes.badge, root: classes.badgeRoot }}
+							badgeContent={<LockIcon className={classes.badgeContent} />}
+						></Badge>
+					)}
 
-			<Box
-				className={clsx(
-					classes.root,
-					disabled && classes.disabled,
-					active && classes.active,
-					locked && classes.locked
-				)}
-				onClick={onClick}
-			>
-				{active ? <MicRoundedIcon /> : <MicOffRoundedIcon />}
-			</Box>
-		</Box>
+					<Box
+						className={clsx(
+							classes.root,
+							disabled && classes.disabled,
+							active && classes.active,
+							locked && classes.locked
+						)}
+						onClick={onClick}
+					>
+						{active ? <MicRoundedIcon /> : <MicOffRoundedIcon />}
+					</Box>
+				</Box>
+			</Tooltip>
+		</>
 	);
 }
 
