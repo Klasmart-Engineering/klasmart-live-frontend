@@ -77,6 +77,7 @@
     "iframe-resizer-react": "^1.1.0",
     "jwt-decode": "^2.2.0",
     "kidsloop-canvas": "git+git@bitbucket.org:calmisland/kidsloop-canvas.git#release/npm",
+    "kidsloop-px": "bitbucket:calmisland/kidsloop-px#970b3962e50ea42f78314798de0a855ebf41f0d2",
     "logrocket": "^1.0.12",
     "mediasoup-client": "^3.6.12",
     "node-source-han-sans-sc": "^1.1.0-2.001R",

@@ -82,3 +82,63 @@ export const viewModeState = atom<viewModeStateType>({
 	key: "viewModeState",
 	default: "onstage",
 });
+
+
+
+// TEMPORARY, TO DELETE WHEN REAL DATA
+export const usersState = atom({
+	key: "usersState",
+	default: [{
+		id: 1,
+		name: 'The Teach',
+		role: 'teacher',
+		hasControls: true,
+		hasVideo: true,
+		hasAudio: true,
+		isSelfAudioMuted : false,
+		isSelfVideoMuted : false,
+		isTeacherAudioMuted : false,
+		isTeacherVideoMuted : false,
+		isSpeaking : false
+	},
+	{
+		id: 2,
+		name: 'The second Teach',
+		role: 'teacher',
+		hasControls: false,
+		hasVideo: true,
+		hasAudio: true,
+		isSelfAudioMuted : false,
+		isSelfVideoMuted : false,
+		isTeacherAudioMuted : false,
+		isTeacherVideoMuted : false,
+		isSpeaking : false
+	},
+	{
+		id: 3,
+		name: 'The first student',
+		role: 'student',
+		hasControls: false,
+		hasVideo: true,
+		hasAudio: true,
+		isSelfAudioMuted : false,
+		isSelfVideoMuted : false,
+		isTeacherAudioMuted : false,
+		isTeacherVideoMuted : false,
+		isSpeaking : false
+	},
+	{
+		id: 4,
+		name: 'The second student',
+		role: 'student',
+		hasControls: false,
+		hasVideo: true,
+		hasAudio: true,
+		isSelfAudioMuted : false,
+		isSelfVideoMuted : false,
+		isTeacherAudioMuted : false,
+		isTeacherVideoMuted : false,
+		isSpeaking : false
+	}
+],
+});

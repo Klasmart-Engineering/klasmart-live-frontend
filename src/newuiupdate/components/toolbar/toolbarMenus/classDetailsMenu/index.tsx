@@ -3,18 +3,18 @@ import React from "react";
 import {
 	makeStyles,
 	Theme,
-	Paper,
 	Box,
-	Typography,
 	Tabs,
 	Tab,
 } from "@material-ui/core";
 
 
 import { useRecoilState } from "recoil";
-import { isClassDetailsOpenState } from "../../../states/layoutAtoms";
+import { isClassDetailsOpenState } from "../../../../states/layoutAtoms";
 
-import { StyledPopper } from "../../utils";
+import { StyledPopper } from "../../../utils";
+import ClassDetails from "./classDetails";
+import ClassRoster from "./classRoster";
 
 const useStyles = makeStyles((theme: Theme) => ({
 	root: {
@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 		paddingBottom: 10,
 	}, 
 	detailsValue:{
-		color: theme.palette.grey[500],
+		color: theme.palette.grey[600],
 		paddingBottom: 10,
 	}
 }));
@@ -50,7 +50,7 @@ function ClassDetailsMenu(props: GlobaActionsMenuProps) {
 
 	const [value, setValue] = React.useState(0);
 
-	const handleChange = (e: Event, newValue: any) => {
+	const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
 		setValue(newValue);
 	};
 
@@ -58,30 +58,17 @@ function ClassDetailsMenu(props: GlobaActionsMenuProps) {
 		<StyledPopper open={isClassDetailsOpen} anchorEl={anchor}>
 			<Tabs
 				value={value}
-				onChange={() => handleChange}
+				onChange={handleChange}
 				aria-label="simple tabs example"
 			>
 				<Tab label="Class details" disableRipple />
-				<Tab label="Item Two" disableRipple />
+				<Tab label="Class roster" disableRipple />
 			</Tabs>
 			<TabPanel value={value} index={0}>
-				<table>
-					<tr>
-						<td className={classes.detailsLabel}><Typography>Class Name</Typography></td>
-						<td className={classes.detailsValue}><Typography>Class Name</Typography></td>
-					</tr>
-					<tr>
-					<td className={classes.detailsLabel}><Typography>Lesson Name</Typography></td>
-						<td className={classes.detailsValue}><Typography>Animals</Typography></td>
-					</tr>
-					<tr>
-					<td className={classes.detailsLabel}><Typography>Room ID</Typography></td>
-						<td className={classes.detailsValue}><Typography>AD01</Typography></td>
-					</tr>
-				</table>
+				<ClassDetails />
 			</TabPanel>
 			<TabPanel value={value} index={1}>
-				Item Two
+				<ClassRoster />
 			</TabPanel>
 		</StyledPopper>
 	);
@@ -90,9 +77,9 @@ function ClassDetailsMenu(props: GlobaActionsMenuProps) {
 export default ClassDetailsMenu;
 
 interface TabPanelProps {
-	children?: any;
-	value?: any;
-	index?: any;
+	children?: React.ReactNode;
+	index: any;
+	value: any;
 }
 
 function TabPanel(props: TabPanelProps) {
