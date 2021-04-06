@@ -12,7 +12,7 @@ import { useRecoilState } from "recoil";
 import { isChatOpenState } from "../../../states/layoutAtoms";
 
 function Chat() {
-	const [drawerWidth, setDrawerWidth] = useState<Number | String>(340);
+	const [drawerWidth, setDrawerWidth] = useState<Number | String | any>(340);
 	const [isChatOpen, setIsChatOpen] = useRecoilState(isChatOpenState);
 
 	const useStyles = makeStyles((theme: Theme) => ({

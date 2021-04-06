@@ -40,6 +40,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 		cursor: "default",
 	},
 	locked: {},
+	active: {},
 	badgeRoot: {
 		position: "absolute",
 		top: 0,

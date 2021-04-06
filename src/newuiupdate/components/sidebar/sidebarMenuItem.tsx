@@ -64,8 +64,8 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface SidebarItemMenuProps {
-	icon?: any;
-	name?: string;
+	icon: any;
+	name: string;
 	active?: boolean;
 }
 
@@ -74,7 +74,7 @@ function SidebarMenuItem(props: SidebarItemMenuProps) {
 	const { name, icon, active } = props;
 	const [activeTab, setActiveTab] = useRecoilState(activeTabState);
 
-	const handleChangeTab = (e) => {
+	const handleChangeTab = (e: string) => {
 		setActiveTab(e);
 	};
 

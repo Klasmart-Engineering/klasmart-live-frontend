@@ -42,11 +42,14 @@ const useStyles = makeStyles((theme: Theme) => ({
 	}
 }));
 
+interface ViewModesMenuProps {
+	anchor?: any;
+}
 
-function ViewModesMenu(props) {
+
+function ViewModesMenu(props:ViewModesMenuProps) {
 	const { anchor } = props;
 	const classes = useStyles();
-
 
 	const [viewMode, setViewMode] = useRecoilState(
 		viewModeState

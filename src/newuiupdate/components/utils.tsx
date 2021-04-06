@@ -74,14 +74,19 @@ function StyledDrawer(props: StyledDrawerProps) {
 
 export { StyledDrawer };
 
-function StyledPopper(props) {
-	const classes = useStyles();
+interface StyledPopperProps {
+	children: any;
+	open?: boolean;
+	anchorEl?: any;
+}
 
+function StyledPopper(props: StyledPopperProps) {
+	const classes = useStyles();
 	const { children, open, anchorEl } = props;
 
 	return (
 		<Popper
-			open={open}
+			open={open ? true : false}
 			anchorEl={anchorEl}
 			disablePortal={false}
 			placement="top"

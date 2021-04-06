@@ -50,7 +50,7 @@ function ClassDetailsMenu(props: GlobaActionsMenuProps) {
 
 	const [value, setValue] = React.useState(0);
 
-	const handleChange = (event, newValue) => {
+	const handleChange = (e: Event, newValue: any) => {
 		setValue(newValue);
 	};
 
@@ -58,7 +58,7 @@ function ClassDetailsMenu(props: GlobaActionsMenuProps) {
 		<StyledPopper open={isClassDetailsOpen} anchorEl={anchor}>
 			<Tabs
 				value={value}
-				onChange={handleChange}
+				onChange={() => handleChange}
 				aria-label="simple tabs example"
 			>
 				<Tab label="Class details" disableRipple />
@@ -89,7 +89,13 @@ function ClassDetailsMenu(props: GlobaActionsMenuProps) {
 
 export default ClassDetailsMenu;
 
-function TabPanel(props) {
+interface TabPanelProps {
+	children?: any;
+	value?: any;
+	index?: any;
+}
+
+function TabPanel(props: TabPanelProps) {
 	const { children, value, index, ...other } = props;
 
 	return (
