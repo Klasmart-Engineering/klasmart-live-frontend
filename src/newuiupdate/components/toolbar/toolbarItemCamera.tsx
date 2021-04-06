@@ -89,28 +89,28 @@ function ToolbarItemCamera(props: ToolbarItemCameraProps) {
 
 	return (
 		<>
-		<Tooltip title={tooltip} disableFocusListener={!hasTooltip} disableHoverListener={!hasTooltip} disableTouchListener={!hasTooltip}>
-			<Box className={classes.itemRoot}>
-				{locked && (
-					<Badge
-						classes={{ badge: classes.badge, root: classes.badgeRoot }}
-						badgeContent={<LockIcon className={classes.badgeContent} />}
-					></Badge>
-				)}
-
-				<Box
-					className={clsx(
-						classes.root,
-						disabled && classes.disabled,
-						active && classes.active,
-						locked && classes.locked
+			<Tooltip title={tooltip} disableFocusListener={!hasTooltip} disableHoverListener={!hasTooltip} disableTouchListener={!hasTooltip}>
+				<Box className={classes.itemRoot}>
+					{locked && (
+						<Badge
+							classes={{ badge: classes.badge, root: classes.badgeRoot }}
+							badgeContent={<LockIcon className={classes.badgeContent} />}
+						></Badge>
 					)}
-					onClick={onClick}
-				>
-					{active ? <VideocamRoundedIcon /> : <VideocamOffRoundedIcon />}
+
+					<Box
+						className={clsx(
+							classes.root,
+							disabled && classes.disabled,
+							active && classes.active,
+							locked && classes.locked
+						)}
+						onClick={onClick}
+					>
+						{active ? <VideocamRoundedIcon /> : <VideocamOffRoundedIcon />}
+					</Box>
 				</Box>
-			</Box>
-		</Tooltip>
+			</Tooltip>
 		</>
 	);
 }

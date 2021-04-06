@@ -54,7 +54,7 @@ export function themeProvider(languageCode: string, themeMode: string) {
 		fontWeightLight: localeTypography.localeWeightLight,
 		fontWeightMedium: localeTypography.localeWeightMedium,
 		fontWeightRegular: localeTypography.localeWeightRegular,
-		
+		fontSize: 12
 	} as any;
 
 	const overrides = {
@@ -79,9 +79,6 @@ export function themeProvider(languageCode: string, themeMode: string) {
 				"&:hover": {
 					opacity: 1
 				},
-			},
-			selected: {
-				"&:hover": {},
 			},
 		},
 	};

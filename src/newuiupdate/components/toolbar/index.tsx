@@ -148,7 +148,11 @@ function Toolbar() {
 						active={activeMicrophone}
 						onClick={() => setActiveMicrophone(!activeMicrophone)}
 					/>
-					<ToolbarItemCall locked icon={<PhoneInTalkIcon />} />
+					<ToolbarItemCall 
+						locked 
+						tooltip="Ask permission to leave the class"
+						icon={<PhoneInTalkIcon />} 
+					/>
 					<ToolbarItemCamera
 						active={activeCamera}
 						locked
