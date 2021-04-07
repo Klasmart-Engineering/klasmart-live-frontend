@@ -78,7 +78,7 @@ export function themeProvider(languageCode: string, themeMode: string) {
 			root: {
 				minWidth: "0 !important",
 				minHeight: "0 !important",
-				padding: "6px 18px",
+				padding: "5px 16px",
 				fontSize: '0.85rem',
 				transition: 'opacity 100ms ease-in-out',
 				"&:hover": {

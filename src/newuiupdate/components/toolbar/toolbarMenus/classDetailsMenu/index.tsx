@@ -17,23 +17,6 @@ import ClassDetails from "./classDetails";
 import ClassRoster from "./classRoster";
 
 const useStyles = makeStyles((theme: Theme) => ({
-	root: {
-		padding: 10,
-		justifyContent: "space-between",
-	},
-	iconGroup: {
-		display: "flex",
-		alignItems: "center",
-	}, 
-	detailsLabel:{
-		color: theme.palette.text.primary,
-		paddingRight: 30,
-		paddingBottom: 10,
-	}, 
-	detailsValue:{
-		color: theme.palette.grey[600],
-		paddingBottom: 10,
-	}
 }));
 
 interface GlobaActionsMenuProps {

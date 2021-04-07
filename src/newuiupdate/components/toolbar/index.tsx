@@ -211,6 +211,7 @@ function Toolbar() {
 				</Grid>
 			</Grid>
 
+
 			<ClassDetailsMenu anchor={classDetailsEl} />
 			<CanvasMenu anchor={canvasEl} />
 			<GlobalActionsMenu anchor={globalActionsEl} />

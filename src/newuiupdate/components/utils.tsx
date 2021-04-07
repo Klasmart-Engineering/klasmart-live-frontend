@@ -35,6 +35,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 	},
 	styledDrawerInner: {
 		padding: 10,
+		height: '100%',
 	},
 	popperRoot:{
 		zIndex: 99,

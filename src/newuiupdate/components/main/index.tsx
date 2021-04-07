@@ -4,6 +4,7 @@ import { makeStyles, Grid, Theme, Box } from "@material-ui/core";
 import MainView from "./mainView";
 import MainDrawer from "./mainDrawer";
 import Toolbar from "../toolbar";
+import CanvasDrawer from "./canvasDrawer";
 
 const useStyles = makeStyles((theme: Theme) => ({
 	fullHeight: {},
@@ -31,6 +32,7 @@ function Main() {
 					<Grid container id="main-content">
 						<Grid item xs>
 							<MainView />
+							<CanvasDrawer />
 						</Grid>
 						<Grid item className={classes.mainViewDrawer}>
 							<MainDrawer />

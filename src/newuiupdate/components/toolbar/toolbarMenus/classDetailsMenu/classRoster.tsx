@@ -68,9 +68,16 @@ function ClassRoster() {
         return e.role === "student"
     });
 
+    // TODO : This is not optimal
+    const resetPosition = (event: React.ChangeEvent<unknown>) => {
+        setTimeout(function(){  
+            window.dispatchEvent(new Event('resize'));  
+        }, 200);
+    };
+
 	return (
         <div>
-            <Accordion elevation={0}>
+            <Accordion elevation={0} onChange={resetPosition}>
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
                     aria-controls="panel1a-content"
@@ -96,7 +103,7 @@ function ClassRoster() {
                     ))}
                 </AccordionDetails>
             </Accordion>
-            <Accordion elevation={0}>
+            <Accordion elevation={0} onChange={resetPosition}>
                 <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
                 aria-controls="panel2a-content"
@@ -122,7 +129,7 @@ function ClassRoster() {
                     ))}
                 </AccordionDetails>
             </Accordion>
-            <Accordion elevation={0}>
+            <Accordion elevation={0} onChange={resetPosition}>
                 <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
                 aria-controls="panel3a-content"
@@ -134,8 +141,7 @@ function ClassRoster() {
                 </AccordionSummary>
                 <AccordionDetails>
                     <Typography>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex,
-                        sit amet blandit leo lobortis eget.
+                        No informations.
                     </Typography>
                 </AccordionDetails>
             </Accordion>
