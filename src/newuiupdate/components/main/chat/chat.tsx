@@ -7,57 +7,99 @@ import {
 	Grid,
 	Theme,
 	Drawer,
+	Tabs, 
+	Tab,
+	Typography
 } from "@material-ui/core";
 import { useRecoilState } from "recoil";
 import { isChatOpenState } from "../../../states/layoutAtoms";
+import Messages from "./messages";
+import Attachments from "./attachements";
+
+const useStyles = makeStyles((theme: Theme) => ({
+	fullHeight:{
+		height: '100%',
+	},
+	tabsFlexContainer:{
+		display: 'block',
+		textAlign: 'right'
+	},
+	title:{
+		position: 'absolute',
+		fontSize: '1.25rem',
+		top: 23,
+		fontWeight: 600
+	}
+}));
+
 
 function Chat() {
 	const [drawerWidth, setDrawerWidth] = useState<Number | String | any>(340);
 	const [isChatOpen, setIsChatOpen] = useRecoilState(isChatOpenState);
 
-	const useStyles = makeStyles((theme: Theme) => ({
-		drawerPinUser: {
-			width: isChatOpen ? drawerWidth : 0,
-			flexShrink: 0,
-			transition: theme.transitions.create("width", {
-				easing: theme.transitions.easing.sharp,
-				duration: theme.transitions.duration.shortest,
-			}),
-
-			paddingLeft: theme.spacing(2),
-		},
-		drawerPaper: {
-			width: drawerWidth,
-			transition: theme.transitions.create("width", {
-				easing: theme.transitions.easing.sharp,
-				duration: theme.transitions.duration.shortest,
-			}),
-			border: 0,
-			backgroundColor: theme.palette.grey[200],
-			borderRadius: 12,
-		},
-		inner: {
-			padding: 10,
-		},
-	}));
 	const classes = useStyles();
 
+	const [value, setValue] = React.useState(0);
+
+	const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+		setValue(newValue);
+	};
+
 	return (
-		<Drawer
-			anchor="right"
-			open={isChatOpen}
-			classes={{ root: classes.drawerPinUser, paper: classes.drawerPaper }}
-			PaperProps={{ style: { position: "absolute" } }}
-			BackdropProps={{ style: { position: "absolute" } }}
-			ModalProps={{
-				container: document.getElementById("main-content"),
-				style: { position: "absolute" },
-			}}
-			variant="persistent"
-		>
-			<Box className={classes.inner}>Chat, do stuff here </Box>
-		</Drawer>
+		<Grid container direction="column" className={classes.fullHeight}>
+			<Grid item>
+				
+			</Grid>
+			<Grid item xs>
+				<Grid container direction="column" className={classes.fullHeight}>
+					<Grid item>
+						<Typography className={classes.title}>Class Chat</Typography>
+						<Tabs
+							value={value}
+							onChange={handleChange}
+							classes={{flexContainer: classes.tabsFlexContainer}}
+						> 
+							<Tab label="Messages" disableRipple />
+							<Tab label="Attachements" disableRipple />
+						</Tabs>
+					</Grid>
+					<Grid item xs>
+						<TabPanel value={value} index={0}>
+							<Messages />
+						</TabPanel>
+						<TabPanel value={value} index={1}>
+							<Attachments />
+						</TabPanel>
+					</Grid>
+				</Grid>
+			</Grid>
+		</Grid>
 	);
 }
 
 export default Chat;
+
+
+interface TabPanelProps {
+	children?: React.ReactNode;
+	index: any;
+	value: any;
+}
+
+function TabPanel(props: TabPanelProps) {
+	const { children, value, index, ...other } = props;
+	const classes = useStyles();
+
+	return (
+		<div
+			role="tabpanel"
+			hidden={value !== index}
+			id={`simple-tabpanel-${index}`}
+			aria-labelledby={`simple-tab-${index}`}
+			className={classes.fullHeight}
+			{...other}
+		>
+			{value === index && children}
+		</div>
+	);
+}
