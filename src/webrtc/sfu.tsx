@@ -10,13 +10,22 @@ import {
 import React, { createContext, useReducer, useRef, useContext, useEffect, useMemo } from "react";
 import { RoomContext } from "../pages/room/room";
 import { gql, ExecutionResult, ApolloClient, InMemoryCache } from "apollo-boost";
-import { useMutation, useSubscription, ApolloProvider } from "@apollo/react-hooks";
+import { useMutation, useSubscription, ApolloProvider, useLazyQuery } from "@apollo/react-hooks";
 import { MutationFunctionOptions } from "@apollo/react-common/lib/types/types";
 import { Resolver, PrePromise } from "../resolver";
 import { WebSocketLink } from "apollo-link-ws";
 import { sessionId, LocalSessionContext } from "../entry";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { Producer, ProducerOptions } from "mediasoup-client/lib/Producer";
+
+export const GET_GLOBAL_MUTE = gql`
+    query getGlobalMute($roomId: String!, $sessionId: String!) {
+        getGlobalMute(roomId: $roomId, sessionId: $sessionId) {
+            audioGloballyMuted,
+            videoGloballyDisabled,
+        }
+    }
+`;
 
 const SEND_RTP_CAPABILITIES = gql`
     mutation rtpCapabilities($rtpCapabilities: String!) {
@@ -124,6 +133,8 @@ export class WebRTCSFUContext implements WebRTCContext {
     }
 
     private static InternalProvider({ sfu, rerender }: { sfu: React.MutableRefObject<WebRTCSFUContext>, rerender: React.DispatchWithoutAction }) {
+        const { roomId } = RoomContext.Consume();
+        const { name, sessionId } = useContext(LocalSessionContext);
         const [rtpCapabilities] = useMutation(SEND_RTP_CAPABILITIES);
         const [transport] = useMutation(TRANSPORT);
         const [producer] = useMutation(PRODUCER);
@@ -132,13 +143,17 @@ export class WebRTCSFUContext implements WebRTCContext {
         const [mute] = useMutation(MUTE);
         const [globalMute] = useMutation(GLOBAL_MUTE);
         const [endClass] = useMutation(ENDCLASS);
+        const [getGlobalMute] = useLazyQuery(GET_GLOBAL_MUTE, {onCompleted: data => sfu.current.globalMuteMessage(data.getGlobalMute)});
+        useEffect(() => {
+            if (sfu.current) {
+                getGlobalMute({variables: { roomId, sessionId}});
+            }
+        }, [getGlobalMute, roomId, sessionId, sfu.current]);
 
         if (!sfu.current) {
             sfu.current = new WebRTCSFUContext(rerender, rtpCapabilities, transport, producer, consumer, stream, mute, globalMute, endClass)
         }
 
-        const { roomId } = RoomContext.Consume();
-        const { name } = useContext(LocalSessionContext);
         useSubscription(SUBSCRIBE, {
             onSubscriptionData: ({ subscriptionData }) => {
                 if (!subscriptionData?.data?.media) {
@@ -808,9 +823,9 @@ export class WebRTCSFUContext implements WebRTCContext {
         }
     }
 
-    private globalMuteMessage(globalMuteMessage: GlobalMuteNotification): void {
-        this._audioGloballyMuted = globalMuteMessage.audioGloballyMuted ?? this._audioGloballyMuted;
-        this._videoGloballyDisabled = globalMuteMessage.videoGloballyDisabled ?? this._videoGloballyDisabled;
+    private globalMuteMessage(globalMuteNotification: GlobalMuteNotification): void {
+        this._audioGloballyMuted = globalMuteNotification.audioGloballyMuted ?? this._audioGloballyMuted;
+        this._videoGloballyDisabled = globalMuteNotification.videoGloballyDisabled ?? this._videoGloballyDisabled;
     }
 
     get audioGloballyMuted(): boolean {
