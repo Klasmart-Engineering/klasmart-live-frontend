@@ -28,7 +28,7 @@ import { Star as StarIcon } from "@styled-icons/material/Star";
 import { EmojiEvents as TrophyIcon } from "@styled-icons/material/EmojiEvents";
 import { Favorite as HeartIcon } from "@styled-icons/material/Favorite";
 import { ThumbUp as EncourageIcon } from "@styled-icons/material/ThumbUp";
-import { GlobalMuteNotification, MuteNotification, WebRTCSFUContext } from "./webrtc/sfu";
+import { GlobalMuteNotification, WebRTCSFUContext } from "./webrtc/sfu";
 import { useSynchronizedState } from "./whiteboard/context-providers/SynchronizedStateProvider";
 import { LocalSessionContext } from "./entry";
 
@@ -76,25 +76,32 @@ export function GlobalCameraControl(): JSX.Element {
     const [micsOn, setMicsOn] = useState(true);
 
     const states = WebRTCSFUContext.Consume()
-    const { roomId, sessionId: localSessionId } = useContext(LocalSessionContext);
+    const { roomId, sessionId } = useContext(LocalSessionContext);
     const [rewardTrophyMutation] = useMutation(MUTATION_REWARD_TROPHY);
     const rewardTrophy = (user: string, kind: string) => rewardTrophyMutation({ variables: { roomId, user, kind } });
 
     const { actions: { clear } } = useToolbarContext();
-
     const {
         state: { display },
         actions: { setDisplay },
     } = useSynchronizedState();
-    
+
+    useEffect(() => {
+        setCamerasOn(!states.videoGloballyDisabled);
+    }, [states.videoGloballyDisabled])
+
+    useEffect(() => {
+        setMicsOn(!states.audioGloballyMuted);
+    }, [states.audioGloballyMuted])
+
     function toggleVideoStates() {
         const notification: GlobalMuteNotification = {
             roomId,
             audioGloballyMuted: undefined,
             videoGloballyDisabled: camerasOn,
         }
+        setCamerasOn(!states.videoGloballyDisabled);
         states.sendGlobalMute(notification);
-        setCamerasOn(!camerasOn);
     }
 
     function toggleAudioStates() {
@@ -103,8 +110,8 @@ export function GlobalCameraControl(): JSX.Element {
             audioGloballyMuted: micsOn,
             videoGloballyDisabled: undefined,
         }
+        setMicsOn(!states.audioGloballyMuted);
         states.sendGlobalMute(notification);
-        setMicsOn(!micsOn);
     }
 
     return (
@@ -201,7 +208,7 @@ export function GlobalCameraControl(): JSX.Element {
                         <IconButton
                             color={"primary"}
                             style={{ backgroundColor: "#f6fafe" }}
-                            onClick={() => { rewardTrophy(localSessionId, "star"); }}
+                            onClick={() => { rewardTrophy(sessionId, "star"); }}
                         >
                             <StarIcon size="1rem" />
                         </IconButton>
@@ -218,7 +225,7 @@ export function GlobalCameraControl(): JSX.Element {
                         <IconButton
                             color={"primary"}
                             style={{ backgroundColor: "#f6fafe" }}
-                            onClick={() => { rewardTrophy(localSessionId, "trophy"); }}
+                            onClick={() => { rewardTrophy(sessionId, "trophy"); }}
                         >
                             <TrophyIcon size="1rem" />
                         </IconButton>
@@ -235,7 +242,7 @@ export function GlobalCameraControl(): JSX.Element {
                         <IconButton
                             color={"primary"}
                             style={{ backgroundColor: "#f6fafe" }}
-                            onClick={() => { rewardTrophy(localSessionId, "heart"); }}
+                            onClick={() => { rewardTrophy(sessionId, "heart"); }}
                         >
                             <HeartIcon size="1rem" />
                         </IconButton>
@@ -252,7 +259,7 @@ export function GlobalCameraControl(): JSX.Element {
                         <IconButton
                             color={"primary"}
                             style={{ backgroundColor: "#f6fafe" }}
-                            onClick={() => { rewardTrophy(localSessionId, getRandomKind(["awesome", "looks_great", "well_done", "great_job"])); }}
+                            onClick={() => { rewardTrophy(sessionId, getRandomKind(["awesome", "looks_great", "well_done", "great_job"])); }}
                         >
                             <EncourageIcon size="1rem" />
                         </IconButton>

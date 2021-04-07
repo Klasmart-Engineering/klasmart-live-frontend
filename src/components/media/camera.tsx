@@ -521,8 +521,10 @@ function ToggleCamera({ session, sfuState, isSelf, cameraRef }: {
     }, [sfuState.isLocalVideoEnabled(session.id)])
 
     useEffect(() => {
-        setCameraOn(!sfuState.videoGloballyDisabled);
-    }, [sfuState.videoGloballyDisabled])
+        if (sfuState.videoGloballyDisabled && sfuState.isLocalVideoEnabled(session.id) && !session.isHost) {
+            toggleOutboundVideoState();
+        }
+    }, [sfuState.videoGloballyDisabled, sfuState.isLocalVideoEnabled(session.id)])
 
     // My another user's mute state
     function toggleInboundVideoState() {
@@ -540,10 +542,6 @@ function ToggleCamera({ session, sfuState, isSelf, cameraRef }: {
 
     // My own mute state
     function toggleOutboundVideoState() {
-        const localSession = sessions.get(localSessionId);
-        if (sfuState.videoGloballyDisabled && !localSession?.isHost) {
-            return;
-        }
         const notification: MuteNotification = {
             roomId,
             sessionId: session.id,
@@ -555,8 +553,15 @@ function ToggleCamera({ session, sfuState, isSelf, cameraRef }: {
 
     function toggleVideoState(): void {
         if (isSelf) {
+            const localSession = sessions.get(localSessionId);
+            if (sfuState.videoGloballyDisabled && !localSession?.isTeacher) {
+                return;
+            }
             toggleOutboundVideoState();
         } else {
+            if (sfuState.videoGloballyDisabled && !session?.isTeacher) {
+                return;
+            }
             toggleInboundVideoState();
         }
         setIsVideoManuallyDisabled(!sfuState.isLocalVideoEnabled(session.id));
@@ -592,8 +597,10 @@ function ToggleMic({ session, sfuState, isSelf }: {
     }, [sfuState.isLocalAudioEnabled(session.id)])
 
     useEffect(() => {
-        setMicOn(!sfuState.audioGloballyMuted);
-    }, [sfuState.audioGloballyMuted])
+        if (sfuState.audioGloballyMuted && sfuState.isLocalAudioEnabled(session.id) && !session.isTeacher) {
+            toggleOutboundAudioState();
+        }
+    }, [sfuState.audioGloballyMuted, sfuState.isLocalAudioEnabled(session.id)])
 
     function toggleInboundAudioState() {
     const localSession = sessions.get(localSessionId);
@@ -609,10 +616,6 @@ function ToggleMic({ session, sfuState, isSelf }: {
     }
 
     function toggleOutboundAudioState() {
-        const localSession = sessions.get(localSessionId);
-        if (sfuState.audioGloballyMuted && !localSession?.isHost) {
-            return;
-        }
         const notification: MuteNotification = {
             roomId,
             sessionId: session.id,
@@ -624,8 +627,15 @@ function ToggleMic({ session, sfuState, isSelf }: {
 
     function toggleAudioState() {
         if (isSelf) {
+            const localSession = sessions.get(localSessionId);
+            if (sfuState.audioGloballyMuted && !localSession?.isTeacher) {
+                return;
+            }
             toggleOutboundAudioState();
         } else {
+            if (sfuState.audioGloballyMuted && !session.isTeacher) {
+                return;
+            }
             toggleInboundAudioState();
         }
     }
