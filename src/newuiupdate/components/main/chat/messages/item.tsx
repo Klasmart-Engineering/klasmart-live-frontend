@@ -8,10 +8,12 @@ import {
     Box
 } from "@material-ui/core";
 
-import teal from "@material-ui/core/colors/teal";
-
 import { UserAvatar } from "kidsloop-px"
 import clsx from "clsx";
+
+import { HatGraduation as TeacherIcon } from "@styled-icons/fluentui-system-filled/HatGraduation";
+import amber from "@material-ui/core/colors/amber";
+
 
 const useStyles = makeStyles((theme: Theme) => ({
     root:{
@@ -25,8 +27,12 @@ const useStyles = makeStyles((theme: Theme) => ({
             paddingRight: 0,
         },
         "& $message":{
-            backgroundColor: teal[400],
-            color: '#fff'
+            backgroundColor: amber[500],
+            "&:after":{
+                color: amber[500],
+                left: -6,
+                transform: 'scale(-1)'
+            }
         },
         "& $author":{
             textAlign: 'left'
@@ -38,12 +44,27 @@ const useStyles = makeStyles((theme: Theme) => ({
     message:{
         backgroundColor: theme.palette.background.default,
         padding: 10,
-        borderRadius: 12
+        borderRadius: 12,
+        position: 'relative',
+        "&:after":{
+            content: "''",
+            position: 'absolute',
+            top: 10,
+            left: '100%',
+            borderLeft: '6px solid black',
+            borderLeftColor: 'inherit',
+            borderTop: '0 solid transparent',
+            borderBottom: '6px solid transparent',
+            color: theme.palette.background.default,
+        }
     },
     author:{
         color: theme.palette.grey[600],
         textAlign: 'right'
     },
+    teacherIcon:{
+        margin : '2px 6px'
+    }
 }));
 
 export interface MessageProps {
@@ -67,7 +88,10 @@ function Message(props: MessageProps) {
                 />
             </Grid>
             <Grid item xs className={classes.messageGrid}>
-                <Typography className={classes.author}>{session.name}</Typography>
+                <Typography className={classes.author}>
+                    {session.name} 
+                    {session.role === 'teacher' && <TeacherIcon size="1rem" className={classes.teacherIcon} />}
+                </Typography>
                 <Box className={classes.message}>
                     <Typography>{message}</Typography>
                 </Box>
