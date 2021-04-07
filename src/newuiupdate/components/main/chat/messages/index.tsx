@@ -68,13 +68,7 @@ function Messages() {
 
 	if (!messages || messages.length === 0) {
         return (
-			<Box display="flex" justifyContent="center" alignItems="center" className={classes.fullHeight}>
-				<Box display="flex" flexDirection="column" alignItems="center">
-					<ChatIcon size="4rem" className={classes.noResultIcon} />
-					<Typography className={classes.noResultText}>No messages</Typography>
-				</Box>
-			</Box>
-            
+			<NoMessages />
         );
     }
 
@@ -95,3 +89,16 @@ function Messages() {
 }
 
 export default Messages;
+
+function NoMessages(){
+	const classes = useStyles();
+	
+	return (
+		<Box display="flex" justifyContent="center" alignItems="center" className={classes.fullHeight}>
+			<Box display="flex" flexDirection="column" alignItems="center">
+				<ChatIcon size="4rem" className={classes.noResultIcon} />
+				<Typography className={classes.noResultText}>No messages</Typography>
+			</Box>
+		</Box>
+	);
+}
