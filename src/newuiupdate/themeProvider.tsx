@@ -86,6 +86,11 @@ export function themeProvider(languageCode: string, themeMode: string) {
 				},
 			},
 		},
+		MuiButton:{
+			root:{
+				borderRadius: 8
+			}
+		}
 	};
 
 	const palette: PaletteOptions = {
