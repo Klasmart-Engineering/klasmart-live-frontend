@@ -11,15 +11,11 @@ import { LocalSessionContext } from "../../entry";
 interface LiveProps {
     interactiveModeState: InteractiveModeState;
     streamIdState: StreamIdState;
-    numColState: number;
-    setNumColState: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export function Live({
     interactiveModeState,
-    streamIdState,
-    numColState,
-    setNumColState,
+    streamIdState
 }: LiveProps): JSX.Element {
     const { isTeacher } = useContext(LocalSessionContext);
     return (
@@ -29,15 +25,12 @@ export function Live({
                     <Layout
                         interactiveModeState={interactiveModeState}
                         streamIdState={streamIdState}
-                        numColState={numColState}
-                        setNumColState={setNumColState}
                     >
                         {
                             isTeacher
                                 ? <Teacher
                                     interactiveModeState={interactiveModeState}
                                     streamIdState={streamIdState}
-                                    numColState={numColState}
                                 />
                                 : <Student />
                         }

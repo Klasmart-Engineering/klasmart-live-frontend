@@ -12,7 +12,7 @@ import { Live } from "./live";
 import Loading from "../../components/loading";
 import { EventEmitter } from "eventemitter3"
 import { useDispatch } from "react-redux";
-import { setContentIndex } from "../../store/reducers/control";
+import { setContentIndex, setDrawerTabIndex } from "../../store/reducers/control";
 
 export enum ContentType {
     Blank = "Blank",
@@ -70,25 +70,10 @@ export function Room(): JSX.Element {
 
     const [interactiveMode, setInteractiveMode] = useState<number>(0);
     const [streamId, setStreamId] = useState<string>();
-    const [numColState, setNumColState] = useState(2)
-
-    const [openDrawer, setOpenDrawer] = useState<boolean>(isSmDown ? false : true);
-    const handleOpenDrawer = (open?: boolean) => {
-        if (open !== null && open !== undefined) {
-            setOpenDrawer(open);
-        } else {
-            setOpenDrawer(!openDrawer);
-        }
-    };
 
     useEffect(() => {
-        if (isSmDown) {
-            setOpenDrawer(false);
-        }
-    }, [isSmDown]);
-
-    useEffect(() => {
-        dispatch(setContentIndex(0))
+        dispatch(setDrawerTabIndex(0));
+        dispatch(setContentIndex(0));
     }, []);
 
     switch (classtype) {
@@ -111,8 +96,6 @@ export function Room(): JSX.Element {
                 <Live
                     interactiveModeState={{ interactiveMode, setInteractiveMode }}
                     streamIdState={{ streamId, setStreamId }}
-                    numColState={numColState}
-                    setNumColState={setNumColState}
                 />
             );
     }
