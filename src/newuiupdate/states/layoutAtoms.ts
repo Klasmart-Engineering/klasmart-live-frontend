@@ -84,6 +84,11 @@ export const viewModeState = atom<viewModeStateType>({
 });
 
 
+export const pinnedUserState = atom({
+	key: "pinnedUserState",
+	default: 0,
+});
+
 
 // TEMPORARY, TO DELETE WHEN REAL DATA
 export const usersState = atom({
