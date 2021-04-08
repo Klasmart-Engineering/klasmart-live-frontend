@@ -312,6 +312,7 @@ function TabInnerContent({ title, numColState, setNumColState }: {
     const contentIndex = useSelector((store: State) => store.control.contentIndex);
     const colsCamera = useSelector((store: State) => store.control.colsCamera);
     const [hostMutation] = useMutation(MUTATION_SET_HOST);
+    const webrtc = WebRTCSFUContext.Consume()
 
     useEffect(() => {
         const teachers = [...sessions.values()].filter(session => session.isTeacher === true).sort((a, b) => a.joinedAt - b.joinedAt);
@@ -321,6 +322,16 @@ function TabInnerContent({ title, numColState, setNumColState }: {
             hostMutation({ variables: { roomId, hostId } })
         }
     }, [sessions, sessions.size])
+
+    useEffect(() => {
+        // TODO calling a mutation to update the mute statuses. implement a query on SFU and replace this.
+        const notification = {
+            roomId,
+            audioGloballyMuted: undefined,
+            videoGloballyDisabled: undefined,
+        }
+        webrtc.sendGlobalMute(notification);
+    }, [])
 
     // type GridItemXS = 3 | 4 | 6 | 12;
     // const [camGridItemXS, setCamGridItemXS] = useState<GridItemXS>(6);
@@ -339,7 +350,6 @@ function TabInnerContent({ title, numColState, setNumColState }: {
 
     switch (title) {
         case "title_participants":
-            const webrtc = WebRTCSFUContext.Consume()
 
             // TODO: Improve performance as order in flexbox instead of .filter()
             const localSession = sessions.get(localSessionId);
