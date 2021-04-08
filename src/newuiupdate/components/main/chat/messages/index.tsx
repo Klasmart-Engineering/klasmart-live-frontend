@@ -17,6 +17,10 @@ const useStyles = makeStyles((theme: Theme) => ({
 	fullHeight:{
 		height: '100%'
 	},
+	container:{
+		padding : `1rem 10px`,
+		paddingBottom: 0,
+	},
 	messagesContainer:{
 		overflowY: 'scroll'
 	},
@@ -66,20 +70,17 @@ const messages = [
 function Messages() {
 	const classes = useStyles();
 
-	if (!messages || messages.length === 0) {
-        return (
-			<NoMessages />
-        );
-    }
-
 	return (
 		<Grid container direction="column" className={classes.fullHeight}>
 			<Grid item xs className={classes.messagesContainer}>
-				<Box m={1}>
-					{messages.map(message => (
-						<Message id={message.id} session={message.session} message={message.message} />
-					))}
-				</Box>
+				{messages.length === 0 ? 
+					<NoMessages /> : 
+					(<Box className={classes.container}>
+						{messages.map(message => (
+							<Message id={message.id} session={message.session} message={message.message} />
+						))}
+					</Box>)
+				}
 			</Grid>
 			<Grid item>
 				<SendMessage />

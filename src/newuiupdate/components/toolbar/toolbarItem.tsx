@@ -69,7 +69,7 @@ interface ToolbarItemProps {
 	disabled?: boolean;
 	active?: boolean;
 	badge?: any;
-	tooltip?: string;
+	tooltip?: string | boolean;
 }
 
 function ToolbarItem(props: ToolbarItemProps) {
@@ -80,24 +80,25 @@ function ToolbarItem(props: ToolbarItemProps) {
 	return (
 		<>
 			<Tooltip title={tooltip} disableFocusListener={!hasTooltip} disableHoverListener={!hasTooltip} disableTouchListener={!hasTooltip}>
-				<Box
-					className={clsx(
-						classes.root,
-						disabled && classes.disabled,
-						active && classes.active
-					)}
-					onClick={onClick}
-				>
+				<div>
+					<Box
+						className={clsx(
+							classes.root,
+							disabled && classes.disabled,
+							active && classes.active
+						)}
+						onClick={onClick}
+					>
 					{badge && (
 						<Badge
 							classes={{ badge: classes.badge, root: classes.badgeRoot }}
 							badgeContent={<Box className={classes.badgeContent}>{badge}</Box>}
 						></Badge>
 					)}
-
 					{icon}
 					{label && <Typography className={classes.label}>{label}</Typography>}
 				</Box>
+				</div>
 			</Tooltip>
 		</>
 	);

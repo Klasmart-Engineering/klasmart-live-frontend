@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 import Attachment from "./item";
 
 const attachments = [
-	/*{
+	{
 		id: 1,
 		title: "Image",
 		type: "image"
@@ -56,7 +56,7 @@ const attachments = [
 		id: 3,
 		title: "Image",
 		type: "image"
-	},*/
+	},
 ];
 
 
@@ -67,13 +67,14 @@ function Attachments() {
 			<Grid item xs>
 				<Grid container direction="column" className={classes.fullHeight}>
 					<Grid item xs>
-						{attachments.length === 0 && <NoAttachements /> }
-
-						<Box className={classes.container}>
-							{attachments?.map(attachment => (
-								<Attachment title={attachment.title} type={attachment.type} />
-							))}
-						</Box>
+						{attachments.length === 0 ? 
+							<NoAttachments /> : 
+							(<Box className={classes.container}>
+								{attachments?.map(attachment => (
+									<Attachment title={attachment.title} type={attachment.type} />
+								))}
+							</Box>)
+						}
 					</Grid>
 					<Grid item>
 						<Button className={classes.buttonUpload} component="label">
@@ -89,14 +90,14 @@ function Attachments() {
 
 export default Attachments;
 
-function NoAttachements(){
+function NoAttachments(){
 	const classes = useStyles();
 	
 	return (
 		<Box display="flex" justifyContent="center" alignItems="center" className={classes.fullHeight}>
 			<Box display="flex" flexDirection="column" alignItems="center">
 				<UploadIcon size="4rem" className={classes.noResultIcon} />
-				<Typography className={classes.noResultText}>No attachements</Typography>
+				<Typography className={classes.noResultText}>No attachments</Typography>
 			</Box>
 		</Box>
 	);

@@ -35,6 +35,7 @@ import {
 	isCanvasOpenState,
 	isClassDetailsOpenState,
 	viewModeState,
+	isActiveGlobalScreenshareState
 } from "../../states/layoutAtoms";
 
 
@@ -75,6 +76,9 @@ function Toolbar() {
 	);
 	const [isCanvasOpen, setIsCanvasOpen] = useRecoilState(isCanvasOpenState);
 	const [viewMode, setViewModeState] = useRecoilState(viewModeState);
+
+	const [isActiveGlobalScreenshare, setIsActiveGlobalScreenshare] = useRecoilState( isActiveGlobalScreenshareState);
+
 
 	const [
 		globalActionsEl,
@@ -183,6 +187,8 @@ function Toolbar() {
 						label="View modes"
 						active={isViewModesOpen}
 						badge={viewModesBadge}
+						disabled={isActiveGlobalScreenshare}
+						tooltip={isActiveGlobalScreenshare && 'View mode not available when screenshare is active'}
 						onClick={(e: Event) => {
 							resetDrawers();
 							setViewModesEl(e.currentTarget);

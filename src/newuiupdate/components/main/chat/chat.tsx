@@ -2,11 +2,8 @@ import React, { useState } from "react";
 
 import {
 	makeStyles,
-	useTheme,
-	Box,
 	Grid,
 	Theme,
-	Drawer,
 	Tabs, 
 	Tab,
 	Typography
@@ -14,7 +11,7 @@ import {
 import { useRecoilState } from "recoil";
 import { isChatOpenState } from "../../../states/layoutAtoms";
 import Messages from "./messages";
-import Attachments from "./attachements";
+import Attachments from "./attachments";
 
 const useStyles = makeStyles((theme: Theme) => ({
 	fullHeight:{
@@ -60,7 +57,7 @@ function Chat() {
 							classes={{flexContainer: classes.tabsFlexContainer}}
 						> 
 							<Tab label="Messages" disableRipple />
-							<Tab label="Attachements" disableRipple />
+							<Tab label="Attachments" disableRipple />
 						</Tabs>
 					</Grid>
 					<Grid item xs>
