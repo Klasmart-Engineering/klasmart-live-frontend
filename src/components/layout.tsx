@@ -50,7 +50,7 @@ import { gql } from "apollo-boost";
 import { useMutation } from "@apollo/react-hooks";
 import { useDispatch, useSelector } from "react-redux";
 import { State } from "../store/store";
-import { setContentIndex, setDrawerOpen, setDrawerTabIndex } from "../store/reducers/control";
+import { setColsObserve, setContentIndex, setDrawerOpen, setDrawerTabIndex } from "../store/reducers/control";
 
 export const DRAWER_WIDTH = 380;
 
@@ -67,7 +67,7 @@ const TABS = [
     { icon: <SettingsIcon role="img" size="1.5rem" />, title: "title_settings", menuType: ClassroomMenuType.ForHostOnly }
 ];
 
-const OPTION_NUMCOL = [
+const OPTION_COLS_OBSERVE = [
     { id: "option-numcol-2", title: <FormattedMessage id="two_columns" />, value: 2 },
     { id: "option-numcol-4", title: <FormattedMessage id="four_columns" />, value: 4 },
     { id: "option-numcol-6", title: <FormattedMessage id="six_columns" />, value: 6 },
@@ -219,12 +219,10 @@ interface TabPanelProps {
     index: any;
     tab: { icon: JSX.Element, title: string };
     value: any;
-    numColState?: number;
-    setNumColState?: React.Dispatch<React.SetStateAction<number>>;
 }
 
 function TabPanel(props: TabPanelProps) {
-    const { index, tab, value, numColState, setNumColState, ...other } = props;
+    const { index, tab, value, ...other } = props;
     const classes = useStyles();
     const theme = useTheme();
     const dispatch = useDispatch();
@@ -267,7 +265,7 @@ function TabPanel(props: TabPanelProps) {
                     </IconButton>
                 </Grid>
                 <Divider />
-                <TabInnerContent title={tab.title} numColState={numColState} setNumColState={setNumColState} />
+                <TabInnerContent title={tab.title} />
             </div>
             <Popover
                 id={id}
@@ -298,19 +296,16 @@ const MUTATION_SET_HOST = gql`
     }
 `;
 
-function TabInnerContent({ title, numColState, setNumColState }: {
-    title: string,
-    numColState?: number,
-    setNumColState?: React.Dispatch<React.SetStateAction<number>>,
-}) {
+function TabInnerContent({ title }: { title: string }) {
     const classes = useStyles();
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
     const dispatch = useDispatch();
     const { camera, roomId, sessionId: localSessionId, materials, isTeacher: isLocalUserTeacher } = useContext(LocalSessionContext);
     const sessions = useContext(SessionsContext);
-    const contentIndex = useSelector((store: State) => store.control.contentIndex);
     const colsCamera = useSelector((store: State) => store.control.colsCamera);
+    const colsObserve = useSelector((store: State) => store.control.colsObserve);
+    const contentIndex = useSelector((store: State) => store.control.contentIndex);
     const [hostMutation] = useMutation(MUTATION_SET_HOST);
     const webrtc = WebRTCSFUContext.Consume()
 
@@ -342,11 +337,6 @@ function TabInnerContent({ title, numColState, setNumColState }: {
     //         setCamGridItemXS(6);
     //     }
     // }, [camGridItemXS])
-
-    const changeNumColState = (num: number) => {
-        if (!setNumColState) { return; }
-        setNumColState(num);
-    };
 
     switch (title) {
         case "title_participants":
@@ -497,10 +487,10 @@ function TabInnerContent({ title, numColState, setNumColState }: {
                     <Grid item xs={12}>
                         <FormControl style={{ width: "100%" }}>
                             <Select
-                                value={numColState ? numColState : 2}
-                                onChange={(e) => changeNumColState(Number(e.target.value))}
+                                value={colsObserve}
+                                onChange={(e) => dispatch(setColsObserve(Number(e.target.value)))}
                             >
-                                {OPTION_NUMCOL.map((option) => <MenuItem key={option.id} value={option.value}>{option.title}</MenuItem>)}
+                                {OPTION_COLS_OBSERVE.map((option) => <MenuItem key={option.id} value={option.value}>{option.title}</MenuItem>)}
                             </Select>
                         </FormControl>
                     </Grid>
@@ -551,23 +541,17 @@ interface Props {
     children?: React.ReactNode;
     interactiveModeState: InteractiveModeState;
     streamIdState: StreamIdState;
-    numColState: number;
-    setNumColState: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export default function Layout(props: Props): JSX.Element {
     const dispatch = useDispatch();
-    useEffect(() => {
-        // Intialize to point Participants tab menu 
-        dispatch(setDrawerTabIndex(0));
-    }, [])
 
     const { sessions, messages } = RoomContext.Consume()
     const { materials, isTeacher, sessionId: localSessionId } = useContext(LocalSessionContext);
     const localSession = sessions.get(localSessionId);
     const isHostTeacher = localSession?.isTeacher && localSession?.isHost;
 
-    const { children, interactiveModeState, streamIdState, numColState, setNumColState } = props;
+    const { children, interactiveModeState, streamIdState } = props;
     const classes = useStyles();
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
@@ -673,7 +657,7 @@ export default function Layout(props: Props): JSX.Element {
                                     <SessionsContext.Provider value={sessions}>
                                         <MessageContext.Provider value={messages}>
                                             {isHostTeacher ?
-                                                TABS.filter((t) => t.menuType !== 1).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} index={index} tab={tab} value={drawerTabIndex} numColState={numColState} setNumColState={setNumColState} />) :
+                                                TABS.filter((t) => t.menuType !== 1).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} index={index} tab={tab} value={drawerTabIndex} />) :
                                                 TABS.filter((t) => t.menuType !== 0).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} index={index} tab={tab} value={drawerTabIndex} />)
                                             }
                                         </MessageContext.Provider>

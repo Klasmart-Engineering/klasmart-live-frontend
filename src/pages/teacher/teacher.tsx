@@ -78,7 +78,6 @@ const useStyles = makeStyles((theme: Theme) =>
 interface Props {
     interactiveModeState: InteractiveModeState;
     streamIdState: StreamIdState;
-    numColState: number;
 }
 
 export function Teacher(props: Props): JSX.Element {
@@ -95,7 +94,7 @@ export function Teacher(props: Props): JSX.Element {
     const contentIndex = useSelector((store: State) => store.control.contentIndex);
 
     const classes = useStyles();
-    const { interactiveModeState, streamIdState, numColState } = props;
+    const { interactiveModeState, streamIdState } = props;
 
     const { streamId, setStreamId } = streamIdState;
     const { interactiveMode } = interactiveModeState;
@@ -135,17 +134,8 @@ export function Teacher(props: Props): JSX.Element {
 
     return (
         <div ref={rootDivRef} className={classes.root}>
-            {content && content.type === ContentType.Activity ?
-                <>
-                    <Typography variant="caption" color="textSecondary" gutterBottom>
-                        <FormattedMessage id="student_mode" />
-                    </Typography>
-                    <Grid container direction="row" spacing={1} item xs={12}>
-                        {[...sessions.values()].filter(s => s.id !== sessionId).map(session =>
-                            <StudentPreviewCard key={session.id} session={session} numColState={numColState} />
-                        )}
-                    </Grid>
-                </> : <div
+            {content && content.type === ContentType.Activity ? <ObservationMode /> :
+                <div
                     style={{
                         display: "flex",
                         position: "relative", // For "absolute" position of <Whiteboard />
@@ -208,8 +198,27 @@ export function Teacher(props: Props): JSX.Element {
     );
 }
 
-function StudentPreviewCard({ session, numColState }: { session: Session, numColState: number }) {
+function ObservationMode() {
+    const { sessionId } = useContext(LocalSessionContext);
+    const { sessions } = RoomContext.Consume();
+
+    return (
+        <>
+            <Typography variant="caption" color="textSecondary" gutterBottom>
+                <FormattedMessage id="student_mode" />
+            </Typography>
+            <Grid container direction="row" spacing={1} item xs={12}>
+                {[...sessions.values()].filter(s => s.id !== sessionId).map(session =>
+                    <StudentPreviewCard key={session.id} session={session} />
+                )}
+            </Grid>
+        </>
+    )
+}
+
+function StudentPreviewCard({ session }: { session: Session }) {
     const theme = useTheme();
+    const colsObserve = useSelector((store: State) => store.control.colsObserve);
 
     const cardConRef = useRef<HTMLDivElement>(null);
     const [zoomin, setZoomin] = useState(false);
@@ -226,7 +235,7 @@ function StudentPreviewCard({ session, numColState }: { session: Session, numCol
             setWidth(contWidth);
             setHeight(contWidth);
         }
-    }, [cardConRef.current, zoomin, numColState]);
+    }, [cardConRef.current, zoomin, colsObserve]);
 
     const handleOnClickZoom = () => {
         // Automatically scroll top when clicking Zoom In
@@ -235,7 +244,7 @@ function StudentPreviewCard({ session, numColState }: { session: Session, numCol
     }
 
     return (
-        <Grid item xs={12} md={zoomin ? 12 : (12 / numColState as (2 | 4 | 6))} style={{ order: zoomin ? -1 : 0 }}>
+        <Grid item xs={12} md={zoomin ? 12 : (12 / colsObserve as (2 | 4 | 6))} style={{ order: zoomin ? 0 : 1 }}>
             <Card>
                 <CardContent >
                     <Grid ref={cardConRef} item xs={12} style={{ position: "relative", margin: "0 auto" }}>
