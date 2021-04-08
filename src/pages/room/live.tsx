@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { InteractiveModeState, StreamIdState } from "./room";
+import { InteractiveModeState, RoomContext, StreamIdState } from "./room";
 import Layout from "../../components/layout";
 import { Student } from "../student/student";
 import { Teacher } from "../teacher/teacher";
@@ -17,7 +17,11 @@ export function Live({
     interactiveModeState,
     streamIdState
 }: LiveProps): JSX.Element {
-    const { isTeacher } = useContext(LocalSessionContext);
+    const { sessions } = RoomContext.Consume();
+    const { sessionId } = useContext(LocalSessionContext);
+    const localSession = sessions.get(sessionId);
+    const isHostTeacher = localSession?.isTeacher && localSession?.isHost;
+
     return (
         <WebRTCSFUContext.Provide>
             <ScreenShare.Provide>
@@ -27,7 +31,7 @@ export function Live({
                         streamIdState={streamIdState}
                     >
                         {
-                            isTeacher
+                            isHostTeacher
                                 ? <Teacher
                                     interactiveModeState={interactiveModeState}
                                     streamIdState={streamIdState}

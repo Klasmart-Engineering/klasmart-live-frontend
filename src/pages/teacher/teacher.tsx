@@ -198,7 +198,7 @@ export function Teacher(props: Props): JSX.Element {
     );
 }
 
-function ObservationMode() {
+export function ObservationMode() {
     const { sessionId } = useContext(LocalSessionContext);
     const { sessions } = RoomContext.Consume();
 
