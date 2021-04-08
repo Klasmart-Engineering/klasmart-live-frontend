@@ -22,7 +22,6 @@ import {
 	isActiveGlobalCanvasState,
 	isActiveGlobalMuteAudioState,
 	isActiveGlobalMuteVideoState,
-
 	isGlobalActionsOpenState,
 } from "../../../../states/layoutAtoms";
 

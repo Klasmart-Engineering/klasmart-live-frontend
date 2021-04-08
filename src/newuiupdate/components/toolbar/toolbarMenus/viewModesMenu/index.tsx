@@ -10,16 +10,12 @@ import { PresentationChartBar as PresentIcon } from "@styled-icons/heroicons-sol
 import { StyledPopper } from "../../../utils";
 
 import { useRecoilState } from "recoil";
-
 import {
 	viewModeState,
 	isViewModesOpenState,
 } from "../../../../states/layoutAtoms";
 
-
-
 import clsx from "clsx";
-
 
 const useStyles = makeStyles((theme: Theme) => ({
 	item:{
