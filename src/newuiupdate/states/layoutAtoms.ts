@@ -89,6 +89,11 @@ export const pinnedUserState = atom({
 	default: 0,
 });
 
+export const materialActiveIndexState = atom({
+	key: "materialActiveIndexState",
+	default: 0,
+});
+
 
 // TEMPORARY, TO DELETE WHEN REAL DATA
 export const usersState = atom({

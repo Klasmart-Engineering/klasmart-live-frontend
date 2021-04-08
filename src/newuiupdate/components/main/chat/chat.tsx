@@ -17,6 +17,9 @@ const useStyles = makeStyles((theme: Theme) => ({
 	fullHeight:{
 		height: '100%',
 	},
+	tabs:{
+		paddingTop: 0
+	},
 	tabsFlexContainer:{
 		display: 'block',
 		textAlign: 'right'
@@ -24,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 	title:{
 		position: 'absolute',
 		fontSize: '1.25rem',
-		top: 23,
+		top: 13,
 		fontWeight: 600
 	}
 }));
@@ -49,7 +52,7 @@ function Chat() {
 				<Tabs
 					value={value}
 					onChange={handleChange}
-					classes={{flexContainer: classes.tabsFlexContainer}}
+					classes={{root: classes.tabs, flexContainer: classes.tabsFlexContainer}}
 				> 
 					<Tab label="Messages" disableRipple />
 					<Tab label="Attachments" disableRipple />
