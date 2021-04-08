@@ -257,7 +257,7 @@ export class WebRTCSFUContext implements WebRTCContext {
         for (const track of tracks) {
             const params = {track} as ProducerOptions
             if (track.kind === "video") {
-                const scalabilityMode = getSvcScalabilityMode()
+                const scalabilityMode = getVP9SvcScalabilityMode()
                 const codecs = (await this.device()).rtpCapabilities?.codecs
                 const vp9support = codecs?.find((c) => c.mimeType.toLowerCase() === 'video/vp9');
                 if(scalabilityMode && !vp9support) { console.log(`Can not use scalability mode '${scalabilityMode}' as vp9 codec does not seem to be supported`) } 
@@ -272,6 +272,7 @@ export class WebRTCSFUContext implements WebRTCContext {
                     };
                     params.encodings = [ { scalabilityMode, dtx: true } ];
                 } else if(simulcast) {
+                    // Use SFU's recommended codec (VP8)
                     // These should be ordered from lowest bitrate to highest bitrate
                     // rid will be automatically assigned in the order of this array from "r0" to "rN-1"
                     params.encodings = [
@@ -280,6 +281,7 @@ export class WebRTCSFUContext implements WebRTCContext {
                         { maxBitrate: 4000000, scaleResolutionDownBy: 1, scalabilityMode: 'S1T1', dtx: true },
                     ];
                 } else {
+                    // Use SFU's recommended codec (VP8)
                     params.encodings = [
                         { dtx: true },
                     ];
@@ -859,8 +861,10 @@ export interface GlobalMuteNotification {
     audioGloballyMuted?: boolean,
     videoGloballyDisabled?: boolean,
 }
-function getSvcScalabilityMode() {
-    const defaultMode = "L3T3_KEY_SHIFT"
+function getVP9SvcScalabilityMode() {
+    const useVP9 = process.env.USE_VP9 ? true : false
+    if(!useVP9) {return}
+    const defaultMode = process.env.VP9_DEFAULT_SVC_MODE || "L3T3_KEY_SHIFT"
     const getParameters = new URLSearchParams(window.location.search);
     const mode = getParameters.get("svc")
     switch(mode) {
