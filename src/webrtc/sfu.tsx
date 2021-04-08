@@ -84,47 +84,8 @@ const SUBSCRIBE = gql`
         }
     }
 `;
-
-const context = createContext<{ ref: React.MutableRefObject<WebRTCSFUContext> }>(undefined as any);
-
-export class WebRTCSFUContext implements WebRTCContext {
-    public static Provide({ children }: { children: JSX.Element[] | JSX.Element }) {
-        const ref = useRef<WebRTCSFUContext>(undefined as any)
-        const [value, rerender] = useReducer(() => ({ ref }), { ref })
-        const { roomId } = RoomContext.Consume();
-        const token = AuthTokenProvider.retrieveToken();
-
-        const apolloClient = useMemo(() =>
-            new ApolloClient({
-                cache: new InMemoryCache(),
-                link: new WebSocketLink({
-                    uri: `${window.location.protocol === "https:" ? "wss" : "ws"}://${window.location.host}/sfu/${roomId}`,
-                    options: {
-                        reconnect: true,
-                        connectionParams: { sessionId, authToken: token },
-                    },
-                })
-            } as any),
-            [roomId])
-
-        if (!apolloClient) {
-            return <CircularProgress />
-        }
-
-        return (
-            <>
-                <ApolloProvider client={apolloClient}>
-                    <WebRTCSFUContext.InternalProvider sfu={ref} rerender={rerender} />
-                </ApolloProvider>
-                <context.Provider value={value}>
-                    {children}
-                </context.Provider>
-            </>
-        )
-    }
-
-    private static InternalProvider({ sfu, rerender }: { sfu: React.MutableRefObject<WebRTCSFUContext>, rerender: React.DispatchWithoutAction }) {
-        const { roomId } = RoomContext.Consume();
+    InternalProvider() {
+        const { roomId } = useContext(RoomContext);
         const { name, sessionId } = useContext(LocalSessionContext);
         const [rtpCapabilities] = useMutation(SEND_RTP_CAPABILITIES);
         const [transport] = useMutation(TRANSPORT);
@@ -205,6 +166,76 @@ export class WebRTCSFUContext implements WebRTCContext {
 
         return <></>
     }
+
+const context = createContext<{ ref: React.MutableRefObject<WebRTCSFUContext> }>(undefined as any);
+
+export class WebRTCSFUContext implements WebRTCContext {
+    private tracks = new Map<string, MediaStreamTrack>()
+    private consumers = new Map<string, MediaSoup.Consumer>()
+    private inboundStreams = new Map<string, StreamDescription>()
+    private outboundStreams = new Map<string, Stream>()
+    private destructors = new Map<string, () => unknown>()
+    // private rerender: React.DispatchWithoutAction
+    private _audioGloballyMuted: boolean = false;
+    private _videoGloballyDisabled: boolean = false;
+
+    // private constructor(
+    //     rerender: React.DispatchWithoutAction,
+    //     private rtpCapabilities: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>,
+    //     private transport: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>,
+    //     private producer: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>,
+    //     private consumer: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>,
+    //     private stream: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>,
+    //     private mute: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>,
+    //     private globalMute: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>,
+    //     private endClass: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>,
+    // ) {
+    //     this.rerender = rerender
+    //     this.rtpCapabilities = rtpCapabilities
+    //     this.transport = transport
+    //     this.producer = producer
+    //     this.consumer = consumer
+    //     this.stream = stream
+    //     this.mute = mute
+    //     this.globalMute = globalMute
+    //     this.endClass = endClass
+    // }
+
+    private _device?: Device | null
+    private devicePrePromise = Resolver<Device>()
+        // const ref = useRef<WebRTCSFUContext>(undefined as any)
+        // const [value, rerender] = useReducer(() => ({ ref }), { ref })
+        const { roomId } = useContext(RoomContext);
+        const token = AuthTokenProvider.retrieveToken();
+
+        const apolloClient = useMemo(() =>
+            new ApolloClient({
+                cache: new InMemoryCache(),
+                link: new WebSocketLink({
+                    uri: `${window.location.protocol === "https:" ? "wss" : "ws"}://${window.location.host}/sfu/${roomId}`,
+                    options: {
+                        reconnect: true,
+                        connectionParams: { sessionId, authToken: token },
+                    },
+                })
+            } as any),
+            [roomId])
+
+        if (!apolloClient) {
+            return <CircularProgress />
+        }
+
+        return (
+            <>
+                <ApolloProvider client={apolloClient}>
+                    <WebRTCSFUContext.InternalProvider sfu={ref} rerender={rerender} />
+                </ApolloProvider>
+                <context.Provider value={value}>
+                    {children}
+                </context.Provider>
+            </>
+        )
+
 
     public static Consume() {
         return useContext(context).ref.current
@@ -473,39 +504,6 @@ export class WebRTCSFUContext implements WebRTCContext {
         }
     }
 
-    private tracks = new Map<string, MediaStreamTrack>()
-    private consumers = new Map<string, MediaSoup.Consumer>()
-    private inboundStreams = new Map<string, StreamDescription>()
-    private outboundStreams = new Map<string, Stream>()
-    private destructors = new Map<string, () => unknown>()
-    private rerender: React.DispatchWithoutAction
-    private _audioGloballyMuted: boolean = false;
-    private _videoGloballyDisabled: boolean = false;
-
-    private constructor(
-        rerender: React.DispatchWithoutAction,
-        private rtpCapabilities: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>,
-        private transport: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>,
-        private producer: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>,
-        private consumer: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>,
-        private stream: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>,
-        private mute: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>,
-        private globalMute: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>,
-        private endClass: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>,
-    ) {
-        this.rerender = rerender
-        this.rtpCapabilities = rtpCapabilities
-        this.transport = transport
-        this.producer = producer
-        this.consumer = consumer
-        this.stream = stream
-        this.mute = mute
-        this.globalMute = globalMute
-        this.endClass = endClass
-    }
-
-    private _device?: Device | null
-    private devicePrePromise = Resolver<Device>()
 
     private async device() {
         if (this._device) {

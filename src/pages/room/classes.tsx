@@ -1,10 +1,11 @@
-import React, { useState, useContext } from "react";
-import { RoomContext, InteractiveModeState, StreamIdState } from "./room";
+import React, { useContext, useState } from "react";
 import { useSelector } from "react-redux";
-import { State } from "../../store/store";
-import { Layout } from "./layout-new";
 import { LocalSessionContext } from "../../entry";
+import { RoomProvider } from "../../providers/RoomProvider";
+import { State } from "../../store/store";
 import { GlobalWhiteboardContext } from "../../whiteboard/context-providers/GlobalWhiteboardContext";
+import { Layout } from "./layout-new";
+import { InteractiveModeState, StreamIdState } from "./room";
 
 interface ClassesProps {
     interactiveModeState: InteractiveModeState;
@@ -22,7 +23,7 @@ export function Classes({
     const [materialKey, setMaterialKey] = useState(Math.random());
 
     return (
-        <RoomContext.Provide>
+        <RoomProvider>
             <GlobalWhiteboardContext>
                 <Layout
                     interactiveModeState={interactiveModeState}
@@ -34,6 +35,6 @@ export function Classes({
                     setTabIndex={setTabIndex}
                 />
             </GlobalWhiteboardContext>
-        </RoomContext.Provide>
+        </RoomProvider>
     );
 }

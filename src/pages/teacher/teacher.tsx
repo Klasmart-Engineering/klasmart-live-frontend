@@ -7,7 +7,7 @@ import CardActions from "@material-ui/core/CardActions";
 import React, { useEffect, useState, useContext, useRef, useMemo } from "react";
 import { FormattedMessage } from "react-intl";
 import { RecordedIframe } from "../../components/recordediframe";
-import { Session, InteractiveModeState, StreamIdState, RoomContext, InteractiveMode, ContentType } from "../room/room";
+import { Session, InteractiveModeState, StreamIdState, InteractiveMode, ContentType } from "../room/room";
 import { Theme, Card, useTheme, CardContent, Hidden } from "@material-ui/core";
 import { PreviewPlayer } from "../../components/previewPlayer";
 import { Stream } from "../../webRTCState";
@@ -26,6 +26,7 @@ import { imageFrame } from "../../utils/layerValues";
 import { State } from "../../store/store";
 import { useSelector } from "react-redux";
 import { useWindowSize } from "../../utils/viewport";
+import { RoomContext } from "../../providers/RoomProvider";
 
 const drawerWidth = 340;
 
@@ -90,7 +91,7 @@ export function Teacher(props: Props): JSX.Element {
 
     const { roomId, sessionId, materials, name } = useContext(LocalSessionContext);
     const screenShare = ScreenShare.Consume()
-    const { content, sessions } = RoomContext.Consume()
+    const { content, sessions } = useContext(RoomContext)
     const contentIndex = useSelector((store: State) => store.control.contentIndex);
 
     const classes = useStyles();

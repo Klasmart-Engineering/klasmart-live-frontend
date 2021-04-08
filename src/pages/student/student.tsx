@@ -54,7 +54,7 @@ export function Student(): JSX.Element {
         setSquare(size.width > size.height ? size.height : size.width);
     }, [size])
 
-    const { content, sessions } = RoomContext.Consume();
+    const { content, sessions } = useContext(RoomContext);
     const classes = useStyles();
 
     const { name, sessionId, isTeacher } = useContext(LocalSessionContext);

@@ -1,15 +1,16 @@
 const qs = require("qs");
-import React, { useState, useEffect, useContext } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import Grid from "@material-ui/core/Grid";
-
-import { RoomContext, InteractiveModeState, StreamIdState } from "./room";
-import { Layout } from "./layout-new";
+import React, { useContext, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { LocalSessionContext } from "../../entry";
-import { GlobalWhiteboardContext } from "../../whiteboard/context-providers/GlobalWhiteboardContext";
+import { RoomProvider } from "../../providers/RoomProvider";
 import { ClassType } from "../../store/actions";
 import { setDrawerOpen } from "../../store/reducers/control";
 import { State } from "../../store/store";
+import { GlobalWhiteboardContext } from "../../whiteboard/context-providers/GlobalWhiteboardContext";
+import { Layout } from "./layout-new";
+import { InteractiveModeState, StreamIdState } from "./room";
+
 
 interface StudyProps {
     interactiveModeState: InteractiveModeState;
@@ -88,7 +89,7 @@ export function Study({
     }, [])
 
     return (
-        <RoomContext.Provide>
+        <RoomProvider>
             <GlobalWhiteboardContext>
                 <Grid
                     container
@@ -109,6 +110,6 @@ export function Study({
                     />
                 </Grid>
             </GlobalWhiteboardContext>
-        </RoomContext.Provide>
+        </RoomProvider>
     );
 }
