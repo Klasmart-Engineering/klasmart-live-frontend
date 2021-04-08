@@ -3,7 +3,7 @@ import Grid from "@material-ui/core/Grid";
 import React, { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { LocalSessionContext } from "../../entry";
-import { RoomProvider } from "../../providers/RoomProvider";
+import { RoomProvider } from "../../providers/RoomContext";
 import { ClassType } from "../../store/actions";
 import { setDrawerOpen } from "../../store/reducers/control";
 import { State } from "../../store/store";

@@ -1,15 +1,14 @@
-import React, { CSSProperties, useCallback, useContext, useEffect, useRef, useState } from 'react'
+import React, { CSSProperties, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { Transition } from 'react-transition-group';
 import { TransitionStatus } from 'react-transition-group/Transition';
-
+import useSound from 'use-sound';
+import { RoomContext } from '../../providers/RoomContext';
+import { ConfettiRain } from './confettiRain';
 import { Lights } from './lights';
 import { Reward } from './reward';
+import TrophyKinds, { TrophyKind } from './trophyKind';
 import TIMINGS from './trophyTimings';
-import TrophyKinds, { TrophyKind, getRandomKind } from './trophyKind';
 
-import useSound from 'use-sound';
-import { ConfettiRain } from './confettiRain';
-import { RoomContext } from '../../providers/RoomProvider';
 
 export type Trophy = { from: string, user: string, kind: string };
 
