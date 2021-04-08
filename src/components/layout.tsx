@@ -34,7 +34,7 @@ import { Share as ShareIcon } from "@styled-icons/material/Share";
 
 import { GlobalCameraControl } from "../webRTCState";
 import { LocalSessionContext } from "../entry";
-import { Session, Message, InteractiveModeState, StreamIdState, RoomContext } from "../pages/room/room";
+import { Session, Message, InteractiveModeState, StreamIdState } from "../pages/room/room";
 import Toolbar from "../whiteboard/components/Toolbar";
 import ModeControls from "../pages/teacher/modeControls";
 import { SendMessage } from "../sendMessage";
@@ -50,7 +50,13 @@ import { gql } from "apollo-boost";
 import { useMutation } from "@apollo/react-hooks";
 import { useDispatch, useSelector } from "react-redux";
 import { State } from "../store/store";
+<<<<<<< HEAD
 import { setColsObserve, setContentIndex, setDrawerOpen, setDrawerTabIndex } from "../store/reducers/control";
+import { RoomContext } from "../providers/RoomProvider";
+=======
+import { setContentIndex, setDrawerOpen, setDrawerTabIndex } from "../store/reducers/control";
+import { RoomContext } from "../providers/RoomProvider";
+>>>>>>> create RoomProvider
 
 export const DRAWER_WIDTH = 380;
 
@@ -546,7 +552,7 @@ interface Props {
 export default function Layout(props: Props): JSX.Element {
     const dispatch = useDispatch();
 
-    const { sessions, messages } = RoomContext.Consume()
+    const { sessions, messages } = useContext(RoomContext)
     const { materials, sessionId: localSessionId } = useContext(LocalSessionContext);
     const localSession = sessions.get(localSessionId);
     const isHostTeacher = localSession?.isTeacher && localSession?.isHost;

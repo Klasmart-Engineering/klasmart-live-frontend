@@ -9,7 +9,7 @@ import TrophyKinds, { TrophyKind, getRandomKind } from './trophyKind';
 
 import useSound from 'use-sound';
 import { ConfettiRain } from './confettiRain';
-import { RoomContext } from '../../pages/room/room';
+import { RoomContext } from '../../providers/RoomProvider';
 
 export type Trophy = { from: string, user: string, kind: string };
 
@@ -69,8 +69,7 @@ function locationOfElement(elementId?: string): { x: number | string, y: number 
 
 export function Trophy(props: Props): JSX.Element {
     const { children } = props;
-    const room = RoomContext.Consume()
-
+    const room = useContext(RoomContext)
     const [display, setDisplay] = useState(false);
     const [showLights, setShowLights] = useState(false);
     const [showReward, setShowReward] = useState(false);
@@ -90,24 +89,21 @@ export function Trophy(props: Props): JSX.Element {
 
     const containerRef = useRef<HTMLDivElement>(null);
 
-    useEffect(() => {
-        function handleTrophy(trophy: Trophy) {
-            setWithAudio(trophy.from === trophy.user);
-
-            setAppearAt(locationOfElement(`participant:${trophy.from}`));
-
-            setDisappearAt(locationOfElement(trophy.from !== trophy.user ? `participant:${trophy.user}` : undefined));
-
-            if (TrophyKinds[trophy.kind]) {
-                setTrophyKind(TrophyKinds[trophy.kind]);
-            }
-
-            setDisplay(true);
+    const handleTrophy = (trophy: Trophy) => {
+        setWithAudio(trophy.from === trophy.user);
+        setAppearAt(locationOfElement(`participant:${trophy.from}`));
+        setDisappearAt(locationOfElement(trophy.from !== trophy.user ? `participant:${trophy.user}` : undefined));
+        if (TrophyKinds[trophy.kind]) {
+            setTrophyKind(TrophyKinds[trophy.kind]);
         }
+        setDisplay(true);
+    }
 
-        room.emitter.addListener("trophy", handleTrophy)
-        return () => { room.emitter.removeListener("trophy", handleTrophy) }
-    }, [room.emitter, setAppearAt, setDisappearAt, setDisplay])
+    useEffect(() => {
+        if (room.trophy) {
+            handleTrophy(room.trophy);
+        }
+    }, [room.trophy, setAppearAt, setDisappearAt, setDisplay])
 
 
 
