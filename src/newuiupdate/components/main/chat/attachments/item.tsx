@@ -24,7 +24,6 @@ const useStyles = makeStyles((theme: Theme) => ({
                 visibility: 'visible',
             }
         },
-        
     },
     iconButton:{
         visibility: 'hidden',

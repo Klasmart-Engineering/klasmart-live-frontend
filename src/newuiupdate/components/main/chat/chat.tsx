@@ -45,30 +45,23 @@ function Chat() {
 	return (
 		<Grid container direction="column" className={classes.fullHeight}>
 			<Grid item>
-				
+				<Typography className={classes.title}>Class Chat</Typography>
+				<Tabs
+					value={value}
+					onChange={handleChange}
+					classes={{flexContainer: classes.tabsFlexContainer}}
+				> 
+					<Tab label="Messages" disableRipple />
+					<Tab label="Attachments" disableRipple />
+				</Tabs>
 			</Grid>
 			<Grid item xs>
-				<Grid container direction="column" className={classes.fullHeight}>
-					<Grid item>
-						<Typography className={classes.title}>Class Chat</Typography>
-						<Tabs
-							value={value}
-							onChange={handleChange}
-							classes={{flexContainer: classes.tabsFlexContainer}}
-						> 
-							<Tab label="Messages" disableRipple />
-							<Tab label="Attachments" disableRipple />
-						</Tabs>
-					</Grid>
-					<Grid item xs>
-						<TabPanel value={value} index={0}>
-							<Messages />
-						</TabPanel>
-						<TabPanel value={value} index={1}>
-							<Attachments />
-						</TabPanel>
-					</Grid>
-				</Grid>
+				<TabPanel value={value} index={0}>
+					<Messages />
+				</TabPanel>
+				<TabPanel value={value} index={1}>
+					<Attachments />
+				</TabPanel>
 			</Grid>
 		</Grid>
 	);
