@@ -14,6 +14,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 	},
 	head:{
 		borderBottom: "1px solid lightgrey",
+		padding: '6px 0'
 	},
 	container:{
 		padding : `1rem 10px`,
