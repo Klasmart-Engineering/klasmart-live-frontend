@@ -32,12 +32,6 @@ import { GlobalMuteNotification, WebRTCSFUContext } from "./webrtc/sfu";
 import { useSynchronizedState } from "./whiteboard/context-providers/SynchronizedStateProvider";
 import { LocalSessionContext } from "./entry";
 
-const SEND_SIGNAL = gql`
-  mutation webRTCSignal($roomId: ID!, $toSessionId: ID!, $webrtc: WebRTCIn) {
-    webRTCSignal(roomId: $roomId, toSessionId: $toSessionId, webrtc: $webrtc)
-  }
-`;
-
 
 export interface WebRTCIn {
     description?: string

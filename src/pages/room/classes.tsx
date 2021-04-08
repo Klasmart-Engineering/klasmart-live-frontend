@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { useSelector } from "react-redux";
 import { LocalSessionContext } from "../../entry";
-import { RoomProvider } from "../../providers/RoomProvider";
+import { RoomProvider } from "../../providers/RoomContext";
 import { State } from "../../store/store";
 import { GlobalWhiteboardContext } from "../../whiteboard/context-providers/GlobalWhiteboardContext";
 import { Layout } from "./layout-new";

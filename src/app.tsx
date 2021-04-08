@@ -3,7 +3,7 @@ import { Trophy } from "./components/trophies/trophy";
 import { LocalSessionContext } from "./entry";
 import Join from "./pages/join/join";
 import { Room } from "./pages/room/room";
-import { RoomProvider } from "./providers/RoomProvider";
+import { RoomProvider } from "./providers/RoomContext";
 
 export function App(): JSX.Element {
     const { camera, name } = useContext(LocalSessionContext);

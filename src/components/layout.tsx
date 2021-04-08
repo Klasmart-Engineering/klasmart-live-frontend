@@ -1,62 +1,54 @@
 /* eslint-disable no-case-declarations */
-import React, { useState, createContext, useContext, useEffect } from "react";
-import { FormattedMessage } from "react-intl";
-import clsx from "clsx";
-import { createStyles, makeStyles, useTheme, Theme } from "@material-ui/core/styles";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
-import Drawer from "@material-ui/core/Drawer";
-import Container from "@material-ui/core/Container";
-import Grid from "@material-ui/core/Grid";
-import IconButton from "@material-ui/core/IconButton";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
-import Typography from "@material-ui/core/Typography";
-import Divider from "@material-ui/core/Divider";
-import Tooltip from "@material-ui/core/Tooltip";
-import Stepper from "@material-ui/core/Stepper";
-import Step from "@material-ui/core/Step";
-import StepLabel from "@material-ui/core/StepLabel";
+import { useMutation } from "@apollo/react-hooks";
 import Collapse from "@material-ui/core/Collapse";
-import Skeleton from "@material-ui/lab/Skeleton";
-import Hidden from "@material-ui/core/Hidden";
+import Container from "@material-ui/core/Container";
+import Divider from "@material-ui/core/Divider";
+import Drawer from "@material-ui/core/Drawer";
 import FormControl from "@material-ui/core/FormControl/FormControl";
-import Select from "@material-ui/core/Select";
+import Grid from "@material-ui/core/Grid";
+import Hidden from "@material-ui/core/Hidden";
+import IconButton from "@material-ui/core/IconButton";
 import MenuItem from "@material-ui/core/MenuItem";
 import Popover from "@material-ui/core/Popover";
-
+import Select from "@material-ui/core/Select";
+import Step from "@material-ui/core/Step";
+import StepLabel from "@material-ui/core/StepLabel";
+import Stepper from "@material-ui/core/Stepper";
+import { createStyles, makeStyles, Theme, useTheme } from "@material-ui/core/styles";
+import Tab from "@material-ui/core/Tab";
+import Tabs from "@material-ui/core/Tabs";
+import Tooltip from "@material-ui/core/Tooltip";
+import Typography from "@material-ui/core/Typography";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
+import Skeleton from "@material-ui/lab/Skeleton";
 import { Create as CreateIcon } from "@styled-icons/material-twotone/Create";
-import { People as PeopleIcon } from "@styled-icons/material-twotone/People";
-import { LibraryBooks as LessonPlanIcon } from "@styled-icons/material-twotone/LibraryBooks";
 import { Forum as ChatIcon } from "@styled-icons/material-twotone/Forum";
+import { LibraryBooks as LessonPlanIcon } from "@styled-icons/material-twotone/LibraryBooks";
+import { People as PeopleIcon } from "@styled-icons/material-twotone/People";
 import { Settings as SettingsIcon } from "@styled-icons/material-twotone/Settings";
 import { Close as CloseIcon } from "@styled-icons/material/Close";
 import { Share as ShareIcon } from "@styled-icons/material/Share";
-
-import { GlobalCameraControl } from "../webRTCState";
-import { LocalSessionContext } from "../entry";
-import { Session, Message, InteractiveModeState, StreamIdState } from "../pages/room/room";
-import Toolbar from "../whiteboard/components/Toolbar";
-import ModeControls from "../pages/teacher/modeControls";
-import { SendMessage } from "../sendMessage";
-import InviteButton from "./invite";
-import { MaterialTypename } from "../lessonMaterialContext";
-import Lightswitch from "./lightswitch";
-import LanguageSelect from "./languageSelect";
-import CenterAlignChildren from "./centerAlignChildren";
-import { bottomNav, modePanel } from "../utils/layerValues";
-import { WebRTCSFUContext } from "../webrtc/sfu";
-import Camera, { getCameraOrder } from "../components/media/camera";
 import { gql } from "apollo-boost";
-import { useMutation } from "@apollo/react-hooks";
+import clsx from "clsx";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { FormattedMessage } from "react-intl";
 import { useDispatch, useSelector } from "react-redux";
-import { State } from "../store/store";
-<<<<<<< HEAD
+import Camera, { getCameraOrder } from "../components/media/camera";
+import { LocalSessionContext } from "../entry";
+import { MaterialTypename } from "../lessonMaterialContext";
+import { InteractiveModeState, Message, Session, StreamIdState } from "../pages/room/room";
+import ModeControls from "../pages/teacher/modeControls";
+import { RoomContext } from "../providers/RoomContext";
+import { SendMessage } from "../sendMessage";
 import { setColsObserve, setContentIndex, setDrawerOpen, setDrawerTabIndex } from "../store/reducers/control";
-import { RoomContext } from "../providers/RoomProvider";
-=======
-import { setContentIndex, setDrawerOpen, setDrawerTabIndex } from "../store/reducers/control";
-import { RoomContext } from "../providers/RoomProvider";
->>>>>>> create RoomProvider
+import { State } from "../store/store";
+import { bottomNav, modePanel } from "../utils/layerValues";
+import { GlobalCameraControl } from "../webRTCState";
+import Toolbar from "../whiteboard/components/Toolbar";
+import CenterAlignChildren from "./centerAlignChildren";
+import InviteButton from "./invite";
+import LanguageSelect from "./languageSelect";
+import Lightswitch from "./lightswitch";
 
 export const DRAWER_WIDTH = 380;
 
@@ -313,7 +305,6 @@ function TabInnerContent({ title }: { title: string }) {
     const colsObserve = useSelector((store: State) => store.control.colsObserve);
     const contentIndex = useSelector((store: State) => store.control.contentIndex);
     const [hostMutation] = useMutation(MUTATION_SET_HOST);
-    const webrtc = WebRTCSFUContext.Consume()
 
     useEffect(() => {
         const teachers = [...sessions.values()].filter(session => session.isTeacher === true).sort((a, b) => a.joinedAt - b.joinedAt);
@@ -323,16 +314,6 @@ function TabInnerContent({ title }: { title: string }) {
             hostMutation({ variables: { roomId, hostId } })
         }
     }, [sessions, sessions.size])
-
-    useEffect(() => {
-        // TODO calling a mutation to update the mute statuses. implement a query on SFU and replace this.
-        const notification = {
-            roomId,
-            audioGloballyMuted: undefined,
-            videoGloballyDisabled: undefined,
-        }
-        webrtc.sendGlobalMute(notification);
-    }, [])
 
     // type GridItemXS = 3 | 4 | 6 | 12;
     // const [camGridItemXS, setCamGridItemXS] = useState<GridItemXS>(6);

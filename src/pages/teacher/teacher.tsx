@@ -26,7 +26,7 @@ import { imageFrame } from "../../utils/layerValues";
 import { State } from "../../store/store";
 import { useSelector } from "react-redux";
 import { useWindowSize } from "../../utils/viewport";
-import { RoomContext } from "../../providers/RoomProvider";
+import { RoomContext } from "../../providers/RoomContext";
 
 const drawerWidth = 340;
 
