@@ -547,7 +547,7 @@ export default function Layout(props: Props): JSX.Element {
     const dispatch = useDispatch();
 
     const { sessions, messages } = RoomContext.Consume()
-    const { materials, isTeacher, sessionId: localSessionId } = useContext(LocalSessionContext);
+    const { materials, sessionId: localSessionId } = useContext(LocalSessionContext);
     const localSession = sessions.get(localSessionId);
     const isHostTeacher = localSession?.isTeacher && localSession?.isHost;
 

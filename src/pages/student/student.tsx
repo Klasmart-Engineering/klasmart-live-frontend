@@ -16,6 +16,7 @@ import { RecordedIframe } from "../../components/recordediframe";
 import { imageFrame } from "../../utils/layerValues";
 import { WebRTCSFUContext } from "../../webrtc/sfu";
 import { useWindowSize } from "../../utils/viewport";
+import { ObservationMode } from "../teacher/teacher";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -56,7 +57,7 @@ export function Student(): JSX.Element {
     const { content, sessions } = RoomContext.Consume();
     const classes = useStyles();
 
-    const { name, sessionId } = useContext(LocalSessionContext);
+    const { name, sessionId, isTeacher } = useContext(LocalSessionContext);
     const webrtc = WebRTCSFUContext.Consume()
     const [streamId, setStreamId] = useState<string>();
     const [session, setSession] = useState<Session>();
@@ -109,15 +110,11 @@ export function Student(): JSX.Element {
                 </div>
             }
             {content && content.type === ContentType.Activity &&
-                <div className={classes.root} style={{ width: square, height: square }}>
-                    <Whiteboard group={sessionId} uniqueId="student" filterGroups={studentModeFilterGroups} />
-                    <RecordedIframe contentId={content.contentId} setStreamId={setStreamId} square={square} />
-                    {/* <WBToolbar /> */}
-                    {/* <Grid className={classes.textMargin} container justify="center" item xs={12}>
-                        <Typography variant="caption" color="primary" align="center" style={{ margin: "0 auto" }}>
-                            <FormattedMessage id="student_activity_mode" />
-                        </Typography>
-                    </Grid> */}
+                <div className={classes.root} style={isTeacher ? undefined : { width: square, height: square }}>
+                    {isTeacher ? <ObservationMode /> : <>
+                        <Whiteboard group={sessionId} uniqueId="student" filterGroups={studentModeFilterGroups} />
+                        <RecordedIframe contentId={content.contentId} setStreamId={setStreamId} square={square} />
+                    </>}
                 </div>
             }
             {/* {content && content.type === ContentType.Audio ? null : null } */}
