@@ -201,6 +201,12 @@ export function Teacher(props: Props): JSX.Element {
 export function ObservationMode() {
     const { sessionId } = useContext(LocalSessionContext);
     const { sessions } = RoomContext.Consume();
+    const [studentSessions, setStudentSessions] = useState<Session[]>([]);
+
+    useEffect(() => {
+        const students = [...sessions.values()].filter(session => session.isTeacher !== true);
+        setStudentSessions(students);
+    }, [sessions, sessions.size])
 
     return (
         <>
@@ -208,7 +214,7 @@ export function ObservationMode() {
                 <FormattedMessage id="student_mode" />
             </Typography>
             <Grid container direction="row" spacing={1} item xs={12}>
-                {[...sessions.values()].filter(s => s.id !== sessionId).map(session =>
+                {[...studentSessions.values()].filter(s => s.id !== sessionId).map(session =>
                     <StudentPreviewCard key={session.id} session={session} />
                 )}
             </Grid>
