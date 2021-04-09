@@ -1,13 +1,13 @@
 import React from "react";
 
-import { makeStyles, Grid, Theme } from "@material-ui/core";
+import { makeStyles, Grid, Theme, Box } from "@material-ui/core";
 
 import OnStage from "./viewModes/onStage";
-import Observer from "./viewModes/Observer";
+import Observe from "./viewModes/Observe";
 import Present from "./viewModes/Present";
 
 import { useRecoilState } from "recoil";
-import { viewModeState, isActiveGlobalScreenshareState } from "../../states/layoutAtoms";
+import { viewModeState, isActiveGlobalScreenshareState, pinnedUserState, usersState } from "../../states/layoutAtoms";
 import Screenshare from "./viewModes/Screenshare";
 
 
@@ -22,14 +22,10 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 function MainView() {
 	const classes = useStyles();
-	const [viewMode, setViewMode] = useRecoilState(
-		viewModeState
-	);
-
-	const [isActiveGlobalScreenshare, setIsActiveGlobalScreenshare] = useRecoilState(
-		isActiveGlobalScreenshareState
-	);
-
+	const [viewMode, setViewMode] = useRecoilState(viewModeState);
+	const [isActiveGlobalScreenshare, setIsActiveGlobalScreenshare] = useRecoilState(isActiveGlobalScreenshareState);
+	const [pinnedUser, setPinnedUser] = useRecoilState(pinnedUserState);
+	const [users, setUsers] = useRecoilState(usersState);
 
 	if(isActiveGlobalScreenshare){
 		return(
@@ -41,11 +37,25 @@ function MainView() {
 		)
 	}
 
+	if(pinnedUser){
+		return(
+			<Grid container className={classes.root}>
+				<Grid item xs>
+					<Box style={{display: 'flex', height: '100%', alignItems: 'center', textAlign: 'center', justifyContent: 'center'}}>
+						SHOW CAMERA OF {pinnedUser}
+						<br/>
+						{users.filter(user => user.id === pinnedUser).map(user => user.name)}
+					</Box>
+				</Grid>
+			</Grid>
+		)
+	}
+
 	return (
 		<Grid container className={classes.root}>
 			<Grid item xs>
 				{viewMode === 'onstage' && <OnStage />}
-				{viewMode === 'observer' && <Observer />}
+				{viewMode === 'observe' && <Observe />}
 				{viewMode === 'present' && <Present />}
 			</Grid>
 		</Grid>

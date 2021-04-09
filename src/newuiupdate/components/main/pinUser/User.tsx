@@ -52,7 +52,7 @@ function User(props: UserProps) {
     const [pinnedUser, setPinnedUser] = useRecoilState(pinnedUserState);
 
 	return (
-		<Grid container alignItems="center" spacing={2} className={clsx(classes.root, {[classes.active] : id === pinnedUser})} onClick={() => id === pinnedUser ? setPinnedUser(0) : setPinnedUser(id)}>
+		<Grid container alignItems="center" spacing={2} className={clsx(classes.root, {[classes.active] : id === pinnedUser})} onClick={() => id === pinnedUser ? setPinnedUser(undefined) : setPinnedUser(id)}>
             <Grid item>
                 <UserAvatar
                     name={name}
