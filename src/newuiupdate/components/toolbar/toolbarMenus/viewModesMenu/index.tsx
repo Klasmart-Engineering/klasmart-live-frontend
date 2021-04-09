@@ -13,6 +13,7 @@ import { useRecoilState } from "recoil";
 import {
 	viewModeState,
 	isViewModesOpenState,
+	pinnedUserState
 } from "../../../../states/layoutAtoms";
 
 import clsx from "clsx";
@@ -55,6 +56,8 @@ function ViewModesMenu(props:ViewModesMenuProps) {
 		isViewModesOpenState
 	);
 
+	const [pinnedUser, setPinnedUser] = useRecoilState(pinnedUserState);
+
 
 	const items = [
 		{
@@ -62,19 +65,19 @@ function ViewModesMenu(props:ViewModesMenuProps) {
 			title: "On Stage",
 			icon: <OnStageIcon />,
 			isActive: viewMode === 'onstage',
-			onClick: () => setViewMode('onstage'),
+			onClick: () => {setViewMode('onstage'); setPinnedUser(undefined)},
 		},{
 			id: "2",
 			title: "Observe",
 			icon: <ObserveIcon />,
-			isActive: viewMode === 'observer',
-			onClick: () => setViewMode('observer'),
+			isActive: viewMode === 'observe',
+			onClick: () => {setViewMode('observe'); setPinnedUser(undefined)},
 		},{
 			id: "3",
 			title: "Present",
 			icon: <PresentIcon />,
 			isActive: viewMode === 'present',
-			onClick: () => setViewMode('present'),
+			onClick: () => {setViewMode('present'); setPinnedUser(undefined)},
 		},
 	];
 

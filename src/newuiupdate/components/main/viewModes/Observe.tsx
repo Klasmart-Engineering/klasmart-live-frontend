@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 	},
 }));
 
-function Observer() {
+function Observe() {
 	const classes = useStyles();
 
 	return (
@@ -26,4 +26,4 @@ function Observer() {
 	);
 }
 
-export default Observer;
+export default Observe;

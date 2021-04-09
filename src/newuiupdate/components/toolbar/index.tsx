@@ -35,7 +35,7 @@ import {
 	isCanvasOpenState,
 	isClassDetailsOpenState,
 	viewModeState,
-	isActiveGlobalScreenshareState
+	isActiveGlobalScreenshareState,
 } from "../../states/layoutAtoms";
 
 
@@ -112,7 +112,7 @@ function Toolbar() {
 		case 'onstage':
 			viewModesBadge = <OnStageIcon />;
 			break;
-		case 'observer':
+		case 'observe':
 			viewModesBadge = <ObserveIcon />;
 			break;
 		case 'present':
@@ -188,7 +188,7 @@ function Toolbar() {
 						active={isViewModesOpen}
 						badge={viewModesBadge}
 						disabled={isActiveGlobalScreenshare}
-						tooltip={isActiveGlobalScreenshare && 'View mode not available when screenshare is active'}
+						tooltip={isActiveGlobalScreenshare && 'View modes are not available when screenshare is active'}
 						onClick={(e: Event) => {
 							resetDrawers();
 							setViewModesEl(e.currentTarget);
@@ -199,6 +199,8 @@ function Toolbar() {
 						icon={<PinUserIcon />}
 						label="Pin User"
 						active={isPinUserOpen}
+						disabled={isActiveGlobalScreenshare}
+						tooltip={isActiveGlobalScreenshare && 'Pin User is not available when screenshare is active'}
 						onClick={() => {
 							resetDrawers();
 							setIsPinUserOpen(!isPinUserOpen);

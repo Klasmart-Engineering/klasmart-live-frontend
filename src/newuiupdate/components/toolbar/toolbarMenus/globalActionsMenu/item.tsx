@@ -13,6 +13,7 @@ interface GlobaActionsMenuProps {
 	title?: any;
 	variant?: any;
 	active?: any;
+	activeIcon?: any;
 	onClick?: any;
 }
 
@@ -59,7 +60,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 function GlobalActionsMenuItem(props: GlobaActionsMenuProps) {
-	const { type, icon, title, variant, active, onClick } = props;
+	const { type, icon, title, variant, active, activeIcon, onClick } = props;
 
 	const classes = useStyles();
 
@@ -77,7 +78,9 @@ function GlobalActionsMenuItem(props: GlobaActionsMenuProps) {
 			)}
 			onClick={onClick}
 		>
-			<div className={classes.icon}>{icon}</div>
+			<div className={classes.icon}>
+				{activeIcon ? active ? activeIcon : icon: icon}
+			</div>
 		</Grid>
 	);
 }

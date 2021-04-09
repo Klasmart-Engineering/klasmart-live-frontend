@@ -77,19 +77,19 @@ export const isActiveGlobalMuteVideoState = atom({
 });
 
 // VIEW MODES
-type viewModeStateType = "onstage" | "observer" | "present";
+type viewModeStateType = "onstage" | "observe" | "present";
 export const viewModeState = atom<viewModeStateType>({
 	key: "viewModeState",
 	default: "onstage",
 });
 
 
-export const pinnedUserState = atom({
+export const pinnedUserState = atom<number | undefined>({
 	key: "pinnedUserState",
-	default: 0,
+	default: undefined,
 });
 
-export const materialActiveIndexState = atom({
+export const materialActiveIndexState = atom<number>({
 	key: "materialActiveIndexState",
 	default: 0,
 });

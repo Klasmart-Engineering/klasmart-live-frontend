@@ -2,8 +2,6 @@ import React, { useState } from "react";
 
 import { makeStyles, Box, Grid, Theme, Typography } from "@material-ui/core";
 
-import { UserAvatar } from "kidsloop-px"
-
 import { useRecoilState } from "recoil";
 import { usersState } from "../../../states/layoutAtoms";
 import User from "./User";
@@ -26,7 +24,8 @@ const useStyles = makeStyles((theme: Theme) => ({
 		fontWeight: 600
 	},
 	titleGroup:{
-		fontSize: '1rem',
+		fontSize: '0.9rem',
+		marginBottom: 5,
 		fontWeight: 600
 	},
 	userItem:{
@@ -61,7 +60,7 @@ function PinUser() {
 				<Typography className={classes.title}>Pin User</Typography>
 			</Grid>
 			<Grid item xs className={classes.container}>
-				<Box mb={2}>
+				<Box mb={3}>
 					<Typography variant="h4" className={classes.titleGroup}>Teachers</Typography>
 					<Box>
 						{teachers.map((user) => (
@@ -69,7 +68,7 @@ function PinUser() {
 						))}
 					</Box>
 				</Box>
-				<Box mb={2}>
+				<Box mb={3}>
 					<Typography variant="h4" className={classes.titleGroup}>Students</Typography>
 					<Box>
 						{students.map((user) => (

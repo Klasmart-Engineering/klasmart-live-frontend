@@ -5,7 +5,9 @@ import { makeStyles, Grid, Theme } from "@material-ui/core";
 import { TvFill as ScreenShareIcon } from "@styled-icons/bootstrap/TvFill";
 import { PencilFill as CanvasIcon } from "@styled-icons/bootstrap/PencilFill";
 import { MicFill as MicFillIcon } from "@styled-icons/bootstrap/MicFill";
+import { MicMuteFill as MicDisabledIcon } from "@styled-icons/bootstrap/MicMuteFill";
 import { CameraVideoFill as CameraVideoFillIcon } from "@styled-icons/bootstrap/CameraVideoFill";
+import { CameraVideoOffFill as CameraDisabledIcon } from "@styled-icons/bootstrap/CameraVideoOffFill";
 import { TrophyFill as TrophyFillIcon } from "@styled-icons/bootstrap/TrophyFill";
 import { HandThumbsUpFill as HandThumbsUpFillIcon } from "@styled-icons/bootstrap/HandThumbsUpFill";
 import { StarFill as StarFillIcon } from "@styled-icons/bootstrap/StarFill";
@@ -23,6 +25,7 @@ import {
 	isActiveGlobalMuteAudioState,
 	isActiveGlobalMuteVideoState,
 	isGlobalActionsOpenState,
+	pinnedUserState
 } from "../../../../states/layoutAtoms";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -56,6 +59,8 @@ function GlobalActionsMenu(props: GlobaActionsMenuProps) {
 		isActiveGlobalMuteVideoState
 	);
 
+	const [pinnedUser, setPinnedUser] = useRecoilState(pinnedUserState);
+
 	const items = [
 		{
 			id: "1",
@@ -63,7 +68,7 @@ function GlobalActionsMenu(props: GlobaActionsMenuProps) {
 			icon: <ScreenShareIcon size="1.7rem" />,
 			variant: 'blue',
 			isActive: activeGlobalScreenshare,
-			onClick: () => setActiveGlobalScreenshare(!activeGlobalScreenshare),
+			onClick: () => {setActiveGlobalScreenshare(!activeGlobalScreenshare); setPinnedUser(undefined)},
 		},
 		{
 			id: "3",
@@ -73,6 +78,7 @@ function GlobalActionsMenu(props: GlobaActionsMenuProps) {
 			id: "4",
 			title: "Mute All",
 			icon: <MicFillIcon size="1.4rem" />,
+			activeIcon: <MicDisabledIcon size="1.4rem" />,
 			variant: 'blue',
 			isActive: activeGlobalMuteAudio,
 			onClick: () => setActiveGlobalMuteAudio(!activeGlobalMuteAudio),
@@ -81,6 +87,7 @@ function GlobalActionsMenu(props: GlobaActionsMenuProps) {
 			id: "5",
 			title: "Hide all cameras",
 			icon: <CameraVideoFillIcon size="1.4rem" />,
+			activeIcon: <CameraDisabledIcon size="1.4rem" />,
 			variant: 'blue',
 			isActive: activeGlobalMuteVideo,
 			onClick: () => setActiveGlobalMuteVideo(!activeGlobalMuteVideo),
@@ -120,6 +127,7 @@ function GlobalActionsMenu(props: GlobaActionsMenuProps) {
 						key={item.id}
 						title={item.title}
 						icon={item.icon}
+						activeIcon={item.activeIcon}
 						type={item.type}
 						variant={item.variant}
 						active={item.isActive}
