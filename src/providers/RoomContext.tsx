@@ -5,8 +5,8 @@ import { gql } from "apollo-boost";
 import React, { createContext, useContext, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import Loading from "../components/loading";
-import { LocalSessionContext, sessionId } from "../entry";
-import {Content, Message, Session} from "../pages/room/room";
+import { LocalSessionContext } from "../entry";
+import { Content, Message, Session } from "../pages/room/room";
 
 const SUB_ROOM = gql`
     subscription room($roomId: ID!, $name: String) {
@@ -41,7 +41,7 @@ const defaultRoomContext = {
 
 export const RoomContext = createContext<RoomContextInterface>(defaultRoomContext);
 export const RoomProvider = (props: {children: React.ReactNode}) => {
-    const { roomId, name } = useContext(LocalSessionContext);
+    const { roomId, name, sessionId } = useContext(LocalSessionContext);
     const [sfuAddress, setSfuAddress] = useState<string>("");
     const [messages, setMessages] = useState<Map<string, Message>>(new Map<string, Message>());
     const [content, setContent] = useState<Content>();

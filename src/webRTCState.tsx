@@ -1,37 +1,44 @@
-import React, { useRef, createContext, useContext, useEffect, useState, useReducer } from "react";
-import { FormattedMessage } from "react-intl";
-import { gql } from "apollo-boost";
-import { useMutation } from "@apollo/react-hooks";
-import { Theme, useTheme, createStyles, makeStyles } from "@material-ui/core/styles";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { useMutation, useSubscription } from "@apollo/react-hooks";
 import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
-import Paper from "@material-ui/core/Paper";
+import { useTheme } from "@material-ui/core/styles";
 import Tooltip from "@material-ui/core/Tooltip";
-
-import { Videocam as CameraIcon } from "@styled-icons/material-twotone/Videocam";
-import { VideocamOff as CameraOffIcon } from "@styled-icons/material-twotone/VideocamOff";
+import Typography from "@material-ui/core/Typography";
+import { Eraser as EraserIcon } from "@styled-icons/boxicons-solid/Eraser";
+import { GridOff as CanvasOffIcon } from "@styled-icons/material-twotone/GridOff";
+import { GridOn as CanvasIcon } from "@styled-icons/material-twotone/GridOn";
 import { Mic as MicIcon } from "@styled-icons/material-twotone/Mic";
 import { MicOff as MicOffIcon } from "@styled-icons/material-twotone/MicOff";
-import { GridOn as CanvasIcon } from "@styled-icons/material-twotone/GridOn";
-import { GridOff as CanvasOffIcon } from "@styled-icons/material-twotone/GridOff";
-import { Eraser as EraserIcon } from "@styled-icons/boxicons-solid/Eraser";
-
-import { Session } from "./pages/room/room";
-import StyledIcon from "./components/styled/icon";
-import { MoreControlsButton } from "./components/media/camera";
-import { useToolbarContext } from "kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
-
-import { getRandomKind } from './components/trophies/trophyKind';
-import { Star as StarIcon } from "@styled-icons/material/Star";
+import { Videocam as CameraIcon } from "@styled-icons/material-twotone/Videocam";
+import { VideocamOff as CameraOffIcon } from "@styled-icons/material-twotone/VideocamOff";
 import { EmojiEvents as TrophyIcon } from "@styled-icons/material/EmojiEvents";
 import { Favorite as HeartIcon } from "@styled-icons/material/Favorite";
+import { Star as StarIcon } from "@styled-icons/material/Star";
 import { ThumbUp as EncourageIcon } from "@styled-icons/material/ThumbUp";
-import { GlobalMuteNotification, WebRTCSFUContext } from "./webrtc/sfu";
-import { useSynchronizedState } from "./whiteboard/context-providers/SynchronizedStateProvider";
+import { gql } from "apollo-boost";
+import { useToolbarContext } from "kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
+import { default as React, default as React, useContext, useEffect, useRef, useState } from "react";
+import { FormattedMessage } from "react-intl";
+import { getRandomKind } from './components/trophies/trophyKind';
 import { LocalSessionContext } from "./entry";
+import { GlobalMuteNotification, WebRTCContext } from "./providers/WebRTCContext";
+import { useSynchronizedState } from "./whiteboard/context-providers/SynchronizedStateProvider";
 
+const SEND_SIGNAL = gql`
+  mutation webRTCSignal($roomId: ID!, $toSessionId: ID!, $webrtc: WebRTCIn) {
+    webRTCSignal(roomId: $roomId, toSessionId: $toSessionId, webrtc: $webrtc)
+  }
+`;
+
+export const SUBSCRIBE_GLOBAL_MUTE = gql`
+    subscription media($roomId: ID!) {
+            globalMute {
+                roomId,
+                audioGloballyMuted,
+                videoGloballyDisabled,
+            },
+        }
+`;
 
 export interface WebRTCIn {
     description?: string
@@ -39,7 +46,6 @@ export interface WebRTCIn {
 
     stream?: { name: string, streamId: string }
 }
-
 
 export type WebRTC = WebRTCIn & { sessionId: string }
 
@@ -58,10 +64,16 @@ export function Stream(props: { stream?: MediaStream } & React.VideoHTMLAttribut
     return <video style={{ width: "100%" }} ref={videoRef} autoPlay playsInline  {...videoProps} />;
 }
 
-const MUTATION_REWARD_TROPHY = gql`
+export const MUTATION_REWARD_TROPHY = gql`
 mutation rewardTrophy($roomId: ID!, $user: ID!, $kind: String) {
     rewardTrophy(roomId: $roomId, user: $user, kind: $kind)
 }
+`;
+
+const GLOBAL_MUTE_MUTATION = gql`
+    mutation globalMute($roomId: String!, $audioGloballyMuted: Boolean, $videoGloballyDisabled: Boolean) {
+        globalMute(roomId: $roomId, audioGloballyMuted: $audioGloballyMuted, videoGloballyDisabled: $videoGloballyDisabled)
+    }
 `;
 
 export function GlobalCameraControl(): JSX.Element {
@@ -69,9 +81,11 @@ export function GlobalCameraControl(): JSX.Element {
     const [camerasOn, setCamerasOn] = useState(true);
     const [micsOn, setMicsOn] = useState(true);
 
-    const states = WebRTCSFUContext.Consume()
+    const sfuState = useContext(WebRTCContext);
     const { roomId, sessionId } = useContext(LocalSessionContext);
     const [rewardTrophyMutation] = useMutation(MUTATION_REWARD_TROPHY);
+    const [globalMuteMutation] = useMutation(GLOBAL_MUTE_MUTATION);
+    const { data } = useSubscription(SUBSCRIBE_GLOBAL_MUTE);
     const rewardTrophy = (user: string, kind: string) => rewardTrophyMutation({ variables: { roomId, user, kind } });
 
     const { actions: { clear } } = useToolbarContext();
@@ -81,12 +95,18 @@ export function GlobalCameraControl(): JSX.Element {
     } = useSynchronizedState();
 
     useEffect(() => {
-        setCamerasOn(!states.videoGloballyDisabled);
-    }, [states.videoGloballyDisabled])
+        const videoGloballyDisabled = data?.globalMute?.videoGloballyDisabled;
+        if (videoGloballyDisabled !== undefined) {
+            setCamerasOn(!videoGloballyDisabled);
+        }
+    }, [data?.globalMute?.videoGloballyDisabled])
 
     useEffect(() => {
-        setMicsOn(!states.audioGloballyMuted);
-    }, [states.audioGloballyMuted])
+        const audioGloballyMuted = data?.globalMute?.audioGloballyMuted;
+        if (audioGloballyMuted !== undefined) {
+            setMicsOn(!audioGloballyMuted);
+        }
+    }, [data?.globalMute?.audioGloballyMuted])
 
     function toggleVideoStates() {
         const notification: GlobalMuteNotification = {
@@ -94,8 +114,8 @@ export function GlobalCameraControl(): JSX.Element {
             audioGloballyMuted: undefined,
             videoGloballyDisabled: camerasOn,
         }
-        setCamerasOn(!states.videoGloballyDisabled);
-        states.sendGlobalMute(notification);
+        // setCamerasOn(!states.videoGloballyDisabled);
+        globalMuteMutation({variables: notification})
     }
 
     function toggleAudioStates() {
@@ -104,8 +124,8 @@ export function GlobalCameraControl(): JSX.Element {
             audioGloballyMuted: micsOn,
             videoGloballyDisabled: undefined,
         }
-        setMicsOn(!states.audioGloballyMuted);
-        states.sendGlobalMute(notification);
+        // setMicsOn(!states.audioGloballyMuted);
+        globalMuteMutation({variables: notification})
     }
 
     return (

@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import ToggleButton from "@material-ui/lab/ToggleButton";
 import ToggleButtonGroup from "@material-ui/lab/ToggleButtonGroup";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { createStyles, makeStyles, withStyles, Theme, useTheme } from "@material-ui/core/styles";
 import { FormattedMessage } from "react-intl";
-import { ScreenShare } from "./screenShareProvider";
 import { InteractiveMode, InteractiveModeState } from "../room/room";
 import IconButton from "@material-ui/core/IconButton";
 import Divider from "@material-ui/core/Divider";
@@ -18,6 +17,7 @@ import { Videocam as VideoIcon } from "@styled-icons/material/Videocam";
 import { ScreenShare as ScreenShareIcon } from "@styled-icons/material/ScreenShare";
 import { StopScreenShare as StopScreenShareIcon } from "@styled-icons/material/StopScreenShare";
 import { Refresh as RefreshIcon } from "@styled-icons/material/Refresh";
+import { ScreenShareContext } from "./screenShareProvider";
 
 const StyledToggleButtonGroup = withStyles((theme) => ({
     grouped: {
@@ -87,7 +87,7 @@ interface Props {
 
 export default function ModeControls({ interactiveModeState, disablePresent, disableActivity, setKey, orientation }: Props): JSX.Element {
     const { selectedButton, buttonRoot, buttonGroup, divider, helpButton, screenSharingButton } = useStyles();
-    const screenShare = ScreenShare.Consume()
+    const screenShare = useContext(ScreenShareContext);
 
     const { interactiveMode, setInteractiveMode } = interactiveModeState;
     const [{ openStopTooltip, openPresentTooltip, openActivityTooltip, openScreenTooltip }, setOpenTooltip] = useState({
@@ -188,19 +188,19 @@ export default function ModeControls({ interactiveModeState, disablePresent, dis
                                 value={InteractiveMode.ShareScreen}
                                 aria-label="present screen"
                                 classes={{ root: buttonRoot }}
-                                className={(interactiveMode === InteractiveMode.ShareScreen || screenShare.getStream()) ? screenSharingButton : ""}
+                                className={(interactiveMode === InteractiveMode.ShareScreen || screenShare.stream) ? screenSharingButton : ""}
                                 disabled={!navigator.mediaDevices || !(navigator.mediaDevices as any).getDisplayMedia}
                                 onClick={() => {
-                                    if (screenShare.getStream() && interactiveMode === InteractiveMode.ShareScreen) {
+                                    if (screenShare.stream && interactiveMode === InteractiveMode.ShareScreen) {
                                         screenShare.stop();
                                     }
-                                    if (!screenShare.getStream() && interactiveMode !== InteractiveMode.ShareScreen) {
+                                    if (!screenShare.stream && interactiveMode !== InteractiveMode.ShareScreen) {
                                         screenShare.start();
                                     }
                                 }}
                             >
                                 {
-                                    screenShare.getStream() ?
+                                    screenShare.stream ?
                                         <StopScreenShareIcon size="1.5rem" /> :
                                         <ScreenShareIcon size="1.5rem" />
                                 }

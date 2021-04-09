@@ -1,12 +1,12 @@
 import React, { useContext } from "react";
-import { InteractiveModeState, RoomContext, StreamIdState } from "./room";
 import Layout from "../../components/layout";
-import { Student } from "../student/student";
-import { Teacher } from "../teacher/teacher";
-import { ScreenShare } from "../teacher/screenShareProvider";
-import { WebRTCSFUContext } from "../../webrtc/sfu";
-import { GlobalWhiteboardContext } from "../../whiteboard/context-providers/GlobalWhiteboardContext";
 import { LocalSessionContext } from "../../entry";
+import { WebRTCProvider } from "../../providers/WebRTCContext";
+import { GlobalWhiteboardContext } from "../../whiteboard/context-providers/GlobalWhiteboardContext";
+import { Student } from "../student/student";
+import { ScreenShareProvider } from "../teacher/screenShareProvider";
+import { Teacher } from "../teacher/teacher";
+import { InteractiveModeState, StreamIdState } from "./room";
 
 interface LiveProps {
     interactiveModeState: InteractiveModeState;
@@ -23,8 +23,8 @@ export function Live({
     const isHostTeacher = localSession?.isTeacher && localSession?.isHost;
 
     return (
-        <WebRTCSFUContext.Provide>
-            <ScreenShare.Provide>
+        <WebRTCProvider>
+            <ScreenShareProvider>
                 <GlobalWhiteboardContext>
                     <Layout
                         interactiveModeState={interactiveModeState}
@@ -40,7 +40,7 @@ export function Live({
                         }
                     </Layout>
                 </GlobalWhiteboardContext>
-            </ScreenShare.Provide>
-        </WebRTCSFUContext.Provide>
+            </ScreenShareProvider>
+        </WebRTCProvider>
     );
 }

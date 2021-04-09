@@ -48,11 +48,6 @@ const MUTE = gql`
         mute(roomId: $roomId, sessionId: $sessionId, audio: $audio, video: $video)
     }
 `;
-const GLOBAL_MUTE = gql`
-    mutation globalMute($roomId: String!, $audioGloballyMuted: Boolean, $videoGloballyDisabled: Boolean) {
-        globalMute(roomId: $roomId, audioGloballyMuted: $audioGloballyMuted, videoGloballyDisabled: $videoGloballyDisabled)
-    }
-`;
 export const ENDCLASS = gql`
     mutation endClass($roomId: String) {
         endClass(roomId: $roomId)
@@ -76,11 +71,6 @@ const SUBSCRIBE = gql`
                 audio,
                 video,
             },
-            globalMute {
-                roomId,
-                audioGloballyMuted,
-                videoGloballyDisabled,
-            },
         }
     }
 `;
@@ -93,11 +83,10 @@ const SUBSCRIBE = gql`
         const [consumer] = useMutation(CONSUMER);
         const [stream] = useMutation(STREAM);
         const [mute] = useMutation(MUTE);
-        const [globalMute] = useMutation(GLOBAL_MUTE);
         const [endClass] = useMutation(ENDCLASS);
 
         if (!sfu.current) {
-            sfu.current = new WebRTCSFUContext(rerender, rtpCapabilities, transport, producer, consumer, stream, mute, globalMute, endClass)
+            sfu.current = new WebRTCSFUContext(rerender, rtpCapabilities, transport, producer, consumer, stream, mute, endClass)
         }
 
         useSubscription(SUBSCRIBE, {
@@ -113,7 +102,6 @@ const SUBSCRIBE = gql`
                     stream,
                     close,
                     mute,
-                    globalMute
                 } = subscriptionData.data.media
                 if (rtpCapabilities) {
                     sfu.current.rtpCapabilitiesMessage(rtpCapabilities)
@@ -135,9 +123,6 @@ const SUBSCRIBE = gql`
                 }
                 if (mute) {
                     sfu.current.muteMessage(mute)
-                }
-                if (globalMute) {
-                    sfu.current.globalMuteMessage(globalMute)
                 }
             },
             variables: { roomId }
@@ -359,11 +344,6 @@ export class WebRTCSFUContext implements WebRTCContext {
         await this.mute({ variables: muteNotification })
     }
 
-    public async sendGlobalMute(globalMuteNotification: GlobalMuteNotification) {
-        console.log(`${JSON.stringify(globalMuteNotification)}`)
-        await this.globalMute({ variables: globalMuteNotification })
-    }
-
     public localAudioToggle(id?: string) {
         return this.localAudioEnable(id)
     }
@@ -504,6 +484,35 @@ export class WebRTCSFUContext implements WebRTCContext {
         }
     }
 
+    private tracks = new Map<string, MediaStreamTrack>()
+    private consumers = new Map<string, MediaSoup.Consumer>()
+    private inboundStreams = new Map<string, StreamDescription>()
+    private outboundStreams = new Map<string, Stream>()
+    private destructors = new Map<string, () => unknown>()
+    private rerender: React.DispatchWithoutAction
+
+    private constructor(
+        rerender: React.DispatchWithoutAction,
+        private rtpCapabilities: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>,
+        private transport: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>,
+        private producer: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>,
+        private consumer: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>,
+        private stream: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>,
+        private mute: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>,
+        private endClass: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>,
+    ) {
+        this.rerender = rerender
+        this.rtpCapabilities = rtpCapabilities
+        this.transport = transport
+        this.producer = producer
+        this.consumer = consumer
+        this.stream = stream
+        this.mute = mute
+        this.endClass = endClass
+    }
+
+    private _device?: Device | null
+    private devicePrePromise = Resolver<Device>()
 
     private async device() {
         if (this._device) {
@@ -806,19 +815,6 @@ export class WebRTCSFUContext implements WebRTCContext {
                 this.localVideoToggle()
             }
         }
-    }
-
-    private globalMuteMessage(globalMuteNotification: GlobalMuteNotification): void {
-        this._audioGloballyMuted = globalMuteNotification.audioGloballyMuted ?? this._audioGloballyMuted;
-        this._videoGloballyDisabled = globalMuteNotification.videoGloballyDisabled ?? this._videoGloballyDisabled;
-    }
-
-    get audioGloballyMuted(): boolean {
-        return this._audioGloballyMuted;
-    }
-
-    get videoGloballyDisabled(): boolean {
-        return this._videoGloballyDisabled;
     }
 
     private async closeMessage(id: string) {
