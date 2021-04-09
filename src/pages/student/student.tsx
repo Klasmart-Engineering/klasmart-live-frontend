@@ -1,21 +1,22 @@
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-import Paper from "@material-ui/core/Paper";
-import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
-import React, { useState, useEffect, useContext, useRef, useMemo } from "react";
+import Paper from "@material-ui/core/Paper";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";
-import { LocalSessionContext } from "../../entry";
-import { ContentType, RoomContext, Session } from "../room/room";
-import { Whiteboard } from "../../whiteboard/components/Whiteboard";
-import WBToolbar from "../../whiteboard/components/Toolbar";
-import { Stream } from "../../webRTCState";
-import { ReplicaMedia } from "../synchronized-video";
-import { MaterialTypename } from "../../lessonMaterialContext";
 import { PreviewPlayer } from "../../components/previewPlayer";
 import { RecordedIframe } from "../../components/recordediframe";
+import { LocalSessionContext } from "../../entry";
+import { MaterialTypename } from "../../lessonMaterialContext";
+import { RoomContext } from "../../providers/RoomContext";
+import { WebRTCContext } from "../../providers/WebRTCContext";
 import { imageFrame } from "../../utils/layerValues";
-import { WebRTCSFUContext } from "../../webrtc/sfu";
 import { useWindowSize } from "../../utils/viewport";
+import { Stream } from "../../webRTCState";
+import WBToolbar from "../../whiteboard/components/Toolbar";
+import { Whiteboard } from "../../whiteboard/components/Whiteboard";
+import { ContentType, Session } from "../room/room";
+import { ReplicaMedia } from "../synchronized-video";
 import { ObservationMode } from "../teacher/teacher";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -58,7 +59,7 @@ export function Student(): JSX.Element {
     const classes = useStyles();
 
     const { name, sessionId, isTeacher } = useContext(LocalSessionContext);
-    const webrtc = WebRTCSFUContext.Consume()
+    const webrtc = useContext(WebRTCContext)
     const [streamId, setStreamId] = useState<string>();
     const [session, setSession] = useState<Session>();
 

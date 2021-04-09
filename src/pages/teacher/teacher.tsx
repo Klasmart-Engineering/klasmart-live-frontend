@@ -1,32 +1,32 @@
+import { useMutation } from "@apollo/react-hooks";
+import { Card, CardContent, Hidden, Theme, useTheme } from "@material-ui/core";
+import CardActions from "@material-ui/core/CardActions";
 import Grid from "@material-ui/core/Grid";
-import Tooltip from "@material-ui/core/Tooltip";
 import IconButton from "@material-ui/core/IconButton";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
+import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
-import CardActions from "@material-ui/core/CardActions";
-import React, { useEffect, useState, useContext, useRef, useMemo } from "react";
-import { FormattedMessage } from "react-intl";
-import { RecordedIframe } from "../../components/recordediframe";
-import { Session, InteractiveModeState, StreamIdState, InteractiveMode, ContentType } from "../room/room";
-import { Theme, Card, useTheme, CardContent, Hidden } from "@material-ui/core";
-import { PreviewPlayer } from "../../components/previewPlayer";
-import { Stream } from "../../webRTCState";
-import { LocalSessionContext } from "../../entry";
-import { gql } from "apollo-boost";
-import { useMutation } from "@apollo/react-hooks";
-import { Whiteboard } from "../../whiteboard/components/Whiteboard";
-import { ScreenShare } from "./screenShareProvider";
-import { ReplicatedMedia } from "../synchronized-video";
+import { QuestionMarkCircleOutline as QuestionIcon } from "@styled-icons/evaicons-outline/QuestionMarkCircleOutline";
 import { Face as FaceIcon } from "@styled-icons/material/Face";
 import { ZoomIn as ZoomInIcon } from "@styled-icons/material/ZoomIn";
 import { ZoomOut as ZoomOutIcon } from "@styled-icons/material/ZoomOut";
-import { QuestionMarkCircleOutline as QuestionIcon } from "@styled-icons/evaicons-outline/QuestionMarkCircleOutline";
-import { MaterialTypename } from "../../lessonMaterialContext";
-import { imageFrame } from "../../utils/layerValues";
-import { State } from "../../store/store";
+import { gql } from "apollo-boost";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
+import { FormattedMessage } from "react-intl";
 import { useSelector } from "react-redux";
-import { useWindowSize } from "../../utils/viewport";
+import { PreviewPlayer } from "../../components/previewPlayer";
+import { RecordedIframe } from "../../components/recordediframe";
+import { LocalSessionContext } from "../../entry";
+import { MaterialTypename } from "../../lessonMaterialContext";
 import { RoomContext } from "../../providers/RoomContext";
+import { State } from "../../store/store";
+import { imageFrame } from "../../utils/layerValues";
+import { useWindowSize } from "../../utils/viewport";
+import { Stream } from "../../webRTCState";
+import { Whiteboard } from "../../whiteboard/components/Whiteboard";
+import { ContentType, InteractiveMode, InteractiveModeState, Session, StreamIdState } from "../room/room";
+import { ReplicatedMedia } from "../synchronized-video";
+import { ScreenShareContext } from "./screenShareProvider";
 
 const drawerWidth = 340;
 
@@ -90,7 +90,7 @@ export function Teacher(props: Props): JSX.Element {
     }, [size])
 
     const { roomId, sessionId, materials, name } = useContext(LocalSessionContext);
-    const screenShare = ScreenShare.Consume()
+    const screenShare = useContext(ScreenShareContext);
     const { content, sessions } = useContext(RoomContext)
     const contentIndex = useSelector((store: State) => store.control.contentIndex);
 
@@ -148,7 +148,7 @@ export function Teacher(props: Props): JSX.Element {
                     {
                         //TODO: tidy up the conditions of what to render
                         interactiveMode === InteractiveMode.ShareScreen ?
-                            <Stream stream={screenShare.getStream()} /> :
+                            <Stream stream={screenShare.stream} /> :
                             <>
                                 {material ?
                                     material.__typename === MaterialTypename.Image ?

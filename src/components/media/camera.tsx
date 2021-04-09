@@ -1,39 +1,40 @@
-import React, { useRef, useContext, useEffect, useState } from "react";
-import { FormattedMessage } from "react-intl";
-import { useSelector } from "react-redux";
-import { Theme, useTheme, createStyles, makeStyles, withStyles } from "@material-ui/core/styles";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { useMutation } from "@apollo/react-hooks";
 import Grid, { GridProps } from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
-import Paper from "@material-ui/core/Paper";
-import Tooltip from "@material-ui/core/Tooltip";
 import IconButton from '@material-ui/core/IconButton';
+import List from "@material-ui/core/List";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListSubheader from '@material-ui/core/ListSubheader';
 import Menu, { MenuProps } from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
-import List from "@material-ui/core/List";
-import ListSubheader from '@material-ui/core/ListSubheader';
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-
-import { VideocamOff as CameraOffIcon } from "@styled-icons/material-twotone/VideocamOff";
-import { Chalkboard as ChalkboardIcon } from "@styled-icons/boxicons-solid/Chalkboard";
-import { Crown as CrownIcon } from "@styled-icons/boxicons-solid/Crown";
+import Paper from "@material-ui/core/Paper";
+import { createStyles, makeStyles, Theme, useTheme, withStyles } from "@material-ui/core/styles";
+import Tooltip from "@material-ui/core/Tooltip";
+import Typography from "@material-ui/core/Typography";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { BoxArrowUpLeft as BoxArrowUpLeftIcon } from "@styled-icons/bootstrap/BoxArrowUpLeft";
 import { DotsVerticalRounded as DotsVerticalRoundedIcon } from "@styled-icons/boxicons-regular/DotsVerticalRounded";
-import { Video as VideoOnIcon } from "@styled-icons/boxicons-solid/Video";
-import { VideoOff as VideoOffIcon } from "@styled-icons/boxicons-solid/VideoOff";
+import { Chalkboard as ChalkboardIcon } from "@styled-icons/boxicons-solid/Chalkboard";
+import { Crown as CrownIcon } from "@styled-icons/boxicons-solid/Crown";
 import { Microphone as MicrophoneOnIcon } from "@styled-icons/boxicons-solid/Microphone";
 import { MicrophoneOff as MicrophoneOffIcon } from "@styled-icons/boxicons-solid/MicrophoneOff";
-import { Circle as CircleIcon } from "@styled-icons/boxicons-solid/Circle"
-
-import { MuteNotification, WebRTCSFUContext } from "../../webrtc/sfu";
-import { Session } from "../../pages/room/room";
-import StyledIcon from "../styled/icon";
+import { Video as VideoOnIcon } from "@styled-icons/boxicons-solid/Video";
+import { VideoOff as VideoOffIcon } from "@styled-icons/boxicons-solid/VideoOff";
+import { VideocamOff as CameraOffIcon } from "@styled-icons/material-twotone/VideocamOff";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { FormattedMessage } from "react-intl";
+import { useSelector } from "react-redux";
 import { LocalSessionContext } from "../../entry";
-import { useIsElementInViewport } from "../../utils/viewport";
-import PermissionControls from "../../whiteboard/components/WBPermissionControls";
-import TrophyControls from "../trophies/trophyControls";
+import { Session } from "../../pages/room/room";
+import { MUTE, MuteNotification, WebRTCContext, WebRTCContextInterface } from "../../providers/WebRTCContext";
 import { State } from "../../store/store";
+import PermissionControls from "../../whiteboard/components/WBPermissionControls";
 import { SessionsContext } from "../layout";
+import StyledIcon from "../styled/icon";
+import TrophyControls from "../trophies/trophyControls";
+
+
+import { useSubscription } from "@apollo/react-hooks";
+import { SUBSCRIBE_GLOBAL_MUTE } from "../../webRTCState";
 
 const PARTICIPANT_INFO_ZINDEX = 1;
 const ICON_ZINDEX = 2;
@@ -333,7 +334,7 @@ function FullScreenCameraButton({ sessionId }: { sessionId: string }): JSX.Eleme
 
 function MicIndicator({ sessionId }: { sessionId: string }) {
     const { iconGrid, noHoverIcon } = useStyles();
-    const sfuState = WebRTCSFUContext.Consume();
+    const sfuState = useContext(WebRTCContext);
 
     const [micOn, setMicOn] = useState<boolean>(false);
 
@@ -388,7 +389,7 @@ export function MoreControlsButton({ session, isSelf, cameraRef }: {
     const theme = useTheme();
 
     const { isTeacher } = useContext(LocalSessionContext);
-    const sfuState = WebRTCSFUContext.Consume();
+    const sfuState = useContext(WebRTCContext);
 
     const [moreEl, setMoreEl] = useState<null | HTMLElement>(null);
     const handleMoreOpen = (event: React.SyntheticEvent<HTMLAnchorElement>) => { setMoreEl(event.currentTarget); };
@@ -483,7 +484,7 @@ export function MoreControlsButton({ session, isSelf, cameraRef }: {
  */
 function ToggleCamera({ session, sfuState, isSelf, cameraRef }: {
     session: Session,
-    sfuState: WebRTCSFUContext,
+    sfuState: WebRTCContextInterface,
     isSelf: boolean,
     cameraRef: React.RefObject<HTMLElement>
 }): JSX.Element {
@@ -495,6 +496,8 @@ function ToggleCamera({ session, sfuState, isSelf, cameraRef }: {
     const [cameraOn, setCameraOn] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [isVideoManuallyDisabled, setIsVideoManuallyDisabled] = useState<boolean>(false);
+    const [muteMutation] = useMutation(MUTE);
+    const { data } = useSubscription(SUBSCRIBE_GLOBAL_MUTE);
 
     // NOTE: This is the logic for the frontend performance. If this logic goes well, we will restore it again.
     // const isCameraVisible = useIsElementInViewport(cameraRef);
@@ -521,13 +524,13 @@ function ToggleCamera({ session, sfuState, isSelf, cameraRef }: {
     }, [sfuState.isLocalVideoEnabled(session.id)])
 
     useEffect(() => {
-        if (sfuState.videoGloballyDisabled && sfuState.isLocalVideoEnabled(session.id) && !session.isHost) {
+        if (data?.globalMute?.videoGloballyDisabled && sfuState.isLocalVideoEnabled(session.id) && !session.isHost) {
             toggleOutboundVideoState();
         }
-    }, [sfuState.videoGloballyDisabled, sfuState.isLocalVideoEnabled(session.id)])
+    }, [data?.globalMute?.videoGloballyDisabled, sfuState.isLocalVideoEnabled(session.id)])
 
     // My another user's mute state
-    function toggleInboundVideoState() {
+    async function toggleInboundVideoState() {
         const localSession = sessions.get(localSessionId);
         if (localSession?.isHost) {
             const notification: MuteNotification = {
@@ -535,34 +538,34 @@ function ToggleCamera({ session, sfuState, isSelf, cameraRef }: {
                 sessionId: session.id,
                 video: !cameraOn
             }
-            sfuState.sendMute(notification);
+            await muteMutation({ variables: notification })
         }
        sfuState.localVideoToggle(session.id);
     }
 
     // My own mute state
-    function toggleOutboundVideoState() {
+    async function toggleOutboundVideoState() {
         const notification: MuteNotification = {
             roomId,
             sessionId: session.id,
             video: !cameraOn
         }
-        sfuState.sendMute(notification);
+        await muteMutation({ variables: notification })
         sfuState.localVideoToggle(session.id);
     }
 
-    function toggleVideoState(): void {
+    async function toggleVideoState(): Promise<void> {
         if (isSelf) {
             const localSession = sessions.get(localSessionId);
-            if (sfuState.videoGloballyDisabled && !localSession?.isTeacher) {
+            if (data?.globalMute?.videoGloballyDisabled && !localSession?.isTeacher) {
                 return;
             }
-            toggleOutboundVideoState();
+            await toggleOutboundVideoState();
         } else {
-            if (sfuState.videoGloballyDisabled && !session?.isTeacher) {
+            if (data?.globalMute?.videoGloballyDisabled && !session?.isTeacher) {
                 return;
             }
-            toggleInboundVideoState();
+            await toggleInboundVideoState();
         }
         setIsVideoManuallyDisabled(!sfuState.isLocalVideoEnabled(session.id));
     }
@@ -584,59 +587,61 @@ function ToggleCamera({ session, sfuState, isSelf, cameraRef }: {
  */
 function ToggleMic({ session, sfuState, isSelf }: {
     session: Session,
-    sfuState: WebRTCSFUContext,
+    sfuState: WebRTCContextInterface,
     isSelf: boolean,
 }): JSX.Element {
     const { noHoverIcon, moreControlsMenuItem } = useStyles();
     const { roomId, sessionId: localSessionId } = useContext(LocalSessionContext);
     const sessions = useContext(SessionsContext);
     const [micOn, setMicOn] = useState<boolean>(false);
+    const [muteMutation] = useMutation(MUTE);
+    const { data } = useSubscription(SUBSCRIBE_GLOBAL_MUTE);
 
     useEffect(() => {
         setMicOn(sfuState.isLocalAudioEnabled(session.id));
     }, [sfuState.isLocalAudioEnabled(session.id)])
 
     useEffect(() => {
-        if (sfuState.audioGloballyMuted && sfuState.isLocalAudioEnabled(session.id) && !session.isTeacher) {
+        if (data?.globalMute?.audioGloballyMuted && sfuState.isLocalAudioEnabled(session.id) && !session.isTeacher) {
             toggleOutboundAudioState();
         }
-    }, [sfuState.audioGloballyMuted, sfuState.isLocalAudioEnabled(session.id)])
+    }, [data?.globalMute?.audioGloballyMuted, sfuState.isLocalAudioEnabled(session.id)])
 
-    function toggleInboundAudioState() {
-    const localSession = sessions.get(localSessionId);
+    async function toggleInboundAudioState() {
+        const localSession = sessions.get(localSessionId);
         if (localSession?.isHost) {
             const notification: MuteNotification = {
                 roomId,
                 sessionId: session.id,
                 audio: !micOn
             }
-            sfuState.sendMute(notification);
+            await muteMutation({ variables: notification })
         }
         sfuState.localAudioToggle(session.id);
     }
 
-    function toggleOutboundAudioState() {
+    async function toggleOutboundAudioState() {
         const notification: MuteNotification = {
             roomId,
             sessionId: session.id,
             audio: !micOn
         }
-        sfuState.sendMute(notification)
+        await muteMutation({ variables: notification })
         sfuState.localAudioToggle(session.id);
     }
 
-    function toggleAudioState() {
+    async function toggleAudioState() {
         if (isSelf) {
             const localSession = sessions.get(localSessionId);
-            if (sfuState.audioGloballyMuted && !localSession?.isTeacher) {
+            if (data?.globalMute?.audioGloballyMuted && !localSession?.isTeacher) {
                 return;
             }
-            toggleOutboundAudioState();
+            await toggleOutboundAudioState();
         } else {
-            if (sfuState.audioGloballyMuted && !session.isTeacher) {
+            if (data?.globalMute?.audioGloballyMuted && !session.isTeacher) {
                 return;
             }
-            toggleInboundAudioState();
+            await toggleInboundAudioState();
         }
     }
 

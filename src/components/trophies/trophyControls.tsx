@@ -13,18 +13,12 @@ import { gql } from 'apollo-boost';
 import { useMutation } from '@apollo/react-hooks';
 import { LocalSessionContext } from '../../entry';
 import StyledIcon from "../../components/styled/icon";
+import { MUTATION_REWARD_TROPHY } from '../../webRTCState';
 
 type Props = {
     children?: ReactChild | ReactChildren | null
     otherUserId: string
 }
-
-const MUTATION_REWARD_TROPHY = gql`
-  mutation rewardTrophy($roomId: ID!, $user: ID!, $kind: String) {
-    rewardTrophy(roomId: $roomId, user: $user, kind: $kind)
-  }
-`;
-
 
 export default function TrophyControls({ children, otherUserId }: Props): JSX.Element {
     const theme = useTheme();

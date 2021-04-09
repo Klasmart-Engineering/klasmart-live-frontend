@@ -39,6 +39,7 @@ import { MaterialTypename } from "../lessonMaterialContext";
 import { InteractiveModeState, Message, Session, StreamIdState } from "../pages/room/room";
 import ModeControls from "../pages/teacher/modeControls";
 import { RoomContext } from "../providers/RoomContext";
+import { WebRTCContext } from "../providers/WebRTCContext";
 import { SendMessage } from "../sendMessage";
 import { setColsObserve, setContentIndex, setDrawerOpen, setDrawerTabIndex } from "../store/reducers/control";
 import { State } from "../store/store";
@@ -301,9 +302,10 @@ function TabInnerContent({ title }: { title: string }) {
     const dispatch = useDispatch();
     const { camera, roomId, sessionId: localSessionId, materials, isTeacher: isLocalUserTeacher } = useContext(LocalSessionContext);
     const sessions = useContext(SessionsContext);
+    const sfuState = useContext(WebRTCContext);
+    const contentIndex = useSelector((store: State) => store.control.contentIndex);
     const colsCamera = useSelector((store: State) => store.control.colsCamera);
     const colsObserve = useSelector((store: State) => store.control.colsObserve);
-    const contentIndex = useSelector((store: State) => store.control.contentIndex);
     const [hostMutation] = useMutation(MUTATION_SET_HOST);
 
     useEffect(() => {
@@ -386,7 +388,7 @@ function TabInnerContent({ title }: { title: string }) {
                                     <Camera
                                         key={session.id}
                                         session={session}
-                                        mediaStream={webrtc.getCameraStream(session.id)}
+                                        mediaStream={sfuState.getCameraStream(session.id)}
                                         square
 
                                         // GridProps - You can find related props by searching the keyword '...other' in camera.tsx
