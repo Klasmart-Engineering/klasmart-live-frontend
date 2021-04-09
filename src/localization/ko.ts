@@ -50,7 +50,7 @@ const messages: Record<string, string> = {
     live_buttonScreen: "화면 공유",
     live_buttonStopFull: "웹캠 모드",
     live_buttonPresentFull: "발표자 모드",
-    live_buttonObserveFull: "관찰 모드",
+    live_buttonObserveFull: "학생관찰 모드",
     live_buttonScreenFull: "화면 공유",
     title_participants: "수업 참가자",
     title_lesson_plan: "수업 계획",

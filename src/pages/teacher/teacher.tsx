@@ -210,8 +210,8 @@ export function ObservationMode() {
 
     return (
         <>
-            <Typography variant="caption" color="textSecondary" gutterBottom>
-                <FormattedMessage id="student_mode" />
+            <Typography variant="caption" align="center" color="textSecondary" gutterBottom>
+                <FormattedMessage id="live_buttonObserveFull" />
             </Typography>
             <Grid container direction="row" spacing={1} item xs={12}>
                 {[...studentSessions.values()].filter(s => s.id !== sessionId).map(session =>
