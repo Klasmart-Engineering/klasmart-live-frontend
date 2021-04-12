@@ -1,4 +1,4 @@
-import { useMutation } from "@apollo/react-hooks";
+import { useMutation, useSubscription } from "@apollo/client";
 import Grid, { GridProps } from "@material-ui/core/Grid";
 import IconButton from '@material-ui/core/IconButton';
 import List from "@material-ui/core/List";
@@ -23,9 +23,9 @@ import { VideocamOff as CameraOffIcon } from "@styled-icons/material-twotone/Vid
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { useSelector } from "react-redux";
-import { LocalSessionContext } from "../../entry";
+import { LocalSessionContext, SFU_LINK } from "../../entry";
 import { Session } from "../../pages/room/room";
-import { MUTE, MuteNotification, WebRTCContext, WebRTCContextInterface } from "../../providers/WebRTCContext";
+import { MUTE, MuteNotification, SUBSCRIBE_GLOBAL_MUTE, WebRTCContext, WebRTCContextInterface } from "../../providers/WebRTCContext";
 import { State } from "../../store/store";
 import PermissionControls from "../../whiteboard/components/WBPermissionControls";
 import { SessionsContext } from "../layout";
@@ -33,8 +33,6 @@ import StyledIcon from "../styled/icon";
 import TrophyControls from "../trophies/trophyControls";
 
 
-import { useSubscription } from "@apollo/react-hooks";
-import { SUBSCRIBE_GLOBAL_MUTE } from "../../webRTCState";
 
 const PARTICIPANT_INFO_ZINDEX = 1;
 const ICON_ZINDEX = 2;
@@ -496,8 +494,8 @@ function ToggleCamera({ session, sfuState, isSelf, cameraRef }: {
     const [cameraOn, setCameraOn] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [isVideoManuallyDisabled, setIsVideoManuallyDisabled] = useState<boolean>(false);
-    const [muteMutation] = useMutation(MUTE);
-    const { data } = useSubscription(SUBSCRIBE_GLOBAL_MUTE);
+    const [muteMutation] = useMutation(MUTE, {context: {target: SFU_LINK}});
+    const { data } = useSubscription(SUBSCRIBE_GLOBAL_MUTE, {context: {target: SFU_LINK}});
 
     // NOTE: This is the logic for the frontend performance. If this logic goes well, we will restore it again.
     // const isCameraVisible = useIsElementInViewport(cameraRef);
@@ -594,8 +592,8 @@ function ToggleMic({ session, sfuState, isSelf }: {
     const { roomId, sessionId: localSessionId } = useContext(LocalSessionContext);
     const sessions = useContext(SessionsContext);
     const [micOn, setMicOn] = useState<boolean>(false);
-    const [muteMutation] = useMutation(MUTE);
-    const { data } = useSubscription(SUBSCRIBE_GLOBAL_MUTE);
+    const [muteMutation] = useMutation(MUTE, {context: {target: SFU_LINK}});
+    const { data } = useSubscription(SUBSCRIBE_GLOBAL_MUTE, {context: {target: SFU_LINK}});
 
     useEffect(() => {
         setMicOn(sfuState.isLocalAudioEnabled(session.id));

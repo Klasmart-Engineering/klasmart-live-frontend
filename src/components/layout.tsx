@@ -33,7 +33,7 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { useDispatch, useSelector } from "react-redux";
 import Camera, { getCameraOrder } from "../components/media/camera";
-import { LocalSessionContext } from "../entry";
+import { LIVE_LINK, LocalSessionContext } from "../entry";
 import { MaterialTypename } from "../lessonMaterialContext";
 import { InteractiveModeState, Message, Session, StreamIdState } from "../pages/room/room";
 import ModeControls from "../pages/teacher/modeControls";
@@ -305,7 +305,7 @@ function TabInnerContent({ title }: { title: string }) {
     const contentIndex = useSelector((store: State) => store.control.contentIndex);
     const colsCamera = useSelector((store: State) => store.control.colsCamera);
     const colsObserve = useSelector((store: State) => store.control.colsObserve);
-    const [hostMutation] = useMutation(MUTATION_SET_HOST);
+    const [hostMutation] = useMutation(MUTATION_SET_HOST, {context: {target: LIVE_LINK}});
 
     useEffect(() => {
         const teachers = [...sessions.values()].filter(session => session.isTeacher === true).sort((a, b) => a.joinedAt - b.joinedAt);

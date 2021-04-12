@@ -9,7 +9,7 @@ import { Star as StarIcon } from "@styled-icons/material/Star";
 import { ThumbUp as EncourageIcon } from "@styled-icons/material/ThumbUp";
 import React, { ReactChild, ReactChildren, useContext } from 'react';
 import StyledIcon from "../../components/styled/icon";
-import { LocalSessionContext } from '../../entry';
+import { LIVE_LINK, LocalSessionContext } from '../../entry';
 import { MUTATION_REWARD_TROPHY } from '../../webRTCState';
 import { getRandomKind } from './trophyKind';
 
@@ -23,7 +23,7 @@ export default function TrophyControls({ children, otherUserId }: Props): JSX.El
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
 
     const { roomId } = useContext(LocalSessionContext);
-    const [rewardTrophyMutation] = useMutation(MUTATION_REWARD_TROPHY);
+    const [rewardTrophyMutation] = useMutation(MUTATION_REWARD_TROPHY, {context: {target: LIVE_LINK}});
     const rewardTrophy = (user: string, kind: string) => rewardTrophyMutation({ variables: { roomId, user, kind } });
 
     return (

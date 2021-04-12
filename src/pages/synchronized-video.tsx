@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import { FFT } from "../components/fft";
 import ReactPlayer from "../components/react-player/lazy";
-import { LocalSessionContext } from "../entry";
+import { LIVE_LINK, LocalSessionContext, SFU_LINK } from "../entry";
 import { MaterialTypename } from "../lessonMaterialContext";
 import { videoUnmuteOverlay } from "../utils/layerValues";
 
@@ -165,6 +165,7 @@ export function ReplicaMedia(
                 }
             },
             variables: { roomId, sessionId },
+            context: {target: LIVE_LINK},
         }
     );
 
@@ -306,7 +307,9 @@ export function ReplicatedMedia(
         )
       }
     `
-    );
+    , {
+        context: {target: LIVE_LINK}
+    });
 
     useEffect(() => {
         // NOTE: Reset playing to false when the source changes.

@@ -1,11 +1,10 @@
-import { useSubscription } from "@apollo/react-hooks";
+import { gql, useSubscription } from "@apollo/client";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
-import { gql } from "apollo-boost";
 import React, { createContext, useContext, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import Loading from "../components/loading";
-import { LocalSessionContext } from "../entry";
+import { LIVE_LINK, LocalSessionContext } from "../entry";
 import { Content, Message, Session } from "../pages/room/room";
 
 const SUB_ROOM = gql`
@@ -62,7 +61,8 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
                 }
             }
         },
-        variables: { roomId, name }
+        variables: { roomId, name },
+        context: {target: LIVE_LINK},
     });
     
     const addMessage = (newMessage: Message) => {
@@ -74,17 +74,10 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
                 return newState;
             });
         }
-        setMessages(state => ({
-            ...state,
-            [newMessage.id]: newMessage,
-        }));
+        setMessages(prev => new Map(prev.set(newMessage.id, newMessage)));
     }
-    const userJoin = (join: Session) => {
-        setSessions(state => ({
-            ...state,
-            [join.id]: join,
-        }));
-    }
+    const userJoin = (join: Session) => setSessions(prev => new Map(prev.set(join.id, join)));
+
     const userLeave = (leave: Session) => {
         setSessions((prev) => {
             const newState = new Map(prev);

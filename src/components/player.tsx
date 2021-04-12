@@ -2,6 +2,7 @@ import { gql, useSubscription } from '@apollo/client'
 import { CircularProgress, Typography } from '@material-ui/core'
 import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
 import { FormattedMessage } from 'react-intl'
+import { LIVE_LINK } from '../entry'
 
 const SUB_EVENTS = gql`
   subscription stream($streamId: ID!) {
@@ -57,6 +58,7 @@ export function Player ({ streamId, frameProps, parentWidth, parentHeight, setPa
   const { loading, error } = useSubscription(SUB_EVENTS, {
     onSubscriptionData: e => sendEvent(e.subscriptionData.data.stream.event),
     variables: { streamId },
+    context: {target: LIVE_LINK},
   })
 
   useEffect(() => {

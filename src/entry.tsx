@@ -1,4 +1,5 @@
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
+import { RetryLink } from "@apollo/client/link/retry";
 import { WebSocketLink } from "@apollo/client/link/ws";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Grid from "@material-ui/core/Grid";
@@ -30,12 +31,47 @@ import { setUserAgent } from "./store/reducers/session";
 import { createDefaultStore } from "./store/store";
 import { themeProvider } from "./themeProvider";
 import { getDefaultLanguageCode, getLanguage } from "./utils/locale";
+
 LogRocket.init('8acm62/kidsloop-live-prod', {
     mergeIframes: true,
 });
 
 export const sessionId = uuid();
 
+export const SFU_LINK = "SFU_LINK";
+export const LIVE_LINK = "LIVE_LINK";
+
+function getApolloClient(roomId: string) {
+    const authToken = AuthTokenProvider.retrieveToken();
+    const directionalLink = new RetryLink().split(
+        (operation) => operation.getContext().target === LIVE_LINK,
+        new WebSocketLink({
+            uri:
+                process.env.ENDPOINT_WEBSOCKET ||
+                `${window.location.protocol === "https:" ? "wss" : "ws"}://${
+                    window.location.host
+                }/graphql`,
+            options: {
+                reconnect: true,
+                connectionParams: { authToken, sessionId },
+            },
+        }),
+        new WebSocketLink({
+            uri: `${window.location.protocol === "https:" ? "wss" : "ws"}://${
+                window.location.host
+            }/sfu/${roomId}`,
+            options: {
+                reconnect: true,
+                connectionParams: { authToken, sessionId },
+            },
+        }),
+    );
+
+    return new ApolloClient({
+            cache: new InMemoryCache(),
+            link: directionalLink
+        } as any)
+}
 
 Sentry.init({
     dsn: "https://9f4fca35be3b4b7ca970a126f26a5e54@o412774.ingest.sentry.io/5388813",
@@ -146,6 +182,7 @@ const params = parseToken();
 if (params && params.name) {
     LogRocket.identify(params.name, { sessionId })
 }
+const roomId = params ? params.roomId : "";
 function Entry() {
     const [camera, setCamera] = useState<MediaStream>();
     const [name, setName] = useState(params ? params.name : "");
@@ -172,6 +209,8 @@ function Entry() {
         isTeacher: params && params.isTeacher ? params.isTeacher : false,
         materials: params ? params.materials : null
     }), [camera, setCamera, name, setName, params]);
+
+    const apolloClient = getApolloClient(roomId)
 
     const dispatch = useDispatch();
     useEffect(() => {
@@ -213,10 +252,11 @@ if (
     || (!isIOS || !isIOS13) && isChrome // Support only Chrome in other OS
 ) {
     const { store, persistor } = createDefaultStore();
+    const apolloClient = getApolloClient(roomId)
     renderComponent = (
         <Provider store={store}>
             <PersistGate loading={null} persistor={persistor}>
-                <ApolloProvider client={client}>
+                <ApolloProvider client={apolloClient}>
                     <Entry />
                 </ApolloProvider>
             </PersistGate>

@@ -9,7 +9,7 @@ import Paper from "@material-ui/core/Paper";
 import { Send as SendIcon } from "@styled-icons/material-twotone/Send";
 import React, { useContext, useState } from "react";
 import { DRAWER_WIDTH } from "./components/layout";
-import { LocalSessionContext } from "./entry";
+import { LIVE_LINK, LocalSessionContext } from "./entry";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -48,7 +48,7 @@ const SEND_MESSAGE = gql`
 export function SendMessage(): JSX.Element {
     const classes = useStyles();
 
-    const [sendMessage, { loading }] = useMutation(SEND_MESSAGE);
+    const [sendMessage, { loading }] = useMutation(SEND_MESSAGE, {context: {target: LIVE_LINK}});
     const [message, setMessage] = useState("");
     const { roomId } = useContext(LocalSessionContext);
 

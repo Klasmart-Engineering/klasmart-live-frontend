@@ -11,7 +11,7 @@ import React, {
     useEffect,
     useState
 } from "react";
-import { LocalSessionContext } from "../../entry";
+import { LIVE_LINK, LocalSessionContext, SFU_LINK } from "../../entry";
 import { createEmptyPermissions, createPermissions, Permissions } from "../types/Permissions";
 
 export type PainterEventFunction = (payload: PainterEvent) => void
@@ -97,9 +97,9 @@ export const SynchronizedStateProvider: FunctionComponent<Props> = ({
         state: { eventSerializer, eventController },
     } = useSharedEventSerializer();
 
-    const [sendEventMutation] = useMutation(WHITEBOARD_SEND_EVENT);
-    const [sendDisplayMutation] = useMutation(WHITEBOARD_SEND_DISPLAY);
-    const [sendPermissionsMutation] = useMutation(WHITEBOARD_SEND_PERMISSIONS);
+    const [sendEventMutation] = useMutation(WHITEBOARD_SEND_EVENT, {context: {target: LIVE_LINK}});
+    const [sendDisplayMutation] = useMutation(WHITEBOARD_SEND_DISPLAY, {context: {target: LIVE_LINK}});
+    const [sendPermissionsMutation] = useMutation(WHITEBOARD_SEND_PERMISSIONS, {context: {target: LIVE_LINK}});
 
     const { loading: eventsLoading } = useSubscription(SUBSCRIBE_WHITEBOARD_EVENTS, {
         onSubscriptionData: ({ subscriptionData: { data: { whiteboardEvents } } }) => {
@@ -108,7 +108,9 @@ export const SynchronizedStateProvider: FunctionComponent<Props> = ({
 
                 eventController.handlePainterEvent(whiteboardEvents);
             }
-        }, variables: { roomId }
+        },
+        variables: { roomId },
+        context: {target: LIVE_LINK},
     });
 
     const { loading: stateLoading } = useSubscription(SUBSCRIBE_WHITEBOARD_STATE, {
@@ -116,7 +118,9 @@ export const SynchronizedStateProvider: FunctionComponent<Props> = ({
             if (whiteboardState) {
                 setDisplay(whiteboardState.display);
             }
-        }, variables: { roomId }
+        },
+        variables: { roomId },
+        context: {target: LIVE_LINK},
     });
 
     const { loading: permissionsLoading } = useSubscription(SUBSCRIBE_WHITEBOARD_PERMISSIONS, {
@@ -128,7 +132,9 @@ export const SynchronizedStateProvider: FunctionComponent<Props> = ({
                 setUserPermissions(userPermissions);
                 setSelfPermissions(permissions);
             }
-        }, variables: { roomId, userId: sessionId }
+        },
+        variables: { roomId, userId: sessionId },
+    context: {target: LIVE_LINK},
     });
 
     const refetchEvents = useCallback(() => {
