@@ -29,6 +29,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 			duration: theme.transitions.duration.shortest,
 		}),
 		border: 0,
+		background: 'transparent'
 	},
 	styledDrawerInner: {
 		borderRadius: 12,
@@ -65,7 +66,6 @@ function StyledDrawer(props: StyledDrawerProps) {
 			}}
 			BackdropProps={{ style: { position: "absolute" } }}
 			ModalProps={{
-				container: document.getElementById("main-content"),
 				style: { position: "absolute" },
 			}}
 			variant="persistent"

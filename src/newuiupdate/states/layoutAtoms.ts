@@ -94,6 +94,11 @@ export const materialActiveIndexState = atom<number>({
 	default: 0,
 });
 
+export const mosaicViewSizeState = atom<number>({
+	key: "mosaicViewSizeState",
+	default: 4,
+});
+
 
 // TEMPORARY, TO DELETE WHEN REAL DATA
 export const usersState = atom({
@@ -336,76 +341,76 @@ export const usersState = atom({
 		isPinned: false,
 		isSpeaking : false
 	},
-	{
-		id: 4353,
-		name: 'The second student',
-		role: 'student',
-		hasControls: false,
-		hasVideo: false,
-		hasAudio: true,
-		isSelfAudioMuted : false,
-		isSelfVideoMuted : false,
-		isTeacherAudioMuted : false,
-		isTeacherVideoMuted : false,
-		isPinned: false,
-		isSpeaking : false
-	},
-	{
-		id: 43535,
-		name: 'The second student',
-		role: 'student',
-		hasControls: false,
-		hasVideo: false,
-		hasAudio: true,
-		isSelfAudioMuted : false,
-		isSelfVideoMuted : false,
-		isTeacherAudioMuted : false,
-		isTeacherVideoMuted : false,
-		isPinned: false,
-		isSpeaking : false
-	},
-	{
-		id: 435353333,
-		name: 'The second student',
-		role: 'student',
-		hasControls: false,
-		hasVideo: false,
-		hasAudio: true,
-		isSelfAudioMuted : false,
-		isSelfVideoMuted : false,
-		isTeacherAudioMuted : false,
-		isTeacherVideoMuted : false,
-		isPinned: false,
-		isSpeaking : false
-	},
-	{
-		id: 425225,
-		name: 'The second student',
-		role: 'student',
-		hasControls: false,
-		hasVideo: false,
-		hasAudio: true,
-		isSelfAudioMuted : false,
-		isSelfVideoMuted : false,
-		isTeacherAudioMuted : false,
-		isTeacherVideoMuted : false,
-		isPinned: false,
-		isSpeaking : false
-	},
-	{
-		id: 4522522,
-		name: 'The second student',
-		role: 'student',
-		hasControls: false,
-		hasVideo: false,
-		hasAudio: true,
-		isSelfAudioMuted : false,
-		isSelfVideoMuted : false,
-		isTeacherAudioMuted : false,
-		isTeacherVideoMuted : false,
-		isPinned: false,
-		isSpeaking : false
-	}
+	// {
+	// 	id: 4353,
+	// 	name: 'The second student',
+	// 	role: 'student',
+	// 	hasControls: false,
+	// 	hasVideo: false,
+	// 	hasAudio: true,
+	// 	isSelfAudioMuted : false,
+	// 	isSelfVideoMuted : false,
+	// 	isTeacherAudioMuted : false,
+	// 	isTeacherVideoMuted : false,
+	// 	isPinned: false,
+	// 	isSpeaking : false
+	// },
+	// {
+	// 	id: 43535,
+	// 	name: 'The second student',
+	// 	role: 'student',
+	// 	hasControls: false,
+	// 	hasVideo: false,
+	// 	hasAudio: true,
+	// 	isSelfAudioMuted : false,
+	// 	isSelfVideoMuted : false,
+	// 	isTeacherAudioMuted : false,
+	// 	isTeacherVideoMuted : false,
+	// 	isPinned: false,
+	// 	isSpeaking : false
+	// },
+	// {
+	// 	id: 435353333,
+	// 	name: 'The second student',
+	// 	role: 'student',
+	// 	hasControls: false,
+	// 	hasVideo: false,
+	// 	hasAudio: true,
+	// 	isSelfAudioMuted : false,
+	// 	isSelfVideoMuted : false,
+	// 	isTeacherAudioMuted : false,
+	// 	isTeacherVideoMuted : false,
+	// 	isPinned: false,
+	// 	isSpeaking : false
+	// },
+	// {
+	// 	id: 425225,
+	// 	name: 'The second student',
+	// 	role: 'student',
+	// 	hasControls: false,
+	// 	hasVideo: false,
+	// 	hasAudio: true,
+	// 	isSelfAudioMuted : false,
+	// 	isSelfVideoMuted : false,
+	// 	isTeacherAudioMuted : false,
+	// 	isTeacherVideoMuted : false,
+	// 	isPinned: false,
+	// 	isSpeaking : false
+	// },
+	// {
+	// 	id: 4522522,
+	// 	name: 'The second student',
+	// 	role: 'student',
+	// 	hasControls: false,
+	// 	hasVideo: false,
+	// 	hasAudio: true,
+	// 	isSelfAudioMuted : false,
+	// 	isSelfVideoMuted : false,
+	// 	isTeacherAudioMuted : false,
+	// 	isTeacherVideoMuted : false,
+	// 	isPinned: false,
+	// 	isSpeaking : false
+	// }
 ],
 });
 
