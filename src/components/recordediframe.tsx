@@ -14,7 +14,7 @@ import EccoSpinner2 from "../assets/img/spinner/ecco2_spinner.gif";
 import GhostSpinner from "../assets/img/spinner/ghost_spinner.gif";
 import JessSpinner1 from "../assets/img/spinner/jess1_spinner.gif";
 import MimiSpinner1 from "../assets/img/spinner/mimi1_spinner.gif";
-import { LocalSessionContext } from "../entry";
+import { LIVE_LINK, LocalSessionContext } from "../entry";
 import { State } from "../store/store";
 import { loadingActivity } from "../utils/layerValues";
 import { useWindowSize } from "../utils/viewport";
@@ -48,7 +48,7 @@ export function RecordedIframe(props: Props): JSX.Element {
     const { roomId } = useContext(LocalSessionContext);
     const drawerOpen = useSelector((state: State) => state.control.drawerOpen);
     const { contentId, setStreamId, square } = props;
-    const [sendStreamId] = useMutation(SET_STREAMID);
+    const [sendStreamId] = useMutation(SET_STREAMID, {context: {target: LIVE_LINK}});
 
     const [transformScale, setTransformScale] = useState<number>(1);
     const [openDialog, setOpenDialog] = useState(true);

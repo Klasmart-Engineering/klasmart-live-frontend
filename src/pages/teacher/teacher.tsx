@@ -15,7 +15,7 @@ import { FormattedMessage } from "react-intl";
 import { useSelector } from "react-redux";
 import { PreviewPlayer } from "../../components/previewPlayer";
 import { RecordedIframe } from "../../components/recordediframe";
-import { LocalSessionContext } from "../../entry";
+import { LIVE_LINK, LocalSessionContext } from "../../entry";
 import { MaterialTypename } from "../../lessonMaterialContext";
 import { RoomContext } from "../../providers/RoomContext";
 import { State } from "../../store/store";
@@ -110,7 +110,7 @@ export function Teacher(props: Props): JSX.Element {
         setRootDivHeight(rootDivRef.current.clientHeight);
     }, [rootDivRef.current]);
 
-    const [showContent, { loading }] = useMutation(MUT_SHOW_CONTENT);
+    const [showContent, { loading }] = useMutation(MUT_SHOW_CONTENT, {context: {target: LIVE_LINK}});
 
     useEffect(() => {
         if (interactiveMode === InteractiveMode.Blank) {

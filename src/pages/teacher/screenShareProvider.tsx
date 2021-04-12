@@ -33,7 +33,7 @@ export const ScreenShareProvider = (props: {children: React.ReactNode}) => {
             await stop();
             const stream = await ((navigator.mediaDevices as any).getDisplayMedia({audio: true, video: true}) as Promise<MediaStream>);
             setStream(stream)
-            const auxStreams= await transmitStream("aux", stream, false)
+            const auxStreams= await sfuState.transmitStream("aux", stream, false)
             setProducers(auxStreams)
         } catch(e) {
             console.log(e)

@@ -1,41 +1,37 @@
 // @ts-ignore
-import { ApolloProvider, useMutation, useSubscription } from "@apollo/react-hooks";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import { ApolloClient, gql, InMemoryCache } from "apollo-boost";
-import { WebSocketLink } from "apollo-link-ws";
+import { gql, useMutation, useSubscription } from "@apollo/client";
 import {
     Device,
     types as MediaSoup
 } from "mediasoup-client";
 import { Producer, ProducerOptions } from "mediasoup-client/lib/Producer";
-import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { LocalSessionContext } from "../entry";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { LocalSessionContext, SFU_LINK } from "../entry";
 import { PrePromise, Resolver } from "../resolver";
-import { AuthTokenProvider } from "../services/auth-token/AuthTokenProvider";
 
 const callstats: any = require('callstats-js/callstats.min');
 
-export const SEND_RTP_CAPABILITIES = gql`
+const SEND_RTP_CAPABILITIES = gql`
     mutation rtpCapabilities($rtpCapabilities: String!) {
         rtpCapabilities(rtpCapabilities: $rtpCapabilities)
     }
 `;
-export const TRANSPORT = gql`
+const TRANSPORT = gql`
     mutation transport($producer: Boolean!, $params: String!) {
         transport(producer: $producer, params: $params)
     }
 `;
-export const PRODUCER = gql`
+const PRODUCER = gql`
     mutation producer($params: String!) {
         producer(params: $params)
     }
 `;
-export const CONSUMER = gql`
+const CONSUMER = gql`
     mutation consumer($id: String!, $pause: Boolean) {
         consumer(id: $id, pause: $pause)
     }
 `;
-export const STREAM = gql`
+const STREAM = gql`
     mutation stream($id: String!, $producerIds: [String]!) {
         stream(id: $id, producerIds: $producerIds)
     }
@@ -45,7 +41,7 @@ export const MUTE = gql`
         mute(roomId: $roomId, sessionId: $sessionId, audio: $audio, video: $video)
     }
 `;
-export const GLOBAL_MUTE = gql`
+export const GLOBAL_MUTE_MUTATION = gql`
     mutation globalMute($roomId: String!, $audioGloballyMuted: Boolean, $videoGloballyDisabled: Boolean) {
         globalMute(roomId: $roomId, audioGloballyMuted: $audioGloballyMuted, videoGloballyDisabled: $videoGloballyDisabled)
     }
@@ -55,6 +51,16 @@ export const ENDCLASS = gql`
         endClass(roomId: $roomId)
     }
 `;
+export const SUBSCRIBE_GLOBAL_MUTE = gql`
+    subscription media($roomId: ID!) {
+            globalMute {
+                roomId,
+                audioGloballyMuted,
+                videoGloballyDisabled,
+            },
+        }
+`;
+
 const SUBSCRIBE = gql`
     subscription media($roomId: ID!) {
         media(roomId: $roomId) {
@@ -108,15 +114,17 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
     const [consumers, setConsumers] = useState<Map<string, MediaSoup.Consumer>>(new Map<string, MediaSoup.Consumer>());
     const [inboundStreams, setInboundStreams] = useState<Map<string, StreamDescription>>(new Map<string, StreamDescription>());
     const [outboundStreams, setOutboundStreams] = useState<Map<string, Stream>>(new Map<string, Stream>());
-    const [audioGloballyMuted, setAudioGloballyMuted] = useState<boolean>(false);
-    const [videoGloballyDisabled, setVideoGloballyDisabled] = useState<boolean>(false);
     const [destructors, setDestructors] = useState<Map<string, () => any>>(new Map<string, () => any>());
 
-    const [rtpCapabilitiesMutation] = useMutation(SEND_RTP_CAPABILITIES);
-    const [transportMutation] = useMutation(TRANSPORT);
-    const [producerMutation] = useMutation(PRODUCER);
-    const [consumerMutation] = useMutation(CONSUMER);
-    const [streamMutation] = useMutation(STREAM);
+    const [devicePrePromise, setDevicePrePremise] = useState<PrePromise<Device>>(Resolver<Device>());
+    const [producerTransportPrePromise, setProducerTransportPrePromise] = useState<PrePromise<MediaSoup.Transport>>(Resolver<MediaSoup.Transport>());
+    const [consumerTransportPrePromise, setConsumerTransportPrePromise] = useState<PrePromise<MediaSoup.Transport>>(Resolver<MediaSoup.Transport>());
+
+    const [rtpCapabilitiesMutation] = useMutation(SEND_RTP_CAPABILITIES, {context: {target: SFU_LINK}});
+    const [transportMutation] = useMutation(TRANSPORT, {context: {target: SFU_LINK}});
+    const [producerMutation] = useMutation(PRODUCER, {context: {target: SFU_LINK}});
+    const [consumerMutation] = useMutation(CONSUMER, {context: {target: SFU_LINK}});
+    const [streamMutation] = useMutation(STREAM, {context: {target: SFU_LINK}});
     // const [endClassMutation] = useMutation(ENDCLASS);
 
     const getStream = (id: string) => {
@@ -151,7 +159,7 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
         const transport = await initProducerTransport()
         console.log(`Transport`)
         const tracks = stream.getTracks()
-        const producers = []
+        const producers: Producer[] = []
         let producer: Producer
         for (const track of tracks) {
             const params = {track} as ProducerOptions
@@ -191,17 +199,12 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
                 params.encodings = [{ dtx: true }]
                 producer = await transport.produce(params)
             }
-            destructors.set(producer.id, () => producer.close())
+            setDestructors(new Map(destructors.set(producer.id, () => producer.close())));
             producers.push(producer)
         }
         console.log(`Got producers`)
         console.log(producers)
-        outboundStreams.set(id, {
-            id,
-            producers,
-            audioEnabled: true,
-            videoEnabled: true,
-        })
+        setOutboundStreams(new Map(outboundStreams.set(id, {id, producers, audioEnabled: true, videoEnabled: true})));
         const producerIds = []
         for (const producer of producers) {
             if (producer) {
@@ -246,11 +249,7 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
             }
             if (stream.audioEnabled !== enabled) {
                 stream.audioEnabled = enabled
-                stream.audioEnabled = enabled
-                setOutboundStreams(state => ({
-                    ...state,
-                    [stream.id]: stream,
-                }));
+                setOutboundStreams(new Map(outboundStreams.set(stream.id, stream)));
             }
 
             for (const producer of stream.producers) {
@@ -277,10 +276,7 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
             }
             if (stream.audioEnabled !== enabled) {
                 stream.audioEnabled = enabled
-                setInboundStreams(state => ({
-                    ...state,
-                    [stream.id]: stream,
-                }));
+                setInboundStreams(new Map(inboundStreams.set(stream.id, stream)));
             }
 
             for (const track of tracks) {
@@ -321,10 +317,7 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
             console.log("videoEnabled", stream.videoEnabled)
             if (stream.videoEnabled !== enabled) {
                 stream.videoEnabled = enabled
-                setOutboundStreams(state => ({
-                    ...state,
-                    [stream.id]: stream,
-                }));
+                setOutboundStreams(new Map(outboundStreams.set(stream.id, stream)));
             }
 
             for (const producer of stream.producers) {
@@ -358,10 +351,7 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
             if (stream.videoEnabled !== enabled) {
                 console.log("videoEnabled", stream.videoEnabled)
                 stream.videoEnabled = enabled
-                setInboundStreams(state => ({
-                    ...state,
-                    [stream.id]: stream,
-                }));
+                setInboundStreams(new Map(inboundStreams.set(stream.id, stream)));
             }
 
             for (const track of tracks) {
@@ -377,7 +367,7 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
         if (device) {
             return device
         }
-        const { promise } = await Resolver<Device>()
+        const { promise } = await devicePrePromise 
         return promise
     }
 
@@ -385,7 +375,7 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
         if (producerTransport) {
             return producerTransport
         }
-        const { promise } = await Resolver<MediaSoup.Transport>()
+        const { promise } = await producerTransportPrePromise
         return promise
     }
 
@@ -394,7 +384,7 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
         if (consumerTransport) {
             return consumerTransport
         }
-        const { promise } = await Resolver<MediaSoup.Transport>()
+        const { promise } = await consumerTransportPrePromise
         return promise
     }
 
@@ -406,10 +396,7 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
         let prePromise = consumerPrePromises.get(producerId)
         if (!prePromise) {
             prePromise = Resolver<MediaSoup.Consumer>()
-            setConsumerPrePromises(state => ({
-                ...state,
-                [producerId]: prePromise,
-            }));
+            setConsumerPrePromises(new Map(consumerPrePromises.set(producerId, prePromise)));
         }
         const { promise } = await prePromise
         return promise
@@ -432,7 +419,7 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
         await webRTCDevice.load({ routerRtpCapabilities })
         const rtpCapabilities = JSON.stringify(webRTCDevice.rtpCapabilities)
         await rtpCapabilitiesMutation({ variables: { rtpCapabilities } })
-        const { resolver } = await Resolver<Device>()
+        const { resolver } = await devicePrePromise;
         setDevice(webRTCDevice);
         resolver(webRTCDevice)
     }
@@ -456,13 +443,10 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
 
         attachCallstatsFabric(transport, params, roomId, callstats.transmissionDirection.sendonly)
 
-        setDestructors(state => ({
-            ...state,
-            [transport.id]: () => {
-                terminateCallstatsFabric(transport, roomId)
-                transport.close()
-            },
-        }));
+        setDestructors(new Map(destructors.set(transport.id, () => {
+            terminateCallstatsFabric(transport, roomId)
+            transport.close()
+        })));
 
         transport.on("connect", async (connectParams, callback, errback) => {
             try {
@@ -501,7 +485,7 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
         )
 
         console.log("Producer: resolve")
-        const { resolver } = await Resolver<MediaSoup.Transport>()
+        const { resolver } = await producerTransportPrePromise
         setProducerTransport(transport)
         resolver(transport)
         console.log("Producer: resolved")
@@ -526,13 +510,10 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
 
         attachCallstatsFabric(transport, params, roomId, callstats.transmissionDirection.receiveonly);
 
-        setDestructors(state => ({
-            ...state,
-            [transport.id]: () => {
-                terminateCallstatsFabric(transport, roomId)
-                transport.close()
-            },
-        }));
+        setDestructors(new Map(destructors.set(transport.id, () => {
+            terminateCallstatsFabric(transport, roomId)
+            transport.close()
+        })));
 
         transport.on("connect", async (connectParams, callback, errback) => {
             console.log("Consumer: connect")
@@ -554,7 +535,7 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
         })
 
         console.log("Consumer: resolve")
-        const { resolver } = await Resolver<MediaSoup.Transport>()
+        const { resolver } = await consumerTransportPrePromise
         setConsumerTransport(transport)
         resolver(transport)
     }
@@ -609,15 +590,16 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
         console.log("Consumer message")
         const params = JSON.parse(consumerParams)
 
-        const device = await initDevice();
         const transport = await initConsumerTransport()
         console.log("Consumer wait")
         const consumer = await transport.consume(params)
-        destructors.set(consumer.id, () => consumer.close())
+        setDestructors(new Map(destructors.set(consumer.id, () => {
+            consumer.close()
+        })));
         console.log("Consumer unpause")
         consumerMutation({ variables: { id: consumer.id, pause: false } })
-        tracks.set(consumer.producerId, consumer.track)
-        consumers.set(consumer.producerId, consumer)
+        setTracks(new Map(tracks.set(consumer.producerId, consumer.track)));
+        setConsumers(new Map(consumers.set(consumer.producerId, consumer)));
         const prePromise = consumerPrePromises.get(consumer.producerId)
         if (prePromise) {
             const { resolver } = await prePromise
@@ -634,17 +616,14 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
             producerIds
         } = stream
         Object.assign(stream, { videoEnabled: true, audioEnabled: true })
-        inboundStreams.set(`${sessionId}_${id}`, stream)
+        setInboundStreams(new Map(inboundStreams.set(`${sessionId}_${id}`, stream)));
         const tracks = [] as MediaStreamTrack[]
         for (const producerId of producerIds) {
             const consumer = await getConsumer(producerId)
             tracks.push(consumer.track)
         }
         stream.stream = new MediaStream(tracks)
-        setInboundStreams(state => ({
-            ...state,
-            [stream.id]: stream,
-        }));
+        setInboundStreams(new Map(inboundStreams.set(stream.id, stream)));
     }
 
     const muteMessage = (muteNotification: MuteNotification) => {
@@ -750,7 +729,8 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
                 muteMessage(mute)
             }
         },
-        variables: { roomId }
+        variables: { roomId },
+        context: {target: SFU_LINK}
     })
 
     useEffect(() => {
