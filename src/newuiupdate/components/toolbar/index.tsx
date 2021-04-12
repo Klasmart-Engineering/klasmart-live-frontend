@@ -14,6 +14,8 @@ import { Eye as ObserveIcon } from "@styled-icons/fa-regular/Eye";
 import { PresentationChartBar as PresentIcon } from "@styled-icons/heroicons-solid/PresentationChartBar";
 import PhoneInTalkIcon from "@material-ui/icons/PhoneInTalk";
 
+import clsx from "clsx";
+
 import ToolbarItem from "./toolbarItem";
 import ToolbarItemCall from "./toolbarItemCall";
 import ToolbarItemMicrophone from "./toolbarItemMicrophone";
@@ -36,14 +38,23 @@ import {
 	isClassDetailsOpenState,
 	viewModeState,
 	isActiveGlobalScreenshareState,
+	activeTabState
 } from "../../states/layoutAtoms";
 
 
 const useStyles = makeStyles((theme: Theme) => ({
 	root: {
 		padding: 10,
-		paddingTop: 0,
+		marginTop: -10,
 		justifyContent: "space-between",
+		color: theme.palette.text.primary,
+	},
+	rootMosaic:{
+		width: '80%',
+		margin : '0 auto',
+		backgroundColor: 'rgba(45,55,70,0.30)',
+		borderRadius: 20,
+		color: '#fff'
 	},
 	iconGroup: {
 		display: "flex",
@@ -70,6 +81,7 @@ function Toolbar() {
 		isViewModesOpenState
 	);
 	const [isPinUserOpen, setIsPinUserOpen] = useRecoilState(isPinUserOpenState);
+	const [activeTab, setActiveTab] = useRecoilState(activeTabState);
 	const [isChatOpen, setIsChatOpen] = useRecoilState(isChatOpenState);
 	const [isClassDetailsOpen, setIsClassDetailsOpen] = useRecoilState(
 		isClassDetailsOpenState
@@ -122,12 +134,14 @@ function Toolbar() {
 
 	return (
 		<>
-			<Grid container className={classes.root}>
+			<Grid container className={clsx(classes.root, {[classes.rootMosaic] : activeTab === "mosaic"})}>
 				<Grid item className={classes.iconGroup}>
 					<ToolbarItem
 						icon={<InfoIcon />}
 						label="Class Name"
 						active={isClassDetailsOpen}
+						disabled={Boolean(handleDisabledItem('classDetails'))}
+						tooltip={handleDisabledItem('classDetails')}
 						onClick={(e: Event) => {
 							resetDrawers();
 							setClassDetailsEl(e.currentTarget);
@@ -138,6 +152,8 @@ function Toolbar() {
 						icon={<CanvasIcon />}
 						label="Canvas"
 						active={isCanvasOpen}
+						disabled={Boolean(handleDisabledItem('canvas'))}
+						tooltip={handleDisabledItem('canvas')}
 						onClick={(e: Event) => {
 							resetDrawers();
 							setCanvasEl(e.currentTarget);
@@ -166,6 +182,8 @@ function Toolbar() {
 					<ToolbarItem
 						icon={<GlobalActionsIcon />}
 						label="Global actions"
+						disabled={Boolean(handleDisabledItem('globalActions'))}
+						tooltip={handleDisabledItem('globalActions')}
 						active={isGlobalActionsOpen}
 						onClick={(e: Event) => {
 							resetDrawers();
@@ -176,6 +194,8 @@ function Toolbar() {
 					<ToolbarItem
 						icon={<LessonPlanIcon />}
 						label="Lesson Plan"
+						disabled={Boolean(handleDisabledItem('lessonPlan'))}
+						tooltip={handleDisabledItem('lessonPlan')}
 						active={isLessonPlanOpen}
 						onClick={() => {
 							resetDrawers();
@@ -187,15 +207,16 @@ function Toolbar() {
 						label="View modes"
 						active={isViewModesOpen}
 						badge={viewModesBadge}
-						disabled={isActiveGlobalScreenshare}
-						tooltip={isActiveGlobalScreenshare && 'View modes are not available when screenshare is active'}
+						disabled={Boolean(handleViewModesDisabled())}
+						tooltip={handleViewModesDisabled()}
 						onClick={(e: Event) => {
 							resetDrawers();
 							setViewModesEl(e.currentTarget);
 							setIsViewModesOpen(!isViewModesOpen);
 						}}
 					/>
-					<ToolbarItem
+
+					{/* <ToolbarItem
 						icon={<PinUserIcon />}
 						label="Pin User"
 						active={isPinUserOpen}
@@ -205,7 +226,8 @@ function Toolbar() {
 							resetDrawers();
 							setIsPinUserOpen(!isPinUserOpen);
 						}}
-					/>
+					/> */}
+
 					<ToolbarItem
 						icon={<ChatIcon />}
 						label="Chat"
@@ -229,3 +251,42 @@ function Toolbar() {
 }
 
 export default Toolbar;
+
+
+function handleViewModesDisabled(){
+	const [isActiveGlobalScreenshare, setIsActiveGlobalScreenshare] = useRecoilState( isActiveGlobalScreenshareState);
+	const [activeTab, setActiveTab] = useRecoilState(activeTabState);
+
+	if(isActiveGlobalScreenshare){
+		return 'View modes are not available when screenshare is active'
+	} 
+
+	if(activeTab === 'mosaic'){
+		return 'View modes are not available in mosaic mode'
+	} 
+}
+
+
+function handleDisabledItem(item: string){
+	const [isActiveGlobalScreenshare, setIsActiveGlobalScreenshare] = useRecoilState( isActiveGlobalScreenshareState);
+	const [activeTab, setActiveTab] = useRecoilState(activeTabState);
+
+	const tooltips:any = {
+		'classDetails': {
+			mosaic: 'Class details are not available in mosaic mode'
+		},
+		'canvas': {
+			mosaic: 'Canvas is not available in mosaic mode'
+		},
+		'lessonPlan': {
+			mosaic: 'Lesson plan is not available in mosaic mode'
+		},
+		'viewModes': {
+			mosaic: 'View modes are not available in mosaic mode'
+		}
+	}
+
+	if(activeTab === 'mosaic' && tooltips[item]?.mosaic !== undefined){return tooltips[item].mosaic}
+
+	return('')
+}

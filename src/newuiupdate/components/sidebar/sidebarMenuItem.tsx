@@ -7,14 +7,15 @@ import { activeTabState } from "../../states/layoutAtoms";
 
 const useStyles = makeStyles((theme: Theme) => ({
 	root: {
-		padding: "14px 0",
+		padding: "12px 0",
 		border: 0,
 		borderRadius: 0,
 		color: theme.palette.grey[500],
 		position: "relative",
+		minWidth: 50,
 		"& svg":{
-			height: 24,
-			width: 24,
+			height: 22,
+			width: 22,
 		},
 		"&:after": {
 			content: "''",

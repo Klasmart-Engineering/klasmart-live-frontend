@@ -6,6 +6,10 @@ import MainDrawer from "./mainDrawer";
 import Toolbar from "../toolbar";
 import CanvasDrawer from "./canvasDrawer";
 
+import { useRecoilState } from "recoil";
+import { activeTabState } from "../../states/layoutAtoms";
+
+
 const useStyles = makeStyles((theme: Theme) => ({
 	fullHeight: {},
 	mainViewContainer: {
@@ -24,6 +28,9 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 function Main() {
 	const classes = useStyles();
+	const [activeTab, setActiveTab] = useRecoilState(activeTabState);
+	
+	if(activeTab !== 'participants'){return(null)}
 
 	return (
 		<Grid container direction="column" style={{ height: "100vh" }}>
@@ -32,7 +39,6 @@ function Main() {
 					<Grid container id="main-content">
 						<Grid item xs>
 							<MainView />
-							<CanvasDrawer />
 						</Grid>
 						<Grid item className={classes.mainViewDrawer}>
 							<MainDrawer />
