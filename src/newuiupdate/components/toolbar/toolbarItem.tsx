@@ -4,6 +4,9 @@ import { makeStyles, useTheme, Box, Grid, Theme, Typography, Badge, Tooltip } fr
 
 import amber from "@material-ui/core/colors/amber";
 
+import { useRecoilState } from "recoil";
+import { activeTabState } from "../../states/layoutAtoms";
+
 const useStyles = makeStyles((theme: Theme) => ({
 	root: {
 		display: "flex",
@@ -15,13 +18,17 @@ const useStyles = makeStyles((theme: Theme) => ({
 		margin: "0 4px",
 		transition: "all 100ms ease-in-out",
 		position: 'relative',
-		color: theme.palette.text.primary,
 		"&:hover": {
 			backgroundColor: "#e2e7ec",
 		},
 		"& > svg":{
 			height: 25,
 		}
+	},
+	rootMosaic:{
+		"&:hover": {
+			backgroundColor: 'rgba(60, 70, 80, 0.5)',
+		},
 	},
 	active: {
 		backgroundColor: "#B4CDED",
@@ -76,6 +83,7 @@ function ToolbarItem(props: ToolbarItemProps) {
 	const { icon, label, onClick, disabled, active, badge, tooltip = false} = props;
 	const classes = useStyles();
 	const hasTooltip = tooltip ? true : false;
+	const [activeTab, setActiveTab] = useRecoilState(activeTabState);
 
 	return (
 		<>
@@ -83,9 +91,11 @@ function ToolbarItem(props: ToolbarItemProps) {
 				<div>
 					<Box
 						className={clsx(
-							classes.root,
-							disabled && classes.disabled,
-							active && classes.active
+							classes.root,{
+								[classes.rootMosaic] : activeTab === 'mosaic',
+								[classes.active] : active,
+								[classes.disabled] : disabled,
+							}
 						)}
 						onClick={onClick}
 					>
@@ -93,7 +103,7 @@ function ToolbarItem(props: ToolbarItemProps) {
 						<Badge
 							classes={{ badge: classes.badge, root: classes.badgeRoot }}
 							badgeContent={<Box className={classes.badgeContent}>{badge}</Box>}
-						></Badge>
+						/>
 					)}
 					{icon}
 					{label && <Typography className={classes.label}>{label}</Typography>}

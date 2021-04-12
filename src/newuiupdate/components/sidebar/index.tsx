@@ -25,12 +25,13 @@ const useStyles = makeStyles((theme: Theme) => ({
 		}),
 		border: 0,
 	},
-	tabContainer: {
+	fullheight: {
 		height: "100%",
 	},
 	tabNav: {
 		display: "flex",
 		flexDirection: "column",
+		overflow: 'hidden'
 	},
 	tabInner: {
 		backgroundColor: theme.palette.background.default,
@@ -61,11 +62,18 @@ const sidebarTabs = [
 
 function Sidebar() {
 	const [activeTab, setActiveTab] = useRecoilState(activeTabState);
-	const [drawerWidth, setDrawerWidth] = useState<any>(340);
+	const [drawerWidth, setDrawerWidth] = useState<any>(440);
 	const classes = useStyles();
 
+	const [transitionEnded, setTransitionEnded] = useState(false);
+    useEffect(()=> {
+        setTransitionEnded(false); 
+        setTimeout(function(){ setTransitionEnded(true) }, 350)
+    }, [activeTab]);
+
+
 	useEffect(() => {
-		activeTab !== "participants" ? setDrawerWidth("100%") : setDrawerWidth(340);
+		activeTab !== "participants" ? setDrawerWidth("100%") : setDrawerWidth(440);
 	}, [activeTab]);
 
 	return (
@@ -75,13 +83,14 @@ function Sidebar() {
 			open={true}
 			classes={{ root: classes.drawer, paper: classes.drawerPaper }}
 			style={{ width: drawerWidth }}
+			transitionDuration={0}
 			PaperProps={{
 				style: {
 					width: drawerWidth,
 				},
 			}}
 		>
-			<Grid container className={classes.tabContainer}>
+			<Grid container className={classes.fullheight}>
 				<Grid item className={classes.tabNav}>
 					{sidebarTabs.map((sidebarTab) => (
 						<SidebarMenuItem
@@ -96,7 +105,9 @@ function Sidebar() {
 					{sidebarTabs.map(
 						(sidebarTab) =>
 							activeTab == sidebarTab.name && (
-								<div key={sidebarTab.id}>{sidebarTab.content}</div>
+								<div key={sidebarTab.id} className={classes.fullheight}>
+									{transitionEnded && sidebarTab.content}
+								</div>
 							)
 					)}
 				</Grid>

@@ -21,8 +21,23 @@ import { usersState } from "../../../../states/layoutAtoms";
 
 const useStyles = makeStyles((theme: Theme) => ({
 	root: {
-
+        maxWidth: '600px'
 	},
+    accordion:{
+        borderRadius: 12,
+        "&$expanded":{
+            backgroundColor: theme.palette.grey[100]
+        },
+        "&:hover":{
+            backgroundColor: theme.palette.grey[100]
+        },
+        "&:before":{
+            display: 'none'
+        },
+        "&:after":{
+            display: 'none'
+        },
+    },
 	detailsLabel:{
 		color: theme.palette.text.primary,
 		paddingRight: 30,
@@ -42,6 +57,11 @@ const useStyles = makeStyles((theme: Theme) => ({
         textAlign: 'center',
         borderRadius: 20,
         marginLeft: 20
+    },
+    gridUsers:{
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr 1fr',
+        gridGap: 15
     },
     userItem:{
         marginRight: 15,
@@ -76,8 +96,8 @@ function ClassRoster() {
     };
 
 	return (
-        <div>
-            <Accordion elevation={0} onChange={resetPosition}>
+        <div className={classes.root}>
+            <Accordion elevation={0} onChange={resetPosition} className={classes.accordion}>
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
                     aria-controls="panel1a-content"
@@ -103,33 +123,35 @@ function ClassRoster() {
                     ))}
                 </AccordionDetails>
             </Accordion>
-            <Accordion elevation={0} onChange={resetPosition}>
+            <Accordion elevation={0} onChange={resetPosition} className={classes.accordion}>
                 <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel2a-content"
-                id="panel2a-header"
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="panel2a-content"
+                    id="panel2a-header"
                 >
                     <Typography className={classes.heading}>
                         Students <span className={classes.number}>{students.length}</span>
                     </Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                    {students.map((user) => (
-                        <Box
-                            key={user.id}
-                            className={classes.userItem}
-                        >
-                            <UserAvatar
-                                name={user.name}
-                                className={classes.avatar}
-                                size="small"
-                            />
-                            <Typography>{user.name}</Typography>
-                        </Box>
-                    ))}
+                    <Box className={classes.gridUsers}>
+                        {students.map((user) => (
+                            <Box
+                                key={user.id}
+                                className={classes.userItem}
+                            >
+                                <UserAvatar
+                                    name={user.name}
+                                    className={classes.avatar}
+                                    size="small"
+                                />
+                                <Typography>{user.name}</Typography>
+                            </Box>
+                        ))}
+                    </Box>
                 </AccordionDetails>
             </Accordion>
-            <Accordion elevation={0} onChange={resetPosition}>
+            <Accordion elevation={0} onChange={resetPosition} className={classes.accordion}>
                 <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
                 aria-controls="panel3a-content"

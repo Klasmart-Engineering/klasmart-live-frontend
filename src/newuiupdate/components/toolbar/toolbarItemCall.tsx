@@ -49,6 +49,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 	},
 	badge: {
 		background: "#fff",
+		color: '#000',
 		boxShadow: "0px 2px 4px rgba(0,0,0,0.25)",
 	},
 	badgeContent: {

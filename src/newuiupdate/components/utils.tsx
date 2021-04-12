@@ -22,7 +22,6 @@ const useStyles = makeStyles((theme: Theme) => ({
 			duration: theme.transitions.duration.shortest,
 		}),
 
-		paddingLeft: theme.spacing(2),
 	},
 	styledDrawerPaper: {
 		transition: theme.transitions.create("width", {
@@ -30,15 +29,16 @@ const useStyles = makeStyles((theme: Theme) => ({
 			duration: theme.transitions.duration.shortest,
 		}),
 		border: 0,
-		backgroundColor: theme.palette.grey[200],
-		borderRadius: 12,
 	},
 	styledDrawerInner: {
+		borderRadius: 12,
+		backgroundColor: theme.palette.grey[200],
 		padding: 10,
+		marginLeft: theme.spacing(2),
 		height: '100%',
 	},
 	popperRoot:{
-		zIndex: 99,
+		zIndex: 9999,
 	},
 	popperPapper: {
 		borderRadius: 12,
@@ -71,7 +71,8 @@ function StyledDrawer(props: StyledDrawerProps) {
 			variant="persistent"
 			style={{ width: active ? drawerWidth : 0 }}
 		>
-			<Box className={classes.styledDrawerInner}>{children}</Box>
+			<Box className={classes.styledDrawerInner}>{children}
+			</Box>
 		</Drawer>
 	);
 }
