@@ -40,6 +40,7 @@ import {
 	isActiveGlobalScreenshareState,
 	activeTabState
 } from "../../states/layoutAtoms";
+import ChatMenu from "./toolbarMenus/chatMenu";
 
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -106,6 +107,11 @@ function Toolbar() {
 	const [
 		viewModesEl,
 		setViewModesEl,
+	] = React.useState<any | null>(null);
+
+	const [
+		chatEl,
+		setChatEl,
 	] = React.useState<any | null>(null);
 
 	const resetDrawers = () => {
@@ -233,8 +239,9 @@ function Toolbar() {
 						label="Chat"
 						badge={2}
 						active={isChatOpen}
-						onClick={() => {
+						onClick={(e: Event) => {
 							resetDrawers();
+							setChatEl(e.currentTarget);
 							setIsChatOpen(!isChatOpen);
 						}}
 					/>
@@ -242,6 +249,7 @@ function Toolbar() {
 			</Grid>
 
 
+			{/* <ChatMenu anchor={chatEl} /> */}
 			<ClassDetailsMenu anchor={classDetailsEl} />
 			<CanvasMenu anchor={canvasEl} />
 			<GlobalActionsMenu anchor={globalActionsEl} />

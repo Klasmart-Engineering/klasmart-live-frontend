@@ -77,7 +77,7 @@ function Messages() {
 					<NoMessages /> : 
 					(<Box className={classes.container}>
 						{messages.map(message => (
-							<Message id={message.id} session={message.session} message={message.message} />
+							<Message key={message.id} id={message.id} session={message.session} message={message.message} />
 						))}
 					</Box>)
 				}

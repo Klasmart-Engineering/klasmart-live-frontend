@@ -48,14 +48,14 @@ function TabParticipants() {
 			<Grid item className={classes.gridContainerTeachers}>
 				<Box className={clsx(classes.cameraGrid, {[classes.cameraGridSingleTeacher] : teachers.length === 1})}>
 					{teachers.map((user) => (
-						<UserCamera user={user} />
+						<UserCamera key={user.id} user={user} />
 					))}
 				</Box>
 			</Grid>
 			<Grid item xs className={classes.gridContainerStudents}>
 				<Box className={classes.cameraGrid}>
 					{students.map((user) => (
-						<UserCamera user={user} />
+						<UserCamera key={user.id} user={user} />
 					))}
 				</Box>
 			</Grid>

@@ -102,41 +102,9 @@ const useStyles = makeStyles((theme: Theme) => ({
         margin: '5px',
         backgroundColor: 'rgba(255,255,255,0.3)',
         padding: 5,
+        fontSize: 'inherit',
         color: '#fff',
         "&:hover":{
-        }
-     },
-     controlsIconMore:{
-        color: '#fff',
-        margin: '3px',
-        backgroundColor: '#E58B88',
-        "&:hover":{
-            backgroundColor: '#E58B88',
-            transform: 'scale(1.05)'
-        }
-     },
-     controlsIconTrophy:{
-        color: '#fff',
-        margin: '3px',
-        backgroundColor: amber[500],
-        "& svg":{
-            padding: '0.1rem'
-        },
-        "&:hover":{
-            backgroundColor: amber[500],
-            transform: 'scale(1.05)'
-        }
-     },
-     controlsIconPin:{
-        color: '#fff',
-        margin: '3px',
-        backgroundColor: amber[500],
-        "& svg":{
-            padding: '0.1rem'
-        },
-        "&:hover":{
-            backgroundColor: amber[500],
-            transform: 'scale(1.05)'
         }
      },
      controlsIconActive:{
@@ -179,6 +147,9 @@ const useStyles = makeStyles((theme: Theme) => ({
          "& svg":{
             color: '#fff'
         },
+     },
+     iconButton:{
+         fontSize: 'inherit'
      }
 }));
 
@@ -262,7 +233,6 @@ function UserCameraActions(props: UserCameraActionsType) {
             <Grid className={clsx(classes.controls, {[classes.controlsHover] : isHover})}>
 
                 <div className={classes.expand}>
-                    
                     <IconButton
                         component="a"
                         aria-label="Trophy button"
@@ -270,8 +240,9 @@ function UserCameraActions(props: UserCameraActionsType) {
                         aria-haspopup="true"
                         size="small"
                         onClick={handleTrophyOpen}
+                        className={classes.controlsIcon}
                     >
-                        <ExpandIcon size="0.75rem" />
+                        <ExpandIcon size="0.75em" />
                     </IconButton>
                 </div>
 
@@ -287,7 +258,7 @@ function UserCameraActions(props: UserCameraActionsType) {
                     className={classes.controlsIcon}
                     onClick={handleTrophyOpen}
                 >
-                    <TrophyIcon size="0.85rem"/>
+                    <TrophyIcon size="0.85em"/>
                 </IconButton>
 
                 <IconButton
@@ -299,7 +270,7 @@ function UserCameraActions(props: UserCameraActionsType) {
                     className={clsx(classes.controlsIcon, {[classes.controlsIconActive] : user.id === pinnedUser})} 
                     onClick={() => handlePinnedUser(user.id)}
                 >
-                    <PinIcon size="1rem"/>
+                    <PinIcon size="1em"/>
                 </IconButton>
 
                 <IconButton
@@ -311,7 +282,7 @@ function UserCameraActions(props: UserCameraActionsType) {
                     className={classes.controlsIcon}
                     onClick={handleMoreOpen}
                 >
-                    <DotsVerticalRoundedIcon size="1rem"/>
+                    <DotsVerticalRoundedIcon size="1em"/>
                 </IconButton>
             
                

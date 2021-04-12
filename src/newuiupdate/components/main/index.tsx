@@ -36,7 +36,7 @@ function Main() {
 		<Grid container direction="column" style={{ height: "100vh" }}>
 			<Grid item xs className={classes.mainViewContainer}>
 				<Box className={classes.mainView}>
-					<Grid container id="main-content">
+					<Grid container>
 						<Grid item xs>
 							<MainView />
 						</Grid>
