@@ -47,12 +47,11 @@ const useStyles = makeStyles((theme: Theme) => ({
         marginTop: -10,
         justifyContent: `space-between`,
         color: theme.palette.text.primary,
+        position: 'relative',
+        zIndex: 9
     },
     rootMosaic:{
-        width: `80%`,
-        margin : `0 auto`,
-        backgroundColor: `rgba(45,55,70,0.30)`,
-        borderRadius: 20,
+        backgroundColor: `rgba(49,49,60,0.85)`,
         color: `#fff`,
     },
     iconGroup: {

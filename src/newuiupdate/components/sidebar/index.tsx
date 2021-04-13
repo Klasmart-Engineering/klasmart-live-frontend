@@ -1,6 +1,5 @@
 import {
     activeTabState,
-    mosaicViewSizeState,
 } from "../../states/layoutAtoms";
 import SidebarMenuItem from "./sidebarMenuItem";
 import TabMosaic from "./tabMosaic";
@@ -9,14 +8,11 @@ import TabSettings from "./tabSettings";
 import {
     Drawer,
     Grid,
-    IconButton,
     makeStyles,
-    Menu,
     Theme,
 } from "@material-ui/core";
 import { Grid as MosaicIcon } from "@styled-icons/bootstrap/Grid";
 import { PeopleOutline as ParticipantsIcon } from "@styled-icons/evaicons-outline/PeopleOutline";
-import { SmartDisplay as SliderIcon } from "@styled-icons/material-twotone/SmartDisplay";
 import { UserSettings as SettingsIcon } from "@styled-icons/remix-line/UserSettings";
 import React,
 {
@@ -24,6 +20,7 @@ import React,
     useState,
 } from "react";
 import { useRecoilState } from "recoil";
+import MosaicSlider from "./mosaicSlider";
 
 const useStyles = makeStyles((theme: Theme) => ({
     drawer: {
@@ -56,7 +53,10 @@ const useStyles = makeStyles((theme: Theme) => ({
         boxShadow: `0 2px 6px 0px rgba(0,0,0,0.3)`,
         transform: `scale(0.8)`,
     },
-    slider:{},
+    slider:{
+        minHeight: 150,
+        margin: '10px 3px',
+    },
 }));
 
 const sidebarTabs = [
@@ -82,20 +82,10 @@ const sidebarTabs = [
 
 function Sidebar () {
     const [ activeTab, setActiveTab ] = useRecoilState(activeTabState);
-    const [ mosaicViewSize, setMosaicViewSize ] = useRecoilState(mosaicViewSizeState);
     const [ drawerWidth, setDrawerWidth ] = useState<any>(440);
     const classes = useStyles();
 
-    const [ mosaicGridSettingsEl, setMosaicGridSettingsEl ] = useState<null | HTMLElement>(null);
-    const handleSliderGridOpen = (event: React.SyntheticEvent<HTMLAnchorElement>) => { console.log(`open`); setMosaicGridSettingsEl(event.currentTarget); };
-    const handleSliderGridClose = () => { setMosaicGridSettingsEl(null); };
-
     const [ transitionEnded, setTransitionEnded ] = useState(false);
-
-    const handleSliderChange = (event:any) => {
-        const sliderHelperCalc = Number(event.target.min) + Number(event.target.max);
-        setMosaicViewSize(event.target.value / -1 + sliderHelperCalc);
-    };
 
     useEffect(() => {
         activeTab !== `participants` ? setDrawerWidth(`100%`) : setDrawerWidth(440);
@@ -144,56 +134,13 @@ function Sidebar () {
                                 />
                             ))}
                         </Grid>
+                        {activeTab === 'mosaic' && 
                         <Grid
                             item
                             className={classes.tabNavMore}>
-
-                            <Menu
-                                id="grid-settings-menu"
-                                anchorEl={mosaicGridSettingsEl}
-                                getContentAnchorEl={null}
-                                anchorOrigin={{
-                                    vertical: `top`,
-                                    horizontal: `center`,
-                                }}
-                                transformOrigin={{
-                                    vertical: `bottom`,
-                                    horizontal: `center`,
-                                }}
-                                open={Boolean(mosaicGridSettingsEl)}
-                                MenuListProps={{
-                                    onPointerLeave: handleSliderGridClose,
-                                    disablePadding: true,
-                                }}
-                                onClose={handleSliderGridClose}
-                            >
-
-                                <div className="value-slider">
-                                    <div className="label">Grid size</div>
-                                    <input
-                                        type="range"
-                                        min="3"
-                                        max="8"
-                                        step="1"
-                                        value={mosaicViewSize / -1 + 11}
-                                        className={classes.slider}
-                                        id="myRange"
-                                        onChange={handleSliderChange} />
-                                </div>
-                            </Menu>
-
-                            <IconButton
-                                component="a"
-                                aria-label="Grid slider button"
-                                aria-controls="grid-sldier-popover"
-                                aria-haspopup="true"
-                                size="small"
-                                className={classes.sliderIconButton}
-                                onClick={handleSliderGridOpen}
-							 >
-                                <SliderIcon size="1.6rem"/>
-                            </IconButton>
+                            <MosaicSlider />
                         </Grid>
+                        }
                     </Grid>
                 </Grid>
                 <Grid

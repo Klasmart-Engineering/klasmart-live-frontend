@@ -13,7 +13,7 @@ import {
     Theme,
 } from "@material-ui/core";
 import clsx from "clsx";
-import React from "react";
+import React, { useEffect } from "react";
 import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -30,9 +30,11 @@ const useStyles = makeStyles((theme: Theme) => ({
     gridContainerTeachers:{
         marginBottom: 15,
         "& $cameraGrid":{
-            gridTemplateColumns: `repeat(5, 1fr)`,
+            display: `block`,
             "&>div":{
-                minHeight: 190,
+                minHeight: 150,
+                width: 260,
+                margin: '0 auto',
             },
         },
     },
@@ -44,7 +46,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         height: `100%`,
     },
     viewContainer:{
-        height: `100%`,
+        height: `calc(100% - 10px)`,
         position: `relative`,
         overflow: `hidden`,
     },
@@ -52,26 +54,33 @@ const useStyles = makeStyles((theme: Theme) => ({
         paddingBottom: 20,
     },
     toolbarContainer:{
-        display: `flex`,
-        alignItems: `center`,
+        width: 'calc(100% + 20px)',
+        margin: -10,
+        marginTop: 0
     },
     cameraGrid3:{
         gridTemplateColumns: `repeat(3, 1fr)`,
+        "&>div":{
+            minHeight: 350,
+        },
     },
     cameraGrid4:{
         gridTemplateColumns: `repeat(4, 1fr)`,
+        "&>div":{
+            minHeight: 270,
+        },
     },
     cameraGrid5:{
         gridTemplateColumns: `repeat(5, 1fr)`,
+        "&>div":{
+            minHeight: 220,
+        },
     },
     cameraGrid6:{
         gridTemplateColumns: `repeat(6, 1fr)`,
-    },
-    cameraGrid7:{
-        gridTemplateColumns: `repeat(7, 1fr)`,
-    },
-    cameraGrid8:{
-        gridTemplateColumns: `repeat(8, 1fr)`,
+        "&>div":{
+            minHeight: 200,
+        },
     },
 }));
 
@@ -89,6 +98,11 @@ function TabMosaic () {
     const students = users.filter(function (e) {
         return e.role === `student`;
     });
+
+    useEffect(()=>{
+        console.log(mosaicViewSize)
+    }, [mosaicViewSize])
+
 
     return (
         <>
@@ -126,10 +140,9 @@ function TabMosaic () {
                                     className={classes.gridContainerStudents}>
                                     <div className={clsx(classes.cameraGrid, {
                                         [classes.cameraGrid3] : mosaicViewSize === 3,
+                                        [classes.cameraGrid4] : mosaicViewSize === 4,
                                         [classes.cameraGrid5] : mosaicViewSize === 5,
                                         [classes.cameraGrid6] : mosaicViewSize === 6,
-                                        [classes.cameraGrid7] : mosaicViewSize === 7,
-                                        [classes.cameraGrid8] : mosaicViewSize === 8,
                                     })}>
                                         {students.map((user) => (
                                             <UserCamera
