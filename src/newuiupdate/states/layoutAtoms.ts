@@ -14,6 +14,13 @@ export const activeTabState = atom({
 	default: "participants",
 });
 
+type activeSettingsTabStateType = "schedule" | "settings" | "toolbar" | "record";
+export const activeSettingsStateTab = atom({
+	key: "activeSettingsStateTab",
+	default: "schedule",
+});
+
+
 export const isClassDetailsOpenState = atom<boolean>({
 	key: "isClassDetailsOpenState",
 	default: false,
@@ -114,20 +121,6 @@ export const usersState = atom({
 		role: 'teacher',
 		hasControls: true,
 		hasVideo: true,
-		hasAudio: true,
-		isSelfAudioMuted : false,
-		isSelfVideoMuted : false,
-		isTeacherAudioMuted : false,
-		isTeacherVideoMuted : false,
-		isPinned: false,
-		isSpeaking : false
-	},
-	{
-		id: 2,
-		name: 'The second Teach',
-		role: 'student',
-		hasControls: false,
-		hasVideo: false,
 		hasAudio: true,
 		isSelfAudioMuted : false,
 		isSelfVideoMuted : false,

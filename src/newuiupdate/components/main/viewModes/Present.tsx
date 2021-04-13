@@ -20,7 +20,7 @@ function Present() {
 			<Grid item>
 				<PresentIcon size="4rem" />
                 <br/> 
-				OBSERVE
+				PRESENT
 			</Grid>
 		</Grid>
 	);

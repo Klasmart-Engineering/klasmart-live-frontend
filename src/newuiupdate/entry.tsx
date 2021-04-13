@@ -5,14 +5,23 @@ import React from 'react';
 import { RecoilRoot } from 'recoil';
 import RecoilizeDebugger from 'recoilize';
 
+import {
+    AlertDialogProvider,
+    ConfirmDialogProvider,
+    PromptDialogProvider,
+    SnackbarProvider,
+} from "kidsloop-px";
+
 const app = document.getElementById(`app`);
 
 function Entry () {
     return (
         <RecoilRoot>
             <ThemeProvider theme={themeProvider(`en`, `light`)}>
-                {/* <RecoilizeDebugger root={app} /> */}
-                <Layout />
+                <SnackbarProvider anchorOrigin={{ vertical: 'top',  horizontal: 'center', }} closeButtonLabel="Dismiss">
+                    {/* <RecoilizeDebugger root={app} /> */}
+                    <Layout />
+                </SnackbarProvider>
             </ThemeProvider>
         </RecoilRoot>
     );

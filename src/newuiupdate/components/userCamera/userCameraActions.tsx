@@ -249,11 +249,11 @@ function UserCameraActions (props: UserCameraActionsType) {
                         getContentAnchorEl={null}
                         anchorOrigin={{
                             vertical: `bottom`,
-                            horizontal: `left`,
+                            horizontal: `center`,
                         }}
                         transformOrigin={{
                             vertical: `top`,
-                            horizontal: `right`,
+                            horizontal: `center`,
                         }}
                         open={Boolean(moreEl)}
                         MenuListProps={{

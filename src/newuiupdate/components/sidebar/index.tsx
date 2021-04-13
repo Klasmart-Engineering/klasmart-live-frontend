@@ -4,7 +4,7 @@ import {
 import SidebarMenuItem from "./sidebarMenuItem";
 import TabMosaic from "./tabMosaic";
 import TabParticipants from "./tabParticipants";
-import TabSettings from "./tabSettings";
+import TabSettings from "./tabSettings/index";
 import {
     Drawer,
     Grid,
@@ -40,6 +40,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         display: `flex`,
         flexDirection: `column`,
         overflow: `hidden`,
+        paddingBottom: 20
     },
     tabNavMore: {
         margin: `20px 0`,
@@ -81,10 +82,10 @@ const sidebarTabs = [
 ];
 
 function Sidebar () {
-    const [ activeTab, setActiveTab ] = useRecoilState(activeTabState);
-    const [ drawerWidth, setDrawerWidth ] = useState<any>(440);
     const classes = useStyles();
-
+    const [ activeTab, setActiveTab ] = useRecoilState(activeTabState);
+    const activeTabContent = sidebarTabs.find(item => item.name === activeTab)?.content;
+    const [ drawerWidth, setDrawerWidth ] = useState<any>(440);
     const [ transitionEnded, setTransitionEnded ] = useState(false);
 
     useEffect(() => {
@@ -147,14 +148,7 @@ function Sidebar () {
                     item
                     xs
                     className={classes.tabInner}>
-                    {sidebarTabs.map((sidebarTab) =>
-                        activeTab == sidebarTab.name && (
-                            <div
-                                key={sidebarTab.id}
-                                className={classes.fullheight}>
-                                {sidebarTab.content}
-                            </div>
-                        ))}
+                    {activeTabContent}
                 </Grid>
             </Grid>
         </Drawer>
