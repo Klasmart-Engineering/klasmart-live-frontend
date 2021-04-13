@@ -8,55 +8,47 @@ export const themeState = atom<themeStateType>({
 });
 
 // LAYOUT
-export const activeTabState = atom({
+type activeTabStateType = "participants" | "mosaic" | "settings";
+export const activeTabState = atom<activeTabStateType>({
 	key: "activeTabState",
 	default: "participants",
 });
 
-export const isClassDetailsOpenState = atom({
+export const isClassDetailsOpenState = atom<boolean>({
 	key: "isClassDetailsOpenState",
 	default: false,
 });
 
-export const isCanvasOpenState = atom({
+export const isCanvasOpenState = atom<boolean>({
 	key: "isCanvasOpenState",
 	default: false,
 });
 
-export const isGlobalActionsOpenState = atom({
+export const isGlobalActionsOpenState = atom<boolean>({
 	key: "isGlobalActionsOpenState",
 	default: false,
 });
 
-export const isViewModesOpenState = atom({
+export const isViewModesOpenState = atom<boolean>({
 	key: "isViewModesOpenState",
 	default: false,
 });
 
-export const isLessonPlanOpenState = atom({
+export const isLessonPlanOpenState = atom<boolean>({
 	key: "isLessonPlanOpenState",
 	default: false,
 });
 
-export const isPinUserOpenState = atom({
+export const isPinUserOpenState = atom<boolean>({
 	key: "isPinUserOpenState",
 	default: false,
 });
 
-export const isChatOpenState = atom({
+export const isChatOpenState = atom<boolean>({
 	key: "isChatOpenState",
 	default: false,
 });
 
-export const activeMicrophoneState = atom({
-	key: "activeMicrophoneState",
-	default: true,
-});
-
-export const activeCameraState = atom({
-	key: "activeCameraState",
-	default: true,
-});
 
 // GLOBAL ACTIONS
 export const isActiveGlobalScreenshareState = atom({
@@ -76,6 +68,17 @@ export const isActiveGlobalMuteVideoState = atom({
 	default: false,
 });
 
+// SELF USER
+export const activeMicrophoneState = atom({
+	key: "activeMicrophoneState",
+	default: true,
+});
+
+export const activeCameraState = atom({
+	key: "activeCameraState",
+	default: true,
+});
+
 // VIEW MODES
 type viewModeStateType = "onstage" | "observe" | "present";
 export const viewModeState = atom<viewModeStateType>({
@@ -84,6 +87,7 @@ export const viewModeState = atom<viewModeStateType>({
 });
 
 
+// LAYOUT - ACTIVITTY
 export const pinnedUserState = atom<number | undefined>({
 	key: "pinnedUserState",
 	default: undefined,
@@ -413,33 +417,3 @@ export const usersState = atom({
 	// }
 ],
 });
-
-
-export const usersStateTest = atom({
-	key: "usersStateTest",
-	default: [{
-		"user1":{
-			name: 'The Teach',
-			role: 'teacher',
-			hasControls: true,
-			hasVideo: true,
-			hasAudio: true,
-			isSelfAudioMuted : false,
-			isSelfVideoMuted : false,
-			isTeacherAudioMuted : false,
-			isTeacherVideoMuted : false,
-			isSpeaking : false
-		},"user2":{
-			name: 'The Student',
-			role: 'teacher',
-			hasControls: true,
-			hasVideo: true,
-			hasAudio: true,
-			isSelfAudioMuted : false,
-			isSelfVideoMuted : false,
-			isTeacherAudioMuted : false,
-			isTeacherVideoMuted : false,
-			isSpeaking : false
-		},
-	}]
-})

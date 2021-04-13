@@ -1,77 +1,72 @@
-import React from "react";
-import clsx from "clsx";
 import {
-	makeStyles,
-	useTheme,
-	Box,
-	Grid,
-	Badge,
-	Theme,
-	Tooltip,
+    Badge,
+    makeStyles,
+    Theme,
+    Tooltip,
 } from "@material-ui/core";
-import LockIcon from "@material-ui/icons/Lock";
-
 import red from "@material-ui/core/colors/red";
-
-import VideocamRoundedIcon from "@material-ui/icons/VideocamRounded";
+import LockIcon from "@material-ui/icons/Lock";
 import VideocamOffRoundedIcon from "@material-ui/icons/VideocamOffRounded";
+import VideocamRoundedIcon from "@material-ui/icons/VideocamRounded";
+import clsx from "clsx";
+import React from "react";
 
 const useStyles = makeStyles((theme: Theme) => ({
-	itemRoot: {
-		position: "relative",
-	},
-	root: {
-		display: "flex",
-		flexDirection: "column",
-		alignItems: "center",
-		fontSize: "0.75em",
-		borderRadius: 12,
-		cursor: "pointer",
-		padding: 15,
-		transition: "all 100ms ease-in-out",
-		color: red[500],
-		margin: "0 5px",
-		"&:hover": {
-			backgroundColor: "#e2e7ec",
-		},
-		"& svg" : {
-			width: '1.25em',
-    		height: '1.25em',
-		}
-	},
-	active: {
-		color: "inherit",
-		"&:hover": {
-			color: "inherit",
-		},
-	},
-	locked: {
-		opacity: 0.4,
-		pointerEvents: "none",
-		backgroundColor: "#e2e7ec",
-		cursor: "default",
-	},
-	disabled: {
-		opacity: 0.4,
-		pointerEvents: "none",
-		cursor: "default",
-	},
-	label: {
-		marginTop: 10,
-	},
-	badgeRoot: {
-		position: "absolute",
-		top: 0,
-		right: 10,
-	},
-	badge: {
-		background: "#fff",
-		color: '#000',
-		boxShadow: "0px 2px 4px rgba(0,0,0,0.25)",
-	},
-	badgeContent: {
-		fontSize: "1em",
-	},
+    itemRoot: {
+        position: `relative`,
+    },
+    root: {
+        display: `flex`,
+        flexDirection: `column`,
+        alignItems: `center`,
+        fontSize: `0.75em`,
+        borderRadius: 12,
+        cursor: `pointer`,
+        padding: 15,
+        transition: `all 100ms ease-in-out`,
+        color: red[500],
+        margin: `0 5px`,
+        "&:hover": {
+            backgroundColor: `#e2e7ec`,
+        },
+        "& svg" : {
+            width: `1.25em`,
+    		height: `1.25em`,
+        },
+    },
+    active: {
+        color: `inherit`,
+        "&:hover": {
+            color: `inherit`,
+        },
+    },
+    locked: {
+        opacity: 0.4,
+        pointerEvents: `none`,
+        backgroundColor: `#e2e7ec`,
+        cursor: `default`,
+    },
+    disabled: {
+        opacity: 0.4,
+        pointerEvents: `none`,
+        cursor: `default`,
+    },
+    label: {
+        marginTop: 10,
+    },
+    badgeRoot: {
+        position: `absolute`,
+        top: 0,
+        right: 10,
+    },
+    badge: {
+        background: `#fff`,
+        color: `#000`,
+        boxShadow: `0px 2px 4px rgba(0,0,0,0.25)`,
+    },
+    badgeContent: {
+        fontSize: `1em`,
+    },
 }));
 
 interface ToolbarItemCameraProps {
@@ -83,37 +78,46 @@ interface ToolbarItemCameraProps {
 	tooltip?: string;
 }
 
-function ToolbarItemCamera(props: ToolbarItemCameraProps) {
-	const { icon, onClick, disabled, active, locked, tooltip = false } = props;
-	const classes = useStyles();
-	const hasTooltip = tooltip ? true : false;
+function ToolbarItemCamera (props: ToolbarItemCameraProps) {
+    const {
+        icon,
+        onClick,
+        disabled,
+        active,
+        locked,
+        tooltip = false,
+    } = props;
+    const classes = useStyles();
+    const hasTooltip = tooltip ? true : false;
 
-	return (
-		<>
-			<Tooltip title={tooltip} disableFocusListener={!hasTooltip} disableHoverListener={!hasTooltip} disableTouchListener={!hasTooltip}>
-				<Box className={classes.itemRoot}>
-					{locked && (
-						<Badge
-							classes={{ badge: classes.badge, root: classes.badgeRoot }}
-							badgeContent={<LockIcon className={classes.badgeContent} />}
-						></Badge>
-					)}
+    return (
+        <>
+            <Tooltip
+                title={tooltip}
+                disableFocusListener={!hasTooltip}
+                disableHoverListener={!hasTooltip}
+                disableTouchListener={!hasTooltip}>
+                <div className={classes.itemRoot}>
+                    {locked && (
+                        <Badge
+                            classes={{
+                                badge: classes.badge,
+                                root: classes.badgeRoot,
+                            }}
+                            badgeContent={<LockIcon className={classes.badgeContent} />}
+                        ></Badge>
+                    )}
 
-					<Box
-						className={clsx(
-							classes.root,
-							disabled && classes.disabled,
-							active && classes.active,
-							locked && classes.locked
-						)}
-						onClick={onClick}
-					>
-						{active ? <VideocamRoundedIcon /> : <VideocamOffRoundedIcon />}
-					</Box>
-				</Box>
-			</Tooltip>
-		</>
-	);
+                    <div
+                        className={clsx(classes.root, disabled && classes.disabled, active && classes.active, locked && classes.locked)}
+                        onClick={onClick}
+                    >
+                        {active ? <VideocamRoundedIcon /> : <VideocamOffRoundedIcon />}
+                    </div>
+                </div>
+            </Tooltip>
+        </>
+    );
 }
 
 export default ToolbarItemCamera;
