@@ -41,6 +41,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     gridContainerStudents: {
         overflowY : `scroll`,
         position: `relative`,
+        paddingBottom: 20,
     },
     fullheight: {
         height: `100%`,
@@ -98,10 +99,6 @@ function TabMosaic () {
     const students = users.filter(function (e) {
         return e.role === `student`;
     });
-
-    useEffect(()=>{
-        console.log(mosaicViewSize)
-    }, [mosaicViewSize])
 
 
     return (

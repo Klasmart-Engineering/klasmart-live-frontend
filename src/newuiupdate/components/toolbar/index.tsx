@@ -41,6 +41,8 @@ import clsx from "clsx";
 import React from "react";
 import { useRecoilState } from "recoil";
 
+import { useSnackbar } from "kidsloop-px";
+
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
         padding: 10,
@@ -97,6 +99,8 @@ function Toolbar () {
         setIsViewModesOpen(false);
     };
 
+    const { enqueueSnackbar } = useSnackbar();
+
     let viewModesBadge = <OnStageIcon />;
     switch (viewMode) {
     case `onstage`:
@@ -150,7 +154,7 @@ function Toolbar () {
                     className={classes.iconGroup}>
                     <ToolbarItemMicrophone
                         active={activeMicrophone}
-                        onClick={() => setActiveMicrophone(!activeMicrophone)}
+                        onClick={() =>  {enqueueSnackbar('mic muted'); setActiveMicrophone(!activeMicrophone)}}
                     />
                     <ToolbarItemCall
                         locked
