@@ -60,28 +60,34 @@ const useStyles = makeStyles((theme: Theme) => ({
         margin: -10,
         marginTop: 0
     },
+    cameraGrid2:{
+        gridTemplateColumns: `repeat(7, 1fr)`,
+        "&>div":{
+            minHeight: 115,
+        },
+    },
     cameraGrid3:{
         gridTemplateColumns: `repeat(6, 1fr)`,
         "&>div":{
-            minHeight: 200,
+            minHeight: 135,
         },
     },
     cameraGrid4:{
         gridTemplateColumns: `repeat(5, 1fr)`,
         "&>div":{
-            minHeight: 220,
+            minHeight: 175,
         },
     },
     cameraGrid5:{
         gridTemplateColumns: `repeat(4, 1fr)`,
         "&>div":{
-            minHeight: 270,
+            minHeight: 210,
         },
     },
     cameraGrid6:{
         gridTemplateColumns: `repeat(3, 1fr)`,
         "&>div":{
-            minHeight: 350,
+            minHeight: 280,
         },
     },
 }));
@@ -137,6 +143,7 @@ function TabMosaic () {
                                     xs
                                     className={classes.gridContainerStudents}>
                                     <div className={clsx(classes.cameraGrid, {
+                                        [classes.cameraGrid2] : mosaicViewSize === 2,
                                         [classes.cameraGrid3] : mosaicViewSize === 3,
                                         [classes.cameraGrid4] : mosaicViewSize === 4,
                                         [classes.cameraGrid5] : mosaicViewSize === 5,

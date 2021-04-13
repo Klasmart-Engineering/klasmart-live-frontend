@@ -67,7 +67,7 @@ function MosaicSlider () {
                 onChange={handleSliderChange}
                 step={1}
                 marks
-                min={3}
+                min={2}
                 max={6}
                 className={classes.slider}
             />
