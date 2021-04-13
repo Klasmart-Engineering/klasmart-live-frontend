@@ -1,6 +1,5 @@
 import {
     pinnedUserState,
-    usersState,
 } from "../../states/layoutAtoms";
 import {
     Grid,
@@ -25,8 +24,6 @@ import { StarFill as StarFillIcon } from "@styled-icons/bootstrap/StarFill";
 import { TrophyFill as TrophyIcon } from "@styled-icons/bootstrap/TrophyFill";
 import { DotsVerticalRounded as DotsVerticalRoundedIcon } from "@styled-icons/boxicons-regular/DotsVerticalRounded";
 import { Pin as PinIcon } from "@styled-icons/entypo/Pin";
-import { Crown as HasControlsIcon } from "@styled-icons/fa-solid/Crown";
-import { HatGraduation as TeacherIcon } from "@styled-icons/fluentui-system-filled/HatGraduation";
 import clsx from "clsx";
 import React,
 { useState } from "react";
