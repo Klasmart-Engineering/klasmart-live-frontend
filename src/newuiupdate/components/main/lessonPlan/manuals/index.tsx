@@ -66,6 +66,7 @@ function Manuals () {
                     (<div className={classes.container}>
                         {manuals?.map(manual => (
                             <Manual
+                                key={manual.id}
                                 title={manual.title}
                                 type={manual.type} />
                         ))}

@@ -78,6 +78,7 @@ function Attachments () {
                             (<div className={classes.container}>
                                 {attachments?.map(attachment => (
                                     <Attachment
+                                        key={attachment.id}
                                         title={attachment.title}
                                         type={attachment.type} />
                                 ))}
