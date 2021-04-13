@@ -134,3 +134,34 @@ function StyledPopper (props: StyledPopperProps) {
 }
 
 export { StyledPopper };
+
+
+interface TabPanelProps {
+	children?: React.ReactNode;
+	index: any;
+	value: any;
+}
+
+function TabPanel (props: TabPanelProps) {
+    const {
+        children,
+        value,
+        index,
+        ...other
+    } = props;
+    const classes = useStyles();
+
+    return (
+        <div
+            role="tabpanel"
+            hidden={value !== index}
+            id={`simple-tabpanel-${index}`}
+            aria-labelledby={`simple-tab-${index}`}
+            style={{ height: '100%' }}
+            {...other}
+        >
+            {value === index && children}
+        </div>
+    );
+}
+export { TabPanel };

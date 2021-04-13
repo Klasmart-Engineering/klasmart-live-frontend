@@ -5,7 +5,7 @@ import {
     Theme,
     Typography,
 } from "@material-ui/core";
-import { CloudDownload as DownloadIcon } from "@styled-icons/boxicons-regular/CloudDownload";
+import { ChevronRight as AccessIcon } from "@styled-icons/boxicons-regular/ChevronRight";
 import { Attachment as AttachmentIcon } from "@styled-icons/icomoon/Attachment";
 import React from "react";
 
@@ -34,12 +34,12 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 }));
 
-export interface AttachmentProps {
+export interface ManualPropsType {
     title: string;
     type: string;
 }
 
-function Attachment (props: AttachmentProps) {
+function Manual (props: ManualPropsType) {
     const classes = useStyles();
     const { title, type } = props;
 
@@ -63,11 +63,11 @@ function Attachment (props: AttachmentProps) {
                     className={classes.iconButton}
                     type="submit"
                 >
-                    <DownloadIcon size="1.25rem"/>
+                    <AccessIcon size="1.25rem"/>
                 </IconButton>
             </Grid>
         </Grid>
     );
 }
 
-export default Attachment;
+export default Manual;

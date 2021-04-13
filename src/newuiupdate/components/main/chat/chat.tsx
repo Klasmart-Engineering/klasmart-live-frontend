@@ -13,6 +13,7 @@ import {
 import React,
 { useState } from "react";
 import { useRecoilState } from "recoil";
+import { TabPanel } from "../../utils";
 
 const useStyles = makeStyles((theme: Theme) => ({
     fullHeight:{
@@ -27,7 +28,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     title:{
         position: `absolute`,
-
         fontSize: `1.25rem`,
         top: 13,
         fontWeight: 600,
@@ -89,31 +89,3 @@ function Chat () {
 
 export default Chat;
 
-interface TabPanelProps {
-	children?: React.ReactNode;
-	index: any;
-	value: any;
-}
-
-function TabPanel (props: TabPanelProps) {
-    const {
-        children,
-        value,
-        index,
-        ...other
-    } = props;
-    const classes = useStyles();
-
-    return (
-        <div
-            role="tabpanel"
-            hidden={value !== index}
-            id={`simple-tabpanel-${index}`}
-            aria-labelledby={`simple-tab-${index}`}
-            className={classes.fullHeight}
-            {...other}
-        >
-            {value === index && children}
-        </div>
-    );
-}
