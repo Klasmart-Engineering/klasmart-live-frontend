@@ -1,8 +1,6 @@
 import React from "react";
 
-import { Grid, makeStyles, Theme } from "@material-ui/core";
-
-import InboxIcon from '@material-ui/icons/Inbox';
+import { Grid, makeStyles, Theme , Fade} from "@material-ui/core";
 
 import { Calendar as ScheduleIcon } from "@styled-icons/boxicons-regular/Calendar";
 import { Settings2Outline as SettingsIcon } from "@styled-icons/evaicons-outline/Settings2Outline";
@@ -60,14 +58,16 @@ function TabSettings() {
 	const activeTabContent = settingsTabs.find(item=> item.name === activeSettingsTab)?.content;
 
 	return (
-		<Grid container className={classes.fullheight}>
-			<Grid item>
-				<TabSettingsMenu menu={settingsTabs} />
-			</Grid>
-			<Grid item xs className={classes.tabInner}>
-				{activeTabContent} 
-			</Grid>
-		</Grid>
+        <Fade in>
+            <Grid container className={classes.fullheight}>
+                <Grid item>
+                    <TabSettingsMenu menu={settingsTabs} />
+                </Grid>
+                <Grid item xs className={classes.tabInner}>
+                    {activeTabContent} 
+                </Grid>
+            </Grid>
+        </Fade>
 	);
 }
 

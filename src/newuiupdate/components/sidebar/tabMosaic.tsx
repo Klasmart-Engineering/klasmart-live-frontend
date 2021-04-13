@@ -11,6 +11,7 @@ import {
     Grid,
     makeStyles,
     Theme,
+    Fade
 } from "@material-ui/core";
 import clsx from "clsx";
 import React, { useEffect } from "react";
@@ -60,27 +61,27 @@ const useStyles = makeStyles((theme: Theme) => ({
         marginTop: 0
     },
     cameraGrid3:{
-        gridTemplateColumns: `repeat(3, 1fr)`,
+        gridTemplateColumns: `repeat(6, 1fr)`,
         "&>div":{
-            minHeight: 350,
+            minHeight: 200,
         },
     },
     cameraGrid4:{
-        gridTemplateColumns: `repeat(4, 1fr)`,
-        "&>div":{
-            minHeight: 270,
-        },
-    },
-    cameraGrid5:{
         gridTemplateColumns: `repeat(5, 1fr)`,
         "&>div":{
             minHeight: 220,
         },
     },
-    cameraGrid6:{
-        gridTemplateColumns: `repeat(6, 1fr)`,
+    cameraGrid5:{
+        gridTemplateColumns: `repeat(4, 1fr)`,
         "&>div":{
-            minHeight: 200,
+            minHeight: 270,
+        },
+    },
+    cameraGrid6:{
+        gridTemplateColumns: `repeat(3, 1fr)`,
+        "&>div":{
+            minHeight: 350,
         },
     },
 }));
@@ -102,7 +103,7 @@ function TabMosaic () {
 
 
     return (
-        <>
+        <Fade in>
             <Grid
                 container
                 direction="column"
@@ -166,7 +167,7 @@ function TabMosaic () {
                 </Grid>
             </Grid>
 
-        </>
+        </Fade>
     );
 }
 

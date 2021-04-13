@@ -4,6 +4,7 @@ import {
     Grid,
     makeStyles,
     Theme,
+    Fade
 } from "@material-ui/core";
 import clsx from "clsx";
 import React from "react";
@@ -45,36 +46,38 @@ function TabParticipants () {
     });
 
     return (
-        <Grid
-            container
-            direction="column"
-            className={classes.fullheight}>
+        <Fade in>
             <Grid
-                item
-                className={classes.gridContainerTeachers}>
-                <div className={clsx(classes.cameraGrid, {
-                    [classes.cameraGridSingleTeacher] : teachers.length === 1,
-                })}>
-                    {teachers.map((user) => (
-                        <UserCamera
-                            key={user.id}
-                            user={user} />
-                    ))}
-                </div>
+                container
+                direction="column"
+                className={classes.fullheight}>
+                <Grid
+                    item
+                    className={classes.gridContainerTeachers}>
+                    <div className={clsx(classes.cameraGrid, {
+                        [classes.cameraGridSingleTeacher] : teachers.length === 1,
+                    })}>
+                        {teachers.map((user) => (
+                            <UserCamera
+                                key={user.id}
+                                user={user} />
+                        ))}
+                    </div>
+                </Grid>
+                <Grid
+                    item
+                    xs
+                    className={classes.gridContainerStudents}>
+                    <div className={classes.cameraGrid}>
+                        {students.map((user) => (
+                            <UserCamera
+                                key={user.id}
+                                user={user} />
+                        ))}
+                    </div>
+                </Grid>
             </Grid>
-            <Grid
-                item
-                xs
-                className={classes.gridContainerStudents}>
-                <div className={classes.cameraGrid}>
-                    {students.map((user) => (
-                        <UserCamera
-                            key={user.id}
-                            user={user} />
-                    ))}
-                </div>
-            </Grid>
-        </Grid>
+        </Fade>
     );
 }
 
