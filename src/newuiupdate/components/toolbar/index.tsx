@@ -55,6 +55,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     rootMosaic:{
         backgroundColor: `rgba(49,49,60,0.85)`,
         color: `#fff`,
+        paddingLeft: 40,
+        paddingRight: 40,
     },
     iconGroup: {
         display: `flex`,

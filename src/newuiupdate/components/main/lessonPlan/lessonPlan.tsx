@@ -1,4 +1,4 @@
-import { materialActiveIndexState } from "../../../states/layoutAtoms";
+import { isLessonPlanOpenState } from "../../../states/layoutAtoms";
 import {
     Grid,
     makeStyles,
@@ -12,6 +12,8 @@ import { useRecoilState } from "recoil";
 import Plan from "./plan";
 import { TabPanel } from "../../utils";
 import Manuals from "./manuals";
+
+import { CloseCircle as CloseIcon } from "@styled-icons/ionicons-solid/CloseCircle";
 
 const useStyles = makeStyles((theme: Theme) => ({
     fullHeight:{
@@ -30,6 +32,12 @@ const useStyles = makeStyles((theme: Theme) => ({
         top: 13,
         fontWeight: 600,
     },
+    closeTab:{
+        cursor: 'pointer',
+        position: 'absolute',
+        right: 5,
+        top: 5
+    }
 }));
 
 const materials = [
@@ -44,12 +52,12 @@ const materials = [
     {
         id: `3`,
         name: `Step 3 Scientology`,
-    },
+    }
 ];
 
 function LessonPlan () {
     const classes = useStyles();
-
+    const [ isLessonPlanOpen, setIsLessonPlanOpen ] = useRecoilState(isLessonPlanOpenState);
     const [ value, setValue ] = React.useState(0);
 
     const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
@@ -62,6 +70,9 @@ function LessonPlan () {
             direction="column"
             className={classes.fullHeight}>
             <Grid item>
+                 <div className={classes.closeTab} onClick={() => setIsLessonPlanOpen(false)}>
+                    <CloseIcon size="1.25rem" />
+                </div>
                 <Typography className={classes.title}>Lesson Plan</Typography>
                 <Tabs
                     value={value}
