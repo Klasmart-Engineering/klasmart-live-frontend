@@ -63,7 +63,7 @@ export function themeProvider(languageCode: string, themeMode: string) {
 				minHeight: 0,
 				padding: 10,
 				borderBottom: "1px solid lightgrey",
-				"& .MuiTabs-flexContainer": {
+				"& $flexContainer": {
 					zIndex: 5,
 					position: "relative",
 				},

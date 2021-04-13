@@ -1,58 +1,61 @@
-import React from "react";
-
 import {
-	makeStyles,
-	Grid,
-	Theme,
-    Typography,
     Box,
-    IconButton
+    Grid,
+    IconButton,
+    makeStyles,
+    Theme,
+    Typography,
 } from "@material-ui/core";
-
-
-import { Attachment as AttachmentIcon } from "@styled-icons/icomoon/Attachment";
 import { CloudDownload as DownloadIcon } from "@styled-icons/boxicons-regular/CloudDownload";
+import { Attachment as AttachmentIcon } from "@styled-icons/icomoon/Attachment";
+import React from "react";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root:{
-        cursor: 'pointer',
+        cursor: `pointer`,
         borderRadius: 12,
         flexGrow: 1,
         "&:hover":{
-            backgroundColor: '#fff',
+            backgroundColor: `#fff`,
             "& $iconButton":{
-                visibility: 'visible',
-            }
+                visibility: `visible`,
+            },
         },
     },
     iconButton:{
-        visibility: 'hidden',
+        visibility: `hidden`,
         padding: 10,
         borderRadius: 12,
-        color: '#fff',
+        color: `#fff`,
         backgroundColor: theme.palette.text.primary,
         "&:hover":{
             backgroundColor: theme.palette.text.primary,
-            opacity: 0.8
-        }
-    }
+            opacity: 0.8,
+        },
+    },
 }));
 
 export interface AttachmentProps {
-    title: string,
-    type: string,
+    title: string;
+    type: string;
 }
 
-function Attachment(props: AttachmentProps) {
-	const classes = useStyles();
-    const {title, type} = props;
+function Attachment (props: AttachmentProps) {
+    const classes = useStyles();
+    const { title, type } = props;
 
-	return (
-        <Grid container alignItems="center" spacing={2} className={classes.root}>
+    return (
+        <Grid
+            container
+            alignItems="center"
+            spacing={2}
+            className={classes.root}>
             <Grid item>
                 <AttachmentIcon size="1rem"/>
             </Grid>
-            <Grid item xs>
+            <Grid
+                item
+                xs>
                 <Typography>{title}</Typography>
             </Grid>
             <Grid item>
@@ -65,7 +68,7 @@ function Attachment(props: AttachmentProps) {
                 </IconButton>
             </Grid>
         </Grid>
-	);
+    );
 }
 
 export default Attachment;
