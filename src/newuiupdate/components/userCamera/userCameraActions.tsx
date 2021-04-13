@@ -92,15 +92,11 @@ const useStyles = makeStyles((theme: Theme) => ({
         alignItems:`center`,
         bottom: 0,
         right: 0,
-        opacity: 0,
+        opacity: 1,
         transition: `all 100ms ease-in-out`,
-        visibility: `hidden`,
+        visibility: `visible`,
         backdropFilter: `blur(2px)`,
         backgroundColor: `rgba(0,0,0,0.5)`,
-    },
-    controlsHover:{
-        opacity: 1,
-        visibility: `visible`,
     },
     controlsIcon:{
         margin: `5px`,
@@ -161,14 +157,10 @@ interface UserCameraActionsType {
 }
 
 function UserCameraActions (props: UserCameraActionsType) {
-
     const { user } = props;
     const classes = useStyles();
-    const [ isHover, setIsHover ] = useState(false);
 
     const [ pinnedUser, setPinnedUser ] = useRecoilState(pinnedUserState);
-    const [ users, setUsers ] = useRecoilState(usersState);
-
     const [ localCamera, setLocalCamera ] = useState(false);
     const [ localMicrophone, setLocalMicrophone ] = useState(true);
 
@@ -191,66 +183,21 @@ function UserCameraActions (props: UserCameraActionsType) {
     }
 
     function handlePinnedUser (id: any){
-        /*
-        let tempIndex = users.findIndex((e,i) => e.id === id);
-        let tempUsers = [...users];
-        let tempUser = {...users[tempIndex]};
-
-        let tempIndexPinned = users.findIndex((e,i) => e.isPinned === true);
-        if(tempIndexPinned !== -1 ){
-            let tempUserPinned = {...users[tempIndexPinned]};
-            tempUserPinned.isPinned = false;
-            tempUsers[tempIndexPinned] = tempUserPinned;
-         }
-
-        tempUser.isPinned = !users[tempIndex].isPinned;
-        tempUsers[tempIndex] = tempUser;
-
-        setUsers(tempUsers);*/
         id === pinnedUser ? setPinnedUser(undefined) : setPinnedUser(id);
-
     }
 
-    if(user.role === `teacher`){
-        return(
-            <div className={`${classes.root} ${classes.rootTeacher}`}>
-                <div className={classes.topCamera}>
-                    <Typography className={classes.name}>{user.name}</Typography>
-                    <div className={classes.roles}>
-                        <TeacherIcon
-                            size="1.25rem"
-                            className={classes.roleIcon}/>
-                        {user.hasControls && <HasControlsIcon
-                            size="1.25rem"
-                            className={`${classes.roleIcon} ${classes.roleHasControlsIcon}`}/>}
-                    </div>
-                </div>
-            </div>
-        );
-    }
 
     return (
         <div
-            className={classes.root}
-            onMouseEnter={() => setIsHover(true)}
-            onMouseLeave={() => setIsHover(false)}>
-            <div className={classes.topCamera}></div>
-            <div className={classes.bottomCamera}>
-                <Typography className={classes.name}>{user.name}</Typography>
-            </div>
-            <Grid className={clsx(classes.controls, {
-                [classes.controlsHover] : isHover,
-            })}>
-
+            className={classes.root}>
+            <Grid className={classes.controls}>
                 <div className={classes.expand}>
                     <IconButton
                         component="a"
-                        aria-label="Trophy button"
-                        aria-controls="trophy-popover"
-                        aria-haspopup="true"
+                        aria-label="Expand video"
                         size="small"
                         className={classes.controlsIcon}
-                        onClick={handleTrophyOpen}
+                        style={{background: 'none'}}
                     >
                         <ExpandIcon size="0.75em" />
                     </IconButton>

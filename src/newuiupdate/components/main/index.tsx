@@ -45,7 +45,7 @@ function Main () {
                 xs
                 className={classes.mainViewContainer}>
                 <div className={classes.mainView}>
-                    <Grid container>
+                    <Grid container id="main-content">
                         <Grid
                             item
                             xs>

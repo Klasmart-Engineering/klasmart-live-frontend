@@ -1,5 +1,4 @@
 import {
-    Box,
     Drawer,
     Fade,
     makeStyles,
@@ -9,6 +8,9 @@ import {
 } from "@material-ui/core";
 import React,
 { useState } from "react";
+
+import { activeTabState } from "../states/layoutAtoms";
+import { useRecoilState } from "recoil";
 
 interface StyledDrawerProps {
 	children?: any;
@@ -45,6 +47,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     popperPapper: {
         borderRadius: 12,
         overflow: `hidden`,
+        maxHeight: 'calc(100vh - 150px)',
+        overflowY: 'scroll',
     },
 }));
 
@@ -53,6 +57,8 @@ function StyledDrawer (props: StyledDrawerProps) {
 
     const [ drawerWidth, setDrawerWidth ] = useState<any>(340);
     const { children, active } = props;
+
+    const [ activeTab, setActiveTab ] = useRecoilState(activeTabState);
 
     return (
         <Drawer
@@ -83,8 +89,7 @@ function StyledDrawer (props: StyledDrawerProps) {
                 width: active ? drawerWidth : 0,
             }}
         >
-            <Box className={classes.styledDrawerInner}>{children}
-            </Box>
+            <div className={classes.styledDrawerInner} style={{marginBottom: activeTab === 'mosaic' ? 20 : ''}}>{children}</div>
         </Drawer>
     );
 }

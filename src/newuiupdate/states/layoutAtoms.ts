@@ -9,7 +9,7 @@ export const themeState = atom<themeStateType>({
 
 // LAYOUT
 type activeTabStateType = "participants" | "mosaic" | "settings";
-export const activeTabState = atom<activeTabStateType>({
+export const activeTabState = atom({
 	key: "activeTabState",
 	default: "participants",
 });
@@ -98,7 +98,8 @@ export const materialActiveIndexState = atom<number>({
 	default: 0,
 });
 
-export const mosaicViewSizeState = atom<number>({
+// number | string | Array<number | string
+export const mosaicViewSizeState = atom<number|string|Array<number|string>>({
 	key: "mosaicViewSizeState",
 	default: 4,
 });
