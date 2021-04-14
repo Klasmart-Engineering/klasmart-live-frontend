@@ -51,17 +51,7 @@ export const ENDCLASS = gql`
         endClass(roomId: $roomId)
     }
 `;
-export const SUBSCRIBE_GLOBAL_MUTE = gql`
-    subscription media($roomId: ID!) {
-            globalMute {
-                roomId,
-                audioGloballyMuted,
-                videoGloballyDisabled,
-            },
-        }
-`;
-
-const SUBSCRIBE = gql`
+export const SUBSCRIBE = gql`
     subscription media($roomId: ID!) {
         media(roomId: $roomId) {
             rtpCapabilities,
@@ -116,16 +106,15 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
     const [outboundStreams, setOutboundStreams] = useState<Map<string, Stream>>(new Map<string, Stream>());
     const [destructors, setDestructors] = useState<Map<string, () => any>>(new Map<string, () => any>());
 
-    const [devicePrePromise, setDevicePrePremise] = useState<PrePromise<Device>>(Resolver<Device>());
-    const [producerTransportPrePromise, setProducerTransportPrePromise] = useState<PrePromise<MediaSoup.Transport>>(Resolver<MediaSoup.Transport>());
-    const [consumerTransportPrePromise, setConsumerTransportPrePromise] = useState<PrePromise<MediaSoup.Transport>>(Resolver<MediaSoup.Transport>());
-
     const [rtpCapabilitiesMutation] = useMutation(SEND_RTP_CAPABILITIES, {context: {target: SFU_LINK}});
     const [transportMutation] = useMutation(TRANSPORT, {context: {target: SFU_LINK}});
     const [producerMutation] = useMutation(PRODUCER, {context: {target: SFU_LINK}});
     const [consumerMutation] = useMutation(CONSUMER, {context: {target: SFU_LINK}});
     const [streamMutation] = useMutation(STREAM, {context: {target: SFU_LINK}});
     // const [endClassMutation] = useMutation(ENDCLASS);
+    const devicePrePromise = Resolver<Device>();
+    const producerTransportPrePromise = Resolver<MediaSoup.Transport>();
+    const consumerTransportPrePromise = Resolver<MediaSoup.Transport>();
 
     const getStream = (id: string) => {
         const stream = inboundStreams.get(id)
