@@ -43,7 +43,11 @@ export const MUTE = gql`
 `;
 export const GLOBAL_MUTE_MUTATION = gql`
     mutation globalMute($roomId: String!, $audioGloballyMuted: Boolean, $videoGloballyDisabled: Boolean) {
-        globalMute(roomId: $roomId, audioGloballyMuted: $audioGloballyMuted, videoGloballyDisabled: $videoGloballyDisabled)
+        globalMute(roomId: $roomId, audioGloballyMuted: $audioGloballyMuted, videoGloballyDisabled: $videoGloballyDisabled) {
+            roomId,
+            audioGloballyMuted,
+            videoGloballyDisabled,
+        }
     }
 `;
 export const ENDCLASS = gql`

@@ -525,7 +525,7 @@ function ToggleCamera({ session, sfuState, isSelf, cameraRef }: {
     }, [states.isLocalVideoEnabled(session.id)])
 
     useEffect(() => {
-        if (roomData?.media?.globalMute?.videoGloballyDisabled && states.isLocalVideoEnabled(session.id) && !session.isHost) {
+        if (roomData?.media?.globalMute?.videoGloballyDisabled && states.isLocalVideoEnabled(session.id) && !session.isTeacher) {
             toggleOutboundVideoState();
         }
     }, [roomData?.media?.globalMute?.videoGloballyDisabled, states.isLocalVideoEnabled(session.id)])
