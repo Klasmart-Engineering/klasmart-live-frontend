@@ -1,4 +1,4 @@
-import { gql, useMutation, useSubscription } from "@apollo/client";
+import { gql, useMutation } from "@apollo/client";
 import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
 import { useTheme } from "@material-ui/core/styles";
@@ -20,7 +20,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { getRandomKind } from './components/trophies/trophyKind';
 import { LIVE_LINK, LocalSessionContext, SFU_LINK } from "./entry";
-import { GlobalMuteNotification, GLOBAL_MUTE_MUTATION, SUBSCRIBE } from "./providers/WebRTCContext";
+import { GlobalMuteNotification, GLOBAL_MUTE_MUTATION } from "./providers/WebRTCContext";
 import { useSynchronizedState } from "./whiteboard/context-providers/SynchronizedStateProvider";
 
 // const SEND_SIGNAL = gql`
@@ -66,7 +66,6 @@ export function GlobalCameraControl(): JSX.Element {
     const { roomId, sessionId } = useContext(LocalSessionContext);
     const [rewardTrophyMutation] = useMutation(MUTATION_REWARD_TROPHY, {context: {target: LIVE_LINK}});
     const [globalMuteMutation] = useMutation(GLOBAL_MUTE_MUTATION, {context: {target: SFU_LINK}});
-    const { data } = useSubscription(SUBSCRIBE, { variables: { roomId }, context: {target: SFU_LINK} });
     const rewardTrophy = (user: string, kind: string) => rewardTrophyMutation({ variables: { roomId, user, kind } });
 
     const { actions: { clear } } = useToolbarContext();
@@ -75,36 +74,30 @@ export function GlobalCameraControl(): JSX.Element {
         actions: { setDisplay },
     } = useSynchronizedState();
 
-    useEffect(() => {
-        const videoGloballyDisabled = data?.media?.globalMute?.videoGloballyDisabled;
-        if (videoGloballyDisabled != null) {
-            setCamerasOn(!videoGloballyDisabled);
-        }
-    }, [data?.media?.globalMute?.videoGloballyDisabled])
-
-    useEffect(() => {
-        const audioGloballyMuted = data?.media?.globalMute?.audioGloballyMuted;
-        if (audioGloballyMuted != null) {
-            setMicsOn(!audioGloballyMuted);
-        }
-    }, [data?.media?.globalMute?.audioGloballyMuted])
-
-    function toggleVideoStates() {
+    async function toggleVideoStates() {
         const notification: GlobalMuteNotification = {
             roomId,
             audioGloballyMuted: undefined,
             videoGloballyDisabled: camerasOn,
         }
-        globalMuteMutation({ variables: notification })
+        const data = await globalMuteMutation({ variables: notification })
+        const videoGloballyDisabled = data?.data?.globalMute?.videoGloballyDisabled;
+        if (videoGloballyDisabled != null) {
+            setCamerasOn(!videoGloballyDisabled);
+        }
     }
 
-    function toggleAudioStates() {
+    async function toggleAudioStates() {
         const notification: GlobalMuteNotification = {
             roomId,
             audioGloballyMuted: micsOn,
             videoGloballyDisabled: undefined,
         }
-        globalMuteMutation({ variables: notification })
+        const data = await globalMuteMutation({ variables: notification })
+        const audioGloballyMuted = data?.data?.globalMute?.audioGloballyMuted;
+        if (audioGloballyMuted != null) {
+            setMicsOn(!audioGloballyMuted);
+        }
     }
 
     return (
