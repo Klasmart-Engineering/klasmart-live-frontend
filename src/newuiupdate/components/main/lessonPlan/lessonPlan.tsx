@@ -43,21 +43,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     }
 }));
 
-const materials = [
-    {
-        id: `1`,
-        name: `Step 1 Colors`,
-    },
-    {
-        id: `2`,
-        name: `Step 2 Animals`,
-    },
-    {
-        id: `3`,
-        name: `Step 3 Scientology`,
-    }
-];
-
 function LessonPlan () {
     const classes = useStyles();
     const [ isLessonPlanOpen, setIsLessonPlanOpen ] = useRecoilState(isLessonPlanOpenState);

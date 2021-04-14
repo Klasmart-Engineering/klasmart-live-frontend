@@ -26,10 +26,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     accordion:{
         borderRadius: 12,
         "&$expanded":{
-            backgroundColor: theme.palette.grey[100]
+            backgroundColor: theme.palette.grey[200]
         },
         "&:hover":{
-            backgroundColor: theme.palette.grey[100]
+            backgroundColor: theme.palette.grey[200]
         },
         "&:before":{
             display: 'none'

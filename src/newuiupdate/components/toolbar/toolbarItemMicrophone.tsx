@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         color: red[500],
         margin: `0 5px`,
         "&:hover": {
-            backgroundColor: `#e2e7ec`,
+            backgroundColor: theme.palette.grey[200],
         },
         "& svg" : {
             width: `1.25em`,
@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     locked: {
         opacity: 0.4,
         pointerEvents: `none`,
-        backgroundColor: `#e2e7ec`,
+        backgroundColor: theme.palette.grey[200],
         cursor: `default`,
     },
     disabled: {

@@ -9,6 +9,7 @@ import {
 } from "@material-ui/core";
 import { CloudUpload as UploadIcon } from "@styled-icons/boxicons-regular/CloudUpload";
 import React from "react";
+import { NoItemList } from "../../../utils";
 
 const useStyles = makeStyles((theme: Theme) => ({
     fullHeight:{
@@ -27,14 +28,6 @@ const useStyles = makeStyles((theme: Theme) => ({
             opacity: 0.8,
             backgroundColor: theme.palette.text.primary,
         },
-    },
-    noResultContainer:{},
-    noResultIcon:{
-        color: theme.palette.grey[300],
-        marginBottom: 10,
-    },
-    noResultText:{
-        color: theme.palette.grey[700],
     },
 }));
 
@@ -74,7 +67,7 @@ function Attachments () {
                         item
                         xs>
                         {attachments.length === 0 ?
-                            <NoAttachments /> :
+                            <NoItemList icon={<UploadIcon />} text='No attachments' /> :
                             (<div className={classes.container}>
                                 {attachments?.map(attachment => (
                                     <Attachment
@@ -102,25 +95,3 @@ function Attachments () {
 }
 
 export default Attachments;
-
-function NoAttachments (){
-    const classes = useStyles();
-
-    return (
-        <Box
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            className={classes.fullHeight}>
-            <Box
-                display="flex"
-                flexDirection="column"
-                alignItems="center">
-                <UploadIcon
-                    size="4rem"
-                    className={classes.noResultIcon} />
-                <Typography className={classes.noResultText}>No attachments</Typography>
-            </Box>
-        </Box>
-    );
-}

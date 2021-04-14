@@ -1,18 +1,12 @@
 import { materialActiveIndexState } from "../../../../states/layoutAtoms";
 import {
-    Grid,
-    makeStyles,
     Step,
     StepLabel,
     Stepper,
-    Theme,
-    Typography,
 } from "@material-ui/core";
 import React from "react";
 import { useRecoilState } from "recoil";
 
-const useStyles = makeStyles((theme: Theme) => ({
-}));
 
 const materials = [
     {
@@ -30,8 +24,6 @@ const materials = [
 ];
 
 function Plan () {
-    const classes = useStyles();
-
     const [ materialActiveIndex, setMaterialActiveIndex ] = useRecoilState(materialActiveIndexState);
 
     return (
