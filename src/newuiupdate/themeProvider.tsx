@@ -62,14 +62,14 @@ export function themeProvider(languageCode: string, themeMode: string) {
 			root: {
 				minHeight: 0,
 				padding: 10,
-				borderBottom: "1px solid lightgrey",
+				borderBottom: "1px solid rgba(0,0,0,0.1)",
 				"& $flexContainer": {
 					zIndex: 5,
 					position: "relative",
 				},
 			},
 			indicator: {
-				backgroundColor: "#B4CDED",
+				backgroundColor: "#cfe1f9",
 				height: "100%",
 				borderRadius: 40,
 			},
@@ -90,12 +90,40 @@ export function themeProvider(languageCode: string, themeMode: string) {
 			root:{
 				borderRadius: 8
 			}
+		},
+		MuiStepper:{
+			root:{
+				background: 'transparent'
+			}
+		},
+		MuiStep:{
+			root:{
+				cursor: `pointer`,
+				marginBottom: 8,
+				marginLeft: -1
+			}
+		},
+		MuiStepLabel:{
+			label:{
+				color: 'inherit',
+				opacity: 0.6,
+				fontSize: '0.85rem',
+				"&$active":{
+					opacity: 1,
+					fontWeight: 600
+				}
+			},
+		},
+		MuiStepIcon:{
+			root:{
+				fontSize: '1.65rem',
+			}
 		}
 	};
 
 	const palette: PaletteOptions = {
 		background: {
-			default: "#B4CDED",
+			default: "#cfe1f9",
 			paper: "#ffffff",
 		},
 		primary: {
@@ -108,13 +136,14 @@ export function themeProvider(languageCode: string, themeMode: string) {
 			primary: "#344966",
 			secondary: "#9e9e9e",
 		},
+		grey:{
+			"200": '#f1f6fc'
+		}
 	};
 
 	if (themeMode === "student") {
 		palette.background = { default: "red" };
 	}
-
-	console.log("theme", themeMode);
 
 	let theme: Theme;
 	if (themeMode === "light") {

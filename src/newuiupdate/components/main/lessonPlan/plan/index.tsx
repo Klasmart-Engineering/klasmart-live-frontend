@@ -12,14 +12,6 @@ import React from "react";
 import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
-    stepper:{
-        backgroundColor: `transparent`,
-    },
-    step: {
-        cursor: `pointer`,
-        marginBottom: 4,
-        marginLeft: 2
-    },
 }));
 
 const materials = [
@@ -50,16 +42,11 @@ function Plan () {
             }}
             activeStep={materialActiveIndex}
             orientation="vertical"
-            classes={{
-                root: classes.stepper,
-                
-            }}
         >
             {materials.map((material, index) => (
                 <Step
                     key={`step-${material.name}`}
                     disabled={false}
-                    className={classes.step}
                     onClick={() => setMaterialActiveIndex(index)}
                 >
                     <StepLabel key={`label-${material.name}`}>{material.name}</StepLabel>
