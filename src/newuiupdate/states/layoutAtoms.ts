@@ -111,7 +111,7 @@ export const userState = atom({
 		id: 4,
 		name: 'The second student',
 		role: 'student',
-		hasControls: false,
+		hasControls: true,
 		hasVideo: false,
 		hasAudio: true,
 		isSelfAudioMuted : false,
