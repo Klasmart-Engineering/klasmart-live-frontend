@@ -8,7 +8,7 @@ import {
     Slider,
     Theme,
 } from "@material-ui/core";
-import { SmartDisplay as SliderIcon } from "@styled-icons/material-twotone/SmartDisplay";
+import { SlideSize as SliderIcon } from "@styled-icons/fluentui-system-regular/SlideSize";
 import React,
 {
     useState,useEffect
