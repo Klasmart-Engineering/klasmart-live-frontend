@@ -21,7 +21,7 @@ import { FormattedMessage } from "react-intl";
 import { getRandomKind } from './components/trophies/trophyKind';
 import { LIVE_LINK, LocalSessionContext, SFU_LINK } from "./entry";
 import { Session } from "./pages/room/room";
-import { GlobalMuteNotification, GLOBAL_MUTE_MUTATION, GLOBAL_MUTE_QUERY } from "./providers/WebRTCContext";
+import { GlobalMuteNotification, GLOBAL_MUTE_MUTATION, GLOBAL_MUTE_QUERY, WebRTCContext } from "./providers/WebRTCContext";
 import { useSynchronizedState } from "./whiteboard/context-providers/SynchronizedStateProvider";
 
 // const SEND_SIGNAL = gql`
@@ -60,9 +60,9 @@ mutation rewardTrophy($roomId: ID!, $user: ID!, $kind: String) {
 }
 `;
 
-export function GlobalCameraControl(props: {localSession: Session}): JSX.Element {
+export function GlobalCameraControl(props: {localSession: Session }): JSX.Element {
     const theme = useTheme();
-    const { localSession} = props;
+    const { localSession } = props;
     const [camerasOn, setCamerasOn] = useState(true);
     const [micsOn, setMicsOn] = useState(true);
     const { roomId } = useContext(LocalSessionContext);
@@ -70,6 +70,7 @@ export function GlobalCameraControl(props: {localSession: Session}): JSX.Element
     const [globalMuteMutation] = useMutation(GLOBAL_MUTE_MUTATION, {context: {target: SFU_LINK}});
     const [queryGlobalMute, { data: globalMuteStatus }] = useLazyQuery(GLOBAL_MUTE_QUERY, {context: {target: SFU_LINK}});
     const rewardTrophy = (user: string, kind: string) => rewardTrophyMutation({ variables: { roomId, user, kind } });
+    const states = useContext(WebRTCContext);
 
     const { actions: { clear } } = useToolbarContext();
     const {
@@ -82,21 +83,23 @@ export function GlobalCameraControl(props: {localSession: Session}): JSX.Element
     }, [roomId, localSession.isHost])
 
     useEffect(() => {
+    }, [states.inboundStreams.size])
+    useEffect(() => {
         const videoGloballyDisabled = globalMuteStatus?.retrieveGlobalMute?.videoGloballyDisabled;
-        if (videoGloballyDisabled != null) {
-            setCamerasOn(!videoGloballyDisabled);
+        if (videoGloballyDisabled !== undefined) {
+            toggleVideoStates(videoGloballyDisabled);
         }
         const audioGloballyMuted = globalMuteStatus?.retrieveGlobalMute?.audioGloballyMuted;
-        if (audioGloballyMuted != null) {
-            setMicsOn(!audioGloballyMuted);
+        if (audioGloballyMuted !== undefined) {
+            toggleAudioStates(audioGloballyMuted);
         }
-    }, [globalMuteStatus])
+    }, [globalMuteStatus, states.inboundStreams.size])
     
-    async function toggleVideoStates() {
+    async function toggleVideoStates(isOn?: boolean) {
         const notification: GlobalMuteNotification = {
             roomId,
             audioGloballyMuted: undefined,
-            videoGloballyDisabled: camerasOn,
+            videoGloballyDisabled: isOn ?? camerasOn,
         }
         const data = await globalMuteMutation({ variables: notification })
         const videoGloballyDisabled = data?.data?.updateGlobalMute?.videoGloballyDisabled;
@@ -105,10 +108,10 @@ export function GlobalCameraControl(props: {localSession: Session}): JSX.Element
         }
     }
 
-    async function toggleAudioStates() {
+    async function toggleAudioStates(isOn?: boolean) {
         const notification: GlobalMuteNotification = {
             roomId,
-            audioGloballyMuted: micsOn,
+            audioGloballyMuted: isOn ?? micsOn,
             videoGloballyDisabled: undefined,
         }
         const data = await globalMuteMutation({ variables: notification })
@@ -138,7 +141,7 @@ export function GlobalCameraControl(props: {localSession: Session}): JSX.Element
                         <IconButton
                             color={camerasOn ? "primary" : "secondary"}
                             style={{ backgroundColor: camerasOn ? "#f6fafe" : "#fef5f9" }}
-                            onClick={toggleVideoStates}
+                            onClick={() => toggleVideoStates()}
                         >
                             {camerasOn ? <CameraIcon size="1rem" /> : <CameraOffIcon size="1rem" />}
                         </IconButton>
@@ -158,7 +161,7 @@ export function GlobalCameraControl(props: {localSession: Session}): JSX.Element
                         <IconButton
                             color={micsOn ? "primary" : "secondary"}
                             style={{ backgroundColor: micsOn ? "#f6fafe" : "#fef5f9" }}
-                            onClick={toggleAudioStates}
+                            onClick={() => toggleAudioStates()}
                         >
                             {micsOn ? <MicIcon size="1rem" /> : <MicOffIcon size="1rem" />}
                         </IconButton>
