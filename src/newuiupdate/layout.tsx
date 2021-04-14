@@ -5,11 +5,14 @@ import React from 'react';
 
 import { classEndedState } from "./states/layoutAtoms";
 import { useRecoilState } from "recoil";
+import ClassEnded from './components/others/classEnded';
 
 function Layout () {
     const [ classEnded, setClassEnded ] = useRecoilState(classEndedState);
 
-    if(classEnded){return(<div>CLASS HAS ENDED</div>)}
+    if(classEnded){
+        return(<ClassEnded />)
+    }
 
     return (
         <Grid container>

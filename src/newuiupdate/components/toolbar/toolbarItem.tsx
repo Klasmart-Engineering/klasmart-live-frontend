@@ -111,25 +111,27 @@ function ToolbarItem (props: ToolbarItemProps) {
                 disableFocusListener={!hasTooltip}
                 disableHoverListener={!hasTooltip}
                 disableTouchListener={!hasTooltip}>
-                    <div
-                        className={clsx(classes.root, {
-                            [classes.rootMosaic] : activeTab === `mosaic`,
-                            [classes.active] : active,
-                            [classes.disabled] : disabled,
-                        })}
-                        onClick={onClick}
-                    >
-                        {badge && (
-                            <Badge
-                                classes={{
-                                    badge: classes.badge,
-                                    root: classes.badgeRoot,
-                                }}
-                                badgeContent={<div className={classes.badgeContent}>{badge}</div>}
-                            />
-                        )}
-                        {icon}
-                        {label && <Typography className={classes.label}>{label}</Typography>}
+                    <div>
+                        <div
+                            className={clsx(classes.root, {
+                                [classes.rootMosaic] : activeTab === `mosaic`,
+                                [classes.active] : active,
+                                [classes.disabled] : disabled,
+                            })}
+                            onClick={onClick}
+                        >
+                            {badge && (
+                                <Badge
+                                    classes={{
+                                        badge: classes.badge,
+                                        root: classes.badgeRoot,
+                                    }}
+                                    badgeContent={<div className={classes.badgeContent}>{badge}</div>}
+                                />
+                            )}
+                            {icon}
+                            {label && <Typography className={classes.label}>{label}</Typography>}
+                        </div>
                     </div>
             </Tooltip>
         </>

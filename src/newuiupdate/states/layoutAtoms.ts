@@ -104,18 +104,6 @@ export const mosaicViewSizeState = atom<number|string|Array<number|string>>({
 });
 
 
-// SELF USER
-export const activeMicrophoneState = atom({
-	key: "activeMicrophoneState",
-	default: true,
-});
-
-export const activeCameraState = atom({
-	key: "activeCameraState",
-	default: true,
-});
-
-
 // TEMPORARY, TO DELETE WHEN REAL DATA
 export const userState = atom({
 	key: "userState",
