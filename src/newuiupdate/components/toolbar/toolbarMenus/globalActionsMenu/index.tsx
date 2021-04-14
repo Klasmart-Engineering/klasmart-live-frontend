@@ -3,7 +3,6 @@ import React from "react";
 import { makeStyles, Grid, Theme } from "@material-ui/core";
 
 import { TvFill as ScreenShareIcon } from "@styled-icons/bootstrap/TvFill";
-import { PencilFill as CanvasIcon } from "@styled-icons/bootstrap/PencilFill";
 import { MicFill as MicFillIcon } from "@styled-icons/bootstrap/MicFill";
 import { MicMuteFill as MicDisabledIcon } from "@styled-icons/bootstrap/MicMuteFill";
 import { CameraVideoFill as CameraVideoFillIcon } from "@styled-icons/bootstrap/CameraVideoFill";

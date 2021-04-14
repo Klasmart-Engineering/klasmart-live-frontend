@@ -20,6 +20,8 @@ import LockIcon from "@material-ui/icons/Lock";
 import clsx from "clsx";
 import React, {useState, useEffect} from "react";
 
+import { Admin as ParentIcon } from "@styled-icons/remix-line/Admin";
+
 const useStyles = makeStyles((theme: Theme) => ({
     itemRoot: {
         position: `relative`,
@@ -64,8 +66,21 @@ const useStyles = makeStyles((theme: Theme) => ({
     badgeContent: {
         fontSize: `1em`,
     },
+    dialogTitle:{
+        textAlign: 'center'
+    },
+    dialogContent:{
+        textAlign: 'center'
+    },
+    dialogIcon:{
+        background: theme.palette.grey[200],
+        borderRadius: 40,
+        padding: 20,
+        marginBottom: 20,
+    },
     parentChecker:{
-        marginTop: 20
+        marginTop: 20,
+        marginBottom: 20,
     },
     parentCheckerItem:{
         color: '#fff',
@@ -78,6 +93,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         borderRadius: 50,
         fontSize: '1.5rem',
         cursor: 'pointer',
+        margin: '0 10px',
     },
     parentCheckerItemActive:{
         opacity: 0.4
@@ -167,13 +183,12 @@ function ToolbarItemCall (props: ToolbarItemCallProps) {
                 </div>
             </Tooltip>
             <Dialog onClose={handleCloseDialog} aria-labelledby="leave-class-dialog" open={openModal}>
-                <DialogTitle id="leave-class-dialog">Leave class</DialogTitle>
-                <DialogContent>
-                    <DialogContentText id="leave-class-dialog-description">
-                        <strong>Parents only</strong><br/>
-                        To continue, please tap the numbers in ascending order
-                    </DialogContentText>
-                    <Grid container justify="space-around" className={classes.parentChecker}>
+                <DialogTitle id="leave-class-dialog" className={classes.dialogTitle}>Leave class</DialogTitle>
+                <DialogContent className={classes.dialogContent}>
+                    <ParentIcon size="2rem" className={classes.dialogIcon} />
+                    <Typography variant="h5">Parents only </Typography>
+                    <Typography> To continue, please tap the numbers in ascending order </Typography>
+                    <Grid container justify="center" className={classes.parentChecker}>
                         {checkNumbers.map((number, index) => (
                             <Grid item key={`numer-${index}`}>
                                 <Typography className={clsx(classes.parentCheckerItem, {[classes.parentCheckerItemActive] : number.checked})} onClick={() => handleSelectNumber(number.value, index)} >{number.value}</Typography>

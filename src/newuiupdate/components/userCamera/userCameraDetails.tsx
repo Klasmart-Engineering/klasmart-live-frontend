@@ -1,36 +1,15 @@
 import {
-    pinnedUserState,
-    usersState,
-} from "../../states/layoutAtoms";
-import {
-    Grid,
-    IconButton,
     makeStyles,
-    Menu,
-    MenuItem,
     Theme,
     Typography,
 } from "@material-ui/core";
 import amber from "@material-ui/core/colors/amber";
-import red from "@material-ui/core/colors/red";
-import { fade } from '@material-ui/core/styles/colorManipulator';
-import { ArrowsAngleExpand as ExpandIcon } from "@styled-icons/bootstrap/ArrowsAngleExpand";
-import { CameraVideoFill as CameraVideoFillIcon } from "@styled-icons/bootstrap/CameraVideoFill";
-import { CameraVideoOffFill as CameraDisabledIcon } from "@styled-icons/bootstrap/CameraVideoOffFill";
-import { HandThumbsUpFill as HandThumbsUpFillIcon } from "@styled-icons/bootstrap/HandThumbsUpFill";
-import { HeartFill as HeartFillIcon } from "@styled-icons/bootstrap/HeartFill";
-import { MicFill as MicFillIcon } from "@styled-icons/bootstrap/MicFill";
 import { MicMuteFill as MicDisabledIcon } from "@styled-icons/bootstrap/MicMuteFill";
-import { StarFill as StarFillIcon } from "@styled-icons/bootstrap/StarFill";
-import { TrophyFill as TrophyIcon } from "@styled-icons/bootstrap/TrophyFill";
-import { DotsVerticalRounded as DotsVerticalRoundedIcon } from "@styled-icons/boxicons-regular/DotsVerticalRounded";
-import { Pin as PinIcon } from "@styled-icons/entypo/Pin";
 import { Crown as HasControlsIcon } from "@styled-icons/fa-solid/Crown";
 import { HatGraduation as TeacherIcon } from "@styled-icons/fluentui-system-filled/HatGraduation";
-import clsx from "clsx";
-import React,
-{ useState } from "react";
-import { useRecoilState } from "recoil";
+
+import React from "react";
+
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -68,6 +47,8 @@ const useStyles = makeStyles((theme: Theme) => ({
         fontSize: `0.75rem`,
         lineHeight: `1.2`,
         fontWeight: 600,
+        backgroundColor: 'rgba(0, 0, 0, 0.25)',
+        borderRadius: '0 12px 0'
     },
     roles:{
         position: `absolute`,
@@ -116,7 +97,9 @@ function UserCameraDetails (props: UserCameraDetailsType) {
             className={classes.root}>
             <div className={classes.topCamera}></div>
             <div className={classes.bottomCamera}>
-                <Typography className={classes.name}>{user.name}</Typography>
+                <Typography className={classes.name}>
+                    {user.name} {!user.hasAudio && <MicDisabledIcon size="0.85rem"/>}
+                </Typography>
             </div>
         </div>
     );
