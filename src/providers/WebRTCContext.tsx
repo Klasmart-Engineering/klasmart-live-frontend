@@ -42,8 +42,8 @@ export const MUTE = gql`
     }
 `;
 export const GLOBAL_MUTE_MUTATION = gql`
-    mutation globalMute($roomId: String!, $audioGloballyMuted: Boolean, $videoGloballyDisabled: Boolean) {
-        globalMute(roomId: $roomId, audioGloballyMuted: $audioGloballyMuted, videoGloballyDisabled: $videoGloballyDisabled) {
+    mutation updateGlobalMute($roomId: String!, $audioGloballyMuted: Boolean, $videoGloballyDisabled: Boolean) {
+        updateGlobalMute(roomId: $roomId, audioGloballyMuted: $audioGloballyMuted, videoGloballyDisabled: $videoGloballyDisabled) {
             roomId,
             audioGloballyMuted,
             videoGloballyDisabled,
@@ -53,6 +53,15 @@ export const GLOBAL_MUTE_MUTATION = gql`
 export const ENDCLASS = gql`
     mutation endClass($roomId: String) {
         endClass(roomId: $roomId)
+    }
+`;
+export const GLOBAL_MUTE_QUERY= gql`
+    query retrieveGlobalMute($roomId: String!) {
+        retrieveGlobalMute(roomId: $roomId) {
+            roomId,
+            audioGloballyMuted,
+            videoGloballyDisabled,
+        }
     }
 `;
 export const SUBSCRIBE = gql`

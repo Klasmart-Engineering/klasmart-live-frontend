@@ -345,7 +345,7 @@ function TabInnerContent({ title }: { title: string }) {
                             item xs={12}
                             style={{ padding: theme.spacing(0.5) }}
                         />
-                        <GlobalCameraControl />
+                        <GlobalCameraControl localSession={localSession} />
                     </>}
                     <Grid
                         container
