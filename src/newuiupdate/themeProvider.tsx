@@ -118,6 +118,11 @@ export function themeProvider(languageCode: string, themeMode: string) {
 			root:{
 				fontSize: '1.65rem',
 			}
+		},
+		MuiAccordionSummary:{
+			expandIcon:{
+				color: "#344966"
+			}
 		}
 	};
 

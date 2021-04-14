@@ -1,16 +1,13 @@
-import { materialActiveIndexState } from "../../../../states/layoutAtoms";
 import {
     Grid,
     makeStyles,
-    Box,
     Theme,
-    Typography,
 } from "@material-ui/core";
 import React from "react";
-import { useRecoilState } from "recoil";
 import Manual from "./item";
 
 import { Book as ManualIcon } from "@styled-icons/bootstrap/Book";
+import { NoItemList } from "../../../utils";
 
 const useStyles = makeStyles((theme: Theme) => ({
     fullHeight:{
@@ -19,14 +16,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     container:{
         padding : `1rem 10px`,
         paddingBottom: 0,
-    },
-    noResultContainer:{},
-    noResultIcon:{
-        color: theme.palette.grey[300],
-        marginBottom: 10,
-    },
-    noResultText:{
-        color: theme.palette.grey[700],
     },
 }));
 
@@ -62,7 +51,8 @@ function Manuals () {
                 item
                 xs>
                 {manuals.length === 0 ?
-                    <NoManuals /> :
+                    <NoItemList icon={<ManualIcon />} text='No manuals' />
+                     :
                     (<div className={classes.container}>
                         {manuals?.map(manual => (
                             <Manual
@@ -78,26 +68,3 @@ function Manuals () {
 }
 
 export default Manuals;
-
-
-function NoManuals (){
-    const classes = useStyles();
-
-    return (
-        <Box
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            className={classes.fullHeight}>
-            <Box
-                display="flex"
-                flexDirection="column"
-                alignItems="center">
-                <ManualIcon
-                    size="4rem"
-                    className={classes.noResultIcon} />
-                <Typography className={classes.noResultText}>No manuals</Typography>
-            </Box>
-        </Box>
-    );
-}

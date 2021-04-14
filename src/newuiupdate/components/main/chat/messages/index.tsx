@@ -9,6 +9,7 @@ import {
 } from "@material-ui/core";
 import { ChatSquareDotsFill as ChatIcon } from "@styled-icons/bootstrap/ChatSquareDotsFill";
 import React from "react";
+import { NoItemList } from "../../../utils";
 
 const useStyles = makeStyles((theme: Theme) => ({
     fullHeight:{
@@ -20,14 +21,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     messagesContainer:{
         overflowY: `scroll`,
-    },
-    noResultContainer:{},
-    noResultIcon:{
-        color: theme.palette.grey[300],
-        marginBottom: 10,
-    },
-    noResultText:{
-        color: theme.palette.grey[700],
     },
 }));
 
@@ -74,7 +67,7 @@ function Messages () {
                 xs
                 className={classes.messagesContainer}>
                 {messages.length === 0 ?
-                    <NoMessages /> :
+                    <NoItemList icon={<ChatIcon />} text='No messages' /> :
                     (<Box className={classes.container}>
                         {messages.map(message => (
                             <Message
@@ -94,25 +87,3 @@ function Messages () {
 }
 
 export default Messages;
-
-function NoMessages (){
-    const classes = useStyles();
-
-    return (
-        <Box
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            className={classes.fullHeight}>
-            <Box
-                display="flex"
-                flexDirection="column"
-                alignItems="center">
-                <ChatIcon
-                    size="4rem"
-                    className={classes.noResultIcon} />
-                <Typography className={classes.noResultText}>No messages</Typography>
-            </Box>
-        </Box>
-    );
-}

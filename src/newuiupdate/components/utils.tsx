@@ -5,13 +5,13 @@ import {
     Paper,
     Popper,
     Theme,
+    Typography,
 } from "@material-ui/core";
 import React,
 { useState } from "react";
 
 import { activeTabState } from "../states/layoutAtoms";
 import { useRecoilState } from "recoil";
-
 interface StyledDrawerProps {
 	children?: any;
 	active?: boolean;
@@ -164,3 +164,54 @@ function TabPanel (props: TabPanelProps) {
     );
 }
 export { TabPanel };
+
+
+
+const useStylesNoItemList = makeStyles((theme: Theme) => ({
+    root:{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100%'
+    },
+    inner:{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+    },
+    icon:{
+        marginBottom: 10,
+        "& svg":{
+            height: '4rem',
+            width: '4rem',
+            opacity: 0.1
+        }
+    },
+    text:{
+        color: theme.palette.grey[700],
+    }
+}));
+
+interface NoItemListProps {
+	icon?: any;
+	text?: string;
+}
+
+function NoItemList (props: NoItemListProps) {
+    const classes = useStylesNoItemList();
+    const {
+        icon,
+        text,
+    } = props;
+
+    return (
+        <div className={classes.root}>
+            <div className={classes.inner}>
+                <div className={classes.icon}>{icon}</div>
+                <Typography className={classes.text}>{text}</Typography>
+            </div>
+        </div>
+    );
+}
+
+export { NoItemList };
