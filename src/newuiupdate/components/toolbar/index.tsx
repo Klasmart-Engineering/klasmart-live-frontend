@@ -153,13 +153,13 @@ function Toolbar () {
                     />
                     <ToolbarItemCall
                         locked={user.role === 'student'}
-                        tooltip="Ask permission to leave the class"
+                        tooltip={user.role === 'student' ? "Ask permission to leave the class" : undefined}
                         icon={<PhoneInTalkIcon />}
                     />
                     <ToolbarItemCamera
                         locked={user.isTeacherVideoMuted}
                         active={user.hasVideo}
-                        tooltip="The teacher has disabled your camera"
+                        tooltip={user.isTeacherVideoMuted ? "The teacher has disabled your camera" : undefined}
                         onClick={() => setUser({...user, hasVideo: !user.hasVideo})}
                     />
                 </Grid>

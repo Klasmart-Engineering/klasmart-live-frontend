@@ -7,8 +7,9 @@ import {
 import { fade } from '@material-ui/core/styles/colorManipulator';
 import red from "@material-ui/core/colors/red";
 import LockIcon from "@material-ui/icons/Lock";
-import MicOffRoundedIcon from "@material-ui/icons/MicOffRounded";
-import MicRoundedIcon from "@material-ui/icons/MicRounded";
+import { MicFill as MicFillIcon } from "@styled-icons/bootstrap/MicFill";
+import { MicMuteFill as MicDisabledIcon } from "@styled-icons/bootstrap/MicMuteFill";
+
 import clsx from "clsx";
 import React from "react";
 
@@ -32,8 +33,8 @@ const useStyles = makeStyles((theme: Theme) => ({
             backgroundColor: fade(red[500], 0.2),
         },
         "& svg" : {
-            width: `1.25em`,
-    		height: `1.25em`,
+            width: `1.75em`,
+    		height: `1.75em`,
         },
     },
     active: {
@@ -116,7 +117,7 @@ function ToolbarItemMicrophone (props: ToolbarItemMicrophoneProps) {
                         className={clsx(classes.root, disabled && classes.disabled, active && classes.active, locked && classes.locked)}
                         onClick={onClick}
                     >
-                        {active ? <MicRoundedIcon /> : <MicOffRoundedIcon />}
+                        {active ? <MicFillIcon /> : <MicDisabledIcon />}
                     </div>
                 </div>
             </Tooltip>

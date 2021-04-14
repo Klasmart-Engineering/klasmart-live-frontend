@@ -7,8 +7,8 @@ import {
 import { fade } from '@material-ui/core/styles/colorManipulator';
 import red from "@material-ui/core/colors/red";
 import LockIcon from "@material-ui/icons/Lock";
-import VideocamOffRoundedIcon from "@material-ui/icons/VideocamOffRounded";
-import VideocamRoundedIcon from "@material-ui/icons/VideocamRounded";
+import { CameraVideoFill as CameraVideoFillIcon } from "@styled-icons/bootstrap/CameraVideoFill";
+import { CameraVideoOffFill as CameraDisabledIcon } from "@styled-icons/bootstrap/CameraVideoOffFill";
 import clsx from "clsx";
 import React from "react";
 
@@ -32,8 +32,8 @@ const useStyles = makeStyles((theme: Theme) => ({
             backgroundColor: fade(red[500], 0.2),
         },
         "& svg" : {
-            width: `1.25em`,
-    		height: `1.25em`,
+            width: `1.75em`,
+    		height: `1.75em`,
         },
     },
     active: {
@@ -116,7 +116,7 @@ function ToolbarItemCamera (props: ToolbarItemCameraProps) {
                         className={clsx(classes.root, disabled && classes.disabled, active && classes.active, locked && classes.locked)}
                         onClick={onClick}
                     >
-                        {active ? <VideocamRoundedIcon /> : <VideocamOffRoundedIcon />}
+                        {active ? <CameraVideoFillIcon /> : <CameraDisabledIcon />}
                     </div>
                 </div>
             </Tooltip>
