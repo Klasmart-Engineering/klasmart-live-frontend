@@ -1,4 +1,4 @@
-import { gql, useMutation } from "@apollo/client";
+import { gql, useLazyQuery, useMutation } from "@apollo/client";
 import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
 import { useTheme } from "@material-ui/core/styles";
@@ -20,7 +20,8 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { getRandomKind } from './components/trophies/trophyKind';
 import { LIVE_LINK, LocalSessionContext, SFU_LINK } from "./entry";
-import { GlobalMuteNotification, GLOBAL_MUTE_MUTATION } from "./providers/WebRTCContext";
+import { Session } from "./pages/room/room";
+import { GlobalMuteNotification, GLOBAL_MUTE_MUTATION, GLOBAL_MUTE_QUERY } from "./providers/WebRTCContext";
 import { useSynchronizedState } from "./whiteboard/context-providers/SynchronizedStateProvider";
 
 // const SEND_SIGNAL = gql`
@@ -59,13 +60,15 @@ mutation rewardTrophy($roomId: ID!, $user: ID!, $kind: String) {
 }
 `;
 
-export function GlobalCameraControl(): JSX.Element {
+export function GlobalCameraControl(props: {localSession: Session}): JSX.Element {
     const theme = useTheme();
+    const { localSession} = props;
     const [camerasOn, setCamerasOn] = useState(true);
     const [micsOn, setMicsOn] = useState(true);
-    const { roomId, sessionId } = useContext(LocalSessionContext);
+    const { roomId } = useContext(LocalSessionContext);
     const [rewardTrophyMutation] = useMutation(MUTATION_REWARD_TROPHY, {context: {target: LIVE_LINK}});
     const [globalMuteMutation] = useMutation(GLOBAL_MUTE_MUTATION, {context: {target: SFU_LINK}});
+    const [queryGlobalMute, { data: globalMuteStatus }] = useLazyQuery(GLOBAL_MUTE_QUERY, {context: {target: SFU_LINK}});
     const rewardTrophy = (user: string, kind: string) => rewardTrophyMutation({ variables: { roomId, user, kind } });
 
     const { actions: { clear } } = useToolbarContext();
@@ -74,6 +77,21 @@ export function GlobalCameraControl(): JSX.Element {
         actions: { setDisplay },
     } = useSynchronizedState();
 
+    useEffect(() => {
+        queryGlobalMute({ variables: { roomId }});
+    }, [roomId, localSession.isHost])
+
+    useEffect(() => {
+        const videoGloballyDisabled = globalMuteStatus?.retrieveGlobalMute?.videoGloballyDisabled;
+        if (videoGloballyDisabled != null) {
+            setCamerasOn(!videoGloballyDisabled);
+        }
+        const audioGloballyMuted = globalMuteStatus?.retrieveGlobalMute?.audioGloballyMuted;
+        if (audioGloballyMuted != null) {
+            setMicsOn(!audioGloballyMuted);
+        }
+    }, [globalMuteStatus])
+    
     async function toggleVideoStates() {
         const notification: GlobalMuteNotification = {
             roomId,
@@ -81,7 +99,7 @@ export function GlobalCameraControl(): JSX.Element {
             videoGloballyDisabled: camerasOn,
         }
         const data = await globalMuteMutation({ variables: notification })
-        const videoGloballyDisabled = data?.data?.globalMute?.videoGloballyDisabled;
+        const videoGloballyDisabled = data?.data?.updateGlobalMute?.videoGloballyDisabled;
         if (videoGloballyDisabled != null) {
             setCamerasOn(!videoGloballyDisabled);
         }
@@ -94,7 +112,7 @@ export function GlobalCameraControl(): JSX.Element {
             videoGloballyDisabled: undefined,
         }
         const data = await globalMuteMutation({ variables: notification })
-        const audioGloballyMuted = data?.data?.globalMute?.audioGloballyMuted;
+        const audioGloballyMuted = data?.data?.updateGlobalMute?.audioGloballyMuted;
         if (audioGloballyMuted != null) {
             setMicsOn(!audioGloballyMuted);
         }
@@ -194,7 +212,7 @@ export function GlobalCameraControl(): JSX.Element {
                         <IconButton
                             color={"primary"}
                             style={{ backgroundColor: "#f6fafe" }}
-                            onClick={() => { rewardTrophy(sessionId, "star"); }}
+                            onClick={() => { rewardTrophy(localSession.id, "star"); }}
                         >
                             <StarIcon size="1rem" />
                         </IconButton>
@@ -211,7 +229,7 @@ export function GlobalCameraControl(): JSX.Element {
                         <IconButton
                             color={"primary"}
                             style={{ backgroundColor: "#f6fafe" }}
-                            onClick={() => { rewardTrophy(sessionId, "trophy"); }}
+                            onClick={() => { rewardTrophy(localSession.id, "trophy"); }}
                         >
                             <TrophyIcon size="1rem" />
                         </IconButton>
@@ -228,7 +246,7 @@ export function GlobalCameraControl(): JSX.Element {
                         <IconButton
                             color={"primary"}
                             style={{ backgroundColor: "#f6fafe" }}
-                            onClick={() => { rewardTrophy(sessionId, "heart"); }}
+                            onClick={() => { rewardTrophy(localSession.id, "heart"); }}
                         >
                             <HeartIcon size="1rem" />
                         </IconButton>
@@ -245,7 +263,7 @@ export function GlobalCameraControl(): JSX.Element {
                         <IconButton
                             color={"primary"}
                             style={{ backgroundColor: "#f6fafe" }}
-                            onClick={() => { rewardTrophy(sessionId, getRandomKind(["awesome", "looks_great", "well_done", "great_job"])); }}
+                            onClick={() => { rewardTrophy(localSession.id, getRandomKind(["awesome", "looks_great", "well_done", "great_job"])); }}
                         >
                             <EncourageIcon size="1rem" />
                         </IconButton>
