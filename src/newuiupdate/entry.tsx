@@ -18,10 +18,16 @@ function Entry () {
     return (
         <RecoilRoot>
             <ThemeProvider theme={themeProvider(`en`, `light`)}>
-                <SnackbarProvider anchorOrigin={{ vertical: 'top',  horizontal: 'center', }} closeButtonLabel="Dismiss">
-                    {/* <RecoilizeDebugger root={app} /> */}
-                    <Layout />
-                </SnackbarProvider>
+                <ConfirmDialogProvider>
+                    <PromptDialogProvider>
+                        <AlertDialogProvider>
+                            <SnackbarProvider anchorOrigin={{ vertical: 'top',  horizontal: 'center', }} closeButtonLabel="Dismiss">
+                                {/* <RecoilizeDebugger root={app} /> */}
+                                <Layout />
+                            </SnackbarProvider>
+                        </AlertDialogProvider>
+                    </PromptDialogProvider>
+                </ConfirmDialogProvider>
             </ThemeProvider>
         </RecoilRoot>
     );
