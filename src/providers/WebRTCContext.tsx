@@ -38,7 +38,12 @@ const STREAM = gql`
 `;
 export const MUTE = gql`
     mutation mute($roomId: String!, $sessionId: String!, $audio: Boolean, $video: Boolean) {
-        mute(roomId: $roomId, sessionId: $sessionId, audio: $audio, video: $video)
+        mute(roomId: $roomId, sessionId: $sessionId, audio: $audio, video: $video) {
+            roomId,
+            sessionId,
+            audio,
+            video,
+        }
     }
 `;
 export const GLOBAL_MUTE_MUTATION = gql`

@@ -519,7 +519,7 @@ function ToggleCamera({ session, sfuState, isSelf, cameraRef }: {
     // }, [isCameraVisible, drawerTabIndex]);
 
     useEffect(() => {
-        if (states.isLocalVideoEnabled(session.id) != null) {
+        if (states.isLocalVideoEnabled(session.id) !== undefined) {
             setCameraOn(states.isLocalVideoEnabled(session.id));
         }
     }, [states.isLocalVideoEnabled(session.id)])
@@ -538,7 +538,10 @@ function ToggleCamera({ session, sfuState, isSelf, cameraRef }: {
                 sessionId: session.id,
                 video: !cameraOn
             }
-            await muteMutation({ variables: notification })
+            const muteNotification = await muteMutation({ variables: notification })
+            if (muteNotification?.data?.mute?.video != null) {
+                setCameraOn(muteNotification.data.mute.video)
+            }
         } else {
             states.localVideoToggle(session.id);
         }
@@ -550,7 +553,10 @@ function ToggleCamera({ session, sfuState, isSelf, cameraRef }: {
             sessionId: session.id,
             video: !cameraOn
         }
-        await muteMutation({ variables: notification })
+        const muteNotification = await muteMutation({ variables: notification })
+        if (muteNotification?.data?.mute?.video != null) {
+            setCameraOn(muteNotification.data.mute.video)
+        }
     }
 
     async function toggleVideoState(): Promise<void> {
@@ -598,7 +604,7 @@ function ToggleMic({ session, sfuState, isSelf }: {
     const states = useContext(WebRTCContext);
 
     useEffect(() => {
-        if (states.isLocalAudioEnabled(session.id) != null) {
+        if (states.isLocalAudioEnabled(session.id) !== undefined) {
             setMicOn(states.isLocalAudioEnabled(session.id));
         }
     }, [states.isLocalAudioEnabled(session.id)])
@@ -617,7 +623,10 @@ function ToggleMic({ session, sfuState, isSelf }: {
                 sessionId: session.id,
                 audio: !micOn
             }
-            await muteMutation({ variables: notification })
+            const muteNotification = await muteMutation({ variables: notification })
+            if (muteNotification?.data?.mute?.audio != null) {
+                setMicOn(muteNotification.data.mute.audio)
+            }
         } else {
             states.localAudioToggle(session.id);
         }
@@ -629,7 +638,10 @@ function ToggleMic({ session, sfuState, isSelf }: {
             sessionId: session.id,
             audio: !micOn
         }
-        await muteMutation({ variables: notification })
+        const muteNotification = await muteMutation({ variables: notification })
+        if (muteNotification?.data?.mute?.audio != null) {
+            setMicOn(muteNotification.data.mute.audio)
+        }
     }
 
     async function toggleAudioState() {
