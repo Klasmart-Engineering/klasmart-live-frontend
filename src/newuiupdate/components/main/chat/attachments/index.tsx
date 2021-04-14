@@ -1,11 +1,9 @@
 import Attachment from "./item";
 import {
-    Box,
     Button,
     Grid,
     makeStyles,
     Theme,
-    Typography,
 } from "@material-ui/core";
 import { CloudUpload as UploadIcon } from "@styled-icons/boxicons-regular/CloudUpload";
 import React from "react";

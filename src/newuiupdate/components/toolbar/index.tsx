@@ -2,6 +2,7 @@ import {
     activeCameraState,
     activeMicrophoneState,
     activeTabState,
+    userState,
     isActiveGlobalScreenshareState,
     isCanvasOpenState,
     isChatOpenState,
@@ -68,20 +69,18 @@ const useStyles = makeStyles((theme: Theme) => ({
 function Toolbar () {
     const classes = useStyles();
 
+    const [ user, setUser ] = useRecoilState(userState);
     const [ activeMicrophone, setActiveMicrophone ] = useRecoilState(activeMicrophoneState);
     const [ activeCamera, setActiveCamera ] = useRecoilState(activeCameraState);
 
     const [ isGlobalActionsOpen, setIsGlobalActionsOpen ] = useRecoilState(isGlobalActionsOpenState);
     const [ isLessonPlanOpen, setIsLessonPlanOpen ] = useRecoilState(isLessonPlanOpenState);
     const [ isViewModesOpen, setIsViewModesOpen ] = useRecoilState(isViewModesOpenState);
-    const [ isPinUserOpen, setIsPinUserOpen ] = useRecoilState(isPinUserOpenState);
     const [ activeTab, setActiveTab ] = useRecoilState(activeTabState);
     const [ isChatOpen, setIsChatOpen ] = useRecoilState(isChatOpenState);
     const [ isClassDetailsOpen, setIsClassDetailsOpen ] = useRecoilState(isClassDetailsOpenState);
     const [ isCanvasOpen, setIsCanvasOpen ] = useRecoilState(isCanvasOpenState);
     const [ viewMode, setViewModeState ] = useRecoilState(viewModeState);
-
-    const [ isActiveGlobalScreenshare, setIsActiveGlobalScreenshare ] = useRecoilState( isActiveGlobalScreenshareState);
 
     const [ globalActionsEl, setGlobalActionsEl ] = React.useState<any | null>(null);
     const [ canvasEl, setCanvasEl ] = React.useState<any | null>(null);
@@ -93,7 +92,6 @@ function Toolbar () {
     const resetDrawers = () => {
         setIsGlobalActionsOpen(false);
         setIsLessonPlanOpen(false);
-        setIsPinUserOpen(false);
         setIsChatOpen(false);
         setIsClassDetailsOpen(false);
         setIsCanvasOpen(false);
@@ -155,19 +153,20 @@ function Toolbar () {
                     item
                     className={classes.iconGroup}>
                     <ToolbarItemMicrophone
-                        active={activeMicrophone}
-                        onClick={() =>  {enqueueSnackbar('mic muted'); setActiveMicrophone(!activeMicrophone)}}
+                        locked={user.isTeacherAudioMuted}
+                        active={user.hasAudio}
+                        onClick={() =>  {enqueueSnackbar('mic muted'); setUser({...user, hasAudio: !user.hasAudio})}}
                     />
                     <ToolbarItemCall
-                        locked
+                        locked={user.role === 'student'}
                         tooltip="Ask permission to leave the class"
                         icon={<PhoneInTalkIcon />}
                     />
                     <ToolbarItemCamera
-                        locked
-                        active={activeCamera}
+                        locked={user.isTeacherVideoMuted}
+                        active={user.hasVideo}
                         tooltip="The teacher has disabled your camera"
-                        onClick={() => setActiveCamera(!activeCamera)}
+                        onClick={() => setUser({...user, hasVideo: !user.hasVideo})}
                     />
                 </Grid>
                 <Grid
@@ -209,18 +208,6 @@ function Toolbar () {
                             setIsViewModesOpen(!isViewModesOpen);
                         }}
                     />
-
-                    {/* <ToolbarItem
-						icon={<PinUserIcon />}
-						label="Pin User"
-						active={isPinUserOpen}
-						disabled={isActiveGlobalScreenshare}
-						tooltip={isActiveGlobalScreenshare && 'Pin User is not available when screenshare is active'}
-						onClick={() => {
-							resetDrawers();
-							setIsPinUserOpen(!isPinUserOpen);
-						}}
-					/> */}
 
                     <ToolbarItem
                         icon={<ChatIcon />}

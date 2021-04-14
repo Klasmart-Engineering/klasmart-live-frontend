@@ -5,7 +5,6 @@ import {
     Grid,
     makeStyles,
     Theme,
-    Typography,
 } from "@material-ui/core";
 import { ChatSquareDotsFill as ChatIcon } from "@styled-icons/bootstrap/ChatSquareDotsFill";
 import React from "react";

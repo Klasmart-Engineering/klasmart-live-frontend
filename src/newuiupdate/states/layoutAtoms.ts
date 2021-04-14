@@ -20,7 +20,6 @@ export const activeSettingsStateTab = atom({
 	default: "schedule",
 });
 
-
 export const isClassDetailsOpenState = atom<boolean>({
 	key: "isClassDetailsOpenState",
 	default: false,
@@ -56,6 +55,10 @@ export const isChatOpenState = atom<boolean>({
 	default: false,
 });
 
+export const classEndedState = atom({
+	key: "classEndedState",
+	default: false,
+});
 
 // GLOBAL ACTIONS
 export const isActiveGlobalScreenshareState = atom({
@@ -75,16 +78,6 @@ export const isActiveGlobalMuteVideoState = atom({
 	default: false,
 });
 
-// SELF USER
-export const activeMicrophoneState = atom({
-	key: "activeMicrophoneState",
-	default: true,
-});
-
-export const activeCameraState = atom({
-	key: "activeCameraState",
-	default: true,
-});
 
 // VIEW MODES
 type viewModeStateType = "onstage" | "observe" | "present";
@@ -105,14 +98,43 @@ export const materialActiveIndexState = atom<number>({
 	default: 0,
 });
 
-// number | string | Array<number | string
 export const mosaicViewSizeState = atom<number|string|Array<number|string>>({
 	key: "mosaicViewSizeState",
 	default: 4,
 });
 
 
+// SELF USER
+export const activeMicrophoneState = atom({
+	key: "activeMicrophoneState",
+	default: true,
+});
+
+export const activeCameraState = atom({
+	key: "activeCameraState",
+	default: true,
+});
+
+
 // TEMPORARY, TO DELETE WHEN REAL DATA
+export const userState = atom({
+	key: "userState",
+	default: {
+		id: 4,
+		name: 'The second student',
+		role: 'student',
+		hasControls: false,
+		hasVideo: false,
+		hasAudio: true,
+		isSelfAudioMuted : false,
+		isSelfVideoMuted : false,
+		isTeacherAudioMuted : false,
+		isTeacherVideoMuted : true,
+		isPinned: false,
+		isSpeaking : false
+	}
+});
+
 export const usersState = atom({
 	key: "usersState",
 	default: [{
@@ -153,7 +175,7 @@ export const usersState = atom({
 		isSelfAudioMuted : false,
 		isSelfVideoMuted : false,
 		isTeacherAudioMuted : false,
-		isTeacherVideoMuted : false,
+		isTeacherVideoMuted : true,
 		isPinned: false,
 		isSpeaking : false
 	},
