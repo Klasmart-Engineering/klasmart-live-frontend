@@ -20,7 +20,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { getRandomKind } from './components/trophies/trophyKind';
 import { LIVE_LINK, LocalSessionContext, SFU_LINK } from "./entry";
-import { GlobalMuteNotification, GLOBAL_MUTE_MUTATION, SUBSCRIBE_GLOBAL_MUTE, WebRTCContext } from "./providers/WebRTCContext";
+import { GlobalMuteNotification, GLOBAL_MUTE_MUTATION, SUBSCRIBE } from "./providers/WebRTCContext";
 import { useSynchronizedState } from "./whiteboard/context-providers/SynchronizedStateProvider";
 
 // const SEND_SIGNAL = gql`
@@ -63,12 +63,10 @@ export function GlobalCameraControl(): JSX.Element {
     const theme = useTheme();
     const [camerasOn, setCamerasOn] = useState(true);
     const [micsOn, setMicsOn] = useState(true);
-
-    const sfuState = useContext(WebRTCContext);
     const { roomId, sessionId } = useContext(LocalSessionContext);
     const [rewardTrophyMutation] = useMutation(MUTATION_REWARD_TROPHY, {context: {target: LIVE_LINK}});
     const [globalMuteMutation] = useMutation(GLOBAL_MUTE_MUTATION, {context: {target: SFU_LINK}});
-    const { data } = useSubscription(SUBSCRIBE_GLOBAL_MUTE, {context: {target: SFU_LINK}});
+    const { data } = useSubscription(SUBSCRIBE, { variables: { roomId }, context: {target: SFU_LINK} });
     const rewardTrophy = (user: string, kind: string) => rewardTrophyMutation({ variables: { roomId, user, kind } });
 
     const { actions: { clear } } = useToolbarContext();
@@ -78,28 +76,18 @@ export function GlobalCameraControl(): JSX.Element {
     } = useSynchronizedState();
 
     useEffect(() => {
-        // TODO calling a mutation to update the mute statuses. implement a query on SFU and replace this.
-        const notification = {
-            roomId,
-            audioGloballyMuted: undefined,
-            videoGloballyDisabled: undefined,
-        }
-        globalMuteMutation({ variables: notification, context: {target: SFU_LINK}})
-    }, [])
-
-    useEffect(() => {
-        const videoGloballyDisabled = data?.globalMute?.videoGloballyDisabled;
-        if (videoGloballyDisabled !== undefined) {
+        const videoGloballyDisabled = data?.media?.globalMute?.videoGloballyDisabled;
+        if (videoGloballyDisabled != null) {
             setCamerasOn(!videoGloballyDisabled);
         }
-    }, [data?.globalMute?.videoGloballyDisabled])
+    }, [data?.media?.globalMute?.videoGloballyDisabled])
 
     useEffect(() => {
-        const audioGloballyMuted = data?.globalMute?.audioGloballyMuted;
-        if (audioGloballyMuted !== undefined) {
+        const audioGloballyMuted = data?.media?.globalMute?.audioGloballyMuted;
+        if (audioGloballyMuted != null) {
             setMicsOn(!audioGloballyMuted);
         }
-    }, [data?.globalMute?.audioGloballyMuted])
+    }, [data?.media?.globalMute?.audioGloballyMuted])
 
     function toggleVideoStates() {
         const notification: GlobalMuteNotification = {
@@ -107,8 +95,7 @@ export function GlobalCameraControl(): JSX.Element {
             audioGloballyMuted: undefined,
             videoGloballyDisabled: camerasOn,
         }
-        // setCamerasOn(!states.videoGloballyDisabled);
-        globalMuteMutation({ variables: notification, context: {target: SFU_LINK}})
+        globalMuteMutation({ variables: notification })
     }
 
     function toggleAudioStates() {
@@ -117,8 +104,7 @@ export function GlobalCameraControl(): JSX.Element {
             audioGloballyMuted: micsOn,
             videoGloballyDisabled: undefined,
         }
-        // setMicsOn(!states.audioGloballyMuted);
-        globalMuteMutation({ variables: notification, context: {target: SFU_LINK}})
+        globalMuteMutation({ variables: notification })
     }
 
     return (
