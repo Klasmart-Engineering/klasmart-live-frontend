@@ -117,6 +117,7 @@ function Toolbar () {
                     item
                     className={classes.iconGroup}>
                     <ToolbarItem
+                        display={true}
                         icon={<InfoIcon />}
                         label="Class Name"
                         active={isClassDetailsOpen}
@@ -129,6 +130,7 @@ function Toolbar () {
                         }}
                     />
                     <ToolbarItem
+                        display={user.hasControls}
                         icon={<CanvasIcon />}
                         label="Canvas"
                         active={isCanvasOpen}
@@ -165,6 +167,7 @@ function Toolbar () {
                     item
                     className={classes.iconGroup}>
                     <ToolbarItem
+                        display={user.hasControls}
                         icon={<GlobalActionsIcon />}
                         label="Global actions"
                         disabled={Boolean(handleTooltip(`globalActions`))}
@@ -177,6 +180,7 @@ function Toolbar () {
                         }}
                     />
                     <ToolbarItem
+                        display={user.hasControls}
                         icon={<LessonPlanIcon />}
                         label="Lesson Plan"
                         disabled={Boolean(handleTooltip(`lessonPlan`))}
@@ -188,6 +192,7 @@ function Toolbar () {
                         }}
                     />
                     <ToolbarItem
+                        display={user.hasControls}
                         icon={<ViewModesIcon />}
                         label="View modes"
                         active={isViewModesOpen}
@@ -202,6 +207,7 @@ function Toolbar () {
                     />
 
                     <ToolbarItem
+                        display={true}
                         icon={<ChatIcon />}
                         label="Chat"
                         badge={2}

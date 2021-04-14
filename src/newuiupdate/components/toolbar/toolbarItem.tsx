@@ -81,6 +81,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface ToolbarItemProps {
+	display?: boolean;
 	icon?: any;
 	label?: string;
 	onClick?: any;
@@ -92,6 +93,7 @@ interface ToolbarItemProps {
 
 function ToolbarItem (props: ToolbarItemProps) {
     const {
+        display = false,
         icon,
         label,
         onClick,
@@ -103,6 +105,10 @@ function ToolbarItem (props: ToolbarItemProps) {
     const classes = useStyles();
     const hasTooltip = tooltip ? true : false;
     const [ activeTab, setActiveTab ] = useRecoilState(activeTabState);
+
+    if(!display){
+        return(null)
+    }
 
     return (
         <>
