@@ -1,4 +1,4 @@
-import { activeTabState } from "../../states/layoutAtoms";
+import { activeTabState, isClassDetailsOpenState } from "../../states/layoutAtoms";
 import {
     Button,
     makeStyles,
@@ -81,9 +81,11 @@ function SidebarMenuItem (props: SidebarItemMenuProps) {
         active,
     } = props;
     const [ activeTab, setActiveTab ] = useRecoilState(activeTabState);
+    const [ isClassDetailsOpen, setIsClassDetailsOpen ] = useRecoilState(isClassDetailsOpenState);
 
     const handleChangeTab = (e: string) => {
         setActiveTab(e);
+        setIsClassDetailsOpen(false);
     };
 
     return (

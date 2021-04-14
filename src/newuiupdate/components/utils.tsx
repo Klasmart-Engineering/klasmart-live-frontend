@@ -49,6 +49,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         overflow: `hidden`,
         maxHeight: 'calc(100vh - 150px)',
         overflowY: 'scroll',
+        boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.075), 0 2px 12px 0px rgba(0, 0, 0, 0.065)',
     },
 }));
 
@@ -125,9 +126,7 @@ function StyledPopper (props: StyledPopperProps) {
             className={classes.popperRoot}
         >
             <Fade in={open}>
-                <Paper
-                    elevation={3}
-                    className={classes.popperPapper}>{children}</Paper>
+                <Paper className={classes.popperPapper}>{children}</Paper>
             </Fade>
         </Popper>
     );

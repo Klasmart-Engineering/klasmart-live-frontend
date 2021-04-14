@@ -20,17 +20,20 @@ const useStyles = makeStyles((theme: Theme) => ({
         height: `100%`,
     },
     tabs:{
-        paddingTop: 0,
+        margin: '0 -10px',
+        borderTop: '1px solid rgba(0,0,0,0.1)',
+        borderBottom: '1px solid rgba(0,0,0,0.1)',
     },
     tabsFlexContainer:{
         display: `block`,
-        textAlign: `right`,
+        textAlign: `center`,
     },
     title:{
-        position: `absolute`,
-        fontSize: `1.25rem`,
-        top: 13,
+        fontSize: `1rem`,
         fontWeight: 600,
+        textAlign: 'center',
+        marginTop: -5,
+        marginBottom: 5
     },
     closeTab:{
         cursor: 'pointer',
@@ -84,10 +87,10 @@ function LessonPlan () {
                 >
                     <Tab
                         disableRipple
-                        label="Plan" />
+                        label="Lesson Plan" />
                     <Tab
                         disableRipple
-                        label="Manuals" />
+                        label="Teacher Manuals" />
                 </Tabs>
             </Grid>
             <Grid

@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         transition: `all 100ms ease-in-out`,
         position: `relative`,
         "&:hover": {
-            backgroundColor: `#e2e7ec`,
+            backgroundColor: theme.palette.grey[200],
         },
         "& > svg":{
             height: 25,
@@ -31,13 +31,20 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     rootMosaic:{
         "&:hover": {
-            backgroundColor: `rgba(60, 70, 80, 0.5)`,
+            backgroundColor: `rgba(255, 255, 255, 0.15)`,
         },
+        "&$active":{
+            color: theme.palette.text.primary,
+            backgroundColor: theme.palette.background.paper,
+            "&:hover": {
+                backgroundColor: theme.palette.background.paper,
+            },
+        }
     },
     active: {
-        backgroundColor: `#B4CDED`,
+        backgroundColor: theme.palette.background.default,
         "&:hover": {
-            backgroundColor: `#B4CDED`,
+            backgroundColor: theme.palette.background.default,
         },
     },
     disabled: {
@@ -104,7 +111,6 @@ function ToolbarItem (props: ToolbarItemProps) {
                 disableFocusListener={!hasTooltip}
                 disableHoverListener={!hasTooltip}
                 disableTouchListener={!hasTooltip}>
-                <div>
                     <div
                         className={clsx(classes.root, {
                             [classes.rootMosaic] : activeTab === `mosaic`,
@@ -125,7 +131,6 @@ function ToolbarItem (props: ToolbarItemProps) {
                         {icon}
                         {label && <Typography className={classes.label}>{label}</Typography>}
                     </div>
-                </div>
             </Tooltip>
         </>
     );
