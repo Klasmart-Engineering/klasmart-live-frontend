@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
     },
     styledDrawerPaper: {
-        transition: theme.transitions.create(`width`, {
+        transition: theme.transitions.create('width', {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.shortest,
         }),
@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         height: `100%`,
     },
     popperRoot:{
-        zIndex: 9999,
+        zIndex: 1200,
     },
     popperPapper: {
         borderRadius: 12,

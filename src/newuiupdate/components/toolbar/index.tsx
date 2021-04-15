@@ -34,10 +34,11 @@ import { PresentationChartBar as PresentIcon } from "@styled-icons/heroicons-sol
 import { ChevronBottom as ViewModesIcon } from "@styled-icons/open-iconic/ChevronBottom";
 import { FilePaper as LessonPlanIcon } from "@styled-icons/remix-fill/FilePaper";
 import clsx from "clsx";
-import React from "react";
+import React, { useState } from "react";
 import { useRecoilState } from "recoil";
 
 import { useSnackbar } from "kidsloop-px";
+import { DialogEndCall } from "../utils/endCall";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -74,12 +75,13 @@ function Toolbar () {
     const [ isCanvasOpen, setIsCanvasOpen ] = useRecoilState(isCanvasOpenState);
     const [ viewMode, setViewModeState ] = useRecoilState(viewModeState);
 
-    const [ globalActionsEl, setGlobalActionsEl ] = React.useState<any | null>(null);
-    const [ canvasEl, setCanvasEl ] = React.useState<any | null>(null);
-    const [ classDetailsEl, setClassDetailsEl ] = React.useState<any | null>(null);
-    const [ viewModesEl, setViewModesEl ] = React.useState<any | null>(null);
+    const [ globalActionsEl, setGlobalActionsEl ] = useState<any | null>(null);
+    const [ canvasEl, setCanvasEl ] = useState<any | null>(null);
+    const [ classDetailsEl, setClassDetailsEl ] = useState<any | null>(null);
+    const [ viewModesEl, setViewModesEl ] = useState<any | null>(null);
+    const [ chatEl, setChatEl ] = useState<any | null>(null);
 
-    const [ chatEl, setChatEl ] = React.useState<any | null>(null);
+    const [openEndCallDialog, setOpenEndCallDialog] = useState(false);
 
     const resetDrawers = () => {
         setIsGlobalActionsOpen(false);
@@ -155,6 +157,7 @@ function Toolbar () {
                         locked={user.role === 'student'}
                         tooltip={user.role === 'student' ? "Ask permission to leave the class" : undefined}
                         icon={<PhoneInTalkIcon />}
+                        onClick={() => setOpenEndCallDialog(true)}
                     />
                     <ToolbarItemCamera
                         locked={user.isTeacherVideoMuted}
@@ -225,6 +228,8 @@ function Toolbar () {
             <CanvasMenu anchor={canvasEl} />
             <GlobalActionsMenu anchor={globalActionsEl} />
             <ViewModesMenu anchor={viewModesEl} />
+
+            <DialogEndCall parentCaptcha={user.role === 'student'} open={openEndCallDialog} onClose={() => setOpenEndCallDialog(false)} /> 
         </>
     );
 }
