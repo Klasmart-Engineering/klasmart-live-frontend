@@ -7,7 +7,7 @@ import {
     Theme,
     Typography,
 } from "@material-ui/core";
-import React from "react";
+import React, { useState } from "react";
 import { useRecoilState } from "recoil";
 import Plan from "./plan";
 import { TabPanel } from "../../utils";
@@ -46,7 +46,8 @@ const useStyles = makeStyles((theme: Theme) => ({
 function LessonPlan () {
     const classes = useStyles();
     const [ isLessonPlanOpen, setIsLessonPlanOpen ] = useRecoilState(isLessonPlanOpenState);
-    const [ value, setValue ] = React.useState(0);
+    
+    const [ value, setValue ] = useState(0);
 
     const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
         setValue(newValue);
