@@ -55,6 +55,11 @@ export const isChatOpenState = atom<boolean>({
 	default: false,
 });
 
+export const isEndCallDialogOpenState = atom({
+	key: "isEndCallDialogOpenState",
+	default: false,
+});
+
 export const classEndedState = atom({
 	key: "classEndedState",
 	default: false,
