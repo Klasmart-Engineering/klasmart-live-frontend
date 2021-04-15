@@ -229,7 +229,7 @@ function Toolbar () {
             <GlobalActionsMenu anchor={globalActionsEl} />
             <ViewModesMenu anchor={viewModesEl} />
 
-            <DialogEndCall parentCaptcha={user.role === 'student'} open={openEndCallDialog} onClose={() => setOpenEndCallDialog(false)} /> 
+            <DialogEndCall user={user} parentCaptcha={user.role === 'student'} open={openEndCallDialog} onClose={() => setOpenEndCallDialog(false)} /> 
         </>
     );
 }
