@@ -6,6 +6,8 @@ import {
 	Typography,
 } from "@material-ui/core";
 
+import { classInfoState } from "../../../../states/layoutAtoms";
+import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
 	root: {
@@ -22,10 +24,9 @@ const useStyles = makeStyles((theme: Theme) => ({
 	}
 }));
 
-
-
 function ClassDetails() {
 	const classes = useStyles();
+    const [ classInfo, setClassInfo ] = useRecoilState(classInfoState);
 
 	return (
         <div>
@@ -33,47 +34,43 @@ function ClassDetails() {
                 <tbody>
                     <tr>
                         <td className={classes.detailsLabel}><Typography>Class Name</Typography></td>
-                        <td className={classes.detailsValue}><Typography>Class Name</Typography></td>
+                        <td className={classes.detailsValue}><Typography>{classInfo.class_name}</Typography></td>
                     </tr>
                     <tr>
                         <td className={classes.detailsLabel}><Typography>Lesson Name</Typography></td>
-                        <td className={classes.detailsValue}><Typography>Animals</Typography></td>
+                        <td className={classes.detailsValue}><Typography>{classInfo.lesson_name}</Typography></td>
                     </tr>
                     <tr>
                         <td className={classes.detailsLabel}><Typography>Room ID</Typography></td>
-                        <td className={classes.detailsValue}><Typography>AD01</Typography></td>
+                        <td className={classes.detailsValue}><Typography>{classInfo.room_id}</Typography></td>
                     </tr>
                     <tr>
                         <td className={classes.detailsLabel}><Typography>Class Type</Typography></td>
-                        <td className={classes.detailsValue}><Typography>Live</Typography></td>
+                        <td className={classes.detailsValue}><Typography>{classInfo.class_type}</Typography></td>
                     </tr>
                     <tr>
                         <td className={classes.detailsLabel}><Typography>Enrolled Participants</Typography></td>
-                        <td className={classes.detailsValue}><Typography>16 students, 1 teacher</Typography></td>
+                        <td className={classes.detailsValue}><Typography>{classInfo.enrolled_participants}</Typography></td>
                     </tr>
                     <tr>
                         <td className={classes.detailsLabel}><Typography>Program</Typography></td>
-                        <td className={classes.detailsValue}><Typography>Badanamu ESL</Typography></td>
+                        <td className={classes.detailsValue}><Typography>{classInfo.program}</Typography></td>
                     </tr>
                     <tr>
                         <td className={classes.detailsLabel}><Typography>Subject</Typography></td>
-                        <td className={classes.detailsValue}><Typography>Language / Literacy</Typography></td>
-                    </tr>
-                    <tr>
-                        <td className={classes.detailsLabel}><Typography>Lesson Plan</Typography></td>
-                        <td className={classes.detailsValue}><Typography>Animals</Typography></td>
+                        <td className={classes.detailsValue}><Typography>{classInfo.subject}</Typography></td>
                     </tr>
                     <tr>
                         <td className={classes.detailsLabel}><Typography>Lesson Materials</Typography></td>
-                        <td className={classes.detailsValue}><Typography>20 lesson materials</Typography></td>
+                        <td className={classes.detailsValue}><Typography>{classInfo.materials.length}</Typography></td>
                     </tr>
                     <tr>
                         <td className={classes.detailsLabel}><Typography>Start time</Typography></td>
-                        <td className={classes.detailsValue}><Typography>2021/03/03, 09:00 am</Typography></td>
+                        <td className={classes.detailsValue}><Typography>{classInfo.start_at}</Typography></td>
                     </tr>
                     <tr>
                         <td className={classes.detailsLabel}><Typography>End time</Typography></td>
-                        <td className={classes.detailsValue}><Typography>2021/03/03, 10:00 am</Typography></td>
+                        <td className={classes.detailsValue}><Typography>{classInfo.end_at}</Typography></td>
                     </tr>
                 </tbody>
             </table>

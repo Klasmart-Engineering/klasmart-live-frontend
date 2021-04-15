@@ -105,6 +105,34 @@ export const mosaicViewSizeState = atom<number|string|Array<number|string>>({
 
 
 // TEMPORARY, TO DELETE WHEN REAL DATA
+export const classInfoState = atom({
+	key: "classInfoState",
+	default: {
+		class_id: 4,
+		class_name: 'Class Name',
+		lesson_name: 'Animals',
+		room_id: 'AD01',
+		class_type: 'online',
+		enrolled_participants: '16 students, 1teacher',
+		program: 'Badanamu ESL',
+		subject: 'Language / Literacy',
+		materials: [{
+			id: `1`,
+			name: `Step 1 Colors`,
+		},
+		{
+			id: `2`,
+			name: `Step 2 Animals`,
+		},
+		{
+			id: `3`,
+			name: `Step 3 Scientology`,
+		}],
+		start_at: '2021/03/03, 09:00 am',
+		end_at: '2021/03/03, 10:00 am',
+	}
+});
+
 export const userState = atom({
 	key: "userState",
 	default: {

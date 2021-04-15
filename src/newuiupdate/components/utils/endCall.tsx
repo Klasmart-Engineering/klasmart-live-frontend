@@ -15,6 +15,8 @@ import React,
 import red from "@material-ui/core/colors/red";
 
 import { Admin as ParentIcon } from "@styled-icons/remix-line/Admin";
+import { Warning as WarningIcon } from "@styled-icons/entypo/Warning";
+
 import clsx from "clsx";
 import { classEndedState } from "../../states/layoutAtoms";
 import { useRecoilState } from "recoil";
@@ -28,10 +30,15 @@ const useStyles = makeStyles((theme: Theme) => ({
         textAlign: 'center'
     },
     dialogIcon:{
+        display: 'inline-block',
         background: theme.palette.grey[200],
         borderRadius: 40,
         padding: 20,
         marginBottom: 20,
+    },
+    warningIcon:{
+        color: '#ffca00',
+        background: '#f9f7e8',
     },
     parentChecker:{
         marginTop: 20,
@@ -64,26 +71,36 @@ function DialogEndCall(props:any){
     const [ classEnded, setClassEnded ] = useRecoilState(classEndedState);
     const [ showParentCaptcha, setShowParentCaptcha ] = useState(false);
       
-    useEffect(() => {
-        if(user.role === 'student'){
-            setShowParentCaptcha(true)
-        }
-    }, [open]);
+    let dialogTitle = 'End class'
+    let dialogContent = 'Are you sure to end the class?'
 
+    if(user.role === 'student'){
+         dialogTitle = 'Leave class'
+         dialogContent = 'Leaving class will close the session window tab, close your camera and turn off your microphone'
+
+        useEffect(() => {
+            setShowParentCaptcha(true)
+        }, [open]);
+    }
 
     return(
-        <Dialog open={open} onClose={onClose} aria-labelledby="leave-class-dialog">
-            <DialogTitle id="leave-class-dialog" className={classes.dialogTitle}>Leave class</DialogTitle>
+        <Dialog open={open} onClose={onClose} aria-labelledby="leave-class-dialog" maxWidth="xs">
+            <DialogTitle id="leave-class-dialog" className={classes.dialogTitle}>{dialogTitle}</DialogTitle>
             <DialogContent className={classes.dialogContent}>
                 {showParentCaptcha ? 
                     <ParentCaptcha setShowParentCaptcha={setShowParentCaptcha} /> : (
-                    <Typography>Are you sure to leave ?</Typography>
+                    <>  
+                        <div className={clsx(classes.dialogIcon, classes.warningIcon)}>
+                            <WarningIcon size="2rem" />
+                        </div>
+                        <Typography>{dialogContent}</Typography>
+                    </>
                 )}
             </DialogContent>
             
             <DialogActions>
                 <Button onClick={onClose} color="primary">Cancel</Button>
-                {!showParentCaptcha && <Button onClick={() => setClassEnded(true)} variant="contained" color="primary">Leave class</Button>}
+                {!showParentCaptcha && <Button onClick={() => setClassEnded(true)} variant="contained" color="primary">{dialogTitle}</Button>}
             </DialogActions>
         </Dialog>
     )
@@ -148,7 +165,9 @@ function ParentCaptcha(props:any){
 
     return(
         <div>
-            <ParentIcon size="2rem" className={classes.dialogIcon} />
+            <div className={classes.dialogIcon}>
+                <ParentIcon size="2rem"  />
+            </div>
             <Typography variant="h5">Parents only </Typography>
             <Typography>To continue, please tap the numbers in ascending order </Typography>
             <Grid container justify="center" className={classes.parentChecker}>

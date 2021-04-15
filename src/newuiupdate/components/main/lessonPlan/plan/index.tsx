@@ -1,4 +1,4 @@
-import { materialActiveIndexState } from "../../../../states/layoutAtoms";
+import { materialActiveIndexState, classInfoState } from "../../../../states/layoutAtoms";
 import {
     Step,
     StepLabel,
@@ -8,23 +8,10 @@ import React from "react";
 import { useRecoilState } from "recoil";
 
 
-const materials = [
-    {
-        id: `1`,
-        name: `Step 1 Colors`,
-    },
-    {
-        id: `2`,
-        name: `Step 2 Animals`,
-    },
-    {
-        id: `3`,
-        name: `Step 3 Scientology`,
-    },
-];
 
 function Plan () {
     const [ materialActiveIndex, setMaterialActiveIndex ] = useRecoilState(materialActiveIndexState);
+    const [ classInfo, setClassInfo ] = useRecoilState(classInfoState);
 
     return (
         <Stepper
@@ -35,7 +22,7 @@ function Plan () {
             activeStep={materialActiveIndex}
             orientation="vertical"
         >
-            {materials.map((material, index) => (
+            {classInfo.materials.map((material, index) => (
                 <Step
                     key={`step-${material.name}`}
                     disabled={false}
