@@ -102,10 +102,10 @@ export interface WebRTCContextInterface {
     transmitStream: (id: string, stream: MediaStream, simulcast: boolean) => Promise<MediaSoup.Producer[]>
     localAudioToggle: (id?: string) => void,
     isLocalAudioEnabled: (id?: string) => boolean,
-    localAudioEnable: (id?: string, enabled?: boolean) => void,
+    localAudioEnable: (id?: string) => void,
     localVideoToggle: (id?: string) => void,
     isLocalVideoEnabled: (id?: string) => boolean,
-    localVideoEnable: (id?: string, enabled?: boolean) => void,
+    localVideoEnable: (id?: string) => void,
     inboundStreams: Map<string, StreamDescription>,
 }
 
@@ -116,15 +116,14 @@ const defaultWebRTCContext = {
     transmitStream: async (id: string, stream: MediaStream, simulcast = true) => {return []},
     localAudioToggle: (id?: string) => {},
     isLocalAudioEnabled: (id?: string) => {return false},
-    localAudioEnable: (id?: string, enabled?: boolean) => {},
+    localAudioEnable: (id?: string) => {},
     localVideoToggle: (id?: string) => {},
     isLocalVideoEnabled: (id?: string) => {return false},
-    localVideoEnable: (id?: string, enabled?: boolean) => {},
+    localVideoEnable: (id?: string) => {},
     inboundStreams: new Map<string, StreamDescription>(),
 }
 
-// export const WebRTCContext = createContext<WebRTCContextInterface>(defaultWebRTCContext);
-export const WebRTCContext = createContext(defaultWebRTCContext);
+export const WebRTCContext = createContext<WebRTCContextInterface>(defaultWebRTCContext);
 
 export const WebRTCProvider = (props: {children: React.ReactNode}) => {
     const { roomId, name, sessionId, camera } = useContext(LocalSessionContext);
@@ -148,34 +147,28 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
     const producerTransportPrePromise = Resolver<MediaSoup.Transport>();
     const consumerTransportPrePromise = Resolver<MediaSoup.Transport>();
 
-    const getStream = (id: string) => {
+    const getStream = (id: string): MediaStream | undefined => {
         const stream = inboundStreams.get(id)
-        if (!stream) {
-            return
-        }
-        return stream.stream
+        return stream?.stream
     }
 
-    const getCameraStream = (sessionId: string) => {
-        return getStream(`${sessionId}_camera`)
-    }
-
-    const getAuxStream = (sessionId: string) => {
+    const getAuxStream = (sessionId: string): MediaStream | undefined => {
         return getStream(`${sessionId}_aux`)
     }
 
-    const getTracks = (id: string) => {
+    const getCameraStream = (sessionId: string): MediaStream | undefined => {
+        return getStream(`${sessionId}_camera`)
+    }
+
+    const getTracks = (id: string): MediaStreamTrack[] => {
         const stream = inboundStreams.get(id)
         console.log("getTracks: inboundStreams\n", inboundStreams)
         console.log(`stream - ${id}`, stream)
-        if (!stream) {
-            return
-        }
-        return stream.producerIds
+        return stream?.producerIds
             .map((producerId) => tracks.get(producerId))
             .filter((track) => track !== undefined) as MediaStreamTrack[]
     }
-    const transmitStream = async (id: string, stream: MediaStream, simulcast = true) => {
+    const transmitStream = async (id: string, stream: MediaStream, simulcast = true): Promise<MediaSoup.Producer[]> => {
         console.log(`Transmit ${id}`)
         const transport = await initProducerTransport()
         console.log(`Transport`)
@@ -185,7 +178,7 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
         for (const track of tracks) {
             const params = {track} as ProducerOptions
             if (track.kind === "video") {
-                const scalabilityMode = getSvcScalabilityMode()
+                const scalabilityMode = getVP9SvcScalabilityMode()
                 const codecs = (await initDevice()).rtpCapabilities?.codecs
                 const vp9support = codecs?.find((c) => c.mimeType.toLowerCase() === 'video/vp9');
                 if(scalabilityMode && !vp9support) { console.log(`Can not use scalability mode '${scalabilityMode}' as vp9 codec does not seem to be supported`) } 
@@ -244,11 +237,11 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
         return producers
     }
 
-    const localAudioToggle = (id?: string) => {
+    const localAudioToggle = (id?: string): void => {
         return localAudioEnable(id);
     }
 
-    const isLocalAudioEnabled = (id?: string) => {
+    const isLocalAudioEnabled = (id?: string): boolean => {
         const stream = id === undefined || id === sessionId
             ? outboundStreams.get("camera")
             : inboundStreams.get(`${id}_camera`)
@@ -258,7 +251,7 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
         return stream.audioEnabled
     }
 
-    const localAudioEnable = (id?: string, enabled?: boolean) => {
+    const localAudioEnable = (id?: string, enabled?: boolean): void => {
         if (id === undefined || id === sessionId) {
             // My Camera
             const stream = outboundStreams.get("camera")
@@ -309,11 +302,11 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
     }
 
 
-    const localVideoToggle = (id?: string) => {
+    const localVideoToggle = (id?: string): void => {
         return localVideoEnable(id)
     }
 
-    const isLocalVideoEnabled = (id?: string) => {
+    const isLocalVideoEnabled = (id?: string): boolean => {
         const stream = id === undefined || id === sessionId
             ? outboundStreams.get("camera")
             : inboundStreams.get(`${id}_camera`)
@@ -323,7 +316,7 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
         return stream.videoEnabled
     }
 
-    const localVideoEnable = (id?: string, enabled?: boolean) => {
+    const localVideoEnable = (id?: string, enabled?: boolean): void => {
         if (id === undefined || id === sessionId) {
             // My Camera
             const stream = outboundStreams.get("camera")
@@ -766,14 +759,15 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
                 }
             }))
         }
-    }, [camera])
+    }, [camera,producerTransport])
 
     return (
-        <WebRTCContext.Provider value={value}>
-            {props.children}
-        </WebRTCContext.Provider>
+            <WebRTCContext.Provider value={value}>
+                {props.children}
+            </WebRTCContext.Provider>
     )
 }
+
 interface StreamDescription {
     id: string
     sessionId: string
@@ -803,8 +797,10 @@ export interface GlobalMuteNotification {
     videoGloballyDisabled?: boolean,
 }
 
-function getSvcScalabilityMode() {
-    const defaultMode = "L3T3_KEY_SHIFT"
+function getVP9SvcScalabilityMode() {
+    const useVP9 = process.env.USE_VP9 ? true : false
+    if(!useVP9) {return}
+    const defaultMode = process.env.VP9_DEFAULT_SVC_MODE || "L3T3_KEY_SHIFT"
     const getParameters = new URLSearchParams(window.location.search);
     const mode = getParameters.get("svc")
     switch(mode) {

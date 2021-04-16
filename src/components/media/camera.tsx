@@ -493,7 +493,6 @@ function ToggleCamera({ session, sfuState, isSelf, cameraRef }: {
     const drawerTabIndex = useSelector((state: State) => state.control.drawerTabIndex);
     const [cameraOn, setCameraOn] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [videoGloballyDisabled, setVideoGloballyDisabled] = useState<boolean>(false);
     const [isVideoManuallyDisabled, setIsVideoManuallyDisabled] = useState<boolean>(false);
     const [muteMutation] = useMutation(MUTE, {context: {target: SFU_LINK}});
     const { data: roomData } = useSubscription(SUBSCRIBE, { variables: { roomId }, context: {target: SFU_LINK}});
@@ -523,12 +522,6 @@ function ToggleCamera({ session, sfuState, isSelf, cameraRef }: {
             setCameraOn(states.isLocalVideoEnabled(session.id));
         }
     }, [states.isLocalVideoEnabled(session.id)])
-
-    useEffect(() => {
-        if (roomData?.media?.globalMute?.videoGloballyDisabled && states.isLocalVideoEnabled(session.id) && !session.isTeacher) {
-            toggleOutboundVideoState();
-        }
-    }, [roomData?.media?.globalMute?.videoGloballyDisabled, states.isLocalVideoEnabled(session.id)])
 
     async function toggleInboundVideoState() {
         const localSession = sessions.get(localSessionId);
@@ -608,12 +601,6 @@ function ToggleMic({ session, sfuState, isSelf }: {
             setMicOn(states.isLocalAudioEnabled(session.id));
         }
     }, [states.isLocalAudioEnabled(session.id)])
-
-    useEffect(() => {
-        if (roomData?.media?.globalMute?.audioGloballyMuted && states.isLocalAudioEnabled(session.id) && !session.isTeacher) {
-            toggleOutboundAudioState();
-        }
-    }, [roomData?.media?.globalMute?.audioGloballyMuted, states.isLocalAudioEnabled(session.id)])
 
     async function toggleInboundAudioState() {
         const localSession = sessions.get(localSessionId);
