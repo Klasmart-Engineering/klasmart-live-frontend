@@ -2,6 +2,7 @@ import React from 'react';
 import { Grid, makeStyles, Theme, Typography, Fade } from '@material-ui/core';
 
 import { CalendarCheck as ClassEndedIcon } from "@styled-icons/boxicons-regular/CalendarCheck";
+import { Feedback } from './feedback';
 
 const useStyles = makeStyles((theme: Theme) => ({
     container:{
@@ -35,8 +36,9 @@ function ClassEnded () {
                     <div className={classes.icon}>
                         <ClassEndedIcon />
                     </div>
-                <Typography variant="h3">Class has ended</Typography>
-                <Typography variant="body1">Thanks for attending the class</Typography>
+                    <Typography variant="h3">Class has ended</Typography>
+                    <Typography variant="body1">Thanks for attending the class</Typography>
+                    <Feedback />
                 </Grid>
             </Grid>
         </Fade>

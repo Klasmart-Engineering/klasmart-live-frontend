@@ -18,7 +18,7 @@ import { Admin as ParentIcon } from "@styled-icons/remix-line/Admin";
 import { Warning as WarningIcon } from "@styled-icons/entypo/Warning";
 
 import clsx from "clsx";
-import { classEndedState } from "../../states/layoutAtoms";
+import { classEndedState } from "../../../states/layoutAtoms";
 import { useRecoilState } from "recoil";
 
 
@@ -71,8 +71,9 @@ function DialogEndCall(props:any){
     const [ classEnded, setClassEnded ] = useRecoilState(classEndedState);
     const [ showParentCaptcha, setShowParentCaptcha ] = useState(false);
       
-    let dialogTitle = 'End class'
-    let dialogContent = 'Are you sure to end the class?'
+    let dialogTitle = 'End class';
+    let dialogContent = 'Are you sure to end the class?';
+    let dialogOnConfirm = () => setClassEnded(true);
 
     if(user.role === 'student'){
          dialogTitle = 'Leave class'
@@ -100,7 +101,7 @@ function DialogEndCall(props:any){
             
             <DialogActions>
                 <Button onClick={onClose} color="primary">Cancel</Button>
-                {!showParentCaptcha && <Button onClick={() => setClassEnded(true)} variant="contained" color="primary">{dialogTitle}</Button>}
+                {!showParentCaptcha && <Button onClick={dialogOnConfirm} variant="contained" color="primary">{dialogTitle}</Button>}
             </DialogActions>
         </Dialog>
     )

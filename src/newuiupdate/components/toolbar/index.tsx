@@ -38,7 +38,7 @@ import React, { useState } from "react";
 import { useRecoilState } from "recoil";
 
 import { useSnackbar } from "kidsloop-px";
-import { DialogEndCall } from "../utils/endCall";
+import { DialogEndCall } from "../utils/endCall/endCall";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -229,7 +229,7 @@ function Toolbar () {
             <GlobalActionsMenu anchor={globalActionsEl} />
             <ViewModesMenu anchor={viewModesEl} />
 
-            <DialogEndCall user={user} parentCaptcha={user.role === 'student'} open={openEndCallDialog} onClose={() => setOpenEndCallDialog(false)} /> 
+            <DialogEndCall user={user} open={openEndCallDialog} onClose={() => setOpenEndCallDialog(false)} /> 
         </>
     );
 }
