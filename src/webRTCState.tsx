@@ -1,4 +1,4 @@
-import { gql, useLazyQuery, useMutation } from "@apollo/client";
+import { gql, useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
 import { useTheme } from "@material-ui/core/styles";
@@ -23,12 +23,6 @@ import { LIVE_LINK, LocalSessionContext, SFU_LINK } from "./entry";
 import { Session } from "./pages/room/room";
 import { GlobalMuteNotification, GLOBAL_MUTE_MUTATION, GLOBAL_MUTE_QUERY, WebRTCContext } from "./providers/WebRTCContext";
 import { useSynchronizedState } from "./whiteboard/context-providers/SynchronizedStateProvider";
-
-// const SEND_SIGNAL = gql`
-//   mutation webRTCSignal($roomId: ID!, $toSessionId: ID!, $webrtc: WebRTCIn) {
-//     webRTCSignal(roomId: $roomId, toSessionId: $toSessionId, webrtc: $webrtc)
-//   }
-// `;
 
 export interface WebRTCIn {
     description?: string
@@ -68,7 +62,7 @@ export function GlobalCameraControl(props: {localSession: Session }): JSX.Elemen
     const { roomId } = useContext(LocalSessionContext);
     const [rewardTrophyMutation] = useMutation(MUTATION_REWARD_TROPHY, {context: {target: LIVE_LINK}});
     const [globalMuteMutation] = useMutation(GLOBAL_MUTE_MUTATION, {context: {target: SFU_LINK}});
-    const [queryGlobalMute, { data: globalMuteStatus }] = useLazyQuery(GLOBAL_MUTE_QUERY, {context: {target: SFU_LINK}});
+    const {refetch} = useQuery(GLOBAL_MUTE_QUERY, { variables: { roomId }, context: {target: SFU_LINK}});
     const rewardTrophy = (user: string, kind: string) => rewardTrophyMutation({ variables: { roomId, user, kind } });
     const states = useContext(WebRTCContext);
 
@@ -78,22 +72,21 @@ export function GlobalCameraControl(props: {localSession: Session }): JSX.Elemen
         actions: { setDisplay },
     } = useSynchronizedState();
 
-    useEffect(() => {
-        queryGlobalMute({ variables: { roomId }});
-    }, [roomId, localSession.isHost])
-
-    useEffect(() => {
-    }, [states.inboundStreams.size])
-    useEffect(() => {
-        const videoGloballyDisabled = globalMuteStatus?.retrieveGlobalMute?.videoGloballyDisabled;
-        if (videoGloballyDisabled !== undefined) {
+    const enforceGlobalMute = async () => {
+        const { data }= await refetch();
+        const videoGloballyDisabled = data?.retrieveGlobalMute?.videoGloballyDisabled;
+        if (videoGloballyDisabled) {
             toggleVideoStates(videoGloballyDisabled);
         }
-        const audioGloballyMuted = globalMuteStatus?.retrieveGlobalMute?.audioGloballyMuted;
-        if (audioGloballyMuted !== undefined) {
+        const audioGloballyMuted = data?.retrieveGlobalMute?.audioGloballyMuted;
+        if (audioGloballyMuted) {
             toggleAudioStates(audioGloballyMuted);
         }
-    }, [globalMuteStatus, states.inboundStreams.size])
+    }
+
+    useEffect(() => {
+        enforceGlobalMute()
+    }, [roomId, localSession.isHost, states.inboundStreams.size])
     
     async function toggleVideoStates(isOn?: boolean) {
         const notification: GlobalMuteNotification = {

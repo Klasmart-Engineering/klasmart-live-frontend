@@ -68,33 +68,15 @@ function getApolloClient(roomId: string) {
     );
 
     return new ApolloClient({
-            cache: new InMemoryCache(),
-            link: directionalLink
-        } as any)
+        cache: new InMemoryCache(),
+        link: directionalLink
+    } as any)
 }
 
 Sentry.init({
     dsn: "https://9f4fca35be3b4b7ca970a126f26a5e54@o412774.ingest.sentry.io/5388813",
     environment: process.env.NODE_ENV || "not-specified",
 });
-
-
-const authToken = AuthTokenProvider.retrieveToken();
-const wsLink = new WebSocketLink({
-    uri: process.env.ENDPOINT_WEBSOCKET || `${window.location.protocol === "https:" ? "wss" : "ws"}://${window.location.host}/graphql`,
-    options: {
-        reconnect: true,
-        connectionParams: {
-            authToken,
-            sessionId
-        },
-    }
-});
-
-const client = new ApolloClient({
-    cache: new InMemoryCache(),
-    link: wsLink
-} as any);
 
 export interface IThemeContext {
     themeMode: string,
@@ -209,8 +191,6 @@ function Entry() {
         isTeacher: params && params.isTeacher ? params.isTeacher : false,
         materials: params ? params.materials : null
     }), [camera, setCamera, name, setName, params]);
-
-    const apolloClient = getApolloClient(roomId)
 
     const dispatch = useDispatch();
     useEffect(() => {

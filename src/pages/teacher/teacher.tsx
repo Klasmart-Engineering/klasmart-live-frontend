@@ -200,7 +200,7 @@ export function Teacher(props: Props): JSX.Element {
 
 export function ObservationMode() {
     const { sessionId } = useContext(LocalSessionContext);
-    const { sessions } = RoomContext.Consume();
+    const { sessions } = useContext(RoomContext);
     const [studentSessions, setStudentSessions] = useState<Session[]>([]);
 
     useEffect(() => {
