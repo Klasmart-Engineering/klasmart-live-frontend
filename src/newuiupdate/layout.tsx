@@ -8,7 +8,7 @@ import Class from './pages/class';
 function Layout () {
     const [ classEnded, setClassEnded ] = useRecoilState(classEndedState);
 
-    if(!classEnded){
+    if(classEnded){
         return(<ClassEnded />)
     }
 
