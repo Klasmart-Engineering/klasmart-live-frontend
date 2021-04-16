@@ -69,7 +69,7 @@ export const GLOBAL_MUTE_QUERY= gql`
         }
     }
 `;
-export const SUBSCRIBE = gql`
+const SUBSCRIBE = gql`
     subscription media($roomId: ID!) {
         media(roomId: $roomId) {
             rtpCapabilities,

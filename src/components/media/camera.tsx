@@ -1,4 +1,4 @@
-import { useMutation, useSubscription } from "@apollo/client";
+import { gql, useMutation, useSubscription } from "@apollo/client";
 import Grid, { GridProps } from "@material-ui/core/Grid";
 import IconButton from '@material-ui/core/IconButton';
 import List from "@material-ui/core/List";
@@ -25,7 +25,7 @@ import { FormattedMessage } from "react-intl";
 import { useSelector } from "react-redux";
 import { LocalSessionContext, SFU_LINK } from "../../entry";
 import { Session } from "../../pages/room/room";
-import { MUTE, MuteNotification, SUBSCRIBE, WebRTCContext, WebRTCContextInterface } from "../../providers/WebRTCContext";
+import { MUTE, MuteNotification, WebRTCContext, WebRTCContextInterface } from "../../providers/WebRTCContext";
 import { State } from "../../store/store";
 import PermissionControls from "../../whiteboard/components/WBPermissionControls";
 import { SessionsContext } from "../layout";
@@ -474,6 +474,16 @@ export function MoreControlsButton({ session, isSelf, cameraRef }: {
         </Grid>
     )
 }
+
+const SUBSCRIBE = gql`
+    subscription media($roomId: ID!) {
+            globalMute {
+                roomId,
+                audioGloballyMuted,
+                videoGloballyDisabled,
+            },
+        }
+`;
 
 /**
  * TODO:
