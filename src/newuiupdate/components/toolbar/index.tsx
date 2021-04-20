@@ -1,6 +1,5 @@
 import {
     activeTabState,
-    userState,
     isActiveGlobalScreenshareState,
     isCanvasOpenState,
     isChatOpenState,
@@ -8,8 +7,10 @@ import {
     isGlobalActionsOpenState,
     isLessonPlanOpenState,
     isViewModesOpenState,
+    userState,
     viewModeState,
 } from "../../states/layoutAtoms";
+import { DialogEndCall } from "../utils/endCall/endCall";
 import ToolbarItem from "./toolbarItem";
 import ToolbarItemCall from "./toolbarItemCall";
 import ToolbarItemCamera from "./toolbarItemCamera";
@@ -34,11 +35,9 @@ import { PresentationChartBar as PresentIcon } from "@styled-icons/heroicons-sol
 import { ChevronBottom as ViewModesIcon } from "@styled-icons/open-iconic/ChevronBottom";
 import { FilePaper as LessonPlanIcon } from "@styled-icons/remix-fill/FilePaper";
 import clsx from "clsx";
-import React, { useState } from "react";
-import { useRecoilState } from "recoil";
-
 import { useSnackbar } from "kidsloop-px";
-import { DialogEndCall } from "../utils/endCall/endCall";
+import React, { useEffect, useState } from "react";
+import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -46,8 +45,8 @@ const useStyles = makeStyles((theme: Theme) => ({
         marginTop: -10,
         justifyContent: `space-between`,
         color: theme.palette.text.primary,
-        position: 'relative',
-        zIndex: 9
+        position: `relative`,
+        zIndex: 9,
     },
     rootMosaic:{
         backgroundColor: `rgba(49,49,60,0.85)`,
@@ -81,7 +80,7 @@ function Toolbar () {
     const [ viewModesEl, setViewModesEl ] = useState<any | null>(null);
     const [ chatEl, setChatEl ] = useState<any | null>(null);
 
-    const [openEndCallDialog, setOpenEndCallDialog] = useState(false);
+    const [ openEndCallDialog, setOpenEndCallDialog ] = useState(false);
 
     const resetDrawers = () => {
         setIsGlobalActionsOpen(false);
@@ -107,6 +106,9 @@ function Toolbar () {
         viewModesBadge = <PresentIcon />;
         break;
     }
+    useEffect(()=> {
+        resetDrawers();
+    }, [ activeTab ]);
 
     return (
         <>
@@ -151,19 +153,25 @@ function Toolbar () {
                     <ToolbarItemMicrophone
                         locked={user.isTeacherAudioMuted}
                         active={user.hasAudio}
-                        onClick={() =>  {enqueueSnackbar('mic muted'); setUser({...user, hasAudio: !user.hasAudio})}}
+                        onClick={() =>  {enqueueSnackbar(`mic muted`); setUser({
+                            ...user,
+                            hasAudio: !user.hasAudio,
+                        });}}
                     />
                     <ToolbarItemCall
-                        locked={user.role === 'student'}
-                        tooltip={user.role === 'student' ? "Ask permission to leave the class" : undefined}
+                        locked={user.role === `student`}
+                        tooltip={user.role === `student` ? `Ask permission to leave the class` : undefined}
                         icon={<PhoneInTalkIcon />}
                         onClick={() => setOpenEndCallDialog(true)}
                     />
                     <ToolbarItemCamera
                         locked={user.isTeacherVideoMuted}
                         active={user.hasVideo}
-                        tooltip={user.isTeacherVideoMuted ? "The teacher has disabled your camera" : undefined}
-                        onClick={() => setUser({...user, hasVideo: !user.hasVideo})}
+                        tooltip={user.isTeacherVideoMuted ? `The teacher has disabled your camera` : undefined}
+                        onClick={() => setUser({
+                            ...user,
+                            hasVideo: !user.hasVideo,
+                        })}
                     />
                 </Grid>
                 <Grid
@@ -229,14 +237,15 @@ function Toolbar () {
             <GlobalActionsMenu anchor={globalActionsEl} />
             <ViewModesMenu anchor={viewModesEl} />
 
-            <DialogEndCall user={user} open={openEndCallDialog} onClose={() => setOpenEndCallDialog(false)} /> 
+            <DialogEndCall
+                user={user}
+                open={openEndCallDialog}
+                onClose={() => setOpenEndCallDialog(false)} />
         </>
     );
 }
 
 export default Toolbar;
-
-
 
 function handleTooltip (item: string){
     const [ isActiveGlobalScreenshare, setIsActiveGlobalScreenshare ] = useRecoilState( isActiveGlobalScreenshareState);
@@ -258,8 +267,8 @@ function handleTooltip (item: string){
         },
     };
 
-    if(isActiveGlobalScreenshare && tooltips[item]?.screenshare !== undefined){return tooltips[item].screenshare}
-    
+    if(isActiveGlobalScreenshare && tooltips[item]?.screenshare !== undefined){return tooltips[item].screenshare;}
+
     if(activeTab === `mosaic` && tooltips[item]?.mosaic !== undefined){return tooltips[item].mosaic;}
 
     return(``);
