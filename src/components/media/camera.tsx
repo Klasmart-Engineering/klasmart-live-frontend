@@ -86,29 +86,22 @@ export function getCameraOrder(userSession: Session, isLocalUser: boolean): Came
 }
 
 interface CameraProps extends GridProps {
+    isLocalCamera: boolean;
     session?: Session;
     mediaStream?: MediaStream;
-    muted?: boolean;
     square?: boolean;
     noBorderRadius?: boolean;
     hidden?: boolean; // Maybe this prop will be deleted after classroom layout renewal.
 }
 
 export default function Camera({
+    isLocalCamera,
     session,
     mediaStream,
-    muted,
     square,
     noBorderRadius,
     ...other
 }: CameraProps): JSX.Element {
-    const theme = useTheme();
-
-    const { sessionId: userSelfSessionId } = useContext(LocalSessionContext);
-    const isSelf = session
-        ? session.id === userSelfSessionId
-        : true; // e.g. <Camera /> without session in join.tsx
-
     const audioRef = useRef<HTMLAudioElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -120,6 +113,17 @@ export default function Camera({
             videoRef.current.srcObject = mediaStream ? mediaStream : null;
         }
     }, [videoRef.current, mediaStream]);
+
+    useEffect(() => {
+        // TODO subscribe to the mute event and use the video value instead
+        const isVideoEnabled = mediaStream?.getVideoTracks().find((track: MediaStreamTrack) => track.enabled)?.enabled;
+        if (!isVideoEnabled && session) {
+            const videoEl= document.getElementById(`camera:${session.id}`) as HTMLVideoElement;
+            if (videoEl) {
+                videoEl.load();
+            }
+        }
+    }, [mediaStream?.getVideoTracks()]);
 
     const cameraRef = useRef<HTMLDivElement>(null);
     return (
@@ -137,17 +141,18 @@ export default function Camera({
                     paddingBottom: square ? "75%" : "56.25%",
                 }}
             >
-                {session && <ParticipantInfo session={session} isSelf={isSelf} />}
+                {session && <ParticipantInfo session={session} isSelf={isLocalCamera} />}
                 {mediaStream ?
                     <>
                         {session && <>
                             <MediaIndicators sessionId={session.id} />
-                            <MoreControlsButton session={session} isSelf={isSelf} cameraRef={cameraRef} />
+                            <MoreControlsButton session={session} isSelf={isLocalCamera} cameraRef={cameraRef} />
                         </>}
                         <video
                             id={session ? `camera:${session.id}` : undefined}
                             autoPlay={true}
                             muted={true}
+                            poster="data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="
                             playsInline
                             style={{
                                 backgroundColor: "#000",
@@ -163,7 +168,7 @@ export default function Camera({
                         />
                         <audio
                             autoPlay={true}
-                            muted={muted}
+                            muted={isLocalCamera}
                             ref={audioRef}
                         />
                     </>
