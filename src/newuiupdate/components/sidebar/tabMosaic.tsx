@@ -6,15 +6,15 @@ import {
 import Chat from "../main/chat/chat";
 import Toolbar from "../toolbar";
 import UserCamera from "../userCamera/userCamera";
-import { StyledDrawer } from "../utils";
+import { StyledDrawer } from "../utils/utils";
 import {
+    Fade,
     Grid,
     makeStyles,
     Theme,
-    Fade
 } from "@material-ui/core";
 import clsx from "clsx";
-import React, { useEffect } from "react";
+import React from "react";
 import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme: Theme) => ({
             "&>div":{
                 minHeight: 150,
                 width: 260,
-                margin: '0 auto',
+                margin: `0 auto`,
             },
         },
     },
@@ -56,9 +56,9 @@ const useStyles = makeStyles((theme: Theme) => ({
         paddingBottom: 20,
     },
     toolbarContainer:{
-        width: 'calc(100% + 20px)',
+        width: `calc(100% + 20px)`,
         margin: -10,
-        marginTop: 0
+        marginTop: 0,
     },
     cameraGrid2:{
         gridTemplateColumns: `repeat(7, 1fr)`,
@@ -106,7 +106,6 @@ function TabMosaic () {
     const students = users.filter(function (e) {
         return e.role === `student`;
     });
-
 
     return (
         <Fade in>

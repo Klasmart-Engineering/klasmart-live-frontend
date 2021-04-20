@@ -1,3 +1,4 @@
+import { activeTabState } from "../../states/layoutAtoms";
 import {
     Drawer,
     Fade,
@@ -9,9 +10,8 @@ import {
 } from "@material-ui/core";
 import React,
 { useState } from "react";
-
-import { activeTabState } from "../states/layoutAtoms";
 import { useRecoilState } from "recoil";
+
 interface StyledDrawerProps {
 	children?: any;
 	active?: boolean;
@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
     },
     styledDrawerPaper: {
-        transition: theme.transitions.create('width', {
+        transition: theme.transitions.create(`width`, {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.shortest,
         }),
@@ -47,9 +47,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     popperPapper: {
         borderRadius: 12,
         overflow: `hidden`,
-        maxHeight: 'calc(100vh - 150px)',
-        overflowY: 'scroll',
-        boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.075), 0 2px 12px 0px rgba(0, 0, 0, 0.065)',
+        maxHeight: `calc(100vh - 150px)`,
+        overflowY: `scroll`,
+        boxShadow: `0 1px 2px 0 rgba(0, 0, 0, 0.075), 0 2px 12px 0px rgba(0, 0, 0, 0.065)`,
     },
 }));
 
@@ -90,7 +90,11 @@ function StyledDrawer (props: StyledDrawerProps) {
                 width: active ? drawerWidth : 0,
             }}
         >
-            <div className={classes.styledDrawerInner} style={{marginBottom: activeTab === 'mosaic' ? 20 : ''}}>{children}</div>
+            <div
+                className={classes.styledDrawerInner}
+                style={{
+                    marginBottom: activeTab === `mosaic` ? 20 : ``,
+                }}>{children}</div>
         </Drawer>
     );
 }
@@ -134,7 +138,6 @@ function StyledPopper (props: StyledPopperProps) {
 
 export { StyledPopper };
 
-
 interface TabPanelProps {
 	children?: React.ReactNode;
 	index: any;
@@ -156,7 +159,9 @@ function TabPanel (props: TabPanelProps) {
             hidden={value !== index}
             id={`simple-tabpanel-${index}`}
             aria-labelledby={`simple-tab-${index}`}
-            style={{ height: '100%' }}
+            style={{
+                height: `100%`,
+            }}
             {...other}
         >
             {value === index && children}
@@ -165,31 +170,29 @@ function TabPanel (props: TabPanelProps) {
 }
 export { TabPanel };
 
-
-
 const useStylesNoItemList = makeStyles((theme: Theme) => ({
     root:{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100%'
+        display: `flex`,
+        justifyContent: `center`,
+        alignItems: `center`,
+        height: `100%`,
     },
     inner:{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
+        display: `flex`,
+        flexDirection: `column`,
+        alignItems: `center`,
     },
     icon:{
         marginBottom: 10,
         "& svg":{
-            height: '4rem',
-            width: '4rem',
-            opacity: 0.1
-        }
+            height: `4rem`,
+            width: `4rem`,
+            opacity: 0.1,
+        },
     },
     text:{
         color: theme.palette.grey[700],
-    }
+    },
 }));
 
 interface NoItemListProps {

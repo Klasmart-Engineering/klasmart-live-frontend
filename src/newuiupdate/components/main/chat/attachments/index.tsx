@@ -1,3 +1,4 @@
+import { NoItemList } from "../../../utils/utils";
 import Attachment from "./item";
 import {
     Button,
@@ -7,7 +8,6 @@ import {
 } from "@material-ui/core";
 import { CloudUpload as UploadIcon } from "@styled-icons/boxicons-regular/CloudUpload";
 import React from "react";
-import { NoItemList } from "../../../utils";
 
 const useStyles = makeStyles((theme: Theme) => ({
     fullHeight:{
@@ -65,7 +65,9 @@ function Attachments () {
                         item
                         xs>
                         {attachments.length === 0 ?
-                            <NoItemList icon={<UploadIcon />} text='No attachments' /> :
+                            <NoItemList
+                                icon={<UploadIcon />}
+                                text='No attachments' /> :
                             (<div className={classes.container}>
                                 {attachments?.map(attachment => (
                                     <Attachment

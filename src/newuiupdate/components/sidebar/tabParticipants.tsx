@@ -1,10 +1,10 @@
 import { usersState } from "../../states/layoutAtoms";
 import UserCamera from "../userCamera/userCamera";
 import {
+    Fade,
     Grid,
     makeStyles,
     Theme,
-    Fade
 } from "@material-ui/core";
 import clsx from "clsx";
 import React from "react";

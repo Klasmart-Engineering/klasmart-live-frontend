@@ -1,168 +1,192 @@
+import { classEndedState } from "../../../states/layoutAtoms";
 import {
+    Button,
     Dialog,
-    DialogTitle,
-    DialogContent,
-    Typography,
     DialogActions,
+    DialogContent,
+    DialogTitle,
     Grid,
     makeStyles,
     Theme,
-    Button
+    Typography,
 } from "@material-ui/core";
-import React,
-{ useState, useEffect } from "react";
-
 import red from "@material-ui/core/colors/red";
-
-import { Admin as ParentIcon } from "@styled-icons/remix-line/Admin";
 import { Warning as WarningIcon } from "@styled-icons/entypo/Warning";
-
+import { Admin as ParentIcon } from "@styled-icons/remix-line/Admin";
 import clsx from "clsx";
-import { classEndedState } from "../../../states/layoutAtoms";
+import React,
+{ useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
-
 
 const useStyles = makeStyles((theme: Theme) => ({
     dialogTitle:{
-        textAlign: 'center'
+        textAlign: `center`,
     },
     dialogContent:{
-        textAlign: 'center'
+        textAlign: `center`,
     },
     dialogIcon:{
-        display: 'inline-block',
+        display: `inline-block`,
         background: theme.palette.grey[200],
         borderRadius: 40,
         padding: 20,
         marginBottom: 20,
     },
     warningIcon:{
-        color: '#ffca00',
-        background: '#f9f7e8',
+        color: `#ffca00`,
+        background: `#f9f7e8`,
     },
     parentChecker:{
         marginTop: 20,
         marginBottom: 20,
     },
     parentCheckerItem:{
-        color: '#fff',
+        color: `#fff`,
         width: 50,
         height: 50,
-        background: '#252961',
-        justifyContent: 'center',
-        display: 'flex',
-        alignItems: 'center',
+        background: `#252961`,
+        justifyContent: `center`,
+        display: `flex`,
+        alignItems: `center`,
         borderRadius: 50,
-        fontSize: '1.5rem',
-        cursor: 'pointer',
-        margin: '0 10px',
+        fontSize: `1.5rem`,
+        cursor: `pointer`,
+        margin: `0 10px`,
     },
     parentCheckerItemActive:{
-        opacity: 0.4
+        opacity: 0.4,
     },
     error: {
-        color: red[500]
-    }
+        color: red[500],
+    },
 }));
 
-function DialogEndCall(props:any){
+function DialogEndCall (props:any){
     const classes = useStyles();
-    const { open, onClose, user } = props;
+    const {
+        open, onClose, user,
+    } = props;
     const [ classEnded, setClassEnded ] = useRecoilState(classEndedState);
     const [ showParentCaptcha, setShowParentCaptcha ] = useState(false);
-      
-    let dialogTitle = 'End class';
-    let dialogContent = 'Are you sure to end the class?';
-    let dialogOnConfirm = () => setClassEnded(true);
 
-    if(user.role === 'student'){
-         dialogTitle = 'Leave class'
-         dialogContent = 'Leaving class will close the session window tab, close your camera and turn off your microphone'
+    let dialogTitle = `End class`;
+    let dialogContent = `Are you sure to end the class?`;
+    const dialogOnConfirm = () => setClassEnded(true);
+
+    if(user.role === `student`){
+        dialogTitle = `Leave class`;
+        dialogContent = `Leaving class will close the session window tab, close your camera and turn off your microphone`;
 
         useEffect(() => {
-            setShowParentCaptcha(true)
-        }, [open]);
+            setShowParentCaptcha(true);
+        }, [ open ]);
     }
 
     return(
-        <Dialog open={open} onClose={onClose} aria-labelledby="leave-class-dialog" maxWidth="xs">
-            <DialogTitle id="leave-class-dialog" className={classes.dialogTitle}>{dialogTitle}</DialogTitle>
+        <Dialog
+            open={open}
+            aria-labelledby="leave-class-dialog"
+            maxWidth="xs"
+            onClose={onClose}>
+            <DialogTitle
+                id="leave-class-dialog"
+                className={classes.dialogTitle}>{dialogTitle}</DialogTitle>
             <DialogContent className={classes.dialogContent}>
-                {showParentCaptcha ? 
+                {showParentCaptcha ?
                     <ParentCaptcha setShowParentCaptcha={setShowParentCaptcha} /> : (
-                    <>  
-                        <div className={clsx(classes.dialogIcon, classes.warningIcon)}>
-                            <WarningIcon size="2rem" />
-                        </div>
-                        <Typography>{dialogContent}</Typography>
-                    </>
-                )}
+                        <>
+                            <div className={clsx(classes.dialogIcon, classes.warningIcon)}>
+                                <WarningIcon size="2rem" />
+                            </div>
+                            <Typography>{dialogContent}</Typography>
+                        </>
+                    )}
             </DialogContent>
-            
+
             <DialogActions>
-                <Button onClick={onClose} color="primary">Cancel</Button>
-                {!showParentCaptcha && <Button onClick={dialogOnConfirm} variant="contained" color="primary">{dialogTitle}</Button>}
+                <Button
+                    color="primary"
+                    onClick={onClose}>Cancel</Button>
+                {!showParentCaptcha && <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={dialogOnConfirm}>{dialogTitle}</Button>}
             </DialogActions>
         </Dialog>
-    )
+    );
 }
 
-export { DialogEndCall }
+export { DialogEndCall };
 
-
-function ParentCaptcha(props:any){
+function ParentCaptcha (props:any){
     const classes = useStyles();
     const {  setShowParentCaptcha } = props;
-    const [checkNumbers, setCheckNumbers] = useState<any[]>([]);
-    const [error, setError] = useState(false);
-    
-     const generateRandomNumbers = () => {
+    const [ checkNumbers, setCheckNumbers ] = useState<any[]>([]);
+    const [ error, setError ] = useState(false);
+
+    const generateRandomNumbers = () => {
         const randomNumbers:any[] = [];
         while(randomNumbers.length < 3){
-            var number = Math.floor(Math.random() * 100) + 1;
+            const number = Math.floor(Math.random() * 100) + 1;
             if(randomNumbers.indexOf(number) === -1) randomNumbers.push(number);
         }
 
         setCheckNumbers([
-            {value: randomNumbers[0], checked: false, selected: 0},
-            {value: randomNumbers[1], checked: false, selected: 0},
-            {value: randomNumbers[2], checked: false, selected: 0},
-        ])
-    }
-    
+            {
+                value: randomNumbers[0],
+                checked: false,
+                selected: 0,
+            },
+            {
+                value: randomNumbers[1],
+                checked: false,
+                selected: 0,
+            },
+            {
+                value: randomNumbers[2],
+                checked: false,
+                selected: 0,
+            },
+        ]);
+    };
+
     const handleSelectNumber = (value:number, index: number) => {
-        let updatedNumbers = [...checkNumbers];
-        updatedNumbers[index] = {...checkNumbers[index], checked: true, selected: updatedNumbers.filter(number => number.checked === true).length};
+        const updatedNumbers = [ ...checkNumbers ];
+        updatedNumbers[index] = {
+            ...checkNumbers[index],
+            checked: true,
+            selected: updatedNumbers.filter(number => number.checked === true).length,
+        };
         setCheckNumbers(updatedNumbers);
     };
- 
+
     useEffect(() => {
         generateRandomNumbers();
     }, []);
 
-     useEffect(() => {
-         if(checkNumbers.length){
+    useEffect(() => {
+        if(checkNumbers.length){
             const findUnchecked = checkNumbers.find(number => number.checked === false);
-        
+
             if(findUnchecked === undefined){
                 const selectedNumbers = checkNumbers
-                .sort((a, b) => a.selected - b.selected)
-                .map(number => number.value);
-    
+                    .sort((a, b) => a.selected - b.selected)
+                    .map(number => number.value);
+
                 const isValid = selectedNumbers.filter((a, i) => a > selectedNumbers[i + 1]).length === 0;
 
                 if(isValid){
                     setShowParentCaptcha(!isValid);
-                    setError(false)
+                    setError(false);
                 }else{
-                    setError(true)
+                    setError(true);
                 }
-                 
+
                 generateRandomNumbers();
             }
-         }
-        
-     }, [checkNumbers]);
+        }
+
+    }, [ checkNumbers ]);
 
     return(
         <div>
@@ -171,16 +195,25 @@ function ParentCaptcha(props:any){
             </div>
             <Typography variant="h5">Parents only </Typography>
             <Typography>To continue, please tap the numbers in ascending order </Typography>
-            <Grid container justify="center" className={classes.parentChecker}>
+            <Grid
+                container
+                justify="center"
+                className={classes.parentChecker}>
                 {checkNumbers.map((number, index) => (
-                    <Grid item key={`numer-${index}`}>
-                        <Typography className={clsx(classes.parentCheckerItem, {[classes.parentCheckerItemActive] : number.checked})} onClick={() => handleSelectNumber(number.value, index)} >{number.value}</Typography>
+                    <Grid
+                        key={`numer-${index}`}
+                        item>
+                        <Typography
+                            className={clsx(classes.parentCheckerItem, {
+                                [classes.parentCheckerItemActive] : number.checked,
+                            })}
+                            onClick={() => handleSelectNumber(number.value, index)} >{number.value}</Typography>
                     </Grid>
                 ))}
             </Grid>
             {error && <Typography className={classes.error}>Please try again</Typography>}
         </div>
-    )
+    );
 }
 
-export { ParentCaptcha }
+export { ParentCaptcha };

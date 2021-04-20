@@ -1,13 +1,12 @@
+import { NoItemList } from "../../../utils/utils";
+import Manual from "./item";
 import {
     Grid,
     makeStyles,
     Theme,
 } from "@material-ui/core";
-import React from "react";
-import Manual from "./item";
-
 import { Book as ManualIcon } from "@styled-icons/bootstrap/Book";
-import { NoItemList } from "../../../utils";
+import React from "react";
 
 const useStyles = makeStyles((theme: Theme) => ({
     fullHeight:{
@@ -18,7 +17,6 @@ const useStyles = makeStyles((theme: Theme) => ({
         paddingBottom: 0,
     },
 }));
-
 
 const manuals = [
     {
@@ -38,7 +36,6 @@ const manuals = [
     },
 ];
 
-
 function Manuals () {
     const classes = useStyles();
 
@@ -51,8 +48,10 @@ function Manuals () {
                 item
                 xs>
                 {manuals.length === 0 ?
-                    <NoItemList icon={<ManualIcon />} text='No manuals' />
-                     :
+                    <NoItemList
+                        icon={<ManualIcon />}
+                        text='No manuals' />
+                    :
                     (<div className={classes.container}>
                         {manuals?.map(manual => (
                             <Manual

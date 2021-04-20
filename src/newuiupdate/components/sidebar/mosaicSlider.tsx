@@ -1,6 +1,4 @@
-import {
-    mosaicViewSizeState,
-} from "../../states/layoutAtoms";
+import { mosaicViewSizeState } from "../../states/layoutAtoms";
 import {
     IconButton,
     makeStyles,
@@ -10,9 +8,7 @@ import {
 } from "@material-ui/core";
 import { SlideSize as SliderIcon } from "@styled-icons/fluentui-system-regular/SlideSize";
 import React,
-{
-    useState,useEffect
-} from "react";
+{ useState } from "react";
 import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -23,10 +19,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     slider:{
         minHeight: 150,
-        margin: '10px 3px',
+        margin: `10px 3px`,
     },
 }));
-
 
 function MosaicSlider () {
     const classes = useStyles();
@@ -41,49 +36,49 @@ function MosaicSlider () {
 
     return (
         <>
-        <Menu
-            id="grid-settings-menu"
-            anchorEl={mosaicGridSettingsEl}
-            getContentAnchorEl={null}
-            anchorOrigin={{
-                vertical: `top`,
-                horizontal: `center`,
-            }}
-            transformOrigin={{
-                vertical: `bottom`,
-                horizontal: `center`,
-            }}
-            open={Boolean(mosaicGridSettingsEl)}
-            MenuListProps={{
-                onPointerLeave: handleSliderGridClose,
-                disablePadding: true,
-            }}
-            onClose={handleSliderGridClose}
-        >
-
-            <Slider
-                orientation="vertical"
-                value={typeof mosaicViewSize === 'number' ? mosaicViewSize : 0}
-                onChange={handleSliderChange}
-                step={1}
-                marks
-                min={2}
-                max={6}
-                className={classes.slider}
-            />
-        </Menu>
-
-        <IconButton
-            component="a"
-            aria-label="Grid slider button"
-            aria-controls="grid-sldier-popover"
-            aria-haspopup="true"
-            size="small"
-            className={classes.sliderIconButton}
-            onClick={handleSliderGridOpen}
+            <Menu
+                id="grid-settings-menu"
+                anchorEl={mosaicGridSettingsEl}
+                getContentAnchorEl={null}
+                anchorOrigin={{
+                    vertical: `top`,
+                    horizontal: `center`,
+                }}
+                transformOrigin={{
+                    vertical: `bottom`,
+                    horizontal: `center`,
+                }}
+                open={Boolean(mosaicGridSettingsEl)}
+                MenuListProps={{
+                    onPointerLeave: handleSliderGridClose,
+                    disablePadding: true,
+                }}
+                onClose={handleSliderGridClose}
             >
-            <SliderIcon size="1.6rem"/>
-        </IconButton>
+
+                <Slider
+                    marks
+                    orientation="vertical"
+                    value={typeof mosaicViewSize === `number` ? mosaicViewSize : 0}
+                    step={1}
+                    min={2}
+                    max={6}
+                    className={classes.slider}
+                    onChange={handleSliderChange}
+                />
+            </Menu>
+
+            <IconButton
+                component="a"
+                aria-label="Grid slider button"
+                aria-controls="grid-sldier-popover"
+                aria-haspopup="true"
+                size="small"
+                className={classes.sliderIconButton}
+                onClick={handleSliderGridOpen}
+            >
+                <SliderIcon size="1.6rem"/>
+            </IconButton>
         </>
     );
 }

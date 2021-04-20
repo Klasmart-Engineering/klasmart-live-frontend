@@ -1,3 +1,4 @@
+import { NoItemList } from "../../../utils/utils";
 import Message from "./item";
 import SendMessage from "./sendMessage";
 import {
@@ -8,7 +9,6 @@ import {
 } from "@material-ui/core";
 import { ChatSquareDotsFill as ChatIcon } from "@styled-icons/bootstrap/ChatSquareDotsFill";
 import React from "react";
-import { NoItemList } from "../../../utils";
 
 const useStyles = makeStyles((theme: Theme) => ({
     fullHeight:{
@@ -66,7 +66,9 @@ function Messages () {
                 xs
                 className={classes.messagesContainer}>
                 {messages.length === 0 ?
-                    <NoItemList icon={<ChatIcon />} text='No messages' /> :
+                    <NoItemList
+                        icon={<ChatIcon />}
+                        text='No messages' /> :
                     (<Box className={classes.container}>
                         {messages.map(message => (
                             <Message

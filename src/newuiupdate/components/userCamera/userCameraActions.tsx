@@ -1,6 +1,4 @@
-import {
-    pinnedUserState,
-} from "../../states/layoutAtoms";
+import { pinnedUserState } from "../../states/layoutAtoms";
 import {
     Grid,
     IconButton,
@@ -8,7 +6,6 @@ import {
     Menu,
     MenuItem,
     Theme,
-    Typography,
 } from "@material-ui/core";
 import amber from "@material-ui/core/colors/amber";
 import red from "@material-ui/core/colors/red";
@@ -183,7 +180,6 @@ function UserCameraActions (props: UserCameraActionsType) {
         id === pinnedUser ? setPinnedUser(undefined) : setPinnedUser(id);
     }
 
-
     return (
         <div
             className={classes.root}>
@@ -194,7 +190,9 @@ function UserCameraActions (props: UserCameraActionsType) {
                         aria-label="Expand video"
                         size="small"
                         className={classes.controlsIcon}
-                        style={{background: 'none'}}
+                        style={{
+                            background: `none`,
+                        }}
                     >
                         <ExpandIcon size="0.75em" />
                     </IconButton>

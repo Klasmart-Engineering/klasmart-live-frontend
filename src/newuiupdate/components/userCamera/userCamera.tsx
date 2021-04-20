@@ -1,13 +1,13 @@
 import Camera from "./camera";
 import NoCamera from "./noCamera";
 import UserCameraActions from "./userCameraActions";
+import UserCameraDetails from "./userCameraDetails";
 import {
     Grid,
     makeStyles,
     Theme,
 } from "@material-ui/core";
-import React, {useState} from "react";
-import UserCameraDetails from "./userCameraDetails";
+import React, { useState } from "react";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {

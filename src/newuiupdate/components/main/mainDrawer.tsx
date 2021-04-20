@@ -1,38 +1,35 @@
-import React from "react";
-
-import PinUser from "./pinUser/pinUser";
+import {
+    isChatOpenState,
+    isLessonPlanOpenState,
+    isPinUserOpenState,
+} from "../../states/layoutAtoms";
+import { StyledDrawer } from "../utils/utils";
 import Chat from "./chat/chat";
 import LessonPlan from "./lessonPlan/lessonPlan";
+import PinUser from "./pinUser/pinUser";
+import React from "react";
 import { useRecoilState } from "recoil";
-import {
-	isChatOpenState,
-	isLessonPlanOpenState,
-	isPinUserOpenState,
-} from "../../states/layoutAtoms";
-import { StyledDrawer } from "../utils";
 
-function MainDrawer() {
-	const [isPinUserOpen, setIsPinUserOpen] = useRecoilState(isPinUserOpenState);
-	const [isChatOpen, setIsChatOpen] = useRecoilState(isChatOpenState);
-	const [isLessonPlanOpen, setIsLessonPlanOpen] = useRecoilState(
-		isLessonPlanOpenState
-	);
+function MainDrawer () {
+    const [ isPinUserOpen, setIsPinUserOpen ] = useRecoilState(isPinUserOpenState);
+    const [ isChatOpen, setIsChatOpen ] = useRecoilState(isChatOpenState);
+    const [ isLessonPlanOpen, setIsLessonPlanOpen ] = useRecoilState(isLessonPlanOpenState);
 
-	return (
-		<>
-			<StyledDrawer active={isPinUserOpen}>
-				<PinUser />
-			</StyledDrawer>
+    return (
+        <>
+            <StyledDrawer active={isPinUserOpen}>
+                <PinUser />
+            </StyledDrawer>
 
-			<StyledDrawer active={isChatOpen}>
-				<Chat />
-			</StyledDrawer>
+            <StyledDrawer active={isChatOpen}>
+                <Chat />
+            </StyledDrawer>
 
-			<StyledDrawer active={isLessonPlanOpen}>
-				<LessonPlan />
-			</StyledDrawer>
-		</>
-	);
+            <StyledDrawer active={isLessonPlanOpen}>
+                <LessonPlan />
+            </StyledDrawer>
+        </>
+    );
 }
 
 export default MainDrawer;

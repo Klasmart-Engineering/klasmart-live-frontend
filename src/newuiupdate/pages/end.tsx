@@ -1,30 +1,30 @@
-import React from 'react';
-import { Grid, makeStyles, Theme, Typography, Fade } from '@material-ui/core';
-
-import { CalendarCheck as ClassEndedIcon } from "@styled-icons/boxicons-regular/CalendarCheck";
 import { Feedback } from '../components/others/endPage/feedback';
-
+import {
+    Fade, Grid, makeStyles, Theme, Typography,
+} from '@material-ui/core';
+import { CalendarCheck as ClassEndedIcon } from "@styled-icons/boxicons-regular/CalendarCheck";
+import React from 'react';
 
 const useStyles = makeStyles((theme: Theme) => ({
     container:{
-        height: '100%',
+        height: `100%`,
         backgroundColor: theme.palette.grey[200],
     },
     root: {
-        textAlign: 'center',
+        textAlign: `center`,
     },
     icon:{
         color: theme.palette.text.primary,
         marginBottom: 10,
         "& svg": {
-            height: '3rem',
-            width: '3rem',
+            height: `3rem`,
+            width: `3rem`,
             background: theme.palette.text.primary,
             borderRadius: 40,
             color: theme.palette.common.white,
-            padding: '1rem',
-        }
-    }
+            padding: `1rem`,
+        },
+    },
 }));
 
 function ClassEnded () {
@@ -32,8 +32,14 @@ function ClassEnded () {
 
     return (
         <Fade in={true}>
-            <Grid container alignItems="center" justify="center" className={classes.container}>
-                <Grid item className={classes.root}>
+            <Grid
+                container
+                alignItems="center"
+                justify="center"
+                className={classes.container}>
+                <Grid
+                    item
+                    className={classes.root}>
                     <div className={classes.icon}>
                         <ClassEndedIcon />
                     </div>

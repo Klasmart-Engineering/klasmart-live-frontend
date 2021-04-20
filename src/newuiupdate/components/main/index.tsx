@@ -1,6 +1,4 @@
-import { activeTabState } from "../../states/layoutAtoms";
 import Toolbar from "../toolbar";
-import CanvasDrawer from "./canvasDrawer";
 import MainDrawer from "./mainDrawer";
 import MainView from "./mainView";
 import {
@@ -9,7 +7,6 @@ import {
     Theme,
 } from "@material-ui/core";
 import React from "react";
-import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
     fullHeight: {},
