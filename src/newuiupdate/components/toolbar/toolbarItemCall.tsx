@@ -24,13 +24,13 @@ const useStyles = makeStyles((theme: Theme) => ({
         cursor: `pointer`,
         padding: 15,
         transition: `all 100ms ease-in-out`,
-        margin: '0 7px',
+        margin: `0 7px`,
         "&:hover": {
             transform: `scale(1.1)`,
         },
         "& svg" : {
             width: `1.25em`,
-    		height: `1.25em`,
+            height: `1.25em`,
         },
     },
     disabled: {

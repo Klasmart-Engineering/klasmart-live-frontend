@@ -4,8 +4,6 @@ import {
     AccordionDetails,
     AccordionSummary,
     Box,
-    List,
-    ListItem,
     makeStyles,
     Theme,
     Typography,

@@ -1,4 +1,4 @@
-import { materialActiveIndexState, classInfoState } from "../../../../states/layoutAtoms";
+import { classInfoState, materialActiveIndexState } from "../../../../states/layoutAtoms";
 import {
     Step,
     StepLabel,
@@ -6,8 +6,6 @@ import {
 } from "@material-ui/core";
 import React from "react";
 import { useRecoilState } from "recoil";
-
-
 
 function Plan () {
     const [ materialActiveIndex, setMaterialActiveIndex ] = useRecoilState(materialActiveIndexState);

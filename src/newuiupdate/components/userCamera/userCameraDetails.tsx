@@ -7,9 +7,7 @@ import amber from "@material-ui/core/colors/amber";
 import { MicMuteFill as MicDisabledIcon } from "@styled-icons/bootstrap/MicMuteFill";
 import { Crown as HasControlsIcon } from "@styled-icons/fa-solid/Crown";
 import { HatGraduation as TeacherIcon } from "@styled-icons/fluentui-system-filled/HatGraduation";
-
 import React from "react";
-
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -47,8 +45,8 @@ const useStyles = makeStyles((theme: Theme) => ({
         fontSize: `0.75rem`,
         lineHeight: `1.2`,
         fontWeight: 600,
-        backgroundColor: 'rgba(0, 0, 0, 0.25)',
-        borderRadius: '0 12px 0'
+        backgroundColor: `rgba(0, 0, 0, 0.25)`,
+        borderRadius: `0 12px 0`,
     },
     roles:{
         position: `absolute`,

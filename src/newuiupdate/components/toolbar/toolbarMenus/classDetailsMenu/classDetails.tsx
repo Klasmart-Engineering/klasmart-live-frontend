@@ -1,34 +1,30 @@
-import React from "react";
-
-import {
-	makeStyles,
-	Theme,
-	Typography,
-} from "@material-ui/core";
-
 import { classInfoState } from "../../../../states/layoutAtoms";
+import {
+    makeStyles,
+    Theme,
+    Typography,
+} from "@material-ui/core";
+import React from "react";
 import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
-	root: {
-
-	},
-	detailsLabel:{
-		color: theme.palette.text.primary,
-		paddingRight: 30,
-		paddingBottom: 10,
-	}, 
-	detailsValue:{
-		color: theme.palette.grey[600],
-		paddingBottom: 10,
-	}
+    root: {},
+    detailsLabel:{
+        color: theme.palette.text.primary,
+        paddingRight: 30,
+        paddingBottom: 10,
+    },
+    detailsValue:{
+        color: theme.palette.grey[600],
+        paddingBottom: 10,
+    },
 }));
 
-function ClassDetails() {
-	const classes = useStyles();
+function ClassDetails () {
+    const classes = useStyles();
     const [ classInfo, setClassInfo ] = useRecoilState(classInfoState);
 
-	return (
+    return (
         <div>
             <table>
                 <tbody>
@@ -75,7 +71,7 @@ function ClassDetails() {
                 </tbody>
             </table>
         </div>
-	);
+    );
 }
 
 export default ClassDetails;

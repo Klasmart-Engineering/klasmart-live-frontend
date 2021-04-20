@@ -1,6 +1,5 @@
-import {
-    activeTabState,
-} from "../../states/layoutAtoms";
+import { activeTabState } from "../../states/layoutAtoms";
+import MosaicSlider from "./mosaicSlider";
 import SidebarMenuItem from "./sidebarMenuItem";
 import TabMosaic from "./tabMosaic";
 import TabParticipants from "./tabParticipants";
@@ -20,7 +19,6 @@ import React,
     useState,
 } from "react";
 import { useRecoilState } from "recoil";
-import MosaicSlider from "./mosaicSlider";
 
 const useStyles = makeStyles((theme: Theme) => ({
     drawer: {
@@ -40,7 +38,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         display: `flex`,
         flexDirection: `column`,
         overflow: `hidden`,
-        paddingBottom: 20
+        paddingBottom: 20,
     },
     tabNavMore: {
         margin: `20px 0`,
@@ -56,7 +54,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     slider:{
         minHeight: 150,
-        margin: '10px 3px',
+        margin: `10px 3px`,
     },
 }));
 
@@ -135,7 +133,7 @@ function Sidebar () {
                                 />
                             ))}
                         </Grid>
-                        {activeTab === 'mosaic' && 
+                        {activeTab === `mosaic` &&
                         <Grid
                             item
                             className={classes.tabNavMore}>

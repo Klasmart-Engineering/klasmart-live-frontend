@@ -4,8 +4,8 @@ import {
     Theme,
     Tooltip,
 } from "@material-ui/core";
-import { fade } from '@material-ui/core/styles/colorManipulator';
 import red from "@material-ui/core/colors/red";
+import { fade } from '@material-ui/core/styles/colorManipulator';
 import LockIcon from "@material-ui/icons/Lock";
 import { CameraVideoFill as CameraVideoFillIcon } from "@styled-icons/bootstrap/CameraVideoFill";
 import { CameraVideoOffFill as CameraDisabledIcon } from "@styled-icons/bootstrap/CameraVideoOffFill";
@@ -27,13 +27,13 @@ const useStyles = makeStyles((theme: Theme) => ({
         transition: `all 100ms ease-in-out`,
         color: red[500],
         backgroundColor: fade(red[500], 0.1),
-        margin: '0 7px',
+        margin: `0 7px`,
         "&:hover": {
             backgroundColor: fade(red[500], 0.2),
         },
         "& svg" : {
             width: `1.75em`,
-    		height: `1.75em`,
+            height: `1.75em`,
         },
     },
     active: {
