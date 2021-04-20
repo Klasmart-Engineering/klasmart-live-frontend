@@ -1,7 +1,7 @@
 import Layout from './layout';
+import Providers from './providers/providers';
 import { themeProvider } from "./themeProvider";
 import { ThemeProvider } from "@material-ui/core";
-import { SnackbarProvider } from "kidsloop-px";
 import React from 'react';
 import { RecoilRoot } from 'recoil';
 // import RecoilizeDebugger from 'recoilize';
@@ -9,17 +9,10 @@ import { RecoilRoot } from 'recoil';
 function Entry () {
     return (
         <RecoilRoot>
-            <ThemeProvider theme={themeProvider(`en`, `light`)}>
-                <SnackbarProvider
-                    anchorOrigin={{
-                        vertical: `top`,
-                        horizontal: `center`,
-                    }}
-                    closeButtonLabel="Dismiss">
-                    {/* <RecoilizeDebugger root={app} /> */}
-                    <Layout />
-                </SnackbarProvider>
-            </ThemeProvider>
+            {/* <RecoilizeDebugger root={app} /> */}
+            <Providers>
+                <Layout />
+            </Providers>
         </RecoilRoot>
     );
 }
