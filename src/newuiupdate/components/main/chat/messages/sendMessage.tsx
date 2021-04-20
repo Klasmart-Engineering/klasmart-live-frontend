@@ -1,3 +1,5 @@
+import { LocalSessionContext } from "../../../../providers/providers";
+import { useMutation } from "@apollo/react-hooks";
 import {
     IconButton,
     InputBase,
@@ -6,7 +8,8 @@ import {
     Theme,
 } from "@material-ui/core";
 import { SendPlane as SendIcon } from "@styled-icons/remix-fill/SendPlane";
-import React, { useState } from "react";
+import { gql } from "apollo-boost";
+import React, { useContext, useState } from "react";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root:{
@@ -33,14 +36,32 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 }));
 
+const SEND_MESSAGE = gql`
+    mutation sendMessage($roomId: ID!, $message: String) {
+        sendMessage(roomId: $roomId, message: $message) {
+            id,
+            message
+        }
+    }
+`;
+
 function SendMessage () {
     const classes = useStyles();
 
     const [ message, setMessage ] = useState(``);
 
+    const { roomId } = useContext(LocalSessionContext);
+
+    const [ sendMessage, { loading } ] = useMutation(SEND_MESSAGE);
+
     const submitMessage = (e: React.FormEvent<HTMLDivElement>) => {
         e.preventDefault();
-        // DO THE GRAPHQL STUFF HERE
+        sendMessage({
+            variables: {
+                roomId,
+                message,
+            },
+        });
         setMessage(``);
     };
 
