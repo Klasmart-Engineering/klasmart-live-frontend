@@ -29,9 +29,6 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 function Main () {
     const classes = useStyles();
-    const [ activeTab, setActiveTab ] = useRecoilState(activeTabState);
-
-    if(activeTab !== `participants`){return(null);}
 
     return (
         <Grid
@@ -45,7 +42,9 @@ function Main () {
                 xs
                 className={classes.mainViewContainer}>
                 <div className={classes.mainView}>
-                    <Grid container id="main-content">
+                    <Grid
+                        container
+                        id="main-content">
                         <Grid
                             item
                             xs>
