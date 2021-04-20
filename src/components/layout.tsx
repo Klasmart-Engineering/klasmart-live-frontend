@@ -339,7 +339,7 @@ function TabInnerContent({ title }: { title: string }) {
                         <Camera
                             session={localSession}
                             mediaStream={camera !== null ? camera : undefined}
-                            muted
+                            isLocalCamera
                             // GridProps - You can find related props by searching the keyword '...other' in camera.tsx
 
                             item xs={12}
@@ -367,7 +367,7 @@ function TabInnerContent({ title }: { title: string }) {
                             <Camera
                                 session={localSession}
                                 mediaStream={camera !== null ? camera : undefined}
-                                muted
+                                isLocalCamera
                                 square
 
                                 // GridProps - You can find related props by searching the keyword '...other' in camera.tsx
@@ -389,7 +389,7 @@ function TabInnerContent({ title }: { title: string }) {
                                         session={session}
                                         mediaStream={sfuState.getCameraStream(session.id)}
                                         square
-
+                                        isLocalCamera={false}
                                         // GridProps - You can find related props by searching the keyword '...other' in camera.tsx
                                         item xs={isSmDown ? 3 : 12}
                                         // xs={camGridItemXS} // TODO (Isu): This is planned by design.
