@@ -23,6 +23,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         "& $messageGrid":{
             paddingLeft: 10,
             paddingRight: 0,
+            textAlign: `left`,
         },
         "& $message":{
             backgroundColor: amber[500],
@@ -38,12 +39,15 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     messageGrid:{
         paddingRight: 10,
+        textAlign: `right`,
     },
     message:{
         backgroundColor: theme.palette.background.default,
         padding: 10,
         borderRadius: 12,
         position: `relative`,
+        textAlign: `left`,
+        display: `inline-block`,
         "&:after":{
             content: `''`,
             position: `absolute`,

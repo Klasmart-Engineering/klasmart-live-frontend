@@ -9,7 +9,7 @@ import React, {
     createContext, ReactChild, ReactChildren, useMemo, useState,
 } from 'react';
 import { RawIntlProvider } from "react-intl";
-import { uuid } from "uuidv4";
+import { v4 as uuid } from "uuid";
 
 type Props = {
     children?: ReactChild | ReactChildren | null;
