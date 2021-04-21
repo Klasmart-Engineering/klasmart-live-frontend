@@ -1,7 +1,7 @@
 import { LessonMaterial, MaterialTypename } from "../../lessonMaterialContext";
-import { RoomContext } from "../../pages/room/room";
 import { getDefaultLanguageCode, getLanguage } from "../../utils/locale";
 import { themeProvider } from "../themeProvider";
+import { RoomContext } from "./roomContext";
 import { ThemeProvider } from "@material-ui/core";
 import jwt_decode from "jwt-decode";
 import { SnackbarProvider } from "kidsloop-px";

@@ -1,3 +1,4 @@
+import { RoomContext } from "../../../../providers/roomContext";
 import { NoItemList } from "../../../utils/utils";
 import Message from "./item";
 import SendMessage from "./sendMessage";
@@ -8,7 +9,7 @@ import {
     Theme,
 } from "@material-ui/core";
 import { ChatSquareDotsFill as ChatIcon } from "@styled-icons/bootstrap/ChatSquareDotsFill";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 
 const useStyles = makeStyles((theme: Theme) => ({
     fullHeight:{
@@ -23,38 +24,18 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 }));
 
-const messages = [
-    {
-        id: `1`,
-        session: {
-            id: 1,
-            name: `Tim Jones`,
-            role: `student`,
-        },
-        message: `Hello everyone, my name is Timmy but you can call me Tim.`,
-    },
-    {
-        id: `2`,
-        session: {
-            id: 1,
-            name: `Joy Phillips`,
-            role: `student`,
-        },
-        message: `Hi Tim. My name is Joy. Nice to meet you`,
-    },
-    {
-        id: `3`,
-        session: {
-            id: 1,
-            name: `Tim Jones`,
-            role: `teacher`,
-        },
-        message: `Hi Ziko, my name is Time. Let us all be friends`,
-    },
-];
-
 function Messages () {
     const classes = useStyles();
+    const { messages:messagesData } = RoomContext.Consume();
+
+    const messages:any = Array.from(messagesData);
+    const messagesBox = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        // TODO, useref + scrollintoview (if possible),
+        const objDiv = document.getElementById(`chat-container`);
+        if(objDiv) objDiv.scrollTop = objDiv?.scrollHeight;
+    }, [ messages ]);
 
     return (
         <Grid
@@ -64,18 +45,21 @@ function Messages () {
             <Grid
                 item
                 xs
+                // ref={messagesBox}
+                id="chat-container"
                 className={classes.messagesContainer}>
-                {messages.length === 0 ?
+                {messages.size === 0 ?
                     <NoItemList
                         icon={<ChatIcon />}
                         text='No messages' /> :
-                    (<Box className={classes.container}>
-                        {messages.map(message => (
+                    (<Box
+                        className={classes.container}>
+                        {messages.map((message:any) => (
                             <Message
-                                key={message.id}
-                                id={message.id}
-                                session={message.session}
-                                message={message.message} />
+                                key={message[1].id}
+                                id={message[1].id}
+                                session={message[1].session}
+                                message={message[1].message} />
                         ))}
                     </Box>)
                 }
