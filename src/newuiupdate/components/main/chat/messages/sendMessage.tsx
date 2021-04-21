@@ -49,7 +49,6 @@ function SendMessage () {
     const classes = useStyles();
 
     const [ message, setMessage ] = useState(``);
-
     const { roomId } = useContext(LocalSessionContext);
 
     const [ sendMessage, { loading } ] = useMutation(SEND_MESSAGE);

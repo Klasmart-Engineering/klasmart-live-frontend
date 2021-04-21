@@ -81,7 +81,7 @@ function Message (props: MessageProps) {
             container
             alignItems="center"
             className={clsx(classes.root, {
-                [classes.rootTeacher]: session.role === `teacher`,
+                [classes.rootTeacher]: session.isTeacher,
             })}>
             <Grid item>
                 <UserAvatar
@@ -95,7 +95,7 @@ function Message (props: MessageProps) {
                 className={classes.messageGrid}>
                 <Typography className={classes.author}>
                     {session.name}
-                    {session.role === `teacher` && <TeacherIcon
+                    {session.isTeacher && <TeacherIcon
                         size="1rem"
                         className={classes.teacherIcon} />}
                 </Typography>
