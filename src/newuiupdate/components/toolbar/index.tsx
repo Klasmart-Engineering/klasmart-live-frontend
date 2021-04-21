@@ -121,7 +121,7 @@ function Toolbar () {
                     item
                     className={classes.iconGroup}>
                     <ToolbarItem
-                        display={true}
+                        display={activeTab !== `mosaic`}
                         icon={<InfoIcon />}
                         label="Class Name"
                         active={isClassDetailsOpen}
@@ -134,7 +134,7 @@ function Toolbar () {
                         }}
                     />
                     <ToolbarItem
-                        display={user.hasControls}
+                        display={user.hasControls ? activeTab !== `mosaic` : false}
                         icon={<CanvasIcon />}
                         label="Canvas"
                         active={isCanvasOpen}
@@ -191,7 +191,7 @@ function Toolbar () {
                         }}
                     />
                     <ToolbarItem
-                        display={user.hasControls}
+                        display={user.hasControls ? activeTab !== `mosaic` : false}
                         icon={<LessonPlanIcon />}
                         label="Lesson Plan"
                         disabled={Boolean(handleTooltip(`lessonPlan`))}
@@ -203,7 +203,7 @@ function Toolbar () {
                         }}
                     />
                     <ToolbarItem
-                        display={user.hasControls}
+                        display={user.hasControls ? activeTab !== `mosaic` : false}
                         icon={<ViewModesIcon />}
                         label="View modes"
                         active={isViewModesOpen}
