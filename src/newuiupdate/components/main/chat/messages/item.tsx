@@ -2,13 +2,16 @@ import {
     Grid,
     makeStyles,
     Theme,
+    Tooltip,
     Typography,
 } from "@material-ui/core";
 import amber from "@material-ui/core/colors/amber";
+import { TimeFive as TimestampIcon } from "@styled-icons/boxicons-regular/TimeFive";
 import { HatGraduation as TeacherIcon } from "@styled-icons/fluentui-system-filled/HatGraduation";
 import clsx from "clsx";
 import { UserAvatar } from "kidsloop-px";
 import React from "react";
+import { FormattedDate, FormattedTime } from "react-intl";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root:{
@@ -60,6 +63,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     teacherIcon:{
         margin : `2px 6px`,
     },
+    timeIcon:{
+        marginLeft: 5,
+        color: theme.palette.grey[500],
+    },
 }));
 
 export interface MessageProps {
@@ -98,6 +105,19 @@ function Message (props: MessageProps) {
                     {session.isTeacher && <TeacherIcon
                         size="1rem"
                         className={classes.teacherIcon} />}
+
+                    <Tooltip
+                        placement="top"
+                        title={
+                            <>
+                                <FormattedDate value={new Date(Number(id.split(`-`)[0]))} /> - <FormattedTime value={new Date(Number(id.split(`-`)[0]))} />
+                            </>
+                        }
+                    >
+                        <TimestampIcon
+                            size="0.85rem"
+                            className={classes.timeIcon} />
+                    </Tooltip>
                 </Typography>
                 <div className={classes.message}>
                     <Typography>{message}</Typography>
