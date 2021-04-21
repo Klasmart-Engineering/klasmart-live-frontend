@@ -87,11 +87,6 @@ const SUBSCRIBE = gql`
                 audio,
                 video,
             },
-            globalMute {
-                roomId,
-                audioGloballyMuted,
-                videoGloballyDisabled,
-            },
         }
     }
 `;
