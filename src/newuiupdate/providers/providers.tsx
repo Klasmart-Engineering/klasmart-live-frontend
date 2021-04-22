@@ -1,3 +1,4 @@
+import { sessionId } from "../../entry";
 import { LessonMaterial, MaterialTypename } from "../../lessonMaterialContext";
 import { getDefaultLanguageCode, getLanguage } from "../../utils/locale";
 import { themeProvider } from "../themeProvider";
@@ -31,8 +32,6 @@ if (params && params.name) {
     });
 }
 */
-
-export const sessionId = uuid();
 
 function Providers ({ children }: Props) {
     const [ camera, setCamera ] = useState<MediaStream>();
