@@ -1,5 +1,5 @@
-import { usersState } from "../../states/layoutAtoms";
-import UserCamera from "../userCamera/userCamera";
+import { usersState } from "../../../states/layoutAtoms";
+import UserCamera from "../../userCamera/userCamera";
 import {
     Fade,
     Grid,

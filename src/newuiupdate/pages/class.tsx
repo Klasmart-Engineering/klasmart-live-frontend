@@ -1,5 +1,5 @@
-import Main from '../components/main';
-import Sidebar from '../components/sidebar';
+import Main from '../components/main/main';
+import Sidebar from '../components/sidebar/sidebar';
 import { Grid } from '@material-ui/core';
 import React from 'react';
 

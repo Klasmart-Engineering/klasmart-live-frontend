@@ -1,5 +1,6 @@
-import ClassEnded from './components/others/endPage/classEnded';
+
 import Class from './pages/class';
+import ClassEnded from './pages/classEnded';
 import { classEndedState } from "./states/layoutAtoms";
 import React from 'react';
 import { useRecoilState } from "recoil";

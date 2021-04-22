@@ -10,15 +10,15 @@ import {
     userState,
     viewModeState,
 } from "../../states/layoutAtoms";
-import { DialogEndCall } from "../utils/endCall/endCall";
+import { DialogEndCall } from "../utils/endCall";
 import ToolbarItem from "./toolbarItem";
 import ToolbarItemCall from "./toolbarItemCall";
 import ToolbarItemCamera from "./toolbarItemCamera";
 import ToolbarItemMicrophone from "./toolbarItemMicrophone";
 import CanvasMenu from "./toolbarMenus/canvasMenu";
-import ClassDetailsMenu from "./toolbarMenus/classDetailsMenu/index";
-import GlobalActionsMenu from "./toolbarMenus/globalActionsMenu";
-import ViewModesMenu from "./toolbarMenus/viewModesMenu";
+import ClassDetailsMenu from "./toolbarMenus/classDetailsMenu/classDetailsMenu";
+import GlobalActionsMenu from "./toolbarMenus/globalActionsMenu/globalActionsMenu";
+import ViewModesMenu from "./toolbarMenus/viewModesMenu/viewModesMenu";
 import {
     Grid,
     makeStyles,

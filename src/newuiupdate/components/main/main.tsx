@@ -1,4 +1,4 @@
-import Toolbar from "../toolbar";
+import Toolbar from "../toolbar/toolbar";
 import MainDrawer from "./mainDrawer";
 import MainView from "./mainView";
 import {

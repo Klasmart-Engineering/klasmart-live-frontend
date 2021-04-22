@@ -1,5 +1,5 @@
 import { NoItemList } from "../../../utils/utils";
-import Attachment from "./item";
+import Attachment from "./attachment";
 import {
     Button,
     Grid,

@@ -1,5 +1,5 @@
 import { NoItemList } from "../../../utils/utils";
-import Manual from "./item";
+import Manual from "./manual";
 import {
     Grid,
     makeStyles,
