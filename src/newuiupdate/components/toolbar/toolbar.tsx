@@ -102,7 +102,9 @@ function Toolbar () {
 
     const { enqueueSnackbar } = useSnackbar();
 
-    const { roomId, sessionId } = useContext(LocalSessionContext);
+    const {
+        roomId, sessionId, isTeacher,
+    } = useContext(LocalSessionContext);
     const { sessions } = useContext(RoomContext);
 
     const [ hostMutation ] = useMutation(MUTATION_SET_HOST, {
@@ -197,8 +199,8 @@ function Toolbar () {
                         });}}
                     />
                     <ToolbarItemCall
-                        locked={user.role === `student`}
-                        tooltip={user.role === `student` ? `Ask permission to leave the class` : undefined}
+                        locked={!isTeacher}
+                        tooltip={!isTeacher ? `Ask permission to leave the class` : undefined}
                         icon={<PhoneInTalkIcon />}
                         onClick={() => setOpenEndCallDialog(true)}
                     />

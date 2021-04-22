@@ -46,6 +46,23 @@ export const sessionId = uuid();
 export const SFU_LINK = `SFU_LINK`;
 export const LIVE_LINK = `LIVE_LINK`;
 
+const authToken = AuthTokenProvider.retrieveToken();
+const wsLink = new WebSocketLink({
+    uri: process.env.ENDPOINT_WEBSOCKET || `${window.location.protocol === `https:` ? `wss` : `ws`}://${window.location.host}/graphql`,
+    options: {
+        reconnect: true,
+        connectionParams: {
+            authToken,
+            sessionId,
+        },
+    },
+});
+const client = new ApolloClient({
+    cache: new InMemoryCache(),
+    link: wsLink,
+} as any);
+
+/*
 function getApolloClient (roomId: string) {
     const authToken = AuthTokenProvider.retrieveToken();
     const directionalLink = new RetryLink().split((operation) => operation.getContext().target === LIVE_LINK, new WebSocketLink({
@@ -79,6 +96,7 @@ function getApolloClient (roomId: string) {
         link: directionalLink,
     } as any);
 }
+*/
 // import NewUIEntry from './newuiupdate/entry';
 
 Sentry.init({
@@ -321,13 +339,13 @@ if (
     || (!isIOS || !isIOS13) && isChrome // Support only Chrome in other OS
 ) {
     const { store, persistor } = createDefaultStore();
-    const apolloClient = getApolloClient(roomId);
+    // const apolloClient = getApolloClient(roomId);
     renderComponent = (
         <Provider store={store}>
             <PersistGate
                 loading={null}
                 persistor={persistor}>
-                <ApolloProvider client={apolloClient}>
+                <ApolloProvider client={client}>
                     {/* <Entry /> */}
                     <NewUIEntry />
                 </ApolloProvider>
