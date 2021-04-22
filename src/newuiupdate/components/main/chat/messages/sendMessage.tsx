@@ -1,5 +1,6 @@
 import { LIVE_LINK, LocalSessionContext } from "../../../../providers/providers";
-import { gql, useMutation } from "@apollo/client";
+import { SEND_MESSAGE } from "../../../utils/graphql";
+import {  useMutation } from "@apollo/client";
 import {
     IconButton,
     InputBase,
@@ -34,15 +35,6 @@ const useStyles = makeStyles((theme: Theme) => ({
         },
     },
 }));
-
-const SEND_MESSAGE = gql`
-    mutation sendMessage($roomId: ID!, $message: String) {
-        sendMessage(roomId: $roomId, message: $message) {
-            id,
-            message
-        }
-    }
-`;
 
 function SendMessage () {
     const classes = useStyles();

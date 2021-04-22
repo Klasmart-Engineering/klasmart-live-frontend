@@ -6,7 +6,7 @@ import { ThemeProvider } from "@material-ui/core";
 import jwt_decode from "jwt-decode";
 import { SnackbarProvider } from "kidsloop-px";
 import React, {
-    createContext, ReactChild, ReactChildren, useMemo, useState,
+    createContext, ReactChild, ReactChildren, useEffect, useMemo, useState,
 } from 'react';
 import { RawIntlProvider } from "react-intl";
 import { v4 as uuid } from "uuid";
