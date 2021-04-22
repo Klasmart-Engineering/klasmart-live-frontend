@@ -1,62 +1,15 @@
-
 import Loading from "../../components/loading";
-import { LocalSessionContext, sessionId } from "./providers";
-import { useSubscription } from "@apollo/react-hooks";
+import {
+    Content, Message, Session,
+} from "../../pages/room/room";
+import { LIVE_LINK, LocalSessionContext } from "./providers";
+import { gql, useSubscription } from "@apollo/client";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
-import { gql } from "apollo-boost";
-import { EventEmitter } from "eventemitter3";
 import React, {
-    createContext, useContext,  useReducer, useRef,
+    createContext, useContext, useState,
 } from "react";
 import { FormattedMessage } from "react-intl";
-
-export enum ContentType {
-    Blank = `Blank`,
-    Stream = `Stream`,
-    Activity = `Activity`,
-    Video = `Video`,
-    Audio = `Audio`,
-    Image = `Image`,
-    Camera = `Camera`,
-    Screen = `Screen`,
-}
-
-// TODO create a new file for enums
-export enum InteractiveMode {
-    Blank,
-    Present,
-    Observe,
-    ShareScreen,
-}
-export interface Session {
-    id: string;
-    name?: string;
-    streamId?: string;
-    isTeacher?: boolean;
-    isHost?: boolean;
-    joinedAt: number;
-}
-
-export interface Content {
-    type: ContentType;
-    contentId: string;
-}
-
-export interface Message {
-    id: string;
-    message: string;
-    session: Session;
-}
-export interface InteractiveModeState {
-    interactiveMode: number;
-    setInteractiveMode: React.Dispatch<React.SetStateAction<number>>;
-}
-
-export interface StreamIdState {
-    streamId: string | undefined;
-    setStreamId: React.Dispatch<React.SetStateAction<string | undefined>>;
-}
 
 const SUB_ROOM = gql`
     subscription room($roomId: ID!, $name: String) {
@@ -72,101 +25,94 @@ const SUB_ROOM = gql`
     }
 `;
 
-const context = createContext<{ value: RoomContext }>(undefined as any);
-export class RoomContext {
-    public static Provide (props: { children?: JSX.Element | JSX.Element[] }) {
-        const { roomId, name } = useContext(LocalSessionContext);
-
-        const ref = useRef<RoomContext>(undefined as any);
-        const [ value, rerender ] = useReducer(() => ({
-            value: ref.current,
-        }), {
-            value: ref.current,
-        });
-        if (!ref.current) { ref.current = new RoomContext(rerender, roomId); }
-
-        const { loading, error } = useSubscription(SUB_ROOM, {
-            onSubscriptionData: ({ subscriptionData }) => {
-                if (!subscriptionData) { return; }
-                if (!subscriptionData.data) { return; }
-                if (!subscriptionData.data.room) { return; }
-                const {
-                    message, content, join, leave, session, sfu, trophy,
-                } = subscriptionData.data.room;
-                if (message) { ref.current.addMessage(message); }
-                if (content) { ref.current.setContent(content); }
-                if (join) { ref.current.userJoin(join); }
-                if (leave) { ref.current.userLeave(leave); }
-                if (sfu) { ref.current.sfuAddress = sfu; rerender(); }
-                if (trophy) {
-                    if (trophy.from === trophy.user || trophy.user === sessionId || trophy.from === sessionId) {
-                        ref.current.emitter.emit(`trophy`, trophy);
-                    }
-                }
-            },
-            variables: {
-                roomId,
-                name,
-            },
-        });
-
-        if (loading || !ref.current.content) { return (
-            <Grid
-                container
-                alignItems="center"
-                style={{
-                    height: `100%`,
-                }}>
-                <Loading messageId="loading" />
-            </Grid>
-        ); }
-
-        if (error) { return <Typography><FormattedMessage id="failed_to_connect" />{JSON.stringify(error)}</Typography>; }
-
-        return (
-            <context.Provider value={value} >
-                {props.children}
-            </context.Provider>
-        );
-    }
-
-    public static Consume () {
-        return useContext(context).value;
-    }
-
-    public roomId: string
-    public sfuAddress?: string
-    private rerender: React.DispatchWithoutAction
-    private constructor (rerender: React.DispatchWithoutAction, roomId: string) {
-        this.rerender = rerender;
-        this.roomId = roomId;
-    }
-
-    public messages = new Map<string, Message>();
-    private addMessage (newMessage: Message) {
-        for (const id of this.messages.keys()) {
-            if (this.messages.size < 32) { break; }
-            this.messages.delete(id);
-        }
-        this.messages.set(newMessage.id, newMessage);
-        this.rerender();
-    }
-
-    public content?: Content
-    private setContent (content: Content) {
-        this.content = content;
-        this.rerender();
-    }
-
-    public sessions = new Map<string, Session>()
-    private userJoin (join: Session) {
-        this.sessions.set(join.id, join);
-        this.rerender();
-    }
-    private userLeave (leave: Session) {
-        this.sessions.delete(leave.id);
-        this.rerender();
-    }
-
-    public emitter = new EventEmitter()
+export interface RoomContextInterface {
+    sfuAddress: string;
+    messages: Map<string, Message>;
+    content: Content | undefined;
+    sessions: Map<string, Session>;
+    trophy: any;
 }
+
+const defaultRoomContext = {
+    sfuAddress: ``,
+    messages: new Map<string, Message>(),
+    content: undefined,
+    sessions: new Map<string, Session>(),
+    trophy: undefined,
+};
+
+export const RoomContext = createContext<RoomContextInterface>(defaultRoomContext);
+export const RoomProvider = (props: {children: React.ReactNode}) => {
+    const {
+        roomId, name, sessionId,
+    } = useContext(LocalSessionContext);
+    const [ sfuAddress, setSfuAddress ] = useState<string>(``);
+    const [ messages, setMessages ] = useState<Map<string, Message>>(new Map<string, Message>());
+    const [ content, setContent ] = useState<Content>();
+    const [ sessions, setSessions ] = useState<Map<string, Session>>(new Map<string, Session>());
+    const [ trophy, setTrophy ] = useState();
+    const { loading, error } = useSubscription(SUB_ROOM, {
+        onSubscriptionData: ({ subscriptionData }) => {
+            if (!subscriptionData?.data?.room) { return; }
+            const {
+                message, content, join, leave, session, sfu, trophy,
+            } = subscriptionData.data.room;
+            if (sfu) { setSfuAddress(sfu); }
+            if (message) { addMessage(message); }
+            if (content) { setContent(content); }
+            if (join) { userJoin(join); }
+            if (leave) { userLeave(leave); }
+            if (trophy) {
+                if (trophy.from === trophy.user || trophy.user === sessionId || trophy.from === sessionId) {
+                    setTrophy(trophy);
+                }
+            }
+        },
+        variables: {
+            roomId,
+            name,
+        },
+        context: {
+            target: LIVE_LINK,
+        },
+    });
+
+    const addMessage = (newMessage: Message) => {
+        for (const id of messages.keys()) {
+            if (messages.size < 32) { break; }
+            setMessages((prev) => {
+                const newState = new Map(prev);
+                newState.delete(id);
+                return newState;
+            });
+        }
+        setMessages(prev => new Map(prev.set(newMessage.id, newMessage)));
+    };
+    const userJoin = (join: Session) => setSessions(prev => new Map(prev.set(join.id, join)));
+
+    const userLeave = (leave: Session) => {
+        setSessions((prev) => {
+            const newState = new Map(prev);
+            newState.delete(leave.id);
+            return newState;
+        });
+    };
+    const value = {
+        sfuAddress,
+        messages,
+        content,
+        sessions,
+        trophy,
+    };
+
+    if (loading || !content) { return <Grid
+        container
+        alignItems="center"
+        style={{
+            height: `100%`,
+        }}><Loading messageId="loading" /></Grid>; }
+    if (error) { return <Typography><FormattedMessage id="failed_to_connect" />{JSON.stringify(error)}</Typography>; }
+    return <RoomContext.Provider value={value} >
+        {props.children}
+    </RoomContext.Provider>;
+};

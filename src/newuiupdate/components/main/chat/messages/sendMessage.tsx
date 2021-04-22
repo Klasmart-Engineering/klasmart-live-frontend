@@ -1,5 +1,5 @@
-import { LocalSessionContext } from "../../../../providers/providers";
-import { useMutation } from "@apollo/react-hooks";
+import { LIVE_LINK, LocalSessionContext } from "../../../../providers/providers";
+import { gql, useMutation } from "@apollo/client";
 import {
     IconButton,
     InputBase,
@@ -8,7 +8,6 @@ import {
     Theme,
 } from "@material-ui/core";
 import { SendPlane as SendIcon } from "@styled-icons/remix-fill/SendPlane";
-import { gql } from "apollo-boost";
 import React, { useContext, useState } from "react";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -51,7 +50,11 @@ function SendMessage () {
     const [ message, setMessage ] = useState(``);
     const { roomId } = useContext(LocalSessionContext);
 
-    const [ sendMessage, { loading } ] = useMutation(SEND_MESSAGE);
+    const [ sendMessage, { loading } ] = useMutation(SEND_MESSAGE, {
+        context: {
+            target: LIVE_LINK,
+        },
+    });
 
     const submitMessage = (e: React.FormEvent<HTMLDivElement>) => {
         e.preventDefault();
