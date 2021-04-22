@@ -51,7 +51,6 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
 
     const { roomId, sessionId } = useContext(LocalSessionContext);
 
-    // TODO : Not working yet - sessionId from session context is different from the sessions in the roomcontext (something with how/where uuid is used i guess)
     const [ rewardTrophyMutation ] = useMutation(MUTATION_REWARD_TROPHY, {
         context: {
             target: LIVE_LINK,
