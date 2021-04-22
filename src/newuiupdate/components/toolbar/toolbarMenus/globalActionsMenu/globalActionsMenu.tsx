@@ -1,3 +1,4 @@
+import { LIVE_LINK, LocalSessionContext } from "../../../../providers/providers";
 import {
     isActiveGlobalCanvasState,
     isActiveGlobalMuteAudioState,
@@ -6,8 +7,10 @@ import {
     isGlobalActionsOpenState,
     pinnedUserState,
 } from "../../../../states/layoutAtoms";
+import { MUTATION_REWARD_TROPHY } from "../../../utils/graphql";
 import { StyledPopper } from "../../../utils/utils";
 import GlobalActionsMenuItem from "./globalAction";
+import { useMutation } from "@apollo/client";
 import {
     Grid, makeStyles, Theme,
 } from "@material-ui/core";
@@ -20,7 +23,7 @@ import { MicMuteFill as MicDisabledIcon } from "@styled-icons/bootstrap/MicMuteF
 import { StarFill as StarFillIcon } from "@styled-icons/bootstrap/StarFill";
 import { TrophyFill as TrophyFillIcon } from "@styled-icons/bootstrap/TrophyFill";
 import { TvFill as ScreenShareIcon } from "@styled-icons/bootstrap/TvFill";
-import React from "react";
+import React, { useContext } from "react";
 import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -46,6 +49,24 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
 
     const [ pinnedUser, setPinnedUser ] = useRecoilState(pinnedUserState);
 
+    const { roomId, sessionId } = useContext(LocalSessionContext);
+
+    // TODO : Not working yet - sessionId from session context is different from the sessions in the roomcontext (something with how/where uuid is used i guess)
+    const [ rewardTrophyMutation ] = useMutation(MUTATION_REWARD_TROPHY, {
+        context: {
+            target: LIVE_LINK,
+        },
+    });
+    const rewardTrophy = (user: string, kind: string) => {
+        rewardTrophyMutation({
+            variables: {
+                roomId,
+                user,
+                kind,
+            },
+        });
+
+    };
     const items = [
         {
             id: `1`,
@@ -85,21 +106,25 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
             id: `7`,
             title: `Send trophy`,
             icon: <TrophyFillIcon size="1.4rem" />,
+            onClick: () => rewardTrophy(sessionId, `trophy`),
         },
         {
             id: `8`,
             title: `Send thumbs up`,
             icon: <HandThumbsUpFillIcon size="1.4rem" />,
+            onClick: () => rewardTrophy(sessionId, `great_job`),
         },
         {
             id: `9`,
             title: `Send star`,
             icon: <StarFillIcon size="1.4rem" />,
+            onClick: () => rewardTrophy(sessionId, `star`),
         },
         {
             id: `10`,
             title: `Send heart`,
             icon: <HeartFillIcon size="1.4rem" />,
+            onClick: () => rewardTrophy(sessionId, `heart`),
             variant: `red`,
         },
     ];
