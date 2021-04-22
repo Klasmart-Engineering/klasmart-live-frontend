@@ -1,4 +1,4 @@
-import { Feedback } from './feedback';
+import { Feedback } from '../components/others/feedback';
 import {
     Fade, Grid, makeStyles, Theme, Typography,
 } from '@material-ui/core';

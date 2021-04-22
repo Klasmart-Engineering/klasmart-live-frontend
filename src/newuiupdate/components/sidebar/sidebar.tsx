@@ -1,8 +1,8 @@
 import { activeTabState } from "../../states/layoutAtoms";
 import MosaicSlider from "./mosaicSlider";
 import SidebarMenuItem from "./sidebarMenuItem";
-import TabMosaic from "./tabMosaic";
-import TabParticipants from "./tabParticipants";
+import TabMosaic from "./tabMosaic/tabMosaic";
+import TabParticipants from "./tabParticipants/tabParticipants";
 import TabSettings from "./tabSettings/index";
 import {
     Drawer,

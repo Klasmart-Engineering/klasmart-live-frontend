@@ -1,4 +1,4 @@
-import { classEndedState } from "../../../states/layoutAtoms";
+import { classEndedState } from "../../states/layoutAtoms";
 import {
     Button,
     Dialog,

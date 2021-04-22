@@ -1,7 +1,7 @@
 import { isChatOpenState } from "../../../states/layoutAtoms";
 import { TabPanel } from "../../utils/utils";
-import Attachments from "./attachments";
-import Messages from "./messages";
+import Attachments from "./attachments/attachments";
+import Messages from "./messages/messages";
 import {
     Grid,
     makeStyles,

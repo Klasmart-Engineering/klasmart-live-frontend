@@ -7,7 +7,7 @@ import {
     pinnedUserState,
 } from "../../../../states/layoutAtoms";
 import { StyledPopper } from "../../../utils/utils";
-import GlobalActionsMenuItem from "./item";
+import GlobalActionsMenuItem from "./globalAction";
 import {
     Grid, makeStyles, Theme,
 } from "@material-ui/core";
