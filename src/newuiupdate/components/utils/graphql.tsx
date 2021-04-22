@@ -13,3 +13,9 @@ export const SEND_MESSAGE = gql`
         }
     }
 `;
+
+export const MUTATION_SET_HOST = gql`
+    mutation setHost($roomId: ID!, $hostId: ID!) {
+        setHost(roomId: $roomId, hostId: $hostId)
+    }
+`;
