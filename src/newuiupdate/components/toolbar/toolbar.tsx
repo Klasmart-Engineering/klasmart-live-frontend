@@ -1,3 +1,6 @@
+import { SessionsContext } from "../../../components/layout";
+import { LIVE_LINK, LocalSessionContext } from "../../providers/providers";
+import { RoomContext } from "../../providers/roomContext";
 import {
     activeTabState,
     isActiveGlobalScreenshareState,
@@ -11,6 +14,7 @@ import {
     viewModeState,
 } from "../../states/layoutAtoms";
 import { DialogEndCall } from "../utils/endCall";
+import { MUTATION_SET_HOST } from "../utils/graphql";
 import ToolbarItem from "./toolbarItem";
 import ToolbarItemCall from "./toolbarItemCall";
 import ToolbarItemCamera from "./toolbarItemCamera";
@@ -19,6 +23,7 @@ import CanvasMenu from "./toolbarMenus/canvasMenu";
 import ClassDetailsMenu from "./toolbarMenus/classDetailsMenu/classDetailsMenu";
 import GlobalActionsMenu from "./toolbarMenus/globalActionsMenu/globalActionsMenu";
 import ViewModesMenu from "./toolbarMenus/viewModesMenu/viewModesMenu";
+import { useMutation } from "@apollo/client";
 import {
     Grid,
     makeStyles,
@@ -36,7 +41,9 @@ import { ChevronBottom as ViewModesIcon } from "@styled-icons/open-iconic/Chevro
 import { FilePaper as LessonPlanIcon } from "@styled-icons/remix-fill/FilePaper";
 import clsx from "clsx";
 import { useSnackbar } from "kidsloop-px";
-import React, { useEffect, useState } from "react";
+import React, {
+    useContext, useEffect, useState,
+} from "react";
 import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -79,6 +86,7 @@ function Toolbar () {
     const [ classDetailsEl, setClassDetailsEl ] = useState<any | null>(null);
     const [ viewModesEl, setViewModesEl ] = useState<any | null>(null);
     const [ chatEl, setChatEl ] = useState<any | null>(null);
+    const [ hasControls, setHasControls ] = useState<any | null>(false);
 
     const [ openEndCallDialog, setOpenEndCallDialog ] = useState(false);
 
@@ -93,6 +101,36 @@ function Toolbar () {
     };
 
     const { enqueueSnackbar } = useSnackbar();
+
+    const { roomId, sessionId } = useContext(LocalSessionContext);
+    const { sessions } = useContext(RoomContext);
+
+    const [ hostMutation ] = useMutation(MUTATION_SET_HOST, {
+        context: {
+            target: LIVE_LINK,
+        },
+    });
+    // TODO - REMOVE THIS LOGIC FROM THIS COMPONENT, IT SHOULD BE AROUND THE PROVIDERS
+    useEffect(() => {
+        const teachers = [ ...sessions.values() ].filter(session => session.isTeacher === true).sort((a, b) => a.joinedAt - b.joinedAt);
+        const host = teachers.find(session => session.isHost === true);
+        if (!host && teachers.length) {
+            const hostId = teachers[0].id;
+            hostMutation({
+                variables: {
+                    roomId,
+                    hostId,
+                },
+            });
+        }
+
+        if(host?.id === sessionId){
+            setHasControls(true);
+        }else{
+            setHasControls(false);
+        }
+
+    }, [ sessions, sessions.size ]);
 
     let viewModesBadge = <OnStageIcon />;
     switch (viewMode) {
@@ -134,7 +172,7 @@ function Toolbar () {
                         }}
                     />
                     <ToolbarItem
-                        display={user.hasControls ? activeTab !== `mosaic` : false}
+                        display={hasControls ? activeTab !== `mosaic` : false}
                         icon={<CanvasIcon />}
                         label="Canvas"
                         active={isCanvasOpen}
@@ -178,7 +216,7 @@ function Toolbar () {
                     item
                     className={classes.iconGroup}>
                     <ToolbarItem
-                        display={user.hasControls}
+                        display={hasControls}
                         icon={<GlobalActionsIcon />}
                         label="Global actions"
                         disabled={Boolean(handleTooltip(`globalActions`))}
@@ -191,7 +229,7 @@ function Toolbar () {
                         }}
                     />
                     <ToolbarItem
-                        display={user.hasControls ? activeTab !== `mosaic` : false}
+                        display={hasControls ? activeTab !== `mosaic` : false}
                         icon={<LessonPlanIcon />}
                         label="Lesson Plan"
                         disabled={Boolean(handleTooltip(`lessonPlan`))}
@@ -203,7 +241,7 @@ function Toolbar () {
                         }}
                     />
                     <ToolbarItem
-                        display={user.hasControls ? activeTab !== `mosaic` : false}
+                        display={hasControls ? activeTab !== `mosaic` : false}
                         icon={<ViewModesIcon />}
                         label="View modes"
                         active={isViewModesOpen}
