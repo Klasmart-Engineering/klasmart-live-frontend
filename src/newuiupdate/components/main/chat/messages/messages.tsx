@@ -9,7 +9,9 @@ import {
     Theme,
 } from "@material-ui/core";
 import { ChatSquareDotsFill as ChatIcon } from "@styled-icons/bootstrap/ChatSquareDotsFill";
-import React, { useEffect, useRef } from "react";
+import React, {
+    useContext, useEffect, useRef,
+} from "react";
 
 const useStyles = makeStyles((theme: Theme) => ({
     fullHeight:{
@@ -26,7 +28,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 function Messages () {
     const classes = useStyles();
-    const { messages:messagesData } = RoomContext.Consume();
+    const { messages:messagesData } = useContext(RoomContext);
 
     const messages:any = Array.from(messagesData);
     const messagesBox = useRef<HTMLDivElement>(null);

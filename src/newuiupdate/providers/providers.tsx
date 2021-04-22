@@ -1,7 +1,7 @@
 import { LessonMaterial, MaterialTypename } from "../../lessonMaterialContext";
 import { getDefaultLanguageCode, getLanguage } from "../../utils/locale";
 import { themeProvider } from "../themeProvider";
-import { RoomContext } from "./roomContext";
+import { RoomProvider } from "./roomContext";
 import { ThemeProvider } from "@material-ui/core";
 import jwt_decode from "jwt-decode";
 import { SnackbarProvider } from "kidsloop-px";
@@ -10,6 +10,9 @@ import React, {
 } from 'react';
 import { RawIntlProvider } from "react-intl";
 import { v4 as uuid } from "uuid";
+
+export const LIVE_LINK = `LIVE_LINK`;
+export const SFU_LINK = `SFU_LINK`;
 
 type Props = {
     children?: ReactChild | ReactChildren | null;
@@ -80,11 +83,11 @@ function Providers ({ children }: Props) {
                                 horizontal: `center`,
                             }}
                             closeButtonLabel="Dismiss">
-                            <RoomContext.Provide>
+                            <RoomProvider>
                                 <>
                                     {children}
                                 </>
-                            </RoomContext.Provide>
+                            </RoomProvider>
                         </SnackbarProvider>
                     </ThemeProvider>
                 </RawIntlProvider>

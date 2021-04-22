@@ -1,7 +1,5 @@
 import Layout from './layout';
 import Providers from './providers/providers';
-import { themeProvider } from "./themeProvider";
-import { ThemeProvider } from "@material-ui/core";
 import React from 'react';
 import { RecoilRoot } from 'recoil';
 // import RecoilizeDebugger from 'recoilize';
