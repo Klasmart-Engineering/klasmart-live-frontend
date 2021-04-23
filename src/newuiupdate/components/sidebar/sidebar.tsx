@@ -1,9 +1,10 @@
+import { LocalSessionContext } from "../../providers/providers";
 import { activeTabState } from "../../states/layoutAtoms";
 import MosaicSlider from "./mosaicSlider";
 import SidebarMenuItem from "./sidebarMenuItem";
 import TabMosaic from "./tabMosaic/tabMosaic";
 import TabParticipants from "./tabParticipants/tabParticipants";
-import TabSettings from "./tabSettings/index";
+import TabSettings from "./tabSettings/tabSettings";
 import {
     Drawer,
     Grid,
@@ -15,6 +16,7 @@ import { PeopleOutline as ParticipantsIcon } from "@styled-icons/evaicons-outlin
 import { UserSettings as SettingsIcon } from "@styled-icons/remix-line/UserSettings";
 import React,
 {
+    useContext,
     useEffect,
     useState,
 } from "react";
@@ -70,6 +72,7 @@ const sidebarTabs = [
         name: `mosaic`,
         icon: <MosaicIcon />,
         content: <TabMosaic />,
+        role: `teacher`,
     },
     {
         id: 3,
@@ -84,7 +87,8 @@ function Sidebar () {
     const [ activeTab, setActiveTab ] = useRecoilState(activeTabState);
     const activeTabContent = sidebarTabs.find(item => item.name === activeTab)?.content;
     const [ drawerWidth, setDrawerWidth ] = useState<any>(440);
-    const [ transitionEnded, setTransitionEnded ] = useState(false);
+
+    const { isTeacher } = useContext(LocalSessionContext);
 
     useEffect(() => {
         activeTab !== `participants` ? setDrawerWidth(`100%`) : setDrawerWidth(440);
@@ -124,14 +128,19 @@ function Sidebar () {
                         <Grid
                             item
                             className={classes.tabNav}>
-                            {sidebarTabs.map((sidebarTab) => (
-                                <SidebarMenuItem
-                                    key={sidebarTab.id}
-                                    name={sidebarTab.name}
-                                    icon={sidebarTab.icon}
-                                    active={activeTab === sidebarTab.name}
-                                />
-                            ))}
+                            {sidebarTabs.map((sidebarTab) => {
+                                const permission = sidebarTab.role === undefined || (sidebarTab.role === `teacher` && isTeacher);
+                                if(permission){
+                                    return (
+                                        <SidebarMenuItem
+                                            key={sidebarTab.id}
+                                            name={sidebarTab.name}
+                                            icon={sidebarTab.icon}
+                                            active={activeTab === sidebarTab.name}
+                                        />
+                                    );
+                                }
+                            })}
                         </Grid>
                         {activeTab === `mosaic` &&
                         <Grid

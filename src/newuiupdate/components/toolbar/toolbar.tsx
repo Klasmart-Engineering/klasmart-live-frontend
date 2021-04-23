@@ -13,7 +13,7 @@ import {
     userState,
     viewModeState,
 } from "../../states/layoutAtoms";
-import { DialogEndCall } from "../utils/endCall";
+import { DialogEndClass, DialogLeaveClass } from "../utils/endCall";
 import { MUTATION_SET_HOST } from "../utils/graphql";
 import ToolbarItem from "./toolbarItem";
 import ToolbarItemCall from "./toolbarItemCall";
@@ -71,6 +71,12 @@ const useStyles = makeStyles((theme: Theme) => ({
 function Toolbar () {
     const classes = useStyles();
 
+    const {
+        roomId, sessionId, isTeacher,
+    } = useContext(LocalSessionContext);
+    const { sessions } = useContext(RoomContext);
+    const { enqueueSnackbar } = useSnackbar();
+
     const [ user, setUser ] = useRecoilState(userState);
     const [ isGlobalActionsOpen, setIsGlobalActionsOpen ] = useRecoilState(isGlobalActionsOpenState);
     const [ isLessonPlanOpen, setIsLessonPlanOpen ] = useRecoilState(isLessonPlanOpenState);
@@ -89,6 +95,8 @@ function Toolbar () {
     const [ hasControls, setHasControls ] = useState<any | null>(false);
 
     const [ openEndCallDialog, setOpenEndCallDialog ] = useState(false);
+    const [ openEndClassDialog, setOpenEndClassDialog ] = useState(false);
+    const [ openLeaveClassDialog, setOpenLeaveClassDialog ] = useState(false);
 
     const resetDrawers = () => {
         setIsGlobalActionsOpen(false);
@@ -99,13 +107,6 @@ function Toolbar () {
         setIsGlobalActionsOpen(false);
         setIsViewModesOpen(false);
     };
-
-    const { enqueueSnackbar } = useSnackbar();
-
-    const {
-        roomId, sessionId, isTeacher,
-    } = useContext(LocalSessionContext);
-    const { sessions } = useContext(RoomContext);
 
     const [ hostMutation ] = useMutation(MUTATION_SET_HOST, {
         context: {
@@ -133,6 +134,10 @@ function Toolbar () {
         }
 
     }, [ sessions, sessions.size ]);
+
+    function endCall () {
+        isTeacher ? setOpenEndClassDialog(true) : setOpenLeaveClassDialog(true);
+    }
 
     let viewModesBadge = <OnStageIcon />;
     switch (viewMode) {
@@ -202,7 +207,7 @@ function Toolbar () {
                         locked={!isTeacher}
                         tooltip={!isTeacher ? `Ask permission to leave the class` : undefined}
                         icon={<PhoneInTalkIcon />}
-                        onClick={() => setOpenEndCallDialog(true)}
+                        onClick={() => endCall()}
                     />
                     <ToolbarItemCamera
                         locked={user.isTeacherVideoMuted}
@@ -277,10 +282,14 @@ function Toolbar () {
             <GlobalActionsMenu anchor={globalActionsEl} />
             <ViewModesMenu anchor={viewModesEl} />
 
-            <DialogEndCall
-                user={user}
-                open={openEndCallDialog}
-                onClose={() => setOpenEndCallDialog(false)} />
+            <DialogEndClass
+                open={openEndClassDialog}
+                onClose={() => setOpenEndClassDialog(false)} />
+
+            <DialogLeaveClass
+                open={openLeaveClassDialog}
+                onClose={() => setOpenLeaveClassDialog(false)} />
+
         </>
     );
 }

@@ -1,3 +1,4 @@
+import { LocalSessionContext } from "../../../../providers/providers";
 import { NoItemList } from "../../../utils/utils";
 import Attachment from "./attachment";
 import {
@@ -7,7 +8,7 @@ import {
     Theme,
 } from "@material-ui/core";
 import { CloudUpload as UploadIcon } from "@styled-icons/boxicons-regular/CloudUpload";
-import React from "react";
+import React, { useContext } from "react";
 
 const useStyles = makeStyles((theme: Theme) => ({
     fullHeight:{
@@ -49,6 +50,8 @@ const attachments = [
 
 function Attachments () {
     const classes = useStyles();
+    const { isTeacher } = useContext(LocalSessionContext);
+
     return (
         <Grid
             container
@@ -78,16 +81,20 @@ function Attachments () {
                             </div>)
                         }
                     </Grid>
-                    <Grid item>
-                        <Button
-                            className={classes.buttonUpload}
-                            component="label">
-                            <UploadIcon size="1.75rem" /> Upload
-                            <input
-                                hidden
-                                type="file" />
-  						</Button>
-                    </Grid>
+
+                    {isTeacher &&
+                        <Grid item>
+                            <Button
+                                className={classes.buttonUpload}
+                                component="label">
+                                <UploadIcon size="1.75rem" /> Upload
+                                <input
+                                    hidden
+                                    type="file" />
+                            </Button>
+                        </Grid>
+                    }
+
                 </Grid>
             </Grid>
         </Grid>

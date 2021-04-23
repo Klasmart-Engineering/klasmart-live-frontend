@@ -1,5 +1,5 @@
 import { activeSettingsStateTab } from "../../../states/layoutAtoms";
-import TabSettingsMenu from "./menu";
+import TabSettingsMenu from "./tabSettingsMenu";
 import {
     Fade, Grid, makeStyles, Theme,
 } from "@material-ui/core";

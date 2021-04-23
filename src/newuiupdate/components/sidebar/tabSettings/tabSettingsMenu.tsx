@@ -1,9 +1,10 @@
+import { LocalSessionContext } from "../../../providers/providers";
 import { activeSettingsStateTab } from "../../../states/layoutAtoms";
 import {
     Grid, List, ListItem, ListItemIcon, ListItemText, makeStyles, Theme, Typography,
 } from "@material-ui/core";
 import { UserAvatar } from "kidsloop-px";
-import React from "react";
+import React, { useContext } from "react";
 import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -49,6 +50,8 @@ function TabSettingsMenu (props: any) {
         setActiveSettingsTab(tab);
     };
 
+    const { name, isTeacher } = useContext(LocalSessionContext);
+
     return (
         <Grid
             container
@@ -63,13 +66,13 @@ function TabSettingsMenu (props: any) {
                         item
                         className={classes.avatar}>
                         <UserAvatar
-                            name="Jane Kim"
+                            name={name || `u`}
                             size="medium"
                         />
                     </Grid>
                     <Grid>
-                        <Typography variant="h5">Jane Kim</Typography>
-                        <Typography variant="body2">jane.kim@calmid.com</Typography>
+                        <Typography variant="h5">{name}</Typography>
+                        <Typography variant="body2">{isTeacher ? `Teacher` : `Student`}</Typography>
                     </Grid>
                 </Grid>
             </Grid>
