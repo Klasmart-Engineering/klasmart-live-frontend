@@ -1,0 +1,46 @@
+pipelines:
+  custom:
+    deploy:
+    - variables:
+          - name: KIDSLOOP_REGION
+          - name: KIDSLOOP_ENV
+    - step:
+        name: 'Build NPM'
+        image: node:lts
+        script:
+          - npm i
+          - mv deploy/config/$KIDSLOOP_REGION/webpack.$KIDSLOOP_ENV.config.js ./webpack.$KIDSLOOP_ENV.config.js
+          - npm run build:$KIDSLOOP_ENV
+        caches:
+          - nodemodules
+        artifacts:
+          - dist/*
+
+    - step:
+        name: "Build & Push Docker image"
+        image: python:3.9-alpine
+        script:
+          - pip3 install -U awscli
+          - mv dist deploy/
+
+          - export BRANCH_TAG=$(echo "$BITBUCKET_BRANCH" | sed -E 's/([^0-9a-zA-Z]+)/-/g' | awk '{print tolower($0)}')
+          - export TAG=$BRANCH_TAG-$KIDSLOOP_REGION-$KIDSLOOP_ENV
+          - export REPO=$DOCKER_REPO_URL/kidsloop-live-frontend   # DOCKER_REPO_URL is workspace wide variable
+        
+          - aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin $DOCKER_REPO_URL
+          - docker build -t live-frontend deploy/
+          
+          - docker tag live-frontend:latest $REPO:$TAG
+          - docker tag live-frontend:latest $REPO:$TAG-latest
+          - docker tag live-frontend:latest $REPO:$TAG-$BITBUCKET_BUILD_NUMBER
+
+          - docker push $REPO:$TAG
+          - docker push $REPO:$TAG-latest
+          - docker push $REPO:$TAG-$BITBUCKET_BUILD_NUMBER
+
+        services:
+          - docker
+
+definitions:
+  caches:
+    nodemodules: ./node_modules
