@@ -79,44 +79,102 @@ const feedbackRatingItems = [
     {
         value: 1,
         label: `Terrible`,
-        choices: [ `Couldn't join the class`, `Bad audio/video` ],
+        choices: {
+            student : [ `Couldn't join the class`, `Bad audio/video` ],
+            teacher : [ `I didnt teach`, `Bad audio/video` ],
+            leaving : [
+                `Appointment`,
+                `Sick`,
+                `Other`,
+            ],
+        },
     },
     {
         value: 2,
         label: `Bad`,
-        choices: [
-            `Teacher unprofessionnal`,
-            `Tools are not adapted`,
-            `Low quality audio/video`,
-        ],
+        choices: {
+            student : [
+                `Teacher unprofessionnal`,
+                `Tools are not adapted`,
+                `Low quality audio/video`,
+            ],
+            teacher : [
+                `Teacher unprofessionnal`,
+                `Tools are not adapted`,
+                `Low quality audio/video`,
+            ],
+            leaving : [
+                `Appointment`,
+                `Sick`,
+                `Other`,
+            ],
+        },
     },
     {
         value: 3,
         label: `Okay`,
-        choices: [ `Materials could be better`, `Too much noise` ],
+        choices: {
+            student : [ `Materials could be better`, `Too much noise` ],
+            teacher : [ `Materials could be better`, `Too much noise` ],
+            leaving : [
+                `Appointment`,
+                `Sick`,
+                `Other`,
+            ],
+        },
     },
     {
         value: 4,
         label: `Good`,
-        choices: [
-            `Teacher was exemplary`,
-            `good audio/video quality`,
-            `Materials were adequate`,
-        ],
+        choices: {
+            student : [
+                `Teacher was exemplary`,
+                `good audio/video quality`,
+                `Materials were adequate`,
+            ],
+            teacher : [
+                `Teacher was exemplary`,
+                `good audio/video quality`,
+                `Materials were adequate`,
+            ],
+            leaving : [
+                `Appointment`,
+                `Sick`,
+                `Other`,
+            ],
+        },
     },
     {
         value: 5,
         label: `Great`,
-        choices: [
-            `Teacher was amazing`,
-            `Great audio/video quality`,
-            `Materials were great`,
-        ],
+        choices: {
+            student : [
+                `Teacher was amazing`,
+                `Great audio/video quality`,
+                `Materials were great`,
+            ],
+            teacher : [
+                `Teacher was amazing`,
+                `Great audio/video quality`,
+                `Materials were great`,
+            ],
+            leaving : [
+                `Appointment`,
+                `Sick`,
+                `Other`,
+            ],
+        },
     },
 ];
 
-function Feedback (props:any){
+export interface FeedbackProps {
+    type: "student" | "teacher" | "leaving";
+}
+
+function Feedback (props:FeedbackProps){
     const classes = useStyles();
+
+    const { type } = props;
 
     const [ feedbackNote, setFeedbackNote ] = useState<number|null>(null);
     const [ feedbackSent, setFeedbackSent ] = useState(false);
@@ -132,7 +190,9 @@ function Feedback (props:any){
                         container
                         spacing={3}>
                         {feedbackRatingItems.map(item => (
-                            <Grid item>
+                            <Grid
+                                key={item.value}
+                                item>
                                 <div
                                     className={clsx(classes.star, {
                                         [classes.starActive]: Number(feedbackNote) >= item.value,
@@ -148,34 +208,37 @@ function Feedback (props:any){
                     </Grid>
                 </div>
             </Grid>
+            {Boolean(feedbackNote) &&
             <Grid item>
                 <Fade in={Boolean(feedbackNote)}>
                     <div>
                         <Typography className={classes.moreTitle}>Thanks for your feedback!</Typography>
                         {!feedbackSent &&
-                            <>
-                                <Typography className={classes.moreSubtitle}>do you want to add more details ?</Typography>
-                                <div className={classes.rootChips}>
-                                    {feedbackRatingItems.find(item => item.value === feedbackNote)?.choices.map(item => (
-                                        <FeedbackChip item={item} />
-                                    ))}
-                                </div>
-                                <form>
-                                    <TextField
-                                        label="Leave a comment"
-                                        className={classes.inputField}
-                                    />
-                                </form>
-                                <Button
-                                    className={classes.submitButton}
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={() => setFeedbackSent(true)}>Submit</Button>
-                            </>
+                        <>
+                            <Typography className={classes.moreSubtitle}>do you want to add more details ?</Typography>
+                            <div className={classes.rootChips}>
+                                {feedbackRatingItems.find(item => item.value === feedbackNote)?.choices[type].map((item, index) => (
+                                    <FeedbackChip
+                                        key={index}
+                                        item={item} />
+                                ))}
+                            </div>
+                            <form>
+                                <TextField
+                                    label="Leave a comment"
+                                    className={classes.inputField}
+                                />
+                            </form>
+                            <Button
+                                className={classes.submitButton}
+                                variant="contained"
+                                color="primary"
+                                onClick={() => setFeedbackSent(true)}>Submit</Button>
+                        </>
                         }
                     </div>
                 </Fade>
-            </Grid>
+            </Grid>}
         </Grid>
     );
 }

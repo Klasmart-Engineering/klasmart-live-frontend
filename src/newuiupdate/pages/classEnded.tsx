@@ -3,17 +3,18 @@ import {
     Fade, Grid, makeStyles, Theme, Typography,
 } from '@material-ui/core';
 import { CalendarCheck as ClassEndedIcon } from "@styled-icons/boxicons-regular/CalendarCheck";
-import React from 'react';
+import React, { useContext } from 'react';
+import { LocalSessionContext } from '../providers/providers';
 
 const useStyles = makeStyles((theme: Theme) => ({
-    container:{
+    container: {
         height: `100%`,
         backgroundColor: theme.palette.grey[200],
     },
     root: {
         textAlign: `center`,
     },
-    icon:{
+    icon: {
         color: theme.palette.text.primary,
         marginBottom: 10,
         "& svg": {
@@ -29,6 +30,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 function ClassEnded () {
     const classes = useStyles();
+    const { isTeacher } = useContext(LocalSessionContext);
 
     return (
         <Fade in={true}>
@@ -45,7 +47,7 @@ function ClassEnded () {
                     </div>
                     <Typography variant="h3">Class has ended</Typography>
                     <Typography variant="body1">Thanks for attending the class</Typography>
-                    <Feedback />
+                    <Feedback type={isTeacher ? 'teacher' : 'student'}/>
                 </Grid>
             </Grid>
         </Fade>

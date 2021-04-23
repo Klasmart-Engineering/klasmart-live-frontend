@@ -55,8 +55,14 @@ export const isChatOpenState = atom<boolean>({
     default: false,
 });
 
+// TODO : USE GQL MUTATION FOR THIS
 export const classEndedState = atom({
     key: `classEndedState`,
+    default: false,
+});
+
+export const classLeftState = atom({
+    key: `classLeftState`,
     default: false,
 });
 

@@ -50,7 +50,7 @@ function Messages () {
                 // ref={messagesBox}
                 id="chat-container"
                 className={classes.messagesContainer}>
-                {messages.size === 0 ?
+                {messages.length === 0 ?
                     <NoItemList
                         icon={<ChatIcon />}
                         text='No messages' /> :

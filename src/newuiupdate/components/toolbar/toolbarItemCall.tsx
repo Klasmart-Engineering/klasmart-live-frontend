@@ -1,3 +1,6 @@
+import { LIVE_LINK, LocalSessionContext } from "../../providers/providers";
+import { ENDCLASS } from "../utils/graphql";
+import { useMutation } from "@apollo/client";
 import {
     Badge,
     makeStyles,
@@ -7,7 +10,7 @@ import {
 import red from "@material-ui/core/colors/red";
 import LockIcon from "@material-ui/icons/Lock";
 import clsx from "clsx";
-import React from "react";
+import React, { useContext } from "react";
 
 const useStyles = makeStyles((theme: Theme) => ({
     itemRoot: {
@@ -75,6 +78,25 @@ function ToolbarItemCall (props: ToolbarItemCallProps) {
     } = props;
     const classes = useStyles();
     const hasTooltip = tooltip ? true : false;
+
+    /*
+    TODO END CALL
+    const [ endClassMutation, { loading } ] = useMutation(ENDCLASS, {
+        context: {
+            target: LIVE_LINK,
+        },
+    });
+
+    const { roomId } = useContext(LocalSessionContext);
+
+    function endClass () {
+        endClassMutation({
+            variables: {
+                roomId,
+            },
+        });
+    }
+    */
 
     return (
         <>

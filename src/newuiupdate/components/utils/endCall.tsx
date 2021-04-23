@@ -1,21 +1,24 @@
-import { classEndedState } from "../../states/layoutAtoms";
+import { LocalSessionContext } from "../../providers/providers";
+import { classEndedState, classLeftState } from "../../states/layoutAtoms";
+import { ParentCaptcha } from "./parentCaptcha";
 import {
     Button,
     Dialog,
     DialogActions,
     DialogContent,
     DialogTitle,
-    Grid,
     makeStyles,
     Theme,
     Typography,
 } from "@material-ui/core";
 import red from "@material-ui/core/colors/red";
 import { Warning as WarningIcon } from "@styled-icons/entypo/Warning";
-import { Admin as ParentIcon } from "@styled-icons/remix-line/Admin";
 import clsx from "clsx";
 import React,
-{ useEffect, useState } from "react";
+{
+    useContext,
+    useEffect, useState,
+} from "react";
 import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -61,22 +64,15 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 }));
 
-function DialogEndCall (props:any){
+function DialogLeaveClass (props:any){
     const classes = useStyles();
-    const {
-        open, onClose, user,
-    } = props;
-    const [ classEnded, setClassEnded ] = useRecoilState(classEndedState);
+    const { isTeacher } = useContext(LocalSessionContext);
+
+    const { open, onClose } = props;
+    const [ classLeft, setClassLeft ] = useRecoilState(classLeftState);
     const [ showParentCaptcha, setShowParentCaptcha ] = useState(false);
 
-    let dialogTitle = `End class`;
-    let dialogContent = `Are you sure to end the class?`;
-    const dialogOnConfirm = () => setClassEnded(true);
-
-    if(user.role === `student`){
-        dialogTitle = `Leave class`;
-        dialogContent = `Leaving class will close the session window tab, close your camera and turn off your microphone`;
-
+    if(!isTeacher){
         useEffect(() => {
             setShowParentCaptcha(true);
         }, [ open ]);
@@ -90,7 +86,7 @@ function DialogEndCall (props:any){
             onClose={onClose}>
             <DialogTitle
                 id="leave-class-dialog"
-                className={classes.dialogTitle}>{dialogTitle}</DialogTitle>
+                className={classes.dialogTitle}>Leave Class</DialogTitle>
             <DialogContent className={classes.dialogContent}>
                 {showParentCaptcha ?
                     <ParentCaptcha setShowParentCaptcha={setShowParentCaptcha} /> : (
@@ -98,7 +94,7 @@ function DialogEndCall (props:any){
                             <div className={clsx(classes.dialogIcon, classes.warningIcon)}>
                                 <WarningIcon size="2rem" />
                             </div>
-                            <Typography>{dialogContent}</Typography>
+                            <Typography>Leaving class will close the session window tab, close your camera and turn off your microphone</Typography>
                         </>
                     )}
             </DialogContent>
@@ -110,110 +106,45 @@ function DialogEndCall (props:any){
                 {!showParentCaptcha && <Button
                     variant="contained"
                     color="primary"
-                    onClick={dialogOnConfirm}>{dialogTitle}</Button>}
+                    onClick={() => setClassLeft(true)}>Leave Class</Button>}
             </DialogActions>
         </Dialog>
     );
 }
+export { DialogLeaveClass };
 
-export { DialogEndCall };
-
-function ParentCaptcha (props:any){
+function DialogEndClass (props:any){
     const classes = useStyles();
-    const {  setShowParentCaptcha } = props;
-    const [ checkNumbers, setCheckNumbers ] = useState<any[]>([]);
-    const [ error, setError ] = useState(false);
-
-    const generateRandomNumbers = () => {
-        const randomNumbers:any[] = [];
-        while(randomNumbers.length < 3){
-            const number = Math.floor(Math.random() * 100) + 1;
-            if(randomNumbers.indexOf(number) === -1) randomNumbers.push(number);
-        }
-
-        setCheckNumbers([
-            {
-                value: randomNumbers[0],
-                checked: false,
-                selected: 0,
-            },
-            {
-                value: randomNumbers[1],
-                checked: false,
-                selected: 0,
-            },
-            {
-                value: randomNumbers[2],
-                checked: false,
-                selected: 0,
-            },
-        ]);
-    };
-
-    const handleSelectNumber = (value:number, index: number) => {
-        const updatedNumbers = [ ...checkNumbers ];
-        updatedNumbers[index] = {
-            ...checkNumbers[index],
-            checked: true,
-            selected: updatedNumbers.filter(number => number.checked === true).length,
-        };
-        setCheckNumbers(updatedNumbers);
-    };
-
-    useEffect(() => {
-        generateRandomNumbers();
-    }, []);
-
-    useEffect(() => {
-        if(checkNumbers.length){
-            const findUnchecked = checkNumbers.find(number => number.checked === false);
-
-            if(findUnchecked === undefined){
-                const selectedNumbers = checkNumbers
-                    .sort((a, b) => a.selected - b.selected)
-                    .map(number => number.value);
-
-                const isValid = selectedNumbers.filter((a, i) => a > selectedNumbers[i + 1]).length === 0;
-
-                if(isValid){
-                    setShowParentCaptcha(!isValid);
-                    setError(false);
-                }else{
-                    setError(true);
-                }
-
-                generateRandomNumbers();
-            }
-        }
-
-    }, [ checkNumbers ]);
+    const { open, onClose } = props;
+    const [ classEnded, setClassEnded ] = useRecoilState(classEndedState);
 
     return(
-        <div>
-            <div className={classes.dialogIcon}>
-                <ParentIcon size="2rem"  />
-            </div>
-            <Typography variant="h5">Parents only </Typography>
-            <Typography>To continue, please tap the numbers in ascending order </Typography>
-            <Grid
-                container
-                justify="center"
-                className={classes.parentChecker}>
-                {checkNumbers.map((number, index) => (
-                    <Grid
-                        key={`numer-${index}`}
-                        item>
-                        <Typography
-                            className={clsx(classes.parentCheckerItem, {
-                                [classes.parentCheckerItemActive] : number.checked,
-                            })}
-                            onClick={() => handleSelectNumber(number.value, index)} >{number.value}</Typography>
-                    </Grid>
-                ))}
-            </Grid>
-            {error && <Typography className={classes.error}>Please try again</Typography>}
-        </div>
+        <Dialog
+            open={open}
+            aria-labelledby="end-class-dialog"
+            maxWidth="xs"
+            onClose={onClose}>
+            <DialogTitle
+                id="end-class-dialog"
+                className={classes.dialogTitle}>End Class</DialogTitle>
+            <DialogContent className={classes.dialogContent}>
+                <div className={clsx(classes.dialogIcon, classes.warningIcon)}>
+                    <WarningIcon size="2rem" />
+                </div>
+                <Typography>Are you sure to end the class?</Typography>
+                <Typography>Ending class will close the session window tab for all participants</Typography>
+            </DialogContent>
+
+            <DialogActions>
+                <Button
+                    color="primary"
+                    onClick={onClose}>Cancel</Button>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => setClassEnded(true)}>End Class</Button>
+            </DialogActions>
+        </Dialog>
     );
 }
-
-export { ParentCaptcha };
+export { DialogEndClass };
