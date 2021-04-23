@@ -10,6 +10,7 @@ import {
     isGlobalActionsOpenState,
     isLessonPlanOpenState,
     isViewModesOpenState,
+    unreadMessagesState,
     userState,
     viewModeState,
 } from "../../states/layoutAtoms";
@@ -86,6 +87,7 @@ function Toolbar () {
     const [ isClassDetailsOpen, setIsClassDetailsOpen ] = useRecoilState(isClassDetailsOpenState);
     const [ isCanvasOpen, setIsCanvasOpen ] = useRecoilState(isCanvasOpenState);
     const [ viewMode, setViewModeState ] = useRecoilState(viewModeState);
+    const [ unreadMessages, setUnreadMessages ] = useRecoilState(unreadMessagesState);
 
     const [ globalActionsEl, setGlobalActionsEl ] = useState<any | null>(null);
     const [ canvasEl, setCanvasEl ] = useState<any | null>(null);
@@ -266,7 +268,7 @@ function Toolbar () {
                         display={true}
                         icon={<ChatIcon />}
                         label="Chat"
-                        badge={2}
+                        badge={unreadMessages ? unreadMessages : null}
                         active={isChatOpen}
                         onClick={(e: Event) => {
                             resetDrawers();
