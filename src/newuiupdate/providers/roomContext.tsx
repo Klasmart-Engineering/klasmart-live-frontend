@@ -2,13 +2,13 @@ import Loading from "../../components/loading";
 import {
     Content, Message, Session,
 } from "../../pages/room/room";
-import { unreadMessagesState } from "../states/layoutAtoms";
+import { isChatOpenState, unreadMessagesState } from "../states/layoutAtoms";
 import { LIVE_LINK, LocalSessionContext } from "./providers";
 import { gql, useSubscription } from "@apollo/client";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import React, {
-    createContext, useContext, useState,
+    createContext, useContext, useEffect, useState,
 } from "react";
 import { FormattedMessage } from "react-intl";
 import { useRecoilState } from "recoil";
@@ -54,6 +54,11 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
     const [ sessions, setSessions ] = useState<Map<string, Session>>(new Map<string, Session>());
     const [ trophy, setTrophy ] = useState();
     const [ unreadMessages, setUnreadMessages ] = useRecoilState(unreadMessagesState);
+    const [ isChatOpen, setIsChatOpen ] = useRecoilState(isChatOpenState);
+
+    useEffect(() => {
+        isChatOpen && setUnreadMessages(0);
+    }, [ isChatOpen, messages ]);
 
     const { loading, error } = useSubscription(SUB_ROOM, {
         onSubscriptionData: ({ subscriptionData }) => {
@@ -90,7 +95,7 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
                 return newState;
             });
         }
-        setUnreadMessages(unreadMessages + 1);
+        !isChatOpen && setUnreadMessages(unreadMessages + 1);
         setMessages(prev => new Map(prev.set(newMessage.id, newMessage)));
     };
     const userJoin = (join: Session) => setSessions(prev => new Map(prev.set(join.id, join)));

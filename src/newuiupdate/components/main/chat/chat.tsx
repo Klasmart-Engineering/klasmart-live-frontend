@@ -1,3 +1,4 @@
+import { RoomContext } from "../../../providers/roomContext";
 import { isChatOpenState, unreadMessagesState } from "../../../states/layoutAtoms";
 import { TabPanel } from "../../utils/utils";
 import Attachments from "./attachments/attachments";
@@ -13,6 +14,7 @@ import {
 import { CloseCircle as CloseIcon } from "@styled-icons/ionicons-solid/CloseCircle";
 import React,
 {
+    useContext,
     useEffect,
     useState,
 } from "react";
@@ -49,16 +51,11 @@ const useStyles = makeStyles((theme: Theme) => ({
 function Chat () {
     const classes = useStyles();
     const [ isChatOpen, setIsChatOpen ] = useRecoilState(isChatOpenState);
-    const [ unreadMessages, setUnreadMessages ] = useRecoilState(unreadMessagesState);
-    const [ value, setValue ] = useState(0);
+    const [ tabValue, setTabValue ] = useState(0);
 
-    const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
-        setValue(newValue);
+    const handleChange = (event: React.ChangeEvent<{}>, newTabValue: number) => {
+        setTabValue(newTabValue);
     };
-
-    useEffect(() => {
-        setUnreadMessages(0);
-    }, [ isChatOpen ]);
 
     return (
         <Grid
@@ -73,7 +70,7 @@ function Chat () {
                     <CloseIcon size="1.25rem" />
                 </div>
                 <Tabs
-                    value={value}
+                    value={tabValue}
                     classes={{
                         root: classes.tabs,
                         flexContainer: classes.tabsFlexContainer,
@@ -92,12 +89,12 @@ function Chat () {
                 item
                 xs>
                 <TabPanel
-                    value={value}
+                    value={tabValue}
                     index={0}>
                     <Messages />
                 </TabPanel>
                 <TabPanel
-                    value={value}
+                    value={tabValue}
                     index={1}>
                     <Attachments />
                 </TabPanel>

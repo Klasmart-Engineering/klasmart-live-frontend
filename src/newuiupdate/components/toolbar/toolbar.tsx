@@ -3,6 +3,7 @@ import { LIVE_LINK, LocalSessionContext } from "../../providers/providers";
 import { RoomContext } from "../../providers/roomContext";
 import {
     activeTabState,
+    hasControlsState,
     isActiveGlobalScreenshareState,
     isCanvasOpenState,
     isChatOpenState,
@@ -72,10 +73,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 function Toolbar () {
     const classes = useStyles();
 
-    const {
-        roomId, sessionId, isTeacher,
-    } = useContext(LocalSessionContext);
-    const { sessions } = useContext(RoomContext);
+    const { isTeacher } = useContext(LocalSessionContext);
     const { enqueueSnackbar } = useSnackbar();
 
     const [ user, setUser ] = useRecoilState(userState);
@@ -88,15 +86,14 @@ function Toolbar () {
     const [ isCanvasOpen, setIsCanvasOpen ] = useRecoilState(isCanvasOpenState);
     const [ viewMode, setViewModeState ] = useRecoilState(viewModeState);
     const [ unreadMessages, setUnreadMessages ] = useRecoilState(unreadMessagesState);
+    const [ hasControls, setHasControls ] = useRecoilState(hasControlsState);
 
     const [ globalActionsEl, setGlobalActionsEl ] = useState<any | null>(null);
     const [ canvasEl, setCanvasEl ] = useState<any | null>(null);
     const [ classDetailsEl, setClassDetailsEl ] = useState<any | null>(null);
     const [ viewModesEl, setViewModesEl ] = useState<any | null>(null);
     const [ chatEl, setChatEl ] = useState<any | null>(null);
-    const [ hasControls, setHasControls ] = useState<any | null>(false);
 
-    const [ openEndCallDialog, setOpenEndCallDialog ] = useState(false);
     const [ openEndClassDialog, setOpenEndClassDialog ] = useState(false);
     const [ openLeaveClassDialog, setOpenLeaveClassDialog ] = useState(false);
 
@@ -109,33 +106,6 @@ function Toolbar () {
         setIsGlobalActionsOpen(false);
         setIsViewModesOpen(false);
     };
-
-    const [ hostMutation ] = useMutation(MUTATION_SET_HOST, {
-        context: {
-            target: LIVE_LINK,
-        },
-    });
-    // TODO - REMOVE THIS LOGIC FROM THIS COMPONENT, IT SHOULD BE AROUND THE PROVIDERS
-    useEffect(() => {
-        const teachers = [ ...sessions.values() ].filter(session => session.isTeacher === true).sort((a, b) => a.joinedAt - b.joinedAt);
-        const host = teachers.find(session => session.isHost === true);
-        if (!host && teachers.length) {
-            const hostId = teachers[0].id;
-            hostMutation({
-                variables: {
-                    roomId,
-                    hostId,
-                },
-            });
-        }
-
-        if(host?.id === sessionId){
-            setHasControls(true);
-        }else{
-            setHasControls(false);
-        }
-
-    }, [ sessions, sessions.size ]);
 
     function endCall () {
         isTeacher ? setOpenEndClassDialog(true) : setOpenLeaveClassDialog(true);
