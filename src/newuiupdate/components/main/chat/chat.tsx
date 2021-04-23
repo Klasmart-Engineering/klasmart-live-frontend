@@ -1,4 +1,4 @@
-import { isChatOpenState } from "../../../states/layoutAtoms";
+import { isChatOpenState, unreadMessagesState } from "../../../states/layoutAtoms";
 import { TabPanel } from "../../utils/utils";
 import Attachments from "./attachments/attachments";
 import Messages from "./messages/messages";
@@ -12,7 +12,10 @@ import {
 } from "@material-ui/core";
 import { CloseCircle as CloseIcon } from "@styled-icons/ionicons-solid/CloseCircle";
 import React,
-{ useState } from "react";
+{
+    useEffect,
+    useState,
+} from "react";
 import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -46,11 +49,16 @@ const useStyles = makeStyles((theme: Theme) => ({
 function Chat () {
     const classes = useStyles();
     const [ isChatOpen, setIsChatOpen ] = useRecoilState(isChatOpenState);
-    const [ value, setValue ] = React.useState(0);
+    const [ unreadMessages, setUnreadMessages ] = useRecoilState(unreadMessagesState);
+    const [ value, setValue ] = useState(0);
 
     const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
         setValue(newValue);
     };
+
+    useEffect(() => {
+        setUnreadMessages(0);
+    }, [ isChatOpen ]);
 
     return (
         <Grid

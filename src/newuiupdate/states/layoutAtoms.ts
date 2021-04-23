@@ -66,6 +66,11 @@ export const classLeftState = atom({
     default: false,
 });
 
+export const unreadMessagesState = atom({
+    key: `unreadMessagesState`,
+    default: 0,
+});
+
 // GLOBAL ACTIONS
 export const isActiveGlobalScreenshareState = atom({
     key: `isActiveGlobalScreenshareState`,
