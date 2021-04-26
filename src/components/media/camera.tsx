@@ -105,6 +105,8 @@ export default function Camera({
     const webRTCContext = useContext(WebRTCContext);
     const audioRef = useRef<HTMLAudioElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
+    const cameraId = session ? `camera:${session.id}` : "";
+    const BLACK_IMAGE = "data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=";
 
     useEffect(() => {
         if (audioRef.current) {
@@ -117,7 +119,7 @@ export default function Camera({
 
     useEffect(() => {
         if (webRTCContext.isLocalVideoEnabled(session?.id) || !session) return;
-        const videoEl = document.getElementById(`camera:${session.id}`) as HTMLVideoElement;
+        const videoEl = document.getElementById(cameraId) as HTMLVideoElement;
         if (videoEl) {
             videoEl.load();
         }
@@ -147,10 +149,10 @@ export default function Camera({
                             <MoreControlsButton session={session} isSelf={isLocalCamera} cameraRef={cameraRef} />
                         </>}
                         <video
-                            id={session ? `camera:${session.id}` : undefined}
+                            id={cameraId}
                             autoPlay={true}
                             muted={true}
-                            poster="data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="
+                            poster={BLACK_IMAGE}
                             playsInline
                             style={{
                                 backgroundColor: "#000",
