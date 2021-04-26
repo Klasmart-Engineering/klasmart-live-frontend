@@ -17,7 +17,7 @@ export const activeTabState = atom({
 type activeSettingsTabStateType = "schedule" | "settings" | "toolbar" | "record";
 export const activeSettingsStateTab = atom({
     key: `activeSettingsStateTab`,
-    default: `schedule`,
+    default: `settings`,
 });
 
 export const isClassDetailsOpenState = atom<boolean>({

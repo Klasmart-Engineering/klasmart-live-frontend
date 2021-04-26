@@ -12,6 +12,7 @@ import {
 } from "@material-ui/core";
 import { CloseCircle as CloseIcon } from "@styled-icons/ionicons-solid/CloseCircle";
 import React, { useState } from "react";
+import { FormattedMessage, useIntl } from "react-intl";
 import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -44,12 +45,13 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 function LessonPlan () {
     const classes = useStyles();
+    const intl = useIntl();
+
     const [ isLessonPlanOpen, setIsLessonPlanOpen ] = useRecoilState(isLessonPlanOpenState);
+    const [ tabValue, setTabValue ] = useState(0);
 
-    const [ value, setValue ] = useState(0);
-
-    const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
-        setValue(newValue);
+    const handleChange = (event: React.ChangeEvent<{}>, newTabValue: number) => {
+        setTabValue(newTabValue);
     };
 
     return (
@@ -59,13 +61,18 @@ function LessonPlan () {
             className={classes.fullHeight}>
             <Grid item>
                 <div
+                    title={intl.formatMessage({
+                        id: `common_close_tab`,
+                    })}
                     className={classes.closeTab}
                     onClick={() => setIsLessonPlanOpen(false)}>
                     <CloseIcon size="1.25rem" />
                 </div>
-                <Typography className={classes.title}>Lesson Plan</Typography>
+                <Typography className={classes.title}>
+                    <FormattedMessage id="toolbar_lesson_plan" />
+                </Typography>
                 <Tabs
-                    value={value}
+                    value={tabValue}
                     classes={{
                         root: classes.tabs,
                         flexContainer: classes.tabsFlexContainer,
@@ -74,22 +81,26 @@ function LessonPlan () {
                 >
                     <Tab
                         disableRipple
-                        label="Lesson Plan" />
+                        label={intl.formatMessage({
+                            id: `lessonplan_content`,
+                        })} />
                     <Tab
                         disableRipple
-                        label="Teacher Manuals" />
+                        label={intl.formatMessage({
+                            id: `lessonplan_manuals`,
+                        })} />
                 </Tabs>
             </Grid>
             <Grid
                 item
                 xs>
                 <TabPanel
-                    value={value}
+                    value={tabValue}
                     index={0}>
                     <Plan />
                 </TabPanel>
                 <TabPanel
-                    value={value}
+                    value={tabValue}
                     index={1}>
                     <Manuals />
                 </TabPanel>

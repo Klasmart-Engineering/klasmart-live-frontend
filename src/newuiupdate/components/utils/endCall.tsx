@@ -19,6 +19,7 @@ import React,
     useContext,
     useEffect, useState,
 } from "react";
+import { FormattedMessage } from "react-intl";
 import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -66,9 +67,9 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 function DialogLeaveClass (props:any){
     const classes = useStyles();
-    const { isTeacher } = useContext(LocalSessionContext);
-
     const { open, onClose } = props;
+
+    const { isTeacher } = useContext(LocalSessionContext);
     const [ classLeft, setClassLeft ] = useRecoilState(classLeftState);
     const [ showParentCaptcha, setShowParentCaptcha ] = useState(false);
 
@@ -86,7 +87,9 @@ function DialogLeaveClass (props:any){
             onClose={onClose}>
             <DialogTitle
                 id="leave-class-dialog"
-                className={classes.dialogTitle}>Leave Class</DialogTitle>
+                className={classes.dialogTitle}>
+                <FormattedMessage id="leave_class" />
+            </DialogTitle>
             <DialogContent className={classes.dialogContent}>
                 {showParentCaptcha ?
                     <ParentCaptcha setShowParentCaptcha={setShowParentCaptcha} /> : (
@@ -94,7 +97,9 @@ function DialogLeaveClass (props:any){
                             <div className={clsx(classes.dialogIcon, classes.warningIcon)}>
                                 <WarningIcon size="2rem" />
                             </div>
-                            <Typography>Leaving class will close the session window tab, close your camera and turn off your microphone</Typography>
+                            <Typography>
+                                <FormattedMessage id="leave_class_description" />
+                            </Typography>
                         </>
                     )}
             </DialogContent>
@@ -102,11 +107,15 @@ function DialogLeaveClass (props:any){
             <DialogActions>
                 <Button
                     color="primary"
-                    onClick={onClose}>Cancel</Button>
+                    onClick={onClose}>
+                    <FormattedMessage id="common_cancel" />
+                </Button>
                 {!showParentCaptcha && <Button
                     variant="contained"
                     color="primary"
-                    onClick={() => setClassLeft(true)}>Leave Class</Button>}
+                    onClick={() => setClassLeft(true)}>
+                    <FormattedMessage id="leave_class" />
+                </Button>}
             </DialogActions>
         </Dialog>
     );
@@ -126,23 +135,29 @@ function DialogEndClass (props:any){
             onClose={onClose}>
             <DialogTitle
                 id="end-class-dialog"
-                className={classes.dialogTitle}>End Class</DialogTitle>
+                className={classes.dialogTitle}>
+                <FormattedMessage id="end_class" />
+            </DialogTitle>
             <DialogContent className={classes.dialogContent}>
                 <div className={clsx(classes.dialogIcon, classes.warningIcon)}>
                     <WarningIcon size="2rem" />
                 </div>
-                <Typography>Are you sure to end the class?</Typography>
-                <Typography>Ending class will close the session window tab for all participants</Typography>
+                <Typography><FormattedMessage id="end_class_confirm" /></Typography>
+                <Typography><FormattedMessage id="end_class_description" /></Typography>
             </DialogContent>
 
             <DialogActions>
                 <Button
                     color="primary"
-                    onClick={onClose}>Cancel</Button>
+                    onClick={onClose}>
+                    <FormattedMessage id="common_cancel" />
+                </Button>
                 <Button
                     variant="contained"
                     color="primary"
-                    onClick={() => setClassEnded(true)}>End Class</Button>
+                    onClick={() => setClassEnded(true)}>
+                    <FormattedMessage id="end_class" />
+                </Button>
             </DialogActions>
         </Dialog>
     );

@@ -103,7 +103,6 @@ function ToolbarItem (props: ToolbarItemProps) {
         tooltip = false,
     } = props;
     const classes = useStyles();
-    const hasTooltip = tooltip ? true : false;
     const [ activeTab, setActiveTab ] = useRecoilState(activeTabState);
 
     if(!display){
@@ -113,10 +112,10 @@ function ToolbarItem (props: ToolbarItemProps) {
     return (
         <>
             <Tooltip
-                title={tooltip}
-                disableFocusListener={!hasTooltip}
-                disableHoverListener={!hasTooltip}
-                disableTouchListener={!hasTooltip}>
+                title={tooltip || `tooltip`}
+                disableFocusListener={!tooltip}
+                disableHoverListener={!tooltip}
+                disableTouchListener={!tooltip}>
                 <div>
                     <div
                         className={clsx(classes.root, {

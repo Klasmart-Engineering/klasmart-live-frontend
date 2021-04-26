@@ -9,7 +9,8 @@ import {
     Tabs,
     Theme,
 } from "@material-ui/core";
-import React from "react";
+import React, { useState } from "react";
+import { useIntl } from "react-intl";
 import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({}));
@@ -21,13 +22,13 @@ interface GlobaActionsMenuProps {
 function ClassDetailsMenu (props: GlobaActionsMenuProps) {
     const { anchor } = props;
     const classes = useStyles();
+    const intl = useIntl();
 
     const [ isClassDetailsOpen, setIsClassDetailsOpen ] = useRecoilState(isClassDetailsOpenState);
+    const [ tabValue, setTabValue ] = useState(0);
 
-    const [ value, setValue ] = React.useState(0);
-
-    const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
-        setValue(newValue);
+    const handleChange = (event: React.ChangeEvent<{}>, newTabValue: number) => {
+        setTabValue(newTabValue);
     };
 
     return (
@@ -35,24 +36,28 @@ function ClassDetailsMenu (props: GlobaActionsMenuProps) {
             open={isClassDetailsOpen}
             anchorEl={anchor}>
             <Tabs
-                value={value}
-                aria-label="simple tabs example"
+                value={tabValue}
+                aria-label="Class Details Tabs"
                 onChange={handleChange}
             >
                 <Tab
                     disableRipple
-                    label="Class details" />
+                    label={intl.formatMessage({
+                        id: `classdetails_details`,
+                    })} />
                 <Tab
                     disableRipple
-                    label="Class roster" />
+                    label={intl.formatMessage({
+                        id: `classdetails_roster`,
+                    })} />
             </Tabs>
             <TabPanel
-                value={value}
+                value={tabValue}
                 index={0}>
                 <ClassDetails />
             </TabPanel>
             <TabPanel
-                value={value}
+                value={tabValue}
                 index={1}>
                 <ClassRoster />
             </TabPanel>

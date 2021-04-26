@@ -9,6 +9,7 @@ import {
 } from "@material-ui/core";
 import { CloudUpload as UploadIcon } from "@styled-icons/boxicons-regular/CloudUpload";
 import React, { useContext } from "react";
+import { FormattedMessage, useIntl } from "react-intl";
 
 const useStyles = makeStyles((theme: Theme) => ({
     fullHeight:{
@@ -50,6 +51,8 @@ const attachments = [
 
 function Attachments () {
     const classes = useStyles();
+    const intl = useIntl();
+
     const { isTeacher } = useContext(LocalSessionContext);
 
     return (
@@ -70,7 +73,9 @@ function Attachments () {
                         {attachments.length === 0 ?
                             <NoItemList
                                 icon={<UploadIcon />}
-                                text='No attachments' /> :
+                                text={intl.formatMessage({
+                                    id: `chat_attachments_noresults`,
+                                })} /> :
                             (<div className={classes.container}>
                                 {attachments?.map(attachment => (
                                     <Attachment
@@ -87,7 +92,7 @@ function Attachments () {
                             <Button
                                 className={classes.buttonUpload}
                                 component="label">
-                                <UploadIcon size="1.75rem" /> Upload
+                                <UploadIcon size="1.75rem" /> <FormattedMessage id="chat_attachments_upload" />
                                 <input
                                     hidden
                                     type="file" />

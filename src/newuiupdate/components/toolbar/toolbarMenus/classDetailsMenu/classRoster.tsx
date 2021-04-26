@@ -11,6 +11,7 @@ import {
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { UserAvatar } from "kidsloop-px";
 import React from "react";
+import { FormattedMessage } from "react-intl";
 import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -97,7 +98,7 @@ function ClassRoster () {
                     id="panel1a-header"
                 >
                     <Typography className={classes.heading}>
-                        Teachers <span className={classes.number}>{teachers.length}</span>
+                        <FormattedMessage id="classdetails_roster_teachers" /> <span className={classes.number}>{teachers.length}</span>
                     </Typography>
                 </AccordionSummary>
                 <AccordionDetails>
@@ -126,7 +127,7 @@ function ClassRoster () {
                     id="panel2a-header"
                 >
                     <Typography className={classes.heading}>
-                        Students <span className={classes.number}>{students.length}</span>
+                        <FormattedMessage id="classdetails_roster_students" /> <span className={classes.number}>{students.length}</span>
                     </Typography>
                 </AccordionSummary>
                 <AccordionDetails>
@@ -147,6 +148,10 @@ function ClassRoster () {
                     </Box>
                 </AccordionDetails>
             </Accordion>
+            {/*
+            TODO : KLL-525
+            Phase 1 : Showing roster
+            Phase 2 : Updating roster with absentees
             <Accordion
                 elevation={0}
                 className={classes.accordion}
@@ -165,7 +170,7 @@ function ClassRoster () {
                         No informations.
                     </Typography>
                 </AccordionDetails>
-            </Accordion>
+            </Accordion> */}
         </div>
     );
 }

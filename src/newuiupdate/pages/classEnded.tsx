@@ -1,10 +1,11 @@
 import { Feedback } from '../components/others/feedback';
+import { LocalSessionContext } from '../providers/providers';
 import {
     Fade, Grid, makeStyles, Theme, Typography,
 } from '@material-ui/core';
 import { CalendarCheck as ClassEndedIcon } from "@styled-icons/boxicons-regular/CalendarCheck";
 import React, { useContext } from 'react';
-import { LocalSessionContext } from '../providers/providers';
+import { FormattedMessage } from 'react-intl';
 
 const useStyles = makeStyles((theme: Theme) => ({
     container: {
@@ -26,6 +27,13 @@ const useStyles = makeStyles((theme: Theme) => ({
             padding: `1rem`,
         },
     },
+    returnToHub:{
+        fontWeight: 600,
+        marginTop: theme.spacing(4),
+        "& a": {
+            color: theme.palette.text.primary,
+        },
+    },
 }));
 
 function ClassEnded () {
@@ -45,9 +53,12 @@ function ClassEnded () {
                     <div className={classes.icon}>
                         <ClassEndedIcon />
                     </div>
-                    <Typography variant="h3">Class has ended</Typography>
-                    <Typography variant="body1">Thanks for attending the class</Typography>
-                    <Feedback type={isTeacher ? 'teacher' : 'student'}/>
+                    <Typography variant="h3"><FormattedMessage id="class_ended_you_have_left" /></Typography>
+                    <Typography variant="body1"><FormattedMessage id="class_ended_thanks_for_attending" /></Typography>
+                    <Feedback type={isTeacher ? `teacher` : `student`}/>
+                    <Typography className={classes.returnToHub}>
+                        <a href="#"><FormattedMessage id="class_ended_return_to_hub" /></a>
+                    </Typography>
                 </Grid>
             </Grid>
         </Fade>
