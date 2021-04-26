@@ -102,6 +102,7 @@ export default function Camera({
     noBorderRadius,
     ...other
 }: CameraProps): JSX.Element {
+    const webRTCContext = useContext(WebRTCContext);
     const audioRef = useRef<HTMLAudioElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -115,15 +116,12 @@ export default function Camera({
     }, [videoRef.current, mediaStream]);
 
     useEffect(() => {
-        // TODO subscribe to the mute event and use the video value instead
-        const isVideoEnabled = mediaStream?.getVideoTracks().find((track: MediaStreamTrack) => track.enabled)?.enabled;
-        if (!isVideoEnabled && session) {
-            const videoEl= document.getElementById(`camera:${session.id}`) as HTMLVideoElement;
-            if (videoEl) {
-                videoEl.load();
-            }
+        if (webRTCContext.isLocalVideoEnabled(session?.id) || !session) return;
+        const videoEl = document.getElementById(`camera:${session.id}`) as HTMLVideoElement;
+        if (videoEl) {
+            videoEl.load();
         }
-    }, [mediaStream?.getVideoTracks()]);
+    }, [webRTCContext.isLocalVideoEnabled(session?.id)]);
 
     const cameraRef = useRef<HTMLDivElement>(null);
     return (
