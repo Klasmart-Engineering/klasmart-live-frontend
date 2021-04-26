@@ -4,6 +4,7 @@ import {
 } from '@material-ui/core';
 import { CalendarCheck as ClassEndedIcon } from "@styled-icons/boxicons-regular/CalendarCheck";
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
 
 const useStyles = makeStyles((theme: Theme) => ({
     container:{
@@ -50,11 +51,11 @@ function ClassLeft () {
                     <div className={classes.icon}>
                         <ClassEndedIcon />
                     </div>
-                    <Typography variant="h3">You have left the class</Typography>
-                    <Typography variant="body1">Thanks for attending the class</Typography>
+                    <Typography variant="h3"><FormattedMessage id="class_ended_title" /></Typography>
+                    <Typography variant="body1"><FormattedMessage id="class_ended_title" /></Typography>
                     <Feedback type="leaving" />
                     <Typography className={classes.returnToHub}>
-                        <a href="#">Return to hub</a>
+                        <a href="#"><FormattedMessage id="class_ended_return_to_hub" /></a>
                     </Typography>
                 </Grid>
             </Grid>

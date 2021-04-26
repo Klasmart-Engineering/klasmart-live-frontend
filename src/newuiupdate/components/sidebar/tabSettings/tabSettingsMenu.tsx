@@ -1,7 +1,9 @@
+import { ThemeContext } from "../../../../entry";
 import { LocalSessionContext } from "../../../providers/providers";
 import { activeSettingsStateTab } from "../../../states/layoutAtoms";
 import {
-    Grid, List, ListItem, ListItemIcon, ListItemText, makeStyles, Theme, Typography,
+    Grid, List, ListItem, ListItemIcon, ListItemText, makeStyles, Theme, Tooltip,
+    Typography,
 } from "@material-ui/core";
 import { UserAvatar } from "kidsloop-px";
 import React, { useContext } from "react";
@@ -25,6 +27,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     list:{},
     listItem:{
+        margin: `8px 0`,
         borderRadius: 10,
         "&$selected":{
             background: theme.palette.background.default,
@@ -34,6 +37,10 @@ const useStyles = makeStyles((theme: Theme) => ({
         },
     },
     selected:{},
+    disabled:{
+        opacity: `0.4`,
+        background: `#edf4fd`,
+    },
     listItemIcon:{
         color: theme.palette.text.primary,
     },
@@ -86,19 +93,30 @@ function TabSettingsMenu (props: any) {
                         root: classes.list,
                     }}>
                     {menu.map((item: any) => (
-                        <ListItem
+                        <Tooltip
                             key={item.id}
-                            button
-                            selected={activeSettingsTab === item.name}
-                            classes={{
-                                root: classes.listItem,
-                                selected: classes.selected,
-                            }}
-                            onClick={(event) => handleListItemClick(event, item.name)}
-                        >
-                            <ListItemIcon className={classes.listItemIcon}>{item.icon}</ListItemIcon>
-                            <ListItemText primary={item.label} />
-                        </ListItem>
+                            title={item.tooltip || `tooltip`}
+                            disableFocusListener={!item.tooltip}
+                            disableHoverListener={!item.tooltip}
+                            disableTouchListener={!item.tooltip}
+                            placement="right">
+                            <div>
+                                <ListItem
+                                    button
+                                    selected={activeSettingsTab === item.name}
+                                    classes={{
+                                        root: classes.listItem,
+                                        selected: classes.selected,
+                                        disabled: classes.disabled,
+                                    }}
+                                    disabled={item.disabled}
+                                    onClick={(event) => handleListItemClick(event, item.name)}
+                                >
+                                    <ListItemIcon className={classes.listItemIcon}>{item.icon}</ListItemIcon>
+                                    <ListItemText primary={item.label} />
+                                </ListItem>
+                            </div>
+                        </Tooltip>
                     ))}
                 </List>
             </Grid>

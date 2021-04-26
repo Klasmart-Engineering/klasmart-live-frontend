@@ -1,5 +1,4 @@
-import { RoomContext } from "../../../providers/roomContext";
-import { isChatOpenState, unreadMessagesState } from "../../../states/layoutAtoms";
+import { isChatOpenState } from "../../../states/layoutAtoms";
 import { TabPanel } from "../../utils/utils";
 import Attachments from "./attachments/attachments";
 import Messages from "./messages/messages";
@@ -13,11 +12,8 @@ import {
 } from "@material-ui/core";
 import { CloseCircle as CloseIcon } from "@styled-icons/ionicons-solid/CloseCircle";
 import React,
-{
-    useContext,
-    useEffect,
-    useState,
-} from "react";
+{ useState } from "react";
+import { FormattedMessage, useIntl } from "react-intl";
 import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -50,6 +46,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 function Chat () {
     const classes = useStyles();
+    const intl = useIntl();
     const [ isChatOpen, setIsChatOpen ] = useRecoilState(isChatOpenState);
     const [ tabValue, setTabValue ] = useState(0);
 
@@ -63,8 +60,13 @@ function Chat () {
             direction="column"
             className={classes.fullHeight}>
             <Grid item>
-                <Typography className={classes.title}>Chat</Typography>
+                <Typography className={classes.title}>
+                    <FormattedMessage id="toolbar_chat" />
+                </Typography>
                 <div
+                    title={intl.formatMessage({
+                        id: `common_close_tab`,
+                    })}
                     className={classes.closeTab}
                     onClick={() => setIsChatOpen(false)}>
                     <CloseIcon size="1.25rem" />
@@ -79,10 +81,14 @@ function Chat () {
                 >
                     <Tab
                         disableRipple
-                        label="Messages" />
+                        label={intl.formatMessage({
+                            id: `chat_messages`,
+                        })} />
                     <Tab
                         disableRipple
-                        label="Attachments" />
+                        label={intl.formatMessage({
+                            id: `chat_attachments`,
+                        })} />
                 </Tabs>
             </Grid>
             <Grid

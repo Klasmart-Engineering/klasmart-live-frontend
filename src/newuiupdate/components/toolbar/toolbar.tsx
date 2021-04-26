@@ -1,6 +1,4 @@
-import { SessionsContext } from "../../../components/layout";
-import { LIVE_LINK, LocalSessionContext } from "../../providers/providers";
-import { RoomContext } from "../../providers/roomContext";
+import { LocalSessionContext } from "../../providers/providers";
 import {
     activeTabState,
     hasControlsState,
@@ -16,7 +14,6 @@ import {
     viewModeState,
 } from "../../states/layoutAtoms";
 import { DialogEndClass, DialogLeaveClass } from "../utils/endCall";
-import { MUTATION_SET_HOST } from "../utils/graphql";
 import ToolbarItem from "./toolbarItem";
 import ToolbarItemCall from "./toolbarItemCall";
 import ToolbarItemCamera from "./toolbarItemCamera";
@@ -25,7 +22,6 @@ import CanvasMenu from "./toolbarMenus/canvasMenu";
 import ClassDetailsMenu from "./toolbarMenus/classDetailsMenu/classDetailsMenu";
 import GlobalActionsMenu from "./toolbarMenus/globalActionsMenu/globalActionsMenu";
 import ViewModesMenu from "./toolbarMenus/viewModesMenu/viewModesMenu";
-import { useMutation } from "@apollo/client";
 import {
     Grid,
     makeStyles,
@@ -46,6 +42,7 @@ import { useSnackbar } from "kidsloop-px";
 import React, {
     useContext, useEffect, useState,
 } from "react";
+import { useIntl } from "react-intl";
 import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -72,7 +69,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 function Toolbar () {
     const classes = useStyles();
-
+    const intl = useIntl();
     const { isTeacher } = useContext(LocalSessionContext);
     const { enqueueSnackbar } = useSnackbar();
 
@@ -140,7 +137,9 @@ function Toolbar () {
                     <ToolbarItem
                         display={activeTab !== `mosaic`}
                         icon={<InfoIcon />}
-                        label="Class Name"
+                        label={intl.formatMessage({
+                            id: `toolbar_class_details`,
+                        })}
                         active={isClassDetailsOpen}
                         disabled={Boolean(handleTooltip(`classDetails`))}
                         tooltip={handleTooltip(`classDetails`)}
@@ -153,7 +152,9 @@ function Toolbar () {
                     <ToolbarItem
                         display={hasControls ? activeTab !== `mosaic` : false}
                         icon={<CanvasIcon />}
-                        label="Canvas"
+                        label={intl.formatMessage({
+                            id: `toolbar_canvas`,
+                        })}
                         active={isCanvasOpen}
                         disabled={Boolean(handleTooltip(`canvas`))}
                         tooltip={handleTooltip(`canvas`)}
@@ -170,6 +171,9 @@ function Toolbar () {
                     <ToolbarItemMicrophone
                         locked={user.isTeacherAudioMuted}
                         active={user.hasAudio}
+                        tooltip={user.isTeacherAudioMuted ? intl.formatMessage({
+                            id: `toolbar_microphonelocked`,
+                        }) : undefined}
                         onClick={() =>  {enqueueSnackbar(`mic muted`); setUser({
                             ...user,
                             hasAudio: !user.hasAudio,
@@ -177,14 +181,18 @@ function Toolbar () {
                     />
                     <ToolbarItemCall
                         locked={!isTeacher}
-                        tooltip={!isTeacher ? `Ask permission to leave the class` : undefined}
+                        tooltip={!isTeacher ? intl.formatMessage({
+                            id: `toolbar_endcall_ask_to_leave`,
+                        }) : undefined}
                         icon={<PhoneInTalkIcon />}
                         onClick={() => endCall()}
                     />
                     <ToolbarItemCamera
                         locked={user.isTeacherVideoMuted}
                         active={user.hasVideo}
-                        tooltip={user.isTeacherVideoMuted ? `The teacher has disabled your camera` : undefined}
+                        tooltip={user.isTeacherVideoMuted ? intl.formatMessage({
+                            id: `toolbar_camera_locked`,
+                        }) : undefined}
                         onClick={() => setUser({
                             ...user,
                             hasVideo: !user.hasVideo,
@@ -197,7 +205,9 @@ function Toolbar () {
                     <ToolbarItem
                         display={hasControls}
                         icon={<GlobalActionsIcon />}
-                        label="Global actions"
+                        label={intl.formatMessage({
+                            id: `toolbar_global_actions`,
+                        })}
                         disabled={Boolean(handleTooltip(`globalActions`))}
                         tooltip={handleTooltip(`globalActions`)}
                         active={isGlobalActionsOpen}
@@ -210,7 +220,9 @@ function Toolbar () {
                     <ToolbarItem
                         display={hasControls ? activeTab !== `mosaic` : false}
                         icon={<LessonPlanIcon />}
-                        label="Lesson Plan"
+                        label={intl.formatMessage({
+                            id: `toolbar_lesson_plan`,
+                        })}
                         disabled={Boolean(handleTooltip(`lessonPlan`))}
                         tooltip={handleTooltip(`lessonPlan`)}
                         active={isLessonPlanOpen}
@@ -222,7 +234,9 @@ function Toolbar () {
                     <ToolbarItem
                         display={hasControls ? activeTab !== `mosaic` : false}
                         icon={<ViewModesIcon />}
-                        label="View modes"
+                        label={intl.formatMessage({
+                            id: `toolbar_view_modes`,
+                        })}
                         active={isViewModesOpen}
                         badge={viewModesBadge}
                         disabled={Boolean(handleTooltip(`viewModes`))}
@@ -237,7 +251,9 @@ function Toolbar () {
                     <ToolbarItem
                         display={true}
                         icon={<ChatIcon />}
-                        label="Chat"
+                        label={intl.formatMessage({
+                            id: `toolbar_chat`,
+                        })}
                         badge={unreadMessages ? unreadMessages : null}
                         active={isChatOpen}
                         onClick={(e: Event) => {
@@ -269,6 +285,7 @@ function Toolbar () {
 export default Toolbar;
 
 function handleTooltip (item: string){
+    const intl = useIntl();
     const [ isActiveGlobalScreenshare, setIsActiveGlobalScreenshare ] = useRecoilState( isActiveGlobalScreenshareState);
     const [ activeTab, setActiveTab ] = useRecoilState(activeTabState);
 
@@ -283,7 +300,9 @@ function handleTooltip (item: string){
             mosaic: `Lesson plan is not available in mosaic mode`,
         },
         viewModes: {
-            screenshare: `View modes are not available when screenshare is active`,
+            screenshare: intl.formatMessage({
+                id: `toolbar_view_modes_disabled_screenshare`,
+            }),
             mosaic: `View modes are not available in mosaic mode`,
         },
     };

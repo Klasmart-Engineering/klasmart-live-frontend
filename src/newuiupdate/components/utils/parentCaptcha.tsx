@@ -10,6 +10,7 @@ import { Admin as ParentIcon } from "@styled-icons/remix-line/Admin";
 import clsx from "clsx";
 import React,
 { useEffect, useState } from "react";
+import { FormattedMessage } from "react-intl";
 
 const useStyles = makeStyles((theme: Theme) => ({
     dialogIcon:{
@@ -119,8 +120,8 @@ function ParentCaptcha (props:any){
             <div className={classes.dialogIcon}>
                 <ParentIcon size="2rem"  />
             </div>
-            <Typography variant="h5">Parents only </Typography>
-            <Typography>To continue, please tap the numbers in ascending order </Typography>
+            <Typography variant="h5"><FormattedMessage id="parents_captcha_title" /></Typography>
+            <Typography><FormattedMessage id="parents_captcha_description" /></Typography>
             <Grid
                 container
                 justify="center"
@@ -137,7 +138,7 @@ function ParentCaptcha (props:any){
                     </Grid>
                 ))}
             </Grid>
-            {error && <Typography className={classes.error}>Please try again</Typography>}
+            {error && <Typography className={classes.error}><FormattedMessage id="parents_captcha_error" /></Typography>}
         </div>
     );
 }

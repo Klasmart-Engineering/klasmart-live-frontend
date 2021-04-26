@@ -10,6 +10,7 @@ import {
 } from "@material-ui/core";
 import { SendPlane as SendIcon } from "@styled-icons/remix-fill/SendPlane";
 import React, { useContext, useState } from "react";
+import { useIntl } from "react-intl";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root:{
@@ -38,6 +39,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 function SendMessage () {
     const classes = useStyles();
+    const intl = useIntl();
 
     const [ message, setMessage ] = useState(``);
     const { roomId } = useContext(LocalSessionContext);
@@ -67,7 +69,9 @@ function SendMessage () {
             onSubmit={submitMessage}
         >
             <InputBase
-                placeholder="Write your message"
+                placeholder={intl.formatMessage({
+                    id: `chat_messages_write_placeholder`,
+                })}
                 value={message}
                 classes={{
                     root: classes.rootInput,

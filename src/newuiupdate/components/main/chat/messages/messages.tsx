@@ -12,6 +12,7 @@ import { ChatSquareDotsFill as ChatIcon } from "@styled-icons/bootstrap/ChatSqua
 import React, {
     useContext, useEffect, useRef,
 } from "react";
+import { useIntl } from "react-intl";
 
 const useStyles = makeStyles((theme: Theme) => ({
     fullHeight:{
@@ -28,6 +29,8 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 function Messages () {
     const classes = useStyles();
+    const intl = useIntl();
+
     const { messages:messagesData } = useContext(RoomContext);
 
     const messages:any = Array.from(messagesData);
@@ -53,7 +56,9 @@ function Messages () {
                 {messages.length === 0 ?
                     <NoItemList
                         icon={<ChatIcon />}
-                        text='No messages' /> :
+                        text={intl.formatMessage({
+                            id: `chat_messages_noresults`,
+                        })} /> :
                     (<Box
                         className={classes.container}>
                         {messages.map((message:any) => (
