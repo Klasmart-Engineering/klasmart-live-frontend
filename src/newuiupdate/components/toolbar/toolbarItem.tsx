@@ -8,7 +8,7 @@ import {
 } from "@material-ui/core";
 import amber from "@material-ui/core/colors/amber";
 import clsx from "clsx";
-import React from "react";
+import React, { forwardRef } from "react";
 import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -94,7 +94,6 @@ interface ToolbarItemProps {
 
 function ToolbarItem (props: ToolbarItemProps) {
     const {
-        ref,
         display = false,
         icon,
         label,
@@ -118,27 +117,25 @@ function ToolbarItem (props: ToolbarItemProps) {
                 disableFocusListener={!tooltip}
                 disableHoverListener={!tooltip}
                 disableTouchListener={!tooltip}>
-                <div ref={ref}>
-                    <div
-                        className={clsx(classes.root, {
-                            [classes.rootMosaic] : activeTab === `mosaic`,
-                            [classes.active] : active,
-                            [classes.disabled] : disabled,
-                        })}
-                        onClick={onClick}
-                    >
-                        {badge && (
-                            <Badge
-                                classes={{
-                                    badge: classes.badge,
-                                    root: classes.badgeRoot,
-                                }}
-                                badgeContent={<div className={classes.badgeContent}>{badge}</div>}
-                            />
-                        )}
-                        {icon}
-                        {label && <Typography className={classes.label}>{label}</Typography>}
-                    </div>
+                <div
+                    className={clsx(classes.root, {
+                        [classes.rootMosaic] : activeTab === `mosaic`,
+                        [classes.active] : active,
+                        [classes.disabled] : disabled,
+                    })}
+                    onClick={onClick}
+                >
+                    {badge && (
+                        <Badge
+                            classes={{
+                                badge: classes.badge,
+                                root: classes.badgeRoot,
+                            }}
+                            badgeContent={<div className={classes.badgeContent}>{badge}</div>}
+                        />
+                    )}
+                    {icon}
+                    {label && <Typography className={classes.label}>{label}</Typography>}
                 </div>
             </Tooltip>
         </>

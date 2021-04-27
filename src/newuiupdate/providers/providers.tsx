@@ -2,6 +2,7 @@ import { sessionId } from "../../entry";
 import { LessonMaterial, MaterialTypename } from "../../lessonMaterialContext";
 import { getDefaultLanguageCode, getLanguage } from "../../utils/locale";
 import { themeProvider } from "../themeProvider";
+import { GlobalWhiteboardContext } from "../whiteboard/context-providers/GlobalWhiteboardContext";
 import { RoomProvider } from "./roomContext";
 import { ThemeProvider } from "@material-ui/core";
 import jwt_decode from "jwt-decode";
@@ -83,9 +84,11 @@ function Providers ({ children }: Props) {
                             }}
                             closeButtonLabel="Dismiss">
                             <RoomProvider>
-                                <>
-                                    {children}
-                                </>
+                                <GlobalWhiteboardContext>
+                                    <>
+                                        {children}
+                                    </>
+                                </GlobalWhiteboardContext>
                             </RoomProvider>
                         </SnackbarProvider>
                     </ThemeProvider>

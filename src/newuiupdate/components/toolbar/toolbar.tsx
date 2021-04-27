@@ -13,6 +13,7 @@ import {
     userState,
     viewModeState,
 } from "../../states/layoutAtoms";
+import { useSynchronizedState } from "../../whiteboard/context-providers/SynchronizedStateProvider";
 import { DialogEndClass, DialogLeaveClass } from "../utils/endCall";
 import ToolbarItem from "./toolbarItem";
 import ToolbarItemCall from "./toolbarItemCall";
@@ -83,11 +84,10 @@ function Toolbar () {
     const [ unreadMessages, setUnreadMessages ] = useRecoilState(unreadMessagesState);
     const [ hasControls, setHasControls ] = useRecoilState(hasControlsState);
 
-    const [ globalActionsEl, setGlobalActionsEl ] = useState<any | null>(null);
-    const [ canvasEl, setCanvasEl ] = useState<any | null>(null);
-    const [ classDetailsEl, setClassDetailsEl ] = useState<any | null>(null);
-    const [ viewModesEl, setViewModesEl ] = useState<any | null>(null);
-    const [ chatEl, setChatEl ] = useState<any | null>(null);
+    const classDetailsRef = React.useRef<any>();
+    const canvasRef = React.useRef<any>();
+    const globalActionsRef = React.useRef<any>();
+    const viewModesRef = React.useRef<any>();
 
     const [ openEndClassDialog, setOpenEndClassDialog ] = useState(false);
     const [ openLeaveClassDialog, setOpenLeaveClassDialog ] = useState(false);
@@ -122,6 +122,16 @@ function Toolbar () {
         resetDrawers();
     }, [ activeTab ]);
 
+    const { state: { display: isGlobalCanvasEnabled, permissions: permissionsGlobalCanvas } } = useSynchronizedState();
+
+    console.log(isGlobalCanvasEnabled);
+    console.log(permissionsGlobalCanvas);
+    console.log(`------`);
+
+    useEffect(() => {
+        activeTab !== `mosaic` && setIsCanvasOpen(isGlobalCanvasEnabled);
+    }, [ isGlobalCanvasEnabled ]);
+
     return (
         <>
             <Grid
@@ -132,36 +142,38 @@ function Toolbar () {
                 <Grid
                     item
                     className={classes.iconGroup}>
-                    <ToolbarItem
-                        display={activeTab !== `mosaic`}
-                        icon={<InfoIcon />}
-                        label={intl.formatMessage({
-                            id: `toolbar_class_details`,
-                        })}
-                        active={isClassDetailsOpen}
-                        disabled={Boolean(handleTooltip(`classDetails`))}
-                        tooltip={handleTooltip(`classDetails`)}
-                        onClick={(e: Event) => {
-                            resetDrawers();
-                            setClassDetailsEl(e.currentTarget);
-                            setIsClassDetailsOpen(!isClassDetailsOpen);
-                        }}
-                    />
-                    <ToolbarItem
-                        display={hasControls ? activeTab !== `mosaic` : false}
-                        icon={<CanvasIcon />}
-                        label={intl.formatMessage({
-                            id: `toolbar_canvas`,
-                        })}
-                        active={isCanvasOpen}
-                        disabled={Boolean(handleTooltip(`canvas`))}
-                        tooltip={handleTooltip(`canvas`)}
-                        onClick={(e: Event) => {
-                            resetDrawers();
-                            setCanvasEl(e.currentTarget);
-                            setIsCanvasOpen(!isCanvasOpen);
-                        }}
-                    />
+                    <div ref={classDetailsRef}>
+                        <ToolbarItem
+                            display={activeTab !== `mosaic`}
+                            icon={<InfoIcon />}
+                            label={intl.formatMessage({
+                                id: `toolbar_class_details`,
+                            })}
+                            active={isClassDetailsOpen}
+                            disabled={Boolean(handleTooltip(`classDetails`))}
+                            tooltip={handleTooltip(`classDetails`)}
+                            onClick={(e: Event) => {
+                                resetDrawers();
+                                setIsClassDetailsOpen(!isClassDetailsOpen);
+                            }}
+                        />
+                    </div>
+                    <div ref={canvasRef}>
+                        <ToolbarItem
+                            display={activeTab === `mosaic` ? false : hasControls ? true : isGlobalCanvasEnabled ? permissionsGlobalCanvas ? true : false : false}
+                            icon={<CanvasIcon />}
+                            label={intl.formatMessage({
+                                id: `toolbar_canvas`,
+                            })}
+                            active={isCanvasOpen}
+                            disabled={Boolean(handleTooltip(`canvas`))}
+                            tooltip={handleTooltip(`canvas`)}
+                            onClick={(e: Event) => {
+                                resetDrawers();
+                                setIsCanvasOpen(!isCanvasOpen);
+                            }}
+                        />
+                    </div>
                 </Grid>
                 <Grid
                     item
@@ -200,21 +212,22 @@ function Toolbar () {
                 <Grid
                     item
                     className={classes.iconGroup}>
-                    <ToolbarItem
-                        display={hasControls}
-                        icon={<GlobalActionsIcon />}
-                        label={intl.formatMessage({
-                            id: `toolbar_global_actions`,
-                        })}
-                        disabled={Boolean(handleTooltip(`globalActions`))}
-                        tooltip={handleTooltip(`globalActions`)}
-                        active={isGlobalActionsOpen}
-                        onClick={(e: Event) => {
-                            resetDrawers();
-                            setGlobalActionsEl(e.currentTarget);
-                            setIsGlobalActionsOpen(!isGlobalActionsOpen);
-                        }}
-                    />
+                    <div ref={globalActionsRef}>
+                        <ToolbarItem
+                            display={hasControls}
+                            icon={<GlobalActionsIcon />}
+                            label={intl.formatMessage({
+                                id: `toolbar_global_actions`,
+                            })}
+                            disabled={Boolean(handleTooltip(`globalActions`))}
+                            tooltip={handleTooltip(`globalActions`)}
+                            active={isGlobalActionsOpen}
+                            onClick={(e: Event) => {
+                                resetDrawers();
+                                setIsGlobalActionsOpen(!isGlobalActionsOpen);
+                            }}
+                        />
+                    </div>
                     <ToolbarItem
                         display={hasControls ? activeTab !== `mosaic` : false}
                         icon={<LessonPlanIcon />}
@@ -229,23 +242,23 @@ function Toolbar () {
                             setIsLessonPlanOpen(!isLessonPlanOpen);
                         }}
                     />
-                    <ToolbarItem
-                        display={hasControls ? activeTab !== `mosaic` : false}
-                        icon={<ViewModesIcon />}
-                        label={intl.formatMessage({
-                            id: `toolbar_view_modes`,
-                        })}
-                        active={isViewModesOpen}
-                        badge={viewModesBadge}
-                        disabled={Boolean(handleTooltip(`viewModes`))}
-                        tooltip={handleTooltip(`viewModes`)}
-                        onClick={(e: Event) => {
-                            resetDrawers();
-                            setViewModesEl(e.currentTarget);
-                            setIsViewModesOpen(!isViewModesOpen);
-                        }}
-                    />
-
+                    <div ref={viewModesRef}>
+                        <ToolbarItem
+                            display={hasControls ? activeTab !== `mosaic` : false}
+                            icon={<ViewModesIcon />}
+                            label={intl.formatMessage({
+                                id: `toolbar_view_modes`,
+                            })}
+                            active={isViewModesOpen}
+                            badge={viewModesBadge}
+                            disabled={Boolean(handleTooltip(`viewModes`))}
+                            tooltip={handleTooltip(`viewModes`)}
+                            onClick={(e: Event) => {
+                                resetDrawers();
+                                setIsViewModesOpen(!isViewModesOpen);
+                            }}
+                        />
+                    </div>
                     <ToolbarItem
                         display={true}
                         icon={<ChatIcon />}
@@ -256,17 +269,16 @@ function Toolbar () {
                         active={isChatOpen}
                         onClick={(e: Event) => {
                             resetDrawers();
-                            setChatEl(e.currentTarget);
                             setIsChatOpen(!isChatOpen);
                         }}
                     />
                 </Grid>
             </Grid>
 
-            <ClassDetailsMenu anchor={classDetailsEl} />
-            <CanvasMenu anchor={canvasEl} />
-            <GlobalActionsMenu anchor={globalActionsEl} />
-            <ViewModesMenu anchor={viewModesEl} />
+            <ClassDetailsMenu anchor={classDetailsRef.current} />
+            <CanvasMenu anchor={canvasRef.current} />
+            <GlobalActionsMenu anchor={globalActionsRef.current} />
+            <ViewModesMenu anchor={viewModesRef.current} />
 
             <DialogEndClass
                 open={openEndClassDialog}
