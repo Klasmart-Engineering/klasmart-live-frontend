@@ -1,14 +1,26 @@
 import React, { useEffect, useRef, useState } from "react";
+import { Theme } from "@material-ui/core";
+import { createStyles, makeStyles } from "@material-ui/core/styles";
+import Grid from "@material-ui/core/Grid";
 import { useWindowSize } from "../utils/viewport";
+import { imageFrame } from "../utils/layerValues";
+import { LessonMaterial } from "../lessonMaterialContext";
+
+const useStyles = makeStyles((theme: Theme) =>
+    createStyles({
+        imageFrame: {
+            zIndex: imageFrame,
+            maxWidth: "99%",
+            maxHeight: `calc(100vh - ${theme.spacing(5)}px)`,
+            margin: "0 auto",
+            backdropFilter: "blur(8px)",
+            WebkitBackdropFilter: "blur(8px)",
+        },
+    })
+);
 
 export interface Props {
     contentId: string;
-}
-
-enum LoadStatus {
-    Error,
-    Loading,
-    Finished,
 }
 
 export function ResizedIframe(props: Props): JSX.Element {
@@ -85,4 +97,31 @@ export function ResizedIframe(props: Props): JSX.Element {
             }}
         />
     );
+}
+
+export function ImageFrame({ material }: { material: LessonMaterial }) {
+    const { imageFrame } = useStyles();
+
+    return (
+        <Grid container>
+            <Grid container item style={{
+                height: "100%",
+                position: "absolute",
+                left: 0,
+                right: 0,
+                zIndex: 1,
+                backgroundImage: `url(${material.url})`,
+                filter: "blur(8px)",
+                WebkitFilter: "blur(8px)",
+                backgroundPosition: "center",
+                backgroundRepeat: "no-repeat",
+                backgroundSize: "cover",
+            }}
+            />
+            <img
+                className={imageFrame}
+                src={material.url}
+            />
+        </Grid>
+    )
 }
