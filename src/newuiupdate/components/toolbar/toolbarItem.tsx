@@ -82,6 +82,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 interface ToolbarItemProps {
 	display?: boolean;
+	ref?: any;
 	icon?: any;
 	label?: string;
 	onClick?: any;
@@ -93,6 +94,7 @@ interface ToolbarItemProps {
 
 function ToolbarItem (props: ToolbarItemProps) {
     const {
+        ref,
         display = false,
         icon,
         label,
@@ -116,7 +118,7 @@ function ToolbarItem (props: ToolbarItemProps) {
                 disableFocusListener={!tooltip}
                 disableHoverListener={!tooltip}
                 disableTouchListener={!tooltip}>
-                <div>
+                <div ref={ref}>
                     <div
                         className={clsx(classes.root, {
                             [classes.rootMosaic] : activeTab === `mosaic`,

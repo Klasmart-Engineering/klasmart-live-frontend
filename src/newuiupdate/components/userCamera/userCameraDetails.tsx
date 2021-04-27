@@ -99,7 +99,7 @@ function UserCameraDetails (props: UserCameraDetailsType) {
             <div className={classes.topCamera}></div>
             <div className={classes.bottomCamera}>
                 <Typography className={classes.name}>
-                    {user.name} {!user.hasAudio && <MicDisabledIcon size="0.85rem"/>}
+                    {isSelf ? `You` : user.name} {!user.hasAudio && <MicDisabledIcon size="0.85rem"/>}
                 </Typography>
             </div>
         </div>

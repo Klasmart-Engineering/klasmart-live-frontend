@@ -316,7 +316,7 @@ function UserCameraActions (props: UserCameraActionsType) {
                                     size="1rem"/> Enable camera</> }
                         </MenuItem>
 
-                        {hasControls && !user.isHost &&
+                        {hasControls && !user.isHost && user.isTeacher &&
                             <MenuItem
                                 className={classes.menuItem}
                                 onClick={() => giveControls(user)}>

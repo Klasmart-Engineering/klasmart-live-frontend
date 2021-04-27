@@ -17,6 +17,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         borderRadius: 12,
         width: `100%`,
         minHeight: 90,
+        height: `100%`,
         alignItems: `center`,
         textAlign: `center`,
         position: `relative`,
@@ -35,10 +36,11 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 interface UserCameraType {
     user: any;
+    actions?: boolean;
 }
 
 function UserCamera (props: UserCameraType) {
-    const { user } = props;
+    const { user, actions = true } = props;
     const classes = useStyles();
     const [ isHover, setIsHover ] = useState(false);
 
@@ -60,7 +62,7 @@ function UserCamera (props: UserCameraType) {
                 item
                 xs>
                 <UserCameraDetails user={user} />
-                {isHover && <UserCameraActions user={user} />}
+                {actions ? isHover && <UserCameraActions user={user} /> : null}
                 {user.hasVideo ? <Camera user={user} /> : <NoCamera name={user.name} />}
             </Grid>
         </Grid>

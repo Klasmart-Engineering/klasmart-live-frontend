@@ -53,7 +53,7 @@ function ClassEnded () {
                     <div className={classes.icon}>
                         <ClassEndedIcon />
                     </div>
-                    <Typography variant="h3"><FormattedMessage id="class_ended_you_have_left" /></Typography>
+                    <Typography variant="h3"><FormattedMessage id="class_ended_title" /></Typography>
                     <Typography variant="body1"><FormattedMessage id="class_ended_thanks_for_attending" /></Typography>
                     <Feedback type={isTeacher ? `teacher` : `student`}/>
                     <Typography className={classes.returnToHub}>
