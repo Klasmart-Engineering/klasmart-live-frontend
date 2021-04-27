@@ -15,6 +15,7 @@ import { State } from "../../store/store";
 import { ClassType } from "../../store/actions";
 import { Whiteboard } from "../../whiteboard/components/Whiteboard-new";
 import { setContentIndex } from "../../store/reducers/control";
+import { ResizedIframe } from "../resizedIframe";
 
 export const DRAWER_TOOLBAR_WIDTH = 64;
 
@@ -87,9 +88,7 @@ function ClassContent({ recommandUrl }: {
                 // overflowY: interactiveMode === 2 ? "auto" : "hidden" // For Observe mode
             }}
         >
-            {/* TODO (Isu): Make below as component  */}
             <Grid
-                id="classes-content-container"
                 ref={rootDivRef}
                 container
                 direction="row"
@@ -99,44 +98,35 @@ function ClassContent({ recommandUrl }: {
                 xs={12}
                 style={{ width: "100%", height: "100%" }}
             >
-                <Grid item xs={1}>
+                <Grid
+                    container
+                    justify="center"
+                    item
+                    xs={1}
+                >
                     <IconButton disabled={contentIndex <= 0} aria-label="go to prev activity" onClick={() => dispatch(setContentIndex(contentIndex - 1))}>
                         <ArrowBackIcon fontSize="large" />
                     </IconButton>
                 </Grid>
                 <Grid
+                    id="classes-content-container"
                     item
-                    style={squareSize ? {
+                    xs={10}
+                    style={{
                         position: "relative",
                         margin: "0 auto",
-                        width: squareSize,
-                        height: squareSize
-                    } : {
-                            position: "relative",
-                            margin: "0 auto",
-                            height: "100%"
-                        }
-                    }
+                        height: "100%"
+                    }}
                 >
                     <Whiteboard uniqueId={forStudent ? "student" : "teacher"} />
-                    {recommandUrl === undefined || !recommandUrl ?
-                        <IframeResizerNew
-                            draggable
-                            scrolling
-                            forwardRef={iframeRef}
-                            src={`${materials[contentIndex].url}`}
-                            style={{ width: "100%", height: "100%" }}
-                        /> :
-                        <IframeResizerNew
-                            draggable
-                            scrolling
-                            forwardRef={iframeRef}
-                            src={materials.length ? `${recommandUrl}` : `${materials[contentIndex].url}`}
-                            style={{ width: "100%", height: "100%" }}
-                        />
-                    }
+                    <ResizedIframe contentId={contentIndex >= materials.length ? `${recommandUrl}` : `${materials[contentIndex].url}`} />
                 </Grid>
-                <Grid item xs={1}>
+                <Grid
+                    container
+                    justify="center"
+                    item
+                    xs={1}
+                >
                     <IconButton disabled={contentIndex >= (recommandUrl ? materials.length : materials.length - 1)} aria-label="go to next activity" onClick={() => dispatch(setContentIndex(contentIndex + 1))}>
                         <ArrowForwardIcon fontSize="large" />
                     </IconButton>
