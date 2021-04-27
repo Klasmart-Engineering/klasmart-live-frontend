@@ -1,6 +1,7 @@
 import { ClassType } from "../../../store/actions";
 import { LocalSessionContext } from "../../providers/providers";
 import Toolbar from "../toolbar/toolbar";
+import { Whiteboard } from "../utils/Whiteboard";
 import MainDrawer from "./mainDrawer";
 import MainView from "./mainView";
 import {
@@ -22,6 +23,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         overflow: `hidden`,
         display: `flex`,
         flex: 1,
+        position: `relative`,
     },
     mainViewDrawer: {
         position: `relative`,
@@ -48,6 +50,7 @@ function Main () {
                         <Grid
                             item
                             xs>
+                            <Whiteboard uniqueId="student" />
                             <MainView />
                         </Grid>
                         <Grid
