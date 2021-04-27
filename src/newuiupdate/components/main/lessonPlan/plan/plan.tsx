@@ -1,35 +1,59 @@
-import { classInfoState, materialActiveIndexState } from "../../../../states/layoutAtoms";
+import { LocalSessionContext } from "../../../../providers/providers";
+import { materialActiveIndexState } from "../../../../states/layoutAtoms";
 import {
+    Grid,
+    makeStyles,
     Step,
     StepLabel,
     Stepper,
+    Theme,
 } from "@material-ui/core";
-import React from "react";
+import React, { useContext } from "react";
 import { useRecoilState } from "recoil";
 
+const useStyles = makeStyles((theme: Theme) => ({
+    fullHeight:{
+        height: `100%`,
+    },
+    root:{
+        overflowY: `scroll`,
+    },
+    container:{
+        overflowY: `scroll`,
+    },
+}));
+
 function Plan () {
+    const classes = useStyles();
     const [ materialActiveIndex, setMaterialActiveIndex ] = useRecoilState(materialActiveIndexState);
-    const [ classInfo, setClassInfo ] = useRecoilState(classInfoState);
+
+    const { materials } = useContext(LocalSessionContext);
 
     return (
-        <Stepper
-            style={{
-                overflowX: `hidden`,
-                overflowY: `auto`,
-            }}
-            activeStep={materialActiveIndex}
-            orientation="vertical"
-        >
-            {classInfo.materials.map((material, index) => (
-                <Step
-                    key={`step-${material.name}`}
-                    disabled={false}
-                    onClick={() => setMaterialActiveIndex(index)}
+        <Grid
+            container
+            direction="column"
+            className={classes.fullHeight}>
+            <Grid
+                item
+                xs
+                className={classes.container}>
+                <Stepper
+                    activeStep={materialActiveIndex}
+                    orientation="vertical"
                 >
-                    <StepLabel key={`label-${material.name}`}>{material.name}</StepLabel>
-                </Step>
-            ))}
-        </Stepper>
+                    {materials.map((material, index) => (
+                        <Step
+                            key={`step-${material.name}-${index}`}
+                            disabled={false}
+                            onClick={() => setMaterialActiveIndex(index)}
+                        >
+                            <StepLabel key={`label-${material.name}`}>{material.name}</StepLabel>
+                        </Step>
+                    ))}
+                </Stepper>
+            </Grid>
+        </Grid>
     );
 }
 

@@ -136,6 +136,7 @@ const messages: Record<string, string> = {
     class_ended_title: `Class has ended`,
     class_ended_thanks_for_attending: `Thanks for attending the class`,
     class_ended_you_have_left: `You have left the class`,
+    class_ended_return_to_hub: `Return to hub`,
     parents_captcha_title: `Parents only`,
     parents_captcha_description: `To continue, please tap the numbers in ascending order`,
     parents_captcha_error: `Please try again`,

@@ -38,7 +38,6 @@ import { PresentationChartBar as PresentIcon } from "@styled-icons/heroicons-sol
 import { ChevronBottom as ViewModesIcon } from "@styled-icons/open-iconic/ChevronBottom";
 import { FilePaper as LessonPlanIcon } from "@styled-icons/remix-fill/FilePaper";
 import clsx from "clsx";
-import { useSnackbar } from "kidsloop-px";
 import React, {
     useContext, useEffect, useState,
 } from "react";
@@ -71,7 +70,6 @@ function Toolbar () {
     const classes = useStyles();
     const intl = useIntl();
     const { isTeacher } = useContext(LocalSessionContext);
-    const { enqueueSnackbar } = useSnackbar();
 
     const [ user, setUser ] = useRecoilState(userState);
     const [ isGlobalActionsOpen, setIsGlobalActionsOpen ] = useRecoilState(isGlobalActionsOpenState);
@@ -105,7 +103,7 @@ function Toolbar () {
     };
 
     function endCall () {
-        isTeacher ? setOpenEndClassDialog(true) : setOpenLeaveClassDialog(true);
+        hasControls ? setOpenEndClassDialog(true) : setOpenLeaveClassDialog(true);
     }
 
     let viewModesBadge = <OnStageIcon />;
@@ -174,7 +172,7 @@ function Toolbar () {
                         tooltip={user.isTeacherAudioMuted ? intl.formatMessage({
                             id: `toolbar_microphonelocked`,
                         }) : undefined}
-                        onClick={() =>  {enqueueSnackbar(`mic muted`); setUser({
+                        onClick={() =>  { setUser({
                             ...user,
                             hasAudio: !user.hasAudio,
                         });}}
