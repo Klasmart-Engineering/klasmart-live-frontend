@@ -7,6 +7,7 @@ import { LIVE_LINK, LocalSessionContext } from "./providers";
 import { gql, useSubscription } from "@apollo/client";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
+import { useSnackbar } from "kidsloop-px";
 import React, {
     createContext, useContext, useEffect, useState,
 } from "react";
@@ -55,6 +56,7 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
     const [ trophy, setTrophy ] = useState();
     const [ unreadMessages, setUnreadMessages ] = useRecoilState(unreadMessagesState);
     const [ isChatOpen, setIsChatOpen ] = useRecoilState(isChatOpenState);
+    const { enqueueSnackbar } = useSnackbar();
 
     useEffect(() => {
         isChatOpen && setUnreadMessages(0);
@@ -95,7 +97,10 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
                 return newState;
             });
         }
-        !isChatOpen && setUnreadMessages(unreadMessages + 1);
+        if(!isChatOpen){
+            enqueueSnackbar(`${newMessage.session.name} sent a new message`);
+            setUnreadMessages(unreadMessages + 1);
+        }
         setMessages(prev => new Map(prev.set(newMessage.id, newMessage)));
     };
     const userJoin = (join: Session) => setSessions(prev => new Map(prev.set(join.id, join)));
