@@ -26,26 +26,38 @@ function Layout () {
         },
     });
 
+    // TODO :
+    // 1) Change the settimeout logic ? (added because it is conflicting with the give room controls logic)
+    // 2) Move to a provider ?
+    let setDefaultHost:any;
+
+    useEffect(() => {
+        setDefaultHost = setTimeout(function (){
+            const teachers = [ ...sessions.values() ].filter(session => session.isTeacher === true).sort((a, b) => a.joinedAt - b.joinedAt);
+            const host = teachers.find(session => session.isHost === true);
+            if (!host && teachers.length) {
+                const hostId = teachers[0].id;
+                hostMutation({
+                    variables: {
+                        roomId,
+                        hostId,
+                    },
+                });
+
+                hostId === sessionId ? setHasControls(true) : setHasControls(false);
+            }
+        }, 1000);
+
+        return function cleanup (){
+            clearTimeout(setDefaultHost);
+        };
+    }, [ sessions.size ]);
+
     useEffect(() => {
         const teachers = [ ...sessions.values() ].filter(session => session.isTeacher === true).sort((a, b) => a.joinedAt - b.joinedAt);
         const host = teachers.find(session => session.isHost === true);
-        if (!host && teachers.length) {
-            const hostId = teachers[0].id;
-            hostMutation({
-                variables: {
-                    roomId,
-                    hostId,
-                },
-            });
-        }
-
-        if(host?.id === sessionId){
-            setHasControls(true);
-        }else{
-            setHasControls(false);
-        }
-
-    }, [ sessions, sessions.size ]);
+        host?.id === sessionId ? setHasControls(true) : setHasControls(false);
+    }, [ sessions ]);
 
     if(classLeft){
         return(<ClassLeft />);

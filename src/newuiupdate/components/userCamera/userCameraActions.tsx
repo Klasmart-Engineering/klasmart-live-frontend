@@ -1,4 +1,7 @@
-import { pinnedUserState } from "../../states/layoutAtoms";
+import { LIVE_LINK, LocalSessionContext } from "../../providers/providers";
+import { hasControlsState, pinnedUserState } from "../../states/layoutAtoms";
+import { MUTATION_SET_HOST } from "../utils/graphql";
+import { useMutation } from "@apollo/client";
 import {
     Grid,
     IconButton,
@@ -21,9 +24,13 @@ import { StarFill as StarFillIcon } from "@styled-icons/bootstrap/StarFill";
 import { TrophyFill as TrophyIcon } from "@styled-icons/bootstrap/TrophyFill";
 import { DotsVerticalRounded as DotsVerticalRoundedIcon } from "@styled-icons/boxicons-regular/DotsVerticalRounded";
 import { Pin as PinIcon } from "@styled-icons/entypo/Pin";
+import { Crown as HasControlsIcon } from "@styled-icons/fa-solid/Crown";
 import clsx from "clsx";
 import React,
-{ useState } from "react";
+{
+    useContext,
+    useState,
+} from "react";
 import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -154,6 +161,9 @@ function UserCameraActions (props: UserCameraActionsType) {
     const { user } = props;
     const classes = useStyles();
 
+    const { roomId, isTeacher } = useContext(LocalSessionContext);
+
+    const [ hasControls, setHasControls ] = useRecoilState(hasControlsState);
     const [ pinnedUser, setPinnedUser ] = useRecoilState(pinnedUserState);
     const [ localCamera, setLocalCamera ] = useState(false);
     const [ localMicrophone, setLocalMicrophone ] = useState(true);
@@ -165,6 +175,21 @@ function UserCameraActions (props: UserCameraActionsType) {
     const [ trophyEl, setTrophyEl ] = useState<null | HTMLElement>(null);
     const handleTrophyOpen = (event: React.SyntheticEvent<HTMLAnchorElement>) => { setTrophyEl(event.currentTarget); };
     const handleTrophyClose = () => { setTrophyEl(null); };
+
+    const [ hostMutation ] = useMutation(MUTATION_SET_HOST, {
+        context: {
+            target: LIVE_LINK,
+        },
+    });
+
+    function giveControls (user:any){
+        hostMutation({
+            variables: {
+                roomId,
+                hostId: user.id,
+            },
+        });
+    }
 
     function toggleVideoState (): void {
         setLocalCamera(!localCamera);
@@ -199,32 +224,35 @@ function UserCameraActions (props: UserCameraActionsType) {
                 </div>
 
                 <Grid item>
+                    {isTeacher && !user.isTeacher &&
+                        <IconButton
+                            component="a"
+                            aria-label="Trophy button"
+                            aria-controls="trophy-popover"
+                            aria-haspopup="true"
+                            size="small"
+                            className={classes.controlsIcon}
+                            onClick={handleTrophyOpen}
+                        >
+                            <TrophyIcon size="0.85em"/>
+                        </IconButton>
+                    }
 
-                    <IconButton
-                        component="a"
-                        aria-label="Trophy button"
-                        aria-controls="trophy-popover"
-                        aria-haspopup="true"
-                        size="small"
-                        className={classes.controlsIcon}
-                        onClick={handleTrophyOpen}
-                    >
-                        <TrophyIcon size="0.85em"/>
-                    </IconButton>
-
-                    <IconButton
-                        component="a"
-                        aria-label="More controls button"
-                        aria-controls="more-controls-popover"
-                        aria-haspopup="true"
-                        size="small"
-                        className={clsx(classes.controlsIcon, {
-                            [classes.controlsIconActive] : user.id === pinnedUser,
-                        })}
-                        onClick={() => handlePinnedUser(user.id)}
-                    >
-                        <PinIcon size="1em"/>
-                    </IconButton>
+                    {hasControls &&
+                        <IconButton
+                            component="a"
+                            aria-label="More controls button"
+                            aria-controls="more-controls-popover"
+                            aria-haspopup="true"
+                            size="small"
+                            className={clsx(classes.controlsIcon, {
+                                [classes.controlsIconActive] : user.id === pinnedUser,
+                            })}
+                            onClick={() => handlePinnedUser(user.id)}
+                        >
+                            <PinIcon size="1em"/>
+                        </IconButton>
+                    }
 
                     <IconButton
                         component="a"
@@ -282,10 +310,19 @@ function UserCameraActions (props: UserCameraActionsType) {
                             {localCamera && <><CameraVideoFillIcon
                                 className={classes.menuItemIcon}
                                 size="1rem"/> Disable camera</> }
-                            {!localCamera && <><CameraDisabledIcon
-                                className={classes.menuItemIcon}
-                                size="1rem"/> Enable camera</> }
+                            {!localCamera && <>
+                                <CameraDisabledIcon
+                                    className={classes.menuItemIcon}
+                                    size="1rem"/> Enable camera</> }
                         </MenuItem>
+
+                        {hasControls && !user.isHost &&
+                            <MenuItem
+                                className={classes.menuItem}
+                                onClick={() => giveControls(user)}>
+                                <HasControlsIcon className={classes.menuItemIcon} /> Give room controls
+                            </MenuItem>
+                        }
 
                     </Menu>
 

@@ -1,3 +1,5 @@
+import { Session } from "../../../../pages/room/room";
+import { RoomContext } from "../../../providers/roomContext";
 import {
     isChatOpenState,
     mosaicViewSizeState,
@@ -14,7 +16,9 @@ import {
     Theme,
 } from "@material-ui/core";
 import clsx from "clsx";
-import React from "react";
+import React, {
+    useContext, useEffect, useState,
+} from "react";
 import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -31,11 +35,11 @@ const useStyles = makeStyles((theme: Theme) => ({
     gridContainerTeachers:{
         marginBottom: 15,
         "& $cameraGrid":{
-            display: `block`,
+            display: `flex`,
+            justifyContent: `center`,
             "&>div":{
                 minHeight: 150,
                 width: 260,
-                margin: `0 auto`,
             },
         },
     },
@@ -95,17 +99,20 @@ const useStyles = makeStyles((theme: Theme) => ({
 function TabMosaic () {
     const classes = useStyles();
 
-    const [ users, setUsers ] = useRecoilState(usersState);
     const [ isChatOpen, setIsChatOpen ] = useRecoilState(isChatOpenState);
     const [ mosaicViewSize, setMosaicViewSize ] = useRecoilState(mosaicViewSizeState);
 
-    const teachers = users.filter(function (e) {
-        return e.role === `teacher`;
-    });
+    const { sessions } = useContext(RoomContext);
+    const [ studentsSessions, setStudentsSessions ] = useState<Session[]>([]);
+    const [ teachersSessions, setTeachersSessions ] = useState<Session[]>([]);
 
-    const students = users.filter(function (e) {
-        return e.role === `student`;
-    });
+    useEffect(() => {
+        const teachers = [ ...sessions.values() ].filter(session => session.isTeacher === true);
+        setTeachersSessions(teachers);
+
+        const students = [ ...sessions.values() ].filter(session => session.isTeacher !== true);
+        setStudentsSessions(students);
+    }, [ sessions, sessions.size ]);
 
     return (
         <Fade in>
@@ -130,7 +137,7 @@ function TabMosaic () {
                                     item
                                     className={classes.gridContainerTeachers}>
                                     <div className={classes.cameraGrid}>
-                                        {teachers.map((user) => (
+                                        {teachersSessions.map((user) => (
                                             <UserCamera
                                                 key={user.id}
                                                 user={user} />
@@ -148,7 +155,7 @@ function TabMosaic () {
                                         [classes.cameraGrid5] : mosaicViewSize === 5,
                                         [classes.cameraGrid6] : mosaicViewSize === 6,
                                     })}>
-                                        {students.map((user) => (
+                                        {studentsSessions.map((user) => (
                                             <UserCamera
                                                 key={user.id}
                                                 user={user} />
