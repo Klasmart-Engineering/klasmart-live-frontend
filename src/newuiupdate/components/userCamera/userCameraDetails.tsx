@@ -1,3 +1,4 @@
+import { LocalSessionContext } from "../../providers/providers";
 import {
     makeStyles,
     Theme,
@@ -7,7 +8,7 @@ import amber from "@material-ui/core/colors/amber";
 import { MicMuteFill as MicDisabledIcon } from "@styled-icons/bootstrap/MicMuteFill";
 import { Crown as HasControlsIcon } from "@styled-icons/fa-solid/Crown";
 import { HatGraduation as TeacherIcon } from "@styled-icons/fluentui-system-filled/HatGraduation";
-import React from "react";
+import React, { useContext } from "react";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -71,17 +72,19 @@ interface UserCameraDetailsType {
 function UserCameraDetails (props: UserCameraDetailsType) {
     const { user } = props;
     const classes = useStyles();
+    const { sessionId } = useContext(LocalSessionContext);
+    const isSelf = user.id === sessionId ? true : false;
 
-    if(user.role === `teacher`){
+    if(user.isTeacher){
         return(
             <div className={`${classes.root} ${classes.rootTeacher}`}>
                 <div className={classes.topCamera}>
-                    <Typography className={classes.name}>{user.name}</Typography>
+                    <Typography className={classes.name}>{isSelf ? `You` : user.name}</Typography>
                     <div className={classes.roles}>
                         <TeacherIcon
                             size="1.25rem"
                             className={classes.roleIcon}/>
-                        {user.hasControls && <HasControlsIcon
+                        {user.isHost && <HasControlsIcon
                             size="1.25rem"
                             className={`${classes.roleIcon} ${classes.roleHasControlsIcon}`}/>}
                     </div>

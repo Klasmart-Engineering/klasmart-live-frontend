@@ -1,3 +1,5 @@
+import { ClassType } from "../../../store/actions";
+import { LocalSessionContext } from "../../providers/providers";
 import Toolbar from "../toolbar/toolbar";
 import MainDrawer from "./mainDrawer";
 import MainView from "./mainView";
@@ -6,10 +8,12 @@ import {
     makeStyles,
     Theme,
 } from "@material-ui/core";
-import React from "react";
+import React, { useContext } from "react";
 
 const useStyles = makeStyles((theme: Theme) => ({
-    fullHeight: {},
+    fullViewHeight: {
+        height: `100vh`,
+    },
     mainViewContainer: {
         display: `flex`,
     },
@@ -26,14 +30,13 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 function Main () {
     const classes = useStyles();
+    const { classtype } = useContext(LocalSessionContext);
 
     return (
         <Grid
             container
             direction="column"
-            style={{
-                height: `100vh`,
-            }}>
+            className={classes.fullViewHeight}>
             <Grid
                 item
                 xs
@@ -55,9 +58,11 @@ function Main () {
                     </Grid>
                 </div>
             </Grid>
-            <Grid item>
-                <Toolbar />
-            </Grid>
+            {classtype !== ClassType.STUDY &&
+             <Grid item>
+                 <Toolbar />
+             </Grid>
+            }
         </Grid>
     );
 }
