@@ -1,5 +1,6 @@
 import { LocalSessionContext } from "../../../../providers/providers";
 import { materialActiveIndexState } from "../../../../states/layoutAtoms";
+import { NoItemList } from "../../../utils/utils";
 import {
     Grid,
     makeStyles,
@@ -8,7 +9,9 @@ import {
     Stepper,
     Theme,
 } from "@material-ui/core";
+import { Book as PlanIcon } from "@styled-icons/boxicons-regular/Book";
 import React, { useContext } from "react";
+import { useIntl } from "react-intl";
 import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -25,8 +28,8 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 function Plan () {
     const classes = useStyles();
+    const intl = useIntl();
     const [ materialActiveIndex, setMaterialActiveIndex ] = useRecoilState(materialActiveIndexState);
-
     const { materials } = useContext(LocalSessionContext);
 
     return (
@@ -38,20 +41,29 @@ function Plan () {
                 item
                 xs
                 className={classes.container}>
-                <Stepper
-                    activeStep={materialActiveIndex}
-                    orientation="vertical"
-                >
-                    {materials.map((material, index) => (
-                        <Step
-                            key={`step-${material.name}-${index}`}
-                            disabled={false}
-                            onClick={() => setMaterialActiveIndex(index)}
-                        >
-                            <StepLabel key={`label-${material.name}`}>{material.name}</StepLabel>
-                        </Step>
-                    ))}
-                </Stepper>
+                {materials.length === 0 ? (
+                    <NoItemList
+                        icon={<PlanIcon />}
+                        text={intl.formatMessage({
+                            id: `lessonplan_content_noresults`,
+                        })} />
+                ) : (
+                    <Stepper
+                        activeStep={materialActiveIndex}
+                        orientation="vertical"
+                    >
+                        {materials.map((material, index) => (
+                            <Step
+                                key={`step-${material.name}-${index}`}
+                                disabled={false}
+                                onClick={() => setMaterialActiveIndex(index)}
+                            >
+                                <StepLabel key={`label-${material.name}`}>{material.name}</StepLabel>
+                            </Step>
+                        ))}
+                    </Stepper>
+                ) }
+
             </Grid>
         </Grid>
     );

@@ -7,6 +7,7 @@ import {
 } from "@material-ui/core";
 import { Book as ManualIcon } from "@styled-icons/bootstrap/Book";
 import React from "react";
+import { useIntl } from "react-intl";
 
 const useStyles = makeStyles((theme: Theme) => ({
     fullHeight:{
@@ -18,8 +19,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 }));
 
-const manuals = [
-    {
+const manuals:any = [
+   /* {
         id: 1,
         title: `Teacher Manual #1`,
         type: `pdf`,
@@ -33,11 +34,12 @@ const manuals = [
         id: 3,
         title: `Teacher Manual #3`,
         type: `pdf`,
-    },
+    },*/
 ];
 
 function Manuals () {
     const classes = useStyles();
+    const intl = useIntl();
 
     return (
         <Grid
@@ -50,10 +52,12 @@ function Manuals () {
                 {manuals.length === 0 ?
                     <NoItemList
                         icon={<ManualIcon />}
-                        text='No manuals' />
+                        text={intl.formatMessage({
+                            id: `lessonplan_manuals_noresults`,
+                        })} />
                     :
                     (<div className={classes.container}>
-                        {manuals?.map(manual => (
+                        {manuals?.map((manual:any) => (
                             <Manual
                                 key={manual.id}
                                 title={manual.title}

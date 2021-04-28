@@ -96,6 +96,12 @@ export const viewModeState = atom<viewModeStateType>({
     default: `onstage`,
 });
 
+type interactiveModeState = "Blank" | "Present" | "Observe" | "ShareScreen";
+export const interactiveModeState = atom<interactiveModeState>({
+    key: `interactiveModeState`,
+    default: `Blank`,
+});
+
 // LAYOUT - ACTIVITTY
 export const pinnedUserState = atom<number | undefined>({
     key: `pinnedUserState`,

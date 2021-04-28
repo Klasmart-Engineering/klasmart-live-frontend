@@ -5,6 +5,7 @@ import {
     Typography,
 } from "@material-ui/core";
 import React from "react";
+import { FormattedMessage } from "react-intl";
 import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -29,43 +30,43 @@ function ClassDetails () {
             <table>
                 <tbody>
                     <tr>
-                        <td className={classes.detailsLabel}><Typography>Class Name</Typography></td>
+                        <td className={classes.detailsLabel}><Typography><FormattedMessage id="classdetails_class_name" /></Typography></td>
                         <td className={classes.detailsValue}><Typography>{classInfo.class_name}</Typography></td>
                     </tr>
                     <tr>
-                        <td className={classes.detailsLabel}><Typography>Lesson Name</Typography></td>
+                        <td className={classes.detailsLabel}><Typography><FormattedMessage id="classdetails_lesson_name" /></Typography></td>
                         <td className={classes.detailsValue}><Typography>{classInfo.lesson_name}</Typography></td>
                     </tr>
                     <tr>
-                        <td className={classes.detailsLabel}><Typography>Room ID</Typography></td>
+                        <td className={classes.detailsLabel}><Typography><FormattedMessage id="classdetails_room_id" /></Typography></td>
                         <td className={classes.detailsValue}><Typography>{classInfo.room_id}</Typography></td>
                     </tr>
                     <tr>
-                        <td className={classes.detailsLabel}><Typography>Class Type</Typography></td>
+                        <td className={classes.detailsLabel}><Typography><FormattedMessage id="classdetails_class_type" /></Typography></td>
                         <td className={classes.detailsValue}><Typography>{classInfo.class_type}</Typography></td>
                     </tr>
                     <tr>
-                        <td className={classes.detailsLabel}><Typography>Enrolled Participants</Typography></td>
+                        <td className={classes.detailsLabel}><Typography><FormattedMessage id="classdetails_enrolled_participants" /></Typography></td>
                         <td className={classes.detailsValue}><Typography>{classInfo.enrolled_participants}</Typography></td>
                     </tr>
                     <tr>
-                        <td className={classes.detailsLabel}><Typography>Program</Typography></td>
+                        <td className={classes.detailsLabel}><Typography><FormattedMessage id="classdetails_program" /></Typography></td>
                         <td className={classes.detailsValue}><Typography>{classInfo.program}</Typography></td>
                     </tr>
                     <tr>
-                        <td className={classes.detailsLabel}><Typography>Subject</Typography></td>
+                        <td className={classes.detailsLabel}><Typography><FormattedMessage id="classdetails_subject" /></Typography></td>
                         <td className={classes.detailsValue}><Typography>{classInfo.subject}</Typography></td>
                     </tr>
                     <tr>
-                        <td className={classes.detailsLabel}><Typography>Lesson Materials</Typography></td>
+                        <td className={classes.detailsLabel}><Typography><FormattedMessage id="classdetails_lesson_materials" /></Typography></td>
                         <td className={classes.detailsValue}><Typography>{classInfo.materials.length}</Typography></td>
                     </tr>
                     <tr>
-                        <td className={classes.detailsLabel}><Typography>Start time</Typography></td>
+                        <td className={classes.detailsLabel}><Typography><FormattedMessage id="classdetails_start_time" /></Typography></td>
                         <td className={classes.detailsValue}><Typography>{classInfo.start_at}</Typography></td>
                     </tr>
                     <tr>
-                        <td className={classes.detailsLabel}><Typography>End time</Typography></td>
+                        <td className={classes.detailsLabel}><Typography><FormattedMessage id="classdetails_end_time" /></Typography></td>
                         <td className={classes.detailsValue}><Typography>{classInfo.end_at}</Typography></td>
                     </tr>
                 </tbody>

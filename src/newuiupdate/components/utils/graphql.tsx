@@ -26,3 +26,9 @@ export const ENDCLASS = gql`
         endClass(roomId: $roomId)
     }
 `;
+
+export const MUT_SHOW_CONTENT = gql`
+    mutation showContent($roomId: ID!, $type: ContentType!, $contentId: ID) {
+        showContent(roomId: $roomId, type: $type, contentId: $contentId)
+    }
+`;

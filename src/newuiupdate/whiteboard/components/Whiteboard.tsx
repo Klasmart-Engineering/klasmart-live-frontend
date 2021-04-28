@@ -1,9 +1,11 @@
 import React, { useContext, useMemo } from "react";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
-import { whiteboard } from "../../utils/layerValues";
+
 import { useSynchronizedState } from "../context-providers/SynchronizedStateProvider";
 import { WhiteboardCanvas } from "kidsloop-canvas/lib/domain/whiteboard/WhiteboardCanvas";
-import { LocalSessionContext } from "../../entry";
+import { LocalSessionContext } from "../../providers/providers";
+import { whiteboard } from "../../../utils/layerValues";
+
 
 type Props = {
     uniqueId: string;

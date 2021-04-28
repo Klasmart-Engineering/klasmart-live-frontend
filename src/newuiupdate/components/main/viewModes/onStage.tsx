@@ -1,12 +1,14 @@
 import { RoomContext } from "../../../providers/roomContext";
 import UserCamera from "../../userCamera/userCamera";
 import {
-    Grid, makeStyles, Theme,
+    Grid, makeStyles, Theme, Typography,
 } from "@material-ui/core";
 import { UserVoice as OnStageIcon } from "@styled-icons/boxicons-solid/UserVoice";
 import React, {
     useContext, useEffect, useState,
 } from "react";
+import { FormattedMessage } from "react-intl";
+import { LocalSessionContext } from "../../../providers/providers";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -19,7 +21,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 function OnStage () {
     const classes = useStyles();
     const { content, sessions } = useContext(RoomContext);
-
+    const { name } = useContext(LocalSessionContext);
     const [ host, setHost ] = useState<any>();
 
     useEffect(() => {
@@ -41,7 +43,8 @@ function OnStage () {
             container
             className={classes.root}>
             <Grid item>
-                waiting_for_class
+                <Typography variant="h4"><FormattedMessage id={"hello"} values={{ name }} /></Typography>
+                <Typography><FormattedMessage id={"waiting_for_class"} /></Typography>
             </Grid>
         </Grid>
     );
