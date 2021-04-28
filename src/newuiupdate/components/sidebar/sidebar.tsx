@@ -20,6 +20,7 @@ import React,
     useEffect,
     useState,
 } from "react";
+import { useIntl } from "react-intl";
 import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -60,35 +61,46 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 }));
 
-const sidebarTabs = [
-    {
-        id: 1,
-        name: `participants`,
-        icon: <ParticipantsIcon />,
-        content: <TabParticipants />,
-    },
-    {
-        id: 2,
-        name: `mosaic`,
-        icon: <MosaicIcon />,
-        content: <TabMosaic />,
-        role: `teacher`,
-    },
-    {
-        id: 3,
-        name: `settings`,
-        icon: <SettingsIcon />,
-        content: <TabSettings />,
-    },
-];
-
 function Sidebar () {
     const classes = useStyles();
+    const intl = useIntl();
+
     const [ activeTab, setActiveTab ] = useRecoilState(activeTabState);
-    const activeTabContent = sidebarTabs.find(item => item.name === activeTab)?.content;
+    const { isTeacher } = useContext(LocalSessionContext);
     const [ drawerWidth, setDrawerWidth ] = useState<any>(440);
 
-    const { isTeacher } = useContext(LocalSessionContext);
+    const sidebarTabs = [
+        {
+            id: 1,
+            name: `participants`,
+            label: intl.formatMessage({
+                id: `title_participants`,
+            }),
+            icon: <ParticipantsIcon />,
+            content: <TabParticipants />,
+        },
+        {
+            id: 2,
+            name: `mosaic`,
+            label: intl.formatMessage({
+                id: `title_mosaic`,
+            }),
+            icon: <MosaicIcon />,
+            content: <TabMosaic />,
+            role: `teacher`,
+        },
+        {
+            id: 3,
+            name: `settings`,
+            label: intl.formatMessage({
+                id: `title_settings`,
+            }),
+            icon: <SettingsIcon />,
+            content: <TabSettings />,
+        },
+    ];
+
+    const activeTabContent = sidebarTabs.find(item => item.name === activeTab)?.content;
 
     useEffect(() => {
         activeTab !== `participants` ? setDrawerWidth(`100%`) : setDrawerWidth(440);
@@ -135,6 +147,7 @@ function Sidebar () {
                                         <SidebarMenuItem
                                             key={sidebarTab.id}
                                             name={sidebarTab.name}
+                                            label={sidebarTab.label}
                                             icon={sidebarTab.icon}
                                             active={activeTab === sidebarTab.name}
                                         />

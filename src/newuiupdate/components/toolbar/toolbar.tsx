@@ -2,6 +2,7 @@ import { LocalSessionContext } from "../../providers/providers";
 import {
     activeTabState,
     hasControlsState,
+    interactiveModeState,
     isActiveGlobalScreenshareState,
     isCanvasOpenState,
     isChatOpenState,
@@ -11,7 +12,6 @@ import {
     isViewModesOpenState,
     unreadMessagesState,
     userState,
-    viewModeState,
 } from "../../states/layoutAtoms";
 import { useSynchronizedState } from "../../whiteboard/context-providers/SynchronizedStateProvider";
 import { DialogEndClass, DialogLeaveClass } from "../utils/endCall";
@@ -80,7 +80,7 @@ function Toolbar () {
     const [ isChatOpen, setIsChatOpen ] = useRecoilState(isChatOpenState);
     const [ isClassDetailsOpen, setIsClassDetailsOpen ] = useRecoilState(isClassDetailsOpenState);
     const [ isCanvasOpen, setIsCanvasOpen ] = useRecoilState(isCanvasOpenState);
-    const [ viewMode, setViewModeState ] = useRecoilState(viewModeState);
+    const [ interactiveMode, setInteractiveMode ] = useRecoilState(interactiveModeState);
     const [ unreadMessages, setUnreadMessages ] = useRecoilState(unreadMessagesState);
     const [ hasControls, setHasControls ] = useRecoilState(hasControlsState);
 
@@ -107,14 +107,14 @@ function Toolbar () {
     }
 
     let viewModesBadge = <OnStageIcon />;
-    switch (viewMode) {
-    case `onstage`:
+    switch (interactiveMode) {
+    case `Blank`:
         viewModesBadge = <OnStageIcon />;
         break;
-    case `observe`:
+    case `Observe`:
         viewModesBadge = <ObserveIcon />;
         break;
-    case `present`:
+    case `Present`:
         viewModesBadge = <PresentIcon />;
         break;
     }
@@ -123,10 +123,6 @@ function Toolbar () {
     }, [ activeTab ]);
 
     const { state: { display: isGlobalCanvasEnabled, permissions: permissionsGlobalCanvas } } = useSynchronizedState();
-
-    console.log(isGlobalCanvasEnabled);
-    console.log(permissionsGlobalCanvas);
-    console.log(`------`);
 
     useEffect(() => {
         activeTab !== `mosaic` && setIsCanvasOpen(isGlobalCanvasEnabled);

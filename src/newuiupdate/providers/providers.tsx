@@ -12,6 +12,8 @@ import React, {
 } from 'react';
 import { RawIntlProvider } from "react-intl";
 import { v4 as uuid } from "uuid";
+import { WebRTCProvider } from "./WebRTCContext";
+import { ScreenShareProvider } from "./screenShareProvider";
 
 export const LIVE_LINK = `LIVE_LINK`;
 export const SFU_LINK = `SFU_LINK`;
@@ -84,11 +86,15 @@ function Providers ({ children }: Props) {
                             }}
                             closeButtonLabel="Dismiss">
                             <RoomProvider>
-                                <GlobalWhiteboardContext>
-                                    <>
-                                        {children}
-                                    </>
-                                </GlobalWhiteboardContext>
+                                <WebRTCProvider>
+                                    <ScreenShareProvider>
+                                        <GlobalWhiteboardContext>
+                                            <>
+                                                {children}
+                                            </>
+                                        </GlobalWhiteboardContext>
+                                    </ScreenShareProvider>
+                                </WebRTCProvider>
                             </RoomProvider>
                         </SnackbarProvider>
                     </ThemeProvider>

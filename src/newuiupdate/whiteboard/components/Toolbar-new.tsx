@@ -27,8 +27,8 @@ import PinkCrayon from "../../assets/img/canvas/crayons/pink.svg";
 import PurpleCrayon from "../../assets/img/canvas/crayons/purple.svg";
 import BrownCrayon from "../../assets/img/canvas/crayons/brown.svg";
 import Eraser from "../../assets/img/canvas/eraser.svg";
-import { ClassType } from "../../store/actions";
-import { LocalSessionContext } from "../../entry";
+import { LocalSessionContext } from "../../providers/providers";
+import { ClassType } from "../../../store/actions";
 
 type Props = {
     children?: ReactChild | ReactChildren | null | any;

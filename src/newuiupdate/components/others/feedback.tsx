@@ -12,6 +12,7 @@ import { Star as StarEmptyIcon } from "@styled-icons/bootstrap/Star";
 import { StarFill as StarFillIcon } from "@styled-icons/bootstrap/StarFill";
 import clsx from "clsx";
 import React, { useState } from "react";
+import { useIntl } from "react-intl";
 
 const useStyles = makeStyles((theme: Theme) => ({
     stars:{
@@ -75,109 +76,120 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 }));
 
-const feedbackRatingItems = [
-    {
-        value: 1,
-        label: `Terrible`,
-        choices: {
-            student : [ `Couldn't join the class`, `Bad audio/video` ],
-            teacher : [ `I didnt teach`, `Bad audio/video` ],
-            leaving : [
-                `Appointment`,
-                `Sick`,
-                `Other`,
-            ],
-        },
-    },
-    {
-        value: 2,
-        label: `Bad`,
-        choices: {
-            student : [
-                `Teacher unprofessionnal`,
-                `Tools are not adapted`,
-                `Low quality audio/video`,
-            ],
-            teacher : [
-                `Teacher unprofessionnal`,
-                `Tools are not adapted`,
-                `Low quality audio/video`,
-            ],
-            leaving : [
-                `Appointment`,
-                `Sick`,
-                `Other`,
-            ],
-        },
-    },
-    {
-        value: 3,
-        label: `Okay`,
-        choices: {
-            student : [ `Materials could be better`, `Too much noise` ],
-            teacher : [ `Materials could be better`, `Too much noise` ],
-            leaving : [
-                `Appointment`,
-                `Sick`,
-                `Other`,
-            ],
-        },
-    },
-    {
-        value: 4,
-        label: `Good`,
-        choices: {
-            student : [
-                `Teacher was exemplary`,
-                `good audio/video quality`,
-                `Materials were adequate`,
-            ],
-            teacher : [
-                `Teacher was exemplary`,
-                `good audio/video quality`,
-                `Materials were adequate`,
-            ],
-            leaving : [
-                `Appointment`,
-                `Sick`,
-                `Other`,
-            ],
-        },
-    },
-    {
-        value: 5,
-        label: `Great`,
-        choices: {
-            student : [
-                `Teacher was amazing`,
-                `Great audio/video quality`,
-                `Materials were great`,
-            ],
-            teacher : [
-                `Teacher was amazing`,
-                `Great audio/video quality`,
-                `Materials were great`,
-            ],
-            leaving : [
-                `Appointment`,
-                `Sick`,
-                `Other`,
-            ],
-        },
-    },
-];
-
 export interface FeedbackProps {
     type: "student" | "teacher" | "leaving";
 }
 
 function Feedback (props:FeedbackProps){
     const classes = useStyles();
+    const intl = useIntl();
 
     const { type } = props;
 
     const [ feedbackNote, setFeedbackNote ] = useState<number|null>(null);
     const [ feedbackSent, setFeedbackSent ] = useState(false);
+
+    const feedbackRatingItems = [
+        {
+            value: 1,
+            label: intl.formatMessage({
+                id: `feedback_terrible`,
+            }),
+            choices: {
+                student : [ `Couldn't join the class`, `Bad audio/video` ],
+                teacher : [ `I didnt teach`, `Bad audio/video` ],
+                leaving : [
+                    `Appointment`,
+                    `Sick`,
+                    `Other`,
+                ],
+            },
+        },
+        {
+            value: 2,
+            label: intl.formatMessage({
+                id: `feedback_bad`,
+            }),
+            choices: {
+                student : [
+                    `Teacher unprofessionnal`,
+                    `Tools are not adapted`,
+                    `Low quality audio/video`,
+                ],
+                teacher : [
+                    `Teacher unprofessionnal`,
+                    `Tools are not adapted`,
+                    `Low quality audio/video`,
+                ],
+                leaving : [
+                    `Appointment`,
+                    `Sick`,
+                    `Other`,
+                ],
+            },
+        },
+        {
+            value: 3,
+            label: intl.formatMessage({
+                id: `feedback_okay`,
+            }),
+            choices: {
+                student : [ `Materials could be better`, `Too much noise` ],
+                teacher : [ `Materials could be better`, `Too much noise` ],
+                leaving : [
+                    `Appointment`,
+                    `Sick`,
+                    `Other`,
+                ],
+            },
+        },
+        {
+            value: 4,
+            label: intl.formatMessage({
+                id: `feedback_good`,
+            }),
+            choices: {
+                student : [
+                    `Teacher was exemplary`,
+                    `good audio/video quality`,
+                    `Materials were adequate`,
+                ],
+                teacher : [
+                    `Teacher was exemplary`,
+                    `good audio/video quality`,
+                    `Materials were adequate`,
+                ],
+                leaving : [
+                    `Appointment`,
+                    `Sick`,
+                    `Other`,
+                ],
+            },
+        },
+        {
+            value: 5,
+            label: intl.formatMessage({
+                id: `feedback_great`,
+            }),
+            choices: {
+                student : [
+                    `Teacher was amazing`,
+                    `Great audio/video quality`,
+                    `Materials were great`,
+                ],
+                teacher : [
+                    `Teacher was amazing`,
+                    `Great audio/video quality`,
+                    `Materials were great`,
+                ],
+                leaving : [
+                    `Appointment`,
+                    `Sick`,
+                    `Other`,
+                ],
+            },
+        },
+    ];
 
     return(
         <Grid

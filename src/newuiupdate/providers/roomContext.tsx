@@ -11,7 +11,7 @@ import { useSnackbar } from "kidsloop-px";
 import React, {
     createContext, useContext, useEffect, useState,
 } from "react";
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 import { useRecoilState } from "recoil";
 
 const SUB_ROOM = gql`
@@ -46,6 +46,7 @@ const defaultRoomContext = {
 
 export const RoomContext = createContext<RoomContextInterface>(defaultRoomContext);
 export const RoomProvider = (props: {children: React.ReactNode}) => {
+    const intl = useIntl();
     const {
         roomId, name, sessionId,
     } = useContext(LocalSessionContext);
@@ -98,7 +99,11 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
             });
         }
         if(!isChatOpen){
-            enqueueSnackbar(`${newMessage.session.name} sent a new message`);
+            enqueueSnackbar(intl.formatMessage({
+                id: `notification_user_sent_message`,
+            }, {
+                user: newMessage.session.name,
+            }));
             setUnreadMessages(unreadMessages + 1);
         }
         setMessages(prev => new Map(prev.set(newMessage.id, newMessage)));

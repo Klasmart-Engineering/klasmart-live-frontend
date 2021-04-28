@@ -8,7 +8,7 @@ import { Eraser as EraserIcon } from "@styled-icons/boxicons-solid/Eraser";
 import { InvertColors as InvertColorsIcon } from "@styled-icons/material/InvertColors";
 import { InvertColorsOff as InvertColorsOffIcon } from "@styled-icons/material/InvertColorsOff";
 
-import StyledIcon from "../../components/styled/icon";
+import StyledIcon from "../../../components/styled/icon";
 
 import { useSynchronizedState } from "../context-providers/SynchronizedStateProvider";
 import { useToolbarContext } from "kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";

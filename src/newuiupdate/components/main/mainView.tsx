@@ -1,8 +1,8 @@
 import {
+    interactiveModeState,
     isActiveGlobalScreenshareState,
     pinnedUserState,
     usersState,
-    viewModeState,
 } from "../../states/layoutAtoms";
 import Observe from "./viewModes/Observe";
 import OnStage from "./viewModes/onStage";
@@ -13,8 +13,10 @@ import {
     makeStyles,
     Theme,
 } from "@material-ui/core";
-import React from "react";
+import React, { useContext } from "react";
 import { useRecoilState } from "recoil";
+import { RoomContext } from "../../providers/roomContext";
+import { ContentType } from "../../../pages/room/room";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -26,12 +28,11 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 function MainView () {
     const classes = useStyles();
-    const [ viewMode, setViewMode ] = useRecoilState(viewModeState);
-    const [ isActiveGlobalScreenshare, setIsActiveGlobalScreenshare ] = useRecoilState(isActiveGlobalScreenshareState);
-    const [ pinnedUser, setPinnedUser ] = useRecoilState(pinnedUserState);
-    const [ users, setUsers ] = useRecoilState(usersState);
+    const { content } = useContext(RoomContext)
 
-    if(isActiveGlobalScreenshare){
+    const [ pinnedUser, setPinnedUser ] = useRecoilState(pinnedUserState);
+
+    if(content?.type === ContentType.Screen){
         return(
             <Grid
                 container
@@ -45,7 +46,7 @@ function MainView () {
         );
     }
 
-    if(pinnedUser){
+    if(content?.type === ContentType.Stream){
         return(
             <Grid
                 container
@@ -53,32 +54,59 @@ function MainView () {
                 <Grid
                     item
                     xs>
-                    <div style={{
-                        display: `flex`,
-                        height: `100%`,
-                        alignItems: `center`,
-                        textAlign: `center`,
-                        justifyContent: `center`,
-                    }}>
-						SHOW CAMERA OF {pinnedUser}
-                        <br/>
-                        {users.filter(user => user.id === pinnedUser).map(user => user.name)}
-                    </div>
+                    <Present />
                 </Grid>
             </Grid>
         );
     }
 
-    return (
+    if(content?.type === ContentType.Activity){
+        return(
+            <Grid
+                container
+                className={classes.root}>
+                <Grid
+                    item
+                    xs>
+                    <Observe />
+                </Grid>
+            </Grid>
+        );
+    }
+
+    // TODO : Pin User feature
+    // if(pinnedUser){
+    //     return(
+    //         <Grid
+    //             container
+    //             className={classes.root}>
+    //             <Grid
+    //                 item
+    //                 xs>
+    //                 <div style={{
+    //                     display: `flex`,
+    //                     height: `100%`,
+    //                     alignItems: `center`,
+    //                     textAlign: `center`,
+    //                     justifyContent: `center`,
+    //                 }}>
+	// 					SHOW CAMERA OF {pinnedUser}
+    //                     <br/>
+    //                     {users.filter(user => user.id === pinnedUser).map(user => user.name)}
+    //                 </div>
+    //             </Grid>
+    //         </Grid>
+    //     );
+    // }
+
+    return(
         <Grid
             container
             className={classes.root}>
             <Grid
                 item
                 xs>
-                {viewMode === `onstage` && <OnStage />}
-                {viewMode === `observe` && <Observe />}
-                {viewMode === `present` && <Present />}
+                <OnStage />
             </Grid>
         </Grid>
     );

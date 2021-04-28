@@ -1,13 +1,11 @@
 import { LIVE_LINK, LocalSessionContext } from "../../../../providers/providers";
 import {
-    isActiveGlobalCanvasState,
     isActiveGlobalMuteAudioState,
     isActiveGlobalMuteVideoState,
-    isActiveGlobalScreenshareState,
     isGlobalActionsOpenState,
     pinnedUserState,
 } from "../../../../states/layoutAtoms";
-import { MUTATION_REWARD_TROPHY } from "../../../utils/graphql";
+import { MUTATION_REWARD_TROPHY, MUT_SHOW_CONTENT } from "../../../utils/graphql";
 import { StyledPopper } from "../../../utils/utils";
 import GlobalActionsMenuItem from "./globalAction";
 import { useMutation } from "@apollo/client";
@@ -23,8 +21,12 @@ import { MicMuteFill as MicDisabledIcon } from "@styled-icons/bootstrap/MicMuteF
 import { StarFill as StarFillIcon } from "@styled-icons/bootstrap/StarFill";
 import { TrophyFill as TrophyFillIcon } from "@styled-icons/bootstrap/TrophyFill";
 import { TvFill as ScreenShareIcon } from "@styled-icons/bootstrap/TvFill";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
+import { useIntl } from "react-intl";
 import { useRecoilState } from "recoil";
+import { ContentType } from "../../../../../pages/room/room";
+import { RoomContext } from "../../../../providers/roomContext";
+import { ScreenShareContext } from "../../../../providers/screenShareProvider";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -39,23 +41,20 @@ interface GlobaActionsMenuProps {
 function GlobalActionsMenu (props: GlobaActionsMenuProps) {
     const { anchor } = props;
     const classes = useStyles();
+    const intl = useIntl();
 
     const [ isGlobalActionsOpen, setIsGlobalActionsOpen ] = useRecoilState(isGlobalActionsOpenState);
-
-    const [ activeGlobalScreenshare, setActiveGlobalScreenshare ] = useRecoilState(isActiveGlobalScreenshareState);
-    const [ activeGlobalCanvas, setActiveGlobalCanvas ] = useRecoilState(isActiveGlobalCanvasState);
     const [ activeGlobalMuteAudio, setActiveGlobalMuteAudio ] = useRecoilState(isActiveGlobalMuteAudioState);
     const [ activeGlobalMuteVideo, setActiveGlobalMuteVideo ] = useRecoilState(isActiveGlobalMuteVideoState);
-
     const [ pinnedUser, setPinnedUser ] = useRecoilState(pinnedUserState);
 
     const { roomId, sessionId } = useContext(LocalSessionContext);
+    const { content } = useContext(RoomContext)
+    const screenShare = useContext(ScreenShareContext);
 
-    const [ rewardTrophyMutation ] = useMutation(MUTATION_REWARD_TROPHY, {
-        context: {
-            target: LIVE_LINK,
-        },
-    });
+    const [ showContent, { loading: loadingShowContent } ] = useMutation(MUT_SHOW_CONTENT, {context: {target: LIVE_LINK}});
+    const [ rewardTrophyMutation, { loading: loadingTrophy } ] = useMutation(MUTATION_REWARD_TROPHY, {context: {target: LIVE_LINK}});
+
     const rewardTrophy = (user: string, kind: string) => {
         rewardTrophyMutation({
             variables: {
@@ -64,16 +63,29 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
                 kind,
             },
         });
-
     };
+
+    const toggleScreenshare = () => {
+        if( content?.type === ContentType.Screen ) {
+            screenShare.stop();
+            showContent({ variables: { roomId, type: ContentType.Camera, contentId: sessionId } });
+        }else{
+            screenShare.start();
+            showContent({ variables: { roomId, type: ContentType.Screen, contentId: sessionId } });
+        }
+        setPinnedUser(undefined);
+    };
+
     const items = [
         {
             id: `1`,
-            title: `Screenshare`,
+            title: intl.formatMessage({
+                id: content?.type === ContentType.Screen ? `toolbar_global_actions_turn_of_screenshare` : `toolbar_global_actions_turn_on_screenshare`,
+            }),
             icon: <ScreenShareIcon size="1.7rem" />,
             variant: `blue`,
-            isActive: activeGlobalScreenshare,
-            onClick: () => {setActiveGlobalScreenshare(!activeGlobalScreenshare); setPinnedUser(undefined);},
+            isActive: content?.type === ContentType.Screen,
+            onClick: () => {toggleScreenshare()},
         },
         {
             id: `3`,
@@ -81,7 +93,9 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
         },
         {
             id: `4`,
-            title: `Mute All`,
+            title: intl.formatMessage({
+                id: activeGlobalMuteAudio ? `unmute_all` : `mute_all`,
+            }),
             icon: <MicFillIcon size="1.4rem" />,
             activeIcon: <MicDisabledIcon size="1.4rem" />,
             variant: `blue`,
@@ -90,7 +104,9 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
         },
         {
             id: `5`,
-            title: `Hide all cameras`,
+            title: intl.formatMessage({
+                id: activeGlobalMuteVideo ? `set_cameras_on` : `set_cameras_off`,
+            }),
             icon: <CameraVideoFillIcon size="1.4rem" />,
             activeIcon: <CameraDisabledIcon size="1.4rem" />,
             variant: `blue`,
@@ -103,25 +119,33 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
         },
         {
             id: `7`,
-            title: `Send trophy`,
+            title: intl.formatMessage({
+                id: `give_trophy`,
+            }),
             icon: <TrophyFillIcon size="1.4rem" />,
             onClick: () => rewardTrophy(sessionId, `trophy`),
         },
         {
             id: `8`,
-            title: `Send thumbs up`,
+            title: intl.formatMessage({
+                id: `encourage`,
+            }),
             icon: <HandThumbsUpFillIcon size="1.4rem" />,
             onClick: () => rewardTrophy(sessionId, `great_job`),
         },
         {
             id: `9`,
-            title: `Send star`,
+            title: intl.formatMessage({
+                id: `give_star`,
+            }),
             icon: <StarFillIcon size="1.4rem" />,
             onClick: () => rewardTrophy(sessionId, `star`),
         },
         {
             id: `10`,
-            title: `Send heart`,
+            title: intl.formatMessage({
+                id: `give_heart`,
+            }),
             icon: <HeartFillIcon size="1.4rem" />,
             onClick: () => rewardTrophy(sessionId, `heart`),
             variant: `red`,

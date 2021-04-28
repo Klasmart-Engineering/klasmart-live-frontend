@@ -32,6 +32,7 @@ import React,
     useState,
 } from "react";
 import { useRecoilState } from "recoil";
+import { FormattedMessage } from "react-intl";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -124,11 +125,8 @@ const useStyles = makeStyles((theme: Theme) => ({
         },
     },
     menuItem:{
-        borderRadius: 10,
-        margin: 5,
-        "&:hover": {
-            backgroundColor: theme.palette.grey[200],
-        },
+        color: theme.palette.grey[800],
+        fontWeight: 600,
     },
     menuItemActive:{
         color: red[500],
@@ -139,6 +137,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     menuItemIcon:{
         marginRight: 10,
+        padding: 5
+    },
+    menuItemIconActive:{
+        color: red[500]
     },
     expand:{
         position: `absolute`,
@@ -281,46 +283,38 @@ function UserCameraActions (props: UserCameraActionsType) {
                         open={Boolean(moreEl)}
                         MenuListProps={{
                             onPointerLeave: handleMoreClose,
-                            disablePadding: true,
-                        }}
-                        classes={{
-                            paper: classes.menuPaper,
                         }}
                         onClose={handleMoreClose}
                     >
 
                         <MenuItem
-                            className={clsx(classes.menuItem, {
-                                [classes.menuItemActive]: !localMicrophone,
-                            })}
+                            className={classes.menuItem}
                             onClick={(toggleAudioState)}>
                             {localMicrophone && <><MicFillIcon
                                 className={classes.menuItemIcon}
-                                size="1rem"/> Disable microphone</> }
+                                size="1rem"/><FormattedMessage id="toggle_microphone_off"/></> }
                             {!localMicrophone && <><MicDisabledIcon
-                                className={classes.menuItemIcon}
-                                size="1rem"/> Enable microphone</> }
+                                className={clsx(classes.menuItemIcon, classes.menuItemIconActive)}
+                                size="1rem"/><FormattedMessage id="toggle_microphone_on"/></> }
                         </MenuItem>
 
                         <MenuItem
-                            className={clsx(classes.menuItem, {
-                                [classes.menuItemActive]: !localCamera,
-                            })}
+                            className={classes.menuItem}
                             onClick={(toggleVideoState)}>
                             {localCamera && <><CameraVideoFillIcon
                                 className={classes.menuItemIcon}
-                                size="1rem"/> Disable camera</> }
+                                size="1rem"/><FormattedMessage id="toggle_camera_off"/></> }
                             {!localCamera && <>
                                 <CameraDisabledIcon
-                                    className={classes.menuItemIcon}
-                                    size="1rem"/> Enable camera</> }
+                                    className={clsx(classes.menuItemIcon, classes.menuItemIconActive)}
+                                    size="1rem"/><FormattedMessage id="toggle_camera_on"/></> }
                         </MenuItem>
 
                         {hasControls && !user.isHost && user.isTeacher &&
                             <MenuItem
                                 className={classes.menuItem}
                                 onClick={() => giveControls(user)}>
-                                <HasControlsIcon className={classes.menuItemIcon} /> Give room controls
+                                <HasControlsIcon className={classes.menuItemIcon} /><FormattedMessage id="toggle_room_controls"/>
                             </MenuItem>
                         }
 

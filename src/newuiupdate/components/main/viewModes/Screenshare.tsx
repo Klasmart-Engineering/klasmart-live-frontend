@@ -2,7 +2,9 @@ import {
     Grid, makeStyles, Theme,
 } from "@material-ui/core";
 import { TvFill as ScreenShareIcon } from "@styled-icons/bootstrap/TvFill";
-import React from "react";
+import React, { useContext } from "react";
+import { Stream } from "../../../../webRTCState";
+import { ScreenShareContext } from "../../../providers/screenShareProvider";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -15,15 +17,14 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 function Screenshare () {
     const classes = useStyles();
+    const screenShare = useContext(ScreenShareContext);
 
     return (
         <Grid
             container
             className={classes.root}>
             <Grid item>
-                <ScreenShareIcon size="4rem" />
-                <br/>
-				Screenshare
+                <Stream stream={screenShare.stream} />
             </Grid>
         </Grid>
     );

@@ -3,6 +3,7 @@ import {
     Button,
     makeStyles,
     Theme,
+    Tooltip,
 } from "@material-ui/core";
 import clsx from "clsx";
 import React from "react";
@@ -70,6 +71,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 interface SidebarItemMenuProps {
 	icon: any;
 	name: string;
+    label: string;
 	active?: boolean;
 }
 
@@ -77,6 +79,7 @@ function SidebarMenuItem (props: SidebarItemMenuProps) {
     const classes = useStyles();
     const {
         name,
+        label,
         icon,
         active,
     } = props;
@@ -89,12 +92,16 @@ function SidebarMenuItem (props: SidebarItemMenuProps) {
     };
 
     return (
-        <Button
-            className={clsx(classes.root, active && classes.active)}
-            onClick={(e) => handleChangeTab(name)}
-        >
-            {icon}
-        </Button>
+        <Tooltip
+            title={label}
+            placement="left">
+            <Button
+                className={clsx(classes.root, active && classes.active)}
+                onClick={(e) => handleChangeTab(name)}
+            >
+                {icon}
+            </Button>
+        </Tooltip>
     );
 }
 
