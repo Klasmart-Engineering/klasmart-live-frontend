@@ -1,4 +1,5 @@
 import { Session } from "../../../../pages/room/room";
+import { LocalSessionContext } from "../../../providers/providers";
 import { RoomContext } from "../../../providers/roomContext";
 import UserCamera from "../../userCamera/userCamera";
 import { NoItemList } from "../../utils/utils";
@@ -11,7 +12,7 @@ import {
 import { Person as UserIcon } from "@styled-icons/fluentui-system-regular/Person";
 import clsx from "clsx";
 import React, {
-    useContext, useEffect, useState,
+    useContext, useEffect, useRef, useState,
 } from "react";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -74,7 +75,6 @@ function TabParticipants () {
                     ) : <NoItemList
                         icon={<UserIcon />}
                         text="No teachers connected" />}
-
                 </Grid>
                 <Grid
                     item

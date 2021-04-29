@@ -1,5 +1,6 @@
 import { LocalSessionContext } from "../../providers/providers";
-import Camera from "./camera";
+import { RoomContext } from "../../providers/roomContext";
+import { WebRTCContext } from "../../providers/WebRTCContext";
 import NoCamera from "./noCamera";
 import UserCameraActions from "./userCameraActions";
 import UserCameraDetails from "./userCameraDetails";
@@ -9,7 +10,9 @@ import {
     Theme,
 } from "@material-ui/core";
 import clsx from "clsx";
-import React, { useContext, useState } from "react";
+import React, {
+    useContext, useEffect, useRef, useState,
+} from "react";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -44,9 +47,27 @@ function UserCamera (props: UserCameraType) {
     const classes = useStyles();
     const [ isHover, setIsHover ] = useState(false);
 
-    const { sessionId } = useContext(LocalSessionContext);
+    const { camera, sessionId } = useContext(LocalSessionContext);
+    const { sessions } = useContext(RoomContext);
+    const webrtc = useContext(WebRTCContext);
+
     const isSelf = user.id === sessionId ? true : false;
     const isSpeaking = false;
+
+    const userSession = sessions.get(user.id);
+    const userCamera = isSelf ? camera : webrtc.getCameraStream(user.id);
+
+    const audioRef = useRef<HTMLAudioElement>(null);
+    const videoRef = useRef<HTMLVideoElement>(null);
+
+    useEffect(() => {
+        if (audioRef.current) {
+            audioRef.current.srcObject = userCamera ? userCamera : null;
+        }
+        if (videoRef.current) {
+            videoRef.current.srcObject = userCamera ? userCamera : null;
+        }
+    }, [ videoRef.current, userCamera ]);
 
     return (
         <Grid
@@ -63,7 +84,30 @@ function UserCamera (props: UserCameraType) {
                 xs>
                 <UserCameraDetails user={user} />
                 {actions ? isHover && <UserCameraActions user={user} /> : null}
-                {user.hasVideo ? <Camera user={user} /> : <NoCamera name={user.name} />}
+                {userCamera ? (
+                    <>
+                        <video
+                            ref={videoRef}
+                            playsInline
+                            id={userSession ? `camera:${userSession.id}` : undefined}
+                            autoPlay={true}
+                            muted={true}
+                            style={{
+                                width: `100%`,
+                                height: `100%`,
+                                position: `absolute`,
+                                top: 0,
+                                left: 0,
+                            }}
+                        />
+                        <audio
+                            ref={audioRef}
+                            autoPlay={true}
+                            muted={true}
+                            // muted={isSelf}
+                        />
+                    </>
+                ) : <NoCamera name={user.name} />}
             </Grid>
         </Grid>
     );

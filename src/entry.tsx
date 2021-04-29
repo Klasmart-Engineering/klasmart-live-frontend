@@ -62,7 +62,6 @@ const client = new ApolloClient({
     link: wsLink,
 } as any);
 
-/*
 function getApolloClient (roomId: string) {
     const authToken = AuthTokenProvider.retrieveToken();
     const directionalLink = new RetryLink().split((operation) => operation.getContext().target === LIVE_LINK, new WebSocketLink({
@@ -96,7 +95,7 @@ function getApolloClient (roomId: string) {
         link: directionalLink,
     } as any);
 }
-*/
+
 // import NewUIEntry from './newuiupdate/entry';
 
 Sentry.init({
@@ -339,13 +338,13 @@ if (
     || (!isIOS || !isIOS13) && isChrome // Support only Chrome in other OS
 ) {
     const { store, persistor } = createDefaultStore();
-    // const apolloClient = getApolloClient(roomId);
+    const apolloClient = getApolloClient(roomId);
     renderComponent = (
         <Provider store={store}>
             <PersistGate
                 loading={null}
                 persistor={persistor}>
-                <ApolloProvider client={client}>
+                <ApolloProvider client={apolloClient}>
                     {/* <Entry /> */}
                     <NewUIEntry />
                 </ApolloProvider>

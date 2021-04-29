@@ -1,11 +1,14 @@
+import { ContentType } from "../../../../../pages/room/room";
 import { LIVE_LINK, LocalSessionContext } from "../../../../providers/providers";
+import { RoomContext } from "../../../../providers/roomContext";
+import { ScreenShareContext } from "../../../../providers/screenShareProvider";
 import {
     isActiveGlobalMuteAudioState,
     isActiveGlobalMuteVideoState,
     isGlobalActionsOpenState,
     pinnedUserState,
 } from "../../../../states/layoutAtoms";
-import { MUTATION_REWARD_TROPHY, MUT_SHOW_CONTENT } from "../../../utils/graphql";
+import { MUT_SHOW_CONTENT, MUTATION_REWARD_TROPHY } from "../../../utils/graphql";
 import { StyledPopper } from "../../../utils/utils";
 import GlobalActionsMenuItem from "./globalAction";
 import { useMutation } from "@apollo/client";
@@ -24,9 +27,6 @@ import { TvFill as ScreenShareIcon } from "@styled-icons/bootstrap/TvFill";
 import React, { useContext, useEffect } from "react";
 import { useIntl } from "react-intl";
 import { useRecoilState } from "recoil";
-import { ContentType } from "../../../../../pages/room/room";
-import { RoomContext } from "../../../../providers/roomContext";
-import { ScreenShareContext } from "../../../../providers/screenShareProvider";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -49,11 +49,19 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
     const [ pinnedUser, setPinnedUser ] = useRecoilState(pinnedUserState);
 
     const { roomId, sessionId } = useContext(LocalSessionContext);
-    const { content } = useContext(RoomContext)
+    const { content } = useContext(RoomContext);
     const screenShare = useContext(ScreenShareContext);
 
-    const [ showContent, { loading: loadingShowContent } ] = useMutation(MUT_SHOW_CONTENT, {context: {target: LIVE_LINK}});
-    const [ rewardTrophyMutation, { loading: loadingTrophy } ] = useMutation(MUTATION_REWARD_TROPHY, {context: {target: LIVE_LINK}});
+    const [ showContent, { loading: loadingShowContent } ] = useMutation(MUT_SHOW_CONTENT, {
+        context: {
+            target: LIVE_LINK,
+        },
+    });
+    const [ rewardTrophyMutation, { loading: loadingTrophy } ] = useMutation(MUTATION_REWARD_TROPHY, {
+        context: {
+            target: LIVE_LINK,
+        },
+    });
 
     const rewardTrophy = (user: string, kind: string) => {
         rewardTrophyMutation({
@@ -66,12 +74,24 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
     };
 
     const toggleScreenshare = () => {
-        if( content?.type === ContentType.Screen ) {
+        if( content?.type === ContentType.Screen && screenShare.stream) {
             screenShare.stop();
-            showContent({ variables: { roomId, type: ContentType.Camera, contentId: sessionId } });
+            showContent({
+                variables: {
+                    roomId,
+                    type: ContentType.Camera,
+                    contentId: sessionId,
+                },
+            });
         }else{
             screenShare.start();
-            showContent({ variables: { roomId, type: ContentType.Screen, contentId: sessionId } });
+            showContent({
+                variables: {
+                    roomId,
+                    type: ContentType.Screen,
+                    contentId: sessionId,
+                },
+            });
         }
         setPinnedUser(undefined);
     };
@@ -80,12 +100,12 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
         {
             id: `1`,
             title: intl.formatMessage({
-                id: content?.type === ContentType.Screen ? `toolbar_global_actions_turn_of_screenshare` : `toolbar_global_actions_turn_on_screenshare`,
+                id: content?.type === ContentType.Screen && screenShare.stream ? `toolbar_global_actions_turn_of_screenshare` : `toolbar_global_actions_turn_on_screenshare`,
             }),
             icon: <ScreenShareIcon size="1.7rem" />,
             variant: `blue`,
-            isActive: content?.type === ContentType.Screen,
-            onClick: () => {toggleScreenshare()},
+            isActive: content?.type === ContentType.Screen && screenShare.stream,
+            onClick: () => {toggleScreenshare();},
         },
         {
             id: `3`,
