@@ -1,9 +1,7 @@
-import {
-    interactiveModeState,
-    isActiveGlobalScreenshareState,
-    pinnedUserState,
-    usersState,
-} from "../../states/layoutAtoms";
+import { ContentType } from "../../../pages/room/room";
+import { RoomContext } from "../../providers/roomContext";
+import { ScreenShareContext } from "../../providers/screenShareProvider";
+import { pinnedUserState } from "../../states/layoutAtoms";
 import Observe from "./viewModes/Observe";
 import OnStage from "./viewModes/onStage";
 import Present from "./viewModes/Present";
@@ -15,8 +13,6 @@ import {
 } from "@material-ui/core";
 import React, { useContext } from "react";
 import { useRecoilState } from "recoil";
-import { RoomContext } from "../../providers/roomContext";
-import { ContentType } from "../../../pages/room/room";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -28,11 +24,13 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 function MainView () {
     const classes = useStyles();
-    const { content } = useContext(RoomContext)
-
+    const { content } = useContext(RoomContext);
+    const screenShare = useContext(ScreenShareContext);
     const [ pinnedUser, setPinnedUser ] = useRecoilState(pinnedUserState);
 
-    if(content?.type === ContentType.Screen){
+    // SCREENSHARE VIEW
+    // TEACHER and STUDENTS : Host Screen
+    if(content?.type === ContentType.Screen && screenShare.stream){
         return(
             <Grid
                 container
@@ -46,6 +44,9 @@ function MainView () {
         );
     }
 
+    // PRESENT VIEW
+    // HOST : Present activity
+    // STUDENTS : See activity screen from Host
     if(content?.type === ContentType.Stream){
         return(
             <Grid
@@ -60,6 +61,8 @@ function MainView () {
         );
     }
 
+    // TEACHER : Observe student doing activities
+    // STUDENTS : Interactive activity
     if(content?.type === ContentType.Activity){
         return(
             <Grid
@@ -90,7 +93,7 @@ function MainView () {
     //                     textAlign: `center`,
     //                     justifyContent: `center`,
     //                 }}>
-	// 					SHOW CAMERA OF {pinnedUser}
+    // 					SHOW CAMERA OF {pinnedUser}
     //                     <br/>
     //                     {users.filter(user => user.id === pinnedUser).map(user => user.name)}
     //                 </div>
@@ -99,6 +102,8 @@ function MainView () {
     //     );
     // }
 
+    // DEFAULT VIEW (OnStage)
+    // TEACHER and STUDENTS : Host camera
     return(
         <Grid
             container

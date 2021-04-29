@@ -3,6 +3,7 @@ import { MUTATION_SET_HOST } from './components/utils/graphql';
 import Class from './pages/class';
 import ClassEnded from './pages/classEnded';
 import ClassLeft from './pages/classLeft';
+import Join from './pages/join';
 import { LIVE_LINK, LocalSessionContext } from './providers/providers';
 import { RoomContext } from './providers/roomContext';
 import {
@@ -17,7 +18,9 @@ function Layout () {
     const [ classEnded, setClassEnded ] = useRecoilState(classEndedState);
     const [ hasControls, setHasControls ] = useRecoilState(hasControlsState);
 
-    const { roomId, sessionId } = useContext(LocalSessionContext);
+    const {
+        camera, name, roomId, sessionId,
+    } = useContext(LocalSessionContext);
     const { sessions } = useContext(RoomContext);
 
     const [ hostMutation ] = useMutation(MUTATION_SET_HOST, {
@@ -58,6 +61,10 @@ function Layout () {
         const host = teachers.find(session => session.isHost === true);
         host?.id === sessionId ? setHasControls(true) : setHasControls(false);
     }, [ sessions ]);
+
+    if (!name || camera === undefined) {
+        return <Join />;
+    }
 
     if(classLeft){
         return(<ClassLeft />);

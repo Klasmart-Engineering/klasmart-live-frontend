@@ -31,8 +31,8 @@ import React,
     useContext,
     useState,
 } from "react";
-import { useRecoilState } from "recoil";
 import { FormattedMessage } from "react-intl";
+import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -137,10 +137,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     menuItemIcon:{
         marginRight: 10,
-        padding: 5
+        padding: 5,
     },
     menuItemIconActive:{
-        color: red[500]
+        color: red[500],
     },
     expand:{
         position: `absolute`,
@@ -207,6 +207,19 @@ function UserCameraActions (props: UserCameraActionsType) {
         id === pinnedUser ? setPinnedUser(undefined) : setPinnedUser(id);
     }
 
+    function fullScreenCamera () {
+        const videoId = `camera:${user.id}`;
+        const video = document.getElementById(videoId) as any;
+        if (!video) return;
+
+        if (video.requestFullscreen)
+            video.requestFullscreen();
+        else if (video.webkitRequestFullscreen)
+            video.webkitRequestFullscreen(); // to support on Safari
+        else if (video.msRequestFullScreen)
+            video.msRequestFullScreen(); // to support on Edge
+    }
+
     return (
         <div
             className={classes.root}>
@@ -220,6 +233,7 @@ function UserCameraActions (props: UserCameraActionsType) {
                         style={{
                             background: `none`,
                         }}
+                        onClick={() => fullScreenCamera()}
                     >
                         <ExpandIcon size="0.75em" />
                     </IconButton>
