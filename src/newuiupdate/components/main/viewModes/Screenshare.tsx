@@ -1,11 +1,15 @@
-import { Stream } from "../../../../webRTCState";
+import { LocalSessionContext } from "../../../providers/providers";
 import { RoomContext } from "../../../providers/roomContext";
 import { ScreenShareContext } from "../../../providers/screenShareProvider";
 import { WebRTCContext } from "../../../providers/WebRTCContext";
+import UserCamera from "../../userCamera/userCamera";
+import { StyledVideo } from "../../utils/styledVideo";
 import {
     Grid, makeStyles, Theme,
 } from "@material-ui/core";
-import React, { useContext, useEffect } from "react";
+import React, {
+    useContext, useEffect, useRef,
+} from "react";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -20,41 +24,24 @@ function Screenshare () {
     const classes = useStyles();
     const screenShare = useContext(ScreenShareContext);
     const webrtc = useContext(WebRTCContext);
-    const { content } = useContext(RoomContext);
+    const { content, sessions } = useContext(RoomContext);
 
-    /*
-    useEffect(()=>{
-        console.log(`--------`);
-        if(content){
-            console.log(webrtc.getAuxStream(content.contentId));
-        }
-        console.log(`--------`);
-    }, [ webrtc ]);
-    */
+    const screenshareVideo = screenShare.stream ? screenShare.stream : content && webrtc.getAuxStream(content?.contentId);
 
     // Local ScreenShare Stream
-    if(screenShare.stream){
+    if(screenshareVideo){
         return(
             <Grid
                 container
                 className={classes.root}>
                 <Grid item>
-                    <Stream stream={screenShare.stream} />
+                    <StyledVideo stream={screenshareVideo} />
                 </Grid>
             </Grid>
         );
     }
 
-    if(content){
-        return(
-            <>
-            TEST
-            </>
-            // <Stream stream={webrtc.getAuxStream(content.contentId)} />
-        );
-    }
-
-    return(null);
+    return(<div>TEST</div>);
 
 }
 
