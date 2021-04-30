@@ -86,8 +86,8 @@ export function ResizedIframe(props: Props): JSX.Element {
             .h5p-single-choice-set{
                 max-height: 300px !important;
             }
-            .h5p-multichoice .h5p-answers{
-                display: flex;
+            .h5p-alternative-inner{
+                height: auto !important;
             }
             .h5p-column .h5p-dragquestion > .h5p-question-content > .h5p-inner{
                 width: 100% !important
