@@ -90,9 +90,9 @@ export function ResizedIframe(props: Props): JSX.Element {
                 width: contentWidth,
                 height: contentHeight,
                 position: `absolute`,
-                top: 0,
-                left: 0,
-                transformOrigin: "top left",
+                // top: 0,
+                // left: 0,
+                transformOrigin: "center center",
                 transform: `scale(${transformScale})`,
             }}
         />
