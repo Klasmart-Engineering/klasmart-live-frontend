@@ -1,6 +1,7 @@
 import { ContentType } from "../../../pages/room/room";
 import { RoomContext } from "../../providers/roomContext";
 import { ScreenShareContext } from "../../providers/screenShareProvider";
+import { WebRTCContext } from "../../providers/WebRTCContext";
 import { pinnedUserState } from "../../states/layoutAtoms";
 import Observe from "./viewModes/Observe";
 import OnStage from "./viewModes/onStage";
@@ -28,9 +29,12 @@ function MainView () {
     const screenShare = useContext(ScreenShareContext);
     const [ pinnedUser, setPinnedUser ] = useRecoilState(pinnedUserState);
 
+    const webrtc = useContext(WebRTCContext);
+    const activeScreenshare = screenShare.stream || content && webrtc.getAuxStream(content.contentId);
+
     // SCREENSHARE VIEW
     // TEACHER and STUDENTS : Host Screen
-    if(content?.type === ContentType.Screen && screenShare.stream){
+    if(content?.type === ContentType.Screen && activeScreenshare){
         return(
             <Grid
                 container

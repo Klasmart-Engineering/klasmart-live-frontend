@@ -1,4 +1,4 @@
-import { WebRTCContext } from "../../providers/WebRTCContext";
+import { WebRTCContext } from "./WebRTCContext";
 import { types as MediaSoup } from "mediasoup-client";
 import React, {
     createContext,
