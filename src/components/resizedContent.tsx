@@ -40,6 +40,7 @@ export function ResizedIframe(props: Props): JSX.Element {
     useEffect(() => {
         const iRef = window.document.getElementById("resizediframe") as HTMLIFrameElement;
         iRef.addEventListener("load", onLoad);
+        iRef.addEventListener("resize", onLoad);
         return () => iRef.removeEventListener("load", onLoad);
     }, [contentId]);
 
@@ -66,19 +67,48 @@ export function ResizedIframe(props: Props): JSX.Element {
         const contentDoc = iframeElement.contentDocument
         if (!contentWindow || !contentDoc) { return; }
 
+        // Custom styles when needed
+        var style = document.createElement('style');
+        style.innerHTML = `
+        .h5p-content{
+            display: inline-block !important;
+            width: auto !important;
+        }
+        .h5p-course-presentation .h5p-wrapper{
+            min-width: 1600px !important;
+            min-height: 900px !important
+        }
+        `;
+        contentDoc.head.appendChild(style);
+        
         // IP Protection: Contents should not be able to be downloaded by right-clicking.
         const blockRightClick = (e: MouseEvent) => { e.preventDefault() }
         contentWindow.addEventListener("contextmenu", (e) => blockRightClick(e), false);
         const h5pDivCollection = contentDoc.body.getElementsByClassName("h5p-content");
+
         if (h5pDivCollection.length > 0) {
             const h5pContainer = h5pDivCollection[0] as HTMLDivElement;
             h5pContainer.setAttribute("data-iframe-height", "");
             const h5pWidth = h5pContainer.getBoundingClientRect().width;
             const h5pHeight = h5pContainer.getBoundingClientRect().height;
-            setContentWidth(h5pWidth);
-            setContentHeight(h5pHeight);
-            scale(h5pWidth, h5pHeight);
+             setContentWidth(h5pWidth);
+             setContentHeight(h5pHeight);
+             scale(h5pWidth, h5pHeight);
         }
+
+        // Listen to acvitity clicks (that change the height of h5p)
+        contentDoc.addEventListener('mouseup', function(){
+            setTimeout(function(){ 
+                const h5pContainer = h5pDivCollection[0] as HTMLDivElement;
+                h5pContainer.setAttribute("data-iframe-height", "");
+                const h5pWidth = h5pContainer.getBoundingClientRect().width;
+                const h5pHeight = h5pContainer.getBoundingClientRect().height;
+
+                setContentWidth(h5pWidth);
+                setContentHeight(h5pHeight);
+            }, 2000);
+        }, false);           
+
     }
 
     return (
@@ -86,14 +116,16 @@ export function ResizedIframe(props: Props): JSX.Element {
             id="resizediframe"
             src={contentId}
             ref={iframeRef}
+            data-h5p-width={contentWidth}
+            data-h5p-height={contentWidth}
             style={{
                 width: contentWidth,
                 height: contentHeight,
                 position: `absolute`,
-                // top: 0,
-                // left: 0,
                 transformOrigin: "center center",
                 transform: `scale(${transformScale})`,
+                minWidth: '100%',
+                minHeight: '100%',
             }}
         />
     );
