@@ -1,5 +1,5 @@
 import { gql, useMutation, useSubscription } from "@apollo/client";
-import { CircularProgress, IconButton, Typography } from "@material-ui/core";
+import { CircularProgress, IconButton, makeStyles,createStyles, Theme,  Typography } from "@material-ui/core";
 import { VolumeMute as AudioOffIcon } from "@styled-icons/boxicons-regular/VolumeMute";
 import React, {
     useCallback, useContext, useEffect, useRef,
@@ -24,6 +24,21 @@ interface ReplicaVideoProps {
 
 const PLAYLIST_FILE_NAME = "master";
 const PLAYLIST_FILE_HOST = "/video";
+
+const useStyles = makeStyles((theme: Theme) =>
+    createStyles({
+        reactPlayer: {
+            "& video": {
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                objectFit: 'contain',
+            }
+        },
+    }),
+);
 
 const createHlsDashUrlFromSrc = (src: string): string[] => {
     let urls: string[] = []
@@ -63,6 +78,7 @@ export function ReplicaMedia(
     props: React.VideoHTMLAttributes<HTMLMediaElement> & ReplicaVideoProps
 ) {
     const { sessionId, type, ...mediaProps } = props;
+    const classes = useStyles();
     const srcRef = useRef<string>();
     const [playing, setPlaying] = useState<boolean>(false);
     const timeRef = useRef<number>();
@@ -251,6 +267,7 @@ export function ReplicaMedia(
                         }}
                         onError={(_, reason) => reactPlayerError(reason)}
                         width="100%"
+                        className={classes.reactPlayer}
                     />
                     {videoReady && muted ?
                         <div id="video-unmute-overlay" style={{ position: "absolute", width: "100%", height: "100%", zIndex: videoUnmuteOverlay }}>
@@ -278,7 +295,7 @@ export function ReplicatedMedia(
     props: React.VideoHTMLAttributes<HTMLMediaElement> & ReplicatedMediaProps
 ) {
     const { type, src, ...mediaProps } = props;
-
+    const classes = useStyles();
     const ref = useRef<HTMLMediaElement>(null);
 
     const reactPlayerRef = useRef<ReactPlayer>(null);
@@ -456,7 +473,7 @@ export function ReplicatedMedia(
                     controls
                     playsinline
                     url={videoSources}
-                    width="100%"
+                    className={classes.reactPlayer}
                     config={{
                         file: {
                             attributes: {
