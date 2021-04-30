@@ -31,8 +31,8 @@ export function ResizedIframe(props: Props): JSX.Element {
     const [transformScale, setTransformScale] = useState<number>(1);
     const [contentWidth, setContentWidth] = useState(1600);
     const [contentHeight, setContentHeight] = useState(1400);
-    const [cssTransform, setCssTransform] = useState(`scale(1.8)`);
     const [enableResize, setEnableResize] = useState(true);
+    const [stylesLoaded, setStylesLoaded] = useState(false);
 
     const size = useWindowSize();
 
@@ -72,27 +72,30 @@ export function ResizedIframe(props: Props): JSX.Element {
         if (!contentWindow || !contentDoc) { return; }
 
         // Custom styles when needed
-        var style = document.createElement('style');
-        style.innerHTML = `
-        .h5p-content{
-            display: inline-block !important;
-            width: auto !important;
+        if(!stylesLoaded){
+            var style = document.createElement('style');
+            style.innerHTML = `
+            .h5p-content{
+                display: inline-block !important;
+                width: auto !important;
+            }
+            .h5p-course-presentation .h5p-wrapper{
+                min-width: 1300px !important;
+                min-height: 800px !important
+            }
+            .h5p-single-choice-set{
+                max-height: 300px !important;
+            }
+            .h5p-multichoice .h5p-answers{
+                display: flex;
+            }
+            .h5p-column .h5p-dragquestion > .h5p-question-content > .h5p-inner{
+                width: 100% !important
+            }
+            `;
+            contentDoc.head.appendChild(style);
+            setStylesLoaded(true);
         }
-        .h5p-course-presentation .h5p-wrapper{
-            min-width: 1600px !important;
-            min-height: 900px !important
-        }
-        .h5p-single-choice-set{
-            max-height: 300px !important;
-        }
-        .h5p-multichoice .h5p-answers{
-            display: flex;
-        }
-        .h5p-column .h5p-dragquestion > .h5p-question-content > .h5p-inner{
-            width: 100% !important
-        }
-        `;
-        contentDoc.head.appendChild(style);
         
         // IP Protection: Contents should not be able to be downloaded by right-clicking.
         const blockRightClick = (e: MouseEvent) => { e.preventDefault() }

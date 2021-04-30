@@ -57,6 +57,10 @@ export function RecordedIframe(props: Props): JSX.Element {
     const [intervalId, setIntervalId] = useState<number>();
     const [contentWidth, setContentWidth] = useState(1600);
     const [contentHeight, setContentHeight] = useState(1400);
+    const [enableResize, setEnableResize] = useState(true);
+    const [stylesLoaded, setStylesLoaded] = useState(false);
+
+
     const size = useWindowSize();
 
     useEffect(() => {
@@ -125,10 +129,46 @@ export function RecordedIframe(props: Props): JSX.Element {
         const contentDoc = iframeElement.contentDocument
         if (!contentWindow || !contentDoc) { return; }
 
+        // Custom styles when needed
+        if(!stylesLoaded){
+            var style = document.createElement('style');
+            style.innerHTML = `
+            .h5p-content{
+                display: inline-block !important;
+                width: auto !important;
+            }
+            .h5p-course-presentation .h5p-wrapper{
+                min-width: 1300px !important;
+                min-height: 800px !important
+            }
+            .h5p-single-choice-set{
+                max-height: 300px !important;
+            }
+            .h5p-multichoice .h5p-answers{
+                display: flex;
+            }
+            .h5p-column .h5p-dragquestion > .h5p-question-content > .h5p-inner{
+                width: 100% !important
+            }
+            `;
+            contentDoc.head.appendChild(style);
+            setStylesLoaded(true);
+        }
+
         // IP Protection: Contents should not be able to be downloaded by right-clicking.
         const blockRightClick = (e: MouseEvent) => { e.preventDefault() }
         contentWindow.addEventListener("contextmenu", (e) => blockRightClick(e), false);
         const h5pDivCollection = contentDoc.body.getElementsByClassName("h5p-content");
+        const h5pTypeColumn = contentDoc.body.getElementsByClassName("h5p-column").length;
+
+        if(h5pTypeColumn){
+            setEnableResize(false)
+            h5pDivCollection[0].setAttribute("style", "width: 100% !important;");
+        }else{
+            setEnableResize(true)
+             h5pDivCollection[0].setAttribute("style", "width: auto !important;");
+        }
+
         if (h5pDivCollection.length > 0) {
             const h5pContainer = h5pDivCollection[0] as HTMLDivElement;
             h5pContainer.setAttribute("data-iframe-height", "");
@@ -241,14 +281,14 @@ export function RecordedIframe(props: Props): JSX.Element {
                 src={contentId}
                 ref={iframeRef}
                 style={{
-                    width: contentWidth,
-                    height: contentHeight,
-                    position: `absolute`,
-                    top: 0,
-                    left: 0,
-                    transformOrigin: "top left",
-                    transform: `scale(${transformScale})`,
-                }}
+                width: enableResize ? contentWidth : '100%',
+                height: enableResize ? contentHeight : '100%',
+                position: enableResize ? `absolute` : 'static',
+                transformOrigin: "center center",
+                transform: enableResize ? `scale(${transformScale})` : `scale(0.8)`,
+                minWidth: '100%',
+                minHeight: '100%',
+            }}
             />
         </React.Fragment>
     );
