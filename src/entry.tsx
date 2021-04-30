@@ -145,6 +145,7 @@ function parseToken() {
                 materials: materialsParam ? JSON.parse(materialsParam) : [
                     { __typename: MaterialTypename.Iframe, name: "Interactive video", url: "/h5p/play/60588e7475aa32001244926f" },
                     { __typename: MaterialTypename.Iframe, name: "Course Presentation", url: "/h5p/play/60588da62af9710014707a2d" },
+                    { __typename: MaterialTypename.Iframe, name: "Colum Presentation", url: "/h5p/play/608b9065e5085e0014359f72" },
                     { __typename: MaterialTypename.Iframe, name: "Drag and drop", url: "/h5p/play/60589f9375aa32001244928a" },
                     { __typename: MaterialTypename.Iframe, name: "Memory Game", url: "/h5p/play/605891d02af9710014707a44" },
                     { __typename: MaterialTypename.Iframe, name: "Fruit", url: "/h5p/play/604afe4c75aa320012448fca" },

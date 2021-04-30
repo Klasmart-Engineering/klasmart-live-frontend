@@ -31,17 +31,21 @@ export function ResizedIframe(props: Props): JSX.Element {
     const [transformScale, setTransformScale] = useState<number>(1);
     const [contentWidth, setContentWidth] = useState(1600);
     const [contentHeight, setContentHeight] = useState(1400);
+    const [cssTransform, setCssTransform] = useState(`scale(1.8)`);
+    const [enableResize, setEnableResize] = useState(true);
+
     const size = useWindowSize();
 
     useEffect(() => {
-        scale(contentWidth, contentHeight);
+        if(enableResize){
+            scale(contentWidth, contentHeight);
+        }
     }, [size])
 
     useEffect(() => {
         const iRef = window.document.getElementById("resizediframe") as HTMLIFrameElement;
         iRef.addEventListener("load", onLoad);
-        iRef.addEventListener("resize", onLoad);
-        return () => iRef.removeEventListener("load", onLoad);
+        return () =>  iRef.removeEventListener("resize", onLoad);
     }, [contentId]);
 
     const scale = (innerWidth: number, innerHeight: number) => {
@@ -78,6 +82,15 @@ export function ResizedIframe(props: Props): JSX.Element {
             min-width: 1600px !important;
             min-height: 900px !important
         }
+        .h5p-single-choice-set{
+            max-height: 300px !important;
+        }
+        .h5p-multichoice .h5p-answers{
+            display: flex;
+        }
+        .h5p-column .h5p-dragquestion > .h5p-question-content > .h5p-inner{
+            width: 100% !important
+        }
         `;
         contentDoc.head.appendChild(style);
         
@@ -85,6 +98,15 @@ export function ResizedIframe(props: Props): JSX.Element {
         const blockRightClick = (e: MouseEvent) => { e.preventDefault() }
         contentWindow.addEventListener("contextmenu", (e) => blockRightClick(e), false);
         const h5pDivCollection = contentDoc.body.getElementsByClassName("h5p-content");
+        const h5pTypeColumn = contentDoc.body.getElementsByClassName("h5p-column").length;
+
+        if(h5pTypeColumn){
+            setEnableResize(false)
+            h5pDivCollection[0].setAttribute("style", "width: 100% !important;");
+        }else{
+            setEnableResize(true)
+             h5pDivCollection[0].setAttribute("style", "width: auto !important;");
+        }
 
         if (h5pDivCollection.length > 0) {
             const h5pContainer = h5pDivCollection[0] as HTMLDivElement;
@@ -119,11 +141,11 @@ export function ResizedIframe(props: Props): JSX.Element {
             data-h5p-width={contentWidth}
             data-h5p-height={contentWidth}
             style={{
-                width: contentWidth,
-                height: contentHeight,
-                position: `absolute`,
+                width: enableResize ? contentWidth : '100%',
+                height: enableResize ? contentHeight : '100%',
+                position: enableResize ? `absolute` : 'static',
                 transformOrigin: "center center",
-                transform: `scale(${transformScale})`,
+                transform: enableResize ? `scale(${transformScale})` : `scale(0.8)`,
                 minWidth: '100%',
                 minHeight: '100%',
             }}
