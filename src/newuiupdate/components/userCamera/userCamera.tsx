@@ -1,6 +1,7 @@
 import { LocalSessionContext } from "../../providers/providers";
 import { RoomContext } from "../../providers/roomContext";
 import { WebRTCContext } from "../../providers/WebRTCContext";
+import { videoGloballyMutedState } from "../../states/layoutAtoms";
 import NoCamera from "./noCamera";
 import UserCameraActions from "./userCameraActions";
 import UserCameraDetails from "./userCameraDetails";
@@ -13,6 +14,7 @@ import clsx from "clsx";
 import React, {
     useContext, useEffect, useRef, useState,
 } from "react";
+import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -50,6 +52,7 @@ function UserCamera (props: UserCameraType) {
     const { camera, sessionId } = useContext(LocalSessionContext);
     const { sessions } = useContext(RoomContext);
     const webrtc = useContext(WebRTCContext);
+    const [ videoGloballyMuted, setVideoGloballyMuted ] = useRecoilState(videoGloballyMutedState);
 
     const isSelf = user.id === sessionId ? true : false;
     const isSpeaking = false;
@@ -67,6 +70,9 @@ function UserCamera (props: UserCameraType) {
         if (videoRef.current) {
             videoRef.current.srcObject = userCamera ? userCamera : null;
         }
+
+        // console.log(userCamera?.getVideoTracks()[0].muted);
+
     }, [ videoRef.current, userCamera ]);
 
     return (

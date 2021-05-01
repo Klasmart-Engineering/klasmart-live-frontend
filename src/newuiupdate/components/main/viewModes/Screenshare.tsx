@@ -5,8 +5,10 @@ import { WebRTCContext } from "../../../providers/WebRTCContext";
 import UserCamera from "../../userCamera/userCamera";
 import { StyledVideo } from "../../utils/styledVideo";
 import {
-    Grid, makeStyles, Theme,
+    Button,
+    Grid, makeStyles, Theme, Typography,
 } from "@material-ui/core";
+import PresentToAllIcon from '@material-ui/icons/PresentToAll';
 import React, {
     useContext, useEffect, useRef,
 } from "react";
@@ -17,7 +19,15 @@ const useStyles = makeStyles((theme: Theme) => ({
         alignItems: `center`,
         justifyContent: `center`,
         border: `5px solid gren`,
+        textAlign: `center`,
     },
+    icon:{
+        color: theme.palette.text.primary,
+        "& svg": {
+            fontSize: `3rem`,
+        },
+    },
+    button:{},
 }));
 
 function Screenshare () {
@@ -35,13 +45,39 @@ function Screenshare () {
                 container
                 className={classes.root}>
                 <Grid item>
-                    <StyledVideo stream={screenshareVideo} />
+                    {screenShare.stream ? (
+                        <Grid
+                            container
+                            direction="column"
+                            spacing={3}
+                        >
+                            <Grid item>
+                                <div className={classes.icon}>
+                                    <PresentToAllIcon />
+                                </div>
+                            </Grid>
+                            <Grid item>
+                                <Typography variant="h5">Your are presenting to everyone</Typography>
+                            </Grid>
+                            <Grid item>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={() => screenShare.stop()}
+                                >Stop presenting</Button>
+                            </Grid>
+                        </Grid>
+                    ) : (
+                        <>
+                            <StyledVideo stream={screenshareVideo} />
+                        </>
+                    )}
                 </Grid>
             </Grid>
         );
     }
 
-    return(<div>TEST</div>);
+    return(null);
 
 }
 

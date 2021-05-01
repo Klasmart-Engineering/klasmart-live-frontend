@@ -3,6 +3,7 @@ import { RoomContext } from "../../providers/roomContext";
 import { ScreenShareContext } from "../../providers/screenShareProvider";
 import { WebRTCContext } from "../../providers/WebRTCContext";
 import { pinnedUserState } from "../../states/layoutAtoms";
+import { Whiteboard } from "../utils/Whiteboard";
 import Observe from "./viewModes/Observe";
 import OnStage from "./viewModes/onStage";
 import Present from "./viewModes/Present";
@@ -42,6 +43,7 @@ function MainView () {
                 <Grid
                     item
                     xs>
+                    <Whiteboard uniqueId="student" />
                     <Screenshare />
                 </Grid>
             </Grid>

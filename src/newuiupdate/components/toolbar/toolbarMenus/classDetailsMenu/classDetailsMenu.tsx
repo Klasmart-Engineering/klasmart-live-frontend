@@ -45,11 +45,11 @@ function ClassDetailsMenu (props: GlobaActionsMenuProps) {
                     label={intl.formatMessage({
                         id: `classdetails_details`,
                     })} />
-                <Tab
+                {/* <Tab
                     disableRipple
                     label={intl.formatMessage({
                         id: `classdetails_roster`,
-                    })} />
+                    })} /> */}
             </Tabs>
             <TabPanel
                 value={tabValue}

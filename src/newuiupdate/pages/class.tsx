@@ -15,7 +15,7 @@ function Class () {
                 xs>
                 <Main />
             </Grid>
-            {classtype !== ClassType.STUDY &&
+            {classtype === ClassType.LIVE &&
              <Grid item>
                  <Sidebar />
              </Grid>

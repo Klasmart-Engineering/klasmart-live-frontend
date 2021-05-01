@@ -1,4 +1,5 @@
 import { LocalSessionContext } from "../../providers/providers";
+import { WebRTCContext } from "../../providers/WebRTCContext";
 import {
     makeStyles,
     Theme,
@@ -8,7 +9,9 @@ import amber from "@material-ui/core/colors/amber";
 import { MicMuteFill as MicDisabledIcon } from "@styled-icons/bootstrap/MicMuteFill";
 import { Crown as HasControlsIcon } from "@styled-icons/fa-solid/Crown";
 import { HatGraduation as TeacherIcon } from "@styled-icons/fluentui-system-filled/HatGraduation";
-import React, { useContext } from "react";
+import React, {
+    useContext, useEffect, useState,
+} from "react";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -73,7 +76,14 @@ function UserCameraDetails (props: UserCameraDetailsType) {
     const { user } = props;
     const classes = useStyles();
     const { sessionId } = useContext(LocalSessionContext);
+    const webrtc = useContext(WebRTCContext);
+    const [ micOn, setMicOn ] = useState<boolean>(false);
+
     const isSelf = user.id === sessionId ? true : false;
+
+    useEffect(() => {
+        setMicOn(webrtc.isLocalAudioEnabled(sessionId));
+    }, [ webrtc.isLocalAudioEnabled(sessionId) ]);
 
     if(user.isTeacher){
         return(
@@ -99,7 +109,7 @@ function UserCameraDetails (props: UserCameraDetailsType) {
             <div className={classes.topCamera}></div>
             <div className={classes.bottomCamera}>
                 <Typography className={classes.name}>
-                    {isSelf ? `You` : user.name} {!user.hasAudio && <MicDisabledIcon size="0.85rem"/>}
+                    {isSelf ? `You` : user.name} {!micOn && <MicDisabledIcon size="0.85rem"/>}
                 </Typography>
             </div>
         </div>

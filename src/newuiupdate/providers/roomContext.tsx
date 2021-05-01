@@ -2,9 +2,16 @@ import Loading from "../../components/loading";
 import {
     Content, Message, Session,
 } from "../../pages/room/room";
-import { isChatOpenState, unreadMessagesState } from "../states/layoutAtoms";
-import { LIVE_LINK, LocalSessionContext } from "./providers";
-import { gql, useSubscription } from "@apollo/client";
+import {
+    audioGloballyMutedState, isChatOpenState, unreadMessagesState, videoGloballyMutedState,
+} from "../states/layoutAtoms";
+import {
+    LIVE_LINK, LocalSessionContext, SFU_LINK,
+} from "./providers";
+import { GLOBAL_MUTE_QUERY } from "./WebRTCContext";
+import {
+    gql, useQuery, useSubscription,
+} from "@apollo/client";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { useSnackbar } from "kidsloop-px";
@@ -34,6 +41,8 @@ export interface RoomContextInterface {
     content: Content | undefined;
     sessions: Map<string, Session>;
     trophy: any;
+    audioGloballyMuted: boolean;
+    videoGloballyMuted: boolean;
 }
 
 const defaultRoomContext = {
@@ -42,6 +51,8 @@ const defaultRoomContext = {
     content: undefined,
     sessions: new Map<string, Session>(),
     trophy: undefined,
+    audioGloballyMuted: false,
+    videoGloballyMuted: false,
 };
 
 export const RoomContext = createContext<RoomContextInterface>(defaultRoomContext);
@@ -57,11 +68,21 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
     const [ trophy, setTrophy ] = useState();
     const [ unreadMessages, setUnreadMessages ] = useRecoilState(unreadMessagesState);
     const [ isChatOpen, setIsChatOpen ] = useRecoilState(isChatOpenState);
+    const [ audioGloballyMuted, setAudioGloballyMuted ] = useRecoilState(audioGloballyMutedState);
+    const [ videoGloballyMuted, setVideoGloballyMuted ] = useRecoilState(videoGloballyMutedState);
     const { enqueueSnackbar } = useSnackbar();
 
     useEffect(() => {
         isChatOpen && setUnreadMessages(0);
     }, [ isChatOpen, messages ]);
+
+    useEffect(() => {
+        fetchGlobalMute();
+        console.log(`/////////////////`);
+        console.log(audioGloballyMuted);
+        console.log(videoGloballyMuted);
+        console.log(`/////////////////`);
+    }, [ audioGloballyMuted, videoGloballyMuted ]);
 
     const { loading, error } = useSubscription(SUB_ROOM, {
         onSubscriptionData: ({ subscriptionData }) => {
@@ -117,12 +138,34 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
             return newState;
         });
     };
+
+    const { refetch: refetchGlobalMute } = useQuery(GLOBAL_MUTE_QUERY, {
+        variables: {
+            roomId,
+        },
+        context: {
+            target: SFU_LINK,
+        },
+    });
+
+    const fetchGlobalMute = async () => {
+        const { data: globalMuteData } = await refetchGlobalMute();
+        console.log(`------`);
+        console.log(globalMuteData);
+        console.log(globalMuteData.retrieveGlobalMute.audioGloballyMuted);
+        console.log(`------`);
+        setAudioGloballyMuted(globalMuteData.retrieveGlobalMute.audioGloballyMuted);
+        setVideoGloballyMuted(globalMuteData.retrieveGlobalMute.videoGloballyDisabled);
+    };
+
     const value = {
         sfuAddress,
         messages,
         content,
         sessions,
         trophy,
+        audioGloballyMuted,
+        videoGloballyMuted,
     };
 
     if (loading || !content) { return <Grid
