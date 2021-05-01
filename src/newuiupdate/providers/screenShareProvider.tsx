@@ -1,4 +1,8 @@
+import { ContentType } from "../../pages/room/room";
+import { MUT_SHOW_CONTENT } from "../components/utils/graphql";
+import { LIVE_LINK, LocalSessionContext } from "./providers";
 import { WebRTCContext } from "./WebRTCContext";
+import { useMutation } from "@apollo/client";
 import { types as MediaSoup } from "mediasoup-client";
 import React, {
     createContext,
@@ -25,6 +29,17 @@ export const ScreenShareProvider = (props: {children: React.ReactNode}) => {
     const [ starting, setStarting ] = useState<boolean>(false);
     const [ stopping, setStopping ] = useState<boolean>(false);
     const sfuState = useContext(WebRTCContext);
+    const { roomId, sessionId } = useContext(LocalSessionContext);
+
+    const [ showContent, { loading: loadingShowContent } ] = useMutation(MUT_SHOW_CONTENT, {
+        context: {
+            target: LIVE_LINK,
+        },
+    });
+
+    window.addEventListener(`beforeunload`, function (e){
+        stop();
+    }, false);
 
     stream?.getVideoTracks()[0].addEventListener(`ended`, () => {
         stop();
@@ -43,6 +58,13 @@ export const ScreenShareProvider = (props: {children: React.ReactNode}) => {
             setStream(stream);
             const auxStreams= await sfuState.transmitStream(`aux`, stream, false);
             setProducers(auxStreams);
+            showContent({
+                variables: {
+                    roomId,
+                    type: ContentType.Screen,
+                    contentId: sessionId,
+                },
+            });
         } catch(e) {
             console.log(e);
         } finally {
@@ -63,6 +85,13 @@ export const ScreenShareProvider = (props: {children: React.ReactNode}) => {
                 track.stop();
             }
             setStream(undefined);
+            showContent({
+                variables: {
+                    roomId,
+                    type: ContentType.Camera,
+                    contentId: sessionId,
+                },
+            });
         } finally {
             setStopping(false);
         }

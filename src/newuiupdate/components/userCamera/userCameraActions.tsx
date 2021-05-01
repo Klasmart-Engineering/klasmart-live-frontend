@@ -1,7 +1,13 @@
-import { LIVE_LINK, LocalSessionContext } from "../../providers/providers";
+import {
+    LIVE_LINK, LocalSessionContext, SFU_LINK,
+} from "../../providers/providers";
+import { RoomContext } from "../../providers/roomContext";
+import {
+    GLOBAL_MUTE_QUERY, MUTE, MuteNotification, WebRTCContext,
+} from "../../providers/WebRTCContext";
 import { hasControlsState, pinnedUserState } from "../../states/layoutAtoms";
 import { MUTATION_SET_HOST } from "../utils/graphql";
-import { useMutation } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import {
     Grid,
     IconButton,
@@ -29,6 +35,7 @@ import clsx from "clsx";
 import React,
 {
     useContext,
+    useEffect,
     useState,
 } from "react";
 import { FormattedMessage } from "react-intl";
@@ -163,7 +170,13 @@ function UserCameraActions (props: UserCameraActionsType) {
     const { user } = props;
     const classes = useStyles();
 
-    const { roomId, isTeacher } = useContext(LocalSessionContext);
+    const {
+        roomId, isTeacher, sessionId,
+    } = useContext(LocalSessionContext);
+    const { sessions } = useContext(RoomContext);
+    const webrtc = useContext(WebRTCContext);
+
+    const isSelf = sessionId === user.id;
 
     const [ hasControls, setHasControls ] = useRecoilState(hasControlsState);
     const [ pinnedUser, setPinnedUser ] = useRecoilState(pinnedUserState);
@@ -177,6 +190,22 @@ function UserCameraActions (props: UserCameraActionsType) {
     const [ trophyEl, setTrophyEl ] = useState<null | HTMLElement>(null);
     const handleTrophyOpen = (event: React.SyntheticEvent<HTMLAnchorElement>) => { setTrophyEl(event.currentTarget); };
     const handleTrophyClose = () => { setTrophyEl(null); };
+
+    const [ micOn, setMicOn ] = useState<boolean>(false);
+
+    const [ muteMutation ] = useMutation(MUTE, {
+        context: {
+            target: SFU_LINK,
+        },
+    });
+    const { refetch } = useQuery(GLOBAL_MUTE_QUERY, {
+        variables: {
+            roomId,
+        },
+        context: {
+            target: SFU_LINK,
+        },
+    });
 
     const [ hostMutation ] = useMutation(MUTATION_SET_HOST, {
         context: {
@@ -198,7 +227,7 @@ function UserCameraActions (props: UserCameraActionsType) {
         handleMoreClose();
     }
 
-    function toggleAudioState (): void {
+    function toggleAudioStatee (): void {
         setLocalMicrophone(!localMicrophone);
         handleMoreClose();
     }
@@ -207,37 +236,67 @@ function UserCameraActions (props: UserCameraActionsType) {
         id === pinnedUser ? setPinnedUser(undefined) : setPinnedUser(id);
     }
 
-    function fullScreenCamera () {
-        const videoId = `camera:${user.id}`;
-        const video = document.getElementById(videoId) as any;
-        if (!video) return;
+    useEffect(() => {
+        if (webrtc.isLocalAudioEnabled(user.id) !== undefined) {
+            setMicOn(webrtc.isLocalAudioEnabled(user.id));
+        }
+    }, [ webrtc.isLocalAudioEnabled(user.id) ]);
 
-        if (video.requestFullscreen)
-            video.requestFullscreen();
-        else if (video.webkitRequestFullscreen)
-            video.webkitRequestFullscreen(); // to support on Safari
-        else if (video.msRequestFullScreen)
-            video.msRequestFullScreen(); // to support on Edge
+    async function toggleInboundAudioState () {
+        const localSession = sessions.get(sessionId);
+        if (localSession?.isHost) {
+            const notification: MuteNotification = {
+                roomId,
+                sessionId: user.id,
+                audio: !micOn,
+            };
+            const muteNotification = await muteMutation({
+                variables: notification,
+            });
+            if (muteNotification?.data?.mute?.audio != null) {
+                setMicOn(muteNotification.data.mute.audio);
+            }
+        } else {
+            webrtc.localAudioToggle(user.id);
+        }
+    }
+
+    async function toggleOutboundAudioState () {
+        const notification: MuteNotification = {
+            roomId,
+            sessionId: user.id,
+            audio: !micOn,
+        };
+        const muteNotification = await muteMutation({
+            variables: notification,
+        });
+        if (muteNotification?.data?.mute?.audio != null) {
+            setMicOn(muteNotification.data.mute.audio);
+        }
+    }
+
+    async function toggleAudioState () {
+        const { data }= await refetch();
+        const audioGloballyMuted = data?.retrieveGlobalMute?.audioGloballyMuted;
+        if (isSelf) {
+            const localSession = sessions.get(sessionId);
+            if (audioGloballyMuted && !localSession?.isTeacher) {
+                return;
+            }
+            await toggleOutboundAudioState();
+        } else {
+            if (audioGloballyMuted && !user.isTeacher) {
+                return;
+            }
+            await toggleInboundAudioState();
+        }
     }
 
     return (
         <div
             className={classes.root}>
             <Grid className={classes.controls}>
-                <div className={classes.expand}>
-                    <IconButton
-                        component="a"
-                        aria-label="Expand video"
-                        size="small"
-                        className={classes.controlsIcon}
-                        style={{
-                            background: `none`,
-                        }}
-                        onClick={() => fullScreenCamera()}
-                    >
-                        <ExpandIcon size="0.75em" />
-                    </IconButton>
-                </div>
+                <ExpandCamera user={user} />
 
                 <Grid item>
                     {isTeacher && !user.isTeacher &&
@@ -312,6 +371,8 @@ function UserCameraActions (props: UserCameraActionsType) {
                                 size="1rem"/><FormattedMessage id="toggle_microphone_on"/></> }
                         </MenuItem>
 
+                        <ToggleCamera user={user}/>
+
                         <MenuItem
                             className={classes.menuItem}
                             onClick={(toggleVideoState)}>
@@ -376,3 +437,147 @@ function UserCameraActions (props: UserCameraActionsType) {
 }
 
 export default UserCameraActions;
+
+function ToggleCamera (props:any){
+    const { user } = props;
+    const classes = useStyles();
+
+    const { roomId, sessionId } = useContext(LocalSessionContext);
+    const { sessions } = useContext(RoomContext);
+    const isSelf = sessionId === user.id;
+
+    const [ cameraOn, setCameraOn ] = useState<boolean>(false);
+    const [ isLoading, setIsLoading ] = useState<boolean>(true);
+    const [ isVideoManuallyDisabled, setIsVideoManuallyDisabled ] = useState<boolean>(false);
+    const [ muteMutation ] = useMutation(MUTE, {
+        context: {
+            target: SFU_LINK,
+        },
+    });
+    const { refetch } = useQuery(GLOBAL_MUTE_QUERY, {
+        variables: {
+            roomId,
+        },
+        context: {
+            target: SFU_LINK,
+        },
+    });
+    const webrtc = useContext(WebRTCContext);
+    // NOTE: This is the logic for the frontend performance. If this logic goes well, we will restore it again.
+    // const isCameraVisible = useIsElementInViewport(cameraRef);
+
+    useEffect(() => {
+        if (isLoading && webrtc.isLocalVideoEnabled(user.id)) {
+            setIsLoading(false);
+        }
+    }, [ webrtc.isLocalVideoEnabled(user.id) ]);
+
+    useEffect(() => {
+        if (webrtc.isLocalVideoEnabled(user.id) !== undefined) {
+            setCameraOn(webrtc.isLocalVideoEnabled(user.id));
+        }
+    }, [ webrtc.isLocalVideoEnabled(user.id) ]);
+
+    async function toggleInboundVideoState () {
+        const localSession = sessions.get(sessionId);
+        if (localSession?.isHost) {
+            const notification: MuteNotification = {
+                roomId,
+                sessionId: user.id,
+                video: !cameraOn,
+            };
+            const muteNotification = await muteMutation({
+                variables: notification,
+            });
+            if (muteNotification?.data?.mute?.video != null) {
+                setCameraOn(muteNotification.data.mute.video);
+            }
+        } else {
+            webrtc.localVideoToggle(user.id);
+        }
+    }
+
+    async function toggleOutboundVideoState () {
+        const notification: MuteNotification = {
+            roomId,
+            sessionId: user.id,
+            video: !cameraOn,
+        };
+        const muteNotification = await muteMutation({
+            variables: notification,
+        });
+        if (muteNotification?.data?.mute?.video != null) {
+            setCameraOn(muteNotification.data.mute.video);
+        }
+    }
+
+    async function toggleVideoState (): Promise<void> {
+        const { data } = await refetch();
+        const videoGloballyDisabled = data?.retrieveGlobalMute?.videoGloballyDisabled;
+        if (isSelf) {
+            const localSession = sessions.get(sessionId);
+            if (videoGloballyDisabled && !localSession?.isTeacher) {
+                return;
+            }
+            await toggleOutboundVideoState();
+        } else {
+            if (videoGloballyDisabled && !user?.isTeacher) {
+                return;
+            }
+            await toggleInboundVideoState();
+        }
+        setIsVideoManuallyDisabled(!webrtc.isLocalVideoEnabled(user.id));
+    }
+
+    return (
+        <>
+            <MenuItem
+                className={classes.menuItem}
+                onClick={toggleVideoState}>
+                {cameraOn && <><CameraVideoFillIcon
+                    className={classes.menuItemIcon}
+                    size="1rem"/><FormattedMessage id="toggle_camera_off"/></> }
+                {!cameraOn && <>
+                    <CameraDisabledIcon
+                        className={clsx(classes.menuItemIcon, classes.menuItemIconActive)}
+                        size="1rem"/><FormattedMessage id="toggle_camera_on"/></> }
+            </MenuItem>
+        </>
+    );
+}
+
+function ExpandCamera (props:any){
+    const { user } = props;
+    const classes = useStyles();
+
+    function fullScreenCamera () {
+        const videoId = `camera:${user.id}`;
+        const video = document.getElementById(videoId) as any;
+        if (!video) return;
+
+        if (video.requestFullscreen)
+            video.requestFullscreen();
+        else if (video.webkitRequestFullscreen)
+            video.webkitRequestFullscreen(); // to support on Safari
+        else if (video.msRequestFullScreen)
+            video.msRequestFullScreen(); // to support on Edge
+    }
+
+    return(
+        <div className={classes.expand}>
+            <IconButton
+                component="a"
+                aria-label="Expand video"
+                size="small"
+                className={classes.controlsIcon}
+                style={{
+                    background: `none`,
+                }}
+                onClick={() => fullScreenCamera()}
+            >
+                <ExpandIcon size="0.75em" />
+            </IconButton>
+        </div>
+
+    );
+}

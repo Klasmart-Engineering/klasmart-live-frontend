@@ -1,4 +1,5 @@
 import { LocalSessionContext } from "../../providers/providers";
+import { WebRTCContext } from "../../providers/WebRTCContext";
 import {
     activeTabState,
     hasControlsState,
@@ -12,6 +13,7 @@ import {
     isViewModesOpenState,
     unreadMessagesState,
     userState,
+    videoGloballyMutedState,
 } from "../../states/layoutAtoms";
 import { useSynchronizedState } from "../../whiteboard/context-providers/SynchronizedStateProvider";
 import { DialogEndClass, DialogLeaveClass } from "../utils/endCall";
@@ -70,7 +72,8 @@ const useStyles = makeStyles((theme: Theme) => ({
 function Toolbar () {
     const classes = useStyles();
     const intl = useIntl();
-    const { isTeacher } = useContext(LocalSessionContext);
+    const { isTeacher, sessionId } = useContext(LocalSessionContext);
+    const webrtc = useContext(WebRTCContext);
 
     const [ user, setUser ] = useRecoilState(userState);
     const [ isGlobalActionsOpen, setIsGlobalActionsOpen ] = useRecoilState(isGlobalActionsOpenState);
@@ -83,6 +86,9 @@ function Toolbar () {
     const [ interactiveMode, setInteractiveMode ] = useRecoilState(interactiveModeState);
     const [ unreadMessages, setUnreadMessages ] = useRecoilState(unreadMessagesState);
     const [ hasControls, setHasControls ] = useRecoilState(hasControlsState);
+    const [ videoGloballyMuted, setVideoGloballyMuted ] = useRecoilState(videoGloballyMutedState);
+
+    const [ micOn, setMicOn ] = useState<boolean>(false);
 
     const classDetailsRef = React.useRef<any>();
     const canvasRef = React.useRef<any>();
@@ -127,6 +133,13 @@ function Toolbar () {
     useEffect(() => {
         activeTab !== `mosaic` && setIsCanvasOpen(isGlobalCanvasEnabled);
     }, [ isGlobalCanvasEnabled ]);
+
+    function toggleLocalMicrophone (){
+    }
+
+    useEffect(() => {
+        setMicOn(webrtc.isLocalAudioEnabled(sessionId));
+    }, [ webrtc.isLocalAudioEnabled(sessionId) ]);
 
     return (
         <>
@@ -175,15 +188,12 @@ function Toolbar () {
                     item
                     className={classes.iconGroup}>
                     <ToolbarItemMicrophone
-                        locked={user.isTeacherAudioMuted}
-                        active={user.hasAudio}
+                        // locked={user.isTeacherAudioMuted}
+                        active={micOn}
                         tooltip={user.isTeacherAudioMuted ? intl.formatMessage({
                             id: `toolbar_microphonelocked`,
                         }) : undefined}
-                        onClick={() =>  { setUser({
-                            ...user,
-                            hasAudio: !user.hasAudio,
-                        });}}
+                        onClick={() =>  { console.log(`toggle mic`);}}
                     />
                     <ToolbarItemCall
                         locked={!isTeacher}
@@ -194,15 +204,12 @@ function Toolbar () {
                         onClick={() => endCall()}
                     />
                     <ToolbarItemCamera
-                        locked={user.isTeacherVideoMuted}
-                        active={user.hasVideo}
-                        tooltip={user.isTeacherVideoMuted ? intl.formatMessage({
+                        locked={videoGloballyMuted}
+                        active={true}
+                        tooltip={videoGloballyMutedState ? intl.formatMessage({
                             id: `toolbar_camera_locked`,
                         }) : undefined}
-                        onClick={() => setUser({
-                            ...user,
-                            hasVideo: !user.hasVideo,
-                        })}
+                        onClick={() =>  { console.log(`toggle video`);}}
                     />
                 </Grid>
                 <Grid

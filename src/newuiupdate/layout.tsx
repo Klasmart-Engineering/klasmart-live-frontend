@@ -1,4 +1,5 @@
 
+import { ClassType } from "../store/actions";
 import { MUTATION_SET_HOST } from './components/utils/graphql';
 import Class from './pages/class';
 import ClassEnded from './pages/classEnded';
@@ -7,7 +8,7 @@ import Join from './pages/join';
 import { LIVE_LINK, LocalSessionContext } from './providers/providers';
 import { RoomContext } from './providers/roomContext';
 import {
-    classEndedState, classLeftState, hasControlsState,
+    classEndedState, classLeftState, hasControlsState, isLessonPlanOpenState,
 } from "./states/layoutAtoms";
 import { useMutation } from '@apollo/client';
 import React, { useContext, useEffect } from 'react';
@@ -17,9 +18,10 @@ function Layout () {
     const [ classLeft, setClassLeft ] = useRecoilState(classLeftState);
     const [ classEnded, setClassEnded ] = useRecoilState(classEndedState);
     const [ hasControls, setHasControls ] = useRecoilState(hasControlsState);
+    const [ isLessonPlanOpen, setIsLessonPlanOpen ] = useRecoilState(isLessonPlanOpenState);
 
     const {
-        camera, name, roomId, sessionId,
+        camera, name, roomId, sessionId, classtype,
     } = useContext(LocalSessionContext);
     const { sessions } = useContext(RoomContext);
 
@@ -61,6 +63,12 @@ function Layout () {
         const host = teachers.find(session => session.isHost === true);
         host?.id === sessionId ? setHasControls(true) : setHasControls(false);
     }, [ sessions ]);
+
+    useEffect(() => {
+        if(classtype === ClassType.CLASSES){
+            setIsLessonPlanOpen(true);
+        }
+    }, [ classtype ]);
 
     if (!name || camera === undefined) {
         return <Join />;

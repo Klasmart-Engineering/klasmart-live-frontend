@@ -3,7 +3,7 @@ import { hasControlsState, isCanvasOpenState } from "../../../states/layoutAtoms
 import { useSynchronizedState } from "../../../whiteboard/context-providers/SynchronizedStateProvider";
 import { StyledPopper } from "../../utils/utils";
 import {
-    Grid, makeStyles,  Theme,
+    Grid, makeStyles,  Theme, Tooltip,
 } from "@material-ui/core";
 import { Move as MoveIcon } from "@styled-icons/boxicons-regular/Move";
 import { Eraser as EraserIcon } from "@styled-icons/boxicons-solid/Eraser";
@@ -40,28 +40,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 }));
 
-const items = [
-    {
-        id: `1`,
-        color: `#000000`,
-    },
-    {
-        id: `2`,
-        color: `#0000ff`,
-    },
-    {
-        id: `4`,
-        color: `#00ff00`,
-    },
-    {
-        id: `5`,
-        color: `#fbe739`,
-    },
-    {
-        id: `6`,
-        color: `#ff0000`,
-    },
-];
 interface GlobaActionsMenuProps {
 	anchor?: any;
 }
@@ -101,20 +79,29 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
                 container
                 alignItems="stretch"
                 className={classes.root}>
-                {items.map((item) => (
-                    <Grid
-                        key={item.id}
-                        item
-                        style={{
-                            color: item.color,
-                        }}
-                        className={classes.item}
 
-                        onClick={() => {selectTool(`line`); selectColorByValue(item.color);} }
-                    >
-                        <PencilIcon size="2rem"/>
-                    </Grid>
-                ))}
+                <CanvasMenuItem
+                    color='#000000'
+                    icon={<PencilIcon size="2rem"/>}
+                    onClick={ () => {selectTool(`line`); selectColorByValue(`#000000`);} } />
+                <CanvasMenuItem
+                    color='#0000ff'
+                    icon={<PencilIcon size="2rem"/>}
+                    onClick={ () => {selectTool(`line`); selectColorByValue(`0000ff`);} } />
+                <CanvasMenuItem
+                    color='#00ff00'
+                    icon={<PencilIcon size="2rem"/>}
+                    onClick={ () => {selectTool(`line`); selectColorByValue(`00ff00`);} } />
+                <CanvasMenuItem
+                    color='#fbe739'
+                    icon={<PencilIcon size="2rem"/>}
+                    onClick={ () => {selectTool(`line`); selectColorByValue(`fbe739`);} } />
+                <CanvasMenuItem
+                    color='#ff0000'
+                    icon={<PencilIcon size="2rem"/>}
+                    onClick={ () => {selectTool(`line`); selectColorByValue(`ff0000`);} } />
+
+                {/* MORE TOOLS : they work but not used
                 <Grid
                     item
                     className={classes.item}
@@ -129,39 +116,30 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
                 >
                     <TextIcon size="2rem"/>
                 </Grid>
-                <Grid
-                    item
-                    className={classes.item}
-                    onClick={() => { selectObjectEraser(); } }
-                >
-                    <EraserIcon size="2rem"/>
-                </Grid>
-                <Grid
-                    item
-                    className={classes.item}
-                    onClick={() => {  clear([ sessionId ]); } }
-                >
-                    <TrashIcon size="2rem"/>
-                </Grid>
+                */}
+
+                <CanvasMenuItem
+                    title="Eraser"
+                    icon={<EraserIcon size="2rem"/>}
+                    onClick={ () => selectObjectEraser() } />
+
+                <CanvasMenuItem
+                    title="Clear canvas"
+                    icon={<TrashIcon size="2rem"/>}
+                    onClick={ () => clear([ sessionId ]) } />
 
                 {hasControls &&
                 <>
-                    <Grid
-                        item
-                        className={classes.item}
-                        onClick={() => { clear() ; } }
-                    >
-                        <TrashIcon size="2rem"/>
-                    </Grid>
-                    <Grid
-                        item
-                        className={clsx(classes.item,  {
-                            [classes.active] : isGlobalCanvasEnabled,
-                        })}
-                        onClick={() => { setIsGlobalCanvasEnabled(!isGlobalCanvasEnabled); }}
-                    >
-                        <PeopleCommunityIcon size="2rem"/>
-                    </Grid>
+                    <CanvasMenuItem
+                        title="Clear all canvas"
+                        icon={<TrashIcon size="2rem"/>}
+                        onClick={ () => clear() } />
+
+                    <CanvasMenuItem
+                        title="Toggle all canvas on"
+                        active={isGlobalCanvasEnabled}
+                        icon={<PeopleCommunityIcon size="2rem"/>}
+                        onClick={ () => setIsGlobalCanvasEnabled(!isGlobalCanvasEnabled) } />
                 </>
                 }
             </Grid>
@@ -170,3 +148,40 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
 }
 
 export default CanvasMenu;
+
+interface CanvasMenuItemProps {
+	onClick: any;
+    icon: any;
+    title?: string;
+    active?: boolean;
+    color?: string;
+}
+
+const CanvasMenuItem = (props:CanvasMenuItemProps) => {
+    const classes = useStyles();
+    const {
+        onClick, active, icon, title, color,
+    } = props;
+
+    return(
+        <Grid item  >
+            <Tooltip
+                title={title || `Button`}
+                disableFocusListener={!title}
+                disableHoverListener={!title}
+                disableTouchListener={!title}
+                placement="top">
+                <div
+                    className={clsx(classes.item,  {
+                        [classes.active] : active,
+                    })}
+                    style={{
+                        color: color,
+                    }}
+                    onClick={onClick}>
+                    {icon}
+                </div>
+            </Tooltip>
+        </Grid>
+    );
+};

@@ -2,7 +2,10 @@ import { ClassType } from "../../../store/actions";
 import { LocalSessionContext } from "../../providers/providers";
 import Toolbar from "../toolbar/toolbar";
 import { Whiteboard } from "../utils/Whiteboard";
+import MainClass from "./mainClass";
 import MainDrawer from "./mainDrawer";
+import MainLive from "./mainLive";
+import MainStudy from "./mainStudy";
 import MainView from "./mainView";
 import {
     Grid,
@@ -28,6 +31,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     mainViewDrawer: {
         position: `relative`,
     },
+    relative:{
+        position: `relative`,
+    },
 }));
 
 function Main () {
@@ -49,9 +55,13 @@ function Main () {
                         id="main-content">
                         <Grid
                             item
-                            xs>
-                            <Whiteboard uniqueId="student" />
-                            <MainView />
+                            xs
+                            className={classes.relative}>
+                            {/* <MainView />
+                            <Whiteboard uniqueId="student" /> */}
+                            {classtype == ClassType.LIVE &&  <MainView /> }
+                            {classtype == ClassType.STUDY &&  <MainStudy /> }
+                            {classtype == ClassType.CLASSES &&  <MainClass /> }
                         </Grid>
                         <Grid
                             item
@@ -61,7 +71,7 @@ function Main () {
                     </Grid>
                 </div>
             </Grid>
-            {classtype !== ClassType.STUDY &&
+            {classtype === ClassType.LIVE &&
              <Grid item>
                  <Toolbar />
              </Grid>

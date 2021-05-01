@@ -4,16 +4,15 @@ import { getDefaultLanguageCode, getLanguage } from "../../utils/locale";
 import { themeProvider } from "../themeProvider";
 import { GlobalWhiteboardContext } from "../whiteboard/context-providers/GlobalWhiteboardContext";
 import { RoomProvider } from "./roomContext";
+import { ScreenShareProvider } from "./screenShareProvider";
+import { WebRTCProvider } from "./WebRTCContext";
 import { ThemeProvider } from "@material-ui/core";
 import jwt_decode from "jwt-decode";
 import { SnackbarProvider } from "kidsloop-px";
 import React, {
-    createContext, ReactChild, ReactChildren, useEffect, useMemo, useState,
+    createContext, ReactChild, ReactChildren,  useMemo, useState,
 } from 'react';
 import { RawIntlProvider } from "react-intl";
-import { v4 as uuid } from "uuid";
-import { WebRTCProvider } from "./WebRTCContext";
-import { ScreenShareProvider } from "./screenShareProvider";
 
 export const LIVE_LINK = `LIVE_LINK`;
 export const SFU_LINK = `SFU_LINK`;
