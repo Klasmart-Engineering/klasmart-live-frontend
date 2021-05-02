@@ -25,6 +25,7 @@ import CanvasMenu from "./toolbarMenus/canvasMenu";
 import ClassDetailsMenu from "./toolbarMenus/classDetailsMenu/classDetailsMenu";
 import GlobalActionsMenu from "./toolbarMenus/globalActionsMenu/globalActionsMenu";
 import ViewModesMenu from "./toolbarMenus/viewModesMenu/viewModesMenu";
+import { useMutation } from "@apollo/client";
 import {
     Grid,
     makeStyles,
@@ -88,8 +89,6 @@ function Toolbar () {
     const [ hasControls, setHasControls ] = useRecoilState(hasControlsState);
     const [ videoGloballyMuted, setVideoGloballyMuted ] = useRecoilState(videoGloballyMutedState);
 
-    const [ micOn, setMicOn ] = useState<boolean>(false);
-
     const classDetailsRef = React.useRef<any>();
     const canvasRef = React.useRef<any>();
     const globalActionsRef = React.useRef<any>();
@@ -133,13 +132,6 @@ function Toolbar () {
     useEffect(() => {
         activeTab !== `mosaic` && setIsCanvasOpen(isGlobalCanvasEnabled);
     }, [ isGlobalCanvasEnabled ]);
-
-    function toggleLocalMicrophone (){
-    }
-
-    useEffect(() => {
-        setMicOn(webrtc.isLocalAudioEnabled(sessionId));
-    }, [ webrtc.isLocalAudioEnabled(sessionId) ]);
 
     return (
         <>
@@ -188,12 +180,12 @@ function Toolbar () {
                     item
                     className={classes.iconGroup}>
                     <ToolbarItemMicrophone
-                        // locked={user.isTeacherAudioMuted}
-                        active={micOn}
+                        // locked={}
+                        active={webrtc.isLocalAudioEnabled(sessionId)}
                         tooltip={user.isTeacherAudioMuted ? intl.formatMessage({
                             id: `toolbar_microphonelocked`,
                         }) : undefined}
-                        onClick={() =>  { console.log(`toggle mic`);}}
+                        onClick={() =>  webrtc.localAudioToggle(sessionId) }
                     />
                     <ToolbarItemCall
                         locked={!isTeacher}
@@ -205,11 +197,11 @@ function Toolbar () {
                     />
                     <ToolbarItemCamera
                         locked={videoGloballyMuted}
-                        active={true}
+                        active={webrtc.isLocalVideoEnabled(sessionId)}
                         tooltip={videoGloballyMutedState ? intl.formatMessage({
                             id: `toolbar_camera_locked`,
                         }) : undefined}
-                        onClick={() =>  { console.log(`toggle video`);}}
+                        onClick={() =>  webrtc.localVideoToggle(sessionId) }
                     />
                 </Grid>
                 <Grid

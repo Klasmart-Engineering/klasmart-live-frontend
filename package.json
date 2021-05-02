@@ -29,6 +29,7 @@
     "@types/redux-logger": "^3.0.8",
     "@types/styled-components": "^5.1.2",
     "@types/uuid": "^8.0.0",
+    "@types/voice-activity-detection": "^0.0.0",
     "@typescript-eslint/eslint-plugin": "^4.22.0",
     "@typescript-eslint/parser": "^4.22.0",
     "chai": "^4.2.0",
@@ -103,6 +104,7 @@
     "typeface-nanum-square-round": "^1.0.2",
     "use-sound": "^1.0.2",
     "uuid": "^8.1.0",
-    "uuidv4": "^6.1.0"
+    "uuidv4": "^6.1.0",
+    "voice-activity-detection": "^0.0.5"
   }
 }
