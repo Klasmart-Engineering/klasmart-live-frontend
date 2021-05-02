@@ -15,6 +15,7 @@ import React, {
     useContext, useEffect, useRef, useState,
 } from "react";
 import { useRecoilState } from "recoil";
+import  vad  from "voice-activity-detection";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -22,6 +23,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         borderRadius: 12,
         width: `100%`,
         minHeight: 90,
+        margin: 2,
         height: `100%`,
         alignItems: `center`,
         textAlign: `center`,
@@ -34,8 +36,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     speaking:{
         order: 2,
-        border: `4px solid #5ce1ff`,
-        boxShadow: `2px 2px 2px rgba(93, 225, 255, 0.4)`,
+        boxShadow: `0px 0px 0px 2px #ffe000, 0px 6px 4px 1px rgb(255 224 0 / 48%)`,
     },
 }));
 
@@ -49,19 +50,51 @@ function UserCamera (props: UserCameraType) {
     const classes = useStyles();
     const [ isHover, setIsHover ] = useState(false);
 
+    const [ isSpeaking, setIsSpeaking ] = useState(false);
+    const [ camOn, setCamOn ] = useState(false);
+    const [ micOn, setMicOn ] = useState(false);
+
     const { camera, sessionId } = useContext(LocalSessionContext);
     const { sessions } = useContext(RoomContext);
     const webrtc = useContext(WebRTCContext);
-    const [ videoGloballyMuted, setVideoGloballyMuted ] = useRecoilState(videoGloballyMutedState);
 
     const isSelf = user.id === sessionId ? true : false;
-    const isSpeaking = false;
+    const enableSpeakingActivity = true;
 
     const userSession = sessions.get(user.id);
     const userCamera = isSelf ? camera : webrtc.getCameraStream(user.id);
 
     const audioRef = useRef<HTMLAudioElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
+
+    const userCameraTracks = userCamera?.getTracks();
+
+    function audioDetector (stream:any) {
+        const audioContext = new AudioContext();
+
+        const options = {
+            minNoiseLevel: 0.3,
+            maxNoiseLevel: 0.7,
+            noiseCaptureDuration: 1000,
+            avgNoiseMultiplier: 0.3,
+            smoothingTimeConstant: 0.9,
+
+            onVoiceStart: function () {
+                setIsSpeaking(true);
+            },
+            onVoiceStop: function () {
+                setIsSpeaking(false);
+            },
+            onUpdate: function (val:any) {
+
+            },
+        };
+        vad(audioContext, stream, options);
+    }
+
+    useEffect(() => {
+        userCamera && enableSpeakingActivity && audioDetector(userCamera);
+    }, [ userCamera ]);
 
     useEffect(() => {
         if (audioRef.current) {
@@ -71,9 +104,16 @@ function UserCamera (props: UserCameraType) {
             videoRef.current.srcObject = userCamera ? userCamera : null;
         }
 
-        // console.log(userCamera?.getVideoTracks()[0].muted);
-
-    }, [ videoRef.current, userCamera ]);
+        if(userCameraTracks){
+            userCameraTracks.forEach( (track:any) => {
+                if(track.kind === `audio`){
+                    setMicOn(track.enabled);
+                    track.enabled === false && setIsSpeaking(false);
+                }
+                track.kind === `video` && setCamOn(track.enabled);
+            });
+        }
+    }, [ userCameraTracks, userCamera ]);
 
     return (
         <Grid
@@ -88,9 +128,10 @@ function UserCamera (props: UserCameraType) {
             <Grid
                 item
                 xs>
+                <div id={`meter-${user.id}`}></div>
                 <UserCameraDetails user={user} />
                 {actions ? isHover && <UserCameraActions user={user} /> : null}
-                {userCamera ? (
+                {userCamera && camOn ? (
                     <>
                         <video
                             ref={videoRef}
@@ -109,8 +150,7 @@ function UserCamera (props: UserCameraType) {
                         <audio
                             ref={audioRef}
                             autoPlay={true}
-                            muted={true}
-                            // muted={isSelf}
+                            muted={isSelf}
                         />
                     </>
                 ) : <NoCamera name={user.name} />}

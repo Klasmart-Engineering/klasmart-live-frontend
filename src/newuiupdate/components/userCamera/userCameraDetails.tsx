@@ -9,9 +9,8 @@ import amber from "@material-ui/core/colors/amber";
 import { MicMuteFill as MicDisabledIcon } from "@styled-icons/bootstrap/MicMuteFill";
 import { Crown as HasControlsIcon } from "@styled-icons/fa-solid/Crown";
 import { HatGraduation as TeacherIcon } from "@styled-icons/fluentui-system-filled/HatGraduation";
-import React, {
-    useContext, useEffect, useState,
-} from "react";
+import React, { useContext } from "react";
+import { FormattedMessage } from "react-intl";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -33,7 +32,6 @@ const useStyles = makeStyles((theme: Theme) => ({
             marginTop: 4,
             borderRadius: 20,
         },
-
     },
     topCamera:{
         textAlign: `center`,
@@ -77,19 +75,14 @@ function UserCameraDetails (props: UserCameraDetailsType) {
     const classes = useStyles();
     const { sessionId } = useContext(LocalSessionContext);
     const webrtc = useContext(WebRTCContext);
-    const [ micOn, setMicOn ] = useState<boolean>(false);
 
     const isSelf = user.id === sessionId ? true : false;
-
-    useEffect(() => {
-        setMicOn(webrtc.isLocalAudioEnabled(sessionId));
-    }, [ webrtc.isLocalAudioEnabled(sessionId) ]);
 
     if(user.isTeacher){
         return(
             <div className={`${classes.root} ${classes.rootTeacher}`}>
                 <div className={classes.topCamera}>
-                    <Typography className={classes.name}>{isSelf ? `You` : user.name}</Typography>
+                    <Typography className={classes.name}>{isSelf ? <FormattedMessage id="you"/> : user.name}</Typography>
                     <div className={classes.roles}>
                         <TeacherIcon
                             size="1.25rem"
@@ -109,7 +102,7 @@ function UserCameraDetails (props: UserCameraDetailsType) {
             <div className={classes.topCamera}></div>
             <div className={classes.bottomCamera}>
                 <Typography className={classes.name}>
-                    {isSelf ? `You` : user.name} {!micOn && <MicDisabledIcon size="0.85rem"/>}
+                    {isSelf ? <FormattedMessage id="you"/> : user.name} {!webrtc.isLocalAudioEnabled(user.id) && <MicDisabledIcon size="0.85rem"/>}
                 </Typography>
             </div>
         </div>

@@ -5,7 +5,7 @@ import { RoomContext } from "../../providers/roomContext";
 import {
     GLOBAL_MUTE_QUERY, MUTE, MuteNotification, WebRTCContext,
 } from "../../providers/WebRTCContext";
-import { hasControlsState, pinnedUserState } from "../../states/layoutAtoms";
+import { hasControlsState,  pinnedUserState } from "../../states/layoutAtoms";
 import { MUTATION_SET_HOST } from "../utils/graphql";
 import { useMutation, useQuery } from "@apollo/client";
 import {
@@ -170,18 +170,10 @@ function UserCameraActions (props: UserCameraActionsType) {
     const { user } = props;
     const classes = useStyles();
 
-    const {
-        roomId, isTeacher, sessionId,
-    } = useContext(LocalSessionContext);
-    const { sessions } = useContext(RoomContext);
-    const webrtc = useContext(WebRTCContext);
-
-    const isSelf = sessionId === user.id;
+    const { isTeacher, sessionId } = useContext(LocalSessionContext);
 
     const [ hasControls, setHasControls ] = useRecoilState(hasControlsState);
     const [ pinnedUser, setPinnedUser ] = useRecoilState(pinnedUserState);
-    const [ localCamera, setLocalCamera ] = useState(false);
-    const [ localMicrophone, setLocalMicrophone ] = useState(true);
 
     const [ moreEl, setMoreEl ] = useState<null | HTMLElement>(null);
     const handleMoreOpen = (event: React.SyntheticEvent<HTMLAnchorElement>) => { setMoreEl(event.currentTarget); };
@@ -191,105 +183,8 @@ function UserCameraActions (props: UserCameraActionsType) {
     const handleTrophyOpen = (event: React.SyntheticEvent<HTMLAnchorElement>) => { setTrophyEl(event.currentTarget); };
     const handleTrophyClose = () => { setTrophyEl(null); };
 
-    const [ micOn, setMicOn ] = useState<boolean>(false);
-
-    const [ muteMutation ] = useMutation(MUTE, {
-        context: {
-            target: SFU_LINK,
-        },
-    });
-    const { refetch } = useQuery(GLOBAL_MUTE_QUERY, {
-        variables: {
-            roomId,
-        },
-        context: {
-            target: SFU_LINK,
-        },
-    });
-
-    const [ hostMutation ] = useMutation(MUTATION_SET_HOST, {
-        context: {
-            target: LIVE_LINK,
-        },
-    });
-
-    function giveControls (user:any){
-        hostMutation({
-            variables: {
-                roomId,
-                hostId: user.id,
-            },
-        });
-    }
-
-    function toggleVideoState (): void {
-        setLocalCamera(!localCamera);
-        handleMoreClose();
-    }
-
-    function toggleAudioStatee (): void {
-        setLocalMicrophone(!localMicrophone);
-        handleMoreClose();
-    }
-
     function handlePinnedUser (id: any){
         id === pinnedUser ? setPinnedUser(undefined) : setPinnedUser(id);
-    }
-
-    useEffect(() => {
-        if (webrtc.isLocalAudioEnabled(user.id) !== undefined) {
-            setMicOn(webrtc.isLocalAudioEnabled(user.id));
-        }
-    }, [ webrtc.isLocalAudioEnabled(user.id) ]);
-
-    async function toggleInboundAudioState () {
-        const localSession = sessions.get(sessionId);
-        if (localSession?.isHost) {
-            const notification: MuteNotification = {
-                roomId,
-                sessionId: user.id,
-                audio: !micOn,
-            };
-            const muteNotification = await muteMutation({
-                variables: notification,
-            });
-            if (muteNotification?.data?.mute?.audio != null) {
-                setMicOn(muteNotification.data.mute.audio);
-            }
-        } else {
-            webrtc.localAudioToggle(user.id);
-        }
-    }
-
-    async function toggleOutboundAudioState () {
-        const notification: MuteNotification = {
-            roomId,
-            sessionId: user.id,
-            audio: !micOn,
-        };
-        const muteNotification = await muteMutation({
-            variables: notification,
-        });
-        if (muteNotification?.data?.mute?.audio != null) {
-            setMicOn(muteNotification.data.mute.audio);
-        }
-    }
-
-    async function toggleAudioState () {
-        const { data }= await refetch();
-        const audioGloballyMuted = data?.retrieveGlobalMute?.audioGloballyMuted;
-        if (isSelf) {
-            const localSession = sessions.get(sessionId);
-            if (audioGloballyMuted && !localSession?.isTeacher) {
-                return;
-            }
-            await toggleOutboundAudioState();
-        } else {
-            if (audioGloballyMuted && !user.isTeacher) {
-                return;
-            }
-            await toggleInboundAudioState();
-        }
     }
 
     return (
@@ -313,7 +208,8 @@ function UserCameraActions (props: UserCameraActionsType) {
                         </IconButton>
                     }
 
-                    {hasControls &&
+                    {/* TODO: Pin user
+                    hasControls &&
                         <IconButton
                             component="a"
                             aria-label="More controls button"
@@ -327,7 +223,7 @@ function UserCameraActions (props: UserCameraActionsType) {
                         >
                             <PinIcon size="1em"/>
                         </IconButton>
-                    }
+                        */}
 
                     <IconButton
                         component="a"
@@ -360,37 +256,11 @@ function UserCameraActions (props: UserCameraActionsType) {
                         onClose={handleMoreClose}
                     >
 
-                        <MenuItem
-                            className={classes.menuItem}
-                            onClick={(toggleAudioState)}>
-                            {localMicrophone && <><MicFillIcon
-                                className={classes.menuItemIcon}
-                                size="1rem"/><FormattedMessage id="toggle_microphone_off"/></> }
-                            {!localMicrophone && <><MicDisabledIcon
-                                className={clsx(classes.menuItemIcon, classes.menuItemIconActive)}
-                                size="1rem"/><FormattedMessage id="toggle_microphone_on"/></> }
-                        </MenuItem>
-
-                        <ToggleCamera user={user}/>
-
-                        <MenuItem
-                            className={classes.menuItem}
-                            onClick={(toggleVideoState)}>
-                            {localCamera && <><CameraVideoFillIcon
-                                className={classes.menuItemIcon}
-                                size="1rem"/><FormattedMessage id="toggle_camera_off"/></> }
-                            {!localCamera && <>
-                                <CameraDisabledIcon
-                                    className={clsx(classes.menuItemIcon, classes.menuItemIconActive)}
-                                    size="1rem"/><FormattedMessage id="toggle_camera_on"/></> }
-                        </MenuItem>
+                        <ToggleMic user={user} />
+                        <ToggleCamera user={user} />
 
                         {hasControls && !user.isHost && user.isTeacher &&
-                            <MenuItem
-                                className={classes.menuItem}
-                                onClick={() => giveControls(user)}>
-                                <HasControlsIcon className={classes.menuItemIcon} /><FormattedMessage id="toggle_room_controls"/>
-                            </MenuItem>
+                            <ToggleControls user={user} />
                         }
 
                     </Menu>
@@ -444,11 +314,10 @@ function ToggleCamera (props:any){
 
     const { roomId, sessionId } = useContext(LocalSessionContext);
     const { sessions } = useContext(RoomContext);
-    const isSelf = sessionId === user.id;
+    const webrtc = useContext(WebRTCContext);
 
-    const [ cameraOn, setCameraOn ] = useState<boolean>(false);
+    const [ camOn, setCamOn ] = useState<boolean>(true);
     const [ isLoading, setIsLoading ] = useState<boolean>(true);
-    const [ isVideoManuallyDisabled, setIsVideoManuallyDisabled ] = useState<boolean>(false);
     const [ muteMutation ] = useMutation(MUTE, {
         context: {
             target: SFU_LINK,
@@ -462,9 +331,8 @@ function ToggleCamera (props:any){
             target: SFU_LINK,
         },
     });
-    const webrtc = useContext(WebRTCContext);
-    // NOTE: This is the logic for the frontend performance. If this logic goes well, we will restore it again.
-    // const isCameraVisible = useIsElementInViewport(cameraRef);
+
+    const isSelf = sessionId === user.id;
 
     useEffect(() => {
         if (isLoading && webrtc.isLocalVideoEnabled(user.id)) {
@@ -474,7 +342,7 @@ function ToggleCamera (props:any){
 
     useEffect(() => {
         if (webrtc.isLocalVideoEnabled(user.id) !== undefined) {
-            setCameraOn(webrtc.isLocalVideoEnabled(user.id));
+            setCamOn(webrtc.isLocalVideoEnabled(user.id));
         }
     }, [ webrtc.isLocalVideoEnabled(user.id) ]);
 
@@ -484,13 +352,13 @@ function ToggleCamera (props:any){
             const notification: MuteNotification = {
                 roomId,
                 sessionId: user.id,
-                video: !cameraOn,
+                video: !camOn,
             };
             const muteNotification = await muteMutation({
                 variables: notification,
             });
             if (muteNotification?.data?.mute?.video != null) {
-                setCameraOn(muteNotification.data.mute.video);
+                setCamOn(muteNotification.data.mute.video);
             }
         } else {
             webrtc.localVideoToggle(user.id);
@@ -501,13 +369,13 @@ function ToggleCamera (props:any){
         const notification: MuteNotification = {
             roomId,
             sessionId: user.id,
-            video: !cameraOn,
+            video: !camOn,
         };
         const muteNotification = await muteMutation({
             variables: notification,
         });
         if (muteNotification?.data?.mute?.video != null) {
-            setCameraOn(muteNotification.data.mute.video);
+            setCamOn(muteNotification.data.mute.video);
         }
     }
 
@@ -526,21 +394,162 @@ function ToggleCamera (props:any){
             }
             await toggleInboundVideoState();
         }
-        setIsVideoManuallyDisabled(!webrtc.isLocalVideoEnabled(user.id));
+    }
+
+    return (
+        <MenuItem
+            className={classes.menuItem}
+            onClick={toggleVideoState}>
+            {camOn ?
+                <>
+                    <CameraVideoFillIcon
+                        className={classes.menuItemIcon}
+                        size="1rem"/>
+                    <FormattedMessage id="toggle_camera_off"/>
+                </> :
+                <>
+                    <CameraDisabledIcon
+                        className={clsx(classes.menuItemIcon, classes.menuItemIconActive)}
+                        size="1rem"/>
+                    <FormattedMessage id="toggle_camera_on"/>
+                </>
+            }
+        </MenuItem>
+    );
+}
+
+function ToggleMic (props:any){
+    const { user } = props;
+    const classes = useStyles();
+
+    const { roomId, sessionId } = useContext(LocalSessionContext);
+    const { sessions } = useContext(RoomContext);
+    const isSelf = sessionId === user.id;
+
+    const [ micOn, setMicOn ] = useState<boolean>(true);
+
+    const [ muteMutation ] = useMutation(MUTE, {
+        context: {
+            target: SFU_LINK,
+        },
+    });
+    const { refetch } = useQuery(GLOBAL_MUTE_QUERY, {
+        variables: {
+            roomId,
+        },
+        context: {
+            target: SFU_LINK,
+        },
+    });
+    const webrtc = useContext(WebRTCContext);
+
+    useEffect(() => {
+        if (webrtc.isLocalAudioEnabled(user.id) !== undefined) {
+            setMicOn(webrtc.isLocalAudioEnabled(user.id));
+        }
+    }, [ webrtc.isLocalAudioEnabled(user.id) ]);
+
+    async function toggleInboundAudioState () {
+        const localSession = sessions.get(sessionId);
+        if (localSession?.isHost) {
+            const notification: MuteNotification = {
+                roomId,
+                sessionId: user.id,
+                audio: !micOn,
+            };
+            const muteNotification = await muteMutation({
+                variables: notification,
+            });
+            if (muteNotification?.data?.mute?.audio != null) {
+                setMicOn(muteNotification.data.mute.audio);
+            }
+        } else {
+            webrtc.localAudioToggle(user.id);
+        }
+    }
+
+    async function toggleOutboundAudioState () {
+        const notification: MuteNotification = {
+            roomId,
+            sessionId: user.id,
+            audio: !micOn,
+        };
+        const muteNotification = await muteMutation({
+            variables: notification,
+        });
+        if (muteNotification?.data?.mute?.audio != null) {
+            setMicOn(muteNotification.data.mute.audio);
+        }
+    }
+
+    async function toggleAudioState (): Promise<void> {
+        const { data } = await refetch();
+        const audioGloballyMuted = data?.retrieveGlobalMute?.audioGloballyMuted;
+        if (isSelf) {
+            const localSession = sessions.get(sessionId);
+            if (audioGloballyMuted && !localSession?.isTeacher) {
+                return;
+            }
+            await toggleOutboundAudioState();
+        } else {
+            if (audioGloballyMuted && !user?.isTeacher) {
+                return;
+            }
+            await toggleInboundAudioState();
+        }
+    }
+
+    return (
+        <MenuItem
+            className={classes.menuItem}
+            onClick={toggleAudioState}>
+            {micOn ?
+                <>
+                    <MicFillIcon
+                        className={classes.menuItemIcon}
+                        size="1rem"/>
+                    <FormattedMessage id="toggle_microphone_off"/>
+                </> :
+                <>
+                    <MicDisabledIcon
+                        className={clsx(classes.menuItemIcon, classes.menuItemIconActive)}
+                        size="1rem"/>
+                    <FormattedMessage id="toggle_microphone_on"/>
+                </>
+            }
+        </MenuItem>
+    );
+}
+
+function ToggleControls (props:any){
+    const { user } = props;
+    const classes = useStyles();
+
+    const { roomId } = useContext(LocalSessionContext);
+
+    const [ hostMutation ] = useMutation(MUTATION_SET_HOST, {
+        context: {
+            target: LIVE_LINK,
+        },
+    });
+
+    function giveControls (user:any){
+        hostMutation({
+            variables: {
+                roomId,
+                hostId: user.id,
+            },
+        });
     }
 
     return (
         <>
             <MenuItem
                 className={classes.menuItem}
-                onClick={toggleVideoState}>
-                {cameraOn && <><CameraVideoFillIcon
+                onClick={() => giveControls(user)}>
+                <HasControlsIcon
                     className={classes.menuItemIcon}
-                    size="1rem"/><FormattedMessage id="toggle_camera_off"/></> }
-                {!cameraOn && <>
-                    <CameraDisabledIcon
-                        className={clsx(classes.menuItemIcon, classes.menuItemIconActive)}
-                        size="1rem"/><FormattedMessage id="toggle_camera_on"/></> }
+                    size="1rem" /><FormattedMessage id="toggle_room_controls"/>
             </MenuItem>
         </>
     );
