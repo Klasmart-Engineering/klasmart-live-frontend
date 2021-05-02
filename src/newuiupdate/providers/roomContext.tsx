@@ -78,10 +78,6 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
 
     useEffect(() => {
         fetchGlobalMute();
-        console.log(`/////////////////`);
-        console.log(audioGloballyMuted);
-        console.log(videoGloballyMuted);
-        console.log(`/////////////////`);
     }, [ audioGloballyMuted, videoGloballyMuted ]);
 
     const { loading, error } = useSubscription(SUB_ROOM, {
@@ -150,10 +146,6 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
 
     const fetchGlobalMute = async () => {
         const { data: globalMuteData } = await refetchGlobalMute();
-        console.log(`------`);
-        console.log(globalMuteData);
-        console.log(globalMuteData.retrieveGlobalMute.audioGloballyMuted);
-        console.log(`------`);
         setAudioGloballyMuted(globalMuteData.retrieveGlobalMute.audioGloballyMuted);
         setVideoGloballyMuted(globalMuteData.retrieveGlobalMute.videoGloballyDisabled);
     };

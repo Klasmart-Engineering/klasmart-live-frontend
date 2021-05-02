@@ -1,5 +1,9 @@
-import { LocalSessionContext } from "../../providers/providers";
-import { WebRTCContext } from "../../providers/WebRTCContext";
+import { ContentType } from "../../../pages/room/room";
+import { LocalSessionContext, SFU_LINK } from "../../providers/providers";
+import { RoomContext } from "../../providers/roomContext";
+import {
+    MUTE, MuteNotification, WebRTCContext,
+} from "../../providers/WebRTCContext";
 import {
     activeTabState,
     hasControlsState,
@@ -73,8 +77,11 @@ const useStyles = makeStyles((theme: Theme) => ({
 function Toolbar () {
     const classes = useStyles();
     const intl = useIntl();
-    const { isTeacher, sessionId } = useContext(LocalSessionContext);
+    const {
+        isTeacher, sessionId, roomId,
+    } = useContext(LocalSessionContext);
     const webrtc = useContext(WebRTCContext);
+    const { content } = useContext(RoomContext);
 
     const [ user, setUser ] = useRecoilState(userState);
     const [ isGlobalActionsOpen, setIsGlobalActionsOpen ] = useRecoilState(isGlobalActionsOpenState);
@@ -97,6 +104,9 @@ function Toolbar () {
     const [ openEndClassDialog, setOpenEndClassDialog ] = useState(false);
     const [ openLeaveClassDialog, setOpenLeaveClassDialog ] = useState(false);
 
+    const [ camOn, setCamOn ] = useState<boolean>(true);
+    const [ micOn, setMicOn ] = useState<boolean>(true);
+
     const resetDrawers = () => {
         setIsGlobalActionsOpen(false);
         setIsLessonPlanOpen(false);
@@ -107,20 +117,53 @@ function Toolbar () {
         setIsViewModesOpen(false);
     };
 
+    const [ muteMutation ] = useMutation(MUTE, {
+        context: {
+            target: SFU_LINK,
+        },
+    });
+
+    async function toggleOutboundAudioState () {
+        const notification: MuteNotification = {
+            roomId,
+            sessionId,
+            audio: !micOn,
+        };
+        const muteNotification = await muteMutation({
+            variables: notification,
+        });
+        if (muteNotification?.data?.mute?.audio != null) {
+            setMicOn(muteNotification.data.mute.audio);
+        }
+    }
+
+    async function toggleOutboundVideoState () {
+        const notification: MuteNotification = {
+            roomId,
+            sessionId,
+            video: !camOn,
+        };
+        const muteNotification = await muteMutation({
+            variables: notification,
+        });
+        if (muteNotification?.data?.mute?.video != null) {
+            setCamOn(muteNotification.data.mute.video);
+        }
+    }
+
     function endCall () {
         hasControls ? setOpenEndClassDialog(true) : setOpenLeaveClassDialog(true);
     }
 
     let viewModesBadge = <OnStageIcon />;
-    switch (interactiveMode) {
-    case `Blank`:
-        viewModesBadge = <OnStageIcon />;
+    switch (content?.type) {
+    case ContentType.Camera: viewModesBadge = <OnStageIcon />;
         break;
-    case `Observe`:
-        viewModesBadge = <ObserveIcon />;
+    case ContentType.Activity: viewModesBadge = <ObserveIcon />;
         break;
-    case `Present`:
-        viewModesBadge = <PresentIcon />;
+    case ContentType.Stream: viewModesBadge = <PresentIcon />;
+        break;
+    default: viewModesBadge = <OnStageIcon />;
         break;
     }
     useEffect(()=> {
@@ -181,11 +224,11 @@ function Toolbar () {
                     className={classes.iconGroup}>
                     <ToolbarItemMicrophone
                         // locked={}
-                        active={webrtc.isLocalAudioEnabled(sessionId)}
+                        active={micOn}
                         tooltip={user.isTeacherAudioMuted ? intl.formatMessage({
                             id: `toolbar_microphonelocked`,
                         }) : undefined}
-                        onClick={() =>  webrtc.localAudioToggle(sessionId) }
+                        onClick={() =>  toggleOutboundAudioState() }
                     />
                     <ToolbarItemCall
                         locked={!isTeacher}
@@ -197,11 +240,11 @@ function Toolbar () {
                     />
                     <ToolbarItemCamera
                         locked={videoGloballyMuted}
-                        active={webrtc.isLocalVideoEnabled(sessionId)}
+                        active={camOn}
                         tooltip={videoGloballyMutedState ? intl.formatMessage({
                             id: `toolbar_camera_locked`,
                         }) : undefined}
-                        onClick={() =>  webrtc.localVideoToggle(sessionId) }
+                        onClick={() =>  toggleOutboundVideoState() }
                     />
                 </Grid>
                 <Grid

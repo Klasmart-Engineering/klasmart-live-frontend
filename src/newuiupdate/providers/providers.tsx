@@ -177,7 +177,72 @@ function parseToken () {
                 isTeacher: payload.teacher ? Boolean(payload.teacher) : false,
                 name: payload.name ? String(payload.name) : undefined,
                 roomId: String(payload.roomid),
-                materials: parsedMaterials || [],
+                // materials: parsedMaterials || [],
+                materials:  [
+                    {
+                        __typename: MaterialTypename.Iframe,
+                        name: `Interactive video`,
+                        url: `/h5p/play/60588e7475aa32001244926f`,
+                    },
+                    {
+                        __typename: MaterialTypename.Iframe,
+                        name: `Course Presentation`,
+                        url: `/h5p/play/60588da62af9710014707a2d`,
+                    },
+                    {
+                        __typename: MaterialTypename.Iframe,
+                        name: `Colum Presentation`,
+                        url: `/h5p/play/608b9065e5085e0014359f72`,
+                    },
+                    {
+                        __typename: MaterialTypename.Iframe,
+                        name: `KLL-308`,
+                        url: `/h5p/play/608bd68cd6378f00130bfa70`,
+                    },
+                    {
+                        __typename: MaterialTypename.Iframe,
+                        name: `Drag and drop`,
+                        url: `/h5p/play/60589f9375aa32001244928a`,
+                    },
+                    {
+                        __typename: MaterialTypename.Iframe,
+                        name: `Memory Game`,
+                        url: `/h5p/play/605891d02af9710014707a44`,
+                    },
+                    {
+                        __typename: MaterialTypename.Iframe,
+                        name: `Fruit`,
+                        url: `/h5p/play/604afe4c75aa320012448fca`,
+                    },
+                    {
+                        __typename: MaterialTypename.Video,
+                        name: `Video`,
+                        url: `${process.env.ENDPOINT_TEST_ASSETS_S3 || `.`}/test_video.mp4`,
+                    },
+                    {
+                        __typename: MaterialTypename.Audio,
+                        name: `Audio`,
+                        url: `${process.env.ENDPOINT_TEST_ASSETS_S3 || `.`}/test_audio.m4a`,
+                    },
+                    {
+                        __typename: MaterialTypename.Image,
+                        name: `Portrait Image`,
+                        url: `https://i.pinimg.com/originals/00/01/c0/0001c005b9aece8969ed51a20af4c2cd.jpg`,
+                    },
+                    {
+                        __typename: MaterialTypename.Image,
+                        name: `Landscape Image`,
+                        url: `https://blog.groupeastek.com/wp-content/uploads/2015/10/observatoires-photographiques-du-paysage.jpeg`,
+                    },
+                    {
+                        name: `Pairs - Legacy`,
+                        url: `/h5p/play/5ecf4e4b611e18398f7380ef`,
+                    },
+                    {
+                        name: `Video - Legacy`,
+                        video: `${process.env.ENDPOINT_TEST_ASSETS_S3 || `.`}/test_video.mp4`,
+                    },
+                ],
             };
         }
         // TODO think of a better way to set up the debug environment

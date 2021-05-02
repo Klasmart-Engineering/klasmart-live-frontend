@@ -96,10 +96,15 @@ export const viewModeState = atom<viewModeStateType>({
     default: `onstage`,
 });
 
-type interactiveModeState = "Blank" | "Present" | "Observe" | "ShareScreen";
-export const interactiveModeState = atom<interactiveModeState>({
+type interactiveModeStateType = "Blank" | "Present" | "Observe" | "ShareScreen";
+export const interactiveModeState = atom<interactiveModeStateType>({
     key: `interactiveModeState`,
     default: `Blank`,
+});
+
+export const streamIdState = atom({
+    key: `streamIdState`,
+    default: ``,
 });
 
 // LAYOUT - ACTIVITTY

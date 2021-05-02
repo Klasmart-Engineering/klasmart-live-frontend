@@ -3,7 +3,7 @@ import {
     Fade, Grid, makeStyles, Theme, Typography,
 } from '@material-ui/core';
 import { CalendarCheck as ClassEndedIcon } from "@styled-icons/boxicons-regular/CalendarCheck";
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -37,6 +37,8 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 function ClassLeft () {
     const classes = useStyles();
+
+    // TODO : Disable camera on leave page
 
     return (
         <Fade in={true}>
