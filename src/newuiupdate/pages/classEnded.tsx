@@ -40,6 +40,8 @@ function ClassEnded () {
     const classes = useStyles();
     const { isTeacher } = useContext(LocalSessionContext);
 
+    // TODO : Disable camera on leave page
+
     return (
         <Fade in={true}>
             <Grid

@@ -1,3 +1,4 @@
+import { LocalSessionContext } from "../../../providers/providers";
 import { RoomContext } from "../../../providers/roomContext";
 import UserCamera from "../../userCamera/userCamera";
 import {
@@ -8,7 +9,6 @@ import React, {
     useContext, useEffect, useState,
 } from "react";
 import { FormattedMessage } from "react-intl";
-import { LocalSessionContext } from "../../../providers/providers";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -43,8 +43,12 @@ function OnStage () {
             container
             className={classes.root}>
             <Grid item>
-                <Typography variant="h4"><FormattedMessage id={"hello"} values={{ name }} /></Typography>
-                <Typography><FormattedMessage id={"waiting_for_class"} /></Typography>
+                <Typography variant="h4"><FormattedMessage
+                    id={`hello`}
+                    values={{
+                        name,
+                    }} /></Typography>
+                <Typography><FormattedMessage id={`waiting_for_class`} /></Typography>
             </Grid>
         </Grid>
     );

@@ -76,7 +76,7 @@ function UserCamera (props: UserCameraType) {
             minNoiseLevel: 0.3,
             maxNoiseLevel: 0.7,
             noiseCaptureDuration: 1000,
-            avgNoiseMultiplier: 0.3,
+            avgNoiseMultiplier: 0.0001,
             smoothingTimeConstant: 0.9,
 
             onVoiceStart: function () {
@@ -119,8 +119,8 @@ function UserCamera (props: UserCameraType) {
         <Grid
             container
             className={clsx(classes.root, {
-                [classes.self]: isSelf,
                 [classes.speaking]: isSpeaking,
+                [classes.self]: isSelf,
             })}
             onMouseEnter={() => setIsHover(true)}
             onMouseLeave={() => setIsHover(false)}
@@ -128,7 +128,6 @@ function UserCamera (props: UserCameraType) {
             <Grid
                 item
                 xs>
-                <div id={`meter-${user.id}`}></div>
                 <UserCameraDetails user={user} />
                 {actions ? isHover && <UserCameraActions user={user} /> : null}
                 {userCamera && camOn ? (

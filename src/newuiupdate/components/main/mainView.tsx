@@ -2,8 +2,9 @@ import { ContentType } from "../../../pages/room/room";
 import { RoomContext } from "../../providers/roomContext";
 import { ScreenShareContext } from "../../providers/screenShareProvider";
 import { WebRTCContext } from "../../providers/WebRTCContext";
-import { pinnedUserState } from "../../states/layoutAtoms";
+import { isLessonPlanOpenState, pinnedUserState } from "../../states/layoutAtoms";
 import { Whiteboard } from "../utils/Whiteboard";
+import PreviewLessonPlan from "./previewLessonPlan";
 import Observe from "./viewModes/Observe";
 import OnStage from "./viewModes/onStage";
 import Present from "./viewModes/Present";
@@ -21,6 +22,11 @@ const useStyles = makeStyles((theme: Theme) => ({
         background: theme.palette.grey[200],
         borderRadius: 12,
         height: `100%`,
+        position: `relative`,
+        overflow: `hidden`,
+    },
+    fullHeight:{
+        height: `100%`,
     },
 }));
 
@@ -29,6 +35,7 @@ function MainView () {
     const { content } = useContext(RoomContext);
     const screenShare = useContext(ScreenShareContext);
     const [ pinnedUser, setPinnedUser ] = useRecoilState(pinnedUserState);
+    const [ isLessonPlanOpen, setIsLessonPlanOpen ] = useRecoilState(isLessonPlanOpenState);
 
     const webrtc = useContext(WebRTCContext);
     const activeScreenshare = screenShare.stream || content && webrtc.getAuxStream(content.contentId);
@@ -42,7 +49,10 @@ function MainView () {
                 className={classes.root}>
                 <Grid
                     item
-                    xs>
+                    xs
+                    className={classes.fullHeight}
+                    id="main-container"
+                >
                     <Whiteboard uniqueId="student" />
                     <Screenshare />
                 </Grid>
@@ -60,7 +70,9 @@ function MainView () {
                 className={classes.root}>
                 <Grid
                     item
-                    xs>
+                    xs
+                    className={classes.fullHeight}
+                >
                     <Present />
                 </Grid>
             </Grid>
@@ -76,47 +88,46 @@ function MainView () {
                 className={classes.root}>
                 <Grid
                     item
-                    xs>
+                    xs
+                    className={classes.fullHeight}
+                >
                     <Observe />
                 </Grid>
             </Grid>
         );
     }
 
-    // TODO : Pin User feature
-    // if(pinnedUser){
-    //     return(
-    //         <Grid
-    //             container
-    //             className={classes.root}>
-    //             <Grid
-    //                 item
-    //                 xs>
-    //                 <div style={{
-    //                     display: `flex`,
-    //                     height: `100%`,
-    //                     alignItems: `center`,
-    //                     textAlign: `center`,
-    //                     justifyContent: `center`,
-    //                 }}>
-    // 					SHOW CAMERA OF {pinnedUser}
-    //                     <br/>
-    //                     {users.filter(user => user.id === pinnedUser).map(user => user.name)}
-    //                 </div>
-    //             </Grid>
-    //         </Grid>
-    //     );
-    // }
-
     // DEFAULT VIEW (OnStage)
     // TEACHER and STUDENTS : Host camera
+
+    if((content?.type === ContentType.Camera) && isLessonPlanOpen){
+        return(
+            <Grid
+                container
+                className={classes.root}
+                alignItems="center"
+                justify="center"
+            >
+                <Grid
+                    item
+                    xs
+                    className={classes.fullHeight}
+                >
+                    <PreviewLessonPlan />
+                </Grid>
+            </Grid>
+        );
+    }
+
     return(
         <Grid
             container
             className={classes.root}>
             <Grid
                 item
-                xs>
+                xs
+                className={classes.fullHeight}
+            >
                 <OnStage />
             </Grid>
         </Grid>
