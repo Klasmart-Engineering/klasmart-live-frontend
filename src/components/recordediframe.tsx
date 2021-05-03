@@ -101,19 +101,11 @@ export function RecordedIframe(props: Props): JSX.Element {
     const scale = (innerWidth: number, innerHeight: number) => {
         let currentWidth: number = size.width, currentHeight: number = size.height;
 
-        if (square) {
-            /**
-             * For exact synchronization of <Whiteboard /> drawing position,
-             * Square should be required when classtype === Classtype.LIVE.
-             */
-            currentWidth = square, currentHeight = square;
-        } else {
             const iRef = window.document.getElementById("main-container") as HTMLIFrameElement;
             if (iRef) {
                 currentWidth = iRef.getBoundingClientRect().width;
                 currentHeight = iRef.getBoundingClientRect().height;
             }
-        }
 
         const shrinkRatioX = (currentWidth / innerWidth) > 1 ? 1 : currentWidth / innerWidth;
         const shrinkRatioY = (currentHeight / innerHeight) > 1 ? 1 : currentHeight / innerHeight;
@@ -152,7 +144,7 @@ export function RecordedIframe(props: Props): JSX.Element {
             }
             `;
             contentDoc.head.appendChild(style);
-            setStylesLoaded(true);
+            // setStylesLoaded(true);
         }
 
         // IP Protection: Contents should not be able to be downloaded by right-clicking.
@@ -302,8 +294,8 @@ export function RecordedIframe(props: Props): JSX.Element {
                 width: enableResize ? contentWidth : '100%',
                 height: enableResize ? contentHeight : '100%',
                 position: enableResize ? `absolute` : 'static',
-                transformOrigin: "center center",
-                transform: enableResize ? `scale(${transformScale})` : `scale(0.8)`,
+                transformOrigin: "top left",
+                transform: enableResize ? `scale(${transformScale})` : `scale(1)`,
                 minWidth: '100%',
                 minHeight: '100%',
             }}
