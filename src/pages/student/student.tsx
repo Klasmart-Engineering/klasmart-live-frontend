@@ -99,7 +99,7 @@ export function Student(): JSX.Element {
                 </div>
             }
             {content && content.type === ContentType.Stream &&
-                <div id="player-container" className={classes.root} style={{ width: square, height: square }}>
+                <div id="player-container" className={classes.root} style={{ width: '100%', height:  '100%' }}>
                     <Whiteboard uniqueId="student" />
                     <PreviewPlayer streamId={content.contentId} width={square} height={square} />
                     {/* <WBToolbar /> */}

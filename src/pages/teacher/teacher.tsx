@@ -140,8 +140,8 @@ export function Teacher(props: Props): JSX.Element {
                     style={{
                         display: "flex",
                         position: "relative", // For "absolute" position of <Whiteboard />
-                        width: square,
-                        height: square
+                        width: '100%',
+                        height: '100%',
                     }}
                 >
                     <Whiteboard uniqueId="global" />

@@ -148,7 +148,7 @@ export function ResizedIframe(props: Props): JSX.Element {
                 height: enableResize ? contentHeight : '100%',
                 position: enableResize ? `absolute` : 'static',
                 transformOrigin: "center center",
-                transform: enableResize ? `scale(${transformScale})` : `scale(0.8)`,
+                transform: enableResize ? `scale(${transformScale})` : `scale(1)`,
                 minWidth: '100%',
                 minHeight: '100%',
             }}
