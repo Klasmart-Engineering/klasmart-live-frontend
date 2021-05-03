@@ -165,8 +165,8 @@ const messages: Record<string, string> = {
     notification_you_have_controls: `You have teacher controls`,
     notification_you_dont_have_controls: `You dont' have teacher controls`,
     notification_user_left: `{user} has left the class rooom`,
-    notification_user_muted_microphone: `{user} has toggled off his microphone`,
-    notification_user_muted_camera: `{user} has toggled off his camera`,
+    notification_user_muted_microphone: `{user} has toggled off their microphone`,
+    notification_user_muted_camera: `{user} has toggled off their camera`,
     notification_self_muted_user_microphone: `You have toggled off {user}'s microphone`,
     notification_self_muted_user_camera: `You have toggled off {user}'s camera`,
     notification_self_muted_user_canvas: `You have toggled off {user}'s canvas`,
@@ -196,7 +196,7 @@ const messages: Record<string, string> = {
     common_cancel: `Cancel`,
     common_dismiss: `Dismiss`,
     common_submit: `Submit`,
-    title_mosaic: `Mosaic \n (Press 'esc' to exit)`,
+    title_mosaic: `Mosaic (Press 'esc' to exit)`,
     you: `You`,
 };
 export default messages;
