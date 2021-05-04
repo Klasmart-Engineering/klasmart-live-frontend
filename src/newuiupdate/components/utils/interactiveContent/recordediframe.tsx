@@ -82,9 +82,9 @@ export function RecordedIframe (props: Props): JSX.Element {
         setSeconds(MAX_LOADING_COUNT);
         setLoadStatus(LoadStatus.Loading);
 
-        const iRef = window.document.getElementById(`recordediframe`) as HTMLIFrameElement;
-        iRef.addEventListener(`load`, () => setLoadStatus(LoadStatus.Finished));
-        return () => iRef.removeEventListener(`load`, () => setLoadStatus(LoadStatus.Finished));
+        // const iRef = window.document.getElementById(`recordediframe`) as HTMLIFrameElement;
+        // iRef.addEventListener(`load`, () => setLoadStatus(LoadStatus.Finished));
+        // return () => iRef.removeEventListener(`load`, () => setLoadStatus(LoadStatus.Finished));
     }, [ contentId ]);
 
     useEffect(() => {
@@ -134,6 +134,14 @@ export function RecordedIframe (props: Props): JSX.Element {
         const contentWindow = iframeElement.contentWindow;
         const contentDoc = iframeElement.contentDocument;
         if (!contentWindow || !contentDoc) { return; }
+
+        const style = document.createElement(`style`);
+        style.innerHTML = `
+            .h5p-alternative-inner{
+                height: auto !important;
+            }
+            `;
+        contentDoc.head.appendChild(style);
 
         // IP Protection: Contents should not be able to be downloaded by right-clicking.
         const blockRightClick = (e: MouseEvent) => { e.preventDefault(); };
@@ -197,7 +205,7 @@ export function RecordedIframe (props: Props): JSX.Element {
                     },
                 }}
                 style={{
-                    zIndex: loadingActivity,
+                    zIndex: 1300,
                 }}
             >
                 <Grid
@@ -269,6 +277,9 @@ export function RecordedIframe (props: Props): JSX.Element {
                 style={{
                     width: `100%`,
                     height:  `100%`,
+                }}
+                onLoad={() => {
+                    setLoadStatus(LoadStatus.Finished);
                 }}
             />
         </React.Fragment>

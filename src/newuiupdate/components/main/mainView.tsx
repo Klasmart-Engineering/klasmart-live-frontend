@@ -2,7 +2,10 @@ import { ContentType } from "../../../pages/room/room";
 import { RoomContext } from "../../providers/roomContext";
 import { ScreenShareContext } from "../../providers/screenShareProvider";
 import { WebRTCContext } from "../../providers/WebRTCContext";
-import { isLessonPlanOpenState, pinnedUserState } from "../../states/layoutAtoms";
+import {
+    hasControlsState,
+    isLessonPlanOpenState, isViewModesOpenState, pinnedUserState,
+} from "../../states/layoutAtoms";
 import PreviewLessonPlan from "./previewLessonPlan";
 import Observe from "./viewModes/Observe";
 import OnStage from "./viewModes/onStage";
@@ -13,12 +16,12 @@ import {
     makeStyles,
     Theme,
 } from "@material-ui/core";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
-        background: theme.palette.grey[200],
+        backgroundColor: theme.palette.grey[200],
         borderRadius: 12,
         height: `100%`,
         position: `relative`,
@@ -33,15 +36,28 @@ function MainView () {
     const classes = useStyles();
     const { content } = useContext(RoomContext);
     const screenShare = useContext(ScreenShareContext);
-    const [ pinnedUser, setPinnedUser ] = useRecoilState(pinnedUserState);
-    const [ isLessonPlanOpen, setIsLessonPlanOpen ] = useRecoilState(isLessonPlanOpenState);
-
     const webrtc = useContext(WebRTCContext);
-    const activeScreenshare = screenShare.stream || content && webrtc.getAuxStream(content.contentId);
+
+    const [ pinnedUser, setPinnedUser ] = useRecoilState(pinnedUserState);
+    const [ isViewModesOpen, setIsViewModesOpen ] = useRecoilState(isViewModesOpenState);
+    const [ isLessonPlanOpen, setIsLessonPlanOpen ] = useRecoilState(isLessonPlanOpenState);
+    const [ hasControls, setHasControls ] = useRecoilState(hasControlsState);
+
+    const activeScreenshare = ContentType.Screen && (screenShare.stream || content && webrtc.getAuxStream(content.contentId));
+    const activePresent = content?.type === ContentType.Stream || content?.type === ContentType.Video || content?.type === ContentType.Audio || content?.type === ContentType.Image;
+
+    useEffect(()=>{
+        if(activePresent && hasControls){
+            setTimeout(function (){
+                setIsViewModesOpen(false);
+                setIsLessonPlanOpen(true);
+            }, 1000);
+        }
+    }, [ activePresent ]);
 
     // SCREENSHARE VIEW
     // TEACHER and STUDENTS : Host Screen
-    if(content?.type === ContentType.Screen && activeScreenshare){
+    if(activeScreenshare){
         return(
             <Grid
                 container
@@ -61,7 +77,7 @@ function MainView () {
     // PRESENT VIEW
     // HOST : Present activity
     // STUDENTS : See activity screen from Host
-    if(content?.type === ContentType.Stream){
+    if(activePresent){
         return(
             <Grid
                 container

@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     rootSmall:{},
     rootLarge:{
         "& $name":{
-            fontSize: `2rem`,
+            fontSize: `1em`,
             borderRadius: `8px`,
             margin: `10px`,
             padding: `2px 20px`,

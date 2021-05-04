@@ -22,7 +22,7 @@ function OnStage () {
     const classes = useStyles();
     const { content, sessions } = useContext(RoomContext);
     const { name } = useContext(LocalSessionContext);
-    const [ host, setHost ] = useState<any>();
+    const [ host, setHost ] = useState<any>(true);
 
     useEffect(() => {
         const teachers = [ ...sessions.values() ].filter(session => session.isTeacher === true).sort((a, b) => a.joinedAt - b.joinedAt);
