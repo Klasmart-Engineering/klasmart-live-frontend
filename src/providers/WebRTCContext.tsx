@@ -7,7 +7,7 @@ import {
 import { Producer, ProducerOptions } from "mediasoup-client/lib/Producer";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { LocalSessionContext, SFU_LINK } from "../entry";
-import { PrePromise, Resolver } from "../resolver";
+import { Resolver } from "../resolver";
 
 const callstats: any = require('callstats-js/callstats.min');
 
@@ -125,7 +125,6 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
     const [device, setDevice] = useState<Device | undefined | null>();
     const [producerTransport, setProducerTransport] = useState<MediaSoup.Transport | undefined | null>();
     const [consumerTransport, setConsumerTransport] = useState<MediaSoup.Transport | undefined | null>();
-    const [consumerPrePromises, setConsumerPrePromises] = useState<Map<string, PrePromise<MediaSoup.Consumer>>>(new Map<string, PrePromise<MediaSoup.Consumer>>());
     const [tracks, setTracks] = useState<Map<string, MediaStreamTrack>>(new Map<string, MediaStreamTrack>());
     const [consumers, setConsumers] = useState<Map<string, MediaSoup.Consumer>>(new Map<string, MediaSoup.Consumer>());
     const [inboundStreams, setInboundStreams] = useState<Map<string, StreamDescription>>(new Map<string, StreamDescription>());
@@ -397,18 +396,13 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
         return promise
     }
 
-    const getConsumer = async(producerId: string) => {
-        const consumer = consumers.get(producerId)
-        if (consumer) {
-            return consumer
-        }
-        let prePromise = consumerPrePromises.get(producerId)
-        if (!prePromise) {
-            prePromise = Resolver<MediaSoup.Consumer>()
-            setConsumerPrePromises(new Map(consumerPrePromises.set(producerId, prePromise)));
-        }
-        const { promise } = await prePromise
-        return promise
+    const getConsumer = async(producerId: string) : Promise<MediaSoup.Consumer> => {
+        let consumer: MediaSoup.Consumer | undefined = undefined;
+        while(!consumer) {
+            consumer = consumers.get(producerId);
+            await new Promise(r => setTimeout(r, 100));
+         }
+        return consumer;
     }
 
     const rtpCapabilitiesMessage = async (message: string) => {
@@ -609,11 +603,6 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
         consumerMutation({ variables: { id: consumer.id, pause: false } })
         setTracks(new Map(tracks.set(consumer.producerId, consumer.track)));
         setConsumers(new Map(consumers.set(consumer.producerId, consumer)));
-        const prePromise = consumerPrePromises.get(consumer.producerId)
-        if (prePromise) {
-            const { resolver } = await prePromise
-            resolver(consumer)
-        }
         console.log("Consumer done")
     }
 
