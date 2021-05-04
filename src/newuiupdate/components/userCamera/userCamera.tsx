@@ -31,6 +31,10 @@ const useStyles = makeStyles((theme: Theme) => ({
         overflow: `hidden`,
         order: 99,
     },
+    rootSmall:{},
+    rootLarge:{
+        fontSize: `2rem`,
+    },
     self:{
         order: 1,
     },
@@ -43,23 +47,26 @@ const useStyles = makeStyles((theme: Theme) => ({
 interface UserCameraType {
     user: any;
     actions?: boolean;
+    variant?: "default" | "large" | "small";
 }
 
 function UserCamera (props: UserCameraType) {
-    const { user, actions = true } = props;
+    const {
+        user, variant, actions = true,
+    } = props;
     const classes = useStyles();
     const [ isHover, setIsHover ] = useState(false);
 
     const [ isSpeaking, setIsSpeaking ] = useState(false);
-    const [ camOn, setCamOn ] = useState(false);
-    const [ micOn, setMicOn ] = useState(false);
+    const [ camOn, setCamOn ] = useState(true);
+    const [ micOn, setMicOn ] = useState(true);
 
     const { camera, sessionId } = useContext(LocalSessionContext);
     const { sessions } = useContext(RoomContext);
     const webrtc = useContext(WebRTCContext);
 
     const isSelf = user.id === sessionId ? true : false;
-    const enableSpeakingActivity = true;
+    const enableSpeakingActivity = false;
 
     const userSession = sessions.get(user.id);
     const userCamera = isSelf ? camera : webrtc.getCameraStream(user.id);
@@ -85,16 +92,10 @@ function UserCamera (props: UserCameraType) {
             onVoiceStop: function () {
                 setIsSpeaking(false);
             },
-            onUpdate: function (val:any) {
-
-            },
+            onUpdate: function (val:any) {},
         };
         vad(audioContext, stream, options);
     }
-
-    useEffect(() => {
-        userCamera && enableSpeakingActivity && audioDetector(userCamera);
-    }, [ userCamera ]);
 
     useEffect(() => {
         if (audioRef.current) {
@@ -103,17 +104,25 @@ function UserCamera (props: UserCameraType) {
         if (videoRef.current) {
             videoRef.current.srcObject = userCamera ? userCamera : null;
         }
+    }, [
+        videoRef.current,
+        userCamera,
+        camOn,
+    ]);
+
+    useEffect(() => {
+        setMicOn(webrtc.isLocalAudioEnabled(sessionId));
+    }, [ webrtc.isLocalAudioEnabled(sessionId) ]);
+
+    useEffect(() => {
+        setCamOn(webrtc.isLocalVideoEnabled(sessionId));
 
         if(userCameraTracks){
             userCameraTracks.forEach( (track:any) => {
-                if(track.kind === `audio`){
-                    setMicOn(track.enabled);
-                    track.enabled === false && setIsSpeaking(false);
-                }
-                track.kind === `video` && setCamOn(track.enabled);
+                track.kind === `video` &&  track.enabled === `false` && setCamOn(track.enabled);
             });
         }
-    }, [ userCameraTracks, userCamera ]);
+    }, [ webrtc.isLocalVideoEnabled(sessionId), userCameraTracks ]);
 
     return (
         <Grid
@@ -121,14 +130,19 @@ function UserCamera (props: UserCameraType) {
             className={clsx(classes.root, {
                 [classes.speaking]: isSpeaking,
                 [classes.self]: isSelf,
+                [classes.rootSmall]: variant === `small`,
+                [classes.rootLarge]: variant === `large`,
             })}
             onMouseEnter={() => setIsHover(true)}
             onMouseLeave={() => setIsHover(false)}
         >
             <Grid
                 item
-                xs>
-                <UserCameraDetails user={user} />
+                xs
+            >
+                <UserCameraDetails
+                    variant={variant}
+                    user={user} />
                 {actions ? isHover && <UserCameraActions user={user} /> : null}
                 {userCamera && camOn ? (
                     <>

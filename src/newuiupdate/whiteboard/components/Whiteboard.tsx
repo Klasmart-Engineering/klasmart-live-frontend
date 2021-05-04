@@ -1,11 +1,9 @@
-import React, { useContext, useMemo } from "react";
-import { CSSProperties } from "@material-ui/core/styles/withStyles";
-
-import { useSynchronizedState } from "../context-providers/SynchronizedStateProvider";
-import { WhiteboardCanvas } from "kidsloop-canvas/lib/domain/whiteboard/WhiteboardCanvas";
-import { LocalSessionContext } from "../../providers/providers";
 import { whiteboard } from "../../../utils/layerValues";
-
+import { LocalSessionContext } from "../../providers/providers";
+import { useSynchronizedState } from "../context-providers/SynchronizedStateProvider";
+import { CSSProperties } from "@material-ui/core/styles/withStyles";
+import { WhiteboardCanvas } from "kidsloop-canvas/lib/domain/whiteboard/WhiteboardCanvas";
+import React, { useContext, useMemo } from "react";
 
 type Props = {
     uniqueId: string;
@@ -18,7 +16,9 @@ type Props = {
     centerVertically?: boolean;
 }
 
-export function Whiteboard({ group, width, height, filterUsers, filterGroups, uniqueId, centerHorizontally, centerVertically }: Props): JSX.Element {
+export function Whiteboard ({
+    group, width, height, filterUsers, filterGroups, uniqueId, centerHorizontally, centerVertically,
+}: Props): JSX.Element {
     const { state: { permissions, display } } = useSynchronizedState();
 
     const { sessionId } = useContext(LocalSessionContext);
@@ -30,12 +30,12 @@ export function Whiteboard({ group, width, height, filterUsers, filterGroups, un
             return sessionId;
         }
 
-    }, [sessionId, group]);
+    }, [ sessionId, group ]);
 
     const canvasStyle: CSSProperties = {
         zIndex: whiteboard,
-        width: "100%",
-        height: "100%"
+        width: `100%`,
+        height: `100%`,
     };
 
     return (
@@ -43,14 +43,14 @@ export function Whiteboard({ group, width, height, filterUsers, filterGroups, un
             id="whiteboard-container"
             style={{
                 zIndex: whiteboard + 1,
-                display: display ? "block" : "none",
-                position: "absolute",
+                display: display ? `block` : `none`,
+                position: `absolute`,
                 top: 0,
                 bottom: 0,
                 left: 0,
                 right: 0,
-                width: width ? width : "100%",
-                height: height ? height : "100%",
+                width: width ? width : `100%`,
+                height: height ? height : `100%`,
             }}
         >
             <WhiteboardCanvas
@@ -63,7 +63,7 @@ export function Whiteboard({ group, width, height, filterUsers, filterGroups, un
                 pixelWidth={1024}
                 pixelHeight={1024}
                 display={display}
-                scaleMode={"ScaleToFill"}
+                scaleMode={`ScaleToFit`}
                 centerHorizontally={centerHorizontally !== undefined ? centerHorizontally : true}
                 centerVertically={centerVertically !== undefined ? centerVertically : false}
             />

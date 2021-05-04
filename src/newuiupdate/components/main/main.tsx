@@ -1,7 +1,7 @@
 import { ClassType } from "../../../store/actions";
 import { LocalSessionContext } from "../../providers/providers";
+import { Whiteboard } from "../../whiteboard/components/Whiteboard";
 import Toolbar from "../toolbar/toolbar";
-import { Whiteboard } from "../utils/Whiteboard";
 import MainClass from "./mainClass";
 import MainDrawer from "./mainDrawer";
 import MainLive from "./mainLive";
@@ -57,8 +57,8 @@ function Main () {
                             item
                             xs
                             className={classes.relative}>
-                            {/* <MainView />
-                            <Whiteboard uniqueId="student" /> */}
+                            {/* <MainView /> */}
+                            <Whiteboard uniqueId="student" />
                             {classtype == ClassType.LIVE &&  <MainView /> }
                             {classtype == ClassType.STUDY &&  <MainStudy /> }
                             {classtype == ClassType.CLASSES &&  <MainClass /> }

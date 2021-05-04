@@ -1,7 +1,6 @@
 import { ClassType } from "../../../store/actions";
 import { LocalSessionContext } from "../../providers/providers";
 import Toolbar from "../toolbar/toolbar";
-import { Whiteboard } from "../utils/Whiteboard";
 import MainDrawer from "./mainDrawer";
 import MainView from "./mainView";
 import {
@@ -19,7 +18,6 @@ function MainLive () {
 
     return (
         <>
-            <Whiteboard uniqueId="student" />
             <MainView />
         </>
     );

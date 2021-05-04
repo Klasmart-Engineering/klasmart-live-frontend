@@ -135,16 +135,10 @@ const useStyles = makeStyles((theme: Theme) => ({
         color: theme.palette.grey[800],
         fontWeight: 600,
     },
-    menuItemActive:{
-        color: red[500],
-        backgroundColor: fade(red[100], 0.5),
-        "&:hover": {
-            backgroundColor: fade(red[100], 0.8),
-        },
-    },
     menuItemIcon:{
         marginRight: 10,
         padding: 5,
+        // color: `#479df7`,
     },
     menuItemIconActive:{
         color: red[500],
@@ -317,6 +311,7 @@ function ToggleCamera (props:any){
     const webrtc = useContext(WebRTCContext);
 
     const [ camOn, setCamOn ] = useState<boolean>(true);
+
     const [ isLoading, setIsLoading ] = useState<boolean>(true);
     const [ muteMutation ] = useMutation(MUTE, {
         context: {
@@ -341,9 +336,7 @@ function ToggleCamera (props:any){
     }, [ webrtc.isLocalVideoEnabled(user.id) ]);
 
     useEffect(() => {
-        if (webrtc.isLocalVideoEnabled(user.id) !== undefined) {
-            setCamOn(webrtc.isLocalVideoEnabled(user.id));
-        }
+        setCamOn(webrtc.isLocalVideoEnabled(user.id));
     }, [ webrtc.isLocalVideoEnabled(user.id) ]);
 
     async function toggleInboundVideoState () {
@@ -357,9 +350,6 @@ function ToggleCamera (props:any){
             const muteNotification = await muteMutation({
                 variables: notification,
             });
-            if (muteNotification?.data?.mute?.video != null) {
-                setCamOn(muteNotification.data.mute.video);
-            }
         } else {
             webrtc.localVideoToggle(user.id);
         }
@@ -374,9 +364,6 @@ function ToggleCamera (props:any){
         const muteNotification = await muteMutation({
             variables: notification,
         });
-        if (muteNotification?.data?.mute?.video != null) {
-            setCamOn(muteNotification.data.mute.video);
-        }
     }
 
     async function toggleVideoState (): Promise<void> {
@@ -443,12 +430,6 @@ function ToggleMic (props:any){
     });
     const webrtc = useContext(WebRTCContext);
 
-    useEffect(() => {
-        if (webrtc.isLocalAudioEnabled(user.id) !== undefined) {
-            setMicOn(webrtc.isLocalAudioEnabled(user.id));
-        }
-    }, [ webrtc.isLocalAudioEnabled(user.id) ]);
-
     async function toggleInboundAudioState () {
         const localSession = sessions.get(sessionId);
         if (localSession?.isHost) {
@@ -460,9 +441,6 @@ function ToggleMic (props:any){
             const muteNotification = await muteMutation({
                 variables: notification,
             });
-            if (muteNotification?.data?.mute?.audio != null) {
-                setMicOn(muteNotification.data.mute.audio);
-            }
         } else {
             webrtc.localAudioToggle(user.id);
         }
@@ -477,9 +455,6 @@ function ToggleMic (props:any){
         const muteNotification = await muteMutation({
             variables: notification,
         });
-        if (muteNotification?.data?.mute?.audio != null) {
-            setMicOn(muteNotification.data.mute.audio);
-        }
     }
 
     async function toggleAudioState (): Promise<void> {
@@ -498,6 +473,10 @@ function ToggleMic (props:any){
             await toggleInboundAudioState();
         }
     }
+
+    useEffect(() => {
+        setMicOn(webrtc.isLocalAudioEnabled(user.id));
+    }, [ webrtc.isLocalAudioEnabled(user.id) ]);
 
     return (
         <MenuItem

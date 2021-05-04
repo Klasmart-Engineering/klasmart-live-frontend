@@ -132,9 +132,6 @@ function Toolbar () {
         const muteNotification = await muteMutation({
             variables: notification,
         });
-        if (muteNotification?.data?.mute?.audio != null) {
-            setMicOn(muteNotification.data.mute.audio);
-        }
     }
 
     async function toggleOutboundVideoState () {
@@ -146,9 +143,6 @@ function Toolbar () {
         const muteNotification = await muteMutation({
             variables: notification,
         });
-        if (muteNotification?.data?.mute?.video != null) {
-            setCamOn(muteNotification.data.mute.video);
-        }
     }
 
     function endCall () {
@@ -166,6 +160,7 @@ function Toolbar () {
     default: viewModesBadge = <OnStageIcon />;
         break;
     }
+
     useEffect(()=> {
         resetDrawers();
     }, [ activeTab ]);
@@ -175,6 +170,14 @@ function Toolbar () {
     useEffect(() => {
         activeTab !== `mosaic` && setIsCanvasOpen(isGlobalCanvasEnabled);
     }, [ isGlobalCanvasEnabled ]);
+
+    useEffect(() => {
+        setMicOn(webrtc.isLocalAudioEnabled(sessionId));
+    }, [ webrtc.isLocalAudioEnabled(sessionId) ]);
+
+    useEffect(() => {
+        setCamOn(webrtc.isLocalVideoEnabled(sessionId));
+    }, [ webrtc.isLocalVideoEnabled(sessionId) ]);
 
     return (
         <>
@@ -225,9 +228,9 @@ function Toolbar () {
                     <ToolbarItemMicrophone
                         // locked={}
                         active={micOn}
-                        tooltip={user.isTeacherAudioMuted ? intl.formatMessage({
-                            id: `toolbar_microphonelocked`,
-                        }) : undefined}
+                        // tooltip={user.isTeacherAudioMuted ? intl.formatMessage({
+                        //     id: `toolbar_microphonelocked`,
+                        // }) : undefined}
                         onClick={() =>  toggleOutboundAudioState() }
                     />
                     <ToolbarItemCall
@@ -239,11 +242,11 @@ function Toolbar () {
                         onClick={() => endCall()}
                     />
                     <ToolbarItemCamera
-                        locked={videoGloballyMuted}
+                        // locked={videoGloballyMuted}
                         active={camOn}
-                        tooltip={videoGloballyMutedState ? intl.formatMessage({
-                            id: `toolbar_camera_locked`,
-                        }) : undefined}
+                        // tooltip={videoGloballyMutedState ? intl.formatMessage({
+                        //     id: `toolbar_camera_locked`,
+                        // }) : undefined}
                         onClick={() =>  toggleOutboundVideoState() }
                     />
                 </Grid>
