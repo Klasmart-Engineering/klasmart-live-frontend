@@ -3,7 +3,6 @@ import { RoomContext } from "../../providers/roomContext";
 import { ScreenShareContext } from "../../providers/screenShareProvider";
 import { WebRTCContext } from "../../providers/WebRTCContext";
 import { isLessonPlanOpenState, pinnedUserState } from "../../states/layoutAtoms";
-import { Whiteboard } from "../utils/Whiteboard";
 import PreviewLessonPlan from "./previewLessonPlan";
 import Observe from "./viewModes/Observe";
 import OnStage from "./viewModes/onStage";
@@ -53,7 +52,6 @@ function MainView () {
                     className={classes.fullHeight}
                     id="main-container"
                 >
-                    <Whiteboard uniqueId="student" />
                     <Screenshare />
                 </Grid>
             </Grid>

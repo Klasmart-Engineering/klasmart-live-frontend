@@ -34,7 +34,9 @@ function OnStage () {
         return(
             <UserCamera
                 user={host}
-                actions={false}/>
+                actions={false}
+                variant="large"
+            />
         );
     }
 

@@ -4,11 +4,14 @@ import {
     makeStyles,
     Theme,
     Typography,
+    useMediaQuery,
+    useTheme,
 } from "@material-ui/core";
 import amber from "@material-ui/core/colors/amber";
 import { MicMuteFill as MicDisabledIcon } from "@styled-icons/bootstrap/MicMuteFill";
 import { Crown as HasControlsIcon } from "@styled-icons/fa-solid/Crown";
 import { HatGraduation as TeacherIcon } from "@styled-icons/fluentui-system-filled/HatGraduation";
+import clsx from "clsx";
 import React, { useContext } from "react";
 import { FormattedMessage } from "react-intl";
 
@@ -33,6 +36,15 @@ const useStyles = makeStyles((theme: Theme) => ({
             borderRadius: 20,
         },
     },
+    rootSmall:{},
+    rootLarge:{
+        "& $name":{
+            fontSize: `2rem`,
+            borderRadius: `8px`,
+            margin: `10px`,
+            padding: `2px 20px`,
+        },
+    },
     topCamera:{
         textAlign: `center`,
     },
@@ -43,9 +55,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     name: {
         color: `#fff`,
         display: `inline-block`,
-        padding: `4px 6px`,
-        fontSize: `0.75rem`,
+        padding: `6px 10px`,
         lineHeight: `1.2`,
+        fontSize: `0.8em`,
         fontWeight: 600,
         backgroundColor: `rgba(0, 0, 0, 0.25)`,
         borderRadius: `0 12px 0`,
@@ -56,10 +68,10 @@ const useStyles = makeStyles((theme: Theme) => ({
         right: 0,
         backgroundColor: `#fff`,
         borderRadius: `0 0 0 10px`,
-        padding : `0 10px`,
+        padding : `0 0.5em`,
     },
     roleIcon:{
-        margin: `2px 4px`,
+        margin: `0.2em`,
     },
     roleHasControlsIcon:{
         color: amber[500],
@@ -68,11 +80,14 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 interface UserCameraDetailsType {
     user: any;
+    variant?: "default" | "large" | "small";
 }
 
 function UserCameraDetails (props: UserCameraDetailsType) {
-    const { user } = props;
+    const { user, variant } = props;
     const classes = useStyles();
+    const theme = useTheme();
+
     const { sessionId } = useContext(LocalSessionContext);
     const webrtc = useContext(WebRTCContext);
 
@@ -80,15 +95,18 @@ function UserCameraDetails (props: UserCameraDetailsType) {
 
     if(user.isTeacher){
         return(
-            <div className={`${classes.root} ${classes.rootTeacher}`}>
+            <div className={clsx(classes.root, classes.rootTeacher, {
+                [classes.rootSmall]: variant === `small`,
+                [classes.rootLarge]: variant === `large`,
+            })}>
                 <div className={classes.topCamera}>
-                    <Typography className={classes.name}>{isSelf ? <FormattedMessage id="you"/> : user.name}</Typography>
+                    <Typography className={classes.name}>{isSelf ? <FormattedMessage id="you"/> : user.name} {!webrtc.isLocalAudioEnabled(user.id) && <MicDisabledIcon size="0.85em"/>}</Typography>
                     <div className={classes.roles}>
                         <TeacherIcon
-                            size="1.25rem"
+                            size="1em"
                             className={classes.roleIcon}/>
                         {user.isHost && <HasControlsIcon
-                            size="1.25rem"
+                            size="1em"
                             className={`${classes.roleIcon} ${classes.roleHasControlsIcon}`}/>}
                     </div>
                 </div>
@@ -102,7 +120,7 @@ function UserCameraDetails (props: UserCameraDetailsType) {
             <div className={classes.topCamera}></div>
             <div className={classes.bottomCamera}>
                 <Typography className={classes.name}>
-                    {isSelf ? <FormattedMessage id="you"/> : user.name} {!webrtc.isLocalAudioEnabled(user.id) && <MicDisabledIcon size="0.85rem"/>}
+                    {isSelf ? <FormattedMessage id="you"/> : user.name} {!webrtc.isLocalAudioEnabled(user.id) && <MicDisabledIcon size="0.85em"/>}
                 </Typography>
             </div>
         </div>
