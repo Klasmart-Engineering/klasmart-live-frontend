@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         backgroundColor: `#31313c`,
         borderRadius: 12,
         width: `100%`,
-        minHeight: 90,
+        minHeight: 96,
         margin: 2,
         height: `100%`,
         alignItems: `center`,
@@ -30,10 +30,13 @@ const useStyles = makeStyles((theme: Theme) => ({
         position: `relative`,
         overflow: `hidden`,
         order: 99,
+        "& video": {
+            // backgroundColor: theme.palette.grey[200],
+        },
     },
     rootSmall:{},
     rootLarge:{
-        fontSize: `2rem`,
+        fontSize: `1.5rem`,
     },
     self:{
         order: 1,
@@ -111,18 +114,20 @@ function UserCamera (props: UserCameraType) {
     ]);
 
     useEffect(() => {
-        setMicOn(webrtc.isLocalAudioEnabled(sessionId));
-    }, [ webrtc.isLocalAudioEnabled(sessionId) ]);
+        setMicOn(webrtc.isLocalAudioEnabled(user.id));
+    }, [ webrtc.isLocalAudioEnabled(user.id) ]);
 
     useEffect(() => {
-        setCamOn(webrtc.isLocalVideoEnabled(sessionId));
+        setCamOn(webrtc.isLocalVideoEnabled(user.id));
 
         if(userCameraTracks){
             userCameraTracks.forEach( (track:any) => {
-                track.kind === `video` &&  track.enabled === `false` && setCamOn(track.enabled);
+                if(track.kind === `video` && track.enabled === false){
+                    setCamOn(false);
+                }
             });
         }
-    }, [ webrtc.isLocalVideoEnabled(sessionId), userCameraTracks ]);
+    }, [ webrtc.isLocalVideoEnabled(user.id), userCameraTracks ]);
 
     return (
         <Grid

@@ -24,7 +24,7 @@ function PreviewLessonPlan () {
 
     if(material?.__typename === MaterialTypename.Image){
         return (
-            <ActivityImage material={material} />
+            <ActivityImage material={material.url} />
         );
     }
 
@@ -47,30 +47,6 @@ function PreviewLessonPlan () {
             <RecordedIframe
                 contentId={material.url}
             />
-        );
-    }
-
-    if(material?.__typename === MaterialTypename.Video){
-        return (
-            <>
-                Video
-            </>
-        );
-    }
-
-    if(material?.__typename === MaterialTypename.Audio){
-        return (
-            <>
-                Audio
-            </>
-        );
-    }
-
-    if(material?.__typename === MaterialTypename.Iframe){
-        return (
-            <>
-                Iframe
-            </>
         );
     }
 

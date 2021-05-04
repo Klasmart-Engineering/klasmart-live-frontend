@@ -4,10 +4,14 @@ import { LIVE_LINK, LocalSessionContext } from "../../../providers/providers";
 import { RoomContext } from "../../../providers/roomContext";
 import {
     hasControlsState, interactiveModeState,
+    isLessonPlanOpenState,
     materialActiveIndexState, streamIdState,
 } from "../../../states/layoutAtoms";
 import { MUT_SHOW_CONTENT } from "../../utils/graphql";
+import ActivityImage from "../../utils/interactiveContent/image";
 import { PreviewPlayer } from "../../utils/interactiveContent/previewPlayer";
+import { RecordedIframe } from "../../utils/interactiveContent/recordediframe";
+import { ReplicaMedia } from "../../utils/interactiveContent/synchronized-video";
 import PreviewLessonPlan from "../previewLessonPlan";
 import { useMutation } from "@apollo/client";
 import {
@@ -36,6 +40,7 @@ function Present () {
         materials, roomId, sessionId,
     } = useContext(LocalSessionContext);
     const [ materialActiveIndex, setMaterialActiveIndex ] = useRecoilState(materialActiveIndexState);
+
     const material = materialActiveIndex >= 0 && materialActiveIndex < materials.length ? materials[materialActiveIndex] : undefined;
 
     const [ showContent, { loading: loadingShowContent } ] = useMutation(MUT_SHOW_CONTENT, {
@@ -88,16 +93,37 @@ function Present () {
         sessionId,
     ]);
 
+    // IF TEACHER
     if(hasControls){
         return(<PreviewLessonPlan />);
     }
 
-    if(content){
+    if(content && content.type === ContentType.Image){
+        return (
+            <ActivityImage material={content?.contentId} />
+        );
+    }
+
+    if(content && content.type === ContentType.Stream){
         return (
             <PreviewPlayer
                 streamId={content?.contentId}
                 width="100%"
                 height="100%" />
+        );
+    }
+
+    if(content && content.type === ContentType.Activity){
+        return (
+            <RecordedIframe contentId={content?.contentId}  />
+        );
+    }
+
+    if(content && (content.type === ContentType.Video || content.type === ContentType.Audio)){
+        return (
+            <ReplicaMedia
+                type={content.type}
+                sessionId={content.contentId} />
         );
     }
 

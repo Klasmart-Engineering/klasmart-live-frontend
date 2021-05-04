@@ -10,6 +10,7 @@ import { Eraser as EraserIcon } from "@styled-icons/boxicons-solid/Eraser";
 import { Trash as TrashIcon } from "@styled-icons/boxicons-solid/Trash";
 import { Pencil as PencilIcon } from "@styled-icons/entypo/Pencil";
 import { PeopleCommunity as PeopleCommunityIcon } from "@styled-icons/fluentui-system-filled/PeopleCommunity";
+import { SlideEraser as SlideEraserIcon } from "@styled-icons/fluentui-system-regular/SlideEraser";
 import { Brush as BrushIcon } from "@styled-icons/material/Brush";
 import { TextFields as TextIcon } from "@styled-icons/material/TextFields";
 import clsx from "clsx";
@@ -87,19 +88,19 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
                 <CanvasMenuItem
                     color='#0000ff'
                     icon={<PencilIcon size="2rem"/>}
-                    onClick={ () => {selectTool(`line`); selectColorByValue(`0000ff`);} } />
+                    onClick={ () => {selectTool(`line`); selectColorByValue(`#0000ff`);} } />
                 <CanvasMenuItem
                     color='#00ff00'
                     icon={<PencilIcon size="2rem"/>}
-                    onClick={ () => {selectTool(`line`); selectColorByValue(`00ff00`);} } />
+                    onClick={ () => {selectTool(`line`); selectColorByValue(`#00ff00`);} } />
                 <CanvasMenuItem
                     color='#fbe739'
                     icon={<PencilIcon size="2rem"/>}
-                    onClick={ () => {selectTool(`line`); selectColorByValue(`fbe739`);} } />
+                    onClick={ () => {selectTool(`line`); selectColorByValue(`#fbe739`);} } />
                 <CanvasMenuItem
                     color='#ff0000'
                     icon={<PencilIcon size="2rem"/>}
-                    onClick={ () => {selectTool(`line`); selectColorByValue(`ff0000`);} } />
+                    onClick={ () => {selectTool(`line`); selectColorByValue(`#ff0000`);} } />
 
                 {/* MORE TOOLS : they work but not used
                 <Grid
@@ -125,7 +126,7 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
 
                 <CanvasMenuItem
                     title="Clear canvas"
-                    icon={<TrashIcon size="2rem"/>}
+                    icon={<SlideEraserIcon size="2rem"/>}
                     onClick={ () => clear([ sessionId ]) } />
 
                 {hasControls &&

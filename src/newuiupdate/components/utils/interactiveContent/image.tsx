@@ -48,12 +48,12 @@ function ActivityImage (props: any) {
                 item
                 className={classes.imageBackground}
                 style={{
-                    backgroundImage: `url(${material.url})`,
+                    backgroundImage: `url(${material})`,
                 }}
             />
             <img
                 className={classes.image}
-                src={material.url}
+                src={material}
             />
         </Grid>
     );

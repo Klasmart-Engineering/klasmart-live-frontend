@@ -23,8 +23,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     cameraGridSingleTeacher:{
         gridTemplateColumns: `1fr`,
-        minHeight: `130px`,
-        padding: `0 30px`,
+        minHeight: `150px`,
+        padding: `0 52px`,
     },
     gridContainerTeachers:{
         marginBottom: `15px`,

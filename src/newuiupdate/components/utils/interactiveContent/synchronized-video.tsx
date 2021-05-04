@@ -22,7 +22,7 @@ interface VideoSynchronize {
 
 interface ReplicaVideoProps {
     sessionId: string;
-    type: MaterialTypename.Video | MaterialTypename.Audio;
+    type: 'Audio' | 'Video';
 }
 
 const PLAYLIST_FILE_NAME = `master`;
