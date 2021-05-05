@@ -34,6 +34,8 @@ import {
     Grid,
     makeStyles,
     Theme,
+    useMediaQuery,
+    useTheme,
 } from "@material-ui/core";
 import PhoneInTalkIcon from "@material-ui/icons/PhoneInTalk";
 import { ChatSquareDotsFill as ChatIcon } from "@styled-icons/bootstrap/ChatSquareDotsFill";
@@ -67,6 +69,9 @@ const useStyles = makeStyles((theme: Theme) => ({
         paddingLeft: 40,
         paddingRight: 40,
     },
+    rootMd:{
+        fontSize: `0.9rem`,
+    },
     iconGroup: {
         display: `flex`,
         alignItems: `center`,
@@ -83,7 +88,6 @@ function Toolbar () {
     const webrtc = useContext(WebRTCContext);
     const { content } = useContext(RoomContext);
 
-    const [ user, setUser ] = useRecoilState(userState);
     const [ isGlobalActionsOpen, setIsGlobalActionsOpen ] = useRecoilState(isGlobalActionsOpenState);
     const [ isLessonPlanOpen, setIsLessonPlanOpen ] = useRecoilState(isLessonPlanOpenState);
     const [ isViewModesOpen, setIsViewModesOpen ] = useRecoilState(isViewModesOpenState);
@@ -95,6 +99,9 @@ function Toolbar () {
     const [ unreadMessages, setUnreadMessages ] = useRecoilState(unreadMessagesState);
     const [ hasControls, setHasControls ] = useRecoilState(hasControlsState);
     const [ videoGloballyMuted, setVideoGloballyMuted ] = useRecoilState(videoGloballyMutedState);
+
+    const theme = useTheme();
+    const isMdDown = useMediaQuery(theme.breakpoints.down(`md`));
 
     const classDetailsRef = React.useRef<any>();
     const canvasRef = React.useRef<any>();
@@ -168,7 +175,7 @@ function Toolbar () {
     const { state: { display: isGlobalCanvasEnabled, permissions: permissionsGlobalCanvas } } = useSynchronizedState();
 
     useEffect(() => {
-        activeTab !== `mosaic` && setIsCanvasOpen(isGlobalCanvasEnabled);
+        activeTab !== `mosaic` && setIsCanvasOpen(isGlobalCanvasEnabled && permissionsGlobalCanvas.allowCreateShapes);
     }, [ isGlobalCanvasEnabled ]);
 
     useEffect(() => {
@@ -185,6 +192,7 @@ function Toolbar () {
                 container
                 className={clsx(classes.root, {
                     [classes.rootMosaic] : activeTab === `mosaic`,
+                    [classes.rootMd] : isMdDown,
                 })}>
                 <Grid
                     item
@@ -207,7 +215,7 @@ function Toolbar () {
                     </div>
                     <div ref={canvasRef}>
                         <ToolbarItem
-                            display={activeTab === `mosaic` ? false : hasControls ? true : isGlobalCanvasEnabled ? permissionsGlobalCanvas ? true : false : false}
+                            display={activeTab === `mosaic` ? false : hasControls ? true : isGlobalCanvasEnabled ? permissionsGlobalCanvas.allowCreateShapes ? true : false : false}
                             icon={<CanvasIcon />}
                             label={intl.formatMessage({
                                 id: `toolbar_canvas`,

@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 interface UserCameraType {
     user: any;
     actions?: boolean;
-    variant?: "default" | "large" | "small";
+    variant?: "medium" | "large" | "small";
 }
 
 function UserCamera (props: UserCameraType) {
@@ -60,7 +60,10 @@ function UserCamera (props: UserCameraType) {
     const classes = useStyles();
     const [ isHover, setIsHover ] = useState(false);
 
+    const enableSpeakingActivity = true;
     const [ isSpeaking, setIsSpeaking ] = useState(false);
+    const [ speakingActivity, setSpeakingActivity ] = useState(0);
+
     const [ camOn, setCamOn ] = useState(true);
     const [ micOn, setMicOn ] = useState(true);
 
@@ -69,7 +72,6 @@ function UserCamera (props: UserCameraType) {
     const webrtc = useContext(WebRTCContext);
 
     const isSelf = user.id === sessionId ? true : false;
-    const enableSpeakingActivity = false;
 
     const userSession = sessions.get(user.id);
     const userCamera = isSelf ? camera : webrtc.getCameraStream(user.id);
@@ -85,17 +87,18 @@ function UserCamera (props: UserCameraType) {
         const options = {
             minNoiseLevel: 0.3,
             maxNoiseLevel: 0.7,
-            noiseCaptureDuration: 1000,
-            avgNoiseMultiplier: 0.0001,
+            noiseCaptureDuration: 1500,
+            avgNoiseMultiplier: 0.3,
             smoothingTimeConstant: 0.9,
 
             onVoiceStart: function () {
                 setIsSpeaking(true);
             },
             onVoiceStop: function () {
-                setIsSpeaking(false);
+                setIsSpeaking(false);        },
+            onUpdate: function (val:any) {
+                setSpeakingActivity(val);
             },
-            onUpdate: function (val:any) {},
         };
         vad(audioContext, stream, options);
     }
@@ -129,11 +132,15 @@ function UserCamera (props: UserCameraType) {
         }
     }, [ webrtc.isLocalVideoEnabled(user.id), userCameraTracks ]);
 
+    useEffect(() => {
+        userCamera && enableSpeakingActivity && audioDetector(userCamera);
+    }, [ userCamera ]);
+
     return (
         <Grid
             container
             className={clsx(classes.root, {
-                [classes.speaking]: isSpeaking,
+                // [classes.speaking]: isSpeaking,
                 [classes.self]: isSelf,
                 [classes.rootSmall]: variant === `small`,
                 [classes.rootLarge]: variant === `large`,
@@ -147,7 +154,9 @@ function UserCamera (props: UserCameraType) {
             >
                 <UserCameraDetails
                     variant={variant}
-                    user={user} />
+                    user={user}
+                    speakingActivity={speakingActivity}
+                />
                 {actions ? isHover && <UserCameraActions user={user} /> : null}
                 {userCamera && camOn ? (
                     <>
@@ -171,7 +180,9 @@ function UserCamera (props: UserCameraType) {
                             muted={isSelf}
                         />
                     </>
-                ) : <NoCamera name={user.name} />}
+                ) : <NoCamera
+                    name={user.name}
+                    variant={variant} />}
             </Grid>
         </Grid>
     );

@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 function OnStage () {
     const classes = useStyles();
-    const { content, sessions } = useContext(RoomContext);
+    const { sessions } = useContext(RoomContext);
     const { name } = useContext(LocalSessionContext);
     const [ host, setHost ] = useState<any>(true);
 

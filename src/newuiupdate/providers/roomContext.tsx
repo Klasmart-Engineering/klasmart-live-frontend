@@ -59,7 +59,7 @@ export const RoomContext = createContext<RoomContextInterface>(defaultRoomContex
 export const RoomProvider = (props: {children: React.ReactNode}) => {
     const intl = useIntl();
     const {
-        roomId, name, sessionId,
+        roomId, name, sessionId, camera,
     } = useContext(LocalSessionContext);
     const [ sfuAddress, setSfuAddress ] = useState<string>(``);
     const [ messages, setMessages ] = useState<Map<string, Message>>(new Map<string, Message>());
@@ -116,11 +116,13 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
             });
         }
         if(!isChatOpen){
-            enqueueSnackbar(intl.formatMessage({
-                id: `notification_user_sent_message`,
-            }, {
-                user: newMessage.session.name,
-            }));
+            if(camera){
+                enqueueSnackbar(intl.formatMessage({
+                    id: `notification_user_sent_message`,
+                }, {
+                    user: newMessage.session.name,
+                }));
+            }
             setUnreadMessages(unreadMessages + 1);
         }
         setMessages(prev => new Map(prev.set(newMessage.id, newMessage)));

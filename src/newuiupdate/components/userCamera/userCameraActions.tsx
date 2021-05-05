@@ -7,6 +7,7 @@ import {
 } from "../../providers/WebRTCContext";
 import { hasControlsState,  pinnedUserState } from "../../states/layoutAtoms";
 import { MUTATION_SET_HOST } from "../utils/graphql";
+import { fullScreenById } from "../utils/utils";
 import { useMutation, useQuery } from "@apollo/client";
 import {
     Grid,
@@ -538,19 +539,6 @@ function ExpandCamera (props:any){
     const { user } = props;
     const classes = useStyles();
 
-    function fullScreenCamera () {
-        const videoId = `camera:${user.id}`;
-        const video = document.getElementById(videoId) as any;
-        if (!video) return;
-
-        if (video.requestFullscreen)
-            video.requestFullscreen();
-        else if (video.webkitRequestFullscreen)
-            video.webkitRequestFullscreen(); // to support on Safari
-        else if (video.msRequestFullScreen)
-            video.msRequestFullScreen(); // to support on Edge
-    }
-
     return(
         <div className={classes.expand}>
             <IconButton
@@ -561,7 +549,7 @@ function ExpandCamera (props:any){
                 style={{
                     background: `none`,
                 }}
-                onClick={() => fullScreenCamera()}
+                onClick={() => fullScreenById(`camera:${user.id}`)}
             >
                 <ExpandIcon size="0.75em" />
             </IconButton>

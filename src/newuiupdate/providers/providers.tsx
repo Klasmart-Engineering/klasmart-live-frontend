@@ -185,6 +185,11 @@ function parseToken () {
                         url: `/h5p/play/60588e7475aa32001244926f`,
                     },
                     {
+                        __typename : MaterialTypename.Iframe,
+                        name : `PDf column`,
+                        url: `${process.env.ENDPOINT_TEST_ASSETS_S3 || `.`}/test_pdf.pdf`,
+                    },
+                    {
                         __typename: MaterialTypename.Iframe,
                         name: `Course Presentation`,
                         url: `/h5p/play/60588da62af9710014707a2d`,
@@ -227,12 +232,12 @@ function parseToken () {
                     {
                         __typename: MaterialTypename.Image,
                         name: `Portrait Image`,
-                        url: `https://i.pinimg.com/originals/00/01/c0/0001c005b9aece8969ed51a20af4c2cd.jpg`,
+                        url: `./test_image-1.jpeg`,
                     },
                     {
                         __typename: MaterialTypename.Image,
                         name: `Landscape Image`,
-                        url: `https://blog.groupeastek.com/wp-content/uploads/2015/10/observatoires-photographiques-du-paysage.jpeg`,
+                        url: `./test_image-2.jpeg`,
                     },
                     {
                         name: `Pairs - Legacy`,

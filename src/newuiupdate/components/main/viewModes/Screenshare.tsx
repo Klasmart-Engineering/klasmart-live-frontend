@@ -2,23 +2,21 @@ import { LocalSessionContext } from "../../../providers/providers";
 import { RoomContext } from "../../../providers/roomContext";
 import { ScreenShareContext } from "../../../providers/screenShareProvider";
 import { WebRTCContext } from "../../../providers/WebRTCContext";
-import UserCamera from "../../userCamera/userCamera";
+import { isGlobalActionsOpenState } from "../../../states/layoutAtoms";
 import { StyledVideo } from "../../utils/styledVideo";
 import {
     Button,
-    Grid, makeStyles, Theme, Typography,
+    Grid, makeStyles, Theme, Typography, useMediaQuery, useTheme,
 } from "@material-ui/core";
 import PresentToAllIcon from '@material-ui/icons/PresentToAll';
-import React, {
-    useContext, useEffect, useRef,
-} from "react";
+import React, { useContext } from "react";
+import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
         height: `100%`,
         alignItems: `center`,
         justifyContent: `center`,
-        border: `5px solid gren`,
         textAlign: `center`,
     },
     icon:{
@@ -28,15 +26,23 @@ const useStyles = makeStyles((theme: Theme) => ({
         },
     },
     button:{},
+    relative:{
+        position: `relative`,
+    },
 }));
 
 function Screenshare () {
     const classes = useStyles();
     const screenShare = useContext(ScreenShareContext);
     const webrtc = useContext(WebRTCContext);
-    const { content, sessions } = useContext(RoomContext);
+    const { content } = useContext(RoomContext);
+
+    const [ isGlobalActionsOpen, setIsGlobalActionsOpen ] = useRecoilState(isGlobalActionsOpenState);
 
     const screenshareVideo = screenShare.stream ? screenShare.stream : content && webrtc.getAuxStream(content?.contentId);
+
+    const theme = useTheme();
+    const isMdDown = useMediaQuery(theme.breakpoints.down(`md`));
 
     // Local ScreenShare Stream
     if(screenshareVideo){
@@ -44,27 +50,47 @@ function Screenshare () {
             <Grid
                 container
                 className={classes.root}>
-                <Grid item>
+                <Grid
+                    item
+                    style={{
+                        width: `100%`,
+                    }}>
                     {screenShare.stream ? (
                         <Grid
                             container
-                            direction="column"
-                            spacing={3}
-                        >
-                            <Grid item>
-                                <div className={classes.icon}>
-                                    <PresentToAllIcon />
-                                </div>
+                            justify="center">
+                            <Grid
+                                item
+                                xs={6}>
+                                <Grid
+                                    container
+                                    direction="column"
+                                    spacing={3}
+                                >
+                                    <Grid item>
+                                        <div className={classes.icon}>
+                                            <PresentToAllIcon />
+                                        </div>
+                                    </Grid>
+                                    <Grid item>
+                                        <Typography variant="h5">Your are presenting to everyone</Typography>
+                                    </Grid>
+                                    <Grid item>
+                                        <Button
+                                            variant="contained"
+                                            color="primary"
+                                            onClick={() => {screenShare.stop(); setIsGlobalActionsOpen(false);}}
+                                        >Stop presenting</Button>
+                                    </Grid>
+                                </Grid>
                             </Grid>
-                            <Grid item>
-                                <Typography variant="h5">Your are presenting to everyone</Typography>
-                            </Grid>
-                            <Grid item>
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={() => screenShare.stop()}
-                                >Stop presenting</Button>
+                            <Grid
+                                item
+                                xs={6}
+                                className={classes.relative}
+                                hidden={isMdDown}
+                            >
+                                <StyledVideo stream={screenshareVideo} />
                             </Grid>
                         </Grid>
                     ) : (
