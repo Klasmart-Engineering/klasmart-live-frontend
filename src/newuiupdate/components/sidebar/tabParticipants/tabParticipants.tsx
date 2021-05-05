@@ -8,6 +8,8 @@ import {
     Grid,
     makeStyles,
     Theme,
+    useMediaQuery,
+    useTheme,
 } from "@material-ui/core";
 import { Person as UserIcon } from "@styled-icons/fluentui-system-regular/Person";
 import clsx from "clsx";
@@ -45,6 +47,9 @@ function TabParticipants () {
     const [ studentsSessions, setStudentsSessions ] = useState<Session[]>([]);
     const [ teachersSessions, setTeachersSessions ] = useState<Session[]>([]);
 
+    const theme = useTheme();
+    const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
+
     useEffect(() => {
         const teachers = [ ...sessions.values() ].filter(session => session.isTeacher === true);
         setTeachersSessions(teachers);
@@ -80,7 +85,7 @@ function TabParticipants () {
                     item
                     xs
                     className={clsx({
-                        [classes.gridContainerStudents]: studentsSessions.length,
+                        [classes.gridContainerStudents]: studentsSessions.length && !isSmDown,
                     })}>
                     {studentsSessions.length ? (
                         <div className={classes.cameraGrid}>

@@ -2,14 +2,20 @@ import { ClassType } from "../../store/actions";
 import Main from '../components/main/main';
 import Sidebar from '../components/sidebar/sidebar';
 import { LocalSessionContext } from '../providers/providers';
-import { Grid } from '@material-ui/core';
+import {
+    Grid, useMediaQuery, useTheme,
+} from '@material-ui/core';
 import React, { useContext } from 'react';
 
 function Class () {
     const { classtype } = useContext(LocalSessionContext);
+    const theme = useTheme();
+    const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
 
     return (
-        <Grid container>
+        <Grid
+            container
+            direction={isSmDown ? `column` : `row`}>
             <Grid
                 item
                 xs>

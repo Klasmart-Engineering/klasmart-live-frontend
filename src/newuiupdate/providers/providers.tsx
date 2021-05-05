@@ -299,12 +299,12 @@ function parseToken () {
                     {
                         __typename: MaterialTypename.Image,
                         name: `Portrait Image`,
-                        url: `${process.env.ENDPOINT_TEST_ASSETS_S3 || `.`}/test_image_portrait.jpg`,
+                        url: `${process.env.ENDPOINT_TEST_ASSETS_S3 || `.`}/test_image-1.jpeg`,
                     },
                     {
                         __typename: MaterialTypename.Image,
                         name: `Landscape Image`,
-                        url: `${process.env.ENDPOINT_TEST_ASSETS_S3 || `.`}/test_image_landscape.jpg`,
+                        url: `${process.env.ENDPOINT_TEST_ASSETS_S3 || `.`}/test_image-2.jpeg`,
                     },
                     {
                         name: `Pairs - Legacy`,
