@@ -10,6 +10,8 @@ import {
     Grid,
     makeStyles,
     Theme,
+    useMediaQuery,
+    useTheme,
 } from "@material-ui/core";
 import { Grid as MosaicIcon } from "@styled-icons/bootstrap/Grid";
 import { PeopleOutline as ParticipantsIcon } from "@styled-icons/evaicons-outline/PeopleOutline";
@@ -69,6 +71,9 @@ function Sidebar () {
     const { isTeacher } = useContext(LocalSessionContext);
     const [ drawerWidth, setDrawerWidth ] = useState<any>(440);
 
+    const theme = useTheme();
+    const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
+
     const sidebarTabs = [
         {
             id: 1,
@@ -105,6 +110,10 @@ function Sidebar () {
     useEffect(() => {
         activeTab !== `participants` ? setDrawerWidth(`100%`) : setDrawerWidth(440);
     }, [ activeTab ]);
+
+    if(isSmDown){
+        return(sidebarTabs[0].content);
+    }
 
     return (
         <Drawer

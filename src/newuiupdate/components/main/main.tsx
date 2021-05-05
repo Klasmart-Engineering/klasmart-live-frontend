@@ -11,13 +11,19 @@ import {
     Grid,
     makeStyles,
     Theme,
+    useMediaQuery,
+    useTheme,
 } from "@material-ui/core";
+import clsx from "clsx";
 import React, { useContext } from "react";
 
 const useStyles = makeStyles((theme: Theme) => ({
     fullViewHeight: {
         height: `100vh`,
         flexWrap: `nowrap`,
+    },
+    fullViewHeightSm:{
+        height: `50vh`,
     },
     mainViewContainer: {
         display: `flex`,
@@ -44,11 +50,16 @@ function Main () {
     const classes = useStyles();
     const { classtype } = useContext(LocalSessionContext);
 
+    const theme = useTheme();
+    const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
+
     return (
         <Grid
             container
             direction="column"
-            className={classes.fullViewHeight}>
+            className={clsx(classes.fullViewHeight, {
+                [classes.fullViewHeightSm]: isSmDown,
+            })}>
             <Grid
                 item
                 xs
