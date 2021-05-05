@@ -17,6 +17,7 @@ import React, { useContext } from "react";
 const useStyles = makeStyles((theme: Theme) => ({
     fullViewHeight: {
         height: `100vh`,
+        flexWrap: `nowrap`,
     },
     mainViewContainer: {
         display: `flex`,
@@ -27,12 +28,15 @@ const useStyles = makeStyles((theme: Theme) => ({
         display: `flex`,
         flex: 1,
         position: `relative`,
+        // height: `calc(100vh - 115px)`,
     },
     mainViewDrawer: {
         position: `relative`,
     },
     relative:{
         position: `relative`,
+        height: `100%`,
+        overflow: `auto`,
     },
 }));
 

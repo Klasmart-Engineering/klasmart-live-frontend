@@ -29,7 +29,6 @@ export function Whiteboard ({
         } else {
             return sessionId;
         }
-
     }, [ sessionId, group ]);
 
     const canvasStyle: CSSProperties = {

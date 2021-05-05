@@ -14,10 +14,11 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 interface NoCameraType {
     name: string;
+    variant?: "medium" | "large" | "small";
 }
 
 function NoCamera (props: NoCameraType) {
-    const { name } = props;
+    const { name, variant } = props;
 
     const classes = useStyles();
 
@@ -29,7 +30,7 @@ function NoCamera (props: NoCameraType) {
                 <UserAvatar
                     name={name}
                     className={classes.avatar}
-                    size="medium"
+                    size={variant || `medium`}
                     maxInitialsLength={2}
                 />
             </Grid>

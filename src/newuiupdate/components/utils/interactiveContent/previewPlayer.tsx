@@ -1,4 +1,5 @@
 import { LIVE_LINK } from "../../../providers/providers";
+import { isLessonPlanOpenState } from "../../../states/layoutAtoms";
 import Loading from "./loading";
 import { gql, useSubscription } from "@apollo/client";
 import Typography from "@material-ui/core/Typography";
@@ -6,6 +7,7 @@ import React, {
     useEffect, useRef, useState,
 } from "react";
 import { FormattedMessage } from "react-intl";
+import { useRecoilState } from "recoil";
 
 const SUB_EVENTS = gql`
   subscription stream($streamId: ID!) {
@@ -32,6 +34,8 @@ export function PreviewPlayer ({
         frameWidth: 0,
         frameHeight: 0,
     });
+
+    const [ isLessonPlanOpen, setIsLessonPlanOpen ] = useRecoilState(isLessonPlanOpenState);
 
     // Buffer events until we have a page ready to render them
     const { current: bufferedEvents } = useRef<string[]>([]);
@@ -87,24 +91,36 @@ export function PreviewPlayer ({
             const shrinkRatioX = (width / fWidth) > 1 ? 1 : width / fWidth;
             const shrinkRatioY = (height / fHeight) > 1 ? 1 : height / fHeight;
             setScale(Math.min(shrinkRatioX, shrinkRatioY));
+            console.log(`message`);
         });
-    }, [ ref.current, ref.current && ref.current.contentWindow ]);
+    }, [
+        ref.current,
+        ref.current && ref.current.contentWindow,
+        isLessonPlanOpen,
+    ]);
 
     if (loading) { return <Loading />; }
     if (error) { return <Typography><FormattedMessage id="failed_to_connect" />: {JSON.stringify(error)}</Typography>; }
     return <div
         id="preview-iframe-container"
         style={{
-            width,
-            height,
+            display: `flex`,
+            height: `100%`,
+            width: `100%`,
+            alignItems: `center`,
+            justifyContent: `center`,
         }}>
         <iframe
             key={streamId}
             ref={ref}
+            id={`preview:${streamId}`}
             style={{
                 visibility: loading ? `hidden` : `visible`,
                 transformOrigin: `top left`,
                 transform: `scale(${scale})`,
+                position: `absolute`,
+                top: `0`,
+                left: `0`,
             }}
             src={`player.html`}
             width={frameWidth}

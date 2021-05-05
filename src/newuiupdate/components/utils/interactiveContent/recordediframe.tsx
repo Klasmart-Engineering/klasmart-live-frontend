@@ -140,6 +140,9 @@ export function RecordedIframe (props: Props): JSX.Element {
             .h5p-alternative-inner{
                 height: auto !important;
             }
+            .h5p-sc-set-wrapper.initialized,
+            .h5p-sc-set,
+            .h5p-single-choice-set .h5p-question-content{height: auto}
             `;
         contentDoc.head.appendChild(style);
 

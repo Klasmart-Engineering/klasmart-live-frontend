@@ -5,6 +5,8 @@ import {
     Theme,
     Tooltip,
     Typography,
+    useMediaQuery,
+    useTheme,
 } from "@material-ui/core";
 import amber from "@material-ui/core/colors/amber";
 import clsx from "clsx";
@@ -18,15 +20,15 @@ const useStyles = makeStyles((theme: Theme) => ({
         alignItems: `center`,
         borderRadius: 12,
         cursor: `pointer`,
-        padding: 15,
-        margin: `0 4px`,
+        padding: `0.9em`,
+        margin: `0 0.1em`,
         transition: `all 100ms ease-in-out`,
         position: `relative`,
         "&:hover": {
             backgroundColor: theme.palette.grey[200],
         },
         "& > svg":{
-            height: 25,
+            height: `1.5em`,
         },
     },
     rootMosaic:{
@@ -41,6 +43,7 @@ const useStyles = makeStyles((theme: Theme) => ({
             },
         },
     },
+    rootMd:{},
     active: {
         backgroundColor: theme.palette.background.default,
         "&:hover": {
@@ -54,6 +57,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     label: {
         marginTop: 10,
+        fontSize: `0.8em`,
+    },
+    labelMd:{
+        display: `none`,
     },
     badgeRoot: {
         position: `absolute`,
@@ -106,6 +113,9 @@ function ToolbarItem (props: ToolbarItemProps) {
     const classes = useStyles();
     const [ activeTab, setActiveTab ] = useRecoilState(activeTabState);
 
+    const theme = useTheme();
+    const isMdDown = useMediaQuery(theme.breakpoints.down(`md`));
+
     if(!display){
         return(null);
     }
@@ -120,6 +130,7 @@ function ToolbarItem (props: ToolbarItemProps) {
                 <div
                     className={clsx(classes.root, {
                         [classes.rootMosaic] : activeTab === `mosaic`,
+                        [classes.rootMd] : isMdDown,
                         [classes.active] : active,
                         [classes.disabled] : disabled,
                     })}
@@ -135,7 +146,9 @@ function ToolbarItem (props: ToolbarItemProps) {
                         />
                     )}
                     {icon}
-                    {label && <Typography className={classes.label}>{label}</Typography>}
+                    {label && <Typography className={clsx(classes.label, {
+                        [classes.labelMd] : isMdDown,
+                    })}>{label}</Typography>}
                 </div>
             </Tooltip>
         </>

@@ -86,11 +86,11 @@ function Present () {
             }
         }
     }, [
-        roomId,
-        interactiveMode,
+        // roomId,
+        // interactiveMode,
         material,
-        streamId,
-        sessionId,
+        // streamId,
+        // sessionId,
     ]);
 
     // IF TEACHER

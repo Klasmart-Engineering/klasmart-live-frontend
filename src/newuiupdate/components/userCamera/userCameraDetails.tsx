@@ -1,6 +1,7 @@
 import { LocalSessionContext } from "../../providers/providers";
 import { WebRTCContext } from "../../providers/WebRTCContext";
 import {
+    Grid,
     makeStyles,
     Theme,
     Typography,
@@ -76,15 +77,33 @@ const useStyles = makeStyles((theme: Theme) => ({
     roleHasControlsIcon:{
         color: amber[500],
     },
+    speakingActivity:{
+        display: `flex`,
+        height: 10,
+        alignItems: `center`,
+        marginLeft: 5,
+
+        "& div":{
+            width: 3,
+            height: 0,
+            borderRadius: 20,
+            background: `#fff`,
+            margin: 2,
+            transition: `all 20ms ease-in-out`,
+        },
+    },
 }));
 
 interface UserCameraDetailsType {
     user: any;
-    variant?: "default" | "large" | "small";
+    variant?: "medium" | "large" | "small";
+    speakingActivity?: number;
 }
 
 function UserCameraDetails (props: UserCameraDetailsType) {
-    const { user, variant } = props;
+    const {
+        user, variant, speakingActivity,
+    } = props;
     const classes = useStyles();
     const theme = useTheme();
 
@@ -118,11 +137,31 @@ function UserCameraDetails (props: UserCameraDetailsType) {
         <div
             className={classes.root}>
             <div className={classes.topCamera}></div>
-            <div className={classes.bottomCamera}>
-                <Typography className={classes.name}>
-                    {isSelf ? <FormattedMessage id="you"/> : user.name} {!webrtc.isLocalAudioEnabled(user.id) && <MicDisabledIcon size="0.85em"/>}
-                </Typography>
-            </div>
+            <Grid
+                container
+                alignItems="center"
+                className={classes.bottomCamera}>
+                <Grid item>
+                    <Typography className={classes.name}>
+                        {isSelf ? <FormattedMessage id="you"/> : user.name} {!webrtc.isLocalAudioEnabled(user.id) && <MicDisabledIcon size="0.85em"/>}
+                    </Typography>
+                </Grid>
+                {Boolean(speakingActivity) && speakingActivity  &&
+                    <Grid item>
+                        <div className={classes.speakingActivity}>
+                            <div style={{
+                                height: `${speakingActivity* 100 * 0.9}%`,
+                            }}></div>
+                            <div style={{
+                                height: `${speakingActivity* 100 * 1.8}%`,
+                            }}></div>
+                            <div style={{
+                                height: `${speakingActivity* 100 * 0.9}%`,
+                            }}></div>
+                        </div>
+                    </Grid>
+                }
+            </Grid>
         </div>
     );
 }
