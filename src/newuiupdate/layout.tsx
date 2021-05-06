@@ -4,7 +4,7 @@ import { MUTATION_SET_HOST } from './components/utils/graphql';
 import Class from './pages/class';
 import ClassEnded from './pages/classEnded';
 import ClassLeft from './pages/classLeft';
-import Join from './pages/join';
+import Join from './pages/join-new';
 import { LIVE_LINK, LocalSessionContext } from './providers/providers';
 import { RoomContext } from './providers/roomContext';
 import {
