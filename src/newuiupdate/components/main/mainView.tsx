@@ -43,7 +43,8 @@ function MainView () {
     const [ isLessonPlanOpen, setIsLessonPlanOpen ] = useRecoilState(isLessonPlanOpenState);
     const [ hasControls, setHasControls ] = useRecoilState(hasControlsState);
 
-    const activeScreenshare = ContentType.Screen && (screenShare.stream || content && webrtc.getAuxStream(content.contentId));
+    const activeScreenshare = screenShare.stream || content && webrtc.getAuxStream(content.contentId);
+    // const activeScreenshare = ContentType.Screen && (screenShare.stream || content && webrtc.getAuxStream(content.contentId));
     const activePresent = content?.type === ContentType.Stream || content?.type === ContentType.Video || content?.type === ContentType.Audio || content?.type === ContentType.Image;
 
     useEffect(()=>{
@@ -57,7 +58,7 @@ function MainView () {
 
     // SCREENSHARE VIEW
     // TEACHER and STUDENTS : Host Screen
-    if(activeScreenshare){
+    if(content?.type === ContentType.Screen && activeScreenshare){
         return(
             <Grid
                 container

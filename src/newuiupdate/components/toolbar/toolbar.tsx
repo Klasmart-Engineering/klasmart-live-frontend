@@ -164,6 +164,12 @@ function Toolbar () {
         break;
     case ContentType.Stream: viewModesBadge = <PresentIcon />;
         break;
+    case ContentType.Video: viewModesBadge = <PresentIcon />;
+        break;
+    case ContentType.Audio: viewModesBadge = <PresentIcon />;
+        break;
+    case ContentType.Image: viewModesBadge = <PresentIcon />;
+        break;
     default: viewModesBadge = <OnStageIcon />;
         break;
     }
@@ -215,7 +221,9 @@ function Toolbar () {
                     </div>
                     <div ref={canvasRef}>
                         <ToolbarItem
-                            display={activeTab === `mosaic` ? false : hasControls ? true : isGlobalCanvasEnabled ? permissionsGlobalCanvas.allowCreateShapes ? true : false : false}
+                            display={activeTab === `mosaic` ? false : hasControls ? true : isGlobalCanvasEnabled ? true : false}
+                            // TODO : Fix permission when teacher enable all canvas
+                            // display={activeTab === `mosaic` ? false : hasControls ? true : isGlobalCanvasEnabled ? permissionsGlobalCanvas.allowCreateShapes ? true : false : false}
                             icon={<CanvasIcon />}
                             label={intl.formatMessage({
                                 id: `toolbar_canvas`,

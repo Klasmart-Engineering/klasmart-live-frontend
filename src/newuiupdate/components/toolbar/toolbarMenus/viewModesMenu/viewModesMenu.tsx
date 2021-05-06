@@ -1,9 +1,14 @@
+import { ContentType } from "../../../../../pages/room/room";
+import { LIVE_LINK, LocalSessionContext } from "../../../../providers/providers";
+import { RoomContext } from "../../../../providers/roomContext";
 import {
     interactiveModeState,
     isViewModesOpenState,
     pinnedUserState,
 } from "../../../../states/layoutAtoms";
+import { MUT_SHOW_CONTENT } from "../../../utils/graphql";
 import { StyledPopper } from "../../../utils/utils";
+import { useMutation } from "@apollo/client";
 import {
     Box, Grid, makeStyles, Theme, Typography,
 } from "@material-ui/core";
@@ -13,11 +18,6 @@ import { PresentationChartBar as PresentIcon } from "@styled-icons/heroicons-sol
 import clsx from "clsx";
 import React, { useContext } from "react";
 import { useRecoilState } from "recoil";
-import { RoomContext } from "../../../../providers/roomContext";
-import { useMutation } from "@apollo/client";
-import { LIVE_LINK, LocalSessionContext } from "../../../../providers/providers";
-import { MUT_SHOW_CONTENT } from "../../../utils/graphql";
-import { ContentType } from "../../../../../pages/room/room";
 
 const useStyles = makeStyles((theme: Theme) => ({
     item:{
@@ -53,32 +53,53 @@ function ViewModesMenu (props:ViewModesMenuProps) {
     const [ pinnedUser, setPinnedUser ] = useRecoilState(pinnedUserState);
 
     const { roomId, sessionId } = useContext(LocalSessionContext);
-    const { content } = useContext(RoomContext)
+    const { content } = useContext(RoomContext);
 
-    const [ showContent, { loading: loadingShowContent } ] = useMutation(MUT_SHOW_CONTENT, {context: {target: LIVE_LINK}});
+    const [ showContent, { loading: loadingShowContent } ] = useMutation(MUT_SHOW_CONTENT, {
+        context: {
+            target: LIVE_LINK,
+        },
+    });
 
-    
     const items = [
         {
             id: `1`,
             title: `On Stage`,
             icon: <OnStageIcon />,
-            isActive: content?.type === ContentType.Blank|| content?.type === ContentType.Camera,
-            onClick: () => {showContent({ variables: { roomId, type: ContentType.Camera, contentId: sessionId } }); setPinnedUser(undefined);},
+            isActive: content?.type === ContentType.Blank || content?.type === ContentType.Camera,
+            onClick: () => {showContent({
+                variables: {
+                    roomId,
+                    type: ContentType.Camera,
+                    contentId: sessionId,
+                },
+            }); setPinnedUser(undefined);},
         },
         {
             id: `2`,
             title: `Observe`,
             icon: <ObserveIcon />,
             isActive: content?.type === ContentType.Activity,
-            onClick: () => {showContent({ variables: { roomId, type: ContentType.Activity, contentId: sessionId } }); setPinnedUser(undefined);},
+            onClick: () => {showContent({
+                variables: {
+                    roomId,
+                    type: ContentType.Activity,
+                    contentId: sessionId,
+                },
+            }); setPinnedUser(undefined);},
         },
         {
             id: `3`,
             title: `Present`,
             icon: <PresentIcon />,
-            isActive: content?.type === ContentType.Stream,
-            onClick: () => {showContent({ variables: { roomId, type: ContentType.Stream, contentId: sessionId } }); setPinnedUser(undefined);},
+            isActive: content?.type === ContentType.Stream || content?.type === ContentType.Image || content?.type === ContentType.Audio || content?.type === ContentType.Video,
+            onClick: () => {showContent({
+                variables: {
+                    roomId,
+                    type: ContentType.Stream,
+                    contentId: sessionId,
+                },
+            }); setPinnedUser(undefined);},
         },
     ];
 
