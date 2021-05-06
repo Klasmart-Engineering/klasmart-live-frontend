@@ -35,11 +35,11 @@ function Present () {
     const [ hasControls, setHasControls ] = useRecoilState(hasControlsState);
     const [ streamId, setStreamId ] = useRecoilState(streamIdState);
     const [ interactiveMode, setInteractiveMode ] = useRecoilState(interactiveModeState);
+    const [ materialActiveIndex, setMaterialActiveIndex ] = useRecoilState(materialActiveIndexState);
 
     const {
         materials, roomId, sessionId,
     } = useContext(LocalSessionContext);
-    const [ materialActiveIndex, setMaterialActiveIndex ] = useRecoilState(materialActiveIndexState);
 
     const material = materialActiveIndex >= 0 && materialActiveIndex < materials.length ? materials[materialActiveIndex] : undefined;
 
@@ -87,11 +87,15 @@ function Present () {
         }
     }, [
         // roomId,
-        // interactiveMode,
+        interactiveMode,
         material,
-        // streamId,
+        streamId,
         // sessionId,
     ]);
+
+    useEffect(() => {
+        setMaterialActiveIndex(0);
+    }, []);
 
     // IF TEACHER
     if(hasControls){
@@ -105,6 +109,7 @@ function Present () {
     }
 
     if(content && content.type === ContentType.Stream){
+        console.log(`content`, content?.contentId);
         return (
             <PreviewPlayer
                 streamId={content?.contentId}

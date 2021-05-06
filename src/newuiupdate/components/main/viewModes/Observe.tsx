@@ -99,17 +99,20 @@ function Observe () {
     });
 
     useEffect(() => {
+        setMaterialActiveIndex(0);
+    }, []);
+
+    useEffect(() => {
         const students = [ ...sessions.values() ].filter(session => session.isTeacher !== true);
         setStudentSessions(students);
     }, [ sessions, sessions.size ]);
 
     useEffect(() => {
         if (material) {
-            const materialType = material.__typename === MaterialTypename.Image ? ContentType.Image : ContentType.Activity;
             showContent({
                 variables: {
                     roomId,
-                    type: materialType,
+                    type: ContentType.Activity,
                     contentId: material.url,
                 },
             });
@@ -171,7 +174,7 @@ function StudentPreviewCard ({ session }: { session: Session }) {
             setWidth(contWidth);
             setHeight(contHeight);
         }
-    }, [ ]);
+    }, []);
 
     return (
         <div
