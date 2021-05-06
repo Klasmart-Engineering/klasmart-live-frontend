@@ -77,7 +77,7 @@ const useStyles = makeStyles((theme: Theme) =>
                 content: `''`,
                 width: `200%`,
                 height: 0,
-                paddingTop: `20%`,
+                paddingTop: 300,
                 borderRadius: `100% 100% 0 0`,
                 background: `#fff`,
                 position: `absolute`,
