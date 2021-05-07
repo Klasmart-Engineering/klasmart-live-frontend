@@ -14,7 +14,7 @@ import {
     pinnedUserState,
     videoGloballyMutedState,
 } from "../../../../states/layoutAtoms";
-import { MUT_SHOW_CONTENT, MUTATION_REWARD_TROPHY } from "../../../utils/graphql";
+import { MUTATION_REWARD_TROPHY, MUTATION_SHOW_CONTENT } from "../../../utils/graphql";
 import { StyledPopper } from "../../../utils/utils";
 import GlobalActionsMenuItem from "./globalAction";
 import { useMutation, useQuery } from "@apollo/client";

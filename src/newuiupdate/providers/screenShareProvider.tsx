@@ -1,5 +1,5 @@
 import { ContentType } from "../../pages/room/room";
-import { MUT_SHOW_CONTENT } from "../components/utils/graphql";
+import { MUTATION_SHOW_CONTENT } from "../components/utils/graphql";
 import { LIVE_LINK, LocalSessionContext } from "./providers";
 import { WebRTCContext } from "./WebRTCContext";
 import { useMutation } from "@apollo/client";
@@ -31,7 +31,7 @@ export const ScreenShareProvider = (props: {children: React.ReactNode}) => {
     const sfuState = useContext(WebRTCContext);
     const { roomId, sessionId } = useContext(LocalSessionContext);
 
-    const [ showContent, { loading: loadingShowContent } ] = useMutation(MUT_SHOW_CONTENT, {
+    const [ showContent, { loading: loadingShowContent } ] = useMutation(MUTATION_SHOW_CONTENT, {
         context: {
             target: LIVE_LINK,
         },

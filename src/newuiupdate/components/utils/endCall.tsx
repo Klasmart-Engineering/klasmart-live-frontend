@@ -1,6 +1,8 @@
-import { LocalSessionContext } from "../../providers/providers";
+import { LocalSessionContext, SFU_LINK } from "../../providers/providers";
 import { classEndedState, classLeftState } from "../../states/layoutAtoms";
+import { MUTATION_ENDCLASS } from "./graphql";
 import { ParentCaptcha } from "./parentCaptcha";
+import { useMutation } from "@apollo/client";
 import {
     Button,
     Dialog,
@@ -127,6 +129,14 @@ function DialogEndClass (props:any){
     const { open, onClose } = props;
     const [ classEnded, setClassEnded ] = useRecoilState(classEndedState);
 
+    const { roomId } = useContext(LocalSessionContext);
+
+    const [ endClass ] = useMutation(MUTATION_ENDCLASS, {
+        context: {
+            target: SFU_LINK,
+        },
+    });
+
     return(
         <Dialog
             open={open}
@@ -155,7 +165,11 @@ function DialogEndClass (props:any){
                 <Button
                     variant="contained"
                     color="primary"
-                    onClick={() => setClassEnded(true)}>
+                    onClick={() => endClass({
+                        variables: {
+                            roomId,
+                        },
+                    })}>
                     <FormattedMessage id="end_class" />
                 </Button>
             </DialogActions>

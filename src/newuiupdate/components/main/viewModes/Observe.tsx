@@ -5,7 +5,7 @@ import { RoomContext } from "../../../providers/roomContext";
 import {
     hasControlsState, interactiveModeState, isLessonPlanOpenState, materialActiveIndexState, streamIdState,
 } from "../../../states/layoutAtoms";
-import { MUT_SHOW_CONTENT } from "../../utils/graphql";
+import { MUTATION_SHOW_CONTENT } from "../../utils/graphql";
 import ActivityImage from "../../utils/interactiveContent/image";
 import { PreviewPlayer } from "../../utils/interactiveContent/previewPlayer";
 import { RecordedIframe } from "../../utils/interactiveContent/recordediframe";
@@ -92,7 +92,7 @@ function Observe () {
 
     const material = materialActiveIndex >= 0 && materialActiveIndex < materials.length ? materials[materialActiveIndex] : undefined;
 
-    const [ showContent, { loading: loadingShowContent } ] = useMutation(MUT_SHOW_CONTENT, {
+    const [ showContent, { loading: loadingShowContent } ] = useMutation(MUTATION_SHOW_CONTENT, {
         context: {
             target: LIVE_LINK,
         },

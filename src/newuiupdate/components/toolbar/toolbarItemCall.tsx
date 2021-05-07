@@ -1,6 +1,3 @@
-import { LIVE_LINK, LocalSessionContext } from "../../providers/providers";
-import { ENDCLASS } from "../utils/graphql";
-import { useMutation } from "@apollo/client";
 import {
     Badge,
     makeStyles,
@@ -78,25 +75,6 @@ function ToolbarItemCall (props: ToolbarItemCallProps) {
     } = props;
     const classes = useStyles();
     const hasTooltip = tooltip ? true : false;
-
-    /*
-    TODO END CALL
-    const [ endClassMutation, { loading } ] = useMutation(ENDCLASS, {
-        context: {
-            target: LIVE_LINK,
-        },
-    });
-
-    const { roomId } = useContext(LocalSessionContext);
-
-    function endClass () {
-        endClassMutation({
-            variables: {
-                roomId,
-            },
-        });
-    }
-    */
 
     return (
         <>
