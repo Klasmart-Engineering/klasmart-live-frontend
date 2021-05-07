@@ -12,6 +12,8 @@ import { Pencil as PencilIcon } from "@styled-icons/entypo/Pencil";
 import { PeopleCommunity as PeopleCommunityIcon } from "@styled-icons/fluentui-system-filled/PeopleCommunity";
 import { SlideEraser as SlideEraserIcon } from "@styled-icons/fluentui-system-regular/SlideEraser";
 import { Brush as BrushIcon } from "@styled-icons/material/Brush";
+import { GridOff as GridOffIcon } from "@styled-icons/material/GridOff";
+import { GridOn as GridOnIcon } from "@styled-icons/material/GridOn";
 import { TextFields as TextIcon } from "@styled-icons/material/TextFields";
 import clsx from "clsx";
 import { useToolbarContext } from "kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
@@ -139,7 +141,7 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
                     <CanvasMenuItem
                         title="Toggle all canvas on"
                         active={isGlobalCanvasEnabled}
-                        icon={<PeopleCommunityIcon size="2rem"/>}
+                        icon={isGlobalCanvasEnabled ? <GridOnIcon size="2rem"/> : <GridOffIcon size="2rem"/>}
                         onClick={ () => setIsGlobalCanvasEnabled(!isGlobalCanvasEnabled) } />
                 </>
                 }

@@ -52,39 +52,21 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
     const intl = useIntl();
 
     const [ isGlobalActionsOpen, setIsGlobalActionsOpen ] = useRecoilState(isGlobalActionsOpenState);
-    const [ activeGlobalMuteAudio, setActiveGlobalMuteAudio ] = useRecoilState(isActiveGlobalMuteAudioState);
-    const [ activeGlobalMuteVideo, setActiveGlobalMuteVideo ] = useRecoilState(isActiveGlobalMuteVideoState);
     const [ videoGloballyMuted, setVideoGloballyMuted ] = useRecoilState(videoGloballyMutedState);
 
     const [ pinnedUser, setPinnedUser ] = useRecoilState(pinnedUserState);
     const [ camerasOn, setCamerasOn ] = useState(true);
     const [ micsOn, setMicsOn ] = useState(true);
     const { roomId, sessionId } = useContext(LocalSessionContext);
-    const { content, sessions } = useContext(RoomContext);
+    const { content } = useContext(RoomContext);
     const screenShare = useContext(ScreenShareContext);
-    const webrtc = useContext(WebRTCContext);
-
-    const localSession = sessions.get(sessionId);
 
     const [ globalMuteMutation ] = useMutation(GLOBAL_MUTE_MUTATION, {
         context: {
             target: SFU_LINK,
         },
     });
-    const { refetch: refetchGlobalMute } = useQuery(GLOBAL_MUTE_QUERY, {
-        variables: {
-            roomId,
-        },
-        context: {
-            target: SFU_LINK,
-        },
-    });
 
-    const [ showContent, { loading: loadingShowContent } ] = useMutation(MUT_SHOW_CONTENT, {
-        context: {
-            target: LIVE_LINK,
-        },
-    });
     const [ rewardTrophyMutation, { loading: loadingTrophy } ] = useMutation(MUTATION_REWARD_TROPHY, {
         context: {
             target: LIVE_LINK,
@@ -109,27 +91,6 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
         }
         setPinnedUser(undefined);
     };
-
-    const enforceGlobalMute = async () => {
-        const { data } = await refetchGlobalMute();
-        const videoGloballyDisabled = data?.retrieveGlobalMute?.videoGloballyDisabled;
-        setCamerasOn(!videoGloballyDisabled);
-        // if (videoGloballyDisabled) {
-        //     toggleVideoStates(videoGloballyDisabled);
-        // }
-        // const audioGloballyMuted = data?.retrieveGlobalMute?.audioGloballyMuted;
-        // if (audioGloballyMuted) {
-        //     toggleAudioStates(audioGloballyMuted);
-        // }
-    };
-
-    useEffect(() => {
-        enforceGlobalMute();
-    }, [
-        roomId,
-        localSession?.isHost,
-        webrtc?.inboundStreams.size,
-    ]);
 
     async function toggleVideoStates (isOn?: boolean) {
 
@@ -183,7 +144,7 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
         {
             id: `4`,
             title: intl.formatMessage({
-                id: micsOn ? `unmute_all` : `mute_all`,
+                id: micsOn ? `toggle_all_microphones_off` : `toggle_all_microphones_on`,
             }),
             icon: <MicFillIcon size="1.4rem" />,
             activeIcon: <MicDisabledIcon size="1.4rem" />,
@@ -194,7 +155,7 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
         {
             id: `5`,
             title: intl.formatMessage({
-                id: camerasOn ? `set_cameras_on` : `set_cameras_off`,
+                id: camerasOn ? `toggle_all_cameras_off` : `toggle_all_cameras_on`,
             }),
             icon: <CameraVideoFillIcon size="1.4rem" />,
             activeIcon: <CameraDisabledIcon size="1.4rem" />,

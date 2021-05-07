@@ -5,14 +5,15 @@ import Class from './pages/class';
 import ClassEnded from './pages/classEnded';
 import ClassLeft from './pages/classLeft';
 import Join from './pages/join-new';
-import { LIVE_LINK, LocalSessionContext } from './providers/providers';
+import { LIVE_LINK, LocalSessionContext, SFU_LINK } from './providers/providers';
 import { RoomContext } from './providers/roomContext';
 import {
     classEndedState, classLeftState, hasControlsState, isLessonPlanOpenState,
 } from "./states/layoutAtoms";
-import { useMutation } from '@apollo/client';
-import React, { useContext, useEffect } from 'react';
+import { useMutation, useQuery } from '@apollo/client';
+import React, { useContext, useEffect, useState } from 'react';
 import { useRecoilState } from "recoil";
+import { GlobalMuteNotification, GLOBAL_MUTE_MUTATION, GLOBAL_MUTE_QUERY, WebRTCContext } from "./providers/WebRTCContext";
 
 function Layout () {
     const [ classLeft, setClassLeft ] = useRecoilState(classLeftState);
@@ -20,14 +21,35 @@ function Layout () {
     const [ hasControls, setHasControls ] = useRecoilState(hasControlsState);
     const [ isLessonPlanOpen, setIsLessonPlanOpen ] = useRecoilState(isLessonPlanOpenState);
 
+    const [ camerasOn, setCamerasOn ] = useState(true);
+    const [ micsOn, setMicsOn ] = useState(true);
+    
     const {
         camera, name, roomId, sessionId, classtype,
     } = useContext(LocalSessionContext);
     const { sessions } = useContext(RoomContext);
+    const webrtc = useContext(WebRTCContext);
+
+    const localSession = sessions.get(sessionId);
 
     const [ hostMutation ] = useMutation(MUTATION_SET_HOST, {
         context: {
             target: LIVE_LINK,
+        },
+    });
+
+    const [ globalMuteMutation ] = useMutation(GLOBAL_MUTE_MUTATION, {
+        context: {
+            target: SFU_LINK,
+        },
+    });
+
+    const { refetch: refetchGlobalMute } = useQuery(GLOBAL_MUTE_QUERY, {
+        variables: {
+            roomId,
+        },
+        context: {
+            target: SFU_LINK,
         },
     });
 
@@ -69,6 +91,59 @@ function Layout () {
             setIsLessonPlanOpen(true);
         }
     }, [ classtype ]);
+
+
+    const enforceGlobalMute = async () => {
+        const { data } = await refetchGlobalMute();
+        const videoGloballyDisabled = data?.retrieveGlobalMute?.videoGloballyDisabled;
+        if (videoGloballyDisabled) {
+            toggleVideoStates(videoGloballyDisabled);
+        }
+        const audioGloballyMuted = data?.retrieveGlobalMute?.audioGloballyMuted;
+        if (audioGloballyMuted) {
+            toggleAudioStates(audioGloballyMuted);
+        }
+    };
+
+    useEffect(() => {
+        enforceGlobalMute();
+    }, [
+        roomId,
+        localSession?.isHost,
+        webrtc?.inboundStreams.size,
+    ]);
+
+    async function toggleVideoStates (isOn?: boolean) {
+        const notification: GlobalMuteNotification = {
+            roomId,
+            audioGloballyMuted: undefined,
+            videoGloballyDisabled: isOn ?? camerasOn,
+        };
+        const data = await globalMuteMutation({
+            variables: notification,
+        });
+        const videoGloballyDisabled = data?.data?.updateGlobalMute?.videoGloballyDisabled;
+        if (videoGloballyDisabled != null) {
+            setCamerasOn(!videoGloballyDisabled);
+        }
+    }
+
+    async function toggleAudioStates (isOn?: boolean) {
+        const notification: GlobalMuteNotification = {
+            roomId,
+            audioGloballyMuted: isOn ?? micsOn,
+            videoGloballyDisabled: undefined,
+        };
+        const data = await globalMuteMutation({
+            variables: notification,
+        });
+        const audioGloballyMuted = data?.data?.updateGlobalMute?.audioGloballyMuted;
+        if (audioGloballyMuted != null) {
+            setMicsOn(!audioGloballyMuted);
+        }
+    }
+
+
 
     if (!name || camera === undefined) {
         return <Join />;

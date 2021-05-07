@@ -297,30 +297,28 @@ export default function Join (): JSX.Element {
                                 >
                                     <Grid
                                         container
-                                        direction="row"
+                                        direction="column"
                                         justify="center"
                                         alignItems="center"
                                     >
                                         <Grid item>
                                             <KidsLoopLogo />
                                         </Grid>
-                                        <Grid item>
-                                            <JoinRoomForm
-                                                mediaDeviceError={permissionError || loadError}
-                                                stream={stream}
-                                                audioDeviceOptions={audioDeviceOptions}
-                                                audioDeviceIdHandler={{
-                                                    audioDeviceId,
-                                                    setAudioDeviceId,
-                                                }}
-                                                videoDeviceOptions={videoDeviceOptions}
-                                                videoDeviceIdHandler={{
-                                                    videoDeviceId,
-                                                    setVideoDeviceId,
-                                                }}
-                                            />
-                                        </Grid>
                                     </Grid>
+                                    <JoinRoomForm
+                                        mediaDeviceError={permissionError || loadError}
+                                        stream={stream}
+                                        audioDeviceOptions={audioDeviceOptions}
+                                        audioDeviceIdHandler={{
+                                            audioDeviceId,
+                                            setAudioDeviceId,
+                                        }}
+                                        videoDeviceOptions={videoDeviceOptions}
+                                        videoDeviceIdHandler={{
+                                            videoDeviceId,
+                                            setVideoDeviceId,
+                                        }}
+                                    />
                                 </Grid>
                             </Grid>
                         </CardContent>
@@ -478,24 +476,25 @@ function JoinRoomForm ({
         <form onSubmit={join}>
             <Grid
                 container
+                direction="column"
                 spacing={2}>
-                <Grid
+
+                {!name && <Grid
                     item
-                    xs={12}>
-                    {!name && <StyledTextField
+                    xs><StyledTextField
                         fullWidth
                         label={<FormattedMessage id="what_is_your_name" />}
                         value={user}
                         error={nameError !== null}
                         helperText={nameError}
                         onChange={(e) => setUser(e.target.value)}
-                    />
-                    }
-                </Grid>
+                    /></Grid>
+                }
+
                 {classtype !== ClassType.LIVE ? null :
                     <Grid
                         item
-                        xs={12}>
+                        xs>
                         <MediaDeviceSelect
                             disabled={videoDeviceOptions.length <= 1}
                             deviceType="video"
@@ -507,7 +506,7 @@ function JoinRoomForm ({
                 }
                 <Grid
                     item
-                    xs={12}>
+                    xs>
                     <MediaDeviceSelect
                         disabled={audioDeviceOptions.length <= 1}
                         deviceType="audio"
@@ -518,7 +517,7 @@ function JoinRoomForm ({
                 </Grid>
                 <Grid
                     item
-                    xs={12}>
+                    xs>
                     <StyledButton
                         fullWidth
                         disabled={mediaDeviceError || !stream}

@@ -174,15 +174,15 @@ function UserCamera (props: UserCameraType) {
                                 left: 0,
                             }}
                         />
-                        <audio
-                            ref={audioRef}
-                            autoPlay={true}
-                            muted={isSelf}
-                        />
                     </>
                 ) : <NoCamera
                     name={user.name}
                     variant={variant} />}
+                <audio
+                    ref={audioRef}
+                    autoPlay={true}
+                    muted={isSelf}
+                />
             </Grid>
         </Grid>
     );
