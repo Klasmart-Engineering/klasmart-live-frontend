@@ -1,4 +1,6 @@
-import { LocalSessionContext, SFU_LINK } from "../../providers/providers";
+import {
+    LIVE_LINK, LocalSessionContext, SFU_LINK,
+} from "../../providers/providers";
 import { classEndedState, classLeftState } from "../../states/layoutAtoms";
 import { MUTATION_ENDCLASS } from "./graphql";
 import { ParentCaptcha } from "./parentCaptcha";
@@ -132,8 +134,11 @@ function DialogEndClass (props:any){
     const { roomId } = useContext(LocalSessionContext);
 
     const [ endClass ] = useMutation(MUTATION_ENDCLASS, {
+        variables: {
+            roomId,
+        },
         context: {
-            target: SFU_LINK,
+            target: LIVE_LINK,
         },
     });
 
@@ -165,11 +170,7 @@ function DialogEndClass (props:any){
                 <Button
                     variant="contained"
                     color="primary"
-                    onClick={() => endClass({
-                        variables: {
-                            roomId,
-                        },
-                    })}>
+                    onClick={() => endClass()}>
                     <FormattedMessage id="end_class" />
                 </Button>
             </DialogActions>
