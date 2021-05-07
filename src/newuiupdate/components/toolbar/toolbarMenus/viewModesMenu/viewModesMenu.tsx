@@ -6,7 +6,7 @@ import {
     isViewModesOpenState,
     pinnedUserState,
 } from "../../../../states/layoutAtoms";
-import { MUT_SHOW_CONTENT } from "../../../utils/graphql";
+import { MUTATION_SHOW_CONTENT } from "../../../utils/graphql";
 import { StyledPopper } from "../../../utils/utils";
 import { useMutation } from "@apollo/client";
 import {
@@ -55,7 +55,7 @@ function ViewModesMenu (props:ViewModesMenuProps) {
     const { roomId, sessionId } = useContext(LocalSessionContext);
     const { content } = useContext(RoomContext);
 
-    const [ showContent, { loading: loadingShowContent } ] = useMutation(MUT_SHOW_CONTENT, {
+    const [ showContent, { loading: loadingShowContent } ] = useMutation(MUTATION_SHOW_CONTENT, {
         context: {
             target: LIVE_LINK,
         },

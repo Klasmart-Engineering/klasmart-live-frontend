@@ -2,6 +2,7 @@ import Loading from "../../components/loading";
 import {
     Content, Message, Session,
 } from "../../pages/room/room";
+import { SUBSCRIPTION_ENDCLASS } from "../components/utils/graphql";
 import {
     audioGloballyMutedState, isChatOpenState, unreadMessagesState, videoGloballyMutedState,
 } from "../states/layoutAtoms";
@@ -66,6 +67,7 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
     const [ content, setContent ] = useState<Content>();
     const [ sessions, setSessions ] = useState<Map<string, Session>>(new Map<string, Session>());
     const [ trophy, setTrophy ] = useState();
+    const [ endClass, setEndClass ] = useState(false);
     const [ unreadMessages, setUnreadMessages ] = useRecoilState(unreadMessagesState);
     const [ isChatOpen, setIsChatOpen ] = useRecoilState(isChatOpenState);
     const [ audioGloballyMuted, setAudioGloballyMuted ] = useRecoilState(audioGloballyMutedState);
@@ -103,6 +105,21 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
         },
         context: {
             target: LIVE_LINK,
+        },
+    });
+
+    const { loading: loadingEndClass, error: errorEndClass } = useSubscription(SUBSCRIPTION_ENDCLASS, {
+        onSubscriptionData: ({ subscriptionData }) => {
+            console.log(subscriptionData);
+            // if( subscriptionData?.endClass){
+            //     setEndClass(true);
+            // }
+        },
+        variables: {
+            roomId,
+        },
+        context: {
+            target: SFU_LINK,
         },
     });
 
@@ -160,6 +177,7 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
         trophy,
         audioGloballyMuted,
         videoGloballyMuted,
+        endClass,
     };
 
     if (loading || !content) { return <Grid

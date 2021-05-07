@@ -21,13 +21,21 @@ export const MUTATION_SET_HOST = gql`
     }
 `;
 
-export const ENDCLASS = gql`
-    mutation endClass($roomId: ID!) {
-        endClass(roomId: $roomId)
+export const SUBSCRIPTION_ENDCLASS = gql`
+    subscription endClass($roomId: ID!) {
+        endClass(roomId: $roomId) {
+            endClass
+        }
     }
 `;
 
-export const MUT_SHOW_CONTENT = gql`
+export const MUTATION_ENDCLASS = gql`
+    mutation endClass {
+        endClass
+    }
+`;
+
+export const MUTATION_SHOW_CONTENT = gql`
     mutation showContent($roomId: ID!, $type: ContentType!, $contentId: ID) {
         showContent(roomId: $roomId, type: $type, contentId: $contentId)
     }
