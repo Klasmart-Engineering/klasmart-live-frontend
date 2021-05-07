@@ -181,7 +181,7 @@ function Toolbar () {
     const { state: { display: isGlobalCanvasEnabled, permissions: permissionsGlobalCanvas } } = useSynchronizedState();
 
     useEffect(() => {
-        activeTab !== `mosaic` && setIsCanvasOpen(permissionsGlobalCanvas.allowCreateShapes);
+        activeTab !== `mosaic` && isGlobalCanvasEnabled && setIsCanvasOpen(permissionsGlobalCanvas.allowCreateShapes);
     }, [ permissionsGlobalCanvas.allowCreateShapes ]);
 
     useEffect(() => {

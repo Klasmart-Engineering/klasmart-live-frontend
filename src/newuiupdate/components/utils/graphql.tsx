@@ -30,8 +30,8 @@ export const SUBSCRIPTION_ENDCLASS = gql`
 `;
 
 export const MUTATION_ENDCLASS = gql`
-    mutation endClass {
-        endClass
+    mutation endClass($roomId: ID!) {
+        endClass(roomId: $roomId)
     }
 `;
 
