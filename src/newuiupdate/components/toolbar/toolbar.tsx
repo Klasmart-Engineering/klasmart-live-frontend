@@ -181,8 +181,8 @@ function Toolbar () {
     const { state: { display: isGlobalCanvasEnabled, permissions: permissionsGlobalCanvas } } = useSynchronizedState();
 
     useEffect(() => {
-        activeTab !== `mosaic` && setIsCanvasOpen(isGlobalCanvasEnabled && permissionsGlobalCanvas.allowCreateShapes);
-    }, [ isGlobalCanvasEnabled ]);
+        activeTab !== `mosaic` && setIsCanvasOpen(permissionsGlobalCanvas.allowCreateShapes);
+    }, [ permissionsGlobalCanvas.allowCreateShapes ]);
 
     useEffect(() => {
         setMicOn(webrtc.isLocalAudioEnabled(sessionId));
@@ -221,9 +221,7 @@ function Toolbar () {
                     </div>
                     <div ref={canvasRef}>
                         <ToolbarItem
-                            display={activeTab === `mosaic` ? false : hasControls ? true : isGlobalCanvasEnabled ? true : false}
-                            // TODO : Fix permission when teacher enable all canvas
-                            // display={activeTab === `mosaic` ? false : hasControls ? true : isGlobalCanvasEnabled ? permissionsGlobalCanvas.allowCreateShapes ? true : false : false}
+                            display={activeTab === `mosaic` ? false : hasControls ? true : permissionsGlobalCanvas.allowCreateShapes ? true : false}
                             icon={<CanvasIcon />}
                             label={intl.formatMessage({
                                 id: `toolbar_canvas`,

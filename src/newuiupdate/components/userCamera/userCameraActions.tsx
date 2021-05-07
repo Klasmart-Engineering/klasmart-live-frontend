@@ -6,6 +6,7 @@ import {
     GLOBAL_MUTE_QUERY, MUTE, MuteNotification, WebRTCContext,
 } from "../../providers/WebRTCContext";
 import { hasControlsState,  pinnedUserState } from "../../states/layoutAtoms";
+import { useSynchronizedState } from "../../whiteboard/context-providers/SynchronizedStateProvider";
 import { MUTATION_SET_HOST } from "../utils/graphql";
 import { fullScreenById } from "../utils/utils";
 import { useMutation, useQuery } from "@apollo/client";
@@ -32,9 +33,13 @@ import { TrophyFill as TrophyIcon } from "@styled-icons/bootstrap/TrophyFill";
 import { DotsVerticalRounded as DotsVerticalRoundedIcon } from "@styled-icons/boxicons-regular/DotsVerticalRounded";
 import { Pin as PinIcon } from "@styled-icons/entypo/Pin";
 import { Crown as HasControlsIcon } from "@styled-icons/fa-solid/Crown";
+import { InvertColors as InvertColors } from "@styled-icons/material/InvertColors";
+import { InvertColorsOff as InvertColorsOff } from "@styled-icons/material/InvertColorsOff";
 import clsx from "clsx";
+import { useToolbarContext } from "kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
 import React,
 {
+    useCallback,
     useContext,
     useEffect,
     useState,
@@ -139,7 +144,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     menuItemIcon:{
         marginRight: 10,
         padding: 5,
-        // color: `#479df7`,
+        color: `#0c78d5`,
     },
     menuItemIconActive:{
         color: red[500],
@@ -254,6 +259,8 @@ function UserCameraActions (props: UserCameraActionsType) {
                         <ToggleMic user={user} />
                         <ToggleCamera user={user} />
 
+                        {hasControls && <ToggleCanvas user={user} />}
+
                         {hasControls && !user.isHost && user.isTeacher &&
                             <ToggleControls user={user} />
                         }
@@ -365,6 +372,7 @@ function ToggleCamera (props:any){
         const muteNotification = await muteMutation({
             variables: notification,
         });
+        console.log(muteNotification);
     }
 
     async function toggleVideoState (): Promise<void> {
@@ -530,6 +538,53 @@ function ToggleControls (props:any){
                 <HasControlsIcon
                     className={classes.menuItemIcon}
                     size="1rem" /><FormattedMessage id="toggle_room_controls"/>
+            </MenuItem>
+        </>
+    );
+}
+
+function ToggleCanvas (props:any){
+    const { user } = props;
+    const classes = useStyles();
+
+    const { actions: { setPermissions, getPermissions } } = useSynchronizedState();
+    const { actions: { clear } } = useToolbarContext();
+
+    const permissions = getPermissions(user.id);
+
+    const toggleAllowCreateShapes = useCallback(() => {
+        const newPermissions = {
+            ...permissions,
+            allowCreateShapes: !permissions.allowCreateShapes,
+        };
+        setPermissions(user.id, newPermissions);
+
+    }, [
+        permissions,
+        setPermissions,
+        user.id,
+    ]);
+
+    return (
+        <>
+            <MenuItem
+                className={classes.menuItem}
+                onClick={toggleAllowCreateShapes}>
+
+                {permissions.allowCreateShapes ?
+                    <>
+                        <InvertColors
+                            className={classes.menuItemIcon}
+                            size="1rem"/>
+                        <FormattedMessage id="whiteboard_permissionControls_listItemText_disallow"/>
+                    </> :
+                    <>
+                        <InvertColorsOff
+                            className={clsx(classes.menuItemIcon, classes.menuItemIconActive)}
+                            size="1rem"/>
+                        <FormattedMessage id="whiteboard_permissionControls_listItemText_allow"/>
+                    </>
+                }
             </MenuItem>
         </>
     );
