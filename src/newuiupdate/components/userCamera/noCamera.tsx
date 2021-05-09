@@ -22,6 +22,8 @@ function NoCamera (props: NoCameraType) {
 
     const classes = useStyles();
 
+    if(!name) return(null);
+
     return (
         <Grid
             container

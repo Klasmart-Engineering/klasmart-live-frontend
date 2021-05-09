@@ -5,6 +5,7 @@ import EccoSpinner2 from "../../../../assets/img/spinner/ecco2_spinner.gif";
 import GhostSpinner from "../../../../assets/img/spinner/ghost_spinner.gif";
 import JessSpinner1 from "../../../../assets/img/spinner/jess1_spinner.gif";
 import MimiSpinner1 from "../../../../assets/img/spinner/mimi1_spinner.gif";
+import { loadingActivity } from "../../../../utils/layerValues";
 import { useWindowSize } from "../../../../utils/viewport";
 import { LIVE_LINK, LocalSessionContext } from "../../../providers/providers";
 import { streamIdState } from "../../../states/layoutAtoms";
@@ -55,6 +56,8 @@ export function RecordedIframe (props: Props): JSX.Element {
     const { roomId } = useContext(LocalSessionContext);
     const [ streamId, setStreamId ] = useRecoilState(streamIdState);
 
+    const square = false;
+
     const { contentId } = props;
     const [ sendStreamId ] = useMutation(SET_STREAMID, {
         context: {
@@ -69,10 +72,6 @@ export function RecordedIframe (props: Props): JSX.Element {
     const [ intervalId, setIntervalId ] = useState<number>();
     const [ contentWidth, setContentWidth ] = useState(1600);
     const [ contentHeight, setContentHeight ] = useState(1400);
-
-    const [ enableResize, setEnableResize ] = useState(true);
-    const [ stylesLoaded, setStylesLoaded ] = useState(false);
-
     const size = useWindowSize();
 
     useEffect(() => {
@@ -83,9 +82,9 @@ export function RecordedIframe (props: Props): JSX.Element {
         setSeconds(MAX_LOADING_COUNT);
         setLoadStatus(LoadStatus.Loading);
 
-        const iRef = window.document.getElementById(`recordediframe`) as HTMLIFrameElement;
-        iRef.addEventListener(`load`, () => setLoadStatus(LoadStatus.Finished));
-        return () => iRef.removeEventListener(`load`, () => setLoadStatus(LoadStatus.Finished));
+        // const iRef = window.document.getElementById(`recordediframe`) as HTMLIFrameElement;
+        // iRef.addEventListener(`load`, () => setLoadStatus(LoadStatus.Finished));
+        // return () => iRef.removeEventListener(`load`, () => setLoadStatus(LoadStatus.Finished));
     }, [ contentId ]);
 
     useEffect(() => {
@@ -108,10 +107,18 @@ export function RecordedIframe (props: Props): JSX.Element {
     const scale = (innerWidth: number, innerHeight: number) => {
         let currentWidth: number = size.width, currentHeight: number = size.height;
 
-        const iRef = window.document.getElementById(`activity-view-container`) as HTMLIFrameElement;
-        if (iRef) {
-            currentWidth = iRef.getBoundingClientRect().width;
-            currentHeight = iRef.getBoundingClientRect().height;
+        if (square) {
+            /**
+             * For exact synchronization of <Whiteboard /> drawing position,
+             * Square should be required when classtype === Classtype.LIVE.
+             */
+            currentWidth = square, currentHeight = square;
+        } else {
+            const iRef = window.document.getElementById(`main-container`) as HTMLIFrameElement;
+            if (iRef) {
+                currentWidth = iRef.getBoundingClientRect().width;
+                currentHeight = iRef.getBoundingClientRect().height;
+            }
         }
 
         const shrinkRatioX = (currentWidth / innerWidth) > 1 ? 1 : currentWidth / innerWidth;
@@ -128,48 +135,22 @@ export function RecordedIframe (props: Props): JSX.Element {
         const contentDoc = iframeElement.contentDocument;
         if (!contentWindow || !contentDoc) { return; }
 
-        // Custom styles when needed
-        if(!stylesLoaded){
-            const style = document.createElement(`style`);
-            style.innerHTML = `
-            .h5p-content{
-                display: inline-block !important;
-                width: auto !important;
-            }
-            .h5p-course-presentation .h5p-wrapper{
-                min-width: 1300px !important;
-                min-height: 800px !important
-            }
-            .h5p-single-choice-set{
-                max-height: 300px !important;
-            }
+        const style = document.createElement(`style`);
+        style.innerHTML = `
             .h5p-alternative-inner{
                 height: auto !important;
             }
-            .h5p-column .h5p-dragquestion > .h5p-question-content > .h5p-inner{
-                width: 100% !important
-            }
+            .h5p-sc-set-wrapper.initialized,
+            .h5p-sc-set,
+            .h5p-single-choice-set .h5p-question-content{height: auto}
             `;
-            contentDoc.head.appendChild(style);
-            // setStylesLoaded(true);
-        }
+        contentDoc.head.appendChild(style);
 
         // IP Protection: Contents should not be able to be downloaded by right-clicking.
         const blockRightClick = (e: MouseEvent) => { e.preventDefault(); };
         contentWindow.addEventListener(`contextmenu`, (e) => blockRightClick(e), false);
         const h5pDivCollection = contentDoc.body.getElementsByClassName(`h5p-content`);
-        const h5pTypeColumn = contentDoc.body.getElementsByClassName(`h5p-column`).length;
-
         if (h5pDivCollection.length > 0) {
-
-            if(h5pTypeColumn){
-                setEnableResize(false);
-                h5pDivCollection[0].setAttribute(`style`, `width: 100% !important;`);
-            }else{
-                setEnableResize(true);
-                h5pDivCollection[0].setAttribute(`style`, `width: auto !important;`);
-            }
-
             const h5pContainer = h5pDivCollection[0] as HTMLDivElement;
             h5pContainer.setAttribute(`data-iframe-height`, ``);
             const h5pWidth = h5pContainer.getBoundingClientRect().width;
@@ -297,13 +278,11 @@ export function RecordedIframe (props: Props): JSX.Element {
                 id="recordediframe"
                 src={contentId}
                 style={{
-                    width: enableResize ? contentWidth : `100%`,
-                    height: enableResize ? contentHeight : `100%`,
-                    position: enableResize ? `absolute` : `static`,
-                    transformOrigin: `top left`,
-                    transform: enableResize ? `scale(${transformScale})` : `scale(1)`,
-                    minWidth: `100%`,
-                    minHeight: `100%`,
+                    width: `100%`,
+                    height:  `100%`,
+                }}
+                onLoad={() => {
+                    setLoadStatus(LoadStatus.Finished);
                 }}
             />
         </React.Fragment>

@@ -71,7 +71,9 @@ function Main () {
                         <Grid
                             item
                             xs
-                            className={classes.relative}>
+                            className={classes.relative}
+                            id="activity-view-container"
+                        >
                             {/* <MainView /> */}
                             <Whiteboard uniqueId="student" />
                             {classtype == ClassType.LIVE &&  <MainView /> }

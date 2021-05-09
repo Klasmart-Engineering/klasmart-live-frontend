@@ -1,9 +1,26 @@
 import { whiteboard } from "../../../utils/layerValues";
 import { LocalSessionContext } from "../../providers/providers";
 import { useSynchronizedState } from "../context-providers/SynchronizedStateProvider";
+import { makeStyles, Theme } from "@material-ui/core";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
 import { WhiteboardCanvas } from "kidsloop-canvas/lib/domain/whiteboard/WhiteboardCanvas";
 import React, { useContext, useMemo } from "react";
+
+const useStyles = makeStyles((theme: Theme) => ({
+    whiteboard: {
+        width: `100%`,
+        height: `100%`,
+        "& div": {
+            width: `100% !important`,
+            height: `100% !important`,
+            transform: `none !important`,
+        },
+        "& canvas": {
+            width: `100% !important`,
+            height: `100% !important`,
+        },
+    },
+}));
 
 type Props = {
     uniqueId: string;
@@ -20,7 +37,7 @@ export function Whiteboard ({
     group, width, height, filterUsers, filterGroups, uniqueId, centerHorizontally, centerVertically,
 }: Props): JSX.Element {
     const { state: { permissions, display } } = useSynchronizedState();
-
+    const classes = useStyles();
     const { sessionId } = useContext(LocalSessionContext);
 
     const canvasUserId = useMemo(() => {
@@ -51,6 +68,7 @@ export function Whiteboard ({
                 width: width ? width : `100%`,
                 height: height ? height : `100%`,
             }}
+            className={classes.whiteboard}
         >
             <WhiteboardCanvas
                 instanceId={`canvas:user:${sessionId}:${uniqueId}`}

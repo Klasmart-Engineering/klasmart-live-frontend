@@ -4,9 +4,7 @@ import {
 } from "../../../../providers/providers";
 import { RoomContext } from "../../../../providers/roomContext";
 import { ScreenShareContext } from "../../../../providers/screenShareProvider";
-import {
-    GLOBAL_MUTE_MUTATION, GLOBAL_MUTE_QUERY, GlobalMuteNotification, WebRTCContext,
-} from "../../../../providers/WebRTCContext";
+import { GLOBAL_MUTE_MUTATION,  GlobalMuteNotification } from "../../../../providers/WebRTCContext";
 import {
     isActiveGlobalMuteAudioState,
     isActiveGlobalMuteVideoState,
@@ -14,10 +12,10 @@ import {
     pinnedUserState,
     videoGloballyMutedState,
 } from "../../../../states/layoutAtoms";
-import { MUTATION_REWARD_TROPHY, MUTATION_SHOW_CONTENT } from "../../../utils/graphql";
+import { MUTATION_REWARD_TROPHY } from "../../../utils/graphql";
 import { StyledPopper } from "../../../utils/utils";
 import GlobalActionsMenuItem from "./globalAction";
-import { useMutation, useQuery } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import {
     Grid, makeStyles, Theme,
 } from "@material-ui/core";
@@ -30,9 +28,7 @@ import { MicMuteFill as MicDisabledIcon } from "@styled-icons/bootstrap/MicMuteF
 import { StarFill as StarFillIcon } from "@styled-icons/bootstrap/StarFill";
 import { TrophyFill as TrophyFillIcon } from "@styled-icons/bootstrap/TrophyFill";
 import { TvFill as ScreenShareIcon } from "@styled-icons/bootstrap/TvFill";
-import React, {
-    useContext, useEffect, useState,
-} from "react";
+import React, { useContext,  useState } from "react";
 import { useIntl } from "react-intl";
 import { useRecoilState } from "recoil";
 
@@ -93,7 +89,6 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
     };
 
     async function toggleVideoStates (isOn?: boolean) {
-
         const notification: GlobalMuteNotification = {
             roomId,
             audioGloballyMuted: undefined,
@@ -102,6 +97,7 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
         const data = await globalMuteMutation({
             variables: notification,
         });
+        console.log(data);
         const videoGloballyDisabled = data?.data?.updateGlobalMute?.videoGloballyDisabled;
         if (videoGloballyDisabled != null) {
             setCamerasOn(!videoGloballyDisabled);

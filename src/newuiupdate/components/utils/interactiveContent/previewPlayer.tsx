@@ -1,9 +1,12 @@
+import { useWindowSize } from "../../../../utils/viewport";
 import { LIVE_LINK } from "../../../providers/providers";
+import { RoomContext } from "../../../providers/roomContext";
 import { isLessonPlanOpenState } from "../../../states/layoutAtoms";
 import Loading from "./loading";
 import { gql, useSubscription } from "@apollo/client";
 import Typography from "@material-ui/core/Typography";
 import React, {
+    useContext,
     useEffect, useRef, useState,
 } from "react";
 import { FormattedMessage } from "react-intl";
@@ -29,13 +32,38 @@ export function PreviewPlayer ({
     streamId, frameProps, width, height,
 }: Props): JSX.Element {
     const ref = useRef<HTMLIFrameElement>(null);
-    const [ scale, setScale ] = useState(1);
+    // const [ scale, setScale ] = useState(1);
     const [ { frameWidth, frameHeight }, setWidthHeight ] = useState({
         frameWidth: 0,
         frameHeight: 0,
     });
 
     const [ isLessonPlanOpen, setIsLessonPlanOpen ] = useRecoilState(isLessonPlanOpenState);
+    const [ transformScale, setTransformScale ] = useState<number>(1);
+
+    const { content } = useContext(RoomContext);
+
+    const size = useWindowSize();
+
+    useEffect(() => {
+        scale(frameWidth, frameHeight);
+    }, [ size, content ]);
+
+    const scale = (innerWidth: number, innerHeight: number) => {
+        console.log(`scale this up`);
+        let currentWidth: number = size.width, currentHeight: number = size.height;
+
+        const iRef = window.document.getElementById(`activity-view-container`) as HTMLIFrameElement;
+        if (iRef) {
+            currentWidth = iRef.getBoundingClientRect().width;
+            currentHeight = iRef.getBoundingClientRect().height;
+        }
+
+        const shrinkRatioX = currentWidth / innerWidth;
+        const shrinkRatioY =  currentHeight / innerHeight;
+        const shrinkRatio = Math.min(shrinkRatioX, shrinkRatioY);
+        setTransformScale(shrinkRatio);
+    };
 
     // Buffer events until we have a page ready to render them
     const { current: bufferedEvents } = useRef<string[]>([]);
@@ -79,6 +107,7 @@ export function PreviewPlayer ({
     });
 
     useEffect(() => {
+        console.log(ref.current);
         if (ref.current == null || ref.current.contentWindow == null) { return; }
         window.addEventListener(`message`, ({ data }) => {
             if (!data || !data.width || !data.height) { return; }
@@ -88,9 +117,7 @@ export function PreviewPlayer ({
                 frameWidth: fWidth,
                 frameHeight: fHeight,
             });
-            const shrinkRatioX = (width / fWidth) > 1 ? 1 : width / fWidth;
-            const shrinkRatioY = (height / fHeight) > 1 ? 1 : height / fHeight;
-            setScale(Math.min(shrinkRatioX, shrinkRatioY));
+            scale(frameWidth, frameHeight);
             console.log(`message`);
         });
     }, [
@@ -117,7 +144,7 @@ export function PreviewPlayer ({
             style={{
                 visibility: loading ? `hidden` : `visible`,
                 transformOrigin: `top left`,
-                transform: `scale(${scale})`,
+                transform: `scale(${transformScale})`,
                 position: `absolute`,
                 top: `0`,
                 left: `0`,

@@ -198,5 +198,7 @@ const messages: Record<string, string> = {
     common_submit: `Submit`,
     title_mosaic: `Mosaic (Press 'esc' to exit)`,
     you: `You`,
+
+    classtype_live: `Online`,
 };
 export default messages;
