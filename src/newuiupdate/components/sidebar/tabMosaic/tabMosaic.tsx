@@ -1,6 +1,7 @@
 import { Session } from "../../../../pages/room/room";
 import { RoomContext } from "../../../providers/roomContext";
 import {
+    activeTabState,
     isChatOpenState,
     mosaicViewSizeState,
     usersState,
@@ -101,6 +102,7 @@ function TabMosaic () {
 
     const [ isChatOpen, setIsChatOpen ] = useRecoilState(isChatOpenState);
     const [ mosaicViewSize, setMosaicViewSize ] = useRecoilState(mosaicViewSizeState);
+    const [ activeTab, setActiveTab ] = useRecoilState(activeTabState);
 
     const { sessions } = useContext(RoomContext);
     const [ studentsSessions, setStudentsSessions ] = useState<Session[]>([]);
@@ -113,6 +115,15 @@ function TabMosaic () {
         const students = [ ...sessions.values() ].filter(session => session.isTeacher !== true);
         setStudentsSessions(students);
     }, [ sessions, sessions.size ]);
+
+    useEffect(() => {
+        window.addEventListener(`keydown`, event => {
+            if (event.code === `27` || event.code === `Escape`) {
+                setActiveTab(`participants`);
+            }
+        });
+        return () => window.removeEventListener(`keydown`, () => {});
+    }, []);
 
     return (
         <Fade in>
