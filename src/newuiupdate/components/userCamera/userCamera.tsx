@@ -1,7 +1,7 @@
+import ReactPlayer from "../../../components/react-player";
 import { LocalSessionContext } from "../../providers/providers";
 import { RoomContext } from "../../providers/roomContext";
 import { WebRTCContext } from "../../providers/WebRTCContext";
-import { videoGloballyMutedState } from "../../states/layoutAtoms";
 import NoCamera from "./noCamera";
 import UserCameraActions from "./userCameraActions";
 import UserCameraDetails from "./userCameraDetails";
@@ -14,7 +14,6 @@ import clsx from "clsx";
 import React, {
     useContext, useEffect, useRef, useState,
 } from "react";
-import { useRecoilState } from "recoil";
 import  vad  from "voice-activity-detection";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -30,20 +29,24 @@ const useStyles = makeStyles((theme: Theme) => ({
         position: `relative`,
         overflow: `hidden`,
         order: 99,
-        "& video": {
-            // backgroundColor: theme.palette.grey[200],
-        },
     },
     rootSmall:{},
     rootLarge:{
         fontSize: `1.5rem`,
+    },
+    video:{
+        width: `100% !important`,
+        height: `100% !important`,
+        position: `absolute`,
+        top: 0,
+        left: 0,
     },
     self:{
         order: 1,
     },
     speaking:{
         order: 2,
-        boxShadow: `0px 0px 0px 2px #ffe000, 0px 6px 4px 1px rgb(255 224 0 / 48%)`,
+        boxShadow: `0px 0px 0px 2px #ffe000, 0px 6px 4px 1px rgb(255 224 0 / 10%)`,
     },
 }));
 
@@ -79,8 +82,6 @@ function UserCamera (props: UserCameraType) {
     const audioRef = useRef<HTMLAudioElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
 
-    const userCameraTracks = userCamera?.getTracks();
-
     function audioDetector (stream:any) {
         const audioContext = new AudioContext();
 
@@ -90,15 +91,9 @@ function UserCamera (props: UserCameraType) {
             noiseCaptureDuration: 1500,
             avgNoiseMultiplier: 0.3,
             smoothingTimeConstant: 0.9,
-
-            onVoiceStart: function () {
-                setIsSpeaking(true);
-            },
-            onVoiceStop: function () {
-                setIsSpeaking(false);        },
-            onUpdate: function (val:any) {
-                setSpeakingActivity(val);
-            },
+            onVoiceStart: function () { setIsSpeaking(true); },
+            onVoiceStop: function () { setIsSpeaking(false); },
+            onUpdate: function (val:any) { setSpeakingActivity(val); },
         };
         vad(audioContext, stream, options);
     }
@@ -123,6 +118,8 @@ function UserCamera (props: UserCameraType) {
     useEffect(() => {
         setCamOn(webrtc.isLocalVideoEnabled(user.id));
 
+        const userCameraTracks = userCamera?.getTracks();
+
         if(userCameraTracks){
             userCameraTracks.forEach( (track:any) => {
                 if(track.kind === `video` && track.enabled === false){
@@ -130,7 +127,7 @@ function UserCamera (props: UserCameraType) {
                 }
             });
         }
-    }, [ webrtc.isLocalVideoEnabled(user.id), userCameraTracks ]);
+    }, [ webrtc.isLocalVideoEnabled(user.id) ]);
 
     useEffect(() => {
         userCamera && enableSpeakingActivity && audioDetector(userCamera);
@@ -145,6 +142,7 @@ function UserCamera (props: UserCameraType) {
                 [classes.rootSmall]: variant === `small`,
                 [classes.rootLarge]: variant === `large`,
             })}
+            id={`participant:${user.id}`}
             onMouseEnter={() => setIsHover(true)}
             onMouseLeave={() => setIsHover(false)}
         >
@@ -158,26 +156,18 @@ function UserCamera (props: UserCameraType) {
                     speakingActivity={speakingActivity}
                 />
                 {actions ? isHover && <UserCameraActions user={user} /> : null}
-                {userCamera && camOn ? (
-                    <>
-                        <video
-                            ref={videoRef}
-                            playsInline
-                            id={userSession ? `camera:${userSession.id}` : undefined}
-                            autoPlay={true}
-                            muted={true}
-                            style={{
-                                width: `100%`,
-                                height: `100%`,
-                                position: `absolute`,
-                                top: 0,
-                                left: 0,
-                            }}
-                        />
-                    </>
+                {userCamera && userSession && camOn ? (
+                    <ReactPlayer
+                        url={userCamera}
+                        playing={true}
+                        muted={true}
+                        id={`camera:${userSession.id}`}
+                        className={classes.video}
+                    />
                 ) : <NoCamera
                     name={user.name}
-                    variant={variant} />}
+                    variant={variant} />
+                }
                 <audio
                     ref={audioRef}
                     autoPlay={true}

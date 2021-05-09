@@ -7,7 +7,7 @@ import {
 } from "../../providers/WebRTCContext";
 import { hasControlsState,  pinnedUserState } from "../../states/layoutAtoms";
 import { useSynchronizedState } from "../../whiteboard/context-providers/SynchronizedStateProvider";
-import { MUTATION_SET_HOST } from "../utils/graphql";
+import { MUTATION_REWARD_TROPHY, MUTATION_SET_HOST } from "../utils/graphql";
 import { fullScreenById } from "../utils/utils";
 import { useMutation, useQuery } from "@apollo/client";
 import {
@@ -170,7 +170,9 @@ function UserCameraActions (props: UserCameraActionsType) {
     const { user } = props;
     const classes = useStyles();
 
-    const { isTeacher, sessionId } = useContext(LocalSessionContext);
+    const {
+        isTeacher, sessionId, roomId,
+    } = useContext(LocalSessionContext);
 
     const [ hasControls, setHasControls ] = useRecoilState(hasControlsState);
     const [ pinnedUser, setPinnedUser ] = useRecoilState(pinnedUserState);
@@ -182,6 +184,19 @@ function UserCameraActions (props: UserCameraActionsType) {
     const [ trophyEl, setTrophyEl ] = useState<null | HTMLElement>(null);
     const handleTrophyOpen = (event: React.SyntheticEvent<HTMLAnchorElement>) => { setTrophyEl(event.currentTarget); };
     const handleTrophyClose = () => { setTrophyEl(null); };
+
+    const [ rewardTrophyMutation ] = useMutation(MUTATION_REWARD_TROPHY, {
+        context: {
+            target: LIVE_LINK,
+        },
+    });
+    const rewardTrophy = (user: string, kind: string) => rewardTrophyMutation({
+        variables: {
+            roomId,
+            user,
+            kind,
+        },
+    });
 
     function handlePinnedUser (id: any){
         id === pinnedUser ? setPinnedUser(undefined) : setPinnedUser(id);
@@ -291,16 +306,16 @@ function UserCameraActions (props: UserCameraActionsType) {
                     >
                         <MenuItem
                             className={classes.menuItem}
-                            onClick={handleTrophyClose}><TrophyIcon size="1.2rem"/></MenuItem>
+                            onClick={() => rewardTrophy(user.id, `trophy`)}><TrophyIcon size="1.2rem"/></MenuItem>
                         <MenuItem
                             className={classes.menuItem}
-                            onClick={handleTrophyClose}><HandThumbsUpFillIcon size="1.2rem"/></MenuItem>
+                            onClick={() => rewardTrophy(user.id, `awesome`)}><HandThumbsUpFillIcon size="1.2rem"/></MenuItem>
                         <MenuItem
                             className={classes.menuItem}
-                            onClick={handleTrophyClose}><StarFillIcon size="1.2rem"/></MenuItem>
+                            onClick={() => rewardTrophy(user.id, `star`)}><StarFillIcon size="1.2rem"/></MenuItem>
                         <MenuItem
                             className={classes.menuItem}
-                            onClick={handleTrophyClose}><HeartFillIcon size="1.2rem"/></MenuItem>
+                            onClick={() => rewardTrophy(user.id, `heart`)}><HeartFillIcon size="1.2rem"/></MenuItem>
                     </Menu>
                 </Grid>
             </Grid>

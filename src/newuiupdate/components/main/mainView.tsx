@@ -115,7 +115,7 @@ function MainView () {
     // DEFAULT VIEW (OnStage)
     // TEACHER and STUDENTS : Host camera
 
-    if((content?.type === ContentType.Camera) && isLessonPlanOpen){
+    if((content?.type === ContentType.Camera || content?.type === ContentType.Blank) && isLessonPlanOpen){
         return(
             <Grid
                 container

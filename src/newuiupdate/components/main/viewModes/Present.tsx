@@ -109,7 +109,6 @@ function Present () {
     }
 
     if(content && content.type === ContentType.Stream){
-        console.log(`content`, content?.contentId);
         return (
             <PreviewPlayer
                 streamId={content?.contentId}
