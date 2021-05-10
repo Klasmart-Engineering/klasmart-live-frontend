@@ -24,6 +24,24 @@ const messages: Record<string, string> = {
     err_500_subtitle: "Oops! Something went wrong",
 
     activity_link: "Activity Link",
+
+    join_cameraPreviewFallback_allowMediaPermissions: "Allow media device permissions",
+    join_permissionAlertDialog_title: "Allow to use your media device for Kidsloop Live",
+    join_permissionAlertDialog_contentText_live: "Kidsloop Live needs access to the camera and microphone in order for other class participants to see you and hear you.",
+    join_permissionAlertDialog_contentText_classesStudy: "Kidsloop Live needs access to the microphone for in-class interactive contents.",
+    join_permissionAlertDialog_action_close: "Close",
+
+    camera_participantInfo_chalkboardIcon_tooltip: "{name} is teacher",
+    camera_participantInfo_crownIcon_tooltip: "Teacher {name} is presenting",
+    camera_fullScreenCameraButton_tooltip: "Full screen camera",
+    camera_moreControlsButton_listSubheader_whiteboard: "Give Whiteboard Controls",
+    camera_moreControlsButton_listSubheader_trophy: "Give Trophy",
+    camera_moreControlsButton_listSubheader_toggleCamMic: "Toggle Camera / Microphone",
+
+    whiteboard_permissionControls_listItemText_disallow: "Disallow drawing",
+    whiteboard_permissionControls_listItemText_allow: "Allow drawing",
+    whiteboard_permissionControls_listItemText_clear: "Clear",
+
     allow_media_permission: "Please allow microphone and camera permissions if you want to use media devices.",
     button_cancel: "Cancel",
     button_confirm: "Confirm",

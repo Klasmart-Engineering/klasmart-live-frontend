@@ -1,62 +1,47 @@
-import React from "react";
-import { ContentIndexState, InteractiveModeState, StreamIdState } from "./room";
+import React, { useContext } from "react";
 import Layout from "../../components/layout";
-import { Student } from "../student/student";
-import { Teacher } from "../teacher/teacher";
-import { ScreenShare } from "../teacher/screenShareProvider";
-import { WebRTCSFUContext } from "../../webrtc/sfu";
+import { LocalSessionContext } from "../../entry";
+import { RoomContext } from "../../providers/RoomContext";
+import { WebRTCProvider } from "../../providers/WebRTCContext";
 import { GlobalWhiteboardContext } from "../../whiteboard/context-providers/GlobalWhiteboardContext";
+import { Student } from "../student/student";
+import { ScreenShareProvider } from "../teacher/screenShareProvider";
+import { Teacher } from "../teacher/teacher";
+import { InteractiveModeState, StreamIdState } from "./room";
 
 interface LiveProps {
-    teacher: boolean;
-    openDrawer: boolean;
-    handleOpenDrawer: (open?: boolean) => void;
-    contentIndexState: ContentIndexState;
     interactiveModeState: InteractiveModeState;
     streamIdState: StreamIdState;
-    numColState: number;
-    setNumColState: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export function Live({
-    teacher,
-    openDrawer,
-    handleOpenDrawer,
-    contentIndexState,
     interactiveModeState,
-    streamIdState,
-    numColState,
-    setNumColState,
+    streamIdState
 }: LiveProps): JSX.Element {
+    const { sessions } = useContext(RoomContext);
+    const { sessionId } = useContext(LocalSessionContext);
+    const localSession = sessions.get(sessionId);
+    const isHostTeacher = localSession?.isTeacher && localSession?.isHost;
+
     return (
-        <WebRTCSFUContext.Provide>
-            <ScreenShare.Provide>
+        <WebRTCProvider>
+            <ScreenShareProvider>
                 <GlobalWhiteboardContext>
                     <Layout
-                        isTeacher={teacher}
-                        openDrawer={openDrawer}
-                        handleOpenDrawer={handleOpenDrawer}
-                        contentIndexState={contentIndexState}
                         interactiveModeState={interactiveModeState}
                         streamIdState={streamIdState}
-                        numColState={numColState}
-                        setNumColState={setNumColState}
                     >
                         {
-                            teacher
+                            isHostTeacher
                                 ? <Teacher
-                                    openDrawer={openDrawer}
-                                    handleOpenDrawer={handleOpenDrawer}
-                                    contentIndexState={contentIndexState}
                                     interactiveModeState={interactiveModeState}
                                     streamIdState={streamIdState}
-                                    numColState={numColState}
                                 />
-                                : <Student openDrawer={openDrawer} />
+                                : <Student />
                         }
                     </Layout>
                 </GlobalWhiteboardContext>
-            </ScreenShare.Provide>
-        </WebRTCSFUContext.Provide>
+            </ScreenShareProvider>
+        </WebRTCProvider>
     );
 }

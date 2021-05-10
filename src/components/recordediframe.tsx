@@ -5,33 +5,27 @@ import { useMutation } from "@apollo/react-hooks";
 import IframeResizer from "iframe-resizer-react";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import Grid from "@material-ui/core/Grid";
+import { gql, useMutation } from "@apollo/client";
 import Dialog from "@material-ui/core/Dialog";
+import Grid from "@material-ui/core/Grid";
 import { useTheme } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { Refresh as RefreshIcon } from "@styled-icons/material/Refresh";
-
-import StyledFAB from "../styled/fabButton";
-import { DRAWER_TOOLBAR_WIDTH } from "../../pages/layout";
-import { loadingActivity } from "../../utils/layerValues";
-
-import CurlySpinner1 from "../../assets/img/spinner/curly1_spinner.gif"
-import CurlySpinner2 from "../../assets/img/spinner/curly2_spinner.gif"
-import EccoSpinner1 from "../../assets/img/spinner/ecco1_spinner.gif"
-import EccoSpinner2 from "../../assets/img/spinner/ecco2_spinner.gif"
-import JessSpinner1 from "../../assets/img/spinner/jess1_spinner.gif"
-import MimiSpinner1 from "../../assets/img/spinner/mimi1_spinner.gif"
-import GhostSpinner from "../../assets/img/spinner/ghost_spinner.gif"
-import { State } from "../../store/store";
-import { useUserContext } from "../../context-provider/user-context";
-import { injectIframeScript } from "../../utils/injectIframeScript";
-import { useHttpEndpoint } from "../../context-provider/region-select-context";
-
-interface NewProps extends IframeResizer.IframeResizerProps {
-    forwardRef: any
-}
-const IframeResizerNew = IframeResizer as React.FC<NewProps>
-
-const SPINNER = [CurlySpinner1, CurlySpinner2, EccoSpinner1, EccoSpinner2, JessSpinner1, MimiSpinner1];
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
+import CurlySpinner1 from "../assets/img/spinner/curly1_spinner.gif";
+import CurlySpinner2 from "../assets/img/spinner/curly2_spinner.gif";
+import EccoSpinner1 from "../assets/img/spinner/ecco1_spinner.gif";
+import EccoSpinner2 from "../assets/img/spinner/ecco2_spinner.gif";
+import GhostSpinner from "../assets/img/spinner/ghost_spinner.gif";
+import JessSpinner1 from "../assets/img/spinner/jess1_spinner.gif";
+import MimiSpinner1 from "../assets/img/spinner/mimi1_spinner.gif";
+import { LIVE_LINK, LocalSessionContext } from "../entry";
+import { State } from "../store/store";
+import { loadingActivity } from "../utils/layerValues";
+import { useWindowSize } from "../utils/viewport";
+import StyledFAB from "./styled/fabButton";
 
 const SET_STREAMID = gql`
     mutation setSessionStreamId($roomId: ID!, $streamId: ID!) {
@@ -42,115 +36,149 @@ const SET_STREAMID = gql`
 export interface Props {
     contentHref: string;
     setStreamId: React.Dispatch<React.SetStateAction<string | undefined>>;
-    parentWidth: number;
-    parentHeight: number;
+    square?: number;
 }
 
-export function RecordedIframe({ contentHref, setStreamId, parentHeight }: Props): JSX.Element {
+enum LoadStatus {
+    Error,
+    Loading,
+    Finished,
+}
+
+export function RecordedIframe(props: Props): JSX.Element {
+    const SPINNER = [CurlySpinner1, CurlySpinner2, EccoSpinner1, EccoSpinner2, JessSpinner1, MimiSpinner1];
+    const MAX_LOADING_COUNT = 60
     const iframeRef = useRef<HTMLIFrameElement>(null);
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
 
+    const { roomId } = useContext(LocalSessionContext);
     const drawerOpen = useSelector((state: State) => state.control.drawerOpen);
-    const drawerWidth = useSelector((state: State) => state.control.drawerWidth);
+    const { contentId, setStreamId, square } = props;
+    const [sendStreamId] = useMutation(SET_STREAMID, {context: {target: LIVE_LINK}});
 
-    const { roomId, token } = useUserContext();
-    const [sendStreamId] = useMutation(SET_STREAMID);
-
-    const [isFlashCards, setIsFlashCards] = useState(false);
-    const [iframeWidth, setIframeWidth] = useState<number | string>("100%");
-    const [iframeHeight, setIframeHeight] = useState<number | string>(700);
-    const [minHeight, setMinHeight] = useState<number>();
-    const [numRenders, setNumRenders] = useState(0);
-    const [key, setKey] = useState(Math.random());
+    const [transformScale, setTransformScale] = useState<number>(1);
     const [openDialog, setOpenDialog] = useState(true);
-    const [seconds, setSeconds] = useState(60);
-    const [spinner, setSpinner] = useState(Math.floor(Math.random() * Math.floor(SPINNER.length)));
+    const [seconds, setSeconds] = useState(MAX_LOADING_COUNT);
+    const [loadStatus, setLoadStatus] = useState(LoadStatus.Loading);
+    const [intervalId, setIntervalId] = useState<number>();
+    const [contentWidth, setContentWidth] = useState(1600);
+    const [contentHeight, setContentHeight] = useState(1400);
+    const [enableResize, setEnableResize] = useState(true);
+    const [stylesLoaded, setStylesLoaded] = useState(false);
 
-    const recorderEndpoint = useHttpEndpoint("live");
 
-    const contentHrefWithToken = useMemo<string>(() => {
-        const encodedEndpoint = encodeURIComponent(recorderEndpoint);
-        return `${contentHref}?token=${token}&endpoint=${encodedEndpoint}`;
-    }, [contentHref, token, recorderEndpoint]);
-
-    // Whenever the content changes, dialog is displayed and width is initialized.
-    useEffect(() => {
-        setIsFlashCards(false);
-        setOpenDialog(true);
-        setKey(Math.random());
-        setIframeWidth("100%");
-    }, [contentHrefWithToken]);
+    const size = useWindowSize();
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-            let newTime = seconds - 1;
-            setSeconds(newTime);
-        }, 1000);
+        scale(contentWidth, contentHeight);
+    }, [size])
 
-        if (seconds <= 0) { clearTimeout(timer); }
-        return () => clearTimeout(timer);
-    });
+    useEffect(() => {
+        // TODO gotta find a way to resize the h5p activity when the drawer gets opened.
+        // window.dispatchEvent(new Event('resize'));
+    }, [drawerOpen])
 
-    const scaleToFitParent = (iframeWidth: number, iframeHeight: number) => {
-        const scale = parentHeight / iframeHeight;
-        if (scale < 0.9) {
-            const width = iframeWidth * scale;
-            const height = iframeHeight * scale;
-            setIframeWidth(width);
-            setIframeHeight(height);
-            setKey(Math.random());
+    useEffect(() => {
+        setSeconds(MAX_LOADING_COUNT)
+        setLoadStatus(LoadStatus.Loading)
+
+        const iRef = window.document.getElementById("recordediframe") as HTMLIFrameElement;
+        iRef.addEventListener("load", () => setLoadStatus(LoadStatus.Finished));
+        return () => iRef.removeEventListener("load", () => setLoadStatus(LoadStatus.Finished));
+    }, [contentId]);
+
+    useEffect(() => {
+        if (loadStatus === LoadStatus.Loading) {
+            const interval = window.setInterval(() => {
+                setSeconds(seconds => seconds - 1);
+            }, 1000);
+            setIntervalId(interval)
+        } else if (loadStatus === LoadStatus.Finished) {
+            setOpenDialog(false);
+            clearInterval(intervalId);
+            onLoad()
+            startRecording()
+        } else if (seconds <= 0 || loadStatus === LoadStatus.Error) {
+            clearInterval(intervalId);
         }
+        return () => clearInterval(intervalId);
+    }, [loadStatus]);
+
+    const scale = (innerWidth: number, innerHeight: number) => {
+        let currentWidth: number = size.width, currentHeight: number = size.height;
+
+            const iRef = window.document.getElementById("main-container") as HTMLIFrameElement;
+            if (iRef) {
+                currentWidth = iRef.getBoundingClientRect().width;
+                currentHeight = iRef.getBoundingClientRect().height;
+            }
+
+        const shrinkRatioX = (currentWidth / innerWidth) > 1 ? 1 : currentWidth / innerWidth;
+        const shrinkRatioY = (currentHeight / innerHeight) > 1 ? 1 : currentHeight / innerHeight;
+        const shrinkRatio = Math.min(shrinkRatioX, shrinkRatioY);
+        setTransformScale(shrinkRatio);
     }
 
-    function inject(iframeElement: HTMLIFrameElement) {
+    function onLoad() {
+        // TODO the client-side rendering version of H5P is ready! we can probably delete this function and the scale function above
+        // if we switch over to it! Ask me (Daiki) about the details.
+        const iframeElement = window.document.getElementById("recordediframe") as HTMLIFrameElement;
         const contentWindow = iframeElement.contentWindow
         const contentDoc = iframeElement.contentDocument
 
         if (!contentWindow || !contentDoc) { return; }
-        // IP Protection
+
+        // Custom styles when needed
+        if(!stylesLoaded){
+            var style = document.createElement('style');
+            style.innerHTML = `
+            .h5p-content{
+                display: inline-block !important;
+                width: auto !important;
+            }
+            .h5p-course-presentation .h5p-wrapper{
+                min-width: 1300px !important;
+                min-height: 800px !important
+            }
+            .h5p-single-choice-set{
+                max-height: 300px !important;
+            }
+            .h5p-alternative-inner{
+                height: auto !important;
+            }
+            .h5p-column .h5p-dragquestion > .h5p-question-content > .h5p-inner{
+                width: 100% !important
+            }
+            `;
+            contentDoc.head.appendChild(style);
+            // setStylesLoaded(true);
+        }
+
+        // IP Protection: Contents should not be able to be downloaded by right-clicking.
         const blockRightClick = (e: MouseEvent) => { e.preventDefault() }
         contentWindow.addEventListener("contextmenu", (e) => blockRightClick(e), false);
-
-        const isFlashCards = contentDoc.body.getElementsByClassName("h5p-flashcards").length >= 1;
-        setIsFlashCards(isFlashCards);
         const h5pDivCollection = contentDoc.body.getElementsByClassName("h5p-content");
-        // TODO: Is it possible to handle all non-h5p content with this line?
-        const contentDivCollection = contentDoc.body.getElementsByClassName("content");
+        const h5pTypeColumn = contentDoc.body.getElementsByClassName("h5p-column").length;
+
+        if(h5pTypeColumn){
+            setEnableResize(false)
+            h5pDivCollection[0].setAttribute("style", "width: 100% !important;");
+        }else{
+            setEnableResize(true)
+             h5pDivCollection[0].setAttribute("style", "width: auto !important;");
+        }
+
         if (h5pDivCollection.length > 0) {
             const h5pContainer = h5pDivCollection[0] as HTMLDivElement;
-            h5pContainer.style.overflow = isFlashCards ? "auto" : "hidden";
             h5pContainer.setAttribute("data-iframe-height", "");
-        } else if (contentDivCollection.length > 0) {
-            contentDivCollection[0].setAttribute("data-iframe-height", "");
-        } else {
-            setMinHeight(700);
+            const h5pWidth = h5pContainer.getBoundingClientRect().width;
+            const h5pHeight = h5pContainer.getBoundingClientRect().height;
+            setContentWidth(h5pWidth);
+            setContentHeight(h5pHeight);
+            scale(h5pWidth, h5pHeight);
         }
-
-        const cdnResizerScript = contentDoc.createElement("script");
-        cdnResizerScript.setAttribute("type", "text/javascript");
-        cdnResizerScript.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/iframe-resizer/3.5.8/iframeResizer.contentWindow.min.js");
-        contentDoc.head.appendChild(cdnResizerScript);
-
-        const h5pResizerScript = contentDoc.createElement("script");
-        h5pResizerScript.setAttribute("type", "text/javascript");
-        h5pResizerScript.setAttribute("src", "https://h5p.org/sites/all/modules/h5p/library/js/h5p-resizer.js");
-        contentDoc.head.appendChild(h5pResizerScript);
-
-        return contentWindow.removeEventListener("contextmenu", (e) => blockRightClick(e), false);
     }
-
-    useEffect(() => {
-        const iRef = window.document.getElementById("recordediframe") as HTMLIFrameElement;
-        if (!iRef) { return; }
-
-        const onIframeLoad = () => {
-            inject(iRef);
-        }
-
-        iRef.addEventListener("load", onIframeLoad);
-        return () => iRef.removeEventListener("load", onIframeLoad);
-    }, [key])
 
     useEffect(() => {
         function onMessage({ data }: MessageEvent) {
@@ -180,8 +208,12 @@ export function RecordedIframe({ contentHref, setStreamId, parentHeight }: Props
         // then set as the text content of script node.
         // script.setAttribute("src", recorderScript);
 
-        injectIframeScript(iRef, "record");
+        injectIframeScript(iRef, "record-e44f2b3");
     }
+
+    const getRandomSpinner = (): string => SPINNER[Math.floor(Math.random() * SPINNER.length)];
+
+    const getSpinner = (): string => loadStatus === LoadStatus.Loading ? getRandomSpinner() : GhostSpinner;
 
     return (
         <React.Fragment>
@@ -189,7 +221,6 @@ export function RecordedIframe({ contentHref, setStreamId, parentHeight }: Props
                 fullScreen
                 hideBackdrop
                 open={openDialog}
-                onClose={() => setOpenDialog(false)}
                 PaperProps={{
                     style: { backgroundColor: "rgba(255,255,255,0.7)" },
                 }}
@@ -206,72 +237,59 @@ export function RecordedIframe({ contentHref, setStreamId, parentHeight }: Props
                     style={{ flexGrow: 1 }}
                 >
                     <Grid item>
-                        <img src={seconds ? SPINNER[spinner] : GhostSpinner} height={80} />
+                        <img src={getSpinner()} height={80} />
                     </Grid>
                     <Grid item>
                         <Typography variant="h6" align="center" gutterBottom>
-                            {seconds ?
-                                "Loading the lesson material!" :
-                                "Sorry, something went wrong!"
-                            }
+                            {loadStatus === LoadStatus.Loading
+                                ? "Loading the lesson material!"
+                                : null}
+                            {loadStatus === LoadStatus.Error
+                                ? "Sorry, something went wrong!"
+                                : null}
                         </Typography>
                     </Grid>
                     <Grid item>
-                        <Typography variant="caption" align="center" gutterBottom>
-                            {seconds ?
-                                `If you still see this screen after ${seconds} seconds, click Reload below.` :
-                                "Please click the Reload button."
-                            }
+                        <Typography
+                            variant="caption"
+                            align="center"
+                            gutterBottom
+                        >
+                            {loadStatus === LoadStatus.Loading
+                                ? `If you still see this screen after ${seconds} seconds, click Reload below.`
+                                : null}
+                            {loadStatus === LoadStatus.Error
+                                ? "Please click the Reload button."
+                                : null}
                         </Typography>
                     </Grid>
                     <Grid item style={{ paddingTop: theme.spacing(2) }}>
                         <StyledFAB
-                            disabled={seconds !== 0}
-                            onClick={() => {
-                                setKey(Math.random());
-                                setSeconds(60);
-                                setSpinner(Math.floor(Math.random() * Math.floor(SPINNER.length)));
-                            }}
+                            disabled={loadStatus === LoadStatus.Loading}
+                            onClick={() => setLoadStatus(LoadStatus.Loading)}
                         >
-                            Reload <RefreshIcon size="1rem" style={{ marginLeft: isSmDown ? 0 : 4 }} />
+                            Reload{" "}
+                            <RefreshIcon
+                                size="1rem"
+                                style={{ marginLeft: isSmDown ? 0 : 4 }}
+                            />
                         </StyledFAB>
                     </Grid>
                 </Grid>
             </Dialog>
-            <IframeResizerNew
-                // log
-                scrolling={isFlashCards ? true : false}
-                draggable
+            <iframe
                 id="recordediframe"
-                src={contentHrefWithToken}
-                forwardRef={iframeRef}
-                heightCalculationMethod="taggedElement"
-                minHeight={minHeight}
-                allow="microphone"
-                onResized={(e) => {
-                    setNumRenders(numRenders + 1);
-                    const width = Number(e.width), height = Number(e.height);
-                    if (isFlashCards) {
-                        setIframeHeight(height)
-                    } else if (height > parentHeight && numRenders < 2 && !isFlashCards) {
-                        scaleToFitParent(width, height)
-                    }
-                }}
-                onInit={(iframe) => {
-                    // After resizing is complete.                        
-                    setIframeWidth("100%");
-                    startRecording();
-                    setNumRenders(0);
-                    setIsFlashCards(false);
-                    setOpenDialog(false);
-                }}
+                src={contentId}
+                ref={iframeRef}
                 style={{
-                    width: iframeWidth,
-                    height: iframeHeight,
-                    // As long as it is the <Whiteboard />'s children, it cannot be centered with margin: "0 auto".
-                }}
-                key={key}
-                checkOrigin={false}
+                width: enableResize ? contentWidth : '100%',
+                height: enableResize ? contentHeight : '100%',
+                position: enableResize ? `absolute` : 'static',
+                transformOrigin: "top left",
+                transform: enableResize ? `scale(${transformScale})` : `scale(1)`,
+                minWidth: '100%',
+                minHeight: '100%',
+            }}
             />
         </React.Fragment>
     );

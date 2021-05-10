@@ -1,76 +1,74 @@
-import React, { 
+import { types as MediaSoup } from "mediasoup-client";
+import React, {
     createContext,
-    useReducer, DispatchWithoutAction, useContext, useRef } from "react";
-import { WebRTCSFUContext } from "../../webrtc/sfu";
-import {types as MediaSoup} from "mediasoup-client"
+    useContext, useState
+} from "react";
+import { WebRTCContext } from "../../providers/WebRTCContext";
 
-const ScreenShareContext = createContext<{ref: React.MutableRefObject<ScreenShare>}>(undefined as any);
+export interface ScreenShareContextInterface {
+    stream: MediaStream | undefined;
+    start: () => Promise<void>;
+    stop: () => Promise<void>
+}
 
-export class ScreenShare {
-    public static Provide({children}: {children: JSX.Element | JSX.Element[]}) {
-        const ref = useRef<ScreenShare>(undefined as any)
-        const [value, rerender] = useReducer(() => ({ref}),{ref})
-        const sfu = WebRTCSFUContext.Consume()
-        if(!ref.current) {ref.current = new ScreenShare(rerender, sfu)}
+const defaultScreenShareContext = {
+    stream: undefined,
+    start: async () => {},
+    stop: async () => {},
+}
 
-        return <ScreenShareContext.Provider value={value}>
-            {children}
-        </ScreenShareContext.Provider>;
-    }
+export const ScreenShareContext = createContext<ScreenShareContextInterface>(defaultScreenShareContext);
 
-    public static Consume() {
-        return useContext(ScreenShareContext).ref.current
-    }
+export const ScreenShareProvider = (props: {children: React.ReactNode}) => {
+    const [stream, setStream] = useState<MediaStream | undefined>()
+    const [producers, setProducers] = useState<MediaSoup.Producer[]>([])
+    const [starting, setStarting] = useState<boolean>(false)
+    const [stopping, setStopping] = useState<boolean>(false)
+    const sfuState = useContext(WebRTCContext);
     
-    public getStream() {return this.stream;}
-    private setStream(stream?: MediaStream) {
-        this.stream = stream;
-        this.rerender() 
-    }
-    
-    private starting = false
-    public async start() {
-        if(this.stream) {return;}
-        if(this.starting) {return;}
+    const start = async () => {
+        if(stream) {return;}
+        if(starting) {return;}
         try {
-            this.starting = true;
-            await this.stop();
+            setStarting(true)
+            await stop();
             const stream = await ((navigator.mediaDevices as any).getDisplayMedia({audio: true, video: true}) as Promise<MediaStream>);
-            this.setStream(stream)
-            this.producers = await this.sfu.transmitStream("aux", stream)
+            setStream(stream)
+            const auxStreams= await sfuState.transmitStream("aux", stream, false)
+            setProducers(auxStreams)
+        } catch(e) {
+            console.log(e)
         } finally {
-            this.starting = false;
+            setStarting(false)
         }
     }
 
-    private stopping = false
-    public async stop() {
-        if(!this.stream) {return;}
-        if(this.stopping) {return;}
+    const stop = async () => {
+        if(!stream) {return;}
+        if(stopping) {return;}
         try {
-            this.stopping = true;
-            if(this.producers) {
-                for(const producer of this.producers) {
-                    producer.close()
-                }
+            setStopping(true)
+            for(const producer of producers) {
+                producer.close()
             }
-            this.producers = undefined
-            for(const track of this.stream.getTracks()) {
+            setProducers([])
+            for(const track of stream.getTracks()) {
                 track.stop();
             }
-            this.setStream()
+            setStream(undefined)
         } finally {
-            this.stopping = false;
+            setStopping(false)
         }
     }
-
-
-    private stream?: MediaStream
-    private producers?: MediaSoup.Producer[]
-    private rerender: DispatchWithoutAction
-    private sfu: WebRTCSFUContext
-    private constructor(rerender: DispatchWithoutAction, sfu: WebRTCSFUContext) {
-        this.rerender = rerender
-        this.sfu = sfu
+    const value = {
+        stream,
+        start,
+        stop
     }
+
+    return(
+        <ScreenShareContext.Provider value={value}>
+            {props.children}
+        </ScreenShareContext.Provider>
+    )
 }

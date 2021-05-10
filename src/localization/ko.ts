@@ -1,12 +1,24 @@
 // ko.ts
 const messages: Record<string, string> = {
-    join_CameraPreviewFallback_allowMediaPermissions: "미디어 장치 권한을 허용하십시오.",
-    join_PermissionAlertDialog_DialogTitle: "Kidsloop Live에서 미디어 장치를 사용하도록 허용하기",
-    join_PermissionAlertDialog_DialogContentText_live: "다른 수업 참가자들이 내 모습을 보고 음성을 들으려면 Kidsloop Live에서 카메라와 마이크에 액세스 할 수 있어야 합니다.",
-    join_PermissionAlertDialog_DialogContentText_classes_study: "수업 중 인터랙티브 콘텐츠를 사용하기 위해 Kidsloop Live에서 마이크에 액세스 할 수 있어야 합니다.",
-    join_PermissionAlertDialog_Button_close: "닫기",
-
     activity_link: "액티비티 링크",
+
+    join_cameraPreviewFallback_allowMediaPermissions: "미디어 장치 권한을 허용하십시오.",
+    join_permissionAlertDialog_title: "Kidsloop Live에서 미디어 장치를 사용하도록 허용하기",
+    join_permissionAlertDialog_contentText_live: "다른 수업 참가자들이 내 모습을 보고 음성을 들으려면 Kidsloop Live에서 카메라와 마이크에 액세스 할 수 있어야 합니다.",
+    join_permissionAlertDialog_contentText_classesStudy: "수업 중 인터랙티브 콘텐츠를 사용하기 위해 Kidsloop Live에서 마이크에 액세스 할 수 있어야 합니다.",
+    join_permissionAlertDialog_action_close: "닫기",
+
+    camera_participantInfo_chalkboardIcon_tooltip: "{name}은 선생님 입니다",
+    camera_participantInfo_crownIcon_tooltip: "{name} 선생님이 발표 중입니다",
+    camera_fullScreenCameraButton_tooltip: "카메라 전체화면",
+    camera_moreControlsButton_listSubheader_whiteboard: "화이트보드 보여주기",
+    camera_moreControlsButton_listSubheader_trophy: "트로피 주기",
+    camera_moreControlsButton_listSubheader_toggleCamMic: "카메라 / 마이크 전환",
+
+    whiteboard_permissionControls_listItemText_disallow: "그리기 비활성",
+    whiteboard_permissionControls_listItemText_allow: "그리기 활성",
+    whiteboard_permissionControls_listItemText_clear: "모두 지우기",
+
     allow_media_permission: "미디어 장치를 사용하려면 마이크 및 카메라 권한을 허용하십시오.",
     error_camera_unavailable: "📷 에 액세스 할 수 없습니다.",
     err_button_home: "홈",
@@ -47,17 +59,17 @@ const messages: Record<string, string> = {
     no_messages: "아직 메시지가 없습니다...",
     no_participants: "아직 수업에 참여한 사람이 없습니다...",
     select_device: "{device} 선택",
-    connect_camera: "📷 를 연결하십시오.",
+    connect_camera: "📷를 연결하십시오.",
 
     refresh_activity: "액티비티 새로고침",
     what_is_this: "이건 어떤 기능인가요?",
     live_buttonStop: "정지",
     live_buttonPresent: "수업 진행",
-    live_buttonObserve: "관찰",
+    live_buttonObserve: "학생관찰",
     live_buttonScreen: "화면 공유",
     live_buttonStopFull: "웹캠 모드",
     live_buttonPresentFull: "발표자 모드",
-    live_buttonObserveFull: "관찰 모드",
+    live_buttonObserveFull: "학생관찰 모드",
     live_buttonScreenFull: "화면 공유",
     title_participants: "수업 참가자",
     title_lesson_plan: "수업 계획",

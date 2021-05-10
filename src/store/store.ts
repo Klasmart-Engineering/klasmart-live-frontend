@@ -29,6 +29,7 @@ const rootReducer = combineReducers({
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
+// TODO my linter is highlighting this function signature. investigate!
 export function createDefaultStore() {
     const store = configureStore({ reducer: persistedReducer, middleware: [thunk, logger] })
     const persistor = persistStore(store);

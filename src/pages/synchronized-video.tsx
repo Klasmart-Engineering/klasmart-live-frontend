@@ -1,9 +1,9 @@
+import { gql, useMutation, useSubscription } from "@apollo/client";
+import { CircularProgress, IconButton, makeStyles,createStyles, Theme,  Typography } from "@material-ui/core";
+import { VolumeMute as AudioOffIcon } from "@styled-icons/boxicons-regular/VolumeMute";
 import React, {
-    useRef,
-    useEffect,
-    useContext,
-    useCallback,
-    useState,
+    useCallback, useContext, useEffect, useRef,
+    useState
 } from "react";
 import { useSubscription, useMutation } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
@@ -18,6 +18,11 @@ import { useSelector } from "react-redux";
 import { State } from "../../store/store";
 import { useUserContext } from "../../context-provider/user-context";
 import { useHttpEndpoint } from "../../context-provider/region-select-context";
+import { FFT } from "../components/fft";
+import ReactPlayer from "../components/react-player/lazy";
+import { LIVE_LINK, LocalSessionContext, SFU_LINK } from "../entry";
+import { MaterialTypename } from "../lessonMaterialContext";
+import { videoUnmuteOverlay } from "../utils/layerValues";
 
 interface VideoSynchronize {
     src?: string;
@@ -32,6 +37,21 @@ interface ReplicaVideoProps {
 
 const PLAYLIST_FILE_NAME = "master";
 const PLAYLIST_FILE_HOST = "/video";
+
+const useStyles = makeStyles((theme: Theme) =>
+    createStyles({
+        reactPlayer: {
+            "& video": {
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                objectFit: 'contain',
+            }
+        },
+    }),
+);
 
 const createHlsDashUrlFromSrc = (src: string): string[] => {
     let urls: string[] = []
@@ -72,6 +92,7 @@ export function ReplicaMedia(
     props: React.VideoHTMLAttributes<HTMLMediaElement> & ReplicaVideoProps
 ) {
     const { sessionId, type, ...mediaProps } = props;
+    const classes = useStyles();
     const srcRef = useRef<string>();
     const [playing, setPlaying] = useState<boolean>(false);
     const timeRef = useRef<number>();
@@ -192,6 +213,7 @@ export function ReplicaMedia(
                 }
             },
             variables: { roomId, sessionId },
+            context: {target: LIVE_LINK},
         }
     );
 
@@ -278,6 +300,7 @@ export function ReplicaMedia(
                         }}
                         onError={(_, reason) => reactPlayerError(reason)}
                         width="100%"
+                        className={classes.reactPlayer}
                     />
                     {videoReady && muted ?
                         <div id="video-unmute-overlay" style={{ position: "absolute", width: "100%", height: "100%", zIndex: videoUnmuteOverlay }}>
@@ -305,7 +328,7 @@ export function ReplicatedMedia(
     props: React.VideoHTMLAttributes<HTMLMediaElement> & ReplicatedMediaProps
 ) {
     const { type, src, ...mediaProps } = props;
-
+    const classes = useStyles();
     const ref = useRef<HTMLMediaElement>(null);
 
     const reactPlayerRef = useRef<ReactPlayer>(null);
@@ -341,7 +364,9 @@ export function ReplicatedMedia(
         )
       }
     `
-    );
+    , {
+        context: {target: LIVE_LINK}
+    });
 
     useEffect(() => {
         // NOTE: Reset playing to false when the source changes.
@@ -489,7 +514,7 @@ export function ReplicatedMedia(
                     playsinline
                     volume={volume}
                     url={videoSources}
-                    width="100%"
+                    className={classes.reactPlayer}
                     config={{
                         file: {
                             attributes: {

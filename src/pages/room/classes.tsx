@@ -1,31 +1,31 @@
-import React, { useState, useContext } from "react";
-import { RoomContext, InteractiveModeState, StreamIdState, ContentIndexState } from "./room";
-import { Layout } from "./layout-new";
-import { UserContext } from "../../entry";
+import React, { useContext, useState } from "react";
+import { useSelector } from "react-redux";
+import { LocalSessionContext } from "../../entry";
+import { RoomProvider } from "../../providers/RoomContext";
+import { State } from "../../store/store";
 import { GlobalWhiteboardContext } from "../../whiteboard/context-providers/GlobalWhiteboardContext";
+import { Layout } from "./layout-new";
+import { InteractiveModeState, StreamIdState } from "./room";
 
 interface ClassesProps {
-    contentIndexState: ContentIndexState;
     interactiveModeState: InteractiveModeState;
     streamIdState: StreamIdState;
 }
 
 export function Classes({
-    contentIndexState,
     interactiveModeState,
     streamIdState,
 }: ClassesProps): JSX.Element {
-    const { materials } = useContext(UserContext);
-    const { contentIndex } = contentIndexState;
+    const { materials } = useContext(LocalSessionContext);
+    const contentIndex = useSelector((store: State) => store.control.contentIndex);
     const material = contentIndex >= 0 && contentIndex < materials.length ? materials[contentIndex] : undefined;
     const [tabIndex, setTabIndex] = useState(0);
     const [materialKey, setMaterialKey] = useState(Math.random());
 
     return (
-        <RoomContext.Provide>
+        <RoomProvider>
             <GlobalWhiteboardContext>
                 <Layout
-                    contentIndexState={contentIndexState}
                     interactiveModeState={interactiveModeState}
                     streamIdState={streamIdState}
                     material={material}
@@ -35,6 +35,6 @@ export function Classes({
                     setTabIndex={setTabIndex}
                 />
             </GlobalWhiteboardContext>
-        </RoomContext.Provide>
+        </RoomProvider>
     );
 }

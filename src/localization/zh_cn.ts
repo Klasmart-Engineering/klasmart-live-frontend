@@ -24,6 +24,24 @@ const messages: Record<string, string> = {
     err_500_subtitle: "Oops! Something went wrong",
 
     activity_link: "活动链接",
+
+    join_cameraPreviewFallback_allowMediaPermissions: "允许媒体设备权限",
+    join_permissionAlertDialog_title: "允许Kidsloop 直播访问你的媒体设备",
+    join_permissionAlertDialog_contentText_live: "Kidsloop Live需要接入摄像头和麦克风，以便其他参与者能够看到你并听到你的声音",
+    join_permissionAlertDialog_contentText_classesStudy: "Kidsloop直播需要接入麦克风，进行课内互动内容",
+    join_permissionAlertDialog_action_close: "关闭",
+
+    camera_participantInfo_chalkboardIcon_tooltip: "老师是 {}",
+    camera_participantInfo_crownIcon_tooltip: "老师 {} 正在演示",
+    camera_fullScreenCameraButton_tooltip: "摄像头全屏",
+    camera_moreControlsButton_listSubheader_whiteboard: "给予白板控制权",
+    camera_moreControlsButton_listSubheader_trophy: "赠送奖杯",
+    camera_moreControlsButton_listSubheader_toggleCamMic: "切换摄像头/麦克风",
+
+    whiteboard_permissionControls_listItemText_disallow: "禁止绘画",
+    whiteboard_permissionControls_listItemText_allow: "允许绘画",
+    whiteboard_permissionControls_listItemText_clear: "清除",
+
     allow_media_permission: "如果您想要使用媒体设备，请授权允许使用你的话筒和相机",
     button_cancel: "Cancel",
     button_confirm: "Confirm",

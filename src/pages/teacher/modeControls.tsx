@@ -1,12 +1,11 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import ToggleButton from "@material-ui/lab/ToggleButton";
 import ToggleButtonGroup from "@material-ui/lab/ToggleButtonGroup";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { createStyles, makeStyles, withStyles, Theme, useTheme } from "@material-ui/core/styles";
 import { FormattedMessage } from "react-intl";
-import { ScreenShare } from "./screenShareProvider";
-import { InteractiveModeState } from "../room/room";
+import { InteractiveMode, InteractiveModeState } from "../room/room";
 import IconButton from "@material-ui/core/IconButton";
 import Divider from "@material-ui/core/Divider";
 import Tooltip from "@material-ui/core/Tooltip";
@@ -18,6 +17,7 @@ import { Videocam as VideoIcon } from "@styled-icons/material/Videocam";
 import { ScreenShare as ScreenShareIcon } from "@styled-icons/material/ScreenShare";
 import { StopScreenShare as StopScreenShareIcon } from "@styled-icons/material/StopScreenShare";
 import { Refresh as RefreshIcon } from "@styled-icons/material/Refresh";
+import { ScreenShareContext } from "./screenShareProvider";
 
 const StyledToggleButtonGroup = withStyles((theme) => ({
     grouped: {
@@ -87,7 +87,7 @@ interface Props {
 
 export default function ModeControls({ interactiveModeState, disablePresent, disableActivity, setKey, orientation }: Props): JSX.Element {
     const { selectedButton, buttonRoot, buttonGroup, divider, helpButton, screenSharingButton } = useStyles();
-    const screenShare = ScreenShare.Consume()
+    const screenShare = useContext(ScreenShareContext);
 
     const { interactiveMode, setInteractiveMode } = interactiveModeState;
     const [{ openStopTooltip, openPresentTooltip, openActivityTooltip, openScreenTooltip }, setOpenTooltip] = useState({
@@ -132,8 +132,8 @@ export default function ModeControls({ interactiveModeState, disablePresent, dis
                         <ToggleButton
                             aria-label="blank"
                             classes={{ root: buttonRoot }}
-                            className={!interactiveMode ? selectedButton : ""}
-                            value={0}
+                            className={interactiveMode === InteractiveMode.Blank ? selectedButton : ""}
+                            value={InteractiveMode.Blank}
                         >
                             <VideoIcon size="1.5rem" />
                         </ToggleButton>
@@ -149,9 +149,9 @@ export default function ModeControls({ interactiveModeState, disablePresent, dis
                         <ToggleButton
                             aria-label="present"
                             classes={{ root: buttonRoot }}
-                            className={interactiveMode === 1 ? selectedButton : ""}
+                            className={interactiveMode === InteractiveMode.Present ? selectedButton : ""}
                             disabled={disablePresent}
-                            value={1}
+                            value={InteractiveMode.Present}
                         >
                             <PresentIcon size="1.5rem" />
                         </ToggleButton>
@@ -167,9 +167,9 @@ export default function ModeControls({ interactiveModeState, disablePresent, dis
                         <ToggleButton
                             aria-label="observe mode"
                             classes={{ root: buttonRoot }}
-                            className={interactiveMode === 2 ? selectedButton : ""}
+                            className={interactiveMode === InteractiveMode.Observe ? selectedButton : ""}
                             disabled={disableActivity}
-                            value={2}
+                            value={InteractiveMode.Observe}
                         >
                             <ViewIcon size="1.5rem" />
                         </ToggleButton>
@@ -181,26 +181,26 @@ export default function ModeControls({ interactiveModeState, disablePresent, dis
                             onClose={() => toggleTooltip(false, false, false, false)}
                             onOpen={() => toggleTooltip(false, false, false, true)}
                             placement={"left"}
-                            title={interactiveMode === 3 ? "Stop Presenting" : <FormattedMessage id="live_buttonScreen" />}
+                            title={interactiveMode === InteractiveMode.ShareScreen ? "Stop Presenting" : <FormattedMessage id="live_buttonScreen" />}
                         >
                             <ToggleButton
                                 style={{ whiteSpace: 'pre-line' }}
-                                value={3}
+                                value={InteractiveMode.ShareScreen}
                                 aria-label="present screen"
                                 classes={{ root: buttonRoot }}
-                                className={(interactiveMode === 3 || screenShare.getStream()) ? screenSharingButton : ""}
+                                className={(interactiveMode === InteractiveMode.ShareScreen || screenShare.stream) ? screenSharingButton : ""}
                                 disabled={!navigator.mediaDevices || !(navigator.mediaDevices as any).getDisplayMedia}
                                 onClick={() => {
-                                    if (screenShare.getStream() && interactiveMode === 3) {
+                                    if (screenShare.stream && interactiveMode === InteractiveMode.ShareScreen) {
                                         screenShare.stop();
                                     }
-                                    if (!screenShare.getStream() && interactiveMode !== 3) {
+                                    if (!screenShare.stream && interactiveMode !== InteractiveMode.ShareScreen) {
                                         screenShare.start();
                                     }
                                 }}
                             >
                                 {
-                                    screenShare.getStream() ?
+                                    screenShare.stream ?
                                         <StopScreenShareIcon size="1.5rem" /> :
                                         <ScreenShareIcon size="1.5rem" />
                                 }

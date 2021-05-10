@@ -1,20 +1,23 @@
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-import Paper from "@material-ui/core/Paper";
-import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
-import React, { useState, useEffect, useContext, useRef, useMemo } from "react";
+import Paper from "@material-ui/core/Paper";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";
-import { UserContext } from "../../entry";
-import { RoomContext } from "../room/room";
-import { Whiteboard } from "../../whiteboard/components/Whiteboard";
-import WBToolbar from "../../whiteboard/components/Toolbar";
-import { Stream } from "../../webRTCState";
-import { ReplicaMedia } from "../synchronized-video";
-import { MaterialTypename } from "../../lessonMaterialContext";
-import { PreviewPlayer } from "../../components/preview-player";
+import { PreviewPlayer } from "../../components/previewPlayer";
 import { RecordedIframe } from "../../components/recordediframe";
+import { LocalSessionContext } from "../../entry";
+import { MaterialTypename } from "../../lessonMaterialContext";
+import { RoomContext } from "../../providers/RoomContext";
+import { WebRTCContext } from "../../providers/WebRTCContext";
 import { imageFrame } from "../../utils/layerValues";
-import { WebRTCSFUContext } from "../../webrtc/sfu";
+import { useWindowSize } from "../../utils/viewport";
+import { Stream } from "../../webRTCState";
+import WBToolbar from "../../whiteboard/components/Toolbar";
+import { Whiteboard } from "../../whiteboard/components/Whiteboard";
+import { ContentType, Session } from "../room/room";
+import { ReplicaMedia } from "../synchronized-video";
+import { ObservationMode } from "../teacher/teacher";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -22,6 +25,7 @@ const useStyles = makeStyles((theme: Theme) =>
             display: "flex",
             flexDirection: "column",
             height: "100%",
+            position: "relative", // For "absolute" position of <Whiteboard />
         },
         paperContainer: {
             borderRadius: 12,
@@ -43,102 +47,88 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-export function Student({ openDrawer }: {
-    openDrawer: boolean
-}): JSX.Element {
-    const { content, users } = RoomContext.Consume();
+export function Student(): JSX.Element {
+    const size = useWindowSize();
+    const [square, setSquare] = useState(size.width > size.height ? size.height : size.width);
+
+    useEffect(() => {
+        setSquare(size.width > size.height ? size.height : size.width);
+    }, [size])
+
+    const { content, sessions } = useContext(RoomContext);
     const classes = useStyles();
 
-    const { name, sessionId } = useContext(UserContext);
-    const webrtc = WebRTCSFUContext.Consume()
+    const { name, sessionId, isTeacher } = useContext(LocalSessionContext);
+    const webrtc = useContext(WebRTCContext)
     const [streamId, setStreamId] = useState<string>();
-
-    const rootDivRef = useRef<HTMLDivElement>(null);
-    const [rootDivWidth, setRootDivWidth] = useState<number>(0);
-    const [rootDivHeight, setRootDivHeight] = useState<number>(0);
+    const [session, setSession] = useState<Session>();
 
     const studentModeFilterGroups = useMemo(() => {
         return [sessionId];
     }, [sessionId]);
 
     useEffect(() => {
-        if (!rootDivRef || !rootDivRef.current) { return; }
-        setRootDivWidth(rootDivRef.current.clientWidth);
-        setRootDivHeight(rootDivRef.current.clientHeight);
-    }, [rootDivRef.current]);
+        if (content) {
+            const studentSession = sessions.get(content.contentId);
+            if (studentSession) {
+                setSession(studentSession);
+            }
+        }
+    }, [content]);
 
-    if (!content || content.type == "Blank") {
-        return (
-            <div ref={rootDivRef} className={classes.root}>
-                <Grid item xs={12}>
-                    <Paper elevation={4} className={classes.paperContainer}>
-                        <Grid
-                            container
-                            direction="row"
-                            justify="space-between"
-                            alignItems="center"
-                            style={{ height: "100%" }}
-                        >
-                            <Grid item xs={12}>
-                                <Typography><FormattedMessage id={"hello"} values={{ name }} /></Typography>
-                                <Typography><FormattedMessage id={"waiting_for_class"} /></Typography>
+    return (
+        <>
+            {!content || content.type === ContentType.Blank &&
+                <div className={classes.root} style={{ width: square, height: square }}>
+                    <Grid item xs={12}>
+                        <Paper elevation={4} className={classes.paperContainer}>
+                            <Grid
+                                container
+                                direction="row"
+                                justify="space-between"
+                                alignItems="center"
+                                style={{ height: "100%" }}
+                            >
+                                <Grid item xs={12}>
+                                    <Typography><FormattedMessage id={"hello"} values={{ name }} /></Typography>
+                                    <Typography><FormattedMessage id={"waiting_for_class"} /></Typography>
+                                </Grid>
                             </Grid>
-                        </Grid>
-                    </Paper>
-                </Grid>
-            </div>
-        );
-    }
-
-    switch (content.type) {
-        case "Stream":
-            return (
-                <div ref={rootDivRef} id="player-container" className={classes.root}>
-                    <Whiteboard uniqueId="student" height={rootDivHeight}>
-                        <PreviewPlayer streamId={content.contentId} width={rootDivWidth} height={rootDivHeight} />
-                        {/* <WBToolbar /> */}
-                    </Whiteboard>
+                        </Paper>
+                    </Grid>
+                </div>
+            }
+            {content && content.type === ContentType.Stream &&
+                <div id="player-container" className={classes.root} style={{ width: '100%', height:  '100%' }}>
+                    <Whiteboard uniqueId="student" />
+                    <PreviewPlayer streamId={content.contentId} width={square} height={square} />
+                    {/* <WBToolbar /> */}
                     {/* <Grid className={classes.textMargin} container justify="center" item xs={12}>
                         <Typography variant="caption" color="primary" align="center" style={{ margin: "0 auto" }}>
                             <FormattedMessage id="student_stream_mode" />
                         </Typography>
                     </Grid> */}
                 </div>
-            );
-        case "Activity":
-            return (
-                <div ref={rootDivRef} className={classes.root}>
-                    <Whiteboard group={sessionId} uniqueId="student" height={rootDivHeight} filterGroups={studentModeFilterGroups}>
-                        {(rootDivRef && rootDivHeight) ?
-                            <RecordedIframe
-                                contentId={content.contentId}
-                                setStreamId={setStreamId}
-                                parentWidth={rootDivWidth}
-                                parentHeight={rootDivHeight}
-                                openDrawer={openDrawer}
-                            /> : undefined}
-                        {/* <WBToolbar /> */}
-                    </Whiteboard>
-                    {/* <Grid className={classes.textMargin} container justify="center" item xs={12}>
-                        <Typography variant="caption" color="primary" align="center" style={{ margin: "0 auto" }}>
-                            <FormattedMessage id="student_activity_mode" />
-                        </Typography>
-                    </Grid> */}
+            }
+            {content && content.type === ContentType.Activity &&
+                <div className={classes.root} style={isTeacher ? undefined : { width: square, height: square }}>
+                    {isTeacher ? <ObservationMode /> : <>
+                        <Whiteboard group={sessionId} uniqueId="student" filterGroups={studentModeFilterGroups} />
+                        <RecordedIframe contentId={content.contentId} setStreamId={setStreamId} square={square} />
+                    </>}
                 </div>
-            );
-        case "Audio":
-        case "Video":
-            return (
-                <div ref={rootDivRef} className={classes.root}>
-                    <Whiteboard uniqueId="student" height={rootDivHeight}>
-                        <ReplicaMedia type={content.type === "Video" ? MaterialTypename.Video : MaterialTypename.Audio} style={{ width: "100%" }} sessionId={content.contentId} />
-                    </Whiteboard>
+            }
+            {/* {content && content.type === ContentType.Audio ? null : null } */}
+            {content && content.type === ContentType.Video &&
+                <div className={classes.root} style={{ width: square, height: square }}>
+                    <Whiteboard uniqueId="student" />
+                    <ReplicaMedia type={content.type === "Video" ? MaterialTypename.Video : MaterialTypename.Audio} style={{ width: "100%" }} sessionId={content.contentId} />
                     <WBToolbar />
                 </div>
-            );
-        case "Image":
-            return <div ref={rootDivRef} className={classes.root}>
-                <Whiteboard uniqueId="student" height={rootDivHeight}>
+            }
+            {content && content.type === ContentType.Image &&
+                <div className={classes.root} style={{ width: square, height: square }}>
+                    <Whiteboard uniqueId="student" />
                     <Grid container>
                         <Grid container item style={{
                             height: "100%",
@@ -160,30 +150,26 @@ export function Student({ openDrawer }: {
                             src={content.contentId}
                         />
                     </Grid>
-                </Whiteboard>
-                <WBToolbar />
-            </div>;
-        case "Camera":
-            {
-                const session = users.get(content.contentId)
-                return <div ref={rootDivRef} className={classes.root}>
-                    <Typography variant="caption" align="center">{session ? session.name : undefined}</Typography>
-                    <Whiteboard uniqueId="student" height={rootDivHeight}>
-                        <Stream stream={webrtc.getCameraStream(content.contentId)} />
-                    </Whiteboard>
                     <WBToolbar />
-                </div>;
+                </div>
             }
-        case "Screen":
-            {
-                const session = users.get(content.contentId)
-                return <div ref={rootDivRef} className={classes.root}>
+            {content && content.type === ContentType.Camera &&
+                <div className={classes.root} style={{ width: square, height: square }}>
                     <Typography variant="caption" align="center">{session ? session.name : undefined}</Typography>
-                    <Whiteboard uniqueId="student" height={rootDivHeight}>
-                        <Stream stream={webrtc.getAuxStream(content.contentId)} />
-                    </Whiteboard>
+                    <Whiteboard uniqueId="student" />
+                    <Stream stream={webrtc.getCameraStream(content.contentId)} />
                     <WBToolbar />
-                </div>;
+                </div>
             }
-    }
+            {content && content.type === ContentType.Screen &&
+                <div className={classes.root} style={{ width: square, height: square }}>
+                    <Typography variant="caption" align="center">{session ? session.name : undefined}</Typography>
+                    <Whiteboard uniqueId="student" />
+                    <Stream stream={webrtc.getAuxStream(content.contentId)} />
+                    <WBToolbar />
+                </div>
+            }
+
+        </>
+    );
 }

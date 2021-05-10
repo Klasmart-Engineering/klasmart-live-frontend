@@ -24,6 +24,24 @@ const messages: Record<string, string> = {
     err_500_subtitle: "Oops! Something went wrong",
 
     activity_link: "link Aktivitas",
+
+    join_cameraPreviewFallback_allowMediaPermissions: "Izinkan penggunaan perangkat media",
+    join_permissionAlertDialog_title: "Izinkan penggunaan perangkat media untuk KidsLoop Live",
+    join_permissionAlertDialog_contentText_live: "KidslLoop Live butuh akses ke kamera dan mikrofon agar partisipan kelas dapat melihat dan mendengar Anda.",
+    join_permissionAlertDialog_contentText_classesStudy: "KidsLoop Live butuh akses ke mikrofon untuk konten interaktif di kelas.",
+    join_permissionAlertDialog_action_close: "Tutup",
+
+    camera_participantInfo_chalkboardIcon_tooltip: "{name} adalah guru",
+    camera_participantInfo_crownIcon_tooltip: "Guru {name} sedang presentasi",
+    camera_fullScreenCameraButton_tooltip: "Kamera full screen",
+    camera_moreControlsButton_listSubheader_whiteboard: "Beri Kendali Papan Tulis",
+    camera_moreControlsButton_listSubheader_trophy: "Beri Piala",
+    camera_moreControlsButton_listSubheader_toggleCamMic: "Alihkan Kamera/Mikrofon",
+
+    whiteboard_permissionControls_listItemText_disallow: "Larang menggambar",
+    whiteboard_permissionControls_listItemText_allow: "Izinkan menggambar",
+    whiteboard_permissionControls_listItemText_clear: "Hapus",
+
     allow_media_permission: "silahkan izinkan mikrofon dan kamera jika Anda ingin menggunakan perangkat media.",
     button_cancel: "Cancel",
     button_confirm: "Confirm",

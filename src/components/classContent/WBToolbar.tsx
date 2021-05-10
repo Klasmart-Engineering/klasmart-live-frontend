@@ -12,7 +12,7 @@ import { ExpandMore as ArrowDownIcon } from "@styled-icons/material/ExpandMore";
 import { PencilAlt as WBIcon } from "@styled-icons/fa-solid/PencilAlt";
 
 import StyledIcon from "../styled/icon";
-import { UserContext } from "../../entry";
+import { LocalSessionContext } from "../../entry";
 import { useSynchronizedState } from "../../whiteboard/context-providers/SynchronizedStateProvider";
 import WBToolbar from "../../whiteboard/components/Toolbar-new"; // TODO: Change Toolbar-new to Toolbar
 import { WB_EXPAND_BUTTON, WB_TOOLBAR } from "../../utils/layerValues";
@@ -25,9 +25,9 @@ export function WBToolbarContainer() {
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down('sm'));
 
-    const { classtype, teacher, sessionId } = useContext(UserContext);
+    const { classtype, isTeacher, sessionId } = useContext(LocalSessionContext);
     const { state: { display, permissions }, actions: { setDisplay, getPermissions, setPermissions } } = useSynchronizedState();
-    const enableWB = classtype === ClassType.LIVE ? (!teacher ? display && permissions.allowCreateShapes : display) : true;
+    const enableWB = classtype === ClassType.LIVE ? (!isTeacher ? display && permissions.allowCreateShapes : display) : true;
     const [open, setOpen] = useState(false);
 
     const handleOpenWBToolbar = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -93,7 +93,7 @@ export function WBToolbarContainer() {
                             style={{ backgroundColor: theme.palette.background.paper }}
                             onClick={handleCloseWBToolbar}
                         >
-                            <StyledIcon icon={teacher ? <ArrowDownIcon /> : <CloseIcon />} size="large" />
+                            <StyledIcon icon={isTeacher ? <ArrowDownIcon /> : <CloseIcon />} size="large" />
                         </IconButton>
                     </Grid>
                     <WBToolbar />

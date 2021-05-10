@@ -1,8 +1,8 @@
 export enum MaterialTypename {
-    "Iframe" = "Iframe",
-    "Video" = "Video",
-    "Audio" = "Audio",
-    "Image" = "Image",
+    Iframe = "Iframe",
+    Video = "Video",
+    Audio = "Audio",
+    Image = "Image",
 }
 
 export type LessonMaterial  = {

@@ -2,15 +2,14 @@ import React, { useEffect, useContext } from "react";
 import { useDispatch } from "react-redux";
 import Grid from "@material-ui/core/Grid";
 import { LessonMaterial } from "../../lessonMaterialContext"
-import { ContentIndexState, InteractiveModeState, StreamIdState } from "./room";
+import { InteractiveModeState, StreamIdState } from "./room";
 import { ClassContentContainer } from "../../components/classContent/classContent";
 import { DrawerContainer } from "../../components/drawer/drawer";
-import { UserContext } from "../../entry";
+import { LocalSessionContext } from "../../entry";
 import { ClassType } from "../../store/actions";
 import { setDrawerOpen } from "../../store/reducers/control";
 
 interface LayoutProps {
-    contentIndexState: ContentIndexState;
     interactiveModeState: InteractiveModeState;
     streamIdState: StreamIdState;
     material: LessonMaterial | undefined;
@@ -22,7 +21,6 @@ interface LayoutProps {
 }
 
 export function Layout({
-    contentIndexState,
     interactiveModeState,
     streamIdState,
     material,
@@ -32,7 +30,7 @@ export function Layout({
     setTabIndex,
     recommandUrl,
 }: LayoutProps): JSX.Element {
-    const { classtype } = useContext(UserContext);
+    const { classtype } = useContext(LocalSessionContext);
     const dispatch = useDispatch();
     const { streamId } = streamIdState;
 
@@ -49,7 +47,6 @@ export function Layout({
             style={{ flexGrow: 1, overflow: "hidden", height: "100%" }}
         >
             <ClassContentContainer
-                contentIndexState={contentIndexState}
                 materialKey={materialKey}
                 recommandUrl={recommandUrl}
             />

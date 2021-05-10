@@ -20,7 +20,7 @@ import Button from '@material-ui/core/Button';
 import { InfoCircle as InfoCircleIcon } from "@styled-icons/boxicons-solid/InfoCircle";
 import StyledIcon from "../../components/styled/icon";
 
-import { UserContext } from "../../entry";
+import { LocalSessionContext } from "../../entry";
 import StyledButton from "../../components/styled/button";
 import StyledTextField from "../../components/styled/textfield";
 import Camera from "../../components/media/camera";
@@ -28,6 +28,8 @@ import Loading from "../../components/loading";
 import MediaDeviceSelect, { DeviceInfo } from "../../components/mediaDeviceSelect";
 import logger from "../../services/logger/Logger";
 import { ClassType, OrientationType } from '../../store/actions';
+import MediaDeviceSelect from "../../components/mediaDeviceSelect";
+import { ClassType } from '../../store/actions';
 
 import KidsLoopLiveTeachers from "../../assets/img/kidsloop_live_teachers.svg";
 import KidsLoopLiveStudents from "../../assets/img/kidsloop_live_students.svg";
@@ -196,9 +198,6 @@ export default function Join(): JSX.Element {
                     setVideoDeviceId("");
                 }
             }
-
-            // Please take a look Logger.tsx
-            logger({ logType: 'join.tsx detect devices devices list test6', devices });
         } catch (e) {
             console.error(`loadMediaDevices Error - ${e}`);
             setLoadError(true);
@@ -219,15 +218,18 @@ export default function Join(): JSX.Element {
     }
 
     function getCamStream(audioDeviceId: string, videoDeviceId: string) {
+        const videoConstraints = {
+            width: { ideal: 640 },
+            height: { ideal: 360 },
+            frameRate: { max: 24 }
+        };
+
         navigator.mediaDevices.getUserMedia({
             audio: { deviceId: audioDeviceId },
-            video: {
-                deviceId: videoDeviceId,
-                width: { min: 1024, ideal: 1280, max: 1920 },
-                height: { min: 576, ideal: 720, max: 1080 },
-                facingMode: "user" // the front camera (if one is available)
-            }
+            video: { deviceId: videoDeviceId }
         }).then((s) => {
+            const track = s.getVideoTracks()[0];
+            track.applyConstraints(videoConstraints);
             setStream(s);
             setLoadError(false);
         }).catch((e) => {
@@ -336,7 +338,7 @@ function CameraPreview({ permissionError, videoStream }: {
         permissionError ?
             <CameraPreviewFallback permissionError /> : (
                 videoStream && videoStream.getVideoTracks().length > 0 && videoStream.getVideoTracks().every((t) => t.readyState === "live") && videoStream.active ?
-                    <Camera mediaStream={videoStream} muted={true} /> :
+                    <Camera mediaStream={videoStream} isLocalCamera={true} /> :
                     <Loading messageId="allow_media_permission" />
             )
     )
@@ -375,7 +377,7 @@ function CameraPreviewFallback({ permissionError }: { permissionError: boolean }
                 }}
             >
                 {permissionError ?
-                    <FormattedMessage id="join_CameraPreviewFallback_allowMediaPermissions" /> :
+                    <FormattedMessage id="join_cameraPreviewFallback_allowMediaPermissions" /> :
                     <FormattedMessage id="connect_camera" />
                 }
             </Typography>
@@ -385,11 +387,11 @@ function CameraPreviewFallback({ permissionError }: { permissionError: boolean }
 
 function KidsLoopLogo(): JSX.Element {
     const { logo } = useStyles();
-    const { classtype, teacher } = useContext(UserContext);
+    const { classtype, isTeacher } = useContext(LocalSessionContext);
     const IMG_HEIGHT = "64px";
     // TODO: Logo asset for ClassType.CLASSES
     return (classtype === ClassType.LIVE
-        ? <img alt="KidsLoop Live" src={teacher ? KidsLoopLiveTeachers : KidsLoopLiveStudents} height={IMG_HEIGHT} className={logo} />
+        ? <img alt="KidsLoop Live" src={isTeacher ? KidsLoopLiveTeachers : KidsLoopLiveStudents} height={IMG_HEIGHT} className={logo} />
         : <img alt="KidsLoop Live" src={classtype === ClassType.CLASSES ? KidsLoopLiveTeachers : KidsLoopStudyStudents} height={IMG_HEIGHT} className={logo} />
     )
 }
@@ -417,7 +419,7 @@ function JoinRoomForm({
     audioDeviceIdHandler,
     videoDeviceIdHandler
 }: JoinRoomFormProps): JSX.Element {
-    const { classtype, setCamera, name, setName, sessionId } = useContext(UserContext);
+    const { classtype, setCamera, name, setName, sessionId } = useContext(LocalSessionContext);
 
     const { audioDeviceId, setAudioDeviceId } = audioDeviceIdHandler;
     const { videoDeviceId, setVideoDeviceId } = videoDeviceIdHandler;
@@ -442,7 +444,7 @@ function JoinRoomForm({
             setName(user);
             LogRocket.identify(user, { sessionId })
         }
-        setCamera(stream || null);
+        setCamera(stream);
     }
 
     return (
@@ -508,7 +510,7 @@ function PermissionAlertDialog({ dialogOpenHandler }: {
         handleDialogClose: () => void
     }
 }) {
-    const { classtype } = useContext(UserContext);
+    const { classtype } = useContext(LocalSessionContext);
     const { dialogOpen, handleDialogClose } = dialogOpenHandler;
 
     return (
@@ -519,19 +521,19 @@ function PermissionAlertDialog({ dialogOpenHandler }: {
             aria-describedby="media-permission-alert-description"
         >
             <DialogTitle id="media-permission-alert-title">
-                <FormattedMessage id="join_PermissionAlertDialog_DialogTitle" />
+                <FormattedMessage id="join_permissionAlertDialog_title" />
             </DialogTitle>
             <DialogContent>
                 <DialogContentText id="media-permission-alert-description">
                     {classtype === ClassType.LIVE ?
-                        <FormattedMessage id="join_PermissionAlertDialog_DialogContentText_live" /> :
-                        <FormattedMessage id="join_PermissionAlertDialog_DialogContentText_classes_study" />
+                        <FormattedMessage id="join_permissionAlertDialog_contentText_live" /> :
+                        <FormattedMessage id="join_permissionAlertDialog_contentText_classesStudy" />
                     }
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleDialogClose} color="primary">
-                    <FormattedMessage id="join_PermissionAlertDialog_Button_close" />
+                    <FormattedMessage id="join_permissionAlertDialog_action_close" />
                 </Button>
             </DialogActions>
         </Dialog>

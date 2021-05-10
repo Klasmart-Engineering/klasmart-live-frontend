@@ -23,16 +23,44 @@ import { ClassType, OrientationType } from "../../store/actions";
 import { useUserContext } from "../../context-provider/user-context";
 import { lockOrientation } from "../../utils/screenUtils";
 import { LiveSessionLinkProvider } from "../../context-provider/live-session-link-context";
+import { useMediaQuery, useTheme } from "@material-ui/core";
+import React, { useContext, useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { LocalSessionContext } from "../../entry";
+import { setContentIndex, setDrawerTabIndex } from "../../store/reducers/control";
+import { Classes } from "./classes";
+import { Live } from "./live";
+import { Study } from "./study";
 
+export enum ContentType {
+    Blank = "Blank",
+    Stream = "Stream",
+    Activity = "Activity",
+    Video = "Video",
+    Audio = "Audio",
+    Image = "Image",
+    Camera = "Camera",
+    Screen = "Screen",
+}
+
+// TODO create a new file for enums
+export enum InteractiveMode {
+    Blank,
+    Present,
+    Observe,
+    ShareScreen,
+}
 export interface Session {
     id: string
     name?: string
     streamId?: string
     isTeacher?: boolean
+    isHost?: boolean
+    joinedAt: number
 }
 
 export interface Content {
-    type: "Blank" | "Stream" | "Activity" | "Video" | "Audio" | "Image" | "Camera" | "Screen",
+    type: ContentType,
     contentId: string,
 }
 
@@ -41,7 +69,6 @@ export interface Message {
     message: string,
     session: Session,
 }
-
 export interface InteractiveModeState {
     interactiveMode: number;
     setInteractiveMode: React.Dispatch<React.SetStateAction<number>>;
@@ -52,13 +79,10 @@ export interface StreamIdState {
     setStreamId: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
-export function Room(): JSX.Element {
+export function Room({ teacher }: Props): JSX.Element {
     const dispatch = useDispatch();
     const classType = useSelector((state: State) => state.session.classType);
     const deviceOrientation = useSelector((state: State) => state.location.deviceOrientation);
-
-export function Room({ teacher }: Props): JSX.Element {
-    const { classtype } = useContext(UserContext);
 
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
@@ -69,13 +93,14 @@ export function Room({ teacher }: Props): JSX.Element {
 
     useEffect(() => {
         lockOrientation(OrientationType.LANDSCAPE, dispatch);
-    }, [])
+        dispatch(setDrawerTabIndex(0));
+        dispatch(setContentIndex(0));
+    }, []);
 
     switch (classtype) {
         case "study":
             return (
                 <Study
-                    contentIndexState={{ contentIndex, setContentIndex }}
                     interactiveModeState={{ interactiveMode: 1, setInteractiveMode }}
                     streamIdState={{ streamId, setStreamId }}
                 />
@@ -83,7 +108,6 @@ export function Room({ teacher }: Props): JSX.Element {
         case "class":
             return (
                 <Classes
-                    contentIndexState={{ contentIndex, setContentIndex }}
                     interactiveModeState={{ interactiveMode: 1, setInteractiveMode }}
                     streamIdState={{ streamId, setStreamId }}
                 />
@@ -91,14 +115,8 @@ export function Room({ teacher }: Props): JSX.Element {
         default:
             return (
                 <Live
-                    teacher={teacher}
-                    openDrawer={openDrawer}
-                    handleOpenDrawer={handleOpenDrawer}
-                    contentIndexState={{ contentIndex, setContentIndex }}
                     interactiveModeState={{ interactiveMode, setInteractiveMode }}
                     streamIdState={{ streamId, setStreamId }}
-                    numColState={numColState}
-                    setNumColState={setNumColState}
                 />
             );
     }

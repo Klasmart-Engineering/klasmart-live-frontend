@@ -1,8 +1,8 @@
+import { gql, useSubscription } from "@apollo/client";
+import Typography from "@material-ui/core/Typography";
 import React, { useEffect, useRef, useState } from "react";
 import { FormattedMessage } from "react-intl";
-import { useSubscription } from "@apollo/react-hooks";
-import { gql } from "apollo-boost";
-import Typography from "@material-ui/core/Typography";
+import { LIVE_LINK } from "../entry";
 import Loading from "./loading";
 
 const SUB_EVENTS = gql`
@@ -16,13 +16,14 @@ const SUB_EVENTS = gql`
 
 export interface Props {
     streamId: string;
-    width?: number | string;
-    height?: number | string;
+    width: number;
+    height: number;
     frameProps?: React.DetailedHTMLProps<React.IframeHTMLAttributes<HTMLIFrameElement>, HTMLIFrameElement>
 }
 
 export function PreviewPlayer({ streamId, frameProps, width, height }: Props): JSX.Element {
     const ref = useRef<HTMLIFrameElement>(null);
+    const [scale, setScale] = useState(1);
     const [{ frameWidth, frameHeight }, setWidthHeight] = useState({ frameWidth: 0, frameHeight: 0 });
 
     // Buffer events until we have a page ready to render them
@@ -46,7 +47,7 @@ export function PreviewPlayer({ streamId, frameProps, width, height }: Props): J
         const listener = (e: MessageEvent) => { if (e.data === "ready") { sendEvent(); } };
         iframeWindow.addEventListener("message", listener);
         return () => {
-            if(iframeWindow&&iframeWindow.removeEventListener) {
+            if (iframeWindow && iframeWindow.removeEventListener) {
                 iframeWindow.removeEventListener("message", listener);
             }
         }
@@ -55,9 +56,9 @@ export function PreviewPlayer({ streamId, frameProps, width, height }: Props): J
     const { loading, error } = useSubscription(SUB_EVENTS, {
         onSubscriptionData: e => sendEvent(e.subscriptionData.data.stream.event),
         variables: { streamId },
+        context: {target: LIVE_LINK},
     });
 
-    const [scale, setScale] = useState(1);
     useEffect(() => {
         if (ref.current == null || ref.current.contentWindow == null) { return; }
         window.addEventListener("message", ({ data }) => {
@@ -65,17 +66,11 @@ export function PreviewPlayer({ streamId, frameProps, width, height }: Props): J
             const fWidth = Number(data.width.replace("px", ""));
             const fHeight = Number(data.height.replace("px", ""));
             setWidthHeight({ frameWidth: fWidth, frameHeight: fHeight });
-            if (width && height) {
-                setScale(Math.min(Number(width) / fWidth, Number(height) / fHeight));
-            }
+            const shrinkRatioX = (width / fWidth) > 1 ? 1 : width / fWidth;
+            const shrinkRatioY = (height / fHeight) > 1 ? 1 : height / fHeight;
+            setScale(Math.min(shrinkRatioX, shrinkRatioY));
         });
     }, [ref.current, ref.current && ref.current.contentWindow]);
-
-    useEffect(() => {
-        if (typeof width === "number" && typeof height === "number") {
-            setScale(Math.min(width / frameWidth, height / frameHeight));
-        }
-    }, [width, height]);
 
     if (loading) { return <Loading />; }
     if (error) { return <Typography><FormattedMessage id="failed_to_connect" />: {JSON.stringify(error)}</Typography>; }

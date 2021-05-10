@@ -1,37 +1,39 @@
-import React, { useRef, useContext, useEffect, useState } from "react";
-import { FormattedMessage } from "react-intl";
-import { Theme, useTheme, createStyles, makeStyles, withStyles } from "@material-ui/core/styles";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
-import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
-import Paper from "@material-ui/core/Paper";
-import Tooltip from "@material-ui/core/Tooltip";
+import { useMutation, useQuery } from "@apollo/client";
+import Grid, { GridProps } from "@material-ui/core/Grid";
 import IconButton from '@material-ui/core/IconButton';
+import List from "@material-ui/core/List";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListSubheader from '@material-ui/core/ListSubheader';
 import Menu, { MenuProps } from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
-import List from "@material-ui/core/List";
-import ListSubheader from '@material-ui/core/ListSubheader';
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-
-import { VideocamOff as CameraOffIcon } from "@styled-icons/material-twotone/VideocamOff";
-import { Chalkboard as ChalkboardIcon } from "@styled-icons/boxicons-solid/Chalkboard";
-import { Crown as CrownIcon } from "@styled-icons/boxicons-solid/Crown";
+import Paper from "@material-ui/core/Paper";
+import { createStyles, makeStyles, Theme, useTheme, withStyles } from "@material-ui/core/styles";
+import Tooltip from "@material-ui/core/Tooltip";
+import Typography from "@material-ui/core/Typography";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { BoxArrowUpLeft as BoxArrowUpLeftIcon } from "@styled-icons/bootstrap/BoxArrowUpLeft";
 import { DotsVerticalRounded as DotsVerticalRoundedIcon } from "@styled-icons/boxicons-regular/DotsVerticalRounded";
-import { Video as VideoOnIcon } from "@styled-icons/boxicons-solid/Video";
-import { VideoOff as VideoOffIcon } from "@styled-icons/boxicons-solid/VideoOff";
+import { Chalkboard as ChalkboardIcon } from "@styled-icons/boxicons-solid/Chalkboard";
+import { Crown as CrownIcon } from "@styled-icons/boxicons-solid/Crown";
 import { Microphone as MicrophoneOnIcon } from "@styled-icons/boxicons-solid/Microphone";
 import { MicrophoneOff as MicrophoneOffIcon } from "@styled-icons/boxicons-solid/MicrophoneOff";
-import { Circle as CircleIcon } from "@styled-icons/boxicons-solid/Circle"
-
-import { MuteNotification, WebRTCSFUContext } from "../../webrtc/sfu";
+import { Video as VideoOnIcon } from "@styled-icons/boxicons-solid/Video";
+import { VideoOff as VideoOffIcon } from "@styled-icons/boxicons-solid/VideoOff";
+import { VideocamOff as CameraOffIcon } from "@styled-icons/material-twotone/VideocamOff";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { FormattedMessage } from "react-intl";
+import { useSelector } from "react-redux";
+import { LocalSessionContext, SFU_LINK } from "../../entry";
 import { Session } from "../../pages/room/room";
-import StyledIcon from "../styled/icon";
-import { UserContext } from "../../entry";
-import { isElementInViewport } from "../../utils/viewport";
+import { GLOBAL_MUTE_QUERY, MUTE, MuteNotification, WebRTCContext, WebRTCContextInterface } from "../../providers/WebRTCContext";
+import { State } from "../../store/store";
 import PermissionControls from "../../whiteboard/components/WBPermissionControls";
+import { SessionsContext } from "../layout";
+import StyledIcon from "../styled/icon";
 import TrophyControls from "../trophies/trophyControls";
 import useVideoLayoutUpdate from "../../utils/video-layout-update";
+
+
 
 const PARTICIPANT_INFO_ZINDEX = 1;
 const ICON_ZINDEX = 2;
@@ -59,23 +61,53 @@ const useStyles = makeStyles((theme: Theme) =>
     })
 );
 
-interface CameraProps {
-    session?: Session;
-    mediaStream?: MediaStream;
-    muted?: boolean;
-    square?: boolean;
-    noBorderRadius?: boolean;
+export enum CameraOrder {
+    Default = 0,
+    HostTeacher = 1,
+    TeacherSelf = 2,
+    Teacher = 3,
+    // StudentSpeaking = 4, // TODO: https://calmisland.atlassian.net/browse/KL-3907
+    StudentSelf = 9,
+    Student = 10,
 }
 
-export default function Camera({ session, mediaStream, muted, square, noBorderRadius }: CameraProps): JSX.Element {
-    const { sessionId: userSelfSessionId } = useContext(UserContext);
-    const isSelf = session
-        ? session.id === userSelfSessionId
-        : true; // e.g. <Camera /> without session in join.tsx
+export function getCameraOrder(userSession: Session, isLocalUser: boolean): CameraOrder {
+    let order: CameraOrder;
+    if (userSession.isHost)
+        order = CameraOrder.HostTeacher;
+    else if (userSession.isTeacher && isLocalUser)
+        order = CameraOrder.TeacherSelf;
+    else if (userSession.isTeacher)
+        order = CameraOrder.Teacher;
+    else if (isLocalUser)
+        order = CameraOrder.StudentSelf;
+    else
+        order = CameraOrder.Student
+    return order;
+}
 
-    const theme = useTheme();
+interface CameraProps extends GridProps {
+    isLocalCamera: boolean;
+    session?: Session;
+    mediaStream?: MediaStream;
+    square?: boolean;
+    noBorderRadius?: boolean;
+    hidden?: boolean; // Maybe this prop will be deleted after classroom layout renewal.
+}
+
+export default function Camera({
+    isLocalCamera,
+    session,
+    mediaStream,
+    square,
+    noBorderRadius,
+    ...other
+}: CameraProps): JSX.Element {
+    const webRTCContext = useContext(WebRTCContext);
     const audioRef = useRef<HTMLAudioElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
+    const cameraId = session ? `camera:${session.id}` : "";
+    const BLACK_IMAGE = "data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=";
 
     useEffect(() => {
         if (audioRef.current) {
@@ -87,75 +119,77 @@ export default function Camera({ session, mediaStream, muted, square, noBorderRa
     }, [videoRef.current, mediaStream]);
 
     useEffect(() => {
-        if (!videoRef.current || !mediaStream) { return; }
-        videoRef.current.pause();
-        videoRef.current.srcObject = mediaStream;
-    }, [videoRef.current, mediaStream]);
-
-    useVideoLayoutUpdate(videoRef.current);
+        if (webRTCContext.isLocalVideoEnabled(session?.id) || !session) return;
+        const videoEl = document.getElementById(cameraId) as HTMLVideoElement;
+        if (videoEl) {
+            videoEl.load();
+        }
+    }, [webRTCContext.isLocalVideoEnabled(session?.id)]);
 
     const cameraRef = useRef<HTMLDivElement>(null);
     return (
-        <Paper
-            ref={cameraRef}
-            component="div"
-            elevation={2}
-            style={{
-                position: "relative",
-                width: "100%",
-                backgroundColor: mediaStream ? "transparent" : "#193d6f",
-                borderRadius: noBorderRadius ? 0 : 12,
-                height: 0,
-                margin: theme.spacing(0.5),
-                paddingBottom: square ? "75%" : "56.25%",
-            }}
-        >
-            {session ? <ParticipantInfo session={session} isSelf={isSelf} /> : null}
-            {mediaStream ?
-                <>
-                    {session ? <>
-                        <MediaIndicators sessionId={session.id} />
-                        <MoreControlsButton sessionId={session.id} isSelf={isSelf} cameraRef={cameraRef} />
-                    </> : null}
-                    <video
-                        id={session ? `camera:${session.id}` : undefined}
-                        autoPlay={true}
-                        muted={true}
-                        playsInline
+        <Grid {...other}>
+            <Paper
+                ref={cameraRef}
+                component="div"
+                elevation={2}
+                style={{
+                    position: "relative",
+                    width: "100%",
+                    backgroundColor: "#193d6f",
+                    borderRadius: noBorderRadius ? 0 : 12,
+                    height: 0,
+                    paddingBottom: square ? "75%" : "56.25%",
+                }}
+            >
+                {session && <ParticipantInfo session={session} isSelf={isLocalCamera} />}
+                {mediaStream ?
+                    <>
+                        {session && <>
+                            <MediaIndicators sessionId={session.id} />
+                            <MoreControlsButton session={session} isSelf={isLocalCamera} cameraRef={cameraRef} />
+                        </>}
+                        <video
+                            id={cameraId}
+                            autoPlay={true}
+                            muted={true}
+                            poster={BLACK_IMAGE}
+                            playsInline
+                            style={{
+                                backgroundColor: "#000",
+                                borderRadius: 12,
+                                objectFit: "cover",
+                                position: "absolute",
+                                top: 0,
+                                left: 0,
+                                width: "100%",
+                                height: "100%",
+                            }}
+                            ref={videoRef}
+                        />
+                        <audio
+                            autoPlay={true}
+                            muted={isLocalCamera}
+                            ref={audioRef}
+                        />
+                    </>
+                    :
+                    <Typography
+                        align="center"
                         style={{
-                            zIndex: -1,
-                            backgroundColor: "#000",
-                            borderRadius: 12,
-                            objectFit: "cover",
+                            color: "#FFF",
+                            top: "50%",
+                            left: "50%",
+                            marginRight: "-50%",
                             position: "absolute",
-                            top: 0,
-                            left: 0,
-                            width: "100%",
-                            height: "100%",
+                            transform: "translate(-50%, -50%)",
                         }}
-                        ref={videoRef}
-                    />
-                    <audio
-                        autoPlay={true}
-                        muted={muted}
-                        ref={audioRef}
-                    />
-                </> :
-                <Typography
-                    align="center"
-                    style={{
-                        color: "#FFF",
-                        top: "50%",
-                        left: "50%",
-                        marginRight: "-50%",
-                        position: "absolute",
-                        transform: "translate(-50%, -50%)",
-                    }}
-                >
-                    <CameraOffIcon size="1.5rem" />
-                </Typography>
-            }
-        </Paper>
+                    >
+                        <CameraOffIcon size="1.5rem" />
+                    </Typography>
+                }
+            </Paper>
+        </Grid>
     );
 }
 
@@ -209,37 +243,33 @@ function ParticipantInfo({ session, isSelf }: { session: Session, isSelf: boolea
                         icon={<ChalkboardIcon />}
                         size="small"
                         color="#FFF"
+                        // TODO: https://calmisland.atlassian.net/browse/KL-4029
                         tooltip={{
                             children: <ChalkboardIcon />,
                             placement: "top",
-                            title: `${name} is teacher`,
+                            title: <FormattedMessage id="camera_participantInfo_chalkboardIcon_tooltip" values={{ name }} />,
                         }}
                     />
                 </Grid> : null
             }
 
             {/* CrownIcon for host teacher */}
-            {/* 
-                TODO: Host - teacher who can control the classroom(like toggle classroom mode, grant mic/cam permission, whiteboard permission, etc.)
-                As of now, there is no way to know who is the host teacher. Feb 18, 2021
-                https://calmisland.atlassian.net/browse/KL-3508
-            */}
-            {/* 
-                {session.isTeacher && session.isHost ?
-                    <Grid item className={iconGrid}>
-                        <StyledIcon
-                            icon={<CrownIcon />}
-                            size="small"
-                            color="#C9940D"
-                            tooltip={{
-                                children: <CrownIcon />,
-                                placement: "top",
-                                title: `${name} is host teacher`,
-                            }}
-                        />
-                    </Grid> : null
-                }
-            */}
+            {/* host: teacher who can control the classroom(like toggle classroom mode, grant mic/cam permission, whiteboard permission, etc.) */}
+            {session.isTeacher && session.isHost ?
+                <Grid item className={iconGrid}>
+                    <StyledIcon
+                        icon={<CrownIcon />}
+                        size="small"
+                        color="#C9940D"
+                        // TODO: https://calmisland.atlassian.net/browse/KL-4029
+                        tooltip={{
+                            children: <CrownIcon />,
+                            placement: "top",
+                            title: <FormattedMessage id="camera_participantInfo_crownIcon_tooltip" values={{ name }} />
+                        }}
+                    />
+                </Grid> : null
+            }
         </Grid>
     )
 }
@@ -268,7 +298,6 @@ function MediaIndicators({ sessionId }: { sessionId: string }) {
 }
 
 function FullScreenCameraButton({ sessionId }: { sessionId: string }): JSX.Element {
-    const theme = useTheme();
     const toggleBtnId = `toggle-fullscreen-camera-button:${sessionId}`
     const videoId = `camera:${sessionId}`
 
@@ -299,7 +328,7 @@ function FullScreenCameraButton({ sessionId }: { sessionId: string }): JSX.Eleme
                 tooltip={{
                     children: <BoxArrowUpLeftIcon />,
                     placement: "top",
-                    title: "Full screen", // TODO: Localization
+                    title: <FormattedMessage id="camera_fullScreenCameraButton_tooltip" />
                 }}
             />
         </IconButton>
@@ -309,21 +338,26 @@ function FullScreenCameraButton({ sessionId }: { sessionId: string }): JSX.Eleme
 
 function MicIndicator({ sessionId }: { sessionId: string }) {
     const { iconGrid, noHoverIcon } = useStyles();
-    const sfuState = WebRTCSFUContext.Consume();
+    const sfuState = useContext(WebRTCContext);
 
     const [micOn, setMicOn] = useState<boolean>(false);
-    useEffect(() => {
-        setMicOn(sfuState.isLocalAudioEnabled(sessionId));
-    }, [micOn]);
 
-    return (
+    useEffect(() => {
+        setMicOn(sfuState.isLocalAudioEnabled(sessionId))
+    }, [sfuState.isLocalAudioEnabled(sessionId)])
+
+    return (micOn ? <></> :
         <Grid
             item
             className={iconGrid}
             style={{ padding: 0 }}
         >
             <StyledIcon
-                icon={micOn ? <CircleIcon className={noHoverIcon} /> : <MicrophoneOffIcon className={noHoverIcon} />}
+                icon={micOn ?
+                    // <CircleIcon className={noHoverIcon} /> : TODO: https://calmisland.atlassian.net/browse/KL-3509
+                    <></> :
+                    <MicrophoneOffIcon className={noHoverIcon} />
+                }
                 size="small"
                 color={micOn ? "#2EE2D8" : "#FFF"}
             />
@@ -350,89 +384,101 @@ const MoreControlsPopover = withStyles({
     />
 ));
 
-export function MoreControlsButton({ sessionId, isSelf, cameraRef }: {
-    sessionId: string,
+export function MoreControlsButton({ session, isSelf, cameraRef }: {
+    session: Session,
     isSelf: boolean,
     cameraRef: React.RefObject<HTMLElement>
 }): JSX.Element {
     const { moreControlsMenuItem } = useStyles();
     const theme = useTheme();
 
-    const { teacher } = useContext(UserContext);
-    const sfuState = WebRTCSFUContext.Consume();
+    const { isTeacher } = useContext(LocalSessionContext);
+    const sfuState = useContext(WebRTCContext);
 
     const [moreEl, setMoreEl] = useState<null | HTMLElement>(null);
     const handleMoreOpen = (event: React.SyntheticEvent<HTMLAnchorElement>) => { setMoreEl(event.currentTarget); };
     const handleMoreClose = () => { setMoreEl(null); };
 
-    return (<>
-        <IconButton
-            component="a"
-            aria-label="More controls button"
-            aria-controls="more-controls-popover"
-            aria-haspopup="true"
-            size="small"
-            onClick={handleMoreOpen}
+    return (
+        <Grid
+            container
+            justify="flex-start"
+            alignItems="center"
             style={{
                 zIndex: ICON_ZINDEX,
                 position: "absolute",
-                bottom: theme.spacing(0.5),
-                left: theme.spacing(0.5)
+                bottom: 0,
+                left: 0,
+                width: "100%",
+                padding: theme.spacing(0.5),
+                background: "linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3)",
+                borderRadius: "0 0 12px 12px",
             }}
         >
-            <StyledIcon icon={<DotsVerticalRoundedIcon />} size="small" color="#FFF" />
-        </IconButton>
-        <MoreControlsPopover
-            id="more-controls-popover"
-            keepMounted
-            anchorEl={moreEl}
-            open={Boolean(moreEl)}
-            onClose={handleMoreClose}
-            MenuListProps={{ onPointerLeave: handleMoreClose }}
-        >
-            {/* Whiteboard & Trophy permissions
+            <IconButton
+                component="a"
+                aria-label="More controls button"
+                aria-controls="more-controls-popover"
+                aria-haspopup="true"
+                size="small"
+                onClick={handleMoreOpen}
+            >
+                <StyledIcon icon={<DotsVerticalRoundedIcon />} size="small" color="#FFF" />
+            </IconButton>
+            <MoreControlsPopover
+                id="more-controls-popover"
+                keepMounted
+                anchorEl={moreEl}
+                open={Boolean(moreEl)}
+                onClose={handleMoreClose}
+                MenuListProps={{ onPointerLeave: handleMoreClose }}
+            >
+                {/* Whiteboard & Trophy permissions
                 1. isSelf: User do not have to control user's own permissions.
                 2. !teacher: If User are not teacher, user cannot control other's permissions.
             */}
-            {isSelf || !teacher ? null : <>
-                <List
-                    disablePadding
-                    subheader={
-                        <ListSubheader>
-                            Give Whiteboard Controls {/* TODO: Localization */}
-                        </ListSubheader>
-                    }
-                >
-                    <PermissionControls otherUserId={sessionId} />
-                </List>
-                <List
-                    disablePadding
-                    subheader={
-                        <ListSubheader>
-                            Give Trophy {/* TODO: Localization */}
-                        </ListSubheader>
-                    }
-                >
-                    <MenuItem className={moreControlsMenuItem}>
-                        <TrophyControls otherUserId={sessionId} />
-                    </MenuItem>
-                </List>
-            </>}
-
-            {/* Camera & Microphone */}
-            <List
-                disablePadding
-                subheader={
-                    <ListSubheader>
-                        Toggle Camera / Microphone {/* TODO: Localization */}
-                    </ListSubheader>
+                {isSelf || !isTeacher ? null :
+                    <List>
+                        <List
+                            disablePadding
+                            subheader={
+                                <ListSubheader>
+                                    <FormattedMessage id="camera_moreControlsButton_listSubheader_whiteboard" />
+                                </ListSubheader>
+                            }
+                        >
+                            <PermissionControls otherUserId={session.id} />
+                        </List>
+                        <List
+                            disablePadding
+                            subheader={
+                                <ListSubheader>
+                                    <FormattedMessage id="camera_moreControlsButton_listSubheader_trophy" />
+                                </ListSubheader>
+                            }
+                        >
+                            <MenuItem className={moreControlsMenuItem}>
+                                <TrophyControls otherUserId={session.id} />
+                            </MenuItem>
+                        </List>
+                    </List>
                 }
-            >
-                <ToggleCamera sessionId={sessionId} sfuState={sfuState} cameraRef={cameraRef} />
-                <ToggleMic sessionId={sessionId} sfuState={sfuState} />
-            </List>
-        </MoreControlsPopover>
-    </>)
+
+                {/* Camera & Microphone */}
+                <List
+                    disablePadding
+                    subheader={
+                        <ListSubheader>
+                            <FormattedMessage id="camera_moreControlsButton_listSubheader_toggleCamMic" />
+                        </ListSubheader>
+                    }
+                >
+                    <ToggleCamera session={session} sfuState={sfuState} isSelf={isSelf} cameraRef={cameraRef} />
+                    <ToggleMic session={session} sfuState={sfuState}  isSelf={isSelf}/>
+                </List>
+            </MoreControlsPopover>
+        </Grid>
+    )
 }
 
 /**
@@ -440,59 +486,94 @@ export function MoreControlsButton({ sessionId, isSelf, cameraRef }: {
  * 1. Separate local / global
  * 2. Property for UI type - IconButton & MenuItem
  */
-function ToggleCamera({ sessionId, sfuState, cameraRef }: {
-    sessionId: string,
-    sfuState: WebRTCSFUContext,
+function ToggleCamera({ session, sfuState, isSelf, cameraRef }: {
+    session: Session,
+    sfuState: WebRTCContextInterface,
+    isSelf: boolean,
     cameraRef: React.RefObject<HTMLElement>
 }): JSX.Element {
     const { noHoverIcon, moreControlsMenuItem } = useStyles();
-    const { roomId } = useContext(UserContext);
+    const { roomId, sessionId: localSessionId } = useContext(LocalSessionContext);
+    const sessions = useContext(SessionsContext);
 
+    const drawerTabIndex = useSelector((state: State) => state.control.drawerTabIndex);
     const [cameraOn, setCameraOn] = useState<boolean>(false);
-    useEffect(() => {
-        setCameraOn(sfuState.isLocalVideoEnabled(sessionId));
-    }, [cameraOn]);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [isVideoManuallyDisabled, setIsVideoManuallyDisabled] = useState<boolean>(false);
+    const [muteMutation] = useMutation(MUTE, {context: {target: SFU_LINK}});
+    const {refetch} = useQuery(GLOBAL_MUTE_QUERY, { variables: { roomId }, context: {target: SFU_LINK}});
+    const states = useContext(WebRTCContext);
+    // NOTE: This is the logic for the frontend performance. If this logic goes well, we will restore it again.
+    // const isCameraVisible = useIsElementInViewport(cameraRef);
 
-    const isCameraVisible = isElementInViewport(cameraRef);
     useEffect(() => {
-        if (isCameraVisible !== cameraOn) {
-            toggleVideoState();
+        if (isLoading && sfuState.isLocalVideoEnabled(session.id)) {
+            setIsLoading(false);
         }
-    }, [isCameraVisible]);
+    }, [sfuState.isLocalVideoEnabled(session.id)])
 
-    function toggleVideoState() {
-        let stream = sfuState.getCameraStream(sessionId)
-        if (stream) {
-            // Inbound stream
-            let tracks = stream.getVideoTracks()
-            if (tracks && tracks.length > 0) {
-                for (const consumerId of tracks.map((t) => t.id)) {
-                    let notification: MuteNotification = {
-                        roomId,
-                        sessionId,
-                        consumerId,
-                        video: !cameraOn
-                    }
-                    sfuState.sendMute(notification);
-                }
+    // NOTE: This is the logic for the frontend performance. If this logic goes well, we will restore it again.
+    // useEffect(() => {
+    //     if (isLoading) { return; }
+    //     const isVisible = drawerTabIndex !== 0 || isCameraVisible;
+    //     if ((isVisible && !sfuState.isLocalVideoEnabled(sessionId) && !isVideoManuallyDisabled) ||
+    //         (!isCameraVisible && sfuState.isLocalVideoEnabled(sessionId))) {
+    //         const stream = sfuState.getCameraStream(sessionId);
+    //         toggleInboundVideoState(stream);
+    //     }
+    // }, [isCameraVisible, drawerTabIndex]);
+
+    useEffect(() => {
+        if (states.isLocalVideoEnabled(session.id) !== undefined) {
+            setCameraOn(states.isLocalVideoEnabled(session.id));
+        }
+    }, [states.isLocalVideoEnabled(session.id)])
+
+    async function toggleInboundVideoState() {
+        const localSession = sessions.get(localSessionId);
+        if (localSession?.isHost) {
+            const notification: MuteNotification = {
+                roomId,
+                sessionId: session.id,
+                video: !cameraOn
+            }
+            const muteNotification = await muteMutation({ variables: notification })
+            if (muteNotification?.data?.mute?.video != null) {
+                setCameraOn(muteNotification.data.mute.video)
             }
         } else {
-            // Outbound stream
-            let producers = sfuState.getOutboundCameraStream()
-            if (producers) {
-                let video = producers.producers.find((a) => a.kind === "video")
-                if (video) {
-                    let notification: MuteNotification = {
-                        roomId,
-                        sessionId,
-                        producerId: video.id,
-                        video: !cameraOn
-                    }
-                    sfuState.sendMute(notification)
-                }
-            }
+            states.localVideoToggle(session.id);
         }
-        sfuState.localVideoToggle(sessionId);
+    }
+
+    async function toggleOutboundVideoState() {
+        const notification: MuteNotification = {
+            roomId,
+            sessionId: session.id,
+            video: !cameraOn
+        }
+        const muteNotification = await muteMutation({ variables: notification })
+        if (muteNotification?.data?.mute?.video != null) {
+            setCameraOn(muteNotification.data.mute.video)
+        }
+    }
+
+    async function toggleVideoState(): Promise<void> {
+        const { data }= await refetch();
+        const videoGloballyDisabled = data?.retrieveGlobalMute?.videoGloballyDisabled;
+        if (isSelf) {
+            const localSession = sessions.get(localSessionId);
+            if (videoGloballyDisabled && !localSession?.isTeacher) {
+                return;
+            }
+            await toggleOutboundVideoState();
+        } else {
+            if (videoGloballyDisabled && !session?.isTeacher) {
+                return;
+            }
+            await toggleInboundVideoState();
+        }
+        setIsVideoManuallyDisabled(!sfuState.isLocalVideoEnabled(session.id));
     }
 
     return (
@@ -510,51 +591,69 @@ function ToggleCamera({ sessionId, sfuState, cameraRef }: {
  * 1. Separate local / global
  * 2. Property for UI type - IconButton & MenuItem
  */
-function ToggleMic({ sessionId, sfuState }: {
-    sessionId: string,
-    sfuState: WebRTCSFUContext
+function ToggleMic({ session, sfuState, isSelf }: {
+    session: Session,
+    sfuState: WebRTCContextInterface,
+    isSelf: boolean,
 }): JSX.Element {
     const { noHoverIcon, moreControlsMenuItem } = useStyles();
-    const { roomId } = useContext(UserContext);
-
+    const { roomId, sessionId: localSessionId } = useContext(LocalSessionContext);
+    const sessions = useContext(SessionsContext);
     const [micOn, setMicOn] = useState<boolean>(false);
-    useEffect(() => {
-        setMicOn(sfuState.isLocalAudioEnabled(sessionId));
-    }, [micOn]);
+    const [muteMutation] = useMutation(MUTE, {context: {target: SFU_LINK}});
+    const {refetch} = useQuery(GLOBAL_MUTE_QUERY, { variables: { roomId }, context: {target: SFU_LINK}});
+    const states = useContext(WebRTCContext);
 
-    function toggleAudioState() {
-        let stream = sfuState.getCameraStream(sessionId)
-        if (stream) {
-            // Inbound stream
-            let tracks = stream.getAudioTracks()
-            if (tracks && tracks.length > 0) {
-                for (const consumerId of tracks.map((t) => t.id)) {
-                    let notification: MuteNotification = {
-                        roomId,
-                        sessionId,
-                        consumerId,
-                        audio: !micOn
-                    }
-                    sfuState.sendMute(notification);
-                }
+    useEffect(() => {
+        if (states.isLocalAudioEnabled(session.id) !== undefined) {
+            setMicOn(states.isLocalAudioEnabled(session.id));
+        }
+    }, [states.isLocalAudioEnabled(session.id)])
+
+    async function toggleInboundAudioState() {
+        const localSession = sessions.get(localSessionId);
+        if (localSession?.isHost) {
+            const notification: MuteNotification = {
+                roomId,
+                sessionId: session.id,
+                audio: !micOn
+            }
+            const muteNotification = await muteMutation({ variables: notification })
+            if (muteNotification?.data?.mute?.audio != null) {
+                setMicOn(muteNotification.data.mute.audio)
             }
         } else {
-            // Outbound stream
-            let producers = sfuState.getOutboundCameraStream()
-            if (producers) {
-                let audio = producers.producers.find((a) => a.kind === "audio")
-                if (audio) {
-                    let notification: MuteNotification = {
-                        roomId,
-                        sessionId,
-                        producerId: audio.id,
-                        audio: !micOn
-                    }
-                    sfuState.sendMute(notification)
-                }
-            }
+            states.localAudioToggle(session.id);
         }
-        sfuState.localAudioToggle(sessionId);
+    }
+
+    async function toggleOutboundAudioState() {
+        const notification: MuteNotification = {
+            roomId,
+            sessionId: session.id,
+            audio: !micOn
+        }
+        const muteNotification = await muteMutation({ variables: notification })
+        if (muteNotification?.data?.mute?.audio != null) {
+            setMicOn(muteNotification.data.mute.audio)
+        }
+    }
+
+    async function toggleAudioState() {
+        const { data }= await refetch();
+        const audioGloballyMuted = data?.retrieveGlobalMute?.audioGloballyMuted;
+        if (isSelf) {
+            const localSession = sessions.get(localSessionId);
+            if (audioGloballyMuted && !localSession?.isTeacher) {
+                return;
+            }
+            await toggleOutboundAudioState();
+        } else {
+            if (audioGloballyMuted && !session.isTeacher) {
+                return;
+            }
+            await toggleInboundAudioState();
+        }
     }
 
     return (

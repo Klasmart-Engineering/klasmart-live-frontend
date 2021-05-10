@@ -5,6 +5,7 @@ type ControlState = {
     selectOrgDialogOpen: boolean;
     drawerOpen: boolean;
     drawerWidth: number;
+    drawerTabIndex: number;
     colsCamera: 1 | 2 | 3 | 4;
     colsObserve: 2 | 4 | 6;
     contentIndex: number;
@@ -15,6 +16,7 @@ const initialControlState: ControlState = {
     selectOrgDialogOpen: false,
     drawerOpen: true,
     drawerWidth: 0,
+    drawerTabIndex: 0,
     colsCamera: 2,
     colsObserve: 2,
     contentIndex: 0,
@@ -36,6 +38,9 @@ const controlSlice = createSlice({
         setDrawerWidth(state, action) {
             return { ...state, drawerWidth: action.payload }
         },
+        setDrawerTabIndex(state, action) {
+            return { ...state, drawerTabIndex: action.payload }
+        },
         setColsCamera(state, action) {
             return { ...state, colsCamera: action.payload }
         },
@@ -44,7 +49,7 @@ const controlSlice = createSlice({
         },
         setContentIndex(state, action) {
             return { ...state, contentIndex: action.payload }
-        }
+        },
     }
 })
 
@@ -53,9 +58,10 @@ export const {
     setSelectOrgDialogOpen,
     setDrawerOpen,
     setDrawerWidth,
+    setDrawerTabIndex,
     setColsCamera,
     setColsObserve,
-    setContentIndex
+    setContentIndex,
 } = controlSlice.actions
 
 export default controlSlice.reducer

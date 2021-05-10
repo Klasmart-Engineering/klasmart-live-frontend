@@ -1,3 +1,6 @@
+import { gql, useMutation, useSubscription } from "@apollo/client";
+import { PainterEvent } from "kidsloop-canvas/lib/domain/whiteboard/event-serializer/PainterEvent";
+import { useSharedEventSerializer } from "kidsloop-canvas/lib/domain/whiteboard/SharedEventSerializerProvider";
 import React, {
     createContext,
     FunctionComponent,
@@ -14,6 +17,8 @@ import { PainterEvent } from "kidsloop-canvas/lib/domain/whiteboard/event-serial
 import { useSharedEventSerializer } from "kidsloop-canvas/lib/domain/whiteboard/SharedEventSerializerProvider"
 import { Permissions, createPermissions, createEmptyPermissions } from "../types/Permissions";
 import { useUserContext } from "../../context-provider/user-context";
+import { LIVE_LINK, LocalSessionContext, SFU_LINK } from "../../entry";
+import { createEmptyPermissions, createPermissions, Permissions } from "../types/Permissions";
 
 export type PainterEventFunction = (payload: PainterEvent) => void
 
@@ -98,9 +103,9 @@ export const SynchronizedStateProvider: FunctionComponent<Props> = ({
         state: { eventSerializer, eventController },
     } = useSharedEventSerializer();
 
-    const [sendEventMutation] = useMutation(WHITEBOARD_SEND_EVENT);
-    const [sendDisplayMutation] = useMutation(WHITEBOARD_SEND_DISPLAY);
-    const [sendPermissionsMutation] = useMutation(WHITEBOARD_SEND_PERMISSIONS);
+    const [sendEventMutation] = useMutation(WHITEBOARD_SEND_EVENT, {context: {target: LIVE_LINK}});
+    const [sendDisplayMutation] = useMutation(WHITEBOARD_SEND_DISPLAY, {context: {target: LIVE_LINK}});
+    const [sendPermissionsMutation] = useMutation(WHITEBOARD_SEND_PERMISSIONS, {context: {target: LIVE_LINK}});
 
     const { loading: eventsLoading } = useSubscription(SUBSCRIBE_WHITEBOARD_EVENTS, {
         onSubscriptionData: ({ subscriptionData: { data: { whiteboardEvents } } }) => {
@@ -109,7 +114,9 @@ export const SynchronizedStateProvider: FunctionComponent<Props> = ({
 
                 eventController.handlePainterEvent(whiteboardEvents);
             }
-        }, variables: { roomId }
+        },
+        variables: { roomId },
+        context: {target: LIVE_LINK},
     });
 
     const { loading: stateLoading } = useSubscription(SUBSCRIBE_WHITEBOARD_STATE, {
@@ -117,7 +124,9 @@ export const SynchronizedStateProvider: FunctionComponent<Props> = ({
             if (whiteboardState) {
                 setDisplay(whiteboardState.display);
             }
-        }, variables: { roomId }
+        },
+        variables: { roomId },
+        context: {target: LIVE_LINK},
     });
 
     const { loading: permissionsLoading } = useSubscription(SUBSCRIBE_WHITEBOARD_PERMISSIONS, {
@@ -129,7 +138,9 @@ export const SynchronizedStateProvider: FunctionComponent<Props> = ({
                 setUserPermissions(userPermissions);
                 setSelfPermissions(permissions);
             }
-        }, variables: { roomId, userId: sessionId }
+        },
+        variables: { roomId, userId: sessionId },
+    context: {target: LIVE_LINK},
     });
 
     const refetchEvents = useCallback(() => {
@@ -152,7 +163,7 @@ export const SynchronizedStateProvider: FunctionComponent<Props> = ({
     }, [eventController, refetchEvents]);
 
     const [display, setDisplay] = useState<boolean>(false);
-    const [selfPermissions, setSelfPermissions] = useState<Permissions>(createPermissions(teacher));
+    const [selfPermissions, setSelfPermissions] = useState<Permissions>(createPermissions(isTeacher));
     const [userPermissions, setUserPermissions] = useState<Map<string, Permissions>>(new Map());
 
     const sendEventAction = useCallback((payload: PainterEvent) => {
@@ -196,12 +207,12 @@ export const SynchronizedStateProvider: FunctionComponent<Props> = ({
             return userPermissions.get(userId)!;
         }
 
-        const permissions = createPermissions(userId === sessionId && teacher);
+        const permissions = createPermissions(userId === sessionId && isTeacher);
         userPermissions.set(userId, permissions);
         setUserPermissions(userPermissions);
 
         return permissions;
-    }, [userPermissions, setUserPermissions, teacher, sessionId]);
+    }, [userPermissions, setUserPermissions, isTeacher, sessionId]);
 
     const SynchronizedStateProviderActions = {
         setDisplay: setDisplayAction,

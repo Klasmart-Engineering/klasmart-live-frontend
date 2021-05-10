@@ -33,7 +33,7 @@ export function Whiteboard({ group, width, height, filterUsers, filterGroups, un
     const canvasStyle: CSSProperties = {
         zIndex: whiteboard,
         width: "100%",
-        height: "100%",
+        height: "100%"
     };
 
     return (

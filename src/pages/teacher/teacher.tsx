@@ -5,24 +5,15 @@ import { gql } from "apollo-boost";
 import { useMutation } from "@apollo/react-hooks";
 import { Theme, Card, useTheme, CardContent, Hidden } from "@material-ui/core";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
-import Grid from "@material-ui/core/Grid";
-import Tooltip from "@material-ui/core/Tooltip";
-import IconButton from "@material-ui/core/IconButton";
-import Typography from "@material-ui/core/Typography";
+import { gql, useMutation } from "@apollo/client";
+import { Card, CardContent, Hidden, Theme, useTheme } from "@material-ui/core";
 import CardActions from "@material-ui/core/CardActions";
-import React, { useEffect, useState, useContext, useRef, useMemo } from "react";
-import { FormattedMessage } from "react-intl";
-import { RecordedIframe } from "../../components/recordediframe";
-import { Session, ContentIndexState, InteractiveModeState, StreamIdState, RoomContext } from "../room/room";
-import { Theme, Card, useTheme, CardContent, Hidden } from "@material-ui/core";
-import { PreviewPlayer } from "../../components/preview-player";
-import { Stream } from "../../webRTCState";
-import { UserContext } from "../../entry";
-import { gql } from "apollo-boost";
-import { useMutation } from "@apollo/react-hooks";
-import { Whiteboard } from "../../whiteboard/components/Whiteboard";
-import { ScreenShare } from "./screenShareProvider";
-import { ReplicatedMedia } from "../synchronized-video";
+import Grid from "@material-ui/core/Grid";
+import IconButton from "@material-ui/core/IconButton";
+import { createStyles, makeStyles } from "@material-ui/core/styles";
+import Tooltip from "@material-ui/core/Tooltip";
+import Typography from "@material-ui/core/Typography";
+import { QuestionMarkCircleOutline as QuestionIcon } from "@styled-icons/evaicons-outline/QuestionMarkCircleOutline";
 import { Face as FaceIcon } from "@styled-icons/material/Face";
 import { ZoomIn as ZoomInIcon } from "@styled-icons/material/ZoomIn";
 import { ZoomOut as ZoomOutIcon } from "@styled-icons/material/ZoomOut";
@@ -41,6 +32,23 @@ import { Whiteboard } from "../../whiteboard/components/Whiteboard";
 import Loading from "../../components/loading";
 import { State } from "../../store/store";
 import { useUserContext } from "../../context-provider/user-context";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
+import { FormattedMessage } from "react-intl";
+import { useSelector } from "react-redux";
+import { PreviewPlayer } from "../../components/previewPlayer";
+import { RecordedIframe } from "../../components/recordediframe";
+import { ImageFrame } from "../../components/resizedContent";
+import { LIVE_LINK, LocalSessionContext } from "../../entry";
+import { MaterialTypename } from "../../lessonMaterialContext";
+import { RoomContext } from "../../providers/RoomContext";
+import { State } from "../../store/store";
+import { imageFrame } from "../../utils/layerValues";
+import { useWindowSize } from "../../utils/viewport";
+import { Stream } from "../../webRTCState";
+import { Whiteboard } from "../../whiteboard/components/Whiteboard";
+import { ContentType, InteractiveMode, InteractiveModeState, Session, StreamIdState } from "../room/room";
+import { ReplicatedMedia } from "../synchronized-video";
+import { ScreenShareContext } from "./screenShareProvider";
 
 const drawerWidth = 340;
 
@@ -101,7 +109,16 @@ export function Teacher(props: Props): JSX.Element {
     const { streamId, setStreamId } = streamIdState;
 
     const contentIndex = useSelector((store: State) => store.control.contentIndex);
-    const { roomId, sessionId, materials } = useUserContext();
+    const { roomId, sessionId, materials, name } = useUserContext();
+    const size = useWindowSize();
+    const [square, setSquare] = useState(size.width > size.height ? size.height : size.width);
+
+    useEffect(() => {
+        setSquare(size.width > size.height ? size.height : size.width);
+    }, [size])
+
+    const screenShare = useContext(ScreenShareContext);
+    const { content, sessions } = useContext(RoomContext)
     const material = contentIndex >= 0 && contentIndex < materials.length ? materials[contentIndex] : undefined;
 
     const screenShare = ScreenShare.Consume()
@@ -121,85 +138,48 @@ export function Teacher(props: Props): JSX.Element {
         else { setSquareSize(width); }
     }, [rootDivRef.current]);
 
-    const [showContent, { loading }] = useMutation(MUT_SHOW_CONTENT);
-    useEffect(() => {
-        if (!interactiveMode) {
-            showContent({ variables: { roomId, type: "Camera", contentId: sessionId } });
-        }
-    }, [roomId, interactiveMode]);
+    const [showContent, { loading }] = useMutation(MUT_SHOW_CONTENT, {context: {target: LIVE_LINK}});
 
     useEffect(() => {
-        if (interactiveMode === 1 && material) {
+        if (interactiveMode === InteractiveMode.Blank) {
+            showContent({ variables: { roomId, type: ContentType.Camera, contentId: sessionId } });
+        } else if (interactiveMode === InteractiveMode.Present && material) {
             if (material.__typename === MaterialTypename.Video || (material.__typename === undefined && material.video)) {
-                showContent({ variables: { roomId, type: "Video", contentId: sessionId } });
+                showContent({ variables: { roomId, type: ContentType.Video, contentId: sessionId } });
             } else if (material.__typename === MaterialTypename.Audio) {
-                showContent({ variables: { roomId, type: "Audio", contentId: sessionId } });
+                showContent({ variables: { roomId, type: ContentType.Audio, contentId: sessionId } });
             } else if (material.__typename === MaterialTypename.Image) {
-                showContent({ variables: { roomId, type: "Image", contentId: material.url } });
+                showContent({ variables: { roomId, type: ContentType.Image, contentId: material.url } });
             } else if ((material.__typename === MaterialTypename.Iframe || (material.__typename === undefined && material.url)) && streamId) {
-                showContent({ variables: { roomId, type: "Stream", contentId: streamId } });
+                showContent({ variables: { roomId, type: ContentType.Stream, contentId: streamId } });
             }
+        } else if (interactiveMode === InteractiveMode.Observe && material && material.url) {
+            showContent({ variables: { roomId, type: ContentType.Activity, contentId: material.url } });
+        } else if (interactiveMode === InteractiveMode.ShareScreen) {
+            showContent({ variables: { roomId, type: ContentType.Screen, contentId: sessionId } });
         }
-    }, [roomId, interactiveMode, material, streamId]);
-
-    useEffect(() => {
-        if (interactiveMode === 2 && material && material.url) {
-            showContent({ variables: { roomId, type: "Activity", contentId: material.url } });
-        }
-    }, [roomId, interactiveMode, material]);
-
-    useEffect(() => {
-        if (interactiveMode === 3) {
-            showContent({ variables: { roomId, type: "Screen", contentId: sessionId } });
-        }
-    }, [roomId, interactiveMode, sessionId]);
+    }, [roomId, interactiveMode, material, streamId, sessionId]);
 
     return (
-        <Grid
-            id="teacher-class-content-container"
-            ref={rootDivRef}
-            container
-            direction="column"
-            item
-            xs={12}
-            className={classes.root}
-            style={squareSize ? { width: squareSize, height: squareSize } : undefined}
-        >
-            {content && content.type === "Activity" ?
-                <Grid container direction="row" justify="flex-start" spacing={1} item xs={12}>
-                    {[...users.entries()].filter(([, s]) => s.id !== sessionId)
-                        .map(([id, session]) => <StudentPreviewCard key={id} session={session} />)}
-                </Grid> :
-                <>
+        <div ref={rootDivRef} className={classes.root}>
+            {content && content.type === ContentType.Activity ? <ObservationMode /> :
+                <div
+                    style={{
+                        display: "flex",
+                        position: "relative", // For "absolute" position of <Whiteboard />
+                        width: '100%',
+                        height: '100%',
+                    }}
+                >
                     <Whiteboard uniqueId="global" />
                     {
                         //TODO: tidy up the conditions of what to render
-                        interactiveMode === 3 ?
-                            <VideoStream stream={screenShare.getStream()} /> :
+                        interactiveMode === InteractiveMode.ShareScreen ?
+                            <Stream stream={screenShare.stream} /> :
                             <>
                                 {material ?
                                     material.__typename === MaterialTypename.Image ?
-                                        <Grid container>
-                                            <Grid container item style={{
-                                                height: "100%",
-                                                position: "absolute",
-                                                left: 0,
-                                                right: 0,
-                                                zIndex: 1,
-                                                // display: "block",
-                                                backgroundImage: `url(${contentHref})`,
-                                                filter: "blur(8px)",
-                                                WebkitFilter: "blur(8px)",
-                                                backgroundPosition: "center",
-                                                backgroundRepeat: "no-repeat",
-                                                backgroundSize: "cover",
-                                            }}
-                                            />
-                                            <img
-                                                className={classes.imageFrame}
-                                                src={contentHref}
-                                            />
-                                        </Grid> :
+                                        <ImageFrame material={material} /> :
                                         material.__typename === MaterialTypename.Video ||
                                             material.__typename === MaterialTypename.Audio ||
                                             (material.__typename === undefined && material.video) ? //Legacy Format TODO: Deprecate
@@ -215,36 +195,63 @@ export function Teacher(props: Props): JSX.Element {
                                                         setStreamId={setStreamId}
                                                         parentWidth={squareSize}
                                                         parentHeight={squareSize}
+                                                        square={square}
                                                     /> : undefined
                                                 ) : undefined : //Unknown Material
                                     undefined //No Material
                                 }
                             </>
                     }
-                </>
+                </div>
             }
-        </Grid>
+        </div>
     );
+}
+
+export function ObservationMode() {
+    const { sessionId } = useContext(LocalSessionContext);
+    const { sessions } = useContext(RoomContext);
+    const [studentSessions, setStudentSessions] = useState<Session[]>([]);
+
+    useEffect(() => {
+        const students = [...sessions.values()].filter(session => session.isTeacher !== true);
+        setStudentSessions(students);
+    }, [sessions, sessions.size])
+
+    return (
+        <>
+            <Typography variant="caption" align="center" color="textSecondary" gutterBottom>
+                <FormattedMessage id="live_buttonObserveFull" />
+            </Typography>
+            <Grid container direction="row" spacing={1} item xs={12}>
+                {[...studentSessions.values()].filter(s => s.id !== sessionId).map(session =>
+                    <StudentPreviewCard key={session.id} session={session} />
+                )}
+            </Grid>
+        </>
+    )
 }
 
 function StudentPreviewCard({ session }: { session: Session }) {
     const theme = useTheme();
-
-    const colsObserve = useSelector((state: State) => state.control.colsObserve);
+    const colsObserve = useSelector((store: State) => store.control.colsObserve);
 
     const cardConRef = useRef<HTMLDivElement>(null);
     const [zoomin, setZoomin] = useState(false);
     const [squareSize, setSquareSize] = useState<number>(0);
+    const [width, setWidth] = useState<number>(0);
+    const [height, setHeight] = useState<number>(0);
 
     const filterGroups = useMemo(() => {
         return [session.id];
     }, [session]);
 
     useEffect(() => {
-        if (!cardConRef || !cardConRef.current) { return; }
-        const width = cardConRef.current.clientWidth;
-        if (!width) { return; }
-        setSquareSize(width);
+        if (cardConRef.current) {
+            const contWidth = cardConRef.current.getBoundingClientRect().width;
+            setWidth(contWidth);
+            setHeight(contWidth);
+        }
     }, [cardConRef.current, zoomin, colsObserve]);
 
     const handleOnClickZoom = () => {
@@ -259,12 +266,12 @@ function StudentPreviewCard({ session }: { session: Session }) {
     return (
         <Grid item xs={12} md={zoomin ? 12 : (12 / colsObserve as (2 | 4 | 6))} style={{ order: zoomin ? 0 : 1 }}>
             <Card>
-                <CardContent>
-                    <Grid ref={cardConRef} container alignItems="center" item xs={12} style={{ position: "relative", height: squareSize }}>
-                        {session && session.streamId ? <>
+                <CardContent >
+                    <Grid ref={cardConRef} item xs={12} style={{ position: "relative", margin: "0 auto" }}>
+                        {session.streamId && <>
                             <Whiteboard group={session.id} uniqueId={session.id} filterGroups={filterGroups} />
-                            <PreviewPlayer streamId={session.streamId} parentWidth={squareSize} parentHeight={squareSize} />
-                        </> : <Loading messageId="loading" />}
+                            <PreviewPlayer width={width} height={height} streamId={session.streamId} />
+                        </>}
                     </Grid>
                 </CardContent>
                 <CardActions style={{ display: "flex", justifyContent: "space-between" }}>

@@ -24,6 +24,24 @@ const messages: Record<string, string> = {
     err_500_subtitle: "Oops! Something went wrong",
 
     activity_link: "Đường dẫn đến Hoạt động",
+
+    join_cameraPreviewFallback_allowMediaPermissions: "Cho phép truy máy ảnh",
+    join_permissionAlertDialog_title: "Cho phép KidsLoop Live truy cập phương tiện truyền thông của bạn",
+    join_permissionAlertDialog_contentText_live: "Kidsloop Live cần truy cập vào máy ảnh và micrô để những người tham gia lớp học khác có thể nhìn thấy bạn và nghe thấy bạn.",
+    join_permissionAlertDialog_contentText_classesStudy: "Kidsloop Live cần truy cập vào micrô cho nội dung của lớp học tương tác",
+    join_permissionAlertDialog_action_close: "Đóng",
+
+    camera_participantInfo_chalkboardIcon_tooltip: "{tên} là giáo viên",
+    camera_participantInfo_crownIcon_tooltip: "Giáo viên {tên} đang có mặt",
+    camera_fullScreenCameraButton_tooltip: "Toàn màn hình",
+    camera_moreControlsButton_listSubheader_whiteboard: "Cho phép sử dụng bảng trắng",
+    camera_moreControlsButton_listSubheader_trophy: "Trao cúp thưởng",
+    camera_moreControlsButton_listSubheader_toggleCamMic: "Chuyển đổi máy ảnh / micrô",
+
+    whiteboard_permissionControls_listItemText_disallow: "Không cho phép vẽ",
+    whiteboard_permissionControls_listItemText_allow: "Cho phép vẽ",
+    whiteboard_permissionControls_listItemText_clear: "Xóa",
+
     allow_media_permission: "Nếu bạn muốn sử dụng các thiết bị truyền thông, vui lòng cho phép sử dụng micrô và máy ảnh của bạn.",
     button_cancel: "Cancel",
     button_confirm: "Confirm",
