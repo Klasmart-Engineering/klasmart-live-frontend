@@ -29,10 +29,16 @@ const useStyles = makeStyles((theme: Theme) => ({
         position: `relative`,
         overflow: `hidden`,
         order: 99,
+        "& video": {
+            objectFit: `cover`,
+        },
     },
     rootSmall:{},
     rootLarge:{
         fontSize: `1.5rem`,
+        "& video": {
+            objectFit: `contain`,
+        },
     },
     video:{
         width: `100% !important`,

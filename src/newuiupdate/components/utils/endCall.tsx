@@ -1,7 +1,7 @@
 import {
     LIVE_LINK, LocalSessionContext, SFU_LINK,
 } from "../../providers/providers";
-import { classEndedState, classLeftState } from "../../states/layoutAtoms";
+import {  classLeftState } from "../../states/layoutAtoms";
 import { MUTATION_ENDCLASS } from "./graphql";
 import { ParentCaptcha } from "./parentCaptcha";
 import { useMutation } from "@apollo/client";
@@ -129,7 +129,6 @@ export { DialogLeaveClass };
 function DialogEndClass (props:any){
     const classes = useStyles();
     const { open, onClose } = props;
-    const [ classEnded, setClassEnded ] = useRecoilState(classEndedState);
 
     const { roomId } = useContext(LocalSessionContext);
 

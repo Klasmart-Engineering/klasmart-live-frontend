@@ -26,10 +26,11 @@ export interface Props {
     width: any;
     height: any;
     frameProps?: React.DetailedHTMLProps<React.IframeHTMLAttributes<HTMLIFrameElement>, HTMLIFrameElement>;
+    container?: any;
 }
 
 export function PreviewPlayer ({
-    streamId, frameProps, width, height,
+    streamId, frameProps, width, height, container,
 }: Props): JSX.Element {
     const ref = useRef<HTMLIFrameElement>(null);
     // const [ scale, setScale ] = useState(1);
@@ -47,13 +48,15 @@ export function PreviewPlayer ({
 
     useEffect(() => {
         scale(frameWidth, frameHeight);
+        /*const innerActitivity = window.document.getElementById(container) as HTMLIFrameElement;
+        innerActitivity.width = String(frameWidth);
+        innerActitivity.height = String(frameHeight);*/
     }, [ size, content ]);
 
     const scale = (innerWidth: number, innerHeight: number) => {
-        console.log(`scale this up`);
         let currentWidth: number = size.width, currentHeight: number = size.height;
 
-        const iRef = window.document.getElementById(`activity-view-container`) as HTMLIFrameElement;
+        const iRef = window.document.getElementById(container) as HTMLIFrameElement;
         if (iRef) {
             currentWidth = iRef.getBoundingClientRect().width;
             currentHeight = iRef.getBoundingClientRect().height;
@@ -117,9 +120,11 @@ export function PreviewPlayer ({
                 frameWidth: fWidth,
                 frameHeight: fHeight,
             });
-            scale(frameWidth, frameHeight);
             console.log(`message`);
         });
+        setTimeout(function (){
+            window.dispatchEvent(new Event(`resize`));
+        }, 1000);
     }, [
         ref.current,
         ref.current && ref.current.contentWindow,

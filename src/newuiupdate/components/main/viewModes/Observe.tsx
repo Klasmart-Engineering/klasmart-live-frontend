@@ -179,6 +179,7 @@ function StudentPreviewCard ({ session }: { session: Session }) {
     return (
         <div
             ref={cardConRef}
+            id={`observe:${session.streamId}`}
             className={classes.item}
         >
             <Typography className={classes.previewName}>{session.name}</Typography>
@@ -191,6 +192,7 @@ function StudentPreviewCard ({ session }: { session: Session }) {
                 <PreviewPlayer
                     width={width}
                     height={height}
+                    container={`observe:${session.streamId}`}
                     streamId={session?.streamId} /></> : <div className={classes.previewLoader}><OfflineIcon size="3em"/>
             </div>}
 
