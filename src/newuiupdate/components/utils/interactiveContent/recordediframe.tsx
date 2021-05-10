@@ -300,7 +300,7 @@ export function RecordedIframe (props: Props): JSX.Element {
                     width: enableResize ? contentWidth : `100%`,
                     height: enableResize ? contentHeight : `100%`,
                     position: enableResize ? `absolute` : `static`,
-                    transformOrigin: `top left`,
+                    // transformOrigin: `top left`,
                     transform: enableResize ? `scale(${transformScale})` : `scale(1)`,
                     minWidth: `100%`,
                     minHeight: `100%`,
