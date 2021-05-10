@@ -5,9 +5,28 @@ const messages: Record<string, string> = {
     join_PermissionAlertDialog_DialogContentText_live: "Kidsloop Live needs access to the camera and microphone in order for other class participants to see you and hear you.",
     join_PermissionAlertDialog_DialogContentText_classes_study: "Kidsloop Live needs access to the microphone for in-class interactive contents.",
     join_PermissionAlertDialog_Button_close: "Close",
+    
+    err_button_home: "Home",
+    err_button_signin: "Back to Sign In",
+    err_button_confirm: "Comfirm",
+    err_400_title: "Bad Request",
+    err_400_subtitle: "The server could not understand the request due to invalid syntax",
+    err_401_title: "Unauthorized",
+    err_401_subtitle: "Please check if you are signed in",
+    err_403_title: "Forbidden",
+    err_403_title_not_supported: "Not Supported",
+    err_403_subtitle: "You don't have permission to access",
+    err_403_subtitle_not_supported: "You have to belong to at least 1 organization",
+    err_403_description_not_supported: "The Organization can be invited by your teacher. Also, teacher is not allowed to use Student App. Please use the web browser to start a live as a teacher account.",
+    err_404_title: "Not Found",
+    err_404_subtitle: "The requested URL was not found",
+    err_500_title: "Internal Server Error",
+    err_500_subtitle: "Oops! Something went wrong",
 
     activity_link: "link Aktivitas",
     allow_media_permission: "silahkan izinkan mikrofon dan kamera jika Anda ingin menggunakan perangkat media.",
+    button_cancel: "Cancel",
+    button_confirm: "Confirm",
     error_camera_unavailable: "Tidak dapat mengakses 📷  Anda",
     error_empty_name: "Silahkan masukan nama anda.",
     error_invaild_token: "Token tidak valid. tidak dapat terhubung ke kelas.",
@@ -45,6 +64,8 @@ const messages: Record<string, string> = {
     title_chat: "obrolan",
     title_whiteboard: "Papan tulis",
     title_settings: "Pengaturan",
+    title_end_class: "End Class",
+    end_class_title: "End the class?",
     invite_students: "Undang",
     copy_clipboard: "Disalin ke papan klip!",
     quick_toggles: "Pemilihan Cepat.",
@@ -84,5 +105,24 @@ const messages: Record<string, string> = {
     browser_guide_title_ios: "Kidsloop Live hanya mendukung Safari di iOS. ",
     browser_guide_body: "Unduh dengan browser yang sesuai dan coba lagi.",
 
+    account_selectOrg_privacyPolicy: "Privacy Policy",
+    account_selectOrg_signOut: "Sign Out",
+    account_selectOrg_whichOrg: "Which Organization?",
+
+    schedule_liveTab: "Live",
+    schedule_studyTab: "Study",
+    schedule_loadingSelectOrg: "Please select an organization first by tapping the top-left corner!",
+    schedule_errorFetchTimeViews: "Oops, Failed to load schedules. Retry by tapping refresh button on the top-right corner!",
+    schedule_liveSubheaderToday: "TODAY",
+    schedule_liveSubheaderTomorrow: "TOMORROW",
+    schedule_liveSubheaderUpcoming: "SCHEDULED LIVES",
+    schedule_liveNoSchedule: "Nothing scheduled Live",
+    schedule_studyAnytimeStudy: "Anytime Study",
+    schedule_studyNoSchedule: "Nothing scheduled Study",
+
+    loading_mediaPermission: "Camera and Microphone premissions required. Please grant the permissions and restart application.",
+
+    title_settings_live: "Room Settings",
+    layout_tabinnercontent_leaveroom: "Leave Room"
 };
 export default messages;

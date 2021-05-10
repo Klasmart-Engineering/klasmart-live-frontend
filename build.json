@@ -1,0 +1,12 @@
+{
+  "android": {
+    "debug": {},
+    "release": {
+      "keystore": "keystore/kidsloop-platform.keystore",
+      "storePassword": "kidsloop",
+      "alias": "kidsloop_platform_production",
+      "password": "kidsloop",
+      "packageType": "bundle"
+    }
+  }
+}

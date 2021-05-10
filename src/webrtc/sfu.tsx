@@ -1,22 +1,33 @@
 // @ts-ignore
 import { AuthTokenProvider } from "../services/auth-token/AuthTokenProvider";
 
-const callstats: any = require('callstats-js/callstats.min');
 import { WebRTCContext } from "./webrtc";
 import {
     Device,
     types as MediaSoup,
 } from "mediasoup-client"
-import React, { createContext, useReducer, useRef, useContext, useEffect, useMemo } from "react";
+import React, { createContext, useReducer, useRef, useContext, useEffect, useMemo, useState, useCallback } from "react";
 import { RoomContext } from "../pages/room/room";
 import { gql, ExecutionResult, ApolloClient, InMemoryCache } from "apollo-boost";
 import { useMutation, useSubscription, ApolloProvider } from "@apollo/react-hooks";
 import { MutationFunctionOptions } from "@apollo/react-common/lib/types/types";
 import { Resolver, PrePromise } from "../resolver";
 import { WebSocketLink } from "apollo-link-ws";
-import { sessionId, UserContext } from "../entry";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { Producer, ProducerOptions } from "mediasoup-client/lib/Producer";
+import useCordovaObservePause from "../cordova-observe-pause";
+import { useCameraContext } from "../components/media/useCameraContext";
+import { useUserContext } from "../context-provider/user-context";
+import { useWebsocketEndpoint } from "../context-provider/region-select-context";
+
+const DISABLE_CALLSTATS = process.env.CALLSTATS_ENABLE !== "TRUE";
+
+let callstats: any = undefined;
+
+if (!DISABLE_CALLSTATS)
+{
+    callstats = require('callstats-js/callstats.min');
+}
 
 const SEND_RTP_CAPABILITIES = gql`
     mutation rtpCapabilities($rtpCapabilities: String!) {
@@ -84,20 +95,22 @@ export class WebRTCSFUContext implements WebRTCContext {
         const ref = useRef<WebRTCSFUContext>(undefined as any)
         const [value, rerender] = useReducer(() => ({ ref }), { ref })
         const { roomId } = RoomContext.Consume();
-        const token = AuthTokenProvider.retrieveToken();
+        const { sessionId, token } = useUserContext();
+
+        const sfuEndpoint = useWebsocketEndpoint("sfu");
 
         const apolloClient = useMemo(() =>
             new ApolloClient({
                 cache: new InMemoryCache(),
                 link: new WebSocketLink({
-                    uri: `${window.location.protocol === "https:" ? "wss" : "ws"}://${window.location.host}/sfu/${roomId}`,
+                    uri: `${sfuEndpoint}/${roomId}`,
                     options: {
                         reconnect: true,
                         connectionParams: { sessionId, authToken: token },
                     },
                 })
             } as any),
-            [roomId])
+            [roomId, token])
 
         if (!apolloClient) {
             return <CircularProgress />
@@ -124,12 +137,14 @@ export class WebRTCSFUContext implements WebRTCContext {
         const [mute] = useMutation(MUTE);
         const [endClass] = useMutation(ENDCLASS);
 
+        const { name, sessionId } = useUserContext();
+
         if (!sfu.current) {
-            sfu.current = new WebRTCSFUContext(rerender, rtpCapabilities, transport, producer, consumer, stream, mute, endClass)
+            sfu.current = new WebRTCSFUContext(rerender, rtpCapabilities, transport, producer, consumer, stream, mute, endClass, sessionId)
         }
 
         const { roomId } = RoomContext.Consume();
-        const { name } = useContext(UserContext);
+        
         useSubscription(SUBSCRIBE, {
             onSubscriptionData: ({ subscriptionData }) => {
                 if (!subscriptionData) {
@@ -175,18 +190,17 @@ export class WebRTCSFUContext implements WebRTCContext {
             variables: { roomId }
         })
 
-        const { camera } = useContext(UserContext);
-
         useEffect(() => {
+            if (!callstats) return;
+
             callstats.initialize("881714000", "OV6YSSRJ0fOA:vr7quqij46jLPMpaBXTAF50F2wFTqP4acrxXWVs9BIk=", name + ":" + sessionId)
-        }, [name, sessionId])
+        }, [name, sessionId, callstats]);
 
+        const camera = useCameraContext();
 
         useEffect(() => {
-            if (!camera) {
-                return
-            }
-            const promise = sfu.current.transmitStream("camera", camera)
+            if (!camera.stream) { return }
+            const promise = sfu.current.transmitStream("camera", camera.stream)
             return () => {
                 promise.then((producers) => producers.forEach(producer => {
                     if (producer) {
@@ -194,7 +208,30 @@ export class WebRTCSFUContext implements WebRTCContext {
                     }
                 }))
             }
-        }, [camera])
+        }, [camera.stream])
+
+        // NOTE: Handle cordova pause/resume events.
+        const [stateBeforePause, setStateBeforePause] = useState<{ camera: boolean | undefined, mic: boolean | undefined }>({ camera: false, mic: false });
+
+        const onPauseStateChanged = useCallback((paused: boolean) => {
+            const states = sfu.current;
+            if (paused) {
+                const beforePause = {
+                    camera: states.isLocalVideoEnabled(),
+                    mic: states.isLocalAudioEnabled(),
+                };
+
+                setStateBeforePause(beforePause);
+
+                states.localVideoEnable(undefined, false);
+                states.localAudioEnable(undefined, false);
+            } else {
+                states.localVideoEnable(undefined, stateBeforePause.camera);
+                states.localAudioEnable(undefined, stateBeforePause.mic);
+            }
+        }, [stateBeforePause, setStateBeforePause]);
+
+        useCordovaObservePause(onPauseStateChanged);
 
         return <></>
     }
@@ -213,6 +250,10 @@ export class WebRTCSFUContext implements WebRTCContext {
 
     public getOutboundCameraStream() {
         return this.outboundStreams.get("camera")
+    }
+
+    public endCurrentClass() {
+        this.endClass();
     }
 
     private getStream(id: string) {
@@ -323,7 +364,7 @@ export class WebRTCSFUContext implements WebRTCContext {
     }
 
     public isLocalAudioEnabled(id?: string) {
-        const stream = id === undefined || id === sessionId
+        const stream = id === undefined || id === this.sessionId
             ? this.outboundStreams.get("camera")
             : this.inboundStreams.get(`${id}_camera`)
         if (!stream) {
@@ -333,7 +374,7 @@ export class WebRTCSFUContext implements WebRTCContext {
     }
 
     public localAudioEnable(id?: string, enabled?: boolean) {
-        if (id === undefined || id === sessionId) {
+        if (id === undefined || id === this.sessionId) {
             // My Camera
             const stream = this.outboundStreams.get("camera")
             if (!stream) {
@@ -388,7 +429,7 @@ export class WebRTCSFUContext implements WebRTCContext {
     }
 
     public isLocalVideoEnabled(id?: string) {
-        const stream = id === undefined || id === sessionId
+        const stream = id === undefined || id === this.sessionId
             ? this.outboundStreams.get("camera")
             : this.inboundStreams.get(`${id}_camera`)
         if (!stream) {
@@ -398,7 +439,7 @@ export class WebRTCSFUContext implements WebRTCContext {
     }
 
     public localVideoEnable(id?: string, enabled?: boolean) {
-        if (id === undefined || id === sessionId) {
+        if (id === undefined || id === this.sessionId) {
             // My Camera
             const stream = this.outboundStreams.get("camera")
             console.log("stream", stream, this.outboundStreams)
@@ -471,6 +512,7 @@ export class WebRTCSFUContext implements WebRTCContext {
     private stream: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>
     private mute: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>
     private endClass: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>
+    private sessionId: string
 
     private constructor(
         rerender: React.DispatchWithoutAction,
@@ -481,6 +523,7 @@ export class WebRTCSFUContext implements WebRTCContext {
         stream: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>,
         mute: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>,
         endClass: (options?: MutationFunctionOptions<any, Record<string, any>>) => Promise<ExecutionResult<any>>,
+        sessionId: string
     ) {
         this.rerender = rerender
         this.rtpCapabilities = rtpCapabilities
@@ -490,6 +533,7 @@ export class WebRTCSFUContext implements WebRTCContext {
         this.stream = stream
         this.mute = mute
         this.endClass = endClass
+        this.sessionId = sessionId
     }
 
     private _device?: Device | null
@@ -554,7 +598,14 @@ export class WebRTCSFUContext implements WebRTCContext {
         }
         this._device = null
 
-        const device = new Device()
+        let device: Device;
+
+        if (process.env.WEBRTC_DEVICE_HANDLER_NAME) {
+            device = new Device({ handlerName: process.env.WEBRTC_DEVICE_HANDLER_NAME as any });
+        } else {
+            device = new Device();
+        }
+
         await device.load({ routerRtpCapabilities })
         const rtpCapabilities = JSON.stringify(device.rtpCapabilities)
         await this.rtpCapabilities({ variables: { rtpCapabilities } })
@@ -581,10 +632,11 @@ export class WebRTCSFUContext implements WebRTCContext {
         console.log("Producer: wait send transport", params)
         const transport = await device.createSendTransport(params)
 
-        WebRTCSFUContext.attachCallstatsFabric(transport, params, roomId, callstats.transmissionDirection.sendonly)
+        if (callstats) WebRTCSFUContext.attachCallstatsFabric(transport, params, roomId, callstats.transmissionDirection.sendonly);
 
         this.destructors.set(transport.id, () => {
-            WebRTCSFUContext.terminateCallstatsFabric(transport, roomId)
+
+            if (callstats) WebRTCSFUContext.terminateCallstatsFabric(transport, roomId);
             transport.close()
         })
 
@@ -601,7 +653,7 @@ export class WebRTCSFUContext implements WebRTCContext {
                 }
                 callback()
             } catch (error) {
-                WebRTCSFUContext.attachCallstatsError(transport, roomId, error)
+                if (callstats) WebRTCSFUContext.attachCallstatsError(transport, roomId, error);
                 errback(error)
             }
         })
@@ -618,7 +670,7 @@ export class WebRTCSFUContext implements WebRTCContext {
                 }
                 callback({ id: data.producer })
             } catch (error) {
-                WebRTCSFUContext.attachCallstatsError(transport, roomId, error)
+                if (callstats) WebRTCSFUContext.attachCallstatsError(transport, roomId, error);
                 errback(error)
             }
         }
@@ -648,10 +700,10 @@ export class WebRTCSFUContext implements WebRTCContext {
         console.log("Consumer: create recv transport")
         const transport = await device.createRecvTransport(params)
 
-        WebRTCSFUContext.attachCallstatsFabric(transport, params, roomId, callstats.transmissionDirection.receiveonly);
+        if (callstats) WebRTCSFUContext.attachCallstatsFabric(transport, params, roomId, callstats.transmissionDirection.receiveonly);
 
         this.destructors.set(transport.id, () => {
-            WebRTCSFUContext.terminateCallstatsFabric(transport, roomId)
+            if (callstats) WebRTCSFUContext.terminateCallstatsFabric(transport, roomId);
             transport.close()
         })
 
@@ -669,7 +721,7 @@ export class WebRTCSFUContext implements WebRTCContext {
                 }
                 callback()
             } catch (error) {
-                WebRTCSFUContext.attachCallstatsError(transport, roomId, error)
+                if (callstats) WebRTCSFUContext.attachCallstatsError(transport, roomId, error);
                 errback(error)
             }
         })
@@ -784,7 +836,7 @@ export class WebRTCSFUContext implements WebRTCContext {
             } else if (video === false && this.isLocalVideoEnabled(muteNotification.sessionId)) {
                 this.localVideoToggle(muteNotification.sessionId)
             }
-        } else if (sessionId === muteNotification.sessionId) {
+        } else if (this.sessionId === muteNotification.sessionId) {
             if (audio && !this.isLocalAudioEnabled()) {
                 this.localAudioToggle()
             } else if (audio === false && this.isLocalAudioEnabled()) {

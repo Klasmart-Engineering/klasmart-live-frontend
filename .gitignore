@@ -2,3 +2,13 @@ node_modules
 dist
 .vscode
 .idea
+.eslintcache
+
+# Cordova
+/plugins/
+/platforms/
+/www/
+
+# MacOS
+.DS_Store
+

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { withStyles } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
@@ -7,10 +7,12 @@ import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import Checkbox from "@material-ui/core/Checkbox";
 
-import { ThemeContext } from "../entry";
-
 import { Brightness4 as Brightness4Icon } from "@styled-icons/material/Brightness4";
 import { Brightness7 as Brightness7Icon } from "@styled-icons/material/Brightness7";
+
+import { useDispatch, useSelector } from "react-redux";
+import { State } from "../store/store";
+import { setThemeMode } from "../store/reducers/control";
 
 interface Props {
     children?: React.ReactNode;
@@ -83,12 +85,8 @@ const StyledSwitch = withStyles({
 })(Switch);
 
 export default function Lightswitch(props: Props) {
-    const { themeMode, setThemeMode } = useContext(ThemeContext);
-
-    function setDarkMode(toggle: boolean) {
-        const mode = toggle ? "light" : "dark";
-        setThemeMode(mode);
-    }
+    const dispatch = useDispatch();
+    const themeMode = useSelector((state: State) => state.control.themeMode);
 
     const [toggled, setToggled] = useState(themeMode === "light" ? true : false);
     const { children, className, type, ...other } = props;
@@ -98,16 +96,18 @@ export default function Lightswitch(props: Props) {
         typeof child !== "string" ? sibling = child : {}
     ));
 
+    function handleClick(value: boolean) {
+        setToggled(value);
+        dispatch(setThemeMode(value ? "light" : "dark"));
+    }
+
     switch (type) {
         case "icon":
             return (
                 <IconButton
                     aria-label="set dark mode"
                     style={{ color: "inherit", fontSize: "inherit" }}
-                    onClick={() => {
-                        setToggled(!toggled);
-                        setDarkMode(!toggled);
-                    }}
+                    onClick={() => handleClick(!toggled)}
                     {...other}
                 >
                     {toggled ?
@@ -131,10 +131,7 @@ export default function Lightswitch(props: Props) {
                     <Grid container justify="flex-end" item xs={2}>
                         <Checkbox
                             checked={!toggled}
-                            onClick={() => {
-                                setToggled(!toggled);
-                                setDarkMode(!toggled);
-                            }}
+                            onClick={() => handleClick(!toggled)}
                             color="primary"
                             style={{ backgroundColor: "transparent" }}
                             inputProps={{ 'aria-label': 'set dark mode' }}
@@ -147,10 +144,7 @@ export default function Lightswitch(props: Props) {
                 <StyledSwitch
                     checked={toggled}
                     className={className}
-                    onChange={(e) => {
-                        setToggled(e.target.checked);
-                        setDarkMode(e.target.checked);
-                    }}
+                    onChange={(e) => handleClick(e.target.checked)}
                     {...other}
                 />
             )

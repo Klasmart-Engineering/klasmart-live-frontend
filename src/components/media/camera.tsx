@@ -31,6 +31,7 @@ import { UserContext } from "../../entry";
 import { isElementInViewport } from "../../utils/viewport";
 import PermissionControls from "../../whiteboard/components/WBPermissionControls";
 import TrophyControls from "../trophies/trophyControls";
+import useVideoLayoutUpdate from "../../utils/video-layout-update";
 
 const PARTICIPANT_INFO_ZINDEX = 1;
 const ICON_ZINDEX = 2;
@@ -85,6 +86,14 @@ export default function Camera({ session, mediaStream, muted, square, noBorderRa
         }
     }, [videoRef.current, mediaStream]);
 
+    useEffect(() => {
+        if (!videoRef.current || !mediaStream) { return; }
+        videoRef.current.pause();
+        videoRef.current.srcObject = mediaStream;
+    }, [videoRef.current, mediaStream]);
+
+    useVideoLayoutUpdate(videoRef.current);
+
     const cameraRef = useRef<HTMLDivElement>(null);
     return (
         <Paper
@@ -94,7 +103,7 @@ export default function Camera({ session, mediaStream, muted, square, noBorderRa
             style={{
                 position: "relative",
                 width: "100%",
-                backgroundColor: "#193d6f",
+                backgroundColor: mediaStream ? "transparent" : "#193d6f",
                 borderRadius: noBorderRadius ? 0 : 12,
                 height: 0,
                 margin: theme.spacing(0.5),
@@ -114,6 +123,7 @@ export default function Camera({ session, mediaStream, muted, square, noBorderRa
                         muted={true}
                         playsInline
                         style={{
+                            zIndex: -1,
                             backgroundColor: "#000",
                             borderRadius: 12,
                             objectFit: "cover",

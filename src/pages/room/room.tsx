@@ -1,16 +1,28 @@
 import React, { useReducer, useState, useContext, useEffect, createContext, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { gql } from "apollo-boost";
 import { useSubscription } from "@apollo/react-hooks";
 import { FormattedMessage } from "react-intl";
-import { useTheme, useMediaQuery } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import { sessionId, UserContext } from "../../entry";
-import { Study } from "./study";
 import { Classes } from "./classes";
 import { Live } from "./live";
 import Loading from "../../components/loading";
+import Study from "../student/study";
+import { Student } from "../student/student";
+import { Teacher } from "../teacher/teacher";
 import { EventEmitter } from "eventemitter3"
+import { WebRTCSFUContext } from "../../webrtc/sfu";
+import { ScreenShare } from "../teacher/screenShareProvider";
+import { GlobalWhiteboardContext } from "../../whiteboard/context-providers/GlobalWhiteboardContext";
+import Layout from "../layout";
+import { Trophy } from "../../components/trophies/trophy";
+import { State } from "../../store/store";
+import { ClassType, OrientationType } from "../../store/actions";
+import { useUserContext } from "../../context-provider/user-context";
+import { lockOrientation } from "../../utils/screenUtils";
+import { LiveSessionLinkProvider } from "../../context-provider/live-session-link-context";
 
 export interface Session {
     id: string
@@ -30,11 +42,6 @@ export interface Message {
     session: Session,
 }
 
-export interface ContentIndexState {
-    contentIndex: number;
-    setContentIndex: React.Dispatch<React.SetStateAction<number>>;
-}
-
 export interface InteractiveModeState {
     interactiveMode: number;
     setInteractiveMode: React.Dispatch<React.SetStateAction<number>>;
@@ -45,35 +52,24 @@ export interface StreamIdState {
     setStreamId: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
-interface Props {
-    teacher: boolean
-}
+export function Room(): JSX.Element {
+    const dispatch = useDispatch();
+    const classType = useSelector((state: State) => state.session.classType);
+    const deviceOrientation = useSelector((state: State) => state.location.deviceOrientation);
 
 export function Room({ teacher }: Props): JSX.Element {
     const { classtype } = useContext(UserContext);
 
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
+    const { teacher, sessionId, token } = useUserContext();
 
-    const [contentIndex, setContentIndex] = useState<number>(0);
     const [interactiveMode, setInteractiveMode] = useState<number>(0);
     const [streamId, setStreamId] = useState<string>();
-    const [numColState, setNumColState] = useState(2)
-
-    const [openDrawer, setOpenDrawer] = useState<boolean>(isSmDown ? false : true);
-    const handleOpenDrawer = (open?: boolean) => {
-        if (open !== null && open !== undefined) {
-            setOpenDrawer(open);
-        } else {
-            setOpenDrawer(!openDrawer);
-        }
-    };
 
     useEffect(() => {
-        if (isSmDown) {
-            setOpenDrawer(false);
-        }
-    }, [isSmDown]);
+        lockOrientation(OrientationType.LANDSCAPE, dispatch);
+    }, [])
 
     switch (classtype) {
         case "study":
@@ -125,7 +121,7 @@ const SUB_ROOM = gql`
 const context = createContext<{ value: RoomContext }>(undefined as any);
 export class RoomContext {
     public static Provide(props: { children?: JSX.Element | JSX.Element[] }) {
-        const { roomId, name } = useContext(UserContext);
+        const { roomId, name, sessionId } = useUserContext();
 
         const ref = useRef<RoomContext>(undefined as any)
         const [value, rerender] = useReducer(() => ({ value: ref.current }), { value: ref.current })
@@ -151,8 +147,7 @@ export class RoomContext {
             variables: { roomId, name }
         });
 
-
-        if (loading || !ref.current.content) { return <Grid container alignItems="center" style={{ height: "100%" }}><Loading messageId="loading" /></Grid>; }
+        if (loading || !ref.current.content) { return <Loading messageId="loading" /> }
         if (error) { return <Typography><FormattedMessage id="failed_to_connect" />{JSON.stringify(error)}</Typography>; }
         return <context.Provider value={value} >
             {props.children}

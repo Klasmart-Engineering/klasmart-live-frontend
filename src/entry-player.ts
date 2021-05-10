@@ -23,4 +23,8 @@ window.addEventListener('message', ({ data }) => {
   }
 });
 (window as any).PLAYER_READY = true
+
 window.postMessage('ready','*')
+
+// NOTE: Added this to notify the preview-player that the entry is ready to handle received events.
+window.parent.postMessage('ready', '*');

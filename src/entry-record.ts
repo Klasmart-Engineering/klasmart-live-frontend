@@ -8,22 +8,24 @@ import { v4 as uuid } from 'uuid'
 if (!(window as any).kidslooplive) {
   (window as any).kidslooplive = true
 
-
-
-  const POST_URL = `${process.env.ENDPOINT_GQL || window.location.origin}/graphql`
   const POST_EVENTS = `
   mutation postPageEvent($streamId: ID!, $pageEvents: [PageEventIn]) {
     postPageEvent(streamId: $streamId, pageEvents: $pageEvents)
   }
   `
 
+  const url = new URL(window.location.href)
+  const endpoint = url.searchParams.get('endpoint') || window.location.origin;
+
   const token = AuthTokenProvider.retrieveToken()
 
   const headers = token ? { authorization: `Bearer ${token}` } : undefined
 
-  const client = new GraphQLClient(POST_URL, { headers: headers })
+  const graphQlEndpoint = `${decodeURIComponent(endpoint)}/graphql`;
+  const client = new GraphQLClient(graphQlEndpoint, { headers: headers })
 
   const streamId = uuid()
+
   window.parent.postMessage({ streamId }, '*')
 
   const eventStream = EventStream.builder()

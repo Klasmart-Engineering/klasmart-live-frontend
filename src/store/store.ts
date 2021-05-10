@@ -6,8 +6,12 @@ import logger from "redux-logger";
 import thunk from "redux-thunk";
 
 import { Actions } from "./actions";
+import data from "./reducers/data";
+import communication from "./reducers/communication";
 import control from "./reducers/control";
 import session from "./reducers/session";
+import location from "./reducers/location";
+import settings from "./reducers/settings";
 
 const persistConfig = {
     key: "kidsloop-live-web",
@@ -15,8 +19,12 @@ const persistConfig = {
 };
 
 const rootReducer = combineReducers({
+    data,
+    communication,
     control,
     session,
+    location,
+    settings
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

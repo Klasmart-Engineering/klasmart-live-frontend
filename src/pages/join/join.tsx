@@ -1,6 +1,7 @@
 import LogRocket from 'logrocket';
 import React, { useState, useContext, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
+import { useDispatch, useSelector } from "react-redux";
 import { createStyles, makeStyles, useTheme, Theme } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import Container from "@material-ui/core/Container";
@@ -34,12 +35,27 @@ import KidsLoopStudyStudents from "../../assets/img/kidsloop_study_students.svg"
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
+        container: {
+            margin: "auto 0"
+        },
         card: {
+            display: "flex",
+            alignItems: "center",
             padding: "48px 40px !important",
             [theme.breakpoints.down("sm")]: {
                 maxWidth: 360,
-                margin: "0 auto"
-            }
+                margin: "0 auto",
+            },
+        },
+        formContainer: {
+            width: "100%"
+        },
+        pageWrapper: {
+            flexGrow: 1
+        },
+        errorIcon: {
+            fontSize: "1em",
+            marginRight: theme.spacing(1),
         },
         logo: {
             display: "block",
@@ -51,9 +67,15 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function Join(): JSX.Element {
     const { card } = useStyles();
     const theme = useTheme();
+    const history = useHistory();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
 
+    const classes = useStyles();
     const { classtype } = useContext(UserContext);
+
+    const dispatch = useDispatch();
+    const classType = useSelector((store: State) => store.session.classType);
+    const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
 
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
     const handleDialogClose = () => setDialogOpen(false);
@@ -64,7 +86,25 @@ export default function Join(): JSX.Element {
     const [videoDeviceOptions, setVideoDeviceOptions] = useState<MediaDeviceInfo[]>([]);
     const [audioDeviceId, setAudioDeviceId] = useState<string>("");
     const [videoDeviceId, setVideoDeviceId] = useState<string>("");
-    const [stream, setStream] = useState<MediaStream>();
+
+    const { name, setName, teacher } = useUserContext();
+    const { information: myInformation } = useUserInformation();
+    const { contentService } = useServices();
+
+    const [user, setUser] = useState<string>("");
+    const [nameError, setNameError] = useState<JSX.Element | null>(null);
+    const { permissions, requestPermissions } = useCordovaInitialize(undefined, undefined, true);
+
+    // TODO: If moving to using just front/back camera device for mobile
+    // app devices we may not need these arrays. Since they would be constant
+    // front/back always (would need to figure out how to determine available
+    // cameras though).
+    const [videoDevices] = useState<DeviceInfo[]>([
+        { label: "Front Facing", kind: "videoinput", id: FacingType.User as string, },
+        { label: "Back Facing", kind: "videoinput", id: FacingType.Environment as string }
+    ]);
+
+    const { error, stream, facing, setFacing, refreshCameras } = useCameraContext();
 
     useEffect(() => {
         if (!navigator.mediaDevices) { return; }
@@ -94,6 +134,34 @@ export default function Join(): JSX.Element {
         navigator.mediaDevices.addEventListener("devicechange", loadMediaDevices);
         return () => { navigator.mediaDevices.removeEventListener("devicechange", loadMediaDevices); };
     }, []);
+
+    // NOTE: This effect will set the customizable name based on the 
+    // information from /me query. This will prepopulate the input
+    // field for the user name but still allow it to be customized.
+    useEffect(() => {
+        if (!myInformation) return;
+
+        if (myInformation.givenName) {
+            setUser(myInformation.givenName);
+        } else if (myInformation.name) {
+            setUser(myInformation.name);
+        }
+
+    }, [myInformation]);
+
+    useEffect(() => {
+        lockOrientation(OrientationType.PORTRAIT, dispatch);
+    }, []);
+
+    useEffect(() => {
+        if (classType === ClassType.STUDY) return;
+
+        if (!permissions) {
+            requestPermissions(true, true);
+        } else {
+            refreshCameras();
+        }
+    }, [refreshCameras, permissions, classType]);
 
     async function loadMediaDevices() {
         try {
@@ -161,6 +229,31 @@ export default function Join(): JSX.Element {
         });
     }
 
+    function join(e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault();
+        setNameError(null);
+        if (!user) {
+            setNameError(
+                <span style={{ display: "flex", alignItems: "center" }}>
+                    <ErrorIcon className={classes.errorIcon} />
+                    <FormattedMessage id="error_empty_name" />
+                </span>
+            );
+        }
+
+        // TODO: Using this conditional here will prioritize the name
+        // coming from token first. And disallow setting any other name.
+        // User also wont be able to set their name after it's been set 
+        // once, unless the page is reloaded (name setting is not persistent)
+        // there's also name information related to the /me query which
+        // currently will be used optionally if the token name isn't set. We
+        // may want to change the priorities used when selecting name and
+        // determining if user can set a custom name or not in the future.
+        if (!name) { setName(user); }
+
+        history.push(`/room`);
+    }
+
     useEffect(() => {
         if (!navigator.mediaDevices) { return; }
         if (classtype === ClassType.LIVE) {
@@ -176,11 +269,11 @@ export default function Join(): JSX.Element {
             direction="column"
             justify="center"
             alignItems="center"
-            style={{ height: "100%" }}
+            style={{ height: "100%", backgroundColor: (classType === ClassType.LIVE && stream) ? "transparent" : "white" }}
         >
             <Container maxWidth={classtype === ClassType.LIVE ? "lg" : "xs"}>
                 <Card>
-                    <CardContent className={card}>
+                    <CardContent className={card}></CardContent>
                         <Grid
                             container
                             direction={isSmDown ? "column-reverse" : "row"}

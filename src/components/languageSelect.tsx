@@ -1,3 +1,7 @@
+import React, { useState } from "react";
+import { FormattedMessage } from "react-intl";
+import { useDispatch, useSelector } from "react-redux";
+
 import Button from "@material-ui/core/Button";
 import Menu, { MenuProps } from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -5,10 +9,9 @@ import { createStyles, makeStyles, Theme, withStyles } from "@material-ui/core/s
 import Tooltip from "@material-ui/core/Tooltip";
 import { ExpandMore as ExpandMoreIcon } from "@styled-icons/material/ExpandMore";
 import { Translate as LanguageIcon } from "@styled-icons/material/Translate";
-import { useState, useContext } from "react";
-import * as React from "react";
-import { FormattedMessage } from "react-intl";
-import { ThemeContext } from "../entry";
+
+import { State } from "../store/store";
+import { setLocale } from "../store/reducers/session";
 
 const LANGUAGES_LABEL: Language[] = [
     {
@@ -70,7 +73,8 @@ const StyledMenu = withStyles({})((props: MenuProps) => (
 
 export default function LanguageSelect(props: Props) {
     const classes = useStyles();
-    const { languageCode, setLanguageCode } = useContext(ThemeContext);
+    const dispatch = useDispatch();
+    const languageCode = useSelector((state: State) => state.session.locale);
 
     const locale = languageCode;
     const langText = LANGUAGES_LABEL.find((element) => element.code === languageCode);
@@ -78,14 +82,14 @@ export default function LanguageSelect(props: Props) {
     const [languageMenuElement, setLanguageMenuElement] = useState<null | HTMLElement>(null);
 
     function languageSelect(language: { code: string, text: string }) {
-        setLanguageCode(language.code);
+        dispatch(setLocale(language.code))
         setLanguageText(language.text);
         setLanguageMenuElement(null);
     }
 
     return (
         <React.Fragment>
-            <Tooltip title={<FormattedMessage id="locale_tooltip" />} enterDelay={300}>
+            <Tooltip title={<FormattedMessage id="language" />} enterDelay={300}>
                 <Button
                     color="inherit"
                     aria-owns={languageMenuElement ? "language-menu" : undefined}
@@ -98,7 +102,7 @@ export default function LanguageSelect(props: Props) {
                     {props.noIcon ? null : <LanguageIcon fontSize="inherit" />}
                     <span className={classes.language}>
                         {locale === "" ?
-                            <FormattedMessage id="locale_select" /> :
+                            <FormattedMessage id="language" /> :
                             languageText
                         }
                     </span>
