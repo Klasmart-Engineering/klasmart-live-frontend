@@ -25,13 +25,21 @@ import StyledButton from "../../components/styled/button";
 import StyledTextField from "../../components/styled/textfield";
 import Camera from "../../components/media/camera";
 import Loading from "../../components/loading";
-import MediaDeviceSelect from "../../components/mediaDeviceSelect";
+import MediaDeviceSelect, { DeviceInfo } from "../../components/mediaDeviceSelect";
 import logger from "../../services/logger/Logger";
-import { ClassType } from '../../store/actions';
+import { ClassType, OrientationType } from '../../store/actions';
 
 import KidsLoopLiveTeachers from "../../assets/img/kidsloop_live_teachers.svg";
 import KidsLoopLiveStudents from "../../assets/img/kidsloop_live_students.svg";
 import KidsLoopStudyStudents from "../../assets/img/kidsloop_study_students.svg";
+import { useHistory } from 'react-router-dom';
+import { useUserContext } from '../../context-provider/user-context';
+import { State } from '../../store/store';
+import { useUserInformation } from '../../context-provider/user-information-context';
+import { useServices } from '../../context-provider/services-provider';
+import useCordovaInitialize from '../../cordova-initialize';
+import { FacingType, useCameraContext } from '../../components/media/useCameraContext';
+import { lockOrientation } from '../../utils/screenUtils';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
