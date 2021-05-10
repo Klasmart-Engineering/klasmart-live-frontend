@@ -38,8 +38,8 @@ const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root:{},
         rootTeacher:{
-            "& $headerBg":{
-                background: `linear-gradient(87deg, rgba(84,140,191,1) 0%, rgba(95,157,214,1) 100%)`,
+            "& $headerBg": {
+                background: `linear-gradient(87deg, rgba(103,161,214,1) 0%, rgba(82,141,195,1) 100%)`,
             },
         },
         card: {
@@ -72,7 +72,7 @@ const useStyles = makeStyles((theme: Theme) =>
             zIndex: -1,
             top: 0,
             left: 0,
-            background: `linear-gradient(87deg, rgba(241,212,108,1) 0%, rgba(237,231,180,1) 100%)`,
+            background: `linear-gradient(87deg, rgba(145,102,253,1) 0%, rgba(134,90,243,1) 100%)`,
             "&:after":{
                 content: `''`,
                 width: `200%`,

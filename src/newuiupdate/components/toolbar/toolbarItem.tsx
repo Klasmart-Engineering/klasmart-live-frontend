@@ -64,12 +64,12 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     badgeRoot: {
         position: `absolute`,
-        top: 6,
-        right: 6,
+        top: 12,
+        right: 12,
     },
     badge: {
-        width: 26,
-        height: 26,
+        width: 22,
+        height: 22,
         borderRadius: 20,
         color: theme.palette.text.primary,
         backgroundColor: amber[500],
@@ -78,8 +78,8 @@ const useStyles = makeStyles((theme: Theme) => ({
         zIndex: 1200,
         fontSize: `0.8em`,
         "& svg":{
-            height: 16,
-            width: 16,
+            height: 15,
+            width: 15,
         },
     },
     badgeContent: {

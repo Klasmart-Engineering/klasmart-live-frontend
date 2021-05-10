@@ -65,6 +65,9 @@ const useStyles = makeStyles((theme: Theme) => ({
             borderRadius: `0 0 20px 0`,
             boxShadow: `30px 0 0 0 ${theme.palette.background.default}`,
         },
+        "&:first-child":{
+            borderRadius: `0 0 0 12px`,
+        },
     },
 }));
 

@@ -2,7 +2,6 @@ import Loading from "../../components/loading";
 import {
     Content, Message, Session,
 } from "../../pages/room/room";
-import { SUBSCRIPTION_ENDCLASS } from "../components/utils/graphql";
 import {
     audioGloballyMutedState, isChatOpenState, unreadMessagesState, videoGloballyMutedState,
 } from "../states/layoutAtoms";
@@ -44,6 +43,7 @@ export interface RoomContextInterface {
     trophy: any;
     audioGloballyMuted: boolean;
     videoGloballyMuted: boolean;
+    endClass: boolean;
 }
 
 const defaultRoomContext = {
@@ -54,6 +54,7 @@ const defaultRoomContext = {
     trophy: undefined,
     audioGloballyMuted: false,
     videoGloballyMuted: false,
+    endClass: false,
 };
 
 export const RoomContext = createContext<RoomContextInterface>(defaultRoomContext);
@@ -108,21 +109,6 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
         },
     });
 
-    const { loading: loadingEndClass, error: errorEndClass } = useSubscription(SUBSCRIPTION_ENDCLASS, {
-        onSubscriptionData: ({ subscriptionData }) => {
-            console.log(subscriptionData);
-            // if( subscriptionData?.endClass){
-            //     setEndClass(true);
-            // }
-        },
-        variables: {
-            roomId,
-        },
-        context: {
-            target: SFU_LINK,
-        },
-    });
-
     const addMessage = (newMessage: Message) => {
         for (const id of messages.keys()) {
             if (messages.size < 32) { break; }
@@ -152,6 +138,10 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
             newState.delete(leave.id);
             return newState;
         });
+
+        if(leave.id === sessionId){
+            setEndClass(true);
+        }
     };
 
     const { refetch: refetchGlobalMute } = useQuery(GLOBAL_MUTE_QUERY, {

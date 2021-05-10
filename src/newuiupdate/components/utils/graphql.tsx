@@ -14,18 +14,9 @@ export const SEND_MESSAGE = gql`
     }
 `;
 
-// TODO : NOT USED YET
 export const MUTATION_SET_HOST = gql`
     mutation setHost($roomId: ID!, $hostId: ID!) {
         setHost(roomId: $roomId, hostId: $hostId)
-    }
-`;
-
-export const SUBSCRIPTION_ENDCLASS = gql`
-    subscription endClass($roomId: ID!) {
-        endClass(roomId: $roomId) {
-            endClass
-        }
     }
 `;
 

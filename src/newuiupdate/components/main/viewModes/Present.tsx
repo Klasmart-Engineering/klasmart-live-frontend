@@ -112,6 +112,7 @@ function Present () {
         return (
             <PreviewPlayer
                 streamId={content?.contentId}
+                container="activity-view-container"
                 width="100%"
                 height="100%" />
         );

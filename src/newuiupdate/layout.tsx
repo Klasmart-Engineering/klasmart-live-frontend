@@ -5,29 +5,34 @@ import Class from './pages/class';
 import ClassEnded from './pages/classEnded';
 import ClassLeft from './pages/classLeft';
 import Join from './pages/join-new';
-import { LIVE_LINK, LocalSessionContext, SFU_LINK } from './providers/providers';
+import {
+    LIVE_LINK, LocalSessionContext, SFU_LINK,
+} from './providers/providers';
 import { RoomContext } from './providers/roomContext';
 import {
-    classEndedState, classLeftState, hasControlsState, isLessonPlanOpenState,
+    GLOBAL_MUTE_MUTATION, GLOBAL_MUTE_QUERY, GlobalMuteNotification, WebRTCContext,
+} from "./providers/WebRTCContext";
+import {
+    classLeftState, hasControlsState, isLessonPlanOpenState,
 } from "./states/layoutAtoms";
 import { useMutation, useQuery } from '@apollo/client';
-import React, { useContext, useEffect, useState } from 'react';
+import React, {
+    useContext, useEffect, useState,
+} from 'react';
 import { useRecoilState } from "recoil";
-import { GlobalMuteNotification, GLOBAL_MUTE_MUTATION, GLOBAL_MUTE_QUERY, WebRTCContext } from "./providers/WebRTCContext";
 
 function Layout () {
     const [ classLeft, setClassLeft ] = useRecoilState(classLeftState);
-    const [ classEnded, setClassEnded ] = useRecoilState(classEndedState);
     const [ hasControls, setHasControls ] = useRecoilState(hasControlsState);
     const [ isLessonPlanOpen, setIsLessonPlanOpen ] = useRecoilState(isLessonPlanOpenState);
 
     const [ camerasOn, setCamerasOn ] = useState(true);
     const [ micsOn, setMicsOn ] = useState(true);
-    
+
     const {
         camera, name, roomId, sessionId, classtype,
     } = useContext(LocalSessionContext);
-    const { sessions } = useContext(RoomContext);
+    const { sessions, endClass } = useContext(RoomContext);
     const webrtc = useContext(WebRTCContext);
 
     const localSession = sessions.get(sessionId);
@@ -92,7 +97,6 @@ function Layout () {
         }
     }, [ classtype ]);
 
-
     const enforceGlobalMute = async () => {
         const { data } = await refetchGlobalMute();
         const videoGloballyDisabled = data?.retrieveGlobalMute?.videoGloballyDisabled;
@@ -143,8 +147,6 @@ function Layout () {
         }
     }
 
-
-
     if (!name || camera === undefined) {
         return <Join />;
     }
@@ -153,7 +155,7 @@ function Layout () {
         return(<ClassLeft />);
     }
 
-    if(classEnded){
+    if(endClass){
         return(<ClassEnded />);
     }
 
