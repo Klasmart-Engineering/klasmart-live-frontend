@@ -45,6 +45,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     fullHeight:{
         height: `100%`,
         overflowY: `auto`,
+        width: `100%`,
     },
     previewLoader:{
         display: `flex`,

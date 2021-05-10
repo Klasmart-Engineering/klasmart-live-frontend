@@ -30,6 +30,12 @@ const useStyles = makeStyles((theme: Theme) => ({
     fullHeight:{
         height: `100%`,
     },
+    fullHeightCentered:{
+        height: `100%`,
+        display: `flex`,
+        alignItems: `center`,
+        justifyContent: `center`,
+    },
 }));
 
 function MainView () {
@@ -86,7 +92,7 @@ function MainView () {
                 <Grid
                     item
                     xs
-                    className={classes.fullHeight}
+                    className={classes.fullHeightCentered}
                 >
                     <Present />
                 </Grid>
@@ -104,7 +110,7 @@ function MainView () {
                 <Grid
                     item
                     xs
-                    className={classes.fullHeight}
+                    className={classes.fullHeightCentered}
                 >
                     <Observe />
                 </Grid>
@@ -126,7 +132,7 @@ function MainView () {
                 <Grid
                     item
                     xs
-                    className={classes.fullHeight}
+                    className={classes.fullHeightCentered}
                 >
                     <PreviewLessonPlan />
                 </Grid>

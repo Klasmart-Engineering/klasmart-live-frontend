@@ -2,6 +2,7 @@ import { ClassType } from "../../../store/actions";
 import { LocalSessionContext } from "../../providers/providers";
 import { materialActiveIndexState } from "../../states/layoutAtoms";
 import { Whiteboard } from "../../whiteboard/components/Whiteboard-new";
+import PreviewLessonPlan from "./previewLessonPlan";
 import { WB_TOOLBAR_MAX_HEIGHT } from "./WBToolbar";
 import Grid from "@material-ui/core/Grid";
 import {
@@ -46,6 +47,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         display: `flex`,
         alignItems: `center`,
         justifyContent: `center`,
+        position: `relative`,
     },
 }));
 
@@ -84,18 +86,11 @@ export function ClassContent () {
             <Grid
                 item
                 xs>
-                <div className={classes.content}>
+                <div
+                    className={classes.content}
+                    id="activity-view-container">
                     <Whiteboard uniqueId={forStudent ? `student` : `teacher`} />
-                    <IframeResizerNew
-                        draggable
-                        scrolling
-                        forwardRef={iframeRef}
-                        src={`${materials[materialActiveIndex].url}`}
-                        style={{
-                            width: `100%`,
-                            height: `100%`,
-                        }}
-                    />
+                    <PreviewLessonPlan />
                 </div>
             </Grid>
             <Grid item>

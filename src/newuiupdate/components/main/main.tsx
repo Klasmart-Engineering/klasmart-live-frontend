@@ -25,6 +25,11 @@ const useStyles = makeStyles((theme: Theme) => ({
     fullViewHeightSm:{
         height: `50vh`,
     },
+    fullHeightCentered:{
+        height: `100%`,
+        display: `flex`,
+        alignItems: `center`,
+    },
     mainViewContainer: {
         display: `flex`,
     },
@@ -72,13 +77,16 @@ function Main () {
                             item
                             xs
                             className={classes.relative}
-                            id="activity-view-container"
                         >
-                            {/* <MainView /> */}
-                            <Whiteboard uniqueId="student" />
-                            {classtype == ClassType.LIVE &&  <MainView /> }
-                            {classtype == ClassType.STUDY &&  <MainStudy /> }
-                            {classtype == ClassType.CLASSES &&  <MainClass /> }
+                            {classtype == ClassType.LIVE && <div
+                                id="activity-view-container"
+                                className={classes.fullHeightCentered}
+                            >
+                                <Whiteboard uniqueId="student" />
+                                <MainView />
+                            </div> }
+                            {classtype == ClassType.STUDY && <MainClass /> }
+                            {classtype == ClassType.CLASSES && <MainClass /> }
                         </Grid>
                         <Grid
                             item
