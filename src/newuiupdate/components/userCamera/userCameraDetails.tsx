@@ -72,6 +72,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         padding : `0 0.5em`,
     },
     roleIcon:{
+        color: theme.palette.text.primary,
         margin: `0.2em`,
     },
     roleHasControlsIcon:{
@@ -86,10 +87,11 @@ const useStyles = makeStyles((theme: Theme) => ({
         "& div":{
             width: 3,
             height: 0,
+            minHeight: 3,
             borderRadius: 20,
             background: `#fff`,
             margin: 2,
-            transition: `all 20ms ease-in-out`,
+            transition: `all 10ms ease`,
         },
     },
 }));

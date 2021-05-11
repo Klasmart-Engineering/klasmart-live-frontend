@@ -1,10 +1,8 @@
-import { MaterialTypename } from "../../../../lessonMaterialContext";
 import { ContentType, Session } from "../../../../pages/room/room";
 import { LIVE_LINK, LocalSessionContext } from "../../../providers/providers";
 import { RoomContext } from "../../../providers/roomContext";
-import {
-    hasControlsState, interactiveModeState, isLessonPlanOpenState, materialActiveIndexState, streamIdState,
-} from "../../../states/layoutAtoms";
+import { hasControlsState,  materialActiveIndexState } from "../../../states/layoutAtoms";
+import { Whiteboard } from "../../../whiteboard/components/Whiteboard";
 import { MUTATION_SHOW_CONTENT } from "../../utils/graphql";
 import ActivityImage from "../../utils/interactiveContent/image";
 import { PreviewPlayer } from "../../utils/interactiveContent/previewPlayer";
@@ -12,11 +10,7 @@ import { RecordedIframe } from "../../utils/interactiveContent/recordediframe";
 import { fullScreenById } from "../../utils/utils";
 import { useMutation } from "@apollo/client";
 import {
-    Card,
-    CardActions,
-    CardContent,
-    CircularProgress,
-    Grid, Hidden, makeStyles, Theme, Tooltip, Typography, useTheme,
+    makeStyles, Theme,  Typography,
 } from "@material-ui/core";
 import { ArrowsAngleExpand as ExpandIcon } from "@styled-icons/bootstrap/ArrowsAngleExpand";
 import { Eye as ObserveIcon } from "@styled-icons/fa-regular/Eye";
@@ -24,8 +18,6 @@ import { CloudOffline as OfflineIcon } from "@styled-icons/ionicons-outline/Clou
 import React, {
     useContext, useEffect, useMemo, useRef, useState,
 } from "react";
-import { FormattedMessage } from "react-intl";
-import { useSelector } from "react-redux";
 import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -86,10 +78,7 @@ function Observe () {
     const [ studentSessions, setStudentSessions ] = useState<Session[]>([]);
 
     const [ hasControls, setHasControls ] = useRecoilState(hasControlsState);
-
     const [ materialActiveIndex, setMaterialActiveIndex ] = useRecoilState(materialActiveIndexState);
-    const [ interactiveMode, setInteractiveMode ] = useRecoilState(interactiveModeState);
-    const [ streamId, setStreamId ] = useRecoilState(streamIdState);
 
     const material = materialActiveIndex >= 0 && materialActiveIndex < materials.length ? materials[materialActiveIndex] : undefined;
 
@@ -126,6 +115,10 @@ function Observe () {
         // sessionId,
     ]);
 
+    const studentModeFilterGroups = useMemo(() => {
+        return [ sessionId ];
+    }, [ sessionId ]);
+
     if(hasControls){
         return(
             <div className={classes.fullHeight}>
@@ -137,22 +130,18 @@ function Observe () {
                 </div>
             </div>
         );
-    }
-
-    if(content && content.type === ContentType.Activity){
-        return (
-            <RecordedIframe contentId={content.contentId}  />
-        );
-
-    }
-
-    if(content && content.type === ContentType.Image){
-        return (
-            <ActivityImage material={material?.url} />
+    }else{
+        return(
+            <>
+                <Whiteboard
+                    group={sessionId}
+                    uniqueId="student"
+                    filterGroups={studentModeFilterGroups} />
+                {content && <RecordedIframe contentId={content.contentId}  />}
+            </>
         );
     }
 
-    return(null);
 }
 
 export default Observe;
@@ -190,6 +179,10 @@ function StudentPreviewCard ({ session }: { session: Session }) {
                     onClick={() => fullScreenById(`preview:${session.streamId}`) }>
                     <ExpandIcon size="0.75em" />
                 </div>
+                <Whiteboard
+                    group={session.id}
+                    uniqueId={session.id}
+                    filterGroups={filterGroups} />
                 <PreviewPlayer
                     width={width}
                     height={height}

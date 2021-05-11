@@ -30,7 +30,6 @@ const useStyles = makeStyles((theme: Theme) => ({
         padding: `0 30px`,
         "&>div":{
             minHeight: 260,
-            fontSize: `1.35rem`,
         },
     },
     gridContainerTeachers:{
@@ -69,6 +68,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         gridTemplateColumns: `repeat(7, 1fr)`,
         "&>div":{
             minHeight: 115,
+            fontSize: `0.8rem`,
         },
     },
     cameraGrid3:{

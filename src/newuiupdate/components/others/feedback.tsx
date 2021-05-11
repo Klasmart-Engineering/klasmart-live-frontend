@@ -8,6 +8,7 @@ import {
     Theme,
     Typography,
 } from "@material-ui/core";
+import amber from "@material-ui/core/colors/amber";
 import { Star as StarEmptyIcon } from "@styled-icons/bootstrap/Star";
 import { StarFill as StarFillIcon } from "@styled-icons/bootstrap/StarFill";
 import clsx from "clsx";
@@ -73,6 +74,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     submitButton:{
         marginTop: 20,
+    },
+    starIcon:{
+        color: amber[500],
     },
 }));
 
@@ -212,7 +216,11 @@ function Feedback (props:FeedbackProps){
                                     })}
                                     onClick={() => setFeedbackNote(item.value)}
                                 >
-                                    {Number(feedbackNote) >= item.value ? <StarFillIcon size="2.5rem"/> : <StarEmptyIcon size="2.5rem"/> }
+                                    {Number(feedbackNote) >= item.value ? <StarFillIcon
+                                        size="2.5rem"
+                                        className={classes.starIcon} /> : <StarEmptyIcon
+                                        size="2.5rem"
+                                        className={classes.starIcon}/> }
                                     {(feedbackNote === null || feedbackNote === item.value) && <Typography className={classes.starLabel}>{item.label}</Typography>}
                                 </div>
                             </Grid>

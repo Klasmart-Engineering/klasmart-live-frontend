@@ -45,6 +45,7 @@ function TabSettings () {
             content: <Settings />,
             disabled : false,
         },
+        /*
         {
             id: 2,
             name: `schedule`,
@@ -83,7 +84,7 @@ function TabSettings () {
             tooltip : intl.formatMessage({
                 id: `common_feature_not_available`,
             }),
-        },
+        },*/
     ];
 
     const activeTabContent = settingsTabs.find(item=> item.name === activeSettingsTab)?.content;

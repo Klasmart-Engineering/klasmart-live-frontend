@@ -181,13 +181,13 @@ function parseToken () {
                 materials:  [
                     {
                         __typename: MaterialTypename.Iframe,
-                        name: `Interactive video`,
-                        url: `/h5p/play/60588e7475aa32001244926f`,
+                        name: `Find Hotspots`,
+                        url: `/h5p/play/60989535faaa390014c2fcf3`,
                     },
                     {
                         __typename : MaterialTypename.Iframe,
-                        name : `PDf column`,
-                        url: `${process.env.ENDPOINT_TEST_ASSETS_S3 || `.`}/test_pdf.pdf`,
+                        name : `Image Pairing`,
+                        url: `/h5p/play/609894f2a0fc630014472997`,
                     },
                     {
                         __typename: MaterialTypename.Iframe,
@@ -206,13 +206,13 @@ function parseToken () {
                     },
                     {
                         __typename: MaterialTypename.Iframe,
-                        name: `Drag and drop`,
-                        url: `/h5p/play/60589f9375aa32001244928a`,
+                        name: `Course presentation 2`,
+                        url: `/h5p/play/60865f9c76be5300133fba76`,
                     },
                     {
                         __typename: MaterialTypename.Iframe,
-                        name: `Memory Game`,
-                        url: `/h5p/play/605891d02af9710014707a44`,
+                        name: `Drag and drop`,
+                        url: `/h5p/play/6040874b75aa320012448e03`,
                     },
                     {
                         __typename: MaterialTypename.Iframe,
