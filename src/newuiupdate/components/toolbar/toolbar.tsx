@@ -182,7 +182,8 @@ function Toolbar () {
 
     useEffect(() => {
         activeTab !== `mosaic` && isGlobalCanvasEnabled && setIsCanvasOpen(permissionsGlobalCanvas.allowCreateShapes);
-    }, [ permissionsGlobalCanvas.allowCreateShapes ]);
+        !isGlobalCanvasEnabled && setIsCanvasOpen(false);
+    }, [ isGlobalCanvasEnabled, permissionsGlobalCanvas.allowCreateShapes ]);
 
     useEffect(() => {
         setMicOn(webrtc.isLocalAudioEnabled(sessionId));
@@ -221,7 +222,7 @@ function Toolbar () {
                     </div>
                     <div ref={canvasRef}>
                         <ToolbarItem
-                            display={activeTab === `mosaic` ? false : hasControls ? true : permissionsGlobalCanvas.allowCreateShapes ? true : false}
+                            display={activeTab === `mosaic` ? false : hasControls ? true : isGlobalCanvasEnabled && permissionsGlobalCanvas.allowCreateShapes ? true : false}
                             icon={<CanvasIcon />}
                             label={intl.formatMessage({
                                 id: `toolbar_canvas`,

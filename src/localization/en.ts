@@ -200,5 +200,9 @@ const messages: Record<string, string> = {
     you: `You`,
 
     classtype_live: `Online`,
+    class_ended_how_was_the_class: `How was the class?`,
+    whiteboard_eraser: `Eraser`,
+    whiteboard_clear_canvas: `Clear canvas`,
+    whiteboard_clear_all_canvas: `Clear all canvas`,
 };
 export default messages;

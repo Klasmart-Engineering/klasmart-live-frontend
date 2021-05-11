@@ -1,5 +1,7 @@
+import { ContentType } from "../../../pages/room/room";
 import { ClassType } from "../../../store/actions";
 import { LocalSessionContext } from "../../providers/providers";
+import { RoomContext } from "../../providers/roomContext";
 import { Whiteboard } from "../../whiteboard/components/Whiteboard";
 import Toolbar from "../toolbar/toolbar";
 import MainClass from "./mainClass";
@@ -54,6 +56,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 function Main () {
     const classes = useStyles();
     const { classtype } = useContext(LocalSessionContext);
+    const { content } = useContext(RoomContext);
 
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
@@ -82,7 +85,7 @@ function Main () {
                                 id="activity-view-container"
                                 className={classes.fullHeightCentered}
                             >
-                                <Whiteboard uniqueId="student" />
+                                {content?.type !== ContentType.Activity && <Whiteboard uniqueId="student" />}
                                 <MainView />
                             </div> }
                             {classtype == ClassType.STUDY && <MainClass /> }
