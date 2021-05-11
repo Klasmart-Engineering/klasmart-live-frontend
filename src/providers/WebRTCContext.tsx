@@ -69,6 +69,16 @@ export const GLOBAL_MUTE_QUERY = gql`
         }
     }
 `;
+export const INDIVIDUAL_MUTE_QUERY = gql`
+    query retrieveMuteStatuses($sessionId: String!) {
+        retrieveMuteStatuses(sessionId: $sessionId) {
+            roomId,
+            sessionId,
+            audio,
+            video,
+        }
+    }
+`;
 const SUBSCRIBE = gql`
     subscription media($roomId: ID!) {
         media(roomId: $roomId) {
