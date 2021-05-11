@@ -25,7 +25,7 @@ import { FormattedMessage } from "react-intl";
 import { useSelector } from "react-redux";
 import { LocalSessionContext, SFU_LINK } from "../../entry";
 import { Session } from "../../pages/room/room";
-import { GLOBAL_MUTE_QUERY, MUTE, MuteNotification, WebRTCContext, WebRTCContextInterface } from "../../providers/WebRTCContext";
+import { GLOBAL_MUTE_QUERY, INDIVIDUAL_MUTE_QUERY, MUTE, MuteNotification, WebRTCContext, WebRTCContextInterface } from "../../providers/WebRTCContext";
 import { State } from "../../store/store";
 import PermissionControls from "../../whiteboard/components/WBPermissionControls";
 import { SessionsContext } from "../layout";
@@ -600,8 +600,17 @@ function ToggleMic({ session, sfuState, isSelf }: {
     const sessions = useContext(SessionsContext);
     const [micOn, setMicOn] = useState<boolean>(false);
     const [muteMutation] = useMutation(MUTE, {context: {target: SFU_LINK}});
-    const {refetch} = useQuery(GLOBAL_MUTE_QUERY, { variables: { roomId }, context: {target: SFU_LINK}});
+    const {refetch: refetchGlobalMute} = useQuery(GLOBAL_MUTE_QUERY, { variables: { roomId }, context: {target: SFU_LINK}});
+    const {refetch: refetchIndividualMute} = useQuery(INDIVIDUAL_MUTE_QUERY, { variables: { sessionId: session.id}, context: {target: SFU_LINK}});
     const states = useContext(WebRTCContext);
+
+    const syncMuteStatus = async () => {
+        const { data }= await refetchIndividualMute();
+    }
+
+    useEffect(() => {
+        syncMuteStatus()
+    }, [])
 
     useEffect(() => {
         if (states.isLocalAudioEnabled(session.id) !== undefined) {
@@ -639,7 +648,7 @@ function ToggleMic({ session, sfuState, isSelf }: {
     }
 
     async function toggleAudioState() {
-        const { data }= await refetch();
+        const { data }= await refetchGlobalMute();
         const audioGloballyMuted = data?.retrieveGlobalMute?.audioGloballyMuted;
         if (isSelf) {
             const localSession = sessions.get(localSessionId);
