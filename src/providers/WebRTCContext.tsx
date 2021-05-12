@@ -286,7 +286,7 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
     const isInAudioEnabled = (id?: string): boolean => {
         const stream = inboundStreams.get(`${id}_camera`)
         if (!stream) {
-            return false
+            return true
         }
         return stream.inAudioEnabled
     }
@@ -606,7 +606,7 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
 
     const streamMessage = async (stream: StreamDescription) => {
         console.log("streamMessage", stream)
-        Object.assign(stream, { videoEnabled: true, outAudioEnabled: true })
+        Object.assign(stream, { videoEnabled: true, outAudioEnabled: true, inAudioEnabled: true })
         const tracks = [] as MediaStreamTrack[]
         for (const producerId of stream.producerIds) {
             const consumer = await getConsumer(producerId)
