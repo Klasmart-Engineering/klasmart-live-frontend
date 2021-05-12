@@ -1,5 +1,6 @@
-import KidsLoopLiveStudents from "../../assets/img/kidsloop_live_students.svg";
-import KidsLoopLiveTeachers from "../../assets/img/kidsloop_live_teachers.svg";
+import KidsLoopLogoSvg from "../../assets/img/kidsloop.svg";
+import KidsLoopLiveStudents from "../../assets/img/kidsloop_live_students-resized.svg";
+import KidsLoopLiveTeachers from "../../assets/img/kidsloop_live_teachers-resized.svg";
 import KidsLoopStudyStudents from "../../assets/img/kidsloop_study_students.svg";
 import Loading from "../../components/loading";
 import Camera from "../../components/media/camera";
@@ -26,6 +27,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { InfoCircle as InfoCircleIcon } from "@styled-icons/boxicons-solid/InfoCircle";
+import clsx from "clsx";
 import LogRocket from 'logrocket';
 import React, {
     useContext, useEffect, useState,
@@ -34,8 +36,18 @@ import { FormattedMessage } from "react-intl";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
+        root:{},
+        rootTeacher:{
+            "& $headerBg": {
+                background: `linear-gradient(87deg, rgba(103,161,214,1) 0%, rgba(82,141,195,1) 100%)`,
+            },
+        },
         card: {
-            padding: `48px 40px !important`,
+            borderRadius: 20,
+            boxShadow: `0px 4px 8px 0px rgb(0 0 0 / 10%)`,
+        },
+        cardContent:{
+            padding: `22px !important`,
             [theme.breakpoints.down(`sm`)]: {
                 maxWidth: 360,
                 margin: `0 auto`,
@@ -44,15 +56,56 @@ const useStyles = makeStyles((theme: Theme) =>
         logo: {
             display: `block`,
             margin: `0 auto`,
+            marginBottom: `1rem`,
+            width: `auto`,
+            maxHeight: `26px`,
+            objectFit: `contain`,
+        },
+        header:{
+            color: `#fff`,
+            padding: `5rem 0 3rem 0`,
+        },
+        headerBg:{
+            position: `fixed`,
+            height: `620px`,
+            width: `100%`,
+            zIndex: -1,
+            top: 0,
+            left: 0,
+            background: `linear-gradient(87deg, rgba(145,102,253,1) 0%, rgba(134,90,243,1) 100%)`,
+            "&:after":{
+                content: `''`,
+                width: `200%`,
+                height: 0,
+                paddingTop: 300,
+                borderRadius: `100% 100% 0 0`,
+                background: `#fff`,
+                position: `absolute`,
+                bottom: 0,
+                left: `50%`,
+                transform: `translateX(-50%)`,
+            },
+        },
+        footer:{
+            textAlign: `center`,
+            "& img": {
+                objectFit: `contain`,
+                height: 50,
+                margin: `2rem 0`,
+                width: `auto`,
+            },
         },
     }));
 
 export default function Join (): JSX.Element {
     const { card } = useStyles();
+    const classes = useStyles();
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
 
-    const { classtype } = useContext(LocalSessionContext);
+    const {
+        classtype, name, isTeacher,
+    } = useContext(LocalSessionContext);
 
     const [ dialogOpen, setDialogOpen ] = useState<boolean>(false);
     const handleDialogClose = () => setDialogOpen(false);
@@ -185,54 +238,73 @@ export default function Join (): JSX.Element {
         }
     }, [ videoDeviceId, audioDeviceId ]);
 
-    return (<>
-        <Grid
-            container
-            direction="column"
-            justify="center"
-            alignItems="center"
-            style={{
-                height: `100%`,
-            }}
-        >
-            <Container maxWidth={classtype === ClassType.LIVE ? `lg` : `xs`}>
-                <Card>
-                    <CardContent className={card}>
-                        <Grid
-                            container
-                            direction={isSmDown ? `column-reverse` : `row`}
-                            justify="center"
-                            alignItems="center"
-                            spacing={4}
-                        >
-                            {classtype !== ClassType.LIVE ? null :
-                                <Grid
-                                    item
-                                    xs={12}
-                                    md={8}>
-                                    <CameraPreview
-                                        permissionError={permissionError}
-                                        videoStream={stream} />
-                                </Grid>
-                            }
+    return (
+        <div className={clsx(classes.root, {
+            [classes.rootTeacher]: isTeacher,
+        })}>
+            <div className={classes.header}>
+                <Typography
+                    noWrap
+                    align="center"
+                    variant="h3"
+                    style={{
+                        fontWeight: 600,
+                    }}
+                >
+                    {name ?
+                        <FormattedMessage
+                            id="hello"
+                            values={{
+                                name,
+                            }} /> : `Join your class` }
+                </Typography>
+                <div className={classes.headerBg}></div>
+            </div>
+            <Grid
+                container
+                direction="column"
+                justify="center"
+                alignItems="center"
+                style={{
+                    paddingBottom: `20px`,
+                }}
+            >
+
+                <Container maxWidth={classtype === ClassType.LIVE ? `md` : `xs`}>
+                    <Card className={classes.card}>
+                        <CardContent className={classes.cardContent}>
                             <Grid
                                 container
-                                item
-                                direction="row"
+                                direction={isSmDown ? `column-reverse` : `row`}
                                 justify="center"
                                 alignItems="center"
                                 spacing={4}
-                                xs={12}
-                                md={classtype === ClassType.LIVE ? 4 : undefined}
                             >
+                                {classtype !== ClassType.LIVE ? null :
+                                    <Grid
+                                        item
+                                        xs={12}
+                                        md={7}>
+                                        <CameraPreview
+                                            permissionError={permissionError}
+                                            videoStream={stream} />
+                                    </Grid>
+                                }
                                 <Grid
                                     item
-                                    xs={12}>
-                                    <KidsLoopLogo />
-                                </Grid>
-                                <Grid
-                                    item
-                                    xs={12}>
+                                    xs={12}
+                                    md={classtype === ClassType.LIVE ? 5 : undefined}
+                                >
+                                    <Grid
+                                        container
+                                        direction="column"
+                                        justify="center"
+                                        alignItems="center"
+                                    >
+                                        <Grid item>
+                                            <KidsLoopLogo />
+                                        </Grid>
+                                    </Grid>
                                     <JoinRoomForm
                                         mediaDeviceError={permissionError || loadError}
                                         stream={stream}
@@ -249,16 +321,19 @@ export default function Join (): JSX.Element {
                                     />
                                 </Grid>
                             </Grid>
-                        </Grid>
-                    </CardContent>
-                </Card>
-            </Container>
-        </Grid>
-        <PermissionAlertDialog dialogOpenHandler={{
-            dialogOpen,
-            handleDialogClose,
-        }} />
-    </>);
+                        </CardContent>
+                    </Card>
+                    <div className={classes.footer}>
+                        <img src={KidsLoopLogoSvg} />
+                    </div>
+                </Container>
+            </Grid>
+            <PermissionAlertDialog dialogOpenHandler={{
+                dialogOpen,
+                handleDialogClose,
+            }} />
+        </div>
+    );
 }
 
 function CameraPreview ({ permissionError, videoStream }: {
@@ -401,39 +476,25 @@ function JoinRoomForm ({
         <form onSubmit={join}>
             <Grid
                 container
+                direction="column"
                 spacing={2}>
-                <Grid
+
+                {!name && <Grid
                     item
-                    xs={12}>
-                    {name ?
-                        <Tooltip
-                            placement="top"
-                            title={name}>
-                            <Typography
-                                noWrap
-                                align="center"
-                                variant="body1">
-                                <FormattedMessage
-                                    id="hello"
-                                    values={{
-                                        name,
-                                    }} />
-                            </Typography>
-                        </Tooltip> :
-                        <StyledTextField
-                            fullWidth
-                            label={<FormattedMessage id="what_is_your_name" />}
-                            value={user}
-                            error={nameError !== null}
-                            helperText={nameError}
-                            onChange={(e) => setUser(e.target.value)}
-                        />
-                    }
-                </Grid>
+                    xs><StyledTextField
+                        fullWidth
+                        label={<FormattedMessage id="what_is_your_name" />}
+                        value={user}
+                        error={nameError !== null}
+                        helperText={nameError}
+                        onChange={(e) => setUser(e.target.value)}
+                    /></Grid>
+                }
+
                 {classtype !== ClassType.LIVE ? null :
                     <Grid
                         item
-                        xs={12}>
+                        xs>
                         <MediaDeviceSelect
                             disabled={videoDeviceOptions.length <= 1}
                             deviceType="video"
@@ -445,7 +506,7 @@ function JoinRoomForm ({
                 }
                 <Grid
                     item
-                    xs={12}>
+                    xs>
                     <MediaDeviceSelect
                         disabled={audioDeviceOptions.length <= 1}
                         deviceType="audio"
@@ -456,7 +517,7 @@ function JoinRoomForm ({
                 </Grid>
                 <Grid
                     item
-                    xs={12}>
+                    xs>
                     <StyledButton
                         fullWidth
                         disabled={mediaDeviceError || !stream}

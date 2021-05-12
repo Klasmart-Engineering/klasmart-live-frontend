@@ -15,9 +15,11 @@ import {
 import { ArrowsAngleExpand as ExpandIcon } from "@styled-icons/bootstrap/ArrowsAngleExpand";
 import { Eye as ObserveIcon } from "@styled-icons/fa-regular/Eye";
 import { CloudOffline as OfflineIcon } from "@styled-icons/ionicons-outline/CloudOffline";
+import { useSnackbar } from "kidsloop-px";
 import React, {
     useContext, useEffect, useMemo, useRef, useState,
 } from "react";
+import { useIntl } from "react-intl";
 import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -70,16 +72,15 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 function Observe () {
     const classes = useStyles();
-
+    const intl = useIntl();
+    const { enqueueSnackbar } = useSnackbar();
     const {
-        materials, sessionId, roomId,
+        materials, sessionId, roomId, isTeacher,
     } = useContext(LocalSessionContext);
     const { content, sessions } = useContext(RoomContext);
     const [ studentSessions, setStudentSessions ] = useState<Session[]>([]);
-
     const [ hasControls, setHasControls ] = useRecoilState(hasControlsState);
     const [ materialActiveIndex, setMaterialActiveIndex ] = useRecoilState(materialActiveIndexState);
-
     const material = materialActiveIndex >= 0 && materialActiveIndex < materials.length ? materials[materialActiveIndex] : undefined;
 
     const [ showContent, { loading: loadingShowContent } ] = useMutation(MUTATION_SHOW_CONTENT, {
@@ -90,6 +91,11 @@ function Observe () {
 
     useEffect(() => {
         setMaterialActiveIndex(0);
+        if(!isTeacher){
+            enqueueSnackbar(intl.formatMessage({
+                id: `notification_observe_content_interactive`,
+            }));
+        }
     }, []);
 
     useEffect(() => {
@@ -119,7 +125,7 @@ function Observe () {
         return [ sessionId ];
     }, [ sessionId ]);
 
-    if(hasControls){
+    if(isTeacher){
         return(
             <div className={classes.fullHeight}>
                 <div className={classes.root}>

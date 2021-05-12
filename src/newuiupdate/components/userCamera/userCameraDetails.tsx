@@ -85,13 +85,12 @@ const useStyles = makeStyles((theme: Theme) => ({
         marginLeft: 5,
 
         "& div":{
-            width: 3,
+            width: 4,
             height: 0,
-            minHeight: 3,
-            borderRadius: 20,
+            minHeight: 4,
+            borderRadius: 10,
             background: `#fff`,
-            margin: 2,
-            transition: `all 10ms ease`,
+            margin: 1,
         },
     },
 }));
