@@ -342,8 +342,8 @@ function MicIndicator({ sessionId }: { sessionId: string }) {
     const [micOn, setMicOn] = useState<boolean>(false);
 
     useEffect(() => {
-        setMicOn(sfuState.isLocalAudioEnabled(sessionId))
-    }, [sfuState.isLocalAudioEnabled(sessionId)])
+        setMicOn(sfuState.isOutAudioEnabled(sessionId) && sfuState.isInAudioEnabled(sessionId))
+    }, [sfuState.isOutAudioEnabled(sessionId), sfuState.isInAudioEnabled(sessionId)])
 
     return (micOn ? <></> :
         <Grid
@@ -598,8 +598,8 @@ function ToggleMic({ session, sfuState, isSelf }: {
     const { noHoverIcon, moreControlsMenuItem } = useStyles();
     const { roomId, sessionId: localSessionId } = useContext(LocalSessionContext);
     const sessions = useContext(SessionsContext);
-    const [outAudionOn, setOutAudioOn] = useState<boolean>(false);
-    const [inAudionOn, setInAudioOn] = useState<boolean>(true);
+    const [outAudioOn, setOutAudioOn] = useState<boolean>(false);
+    const [inAudioOn, setInAudioOn] = useState<boolean>(true);
     const [muteMutation] = useMutation(MUTE, {context: {target: SFU_LINK}});
     const {refetch: refetchGlobalMute} = useQuery(GLOBAL_MUTE_QUERY, { variables: { roomId }, context: {target: SFU_LINK}});
     const {refetch: refetchIndividualMute} = useQuery(INDIVIDUAL_MUTE_QUERY, { variables: { sessionId: session.id}, context: {target: SFU_LINK}});
@@ -615,10 +615,10 @@ function ToggleMic({ session, sfuState, isSelf }: {
     }, [])
 
     useEffect(() => {
-        if (states.isLocalAudioEnabled(session.id) !== undefined) {
-            setOutAudioOn(states.isLocalAudioEnabled(session.id));
+        if (states.isOutAudioEnabled(session.id) !== undefined) {
+            setOutAudioOn(states.isOutAudioEnabled(session.id));
         }
-    }, [states.isLocalAudioEnabled(session.id)])
+    }, [states.isOutAudioEnabled(session.id)])
 
     async function toggleInboundAudioState() {
         const localSession = sessions.get(localSessionId);
@@ -626,14 +626,15 @@ function ToggleMic({ session, sfuState, isSelf }: {
             const notification: MuteNotification = {
                 roomId,
                 sessionId: session.id,
-                audio: !outAudionOn
+                audio: !outAudioOn
             }
             const muteNotification = await muteMutation({ variables: notification })
             if (muteNotification?.data?.mute?.audio != null) {
                 setOutAudioOn(muteNotification.data.mute.audio)
             }
-        } else if (outAudionOn){
-            setInAudioOn(!inAudionOn)
+        } else {
+            states.inAudioToggle(session.id)
+            setInAudioOn(!inAudioOn)
         }
     }
 
@@ -641,7 +642,7 @@ function ToggleMic({ session, sfuState, isSelf }: {
         const notification: MuteNotification = {
             roomId,
             sessionId: session.id,
-            audio: !outAudionOn
+            audio: !outAudioOn
         }
         const muteNotification = await muteMutation({ variables: notification })
         if (muteNotification?.data?.mute?.audio != null) {
@@ -669,9 +670,9 @@ function ToggleMic({ session, sfuState, isSelf }: {
     return (
         <MenuItem onClick={toggleAudioState} className={moreControlsMenuItem}>
             <ListItemIcon>
-                <StyledIcon icon={outAudionOn && inAudionOn ? <MicrophoneOnIcon className={noHoverIcon} /> : <MicrophoneOffIcon className={noHoverIcon} />} size="medium" color={outAudionOn && inAudionOn ? PRIMARY_COLOR : SECONDARY_COLOR} />
+                <StyledIcon icon={outAudioOn && inAudioOn ? <MicrophoneOnIcon className={noHoverIcon} /> : <MicrophoneOffIcon className={noHoverIcon} />} size="medium" color={outAudioOn && inAudioOn ? PRIMARY_COLOR : SECONDARY_COLOR} />
             </ListItemIcon>
-            {outAudionOn && inAudionOn ? <FormattedMessage id="turn_off_mic" /> : <FormattedMessage id="turn_on_mic" />}
+            {outAudioOn && inAudioOn ? <FormattedMessage id="turn_off_mic" /> : <FormattedMessage id="turn_on_mic" />}
         </MenuItem>
     )
 }
