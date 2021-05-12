@@ -55,7 +55,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 function Main () {
     const classes = useStyles();
-    const { classtype } = useContext(LocalSessionContext);
+    const { classtype, isTeacher } = useContext(LocalSessionContext);
     const { content } = useContext(RoomContext);
 
     const theme = useTheme();
@@ -85,7 +85,7 @@ function Main () {
                                 id="activity-view-container"
                                 className={classes.fullHeightCentered}
                             >
-                                {content?.type !== ContentType.Activity && <Whiteboard uniqueId="student" />}
+                                {content?.type !== ContentType.Activity && <Whiteboard uniqueId={isTeacher ? `global` : `student`} />}
                                 <MainView />
                             </div> }
                             {classtype == ClassType.STUDY && <MainClass /> }

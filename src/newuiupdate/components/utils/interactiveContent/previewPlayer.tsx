@@ -148,7 +148,7 @@ export function PreviewPlayer ({
             id={`preview:${streamId}`}
             style={{
                 visibility: loading ? `hidden` : `visible`,
-                transformOrigin: `top left`,
+                transformOrigin: `center top`,
                 transform: `scale(${transformScale})`,
                 position: `absolute`,
                 top: `0`,

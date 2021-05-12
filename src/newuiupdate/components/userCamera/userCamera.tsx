@@ -30,14 +30,14 @@ const useStyles = makeStyles((theme: Theme) => ({
         overflow: `hidden`,
         order: 99,
         "& video": {
-            // objectFit: `cover`,
+            objectFit: `cover`,
         },
     },
     rootSmall:{},
     rootLarge:{
         fontSize: `1.5rem`,
         "& video": {
-            // objectFit: `contain`,
+            objectFit: `contain`,
         },
     },
     video:{
@@ -69,7 +69,7 @@ function UserCamera (props: UserCameraType) {
     const classes = useStyles();
     const [ isHover, setIsHover ] = useState(false);
 
-    const enableSpeakingActivity = true;
+    const enableSpeakingActivity = false;
     const [ isSpeaking, setIsSpeaking ] = useState(false);
     const [ speakingActivity, setSpeakingActivity ] = useState(0);
 
@@ -123,16 +123,6 @@ function UserCamera (props: UserCameraType) {
 
     useEffect(() => {
         setCamOn(webrtc.isLocalVideoEnabled(user.id));
-
-        const userCameraTracks = userCamera?.getTracks();
-
-        if(userCameraTracks){
-            userCameraTracks.forEach( (track:any) => {
-                if(track.kind === `video` && track.enabled === false){
-                    setCamOn(false);
-                }
-            });
-        }
     }, [ webrtc.isLocalVideoEnabled(user.id) ]);
 
     useEffect(() => {
