@@ -342,6 +342,7 @@ function MicIndicator({ sessionId }: { sessionId: string }) {
     const [micOn, setMicOn] = useState<boolean>(false);
 
     useEffect(() => {
+        console.log(sfuState.isOutAudioEnabled(sessionId), sfuState.isInAudioEnabled(sessionId))
         setMicOn(sfuState.isOutAudioEnabled(sessionId) && sfuState.isInAudioEnabled(sessionId))
     }, [sfuState.isOutAudioEnabled(sessionId), sfuState.isInAudioEnabled(sessionId)])
 
