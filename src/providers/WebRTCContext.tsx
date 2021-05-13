@@ -111,7 +111,9 @@ export interface WebRTCContextInterface {
     isAudioDisabledLocally: (id?: string) => boolean,
     toggleVideoByProducer: (id?: string) => void,
     isVideoEnabledByProducer: (id?: string) => boolean,
-    enableVideoByProducer: (id?: string) => void,
+    enableVideoByProducer: (id?: string, enabled?: boolean) => void,
+    toggleLocalVideo: (id?: string) => void,
+    isVideoDisabledLocally: (id?: string) => boolean,
     inboundStreams: Map<string, StreamDescription>,
 }
 
@@ -126,7 +128,9 @@ const defaultWebRTCContext = {
     isAudioDisabledLocally: (id?: string) => {return false},
     toggleVideoByProducer: (id?: string) => {},
     isVideoEnabledByProducer: (id?: string) => {return false},
-    enableVideoByProducer: (id?: string) => {},
+    enableVideoByProducer: (id?: string, enabled?: boolean) => {},
+    toggleLocalVideo: (id?: string) => {},
+    isVideoDisabledLocally: (id?: string) => {return false},
     inboundStreams: new Map<string, StreamDescription>(),
 }
 
@@ -361,6 +365,29 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
             consumer.track.enabled = stream.videoEnabledByProducer
             setConsumers(new Map(consumers.set(consumer.producerId, consumer)));
         }
+    }
+
+    const toggleLocalVideo = (id?: string): void => {
+        const stream = inboundStreams.get(`${id}_camera`)
+        const videoProducerId = stream?.producerIds?.find(id => consumers.get(id)?.track?.kind === "video") ?? "";
+        const consumer = consumers.get(videoProducerId);
+
+        if (!stream || !consumer) {
+            return
+        }
+
+        stream.videoDisabledLocally = !stream.videoDisabledLocally
+        setInboundStreams(new Map(inboundStreams.set(stream.id, stream)));
+        consumer.track.enabled = !stream.videoDisabledLocally
+        setConsumers(new Map(consumers.set(consumer.producerId, consumer)));
+    }
+
+    const isVideoDisabledLocally = (id?: string): boolean => {
+        const stream = inboundStreams.get(`${id}_camera`)
+        if (!stream) {
+            return false
+        }
+        return stream.videoDisabledLocally
     }
 
     const initDevice = async () => {
@@ -598,7 +625,7 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
 
     const streamMessage = async (stream: StreamDescription) => {
         console.log("streamMessage", stream)
-        Object.assign(stream, { videoEnabledByProducer: true, audioEnabledByProducer: true, audioDisabledLocally: false })
+        Object.assign(stream, { videoEnabledByProducer: true, audioEnabledByProducer: true, audioDisabledLocally: false, videoDisabledLocally: false})
         const tracks = [] as MediaStreamTrack[]
         for (const producerId of stream.producerIds) {
             const consumer = await getConsumer(producerId)
@@ -648,6 +675,8 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
         toggleVideoByProducer,
         isVideoEnabledByProducer,
         enableVideoByProducer,
+        toggleLocalVideo,
+        isVideoDisabledLocally,
         inboundStreams,
     }
 
