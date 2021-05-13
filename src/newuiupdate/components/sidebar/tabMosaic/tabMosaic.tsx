@@ -4,7 +4,6 @@ import {
     activeTabState,
     isChatOpenState,
     mosaicViewSizeState,
-    usersState,
 } from "../../../states/layoutAtoms";
 import Chat from "../../main/chat/chat";
 import Toolbar from "../../toolbar/toolbar";

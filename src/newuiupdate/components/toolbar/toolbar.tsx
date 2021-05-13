@@ -7,7 +7,6 @@ import {
 import {
     activeTabState,
     hasControlsState,
-    interactiveModeState,
     isActiveGlobalScreenshareState,
     isCanvasOpenState,
     isChatOpenState,
@@ -16,8 +15,6 @@ import {
     isLessonPlanOpenState,
     isViewModesOpenState,
     unreadMessagesState,
-    userState,
-    videoGloballyMutedState,
 } from "../../states/layoutAtoms";
 import { useSynchronizedState } from "../../whiteboard/context-providers/SynchronizedStateProvider";
 import { DialogEndClass, DialogLeaveClass } from "../utils/endCall";
@@ -95,10 +92,8 @@ function Toolbar () {
     const [ isChatOpen, setIsChatOpen ] = useRecoilState(isChatOpenState);
     const [ isClassDetailsOpen, setIsClassDetailsOpen ] = useRecoilState(isClassDetailsOpenState);
     const [ isCanvasOpen, setIsCanvasOpen ] = useRecoilState(isCanvasOpenState);
-    const [ interactiveMode, setInteractiveMode ] = useRecoilState(interactiveModeState);
     const [ unreadMessages, setUnreadMessages ] = useRecoilState(unreadMessagesState);
     const [ hasControls, setHasControls ] = useRecoilState(hasControlsState);
-    const [ videoGloballyMuted, setVideoGloballyMuted ] = useRecoilState(videoGloballyMutedState);
 
     const theme = useTheme();
     const isMdDown = useMediaQuery(theme.breakpoints.down(`md`));

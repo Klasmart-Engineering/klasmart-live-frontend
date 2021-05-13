@@ -6,10 +6,7 @@ import { RoomContext } from "../../../../providers/roomContext";
 import { ScreenShareContext } from "../../../../providers/screenShareProvider";
 import { GLOBAL_MUTE_MUTATION,  GlobalMuteNotification } from "../../../../providers/WebRTCContext";
 import {
-    isActiveGlobalMuteAudioState,
-    isActiveGlobalMuteVideoState,
     isGlobalActionsOpenState,
-    pinnedUserState,
     videoGloballyMutedState,
 } from "../../../../states/layoutAtoms";
 import { MUTATION_REWARD_TROPHY } from "../../../utils/graphql";
@@ -50,7 +47,6 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
     const [ isGlobalActionsOpen, setIsGlobalActionsOpen ] = useRecoilState(isGlobalActionsOpenState);
     const [ videoGloballyMuted, setVideoGloballyMuted ] = useRecoilState(videoGloballyMutedState);
 
-    const [ pinnedUser, setPinnedUser ] = useRecoilState(pinnedUserState);
     const [ camerasOn, setCamerasOn ] = useState(true);
     const [ micsOn, setMicsOn ] = useState(true);
     const { roomId, sessionId } = useContext(LocalSessionContext);
@@ -85,7 +81,6 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
         }else{
             screenShare.start();
         }
-        setPinnedUser(undefined);
     };
 
     async function toggleVideoStates (isOn?: boolean) {
