@@ -104,12 +104,12 @@ export interface WebRTCContextInterface {
     getAuxStream: (sessionId: string) => MediaStream | undefined
     getCameraStream: (sessionId: string) => MediaStream | undefined
     transmitStream: (id: string, stream: MediaStream, simulcast: boolean) => Promise<MediaSoup.Producer[]>
-    outAudioToggle: (id?: string) => void,
-    isOutAudioEnabled: (id?: string) => boolean,
-    outAudioEnable: (id?: string) => void,
-    inAudioToggle: (id?: string) => void,
-    isInAudioEnabled: (id?: string) => boolean,
-    inAudioEnable: (id?: string) => void,
+    audioToggle: (id?: string) => void,
+    isAudioEnabled: (id?: string) => boolean,
+    audioEnable: (id?: string, enabled?: boolean) => void,
+    localAudioMuteToggle: (id?: string) => void,
+    isLocalAudioMuted: (id?: string) => boolean,
+    localAudioMute: (id?: string) => void,
     localVideoToggle: (id?: string) => void,
     isLocalVideoEnabled: (id?: string) => boolean,
     localVideoEnable: (id?: string) => void,
@@ -120,12 +120,12 @@ const defaultWebRTCContext = {
     getAuxStream: (sessionId: string) => {return undefined},
     getCameraStream: (sessionId: string) => {return undefined},
     transmitStream: async (id: string, stream: MediaStream, simulcast = true) => {return []},
-    outAudioToggle: (id?: string) => {},
-    isOutAudioEnabled: (id?: string) => {return false},
-    outAudioEnable: (id?: string) => {},
-    inAudioToggle: (id?: string) => {},
-    isInAudioEnabled: (id?: string) => {return false},
-    inAudioEnable: (id?: string) => {},
+    audioToggle: (id?: string) => {},
+    isAudioEnabled: (id?: string) => {return false},
+    audioEnable: (id?: string, enabled?: boolean) => {},
+    localAudioMuteToggle: (id?: string) => {},
+    isLocalAudioMuted: (id?: string) => {return false},
+    localAudioMute: (id?: string) => {},
     localVideoToggle: (id?: string) => {},
     isLocalVideoEnabled: (id?: string) => {return false},
     localVideoEnable: (id?: string) => {},
@@ -211,7 +211,7 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
             producers.push(producer)
         }
         console.log(`Got producers`)
-        setOutboundStreams(new Map(outboundStreams.set(id, {id, producers, outAudioEnabled: true, videoEnabled: true})));
+        setOutboundStreams(new Map(outboundStreams.set(id, {id, producers, audioEnabled: true, videoEnabled: true})));
         const producerIds = producers.map(producer => producer.id);
         console.log(`Stream()(${producerIds})`)
         const { errors } = await streamMutation({ variables: { id, producerIds } })
@@ -222,21 +222,21 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
         return producers
     }
 
-    const outAudioToggle = (id?: string): void => {
-        return outAudioEnable(id);
+    const audioToggle = (id?: string): void => {
+        return audioEnable(id);
     }
 
-    const isOutAudioEnabled = (id?: string): boolean => {
+    const isAudioEnabled = (id?: string): boolean => {
         const stream = id === undefined || id === localSessionId
             ? outboundStreams.get("camera")
             : inboundStreams.get(`${id}_camera`)
         if (!stream) {
             return false
         }
-        return stream.outAudioEnabled
+        return stream.audioEnabled
     }
 
-    const outAudioEnable = (id?: string, enabled?: boolean): void => {
+    const audioEnable = (id?: string, enabled?: boolean): void => {
         if (id === undefined || id === localSessionId) {
             // My Camera
             const stream = outboundStreams.get("camera")
@@ -244,16 +244,16 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
                 return
             }
             if (enabled === undefined) {
-                enabled = !stream.outAudioEnabled
+                enabled = !stream.audioEnabled
             }
-            if (stream.outAudioEnabled !== enabled) {
-                stream.outAudioEnabled = enabled
+            if (stream.audioEnabled !== enabled) {
+                stream.audioEnabled = enabled
                 setOutboundStreams(new Map(outboundStreams.set(stream.id, stream)));
             }
 
             for (const producer of stream.producers) {
-                if (producer.kind === "audio" && stream.outAudioEnabled === producer.paused) {
-                    if (stream.outAudioEnabled) {
+                if (producer.kind === "audio" && stream.audioEnabled === producer.paused) {
+                    if (stream.audioEnabled) {
                         producer.resume()
                     } else {
                         producer.pause()
@@ -270,28 +270,28 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
                 return
             }
 
-            if (stream.outAudioEnabled !== enabled) {
-                stream.outAudioEnabled = enabled ?? !stream.outAudioEnabled
+            if (stream.audioEnabled !== enabled) {
+                stream.audioEnabled = enabled ?? !stream.audioEnabled
                 setInboundStreams(new Map(inboundStreams.set(stream.id, stream)));
             }
-            consumer.track.enabled = stream.outAudioEnabled;
+            consumer.track.enabled = stream.audioEnabled;
             setConsumers(new Map(consumers.set(consumer.producerId, consumer)));
         }
     }
 
-    const inAudioToggle = (id?: string): void => {
-        return inAudioEnable(id);
+    const localAudioMuteToggle = (id?: string): void => {
+        return localAudioMute(id);
     }
 
-    const isInAudioEnabled = (id?: string): boolean => {
+    const isLocalAudioMuted = (id?: string): boolean => {
         const stream = inboundStreams.get(`${id}_camera`)
         if (!stream) {
-            return true
+            return false
         }
-        return stream.inAudioEnabled
+        return stream.localAudioMuted
     }
 
-    const inAudioEnable = (id?: string, enabled?: boolean): void => {
+    const localAudioMute = (id?: string, enabled?: boolean): void => {
         const stream = inboundStreams.get(`${id}_camera`)
         const audioProducerId = stream?.producerIds?.find(id => consumers.get(id)?.track?.kind === "audio") ?? "";
         const consumer = consumers.get(audioProducerId);
@@ -300,11 +300,11 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
             return
         }
 
-        if (stream.inAudioEnabled !== enabled) {
-            stream.inAudioEnabled = enabled ?? !stream.inAudioEnabled
+        if (stream.localAudioMuted !== enabled) {
+            stream.localAudioMuted = enabled ?? !stream.localAudioMuted
             setInboundStreams(new Map(inboundStreams.set(stream.id, stream)));
         }
-        consumer.track.enabled = stream.inAudioEnabled;
+        consumer.track.enabled = stream.localAudioMuted;
         setConsumers(new Map(consumers.set(consumer.producerId, consumer)));
     }
 
@@ -606,7 +606,7 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
 
     const streamMessage = async (stream: StreamDescription) => {
         console.log("streamMessage", stream)
-        Object.assign(stream, { videoEnabled: true, outAudioEnabled: true, inAudioEnabled: true })
+        Object.assign(stream, { videoEnabled: true, audioEnabled: true, localAudioMuted: false })
         const tracks = [] as MediaStreamTrack[]
         for (const producerId of stream.producerIds) {
             const consumer = await getConsumer(producerId)
@@ -618,10 +618,10 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
 
     const muteMessage = (muteNotification: MuteNotification) => {
         console.log("muteMessage", muteNotification)
-        if (muteNotification.audio && !isOutAudioEnabled(muteNotification.sessionId)) {
-            outAudioToggle(muteNotification.sessionId)
-        } else if (muteNotification.audio === false && isOutAudioEnabled(muteNotification.sessionId)) {
-            outAudioToggle(muteNotification.sessionId)
+        if (muteNotification.audio && !isAudioEnabled(muteNotification.sessionId)) {
+            audioToggle(muteNotification.sessionId)
+        } else if (muteNotification.audio === false && isAudioEnabled(muteNotification.sessionId)) {
+            audioToggle(muteNotification.sessionId)
         }
         if (muteNotification.video && !isLocalVideoEnabled(muteNotification.sessionId)) {
             localVideoToggle(muteNotification.sessionId)
@@ -648,12 +648,12 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
         getAuxStream,
         getCameraStream,
         transmitStream,
-        outAudioToggle,
-        isOutAudioEnabled,
-        outAudioEnable,
-        inAudioToggle,
-        isInAudioEnabled,
-        inAudioEnable,
+        audioToggle,
+        isAudioEnabled,
+        audioEnable,
+        localAudioMuteToggle,
+        isLocalAudioMuted,
+        localAudioMute,
         localVideoToggle,
         isLocalVideoEnabled,
         localVideoEnable,
@@ -731,8 +731,8 @@ interface StreamDescription {
     sessionId: string
     producerIds: string[]
     videoEnabled: boolean
-    inAudioEnabled: boolean
-    outAudioEnabled: boolean
+    localAudioMuted: boolean
+    audioEnabled: boolean
     stream?: MediaStream
 }
 
@@ -740,7 +740,7 @@ interface Stream {
     id: string
     producers: MediaSoup.Producer[]
     videoEnabled: boolean
-    outAudioEnabled: boolean
+    audioEnabled: boolean
 }
 
 export interface MuteNotification {
