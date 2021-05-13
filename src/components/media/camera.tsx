@@ -118,12 +118,12 @@ export default function Camera({
     }, [videoRef.current, mediaStream]);
 
     useEffect(() => {
-        if (webRTCContext.isLocalVideoEnabled(session?.id) || !session) return;
+        if (webRTCContext.isVideoEnabledByProducer(session?.id) || !session) return;
         const videoEl = document.getElementById(cameraId) as HTMLVideoElement;
         if (videoEl) {
             videoEl.load();
         }
-    }, [webRTCContext.isLocalVideoEnabled(session?.id)]);
+    }, [webRTCContext.isVideoEnabledByProducer(session?.id)]);
 
     const cameraRef = useRef<HTMLDivElement>(null);
     return (
@@ -507,27 +507,27 @@ function ToggleCamera({ session, sfuState, isSelf, cameraRef }: {
     // const isCameraVisible = useIsElementInViewport(cameraRef);
 
     useEffect(() => {
-        if (isLoading && sfuState.isLocalVideoEnabled(session.id)) {
+        if (isLoading && sfuState.isVideoEnabledByProducer(session.id)) {
             setIsLoading(false);
         }
-    }, [sfuState.isLocalVideoEnabled(session.id)])
+    }, [sfuState.isVideoEnabledByProducer(session.id)])
 
     // NOTE: This is the logic for the frontend performance. If this logic goes well, we will restore it again.
     // useEffect(() => {
     //     if (isLoading) { return; }
     //     const isVisible = drawerTabIndex !== 0 || isCameraVisible;
-    //     if ((isVisible && !sfuState.isLocalVideoEnabled(sessionId) && !isVideoManuallyDisabled) ||
-    //         (!isCameraVisible && sfuState.isLocalVideoEnabled(sessionId))) {
+    //     if ((isVisible && !sfuState.isVideoEnabledByProducer(sessionId) && !isVideoManuallyDisabled) ||
+    //         (!isCameraVisible && sfuState.isVideoEnabledByProducer(sessionId))) {
     //         const stream = sfuState.getCameraStream(sessionId);
     //         toggleInboundVideoState(stream);
     //     }
     // }, [isCameraVisible, drawerTabIndex]);
 
     useEffect(() => {
-        if (states.isLocalVideoEnabled(session.id) !== undefined) {
-            setCameraOn(states.isLocalVideoEnabled(session.id));
+        if (states.isVideoEnabledByProducer(session.id) !== undefined) {
+            setCameraOn(states.isVideoEnabledByProducer(session.id));
         }
-    }, [states.isLocalVideoEnabled(session.id)])
+    }, [states.isVideoEnabledByProducer(session.id)])
 
     async function toggleInboundVideoState() {
         const localSession = sessions.get(localSessionId);
@@ -542,7 +542,7 @@ function ToggleCamera({ session, sfuState, isSelf, cameraRef }: {
                 setCameraOn(muteNotification.data.mute.video)
             }
         } else {
-            states.localVideoToggle(session.id);
+            states.toggleVideoByProducer(session.id);
         }
     }
 
@@ -573,7 +573,7 @@ function ToggleCamera({ session, sfuState, isSelf, cameraRef }: {
             }
             await toggleInboundVideoState();
         }
-        setIsVideoManuallyDisabled(!sfuState.isLocalVideoEnabled(session.id));
+        setIsVideoManuallyDisabled(!sfuState.isVideoEnabledByProducer(session.id));
     }
 
     return (
