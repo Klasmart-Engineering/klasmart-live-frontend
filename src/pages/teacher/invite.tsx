@@ -9,13 +9,13 @@ import Tooltip from "@material-ui/core/Tooltip";
 import { ContentCopy as CopyIcon } from "@styled-icons/material/ContentCopy";
 
 import StyledTextField from "../../components/styled/textfield"
-import { useUserContext } from "../../context-provider/user-context";
+import { useSessionContext } from "../../context-provider/session-context";
 
 export default function InviteButton(): JSX.Element {
     const theme = useTheme();
     const [openSnackbar, toggleSnackbar] = useState(false);
 
-    const { roomId } = useUserContext();
+    const { roomId } = useSessionContext();
     const url = useMemo(() => {
         let url = new URL(window.location.href);
         url.href = url.origin + url.pathname;

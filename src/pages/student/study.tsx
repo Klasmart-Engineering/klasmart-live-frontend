@@ -15,7 +15,7 @@ import { State } from "../../store/store";
 import { setContentIndex } from "../../store/reducers/control";
 import { useHttpEndpoint } from "../../context-provider/region-select-context";
 import { useServices } from "../../context-provider/services-provider";
-import { useUserContext } from "../../context-provider/user-context";
+import { useSessionContext } from "../../context-provider/session-context";
 import { MaterialTypename } from "../../lessonMaterialContext";
 import { ContentResponse } from "../../services/cms/IContentService";
 import StyledFAB from "../../components/styled/fabButton";
@@ -30,7 +30,7 @@ const initialHref = location.href;
 export default function Study(): JSX.Element {
     const theme = useTheme();
     const dispatch = useDispatch();
-    const { materials } = useUserContext();
+    const { materials } = useSessionContext();
     const firstIndexOfFeaturedContents = materials.length;
 
     const { contentService } = useServices();
@@ -181,7 +181,7 @@ export default function Study(): JSX.Element {
 
 // TODO (Isu): Resizing
 function StudyContent({ contentUrl }: { contentUrl: string }) {
-    const { sessionId } = useUserContext();
+    const { sessionId } = useSessionContext();
     const iframeRef = useRef<HTMLIFrameElement>(null);
 
     return (<>

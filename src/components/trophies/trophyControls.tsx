@@ -3,19 +3,17 @@ import Grid from '@material-ui/core/Grid/Grid';
 import IconButton from '@material-ui/core/IconButton/IconButton';
 import useTheme from '@material-ui/core/styles/useTheme';
 import useMediaQuery from '@material-ui/core/useMediaQuery/useMediaQuery';
+import { useSessionContext } from '../../context-provider/session-context';
+import React, { ReactChild, ReactChildren } from 'react';
+import StyledIcon from "../../components/styled/icon";
+import { MUTATION_REWARD_TROPHY } from '../../webRTCState';
+import { getRandomKind } from './trophyKind';
+
 import { EmojiEvents as TrophyIcon } from "@styled-icons/material/EmojiEvents";
 import { Favorite as HeartIcon } from "@styled-icons/material/Favorite";
 import { Star as StarIcon } from "@styled-icons/material/Star";
 import { ThumbUp as EncourageIcon } from "@styled-icons/material/ThumbUp";
-import { gql } from 'apollo-boost';
-import { useMutation } from '@apollo/react-hooks';
-import StyledIcon from "../../components/styled/icon";
-import { useUserContext } from '../../context-provider/user-context';
-import React, { ReactChild, ReactChildren, useContext } from 'react';
-import StyledIcon from "../../components/styled/icon";
-import { LIVE_LINK, LocalSessionContext } from '../../entry';
-import { MUTATION_REWARD_TROPHY } from '../../webRTCState';
-import { getRandomKind } from './trophyKind';
+import { SESSION_LINK_LIVE } from '../../context-provider/live-session-link-context';
 
 type Props = {
     children?: ReactChild | ReactChildren | null
@@ -26,8 +24,8 @@ export default function TrophyControls({ children, otherUserId }: Props): JSX.El
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
 
-    const { roomId } = useUserContext();
-    const [rewardTrophyMutation] = useMutation(MUTATION_REWARD_TROPHY, {context: {target: LIVE_LINK}});
+    const { roomId } = useSessionContext();
+    const [rewardTrophyMutation] = useMutation(MUTATION_REWARD_TROPHY, {context: {target: SESSION_LINK_LIVE}});
     const rewardTrophy = (user: string, kind: string) => rewardTrophyMutation({ variables: { roomId, user, kind } });
 
     return (

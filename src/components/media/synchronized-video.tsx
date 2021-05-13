@@ -16,7 +16,7 @@ import { videoUnmuteOverlay } from "../../utils/layerValues";
 import { getContentHref } from "../../utils/contentUtils";
 import { useSelector } from "react-redux";
 import { State } from "../../store/store";
-import { useUserContext } from "../../context-provider/user-context";
+import { useSessionContext } from "../../context-provider/session-context";
 import { useHttpEndpoint } from "../../context-provider/region-select-context";
 
 interface VideoSynchronize {
@@ -80,7 +80,7 @@ export function ReplicaMedia(
 
     const volume = useSelector((state: State) => state.settings.volumeVod);
 
-    const { roomId } = useUserContext();
+    const { roomId } = useSessionContext();
 
     const ref = useRef<HTMLMediaElement>(null);
     const reactPlayerRef = useRef<ReactPlayer>(null);
@@ -321,7 +321,7 @@ export function ReplicatedMedia(
         ref.current.volume = volume;
     }, [ref.current, volume]);
 
-    const { roomId, sessionId } = useUserContext();
+    const { roomId, sessionId } = useSessionContext();
 
     const [send, { loading, error }] = useMutation(
         gql`

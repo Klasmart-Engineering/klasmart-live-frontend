@@ -25,6 +25,7 @@ const messages: Record<string, string> = {
 
     activity_link: "活动链接",
 
+    join_live: "Joining Live...",
     join_cameraPreviewFallback_allowMediaPermissions: "允许媒体设备权限",
     join_permissionAlertDialog_title: "允许Kidsloop 直播访问你的媒体设备",
     join_permissionAlertDialog_contentText_live: "Kidsloop Live需要接入摄像头和麦克风，以便其他参与者能够看到你并听到你的声音",
@@ -137,10 +138,16 @@ const messages: Record<string, string> = {
     schedule_liveNoSchedule: "Nothing scheduled Live",
     schedule_studyAnytimeStudy: "Anytime Study",
     schedule_studyNoSchedule: "Nothing scheduled Study",
+    schedule_selectOrgLoaded: "",
 
     loading_mediaPermission: "Camera and Microphone premissions required. Please grant the permissions and restart application.",
 
     title_settings_live: "Room Settings",
-    layout_tabinnercontent_leaveroom: "Leave Room"
+    layout_tabinnercontent_leaveroom: "Leave Room",
+
+    auth_waiting_for_authentication: "Waiting for authentication...",
+
+    cordova_loading: "Loading...",
+    cordova_permissions_error: "Camera and Microphone premissions required. Please grant the permissions and restart application."
 };
 export default messages;

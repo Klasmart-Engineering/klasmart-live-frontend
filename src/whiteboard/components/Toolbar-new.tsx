@@ -28,7 +28,7 @@ import PurpleCrayon from "../../assets/img/canvas/crayons/purple.svg";
 import BrownCrayon from "../../assets/img/canvas/crayons/brown.svg";
 import Eraser from "../../assets/img/canvas/eraser.svg";
 import { ClassType } from "../../store/actions";
-import { LocalSessionContext } from "../../entry";
+import { useSessionContext } from "../../context-provider/session-context";
 
 type Props = {
     children?: ReactChild | ReactChildren | null | any;
@@ -41,7 +41,7 @@ export const WBToolbar: FunctionComponent<Props> = ({ children }: Props): JSX.El
     const { state: { display, permissions } } = useSynchronizedState();
     const { state: { tools }, actions: { selectTool, selectColorByValue, clear } } = useToolbarContext();
 
-    const { classtype, isTeacher, sessionId } = useContext(LocalSessionContext);
+    const { classType: classtype, isTeacher, sessionId } = useSessionContext();
     const [activedColor, setActivedColor] = useState({ black: false, blue: false, qingse: false, green: false, orange: false, red: false, yellow: false, pink: false, purple: false, brown: false });
     const [activedTool, setActivedTool] = useState({ move: false, line: false, text: false, erase: false, clear: false });
     const forStudent = classtype === ClassType.STUDY || !isTeacher;

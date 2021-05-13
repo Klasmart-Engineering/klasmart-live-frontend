@@ -2,7 +2,7 @@ import { gql, useSubscription } from "@apollo/client";
 import Typography from "@material-ui/core/Typography";
 import React, { useEffect, useRef, useState } from "react";
 import { FormattedMessage } from "react-intl";
-import { LIVE_LINK } from "../entry";
+import { SESSION_LINK_LIVE } from "../context-provider/live-session-link-context";
 import Loading from "./loading";
 
 const SUB_EVENTS = gql`
@@ -56,7 +56,7 @@ export function PreviewPlayer({ streamId, frameProps, width, height }: Props): J
     const { loading, error } = useSubscription(SUB_EVENTS, {
         onSubscriptionData: e => sendEvent(e.subscriptionData.data.stream.event),
         variables: { streamId },
-        context: {target: LIVE_LINK},
+        context: {target: SESSION_LINK_LIVE},
     });
 
     useEffect(() => {

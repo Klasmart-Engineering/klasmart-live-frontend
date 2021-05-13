@@ -6,7 +6,7 @@ import { History } from "history";
 
 type Props = {
     children: ReactChild | ReactChildren | null,
-    history: History<History.PoorMansUnknown>
+    history: History<unknown>
 }
 
 type CordovaSystemContext = {
@@ -46,12 +46,11 @@ export function CordovaSystemProvider({ children, history }: Props) {
     });
 
     const LoadingCordova = () => {
-        return <Loading rawText="Loading..." />;
+        return <Loading messageId="Loading..." />;
     }
 
     const LoadingPermissions = () => {
-        // TODO (Isu): Localization
-        return <Loading rawText="Camera and Microphone premissions required. Please grant the permissions and restart application." />;
+        return <Loading messageId="Camera and Microphone premissions required. Please grant the permissions and restart application." />;
     }
 
     const Content = () => {

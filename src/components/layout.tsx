@@ -33,7 +33,8 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { useDispatch, useSelector } from "react-redux";
 import Camera, { getCameraOrder } from "../components/media/camera";
-import { LIVE_LINK, LocalSessionContext } from "../entry";
+import { SESSION_LINK_LIVE } from "../context-provider/live-session-link-context";
+import { useSessionContext } from "../context-provider/session-context";
 import { MaterialTypename } from "../lessonMaterialContext";
 import { InteractiveModeState, Message, Session, StreamIdState } from "../pages/room/room";
 import ModeControls from "../pages/teacher/modeControls";
@@ -225,7 +226,7 @@ function TabPanel(props: TabPanelProps) {
     const theme = useTheme();
     const dispatch = useDispatch();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
-    const { isTeacher } = useContext(LocalSessionContext);
+    const { isTeacher } = useSessionContext();
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -299,13 +300,13 @@ function TabInnerContent({ title }: { title: string }) {
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
     const dispatch = useDispatch();
-    const { camera, roomId, sessionId: localSessionId, materials, isTeacher: isLocalUserTeacher } = useContext(LocalSessionContext);
+    const { camera, roomId, sessionId: localSessionId, materials, isTeacher: isLocalUserTeacher } = useSessionContext();
     const sessions = useContext(SessionsContext);
     const sfuState = useContext(WebRTCContext);
     const contentIndex = useSelector((store: State) => store.control.contentIndex);
     const colsCamera = useSelector((store: State) => store.control.colsCamera);
     const colsObserve = useSelector((store: State) => store.control.colsObserve);
-    const [hostMutation] = useMutation(MUTATION_SET_HOST, {context: {target: LIVE_LINK}});
+    const [hostMutation] = useMutation(MUTATION_SET_HOST, {context: {target: SESSION_LINK_LIVE}});
 
     useEffect(() => {
         const teachers = [...sessions.values()].filter(session => session.isTeacher === true).sort((a, b) => a.joinedAt - b.joinedAt);
@@ -535,7 +536,7 @@ export default function Layout(props: Props): JSX.Element {
     const dispatch = useDispatch();
 
     const { sessions, messages } = useContext(RoomContext)
-    const { materials, sessionId: localSessionId } = useContext(LocalSessionContext);
+    const { materials, sessionId: localSessionId } = useSessionContext();
     const localSession = sessions.get(localSessionId);
     const isHostTeacher = localSession?.isTeacher && localSession?.isHost;
 

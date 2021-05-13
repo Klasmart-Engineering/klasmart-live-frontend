@@ -1,28 +1,21 @@
 import { gql, useMutation, useSubscription } from "@apollo/client";
 import { CircularProgress, IconButton, makeStyles,createStyles, Theme,  Typography } from "@material-ui/core";
-import { VolumeMute as AudioOffIcon } from "@styled-icons/boxicons-regular/VolumeMute";
 import React, {
-    useCallback, useContext, useEffect, useRef,
+    useCallback, useEffect, useRef,
     useState
 } from "react";
-import { useSubscription, useMutation } from "@apollo/react-hooks";
-import { gql } from "apollo-boost";
-import { CircularProgress, Typography, IconButton } from "@material-ui/core";
-import { MaterialTypename } from "../../lessonMaterialContext";
-import FFT from "./fft";
-import ReactPlayer from "../react-player/lazy";
-import { VolumeMute as AudioOffIcon } from "@styled-icons/boxicons-regular/VolumeMute";
-import { videoUnmuteOverlay } from "../../utils/layerValues";
-import { getContentHref } from "../../utils/contentUtils";
-import { useSelector } from "react-redux";
-import { State } from "../../store/store";
-import { useUserContext } from "../../context-provider/user-context";
-import { useHttpEndpoint } from "../../context-provider/region-select-context";
-import { FFT } from "../components/fft";
-import ReactPlayer from "../components/react-player/lazy";
-import { LIVE_LINK, LocalSessionContext, SFU_LINK } from "../entry";
-import { MaterialTypename } from "../lessonMaterialContext";
 import { videoUnmuteOverlay } from "../utils/layerValues";
+import { getContentHref } from "../utils/contentUtils";
+import { useSelector } from "react-redux";
+import { State } from "../store/store";
+import { useSessionContext } from "../context-provider/session-context";
+import { useHttpEndpoint } from "../context-provider/region-select-context";
+import FFT from "../components/fft";
+import ReactPlayer from "../components/react-player/lazy";
+import { MaterialTypename } from "../lessonMaterialContext";
+
+import { VolumeMute as AudioOffIcon } from "@styled-icons/boxicons-regular/VolumeMute";
+import { SESSION_LINK_LIVE } from "../context-provider/live-session-link-context";
 
 interface VideoSynchronize {
     src?: string;
@@ -101,7 +94,7 @@ export function ReplicaMedia(
 
     const volume = useSelector((state: State) => state.settings.volumeVod);
 
-    const { roomId } = useUserContext();
+    const { roomId } = useSessionContext();
 
     const ref = useRef<HTMLMediaElement>(null);
     const reactPlayerRef = useRef<ReactPlayer>(null);
@@ -213,7 +206,7 @@ export function ReplicaMedia(
                 }
             },
             variables: { roomId, sessionId },
-            context: {target: LIVE_LINK},
+            context: {target: SESSION_LINK_LIVE},
         }
     );
 
@@ -344,7 +337,7 @@ export function ReplicatedMedia(
         ref.current.volume = volume;
     }, [ref.current, volume]);
 
-    const { roomId, sessionId } = useUserContext();
+    const { roomId, sessionId } = useSessionContext();
 
     const [send, { loading, error }] = useMutation(
         gql`
@@ -365,7 +358,7 @@ export function ReplicatedMedia(
       }
     `
     , {
-        context: {target: LIVE_LINK}
+        context: {target: SESSION_LINK_LIVE}
     });
 
     useEffect(() => {

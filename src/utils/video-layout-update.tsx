@@ -13,7 +13,7 @@ export default function useVideoLayoutUpdate(parent: Element | undefined | null)
     useEffect(() => {
         if (!parent) return;
 
-        const ro = new ResizeObserver((_entries, _observer) => {
+        const ro = new ResizeObserver((_entries: ResizeObserverEntry[], _observer: ResizeObserver) => {
             console.log('update video layout');
             updateLayout();
         });

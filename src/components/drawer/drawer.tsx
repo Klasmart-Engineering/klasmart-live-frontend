@@ -16,7 +16,7 @@ import { InteractiveModeState } from "../../pages/room/room";
 import { State } from "../../store/store";
 import { ClassType } from "../../store/actions";
 import { setDrawerWidth, setDrawerOpen } from "../../store/reducers/control";
-import { LocalSessionContext } from "../../entry";
+import { useSessionContext } from "../../context-provider/session-context";
 
 export const DRAWER_TOOLBAR_WIDTH = 64;
 
@@ -86,7 +86,7 @@ function DrawerToolbar({ interactiveModeState, streamId, material, tabIndex, set
     setTabIndex: React.Dispatch<React.SetStateAction<number>>,
     setMaterialKey: React.Dispatch<React.SetStateAction<number>>,
 }) {
-    const { classtype, isTeacher } = useContext(LocalSessionContext);
+    const { classType: classtype, isTeacher } = useSessionContext();
     const classes = useStyles();
     const theme = useTheme();
     const dispatch = useDispatch();

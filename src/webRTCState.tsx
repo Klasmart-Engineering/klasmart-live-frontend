@@ -1,9 +1,18 @@
-import { gql, useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
 import { useTheme } from "@material-ui/core/styles";
 import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
+import { useToolbarContext } from "kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { FormattedMessage } from "react-intl";
+import { getRandomKind } from './components/trophies/trophyKind';
+import { Session } from "./pages/room/room";
+import { GlobalMuteNotification, GLOBAL_MUTE_MUTATION, GLOBAL_MUTE_QUERY, WebRTCContext } from "./providers/WebRTCContext";
+import { useSynchronizedState } from "./whiteboard/context-providers/SynchronizedStateProvider";
+import { SESSION_LINK_LIVE, SESSION_LINK_SFU } from "./context-provider/live-session-link-context";
+
 import { Eraser as EraserIcon } from "@styled-icons/boxicons-solid/Eraser";
 import { GridOff as CanvasOffIcon } from "@styled-icons/material-twotone/GridOff";
 import { GridOn as CanvasIcon } from "@styled-icons/material-twotone/GridOn";
@@ -15,14 +24,7 @@ import { EmojiEvents as TrophyIcon } from "@styled-icons/material/EmojiEvents";
 import { Favorite as HeartIcon } from "@styled-icons/material/Favorite";
 import { Star as StarIcon } from "@styled-icons/material/Star";
 import { ThumbUp as EncourageIcon } from "@styled-icons/material/ThumbUp";
-import { useToolbarContext } from "kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
-import React, { useContext, useEffect, useRef, useState } from "react";
-import { FormattedMessage } from "react-intl";
-import { getRandomKind } from './components/trophies/trophyKind';
-import { LIVE_LINK, LocalSessionContext, SFU_LINK } from "./entry";
-import { Session } from "./pages/room/room";
-import { GlobalMuteNotification, GLOBAL_MUTE_MUTATION, GLOBAL_MUTE_QUERY, WebRTCContext } from "./providers/WebRTCContext";
-import { useSynchronizedState } from "./whiteboard/context-providers/SynchronizedStateProvider";
+import { useSessionContext } from "./context-provider/session-context";
 
 export interface WebRTCIn {
     description?: string
@@ -59,10 +61,10 @@ export function GlobalCameraControl(props: {localSession: Session }): JSX.Elemen
     const { localSession } = props;
     const [camerasOn, setCamerasOn] = useState(true);
     const [micsOn, setMicsOn] = useState(true);
-    const { roomId } = useContext(LocalSessionContext);
-    const [rewardTrophyMutation] = useMutation(MUTATION_REWARD_TROPHY, {context: {target: LIVE_LINK}});
-    const [globalMuteMutation] = useMutation(GLOBAL_MUTE_MUTATION, {context: {target: SFU_LINK}});
-    const {refetch} = useQuery(GLOBAL_MUTE_QUERY, { variables: { roomId }, context: {target: SFU_LINK}});
+    const { roomId } = useSessionContext();
+    const [rewardTrophyMutation] = useMutation(MUTATION_REWARD_TROPHY, {context: {target: SESSION_LINK_LIVE}});
+    const [globalMuteMutation] = useMutation(GLOBAL_MUTE_MUTATION, { context: { target: SESSION_LINK_SFU}});
+    const { refetch } = useQuery(GLOBAL_MUTE_QUERY, { variables: { roomId }, context: { target: SESSION_LINK_SFU}});
     const rewardTrophy = (user: string, kind: string) => rewardTrophyMutation({ variables: { roomId, user, kind } });
     const states = useContext(WebRTCContext);
 

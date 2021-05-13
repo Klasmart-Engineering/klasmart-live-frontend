@@ -2,6 +2,7 @@
 const messages: Record<string, string> = {
     activity_link: "액티비티 링크",
 
+    join_live: "Joining Live...",
     join_cameraPreviewFallback_allowMediaPermissions: "미디어 장치 권한을 허용하십시오.",
     join_permissionAlertDialog_title: "Kidsloop Live에서 미디어 장치를 사용하도록 허용하기",
     join_permissionAlertDialog_contentText_live: "다른 수업 참가자들이 내 모습을 보고 음성을 들으려면 Kidsloop Live에서 카메라와 마이크에 액세스 할 수 있어야 합니다.",
@@ -131,10 +132,16 @@ const messages: Record<string, string> = {
     schedule_liveNoSchedule: "아직 스케줄이 없어요",
     schedule_studyAnytimeStudy: "언제나 학습하기",
     schedule_studyNoSchedule: "아직 스케줄이 없어요",
+    schedule_selectOrgLoaded: "",
 
     loading_mediaPermission: "앱을 사용하려면 카메라 및 마이크 권한이 필요해요. 권한을 허용하고 다시 시작해 보세요.",
 
     title_settings_live: "Room Settings",
-    layout_tabinnercontent_leaveroom: "Leave Room"
+    layout_tabinnercontent_leaveroom: "Leave Room",
+
+    auth_waiting_for_authentication: "Waiting for authentication...",
+
+    cordova_loading: "Loading...",
+    cordova_permissions_error: "Camera and Microphone premissions required. Please grant the permissions and restart application."
 };
 export default messages;

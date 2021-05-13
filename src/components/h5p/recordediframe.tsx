@@ -11,7 +11,6 @@ import Typography from "@material-ui/core/Typography";
 import { Refresh as RefreshIcon } from "@styled-icons/material/Refresh";
 
 import StyledFAB from "../styled/fabButton";
-import { DRAWER_TOOLBAR_WIDTH } from "../../pages/layout";
 import { loadingActivity } from "../../utils/layerValues";
 
 import CurlySpinner1 from "../../assets/img/spinner/curly1_spinner.gif"
@@ -22,9 +21,10 @@ import JessSpinner1 from "../../assets/img/spinner/jess1_spinner.gif"
 import MimiSpinner1 from "../../assets/img/spinner/mimi1_spinner.gif"
 import GhostSpinner from "../../assets/img/spinner/ghost_spinner.gif"
 import { State } from "../../store/store";
-import { useUserContext } from "../../context-provider/user-context";
+import { useSessionContext } from "../../context-provider/session-context";
 import { injectIframeScript } from "../../utils/injectIframeScript";
 import { useHttpEndpoint } from "../../context-provider/region-select-context";
+import { DRAWER_TOOLBAR_WIDTH } from "../drawer/drawer";
 
 interface NewProps extends IframeResizer.IframeResizerProps {
     forwardRef: any
@@ -54,7 +54,7 @@ export function RecordedIframe({ contentHref, setStreamId, parentHeight }: Props
     const drawerOpen = useSelector((state: State) => state.control.drawerOpen);
     const drawerWidth = useSelector((state: State) => state.control.drawerWidth);
 
-    const { roomId, token } = useUserContext();
+    const { roomId, token } = useSessionContext();
     const [sendStreamId] = useMutation(SET_STREAMID);
 
     const [isFlashCards, setIsFlashCards] = useState(false);

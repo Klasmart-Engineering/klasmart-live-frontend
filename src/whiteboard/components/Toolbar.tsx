@@ -9,7 +9,7 @@ import { Brush as BrushIcon } from "@styled-icons/material/Brush";
 import { TextFields as TextIcon } from "@styled-icons/material/TextFields";
 import { Eraser as EraserIcon } from "@styled-icons/boxicons-solid/Eraser";
 import { Trash as TrashIcon } from "@styled-icons/boxicons-solid/Trash";
-import { LocalSessionContext } from "../../entry";
+import { useSessionContext } from "../../context-provider/session-context";
 
 
 type Props = {
@@ -25,7 +25,7 @@ export const Toolbar: FunctionComponent<Props> = ({ children }: Props): JSX.Elem
         state: { tools }, actions: { selectTool, selectColorByValue, clear }
     } = useToolbarContext();
 
-    const { sessionId } = useContext(LocalSessionContext);
+    const { sessionId } = useSessionContext();
 
     const theme = useTheme();
 

@@ -1,16 +1,11 @@
 import React from "react";
-<<<<<<< HEAD:src/messages.tsx
 import { Message } from "./pages/room/room";
-=======
->>>>>>> cordova/rebase-on-master:src/components/chat/messages.tsx
 import { FormattedMessage, FormattedDate, FormattedTime } from "react-intl";
 import { Typography, makeStyles, Theme, createStyles, Grid, Paper } from "@material-ui/core";
 import Tooltip from "@material-ui/core/Tooltip";
+import { mapGenerator } from "./utils/map";
 
 import { AccessTime as TimestampIcon } from "@styled-icons/material-twotone/AccessTime";
-
-import { Message } from "../../pages/room/room";
-import { mapGenerator } from "../../utils/map";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

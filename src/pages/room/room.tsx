@@ -4,33 +4,19 @@ import { gql } from "apollo-boost";
 import { useSubscription } from "@apollo/react-hooks";
 import { FormattedMessage } from "react-intl";
 import Typography from "@material-ui/core/Typography";
-import Grid from "@material-ui/core/Grid";
-import { sessionId, UserContext } from "../../entry";
-import { Classes } from "./classes";
-import { Live } from "./live";
 import Loading from "../../components/loading";
-import Study from "../student/study";
-import { Student } from "../student/student";
-import { Teacher } from "../teacher/teacher";
 import { EventEmitter } from "eventemitter3"
-import { WebRTCSFUContext } from "../../webrtc/sfu";
-import { ScreenShare } from "../teacher/screenShareProvider";
-import { GlobalWhiteboardContext } from "../../whiteboard/context-providers/GlobalWhiteboardContext";
-import Layout from "../layout";
-import { Trophy } from "../../components/trophies/trophy";
 import { State } from "../../store/store";
-import { ClassType, OrientationType } from "../../store/actions";
-import { useUserContext } from "../../context-provider/user-context";
+import { OrientationType } from "../../store/actions";
+import { useSessionContext } from "../../context-provider/session-context";
 import { lockOrientation } from "../../utils/screenUtils";
-import { LiveSessionLinkProvider } from "../../context-provider/live-session-link-context";
-import { useMediaQuery, useTheme } from "@material-ui/core";
-import React, { useContext, useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { LocalSessionContext } from "../../entry";
 import { setContentIndex, setDrawerTabIndex } from "../../store/reducers/control";
 import { Classes } from "./classes";
 import { Live } from "./live";
 import { Study } from "./study";
+import { RoomProvider } from "../../providers/RoomContext";
+import { Trophy } from "../../components/trophies/trophy";
+import { LiveSessionLinkProvider } from "../../context-provider/live-session-link-context";
 
 export enum ContentType {
     Blank = "Blank",
@@ -79,14 +65,9 @@ export interface StreamIdState {
     setStreamId: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
-export function Room({ teacher }: Props): JSX.Element {
+export function Room(): JSX.Element {
     const dispatch = useDispatch();
     const classType = useSelector((state: State) => state.session.classType);
-    const deviceOrientation = useSelector((state: State) => state.location.deviceOrientation);
-
-    const theme = useTheme();
-    const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
-    const { teacher, sessionId, token } = useUserContext();
 
     const [interactiveMode, setInteractiveMode] = useState<number>(0);
     const [streamId, setStreamId] = useState<string>();
@@ -97,7 +78,7 @@ export function Room({ teacher }: Props): JSX.Element {
         dispatch(setContentIndex(0));
     }, []);
 
-    switch (classtype) {
+    switch (classType) {
         case "study":
             return (
                 <Study
@@ -122,6 +103,20 @@ export function Room({ teacher }: Props): JSX.Element {
     }
 }
 
+export function RoomWithContext(): JSX.Element {
+
+    const { sessionId, token } = useSessionContext();
+
+    return (
+        <LiveSessionLinkProvider sessionId={sessionId} token={token}>
+            <RoomProvider>
+                <Room />
+                <Trophy />
+            </RoomProvider>
+        </LiveSessionLinkProvider>
+    );
+}
+
 const SUB_ROOM = gql`
     subscription room($roomId: ID!, $name: String) {
         room(roomId: $roomId, name: $name) {
@@ -139,7 +134,7 @@ const SUB_ROOM = gql`
 const context = createContext<{ value: RoomContext }>(undefined as any);
 export class RoomContext {
     public static Provide(props: { children?: JSX.Element | JSX.Element[] }) {
-        const { roomId, name, sessionId } = useUserContext();
+        const { roomId, name, sessionId } = useSessionContext();
 
         const ref = useRef<RoomContext>(undefined as any)
         const [value, rerender] = useReducer(() => ({ value: ref.current }), { value: ref.current })

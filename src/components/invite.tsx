@@ -3,22 +3,18 @@ import { FormattedMessage } from "react-intl";
 import { useTheme } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
-import { ContentCopy as CopyIcon } from "@styled-icons/material/ContentCopy";
-import { LocalSessionContext } from "../entry";
 import StyledTextField from "../components/styled/textfield"
 import Snackbar from "@material-ui/core/Snackbar";
 import Tooltip from "@material-ui/core/Tooltip";
+import { useSessionContext } from "../context-provider/session-context";
 
 import { ContentCopy as CopyIcon } from "@styled-icons/material/ContentCopy";
-
-import StyledTextField from "../../components/styled/textfield"
-import { useUserContext } from "../../context-provider/user-context";
 
 export default function InviteButton(): JSX.Element {
     const theme = useTheme();
     const [openSnackbar, toggleSnackbar] = useState(false);
 
-    const { roomId } = useUserContext();
+    const { roomId } = useSessionContext();
     const url = useMemo(() => {
         let url = new URL(window.location.href);
         url.href = url.origin + url.pathname;

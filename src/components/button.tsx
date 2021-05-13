@@ -22,7 +22,11 @@ type Props = Parameters<typeof Button>[0] & WithStyles<typeof styles>;
 class KidsloopButton extends React.PureComponent<Props, any> {
     public render() {
         const forwardProps = { ...this.props };
-        delete forwardProps.classes;
+
+        // TODO(axel): How to properly do this without casting to any?
+        // used to be: delete forwardProps.classes which was generating a compiler error.
+        (forwardProps.classes as any) = undefined;
+
         return <Button className={this.props.classes.btn} {...forwardProps} />;
     }
 }

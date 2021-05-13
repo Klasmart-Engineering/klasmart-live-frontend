@@ -19,11 +19,10 @@ import { Settings } from "./settings";
 import InviteButton from "../invite";
 import StyledIcon from "../../components/styled/icon";
 import CenterAlignChildren from "../../components/centerAlignChildren";
-import { LocalSessionContext } from "../../entry";
-import { MaterialTypename } from "../../lessonMaterialContext";
 import { State } from "../../store/store";
 import { ClassType } from "../../store/actions";
 import { setDrawerOpen, setContentIndex } from "../../store/reducers/control";
+import { useSessionContext } from "../../context-provider/session-context";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -57,7 +56,7 @@ export function TabPanel(props: TabPanelProps) {
     const classes = useStyles();
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
-    const { isTeacher } = useContext(LocalSessionContext);
+    const { isTeacher } = useSessionContext();
 
     const dispatch = useDispatch();
     const isMobileOnly = useSelector((state: State) => state.session.userAgent.isMobileOnly);
@@ -125,7 +124,7 @@ export function TabPanel(props: TabPanelProps) {
 }
 
 function TabInnerContent({ title }: { title: string }) {
-    const { classtype, materials } = useContext(LocalSessionContext);
+    const { classType: classtype, materials } = useSessionContext();
     const classes = useStyles();
     const dispatch = useDispatch();
     const contentIndex = useSelector((store: State) => store.control.contentIndex);

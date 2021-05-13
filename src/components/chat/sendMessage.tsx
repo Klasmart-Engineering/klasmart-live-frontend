@@ -9,7 +9,7 @@ import IconButton from "@material-ui/core/IconButton";
 import { Send as SendIcon } from "@styled-icons/material-twotone/Send";
 import { useMutation } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
-import { useUserContext } from "../../context-provider/user-context";
+import { useSessionContext } from "../../context-provider/session-context";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -50,7 +50,7 @@ export function SendMessage(): JSX.Element {
 
     const [sendMessage, { loading }] = useMutation(SEND_MESSAGE);
     const [message, setMessage] = useState("");
-    const { roomId } = useUserContext();
+    const { roomId } = useSessionContext();
 
     function send() {
         sendMessage({ variables: { roomId, message } });

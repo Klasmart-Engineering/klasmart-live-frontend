@@ -23,7 +23,6 @@ import { VideocamOff as CameraOffIcon } from "@styled-icons/material-twotone/Vid
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { useSelector } from "react-redux";
-import { LocalSessionContext, SFU_LINK } from "../../entry";
 import { Session } from "../../pages/room/room";
 import { GLOBAL_MUTE_QUERY, MUTE, MuteNotification, WebRTCContext, WebRTCContextInterface } from "../../providers/WebRTCContext";
 import { State } from "../../store/store";
@@ -32,8 +31,8 @@ import { SessionsContext } from "../layout";
 import StyledIcon from "../styled/icon";
 import TrophyControls from "../trophies/trophyControls";
 import useVideoLayoutUpdate from "../../utils/video-layout-update";
-
-
+import { SESSION_LINK_SFU } from "../../context-provider/live-session-link-context";
+import { useSessionContext } from "../../context-provider/session-context";
 
 const PARTICIPANT_INFO_ZINDEX = 1;
 const ICON_ZINDEX = 2;
@@ -392,7 +391,7 @@ export function MoreControlsButton({ session, isSelf, cameraRef }: {
     const { moreControlsMenuItem } = useStyles();
     const theme = useTheme();
 
-    const { isTeacher } = useContext(LocalSessionContext);
+    const { isTeacher } = useSessionContext();
     const sfuState = useContext(WebRTCContext);
 
     const [moreEl, setMoreEl] = useState<null | HTMLElement>(null);
@@ -493,15 +492,15 @@ function ToggleCamera({ session, sfuState, isSelf, cameraRef }: {
     cameraRef: React.RefObject<HTMLElement>
 }): JSX.Element {
     const { noHoverIcon, moreControlsMenuItem } = useStyles();
-    const { roomId, sessionId: localSessionId } = useContext(LocalSessionContext);
+    const { roomId, sessionId: localSessionId } = useSessionContext();
     const sessions = useContext(SessionsContext);
 
     const drawerTabIndex = useSelector((state: State) => state.control.drawerTabIndex);
     const [cameraOn, setCameraOn] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [isVideoManuallyDisabled, setIsVideoManuallyDisabled] = useState<boolean>(false);
-    const [muteMutation] = useMutation(MUTE, {context: {target: SFU_LINK}});
-    const {refetch} = useQuery(GLOBAL_MUTE_QUERY, { variables: { roomId }, context: {target: SFU_LINK}});
+    const [muteMutation] = useMutation(MUTE, {context: {target: SESSION_LINK_SFU}});
+    const {refetch} = useQuery(GLOBAL_MUTE_QUERY, { variables: { roomId }, context: {target: SESSION_LINK_SFU}});
     const states = useContext(WebRTCContext);
     // NOTE: This is the logic for the frontend performance. If this logic goes well, we will restore it again.
     // const isCameraVisible = useIsElementInViewport(cameraRef);
@@ -597,11 +596,11 @@ function ToggleMic({ session, sfuState, isSelf }: {
     isSelf: boolean,
 }): JSX.Element {
     const { noHoverIcon, moreControlsMenuItem } = useStyles();
-    const { roomId, sessionId: localSessionId } = useContext(LocalSessionContext);
+    const { roomId, sessionId: localSessionId } = useSessionContext();
     const sessions = useContext(SessionsContext);
     const [micOn, setMicOn] = useState<boolean>(false);
-    const [muteMutation] = useMutation(MUTE, {context: {target: SFU_LINK}});
-    const {refetch} = useQuery(GLOBAL_MUTE_QUERY, { variables: { roomId }, context: {target: SFU_LINK}});
+    const [muteMutation] = useMutation(MUTE, {context: {target: SESSION_LINK_SFU}});
+    const {refetch} = useQuery(GLOBAL_MUTE_QUERY, { variables: { roomId }, context: {target: SESSION_LINK_SFU}});
     const states = useContext(WebRTCContext);
 
     useEffect(() => {

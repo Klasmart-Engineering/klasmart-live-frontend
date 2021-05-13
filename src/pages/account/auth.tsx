@@ -119,11 +119,18 @@ export function Auth({ useInAppBrowser }: Props) {
     }
 
     if (useInAppBrowser) {
+
+        /* TODO(axel): The loading used to have a child button. Seems Loading doesn't support child components anymore. Need to
+        recreate that behavior.
+
+        <Loading messageId="Waiting for authentication..." />
+                    <Button onClick={() => setKey(Math.random().toString(36))}>Try again</Button>
+        </Loading >
+        */
+
         return (
             <>
-                <Loading rawText="Waiting for authentication...">
-                    <Button onClick={() => setKey(Math.random().toString(36))}>Try again</Button>
-                </Loading>
+                <Loading messageId="Waiting for authentication..." />
                 { authenticated ? <Redirect to="/" /> : <></> }
             </>
         );

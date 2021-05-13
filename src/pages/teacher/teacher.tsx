@@ -1,54 +1,35 @@
 import React, { useEffect, useState, useContext, useRef, useMemo } from "react";
-import { FormattedMessage } from "react-intl";
 import { useSelector } from "react-redux";
-import { gql } from "apollo-boost";
-import { useMutation } from "@apollo/react-hooks";
 import { Theme, Card, useTheme, CardContent, Hidden } from "@material-ui/core";
-import { createStyles, makeStyles } from "@material-ui/core/styles";
 import { gql, useMutation } from "@apollo/client";
-import { Card, CardContent, Hidden, Theme, useTheme } from "@material-ui/core";
 import CardActions from "@material-ui/core/CardActions";
 import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
-import { QuestionMarkCircleOutline as QuestionIcon } from "@styled-icons/evaicons-outline/QuestionMarkCircleOutline";
-import { Face as FaceIcon } from "@styled-icons/material/Face";
-import { ZoomIn as ZoomInIcon } from "@styled-icons/material/ZoomIn";
-import { ZoomOut as ZoomOutIcon } from "@styled-icons/material/ZoomOut";
-import { QuestionMarkCircleOutline as QuestionIcon } from "@styled-icons/evaicons-outline/QuestionMarkCircleOutline";
-
-import { ScreenShare } from "./screenShareProvider";
-import { Session, InteractiveModeState, StreamIdState, RoomContext } from "../room/room";
-import { MaterialTypename } from "../../lessonMaterialContext";
-import { RecordedIframe } from "../../components/h5p/recordediframe";
-import PreviewPlayer from "../../components/h5p/preview-player";
-import { ReplicatedMedia } from "../../components/media/synchronized-video";
-import VideoStream from "../../components/media/videoStream";
 import { imageFrame } from "../../utils/layerValues";
 import { useMaterialToHref } from "../../utils/contentUtils";
-import { Whiteboard } from "../../whiteboard/components/Whiteboard";
-import Loading from "../../components/loading";
 import { State } from "../../store/store";
-import { useUserContext } from "../../context-provider/user-context";
-import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useSessionContext } from "../../context-provider/session-context";
 import { FormattedMessage } from "react-intl";
-import { useSelector } from "react-redux";
 import { PreviewPlayer } from "../../components/previewPlayer";
 import { RecordedIframe } from "../../components/recordediframe";
 import { ImageFrame } from "../../components/resizedContent";
-import { LIVE_LINK, LocalSessionContext } from "../../entry";
 import { MaterialTypename } from "../../lessonMaterialContext";
 import { RoomContext } from "../../providers/RoomContext";
-import { State } from "../../store/store";
-import { imageFrame } from "../../utils/layerValues";
 import { useWindowSize } from "../../utils/viewport";
 import { Stream } from "../../webRTCState";
 import { Whiteboard } from "../../whiteboard/components/Whiteboard";
 import { ContentType, InteractiveMode, InteractiveModeState, Session, StreamIdState } from "../room/room";
 import { ReplicatedMedia } from "../synchronized-video";
 import { ScreenShareContext } from "./screenShareProvider";
+
+import { QuestionMarkCircleOutline as QuestionIcon } from "@styled-icons/evaicons-outline/QuestionMarkCircleOutline";
+import { Face as FaceIcon } from "@styled-icons/material/Face";
+import { ZoomIn as ZoomInIcon } from "@styled-icons/material/ZoomIn";
+import { ZoomOut as ZoomOutIcon } from "@styled-icons/material/ZoomOut";
+import { SESSION_LINK_LIVE } from "../../context-provider/live-session-link-context";
 
 const drawerWidth = 340;
 
@@ -109,7 +90,7 @@ export function Teacher(props: Props): JSX.Element {
     const { streamId, setStreamId } = streamIdState;
 
     const contentIndex = useSelector((store: State) => store.control.contentIndex);
-    const { roomId, sessionId, materials, name } = useUserContext();
+    const { roomId, sessionId, materials, name } = useSessionContext();
     const size = useWindowSize();
     const [square, setSquare] = useState(size.width > size.height ? size.height : size.width);
 
@@ -120,9 +101,6 @@ export function Teacher(props: Props): JSX.Element {
     const screenShare = useContext(ScreenShareContext);
     const { content, sessions } = useContext(RoomContext)
     const material = contentIndex >= 0 && contentIndex < materials.length ? materials[contentIndex] : undefined;
-
-    const screenShare = ScreenShare.Consume()
-    const { content, users } = RoomContext.Consume()
 
     const rootDivRef = useRef<HTMLDivElement>(null);
     const [squareSize, setSquareSize] = useState<number>(0);
@@ -138,7 +116,7 @@ export function Teacher(props: Props): JSX.Element {
         else { setSquareSize(width); }
     }, [rootDivRef.current]);
 
-    const [showContent, { loading }] = useMutation(MUT_SHOW_CONTENT, {context: {target: LIVE_LINK}});
+    const [showContent, { loading }] = useMutation(MUT_SHOW_CONTENT, {context: {target: SESSION_LINK_LIVE}});
 
     useEffect(() => {
         if (interactiveMode === InteractiveMode.Blank) {
@@ -191,10 +169,8 @@ export function Teacher(props: Props): JSX.Element {
                                             (material.__typename === MaterialTypename.Iframe || material.__typename === undefined) && material.url ? //Legacy Format TODO: Deprecate
                                                 (squareSize ?
                                                     <RecordedIframe
-                                                        contentHref={contentHref}
+                                                        contentId={contentHref}
                                                         setStreamId={setStreamId}
-                                                        parentWidth={squareSize}
-                                                        parentHeight={squareSize}
                                                         square={square}
                                                     /> : undefined
                                                 ) : undefined : //Unknown Material
@@ -209,7 +185,7 @@ export function Teacher(props: Props): JSX.Element {
 }
 
 export function ObservationMode() {
-    const { sessionId } = useContext(LocalSessionContext);
+    const { sessionId } = useSessionContext();
     const { sessions } = useContext(RoomContext);
     const [studentSessions, setStudentSessions] = useState<Session[]>([]);
 

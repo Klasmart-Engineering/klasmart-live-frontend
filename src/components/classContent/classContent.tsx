@@ -10,7 +10,6 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBackIos';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForwardIos';
 
 import { WBToolbarContainer, WB_TOOLBAR_MAX_HEIGHT } from "./WBToolbar"
-import { LocalSessionContext } from "../../entry";
 import { State } from "../../store/store";
 import { ClassType } from "../../store/actions";
 import { Whiteboard } from "../../whiteboard/components/Whiteboard-new";
@@ -18,6 +17,7 @@ import { setContentIndex } from "../../store/reducers/control";
 import { ResizedIframe, ImageFrame } from "../resizedContent";
 import { LessonMaterial, MaterialTypename } from "../../lessonMaterialContext";
 import { ReplicatedMedia } from "../../pages/synchronized-video";
+import { useSessionContext } from "../../context-provider/session-context";
 
 export const DRAWER_TOOLBAR_WIDTH = 64;
 
@@ -25,7 +25,7 @@ export function ClassContentContainer({ materialKey, recommandUrl }: {
     materialKey: number,
     recommandUrl?: string,
 }) {
-    const { classtype } = useContext(LocalSessionContext);
+    const { classType: classtype } = useSessionContext();
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down('sm'));
     const drawerOpen = useSelector((state: State) => state.control.drawerOpen);
@@ -57,7 +57,7 @@ const IframeResizerNew = IframeResizer as React.FC<NewProps>
 function ClassContent({ recommandUrl }: {
     recommandUrl?: string
 }) {
-    const { classtype, isTeacher, materials } = useContext(LocalSessionContext);
+    const { classType: classtype, isTeacher, materials } = useSessionContext();
 
     const iframeRef = useRef<HTMLIFrameElement>(null);
 

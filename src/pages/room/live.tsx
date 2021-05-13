@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import Layout from "../../components/layout";
-import { LocalSessionContext } from "../../entry";
+import { useSessionContext } from "../../context-provider/session-context";
 import { RoomContext } from "../../providers/RoomContext";
 import { WebRTCProvider } from "../../providers/WebRTCContext";
 import { GlobalWhiteboardContext } from "../../whiteboard/context-providers/GlobalWhiteboardContext";
@@ -19,7 +19,7 @@ export function Live({
     streamIdState
 }: LiveProps): JSX.Element {
     const { sessions } = useContext(RoomContext);
-    const { sessionId } = useContext(LocalSessionContext);
+    const { sessionId } = useSessionContext();
     const localSession = sessions.get(sessionId);
     const isHostTeacher = localSession?.isTeacher && localSession?.isHost;
 

@@ -2,7 +2,7 @@ const qs = require("qs");
 import Grid from "@material-ui/core/Grid";
 import React, { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { LocalSessionContext } from "../../entry";
+import { useSessionContext } from "../../context-provider/session-context";
 import { RoomProvider } from "../../providers/RoomContext";
 import { ClassType } from "../../store/actions";
 import { setDrawerOpen } from "../../store/reducers/control";
@@ -21,7 +21,7 @@ export function Study({
     interactiveModeState,
     streamIdState,
 }: StudyProps): JSX.Element {
-    const { classtype, org_id, materials } = useContext(LocalSessionContext);
+    const { classType: classtype, organizationId, materials } = useSessionContext();
     const dispatch = useDispatch();
     const contentIndex = useSelector((store: State) => store.control.contentIndex);
     const material = contentIndex >= 0 && contentIndex < materials.length ? materials[contentIndex] : undefined;
@@ -45,7 +45,7 @@ export function Study({
             publish_status: "published",
             order_by: "update_at",
             content_type: 1,
-            org_id,
+            org_id: organizationId,
         }, { encodeValuesOnly: true });
         const response = await fetch(`${CMS_ENDPOINT}/v1/contents?${encodedParams}`, {
             headers,
@@ -56,7 +56,7 @@ export function Study({
 
     useEffect(() => {
         dispatch(setDrawerOpen(classtype === ClassType.STUDY ? false : true));
-        if (org_id) {
+        if (organizationId) {
             async function fetchEverything() {
                 async function fetchAllLessonMaterials() {
                     const payload = await getAllLessonMaterials();

@@ -22,7 +22,7 @@ import { useShouldSelectOrganization } from "../account/selectOrgDialog";
 import { Fallback } from "../fallback";
 import { Header } from "../../components/header";
 import Loading from "../../components/loading";
-import { useUserContext } from "../../context-provider/user-context";
+import { useSessionContext } from "../../context-provider/session-context";
 import { useServices } from "../../context-provider/services-provider";
 import { State } from "../../store/store";
 import { ScheduleClassType, ScheduleTimeViewResponse, ScheduleResponse, TimeView } from "../../services/cms/ISchedulerService";
@@ -290,7 +290,7 @@ function ScheduledLiveItem({ scheduleId, setOpenAlert }: { scheduleId: string, s
     const [liveDate, setLiveDate] = useState<string>("");
     const [liveTime, setLiveTime] = useState<string>("");
 
-    const { setToken } = useUserContext();
+    const { setToken } = useSessionContext();
     const { schedulerService } = useServices();
 
     useEffect(() => {
@@ -397,7 +397,7 @@ function AnytimeStudyItem({ studyId, setOpenAlert }: {
     const dispatch = useDispatch();
     const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
 
-    const { setToken } = useUserContext();
+    const { setToken } = useSessionContext();
     const { schedulerService } = useServices();
 
     const [studyInfo, setStudyInfo] = useState<ScheduleResponse>();
@@ -461,7 +461,7 @@ function ScheduledStudyItem({ studyId, setOpenAlert }: {
     const dispatch = useDispatch();
     const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
 
-    const { setToken } = useUserContext();
+    const { setToken } = useSessionContext();
     const { schedulerService } = useServices();
 
     const [studyInfo, setStudyInfo] = useState<ScheduleResponse>();
@@ -545,5 +545,5 @@ function ScheduledStudyItem({ studyId, setOpenAlert }: {
 }
 
 function LoadingSchedule({ isOrgSelected }: { isOrgSelected: boolean }) {
-    return <Loading rawText={isOrgSelected ? "Please select an organization first by tapping the top-left corner!" : ""} />
+    return <Loading messageId={isOrgSelected ? "schedule_loadingSelectOrg" : "schedule_selectOrgLoaded"} />
 }

@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import { gql, useMutation } from "@apollo/client";
-// import { FormattedMessage } from "react-intl";
 import { createStyles, makeStyles, Theme } from "@material-ui/core";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Divider from "@material-ui/core/Divider";
@@ -10,10 +8,8 @@ import Paper from "@material-ui/core/Paper";
 import { Send as SendIcon } from "@styled-icons/material-twotone/Send";
 import { useMutation } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
-import { useUserContext } from "../../context-provider/user-context";
-import React, { useContext, useState } from "react";
-import { DRAWER_WIDTH } from "./components/layout";
-import { LIVE_LINK, LocalSessionContext } from "./entry";
+import { useSessionContext } from "./context-provider/session-context";
+import { SESSION_LINK_LIVE } from "./context-provider/live-session-link-context";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -52,9 +48,9 @@ const SEND_MESSAGE = gql`
 export function SendMessage(): JSX.Element {
     const classes = useStyles();
 
-    const [sendMessage, { loading }] = useMutation(SEND_MESSAGE, {context: {target: LIVE_LINK}});
+    const [sendMessage, { loading }] = useMutation(SEND_MESSAGE, {context: {target: SESSION_LINK_LIVE}});
     const [message, setMessage] = useState("");
-    const { roomId } = useUserContext();
+    const { roomId } = useSessionContext();
 
     function send() {
         sendMessage({ variables: { roomId, message } });

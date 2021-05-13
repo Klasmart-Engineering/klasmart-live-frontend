@@ -2,7 +2,7 @@ import React, { ReactChild, ReactChildren } from "react";
 import { CameraContextProvider } from "../components/media/useCameraContext";
 import { RegionSelectProvider } from "./region-select-context";
 import { ServicesProvider } from "./services-provider";
-import { UserContextProvider } from "./user-context";
+import { SessionContextProvider } from "./session-context";
 import { UserInformationContextProvider } from "./user-information-context";
 
 type Props = {
@@ -15,13 +15,13 @@ export function CompositionRoot({ children, sessionId }: Props) {
     return (
         <RegionSelectProvider>
             <ServicesProvider>
-                <UserContextProvider sessionId={sessionId}>
+                <SessionContextProvider sessionId={sessionId}>
                     <UserInformationContextProvider>
                         <CameraContextProvider>
                             { children }
                         </CameraContextProvider>
                     </UserInformationContextProvider>
-                </UserContextProvider>
+                </SessionContextProvider>
             </ServicesProvider>
         </RegionSelectProvider>
     );

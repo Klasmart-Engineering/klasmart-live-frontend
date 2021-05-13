@@ -11,6 +11,8 @@ type TokenDto = {
     name?: string,
     roomid?: string,
     teacher?: boolean,
+    classtype?: string,
+    org_id?: string,
     materials: MaterialDto[],
 }
 
@@ -42,6 +44,8 @@ function parseParamsFromUrlQuery() {
             { name: "Video - Legacy", video: `${process.env.ENDPOINT_TEST_ASSETS_S3 || "."}/test_video.mp4` },
             { __typename: MaterialTypename.Iframe, name: "Quiz", url: "/h5p/play/5ed07656611e18398f7380f6" },
         ],
+        org_id: url.searchParams.get("org_id") || "",
+        classtype: url.searchParams.get("classtype") || "live"
     };
 }
 
@@ -62,6 +66,8 @@ function parseParamsFromToken(token?: string) {
             }
         });
         return {
+            classtype: payload.classtype ? String(payload.classtype) : "live",
+            org_id: payload.org_id ? String(payload.org_id) : "",
             teacher: payload.teacher ? Boolean(payload.teacher) : false,
             name: payload.name ? String(payload.name) : undefined,
             roomId: String(payload.roomid),

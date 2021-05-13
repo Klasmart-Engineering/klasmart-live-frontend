@@ -4,7 +4,8 @@ import Typography from "@material-ui/core/Typography";
 import React, { createContext, useContext, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import Loading from "../components/loading";
-import { LIVE_LINK, LocalSessionContext } from "../entry";
+import { SESSION_LINK_LIVE } from "../context-provider/live-session-link-context";
+import { useSessionContext } from "../context-provider/session-context";
 import { Content, Message, Session } from "../pages/room/room";
 
 const SUB_ROOM = gql`
@@ -40,7 +41,7 @@ const defaultRoomContext = {
 
 export const RoomContext = createContext<RoomContextInterface>(defaultRoomContext);
 export const RoomProvider = (props: {children: React.ReactNode}) => {
-    const { roomId, name, sessionId } = useContext(LocalSessionContext);
+    const { roomId, name, sessionId } = useSessionContext();
     const [sfuAddress, setSfuAddress] = useState<string>("");
     const [messages, setMessages] = useState<Map<string, Message>>(new Map<string, Message>());
     const [content, setContent] = useState<Content>();
@@ -62,7 +63,7 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
             }
         },
         variables: { roomId, name },
-        context: {target: LIVE_LINK},
+        context: {target: SESSION_LINK_LIVE},
     });
     
     const addMessage = (newMessage: Message) => {

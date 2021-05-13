@@ -8,7 +8,7 @@ import FormControl from "@material-ui/core/FormControl";
 
 import { Videocam as CameraIcon } from "@styled-icons/material/Videocam";
 import { Mic as MicIcon } from "@styled-icons/material/Mic";
-import StyledIcon from "../styled/icon";
+import StyledIcon from "./styled/icon";
 
 const useStyles = makeStyles(() =>
     createStyles({

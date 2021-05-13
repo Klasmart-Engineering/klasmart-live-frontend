@@ -38,41 +38,6 @@ LogRocket.init('8acm62/kidsloop-live-prod', {
 
 export const sessionId = uuid();
 
-export const SFU_LINK = "SFU_LINK";
-export const LIVE_LINK = "LIVE_LINK";
-
-function getApolloClient(roomId: string) {
-    const authToken = AuthTokenProvider.retrieveToken();
-    const directionalLink = new RetryLink().split(
-        (operation) => operation.getContext().target === LIVE_LINK,
-        new WebSocketLink({
-            uri:
-                process.env.ENDPOINT_WEBSOCKET ||
-                `${window.location.protocol === "https:" ? "wss" : "ws"}://${
-                    window.location.host
-                }/graphql`,
-            options: {
-                reconnect: true,
-                connectionParams: { authToken, sessionId },
-            },
-        }),
-        new WebSocketLink({
-            uri: `${window.location.protocol === "https:" ? "wss" : "ws"}://${
-                window.location.host
-            }/sfu/${roomId}`,
-            options: {
-                reconnect: true,
-                connectionParams: { authToken, sessionId },
-            },
-        }),
-    );
-
-    return new ApolloClient({
-        cache: new InMemoryCache(),
-        link: directionalLink
-    } as any)
-}
-
 Sentry.init({
     dsn: "https://9f4fca35be3b4b7ca970a126f26a5e54@o412774.ingest.sentry.io/5388813",
     environment: process.env.NODE_ENV || "not-specified",
@@ -85,21 +50,7 @@ export interface IThemeContext {
     setLanguageCode: React.Dispatch<React.SetStateAction<string>>
 }
 
-export interface ILocalSessionContext {
-    classtype: string, // "live" | "class" | "study" | "task"
-    org_id: string,
-    isTeacher: boolean,
-    materials: LessonMaterial[],
-    roomId: string,
-    sessionId: string,
-    name?: string,
-    setName: React.Dispatch<React.SetStateAction<string | undefined>>
-    camera?: MediaStream,
-    setCamera: React.Dispatch<React.SetStateAction<MediaStream | undefined>>,
-}
-
 export const ThemeContext = createContext<IThemeContext>({ themeMode: "", setThemeMode: () => null, languageCode: "", setLanguageCode: () => null } as any as IThemeContext);
-export const LocalSessionContext = createContext<ILocalSessionContext>({ setName: () => null, roomId: "", materials: [], isTeacher: false } as any as ILocalSessionContext);
 
 const url = new URL(window.location.href)
 if (url.hostname !== "localhost" && url.hostname !== "live.beta.kidsloop.net") {
@@ -182,19 +133,6 @@ function Entry() {
         setLanguageCode,
     }), [themeMode, setThemeMode, languageCode, setLanguageCode]);
 
-    const localSession = useMemo<ILocalSessionContext>(() => ({
-        classtype: params ? params.classtype : "live",
-        org_id: params ? params.org_id : "",
-        camera,
-        setCamera,
-        name,
-        setName,
-        sessionId,
-        roomId: params ? params.roomId : "",
-        isTeacher: params && params.isTeacher ? params.isTeacher : false,
-        materials: params ? params.materials : null
-    }), [camera, setCamera, name, setName, params]);
-
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(setUserAgent({
@@ -216,14 +154,12 @@ function Entry() {
 
     return (
         <ThemeContext.Provider value={themeContext}>
-            <LocalSessionContext.Provider value={localSession}>
                 <RawIntlProvider value={locale}>
                     <ThemeProvider theme={themeProvider(languageCode, themeMode)}>
                         <CssBaseline />
                         {!params ? <Typography><FormattedMessage id="error_invaild_token" /></Typography> : <App />}
                     </ThemeProvider>
                 </RawIntlProvider>
-            </LocalSessionContext.Provider>
         </ThemeContext.Provider>
     );
 }
@@ -235,13 +171,11 @@ if (
     || (!isIOS || !isIOS13) && isChrome // Support only Chrome in other OS
 ) {
     const { store, persistor } = createDefaultStore();
-    const apolloClient = getApolloClient(roomId)
+
     renderComponent = (
         <Provider store={store}>
             <PersistGate loading={null} persistor={persistor}>
-                <ApolloProvider client={apolloClient}>
-                    <Entry />
-                </ApolloProvider>
+                <Entry />
             </PersistGate>
         </Provider>
     )

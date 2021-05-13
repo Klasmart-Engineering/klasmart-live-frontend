@@ -1,6 +1,6 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import { LocalSessionContext } from "../../entry";
+import { useSessionContext } from "../../context-provider/session-context";
 import { RoomProvider } from "../../providers/RoomContext";
 import { State } from "../../store/store";
 import { GlobalWhiteboardContext } from "../../whiteboard/context-providers/GlobalWhiteboardContext";
@@ -16,7 +16,7 @@ export function Classes({
     interactiveModeState,
     streamIdState,
 }: ClassesProps): JSX.Element {
-    const { materials } = useContext(LocalSessionContext);
+    const { materials } = useSessionContext();
     const contentIndex = useSelector((store: State) => store.control.contentIndex);
     const material = contentIndex >= 0 && contentIndex < materials.length ? materials[contentIndex] : undefined;
     const [tabIndex, setTabIndex] = useState(0);

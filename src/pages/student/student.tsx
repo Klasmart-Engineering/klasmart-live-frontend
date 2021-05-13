@@ -6,7 +6,7 @@ import React, { useContext, useEffect, useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { PreviewPlayer } from "../../components/previewPlayer";
 import { RecordedIframe } from "../../components/recordediframe";
-import { LocalSessionContext } from "../../entry";
+import { useSessionContext } from "../../context-provider/session-context";
 import { MaterialTypename } from "../../lessonMaterialContext";
 import { RoomContext } from "../../providers/RoomContext";
 import { WebRTCContext } from "../../providers/WebRTCContext";
@@ -58,7 +58,7 @@ export function Student(): JSX.Element {
     const { content, sessions } = useContext(RoomContext);
     const classes = useStyles();
 
-    const { name, sessionId, isTeacher } = useContext(LocalSessionContext);
+    const { name, sessionId, isTeacher } = useSessionContext();
     const webrtc = useContext(WebRTCContext)
     const [streamId, setStreamId] = useState<string>();
     const [session, setSession] = useState<Session>();

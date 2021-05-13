@@ -6,7 +6,8 @@ import {
 } from "mediasoup-client";
 import { Producer, ProducerOptions } from "mediasoup-client/lib/Producer";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { LocalSessionContext, SFU_LINK } from "../entry";
+import { SESSION_LINK_SFU } from "../context-provider/live-session-link-context";
+import { useSessionContext } from "../context-provider/session-context";
 import { Resolver } from "../resolver";
 
 const callstats: any = require('callstats-js/callstats.min');
@@ -119,7 +120,7 @@ const defaultWebRTCContext = {
 export const WebRTCContext = createContext<WebRTCContextInterface>(defaultWebRTCContext);
 
 export const WebRTCProvider = (props: {children: React.ReactNode}) => {
-    const { roomId, name, sessionId: localSessionId, camera } = useContext(LocalSessionContext);
+    const { roomId, name, sessionId: localSessionId, camera } = useSessionContext();
     const [device, setDevice] = useState<Device | undefined | null>();
     const [producerTransport, setProducerTransport] = useState<MediaSoup.Transport | undefined | null>();
     const [consumerTransport, setConsumerTransport] = useState<MediaSoup.Transport | undefined | null>();
@@ -128,11 +129,11 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
     const [outboundStreams, setOutboundStreams] = useState<Map<string, Stream>>(new Map<string, Stream>());
     const [destructors, setDestructors] = useState<Map<string, () => any>>(new Map<string, () => any>());
 
-    const [rtpCapabilitiesMutation] = useMutation(SEND_RTP_CAPABILITIES, {context: {target: SFU_LINK}});
-    const [transportMutation] = useMutation(TRANSPORT, {context: {target: SFU_LINK}});
-    const [producerMutation] = useMutation(PRODUCER, {context: {target: SFU_LINK}});
-    const [consumerMutation] = useMutation(CONSUMER, {context: {target: SFU_LINK}});
-    const [streamMutation] = useMutation(STREAM, {context: {target: SFU_LINK}});
+    const [rtpCapabilitiesMutation] = useMutation(SEND_RTP_CAPABILITIES, {context: {target: SESSION_LINK_SFU}});
+    const [transportMutation] = useMutation(TRANSPORT, {context: {target: SESSION_LINK_SFU}});
+    const [producerMutation] = useMutation(PRODUCER, {context: {target: SESSION_LINK_SFU}});
+    const [consumerMutation] = useMutation(CONSUMER, {context: {target: SESSION_LINK_SFU}});
+    const [streamMutation] = useMutation(STREAM, {context: {target: SESSION_LINK_SFU}});
     // const [endClassMutation] = useMutation(ENDCLASS);
     const devicePrePromise = Resolver<Device>();
     const producerTransportPrePromise = Resolver<MediaSoup.Transport>();
@@ -650,7 +651,7 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
             }
         },
         variables: { roomId },
-        context: {target: SFU_LINK}
+        context: {target: SESSION_LINK_SFU}
     })
 
     useEffect(() => {

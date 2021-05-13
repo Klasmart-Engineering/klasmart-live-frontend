@@ -20,7 +20,7 @@
         "noImplicitAny": true,
         "outDir": "./dist",
         "removeComments": true,
-        "rootDir": "./src",
+        "rootDir": "./",
         "skipLibCheck": true,
         "strict": true,
         "target": "ES6",

@@ -1,21 +1,14 @@
 import React, { useContext } from "react";
-import { Trophy } from "./components/trophies/trophy";
-import { LocalSessionContext } from "./entry";
+import { useSessionContext } from "./context-provider/session-context";
 import Join from "./pages/join/join";
-import { Room } from "./pages/room/room";
-import { RoomProvider } from "./providers/RoomContext";
+import { RoomWithContext } from "./pages/room/room";
 
 export function App(): JSX.Element {
-    const { camera, name } = useContext(LocalSessionContext);
+    const { camera, name } = useSessionContext();
 
     if (!name || camera === undefined) {
         return <Join />;
     }
 
-    return (
-        <RoomProvider>
-            <Room />
-            <Trophy />
-        </RoomProvider>
-    );
+    return <RoomWithContext />;        
 }

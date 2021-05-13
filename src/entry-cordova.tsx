@@ -23,7 +23,7 @@ import {
 import { ThemeProvider } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 
-import { App } from "./app";
+import { App } from "./cordova-app";
 import { createDefaultStore, State } from "./store/store";
 import { setUserAgent } from "./store/reducers/session";
 import { setErrCode } from "./store/reducers/communication";

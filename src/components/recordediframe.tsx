@@ -1,10 +1,3 @@
-import React, { useRef, useEffect, useState, useMemo } from "react";
-import { useSelector } from "react-redux";
-import { gql } from "apollo-boost";
-import { useMutation } from "@apollo/react-hooks";
-import IframeResizer from "iframe-resizer-react";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
-import Grid from "@material-ui/core/Grid";
 import { gql, useMutation } from "@apollo/client";
 import Dialog from "@material-ui/core/Dialog";
 import Grid from "@material-ui/core/Grid";
@@ -21,7 +14,8 @@ import EccoSpinner2 from "../assets/img/spinner/ecco2_spinner.gif";
 import GhostSpinner from "../assets/img/spinner/ghost_spinner.gif";
 import JessSpinner1 from "../assets/img/spinner/jess1_spinner.gif";
 import MimiSpinner1 from "../assets/img/spinner/mimi1_spinner.gif";
-import { LIVE_LINK, LocalSessionContext } from "../entry";
+import { SESSION_LINK_LIVE } from "../context-provider/live-session-link-context";
+import { useSessionContext } from "../context-provider/session-context";
 import { State } from "../store/store";
 import { loadingActivity } from "../utils/layerValues";
 import { useWindowSize } from "../utils/viewport";
@@ -34,7 +28,7 @@ const SET_STREAMID = gql`
 `;
 
 export interface Props {
-    contentHref: string;
+    contentId: string;
     setStreamId: React.Dispatch<React.SetStateAction<string | undefined>>;
     square?: number;
 }
@@ -52,10 +46,10 @@ export function RecordedIframe(props: Props): JSX.Element {
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
 
-    const { roomId } = useContext(LocalSessionContext);
+    const { roomId } = useSessionContext();
     const drawerOpen = useSelector((state: State) => state.control.drawerOpen);
-    const { contentId, setStreamId, square } = props;
-    const [sendStreamId] = useMutation(SET_STREAMID, {context: {target: LIVE_LINK}});
+    const { contentId, setStreamId } = props;
+    const [sendStreamId] = useMutation(SET_STREAMID, {context: {target: SESSION_LINK_LIVE}});
 
     const [transformScale, setTransformScale] = useState<number>(1);
     const [openDialog, setOpenDialog] = useState(true);
@@ -126,7 +120,6 @@ export function RecordedIframe(props: Props): JSX.Element {
         const iframeElement = window.document.getElementById("recordediframe") as HTMLIFrameElement;
         const contentWindow = iframeElement.contentWindow
         const contentDoc = iframeElement.contentDocument
-
         if (!contentWindow || !contentDoc) { return; }
 
         // Custom styles when needed
@@ -202,13 +195,13 @@ export function RecordedIframe(props: Props): JSX.Element {
             !iRef.contentWindow ||
             (iRef.contentWindow as any).kidslooplive ||
             !iRef.contentDocument) { return; }
-
-        // HACK: In chromium (android) there's error when trying to load
-        // set src to local file path. Instead the file text is loaded and
-        // then set as the text content of script node.
-        // script.setAttribute("src", recorderScript);
-
-        injectIframeScript(iRef, "record-e44f2b3");
+        const doc = iRef.contentDocument;
+        const script = doc.createElement("script");
+        script.setAttribute("type", "text/javascript");
+        const matches = window.location.pathname.match(/^(.*\/+)([^/]*)$/);
+        const prefix = matches && matches.length >= 2 ? matches[1] : "";
+        script.setAttribute("src", `${prefix}record-e44f2b3.js`);
+        doc.head.appendChild(script);
     }
 
     const getRandomSpinner = (): string => SPINNER[Math.floor(Math.random() * SPINNER.length)];
@@ -225,8 +218,7 @@ export function RecordedIframe(props: Props): JSX.Element {
                     style: { backgroundColor: "rgba(255,255,255,0.7)" },
                 }}
                 style={{
-                    paddingRight: !drawerOpen ? "" : drawerWidth + DRAWER_TOOLBAR_WIDTH,
-                    zIndex: loadingActivity
+                    zIndex: loadingActivity,
                 }}
             >
                 <Grid
