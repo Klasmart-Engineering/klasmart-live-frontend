@@ -8,16 +8,13 @@ import React, { useContext, useMemo } from "react";
 
 const useStyles = makeStyles((theme: Theme) => ({
     whiteboard: {
-        width: `100%`,
-        height: `100%`,
         "& div": {
-            width: `100% !important`,
-            height: `100% !important`,
-            transform: `none !important`,
+            overflow: `hidden`,
+            position: `relative`,
         },
         "& canvas": {
-            width: `100% !important`,
-            height: `100% !important`,
+            width: `auto !important`,
+            height: `auto !important`,
         },
     },
 }));
@@ -50,8 +47,8 @@ export function Whiteboard ({
 
     const canvasStyle: CSSProperties = {
         zIndex: whiteboard,
-        width: `100%`,
-        height: `100%`,
+        // width: `100%`,
+        // height: `100%`,
     };
 
     return (
@@ -80,7 +77,7 @@ export function Whiteboard ({
                 pixelWidth={1024}
                 pixelHeight={1024}
                 display={display}
-                scaleMode={`ScaleToFit`}
+                scaleMode={`ScaleToFill`}
                 centerHorizontally={centerHorizontally !== undefined ? centerHorizontally : true}
                 centerVertically={centerVertically !== undefined ? centerVertically : false}
             />

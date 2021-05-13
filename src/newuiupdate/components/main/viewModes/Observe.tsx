@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         padding: 20,
     },
     item:{
-        minHeight: 180,
+        minHeight: 260,
         background: theme.palette.background.paper,
         borderRadius: 12,
         boxShadow: `2px 2px 3px 1px rgb(0 0 0 / 5%)`,
@@ -90,7 +90,6 @@ function Observe () {
     });
 
     useEffect(() => {
-        setMaterialActiveIndex(0);
         if(!isTeacher){
             enqueueSnackbar(intl.formatMessage({
                 id: `notification_observe_content_interactive`,
@@ -104,7 +103,7 @@ function Observe () {
     }, [ sessions, sessions.size ]);
 
     useEffect(() => {
-        if (material) {
+        if (hasControls && material) {
             showContent({
                 variables: {
                     roomId,
@@ -113,13 +112,7 @@ function Observe () {
                 },
             });
         }
-    }, [
-        // roomId,
-        // interactiveMode,
-        material,
-        // streamId,
-        // sessionId,
-    ]);
+    }, [ material ]);
 
     const studentModeFilterGroups = useMemo(() => {
         return [ sessionId ];
