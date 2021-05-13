@@ -342,9 +342,9 @@ function MicIndicator({ sessionId }: { sessionId: string }) {
     const [micOn, setMicOn] = useState<boolean>(false);
 
     useEffect(() => {
-        console.log(sfuState.isLocalAudioEnabled(sessionId), sfuState.isLocalAudioMuted(sessionId))
-        setMicOn(sfuState.isLocalAudioEnabled(sessionId) && !sfuState.isLocalAudioMuted(sessionId))
-    }, [sfuState.isLocalAudioEnabled(sessionId), sfuState.isLocalAudioMuted(sessionId)])
+        console.log(sfuState.isAudioEnabledByProducer(sessionId), sfuState.isAudioDisabledLocally(sessionId))
+        setMicOn(sfuState.isAudioEnabledByProducer(sessionId) && !sfuState.isAudioDisabledLocally(sessionId))
+    }, [sfuState.isAudioEnabledByProducer(sessionId), sfuState.isAudioDisabledLocally(sessionId)])
 
     return (micOn ? <></> :
         <Grid
@@ -607,7 +607,7 @@ function ToggleMic({ session, sfuState, isSelf }: {
 
     const syncMuteStatus = async () => {
         const { data } = await refetchIndividualMute();
-        states.localAudioEnable(session.id, data?.retrieveMuteStatuses?.audio)
+        states.enableAudioByProducer(session.id, data?.retrieveMuteStatuses?.audio)
     }
 
     useEffect(() => {
@@ -615,10 +615,10 @@ function ToggleMic({ session, sfuState, isSelf }: {
     }, [])
 
     useEffect(() => {
-        if (states.isLocalAudioEnabled(session.id) !== undefined) {
-            setMicOn(states.isLocalAudioEnabled(session.id));
+        if (states.isAudioEnabledByProducer(session.id) !== undefined) {
+            setMicOn(states.isAudioEnabledByProducer(session.id));
         }
-    }, [states.isLocalAudioEnabled(session.id)])
+    }, [states.isAudioEnabledByProducer(session.id)])
 
     async function toggleInboundAudioState() {
         const localSession = sessions.get(localSessionId);
@@ -633,7 +633,7 @@ function ToggleMic({ session, sfuState, isSelf }: {
                 setMicOn(muteNotification.data.mute.audio)
             }
         } else {
-            states.localAudioMuteToggle(session.id)
+            states.toggleLocalAudio(session.id)
         }
     }
 
@@ -669,9 +669,9 @@ function ToggleMic({ session, sfuState, isSelf }: {
     return (
         <MenuItem onClick={toggleAudioState} className={moreControlsMenuItem}>
             <ListItemIcon>
-                <StyledIcon icon={micOn && !states.isLocalAudioMuted(session.id) ? <MicrophoneOnIcon className={noHoverIcon} /> : <MicrophoneOffIcon className={noHoverIcon} />} size="medium" color={micOn && !states.isLocalAudioMuted(session.id) ? PRIMARY_COLOR : SECONDARY_COLOR} />
+                <StyledIcon icon={micOn && !states.isAudioDisabledLocally(session.id) ? <MicrophoneOnIcon className={noHoverIcon} /> : <MicrophoneOffIcon className={noHoverIcon} />} size="medium" color={micOn && !states.isAudioDisabledLocally(session.id) ? PRIMARY_COLOR : SECONDARY_COLOR} />
             </ListItemIcon>
-            {micOn && !states.isLocalAudioMuted(session.id) ? <FormattedMessage id="turn_off_mic" /> : <FormattedMessage id="turn_on_mic" />}
+            {micOn && !states.isAudioDisabledLocally(session.id) ? <FormattedMessage id="turn_off_mic" /> : <FormattedMessage id="turn_on_mic" />}
         </MenuItem>
     )
 }
