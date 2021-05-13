@@ -7,7 +7,7 @@ import JessSpinner1 from "../../../../assets/img/spinner/jess1_spinner.gif";
 import MimiSpinner1 from "../../../../assets/img/spinner/mimi1_spinner.gif";
 import { useWindowSize } from "../../../../utils/viewport";
 import { LIVE_LINK, LocalSessionContext } from "../../../providers/providers";
-import { streamIdState } from "../../../states/layoutAtoms";
+import { isLessonPlanOpenState, streamIdState } from "../../../states/layoutAtoms";
 import { gql, useMutation } from "@apollo/client";
 import { Button } from "@material-ui/core";
 import Dialog from "@material-ui/core/Dialog";
@@ -54,6 +54,7 @@ export function RecordedIframe (props: Props): JSX.Element {
 
     const { roomId } = useContext(LocalSessionContext);
     const [ streamId, setStreamId ] = useRecoilState(streamIdState);
+    const [ isLessonPlanOpen, setIsLessonPlanOpen ] = useRecoilState(isLessonPlanOpenState);
 
     const { contentId } = props;
     const [ sendStreamId ] = useMutation(SET_STREAMID, {
@@ -77,19 +78,25 @@ export function RecordedIframe (props: Props): JSX.Element {
 
     useEffect(() => {
         scale(contentWidth, contentHeight);
+        setTimeout(function (){
+            scaleWhiteboard();
+        }, 300);
     }, [ size ]);
+
+    useEffect(() => {
+        setTimeout(function (){
+            window.dispatchEvent(new Event(`resize`));
+        }, 300);
+    }, [ isLessonPlanOpen ]);
 
     useEffect(() => {
         setSeconds(MAX_LOADING_COUNT);
         setLoadStatus(LoadStatus.Loading);
-
-        const iRef = window.document.getElementById(`recordediframe`) as HTMLIFrameElement;
-        iRef.addEventListener(`load`, () => setLoadStatus(LoadStatus.Finished));
-        return () => iRef.removeEventListener(`load`, () => setLoadStatus(LoadStatus.Finished));
     }, [ contentId ]);
 
     useEffect(() => {
         if (loadStatus === LoadStatus.Loading) {
+            setOpenDialog(true);
             const interval = window.setInterval(() => {
                 setSeconds(seconds => seconds - 1);
             }, 1000);
@@ -120,6 +127,15 @@ export function RecordedIframe (props: Props): JSX.Element {
         setTransformScale(shrinkRatio);
     };
 
+    const scaleWhiteboard = () => {
+        const recordediframe = window.document.getElementById(`recordediframe`) as HTMLIFrameElement;
+        const recordediframeStyles = recordediframe.getAttribute(`style`);
+        const whiteboard = window.document.getElementsByClassName(`canvas-container`)[0];
+        if(recordediframeStyles){
+            whiteboard.setAttribute(`style`, recordediframeStyles);
+        }
+    };
+
     function onLoad () {
         // TODO the client-side rendering version of H5P is ready! we can probably delete this function and the scale function above
         // if we switch over to it! Ask me (Daiki) about the details.
@@ -133,12 +149,12 @@ export function RecordedIframe (props: Props): JSX.Element {
             const style = document.createElement(`style`);
             style.innerHTML = `
             .h5p-content{
-                display: inline-block !important;
-                width: auto !important;
+                // display: inline-block !important;
+                // width: auto !important;
             }
             .h5p-course-presentation .h5p-wrapper{
-                min-width: 1300px !important;
-                min-height: 800px !important
+                // min-width: 1300px !important;
+                // min-height: 800px !important
             }
             .h5p-single-choice-set{
                 max-height: 300px !important;
@@ -300,11 +316,14 @@ export function RecordedIframe (props: Props): JSX.Element {
                     width: enableResize ? contentWidth : `100%`,
                     height: enableResize ? contentHeight : `100%`,
                     position: enableResize ? `absolute` : `static`,
-                    // transformOrigin: `top left`,
+                    transformOrigin: `top left`,
+                    top: 0,
+                    left: 0,
                     transform: enableResize ? `scale(${transformScale})` : `scale(1)`,
                     minWidth: `100%`,
                     minHeight: `100%`,
                 }}
+                onLoad={() =>  {setLoadStatus(LoadStatus.Finished); window.dispatchEvent(new Event(`resize`));}}
             />
         </React.Fragment>
     );

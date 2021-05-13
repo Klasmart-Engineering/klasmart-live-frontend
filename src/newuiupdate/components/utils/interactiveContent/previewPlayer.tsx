@@ -48,10 +48,19 @@ export function PreviewPlayer ({
 
     useEffect(() => {
         scale(frameWidth, frameHeight);
+        setTimeout(function (){
+            scaleWhiteboard();
+        }, 300);
         /*const innerActitivity = window.document.getElementById(container) as HTMLIFrameElement;
         innerActitivity.width = String(frameWidth);
         innerActitivity.height = String(frameHeight);*/
-    }, [ size, content ]);
+    }, [
+        size,
+        content,
+        ref.current,
+        ref.current && ref.current.contentWindow,
+        isLessonPlanOpen,
+    ]);
 
     const scale = (innerWidth: number, innerHeight: number) => {
         let currentWidth: number = size.width, currentHeight: number = size.height;
@@ -66,6 +75,18 @@ export function PreviewPlayer ({
         const shrinkRatioY =  currentHeight / innerHeight;
         const shrinkRatio = Math.min(shrinkRatioX, shrinkRatioY);
         setTransformScale(shrinkRatio);
+    };
+
+    const scaleWhiteboard = () => {
+        const previewIframe = ref.current as HTMLIFrameElement;
+        const previewIframeStyles = previewIframe.getAttribute(`style`);
+        const whiteboard = window.document.getElementsByClassName(`canvas-container`)[0];
+        // window.document.getElementsByClassName(`lower-canvas`)[0].setAttribute(`style`, window.document.getElementsByClassName(`lower-canvas`)[0].getAttribute(`style`) + `; transform: scale(2); transform-origin: top left;`);
+        window.document.getElementsByClassName(`lower-canvas`)[0].setAttribute(`style`, window.document.getElementsByClassName(`lower-canvas`)[0].getAttribute(`style`) + `;`);
+        window.document.getElementsByClassName(`upper-canvas`)[0].setAttribute(`style`,  window.document.getElementsByClassName(`upper-canvas`)[0].getAttribute(`style`) + `;`);
+        if(previewIframeStyles){
+            whiteboard.setAttribute(`style`, previewIframeStyles);
+        }
     };
 
     // Buffer events until we have a page ready to render them
@@ -148,15 +169,15 @@ export function PreviewPlayer ({
             id={`preview:${streamId}`}
             style={{
                 visibility: loading ? `hidden` : `visible`,
-                transformOrigin: `center top`,
+                transformOrigin: `top left`,
                 transform: `scale(${transformScale})`,
                 position: `absolute`,
                 top: `0`,
                 left: `0`,
+                width: frameWidth,
+                height: frameHeight,
             }}
             src={`player.html`}
-            width={frameWidth}
-            height={frameHeight}
             {...frameProps}
         />
     </div>;

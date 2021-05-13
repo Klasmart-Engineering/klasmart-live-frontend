@@ -220,6 +220,11 @@ function parseToken () {
                         url: `/h5p/play/604afe4c75aa320012448fca`,
                     },
                     {
+                        __typename: MaterialTypename.Iframe,
+                        name: `Flash cards`,
+                        url: `/h5p/play/609bb507aa2a8d001333c8c9`,
+                    },
+                    {
                         __typename: MaterialTypename.Video,
                         name: `Video`,
                         url: `${process.env.ENDPOINT_TEST_ASSETS_S3 || `.`}/test_video.mp4`,
