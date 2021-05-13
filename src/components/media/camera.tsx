@@ -501,10 +501,20 @@ function ToggleCamera({ session, sfuState, isSelf, cameraRef }: {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [isVideoManuallyDisabled, setIsVideoManuallyDisabled] = useState<boolean>(false);
     const [muteMutation] = useMutation(MUTE, {context: {target: SFU_LINK}});
-    const {refetch} = useQuery(GLOBAL_MUTE_QUERY, { variables: { roomId }, context: {target: SFU_LINK}});
+    const {refetch: refetchGlobalMute} = useQuery(GLOBAL_MUTE_QUERY, { variables: { roomId }, context: {target: SFU_LINK}});
+    const {refetch: refetchIndividualMute} = useQuery(INDIVIDUAL_MUTE_QUERY, { variables: { sessionId: session.id}, context: {target: SFU_LINK}});
     const states = useContext(WebRTCContext);
     // NOTE: This is the logic for the frontend performance. If this logic goes well, we will restore it again.
     // const isCameraVisible = useIsElementInViewport(cameraRef);
+
+    const syncMuteStatus = async () => {
+        const { data } = await refetchIndividualMute();
+        states.enableVideoByProducer(session.id, data?.retrieveMuteStatuses?.video)
+    }
+
+    useEffect(() => {
+        syncMuteStatus()
+    }, [])
 
     useEffect(() => {
         if (isLoading && sfuState.isVideoEnabledByProducer(session.id)) {
@@ -542,7 +552,7 @@ function ToggleCamera({ session, sfuState, isSelf, cameraRef }: {
                 setCameraOn(muteNotification.data.mute.video)
             }
         } else {
-            states.toggleVideoByProducer(session.id);
+            states.toggleLocalVideo(session.id);
         }
     }
 
@@ -559,7 +569,7 @@ function ToggleCamera({ session, sfuState, isSelf, cameraRef }: {
     }
 
     async function toggleVideoState(): Promise<void> {
-        const { data }= await refetch();
+        const { data }= await refetchGlobalMute();
         const videoGloballyDisabled = data?.retrieveGlobalMute?.videoGloballyDisabled;
         if (isSelf) {
             const localSession = sessions.get(localSessionId);
@@ -579,9 +589,9 @@ function ToggleCamera({ session, sfuState, isSelf, cameraRef }: {
     return (
         <MenuItem onClick={toggleVideoState} className={moreControlsMenuItem}>
             <ListItemIcon>
-                <StyledIcon icon={cameraOn ? <VideoOnIcon className={noHoverIcon} /> : <VideoOffIcon className={noHoverIcon} />} size="medium" color={cameraOn ? PRIMARY_COLOR : SECONDARY_COLOR} />
+                <StyledIcon icon={cameraOn && !states.isVideoDisabledLocally(session.id) ? <VideoOnIcon className={noHoverIcon} /> : <VideoOffIcon className={noHoverIcon} />} size="medium" color={cameraOn && !states.isVideoDisabledLocally(session.id) ? PRIMARY_COLOR : SECONDARY_COLOR} />
             </ListItemIcon>
-            {cameraOn ? <FormattedMessage id="turn_off_camera" /> : <FormattedMessage id="turn_on_camera" />}
+            {cameraOn && !states.isVideoDisabledLocally(session.id) ? <FormattedMessage id="turn_off_camera" /> : <FormattedMessage id="turn_on_camera" />}
         </MenuItem>
     )
 }
