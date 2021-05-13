@@ -276,7 +276,7 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
                 stream.audioEnabledByProducer = enabled ?? !stream.audioEnabledByProducer
                 setInboundStreams(new Map(inboundStreams.set(stream.id, stream)));
             }
-            consumer.track.enabled = stream.audioEnabledByProducer;
+            consumer.track.enabled = stream.audioEnabledByProducer && !stream.audioDisabledLocally;
             setConsumers(new Map(consumers.set(consumer.producerId, consumer)));
         }
     }
@@ -292,7 +292,7 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
 
         stream.audioDisabledLocally = !stream.audioDisabledLocally
         setInboundStreams(new Map(inboundStreams.set(stream.id, stream)));
-        consumer.track.enabled = !stream.audioDisabledLocally;
+        consumer.track.enabled = stream.audioEnabledByProducer && !stream.audioDisabledLocally;
         setConsumers(new Map(consumers.set(consumer.producerId, consumer)));
     }
 
@@ -362,7 +362,7 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
                 stream.videoEnabledByProducer = enabled ?? !stream.videoEnabledByProducer
                 setInboundStreams(new Map(inboundStreams.set(stream.id, stream)));
             }
-            consumer.track.enabled = stream.videoEnabledByProducer
+            consumer.track.enabled = stream.videoEnabledByProducer && !stream.videoDisabledLocally
             setConsumers(new Map(consumers.set(consumer.producerId, consumer)));
         }
     }
@@ -378,7 +378,7 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
 
         stream.videoDisabledLocally = !stream.videoDisabledLocally
         setInboundStreams(new Map(inboundStreams.set(stream.id, stream)));
-        consumer.track.enabled = !stream.videoDisabledLocally
+        consumer.track.enabled = stream.videoEnabledByProducer && !stream.videoDisabledLocally
         setConsumers(new Map(consumers.set(consumer.producerId, consumer)));
     }
 
