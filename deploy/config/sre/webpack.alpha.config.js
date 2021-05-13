@@ -84,7 +84,7 @@ module.exports = {
   plugins: [
     new webpack.EnvironmentPlugin(
       { "CALLSTATS_ENABLE": "TRUE" },
-      { "ENDPOINT_CMS": "https://cms.klpsre.com" },
+      { "ENDPOINT_CMS": "https://cms.alpha.klpsre.com" },
     ),
     new HtmlWebpackPlugin({
       filename: 'index.html',
