@@ -342,9 +342,9 @@ function MicIndicator({ sessionId }: { sessionId: string }) {
     const [micOn, setMicOn] = useState<boolean>(false);
 
     useEffect(() => {
-        console.log(sfuState.isAudioEnabled(sessionId), sfuState.isLocalAudioMuted(sessionId))
-        setMicOn(sfuState.isAudioEnabled(sessionId) && !sfuState.isLocalAudioMuted(sessionId))
-    }, [sfuState.isAudioEnabled(sessionId), sfuState.isLocalAudioMuted(sessionId)])
+        console.log(sfuState.isLocalAudioEnabled(sessionId), sfuState.isLocalAudioMuted(sessionId))
+        setMicOn(sfuState.isLocalAudioEnabled(sessionId) && !sfuState.isLocalAudioMuted(sessionId))
+    }, [sfuState.isLocalAudioEnabled(sessionId), sfuState.isLocalAudioMuted(sessionId)])
 
     return (micOn ? <></> :
         <Grid
@@ -607,7 +607,7 @@ function ToggleMic({ session, sfuState, isSelf }: {
 
     const syncMuteStatus = async () => {
         const { data } = await refetchIndividualMute();
-        states.audioEnable(session.id, data?.retrieveMuteStatuses?.audio)
+        states.localAudioEnabled(session.id, data?.retrieveMuteStatuses?.audio)
     }
 
     useEffect(() => {
@@ -615,10 +615,10 @@ function ToggleMic({ session, sfuState, isSelf }: {
     }, [])
 
     useEffect(() => {
-        if (states.isAudioEnabled(session.id) !== undefined) {
-            setMicOn(states.isAudioEnabled(session.id));
+        if (states.isLocalAudioEnabled(session.id) !== undefined) {
+            setMicOn(states.isLocalAudioEnabled(session.id));
         }
-    }, [states.isAudioEnabled(session.id)])
+    }, [states.isLocalAudioEnabled(session.id)])
 
     async function toggleInboundAudioState() {
         const localSession = sessions.get(localSessionId);
