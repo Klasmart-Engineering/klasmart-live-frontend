@@ -106,7 +106,7 @@ export interface WebRTCContextInterface {
     transmitStream: (id: string, stream: MediaStream, simulcast: boolean) => Promise<MediaSoup.Producer[]>
     localAudioToggle: (id?: string) => void,
     isLocalAudioEnabled: (id?: string) => boolean,
-    localAudioEnabled: (id?: string, enabled?: boolean) => void,
+    localAudioEnable: (id?: string, enabled?: boolean) => void,
     localAudioMuteToggle: (id?: string) => void,
     isLocalAudioMuted: (id?: string) => boolean,
     localAudioMute: (id?: string) => void,
@@ -122,7 +122,7 @@ const defaultWebRTCContext = {
     transmitStream: async (id: string, stream: MediaStream, simulcast = true) => {return []},
     localAudioToggle: (id?: string) => {},
     isLocalAudioEnabled: (id?: string) => {return false},
-    localAudioEnabled: (id?: string, enabled?: boolean) => {},
+    localAudioEnable: (id?: string, enabled?: boolean) => {},
     localAudioMuteToggle: (id?: string) => {},
     isLocalAudioMuted: (id?: string) => {return false},
     localAudioMute: (id?: string) => {},
@@ -223,7 +223,7 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
     }
 
     const localAudioToggle = (id?: string): void => {
-        return localAudioEnabled(id);
+        return localAudioEnable(id);
     }
 
     const isLocalAudioEnabled = (id?: string): boolean => {
@@ -236,7 +236,7 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
         return stream.audioEnabled
     }
 
-    const localAudioEnabled = (id?: string, enabled?: boolean): void => {
+    const localAudioEnable = (id?: string, enabled?: boolean): void => {
         if (id === undefined || id === localSessionId) {
             // My Camera
             const stream = outboundStreams.get("camera")
@@ -552,7 +552,7 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
             if (handler["_pc"] !== undefined) {
                 const pc = handler["_pc"]
                 const fabricAttributes = {
-                    outEndpointType: callstats.endpointType.server,
+                    remoteEndpointType: callstats.endpointType.server,
                     fabricTransmissionDirection: direction
                 }
                 callstats.addNewFabric(pc, params.id, callstats.fabricUsage.multiplex, roomId, fabricAttributes)
@@ -650,7 +650,7 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
         transmitStream,
         localAudioToggle,
         isLocalAudioEnabled,
-        localAudioEnabled,
+        localAudioEnable,
         localAudioMuteToggle,
         isLocalAudioMuted,
         localAudioMute,

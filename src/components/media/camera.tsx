@@ -607,7 +607,7 @@ function ToggleMic({ session, sfuState, isSelf }: {
 
     const syncMuteStatus = async () => {
         const { data } = await refetchIndividualMute();
-        states.localAudioEnabled(session.id, data?.retrieveMuteStatuses?.audio)
+        states.localAudioEnable(session.id, data?.retrieveMuteStatuses?.audio)
     }
 
     useEffect(() => {
