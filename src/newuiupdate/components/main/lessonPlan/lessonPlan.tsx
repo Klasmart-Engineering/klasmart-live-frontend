@@ -84,11 +84,12 @@ function LessonPlan () {
                         label={intl.formatMessage({
                             id: `lessonplan_content`,
                         })} />
+                    {/* TODO : NKL-546 (Show teacher manuals), see with Jubilee for more details
                     <Tab
                         disableRipple
                         label={intl.formatMessage({
                             id: `lessonplan_manuals`,
-                        })} />
+                        })} /> */}
                 </Tabs>
             </Grid>
             <Grid

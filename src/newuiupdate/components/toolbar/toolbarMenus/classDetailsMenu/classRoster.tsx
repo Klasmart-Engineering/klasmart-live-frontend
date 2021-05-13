@@ -1,4 +1,3 @@
-import { usersState } from "../../../../states/layoutAtoms";
 import {
     Accordion,
     AccordionDetails,
@@ -68,6 +67,10 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 function ClassRoster () {
     const classes = useStyles();
+
+    return(null);
+
+    /*
 
     // TODO : Switch to real data
     const [ users, setUsers ] = useRecoilState(usersState);
@@ -170,9 +173,10 @@ function ClassRoster () {
                         No informations.
                     </Typography>
                 </AccordionDetails>
-            </Accordion> */}
+            </Accordion>
         </div>
     );
+    */
 }
 
 export default ClassRoster;

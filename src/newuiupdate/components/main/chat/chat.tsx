@@ -84,11 +84,12 @@ function Chat () {
                         label={intl.formatMessage({
                             id: `chat_messages`,
                         })} />
+                    {/* TODO : KLL-478 (Attachments feature), see with Jubilee for more details
                     <Tab
                         disableRipple
                         label={intl.formatMessage({
                             id: `chat_attachments`,
-                        })} />
+                        })} /> */}
                 </Tabs>
             </Grid>
             <Grid

@@ -1,11 +1,7 @@
 import { ContentType } from "../../../../../pages/room/room";
 import { LIVE_LINK, LocalSessionContext } from "../../../../providers/providers";
 import { RoomContext } from "../../../../providers/roomContext";
-import {
-    interactiveModeState,
-    isViewModesOpenState,
-    pinnedUserState,
-} from "../../../../states/layoutAtoms";
+import { isViewModesOpenState } from "../../../../states/layoutAtoms";
 import { MUTATION_SHOW_CONTENT } from "../../../utils/graphql";
 import { StyledPopper } from "../../../utils/utils";
 import { useMutation } from "@apollo/client";
@@ -48,9 +44,7 @@ function ViewModesMenu (props:ViewModesMenuProps) {
     const { anchor } = props;
     const classes = useStyles();
 
-    const [ interactiveMode, setInteractiveMode ] = useRecoilState(interactiveModeState);
     const [ isViewModesOpen, setIsViewModesOpen ] = useRecoilState(isViewModesOpenState);
-    const [ pinnedUser, setPinnedUser ] = useRecoilState(pinnedUserState);
 
     const { roomId, sessionId } = useContext(LocalSessionContext);
     const { content } = useContext(RoomContext);
@@ -73,7 +67,7 @@ function ViewModesMenu (props:ViewModesMenuProps) {
                     type: ContentType.Camera,
                     contentId: sessionId,
                 },
-            }); setPinnedUser(undefined);},
+            }); },
         },
         {
             id: `2`,
@@ -86,7 +80,7 @@ function ViewModesMenu (props:ViewModesMenuProps) {
                     type: ContentType.Activity,
                     contentId: sessionId,
                 },
-            }); setPinnedUser(undefined);},
+            }); },
         },
         {
             id: `3`,
@@ -99,7 +93,7 @@ function ViewModesMenu (props:ViewModesMenuProps) {
                     type: ContentType.Stream,
                     contentId: sessionId,
                 },
-            }); setPinnedUser(undefined);},
+            });},
         },
     ];
 

@@ -4,7 +4,7 @@ import { ScreenShareContext } from "../../providers/screenShareProvider";
 import { WebRTCContext } from "../../providers/WebRTCContext";
 import {
     hasControlsState,
-    isLessonPlanOpenState, isViewModesOpenState, pinnedUserState,
+    isLessonPlanOpenState, isViewModesOpenState,
 } from "../../states/layoutAtoms";
 import PreviewLessonPlan from "./previewLessonPlan";
 import Observe from "./viewModes/Observe";
@@ -44,7 +44,6 @@ function MainView () {
     const screenShare = useContext(ScreenShareContext);
     const webrtc = useContext(WebRTCContext);
 
-    const [ pinnedUser, setPinnedUser ] = useRecoilState(pinnedUserState);
     const [ isViewModesOpen, setIsViewModesOpen ] = useRecoilState(isViewModesOpenState);
     const [ isLessonPlanOpen, setIsLessonPlanOpen ] = useRecoilState(isLessonPlanOpenState);
     const [ hasControls, setHasControls ] = useRecoilState(hasControlsState);
