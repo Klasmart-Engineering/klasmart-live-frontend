@@ -118,12 +118,12 @@ export default function Camera({
     }, [videoRef.current, mediaStream]);
 
     useEffect(() => {
-        if (webRTCContext.isVideoEnabledByProducer(session?.id) || !session) return;
+        if ((webRTCContext.isVideoEnabledByProducer(session?.id) && !webRTCContext.isVideoDisabledLocally(session?.id)) || !session) return;
         const videoEl = document.getElementById(cameraId) as HTMLVideoElement;
         if (videoEl) {
             videoEl.load();
         }
-    }, [webRTCContext.isVideoEnabledByProducer(session?.id)]);
+    }, [webRTCContext.isVideoEnabledByProducer(session?.id), webRTCContext.isVideoDisabledLocally]);
 
     const cameraRef = useRef<HTMLDivElement>(null);
     return (
