@@ -6,7 +6,7 @@ import React, {
     useState,
 } from "react";
 import { useSubscription, useMutation } from "@apollo/react-hooks";
-import { gql } from "apollo-boost";
+import { gql } from "@apollo/client";
 import { CircularProgress, Typography, IconButton } from "@material-ui/core";
 import { MaterialTypename } from "../../lessonMaterialContext";
 import FFT from "./fft";

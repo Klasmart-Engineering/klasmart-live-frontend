@@ -6,8 +6,7 @@ import IconButton from "@material-ui/core/IconButton";
 import InputBase from "@material-ui/core/InputBase";
 import Paper from "@material-ui/core/Paper";
 import { Send as SendIcon } from "@styled-icons/material-twotone/Send";
-import { useMutation } from "@apollo/react-hooks";
-import { gql } from "apollo-boost";
+import { gql, useMutation} from "@apollo/client";
 import { useSessionContext } from "./context-provider/session-context";
 import { SESSION_LINK_LIVE } from "./context-provider/live-session-link-context";
 

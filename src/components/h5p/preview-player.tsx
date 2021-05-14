@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { useSubscription } from "@apollo/react-hooks";
-import { gql } from "apollo-boost";
+import { gql } from "@apollo/client";
 import Typography from "@material-ui/core/Typography";
 import Loading from "../loading";
 

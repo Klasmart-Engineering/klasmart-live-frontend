@@ -1,7 +1,6 @@
 import React, { useRef, useEffect, useState, useMemo } from "react";
 import { useSelector } from "react-redux";
-import { gql } from "apollo-boost";
-import { useMutation } from "@apollo/react-hooks";
+import { gql, useMutation } from "@apollo/client";
 import IframeResizer from "iframe-resizer-react";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import Grid from "@material-ui/core/Grid";

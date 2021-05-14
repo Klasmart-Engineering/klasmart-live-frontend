@@ -1,7 +1,6 @@
 import React, { useReducer, useState, useContext, useEffect, createContext, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { gql } from "apollo-boost";
-import { useSubscription } from "@apollo/react-hooks";
+import { gql, useSubscription } from "@apollo/client"
 import { FormattedMessage } from "react-intl";
 import Typography from "@material-ui/core/Typography";
 import Loading from "../../components/loading";

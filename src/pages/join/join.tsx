@@ -1,4 +1,3 @@
-import LogRocket from 'logrocket';
 import React, { useState, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { createStyles, makeStyles, useTheme, Theme } from "@material-ui/core/styles";
@@ -30,6 +29,8 @@ import KidsLoopLiveTeachers from "../../assets/img/kidsloop_live_teachers.svg";
 import KidsLoopLiveStudents from "../../assets/img/kidsloop_live_students.svg";
 import KidsLoopStudyStudents from "../../assets/img/kidsloop_study_students.svg";
 import { useSessionContext } from '../../context-provider/session-context';
+import { useHistory } from "react-router-dom";
+import { useUserInformation } from "../../context-provider/user-information-context";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -325,13 +326,31 @@ function JoinRoomForm({
     audioDeviceIdHandler,
     videoDeviceIdHandler
 }: JoinRoomFormProps): JSX.Element {
-    const { classType: classtype, setCamera, name, setName, sessionId } = useSessionContext();
+    const { classType: classtype, setCamera, name, setName } = useSessionContext();
+
+    const { information: myInformation } = useUserInformation();
 
     const { audioDeviceId, setAudioDeviceId } = audioDeviceIdHandler;
     const { videoDeviceId, setVideoDeviceId } = videoDeviceIdHandler;
 
     const [user, setUser] = useState<string>("");
     const [nameError, setNameError] = useState<JSX.Element | null>(null);
+
+    const history = useHistory();
+
+    // NOTE: Set the user customizable name based on the information from /me query. This 
+    // will populate the input field for the user name but still allow it to be customized
+    // before joining room.
+    useEffect(() => {
+        if (!myInformation) return;
+
+        if (myInformation.givenName) {
+            setUser(myInformation.givenName);
+        } else if(myInformation.name) {
+            setUser(myInformation.name);
+        }
+
+    }, [myInformation]);
 
     function join(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -348,9 +367,10 @@ function JoinRoomForm({
         }
         if (!name) {
             setName(user);
-            LogRocket.identify(user, { sessionId })
         }
         setCamera(stream);
+
+        history.push(`/room`);
     }
 
     return (
