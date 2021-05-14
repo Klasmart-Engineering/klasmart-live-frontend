@@ -15,8 +15,8 @@ const useStyles = makeStyles((theme: Theme) => ({
             position: `relative`,
         },
         "& canvas": {
-            width: `auto !important`,
-            height: `auto !important`,
+            width: `2048px !important`,
+            height: `2048px !important`,
         },
     },
 }));
@@ -71,7 +71,7 @@ export function Whiteboard ({
                 width: width ? width : `100%`,
                 height: height ? height : `100%`,
             }}
-            className={classes.whiteboard}
+            className={`${classes.whiteboard} whiteboard-container-class`}
         >
             <WhiteboardCanvas
                 instanceId={`canvas:user:${sessionId}:${uniqueId}`}

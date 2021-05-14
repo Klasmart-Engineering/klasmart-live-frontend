@@ -18,11 +18,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     fullHeight:{
         height: `100%`,
     },
-    root:{
-        overflowY: `scroll`,
-    },
     container:{
         overflowY: `scroll`,
+        minHeight: 300,
+        minWidth: 300,
     },
 }));
 

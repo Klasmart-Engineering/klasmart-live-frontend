@@ -23,8 +23,10 @@ import ToolbarItemCall from "./toolbarItemCall";
 import ToolbarItemCamera from "./toolbarItemCamera";
 import ToolbarItemMicrophone from "./toolbarItemMicrophone";
 import CanvasMenu from "./toolbarMenus/canvasMenu";
+import ChatMenu from "./toolbarMenus/chatMenu/chatMenu";
 import ClassDetailsMenu from "./toolbarMenus/classDetailsMenu/classDetailsMenu";
 import GlobalActionsMenu from "./toolbarMenus/globalActionsMenu/globalActionsMenu";
+import LessonPlanMenu from "./toolbarMenus/lessonPlanMenu/lessonPlanMenu";
 import ViewModesMenu from "./toolbarMenus/viewModesMenu/viewModesMenu";
 import { useMutation } from "@apollo/client";
 import {
@@ -102,6 +104,8 @@ function Toolbar () {
     const canvasRef = React.useRef<any>();
     const globalActionsRef = React.useRef<any>();
     const viewModesRef = React.useRef<any>();
+    const chatRef = React.useRef<any>();
+    const lessonPlanRef = React.useRef<any>();
 
     const [ openEndClassDialog, setOpenEndClassDialog ] = useState(false);
     const [ openLeaveClassDialog, setOpenLeaveClassDialog ] = useState(false);
@@ -279,20 +283,22 @@ function Toolbar () {
                             }}
                         />
                     </div>
-                    <ToolbarItem
-                        display={hasControls ? activeTab !== `mosaic` : false}
-                        icon={<LessonPlanIcon />}
-                        label={intl.formatMessage({
-                            id: `toolbar_lesson_plan`,
-                        })}
-                        disabled={Boolean(handleTooltip(`lessonPlan`))}
-                        tooltip={handleTooltip(`lessonPlan`)}
-                        active={isLessonPlanOpen}
-                        onClick={() => {
-                            resetDrawers();
-                            setIsLessonPlanOpen(!isLessonPlanOpen);
-                        }}
-                    />
+                    <div ref={lessonPlanRef}>
+                        <ToolbarItem
+                            display={hasControls ? activeTab !== `mosaic` : false}
+                            icon={<LessonPlanIcon />}
+                            label={intl.formatMessage({
+                                id: `toolbar_lesson_plan`,
+                            })}
+                            disabled={Boolean(handleTooltip(`lessonPlan`))}
+                            tooltip={handleTooltip(`lessonPlan`)}
+                            active={isLessonPlanOpen}
+                            onClick={() => {
+                                resetDrawers();
+                                setIsLessonPlanOpen(!isLessonPlanOpen);
+                            }}
+                        />
+                    </div>
                     <div ref={viewModesRef}>
                         <ToolbarItem
                             display={hasControls ? activeTab !== `mosaic` : false}
@@ -310,19 +316,21 @@ function Toolbar () {
                             }}
                         />
                     </div>
-                    <ToolbarItem
-                        display={true}
-                        icon={<ChatIcon />}
-                        label={intl.formatMessage({
-                            id: `toolbar_chat`,
-                        })}
-                        badge={unreadMessages ? unreadMessages : null}
-                        active={isChatOpen}
-                        onClick={(e: Event) => {
-                            resetDrawers();
-                            setIsChatOpen(!isChatOpen);
-                        }}
-                    />
+                    <div ref={chatRef}>
+                        <ToolbarItem
+                            display={true}
+                            icon={<ChatIcon />}
+                            label={intl.formatMessage({
+                                id: `toolbar_chat`,
+                            })}
+                            badge={unreadMessages ? unreadMessages : null}
+                            active={isChatOpen}
+                            onClick={(e: Event) => {
+                                resetDrawers();
+                                setIsChatOpen(!isChatOpen);
+                            }}
+                        />
+                    </div>
                 </Grid>
             </Grid>
 
@@ -330,6 +338,8 @@ function Toolbar () {
             <CanvasMenu anchor={canvasRef.current} />
             <GlobalActionsMenu anchor={globalActionsRef.current} />
             <ViewModesMenu anchor={viewModesRef.current} />
+            <ChatMenu anchor={chatRef.current} />
+            <LessonPlanMenu anchor={lessonPlanRef.current} />
 
             <DialogEndClass
                 open={openEndClassDialog}
