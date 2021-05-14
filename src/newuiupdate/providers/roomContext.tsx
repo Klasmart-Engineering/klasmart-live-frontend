@@ -3,7 +3,7 @@ import {
     Content, Message, Session,
 } from "../../pages/room/room";
 import {
-    audioGloballyMutedState, isChatOpenState, unreadMessagesState, videoGloballyMutedState,
+    audioGloballyMutedState, classEndedState, isChatOpenState, unreadMessagesState, videoGloballyMutedState,
 } from "../states/layoutAtoms";
 import {
     LIVE_LINK, LocalSessionContext, SFU_LINK,
@@ -43,7 +43,6 @@ export interface RoomContextInterface {
     trophy: any;
     audioGloballyMuted: boolean;
     videoGloballyMuted: boolean;
-    endClass: boolean;
 }
 
 const defaultRoomContext = {
@@ -54,7 +53,6 @@ const defaultRoomContext = {
     trophy: undefined,
     audioGloballyMuted: false,
     videoGloballyMuted: false,
-    endClass: false,
 };
 
 export const RoomContext = createContext<RoomContextInterface>(defaultRoomContext);
@@ -68,7 +66,7 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
     const [ content, setContent ] = useState<Content>();
     const [ sessions, setSessions ] = useState<Map<string, Session>>(new Map<string, Session>());
     const [ trophy, setTrophy ] = useState();
-    const [ endClass, setEndClass ] = useState(false);
+    const [ classEnded, setClassEnded ] = useRecoilState(classEndedState);
     const [ unreadMessages, setUnreadMessages ] = useRecoilState(unreadMessagesState);
     const [ isChatOpen, setIsChatOpen ] = useRecoilState(isChatOpenState);
     const [ audioGloballyMuted, setAudioGloballyMuted ] = useRecoilState(audioGloballyMutedState);
@@ -140,7 +138,7 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
         });
 
         if(leave.id === sessionId){
-            setEndClass(true);
+            setClassEnded(true);
         }
     };
 
@@ -167,7 +165,6 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
         trophy,
         audioGloballyMuted,
         videoGloballyMuted,
-        endClass,
     };
 
     if (loading || !content) { return <Grid

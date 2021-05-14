@@ -55,6 +55,11 @@ export const classLeftState = atom({
     default: false,
 });
 
+export const classEndedState = atom({
+    key: `classEndedState`,
+    default: false,
+});
+
 export const unreadMessagesState = atom({
     key: `unreadMessagesState`,
     default: 0,
