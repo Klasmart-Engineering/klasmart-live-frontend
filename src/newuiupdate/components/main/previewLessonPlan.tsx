@@ -1,11 +1,10 @@
 import { MaterialTypename } from "../../../lessonMaterialContext";
 import { LocalSessionContext } from "../../providers/providers";
-import { materialActiveIndexState } from "../../states/layoutAtoms";
+import { materialActiveIndexState, studyRecommandUrlState } from "../../states/layoutAtoms";
 import ActivityImage from "../utils/interactiveContent/image";
 import { RecordedIframe } from "../utils/interactiveContent/recordediframe";
 import { ReplicatedMedia } from "../utils/interactiveContent/synchronized-video";
 import {
-    Grid,
     makeStyles,
     Theme,
 } from "@material-ui/core";
@@ -20,7 +19,17 @@ function PreviewLessonPlan () {
     const classes = useStyles();
     const {  materials } = useContext(LocalSessionContext);
     const [ materialActiveIndex, setMaterialActiveIndex ] = useRecoilState(materialActiveIndexState);
+    const [ studyRecommandUrl, setStudyRecommandUrl ] = useRecoilState(studyRecommandUrlState);
     const material = materialActiveIndex >= 0 && materialActiveIndex < materials.length ? materials[materialActiveIndex] : undefined;
+
+    // If recommanded content in study mode
+    if(materialActiveIndex === materials.length && studyRecommandUrl){
+        return(
+            <RecordedIframe
+                contentId={studyRecommandUrl}
+            />
+        );
+    }
 
     if(material?.__typename === MaterialTypename.Image){
         return (
@@ -42,7 +51,7 @@ function PreviewLessonPlan () {
         );
     }
 
-    if((material?.__typename === MaterialTypename.Iframe || material?.__typename === undefined) && material?.url){
+    if(((material?.__typename === MaterialTypename.Iframe || material?.__typename === undefined) && material?.url)){
         return(
             <RecordedIframe
                 contentId={material.url}

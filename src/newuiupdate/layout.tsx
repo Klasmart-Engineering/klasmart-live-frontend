@@ -13,7 +13,7 @@ import {
     GLOBAL_MUTE_MUTATION, GLOBAL_MUTE_QUERY, GlobalMuteNotification, WebRTCContext,
 } from "./providers/WebRTCContext";
 import {
-    classLeftState, hasControlsState, isLessonPlanOpenState,
+    classLeftState, hasControlsState, isLessonPlanOpenState, studyRecommandUrlState,
 } from "./states/layoutAtoms";
 import { useMutation, useQuery } from '@apollo/client';
 import React, {
@@ -21,16 +21,19 @@ import React, {
 } from 'react';
 import { useRecoilState } from "recoil";
 
+const qs = require(`qs`);
+
 function Layout () {
     const [ classLeft, setClassLeft ] = useRecoilState(classLeftState);
     const [ hasControls, setHasControls ] = useRecoilState(hasControlsState);
     const [ isLessonPlanOpen, setIsLessonPlanOpen ] = useRecoilState(isLessonPlanOpenState);
+    const [ studyRecommandUrl, setStudyRecommandUrl ] = useRecoilState(studyRecommandUrlState);
 
     const [ camerasOn, setCamerasOn ] = useState(true);
     const [ micsOn, setMicsOn ] = useState(true);
 
     const {
-        camera, name, roomId, sessionId, classtype,
+        camera, name, roomId, sessionId, classtype, org_id,
     } = useContext(LocalSessionContext);
     const { sessions, endClass } = useContext(RoomContext);
     const webrtc = useContext(WebRTCContext);
@@ -57,6 +60,58 @@ function Layout () {
             target: SFU_LINK,
         },
     });
+
+    function ramdomInt (min: number, max: number) {
+        return Math.floor(Math.random() * (max - min)) + min;
+    }
+
+    // https://swagger-ui.kidsloop.net/#/content/searchContents
+    async function getAllLessonMaterials () {
+        const CMS_ENDPOINT = `${process.env.ENDPOINT_CMS}`;
+        const headers = new Headers();
+        headers.append(`Accept`, `application/json`);
+        headers.append(`Content-Type`, `application/json`);
+        const encodedParams = qs.stringify({
+            publish_status: `published`,
+            order_by: `update_at`,
+            content_type: 1,
+            org_id,
+        }, {
+            encodeValuesOnly: true,
+        });
+        const response = await fetch(`${CMS_ENDPOINT}/v1/contents?${encodedParams}`, {
+            headers,
+            method: `GET`,
+        });
+        if (response.status === 200) { return response.json(); }
+    }
+
+    async function fetchEverything () {
+        async function fetchAllLessonMaterials () {
+            const payload = await getAllLessonMaterials();
+            const matList = payload.list;
+            const dnds = matList.filter((mat: any) => {
+                const obj = JSON.parse(mat.data);
+                return obj.file_type === 5;
+            });
+            let randomIdx: number;
+            if (dnds.length === 0) {
+                randomIdx = ramdomInt(0, matList.length - 1);
+                const data = JSON.parse(matList[randomIdx].data);
+                setStudyRecommandUrl(`/h5p/play/${data.source}`);
+            } else {
+                randomIdx = ramdomInt(0, dnds.length - 1);
+                const data = JSON.parse(dnds[randomIdx].data);
+                setStudyRecommandUrl(`/h5p/play/${data.source}`);
+            }
+        }
+        try {
+            await Promise.all([ fetchAllLessonMaterials() ]);
+        } catch (err) {
+            console.error(`Fail to fetchAllLessonMaterials in Study: ${err}`);
+            setStudyRecommandUrl(``);
+        } finally { }
+    }
 
     // TODO :
     // 1) Change the settimeout logic ? (added because it is conflicting with the give room controls logic)
@@ -94,6 +149,11 @@ function Layout () {
     useEffect(() => {
         if(classtype === ClassType.CLASSES){
             setIsLessonPlanOpen(true);
+        }
+        if(classtype === ClassType.STUDY){
+            if (org_id) {
+                fetchEverything();
+            }
         }
     }, [ classtype ]);
 

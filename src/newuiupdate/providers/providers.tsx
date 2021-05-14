@@ -3,6 +3,7 @@ import { LessonMaterial, MaterialTypename } from "../../lessonMaterialContext";
 import { getDefaultLanguageCode, getLanguage } from "../../utils/locale";
 import { themeProvider } from "../themeProvider";
 import { GlobalWhiteboardContext } from "../whiteboard/context-providers/GlobalWhiteboardContext";
+import ClassProviders from "./classProviders";
 import { RoomProvider } from "./roomContext";
 import { ScreenShareProvider } from "./screenShareProvider";
 import { WebRTCProvider } from "./WebRTCContext";
@@ -78,24 +79,9 @@ function Providers ({ children }: Props) {
             <LocalSessionContext.Provider value={localSession}>
                 <RawIntlProvider value={locale}>
                     <ThemeProvider theme={themeProvider(`en`, `light`)}>
-                        <SnackbarProvider
-                            anchorOrigin={{
-                                vertical: `top`,
-                                horizontal: `center`,
-                            }}
-                            closeButtonLabel="Dismiss">
-                            <RoomProvider>
-                                <WebRTCProvider>
-                                    <ScreenShareProvider>
-                                        <GlobalWhiteboardContext>
-                                            <>
-                                                {children}
-                                            </>
-                                        </GlobalWhiteboardContext>
-                                    </ScreenShareProvider>
-                                </WebRTCProvider>
-                            </RoomProvider>
-                        </SnackbarProvider>
+                        <ClassProviders>
+                            {children}
+                        </ClassProviders>
                     </ThemeProvider>
                 </RawIntlProvider>
             </LocalSessionContext.Provider>
@@ -223,6 +209,11 @@ function parseToken () {
                         __typename: MaterialTypename.Iframe,
                         name: `Flash cards`,
                         url: `/h5p/play/609bb507aa2a8d001333c8c9`,
+                    },
+                    {
+                        __typename: MaterialTypename.Iframe,
+                        name: `Flash cards`,
+                        url: `/h5p/play/609b6c041553de0014fbb124`,
                     },
                     {
                         __typename: MaterialTypename.Video,

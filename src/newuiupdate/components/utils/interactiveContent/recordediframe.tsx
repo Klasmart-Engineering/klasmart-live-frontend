@@ -5,6 +5,7 @@ import EccoSpinner2 from "../../../../assets/img/spinner/ecco2_spinner.gif";
 import GhostSpinner from "../../../../assets/img/spinner/ghost_spinner.gif";
 import JessSpinner1 from "../../../../assets/img/spinner/jess1_spinner.gif";
 import MimiSpinner1 from "../../../../assets/img/spinner/mimi1_spinner.gif";
+import { ClassType } from "../../../../store/actions";
 import { useWindowSize } from "../../../../utils/viewport";
 import { LIVE_LINK, LocalSessionContext } from "../../../providers/providers";
 import { isLessonPlanOpenState, streamIdState } from "../../../states/layoutAtoms";
@@ -52,7 +53,7 @@ export function RecordedIframe (props: Props): JSX.Element {
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
 
-    const { roomId } = useContext(LocalSessionContext);
+    const { roomId, classtype } = useContext(LocalSessionContext);
     const [ streamId, setStreamId ] = useRecoilState(streamIdState);
     const [ isLessonPlanOpen, setIsLessonPlanOpen ] = useRecoilState(isLessonPlanOpenState);
 
@@ -127,6 +128,7 @@ export function RecordedIframe (props: Props): JSX.Element {
         setTransformScale(shrinkRatio);
     };
 
+    // TODO : Find a better system to scale the Whiteboard to the h5p
     const scaleWhiteboard = () => {
         const recordediframe = window.document.getElementById(`recordediframe`) as HTMLIFrameElement;
         const recordediframeStyles = recordediframe.getAttribute(`style`);
@@ -148,14 +150,6 @@ export function RecordedIframe (props: Props): JSX.Element {
         if(!stylesLoaded){
             const style = document.createElement(`style`);
             style.innerHTML = `
-            .h5p-content{
-                // display: inline-block !important;
-                // width: auto !important;
-            }
-            .h5p-course-presentation .h5p-wrapper{
-                // min-width: 1300px !important;
-                // min-height: 800px !important
-            }
             .h5p-single-choice-set{
                 max-height: 300px !important;
             }
@@ -316,12 +310,11 @@ export function RecordedIframe (props: Props): JSX.Element {
                     width: enableResize ? contentWidth : `100%`,
                     height: enableResize ? contentHeight : `100%`,
                     position: enableResize ? `absolute` : `static`,
-                    transformOrigin: `top left`,
-                    top: 0,
-                    left: 0,
+                    transformOrigin: classtype === ClassType.LIVE ? `top left` : `unset`,
+                    top: classtype === ClassType.LIVE ? 0 : `auto`,
+                    left: classtype === ClassType.LIVE ? 0 : `auto`,
                     transform: enableResize ? `scale(${transformScale})` : `scale(1)`,
                     minWidth: `100%`,
-                    minHeight: `100%`,
                 }}
                 onLoad={() =>  {setLoadStatus(LoadStatus.Finished); window.dispatchEvent(new Event(`resize`));}}
             />
