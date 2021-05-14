@@ -1,9 +1,14 @@
 import { Feedback } from '../components/others/feedback';
+import { LocalSessionContext, SFU_LINK } from '../providers/providers';
+import { MUTE, MuteNotification } from '../providers/WebRTCContext';
+import { useMutation } from '@apollo/client';
 import {
     Fade, Grid, makeStyles, Theme, Typography,
 } from '@material-ui/core';
 import { CalendarCheck as ClassEndedIcon } from "@styled-icons/boxicons-regular/CalendarCheck";
-import React, { useEffect, useState } from 'react';
+import React, {
+    useContext, useEffect, useState,
+} from 'react';
 import { FormattedMessage } from 'react-intl';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -38,7 +43,24 @@ const useStyles = makeStyles((theme: Theme) => ({
 function ClassLeft () {
     const classes = useStyles();
 
-    // TODO : Disable camera on leave page
+    // TODO : Full Disable camera on leave page
+    const { sessionId, roomId } = useContext(LocalSessionContext);
+    const [ muteMutation ] = useMutation(MUTE, {
+        context: {
+            target: SFU_LINK,
+        },
+    });
+    const notification: MuteNotification = {
+        roomId,
+        sessionId,
+        audio: false,
+        video: false,
+    };
+    useEffect(()=>{
+        muteMutation({
+            variables: notification,
+        });
+    }, []);
 
     return (
         <Fade in={true}>

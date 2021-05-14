@@ -4,7 +4,9 @@ import { useSynchronizedState } from "../context-providers/SynchronizedStateProv
 import { makeStyles, Theme } from "@material-ui/core";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
 import { WhiteboardCanvas } from "kidsloop-canvas/lib/domain/whiteboard/WhiteboardCanvas";
-import React, { useContext, useMemo } from "react";
+import React, {
+    useContext, useEffect, useMemo,
+} from "react";
 
 const useStyles = makeStyles((theme: Theme) => ({
     whiteboard: {
@@ -45,10 +47,14 @@ export function Whiteboard ({
         }
     }, [ sessionId, group ]);
 
+    useEffect(()=>{
+        window.dispatchEvent(new Event(`resize`));
+    }, [ display ]);
+
     const canvasStyle: CSSProperties = {
         zIndex: whiteboard,
-        // width: `100%`,
-        // height: `100%`,
+        width: `100%`,
+        height: `100%`,
     };
 
     return (
@@ -74,8 +80,8 @@ export function Whiteboard ({
                 initialStyle={canvasStyle}
                 filterUsers={filterUsers}
                 filterGroups={filterGroups}
-                pixelWidth={1024}
-                pixelHeight={1024}
+                pixelWidth={2048}
+                pixelHeight={2048}
                 display={display}
                 scaleMode={`ScaleToFill`}
                 centerHorizontally={centerHorizontally !== undefined ? centerHorizontally : true}

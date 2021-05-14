@@ -51,9 +51,6 @@ export function PreviewPlayer ({
         setTimeout(function (){
             scaleWhiteboard();
         }, 300);
-        /*const innerActitivity = window.document.getElementById(container) as HTMLIFrameElement;
-        innerActitivity.width = String(frameWidth);
-        innerActitivity.height = String(frameHeight);*/
     }, [
         size,
         content,
@@ -77,10 +74,16 @@ export function PreviewPlayer ({
         setTransformScale(shrinkRatio);
     };
 
+    // TODO : Find a better system to scale the Whiteboard to the h5p
     const scaleWhiteboard = () => {
         const previewIframe = ref.current as HTMLIFrameElement;
         const previewIframeStyles = previewIframe.getAttribute(`style`);
         const whiteboard = window.document.getElementsByClassName(`canvas-container`)[0];
+        const canvasSize = window.document.getElementsByClassName(`lower-canvas`)[0].getAttribute(`width`);
+        if(canvasSize == `1024`){
+            window.document.getElementsByClassName(`lower-canvas`)[0].setAttribute(`style`, window.document.getElementsByClassName(`lower-canvas`)[0].getAttribute(`style`) + `; `);
+            window.document.getElementsByClassName(`upper-canvas`)[0].setAttribute(`style`,  window.document.getElementsByClassName(`upper-canvas`)[0].getAttribute(`style`) + `; `);
+        }
         // window.document.getElementsByClassName(`lower-canvas`)[0].setAttribute(`style`, window.document.getElementsByClassName(`lower-canvas`)[0].getAttribute(`style`) + `; transform: scale(2); transform-origin: top left;`);
         window.document.getElementsByClassName(`lower-canvas`)[0].setAttribute(`style`, window.document.getElementsByClassName(`lower-canvas`)[0].getAttribute(`style`) + `;`);
         window.document.getElementsByClassName(`upper-canvas`)[0].setAttribute(`style`,  window.document.getElementsByClassName(`upper-canvas`)[0].getAttribute(`style`) + `;`);

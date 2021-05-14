@@ -126,3 +126,8 @@ export const audioGloballyMutedState = atom({
     key: `audioGloballyMutedState`,
     default: false,
 });
+
+export const studyRecommandUrlState = atom({
+    key: `studyRecommandUrlState`,
+    default: ``,
+});
