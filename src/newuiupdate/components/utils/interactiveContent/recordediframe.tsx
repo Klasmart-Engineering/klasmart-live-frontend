@@ -5,9 +5,11 @@ import EccoSpinner2 from "../../../../assets/img/spinner/ecco2_spinner.gif";
 import GhostSpinner from "../../../../assets/img/spinner/ghost_spinner.gif";
 import JessSpinner1 from "../../../../assets/img/spinner/jess1_spinner.gif";
 import MimiSpinner1 from "../../../../assets/img/spinner/mimi1_spinner.gif";
+import { ContentType } from "../../../../pages/room/room";
 import { ClassType } from "../../../../store/actions";
 import { useWindowSize } from "../../../../utils/viewport";
 import { LIVE_LINK, LocalSessionContext } from "../../../providers/providers";
+import { RoomContext } from "../../../providers/roomContext";
 import { isLessonPlanOpenState, streamIdState } from "../../../states/layoutAtoms";
 import { gql, useMutation } from "@apollo/client";
 import { Button } from "@material-ui/core";
@@ -54,6 +56,7 @@ export function RecordedIframe (props: Props): JSX.Element {
     const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
 
     const { roomId, classtype } = useContext(LocalSessionContext);
+    const { content } = useContext(RoomContext);
     const [ streamId, setStreamId ] = useRecoilState(streamIdState);
     const [ isLessonPlanOpen, setIsLessonPlanOpen ] = useRecoilState(isLessonPlanOpenState);
 
@@ -150,6 +153,7 @@ export function RecordedIframe (props: Props): JSX.Element {
         if(!stylesLoaded){
             const style = document.createElement(`style`);
             style.innerHTML = `
+            img{max-width: 100%; height: auto; object-fit:contain}
             .h5p-single-choice-set{
                 max-height: 300px !important;
             }
@@ -171,7 +175,6 @@ export function RecordedIframe (props: Props): JSX.Element {
         const h5pTypeColumn = contentDoc.body.getElementsByClassName(`h5p-column`).length;
 
         if (h5pDivCollection.length > 0) {
-
             if(h5pTypeColumn){
                 setEnableResize(false);
                 h5pDivCollection[0].setAttribute(`style`, `width: 100% !important;`);
@@ -187,6 +190,14 @@ export function RecordedIframe (props: Props): JSX.Element {
             setContentWidth(h5pWidth);
             setContentHeight(h5pHeight);
             scale(h5pWidth, h5pHeight);
+        }
+        else{
+            const imageWidth = contentDoc.body.getElementsByTagName(`img`)[0].getBoundingClientRect().width;
+            const imageHeight = contentDoc.body.getElementsByTagName(`img`)[0].getBoundingClientRect().height;
+            if(imageWidth && imageHeight){
+                setContentWidth(imageWidth);
+                setContentHeight(imageHeight);
+            }
         }
     }
 

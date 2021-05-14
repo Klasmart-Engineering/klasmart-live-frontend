@@ -226,6 +226,11 @@ function parseToken () {
                         url: `${process.env.ENDPOINT_TEST_ASSETS_S3 || `.`}/test_audio.m4a`,
                     },
                     {
+                        __typename: MaterialTypename.Iframe,
+                        name: `Portrait PDF`,
+                        url: `./test_pdf.pdf`,
+                    },
+                    {
                         __typename: MaterialTypename.Image,
                         name: `Portrait Image`,
                         url: `./test_image-1.jpeg`,
