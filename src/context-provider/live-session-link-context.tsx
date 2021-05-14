@@ -37,7 +37,7 @@ export function LiveSessionLinkProvider({ children, sessionId, token, roomId }: 
         });
 
         const sfuLink = new WebSocketLink({
-            uri: `${endpointSfu}/sfu/${roomId}`,
+            uri: `${endpointSfu}/${roomId}`,
             options: {
                 reconnect: true,
                 connectionParams: { authToken: token, sessionId },

@@ -104,10 +104,10 @@ export function Room(): JSX.Element {
 
 export function RoomWithContext(): JSX.Element {
 
-    const { sessionId, token } = useSessionContext();
+    const { sessionId, token, roomId } = useSessionContext();
 
     return (
-        <LiveSessionLinkProvider sessionId={sessionId} token={token}>
+        <LiveSessionLinkProvider sessionId={sessionId} token={token} roomId={roomId}>
             <RoomProvider>
                 <Room />
                 <Trophy />
