@@ -63,16 +63,16 @@ function Entry() {
     const history = createHashHistory();
 
     return (
-        <CordovaSystemProvider history={history}>
-            <CompositionRoot sessionId={sessionId}>
-                <RawIntlProvider value={language}>
+        <RawIntlProvider value={language}>
+            <CordovaSystemProvider history={history}>
+                <CompositionRoot sessionId={sessionId}>
                     <ThemeProvider theme={themeProvider(languageCode, themeMode)}>
                         <CssBaseline />
                         <App history={history} />
                     </ThemeProvider>
-                </RawIntlProvider>
-            </CompositionRoot>
-        </CordovaSystemProvider>
+                </CompositionRoot>
+            </CordovaSystemProvider>
+        </RawIntlProvider >
     );
 }
 
