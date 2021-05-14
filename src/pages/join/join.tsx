@@ -1,5 +1,5 @@
 import LogRocket from 'logrocket';
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { createStyles, makeStyles, useTheme, Theme } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
