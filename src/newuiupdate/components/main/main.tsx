@@ -91,11 +91,12 @@ function Main () {
                             {classtype == ClassType.STUDY && <MainClass /> }
                             {classtype == ClassType.CLASSES && <MainClass /> }
                         </Grid>
+                        {/* DRAWER IS DEPRECATED
                         <Grid
                             item
                             className={classes.mainViewDrawer}>
                             <MainDrawer />
-                        </Grid>
+                        </Grid> */}
                     </Grid>
                 </div>
             </Grid>

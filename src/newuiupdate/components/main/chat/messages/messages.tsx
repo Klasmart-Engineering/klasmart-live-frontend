@@ -24,6 +24,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     messagesContainer:{
         overflowY: `scroll`,
+        minHeight: 300,
+        minWidth: 280,
     },
 }));
 

@@ -41,6 +41,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         position: `absolute`,
         right: 5,
         top: 5,
+        display: `none`,
     },
 }));
 
