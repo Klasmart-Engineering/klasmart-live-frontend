@@ -2,14 +2,9 @@ import { sessionId } from "../../entry";
 import { LessonMaterial, MaterialTypename } from "../../lessonMaterialContext";
 import { getDefaultLanguageCode, getLanguage } from "../../utils/locale";
 import { themeProvider } from "../themeProvider";
-import { GlobalWhiteboardContext } from "../whiteboard/context-providers/GlobalWhiteboardContext";
-import ClassProviders from "./classProviders";
-import { RoomProvider } from "./roomContext";
-import { ScreenShareProvider } from "./screenShareProvider";
 import { WebRTCProvider } from "./WebRTCContext";
 import { ThemeProvider } from "@material-ui/core";
 import jwt_decode from "jwt-decode";
-import { SnackbarProvider } from "kidsloop-px";
 import React, {
     createContext, ReactChild, ReactChildren,  useMemo, useState,
 } from 'react';
@@ -79,9 +74,9 @@ function Providers ({ children }: Props) {
             <LocalSessionContext.Provider value={localSession}>
                 <RawIntlProvider value={locale}>
                     <ThemeProvider theme={themeProvider(`en`, `light`)}>
-                        <ClassProviders>
+                        <WebRTCProvider>
                             {children}
-                        </ClassProviders>
+                        </WebRTCProvider>
                     </ThemeProvider>
                 </RawIntlProvider>
             </LocalSessionContext.Provider>
