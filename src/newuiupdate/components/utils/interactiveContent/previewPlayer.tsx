@@ -44,6 +44,8 @@ export function PreviewPlayer ({
 
     const { content } = useContext(RoomContext);
 
+    const containerHtml = window.document.getElementById(container) as HTMLIFrameElement;
+
     const size = useWindowSize();
 
     useEffect(() => {
@@ -62,10 +64,9 @@ export function PreviewPlayer ({
     const scale = (innerWidth: number, innerHeight: number) => {
         let currentWidth: number = size.width, currentHeight: number = size.height;
 
-        const iRef = window.document.getElementById(container) as HTMLIFrameElement;
-        if (iRef) {
-            currentWidth = iRef.getBoundingClientRect().width;
-            currentHeight = iRef.getBoundingClientRect().height;
+        if (containerHtml) {
+            currentWidth = containerHtml.getBoundingClientRect().width;
+            currentHeight = containerHtml.getBoundingClientRect().height;
         }
 
         const shrinkRatioX = currentWidth / innerWidth;
@@ -78,15 +79,7 @@ export function PreviewPlayer ({
     const scaleWhiteboard = () => {
         const previewIframe = ref.current as HTMLIFrameElement;
         const previewIframeStyles = previewIframe.getAttribute(`style`);
-        const whiteboard = window.document.getElementsByClassName(`canvas-container`)[0];
-        const canvasSize = window.document.getElementsByClassName(`lower-canvas`)[0].getAttribute(`width`);
-        if(canvasSize == `1024`){
-            window.document.getElementsByClassName(`lower-canvas`)[0].setAttribute(`style`, window.document.getElementsByClassName(`lower-canvas`)[0].getAttribute(`style`) + `; `);
-            window.document.getElementsByClassName(`upper-canvas`)[0].setAttribute(`style`,  window.document.getElementsByClassName(`upper-canvas`)[0].getAttribute(`style`) + `; `);
-        }
-        // window.document.getElementsByClassName(`lower-canvas`)[0].setAttribute(`style`, window.document.getElementsByClassName(`lower-canvas`)[0].getAttribute(`style`) + `; transform: scale(2); transform-origin: top left;`);
-        window.document.getElementsByClassName(`lower-canvas`)[0].setAttribute(`style`, window.document.getElementsByClassName(`lower-canvas`)[0].getAttribute(`style`) + `;`);
-        window.document.getElementsByClassName(`upper-canvas`)[0].setAttribute(`style`,  window.document.getElementsByClassName(`upper-canvas`)[0].getAttribute(`style`) + `;`);
+        const whiteboard = containerHtml.getElementsByClassName(`canvas-container`)[0];
         if(previewIframeStyles){
             whiteboard.setAttribute(`style`, previewIframeStyles);
         }
