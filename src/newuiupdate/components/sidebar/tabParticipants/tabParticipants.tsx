@@ -32,7 +32,8 @@ const useStyles = makeStyles((theme: Theme) => ({
         marginBottom: `15px`,
     },
     gridContainerStudents: {
-        overflowY : `scroll`,
+        overflowX : `hidden`,
+        overflowY : `auto`,
         marginBottom: -10,
         paddingBottom: 10,
     },

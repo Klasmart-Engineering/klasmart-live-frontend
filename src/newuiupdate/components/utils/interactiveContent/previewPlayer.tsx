@@ -54,11 +54,9 @@ export function PreviewPlayer ({
             scaleWhiteboard();
         }, 300);
     }, [
+        frameWidth,
+        frameHeight,
         size,
-        content,
-        ref.current,
-        ref.current && ref.current.contentWindow,
-        isLessonPlanOpen,
     ]);
 
     const scale = (innerWidth: number, innerHeight: number) => {
@@ -77,11 +75,14 @@ export function PreviewPlayer ({
 
     // TODO : Find a better system to scale the Whiteboard to the h5p
     const scaleWhiteboard = () => {
+        // if(containerHtml){
         const previewIframe = ref.current as HTMLIFrameElement;
         const previewIframeStyles = previewIframe.getAttribute(`style`);
-        const whiteboard = containerHtml.getElementsByClassName(`canvas-container`)[0];
-        if(previewIframeStyles){
-            whiteboard.setAttribute(`style`, previewIframeStyles);
+        if(containerHtml){
+            const whiteboard = containerHtml.getElementsByClassName(`canvas-container`)[0];
+            if(previewIframeStyles){
+                whiteboard.setAttribute(`style`, previewIframeStyles);
+            }
         }
     };
 
@@ -126,6 +127,20 @@ export function PreviewPlayer ({
         },
     });
 
+    const onLoad = () => {
+        if (ref.current == null || ref.current.contentWindow == null) { return; }
+        const iframeDoc = ref.current.contentDocument;
+        const recordedIframe = iframeDoc?.getElementsByTagName(`iframe`);
+        if(recordedIframe && recordedIframe.length){
+            const fWidth = Number(recordedIframe[0].width.replace(`px`, ``));
+            const fHeight = Number(recordedIframe[0].height.replace(`px`, ``));
+            setWidthHeight({
+                frameWidth: fWidth,
+                frameHeight: fHeight,
+            });
+        }
+    };
+    /*
     useEffect(() => {
         console.log(ref.current);
         if (ref.current == null || ref.current.contentWindow == null) { return; }
@@ -139,14 +154,11 @@ export function PreviewPlayer ({
             });
             console.log(`message`);
         });
-        setTimeout(function (){
-            window.dispatchEvent(new Event(`resize`));
-        }, 1000);
     }, [
         ref.current,
         ref.current && ref.current.contentWindow,
         isLessonPlanOpen,
-    ]);
+    ]);*/
 
     if (loading) { return <Loading />; }
     if (error) { return <Typography><FormattedMessage id="failed_to_connect" />: {JSON.stringify(error)}</Typography>; }
@@ -174,6 +186,7 @@ export function PreviewPlayer ({
                 height: frameHeight,
             }}
             src={`player.html`}
+            onLoad={() => {setTimeout(function (){ onLoad(); }, 1000); }}
             {...frameProps}
         />
     </div>;

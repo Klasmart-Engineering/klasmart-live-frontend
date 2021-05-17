@@ -19,6 +19,13 @@ const useStyles = makeStyles((theme: Theme) => ({
             height: `2048px !important`,
         },
     },
+    whiteboardResizer:{
+        position: `absolute`,
+        top: `0`,
+        left: `0`,
+        width: `100%`,
+        height: `100%`,
+    },
 }));
 
 type Props = {
@@ -73,20 +80,22 @@ export function Whiteboard ({
             }}
             className={`${classes.whiteboard} whiteboard-container-class`}
         >
-            <WhiteboardCanvas
-                instanceId={`canvas:user:${sessionId}:${uniqueId}`}
-                userId={canvasUserId}
-                pointerEvents={permissions.allowCreateShapes}
-                initialStyle={canvasStyle}
-                filterUsers={filterUsers}
-                filterGroups={filterGroups}
-                pixelWidth={2048}
-                pixelHeight={2048}
-                display={display}
-                scaleMode={`ScaleToFill`}
-                centerHorizontally={centerHorizontally !== undefined ? centerHorizontally : true}
-                centerVertically={centerVertically !== undefined ? centerVertically : false}
-            />
+            <div className={`${classes.whiteboardResizer} whiteboard-resizer`}>
+                <WhiteboardCanvas
+                    instanceId={`canvas:user:${sessionId}:${uniqueId}`}
+                    userId={canvasUserId}
+                    pointerEvents={permissions.allowCreateShapes}
+                    initialStyle={canvasStyle}
+                    filterUsers={filterUsers}
+                    filterGroups={filterGroups}
+                    pixelWidth={2048}
+                    pixelHeight={2048}
+                    display={display}
+                    scaleMode={`ScaleToFill`}
+                    centerHorizontally={centerHorizontally !== undefined ? centerHorizontally : true}
+                    centerVertically={centerVertically !== undefined ? centerVertically : false}
+                />
+            </div>
         </div>
     );
 }
