@@ -116,12 +116,13 @@ function TabMosaic () {
     }, [ sessions, sessions.size ]);
 
     useEffect(() => {
-        window.addEventListener(`keydown`, event => {
+        const listener = (event:any) => {
             if (event.code === `27` || event.code === `Escape`) {
                 setActiveTab(`participants`);
             }
-        });
-        return () => window.removeEventListener(`keydown`, () => {});
+        };
+        window.addEventListener(`keydown`, listener);
+        return () => window.removeEventListener(`keydown`, listener);
     }, []);
 
     return (

@@ -18,6 +18,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         display: `flex`,
         alignItems: `center`,
         borderRadius: 10,
+        background: theme.palette.grey[200],
     },
     rootInput:{
         flex: 1,
