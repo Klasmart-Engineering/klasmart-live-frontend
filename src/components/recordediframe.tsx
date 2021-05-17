@@ -153,23 +153,25 @@ export function RecordedIframe(props: Props): JSX.Element {
         const h5pDivCollection = contentDoc.body.getElementsByClassName("h5p-content");
         const h5pTypeColumn = contentDoc.body.getElementsByClassName("h5p-column").length;
 
+        
+        if (h5pDivCollection.length <= 0) {return}
+
         if(h5pTypeColumn){
             setEnableResize(false)
             h5pDivCollection[0].setAttribute("style", "width: 100% !important;");
         }else{
             setEnableResize(true)
-             h5pDivCollection[0].setAttribute("style", "width: auto !important;");
+            h5pDivCollection[0].setAttribute("style", "width: auto !important;");
         }
-
-        if (h5pDivCollection.length > 0) {
-            const h5pContainer = h5pDivCollection[0] as HTMLDivElement;
-            h5pContainer.setAttribute("data-iframe-height", "");
-            const h5pWidth = h5pContainer.getBoundingClientRect().width;
-            const h5pHeight = h5pContainer.getBoundingClientRect().height;
-            setContentWidth(h5pWidth);
-            setContentHeight(h5pHeight);
-            scale(h5pWidth, h5pHeight);
-        }
+        
+        const h5pContainer = h5pDivCollection[0] as HTMLDivElement;
+        h5pContainer.setAttribute("data-iframe-height", "");
+        const h5pWidth = h5pContainer.getBoundingClientRect().width;
+        const h5pHeight = h5pContainer.getBoundingClientRect().height;
+        setContentWidth(h5pWidth);
+        setContentHeight(h5pHeight);
+        scale(h5pWidth, h5pHeight);
+        
     }
 
     useEffect(() => {
