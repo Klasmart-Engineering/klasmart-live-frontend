@@ -207,8 +207,8 @@ function parseToken () {
                     },
                     {
                         __typename: MaterialTypename.Iframe,
-                        name: `Flash cards`,
-                        url: `/h5p/play/609b6c041553de0014fbb124`,
+                        name: `Course presentation - Video`,
+                        url: `/h5p/play/60a22f864a8573001389a2bf`,
                     },
                     {
                         __typename: MaterialTypename.Video,

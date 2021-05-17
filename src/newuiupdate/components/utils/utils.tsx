@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         borderRadius: 12,
         overflow: `hidden`,
         maxHeight: `calc(100vh - 150px)`,
-        overflowY: `scroll`,
+        overflowY: `auto`,
         boxShadow: `0 1px 2px 0 rgba(0, 0, 0, 0.075), 0 2px 12px 0px rgba(0, 0, 0, 0.065)`,
     },
 }));
