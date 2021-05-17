@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         flexWrap: `nowrap`,
     },
     fullViewHeightSm:{
-        height: `50vh`,
+        height: `80vh`,
     },
     fullHeightCentered:{
         height: `100%`,

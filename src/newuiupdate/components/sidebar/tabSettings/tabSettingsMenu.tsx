@@ -79,7 +79,7 @@ function TabSettingsMenu (props: any) {
                     </Grid>
                     <Grid>
                         <Typography variant="h5">{name}</Typography>
-                        <Typography variant="body2">{isTeacher ? `Teacher` : `Student`}</Typography>
+                        {/* <Typography variant="body2">{isTeacher ? `Teacher` : `Student`}</Typography> */}
                     </Grid>
                 </Grid>
             </Grid>

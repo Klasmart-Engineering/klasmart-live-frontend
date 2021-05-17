@@ -173,9 +173,10 @@ export function RecordedIframe (props: Props): JSX.Element {
         contentWindow.addEventListener(`contextmenu`, (e) => blockRightClick(e), false);
         const h5pDivCollection = contentDoc.body.getElementsByClassName(`h5p-content`);
         const h5pTypeColumn = contentDoc.body.getElementsByClassName(`h5p-column`).length;
+        const h5pTypeAccordion = contentDoc.body.getElementsByClassName(`h5p-accordion`).length;
 
         if (h5pDivCollection.length > 0) {
-            if(h5pTypeColumn){
+            if(h5pTypeColumn || h5pTypeAccordion){
                 setEnableResize(false);
                 h5pDivCollection[0].setAttribute(`style`, `width: 100% !important;`);
             }else{
@@ -190,14 +191,16 @@ export function RecordedIframe (props: Props): JSX.Element {
             setContentWidth(h5pWidth);
             setContentHeight(h5pHeight);
             scale(h5pWidth, h5pHeight);
-        }
-        else{
+        } else if(contentDoc.body.getElementsByTagName(`img`).length){
             const imageWidth = contentDoc.body.getElementsByTagName(`img`)[0].getBoundingClientRect().width;
             const imageHeight = contentDoc.body.getElementsByTagName(`img`)[0].getBoundingClientRect().height;
             if(imageWidth && imageHeight){
                 setContentWidth(imageWidth);
                 setContentHeight(imageHeight);
             }
+        }else{
+            setContentWidth(1024);
+            setContentHeight(1024);
         }
     }
 

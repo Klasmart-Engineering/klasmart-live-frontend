@@ -28,8 +28,8 @@ const useStyles = makeStyles((theme: Theme) => ({
         padding: 4,
     },
     item:{
-        padding: `8px 16px`,
-        margin: `0 4px`,
+        padding: `0.4em 0.8em`,
+        margin: `0 2px`,
         cursor: `pointer`,
         borderRadius: 10,
         transition: `100ms all ease-in-out`,
@@ -65,6 +65,8 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
 
     const [ selectedPen, setSelectedPen ] = useState<string|undefined>(undefined);
     const [ selectedEraser, setSelectedEraser ] = useState<boolean>(false);
+    const [ selectedText, setSelectedText ] = useState<boolean>(false);
+    const [ selectedMove, setSelectedMove ] = useState<boolean>(false);
 
     const { sessionId } = useContext(LocalSessionContext);
 
@@ -91,6 +93,8 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
             selectTool(`line`);
             selectColorByValue(selectedPen);
             setSelectedEraser(false);
+            setSelectedText(false);
+            setSelectedMove(false);
         }
     }, [ selectedPen ]);
 
@@ -115,65 +119,57 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
                     color='#000000'
                     disabled={!isGlobalCanvasEnabled}
                     active={selectedPen === `#000000`}
-                    icon={<PencilIcon size="2rem"/>}
+                    icon={<PencilIcon size="1.85rem"/>}
                     onClick={ () => {setSelectedPen(`#000000`);} } />
                 <CanvasMenuItem
                     color='#0000ff'
                     disabled={!isGlobalCanvasEnabled}
                     active={selectedPen === `#0000ff`}
-                    icon={<PencilIcon size="2rem"/>}
+                    icon={<PencilIcon size="1.85rem"/>}
                     onClick={ () => { setSelectedPen(`#0000ff`);} } />
                 <CanvasMenuItem
                     color='#00ff00'
                     disabled={!isGlobalCanvasEnabled}
                     active={selectedPen === `#00ff00`}
-                    icon={<PencilIcon size="2rem"/>}
+                    icon={<PencilIcon size="1.85rem"/>}
                     onClick={ () => { setSelectedPen(`#00ff00`);} } />
                 <CanvasMenuItem
                     color='#fbe739'
                     disabled={!isGlobalCanvasEnabled}
                     active={selectedPen === `#fbe739`}
-                    icon={<PencilIcon size="2rem"/>}
+                    icon={<PencilIcon size="1.85rem"/>}
                     onClick={ () => {setSelectedPen(`#fbe739`);} } />
                 <CanvasMenuItem
                     color='#ff0000'
                     disabled={!isGlobalCanvasEnabled}
                     active={selectedPen === `#ff0000`}
-                    icon={<PencilIcon size="2rem"/>}
-                    onClick={ () => {setSelectedPen(`#ff0000`);} } />
-
-                {/* MORE TOOLS : they work but not used
-                <Grid
-                    item
-                    className={classes.item}
-                    onClick={() => { selectTool(`move`); } }
-                >
-                    <MoveIcon size="2rem"/>
-                </Grid>
-                <Grid
-                    item
-                    className={classes.item}
-                    onClick={() => { selectTool(`text`); } }
-                >
-                    <TextIcon size="2rem"/>
-                </Grid>
-                */}
-
+                    icon={<PencilIcon size="1.85rem"/>}
+                    onClick={ () => { setSelectedPen(`#ff0000`);} } />
+                <CanvasMenuItem
+                    disabled={!isGlobalCanvasEnabled}
+                    active={selectedMove}
+                    icon={<MoveIcon size="1.85rem"/>}
+                    onClick={ () => {  setSelectedMove(true); setSelectedText(false); setSelectedEraser(false); setSelectedPen(undefined);  selectTool(`move`); } } />
+                <CanvasMenuItem
+                    disabled={!isGlobalCanvasEnabled}
+                    active={selectedText}
+                    icon={<TextIcon size="1.85rem"/>}
+                    onClick={ () => {  setSelectedText(true); setSelectedMove(false); setSelectedEraser(false); setSelectedPen(undefined);  selectTool(`text`); } } />
                 <CanvasMenuItem
                     title={intl.formatMessage({
                         id: `whiteboard_eraser`,
                     })}
                     disabled={!isGlobalCanvasEnabled}
                     active={selectedEraser}
-                    icon={<EraserIcon size="2rem"/>}
-                    onClick={ () => {setSelectedPen(undefined);  selectObjectEraser(); setSelectedEraser(true);  }} />
+                    icon={<EraserIcon size="1.85rem"/>}
+                    onClick={ () => {setSelectedPen(undefined);  setSelectedMove(false); setSelectedText(false); selectObjectEraser(); setSelectedEraser(true);  }} />
 
                 <CanvasMenuItem
                     title={intl.formatMessage({
                         id: `whiteboard_clear_canvas`,
                     })}
                     disabled={!isGlobalCanvasEnabled}
-                    icon={<SlideEraserIcon size="2rem"/>}
+                    icon={<SlideEraserIcon size="1.85rem"/>}
                     onClick={ () => { clear([ sessionId ]);} } />
 
                 {hasControls &&
@@ -183,7 +179,7 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
                             id: `whiteboard_clear_all_canvas`,
                         })}
                         disabled={!isGlobalCanvasEnabled}
-                        icon={<TrashIcon size="2rem"/>}
+                        icon={<TrashIcon size="1.85rem"/>}
                         onClick={ () => { clear();} } />
 
                     <CanvasMenuItem
@@ -191,7 +187,7 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
                             id: isGlobalCanvasEnabled ? `toggle_all_canvas_off` :  `toggle_all_canvas_on`,
                         })}
                         active={isGlobalCanvasEnabled}
-                        icon={isGlobalCanvasEnabled ? <GridOnIcon size="2rem"/> : <GridOffIcon size="2rem"/>}
+                        icon={isGlobalCanvasEnabled ? <GridOnIcon size="1.85rem"/> : <GridOffIcon size="1.85rem"/>}
                         onClick={ () => {setIsGlobalCanvasEnabled(!isGlobalCanvasEnabled);} } />
                 </>
                 }
