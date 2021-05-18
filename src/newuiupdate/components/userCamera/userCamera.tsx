@@ -74,7 +74,6 @@ function UserCamera (props: UserCameraType) {
     const [ speakingActivity, setSpeakingActivity ] = useState(0);
 
     const [ camOn, setCamOn ] = useState(true);
-    const [ micOn, setMicOn ] = useState(true);
 
     const { camera, sessionId } = useContext(LocalSessionContext);
     const { sessions } = useContext(RoomContext);
@@ -118,12 +117,8 @@ function UserCamera (props: UserCameraType) {
     ]);
 
     useEffect(() => {
-        setMicOn(webrtc.isLocalAudioEnabled(user.id));
-    }, [ webrtc.isLocalAudioEnabled(user.id) ]);
-
-    useEffect(() => {
-        setCamOn(webrtc.isLocalVideoEnabled(user.id));
-    }, [ webrtc.isLocalVideoEnabled(user.id) ]);
+        setCamOn(webrtc.isVideoEnabledByProducer(user.id) && !webrtc.isVideoDisabledLocally(user.id));
+    }, [ webrtc.isVideoEnabledByProducer(user.id), webrtc.isVideoDisabledLocally(user.id) ]);
 
     useEffect(() => {
         userCamera && enableSpeakingActivity && audioDetector(userCamera);
