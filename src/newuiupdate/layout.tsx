@@ -1,4 +1,5 @@
 
+import { Trophy } from './components/others/trophies/trophy';
 import Class from './pages/class';
 import ClassEnded from './pages/classEnded';
 import ClassLeft from './pages/classLeft';
@@ -28,7 +29,10 @@ function Layout () {
 
     return (
         <ClassProviders>
-            <Class />
+            <>
+                <Class />
+                <Trophy />
+            </>
         </ClassProviders>
     );
 }
