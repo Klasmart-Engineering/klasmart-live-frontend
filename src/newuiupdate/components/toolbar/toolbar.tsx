@@ -185,12 +185,12 @@ function Toolbar () {
     }, [ isGlobalCanvasEnabled, permissionsGlobalCanvas.allowCreateShapes ]);
 
     useEffect(() => {
-        setMicOn(webrtc.isLocalAudioEnabled(sessionId));
-    }, [ webrtc.isLocalAudioEnabled(sessionId) ]);
+        setMicOn(webrtc.isAudioEnabledByProducer(sessionId) && !webrtc.isAudioDisabledLocally(sessionId));
+    }, [ webrtc.isAudioEnabledByProducer(sessionId), webrtc.isAudioDisabledLocally(sessionId) ]);
 
     useEffect(() => {
-        setCamOn(webrtc.isLocalVideoEnabled(sessionId));
-    }, [ webrtc.isLocalVideoEnabled(sessionId) ]);
+        setCamOn(webrtc.isVideoEnabledByProducer(sessionId) && !webrtc.isVideoDisabledLocally(sessionId));
+    }, [ webrtc.isVideoEnabledByProducer(sessionId), webrtc.isVideoDisabledLocally(sessionId) ]);
 
     return (
         <>

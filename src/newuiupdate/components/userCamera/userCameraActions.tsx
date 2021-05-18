@@ -3,7 +3,8 @@ import {
 } from "../../providers/providers";
 import { RoomContext } from "../../providers/roomContext";
 import {
-    GLOBAL_MUTE_QUERY, MUTE, MuteNotification, WebRTCContext,
+    GLOBAL_MUTE_QUERY, INDIVIDUAL_MUTE_QUERY,
+    MUTE, MuteNotification, WebRTCContext,
 } from "../../providers/WebRTCContext";
 import { hasControlsState,  pinnedUserState } from "../../states/layoutAtoms";
 import { useSynchronizedState } from "../../whiteboard/context-providers/SynchronizedStateProvider";
@@ -341,7 +342,7 @@ function ToggleCamera (props:any){
             target: SFU_LINK,
         },
     });
-    const { refetch } = useQuery(GLOBAL_MUTE_QUERY, {
+    const { refetch: refetchGlobalMute } = useQuery(GLOBAL_MUTE_QUERY, {
         variables: {
             roomId,
         },
@@ -349,18 +350,34 @@ function ToggleCamera (props:any){
             target: SFU_LINK,
         },
     });
-
+    const { refetch: refetchIndividualMute } = useQuery(INDIVIDUAL_MUTE_QUERY, {
+        variables: {
+            sessionId: user.id,
+        },
+        context: {
+            target: SFU_LINK,
+        },
+    });
     const isSelf = sessionId === user.id;
 
-    useEffect(() => {
-        if (isLoading && webrtc.isLocalVideoEnabled(user.id)) {
-            setIsLoading(false);
-        }
-    }, [ webrtc.isLocalVideoEnabled(user.id) ]);
+    const syncMuteStatus = async () => {
+        const { data } = await refetchIndividualMute();
+        webrtc.enableVideoByProducer(user.id, data?.retrieveMuteStatuses?.video);
+    };
 
     useEffect(() => {
-        setCamOn(webrtc.isLocalVideoEnabled(user.id));
-    }, [ webrtc.isLocalVideoEnabled(user.id) ]);
+        syncMuteStatus();
+    }, []);
+
+    useEffect(() => {
+        if (isLoading && webrtc.isVideoEnabledByProducer(user.id)) {
+            setIsLoading(false);
+        }
+    }, [ webrtc.isVideoEnabledByProducer(user.id) ]);
+
+    useEffect(() => {
+        setCamOn(webrtc.isVideoEnabledByProducer(user.id) && !webrtc.isVideoDisabledLocally(user.id));
+    }, [ webrtc.isVideoEnabledByProducer(user.id), webrtc.isVideoDisabledLocally(user.id) ]);
 
     async function toggleInboundVideoState () {
         const localSession = sessions.get(sessionId);
@@ -373,8 +390,11 @@ function ToggleCamera (props:any){
             const muteNotification = await muteMutation({
                 variables: notification,
             });
+            if (muteNotification?.data?.mute?.video != null) {
+                setCamOn(muteNotification.data.mute.video);
+            }
         } else {
-            webrtc.localVideoToggle(user.id);
+            webrtc.toggleLocalVideo(user.id);
         }
     }
 
@@ -387,11 +407,13 @@ function ToggleCamera (props:any){
         const muteNotification = await muteMutation({
             variables: notification,
         });
-        console.log(muteNotification);
+        if (muteNotification?.data?.mute?.video != null) {
+            setCamOn(muteNotification.data.mute.video);
+        }
     }
 
     async function toggleVideoState (): Promise<void> {
-        const { data } = await refetch();
+        const { data }= await refetchGlobalMute();
         const videoGloballyDisabled = data?.retrieveGlobalMute?.videoGloballyDisabled;
         if (isSelf) {
             const localSession = sessions.get(sessionId);
@@ -444,7 +466,7 @@ function ToggleMic (props:any){
             target: SFU_LINK,
         },
     });
-    const { refetch } = useQuery(GLOBAL_MUTE_QUERY, {
+    const { refetch: refetchGlobalMute } = useQuery(GLOBAL_MUTE_QUERY, {
         variables: {
             roomId,
         },
@@ -452,7 +474,28 @@ function ToggleMic (props:any){
             target: SFU_LINK,
         },
     });
+    const { refetch: refetchIndividualMute } = useQuery(INDIVIDUAL_MUTE_QUERY, {
+        variables: {
+            sessionId: sessionId,
+        },
+        context: {
+            target: SFU_LINK,
+        },
+    });
     const webrtc = useContext(WebRTCContext);
+
+    const syncMuteStatus = async () => {
+        const { data } = await refetchIndividualMute();
+        webrtc.enableAudioByProducer(sessionId, data?.retrieveMuteStatuses?.audio);
+    };
+
+    useEffect(() => {
+        syncMuteStatus();
+    }, []);
+
+    useEffect(() => {
+        setMicOn(webrtc.isAudioEnabledByProducer(user.id) && !webrtc.isAudioDisabledLocally(user.id));
+    }, [ webrtc.isAudioEnabledByProducer(user.id), webrtc.isAudioDisabledLocally(user.id) ]);
 
     async function toggleInboundAudioState () {
         const localSession = sessions.get(sessionId);
@@ -465,8 +508,11 @@ function ToggleMic (props:any){
             const muteNotification = await muteMutation({
                 variables: notification,
             });
+            if (muteNotification?.data?.mute?.audio != null) {
+                setMicOn(muteNotification.data.mute.audio);
+            }
         } else {
-            webrtc.localAudioToggle(user.id);
+            webrtc.toggleLocalAudio(user.id);
         }
     }
 
@@ -479,10 +525,13 @@ function ToggleMic (props:any){
         const muteNotification = await muteMutation({
             variables: notification,
         });
+        if (muteNotification?.data?.mute?.audio != null) {
+            setMicOn(muteNotification.data.mute.audio);
+        }
     }
 
     async function toggleAudioState (): Promise<void> {
-        const { data } = await refetch();
+        const { data }= await refetchGlobalMute();
         const audioGloballyMuted = data?.retrieveGlobalMute?.audioGloballyMuted;
         if (isSelf) {
             const localSession = sessions.get(sessionId);
@@ -491,16 +540,12 @@ function ToggleMic (props:any){
             }
             await toggleOutboundAudioState();
         } else {
-            if (audioGloballyMuted && !user?.isTeacher) {
+            if (audioGloballyMuted && !user.isTeacher) {
                 return;
             }
             await toggleInboundAudioState();
         }
     }
-
-    useEffect(() => {
-        setMicOn(webrtc.isLocalAudioEnabled(user.id));
-    }, [ webrtc.isLocalAudioEnabled(user.id) ]);
 
     return (
         <MenuItem
