@@ -10,10 +10,7 @@ function Entry () {
         <RecoilRoot>
             {/* <RecoilizeDebugger root={app} /> */}
             <Providers>
-                <>
-                    <Layout />
-                    <Trophy />
-                </>
+                <Layout />
             </Providers>
         </RecoilRoot>
     );
