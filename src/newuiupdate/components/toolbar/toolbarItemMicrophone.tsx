@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         backgroundColor: `inherit`,
         "&:hover": {
             color: `inherit`,
-            backgroundColor: theme.palette.grey[200],
+            backgroundColor: fade(theme.palette.background.default, 0.3),
         },
     },
     locked: {
