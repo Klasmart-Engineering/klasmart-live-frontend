@@ -6,7 +6,8 @@ import {
     gql, useMutation, useSubscription,
 } from "@apollo/client";
 import {
-    CircularProgress, IconButton, Typography,
+    CircularProgress, IconButton, makeStyles,
+    Theme, Typography,
 } from "@material-ui/core";
 import { VolumeMute as AudioOffIcon } from "@styled-icons/boxicons-regular/VolumeMute";
 import React, {
@@ -27,6 +28,22 @@ interface ReplicaVideoProps {
 
 const PLAYLIST_FILE_NAME = `master`;
 const PLAYLIST_FILE_HOST = `/video`;
+
+const useStyles = makeStyles((theme: Theme) => ({
+    video: {
+        width: `100% !important`,
+        height: `100% !important`,
+        position: `relative`,
+        "& video":{
+            objectFit: `contain`,
+            position: `absolute`,
+            top: 0,
+            left: 0,
+            width: `100%`,
+            height: `100%`,
+        },
+    },
+}));
 
 const createHlsDashUrlFromSrc = (src: string): string[] => {
     let urls: string[] = [];
@@ -62,6 +79,7 @@ export function ReplicaMedia (props: React.VideoHTMLAttributes<HTMLMediaElement>
     const {
         sessionId, type, ...mediaProps
     } = props;
+    const classes = useStyles();
     const srcRef = useRef<string>();
     const [ playing, setPlaying ] = useState<boolean>(false);
     const timeRef = useRef<number>();
@@ -240,6 +258,7 @@ export function ReplicaMedia (props: React.VideoHTMLAttributes<HTMLMediaElement>
                     playing={videoReady && playing}
                     url={videoSources}
                     muted={muted}
+                    className={classes.video}
                     config={{
                         file: {
                             attributes: {
@@ -298,7 +317,7 @@ export function ReplicatedMedia (props: React.VideoHTMLAttributes<HTMLMediaEleme
     const {
         type, src, ...mediaProps
     } = props;
-
+    const classes = useStyles();
     const ref = useRef<HTMLMediaElement>(null);
 
     const reactPlayerRef = useRef<ReactPlayer>(null);
@@ -488,6 +507,7 @@ export function ReplicatedMedia (props: React.VideoHTMLAttributes<HTMLMediaEleme
                 playsinline
                 url={videoSources}
                 width="100%"
+                className={classes.video}
                 config={{
                     file: {
                         attributes: {
