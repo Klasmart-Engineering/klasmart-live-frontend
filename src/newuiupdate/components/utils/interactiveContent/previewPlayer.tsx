@@ -75,10 +75,9 @@ export function PreviewPlayer ({
 
     // TODO : Find a better system to scale the Whiteboard to the h5p
     const scaleWhiteboard = () => {
-        // if(containerHtml){
         const previewIframe = ref.current as HTMLIFrameElement;
-        const previewIframeStyles = previewIframe.getAttribute(`style`);
-        if(containerHtml){
+        if(previewIframe && containerHtml){
+            const previewIframeStyles = previewIframe.getAttribute(`style`);
             const whiteboard = containerHtml.getElementsByClassName(`canvas-container`)[0];
             if(previewIframeStyles){
                 whiteboard.setAttribute(`style`, previewIframeStyles);
@@ -140,25 +139,21 @@ export function PreviewPlayer ({
             });
         }
     };
-    /*
+
     useEffect(() => {
-        console.log(ref.current);
-        if (ref.current == null || ref.current.contentWindow == null) { return; }
-        window.addEventListener(`message`, ({ data }) => {
-            if (!data || !data.width || !data.height) { return; }
-            const fWidth = Number(data.width.replace(`px`, ``));
-            const fHeight = Number(data.height.replace(`px`, ``));
-            setWidthHeight({
-                frameWidth: fWidth,
-                frameHeight: fHeight,
+        if(ref.current && ref.current.contentWindow){
+            window.addEventListener(`message`, message => {
+                if (message.source !== ref.current?.contentWindow || !message.data || !message.data.width || !message.data.height) { return; }
+                const fWidth = Number(message.data.width.replace(`px`, ``));
+                const fHeight = Number(message.data.height.replace(`px`, ``));
+                setWidthHeight({
+                    frameWidth: fWidth,
+                    frameHeight: fHeight,
+                });
             });
-            console.log(`message`);
-        });
-    }, [
-        ref.current,
-        ref.current && ref.current.contentWindow,
-        isLessonPlanOpen,
-    ]);*/
+        }
+
+    }, [ ref.current, ref.current && ref.current.contentWindow ]);
 
     if (loading) { return <Loading />; }
     if (error) { return <Typography><FormattedMessage id="failed_to_connect" />: {JSON.stringify(error)}</Typography>; }

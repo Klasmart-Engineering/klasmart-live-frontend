@@ -136,51 +136,36 @@ function TabMosaic () {
                     xs>
                     <Grid
                         container
+                        direction="column"
                         className={classes.viewContainer}>
                         <Grid
                             item
-                            xs>
-                            <Grid
-                                container
-                                direction="column"
-                                className={classes.fullheight}>
-                                <Grid
-                                    item
-                                    className={classes.gridContainerTeachers}>
-                                    <div className={classes.cameraGrid}>
-                                        {teachersSessions.map((user) => (
-                                            <UserCamera
-                                                key={user.id}
-                                                user={user} />
-                                        ))}
-                                    </div>
-                                </Grid>
-                                <Grid
-                                    item
-                                    xs
-                                    className={classes.gridContainerStudents}>
-                                    <div className={clsx(classes.cameraGrid, {
-                                        [classes.cameraGrid2] : mosaicViewSize === 2,
-                                        [classes.cameraGrid3] : mosaicViewSize === 3,
-                                        [classes.cameraGrid4] : mosaicViewSize === 4,
-                                        [classes.cameraGrid5] : mosaicViewSize === 5,
-                                        [classes.cameraGrid6] : mosaicViewSize === 6,
-                                    })}>
-                                        {studentsSessions.map((user) => (
-                                            <UserCamera
-                                                key={user.id}
-                                                user={user} />
-                                        ))}
-                                    </div>
-                                </Grid>
-                            </Grid>
+                            className={classes.gridContainerTeachers}>
+                            <div className={classes.cameraGrid}>
+                                {teachersSessions.map((user) => (
+                                    <UserCamera
+                                        key={user.id}
+                                        user={user} />
+                                ))}
+                            </div>
                         </Grid>
                         <Grid
                             item
-                            className={classes.drawerContainer}>
-                            <StyledDrawer active={isChatOpen}>
-                                <Chat />
-                            </StyledDrawer>
+                            xs
+                            className={classes.gridContainerStudents}>
+                            <div className={clsx(classes.cameraGrid, {
+                                [classes.cameraGrid2] : mosaicViewSize === 2,
+                                [classes.cameraGrid3] : mosaicViewSize === 3,
+                                [classes.cameraGrid4] : mosaicViewSize === 4,
+                                [classes.cameraGrid5] : mosaicViewSize === 5,
+                                [classes.cameraGrid6] : mosaicViewSize === 6,
+                            })}>
+                                {studentsSessions.map((user) => (
+                                    <UserCamera
+                                        key={user.id}
+                                        user={user} />
+                                ))}
+                            </div>
                         </Grid>
                     </Grid>
                 </Grid>

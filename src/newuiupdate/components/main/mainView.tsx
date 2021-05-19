@@ -44,22 +44,10 @@ function MainView () {
     const screenShare = useContext(ScreenShareContext);
     const webrtc = useContext(WebRTCContext);
 
-    const [ isViewModesOpen, setIsViewModesOpen ] = useRecoilState(isViewModesOpenState);
     const [ isLessonPlanOpen, setIsLessonPlanOpen ] = useRecoilState(isLessonPlanOpenState);
-    const [ hasControls, setHasControls ] = useRecoilState(hasControlsState);
 
     const activeScreenshare = screenShare.stream || content && webrtc.getAuxStream(content.contentId);
-    // const activeScreenshare = ContentType.Screen && (screenShare.stream || content && webrtc.getAuxStream(content.contentId));
     const activePresent = content?.type === ContentType.Stream || content?.type === ContentType.Video || content?.type === ContentType.Audio || content?.type === ContentType.Image;
-
-    useEffect(()=>{
-        if(activePresent && hasControls){
-            setTimeout(function (){
-                setIsViewModesOpen(false);
-                setIsLessonPlanOpen(true);
-            }, 1000);
-        }
-    }, [ activePresent ]);
 
     // SCREENSHARE VIEW
     // TEACHER and STUDENTS : Host Screen
