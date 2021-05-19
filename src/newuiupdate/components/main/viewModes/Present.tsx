@@ -86,16 +86,11 @@ function Present () {
             }
         }
     }, [
-        // roomId,
         interactiveMode,
         material,
         streamId,
-        // sessionId,
+        sessionId,
     ]);
-
-    useEffect(() => {
-        setMaterialActiveIndex(0);
-    }, []);
 
     // IF TEACHER
     if(hasControls){

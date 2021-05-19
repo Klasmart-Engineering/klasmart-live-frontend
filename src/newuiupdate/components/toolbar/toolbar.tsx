@@ -336,10 +336,14 @@ function Toolbar () {
 
             <ClassDetailsMenu anchor={classDetailsRef.current} />
             <CanvasMenu anchor={canvasRef.current} />
-            <GlobalActionsMenu anchor={globalActionsRef.current} />
-            <ViewModesMenu anchor={viewModesRef.current} />
             <ChatMenu anchor={chatRef.current} />
-            <LessonPlanMenu anchor={lessonPlanRef.current} />
+            {hasControls &&
+                <>
+                    <GlobalActionsMenu anchor={globalActionsRef.current} />
+                    <ViewModesMenu anchor={viewModesRef.current} />
+                    <LessonPlanMenu anchor={lessonPlanRef.current} />
+                </>
+            }
 
             <DialogEndClass
                 open={openEndClassDialog}
