@@ -148,9 +148,6 @@ function Class () {
     }, [ sessions ]);
 
     useEffect(() => {
-        if(classtype === ClassType.CLASSES){
-            setIsLessonPlanOpen(true);
-        }
         if(classtype === ClassType.STUDY){
             if (org_id) {
                 fetchEverything();
