@@ -1,3 +1,5 @@
+import { ClassType } from "../../../store/actions";
+import { LocalSessionContext } from "../../providers/providers";
 import {
     isChatOpenState,
     isLessonPlanOpenState,
@@ -5,20 +7,15 @@ import {
 import { StyledDrawer } from "../utils/utils";
 import Chat from "./chat/chat";
 import LessonPlan from "./lessonPlan/lessonPlan";
-import React from "react";
+import React, { useContext } from "react";
 import { useRecoilState } from "recoil";
 
 function MainDrawer () {
-    const [ isChatOpen, setIsChatOpen ] = useRecoilState(isChatOpenState);
-    const [ isLessonPlanOpen, setIsLessonPlanOpen ] = useRecoilState(isLessonPlanOpenState);
+    const { classtype, isTeacher } = useContext(LocalSessionContext);
 
     return (
         <>
-            <StyledDrawer active={isChatOpen}>
-                <Chat />
-            </StyledDrawer>
-
-            <StyledDrawer active={isLessonPlanOpen}>
+            <StyledDrawer active={classtype === ClassType.CLASSES}>
                 <LessonPlan />
             </StyledDrawer>
         </>
