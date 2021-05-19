@@ -117,7 +117,10 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
             });
         }
         if(!isChatOpen){
-            if(camera){
+            const now = Date.now() - 5000;
+            const messageTime = Number(newMessage.id.split(`-`)[0]);
+
+            if(camera && now <= messageTime){
                 enqueueSnackbar(intl.formatMessage({
                     id: `notification_user_sent_message`,
                 }, {
