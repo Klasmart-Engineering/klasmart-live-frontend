@@ -1,3 +1,4 @@
+/* eslint-disable modules-newline/import-declaration-newline */
 import ReactPlayer from "../../../components/react-player";
 import { LocalSessionContext } from "../../providers/providers";
 import { RoomContext } from "../../providers/roomContext";
