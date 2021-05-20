@@ -2,7 +2,8 @@
 import { Resolver } from "../../resolver";
 import { LocalSessionContext, SFU_LINK } from "./providers";
 import {
-    gql, useMutation, useSubscription,
+    gql, useMutation, useQuery,
+    useSubscription,
 } from "@apollo/client";
 import {
     Device,
@@ -74,8 +75,8 @@ export const GLOBAL_MUTE_QUERY = gql`
     }
 `;
 export const INDIVIDUAL_MUTE_QUERY = gql`
-    query retrieveMuteStatuses($sessionId: String!) {
-        retrieveMuteStatuses(sessionId: $sessionId) {
+    query retrieveMuteStatuses {
+        retrieveMuteStatuses {
             roomId,
             sessionId,
             audio,
@@ -151,6 +152,7 @@ export const WebRTCProvider = (props: { children: React.ReactNode }) => {
     const [ inboundStreams, setInboundStreams ] = useState<Map<string, StreamDescription>>(new Map<string, StreamDescription>());
     const [ outboundStreams, setOutboundStreams ] = useState<Map<string, Stream>>(new Map<string, Stream>());
     const [ destructors, setDestructors ] = useState<Map<string, () => any>>(new Map<string, () => any>());
+    const [ muteStatuses, setMuteStatuses ] = useState<Map<string, MuteNotification>>(new Map<string, MuteNotification>());
 
     const [ rtpCapabilitiesMutation ] = useMutation(SEND_RTP_CAPABILITIES, {
         context: {
@@ -173,6 +175,11 @@ export const WebRTCProvider = (props: { children: React.ReactNode }) => {
         },
     });
     const [ streamMutation ] = useMutation(STREAM, {
+        context: {
+            target: SFU_LINK,
+        },
+    });
+    const { refetch } = useQuery(INDIVIDUAL_MUTE_QUERY, {
         context: {
             target: SFU_LINK,
         },
@@ -703,9 +710,11 @@ export const WebRTCProvider = (props: { children: React.ReactNode }) => {
 
     const streamMessage = async (stream: StreamDescription) => {
         console.log(`streamMessage`, stream);
+        const muteStatus = muteStatuses.get(stream.sessionId);
+        console.log(`muteStatus`, muteStatus);
         Object.assign(stream, {
-            videoEnabledByProducer: true,
-            audioEnabledByProducer: true,
+            videoEnabledByProducer: muteStatus ? muteStatus.video : true,
+            audioEnabledByProducer: muteStatus ? muteStatus.audio : true,
             audioDisabledLocally: false,
             videoDisabledLocally: false,
         });
@@ -823,6 +832,19 @@ export const WebRTCProvider = (props: { children: React.ReactNode }) => {
             }));
         };
     }, [ camera, producerTransport ]);
+
+    const syncMuteStatuses = async () => {
+        const { data } = await refetch();
+        const muteStatuses: Map<string, MuteNotification> = new Map<string, MuteNotification>();
+        for (const muteStatus of data.retrieveMuteStatuses) {
+            muteStatuses.set(muteStatus.sessionId, muteStatus);
+        }
+        setMuteStatuses(muteStatuses);
+        console.log(`muteStatuses`, muteStatuses);
+    };
+    useEffect(() => {
+        syncMuteStatuses();
+    }, []);
 
     return (
         <WebRTCContext.Provider value={value}>

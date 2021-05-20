@@ -3,7 +3,7 @@ import {
 } from "../../providers/providers";
 import { RoomContext } from "../../providers/roomContext";
 import {
-    GLOBAL_MUTE_QUERY, INDIVIDUAL_MUTE_QUERY,
+    GLOBAL_MUTE_QUERY,
     MUTE, MuteNotification, WebRTCContext,
 } from "../../providers/WebRTCContext";
 import { hasControlsState,  pinnedUserState } from "../../states/layoutAtoms";
@@ -340,7 +340,7 @@ function ToggleCamera (props:any){
             target: SFU_LINK,
         },
     });
-    const { refetch: refetchGlobalMute } = useQuery(GLOBAL_MUTE_QUERY, {
+    const { refetch } = useQuery(GLOBAL_MUTE_QUERY, {
         variables: {
             roomId,
         },
@@ -348,24 +348,8 @@ function ToggleCamera (props:any){
             target: SFU_LINK,
         },
     });
-    const { refetch: refetchIndividualMute } = useQuery(INDIVIDUAL_MUTE_QUERY, {
-        variables: {
-            sessionId: user.id,
-        },
-        context: {
-            target: SFU_LINK,
-        },
-    });
+
     const isSelf = sessionId === user.id;
-
-    const syncMuteStatus = async () => {
-        const { data } = await refetchIndividualMute();
-        webrtc.enableVideoByProducer(user.id, data?.retrieveMuteStatuses?.video);
-    };
-
-    useEffect(() => {
-        syncMuteStatus();
-    }, []);
 
     useEffect(() => {
         if (isLoading && webrtc.isVideoEnabledByProducer(user.id)) {
@@ -411,7 +395,7 @@ function ToggleCamera (props:any){
     }
 
     async function toggleVideoState (): Promise<void> {
-        const { data }= await refetchGlobalMute();
+        const { data }= await refetch();
         const videoGloballyDisabled = data?.retrieveGlobalMute?.videoGloballyDisabled;
         if (isSelf) {
             const localSession = sessions.get(sessionId);
@@ -464,7 +448,7 @@ function ToggleMic (props:any){
             target: SFU_LINK,
         },
     });
-    const { refetch: refetchGlobalMute } = useQuery(GLOBAL_MUTE_QUERY, {
+    const { refetch } = useQuery(GLOBAL_MUTE_QUERY, {
         variables: {
             roomId,
         },
@@ -472,24 +456,8 @@ function ToggleMic (props:any){
             target: SFU_LINK,
         },
     });
-    const { refetch: refetchIndividualMute } = useQuery(INDIVIDUAL_MUTE_QUERY, {
-        variables: {
-            sessionId: user.id,
-        },
-        context: {
-            target: SFU_LINK,
-        },
-    });
+
     const webrtc = useContext(WebRTCContext);
-
-    const syncMuteStatus = async () => {
-        const { data } = await refetchIndividualMute();
-        webrtc.enableAudioByProducer(user.id, data?.retrieveMuteStatuses?.audio);
-    };
-
-    useEffect(() => {
-        syncMuteStatus();
-    }, []);
 
     useEffect(() => {
         setMicOn(webrtc.isAudioEnabledByProducer(user.id) && !webrtc.isAudioDisabledLocally(user.id));
@@ -529,7 +497,7 @@ function ToggleMic (props:any){
     }
 
     async function toggleAudioState (): Promise<void> {
-        const { data }= await refetchGlobalMute();
+        const { data }= await refetch();
         const audioGloballyMuted = data?.retrieveGlobalMute?.audioGloballyMuted;
         if (isSelf) {
             const localSession = sessions.get(sessionId);
