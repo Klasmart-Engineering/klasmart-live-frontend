@@ -85,6 +85,7 @@ module.exports = {
     new webpack.EnvironmentPlugin(
       { "CALLSTATS_ENABLE": "TRUE" },
       { "ENDPOINT_CMS": "https://cms.kidsloop.id" },
+      { "ENDPOINT_HUB": "https://hub.kidsloop.id" },
     ),
     new HtmlWebpackPlugin({
       filename: 'index.html',

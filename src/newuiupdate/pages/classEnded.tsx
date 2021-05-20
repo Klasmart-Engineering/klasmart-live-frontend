@@ -40,6 +40,8 @@ function ClassEnded () {
     const classes = useStyles();
     const { isTeacher } = useContext(LocalSessionContext);
 
+    const HUB_ENDPOINT = process.env.ENDPOINT_HUB;
+
     // TODO : Disable camera on leave page
 
     return (
@@ -57,13 +59,17 @@ function ClassEnded () {
                     </div>
                     <Typography variant="h3"><FormattedMessage id="class_ended_title" /></Typography>
                     <Typography variant="body1"><FormattedMessage id="class_ended_thanks_for_attending" /></Typography>
+
                     {/* TODO : FEEDBACK
                     <Typography variant="body1"><FormattedMessage id="class_ended_how_was_the_class" /></Typography>
                     <Feedback type={isTeacher ? `teacher` : `student`}/>
                     */}
+
+                    {HUB_ENDPOINT &&
                     <Typography className={classes.returnToHub}>
-                        <a href="#"><FormattedMessage id="class_ended_return_to_hub" /></a>
+                        <a href={HUB_ENDPOINT}><FormattedMessage id="class_ended_return_to_hub" /></a>
                     </Typography>
+                    }
                 </Grid>
             </Grid>
         </Fade>
