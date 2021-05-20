@@ -47,9 +47,14 @@ export const CameraContextProvider = ({ children }: Props) => {
             return;
         }
 
+        if (!navigator.mediaDevices) {
+            setCameraStream(undefined);
+            setError(true);
+            return;
+        }
+
         const facingMode = facing === FacingType.User ? "user" : "environment";
 
-        console.log('getUserMedia');
         navigator.mediaDevices.getUserMedia({
             video: { facingMode },
             audio: true,

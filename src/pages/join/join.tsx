@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { FormattedMessage } from "react-intl";
 import { createStyles, makeStyles, useTheme, Theme } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
@@ -31,6 +31,8 @@ import KidsLoopStudyStudents from "../../assets/img/kidsloop_study_students.svg"
 import { useSessionContext } from '../../context-provider/session-context';
 import { useHistory } from "react-router-dom";
 import { useUserInformation } from "../../context-provider/user-information-context";
+import { FacingType, useCameraContext } from "../../components/media/useCameraContext";
+import useCordovaInitialize from "../../cordova-initialize";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -58,127 +60,54 @@ export default function Join(): JSX.Element {
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
     const handleDialogClose = () => setDialogOpen(false);
 
-    const [permissionError, setPermissionError] = useState<boolean>(false);
-    const [loadError, setLoadError] = useState<boolean>(false);
-    const [audioDeviceOptions, setAudioDeviceOptions] = useState<DeviceInfo[]>([]);
-    const [videoDeviceOptions, setVideoDeviceOptions] = useState<DeviceInfo[]>([]);
-    const [audioDeviceId, setAudioDeviceId] = useState<string>("");
-    const [videoDeviceId, setVideoDeviceId] = useState<string>("");
-    const [stream, setStream] = useState<MediaStream>();
+    const [audioDeviceId, setAudioDeviceId] = useState<string>("system");
+    const [videoDeviceId, setVideoDeviceId] = useState<string>(FacingType.User as string);
+
+    const [videoDevices] = useState<DeviceInfo[]>([
+        { label: "Front Facing", kind: "videoinput", id: FacingType.User as string },
+        { label: "Back Facing", kind: "videoinput", id: FacingType.Environment as string }
+    ]);
+
+    const [audioDevices] = useState<DeviceInfo[]>([
+        { label: "System Microphone", kind: "audioinput", id: "system" as string },
+    ]);
+
+    const { error, stream, facing, setFacing, refreshCameras } = useCameraContext();
+    const { permissions, requestPermissions, requestIosCameraPermission } = useCordovaInitialize(undefined, undefined, true);
 
     useEffect(() => {
-        if (!navigator.mediaDevices) { return; }
+        setFacing(videoDeviceId as FacingType);
+        setDialogOpen(!permissions);
+    }, [setFacing, videoDeviceId]);
 
-        const getMediaPermissions = async () => {
-            try {
-                /**
-                 * Specification
-                 * Even if it's not a live class(classtype !== ClassType.LIVE), application needs a microphone.
-                 * This is because some H5P content requires a microphone.
-                 */
-                await navigator.mediaDevices.getUserMedia({ audio: true });
-                // Live class requires the cameras also.
-                if (classtype === ClassType.LIVE) {
-                    await navigator.mediaDevices.getUserMedia({ video: true });
-                }
-                setPermissionError(false); setDialogOpen(false);
-                await loadMediaDevices();
-            } catch (e) {
-                console.error(`getMediaPermissions Error - ${e}`);
-                setPermissionError(true); setDialogOpen(true);
-            }
+    useEffect(() => {
+        if (classtype === ClassType.LIVE) {
+            // TODO: Camera & microphone
+        } else {
+            // TODO: Only microphone
         }
-        getMediaPermissions();
 
-        // When user disconnect or connect a media device, the media devices that connected to computer are reloaded.
-        navigator.mediaDevices.addEventListener("devicechange", loadMediaDevices);
-        return () => { navigator.mediaDevices.removeEventListener("devicechange", loadMediaDevices); };
-    }, []);
-
-    async function loadMediaDevices() {
-        try {
-            const devices = await navigator.mediaDevices.enumerateDevices();
-
-            const audioDevices = devices.filter((d) => d.kind == "audioinput").map((v, i) => {
-                return {
-                    id: String(i),
-                    ...v
-                };
-            });
-            setAudioDeviceOptions(audioDevices);
-
-            if (audioDevices.length > 0) {
-                // Select the first mic only if there is no mic selected
-                if (audioDeviceId === "") setAudioDeviceId(audioDevices[0].deviceId);
-            } else {
-                setAudioDeviceId("");
-            }
-
-            if (classtype === ClassType.LIVE) {
-                const videoDevices = devices.filter((d) => d.kind == "videoinput").map((v, i) => {
-                    return { 
-                        id: String(i),
-                        ...v
-                    };
-                });
-                setVideoDeviceOptions(videoDevices);
-
-                if (videoDevices.length > 0) {
-                    // Select the first cam only if there is no cam selected
-                    if (videoDeviceId === "") setVideoDeviceId(videoDevices[0].deviceId);
-                } else {
-                    setVideoDeviceId("");
-                }
-            }
-        } catch (e) {
-            console.error(`loadMediaDevices Error - ${e}`);
-            setLoadError(true);
+        if (!permissions) {
+            requestPermissions(true, true);
+        } else {
+            refreshCameras();
         }
-    }
 
-    function getMicStream(deviceId: string) {
-        navigator.mediaDevices.getUserMedia({
-            audio: { deviceId }
-        }).then((s) => {
-            setStream(s);
-            setLoadError(false);
-        }).catch((e) => {
-            console.error(`getMicStream Error - ${e}`);
-            setStream(undefined);
-            setLoadError(true);
-        });
-    }
+        setDialogOpen(!permissions);
+    }, [refreshCameras, permissions, classtype]);
 
-    function getCamStream(audioDeviceId: string, videoDeviceId: string) {
+    useEffect(() => {
+        if (!stream) return;
+
         const videoConstraints = {
             width: { ideal: 640 },
             height: { ideal: 360 },
             frameRate: { max: 24 }
         };
 
-        navigator.mediaDevices.getUserMedia({
-            audio: { deviceId: audioDeviceId },
-            video: { deviceId: videoDeviceId }
-        }).then((s) => {
-            const track = s.getVideoTracks()[0];
-            track.applyConstraints(videoConstraints);
-            setStream(s);
-            setLoadError(false);
-        }).catch((e) => {
-            console.error(`getCamStream Error - ${e}`);
-            setStream(undefined);
-            setLoadError(true);
-        });
-    }
-
-    useEffect(() => {
-        if (!navigator.mediaDevices) { return; }
-        if (classtype === ClassType.LIVE) {
-            getCamStream(audioDeviceId, videoDeviceId);
-        } else {
-            getMicStream(audioDeviceId)
-        }
-    }, [videoDeviceId, audioDeviceId]);
+        const track = stream.getVideoTracks()[0];
+        track?.applyConstraints(videoConstraints);
+    }, [stream]);
 
     return (<>
         <Grid
@@ -199,8 +128,8 @@ export default function Join(): JSX.Element {
                             spacing={4}
                         >
                             {classtype !== ClassType.LIVE ? null :
-                                <Grid item xs={12} md={8}>
-                                    <CameraPreview permissionError={permissionError} videoStream={stream} />
+                                <Grid item xs={12} md={8} style={{minWidth: 260}}>
+                                    <CameraPreview permissionError={!permissions} videoStream={stream} />
                                 </Grid>
                             }
                             <Grid
@@ -218,12 +147,12 @@ export default function Join(): JSX.Element {
                                 </Grid>
                                 <Grid item xs={12}>
                                     <JoinRoomForm
-                                        mediaDeviceError={permissionError || loadError}
+                                        mediaDeviceError={!permissions || error}
                                         stream={stream}
-                                        audioDeviceOptions={audioDeviceOptions}
+                                        audioDeviceOptions={audioDevices}
                                         audioDeviceIdHandler={{ audioDeviceId, setAudioDeviceId }}
-                                        videoDeviceOptions={videoDeviceOptions}
-                                        videoDeviceIdHandler={{ videoDeviceId, setVideoDeviceId }}
+                                        videoDeviceOptions={videoDevices}
+                                        videoDeviceIdHandler={{ videoDeviceId: facing as string, setVideoDeviceId }}
                                     />
                                 </Grid>
                             </Grid>
