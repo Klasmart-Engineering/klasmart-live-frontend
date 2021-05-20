@@ -21,8 +21,8 @@ export const MUTATION_SET_HOST = gql`
 `;
 
 export const MUTATION_ENDCLASS = gql`
-    mutation endClass($roomId: ID!) {
-        endClass(roomId: $roomId)
+    mutation endClass {
+        endClass
     }
 `;
 

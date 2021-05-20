@@ -130,12 +130,7 @@ function DialogEndClass (props:any){
     const classes = useStyles();
     const { open, onClose } = props;
 
-    const { roomId } = useContext(LocalSessionContext);
-
     const [ endClass ] = useMutation(MUTATION_ENDCLASS, {
-        variables: {
-            roomId,
-        },
         context: {
             target: LIVE_LINK,
         },
