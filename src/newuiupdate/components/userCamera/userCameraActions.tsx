@@ -171,9 +171,7 @@ function UserCameraActions (props: UserCameraActionsType) {
     const { user } = props;
     const classes = useStyles();
 
-    const {
-        isTeacher, sessionId, roomId,
-    } = useContext(LocalSessionContext);
+    const { isTeacher, roomId } = useContext(LocalSessionContext);
 
     const [ hasControls, setHasControls ] = useRecoilState(hasControlsState);
     const [ pinnedUser, setPinnedUser ] = useRecoilState(pinnedUserState);
@@ -476,7 +474,7 @@ function ToggleMic (props:any){
     });
     const { refetch: refetchIndividualMute } = useQuery(INDIVIDUAL_MUTE_QUERY, {
         variables: {
-            sessionId: sessionId,
+            sessionId: user.id,
         },
         context: {
             target: SFU_LINK,
@@ -486,7 +484,7 @@ function ToggleMic (props:any){
 
     const syncMuteStatus = async () => {
         const { data } = await refetchIndividualMute();
-        webrtc.enableAudioByProducer(sessionId, data?.retrieveMuteStatuses?.audio);
+        webrtc.enableAudioByProducer(user.id, data?.retrieveMuteStatuses?.audio);
     };
 
     useEffect(() => {
