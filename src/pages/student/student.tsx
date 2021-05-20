@@ -10,6 +10,7 @@ import { useSessionContext } from "../../context-provider/session-context";
 import { MaterialTypename } from "../../lessonMaterialContext";
 import { RoomContext } from "../../providers/RoomContext";
 import { WebRTCContext } from "../../providers/WebRTCContext";
+import { useContentToHref } from "../../utils/contentUtils";
 import { imageFrame } from "../../utils/layerValues";
 import { useWindowSize } from "../../utils/viewport";
 import { Stream } from "../../webRTCState";
@@ -63,6 +64,8 @@ export function Student(): JSX.Element {
     const [streamId, setStreamId] = useState<string>();
     const [session, setSession] = useState<Session>();
 
+    const [contentHref] = useContentToHref(content);
+
     const studentModeFilterGroups = useMemo(() => {
         return [sessionId];
     }, [sessionId]);
@@ -114,7 +117,7 @@ export function Student(): JSX.Element {
                 <div className={classes.root} style={isTeacher ? undefined : { width: square, height: square }}>
                     {isTeacher ? <ObservationMode /> : <>
                         <Whiteboard group={sessionId} uniqueId="student" filterGroups={studentModeFilterGroups} />
-                        <RecordedIframe contentId={content.contentId} setStreamId={setStreamId} square={square} />
+                        <RecordedIframe contentHref={contentHref} setStreamId={setStreamId} square={square} />
                     </>}
                 </div>
             }

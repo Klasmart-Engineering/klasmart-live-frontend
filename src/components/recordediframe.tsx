@@ -5,7 +5,7 @@ import { useTheme } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { Refresh as RefreshIcon } from "@styled-icons/material/Refresh";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import CurlySpinner1 from "../assets/img/spinner/curly1_spinner.gif";
 import CurlySpinner2 from "../assets/img/spinner/curly2_spinner.gif";
@@ -15,8 +15,10 @@ import GhostSpinner from "../assets/img/spinner/ghost_spinner.gif";
 import JessSpinner1 from "../assets/img/spinner/jess1_spinner.gif";
 import MimiSpinner1 from "../assets/img/spinner/mimi1_spinner.gif";
 import { SESSION_LINK_LIVE } from "../context-provider/live-session-link-context";
+import { useHttpEndpoint } from "../context-provider/region-select-context";
 import { useSessionContext } from "../context-provider/session-context";
 import { State } from "../store/store";
+import { injectIframeScript } from "../utils/injectIframeScript";
 import { loadingActivity } from "../utils/layerValues";
 import { useWindowSize } from "../utils/viewport";
 import StyledFAB from "./styled/fabButton";
@@ -28,7 +30,7 @@ const SET_STREAMID = gql`
 `;
 
 export interface Props {
-    contentId: string;
+    contentHref: string;
     setStreamId: React.Dispatch<React.SetStateAction<string | undefined>>;
     square?: number;
 }
@@ -46,9 +48,9 @@ export function RecordedIframe(props: Props): JSX.Element {
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
 
-    const { roomId } = useSessionContext();
+    const { roomId, token } = useSessionContext();
     const drawerOpen = useSelector((state: State) => state.control.drawerOpen);
-    const { contentId, setStreamId } = props;
+    const { contentHref, setStreamId } = props;
     const [sendStreamId] = useMutation(SET_STREAMID, {context: {target: SESSION_LINK_LIVE}});
 
     const [transformScale, setTransformScale] = useState<number>(1);
@@ -59,8 +61,14 @@ export function RecordedIframe(props: Props): JSX.Element {
     const [contentWidth, setContentWidth] = useState(1600);
     const [contentHeight, setContentHeight] = useState(1400);
     const [enableResize, setEnableResize] = useState(true);
-    const [stylesLoaded, setStylesLoaded] = useState(false);
+    const [stylesLoaded] = useState(false);
 
+    const recorderEndpoint = useHttpEndpoint("live");
+
+    const contentHrefWithToken = useMemo<string>(() => {
+        const encodedEndpoint = encodeURIComponent(recorderEndpoint);
+        return `${contentHref}?token=${token}&endpoint=${encodedEndpoint}`;
+    }, [contentHref, token, recorderEndpoint]);
 
     const size = useWindowSize();
 
@@ -80,7 +88,7 @@ export function RecordedIframe(props: Props): JSX.Element {
         const iRef = window.document.getElementById("recordediframe") as HTMLIFrameElement;
         iRef.addEventListener("load", () => setLoadStatus(LoadStatus.Finished));
         return () => iRef.removeEventListener("load", () => setLoadStatus(LoadStatus.Finished));
-    }, [contentId]);
+    }, [contentHref]);
 
     useEffect(() => {
         if (loadStatus === LoadStatus.Loading) {
@@ -156,15 +164,15 @@ export function RecordedIframe(props: Props): JSX.Element {
 
         if(h5pTypeColumn){
             setEnableResize(false)
-            h5pDivCollection[0].setAttribute("style", "width: 100% !important;");
+            h5pDivCollection[0]?.setAttribute("style", "width: 100% !important;");
         }else{
             setEnableResize(true)
-             h5pDivCollection[0].setAttribute("style", "width: auto !important;");
+             h5pDivCollection[0]?.setAttribute("style", "width: auto !important;");
         }
 
         if (h5pDivCollection.length > 0) {
             const h5pContainer = h5pDivCollection[0] as HTMLDivElement;
-            h5pContainer.setAttribute("data-iframe-height", "");
+            h5pContainer?.setAttribute("data-iframe-height", "");
             const h5pWidth = h5pContainer.getBoundingClientRect().width;
             const h5pHeight = h5pContainer.getBoundingClientRect().height;
             setContentWidth(h5pWidth);
@@ -195,13 +203,8 @@ export function RecordedIframe(props: Props): JSX.Element {
             !iRef.contentWindow ||
             (iRef.contentWindow as any).kidslooplive ||
             !iRef.contentDocument) { return; }
-        const doc = iRef.contentDocument;
-        const script = doc.createElement("script");
-        script.setAttribute("type", "text/javascript");
-        const matches = window.location.pathname.match(/^(.*\/+)([^/]*)$/);
-        const prefix = matches && matches.length >= 2 ? matches[1] : "";
-        script.setAttribute("src", `${prefix}record-e44f2b3.js`);
-        doc.head.appendChild(script);
+
+        injectIframeScript(iRef, "record");
     }
 
     const getRandomSpinner = (): string => SPINNER[Math.floor(Math.random() * SPINNER.length)];
@@ -271,8 +274,9 @@ export function RecordedIframe(props: Props): JSX.Element {
             </Dialog>
             <iframe
                 id="recordediframe"
-                src={contentId}
+                src={contentHrefWithToken}
                 ref={iframeRef}
+                allow="microphone"
                 style={{
                 width: enableResize ? contentWidth : '100%',
                 height: enableResize ? contentHeight : '100%',
@@ -280,7 +284,7 @@ export function RecordedIframe(props: Props): JSX.Element {
                 transformOrigin: "top left",
                 transform: enableResize ? `scale(${transformScale})` : `scale(1)`,
                 minWidth: '100%',
-                minHeight: '100%',
+                minHeight: '100%'
             }}
             />
         </React.Fragment>
