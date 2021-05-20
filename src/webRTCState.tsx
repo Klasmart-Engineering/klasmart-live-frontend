@@ -11,7 +11,7 @@ import { getRandomKind } from './components/trophies/trophyKind';
 import { Session } from "./pages/room/room";
 import { GlobalMuteNotification, GLOBAL_MUTE_MUTATION, GLOBAL_MUTE_QUERY, WebRTCContext } from "./providers/WebRTCContext";
 import { useSynchronizedState } from "./whiteboard/context-providers/SynchronizedStateProvider";
-import { SESSION_LINK_LIVE, SESSION_LINK_SFU } from "./context-provider/live-session-link-context";
+import { SESSION_LINK_LIVE } from "./context-provider/live-session-link-context";
 
 import { Eraser as EraserIcon } from "@styled-icons/boxicons-solid/Eraser";
 import { GridOff as CanvasOffIcon } from "@styled-icons/material-twotone/GridOff";
@@ -63,8 +63,8 @@ export function GlobalCameraControl(props: {localSession: Session }): JSX.Elemen
     const [micsOn, setMicsOn] = useState(true);
     const { roomId } = useSessionContext();
     const [rewardTrophyMutation] = useMutation(MUTATION_REWARD_TROPHY, {context: {target: SESSION_LINK_LIVE}});
-    const [globalMuteMutation] = useMutation(GLOBAL_MUTE_MUTATION, { context: { target: SESSION_LINK_SFU}});
-    const { refetch } = useQuery(GLOBAL_MUTE_QUERY, { variables: { roomId }, context: { target: SESSION_LINK_SFU}});
+    const [globalMuteMutation] = useMutation(GLOBAL_MUTE_MUTATION, { context: { target: SESSION_LINK_LIVE}});
+    const { refetch } = useQuery(GLOBAL_MUTE_QUERY, { variables: { roomId }, context: { target: SESSION_LINK_LIVE}});
     const rewardTrophy = (user: string, kind: string) => rewardTrophyMutation({ variables: { roomId, user, kind } });
     const states = useContext(WebRTCContext);
 
