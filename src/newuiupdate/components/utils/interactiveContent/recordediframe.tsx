@@ -82,9 +82,11 @@ export function RecordedIframe (props: Props): JSX.Element {
 
     useEffect(() => {
         scale(contentWidth, contentHeight);
-        setTimeout(function (){
-            scaleWhiteboard();
-        }, 300);
+        if(classtype == ClassType.LIVE){
+            setTimeout(function (){
+                scaleWhiteboard();
+            }, 300);
+        }
     }, [ size ]);
 
     useEffect(() => {
