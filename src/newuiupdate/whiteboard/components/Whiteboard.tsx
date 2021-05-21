@@ -71,6 +71,7 @@ export function Whiteboard ({
                 zIndex: whiteboard + 1,
                 display: display ? `block` : `none`,
                 position: `absolute`,
+                overflow: `hidden`,
                 top: 0,
                 bottom: 0,
                 left: 0,

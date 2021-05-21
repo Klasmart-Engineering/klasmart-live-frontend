@@ -75,8 +75,8 @@ export function WBToolbarContainer () {
                     display: open ? `none` : `flex`,
                     zIndex: WB_EXPAND_BUTTON,
                     position: `absolute`,
-                    bottom: 0,
-                    left: 0,
+                    bottom: 10,
+                    left: 10,
                 }}
                 onClick={handleOpenWBToolbar}
             >
@@ -92,9 +92,9 @@ export function WBToolbarContainer () {
                     zIndex: WB_TOOLBAR,
                     display: open ? `flex` : `none`,
                     padding: isSmDown ? theme.spacing(0.5) : theme.spacing(1),
-                    width: `100%`,
+                    width: `calc(100% - 20px)`,
                     position: `absolute`,
-                    bottom: 0,
+                    bottom: 5,
                     borderRadius: 32,
                     overflowY: `hidden`,
                 }}

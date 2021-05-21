@@ -1,7 +1,7 @@
 import { ClassType } from "../../../store/actions";
 import { LocalSessionContext } from "../../providers/providers";
 import { materialActiveIndexState, studyRecommandUrlState } from "../../states/layoutAtoms";
-import { Whiteboard } from "../../whiteboard/components/Whiteboard-new";
+import { Whiteboard } from "../../whiteboard/components/Whiteboard";
 import PreviewLessonPlan from "./previewLessonPlan";
 import { WB_TOOLBAR_MAX_HEIGHT } from "./WBToolbar";
 import Grid from "@material-ui/core/Grid";
