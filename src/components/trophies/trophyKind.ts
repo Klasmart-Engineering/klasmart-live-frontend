@@ -8,7 +8,7 @@ import looksGreat from "../../assets/img/trophies/encourage/looks_great.png";
 import wellDone from "../../assets/img/trophies/encourage/well_done.png";
 import rewardSound1 from "../../assets/audio/trophies/reward1.mp3";
 import rewardSound2 from "../../assets/audio/trophies/reward2.mp3";
-import { CSSProperties } from "@material-ui/core/styles/withStyles";
+import { CSSProperties } from 'react';
 
 export type TrophyKind = {
     name: string,

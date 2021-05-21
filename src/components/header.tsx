@@ -107,7 +107,7 @@ function OpenSelectOrgButton() {
     const dispatch = useDispatch();
     const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
 
-    const selectedOrganizationColor = utils.stringToHslColor(selectedOrg.organization_name ?? "??");
+    const selectedOrganizationColor = utils.stringToColor(selectedOrg.organization_name ?? "??");
     const selectedOrganizationInitials = utils.nameToInitials(selectedOrg.organization_name ?? "??", 4);
 
     return (

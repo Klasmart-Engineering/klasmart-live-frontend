@@ -1,7 +1,6 @@
 // This is temporary and will be removed after the App and Web merge.
 
-import React, { useContext, useMemo } from "react";
-import { CSSProperties } from "@material-ui/core/styles/withStyles";
+import React, { CSSProperties, useMemo } from "react";
 import { whiteboard } from "../../utils/layerValues";
 import { useSynchronizedState } from "../context-providers/SynchronizedStateProvider";
 import { WhiteboardCanvas } from "kidsloop-canvas/lib/domain/whiteboard/WhiteboardCanvas";

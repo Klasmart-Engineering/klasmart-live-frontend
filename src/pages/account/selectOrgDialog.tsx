@@ -276,7 +276,7 @@ function OrgCard({ org, checked, setOrg }: {
     const theme = useTheme();
     const square = theme.spacing(15);
 
-    const orgColor = utils.stringToHslColor(org.organization_name ?? "??");
+    const orgColor = utils.stringToColor(org.organization_name ?? "??");
     const orgInitials = utils.nameToInitials(org.organization_name ?? "??", 4);
 
     return (
