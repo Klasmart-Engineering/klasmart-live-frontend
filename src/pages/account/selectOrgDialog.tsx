@@ -24,7 +24,7 @@ import StyledIcon from "../../components/styled/icon";
 import { State } from "../../store/store";
 import { setSelectedOrg, setUser } from "../../store/reducers/session";
 import { setSelectOrgDialogOpen } from "../../store/reducers/control";
-import { Organization, OrganizationResponse } from "../../services/user/IUserInformationService";
+import { Organization, OrganizationResponse, OrganizationStatus } from "../../services/user/IUserInformationService";
 
 const useStyles = makeStyles((theme: Theme) => ({
     noPadding: {
@@ -131,7 +131,7 @@ export function SelectOrgDialog() {
     const dispatch = useDispatch();
     const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
     const open = useSelector((state: State) => state.control.selectOrgDialogOpen);
-    const [org, setOrg] = useState<OrganizationResponse>(selectedOrg ? selectedOrg : { organization_id: "", organization_name: "" });
+    const [org, setOrg] = useState<OrganizationResponse>(selectedOrg ? selectedOrg : { organization_id: "", organization_name: "", status: OrganizationStatus.inactive });
     const { information } = useUserInformation();
     const { region } = useRegionSelect();
     const { actions } = useUserInformation();
@@ -143,6 +143,7 @@ export function SelectOrgDialog() {
             return {
                 organization_id: o.organization.organization_id,
                 organization_name: o.organization.organization_name,
+                status: o.organization.status
             }
         })
     }, [information]);

@@ -3,10 +3,16 @@
 // of these implementation specific response types from 
 // the interface.
 
+export enum OrganizationStatus {
+    active,
+    inactive
+};
+
 export type OrganizationResponse = {
     organization_id: string,
     organization_name: string,
-    owner?: { email: string }
+    owner?: { email: string },
+    status: OrganizationStatus,
 }
 
 export type RoleResponse = {
@@ -22,20 +28,28 @@ export type ClassResponse = {
 
 export type Organization = {
     organization: OrganizationResponse,
-    roles: RoleResponse[]
-}
+    roles: RoleResponse[],
+};
 
 export type UserInformation = {
     id: string,
     email: string,
-    name: string,
+    phone: string,
     givenName: string,
     familyName: string,
+    fullName: string,
+    username: string,
+    dateOfBirth: string,
     avatar: string,
     organizations: Organization[],
     classes: ClassResponse[],
+
+    // TODO: Can this be combined with organizations 
+    // array?
+    memberships: OrganizationResponse[],
 }
 
 export interface IUserInformationService {
     me(): Promise<UserInformation>;
+    getMyUsers(): Promise<UserInformation[]>;
 }

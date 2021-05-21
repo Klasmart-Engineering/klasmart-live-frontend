@@ -275,8 +275,8 @@ function JoinRoomForm({
 
         if (myInformation.givenName) {
             setUser(myInformation.givenName);
-        } else if(myInformation.name) {
-            setUser(myInformation.name);
+        } else if(myInformation.username) {
+            setUser(myInformation.username);
         }
 
     }, [myInformation]);

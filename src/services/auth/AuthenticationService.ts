@@ -44,4 +44,26 @@ export class AuthenticationService implements IAuthenticationService {
         const url = `${this.endpoint}/signout`;
         await fetchJson(url, { credentials: "include" })
     }
+
+    async switchUser(userId: string): Promise<boolean> {
+        const url = `${this.endpoint}/refresh`;
+        const response = await fetchJson(url, {
+            body: JSON.stringify({ user_id: userId }),
+            method: "POST",
+            credentials: "include",
+        });
+
+        await response.text();
+
+        // NOTE: Token might be expired, so trying again
+        // after doing refresh.
+        if (!response.ok) {
+            const refreshed = await this.refresh();
+            if (refreshed) {
+                return await this.switchUser(userId);
+            }
+        }
+
+        return response.ok;
+    }
 }

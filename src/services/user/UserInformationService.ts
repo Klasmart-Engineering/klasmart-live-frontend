@@ -8,11 +8,14 @@ const QUERY_ME = `
     query {
         me {
             user_id
-            email
-            user_name
+            full_name
             given_name
             family_name
+            email
+            phone
+            date_of_birth
             avatar
+            username
             organizationsWithPermission(permission_name: "attend_live_class_as_a_student_187") {
                 roles {
                     role_id
@@ -44,7 +47,26 @@ const QUERY_ME = `
             }
         }
     }
-`
+`;
+
+const QUERY_MY_USERS = `
+    query {
+        my_users {
+            user_id
+            full_name
+            given_name
+            family_name
+            email
+            phone
+            date_of_birth
+            avatar
+            username
+            memberships {
+                status
+            }
+        }
+    }
+`;
 
 type SchoolResponse = {
     school_id: string,
@@ -53,14 +75,20 @@ type SchoolResponse = {
 
 type UserResponse = {
     user_id: string,
-    email: string,
-    user_name: string | null,
+    full_name: string | null,
     given_name: string | null,
     family_name: string | null,
+    email: string | null,
+    phone: string | null,
+    date_of_birth: string | null,
     avatar: string | null,
+    username: string | null,
+
     organizationsWithPermission: { organization: OrganizationResponse, roles: RoleResponse[] }[],
     schoolsWithPermission: { school: SchoolResponse, roles: RoleResponse[] }[],
-    classesStudying: ClassResponse[]
+    classesStudying: ClassResponse[],
+
+    memberships: OrganizationResponse[]
 }
 
 type UserQueryResponse = {
@@ -69,7 +97,13 @@ type UserQueryResponse = {
     }
 }
 
-async function fetchQuery(url: string, query: string): Promise<UserQueryResponse> {
+type MyUsersQueryResponse = {
+    data: {
+        my_users: UserResponse[]
+    }
+}
+
+async function fetchQuery<TResult>(url: string, query: string): Promise<TResult> {
     const headers = new Headers();
     headers.append("Accept", "application/json");
     headers.append("Content-Type", "application/json");
@@ -96,7 +130,7 @@ export class UserInformationService implements IUserInformationService {
     }
 
     async me(): Promise<UserInformation> {
-        let result = await fetchQuery(this.endpoint, QUERY_ME);
+        let result = await fetchQuery<UserQueryResponse>(this.endpoint, QUERY_ME);
         if (!result.data?.me && this.auth) {
             const isAuthenticated = await this.auth.refresh();
             if (isAuthenticated) {
@@ -117,14 +151,36 @@ export class UserInformationService implements IUserInformationService {
         const information: UserInformation = {
             id: me.user_id || "",
             email: me.email || "",
-            name: me.user_name || "",
+            phone: me.phone || "",
             givenName: me.given_name || "",
             familyName: me.family_name || "",
+            fullName: me.full_name || "",
+            username: me.username || "",
+            dateOfBirth: me.date_of_birth || "",
             avatar: me.avatar || "",
             organizations: me.organizationsWithPermission || [], // TODO (Isu): schoolsWithPermission also needs to be considered in the future.
             classes: me.classesStudying || [],
+            memberships: me.memberships || [],
         }
 
         return information;
+    }
+
+    async getMyUsers(): Promise<UserInformation[]> {
+        let result = await fetchQuery<MyUsersQueryResponse>(this.endpoint, QUERY_MY_USERS);
+        if (!result.data?.my_users && this.auth) {
+            const isAuthenticated = await this.auth.refresh();
+            if (isAuthenticated) {
+                result = await fetchQuery(this.endpoint, QUERY_MY_USERS);
+            } else {
+                throw new Error("Account is signed out")
+            }
+        }
+
+        if (!result.data?.my_users) {
+            throw new Error("Unable to fetch my users");
+        }
+
+        return result.data!.my_users.map(v => this.userInformationFromResponseData(v));
     }
 }

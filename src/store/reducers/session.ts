@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { ClassType, UserAgent, UserType } from "../actions";
 import { getDefaultLanguageCode } from "../../utils/locale";
-import { OrganizationResponse, UserInformation } from "../../services/user/IUserInformationService";
+import { OrganizationResponse, OrganizationStatus, UserInformation } from "../../services/user/IUserInformationService";
 
 type SessionState = {
     classType: ClassType;
@@ -37,14 +37,18 @@ const initialSessionState: SessionState = {
     user: {
         id: "",
         email: "",
-        name: "",
+        username: "",
         givenName: "",
         familyName: "",
+        phone: "",
+        fullName: "",
+        dateOfBirth: "",
         avatar: "",
         organizations: [],
         classes: [],
+        memberships: []
     },
-    selectedOrg: { organization_id: "", organization_name: "" },
+    selectedOrg: { organization_id: "", organization_name: "", status: OrganizationStatus.inactive },
     regionId: "prod",
 }
 
