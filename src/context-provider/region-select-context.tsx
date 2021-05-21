@@ -54,15 +54,15 @@ const DefaultRegions: Region[] = [
         }
     },
     {
-        id: "dev",
-        name: "Development",
+        id: "alpha",
+        name: "Alpha",
         development: true,
         services: {
-            auth: "https://auth.kidsloop.net",
-            live: "https://live.kidsloop.net",
-            cms: "https://kl2.kidsloop.net",
-            sfu: "https://live.kidsloop.net/sfu",
-            user: "https://api.kidsloop.net/user/",
+            auth: "https://auth.alpha.kidsloop.net",
+            live: "https://live.alpha.kidsloop.net",
+            cms: "https://kl2-test.kidsloop.net",
+            sfu: "https://live.alpha.kidsloop.net/sfu",
+            user: "https://api.alpha.kidsloop.net/user/",
             privacy: "https://kidsloop.net/en/policies/privacy-notice"
         }
     }
