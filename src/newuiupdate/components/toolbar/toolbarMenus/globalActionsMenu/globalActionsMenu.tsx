@@ -4,7 +4,9 @@ import {
 } from "../../../../providers/providers";
 import { RoomContext } from "../../../../providers/roomContext";
 import { ScreenShareContext } from "../../../../providers/screenShareProvider";
-import { GLOBAL_MUTE_MUTATION,  GlobalMuteNotification } from "../../../../providers/WebRTCContext";
+import {
+    GLOBAL_MUTE_MUTATION,  GLOBAL_MUTE_QUERY, GlobalMuteNotification,
+} from "../../../../providers/WebRTCContext";
 import {
     isGlobalActionsOpenState,
     videoGloballyMutedState,
@@ -12,7 +14,7 @@ import {
 import { MUTATION_REWARD_TROPHY } from "../../../utils/graphql";
 import { StyledPopper } from "../../../utils/utils";
 import GlobalActionsMenuItem from "./globalAction";
-import { useMutation } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import {
     Grid, makeStyles, Theme,
 } from "@material-ui/core";
@@ -25,7 +27,9 @@ import { MicMuteFill as MicDisabledIcon } from "@styled-icons/bootstrap/MicMuteF
 import { StarFill as StarFillIcon } from "@styled-icons/bootstrap/StarFill";
 import { TrophyFill as TrophyFillIcon } from "@styled-icons/bootstrap/TrophyFill";
 import { TvFill as ScreenShareIcon } from "@styled-icons/bootstrap/TvFill";
-import React, { useContext,  useState } from "react";
+import React, {
+    useContext,  useEffect,  useState,
+} from "react";
 import { useIntl } from "react-intl";
 import { useRecoilState } from "recoil";
 
@@ -54,6 +58,15 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
     const screenShare = useContext(ScreenShareContext);
 
     const [ globalMuteMutation ] = useMutation(GLOBAL_MUTE_MUTATION, {
+        context: {
+            target: SFU_LINK,
+        },
+    });
+
+    const { refetch: refetchGlobalMute } = useQuery(GLOBAL_MUTE_QUERY, {
+        variables: {
+            roomId,
+        },
         context: {
             target: SFU_LINK,
         },
@@ -92,7 +105,6 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
         const data = await globalMuteMutation({
             variables: notification,
         });
-        console.log(data);
         const videoGloballyDisabled = data?.data?.updateGlobalMute?.videoGloballyDisabled;
         if (videoGloballyDisabled != null) {
             setCamerasOn(!videoGloballyDisabled);
@@ -192,6 +204,16 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
             variant: `red`,
         },
     ];
+
+    const fetchGlobalMute = async () => {
+        const { data: globalMuteData } = await refetchGlobalMute();
+        setMicsOn(!globalMuteData.retrieveGlobalMute.audioGloballyMuted);
+        setCamerasOn(!globalMuteData.retrieveGlobalMute.videoGloballyDisabled);
+    };
+
+    useEffect(()=>{
+        fetchGlobalMute();
+    }, []);
 
     return (
         <StyledPopper
