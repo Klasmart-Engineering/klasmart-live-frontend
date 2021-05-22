@@ -16,6 +16,7 @@ import clsx from "clsx";
 import React, {
     useContext, useEffect, useRef, useState,
 } from "react";
+import { useIntl } from "react-intl";
 
 const useStyles = makeStyles((theme: Theme) => ({
     cameraGrid: {
@@ -44,6 +45,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 function TabParticipants () {
     const classes = useStyles();
+    const intl = useIntl();
     const { sessions } = useContext(RoomContext);
     const [ studentsSessions, setStudentsSessions ] = useState<Session[]>([]);
     const [ teachersSessions, setTeachersSessions ] = useState<Session[]>([]);
@@ -80,7 +82,9 @@ function TabParticipants () {
                         </div>
                     ) : <NoItemList
                         icon={<UserIcon />}
-                        text="No teachers connected" />}
+                        text={intl.formatMessage({
+                            id: `no_teachers_connected`,
+                        })} />}
                 </Grid>
                 <Grid
                     item
@@ -99,7 +103,9 @@ function TabParticipants () {
                     ) : (
                         <NoItemList
                             icon={<UserIcon />}
-                            text="No students connected" />
+                            text={intl.formatMessage({
+                                id: `no_students_connected`,
+                            })} />
                     )}
                 </Grid>
             </Grid>
