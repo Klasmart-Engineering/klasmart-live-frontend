@@ -204,5 +204,8 @@ const messages: Record<string, string> = {
     whiteboard_eraser: `橡皮擦`,
     whiteboard_clear_canvas: `清除白板`,
     whiteboard_clear_all_canvas: `清除全部白板`,
+
+    no_teachers_connected: `No teachers connected`,
+    no_students_connected: `No students connected`,
 };
 export default messages;

@@ -204,5 +204,8 @@ const messages: Record<string, string> = {
     whiteboard_eraser: `지우개`,
     whiteboard_clear_canvas: `캔버스 지우기`,
     whiteboard_clear_all_canvas: `모든 캔버스 지우기`,
+
+    no_teachers_connected: `No teachers connected`,
+    no_students_connected: `No students connected`,
 };
 export default messages;

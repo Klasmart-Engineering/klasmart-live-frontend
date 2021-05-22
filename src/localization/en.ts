@@ -204,5 +204,8 @@ const messages: Record<string, string> = {
     whiteboard_eraser: `Eraser`,
     whiteboard_clear_canvas: `Clear canvas`,
     whiteboard_clear_all_canvas: `Clear all canvas`,
+
+    no_teachers_connected: `No teachers connected`,
+    no_students_connected: `No students connected`,
 };
 export default messages;
