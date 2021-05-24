@@ -84,6 +84,45 @@ export interface FeedbackProps {
     type: "student" | "teacher" | "leaving";
 }
 
+function getChoices (id:number) {
+    const intl = useIntl();
+    return {
+        student : [
+            intl.formatMessage({
+                id: `feedback_student_video_${id}`,
+            }),
+            intl.formatMessage({
+                id: `feedback_student_audio_${id}`,
+            }),
+            intl.formatMessage({
+                id: `feedback_student_presentation_${id}`,
+            }),
+            intl.formatMessage({
+                id: `feedback_student_other_${id}`,
+            }),
+        ],
+        teacher : [
+            intl.formatMessage({
+                id: `feedback_teacher_video_${id}`,
+            }),
+            intl.formatMessage({
+                id: `feedback_teacher_audio_${id}`,
+            }),
+            intl.formatMessage({
+                id: `feedback_teacher_presentation_${id}`,
+            }),
+            intl.formatMessage({
+                id: `feedback_teacher_other_${id}`,
+            }),
+        ],
+        leaving : [
+            `Appointment`,
+            `Sick`,
+            `Other`,
+        ],
+    };
+}
+
 function Feedback (props:FeedbackProps){
     const classes = useStyles();
     const intl = useIntl();
@@ -99,205 +138,35 @@ function Feedback (props:FeedbackProps){
             label: intl.formatMessage({
                 id: `feedback_not_so_good`,
             }),
-            choices: {
-                student : [
-                    intl.formatMessage({
-                        id: `feedback_student_video_1`,
-                    }),
-                    intl.formatMessage({
-                        id: `feedback_student_audio_1`,
-                    }),
-                    intl.formatMessage({
-                        id: `feedback_student_presentation_1`,
-                    }),
-                    intl.formatMessage({
-                        id: `feedback_student_other_1`,
-                    }),
-                ],
-                teacher : [
-                    intl.formatMessage({
-                        id: `feedback_teacher_video_1`,
-                    }),
-                    intl.formatMessage({
-                        id: `feedback_teacher_audio_1`,
-                    }),
-                    intl.formatMessage({
-                        id: `feedback_teacher_presentation_1`,
-                    }),
-                    intl.formatMessage({
-                        id: `feedback_teacher_other_1`,
-                    }),
-                ],
-                leaving : [
-                    `Appointment`,
-                    `Sick`,
-                    `Other`,
-                ],
-            },
+            choices: getChoices(1),
         },
         {
             value: 2,
             label: intl.formatMessage({
                 id: `feedback_bad`,
             }),
-            choices: {
-                student : [
-                    intl.formatMessage({
-                        id: `feedback_student_video_2`,
-                    }),
-                    intl.formatMessage({
-                        id: `feedback_student_audio_2`,
-                    }),
-                    intl.formatMessage({
-                        id: `feedback_student_presentation_2`,
-                    }),
-                    intl.formatMessage({
-                        id: `feedback_student_other_2`,
-                    }),
-                ],
-                teacher : [
-                    intl.formatMessage({
-                        id: `feedback_teacher_video_2`,
-                    }),
-                    intl.formatMessage({
-                        id: `feedback_teacher_audio_2`,
-                    }),
-                    intl.formatMessage({
-                        id: `feedback_teacher_presentation_2`,
-                    }),
-                    intl.formatMessage({
-                        id: `feedback_teacher_other_2`,
-                    }),
-                ],
-                leaving : [
-                    `Appointment`,
-                    `Sick`,
-                    `Other`,
-                ],
-            },
+            choices: getChoices(2),
         },
         {
             value: 3,
             label: intl.formatMessage({
                 id: `feedback_okay`,
             }),
-            choices: {
-                student : [
-                    intl.formatMessage({
-                        id: `feedback_student_video_3`,
-                    }),
-                    intl.formatMessage({
-                        id: `feedback_student_audio_3`,
-                    }),
-                    intl.formatMessage({
-                        id: `feedback_student_presentation_3`,
-                    }),
-                    intl.formatMessage({
-                        id: `feedback_student_other_3`,
-                    }),
-                ],
-                teacher : [
-                    intl.formatMessage({
-                        id: `feedback_teacher_video_3`,
-                    }),
-                    intl.formatMessage({
-                        id: `feedback_teacher_audio_3`,
-                    }),
-                    intl.formatMessage({
-                        id: `feedback_teacher_presentation_3`,
-                    }),
-                    intl.formatMessage({
-                        id: `feedback_teacher_other_3`,
-                    }),
-                ],
-                leaving : [
-                    `Appointment`,
-                    `Sick`,
-                    `Other`,
-                ],
-            },
+            choices: getChoices(3),
         },
         {
             value: 4,
             label: intl.formatMessage({
                 id: `feedback_good`,
             }),
-            choices: {
-                student : [
-                    intl.formatMessage({
-                        id: `feedback_student_video_4`,
-                    }),
-                    intl.formatMessage({
-                        id: `feedback_student_audio_4`,
-                    }),
-                    intl.formatMessage({
-                        id: `feedback_student_presentation_4`,
-                    }),
-                    intl.formatMessage({
-                        id: `feedback_student_other_4`,
-                    }),
-                ],
-                teacher : [
-                    intl.formatMessage({
-                        id: `feedback_teacher_video_4`,
-                    }),
-                    intl.formatMessage({
-                        id: `feedback_teacher_audio_4`,
-                    }),
-                    intl.formatMessage({
-                        id: `feedback_teacher_presentation_4`,
-                    }),
-                    intl.formatMessage({
-                        id: `feedback_teacher_other_4`,
-                    }),
-                ],
-                leaving : [
-                    `Appointment`,
-                    `Sick`,
-                    `Other`,
-                ],
-            },
+            choices: getChoices(4),
         },
         {
             value: 5,
             label: intl.formatMessage({
                 id: `feedback_awesome`,
             }),
-            choices: {
-                student : [
-                    intl.formatMessage({
-                        id: `feedback_student_video_5`,
-                    }),
-                    intl.formatMessage({
-                        id: `feedback_student_audio_5`,
-                    }),
-                    intl.formatMessage({
-                        id: `feedback_student_presentation_5`,
-                    }),
-                    intl.formatMessage({
-                        id: `feedback_student_other_5`,
-                    }),
-                ],
-                teacher : [
-                    intl.formatMessage({
-                        id: `feedback_teacher_video_5`,
-                    }),
-                    intl.formatMessage({
-                        id: `feedback_teacher_audio_5`,
-                    }),
-                    intl.formatMessage({
-                        id: `feedback_teacher_presentation_5`,
-                    }),
-                    intl.formatMessage({
-                        id: `feedback_teacher_other_5`,
-                    }),
-                ],
-                leaving : [
-                    `Appointment`,
-                    `Sick`,
-                    `Other`,
-                ],
-            },
+            choices: getChoices(5),
         },
     ];
 
