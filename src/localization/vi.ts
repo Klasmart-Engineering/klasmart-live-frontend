@@ -205,7 +205,7 @@ const messages: Record<string, string> = {
     whiteboard_clear_canvas: `Xóa bảng trắng`,
     whiteboard_clear_all_canvas: `Xóa tất cả bảng trắng`,
 
-    no_teachers_connected: `No teachers connected`,
-    no_students_connected: `No students connected`,
+    no_teachers_connected: `Không có giáo viên kết nối`,
+    no_students_connected: `Không có học sinh kết nối`,
 };
 export default messages;
