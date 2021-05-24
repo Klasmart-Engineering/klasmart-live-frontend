@@ -26,6 +26,12 @@ export const MUTATION_ENDCLASS = gql`
     }
 `;
 
+export const MUTATION_LEAVECLASS = gql`
+    mutation leaveClass {
+        leaveClass
+    }
+`;
+
 export const MUTATION_SHOW_CONTENT = gql`
     mutation showContent($roomId: ID!, $type: ContentType!, $contentId: ID) {
         showContent(roomId: $roomId, type: $type, contentId: $contentId)
