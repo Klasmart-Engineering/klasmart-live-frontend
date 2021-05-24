@@ -158,7 +158,7 @@ const messages: Record<string, string> = {
     class_ended_you_have_left: `수업에서 나왔습니다.`,
     class_ended_return_to_hub: `홈페이지로 돌아갑니다.`,
     parents_captcha_title: `학부모 전용`,
-    parents_captcha_description: `계속하시려면, 숫자를 큰 순서에서 작은 순서로 골라 주세요.`,
+    parents_captcha_description: `계속하시려면, 작은 숫자부터 큰 숫자까지 순서대로 골라 주세요.`,
     parents_captcha_error: `다시 시도해 주세요.`,
     notification_user_sent_message: `{user}가 메시지를 보냈습니다.`,
     notification_user_is_pinned: `{user}를 고정하였습니다.`,

@@ -48,6 +48,8 @@ const useStyles = makeStyles((theme: Theme) => ({
         position: `relative`,
         textAlign: `left`,
         display: `inline-block`,
+        maxWidth: 200,
+        wordBreak: `break-word`,
         "&:after":{
             content: `''`,
             position: `absolute`,
