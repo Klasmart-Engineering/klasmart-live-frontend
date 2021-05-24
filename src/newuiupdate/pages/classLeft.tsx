@@ -56,10 +56,8 @@ function ClassLeft () {
                     <Typography variant="h3"><FormattedMessage id="class_ended_you_have_left" /></Typography>
                     <Typography variant="body1"><FormattedMessage id="class_ended_thanks_for_attending" /></Typography>
 
-                    {/* TODO : FEEDBACK
                     <Typography variant="body1"><FormattedMessage id="class_ended_how_was_the_class" /></Typography>
                      <Feedback type="leaving" />
-                    */}
 
                     {HUB_ENDPOINT &&
                     <Typography className={classes.returnToHub}>

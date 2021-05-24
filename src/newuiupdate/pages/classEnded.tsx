@@ -60,10 +60,8 @@ function ClassEnded () {
                     <Typography variant="h3"><FormattedMessage id="class_ended_title" /></Typography>
                     <Typography variant="body1"><FormattedMessage id="class_ended_thanks_for_attending" /></Typography>
 
-                    {/* TODO : FEEDBACK
                     <Typography variant="body1"><FormattedMessage id="class_ended_how_was_the_class" /></Typography>
                     <Feedback type={isTeacher ? `teacher` : `student`}/>
-                    */}
 
                     {HUB_ENDPOINT &&
                     <Typography className={classes.returnToHub}>

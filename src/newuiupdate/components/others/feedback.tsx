@@ -13,7 +13,7 @@ import { Star as StarEmptyIcon } from "@styled-icons/bootstrap/Star";
 import { StarFill as StarFillIcon } from "@styled-icons/bootstrap/StarFill";
 import clsx from "clsx";
 import React, { useState } from "react";
-import { useIntl } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 
 const useStyles = makeStyles((theme: Theme) => ({
     stars:{
@@ -97,11 +97,37 @@ function Feedback (props:FeedbackProps){
         {
             value: 1,
             label: intl.formatMessage({
-                id: `feedback_terrible`,
+                id: `feedback_not_so_good`,
             }),
             choices: {
-                student : [ `Couldn't join the class`, `Bad audio/video` ],
-                teacher : [ `I didnt teach`, `Bad audio/video` ],
+                student : [
+                    intl.formatMessage({
+                        id: `feedback_student_video_1`,
+                    }),
+                    intl.formatMessage({
+                        id: `feedback_student_audio_1`,
+                    }),
+                    intl.formatMessage({
+                        id: `feedback_student_presentation_1`,
+                    }),
+                    intl.formatMessage({
+                        id: `feedback_student_other_1`,
+                    }),
+                ],
+                teacher : [
+                    intl.formatMessage({
+                        id: `feedback_teacher_video_1`,
+                    }),
+                    intl.formatMessage({
+                        id: `feedback_teacher_audio_1`,
+                    }),
+                    intl.formatMessage({
+                        id: `feedback_teacher_presentation_1`,
+                    }),
+                    intl.formatMessage({
+                        id: `feedback_teacher_other_1`,
+                    }),
+                ],
                 leaving : [
                     `Appointment`,
                     `Sick`,
@@ -116,14 +142,32 @@ function Feedback (props:FeedbackProps){
             }),
             choices: {
                 student : [
-                    `Teacher unprofessionnal`,
-                    `Tools are not adapted`,
-                    `Low quality audio/video`,
+                    intl.formatMessage({
+                        id: `feedback_student_video_2`,
+                    }),
+                    intl.formatMessage({
+                        id: `feedback_student_audio_2`,
+                    }),
+                    intl.formatMessage({
+                        id: `feedback_student_presentation_2`,
+                    }),
+                    intl.formatMessage({
+                        id: `feedback_student_other_2`,
+                    }),
                 ],
                 teacher : [
-                    `Teacher unprofessionnal`,
-                    `Tools are not adapted`,
-                    `Low quality audio/video`,
+                    intl.formatMessage({
+                        id: `feedback_teacher_video_2`,
+                    }),
+                    intl.formatMessage({
+                        id: `feedback_teacher_audio_2`,
+                    }),
+                    intl.formatMessage({
+                        id: `feedback_teacher_presentation_2`,
+                    }),
+                    intl.formatMessage({
+                        id: `feedback_teacher_other_2`,
+                    }),
                 ],
                 leaving : [
                     `Appointment`,
@@ -138,8 +182,34 @@ function Feedback (props:FeedbackProps){
                 id: `feedback_okay`,
             }),
             choices: {
-                student : [ `Materials could be better`, `Too much noise` ],
-                teacher : [ `Materials could be better`, `Too much noise` ],
+                student : [
+                    intl.formatMessage({
+                        id: `feedback_student_video_3`,
+                    }),
+                    intl.formatMessage({
+                        id: `feedback_student_audio_3`,
+                    }),
+                    intl.formatMessage({
+                        id: `feedback_student_presentation_3`,
+                    }),
+                    intl.formatMessage({
+                        id: `feedback_student_other_3`,
+                    }),
+                ],
+                teacher : [
+                    intl.formatMessage({
+                        id: `feedback_teacher_video_3`,
+                    }),
+                    intl.formatMessage({
+                        id: `feedback_teacher_audio_3`,
+                    }),
+                    intl.formatMessage({
+                        id: `feedback_teacher_presentation_3`,
+                    }),
+                    intl.formatMessage({
+                        id: `feedback_teacher_other_3`,
+                    }),
+                ],
                 leaving : [
                     `Appointment`,
                     `Sick`,
@@ -154,14 +224,32 @@ function Feedback (props:FeedbackProps){
             }),
             choices: {
                 student : [
-                    `Teacher was exemplary`,
-                    `good audio/video quality`,
-                    `Materials were adequate`,
+                    intl.formatMessage({
+                        id: `feedback_student_video_4`,
+                    }),
+                    intl.formatMessage({
+                        id: `feedback_student_audio_4`,
+                    }),
+                    intl.formatMessage({
+                        id: `feedback_student_presentation_4`,
+                    }),
+                    intl.formatMessage({
+                        id: `feedback_student_other_4`,
+                    }),
                 ],
                 teacher : [
-                    `Teacher was exemplary`,
-                    `good audio/video quality`,
-                    `Materials were adequate`,
+                    intl.formatMessage({
+                        id: `feedback_teacher_video_4`,
+                    }),
+                    intl.formatMessage({
+                        id: `feedback_teacher_audio_4`,
+                    }),
+                    intl.formatMessage({
+                        id: `feedback_teacher_presentation_4`,
+                    }),
+                    intl.formatMessage({
+                        id: `feedback_teacher_other_4`,
+                    }),
                 ],
                 leaving : [
                     `Appointment`,
@@ -173,18 +261,36 @@ function Feedback (props:FeedbackProps){
         {
             value: 5,
             label: intl.formatMessage({
-                id: `feedback_great`,
+                id: `feedback_awesome`,
             }),
             choices: {
                 student : [
-                    `Teacher was amazing`,
-                    `Great audio/video quality`,
-                    `Materials were great`,
+                    intl.formatMessage({
+                        id: `feedback_student_video_5`,
+                    }),
+                    intl.formatMessage({
+                        id: `feedback_student_audio_5`,
+                    }),
+                    intl.formatMessage({
+                        id: `feedback_student_presentation_5`,
+                    }),
+                    intl.formatMessage({
+                        id: `feedback_student_other_5`,
+                    }),
                 ],
                 teacher : [
-                    `Teacher was amazing`,
-                    `Great audio/video quality`,
-                    `Materials were great`,
+                    intl.formatMessage({
+                        id: `feedback_teacher_video_5`,
+                    }),
+                    intl.formatMessage({
+                        id: `feedback_teacher_audio_5`,
+                    }),
+                    intl.formatMessage({
+                        id: `feedback_teacher_presentation_5`,
+                    }),
+                    intl.formatMessage({
+                        id: `feedback_teacher_other_5`,
+                    }),
                 ],
                 leaving : [
                     `Appointment`,
@@ -232,10 +338,11 @@ function Feedback (props:FeedbackProps){
             <Grid item>
                 <Fade in={Boolean(feedbackNote)}>
                     <div>
-                        <Typography className={classes.moreTitle}>Thanks for your feedback!</Typography>
                         {!feedbackSent &&
                         <>
-                            <Typography className={classes.moreSubtitle}>do you want to add more details ?</Typography>
+                            <Typography className={classes.moreSubtitle}>
+                                <FormattedMessage id="feedback_detail_question" />
+                            </Typography>
                             <div className={classes.rootChips}>
                                 {feedbackRatingItems.find(item => item.value === feedbackNote)?.choices[type].map((item, index) => (
                                     <FeedbackChip
