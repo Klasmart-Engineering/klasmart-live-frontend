@@ -2,7 +2,7 @@ import {
     LIVE_LINK, LocalSessionContext, SFU_LINK,
 } from "../../providers/providers";
 import {  classLeftState } from "../../states/layoutAtoms";
-import { MUTATION_ENDCLASS } from "./graphql";
+import { MUTATION_ENDCLASS, MUTATION_LEAVECLASS } from "./graphql";
 import { ParentCaptcha } from "./parentCaptcha";
 import { useMutation } from "@apollo/client";
 import {
@@ -83,6 +83,16 @@ function DialogLeaveClass (props:any){
         }, [ open ]);
     }
 
+    const [ leaveClass ] = useMutation(MUTATION_LEAVECLASS, {
+        context: {
+            target: LIVE_LINK,
+        },
+    });
+    const onClick = async () => {
+        await leaveClass();
+        setClassLeft(true);
+    };
+
     return(
         <Dialog
             open={open}
@@ -117,7 +127,7 @@ function DialogLeaveClass (props:any){
                 {!showParentCaptcha && <Button
                     variant="contained"
                     color="primary"
-                    onClick={() => setClassLeft(true)}>
+                    onClick={() => onClick()}>
                     <FormattedMessage id="leave_class" />
                 </Button>}
             </DialogActions>
