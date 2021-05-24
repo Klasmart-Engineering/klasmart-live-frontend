@@ -131,4 +131,5 @@ export interface IContentService {
     // https://swagger-ui.kidsloop.net/#/content/searchContents
     searchContents(organizationId: string, publishStatus: PublishStatus, orderBy: ContentOrder, contentType: number): Promise<ContentListResponse>
     getFeaturedContents(organizationId: string): Promise<ContentListResponse>
+    getAllLessonMaterials(organizationId: string): Promise<ContentListResponse>
 }

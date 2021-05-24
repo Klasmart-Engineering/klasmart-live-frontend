@@ -5,6 +5,7 @@ import Grid from "@material-ui/core/Grid";
 import { useWindowSize } from "../utils/viewport";
 import { imageFrame } from "../utils/layerValues";
 import { LessonMaterial } from "../lessonMaterialContext";
+import { useMaterialToHref } from "../../dist/types/src/utils/contentUtils";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -159,6 +160,8 @@ export function ResizedIframe(props: Props): JSX.Element {
 export function ImageFrame({ material }: { material: LessonMaterial }) {
     const { imageFrame } = useStyles();
 
+    const [contentHref] = useMaterialToHref(material);
+
     return (
         <Grid container>
             <Grid container item style={{
@@ -167,7 +170,7 @@ export function ImageFrame({ material }: { material: LessonMaterial }) {
                 left: 0,
                 right: 0,
                 zIndex: 1,
-                backgroundImage: `url(${material.url})`,
+                backgroundImage: `url(${contentHref})`,
                 filter: "blur(8px)",
                 WebkitFilter: "blur(8px)",
                 backgroundPosition: "center",
@@ -177,7 +180,7 @@ export function ImageFrame({ material }: { material: LessonMaterial }) {
             />
             <img
                 className={imageFrame}
-                src={material.url}
+                src={contentHref}
             />
         </Grid>
     )

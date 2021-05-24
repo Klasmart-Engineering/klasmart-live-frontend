@@ -1,12 +1,14 @@
-const qs = require("qs");
 import Grid from "@material-ui/core/Grid";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useHttpEndpoint } from "../../context-provider/region-select-context";
+import { useServices } from "../../context-provider/services-provider";
 import { useSessionContext } from "../../context-provider/session-context";
 import { RoomProvider } from "../../providers/RoomContext";
 import { ClassType } from "../../store/actions";
 import { setDrawerOpen } from "../../store/reducers/control";
 import { State } from "../../store/store";
+import { getContentHref } from "../../utils/contentUtils";
 import { GlobalWhiteboardContext } from "../../whiteboard/context-providers/GlobalWhiteboardContext";
 import { Layout } from "./layout-new";
 import { InteractiveModeState, StreamIdState } from "./room";
@@ -26,32 +28,15 @@ export function Study({
     const contentIndex = useSelector((store: State) => store.control.contentIndex);
     const material = contentIndex >= 0 && contentIndex < materials.length ? materials[contentIndex] : undefined;
 
-    const { streamId } = streamIdState;
     const [tabIndex, setTabIndex] = useState(0);
     const [materialKey, setMaterialKey] = useState(Math.random());
-    const [recommandUrl, setRecommandUrl] = useState<string>("");
+    const [recommendContent, setRecommendContent] = useState<string>("");
+    
+    const contentEndpoint = useHttpEndpoint("live");
+    const { contentService } = useServices();
 
     function ramdomInt(min: number, max: number) {
         return Math.floor(Math.random() * (max - min)) + min;
-    }
-
-    // https://swagger-ui.kidsloop.net/#/content/searchContents
-    async function getAllLessonMaterials() {
-        const CMS_ENDPOINT = `${process.env.ENDPOINT_CMS}`;
-        const headers = new Headers();
-        headers.append("Accept", "application/json");
-        headers.append("Content-Type", "application/json");
-        const encodedParams = qs.stringify({
-            publish_status: "published",
-            order_by: "update_at",
-            content_type: 1,
-            org_id: organizationId,
-        }, { encodeValuesOnly: true });
-        const response = await fetch(`${CMS_ENDPOINT}/v1/contents?${encodedParams}`, {
-            headers,
-            method: "GET",
-        });
-        if (response.status === 200) { return response.json(); }
     }
 
     useEffect(() => {
@@ -59,8 +44,8 @@ export function Study({
         if (organizationId) {
             async function fetchEverything() {
                 async function fetchAllLessonMaterials() {
-                    const payload = await getAllLessonMaterials();
-                    const matList = payload.list;
+                    const payload = await contentService?.getAllLessonMaterials(organizationId);
+                    const matList = payload!.list;
                     const dnds = matList.filter((mat: any) => {
                         const obj = JSON.parse(mat.data)
                         return obj.file_type === 5
@@ -69,18 +54,20 @@ export function Study({
                     if (dnds.length === 0) {
                         randomIdx = ramdomInt(0, matList.length - 1);
                         const data = JSON.parse(matList[randomIdx].data);
-                        setRecommandUrl(`/h5p/play/${data.source}`);
+                        const contentHref = getContentHref(data.source, contentEndpoint);
+                        setRecommendContent(contentHref);
                     } else {
                         randomIdx = ramdomInt(0, dnds.length - 1);
                         const data = JSON.parse(dnds[randomIdx].data);
-                        setRecommandUrl(`/h5p/play/${data.source}`);
+                        const contentHref = getContentHref(data.source, contentEndpoint);
+                        setRecommendContent(contentHref);
                     }
                 }
                 try {
                     await Promise.all([fetchAllLessonMaterials()])
                 } catch (err) {
                     console.error(`Fail to fetchAllLessonMaterials in Study: ${err}`)
-                    setRecommandUrl("");
+                    setRecommendContent("");
                 } finally { }
             }
 
@@ -106,7 +93,7 @@ export function Study({
                         setMaterialKey={setMaterialKey}
                         tabIndex={tabIndex}
                         setTabIndex={setTabIndex}
-                        recommandUrl={recommandUrl ? recommandUrl : undefined}
+                        recommandUrl={recommendContent ? recommendContent : undefined}
                     />
                 </Grid>
             </GlobalWhiteboardContext>

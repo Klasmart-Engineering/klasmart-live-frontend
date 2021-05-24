@@ -91,4 +91,17 @@ export class ContentService implements IContentService {
             list: picked,
         };
     }
+
+    // https://swagger-ui.kidsloop.net/#/content/searchContents
+    async getAllLessonMaterials(organizationId: string): Promise<ContentListResponse> {
+        const url = `${this.endpoint}/v1/contents`;
+        const result = await fetchJsonData<ContentListResponse>(url, "GET", {
+            publish_status: PublishStatus.PUBLISHED,
+            order_by: ContentOrder.BY_UPDATE_AT,
+            content_type: ContentType.MATERIAL,
+            org_id: organizationId
+        }, this.auth);
+
+        return result;
+    }
 }

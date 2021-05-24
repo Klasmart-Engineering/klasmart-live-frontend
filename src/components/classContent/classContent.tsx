@@ -18,6 +18,7 @@ import { ResizedIframe, ImageFrame } from "../resizedContent";
 import { LessonMaterial, MaterialTypename } from "../../lessonMaterialContext";
 import { ReplicatedMedia } from "../../pages/synchronized-video";
 import { useSessionContext } from "../../context-provider/session-context";
+import { useMaterialToHref } from "../../utils/contentUtils";
 
 export const DRAWER_TOOLBAR_WIDTH = 64;
 
@@ -52,14 +53,11 @@ export function ClassContentContainer({ materialKey, recommandUrl }: {
 }
 
 interface NewProps extends IframeResizer.IframeResizerProps { forwardRef: any }
-const IframeResizerNew = IframeResizer as React.FC<NewProps>
 
 function ClassContent({ recommandUrl }: {
     recommandUrl?: string
 }) {
     const { classType: classtype, isTeacher, materials } = useSessionContext();
-
-    const iframeRef = useRef<HTMLIFrameElement>(null);
 
     const rootDivRef = useRef<HTMLDivElement>(null);
 
@@ -76,6 +74,8 @@ function ClassContent({ recommandUrl }: {
             return
         }
     }, [contentIndex])
+
+    const [contentHref] = useMaterialToHref(currentMaterial);
 
     return (
         <Grid
@@ -130,11 +130,11 @@ function ClassContent({ recommandUrl }: {
                             (currentMaterial.__typename === undefined && currentMaterial.video) ? 
                                 <ReplicatedMedia
                                     type={currentMaterial.__typename || MaterialTypename.Video}
-                                    src={(currentMaterial.__typename === undefined && currentMaterial.video) || currentMaterial.url}
+                                    src={(currentMaterial.__typename === undefined && currentMaterial.video) || contentHref}
                                     style={{ width: "100%" }}
                                 /> :
-                                (currentMaterial.__typename === MaterialTypename.Iframe || currentMaterial.__typename === undefined) && currentMaterial.url ?
-                                <ResizedIframe contentId={contentIndex >= materials.length ? `${recommandUrl}` : `${materials[contentIndex].url}`} /> : <></>
+                                (currentMaterial.__typename === MaterialTypename.Iframe || currentMaterial.__typename === undefined) && contentHref ?
+                                <ResizedIframe contentId={contentIndex >= materials.length ? `${recommandUrl}` : `${contentHref}`} /> : <></>
                     }
                 </Grid>
                 <Grid
