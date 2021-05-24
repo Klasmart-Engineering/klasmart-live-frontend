@@ -1,7 +1,8 @@
+import KidsLoopClassTeachers from "../../assets/img/classtype/kidsloop_class_teachers.svg";
+import KidsLoopLiveStudents from "../../assets/img/classtype/kidsloop_live_students.svg";
+import KidsLoopLiveTeachers from "../../assets/img/classtype/kidsloop_live_teachers.svg";
+import KidsLoopStudyStudents from "../../assets/img/classtype/kidsloop_study_students.svg";
 import KidsLoopLogoSvg from "../../assets/img/kidsloop.svg";
-import KidsLoopLiveStudents from "../../assets/img/kidsloop_live_students-resized.svg";
-import KidsLoopLiveTeachers from "../../assets/img/kidsloop_live_teachers-resized.svg";
-import KidsLoopStudyStudents from "../../assets/img/kidsloop_study_students.svg";
 import Loading from "../../components/loading";
 import Camera from "../../components/media/camera";
 import MediaDeviceSelect from "../../components/mediaDeviceSelect";
@@ -398,19 +399,13 @@ function KidsLoopLogo (): JSX.Element {
     const { logo } = useStyles();
     const { classtype, isTeacher } = useContext(LocalSessionContext);
     const IMG_HEIGHT = `64px`;
-    // TODO: Logo asset for ClassType.CLASSES
-    return (classtype === ClassType.LIVE
-        ? <img
-            alt="KidsLoop Live"
-            src={isTeacher ? KidsLoopLiveTeachers : KidsLoopLiveStudents}
-            height={IMG_HEIGHT}
-            className={logo} />
-        : <img
-            alt="KidsLoop Live"
-            src={classtype === ClassType.CLASSES ? KidsLoopLiveTeachers : KidsLoopStudyStudents}
-            height={IMG_HEIGHT}
-            className={logo} />
-    );
+    const IMG_SRC = classtype === ClassType.LIVE ? (isTeacher ? KidsLoopLiveTeachers : KidsLoopLiveStudents) : classtype === ClassType.CLASSES ? KidsLoopClassTeachers : KidsLoopStudyStudents;
+
+    return (<img
+        alt="KidsLoop Live"
+        src={IMG_SRC}
+        height={IMG_HEIGHT}
+        className={logo} />);
 }
 
 interface JoinRoomFormProps {
