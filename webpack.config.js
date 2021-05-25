@@ -8,6 +8,7 @@ module.exports = {
     ui: "./src/entry.tsx",
     "record-e44f2b3": "./src/entry-record.ts",
     player: "./src/entry-player.ts",
+    pdfviewer: "./src/entry-pdfviewer.ts",
   },
   module: {
     rules: [
@@ -97,6 +98,11 @@ module.exports = {
       chunks: ["player"],
       template: "src/player.html",
     }),
+    new HtmlWebpackPlugin({
+      filename: "pdfviewer.html",
+      chunks: ["pdfviewer"],
+      template: "src/pdfviewer.html",
+    }),
   ],
   devServer: {
     host: "0.0.0.0",
@@ -112,6 +118,10 @@ module.exports = {
         ws: true,
       },
       "/h5p": {
+        target: "https://live.kidsloop.net",
+        changeOrigin: true,
+      },
+      "/assets": {
         target: "https://live.kidsloop.net",
         changeOrigin: true,
       },
