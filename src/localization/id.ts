@@ -205,7 +205,7 @@ const messages: Record<string, string> = {
     whiteboard_clear_canvas: `Bersihkan kanvas`,
     whiteboard_clear_all_canvas: `Bersihkan semua kanvas`,
 
-    no_teachers_connected: `No teachers connected`,
-    no_students_connected: `No students connected`,
+    no_teachers_connected: `Tidak ada guru terhubung`,
+    no_students_connected: `Tidak ada pelajar terhubung`,
 };
 export default messages;
