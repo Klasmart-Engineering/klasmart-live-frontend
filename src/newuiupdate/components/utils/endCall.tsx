@@ -1,7 +1,7 @@
 import {
     LIVE_LINK, LocalSessionContext, SFU_LINK,
 } from "../../providers/providers";
-import {  classLeftState } from "../../states/layoutAtoms";
+import {classLeftState, unreadMessagesState} from "../../states/layoutAtoms";
 import { MUTATION_ENDCLASS, MUTATION_LEAVECLASS } from "./graphql";
 import { ParentCaptcha } from "./parentCaptcha";
 import { useMutation } from "@apollo/client";
@@ -26,6 +26,7 @@ import React,
 } from "react";
 import { FormattedMessage } from "react-intl";
 import { useRecoilState } from "recoil";
+import {Message} from "../../../pages/room/room";
 
 const useStyles = makeStyles((theme: Theme) => ({
     dialogTitle:{
@@ -77,6 +78,8 @@ function DialogLeaveClass (props:any){
     const { isTeacher, sessionId } = useContext(LocalSessionContext);
     const [ classLeft, setClassLeft ] = useRecoilState(classLeftState);
     const [ showParentCaptcha, setShowParentCaptcha ] = useState(false);
+    const [ unreadMessages, setUnreadMessages ] = useRecoilState(unreadMessagesState);
+    const [ messages, setMessages ] = useState<Map<string, Message>>(new Map<string, Message>());
 
     const { actions: { clear } } = useToolbarContext();
 
@@ -95,6 +98,14 @@ function DialogLeaveClass (props:any){
         clear([ sessionId ]);
         await leaveClass();
         setClassLeft(true);
+        setUnreadMessages(0);
+        for (const id of messages.keys()) {
+            setMessages((prev) => {
+                const newState = new Map(prev);
+                newState.delete(id);
+                return newState;
+            });
+        }
     };
 
     return(
