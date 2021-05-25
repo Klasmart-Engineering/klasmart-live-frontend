@@ -12,7 +12,7 @@ import amber from "@material-ui/core/colors/amber";
 import { Star as StarEmptyIcon } from "@styled-icons/bootstrap/Star";
 import { StarFill as StarFillIcon } from "@styled-icons/bootstrap/StarFill";
 import clsx from "clsx";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -53,7 +53,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     moreSubtitle:{
         color: theme.palette.grey[700],
-        marginBottom: theme.spacing(5),
+        marginTop: 8,
+        marginBottom: theme.spacing(2),
     },
     comment:{
         textAlign:`center`,
@@ -155,22 +156,28 @@ function Feedback (props:FeedbackProps){
 
     const { type } = props;
 
-    const [ feedbackNote, setFeedbackNote ] = useState<number|null>(null);
-    const [ feedbackSent, setFeedbackSent ] = useState(false);
-    const [ quickFeedbacks, setQuickFeedbacks ] = useState(new Array<any>());
+    const [ stars, setStars ] = useState<number|null>(null);
+    const [ feedbackSent, setFeedbackSent ] = useState<boolean>(false);
+    const [ quickFeedbacks, setQuickFeedbacks ] = useState<Array<any>>(new Array<any>());
     const [ comment, setComment ] = useState<string>(``);
 
-    const onQuickFeedback = (type: string) => {
-        const quickFeedback = {
-            type,
-            stars: feedbackNote,
-        };
-        quickFeedbacks.push(quickFeedback);
-        setQuickFeedbacks(quickFeedbacks);
+    useEffect(() => setQuickFeedbacks([]), [ stars ]);
+
+    const onQuickFeedback = (type: string, active: boolean) => {
+        let qFeedbacks = quickFeedbacks;
+        if(active) {
+            qFeedbacks.push({
+                type,
+                stars,
+            });
+        } else {
+            qFeedbacks = qFeedbacks.filter(item => item.type !== type);
+        }
+        setQuickFeedbacks(qFeedbacks);
     };
 
     const onSubmit = () => {
-        console.log(`stars`, feedbackNote);
+        console.log(`stars`, stars);
         console.log(`quickFeedbacks`, quickFeedbacks);
         console.log(`comment`, comment);
         setFeedbackSent(true);
@@ -230,26 +237,26 @@ function Feedback (props:FeedbackProps){
                                 item>
                                 <div
                                     className={clsx(classes.star, {
-                                        [classes.starActive]: Number(feedbackNote) >= item.value,
+                                        [classes.starActive]: Number(stars) >= item.value,
                                         [classes.starUnclickable]: feedbackSent,
                                     })}
-                                    onClick={() => setFeedbackNote(item.value)}
+                                    onClick={() => setStars(item.value)}
                                 >
-                                    {Number(feedbackNote) >= item.value ? <StarFillIcon
+                                    {Number(stars) >= item.value ? <StarFillIcon
                                         size="2.5rem"
                                         className={classes.starIcon} /> : <StarEmptyIcon
                                         size="2.5rem"
                                         className={classes.starIcon}/> }
-                                    {(feedbackNote === null || feedbackNote === item.value) && <Typography className={classes.starLabel}>{item.label}</Typography>}
+                                    {(stars === null || stars === item.value) && <Typography className={classes.starLabel}>{item.label}</Typography>}
                                 </div>
                             </Grid>
                         ))}
                     </Grid>
                 </div>
             </Grid>
-            {Boolean(feedbackNote) &&
+            {Boolean(stars) &&
             <Grid item>
-                <Fade in={Boolean(feedbackNote)}>
+                <Fade in={Boolean(stars)}>
                     <div>
                         {!feedbackSent &&
                         <div>
@@ -257,16 +264,18 @@ function Feedback (props:FeedbackProps){
                                 <FormattedMessage id="feedback_detail_question" />
                             </Typography>
                             <div className={classes.rootChips}>
-                                {feedbackRatingItems.find(item => item.value === feedbackNote)?.choices[type].map((item: any, index: number) => (
+                                {feedbackRatingItems.find(item => item.value === stars)?.choices[type].map((item: any, index: number) => (
                                     <FeedbackChip
-                                        key={index}
+                                        key={`${stars}_${index}`}
                                         item={item}
                                         onQuickFeedback={onQuickFeedback} />
                                 ))}
                             </div>
                             <form>
                                 <TextField
-                                    label="Leave a comment"
+                                    label={intl.formatMessage({
+                                        id: `feedback_comment`,
+                                    })}
                                     className={classes.inputField}
                                     value={comment}
                                     onChange={e => setComment(e.target.value)}
@@ -293,10 +302,8 @@ function FeedbackChip (props:any){
     const { item, onQuickFeedback } = props;
     const [ active, setActive ] = useState(false);
 
-    const onClick = () => {
-        setActive(!active);
-        onQuickFeedback(item.type);
-    };
+    useEffect(() => onQuickFeedback(item.type, active), [ active ]);
+
     return(
         <Chip
             label={item.text}
@@ -304,7 +311,7 @@ function FeedbackChip (props:any){
             className={clsx(classes.chip, {
                 [classes.activeChip]: active,
             })}
-            onClick={() => onClick()}/>
+            onClick={() => setActive(!active)}/>
     );
 }
 

@@ -209,6 +209,8 @@ const messages: Record<string, string> = {
     no_students_connected: `No students connected`,
 
     feedback_detail_question: `Do you want to add more details?`,
+    feedback_comment: `Leave a commnet`,
+
     feedback_student_video_1: `Terrible video`,
     feedback_student_audio_1: `Terrible audio`,
     feedback_student_presentation_1: `Couldn't see teacher's screen`,
