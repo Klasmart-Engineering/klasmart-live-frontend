@@ -126,7 +126,8 @@ const messages: Record<string, string> = {
 
     account_selectOrg_privacyPolicy: "Privacy Policy",
     account_selectOrg_signOut: "Sign Out",
-    account_selectOrg_whichOrg: "Which Organization?",
+    account_selectOrg_whichOrg: "Select an Organization",
+    account_selectUser_whichUser: "Select a Profile",
 
     schedule_liveTab: "Live",
     schedule_studyTab: "Study",

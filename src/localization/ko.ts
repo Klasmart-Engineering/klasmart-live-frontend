@@ -121,6 +121,7 @@ const messages: Record<string, string> = {
     account_selectOrg_privacyPolicy: "개인 정보 정책",
     account_selectOrg_signOut: "로그아웃",
     account_selectOrg_whichOrg: "어떤 기관인가요?",
+    account_selectUser_whichUser: "Select a Profile",
 
     schedule_liveTab: "라이브",
     schedule_studyTab: "학습",
