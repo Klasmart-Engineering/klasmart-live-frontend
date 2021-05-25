@@ -111,6 +111,12 @@ function Sidebar () {
         activeTab !== `participants` ? setDrawerWidth(`100%`) : setDrawerWidth(440);
     }, [ activeTab ]);
 
+    useEffect(()=>{
+        setTimeout(function (){
+            window.dispatchEvent(new Event(`resize`));
+        }, 1000);
+    }, [ isSmDown ]);
+
     if(isSmDown){
         return(sidebarTabs[0].content);
     }
