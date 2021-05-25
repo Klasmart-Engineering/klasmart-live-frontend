@@ -119,7 +119,6 @@ function Toolbar () {
         setIsChatOpen(false);
         setIsClassDetailsOpen(false);
         setIsCanvasOpen(false);
-        setIsGlobalActionsOpen(false);
         setIsViewModesOpen(false);
     };
 
