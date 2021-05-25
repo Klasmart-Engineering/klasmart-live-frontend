@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     moreSubtitle:{
         color: theme.palette.grey[700],
-        marginBottom: theme.spacing(2),
+        marginBottom: theme.spacing(5),
     },
     comment:{
         textAlign:`center`,
@@ -88,37 +88,63 @@ function getChoices (id:number) {
     const intl = useIntl();
     return {
         student : [
-            intl.formatMessage({
-                id: `feedback_student_video_${id}`,
-            }),
-            intl.formatMessage({
-                id: `feedback_student_audio_${id}`,
-            }),
-            intl.formatMessage({
-                id: `feedback_student_presentation_${id}`,
-            }),
-            intl.formatMessage({
-                id: `feedback_student_other_${id}`,
-            }),
+            {
+                text:  intl.formatMessage({
+                    id: `feedback_student_video_${id}`,
+                }),
+                type: `video`,
+            },
+            {
+                text:   intl.formatMessage({
+                    id: `feedback_student_audio_${id}`,
+                }),
+                type: `audio`,
+            },
+            {
+                text:  intl.formatMessage({
+                    id: `feedback_student_presentation_${id}`,
+                }),
+                type: `presentation`,
+            },
+            {
+                text: intl.formatMessage({
+                    id: `feedback_student_other_${id}`,
+                }),
+                type: `other`,
+            },
+
         ],
         teacher : [
-            intl.formatMessage({
-                id: `feedback_teacher_video_${id}`,
-            }),
-            intl.formatMessage({
-                id: `feedback_teacher_audio_${id}`,
-            }),
-            intl.formatMessage({
-                id: `feedback_teacher_presentation_${id}`,
-            }),
-            intl.formatMessage({
-                id: `feedback_teacher_other_${id}`,
-            }),
+            {
+                text:  intl.formatMessage({
+                    id: `feedback_teacher_video_${id}`,
+                }),
+                type: `video`,
+            },
+            {
+                text:   intl.formatMessage({
+                    id: `feedback_teacher_audio_${id}`,
+                }),
+                type: `audio`,
+            },
+            {
+                text:  intl.formatMessage({
+                    id: `feedback_teacher_presentation_${id}`,
+                }),
+                type: `presentation`,
+            },
+            {
+                text: intl.formatMessage({
+                    id: `feedback_teacher_other_${id}`,
+                }),
+                type: `other`,
+            },
         ],
         leaving : [
-            `Appointment`,
-            `Sick`,
-            `Other`,
+            {
+                text: ``,
+                type: ``,
+            },
         ],
     };
 }
@@ -131,6 +157,24 @@ function Feedback (props:FeedbackProps){
 
     const [ feedbackNote, setFeedbackNote ] = useState<number|null>(null);
     const [ feedbackSent, setFeedbackSent ] = useState(false);
+    const [ quickFeedbacks, setQuickFeedbacks ] = useState(new Array<any>());
+    const [ comment, setComment ] = useState<string>(``);
+
+    const onQuickFeedback = (type: string) => {
+        const quickFeedback = {
+            type,
+            stars: feedbackNote,
+        };
+        quickFeedbacks.push(quickFeedback);
+        setQuickFeedbacks(quickFeedbacks);
+    };
+
+    const onSubmit = () => {
+        console.log(`stars`, feedbackNote);
+        console.log(`quickFeedbacks`, quickFeedbacks);
+        console.log(`comment`, comment);
+        setFeedbackSent(true);
+    };
 
     const feedbackRatingItems = [
         {
@@ -208,29 +252,32 @@ function Feedback (props:FeedbackProps){
                 <Fade in={Boolean(feedbackNote)}>
                     <div>
                         {!feedbackSent &&
-                        <>
+                        <div>
                             <Typography className={classes.moreSubtitle}>
                                 <FormattedMessage id="feedback_detail_question" />
                             </Typography>
                             <div className={classes.rootChips}>
-                                {feedbackRatingItems.find(item => item.value === feedbackNote)?.choices[type].map((item, index) => (
+                                {feedbackRatingItems.find(item => item.value === feedbackNote)?.choices[type].map((item: any, index: number) => (
                                     <FeedbackChip
                                         key={index}
-                                        item={item} />
+                                        item={item}
+                                        onQuickFeedback={onQuickFeedback} />
                                 ))}
                             </div>
                             <form>
                                 <TextField
                                     label="Leave a comment"
                                     className={classes.inputField}
+                                    value={comment}
+                                    onChange={e => setComment(e.target.value)}
                                 />
                             </form>
                             <Button
                                 className={classes.submitButton}
                                 variant="contained"
                                 color="primary"
-                                onClick={() => setFeedbackSent(true)}>Submit</Button>
-                        </>
+                                onClick={() => onSubmit()}>Submit</Button>
+                        </ div>
                         }
                     </div>
                 </Fade>
@@ -243,17 +290,21 @@ export { Feedback };
 
 function FeedbackChip (props:any){
     const classes = useStyles();
-    const { item } = props;
+    const { item, onQuickFeedback } = props;
     const [ active, setActive ] = useState(false);
 
+    const onClick = () => {
+        setActive(!active);
+        onQuickFeedback(item.type);
+    };
     return(
         <Chip
-            label={item}
+            label={item.text}
             variant="outlined"
             className={clsx(classes.chip, {
                 [classes.activeChip]: active,
             })}
-            onClick={() => setActive(!active)}/>
+            onClick={() => onClick()}/>
     );
 }
 
