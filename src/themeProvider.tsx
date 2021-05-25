@@ -102,6 +102,9 @@ export function themeProvider(languageCode: string, themeMode: string) {
             light: "#0E78D5",
             main: "#0E78D5",
         },
+        success: {
+            main: "#37C106"
+        }
     };
 
     let theme: Theme;
