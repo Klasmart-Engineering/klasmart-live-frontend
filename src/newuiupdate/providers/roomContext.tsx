@@ -108,14 +108,15 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
     });
 
     const addMessage = (newMessage: Message) => {
-        for (const id of messages.keys()) {
-            if (messages.size < 32) { break; }
-            setMessages((prev) => {
-                const newState = new Map(prev);
-                newState.delete(id);
-                return newState;
-            });
-        }
+        // for (const id of messages.keys()) {
+        //     if (messages.size < 32) { break; }
+        //     setMessages((prev) => {
+        //         const newState = new Map(prev);
+        //         newState.delete(id);
+        //         return newState;
+        //     });
+        // }
+
         if(!isChatOpen){
             const now = Date.now() - 5000;
             const messageTime = Number(newMessage.id.split(`-`)[0]);
