@@ -4,7 +4,6 @@ import { RoomContext } from "../../../providers/roomContext";
 import { hasControlsState,  materialActiveIndexState } from "../../../states/layoutAtoms";
 import { Whiteboard } from "../../../whiteboard/components/Whiteboard";
 import { MUTATION_SHOW_CONTENT } from "../../utils/graphql";
-import ActivityImage from "../../utils/interactiveContent/image";
 import { PreviewPlayer } from "../../utils/interactiveContent/previewPlayer";
 import { RecordedIframe } from "../../utils/interactiveContent/recordediframe";
 import { fullScreenById } from "../../utils/utils";
@@ -13,7 +12,6 @@ import {
     makeStyles, Theme,  Typography,
 } from "@material-ui/core";
 import { ArrowsAngleExpand as ExpandIcon } from "@styled-icons/bootstrap/ArrowsAngleExpand";
-import { Eye as ObserveIcon } from "@styled-icons/fa-regular/Eye";
 import { CloudOffline as OfflineIcon } from "@styled-icons/ionicons-outline/CloudOffline";
 import { useSnackbar } from "kidsloop-px";
 import React, {
@@ -47,16 +45,31 @@ const useStyles = makeStyles((theme: Theme) => ({
         alignItems: `center`,
         justifyContent: `center`,
     },
+    previewPlayerContainer:{
+        "&:hover $previewExpand":{
+            opacity: 1,
+            visibility: `visible`,
+        },
+    },
     previewExpand:{
+        opacity: 0,
+        visibility: `hidden`,
+        display: `flex`,
         position: `absolute`,
         top: 0,
         left: 0,
         zIndex: 9,
         margin: 10,
-        padding: 10,
         borderRadius: 10,
+        width: 30,
+        height: 30,
         cursor: `pointer`,
-        background: `rgb(255 255 255 / 55%)`,
+        background: theme.palette.grey[300],
+        alignItems: `center`,
+        justifyContent: `center`,
+        "&:hover":{
+            opacity: 0.8,
+        },
     },
     previewName:{
         position: `absolute`,
@@ -172,22 +185,29 @@ function StudentPreviewCard ({ session }: { session: Session }) {
             className={classes.item}
         >
             <Typography className={classes.previewName}>{session.name}</Typography>
-            {session?.streamId ?  <>
-                <div
-                    className={classes.previewExpand}
-                    onClick={() => fullScreenById(`preview:${session.streamId}`) }>
-                    <ExpandIcon size="0.75em" />
+            {session?.streamId ?
+                <>
+                    <Whiteboard
+                        group={session.id}
+                        uniqueId={session.id}
+                        filterGroups={filterGroups} />
+                    <div className={classes.previewPlayerContainer}>
+                        <div
+                            className={classes.previewExpand}
+                            onClick={() => fullScreenById(`preview:${session.streamId}`) }>
+                            <ExpandIcon size="0.75em" />
+                        </div>
+                        <PreviewPlayer
+                            width={width}
+                            height={height}
+                            container={`observe:${session.streamId}`}
+                            streamId={session?.streamId} />
+                    </div>
+                </> :
+                <div className={classes.previewLoader}>
+                    <OfflineIcon size="3em"/>
                 </div>
-                <Whiteboard
-                    group={session.id}
-                    uniqueId={session.id}
-                    filterGroups={filterGroups} />
-                <PreviewPlayer
-                    width={width}
-                    height={height}
-                    container={`observe:${session.streamId}`}
-                    streamId={session?.streamId} /></> : <div className={classes.previewLoader}><OfflineIcon size="3em"/>
-            </div>}
+            }
 
         </div>
     );
