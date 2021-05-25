@@ -8,6 +8,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     item:{
         cursor: `pointer`,
         padding: `12px 20px`,
+        "&:hover": {
+            backgroundColor: theme.palette.grey[200],
+        },
     },
     itemIcon:{
         padding: 10,
@@ -22,6 +25,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     active:{
         backgroundColor: theme.palette.background.default,
+        pointerEvents: `none`,
     },
 }));
 
