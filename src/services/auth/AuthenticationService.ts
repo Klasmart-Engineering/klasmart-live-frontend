@@ -46,7 +46,7 @@ export class AuthenticationService implements IAuthenticationService {
     }
 
     async switchUser(userId: string): Promise<boolean> {
-        const url = `${this.endpoint}/refresh`;
+        const url = `${this.endpoint}/switch`;
         const response = await fetchJson(url, {
             body: JSON.stringify({ user_id: userId }),
             method: "POST",

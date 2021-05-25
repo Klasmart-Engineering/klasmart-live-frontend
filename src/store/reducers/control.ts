@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 type ControlState = {
     themeMode: "light" | "dark";
     selectOrgDialogOpen: boolean;
+    selectUserDialogOpen: boolean;
     drawerOpen: boolean;
     drawerWidth: number;
     drawerTabIndex: number;
@@ -14,6 +15,7 @@ type ControlState = {
 const initialControlState: ControlState = {
     themeMode: "light",
     selectOrgDialogOpen: false,
+    selectUserDialogOpen: false,
     drawerOpen: true,
     drawerWidth: 0,
     drawerTabIndex: 0,
@@ -31,6 +33,9 @@ const controlSlice = createSlice({
         },
         setSelectOrgDialogOpen(state, action) {
             return { ...state, selectOrgDialogOpen: action.payload }
+        },
+        setSelectUserDialogOpen(state, action) {
+            return { ...state, selectUserDialogOpen: action.payload }
         },
         setDrawerOpen(state, action) {
             return { ...state, drawerOpen: action.payload }
@@ -56,6 +61,7 @@ const controlSlice = createSlice({
 export const {
     setThemeMode,
     setSelectOrgDialogOpen,
+    setSelectUserDialogOpen,
     setDrawerOpen,
     setDrawerWidth,
     setDrawerTabIndex,

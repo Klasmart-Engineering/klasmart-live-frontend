@@ -8,8 +8,8 @@ type SessionState = {
     userAgent: UserAgent;
     userType: UserType;
     locale: string;
-    user: UserInformation;
-    selectedOrg: OrganizationResponse;
+    user: UserInformation | undefined;
+    selectedOrg: OrganizationResponse | undefined;
     regionId: string;
 }
 
@@ -34,21 +34,8 @@ const initialSessionState: SessionState = {
     },
     userType: UserType.STUDENT,
     locale: getDefaultLanguageCode(),
-    user: {
-        id: "",
-        email: "",
-        username: "",
-        givenName: "",
-        familyName: "",
-        phone: "",
-        fullName: "",
-        dateOfBirth: "",
-        avatar: "",
-        organizations: [],
-        classes: [],
-        memberships: []
-    },
-    selectedOrg: { organization_id: "", organization_name: "", status: OrganizationStatus.inactive },
+    user: undefined,
+    selectedOrg: undefined,
     regionId: "prod",
 }
 

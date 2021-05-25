@@ -7,6 +7,7 @@ import { RoomWithContext } from "./pages/room/room";
 import Join from "./pages/join/join";
 import { Schedule } from "./pages/schedule/schedule";
 import { UserRoute } from "./components/userRoute";
+import { SelectUserDialog } from "./pages/account/selectUserDialog";
 
 export function App({ history }: {
     history: any;
@@ -29,6 +30,7 @@ export function App({ history }: {
                 </Switch>
             </Router>
             <SelectOrgDialog />
+            <SelectUserDialog />
         </Grid>
     )
 }

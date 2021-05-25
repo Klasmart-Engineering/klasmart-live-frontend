@@ -5,22 +5,20 @@ import Grid from "@material-ui/core/Grid";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
-import Avatar from "@material-ui/core/Avatar";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import Typography from "@material-ui/core/Typography";
 
 import { Close as CloseIcon } from "@styled-icons/material/Close";
 import { ArrowBackIos as ArrowBackIcon } from "@styled-icons/material/ArrowBackIos";
 import { Refresh as RefreshIcon } from "@styled-icons/material/Refresh";
-import { Business as BusinessIcon } from "@styled-icons/material-rounded/Business";
 
 import StyledIcon from "./styled/icon";
 import { State } from "../store/store";
-import { setSelectOrgDialogOpen } from "../store/reducers/control";
+import { setSelectOrgDialogOpen, setSelectUserDialogOpen } from "../store/reducers/control";
 
 import KidsloopLogo from "../assets/img/kidsloop_icon.svg";
 import { useHistory } from "react-router-dom";
-import { utils } from "kidsloop-px";
+import { UserAvatar, OrganizationAvatar } from "kidsloop-px";
+import ButtonBase from "@material-ui/core/ButtonBase";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -36,6 +34,12 @@ const useStyles = makeStyles((theme: Theme) =>
         iconButton: {
             backgroundColor: theme.palette.background.paper
         },
+        selectOrganizationButton: {
+            borderRadius: 4,
+        },
+        selectUserButton: {
+            borderRadius: "50%",
+        },
     }),
 );
 
@@ -43,7 +47,9 @@ export function Header({ isHomeRoute, setKey }: { isHomeRoute?: boolean, setKey?
     const { root, safeArea } = useStyles();
     const theme = useTheme();
     const errCode = useSelector((state: State) => state.communication.errCode);
+
     const selectOrgDialogOpen = useSelector((state: State) => state.control.selectOrgDialogOpen);
+    const selectUserDialogOpen = useSelector((state: State) => state.control.selectUserDialogOpen);
 
     return (errCode ? <></> :
         <div className={root}>
@@ -73,11 +79,17 @@ export function Header({ isHomeRoute, setKey }: { isHomeRoute?: boolean, setKey?
                                     isHomeRoute ? <OpenSelectOrgButton /> : <GoBackButton />
                                 )}
                             </Grid>
+                            <Grid item style={{ flexGrow: 0 }}>
+                                <div style={{width: 44, height: 44}} />
+                            </Grid>
                             <Grid item style={{ flexGrow: 1, textAlign: "center" }}>
                                 <img alt="KidsLoop Logo" src={KidsloopLogo} height={32} />
                             </Grid>
                             <Grid item style={{ flexGrow: 0 }}>
                                 <MenuButton setKey={setKey} />
+                            </Grid>
+                            <Grid item style={{ flexGrow: 0 }}>
+                                <OpenSelectUserButton />
                             </Grid>
                         </Grid>
                     </Grid>
@@ -102,35 +114,50 @@ function CloseSelectOrgButton() {
     );
 }
 
-function OpenSelectOrgButton() {
+function CloseSelectUserButton() {
     const { iconButton } = useStyles();
     const dispatch = useDispatch();
-    const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
-
-    const selectedOrganizationColor = utils.stringToColor(selectedOrg.organization_name ?? "??");
-    const selectedOrganizationInitials = utils.nameToInitials(selectedOrg.organization_name ?? "??", 4);
 
     return (
         <IconButton
-            onClick={() => dispatch(setSelectOrgDialogOpen(true))}
+            onClick={() => dispatch(setSelectUserDialogOpen(false))}
             size="medium"
             className={iconButton}
-            style={{ padding: 0 }}
         >
-            <Avatar
-                variant="circle"
-                style={{
-                    color: "white",
-                    backgroundColor: selectedOrganizationColor,
-                }}>
-                <Typography variant="caption">
-                    { selectedOrg.organization_name !== ""
-                        ? selectedOrganizationInitials
-                        : <BusinessIcon />
-                    }
-                </Typography>
-            </Avatar>
+            <StyledIcon icon={<CloseIcon />} size="medium" />
         </IconButton>
+    );
+}
+
+function OpenSelectUserButton() {
+    const { selectUserButton } = useStyles();
+
+    const dispatch = useDispatch();
+    const selectedUser = useSelector((state: State) => state.session.user);
+
+    return (
+        <ButtonBase
+            className={selectUserButton}
+            onClick={() => dispatch(setSelectUserDialogOpen(true))}
+        >
+            <UserAvatar name={selectedUser?.fullName ?? ""} size={"medium"} />
+        </ButtonBase>
+    );
+}
+
+function OpenSelectOrgButton() {
+    const { selectOrganizationButton } = useStyles();
+
+    const dispatch = useDispatch();
+    const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
+
+    return (
+        <ButtonBase
+            className={selectOrganizationButton}
+            onClick={() => dispatch(setSelectOrgDialogOpen(true))}
+        >
+            <OrganizationAvatar name={selectedOrg?.organization_name ?? ""} size={"medium"} />
+        </ButtonBase>
     );
 }
 
@@ -139,20 +166,6 @@ function GoBackButton() {
     const history = useHistory();
 
     const [canGoBack, _setCanGoBack] = useState<boolean>(true);
-
-    useEffect(() => {
-        if (!history) return;
-
-        const unlisten = history.listen(() => {
-            // TODO: This history doesn't have any index field, so can't determine
-            // if application is on top of the history stack. 
-            // setCanGoBack(history.index > 0);
-        });
-
-        return () => {
-            unlisten();
-        }
-    }, [history]);
 
     return (
         <IconButton

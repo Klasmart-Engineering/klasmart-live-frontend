@@ -173,7 +173,7 @@ export class UserInformationService implements IUserInformationService {
             if (isAuthenticated) {
                 result = await fetchQuery(this.endpoint, QUERY_MY_USERS);
             } else {
-                throw new Error("Account is signed out")
+                throw new Error("Account is signed out");
             }
         }
 
@@ -181,6 +181,9 @@ export class UserInformationService implements IUserInformationService {
             throw new Error("Unable to fetch my users");
         }
 
-        return result.data!.my_users.map(v => this.userInformationFromResponseData(v));
+        const usersWithOrganizations = 
+            result.data!.my_users.filter(v => v.memberships && v.memberships.length > 0);
+
+        return usersWithOrganizations.map(v => this.userInformationFromResponseData(v));
     }
 }

@@ -44,7 +44,7 @@ export type UserInformation = {
     organizations: Organization[],
     classes: ClassResponse[],
 
-    // TODO: Can this be combined with organizations 
+    // TODO (axel): Can this be combined with organizations 
     // array?
     memberships: OrganizationResponse[],
 }

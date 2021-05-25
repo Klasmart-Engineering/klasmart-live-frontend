@@ -6,7 +6,6 @@ import { OrientationType } from "../../store/actions";
 import { lockOrientation } from "../../utils/screenUtils";
 import Loading from "../../components/loading";
 import { useState } from "react";
-import Button from "@material-ui/core/Button";
 import { useHttpEndpoint } from "../../context-provider/region-select-context";
 import { useUserInformation } from "../../context-provider/user-information-context";
 import { Redirect } from "react-router-dom";

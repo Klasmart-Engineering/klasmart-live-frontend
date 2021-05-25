@@ -1,5 +1,5 @@
-import { utils } from "kidsloop-px";
-import React, { useMemo, useState, useEffect } from "react";
+import { OrganizationAvatar } from "kidsloop-px";
+import React, { useMemo, useState, useEffect, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { FormattedMessage } from "react-intl";
 import { makeStyles, Theme, useTheme } from '@material-ui/core/styles';
@@ -8,23 +8,20 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
 import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Divider from "@material-ui/core/Divider";
-import Avatar from "@material-ui/core/Avatar";
 import Link from "@material-ui/core/Link";
 
 import { Check as CheckIcon } from "@styled-icons/fa-solid/Check";
-import { Business as BusinessIcon } from "@styled-icons/material-rounded/Business";
 
 import { isRoleTeacher, useUserInformation } from "../../context-provider/user-information-context";
 import { useRegionSelect } from "../../context-provider/region-select-context";
 import { Header } from "../../components/header";
-import StyledIcon from "../../components/styled/icon";
 import { State } from "../../store/store";
 import { setSelectedOrg, setUser } from "../../store/reducers/session";
 import { setSelectOrgDialogOpen } from "../../store/reducers/control";
-import { Organization, OrganizationResponse, OrganizationStatus } from "../../services/user/IUserInformationService";
+import { Organization, OrganizationResponse } from "../../services/user/IUserInformationService";
+import { List, ListItem, ListItemAvatar, ListItemIcon, ListItemText } from "@material-ui/core";
 
 const useStyles = makeStyles((theme: Theme) => ({
     noPadding: {
@@ -39,19 +36,20 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 export function useShouldSelectOrganization() {
     const dispatch = useDispatch();
-    const { information } = useUserInformation();
     const isMobileOnly = useSelector((state: State) => state.session.userAgent.isMobileOnly);
     const isTablet = useSelector((state: State) => state.session.userAgent.isTablet);
     const isMobile = isMobileOnly || isTablet
-    const [shouldSelect, setShouldSelect] = useState<boolean>(false);
-    const [errCode, setErrCode] = useState<number | null>(null);
+    const [shouldSelectOrganization, setShouldSelectOrganization] = useState<boolean>(false);
+    const [organizationSelectErrorCode, setOrganizationSelectErrorCode] = useState<number | null>(null);
     const [hasStudentRole, setHasStudentRole] = useState<boolean | null>(null);
+
+    const selectedUser = useSelector((state: State) => state.session.user);
     const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
 
     const setErrorState = (errorCode: number) => {
-        setShouldSelect(false);
+        setShouldSelectOrganization(false);
         setHasStudentRole(null);
-        setErrCode(errorCode);
+        setOrganizationSelectErrorCode(errorCode);
     };
 
     const verifyOrganizationStudentRole = (organization: Organization) => {
@@ -73,44 +71,44 @@ export function useShouldSelectOrganization() {
 
     useEffect(() => {
         // 1. information returns undefined
-        if (!information) {
+        if (!selectedUser) {
             setErrorState(401);
             return;
         }
 
         // NOTE: User already selected organization.
         if (selectedOrg) {
-            const selected = information.organizations.find(o => o.organization.organization_id === selectedOrg.organization_id);
+            const selected = selectedUser.organizations.find(o => o.organization.organization_id === selectedOrg?.organization_id);
             if (selected && verifyOrganizationStudentRole(selected)) {
                 setHasStudentRole(true);
-                setShouldSelect(false);
-                setErrCode(null);
+                setShouldSelectOrganization(false);
+                setOrganizationSelectErrorCode(null);
                 return;
             }
         }
 
         // 1. information exists
-        if (information.organizations.length === 0) { // 2. User has no organization
+        if (selectedUser.organizations.length === 0) { // 2. User has no organization
             setErrorState(403);
-        } else if (information.organizations.length === 1) { // 2. User has 1 organization
-            setShouldSelect(false);
-            const { organization_id, organization_name } = information.organizations[0].organization;
+        } else if (selectedUser.organizations.length === 1) { // 2. User has 1 organization
+            setShouldSelectOrganization(false);
+            const { organization_id, organization_name } = selectedUser.organizations[0].organization;
 
-            if (!verifyOrganizationStudentRole(information.organizations[0])) {
+            if (!verifyOrganizationStudentRole(selectedUser.organizations[0])) {
                 setHasStudentRole(false);
-                setErrCode(403);
+                setOrganizationSelectErrorCode(403);
                 return;
             }
 
-            setErrCode(null);
+            setOrganizationSelectErrorCode(null);
             setHasStudentRole(true);
             dispatch(setSelectedOrg({ organization_id, organization_name }));
         } else { // 2. User has more than 2 organizations
-            setShouldSelect(true);
+            setShouldSelectOrganization(true);
             setHasStudentRole(true);
-            setErrCode(null);
+            setOrganizationSelectErrorCode(null);
         }
-    }, [information, selectedOrg]);
+    }, [selectedUser, selectedOrg]);
 
     /** 
      * ABOUT hasStudentRole (Isu)
@@ -122,36 +120,30 @@ export function useShouldSelectOrganization() {
      * But it was added because it can be used in the future.
      * For more information, see QUERY_ME at user-information-context.tsx.
      */
-    return { errCode, shouldSelect, hasStudentRole }
+    return { organizationSelectErrorCode, shouldSelectOrganization, hasStudentRole }
 }
 
 export function SelectOrgDialog() {
     const theme = useTheme();
     const { noPadding } = useStyles();
     const dispatch = useDispatch();
-    const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
     const open = useSelector((state: State) => state.control.selectOrgDialogOpen);
-    const [org, setOrg] = useState<OrganizationResponse>(selectedOrg ? selectedOrg : { organization_id: "", organization_name: "", status: OrganizationStatus.inactive });
-    const { information } = useUserInformation();
     const { region } = useRegionSelect();
     const { actions } = useUserInformation();
 
-    const organizations = useMemo(() => {
-        if (!information) return [];
+    const selectedUser = useSelector((state: State) => state.session.user);
 
-        return information.organizations.map(o => {
+    const organizations = useMemo(() => {
+        if (!selectedUser) return [];
+
+        return selectedUser.organizations.map(o => {
             return {
                 organization_id: o.organization.organization_id,
                 organization_name: o.organization.organization_name,
                 status: o.organization.status
             }
         })
-    }, [information]);
-
-    useEffect(() => {
-        dispatch(setSelectedOrg(org));
-        dispatch(setSelectOrgDialogOpen(false));
-    }, [org]);
+    }, [selectedUser]);
 
     const handleBrowser = () => {
         const cordova = (window as any).cordova;
@@ -177,17 +169,8 @@ export function SelectOrgDialog() {
 
     async function handleSignOut() {
         dispatch(setSelectOrgDialogOpen(false));
-        dispatch(setUser({
-            id: "",
-            email: "",
-            name: "",
-            givenName: "",
-            familyName: "",
-            avatar: "",
-            organizations: [],
-            classes: [],
-        }));
-        dispatch(setSelectedOrg({ organization_id: "", organization_name: "" }));
+        dispatch(setUser(undefined));
+        dispatch(setSelectedOrg(undefined));
         actions?.signOutUser();
     }
 
@@ -205,13 +188,13 @@ export function SelectOrgDialog() {
             >
                 <Header />
             </DialogTitle>
-            <DialogContent dividers>
+            <DialogContent dividers style={{ padding: 0 }}>
                 <Grid item xs={12} style={{ paddingTop: theme.spacing(2), paddingBottom: theme.spacing(4) }}>
-                    <Typography variant="body2" align="center">
+                    <Typography variant="h4" align="center">
                         <FormattedMessage id="account_selectOrg_whichOrg" />
                     </Typography>
                 </Grid>
-                <OrgList handler={{ org, setOrg }} organizations={organizations} />
+                <OrgList organizations={organizations} />
             </DialogContent>
             <DialogActions className={noPadding}>
                 <Grid item xs={6}>
@@ -242,108 +225,38 @@ export function SelectOrgDialog() {
     )
 }
 
-
-
-function OrgList({ handler, organizations }: {
-    handler: { org: OrganizationResponse, setOrg: React.Dispatch<React.SetStateAction<OrganizationResponse>> },
-    organizations: OrganizationResponse[]
-}) {
-    return (
-        <Grid
-            container
-            direction="row"
-            justify="flex-start"
-            alignItems="center"
-            alignContent="center"
-            spacing={3}
-        >
-            {organizations.length === 0 ? null : organizations.map((o) =>
-                <OrgCard
-                    key={o.organization_id}
-                    org={o}
-                    checked={handler.org.organization_id === o.organization_id}
-                    setOrg={handler.setOrg}
-                />
-            )}
-        </Grid>
-    )
-}
-
-function OrgCard({ org, checked, setOrg }: {
-    org: OrganizationResponse,
-    checked: boolean,
-    setOrg: React.Dispatch<React.SetStateAction<OrganizationResponse>>
-}) {
+function OrgList({ organizations }: { organizations: OrganizationResponse[] }) {
+    const dispatch = useDispatch();
     const theme = useTheme();
-    const square = theme.spacing(15);
 
-    const orgColor = utils.stringToColor(org.organization_name ?? "??");
-    const orgInitials = utils.nameToInitials(org.organization_name ?? "??", 4);
+    const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
+
+    const changeOrganization = useCallback((organization: OrganizationResponse) => {
+        dispatch(setSelectedOrg(organization));
+        dispatch(setSelectOrgDialogOpen(false));
+    }, []);
 
     return (
-        <Grid container direction="column" justify="space-between" alignItems="center" spacing={1} item xs={6}>
-            <Grid item >
-                <Button
-                    onClick={() => setOrg(org)}
-                    style={{
-                        position: "relative",
-                        padding: 0,
-                        borderRadius: 12,
-                        backgroundColor: "transparent",
-                        boxShadow: checked ? "0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08)" : "unset"
-                    }}
+        <List>
+            {organizations.map((organization) => {
+                return <ListItem
+                    key={organization.organization_id}
+                    button
+                    onClick={() => changeOrganization(organization)}
                 >
-                    <Avatar
-                        // onClick={() => setOrg(org)}
-                        variant="rounded"
-                        style={{
-                            backgroundColor: orgColor,
-                            borderRadius: 12,
-                            // boxShadow: checked ? "0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08)" : "unset",
-                            color: "white",
-                            // padding: 0,
-                            // position: "relative",
-                            width: theme.spacing(12),
-                            height: theme.spacing(12),
-                        }}>
-                        <Typography variant="caption">
-                            {org.organization_name !== ""
-                                ? orgInitials
-                                : <BusinessIcon />
-                            }
-                        </Typography>
-                    </Avatar>
-                    <CheckedOrgOverlay checked={checked} />
-                </Button>
-            </Grid>
-            <Grid item>
-                <Typography variant="caption" align="center">{org.organization_name}</Typography>
-            </Grid>
-        </Grid>
-    )
-}
-
-function CheckedOrgOverlay({ checked }: { checked: boolean }) {
-
-    return (
-        <Grid
-            container
-            justify="center"
-            alignItems="center"
-            style={{
-                position: "absolute",
-                width: "100%",
-                height: "100%",
-                top: 0,
-                left: 0,
-                borderRadius: 12,
-                background: "rgba(14, 120, 213, 0.5)",
-                opacity: checked ? 1 : 0
-            }}
-        >
-            <Grid item xs={12} style={{ textAlign: "center" }}>
-                {checked ? <StyledIcon icon={<CheckIcon />} color="white" size="4rem" /> : null}
-            </Grid>
-        </Grid>
+                    <ListItemAvatar>
+                        <OrganizationAvatar name={organization.organization_name} />
+                    </ListItemAvatar>
+                    <ListItemText
+                        primary={organization.organization_name}
+                    />
+                    {organization.organization_id === selectedOrg?.organization_id && (
+                        <ListItemIcon>
+                            <CheckIcon color={theme.palette.success.main} size={24} />
+                        </ListItemIcon>
+                    )}
+                </ListItem>;
+            })}
+        </List>
     )
 }

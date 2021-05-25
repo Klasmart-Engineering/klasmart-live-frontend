@@ -2,7 +2,7 @@ const dateFormat = require("dateformat");
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FormattedMessage } from "react-intl";
-import { makeStyles, Theme, useTheme } from '@material-ui/core/styles';
+import { makeStyles, Theme } from '@material-ui/core/styles';
 import Grid from "@material-ui/core/Grid";
 import ListSubheader from '@material-ui/core/ListSubheader';
 import List from '@material-ui/core/List';
@@ -28,7 +28,7 @@ import { State } from "../../store/store";
 import { ScheduleClassType, ScheduleTimeViewResponse, ScheduleResponse, TimeView } from "../../services/cms/ISchedulerService";
 import { ClassType, OrientationType } from "../../store/actions";
 import { setInFlight } from "../../store/reducers/communication";
-import { setSelectOrgDialogOpen } from "../../store/reducers/control";
+import { setSelectOrgDialogOpen, setSelectUserDialogOpen } from "../../store/reducers/control";
 import {
     setScheduleTimeViewAll,
     setScheduleTimeViewLiveAll,
@@ -36,13 +36,12 @@ import {
     setScheduleTimeViewLiveToday,
     setScheduleTimeViewLiveTomorrow,
     setScheduleTimeViewLiveUpcoming,
-    setScheduleStudyAnytime,
-    setScheduleStudyDueDate,
     setLessonPlanIdOfSelectedSchedule,
     setScheduleTimeViewStudyAnytime
 } from "../../store/reducers/data";
 import { lockOrientation } from "../../utils/screenUtils";
 import { autoHideDuration } from "../../utils/fixedValues";
+import { useShouldSelectUser } from "../account/selectUserDialog";
 
 // NOTE: China API server(Go lang) accept 10 digits timestamp
 const now = new Date();
@@ -73,18 +72,20 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 export function Schedule() {
-    const theme = useTheme();
     const dispatch = useDispatch();
     const classType = useSelector((state: State) => state.session.classType);
     const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
     const inFlight = useSelector((state: State) => state.communication.inFlight);
 
     const { schedulerService } = useServices();
-    const { shouldSelect, errCode } = useShouldSelectOrganization();
+    
+    const { shouldSelectUser, userSelectErrorCode } = useShouldSelectUser();
+    const { shouldSelectOrganization, organizationSelectErrorCode } = useShouldSelectOrganization();
 
     const [key, setKey] = useState(Math.random().toString(36))
     const [alertMessageId, setAlertMessageId] = useState<string>();
     const [openAlert, setOpenAlert] = useState(false);
+
     const handleClose = (event?: React.SyntheticEvent, reason?: string) => {
         if (reason === "clickaway") { return; }
         setOpenAlert(false);
@@ -98,6 +99,8 @@ export function Schedule() {
         async function fetchEverything() {
             async function fetchSchedules() {
                 if (!schedulerService) return Promise.reject();
+                if (!selectedOrg) return Promise.reject();
+
                 // TODO (Isu): Apply more API params to filter. It makes don't need to do .filter().
                 const thisMonthSchedules = await schedulerService.getScheduleTimeViews(selectedOrg.organization_id, TimeView.MONTH, todayTimeStamp, timeZoneOffset);
                 const nextMonthSchedules = await schedulerService.getScheduleTimeViews(selectedOrg.organization_id, TimeView.MONTH, nextMonthTimeStamp, timeZoneOffset);
@@ -145,45 +148,46 @@ export function Schedule() {
         }
         dispatch(setInFlight(true));
 
-        if (shouldSelect) {
-            dispatch(setSelectOrgDialogOpen(true));
+        if (shouldSelectUser) {
+            dispatch(setSelectUserDialogOpen(true));
         } else {
-            dispatch(setSelectOrgDialogOpen(false));
+            dispatch(setSelectUserDialogOpen(false));
+
+            if (shouldSelectOrganization) {
+                dispatch(setSelectOrgDialogOpen(true));
+            } else {
+                dispatch(setSelectOrgDialogOpen(false));
+            }
         }
 
         if (selectedOrg && selectedOrg.organization_id !== "") {
             fetchEverything();
         }
-    }, [shouldSelect, selectedOrg, schedulerService, key])
+    }, [shouldSelectUser, shouldSelectOrganization, selectedOrg, schedulerService, key])
 
-    const user = useSelector((state: State) => state.session.user);
-    const [hasOrg, _] = useState(Boolean(user.organizations.length));
+    if (userSelectErrorCode && userSelectErrorCode !== 401) {
+        return (
+            <Fallback
+                errCode={`${organizationSelectErrorCode}`}
+                titleMsgId={`err_${organizationSelectErrorCode}_title`}
+                subtitleMsgId={`err_${organizationSelectErrorCode}_subtitle`}
+            />
+        );
+    }
 
-    if (errCode && errCode !== 401) {
-        const code = `${errCode}`;
-        if (code === "403" && !hasOrg) {
-            return (
-                <Fallback
-                    errCode={code}
-                    titleMsgId={"err_403_title_not_supported"}
-                    subtitleMsgId={"err_403_subtitle_not_supported"}
-                    descriptionMsgId={"err_403_description_not_supported"}
-                />
-            );
-        } else {
-            return (
-                <Fallback
-                    errCode={code}
-                    titleMsgId={`err_${code}_title`}
-                    subtitleMsgId={`err_${code}_subtitle`}
-                />
-            );
-        }
+    if (organizationSelectErrorCode && organizationSelectErrorCode !== 401) {
+        return (
+            <Fallback
+                errCode={`${organizationSelectErrorCode}`}
+                titleMsgId={`err_${organizationSelectErrorCode}_title`}
+                subtitleMsgId={`err_${organizationSelectErrorCode}_subtitle`}
+            />
+        );
     }
 
     return (<>
         <Header isHomeRoute setKey={setKey} />
-        {inFlight ? <LoadingSchedule isOrgSelected={Boolean(selectedOrg.organization_id)} /> :
+        {inFlight ? <LoadingSchedule isOrgSelected={Boolean(selectedOrg?.organization_id)} /> :
             <Grid
                 id="schedule-container"
                 wrap="nowrap"
@@ -300,6 +304,10 @@ function ScheduledLiveItem({ scheduleId, setOpenAlert }: { scheduleId: string, s
                     throw new Error("Scheduler service not available.");
                 }
 
+                if (!selectedOrg) {
+                    throw new Error("Organization is not selected.");
+                }
+
                 const live = await schedulerService.getScheduleInfo(selectedOrg.organization_id, scheduleId);
                 setLiveInfo(live);
             }
@@ -325,6 +333,8 @@ function ScheduledLiveItem({ scheduleId, setOpenAlert }: { scheduleId: string, s
     const goJoin = () => {
         if (!schedulerService) { return; }
         if (!liveInfo) { return; }
+        if (!selectedOrg) { return; }
+
         dispatch(setLessonPlanIdOfSelectedSchedule(liveInfo.lesson_plan.id));
         schedulerService.getScheduleToken(selectedOrg.organization_id, liveInfo.id).then((res) => {
             if (res.token) {
@@ -408,6 +418,10 @@ function AnytimeStudyItem({ studyId, setOpenAlert }: {
                 if (!schedulerService) {
                     throw new Error("Scheduler service not available.");
                 }
+                if (!selectedOrg) {
+                    throw new Error("Organization is not selected.");
+                }
+
                 const studyPayload = await schedulerService.getScheduleInfo(selectedOrg.organization_id, studyId);
                 setStudyInfo(studyPayload);
             }
@@ -423,6 +437,8 @@ function AnytimeStudyItem({ studyId, setOpenAlert }: {
     const goJoin = () => {
         if (!schedulerService) { return; }
         if (!studyInfo) { return; }
+        if (!selectedOrg) { return; }
+
         dispatch(setLessonPlanIdOfSelectedSchedule(studyInfo.lesson_plan.id));
         schedulerService.getScheduleToken(selectedOrg.organization_id, studyInfo.id).then((res) => {
             if (res.token) {
@@ -474,7 +490,12 @@ function ScheduledStudyItem({ studyId, setOpenAlert }: {
                 if (!schedulerService) {
                     throw new Error("Scheduler service not available.");
                 }
-                const studyPayload = await schedulerService.getScheduleInfo(selectedOrg.organization_id, studyId);
+
+                if (!selectedOrg) {
+                    throw new Error("Organization is not selected.");
+                }
+
+                const studyPayload = await schedulerService.getScheduleInfo(selectedOrg!.organization_id, studyId);
                 if (studyPayload.due_at !== 0) {
                     const formattedDueDate =
                         dateFormat(new Date(studyPayload.due_at * 1000), "shortTime", false, false) + ", " +
@@ -497,6 +518,8 @@ function ScheduledStudyItem({ studyId, setOpenAlert }: {
     const goJoin = () => {
         if (!schedulerService) { return; }
         if (!studyInfo) { return; }
+        if (!selectedOrg) { return; }
+
         dispatch(setLessonPlanIdOfSelectedSchedule(studyInfo.lesson_plan.id));
         schedulerService.getScheduleToken(selectedOrg.organization_id, studyInfo.id).then((res) => {
             if (res.token) {

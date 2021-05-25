@@ -33,6 +33,7 @@ import { useLocaleCookie } from "./utils/locale";
 import { createHashHistory } from 'history'
 import { CordovaSystemProvider } from "./context-provider/cordova-system-context";
 import { CompositionRoot } from "./context-provider/composition-root";
+import { SnackbarProvider } from "kidsloop-px";
 
 function Entry() {
     const dispatch = useDispatch();
@@ -67,8 +68,10 @@ function Entry() {
             <CordovaSystemProvider history={history}>
                 <CompositionRoot sessionId={sessionId}>
                     <ThemeProvider theme={themeProvider(languageCode, themeMode)}>
-                        <CssBaseline />
-                        <App history={history} />
+                        <SnackbarProvider >
+                            <CssBaseline />
+                            <App history={history} />
+                        </SnackbarProvider>
                     </ThemeProvider>
                 </CompositionRoot>
             </CordovaSystemProvider>
