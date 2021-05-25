@@ -5,7 +5,7 @@ import Grid from "@material-ui/core/Grid";
 import { useWindowSize } from "../utils/viewport";
 import { imageFrame } from "../utils/layerValues";
 import { LessonMaterial } from "../lessonMaterialContext";
-import { useMaterialToHref } from "../../dist/types/src/utils/contentUtils";
+import { useMaterialToHref } from "../utils/contentUtils";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
