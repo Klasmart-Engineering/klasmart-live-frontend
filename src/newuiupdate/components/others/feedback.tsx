@@ -1,3 +1,4 @@
+import { LocalSessionContext } from '../../providers/providers';
 import {
     Button,
     Chip,
@@ -12,7 +13,9 @@ import amber from "@material-ui/core/colors/amber";
 import { Star as StarEmptyIcon } from "@styled-icons/bootstrap/Star";
 import { StarFill as StarFillIcon } from "@styled-icons/bootstrap/StarFill";
 import clsx from "clsx";
-import React, { useEffect, useState } from "react";
+import React, {
+    useContext, useEffect, useState,
+} from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -56,7 +59,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         marginTop: 8,
         marginBottom: theme.spacing(2),
     },
-    comment:{
+    message:{
         textAlign:`center`,
         color: theme.palette.text.primary,
     },
@@ -82,104 +85,75 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 export interface FeedbackProps {
-    type: "student" | "teacher" | "leaving";
+    type: "END_CLASS" | "LEAVE_CLASS";
 }
 
-function getChoices (id:number) {
+function getChoices (feedbackType: string, userType: string, stars: number) {
     const intl = useIntl();
-    return {
-        student : [
-            {
-                text:  intl.formatMessage({
-                    id: `feedback_student_video_${id}`,
-                }),
-                type: `video`,
-            },
-            {
-                text:   intl.formatMessage({
-                    id: `feedback_student_audio_${id}`,
-                }),
-                type: `audio`,
-            },
-            {
-                text:  intl.formatMessage({
-                    id: `feedback_student_presentation_${id}`,
-                }),
-                type: `presentation`,
-            },
-            {
-                text: intl.formatMessage({
-                    id: `feedback_student_other_${id}`,
-                }),
-                type: `other`,
-            },
-
-        ],
-        teacher : [
-            {
-                text:  intl.formatMessage({
-                    id: `feedback_teacher_video_${id}`,
-                }),
-                type: `video`,
-            },
-            {
-                text:   intl.formatMessage({
-                    id: `feedback_teacher_audio_${id}`,
-                }),
-                type: `audio`,
-            },
-            {
-                text:  intl.formatMessage({
-                    id: `feedback_teacher_presentation_${id}`,
-                }),
-                type: `presentation`,
-            },
-            {
-                text: intl.formatMessage({
-                    id: `feedback_teacher_other_${id}`,
-                }),
-                type: `other`,
-            },
-        ],
-        leaving : [
-            {
-                text: ``,
-                type: ``,
-            },
-        ],
-    };
+    feedbackType = feedbackType.toLowerCase();
+    return [
+        {
+            text:  intl.formatMessage({
+                id: `feedback_${feedbackType}_${userType}_video_${stars}`,
+            }),
+            type: `VIDEO`,
+        },
+        {
+            text:   intl.formatMessage({
+                id: `feedback_${feedbackType}_${userType}_audio_${stars}`,
+            }),
+            type: `AUDIO`,
+        },
+        {
+            text:  intl.formatMessage({
+                id: `feedback_${feedbackType}_${userType}_presentation_${stars}`,
+            }),
+            type: `PRESENTATION`,
+        },
+        {
+            text: intl.formatMessage({
+                id: `feedback_${feedbackType}_${userType}_other_${stars}`,
+            }),
+            type: `OTHER`,
+        },
+    ];
 }
 
 function Feedback (props:FeedbackProps){
     const classes = useStyles();
     const intl = useIntl();
-
-    const { type } = props;
+    const { isTeacher } = useContext(LocalSessionContext);
+    const userType = isTeacher ? `teacher`: `student`;
+    const { type: feedbackType } = props;
 
     const [ stars, setStars ] = useState<number|null>(null);
     const [ feedbackSent, setFeedbackSent ] = useState<boolean>(false);
-    const [ quickFeedbacks, setQuickFeedbacks ] = useState<Array<any>>(new Array<any>());
-    const [ comment, setComment ] = useState<string>(``);
+    const [ quickFeedback, setQuickFeedback ] = useState<Array<any>>(new Array<any>());
+    const [ message, setMessage ] = useState<string>(``);
 
-    useEffect(() => setQuickFeedbacks([]), [ stars ]);
+    useEffect(() => setQuickFeedback([]), [ stars ]);
 
     const onQuickFeedback = (type: string, active: boolean) => {
-        let qFeedbacks = quickFeedbacks;
+        let qFeedback = quickFeedback;
         if(active) {
-            qFeedbacks.push({
+            qFeedback.push({
                 type,
                 stars,
             });
         } else {
-            qFeedbacks = qFeedbacks.filter(item => item.type !== type);
+            qFeedback = qFeedback.filter(item => item.type !== type);
         }
-        setQuickFeedbacks(qFeedbacks);
+        setQuickFeedback(qFeedback);
     };
 
     const onSubmit = () => {
-        console.log(`stars`, stars);
-        console.log(`quickFeedbacks`, quickFeedbacks);
-        console.log(`comment`, comment);
+        const data = {
+            stars,
+            feedbackType,
+            message,
+            quickFeedback,
+        };
+        console.log(`data`, data);
         setFeedbackSent(true);
     };
 
@@ -189,35 +163,35 @@ function Feedback (props:FeedbackProps){
             label: intl.formatMessage({
                 id: `feedback_not_so_good`,
             }),
-            choices: getChoices(1),
+            choices: getChoices(feedbackType, userType, 1),
         },
         {
             value: 2,
             label: intl.formatMessage({
                 id: `feedback_bad`,
             }),
-            choices: getChoices(2),
+            choices: getChoices(feedbackType, userType, 2),
         },
         {
             value: 3,
             label: intl.formatMessage({
                 id: `feedback_okay`,
             }),
-            choices: getChoices(3),
+            choices: getChoices(feedbackType, userType, 3),
         },
         {
             value: 4,
             label: intl.formatMessage({
                 id: `feedback_good`,
             }),
-            choices: getChoices(4),
+            choices: getChoices(feedbackType, userType, 4),
         },
         {
             value: 5,
             label: intl.formatMessage({
                 id: `feedback_awesome`,
             }),
-            choices: getChoices(5),
+            choices: getChoices(feedbackType, userType, 5),
         },
     ];
 
@@ -264,7 +238,7 @@ function Feedback (props:FeedbackProps){
                                 <FormattedMessage id="feedback_detail_question" />
                             </Typography>
                             <div className={classes.rootChips}>
-                                {feedbackRatingItems.find(item => item.value === stars)?.choices[type].map((item: any, index: number) => (
+                                {feedbackRatingItems.find(item => item.value === stars)?.choices.map((item: any, index: number) => (
                                     <FeedbackChip
                                         key={`${stars}_${index}`}
                                         item={item}
@@ -274,11 +248,11 @@ function Feedback (props:FeedbackProps){
                             <form>
                                 <TextField
                                     label={intl.formatMessage({
-                                        id: `feedback_comment`,
+                                        id: `feedback_message`,
                                     })}
                                     className={classes.inputField}
-                                    value={comment}
-                                    onChange={e => setComment(e.target.value)}
+                                    value={message}
+                                    onChange={e => setMessage(e.target.value)}
                                 />
                             </form>
                             <Button
