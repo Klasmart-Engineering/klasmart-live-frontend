@@ -1,4 +1,6 @@
-import { LocalSessionContext } from '../../providers/providers';
+import { LIVE_LINK, LocalSessionContext } from '../../providers/providers';
+import { MUTATION_SAVE_FEEDBACK } from "../utils/graphql";
+import { useMutation } from '@apollo/client';
 import {
     Button,
     Chip,
@@ -131,6 +133,12 @@ function Feedback (props:FeedbackProps){
     const [ quickFeedback, setQuickFeedback ] = useState<Array<any>>(new Array<any>());
     const [ message, setMessage ] = useState<string>(``);
 
+    const [ saveFeedbackMutation ] = useMutation(MUTATION_SAVE_FEEDBACK, {
+        context: {
+            target: LIVE_LINK,
+        },
+    });
+
     useEffect(() => setQuickFeedback([]), [ stars ]);
 
     const onQuickFeedback = (type: string, active: boolean) => {
@@ -147,13 +155,14 @@ function Feedback (props:FeedbackProps){
     };
 
     const onSubmit = () => {
-        const data = {
-            stars,
-            feedbackType,
-            message,
-            quickFeedback,
-        };
-        console.log(`data`, data);
+        saveFeedbackMutation({
+            variables: {
+                stars,
+                feedbackType,
+                message,
+                quickFeedback,
+            },
+        });
         setFeedbackSent(true);
     };
 
