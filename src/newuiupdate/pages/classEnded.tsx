@@ -1,10 +1,9 @@
 import { Feedback } from '../components/others/feedback';
-import { LocalSessionContext } from '../providers/providers';
 import {
     Fade, Grid, makeStyles, Theme, Typography,
 } from '@material-ui/core';
 import { CalendarCheck as ClassEndedIcon } from "@styled-icons/boxicons-regular/CalendarCheck";
-import React, { useContext } from 'react';
+import React from 'react';
 import { FormattedMessage } from 'react-intl';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -38,11 +37,8 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 function ClassEnded () {
     const classes = useStyles();
-    const { isTeacher } = useContext(LocalSessionContext);
 
     const HUB_ENDPOINT = process.env.ENDPOINT_HUB;
-
-    // TODO : Disable camera on leave page
 
     return (
         <Fade in={true}>
@@ -61,7 +57,7 @@ function ClassEnded () {
                     <Typography variant="body1"><FormattedMessage id="class_ended_thanks_for_attending" /></Typography>
 
                     <Typography variant="body1"><FormattedMessage id="class_ended_how_was_the_class" /></Typography>
-                    <Feedback type={isTeacher ? `teacher` : `student`}/>
+                    <Feedback type={`END_CLASS`}/>
 
                     {HUB_ENDPOINT &&
                     <Typography className={classes.returnToHub}>
