@@ -61,7 +61,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         marginTop: 8,
         marginBottom: theme.spacing(2),
     },
-    message:{
+    comment:{
         textAlign:`center`,
         color: theme.palette.text.primary,
     },
@@ -131,7 +131,7 @@ function Feedback (props:FeedbackProps){
     const [ stars, setStars ] = useState<number|null>(null);
     const [ feedbackSent, setFeedbackSent ] = useState<boolean>(false);
     const [ quickFeedback, setQuickFeedback ] = useState<Array<any>>(new Array<any>());
-    const [ message, setMessage ] = useState<string>(``);
+    const [ comment, setComment ] = useState<string>(``);
 
     const [ saveFeedbackMutation ] = useMutation(MUTATION_SAVE_FEEDBACK, {
         context: {
@@ -159,7 +159,7 @@ function Feedback (props:FeedbackProps){
             variables: {
                 stars,
                 feedbackType,
-                message,
+                comment,
                 quickFeedback,
             },
         });
@@ -257,11 +257,11 @@ function Feedback (props:FeedbackProps){
                             <form>
                                 <TextField
                                     label={intl.formatMessage({
-                                        id: `feedback_message`,
+                                        id: `feedback_comment`,
                                     })}
                                     className={classes.inputField}
-                                    value={message}
-                                    onChange={e => setMessage(e.target.value)}
+                                    value={comment}
+                                    onChange={e => setComment(e.target.value)}
                                 />
                             </form>
                             <Button

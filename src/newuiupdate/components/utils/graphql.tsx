@@ -6,8 +6,8 @@ mutation rewardTrophy($roomId: ID!, $user: ID!, $kind: String) {
 }`;
 
 export const MUTATION_SAVE_FEEDBACK = gql`
-mutation saveFeedback($stars: Int!, $feedbackType: FeedbackType!, $message: String, $quickFeedback: [QuickFeedbackInput]) {
-    saveFeedback(stars: $stars, feedbackType: $feedbackType, message: $message, quickFeedback: $quickFeedback)
+mutation saveFeedback($stars: Int!, $feedbackType: FeedbackType!, $comment: String, $quickFeedback: [QuickFeedbackInput]) {
+    saveFeedback(stars: $stars, feedbackType: $feedbackType, comment: $comment, quickFeedback: $quickFeedback)
 }`;
 
 export const SEND_MESSAGE = gql`
