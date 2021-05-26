@@ -28,7 +28,7 @@ export class SchedulerService implements ISchedulerService {
             view_type: viewType,
             time_at: timeAt,
             time_zone_offset: timeZoneOffset,
-            class_types: class_types ? class_types : "",
+            class_types: class_types ?? "",
             org_id: organizationId
         }, this.auth);
 
