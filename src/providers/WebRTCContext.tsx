@@ -375,7 +375,13 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
         }
         setDevice(null);
 
-        const webRTCDevice = new Device()
+        let webRTCDevice: Device;
+        if (process.env.WEBRTC_DEVICE_HANDLER_NAME) {
+            webRTCDevice = new Device({ handlerName: process.env.WEBRTC_DEVICE_HANDLER_NAME as any});
+        } else {
+            webRTCDevice = new Device();
+        }
+
         await webRTCDevice.load({ routerRtpCapabilities })
         const rtpCapabilities = JSON.stringify(webRTCDevice.rtpCapabilities)
         await rtpCapabilitiesMutation({ variables: { rtpCapabilities } })
@@ -654,10 +660,10 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
         context: {target: SESSION_LINK_SFU}
     })
 
-    useEffect(() => {
+    // TODO (axel): callstats not supported on iOS app.
+    /* useEffect(() => {
         callstats.initialize("881714000", "OV6YSSRJ0fOA:vr7quqij46jLPMpaBXTAF50F2wFTqP4acrxXWVs9BIk=", name + ":" + localSessionId)
-    }, [name, localSessionId])
-
+    }, [name, localSessionId]) */
 
     useEffect(() => {
         if (!camera) {
