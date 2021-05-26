@@ -6,17 +6,18 @@ window.addEventListener('message', ({data}) => {
     alert("Please build the pdfjs-dist library using\n  `gulp dist-install`");
   }
   // The workerSrc property shall be specified.
-  //
+  
   // pdfjsLib.GlobalWorkerOptions.workerSrc =
   //   "../../node_modules/pdfjs-dist/build/pdf.worker.js";
   
   // Some PDFs need external cmaps.
-  //
+  
   const CMAP_URL = "../../node_modules/pdfjs-dist/cmaps/";
   const CMAP_PACKED = true;
   
   const DEFAULT_URL = data.pdfSrc;
   
+
   const container = document.getElementById("viewerContainer");
   
   const eventBus = new pdfjsViewer.EventBus();
@@ -34,10 +35,18 @@ window.addEventListener('message', ({data}) => {
     textLayerMode: 0,
   });
   pdfLinkService.setViewer(pdfViewer);
-  
+
+  if (!data.scale) data.scale = scaleLiterals[0]
+
+  // validate scale
+  if (typeof data.scale !== 'number' && !scaleLiterals.includes(data.scale)) {
+    console.warn(`Unknown scale literal: ${data.scale}. Defaulting to ${scaleLiterals[0]}`)
+    data.scale = scaleLiterals[0];
+  }
+
   eventBus.on("pagesinit", function () {
     // We can use pdfViewer now, e.g. let's change default scale.
-    pdfViewer.currentScaleValue = "page-width";
+    pdfViewer.currentScaleValue = data.scale;
   });
   
   // Loading document.
@@ -53,13 +62,21 @@ window.addEventListener('message', ({data}) => {
   
     pdfLinkService.setDocument(pdfDocument, null);
   });
+});
 
-})
+const scaleLiterals = [
+  'page-width',
+  'actual-size',
+  'automatic-zoom',
+  'page-fit'
+];
 
 window.PLAYER_READY = true;
 const samplePdfs = ['a', 'b', 'c', 'd'];
 const selection = samplePdfs[Math.floor(Math.random() * 4)];
 const data = {
-  pdfSrc: `http://localhost:3000/api/pdf/${selection}.pdf`
+  pdfSrc: `http://localhost:3000/api/pdf/${selection}.pdf`,
+  scale: 'page-wid'
 }
+
 window.postMessage(data, '*');

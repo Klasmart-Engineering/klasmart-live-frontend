@@ -8,7 +8,7 @@ module.exports = {
     ui: "./src/entry.tsx",
     "record-e44f2b3": "./src/entry-record.ts",
     player: "./src/entry-player.ts",
-    pdfviewer: "./src/entry-pdfviewer.ts",
+    pdfviewer: "./src/entry-pdfviewer.js",
   },
   module: {
     rules: [
