@@ -78,7 +78,7 @@ export function Schedule() {
     const inFlight = useSelector((state: State) => state.communication.inFlight);
 
     const { schedulerService } = useServices();
-    
+
     const { shouldSelectUser, userSelectErrorCode } = useShouldSelectUser();
     const { shouldSelectOrganization, organizationSelectErrorCode } = useShouldSelectOrganization();
 
@@ -568,5 +568,8 @@ function ScheduledStudyItem({ studyId, setOpenAlert }: {
 }
 
 function LoadingSchedule({ isOrgSelected }: { isOrgSelected: boolean }) {
-    return <Loading messageId={isOrgSelected ? "schedule_loadingSelectOrg" : "schedule_selectOrgLoaded"} />
+    return (
+        isOrgSelected ? <Loading messageId={"schedule_loadingSelectOrg"} /> :
+            <Loading messageId={"schedule_selectOrgLoaded"} />
+    )
 }
