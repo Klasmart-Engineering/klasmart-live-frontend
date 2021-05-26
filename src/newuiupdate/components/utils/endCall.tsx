@@ -18,6 +18,7 @@ import {
 import red from "@material-ui/core/colors/red";
 import { Warning as WarningIcon } from "@styled-icons/entypo/Warning";
 import clsx from "clsx";
+import { useToolbarContext } from "kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
 import React,
 {
     useContext,
@@ -73,9 +74,11 @@ function DialogLeaveClass (props:any){
     const classes = useStyles();
     const { open, onClose } = props;
 
-    const { isTeacher } = useContext(LocalSessionContext);
+    const { isTeacher, sessionId } = useContext(LocalSessionContext);
     const [ classLeft, setClassLeft ] = useRecoilState(classLeftState);
     const [ showParentCaptcha, setShowParentCaptcha ] = useState(false);
+
+    const { actions: { clear } } = useToolbarContext();
 
     if(!isTeacher){
         useEffect(() => {
@@ -89,6 +92,7 @@ function DialogLeaveClass (props:any){
         },
     });
     const onClick = async () => {
+        clear([ sessionId ]);
         await leaveClass();
         setClassLeft(true);
     };
