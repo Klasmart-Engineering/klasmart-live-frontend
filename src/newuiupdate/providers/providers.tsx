@@ -2,7 +2,6 @@ import { sessionId } from "../../entry";
 import { LessonMaterial, MaterialTypename } from "../../lessonMaterialContext";
 import { getDefaultLanguageCode, getLanguage } from "../../utils/locale";
 import { themeProvider } from "../themeProvider";
-import { WebRTCProvider } from "./WebRTCContext";
 import { ThemeProvider } from "@material-ui/core";
 import jwt_decode from "jwt-decode";
 import React, {
@@ -74,9 +73,7 @@ function Providers ({ children }: Props) {
             <LocalSessionContext.Provider value={localSession}>
                 <RawIntlProvider value={locale}>
                     <ThemeProvider theme={themeProvider(`en`, `light`)}>
-                        <WebRTCProvider>
-                            {children}
-                        </WebRTCProvider>
+                        {children}
                     </ThemeProvider>
                 </RawIntlProvider>
             </LocalSessionContext.Provider>

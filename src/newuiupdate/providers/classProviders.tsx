@@ -1,6 +1,7 @@
 import { GlobalWhiteboardContext } from "../whiteboard/context-providers/GlobalWhiteboardContext";
 import { RoomProvider } from "./roomContext";
 import { ScreenShareProvider } from "./screenShareProvider";
+import { WebRTCProvider } from "./WebRTCContext";
 import { SnackbarProvider } from "kidsloop-px";
 import React, { ReactChild, ReactChildren } from 'react';
 import { useIntl } from "react-intl";
@@ -22,13 +23,15 @@ function ClassProviders ({ children }: Props) {
                 id: `common_dismiss`,
             })}>
             <RoomProvider>
-                <ScreenShareProvider>
-                    <GlobalWhiteboardContext>
-                        <>
-                            {children}
-                        </>
-                    </GlobalWhiteboardContext>
-                </ScreenShareProvider>
+                <WebRTCProvider>
+                    <ScreenShareProvider>
+                        <GlobalWhiteboardContext>
+                            <>
+                                {children}
+                            </>
+                        </GlobalWhiteboardContext>
+                    </ScreenShareProvider>
+                </WebRTCProvider>
             </RoomProvider>
         </SnackbarProvider>
     );
