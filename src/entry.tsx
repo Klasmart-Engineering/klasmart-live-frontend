@@ -64,7 +64,15 @@ const client = new ApolloClient({
 
 function getApolloClient (roomId: string) {
     const authToken = AuthTokenProvider.retrieveToken();
-    const directionalLink = new RetryLink().split((operation) => operation.getContext().target === LIVE_LINK, new WebSocketLink({
+    const retryOptions = {
+        delay: {
+            max: 300,
+        },
+        attempts: {
+            max: Infinity,
+        },
+    };
+    const directionalLink = new RetryLink(retryOptions).split((operation) => operation.getContext().target === LIVE_LINK, new WebSocketLink({
         uri:
                 process.env.ENDPOINT_WEBSOCKET ||
                 `${window.location.protocol === `https:` ? `wss` : `ws`}://${
