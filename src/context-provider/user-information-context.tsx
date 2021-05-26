@@ -1,7 +1,8 @@
 import React, { createContext, ReactChild, ReactChildren, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { UserInformation } from "../services/user/IUserInformationService";
 import { setLocale, setRegion, setSelectedOrg, setSelectedUserId } from "../store/reducers/session";
+import { State } from "../store/store";
 import { useServices } from "./services-provider";
 
 // TODO (Axel): All of this context can be combined with the user-context from 
@@ -163,12 +164,14 @@ export function UserInformationContextProvider({ children }: Props) {
     const [error, setError] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
 
+    const selectedUserId = useSelector((state: State) => state.session.selectedUserId);
     const [selectedUserProfile, setSelectedUserProfile] = useState<UserInformation>();
     const [myUsers, setMyUsers] = useState<UserInformation[]>([]);
 
     const { authenticated, refresh, authReady, signOut, switchUser } = useAuthentication();
 
     const { userInformationService } = useServices();
+    
 
     const fetchMyUsers = useCallback(async () => {
         if (!userInformationService) return;
@@ -222,6 +225,12 @@ export function UserInformationContextProvider({ children }: Props) {
             setMyUsers([]);
         }
     }, [authenticated]);
+
+    useEffect(() => {
+        if (authenticated && selectedUserId !== undefined && selectedUserId != selectedUserProfile?.id) {
+            fetchSelectedUser();
+        }
+    }, [selectedUserId, authenticated]);
 
     return (
         <UserInformationContext.Provider value={context}>

@@ -38,7 +38,7 @@ export function useShouldSelectUser() {
     const dispatch = useDispatch();
     const { enqueueSnackbar } = useSnackbar();
 
-    const { selectedUserProfile, myUsers, actions } = useUserInformation();
+    const { myUsers, actions } = useUserInformation();
 
     const [shouldSelectUser, setShouldSelectUser] = useState<boolean>(false);
     const [userSelectErrorCode, setUserSelectErrorCode] = useState<number | null>(null);
@@ -180,10 +180,12 @@ function UserList({ users }: { users: UserInformation[] }) {
         try {
             actions?.selectUser(userId);
             dispatch(setSelectedUserId(userId));
+            dispatch(setSelectedOrg(undefined));
+            dispatch(setSelectUserDialogOpen(false));
         } catch(error) {
             enqueueSnackbar("Couldn't select user.", {variant: "error"});
         }
-    }, [actions]);  
+    }, [actions]);
 
     return (
         <List>

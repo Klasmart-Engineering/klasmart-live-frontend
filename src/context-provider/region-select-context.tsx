@@ -60,7 +60,7 @@ const DefaultRegions: Region[] = [
         services: {
             auth: "https://auth.alpha.kidsloop.net",
             live: "https://live.alpha.kidsloop.net",
-            cms: "https://kl2-test.kidsloop.net",
+            cms: "https://cms.alpha.kidsloop.net",
             sfu: "https://live.alpha.kidsloop.net/sfu",
             user: "https://api.alpha.kidsloop.net/user/",
             privacy: "https://kidsloop.net/en/policies/privacy-notice"

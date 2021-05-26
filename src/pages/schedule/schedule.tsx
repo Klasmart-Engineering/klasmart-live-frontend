@@ -42,6 +42,7 @@ import {
 import { lockOrientation } from "../../utils/screenUtils";
 import { autoHideDuration } from "../../utils/fixedValues";
 import { useShouldSelectUser } from "../account/selectUserDialog";
+import { useUserInformation } from "../../context-provider/user-information-context";
 
 // NOTE: China API server(Go lang) accept 10 digits timestamp
 const now = new Date();
@@ -82,6 +83,8 @@ export function Schedule() {
     const { shouldSelectUser, userSelectErrorCode } = useShouldSelectUser();
     const { shouldSelectOrganization, organizationSelectErrorCode } = useShouldSelectOrganization();
 
+    const { selectedUserProfile } = useUserInformation();
+
     const [key, setKey] = useState(Math.random().toString(36))
     const [alertMessageId, setAlertMessageId] = useState<string>();
     const [openAlert, setOpenAlert] = useState(false);
@@ -99,6 +102,7 @@ export function Schedule() {
         async function fetchEverything() {
             async function fetchSchedules() {
                 if (!schedulerService) return Promise.reject();
+                if (!selectedUserProfile) return Promise.reject();
                 if (!selectedOrg) return Promise.reject();
 
                 // TODO (Isu): Apply more API params to filter. It makes don't need to do .filter().
@@ -160,10 +164,10 @@ export function Schedule() {
             }
         }
 
-        if (selectedOrg && selectedOrg.organization_id !== "") {
+        if (selectedUserProfile && selectedOrg && selectedOrg.organization_id !== "") {
             fetchEverything();
         }
-    }, [shouldSelectUser, shouldSelectOrganization, selectedOrg, schedulerService, key])
+    }, [shouldSelectUser, shouldSelectOrganization, selectedOrg, schedulerService, selectedUserProfile, key])
 
     if (userSelectErrorCode && userSelectErrorCode !== 401) {
         return (
