@@ -1,7 +1,7 @@
 import React, { createContext, ReactChild, ReactChildren, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
 import { UserInformation } from "../services/user/IUserInformationService";
-import { setLocale, setRegion } from "../store/reducers/session";
+import { setLocale, setRegion, setSelectedOrg, setSelectedUserId } from "../store/reducers/session";
 import { useServices } from "./services-provider";
 
 // TODO (Axel): All of this context can be combined with the user-context from 
@@ -14,6 +14,7 @@ type Props = {
 }
 
 type UserInformationActions = {
+    selectUser: (userId: string) => Promise<void>
     signOutUser: () => void
     refreshAuthenticationToken: () => void
     refreshUserInformation: () => Promise<void>
@@ -23,12 +24,12 @@ type UserInformationContext = {
     loading: boolean,
     error: boolean,
     authenticated: boolean,
-    information?: UserInformation,
+    selectedUserProfile?: UserInformation,
     actions?: UserInformationActions,
     myUsers: UserInformation[]
 }
 
-const UserInformationContext = createContext<UserInformationContext>({ loading: true, authenticated: false, error: false, information: undefined, actions: undefined, myUsers: [] });
+const UserInformationContext = createContext<UserInformationContext>({ loading: true, authenticated: false, error: false, selectedUserProfile: undefined, actions: undefined, myUsers: [] });
 
 export function isRoleTeacher(role: string) {
     const teacherRoleNames = [
@@ -81,6 +82,17 @@ const useAuthentication = () => {
         }).finally(() => {
             setAuthenticated(false);
         });
+    }, []);
+
+    const switchUser = useCallback(async (userId: string) => {
+        if (!authenticationService) return Promise.reject<void>("No authentication service.");
+        if (signedOut) return Promise.reject<void>("Not signed in");
+
+        try {
+            await authenticationService.switchUser(userId);
+        } catch (error) {
+            console.error(error);
+        }
     }, []);
 
     useEffect(() => {
@@ -144,52 +156,70 @@ const useAuthentication = () => {
         refresh();
     }, [])
 
-    return { authReady, authError, authenticated, refresh, signOut };
+    return { authReady, authError, authenticated, refresh, signOut, switchUser };
 }
 
-export function UserInformationContextProvider({ children }: Props) {    
+export function UserInformationContextProvider({ children }: Props) {
     const [error, setError] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
 
-    const [informationLoading, setInformationLoading] = useState<boolean>(false);
-    const [information, setInformation] = useState<UserInformation>();
+    const [selectedUserProfile, setSelectedUserProfile] = useState<UserInformation>();
     const [myUsers, setMyUsers] = useState<UserInformation[]>([]);
 
-    const { authenticated, refresh, authReady, signOut } = useAuthentication();
+    const { authenticated, refresh, authReady, signOut, switchUser } = useAuthentication();
 
     const { userInformationService } = useServices();
 
-    const fetchInformation = useCallback(async () => {
+    const fetchMyUsers = useCallback(async () => {
         if (!userInformationService) return;
-        if (informationLoading) return;
+        if (loading) return;
 
-        setInformationLoading(true);
+        setLoading(true);
 
         try {
-            const userInformation = await userInformationService.me();
-            setInformation(userInformation);
-
             const myUsers = await userInformationService.getMyUsers();
             setMyUsers(myUsers);
-        } catch(error) {
+        } catch (error) {
             console.error(error);
-            setInformation(undefined);
+            setSelectedUserProfile(undefined);
             setMyUsers([]);
             setError(true);
         } finally {
-            setInformationLoading(false);
+            setLoading(false);
         }
-        
+
     }, [userInformationService]);
 
+    const fetchSelectedUser = useCallback(async () => {
+        if (!userInformationService) return;
+        if (loading) return;
+
+        setLoading(true);
+
+        try {
+            const selectedUser = await userInformationService.me();
+            setSelectedUserProfile(selectedUser);
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
+    }, [userInformationService]);
+
+    const selectUser = useCallback(async (userId: string) => {
+        await switchUser(userId);
+        await fetchSelectedUser();
+    }, []);
+
     const context = useMemo<UserInformationContext>(() => {
-        return { authenticated, loading: informationLoading || !authReady, error, information, actions: { signOutUser: signOut, refreshUserInformation: fetchInformation, refreshAuthenticationToken: refresh }, myUsers }
-    }, [information, informationLoading, authReady, error, fetchInformation, authenticated])
+        return { authenticated, loading: loading || !authReady, error, selectedUserProfile, actions: { signOutUser: signOut, refreshUserInformation: fetchMyUsers, refreshAuthenticationToken: refresh, selectUser }, myUsers }
+    }, [selectedUserProfile, loading, authReady, error, fetchMyUsers, authenticated])
 
     useEffect(() => {
         if (authenticated) {
-            fetchInformation();
+            fetchMyUsers();
         } else {
-            setInformation(undefined);
+            setMyUsers([]);
         }
     }, [authenticated]);
 

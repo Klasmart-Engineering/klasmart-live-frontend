@@ -8,10 +8,8 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
 import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Divider from "@material-ui/core/Divider";
-import Avatar from "@material-ui/core/Avatar";
 import Link from "@material-ui/core/Link";
 
 import { Check as CheckIcon } from "@styled-icons/fa-solid/Check";
@@ -20,11 +18,10 @@ import { useUserInformation } from "../../context-provider/user-information-cont
 import { useRegionSelect } from "../../context-provider/region-select-context";
 import { Header } from "../../components/header";
 import { State } from "../../store/store";
-import { setSelectedOrg, setUser } from "../../store/reducers/session";
+import { setSelectedOrg, setSelectedUserId } from "../../store/reducers/session";
 import { setSelectUserDialogOpen } from "../../store/reducers/control";
 import { UserInformation } from "../../services/user/IUserInformationService";
 import { List, ListItem, ListItemAvatar, ListItemIcon, ListItemText } from "@material-ui/core";
-import { useServices } from "../../context-provider/services-provider";
 
 const useStyles = makeStyles((theme: Theme) => ({
     noPadding: {
@@ -39,13 +36,14 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 export function useShouldSelectUser() {
     const dispatch = useDispatch();
+    const { enqueueSnackbar } = useSnackbar();
 
-    const { information, myUsers } = useUserInformation();
+    const { selectedUserProfile, myUsers, actions } = useUserInformation();
 
     const [shouldSelectUser, setShouldSelectUser] = useState<boolean>(false);
     const [userSelectErrorCode, setUserSelectErrorCode] = useState<number | null>(null);
 
-    const selectedUser = useSelector((state: State) => state.session.user);
+    const selectedUserId = useSelector((state: State) => state.session.selectedUserId);
 
     const setErrorState = (errorCode: number) => {
         setShouldSelectUser(false);
@@ -53,25 +51,29 @@ export function useShouldSelectUser() {
     };
 
     useEffect(() => {
-        const didNotSelectUser = selectedUser === undefined;
-        const mismatchingUserId = information?.id !== selectedUser?.id;
+        const didNotSelectUser = selectedUserId === undefined;
 
-        if (didNotSelectUser || mismatchingUserId) {
-            if (information === undefined) {
-                setErrorState(401);
-                return;
-            }
-
+        if (didNotSelectUser) {
             if (myUsers && myUsers.length > 1) {
                 setShouldSelectUser(true);
             } else {
                 setShouldSelectUser(false);
-                dispatch(setUser(information));
+
+                if (myUsers && myUsers.length == 1) {
+                    actions?.selectUser(myUsers[0].id).then(() => {
+                        dispatch(setSelectedUserId(myUsers[0].id));
+                        dispatch(setSelectUserDialogOpen(false));
+                    }).catch(error => {
+                        enqueueSnackbar("Unable to select user", { variant: "error" });
+                    });
+                } else {
+                    setErrorState(403);
+                }
             }
         } else {
             setShouldSelectUser(false);
         }
-    }, [information, myUsers, selectedUser]);
+    }, [myUsers, selectedUserId]);
 
     return { userSelectErrorCode, shouldSelectUser }
 }
@@ -111,7 +113,7 @@ export function SelectUserDialog() {
 
     async function handleSignOut() {
         dispatch(setSelectUserDialogOpen(false));
-        dispatch(setUser(undefined));
+        dispatch(setSelectedUserId(undefined));
         dispatch(setSelectedOrg(undefined));
         actions?.signOutUser();
     }
@@ -168,32 +170,20 @@ export function SelectUserDialog() {
 }
 
 function UserList({ users }: { users: UserInformation[] }) {
-    const dispatch = useDispatch();
-    const selectedUser = useSelector((state: State) => state.session.user);
-
-    const { authenticationService } = useServices();
     const { enqueueSnackbar } = useSnackbar();
-
-    const { information, actions } = useUserInformation();
+    const { selectedUserProfile, actions } = useUserInformation();
+    const dispatch = useDispatch();
 
     const theme = useTheme();
 
-    const changeUser = useCallback(async (user: UserInformation) => {
+    const selectUser = useCallback(async (userId: string) => {
         try {
-            const switched = await authenticationService!.switchUser(user.id);
-            if (!switched) {
-                throw new Error("Couldn't switch user");
-            }
-
-            await actions?.refreshUserInformation();
-
-            dispatch(setUser(information));
-            dispatch(setSelectedOrg(undefined));
-            dispatch(setSelectUserDialogOpen(false));
-        } catch (error) {
-            enqueueSnackbar("Unable to select user", { variant: "error" });
+            actions?.selectUser(userId);
+            dispatch(setSelectedUserId(userId));
+        } catch(error) {
+            enqueueSnackbar("Couldn't select user.", {variant: "error"});
         }
-    }, []);
+    }, [actions]);  
 
     return (
         <List>
@@ -206,7 +196,7 @@ function UserList({ users }: { users: UserInformation[] }) {
                 return <ListItem
                     key={user.id}
                     button
-                    onClick={() => changeUser(user)}
+                    onClick={() => selectUser(user.id)}
                 >
                     <ListItemAvatar>
                         <UserAvatar name={userName} />
@@ -217,7 +207,7 @@ function UserList({ users }: { users: UserInformation[] }) {
                             `Please update your profile` :
                             user.dateOfBirth ? `Birthday: ` + user.dateOfBirth : ``}
                     />
-                    {user.id === selectedUser?.id && (
+                    {user.id === selectedUserProfile?.id && (
                         <ListItemIcon>
                             <CheckIcon color={theme.palette.success.main} size={24} />
                         </ListItemIcon>

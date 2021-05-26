@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { createStyles, makeStyles, useTheme, Theme } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
@@ -257,7 +257,7 @@ function JoinRoomForm({
 }: JoinRoomFormProps): JSX.Element {
     const { classType: classtype, setCamera, name, setName } = useSessionContext();
 
-    const { information: myInformation } = useUserInformation();
+    const { selectedUserProfile } = useUserInformation();
 
     const { audioDeviceId, setAudioDeviceId } = audioDeviceIdHandler;
     const { videoDeviceId, setVideoDeviceId } = videoDeviceIdHandler;
@@ -271,15 +271,15 @@ function JoinRoomForm({
     // will populate the input field for the user name but still allow it to be customized
     // before joining room.
     useEffect(() => {
-        if (!myInformation) return;
+        if (!selectedUserProfile) return;
 
-        if (myInformation.givenName) {
-            setUser(myInformation.givenName);
-        } else if(myInformation.username) {
-            setUser(myInformation.username);
+        if (selectedUserProfile.givenName) {
+            setUser(selectedUserProfile.givenName);
+        } else if(selectedUserProfile.username) {
+            setUser(selectedUserProfile.username);
         }
 
-    }, [myInformation]);
+    }, [selectedUserProfile]);
 
     function join(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();

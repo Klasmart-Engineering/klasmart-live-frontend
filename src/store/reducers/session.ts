@@ -1,14 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { ClassType, UserAgent, UserType } from "../actions";
 import { getDefaultLanguageCode } from "../../utils/locale";
-import { OrganizationResponse, OrganizationStatus, UserInformation } from "../../services/user/IUserInformationService";
+import { OrganizationResponse } from "../../services/user/IUserInformationService";
 
 type SessionState = {
     classType: ClassType;
     userAgent: UserAgent;
     userType: UserType;
     locale: string;
-    user: UserInformation | undefined;
+    selectedUserId: string | undefined;
     selectedOrg: OrganizationResponse | undefined;
     regionId: string;
 }
@@ -34,9 +34,9 @@ const initialSessionState: SessionState = {
     },
     userType: UserType.STUDENT,
     locale: getDefaultLanguageCode(),
-    user: undefined,
+    selectedUserId: undefined,
     selectedOrg: undefined,
-    regionId: "prod",
+    regionId: "alpha",
 }
 
 const sessionSlice = createSlice({
@@ -55,8 +55,8 @@ const sessionSlice = createSlice({
         setLocale(state, action) {
             return { ...state, locale: action.payload }
         },
-        setUser(state, action) {
-            return { ...state, user: action.payload }
+        setSelectedUserId(state, action) {
+            return { ...state, selectedUserId: action.payload }
         },
         setSelectedOrg(state, action) {
             return { ...state, selectedOrg: action.payload }
@@ -72,7 +72,7 @@ export const {
     setUserAgent,
     setUserType,
     setLocale,
-    setUser,
+    setSelectedUserId,
     setSelectedOrg,
     setRegion
 } = sessionSlice.actions

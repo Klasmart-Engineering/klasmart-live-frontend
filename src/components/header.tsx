@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createStyles, makeStyles, Theme, useTheme } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
@@ -19,6 +19,7 @@ import KidsloopLogo from "../assets/img/kidsloop_icon.svg";
 import { useHistory } from "react-router-dom";
 import { UserAvatar, OrganizationAvatar } from "kidsloop-px";
 import ButtonBase from "@material-ui/core/ButtonBase";
+import { useUserInformation } from "../context-provider/user-information-context";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -127,14 +128,15 @@ function OpenSelectUserButton() {
     const { selectUserButton } = useStyles();
 
     const dispatch = useDispatch();
-    const selectedUser = useSelector((state: State) => state.session.user);
+
+    const { selectedUserProfile } = useUserInformation();
 
     return (
         <ButtonBase
             className={selectUserButton}
             onClick={() => dispatch(setSelectUserDialogOpen(true))}
         >
-            <UserAvatar name={selectedUser?.fullName ?? ""} size={"medium"} />
+            <UserAvatar name={selectedUserProfile?.fullName ?? ""} size={"medium"} />
         </ButtonBase>
     );
 }

@@ -18,7 +18,7 @@ import { isRoleTeacher, useUserInformation } from "../../context-provider/user-i
 import { useRegionSelect } from "../../context-provider/region-select-context";
 import { Header } from "../../components/header";
 import { State } from "../../store/store";
-import { setSelectedOrg, setUser } from "../../store/reducers/session";
+import { setSelectedOrg, setSelectedUserId } from "../../store/reducers/session";
 import { setSelectOrgDialogOpen } from "../../store/reducers/control";
 import { Organization, OrganizationResponse } from "../../services/user/IUserInformationService";
 import { List, ListItem, ListItemAvatar, ListItemIcon, ListItemText } from "@material-ui/core";
@@ -43,7 +43,8 @@ export function useShouldSelectOrganization() {
     const [organizationSelectErrorCode, setOrganizationSelectErrorCode] = useState<number | null>(null);
     const [hasStudentRole, setHasStudentRole] = useState<boolean | null>(null);
 
-    const selectedUser = useSelector((state: State) => state.session.user);
+    const { selectedUserProfile } = useUserInformation();
+
     const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
 
     const setErrorState = (errorCode: number) => {
@@ -70,15 +71,15 @@ export function useShouldSelectOrganization() {
     }
 
     useEffect(() => {
-        // 1. information returns undefined
-        if (!selectedUser) {
+        // 1. User profile haven't been selected
+        if (!selectedUserProfile) {
             setErrorState(401);
             return;
         }
 
         // NOTE: User already selected organization.
         if (selectedOrg) {
-            const selected = selectedUser.organizations.find(o => o.organization.organization_id === selectedOrg?.organization_id);
+            const selected = selectedUserProfile.organizations.find(o => o.organization.organization_id === selectedOrg?.organization_id);
             if (selected && verifyOrganizationStudentRole(selected)) {
                 setHasStudentRole(true);
                 setShouldSelectOrganization(false);
@@ -88,13 +89,13 @@ export function useShouldSelectOrganization() {
         }
 
         // 1. information exists
-        if (selectedUser.organizations.length === 0) { // 2. User has no organization
+        if (selectedUserProfile.organizations.length === 0) { // 2. User has no organization
             setErrorState(403);
-        } else if (selectedUser.organizations.length === 1) { // 2. User has 1 organization
+        } else if (selectedUserProfile.organizations.length === 1) { // 2. User has 1 organization
             setShouldSelectOrganization(false);
-            const { organization_id, organization_name } = selectedUser.organizations[0].organization;
+            const { organization_id, organization_name } = selectedUserProfile.organizations[0].organization;
 
-            if (!verifyOrganizationStudentRole(selectedUser.organizations[0])) {
+            if (!verifyOrganizationStudentRole(selectedUserProfile.organizations[0])) {
                 setHasStudentRole(false);
                 setOrganizationSelectErrorCode(403);
                 return;
@@ -108,7 +109,7 @@ export function useShouldSelectOrganization() {
             setHasStudentRole(true);
             setOrganizationSelectErrorCode(null);
         }
-    }, [selectedUser, selectedOrg]);
+    }, [selectedUserProfile, selectedOrg]);
 
     /** 
      * ABOUT hasStudentRole (Isu)
@@ -129,21 +130,19 @@ export function SelectOrgDialog() {
     const dispatch = useDispatch();
     const open = useSelector((state: State) => state.control.selectOrgDialogOpen);
     const { region } = useRegionSelect();
-    const { actions } = useUserInformation();
-
-    const selectedUser = useSelector((state: State) => state.session.user);
+    const { selectedUserProfile, actions } = useUserInformation();
 
     const organizations = useMemo(() => {
-        if (!selectedUser) return [];
+        if (!selectedUserProfile) return [];
 
-        return selectedUser.organizations.map(o => {
+        return selectedUserProfile.organizations.map(o => {
             return {
                 organization_id: o.organization.organization_id,
                 organization_name: o.organization.organization_name,
                 status: o.organization.status
             }
         })
-    }, [selectedUser]);
+    }, [selectedUserProfile]);
 
     const handleBrowser = () => {
         const cordova = (window as any).cordova;
@@ -169,7 +168,7 @@ export function SelectOrgDialog() {
 
     async function handleSignOut() {
         dispatch(setSelectOrgDialogOpen(false));
-        dispatch(setUser(undefined));
+        dispatch(setSelectedUserId(undefined));
         dispatch(setSelectedOrg(undefined));
         actions?.signOutUser();
     }
