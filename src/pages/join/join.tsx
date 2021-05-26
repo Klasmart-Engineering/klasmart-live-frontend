@@ -88,7 +88,8 @@ export default function Join(): JSX.Element {
         }
 
         if (!permissions) {
-            requestPermissions(true, true);
+            // requestPermissions(true, true);
+            requestIosCameraPermission(true, true);
         } else {
             refreshCameras();
         }
@@ -96,6 +97,7 @@ export default function Join(): JSX.Element {
         setDialogOpen(!permissions);
     }, [refreshCameras, permissions, classtype]);
 
+    /* TODO (axel): Unsupported on iOS
     useEffect(() => {
         if (!stream) return;
 
@@ -107,7 +109,7 @@ export default function Join(): JSX.Element {
 
         const track = stream.getVideoTracks()[0];
         track?.applyConstraints(videoConstraints);
-    }, [stream]);
+    }, [stream]); */
 
     return (<>
         <Grid

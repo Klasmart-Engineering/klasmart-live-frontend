@@ -88,6 +88,8 @@ const useCordovaInitialize = (backExitApplication?: boolean, callbackBackButton?
             if (wkWebView) {
                 wkWebView.injectCookie('kidsloop.net/refresh');
                 wkWebView.injectCookie('kidsloop.net/');
+                wkWebView.injectCookie('auth.alpha.kidsloop.net/refresh');
+                wkWebView.injectCookie('.alpha.kidsloop.net/');
             }
 
             setCordovaReady(true);
