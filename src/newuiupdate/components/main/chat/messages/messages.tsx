@@ -40,8 +40,13 @@ function Messages () {
 
     useEffect(() => {
         // TODO, useref + scrollintoview (if possible),
-        const objDiv = document.getElementById(`chat-container`);
-        if(objDiv) objDiv.scrollTop = objDiv?.scrollHeight;
+
+        const objDiv = document.querySelectorAll(`.chat-container`);
+        if(objDiv.length) {
+            for (let i of objDiv) {
+                i.scrollTop = i.scrollHeight
+            }
+        }
     }, [ messages ]);
 
     return (
@@ -54,6 +59,7 @@ function Messages () {
                 xs
                 // ref={messagesBox}
                 id="chat-container"
+                classes={{root: 'chat-container'}}
                 className={classes.messagesContainer}>
                 {messages.length === 0 ?
                     <NoItemList
