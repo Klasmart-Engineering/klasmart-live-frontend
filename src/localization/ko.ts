@@ -133,7 +133,7 @@ const messages: Record<string, string> = {
     schedule_liveNoSchedule: "아직 스케줄이 없어요",
     schedule_studyAnytimeStudy: "언제나 학습하기",
     schedule_studyNoSchedule: "아직 스케줄이 없어요",
-    schedule_selectOrgLoaded: "",
+    schedule_selectOrgLoaded: "Please select an organization",
 
     loading_mediaPermission: "앱을 사용하려면 카메라 및 마이크 권한이 필요해요. 권한을 허용하고 다시 시작해 보세요.",
 

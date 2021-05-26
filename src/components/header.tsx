@@ -75,12 +75,12 @@ export function Header({ isHomeRoute, setKey }: { isHomeRoute?: boolean, setKey?
                             wrap="nowrap"
                         >
                             <Grid item style={{ flexGrow: 0 }}>
-                                {selectOrgDialogOpen ? <CloseSelectOrgButton /> : (
+                                {selectOrgDialogOpen || selectUserDialogOpen ? <CloseSelectOrgOrUserButton /> : (
                                     isHomeRoute ? <OpenSelectOrgButton /> : <GoBackButton />
                                 )}
                             </Grid>
                             <Grid item style={{ flexGrow: 0 }}>
-                                <div style={{width: 44, height: 44}} />
+                                { isHomeRoute && <div style={{width: 44, height: 44}} /> }
                             </Grid>
                             <Grid item style={{ flexGrow: 1, textAlign: "center" }}>
                                 <img alt="KidsLoop Logo" src={KidsloopLogo} height={32} />
@@ -89,7 +89,7 @@ export function Header({ isHomeRoute, setKey }: { isHomeRoute?: boolean, setKey?
                                 <MenuButton setKey={setKey} />
                             </Grid>
                             <Grid item style={{ flexGrow: 0 }}>
-                                <OpenSelectUserButton />
+                                { isHomeRoute && <OpenSelectUserButton /> }
                             </Grid>
                         </Grid>
                     </Grid>
@@ -99,28 +99,22 @@ export function Header({ isHomeRoute, setKey }: { isHomeRoute?: boolean, setKey?
     );
 }
 
-function CloseSelectOrgButton() {
+function CloseSelectOrgOrUserButton() {
     const { iconButton } = useStyles();
     const dispatch = useDispatch();
 
-    return (
-        <IconButton
-            onClick={() => dispatch(setSelectOrgDialogOpen(false))}
-            size="medium"
-            className={iconButton}
-        >
-            <StyledIcon icon={<CloseIcon />} size="medium" />
-        </IconButton>
-    );
-}
-
-function CloseSelectUserButton() {
-    const { iconButton } = useStyles();
-    const dispatch = useDispatch();
+    const selectOrgDialogOpen = useSelector((state: State) => state.control.selectOrgDialogOpen);
+    const selectUserDialogOpen = useSelector((state: State) => state.control.selectUserDialogOpen);
 
     return (
         <IconButton
-            onClick={() => dispatch(setSelectUserDialogOpen(false))}
+            onClick={() => {
+                if (selectOrgDialogOpen) {
+                    dispatch(setSelectOrgDialogOpen(false))
+                } else if (selectUserDialogOpen) {
+                    dispatch(setSelectUserDialogOpen(false))
+                }
+            }}
             size="medium"
             className={iconButton}
         >
