@@ -188,7 +188,23 @@ function parseToken () {
                 isTeacher: payload.teacher ? Boolean(payload.teacher) : false,
                 name: payload.name ? String(payload.name) : undefined,
                 roomId: String(payload.roomid),
-                materials: parsedMaterials || [],
+                materials: [
+                    {
+                        __typename: MaterialTypename.Iframe,
+                        name: `Colum Presentation`,
+                        url: `/h5p/play/608b9065e5085e0014359f72`,
+                    },
+                    {
+                        __typename: MaterialTypename.Iframe,
+                        name: `Local PDF`,
+                        url: `http://localhost:3000/api/pdf/a.pdf`,
+                    },
+                    {
+                        __typename: MaterialTypename.Iframe,
+                        name: `PDF from alpha`,
+                        url: `https://live.alpha.kidsloop.net/assets/60a3c4a203b03c3acdb56f9d.pdf`,
+                    },
+                ],
             };
         }
         // TODO think of a better way to set up the debug environment
