@@ -46,22 +46,6 @@ export const sessionId = uuid();
 export const SFU_LINK = `SFU_LINK`;
 export const LIVE_LINK = `LIVE_LINK`;
 
-const authToken = AuthTokenProvider.retrieveToken();
-const wsLink = new WebSocketLink({
-    uri: process.env.ENDPOINT_WEBSOCKET || `${window.location.protocol === `https:` ? `wss` : `ws`}://${window.location.host}/graphql`,
-    options: {
-        reconnect: true,
-        connectionParams: {
-            authToken,
-            sessionId,
-        },
-    },
-});
-const client = new ApolloClient({
-    cache: new InMemoryCache(),
-    link: wsLink,
-} as any);
-
 function getApolloClient (roomId: string) {
     const authToken = AuthTokenProvider.retrieveToken();
     const retryOptions = {
