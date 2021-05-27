@@ -6,7 +6,7 @@ module.exports = {
   mode: "development",
   entry: {
     ui: "./src/entry.tsx",
-    "record-e44f2b3": "./src/entry-record.ts",
+    "record-1db5341": "./src/entry-record.ts",
     player: "./src/entry-player.ts",
     pdfviewer: "./src/entry-pdfviewer.js",
   },
