@@ -38,10 +38,10 @@ export function useShouldSelectUser() {
     const dispatch = useDispatch();
     const { enqueueSnackbar } = useSnackbar();
 
-    const { myUsers, actions } = useUserInformation();
+    const { myUsers, actions, authenticated } = useUserInformation();
 
     const [shouldSelectUser, setShouldSelectUser] = useState<boolean>(false);
-    const [userSelectErrorCode, setUserSelectErrorCode] = useState<number | null>(null);
+    const [userSelectErrorCode, setUserSelectErrorCode] = useState<number>();
 
     const selectedUserId = useSelector((state: State) => state.session.selectedUserId);
 
@@ -51,9 +51,13 @@ export function useShouldSelectUser() {
     };
 
     useEffect(() => {
-        const didNotSelectUser = selectedUserId === undefined;
+        if (!authenticated) return;
+        if (!myUsers) return;
 
-        if (didNotSelectUser) {
+        const didNotSelectUser = selectedUserId === undefined;
+        const invalidUserSelected = selectedUserId && myUsers && (myUsers?.some(u => selectedUserId === u.id) === false);
+
+        if (didNotSelectUser || invalidUserSelected) {
             if (myUsers && myUsers.length > 1) {
                 setShouldSelectUser(true);
             } else {
@@ -64,16 +68,15 @@ export function useShouldSelectUser() {
                         dispatch(setSelectedUserId(myUsers[0].id));
                         dispatch(setSelectUserDialogOpen(false));
                     }).catch(error => {
+                        console.error(error);
                         enqueueSnackbar("Unable to select user", { variant: "error" });
                     });
-                } else {
-                    setErrorState(403);
                 }
             }
         } else {
             setShouldSelectUser(false);
         }
-    }, [myUsers, selectedUserId]);
+    }, [myUsers, selectedUserId, authenticated, actions]);
 
     return { userSelectErrorCode, shouldSelectUser }
 }
@@ -169,7 +172,7 @@ export function SelectUserDialog() {
     )
 }
 
-function UserList({ users }: { users: UserInformation[] }) {
+function UserList({ users }: { users?: UserInformation[] }) {
     const { enqueueSnackbar } = useSnackbar();
     const { selectedUserProfile, actions } = useUserInformation();
     const dispatch = useDispatch();
@@ -182,14 +185,14 @@ function UserList({ users }: { users: UserInformation[] }) {
             dispatch(setSelectedUserId(userId));
             dispatch(setSelectedOrg(undefined));
             dispatch(setSelectUserDialogOpen(false));
-        } catch(error) {
-            enqueueSnackbar("Couldn't select user.", {variant: "error"});
+        } catch (error) {
+            enqueueSnackbar("Couldn't select user.", { variant: "error" });
         }
     }, [actions]);
 
     return (
         <List>
-            {users.map((user) => {
+            {users && users.map((user) => {
                 const givenName = user.givenName ?? ``;
                 const familyName = user.familyName ?? ``;
                 const fullName = givenName + ` ` + familyName;

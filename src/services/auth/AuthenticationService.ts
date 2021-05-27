@@ -45,7 +45,7 @@ export class AuthenticationService implements IAuthenticationService {
         await fetchJson(url, { credentials: "include" })
     }
 
-    async switchUser(userId: string): Promise<boolean> {
+    async switchUser(userId: string, retry: boolean = true): Promise<boolean> {
         const url = `${this.endpoint}/switch`;
         const response = await fetchJson(url, {
             body: JSON.stringify({ user_id: userId }),
@@ -59,8 +59,8 @@ export class AuthenticationService implements IAuthenticationService {
         // after doing refresh.
         if (!response.ok) {
             const refreshed = await this.refresh();
-            if (refreshed) {
-                return await this.switchUser(userId);
+            if (refreshed && retry) {
+                return await this.switchUser(userId, false);
             }
         }
 

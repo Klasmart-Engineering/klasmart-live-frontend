@@ -76,6 +76,7 @@ export function Schedule() {
     const dispatch = useDispatch();
     const classType = useSelector((state: State) => state.session.classType);
     const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
+    const selectedUserId = useSelector((state: State) => state.session.selectedUserId);
     const inFlight = useSelector((state: State) => state.communication.inFlight);
 
     const { schedulerService } = useServices();
@@ -164,7 +165,9 @@ export function Schedule() {
             }
         }
 
-        if (selectedUserProfile && selectedOrg && selectedOrg.organization_id !== "") {
+        const selectedValidUser = selectedUserId && selectedUserId === selectedUserProfile?.id;
+
+        if (selectedValidUser && selectedOrg && selectedOrg.organization_id !== "") {
             fetchEverything();
         }
     }, [shouldSelectUser, shouldSelectOrganization, selectedOrg, schedulerService, selectedUserProfile, key])
@@ -172,9 +175,9 @@ export function Schedule() {
     if (userSelectErrorCode && userSelectErrorCode !== 401) {
         return (
             <Fallback
-                errCode={`${organizationSelectErrorCode}`}
-                titleMsgId={`err_${organizationSelectErrorCode}_title`}
-                subtitleMsgId={`err_${organizationSelectErrorCode}_subtitle`}
+                errCode={`${userSelectErrorCode}`}
+                titleMsgId={`err_${userSelectErrorCode}_title`}
+                subtitleMsgId={`err_${userSelectErrorCode}_subtitle`}
             />
         );
     }
