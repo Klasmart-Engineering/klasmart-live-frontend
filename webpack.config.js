@@ -102,7 +102,7 @@ module.exports = {
       filename: "pdfviewer.html",
       chunks: ["pdfviewer"],
       template: "src/pdfviewer.html",
-    }),
+    })
   ],
   devServer: {
     host: "0.0.0.0",
