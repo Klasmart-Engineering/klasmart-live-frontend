@@ -1,5 +1,6 @@
 "use strict";
 
+console.log('loading PDF view');
 window.addEventListener('message', ({data}) => {
   if (!pdfjsLib.getDocument || !pdfjsViewer.PDFViewer) {
     // eslint-disable-next-line no-alert
@@ -17,7 +18,6 @@ window.addEventListener('message', ({data}) => {
   
   const DEFAULT_URL = data.pdfSrc;
   
-
   const container = document.getElementById("viewerContainer");
   
   const eventBus = new pdfjsViewer.EventBus();
@@ -26,13 +26,14 @@ window.addEventListener('message', ({data}) => {
   const pdfLinkService = new pdfjsViewer.PDFLinkService({
     eventBus,
   });
-  
+
   const pdfViewer = new pdfjsViewer.PDFViewer({
     container,
     eventBus,
     linkService: pdfLinkService,
     renderer: "svg",
     textLayerMode: 0,
+    embedFonts: true
   });
   pdfLinkService.setViewer(pdfViewer);
 
@@ -54,7 +55,11 @@ window.addEventListener('message', ({data}) => {
     url: DEFAULT_URL,
     cMapUrl: CMAP_URL,
     cMapPacked: CMAP_PACKED,
+    fontExtraProperties: true,
   });
+
+  loadingTask
+
   loadingTask.promise.then(function (pdfDocument) {
     // Document loaded, specifying document for the viewer and
     // the (optional) linkService.
@@ -76,7 +81,7 @@ const samplePdfs = ['a', 'b', 'c', 'd'];
 const selection = samplePdfs[Math.floor(Math.random() * 4)];
 const data = {
   pdfSrc: `http://localhost:3000/api/pdf/${selection}.pdf`,
-  scale: 'page-wid'
+  scale: 'page-width'
 }
 
 window.postMessage(data, '*');

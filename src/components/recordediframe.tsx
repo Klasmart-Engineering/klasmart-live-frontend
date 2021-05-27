@@ -175,6 +175,7 @@ export function RecordedIframe(props: Props): JSX.Element {
 
     const getSpinner = (): string => loadStatus === LoadStatus.Loading ? getRandomSpinner() : GhostSpinner;
 
+
     return (
         <React.Fragment>
             <Dialog
@@ -238,7 +239,7 @@ export function RecordedIframe(props: Props): JSX.Element {
             </Dialog>
             <iframe
                 id="recordediframe"
-                src={contentId}
+                src={contentId.endsWith('.pdf') ? '/pdfviewer.html' : contentId}
                 ref={iframeRef}
                 style={{
                     width: contentWidth,
