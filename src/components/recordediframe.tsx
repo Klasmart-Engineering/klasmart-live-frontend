@@ -157,18 +157,22 @@ export function RecordedIframe(props: Props): JSX.Element {
     }, [iframeRef.current]);
 
     function startRecording() {
-        const iRef = window.document.getElementById("recordediframe") as HTMLIFrameElement;
-        if (!iRef ||
-            !iRef.contentWindow ||
-            (iRef.contentWindow as any).kidslooplive ||
-            !iRef.contentDocument) { return; }
-        const doc = iRef.contentDocument;
-        const script = doc.createElement("script");
-        script.setAttribute("type", "text/javascript");
-        const matches = window.location.pathname.match(/^(.*\/+)([^/]*)$/);
-        const prefix = matches && matches.length >= 2 ? matches[1] : "";
-        script.setAttribute("src", `${prefix}record-e44f2b3.js`);
-        doc.head.appendChild(script);
+        try {
+            const iRef = window.document.getElementById("recordediframe") as HTMLIFrameElement;
+            if (!iRef ||
+                !iRef.contentWindow ||
+                (iRef.contentWindow as any).kidslooplive ||
+                !iRef.contentDocument) { return; }
+            const doc = iRef.contentDocument;
+            const script = doc.createElement("script");
+            script.setAttribute("type", "text/javascript");
+            const matches = window.location.pathname.match(/^(.*\/+)([^/]*)$/);
+            const prefix = matches && matches.length >= 2 ? matches[1] : "";
+            script.setAttribute("src", `${prefix}record-1db5341.js`);
+            doc.head.appendChild(script);
+        } catch(e) {
+            console.log(e)
+        }
     }
 
     const getRandomSpinner = (): string => SPINNER[Math.floor(Math.random() * SPINNER.length)];
