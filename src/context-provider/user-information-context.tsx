@@ -1,7 +1,7 @@
 import React, { createContext, ReactChild, ReactChildren, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { UserInformation } from "../services/user/IUserInformationService";
-import { setLocale, setRegion, setSelectedUserId } from "../store/reducers/session";
+import { setLocale, setRegion, setSelectedOrg, setSelectedUserId } from "../store/reducers/session";
 import { State } from "../store/store";
 import { useServices } from "./services-provider";
 
@@ -25,12 +25,13 @@ type UserInformationContext = {
     loading: boolean,
     error: boolean,
     authenticated: boolean,
+    isSelectingUser: boolean,
     selectedUserProfile?: UserInformation,
     actions?: UserInformationActions,
     myUsers?: UserInformation[]
 }
 
-const UserInformationContext = createContext<UserInformationContext>({ loading: true, authenticated: false, error: false, selectedUserProfile: undefined, actions: undefined, myUsers: [] });
+const UserInformationContext = createContext<UserInformationContext>({ loading: true, authenticated: false, error: false, isSelectingUser: false, selectedUserProfile: undefined, actions: undefined, myUsers: [] });
 
 export function isRoleTeacher(role: string) {
     const teacherRoleNames = [
@@ -162,6 +163,7 @@ export function UserInformationContextProvider({ children }: Props) {
 
     const [error, setError] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
+    const [isSelectingUser, setIsSelectingUser] = useState<boolean>(false);
 
     const selectedUserId = useSelector((state: State) => state.session.selectedUserId);
     const [selectedUserProfile, setSelectedUserProfile] = useState<UserInformation>();
@@ -208,8 +210,17 @@ export function UserInformationContextProvider({ children }: Props) {
     }, [userInformationService]);
 
     const selectUser = useCallback(async (userId: string) => {
-        await switchUser(userId);
-        await fetchSelectedUser();
+        try {
+            setIsSelectingUser(true);
+            await switchUser(userId);
+
+            dispatch(setSelectedUserId(userId));
+            dispatch(setSelectedOrg(undefined));
+
+            await fetchSelectedUser();
+        } finally {
+            setIsSelectingUser(false);
+        }
     }, [switchUser, fetchSelectedUser]);
 
     const logOutUser = useCallback(async () => {
@@ -220,7 +231,7 @@ export function UserInformationContextProvider({ children }: Props) {
     }, [signOut]);
 
     const context = useMemo<UserInformationContext>(() => {
-        return { authenticated, loading: loading || !authReady, error, selectedUserProfile, actions: { signOutUser: signOut, refreshUserInformation: fetchMyUsers, refreshAuthenticationToken: refresh, selectUser }, myUsers }
+        return { authenticated, loading: loading || !authReady, error, isSelectingUser, selectedUserProfile, actions: { signOutUser: logOutUser, refreshUserInformation: fetchMyUsers, refreshAuthenticationToken: refresh, selectUser }, myUsers }
     }, [selectedUserProfile, loading, authReady, error, fetchMyUsers, authenticated])
 
     useEffect(() => {

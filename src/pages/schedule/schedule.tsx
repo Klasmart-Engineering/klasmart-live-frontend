@@ -84,7 +84,7 @@ export function Schedule() {
     const { shouldSelectUser, userSelectErrorCode } = useShouldSelectUser();
     const { shouldSelectOrganization, organizationSelectErrorCode } = useShouldSelectOrganization();
 
-    const { selectedUserProfile } = useUserInformation();
+    const { selectedUserProfile, isSelectingUser } = useUserInformation();
 
     const [key, setKey] = useState(Math.random().toString(36))
     const [alertMessageId, setAlertMessageId] = useState<string>();
@@ -151,26 +151,36 @@ export function Schedule() {
                 dispatch(setInFlight(false));
             }
         }
-        dispatch(setInFlight(true));
+
+        if (isSelectingUser) {
+            return;
+        }
 
         if (shouldSelectUser) {
             dispatch(setSelectUserDialogOpen(true));
+            return;
         } else {
             dispatch(setSelectUserDialogOpen(false));
 
             if (shouldSelectOrganization) {
                 dispatch(setSelectOrgDialogOpen(true));
+                return;
             } else {
                 dispatch(setSelectOrgDialogOpen(false));
             }
         }
 
         const selectedValidUser = selectedUserId && selectedUserId === selectedUserProfile?.id;
+        const selectedValidOrg = selectedOrg && selectedUserProfile?.organizations?.some(
+            o => o.organization.organization_id === selectedOrg?.organization_id
+        );
 
-        if (selectedValidUser && selectedOrg && selectedOrg.organization_id !== "") {
+        if (selectedValidUser && selectedValidOrg) {
+            dispatch(setInFlight(true));
+
             fetchEverything();
         }
-    }, [shouldSelectUser, shouldSelectOrganization, selectedOrg, schedulerService, selectedUserProfile, key])
+    }, [shouldSelectUser, shouldSelectOrganization, selectedOrg, schedulerService, selectedUserProfile, key, isSelectingUser])
 
     if (userSelectErrorCode && userSelectErrorCode !== 401) {
         return (

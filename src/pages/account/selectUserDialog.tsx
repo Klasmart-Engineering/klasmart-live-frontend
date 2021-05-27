@@ -45,11 +45,6 @@ export function useShouldSelectUser() {
 
     const selectedUserId = useSelector((state: State) => state.session.selectedUserId);
 
-    const setErrorState = (errorCode: number) => {
-        setShouldSelectUser(false);
-        setUserSelectErrorCode(errorCode);
-    };
-
     useEffect(() => {
         if (!authenticated) return;
         if (!myUsers) return;
@@ -177,18 +172,16 @@ function UserList({ users }: { users?: UserInformation[] }) {
     const { selectedUserProfile, actions } = useUserInformation();
     const dispatch = useDispatch();
 
-    const theme = useTheme();
-
     const selectUser = useCallback(async (userId: string) => {
         try {
-            actions?.selectUser(userId);
-            dispatch(setSelectedUserId(userId));
-            dispatch(setSelectedOrg(undefined));
+            await actions?.selectUser(userId);
             dispatch(setSelectUserDialogOpen(false));
         } catch (error) {
             enqueueSnackbar("Couldn't select user.", { variant: "error" });
         }
     }, [actions]);
+
+    const theme = useTheme();
 
     return (
         <List>
