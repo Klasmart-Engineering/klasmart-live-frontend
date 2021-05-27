@@ -50,6 +50,7 @@ import CenterAlignChildren from "./centerAlignChildren";
 import InviteButton from "./invite";
 import LanguageSelect from "./languageSelect";
 import Lightswitch from "./lightswitch";
+import StyledButton from "./styled/button";
 
 export const DRAWER_WIDTH = 380;
 
@@ -63,7 +64,8 @@ const TABS = [
     { icon: <LessonPlanIcon role="img" size="1.5rem" />, title: "title_lesson_plan", menuType: ClassroomMenuType.ForHostOnly },
     { icon: <ChatIcon role="img" size="1.5rem" />, title: "title_chat", menuType: ClassroomMenuType.ForAll },
     { icon: <CreateIcon role="img" size="1.5rem" />, title: "title_whiteboard", menuType: ClassroomMenuType.ForAll },
-    { icon: <SettingsIcon role="img" size="1.5rem" />, title: "title_settings", menuType: ClassroomMenuType.ForHostOnly }
+    { icon: <SettingsIcon role="img" size="1.5rem" />, title: "title_settings", menuType: ClassroomMenuType.ForHostOnly },
+    { icon: <SettingsIcon role="img" size="1.5rem" />, title: "title_settings_live", menuType: ClassroomMenuType.ForAll }
 ];
 
 const OPTION_COLS_OBSERVE = [
@@ -306,7 +308,8 @@ function TabInnerContent({ title }: { title: string }) {
     const contentIndex = useSelector((store: State) => store.control.contentIndex);
     const colsCamera = useSelector((store: State) => store.control.colsCamera);
     const colsObserve = useSelector((store: State) => store.control.colsObserve);
-    const [hostMutation] = useMutation(MUTATION_SET_HOST, {context: {target: SESSION_LINK_LIVE}});
+    const [hostMutation] = useMutation(MUTATION_SET_HOST, { context: { target: SESSION_LINK_LIVE } });
+    const { exitRoom } = useContext(RoomContext);
 
     useEffect(() => {
         const teachers = [...sessions.values()].filter(session => session.isTeacher === true).sort((a, b) => a.joinedAt - b.joinedAt);
@@ -483,6 +486,23 @@ function TabInnerContent({ title }: { title: string }) {
                             </Select>
                         </FormControl>
                     </Grid>
+                </Grid>
+            );
+        case "title_settings_live":
+            return (
+                <Grid
+                    container
+                    direction="column"
+                    justify="center"
+                    alignContent="center"
+                    style={{ overflow: "hidden" }}
+                    spacing={2}
+                >
+                    <StyledButton onClick={() => {
+                        exitRoom();
+                    }}>
+                        <FormattedMessage id="layout_tabinnercontent_leaveroom" />
+                    </StyledButton>
                 </Grid>
             );
         default:

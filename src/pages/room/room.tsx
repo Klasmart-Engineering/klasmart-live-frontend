@@ -1,10 +1,5 @@
-import React, { useReducer, useState, useContext, useEffect, createContext, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { gql, useSubscription } from "@apollo/client"
-import { FormattedMessage } from "react-intl";
-import Typography from "@material-ui/core/Typography";
-import Loading from "../../components/loading";
-import { EventEmitter } from "eventemitter3"
 import { State } from "../../store/store";
 import { OrientationType } from "../../store/actions";
 import { useSessionContext } from "../../context-provider/session-context";
@@ -114,95 +109,4 @@ export function RoomWithContext(): JSX.Element {
             </RoomProvider>
         </LiveSessionLinkProvider>
     );
-}
-
-const SUB_ROOM = gql`
-    subscription room($roomId: ID!, $name: String) {
-        room(roomId: $roomId, name: $name) {
-            message { id, message, session { name } },
-            content { type, contentId },
-            join { id, name, streamId, isTeacher },
-            leave { id },
-            session { webRTC { sessionId, description, ice, stream { name, streamId } } },
-            sfu,
-            trophy { from, user, kind },
-        }
-    }
-`;
-
-const context = createContext<{ value: RoomContext }>(undefined as any);
-export class RoomContext {
-    public static Provide(props: { children?: JSX.Element | JSX.Element[] }) {
-        const { roomId, name, sessionId } = useSessionContext();
-
-        const ref = useRef<RoomContext>(undefined as any)
-        const [value, rerender] = useReducer(() => ({ value: ref.current }), { value: ref.current })
-        if (!ref.current) { ref.current = new RoomContext(rerender, roomId) }
-
-        const { loading, error } = useSubscription(SUB_ROOM, {
-            onSubscriptionData: ({ subscriptionData }) => {
-                if (!subscriptionData) { return; }
-                if (!subscriptionData.data) { return; }
-                if (!subscriptionData.data.room) { return; }
-                const { message, content, join, leave, session, sfu, trophy } = subscriptionData.data.room;
-                if (message) { ref.current.addMessage(message); }
-                if (content) { ref.current.setContent(content); }
-                if (join) { ref.current.userJoin(join) }
-                if (leave) { ref.current.userLeave(leave) }
-                if (sfu) { ref.current.sfuAddress = sfu; rerender(); }
-                if (trophy) {
-                    if (trophy.from === trophy.user || trophy.user === sessionId || trophy.from === sessionId) {
-                        ref.current.emitter.emit("trophy", trophy);
-                    }
-                }
-            },
-            variables: { roomId, name }
-        });
-
-        if (loading || !ref.current.content) { return <Loading messageId="loading" /> }
-        if (error) { return <Typography><FormattedMessage id="failed_to_connect" />{JSON.stringify(error)}</Typography>; }
-        return <context.Provider value={value} >
-            {props.children}
-        </context.Provider>
-    }
-
-    public static Consume() {
-        return useContext(context).value
-    }
-
-    public roomId: string
-    public sfuAddress?: string
-    private rerender: React.DispatchWithoutAction
-    private constructor(rerender: React.DispatchWithoutAction, roomId: string) {
-        this.rerender = rerender
-        this.roomId = roomId
-    }
-
-    public messages = new Map<string, Message>();
-    private addMessage(newMessage: Message) {
-        for (const id of this.messages.keys()) {
-            if (this.messages.size < 32) { break; }
-            this.messages.delete(id);
-        }
-        this.messages.set(newMessage.id, newMessage);
-        this.rerender()
-    }
-
-    public content?: Content
-    private setContent(content: Content) {
-        this.content = content
-        this.rerender()
-    }
-
-    public users = new Map<string, Session>()
-    private userJoin(join: Session) {
-        this.users.set(join.id, join);
-        this.rerender()
-    }
-    private userLeave(leave: Session) {
-        this.users.delete(leave.id);
-        this.rerender()
-    }
-
-    public emitter = new EventEmitter()
 }

@@ -1,7 +1,7 @@
 import { gql, useSubscription } from "@apollo/client";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import Loading from "../components/loading";
 import { SESSION_LINK_LIVE } from "../context-provider/live-session-link-context";
@@ -11,7 +11,7 @@ import { Content, Message, Session } from "../pages/room/room";
 const SUB_ROOM = gql`
     subscription room($roomId: ID!, $name: String) {
         room(roomId: $roomId, name: $name) {
-            message { id, message, session { name } },
+            message { id, message, session { name, isTeacher } },
             content { type, contentId },
             join { id, name, streamId, isTeacher, isHost, joinedAt },
             leave { id },
@@ -28,6 +28,7 @@ export interface RoomContextInterface {
     content: Content | undefined
     sessions: Map<string, Session>
     trophy: any
+    exitRoom: () => void
 }
 
 const defaultRoomContext = {
@@ -36,8 +37,10 @@ const defaultRoomContext = {
     content: undefined,
     sessions: new Map<string, Session>(),
     trophy: undefined,
+    exitRoom: () => {}
 }
 
+const initialHref = location.href;
 
 export const RoomContext = createContext<RoomContextInterface>(defaultRoomContext);
 export const RoomProvider = (props: {children: React.ReactNode}) => {
@@ -47,10 +50,12 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
     const [content, setContent] = useState<Content>();
     const [sessions, setSessions] = useState<Map<string, Session>>(new Map<string, Session>());
     const [trophy, setTrophy] = useState();
+    const [classEnded, setClassEnded] = useState<boolean>(false);
+
     const { loading, error } = useSubscription(SUB_ROOM, {
         onSubscriptionData: ({ subscriptionData }) => {
             if (!subscriptionData?.data?.room) { return; }
-            const { message, content, join, leave, session, sfu, trophy } = subscriptionData.data.room;
+            const { message, content, join, leave, sfu, trophy } = subscriptionData.data.room;
             if (sfu) { setSfuAddress(sfu) }
             if (message) { addMessage(message); }
             if (content) { setContent(content); }
@@ -85,14 +90,36 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
             newState.delete(leave.id);
             return newState;
         });
+
+        if (leave.id === sessionId) {
+            setClassEnded(true);
+        }
     }
+
+    const exitRoom = useCallback(() => {
+        const app = (navigator as any).app;
+        if (app) {
+            app.loadUrl(initialHref, { wait: 0, loadingDialog: "Wait, Loading App", loadUrlTimeoutValue: 60000 });
+        } else {
+            (navigator as any).splashscreen.show();
+            location.href = initialHref;
+        }
+    }, []);
+
     const value = {
         sfuAddress,
         messages,
         content,
         sessions,
         trophy,
+        exitRoom,
     }
+
+    useEffect(() => {
+        if (classEnded) {
+            exitRoom();
+        }
+    }, [classEnded])
 
     if (loading || !content) { return <Grid container alignItems="center" style={{ height: "100%" }}><Loading messageId="loading" /></Grid>; }
     if (error) { return <Typography><FormattedMessage id="failed_to_connect" />{JSON.stringify(error)}</Typography>; }

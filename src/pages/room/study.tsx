@@ -12,7 +12,7 @@ import { getContentHref } from "../../utils/contentUtils";
 import { GlobalWhiteboardContext } from "../../whiteboard/context-providers/GlobalWhiteboardContext";
 import { Layout } from "./layout-new";
 import { InteractiveModeState, StreamIdState } from "./room";
-
+import { DoorOpen as ExitIcon } from "@styled-icons/bootstrap/DoorOpen";
 
 interface StudyProps {
     interactiveModeState: InteractiveModeState;
