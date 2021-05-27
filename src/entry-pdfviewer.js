@@ -75,8 +75,10 @@ const scaleLiterals = [
   'automatic-zoom',
   'page-fit'
 ];
-
 window.PLAYER_READY = true;
+
+// Testing Configuration - Forces display of content from a test PDF server
+const pdfTest = false;
 const samplePdfs = ['a', 'b', 'c', 'd'];
 const selection = samplePdfs[Math.floor(Math.random() * 4)];
 const data = {
@@ -84,4 +86,6 @@ const data = {
   scale: 'page-width'
 }
 
-window.postMessage(data, '*');
+if (pdfTest) {
+  window.postMessage(data, '*');
+} 
