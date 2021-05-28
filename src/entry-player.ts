@@ -15,7 +15,7 @@ window.addEventListener('message', ({ data }) => {
       if (events.length >= 2) {
         player = new Replayer(events)
         player.on('resize', () => window.parent.postMessage({ width: player.iframe.width, height: player.iframe.height }, '*'))
-        player.play()
+        player.startLive(event.timestamp)
       }
     }
   } catch (e) {
