@@ -64,8 +64,6 @@ window.addEventListener('message', (payload) => {
     fontExtraProperties: true,
   });
 
-  loadingTask
-
   loadingTask.promise.then(function (pdfDocument) {
     // Document loaded, specifying document for the viewer and
     // the (optional) linkService.
@@ -81,12 +79,6 @@ const scaleLiterals = [
   'automatic-zoom',
   'page-fit'
 ];
-window.PLAYER_READY = true;
-
-console.log('Sending message to parent window');
-window.parent.postMessage({
-  PLAYER_READY: true
-}, '*')
 
 // Testing Configuration - Forces display of content from a test PDF server
 // const pdfTest = false;
