@@ -185,19 +185,19 @@ function parseToken () {
             return {
                 classtype: payload.classtype ? String(payload.classtype) : `live`,
                 org_id: payload.org_id ? String(payload.org_id) : ``,
-                isTeacher: payload.teacher ? Boolean(payload.teacher) : false,
+                isTeacher: payload.teacher ? Boolean(payload.teacher) : null,
                 name: payload.name ? String(payload.name) : undefined,
                 roomId: String(payload.roomid),
                 materials: [
                     {
                         __typename: MaterialTypename.Iframe,
-                        name: `PDF from alpha`,
-                        url: `https://live.alpha.kidsloop.net/assets/60a3c4a203b03c3acdb56f9d.pdf`,
+                        name: `Local PDF`,
+                        url: `http://localhost:3000/api/pdf/a.pdf`,
                     },
                     {
                         __typename: MaterialTypename.Iframe,
-                        name: `Local PDF`,
-                        url: `http://localhost:3000/api/pdf/a.pdf`,
+                        name: `PDF from alpha`,
+                        url: `https://live.alpha.kidsloop.net/assets/60a3c4a203b03c3acdb56f9d.pdf`,
                     },
                     {
                         __typename: MaterialTypename.Iframe,
