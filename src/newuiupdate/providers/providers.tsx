@@ -155,7 +155,7 @@ function parseToken () {
                 isTeacher: payload.teacher ? Boolean(payload.teacher) : false,
                 name: payload.name ? String(payload.name) : undefined,
                 roomId: String(payload.roomid),
-                materials: parsedMaterials || []
+                materials: parsedMaterials || [],
             };
         }
         // TODO think of a better way to set up the debug environment
