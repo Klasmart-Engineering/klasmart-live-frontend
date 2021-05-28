@@ -86,8 +86,8 @@ export const WBToolbar: FunctionComponent<Props> = ({ children }: Props): JSX.El
             <Grid item style={{ flex: 1, textAlign: "center" }}>
                 <IconButton
                     style={{
-                        width: "3rem",
-                        height: "3rem",
+                        width: "2.5rem",
+                        height: "2.5rem",
                         backgroundColor: crayon ? "transparent" : colorValue,
                         border: actived ? `${isSmDown ? 2 : 5}px solid ${"#1B365D"}` : 0
                     }} // TODO: Handle when Dark mode
@@ -135,8 +135,8 @@ export const WBToolbar: FunctionComponent<Props> = ({ children }: Props): JSX.El
     );
 
     const VisibleToolbar = () => (forStudent ? (
-        <Grid id="wb-toolbar-student" container direction="row" justify="center" alignItems="center" spacing={2} item style={{ flex: 1 }}>
-            <Grid container direction="row" justify="space-between" alignItems="center" alignContent="center" item style={{ flex: 1, padding: 0, height: "100%" }}>
+        <Grid id="wb-toolbar-student" container direction="row" justify="center" alignItems="center" spacing={2} style={{ flex: 1 }}>
+            <Grid container direction="row" justify="space-between" alignItems="center" alignContent="center" >
                 <ColorPicker />
             </Grid>
             <Grid item style={{ flex: 0 }}>
@@ -145,18 +145,24 @@ export const WBToolbar: FunctionComponent<Props> = ({ children }: Props): JSX.El
             {children}
         </Grid>
     ) : (
-            <Grid id="wb-toolbar-teacher" container direction="row" justify="space-between" alignItems="center" spacing={2} item style={{ flex: 1 }}>
-                <Grid container direction="row" justify="space-between" alignItems="center" alignContent="center" item style={{ flex: 1 }}>
-                    <ColorPicker />
+            <Grid id="wb-toolbar-teacher" item xs>
+                <Grid container justify="space-between" alignItems="center" spacing={2}>
+                    <Grid item xs>
+                        <Grid container justify="space-between" alignItems="center" alignContent="center" >
+                            <ColorPicker />
+                        </Grid>
+                    </Grid>
+                    <Grid item>
+                        <Grid container justify="space-between" alignItems="center" alignContent="center" >
+                            <ToolButton clicked={selectLine} actived={activedTool.line}><BrushIcon size={"1.5rem"} /></ToolButton>
+                            <ToolButton clicked={selectText} actived={activedTool.text}><TextIcon size={"1.5rem"} /></ToolButton>
+                            <ToolButton clicked={selectMove} actived={activedTool.move}><MoveIcon size={"1.5rem"} /></ToolButton>
+                            <ToolButton clicked={selectObjectEraser} actived={activedTool.erase}><EraserIcon size={"1.5rem"} /></ToolButton>
+                            <ToolButton clicked={selectClear} actived={activedTool.clear}><TrashIcon size={"1.5rem"} /></ToolButton>
+                        </Grid>
+                    </Grid>
+                    {children}
                 </Grid>
-                <Grid container direction="row" justify="space-between" alignItems="center" alignContent="center" item style={{ flex: 0 }}>
-                    <ToolButton clicked={selectLine} actived={activedTool.line}><BrushIcon size={"1.5rem"} /></ToolButton>
-                    <ToolButton clicked={selectText} actived={activedTool.text}><TextIcon size={"1.5rem"} /></ToolButton>
-                    <ToolButton clicked={selectMove} actived={activedTool.move}><MoveIcon size={"1.5rem"} /></ToolButton>
-                    <ToolButton clicked={selectObjectEraser} actived={activedTool.erase}><EraserIcon size={"1.5rem"} /></ToolButton>
-                    <ToolButton clicked={selectClear} actived={activedTool.clear}><TrashIcon size={"1.5rem"} /></ToolButton>
-                </Grid>
-                {children}
             </Grid>
         ));
 
