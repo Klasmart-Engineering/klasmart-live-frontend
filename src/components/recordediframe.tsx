@@ -142,6 +142,8 @@ export function RecordedIframe(props: Props): JSX.Element {
 
     useEffect(() => {
         function onMessage({ data }: MessageEvent) {
+            console.log(`Message at parent`);
+            console.log(data);
             if (data && data.streamId) {
                 if (setStreamId) { setStreamId(data.streamId); }
                 sendStreamId({
@@ -151,7 +153,20 @@ export function RecordedIframe(props: Props): JSX.Element {
                     },
                 });
             }
+            
+            if (data?.PLAYER_READY && contentId.endsWith('.pdf')) {
+                console.log('file is pdf');
+                console.log(data);
+                if (iframeRef?.current?.contentWindow){
+                    console.log(`Sending message to iframe with contentId: ${contentId}`)
+                    iframeRef.current.contentWindow.postMessage({
+                        pdfSrc: contentId,
+                        scale: 'page-width'
+                    }, '*')
+                }
+            }
         }
+
         window.addEventListener("message", onMessage);
         return () => window.removeEventListener("message", onMessage);
     }, [iframeRef.current]);
