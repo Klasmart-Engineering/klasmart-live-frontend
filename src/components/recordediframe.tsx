@@ -153,17 +153,16 @@ export function RecordedIframe(props: Props): JSX.Element {
                     },
                 });
             }
-            
-            if (data?.PLAYER_READY && contentId.endsWith('.pdf')) {
-                console.log('file is pdf');
-                console.log(data);
-                if (iframeRef?.current?.contentWindow){
-                    console.log(`Sending message to iframe with contentId: ${contentId}`)
-                    iframeRef.current.contentWindow.postMessage({
-                        pdfSrc: contentId,
-                        scale: 'page-width'
-                    }, '*')
-                }
+        }
+
+        if (contentId.endsWith('.pdf')) {
+            console.log('file is pdf');
+            if (iframeRef?.current?.contentWindow){
+                console.log(`Sending message to iframe with contentId: ${contentId}`)
+                iframeRef.current.contentWindow.postMessage({
+                    pdfSrc: contentId,
+                    scale: 'page-width'
+                }, '*')
             }
         }
 
