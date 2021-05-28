@@ -234,7 +234,7 @@ export function RecordedIframe (props: Props): JSX.Element {
             script.setAttribute(`type`, `text/javascript`);
             const matches = window.location.pathname.match(/^(.*\/+)([^/]*)$/);
             const prefix = matches && matches.length >= 2 ? matches[1] : ``;
-            script.setAttribute(`src`, `${prefix}record-e44f2b3.js`);
+            script.setAttribute(`src`, `${prefix}record-1db5341.js`);
             doc.head.appendChild(script);
         }
         catch(e){
