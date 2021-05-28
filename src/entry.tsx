@@ -191,8 +191,8 @@ function parseToken () {
                 materials: [
                     {
                         __typename: MaterialTypename.Iframe,
-                        name: `Colum Presentation`,
-                        url: `/h5p/play/608b9065e5085e0014359f72`,
+                        name: `PDF from alpha`,
+                        url: `https://live.alpha.kidsloop.net/assets/60a3c4a203b03c3acdb56f9d.pdf`,
                     },
                     {
                         __typename: MaterialTypename.Iframe,
@@ -201,8 +201,8 @@ function parseToken () {
                     },
                     {
                         __typename: MaterialTypename.Iframe,
-                        name: `PDF from alpha`,
-                        url: `https://live.alpha.kidsloop.net/assets/60a3c4a203b03c3acdb56f9d.pdf`,
+                        name: `Colum Presentation`,
+                        url: `/h5p/play/608b9065e5085e0014359f72`,
                     },
                 ],
             };

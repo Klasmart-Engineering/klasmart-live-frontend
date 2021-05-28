@@ -1,7 +1,13 @@
 "use strict";
 
 console.log('loading PDF view');
-window.addEventListener('message', ({data}) => {
+window.addEventListener('message', (payload) => {
+  const {data} = payload
+  console.log(`message received`);
+  console.log(payload);
+  if(!data.pdfSrc) {
+    return;
+  }
   if (!pdfjsLib.getDocument || !pdfjsViewer.PDFViewer) {
     // eslint-disable-next-line no-alert
     alert("Please build the pdfjs-dist library using\n  `gulp dist-install`");
@@ -77,15 +83,20 @@ const scaleLiterals = [
 ];
 window.PLAYER_READY = true;
 
-// Testing Configuration - Forces display of content from a test PDF server
-const pdfTest = false;
-const samplePdfs = ['a', 'b', 'c', 'd'];
-const selection = samplePdfs[Math.floor(Math.random() * 4)];
-const data = {
-  pdfSrc: `http://localhost:3000/api/pdf/${selection}.pdf`,
-  scale: 'page-width'
-}
+console.log('Sending message to parent window');
+window.parent.postMessage({
+  PLAYER_READY: true
+}, '*')
 
-if (pdfTest) {
-  window.postMessage(data, '*');
-} 
+// Testing Configuration - Forces display of content from a test PDF server
+// const pdfTest = false;
+// const samplePdfs = ['a', 'b', 'c', 'd'];
+// const selection = samplePdfs[Math.floor(Math.random() * 4)];
+// const data = {
+//   pdfSrc: `http://localhost:3000/api/pdf/${selection}.pdf`,
+//   scale: 'page-width'
+// }
+
+// if (pdfTest) {
+//   window.postMessage(data, '*');
+// } 
