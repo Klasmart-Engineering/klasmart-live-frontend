@@ -217,7 +217,8 @@ export function ReplicaMedia (props: React.VideoHTMLAttributes<HTMLMediaElement>
         return <CircularProgress />;
     }
     if (error) {
-        return <Typography>{error}</Typography>;
+        console.log(error)
+        return <CircularProgress />;
     }
     switch (type) {
     case MaterialTypename.Audio:
@@ -479,7 +480,8 @@ export function ReplicatedMedia (props: React.VideoHTMLAttributes<HTMLMediaEleme
 
     // if(loading) {return <CircularProgress />;}
     if (error) {
-        return <Typography>{error}</Typography>;
+        console.log(error)
+        return <CircularProgress />;
     }
 
     switch (type) {
