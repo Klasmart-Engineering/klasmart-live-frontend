@@ -83,7 +83,7 @@ export function Study({
                     direction="row"
                     justify="flex-start"
                     wrap="nowrap"
-                    style={{ flexGrow: 1, overflow: "hidden", height: "100%" }}
+                    style={{ flexGrow: 1, overflow: "hidden", height: "100%", backgroundColor: "white" }}
                 >
                     <Layout
                         interactiveModeState={interactiveModeState}

@@ -6,7 +6,7 @@ import Typography from "@material-ui/core/Typography";
 
 export default function Loading({ messageId }: { messageId?: string }) {
     return (
-        <Grid item xs={12} style={{ textAlign: "center" }}>
+        <Grid item xs={12} style={{ textAlign: "center", backgroundColor: "white" }}>
             <Grid
                 container item
                 direction="row"
