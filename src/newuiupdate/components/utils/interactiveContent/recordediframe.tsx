@@ -24,6 +24,7 @@ import React, {
 } from "react";
 import { useSelector } from "react-redux";
 import { useRecoilState } from "recoil";
+import { FormattedMessage } from "react-intl";
 
 const SET_STREAMID = gql`
     mutation setSessionStreamId($roomId: ID!, $streamId: ID!) {
@@ -280,12 +281,8 @@ export function RecordedIframe (props: Props): JSX.Element {
                             gutterBottom
                             variant="h6"
                             align="center">
-                            {loadStatus === LoadStatus.Loading
-                                ? `Loading the lesson material!`
-                                : null}
-                            {loadStatus === LoadStatus.Error
-                                ? `Sorry, something went wrong!`
-                                : null}
+                            {loadStatus === LoadStatus.Loading && <FormattedMessage id="loading_activity_lessonMaterial" />}
+                            {loadStatus === LoadStatus.Error && <FormattedMessage id="loading_activity_error" />}
                         </Typography>
                     </Grid>
                     <Grid item>
@@ -294,12 +291,8 @@ export function RecordedIframe (props: Props): JSX.Element {
                             variant="caption"
                             align="center"
                         >
-                            {loadStatus === LoadStatus.Loading
-                                ? `If you still see this screen after ${seconds} seconds, click Reload below.`
-                                : null}
-                            {loadStatus === LoadStatus.Error
-                                ? `Please click the Reload button.`
-                                : null}
+                            {loadStatus === LoadStatus.Loading && <FormattedMessage id="loading_activity_lessonMaterial_description"  values={{ seconds: seconds }} />}
+                            {loadStatus === LoadStatus.Error && <FormattedMessage id="loading_activity_lessonMaterial_clickReload" />}
                         </Typography>
                     </Grid>
                     <Grid
@@ -311,7 +304,7 @@ export function RecordedIframe (props: Props): JSX.Element {
                             disabled={loadStatus === LoadStatus.Loading}
                             onClick={() => setLoadStatus(LoadStatus.Loading)}
                         >
-                            Reload{` `}
+                            <FormattedMessage id="loading_activity_lessonMaterial_reload" />{` `}
                             <RefreshIcon
                                 size="1rem"
                                 style={{
