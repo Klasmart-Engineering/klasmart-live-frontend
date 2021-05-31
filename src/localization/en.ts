@@ -252,5 +252,11 @@ const messages: Record<string, string> = {
     feedback_end_class_teacher_audio_5: `Audio worked well`,
     feedback_end_class_teacher_presentation_5: `Presentation worked well`,
     feedback_end_class_teacher_other_5: `Useful tools`,
+
+    loading_activity_lessonMaterial: `Loading the lesson material!`,
+    loading_activity_lessonMaterial_description: `If you still see this screen after {seconds} seconds, click Reload below.`,
+    loading_activity_error: `Sorry, something went wrong!`,
+    loading_activity_lessonMaterial_clickReload: `Please click the Reload button.`,
+    loading_activity_lessonMaterial_reload: `Reload`,
 };
 export default messages;
