@@ -209,7 +209,7 @@ const messages: Record<string, string> = {
     no_students_connected: `Không có học sinh kết nối`,
 
     feedback_detail_question: `Do you want to add more details?`,
-    feedback_comment: `Leave a commnet`,
+    feedback_comment: `Leave a comment`,
 
     feedback_end_class_student_video_1: `Terrible video`,
     feedback_end_class_student_audio_1: `Terrible audio`,
