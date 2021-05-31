@@ -7,9 +7,11 @@ import { ReplicatedMedia } from "../utils/interactiveContent/synchronized-video"
 import {
     makeStyles,
     Theme,
+    Typography,
 } from "@material-ui/core";
 import React, { useContext } from "react";
 import { useRecoilState } from "recoil";
+import { FormattedMessage } from "react-intl";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {},
@@ -59,7 +61,7 @@ function PreviewLessonPlan () {
         );
     }
 
-    return(<div>Error loading materials</div>);
+    return(<Typography><FormattedMessage id="loading_activity_error" /></Typography>);
 
 }
 
