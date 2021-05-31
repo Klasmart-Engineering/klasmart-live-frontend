@@ -2,6 +2,7 @@ const webpack = require('webpack')
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const SentryWebpackPlugin = require("@sentry/webpack-plugin")
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 require('dotenv').config()
 
@@ -101,6 +102,15 @@ module.exports = {
       include: ".",
       ignoreFile: ".sentrycliignore",
       ignore: ["node_modules", "webpack.config.js", "webpack.prod.config.js"],
+    }),
+    new CopyWebpackPlugin({
+      patterns: [{
+        from: 'node_modules/pdfjs-dist/cmaps',
+        to: 'cmaps/'
+      }, {
+        from: 'node_modules/pdfjs-dist',
+        to: 'pdfjs-dist/'
+      }]
     }),
   ]
 }

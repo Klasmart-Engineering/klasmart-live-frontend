@@ -1,6 +1,7 @@
 const webpack = require("webpack");
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   mode: "development",
@@ -102,6 +103,15 @@ module.exports = {
       filename: "pdfviewer.html",
       chunks: ["pdfviewer"],
       template: "src/pdfviewer.html",
+    }),
+    new CopyWebpackPlugin({
+      patterns: [{
+        from: 'node_modules/pdfjs-dist/cmaps',
+        to: 'cmaps/'
+      }, {
+        from: 'node_modules/pdfjs-dist',
+        to: 'pdfjs-dist/'
+      }]
     })
   ],
   devServer: {
