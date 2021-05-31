@@ -56,8 +56,9 @@ function ClassEnded () {
                     <Typography variant="h3"><FormattedMessage id="class_ended_title" /></Typography>
                     <Typography variant="body1"><FormattedMessage id="class_ended_thanks_for_attending" /></Typography>
 
+                    {/* TODO : JUNE SCOPE (feature is ready) 
                     <Typography variant="body1"><FormattedMessage id="class_ended_how_was_the_class" /></Typography>
-                    <Feedback type={`END_CLASS`}/>
+                    <Feedback type={`END_CLASS`}/> */}
 
                     {HUB_ENDPOINT &&
                     <Typography className={classes.returnToHub}>
