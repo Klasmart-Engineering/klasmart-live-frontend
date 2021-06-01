@@ -121,8 +121,8 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
         }
     }, [classEnded])
 
-    if (loading || !content) { return <Grid container alignItems="center" style={{ height: "100%" }}><Loading messageId="loading" /></Grid>; }
-    if (error) { return <Typography><FormattedMessage id="failed_to_connect" />{JSON.stringify(error)}</Typography>; }
+    if (loading || !content) { return <Grid container alignItems="center" style={{ height: "100%", backgroundColor: "white" }}><Loading messageId="loading" /></Grid>; }
+    if (error) { return <Grid container alignItems="center" style={{ height: "100%", backgroundColor: "white" }}><Typography><FormattedMessage id="failed_to_connect" />{JSON.stringify(error)}</Typography></Grid>; }
     return <RoomContext.Provider value={value} >
         {props.children}
     </RoomContext.Provider>

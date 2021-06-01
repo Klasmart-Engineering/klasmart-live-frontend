@@ -117,7 +117,7 @@ export default function Join(): JSX.Element {
             direction="column"
             justify="center"
             alignItems="center"
-            style={{ height: "100%" }}
+            style={{ height: "100%", backgroundColor: "white" }}
         >
             <Container maxWidth={classtype === ClassType.LIVE ? "lg" : "xs"}>
                 <Card>
