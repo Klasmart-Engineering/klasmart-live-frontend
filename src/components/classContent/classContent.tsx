@@ -8,6 +8,7 @@ import IconButton from "@material-ui/core/IconButton";
 
 import ArrowBackIcon from '@material-ui/icons/ArrowBackIos';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForwardIos';
+import { DoorOpen as ExitIcon } from "@styled-icons/bootstrap/DoorOpen";
 
 import { WBToolbarContainer, WB_TOOLBAR_MAX_HEIGHT } from "./WBToolbar"
 import { State } from "../../store/store";
@@ -19,6 +20,9 @@ import { LessonMaterial, MaterialTypename } from "../../lessonMaterialContext";
 import { ReplicatedMedia } from "../../pages/synchronized-video";
 import { useSessionContext } from "../../context-provider/session-context";
 import { useMaterialToHref } from "../../utils/contentUtils";
+import StyledFAB from "../styled/fabButton";
+import { RoomContext } from "../../providers/RoomContext";
+import StyledIcon from "../styled/icon";
 
 export const DRAWER_TOOLBAR_WIDTH = 64;
 
@@ -52,12 +56,13 @@ export function ClassContentContainer({ materialKey, recommandUrl }: {
     )
 }
 
-interface NewProps extends IframeResizer.IframeResizerProps { forwardRef: any }
-
 function ClassContent({ recommandUrl }: {
     recommandUrl?: string
 }) {
     const { classType: classtype, isTeacher, materials } = useSessionContext();
+    const { exitRoom } = useContext(RoomContext);
+
+    const theme = useTheme();
 
     const rootDivRef = useRef<HTMLDivElement>(null);
 
@@ -147,6 +152,19 @@ function ClassContent({ recommandUrl }: {
                         <ArrowForwardIcon fontSize="large" />
                     </IconButton>
                 </Grid>
+                <StyledFAB 
+                    aria-label="exit study button"
+                    size="large"
+                    onClick={() => exitRoom()}
+                    style={{
+                        display: contentIndex >= materials.length - 1 ? "block" : "none",
+                        backgroundColor: "transparent",
+                        position: "fixed",
+                        top: theme.spacing(1),
+                        right: theme.spacing(1)
+                    }}>
+                        <StyledIcon icon={<ExitIcon />} size="large" color="#000000" />
+                </StyledFAB>
             </Grid>
         </Grid>
     )

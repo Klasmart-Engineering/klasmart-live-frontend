@@ -2,7 +2,6 @@ import React, { useRef, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { State } from "../../store/store";
 import useVideoLayoutUpdate from "../../utils/video-layout-update";
-import { videoStreamControls } from "../../utils/layerValues";
 
 export default function VideoStream(props: { stream?: MediaStream } & React.VideoHTMLAttributes<HTMLMediaElement>): JSX.Element {
     const { stream, ...videoProps } = props;

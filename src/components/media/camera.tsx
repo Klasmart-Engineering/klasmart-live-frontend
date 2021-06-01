@@ -126,6 +126,9 @@ export default function Camera({
     }, [webRTCContext.isLocalVideoEnabled(session?.id)]);
 
     const cameraRef = useRef<HTMLDivElement>(null);
+
+    useVideoLayoutUpdate(videoRef.current);
+
     return (
         <Grid {...other}>
             <Paper
@@ -135,7 +138,7 @@ export default function Camera({
                 style={{
                     position: "relative",
                     width: "100%",
-                    backgroundColor: "#193d6f",
+                    backgroundColor: mediaStream ? "transparent" : "#193d6f",
                     borderRadius: noBorderRadius ? 0 : 12,
                     height: 0,
                     paddingBottom: square ? "75%" : "56.25%",
@@ -155,7 +158,7 @@ export default function Camera({
                             poster={BLACK_IMAGE}
                             playsInline
                             style={{
-                                backgroundColor: "#000",
+                                zIndex: -1,
                                 borderRadius: 12,
                                 objectFit: "cover",
                                 position: "absolute",

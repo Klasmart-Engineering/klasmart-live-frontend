@@ -81,18 +81,16 @@ export default function Join(): JSX.Element {
     }, [setFacing, videoDeviceId]);
 
     useEffect(() => {
-        if (classtype === ClassType.LIVE) {
-            // TODO: Camera & microphone
-        } else {
-            // TODO: Only microphone
-        }
+        const getCameraDevice = classtype === ClassType.LIVE;
 
         if (!permissions) {
-            // requestPermissions(true, true);
-            requestIosCameraPermission(true, true);
-        } else {
+            requestIosCameraPermission(getCameraDevice, true);
+        } else if(getCameraDevice) {
             refreshCameras();
         }
+
+        // TODO (axel):
+        // requestPermissions(getCameraDevice, true);
 
         setDialogOpen(!permissions);
     }, [refreshCameras, permissions, classtype]);
@@ -346,7 +344,7 @@ function JoinRoomForm({
                 </Grid>
                 <Grid item xs={12}>
                     <StyledButton
-                        disabled={mediaDeviceError || !stream}
+                        disabled={classtype === ClassType.LIVE && (mediaDeviceError || !stream)}
                         fullWidth
                         type="submit"
                         size="large"
