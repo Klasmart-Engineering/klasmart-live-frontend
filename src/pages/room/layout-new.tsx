@@ -17,7 +17,7 @@ interface LayoutProps {
     setMaterialKey: React.Dispatch<React.SetStateAction<number>>;
     tabIndex: number;
     setTabIndex: React.Dispatch<React.SetStateAction<number>>;
-    recommandUrl?: string;
+    recommendUrl?: string;
 }
 
 export function Layout({
@@ -28,7 +28,7 @@ export function Layout({
     setMaterialKey,
     tabIndex,
     setTabIndex,
-    recommandUrl,
+    recommendUrl,
 }: LayoutProps): JSX.Element {
     const { classType: classtype } = useSessionContext();
     const dispatch = useDispatch();
@@ -48,7 +48,7 @@ export function Layout({
         >
             <ClassContentContainer
                 materialKey={materialKey}
-                recommandUrl={recommandUrl}
+                recommendUrl={recommendUrl}
             />
             {classtype === ClassType.STUDY ? null :
                 <DrawerContainer

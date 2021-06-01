@@ -132,6 +132,7 @@ const useStyles = makeStyles((theme: Theme) =>
                 duration: theme.transitions.duration.enteringScreen,
                 easing: theme.transitions.easing.sharp,
             }),
+            backgroundColor: "transparent"
         },
         drawerClose: {
             overflowX: "hidden",
@@ -617,7 +618,7 @@ export default function Layout(props: Props): JSX.Element {
                             hidden={isSmDown}
                             variant="permanent"
                         >
-                            <Grid container direction="row" style={{ flexGrow: 1, overflow: "hidden" }}>
+                            <Grid container direction="row" style={{ flexGrow: 1, overflow: "hidden", backgroundColor: "transparent" }}>
                                 <Grid item xs={!drawerOpen ? 12 : 2} style={{ flexGrow: 1 }}>
                                     <Grid
                                         container

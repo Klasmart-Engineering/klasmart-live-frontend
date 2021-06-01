@@ -26,9 +26,9 @@ import StyledIcon from "../styled/icon";
 
 export const DRAWER_TOOLBAR_WIDTH = 64;
 
-export function ClassContentContainer({ materialKey, recommandUrl }: {
+export function ClassContentContainer({ materialKey, recommendUrl }: {
     materialKey: number,
-    recommandUrl?: string,
+    recommendUrl?: string,
 }) {
     const { classType: classtype } = useSessionContext();
     const theme = useTheme();
@@ -50,14 +50,14 @@ export function ClassContentContainer({ materialKey, recommandUrl }: {
                 paddingRight: (isSmDown ? theme.spacing(1) : theme.spacing(2)) + (classtype === ClassType.STUDY ? 0 : DRAWER_TOOLBAR_WIDTH),
             }}
         >
-            <ClassContent recommandUrl={recommandUrl} />
+            <ClassContent recommendUrl={recommendUrl} />
             <WBToolbarContainer />
         </Grid>
     )
 }
 
-function ClassContent({ recommandUrl }: {
-    recommandUrl?: string
+function ClassContent({ recommendUrl }: {
+    recommendUrl?: string
 }) {
     const { classType: classtype, isTeacher, materials } = useSessionContext();
     const { exitRoom } = useContext(RoomContext);
@@ -139,7 +139,7 @@ function ClassContent({ recommandUrl }: {
                                     style={{ width: "100%" }}
                                 /> :
                                 (currentMaterial.__typename === MaterialTypename.Iframe || currentMaterial.__typename === undefined) && contentHref ?
-                                <ResizedIframe contentId={contentIndex >= materials.length ? `${recommandUrl}` : `${contentHref}`} /> : <></>
+                                <ResizedIframe contentId={contentIndex >= materials.length ? `${recommendUrl}` : `${contentHref}`} /> : <></>
                     }
                 </Grid>
                 <Grid
@@ -148,7 +148,7 @@ function ClassContent({ recommandUrl }: {
                     item
                     xs={1}
                 >
-                    <IconButton disabled={contentIndex >= (recommandUrl ? materials.length : materials.length - 1)} aria-label="go to next activity" onClick={() => dispatch(setContentIndex(contentIndex + 1))}>
+                    <IconButton disabled={contentIndex >= (recommendUrl ? materials.length : materials.length - 1)} aria-label="go to next activity" onClick={() => dispatch(setContentIndex(contentIndex + 1))}>
                         <ArrowForwardIcon fontSize="large" />
                     </IconButton>
                 </Grid>

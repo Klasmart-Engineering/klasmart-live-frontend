@@ -71,7 +71,7 @@ export function DrawerContainer({ interactiveModeState, streamId, material, tabI
     }, [ref.current]);
 
     return (
-        <Grid id="drawer-container" ref={ref} item xs={drawerOpen ? 3 : undefined} style={{ position: "relative" }}>
+        <Grid id="drawer-container" ref={ref} item xs={drawerOpen ? 3 : undefined} style={{ position: "relative", backgroundColor: "transparent" }}>
             {TABS.filter((t) => t.cType === ClassType.CLASSES).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} index={index} tab={tab} value={tabIndex} />)}
             <DrawerToolbar interactiveModeState={interactiveModeState} streamId={streamId} material={material} tabIndex={tabIndex} setTabIndex={setTabIndex} setMaterialKey={setMaterialKey} />
         </Grid>
