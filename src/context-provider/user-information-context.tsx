@@ -218,9 +218,12 @@ export function UserInformationContextProvider({ children }: Props) {
             dispatch(setSelectedOrg(undefined));
 
             await fetchSelectedUser();
+        } catch (error) {
+            console.error(error);
         } finally {
             setIsSelectingUser(false);
         }
+
     }, [switchUser, fetchSelectedUser]);
 
     const logOutUser = useCallback(async () => {
@@ -232,7 +235,7 @@ export function UserInformationContextProvider({ children }: Props) {
 
     const context = useMemo<UserInformationContext>(() => {
         return { authenticated, loading: loading || !authReady, error, isSelectingUser, selectedUserProfile, actions: { signOutUser: logOutUser, refreshUserInformation: fetchMyUsers, refreshAuthenticationToken: refresh, selectUser }, myUsers }
-    }, [selectedUserProfile, loading, authReady, error, fetchMyUsers, authenticated])
+    }, [selectedUserProfile, loading, authReady, error, fetchMyUsers, authenticated, isSelectingUser, myUsers])
 
     useEffect(() => {
         if (authenticated) {
