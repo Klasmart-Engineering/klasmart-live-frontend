@@ -25,6 +25,7 @@ import { Favorite as HeartIcon } from "@styled-icons/material/Favorite";
 import { Star as StarIcon } from "@styled-icons/material/Star";
 import { ThumbUp as EncourageIcon } from "@styled-icons/material/ThumbUp";
 import { useSessionContext } from "./context-provider/session-context";
+import useVideoLayoutUpdate from "./utils/video-layout-update";
 
 export interface WebRTCIn {
     description?: string
@@ -47,7 +48,10 @@ export function Stream(props: { stream?: MediaStream } & React.VideoHTMLAttribut
         if (!stream) { return; }
         videoRef.current.srcObject = stream;
     }, [videoRef.current, stream]);
-    return <video style={{ width: "100%" }} ref={videoRef} autoPlay playsInline  {...videoProps} />;
+
+    useVideoLayoutUpdate(videoRef.current);
+
+    return <video style={{zIndex: -1, width: "100%" }} ref={videoRef} autoPlay playsInline  {...videoProps} />;
 }
 
 export const MUTATION_REWARD_TROPHY = gql`

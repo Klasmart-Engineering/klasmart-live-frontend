@@ -93,7 +93,7 @@ export function Study({
                         setMaterialKey={setMaterialKey}
                         tabIndex={tabIndex}
                         setTabIndex={setTabIndex}
-                        recommandUrl={recommendContent ? recommendContent : undefined}
+                        recommendUrl={recommendContent ? recommendContent : undefined}
                     />
                 </Grid>
             </GlobalWhiteboardContext>

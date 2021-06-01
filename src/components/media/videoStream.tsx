@@ -22,5 +22,5 @@ export default function VideoStream(props: { stream?: MediaStream } & React.Vide
         videoRef.current.volume = volume;
     }, [videoRef.current, volume]);
 
-    return <video style={{ width: "100%"}} ref={videoRef} autoPlay playsInline {...videoProps} />;
+    return <video style={{ width: "100%", zIndex: -1}} ref={videoRef} autoPlay playsInline {...videoProps} />;
 }
