@@ -11,7 +11,8 @@ module.exports = {
   entry: {
     ui: './src/entry.tsx',
     "record-1db5341": './src/entry-record.ts',
-    player: './src/entry-player.ts'
+    player: './src/entry-player.ts',
+    pdfviewer: './src/entry-pdfviewer.js'
   },
   module: {
     rules: [
@@ -97,6 +98,11 @@ module.exports = {
       filename: 'player.html',
       chunks: ['player'],
       template: 'src/player.html'
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'pdfviewer.html',
+      chunks: ['pdfviewer'],
+      template: 'src/pdfviewer.html',
     }),
     new SentryWebpackPlugin({
       include: ".",
