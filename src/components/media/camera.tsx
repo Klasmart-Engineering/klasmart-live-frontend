@@ -110,10 +110,12 @@ export default function Camera({
 
     useEffect(() => {
         if (audioRef.current) {
-            audioRef.current.srcObject = mediaStream ? mediaStream : null;
+            audioRef.current.pause();
+            audioRef.current.srcObject = mediaStream ?? null;
         }
         if (videoRef.current) {
-            videoRef.current.srcObject = mediaStream ? mediaStream : null;
+            videoRef.current.pause();
+            videoRef.current.srcObject = mediaStream ?? null;
         }
     }, [videoRef.current, mediaStream]);
 
@@ -155,7 +157,7 @@ export default function Camera({
                             id={cameraId}
                             autoPlay={true}
                             muted={true}
-                            poster={BLACK_IMAGE}
+                            poster={ mediaStream ? undefined : BLACK_IMAGE}
                             playsInline
                             style={{
                                 zIndex: -1,

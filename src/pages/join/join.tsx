@@ -81,7 +81,7 @@ export default function Join(): JSX.Element {
     }, [setFacing, videoDeviceId]);
 
     useEffect(() => {
-        const getCameraDevice = classtype === ClassType.LIVE;
+        const getCameraDevice = classtype == ClassType.LIVE;
 
         if (!permissions) {
             requestIosCameraPermission(getCameraDevice, true);
@@ -115,10 +115,10 @@ export default function Join(): JSX.Element {
             direction="column"
             justify="center"
             alignItems="center"
-            style={{ height: "100%", backgroundColor: "white" }}
+            style={{ height: "100%", backgroundColor: classtype == ClassType.LIVE ? "transparent" : "white" }}
         >
             <Container maxWidth={classtype === ClassType.LIVE ? "lg" : "xs"}>
-                <Card>
+                <Card style={{ backgroundColor: classtype == ClassType.LIVE ? "transparent" : "white" }}>
                     <CardContent className={card}>
                         <Grid
                             container
