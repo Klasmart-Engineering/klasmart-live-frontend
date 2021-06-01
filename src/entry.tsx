@@ -8,9 +8,7 @@ import { setUserAgent } from "./store/reducers/session";
 import { createDefaultStore } from "./store/store";
 import { themeProvider } from "./themeProvider";
 import { getDefaultLanguageCode, getLanguage } from "./utils/locale";
-import {
-    ApolloClient, ApolloProvider, InMemoryCache,
-} from "@apollo/client";
+import { ApolloClient, InMemoryCache } from "@apollo/client";
 import { RetryLink } from "@apollo/client/link/retry";
 import { WebSocketLink } from "@apollo/client/link/ws";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -46,7 +44,7 @@ export const sessionId = uuid();
 export const SFU_LINK = `SFU_LINK`;
 export const LIVE_LINK = `LIVE_LINK`;
 
-function getApolloClient (roomId: string) {
+export function getApolloClient (roomId: string) {
     const authToken = AuthTokenProvider.retrieveToken();
     const retryOptions = {
         delay: {
@@ -330,16 +328,12 @@ if (
     || (!isIOS || !isIOS13) && isChrome // Support only Chrome in other OS
 ) {
     const { store, persistor } = createDefaultStore();
-    const apolloClient = getApolloClient(roomId);
     renderComponent = (
         <Provider store={store}>
             <PersistGate
                 loading={null}
                 persistor={persistor}>
-                <ApolloProvider client={apolloClient}>
-                    {/* <Entry /> */}
-                    <NewUIEntry />
-                </ApolloProvider>
+                <NewUIEntry />
             </PersistGate>
         </Provider>
     );

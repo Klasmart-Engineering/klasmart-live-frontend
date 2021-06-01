@@ -1,4 +1,3 @@
-import { Trophy } from '../newuiupdate/components/others/trophies/trophy';
 import Layout from './layout';
 import Providers from './providers/providers';
 import React from 'react';
