@@ -3,14 +3,10 @@ import ChromeLogo from "./assets/img/browser/chrome_logo.svg";
 import SafariLogo from "./assets/img/browser/safari_logo.png";
 import { LessonMaterial, MaterialTypename } from "./lessonMaterialContext";
 import  NewUIEntry  from "./newuiupdate/entry";
-import { AuthTokenProvider } from "./services/auth-token/AuthTokenProvider";
 import { setUserAgent } from "./store/reducers/session";
 import { createDefaultStore } from "./store/store";
 import { themeProvider } from "./themeProvider";
 import { getDefaultLanguageCode, getLanguage } from "./utils/locale";
-import { ApolloClient, InMemoryCache } from "@apollo/client";
-import { RetryLink } from "@apollo/client/link/retry";
-import { WebSocketLink } from "@apollo/client/link/ws";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Grid from "@material-ui/core/Grid";
 import { ThemeProvider } from "@material-ui/core/styles";
@@ -40,54 +36,13 @@ LogRocket.init(`8acm62/kidsloop-live-prod`, {
 });
 
 export const sessionId = uuid();
-
 export const SFU_LINK = `SFU_LINK`;
 export const LIVE_LINK = `LIVE_LINK`;
 
-export function getApolloClient (roomId: string) {
-    const authToken = AuthTokenProvider.retrieveToken();
-    const retryOptions = {
-        delay: {
-            max: 300,
-        },
-        attempts: {
-            max: Infinity,
-        },
-    };
-    const directionalLink = new RetryLink(retryOptions).split((operation) => operation.getContext().target === LIVE_LINK, new WebSocketLink({
-        uri:
-                process.env.ENDPOINT_WEBSOCKET ||
-                `${window.location.protocol === `https:` ? `wss` : `ws`}://${
-                    window.location.host
-                }/graphql`,
-        options: {
-            reconnect: true,
-            connectionParams: {
-                authToken,
-                sessionId,
-            },
-        },
-    }), new WebSocketLink({
-        uri: `${window.location.protocol === `https:` ? `wss` : `ws`}://${
-            window.location.host
-        }/sfu/${roomId}`,
-        options: {
-            reconnect: true,
-            connectionParams: {
-                authToken,
-                sessionId,
-            },
-        },
-    }));
-
-    return new ApolloClient({
-        cache: new InMemoryCache(),
-        link: directionalLink,
-    } as any);
-}
-
-// import NewUIEntry from './newuiupdate/entry';
-
+/*
+    Most of the things that used to be done in this file is now done inside the /newuiupdate/providers/providers.tsx
+    So this file contains lots of dead code which needs to be removed
+*/
 Sentry.init({
     dsn: `https://9f4fca35be3b4b7ca970a126f26a5e54@o412774.ingest.sentry.io/5388813`,
     environment: process.env.NODE_ENV || `not-specified`,

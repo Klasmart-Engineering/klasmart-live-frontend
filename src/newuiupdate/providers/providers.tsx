@@ -1,4 +1,3 @@
-import { sessionId } from "../../entry";
 import { LessonMaterial, MaterialTypename } from "../../lessonMaterialContext";
 import { getDefaultLanguageCode, getLanguage } from "../../utils/locale";
 import { themeProvider } from "../themeProvider";
@@ -8,7 +7,9 @@ import React, {
     createContext, ReactChild, ReactChildren,  useMemo, useState,
 } from 'react';
 import { RawIntlProvider } from "react-intl";
+import { v4 as uuid } from "uuid";
 
+export const sessionId = uuid();
 export const LIVE_LINK = `LIVE_LINK`;
 export const SFU_LINK = `SFU_LINK`;
 

@@ -1,15 +1,63 @@
-import { getApolloClient } from "../entry";
+import { AuthTokenProvider } from "../services/auth-token/AuthTokenProvider";
 import { Trophy } from './components/others/trophies/trophy';
 import Class from './pages/class';
 import ClassEnded from './pages/classEnded';
 import ClassLeft from './pages/classLeft';
 import Join from './pages/join';
 import ClassProviders from "./providers/classProviders";
-import { LocalSessionContext } from './providers/providers';
+import {
+    LIVE_LINK, LocalSessionContext, sessionId,
+} from './providers/providers';
 import { classEndedState, classLeftState } from "./states/layoutAtoms";
-import { ApolloProvider } from "@apollo/client";
+import {
+    ApolloClient, ApolloProvider, InMemoryCache,
+} from "@apollo/client";
+import { RetryLink } from "@apollo/client/link/retry";
+import { WebSocketLink } from "@apollo/client/link/ws";
 import React, { useContext } from 'react';
 import { useRecoilState } from "recoil";
+
+export function getApolloClient (roomId: string) {
+    const authToken = AuthTokenProvider.retrieveToken();
+    const retryOptions = {
+        delay: {
+            max: 300,
+        },
+        attempts: {
+            max: Infinity,
+        },
+    };
+    const directionalLink = new RetryLink(retryOptions).split((operation) => operation.getContext().target === LIVE_LINK, new WebSocketLink({
+        uri:
+                process.env.ENDPOINT_WEBSOCKET ||
+                `${window.location.protocol === `https:` ? `wss` : `ws`}://${
+                    window.location.host
+                }/graphql`,
+        options: {
+            reconnect: true,
+            connectionParams: {
+                authToken,
+                sessionId,
+            },
+        },
+    }), new WebSocketLink({
+        uri: `${window.location.protocol === `https:` ? `wss` : `ws`}://${
+            window.location.host
+        }/sfu/${roomId}`,
+        options: {
+            reconnect: true,
+            connectionParams: {
+                authToken,
+                sessionId,
+            },
+        },
+    }));
+
+    return new ApolloClient({
+        cache: new InMemoryCache(),
+        link: directionalLink,
+    } as any);
+}
 
 function Layout () {
     const { camera, name } = useContext(LocalSessionContext);
