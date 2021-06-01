@@ -33,19 +33,23 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     rootTeacher:{
         "& $name":{
-            backgroundColor: `rgba(255,255,255,0.3)`,
-            padding: `0 10px`,
-            marginTop: 4,
-            borderRadius: 20,
+            position: `absolute`,
+            left: `0`,
+            bottom: `0`,
+            maxWidth: `160px`,
+            borderRadius: `0 12px 0`,
         },
     },
     rootSmall:{},
     rootLarge:{
         "& $name":{
+            position: `relative`,
+            backgroundColor: `rgba(255,255,255,0.3)`,
             fontSize: `1em`,
             borderRadius: `8px`,
             margin: `10px`,
             padding: `2px 20px`,
+            maxWidth: `160px`,
         },
     },
     topCamera:{
@@ -58,12 +62,18 @@ const useStyles = makeStyles((theme: Theme) => ({
     name: {
         color: `#fff`,
         display: `inline-block`,
+        verticalAlign: `bottom`,
         padding: `6px 10px`,
         lineHeight: `1.2`,
         fontSize: `0.8em`,
         fontWeight: 600,
         backgroundColor: `rgba(0, 0, 0, 0.25)`,
         borderRadius: `0 12px 0`,
+        textOverflow: `ellipsis`,
+        overflow: `hidden`,
+        whiteSpace: `nowrap`,
+        boxSizing: `border-box`,
+        maxWidth: `160px`
     },
     roles:{
         position: `absolute`,
@@ -95,6 +105,10 @@ const useStyles = makeStyles((theme: Theme) => ({
             margin: 1,
         },
     },
+    gridItem: {
+        display: `block`,
+        width: `100%`
+    }
 }));
 
 interface UserCameraDetailsType {
@@ -149,7 +163,9 @@ function UserCameraDetails (props: UserCameraDetailsType) {
                 container
                 alignItems="center"
                 className={classes.bottomCamera}>
-                <Grid item>
+                <Grid
+                    item
+                    className={classes.gridItem}>
                     <Typography className={classes.name}>
                         {isSelf ? <FormattedMessage id="you"/> : user.name} {!micOn && <MicDisabledIcon size="0.85em"/>}
                     </Typography>
