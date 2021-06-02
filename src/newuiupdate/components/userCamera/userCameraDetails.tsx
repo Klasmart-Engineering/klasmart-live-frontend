@@ -36,7 +36,6 @@ const useStyles = makeStyles((theme: Theme) => ({
             position: `absolute`,
             left: `0`,
             bottom: `0`,
-            maxWidth: `160px`,
             borderRadius: `0 12px 0`,
         },
     },
@@ -47,10 +46,20 @@ const useStyles = makeStyles((theme: Theme) => ({
             backgroundColor: `rgba(255,255,255,0.3)`,
             fontSize: `1em`,
             borderRadius: `8px`,
-            margin: `10px`,
+            margin: `10px 100px 10px 80px`,
             padding: `2px 20px`,
-            maxWidth: `160px`,
-        },
+            display: `inline-flex`,
+            alignItems: `center`,
+            maxWidth: `calc(100% - 230px)`,
+
+            "& span": {
+                maxWidth: `none`,
+
+                "& + svg": {
+                    minWidth: `20px`
+                }
+            }
+        }
     },
     topCamera:{
         textAlign: `center`,
@@ -69,11 +78,23 @@ const useStyles = makeStyles((theme: Theme) => ({
         fontWeight: 600,
         backgroundColor: `rgba(0, 0, 0, 0.25)`,
         borderRadius: `0 12px 0`,
+
+        "& > span": {
+            marginRight: `5px`,
+
+            "& + svg": {
+                minWidth: `11px`
+            }
+        }
+    },
+    textOverflow: {
+        display: `inline-block`,
+        verticalAlign: `middle`,
         textOverflow: `ellipsis`,
         overflow: `hidden`,
         whiteSpace: `nowrap`,
         boxSizing: `border-box`,
-        maxWidth: `160px`
+        maxWidth: `138px`
     },
     roles:{
         position: `absolute`,
@@ -108,6 +129,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     gridItem: {
         display: `block`,
         width: `100%`
+    },
+    iconRootLarge: {
+        minWidth: `20px`
     }
 }));
 
@@ -141,7 +165,7 @@ function UserCameraDetails (props: UserCameraDetailsType) {
                 [classes.rootLarge]: variant === `large`,
             })}>
                 <div className={classes.topCamera}>
-                    <Typography className={classes.name}>{isSelf ? <FormattedMessage id="you"/> : user.name} {!micOn && <MicDisabledIcon size="0.85em"/>}</Typography>
+                    <Typography className={classes.name}>{isSelf ? <span><FormattedMessage id="you"/></span> : <span className={classes.textOverflow}>{user.name}</span>} {!micOn && <MicDisabledIcon size="0.85em"/>}</Typography>
                     <div className={classes.roles}>
                         <TeacherIcon
                             size="1em"
@@ -167,7 +191,7 @@ function UserCameraDetails (props: UserCameraDetailsType) {
                     item
                     className={classes.gridItem}>
                     <Typography className={classes.name}>
-                        {isSelf ? <FormattedMessage id="you"/> : user.name} {!micOn && <MicDisabledIcon size="0.85em"/>}
+                        {isSelf ? <span><FormattedMessage id="you"/></span> : <span className={classes.textOverflow}>{user.name}</span>} {!micOn && <MicDisabledIcon size="0.85em"/>}
                     </Typography>
                 </Grid>
                 {Boolean(speakingActivity) && speakingActivity  &&
