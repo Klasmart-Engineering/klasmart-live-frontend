@@ -10,6 +10,8 @@ import {
     Grid,
     makeStyles,
     Theme,
+    useMediaQuery,
+    useTheme,
 } from "@material-ui/core";
 import clsx from "clsx";
 import React, {
@@ -23,7 +25,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         borderRadius: 12,
         width: `100%`,
         minHeight: 96,
-        margin: 2,
+        margin: '0 auto',
         height: `100%`,
         alignItems: `center`,
         textAlign: `center`,
@@ -34,7 +36,12 @@ const useStyles = makeStyles((theme: Theme) => ({
             objectFit: `cover`,
         },
     },
-    rootSmall:{},
+    rootSm:{
+        minHeight: 120,
+        "& video": {
+            objectFit: `contain`,
+        },
+    },
     rootLarge:{
         fontSize: `1.5rem`,
         "& video": {
@@ -69,6 +76,9 @@ function UserCamera (props: UserCameraType) {
     } = props;
     const classes = useStyles();
     const [ isHover, setIsHover ] = useState(false);
+
+    const theme = useTheme();
+    const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
 
     const enableSpeakingActivity = false;
     const [ isSpeaking, setIsSpeaking ] = useState(false);
@@ -131,7 +141,7 @@ function UserCamera (props: UserCameraType) {
             className={clsx(classes.root, {
                 // [classes.speaking]: isSpeaking,
                 [classes.self]: isSelf,
-                [classes.rootSmall]: variant === `small`,
+                [classes.rootSm]: isSmDown,
                 [classes.rootLarge]: variant === `large`,
             })}
             id={`participant:${user.id}`}

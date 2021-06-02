@@ -19,6 +19,9 @@ import React, {
 import { useIntl } from "react-intl";
 
 const useStyles = makeStyles((theme: Theme) => ({
+    rootSm:{
+        padding: '0 10px'
+    },
     cameraGrid: {
         display: `grid`,
         gridTemplateColumns: `1fr 1fr`,
@@ -66,7 +69,7 @@ function TabParticipants () {
             <Grid
                 container
                 direction="column"
-                className={classes.fullheight}>
+                className={clsx(classes.fullheight, {[classes.rootSm] : isSmDown})}>
                 <Grid
                     item
                     className={classes.gridContainerTeachers}>
