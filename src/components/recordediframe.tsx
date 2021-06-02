@@ -17,6 +17,7 @@ import MimiSpinner1 from "../assets/img/spinner/mimi1_spinner.gif";
 import { SESSION_LINK_LIVE } from "../context-provider/live-session-link-context";
 import { useHttpEndpoint } from "../context-provider/region-select-context";
 import { useSessionContext } from "../context-provider/session-context";
+import { ClassType } from "../store/actions";
 import { State } from "../store/store";
 import { injectIframeScript } from "../utils/injectIframeScript";
 import { loadingActivity } from "../utils/layerValues";
@@ -48,7 +49,7 @@ export function RecordedIframe(props: Props): JSX.Element {
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
 
-    const { roomId, token } = useSessionContext();
+    const { roomId, token, classType } = useSessionContext();
     const drawerOpen = useSelector((state: State) => state.control.drawerOpen);
     const { contentHref, setStreamId } = props;
     const [sendStreamId] = useMutation(SET_STREAMID, {context: {target: SESSION_LINK_LIVE}});
@@ -74,43 +75,46 @@ export function RecordedIframe(props: Props): JSX.Element {
 
     useEffect(() => {
         scale(contentWidth, contentHeight);
-    }, [size])
+        if (classType == ClassType.LIVE) {
+            setTimeout(() => {
+                scaleWhiteboard();
+            }, 300);
+        }
+    }, [size]);
 
     useEffect(() => {
-        // TODO gotta find a way to resize the h5p activity when the drawer gets opened.
-        // window.dispatchEvent(new Event('resize'));
+        setTimeout(() => {
+            window.dispatchEvent(new Event(`resize`));
+        }, 300)
     }, [drawerOpen])
 
     useEffect(() => {
-        setSeconds(MAX_LOADING_COUNT)
-        setLoadStatus(LoadStatus.Loading)
-
-        const iRef = window.document.getElementById("recordediframe") as HTMLIFrameElement;
-        iRef.addEventListener("load", () => setLoadStatus(LoadStatus.Finished));
-        return () => iRef.removeEventListener("load", () => setLoadStatus(LoadStatus.Finished));
+        setSeconds(MAX_LOADING_COUNT);
+        setLoadStatus(LoadStatus.Loading);
     }, [contentHref]);
 
     useEffect(() => {
         if (loadStatus === LoadStatus.Loading) {
+            setOpenDialog(true);
             const interval = window.setInterval(() => {
                 setSeconds(seconds => seconds - 1);
             }, 1000);
-            setIntervalId(interval)
         } else if (loadStatus === LoadStatus.Finished) {
             setOpenDialog(false);
             clearInterval(intervalId);
-            onLoad()
-            startRecording()
+            onLoad();
+            startRecording();
         } else if (seconds <= 0 || loadStatus === LoadStatus.Error) {
             clearInterval(intervalId);
         }
+
         return () => clearInterval(intervalId);
     }, [loadStatus]);
 
     const scale = (innerWidth: number, innerHeight: number) => {
         let currentWidth: number = size.width, currentHeight: number = size.height;
 
-            const iRef = window.document.getElementById("main-container") as HTMLIFrameElement;
+            const iRef = window.document.getElementById(`activity-view-container`) as HTMLIFrameElement;
             if (iRef) {
                 currentWidth = iRef.getBoundingClientRect().width;
                 currentHeight = iRef.getBoundingClientRect().height;
@@ -121,6 +125,15 @@ export function RecordedIframe(props: Props): JSX.Element {
         const shrinkRatio = Math.min(shrinkRatioX, shrinkRatioY);
         setTransformScale(shrinkRatio);
     }
+
+    const scaleWhiteboard = () => {
+        const recordediframe = window.document.getElementById(`recordediframe`) as HTMLIFrameElement;
+        const recordediframeStyles = recordediframe.getAttribute(`style`);
+        const whiteboard = window.document.getElementsByClassName(`canvas-container`)[0];
+        if (recordediframeStyles) {
+            whiteboard.setAttribute(`style`, recordediframeStyles);
+        }
+    };
 
     function onLoad() {
         // TODO the client-side rendering version of H5P is ready! we can probably delete this function and the scale function above
@@ -134,26 +147,17 @@ export function RecordedIframe(props: Props): JSX.Element {
         if(!stylesLoaded){
             var style = document.createElement('style');
             style.innerHTML = `
-            .h5p-content{
-                display: inline-block !important;
-                width: auto !important;
-            }
-            .h5p-course-presentation .h5p-wrapper{
-                min-width: 1300px !important;
-                min-height: 800px !important
-            }
+            img{max-width: 100%; height: auto; object-fit:contain}
             .h5p-single-choice-set{
                 max-height: 300px !important;
             }
             .h5p-alternative-inner{
                 height: auto !important;
             }
-            .h5p-column .h5p-dragquestion > .h5p-question-content > .h5p-inner{
-                width: 100% !important
-            }
-            `;
+            .h5p-column .h5p-dragquestion > .h5p-question-content > .h5p-inner {
+                width: 100% !important;
+            }`;
             contentDoc.head.appendChild(style);
-            // setStylesLoaded(true);
         }
 
         // IP Protection: Contents should not be able to be downloaded by right-clicking.
@@ -161,16 +165,17 @@ export function RecordedIframe(props: Props): JSX.Element {
         contentWindow.addEventListener("contextmenu", (e) => blockRightClick(e), false);
         const h5pDivCollection = contentDoc.body.getElementsByClassName("h5p-content");
         const h5pTypeColumn = contentDoc.body.getElementsByClassName("h5p-column").length;
-
-        if(h5pTypeColumn){
-            setEnableResize(false)
-            h5pDivCollection[0]?.setAttribute("style", "width: 100% !important;");
-        }else{
-            setEnableResize(true)
-             h5pDivCollection[0]?.setAttribute("style", "width: auto !important;");
-        }
+        const h5pTypeAccordion = contentDoc.body.getElementsByClassName(`h5p-accordion`).length;
 
         if (h5pDivCollection.length > 0) {
+            if (h5pTypeColumn || h5pTypeAccordion) {
+                setEnableResize(false);
+                h5pDivCollection[0].setAttribute(`style`, `width: 100% !important!;`);
+            } else {
+                setEnableResize(true);
+                h5pDivCollection[0].setAttribute(`style`, `width: auto !important;`);
+            }
+
             const h5pContainer = h5pDivCollection[0] as HTMLDivElement;
             h5pContainer?.setAttribute("data-iframe-height", "");
             const h5pWidth = h5pContainer.getBoundingClientRect().width;
@@ -178,6 +183,16 @@ export function RecordedIframe(props: Props): JSX.Element {
             setContentWidth(h5pWidth);
             setContentHeight(h5pHeight);
             scale(h5pWidth, h5pHeight);
+        } else if (contentDoc.body.getElementsByTagName(`img`).length) {
+            const imageWidth = contentDoc.body.getElementsByTagName(`img`)[0].getBoundingClientRect().width;
+            const imageHeight = contentDoc.body.getElementsByTagName(`img`)[0].getBoundingClientRect().height;
+            if (imageWidth && imageHeight) {
+                setContentWidth(imageWidth);
+                setContentHeight(imageHeight);
+            }
+        } else {
+            setContentWidth(1024);
+            setContentHeight(1024);
         }
     }
 
@@ -198,13 +213,17 @@ export function RecordedIframe(props: Props): JSX.Element {
     }, [iframeRef.current]);
 
     function startRecording() {
-        const iRef = window.document.getElementById("recordediframe") as HTMLIFrameElement;
-        if (!iRef ||
-            !iRef.contentWindow ||
-            (iRef.contentWindow as any).kidslooplive ||
-            !iRef.contentDocument) { return; }
-
-        injectIframeScript(iRef, "record");
+        try {
+            const iRef = window.document.getElementById("recordediframe") as HTMLIFrameElement;
+            if (!iRef ||
+                !iRef.contentWindow ||
+                (iRef.contentWindow as any).kidslooplive ||
+                !iRef.contentDocument) { return; }
+        
+            injectIframeScript(iRef, "record");
+        } catch(error) {
+            console.error(error);
+        }
     }
 
     const getRandomSpinner = (): string => SPINNER[Math.floor(Math.random() * SPINNER.length)];
@@ -278,14 +297,14 @@ export function RecordedIframe(props: Props): JSX.Element {
                 ref={iframeRef}
                 allow="microphone"
                 style={{
-                width: enableResize ? contentWidth : '100%',
-                height: enableResize ? contentHeight : '100%',
-                position: enableResize ? `absolute` : 'static',
-                transformOrigin: "top left",
-                transform: enableResize ? `scale(${transformScale})` : `scale(1)`,
-                minWidth: '100%',
-                minHeight: '100%'
-            }}
+                    width: enableResize ? contentWidth : '100%',
+                    height: enableResize ? contentHeight : '100%',
+                    position: enableResize ? `absolute` : 'static',
+                    transformOrigin: classType === ClassType.LIVE ? 'top left' : 'unset',
+                    transform: enableResize ? `scale(${transformScale})` : `scale(1)`,
+                    minWidth: '100%',
+                }}
+                onLoad={() => { setLoadStatus(LoadStatus.Finished); window.dispatchEvent(new Event(`resize`));}}
             />
         </React.Fragment>
     );
