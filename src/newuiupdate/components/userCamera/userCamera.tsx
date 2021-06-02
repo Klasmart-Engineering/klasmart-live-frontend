@@ -162,6 +162,8 @@ function UserCamera (props: UserCameraType) {
                     <ReactPlayer
                         url={userCamera}
                         playing={true}
+                        playsinline={true}
+                        autoPlay
                         muted={true}
                         id={`camera:${userSession.id}`}
                         className={classes.video}
