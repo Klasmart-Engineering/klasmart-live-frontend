@@ -36,7 +36,7 @@ const initialSessionState: SessionState = {
     locale: getDefaultLanguageCode(),
     selectedUserId: undefined,
     selectedOrg: undefined,
-    regionId: "alpha",
+    regionId: "auth.alpha.kidsloop.net",
 }
 
 const sessionSlice = createSlice({
@@ -61,8 +61,8 @@ const sessionSlice = createSlice({
         setSelectedOrg(state, action) {
             return { ...state, selectedOrg: action.payload }
         },
-        setRegion(state, action) {
-            return { ...state, region: action.payload }
+        setRegionId(state, action) {
+            return { ...state, regionId: action.payload }
         }
     }
 })
@@ -74,7 +74,7 @@ export const {
     setLocale,
     setSelectedUserId,
     setSelectedOrg,
-    setRegion
+    setRegionId
 } = sessionSlice.actions
 
 export default sessionSlice.reducer

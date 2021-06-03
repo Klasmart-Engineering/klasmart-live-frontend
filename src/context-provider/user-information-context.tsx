@@ -1,7 +1,7 @@
 import React, { createContext, ReactChild, ReactChildren, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { UserInformation } from "../services/user/IUserInformationService";
-import { setLocale, setRegion, setSelectedOrg, setSelectedUserId } from "../store/reducers/session";
+import { setLocale, setRegionId, setSelectedOrg, setSelectedUserId } from "../store/reducers/session";
 import { State } from "../store/store";
 import { useServices } from "./services-provider";
 
@@ -54,6 +54,8 @@ const useAuthentication = () => {
 
     const { authenticationService } = useServices();
 
+    const [tokenFromAuth, setTokenFromAuth] = useState<string>();
+
     const dispatch = useDispatch();
 
     const refresh = useCallback(() => {
@@ -71,7 +73,7 @@ const useAuthentication = () => {
             }).finally(() => {
                 setAuthReady(true);
             })
-    }, []);
+    }, [authenticationService]);
 
     const signOut = useCallback(async () => {
         if (!authenticationService) return;
@@ -110,7 +112,23 @@ const useAuthentication = () => {
         return () => {
             clearInterval(repeatedTokenRefresh);
         }
-    }, [authenticated]);
+    }, [authenticated, authenticationService]);
+
+    useEffect(() => {
+        if (!authenticationService) return;
+        if (!tokenFromAuth) return;
+
+        authenticationService.transfer(tokenFromAuth).then(() => {
+            setSignedOut(false);
+            refresh();
+        }).catch(err => {
+            console.error(err);
+            setAuthError(true);
+        });
+
+        setTokenFromAuth(undefined);
+
+    }, [authenticationService, tokenFromAuth]);
 
     useEffect(() => {
         if (!authenticationService) return;
@@ -130,20 +148,13 @@ const useAuthentication = () => {
                 }
 
                 const region = url.searchParams.get("region");
+
                 if (region) {
-                    dispatch(setRegion(region))
+                    dispatch(setRegionId(region))
                 }
 
                 const token = url.searchParams.get("token");
-                if (token) {
-                    authenticationService.transfer(token).then(() => {
-                        setSignedOut(false);
-                        refresh();
-                    }).catch(err => {
-                        console.error(err);
-                        setAuthError(true);
-                    });
-                }
+                setTokenFromAuth(token ?? undefined);
             }
         };
 

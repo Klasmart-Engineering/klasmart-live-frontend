@@ -1,7 +1,7 @@
 import React, { createContext, ReactChild, ReactChildren, useCallback, useContext, useEffect, useMemo, useState } from "react"
 import { useSelector, useDispatch } from "react-redux";
 import { State } from "../store/store";
-import { setRegion } from "../store/reducers/session";
+import { setRegionId } from "../store/reducers/session";
 
 export type Service = "auth" | "live" | "cms" | "sfu" | "user" | "privacy"
 
@@ -28,8 +28,8 @@ const RegionSelectContext = createContext<IRegionSelectContext>({ loading: false
 
 const DefaultRegions: Region[] = [
     {
-        id: "prod",
-        name: "Production",
+        id: "auth.kidsloop.net",
+        name: "Global",
         development: false,
         services: {
             auth: "https://auth.kidsloop.net",
@@ -37,12 +37,12 @@ const DefaultRegions: Region[] = [
             cms: "https://kl2.kidsloop.net",
             sfu: "https://live.kidsloop.net/sfu",
             user: "https://api.kidsloop.net/user/",
-            privacy: "https://kidsloop.net/en/policies/privacy-notice"
+            privacy: "https://kidsloop.net/policies/privacy-notice"
         }
     },
     {
-        id: "uk",
-        name: "UK Production",
+        id: "auth.kidsloop.co.uk",
+        name: "UK",
         development: false,
         services: {
             auth: "https://auth.kidsloop.co.uk",
@@ -50,11 +50,63 @@ const DefaultRegions: Region[] = [
             cms: "https://kl2.kidsloop.co.uk",
             sfu: "https://live.kidsloop.co.uk/sfu",
             user: "https://api.kidsloop.co.uk/user/",
-            privacy: "https://kidsloop.co.uk/en/policies/privacy-notice"
+            privacy: "https://kidsloop.net/policies/privacy-notice"
         }
     },
     {
-        id: "alpha",
+        id: "auth.kidsloop.in",
+        name: "India",
+        development: false,
+        services: {
+            auth: "https://auth.kidsloop.in",
+            live: "https://live.kidsloop.in",
+            cms: "https://kl2.kidsloop.in",
+            sfu: "https://live.kidsloop.in/sfu",
+            user: "https://api.kidsloop.in/user/",
+            privacy: "https://kidsloop.net/policies/privacy-notice"
+        }
+    },
+    {
+        id: "auth.kidsloop.id",
+        name: "Indonesia",
+        development: false,
+        services: {
+            auth: "https://auth.kidsloop.id",
+            live: "https://live.kidsloop.id",
+            cms: "https://kl2.kidsloop.id",
+            sfu: "https://live.kidsloop.id/sfu",
+            user: "https://api.kidsloop.id/user/",
+            privacy: "https://kidsloop.net/policies/privacy-notice"
+        }
+    },
+    {
+        id: "auth.kidsloop.cn",
+        name: "China",
+        development: false,
+        services: {
+            auth: "https://auth.kidsloop.cn",
+            live: "https://live.kidsloop.cn",
+            cms: "https://kl2.kidsloop.cn",
+            sfu: "https://live.kidsloop.cn/sfu",
+            user: "https://api.kidsloop.cn/user/",
+            privacy: "https://kidsloop.net/policies/privacy-notice"
+        }
+    },
+    {
+        id: "auth.kidsloop.vn",
+        name: "Vietnam",
+        development: false,
+        services: {
+            auth: "https://auth.kidsloop.vn",
+            live: "https://live.kidsloop.vn",
+            cms: "https://cms.kidsloop.vn",
+            sfu: "https://live.kidsloop.vn/sfu",
+            user: "https://api.kidsloop.vn/user/",
+            privacy: "https://kidsloop.net/policies/privacy-notice"
+        }
+    },
+    {
+        id: "auth.alpha.kidsloop.net",
         name: "Alpha",
         development: true,
         services: {
@@ -115,7 +167,7 @@ export function RegionSelectProvider({ children, regionsUrl }: Props) {
     }, []);
 
     const selectRegion = useCallback((id: string) => {
-        dispatch(setRegion(id))
+        dispatch(setRegionId(id))
     }, []);
 
     useEffect(() => {
