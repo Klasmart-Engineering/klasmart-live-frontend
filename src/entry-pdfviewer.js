@@ -17,7 +17,7 @@ if (!pdfjsLib.getDocument || !pdfjsViewer.PDFViewer) {
 }
 
 // Some PDFs need external cmaps.
-const CMAP_URL = `../../node_modules/pdfjs-dist/cmaps/`;
+const CMAP_URL = `pdfjs-dist/cmaps/`;
 const CMAP_PACKED = true;
 
 const DEFAULT_URL = pdfSrc;
