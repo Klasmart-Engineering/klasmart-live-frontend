@@ -28,8 +28,8 @@ const useStyles = makeStyles((theme: Theme) => ({
         padding: 4,
     },
     item:{
-        padding: `0.4em 0.8em`,
-        margin: `0 2px`,
+        padding: `0.4em`,
+        margin: `0 1px`,
         cursor: `pointer`,
         borderRadius: 10,
         transition: `100ms all ease-in-out`,
@@ -116,11 +116,11 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
                 alignItems="stretch"
                 className={classes.root}>
                 <CanvasMenuItem
-                    color='#000000'
+                    color='#000'
                     disabled={!isGlobalCanvasEnabled}
-                    active={selectedPen === `#000000`}
+                    active={selectedPen === `#000`}
                     icon={<PencilIcon size="1.85rem"/>}
-                    onClick={ () => {setSelectedPen(`#000000`);} } />
+                    onClick={ () => {setSelectedPen(`#000`);} } />
                 <CanvasMenuItem
                     color='#0000ff'
                     disabled={!isGlobalCanvasEnabled}
@@ -145,6 +145,36 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
                     active={selectedPen === `#ff0000`}
                     icon={<PencilIcon size="1.85rem"/>}
                     onClick={ () => { setSelectedPen(`#ff0000`);} } />
+                <CanvasMenuItem
+                    color='#ffa500'
+                    disabled={!isGlobalCanvasEnabled}
+                    active={selectedPen === `#ffa500`}
+                    icon={<PencilIcon size="1.85rem"/>}
+                    onClick={ () => {setSelectedPen(`#ffa500`);} } />
+                <CanvasMenuItem
+                    color='#800080'
+                    disabled={!isGlobalCanvasEnabled}
+                    active={selectedPen === `#800080`}
+                    icon={<PencilIcon size="1.85rem"/>}
+                    onClick={ () => { setSelectedPen(`#800080`);} } />
+                <CanvasMenuItem
+                    color='#ffc0cb'
+                    disabled={!isGlobalCanvasEnabled}
+                    active={selectedPen === `#ffc0cb`}
+                    icon={<PencilIcon size="1.85rem"/>}
+                    onClick={ () => { setSelectedPen(`#ffc0cb`);} } />
+                <CanvasMenuItem
+                    color='#eee'
+                    disabled={!isGlobalCanvasEnabled}
+                    active={selectedPen === `#fff`}
+                    icon={<PencilIcon size="1.85rem"/>}
+                    onClick={ () => {setSelectedPen(`#fff`);} } />
+                <CanvasMenuItem
+                    color='#542727'
+                    disabled={!isGlobalCanvasEnabled}
+                    active={selectedPen === `#542727`}
+                    icon={<PencilIcon size="1.85rem"/>}
+                    onClick={ () => { setSelectedPen(`#542727`);} } />
                 <CanvasMenuItem
                     disabled={!isGlobalCanvasEnabled}
                     active={selectedMove}
