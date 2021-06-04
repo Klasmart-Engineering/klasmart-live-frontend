@@ -26,9 +26,8 @@ import StyledIcon from "../styled/icon";
 
 export const DRAWER_TOOLBAR_WIDTH = 64;
 
-export function ClassContentContainer({ materialKey, recommendUrl }: {
-    materialKey: number,
-    recommendUrl?: string,
+export function ClassContentContainer({ materialKey }: {
+    materialKey: number
 }) {
     const { classType: classtype } = useSessionContext();
     const theme = useTheme();
@@ -50,15 +49,13 @@ export function ClassContentContainer({ materialKey, recommendUrl }: {
                 paddingRight: (isSmDown ? theme.spacing(1) : theme.spacing(2)) + (classtype === ClassType.STUDY ? 0 : DRAWER_TOOLBAR_WIDTH),
             }}
         >
-            <ClassContent recommendUrl={recommendUrl} />
+            <ClassContent />
             <WBToolbarContainer />
         </Grid>
     )
 }
 
-function ClassContent({ recommendUrl }: {
-    recommendUrl?: string
-}) {
+function ClassContent() {
     const { classType: classtype, isTeacher, materials } = useSessionContext();
     const { exitRoom } = useContext(RoomContext);
 
@@ -91,7 +88,6 @@ function ClassContent({ recommendUrl }: {
                 height: `calc(100% - ${WB_TOOLBAR_MAX_HEIGHT}px)`,
                 maxHeight: `calc(100% - ${WB_TOOLBAR_MAX_HEIGHT}px)`,
                 overflow: "hidden",
-                // overflowY: interactiveMode === 2 ? "auto" : "hidden" // For Observe mode
             }}
         >
             <Grid
@@ -139,7 +135,7 @@ function ClassContent({ recommendUrl }: {
                                     style={{ width: "100%" }}
                                 /> :
                                 (currentMaterial.__typename === MaterialTypename.Iframe || currentMaterial.__typename === undefined) && contentHref ?
-                                <ResizedIframe contentId={contentIndex >= materials.length ? `${recommendUrl}` : `${contentHref}`} /> : <></>
+                                <ResizedIframe contentId={contentHref} /> : <></>
                     }
                 </Grid>
                 <Grid
@@ -148,7 +144,7 @@ function ClassContent({ recommendUrl }: {
                     item
                     xs={1}
                 >
-                    <IconButton disabled={contentIndex >= (recommendUrl ? materials.length : materials.length - 1)} aria-label="go to next activity" onClick={() => dispatch(setContentIndex(contentIndex + 1))}>
+                    <IconButton disabled={contentIndex >= materials.length - 1} aria-label="go to next activity" onClick={() => dispatch(setContentIndex(contentIndex + 1))}>
                         <ArrowForwardIcon fontSize="large" />
                     </IconButton>
                 </Grid>

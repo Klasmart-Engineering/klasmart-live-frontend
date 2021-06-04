@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from "react";
+import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import Grid from "@material-ui/core/Grid";
 import { LessonMaterial } from "../../lessonMaterialContext"
@@ -17,7 +17,6 @@ interface LayoutProps {
     setMaterialKey: React.Dispatch<React.SetStateAction<number>>;
     tabIndex: number;
     setTabIndex: React.Dispatch<React.SetStateAction<number>>;
-    recommendUrl?: string;
 }
 
 export function Layout({
@@ -28,7 +27,6 @@ export function Layout({
     setMaterialKey,
     tabIndex,
     setTabIndex,
-    recommendUrl,
 }: LayoutProps): JSX.Element {
     const { classType: classtype } = useSessionContext();
     const dispatch = useDispatch();
@@ -48,7 +46,6 @@ export function Layout({
         >
             <ClassContentContainer
                 materialKey={materialKey}
-                recommendUrl={recommendUrl}
             />
             {classtype === ClassType.STUDY ? null :
                 <DrawerContainer
