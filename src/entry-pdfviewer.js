@@ -8,8 +8,11 @@ const scaleLiterals = [
 ];
 
 const params = new URLSearchParams(window.location.search);
-let scale = params.get(`scale`);
-const pdfSrc = params.get(`pdfSrc`);
+
+// ! Configurable query parameters
+let scale = params.get(`scale`) || scaleLiterals[0];
+const pdfSrc = params.get(`pdfSrc`); // Required
+const useLinkService = params.get(`linkService`) || false;
 
 if (!pdfjsLib.getDocument || !pdfjsViewer.PDFViewer) {
 // eslint-disable-next-line no-alert
@@ -26,22 +29,21 @@ const container = document.getElementById(`viewerContainer`);
 
 const eventBus = new pdfjsViewer.EventBus();
 
-// (Optionally) enable hyperlinks within PDF files.
-const pdfLinkService = new pdfjsViewer.PDFLinkService({
-    eventBus,
-});
+let pdfLinkService = useLinkService
+    ? new pdfjsViewer.PDFLinkService({ eventBus })
+    : undefined;
 
-const pdfViewer = new pdfjsViewer.PDFViewer({
+const pdfViewerParams = {
     container,
     eventBus,
-    linkService: pdfLinkService,
     renderer: `svg`,
     textLayerMode: 0,
-    embedFonts: true,
-});
-pdfLinkService.setViewer(pdfViewer);
+    linkService: pdfLinkService,
+};
 
-if (!scale) scale = scaleLiterals[0];
+const pdfViewer = new pdfjsViewer.PDFViewer(pdfViewerParams);
+
+if (pdfLinkService) pdfLinkService.setViewer(pdfViewer);
 
 // validate scale
 if (typeof scale !== `number` && !scaleLiterals.includes(scale)) {
@@ -64,6 +66,7 @@ const loadingTask = pdfjsLib.getDocument({
 loadingTask.promise.then(function (pdfDocument) {
 // Document loaded, specifying document for the viewer and
 // the (optional) linkService.
+    console.log(pdfDocument);
     pdfViewer.setDocument(pdfDocument);
-    pdfLinkService.setDocument(pdfDocument, null);
+    if (pdfLinkService) pdfLinkService.setDocument(pdfDocument, null);
 });
