@@ -34,12 +34,14 @@ limitations under the License.
       height: 100%;
       display: flex;
       justify-content: center;
-      
     }
     .canvasWrapper {
       background: white;
     }
-    
+    /* Disable links in PDF as the navigation to new page does not appear to be tracked by rrweb */
+    .linkAnnotation {
+      display: none;
+    }
   </style>
   
   <link rel="stylesheet" href="pdfjs-dist/web/pdf_viewer.css">
