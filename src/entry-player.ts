@@ -16,7 +16,7 @@ window.addEventListener(`message`, ({ data }) => {
     if (!data || !data.event) { return; }
     try {
         const event = JSON.parse(data.event);
-        console.log(event);
+        // console.log(event);
         if (!hasStarted) {
             player.startLive(event.timestamp);
             hasStarted = true;
