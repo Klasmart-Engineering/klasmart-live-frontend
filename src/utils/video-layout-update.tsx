@@ -6,7 +6,6 @@ export default function useVideoLayoutUpdate(parent: Element | undefined | null)
         const cordova = (window as any).cordova;
         if (!cordova || !cordova.plugins || !cordova.plugins.iosrtc) return;
 
-        console.log('refreshing videos');
         cordova.plugins.iosrtc.refreshVideos();
     }, []);
 
@@ -26,4 +25,6 @@ export default function useVideoLayoutUpdate(parent: Element | undefined | null)
             ro.disconnect();
         }
     }, [parent, updateLayout]);
+
+    return { updateLayout };
 }

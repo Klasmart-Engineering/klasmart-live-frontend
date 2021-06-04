@@ -161,6 +161,7 @@ const useStyles = makeStyles((theme: Theme) =>
             justifyContent: "space-between",
             height: 48,
             paddingLeft: theme.spacing(2),
+            backgroundColor: "white",
         },
         tabIndicator: {
             backgroundColor: "#0E78D5",
@@ -364,8 +365,7 @@ function TabInnerContent({ title }: { title: string }) {
                             flexGrow: 1,
                             overflow: "hidden auto",
                             // Because student side has no <InviteButton /> and <GlobalCameraControl />
-                            maxHeight: isSmDown ? `calc(100vh - ${theme.spacing(54)}px)` :
-                                localSession?.isTeacher && localSession?.isHost ? `calc(100vh - ${theme.spacing(49)}px)` : `calc(100vh - ${theme.spacing(6)}px)`,
+                            maxHeight:  localSession?.isTeacher && localSession?.isHost ? `calc(100vh - ${theme.spacing(49)}px)` : `calc(100vh - ${theme.spacing(6)}px)`,
                         }}
                     >
                         {localSession && !(localSession?.isTeacher && localSession?.isHost) && (
@@ -376,7 +376,7 @@ function TabInnerContent({ title }: { title: string }) {
                                 square
 
                                 // GridProps - You can find related props by searching the keyword '...other' in camera.tsx
-                                item xs={isSmDown ? 3 : 12}
+                                item xs={12}
                                 style={{
                                     padding: theme.spacing(0.5),
                                     order: getCameraOrder(localSession, true)
@@ -396,7 +396,7 @@ function TabInnerContent({ title }: { title: string }) {
                                         square
                                         isLocalCamera={false}
                                         // GridProps - You can find related props by searching the keyword '...other' in camera.tsx
-                                        item xs={isSmDown ? 3 : 12}
+                                        item xs={12}
                                         // xs={camGridItemXS} // TODO (Isu): This is planned by design.
                                         style={{
                                             padding: theme.spacing(0.5),
@@ -564,7 +564,6 @@ export default function Layout(props: Props): JSX.Element {
     const { children, interactiveModeState, streamIdState } = props;
     const classes = useStyles();
     const theme = useTheme();
-    const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
     const drawerOpen = useSelector((state: State) => state.control.drawerOpen);
     const drawerTabIndex = useSelector((state: State) => state.control.drawerTabIndex);
     const contentIndex = useSelector((store: State) => store.control.contentIndex);
@@ -615,7 +614,6 @@ export default function Layout(props: Props): JSX.Element {
                                     [classes.drawerClose]: !drawerOpen,
                                 }),
                             }}
-                            hidden={isSmDown}
                             variant="permanent"
                         >
                             <Grid container direction="row" style={{ flexGrow: 1, overflow: "hidden", backgroundColor: "transparent" }}>
@@ -675,39 +673,6 @@ export default function Layout(props: Props): JSX.Element {
                                 </Grid>
                             </Grid>
                         </Drawer>
-                        <Hidden mdUp>
-                            <Grid item xs={12} className={classes.bottomNav}>
-                                <Tabs
-                                    aria-label="horizontal tabs"
-                                    orientation="horizontal"
-                                    variant="fullWidth"
-                                    value={drawerTabIndex}
-                                    onChange={handleChange}
-                                    // className={clsx(classes.tabs)}
-                                    classes={{
-                                        indicator: classes.tabIndicator
-                                    }}
-                                    centered
-                                >
-                                    {isHostTeacher ?
-                                        TABS.filter((t) => t.menuType !== 1).map((tab, index) => <StyledTab mobile key={`tab-button-${tab.title}`} className={index === drawerTabIndex ? classes.tabSelected : ""} title={tab.title} value={index}>{tab.icon}</StyledTab>) :
-                                        TABS.filter((t) => t.menuType !== 0).map((tab, index) => <StyledTab mobile key={`tab-button-${tab.title}`} className={index === drawerTabIndex ? classes.tabSelected : ""} title={tab.title} value={index}>{tab.icon}</StyledTab>)
-                                    }
-                                </Tabs>
-                                <Collapse in={drawerOpen}>
-                                    <Grid item xs={12} style={{ backgroundColor: theme.palette.type === "light" ? "#FFF" : "#030D1C" }}>
-                                        <SessionsContext.Provider value={sessions}>
-                                            <MessageContext.Provider value={messages}>
-                                                {isHostTeacher ?
-                                                    TABS.filter((t) => t.menuType !== 1).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} index={index} tab={tab} value={drawerTabIndex} />) :
-                                                    TABS.filter((t) => t.menuType !== 0).map((tab, index) => <TabPanel key={`tab-panel-${tab.title}`} index={index} tab={tab} value={drawerTabIndex} />)
-                                                }
-                                            </MessageContext.Provider>
-                                        </SessionsContext.Provider>
-                                    </Grid>
-                                </Collapse>
-                            </Grid>
-                        </Hidden>
                     </div>
                 </Container>
             </Grid>

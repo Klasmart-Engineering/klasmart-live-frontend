@@ -1,8 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
+import useVideoLayoutUpdate from "./utils/video-layout-update";
 
 const useCordovaInitialize = (backExitApplication?: boolean, callbackBackButton?: () => void, skipInitEffects?: boolean) => {
     const [cordovaReady, setCordovaReady] = useState(false);
     const [permissions, setPermissions] = useState(false);
+
+    const { updateLayout } = useVideoLayoutUpdate(null);
 
     const enableAndroidFullScreen = () => {
         // cordova-plugin-fullscreen
@@ -122,6 +125,16 @@ const useCordovaInitialize = (backExitApplication?: boolean, callbackBackButton?
         }
 
     }, [backExitApplication, callbackBackButton]);
+
+    useEffect(() => {
+        const vu = setInterval(() => {
+            updateLayout();
+        }, 50);
+
+        return () => {
+            clearInterval(vu);
+        };
+    }, []);
 
     return { cordovaReady, permissions, requestPermissions, requestIosCameraPermission };
 };
