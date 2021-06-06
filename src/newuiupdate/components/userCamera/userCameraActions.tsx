@@ -239,6 +239,21 @@ function UserCameraActions (props: UserCameraActionsType) {
                         </IconButton>
                         */}
 
+                    {hasControls &&
+                        <IconButton
+                            component="a"
+                            aria-label="More controls button"
+                            aria-controls="more-controls-popover"
+                            aria-haspopup="true"
+                            size="small"
+                            className={classes.controlsIcon}
+                            onClick={handleMoreOpen}
+                        >
+                            <DotsVerticalRoundedIcon size="1em"/>
+                        </IconButton>
+                    }
+
+                    {!hasControls && !user.isTeacher &&
                     <IconButton
                         component="a"
                         aria-label="More controls button"
@@ -250,6 +265,7 @@ function UserCameraActions (props: UserCameraActionsType) {
                     >
                         <DotsVerticalRoundedIcon size="1em"/>
                     </IconButton>
+                    }
 
                     <Menu
                         id="control-menu"
