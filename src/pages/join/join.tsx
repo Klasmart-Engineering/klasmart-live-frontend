@@ -234,7 +234,7 @@ function CameraPreview({ permissionError, videoStream }: {
         permissionError ?
             <CameraPreviewFallback permissionError /> : (
                 videoStream && videoStream.getVideoTracks().length > 0 && videoStream.getVideoTracks().every((t) => t.readyState === "live") && videoStream.active ?
-                    <Camera mediaStream={videoStream} isLocalCamera={true} /> :
+                    <Camera mediaStream={videoStream} muted={true} /> :
                     <Loading messageId="allow_media_permission" />
             )
     )
