@@ -1,6 +1,7 @@
 const webpack = require("webpack");
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 module.exports = {
   mode: "development",
@@ -8,6 +9,7 @@ module.exports = {
     ui: "./src/entry-cordova.tsx",
     record: "./src/entry-record.ts",
     player: "./src/entry-player.ts",
+    pdfviewer: "./src/entry-pdfviewer.js",
   },
   module: {
     rules: [
@@ -90,6 +92,20 @@ module.exports = {
       chunks: ["player"],
       template: "src/player.cordova.html",
     }),
+    new HtmlWebpackPlugin({
+      filename: "pdfviewer.html",
+      chunks: ["pdfviewer"],
+      template: "src/pdfviewer.html",
+    }),
+    new CopyWebpackPlugin({
+      patterns: [{
+        from: "node_modules/pdfjs-dist/cmaps",
+        to: "cmaps/"
+      }, {
+        from: "node_modules/pdfjs-dist",
+        to: "pdfjs-dist/"
+      }]
+    })
   ],
   devServer: {
     host: "0.0.0.0",

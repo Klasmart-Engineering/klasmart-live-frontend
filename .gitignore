@@ -3,6 +3,7 @@ dist
 .vscode
 .idea
 .eslintcache
+*.ignore
 
 # Cordova
 /plugins/

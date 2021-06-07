@@ -13,9 +13,9 @@ window.addEventListener('message', ({ data }) => {
     } else {
       events.push(event)
       if (events.length >= 2) {
-        player = new Replayer(events)
+        player = new Replayer(events, { mouseTail: false, liveMode: true, speed: 1.5 })
         player.on('resize', () => window.parent.postMessage({ width: player.iframe.width, height: player.iframe.height }, '*'))
-        player.play()
+        player.startLive(event.timestamp);
       }
     }
   } catch (e) {

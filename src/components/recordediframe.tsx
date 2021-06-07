@@ -208,6 +208,7 @@ export function RecordedIframe(props: Props): JSX.Element {
                 });
             }
         }
+
         window.addEventListener("message", onMessage);
         return () => window.removeEventListener("message", onMessage);
     }, [iframeRef.current]);
@@ -293,7 +294,7 @@ export function RecordedIframe(props: Props): JSX.Element {
             </Dialog>
             <iframe
                 id="recordediframe"
-                src={contentHrefWithToken}
+                src={contentHref.endsWith(`.pdf`) ? `/pdfviewer.html?pdfSrc=${contentHref}` : contentHrefWithToken}
                 ref={iframeRef}
                 allow="microphone"
                 style={{

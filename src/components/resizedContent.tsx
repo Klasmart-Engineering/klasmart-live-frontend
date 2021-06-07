@@ -21,13 +21,15 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export interface Props {
-    contentId: string;
+    contentHref: string;
 }
 
 export function ResizedIframe(props: Props): JSX.Element {
     const iframeRef = useRef<HTMLIFrameElement>(null);
 
-    const { contentId } = props;
+    const { contentHref } = props;
+
+    const isPdfContent = contentHref.endsWith(`.pdf`);
 
     const [transformScale, setTransformScale] = useState<number>(1);
     const [contentWidth, setContentWidth] = useState(1600);
@@ -47,7 +49,7 @@ export function ResizedIframe(props: Props): JSX.Element {
         const iRef = window.document.getElementById("resizediframe") as HTMLIFrameElement;
         iRef.addEventListener("load", onLoad);
         return () =>  iRef.removeEventListener("resize", onLoad);
-    }, [contentId]);
+    }, [contentHref]);
 
     const scale = (innerWidth: number, innerHeight: number) => {
         let currentWidth: number = size.width, currentHeight: number = size.height;
@@ -104,16 +106,21 @@ export function ResizedIframe(props: Props): JSX.Element {
         const h5pDivCollection = contentDoc.body.getElementsByClassName("h5p-content");
         const h5pTypeColumn = contentDoc.body.getElementsByClassName("h5p-column").length;
 
-        if(h5pTypeColumn){
+        if (h5pTypeColumn || isPdfContent) {
             setEnableResize(false)
-            h5pDivCollection[0].setAttribute("style", "width: 100% !important;");
-        }else{
+        } else {
             setEnableResize(true)
-             h5pDivCollection[0].setAttribute("style", "width: auto !important;");
         }
 
         if (h5pDivCollection.length > 0) {
             const h5pContainer = h5pDivCollection[0] as HTMLDivElement;
+
+            if (h5pTypeColumn) {
+                h5pContainer.setAttribute("style", "width: 100% !important;");
+            } else {
+                h5pContainer.setAttribute("style", "width: auto !important;");
+            }
+
             h5pContainer.setAttribute("data-iframe-height", "");
             const h5pWidth = h5pContainer.getBoundingClientRect().width;
             const h5pHeight = h5pContainer.getBoundingClientRect().height;
@@ -140,7 +147,7 @@ export function ResizedIframe(props: Props): JSX.Element {
     return (
         <iframe
             id="resizediframe"
-            src={contentId}
+            src={isPdfContent ? `pdfviewer.html?pdfSrc=${contentHref}` : contentHref}
             ref={iframeRef}
             data-h5p-width={contentWidth}
             data-h5p-height={contentWidth}

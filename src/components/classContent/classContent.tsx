@@ -135,7 +135,7 @@ function ClassContent() {
                                     style={{ width: "100%" }}
                                 /> :
                                 (currentMaterial.__typename === MaterialTypename.Iframe || currentMaterial.__typename === undefined) && contentHref ?
-                                <ResizedIframe contentId={contentHref} /> : <></>
+                                <ResizedIframe contentHref={contentHref} /> : <></>
                     }
                 </Grid>
                 <Grid
