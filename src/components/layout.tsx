@@ -119,7 +119,7 @@ const useStyles = makeStyles((theme: Theme) =>
         drawer: {
             width: DRAWER_WIDTH,
             flexShrink: 0,
-            // whiteSpace: "nowrap",
+            whiteSpace: "nowrap",
         },
         drawerOpen: {
             width: DRAWER_WIDTH,
@@ -339,7 +339,7 @@ function TabInnerContent({ title }: { title: string }) {
                         <Camera
                             session={localSession}
                             mediaStream={camera !== null ? camera : undefined}
-                            isLocalCamera
+                            muted
                             // GridProps - You can find related props by searching the keyword '...other' in camera.tsx
 
                             item xs={12}
@@ -367,7 +367,7 @@ function TabInnerContent({ title }: { title: string }) {
                             <Camera
                                 session={localSession}
                                 mediaStream={camera !== null ? camera : undefined}
-                                isLocalCamera
+                                muted
                                 square
 
                                 // GridProps - You can find related props by searching the keyword '...other' in camera.tsx
@@ -389,7 +389,7 @@ function TabInnerContent({ title }: { title: string }) {
                                         session={session}
                                         mediaStream={sfuState.getCameraStream(session.id)}
                                         square
-                                        isLocalCamera={false}
+
                                         // GridProps - You can find related props by searching the keyword '...other' in camera.tsx
                                         item xs={isSmDown ? 3 : 12}
                                         // xs={camGridItemXS} // TODO (Isu): This is planned by design.

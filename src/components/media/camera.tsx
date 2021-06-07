@@ -25,7 +25,7 @@ import { FormattedMessage } from "react-intl";
 import { useSelector } from "react-redux";
 import { LocalSessionContext, SFU_LINK } from "../../entry";
 import { Session } from "../../pages/room/room";
-import { GLOBAL_MUTE_QUERY, INDIVIDUAL_MUTE_QUERY, MUTE, MuteNotification, WebRTCContext, WebRTCContextInterface } from "../../providers/WebRTCContext";
+import { GLOBAL_MUTE_QUERY, MUTE, MuteNotification, WebRTCContext, WebRTCContextInterface } from "../../providers/WebRTCContext";
 import { State } from "../../store/store";
 import PermissionControls from "../../whiteboard/components/WBPermissionControls";
 import { SessionsContext } from "../layout";
@@ -86,27 +86,31 @@ export function getCameraOrder(userSession: Session, isLocalUser: boolean): Came
 }
 
 interface CameraProps extends GridProps {
-    isLocalCamera: boolean;
     session?: Session;
     mediaStream?: MediaStream;
+    muted?: boolean;
     square?: boolean;
     noBorderRadius?: boolean;
     hidden?: boolean; // Maybe this prop will be deleted after classroom layout renewal.
 }
 
 export default function Camera({
-    isLocalCamera,
     session,
     mediaStream,
+    muted,
     square,
     noBorderRadius,
     ...other
 }: CameraProps): JSX.Element {
-    const webRTCContext = useContext(WebRTCContext);
+    const theme = useTheme();
+
+    const { sessionId: userSelfSessionId } = useContext(LocalSessionContext);
+    const isSelf = session
+        ? session.id === userSelfSessionId
+        : true; // e.g. <Camera /> without session in join.tsx
+
     const audioRef = useRef<HTMLAudioElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
-    const cameraId = session ? `camera:${session.id}` : "";
-    const BLACK_IMAGE = "data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=";
 
     useEffect(() => {
         if (audioRef.current) {
@@ -116,14 +120,6 @@ export default function Camera({
             videoRef.current.srcObject = mediaStream ? mediaStream : null;
         }
     }, [videoRef.current, mediaStream]);
-
-    useEffect(() => {
-        if ((webRTCContext.isVideoEnabledByProducer(session?.id) && !webRTCContext.isVideoDisabledLocally(session?.id)) || !session) return;
-        const videoEl = document.getElementById(cameraId) as HTMLVideoElement;
-        if (videoEl) {
-            videoEl.load();
-        }
-    }, [webRTCContext.isVideoEnabledByProducer(session?.id), webRTCContext.isVideoDisabledLocally]);
 
     const cameraRef = useRef<HTMLDivElement>(null);
     return (
@@ -141,18 +137,17 @@ export default function Camera({
                     paddingBottom: square ? "75%" : "56.25%",
                 }}
             >
-                {session && <ParticipantInfo session={session} isSelf={isLocalCamera} />}
+                {session && <ParticipantInfo session={session} isSelf={isSelf} />}
                 {mediaStream ?
                     <>
                         {session && <>
                             <MediaIndicators sessionId={session.id} />
-                            <MoreControlsButton session={session} isSelf={isLocalCamera} cameraRef={cameraRef} />
+                            <MoreControlsButton session={session} isSelf={isSelf} cameraRef={cameraRef} />
                         </>}
                         <video
-                            id={cameraId}
+                            id={session ? `camera:${session.id}` : undefined}
                             autoPlay={true}
                             muted={true}
-                            poster={BLACK_IMAGE}
                             playsInline
                             style={{
                                 backgroundColor: "#000",
@@ -168,7 +163,7 @@ export default function Camera({
                         />
                         <audio
                             autoPlay={true}
-                            muted={isLocalCamera}
+                            muted={muted}
                             ref={audioRef}
                         />
                     </>
@@ -342,9 +337,8 @@ function MicIndicator({ sessionId }: { sessionId: string }) {
     const [micOn, setMicOn] = useState<boolean>(false);
 
     useEffect(() => {
-        console.log(sfuState.isAudioEnabledByProducer(sessionId), sfuState.isAudioDisabledLocally(sessionId))
-        setMicOn(sfuState.isAudioEnabledByProducer(sessionId) && !sfuState.isAudioDisabledLocally(sessionId))
-    }, [sfuState.isAudioEnabledByProducer(sessionId), sfuState.isAudioDisabledLocally(sessionId)])
+        setMicOn(sfuState.isLocalAudioEnabled(sessionId))
+    }, [sfuState.isLocalAudioEnabled(sessionId)])
 
     return (micOn ? <></> :
         <Grid
@@ -501,43 +495,33 @@ function ToggleCamera({ session, sfuState, isSelf, cameraRef }: {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [isVideoManuallyDisabled, setIsVideoManuallyDisabled] = useState<boolean>(false);
     const [muteMutation] = useMutation(MUTE, {context: {target: SFU_LINK}});
-    const {refetch: refetchGlobalMute} = useQuery(GLOBAL_MUTE_QUERY, { variables: { roomId }, context: {target: SFU_LINK}});
-    const {refetch: refetchIndividualMute} = useQuery(INDIVIDUAL_MUTE_QUERY, { variables: { sessionId: session.id}, context: {target: SFU_LINK}});
+    const {refetch} = useQuery(GLOBAL_MUTE_QUERY, { variables: { roomId }, context: {target: SFU_LINK}});
     const states = useContext(WebRTCContext);
     // NOTE: This is the logic for the frontend performance. If this logic goes well, we will restore it again.
     // const isCameraVisible = useIsElementInViewport(cameraRef);
 
-    const syncMuteStatus = async () => {
-        const { data } = await refetchIndividualMute();
-        states.enableVideoByProducer(session.id, data?.retrieveMuteStatuses?.video)
-    }
-
     useEffect(() => {
-        syncMuteStatus()
-    }, [])
-
-    useEffect(() => {
-        if (isLoading && sfuState.isVideoEnabledByProducer(session.id)) {
+        if (isLoading && sfuState.isLocalVideoEnabled(session.id)) {
             setIsLoading(false);
         }
-    }, [sfuState.isVideoEnabledByProducer(session.id)])
+    }, [sfuState.isLocalVideoEnabled(session.id)])
 
     // NOTE: This is the logic for the frontend performance. If this logic goes well, we will restore it again.
     // useEffect(() => {
     //     if (isLoading) { return; }
     //     const isVisible = drawerTabIndex !== 0 || isCameraVisible;
-    //     if ((isVisible && !sfuState.isVideoEnabledByProducer(sessionId) && !isVideoManuallyDisabled) ||
-    //         (!isCameraVisible && sfuState.isVideoEnabledByProducer(sessionId))) {
+    //     if ((isVisible && !sfuState.isLocalVideoEnabled(sessionId) && !isVideoManuallyDisabled) ||
+    //         (!isCameraVisible && sfuState.isLocalVideoEnabled(sessionId))) {
     //         const stream = sfuState.getCameraStream(sessionId);
     //         toggleInboundVideoState(stream);
     //     }
     // }, [isCameraVisible, drawerTabIndex]);
 
     useEffect(() => {
-        if (states.isVideoEnabledByProducer(session.id) !== undefined) {
-            setCameraOn(states.isVideoEnabledByProducer(session.id));
+        if (states.isLocalVideoEnabled(session.id) !== undefined) {
+            setCameraOn(states.isLocalVideoEnabled(session.id));
         }
-    }, [states.isVideoEnabledByProducer(session.id)])
+    }, [states.isLocalVideoEnabled(session.id)])
 
     async function toggleInboundVideoState() {
         const localSession = sessions.get(localSessionId);
@@ -552,7 +536,7 @@ function ToggleCamera({ session, sfuState, isSelf, cameraRef }: {
                 setCameraOn(muteNotification.data.mute.video)
             }
         } else {
-            states.toggleLocalVideo(session.id);
+            states.localVideoToggle(session.id);
         }
     }
 
@@ -569,7 +553,7 @@ function ToggleCamera({ session, sfuState, isSelf, cameraRef }: {
     }
 
     async function toggleVideoState(): Promise<void> {
-        const { data }= await refetchGlobalMute();
+        const { data }= await refetch();
         const videoGloballyDisabled = data?.retrieveGlobalMute?.videoGloballyDisabled;
         if (isSelf) {
             const localSession = sessions.get(localSessionId);
@@ -583,15 +567,15 @@ function ToggleCamera({ session, sfuState, isSelf, cameraRef }: {
             }
             await toggleInboundVideoState();
         }
-        setIsVideoManuallyDisabled(!sfuState.isVideoEnabledByProducer(session.id));
+        setIsVideoManuallyDisabled(!sfuState.isLocalVideoEnabled(session.id));
     }
 
     return (
         <MenuItem onClick={toggleVideoState} className={moreControlsMenuItem}>
             <ListItemIcon>
-                <StyledIcon icon={cameraOn && !states.isVideoDisabledLocally(session.id) ? <VideoOnIcon className={noHoverIcon} /> : <VideoOffIcon className={noHoverIcon} />} size="medium" color={cameraOn && !states.isVideoDisabledLocally(session.id) ? PRIMARY_COLOR : SECONDARY_COLOR} />
+                <StyledIcon icon={cameraOn ? <VideoOnIcon className={noHoverIcon} /> : <VideoOffIcon className={noHoverIcon} />} size="medium" color={cameraOn ? PRIMARY_COLOR : SECONDARY_COLOR} />
             </ListItemIcon>
-            {cameraOn && !states.isVideoDisabledLocally(session.id) ? <FormattedMessage id="turn_off_camera" /> : <FormattedMessage id="turn_on_camera" />}
+            {cameraOn ? <FormattedMessage id="turn_off_camera" /> : <FormattedMessage id="turn_on_camera" />}
         </MenuItem>
     )
 }
@@ -611,24 +595,14 @@ function ToggleMic({ session, sfuState, isSelf }: {
     const sessions = useContext(SessionsContext);
     const [micOn, setMicOn] = useState<boolean>(false);
     const [muteMutation] = useMutation(MUTE, {context: {target: SFU_LINK}});
-    const {refetch: refetchGlobalMute} = useQuery(GLOBAL_MUTE_QUERY, { variables: { roomId }, context: {target: SFU_LINK}});
-    const {refetch: refetchIndividualMute} = useQuery(INDIVIDUAL_MUTE_QUERY, { variables: { sessionId: session.id}, context: {target: SFU_LINK}});
+    const {refetch} = useQuery(GLOBAL_MUTE_QUERY, { variables: { roomId }, context: {target: SFU_LINK}});
     const states = useContext(WebRTCContext);
 
-    const syncMuteStatus = async () => {
-        const { data } = await refetchIndividualMute();
-        states.enableAudioByProducer(session.id, data?.retrieveMuteStatuses?.audio)
-    }
-
     useEffect(() => {
-        syncMuteStatus()
-    }, [])
-
-    useEffect(() => {
-        if (states.isAudioEnabledByProducer(session.id) !== undefined) {
-            setMicOn(states.isAudioEnabledByProducer(session.id));
+        if (states.isLocalAudioEnabled(session.id) !== undefined) {
+            setMicOn(states.isLocalAudioEnabled(session.id));
         }
-    }, [states.isAudioEnabledByProducer(session.id)])
+    }, [states.isLocalAudioEnabled(session.id)])
 
     async function toggleInboundAudioState() {
         const localSession = sessions.get(localSessionId);
@@ -643,7 +617,7 @@ function ToggleMic({ session, sfuState, isSelf }: {
                 setMicOn(muteNotification.data.mute.audio)
             }
         } else {
-            states.toggleLocalAudio(session.id)
+            states.localAudioToggle(session.id);
         }
     }
 
@@ -660,7 +634,7 @@ function ToggleMic({ session, sfuState, isSelf }: {
     }
 
     async function toggleAudioState() {
-        const { data }= await refetchGlobalMute();
+        const { data }= await refetch();
         const audioGloballyMuted = data?.retrieveGlobalMute?.audioGloballyMuted;
         if (isSelf) {
             const localSession = sessions.get(localSessionId);
@@ -679,9 +653,9 @@ function ToggleMic({ session, sfuState, isSelf }: {
     return (
         <MenuItem onClick={toggleAudioState} className={moreControlsMenuItem}>
             <ListItemIcon>
-                <StyledIcon icon={micOn && !states.isAudioDisabledLocally(session.id) ? <MicrophoneOnIcon className={noHoverIcon} /> : <MicrophoneOffIcon className={noHoverIcon} />} size="medium" color={micOn && !states.isAudioDisabledLocally(session.id) ? PRIMARY_COLOR : SECONDARY_COLOR} />
+                <StyledIcon icon={micOn ? <MicrophoneOnIcon className={noHoverIcon} /> : <MicrophoneOffIcon className={noHoverIcon} />} size="medium" color={micOn ? PRIMARY_COLOR : SECONDARY_COLOR} />
             </ListItemIcon>
-            {micOn && !states.isAudioDisabledLocally(session.id) ? <FormattedMessage id="turn_off_mic" /> : <FormattedMessage id="turn_on_mic" />}
+            {micOn ? <FormattedMessage id="turn_off_mic" /> : <FormattedMessage id="turn_on_mic" />}
         </MenuItem>
     )
 }
