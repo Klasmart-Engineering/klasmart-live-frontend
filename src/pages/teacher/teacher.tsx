@@ -15,6 +15,7 @@ import { FormattedMessage } from "react-intl";
 import { useSelector } from "react-redux";
 import { PreviewPlayer } from "../../components/previewPlayer";
 import { RecordedIframe } from "../../components/recordediframe";
+import { ImageFrame } from "../../components/resizedContent";
 import { LIVE_LINK, LocalSessionContext } from "../../entry";
 import { MaterialTypename } from "../../lessonMaterialContext";
 import { RoomContext } from "../../providers/RoomContext";
@@ -139,8 +140,8 @@ export function Teacher(props: Props): JSX.Element {
                     style={{
                         display: "flex",
                         position: "relative", // For "absolute" position of <Whiteboard />
-                        width: square,
-                        height: square
+                        width: '100%',
+                        height: '100%',
                     }}
                 >
                     <Whiteboard uniqueId="global" />
@@ -151,27 +152,7 @@ export function Teacher(props: Props): JSX.Element {
                             <>
                                 {material ?
                                     material.__typename === MaterialTypename.Image ?
-                                        <Grid container>
-                                            <Grid container item style={{
-                                                height: "100%",
-                                                position: "absolute",
-                                                left: 0,
-                                                right: 0,
-                                                zIndex: 1,
-                                                // display: "block",
-                                                backgroundImage: `url(${material.url})`,
-                                                filter: "blur(8px)",
-                                                WebkitFilter: "blur(8px)",
-                                                backgroundPosition: "center",
-                                                backgroundRepeat: "no-repeat",
-                                                backgroundSize: "cover",
-                                            }}
-                                            />
-                                            <img
-                                                className={classes.imageFrame}
-                                                src={material.url}
-                                            />
-                                        </Grid> :
+                                        <ImageFrame material={material} /> :
                                         material.__typename === MaterialTypename.Video ||
                                             material.__typename === MaterialTypename.Audio ||
                                             (material.__typename === undefined && material.video) ? //Legacy Format TODO: Deprecate
