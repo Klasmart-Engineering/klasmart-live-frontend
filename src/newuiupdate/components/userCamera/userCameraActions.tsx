@@ -239,7 +239,7 @@ function UserCameraActions (props: UserCameraActionsType) {
                         </IconButton>
                         */}
 
-                    {(hasControls || (!hasControls && !user.isTeacher)) &&
+                    {(isTeacher || !user.isTeacher) &&
                         <IconButton
                             component="a"
                             aria-label="More controls button"
