@@ -238,7 +238,7 @@ function UserCameraActions (props: UserCameraActionsType) {
                             <PinIcon size="1em"/>
                         </IconButton>
                         */}
-
+                    
                     {(isTeacher || !user.isTeacher) &&
                         <IconButton
                             component="a"

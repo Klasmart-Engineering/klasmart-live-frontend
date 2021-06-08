@@ -57,6 +57,10 @@ export function RecordedIframe(props: Props): JSX.Element {
     const [intervalId, setIntervalId] = useState<number>();
     const [contentWidth, setContentWidth] = useState(1600);
     const [contentHeight, setContentHeight] = useState(1400);
+    const [enableResize, setEnableResize] = useState(true);
+    const [stylesLoaded, setStylesLoaded] = useState(false);
+
+
     const size = useWindowSize();
 
     useEffect(() => {
@@ -97,19 +101,11 @@ export function RecordedIframe(props: Props): JSX.Element {
     const scale = (innerWidth: number, innerHeight: number) => {
         let currentWidth: number = size.width, currentHeight: number = size.height;
 
-        if (square) {
-            /**
-             * For exact synchronization of <Whiteboard /> drawing position,
-             * Square should be required when classtype === Classtype.LIVE.
-             */
-            currentWidth = square, currentHeight = square;
-        } else {
             const iRef = window.document.getElementById("main-container") as HTMLIFrameElement;
             if (iRef) {
                 currentWidth = iRef.getBoundingClientRect().width;
                 currentHeight = iRef.getBoundingClientRect().height;
             }
-        }
 
         const shrinkRatioX = (currentWidth / innerWidth) > 1 ? 1 : currentWidth / innerWidth;
         const shrinkRatioY = (currentHeight / innerHeight) > 1 ? 1 : currentHeight / innerHeight;
@@ -125,19 +121,57 @@ export function RecordedIframe(props: Props): JSX.Element {
         const contentDoc = iframeElement.contentDocument
         if (!contentWindow || !contentDoc) { return; }
 
+        // Custom styles when needed
+        if(!stylesLoaded){
+            var style = document.createElement('style');
+            style.innerHTML = `
+            .h5p-content{
+                display: inline-block !important;
+                width: auto !important;
+            }
+            .h5p-course-presentation .h5p-wrapper{
+                min-width: 1300px !important;
+                min-height: 800px !important
+            }
+            .h5p-single-choice-set{
+                max-height: 300px !important;
+            }
+            .h5p-alternative-inner{
+                height: auto !important;
+            }
+            .h5p-column .h5p-dragquestion > .h5p-question-content > .h5p-inner{
+                width: 100% !important
+            }
+            `;
+            contentDoc.head.appendChild(style);
+            // setStylesLoaded(true);
+        }
+
         // IP Protection: Contents should not be able to be downloaded by right-clicking.
         const blockRightClick = (e: MouseEvent) => { e.preventDefault() }
         contentWindow.addEventListener("contextmenu", (e) => blockRightClick(e), false);
         const h5pDivCollection = contentDoc.body.getElementsByClassName("h5p-content");
-        if (h5pDivCollection.length > 0) {
-            const h5pContainer = h5pDivCollection[0] as HTMLDivElement;
-            h5pContainer.setAttribute("data-iframe-height", "");
-            const h5pWidth = h5pContainer.getBoundingClientRect().width;
-            const h5pHeight = h5pContainer.getBoundingClientRect().height;
-            setContentWidth(h5pWidth);
-            setContentHeight(h5pHeight);
-            scale(h5pWidth, h5pHeight);
+        const h5pTypeColumn = contentDoc.body.getElementsByClassName("h5p-column").length;
+
+        
+        if (h5pDivCollection.length <= 0) {return}
+
+        if(h5pTypeColumn){
+            setEnableResize(false)
+            h5pDivCollection[0].setAttribute("style", "width: 100% !important;");
+        }else{
+            setEnableResize(true)
+            h5pDivCollection[0].setAttribute("style", "width: auto !important;");
         }
+        
+        const h5pContainer = h5pDivCollection[0] as HTMLDivElement;
+        h5pContainer.setAttribute("data-iframe-height", "");
+        const h5pWidth = h5pContainer.getBoundingClientRect().width;
+        const h5pHeight = h5pContainer.getBoundingClientRect().height;
+        setContentWidth(h5pWidth);
+        setContentHeight(h5pHeight);
+        scale(h5pWidth, h5pHeight);
+        
     }
 
     useEffect(() => {
@@ -259,14 +293,14 @@ export function RecordedIframe(props: Props): JSX.Element {
                 src={contentId.endsWith(`.pdf`) ? `/pdfviewer.html` : contentId}
                 ref={iframeRef}
                 style={{
-                    width: contentWidth,
-                    height: contentHeight,
-                    position: `absolute`,
-                    top: 0,
-                    left: 0,
-                    transformOrigin: "top left",
-                    transform: `scale(${transformScale})`,
-                }}
+                width: enableResize ? contentWidth : '100%',
+                height: enableResize ? contentHeight : '100%',
+                position: enableResize ? `absolute` : 'static',
+                transformOrigin: "top left",
+                transform: enableResize ? `scale(${transformScale})` : `scale(1)`,
+                minWidth: '100%',
+                minHeight: '100%',
+            }}
             />
         </React.Fragment>
     );

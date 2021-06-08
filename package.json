@@ -6,6 +6,7 @@
   "scripts": {
     "build": "rm -rf dist/*; webpack; mv dist/record*.js dist/record-1db5341.js",
     "build:alpha": "rm -rf dist/*;webpack --config webpack.alpha.config.js; mv dist/record*.js dist/record-1db5341.js",
+    "build:beta": "rm -rf dist/*;webpack --config webpack.beta.config.js; mv dist/record*.js dist/record-1db5341.js",
     "build:prod-india": "rm -rf dist/*;webpack --config webpack.prod.india.config.js; mv dist/record*.js dist/record-1db5341.js",
     "build:prod": "rm -rf dist/*;webpack --config webpack.prod.config.js; mv dist/record*.js dist/record-1db5341.js",
     "start": "webpack-dev-server",
