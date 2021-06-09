@@ -164,7 +164,7 @@ const messages: Record<string, string> = {
     notification_user_is_pinned: `{user} has been pinned`,
     notification_you_have_controls: `You have teacher controls`,
     notification_you_dont_have_controls: `You dont' have teacher controls`,
-    notification_user_left: `{user} has left the class rooom`,
+    notification_user_left: `{user} has left the class room`,
     notification_user_muted_microphone: `{user} has turned off their microphone`,
     notification_user_muted_camera: `{user} has turned off their camera`,
     notification_self_muted_user_microphone: `You have turned off {user}'s microphone`,
@@ -259,6 +259,6 @@ const messages: Record<string, string> = {
     loading_activity_lessonMaterial_clickReload: `Please click the Reload button.`,
     loading_activity_lessonMaterial_reload: `Reload`,
 
-    notification_user_joined: `{user} has joined the class rooom`,
+    notification_user_joined: `{user} has joined the class room`,
 };
 export default messages;
