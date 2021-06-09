@@ -59,7 +59,7 @@ export const RoomContext = createContext<RoomContextInterface>(defaultRoomContex
 export const RoomProvider = (props: {children: React.ReactNode}) => {
     const intl = useIntl();
     const {
-        roomId, name, sessionId, camera,
+        roomId, name, sessionId, camera, isTeacher
     } = useContext(LocalSessionContext);
     const [ sfuAddress, setSfuAddress ] = useState<string>(``);
     const [ messages, setMessages ] = useState<Map<string, Message>>(new Map<string, Message>());
@@ -132,9 +132,22 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
         }
         setMessages(prev => new Map(prev.set(newMessage.id, newMessage)));
     };
-    const userJoin = (join: Session) => setSessions(prev => new Map(prev.set(join.id, join)));
+
+    const userJoin = (join: Session) => {
+        setSessions(prev => new Map(prev.set(join.id, join)));
+
+        if(isTeacher){
+            enqueueSnackbar(intl.formatMessage({
+                id: `notification_user_joined`,
+            }, {
+                user: join.name,
+            }));
+        }
+    }
 
     const userLeave = (leave: Session) => {
+        const user = sessions.get(leave.id);
+
         setSessions((prev) => {
             const newState = new Map(prev);
             newState.delete(leave.id);
@@ -143,6 +156,14 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
 
         if(leave.id === sessionId){
             setClassEnded(true);
+        }
+
+        if(isTeacher){
+            enqueueSnackbar(intl.formatMessage({
+                id: `notification_user_left`,
+            }, {
+                user: user?.name,
+            }));
         }
     };
 
