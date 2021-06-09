@@ -60,7 +60,7 @@ const DefaultRegions: Region[] = [
         services: {
             auth: "https://auth.kidsloop.in",
             live: "https://live.kidsloop.in",
-            cms: "https://kl2.kidsloop.in",
+            cms: "https://cms.kidsloop.in",
             sfu: "https://live.kidsloop.in/sfu",
             user: "https://api.kidsloop.in/user/",
             privacy: "https://kidsloop.net/policies/privacy-notice"
@@ -73,7 +73,7 @@ const DefaultRegions: Region[] = [
         services: {
             auth: "https://auth.kidsloop.id",
             live: "https://live.kidsloop.id",
-            cms: "https://kl2.kidsloop.id",
+            cms: "https://cms.kidsloop.id",
             sfu: "https://live.kidsloop.id/sfu",
             user: "https://api.kidsloop.id/user/",
             privacy: "https://kidsloop.net/policies/privacy-notice"
