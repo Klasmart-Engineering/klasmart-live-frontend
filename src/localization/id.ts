@@ -258,5 +258,7 @@ const messages: Record<string, string> = {
     loading_activity_error: `Sorry, something went wrong!`,
     loading_activity_lessonMaterial_clickReload: `Please click the Reload button.`,
     loading_activity_lessonMaterial_reload: `Reload`,
+
+    notification_user_joined: `{user} has joined the class rooom`,
 };
 export default messages;
