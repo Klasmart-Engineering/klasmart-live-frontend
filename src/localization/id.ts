@@ -259,6 +259,6 @@ const messages: Record<string, string> = {
     loading_activity_lessonMaterial_clickReload: `Please click the Reload button.`,
     loading_activity_lessonMaterial_reload: `Reload`,
 
-    notification_user_joined: `{user} has joined the class rooom`,
+    notification_user_joined: `{user} has joined the class room`,
 };
 export default messages;
