@@ -9,7 +9,7 @@ module.exports = {
     ui: "./src/entry.tsx",
     "record-1db5341": "./src/entry-record.ts",
     player: "./src/entry-player.ts",
-    pdfviewer: "./src/entry-pdfviewer.js",
+    pdfviewer: "./src/entry-pdfviewer.ts",
   },
   module: {
     rules: [
@@ -88,6 +88,7 @@ module.exports = {
       ["ENDPOINT_WEBSOCKET"],
       ["APP_GIT_REV"],
       { "ENDPOINT_CMS": "https://kl2-test.kidsloop.net" },
+      { "ENDPOINT_PDF": "http://localhost:32891"},
     ),
     new HtmlWebpackPlugin({
       filename: "index.html",
