@@ -35,6 +35,8 @@ import React, {
 } from "react";
 import { FormattedMessage } from "react-intl";
 
+const config = require(`../../../package.json`);
+
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root:{},
@@ -95,6 +97,13 @@ const useStyles = makeStyles((theme: Theme) =>
                 margin: `2rem 0`,
                 width: `auto`,
             },
+        },
+        version:{
+            position: `absolute`,
+            bottom: 10,
+            right: 20,
+            color: theme.palette.grey[400],
+            fontSize: `1rem`,
         },
     }));
 
@@ -270,7 +279,6 @@ export default function Join (): JSX.Element {
                     paddingBottom: `20px`,
                 }}
             >
-
                 <Container maxWidth={classtype === ClassType.LIVE ? `md` : `xs`}>
                     <Card className={classes.card}>
                         <CardContent className={classes.cardContent}>
@@ -329,6 +337,7 @@ export default function Join (): JSX.Element {
                     </div>
                 </Container>
             </Grid>
+            <Typography className={classes.version}>{config.version}</Typography>
             <PermissionAlertDialog dialogOpenHandler={{
                 dialogOpen,
                 handleDialogClose,
