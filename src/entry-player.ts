@@ -3,12 +3,20 @@ import { Replayer } from 'rrweb'
 import { eventWithTime } from 'rrweb/typings/types'
 let player: Replayer
 const events: eventWithTime[] = []
+let receivedSnapshot = false;
 
 window.addEventListener('message', ({ data }) => {
   if (!data || !data.event) { return }
   try {
-    const event = JSON.parse(data.event)
+    const event = JSON.parse(data.event);
+    const isSnapshot = event.type === 2;
+    receivedSnapshot = receivedSnapshot || isSnapshot;
+    
     if (player) {
+      if (receivedSnapshot && isSnapshot) {
+        return;
+      }
+      
       player.addEvent(event)
     } else {
       events.push(event)
