@@ -6,6 +6,7 @@ const player: Replayer = new Replayer([], {
     mouseTail: false,
     liveMode: true,
     speed: 1.5,
+    UNSAFE_replayCanvas: true,
 });
 player.on(`resize`, () => window.parent.postMessage({
     width: player.iframe.width,
