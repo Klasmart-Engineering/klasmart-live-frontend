@@ -22,6 +22,7 @@ import { setSelectedOrg, setSelectedUserId } from "../../store/reducers/session"
 import { setSelectOrgDialogOpen } from "../../store/reducers/control";
 import { Organization, OrganizationResponse } from "../../services/user/IUserInformationService";
 import { List, ListItem, ListItemAvatar, ListItemIcon, ListItemText } from "@material-ui/core";
+import { ParentalGate } from "../../components/parentalGate";
 
 const useStyles = makeStyles((theme: Theme) => ({
     noPadding: {
@@ -132,6 +133,8 @@ export function SelectOrgDialog() {
     const { region } = useRegionSelect();
     const { selectedUserProfile, actions } = useUserInformation();
 
+    const [parentalLock, setParentalLock] = useState<boolean>(false);
+
     const organizations = useMemo(() => {
         if (!selectedUserProfile) return [];
 
@@ -144,7 +147,7 @@ export function SelectOrgDialog() {
         })
     }, [selectedUserProfile]);
 
-    const handleBrowser = () => {
+    const openPrivacyPolicy = () => {
         const cordova = (window as any).cordova;
         let browser: any;
         if (!cordova) return;
@@ -171,6 +174,28 @@ export function SelectOrgDialog() {
         dispatch(setSelectedUserId(undefined));
         dispatch(setSelectedOrg(undefined));
         actions?.signOutUser();
+    }
+
+    useEffect(() => {
+        setParentalLock(false);
+    }, [open]);
+
+    if (parentalLock) {
+        return <Dialog
+            aria-labelledby="select-org-dialog"
+            fullScreen
+            open={open}
+            onClose={() => dispatch(setParentalLock(false))}
+        >
+            <DialogTitle
+                id="select-org-dialog"
+                disableTypography
+                className={noPadding}
+            >
+                <Header />
+            </DialogTitle>
+            <ParentalGate onCompleted={() => { openPrivacyPolicy(); setParentalLock(false); }} />
+        </Dialog>
     }
 
     return (
@@ -200,7 +225,7 @@ export function SelectOrgDialog() {
                     <Link
                         href="#"
                         variant="subtitle2"
-                        onClick={() => { handleBrowser(); }}
+                        onClick={() => { setParentalLock(true); }}
                     >
                         <Typography align="center" style={{ padding: theme.spacing(2, 0) }}>
                             <FormattedMessage id="account_selectOrg_privacyPolicy" />
