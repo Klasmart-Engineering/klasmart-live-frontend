@@ -22,9 +22,9 @@ import { Refresh as RefreshIcon } from "@styled-icons/material/Refresh";
 import React, {
     useContext, useEffect, useRef, useState,
 } from "react";
+import { FormattedMessage } from "react-intl";
 import { useSelector } from "react-redux";
 import { useRecoilState } from "recoil";
-import { FormattedMessage } from "react-intl";
 
 const SET_STREAMID = gql`
     mutation setSessionStreamId($roomId: ID!, $streamId: ID!) {
@@ -150,6 +150,7 @@ export function RecordedIframe (props: Props): JSX.Element {
         const iframeElement = window.document.getElementById(`recordediframe`) as HTMLIFrameElement;
         const contentWindow = iframeElement.contentWindow;
         const contentDoc = iframeElement.contentDocument;
+
         if (!contentWindow || !contentDoc) { return; }
 
         // Custom styles when needed
@@ -157,6 +158,7 @@ export function RecordedIframe (props: Props): JSX.Element {
             const style = document.createElement(`style`);
             style.innerHTML = `
             img{max-width: 100%; height: auto; object-fit:contain}
+            body > video{width: 100%; height: 100vh}
             .h5p-single-choice-set{
                 max-height: 300px !important;
             }
@@ -194,16 +196,22 @@ export function RecordedIframe (props: Props): JSX.Element {
             setContentWidth(h5pWidth);
             setContentHeight(h5pHeight);
             scale(h5pWidth, h5pHeight);
-        } else if(contentDoc.body.getElementsByTagName(`img`).length){
-            const imageWidth = contentDoc.body.getElementsByTagName(`img`)[0].getBoundingClientRect().width;
-            const imageHeight = contentDoc.body.getElementsByTagName(`img`)[0].getBoundingClientRect().height;
-            if(imageWidth && imageHeight){
-                setContentWidth(imageWidth);
-                setContentHeight(imageHeight);
+        } else {
+            setEnableResize(true);
+
+            if(contentDoc.body.getElementsByTagName(`img`).length){
+                const imageWidth = contentDoc.body.getElementsByTagName(`img`)[0].getBoundingClientRect().width;
+                const imageHeight = contentDoc.body.getElementsByTagName(`img`)[0].getBoundingClientRect().height;
+                if(imageWidth && imageHeight){
+                    setContentWidth(imageWidth);
+                    setContentHeight(imageHeight);
+                }
+            }else if(contentDoc.body.getElementsByTagName(`video`).length){
+                setEnableResize(false);
+            }else{
+                setContentWidth(1024);
+                setContentHeight(1024);
             }
-        }else{
-            setContentWidth(1024);
-            setContentHeight(1024);
         }
     }
 
@@ -291,7 +299,11 @@ export function RecordedIframe (props: Props): JSX.Element {
                             variant="caption"
                             align="center"
                         >
-                            {loadStatus === LoadStatus.Loading && <FormattedMessage id="loading_activity_lessonMaterial_description"  values={{ seconds: seconds }} />}
+                            {loadStatus === LoadStatus.Loading && <FormattedMessage
+                                id="loading_activity_lessonMaterial_description"
+                                values={{
+                                    seconds: seconds,
+                                }} />}
                             {loadStatus === LoadStatus.Error && <FormattedMessage id="loading_activity_lessonMaterial_clickReload" />}
                         </Typography>
                     </Grid>
