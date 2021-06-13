@@ -4,6 +4,7 @@ import useVideoLayoutUpdate from "./utils/video-layout-update";
 const useCordovaInitialize = (backExitApplication?: boolean, callbackBackButton?: () => void, skipInitEffects?: boolean) => {
     const [cordovaReady, setCordovaReady] = useState(false);
     const [permissions, setPermissions] = useState(false);
+    const [keepAwake, setKeepAwake] = useState(true);
 
     const { updateLayout } = useVideoLayoutUpdate(null);
 
@@ -107,7 +108,7 @@ const useCordovaInitialize = (backExitApplication?: boolean, callbackBackButton?
 
     useEffect(() => {
         if (skipInitEffects) return;
-        
+
         const onBackButton = (e: Event) => {
             if (!backExitApplication) {
                 e.preventDefault();
@@ -136,7 +137,21 @@ const useCordovaInitialize = (backExitApplication?: boolean, callbackBackButton?
         };
     }, []);
 
-    return { cordovaReady, permissions, requestPermissions, requestIosCameraPermission };
+    useEffect(() => {
+        if (skipInitEffects) return;
+
+        try {
+            if (keepAwake) {
+                (window as any).plugins.insomnia.keepAwake();
+            } else {
+                (window as any).plugins.insomnia.allowSleepAgain();
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }, [keepAwake]);
+
+    return { cordovaReady, permissions, requestPermissions, requestIosCameraPermission, keepAwake, setKeepAwake };
 };
 
 export default useCordovaInitialize;
