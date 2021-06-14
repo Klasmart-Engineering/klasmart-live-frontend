@@ -2,6 +2,7 @@ const webpack = require('webpack')
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const SentryWebpackPlugin = require("@sentry/webpack-plugin")
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 require('dotenv').config()
 
@@ -9,8 +10,9 @@ module.exports = {
   mode: 'production',
   entry: {
     ui: './src/entry.tsx',
-    "record-e44f2b3": './src/entry-record.ts',
-    player: './src/entry-player.ts'
+    "record-1db5341": './src/entry-record.ts',
+    player: './src/entry-player.ts',
+    pdfviewer: './src/entry-pdfviewer.js'
   },
   module: {
     rules: [
@@ -84,7 +86,8 @@ module.exports = {
   plugins: [
     new webpack.EnvironmentPlugin(
       { "CALLSTATS_ENABLE": "TRUE" },
-      { "ENDPOINT_CMS": "https://cms.alpha.kidsloop.vn" },
+      { "ENDPOINT_CMS": "https://cms.kidsloop.vn" },
+      { "ENDPOINT_HUB": "https://hub.kidsloop.vn" },
     ),
     new HtmlWebpackPlugin({
       filename: 'index.html',
@@ -96,10 +99,24 @@ module.exports = {
       chunks: ['player'],
       template: 'src/player.html'
     }),
+    new HtmlWebpackPlugin({
+      filename: 'pdfviewer.html',
+      chunks: ['pdfviewer'],
+      template: 'src/pdfviewer.html',
+    }),
     new SentryWebpackPlugin({
       include: ".",
       ignoreFile: ".sentrycliignore",
       ignore: ["node_modules", "webpack.config.js", "webpack.prod.config.js"],
+    }),
+    new CopyWebpackPlugin({
+      patterns: [{
+        from: 'node_modules/pdfjs-dist/cmaps',
+        to: 'cmaps/'
+      }, {
+        from: 'node_modules/pdfjs-dist',
+        to: 'pdfjs-dist/'
+      }]
     }),
   ]
 }
