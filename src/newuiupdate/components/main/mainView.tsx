@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     fullHeightCentered:{
         height: `100%`,
         display: `flex`,
-        alignItems: `center`,
+        alignItems: `stretch`,
         justifyContent: `center`,
     },
 }));

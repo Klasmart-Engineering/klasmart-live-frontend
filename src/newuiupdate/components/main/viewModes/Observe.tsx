@@ -3,6 +3,7 @@ import { LIVE_LINK, LocalSessionContext } from "../../../providers/providers";
 import { RoomContext } from "../../../providers/roomContext";
 import { hasControlsState,  materialActiveIndexState } from "../../../states/layoutAtoms";
 import { Whiteboard } from "../../../whiteboard/components/Whiteboard";
+import { useSynchronizedState } from "../../../whiteboard/context-providers/SynchronizedStateProvider";
 import { MUTATION_SHOW_CONTENT } from "../../utils/graphql";
 import { PreviewPlayer } from "../../utils/interactiveContent/previewPlayer";
 import { RecordedIframe } from "../../utils/interactiveContent/recordediframe";
@@ -13,6 +14,7 @@ import {
 } from "@material-ui/core";
 import { ArrowsAngleExpand as ExpandIcon } from "@styled-icons/bootstrap/ArrowsAngleExpand";
 import { CloudOffline as OfflineIcon } from "@styled-icons/ionicons-outline/CloudOffline";
+import clsx from "clsx";
 import { useSnackbar } from "kidsloop-px";
 import React, {
     useContext, useEffect, useMemo, useRef, useState,
@@ -81,6 +83,35 @@ const useStyles = makeStyles((theme: Theme) => ({
         fontWeight: 600,
         borderRadius: `0 10px 0 0`,
     },
+    studentWrap: {
+        position: `relative`,
+        width: `100%`,
+    },
+    studentWrapItem: {
+        position: `absolute`,
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0,
+        display: `block`,
+    },
+    studentWrapItemBoard: {
+        zIndex: 2,
+        pointerEvents: `none`,
+
+        '&.active': {
+            pointerEvents: `auto`,
+        },
+    },
+    studentWrapItemContent: {
+        zIndex: 1,
+
+        '&:before': {
+            content: ``,
+            display: `block`,
+            paddingTop: `100%`,
+        },
+    }
 }));
 
 function Observe () {
@@ -95,6 +126,7 @@ function Observe () {
     const [ hasControls, setHasControls ] = useRecoilState(hasControlsState);
     const [ materialActiveIndex, setMaterialActiveIndex ] = useRecoilState(materialActiveIndexState);
     const material = materialActiveIndex >= 0 && materialActiveIndex < materials.length ? materials[materialActiveIndex] : undefined;
+    const { state: { display: isGlobalCanvasEnabled, permissions: permissionsGlobalCanvas } } = useSynchronizedState();
 
     const [ showContent, { loading: loadingShowContent } ] = useMutation(MUTATION_SHOW_CONTENT, {
         context: {
@@ -144,13 +176,19 @@ function Observe () {
         );
     }else{
         return(
-            <>
-                <Whiteboard
-                    group={sessionId}
-                    uniqueId="student"
-                    filterGroups={studentModeFilterGroups} />
-                {content && <RecordedIframe contentId={content.contentId}  />}
-            </>
+            <div className={classes.studentWrap}>
+                <div className={clsx(classes.studentWrapItem, classes.studentWrapItemBoard, {
+                    [`active`] :  permissionsGlobalCanvas.allowCreateShapes && isGlobalCanvasEnabled,
+                })}>
+                    <Whiteboard
+                        group={sessionId}
+                        uniqueId="student"
+                        filterGroups={studentModeFilterGroups} />
+                </div>
+                <div className={`${classes.studentWrapItem} ${classes.studentWrapItemContent}`}>
+                    {content && <RecordedIframe contentId={content.contentId}  />}
+                </div>
+            </div>
         );
     }
 
