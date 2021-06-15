@@ -6,6 +6,7 @@ import { useWindowSize } from "../utils/viewport";
 import { imageFrame } from "../utils/layerValues";
 import { LessonMaterial } from "../lessonMaterialContext";
 import { useMaterialToHref } from "../utils/contentUtils";
+import { injectIframeScript } from "../utils/injectIframeScript";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -35,7 +36,6 @@ export function ResizedIframe(props: Props): JSX.Element {
     const [contentWidth, setContentWidth] = useState(1600);
     const [contentHeight, setContentHeight] = useState(1400);
     const [enableResize, setEnableResize] = useState(true);
-    const [stylesLoaded, setStylesLoaded] = useState(false);
 
     const size = useWindowSize();
 
@@ -73,32 +73,6 @@ export function ResizedIframe(props: Props): JSX.Element {
         const contentWindow = iframeElement.contentWindow
         const contentDoc = iframeElement.contentDocument
         if (!contentWindow || !contentDoc) { return; }
-
-        // Custom styles when needed
-        if(!stylesLoaded){
-            var style = document.createElement('style');
-            style.innerHTML = `
-            .h5p-content{
-                display: inline-block !important;
-                width: auto !important;
-            }
-            .h5p-course-presentation .h5p-wrapper{
-                min-width: 1300px !important;
-                min-height: 800px !important
-            }
-            .h5p-single-choice-set{
-                max-height: 300px !important;
-            }
-            .h5p-alternative-inner{
-                height: auto !important;
-            }
-            .h5p-column .h5p-dragquestion > .h5p-question-content > .h5p-inner{
-                width: 100% !important
-            }
-            `;
-            contentDoc.head.appendChild(style);
-            setStylesLoaded(true);
-        }
         
         // IP Protection: Contents should not be able to be downloaded by right-clicking.
         const blockRightClick = (e: MouseEvent) => { e.preventDefault() }
@@ -140,8 +114,11 @@ export function ResizedIframe(props: Props): JSX.Element {
                 setContentWidth(h5pWidth);
                 setContentHeight(h5pHeight);
             }, 2000);
-        }, false);           
-
+        }, false);
+        
+        if (!isPdfContent) {
+            injectIframeScript(iframeElement, "h5presize");
+        }
     }
 
     return (

@@ -10,6 +10,7 @@ module.exports = {
     record: "./src/entry-record.ts",
     player: "./src/entry-player.ts",
     pdfviewer: "./src/entry-pdfviewer.js",
+    h5presize: "./src/entry-h5p-resize.js",
   },
   module: {
     rules: [
