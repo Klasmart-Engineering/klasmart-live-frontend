@@ -84,8 +84,8 @@ const useStyles = makeStyles((theme: Theme) => ({
         borderRadius: `0 10px 0 0`,
     },
     studentWrap: {
-        position: `relative`,
-        width: `100%`,
+        // position: `relative`,
+        // width: `100%`,
     },
     studentWrapItem: {
         position: `absolute`,
@@ -111,7 +111,7 @@ const useStyles = makeStyles((theme: Theme) => ({
             display: `block`,
             paddingTop: `100%`,
         },
-    }
+    },
 }));
 
 function Observe () {
