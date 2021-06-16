@@ -1,3 +1,4 @@
+import { ClassType } from "../../../../store/actions";
 import { LocalSessionContext } from "../../../providers/providers";
 import { hasControlsState, isCanvasOpenState } from "../../../states/layoutAtoms";
 import { useSynchronizedState } from "../../../whiteboard/context-providers/SynchronizedStateProvider";
@@ -68,7 +69,7 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
     const [ selectedText, setSelectedText ] = useState<boolean>(false);
     const [ selectedMove, setSelectedMove ] = useState<boolean>(false);
 
-    const { sessionId } = useContext(LocalSessionContext);
+    const { classtype, sessionId } = useContext(LocalSessionContext);
 
     const colors = [
         `#000000`, // black
@@ -172,7 +173,7 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
                     icon={<SlideEraserIcon size="1.85rem"/>}
                     onClick={ () => { clear([ sessionId ]);} } />
 
-                {hasControls &&
+                {(hasControls && classtype === ClassType.LIVE) &&
                 <>
                     <CanvasMenuItem
                         title={intl.formatMessage({
