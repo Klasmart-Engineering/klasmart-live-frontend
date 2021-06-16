@@ -261,12 +261,11 @@ export default function Join (): JSX.Element {
                         fontWeight: 600,
                     }}
                 >
-                    {name ?
-                        <FormattedMessage
-                            id="hello"
-                            values={{
-                                name,
-                            }} /> : `Join your class` }
+                    <FormattedMessage
+                        id={name ? `hello` : `join_your_class`}
+                        values={{
+                            name,
+                        }} />
                 </Typography>
                 <div className={classes.headerBg}></div>
             </div>
