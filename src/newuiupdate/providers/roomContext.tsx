@@ -59,7 +59,7 @@ export const RoomContext = createContext<RoomContextInterface>(defaultRoomContex
 export const RoomProvider = (props: {children: React.ReactNode}) => {
     const intl = useIntl();
     const {
-        roomId, name, sessionId, camera, isTeacher
+        roomId, name, sessionId, camera, isTeacher,
     } = useContext(LocalSessionContext);
     const [ sfuAddress, setSfuAddress ] = useState<string>(``);
     const [ messages, setMessages ] = useState<Map<string, Message>>(new Map<string, Message>());
@@ -134,16 +134,17 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
     };
 
     const userJoin = (join: Session) => {
+        const now = Date.now() - 5000;
         setSessions(prev => new Map(prev.set(join.id, join)));
 
-        if(isTeacher && sessionId !== join.id){
+        if(isTeacher && sessionId !== join.id && now <= join.joinedAt){
             enqueueSnackbar(intl.formatMessage({
                 id: `notification_user_joined`,
             }, {
                 user: join.name,
             }));
         }
-    }
+    };
 
     const userLeave = (leave: Session) => {
         const user = sessions.get(leave.id);
