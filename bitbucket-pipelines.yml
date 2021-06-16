@@ -24,9 +24,9 @@ pipelines:
           - mv dist deploy/
 
           - export BRANCH_TAG=$(echo "$BITBUCKET_BRANCH" | sed -E 's/([^0-9a-zA-Z]+)/-/g' | awk '{print tolower($0)}')
-          - export TAG=$BRANCH_TAG-$KIDSLOOP_REGION-$KIDSLOOP_ENV
           - export REPO=$DOCKER_REPO_URL/kidsloop-live-frontend   # DOCKER_REPO_URL is workspace wide variable
           - export COMMIT_TAG=$(echo $BITBUCKET_COMMIT | cut -c1-7)
+          - if test -z "$BRANCH_TAG"; then export TAG=commit-$KIDSLOOP_REGION-$KIDSLOOP_ENV; else export TAG=$BRANCH_TAG-$KIDSLOOP_REGION-$KIDSLOOP_ENV; fi
           - printf '"Git tag":"%s", "Git commit":"%s" "ECR repo":"%s"' $BRANCH_TAG $COMMIT_TAG $REPO
 
           - aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin $DOCKER_REPO_URL
@@ -37,8 +37,8 @@ pipelines:
           - docker tag live-frontend:latest $REPO:$TAG-$BITBUCKET_BUILD_NUMBER
           - docker tag live-frontend:latest $REPO:$TAG-$COMMIT_TAG
 
-          - docker push $REPO:$TAG
-          - docker push $REPO:$TAG-latest
+          - if test -n "$BRANCH_TAG"; then docker push $REPO:$TAG; fi
+          - if test -n "$BRANCH_TAG"; then docker push $REPO:$TAG-latest; fi
           - docker push $REPO:$TAG-$BITBUCKET_BUILD_NUMBER
           - docker push $REPO:$TAG-$COMMIT_TAG
 
