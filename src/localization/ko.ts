@@ -121,7 +121,7 @@ const messages: Record<string, string> = {
     account_selectOrg_privacyPolicy: "개인 정보 정책",
     account_selectOrg_signOut: "로그아웃",
     account_selectOrg_whichOrg: "어떤 기관인가요?",
-    account_selectUser_whichUser: "Select a Profile",
+    account_selectUser_whichUser: "프로필을 선택하세요",
 
     schedule_liveTab: "라이브",
     schedule_studyTab: "학습",
@@ -133,16 +133,16 @@ const messages: Record<string, string> = {
     schedule_liveNoSchedule: "아직 스케줄이 없어요",
     schedule_studyAnytimeStudy: "언제나 학습하기",
     schedule_studyNoSchedule: "아직 스케줄이 없어요",
-    schedule_selectOrgLoaded: "Please select an organization",
+    schedule_selectOrgLoaded: "기관을 선택해 주세요",
 
     loading_mediaPermission: "앱을 사용하려면 카메라 및 마이크 권한이 필요해요. 권한을 허용하고 다시 시작해 보세요.",
 
-    title_settings_live: "Room Settings",
-    layout_tabinnercontent_leaveroom: "Leave Room",
+    title_settings_live: "방 설정",
+    layout_tabinnercontent_leaveroom: "방 나가기",
 
-    auth_waiting_for_authentication: "Waiting for authentication...",
+    auth_waiting_for_authentication: "권한을 기다리고 있습니다...",
 
-    cordova_loading: "Loading...",
-    cordova_permissions_error: "Camera and Microphone premissions required. Please grant the permissions and restart application."
+    cordova_loading: "불러오는 중...",
+    cordova_permissions_error: "카메라와 마이크 권한이 필요합니다. 권한 설정 후 앱을 재시작 해 주세요."
 };
 export default messages;
