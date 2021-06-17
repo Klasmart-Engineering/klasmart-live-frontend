@@ -105,12 +105,6 @@ export function Student(): JSX.Element {
                 <div id="player-container" className={classes.root} style={{ width: '100%', height:  '100%' }}>
                     <Whiteboard uniqueId="student" />
                     <PreviewPlayer streamId={content.contentId} width={square} height={square} />
-                    {/* <WBToolbar /> */}
-                    {/* <Grid className={classes.textMargin} container justify="center" item xs={12}>
-                        <Typography variant="caption" color="primary" align="center" style={{ margin: "0 auto" }}>
-                            <FormattedMessage id="student_stream_mode" />
-                        </Typography>
-                    </Grid> */}
                 </div>
             }
             {content && content.type === ContentType.Activity &&
@@ -121,7 +115,6 @@ export function Student(): JSX.Element {
                     </>}
                 </div>
             }
-            {/* {content && content.type === ContentType.Audio ? null : null } */}
             {content && content.type === ContentType.Video &&
                 <div className={classes.root} style={{ width: square, height: square }}>
                     <Whiteboard uniqueId="student" />
