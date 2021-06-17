@@ -111,8 +111,10 @@ const useStyles = makeStyles((theme: Theme) => ({
         opacity: 1,
         transition: `all 100ms ease-in-out`,
         visibility: `visible`,
+    },
+    controlsTeacher:{
         backdropFilter: `blur(2px)`,
-        backgroundColor: `rgba(0,0,0,0.5)`,
+        backgroundColor: `rgba(0,0,0,0.3)`,
     },
     controlsIcon:{
         margin: `5px`,
@@ -204,7 +206,9 @@ function UserCameraActions (props: UserCameraActionsType) {
     return (
         <div
             className={classes.root}>
-            <Grid className={classes.controls}>
+            <Grid className={clsx(classes.controls, {
+                [classes.controlsTeacher] : isTeacher,
+            })}>
                 <ExpandCamera user={user} />
 
                 <Grid item>
@@ -238,8 +242,8 @@ function UserCameraActions (props: UserCameraActionsType) {
                             <PinIcon size="1em"/>
                         </IconButton>
                         */}
-                    
-                    {(isTeacher || !user.isTeacher) &&
+
+                    {isTeacher &&
                         <IconButton
                             component="a"
                             aria-label="More controls button"
