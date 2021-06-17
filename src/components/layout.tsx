@@ -387,7 +387,17 @@ function TabInnerContent({ title }: { title: string }) {
                             <Typography style={{ color: "rgb(200,200,200)", padding: 4 }}>
                                 <FormattedMessage id="no_participants" />
                             </Typography> :
-                            otherSessions.map(session => {
+                            otherSessions.map((session, index) => {
+                                return { index, session };
+                            }).sort((a, b) => {
+                                const aVideoMuted = !sfuState.isLocalVideoEnabled(a.session.id);
+                                const aSortKey = a.index + (aVideoMuted ? 100 : 0) + (a.session.isTeacher ? 1000 : 0) + (a.session.isHost ? 10000 : 0);
+
+                                const bVideoMuted = !sfuState.isLocalVideoEnabled(b.session.id);
+                                const bSortKey = b.index + (bVideoMuted ? 100 : 0) + (b.session.isTeacher ? 1000 : 0) + (b.session.isHost ? 10000 : 0);
+
+                                return aSortKey - bSortKey;
+                            }).map(({session}) => {
                                 return (
                                     <Camera
                                         key={session.id}
