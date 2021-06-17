@@ -12,7 +12,7 @@ module.exports = {
     ui: './src/entry.tsx',
     "record-1db5341": './src/entry-record.ts',
     player: './src/entry-player.ts',
-    pdfviewer: './src/entry-pdfviewer.js'
+    pdfviewer: './src/entry-pdfviewer.ts'
   },
   module: {
     rules: [
