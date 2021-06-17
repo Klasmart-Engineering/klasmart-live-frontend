@@ -70,9 +70,9 @@ export function WBToolbarContainer () {
                 aria-label="whiteboard toolbar opener"
                 disabled={!enableWB}
                 size="large"
-                color="primary"
                 style={{
                     display: open ? `none` : `flex`,
+                    backgroundColor:`#bd6dd6`,
                     zIndex: WB_EXPAND_BUTTON,
                     position: `absolute`,
                     bottom: 10,

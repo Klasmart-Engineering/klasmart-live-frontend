@@ -1,3 +1,4 @@
+import backgroundStudy from "../../assets/img/background/background_study.png";
 import { ClassType } from "../../store/actions";
 import Main from '../components/main/main';
 import Sidebar from '../components/sidebar/sidebar';
@@ -14,7 +15,7 @@ import {
 } from "../states/layoutAtoms";
 import { useMutation, useQuery } from "@apollo/client";
 import {
-    Grid, useMediaQuery, useTheme,
+    Grid, makeStyles, Theme, useMediaQuery, useTheme,
 } from '@material-ui/core';
 import React, {
     useContext, useEffect, useState,
@@ -23,7 +24,16 @@ import { useRecoilState } from "recoil";
 
 const qs = require(`qs`);
 
+const useStyles = makeStyles((theme: Theme) => ({
+    study: {
+        backgroundImage: `url('${backgroundStudy}')`,
+        backgroundSize: `cover`,
+        backgroundPosition: `left bottom`,
+    },
+}));
+
 function Class () {
+    const classes = useStyles();
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
 
@@ -208,7 +218,9 @@ function Class () {
     return (
         <Grid
             container
-            direction={isSmDown ? `column` : `row`}>
+            direction={isSmDown ? `column` : `row`}
+            className={classes.study}
+        >
             <Grid
                 item
                 xs>
