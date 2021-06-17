@@ -126,6 +126,7 @@ export function ResizedIframe(props: Props): JSX.Element {
             id="resizediframe"
             src={isPdfContent ? `pdfviewer.html?pdfSrc=${contentHref}` : contentHref}
             ref={iframeRef}
+            allow="microphone"
             data-h5p-width={contentWidth}
             data-h5p-height={contentWidth}
             style={{
