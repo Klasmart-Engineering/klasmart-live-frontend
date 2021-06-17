@@ -1,8 +1,6 @@
 const params = new URLSearchParams(window.location.search);
 const pdfUrl = new URL(decodeURI(params.get(`pdfSrc`) ?? ``));
-
-const pdfServiceEndpoint = process.env.ENDPOINT_PDF || `http://localhost:32891`;
-console.log(pdfServiceEndpoint);
+const pdfServiceEndpoint = process.env.ENDPOINT_PDF || `https://live.alpha.kidsloop.net`;
 
 const pageContainer = document.getElementById(`viewerContainer`);
 
@@ -11,7 +9,7 @@ if (!pageContainer) throw new Error(`Could not find the PDF container element!`)
 const getPDFPages = async (endpoint: string, pdfUrl: URL) => {
     console.log(`Retrieving PDF pages`);
     const pdfName = pdfUrl.pathname.split(`/`).pop();
-    const requestURL = `${pdfServiceEndpoint}/assets/${pdfName}/pages?pdfURL=${pdfUrl.toString()}`;
+    const requestURL = `${pdfServiceEndpoint}/pdf/${pdfName}/pages?pdfURL=${pdfUrl.toString()}`;
     console.log(requestURL);
 
     const response = await fetch(requestURL);
@@ -32,9 +30,6 @@ const createImageArray = (endpoint: string, pdfUrl: URL, pageCount: number) => {
         e.addEventListener('load', () => {
             console.log(`load event for page ${i}`);
         });
-        e.addEventListener('loadeddata', () => {
-            console.log(`loadeddata event for page ${i}`);
-        });
         imageElements.push(e);
     }
 
@@ -42,7 +37,7 @@ const createImageArray = (endpoint: string, pdfUrl: URL, pageCount: number) => {
 };
 
 const createPageURL = (pdfName: string, pdfUrl: URL, page: number) => {
-    return `${pdfServiceEndpoint}/assets/${pdfName}/pages/${page}?pdfURL=${pdfUrl.toString()}`;
+    return `${pdfServiceEndpoint}/pdf/${pdfName}/pages/${page}?pdfURL=${pdfUrl.toString()}`;
 };
 
 const clearContainer = (container: HTMLElement) => {
