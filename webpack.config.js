@@ -88,7 +88,7 @@ module.exports = {
       ["ENDPOINT_WEBSOCKET"],
       ["APP_GIT_REV"],
       { "ENDPOINT_CMS": "https://kl2-test.kidsloop.net" },
-      { "ENDPOINT_PDF": "http://localhost:32891"},
+      { "ENDPOINT_PDF": "https://live.alpha.kidsloop.net" }
     ),
     new HtmlWebpackPlugin({
       filename: "index.html",
