@@ -143,6 +143,8 @@ const messages: Record<string, string> = {
     auth_waiting_for_authentication: "권한을 기다리고 있습니다...",
 
     cordova_loading: "불러오는 중...",
-    cordova_permissions_error: "카메라와 마이크 권한이 필요합니다. 권한 설정 후 앱을 재시작 해 주세요."
+    cordova_permissions_error: "카메라와 마이크 권한이 필요합니다. 권한 설정 후 앱을 재시작 해 주세요.",
+    auth_waiting: "Waiting for authentication...",
+    loading_try_again: "Try again",
 };
 export default messages;

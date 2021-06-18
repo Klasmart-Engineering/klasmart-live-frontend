@@ -150,5 +150,7 @@ const messages: Record<string, string> = {
 
     cordova_loading: "Memuat...",
     cordova_permissions_error: "Izin Kamera dan Mikrofon dibutuhkan. Silakan beri izin dan restart aplikasi.",
+    auth_waiting: "Waiting for authentication...",
+    loading_try_again: "Try again",
 };
 export default messages;

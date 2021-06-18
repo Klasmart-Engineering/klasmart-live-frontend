@@ -150,5 +150,7 @@ const messages: Record<string, string> = {
 
     cordova_loading: "Đang tải...",
     cordova_permissions_error: "Cần quyền truy cập đối với camera và micrô. Vui lòng cấp quyền truy cập và khởi động lại ứng dụng.",
+    auth_waiting: "Waiting for authentication...",
+    loading_try_again: "Try again",
 };
 export default messages;

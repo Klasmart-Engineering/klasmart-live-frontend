@@ -149,6 +149,8 @@ const messages: Record<string, string> = {
     auth_waiting_for_authentication: "等待授权...",
 
     cordova_loading: "加载中...",
-    cordova_permissions_error: "需要相机和麦克风的权限。请授予权限并重新启动应用程序."
+    cordova_permissions_error: "需要相机和麦克风的权限。请授予权限并重新启动应用程序.",
+    auth_waiting: "Waiting for authentication...",
+    loading_try_again: "Try again",
 };
 export default messages;

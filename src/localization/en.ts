@@ -149,6 +149,8 @@ const messages: Record<string, string> = {
     auth_waiting_for_authentication: "Waiting for authentication...",
 
     cordova_loading: "Loading...",
-    cordova_permissions_error: "Camera and Microphone premissions required. Please grant the permissions and restart application."
+    cordova_permissions_error: "Camera and Microphone premissions required. Please grant the permissions and restart application.",
+    auth_waiting: "Waiting for authentication...",
+    loading_try_again: "Try again",
 };
 export default messages;
