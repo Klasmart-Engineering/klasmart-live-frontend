@@ -10,6 +10,7 @@ import { useHttpEndpoint } from "../../context-provider/region-select-context";
 import { useUserInformation } from "../../context-provider/user-information-context";
 import { Redirect } from "react-router-dom";
 import { ParentalGate } from "../../components/parentalGate";
+import { Grid } from "@material-ui/core";
 
 const useStyles = makeStyles((_theme) => createStyles({
     container: {
@@ -127,11 +128,17 @@ export function Auth({ useInAppBrowser }: Props) {
         </Loading >
         */
 
+        // <Button label={"Try again"} onClick={() => setKey(Math.random().toString(36))} />
+
         return (
-            <>
-                <Loading messageId="Waiting for authentication..." />
+            <Grid container item
+                direction="row"
+                alignItems="center"
+                style={{height: "100%"}}
+                spacing={2}>
+                <Loading messageId="auth_waiting" retryCallback={() => setKey(Math.random().toString(36))} />
                 { authenticated ? <Redirect to="/" /> : <></> }
-            </>
+            </Grid>
         );
     } else {
         return (
