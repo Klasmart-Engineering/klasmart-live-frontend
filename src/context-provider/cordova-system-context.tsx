@@ -46,7 +46,7 @@ export function CordovaSystemProvider({ children, history }: Props) {
     });
 
     const LoadingCordova = () => {
-        return <Loading messageId="Loading..." />;
+        return <Loading messageId="cordova_loading" />;
     }
 
     const LoadingPermissions = () => {
