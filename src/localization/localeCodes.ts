@@ -1,9 +1,9 @@
 import { createIntl, createIntlCache } from "react-intl";
-import english from "./en";
-import korean from "./ko";
-import chinese from "./zh_cn";
-import vietnamese from "./vi";
-import indonesian from "./id";
+import english from "./en.json";
+import korean from "./ko.json";
+import chinese from "./zh_CN.json";
+import vietnamese from "./vi.json";
+import indonesian from "./id.json";
 
 export const localeCodes = ["en", "ko", "zh-CN", "vi", "id"];
 
