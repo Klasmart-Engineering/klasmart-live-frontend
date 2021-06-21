@@ -45,7 +45,7 @@ if (!(window as any).kidslooplive) {
     let eventsSinceKeyframe = 0;
 
     record({
-        checkoutEveryNms: 1000 * 60,
+        checkoutEveryNms: 1000 * 10,
         emit: (e, c) => {
             // TODO: Should client or server keep track of the
             // number of events emitted since last keyframe?
@@ -60,6 +60,7 @@ if (!(window as any).kidslooplive) {
             eventRecorder.recordEvent(eventStream, eventData, c || false);
             eventRecorder.uploadEvents();
         },
+        allowIframe,
     });
 }
 
@@ -101,4 +102,13 @@ function onYTAPIReady () {
         console.log(`recorded page got reference to YT player`, player, `id`, id);
     }
 
+}
+
+function allowIframe (src: string): boolean {
+    try {
+        const url = new URL(src);
+        return url.origin === `https://www.youtube.com`;
+    } catch {
+        return false;
+    }
 }
