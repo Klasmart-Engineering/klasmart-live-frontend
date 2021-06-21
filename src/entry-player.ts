@@ -1,6 +1,13 @@
 import { Replayer } from 'rrweb';
 // eslint-disable-next-line no-unused-vars
 
+enum YoutubePlayerState {
+    ENDED = 0,
+    PLAYING,
+    PAUSED,
+    BUFFERING,
+    CUED,
+}
 const youtubePlayers = new Map<string, any>();
 let hasStarted = false;
 const player: Replayer = new Replayer([], {
@@ -9,7 +16,6 @@ const player: Replayer = new Replayer([], {
     speed: 1.5,
     UNSAFE_replayCanvas: true,
 });
-player.enableInteract();
 
 player.on(`resize`, () => window.parent.postMessage({
     width: player.iframe.width,
@@ -22,13 +28,18 @@ player.on(`custom-event`, (event: any) => {
         return;
     }
     const { tag, payload } = event.data;
-    const youtubePlayer = youtubePlayers.get(payload.id);
     if(tag === `stateChange`) {
-        switch(payload.state){
-        case 1:
+        const youtubePlayer = youtubePlayers.get(payload.id);
+        const info = payload.playerInfo;
+        youtubePlayer.seekTo(info.currentTime);
+        switch(info.playerState){
+        case YoutubePlayerState.ENDED:
+            youtubePlayer.stopVideo();
+            break;
+        case YoutubePlayerState.PLAYING:
             youtubePlayer.playVideo();
             break;
-        case 2:
+        case YoutubePlayerState.PAUSED:
             youtubePlayer.pauseVideo();
             break;
         default:
@@ -57,6 +68,7 @@ window.addEventListener(`message`, ({ data }) => {
 window.postMessage(`ready`, `*`);
 
 function onFullSnapshotRebuilded () {
+    console.log(`onFullSnapshotRebuilded`);
     const replayedIframe = window.document.getElementsByTagName(`iframe`)[0];
     const replayedWindow = replayedIframe.contentWindow;
 
@@ -84,7 +96,7 @@ function onFullSnapshotRebuilded () {
             const id = (iframe as HTMLIFrameElement).getAttribute(`id`) ?? ``;
             const youtubePlayer = new (replayedWindow as any).YT.Player(id, {});
             youtubePlayers.set(id, youtubePlayer);
-            console.log(`replayed page mounted YouTube  object`, youtubePlayer);
+            console.log(`replayed page got reference to YT player`, youtubePlayer, `id`, id);
         }
     }
 }

@@ -82,7 +82,7 @@ function onYTAPIReady () {
         console.log(`onPlayerStateChange`, `id`, id, `event`, event);
         record.addCustomEvent(`stateChange`, {
             id,
-            state: event.data,
+            playerInfo: event.target.playerInfo,
         });
     };
     for(const iframe of document.getElementsByTagName(`iframe`)) {
@@ -92,13 +92,13 @@ function onYTAPIReady () {
             continue;
         }
         const id = (iframe as HTMLIFrameElement).getAttribute(`id`) ?? ``;
-        const ytPlayer = new (window as any).YT.Player(id, {
+        const player = new (window as any).YT.Player(id, {
             events: {
                 onReady: onPlayerReady(id),
                 onStateChange: onPlayerStateChange(id),
             },
         });
-        console.log(`replayed page mounted YouTube  object`, ytPlayer);
+        console.log(`recorded page got reference to YT player`, player, `id`, id);
     }
 
 }
