@@ -26,7 +26,7 @@ player.on(`custom-event`, (event: any) => {
     }
 });
 
-player.on(`fullsnapshot-rebuilded`, (event: any) => onYTAPIReady());
+player.on(`fullsnapshot-rebuilded`, () => onFullSnapshotRebuilded());
 
 window.addEventListener(`message`, ({ data }) => {
     if (!data || !data.event) { return; }
@@ -45,34 +45,24 @@ window.addEventListener(`message`, ({ data }) => {
 (window as any).PLAYER_READY = true;
 window.postMessage(`ready`, `*`);
 
-function onYTAPIReady () {
+function onFullSnapshotRebuilded () {
     const replayedIframe = window.document.getElementsByTagName(`iframe`)[0];
     const replayedWindow = replayedIframe.contentWindow;
 
-    const dummyTag = replayedWindow?.document.createElement(`script`);
     const tag = replayedWindow?.document.createElement(`script`);
-
-    if (!tag || !dummyTag) {
+    (replayedWindow as any).onYouTubeIframeAPIReady = onYTAPIReady;
+    const head = replayedWindow?.document.getElementsByTagName(`head`)[0];
+    if(!tag) {
         return;
     }
-    (replayedWindow as any).onYouTubeIframeAPIReady = callback;
-    console.log(`document`, replayedWindow?.document);
-    const body = replayedWindow?.document.getElementsByTagName(`body`)[0];
-    console.log(`body`, body);
-    const head = replayedWindow?.document.getElementsByTagName(`head`)[0];
-    head?.appendChild(dummyTag);
     tag.src = `https://www.youtube.com/iframe_api`;
-    console.log(`head`, head, `tag`, tag);
     head?.appendChild(tag);
 
-    function callback () {
-        const doc = replayedIframe.contentDocument;
-        if (!doc) {
-            console.log(`empty replayed doc`);
+    function onYTAPIReady () {
+        if (!replayedWindow?.document) {
             return;
         }
-        console.log(`doc`, doc.getElementsByTagName(`iframe`));
-        for(const iframe of doc.getElementsByTagName(`iframe`)) {
+        for(const iframe of replayedWindow?.document.getElementsByTagName(`iframe`)) {
             const src = (iframe as HTMLIFrameElement).getAttribute(`src`) ?? ``;
             const url = new URL(src);
             if (url.origin === `https://www.youtube.com`) {
@@ -80,9 +70,8 @@ function onYTAPIReady () {
                 (iframe as HTMLIFrameElement).setAttribute(`src`, updatedSrc);
             }
             const id = (iframe as HTMLIFrameElement).getAttribute(`id`);
-            console.log(`iframe`, iframe, `id`, id);
             ytPlayer = new (replayedWindow as any).YT.Player(id, {});
+            console.log(`replayed page mounted YouTube  object`, ytPlayer);
         }
-        console.log(`replayed page mounted YouTube  object`, ytPlayer);
     }
 }
