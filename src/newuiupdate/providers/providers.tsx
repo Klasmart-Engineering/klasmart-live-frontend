@@ -156,7 +156,18 @@ function parseToken () {
                 isTeacher: payload.teacher ? Boolean(payload.teacher) : false,
                 name: payload.name ? String(payload.name) : undefined,
                 roomId: String(payload.roomid),
-                materials: parsedMaterials || [],
+                materials: [
+                    {
+                        __typename: MaterialTypename.Iframe,
+                        name: `Colum Presentation`,
+                        url: `/h5p/play/608b9065e5085e0014359f72`,
+                    },
+                    {
+                        __typename: MaterialTypename.Iframe,
+                        name: `Interactive video`,
+                        url: `/h5p/play/60b5f49e378c7c0013f8bdc1`,
+                    },
+                ],
             };
         }
         // TODO think of a better way to set up the debug environment

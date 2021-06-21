@@ -1,4 +1,4 @@
-import backgroundStudy from "../../assets/img/background/background_study.png";
+import backgroundStudy from "../../assets/img/background/background_study.jpg";
 import { ClassType } from "../../store/actions";
 import Main from '../components/main/main';
 import Sidebar from '../components/sidebar/sidebar';
@@ -219,7 +219,7 @@ function Class () {
         <Grid
             container
             direction={isSmDown ? `column` : `row`}
-            className={classes.study}
+            className={classtype === ClassType.STUDY ? classes.study : undefined}
         >
             <Grid
                 item

@@ -336,7 +336,7 @@ export function RecordedIframe (props: Props): JSX.Element {
                     width: enableResize ? contentWidth : `100%`,
                     height: enableResize ? contentHeight : `100%`,
                     position: enableResize ? `absolute` : `static`,
-                    transformOrigin: classtype === ClassType.LIVE ? `top left` : `unset`,
+                    transformOrigin: classtype === ClassType.LIVE ? `top left` : `top center`,
                     top: classtype === ClassType.LIVE ? 0 : `auto`,
                     left: classtype === ClassType.LIVE ? 0 : `auto`,
                     transform: enableResize ? `scale(${transformScale})` : `scale(1)`,
