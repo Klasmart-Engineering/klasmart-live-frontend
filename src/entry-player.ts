@@ -1,7 +1,7 @@
 import { Replayer } from 'rrweb';
 // eslint-disable-next-line no-unused-vars
 
-let ytPlayer: any;
+const youtubePlayers = new Map<string, any>();
 let hasStarted = false;
 const player: Replayer = new Replayer([], {
     mouseTail: false,
@@ -21,8 +21,19 @@ player.on(`custom-event`, (event: any) => {
     if(!event || !event.data){
         return;
     }
-    if(event.data.tag === `stateChange`) {
-        ytPlayer.playVideo();
+    const { tag, payload } = event.data;
+    const youtubePlayer = youtubePlayers.get(payload.id);
+    if(tag === `stateChange`) {
+        switch(payload.state){
+        case 1:
+            youtubePlayer.playVideo();
+            break;
+        case 2:
+            youtubePlayer.pauseVideo();
+            break;
+        default:
+            break;
+        }
     }
 });
 
@@ -65,13 +76,15 @@ function onFullSnapshotRebuilded () {
         for(const iframe of replayedWindow?.document.getElementsByTagName(`iframe`)) {
             const src = (iframe as HTMLIFrameElement).getAttribute(`src`) ?? ``;
             const url = new URL(src);
-            if (url.origin === `https://www.youtube.com`) {
-                const updatedSrc = url.origin +  url.pathname + `?enablejsapi=1`;
-                (iframe as HTMLIFrameElement).setAttribute(`src`, updatedSrc);
+            if (url.origin !== `https://www.youtube.com`) {
+                continue;
             }
-            const id = (iframe as HTMLIFrameElement).getAttribute(`id`);
-            ytPlayer = new (replayedWindow as any).YT.Player(id, {});
-            console.log(`replayed page mounted YouTube  object`, ytPlayer);
+            const updatedSrc = url.origin +  url.pathname + `?enablejsapi=1`;
+            (iframe as HTMLIFrameElement).setAttribute(`src`, updatedSrc);
+            const id = (iframe as HTMLIFrameElement).getAttribute(`id`) ?? ``;
+            const youtubePlayer = new (replayedWindow as any).YT.Player(id, {});
+            youtubePlayers.set(id, youtubePlayer);
+            console.log(`replayed page mounted YouTube  object`, youtubePlayer);
         }
     }
 }

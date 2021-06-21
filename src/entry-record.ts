@@ -75,19 +75,30 @@ if (!(window as any).YT) {
 }
 
 function onYTAPIReady () {
-    function onPlayerReady (event: any) {
-        console.log(`onPlayerReady`, event);
-        ytPlayer.playVideo();
-    }
-    const onPlayerStateChange = (event: any) => {
-        console.log(`onPlayerStateChange`, event);
-        record.addCustomEvent(`stateChange`, event);
+    const onPlayerReady = (id: string) => (event: any) => {
+        console.log(`onPlayerReady`, `id`, id, `event`, event);
     };
-    const ytPlayer = new (window as any).YT.Player(`h5p-youtube-0`, {
-        events: {
-            onReady: onPlayerReady,
-            onStateChange: onPlayerStateChange,
-        },
-    });
-    console.log(`recorded page mounted YouTube player object`, ytPlayer);
+    const onPlayerStateChange = (id: string) => (event: any) => {
+        console.log(`onPlayerStateChange`, `id`, id, `event`, event);
+        record.addCustomEvent(`stateChange`, {
+            id,
+            state: event.data,
+        });
+    };
+    for(const iframe of document.getElementsByTagName(`iframe`)) {
+        const src = (iframe as HTMLIFrameElement).getAttribute(`src`) ?? ``;
+        const url = new URL(src);
+        if (url.origin !== `https://www.youtube.com`) {
+            continue;
+        }
+        const id = (iframe as HTMLIFrameElement).getAttribute(`id`) ?? ``;
+        const ytPlayer = new (window as any).YT.Player(id, {
+            events: {
+                onReady: onPlayerReady(id),
+                onStateChange: onPlayerStateChange(id),
+            },
+        });
+        console.log(`replayed page mounted YouTube  object`, ytPlayer);
+    }
+
 }
