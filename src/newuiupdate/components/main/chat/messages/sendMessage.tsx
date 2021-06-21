@@ -78,7 +78,13 @@ function SendMessage () {
                     root: classes.rootInput,
                     input: classes.input,
                 }}
-                onChange={(e) => setMessage(e.target.value)}
+                onChange={(e) => {
+                    if(e.target.value.length > 500) {
+                        setMessage(e.target.value.slice(0, 497).trim() + '...')
+                    } else {
+                        setMessage(e.target.value)
+                    }
+                }}
             />
             <IconButton
                 aria-label="send"
