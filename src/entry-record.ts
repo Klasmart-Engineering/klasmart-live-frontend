@@ -75,15 +75,15 @@ if (!(window as any).YT) {
 }
 
 function onYTAPIReady () {
-    const onPlayerReady = (event: any) => {
+    function onPlayerReady (event: any) {
         console.log(`onPlayerReady`, event);
         ytPlayer.playVideo();
-    };
+    }
     const onPlayerStateChange = (event: any) => {
         console.log(`onPlayerStateChange`, event);
         record.addCustomEvent(`stateChange`, event);
     };
-    const ytPlayer = new (window as any).YT.Player(`h5p-yoiutube-0`, {
+    const ytPlayer = new (window as any).YT.Player(`h5p-youtube-0`, {
         events: {
             onReady: onPlayerReady,
             onStateChange: onPlayerStateChange,
