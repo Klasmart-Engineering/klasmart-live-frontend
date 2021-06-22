@@ -242,5 +242,10 @@
     "loading_activity_error":"Sorry, something went wrong!",
     "loading_activity_lessonMaterial_clickReload":"Please click the Reload button.",
     "loading_activity_lessonMaterial_reload":"Reload",
-    "notification_user_joined":"{user} has joined the class room"
+    "notification_user_joined":"{user} has joined the class room",
+    "join_your_class": "Join your class",
+    "start": "Start",
+    "end_study_exit": "Exit Study",
+    "end_study_confirm": "Do you want to leave study class ?",
+    "end_study_bonus_content": "Bonus Content"
 }
