@@ -1,6 +1,6 @@
 import { ClassType } from "../../../store/actions";
 import { LIVE_LINK, LocalSessionContext } from "../../providers/providers";
-import { materialActiveIndexState, studyRecommandUrlState } from "../../states/layoutAtoms";
+import { materialActiveIndexState, studyRecommandUrlState, showEndStudyState } from "../../states/layoutAtoms";
 import { Whiteboard } from "../../whiteboard/components/Whiteboard";
 import { MUTATION_REWARD_TROPHY } from "../utils/graphql";
 import PreviewLessonPlan from "./previewLessonPlan";
@@ -18,6 +18,7 @@ import React, {
     useContext, useEffect, useRef, useState,
 } from "react";
 import { useRecoilState } from "recoil";
+import { useIntl } from "react-intl";
 
 const useStyles = makeStyles((theme: Theme) => ({
     arrowButton:{
@@ -31,6 +32,12 @@ const useStyles = makeStyles((theme: Theme) => ({
         },
         "&:active":{
             background: `#bd6dd6`,
+        },
+        [theme.breakpoints.down(`sm`)]: {
+            "& svg":{
+                height: `3.5em`,
+                width: `3.5em`,
+            },
         },
     },
     arrowButtonDisabled:{
@@ -60,17 +67,27 @@ const useStyles = makeStyles((theme: Theme) => ({
         display: `flex`,
         alignItems: `center`,
         justifyContent: `center`,
+        [theme.breakpoints.down(`sm`)]: {
+            width: 80,
+        },
     },
     centeredContent:{
         height: `100%`,
         alignItems: `center`,
         justifyContent: `center`,
         display: `flex`,
+        animation: "$showEndStudyButtons 5000ms ease-in-out" 
     },
     largeButton:{
         margin: `0 3em`,
         cursor: `pointer`,
         textAlign: `center`,
+        [theme.breakpoints.down(`sm`)]: {
+            "& svg":{
+                height: `3.5em`,
+                width: `3.5em`,
+            },
+        },
     },
     largeButtonIcon:{
         background: `#619bd8`,
@@ -87,6 +104,17 @@ const useStyles = makeStyles((theme: Theme) => ({
         fontSize: `1.25em`,
         marginTop: 14,
     },
+    "@keyframes showEndStudyButtons": {
+        "0%": {
+          opacity: 0,
+        },
+        "50%": {
+            opacity: 0,
+        },
+        "100%": {
+          opacity: 1,
+        }
+      }
 }));
 
 export function ClassContent () {
@@ -95,11 +123,12 @@ export function ClassContent () {
     } = useContext(LocalSessionContext);
 
     const classes = useStyles();
-
+    const intl = useIntl();
+    
     const iframeRef = useRef<HTMLIFrameElement>(null);
     const [ materialActiveIndex, setMaterialActiveIndex ] = useRecoilState(materialActiveIndexState);
     const [ studyRecommandUrl, setStudyRecommandUrl ] = useRecoilState(studyRecommandUrlState);
-    const [ showEndStudy, setShowEndStudy ] = useState(false);
+    const [ showEndStudy, setShowEndStudy ] = useRecoilState(showEndStudyState);
 
     const materialsLength = studyRecommandUrl ? materials.length + 1 : materials.length;
 
@@ -125,6 +154,11 @@ export function ClassContent () {
         }
     };
 
+    const handleExit = () => {
+        window.open(`about:blank`, `_self`);
+        window.close();
+    };
+
     useEffect(() => {
         if (!rootDivRef || !rootDivRef.current) { return; }
         const width = rootDivRef.current.clientWidth;
@@ -139,7 +173,7 @@ export function ClassContent () {
             rewardTrophyMutation({
                 variables: {
                     roomId,
-                    user: sessionId,
+                    user: `local-${sessionId}`,
                     kind: `great_job`,
                 },
             });
@@ -164,14 +198,21 @@ export function ClassContent () {
                 item
                 xs>
                 {showEndStudy ?
-                    <div className={classes.centeredContent}>
+                    <div className={classes.centeredContent} >
                         <LargeButton
                             icon={<ExitIcon size="5em" />}
-                            label="Exit Study"/>
-                        <LargeButton
+                            label={intl.formatMessage({
+                                id: `end_study_exit`,
+                            })}
+                            onClick={()=> handleExit()}/>
+                            
+                        {/* TODO : Bonus content 
+                            <LargeButton
                             icon={<BonusContentIcon size="5em" />}
                             variant="yellow"
-                            label="Bonus Content"/>
+                            label={intl.formatMessage({
+                                id: `end_study_bonus_content`,
+                            })}/> */}
                     </div> :
                     <div className={classes.content}>
                         <div
@@ -183,7 +224,6 @@ export function ClassContent () {
                             <PreviewLessonPlan />
                         </div>
                     </div> }
-
             </Grid>
             <Grid
                 item

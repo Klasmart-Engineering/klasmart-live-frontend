@@ -1,5 +1,4 @@
 import { AuthTokenProvider } from "../services/auth-token/AuthTokenProvider";
-import { Trophy } from './components/others/trophies/trophy';
 import Class from './pages/class';
 import ClassEnded from './pages/classEnded';
 import ClassLeft from './pages/classLeft';
@@ -16,6 +15,7 @@ import { RetryLink } from "@apollo/client/link/retry";
 import { WebSocketLink } from "@apollo/client/link/ws";
 import React, { useContext } from 'react';
 import { useRecoilState } from "recoil";
+import { Trophy } from "../components/trophies/trophy";
 
 export function getApolloClient (roomId: string) {
     const authToken = AuthTokenProvider.retrieveToken();

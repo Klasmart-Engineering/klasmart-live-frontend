@@ -66,7 +66,7 @@ function Main () {
             container
             direction="column"
             className={clsx(classes.fullViewHeight, {
-                [classes.fullViewHeightSm]: isSmDown,
+                [classes.fullViewHeightSm]: isSmDown && classtype == ClassType.LIVE,
             })}>
             <Grid
                 item
