@@ -9,8 +9,8 @@ pipelines:
         image: node:lts
         script:
           - npm i
-          - mv deploy/config/$KIDSLOOP_REGION/webpack.$KIDSLOOP_ENV.config.js ./webpack.$KIDSLOOP_ENV.config.js
-          - npm run build:$KIDSLOOP_ENV
+          - mv deploy/config/$KIDSLOOP_REGION/webpack.$KIDSLOOP_ENV.config.js ./webpack.bitbucket.config.js
+          - npm run build:bitbucket
         caches:
           - nodemodules
         artifacts:
