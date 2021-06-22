@@ -134,7 +134,7 @@
     "redux-logger": "^3.0.6",
     "redux-persist": "^6.0.0",
     "resize-observer-polyfill": "^1.5.1",
-    "rrweb": "git+git@bitbucket.org:calmisland/rrweb",
+    "rrweb":  "git+git@bitbucket.org:calmisland/rrweb#fix/media-playback",
     "styled-components": "^5.3.0",
     "styled-icons": "^10.33.0",
     "subscriptions-transport-ws": "^0.9.18",
