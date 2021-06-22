@@ -1,5 +1,5 @@
 import { useWindowSize } from "../../../../utils/viewport";
-import { LIVE_LINK } from "../../../providers/providers";
+import { LIVE_LINK, LocalSessionContext } from "../../../providers/providers";
 import { RoomContext } from "../../../providers/roomContext";
 import { isLessonPlanOpenState } from "../../../states/layoutAtoms";
 import Loading from "./loading";
@@ -43,6 +43,7 @@ export function PreviewPlayer ({
     const [ transformScale, setTransformScale ] = useState<number>(1);
 
     const { content } = useContext(RoomContext);
+    const { isTeacher } = useContext(LocalSessionContext);
 
     const containerHtml = window.document.getElementById(container) as HTMLIFrameElement;
 
@@ -118,12 +119,21 @@ export function PreviewPlayer ({
         const iframeDoc = ref.current.contentDocument;
         const recordedIframe = iframeDoc?.getElementsByTagName(`iframe`);
         if(recordedIframe && recordedIframe.length){
-            const fWidth = Number(recordedIframe[0].width.replace(`px`, ``));
-            const fHeight = Number(recordedIframe[0].height.replace(`px`, ``));
+            const recordedIframeItem = recordedIframe[0];
+
+            const fWidth = Number(recordedIframeItem.width.replace(`px`, ``));
+            const fHeight = Number(recordedIframeItem.height.replace(`px`, ``));
             setWidthHeight({
                 frameWidth: fWidth,
                 frameHeight: fHeight,
             });
+
+            // MUTE VIDEOS ON OBSERVE MODE - TEACHER SIDE
+            if(isTeacher){
+                const video = recordedIframeItem?.contentWindow?.document.getElementsByTagName(`video`);
+                const videoList = Array.prototype.slice.call(video);
+                videoList.forEach(video => video.muted=true);
+            }
         }
     };
 
