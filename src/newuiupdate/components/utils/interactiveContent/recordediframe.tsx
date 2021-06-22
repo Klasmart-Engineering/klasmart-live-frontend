@@ -109,10 +109,12 @@ export function RecordedIframe (props: Props): JSX.Element {
             }, 1000);
             setIntervalId(interval);
         } else if (loadStatus === LoadStatus.Finished) {
-            setOpenDialog(false);
-            clearInterval(intervalId);
-            onLoad();
-            startRecording();
+            setTimeout(function (){
+                setOpenDialog(false);
+                clearInterval(intervalId);
+                onLoad();
+                startRecording();
+            }, 500);
         } else if (seconds <= 0 || loadStatus === LoadStatus.Error) {
             clearInterval(intervalId);
         }
@@ -336,7 +338,7 @@ export function RecordedIframe (props: Props): JSX.Element {
                     width: enableResize ? contentWidth : `100%`,
                     height: enableResize ? contentHeight : `100%`,
                     position: enableResize ? `absolute` : `static`,
-                    transformOrigin: classtype === ClassType.LIVE ? `top left` : `top center`,
+                    transformOrigin: `top left`,
                     top: classtype === ClassType.LIVE ? 0 : `auto`,
                     left: classtype === ClassType.LIVE ? 0 : `auto`,
                     transform: enableResize ? `scale(${transformScale})` : `scale(1)`,

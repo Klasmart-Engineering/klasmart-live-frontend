@@ -136,3 +136,8 @@ export const studyRecommandUrlState = atom({
     key: `studyRecommandUrlState`,
     default: ``,
 });
+
+export const showEndStudyState = atom({
+    key: `showEndStudyState`,
+    default: false,
+});
