@@ -17,8 +17,8 @@ import { useToolbarContext } from "kidsloop-canvas/lib/components/toolbar/toolba
 import { useSynchronizedState } from "../context-providers/SynchronizedStateProvider";
 
 import BlackCrayon from "../../assets/img/canvas/crayons/black.svg";
+import GrayCrayon from "../../assets/img/canvas/crayons/gray.svg";
 import BlueCrayon from "../../assets/img/canvas/crayons/blue.svg";
-import QingseCrayon from "../../assets/img/canvas/crayons/qingse.svg";
 import GreenCrayon from "../../assets/img/canvas/crayons/green.svg";
 import YellowCrayon from "../../assets/img/canvas/crayons/yellow.svg";
 import OrangeCrayon from "../../assets/img/canvas/crayons/orange.svg";
@@ -27,8 +27,23 @@ import PinkCrayon from "../../assets/img/canvas/crayons/pink.svg";
 import PurpleCrayon from "../../assets/img/canvas/crayons/purple.svg";
 import BrownCrayon from "../../assets/img/canvas/crayons/brown.svg";
 import Eraser from "../../assets/img/canvas/eraser.svg";
+
 import { ClassType } from "../../store/actions";
 import { useSessionContext } from "../../context-provider/session-context";
+
+const WhiteboardColors = [
+    { color: "#000000", crayon: BlackCrayon }, // black
+    { color: "#ffffff", crayon: BlackCrayon }, // white
+    { color: "#9c9ca5", crayon: GrayCrayon }, // gray
+    { color: "#824949", crayon: BrownCrayon }, // brown
+    { color: "#fbe739", crayon: YellowCrayon }, // yellow
+    { color: "#ffa500", crayon: OrangeCrayon }, // orange
+    { color: "#ffc0cb", crayon: PinkCrayon }, // pink
+    { color: "#ff0000", crayon: RedCrayon }, // red
+    { color: "#00ff00", crayon: GreenCrayon }, // green
+    { color: "#0000ff", crayon: BlueCrayon }, // blue
+    { color: "#800080", crayon: PurpleCrayon }, // purple
+];
 
 type Props = {
     children?: ReactChild | ReactChildren | null | any;
@@ -41,40 +56,39 @@ export const WBToolbar: FunctionComponent<Props> = ({ children }: Props): JSX.El
     const { state: { display, permissions } } = useSynchronizedState();
     const { state: { tools }, actions: { selectTool, selectColorByValue, clear } } = useToolbarContext();
 
+    const [ selectedColorIndex, setSelectedColorIndex ] = useState<number>(0);
+
     const { classType: classtype, isTeacher, sessionId } = useSessionContext();
-    const [activedColor, setActivedColor] = useState({ black: false, blue: false, qingse: false, green: false, orange: false, red: false, yellow: false, pink: false, purple: false, brown: false });
     const [activedTool, setActivedTool] = useState({ move: false, line: false, text: false, erase: false, clear: false });
     const forStudent = classtype === ClassType.STUDY || !isTeacher;
 
     useEffect(() => {
         selectLine();
-        selectBlack("#000000");
-    }, [])
+        setSelectedColorIndex(0);
+    }, []);
 
-    // TODO (Isu): This will be definitely changed.
-    const selectBlack = (value: string) => { selectColorByValue(value); setActivedColor({ black: true, blue: false, qingse: false, green: false, orange: false, red: false, yellow: false, pink: false, purple: false, brown: false }); setActivedTool({ move: false, line: activedTool.line, text: false, erase: false, clear: false }); }
-    const selectBlue = (value: string) => { selectColorByValue(value); setActivedColor({ black: false, blue: true, qingse: false, green: false, orange: false, red: false, yellow: false, pink: false, purple: false, brown: false }); setActivedTool({ move: false, line: activedTool.line, text: false, erase: false, clear: false }); }
-    const selectQingse = (value: string) => { selectColorByValue(value); setActivedColor({ black: false, blue: false, qingse: true, green: false, orange: false, red: false, yellow: false, pink: false, purple: false, brown: false }); setActivedTool({ move: false, line: activedTool.line, text: false, erase: false, clear: false }); }
-    const selectGreen = (value: string) => { selectColorByValue(value); setActivedColor({ black: false, blue: false, qingse: false, green: true, orange: false, red: false, yellow: false, pink: false, purple: false, brown: false }); setActivedTool({ move: false, line: activedTool.line, text: false, erase: false, clear: false }); }
-    const selectOrange = (value: string) => { selectColorByValue(value); setActivedColor({ black: false, blue: false, qingse: false, green: false, orange: true, red: false, yellow: false, pink: false, purple: false, brown: false }); setActivedTool({ move: false, line: activedTool.line, text: false, erase: false, clear: false }); }
-    const selectRed = (value: string) => { selectColorByValue(value); setActivedColor({ black: false, blue: false, qingse: false, green: false, orange: false, red: true, yellow: false, pink: false, purple: false, brown: false }); setActivedTool({ move: false, line: activedTool.line, text: false, erase: false, clear: false }); }
-    const selectYellow = (value: string) => { selectColorByValue(value); setActivedColor({ black: false, blue: false, qingse: false, green: false, orange: false, red: false, yellow: true, pink: false, purple: false, brown: false }); setActivedTool({ move: false, line: activedTool.line, text: false, erase: false, clear: false }); }
-    const selectPink = (value: string) => { selectColorByValue(value); setActivedColor({ black: false, blue: false, qingse: false, green: false, orange: false, red: false, yellow: false, pink: true, purple: false, brown: false }); setActivedTool({ move: false, line: activedTool.line, text: false, erase: false, clear: false }); }
-    const selectPurple = (value: string) => { selectColorByValue(value); setActivedColor({ black: false, blue: false, qingse: false, green: false, orange: false, red: false, yellow: false, pink: false, purple: true, brown: false }); setActivedTool({ move: false, line: activedTool.line, text: false, erase: false, clear: false }); }
-    const selectBrown = (value: string) => { selectColorByValue(value); setActivedColor({ black: false, blue: false, qingse: false, green: false, orange: false, red: false, yellow: false, pink: false, purple: false, brown: true }); setActivedTool({ move: false, line: activedTool.line, text: false, erase: false, clear: false }); }
+    useEffect(() => {
+        if (selectedColorIndex < 0) {
+            return;
+        }
+
+        selectColorByValue(WhiteboardColors[selectedColorIndex].color);
+        setActivedTool({ move: false, line: activedTool.line, text: false, erase: false, clear: false });
+    }, [selectedColorIndex]);
 
     const selectLine = () => { selectTool("line"); setActivedTool({ move: false, line: true, text: false, erase: false, clear: false }); }
-    const selectText = () => { selectTool("text"); setActivedTool({ move: false, line: false, text: true, erase: false, clear: false }); setActivedColor({ black: false, blue: false, qingse: false, green: false, orange: false, red: false, yellow: false, pink: false, purple: false, brown: false }); }
-    const selectMove = () => { selectTool("move"); setActivedTool({ move: true, line: false, text: false, erase: false, clear: false }); setActivedColor({ black: false, blue: false, qingse: false, green: false, orange: false, red: false, yellow: false, pink: false, purple: false, brown: false }); }
+    const selectText = () => { selectTool("text"); setActivedTool({ move: false, line: false, text: true, erase: false, clear: false }); setSelectedColorIndex(-1); }
+    const selectMove = () => { selectTool("move"); setActivedTool({ move: true, line: false, text: false, erase: false, clear: false }); setSelectedColorIndex(-1); }
+
     const selectObjectEraser = useCallback(() => {
         const eraserOptions = tools.eraser.options;
         if (eraserOptions) {
             selectTool("eraser", eraserOptions[0]);
         }
         setActivedTool({ move: false, line: false, text: false, erase: true, clear: false });
-        setActivedColor({ black: false, blue: false, qingse: false, green: false, orange: false, red: false, yellow: false, pink: false, purple: false, brown: false });
+        setSelectedColorIndex(-1);
     }, [selectTool, tools.eraser.options]);
-    const selectClear = () => { clear([sessionId]); setActivedTool({ move: false, line: false, text: false, erase: false, clear: true }); setActivedColor({ black: false, blue: false, qingse: false, green: false, orange: false, red: false, yellow: false, pink: false, purple: false, brown: false }); }
+    const selectClear = () => { clear([sessionId]); setActivedTool({ move: false, line: false, text: false, erase: false, clear: true }); setSelectedColorIndex(-1); }
 
     type ColorButtonOnClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
     const ColorButton = ({ actived, onClick, colorValue, crayon }: {
@@ -102,16 +116,9 @@ export const WBToolbar: FunctionComponent<Props> = ({ children }: Props): JSX.El
         );
 
     const ColorPicker = () => (<>
-        <ColorButton actived={activedColor.black} onClick={() => selectBlack("#000000")} colorValue={"#000000"} crayon={forStudent ? BlackCrayon : undefined} />
-        <ColorButton actived={activedColor.blue} onClick={() => selectBlue(blue[600])} colorValue={blue[600]} crayon={forStudent ? BlueCrayon : undefined} />
-        <ColorButton actived={activedColor.qingse} onClick={() => selectQingse(cyan["A200"])} colorValue={cyan["A200"]} crayon={forStudent ? QingseCrayon : undefined} />
-        <ColorButton actived={activedColor.green} onClick={() => selectGreen(green[500])} colorValue={green[500]} crayon={forStudent ? GreenCrayon : undefined} />
-        <ColorButton actived={activedColor.yellow} onClick={() => selectYellow(yellow[500])} colorValue={yellow[500]} crayon={forStudent ? YellowCrayon : undefined} />
-        <ColorButton actived={activedColor.orange} onClick={() => selectOrange(orange[500])} colorValue={orange[500]} crayon={forStudent ? OrangeCrayon : undefined} />
-        <ColorButton actived={activedColor.red} onClick={() => selectRed(red[500])} colorValue={red[500]} crayon={forStudent ? RedCrayon : undefined} />
-        <ColorButton actived={activedColor.pink} onClick={() => selectPink(pink[300])} colorValue={pink[300]} crayon={forStudent ? PinkCrayon : undefined} />
-        <ColorButton actived={activedColor.purple} onClick={() => selectPurple(purple[400])} colorValue={purple[400]} crayon={forStudent ? PurpleCrayon : undefined} />
-        <ColorButton actived={activedColor.brown} onClick={() => selectBrown(brown[500])} colorValue={brown[500]} crayon={forStudent ? BrownCrayon : undefined} />
+        { WhiteboardColors.map((c, i) => {
+            <ColorButton actived={i === selectedColorIndex} onClick={() => setSelectedColorIndex(i)} colorValue={c.color} crayon={forStudent ? c.crayon : undefined} />
+        })}
     </>)
 
     type ToolButtonOnClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;

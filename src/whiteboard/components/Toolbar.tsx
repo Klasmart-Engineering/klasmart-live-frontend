@@ -11,10 +11,23 @@ import { Eraser as EraserIcon } from "@styled-icons/boxicons-solid/Eraser";
 import { Trash as TrashIcon } from "@styled-icons/boxicons-solid/Trash";
 import { useSessionContext } from "../../context-provider/session-context";
 
-
 type Props = {
     children?: ReactChild | ReactChildren | null | any;
 }
+
+const WhiteboardColors = [
+    "#000000", // black
+    "#ffffff", // white
+    "#9c9ca5", // gray
+    "#824949", // brown
+    "#fbe739", // yellow
+    "#ffa500", // orange
+    "#ffc0cb", // pink
+    "#ff0000", // red
+    "#00ff00", // green
+    "#0000ff", // blue
+    "#800080", // purble
+];
 
 export const Toolbar: FunctionComponent<Props> = ({ children }: Props): JSX.Element => {
     const {
@@ -75,12 +88,7 @@ export const Toolbar: FunctionComponent<Props> = ({ children }: Props): JSX.Elem
                 <ToolButton clicked={() => clear([sessionId])}><TrashIcon size="1.5rem" /></ToolButton>
             </Grid>
             <Grid container direction="row" justify="center" alignItems="center" spacing={1} style={{ flexGrow: 0, padding: theme.spacing(2) }}>
-                <ColorButton colorValue={"#ff0000"} />
-                <ColorButton colorValue={"#00ff00"} />
-                <ColorButton colorValue={"#0000ff"} />
-                <ColorButton colorValue={"#000000"} />
-                <ColorButton colorValue={"#8880fc"} />
-                <ColorButton colorValue={"#fbe739"} />
+                { WhiteboardColors.map(c => { <ColorButton colorValue={c} /> })}
             </Grid>
             {children}
         </div>
