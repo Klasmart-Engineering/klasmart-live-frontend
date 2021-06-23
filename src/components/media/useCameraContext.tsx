@@ -56,7 +56,21 @@ export const CameraContextProvider = ({ children }: Props) => {
         const facingMode = facing === FacingType.User ? "user" : "environment";
 
         navigator.mediaDevices.getUserMedia({
-            video: { facingMode },
+            video: {
+                facingMode,
+                width: {
+                    max: 720,
+                    ideal: 180,
+                },
+                height: {
+                    max: 540,
+                    ideal: 96
+                },
+                frameRate: {
+                    max: 30,
+                    ideal: 24,
+                }
+            },
             audio: true,
         })
             .then((s) => { setError(false); setCameraStream(s); })
@@ -66,7 +80,7 @@ export const CameraContextProvider = ({ children }: Props) => {
 
     const refreshCameras = useCallback(() => {
         setAcquire(true);
-        
+
         releaseCameraDevice();
         reacquireCameraDevice();
     }, []);

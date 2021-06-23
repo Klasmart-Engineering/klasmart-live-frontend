@@ -669,7 +669,7 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
         if (!camera) {
             return
         }
-        const promise = transmitStream("camera", camera)
+        const promise = transmitStream("camera", camera, false)
         return () => {
             promise.then((producers) => producers.forEach(producer => {
                 if (producer) {
