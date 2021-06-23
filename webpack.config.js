@@ -80,16 +80,17 @@ module.exports = {
   },
   devtool: "source-map",
   plugins: [
-    new webpack.EnvironmentPlugin(
-      ["NODE_ENV"],
-      ["ENDPOINT_GQL"],
-      ["ENDPOINT_H5P"],
-      ["ENDPOINT_TEST_ASSETS_S3"],
-      ["ENDPOINT_WEBSOCKET"],
-      ["APP_GIT_REV"],
-      { "ENDPOINT_CMS": "https://kl2-test.kidsloop.net" },
-      { "ENDPOINT_PDF": "https://live.alpha.kidsloop.net" }
-    ),
+    new webpack.EnvironmentPlugin({
+      "NODE_ENV": undefined,
+      "ENDPOINT_GQL": undefined,
+      "ENDPOINT_H5P": undefined,
+      "ENDPOINT_TEST_ASSETS_S3": undefined,
+      "ENDPOINT_WEBSOCKET": undefined,
+      "APP_GIT_REV": undefined,
+      "ENDPOINT_HUB": "https://hub.alpha.kidsloop.net",
+      "ENDPOINT_CMS": "https://kl2-test.kidsloop.net",
+      "ENDPOINT_PDF": "https://live.alpha.kidsloop.net",
+    }),
     new HtmlWebpackPlugin({
       filename: "index.html",
       chunks: ["ui"],

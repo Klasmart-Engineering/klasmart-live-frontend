@@ -128,6 +128,8 @@ export default function Join (): JSX.Element {
     const [ videoDeviceId, setVideoDeviceId ] = useState<string>(``);
     const [ stream, setStream ] = useState<MediaStream>();
 
+    console.log(process.env.ENDPOINT_PDF)
+
     useEffect(() => {
         if (!navigator.mediaDevices) { return; }
 
