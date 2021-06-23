@@ -37,7 +37,6 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 function ClassLeft () {
     const classes = useStyles();
-
     const HUB_ENDPOINT = process.env.ENDPOINT_HUB;
 
     return (
@@ -56,10 +55,8 @@ function ClassLeft () {
                     <Typography variant="h3"><FormattedMessage id="class_ended_you_have_left" /></Typography>
                     <Typography variant="body1"><FormattedMessage id="class_ended_thanks_for_attending" /></Typography>
 
-                    {/*  TODO : JUNE SCOPE (feature is ready) 
                     <Typography variant="body1"><FormattedMessage id="class_ended_how_was_the_class" /></Typography>
-                    {/* TODO  change to LEAVE_CLASS }
-                    <Feedback type="END_CLASS" /> */}
+                    <Feedback type="END_CLASS" />
 
                     {HUB_ENDPOINT &&
                     <Typography className={classes.returnToHub}>
