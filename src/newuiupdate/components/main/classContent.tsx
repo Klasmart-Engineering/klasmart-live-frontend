@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 export function ClassContent () {
     const {
-        classtype, isTeacher, materials,
+        classtype, isTeacher, materials, sessionId
     } = useContext(LocalSessionContext);
 
     const classes = useStyles();
@@ -82,7 +82,9 @@ export function ClassContent () {
                 <div
                     className={classes.content}
                     id="activity-view-container">
-                    <Whiteboard uniqueId={forStudent ? `student` : `teacher`} />
+                    <Whiteboard 
+                        uniqueId={forStudent ? `student` : `teacher`} 
+                        group={sessionId} />
                     <PreviewLessonPlan />
                 </div>
             </Grid>
