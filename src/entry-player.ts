@@ -34,12 +34,12 @@ player.on(`custom-event`, (event: any) => {
     }
     if(tag === `stateChange`) {
         const info = payload.playerInfo;
-        youtubePlayer.seekTo(info.currentTime);
         switch(info.playerState){
         case YoutubePlayerState.ENDED:
             youtubePlayer.stopVideo();
             break;
         case YoutubePlayerState.PLAYING:
+            youtubePlayer.seekTo(info.currentTime);
             youtubePlayer.playVideo();
             break;
         case YoutubePlayerState.PAUSED:
