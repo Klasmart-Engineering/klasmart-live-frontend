@@ -117,7 +117,7 @@ export const WBToolbar: FunctionComponent<Props> = ({ children }: Props): JSX.El
 
     const ColorPicker = () => (<>
         { WhiteboardColors.map((c, i) => {
-            <ColorButton actived={i === selectedColorIndex} onClick={() => setSelectedColorIndex(i)} colorValue={c.color} crayon={forStudent ? c.crayon : undefined} />
+            return <ColorButton actived={i === selectedColorIndex} onClick={() => setSelectedColorIndex(i)} colorValue={c.color} crayon={forStudent ? c.crayon : undefined} />
         })}
     </>)
 

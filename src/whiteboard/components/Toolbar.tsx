@@ -54,7 +54,7 @@ export const Toolbar: FunctionComponent<Props> = ({ children }: Props): JSX.Elem
             <Grid item xs={6}>
                 <IconButton
                     color={"primary"}
-                    style={{ backgroundColor: colorValue }}
+                    style={{ backgroundColor: colorValue, border: "1px solid black" }}
                     onClick={() => { selectColorByValue(colorValue); }}
                 >
                 </IconButton>
@@ -88,7 +88,7 @@ export const Toolbar: FunctionComponent<Props> = ({ children }: Props): JSX.Elem
                 <ToolButton clicked={() => clear([sessionId])}><TrashIcon size="1.5rem" /></ToolButton>
             </Grid>
             <Grid container direction="row" justify="center" alignItems="center" spacing={1} style={{ flexGrow: 0, padding: theme.spacing(2) }}>
-                { WhiteboardColors.map(c => { <ColorButton colorValue={c} /> })}
+                { WhiteboardColors.map(c => { return <ColorButton colorValue={c} /> })}
             </Grid>
             {children}
         </div>
