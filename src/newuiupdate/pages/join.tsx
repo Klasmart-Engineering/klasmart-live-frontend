@@ -34,6 +34,9 @@ import React, {
     useContext, useEffect, useState,
 } from "react";
 import { FormattedMessage } from "react-intl";
+import { getOrganizationBranding } from "../components/utils/utils";
+import { ORGANIZATION_BRANDING_QUERY } from "../components/utils/graphql";
+import { useQuery } from "@apollo/client";
 
 const config = require(`../../../package.json`);
 
@@ -128,9 +131,17 @@ export default function Join (): JSX.Element {
     const [ videoDeviceId, setVideoDeviceId ] = useState<string>(``);
     const [ stream, setStream ] = useState<MediaStream>();
 
-    console.log(process.env.ENDPOINT_PDF)
-
+    /*
+    const { refetch } = useQuery(ORGANIZATION_BRANDING_QUERY, { variables: { organization_id: "a556a3a0-dc86-45de-8eca-2d7b6a80d1ca" }});
+    const getOrganizationBrandingApollo = async () => {
+        const { data } = await refetch();
+    }
+    */
+   
     useEffect(() => {
+         getOrganizationBranding()
+        // getOrganizationBrandingApollo();
+
         if (!navigator.mediaDevices) { return; }
 
         const getMediaPermissions = async () => {
