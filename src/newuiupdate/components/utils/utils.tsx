@@ -231,3 +231,34 @@ export function fullScreenById (id:any) {
     else if (video.msRequestFullScreen)
         video.msRequestFullScreen(); // to support on Edge
 }
+
+export async function getOrganizationBranding () {
+    const GET_ORGANIZATION_BRANDING = `query {
+        organization(organization_id: $organization_id){
+            branding{
+              iconImageURL
+              faviconImageURL
+              primaryColor
+            }
+          }
+    }`;
+
+    const headers = new Headers();
+    headers.append(`Accept`, `application/json`);
+    headers.append(`Content-Type`, `application/json`);
+    const response = await fetch(`${process.env.ENDPOINT_API}/user/`, {
+        method: `POST`,
+        headers,
+        body: JSON.stringify({
+            query: GET_ORGANIZATION_BRANDING,
+            variables: {
+                organization_id: "a556a3a0-dc86-45de-8eca-2d7b6a80d1ca",
+            }
+        }),
+        credentials: `include`,
+    })
+        .then((r) => r.json())
+        .then((data) => {
+            console.log(data)
+        });
+}

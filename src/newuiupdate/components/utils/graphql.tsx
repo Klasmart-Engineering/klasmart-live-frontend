@@ -42,3 +42,16 @@ export const MUTATION_SHOW_CONTENT = gql`
         showContent(roomId: $roomId, type: $type, contentId: $contentId)
     }
 `;
+
+
+export const ORGANIZATION_BRANDING_QUERY = gql`
+    query organization($organization_id: ID!) {
+        organization(organization_id: $organization_id) {
+            branding{
+                iconImageURL
+                faviconImageURL
+                primaryColor
+            }
+        }
+    }
+`;

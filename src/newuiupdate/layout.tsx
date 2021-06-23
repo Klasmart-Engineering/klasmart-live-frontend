@@ -9,7 +9,7 @@ import {
 } from './providers/providers';
 import { classEndedState, classLeftState } from "./states/layoutAtoms";
 import {
-    ApolloClient, ApolloProvider, InMemoryCache,
+    ApolloClient, ApolloProvider, InMemoryCache, HttpLink
 } from "@apollo/client";
 import { RetryLink } from "@apollo/client/link/retry";
 import { WebSocketLink } from "@apollo/client/link/ws";
@@ -59,11 +59,21 @@ export function getApolloClient (roomId: string) {
     } as any);
 }
 
+
+export const clientAPI = new ApolloClient({
+    cache: new InMemoryCache(),
+    link: new HttpLink({
+        uri: `${process.env.ENDPOINT_API}/user/`,
+         credentials: 'include'
+    }),
+});
+
 function Layout () {
     const { camera, name } = useContext(LocalSessionContext);
 
     if (!name || camera === undefined) {
-        return <Join />;
+        // return  <ApolloProvider client={clientAPI}><Join /></ApolloProvider>;
+         return  <Join />;
     }
     return <ClassWrapper/>;
 }
