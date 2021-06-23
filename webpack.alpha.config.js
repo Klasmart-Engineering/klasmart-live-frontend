@@ -84,12 +84,12 @@ module.exports = {
     path: path.resolve(__dirname, 'dist')
   },
   plugins: [
-    new webpack.EnvironmentPlugin(
-      { "CALLSTATS_ENABLE": "TRUE" },
-      { "ENDPOINT_CMS": "https://cms.alpha.kidsloop.net" },
-      { "ENDPOINT_HUB": "https://hub.alpha.kidsloop.net" },
-      { "ENDPOINT_PDF": "https://live.alpha.kidsloop.net" }
-    ),
+    new webpack.EnvironmentPlugin({
+      "CALLSTATS_ENABLE": "TRUE",
+      "ENDPOINT_HUB": "https://hub.alpha.kidsloop.net",
+      "ENDPOINT_CMS": "https://cms.alpha.kidsloop.net",
+      "ENDPOINT_PDF": "https://live.alpha.kidsloop.net",
+    }),
     new HtmlWebpackPlugin({
       filename: 'index.html',
       chunks: ['ui'],
