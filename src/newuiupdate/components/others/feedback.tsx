@@ -268,9 +268,8 @@ function Feedback (props:FeedbackProps){
                                 className={classes.submitButton}
                                 variant="contained"
                                 color="primary"
-                                onClick={() => onSubmit()}>Submit</Button>
-                        </ div>
-                        }
+                                onClick={() => onSubmit()}><FormattedMessage id="common_submit" /></Button>
+                        </ div>}
                     </div>
                 </Fade>
             </Grid>}
