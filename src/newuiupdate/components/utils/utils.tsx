@@ -232,16 +232,22 @@ export function fullScreenById (id:any) {
         video.msRequestFullScreen(); // to support on Edge
 }
 
-export async function getOrganizationBranding () {
-    const GET_ORGANIZATION_BRANDING = `query {
-        organization(organization_id: $organization_id){
-            branding{
-              iconImageURL
-              faviconImageURL
-              primaryColor
+export interface BrandingType {
+    iconImageURL: string;
+    primaryColor: string;
+}
+
+export async function getOrganizationBranding (organization_id:any) {
+    const GET_ORGANIZATION_BRANDING = `
+        query organization($organization_id: ID!){
+            organization(organization_id: $organization_id){
+                branding{
+                    iconImageURL
+                    primaryColor
+                }
             }
-          }
-    }`;
+        }`
+    ;
 
     const headers = new Headers();
     headers.append(`Accept`, `application/json`);
@@ -252,13 +258,11 @@ export async function getOrganizationBranding () {
         body: JSON.stringify({
             query: GET_ORGANIZATION_BRANDING,
             variables: {
-                organization_id: "a556a3a0-dc86-45de-8eca-2d7b6a80d1ca",
+                organization_id
             }
         }),
         credentials: `include`,
-    })
-        .then((r) => r.json())
-        .then((data) => {
-            console.log(data)
-        });
+    });
+    const { data } = await response.json();
+    return data.organization.branding;
 }
