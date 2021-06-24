@@ -1,10 +1,26 @@
 const params = new URLSearchParams(window.location.search);
-const pdfUrl = new URL(decodeURI(params.get(`pdfSrc`) ?? ``));
+const src = decodeURI(params.get(`pdfSrc`) ?? ``);
 const pdfServiceEndpoint = process.env.ENDPOINT_PDF || `https://live.alpha.kidsloop.net`;
 
 const pageContainer = document.getElementById(`viewerContainer`);
 
 if (!pageContainer) throw new Error(`Could not find the PDF container element!`);
+
+const createPDFURL = (pdfParameter: string) => {
+    console.log(pdfParameter);
+    console.log(`Environment endpoint: ${process.env.ENDPOINT_PDF}`);
+    // Determine if the link is relative or absolute
+    if (pdfParameter.startsWith(`/`)) {
+        // Force relative links in a local environment to point to live
+        const host = window.location.hostname.includes(`localhost`)
+            ? pdfServiceEndpoint
+            : `https://${window.location.hostname}`;
+        console.log(`Determined host: ${host}`);
+        return new URL(`${host}${pdfParameter}`);
+    } else {
+        return new URL(pdfParameter);
+    }
+};
 
 const getPDFPages = async (endpoint: string, pdfUrl: URL) => {
     console.log(`Retrieving PDF pages`);
@@ -27,7 +43,7 @@ const createImageArray = (endpoint: string, pdfUrl: URL, pageCount: number) => {
         // Only eagerly load the first page
         e.setAttribute(`loading`, i > 1 ? `lazy` : `eager`);
         e.setAttribute(`src`, imageSrc);
-        e.addEventListener('load', () => {
+        e.addEventListener(`load`, () => {
             console.log(`load event for page ${i}`);
         });
         imageElements.push(e);
@@ -48,7 +64,7 @@ const clearContainer = (container: HTMLElement) => {
 
 const populatePages = (container: HTMLElement, images: HTMLElement[]) => {
     const [ firstImage, ...otherImages ] = images;
-    firstImage.addEventListener('load', () => {
+    firstImage.addEventListener(`load`, () => {
         otherImages.forEach(i => container.appendChild(i));
     });
     container.appendChild(firstImage);
@@ -63,4 +79,6 @@ const initializePDF = async (pdfUrl: URL) => {
     populatePages(pageContainer, images);
 };
 
+const pdfUrl = createPDFURL(src);
+console.log(`Pdf URL: ${pdfUrl}`);
 initializePDF(pdfUrl);

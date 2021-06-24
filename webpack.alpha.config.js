@@ -88,6 +88,7 @@ module.exports = {
       { "CALLSTATS_ENABLE": "TRUE" },
       { "ENDPOINT_CMS": "https://cms.alpha.kidsloop.net" },
       { "ENDPOINT_HUB": "https://hub.alpha.kidsloop.net" },
+      { "ENDPOINT_PDF": "https://live.alpha.kidsloop.net" }
     ),
     new HtmlWebpackPlugin({
       filename: 'index.html',
