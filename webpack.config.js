@@ -87,7 +87,7 @@ module.exports = {
       "ENDPOINT_TEST_ASSETS_S3": undefined,
       "ENDPOINT_WEBSOCKET": undefined,
       "APP_GIT_REV": undefined,
-      "ENDPOINT_API": "https://api.kidsloop.net",
+      "ENDPOINT_API": "https://api.alpha.kidsloop.net",
       "ENDPOINT_HUB": "https://hub.alpha.kidsloop.net",
       "ENDPOINT_CMS": "https://kl2-test.kidsloop.net",
       "ENDPOINT_PDF": "https://live.alpha.kidsloop.net",

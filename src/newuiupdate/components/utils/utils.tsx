@@ -258,8 +258,8 @@ export async function getOrganizationBranding (organization_id:any) {
         body: JSON.stringify({
             query: GET_ORGANIZATION_BRANDING,
             variables: {
-                organization_id
-            }
+                organization_id,
+            },
         }),
         credentials: `include`,
     });
