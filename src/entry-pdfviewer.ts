@@ -15,7 +15,6 @@ const createPDFURL = (pdfParameter: string) => {
         const host = window.location.hostname.includes(`localhost`)
             ? pdfServiceEndpoint
             : `https://${window.location.hostname}`;
-        console.log(`Determined host: ${host}`);
         return new URL(`${host}${pdfParameter}`);
     } else {
         return new URL(pdfParameter);
@@ -72,13 +71,10 @@ const populatePages = (container: HTMLElement, images: HTMLElement[]) => {
 
 const initializePDF = async (pdfUrl: URL) => {
     const pages = await getPDFPages(pdfServiceEndpoint, pdfUrl);
-    console.log(`Pages total: ${pages}`);
     const images = createImageArray(pdfServiceEndpoint, pdfUrl, pages);
-    console.log(images);
     clearContainer(pageContainer);
     populatePages(pageContainer, images);
 };
 
 const pdfUrl = createPDFURL(src);
-console.log(`Pdf URL: ${pdfUrl}`);
 initializePDF(pdfUrl);
