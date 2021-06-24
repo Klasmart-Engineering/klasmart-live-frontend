@@ -57,7 +57,7 @@ export function RecordedIframe (props: Props): JSX.Element {
     const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
 
     const { roomId, classtype } = useContext(LocalSessionContext);
-    const { content } = useContext(RoomContext);
+    const { sessions } = useContext(RoomContext);
     const [ streamId, setStreamId ] = useRecoilState(streamIdState);
     const [ isLessonPlanOpen, setIsLessonPlanOpen ] = useRecoilState(isLessonPlanOpenState);
 
@@ -80,6 +80,14 @@ export function RecordedIframe (props: Props): JSX.Element {
     const [ stylesLoaded, setStylesLoaded ] = useState(false);
 
     const size = useWindowSize();
+
+    useEffect(() => {
+        if (iframeRef && iframeRef.current && iframeRef.current.contentWindow) {
+            iframeRef.current.contentWindow.postMessage({
+                type:`USER_JOIN_LEAVE`,
+            }, `*`);
+        }
+    }, [ sessions ]);
 
     useEffect(() => {
         scale(contentWidth, contentHeight);
