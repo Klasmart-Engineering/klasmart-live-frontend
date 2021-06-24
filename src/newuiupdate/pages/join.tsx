@@ -10,6 +10,7 @@ import StyledButton from "../../components/styled/button";
 import StyledIcon from "../../components/styled/icon";
 import StyledTextField from "../../components/styled/textfield";
 import { ClassType } from "../../store/actions";
+import { BrandingType, getOrganizationBranding } from "../components/utils/utils";
 import { LocalSessionContext } from "../providers/providers";
 import Button from '@material-ui/core/Button';
 import Card from "@material-ui/core/Card";
@@ -34,7 +35,6 @@ import React, {
     useContext, useEffect, useState,
 } from "react";
 import { FormattedMessage } from "react-intl";
-import { getOrganizationBranding, BrandingType } from "../components/utils/utils";
 
 const config = require(`../../../package.json`);
 
@@ -115,7 +115,7 @@ export default function Join (): JSX.Element {
     const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
 
     const {
-        classtype, name, isTeacher, org_id
+        classtype, name, isTeacher, org_id,
     } = useContext(LocalSessionContext);
 
     const [ dialogOpen, setDialogOpen ] = useState<boolean>(false);
@@ -131,26 +131,30 @@ export default function Join (): JSX.Element {
     const [ loading, setLoading ] = useState(true);
     const [ branding, setBranding ] = useState<BrandingType|undefined>(undefined);
     const logo = branding?.iconImageURL || KidsLoopLogoSvg;
+    const customFavicon = true;
 
     const handleOrganizationBranding = async () => {
+        setLoading(true);
         try {
-            setLoading(true)
             const dataBranding = await getOrganizationBranding(org_id);
             setBranding(dataBranding);
-            setLoading(false)
         } catch (e) {
-           console.log(e)
-           setLoading(false)
+            console.log(e);
         }
-
-        // TODO : Remove before deploy
-        setBranding({"iconImageURL" : 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/736px-Google_2015_logo.svg.png', "primaryColor" : "cd657b"});
+        setLoading(false);
     };
-   
+
+    // Favicon
+    useEffect(() => {
+        if(branding && customFavicon){
+            const link = document.querySelector(`link[rel~='icon']`) as HTMLAnchorElement;
+            link.href = branding.iconImageURL;
+        }
+    }, [ branding ]);
 
     useEffect(() => {
-        handleOrganizationBranding()
-        
+        handleOrganizationBranding();
+
         if (!navigator.mediaDevices) { return; }
 
         const getMediaPermissions = async () => {
@@ -270,14 +274,13 @@ export default function Join (): JSX.Element {
         }
     }, [ videoDeviceId, audioDeviceId ]);
 
-
-    if (loading) { 
+    if (loading) {
         return <Grid
-        container
-        alignItems="center"
-        style={{
-            height: `100%`,
-        }}><Loading messageId="loading" /></Grid>; 
+            container
+            alignItems="center"
+            style={{
+                height: `100%`,
+            }}><Loading messageId="loading" /></Grid>;
     }
 
     return (
@@ -299,7 +302,11 @@ export default function Join (): JSX.Element {
                             name,
                         }} />
                 </Typography>
-                <div className={classes.headerBg} style={{background: branding && `#${branding?.primaryColor}`}}></div>
+                <div
+                    className={classes.headerBg}
+                    style={{
+                        background: branding && `#${branding?.primaryColor}`,
+                    }}></div>
             </div>
             <Grid
                 container
