@@ -117,7 +117,20 @@ const DefaultRegions: Region[] = [
             user: "https://api.alpha.kidsloop.net/user/",
             privacy: "https://kidsloop.net/en/policies/privacy-notice"
         }
-    }
+    },
+    {
+        id: "auth-live-test.kidsloop.net",
+        name: "Live Test",
+        development: true,
+        services: {
+            auth: "https://auth-live-test.kidsloop.net",
+            live: "https://live-live-test.kidsloop.net",
+            cms: "https://kl2-live-test.kidsloop.net",
+            sfu: "https://live-live-test.kidsloop.net/sfu",
+            user: "https://api.alpha.kidsloop.net/user/",
+            privacy: "https://kidsloop.net/en/policies/privacy-notice"
+        }
+    },
 ];
 
 export function RegionSelectProvider({ children, regionsUrl }: Props) {
