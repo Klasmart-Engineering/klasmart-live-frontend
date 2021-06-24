@@ -50,14 +50,8 @@ if (!(window as any).kidslooplive) {
             // TODO: Should client or server keep track of the
             // number of events emitted since last keyframe?
             if (isCheckout) {
-                console.log(`checkout event`, e);
                 eventsSinceKeyframe = 0;
-                youtubePlayers.forEach((player, id) => {
-                    record.addCustomEvent(`YTPlayerStateChange`, {
-                        id,
-                        playerInfo: player.playerInfo,
-                    });
-                });
+                console.log(`checkout event`, e);
             }
 
             const eventData = JSON.stringify({
@@ -72,7 +66,20 @@ if (!(window as any).kidslooplive) {
         allowIframe,
     });
 }
+
 const youtubePlayers = new Map<string, any>();
+
+window.addEventListener(`message`, ({ data }) => {
+    if (!data || data.type !== `USER_JOIN_LEAVE`) { return; }
+    console.log(`onMessage`, data);
+    youtubePlayers.forEach((player, id) => {
+        record.addCustomEvent(`YTPlayerStateChange`, {
+            id,
+            playerInfo: player.playerInfo,
+        });
+    });
+});
+
 if (!(window as any).YT) {
     const tag = document.createElement(`script`);
     tag.src = `https://www.youtube.com/iframe_api`;
