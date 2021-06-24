@@ -81,17 +81,20 @@ function onFullSnapshotRebuilded () {
             return;
         }
         for(const iframe of replayedWindow?.document.getElementsByTagName(`iframe`)) {
-            const src = (iframe as HTMLIFrameElement).getAttribute(`src`) ?? ``;
-            const url = new URL(src);
-            if (url.origin !== `https://www.youtube.com`) {
+            try {
+                const src = (iframe as HTMLIFrameElement).getAttribute(`src`) ?? ``;
+                const url = new URL(src);
+                if (url.origin !== `https://www.youtube.com`) {
+                    continue;
+                }
+                (iframe as HTMLIFrameElement).setAttribute(`src`, decodeURIComponent(src));
+                const id = (iframe as HTMLIFrameElement).getAttribute(`id`) ?? ``;
+                const youtubePlayer = new (replayedWindow as any).YT.Player(id, {});
+                youtubePlayers.set(id, youtubePlayer);
+                console.log(`replayed page got reference to YT player`, youtubePlayer, `id`, id);
+            } catch {
                 continue;
             }
-            const updatedSrc = url.origin +  url.pathname + `?enablejsapi=1`;
-            (iframe as HTMLIFrameElement).setAttribute(`src`, updatedSrc);
-            const id = (iframe as HTMLIFrameElement).getAttribute(`id`) ?? ``;
-            const youtubePlayer = new (replayedWindow as any).YT.Player(id, {});
-            youtubePlayers.set(id, youtubePlayer);
-            console.log(`replayed page got reference to YT player`, youtubePlayer, `id`, id);
         }
     };
 

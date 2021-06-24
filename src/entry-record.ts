@@ -87,21 +87,25 @@ function onYTAPIReady () {
         });
     };
     for(const iframe of document.getElementsByTagName(`iframe`)) {
-        const src = (iframe as HTMLIFrameElement).getAttribute(`src`) ?? ``;
-        const url = new URL(src);
-        if (url.origin !== `https://www.youtube.com`) {
+        try {
+            const src = (iframe as HTMLIFrameElement).getAttribute(`src`) ?? ``;
+            const url = new URL(src);
+            if (url.origin !== `https://www.youtube.com`) {
+                continue;
+            }
+            (iframe as HTMLIFrameElement).setAttribute(`src`, decodeURIComponent(src));
+            const id = (iframe as HTMLIFrameElement).getAttribute(`id`) ?? ``;
+            const player = new (window as any).YT.Player(id, {
+                events: {
+                    onReady: onPlayerReady(id),
+                    onStateChange: onPlayerStateChange(id),
+                },
+            });
+            console.log(`recorded page got reference to YT player`, player, `id`, id);
+        } catch {
             continue;
         }
-        const id = (iframe as HTMLIFrameElement).getAttribute(`id`) ?? ``;
-        const player = new (window as any).YT.Player(id, {
-            events: {
-                onReady: onPlayerReady(id),
-                onStateChange: onPlayerStateChange(id),
-            },
-        });
-        console.log(`recorded page got reference to YT player`, player, `id`, id);
     }
-
 }
 
 function allowIframe (src: string): boolean {
