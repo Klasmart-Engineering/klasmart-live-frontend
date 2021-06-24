@@ -143,7 +143,7 @@ export const WebRTCContext = createContext<WebRTCContextInterface>(defaultWebRTC
 
 export const WebRTCProvider = (props: { children: React.ReactNode }) => {
     const {
-        roomId, name, sessionId: localSessionId, camera,
+        roomId, name, sessionId: localSessionId, camera, isTeacher,
     } = useContext(LocalSessionContext);
     const [ device, setDevice ] = useState<Device | undefined | null>();
     const [ producerTransport, setProducerTransport ] = useState<MediaSoup.Transport | undefined | null>();
@@ -207,6 +207,9 @@ export const WebRTCProvider = (props: { children: React.ReactNode }) => {
         for (const track of tracks) {
             const params = {
                 track,
+                disableTrackOnPause: true,
+                zeroRtpOnPause: true,
+                stopTracks: true,
             } as ProducerOptions;
             if (track.kind === `video`) {
                 const scalabilityMode = getVP9SvcScalabilityMode();
@@ -231,21 +234,25 @@ export const WebRTCProvider = (props: { children: React.ReactNode }) => {
                 } else if (simulcast) {
                     // These should be ordered from lowest bitrate to highest bitrate
                     // rid will be automatically assigned in the order of this array from "r0" to "rN-1"
+
                     params.encodings = [
                         {
-                            maxBitrate: 1000000,
+                            maxBitrate: 100000,
+                            maxFramerate: 15,
                             scaleResolutionDownBy: 4,
                             scalabilityMode: `S1T1`,
                             dtx: true,
                         },
                         {
-                            maxBitrate: 2000000,
+                            maxBitrate: 200000,
+                            maxFramerate: 15,
                             scaleResolutionDownBy: 2,
                             scalabilityMode: `S1T1`,
                             dtx: true,
                         },
                         {
-                            maxBitrate: 4000000,
+                            maxBitrate: 400000,
+                            maxFramerate: 15,
                             scaleResolutionDownBy: 1,
                             scalabilityMode: `S1T1`,
                             dtx: true,
@@ -254,15 +261,26 @@ export const WebRTCProvider = (props: { children: React.ReactNode }) => {
                 } else {
                     params.encodings = [
                         {
+                            maxBitrate: 400000,
+                            maxFramerate: 15,
                             dtx: true,
                         },
                     ];
                 }
                 console.log(`Wait for video producer`);
                 producer = await transport.produce(params);
-                if (simulcast && !scalabilityMode) { await producer.setMaxSpatialLayer(2); }
+                if (simulcast && !scalabilityMode) {
+                    const layerCount = (params.encodings?.length || 1)-1;
+                    await producer.setMaxSpatialLayer(layerCount);
+                }
             } else {
                 console.log(`Wait for audio producer`);
+                params.codecOptions = {
+                    opusDtx: true,
+                    opusPtime: 10,
+                    opusFec: true,
+                    opusStereo: false,
+                };
                 params.encodings = [
                     {
                         dtx: true,
@@ -823,7 +841,8 @@ export const WebRTCProvider = (props: { children: React.ReactNode }) => {
         if (!camera) {
             return;
         }
-        const promise = transmitStream(`camera`, camera);
+        const useSimulcast = isTeacher;
+        const promise = transmitStream(`camera`, camera, useSimulcast);
         return () => {
             promise.then((producers) => producers.forEach(producer => {
                 if (producer) {
