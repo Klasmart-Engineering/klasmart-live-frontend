@@ -1,6 +1,8 @@
 import { ClassType } from "../../../store/actions";
 import { LIVE_LINK, LocalSessionContext } from "../../providers/providers";
-import { materialActiveIndexState, studyRecommandUrlState, showEndStudyState } from "../../states/layoutAtoms";
+import {
+    materialActiveIndexState, showEndStudyState, studyRecommandUrlState,
+} from "../../states/layoutAtoms";
 import { Whiteboard } from "../../whiteboard/components/Whiteboard";
 import { MUTATION_REWARD_TROPHY } from "../utils/graphql";
 import PreviewLessonPlan from "./previewLessonPlan";
@@ -17,8 +19,8 @@ import clsx from "clsx";
 import React, {
     useContext, useEffect, useRef, useState,
 } from "react";
-import { useRecoilState } from "recoil";
 import { useIntl } from "react-intl";
+import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
     arrowButton:{
@@ -76,7 +78,11 @@ const useStyles = makeStyles((theme: Theme) => ({
         alignItems: `center`,
         justifyContent: `center`,
         display: `flex`,
-        animation: "$showEndStudyButtons 5000ms ease-in-out" 
+        animation: `$showEndStudyButtons 5000ms ease-in-out`,
+    },
+    defaultLink:{
+        textDecoration: `none`,
+        color: `inherit`,
     },
     largeButton:{
         margin: `0 3em`,
@@ -106,15 +112,15 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     "@keyframes showEndStudyButtons": {
         "0%": {
-          opacity: 0,
+            opacity: 0,
         },
         "50%": {
             opacity: 0,
         },
         "100%": {
-          opacity: 1,
-        }
-      }
+            opacity: 1,
+        },
+    },
 }));
 
 export function ClassContent () {
@@ -124,7 +130,7 @@ export function ClassContent () {
 
     const classes = useStyles();
     const intl = useIntl();
-    
+
     const iframeRef = useRef<HTMLIFrameElement>(null);
     const [ materialActiveIndex, setMaterialActiveIndex ] = useRecoilState(materialActiveIndexState);
     const [ studyRecommandUrl, setStudyRecommandUrl ] = useRecoilState(studyRecommandUrlState);
@@ -135,6 +141,7 @@ export function ClassContent () {
     const rootDivRef = useRef<HTMLDivElement>(null);
     const [ squareSize, setSquareSize ] = useState<number>(0);
     const forStudent = classtype === ClassType.STUDY || !isTeacher;
+    const HUB_ENDPOINT = process.env.ENDPOINT_HUB;
 
     const [ rewardTrophyMutation, { loading: loadingTrophy } ] = useMutation(MUTATION_REWARD_TROPHY, {
         context: {
@@ -152,11 +159,6 @@ export function ClassContent () {
         if(materialActiveIndex === materials.length - 1){
             setShowEndStudy(true);
         }
-    };
-
-    const handleExit = () => {
-        window.open(`about:blank`, `_self`);
-        window.close();
     };
 
     useEffect(() => {
@@ -198,15 +200,19 @@ export function ClassContent () {
                 item
                 xs>
                 {showEndStudy ?
-                    <div className={classes.centeredContent} >
-                        <LargeButton
-                            icon={<ExitIcon size="5em" />}
-                            label={intl.formatMessage({
-                                id: `end_study_exit`,
-                            })}
-                            onClick={()=> handleExit()}/>
-                            
-                        {/* TODO : Bonus content 
+                    <div className={classes.centeredContent}>
+                        <a
+                            href={HUB_ENDPOINT}
+                            className={classes.defaultLink}>
+                            <LargeButton
+                                icon={<ExitIcon size="5em" />}
+                                label={intl.formatMessage({
+                                    id: `end_study_exit`,
+                                })}
+                            />
+                        </a>
+
+                        {/* TODO : Bonus content
                             <LargeButton
                             icon={<BonusContentIcon size="5em" />}
                             variant="yellow"
