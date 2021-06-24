@@ -34,9 +34,7 @@ import React, {
     useContext, useEffect, useState,
 } from "react";
 import { FormattedMessage } from "react-intl";
-import { getOrganizationBranding } from "../components/utils/utils";
-import { ORGANIZATION_BRANDING_QUERY } from "../components/utils/graphql";
-import { useQuery } from "@apollo/client";
+import { getOrganizationBranding, BrandingType } from "../components/utils/utils";
 
 const config = require(`../../../package.json`);
 
@@ -117,7 +115,7 @@ export default function Join (): JSX.Element {
     const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
 
     const {
-        classtype, name, isTeacher,
+        classtype, name, isTeacher, org_id
     } = useContext(LocalSessionContext);
 
     const [ dialogOpen, setDialogOpen ] = useState<boolean>(false);
@@ -130,18 +128,29 @@ export default function Join (): JSX.Element {
     const [ audioDeviceId, setAudioDeviceId ] = useState<string>(``);
     const [ videoDeviceId, setVideoDeviceId ] = useState<string>(``);
     const [ stream, setStream ] = useState<MediaStream>();
+    const [ loading, setLoading ] = useState(true);
+    const [ branding, setBranding ] = useState<BrandingType|undefined>(undefined);
+    const logo = branding?.iconImageURL || KidsLoopLogoSvg;
 
-    /*
-    const { refetch } = useQuery(ORGANIZATION_BRANDING_QUERY, { variables: { organization_id: "a556a3a0-dc86-45de-8eca-2d7b6a80d1ca" }});
-    const getOrganizationBrandingApollo = async () => {
-        const { data } = await refetch();
-    }
-    */
+    const handleOrganizationBranding = async () => {
+        try {
+            setLoading(true)
+            const dataBranding = await getOrganizationBranding(org_id);
+            setBranding(dataBranding);
+            setLoading(false)
+        } catch (e) {
+           console.log(e)
+           setLoading(false)
+        }
+
+        // TODO : Remove before deploy
+        setBranding({"iconImageURL" : 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/736px-Google_2015_logo.svg.png', "primaryColor" : "cd657b"});
+    };
    
-    useEffect(() => {
-         getOrganizationBranding()
-        // getOrganizationBrandingApollo();
 
+    useEffect(() => {
+        handleOrganizationBranding()
+        
         if (!navigator.mediaDevices) { return; }
 
         const getMediaPermissions = async () => {
@@ -261,6 +270,16 @@ export default function Join (): JSX.Element {
         }
     }, [ videoDeviceId, audioDeviceId ]);
 
+
+    if (loading) { 
+        return <Grid
+        container
+        alignItems="center"
+        style={{
+            height: `100%`,
+        }}><Loading messageId="loading" /></Grid>; 
+    }
+
     return (
         <div className={clsx(classes.root, {
             [classes.rootTeacher]: isTeacher,
@@ -280,7 +299,7 @@ export default function Join (): JSX.Element {
                             name,
                         }} />
                 </Typography>
-                <div className={classes.headerBg}></div>
+                <div className={classes.headerBg} style={{background: branding && `#${branding?.primaryColor}`}}></div>
             </div>
             <Grid
                 container
@@ -323,7 +342,7 @@ export default function Join (): JSX.Element {
                                         alignItems="center"
                                     >
                                         <Grid item>
-                                            <KidsLoopLogo />
+                                            <ClassTypeLogo />
                                         </Grid>
                                     </Grid>
                                     <JoinRoomForm
@@ -345,7 +364,7 @@ export default function Join (): JSX.Element {
                         </CardContent>
                     </Card>
                     <div className={classes.footer}>
-                        <img src={KidsLoopLogoSvg} />
+                        <img src={logo} />
                     </div>
                 </Container>
             </Grid>
@@ -416,7 +435,7 @@ function CameraPreviewFallback ({ permissionError }: { permissionError: boolean 
     );
 }
 
-function KidsLoopLogo (): JSX.Element {
+function ClassTypeLogo (): JSX.Element {
     const { logo } = useStyles();
     const { classtype, isTeacher } = useContext(LocalSessionContext);
     const IMG_HEIGHT = `64px`;
