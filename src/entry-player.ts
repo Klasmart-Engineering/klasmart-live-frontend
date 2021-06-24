@@ -10,7 +10,7 @@ enum YoutubePlayerState {
     BUFFERING,
     CUED,
 }
-const youtubePlayers = new Map<string, {ready: boolean; player: any; initInfo?: any }>();
+const youtubePlayers = new Map<string, {ready: boolean; player?: any; initInfo?: any }>();
 const rrwebPlayer: Replayer = new Replayer([], {
     mouseTail: false,
     liveMode: true,
@@ -30,12 +30,12 @@ rrwebPlayer.on(`custom-event`, (event: any) => {
     }
     const { tag, payload } = event.data;
     if(tag === `YTPlayerStateChange`) {
-        const youtubePlayer = youtubePlayers.get(payload.id);
-        if (!youtubePlayer) {
-            return;
-        }
+        const youtubePlayer = youtubePlayers.get(payload.id) ?? {
+            ready: false,
+        };
         if (!youtubePlayer.ready) {
             youtubePlayer.initInfo = payload.playerInfo;
+            youtubePlayers.set(payload.id, youtubePlayer);
             return;
         }
         updateYoutubePlayerInfo(youtubePlayer.player, payload.playerInfo);
@@ -62,7 +62,6 @@ window.postMessage(`ready`, `*`);
 
 function onFullSnapshotRebuilded () {
     console.log(`onFullSnapshotRebuilded`);
-    youtubePlayers.clear();
     const replayedIframe = window.document.getElementsByTagName(`iframe`)[0];
     const replayedWindow = replayedIframe.contentWindow;
 
@@ -71,12 +70,13 @@ function onFullSnapshotRebuilded () {
             return;
         }
         const onPlayerReady = (id: string) => (event: any) => {
-            console.log(`onPlayerReady`, `id`, id, `event`, event);
             const youtubePlayer = youtubePlayers.get(id);
-            if(youtubePlayer) {
-                youtubePlayer.ready = true;
+            console.log(`onPlayerReady`, `id`, id, `event`, event, `player`, youtubePlayer);
+            if(!youtubePlayer || !youtubePlayer.player) {
+                return;
             }
-            if(youtubePlayer?.initInfo) {
+            youtubePlayer.ready = true;
+            if(youtubePlayer.initInfo) {
                 updateYoutubePlayerInfo(youtubePlayer.player, youtubePlayer.initInfo);
             }
         };
@@ -89,14 +89,14 @@ function onFullSnapshotRebuilded () {
                 }
                 (iframe as HTMLIFrameElement).setAttribute(`src`, decodeURIComponent(src));
                 const id = (iframe as HTMLIFrameElement).getAttribute(`id`) ?? ``;
-                const youtubePlayer = {
-                    player: new (replayedWindow as any).YT.Player(id, {
-                        events: {
-                            onReady: onPlayerReady(id),
-                        },
-                    }),
+                const youtubePlayer = youtubePlayers.get(id) ?? {
                     ready: false,
                 };
+                youtubePlayer.player =  new (replayedWindow as any).YT.Player(id, {
+                    events: {
+                        onReady: onPlayerReady(id),
+                    },
+                }),
                 youtubePlayers.set(id, youtubePlayer);
                 console.log(`replayed page got reference to YT player`, youtubePlayer, `id`, id);
             } catch {
