@@ -52,17 +52,18 @@ export function RecordedIframe(props: Props): JSX.Element {
     const { roomId, token, classType } = useSessionContext();
     const drawerOpen = useSelector((state: State) => state.control.drawerOpen);
     const { contentHref, setStreamId } = props;
-    const [sendStreamId] = useMutation(SET_STREAMID, {context: {target: SESSION_LINK_LIVE}});
+    const [sendStreamId] = useMutation(SET_STREAMID, { context: { target: SESSION_LINK_LIVE } });
+
+    const isPdfContent = contentHref.endsWith(`.pdf`);
 
     const [transformScale, setTransformScale] = useState<number>(1);
     const [openDialog, setOpenDialog] = useState(true);
     const [seconds, setSeconds] = useState(MAX_LOADING_COUNT);
     const [loadStatus, setLoadStatus] = useState(LoadStatus.Loading);
-    const [intervalId, setIntervalId] = useState<number>();
+    const [intervalId] = useState<number>();
     const [contentWidth, setContentWidth] = useState(1600);
     const [contentHeight, setContentHeight] = useState(1400);
     const [enableResize, setEnableResize] = useState(true);
-    const [stylesLoaded] = useState(false);
 
     const recorderEndpoint = useHttpEndpoint("live");
 
@@ -114,11 +115,11 @@ export function RecordedIframe(props: Props): JSX.Element {
     const scale = (innerWidth: number, innerHeight: number) => {
         let currentWidth: number = size.width, currentHeight: number = size.height;
 
-            const iRef = window.document.getElementById(`activity-view-container`) as HTMLIFrameElement;
-            if (iRef) {
-                currentWidth = iRef.getBoundingClientRect().width;
-                currentHeight = iRef.getBoundingClientRect().height;
-            }
+        const iRef = window.document.getElementById(`main-container`) as HTMLIFrameElement;
+        if (iRef) {
+            currentWidth = iRef.getBoundingClientRect().width;
+            currentHeight = iRef.getBoundingClientRect().height;
+        }
 
         const shrinkRatioX = (currentWidth / innerWidth) > 1 ? 1 : currentWidth / innerWidth;
         const shrinkRatioY = (currentHeight / innerHeight) > 1 ? 1 : currentHeight / innerHeight;
@@ -128,9 +129,9 @@ export function RecordedIframe(props: Props): JSX.Element {
 
     const scaleWhiteboard = () => {
         const recordediframe = window.document.getElementById(`recordediframe`) as HTMLIFrameElement;
-        const recordediframeStyles = recordediframe.getAttribute(`style`);
+        const recordediframeStyles = recordediframe?.getAttribute(`style`);
         const whiteboard = window.document.getElementsByClassName(`canvas-container`)[0];
-        if (recordediframeStyles) {
+        if (recordediframeStyles && whiteboard) {
             whiteboard.setAttribute(`style`, recordediframeStyles);
         }
     };
@@ -143,56 +144,50 @@ export function RecordedIframe(props: Props): JSX.Element {
         const contentDoc = iframeElement.contentDocument
         if (!contentWindow || !contentDoc) { return; }
 
-        // Custom styles when needed
-        if(!stylesLoaded){
-            var style = document.createElement('style');
-            style.innerHTML = `
-            img{max-width: 100%; height: auto; object-fit:contain}
-            .h5p-single-choice-set{
-                max-height: 300px !important;
-            }
-            .h5p-alternative-inner{
-                height: auto !important;
-            }
-            .h5p-column .h5p-dragquestion > .h5p-question-content > .h5p-inner {
-                width: 100% !important;
-            }`;
-            contentDoc.head.appendChild(style);
-        }
-
         // IP Protection: Contents should not be able to be downloaded by right-clicking.
         const blockRightClick = (e: MouseEvent) => { e.preventDefault() }
         contentWindow.addEventListener("contextmenu", (e) => blockRightClick(e), false);
         const h5pDivCollection = contentDoc.body.getElementsByClassName("h5p-content");
         const h5pTypeColumn = contentDoc.body.getElementsByClassName("h5p-column").length;
-        const h5pTypeAccordion = contentDoc.body.getElementsByClassName(`h5p-accordion`).length;
+
+        if (h5pTypeColumn || isPdfContent) {
+            setEnableResize(false)
+        } else {
+            setEnableResize(true)
+        }
 
         if (h5pDivCollection.length > 0) {
-            if (h5pTypeColumn || h5pTypeAccordion) {
-                setEnableResize(false);
-                h5pDivCollection[0].setAttribute(`style`, `width: 100% !important!;`);
+            const h5pContainer = h5pDivCollection[0] as HTMLDivElement;
+
+            if (h5pTypeColumn) {
+                h5pContainer.setAttribute("style", "width: 100% !important;");
             } else {
-                setEnableResize(true);
-                h5pDivCollection[0].setAttribute(`style`, `width: auto !important;`);
+                h5pContainer.setAttribute("style", "width: auto !important;");
             }
 
-            const h5pContainer = h5pDivCollection[0] as HTMLDivElement;
-            h5pContainer?.setAttribute("data-iframe-height", "");
+            h5pContainer.setAttribute("data-iframe-height", "");
             const h5pWidth = h5pContainer.getBoundingClientRect().width;
             const h5pHeight = h5pContainer.getBoundingClientRect().height;
             setContentWidth(h5pWidth);
             setContentHeight(h5pHeight);
             scale(h5pWidth, h5pHeight);
-        } else if (contentDoc.body.getElementsByTagName(`img`).length) {
-            const imageWidth = contentDoc.body.getElementsByTagName(`img`)[0].getBoundingClientRect().width;
-            const imageHeight = contentDoc.body.getElementsByTagName(`img`)[0].getBoundingClientRect().height;
-            if (imageWidth && imageHeight) {
-                setContentWidth(imageWidth);
-                setContentHeight(imageHeight);
-            }
-        } else {
-            setContentWidth(1024);
-            setContentHeight(1024);
+        }
+
+        // Listen to acvitity clicks (that change the height of h5p)
+        contentDoc.addEventListener('mouseup', function () {
+            setTimeout(function () {
+                const h5pContainer = h5pDivCollection[0] as HTMLDivElement;
+                h5pContainer.setAttribute("data-iframe-height", "");
+                const h5pWidth = h5pContainer.getBoundingClientRect().width;
+                const h5pHeight = h5pContainer.getBoundingClientRect().height;
+
+                setContentWidth(h5pWidth);
+                setContentHeight(h5pHeight);
+            }, 2000);
+        }, false);
+
+        if (!isPdfContent) {
+            injectIframeScript(iframeElement, "h5presize");
         }
     }
 
@@ -220,9 +215,9 @@ export function RecordedIframe(props: Props): JSX.Element {
                 !iRef.contentWindow ||
                 (iRef.contentWindow as any).kidslooplive ||
                 !iRef.contentDocument) { return; }
-        
+
             injectIframeScript(iRef, "record");
-        } catch(error) {
+        } catch (error) {
             console.error(error);
         }
     }
@@ -297,6 +292,8 @@ export function RecordedIframe(props: Props): JSX.Element {
                 src={contentHref.endsWith(`.pdf`) ? `/pdfviewer.html?pdfSrc=${contentHref}` : contentHrefWithToken}
                 ref={iframeRef}
                 allow="microphone"
+                data-h5p-width={contentWidth}
+                data-h5p-height={contentWidth}
                 style={{
                     width: enableResize ? contentWidth : '100%',
                     height: enableResize ? contentHeight : '100%',
@@ -305,7 +302,7 @@ export function RecordedIframe(props: Props): JSX.Element {
                     transform: enableResize ? `scale(${transformScale})` : `scale(1)`,
                     minWidth: '100%',
                 }}
-                onLoad={() => { setLoadStatus(LoadStatus.Finished); window.dispatchEvent(new Event(`resize`));}}
+                onLoad={() => { setLoadStatus(LoadStatus.Finished); window.dispatchEvent(new Event(`resize`)); }}
             />
         </React.Fragment>
     );
