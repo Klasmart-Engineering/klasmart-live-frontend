@@ -86,6 +86,7 @@ module.exports = {
   plugins: [
     new webpack.EnvironmentPlugin({
       "CALLSTATS_ENABLE": "TRUE",
+      "ENDPOINT_API": "https://api.kidsloop.id",
       "ENDPOINT_HUB": "https://hub.kidsloop.id",
       "ENDPOINT_CMS": "https://cms.kidsloop.id",
       "ENDPOINT_PDF": "https://live.kidsloop.net",
