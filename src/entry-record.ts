@@ -46,24 +46,34 @@ if (!(window as any).kidslooplive) {
 
     record({
         checkoutEveryNms: 1000 * 10,
-        emit: (e, c) => {
+        emit: (e, isCheckout) => {
             // TODO: Should client or server keep track of the
             // number of events emitted since last keyframe?
-            if (c) { eventsSinceKeyframe = 0; }
+            if (isCheckout) {
+                console.log(`checkout event`, e);
+                eventsSinceKeyframe = 0;
+                youtubePlayers.forEach((player, id) => {
+                    record.addCustomEvent(`stateChange`, {
+                        id,
+                        playerInfo: player.playerInfo,
+                    });
+                });
+            }
 
             const eventData = JSON.stringify({
-                checkout: c || false,
+                checkout: isCheckout || false,
                 event: e,
                 index: eventsSinceKeyframe++,
             });
 
-            eventRecorder.recordEvent(eventStream, eventData, c || false);
+            eventRecorder.recordEvent(eventStream, eventData, isCheckout || false);
             eventRecorder.uploadEvents();
         },
+
         allowIframe,
     });
 }
-
+const youtubePlayers = new Map<string, any>();
 if (!(window as any).YT) {
     const tag = document.createElement(`script`);
     tag.src = `https://www.youtube.com/iframe_api`;
@@ -76,6 +86,7 @@ if (!(window as any).YT) {
 }
 
 function onYTAPIReady () {
+    youtubePlayers.clear();
     const onPlayerReady = (id: string) => (event: any) => {
         console.log(`onPlayerReady`, `id`, id, `event`, event);
     };
@@ -95,13 +106,14 @@ function onYTAPIReady () {
             }
             (iframe as HTMLIFrameElement).setAttribute(`src`, decodeURIComponent(src));
             const id = (iframe as HTMLIFrameElement).getAttribute(`id`) ?? ``;
-            const player = new (window as any).YT.Player(id, {
+            const youtubePlayer = new (window as any).YT.Player(id, {
                 events: {
                     onReady: onPlayerReady(id),
                     onStateChange: onPlayerStateChange(id),
                 },
             });
-            console.log(`recorded page got reference to YT player`, player, `id`, id);
+            youtubePlayers.set(id, youtubePlayer);
+            console.log(`recorded page got reference to YT player`, youtubePlayer, `id`, id);
         } catch {
             continue;
         }

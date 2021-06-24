@@ -80,6 +80,9 @@ function onFullSnapshotRebuilded () {
         if (!replayedWindow?.document) {
             return;
         }
+        const onPlayerReady = (id: string) => (event: any) => {
+            console.log(`onPlayerReady`, `id`, id, `event`, event);
+        };
         for(const iframe of replayedWindow?.document.getElementsByTagName(`iframe`)) {
             try {
                 const src = (iframe as HTMLIFrameElement).getAttribute(`src`) ?? ``;
@@ -89,7 +92,11 @@ function onFullSnapshotRebuilded () {
                 }
                 (iframe as HTMLIFrameElement).setAttribute(`src`, decodeURIComponent(src));
                 const id = (iframe as HTMLIFrameElement).getAttribute(`id`) ?? ``;
-                const youtubePlayer = new (replayedWindow as any).YT.Player(id, {});
+                const youtubePlayer = new (replayedWindow as any).YT.Player(id, {
+                    events: {
+                        onReady: onPlayerReady(id),
+                    },
+                });
                 youtubePlayers.set(id, youtubePlayer);
                 console.log(`replayed page got reference to YT player`, youtubePlayer, `id`, id);
             } catch {
