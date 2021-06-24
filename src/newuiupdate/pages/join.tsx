@@ -234,15 +234,18 @@ export default function Join (): JSX.Element {
     }
 
     function getCamStream (audioDeviceId: string, videoDeviceId: string) {
-        const videoConstraints = {
+        const videoConstraints: MediaTrackConstraints = {
             width: {
-                ideal: 640,
+                max: 720,
+                ideal: isTeacher?720:180,
             },
             height: {
-                ideal: 360,
+                max: 540,
+                ideal: isTeacher?405:96,
             },
             frameRate: {
-                max: 24,
+                max: 15,
+                ideal: isTeacher?15:10,
             },
         };
 
