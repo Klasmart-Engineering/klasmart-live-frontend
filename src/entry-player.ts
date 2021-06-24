@@ -1,6 +1,8 @@
 import { Replayer } from 'rrweb';
 // eslint-disable-next-line no-unused-vars
 
+let replayHasStarted = false;
+
 enum YoutubePlayerState {
     ENDED = 0,
     PLAYING,
@@ -8,61 +10,49 @@ enum YoutubePlayerState {
     BUFFERING,
     CUED,
 }
-const youtubePlayers = new Map<string, any>();
-let hasStarted = false;
-const player: Replayer = new Replayer([], {
+const youtubePlayers = new Map<string, {ready: boolean; player: any; initInfo?: any }>();
+const rrwebPlayer: Replayer = new Replayer([], {
     mouseTail: false,
     liveMode: true,
     speed: 1.5,
     UNSAFE_replayCanvas: true,
 });
 
-player.on(`resize`, () => window.parent.postMessage({
-    width: player.iframe.width,
-    height: player.iframe.height,
+rrwebPlayer.on(`resize`, () => window.parent.postMessage({
+    width: rrwebPlayer.iframe.width,
+    height: rrwebPlayer.iframe.height,
 }, `*`));
 
-player.on(`custom-event`, (event: any) => {
+rrwebPlayer.on(`custom-event`, (event: any) => {
     console.log(`received custom event`, event);
     if(!event || !event.data){
         return;
     }
     const { tag, payload } = event.data;
-    const youtubePlayer = youtubePlayers.get(payload.id);
-    if (!youtubePlayer) {
-        return;
-    }
-    if(tag === `stateChange`) {
-        const info = payload.playerInfo;
-        switch(info.playerState){
-        case YoutubePlayerState.ENDED:
-            youtubePlayer.stopVideo();
-            break;
-        case YoutubePlayerState.PLAYING:
-            youtubePlayer.seekTo(info.currentTime);
-            youtubePlayer.playVideo();
-            break;
-        case YoutubePlayerState.PAUSED:
-            youtubePlayer.pauseVideo();
-            break;
-        default:
-            break;
+    if(tag === `YTPlayerStateChange`) {
+        const youtubePlayer = youtubePlayers.get(payload.id);
+        if (!youtubePlayer) {
+            return;
         }
+        if (!youtubePlayer.ready) {
+            youtubePlayer.initInfo = payload.playerInfo;
+            return;
+        }
+        updateYoutubePlayerInfo(youtubePlayer.player, payload.playerInfo);
     }
 });
 
-player.on(`fullsnapshot-rebuilded`, () => onFullSnapshotRebuilded());
+rrwebPlayer.on(`fullsnapshot-rebuilded`, () => onFullSnapshotRebuilded());
 
 window.addEventListener(`message`, ({ data }) => {
     if (!data || !data.event) { return; }
     try {
         const event = JSON.parse(data.event);
-        // console.log(event);
-        if (!hasStarted) {
-            player.startLive(event.timestamp);
-            hasStarted = true;
+        if (!replayHasStarted) {
+            rrwebPlayer.startLive(event.timestamp);
+            replayHasStarted = true;
         }
-        player.addEvent(event);
+        rrwebPlayer.addEvent(event);
     } catch (e) {
         console.error(e);
     }
@@ -82,6 +72,13 @@ function onFullSnapshotRebuilded () {
         }
         const onPlayerReady = (id: string) => (event: any) => {
             console.log(`onPlayerReady`, `id`, id, `event`, event);
+            const youtubePlayer = youtubePlayers.get(id);
+            if(youtubePlayer) {
+                youtubePlayer.ready = true;
+            }
+            if(youtubePlayer?.initInfo) {
+                updateYoutubePlayerInfo(youtubePlayer.player, youtubePlayer.initInfo);
+            }
         };
         for(const iframe of replayedWindow?.document.getElementsByTagName(`iframe`)) {
             try {
@@ -92,11 +89,14 @@ function onFullSnapshotRebuilded () {
                 }
                 (iframe as HTMLIFrameElement).setAttribute(`src`, decodeURIComponent(src));
                 const id = (iframe as HTMLIFrameElement).getAttribute(`id`) ?? ``;
-                const youtubePlayer = new (replayedWindow as any).YT.Player(id, {
-                    events: {
-                        onReady: onPlayerReady(id),
-                    },
-                });
+                const youtubePlayer = {
+                    player: new (replayedWindow as any).YT.Player(id, {
+                        events: {
+                            onReady: onPlayerReady(id),
+                        },
+                    }),
+                    ready: false,
+                };
                 youtubePlayers.set(id, youtubePlayer);
                 console.log(`replayed page got reference to YT player`, youtubePlayer, `id`, id);
             } catch {
@@ -116,5 +116,21 @@ function onFullSnapshotRebuilded () {
         head?.appendChild(tag);
     } else {
         onYTAPIReady();
+    }
+}
+function updateYoutubePlayerInfo (player: any, info: any) {
+    player.seekTo(info.currentTime);
+    switch(info.playerState){
+    case YoutubePlayerState.ENDED:
+        player.stopVideo();
+        break;
+    case YoutubePlayerState.PLAYING:
+        player.playVideo();
+        break;
+    case YoutubePlayerState.PAUSED:
+        player.pauseVideo();
+        break;
+    default:
+        break;
     }
 }

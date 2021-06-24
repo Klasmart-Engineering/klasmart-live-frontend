@@ -53,7 +53,7 @@ if (!(window as any).kidslooplive) {
                 console.log(`checkout event`, e);
                 eventsSinceKeyframe = 0;
                 youtubePlayers.forEach((player, id) => {
-                    record.addCustomEvent(`stateChange`, {
+                    record.addCustomEvent(`YTPlayerStateChange`, {
                         id,
                         playerInfo: player.playerInfo,
                     });
@@ -69,7 +69,6 @@ if (!(window as any).kidslooplive) {
             eventRecorder.recordEvent(eventStream, eventData, isCheckout || false);
             eventRecorder.uploadEvents();
         },
-
         allowIframe,
     });
 }
@@ -92,7 +91,7 @@ function onYTAPIReady () {
     };
     const onPlayerStateChange = (id: string) => (event: any) => {
         console.log(`onPlayerStateChange`, `id`, id, `event`, event);
-        record.addCustomEvent(`stateChange`, {
+        record.addCustomEvent(`YTPlayerStateChange`, {
             id,
             playerInfo: event.target.playerInfo,
         });
