@@ -40,7 +40,7 @@ export function ResizedIframe(props: Props): JSX.Element {
     const size = useWindowSize();
 
     useEffect(() => {
-        if(enableResize){
+        if (enableResize) {
             scale(contentWidth, contentHeight);
         }
     }, [size])
@@ -48,17 +48,17 @@ export function ResizedIframe(props: Props): JSX.Element {
     useEffect(() => {
         const iRef = window.document.getElementById("resizediframe") as HTMLIFrameElement;
         iRef.addEventListener("load", onLoad);
-        return () =>  iRef.removeEventListener("resize", onLoad);
+        return () => iRef.removeEventListener("resize", onLoad);
     }, [contentHref]);
 
     const scale = (innerWidth: number, innerHeight: number) => {
         let currentWidth: number = size.width, currentHeight: number = size.height;
 
-            const iRef = window.document.getElementById("classes-content-container") as HTMLIFrameElement;
-            if (iRef) {
-                currentWidth = iRef.getBoundingClientRect().width;
-                currentHeight = iRef.getBoundingClientRect().height;
-            }
+        const iRef = window.document.getElementById("classes-content-container") as HTMLIFrameElement;
+        if (iRef) {
+            currentWidth = iRef.getBoundingClientRect().width;
+            currentHeight = iRef.getBoundingClientRect().height;
+        }
 
         const shrinkRatioX = (currentWidth / innerWidth) > 1 ? 1 : currentWidth / innerWidth;
         const shrinkRatioY = (currentHeight / innerHeight) > 1 ? 1 : currentHeight / innerHeight;
@@ -73,7 +73,7 @@ export function ResizedIframe(props: Props): JSX.Element {
         const contentWindow = iframeElement.contentWindow
         const contentDoc = iframeElement.contentDocument
         if (!contentWindow || !contentDoc) { return; }
-        
+
         // IP Protection: Contents should not be able to be downloaded by right-clicking.
         const blockRightClick = (e: MouseEvent) => { e.preventDefault() }
         contentWindow.addEventListener("contextmenu", (e) => blockRightClick(e), false);
@@ -98,14 +98,14 @@ export function ResizedIframe(props: Props): JSX.Element {
             h5pContainer.setAttribute("data-iframe-height", "");
             const h5pWidth = h5pContainer.getBoundingClientRect().width;
             const h5pHeight = h5pContainer.getBoundingClientRect().height;
-             setContentWidth(h5pWidth);
-             setContentHeight(h5pHeight);
-             scale(h5pWidth, h5pHeight);
+            setContentWidth(h5pWidth);
+            setContentHeight(h5pHeight);
+            scale(h5pWidth, h5pHeight);
         }
 
         // Listen to acvitity clicks (that change the height of h5p)
-        contentDoc.addEventListener('mouseup', function(){
-            setTimeout(function(){ 
+        contentDoc.addEventListener('mouseup', function () {
+            setTimeout(function () {
                 const h5pContainer = h5pDivCollection[0] as HTMLDivElement;
                 h5pContainer.setAttribute("data-iframe-height", "");
                 const h5pWidth = h5pContainer.getBoundingClientRect().width;
@@ -115,7 +115,7 @@ export function ResizedIframe(props: Props): JSX.Element {
                 setContentHeight(h5pHeight);
             }, 2000);
         }, false);
-        
+
         if (!isPdfContent) {
             injectIframeScript(iframeElement, "h5presize");
         }
