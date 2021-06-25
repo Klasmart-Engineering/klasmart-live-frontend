@@ -140,6 +140,9 @@ const useCordovaInitialize = (backExitApplication?: boolean, callbackBackButton?
     useEffect(() => {
         if (skipInitEffects) return;
 
+        const plugins = (window as any).plugins;
+        if (!plugins) return;
+
         try {
             if (keepAwake) {
                 (window as any).plugins.insomnia.keepAwake();
