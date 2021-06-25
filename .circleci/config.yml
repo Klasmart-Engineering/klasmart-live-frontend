@@ -38,5 +38,6 @@ workflows:
       - build-and-test:
           filters:
             branches:
-              only: cordova/alpha
+              only: 
+              - cordova/alpha
 
