@@ -58,7 +58,7 @@ window.addEventListener(`message`, ({ data }) => {
     }
 });
 (window as any).PLAYER_READY = true;
-window.postMessage(`ready`, `*`);
+window.parent.postMessage(`ready`, `*`);
 
 function onFullSnapshotRebuilded () {
     console.log(`onFullSnapshotRebuilded`);

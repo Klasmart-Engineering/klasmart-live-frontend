@@ -49,9 +49,9 @@ if (!(window as any).kidslooplive) {
         emit: (e, isCheckout) => {
             // TODO: Should client or server keep track of the
             // number of events emitted since last keyframe?
+            console.log(`event`, e, `isCheckout`, isCheckout);
             if (isCheckout) {
                 eventsSinceKeyframe = 0;
-                console.log(`checkout event`, e);
             }
 
             const eventData = JSON.stringify({
@@ -70,8 +70,7 @@ if (!(window as any).kidslooplive) {
 const youtubePlayers = new Map<string, any>();
 
 window.addEventListener(`message`, ({ data }) => {
-    if (!data || data.type !== `USER_JOIN_LEAVE`) { return; }
-    console.log(`onMessage`, data);
+    if (!data || data.type !== `USER_JOIN`) { return; }
     youtubePlayers.forEach((player, id) => {
         record.addCustomEvent(`YTPlayerStateChange`, {
             id,
