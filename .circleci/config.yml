@@ -1,0 +1,33 @@
+version: 2.1
+orbs:
+  node: circleci/node@4.1
+jobs:
+  build-and-test:  
+    environment:
+      - DISABLE_BROWSER_GUIDE: 1
+      - DISABLE_SCREEN_SHARE: 1
+      - USE_TEST_TOKEN: 1
+    docker:
+      - image: cimg/node:15.1
+    steps:
+      - checkout
+      - run:
+              name: clean folders
+              command: rm -rf ./www ./platforms/android
+      - node/install-packages
+      - run:
+              name: package with webpack
+              command: npm run build:app
+      - run:
+              name: cordova run
+              command: cordova prepare android
+
+      - run:
+              name: prepare apk
+              command: cordova build android -- --buildConfig
+
+workflows:
+  sample: 
+    jobs:
+      - build-and-test
+
