@@ -12,12 +12,6 @@ jobs:
     steps:
       - checkout
       - run:
-              name: fix absurd npm dependency
-              command: |
-                git clone https://bitbucket.org/calmisland/rrweb-snapshot.git
-                # now git ls-remote works
-                git ls-remote https://bitbucket.org/calmisland/rrweb-snapshot.git
-      - run:
               name: clean folders
               command: rm -rf ./www ./platforms/android
       - node/install-packages
