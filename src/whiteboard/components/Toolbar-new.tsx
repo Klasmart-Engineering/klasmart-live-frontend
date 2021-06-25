@@ -17,6 +17,7 @@ import { useToolbarContext } from "kidsloop-canvas/lib/components/toolbar/toolba
 import { useSynchronizedState } from "../context-providers/SynchronizedStateProvider";
 
 import BlackCrayon from "../../assets/img/canvas/crayons/black.svg";
+import WhiteCrayon from "../../assets/img/canvas/crayons/white.svg";
 import GrayCrayon from "../../assets/img/canvas/crayons/gray.svg";
 import BlueCrayon from "../../assets/img/canvas/crayons/blue.svg";
 import GreenCrayon from "../../assets/img/canvas/crayons/green.svg";
@@ -33,7 +34,7 @@ import { useSessionContext } from "../../context-provider/session-context";
 
 const WhiteboardColors = [
     { color: "#000000", crayon: BlackCrayon }, // black
-    { color: "#ffffff", crayon: BlackCrayon }, // white
+    { color: "#ffffff", crayon: WhiteCrayon }, // white
     { color: "#9c9ca5", crayon: GrayCrayon }, // gray
     { color: "#824949", crayon: BrownCrayon }, // brown
     { color: "#fbe739", crayon: YellowCrayon }, // yellow
