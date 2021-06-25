@@ -123,11 +123,11 @@ const DefaultRegions: Region[] = [
         name: "Live Test",
         development: true,
         services: {
-            auth: "https://auth-live-test.kidsloop.net",
-            live: "https://live-live-test.kidsloop.net",
-            cms: "https://kl2-live-test.kidsloop.net",
-            sfu: "https://live-live-test.kidsloop.net/sfu",
-            user: "https://api.alpha.kidsloop.net/user/",
+            auth: "http://auth-live-test.kidsloop.net",
+            live: "http://live-live-test.kidsloop.net",
+            cms: "http://kl2-live-test.kidsloop.net",
+            sfu: "http://live-live-test.kidsloop.net/sfu",
+            user: "http://api-live-test.kidsloop.net/user/",
             privacy: "https://kidsloop.net/en/policies/privacy-notice"
         }
     },
