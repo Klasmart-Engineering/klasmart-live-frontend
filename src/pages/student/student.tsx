@@ -133,7 +133,7 @@ export function Student(): JSX.Element {
                             right: 0,
                             zIndex: 1,
                             // display: "block",
-                            backgroundImage: `url(${content.contentId})`,
+                            backgroundImage: `url(${contentHref})`,
                             filter: "blur(8px)",
                             WebkitFilter: "blur(8px)",
                             backgroundPosition: "center",
@@ -143,7 +143,7 @@ export function Student(): JSX.Element {
                         />
                         <img
                             className={classes.imageFrame}
-                            src={content.contentId}
+                            src={contentHref}
                         />
                     </Grid>
                     <WBToolbar />
