@@ -47,13 +47,14 @@ const WhiteboardColors = [
 
 type Props = {
     children?: ReactChild | ReactChildren | null | any;
+    useLocalDisplay?: boolean
 }
 
-export const WBToolbar: FunctionComponent<Props> = ({ children }: Props): JSX.Element => {
+export const WBToolbar: FunctionComponent<Props> = ({ children, useLocalDisplay }: Props): JSX.Element => {
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down('sm'));
 
-    const { state: { display, permissions } } = useSynchronizedState();
+    const { state: { display, localDisplay, permissions } } = useSynchronizedState();
     const { state: { tools }, actions: { selectTool, selectColorByValue, clear } } = useToolbarContext();
 
     const [ selectedColorIndex, setSelectedColorIndex ] = useState<number>(0);

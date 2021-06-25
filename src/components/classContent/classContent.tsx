@@ -50,13 +50,13 @@ export function ClassContentContainer({ materialKey }: {
             }}
         >
             <ClassContent />
-            <WBToolbarContainer />
+            <WBToolbarContainer useLocalDisplay={classtype !== ClassType.LIVE} />
         </Grid>
     )
 }
 
 function ClassContent() {
-    const { classType: classtype, isTeacher, materials } = useSessionContext();
+    const { classType: classtype, isTeacher, materials, sessionId } = useSessionContext();
     const { exitRoom } = useContext(RoomContext);
 
     const theme = useTheme();
@@ -123,7 +123,7 @@ function ClassContent() {
                         height: "100%"
                     }}
                 >
-                    <Whiteboard uniqueId={forStudent ? "student" : "teacher"} />
+                    <Whiteboard uniqueId={forStudent ? "student" : "teacher"} group={classtype !== ClassType.LIVE ? sessionId : undefined} useLocalDisplay={classtype !== ClassType.LIVE} />
                     {currentMaterial.__typename === MaterialTypename.Image ?
                         <ImageFrame material={currentMaterial} /> : 
                             currentMaterial.__typename === MaterialTypename.Video ||

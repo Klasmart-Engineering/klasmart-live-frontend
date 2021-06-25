@@ -15,10 +15,11 @@ type Props = {
     filterGroups?: string[];
     centerHorizontally?: boolean;
     centerVertically?: boolean;
+    useLocalDisplay?: boolean;
 }
 
-export function Whiteboard({ group, width, height, filterUsers, filterGroups, uniqueId, centerHorizontally, centerVertically }: Props): JSX.Element {
-    const { state: { permissions, display } } = useSynchronizedState();
+export function Whiteboard({ group, width, height, filterUsers, filterGroups, uniqueId, centerHorizontally, centerVertically, useLocalDisplay }: Props): JSX.Element {
+    const { state: { permissions, display, localDisplay } } = useSynchronizedState();
 
     const { sessionId } = useSessionContext();
 
@@ -42,7 +43,7 @@ export function Whiteboard({ group, width, height, filterUsers, filterGroups, un
             id="whiteboard-container"
             style={{
                 // zIndex: whiteboard + 1, // need it?
-                display: display ? "block" : "none",
+                display: (useLocalDisplay ? localDisplay : display) ? "block" : "none",
                 position: "absolute",
                 top: 0,
                 bottom: 0,
@@ -61,7 +62,7 @@ export function Whiteboard({ group, width, height, filterUsers, filterGroups, un
                 filterGroups={filterGroups}
                 pixelWidth={1024}
                 pixelHeight={1024}
-                display={display}
+                display={useLocalDisplay ? localDisplay : display}
                 scaleMode={"ScaleToFill"}
                 centerHorizontally={centerHorizontally !== undefined ? centerHorizontally : true}
                 centerVertically={centerVertically !== undefined ? centerVertically : false}

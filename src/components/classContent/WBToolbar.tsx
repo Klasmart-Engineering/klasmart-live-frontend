@@ -21,19 +21,24 @@ import { useSessionContext } from "../../context-provider/session-context";
 export const WB_TOOLBAR_MAX_HEIGHT = 80; // 64 + 16(padding top)
 export const MOBILE_WB_TOOLBAR_MAX_HEIGHT = 46; // 38 + 8(padding top)
 
-export function WBToolbarContainer() {
+export function WBToolbarContainer({ useLocalDisplay } : { useLocalDisplay?: boolean} ) {
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down('sm'));
 
     const { classType: classtype, isTeacher, sessionId } = useSessionContext();
-    const { state: { display, permissions }, actions: { setDisplay, getPermissions, setPermissions } } = useSynchronizedState();
+    const { state: { display, permissions }, actions: { setDisplay, setLocalDisplay, getPermissions, setPermissions } } = useSynchronizedState();
     const enableWB = classtype === ClassType.LIVE ? (!isTeacher ? display && permissions.allowCreateShapes : display) : true;
     const [open, setOpen] = useState(false);
 
     const handleOpenWBToolbar = (e: React.MouseEvent<HTMLButtonElement>) => {
+        if (useLocalDisplay) {
+            setLocalDisplay(true);
+        } else if (classtype !== ClassType.LIVE) {
+            setDisplay(true);
+        }
+
         setOpen(true);
         if (classtype !== ClassType.LIVE) {
-            setDisplay(true);
             const permissions = getPermissions(sessionId);
             const newPermissions = {
                 ...permissions,
@@ -43,9 +48,14 @@ export function WBToolbarContainer() {
         }
     };
     const handleCloseWBToolbar = () => {
+        if (useLocalDisplay) {
+            setLocalDisplay(false);
+        } else if (classtype !== ClassType.LIVE) {
+            setDisplay(false);
+        }
+
         setOpen(false);
         if (classtype !== ClassType.LIVE) {
-            setDisplay(false);
             const permissions = getPermissions(sessionId);
             const newPermissions = {
                 ...permissions,
