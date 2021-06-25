@@ -49,7 +49,6 @@ if (!(window as any).kidslooplive) {
         emit: (e, isCheckout) => {
             // TODO: Should client or server keep track of the
             // number of events emitted since last keyframe?
-            console.log(`event`, e, `isCheckout`, isCheckout);
             if (isCheckout) {
                 eventsSinceKeyframe = 0;
             }

@@ -24,12 +24,41 @@ rrwebPlayer.on(`resize`, () => window.parent.postMessage({
     height: rrwebPlayer.iframe.height,
 }, `*`));
 
-rrwebPlayer.on(`custom-event`, (event: any) => {
+rrwebPlayer.on(`fullsnapshot-rebuilded`, () => onFullSnapshotRebuilded());
+
+window.addEventListener(`message`, ({ data }) => {
+    if (!data || !data.event) { return; }
+    try {
+        const event = JSON.parse(data.event);
+        if (!hasReplayStarted) {
+            rrwebPlayer.startLive();
+            hasReplayStarted = true;
+        }
+        if (event.type === EventType.FullSnapshot) {
+            if(hasReceivedFullSnapshot) {
+                // don't rebuild full snapshot, it makes video appear glitchy
+                return;
+            }
+            hasReceivedFullSnapshot = true;
+        }
+        if (event.type === EventType.Custom ) {
+            // using rrwebPlayer.on('custom-event', handler) has latency issue
+            onCustomEvent(event);
+            return;
+        }
+        rrwebPlayer.addEvent(event);
+    } catch (e) {
+        console.error(e);
+    }
+});
+(window as any).PLAYER_READY = true;
+window.parent.postMessage(`ready`, `*`);
+
+function onCustomEvent (event: any){
     console.log(`received custom event`, event);
     if(!event || !event.data){
         return;
     }
-
     const { tag, payload } = event.data;
     if(tag === `YTPlayerStateChange`) {
         const youtubePlayer = youtubePlayers.get(payload.id) ?? {
@@ -42,33 +71,7 @@ rrwebPlayer.on(`custom-event`, (event: any) => {
         }
         updateYoutubePlayerInfo(youtubePlayer.player, payload.playerInfo);
     }
-});
-
-rrwebPlayer.on(`fullsnapshot-rebuilded`, () => onFullSnapshotRebuilded());
-
-window.addEventListener(`message`, ({ data }) => {
-    if (!data || !data.event) { return; }
-
-    try {
-        const event = JSON.parse(data.event);
-        if (event.type === EventType.FullSnapshot) {
-            if(hasReceivedFullSnapshot) {
-                // don't rebuild full snapshot, it makes video appear glitchy
-                return;
-            }
-            hasReceivedFullSnapshot = true;
-        }
-        if (!hasReplayStarted) {
-            rrwebPlayer.startLive(event.timestamp);
-            hasReplayStarted = true;
-        }
-        rrwebPlayer.addEvent(event);
-    } catch (e) {
-        console.error(e);
-    }
-});
-(window as any).PLAYER_READY = true;
-window.parent.postMessage(`ready`, `*`);
+}
 
 function onFullSnapshotRebuilded () {
     console.log(`onFullSnapshotRebuilded`);
