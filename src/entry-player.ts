@@ -1,7 +1,8 @@
-import { Replayer } from 'rrweb';
+import { EventType, Replayer } from 'rrweb';
 // eslint-disable-next-line no-unused-vars
 
-let replayHasStarted = false;
+let hasReplayStarted = false;
+let hasReceivedFullSnapshot = false;
 
 enum YoutubePlayerState {
     ENDED = 0,
@@ -28,6 +29,7 @@ rrwebPlayer.on(`custom-event`, (event: any) => {
     if(!event || !event.data){
         return;
     }
+
     const { tag, payload } = event.data;
     if(tag === `YTPlayerStateChange`) {
         const youtubePlayer = youtubePlayers.get(payload.id) ?? {
@@ -46,11 +48,19 @@ rrwebPlayer.on(`fullsnapshot-rebuilded`, () => onFullSnapshotRebuilded());
 
 window.addEventListener(`message`, ({ data }) => {
     if (!data || !data.event) { return; }
+
     try {
         const event = JSON.parse(data.event);
-        if (!replayHasStarted) {
+        if (event.type === EventType.FullSnapshot) {
+            if(hasReceivedFullSnapshot) {
+                // don't rebuild full snapshot, it makes video appear glitchy
+                return;
+            }
+            hasReceivedFullSnapshot = true;
+        }
+        if (!hasReplayStarted) {
             rrwebPlayer.startLive(event.timestamp);
-            replayHasStarted = true;
+            hasReplayStarted = true;
         }
         rrwebPlayer.addEvent(event);
     } catch (e) {
