@@ -103,19 +103,6 @@ export function PreviewPlayer ({
         }
     }
 
-    // When the page is ready, start sending buffered events
-    useEffect(() => {
-        if (!ref.current || !ref.current.contentWindow || !ref.current.contentWindow) { return; }
-        const iframeWindow = ref.current.contentWindow;
-        const listener = (e: MessageEvent) => { if (e.data === `ready`) { sendEvent(); } };
-        iframeWindow.addEventListener(`message`, listener);
-        return () => {
-            if (iframeWindow && iframeWindow.removeEventListener) {
-                iframeWindow.removeEventListener(`message`, listener);
-            }
-        };
-    }, [ ref.current, ref.current && ref.current.contentWindow ]);
-
     const { loading, error } = useSubscription(SUB_EVENTS, {
         onSubscriptionData: e => sendEvent(e.subscriptionData.data.stream.event),
         variables: {
@@ -141,19 +128,26 @@ export function PreviewPlayer ({
     };
 
     useEffect(() => {
-        if(ref.current && ref.current.contentWindow){
-            window.addEventListener(`message`, message => {
-                if (message.source !== ref.current?.contentWindow || !message.data || !message.data.width || !message.data.height) { return; }
-                const fWidth = Number(message.data.width.replace(`px`, ``));
-                const fHeight = Number(message.data.height.replace(`px`, ``));
+        const onIframeEvents = (event: MessageEvent) => {
+            if (event.source !== ref.current?.contentWindow || !event.data) {
+                return;
+            }
+            // When the page is ready, start sending buffered events
+            if(event.data === `ready`) {
+                sendEvent();
+            }
+            if (event.data.width && event.data.height) {
+                const fWidth = Number(event.data.width.replace(`px`, ``));
+                const fHeight = Number(event.data.height.replace(`px`, ``));
                 setWidthHeight({
                     frameWidth: fWidth,
                     frameHeight: fHeight,
                 });
-            });
-        }
-
-    }, [ ref.current, ref.current && ref.current.contentWindow ]);
+            }
+        };
+        window.addEventListener(`message`, onIframeEvents);
+        return () => window.removeEventListener(`message`, onIframeEvents);
+    }, [  ]);
 
     if (loading) { return <Loading />; }
     if (error) { return <Typography><FormattedMessage id="failed_to_connect" />: {JSON.stringify(error)}</Typography>; }

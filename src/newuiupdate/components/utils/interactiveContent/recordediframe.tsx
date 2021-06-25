@@ -75,6 +75,7 @@ export function RecordedIframe (props: Props): JSX.Element {
     const [ intervalId, setIntervalId ] = useState<number>();
     const [ contentWidth, setContentWidth ] = useState(1600);
     const [ contentHeight, setContentHeight ] = useState(1400);
+    const [ userCount, setUserCount ] = useState(sessions.size);
 
     const [ enableResize, setEnableResize ] = useState(true);
     const [ stylesLoaded, setStylesLoaded ] = useState(false);
@@ -82,11 +83,12 @@ export function RecordedIframe (props: Props): JSX.Element {
     const size = useWindowSize();
 
     useEffect(() => {
-        if (iframeRef && iframeRef.current && iframeRef.current.contentWindow) {
+        if (sessions.size > userCount && iframeRef && iframeRef.current && iframeRef.current.contentWindow) {
             iframeRef.current.contentWindow.postMessage({
-                type:`USER_JOIN_LEAVE`,
+                type:`USER_JOIN`,
             }, `*`);
         }
+        setUserCount(sessions.size);
     }, [ sessions ]);
 
     useEffect(() => {
