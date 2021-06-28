@@ -39,6 +39,7 @@ const pdfViewerParams = {
     renderer: `svg`,
     textLayerMode: 0,
     linkService: pdfLinkService,
+    fontExtraProperties: true,
 };
 
 const pdfViewer = new pdfjsViewer.PDFViewer(pdfViewerParams);
