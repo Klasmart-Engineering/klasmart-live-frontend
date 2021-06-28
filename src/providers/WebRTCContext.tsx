@@ -120,7 +120,7 @@ const defaultWebRTCContext = {
 export const WebRTCContext = createContext<WebRTCContextInterface>(defaultWebRTCContext);
 
 export const WebRTCProvider = (props: {children: React.ReactNode}) => {
-    const { roomId, name, sessionId: localSessionId, camera } = useSessionContext();
+    const { roomId, name, sessionId: localSessionId, camera, isTeacher } = useSessionContext();
     const [device, setDevice] = useState<Device | undefined | null>();
     const [producerTransport, setProducerTransport] = useState<MediaSoup.Transport | undefined | null>();
     const [consumerTransport, setConsumerTransport] = useState<MediaSoup.Transport | undefined | null>();
@@ -148,6 +148,7 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
     }
 
     const transmitStream = async (id: string, stream: MediaStream, simulcast = true): Promise<MediaSoup.Producer[]> => {
+        const maxBitrate = isTeacher?400000:100000
         console.log(`Transmit ${id}`)
         const transport = await initProducerTransport()
         console.log(`Transport`)
@@ -174,14 +175,15 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
                 } else if(simulcast) {
                     // These should be ordered from lowest bitrate to highest bitrate
                     // rid will be automatically assigned in the order of this array from "r0" to "rN-1"
+                    
                     params.encodings = [
-                        { maxBitrate: 1000000, scaleResolutionDownBy: 4, scalabilityMode: 'S1T1', dtx: true },
-                        { maxBitrate: 2000000, scaleResolutionDownBy: 2, scalabilityMode: 'S1T1', dtx: true },
-                        { maxBitrate: 4000000, scaleResolutionDownBy: 1, scalabilityMode: 'S1T1', dtx: true },
+                        { maxBitrate: maxBitrate>>2, maxFramerate: 15, scaleResolutionDownBy: 4, scalabilityMode: 'S1T1', dtx: true },
+                        { maxBitrate: maxBitrate>>1, maxFramerate: 15, scaleResolutionDownBy: 2, scalabilityMode: 'S1T1', dtx: true },
+                        { maxBitrate: maxBitrate, maxFramerate: 15, scaleResolutionDownBy: 1, scalabilityMode: 'S1T1', dtx: true },
                     ];
                 } else {
                     params.encodings = [
-                        { dtx: true },
+                        { maxBitrate: maxBitrate, maxFramerate: 15, dtx: true },
                     ];
                 }
                 console.log(`Wait for video producer`)
@@ -669,7 +671,8 @@ export const WebRTCProvider = (props: {children: React.ReactNode}) => {
         if (!camera) {
             return
         }
-        const promise = transmitStream("camera", camera, false)
+        const useSimulcast = isTeacher
+        const promise = transmitStream("camera", camera, useSimulcast)
         return () => {
             promise.then((producers) => producers.forEach(producer => {
                 if (producer) {

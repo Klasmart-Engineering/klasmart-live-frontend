@@ -1,4 +1,5 @@
 import React, { createContext, ReactChild, ReactChildren, useCallback, useContext, useEffect, useState } from "react";
+import { useSessionContext } from "../../context-provider/session-context";
 import useCordovaObservePause from "../../cordova-observe-pause";
 
 export enum FacingType {
@@ -23,6 +24,8 @@ type Props = {
 };
 
 export const CameraContextProvider = ({ children }: Props) => {
+    const { isTeacher } = useSessionContext();
+
     const [acquire, setAcquire] = useState<boolean>(false);
     const [facing, setFacing] = useState<FacingType>(FacingType.User);
     const [cameraStream, setCameraStream] = useState<MediaStream>();
@@ -60,15 +63,15 @@ export const CameraContextProvider = ({ children }: Props) => {
                 facingMode,
                 width: {
                     max: 720,
-                    ideal: 180,
+                    ideal: isTeacher?720:180,
                 },
                 height: {
                     max: 540,
-                    ideal: 96
+                    ideal: isTeacher?540:96
                 },
                 frameRate: {
-                    max: 30,
-                    ideal: 24,
+                    max: 15,
+                    ideal: isTeacher?15:12,
                 }
             },
             audio: true,
