@@ -8,7 +8,7 @@ pipelines:
         name: 'Build NPM'
         image: node:lts
         script:
-          - npm i
+          - npm i --unsafe-perm
           - mv deploy/config/$KIDSLOOP_REGION/webpack.$KIDSLOOP_ENV.config.js ./webpack.bitbucket.config.js
           - npm run build:bitbucket
         caches:
