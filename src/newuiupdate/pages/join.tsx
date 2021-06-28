@@ -131,7 +131,6 @@ export default function Join (): JSX.Element {
     const [ loading, setLoading ] = useState(true);
     const [ branding, setBranding ] = useState<BrandingType|undefined>(undefined);
     const logo = branding?.iconImageURL || KidsLoopLogoSvg;
-    const customFavicon = true;
 
     const handleOrganizationBranding = async () => {
         setLoading(true);
@@ -143,14 +142,6 @@ export default function Join (): JSX.Element {
         }
         setLoading(false);
     };
-
-    // Favicon
-    useEffect(() => {
-        if(branding && customFavicon){
-            const link = document.querySelector(`link[rel~='icon']`) as HTMLAnchorElement;
-            link.href = branding.iconImageURL;
-        }
-    }, [ branding ]);
 
     useEffect(() => {
         handleOrganizationBranding();
@@ -297,7 +288,7 @@ export default function Join (): JSX.Element {
                     variant="h3"
                     style={{
                         fontWeight: 600,
-                        color: branding && theme.palette.getContrastText(branding?.primaryColor)
+                        color: branding?.primaryColor && theme.palette.getContrastText(branding?.primaryColor)
                     }}
                 >
                     <FormattedMessage
@@ -309,7 +300,7 @@ export default function Join (): JSX.Element {
                 <div
                     className={classes.headerBg}
                     style={{
-                        background: branding && branding?.primaryColor,
+                        background: branding?.primaryColor && branding?.primaryColor,
                     }}></div>
             </div>
             <Grid
