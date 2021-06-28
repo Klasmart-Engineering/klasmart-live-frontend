@@ -3,8 +3,10 @@ const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const SentryWebpackPlugin = require("@sentry/webpack-plugin")
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const { loadBrandingOptions } = require(`kidsloop-branding`);
+require('dotenv').config();
 
-require('dotenv').config()
+const brandingOptions = loadBrandingOptions(process.env.BRAND);
 
 module.exports = {
   mode: 'production',
@@ -77,7 +79,8 @@ module.exports = {
     ]
   },
   resolve: {
-    extensions: ['.js', '.jsx', '.tsx', '.ts']
+    extensions: ['.js', '.jsx', '.tsx', '.ts'],
+    alias: { ...brandingOptions.webpack.resolve.alias }
   },
   output: {
     filename: '[name].[contenthash].js',
@@ -94,7 +97,8 @@ module.exports = {
     new HtmlWebpackPlugin({
       filename: 'index.html',
       chunks: ['ui'],
-      template: 'src/index.html'
+      template: 'src/index.html',
+      ...brandingOptions.webpack.html,
     }),
     new HtmlWebpackPlugin({
       filename: 'player.html',

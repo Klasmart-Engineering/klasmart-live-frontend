@@ -2,15 +2,19 @@ const webpack = require('webpack')
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const SentryWebpackPlugin = require("@sentry/webpack-plugin")
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const { loadBrandingOptions } = require(`kidsloop-branding`);
+require('dotenv').config();
 
-require('dotenv').config()
+const brandingOptions = loadBrandingOptions(process.env.BRAND);
 
 module.exports = {
   mode: 'production',
   entry: {
     ui: './src/entry.tsx',
-    "record-e44f2b3": './src/entry-record.ts',
-    player: './src/entry-player.ts'
+    "record-1db5341": './src/entry-record.ts',
+    player: './src/entry-player.ts',
+    pdfviewer: './src/entry-pdfviewer.js'
   },
   module: {
     rules: [
@@ -75,7 +79,8 @@ module.exports = {
     ]
   },
   resolve: {
-    extensions: ['.js', '.jsx', '.tsx', '.ts']
+    extensions: ['.js', '.jsx', '.tsx', '.ts'],
+    alias: { ...brandingOptions.webpack.resolve.alias }
   },
   output: {
     filename: '[name].[contenthash].js',
@@ -92,17 +97,32 @@ module.exports = {
     new HtmlWebpackPlugin({
       filename: 'index.html',
       chunks: ['ui'],
-      template: 'src/index.html'
+      template: 'src/index.html',
+      ...brandingOptions.webpack.html,
     }),
     new HtmlWebpackPlugin({
       filename: 'player.html',
       chunks: ['player'],
       template: 'src/player.html'
     }),
+    new HtmlWebpackPlugin({
+      filename: 'pdfviewer.html',
+      chunks: ['pdfviewer'],
+      template: 'src/pdfviewer.html',
+    }),
     new SentryWebpackPlugin({
       include: ".",
       ignoreFile: ".sentrycliignore",
       ignore: ["node_modules", "webpack.config.js", "webpack.prod.config.js"],
+    }),
+    new CopyWebpackPlugin({
+      patterns: [{
+        from: 'node_modules/pdfjs-dist/cmaps',
+        to: 'cmaps/'
+      }, {
+        from: 'node_modules/pdfjs-dist',
+        to: 'pdfjs-dist/'
+      }]
     }),
   ]
 }
