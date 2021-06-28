@@ -31,7 +31,7 @@ window.addEventListener(`message`, ({ data }) => {
     try {
         const event = JSON.parse(data.event);
         if (!hasReplayStarted) {
-            rrwebPlayer.startLive();
+            rrwebPlayer.startLive(event.timestamp);
             hasReplayStarted = true;
         }
         if (event.type === EventType.FullSnapshot) {
