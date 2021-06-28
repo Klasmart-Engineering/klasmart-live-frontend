@@ -2,6 +2,10 @@ const webpack = require("webpack");
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const { loadBrandingOptions } = require(`kidsloop-branding`);
+require('dotenv').config();
+
+const brandingOptions = loadBrandingOptions(process.env.BRAND);
 
 module.exports = {
   mode: "development",
@@ -73,6 +77,7 @@ module.exports = {
   },
   resolve: {
     extensions: [".js", ".jsx", ".tsx", ".ts", ".css", ".ttf"],
+    alias: { ...brandingOptions.webpack.resolve.alias }
   },
   output: {
     filename: "[name].js",
@@ -96,6 +101,7 @@ module.exports = {
       filename: "index.html",
       chunks: ["ui"],
       template: "src/index.html",
+      ...brandingOptions.webpack.html,
     }),
     new HtmlWebpackPlugin({
       filename: "player.html",

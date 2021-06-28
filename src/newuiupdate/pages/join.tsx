@@ -94,9 +94,9 @@ const useStyles = makeStyles((theme: Theme) =>
             textAlign: `center`,
             "& img": {
                 objectFit: `contain`,
-                height: 50,
+                width: 150,
                 margin: `2rem 0`,
-                width: `auto`,
+                height: `auto`,
             },
         },
         version:{
@@ -297,6 +297,7 @@ export default function Join (): JSX.Element {
                     variant="h3"
                     style={{
                         fontWeight: 600,
+                        color: branding && theme.palette.getContrastText(branding?.primaryColor)
                     }}
                 >
                     <FormattedMessage
@@ -308,7 +309,7 @@ export default function Join (): JSX.Element {
                 <div
                     className={classes.headerBg}
                     style={{
-                        background: branding && `#${branding?.primaryColor}`,
+                        background: branding && branding?.primaryColor,
                     }}></div>
             </div>
             <Grid

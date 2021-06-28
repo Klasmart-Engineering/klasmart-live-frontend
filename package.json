@@ -82,6 +82,7 @@
     "iframe-resizer-react": "^1.1.0",
     "inter-ui": "^3.18.0",
     "jwt-decode": "^2.2.0",
+    "kidsloop-branding": "bitbucket:calmisland/kidsloop-branding#1.0.1",
     "kidsloop-canvas": "bitbucket:calmisland/kidsloop-canvas#release/npm",
     "kidsloop-px": "bitbucket:calmisland/kidsloop-px#1.0.9",
     "logrocket": "^1.0.12",
