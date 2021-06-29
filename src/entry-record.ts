@@ -9,27 +9,24 @@ import { v4 as uuid } from 'uuid';
 if (!(window as any).kidslooplive) {
     (window as any).kidslooplive = true;
 
-    const POST_URL = `${process.env.ENDPOINT_GQL || window.location.origin}/graphql`;
     const POST_EVENTS = `
   mutation postPageEvent($streamId: ID!, $pageEvents: [PageEventIn]) {
     postPageEvent(streamId: $streamId, pageEvents: $pageEvents)
   }
   `;
 
+    const url = new URL(window.location.href);
+    const endpoint = url.searchParams.get('endpoint') || window.location.origin;
+    const graphQlEndpoint = `${decodeURIComponent(endpoint)}/graphql`;
+
     const token = AuthTokenProvider.retrieveToken();
+    const headers = token ? { authorization: `Bearer ${token}` } : undefined;
 
-    const headers = token ? {
-        authorization: `Bearer ${token}`,
-    } : undefined;
-
-    const client = new GraphQLClient(POST_URL, {
-        headers: headers,
-    });
+    const client = new GraphQLClient(graphQlEndpoint, { headers: headers });
 
     const streamId = uuid();
-    window.parent.postMessage({
-        streamId,
-    }, `*`);
+
+    window.parent.postMessage({ streamId }, `*`);
 
     const eventStream = EventStream.builder()
         .withId(streamId)
@@ -46,6 +43,7 @@ if (!(window as any).kidslooplive) {
 
     record({
         checkoutEveryNms: 1000 * 10,
+        checkoutEveryNth: 512,
         emit: (e, c) => {
             // TODO: Should client or server keep track of the
             // number of events emitted since last keyframe?
@@ -75,7 +73,7 @@ if (!(window as any).YT) {
     onYTAPIReady();
 }
 
-function onYTAPIReady () {
+function onYTAPIReady() {
     const onPlayerReady = (id: string) => (event: any) => {
         console.log(`onPlayerReady`, `id`, id, `event`, event);
     };
@@ -86,7 +84,7 @@ function onYTAPIReady () {
             playerInfo: event.target.playerInfo,
         });
     };
-    for(const iframe of document.getElementsByTagName(`iframe`)) {
+    for (const iframe of document.getElementsByTagName(`iframe`)) {
         const src = (iframe as HTMLIFrameElement).getAttribute(`src`) ?? ``;
         const url = new URL(src);
         if (url.origin !== `https://www.youtube.com`) {
@@ -104,7 +102,7 @@ function onYTAPIReady () {
 
 }
 
-function allowIframe (src: string): boolean {
+function allowIframe(src: string): boolean {
     try {
         const url = new URL(src);
         return url.origin === `https://www.youtube.com`;

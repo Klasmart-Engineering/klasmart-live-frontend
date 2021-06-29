@@ -1,5 +1,4 @@
 import { Replayer } from 'rrweb';
-// eslint-disable-next-line no-unused-vars
 
 enum YoutubePlayerState {
     ENDED = 0,
@@ -7,9 +6,15 @@ enum YoutubePlayerState {
     PAUSED,
     BUFFERING,
     CUED,
-}
-const youtubePlayers = new Map<string, any>();
+};
+
+const EVENT_TYPE_SNAPSHOT = 2;
+
 let hasStarted = false;
+let receivedSnapshot = false;
+
+const youtubePlayers = new Map<string, any>();
+
 const player: Replayer = new Replayer([], {
     mouseTail: false,
     liveMode: true,
@@ -23,8 +28,7 @@ player.on(`resize`, () => window.parent.postMessage({
 }, `*`));
 
 player.on(`custom-event`, (event: any) => {
-    console.log(`received custom event`, event);
-    if(!event || !event.data){
+    if (!event || !event.data) {
         return;
     }
     const { tag, payload } = event.data;
@@ -32,21 +36,21 @@ player.on(`custom-event`, (event: any) => {
     if (!youtubePlayer) {
         return;
     }
-    if(tag === `stateChange`) {
+    if (tag === `stateChange`) {
         const info = payload.playerInfo;
         youtubePlayer.seekTo(info.currentTime);
-        switch(info.playerState){
-        case YoutubePlayerState.ENDED:
-            youtubePlayer.stopVideo();
-            break;
-        case YoutubePlayerState.PLAYING:
-            youtubePlayer.playVideo();
-            break;
-        case YoutubePlayerState.PAUSED:
-            youtubePlayer.pauseVideo();
-            break;
-        default:
-            break;
+        switch (info.playerState) {
+            case YoutubePlayerState.ENDED:
+                youtubePlayer.stopVideo();
+                break;
+            case YoutubePlayerState.PLAYING:
+                youtubePlayer.playVideo();
+                break;
+            case YoutubePlayerState.PAUSED:
+                youtubePlayer.pauseVideo();
+                break;
+            default:
+                break;
         }
     }
 });
@@ -57,12 +61,23 @@ window.addEventListener(`message`, ({ data }) => {
     if (!data || !data.event) { return; }
     try {
         const event = JSON.parse(data.event);
-        // console.log(event);
+        const isSnapshot = event.type === EVENT_TYPE_SNAPSHOT;
+
+        // FIX: This if statement fixes issue where videos would stop
+        // playing after ~15 seconds on Android.
+        if (receivedSnapshot && isSnapshot) {
+            return;
+        }
+
+        receivedSnapshot = receivedSnapshot || isSnapshot;
+
         if (!hasStarted) {
             player.startLive(event.timestamp);
             hasStarted = true;
         }
+
         player.addEvent(event);
+
     } catch (e) {
         console.error(e);
     }
@@ -70,7 +85,7 @@ window.addEventListener(`message`, ({ data }) => {
 (window as any).PLAYER_READY = true;
 window.postMessage(`ready`, `*`);
 
-function onFullSnapshotRebuilded () {
+function onFullSnapshotRebuilded() {
     console.log(`onFullSnapshotRebuilded`);
     youtubePlayers.clear();
     const replayedIframe = window.document.getElementsByTagName(`iframe`)[0];
@@ -80,13 +95,13 @@ function onFullSnapshotRebuilded () {
         if (!replayedWindow?.document) {
             return;
         }
-        for(const iframe of replayedWindow?.document.getElementsByTagName(`iframe`)) {
+        for (const iframe of replayedWindow?.document.getElementsByTagName(`iframe`)) {
             const src = (iframe as HTMLIFrameElement).getAttribute(`src`) ?? ``;
             const url = new URL(src);
             if (url.origin !== `https://www.youtube.com`) {
                 continue;
             }
-            const updatedSrc = url.origin +  url.pathname + `?enablejsapi=1`;
+            const updatedSrc = url.origin + url.pathname + `?enablejsapi=1`;
             (iframe as HTMLIFrameElement).setAttribute(`src`, updatedSrc);
             const id = (iframe as HTMLIFrameElement).getAttribute(`id`) ?? ``;
             const youtubePlayer = new (replayedWindow as any).YT.Player(id, {});
@@ -99,7 +114,7 @@ function onFullSnapshotRebuilded () {
         const tag = replayedWindow?.document.createElement(`script`);
         (replayedWindow as any).onYouTubeIframeAPIReady = onYTAPIReady;
         const head = replayedWindow?.document.getElementsByTagName(`head`)[0];
-        if(!tag) {
+        if (!tag) {
             return;
         }
         tag.src = `https://www.youtube.com/iframe_api`;
