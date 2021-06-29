@@ -63,7 +63,7 @@ function onCustomEvent (event: any){
         return;
     }
     const { tag, payload } = event.data;
-    if(tag === `YTPlayerStateChange`) {
+    if(tag === `ytPlayerStateChange`) {
         const youtubePlayer = youtubePlayers.get(payload.id) ?? {
             ready: false,
         };
