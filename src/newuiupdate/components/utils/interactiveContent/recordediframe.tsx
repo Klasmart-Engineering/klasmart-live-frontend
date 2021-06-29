@@ -1,29 +1,21 @@
-import CurlySpinner1 from "../../../../assets/img/spinner/curly1_spinner.gif";
-import CurlySpinner2 from "../../../../assets/img/spinner/curly2_spinner.gif";
-import EccoSpinner1 from "../../../../assets/img/spinner/ecco1_spinner.gif";
-import EccoSpinner2 from "../../../../assets/img/spinner/ecco2_spinner.gif";
-import GhostSpinner from "../../../../assets/img/spinner/ghost_spinner.gif";
-import JessSpinner1 from "../../../../assets/img/spinner/jess1_spinner.gif";
-import MimiSpinner1 from "../../../../assets/img/spinner/mimi1_spinner.gif";
-import { ContentType } from "../../../../pages/room/room";
 import { ClassType } from "../../../../store/actions";
 import { useWindowSize } from "../../../../utils/viewport";
 import { LIVE_LINK, LocalSessionContext } from "../../../providers/providers";
 import { RoomContext } from "../../../providers/roomContext";
 import { isLessonPlanOpenState, streamIdState } from "../../../states/layoutAtoms";
 import { gql, useMutation } from "@apollo/client";
-import { Button } from "@material-ui/core";
 import Dialog from "@material-ui/core/Dialog";
 import Grid from "@material-ui/core/Grid";
 import { useTheme } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { Button } from "@material-ui/core";
 import { Refresh as RefreshIcon } from "@styled-icons/material/Refresh";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import React, {
     useContext, useEffect, useRef, useState,
 } from "react";
 import { FormattedMessage } from "react-intl";
-import { useSelector } from "react-redux";
 import { useRecoilState } from "recoil";
 
 const SET_STREAMID = gql`
@@ -43,14 +35,6 @@ enum LoadStatus {
 }
 
 export function RecordedIframe (props: Props): JSX.Element {
-    const SPINNER = [
-        CurlySpinner1,
-        CurlySpinner2,
-        EccoSpinner1,
-        EccoSpinner2,
-        JessSpinner1,
-        MimiSpinner1,
-    ];
     const MAX_LOADING_COUNT = 60;
     const iframeRef = useRef<HTMLIFrameElement>(null);
     const theme = useTheme();
@@ -263,10 +247,6 @@ export function RecordedIframe (props: Props): JSX.Element {
         }
     }
 
-    const getRandomSpinner = (): string => SPINNER[Math.floor(Math.random() * SPINNER.length)];
-
-    const getSpinner = (): string => loadStatus === LoadStatus.Loading ? getRandomSpinner() : GhostSpinner;
-
     return (
         <React.Fragment>
             <Dialog
@@ -292,9 +272,7 @@ export function RecordedIframe (props: Props): JSX.Element {
                     }}
                 >
                     <Grid item>
-                        <img
-                            src={getSpinner()}
-                            height={80} />
+                        <CircularProgress />
                     </Grid>
                     <Grid item>
                         <Typography
