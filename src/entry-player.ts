@@ -30,9 +30,12 @@ window.addEventListener(`message`, ({ data }) => {
     if (!data || !data.event) { return; }
     try {
         const event = JSON.parse(data.event);
-        if (!hasReplayStarted) {
+        if (event.type === EventType.Meta && !hasReplayStarted) {
             rrwebPlayer.startLive(event.timestamp);
             hasReplayStarted = true;
+        }
+        if (!hasReplayStarted) {
+            return;
         }
         if (event.type === EventType.FullSnapshot) {
             if(hasReceivedFullSnapshot) {
