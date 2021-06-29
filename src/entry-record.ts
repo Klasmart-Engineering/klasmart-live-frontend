@@ -44,6 +44,7 @@ if (!(window as any).kidslooplive) {
 
     let eventsSinceKeyframe = 0;
 
+    console.log(`start recording`);
     record({
         checkoutEveryNms: 1000 * 10,
         emit: (e, isCheckout) => {
@@ -78,46 +79,37 @@ window.addEventListener(`message`, ({ data }) => {
     });
 });
 
-if (!(window as any).YT) {
-    const tag = document.createElement(`script`);
-    tag.src = `https://www.youtube.com/iframe_api`;
-    (window as any).onYouTubeIframeAPIReady = onYTAPIReady;
-    const firstScriptTag = document.getElementsByTagName(`script`)[0];
-    firstScriptTag?.parentNode?.insertBefore(tag, firstScriptTag);
-    console.log(`recorded page loaded YouTube iframe api`);
+if (!(window as any).H5P) {
+    setTimeout(() => onYoutubeVideo(), 2000);
 } else {
-    onYTAPIReady();
+    onYoutubeVideo();
+
 }
 
-function onYTAPIReady () {
+function onYoutubeVideo () {
     youtubePlayers.clear();
-    const onPlayerReady = (id: string) => (event: any) => {
-        console.log(`onPlayerReady`, `id`, id, `event`, event);
-    };
-    const onPlayerStateChange = (id: string) => (event: any) => {
-        console.log(`onPlayerStateChange`, `id`, id, `event`, event);
+    const $ = (window as any).H5P.jQuery;
+    const onStateChange = (event: any, data: any) => {
+        event.stopPropagation();
+        console.log(`onStateChange`, `event`, event, `data`, data);
+        const {
+            id, player, state,
+        } = data;
+        youtubePlayers.set(id, player);
         record.addCustomEvent(`YTPlayerStateChange`, {
             id,
-            playerInfo: event.target.playerInfo,
+            playerInfo: state.target.playerInfo,
         });
     };
     for(const iframe of document.getElementsByTagName(`iframe`)) {
         try {
+            const id = (iframe as HTMLIFrameElement).getAttribute(`id`) ?? ``;
             const src = (iframe as HTMLIFrameElement).getAttribute(`src`) ?? ``;
             const url = new URL(src);
-            if (url.origin !== `https://www.youtube.com`) {
+            if (!id || url.origin !== `https://www.youtube.com`) {
                 continue;
             }
-            (iframe as HTMLIFrameElement).setAttribute(`src`, decodeURIComponent(src));
-            const id = (iframe as HTMLIFrameElement).getAttribute(`id`) ?? ``;
-            const youtubePlayer = new (window as any).YT.Player(id, {
-                events: {
-                    onReady: onPlayerReady(id),
-                    onStateChange: onPlayerStateChange(id),
-                },
-            });
-            youtubePlayers.set(id, youtubePlayer);
-            console.log(`recorded page got reference to YT player`, youtubePlayer, `id`, id);
+            $(iframe).on(`ytPlayerStateChange`, onStateChange);
         } catch {
             continue;
         }
