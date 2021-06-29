@@ -22,6 +22,32 @@ const player: Replayer = new Replayer([], {
     UNSAFE_replayCanvas: true,
 });
 
+window.addEventListener(`message`, ({ data }) => {
+    if (!data || !data.event) { return; }
+    try {
+        const event = JSON.parse(data.event);
+        const isSnapshot = event.type === EVENT_TYPE_SNAPSHOT;
+
+        // FIX: This if statement fixes issue where videos would stop
+        // playing after ~15 seconds on Android.
+        if (receivedSnapshot && isSnapshot) {
+            return;
+        }
+
+        receivedSnapshot = receivedSnapshot || isSnapshot;
+
+        if (!hasStarted) {
+            player.startLive(event.timestamp);
+            hasStarted = true;
+        }
+
+        player.addEvent(event);
+
+    } catch (e) {
+        console.error(e);
+    }
+});
+
 player.on(`resize`, () => window.parent.postMessage({
     width: player.iframe.width,
     height: player.iframe.height,
@@ -57,31 +83,6 @@ player.on(`custom-event`, (event: any) => {
 
 player.on(`fullsnapshot-rebuilded`, () => onFullSnapshotRebuilded());
 
-window.addEventListener(`message`, ({ data }) => {
-    if (!data || !data.event) { return; }
-    try {
-        const event = JSON.parse(data.event);
-        const isSnapshot = event.type === EVENT_TYPE_SNAPSHOT;
-
-        // FIX: This if statement fixes issue where videos would stop
-        // playing after ~15 seconds on Android.
-        if (receivedSnapshot && isSnapshot) {
-            return;
-        }
-
-        receivedSnapshot = receivedSnapshot || isSnapshot;
-
-        if (!hasStarted) {
-            player.startLive(event.timestamp);
-            hasStarted = true;
-        }
-
-        player.addEvent(event);
-
-    } catch (e) {
-        console.error(e);
-    }
-});
 (window as any).PLAYER_READY = true;
 window.postMessage(`ready`, `*`);
 
