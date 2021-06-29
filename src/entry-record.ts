@@ -72,7 +72,7 @@ const youtubePlayers = new Map<string, any>();
 window.addEventListener(`message`, ({ data }) => {
     if (!data || data.type !== `USER_JOIN`) { return; }
     youtubePlayers.forEach((player, id) => {
-        record.addCustomEvent(`YTPlayerStateChange`, {
+        record.addCustomEvent(`ytPlayerStateChange`, {
             id,
             playerInfo: player.playerInfo,
         });
@@ -83,36 +83,28 @@ if (!(window as any).H5P) {
     setTimeout(() => onYoutubeVideo(), 2000);
 } else {
     onYoutubeVideo();
-
 }
 
 function onYoutubeVideo () {
-    youtubePlayers.clear();
-    const $ = (window as any).H5P.jQuery;
-    const onStateChange = (event: any, data: any) => {
-        event.stopPropagation();
-        console.log(`onStateChange`, `event`, event, `data`, data);
-        const {
-            id, player, state,
-        } = data;
-        youtubePlayers.set(id, player);
-        record.addCustomEvent(`YTPlayerStateChange`, {
-            id,
-            playerInfo: state.target.playerInfo,
-        });
-    };
-    for(const iframe of document.getElementsByTagName(`iframe`)) {
-        try {
-            const id = (iframe as HTMLIFrameElement).getAttribute(`id`) ?? ``;
-            const src = (iframe as HTMLIFrameElement).getAttribute(`src`) ?? ``;
-            const url = new URL(src);
-            if (!id || url.origin !== `https://www.youtube.com`) {
-                continue;
-            }
-            $(iframe).on(`ytPlayerStateChange`, onStateChange);
-        } catch {
-            continue;
-        }
+    try{
+        console.log(`registering event listeners for youtube videos`);
+        youtubePlayers.clear();
+        const $ = (window as any).H5P.jQuery;
+        const onStateChange = (event: any, data: any) => {
+            event.stopPropagation();
+            console.log(`onStateChange`, `event`, event, `data`, data);
+            const {
+                id, player, state,
+            } = data;
+            youtubePlayers.set(id, player);
+            record.addCustomEvent(`ytPlayerStateChange`, {
+                id,
+                playerInfo: state.target.playerInfo,
+            });
+        };
+        $(window.document.body).on(`ytPlayerStateChange`, onStateChange);
+    } catch (e) {
+        console.log(e);
     }
 }
 
