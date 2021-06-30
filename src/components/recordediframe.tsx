@@ -69,7 +69,11 @@ export function RecordedIframe(props: Props): JSX.Element {
 
     const contentHrefWithToken = useMemo<string>(() => {
         const encodedEndpoint = encodeURIComponent(recorderEndpoint);
-        return `${contentHref}?token=${token}&endpoint=${encodedEndpoint}`;
+        if (contentHref.endsWith(`.pdf`)) {
+            return `pdfviewer.html?pdfSrc=${contentHref}&token=${token}&endpoint=${encodedEndpoint}`;
+        } else {
+            return `${contentHref}?token=${token}&endpoint=${encodedEndpoint}`;
+        }
     }, [contentHref, token, recorderEndpoint]);
 
     const size = useWindowSize();
@@ -289,7 +293,7 @@ export function RecordedIframe(props: Props): JSX.Element {
             </Dialog>
             <iframe
                 id="recordediframe"
-                src={contentHref.endsWith(`.pdf`) ? `/pdfviewer.html?pdfSrc=${contentHref}` : contentHrefWithToken}
+                src={contentHrefWithToken}
                 ref={iframeRef}
                 allow="microphone"
                 data-h5p-width={contentWidth}
