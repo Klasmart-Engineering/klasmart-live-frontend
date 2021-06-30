@@ -4,6 +4,7 @@ import { LocalSessionContext } from "../../providers/providers";
 import { useSynchronizedState } from "../../whiteboard/context-providers/SynchronizedStateProvider";
 import Fab from "@material-ui/core/Fab";
 import { PencilAlt as WBIcon } from "@styled-icons/fa-solid/PencilAlt";
+import { CloseOutline as CloseIcon } from "@styled-icons/evaicons-outline/CloseOutline";
 import React, {useContext, useEffect, useState} from "react";
 import CanvasMenu from "../toolbar/toolbarMenus/canvasMenu";
 import {useRecoilState} from "recoil";
@@ -38,53 +39,32 @@ export function WBToolbarContainer({ useLocalDisplay } : { useLocalDisplay?: boo
         classtype, isTeacher, sessionId,
     } = useContext(LocalSessionContext);
     const {
-        state: { display, permissions }, actions: {
+        state: { display, permissions, localDisplay }, actions: {
             setDisplay, setLocalDisplay, getPermissions, setPermissions,
         },
     } = useSynchronizedState();
 
     const enableWB = classtype === ClassType.LIVE ? (!isTeacher ? display && permissions.allowCreateShapes : display) : true;
 
-    const handleOpenWBToolbar = (e: React.MouseEvent<HTMLButtonElement>) => {
-        if (useLocalDisplay) {
-            setLocalDisplay(true);
-        } else if (classtype !== ClassType.LIVE) {
-            setDisplay(true);
-        }
+    const handleToggleWBToolbar = () => {
+        setIsCanvasOpen(!isCanvasOpen);
 
-        if (classtype !== ClassType.LIVE) {
-            setIsCanvasOpen(!isCanvasOpen);
+        if (useLocalDisplay) {
+            setLocalDisplay(!localDisplay);
+        } else if (classtype !== ClassType.LIVE) {
             setDisplay(!display);
-            const permissions = getPermissions(sessionId);
-            const newPermissions = {
-                ...permissions,
-                allowCreateShapes: true,
-            };
-            setPermissions(sessionId, newPermissions);
         }
-    };
-    const handleCloseWBToolbar = () => {
-        if (useLocalDisplay) {
-            setLocalDisplay(false);
-        } else if (classtype !== ClassType.LIVE) {
-            setDisplay(false);
-        }
-        
-        if (classtype !== ClassType.LIVE) {
-            setDisplay(false);
-            const permissions = getPermissions(sessionId);
-            const newPermissions = {
-                ...permissions,
-                allowCreateShapes: false,
-            };
-            setPermissions(sessionId, newPermissions);
-        }
-    };
 
-    useEffect(() => {
-        display && setIsCanvasOpen(permissions.allowCreateShapes);
-        !display && setIsCanvasOpen(false);
-    }, [ display, permissions.allowCreateShapes ]);
+        if (classtype !== ClassType.LIVE) {
+            const permissions = getPermissions(sessionId);
+            const newPermissions = {
+                ...permissions,
+                allowCreateShapes: !permissions.allowCreateShapes,
+            };
+            setPermissions(sessionId, newPermissions);
+        }
+
+    };
 
     return (
         <Grid
@@ -98,10 +78,13 @@ export function WBToolbarContainer({ useLocalDisplay } : { useLocalDisplay?: boo
                     disabled={!enableWB}
                     size="large"
                     color="primary"
-                    onClick={handleOpenWBToolbar}
+                    onClick={handleToggleWBToolbar}
+                    style={{
+                        backgroundColor:`#bd6dd6`   
+                    }}
                 >
                     <StyledIcon
-                        icon={<WBIcon />}
+                        icon={isCanvasOpen ? <CloseIcon /> : <WBIcon />}
                         size="large"
                         color="white" />
                 </Fab>
