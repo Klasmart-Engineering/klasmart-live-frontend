@@ -44,7 +44,6 @@ if (!(window as any).kidslooplive) {
 
     let eventsSinceKeyframe = 0;
 
-    console.log(`start recording`);
     record({
         checkoutEveryNms: 1000 * 10,
         emit: (e, isCheckout) => {
@@ -63,7 +62,7 @@ if (!(window as any).kidslooplive) {
             eventRecorder.recordEvent(eventStream, eventData, isCheckout || false);
             eventRecorder.uploadEvents();
         },
-        allowIframe,
+        allowIframe: keepIframeSrcFn,
     });
 }
 
@@ -89,26 +88,23 @@ function onYoutubeVideo () {
     try{
         console.log(`registering event listeners for youtube videos`);
         youtubePlayers.clear();
-        const $ = (window as any).H5P.jQuery;
-        const onStateChange = (event: any, data: any) => {
+        const onStateChange = (event: any, id: string, player: any, state: any) => {
+            // console.log(`onStateChange`, `id`, id, `event`, event, `player`, player, `state`, state);
             event.stopPropagation();
-            console.log(`onStateChange`, `event`, event, `data`, data);
-            const {
-                id, player, state,
-            } = data;
             youtubePlayers.set(id, player);
             record.addCustomEvent(`ytPlayerStateChange`, {
                 id,
                 playerInfo: state.target.playerInfo,
             });
         };
+        const $ = (window as any).H5P.jQuery;
         $(window.document.body).on(`ytPlayerStateChange`, onStateChange);
     } catch (e) {
         console.log(e);
     }
 }
 
-function allowIframe (src: string): boolean {
+function keepIframeSrcFn (src: string): boolean {
     try {
         const url = new URL(src);
         return url.origin === `https://www.youtube.com`;
