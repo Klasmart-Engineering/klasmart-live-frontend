@@ -80,7 +80,7 @@ function onYTAPIReady() {
     };
     const onPlayerStateChange = (id: string) => (event: any) => {
         console.log(`onPlayerStateChange`, `id`, id, `event`, event);
-        record.addCustomEvent(`stateChange`, {
+        record.addCustomEvent(`YTPlayerStateChange`, {
             id,
             playerInfo: event.target.playerInfo,
         });
