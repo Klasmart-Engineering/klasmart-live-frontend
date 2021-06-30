@@ -3,8 +3,10 @@ const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const SentryWebpackPlugin = require("@sentry/webpack-plugin")
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const { loadBrandingOptions } = require(`kidsloop-branding`);
+require('dotenv').config();
 
-require('dotenv').config()
+const brandingOptions = loadBrandingOptions(process.env.BRAND);
 
 module.exports = {
   mode: 'production',
@@ -77,24 +79,26 @@ module.exports = {
     ]
   },
   resolve: {
-    extensions: ['.js', '.jsx', '.tsx', '.ts']
+    extensions: ['.js', '.jsx', '.tsx', '.ts'],
+    alias: { ...brandingOptions.webpack.resolve.alias }
   },
   output: {
     filename: '[name].[contenthash].js',
     path: path.resolve(__dirname, 'dist')
   },
   plugins: [
-    new webpack.EnvironmentPlugin(
-      { "CALLSTATS_ENABLE": "TRUE" },
-      { "ENDPOINT_API": "https://api.stage.kidsloop.live" },
-      { "ENDPOINT_HUB": "https://hub.stage.kidsloop.live" },
-      { "ENDPOINT_CMS": "https://cms.stage.kidsloop.live" },
-      { "ENDPOINT_PDF": "https://live.alpha.kidsloop.net" },
-    ),
+    new webpack.EnvironmentPlugin({
+      "CALLSTATS_ENABLE": "TRUE",
+      "ENDPOINT_API": "https://api.stage.kidsloop.live",
+      "ENDPOINT_HUB": "https://hub.stage.kidsloop.live",
+      "ENDPOINT_CMS": "https://cms.stage.kidsloop.live",
+      "ENDPOINT_PDF": "https://live.alpha.kidsloop.net",
+    }),
     new HtmlWebpackPlugin({
       filename: 'index.html',
       chunks: ['ui'],
-      template: 'src/index.html'
+      template: 'src/index.html',
+      ...brandingOptions.webpack.html
     }),
     new HtmlWebpackPlugin({
       filename: 'player.html',
