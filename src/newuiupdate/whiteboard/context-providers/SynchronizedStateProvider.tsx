@@ -64,6 +64,7 @@ const SUBSCRIBE_WHITEBOARD_PERMISSIONS = gql`
 
 interface ISynchronizedState {
     display: boolean;
+    localDisplay: boolean,
     eventsLoading: boolean;
     stateLoading: boolean;
     permissionsLoading: boolean;
@@ -78,6 +79,7 @@ interface ISynchronizedStateContext {
 const Context = createContext<ISynchronizedStateContext>({
     state: {
         display: true,
+        localDisplay: false,
         eventsLoading: false,
         stateLoading: false,
         permissionsLoading: false,
@@ -96,6 +98,8 @@ export const SynchronizedStateProvider: FunctionComponent<Props> = ({ children }
     } = useContext(LocalSessionContext);
 
     const [ events ] = useState<PainterEvent[]>([]);
+
+    const [localDisplay, setLocalDisplay] = useState<boolean>(false);
 
     const { state: { eventSerializer, eventController } } = useSharedEventSerializer();
 
@@ -258,6 +262,7 @@ export const SynchronizedStateProvider: FunctionComponent<Props> = ({ children }
 
     const SynchronizedStateProviderActions = {
         setDisplay: setDisplayAction,
+        setLocalDisplay: setLocalDisplay,
         setPermissions: setPermissionsAction,
         getPermissions: getPermissionsAction,
         refetchEvents: refetchEventsAction,
@@ -268,6 +273,7 @@ export const SynchronizedStateProvider: FunctionComponent<Props> = ({ children }
             value={{
                 state: {
                     display,
+                    localDisplay,
                     eventsLoading,
                     stateLoading,
                     permissionsLoading,

@@ -226,7 +226,7 @@ export function ClassContent () {
                             id="activity-view-container">
                             <Whiteboard
                                 uniqueId={forStudent ? `student` : `teacher`}
-                                group={sessionId} />
+                                group={classtype !== ClassType.LIVE ? sessionId : undefined} useLocalDisplay={classtype !== ClassType.LIVE} />
                             <PreviewLessonPlan />
                         </div>
                     </div> }
