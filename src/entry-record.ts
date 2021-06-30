@@ -10,18 +10,19 @@ if (!(window as any).kidslooplive) {
     (window as any).kidslooplive = true;
 
     const POST_EVENTS = `
-  mutation postPageEvent($streamId: ID!, $pageEvents: [PageEventIn]) {
-    postPageEvent(streamId: $streamId, pageEvents: $pageEvents)
-  }
-  `;
+    mutation postPageEvent($streamId: ID!, $pageEvents: [PageEventIn]) {
+        postPageEvent(streamId: $streamId, pageEvents: $pageEvents)
+    }
+    `;
 
     const url = new URL(window.location.href);
     const endpoint = url.searchParams.get('endpoint') || window.location.origin;
-    const graphQlEndpoint = `${decodeURIComponent(endpoint)}/graphql`;
 
     const token = AuthTokenProvider.retrieveToken();
+
     const headers = token ? { authorization: `Bearer ${token}` } : undefined;
 
+    const graphQlEndpoint = `${decodeURIComponent(endpoint)}/graphql`;
     const client = new GraphQLClient(graphQlEndpoint, { headers: headers });
 
     const streamId = uuid();
