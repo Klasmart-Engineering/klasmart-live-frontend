@@ -6,7 +6,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const { loadBrandingOptions } = require(`kidsloop-branding`);
 require('dotenv').config();
 
-const brandingOptions = loadBrandingOptions(process.env.BRAND);
+const brandingOptions = loadBrandingOptions("RUMAH_KISAH");
 
 module.exports = {
   mode: 'production',
