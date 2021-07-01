@@ -63,7 +63,7 @@ player.on(`custom-event`, (event: any) => {
     if (!youtubePlayer) {
         return;
     }
-    if (tag === `YTPlayerStateChange`) {
+    if (tag === `ytPlayerStateChange`) {
         const info = payload.playerInfo;
         youtubePlayer.seekTo(info.currentTime);
         switch (info.playerState) {
