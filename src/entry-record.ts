@@ -44,6 +44,15 @@ if (!(window as any).kidslooplive) {
 
     let eventsSinceKeyframe = 0;
 
+    const keepIframeSrcFn = (src: string): boolean => {
+        try {
+            const url = new URL(src);
+            return url.origin === `https://www.youtube.com`;
+        } catch {
+            return false;
+        }
+    };
+
     record({
         checkoutEveryNms: 1000 * 10,
         emit: (e, isCheckout) => {
@@ -51,6 +60,10 @@ if (!(window as any).kidslooplive) {
             // number of events emitted since last keyframe?
             if (isCheckout) {
                 eventsSinceKeyframe = 0;
+                // handle newly joined users
+                youtubePlayers.forEach((player, id) => {
+                    addCustomEvent(id, player.playerInfo, true);
+                });
             }
 
             const eventData = JSON.stringify({
@@ -71,10 +84,7 @@ const youtubePlayers = new Map<string, any>();
 window.addEventListener(`message`, ({ data }) => {
     if (!data || data.type !== `USER_JOIN`) { return; }
     youtubePlayers.forEach((player, id) => {
-        record.addCustomEvent(`ytPlayerStateChange`, {
-            id,
-            playerInfo: player.playerInfo,
-        });
+        addCustomEvent(id, player.playerInfo, true);
     });
 });
 
@@ -92,10 +102,7 @@ function onYoutubeVideo () {
             // console.log(`onStateChange`, `id`, id, `event`, event, `player`, player, `state`, state);
             event.stopPropagation();
             youtubePlayers.set(id, player);
-            record.addCustomEvent(`ytPlayerStateChange`, {
-                id,
-                playerInfo: state.target.playerInfo,
-            });
+            addCustomEvent(id, state.target.playerInfo, false);
         };
         const $ = (window as any).H5P.jQuery;
         $(window.document.body).on(`ytPlayerStateChange`, onStateChange);
@@ -104,11 +111,10 @@ function onYoutubeVideo () {
     }
 }
 
-function keepIframeSrcFn (src: string): boolean {
-    try {
-        const url = new URL(src);
-        return url.origin === `https://www.youtube.com`;
-    } catch {
-        return false;
-    }
+function addCustomEvent (id: string, info: any, isInitInfo: boolean) {
+    record.addCustomEvent(`ytPlayerStateChange`, {
+        id,
+        info,
+        isInitInfo,
+    });
 }
