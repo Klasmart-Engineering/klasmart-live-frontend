@@ -74,8 +74,7 @@ function onCustomEvent (event: any){
             isReady: false,
         };
         youtubePlayer.info = payload.info;
-        youtubePlayers.set(payload.id, youtubePlayer);
-        updateYoutubePlayerInfo(youtubePlayer, payload.isInitInfo);
+        updateYoutubePlayerInfo(youtubePlayer, payload.id, payload.isInitInfo);
     }
 }
 
@@ -94,7 +93,7 @@ function onFullSnapshotRebuilded () {
             };
             console.log(`onPlayerReady`, `id`, id, `event`, event, `player`, youtubePlayer);
             youtubePlayer.isReady = true;
-            updateYoutubePlayerInfo(youtubePlayer);
+            updateYoutubePlayerInfo(youtubePlayer, id);
         };
         for(const iframe of replayedWindow?.document.getElementsByTagName(`iframe`)) {
             try {
@@ -135,8 +134,9 @@ function onFullSnapshotRebuilded () {
     }
 }
 
-function updateYoutubePlayerInfo (youtubePlayer: YoutubePlayerReference, isInitInfo?: boolean) {
-    if (!youtubePlayer || !youtubePlayer.isReady || !youtubePlayer.info || !youtubePlayer.player) {
+function updateYoutubePlayerInfo (youtubePlayer: YoutubePlayerReference, id: string, isInitInfo?: boolean) {
+    if (!youtubePlayer.isReady || !youtubePlayer.info || !youtubePlayer.player) {
+        youtubePlayers.set(id, youtubePlayer);
         return;
     }
     // avoid glitches for users who already started watching
