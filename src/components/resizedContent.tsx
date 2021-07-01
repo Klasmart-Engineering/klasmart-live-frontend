@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { Theme } from "@material-ui/core";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
-import { useWindowSize } from "../utils/viewport";
 import { imageFrame } from "../utils/layerValues";
 import { LessonMaterial } from "../lessonMaterialContext";
 import { useMaterialToHref } from "../utils/contentUtils";
@@ -12,8 +11,9 @@ const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         imageFrame: {
             zIndex: imageFrame,
-            maxWidth: "99%",
-            maxHeight: `calc(100vh - ${theme.spacing(5)}px)`,
+            maxWidth: `100%`,
+            height: `auto`,
+            display: `block`,
             margin: "0 auto",
             backdropFilter: "blur(8px)",
             WebkitBackdropFilter: "blur(8px)",
@@ -32,39 +32,15 @@ export function ResizedIframe(props: Props): JSX.Element {
 
     const isPdfContent = contentHref.endsWith(`.pdf`);
 
-    const [transformScale, setTransformScale] = useState<number>(1);
     const [contentWidth, setContentWidth] = useState(1600);
     const [contentHeight, setContentHeight] = useState(1400);
-    const [enableResize, setEnableResize] = useState(true);
-
-    const size = useWindowSize();
-
-    useEffect(() => {
-        if (enableResize) {
-            scale(contentWidth, contentHeight);
-        }
-    }, [size])
+    const [useDoubleSize, setUseDoubleSize] = useState<boolean>(false);
 
     useEffect(() => {
         const iRef = window.document.getElementById("resizediframe") as HTMLIFrameElement;
         iRef.addEventListener("load", onLoad);
         return () => iRef.removeEventListener("resize", onLoad);
     }, [contentHref]);
-
-    const scale = (innerWidth: number, innerHeight: number) => {
-        let currentWidth: number = size.width, currentHeight: number = size.height;
-
-        const iRef = window.document.getElementById("classes-content-container") as HTMLIFrameElement;
-        if (iRef) {
-            currentWidth = iRef.getBoundingClientRect().width;
-            currentHeight = iRef.getBoundingClientRect().height;
-        }
-
-        const shrinkRatioX = (currentWidth / innerWidth) > 1 ? 1 : currentWidth / innerWidth;
-        const shrinkRatioY = (currentHeight / innerHeight) > 1 ? 1 : currentHeight / innerHeight;
-        const shrinkRatio = Math.min(shrinkRatioX, shrinkRatioY);
-        setTransformScale(shrinkRatio);
-    }
 
     function onLoad() {
         // TODO the client-side rendering version of H5P is ready! we can probably delete this function and the scale function above
@@ -80,27 +56,18 @@ export function ResizedIframe(props: Props): JSX.Element {
         const h5pDivCollection = contentDoc.body.getElementsByClassName("h5p-content");
         const h5pTypeColumn = contentDoc.body.getElementsByClassName("h5p-column").length;
 
-        if (h5pTypeColumn || isPdfContent) {
-            setEnableResize(false)
-        } else {
-            setEnableResize(true)
-        }
+        setUseDoubleSize(h5pTypeColumn > 0);
 
         if (h5pDivCollection.length > 0) {
             const h5pContainer = h5pDivCollection[0] as HTMLDivElement;
 
-            if (h5pTypeColumn) {
-                h5pContainer.setAttribute("style", "width: 100% !important;");
-            } else {
-                h5pContainer.setAttribute("style", "width: auto !important;");
-            }
+            h5pContainer.setAttribute("style", "width: 100% !important;");
 
             h5pContainer.setAttribute("data-iframe-height", "");
             const h5pWidth = h5pContainer.getBoundingClientRect().width;
             const h5pHeight = h5pContainer.getBoundingClientRect().height;
             setContentWidth(h5pWidth);
             setContentHeight(h5pHeight);
-            scale(h5pWidth, h5pHeight);
         }
 
         // Listen to acvitity clicks (that change the height of h5p)
@@ -128,15 +95,13 @@ export function ResizedIframe(props: Props): JSX.Element {
             ref={iframeRef}
             allow="microphone"
             data-h5p-width={contentWidth}
-            data-h5p-height={contentWidth}
+            data-h5p-height={contentHeight}
             style={{
-                width: enableResize ? contentWidth : '100%',
-                height: enableResize ? contentHeight : '100%',
-                position: enableResize ? `absolute` : 'static',
+                width: isPdfContent ? `100%` : (useDoubleSize ? `50%` : `100%`),
+                height: isPdfContent ? `100%` : (useDoubleSize ? `50%` : `100%`),
+                position: 'static',
                 transformOrigin: "center center",
-                transform: enableResize ? `scale(${transformScale})` : `scale(1)`,
-                minWidth: '100%',
-                minHeight: '100%',
+                transform: isPdfContent ? `scale(1)` : (useDoubleSize ? `scale(2)` : `scale(1)`),
             }}
         />
     );

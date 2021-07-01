@@ -23,7 +23,6 @@ export const MOBILE_WB_TOOLBAR_MAX_HEIGHT = 46; // 38 + 8(padding top)
 
 export function WBToolbarContainer({ useLocalDisplay } : { useLocalDisplay?: boolean} ) {
     const theme = useTheme();
-    const isSmDown = useMediaQuery(theme.breakpoints.down('sm'));
 
     const { classType: classtype, isTeacher, sessionId } = useSessionContext();
     const { state: { display, permissions }, actions: { setDisplay, setLocalDisplay, getPermissions, setPermissions } } = useSynchronizedState();
@@ -65,30 +64,14 @@ export function WBToolbarContainer({ useLocalDisplay } : { useLocalDisplay?: boo
         }
     };
     return (
-        <Grid item xs={12} style={{ position: "relative", height: WB_TOOLBAR_MAX_HEIGHT }}>
-            <Fab
-                aria-label="whiteboard toolbar opener"
-                disabled={!enableWB}
-                onClick={handleOpenWBToolbar}
-                size="large"
-                color="primary"
-                style={{
-                    display: open ? "none" : "flex",
-                    zIndex: WB_EXPAND_BUTTON,
-                    position: "absolute",
-                    bottom: 0,
-                    left: 0,
-                }}
-            >
-                <StyledIcon icon={<WBIcon />} size="large" color="white" />
-            </Fab>
+        open ? <div style={{ position: "absolute", width: "90%", height: WB_TOOLBAR_MAX_HEIGHT, bottom: 10, left: 10 }}>
             <Paper
                 aria-label="whiteboard toolbar"
                 elevation={2}
                 style={{
                     zIndex: WB_TOOLBAR,
-                    display: open ? "flex" : "none",
-                    padding: isSmDown ? theme.spacing(0.5) : theme.spacing(1),
+                    display: "flex",
+                    padding: theme.spacing(0.5),
                     width: "100%",
                     position: "absolute",
                     bottom: 0,
@@ -109,6 +92,21 @@ export function WBToolbarContainer({ useLocalDisplay } : { useLocalDisplay?: boo
                     <WBToolbar />
                 </Grid>
             </Paper>
-        </Grid>
+        </div> : <Fab
+            aria-label="whiteboard toolbar opener"
+            disabled={!enableWB}
+            onClick={handleOpenWBToolbar}
+            size="large"
+            color="primary"
+            style={{
+                display: open ? "none" : "flex",
+                zIndex: WB_EXPAND_BUTTON,
+                position: "absolute",
+                bottom: 10,
+                left: 10,
+            }}
+        >
+            <StyledIcon icon={<WBIcon />} size="large" color="white" />
+        </Fab>
     )
 }

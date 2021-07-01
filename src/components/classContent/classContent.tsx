@@ -85,8 +85,7 @@ function ClassContent() {
             item xs={12}
             style={{
                 maxWidth: "100%",
-                height: `calc(100% - ${WB_TOOLBAR_MAX_HEIGHT}px)`,
-                maxHeight: `calc(100% - ${WB_TOOLBAR_MAX_HEIGHT}px)`,
+                height: `100%`,
                 overflow: "hidden",
             }}
         >
