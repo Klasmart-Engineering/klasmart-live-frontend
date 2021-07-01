@@ -32,6 +32,7 @@ import React, {
 } from "react";
 import { useIntl } from "react-intl";
 import { useRecoilState } from "recoil";
+import { isMobile } from "react-device-detect";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -223,18 +224,22 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
                 container
                 alignItems="stretch"
                 className={classes.root}>
-                {items.map((item) => (
-                    <GlobalActionsMenuItem
-                        key={item.id}
-                        title={item.title}
-                        icon={item.icon}
-                        activeIcon={item.activeIcon}
-                        type={item.type}
-                        variant={item.variant}
-                        active={item.isActive}
-                        onClick={item.onClick}
-                    />
-                ))}
+                {items.map((item) =>
+                    <>
+                        { (!(isMobile && (item.id === `1` || item.id === `3`)) || !isMobile ) &&
+                        <GlobalActionsMenuItem
+                            key={item.id}
+                            title={item.title}
+                            icon={item.icon}
+                            activeIcon={item.activeIcon}
+                            type={item.type}
+                            variant={item.variant}
+                            active={item.isActive}
+                            onClick={item.onClick}
+                        />
+                        }
+                    </>
+                )}
             </Grid>
         </StyledPopper>
     );
