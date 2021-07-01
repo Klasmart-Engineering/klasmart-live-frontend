@@ -73,7 +73,7 @@ function onCustomEvent (event: any){
         const youtubePlayer = youtubePlayers.get(payload.id) ?? {
             isReady: false,
         };
-        youtubePlayer.info = payload.info;
+        youtubePlayer.info = payload.playerInfo;
         updateYoutubePlayerInfo(youtubePlayer, payload.id, payload.isInitInfo);
     }
 }

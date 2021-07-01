@@ -99,7 +99,6 @@ function onYoutubeVideo () {
         console.log(`registering event listeners for youtube videos`);
         youtubePlayers.clear();
         const onStateChange = (event: any, id: string, player: any, state: any) => {
-            // console.log(`onStateChange`, `id`, id, `event`, event, `player`, player, `state`, state);
             event.stopPropagation();
             youtubePlayers.set(id, player);
             addCustomEvent(id, state.target.playerInfo, false);
@@ -111,10 +110,10 @@ function onYoutubeVideo () {
     }
 }
 
-function addCustomEvent (id: string, info: any, isInitInfo: boolean) {
+function addCustomEvent (id: string, playerInfo: any, isInitInfo: boolean) {
     record.addCustomEvent(`ytPlayerStateChange`, {
         id,
-        info,
+        playerInfo,
         isInitInfo,
     });
 }
