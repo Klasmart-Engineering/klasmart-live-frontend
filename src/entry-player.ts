@@ -11,7 +11,13 @@ enum YoutubePlayerState {
     BUFFERING,
     CUED,
 }
-const youtubePlayers = new Map<string, {ready: boolean; player?: any; initInfo?: any }>();
+type YoutubePlayerReference = {
+    isReady?: boolean;
+    hasStarted?: boolean;
+    player?: any;
+    info?: any;
+};
+const youtubePlayers = new Map<string, YoutubePlayerReference>();
 const rrwebPlayer: Replayer = new Replayer([], {
     mouseTail: false,
     liveMode: true,
@@ -65,14 +71,11 @@ function onCustomEvent (event: any){
     const { tag, payload } = event.data;
     if(tag === `ytPlayerStateChange`) {
         const youtubePlayer = youtubePlayers.get(payload.id) ?? {
-            ready: false,
+            isReady: false,
         };
-        if (!youtubePlayer.ready) {
-            youtubePlayer.initInfo = payload.playerInfo;
-            youtubePlayers.set(payload.id, youtubePlayer);
-            return;
-        }
-        updateYoutubePlayerInfo(youtubePlayer.player, payload.playerInfo);
+        youtubePlayer.info = payload.info;
+        youtubePlayers.set(payload.id, youtubePlayer);
+        updateYoutubePlayerInfo(youtubePlayer, payload.isInitInfo);
     }
 }
 
@@ -86,15 +89,12 @@ function onFullSnapshotRebuilded () {
             return;
         }
         const onPlayerReady = (id: string) => (event: any) => {
-            const youtubePlayer = youtubePlayers.get(id);
+            const youtubePlayer = youtubePlayers.get(id) ?? {
+                isReady: false,
+            };
             console.log(`onPlayerReady`, `id`, id, `event`, event, `player`, youtubePlayer);
-            if(!youtubePlayer || !youtubePlayer.player) {
-                return;
-            }
-            youtubePlayer.ready = true;
-            if(youtubePlayer.initInfo) {
-                updateYoutubePlayerInfo(youtubePlayer.player, youtubePlayer.initInfo);
-            }
+            youtubePlayer.isReady = true;
+            updateYoutubePlayerInfo(youtubePlayer);
         };
         for(const iframe of replayedWindow?.document.getElementsByTagName(`iframe`)) {
             try {
@@ -106,7 +106,7 @@ function onFullSnapshotRebuilded () {
                 (iframe as HTMLIFrameElement).setAttribute(`src`, decodeURIComponent(src));
                 const id = (iframe as HTMLIFrameElement).getAttribute(`id`) ?? ``;
                 const youtubePlayer = youtubePlayers.get(id) ?? {
-                    ready: false,
+                    isReady: false,
                 };
                 youtubePlayer.player =  new (replayedWindow as any).YT.Player(id, {
                     events: {
@@ -134,7 +134,18 @@ function onFullSnapshotRebuilded () {
         onYTAPIReady();
     }
 }
-function updateYoutubePlayerInfo (player: any, info: any) {
+
+function updateYoutubePlayerInfo (youtubePlayer: YoutubePlayerReference, isInitInfo?: boolean) {
+    if (!youtubePlayer || !youtubePlayer.isReady || !youtubePlayer.info || !youtubePlayer.player) {
+        return;
+    }
+    // avoid glitches for users who already started watching
+    if (youtubePlayer.hasStarted && isInitInfo) {
+        return;
+    }
+    youtubePlayer.hasStarted = true;
+
+    const { player, info } = youtubePlayer;
     player.seekTo(info.currentTime);
     switch(info.playerState){
     case YoutubePlayerState.ENDED:
