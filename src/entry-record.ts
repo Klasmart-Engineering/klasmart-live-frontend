@@ -62,7 +62,7 @@ if (!(window as any).kidslooplive) {
             eventRecorder.recordEvent(eventStream, eventData, isCheckout || false);
             eventRecorder.uploadEvents();
         },
-        allowIframe: keepIframeSrcFn,
+        keepIframeSrcFn,
     });
 }
 
