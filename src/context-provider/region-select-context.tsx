@@ -28,8 +28,21 @@ const RegionSelectContext = createContext<IRegionSelectContext>({ loading: false
 
 const DefaultRegions: Region[] = [
     {
+        id: "auth.kidsloop.live",
+        name: "Live Global",
+        development: false,
+        services: {
+            auth: "http://auth.kidsloop.live",
+            live: "http://live.kidsloop.live",
+            cms: "http://cms.kidsloop.live",
+            sfu: "http://live.kidsloop.live/sfu",
+            user: "http://api.kidsloop.live/user/",
+            privacy: "https://kidsloop.live/en/policies/privacy-notice"
+        }
+    },
+    {
         id: "auth.kidsloop.net",
-        name: "Global",
+        name: "Global (Legacy)",
         development: false,
         services: {
             auth: "https://auth.kidsloop.net",
@@ -115,19 +128,6 @@ const DefaultRegions: Region[] = [
             cms: "https://cms.alpha.kidsloop.net",
             sfu: "https://live.alpha.kidsloop.net/sfu",
             user: "https://api.alpha.kidsloop.net/user/",
-            privacy: "https://kidsloop.net/en/policies/privacy-notice"
-        }
-    },
-    {
-        id: "auth-live-test.kidsloop.net",
-        name: "Live Test",
-        development: true,
-        services: {
-            auth: "http://auth-live-test.kidsloop.net",
-            live: "http://live-live-test.kidsloop.net",
-            cms: "http://kl2-live-test.kidsloop.net",
-            sfu: "http://live-live-test.kidsloop.net/sfu",
-            user: "http://api-live-test.kidsloop.net/user/",
             privacy: "https://kidsloop.net/en/policies/privacy-notice"
         }
     },
