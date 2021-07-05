@@ -68,6 +68,7 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
     const [ selectedEraser, setSelectedEraser ] = useState<boolean>(false);
     const [ selectedText, setSelectedText ] = useState<boolean>(false);
     const [ selectedMove, setSelectedMove ] = useState<boolean>(false);
+    const [ toolbarItemsDisabled, setToolbarItemsDisabled ] = useState<boolean>(false);
 
     const { classtype, sessionId } = useContext(LocalSessionContext);
 
@@ -95,7 +96,7 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
             selectTool, selectColorByValue, clear,
         },
     } = useToolbarContext();
-
+    
     const selectObjectEraser = useCallback(() => {
         const eraserOptions = tools.eraser.options;
         if (eraserOptions) {
@@ -114,6 +115,10 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
     }, [ selectedPen ]);
 
     useEffect(()=>{
+        if(classtype === ClassType.LIVE){
+            setToolbarItemsDisabled(!isGlobalCanvasEnabled)
+        }
+
         if(isGlobalCanvasEnabled){
             setSelectedPen(`#000000`);
         }else{
@@ -135,7 +140,7 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
                     <CanvasMenuItem
                         key={`color-${color}`}
                         color={color}
-                        disabled={!isGlobalCanvasEnabled}
+                        disabled={toolbarItemsDisabled}
                         active={selectedPen === color}
                         icon={<PencilIcon
                             size="1.85rem"
@@ -147,12 +152,12 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
                 ))}
 
                 <CanvasMenuItem
-                    disabled={!isGlobalCanvasEnabled}
+                    disabled={toolbarItemsDisabled}
                     active={selectedMove}
                     icon={<MoveIcon size="1.85rem"/>}
                     onClick={ () => {  setSelectedMove(true); setSelectedText(false); setSelectedEraser(false); setSelectedPen(undefined);  selectTool(`move`); } } />
                 <CanvasMenuItem
-                    disabled={!isGlobalCanvasEnabled}
+                    disabled={toolbarItemsDisabled}
                     active={selectedText}
                     icon={<TextIcon size="1.85rem"/>}
                     onClick={ () => {  setSelectedText(true); setSelectedMove(false); setSelectedEraser(false); setSelectedPen(undefined);  selectTool(`text`); } } />
@@ -160,7 +165,7 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
                     title={intl.formatMessage({
                         id: `whiteboard_eraser`,
                     })}
-                    disabled={!isGlobalCanvasEnabled}
+                    disabled={toolbarItemsDisabled}
                     active={selectedEraser}
                     icon={<EraserIcon size="1.85rem"/>}
                     onClick={ () => {setSelectedPen(undefined);  setSelectedMove(false); setSelectedText(false); selectObjectEraser(); setSelectedEraser(true);  }} />
@@ -169,7 +174,7 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
                     title={intl.formatMessage({
                         id: `whiteboard_clear_canvas`,
                     })}
-                    disabled={!isGlobalCanvasEnabled}
+                    disabled={toolbarItemsDisabled}
                     icon={<SlideEraserIcon size="1.85rem"/>}
                     onClick={ () => { clear([ sessionId ]);} } />
 
@@ -179,7 +184,7 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
                         title={intl.formatMessage({
                             id: `whiteboard_clear_all_canvas`,
                         })}
-                        disabled={!isGlobalCanvasEnabled}
+                        disabled={toolbarItemsDisabled}
                         icon={<TrashIcon size="1.85rem"/>}
                         onClick={ () => { clear();} } />
 
