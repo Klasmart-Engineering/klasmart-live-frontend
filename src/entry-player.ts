@@ -1,6 +1,8 @@
 import { EventType, Replayer } from 'rrweb';
 // eslint-disable-next-line no-unused-vars
 
+const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
 let hasReplayStarted = false;
 let hasReceivedFullSnapshot = false;
 
@@ -82,11 +84,24 @@ function onFullSnapshotRebuilded () {
     console.log(`onFullSnapshotRebuilded`);
     const replayedIframe = window.document.getElementsByTagName(`iframe`)[0];
     const replayedWindow = replayedIframe.contentWindow;
+    const replayedDocument = replayedIframe.contentDocument;
+    if (!replayedWindow || !replayedDocument) {
+        return;
+    }
+
+    if (isSafari) {
+        const videos = replayedDocument.getElementsByTagName(`video`);
+        for (const video of videos) {
+            video.muted = true;
+        }
+        window.document.body.addEventListener(`touchstart`, () => {
+            for (const video of videos) {
+                video.muted = false;
+            }
+        }, false);
+    }
 
     const onYTAPIReady = () => {
-        if (!replayedWindow?.document) {
-            return;
-        }
         const onPlayerReady = (id: string) => (event: any) => {
             const youtubePlayer = youtubePlayers.get(id) ?? {
                 isReady: false,
@@ -95,7 +110,8 @@ function onFullSnapshotRebuilded () {
             youtubePlayer.isReady = true;
             updateYoutubePlayerInfo(youtubePlayer, id);
         };
-        for(const iframe of replayedWindow?.document.getElementsByTagName(`iframe`)) {
+
+        for(const iframe of replayedDocument.getElementsByTagName(`iframe`)) {
             try {
                 const src = (iframe as HTMLIFrameElement).getAttribute(`src`) ?? ``;
                 const url = new URL(src);
@@ -121,12 +137,9 @@ function onFullSnapshotRebuilded () {
     };
 
     if (!(replayedWindow as any).YT) {
-        const tag = replayedWindow?.document.createElement(`script`);
+        const tag = replayedDocument.createElement(`script`);
         (replayedWindow as any).onYouTubeIframeAPIReady = onYTAPIReady;
-        const head = replayedWindow?.document.getElementsByTagName(`head`)[0];
-        if(!tag) {
-            return;
-        }
+        const head = replayedDocument.getElementsByTagName(`head`)[0];
         tag.src = `https://www.youtube.com/iframe_api`;
         head?.appendChild(tag);
     } else {
