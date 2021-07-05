@@ -98,6 +98,9 @@ function onFullSnapshotRebuilded () {
             for (const video of videos) {
                 video.muted = false;
             }
+            youtubePlayers.forEach((youtubePlayer) => {
+                youtubePlayer.player.unMute();
+            });
         }, false);
     }
 
@@ -108,6 +111,9 @@ function onFullSnapshotRebuilded () {
             };
             console.log(`onPlayerReady`, `id`, id, `event`, event, `player`, youtubePlayer);
             youtubePlayer.isReady = true;
+            if (isSafari) {
+                youtubePlayer.player.mute();
+            }
             updateYoutubePlayerInfo(youtubePlayer, id);
         };
 
