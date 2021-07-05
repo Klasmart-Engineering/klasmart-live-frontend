@@ -14,7 +14,7 @@ pipelines:
         caches:
           - nodemodules
         artifacts:
-          - dist/*
+          - dist/**
 
     - step:
         name: "Build & Push Docker image"
