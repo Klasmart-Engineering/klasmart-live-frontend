@@ -94,14 +94,18 @@ function onFullSnapshotRebuilded () {
         for (const video of videos) {
             video.muted = true;
         }
-        window.document.body.addEventListener(`touchstart`, () => {
+        const unmute =  () => {
             for (const video of videos) {
                 video.muted = false;
             }
             youtubePlayers.forEach((youtubePlayer) => {
                 youtubePlayer.player.unMute();
             });
-        }, false);
+        };
+        // to unmute video on ipad/iphone tap the video
+        window.document.body.addEventListener(`touchstart`, unmute, false);
+        // to unmute video on desktop click the video twice
+        window.document.body.addEventListener(`click`, unmute, false);
     }
 
     const onYTAPIReady = () => {
