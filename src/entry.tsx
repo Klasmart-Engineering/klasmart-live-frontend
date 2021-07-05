@@ -322,8 +322,7 @@ function GuideContent () {
     return (
         <RawIntlProvider value={locale}>
             <Grid
-                container
-                direction="column"
+                container direction="column"
                 alignItems="center"
                 alignContent="center"
                 spacing={1}
