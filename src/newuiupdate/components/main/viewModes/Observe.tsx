@@ -232,7 +232,7 @@ function StudentPreviewCard ({ session }: { session: Session }) {
                     <div className={classes.previewPlayerContainer}>
                         <div
                             className={classes.previewExpand}
-                            onClick={() => fullScreenById(`preview:${session.streamId}`) }>
+                            onClick={() => fullScreenById(`observe:${session.streamId}`) }>
                             <ExpandIcon size="0.75em" />
                         </div>
                         <PreviewPlayer
