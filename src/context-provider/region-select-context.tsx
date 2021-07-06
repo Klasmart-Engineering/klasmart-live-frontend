@@ -32,11 +32,11 @@ const DefaultRegions: Region[] = [
         name: "Live Global",
         development: false,
         services: {
-            auth: "http://auth.kidsloop.live",
-            live: "http://live.kidsloop.live",
-            cms: "http://cms.kidsloop.live",
-            sfu: "http://live.kidsloop.live/sfu",
-            user: "http://api.kidsloop.live/user/",
+            auth: "https://auth.kidsloop.live",
+            live: "https://live.kidsloop.live",
+            cms: "https://cms.kidsloop.live",
+            sfu: "https://live.kidsloop.live/sfu",
+            user: "https://api.kidsloop.live/user/",
             privacy: "https://kidsloop.live/en/policies/privacy-notice"
         }
     },
