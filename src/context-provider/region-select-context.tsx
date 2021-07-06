@@ -42,15 +42,15 @@ const DefaultRegions: Region[] = [
     },
     {
         id: "auth.kidsloop.net",
-        name: "Global (Legacy)",
+        name: "Live Global (Old)",
         development: false,
         services: {
-            auth: "https://auth.kidsloop.net",
-            live: "https://live.kidsloop.net",
-            cms: "https://kl2.kidsloop.net",
-            sfu: "https://live.kidsloop.net/sfu",
-            user: "https://api.kidsloop.net/user/",
-            privacy: "https://kidsloop.net/policies/privacy-notice"
+            auth: "https://auth.kidsloop.live",
+            live: "https://live.kidsloop.live",
+            cms: "https://cms.kidsloop.live",
+            sfu: "https://live.kidsloop.live/sfu",
+            user: "https://api.kidsloop.live/user/",
+            privacy: "https://kidsloop.live/policies/privacy-notice"
         }
     },
     {
