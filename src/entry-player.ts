@@ -1,4 +1,7 @@
-import { EventType, Replayer } from 'rrweb';
+import {
+    EventType,
+    Replayer,
+} from 'rrweb';
 // eslint-disable-next-line no-unused-vars
 
 const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
@@ -103,9 +106,10 @@ function onFullSnapshotRebuilded () {
             });
         };
         // to unmute video on ipad/iphone tap the video
-        window.document.body.addEventListener(`touchstart`, unmute, false);
-        // to unmute video on desktop click the video twice
-        window.document.body.addEventListener(`click`, unmute, false);
+        // to unmute video on desktop click the video twice(why it doesn't work after first click?)
+        window.document.body.addEventListener(`click`, unmute, {
+            once: true,
+        });
     }
 
     const onYTAPIReady = () => {
