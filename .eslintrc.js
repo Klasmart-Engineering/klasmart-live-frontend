@@ -1,5 +1,11 @@
 module.exports = {
-    extends: [ `@kidsloop/eslint-config/react` ],
+    env: {
+        browser: true,
+        es2021: true,
+    },
+    extends: [
+        `@kidsloop/eslint-config/react`
+    ],
     parserOptions: {
         ecmaFeatures: {
             jsx: true,
