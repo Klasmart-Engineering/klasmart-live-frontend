@@ -141,3 +141,8 @@ export const showEndStudyState = atom({
     key: `showEndStudyState`,
     default: false,
 });
+
+export const hasJoinedClassroomState = atom({
+    key: `hasJoinedClassroomState`,
+    default: false,
+});

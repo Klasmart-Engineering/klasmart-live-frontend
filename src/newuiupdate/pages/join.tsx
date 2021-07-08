@@ -10,8 +10,12 @@ import StyledButton from "../../components/styled/button";
 import StyledIcon from "../../components/styled/icon";
 import StyledTextField from "../../components/styled/textfield";
 import { ClassType } from "../../store/actions";
-import { BrandingType, getOrganizationBranding } from "../components/utils/utils";
+import {
+    BrandingType,
+    getOrganizationBranding,
+} from "../components/utils/utils";
 import { LocalSessionContext } from "../providers/providers";
+import { hasJoinedClassroomState } from "../states/layoutAtoms";
 import Button from '@material-ui/core/Button';
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
@@ -23,7 +27,10 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Grid from "@material-ui/core/Grid";
 import {
-    createStyles, makeStyles, Theme, useTheme,
+    createStyles,
+    makeStyles,
+    Theme,
+    useTheme,
 } from "@material-ui/core/styles";
 import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
@@ -31,10 +38,14 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { InfoCircle as InfoCircleIcon } from "@styled-icons/boxicons-solid/InfoCircle";
 import clsx from "clsx";
 import LogRocket from 'logrocket';
-import React, {
-    useContext, useEffect, useState,
+import React,
+{
+    useContext,
+    useEffect,
+    useState,
 } from "react";
 import { FormattedMessage } from "react-intl";
+import { useRecoilState } from "recoil";
 
 const config = require(`../../../package.json`);
 
@@ -115,12 +126,16 @@ export default function Join (): JSX.Element {
     const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
 
     const {
-        classtype, name, isTeacher, org_id,
+        classtype,
+        name,
+        isTeacher,
+        org_id,
     } = useContext(LocalSessionContext);
 
     const [ dialogOpen, setDialogOpen ] = useState<boolean>(false);
     const handleDialogClose = () => setDialogOpen(false);
 
+    const [ deviceStatus, setDeviceStatus ] = useState<string>(``);
     const [ permissionError, setPermissionError ] = useState<boolean>(false);
     const [ loadError, setLoadError ] = useState<boolean>(false);
     const [ audioDeviceOptions, setAudioDeviceOptions ] = useState<MediaDeviceInfo[]>([]);
@@ -149,26 +164,38 @@ export default function Join (): JSX.Element {
         if (!navigator.mediaDevices) { return; }
 
         const getMediaPermissions = async () => {
-            try {
-                /**
-                 * Specification
-                 * Even if it's not a live class(classtype !== ClassType.LIVE), application needs a microphone.
-                 * This is because some H5P content requires a microphone.
-                 */
-                await navigator.mediaDevices.getUserMedia({
-                    audio: true,
-                });
-                // Live class requires the cameras also.
-                if (classtype === ClassType.LIVE) {
+            switch(classtype){
+            case ClassType.LIVE:
+                try{
                     await navigator.mediaDevices.getUserMedia({
+                        audio: true,
                         video: true,
                     });
+                    await loadMediaDevices();
                 }
-                setPermissionError(false); setDialogOpen(false);
-                await loadMediaDevices();
-            } catch (e) {
-                console.error(`getMediaPermissions Error - ${e}`);
-                setPermissionError(true); setDialogOpen(true);
+                catch (e) {
+                    console.error(`getMediaPermissions Error - ${e}`);
+                    setPermissionError(true); setDialogOpen(true);
+                }
+                break;
+            default:
+                try {
+                    await navigator.mediaDevices.getUserMedia({
+                        audio: true,
+                    });
+                    await loadMediaDevices();
+                }
+                catch (e){
+                    if (isMediaNotFoundError(e)) {
+                        setDeviceStatus(DeviceStatus.MIC_NOT_FOUND);
+                    } else if (isMediaNotAllowedError(e)) {
+                        setDeviceStatus(DeviceStatus.MIC_NOT_ALLOWED);
+                    } else {
+                        setDeviceStatus(DeviceStatus.MIC_ERROR);
+                    }
+                    console.error(`getMediaPermissions Error - ${e}`);
+                    setPermissionError(false); setDialogOpen(true);
+                }
             }
         };
         getMediaPermissions();
@@ -259,6 +286,14 @@ export default function Join (): JSX.Element {
         });
     }
 
+    function isMediaNotFoundError (error: any) {
+        return error.name === `NotFoundError` || error.name === `DevicesNotFoundError`;
+    }
+
+    function isMediaNotAllowedError (error: any) {
+        return error.name === `NotAllowedError` || error.name === `PermissionDeniedError`;
+    }
+
     useEffect(() => {
         if (!navigator.mediaDevices) { return; }
         if (classtype === ClassType.LIVE) {
@@ -288,7 +323,7 @@ export default function Join (): JSX.Element {
                     variant="h3"
                     style={{
                         fontWeight: 600,
-                        color: branding?.primaryColor && theme.palette.getContrastText(branding?.primaryColor)
+                        color: branding?.primaryColor && theme.palette.getContrastText(branding?.primaryColor),
                     }}
                 >
                     <FormattedMessage
@@ -374,6 +409,7 @@ export default function Join (): JSX.Element {
             <PermissionAlertDialog dialogOpenHandler={{
                 dialogOpen,
                 handleDialogClose,
+                deviceStatus,
             }} />
         </div>
     );
@@ -474,8 +510,15 @@ function JoinRoomForm ({
     videoDeviceIdHandler,
 }: JoinRoomFormProps): JSX.Element {
     const {
-        classtype, setCamera, name, setName, sessionId,
+        classtype,
+        setCamera,
+        name,
+        setName,
+        sessionId,
+
     } = useContext(LocalSessionContext);
+
+    const [ hasJoinedClassroom, setHasJoinedClassroom ] = useRecoilState(hasJoinedClassroomState);
 
     const { audioDeviceId, setAudioDeviceId } = audioDeviceIdHandler;
     const { videoDeviceId, setVideoDeviceId } = videoDeviceIdHandler;
@@ -507,6 +550,7 @@ function JoinRoomForm ({
             });
         }
         setCamera(stream);
+        setHasJoinedClassroom(true);
     }
 
     return (
@@ -515,7 +559,6 @@ function JoinRoomForm ({
                 container
                 direction="column"
                 spacing={2}>
-
                 {!name && <Grid
                     item
                     xs><StyledTextField
@@ -557,7 +600,7 @@ function JoinRoomForm ({
                     xs>
                     <StyledButton
                         fullWidth
-                        disabled={mediaDeviceError || !stream}
+                        disabled={classtype === ClassType.LIVE && (mediaDeviceError || !stream)}
                         type="submit"
                         size="large"
                     >
@@ -575,10 +618,23 @@ function PermissionAlertDialog ({ dialogOpenHandler }: {
     dialogOpenHandler: {
         dialogOpen: boolean;
         handleDialogClose: () => void;
+        deviceStatus: string;
     };
 }) {
     const { classtype } = useContext(LocalSessionContext);
-    const { dialogOpen, handleDialogClose } = dialogOpenHandler;
+    const {
+        dialogOpen,
+        handleDialogClose,
+        deviceStatus,
+    } = dialogOpenHandler;
+    const [ dialogTitle, setDialogTitle ] = useState(`join_permissionAlertDialog_title`);
+    const [ dialogContent, setDialogContent ] = useState(`join_permissionAlertDialog_contentText_live`);
+
+    useEffect(() => {
+        if(classtype !== ClassType.LIVE){
+            setDialogContent(`join_permissionAlertDialog_contentText_classesStudy`);
+        }
+    }, [ classtype, deviceStatus ]);
 
     return (
         <Dialog
@@ -588,14 +644,11 @@ function PermissionAlertDialog ({ dialogOpenHandler }: {
             onClose={handleDialogClose}
         >
             <DialogTitle id="media-permission-alert-title">
-                <FormattedMessage id="join_permissionAlertDialog_title" />
+                <FormattedMessage id={dialogTitle} />
             </DialogTitle>
             <DialogContent>
                 <DialogContentText id="media-permission-alert-description">
-                    {classtype === ClassType.LIVE ?
-                        <FormattedMessage id="join_permissionAlertDialog_contentText_live" /> :
-                        <FormattedMessage id="join_permissionAlertDialog_contentText_classesStudy" />
-                    }
+                    <FormattedMessage id={dialogContent} />
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
@@ -607,4 +660,10 @@ function PermissionAlertDialog ({ dialogOpenHandler }: {
             </DialogActions>
         </Dialog>
     );
+}
+
+export enum DeviceStatus {
+    MIC_ERROR = `mic_error`,
+    MIC_NOT_FOUND = `mic_not_found`,
+    MIC_NOT_ALLOWED = `mic_not_allowed`
 }
