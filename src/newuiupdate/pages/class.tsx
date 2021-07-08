@@ -4,21 +4,38 @@ import Main from '../components/main/main';
 import Sidebar from '../components/sidebar/sidebar';
 import { MUTATION_SET_HOST } from "../components/utils/graphql";
 import {
-    LIVE_LINK, LocalSessionContext, SFU_LINK,
+    LIVE_LINK,
+    LocalSessionContext,
+    SFU_LINK,
 } from '../providers/providers';
 import { RoomContext } from "../providers/roomContext";
 import {
-    GLOBAL_MUTE_MUTATION, GLOBAL_MUTE_QUERY, GlobalMuteNotification, WebRTCContext,
+    GLOBAL_MUTE_MUTATION,
+    GLOBAL_MUTE_QUERY,
+    GlobalMuteNotification,
+    WebRTCContext,
 } from "../providers/WebRTCContext";
 import {
-    hasControlsState, isLessonPlanOpenState, studyRecommandUrlState,
+    hasControlsState,
+    isLessonPlanOpenState,
+    studyRecommandUrlState,
 } from "../states/layoutAtoms";
-import { useMutation, useQuery } from "@apollo/client";
 import {
-    Grid, makeStyles, Theme, useMediaQuery, useTheme,
+    useMutation,
+    useQuery,
+} from "@apollo/client";
+import {
+    Grid,
+    makeStyles,
+    Theme,
+    useMediaQuery,
+    useTheme,
 } from '@material-ui/core';
-import React, {
-    useContext, useEffect, useState,
+import React,
+{
+    useContext,
+    useEffect,
+    useState,
 } from 'react';
 import { useRecoilState } from "recoil";
 
@@ -32,33 +49,37 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 }));
 
-function Class() {
+function Class () {
     const classes = useStyles();
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
 
-    const [hasControls, setHasControls] = useRecoilState(hasControlsState);
-    const [isLessonPlanOpen, setIsLessonPlanOpen] = useRecoilState(isLessonPlanOpenState);
-    const [studyRecommandUrl, setStudyRecommandUrl] = useRecoilState(studyRecommandUrlState);
+    const [ hasControls, setHasControls ] = useRecoilState(hasControlsState);
+    const [ isLessonPlanOpen, setIsLessonPlanOpen ] = useRecoilState(isLessonPlanOpenState);
+    const [ studyRecommandUrl, setStudyRecommandUrl ] = useRecoilState(studyRecommandUrlState);
 
-    const [camerasOn, setCamerasOn] = useState(true);
-    const [micsOn, setMicsOn] = useState(true);
+    const [ camerasOn, setCamerasOn ] = useState(true);
+    const [ micsOn, setMicsOn ] = useState(true);
 
     const {
-        roomId, sessionId, classtype, org_id,
+        roomId,
+        sessionId,
+        classtype,
+        org_id,
+
     } = useContext(LocalSessionContext);
     const { sessions } = useContext(RoomContext);
     const webrtc = useContext(WebRTCContext);
 
     const localSession = sessions.get(sessionId);
 
-    const [hostMutation] = useMutation(MUTATION_SET_HOST, {
+    const [ hostMutation ] = useMutation(MUTATION_SET_HOST, {
         context: {
             target: LIVE_LINK,
         },
     });
 
-    const [globalMuteMutation] = useMutation(GLOBAL_MUTE_MUTATION, {
+    const [ globalMuteMutation ] = useMutation(GLOBAL_MUTE_MUTATION, {
         context: {
             target: SFU_LINK,
         },
@@ -73,12 +94,12 @@ function Class() {
         },
     });
 
-    function ramdomInt(min: number, max: number) {
+    function ramdomInt (min: number, max: number) {
         return Math.floor(Math.random() * (max - min)) + min;
     }
 
     // https://swagger-ui.kidsloop.net/#/content/searchContents
-    async function getAllLessonMaterials() {
+    async function getAllLessonMaterials () {
         const CMS_ENDPOINT = `${process.env.ENDPOINT_CMS}`;
         const headers = new Headers();
         headers.append(`Accept`, `application/json`);
@@ -98,8 +119,8 @@ function Class() {
         if (response.status === 200) { return response.json(); }
     }
 
-    async function fetchEverything() {
-        async function fetchAllLessonMaterials() {
+    async function fetchEverything () {
+        async function fetchAllLessonMaterials () {
             const payload = await getAllLessonMaterials();
             const matList = payload.list;
             const dnds = matList.filter((mat: any) => {
@@ -118,7 +139,7 @@ function Class() {
             }
         }
         try {
-            await Promise.all([fetchAllLessonMaterials()]);
+            await Promise.all([ fetchAllLessonMaterials() ]);
         } catch (err) {
             console.error(`Fail to fetchAllLessonMaterials in Study: ${err}`);
             setStudyRecommandUrl(``);
@@ -126,7 +147,7 @@ function Class() {
     }
 
     useEffect(() => {
-        const teachers = [...sessions.values()].filter(session => session.isTeacher === true).sort((a, b) => a.joinedAt - b.joinedAt);
+        const teachers = [ ...sessions.values() ].filter(session => session.isTeacher === true).sort((a, b) => a.joinedAt - b.joinedAt);
         const host = teachers.find(session => session.isHost === true);
         if (!host && teachers.length) {
             const hostId = teachers[0].id;
@@ -138,13 +159,13 @@ function Class() {
             });
             setHasControls(true);
         }
-    }, [sessions.size]);
+    }, [ sessions.size ]);
 
     useEffect(() => {
-        const teachers = [...sessions.values()].filter(session => session.isTeacher === true).sort((a, b) => a.joinedAt - b.joinedAt);
+        const teachers = [ ...sessions.values() ].filter(session => session.isTeacher === true).sort((a, b) => a.joinedAt - b.joinedAt);
         const host = teachers.find(session => session.isHost === true);
         host?.id === sessionId ? setHasControls(true) : setHasControls(false);
-    }, [sessions]);
+    }, [ sessions ]);
 
     useEffect(() => {
         if (classtype === ClassType.STUDY) {
@@ -152,7 +173,7 @@ function Class() {
                 fetchEverything();
             }
         }
-    }, [classtype]);
+    }, [ classtype ]);
 
     const enforceGlobalMute = async () => {
         const { data } = await refetchGlobalMute();
@@ -174,7 +195,7 @@ function Class() {
         webrtc?.inboundStreams.size,
     ]);
 
-    async function toggleVideoStates(isOn?: boolean) {
+    async function toggleVideoStates (isOn?: boolean) {
         const notification: GlobalMuteNotification = {
             roomId,
             audioGloballyMuted: undefined,
@@ -189,7 +210,7 @@ function Class() {
         }
     }
 
-    async function toggleAudioStates(isOn?: boolean) {
+    async function toggleAudioStates (isOn?: boolean) {
         const notification: GlobalMuteNotification = {
             roomId,
             audioGloballyMuted: isOn ?? micsOn,
