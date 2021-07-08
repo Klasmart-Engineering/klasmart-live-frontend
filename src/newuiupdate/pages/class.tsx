@@ -146,7 +146,6 @@ function Class() {
         host?.id === sessionId ? setHasControls(true) : setHasControls(false);
     }, [sessions]);
 
-
     useEffect(() => {
         if (classtype === ClassType.STUDY) {
             if (org_id) {
