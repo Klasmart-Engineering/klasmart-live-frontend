@@ -12,6 +12,7 @@ const useStyles = makeStyles((theme: Theme) =>
         imageFrame: {
             zIndex: imageFrame,
             maxWidth: `100%`,
+            maxHeight: `100%`,
             height: `auto`,
             display: `block`,
             margin: "0 auto",
@@ -113,9 +114,10 @@ export function ImageFrame({ material }: { material: LessonMaterial }) {
     const [contentHref] = useMaterialToHref(material);
 
     return (
-        <Grid container>
+        <Grid container style={{ height: "100%" }}>
             <Grid container item style={{
                 height: "100%",
+                width: "100%",
                 position: "absolute",
                 left: 0,
                 right: 0,
@@ -128,10 +130,12 @@ export function ImageFrame({ material }: { material: LessonMaterial }) {
                 backgroundSize: "cover",
             }}
             />
-            <img
-                className={imageFrame}
-                src={contentHref}
-            />
+            <div className="image-container" style={{ maxWidth: "100%", maxHeight: "100%", zIndex: 994, display: "flex", justifyContent: "center", alignItems: "center" }}>
+                <img
+                    className={imageFrame}
+                    src={contentHref}
+                />
+            </div>
         </Grid>
     )
 }
