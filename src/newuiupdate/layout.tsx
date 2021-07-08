@@ -1,3 +1,4 @@
+import { Trophy } from "../components/trophies/trophy";
 import { AuthTokenProvider } from "../services/auth-token/AuthTokenProvider";
 import Class from './pages/class';
 import ClassEnded from './pages/classEnded';
@@ -5,17 +6,26 @@ import ClassLeft from './pages/classLeft';
 import Join from './pages/join';
 import ClassProviders from "./providers/classProviders";
 import {
-    LIVE_LINK, LocalSessionContext, sessionId,
+    LIVE_LINK,
+    LocalSessionContext,
+    sessionId,
 } from './providers/providers';
-import { classEndedState, classLeftState } from "./states/layoutAtoms";
 import {
-    ApolloClient, ApolloProvider, InMemoryCache, HttpLink
+    classEndedState,
+    classLeftState,
+    hasJoinedClassroomState,
+} from "./states/layoutAtoms";
+import {
+    ApolloClient,
+    ApolloProvider,
+    HttpLink,
+    InMemoryCache,
 } from "@apollo/client";
 import { RetryLink } from "@apollo/client/link/retry";
 import { WebSocketLink } from "@apollo/client/link/ws";
-import React, { useContext } from 'react';
+import React,
+{ useContext } from 'react';
 import { useRecoilState } from "recoil";
-import { Trophy } from "../components/trophies/trophy";
 
 export function getApolloClient (roomId: string) {
     const authToken = AuthTokenProvider.retrieveToken();
@@ -59,23 +69,15 @@ export function getApolloClient (roomId: string) {
     } as any);
 }
 
-
-export const clientAPI = new ApolloClient({
-    cache: new InMemoryCache(),
-    link: new HttpLink({
-        uri: `${process.env.ENDPOINT_API}/user/`,
-         credentials: 'include'
-    }),
-});
-
 function Layout () {
     const { camera, name } = useContext(LocalSessionContext);
+    const [ hasJoinedClassroom, setHasJoinedClassroom ] = useRecoilState(hasJoinedClassroomState);
 
-    if (!name || camera === undefined) {
-        // return  <ApolloProvider client={clientAPI}><Join /></ApolloProvider>;
-         return  <Join />;
+    if(hasJoinedClassroom || (!name || camera !== undefined)){
+        return <ClassWrapper/>;
     }
-    return <ClassWrapper/>;
+
+    return  <Join />;
 }
 
 function ClassWrapper () {
