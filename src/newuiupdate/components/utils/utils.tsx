@@ -220,16 +220,29 @@ function NoItemList (props: NoItemListProps) {
 export { NoItemList };
 
 export function fullScreenById (id:any) {
-    const video = document.getElementById(id) as any;
-
-    if (!video) return;
-
-    if (video.requestFullscreen)
-        video.requestFullscreen();
-    else if (video.webkitRequestFullscreen)
-        video.webkitRequestFullscreen(); // to support on Safari
-    else if (video.msRequestFullScreen)
-        video.msRequestFullScreen(); // to support on Edge
+    const document: any = window.document;
+    const target = document.getElementById(id) as any;
+    if (!target) return;
+    // Exit fullscreen if already enabled
+    if (!window.screenTop && !window.screenY) {
+        if (document.exitFullscreen)
+            document.exitFullscreen();
+        else if (document.mozCancelFullScreen)
+            document.mozCancelFullScreen();
+        else if (document.webkitCancelFullScreen)
+            document.webkitCancelFullScreen();
+        else if (document.msExitFullscreen)
+            document.msExitFullscreen();
+    }
+    // Trigger fullscreen
+    else{
+        if (target.requestFullscreen)
+            target.requestFullscreen();
+        else if (target.webkitRequestFullscreen)
+            target.webkitRequestFullscreen();
+        else if (target.msRequestFullScreen)
+            target.msRequestFullScreen();
+    }
 }
 
 export interface BrandingType {
