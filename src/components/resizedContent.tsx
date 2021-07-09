@@ -114,7 +114,7 @@ export function ImageFrame({ material }: { material: LessonMaterial }) {
     const [contentHref] = useMaterialToHref(material);
 
     return (
-        <Grid container style={{ height: "100%" }}>
+        <Grid container style={{ height: "100%", overflow: "scroll" }}>
             <Grid container item style={{
                 height: "100%",
                 width: "100%",
@@ -130,7 +130,7 @@ export function ImageFrame({ material }: { material: LessonMaterial }) {
                 backgroundSize: "cover",
             }}
             />
-            <div className="image-container" style={{ maxWidth: "100%", maxHeight: "100%", zIndex: 994, display: "flex", justifyContent: "center", alignItems: "center" }}>
+            <div className="image-container" style={{ maxWidth: "100%", zIndex: 994, display: "flex", justifyContent: "center", alignItems: "center", overflow: "scroll" }}>
                 <img
                     className={imageFrame}
                     src={contentHref}
