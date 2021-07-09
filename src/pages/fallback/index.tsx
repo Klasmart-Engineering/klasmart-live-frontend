@@ -68,7 +68,7 @@ export function Fallback({ titleMsgId, subtitleMsgId, descriptionMsgId, errCode 
                             </Grid>
                             <Grid item xs={12}>
                                 <Typography variant="h4" align="center">
-                                    {errCode ? errCode + " " : ""}<FormattedMessage id={titleMsgId} />
+                                    {errCode && !/^(\d{3}x\d{2})$/.test(errCode) ? errCode + " " : ""}<FormattedMessage id={titleMsgId} />
                                 </Typography>
                                 {subtitleMsgId ? (
                                     <Typography variant="h6" align="center">
@@ -111,7 +111,7 @@ function NextStepButton({ errCode }: { errCode: string }) {
     useEffect(() => {
         if (errCode === "401") {
             setBtnTitle(<FormattedMessage id="err_button_signin" />);
-        } else if (errCode === "403") {
+        } else if (/^((403)|(403x\d{2}))$/.test(errCode)) {
             setShouldSignOut(true);
             setBtnTitle(<FormattedMessage id="err_button_signin" />);
         } else {

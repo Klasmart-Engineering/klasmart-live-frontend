@@ -41,14 +41,14 @@ export function useShouldSelectOrganization() {
     const isTablet = useSelector((state: State) => state.session.userAgent.isTablet);
     const isMobile = isMobileOnly || isTablet
     const [shouldSelectOrganization, setShouldSelectOrganization] = useState<boolean>(false);
-    const [organizationSelectErrorCode, setOrganizationSelectErrorCode] = useState<number | null>(null);
+    const [organizationSelectErrorCode, setOrganizationSelectErrorCode] = useState<number | string | null>(null);
     const [hasStudentRole, setHasStudentRole] = useState<boolean | null>(null);
 
     const { selectedUserProfile } = useUserInformation();
 
     const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
 
-    const setErrorState = (errorCode: number) => {
+    const setErrorState = (errorCode: number | string) => {
         setShouldSelectOrganization(false);
         setHasStudentRole(null);
         setOrganizationSelectErrorCode(errorCode);
@@ -91,14 +91,14 @@ export function useShouldSelectOrganization() {
 
         // 1. information exists
         if (selectedUserProfile.organizations.length === 0) { // 2. User has no organization
-            setErrorState(403);
+            setErrorState("403x02");
         } else if (selectedUserProfile.organizations.length === 1) { // 2. User has 1 organization
             setShouldSelectOrganization(false);
             const { organization_id, organization_name } = selectedUserProfile.organizations[0].organization;
 
             if (!verifyOrganizationStudentRole(selectedUserProfile.organizations[0])) {
                 setHasStudentRole(false);
-                setOrganizationSelectErrorCode(403);
+                setOrganizationSelectErrorCode("403x01");
                 return;
             }
 
