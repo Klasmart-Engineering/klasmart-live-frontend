@@ -14,8 +14,12 @@ import {
     useTheme,
 } from "@material-ui/core";
 import clsx from "clsx";
-import React, {
-    useContext, useEffect, useRef, useState,
+import React,
+{
+    useContext,
+    useEffect,
+    useRef,
+    useState,
 } from "react";
 import  vad  from "voice-activity-detection";
 
@@ -25,7 +29,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         borderRadius: 12,
         width: `100%`,
         minHeight: 96,
-        margin: '0 auto',
+        margin: `0 auto`,
         height: `100%`,
         alignItems: `center`,
         textAlign: `center`,
@@ -58,6 +62,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     self:{
         order: 1,
     },
+    videoDisabled:{
+        order: 109,
+    },
     speaking:{
         order: 2,
         boxShadow: `0px 0px 0px 2px #ffe000, 0px 6px 4px 1px rgb(255 224 0 / 10%)`,
@@ -72,7 +79,10 @@ interface UserCameraType {
 
 function UserCamera (props: UserCameraType) {
     const {
-        user, variant, actions = true,
+        user,
+        variant,
+        actions = true,
+
     } = props;
     const classes = useStyles();
     const [ isHover, setIsHover ] = useState(false);
@@ -141,6 +151,7 @@ function UserCamera (props: UserCameraType) {
             className={clsx(classes.root, {
                 // [classes.speaking]: isSpeaking,
                 [classes.self]: isSelf,
+                [classes.videoDisabled]: !isSelf && !webrtc.isVideoEnabledByProducer(user.id),
                 [classes.rootSm]: isSmDown,
                 [classes.rootLarge]: variant === `large`,
             })}
@@ -160,10 +171,10 @@ function UserCamera (props: UserCameraType) {
                 {actions ? isHover && <UserCameraActions user={user} /> : null}
                 {userCamera && userSession && camOn ? (
                     <ReactPlayer
+                        autoPlay
                         url={userCamera}
                         playing={true}
                         playsinline={true}
-                        autoPlay
                         muted={true}
                         id={`camera:${userSession.id}`}
                         className={classes.video}
