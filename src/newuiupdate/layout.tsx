@@ -25,40 +25,63 @@ import { WebSocketLink } from "@apollo/client/link/ws";
 import React,
 { useContext } from 'react';
 import { useRecoilState } from "recoil";
+import { refreshAuthenticationCookie } from "../utils/authentication";
 
 export function getApolloClient(roomId: string) {
     const authToken = AuthTokenProvider.retrieveToken();
-    const retryOptions = {
+
+    const retryLink = new RetryLink({
         delay: {
             max: 300,
         },
         attempts: {
             max: Infinity,
         },
-    };
-    const directionalLink = new RetryLink(retryOptions).split((operation) => operation.getContext().target === LIVE_LINK, new WebSocketLink({
-        uri: `${window.location.protocol === `https:` ? `wss` : `ws`}://${process.env.LIVE_WEBSOCKET_ENDPOINT ||
-            window.location.host
-            }/graphql`,
-        options: {
-            reconnect: true,
-            connectionParams: {
-                authToken,
-                sessionId,
+    });
+
+    const connectionCallback = (errors: Error[] | Error, result?: any) => {
+        //Type information seems to wrong, errors may be a single error or array of errors?
+        if (!(errors instanceof Array)) { errors = [errors] }
+
+        console.log("connectionCallback", errors, result)
+        const authenticationInvalid = errors.some((e) => e.message === "AuthenticationInvalid")
+        if (authenticationInvalid) {
+            //Redirect to login
+            console.log("Redirect to login")
+        }
+
+        const authenticationExpired = errors.some((e) => e.message === "AuthenticationExpired")
+        if (authenticationExpired) { refreshAuthenticationCookie() }
+    }
+
+    const directionalLink = retryLink.split(
+        (operation) => operation.getContext().target === LIVE_LINK,
+        new WebSocketLink({
+            uri: `${window.location.protocol === `https:` ? `wss` : `ws`}://${process.env.LIVE_WEBSOCKET_ENDPOINT ||
+                window.location.host
+                }/graphql`,
+            options: {
+                connectionCallback,
+                reconnect: true,
+                connectionParams: {
+                    authToken,
+                    sessionId,
+                },
             },
-        },
-    }), new WebSocketLink({
-        uri: `${window.location.protocol === `https:` ? `wss` : `ws`}://${process.env.SFU_WEBSOCKET_ENDPOINT ||
-            `${window.location.host}/sfu`
-            }/${roomId}`,
-        options: {
-            reconnect: true,
-            connectionParams: {
-                authToken,
-                sessionId,
+        }), new WebSocketLink({
+            uri: `${window.location.protocol === `https:` ? `wss` : `ws`}://${process.env.SFU_WEBSOCKET_ENDPOINT ||
+                `${window.location.host}/sfu`
+                }/${roomId}`,
+            options: {
+                connectionCallback,
+                reconnect: true,
+                connectionParams: {
+                    authToken,
+                    sessionId,
+                },
             },
-        },
-    }));
+        })
+    );
 
     return new ApolloClient({
         cache: new InMemoryCache(),
