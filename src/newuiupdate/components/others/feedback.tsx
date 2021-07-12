@@ -84,6 +84,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     starIcon:{
         color: amber[500],
     },
+    starBox: {
+        flexWrap: `nowrap`,
+        whiteSpace: `nowrap`
+    }
 }));
 
 export interface FeedbackProps {
@@ -212,6 +216,7 @@ function Feedback (props:FeedbackProps){
             <Grid item>
                 <div className={classes.stars}>
                     <Grid
+                        className={classes.starBox}
                         container
                         spacing={3}>
                         {feedbackRatingItems.map(item => (
