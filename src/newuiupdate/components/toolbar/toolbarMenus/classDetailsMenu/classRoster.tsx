@@ -12,6 +12,7 @@ import { UserAvatar } from "kidsloop-px";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 import { useRecoilState } from "recoil";
+import { classInfoState } from "../../../../states/layoutAtoms";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -68,19 +69,10 @@ const useStyles = makeStyles((theme: Theme) => ({
 function ClassRoster () {
     const classes = useStyles();
 
-    return(null);
-
-    /*
-
     // TODO : Switch to real data
-    const [ users, setUsers ] = useRecoilState(usersState);
-    const teachers = users.filter(function (e) {
-        return e.role === `teacher`;
-    });
-
-    const students = users.filter(function (e) {
-        return e.role === `student`;
-    });
+    const [ users, setUsers ] = useRecoilState(classInfoState);
+    const teachers = users.teachers
+    const students = users.students
 
     // TODO : This is not optimal
     const resetPosition = (event: React.ChangeEvent<unknown>) => {
@@ -152,9 +144,10 @@ function ClassRoster () {
                 </AccordionDetails>
             </Accordion>
             {/*
-            TODO : KLL-525
-            Phase 1 : Showing roster
-            Phase 2 : Updating roster with absentees
+                TODO : KLL-525
+                Phase 1 : Showing roster
+                Phase 2 : Updating roster with absentees
+            */}
             <Accordion
                 elevation={0}
                 className={classes.accordion}
@@ -176,7 +169,6 @@ function ClassRoster () {
             </Accordion>
         </div>
     );
-    */
 }
 
 export default ClassRoster;
