@@ -321,7 +321,9 @@ export function RecordedIframe (props: Props): JSX.Element {
             <iframe
                 ref={iframeRef}
                 id="recordediframe"
-                src={contentId.endsWith(`.pdf`) ? `/pdfviewer.html?pdfSrc=${contentId}` : contentId}
+                src={contentId.endsWith(`.pdf`) 
+                    ? `${contentId.replace('/assets/', '/pdf/')}/view.html` 
+                    : contentId}
                 style={{
                     width: enableResize ? contentWidth : `100%`,
                     height: enableResize ? contentHeight : `100%`,

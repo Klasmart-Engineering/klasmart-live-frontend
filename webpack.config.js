@@ -123,6 +123,10 @@ module.exports = {
         target: "https://live.kidsloop.net",
         changeOrigin: true,
       },
+      "/pdf": {
+        target: "https://live.alpha.kidsloop.net",
+        changeOrigin: true,
+      },
       "/assets": {
         target: "https://live.kidsloop.net",
         changeOrigin: true,
