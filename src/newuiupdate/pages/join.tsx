@@ -632,7 +632,13 @@ function PermissionAlertDialog ({ dialogOpenHandler }: {
 
     useEffect(() => {
         if(classtype !== ClassType.LIVE){
-            setDialogContent(`join_permissionAlertDialog_contentText_classesStudy`);
+            if(DeviceStatus.MIC_NOT_ALLOWED){
+                setDialogTitle(`join_permissionAlertDialog_mic_blocked_title`);
+                setDialogContent(`join_permissionAlertDialog_mic_blocked_contentText_live`);
+            }else if(DeviceStatus.MIC_NOT_FOUND){
+                setDialogTitle(`join_permissionAlertDialog_mic_not_exist_title`);
+                setDialogContent(`join_permissionAlertDialog_mic_not_exist_contentText_live`);
+            }
         }
     }, [ classtype, deviceStatus ]);
 
