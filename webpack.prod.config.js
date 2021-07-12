@@ -14,7 +14,6 @@ module.exports = {
     ui: './src/entry.tsx',
     "record-1db5341": './src/entry-record.ts',
     player: './src/entry-player.ts',
-    pdfviewer: './src/entry-pdfviewer.js'
   },
   module: {
     rules: [
@@ -92,7 +91,6 @@ module.exports = {
       "ENDPOINT_API": "https://api.kidsloop.net",
       "ENDPOINT_HUB": "https://hub.kidsloop.net",
       "ENDPOINT_CMS": "https://kl2.kidsloop.net",
-      "ENDPOINT_PDF": "https://live.kidsloop.net",
     }),
     new HtmlWebpackPlugin({
       filename: 'index.html',
@@ -105,24 +103,10 @@ module.exports = {
       chunks: ['player'],
       template: 'src/player.html'
     }),
-    new HtmlWebpackPlugin({
-      filename: 'pdfviewer.html',
-      chunks: ['pdfviewer'],
-      template: 'src/pdfviewer.html',
-    }),
     new SentryWebpackPlugin({
       include: ".",
       ignoreFile: ".sentrycliignore",
       ignore: ["node_modules", "webpack.config.js", "webpack.prod.config.js"],
-    }),
-    new CopyWebpackPlugin({
-      patterns: [{
-        from: 'node_modules/pdfjs-dist/cmaps',
-        to: 'cmaps/'
-      }, {
-        from: 'node_modules/pdfjs-dist',
-        to: 'pdfjs-dist/'
-      }]
     }),
   ]
 }
