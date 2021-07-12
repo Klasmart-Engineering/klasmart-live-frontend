@@ -2,7 +2,6 @@ const webpack = require('webpack')
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const SentryWebpackPlugin = require("@sentry/webpack-plugin")
-const CopyWebpackPlugin = require('copy-webpack-plugin');
 const { loadBrandingOptions } = require(`kidsloop-branding`);
 require('dotenv').config();
 
@@ -92,7 +91,6 @@ module.exports = {
       "ENDPOINT_API": "https://api.alpha.kidsloop.net",
       "ENDPOINT_HUB": "https://hub.alpha.kidsloop.net",
       "ENDPOINT_CMS": "https://cms.alpha.kidsloop.net",
-      "ENDPOINT_PDF": "https://live.alpha.kidsloop.net",
     }),
     new HtmlWebpackPlugin({
       filename: 'index.html',
@@ -105,24 +103,10 @@ module.exports = {
       chunks: ['player'],
       template: 'src/player.html'
     }),
-    new HtmlWebpackPlugin({
-      filename: 'pdfviewer.html',
-      chunks: ['pdfviewer'],
-      template: 'src/pdfviewer.html',
-    }),
     new SentryWebpackPlugin({
       include: ".",
       ignoreFile: ".sentrycliignore",
       ignore: ["node_modules", "webpack.config.js", "webpack.prod.config.js"],
-    }),
-    new CopyWebpackPlugin({
-      patterns: [{
-        from: 'node_modules/pdfjs-dist/cmaps',
-        to: 'cmaps/'
-      }, {
-        from: 'node_modules/pdfjs-dist',
-        to: 'pdfjs-dist/'
-      }]
-    }),
+    })
   ]
 }

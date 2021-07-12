@@ -1,7 +1,6 @@
 const webpack = require("webpack");
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const CopyWebpackPlugin = require('copy-webpack-plugin');
 const { loadBrandingOptions } = require(`kidsloop-branding`);
 require('dotenv').config();
 
@@ -13,7 +12,6 @@ module.exports = {
     ui: "./src/entry.tsx",
     "record-1db5341": "./src/entry-record.ts",
     player: "./src/entry-player.ts",
-    pdfviewer: "./src/entry-pdfviewer.js",
   },
   module: {
     rules: [
@@ -95,7 +93,6 @@ module.exports = {
       "ENDPOINT_API": "https://api.alpha.kidsloop.net",
       "ENDPOINT_HUB": "https://hub.alpha.kidsloop.net",
       "ENDPOINT_CMS": "https://kl2-test.kidsloop.net",
-      "ENDPOINT_PDF": "https://live.alpha.kidsloop.net",
     }),
     new HtmlWebpackPlugin({
       filename: "index.html",
@@ -107,20 +104,6 @@ module.exports = {
       filename: "player.html",
       chunks: ["player"],
       template: "src/player.html",
-    }),
-    new HtmlWebpackPlugin({
-      filename: "pdfviewer.html",
-      chunks: ["pdfviewer"],
-      template: "src/pdfviewer.html",
-    }),
-    new CopyWebpackPlugin({
-      patterns: [{
-        from: 'node_modules/pdfjs-dist/cmaps',
-        to: 'cmaps/'
-      }, {
-        from: 'node_modules/pdfjs-dist',
-        to: 'pdfjs-dist/'
-      }]
     })
   ],
   devServer: {
