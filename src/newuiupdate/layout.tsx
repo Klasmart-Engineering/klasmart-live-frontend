@@ -18,7 +18,6 @@ import {
 import {
     ApolloClient,
     ApolloProvider,
-    HttpLink,
     InMemoryCache,
 } from "@apollo/client";
 import { RetryLink } from "@apollo/client/link/retry";
@@ -27,7 +26,7 @@ import React,
 { useContext } from 'react';
 import { useRecoilState } from "recoil";
 
-export function getApolloClient (roomId: string) {
+export function getApolloClient(roomId: string) {
     const authToken = AuthTokenProvider.retrieveToken();
     const retryOptions = {
         delay: {
@@ -38,10 +37,9 @@ export function getApolloClient (roomId: string) {
         },
     };
     const directionalLink = new RetryLink(retryOptions).split((operation) => operation.getContext().target === LIVE_LINK, new WebSocketLink({
-        uri: `${window.location.protocol === `https:` ? `wss` : `ws`}://${
-                    process.env.LIVE_WEBSOCKET_ENDPOINT ||
-                    window.location.host
-                }/graphql`,
+        uri: `${window.location.protocol === `https:` ? `wss` : `ws`}://${process.env.LIVE_WEBSOCKET_ENDPOINT ||
+            window.location.host
+            }/graphql`,
         options: {
             reconnect: true,
             connectionParams: {
@@ -50,11 +48,9 @@ export function getApolloClient (roomId: string) {
             },
         },
     }), new WebSocketLink({
-        uri: `${window.location.protocol === `https:` ? `wss` : `ws`}://${
-
-            process.env.SFU_WEBSOCKET_ENDPOINT ||
+        uri: `${window.location.protocol === `https:` ? `wss` : `ws`}://${process.env.SFU_WEBSOCKET_ENDPOINT ||
             `${window.location.host}/sfu`
-        }/${roomId}`,
+            }/${roomId}`,
         options: {
             reconnect: true,
             connectionParams: {
@@ -81,26 +77,26 @@ function Layout () {
     return  <Join />;
 }
 
-function ClassWrapper () {
+function ClassWrapper() {
     const { roomId } = useContext(LocalSessionContext);
     const apolloClient = getApolloClient(roomId);
     return (
         <ApolloProvider client={apolloClient}>
-            <ClassLayout/>
+            <ClassLayout />
         </ApolloProvider>
     );
 }
 
-function ClassLayout () {
-    const [ classLeft, setClassLeft ] = useRecoilState(classLeftState);
-    const [ classEnded, setClassEnded ] = useRecoilState(classEndedState);
+function ClassLayout() {
+    const [classLeft, setClassLeft] = useRecoilState(classLeftState);
+    const [classEnded, setClassEnded] = useRecoilState(classEndedState);
 
-    if(classLeft){
-        return(<ClassLeft />);
+    if (classLeft) {
+        return (<ClassLeft />);
     }
 
-    if(classEnded){
-        return(<ClassEnded />);
+    if (classEnded) {
+        return (<ClassEnded />);
     }
 
     return (
