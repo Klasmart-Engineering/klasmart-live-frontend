@@ -1,7 +1,7 @@
 import { isClassDetailsOpenState } from "../../../../states/layoutAtoms";
 import { StyledPopper } from "../../../utils/utils";
 import ClassDetails from "./classDetails";
-// import ClassRoster from "./classRoster";
+import ClassRoster from "./classRoster";
 import {
     Box,
     makeStyles,
@@ -45,12 +45,12 @@ function ClassDetailsMenu (props: GlobaActionsMenuProps) {
                     label={intl.formatMessage({
                         id: `classdetails_details`,
                     })} />
-                {/* TODO : Class Roster
+                {/* TODO : Class Roster */}
                 <Tab
                     disableRipple
                     label={intl.formatMessage({
                         id: `classdetails_roster`,
-                    })} /> */}
+                    })} />
             </Tabs>
             <TabPanel
                 value={tabValue}
@@ -60,7 +60,8 @@ function ClassDetailsMenu (props: GlobaActionsMenuProps) {
             <TabPanel
                 value={tabValue}
                 index={1}>
-                {/* TODO : Class Roster <ClassRoster /> */}
+                {/* TODO : Class Roster */}
+                <ClassRoster />
             </TabPanel>
         </StyledPopper>
     );
