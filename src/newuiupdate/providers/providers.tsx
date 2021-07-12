@@ -53,6 +53,7 @@ function Providers ({ children }: Props) {
     const localSession = useMemo<ILocalSessionContext>(() => ({
         classtype: params ? params.classtype : `live`,
         org_id: params ? params.org_id : ``,
+        schedule_id: params ? params.schedule_id : ``,
         camera,
         setCamera,
         name,
@@ -93,6 +94,7 @@ export interface IThemeContext {
 export interface ILocalSessionContext {
     classtype: string; // "live" | "class" | "study" | "task"
     org_id: string;
+    schedule_id: string;
     isTeacher: boolean;
     materials: LessonMaterial[];
     roomId: string;
@@ -153,6 +155,7 @@ function parseToken () {
             return {
                 classtype: payload.classtype ? String(payload.classtype) : `live`,
                 org_id: payload.org_id ? String(payload.org_id) : ``,
+                schedule_id: payload.schedule_id ? String(payload.schedule_id) : ``,
                 isTeacher: payload.teacher ? Boolean(payload.teacher) : false,
                 name: payload.name ? String(payload.name) : undefined,
                 roomId: String(payload.roomid),
@@ -166,6 +169,7 @@ function parseToken () {
             return {
                 classtype: url.searchParams.get(`classtype`) || `live`,
                 org_id: url.searchParams.get(`org_id`) || ``,
+                schedule_id: url.searchParams.get(`schedule_id`) || ``,
                 isTeacher: url.searchParams.get(`teacher`) !== null,
                 name: url.searchParams.get(`name`) || undefined, // Should be undefined not null
                 roomId: url.searchParams.get(`roomId`) || `test-room`,
