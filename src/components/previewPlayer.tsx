@@ -59,6 +59,12 @@ export function PreviewPlayer({ streamId, frameProps, width, height }: Props): J
         context: {target: SESSION_LINK_LIVE},
     });
 
+    useEffect(()=>{
+        const shrinkRatioX = (width / frameWidth) > 1 ? 1 : width / frameWidth;
+        const shrinkRatioY = (height / frameHeight) > 1 ? 1 : height / frameHeight;
+        setScale(Math.min(shrinkRatioX, shrinkRatioY));
+    },[width , height , frameWidth, frameHeight])
+
     useEffect(() => {
         if (ref.current == null || ref.current.contentWindow == null) { return; }
         window.addEventListener("message", ({ data }) => {
@@ -66,15 +72,12 @@ export function PreviewPlayer({ streamId, frameProps, width, height }: Props): J
             const fWidth = Number(data.width.replace("px", ""));
             const fHeight = Number(data.height.replace("px", ""));
             setWidthHeight({ frameWidth: fWidth, frameHeight: fHeight });
-            const shrinkRatioX = (width / fWidth) > 1 ? 1 : width / fWidth;
-            const shrinkRatioY = (height / fHeight) > 1 ? 1 : height / fHeight;
-            setScale(Math.min(shrinkRatioX, shrinkRatioY));
         });
     }, [ref.current, ref.current && ref.current.contentWindow]);
 
     if (loading) { return <Loading />; }
     if (error) { return <Typography><FormattedMessage id="failed_to_connect" />: {JSON.stringify(error)}</Typography>; }
-    return <div id="preview-iframe-container" style={{ width, height }}>
+    return <div id="preview-iframe-container" style={{ width, height, position: "absolute" }}>
         <iframe
             key={streamId}
             ref={ref}
