@@ -38,9 +38,8 @@ export function getApolloClient (roomId: string) {
         },
     };
     const directionalLink = new RetryLink(retryOptions).split((operation) => operation.getContext().target === LIVE_LINK, new WebSocketLink({
-        uri:
-                process.env.ENDPOINT_WEBSOCKET ||
-                `${window.location.protocol === `https:` ? `wss` : `ws`}://${
+        uri: `${window.location.protocol === `https:` ? `wss` : `ws`}://${
+                    process.env.LIVE_WEBSOCKET_ENDPOINT ||
                     window.location.host
                 }/graphql`,
         options: {
@@ -52,8 +51,10 @@ export function getApolloClient (roomId: string) {
         },
     }), new WebSocketLink({
         uri: `${window.location.protocol === `https:` ? `wss` : `ws`}://${
-            window.location.host
-        }/sfu/${roomId}`,
+
+            process.env.SFU_WEBSOCKET_ENDPOINT ||
+            `${window.location.host}/sfu`
+        }/${roomId}`,
         options: {
             reconnect: true,
             connectionParams: {
