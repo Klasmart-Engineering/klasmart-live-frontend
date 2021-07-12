@@ -16,6 +16,7 @@ import {
     WebRTCContext,
 } from "../providers/WebRTCContext";
 import {
+    classInfoState,
     hasControlsState,
     isLessonPlanOpenState,
     studyRecommandUrlState,
@@ -57,6 +58,7 @@ function Class () {
     const [ hasControls, setHasControls ] = useRecoilState(hasControlsState);
     const [ isLessonPlanOpen, setIsLessonPlanOpen ] = useRecoilState(isLessonPlanOpenState);
     const [ studyRecommandUrl, setStudyRecommandUrl ] = useRecoilState(studyRecommandUrlState);
+    const [ classInfo, setClassInfo ] = useRecoilState(classInfoState);
 
     const [ camerasOn, setCamerasOn ] = useState(true);
     const [ micsOn, setMicsOn ] = useState(true);
@@ -66,7 +68,8 @@ function Class () {
         sessionId,
         classtype,
         org_id,
-
+        schedule_id,
+        materials,
     } = useContext(LocalSessionContext);
     const { sessions } = useContext(RoomContext);
     const webrtc = useContext(WebRTCContext);
@@ -119,6 +122,25 @@ function Class () {
         if (response.status === 200) { return response.json(); }
     }
 
+    async function classGetInformation (schedule_id: any) {
+        try {
+            // TODO KLL-524 (1): call API
+            const headers = new Headers();
+            headers.append(`Accept`, `application/json`);
+            headers.append(`Content-Type`, `application/json`);
+            console.log(materials.length);
+
+            const response = await fetch(`${process.env.ENDPOINT_CMS}/v1/schedules_view/${schedule_id}`, {
+                headers,
+                method: `GET`
+            });
+
+            if (response.status === 200) { return await response.json(); }
+        } catch (err) {
+            console.error(`Fail to classGetInformation in Live: ${err}`);
+        }
+    }
+
     async function fetchEverything () {
         async function fetchAllLessonMaterials () {
             const payload = await getAllLessonMaterials();
@@ -164,6 +186,36 @@ function Class () {
     }, [ sessions.size, sessions ]);
 
     useEffect(() => {
+        if (classtype === ClassType.LIVE) {
+            classGetInformation(schedule_id);
+
+            // TODO KLL-524 (2): Re-new classInfo by returned data.
+            setClassInfo({
+                class_name: `Class Name`,
+                lesson_name: `Animals`,
+                room_id: `${roomId}`,
+                class_type: `${classtype}`,
+                enrolled_participants: `16 students, 1 teacher`,
+                teachers: [
+                    {
+                        id: `81d8e1c1-c7e1-57cd-98f5-4549a8e0c026`,
+                        name: `David teacher1`
+                    }
+                ],
+                students: [
+                    {
+                        id: `1b622730-1135-43aa-b956-786365561f21`,
+                        name: `Student2 stu`
+                    }
+                ],
+                program: `Badanamu ESL`,
+                subject: `Language/Literacy`,
+                lesson_plan: `Animals`,
+                materials: materials.length,
+                start_at: `2021/03/03, 09:00 am`,
+                end_at: `2021/03/03, 10:00 am`,
+            });
+        }
         if (classtype === ClassType.STUDY) {
             if (org_id) {
                 fetchEverything();
