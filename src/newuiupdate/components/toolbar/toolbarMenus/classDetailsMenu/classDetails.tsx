@@ -1,4 +1,5 @@
 import { LocalSessionContext } from "../../../../providers/providers";
+import { classInfoState } from "../../../../states/layoutAtoms";
 import {
     makeStyles,
     Theme,
@@ -6,6 +7,7 @@ import {
 } from "@material-ui/core";
 import React, { useContext } from "react";
 import { FormattedMessage } from "react-intl";
+import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {},
@@ -22,34 +24,23 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 function ClassDetails () {
     const classes = useStyles();
-    const {
-        classtype, materials, roomId,
-    } = useContext(LocalSessionContext);
+    const [ classInfo, setClassInfo ] = useRecoilState(classInfoState);
 
     return (
         <div>
             <table>
                 <tbody>
                     <tr>
-                        <td className={classes.detailsLabel}><Typography><FormattedMessage id="classdetails_room_id" /></Typography></td>
-                        <td className={classes.detailsValue}><Typography>{roomId}</Typography></td>
-                    </tr>
-                    <tr>
-                        <td className={classes.detailsLabel}><Typography><FormattedMessage id="classdetails_class_type" /></Typography></td>
-                        <td className={classes.detailsValue}><Typography><FormattedMessage id={`classtype_${classtype}`} /></Typography></td>
-                    </tr>
-                    <tr>
-                        <td className={classes.detailsLabel}><Typography><FormattedMessage id="classdetails_lesson_materials" /></Typography></td>
-                        <td className={classes.detailsValue}><Typography>{materials.length}</Typography></td>
-                    </tr>
-
-                    {/* <tr>
                         <td className={classes.detailsLabel}><Typography><FormattedMessage id="classdetails_class_name" /></Typography></td>
                         <td className={classes.detailsValue}><Typography>{classInfo.class_name}</Typography></td>
                     </tr>
                     <tr>
                         <td className={classes.detailsLabel}><Typography><FormattedMessage id="classdetails_lesson_name" /></Typography></td>
                         <td className={classes.detailsValue}><Typography>{classInfo.lesson_name}</Typography></td>
+                    </tr>
+                    <tr>
+                        <td className={classes.detailsLabel}><Typography><FormattedMessage id="classdetails_room_id" /></Typography></td>
+                        <td className={classes.detailsValue}><Typography>{classInfo.room_id}</Typography></td>
                     </tr>
                     <tr>
                         <td className={classes.detailsLabel}><Typography><FormattedMessage id="classdetails_class_type" /></Typography></td>
@@ -68,13 +59,21 @@ function ClassDetails () {
                         <td className={classes.detailsValue}><Typography>{classInfo.subject}</Typography></td>
                     </tr>
                     <tr>
+                        <td className={classes.detailsLabel}><Typography><FormattedMessage id="title_lesson_plan" /></Typography></td>
+                        <td className={classes.detailsValue}><Typography>{classInfo.lesson_plan}</Typography></td>
+                    </tr>
+                    <tr>
+                        <td className={classes.detailsLabel}><Typography><FormattedMessage id="classdetails_lesson_materials" /></Typography></td>
+                        <td className={classes.detailsValue}><Typography>{classInfo.materials} <span style={{textTransform: `lowercase`}}><FormattedMessage id="classdetails_lesson_materials" /></span></Typography></td>
+                    </tr>
+                    <tr>
                         <td className={classes.detailsLabel}><Typography><FormattedMessage id="classdetails_start_time" /></Typography></td>
                         <td className={classes.detailsValue}><Typography>{classInfo.start_at}</Typography></td>
                     </tr>
                     <tr>
                         <td className={classes.detailsLabel}><Typography><FormattedMessage id="classdetails_end_time" /></Typography></td>
                         <td className={classes.detailsValue}><Typography>{classInfo.end_at}</Typography></td>
-                    </tr> */}
+                    </tr>
                 </tbody>
             </table>
         </div>
