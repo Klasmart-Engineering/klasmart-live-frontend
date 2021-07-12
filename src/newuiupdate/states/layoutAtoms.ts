@@ -170,3 +170,32 @@ export const observeDisableState = atom({
     key: `observeDisableState`,
     default: false,
 });
+
+export const classInfoState = atom({
+    key: `classInfoState`,
+    default: {
+        class_name: ``,
+        lesson_name: ``,
+        room_id: ``,
+        class_type: ``,
+        enrolled_participants: ``,
+        teachers: [
+            {
+                id: ``,
+                name: ``,
+            },
+        ],
+        students: [
+            {
+                id: ``,
+                name: ``,
+            },
+        ],
+        program: ``,
+        subject: ``,
+        lesson_plan: ``,
+        materials: 0,
+        start_at: ``,
+        end_at: ``,
+    },
+});
