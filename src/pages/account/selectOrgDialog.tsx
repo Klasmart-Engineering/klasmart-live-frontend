@@ -90,15 +90,16 @@ export function useShouldSelectOrganization() {
         }
 
         // 1. information exists
-        if (selectedUserProfile.organizations.length === 0) { // 2. User has no organization
-            setErrorState("403x02");
+        if (selectedUserProfile.organizations.length === 0) { // 2. User has no organization.
+            // If a teacher accesses there will be no organization, because we only fetch organizations with student permissions.
+            setErrorState("403x02"); //Students Only
         } else if (selectedUserProfile.organizations.length === 1) { // 2. User has 1 organization
             setShouldSelectOrganization(false);
             const { organization_id, organization_name } = selectedUserProfile.organizations[0].organization;
 
             if (!verifyOrganizationStudentRole(selectedUserProfile.organizations[0])) {
                 setHasStudentRole(false);
-                setOrganizationSelectErrorCode("403x01");
+                setOrganizationSelectErrorCode("403x01"); //Access Restricted
                 return;
             }
 
