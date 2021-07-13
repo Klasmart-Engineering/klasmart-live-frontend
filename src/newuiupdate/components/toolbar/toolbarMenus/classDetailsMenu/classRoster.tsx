@@ -18,6 +18,7 @@ import { LocalSessionContext } from "../../../../providers/providers";
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
         margin: `-8px 0`,
+        minHeight: `466px`,
     },
     accordion: {
         "&:before": {
@@ -96,6 +97,7 @@ function ClassRoster () {
     return (
         <div className={classes.root}>
             <Accordion
+                defaultExpanded
                 elevation={0}
                 className={classes.accordion}
                 onChange={resetPosition}>
