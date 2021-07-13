@@ -21,6 +21,8 @@ const useStyles = makeStyles((theme: Theme) => ({
         minHeight: `466px`,
     },
     accordion: {
+        margin: `0 !important`,
+
         "&:before": {
             display: `none`,
         },
