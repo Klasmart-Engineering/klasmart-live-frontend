@@ -9,10 +9,11 @@ import {
 } from "@material-ui/core";
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { UserAvatar } from "kidsloop-px";
-import React from "react";
+import React, {useContext} from "react";
 import { FormattedMessage } from "react-intl";
 import { useRecoilState } from "recoil";
 import { classInfoState } from "../../../../states/layoutAtoms";
+import { LocalSessionContext } from "../../../../providers/providers";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -71,6 +72,7 @@ function ClassRoster () {
 
     // TODO : Switch to real data
     const [ users, setUsers ] = useRecoilState(classInfoState);
+    const { isTeacher } = useContext(LocalSessionContext);
     const teachers = users.teachers
     const students = users.students
 
@@ -81,6 +83,7 @@ function ClassRoster () {
         }, 200);
     };
 
+    // TODO : KLL-525 - (Phase 1 : Showing roster | Phase 2 : Updating roster with absentees)
     return (
         <div className={classes.root}>
             <Accordion
@@ -112,61 +115,61 @@ function ClassRoster () {
                     ))}
                 </AccordionDetails>
             </Accordion>
-            <Accordion
-                elevation={0}
-                className={classes.accordion}
-                onChange={resetPosition}>
-                <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel2a-content"
-                    id="panel2a-header"
-                >
-                    <Typography className={classes.heading}>
-                        <FormattedMessage id="classdetails_roster_students" /> <span className={classes.number}>{students.length}</span>
-                    </Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                    <Box className={classes.gridUsers}>
-                        {students.map((user) => (
-                            <Box
-                                key={user.id}
-                                className={classes.userItem}
-                            >
-                                <UserAvatar
-                                    name={user.name}
-                                    className={classes.avatar}
-                                    size="small"
-                                />
-                                <Typography>{user.name}</Typography>
+            { isTeacher &&
+                <>
+                    <Accordion
+                        elevation={0}
+                        className={classes.accordion}
+                        onChange={resetPosition}>
+                        <AccordionSummary
+                            expandIcon={<ExpandMoreIcon />}
+                            aria-controls="panel2a-content"
+                            id="panel2a-header"
+                        >
+                            <Typography className={classes.heading}>
+                                <FormattedMessage id="classdetails_roster_students" /> <span className={classes.number}>{students.length}</span>
+                            </Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <Box className={classes.gridUsers}>
+                                {students.map((user) => (
+                                    <Box
+                                        key={user.id}
+                                        className={classes.userItem}
+                                    >
+                                        <UserAvatar
+                                            name={user.name}
+                                            className={classes.avatar}
+                                            size="small"
+                                        />
+                                        <Typography>{user.name}</Typography>
+                                    </Box>
+                                ))}
                             </Box>
-                        ))}
-                    </Box>
-                </AccordionDetails>
-            </Accordion>
-            {/*
-                TODO : KLL-525
-                Phase 1 : Showing roster
-                Phase 2 : Updating roster with absentees
-            */}
-            <Accordion
-                elevation={0}
-                className={classes.accordion}
-                onChange={resetPosition}>
-                <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel3a-content"
-                    id="panel3a-header"
-                >
-                    <Typography className={classes.heading}>
-                        Absents <span className={classes.number}>0</span>
-                    </Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                    <Typography>
-                        No informations.
-                    </Typography>
-                </AccordionDetails>
-            </Accordion>
+                        </AccordionDetails>
+                    </Accordion>
+
+                    <Accordion
+                        elevation={0}
+                        className={classes.accordion}
+                        onChange={resetPosition}>
+                        <AccordionSummary
+                            expandIcon={<ExpandMoreIcon />}
+                            aria-controls="panel3a-content"
+                            id="panel3a-header"
+                        >
+                            <Typography className={classes.heading}>
+                                Absents <span className={classes.number}>0</span>
+                            </Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <Typography>
+                                No informations.
+                            </Typography>
+                        </AccordionDetails>
+                    </Accordion>
+                </>
+            }
         </div>
     );
 }
