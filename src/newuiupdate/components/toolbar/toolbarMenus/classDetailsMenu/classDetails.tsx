@@ -1,4 +1,3 @@
-import { LocalSessionContext } from "../../../../providers/providers";
 import { classInfoState } from "../../../../states/layoutAtoms";
 import {
     makeStyles,
@@ -10,15 +9,27 @@ import { FormattedMessage } from "react-intl";
 import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
-    root: {},
-    detailsLabel:{
-        color: theme.palette.text.primary,
-        paddingRight: 30,
-        paddingBottom: 10,
-    },
-    detailsValue:{
-        color: theme.palette.grey[600],
-        paddingBottom: 10,
+    root: {
+        "& > tr": {
+            "& > td": {
+                paddingBottom: `20px`,
+
+                "&:nth-of-type(1)": {
+                    color: theme.palette.text.primary,
+                    paddingRight: `30px`
+                },
+
+                "&:nth-of-type(2)": {
+                    color: theme.palette.grey[600],
+                },
+            },
+
+            "&:last-of-type": {
+                "& > td": {
+                    paddingBottom: `0`,
+                },
+            },
+        },
     },
 }));
 
@@ -29,50 +40,50 @@ function ClassDetails () {
     return (
         <div>
             <table>
-                <tbody>
+                <tbody className={classes.root}>
                     <tr>
-                        <td className={classes.detailsLabel}><Typography><FormattedMessage id="classdetails_class_name" /></Typography></td>
-                        <td className={classes.detailsValue}><Typography>{classInfo.class_name}</Typography></td>
+                        <td><Typography><FormattedMessage id="classdetails_class_name" /></Typography></td>
+                        <td><Typography>{classInfo.class_name}</Typography></td>
                     </tr>
                     <tr>
-                        <td className={classes.detailsLabel}><Typography><FormattedMessage id="classdetails_lesson_name" /></Typography></td>
-                        <td className={classes.detailsValue}><Typography>{classInfo.lesson_name}</Typography></td>
+                        <td><Typography><FormattedMessage id="classdetails_lesson_name" /></Typography></td>
+                        <td><Typography>{classInfo.lesson_name}</Typography></td>
                     </tr>
                     <tr>
-                        <td className={classes.detailsLabel}><Typography><FormattedMessage id="classdetails_room_id" /></Typography></td>
-                        <td className={classes.detailsValue}><Typography>{classInfo.room_id}</Typography></td>
+                        <td><Typography><FormattedMessage id="classdetails_room_id" /></Typography></td>
+                        <td><Typography>{classInfo.room_id}</Typography></td>
                     </tr>
                     <tr>
-                        <td className={classes.detailsLabel}><Typography><FormattedMessage id="classdetails_class_type" /></Typography></td>
-                        <td className={classes.detailsValue}><Typography>{classInfo.class_type}</Typography></td>
+                        <td><Typography><FormattedMessage id="classdetails_class_type" /></Typography></td>
+                        <td><Typography>{classInfo.class_type}</Typography></td>
                     </tr>
                     <tr>
-                        <td className={classes.detailsLabel}><Typography><FormattedMessage id="classdetails_enrolled_participants" /></Typography></td>
-                        <td className={classes.detailsValue}><Typography>{classInfo.enrolled_participants}</Typography></td>
+                        <td><Typography><FormattedMessage id="classdetails_enrolled_participants" /></Typography></td>
+                        <td><Typography>{classInfo.enrolled_participants}</Typography></td>
                     </tr>
                     <tr>
-                        <td className={classes.detailsLabel}><Typography><FormattedMessage id="classdetails_program" /></Typography></td>
-                        <td className={classes.detailsValue}><Typography>{classInfo.program}</Typography></td>
+                        <td><Typography><FormattedMessage id="classdetails_program" /></Typography></td>
+                        <td><Typography>{classInfo.program}</Typography></td>
                     </tr>
                     <tr>
-                        <td className={classes.detailsLabel}><Typography><FormattedMessage id="classdetails_subject" /></Typography></td>
-                        <td className={classes.detailsValue}><Typography>{classInfo.subject}</Typography></td>
+                        <td><Typography><FormattedMessage id="classdetails_subject" /></Typography></td>
+                        <td><Typography>{classInfo.subject}</Typography></td>
                     </tr>
                     <tr>
-                        <td className={classes.detailsLabel}><Typography><FormattedMessage id="title_lesson_plan" /></Typography></td>
-                        <td className={classes.detailsValue}><Typography>{classInfo.lesson_plan}</Typography></td>
+                        <td><Typography><FormattedMessage id="title_lesson_plan" /></Typography></td>
+                        <td><Typography>{classInfo.lesson_plan}</Typography></td>
                     </tr>
                     <tr>
-                        <td className={classes.detailsLabel}><Typography><FormattedMessage id="classdetails_lesson_materials" /></Typography></td>
-                        <td className={classes.detailsValue}><Typography>{classInfo.materials} <span style={{textTransform: `lowercase`}}><FormattedMessage id="classdetails_lesson_materials" /></span></Typography></td>
+                        <td><Typography><FormattedMessage id="classdetails_lesson_materials" /></Typography></td>
+                        <td><Typography>{classInfo.materials} <span style={{textTransform: `lowercase`}}><FormattedMessage id="classdetails_lesson_materials" /></span></Typography></td>
                     </tr>
                     <tr>
-                        <td className={classes.detailsLabel}><Typography><FormattedMessage id="classdetails_start_time" /></Typography></td>
-                        <td className={classes.detailsValue}><Typography>{classInfo.start_at}</Typography></td>
+                        <td><Typography><FormattedMessage id="classdetails_start_time" /></Typography></td>
+                        <td><Typography>{classInfo.start_at}</Typography></td>
                     </tr>
                     <tr>
-                        <td className={classes.detailsLabel}><Typography><FormattedMessage id="classdetails_end_time" /></Typography></td>
-                        <td className={classes.detailsValue}><Typography>{classInfo.end_at}</Typography></td>
+                        <td><Typography><FormattedMessage id="classdetails_end_time" /></Typography></td>
+                        <td><Typography>{classInfo.end_at}</Typography></td>
                     </tr>
                 </tbody>
             </table>

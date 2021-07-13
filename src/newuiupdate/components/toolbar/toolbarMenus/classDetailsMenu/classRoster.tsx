@@ -17,53 +17,62 @@ import { LocalSessionContext } from "../../../../providers/providers";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
-        maxWidth: `600px`,
+        margin: `-8px 0`,
     },
-    accordion:{
-        borderRadius: 12,
-        "&:hover":{
-            backgroundColor: theme.palette.grey[200],
-        },
-        "&:before":{
+    accordion: {
+        "&:before": {
             display: `none`,
         },
-        "&:after":{
+        "&:after": {
             display: `none`,
         },
     },
-    detailsLabel:{
+    accordionSummary: {
+        minHeight: `0 !important`,
+        padding: `0`,
+    },
+    accordionDetails: {
+        padding: `0 0 0 30px`,
+    },
+    detailsLabel: {
         color: theme.palette.text.primary,
         paddingRight: 30,
         paddingBottom: 10,
     },
-    detailsValue:{
+    detailsValue: {
         color: theme.palette.grey[600],
         paddingBottom: 10,
     },
-    heading:{},
-    number:{
+    heading: {
+        display: `flex`,
+        alignItems: `center`,
+        justifyContent: `center`,
+    },
+    number: {
         backgroundColor: theme.palette.text.primary,
         color: `#fff`,
-        width: 20,
-        height: 20,
-        display: `inline-block`,
-        textAlign: `center`,
+        width: `14px`,
+        height: `14px`,
+        fontSize: `8px`,
+        display: `inline-flex`,
+        alignItems: `center`,
+        justifyContent: `center`,
         borderRadius: 20,
-        marginLeft: 20,
+        marginLeft: 10,
     },
-    gridUsers:{
+    gridUsers: {
         display: `grid`,
-        gridTemplateColumns: `1fr 1fr 1fr`,
+        gridTemplateColumns: `1fr 1fr`,
         gridGap: 15,
     },
-    userItem:{
-        marginRight: 15,
+    userItem: {
+        marginRight: 30,
         display:`flex`,
         flexDirection:`row`,
         alignItems:`center`,
     },
-    avatar:{
-        marginRight: 5,
+    avatar: {
+        marginRight: 30,
     },
 }));
 
@@ -91,6 +100,7 @@ function ClassRoster () {
                 className={classes.accordion}
                 onChange={resetPosition}>
                 <AccordionSummary
+                    className={classes.accordionSummary}
                     expandIcon={<ExpandMoreIcon />}
                     aria-controls="panel1a-content"
                     id="panel1a-header"
@@ -99,7 +109,9 @@ function ClassRoster () {
                         <FormattedMessage id="classdetails_roster_teachers" /> <span className={classes.number}>{teachers.length}</span>
                     </Typography>
                 </AccordionSummary>
-                <AccordionDetails>
+                <AccordionDetails
+                    className={classes.accordionDetails}
+                >
                     {teachers.map((user) => (
                         <Box
                             key={user.id}
@@ -122,6 +134,7 @@ function ClassRoster () {
                         className={classes.accordion}
                         onChange={resetPosition}>
                         <AccordionSummary
+                            className={classes.accordionSummary}
                             expandIcon={<ExpandMoreIcon />}
                             aria-controls="panel2a-content"
                             id="panel2a-header"
@@ -130,7 +143,9 @@ function ClassRoster () {
                                 <FormattedMessage id="classdetails_roster_students" /> <span className={classes.number}>{students.length}</span>
                             </Typography>
                         </AccordionSummary>
-                        <AccordionDetails>
+                        <AccordionDetails
+                            className={classes.accordionDetails}
+                        >
                             <Box className={classes.gridUsers}>
                                 {students.map((user) => (
                                     <Box
@@ -154,6 +169,7 @@ function ClassRoster () {
                         className={classes.accordion}
                         onChange={resetPosition}>
                         <AccordionSummary
+                            className={classes.accordionSummary}
                             expandIcon={<ExpandMoreIcon />}
                             aria-controls="panel3a-content"
                             id="panel3a-header"
@@ -162,7 +178,9 @@ function ClassRoster () {
                                 Absents <span className={classes.number}>0</span>
                             </Typography>
                         </AccordionSummary>
-                        <AccordionDetails>
+                        <AccordionDetails
+                            className={classes.accordionDetails}
+                        >
                             <Typography>
                                 No informations.
                             </Typography>
