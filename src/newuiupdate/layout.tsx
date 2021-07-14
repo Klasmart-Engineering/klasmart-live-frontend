@@ -25,7 +25,7 @@ import { WebSocketLink } from "@apollo/client/link/ws";
 import React,
 { useContext } from 'react';
 import { useRecoilState } from "recoil";
-import { refreshAuthenticationCookie } from "../utils/authentication";
+import { redirectToLogin, refreshAuthenticationCookie } from "../utils/authentication";
 
 export function getApolloClient(roomId: string) {
     const authToken = AuthTokenProvider.retrieveToken();
@@ -43,12 +43,8 @@ export function getApolloClient(roomId: string) {
         //Type information seems to wrong, errors may be a single error or array of errors?
         if (!(errors instanceof Array)) { errors = [errors] }
 
-        console.log("connectionCallback", errors, result)
         const authenticationInvalid = errors.some((e) => e.message === "AuthenticationInvalid")
-        if (authenticationInvalid) {
-            //Redirect to login
-            console.log("Redirect to login")
-        }
+        if (authenticationInvalid) { redirectToLogin() } 
 
         const authenticationExpired = errors.some((e) => e.message === "AuthenticationExpired")
         if (authenticationExpired) { refreshAuthenticationCookie() }
