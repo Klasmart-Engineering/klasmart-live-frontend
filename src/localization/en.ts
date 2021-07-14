@@ -143,6 +143,7 @@ const messages: Record<string, string> = {
     schedule_liveNoSchedule: "Nothing scheduled Live",
     schedule_studyAnytimeStudy: "Anytime Study",
     schedule_studyHomeFunStudy: "Home Fun Study",
+    schedule_studySubmittedFeedback: "Submitted",
     schedule_studyNoSchedule: "Nothing scheduled Study",
     schedule_selectOrgLoaded: "Please select an organization",
 
