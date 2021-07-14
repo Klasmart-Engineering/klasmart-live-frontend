@@ -49,6 +49,7 @@ export interface ScheduleResponse {
     id: string
     is_all_day: boolean
     is_repeat: boolean
+    is_home_fun: boolean
     lesson_plan: ForeignIdName
     member_teachers: ForeignIdName[]
     org_id: string
