@@ -34,13 +34,6 @@ if (url.hostname !== `localhost` && url.hostname !== `live.beta.kidsloop.net`) {
 }
 
 const params = parseToken();
-/*
-if (params && params.name) {
-    LogRocket.identify(params.name, {
-        sessionId,
-    });
-}
-*/
 
 function Providers ({ children }: Props) {
     const [ camera, setCamera ] = useState<MediaStream>();

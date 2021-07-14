@@ -37,7 +37,6 @@ import Typography from "@material-ui/core/Typography";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { InfoCircle as InfoCircleIcon } from "@styled-icons/boxicons-solid/InfoCircle";
 import clsx from "clsx";
-import LogRocket from 'logrocket';
 import React,
 {
     useContext,
@@ -545,9 +544,6 @@ function JoinRoomForm ({
         }
         if (!name) {
             setName(user);
-            LogRocket.identify(user, {
-                sessionId,
-            });
         }
         setCamera(stream);
         setHasJoinedClassroom(true);
