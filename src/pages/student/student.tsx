@@ -112,7 +112,7 @@ export function Student(): JSX.Element {
                 <div className={classes.root} style={isTeacher ? undefined : { width: '100%', height: size.height }}>
                     {isTeacher ? <ObservationMode /> : <>
                         <Whiteboard group={sessionId} uniqueId="student" filterGroups={studentModeFilterGroups} />
-                        <RecordedIframe contentHref={contentHref} setStreamId={setStreamId} square={square} />
+                        <RecordedIframe contentHref={contentHref} setStreamId={setStreamId} width={mainContainerSize.width} height={size.height} />
                     </>}
                 </div>
             }

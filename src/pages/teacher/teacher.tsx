@@ -18,7 +18,7 @@ import { RecordedIframe } from "../../components/recordediframe";
 import { ImageFrame } from "../../components/resizedContent";
 import { MaterialTypename } from "../../lessonMaterialContext";
 import { RoomContext } from "../../providers/RoomContext";
-import { useWindowSize } from "../../utils/viewport";
+import {useElementSize, useWindowSize} from "../../utils/viewport";
 import { Stream } from "../../webRTCState";
 import { Whiteboard } from "../../whiteboard/components/Whiteboard";
 import { ContentType, InteractiveMode, InteractiveModeState, Session, StreamIdState } from "../room/room";
@@ -93,6 +93,7 @@ export function Teacher(props: Props): JSX.Element {
     const { roomId, sessionId, materials, name } = useSessionContext();
     const size = useWindowSize();
     const [square, setSquare] = useState(size.width > size.height ? size.height : size.width);
+    const mainContainerSize = useElementSize(`main-container`,{width: size.width, height: size.height});
 
     useEffect(() => {
         setSquare(size.width > size.height ? size.height : size.width);
@@ -171,7 +172,8 @@ export function Teacher(props: Props): JSX.Element {
                                                     <RecordedIframe
                                                         contentHref={contentHref}
                                                         setStreamId={setStreamId}
-                                                        square={square}
+                                                        width={mainContainerSize.width}
+                                                        height={size.height}
                                                     /> : undefined
                                                 ) : undefined : //Unknown Material
                                     undefined //No Material

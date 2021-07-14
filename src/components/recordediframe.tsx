@@ -21,7 +21,6 @@ import { ClassType } from "../store/actions";
 import { State } from "../store/store";
 import { injectIframeScript } from "../utils/injectIframeScript";
 import { loadingActivity } from "../utils/layerValues";
-import { useWindowSize } from "../utils/viewport";
 import StyledFAB from "./styled/fabButton";
 
 const SET_STREAMID = gql`
@@ -33,7 +32,8 @@ const SET_STREAMID = gql`
 export interface Props {
     contentHref: string;
     setStreamId: React.Dispatch<React.SetStateAction<string | undefined>>;
-    square?: number;
+    width: number;
+    height: number;
 }
 
 enum LoadStatus {
@@ -51,7 +51,7 @@ export function RecordedIframe(props: Props): JSX.Element {
 
     const { roomId, token, classType } = useSessionContext();
     const drawerOpen = useSelector((state: State) => state.control.drawerOpen);
-    const { contentHref, setStreamId } = props;
+    const { contentHref, setStreamId, width, height } = props;
     const [sendStreamId] = useMutation(SET_STREAMID, { context: { target: SESSION_LINK_LIVE } });
 
     const isPdfContent = contentHref.endsWith(`.pdf`);
@@ -76,8 +76,6 @@ export function RecordedIframe(props: Props): JSX.Element {
         }
     }, [contentHref, token, recorderEndpoint]);
 
-    const size = useWindowSize();
-
     useEffect(() => {
         scale(contentWidth, contentHeight);
         if (classType == ClassType.LIVE) {
@@ -85,7 +83,7 @@ export function RecordedIframe(props: Props): JSX.Element {
                 scaleWhiteboard();
             }, 300);
         }
-    }, [size]);
+    }, [width, height, contentWidth, contentHeight]);
 
     useEffect(() => {
         setTimeout(() => {
@@ -117,16 +115,8 @@ export function RecordedIframe(props: Props): JSX.Element {
     }, [loadStatus]);
 
     const scale = (innerWidth: number, innerHeight: number) => {
-        let currentWidth: number = size.width, currentHeight: number = size.height;
-
-        const iRef = window.document.getElementById(`main-container`) as HTMLIFrameElement;
-        if (iRef) {
-            currentWidth = iRef.getBoundingClientRect().width;
-            currentHeight = iRef.getBoundingClientRect().height;
-        }
-
-        const shrinkRatioX = (currentWidth / innerWidth) > 1 ? 1 : currentWidth / innerWidth;
-        const shrinkRatioY = (currentHeight / innerHeight) > 1 ? 1 : currentHeight / innerHeight;
+        const shrinkRatioX = width / innerWidth;
+        const shrinkRatioY = height / innerHeight;
         const shrinkRatio = Math.min(shrinkRatioX, shrinkRatioY);
         setTransformScale(shrinkRatio);
     }
@@ -147,14 +137,16 @@ export function RecordedIframe(props: Props): JSX.Element {
         const contentWindow = iframeElement.contentWindow
         const contentDoc = iframeElement.contentDocument
         if (!contentWindow || !contentDoc) { return; }
-
         // IP Protection: Contents should not be able to be downloaded by right-clicking.
         const blockRightClick = (e: MouseEvent) => { e.preventDefault() }
         contentWindow.addEventListener("contextmenu", (e) => blockRightClick(e), false);
         const h5pDivCollection = contentDoc.body.getElementsByClassName("h5p-content");
         const h5pTypeColumn = contentDoc.body.getElementsByClassName("h5p-column").length;
+        const firstElementChild = contentDoc.body.firstElementChild;
+        const firstTagName = firstElementChild?.tagName.toLowerCase();
 
-        if (h5pTypeColumn || isPdfContent) {
+        //Some contents are auto scale with iframe size. So, There don't need to be resized.
+        if (h5pTypeColumn || isPdfContent || firstTagName === 'video') {
             setEnableResize(false)
         } else {
             setEnableResize(true)
@@ -174,7 +166,16 @@ export function RecordedIframe(props: Props): JSX.Element {
             const h5pHeight = h5pContainer.getBoundingClientRect().height;
             setContentWidth(h5pWidth);
             setContentHeight(h5pHeight);
-            scale(h5pWidth, h5pHeight);
+        }else{
+            //Some contents isn't H5P, there are dynamically sized and hard to control. We need to calculate separately
+            switch (firstTagName){
+                case 'img':
+                    setContentWidth(firstElementChild ? firstElementChild.getBoundingClientRect().width : width);
+                    setContentHeight(firstElementChild ? firstElementChild.getBoundingClientRect().height: height);
+                    break;
+                //TODO: Calculate the size of other special content here
+            }
+
         }
 
         // Listen to acvitity clicks (that change the height of h5p)
@@ -300,11 +301,10 @@ export function RecordedIframe(props: Props): JSX.Element {
                 data-h5p-height={contentWidth}
                 style={{
                     width: enableResize ? contentWidth : '100%',
-                    height: enableResize ? contentHeight : '100%',
+                    height: enableResize ? contentHeight : height,
                     position: enableResize ? `absolute` : 'static',
                     transformOrigin: classType === ClassType.LIVE ? 'top left' : 'unset',
                     transform: enableResize ? `scale(${transformScale})` : `scale(1)`,
-                    minWidth: '100%',
                 }}
                 onLoad={() => { setLoadStatus(LoadStatus.Finished); window.dispatchEvent(new Event(`resize`)); }}
             />
