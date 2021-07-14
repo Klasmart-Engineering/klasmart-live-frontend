@@ -113,13 +113,12 @@ export function Schedule() {
 
                 const timeViewAll = thisMonthSchedules.concat(nextMonthSchedules);
                 const timeViewLiveAll = timeViewAll.filter((tv: ScheduleTimeViewResponse) => tv.class_type === ScheduleClassType.LIVE);
-                const timeViewStudyAll = timeViewAll.filter((tv: ScheduleTimeViewResponse) => tv.class_type === ScheduleClassType.STUDY && tv.due_at !== 0 && tv.is_home_fun === false);
-                const timeViewStudyAnytimeNoHomeFun = timeViewStudyAnytime.filter((tv: ScheduleTimeViewResponse) => tv.is_home_fun === false);
+                const timeViewStudyAll = timeViewAll.filter((tv: ScheduleTimeViewResponse) => tv.class_type === ScheduleClassType.STUDY && tv.due_at !== 0);
 
                 dispatch(setScheduleTimeViewAll(timeViewAll));
                 dispatch(setScheduleTimeViewLiveAll(timeViewLiveAll));
                 dispatch(setScheduleTimeViewStudyAll(timeViewStudyAll));
-                dispatch(setScheduleTimeViewStudyAnytime(timeViewStudyAnytimeNoHomeFun));
+                dispatch(setScheduleTimeViewStudyAnytime(timeViewStudyAnytime));
 
                 let timeViewLiveToday: ScheduleTimeViewResponse[] = [],
                     timeViewLiveTomorrow: ScheduleTimeViewResponse[] = [],
@@ -480,7 +479,7 @@ function AnytimeStudyItem({ studyId, setOpenAlert }: {
             <ListItemText
                 disableTypography
                 primary={<Typography variant="body1" className={listItemTextPrimary}>{studyInfo ? studyInfo.title : ""}</Typography>}
-                secondary={<Typography variant="caption" color="textSecondary"><FormattedMessage id="schedule_studyAnytimeStudy" /></Typography>}
+                secondary={<Typography variant="caption" color="textSecondary"><FormattedMessage id={studyInfo?.is_home_fun ?"schedule_studyHomeFunStudy" : "schedule_studyAnytimeStudy"}/></Typography>}
             />
         </ListItem>
     )
