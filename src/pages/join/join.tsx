@@ -1,4 +1,3 @@
-import LogRocket from 'logrocket';
 import React, { useState, useContext, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { createStyles, makeStyles, useTheme, Theme } from "@material-ui/core/styles";
@@ -338,7 +337,6 @@ function JoinRoomForm({
         }
         if (!name) {
             setName(user);
-            LogRocket.identify(user, { sessionId })
         }
         setCamera(stream);
     }

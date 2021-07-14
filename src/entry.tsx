@@ -1,38 +1,57 @@
 import ChromeLogo from "./assets/img/browser/chrome_logo.svg";
 import SafariLogo from "./assets/img/browser/safari_logo.png";
-import { LessonMaterial, MaterialTypename } from "./lessonMaterialContext";
+import {
+    LessonMaterial,
+    MaterialTypename,
+} from "./lessonMaterialContext";
 import  NewUIEntry  from "./newuiupdate/entry";
 import { setUserAgent } from "./store/reducers/session";
 import { createDefaultStore } from "./store/store";
 import { themeProvider } from "./themeProvider";
-import { getDefaultLanguageCode, getLanguage } from "./utils/locale";
+import {
+    getDefaultLanguageCode,
+    getLanguage,
+} from "./utils/locale";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Grid from "@material-ui/core/Grid";
 import { ThemeProvider } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import * as Sentry from '@sentry/react';
 import jwt_decode from "jwt-decode";
-import LogRocket from 'logrocket';
-import React, {
-    createContext, useEffect, useMemo, useState,
+import React,
+{
+    createContext,
+    useEffect,
+    useMemo,
+    useState,
 } from "react";
 import {
     isAndroid,
     isChrome,
-    isChromium, isEdge, isFirefox,
-    isIE, isIOS,
-    isIOS13, isMacOs, isMobileOnly,
-    isMobileSafari, isSafari, isSmartTV, isTablet,
+    isChromium,
+    isEdge,
+    isFirefox,
+    isIE,
+    isIOS,
+    isIOS13,
+    isMacOs,
+    isMobileOnly,
+    isMobileSafari,
+    isSafari,
+    isSmartTV,
+    isTablet,
 } from "react-device-detect";
 import { render } from "react-dom";
-import { FormattedMessage, RawIntlProvider } from "react-intl";
-import { Provider, useDispatch } from "react-redux";
+import {
+    FormattedMessage,
+    RawIntlProvider,
+} from "react-intl";
+import {
+    Provider,
+    useDispatch,
+} from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { v4 as uuid } from "uuid";
-
-LogRocket.init(`8acm62/kidsloop-live-prod`, {
-    mergeIframes: true,
-});
 
 export const sessionId = uuid();
 export const SFU_LINK = `SFU_LINK`;
@@ -198,10 +217,76 @@ function parseToken () {
     return;
 }
 const params = parseToken();
-if (params && params.name) {
-    LogRocket.identify(params.name, {
+const roomId = params ? params.roomId : ``;
+function Entry () {
+    const [ camera, setCamera ] = useState<MediaStream>();
+    const [ name, setName ] = useState(params ? params.name : ``);
+    const [ languageCode, setLanguageCode ] = useState(url.searchParams.get(`lang`) || getDefaultLanguageCode());
+    const [ themeMode, setThemeMode ] = useState(url.searchParams.get(`theme`) || `light`);
+    const locale = getLanguage(languageCode);
+
+    const themeContext = useMemo<IThemeContext>(() => ({
+        themeMode,
+        setThemeMode,
+        languageCode,
+        setLanguageCode,
+    }), [
+        themeMode,
+        setThemeMode,
+        languageCode,
+        setLanguageCode,
+    ]);
+
+    const localSession = useMemo<ILocalSessionContext>(() => ({
+        classtype: params ? params.classtype : `live`,
+        org_id: params ? params.org_id : ``,
+        camera,
+        setCamera,
+        name,
+        setName,
         sessionId,
-    });
+        roomId: params ? params.roomId : ``,
+        isTeacher: params && params.isTeacher ? params.isTeacher : false,
+        materials: params ? params.materials : null,
+    }), [
+        camera,
+        setCamera,
+        name,
+        setName,
+        params,
+    ]);
+
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(setUserAgent({
+            isMobileOnly,
+            isTablet,
+            isBrowser: true,
+            isSmartTV,
+            isAndroid,
+            isIOS,
+            isChrome,
+            isFirefox,
+            isSafari,
+            isIE,
+            isEdge,
+            isChromium,
+            isMobileSafari,
+        }));
+    }, []);
+
+    return (
+        <ThemeContext.Provider value={themeContext}>
+            <LocalSessionContext.Provider value={localSession}>
+                <RawIntlProvider value={locale}>
+                    <ThemeProvider theme={themeProvider(languageCode, themeMode)}>
+                        <CssBaseline />
+                        {!params ? <Typography><FormattedMessage id="error_invaild_token" /></Typography> : <App />}
+                    </ThemeProvider>
+                </RawIntlProvider>
+            </LocalSessionContext.Provider>
+        </ThemeContext.Provider>
+    );
 }
 
 let renderComponent: JSX.Element;
