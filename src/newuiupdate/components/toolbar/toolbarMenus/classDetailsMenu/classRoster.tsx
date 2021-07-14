@@ -33,9 +33,14 @@ const useStyles = makeStyles((theme: Theme) => ({
     accordionSummary: {
         minHeight: `0 !important`,
         padding: `0`,
+
+        "& > div": {
+            margin: `0 !important`,
+        }
     },
     accordionDetails: {
-        padding: `0 0 0 30px`,
+        flexWrap: `wrap`,
+        padding: `0 0 0 15px`,
     },
     detailsLabel: {
         color: theme.palette.text.primary,
@@ -64,18 +69,22 @@ const useStyles = makeStyles((theme: Theme) => ({
         marginLeft: 10,
     },
     gridUsers: {
-        display: `grid`,
-        gridTemplateColumns: `1fr 1fr`,
-        gridGap: 15,
+        display: `flex`,
+        flexWrap: `wrap`,
     },
     userItem: {
-        marginRight: 30,
+        width: `calc(50% - 15px)`,
+        margin: `5px 15px 5px 0`,
         display:`flex`,
         flexDirection:`row`,
         alignItems:`center`,
+
+        "&:nth-of-type(2n)": {
+            marginRight: 0,
+        },
     },
     avatar: {
-        marginRight: 30,
+        marginRight: 10,
     },
 }));
 
