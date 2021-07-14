@@ -32,7 +32,6 @@ import {
     Theme,
     useTheme,
 } from "@material-ui/core/styles";
-import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { InfoCircle as InfoCircleIcon } from "@styled-icons/boxicons-solid/InfoCircle";
