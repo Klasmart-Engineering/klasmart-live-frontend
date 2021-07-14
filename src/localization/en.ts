@@ -142,6 +142,7 @@ const messages: Record<string, string> = {
     schedule_liveSubheaderUpcoming: "SCHEDULED LIVES",
     schedule_liveNoSchedule: "Nothing scheduled Live",
     schedule_studyAnytimeStudy: "Anytime Study",
+    schedule_studyHomeFunStudy: "Home Fun Study",
     schedule_studyNoSchedule: "Nothing scheduled Study",
     schedule_selectOrgLoaded: "Please select an organization",
 
