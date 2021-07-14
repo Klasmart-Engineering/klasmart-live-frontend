@@ -242,10 +242,14 @@
     "loading_activity_error": "Maaf, terjadi kesalahan!",
     "loading_activity_lessonMaterial_clickReload": "Silakan klik tombol Muat Ulang.",
     "loading_activity_lessonMaterial_reload": "Muat Ulang",
-    "notification_user_joined": "`{user} bergabung ke kelas",
+    "notification_user_joined": "{user} bergabung ke kelas",
     "join_your_class": "Bergabung ke kelas",
     "start": "Mulai",
     "end_study_exit": "Keluar",
     "end_study_confirm": "Keluar dari kelas belajar?",
-    "end_study_bonus_content": "Konten Bonus"
+    "end_study_bonus_content": "Konten Bonus",
+    "join_permissionAlertDialog_mic_blocked_title": "Silakan nyalakan mikrofon Anda!",
+    "join_permissionAlertDialog_mic_blocked_contentText_live": "Anda mungkin butuh mikrofon untuk beberapa konten interaktif. Kami menyarankan untuk mengaktifkan izin mikrofon untuk pengalaman yang lebih baik.",
+    "join_permissionAlertDialog_mic_not_exist_title": "Silakan hubungkan mikrofon Anda!",
+    "join_permissionAlertDialog_mic_not_exist_contentText_live": "Kami tidak bisa mendeteksi mikrofon Anda, pengalaman saat menggunakan aplikasi mungkin terbatas."
 }

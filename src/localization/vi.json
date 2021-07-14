@@ -115,7 +115,7 @@
     "classdetails_roster_absents": "Học sinh vắng mặt",
     "viewmodes_on_stage": "Chế độ mặc định",
     "viewmodes_observe": "Quan sát",
-    "viewmodes_present": "Hiện diện",
+    "viewmodes_present": "Trình bày",
     "chat_messages": "Tin nhắn",
     "chat_messages_write_placeholder": "Viết tin nhắn",
     "chat_messages_noresults": "Không có tin nhắn",
@@ -247,5 +247,9 @@
     "start": "Bắt đầu",
     "end_study_exit": "Thoát",
     "end_study_confirm": "Bạn có muốn thoát Bài tập về nhà",
-    "end_study_bonus_content": "Nội dung khác"
+    "end_study_bonus_content": "Nội dung khác",
+    "join_permissionAlertDialog_mic_blocked_title": "Vui lòng mở micrô của bạn!",
+    "join_permissionAlertDialog_mic_blocked_contentText_live": "Bạn có thể cần micrô cho một số nội dung tương tác. Chúng tôi khuyên bạn nên mở micrô để có trải nghiệm tốt hơn.",
+    "join_permissionAlertDialog_mic_not_exist_title": "Vui lòng kết nối micrô của bạn!",
+    "join_permissionAlertDialog_mic_not_exist_contentText_live": "Rất tiếc, chúng tôi không thể tìm thấy micrô. Xin lưu ý rằng trải nghiệm của bạn có thể bị hạn chế."
 }
