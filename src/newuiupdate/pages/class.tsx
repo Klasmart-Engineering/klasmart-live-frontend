@@ -124,14 +124,15 @@ function Class () {
 
     async function classGetInformation (schedule_id: any) {
         let data:any = {};
+
         async function classAPI () {
             // TODO KLL-524 (1): call API
             const headers = new Headers();
             headers.append(`Accept`, `application/json`);
             headers.append(`Content-Type`, `application/json`);
-            const ENDPOINT_CMS_URL = window.location.href.indexOf('localhost') > 0 ? 'https://run.mocky.io/v3/3eebba2c-7b07-4f08-bed8-f314ec7b7e49' : `${process.env.ENDPOINT_CMS}/v1/schedules/${schedule_id}`;
+            const ENDPOINT_CMS_URL = window.location.href.indexOf('localhost') > 0 ? 'https://run.mocky.io/v3/a6b4aed5-a341-4d45-9a63-842d6ff1d53e' : `${process.env.ENDPOINT_CMS}/v1/schedules/${schedule_id}?${org_id}`;
 
-            const response = await fetch(ENDPOINT_CMS_URL, {
+            const response = await fetch(`${ENDPOINT_CMS_URL}`, {
                 headers,
                 method: `GET`
             });
@@ -140,6 +141,7 @@ function Class () {
                 return response.clone().json();
             }
         }
+
         try {
             data = await Promise.all([ classAPI() ]);
         } catch (err) {
@@ -147,21 +149,29 @@ function Class () {
         } finally {
             // TODO KLL-524 (2): Re-new classInfo by returned data.
             const dataR = data[0];
+            const dateOption = {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: 'numeric',
+                minute: 'numeric',
+                hour12: true
+            }
 
             setClassInfo({
                 class_name: dataR.class.name,
-                lesson_name: dataR.attachment.name,
+                lesson_name: dataR.title,
                 room_id: `${roomId}`,
-                class_type: `${classtype}`,
+                class_type: dataR.class_type,
                 enrolled_participants: `${dataR.class_roster_students.length > 1 ? dataR.class_roster_students.length+' students' : dataR.class_roster_students.length+' student'}, ${dataR.class_roster_teachers.length > 1 ? dataR.class_roster_teachers.length+' teachers' : dataR.class_roster_teachers.length+' teacher'}`,
                 teachers: dataR.class_roster_teachers,
                 students: dataR.class_roster_students,
                 program: dataR.program.name,
-                subject: dataR.description,
+                subject: dataR.subjects[0].name,
                 lesson_plan: dataR.lesson_plan.name,
-                materials: materials.length,
-                start_at: dataR.start_at,
-                end_at: dataR.end_at,
+                materials: dataR.lesson_plan.materials.length,
+                start_at: new Date(dataR.start_at*1000).toLocaleString('en-GB', dateOption),
+                end_at: new Date(dataR.end_at*1000).toLocaleString('en-GB', dateOption),
             });
         }
     }
