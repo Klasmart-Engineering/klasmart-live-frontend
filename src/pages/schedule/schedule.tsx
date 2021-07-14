@@ -1,3 +1,5 @@
+import {Icon, ListItemSecondaryAction} from "@material-ui/core";
+
 const dateFormat = require("dateformat");
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -496,6 +498,12 @@ function AnytimeStudyItem({ studyId, setSelectedSchedule, setOpenStudyDetail }: 
                 primary={<Typography variant="body1" className={listItemTextPrimary}>{studyInfo ? studyInfo.title : ""}</Typography>}
                 secondary={<Typography variant="caption" color="textSecondary"><FormattedMessage id={studyInfo?.is_home_fun ?"schedule_studyHomeFunStudy" : "schedule_studyAnytimeStudy"}/></Typography>}
             />
+            {
+                studyInfo?.exist_feedback ?
+                    <ListItemSecondaryAction>
+                        <Typography variant="subtitle2" color="textSecondary"><FormattedMessage id="schedule_studySubmittedFeedback" /></Typography>
+                    </ListItemSecondaryAction> : ""
+            }
         </ListItem>
     )
 }
@@ -580,6 +588,12 @@ function ScheduledStudyItem({ studyId, setSelectedSchedule, setOpenStudyDetail }
                         <Typography variant="caption" color="textSecondary" style={{ fontStyle: "italic" }}>{` - ${studyInfo ? studyInfo.program.name : ""}`}</Typography><br />
                     </> : <Typography variant="caption" color="textSecondary"><FormattedMessage id="schedule_studyAnytimeStudy" /></Typography>}
                 />
+                {
+                    studyInfo?.exist_feedback ?
+                        <ListItemSecondaryAction>
+                            <Typography variant="subtitle2" color="textSecondary"><FormattedMessage id="schedule_studySubmittedFeedback" /></Typography>
+                        </ListItemSecondaryAction> : ""
+                }
             </ListItem>
         </List>
     )
