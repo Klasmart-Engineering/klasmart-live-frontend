@@ -247,5 +247,9 @@
     "start": "Start",
     "end_study_exit": "Exit Study",
     "end_study_confirm": "Do you want to leave study class ?",
-    "end_study_bonus_content": "Bonus Content"
+    "end_study_bonus_content": "Bonus Content",
+    "join_permissionAlertDialog_mic_blocked_title": "Please enable your microphone!",
+    "join_permissionAlertDialog_mic_blocked_contentText_live": "You may need a microphone for some of the interactive content. We recommend enabling microphone permissions for a better experience.",
+    "join_permissionAlertDialog_mic_not_exist_title": "Please connect your microphone!",
+    "join_permissionAlertDialog_mic_not_exist_contentText_live": "Unfortunately, we were unable to find a microphone. Please note your user experience may be limited."
 }
