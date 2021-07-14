@@ -20,7 +20,6 @@ const useStyles = makeStyles((theme: Theme) => ({
         padding: `22px 18px`,
     },
     tabsWrap: {
-        borderBottom: `1px solid #808080`,
         "& button": {
             paddingTop: `5px`,
             width: `50%`,
