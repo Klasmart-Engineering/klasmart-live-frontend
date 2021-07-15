@@ -43,6 +43,7 @@ import { lockOrientation } from "../../utils/screenUtils";
 import { autoHideDuration } from "../../utils/fixedValues";
 import { useShouldSelectUser } from "../account/selectUserDialog";
 import { useUserInformation } from "../../context-provider/user-information-context";
+import StudyDetail from "../join/study-detail";
 
 // NOTE: China API server(Go lang) accept 10 digits timestamp
 const now = new Date();
@@ -89,6 +90,9 @@ export function Schedule() {
     const [key, setKey] = useState(Math.random().toString(36))
     const [alertMessageId, setAlertMessageId] = useState<string>();
     const [openAlert, setOpenAlert] = useState(false);
+    const [openStudyDetail, setOpenStudyDetail] = useState(false);
+
+    const [selectedSchedule, setSelectedSchedule] = useState<ScheduleResponse>();
 
     const handleClose = (event?: React.SyntheticEvent, reason?: string) => {
         if (reason === "clickaway") { return; }
@@ -180,7 +184,28 @@ export function Schedule() {
 
             fetchEverything();
         }
-    }, [shouldSelectUser, shouldSelectOrganization, selectedOrg, schedulerService, selectedUserProfile, key, isSelectingUser])
+    }, [shouldSelectUser, shouldSelectOrganization, selectedOrg, schedulerService, selectedUserProfile, key, isSelectingUser]);
+
+    const { setToken } = useSessionContext();
+
+    const joinStudy = () => {
+        if (!schedulerService) { return; }
+        if (!selectedSchedule) { return; }
+        if (!selectedOrg) { return; }
+
+        dispatch(setLessonPlanIdOfSelectedSchedule(selectedSchedule.lesson_plan.id));
+        schedulerService.getScheduleToken(selectedOrg.organization_id, selectedSchedule.id).then((res) => {
+            if (res.token) {
+                setToken(res.token);
+                // TODO: Can we get rid of the token query parameter and just use
+                // react component state for keeping and parsing the token instead?
+                location.href = `#/join?token=${res.token}`;
+            } else {
+                setOpenAlert(true);
+                return;
+            }
+        })
+    }
 
     if (userSelectErrorCode && userSelectErrorCode !== 401) {
         return (
@@ -214,7 +239,7 @@ export function Schedule() {
                 item
                 style={{ flexGrow: 1, overflowY: "auto", backgroundColor: "white" }}
             >
-                {classType === ClassType.LIVE ? <ScheduledLiveList setOpenAlert={setOpenAlert} /> : <ScheduledStudyList setOpenAlert={setOpenAlert} />}
+                {classType === ClassType.LIVE ? <ScheduledLiveList setOpenAlert={setOpenAlert} /> : <ScheduledStudyList setSelectedSchedule={setSelectedSchedule} setOpenStudyDetail={setOpenStudyDetail}/>}
             </Grid>
         }
         <ClassTypeSwitcher />
@@ -223,6 +248,7 @@ export function Schedule() {
                 <FormattedMessage id={alertMessageId === "" ? "error_unknown_error" : alertMessageId} />
             </Alert>
         </Snackbar>
+        <StudyDetail schedule={selectedSchedule} open={openStudyDetail} onClose={() => setOpenStudyDetail(false)} joinStudy={joinStudy} />
     </>)
 }
 
@@ -382,9 +408,10 @@ function ScheduledLiveItem({ scheduleId, setOpenAlert }: { scheduleId: string, s
     )
 }
 
-function ScheduledStudyList({ setOpenAlert }: { setOpenAlert: React.Dispatch<React.SetStateAction<boolean>> }) {
-    const { listRoot, listSubheaderText, listItemAvatar, listItemTextPrimary } = useStyles();
-
+function ScheduledStudyList({ setSelectedSchedule, setOpenStudyDetail }: { 
+    setSelectedSchedule: React.Dispatch<React.SetStateAction<ScheduleResponse | undefined>>,
+    setOpenStudyDetail: React.Dispatch<React.SetStateAction<boolean>>
+}) {
     const scheduleTimeViewStudyAll = useSelector((state: State) => state.data.scheduleTimeViewStudyAll);
     const scheduleTimeViewStudyAnytime = useSelector((state: State) => state.data.scheduleTimeViewStudyAnytime);
 
@@ -392,39 +419,39 @@ function ScheduledStudyList({ setOpenAlert }: { setOpenAlert: React.Dispatch<Rea
         <Typography variant="body2" color="textSecondary">
             <FormattedMessage id="schedule_studyNoSchedule" />
         </Typography> : <>
-            <AnytimeStudyList timeViews={scheduleTimeViewStudyAnytime} setOpenAlert={setOpenAlert} />
+            <AnytimeStudyList timeViews={scheduleTimeViewStudyAnytime} setSelectedSchedule={setSelectedSchedule} setOpenStudyDetail={setOpenStudyDetail} />
             <Grid item>
                 {scheduleTimeViewStudyAll.length === 0 ? null :
-                    scheduleTimeViewStudyAll.map((study: ScheduleTimeViewResponse) => <ScheduledStudyItem key={study.id} studyId={study.id} setOpenAlert={setOpenAlert} />)}
+                    scheduleTimeViewStudyAll.map((study: ScheduleTimeViewResponse) => <ScheduledStudyItem key={study.id} studyId={study.id} setSelectedSchedule={setSelectedSchedule} setOpenStudyDetail={setOpenStudyDetail} />)}
             </Grid>
         </>
     )
 }
 
-function AnytimeStudyList({ timeViews, setOpenAlert }: {
+function AnytimeStudyList({ timeViews, setSelectedSchedule, setOpenStudyDetail }: {
     timeViews: ScheduleTimeViewResponse[],
-    setOpenAlert: React.Dispatch<React.SetStateAction<boolean>>
+    setSelectedSchedule: React.Dispatch<React.SetStateAction<ScheduleResponse | undefined>>,
+    setOpenStudyDetail: React.Dispatch<React.SetStateAction<boolean>>
 }) {
     const { listRoot } = useStyles();
 
     return (
         <Grid item>
             <List component="nav" aria-labelledby="study-subheader" className={listRoot}>
-                {timeViews.map(tv => <AnytimeStudyItem studyId={tv.id} setOpenAlert={setOpenAlert} />)}
+                {timeViews.map(tv => <AnytimeStudyItem studyId={tv.id} setSelectedSchedule={setSelectedSchedule} setOpenStudyDetail={setOpenStudyDetail} />)}
             </List>
         </Grid>
     )
 }
 
-function AnytimeStudyItem({ studyId, setOpenAlert }: {
+function AnytimeStudyItem({ studyId, setSelectedSchedule, setOpenStudyDetail }: {
     studyId: string,
-    setOpenAlert: React.Dispatch<React.SetStateAction<boolean>>
+    setSelectedSchedule: React.Dispatch<React.SetStateAction<ScheduleResponse | undefined>>,
+    setOpenStudyDetail: React.Dispatch<React.SetStateAction<boolean>>
 }) {
     const { listItemAvatar, listItemTextPrimary } = useStyles();
-    const dispatch = useDispatch();
     const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
 
-    const { setToken } = useSessionContext();
     const { schedulerService } = useServices();
 
     const [studyInfo, setStudyInfo] = useState<ScheduleResponse>();
@@ -449,29 +476,17 @@ function AnytimeStudyItem({ studyId, setOpenAlert }: {
             } finally { }
         }
         fetchEverything();
-    }, [])
+    }, []);
 
-    const goJoin = () => {
-        if (!schedulerService) { return; }
-        if (!studyInfo) { return; }
-        if (!selectedOrg) { return; }
+    const displayScheduleInformation = () => {
+        if (!studyInfo) return;
 
-        dispatch(setLessonPlanIdOfSelectedSchedule(studyInfo.lesson_plan.id));
-        schedulerService.getScheduleToken(selectedOrg.organization_id, studyInfo.id).then((res) => {
-            if (res.token) {
-                setToken(res.token);
-                // TODO: Can we get rid of the token query parameter and just use
-                // react component state for keeping and parsing the token instead?
-                location.href = `#/join?token=${res.token}`;
-            } else {
-                setOpenAlert(true);
-                return;
-            }
-        })
-    }
+        setSelectedSchedule(studyInfo);
+        setOpenStudyDetail(true);
+    };
 
     return (
-        <ListItem button onClick={goJoin}>
+        <ListItem button onClick={displayScheduleInformation}>
             <ListItemAvatar>
                 <Avatar alt={"Scheduled Study"} className={listItemAvatar}>
                     <img src={ScheduledStudyHouse} height={24} />
@@ -486,15 +501,14 @@ function AnytimeStudyItem({ studyId, setOpenAlert }: {
     )
 }
 
-function ScheduledStudyItem({ studyId, setOpenAlert }: {
+function ScheduledStudyItem({ studyId, setSelectedSchedule, setOpenStudyDetail }: {
     studyId: string,
-    setOpenAlert: React.Dispatch<React.SetStateAction<boolean>>
+    setSelectedSchedule: React.Dispatch<React.SetStateAction<ScheduleResponse | undefined>>,
+    setOpenStudyDetail: React.Dispatch<React.SetStateAction<boolean>>
 }) {
     const { listRoot, listSubheaderText, listItemAvatar, listItemTextPrimary } = useStyles();
-    const dispatch = useDispatch();
     const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
 
-    const { setToken } = useSessionContext();
     const { schedulerService } = useServices();
 
     const [studyInfo, setStudyInfo] = useState<ScheduleResponse>();
@@ -530,26 +544,14 @@ function ScheduledStudyItem({ studyId, setOpenAlert }: {
             } finally { }
         }
         fetchEverything();
-    }, [])
+    }, []);
 
-    const goJoin = () => {
-        if (!schedulerService) { return; }
-        if (!studyInfo) { return; }
-        if (!selectedOrg) { return; }
+    const displayScheduleInformation = () => {
+        if (!studyInfo) return;
 
-        dispatch(setLessonPlanIdOfSelectedSchedule(studyInfo.lesson_plan.id));
-        schedulerService.getScheduleToken(selectedOrg.organization_id, studyInfo.id).then((res) => {
-            if (res.token) {
-                setToken(res.token);
-                // TODO: Can we get rid of the token query parameter and just use
-                // react component state for keeping and parsing the token instead?
-                location.href = `#/join?token=${res.token}`;
-            } else {
-                setOpenAlert(true);
-                return;
-            }
-        })
-    }
+        setSelectedSchedule(studyInfo);
+        setOpenStudyDetail(true);
+    };
 
     return (
         <List
@@ -564,7 +566,7 @@ function ScheduledStudyItem({ studyId, setOpenAlert }: {
             }
             className={listRoot}
         >
-            <ListItem button onClick={goJoin}>
+            <ListItem button onClick={displayScheduleInformation}>
                 <ListItemAvatar>
                     <Avatar alt={"Scheduled Study"} className={listItemAvatar}>
                         <img src={ScheduledStudyHouse} height={24} />
