@@ -90,10 +90,14 @@ export const viewModeState = atom<viewModeStateType>({
     default: `onstage`,
 });
 
-type interactiveModeStateType = "Blank" | "Present" | "Observe" | "ShareScreen";
-export const interactiveModeState = atom<interactiveModeStateType>({
+export enum InteractiveMode {
+    OnStage,
+    Observe,
+    Present,
+};
+export const interactiveModeState = atom<InteractiveMode>({
     key: `interactiveModeState`,
-    default: `Blank`,
+    default: InteractiveMode.OnStage,
 });
 
 export const streamIdState = atom({

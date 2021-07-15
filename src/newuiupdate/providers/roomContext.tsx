@@ -3,7 +3,7 @@ import {
     Content, Message, Session,
 } from "../../pages/room/room";
 import {
-    audioGloballyMutedState, classEndedState, isChatOpenState, unreadMessagesState, videoGloballyMutedState,
+    audioGloballyMutedState, classEndedState, isChatOpenState, unreadMessagesState, videoGloballyMutedState, materialActiveIndexState, streamIdState, interactiveModeState,
 } from "../states/layoutAtoms";
 import {
     LIVE_LINK, LocalSessionContext, SFU_LINK,
@@ -59,7 +59,7 @@ export const RoomContext = createContext<RoomContextInterface>(defaultRoomContex
 export const RoomProvider = (props: {children: React.ReactNode}) => {
     const intl = useIntl();
     const {
-        roomId, name, sessionId, camera, isTeacher,
+        roomId, name, sessionId, camera, isTeacher
     } = useContext(LocalSessionContext);
     const [ sfuAddress, setSfuAddress ] = useState<string>(``);
     const [ messages, setMessages ] = useState<Map<string, Message>>(new Map<string, Message>());
@@ -72,6 +72,11 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
     const [ audioGloballyMuted, setAudioGloballyMuted ] = useRecoilState(audioGloballyMutedState);
     const [ videoGloballyMuted, setVideoGloballyMuted ] = useRecoilState(videoGloballyMutedState);
     const { enqueueSnackbar } = useSnackbar();
+
+    const [ materialActiveIndex, setMaterialActiveIndex ] = useRecoilState(materialActiveIndexState);
+    const [ streamId, setStreamId ] = useRecoilState(streamIdState);
+    const [ interactiveMode, setInteractiveMode ] = useRecoilState(interactiveModeState);
+    
 
     useEffect(() => {
         isChatOpen && setUnreadMessages(0);
