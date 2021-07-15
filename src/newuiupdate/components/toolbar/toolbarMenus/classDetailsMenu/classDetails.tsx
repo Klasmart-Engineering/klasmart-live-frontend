@@ -9,7 +9,11 @@ import { FormattedMessage } from "react-intl";
 import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
-    root: {
+    table: {
+        width: `100%`,
+        borderCollapse: `collapse`
+    },
+    tbody: {
         "& > tr": {
             "& > td": {
                 paddingBottom: `20px`,
@@ -29,8 +33,18 @@ const useStyles = makeStyles((theme: Theme) => ({
                     paddingBottom: `0`,
                 },
             },
+
+            [theme.breakpoints.down(`sm`)]: {
+                "& > td": {
+                    paddingBottom: `10px`,
+
+                    "&:nth-of-type(1)": {
+                        paddingRight: `15px`
+                    },
+                }
+            },
         },
-    },
+    }
 }));
 
 function ClassDetails () {
@@ -39,8 +53,8 @@ function ClassDetails () {
 
     return (
         <div>
-            <table>
-                <tbody className={classes.root}>
+            <table className={classes.table}>
+                <tbody className={classes.tbody}>
                     <tr>
                         <td><Typography><FormattedMessage id="classdetails_class_name" /></Typography></td>
                         <td><Typography>{classInfo.class_name}</Typography></td>

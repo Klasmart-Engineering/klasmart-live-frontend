@@ -19,6 +19,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     root: {
         margin: `-8px 0`,
         minHeight: `466px`,
+
+        [theme.breakpoints.down(`sm`)]: {
+            minHeight: `347px`,
+        }
     },
     accordion: {
         margin: `0 !important`,

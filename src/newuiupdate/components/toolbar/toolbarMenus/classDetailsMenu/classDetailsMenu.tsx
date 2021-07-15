@@ -32,12 +32,18 @@ const useStyles = makeStyles((theme: Theme) => ({
                   margin: `0 6px 0 0 !important`,
                 },
             },
-        }
+        },
     },
     popperStyle: {
         width: `calc(500/1920 * 100vw)`,
         minWidth: `400px`,
         maxWidth: `500px`,
+
+        [theme.breakpoints.down(`sm`)]: {
+            width: `100vw`,
+            minWidth: `0`,
+            maxWidth: `calc(100vw - 30px)`,
+        },
     }
 }));
 
