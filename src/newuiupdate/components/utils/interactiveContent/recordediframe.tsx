@@ -165,9 +165,9 @@ export function RecordedIframe (props: Props): JSX.Element {
 
             const videos = contentDoc.body.getElementsByTagName(`video`);
             for(const video of videos) {
+                video.removeAttribute(`autoplay`);
                 video.pause();
                 video.currentTime=0;
-                video.removeAttribute(`autoplay`);
             }
 
             // Custom styles when needed
@@ -186,7 +186,11 @@ export function RecordedIframe (props: Props): JSX.Element {
                 width: 100% !important
             }
             `;
-                contentDoc.head.appendChild(style);
+                if(contentDoc.head) {
+                    contentDoc.head.appendChild(style);
+                } else {
+                    contentDoc.body.appendChild(style);
+                }
             // setStylesLoaded(true);
             }
 
