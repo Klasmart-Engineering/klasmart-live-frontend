@@ -149,7 +149,9 @@ function Class () {
     useEffect(() => {
         const teachers = [ ...sessions.values() ].filter(session => session.isTeacher === true).sort((a, b) => a.joinedAt - b.joinedAt);
         const host = teachers.find(session => session.isHost === true);
-        if (!host && teachers.length) {
+        if (host){
+            host?.id === sessionId ? setHasControls(true) : setHasControls(false);
+        } else if (!host && teachers.length) {
             const hostId = teachers[0].id;
             hostMutation({
                 variables: {
@@ -159,13 +161,7 @@ function Class () {
             });
             setHasControls(true);
         }
-    }, [ sessions.size ]);
-
-    useEffect(() => {
-        const teachers = [ ...sessions.values() ].filter(session => session.isTeacher === true).sort((a, b) => a.joinedAt - b.joinedAt);
-        const host = teachers.find(session => session.isHost === true);
-        host?.id === sessionId ? setHasControls(true) : setHasControls(false);
-    }, [ sessions ]);
+    }, [ sessions.size, sessions ]);
 
     useEffect(() => {
         if (classtype === ClassType.STUDY) {
