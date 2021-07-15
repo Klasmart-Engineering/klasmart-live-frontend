@@ -148,6 +148,9 @@ function DialogEndClass (props:any){
         context: {
             target: LIVE_LINK,
         },
+        onCompleted() {
+            localStorage.setItem('ObserveWarning', 'true');
+        }
     });
 
     return(
@@ -178,7 +181,7 @@ function DialogEndClass (props:any){
                 <Button
                     variant="contained"
                     color="primary"
-                    onClick={() => endClass()}>
+                    onClick={() => endClass() }>
                     <FormattedMessage id="end_class" />
                 </Button>
             </DialogActions>
