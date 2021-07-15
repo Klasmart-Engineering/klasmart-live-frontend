@@ -9,6 +9,7 @@ import {
     interactiveModeState,
     isViewModesOpenState,
     observeContentState,
+    observeDisableState,
     observeWarningState,
 } from "../../../../states/layoutAtoms";
 import { MUTATION_SHOW_CONTENT } from "../../../utils/graphql";
@@ -24,7 +25,6 @@ import React,
 {
     useContext,
     useEffect,
-    useState,
 } from "react";
 import { useIntl } from "react-intl";
 import { useRecoilState } from "recoil";
@@ -42,6 +42,7 @@ function ViewModesMenu (props:ViewModesMenuProps) {
     const [ interactiveMode, setInteractiveMode ] = useRecoilState(interactiveModeState);
     const [ observeOpen, setObserveOpen ] = useRecoilState(observeWarningState);
     const [ observeContent, setObserveContent ] = useRecoilState(observeContentState);
+    const [ observeDisable, setObserveDisable ] = useRecoilState(observeDisableState);
 
     const [ showContent, { loading: loadingShowContent } ] = useMutation(MUTATION_SHOW_CONTENT, {
         context: {
@@ -52,6 +53,7 @@ function ViewModesMenu (props:ViewModesMenuProps) {
     const switchContent = (type:ContentType) => {
         setObserveContent(false);
         setObserveOpen(false);
+
         showContent({
             variables: {
                 roomId,
@@ -72,7 +74,7 @@ function ViewModesMenu (props:ViewModesMenuProps) {
             showContent({
                 variables: {
                     roomId,
-                    type: `Activity`,
+                    type: ContentType.Activity,
                     contentId: sessionId,
                 },
             });
@@ -92,6 +94,7 @@ function ViewModesMenu (props:ViewModesMenuProps) {
                 container
                 alignItems="stretch" >
                 <ViewMode
+                    disable={false}
                     title={intl.formatMessage({
                         id: `viewmodes_on_stage`,
                     })}
@@ -101,6 +104,7 @@ function ViewModesMenu (props:ViewModesMenuProps) {
                 />
 
                 <ViewMode
+                    disable={observeDisable}
                     title={intl.formatMessage({
                         id: `viewmodes_observe`,
                     })}
@@ -110,6 +114,7 @@ function ViewModesMenu (props:ViewModesMenuProps) {
                 />
 
                 <ViewMode
+                    disable={false}
                     title={intl.formatMessage({
                         id: `viewmodes_present`,
                     })}
