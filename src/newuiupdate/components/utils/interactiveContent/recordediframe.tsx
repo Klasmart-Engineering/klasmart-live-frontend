@@ -1,19 +1,32 @@
 import { ClassType } from "../../../../store/actions";
 import { useWindowSize } from "../../../../utils/viewport";
-import { LIVE_LINK, LocalSessionContext } from "../../../providers/providers";
+import {
+    LIVE_LINK,
+    LocalSessionContext,
+} from "../../../providers/providers";
 import { RoomContext } from "../../../providers/roomContext";
-import { isLessonPlanOpenState, streamIdState } from "../../../states/layoutAtoms";
-import { gql, useMutation } from "@apollo/client";
+import {
+    isLessonPlanOpenState,
+    streamIdState,
+} from "../../../states/layoutAtoms";
+import {
+    gql,
+    useMutation,
+} from "@apollo/client";
+import { Button } from "@material-ui/core";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import Dialog from "@material-ui/core/Dialog";
 import Grid from "@material-ui/core/Grid";
 import { useTheme } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
-import { Button } from "@material-ui/core";
 import { Refresh as RefreshIcon } from "@styled-icons/material/Refresh";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import React, {
-    useContext, useEffect, useRef, useState,
+import React,
+{
+    useContext,
+    useEffect,
+    useRef,
+    useState,
 } from "react";
 import { FormattedMessage } from "react-intl";
 import { useRecoilState } from "recoil";
@@ -141,18 +154,26 @@ export function RecordedIframe (props: Props): JSX.Element {
     };
 
     function onLoad () {
-        // TODO the client-side rendering version of H5P is ready! we can probably delete this function and the scale function above
-        // if we switch over to it! Ask me (Daiki) about the details.
-        const iframeElement = window.document.getElementById(`recordediframe`) as HTMLIFrameElement;
-        const contentWindow = iframeElement.contentWindow;
-        const contentDoc = iframeElement.contentDocument;
+        try {
+            // TODO the client-side rendering version of H5P is ready! we can probably delete this function and the scale function above
+            // if we switch over to it! Ask me (Daiki) about the details.
+            const iframeElement = window.document.getElementById(`recordediframe`) as HTMLIFrameElement;
+            const contentWindow = iframeElement.contentWindow;
+            const contentDoc = iframeElement.contentDocument;
 
-        if (!contentWindow || !contentDoc) { return; }
+            if (!contentWindow || !contentDoc) { return; }
 
-        // Custom styles when needed
-        if(!stylesLoaded){
-            const style = document.createElement(`style`);
-            style.innerHTML = `
+            const videos = contentDoc.body.getElementsByTagName(`video`);
+            for(const video of videos) {
+                video.pause();
+                video.currentTime=0;
+                video.removeAttribute(`autoplay`);
+            }
+
+            // Custom styles when needed
+            if(!stylesLoaded){
+                const style = document.createElement(`style`);
+                style.innerHTML = `
             img{max-width: 100%; height: auto; object-fit:contain}
             body > video{width: 100%; height: 100vh}
             .h5p-single-choice-set{
@@ -165,49 +186,53 @@ export function RecordedIframe (props: Props): JSX.Element {
                 width: 100% !important
             }
             `;
-            contentDoc.head.appendChild(style);
+                contentDoc.head.appendChild(style);
             // setStylesLoaded(true);
-        }
-
-        // IP Protection: Contents should not be able to be downloaded by right-clicking.
-        const blockRightClick = (e: MouseEvent) => { e.preventDefault(); };
-        contentWindow.addEventListener(`contextmenu`, (e) => blockRightClick(e), false);
-        const h5pDivCollection = contentDoc.body.getElementsByClassName(`h5p-content`);
-        const h5pTypeColumn = contentDoc.body.getElementsByClassName(`h5p-column`).length;
-        const h5pTypeAccordion = contentDoc.body.getElementsByClassName(`h5p-accordion`).length;
-
-        if (h5pDivCollection.length > 0) {
-            if(h5pTypeColumn || h5pTypeAccordion){
-                setEnableResize(false);
-                h5pDivCollection[0].setAttribute(`style`, `width: 100% !important;`);
-            }else{
-                setEnableResize(true);
-                h5pDivCollection[0].setAttribute(`style`, `width: auto !important;`);
             }
 
-            const h5pContainer = h5pDivCollection[0] as HTMLDivElement;
-            h5pContainer.setAttribute(`data-iframe-height`, ``);
-            const h5pWidth = h5pContainer.getBoundingClientRect().width;
-            const h5pHeight = h5pContainer.getBoundingClientRect().height;
-            setContentWidth(h5pWidth);
-            setContentHeight(h5pHeight);
-            scale(h5pWidth, h5pHeight);
-        } else {
-            setEnableResize(true);
+            // IP Protection: Contents should not be able to be downloaded by right-clicking.
+            const blockRightClick = (e: MouseEvent) => { e.preventDefault(); };
+            contentWindow.addEventListener(`contextmenu`, (e) => blockRightClick(e), false);
+            const h5pDivCollection = contentDoc.body.getElementsByClassName(`h5p-content`);
+            const h5pTypeColumn = contentDoc.body.getElementsByClassName(`h5p-column`).length;
+            const h5pTypeAccordion = contentDoc.body.getElementsByClassName(`h5p-accordion`).length;
 
-            if(contentDoc.body.getElementsByTagName(`img`).length){
-                const imageWidth = contentDoc.body.getElementsByTagName(`img`)[0].getBoundingClientRect().width;
-                const imageHeight = contentDoc.body.getElementsByTagName(`img`)[0].getBoundingClientRect().height;
-                if(imageWidth && imageHeight){
-                    setContentWidth(imageWidth);
-                    setContentHeight(imageHeight);
+            if (h5pDivCollection.length > 0) {
+                if(h5pTypeColumn || h5pTypeAccordion){
+                    setEnableResize(false);
+                    h5pDivCollection[0].setAttribute(`style`, `width: 100% !important;`);
+                }else{
+                    setEnableResize(true);
+                    h5pDivCollection[0].setAttribute(`style`, `width: auto !important;`);
                 }
-            }else if(contentDoc.body.getElementsByTagName(`video`).length){
-                setEnableResize(false);
-            }else{
-                setContentWidth(1024);
-                setContentHeight(1024);
+
+                const h5pContainer = h5pDivCollection[0] as HTMLDivElement;
+                h5pContainer.setAttribute(`data-iframe-height`, ``);
+                const h5pWidth = h5pContainer.getBoundingClientRect().width;
+                const h5pHeight = h5pContainer.getBoundingClientRect().height;
+                setContentWidth(h5pWidth);
+                setContentHeight(h5pHeight);
+                scale(h5pWidth, h5pHeight);
+            } else {
+                setEnableResize(true);
+
+                if(contentDoc.body.getElementsByTagName(`img`).length){
+                    const imageWidth = contentDoc.body.getElementsByTagName(`img`)[0].getBoundingClientRect().width;
+                    const imageHeight = contentDoc.body.getElementsByTagName(`img`)[0].getBoundingClientRect().height;
+                    if(imageWidth && imageHeight){
+                        setContentWidth(imageWidth);
+                        setContentHeight(imageHeight);
+                    }
+                }else if(contentDoc.body.getElementsByTagName(`video`).length){
+                    setEnableResize(false);
+                }else{
+                    setContentWidth(1024);
+                    setContentHeight(1024);
+                }
             }
+        }
+        catch(e) {
+            console.log(`onLoad erorr`, e);
         }
     }
 
@@ -240,7 +265,11 @@ export function RecordedIframe (props: Props): JSX.Element {
             const matches = window.location.pathname.match(/^(.*\/+)([^/]*)$/);
             const prefix = matches && matches.length >= 2 ? matches[1] : ``;
             script.setAttribute(`src`, `${prefix}record-1db5341.js`);
-            doc.head.appendChild(script);
+            if(doc.head) {
+                doc.head.appendChild(script);
+            } else {
+                doc.body.appendChild(script);
+            }
         }
         catch(e){
             console.log(e);
@@ -321,8 +350,8 @@ export function RecordedIframe (props: Props): JSX.Element {
             <iframe
                 ref={iframeRef}
                 id="recordediframe"
-                src={contentId.endsWith(`.pdf`) 
-                    ? `${contentId.replace('/assets/', '/pdf/')}/view.html` 
+                src={contentId.endsWith(`.pdf`)
+                    ? `${contentId.replace(`/assets/`, `/pdf/`)}/view.html`
                     : contentId}
                 style={{
                     width: enableResize ? contentWidth : `100%`,
