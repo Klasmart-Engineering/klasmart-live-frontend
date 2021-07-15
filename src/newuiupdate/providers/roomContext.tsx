@@ -135,9 +135,10 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
 
     const userJoin = (join: Session) => {
         const now = Date.now() - 5000;
+        const newSession = !sessions.has(join.id)
         setSessions(prev => new Map(prev.set(join.id, join)));
 
-        if(isTeacher && sessionId !== join.id && now <= join.joinedAt){
+        if(newSession && isTeacher && sessionId !== join.id && now <= join.joinedAt){
             enqueueSnackbar(intl.formatMessage({
                 id: `notification_user_joined`,
             }, {
