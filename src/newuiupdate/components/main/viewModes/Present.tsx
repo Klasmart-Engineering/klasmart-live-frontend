@@ -48,6 +48,7 @@ function Present () {
         },
     });
 
+    /*
     useEffect(() => {
         if (material) {
             if (material.__typename === MaterialTypename.Video || (material.__typename === undefined && material.video)) {
@@ -90,6 +91,7 @@ function Present () {
         streamId,
         sessionId,
     ]);
+    */
 
     // IF TEACHER
     if(hasControls){

@@ -3,7 +3,7 @@ import {
     Content, Message, Session,
 } from "../../pages/room/room";
 import {
-    audioGloballyMutedState, classEndedState, isChatOpenState, unreadMessagesState, videoGloballyMutedState, materialActiveIndexState, streamIdState, interactiveModeState,
+    audioGloballyMutedState, classEndedState, isChatOpenState, unreadMessagesState, videoGloballyMutedState, materialActiveIndexState, streamIdState, interactiveModeState, hasControlsState
 } from "../states/layoutAtoms";
 import {
     LIVE_LINK, LocalSessionContext, SFU_LINK,
@@ -76,7 +76,13 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
     const [ materialActiveIndex, setMaterialActiveIndex ] = useRecoilState(materialActiveIndexState);
     const [ streamId, setStreamId ] = useRecoilState(streamIdState);
     const [ interactiveMode, setInteractiveMode ] = useRecoilState(interactiveModeState);
+    const [ hasControls, setHasControls ] = useRecoilState(hasControlsState);
     
+    useEffect(() => {
+        if(hasControls){
+            console.log('trigger showcontent')
+        }
+    }, [ streamId, materialActiveIndex, interactiveMode ]);
 
     useEffect(() => {
         isChatOpen && setUnreadMessages(0);
