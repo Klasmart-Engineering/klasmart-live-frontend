@@ -6,7 +6,6 @@ import { WebRTCProvider } from "../../providers/WebRTCContext";
 import { GlobalWhiteboardContext } from "../../whiteboard/context-providers/GlobalWhiteboardContext";
 import { Student } from "../student/student";
 import { ScreenShareProvider } from "../teacher/screenShareProvider";
-import { Teacher } from "../teacher/teacher";
 import { InteractiveModeState, StreamIdState } from "./room";
 
 interface LiveProps {
@@ -31,14 +30,7 @@ export function Live({
                         interactiveModeState={interactiveModeState}
                         streamIdState={streamIdState}
                     >
-                        {
-                            isHostTeacher
-                                ? <Teacher
-                                    interactiveModeState={interactiveModeState}
-                                    streamIdState={streamIdState}
-                                />
-                                : <Student />
-                        }
+                        <Student />
                     </Layout>
                 </GlobalWhiteboardContext>
             </ScreenShareProvider>
