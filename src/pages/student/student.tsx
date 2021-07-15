@@ -17,7 +17,6 @@ import WBToolbar from "../../whiteboard/components/Toolbar";
 import { Whiteboard } from "../../whiteboard/components/Whiteboard";
 import { ContentType, Session } from "../room/room";
 import { ReplicaMedia } from "../synchronized-video";
-import { ObservationMode } from "../teacher/teacher";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -112,10 +111,10 @@ export function Student(): JSX.Element {
             }
             {content && content.type === ContentType.Activity &&
                 <div className={classes.root} style={isTeacher ? undefined : { width: square, height: square }}>
-                    {isTeacher ? <ObservationMode /> : <>
+                    <>
                         <Whiteboard group={sessionId} uniqueId="student" filterGroups={studentModeFilterGroups} />
                         <RecordedIframe contentId={content.contentId} setStreamId={setStreamId} square={square} />
-                    </>}
+                    </>
                 </div>
             }
             {/* {content && content.type === ContentType.Audio ? null : null } */}
