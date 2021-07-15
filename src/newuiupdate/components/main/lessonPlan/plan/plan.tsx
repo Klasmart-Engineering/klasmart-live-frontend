@@ -1,6 +1,9 @@
 import { LocalSessionContext } from "../../../../providers/providers";
 import { materialActiveIndexState } from "../../../../states/layoutAtoms";
+import { MaterialTypename } from "../../../../../lessonMaterialContext";
 import { NoItemList } from "../../../utils/utils";
+import { RoomContext } from "../../../../providers/roomContext";
+import { ContentType } from "../../../../../pages/room/room";
 import {
     Grid,
     makeStyles,
@@ -23,6 +26,10 @@ const useStyles = makeStyles((theme: Theme) => ({
         minHeight: 300,
         minWidth: 300,
     },
+    stepDisabled: {
+        pointerEvents: `none`,
+        opacity: `0.3`,
+    }
 }));
 
 function Plan () {
@@ -30,6 +37,12 @@ function Plan () {
     const intl = useIntl();
     const [ materialActiveIndex, setMaterialActiveIndex ] = useRecoilState(materialActiveIndexState);
     const { materials } = useContext(LocalSessionContext);
+    const { content } = useContext(RoomContext);
+
+    const checkDisable = (material:any) => {
+        if (content?.type === ContentType.Activity && material.__typename !== MaterialTypename.Iframe) return true;
+        else return false;
+    }
 
     return (
         <Grid
@@ -53,8 +66,9 @@ function Plan () {
                     >
                         {materials.map((material, index) => (
                             <Step
+                                className={ checkDisable(material) ? classes.stepDisabled : ``}
                                 key={`step-${material.name}-${index}`}
-                                disabled={false}
+                                disabled={ checkDisable(material) }
                                 onClick={() => setMaterialActiveIndex(index)}
                             >
                                 <StepLabel key={`label-${material.name}`}>{material.name}</StepLabel>
