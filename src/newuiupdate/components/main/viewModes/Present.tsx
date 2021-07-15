@@ -33,7 +33,6 @@ function Present () {
     const classes = useStyles();
     const { content, sessions } = useContext(RoomContext);
     const [ hasControls, setHasControls ] = useRecoilState(hasControlsState);
-    const [ streamId, setStreamId ] = useRecoilState(streamIdState);
     const [ interactiveMode, setInteractiveMode ] = useRecoilState(interactiveModeState);
     const [ materialActiveIndex, setMaterialActiveIndex ] = useRecoilState(materialActiveIndexState);
 

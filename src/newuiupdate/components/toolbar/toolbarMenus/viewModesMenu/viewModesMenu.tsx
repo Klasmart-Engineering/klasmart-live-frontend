@@ -1,7 +1,7 @@
 import { ContentType } from "../../../../../pages/room/room";
 import { LIVE_LINK, LocalSessionContext } from "../../../../providers/providers";
 import { RoomContext } from "../../../../providers/roomContext";
-import { isViewModesOpenState } from "../../../../states/layoutAtoms";
+import { isViewModesOpenState, interactiveModeState, InteractiveMode } from "../../../../states/layoutAtoms";
 import { MUTATION_SHOW_CONTENT } from "../../../utils/graphql";
 import { StyledPopper } from "../../../utils/utils";
 import ViewMode from "./viewMode";
@@ -24,21 +24,8 @@ function ViewModesMenu (props:ViewModesMenuProps) {
     const { roomId, sessionId } = useContext(LocalSessionContext);
     const { content } = useContext(RoomContext);
     const [ isViewModesOpen, setIsViewModesOpen ] = useRecoilState(isViewModesOpenState);
-    const [ showContent, { loading: loadingShowContent } ] = useMutation(MUTATION_SHOW_CONTENT, {
-        context: {
-            target: LIVE_LINK,
-        },
-    });
+    const [ interactiveMode, setInteractiveMode ] = useRecoilState(interactiveModeState);
 
-    const switchContent = (type:ContentType) => {
-        showContent({
-            variables: {
-                roomId,
-                type: type,
-                contentId: sessionId,
-            },
-        });
-    };
 
     return (
         <StyledPopper
@@ -52,8 +39,8 @@ function ViewModesMenu (props:ViewModesMenuProps) {
                         id: `viewmodes_on_stage`,
                     })}
                     icon={<OnStageIcon />}
-                    active={content?.type === ContentType.Blank || content?.type === ContentType.Camera}
-                    onClick={() => switchContent(ContentType.Camera)}
+                    active={interactiveMode === InteractiveMode.OnStage}
+                    onClick={() => setInteractiveMode(InteractiveMode.OnStage)}
                 />
 
                 <ViewMode
@@ -61,8 +48,8 @@ function ViewModesMenu (props:ViewModesMenuProps) {
                         id: `viewmodes_observe`,
                     })}
                     icon={<ObserveIcon />}
-                    active={content?.type === ContentType.Activity}
-                    onClick={() => switchContent(ContentType.Activity)}
+                    active={interactiveMode === InteractiveMode.Observe}
+                    onClick={() => setInteractiveMode(InteractiveMode.Observe)}
                 />
 
                 <ViewMode
@@ -70,8 +57,8 @@ function ViewModesMenu (props:ViewModesMenuProps) {
                         id: `viewmodes_present`,
                     })}
                     icon={<PresentIcon />}
-                    active={content?.type === ContentType.Stream || content?.type === ContentType.Image || content?.type === ContentType.Audio || content?.type === ContentType.Video}
-                    onClick={() => switchContent(ContentType.Stream)}
+                    active={interactiveMode === InteractiveMode.Present}
+                    onClick={() => setInteractiveMode(InteractiveMode.Present)}
                 />
 
             </Grid>
