@@ -160,3 +160,8 @@ export const observeDisableState = atom({
     key: `observeDisableState`,
     default: false,
 });
+
+export const observeDisableState = atom({
+    key: `observeDisableState`,
+    default: false,
+});
