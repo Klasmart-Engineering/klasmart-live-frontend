@@ -47,8 +47,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         flexWrap: `wrap`,
     },
     buttonWrap: {
-        width: `100%`,
-        textAlign: `center`,
+        marginLeft: `auto`,
     },
     buttonOk: {
         marginLeft: `10px`,
@@ -56,8 +55,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     checkWrap: {
         display: `flex`,
         alignItems: `center`,
-        width: `100%`,
-        textAlign: `left`,
+        marginRight: `auto`,
     },
 }));
 
@@ -109,23 +107,6 @@ function ObserveWarning (props:any){
             </DialogContent>
 
             <DialogActions className={classes.dialogActions}>
-                <div className={classes.buttonWrap}>
-                    <Button
-                        variant="outlined"
-                        color="primary"
-                        size="medium"
-                        onClick={onClose}>
-                        <FormattedMessage id="common_cancel" />
-                    </Button>
-                    <Button
-                        className={classes.buttonOk}
-                        variant="contained"
-                        color="primary"
-                        size="medium"
-                        onClick={() => onClick()}>
-                        <FormattedMessage id="common_ok" />
-                    </Button>
-                </div>
                 <div className={classes.checkWrap}>
                     <Checkbox
                         color="primary"
@@ -135,6 +116,20 @@ function ObserveWarning (props:any){
                     <Typography variant="body2">
                         <FormattedMessage id="common_do_not_show_again" />
                     </Typography>
+                </div>
+                <div className={classes.buttonWrap}>
+                    <Button
+                        color="primary"
+                        onClick={onClose}>
+                        <FormattedMessage id="common_cancel" />
+                    </Button>
+                    <Button
+                        className={classes.buttonOk}
+                        variant="contained"
+                        color="primary"
+                        onClick={() => onClick()}>
+                        <FormattedMessage id="common_ok" />
+                    </Button>
                 </div>
             </DialogActions>
         </Dialog>
