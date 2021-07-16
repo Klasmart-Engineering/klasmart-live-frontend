@@ -1,14 +1,11 @@
-import { ContentType, Session } from "../../../../pages/room/room";
-import { LIVE_LINK, LocalSessionContext } from "../../../providers/providers";
+import { Session } from "../../../../pages/room/room";
+import { LocalSessionContext } from "../../../providers/providers";
 import { RoomContext } from "../../../providers/roomContext";
-import { hasControlsState,  materialActiveIndexState } from "../../../states/layoutAtoms";
 import { Whiteboard } from "../../../whiteboard/components/Whiteboard";
 import { useSynchronizedState } from "../../../whiteboard/context-providers/SynchronizedStateProvider";
-import { MUTATION_SHOW_CONTENT } from "../../utils/graphql";
 import { PreviewPlayer } from "../../utils/interactiveContent/previewPlayer";
 import { RecordedIframe } from "../../utils/interactiveContent/recordediframe";
 import { fullScreenById } from "../../utils/utils";
-import { useMutation } from "@apollo/client";
 import {
     makeStyles, Theme,  Typography,
 } from "@material-ui/core";
@@ -20,7 +17,6 @@ import React, {
     useContext, useEffect, useMemo, useRef, useState,
 } from "react";
 import { useIntl } from "react-intl";
-import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -128,16 +124,7 @@ function Observe () {
     } = useContext(LocalSessionContext);
     const { content, sessions } = useContext(RoomContext);
     const [ studentSessions, setStudentSessions ] = useState<Session[]>([]);
-    const [ hasControls, setHasControls ] = useRecoilState(hasControlsState);
-    const [ materialActiveIndex, setMaterialActiveIndex ] = useRecoilState(materialActiveIndexState);
-    const material = materialActiveIndex >= 0 && materialActiveIndex < materials.length ? materials[materialActiveIndex] : undefined;
     const { state: { display: isGlobalCanvasEnabled, permissions: permissionsGlobalCanvas } } = useSynchronizedState();
-
-    const [ showContent, { loading: loadingShowContent } ] = useMutation(MUTATION_SHOW_CONTENT, {
-        context: {
-            target: LIVE_LINK,
-        },
-    });
 
     useEffect(() => {
         if(!isTeacher){
@@ -151,18 +138,6 @@ function Observe () {
         const students = [ ...sessions.values() ].filter(session => session.isTeacher !== true);
         setStudentSessions(students);
     }, [ sessions, sessions.size ]);
-
-    useEffect(() => {
-        if (hasControls && material) {
-            showContent({
-                variables: {
-                    roomId,
-                    type: ContentType.Activity,
-                    contentId: material.url,
-                },
-            });
-        }
-    }, [ material ]);
 
     const studentModeFilterGroups = useMemo(() => {
         return [ sessionId ];
