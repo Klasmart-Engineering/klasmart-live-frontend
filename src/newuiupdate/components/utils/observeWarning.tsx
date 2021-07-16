@@ -98,7 +98,7 @@ function ObserveWarning (props:any){
                 <div className={clsx(classes.dialogIcon, classes.warningIcon)}>
                     <WarningIcon size="1rem" />
                 </div>
-                <FormattedMessage id="observe_warning_videotype" />
+                <FormattedMessage id="common_warning" />
             </DialogTitle>
             <DialogContent className={classes.dialogContent}>
                 <Typography>
