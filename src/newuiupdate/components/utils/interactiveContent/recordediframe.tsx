@@ -248,7 +248,8 @@ export function RecordedIframe (props: Props): JSX.Element {
 
     useEffect(() => {
         function onMessage ({ data }: MessageEvent) {
-            if (data && data.streamId) {
+            if(!data) { return; }
+            if (data.streamId) {
                 if (setStreamId) { setStreamId(data.streamId); }
                 console.log(`flag4 student streamId: `, streamId);
                 sendStreamId({
@@ -257,6 +258,11 @@ export function RecordedIframe (props: Props): JSX.Element {
                         streamId: data.streamId,
                     },
                 });
+            }
+            switch(data.error){
+            case `AuthenticationInvalid`:
+                redirectToLogin();
+                break;
             }
         }
         window.addEventListener(`message`, onMessage);
