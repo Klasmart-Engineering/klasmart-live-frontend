@@ -1,4 +1,5 @@
 import { ClassType } from "../../../../store/actions";
+import { redirectToLogin } from "../../../../utils/authentication";
 import { useWindowSize } from "../../../../utils/viewport";
 import {
     LIVE_LINK,
@@ -42,8 +43,11 @@ export interface Props {
 }
 
 enum LoadStatus {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     Error,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     Loading,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     Finished,
 }
 
