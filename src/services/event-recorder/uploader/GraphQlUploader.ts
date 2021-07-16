@@ -1,3 +1,4 @@
+import { refreshAuthenticationCookie } from "../../../utils/authentication";
 import { SequencedEventData } from "../events/SequencedEvent";
 import { IEventUploader } from "./IEventUploader";
 import { GraphQLClient } from "graphql-request";
@@ -50,8 +51,17 @@ export class GraphQlUploader implements IEventUploader {
               streamId,
               pageEvents: mappedEvents,
           });
-      } catch (reason) {
-          return Promise.reject(reason);
+      } catch (e) {
+          const errors: unknown[] = e?.response?.errors || [];
+          const authenticationInvalid = errors.some((e: any) => e.extensions.code === `AuthenticationInvalid`);
+          if (authenticationInvalid) {
+              window.parent.postMessage({
+                  error: `AuthenticationInvalid`,
+              }, window.location.origin);
+          }
+          const authenticationExpired = errors.some((e: any) => e.extensions.code === `AuthenticationExpired`);
+          if (authenticationExpired) { refreshAuthenticationCookie(); }
+          return Promise.reject(e);
       }
   }
 }
