@@ -15,6 +15,8 @@ import {
     isLessonPlanOpenState,
     isViewModesOpenState,
     unreadMessagesState,
+    InteractiveMode,
+    interactiveModeState,
 } from "../../states/layoutAtoms";
 import { useSynchronizedState } from "../../whiteboard/context-providers/SynchronizedStateProvider";
 import { DialogEndClass, DialogLeaveClass } from "../utils/endCall";
@@ -90,6 +92,7 @@ function Toolbar () {
     const [ isGlobalActionsOpen, setIsGlobalActionsOpen ] = useRecoilState(isGlobalActionsOpenState);
     const [ isLessonPlanOpen, setIsLessonPlanOpen ] = useRecoilState(isLessonPlanOpenState);
     const [ isViewModesOpen, setIsViewModesOpen ] = useRecoilState(isViewModesOpenState);
+    const [ interactiveMode, setInteractiveMode ] = useRecoilState(interactiveModeState);
     const [ activeTab, setActiveTab ] = useRecoilState(activeTabState);
     const [ isChatOpen, setIsChatOpen ] = useRecoilState(isChatOpenState);
     const [ isClassDetailsOpen, setIsClassDetailsOpen ] = useRecoilState(isClassDetailsOpenState);
@@ -154,23 +157,11 @@ function Toolbar () {
         hasControls ? setOpenEndClassDialog(true) : setOpenLeaveClassDialog(true);
     }
 
-    let viewModesBadge = <OnStageIcon />;
-    switch (content?.type) {
-    case ContentType.Camera: viewModesBadge = <OnStageIcon />;
-        break;
-    case ContentType.Activity: viewModesBadge = <ObserveIcon />;
-        break;
-    case ContentType.Stream: viewModesBadge = <PresentIcon />;
-        break;
-    case ContentType.Video: viewModesBadge = <PresentIcon />;
-        break;
-    case ContentType.Audio: viewModesBadge = <PresentIcon />;
-        break;
-    case ContentType.Image: viewModesBadge = <PresentIcon />;
-        break;
-    default: viewModesBadge = <OnStageIcon />;
-        break;
+    if(interactiveMode){
+
     }
+
+    const viewModesBadge = interactiveMode === InteractiveMode.Observe ? <ObserveIcon /> : interactiveMode === InteractiveMode.Present ? <PresentIcon /> : <OnStageIcon />;
 
     useEffect(()=> {
         resetDrawers();
