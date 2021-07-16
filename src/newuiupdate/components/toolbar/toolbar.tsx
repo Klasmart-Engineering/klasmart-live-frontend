@@ -157,10 +157,6 @@ function Toolbar () {
         hasControls ? setOpenEndClassDialog(true) : setOpenLeaveClassDialog(true);
     }
 
-    if(interactiveMode){
-
-    }
-
     const viewModesBadge = interactiveMode === InteractiveMode.Observe ? <ObserveIcon /> : interactiveMode === InteractiveMode.Present ? <PresentIcon /> : <OnStageIcon />;
 
     useEffect(()=> {
