@@ -96,11 +96,15 @@ export function themeProvider (languageCode: string, themeMode: string) {
                 background: `transparent`,
             },
         },
-        MuiStep:{
-            root:{
+        MuiStepButton: {
+            root: {
                 cursor: `pointer`,
                 marginBottom: 8,
                 marginLeft: -1,
+
+                "&.Mui-disabled": {
+                    opacity: `0.3`,
+                }
             },
         },
         MuiStepLabel:{
