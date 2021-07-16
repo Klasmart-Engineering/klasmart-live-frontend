@@ -113,24 +113,28 @@ function parseToken () {
             const parsedMaterials = materials.map((mat: any) => {
                 if (mat.__typename === `Iframe`) {
                     return {
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         __typename: MaterialTypename.Iframe,
                         name: mat.name,
                         url: mat.url,
                     };
                 } else if (mat.__typename === `Video`) {
                     return {
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         __typename: MaterialTypename.Video,
                         name: mat.name,
                         url: mat.url,
                     };
                 } else if (mat.__typename === `Audio`) {
                     return {
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         __typename: MaterialTypename.Audio,
                         name: mat.name,
                         url: mat.url,
                     };
                 } else if (mat.__typename === `Image`) {
                     return {
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         __typename: MaterialTypename.Image,
                         name: mat.name,
                         url: mat.url,
@@ -158,46 +162,55 @@ function parseToken () {
                 roomId: url.searchParams.get(`roomId`) || `test-room`,
                 materials: materialsParam ? JSON.parse(materialsParam) : [
                     {
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         __typename: MaterialTypename.Iframe,
                         name: `Interactive video`,
                         url: `/h5p/play/60588e7475aa32001244926f`,
                     },
                     {
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         __typename: MaterialTypename.Iframe,
                         name: `Course Presentation`,
                         url: `/h5p/play/60588da62af9710014707a2d`,
                     },
                     {
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         __typename: MaterialTypename.Iframe,
                         name: `Drag and drop`,
                         url: `/h5p/play/60589f9375aa32001244928a`,
                     },
                     {
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         __typename: MaterialTypename.Iframe,
                         name: `Memory Game`,
                         url: `/h5p/play/605891d02af9710014707a44`,
                     },
                     {
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         __typename: MaterialTypename.Iframe,
                         name: `Fruit`,
                         url: `/h5p/play/604afe4c75aa320012448fca`,
                     },
                     {
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         __typename: MaterialTypename.Video,
                         name: `Video`,
                         url: `${process.env.ENDPOINT_TEST_ASSETS_S3 || `.`}/test_video.mp4`,
                     },
                     {
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         __typename: MaterialTypename.Audio,
                         name: `Audio`,
                         url: `${process.env.ENDPOINT_TEST_ASSETS_S3 || `.`}/test_audio.m4a`,
                     },
                     {
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         __typename: MaterialTypename.Image,
                         name: `Portrait Image`,
                         url: `${process.env.ENDPOINT_TEST_ASSETS_S3 || `.`}/test_image_portrait.jpg`,
                     },
                     {
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         __typename: MaterialTypename.Image,
                         name: `Landscape Image`,
                         url: `${process.env.ENDPOINT_TEST_ASSETS_S3 || `.`}/test_image_landscape.jpg`,
@@ -213,7 +226,9 @@ function parseToken () {
                 ],
             };
         }
-    } catch (e) { }
+    } catch (e) {
+        console.error(e);
+    }
     return;
 }
 const params = parseToken();
