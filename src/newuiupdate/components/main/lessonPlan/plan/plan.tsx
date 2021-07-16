@@ -10,6 +10,7 @@ import {
     Step,
     StepLabel,
     Stepper,
+    StepButton,
     Theme,
 } from "@material-ui/core";
 import { Book as PlanIcon } from "@styled-icons/boxicons-regular/Book";
@@ -26,10 +27,6 @@ const useStyles = makeStyles((theme: Theme) => ({
         minHeight: 300,
         minWidth: 300,
     },
-    stepDisabled: {
-        pointerEvents: `none`,
-        opacity: `0.3`,
-    }
 }));
 
 function Plan () {
@@ -65,13 +62,14 @@ function Plan () {
                         orientation="vertical"
                     >
                         {materials.map((material, index) => (
-                            <Step
-                                className={ checkDisable(material) ? classes.stepDisabled : ``}
-                                key={`step-${material.name}-${index}`}
-                                disabled={ checkDisable(material) }
-                                onClick={() => setMaterialActiveIndex(index)}
-                            >
-                                <StepLabel key={`label-${material.name}`}>{material.name}</StepLabel>
+                            <Step>
+                                <StepButton
+                                    key={`step-${material.name}-${index}`}
+                                    disabled={ checkDisable(material) }
+                                    onClick={() => setMaterialActiveIndex(index)}
+                                >
+                                    <StepLabel key={`label-${material.name}`}>{material.name}</StepLabel>
+                                </StepButton>
                             </Step>
                         ))}
                     </Stepper>
