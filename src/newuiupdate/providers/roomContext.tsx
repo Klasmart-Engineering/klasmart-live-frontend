@@ -1,16 +1,16 @@
 import Loading from "../../components/loading";
 import {
-    Content, Message, Session,
+    Content, ContentType, Message, Session,
 } from "../../pages/room/room";
 import {
-    audioGloballyMutedState, classEndedState, isChatOpenState, unreadMessagesState, videoGloballyMutedState, materialActiveIndexState, streamIdState, interactiveModeState, hasControlsState
+    audioGloballyMutedState, classEndedState, isChatOpenState, unreadMessagesState, videoGloballyMutedState, materialActiveIndexState, streamIdState, InteractiveMode, interactiveModeState, hasControlsState
 } from "../states/layoutAtoms";
 import {
     LIVE_LINK, LocalSessionContext, SFU_LINK,
 } from "./providers";
 import { GLOBAL_MUTE_QUERY } from "./WebRTCContext";
 import {
-    gql, useQuery, useSubscription,
+    gql, useMutation, useQuery, useSubscription,
 } from "@apollo/client";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
@@ -20,6 +20,8 @@ import React, {
 } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { useRecoilState } from "recoil";
+import { MUTATION_SHOW_CONTENT } from "../components/utils/graphql";
+import { MaterialTypename } from "../../lessonMaterialContext";
 
 const SUB_ROOM = gql`
     subscription room($roomId: ID!, $name: String) {
@@ -59,7 +61,7 @@ export const RoomContext = createContext<RoomContextInterface>(defaultRoomContex
 export const RoomProvider = (props: {children: React.ReactNode}) => {
     const intl = useIntl();
     const {
-        roomId, name, sessionId, camera, isTeacher
+        roomId, name, sessionId, camera, isTeacher, materials,
     } = useContext(LocalSessionContext);
     const [ sfuAddress, setSfuAddress ] = useState<string>(``);
     const [ messages, setMessages ] = useState<Map<string, Message>>(new Map<string, Message>());
@@ -78,11 +80,54 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
     const [ interactiveMode, setInteractiveMode ] = useRecoilState(interactiveModeState);
     const [ hasControls, setHasControls ] = useRecoilState(hasControlsState);
     
+    const defineContentType = (material:any, interactiveMode:InteractiveMode) => {
+        if(interactiveMode === InteractiveMode.OnStage) return ContentType.Blank
+        if(interactiveMode === InteractiveMode.Observe) return ContentType.Activity
+
+        if(material.__typename === MaterialTypename.Video || (material.__typename === undefined && material.video)){
+            return ContentType.Video
+        }else if (material.__typename === MaterialTypename.Audio) {
+            return ContentType.Audio
+        }else if (material.__typename === MaterialTypename.Image) {
+            return ContentType.Image
+        }else{
+            return ContentType.Stream
+        }
+    }
+
+    const defineContentId = (material:any, interactiveMode:InteractiveMode) => {
+        if(interactiveMode === InteractiveMode.OnStage) return sessionId
+        if(interactiveMode === InteractiveMode.Observe) return material.url
+        return streamId
+    }
+
+    const [ showContent, { loading: loadingShowContent } ] = useMutation(MUTATION_SHOW_CONTENT, {
+        context: {
+            target: LIVE_LINK,
+        },
+    });
+    
     useEffect(() => {
         if(hasControls){
-            console.log('trigger showcontent')
+            // TODO : 
+            // 1 : Present Mode : Student side -> Double load if a streamId already existed
+            // 2 : When teacher leaves the room -> switch content to onstage
+            // 3 : Add a loader on the students cards on observe when showContent is triggered
+
+            const material = interactiveMode !== 0 && materialActiveIndex >= 0 && materialActiveIndex < materials.length ? materials[materialActiveIndex] : undefined;
+            const type = defineContentType(material, interactiveMode);
+            const contentId = defineContentId(material, interactiveMode);
+
+            showContent({
+                variables: {
+                    roomId,
+                    type,
+                    contentId
+                },
+            });
+        
         }
-    }, [ streamId, materialActiveIndex, interactiveMode ]);
+    }, [ streamId, materialActiveIndex, interactiveMode, sessions.size ]);
 
     useEffect(() => {
         isChatOpen && setUnreadMessages(0);

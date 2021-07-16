@@ -31,12 +31,15 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 function Present () {
     const classes = useStyles();
-    const { content, sessions } = useContext(RoomContext);
+    const { content } = useContext(RoomContext);
     const [ hasControls, setHasControls ] = useRecoilState(hasControlsState);
-    const [ interactiveMode, setInteractiveMode ] = useRecoilState(interactiveModeState);
-    const [ materialActiveIndex, setMaterialActiveIndex ] = useRecoilState(materialActiveIndexState);
 
-    const {
+
+
+    /*
+        const [ interactiveMode, setInteractiveMode ] = useRecoilState(interactiveModeState);
+    const [ materialActiveIndex, setMaterialActiveIndex ] = useRecoilState(materialActiveIndexState);
+        const {
         materials, roomId, sessionId,
     } = useContext(LocalSessionContext);
 
@@ -48,7 +51,7 @@ function Present () {
         },
     });
 
-    /*
+
     useEffect(() => {
         if (material) {
             if (material.__typename === MaterialTypename.Video || (material.__typename === undefined && material.video)) {
