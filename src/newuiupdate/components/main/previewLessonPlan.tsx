@@ -35,7 +35,7 @@ function PreviewLessonPlan () {
     }
 
     if(material?.__typename === MaterialTypename.Image){
-        setObserveDisable(true);
+        setObserveDisable(false);
         return (
             <ActivityImage material={material.url} />
         );
@@ -54,6 +54,10 @@ function PreviewLessonPlan () {
                 }}
             />
         );
+    }
+
+    if(material?.__typename === MaterialTypename.Audio) {
+        setObserveDisable(false);
     }
 
     if(((material?.__typename === MaterialTypename.Iframe || material?.__typename === undefined) && material?.url)){

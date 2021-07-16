@@ -37,7 +37,7 @@ function Plan () {
     const { content } = useContext(RoomContext);
 
     const checkDisable = (material:any) => {
-        if (content?.type === ContentType.Activity && material.__typename !== MaterialTypename.Iframe) return true;
+        if (content?.type === ContentType.Activity && material.__typename === MaterialTypename.Video) return true;
         else return false;
     }
 
