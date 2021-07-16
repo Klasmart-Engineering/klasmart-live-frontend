@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         backgroundColor: theme.palette.background.default,
         pointerEvents: `none`,
     },
-    disable: {
+    disabled: {
         opacity: `0.3`,
         pointerEvents: `none`,
     }
@@ -38,12 +38,12 @@ interface ViewModeProps {
 	onClick: any;
 	icon: any;
 	title: any;
-    disable: any;
+    disabled: any;
 }
 
 function ViewMode (props: ViewModeProps) {
     const {
-        active, onClick, icon, title, disable
+        active, onClick, icon, title, disabled
     } = props;
 
     const classes = useStyles();
@@ -56,7 +56,7 @@ function ViewMode (props: ViewModeProps) {
                 alignItems="center"
                 className={clsx(classes.item, {
                     [classes.active]: active,
-                    [classes.disable]: disable,
+                    [classes.disabled]: disabled,
                 })}
                 onClick={onClick}>
                 <Grid item>

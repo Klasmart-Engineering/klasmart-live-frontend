@@ -94,7 +94,7 @@ function ViewModesMenu (props:ViewModesMenuProps) {
                 container
                 alignItems="stretch" >
                 <ViewMode
-                    disable={false}
+                    disabled={false}
                     title={intl.formatMessage({
                         id: `viewmodes_on_stage`,
                     })}
@@ -104,7 +104,7 @@ function ViewModesMenu (props:ViewModesMenuProps) {
                 />
 
                 <ViewMode
-                    disable={observeDisable}
+                    disabled={observeDisable}
                     title={intl.formatMessage({
                         id: `viewmodes_observe`,
                     })}
@@ -114,7 +114,7 @@ function ViewModesMenu (props:ViewModesMenuProps) {
                 />
 
                 <ViewMode
-                    disable={false}
+                    disabled={false}
                     title={intl.formatMessage({
                         id: `viewmodes_present`,
                     })}
