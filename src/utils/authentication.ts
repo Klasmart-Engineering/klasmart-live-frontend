@@ -27,7 +27,7 @@ export function redirectToLogin () {
 }
 
 function getRefreshEndpoint () {
-    const override =  process.env.REFRESH_COOKIE_ENDPOINT;
+    const override =  process.env.ENDPOINT_REFRESH_COOKIE;
     if(override) { return override; }
 
     const domain = getDomain();
