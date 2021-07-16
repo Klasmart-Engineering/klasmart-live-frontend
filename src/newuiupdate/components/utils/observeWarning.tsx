@@ -23,7 +23,6 @@ import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
     dialogTitle: {
-        paddingBottom: `0`,
         "& h2": {
             width: `100%`,
             display: `flex`,
@@ -34,12 +33,14 @@ const useStyles = makeStyles((theme: Theme) => ({
     dialogContent: {
         textAlign: `center`,
     },
-    dialogIcon: {
-        background: "transparent !important",
-        marginRight: 5,
-        lineHeight: 0,
+    dialogIcon:{
+        display: `inline-block`,
+        background: theme.palette.grey[200],
+        borderRadius: 40,
+        padding: 20,
+        marginBottom: 20,
     },
-    warningIcon: {
+    warningIcon:{
         color: `#ffca00`,
         background: `#f9f7e8`,
     },
@@ -95,12 +96,12 @@ function ObserveWarning (props:any){
             <DialogTitle
                 id="leave-class-dialog"
                 className={classes.dialogTitle}>
-                <div className={clsx(classes.dialogIcon, classes.warningIcon)}>
-                    <WarningIcon size="1rem" />
-                </div>
                 <FormattedMessage id="common_warning" />
             </DialogTitle>
             <DialogContent className={classes.dialogContent}>
+                <div className={clsx(classes.dialogIcon, classes.warningIcon)}>
+                    <WarningIcon size="2rem" />
+                </div>
                 <Typography>
                     <FormattedMessage id="observe_warning_videotype_text" />
                 </Typography>
