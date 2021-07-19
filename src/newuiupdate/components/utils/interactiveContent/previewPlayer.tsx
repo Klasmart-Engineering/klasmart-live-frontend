@@ -1,7 +1,7 @@
 import { useWindowSize } from "../../../../utils/viewport";
 import { LIVE_LINK, LocalSessionContext } from "../../../providers/providers";
 import { RoomContext } from "../../../providers/roomContext";
-import { isLessonPlanOpenState } from "../../../states/layoutAtoms";
+import { isLessonPlanOpenState, isShowContentLoadingState } from "../../../states/layoutAtoms";
 import Loading from "./loading";
 import { gql, useSubscription } from "@apollo/client";
 import Typography from "@material-ui/core/Typography";
@@ -39,6 +39,7 @@ export function PreviewPlayer ({
         frameHeight: 0,
     });
 
+    const [ isShowContentLoading, setIsShowContentLoading ] = useRecoilState(isShowContentLoadingState);
     const [ isLessonPlanOpen, setIsLessonPlanOpen ] = useRecoilState(isLessonPlanOpenState);
     const [ transformScale, setTransformScale ] = useState<number>(1);
 
@@ -46,7 +47,6 @@ export function PreviewPlayer ({
     const { isTeacher } = useContext(LocalSessionContext);
 
     const containerHtml = window.document.getElementById(container) as HTMLIFrameElement;
-
     const size = useWindowSize();
 
     useEffect(() => {
@@ -168,7 +168,7 @@ export function PreviewPlayer ({
         return () => window.removeEventListener(`message`, onIframeEvents);
     }, [  ]);
 
-    if (loading) { return <Loading />; }
+    if (loading || isShowContentLoading) { return <Loading />; }
     if (error) { return <Typography><FormattedMessage id="failed_to_connect" />: {JSON.stringify(error)}</Typography>; }
     return <div
         id="preview-iframe-container"
@@ -179,12 +179,15 @@ export function PreviewPlayer ({
             alignItems: `center`,
             justifyContent: `center`,
         }}>
+        <>
+            {(loading || isShowContentLoading ) &&  <Loading />}
+        </>
         <iframe
             key={streamId}
             ref={ref}
             id={`preview:${streamId}`}
             style={{
-                visibility: loading ? `hidden` : `visible`,
+                visibility: loading || isShowContentLoading ? `hidden` : `visible`,
                 transformOrigin: `top left`,
                 transform: `scale(${transformScale})`,
                 position: `absolute`,
