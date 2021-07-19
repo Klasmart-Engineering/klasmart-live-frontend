@@ -1,4 +1,4 @@
-import {Icon, ListItemSecondaryAction} from "@material-ui/core";
+import {ListItemSecondaryAction} from "@material-ui/core";
 
 const dateFormat = require("dateformat");
 import React, { useState, useEffect } from "react";
@@ -30,7 +30,11 @@ import { State } from "../../store/store";
 import { ScheduleClassType, ScheduleTimeViewResponse, ScheduleResponse, TimeView } from "../../services/cms/ISchedulerService";
 import { ClassType, OrientationType } from "../../store/actions";
 import { setInFlight } from "../../store/reducers/communication";
-import { setSelectOrgDialogOpen, setSelectUserDialogOpen } from "../../store/reducers/control";
+import {
+    setSelectHomeFunStudyDialogOpen,
+    setSelectOrgDialogOpen,
+    setSelectUserDialogOpen
+} from "../../store/reducers/control";
 import {
     setScheduleTimeViewAll,
     setScheduleTimeViewLiveAll,
@@ -457,18 +461,22 @@ function AnytimeStudyItem({ studyId, setOpenAlert }: {
         if (!studyInfo) { return; }
         if (!selectedOrg) { return; }
 
-        dispatch(setLessonPlanIdOfSelectedSchedule(studyInfo.lesson_plan.id));
-        schedulerService.getScheduleToken(selectedOrg.organization_id, studyInfo.id).then((res) => {
-            if (res.token) {
-                setToken(res.token);
-                // TODO: Can we get rid of the token query parameter and just use
-                // react component state for keeping and parsing the token instead?
-                location.href = `#/join?token=${res.token}`;
-            } else {
-                setOpenAlert(true);
-                return;
-            }
-        })
+        if(!studyInfo.is_home_fun){
+            dispatch(setLessonPlanIdOfSelectedSchedule(studyInfo.lesson_plan.id));
+            schedulerService.getScheduleToken(selectedOrg.organization_id, studyInfo.id).then((res) => {
+                if (res.token) {
+                    setToken(res.token);
+                    // TODO: Can we get rid of the token query parameter and just use
+                    // react component state for keeping and parsing the token instead?
+                    location.href = `#/join?token=${res.token}`;
+                } else {
+                    setOpenAlert(true);
+                    return;
+                }
+            })
+        }else{
+            dispatch(setSelectHomeFunStudyDialogOpen({open: true, studyId: studyInfo.id}))
+        }
     }
 
     return (
@@ -500,7 +508,6 @@ function ScheduledStudyItem({ studyId, setOpenAlert }: {
     const { listRoot, listSubheaderText, listItemAvatar, listItemTextPrimary } = useStyles();
     const dispatch = useDispatch();
     const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
-
     const { setToken } = useSessionContext();
     const { schedulerService } = useServices();
 
@@ -544,18 +551,23 @@ function ScheduledStudyItem({ studyId, setOpenAlert }: {
         if (!studyInfo) { return; }
         if (!selectedOrg) { return; }
 
-        dispatch(setLessonPlanIdOfSelectedSchedule(studyInfo.lesson_plan.id));
-        schedulerService.getScheduleToken(selectedOrg.organization_id, studyInfo.id).then((res) => {
-            if (res.token) {
-                setToken(res.token);
-                // TODO: Can we get rid of the token query parameter and just use
-                // react component state for keeping and parsing the token instead?
-                location.href = `#/join?token=${res.token}`;
-            } else {
-                setOpenAlert(true);
-                return;
-            }
-        })
+        if(!studyInfo.is_home_fun){
+            dispatch(setLessonPlanIdOfSelectedSchedule(studyInfo.lesson_plan.id));
+            schedulerService.getScheduleToken(selectedOrg.organization_id, studyInfo.id).then((res) => {
+                if (res.token) {
+                    setToken(res.token);
+                    // TODO: Can we get rid of the token query parameter and just use
+                    // react component state for keeping and parsing the token instead?
+                    location.href = `#/join?token=${res.token}`;
+                } else {
+                    setOpenAlert(true);
+                    return;
+                }
+            })
+        }else{
+            dispatch(setSelectHomeFunStudyDialogOpen({open: true, studyId: studyInfo.id}))
+        }
+
     }
 
     return (

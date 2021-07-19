@@ -8,6 +8,7 @@ import Join from "./pages/join/join";
 import { Schedule } from "./pages/schedule/schedule";
 import { UserRoute } from "./components/userRoute";
 import { SelectUserDialog } from "./pages/account/selectUserDialog";
+import {HomeFunStudyDialog} from "./pages/home-fun-study/homeFunStudyDialog";
 
 export function App({ history }: {
     history: any;
@@ -31,6 +32,7 @@ export function App({ history }: {
             </Router>
             <SelectOrgDialog />
             <SelectUserDialog />
+            <HomeFunStudyDialog />
         </Grid>
     )
 }
