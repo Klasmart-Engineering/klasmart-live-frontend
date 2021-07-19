@@ -414,7 +414,7 @@ function ScheduledLiveItem({ scheduleId, setOpenAlert }: { scheduleId: string, s
     )
 }
 
-function ScheduledStudyList({ setSelectedSchedule, setOpenStudyDetail }: { 
+function ScheduledStudyList({ setSelectedSchedule, setOpenStudyDetail }: {
     setSelectedSchedule: React.Dispatch<React.SetStateAction<ScheduleResponse | undefined>>,
     setOpenStudyDetail: React.Dispatch<React.SetStateAction<boolean>>
 }) {
@@ -571,7 +571,7 @@ function ScheduledStudyItem({ studyId, setSelectedSchedule, setOpenStudyDetail }
         if(!studyInfo.is_home_fun){
             setSelectedSchedule(studyInfo);
             setOpenStudyDetail(true);
-            
+
         }else{
             dispatch(setSelectHomeFunStudyDialogOpen({open: true, studyId: studyInfo.id}))
         }

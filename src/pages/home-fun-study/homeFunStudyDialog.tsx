@@ -12,7 +12,7 @@ import {
     Typography
 } from "@material-ui/core";
 import {Edit, InfoOutlined, HighlightOffOutlined} from "@material-ui/icons";
-import {makeStyles} from "@material-ui/core/styles";
+import {makeStyles, Theme} from "@material-ui/core/styles";
 import {lockOrientation} from "../../utils/screenUtils";
 import {OrientationType} from "../../store/actions";
 import {useDispatch, useSelector} from "react-redux";
@@ -172,6 +172,7 @@ export function HomeFunStudyDialog() {
 
         setShouldShowSubmitButton(checkShowSubmitButtonCondition());
     }, [studyInfo, hfsFeedbacks])
+
     return (
         <Dialog
             aria-labelledby="select-home-fun-study-dialog"
@@ -303,7 +304,7 @@ function HomeFunStudyContainer({
             saveAssignments(saveAssignmentItems.assignmentItems)
         }
     }, [saveAssignmentItems])
-    
+
     useEffect(() => {
         //Check assignmentItems every time file is selected.
         //If it detects that the file is in selected state, then upload it.
@@ -515,7 +516,7 @@ function HomeFunStudyContainer({
                 </Grid>
                 <HomeFunStudyAssignment
                     assignmentItems={assignmentItems}
-                    onClickUploadInfo={handleClickUploadInfo} onClickUpload={handleClickUpload} 
+                    onClickUploadInfo={handleClickUploadInfo} onClickUpload={handleClickUpload}
                     onDeleteAssignment={handleDeleteAssignmentItem} />
                 <HomeFunStudyComment
                     studyId={studyInfo?.id}
@@ -567,7 +568,7 @@ function HomeFunStudyAssignment({
     const classes = useStyles();
 
     const [shouldShowChooseFile, setShouldShowChooseFile] = useState(false);
-    
+
     useEffect(() => {
         if(assignmentItems.length >= 3){
             setShouldShowChooseFile(false);
@@ -599,7 +600,6 @@ function HomeFunStudyAssignment({
                         ? <Typography variant="caption" display="block" color="textSecondary"><FormattedMessage id={"home_fun_study_maximum_three_files"}/></Typography>
                         :  <Typography variant="caption" display="block" color="secondary"><FormattedMessage id={"home_fun_study_maximum_three_files_limited"} /></Typography>
                 }
-
                 <Box my={2}>
                     <Button
                         variant="outlined"
@@ -633,7 +633,6 @@ function HomeFunStudyAssignment({
                                             </IconButton>
                                             : <CircularProgress size={20} thickness={4}/>
                                     }
-
                                 </ListItemSecondaryAction>
                             </ListItem>
                         ))}
