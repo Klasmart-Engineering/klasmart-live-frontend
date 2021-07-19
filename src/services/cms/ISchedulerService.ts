@@ -67,6 +67,21 @@ export interface ScheduleResponse {
     version: number
 }
 
+export type Assignment  = {
+    attachment_id: string,
+    attachment_name: string,
+    number: number
+}
+
+export interface ScheduleFeedbackResponse {
+    assignments: Assignment[],
+    comment: string,
+    create_at: number,
+    id: string,
+    is_allow_submit: boolean,
+    schedule_id: string,
+    user_id: string
+}
 export enum TimeView {
     MONTH = "month",
     WEEK = "week",
@@ -96,4 +111,6 @@ export interface ISchedulerService {
     getScheduleInfo(organizationId: string, scheduleId: string): Promise<ScheduleResponse>;
 
     getScheduleToken(organizationId: string, scheduleId: string): Promise<ScheduleLiveTokenResponse>;
+
+    getScheduleFeedbacks(organizationId: string, scheduleId: string, userId: string): Promise<ScheduleFeedbackResponse[]>;
 }
