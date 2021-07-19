@@ -13,7 +13,11 @@ import { Refresh as RefreshIcon } from "@styled-icons/material/Refresh";
 
 import StyledIcon from "./styled/icon";
 import { State } from "../store/store";
-import { setSelectOrgDialogOpen, setSelectUserDialogOpen } from "../store/reducers/control";
+import {
+    setSelectHomeFunStudyDialogOpen,
+    setSelectOrgDialogOpen,
+    setSelectUserDialogOpen
+} from "../store/reducers/control";
 
 import KidsloopLogo from "../assets/img/kidsloop_icon.svg";
 import { useHistory } from "react-router-dom";
@@ -51,6 +55,7 @@ export function Header({ isHomeRoute, setKey }: { isHomeRoute?: boolean, setKey?
 
     const selectOrgDialogOpen = useSelector((state: State) => state.control.selectOrgDialogOpen);
     const selectUserDialogOpen = useSelector((state: State) => state.control.selectUserDialogOpen);
+    const selectHomeFunStudyDialogOpen = useSelector((state: State) => state.control.selectHomeFunStudyDialogOpen);
 
     return (errCode ? <></> :
         <div className={root}>
@@ -76,7 +81,7 @@ export function Header({ isHomeRoute, setKey }: { isHomeRoute?: boolean, setKey?
                             wrap="nowrap"
                         >
                             <Grid item style={{ flexGrow: 0 }}>
-                                {selectOrgDialogOpen || selectUserDialogOpen ? <CloseSelectOrgOrUserButton /> : (
+                                {selectOrgDialogOpen || selectUserDialogOpen || selectHomeFunStudyDialogOpen?.open ? <CloseSelectOrgOrUserButton /> : (
                                     isHomeRoute ? <OpenSelectOrgButton /> : <GoBackButton />
                                 )}
                             </Grid>
@@ -106,6 +111,7 @@ function CloseSelectOrgOrUserButton() {
 
     const selectOrgDialogOpen = useSelector((state: State) => state.control.selectOrgDialogOpen);
     const selectUserDialogOpen = useSelector((state: State) => state.control.selectUserDialogOpen);
+    const selectHomeFunStudyDialogOpen = useSelector((state: State) => state.control.selectHomeFunStudyDialogOpen);
 
     return (
         <IconButton
@@ -114,6 +120,8 @@ function CloseSelectOrgOrUserButton() {
                     dispatch(setSelectOrgDialogOpen(false))
                 } else if (selectUserDialogOpen) {
                     dispatch(setSelectUserDialogOpen(false))
+                }else if(selectHomeFunStudyDialogOpen?.open){
+                    dispatch(setSelectHomeFunStudyDialogOpen({open: false, studyId: undefined}))
                 }
             }}
             size="medium"

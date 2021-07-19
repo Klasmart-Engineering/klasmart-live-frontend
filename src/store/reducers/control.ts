@@ -4,6 +4,7 @@ type ControlState = {
     themeMode: "light" | "dark";
     selectOrgDialogOpen: boolean;
     selectUserDialogOpen: boolean;
+    selectHomeFunStudyDialogOpen: { open: boolean, studyId?: string }
     drawerOpen: boolean;
     drawerWidth: number;
     drawerTabIndex: number;
@@ -16,12 +17,13 @@ const initialControlState: ControlState = {
     themeMode: "light",
     selectOrgDialogOpen: false,
     selectUserDialogOpen: false,
+    selectHomeFunStudyDialogOpen: {open: false},
     drawerOpen: true,
     drawerWidth: 0,
     drawerTabIndex: 0,
     colsCamera: 2,
     colsObserve: 2,
-    contentIndex: 0,
+    contentIndex: 0
 }
 
 const controlSlice = createSlice({
@@ -36,6 +38,9 @@ const controlSlice = createSlice({
         },
         setSelectUserDialogOpen(state, action) {
             return { ...state, selectUserDialogOpen: action.payload }
+        },
+        setSelectHomeFunStudyDialogOpen(state, action) {
+            return { ...state, selectHomeFunStudyDialogOpen: action.payload }
         },
         setDrawerOpen(state, action) {
             return { ...state, drawerOpen: action.payload }
@@ -62,6 +67,7 @@ export const {
     setThemeMode,
     setSelectOrgDialogOpen,
     setSelectUserDialogOpen,
+    setSelectHomeFunStudyDialogOpen,
     setDrawerOpen,
     setDrawerWidth,
     setDrawerTabIndex,
