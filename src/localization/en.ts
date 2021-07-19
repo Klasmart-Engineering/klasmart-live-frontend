@@ -5,7 +5,12 @@ const messages: Record<string, string> = {
     join_PermissionAlertDialog_DialogContentText_live: "Kidsloop Live needs access to the camera and microphone in order for other class participants to see you and hear you.",
     join_PermissionAlertDialog_DialogContentText_classes_study: "Kidsloop Live needs access to the microphone for in-class interactive contents.",
     join_PermissionAlertDialog_Button_close: "Close",
-    
+
+    button_submit: "Submit",
+    button_close: "Close",
+    button_add_comment: "Add comment",
+    button_edit_comment: "Edit comment",
+
     err_button_home: "Home",
     err_button_signin: "Back to Sign In",
     err_button_confirm: "Comfirm",
@@ -151,6 +156,13 @@ const messages: Record<string, string> = {
 
     title_settings_live: "Room Settings",
     layout_tabinnercontent_leaveroom: "Leave Room",
+
+    support_file_info_title: "Info",
+    support_file_max_size: "Max: ",
+    support_files: "Support files: ",
+
+    home_fun_study_your_task: "Your task",
+    home_fun_study_comment: "Comment...",
 
     auth_waiting_for_authentication: "Waiting for authentication...",
 
