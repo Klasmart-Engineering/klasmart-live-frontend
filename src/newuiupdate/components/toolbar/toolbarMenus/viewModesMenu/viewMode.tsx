@@ -38,7 +38,7 @@ interface ViewModeProps {
 	onClick: any;
 	icon: any;
 	title: any;
-    disabled: any;
+    disabled?: boolean;
 }
 
 function ViewMode (props: ViewModeProps) {

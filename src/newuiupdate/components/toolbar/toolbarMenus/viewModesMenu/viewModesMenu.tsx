@@ -94,7 +94,6 @@ function ViewModesMenu (props:ViewModesMenuProps) {
                 container
                 alignItems="stretch" >
                 <ViewMode
-                    disabled={false}
                     title={intl.formatMessage({
                         id: `viewmodes_on_stage`,
                     })}
@@ -114,7 +113,6 @@ function ViewModesMenu (props:ViewModesMenuProps) {
                 />
 
                 <ViewMode
-                    disabled={false}
                     title={intl.formatMessage({
                         id: `viewmodes_present`,
                     })}
