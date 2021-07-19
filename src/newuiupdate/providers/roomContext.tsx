@@ -3,7 +3,7 @@ import {
     Content, ContentType, Message, Session,
 } from "../../pages/room/room";
 import {
-    audioGloballyMutedState, classEndedState, isChatOpenState, unreadMessagesState, videoGloballyMutedState, materialActiveIndexState, streamIdState, InteractiveMode, interactiveModeState, hasControlsState
+    audioGloballyMutedState, classEndedState, isChatOpenState, unreadMessagesState, videoGloballyMutedState, materialActiveIndexState, streamIdState, InteractiveMode, interactiveModeState, hasControlsState, isShowContentLoadingState
 } from "../states/layoutAtoms";
 import {
     LIVE_LINK, LocalSessionContext, SFU_LINK,
@@ -71,6 +71,7 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
     const [ classEnded, setClassEnded ] = useRecoilState(classEndedState);
     const [ unreadMessages, setUnreadMessages ] = useRecoilState(unreadMessagesState);
     const [ isChatOpen, setIsChatOpen ] = useRecoilState(isChatOpenState);
+    const [ isShowContentLoading, setIsShowContentLoading ] = useRecoilState(isShowContentLoadingState);
     const [ audioGloballyMuted, setAudioGloballyMuted ] = useRecoilState(audioGloballyMutedState);
     const [ videoGloballyMuted, setVideoGloballyMuted ] = useRecoilState(videoGloballyMutedState);
     const { enqueueSnackbar } = useSnackbar();
@@ -106,14 +107,19 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
             target: LIVE_LINK,
         },
     });
+
+    useEffect(() => {
+        setIsShowContentLoading(loadingShowContent);
+    },[ loadingShowContent ])
     
     useEffect(() => {
         if(hasControls){
+            if(!materials.length) return
+
             // TODO : 
             // 1 : Present Mode : Student side -> Double load if a streamId already existed
             // 2 : When teacher leaves the room -> switch content to onstage
             // 3 : Add a loader on the students cards on observe when showContent is triggered
-
             const material = interactiveMode !== 0 && materialActiveIndex >= 0 && materialActiveIndex < materials.length ? materials[materialActiveIndex] : undefined;
             const type = defineContentType(material, interactiveMode);
             const contentId = defineContentId(material, interactiveMode);
@@ -125,9 +131,8 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
                     contentId
                 },
             });
-        
         }
-    }, [ streamId, materialActiveIndex, interactiveMode, sessions.size ]);
+    }, [ streamId, materialActiveIndex, interactiveMode ]);
 
     useEffect(() => {
         isChatOpen && setUnreadMessages(0);

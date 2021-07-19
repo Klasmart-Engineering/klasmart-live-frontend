@@ -150,3 +150,8 @@ export const hasJoinedClassroomState = atom({
     key: `hasJoinedClassroomState`,
     default: false,
 });
+
+export const isShowContentLoadingState = atom({
+    key: `isShowContentLoadingState`,
+    default: false,
+});

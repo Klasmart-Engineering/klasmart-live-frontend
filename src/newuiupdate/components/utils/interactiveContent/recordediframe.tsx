@@ -255,7 +255,10 @@ export function RecordedIframe (props: Props): JSX.Element {
             }
         }
         window.addEventListener(`message`, onMessage);
-        return () => window.removeEventListener(`message`, onMessage);
+        return () => {
+            window.removeEventListener(`message`, onMessage); 
+            setStreamId('')
+        };
     }, [ iframeRef.current ]);
 
     function startRecording () {
