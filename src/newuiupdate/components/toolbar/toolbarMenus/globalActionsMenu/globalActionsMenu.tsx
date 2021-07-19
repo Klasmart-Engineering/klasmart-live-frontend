@@ -225,8 +225,7 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
                 alignItems="stretch"
                 className={classes.root}>
                 {items.map((item) =>
-                    <>
-                        { (!(isMobile && (item.id === `1` || item.id === `3`)) || !isMobile ) &&
+                    { (!(isMobile && (item.id === `1` || item.id === `3`)) || !isMobile ) &&
                         <GlobalActionsMenuItem
                             key={item.id}
                             title={item.title}
@@ -237,8 +236,7 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
                             active={item.isActive}
                             onClick={item.onClick}
                         />
-                        }
-                    </>
+                    }
                 )}
             </Grid>
         </StyledPopper>
