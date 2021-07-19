@@ -1,3 +1,4 @@
+
 export function getFileExtensionFromName(fileName: string): string {
     const fileExtension = fileName.split('.').pop();
     return fileExtension ? fileExtension : "";
