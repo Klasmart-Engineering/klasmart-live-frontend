@@ -9,6 +9,7 @@ import { Schedule } from "./pages/schedule/schedule";
 import { UserRoute } from "./components/userRoute";
 import { SelectUserDialog } from "./pages/account/selectUserDialog";
 import { ExternalNavigationPrompt } from "./components/externalNavigationPrompt";
+import { HomeFunStudyDialog } from "./pages/home-fun-study/homeFunStudyDialog";
 
 export function App({ history }: {
     history: any;
@@ -33,6 +34,7 @@ export function App({ history }: {
             <SelectOrgDialog />
             <SelectUserDialog />
             <ExternalNavigationPrompt />
+            <HomeFunStudyDialog />
         </Grid>
     )
 }

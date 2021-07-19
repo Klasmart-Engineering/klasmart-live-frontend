@@ -1,4 +1,4 @@
-import {Icon, ListItemSecondaryAction} from "@material-ui/core";
+import {ListItemSecondaryAction} from "@material-ui/core";
 
 const dateFormat = require("dateformat");
 import React, { useState, useEffect } from "react";
@@ -30,7 +30,11 @@ import { State } from "../../store/store";
 import { ScheduleClassType, ScheduleTimeViewResponse, ScheduleResponse, TimeView } from "../../services/cms/ISchedulerService";
 import { ClassType, OrientationType } from "../../store/actions";
 import { setInFlight } from "../../store/reducers/communication";
-import { setSelectOrgDialogOpen, setSelectUserDialogOpen } from "../../store/reducers/control";
+import {
+    setSelectHomeFunStudyDialogOpen,
+    setSelectOrgDialogOpen,
+    setSelectUserDialogOpen
+} from "../../store/reducers/control";
 import {
     setScheduleTimeViewAll,
     setScheduleTimeViewLiveAll,
@@ -482,9 +486,13 @@ function AnytimeStudyItem({ studyId, setSelectedSchedule, setOpenStudyDetail }: 
     const displayScheduleInformation = () => {
         if (!studyInfo) return;
 
-        setSelectedSchedule(studyInfo);
-        setOpenStudyDetail(true);
-    };
+        if(!studyInfo.is_home_fun) {
+            setSelectedSchedule(studyInfo);
+            setOpenStudyDetail(true);
+        } else{
+            dispatch(setSelectHomeFunStudyDialogOpen({open: true, studyId: studyInfo.id}))
+        }
+    }
 
     return (
         <ListItem button onClick={displayScheduleInformation}>
@@ -515,7 +523,6 @@ function ScheduledStudyItem({ studyId, setSelectedSchedule, setOpenStudyDetail }
 }) {
     const { listRoot, listSubheaderText, listItemAvatar, listItemTextPrimary } = useStyles();
     const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
-
     const { schedulerService } = useServices();
 
     const [studyInfo, setStudyInfo] = useState<ScheduleResponse>();
@@ -556,9 +563,14 @@ function ScheduledStudyItem({ studyId, setSelectedSchedule, setOpenStudyDetail }
     const displayScheduleInformation = () => {
         if (!studyInfo) return;
 
-        setSelectedSchedule(studyInfo);
-        setOpenStudyDetail(true);
-    };
+        if(!studyInfo.is_home_fun){
+            setSelectedSchedule(studyInfo);
+            setOpenStudyDetail(true);
+            
+        }else{
+            dispatch(setSelectHomeFunStudyDialogOpen({open: true, studyId: studyInfo.id}))
+        }
+    }
 
     return (
         <List
