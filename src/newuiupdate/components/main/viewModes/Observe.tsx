@@ -42,13 +42,11 @@ const useStyles = makeStyles((theme: Theme) => ({
         overflowY: `auto`,
         width: `100%`,
     },
-    previewLoader:{
+    centerContent:{
         display: `flex`,
         height: `100%`,
         alignItems: `center`,
         justifyContent: `center`,
-    },
-    previewPlayerContainer:{
         "&:hover $previewExpand":{
             opacity: 1,
             visibility: `visible`,
@@ -209,7 +207,7 @@ function StudentPreviewCard ({ session }: { session: Session }) {
                         group={session.id}
                         uniqueId={session.id}
                         filterGroups={filterGroups} />
-                    <div className={classes.previewPlayerContainer}>
+                    <div className={classes.centerContent}>
                         <div
                             className={classes.previewExpand}
                             onClick={() => fullScreenById(`observe:${session.streamId}`) }>
@@ -222,7 +220,7 @@ function StudentPreviewCard ({ session }: { session: Session }) {
                             streamId={session?.streamId} />
                     </div>
                 </> :
-                <div className={classes.previewLoader}>
+                <div className={classes.centerContent}>
                     <OfflineIcon size="3em"/>
                 </div>
             }

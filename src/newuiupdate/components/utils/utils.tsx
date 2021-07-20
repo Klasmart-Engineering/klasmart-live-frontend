@@ -233,6 +233,8 @@ export function fullScreenById (id:any) {
     }
 }
 
+export const sleep = (m:number) => new Promise(r => setTimeout(r, m));
+
 export interface BrandingType {
     iconImageURL: string;
     primaryColor: string;
