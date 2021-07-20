@@ -168,7 +168,7 @@ function UserCamera (props: UserCameraType) {
                     user={user}
                     speakingActivity={speakingActivity}
                 />
-                {actions ? isHover && <UserCameraActions user={user} /> : null}
+                {actions ? isHover && <UserCameraActions user={user} expanded={camOn} /> : null}
                 {userCamera && userSession && camOn ? (
                     <ReactPlayer
                         autoPlay

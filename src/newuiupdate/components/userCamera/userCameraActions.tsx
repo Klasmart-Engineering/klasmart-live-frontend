@@ -167,10 +167,11 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 interface UserCameraActionsType {
     user: any;
+    expanded: boolean;
 }
 
 function UserCameraActions (props: UserCameraActionsType) {
-    const { user } = props;
+    const { user, expanded } = props;
     const classes = useStyles();
 
     const { isTeacher, roomId } = useContext(LocalSessionContext);
@@ -209,7 +210,10 @@ function UserCameraActions (props: UserCameraActionsType) {
             <Grid className={clsx(classes.controls, {
                 [classes.controlsTeacher] : isTeacher,
             })}>
-                <ExpandCamera user={user} />
+                { expanded &&
+                    <ExpandCamera user={user} />
+                }
+
 
                 <Grid item>
                     {isTeacher && !user.isTeacher &&
