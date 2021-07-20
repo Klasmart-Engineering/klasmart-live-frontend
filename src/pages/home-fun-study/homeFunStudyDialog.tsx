@@ -28,9 +28,9 @@ import StyledIcon from "../../components/styled/icon";
 import {getFileExtensionFromName} from "../../utils/fileUtils";
 import {FileIcon} from "../../components/fileIcon";
 import {setSelectHomeFunStudyDialogOpen} from "../../store/reducers/control";
-import {BottomSelector} from "../../components/bottomSelector";
 import {CommentDialog} from "./commentDialog";
 import {setHomeFunStudies} from "../../store/reducers/data";
+import {BottomSelector} from "../../components/bottomSelector";
 
 export type StudyComment = {
     studyId: string,
