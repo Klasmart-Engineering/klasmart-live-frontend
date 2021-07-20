@@ -220,28 +220,16 @@ function NoItemList (props: NoItemListProps) {
 export { NoItemList };
 
 export function fullScreenById (id:any) {
-    const document: any = window.document;
-    const target = document.getElementById(id) as any;
-    if (!target) return;
-    // Exit fullscreen if already enabled
-    if (!window.screenTop && !window.screenY) {
-        if (document.exitFullscreen)
-            document.exitFullscreen();
-        else if (document.mozCancelFullScreen)
-            document.mozCancelFullScreen();
-        else if (document.webkitCancelFullScreen)
-            document.webkitCancelFullScreen();
-        else if (document.msExitFullscreen)
-            document.msExitFullscreen();
-    }
-    // Trigger fullscreen
-    else{
-        if (target.requestFullscreen)
-            target.requestFullscreen();
-        else if (target.webkitRequestFullscreen)
-            target.webkitRequestFullscreen();
-        else if (target.msRequestFullScreen)
-            target.msRequestFullScreen();
+    const doc: any = window.document;
+    const docEl = doc.getElementById(id) as any;
+
+    const requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
+    const cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
+
+    if (!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
+        requestFullScreen.call(docEl);
+    } else {
+        cancelFullScreen.call(doc);
     }
 }
 
