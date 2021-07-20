@@ -4,13 +4,14 @@ import { RoomContext } from "../../../providers/roomContext";
 import { isLessonPlanOpenState, isShowContentLoadingState } from "../../../states/layoutAtoms";
 import Loading from "./loading";
 import { gql, useSubscription } from "@apollo/client";
-import Typography from "@material-ui/core/Typography";
+import {Typography, Grid, CircularProgress} from "@material-ui/core";
 import React, {
     useContext,
     useEffect, useRef, useState,
 } from "react";
 import { FormattedMessage } from "react-intl";
 import { useRecoilState } from "recoil";
+import { sleep } from "../utils";
 
 const SUB_EVENTS = gql`
   subscription stream($streamId: ID!) {
@@ -42,12 +43,19 @@ export function PreviewPlayer ({
     const [ isShowContentLoading, setIsShowContentLoading ] = useRecoilState(isShowContentLoadingState);
     const [ isLessonPlanOpen, setIsLessonPlanOpen ] = useRecoilState(isLessonPlanOpenState);
     const [ transformScale, setTransformScale ] = useState<number>(1);
+    const [ loadingPreviewPlayer, setLoadingPreviewPlayer ] = useState<boolean>(true);
+    const [ loadingParentEvents, setLoadingParentEvents ] = useState<boolean>(true);
 
     const { content } = useContext(RoomContext);
     const { isTeacher } = useContext(LocalSessionContext);
 
     const containerHtml = window.document.getElementById(container) as HTMLIFrameElement;
     const size = useWindowSize();
+    
+    useEffect(() => {
+        setLoadingPreviewPlayer(true);
+        setLoadingParentEvents(true);
+    }, [content?.contentId]);
 
     useEffect(() => {
         scale(frameWidth, frameHeight);
@@ -114,11 +122,13 @@ export function PreviewPlayer ({
         },
     });
 
-    const onLoad = () => {
+    const onLoad = async () => {
         if (ref.current == null || ref.current.contentWindow == null) { return; }
         const iframeDoc = ref.current.contentDocument;
         const recordedIframe = iframeDoc?.getElementsByTagName(`iframe`);
+
         if(recordedIframe && recordedIframe.length){
+            await sleep(800); // Await to make sure iframe is loaded and we can resize correctly
             const recordedIframeItem = recordedIframe[0];
 
             const fWidth = Number(recordedIframeItem.width.replace(`px`, ``));
@@ -143,7 +153,10 @@ export function PreviewPlayer ({
                     iframeYoutube.src += '&mute=1';
                 });
             }
+            await sleep(800); // Await to make sure we resize correctly
         }
+
+        setLoadingPreviewPlayer(false)
     };
 
     useEffect(() => {
@@ -154,6 +167,7 @@ export function PreviewPlayer ({
             // When the page is ready, start sending buffered events
             if(event.data === `ready`) {
                 sendEvent();
+                setLoadingParentEvents(false);
             }
             if (event.data.width && event.data.height) {
                 const fWidth = Number(event.data.width.replace(`px`, ``));
@@ -168,7 +182,7 @@ export function PreviewPlayer ({
         return () => window.removeEventListener(`message`, onIframeEvents);
     }, [  ]);
 
-    if (loading || isShowContentLoading) { return <Loading />; }
+    if (loading || isShowContentLoading) { return <Loading messageId="Page loading" />; }
     if (error) { return <Typography><FormattedMessage id="failed_to_connect" />: {JSON.stringify(error)}</Typography>; }
     return <div
         id="preview-iframe-container"
@@ -180,14 +194,14 @@ export function PreviewPlayer ({
             justifyContent: `center`,
         }}>
         <>
-            {(loading || isShowContentLoading ) &&  <Loading />}
+            {( loadingPreviewPlayer || loadingParentEvents ) && <Loading messageId="Activity loading" /> }
         </>
         <iframe
             key={streamId}
             ref={ref}
             id={`preview:${streamId}`}
             style={{
-                visibility: loading || isShowContentLoading ? `hidden` : `visible`,
+                visibility: loading || isShowContentLoading || loadingPreviewPlayer ? `hidden` : `visible`,
                 transformOrigin: `top left`,
                 transform: `scale(${transformScale})`,
                 position: `absolute`,
@@ -197,7 +211,7 @@ export function PreviewPlayer ({
                 height: frameHeight,
             }}
             src={`player.html`}
-            onLoad={() => {setTimeout(function (){ onLoad(); }, 1000); }}
+            onLoad={() => onLoad()}
             {...frameProps}
         />
     </div>;
