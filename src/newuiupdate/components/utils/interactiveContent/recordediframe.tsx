@@ -260,7 +260,7 @@ export function RecordedIframe (props: Props): JSX.Element {
                 });
             }
             switch(data.error){
-            case `AuthenticationInvalid`:
+            case `RedirectToLogin`:
                 redirectToLogin();
                 break;
             }

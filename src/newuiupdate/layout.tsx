@@ -42,15 +42,16 @@ export function getApolloClient (roomId: string) {
         },
     });
 
-    const connectionCallback = (errors: Error[] | Error, result?: any) => {
+    const connectionCallback = async (errors: Error[] | Error, result?: any) => {
         //Type information seems to wrong, errors may be a single error or array of errors?
         if (!(errors instanceof Array)) { errors = [ errors ]; }
 
-        const authenticationInvalid = errors.some((e) => e.message === `AuthenticationInvalid`);
-        if (authenticationInvalid) { redirectToLogin(); }
+        const authenticationError = errors.some((e) => e.message === `AuthenticationExpired` || e.message === `AuthenticationInvalid`);
 
-        const authenticationExpired = errors.some((e) => e.message === `AuthenticationExpired`);
-        if (authenticationExpired) { refreshAuthenticationCookie(); }
+        if (authenticationError) {
+            const success = await refreshAuthenticationCookie();
+            if(!success) { redirectToLogin(); }
+        }
     };
 
     const directionalLink = retryLink.split((operation) => operation.getContext().target === LIVE_LINK, new WebSocketLink({
