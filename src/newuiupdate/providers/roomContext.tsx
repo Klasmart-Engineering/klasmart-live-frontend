@@ -117,9 +117,8 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
             if(!materials.length) return
 
             // TODO : 
-            // 1 : Present Mode : Student side -> Double load if a streamId already existed
-            // 2 : When teacher leaves the room -> switch content to onstage
-            // 3 : Add a loader on the students cards on observe when showContent is triggered
+            // 1 : When teacher leaves the room -> switch content to onstage
+            
             const material = interactiveMode !== 0 && materialActiveIndex >= 0 && materialActiveIndex < materials.length ? materials[materialActiveIndex] : undefined;
             const type = defineContentType(material, interactiveMode);
             const contentId = defineContentId(material, interactiveMode);
