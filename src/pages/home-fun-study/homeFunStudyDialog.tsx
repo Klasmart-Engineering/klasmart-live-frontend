@@ -28,6 +28,7 @@ import StyledIcon from "../../components/styled/icon";
 import {getFileExtensionFromName} from "../../utils/fileUtils";
 import {FileIcon} from "../../components/fileIcon";
 import {setSelectHomeFunStudyDialogOpen} from "../../store/reducers/control";
+import {BottomSelector} from "../../components/bottomSelector";
 
 const useStyles = makeStyles((theme: Theme) => ({
     noPadding: {
@@ -156,9 +157,26 @@ function HomeFunStudyContainer({
                                    feedbacks
                                }: { studyInfo?: ScheduleResponse, feedbacks?: ScheduleFeedbackResponse[] }) {
     const [openSupportFileInfo, setOpenSupportFileInfo] = useState(false);
+    const [openButtonSelector, setOpenButtonSelector] = useState(false);
 
     function handleClickUploadInfo() {
         setOpenSupportFileInfo(true);
+    }
+
+    function handleClickUpload() {
+        setOpenButtonSelector(true);
+    }
+
+    function onSelectFile(){
+        //TODO: handle select file here
+    }
+
+    function onSelectCamera(){
+        //TODO: handle open camera here
+    }
+
+    function onSelectGallery(){
+        //TODO: handle open gallery here
     }
 
     return (
@@ -196,7 +214,7 @@ function HomeFunStudyContainer({
                 </Grid>
                 <HomeFunStudyAssignment
                     assignments={feedbacks && feedbacks.length > 0 ? feedbacks[0].assignments : []}
-                    onClickUploadInfo={handleClickUploadInfo}/>
+                    onClickUploadInfo={handleClickUploadInfo} onClickUpload={handleClickUpload}/>
                 <HomeFunStudyComment comment={feedbacks && feedbacks.length > 0 ? feedbacks[0].comment : ""}/>
             </Grid>
             <SupportFileInfo
@@ -204,14 +222,26 @@ function HomeFunStudyContainer({
                 onClose={() => {
                     setOpenSupportFileInfo(false)
                 }}/>
+            <BottomSelector
+                onClose={() => {
+                    setOpenButtonSelector(false)
+                }}
+                onOpen={() => {
+                    setOpenButtonSelector(true)
+                }}
+                onSelectFile={onSelectFile}
+                onSelectCamera={onSelectCamera}
+                onSelectGallery={onSelectGallery}
+                open={openButtonSelector}/>
         </>
     )
 }
 
 function HomeFunStudyAssignment({
                                     assignments,
-                                    onClickUploadInfo
-                                }: { assignments: Assignment[], onClickUploadInfo: () => void }) {
+                                    onClickUploadInfo,
+                                    onClickUpload
+                                }: { assignments: Assignment[], onClickUploadInfo: () => void, onClickUpload: () => void }) {
     const classes = useStyles();
 
     return (
@@ -239,6 +269,7 @@ function HomeFunStudyAssignment({
                         variant="outlined"
                         color="primary"
                         className={classes.rounded_button}
+                        onClick={onClickUpload}
                         startIcon={<StyledIcon icon={<UploadIcon/>} size="medium" color="primary"/>}
                     >
                         <Typography variant="body2">Choose File</Typography>
