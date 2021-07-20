@@ -35,6 +35,11 @@ const useStyles = makeStyles((theme: Theme) => ({
         borderRadius: 12,
         boxShadow: `2px 2px 3px 1px rgb(0 0 0 / 5%)`,
         position: `relative`,
+
+        "&:-webkit-full-screen": {
+            width: `100vw`,
+            height: `100vh`,
+        },
     },
     fullHeight:{
         height: `100%`,
