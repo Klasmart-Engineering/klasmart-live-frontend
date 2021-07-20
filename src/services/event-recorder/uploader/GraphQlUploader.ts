@@ -53,15 +53,22 @@ export class GraphQlUploader implements IEventUploader {
           });
       } catch (e) {
           const errors: unknown[] = e?.response?.errors || [];
-          const authenticationInvalid = errors.some((e: any) => e.extensions.code === `AuthenticationInvalid`);
-          if (authenticationInvalid) {
-              window.parent.postMessage({
-                  error: `AuthenticationInvalid`,
-              }, window.location.origin);
-          }
-          const authenticationExpired = errors.some((e: any) => e.extensions.code === `AuthenticationExpired`);
-          if (authenticationExpired) { refreshAuthenticationCookie(); }
+          const authenticationError = errors.some((e: any) => e.extensions.code === `AuthenticationInvalid` || e.extensions.code === `AuthenticationExpired`);
+          if (authenticationError) { handleAuthenticationError(); }
           return Promise.reject(e);
       }
   }
+}
+
+async function handleAuthenticationError () {
+    try {
+        const success = await refreshAuthenticationCookie();
+        if(!success) {
+            window.parent.postMessage({
+                error: `RedirectToLogin`,
+            }, window.location.origin);
+        }
+    } catch(e) {
+        console.error(e);
+    }
 }
