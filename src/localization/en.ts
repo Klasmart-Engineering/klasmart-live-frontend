@@ -10,6 +10,9 @@ const messages: Record<string, string> = {
     button_close: "Close",
     button_add_comment: "Add comment",
     button_edit_comment: "Edit comment",
+    button_file: "File",
+    button_camera: "Camera",
+    button_gallery: "Gallery",
 
     err_button_home: "Home",
     err_button_signin: "Back to Sign In",
