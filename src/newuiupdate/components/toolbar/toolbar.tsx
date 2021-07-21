@@ -1,12 +1,19 @@
 import { ContentType } from "../../../pages/room/room";
-import { LocalSessionContext, SFU_LINK } from "../../providers/providers";
+import {
+    LocalSessionContext,
+    SFU_LINK,
+} from "../../providers/providers";
 import { RoomContext } from "../../providers/roomContext";
 import {
-    MUTE, MuteNotification, WebRTCContext,
+    MUTE,
+    MuteNotification,
+    WebRTCContext,
 } from "../../providers/WebRTCContext";
 import {
     activeTabState,
     hasControlsState,
+    InteractiveMode,
+    interactiveModeState,
     isActiveGlobalScreenshareState,
     isCanvasOpenState,
     isChatOpenState,
@@ -15,11 +22,12 @@ import {
     isLessonPlanOpenState,
     isViewModesOpenState,
     unreadMessagesState,
-    InteractiveMode,
-    interactiveModeState,
 } from "../../states/layoutAtoms";
 import { useSynchronizedState } from "../../whiteboard/context-providers/SynchronizedStateProvider";
-import { DialogEndClass, DialogLeaveClass } from "../utils/endCall";
+import {
+    DialogEndClass,
+    DialogLeaveClass,
+} from "../utils/endCall";
 import ToolbarItem from "./toolbarItem";
 import ToolbarItemCall from "./toolbarItemCall";
 import ToolbarItemCamera from "./toolbarItemCamera";
@@ -49,8 +57,11 @@ import { PresentationChartBar as PresentIcon } from "@styled-icons/heroicons-sol
 import { ChevronBottom as ViewModesIcon } from "@styled-icons/open-iconic/ChevronBottom";
 import { FilePaper as LessonPlanIcon } from "@styled-icons/remix-fill/FilePaper";
 import clsx from "clsx";
-import React, {
-    useContext, useEffect, useState,
+import React,
+{
+    useContext,
+    useEffect,
+    useState,
 } from "react";
 import { useIntl } from "react-intl";
 import { useRecoilState } from "recoil";
@@ -84,7 +95,10 @@ function Toolbar () {
     const classes = useStyles();
     const intl = useIntl();
     const {
-        isTeacher, sessionId, roomId,
+        isTeacher,
+        sessionId,
+        roomId,
+        materials,
     } = useContext(LocalSessionContext);
     const webrtc = useContext(WebRTCContext);
     const { content } = useContext(RoomContext);
@@ -287,7 +301,7 @@ function Toolbar () {
                     </div>
                     <div ref={viewModesRef}>
                         <ToolbarItem
-                            display={hasControls ? activeTab !== `mosaic` : false}
+                            display={hasControls && Boolean(materials.length) && activeTab !== `mosaic`}
                             icon={<ViewModesIcon />}
                             label={intl.formatMessage({
                                 id: `toolbar_view_modes`,

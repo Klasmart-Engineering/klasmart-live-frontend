@@ -144,24 +144,22 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
     }, [ loadingShowContent ]);
 
     useEffect(() => {
-        if(hasControls){
-            if(!materials.length) return;
+        if (!hasControls) return;
 
-            // TODO :
-            // 1 : When teacher leaves the room -> switch content to onstage
+        // TODO :
+        // 1 : When teacher leaves the room -> switch content to onstage
 
-            const material = interactiveMode !== 0 && materialActiveIndex >= 0 && materialActiveIndex < materials.length ? materials[materialActiveIndex] : undefined;
-            const type = defineContentType(material, interactiveMode);
-            const contentId = defineContentId(material, interactiveMode);
+        const material = interactiveMode !== InteractiveMode.OnStage && materialActiveIndex >= 0 && materialActiveIndex < materials.length ? materials[materialActiveIndex] : undefined;
+        const type = defineContentType(material, interactiveMode);
+        const contentId = defineContentId(material, interactiveMode);
 
-            showContent({
-                variables: {
-                    roomId,
-                    type,
-                    contentId,
-                },
-            });
-        }
+        showContent({
+            variables: {
+                roomId,
+                type,
+                contentId,
+            },
+        });
     }, [
         streamId,
         materialActiveIndex,
