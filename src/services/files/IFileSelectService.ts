@@ -1,6 +1,6 @@
 
 export interface IFileSelectService {
     selectFile(): Promise<File>;
-    selectFromGallery(): Promise<File>;
-    selectFromCamera(): Promise<File>;
+    selectFromGallery(): Promise<string>;
+    selectFromCamera(): Promise<string>;
 }
