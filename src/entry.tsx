@@ -1,4 +1,3 @@
-import { App } from "./app";
 import ChromeLogo from "./assets/img/browser/chrome_logo.svg";
 import SafariLogo from "./assets/img/browser/safari_logo.png";
 import { LessonMaterial, MaterialTypename } from "./lessonMaterialContext";
