@@ -5,6 +5,8 @@ import { ContentService } from "../services/cms/ContentService";
 import { IContentService } from "../services/cms/IContentService";
 import { ISchedulerService } from "../services/cms/ISchedulerService";
 import { SchedulerService } from "../services/cms/SchedulerService";
+import { IFileSelectService } from "../services/files/IFileSelectService";
+import { FileSelectService } from "../services/files/FileSelectService";
 import { IUserInformationService } from "../services/user/IUserInformationService";
 import { UserInformationService } from "../services/user/UserInformationService";
 import { useHttpEndpoint } from "./region-select-context";
@@ -18,6 +20,7 @@ type ServicesContext = {
     schedulerService?: ISchedulerService,
     contentService?: IContentService,
     userInformationService?: IUserInformationService,
+    fileSelectService?: IFileSelectService,
 }
 
 const ServicesContext = createContext<ServicesContext>({});
@@ -43,8 +46,12 @@ export function ServicesProvider({ children }: Props) {
         return new UserInformationService(userInformationEndpoint, authenticationService);
     }, [userInformationEndpoint, authenticationService]);
 
+    const fileSelectService = useMemo(() => {
+        return new FileSelectService();
+    }, []);
+
     return (
-        <ServicesContext.Provider value={{ authenticationService, schedulerService, contentService, userInformationService }}>
+        <ServicesContext.Provider value={{ authenticationService, schedulerService, contentService, userInformationService, fileSelectService }}>
             { children }
         </ServicesContext.Provider>
     );
