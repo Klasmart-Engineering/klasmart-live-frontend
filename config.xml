@@ -42,6 +42,12 @@
         <edit-config file="*-Info.plist" mode="merge" target="NSMicrophoneUsageDescription">
             <string>KidsLoop Live wants to have microphone permission for classroom video conference.</string>
         </edit-config>
+        <edit-config file="*-Info.plist" mode="merge" target="NSPhotoLibraryUsageDescription">
+            <string>KidsLoop Live wants to access photo library to select pictures for homework.</string>
+        </edit-config>
+        <edit-config file="*-Info.plist" mode="merge" target="NSPhotoLibraryAddUsageDescription">
+            <string>KidsLoop Live wants to access photo library to save pictures for homework.</string>
+        </edit-config>
     </platform>
     <platform name="android">
         <preference name="AppendUserAgent" value="Cordova" />
