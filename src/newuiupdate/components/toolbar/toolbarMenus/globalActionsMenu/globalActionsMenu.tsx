@@ -1,11 +1,15 @@
 import { ContentType } from "../../../../../pages/room/room";
 import {
-    LIVE_LINK, LocalSessionContext, SFU_LINK,
+    LIVE_LINK,
+    LocalSessionContext,
+    SFU_LINK,
 } from "../../../../providers/providers";
 import { RoomContext } from "../../../../providers/roomContext";
 import { ScreenShareContext } from "../../../../providers/screenShareProvider";
 import {
-    GLOBAL_MUTE_MUTATION,  GLOBAL_MUTE_QUERY, GlobalMuteNotification,
+    GLOBAL_MUTE_MUTATION,
+    GLOBAL_MUTE_QUERY,
+    GlobalMuteNotification,
 } from "../../../../providers/WebRTCContext";
 import {
     isGlobalActionsOpenState,
@@ -14,9 +18,14 @@ import {
 import { MUTATION_REWARD_TROPHY } from "../../../utils/graphql";
 import { StyledPopper } from "../../../utils/utils";
 import GlobalActionsMenuItem from "./globalAction";
-import { useMutation, useQuery } from "@apollo/client";
 import {
-    Grid, makeStyles, Theme,
+    useMutation,
+    useQuery,
+} from "@apollo/client";
+import {
+    Grid,
+    makeStyles,
+    Theme,
 } from "@material-ui/core";
 import { CameraVideoFill as CameraVideoFillIcon } from "@styled-icons/bootstrap/CameraVideoFill";
 import { CameraVideoOffFill as CameraDisabledIcon } from "@styled-icons/bootstrap/CameraVideoOffFill";
@@ -27,12 +36,15 @@ import { MicMuteFill as MicDisabledIcon } from "@styled-icons/bootstrap/MicMuteF
 import { StarFill as StarFillIcon } from "@styled-icons/bootstrap/StarFill";
 import { TrophyFill as TrophyFillIcon } from "@styled-icons/bootstrap/TrophyFill";
 import { TvFill as ScreenShareIcon } from "@styled-icons/bootstrap/TvFill";
-import React, {
-    useContext,  useEffect,  useState,
+import React,
+{
+    useContext,
+    useEffect,
+    useState,
 } from "react";
+import { isMobile } from "react-device-detect";
 import { useIntl } from "react-intl";
 import { useRecoilState } from "recoil";
-import { isMobile } from "react-device-detect";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -140,10 +152,12 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
             variant: `blue`,
             isActive: content?.type === ContentType.Screen,
             onClick: () => {toggleScreenshare();},
+            hidden: isMobile,
         },
         {
             id: `3`,
             type: `divider`,
+            hidden: isMobile,
         },
         {
             id: `4`,
@@ -224,20 +238,19 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
                 container
                 alignItems="stretch"
                 className={classes.root}>
-                {items.map((item) =>
-                    { (!(isMobile && (item.id === `1` || item.id === `3`)) || !isMobile ) &&
-                        <GlobalActionsMenuItem
-                            key={item.id}
-                            title={item.title}
-                            icon={item.icon}
-                            activeIcon={item.activeIcon}
-                            type={item.type}
-                            variant={item.variant}
-                            active={item.isActive}
-                            onClick={item.onClick}
-                        />
-                    }
-                )}
+
+                {items.map((item) => (
+                    !item.hidden && <GlobalActionsMenuItem
+                        key={item.id}
+                        title={item.title}
+                        icon={item.icon}
+                        activeIcon={item.activeIcon}
+                        type={item.type}
+                        variant={item.variant}
+                        active={item.isActive}
+                        onClick={item.onClick}
+                    />
+                ))}
             </Grid>
         </StyledPopper>
     );
