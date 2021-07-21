@@ -1,27 +1,52 @@
 import Loading from "../../components/loading";
+import { MaterialTypename } from "../../lessonMaterialContext";
 import {
-    Content, ContentType, Message, Session,
+    Content,
+    ContentType,
+    Message,
+    Session,
 } from "../../pages/room/room";
+import { MUTATION_SHOW_CONTENT } from "../components/utils/graphql";
 import {
-    audioGloballyMutedState, classEndedState, isChatOpenState, unreadMessagesState, videoGloballyMutedState, materialActiveIndexState, streamIdState, InteractiveMode, interactiveModeState, hasControlsState, isShowContentLoadingState
+    audioGloballyMutedState,
+    classEndedState,
+    hasControlsState,
+    InteractiveMode,
+    interactiveModeState,
+    isChatOpenState,
+    isShowContentLoadingState,
+    materialActiveIndexState,
+    streamIdState,
+    unreadMessagesState,
+    videoGloballyMutedState,
 } from "../states/layoutAtoms";
 import {
-    LIVE_LINK, LocalSessionContext, SFU_LINK,
+    LIVE_LINK,
+    LocalSessionContext,
+    SFU_LINK,
 } from "./providers";
 import { GLOBAL_MUTE_QUERY } from "./WebRTCContext";
 import {
-    gql, useMutation, useQuery, useSubscription,
+    gql,
+    useMutation,
+    useQuery,
+    useSubscription,
 } from "@apollo/client";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { useSnackbar } from "kidsloop-px";
-import React, {
-    createContext, useContext, useEffect, useState,
+import React,
+{
+    createContext,
+    useContext,
+    useEffect,
+    useState,
 } from "react";
-import { FormattedMessage, useIntl } from "react-intl";
+import {
+    FormattedMessage,
+    useIntl,
+} from "react-intl";
 import { useRecoilState } from "recoil";
-import { MUTATION_SHOW_CONTENT } from "../components/utils/graphql";
-import { MaterialTypename } from "../../lessonMaterialContext";
 
 const SUB_ROOM = gql`
     subscription room($roomId: ID!, $name: String) {
@@ -61,7 +86,13 @@ export const RoomContext = createContext<RoomContextInterface>(defaultRoomContex
 export const RoomProvider = (props: {children: React.ReactNode}) => {
     const intl = useIntl();
     const {
-        roomId, name, sessionId, camera, isTeacher, materials,
+        roomId,
+        name,
+        sessionId,
+        camera,
+        isTeacher,
+        materials,
+
     } = useContext(LocalSessionContext);
     const [ sfuAddress, setSfuAddress ] = useState<string>(``);
     const [ messages, setMessages ] = useState<Map<string, Message>>(new Map<string, Message>());
@@ -80,27 +111,27 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
     const [ streamId, setStreamId ] = useRecoilState(streamIdState);
     const [ interactiveMode, setInteractiveMode ] = useRecoilState(interactiveModeState);
     const [ hasControls, setHasControls ] = useRecoilState(hasControlsState);
-    
+
     const defineContentType = (material:any, interactiveMode:InteractiveMode) => {
-        if(interactiveMode === InteractiveMode.OnStage) return ContentType.Blank
-        if(interactiveMode === InteractiveMode.Observe) return ContentType.Activity
+        if(interactiveMode === InteractiveMode.OnStage) return ContentType.Blank;
+        if(interactiveMode === InteractiveMode.Observe) return ContentType.Activity;
 
         if(material.__typename === MaterialTypename.Video || (material.__typename === undefined && material.video)){
-            return ContentType.Video
+            return ContentType.Video;
         }else if (material.__typename === MaterialTypename.Audio) {
-            return ContentType.Audio
+            return ContentType.Audio;
         }else if (material.__typename === MaterialTypename.Image) {
-            return ContentType.Image
+            return ContentType.Image;
         }else{
-            return ContentType.Stream
+            return ContentType.Stream;
         }
-    }
+    };
 
     const defineContentId = (material:any, interactiveMode:InteractiveMode) => {
-        if(interactiveMode === InteractiveMode.OnStage) return sessionId
-        if(interactiveMode === InteractiveMode.Observe) return material.url
-        return streamId
-    }
+        if(interactiveMode === InteractiveMode.OnStage) return sessionId;
+        if(interactiveMode === InteractiveMode.Observe) return material.url;
+        return streamId;
+    };
 
     const [ showContent, { loading: loadingShowContent } ] = useMutation(MUTATION_SHOW_CONTENT, {
         context: {
@@ -110,15 +141,15 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
 
     useEffect(() => {
         setIsShowContentLoading(loadingShowContent);
-    },[ loadingShowContent ])
-    
+    }, [ loadingShowContent ]);
+
     useEffect(() => {
         if(hasControls){
-            if(!materials.length) return
+            if(!materials.length) return;
 
-            // TODO : 
+            // TODO :
             // 1 : When teacher leaves the room -> switch content to onstage
-            
+
             const material = interactiveMode !== 0 && materialActiveIndex >= 0 && materialActiveIndex < materials.length ? materials[materialActiveIndex] : undefined;
             const type = defineContentType(material, interactiveMode);
             const contentId = defineContentId(material, interactiveMode);
@@ -127,11 +158,15 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
                 variables: {
                     roomId,
                     type,
-                    contentId
+                    contentId,
                 },
             });
         }
-    }, [ streamId, materialActiveIndex, interactiveMode ]);
+    }, [
+        streamId,
+        materialActiveIndex,
+        interactiveMode,
+    ]);
 
     useEffect(() => {
         isChatOpen && setUnreadMessages(0);
@@ -145,7 +180,13 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
         onSubscriptionData: ({ subscriptionData }) => {
             if (!subscriptionData?.data?.room) { return; }
             const {
-                message, content, join, leave, session, sfu, trophy,
+                message,
+                content,
+                join,
+                leave,
+                session,
+                sfu,
+                trophy,
             } = subscriptionData.data.room;
             if (sfu) { setSfuAddress(sfu); }
             if (message) { addMessage(message); }
@@ -195,7 +236,7 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
 
     const userJoin = (join: Session) => {
         const now = Date.now() - 5000;
-        const newSession = !sessions.has(join.id)
+        const newSession = !sessions.has(join.id);
         setSessions(prev => new Map(prev.set(join.id, join)));
 
         if(newSession && isTeacher && sessionId !== join.id && now <= join.joinedAt){
