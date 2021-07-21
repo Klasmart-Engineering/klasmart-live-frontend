@@ -159,6 +159,8 @@ function HomeFunStudyContainer({
     const [openSupportFileInfo, setOpenSupportFileInfo] = useState(false);
     const [openButtonSelector, setOpenButtonSelector] = useState(false);
 
+    const { fileSelectService } = useServices();
+
     function handleClickUploadInfo() {
         setOpenSupportFileInfo(true);
     }
@@ -168,15 +170,33 @@ function HomeFunStudyContainer({
     }
 
     function onSelectFile(){
-        //TODO: handle select file here
+        fileSelectService?.selectFile().then(file => {
+            console.log(`selected file: ${file.name}`);
+            // TODO: Add the selected file to upload list.
+            setOpenButtonSelector(false);
+        }).catch(error => {
+            console.error(error);
+        });
     }
 
     function onSelectCamera(){
-        //TODO: handle open camera here
+        fileSelectService?.selectFromCamera().then(path => {
+            console.log(`selected from camera: ${path}`);
+            // TODO: Add the selected file to upload list.
+            setOpenButtonSelector(false);
+        }).catch(error => {
+            console.error(error);
+        });
     }
 
     function onSelectGallery(){
-        //TODO: handle open gallery here
+        fileSelectService?.selectFromGallery().then(path => {
+            console.log(`selected from gallery: ${path}`);
+            // TODO: Add the selected file to upload list.
+            setOpenButtonSelector(false);
+        }).catch(error => {
+            console.error(error);
+        });
     }
 
     return (
