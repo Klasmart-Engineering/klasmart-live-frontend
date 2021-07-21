@@ -13,6 +13,7 @@ const messages: Record<string, string> = {
     button_file: "File",
     button_camera: "Camera",
     button_gallery: "Gallery",
+    button_save: "Save",
 
     err_button_home: "Home",
     err_button_signin: "Back to Sign In",
@@ -166,6 +167,7 @@ const messages: Record<string, string> = {
 
     home_fun_study_your_task: "Your task",
     home_fun_study_comment: "Comment...",
+    home_fun_study_your_comment: "Your Comment",
 
     auth_waiting_for_authentication: "Waiting for authentication...",
 
