@@ -1,4 +1,9 @@
-import { activeTabState } from "../../states/layoutAtoms";
+import { MaterialTypename } from "../../../lessonMaterialContext";
+import { ContentType } from "../../../pages/room/room";
+import {
+    activeTabState,
+    InteractiveMode,
+} from "../../states/layoutAtoms";
 import {
     Drawer,
     Fade,
@@ -235,6 +240,20 @@ export function fullScreenById (id:any) {
 
 export const sleep = (m:number) => new Promise(r => setTimeout(r, m));
 
+export const defineContentType = (material:any, interactiveMode:InteractiveMode) => {
+    if(interactiveMode === InteractiveMode.OnStage) return ContentType.Blank;
+    if(interactiveMode === InteractiveMode.Observe) return ContentType.Activity;
+
+    if(material.__typename === MaterialTypename.Video || (material.__typename === undefined && material.video)){
+        return ContentType.Video;
+    }else if (material.__typename === MaterialTypename.Audio) {
+        return ContentType.Audio;
+    }else if (material.__typename === MaterialTypename.Image) {
+        return ContentType.Image;
+    }else{
+        return ContentType.Stream;
+    }
+};
 export interface BrandingType {
     iconImageURL: string;
     primaryColor: string;

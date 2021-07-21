@@ -7,6 +7,7 @@ import {
     Session,
 } from "../../pages/room/room";
 import { MUTATION_SHOW_CONTENT } from "../components/utils/graphql";
+import { defineContentType } from "../components/utils/utils";
 import {
     audioGloballyMutedState,
     classEndedState,
@@ -112,27 +113,6 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
     const [ interactiveMode, setInteractiveMode ] = useRecoilState(interactiveModeState);
     const [ hasControls, setHasControls ] = useRecoilState(hasControlsState);
 
-    const defineContentType = (material:any, interactiveMode:InteractiveMode) => {
-        if(interactiveMode === InteractiveMode.OnStage) return ContentType.Blank;
-        if(interactiveMode === InteractiveMode.Observe) return ContentType.Activity;
-
-        if(material.__typename === MaterialTypename.Video || (material.__typename === undefined && material.video)){
-            return ContentType.Video;
-        }else if (material.__typename === MaterialTypename.Audio) {
-            return ContentType.Audio;
-        }else if (material.__typename === MaterialTypename.Image) {
-            return ContentType.Image;
-        }else{
-            return ContentType.Stream;
-        }
-    };
-
-    const defineContentId = (material:any, interactiveMode:InteractiveMode) => {
-        if(interactiveMode === InteractiveMode.OnStage) return sessionId;
-        if(interactiveMode === InteractiveMode.Observe) return material.url;
-        return streamId;
-    };
-
     const [ showContent, { loading: loadingShowContent } ] = useMutation(MUTATION_SHOW_CONTENT, {
         context: {
             target: LIVE_LINK,
@@ -151,7 +131,7 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
 
         const material = interactiveMode !== InteractiveMode.OnStage && materialActiveIndex >= 0 && materialActiveIndex < materials.length ? materials[materialActiveIndex] : undefined;
         const type = defineContentType(material, interactiveMode);
-        const contentId = defineContentId(material, interactiveMode);
+        const contentId = interactiveMode === InteractiveMode.OnStage ? sessionId : interactiveMode === InteractiveMode.Observe ? material?.url : streamId;
 
         showContent({
             variables: {
