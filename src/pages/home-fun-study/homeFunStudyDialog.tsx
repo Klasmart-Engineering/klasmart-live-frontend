@@ -12,7 +12,7 @@ import {
     Typography
 } from "@material-ui/core";
 import {Edit, InfoOutlined, HighlightOffOutlined} from "@material-ui/icons";
-import {makeStyles, Theme} from "@material-ui/core/styles";
+import {makeStyles} from "@material-ui/core/styles";
 import {lockOrientation} from "../../utils/screenUtils";
 import {OrientationType} from "../../store/actions";
 import {useDispatch, useSelector} from "react-redux";
@@ -29,8 +29,15 @@ import {getFileExtensionFromName} from "../../utils/fileUtils";
 import {FileIcon} from "../../components/fileIcon";
 import {setSelectHomeFunStudyDialogOpen} from "../../store/reducers/control";
 import {BottomSelector} from "../../components/bottomSelector";
+import {CommentDialog} from "./commentDialog";
+import {setHomeFunStudies} from "../../store/reducers/data";
 
-const useStyles = makeStyles((theme: Theme) => ({
+export type StudyComment = {
+    studyId: string,
+    comment: string
+}
+
+const useStyles = makeStyles(() => ({
     noPadding: {
         padding: 0
     },
@@ -61,6 +68,7 @@ export function HomeFunStudyDialog() {
     const classes = useStyles();
     const dispatch = useDispatch();
     const selectHomeFunStudyDialog = useSelector((state: State) => state.control.selectHomeFunStudyDialogOpen);
+    const homeFunStudyComments = useSelector((state: State) => state.data.homeFunStudyComments); //TODO: Find the comment in this list to submit.
     const {schedulerService} = useServices();
     const {selectedOrg, selectedUserId} = useSelector((state: State) => state.session);
     const [studyInfo, setStudyInfo] = useState<ScheduleResponse>();
@@ -234,8 +242,11 @@ function HomeFunStudyContainer({
                 </Grid>
                 <HomeFunStudyAssignment
                     assignments={feedbacks && feedbacks.length > 0 ? feedbacks[0].assignments : []}
-                    onClickUploadInfo={handleClickUploadInfo} onClickUpload={handleClickUpload}/>
-                <HomeFunStudyComment comment={feedbacks && feedbacks.length > 0 ? feedbacks[0].comment : ""}/>
+                    onClickUploadInfo={handleClickUploadInfo} onClickUpload={handleClickUpload} />
+                <HomeFunStudyComment
+                    studyId={studyInfo?.id}
+                    defaultComment={feedbacks && feedbacks.length > 0 ? feedbacks[0].comment : ""}
+                />
             </Grid>
             <SupportFileInfo
                 open={openSupportFileInfo}
@@ -314,15 +325,52 @@ function HomeFunStudyAssignment({
                             </ListItem>
                         ))}
                     </List>
-
                 </Box>
             </Box>
         </Grid>
     );
 }
 
-function HomeFunStudyComment({comment}: { comment: string }) {
+function HomeFunStudyComment({studyId, defaultComment}: { studyId?: string, defaultComment: string}) {
     const classes = useStyles();
+    const dispatch = useDispatch();
+    const [openEditComment, setOpenEditComment] = useState(false);
+    const [comment, setComment] = useState(defaultComment);
+    const homeFunStudyComments = useSelector((state: State )=> state.data.homeFunStudyComments);
+
+    useEffect(() => {
+        if(studyId){
+            for(let i = 0 ; homeFunStudyComments && i < homeFunStudyComments.length ; i++) {
+                if (homeFunStudyComments[i].studyId == studyId) {
+                    setComment(homeFunStudyComments[i].comment)
+                    break;
+                }
+            }
+        }
+    }, [homeFunStudyComments])
+
+    function handleOnClickEditComment() {
+        setOpenEditComment(true);
+    }
+    function handleSaveComment(newComment: string) {
+        setComment(newComment);
+        if(studyId){
+            let newHFSComments = homeFunStudyComments ? homeFunStudyComments.slice() : [];
+            let hasDetail = false;
+            for(let i = 0 ; i < newHFSComments.length ; i++) {
+                if (newHFSComments[i].studyId == studyId) {
+                    newHFSComments[i] = {studyId: studyId, comment: newComment};
+                    hasDetail = true;
+                    break;
+                }
+            }
+            if(!hasDetail){
+                newHFSComments.push({studyId: studyId, comment: newComment});
+            }
+            dispatch(setHomeFunStudies(newHFSComments));
+        }
+        setOpenEditComment(false);
+    }
     return (
         <Grid item xs>
             <Box mb={1}>
@@ -334,6 +382,7 @@ function HomeFunStudyComment({comment}: { comment: string }) {
                     color="primary"
                     className={classes.rounded_button}
                     startIcon={<Edit/>}
+                    onClick={handleOnClickEditComment}
                 >
                     <Typography variant="body2">
                         {comment ? <FormattedMessage id="button_edit_comment"/> :
@@ -344,6 +393,12 @@ function HomeFunStudyComment({comment}: { comment: string }) {
             <Typography variant="body2" color="textSecondary">
                 {comment ? comment : <FormattedMessage id="home_fun_study_comment"/>}
             </Typography>
+            <CommentDialog
+                open={openEditComment}
+                onClose={() => {setOpenEditComment(false)}}
+                onSave={handleSaveComment}
+                defaultComment={comment}
+            />
         </Grid>
     )
 }
