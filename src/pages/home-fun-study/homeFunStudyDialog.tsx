@@ -333,7 +333,6 @@ function HomeFunStudyAssignment({
 
 function HomeFunStudyComment({studyId, defaultComment}: { studyId?: string, defaultComment: string}) {
     const classes = useStyles();
-
     const dispatch = useDispatch();
     const [openEditComment, setOpenEditComment] = useState(false);
     const [comment, setComment] = useState(defaultComment);
@@ -372,6 +371,7 @@ function HomeFunStudyComment({studyId, defaultComment}: { studyId?: string, defa
         }
         setOpenEditComment(false);
     }
+    
     function handleCloseComment(){
         if(studyId){
             let newHFSComments = homeFunStudyComments ? homeFunStudyComments.slice() : [];
