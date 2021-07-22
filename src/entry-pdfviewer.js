@@ -23,7 +23,7 @@ if (!pdfjsLib.getDocument || !pdfjsViewer.PDFViewer) {
 const CMAP_URL = `pdfjs-dist/cmaps/`;
 const CMAP_PACKED = true;
 
-const DEFAULT_URL = pdfSrc;
+const DEFAULT_URL = `${process.env.ENDPOINT_PDF}${pdfSrc}`;
 
 const container = document.getElementById(`viewerContainer`);
 

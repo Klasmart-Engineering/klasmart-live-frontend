@@ -153,6 +153,17 @@ export function RecordedIframe (props: Props): JSX.Element {
         }
     };
 
+    const getPDFURLTransformer = () => {
+        const jpegTransformer = (contentId: string) => `${contentId.replace(`/assets/`, `/pdf/`)}/view.html`;
+        const svgTransformer = (contentId: string) => `/pdfviewer.html?pdfSrc=${contentId}`;
+
+        switch (process.env.PDF_VERSION) {
+        case `JPEG`: return jpegTransformer;
+        case `SVG`: return svgTransformer;
+        default: return svgTransformer;
+        }
+    };
+
     function onLoad () {
         // TODO the client-side rendering version of H5P is ready! we can probably delete this function and the scale function above
         // if we switch over to it! Ask me (Daiki) about the details.
@@ -216,7 +227,7 @@ export function RecordedIframe (props: Props): JSX.Element {
                     setContentHeight(imageHeight);
                 }
 
-                if (contentId.endsWith(`.pdf`)) {
+                if (process.env.PDF_VERSION?.toUpperCase() === `JPEG` && contentId.endsWith(`.pdf`)) {
                     // Override automatic resizing of PDF documents
                     setEnableResize(false);
                     return;
@@ -342,7 +353,7 @@ export function RecordedIframe (props: Props): JSX.Element {
                 ref={iframeRef}
                 id="recordediframe"
                 src={contentId.endsWith(`.pdf`)
-                    ? `${contentId.replace(`/assets/`, `/pdf/`)}/view.html`
+                    ? getPDFURLTransformer()(contentId)
                     : contentId}
                 style={{
                     width: enableResize ? contentWidth : `100%`,

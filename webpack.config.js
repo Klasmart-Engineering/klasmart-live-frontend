@@ -105,6 +105,7 @@ module.exports = {
             ENDPOINT_HUB: `https://hub.alpha.kidsloop.net`,
             ENDPOINT_CMS: `https://kl2-test.kidsloop.net`,
             ENDPOINT_PDF: `https://live.alpha.kidsloop.net`,
+            PDF_VERSION: `SVG`, // SVG or JPEG - Defaults to SVG
         }),
         new HtmlWebpackPlugin({
             filename: `index.html`,
