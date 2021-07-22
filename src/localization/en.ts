@@ -15,8 +15,13 @@ const messages: Record<string, string> = {
     button_gallery: "Gallery",
     button_save: "Save",
     button_continue: "Continue",
+    button_ok: "Ok",
     close_confirm_description_1: "Would you like to go this page?",
     close_confirm_description_2: "Changes that you made will not be saved.",
+    submission_failed: "Submission Failed",
+    upload_please_check_your_file: "Please Check Your File!",
+    upload_file_not_supported: "This file format is not supported. Please try another file.",
+    upload_file_too_big: "Uploaded file should not be bigger than 100MB. Please try another file.",
 
     err_button_home: "Home",
     err_button_signin: "Back to Sign In",
