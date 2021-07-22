@@ -14,6 +14,9 @@ const messages: Record<string, string> = {
     button_camera: "Camera",
     button_gallery: "Gallery",
     button_save: "Save",
+    button_continue: "Continue",
+    close_confirm_description_1: "Would you like to go this page?",
+    close_confirm_description_2: "Changes that you made will not be saved.",
 
     err_button_home: "Home",
     err_button_signin: "Back to Sign In",
