@@ -106,11 +106,6 @@ module.exports = {
             ...brandingOptions.webpack.html,
         }),
         new HtmlWebpackPlugin({
-            filename: `pdfviewer.html`,
-            chunks: [ `pdfviewer` ],
-            template: `src/pdfviewer.html`,
-        }),
-        new HtmlWebpackPlugin({
             filename: `player.html`,
             chunks: [ `player` ],
             template: `src/player.html`,
