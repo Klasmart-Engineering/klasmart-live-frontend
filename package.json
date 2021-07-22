@@ -1,6 +1,6 @@
 {
   "name": "client",
-  "version": "2.0.11",
+  "version": "2.0.12",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -24,6 +24,7 @@
     "@types/chai-as-promised": "^7.1.2",
     "@types/jwt-decode": "^2.2.1",
     "@types/mocha": "^7.0.2",
+    "@types/pdfjs-dist": "bitbucket:calmisland/pdfjs-dist",
     "@types/react-color": "^3.0.4",
     "@types/react-dom": "^16.9.8",
     "@types/react-router-dom": "^5.1.5",
@@ -67,6 +68,7 @@
     "@types/react-redux": "^7.1.11",
     "callstats-js": "^3.68.1",
     "clsx": "^1.1.1",
+    "copy-webpack-plugin": "^6.4.1",
     "graphql": "^15.5.0",
     "graphql-request": "^2.0.0",
     "iframe-resizer-react": "^1.1.0",
@@ -79,6 +81,7 @@
     "mediasoup-client": "^3.6.12",
     "node-source-han-sans-sc": "^1.1.0-2.001R",
     "query-string": "^6.13.0",
+    "pdfjs-dist": "git+git@bitbucket.org:calmisland/pdfjs-dist",
     "react": "^16.13.1",
     "react-color": "^2.18.1",
     "react-confetti": "^6.0.0",
