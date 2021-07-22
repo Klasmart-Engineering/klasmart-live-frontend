@@ -16,8 +16,8 @@ interface Props {
     open: boolean,
     onClose: () => void,
     onConfirm: () => void,
-    title: string,
-    description: string[],
+    title: string | Element,
+    description: (string | Element)[],
     closeLabel: string,
     confirmLabel: string
 }
