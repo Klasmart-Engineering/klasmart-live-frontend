@@ -333,6 +333,7 @@ function HomeFunStudyAssignment({
 
 function HomeFunStudyComment({studyId, defaultComment}: { studyId?: string, defaultComment: string}) {
     const classes = useStyles();
+
     const dispatch = useDispatch();
     const [openEditComment, setOpenEditComment] = useState(false);
     const [comment, setComment] = useState(defaultComment);
