@@ -15,6 +15,8 @@ module.exports = {
         "record-1db5341": `./src/entry-record.ts`,
         player: `./src/entry-player.ts`,
         pdfviewer: `./src/entry-pdfviewer.js`,
+        ENDPOINT_PDF: `https://live.alpha.kidsloop.net`,
+        PDF_VERSION: `JPEG`, // SVG or JPEG - Defaults to SVG
     },
     module: {
         rules: [
