@@ -215,6 +215,13 @@ export function RecordedIframe (props: Props): JSX.Element {
                     setContentWidth(imageWidth);
                     setContentHeight(imageHeight);
                 }
+
+                if (contentId.endsWith(`.pdf`)) {
+                    // Override automatic resizing of PDF documents
+                    setEnableResize(false);
+                    return;
+                }
+
             }else if(contentDoc.body.getElementsByTagName(`video`).length){
                 setEnableResize(false);
             }else{
@@ -295,7 +302,7 @@ export function RecordedIframe (props: Props): JSX.Element {
                             {loadStatus === LoadStatus.Loading && <FormattedMessage id="loading_activity_lessonMaterial" />}
                             {loadStatus === LoadStatus.Error && <FormattedMessage id="loading_activity_error" />}
                         </Typography>
-                    </Grid>
+                    </Grid>length
                     <Grid item>
                         <Typography
                             gutterBottom
