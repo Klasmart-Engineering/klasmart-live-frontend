@@ -333,6 +333,7 @@ function HomeFunStudyAssignment({
 
 function HomeFunStudyComment({studyId, defaultComment}: { studyId?: string, defaultComment: string}) {
     const classes = useStyles();
+
     const dispatch = useDispatch();
     const [openEditComment, setOpenEditComment] = useState(false);
     const [comment, setComment] = useState(defaultComment);
@@ -371,6 +372,20 @@ function HomeFunStudyComment({studyId, defaultComment}: { studyId?: string, defa
         }
         setOpenEditComment(false);
     }
+    function handleCloseComment(){
+        if(studyId){
+            let newHFSComments = homeFunStudyComments ? homeFunStudyComments.slice() : [];
+            for(let i = 0 ; i < newHFSComments.length ; i++) {
+                if (newHFSComments[i].studyId == studyId) {
+                    newHFSComments.splice(i,1);
+                    break;
+                }
+            }
+            dispatch(setHomeFunStudies(newHFSComments));
+        }
+        setOpenEditComment(false);
+    }
+
     return (
         <Grid item xs>
             <Box mb={1}>
@@ -395,7 +410,7 @@ function HomeFunStudyComment({studyId, defaultComment}: { studyId?: string, defa
             </Typography>
             <CommentDialog
                 open={openEditComment}
-                onClose={() => {setOpenEditComment(false)}}
+                onClose={handleCloseComment}
                 onSave={handleSaveComment}
                 defaultComment={comment}
             />
