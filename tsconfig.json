@@ -26,7 +26,8 @@
         "target": "ES6",
         "types": [
             "react",
-            "node"
+            "node",
+            "cordova-plugin-file"
         ],
         "sourceRoot": "/",
         "inlineSources": true,

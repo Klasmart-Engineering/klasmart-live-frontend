@@ -1,4 +1,5 @@
 import { IFileSelectService } from "./IFileSelectService";
+/// <reference types="cordova-plugin-file" />
 
 const DESTINATION_FILE_URI = 1;
 const SOURCE_PHOTOLIBRARY = 0;
@@ -31,7 +32,7 @@ export class FileSelectService implements IFileSelectService {
         }
     }
 
-    selectFromGallery(): Promise<string> {
+    selectFromGallery(): Promise<File> {
         const camera = (navigator as any).camera;
         if (!camera) return Promise.reject(`No camera available.`);
 
@@ -40,9 +41,19 @@ export class FileSelectService implements IFileSelectService {
             destinationType: DESTINATION_FILE_URI
         };
 
-        var selectGalleryProcedure = new Promise<string>((resolve, reject) => {
+        var selectGalleryProcedure = new Promise<File>((resolve, reject) => {
             camera.getPicture((uri: string) => {
-                resolve(uri);
+                console.log(uri);
+                if(!uri.startsWith("file://") && !uri.startsWith("content://")){
+                    uri = "file://"+uri;
+                }
+                window.resolveLocalFileSystemURL(uri, (entry) => {
+                    (entry as FileEntry).file((file)=>{
+                        resolve(file);
+                    })
+                }, (error) => {
+                    reject(error);
+                });
             }, (message: string) => {
                 reject(message);
             }, options)
@@ -51,7 +62,7 @@ export class FileSelectService implements IFileSelectService {
         return selectGalleryProcedure;
     }
 
-    async selectFromCamera(): Promise<string> {
+    async selectFromCamera(): Promise<File> {
         const camera = (navigator as any).camera;
         if (!camera) return Promise.reject(`No camera available.`);
 
@@ -60,9 +71,16 @@ export class FileSelectService implements IFileSelectService {
             destinationType: DESTINATION_FILE_URI
         };
 
-        var selectGalleryProcedure = new Promise<string>((resolve, reject) => {
+        var selectGalleryProcedure = new Promise<File>((resolve, reject) => {
             camera.getPicture((uri: string) => {
-                resolve(uri);
+                console.log(uri);
+                window.resolveLocalFileSystemURL(uri, (entry) => {
+                    (entry as FileEntry).file((file)=>{
+                        resolve(file);
+                    })
+                }, (error) => {
+                    reject(error);
+                });
             }, (message: string) => {
                 reject(message);
             }, options)
