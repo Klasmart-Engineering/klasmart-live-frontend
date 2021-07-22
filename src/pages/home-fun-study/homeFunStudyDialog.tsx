@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import {Header} from "../../components/header";
 import {
     Box,
-    Button,
+    Button, CircularProgress,
     Dialog, DialogActions, DialogContent, DialogTitle,
     Grid, IconButton,
     List,
@@ -21,16 +21,17 @@ import {State} from "../../store/store";
 import {Assignment, ScheduleFeedbackResponse, ScheduleResponse} from "../../services/cms/ISchedulerService";
 import {formatDueDate} from "../../utils/timeUtils";
 import {SupportFileInfo} from "../../components/supportFileInfo";
-import {FormattedMessage} from "react-intl";
+import {FormattedMessage, useIntl} from "react-intl";
 import {Upload as UploadIcon} from "@styled-icons/bootstrap/Upload"
 import Loading from "../../components/loading";
 import StyledIcon from "../../components/styled/icon";
-import {getFileExtensionFromName} from "../../utils/fileUtils";
+import {getFileExtensionFromName, validateFileSize, validateFileType} from "../../utils/fileUtils";
 import {FileIcon} from "../../components/fileIcon";
 import {setSelectHomeFunStudyDialogOpen} from "../../store/reducers/control";
 import {CommentDialog} from "./commentDialog";
 import {setHomeFunStudies} from "../../store/reducers/data";
 import {BottomSelector} from "../../components/bottomSelector";
+import {DetailErrorDialog} from "../../components/dialogs/detailErrorDialog";
 
 export type StudyComment = {
     studyId: string,
@@ -164,10 +165,29 @@ function HomeFunStudyContainer({
                                    studyInfo,
                                    feedbacks
                                }: { studyInfo?: ScheduleResponse, feedbacks?: ScheduleFeedbackResponse[] }) {
+    const intl = useIntl();
     const [openSupportFileInfo, setOpenSupportFileInfo] = useState(false);
     const [openButtonSelector, setOpenButtonSelector] = useState(false);
+    const [openErrorDialog, setOpenErrorDialog] = useState<{ open: boolean, title: string, description: string[] }>({
+        open: false,
+        title: "",
+        description: []
+    });
+    const [assignments, setAssignments] = useState<{ assignment: Assignment, loading: boolean }[]>([]);
+    const {fileSelectService} = useServices();
 
-    const { fileSelectService } = useServices();
+    useEffect(() => {
+        let formattedAssignments: { assignment: Assignment, loading: boolean }[] = [];
+        if (feedbacks && feedbacks.length > 0) {
+            const feedBackAssignments = feedbacks[0].assignments;
+            formattedAssignments = feedBackAssignments.slice().map((item) => ({assignment: item, loading: false}));
+        }
+        for (let i = 0; i < assignments.length; i++) {
+            if (!assignments[i].loading)
+                formattedAssignments.push(assignments[i]);
+        }
+        setAssignments(formattedAssignments);
+    }, [feedbacks])
 
     function handleClickUploadInfo() {
         setOpenSupportFileInfo(true);
@@ -177,34 +197,69 @@ function HomeFunStudyContainer({
         setOpenButtonSelector(true);
     }
 
-    function onSelectFile(){
+    function onSelectFile() {
         fileSelectService?.selectFile().then(file => {
             console.log(`selected file: ${file.name}`);
-            // TODO: Add the selected file to upload list.
             setOpenButtonSelector(false);
+            handleSelectedFile(file);
         }).catch(error => {
             console.error(error);
         });
     }
 
-    function onSelectCamera(){
-        fileSelectService?.selectFromCamera().then(path => {
-            console.log(`selected from camera: ${path}`);
-            // TODO: Add the selected file to upload list.
+    function onSelectCamera() {
+        fileSelectService?.selectFromCamera().then(file => {
+            console.log(`selected from camera: ${file.name}`);
             setOpenButtonSelector(false);
+            handleSelectedFile(file)
         }).catch(error => {
             console.error(error);
         });
     }
 
-    function onSelectGallery(){
-        fileSelectService?.selectFromGallery().then(path => {
-            console.log(`selected from gallery: ${path}`);
-            // TODO: Add the selected file to upload list.
+    function onSelectGallery() {
+        fileSelectService?.selectFromGallery().then(file => {
+            console.log(`selected from gallery: ${file.name}`);
             setOpenButtonSelector(false);
+            handleSelectedFile(file)
         }).catch(error => {
             console.error(error);
         });
+    }
+
+    function addAnUploadingAssignment(uploadingAssignment: Assignment) {
+        const newAssignments = assignments.slice();
+        newAssignments.push({assignment: uploadingAssignment, loading: true});
+        setAssignments(newAssignments);
+    }
+
+    function handleSelectedFile(file: File) {
+        if (validateFileType(file)) {
+            if (validateFileSize(file)) {
+                console.log(`validated file: ${file.name}`);
+                //TODO: upload the file here
+                const id = Math.random().toString(36).substring(7);
+                addAnUploadingAssignment({attachment_id: id, attachment_name: file.name, number: assignments.length});
+            } else {
+                setOpenErrorDialog({
+                    open: true,
+                    title: intl.formatMessage({id: "submission_failed"}),
+                    description: [
+                        intl.formatMessage({id: "upload_please_check_your_file"}),
+                        intl.formatMessage({id: "upload_file_too_big"})
+                    ]
+                })
+            }
+        } else {
+            setOpenErrorDialog({
+                open: true,
+                title: intl.formatMessage({id: "submission_failed"}),
+                description: [
+                    intl.formatMessage({id: "upload_please_check_your_file"}),
+                    intl.formatMessage({id: "upload_file_not_supported"})
+                ]
+            })
+        }
     }
 
     return (
@@ -241,7 +296,7 @@ function HomeFunStudyContainer({
                     </Box>
                 </Grid>
                 <HomeFunStudyAssignment
-                    assignments={feedbacks && feedbacks.length > 0 ? feedbacks[0].assignments : []}
+                    assignments={assignments}
                     onClickUploadInfo={handleClickUploadInfo} onClickUpload={handleClickUpload} />
                 <HomeFunStudyComment
                     studyId={studyInfo?.id}
@@ -264,6 +319,12 @@ function HomeFunStudyContainer({
                 onSelectCamera={onSelectCamera}
                 onSelectGallery={onSelectGallery}
                 open={openButtonSelector}/>
+            <DetailErrorDialog open={openErrorDialog.open}
+                               onClose={() => {
+                                   setOpenErrorDialog({open: false, title: "", description: []})
+                               }}
+                               title={openErrorDialog.title} description={openErrorDialog.description}
+                               closeLabel={intl.formatMessage({id: "button_ok"})}/>
         </>
     )
 }
@@ -272,7 +333,7 @@ function HomeFunStudyAssignment({
                                     assignments,
                                     onClickUploadInfo,
                                     onClickUpload
-                                }: { assignments: Assignment[], onClickUploadInfo: () => void, onClickUpload: () => void }) {
+                                }: { assignments: { assignment: Assignment, loading: boolean }[], onClickUploadInfo: () => void, onClickUpload: () => void }) {
     const classes = useStyles();
 
     return (
@@ -308,19 +369,24 @@ function HomeFunStudyAssignment({
                 </Box>
                 <Box>
                     <List>
-                        {assignments.map((assignment) => (
-                            <ListItem key={assignment.attachment_id}>
+                        {assignments.map((item) => (
+                            <ListItem key={item.assignment.attachment_id}>
                                 <ListItemIcon>
-                                    <FileIcon fileType={getFileExtensionFromName(assignment.attachment_name)}/>
+                                    <FileIcon fileType={getFileExtensionFromName(item.assignment.attachment_name)}/>
                                 </ListItemIcon>
                                 <ListItemText
                                     primary={<Typography variant="body2"
-                                                         color="textSecondary">{assignment.attachment_name}</Typography>}
+                                                         color="textSecondary">{item.assignment.attachment_name}</Typography>}
                                 />
                                 <ListItemSecondaryAction>
-                                    <IconButton edge="end" aria-label="delete">
-                                        <HighlightOffOutlined color="primary"/>
-                                    </IconButton>
+                                    {
+                                        item.loading
+                                            ? <CircularProgress size={20} thickness={4}/>
+                                            : <IconButton edge="end" aria-label="delete">
+                                                <HighlightOffOutlined color="primary"/>
+                                            </IconButton>
+                                    }
+
                                 </ListItemSecondaryAction>
                             </ListItem>
                         ))}
@@ -331,17 +397,17 @@ function HomeFunStudyAssignment({
     );
 }
 
-function HomeFunStudyComment({studyId, defaultComment}: { studyId?: string, defaultComment: string}) {
+function HomeFunStudyComment({studyId, defaultComment}: { studyId?: string, defaultComment: string }) {
     const classes = useStyles();
 
     const dispatch = useDispatch();
     const [openEditComment, setOpenEditComment] = useState(false);
     const [comment, setComment] = useState(defaultComment);
-    const homeFunStudyComments = useSelector((state: State )=> state.data.homeFunStudyComments);
+    const homeFunStudyComments = useSelector((state: State) => state.data.homeFunStudyComments);
 
     useEffect(() => {
-        if(studyId){
-            for(let i = 0 ; homeFunStudyComments && i < homeFunStudyComments.length ; i++) {
+        if (studyId) {
+            for (let i = 0; homeFunStudyComments && i < homeFunStudyComments.length; i++) {
                 if (homeFunStudyComments[i].studyId == studyId) {
                     setComment(homeFunStudyComments[i].comment)
                     break;
@@ -353,32 +419,33 @@ function HomeFunStudyComment({studyId, defaultComment}: { studyId?: string, defa
     function handleOnClickEditComment() {
         setOpenEditComment(true);
     }
+
     function handleSaveComment(newComment: string) {
         setComment(newComment);
-        if(studyId){
+        if (studyId) {
             let newHFSComments = homeFunStudyComments ? homeFunStudyComments.slice() : [];
             let hasDetail = false;
-            for(let i = 0 ; i < newHFSComments.length ; i++) {
+            for (let i = 0; i < newHFSComments.length; i++) {
                 if (newHFSComments[i].studyId == studyId) {
                     newHFSComments[i] = {studyId: studyId, comment: newComment};
                     hasDetail = true;
                     break;
                 }
             }
-            if(!hasDetail){
+            if (!hasDetail) {
                 newHFSComments.push({studyId: studyId, comment: newComment});
             }
             dispatch(setHomeFunStudies(newHFSComments));
         }
         setOpenEditComment(false);
     }
-    
-    function handleCloseComment(){
-        if(studyId){
+
+    function handleCloseComment() {
+        if (studyId) {
             let newHFSComments = homeFunStudyComments ? homeFunStudyComments.slice() : [];
-            for(let i = 0 ; i < newHFSComments.length ; i++) {
+            for (let i = 0; i < newHFSComments.length; i++) {
                 if (newHFSComments[i].studyId == studyId) {
-                    newHFSComments.splice(i,1);
+                    newHFSComments.splice(i, 1);
                     break;
                 }
             }
