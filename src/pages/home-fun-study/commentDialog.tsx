@@ -2,7 +2,6 @@ import {
     Box,
     Button,
     Dialog,
-    DialogActions,
     DialogContent,
     DialogTitle,
     Slide,
@@ -18,6 +17,7 @@ import {CloseIconButton} from "../../components/closeIconButton";
 import {FormattedMessage, useIntl} from "react-intl";
 import {isBlank} from "../../utils/StringUtils";
 import {TransitionProps} from "@material-ui/core/transitions";
+import {ConfirmDialog} from "../../components/dialogs/confirmDialog";
 
 const useStyles = makeStyles((theme) =>
     createStyles({
@@ -72,6 +72,7 @@ export function CommentDialog({open, onClose, defaultComment, onSave}: Props): J
     const [isEdit, setIsEdit] = useState(false);
     const [canSave, setCanSave] = useState(false);
     const [currentComment, setCurrentComment] = useState(defaultComment);
+    const [openConfirmCloseDialog, setOpenConfirmCloseDialog] = useState(false);
 
     useEffect(() => {
         if (defaultComment && !isBlank(defaultComment)) {
@@ -103,33 +104,54 @@ export function CommentDialog({open, onClose, defaultComment, onSave}: Props): J
         setCurrentComment(event.target.value);
     }
 
+    function handleConfirmClose(){
+        setCurrentComment("");
+        setOpenConfirmCloseDialog(false);
+        onClose();
+    }
+    function handleCloseDialog(){
+        if(currentComment && !isBlank(currentComment)){
+            setOpenConfirmCloseDialog(true);
+        }else{
+            onClose();
+        }
+    }
     return (
-        <Dialog fullScreen open={open} onClose={onClose}
-                TransitionComponent={Transition}
-        >
-            <DialogTitle className={classes.noPadding}>
-                <CommentHeader onClickClose={onClose} onClickSave={handleOnSave} isEdit={isEdit} canSave={canSave}/>
-            </DialogTitle>
-            <DialogContent>
-                <TextField
-                    id={"textField-comment"}
-                    multiline
-                    fullWidth
-                    autoFocus
-                    onChange={handleOnCommentChange}
-                    placeholder={intl.formatMessage({id: "home_fun_study_your_comment"})}
-                    InputProps={{classes: {underline: classes.underline}}}
-                    value={currentComment}
-                />
-                <Box display="flex" justifyContent="flex-end">
-                    <Typography variant={"caption"}
-                                color={"textSecondary"}>{`${currentComment ? currentComment.length : 0}/${MAXIMUM_CHARACTER}`}</Typography>
-                </Box>
-            </DialogContent>
-            <DialogActions>
-
-            </DialogActions>
-        </Dialog>
+        <React.Fragment>
+            <Dialog fullScreen open={open} onClose={onClose}
+                    TransitionComponent={Transition}
+            >
+                <DialogTitle className={classes.noPadding}>
+                    <CommentHeader onClickClose={handleCloseDialog} onClickSave={handleOnSave} isEdit={isEdit} canSave={canSave}/>
+                </DialogTitle>
+                <DialogContent>
+                    <TextField
+                        id={"textField-comment"}
+                        multiline
+                        fullWidth
+                        autoFocus
+                        onChange={handleOnCommentChange}
+                        placeholder={intl.formatMessage({id: "home_fun_study_your_comment"})}
+                        InputProps={{classes: {underline: classes.underline}}}
+                        value={currentComment}
+                    />
+                    <Box display="flex" justifyContent="flex-end">
+                        <Typography variant={"caption"}
+                                    color={"textSecondary"}>{`${currentComment ? currentComment.length : 0}/${MAXIMUM_CHARACTER}`}</Typography>
+                    </Box>
+                </DialogContent>
+            </Dialog>
+            <ConfirmDialog open={openConfirmCloseDialog}
+                           onClose={() => {setOpenConfirmCloseDialog(false)}}
+                           onConfirm={handleConfirmClose}
+                           title={intl.formatMessage({id: "button_close"})}
+                           description={[
+                               intl.formatMessage({id: "close_confirm_description_1"}),
+                               intl.formatMessage({id: "close_confirm_description_2"})
+                           ]}
+                           closeLabel={intl.formatMessage({id: "button_cancel"})}
+                           confirmLabel={intl.formatMessage({id: "button_continue"})} />
+        </React.Fragment>
     )
 }
 
