@@ -119,15 +119,14 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
         },
     });
 
-    useEffect(() => {
-        setIsShowContentLoading(loadingShowContent);
-    }, [ loadingShowContent ]);
+    if(loadingShowContent){
+        setIsShowContentLoading(true);
+    }else{
+        setIsShowContentLoading(false);
+    }
 
     useEffect(() => {
         if (!hasControls) return;
-
-        // TODO :
-        // 1 : When teacher leaves the room -> switch content to onstage
 
         const material = interactiveMode !== InteractiveMode.OnStage && materialActiveIndex >= 0 && materialActiveIndex < materials.length ? materials[materialActiveIndex] : undefined;
         const type = defineContentType(material, interactiveMode);
@@ -141,6 +140,7 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
             },
         });
     }, [
+        hasControls,
         streamId,
         materialActiveIndex,
         interactiveMode,
