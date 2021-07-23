@@ -31,7 +31,7 @@ interface Props {
     open: boolean,
     onClose: () => void,
     onConfirm: () => void,
-    title: string,
+    title: string | Element,
     closeLabel: string,
     confirmLabel: string,
     children: React.ReactNode
