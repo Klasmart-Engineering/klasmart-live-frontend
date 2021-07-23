@@ -383,6 +383,7 @@ function HomeFunStudyComment({studyId, defaultComment}: { studyId?: string, defa
             }
             dispatch(setHomeFunStudies(newHFSComments));
         }
+        setComment(defaultComment);
         setOpenEditComment(false);
     }
 
