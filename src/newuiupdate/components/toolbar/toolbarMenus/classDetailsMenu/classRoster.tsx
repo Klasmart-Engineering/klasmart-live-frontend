@@ -18,7 +18,7 @@ import { LocalSessionContext } from "../../../../providers/providers";
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
         margin: `-8px 0`,
-        minHeight: `466px`,
+        minHeight: `447px`,
 
         [theme.breakpoints.down(`sm`)]: {
             minHeight: `347px`,
