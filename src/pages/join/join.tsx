@@ -99,7 +99,6 @@ export default function Join(): JSX.Element {
             } else if(isIOS) {
                 requestIosCameraPermission(getCameraDevice, true);
             }
-            
         } else if(getCameraDevice) {
             refreshCameras();
         }
@@ -282,7 +281,7 @@ function JoinRoomForm({
 
     const history = useHistory();
 
-    // NOTE: Set the user customizable name based on the information from /me query. This 
+    // NOTE: Set the user customizable name based on the information from /me query. This
     // will populate the input field for the user name but still allow it to be customized
     // before joining room.
     useEffect(() => {
