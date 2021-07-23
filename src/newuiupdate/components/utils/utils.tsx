@@ -1,7 +1,9 @@
 import { MaterialTypename } from "../../../lessonMaterialContext";
 import { ContentType } from "../../../pages/room/room";
+import { LocalSessionContext } from "../../providers/providers";
 import {
     activeTabState,
+    classInfoState,
     InteractiveMode,
 } from "../../states/layoutAtoms";
 import {
@@ -14,7 +16,10 @@ import {
     Typography,
 } from "@material-ui/core";
 import React,
-{ useState } from "react";
+{
+    useContext,
+    useState,
+} from "react";
 import { useRecoilState } from "recoil";
 
 interface StyledDrawerProps {
@@ -301,4 +306,26 @@ export async function getOrganizationBranding (organization_id:any) {
     });
     const { data } = await response.json();
     return data.organization.branding;
+}
+
+export async function classGetInformation (schedule_id: any, org_id: any) {
+    let data:any = {};
+
+    async function classAPI () {
+        const headers = new Headers();
+        headers.append(`Accept`, `application/json`);
+        headers.append(`Content-Type`, `application/json`);
+        const ENDPOINT_CMS_URL = window.location.href.indexOf(`localhost`) > 0 ? `https://run.mocky.io/v3/a6b4aed5-a341-4d45-9a63-842d6ff1d53e` : `${process.env.ENDPOINT_CMS}/v1/schedules/${schedule_id}?${org_id}`;
+
+        const response = await fetch(`${ENDPOINT_CMS_URL}`, {
+            headers,
+            method: `GET`,
+        });
+
+        if (response.status === 200) return response.clone().json();
+    }
+
+    try { data = await Promise.all([ classAPI() ]); }
+    catch (err) { console.error(`Fail to classGetInformation in Live: ${err}`); }
+    finally { return data[0]; }
 }
