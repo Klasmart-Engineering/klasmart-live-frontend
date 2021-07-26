@@ -98,6 +98,11 @@ export type ContentListResponse = {
     list: ContentResponse[]
 }
 
+export type ContentResourceUploadResponse = {
+    path: string,
+    resource_id: string
+}
+
 export enum ContentType {
     MATERIAL = 1,
     PLAN = 2
@@ -122,6 +127,9 @@ export enum ContentOrder {
     BY_DESC_UPDATE_AT = "-update_at"
 }
 
+export enum ContentResourcePartition {
+    SCHEDULE_ATTACHMENT= "schedule_attachment"
+}
 /**
  * Client side API interface for: https://swagger-ui.kidsloop.net/#/content
  */
@@ -132,4 +140,5 @@ export interface IContentService {
     searchContents(organizationId: string, publishStatus: PublishStatus, orderBy: ContentOrder, contentType: number): Promise<ContentListResponse>
     getFeaturedContents(organizationId: string): Promise<ContentListResponse>
     getAllLessonMaterials(organizationId: string): Promise<ContentListResponse>
+    getContentResourceUploadPath(organizationId: string, extension: string): Promise<ContentResourceUploadResponse>
 }
