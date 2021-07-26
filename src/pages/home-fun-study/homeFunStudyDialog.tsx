@@ -25,7 +25,12 @@ import {FormattedMessage, useIntl} from "react-intl";
 import {Upload as UploadIcon} from "@styled-icons/bootstrap/Upload"
 import Loading from "../../components/loading";
 import StyledIcon from "../../components/styled/icon";
-import {getFileExtensionFromName, validateFileSize, validateFileType} from "../../utils/fileUtils";
+import {
+    getFileExtensionFromName,
+    validateFileExtension,
+    validateFileSize,
+    validateFileType
+} from "../../utils/fileUtils";
 import {FileIcon} from "../../components/fileIcon";
 import {setSelectHomeFunStudyDialogOpen} from "../../store/reducers/control";
 import {CommentDialog} from "./commentDialog";
@@ -33,9 +38,10 @@ import {setHomeFunStudies} from "../../store/reducers/data";
 import {BottomSelector} from "../../components/bottomSelector";
 import {DetailErrorDialog} from "../../components/dialogs/detailErrorDialog";
 
-export type StudyComment = {
+export type HomeFunStudyFeedback = {
     studyId: string,
-    comment: string
+    comment: string,
+    assignments: Assignment[]
 }
 
 const useStyles = makeStyles(() => ({
@@ -69,7 +75,7 @@ export function HomeFunStudyDialog() {
     const classes = useStyles();
     const dispatch = useDispatch();
     const selectHomeFunStudyDialog = useSelector((state: State) => state.control.selectHomeFunStudyDialogOpen);
-    const homeFunStudyComments = useSelector((state: State) => state.data.homeFunStudyComments); //TODO: Find the comment in this list to submit.
+    const hfsFeedbacks = useSelector((state: State) => state.data.hfsFeedbacks); //TODO: Find the comment in this list to submit.
     const {schedulerService} = useServices();
     const {selectedOrg, selectedUserId} = useSelector((state: State) => state.session);
     const [studyInfo, setStudyInfo] = useState<ScheduleResponse>();
@@ -175,6 +181,10 @@ function HomeFunStudyContainer({
     });
     const [assignments, setAssignments] = useState<{ assignment: Assignment, loading: boolean }[]>([]);
     const {fileSelectService} = useServices();
+    const {contentService} = useServices();
+    const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
+    const [getUploadPath, setGetUploadPath] = useState({shouldFetch: false, extension: ""});
+    const [uploadAttachment, setUploadAttachment] = useState<{uploadPath: string, resource_id: string}>();
 
     useEffect(() => {
         let formattedAssignments: { assignment: Assignment, loading: boolean }[] = [];
@@ -189,6 +199,26 @@ function HomeFunStudyContainer({
         setAssignments(formattedAssignments);
     }, [feedbacks])
 
+    useEffect(() => {
+        async function fetchContentResourceUploadPath(){
+            if(!selectedOrg){
+                throw new Error("Organization is not selected.");
+            }
+            if(getUploadPath.shouldFetch && validateFileExtension(getUploadPath.extension)){
+                const contentResourceUploadPathResponse = await contentService?.getContentResourceUploadPath(selectedOrg.organization_id, getUploadPath.extension);
+                if(contentResourceUploadPathResponse){
+                    setUploadAttachment({uploadPath: contentResourceUploadPathResponse.path, resource_id: contentResourceUploadPathResponse.resource_id});
+                }else{
+                    //TODO: alert failed message here (Hung)
+                }
+            }
+        }
+        fetchContentResourceUploadPath()
+    }, [selectedOrg, getUploadPath])
+
+    useEffect(() => {
+        //TODO: upload attachment and update the status in HomeFunStudyAssignment
+    }, [uploadAttachment])
     function handleClickUploadInfo() {
         setOpenSupportFileInfo(true);
     }
@@ -238,6 +268,7 @@ function HomeFunStudyContainer({
             if (validateFileSize(file)) {
                 console.log(`validated file: ${file.name}`);
                 //TODO: upload the file here
+                setGetUploadPath({shouldFetch: true, extension: getFileExtensionFromName(file.name)});
                 const id = Math.random().toString(36).substring(7);
                 addAnUploadingAssignment({attachment_id: id, attachment_name: file.name, number: assignments.length});
             } else {
@@ -403,18 +434,18 @@ function HomeFunStudyComment({studyId, defaultComment}: { studyId?: string, defa
     const dispatch = useDispatch();
     const [openEditComment, setOpenEditComment] = useState(false);
     const [comment, setComment] = useState(defaultComment);
-    const homeFunStudyComments = useSelector((state: State) => state.data.homeFunStudyComments);
+    const hfsFeedbacks = useSelector((state: State) => state.data.hfsFeedbacks);
 
     useEffect(() => {
         if (studyId) {
-            for (let i = 0; homeFunStudyComments && i < homeFunStudyComments.length; i++) {
-                if (homeFunStudyComments[i].studyId == studyId) {
-                    setComment(homeFunStudyComments[i].comment)
+            for (let i = 0; hfsFeedbacks && i < hfsFeedbacks.length; i++) {
+                if (hfsFeedbacks[i].studyId == studyId) {
+                    setComment(hfsFeedbacks[i].comment)
                     break;
                 }
             }
         }
-    }, [homeFunStudyComments])
+    }, [hfsFeedbacks])
 
     function handleOnClickEditComment() {
         setOpenEditComment(true);
@@ -423,19 +454,19 @@ function HomeFunStudyComment({studyId, defaultComment}: { studyId?: string, defa
     function handleSaveComment(newComment: string) {
         setComment(newComment);
         if (studyId) {
-            let newHFSComments = homeFunStudyComments ? homeFunStudyComments.slice() : [];
+            let newHFSFeedbacks = hfsFeedbacks ? hfsFeedbacks.slice() : [];
             let hasDetail = false;
-            for (let i = 0; i < newHFSComments.length; i++) {
-                if (newHFSComments[i].studyId == studyId) {
-                    newHFSComments[i] = {studyId: studyId, comment: newComment};
+            for (let i = 0; i < newHFSFeedbacks.length; i++) {
+                if (newHFSFeedbacks[i].studyId == studyId) {
+                    newHFSFeedbacks[i] = {studyId: studyId, comment: newComment, assignments: newHFSFeedbacks[i].assignments};
                     hasDetail = true;
                     break;
                 }
             }
             if (!hasDetail) {
-                newHFSComments.push({studyId: studyId, comment: newComment});
+                newHFSFeedbacks.push({studyId: studyId, comment: newComment, assignments: []});
             }
-            dispatch(setHomeFunStudies(newHFSComments));
+            dispatch(setHomeFunStudies(newHFSFeedbacks));
         }
         setOpenEditComment(false);
     }
