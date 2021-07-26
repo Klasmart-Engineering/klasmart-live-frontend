@@ -189,7 +189,7 @@ export function RecordedIframe (props: Props): JSX.Element {
                 width: 100% !important
             }
             `;
-                contentDoc.head.appendChild(style);
+            contentDoc.head.appendChild(style);
             // setStylesLoaded(true);
         }
 
@@ -246,6 +246,7 @@ export function RecordedIframe (props: Props): JSX.Element {
         function onMessage ({ data }: MessageEvent) {
             if (data && data.streamId) {
                 if (setStreamId) { setStreamId(data.streamId); }
+                console.log(`flag4 student streamId: `, streamId);
                 sendStreamId({
                     variables: {
                         roomId,
@@ -256,12 +257,13 @@ export function RecordedIframe (props: Props): JSX.Element {
         }
         window.addEventListener(`message`, onMessage);
         return () => {
-            window.removeEventListener(`message`, onMessage); 
-            setStreamId('')
+            window.removeEventListener(`message`, onMessage);
+            setStreamId(``);
         };
     }, [ iframeRef.current ]);
 
     function startRecording () {
+        console.log(`flag5 recording: `, props.contentId);
         try{
             const iRef = window.document.getElementById(`recordediframe`) as HTMLIFrameElement;
             if (!iRef ||
