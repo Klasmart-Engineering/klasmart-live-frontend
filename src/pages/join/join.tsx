@@ -84,8 +84,8 @@ export default function Join(): JSX.Element {
         const getCameraDevice = classtype == ClassType.LIVE;
 
         if (!permissions) {
-            requestPermissions(getCameraDevice, true);
-            // requestIosCameraPermission(getCameraDevice, true);
+            // requestPermissions(getCameraDevice, true);
+            requestIosCameraPermission(getCameraDevice, true);
         } else if(getCameraDevice) {
             refreshCameras();
         }
