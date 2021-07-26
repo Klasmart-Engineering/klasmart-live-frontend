@@ -1,16 +1,16 @@
-import { fetchJsonData } from "../../utils/requestUtils";
-import { instanceOfCMSErrorResponse } from "../../utils/typeUtils";
-import { IAuthenticationService } from "../auth/IAuthenticationService";
+import {fetchJsonData} from "../../utils/requestUtils";
+import {instanceOfCMSErrorResponse} from "../../utils/typeUtils";
+import {IAuthenticationService} from "../auth/IAuthenticationService";
 import {
     CMSErrorResponse,
     ContentListResponse,
-    ContentOrder,
+    ContentOrder, ContentResourcePartition, ContentResourceUploadResponse,
     ContentResponse,
     ContentType,
     IContentService,
     PublishStatus
 } from "./IContentService";
-import { shuffle } from "../../utils/arrayUtils";
+import {shuffle} from "../../utils/arrayUtils";
 
 /**
  * Client side API implementation for: https://swagger-ui.kidsloop.net/#/content
@@ -65,7 +65,9 @@ export class ContentService implements IContentService {
             };
         }
 
-        if (result.total === 0) { return result; }
+        if (result.total === 0) {
+            return result;
+        }
 
         const n = 10;
         const allContents = result.list;
@@ -80,10 +82,10 @@ export class ContentService implements IContentService {
         // Shuffle
         const shuffled = shuffle(H5PContents);
 
-        // Put all self_study items to the front of array 
+        // Put all self_study items to the front of array
         shuffled.sort((a, b) => (a.self_study === b.self_study) ? 0 : (a ? -1 : 1))
 
-        // Random pick 10 contents: Get sub-array of first n elements after shuffled 
+        // Random pick 10 contents: Get sub-array of first n elements after shuffled
         const picked = shuffled.slice(0, n);
 
         return {
@@ -99,6 +101,17 @@ export class ContentService implements IContentService {
             publish_status: PublishStatus.PUBLISHED,
             order_by: ContentOrder.BY_UPDATE_AT,
             content_type: ContentType.MATERIAL,
+            org_id: organizationId
+        }, this.auth);
+
+        return result;
+    }
+
+    async getContentResourceUploadPath(organizationId: string, extension: string): Promise<ContentResourceUploadResponse> {
+        const url = `${this.endpoint}/v1/contents_resources`;
+        const result = await fetchJsonData<ContentResourceUploadResponse>(url, "GET", {
+            partition: ContentResourcePartition.SCHEDULE_ATTACHMENT,
+            extension: extension,
             org_id: organizationId
         }, this.auth);
 
