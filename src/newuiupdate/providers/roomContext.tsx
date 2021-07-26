@@ -239,11 +239,11 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
             setClassEnded(true);
         }
 
-        if(isTeacher){
+        if(isTeacher && user){
             enqueueSnackbar(intl.formatMessage({
                 id: `notification_user_left`,
             }, {
-                user: user?.name,
+                user: user.name,
             }));
         }
     };
