@@ -49,6 +49,7 @@ export interface Props {
 export function PreviewPlayer ({
     streamId, frameProps, width, height, container,
 }: Props): JSX.Element {
+    console.log(`flag3 PreviewPlayer steramId: `, streamId);
     const ref = useRef<HTMLIFrameElement>(null);
     // const [ scale, setScale ] = useState(1);
     const [ { frameWidth, frameHeight }, setWidthHeight ] = useState({
@@ -69,7 +70,7 @@ export function PreviewPlayer ({
     const size = useWindowSize();
 
     useEffect(() => {
-
+        console.log(`flag3 loading true, contentId: `, content?.contentId);
         setLoadingPreviewPlayer(true);
         setLoadingParentEvents(true);
     }, [ content?.contentId ]);
