@@ -1,17 +1,33 @@
 import { useWindowSize } from "../../../../utils/viewport";
-import { LIVE_LINK, LocalSessionContext } from "../../../providers/providers";
+import {
+    LIVE_LINK,
+    LocalSessionContext,
+} from "../../../providers/providers";
 import { RoomContext } from "../../../providers/roomContext";
-import { isLessonPlanOpenState, isShowContentLoadingState } from "../../../states/layoutAtoms";
+import {
+    isLessonPlanOpenState,
+    isShowContentLoadingState,
+} from "../../../states/layoutAtoms";
+import { sleep } from "../utils";
 import Loading from "./loading";
-import { gql, useSubscription } from "@apollo/client";
-import {Typography, Grid, CircularProgress} from "@material-ui/core";
-import React, {
+import {
+    gql,
+    useSubscription,
+} from "@apollo/client";
+import {
+    CircularProgress,
+    Grid,
+    Typography,
+} from "@material-ui/core";
+import React,
+{
     useContext,
-    useEffect, useRef, useState,
+    useEffect,
+    useRef,
+    useState,
 } from "react";
 import { FormattedMessage } from "react-intl";
 import { useRecoilState } from "recoil";
-import { sleep } from "../utils";
 
 const SUB_EVENTS = gql`
   subscription stream($streamId: ID!) {
@@ -51,11 +67,12 @@ export function PreviewPlayer ({
 
     const containerHtml = window.document.getElementById(container) as HTMLIFrameElement;
     const size = useWindowSize();
-    
+
     useEffect(() => {
+
         setLoadingPreviewPlayer(true);
         setLoadingParentEvents(true);
-    }, [content?.contentId]);
+    }, [ content?.contentId ]);
 
     useEffect(() => {
         scale(frameWidth, frameHeight);
@@ -149,14 +166,14 @@ export function PreviewPlayer ({
                 const h5pYoutube = recordedIframeItem?.contentWindow?.document.getElementsByClassName(`h5p-youtube`);
                 const youtubeVideoList = Array.prototype.slice.call(h5pYoutube);
                 youtubeVideoList.forEach(video => {
-                    const iframeYoutube = video.getElementsByTagName('iframe')[0];
-                    iframeYoutube.src += '&mute=1';
+                    const iframeYoutube = video.getElementsByTagName(`iframe`)[0];
+                    iframeYoutube.src += `&mute=1`;
                 });
             }
             await sleep(800); // Await to make sure we resize correctly
         }
 
-        setLoadingPreviewPlayer(false)
+        setLoadingPreviewPlayer(false);
     };
 
     useEffect(() => {
