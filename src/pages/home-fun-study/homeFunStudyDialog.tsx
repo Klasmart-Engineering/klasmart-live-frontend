@@ -441,17 +441,6 @@ function HomeFunStudyComment({studyId, defaultComment}: { studyId?: string, defa
     }
 
     function handleCloseComment() {
-        if (studyId) {
-            let newHFSComments = homeFunStudyComments ? homeFunStudyComments.slice() : [];
-            for (let i = 0; i < newHFSComments.length; i++) {
-                if (newHFSComments[i].studyId == studyId) {
-                    newHFSComments.splice(i, 1);
-                    break;
-                }
-            }
-            dispatch(setHomeFunStudies(newHFSComments));
-        }
-        setComment(defaultComment);
         setOpenEditComment(false);
     }
 

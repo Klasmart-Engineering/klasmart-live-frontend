@@ -63,7 +63,7 @@ interface Props {
     defaultComment?: string
 }
 
-const MINIMUM_CHARACTER = 10;
+const MINIMUM_CHARACTER = 1;
 const MAXIMUM_CHARACTER = 100;
 
 export function CommentDialog({open, onClose, defaultComment, onSave}: Props): JSX.Element {
@@ -82,7 +82,7 @@ export function CommentDialog({open, onClose, defaultComment, onSave}: Props): J
         }
 
         setCurrentComment(defaultComment);
-    }, [defaultComment])
+    }, [open, defaultComment]) //force to update current comment after open
 
     useEffect(() => {
         if (currentComment && currentComment.length >= MINIMUM_CHARACTER && currentComment.length <= MAXIMUM_CHARACTER) {
