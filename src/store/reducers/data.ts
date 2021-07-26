@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { LessonMaterial } from "../../lessonMaterialContext";
 import { ScheduleTimeViewResponse, ScheduleResponse } from "../../services/cms/ISchedulerService";
-import {StudyComment} from "../../pages/home-fun-study/homeFunStudyDialog";
+import {HomeFunStudyFeedback} from "../../pages/home-fun-study/homeFunStudyDialog";
 
 type DataState = {
     scheduleTimeViewAll: ScheduleTimeViewResponse[],
@@ -15,7 +15,7 @@ type DataState = {
     scheduleStudyDueDate: ScheduleResponse[],
     lessonPlanIdOfSelectedSchedule: string,
     materials: LessonMaterial[],
-    homeFunStudyComments: StudyComment[]
+    hfsFeedbacks: HomeFunStudyFeedback[]
 }
 
 const initialDataState: DataState = {
@@ -30,7 +30,7 @@ const initialDataState: DataState = {
     scheduleStudyDueDate: [],
     lessonPlanIdOfSelectedSchedule: "",
     materials: [],
-    homeFunStudyComments: []
+    hfsFeedbacks: []
 }
 
 const dataSlice = createSlice({
@@ -71,7 +71,7 @@ const dataSlice = createSlice({
             return { ...state, materials: action.payload }
         },
         setHomeFunStudies(state, action) {
-            return { ...state, homeFunStudyComments: action.payload}
+            return { ...state, hfsFeedbacks: action.payload}
         }
     }
 })
