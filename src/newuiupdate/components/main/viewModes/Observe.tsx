@@ -7,14 +7,21 @@ import { PreviewPlayer } from "../../utils/interactiveContent/previewPlayer";
 import { RecordedIframe } from "../../utils/interactiveContent/recordediframe";
 import { fullScreenById } from "../../utils/utils";
 import {
-    makeStyles, Theme,  Typography,
+    makeStyles,
+    Theme,
+    Typography,
 } from "@material-ui/core";
 import { ArrowsAngleExpand as ExpandIcon } from "@styled-icons/bootstrap/ArrowsAngleExpand";
 import { CloudOffline as OfflineIcon } from "@styled-icons/ionicons-outline/CloudOffline";
 import clsx from "clsx";
 import { useSnackbar } from "kidsloop-px";
-import React, {
-    useContext, useEffect, useMemo, useRef, useState,
+import React,
+{
+    useContext,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
 } from "react";
 import { useIntl } from "react-intl";
 
@@ -118,7 +125,11 @@ function Observe () {
     const intl = useIntl();
     const { enqueueSnackbar } = useSnackbar();
     const {
-        materials, sessionId, roomId, isTeacher,
+        materials,
+        sessionId,
+        roomId,
+        isTeacher,
+
     } = useContext(LocalSessionContext);
     const { content, sessions } = useContext(RoomContext);
     const [ studentSessions, setStudentSessions ] = useState<Session[]>([]);
