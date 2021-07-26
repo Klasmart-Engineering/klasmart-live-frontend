@@ -71,6 +71,7 @@ export function PreviewPlayer ({
 
     useEffect(() => {
         console.log(`flag3 loading true, contentId: `, content?.contentId);
+
         setLoadingPreviewPlayer(true);
         setLoadingParentEvents(true);
     }, [ content?.contentId ]);
