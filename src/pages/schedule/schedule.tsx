@@ -123,7 +123,7 @@ export function Schedule() {
 
                 const timeViewAll = thisMonthSchedules.concat(nextMonthSchedules);
                 const timeViewLiveAll = timeViewAll.filter((tv: ScheduleTimeViewResponse) => tv.class_type === ScheduleClassType.LIVE);
-                const timeViewStudyAll = timeViewAll.filter((tv: ScheduleTimeViewResponse) => tv.class_type === ScheduleClassType.STUDY && tv.due_at !== 0);
+                const timeViewStudyAll = timeViewAll.filter((tv: ScheduleTimeViewResponse) => tv.class_type === ScheduleClassType.STUDY && ( tv.is_home_fun && tv.due_at >= todayTimeStamp || !tv.is_home_fun && tv.due_at != 0));
 
                 dispatch(setScheduleTimeViewAll(timeViewAll));
                 dispatch(setScheduleTimeViewLiveAll(timeViewLiveAll));
