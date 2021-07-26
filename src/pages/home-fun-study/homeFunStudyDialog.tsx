@@ -284,14 +284,14 @@ function HomeFunStudyContainer({
                         <Typography variant='subtitle1'><FormattedMessage
                             id="home_fun_study_your_task"/></Typography>
                         <Typography variant="body2"
-                                    color="textSecondary">{studyInfo?.description ? studyInfo.description : "N/A"}</Typography>
+                                    color="textSecondary">{studyInfo?.description ? studyInfo.description : <FormattedMessage id={"label_not_defined"}/>}</Typography>
                     </Box>
                 </Grid>
                 <Grid item xs>
                     <Box mb={3}>
                         <Typography variant='subtitle1'>Due date</Typography>
                         <Typography variant='body2' color="textSecondary">
-                            {studyInfo?.due_at && studyInfo.due_at !== 0 ? formatDueDate(studyInfo.due_at) : "N/A"}
+                            {studyInfo?.due_at && studyInfo.due_at !== 0 ? formatDueDate(studyInfo.due_at) : <FormattedMessage id={"label_not_defined"}/>}
                         </Typography>
                     </Box>
                 </Grid>
