@@ -313,7 +313,7 @@ export function RecordedIframe (props: Props): JSX.Element {
                             {loadStatus === LoadStatus.Loading && <FormattedMessage id="loading_activity_lessonMaterial" />}
                             {loadStatus === LoadStatus.Error && <FormattedMessage id="loading_activity_error" />}
                         </Typography>
-                    </Grid>length
+                    </Grid>
                     <Grid item>
                         <Typography
                             gutterBottom
