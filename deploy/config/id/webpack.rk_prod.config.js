@@ -99,6 +99,7 @@ module.exports = {
             ENDPOINT_HUB: `https://hub.rumahkisah.net`,
             ENDPOINT_CMS: `https://cms.rumahkisah.net`,
             ENDPOINT_PDF: `https://live.rumahkisah.net`,
+            PDF_VERSION: `SVG`,
         }),
         new HtmlWebpackPlugin({
             filename: `index.html`,
