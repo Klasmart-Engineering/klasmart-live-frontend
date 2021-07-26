@@ -16,6 +16,7 @@ const messages: Record<string, string> = {
     button_save: "Save",
     button_continue: "Continue",
     button_ok: "Ok",
+    label_not_defined: "Not defined",
     close_confirm_description_1: "Would you like to close the window?",
     close_confirm_description_2: "It will dismiss your change.",
     submission_failed: "Submission Failed",
