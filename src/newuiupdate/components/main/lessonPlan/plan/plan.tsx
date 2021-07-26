@@ -1,20 +1,21 @@
-import { LocalSessionContext } from "../../../../providers/providers";
-import { materialActiveIndexState } from "../../../../states/layoutAtoms";
 import { MaterialTypename } from "../../../../../lessonMaterialContext";
-import { NoItemList } from "../../../utils/utils";
-import { RoomContext } from "../../../../providers/roomContext";
 import { ContentType } from "../../../../../pages/room/room";
+import { LocalSessionContext } from "../../../../providers/providers";
+import { RoomContext } from "../../../../providers/roomContext";
+import { materialActiveIndexState } from "../../../../states/layoutAtoms";
+import { NoItemList } from "../../../utils/utils";
 import {
     Grid,
     makeStyles,
     Step,
+    StepButton,
     StepLabel,
     Stepper,
-    StepButton,
     Theme,
 } from "@material-ui/core";
 import { Book as PlanIcon } from "@styled-icons/boxicons-regular/Book";
-import React, { useContext } from "react";
+import React,
+{ useContext } from "react";
 import { useIntl } from "react-intl";
 import { useRecoilState } from "recoil";
 
@@ -39,7 +40,7 @@ function Plan () {
     const checkDisable = (material:any) => {
         if (content?.type === ContentType.Activity && material.__typename === MaterialTypename.Video) return true;
         else return false;
-    }
+    };
 
     return (
         <Grid
@@ -62,9 +63,8 @@ function Plan () {
                         orientation="vertical"
                     >
                         {materials.map((material, index) => (
-                            <Step>
+                            <Step key={`step-${material.name}-${index}`}>
                                 <StepButton
-                                    key={`step-${material.name}-${index}`}
                                     disabled={ checkDisable(material) }
                                     onClick={() => setMaterialActiveIndex(index)}
                                 >

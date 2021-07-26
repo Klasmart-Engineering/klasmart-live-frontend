@@ -44,47 +44,11 @@ function ViewModesMenu (props:ViewModesMenuProps) {
     const [ observeContent, setObserveContent ] = useRecoilState(observeContentState);
     const [ observeDisable, setObserveDisable ] = useRecoilState(observeDisableState);
 
-    const [ showContent, { loading: loadingShowContent } ] = useMutation(MUTATION_SHOW_CONTENT, {
-        context: {
-            target: LIVE_LINK,
-        },
-    });
-
-    const switchContent = (type:ContentType) => {
-        setObserveContent(false);
-        setObserveOpen(false);
-
-        showContent({
-            variables: {
-                roomId,
-                type: type,
-                contentId: sessionId,
-            },
-        });
-    };
-
     const ObserveWarningActive = () => {
         const checkShow = localStorage.getItem(`ObserveWarning`) !== null ? localStorage.getItem(`ObserveWarning`) : `true`;
         if(checkShow === `true`) setObserveOpen(true);
         else setObserveContent(true);
     };
-
-    useEffect(() => {
-        if(observeContent) {
-            showContent({
-                variables: {
-                    roomId,
-                    type: ContentType.Activity,
-                    contentId: sessionId,
-                },
-            });
-        }
-    }, [
-        observeOpen,
-        setObserveOpen,
-        observeContent,
-        setObserveContent,
-    ]);
 
     return (
         <StyledPopper
@@ -108,8 +72,8 @@ function ViewModesMenu (props:ViewModesMenuProps) {
                         id: `viewmodes_observe`,
                     })}
                     icon={<ObserveIcon />}
-                    active={content?.type === ContentType.Activity}
-                    onClick={() => ObserveWarningActive() }
+                    active={interactiveMode === InteractiveMode.Observe}
+                    onClick={() => ObserveWarningActive()}
                 />
 
                 <ViewMode
@@ -123,7 +87,9 @@ function ViewModesMenu (props:ViewModesMenuProps) {
 
                 <ObserveWarning
                     open={observeOpen}
-                    onClose={() => setObserveOpen(false)} />
+                    onClose={() => setObserveOpen(false)}
+                    onConfirm={() => { setObserveOpen(false); setObserveContent(!observeContent); setInteractiveMode(InteractiveMode.Observe);} }
+                />
 
             </Grid>
         </StyledPopper>

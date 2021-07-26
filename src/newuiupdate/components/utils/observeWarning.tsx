@@ -1,8 +1,11 @@
 import { LocalSessionContext } from "../../providers/providers";
-import { observeContentState, observeWarningState } from "../../states/layoutAtoms";
 import {
-    Checkbox,
+    observeContentState,
+    observeWarningState,
+} from "../../states/layoutAtoms";
+import {
     Button,
+    Checkbox,
     Dialog,
     DialogActions,
     DialogContent,
@@ -16,7 +19,7 @@ import clsx from "clsx";
 import React,
 {
     useContext,
-    useEffect, useState,
+    useEffect,
 } from "react";
 import { FormattedMessage } from "react-intl";
 import { useRecoilState } from "recoil";
@@ -28,7 +31,7 @@ const useStyles = makeStyles((theme: Theme) => ({
             display: `flex`,
             alignItems: `center`,
             justifyContent: `center`,
-        }
+        },
     },
     dialogContent: {
         textAlign: `center`,
@@ -62,7 +65,11 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 function ObserveWarning (props:any){
     const classes = useStyles();
-    const { open, onClose } = props;
+    const {
+        open,
+        onClose,
+        onConfirm,
+    } = props;
 
     const { isTeacher } = useContext(LocalSessionContext);
     const [ observeContent, setObserveContent ] = useRecoilState(observeContentState);
@@ -70,21 +77,23 @@ function ObserveWarning (props:any){
 
     const doNotShowAgain = (event:any) => {
         if(event.target.checked) {
-            localStorage.setItem('ObserveWarning', 'false');
+            localStorage.setItem(`ObserveWarning`, `false`);
         } else {
-            localStorage.setItem('ObserveWarning', 'true');
+            localStorage.setItem(`ObserveWarning`, `true`);
         }
-    }
+    };
 
+    /*
     const onClick = () => {
         setObserveOpen(false);
         setObserveContent(!observeContent);
-        console.log('observeWarning Clicked', observeContent);
+        console.log(`observeWarning Clicked`, observeContent);
     };
+    */
 
     useEffect(() => {
         setObserveContent(observeContent);
-        console.log('observeWarning Opened', observeContent);
+        console.log(`observeWarning Opened`, observeContent);
     }, [ observeOpen ]);
 
     return(
@@ -128,7 +137,7 @@ function ObserveWarning (props:any){
                         className={classes.buttonOk}
                         variant="contained"
                         color="primary"
-                        onClick={() => onClick()}>
+                        onClick={onConfirm}>
                         <FormattedMessage id="common_ok" />
                     </Button>
                 </div>

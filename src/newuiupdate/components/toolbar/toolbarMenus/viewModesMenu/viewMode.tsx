@@ -1,5 +1,8 @@
 import {
-    Grid, makeStyles, Theme, Typography,
+    Grid,
+    makeStyles,
+    Theme,
+    Typography,
 } from "@material-ui/core";
 import clsx from "clsx";
 import React from "react";
@@ -30,7 +33,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     disabled: {
         opacity: `0.3`,
         pointerEvents: `none`,
-    }
+    },
 }));
 
 interface ViewModeProps {
@@ -43,7 +46,11 @@ interface ViewModeProps {
 
 function ViewMode (props: ViewModeProps) {
     const {
-        active, onClick, icon, title, disabled
+        active,
+        onClick,
+        icon,
+        title,
+        disabled,
     } = props;
 
     const classes = useStyles();

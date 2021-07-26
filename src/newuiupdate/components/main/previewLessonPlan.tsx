@@ -1,6 +1,10 @@
 import { MaterialTypename } from "../../../lessonMaterialContext";
 import { LocalSessionContext } from "../../providers/providers";
-import { materialActiveIndexState, studyRecommandUrlState, observeDisableState } from "../../states/layoutAtoms";
+import {
+    materialActiveIndexState,
+    observeDisableState,
+    studyRecommandUrlState,
+} from "../../states/layoutAtoms";
 import ActivityImage from "../utils/interactiveContent/image";
 import { RecordedIframe } from "../utils/interactiveContent/recordediframe";
 import { ReplicatedMedia } from "../utils/interactiveContent/synchronized-video";
@@ -9,9 +13,10 @@ import {
     Theme,
     Typography,
 } from "@material-ui/core";
-import React, { useContext } from "react";
-import { useRecoilState } from "recoil";
+import React,
+{ useContext } from "react";
 import { FormattedMessage } from "react-intl";
+import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {},
