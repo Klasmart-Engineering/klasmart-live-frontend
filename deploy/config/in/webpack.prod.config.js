@@ -98,6 +98,7 @@ module.exports = {
             ENDPOINT_HUB: `https://hub.kidsloop.in`,
             ENDPOINT_CMS: `https://cms.kidsloop.in`,
             ENDPOINT_PDF: `https://live.rumahkisah.in`,
+            PDF_VERSION: `SVG`,
         }),
         new HtmlWebpackPlugin({
             filename: `index.html`,

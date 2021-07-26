@@ -15,8 +15,6 @@ module.exports = {
         "record-1db5341": `./src/entry-record.ts`,
         player: `./src/entry-player.ts`,
         pdfviewer: `./src/entry-pdfviewer.js`,
-        ENDPOINT_PDF: `https://live.alpha.kidsloop.net`,
-        PDF_VERSION: `JPEG`, // SVG or JPEG - Defaults to SVG
     },
     module: {
         rules: [
@@ -100,6 +98,7 @@ module.exports = {
             ENDPOINT_HUB: `https://hub.kidsloop.net`,
             ENDPOINT_CMS: `https://kl2.kidsloop.net`,
             ENDPOINT_PDF: `https://live.kidsloop.net`,
+            PDF_VERSION: `SVG`,
         }),
         new HtmlWebpackPlugin({
             filename: `index.html`,
