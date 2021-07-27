@@ -251,5 +251,9 @@
     "join_permissionAlertDialog_mic_blocked_title": "Silakan nyalakan mikrofon Anda!",
     "join_permissionAlertDialog_mic_blocked_contentText_live": "Anda mungkin butuh mikrofon untuk beberapa konten interaktif. Kami menyarankan untuk mengaktifkan izin mikrofon untuk pengalaman yang lebih baik.",
     "join_permissionAlertDialog_mic_not_exist_title": "Silakan hubungkan mikrofon Anda!",
-    "join_permissionAlertDialog_mic_not_exist_contentText_live": "Kami tidak bisa mendeteksi mikrofon Anda, pengalaman saat menggunakan aplikasi mungkin terbatas."
+    "join_permissionAlertDialog_mic_not_exist_contentText_live": "Kami tidak bisa mendeteksi mikrofon Anda, pengalaman saat menggunakan aplikasi mungkin terbatas.",
+    "common_warning": "",
+    "observe_warning_videotype_text": "",
+    "common_ok": "",
+    "common_do_not_show_again": ""
 }
