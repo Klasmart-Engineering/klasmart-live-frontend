@@ -152,7 +152,7 @@ export function HomeFunStudyDialog() {
 
     useEffect(() => {
         function checkShowSubmitButtonCondition(){
-            if(studyInfo && !studyInfo.exist_feedback){
+            if(studyInfo && !studyInfo.exist_assessment){
                 const feedback = hfsFeedbacks.find(item => item.studyId === studyInfo.id)
                 if(feedback && feedback.assignmentItems.length > 0){
                     return true;
