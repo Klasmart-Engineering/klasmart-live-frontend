@@ -47,7 +47,7 @@ function ViewModesMenu (props:ViewModesMenuProps) {
     const ObserveWarningActive = () => {
         const checkShow = localStorage.getItem(`ObserveWarning`) !== null ? localStorage.getItem(`ObserveWarning`) : `true`;
         if(checkShow === `true`) setObserveOpen(true);
-        else setObserveContent(true);
+        else setObserveContent(true); setInteractiveMode(InteractiveMode.Observe);
     };
 
     return (
