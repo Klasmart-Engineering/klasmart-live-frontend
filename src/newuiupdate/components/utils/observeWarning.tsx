@@ -117,7 +117,7 @@ function ObserveWarning (props:any){
             </DialogContent>
 
             <DialogActions className={classes.dialogActions}>
-                <div className={classes.checkWrap}>
+                <label className={classes.checkWrap}>
                     <Checkbox
                         color="primary"
                         size="small"
@@ -126,7 +126,7 @@ function ObserveWarning (props:any){
                     <Typography variant="body2">
                         <FormattedMessage id="common_do_not_show_again" />
                     </Typography>
-                </div>
+                </label>
                 <div className={classes.buttonWrap}>
                     <Button
                         color="primary"
