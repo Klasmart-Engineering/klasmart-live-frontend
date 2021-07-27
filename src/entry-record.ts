@@ -59,7 +59,7 @@ if (!(window as any).kidslooplive) {
             eventRecorder.recordEvent(eventStream, eventData, c || false);
             eventRecorder.uploadEvents();
         },
-        allowIframe,
+        keepIframeSrcFn,
     });
 }
 
@@ -103,7 +103,7 @@ function onYTAPIReady() {
 
 }
 
-function allowIframe(src: string): boolean {
+function keepIframeSrcFn(src: string): boolean {
     try {
         const url = new URL(src);
         return url.origin === `https://www.youtube.com`;
