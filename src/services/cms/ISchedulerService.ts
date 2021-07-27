@@ -51,6 +51,7 @@ export interface ScheduleResponse {
     is_repeat: boolean
     is_home_fun: boolean
     exist_feedback: boolean
+    exist_assessment: boolean
     lesson_plan: ForeignIdName
     member_teachers: ForeignIdName[]
     org_id: string
