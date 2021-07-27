@@ -9,8 +9,6 @@ import ActivityImage from "../utils/interactiveContent/image";
 import { RecordedIframe } from "../utils/interactiveContent/recordediframe";
 import { ReplicatedMedia } from "../utils/interactiveContent/synchronized-video";
 import {
-    makeStyles,
-    Theme,
     Typography,
 } from "@material-ui/core";
 import React,
@@ -18,12 +16,7 @@ import React,
 import { FormattedMessage } from "react-intl";
 import { useRecoilState } from "recoil";
 
-const useStyles = makeStyles((theme: Theme) => ({
-    root: {},
-}));
-
 function PreviewLessonPlan () {
-    const classes = useStyles();
     const {  materials } = useContext(LocalSessionContext);
     const [ materialActiveIndex, setMaterialActiveIndex ] = useRecoilState(materialActiveIndexState);
     const [ studyRecommandUrl, setStudyRecommandUrl ] = useRecoilState(studyRecommandUrlState);
