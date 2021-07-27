@@ -213,13 +213,24 @@ function HomeFunStudyContainer({
             if(!studyInfo)
                 return;
             let newAssignmentItems : AssignmentItem[] = [];
-            //Submitted feedback from CMS
+            //Submitted feedback from CMS.
+            // If the HFS have been submitted, it should be prioritized to show feedback from CMS first.
             if(studyInfo.exist_feedback && feedbacks && feedbacks.length > 0){
                 const feedBackAssignments = feedbacks[0].assignments;
                 newAssignmentItems = convertAssignmentsToAssignmentItems(feedBackAssignments);
+                setAssignmentItems(newAssignmentItems);
+                setSaveAssignmentItems({shouldSave: true, assignmentItems: newAssignmentItems})
             }
-            //Feedback at local
-            else if(hfsFeedbacks){
+        }
+        displayAssignments()
+    }, [studyInfo, feedbacks])
+
+    useEffect(() => {
+        function displayAssignmentsFromLocal(){
+            if(!studyInfo)
+                return;
+            let newAssignmentItems : AssignmentItem[] = [];
+            if(hfsFeedbacks){
                 const currentFeedback = hfsFeedbacks.find(feedback => feedback.studyId === studyInfo.id);
                 if(currentFeedback){
                     newAssignmentItems = currentFeedback.assignmentItems;
@@ -227,8 +238,8 @@ function HomeFunStudyContainer({
             }
             setAssignmentItems(newAssignmentItems);
         }
-        displayAssignments()
-    }, [studyInfo, feedbacks, hfsFeedbacks])
+        displayAssignmentsFromLocal()
+    }, [hfsFeedbacks])
 
     useEffect(() => {
         //Save Assignments after uploaded
