@@ -116,6 +116,8 @@ export function PreviewPlayer ({
     // Buffer events until we have a page ready to render them
     const { current: bufferedEvents } = useRef<string[]>([]);
     function sendEvent (event?: string) {
+        loading = false;
+        error = undefined;
         if (ref.current && ref.current.contentWindow && ((ref.current.contentWindow as any).PLAYER_READY)) {
             while (bufferedEvents.length > 0) {
                 const event = bufferedEvents.shift();
@@ -131,7 +133,7 @@ export function PreviewPlayer ({
         }
     }
 
-    const { loading, error } = useSubscription(SUB_EVENTS, {
+    let { loading, error } = useSubscription(SUB_EVENTS, {
         onSubscriptionData: e => sendEvent(e.subscriptionData.data.stream.event),
         variables: {
             streamId,
@@ -201,7 +203,10 @@ export function PreviewPlayer ({
         return () => window.removeEventListener(`message`, onIframeEvents);
     }, [  ]);
 
-    if (loading || isShowContentLoading) { return <Loading messageId="Page loading" />; }
+    if (loading || isShowContentLoading) {
+        console.log(`flag3 loading: `, loading, `   streamId:`, streamId);
+        return <Loading messageId="Page loading" />;
+    }
     if (error) { return <Typography><FormattedMessage id="failed_to_connect" />: {JSON.stringify(error)}</Typography>; }
     return <div
         id="preview-iframe-container"
