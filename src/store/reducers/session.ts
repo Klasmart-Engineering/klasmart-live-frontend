@@ -36,7 +36,7 @@ const initialSessionState: SessionState = {
     locale: getDefaultLanguageCode(),
     selectedUserId: undefined,
     selectedOrg: undefined,
-    regionId: "auth.kidsloop.live",
+    regionId: "auth.alpha.kidsloop.live",
 }
 
 const sessionSlice = createSlice({
