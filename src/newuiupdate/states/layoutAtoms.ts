@@ -162,7 +162,7 @@ export const observeWarningState = atom({
 });
 
 export const observeContentState = atom({
-    key: `observeDisableState`,
+    key: `observeContentState`,
     default: false,
 });
 
