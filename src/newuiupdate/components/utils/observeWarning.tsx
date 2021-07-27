@@ -1,4 +1,3 @@
-import { LocalSessionContext } from "../../providers/providers";
 import {
     observeContentState,
     observeWarningState,
@@ -18,7 +17,6 @@ import { Warning as WarningIcon } from "@styled-icons/entypo/Warning";
 import clsx from "clsx";
 import React,
 {
-    useContext,
     useEffect,
 } from "react";
 import { FormattedMessage } from "react-intl";
@@ -71,7 +69,6 @@ function ObserveWarning (props:any){
         onConfirm,
     } = props;
 
-    const { isTeacher } = useContext(LocalSessionContext);
     const [ observeContent, setObserveContent ] = useRecoilState(observeContentState);
     const [ observeOpen, setObserveOpen ] = useRecoilState(observeWarningState);
 
@@ -82,14 +79,6 @@ function ObserveWarning (props:any){
             localStorage.setItem(`ObserveWarning`, `true`);
         }
     };
-
-    /*
-    const onClick = () => {
-        setObserveOpen(false);
-        setObserveContent(!observeContent);
-        console.log(`observeWarning Clicked`, observeContent);
-    };
-    */
 
     useEffect(() => {
         setObserveContent(observeContent);

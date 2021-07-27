@@ -1,9 +1,3 @@
-import { ContentType } from "../../../../../pages/room/room";
-import {
-    LIVE_LINK,
-    LocalSessionContext,
-} from "../../../../providers/providers";
-import { RoomContext } from "../../../../providers/roomContext";
 import {
     InteractiveMode,
     interactiveModeState,
@@ -12,20 +6,14 @@ import {
     observeDisableState,
     observeWarningState,
 } from "../../../../states/layoutAtoms";
-import { MUTATION_SHOW_CONTENT } from "../../../utils/graphql";
 import ObserveWarning from "../../../utils/observeWarning";
 import { StyledPopper } from "../../../utils/utils";
 import ViewMode from "./viewMode";
-import { useMutation } from "@apollo/client";
 import { Grid } from "@material-ui/core";
 import { UserVoice as OnStageIcon } from "@styled-icons/boxicons-solid/UserVoice";
 import { Eye as ObserveIcon } from "@styled-icons/fa-regular/Eye";
 import { PresentationChartBar as PresentIcon } from "@styled-icons/heroicons-solid/PresentationChartBar";
-import React,
-{
-    useContext,
-    useEffect,
-} from "react";
+import React from "react";
 import { useIntl } from "react-intl";
 import { useRecoilState } from "recoil";
 
@@ -36,8 +24,6 @@ interface ViewModesMenuProps {
 function ViewModesMenu (props:ViewModesMenuProps) {
     const { anchor } = props;
     const intl = useIntl();
-    const { roomId, sessionId } = useContext(LocalSessionContext);
-    const { content } = useContext(RoomContext);
     const [ isViewModesOpen, setIsViewModesOpen ] = useRecoilState(isViewModesOpenState);
     const [ interactiveMode, setInteractiveMode ] = useRecoilState(interactiveModeState);
     const [ observeOpen, setObserveOpen ] = useRecoilState(observeWarningState);
