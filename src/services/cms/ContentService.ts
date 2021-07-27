@@ -117,4 +117,18 @@ export class ContentService implements IContentService {
 
         return result;
     }
+
+    async uploadAttachment(path: string, file: File): Promise<boolean>{
+        const response = await fetch(path, {
+            method: "PUT",
+            body: file
+        })
+        console.log("uploadAttachment:")
+        console.log(response.status);
+        console.log(response);
+        if(!response.ok){
+            throw new Error(response.statusText);
+        }
+        return true;
+    }
 }
