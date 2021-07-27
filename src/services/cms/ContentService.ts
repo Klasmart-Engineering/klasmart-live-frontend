@@ -123,9 +123,6 @@ export class ContentService implements IContentService {
             method: "PUT",
             body: file
         })
-        console.log("uploadAttachment:")
-        console.log(response.status);
-        console.log(response);
         if(!response.ok){
             throw new Error(response.statusText);
         }
