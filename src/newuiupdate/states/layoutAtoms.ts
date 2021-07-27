@@ -94,7 +94,7 @@ export enum InteractiveMode {
     OnStage,
     Observe,
     Present,
-};
+}
 export const interactiveModeState = atom<InteractiveMode>({
     key: `interactiveModeState`,
     default: InteractiveMode.OnStage,
@@ -156,7 +156,12 @@ export const isShowContentLoadingState = atom({
     default: false,
 });
 
-export const observeDisableState = atom({
+export const observeWarningState = atom({
+    key: `observeWarningState`,
+    default: false,
+});
+
+export const observeContentState = atom({
     key: `observeDisableState`,
     default: false,
 });

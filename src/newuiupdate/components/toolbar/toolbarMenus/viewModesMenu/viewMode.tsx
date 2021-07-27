@@ -63,7 +63,7 @@ function ViewMode (props: ViewModeProps) {
                 alignItems="center"
                 className={clsx(classes.item, {
                     [classes.active]: active,
-                    [classes.disabled]: disabled,
+                    [classes.disabled]: !active && disabled,
                 })}
                 onClick={onClick}>
                 <Grid item>
