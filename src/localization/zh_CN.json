@@ -251,5 +251,9 @@
     "join_permissionAlertDialog_mic_blocked_title": "请启用您的麦克风！",
     "join_permissionAlertDialog_mic_blocked_contentText_live": "你可能需要一个麦克风来体验一些互动内容。我们建议启用麦克风权限以获得更好的体验。",
     "join_permissionAlertDialog_mic_not_exist_title": "请连接您的麦克风！",
-    "join_permissionAlertDialog_mic_not_exist_contentText_live": "很抱歉，我们找不到麦克风，您的用户体验将会受到限制"
+    "join_permissionAlertDialog_mic_not_exist_contentText_live": "很抱歉，我们找不到麦克风，您的用户体验将会受到限制",
+    "common_warning": "",
+    "observe_warning_videotype_text": "",
+    "common_ok": "",
+    "common_do_not_show_again": ""
 }

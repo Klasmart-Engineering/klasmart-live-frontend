@@ -251,5 +251,9 @@
     "join_permissionAlertDialog_mic_blocked_title": "Vui lòng mở micrô của bạn!",
     "join_permissionAlertDialog_mic_blocked_contentText_live": "Bạn có thể cần micrô cho một số nội dung tương tác. Chúng tôi khuyên bạn nên mở micrô để có trải nghiệm tốt hơn.",
     "join_permissionAlertDialog_mic_not_exist_title": "Vui lòng kết nối micrô của bạn!",
-    "join_permissionAlertDialog_mic_not_exist_contentText_live": "Rất tiếc, chúng tôi không thể tìm thấy micrô. Xin lưu ý rằng trải nghiệm của bạn có thể bị hạn chế."
+    "join_permissionAlertDialog_mic_not_exist_contentText_live": "Rất tiếc, chúng tôi không thể tìm thấy micrô. Xin lưu ý rằng trải nghiệm của bạn có thể bị hạn chế.",
+    "common_warning": "",
+    "observe_warning_videotype_text": "",
+    "common_ok": "",
+    "common_do_not_show_again": ""
 }
