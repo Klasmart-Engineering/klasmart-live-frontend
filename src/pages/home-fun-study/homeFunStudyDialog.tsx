@@ -95,6 +95,7 @@ export function HomeFunStudyDialog() {
     const [feedbacks, setFeedbacks] = useState<ScheduleFeedbackResponse[]>();
     const [key, setKey] = useState(Math.random().toString(36))
     const [loading, setLoading] = useState(false);
+    const [showSubmitButton, setShowSubmitButton] = useState(false);
 
     useEffect(() => {
         lockOrientation(OrientationType.PORTRAIT, dispatch);
@@ -149,7 +150,18 @@ export function HomeFunStudyDialog() {
         fetchEverything();
     }, [studyId, selectedOrg, key, selectedUserId])
 
-
+    useEffect(() => {
+        function checkShowSubmitButtonCondition(){
+            if(studyInfo && !studyInfo.exist_feedback){
+                const feedback = hfsFeedbacks.find(item => item.studyId === studyInfo.id)
+                if(feedback && feedback.assignmentItems.length > 0){
+                    return true;
+                }
+            }
+            return false
+        }
+        setShowSubmitButton(checkShowSubmitButtonCondition());
+    }, [studyInfo, hfsFeedbacks])
     return (
         <Dialog
             aria-labelledby="select-home-fun-study-dialog"
@@ -171,7 +183,7 @@ export function HomeFunStudyDialog() {
                 <Button fullWidth variant="contained"
                         className={classes.rounded_button}
                         color="primary"
-                        disabled={studyInfo ? studyInfo.exist_feedback : false}
+                        disabled={!showSubmitButton}
                         classes={{
                             disabled: classes.disabled_button,
                         }}
