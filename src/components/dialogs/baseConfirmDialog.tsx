@@ -31,10 +31,16 @@ interface Props {
     open: boolean,
     onClose: () => void,
     onConfirm: () => void,
-    title: string | Element,
+    title: string,
     closeLabel: string,
     confirmLabel: string,
     children: React.ReactNode
+}
+
+export type ConfirmDialogState = {
+    open: boolean,
+    title: string,
+    description: string[]
 }
 
 export function BaseConfirmDialog({

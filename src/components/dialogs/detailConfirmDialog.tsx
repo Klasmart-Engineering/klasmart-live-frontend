@@ -17,12 +17,12 @@ interface Props {
     onClose: () => void,
     onConfirm: () => void,
     title: string,
-    description: string [],
+    description: string[],
     closeLabel: string,
     confirmLabel: string
 }
 
-export function ConfirmDialog({
+export function DetailConfirmDialog({
                                   open, onClose, onConfirm,
                                   title, description,
                                   closeLabel, confirmLabel
@@ -35,8 +35,13 @@ export function ConfirmDialog({
                     description.map(
                         (item, index) =>
                             <Grid key={index} item xs>
-                                <Typography variant="body2"
-                                            className={classes.dialogText}>{item}</Typography>
+                                {(index === 0)
+                                    ? <Typography variant="body2"
+                                                  className={classes.dialogText}>{item}</Typography>
+
+                                    : <Typography variant="caption"
+                                                  color={"textSecondary"}
+                                    >{item}</Typography>}
                             </Grid>
                     )
                 }
