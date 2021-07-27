@@ -36,6 +36,9 @@ import {CommentDialog} from "./commentDialog";
 import {setHomeFunStudies} from "../../store/reducers/data";
 import {BottomSelector} from "../../components/bottomSelector";
 import {DetailErrorDialog} from "../../components/dialogs/detailErrorDialog";
+import {DetailConfirmDialog} from "../../components/dialogs/detailConfirmDialog";
+import {ErrorDialogState} from "../../components/dialogs/baseErrorDialog";
+import {ConfirmDialogState} from "../../components/dialogs/baseConfirmDialog";
 
 export type HomeFunStudyFeedback = {
     studyId: string,
@@ -192,6 +195,11 @@ export function HomeFunStudyDialog() {
         </Dialog>)
 }
 
+interface ConfirmDeleteAttachmentDialogState extends ConfirmDialogState{
+    itemId: string,
+    attachmentName: string
+}
+
 function HomeFunStudyContainer({
                                    studyInfo,
                                    feedbacks
@@ -200,29 +208,33 @@ function HomeFunStudyContainer({
     const dispatch = useDispatch();
     const [openSupportFileInfo, setOpenSupportFileInfo] = useState(false);
     const [openButtonSelector, setOpenButtonSelector] = useState(false);
-    const [openErrorDialog, setOpenErrorDialog] = useState<{ open: boolean, title: string, description: string[] }>({
-        open: false,
-        title: "",
-        description: []
+    const [openErrorDialog, setOpenErrorDialog] = useState<ErrorDialogState>({open: false, title: "", description: []});
+    const [openDeleteAttachmentDialog, setOpenDeleteAttachmentDialog] = useState<ConfirmDeleteAttachmentDialogState>({
+        open: false, title: "", description: [], itemId: "", attachmentName: ""
     });
     const [assignmentItems, setAssignmentItems] = useState<AssignmentItem[]>([]);
     const {fileSelectService} = useServices();
     const {contentService} = useServices();
     const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
     const hfsFeedbacks = useSelector((state: State) => state.data.hfsFeedbacks);
-    const [saveAssignmentItems, setSaveAssignmentItems] = useState<{shouldSave: boolean, assignmentItems: AssignmentItem[]}>()
+    const [saveAssignmentItems, setSaveAssignmentItems] = useState<{ shouldSave: boolean, assignmentItems: AssignmentItem[] }>()
 
-    function generateAssignmentItemId(){
+    function generateAssignmentItemId() {
         return Math.random().toString(36).substring(7);
     }
 
-    function convertAssignmentsToAssignmentItems(assignments: Assignment[]){
-        return assignments.map(item => ({itemId: generateAssignmentItemId(), attachmentId: item.attachment_id, attachmentName: item.attachment_name, status: AttachmentStatus.UPLOADED}));
+    function convertAssignmentsToAssignmentItems(assignments: Assignment[]) {
+        return assignments.map(item => ({
+            itemId: generateAssignmentItemId(),
+            attachmentId: item.attachment_id,
+            attachmentName: item.attachment_name,
+            status: AttachmentStatus.UPLOADED
+        }));
     }
 
     useEffect(() => {
-        function displayAssignments(){
-            if(!studyInfo)
+        function displayAssignments() {
+            if (!studyInfo)
                 return;
             let newAssignmentItems : AssignmentItem[] = [];
             //Submitted feedback from CMS.
@@ -244,7 +256,7 @@ function HomeFunStudyContainer({
             let newAssignmentItems : AssignmentItem[] = [];
             if(hfsFeedbacks){
                 const currentFeedback = hfsFeedbacks.find(feedback => feedback.studyId === studyInfo.id);
-                if(currentFeedback){
+                if (currentFeedback) {
                     newAssignmentItems = currentFeedback.assignmentItems;
                 }
             }
@@ -255,14 +267,18 @@ function HomeFunStudyContainer({
 
     useEffect(() => {
         //Save Assignments after uploaded
-        function saveAssignments(assignmentItems : AssignmentItem[]){
+        function saveAssignments(assignmentItems: AssignmentItem[]) {
             if (studyInfo) {
                 let newHFSFeedbacks = hfsFeedbacks ? hfsFeedbacks.slice() : [];
                 let hasFeedback = false;
                 for (let i = 0; i < newHFSFeedbacks.length; i++) {
                     if (newHFSFeedbacks[i].studyId == studyInfo.id) {
                         const feedback = newHFSFeedbacks[i];
-                        newHFSFeedbacks[i] = {studyId: studyInfo.id, comment: feedback.comment, assignmentItems: assignmentItems };
+                        newHFSFeedbacks[i] = {
+                            studyId: studyInfo.id,
+                            comment: feedback.comment,
+                            assignmentItems: assignmentItems
+                        };
                         hasFeedback = true;
                         break;
                     }
@@ -273,57 +289,71 @@ function HomeFunStudyContainer({
                 dispatch(setHomeFunStudies(newHFSFeedbacks));
             }
         }
-        if(saveAssignmentItems && saveAssignmentItems.shouldSave){
+
+        if (saveAssignmentItems && saveAssignmentItems.shouldSave) {
             saveAssignments(saveAssignmentItems.assignmentItems)
         }
-    },[saveAssignmentItems])
+    }, [saveAssignmentItems])
+
     useEffect(() => {
         //Check assignmentItems every time file is selected.
         //If it detects that the file is in selected state, then upload it.
-        function uploadSelectedAttachments(){
-            if(assignmentItems){
+        function uploadSelectedAttachments() {
+            if (assignmentItems) {
                 let isNeedUpload = false;
                 const newAssignmentItems = assignmentItems.slice();
-                for(let i = 0 ; i < newAssignmentItems.length ; i++){
-                    if(newAssignmentItems[i].status === AttachmentStatus.SELECTED){
+                for (let i = 0; i < newAssignmentItems.length; i++) {
+                    if (newAssignmentItems[i].status === AttachmentStatus.SELECTED) {
                         const file = newAssignmentItems[i].file
-                        if(file){
+                        if (file) {
                             uploadAttachment(newAssignmentItems[i].itemId, file);
                             const item = newAssignmentItems[i];
-                            newAssignmentItems[i] = {itemId: item.itemId, attachmentId: item.attachmentId, attachmentName: item.attachmentName, status: AttachmentStatus.UPLOADING}
+                            newAssignmentItems[i] = {
+                                itemId: item.itemId,
+                                attachmentId: item.attachmentId,
+                                attachmentName: item.attachmentName,
+                                status: AttachmentStatus.UPLOADING
+                            }
                             isNeedUpload = true;
                         }
                     }
                 }
-                if(isNeedUpload){
+                if (isNeedUpload) {
                     setAssignmentItems(newAssignmentItems);
                 }
 
             }
         }
+
         uploadSelectedAttachments();
     }, [assignmentItems])
 
-    async function uploadAttachment(assignmentItemId: string, file: File){
-        if(!selectedOrg){
+    async function uploadAttachment(assignmentItemId: string, file: File) {
+        if (!selectedOrg) {
             throw new Error("Organization is not selected.");
         }
         const contentResourceUploadPathResponse = await contentService?.getContentResourceUploadPath(selectedOrg.organization_id, getFileExtensionFromName(file.name));
-        if(contentResourceUploadPathResponse){
+        if (contentResourceUploadPathResponse) {
             const uploadResult = await contentService?.uploadAttachment(contentResourceUploadPathResponse.path, file);
-            if(uploadResult){
-                updateAssignmentItemStatusToUploaded(assignmentItemId,contentResourceUploadPathResponse.resource_id);
+            if (uploadResult) {
+                updateAssignmentItemStatusToUploaded(assignmentItemId, contentResourceUploadPathResponse.resource_id);
             }
-        }else{
+        } else {
             //TODO: Would be implement to alert the failed message (Hung)
         }
     }
+
     //Update the attachment's status to UPLOADED after upload successfully, then save it to local (only save the attachment_id and attachment_name without need to save the file)
-    function updateAssignmentItemStatusToUploaded(itemId: string, resourceId: string){
+    function updateAssignmentItemStatusToUploaded(itemId: string, resourceId: string) {
         let newAssignmentItems = assignmentItems.slice();
-        for(let i = 0 ; i < newAssignmentItems.length ; i++){
-            if(newAssignmentItems[i].itemId === itemId){
-                newAssignmentItems[i] = {itemId: itemId, attachmentId: resourceId, attachmentName: newAssignmentItems[i].attachmentName, status: AttachmentStatus.UPLOADED}
+        for (let i = 0; i < newAssignmentItems.length; i++) {
+            if (newAssignmentItems[i].itemId === itemId) {
+                newAssignmentItems[i] = {
+                    itemId: itemId,
+                    attachmentId: resourceId,
+                    attachmentName: newAssignmentItems[i].attachmentName,
+                    status: AttachmentStatus.UPLOADED
+                }
                 break;
             }
         }
@@ -373,7 +403,13 @@ function HomeFunStudyContainer({
     function addAnSelectedAttachment(file: File) {
         const newAssignmentItems = assignmentItems.slice();
         const itemId = generateAssignmentItemId();
-        newAssignmentItems.push({itemId: itemId, attachmentId: "", attachmentName: file.name , status: AttachmentStatus.SELECTED, file: file});
+        newAssignmentItems.push({
+            itemId: itemId,
+            attachmentId: "",
+            attachmentName: file.name,
+            status: AttachmentStatus.SELECTED,
+            file: file
+        });
         setAssignmentItems(newAssignmentItems);
     }
 
@@ -404,6 +440,32 @@ function HomeFunStudyContainer({
         }
     }
 
+    function handleConfirmDeleteAssignmentItem() {
+        const newAssignmentItems = assignmentItems.slice();
+        for(let i = 0 ; i < newAssignmentItems.length ; i++){
+            if(newAssignmentItems[i].itemId === openDeleteAttachmentDialog.itemId){
+                newAssignmentItems.splice(i, 1);
+                break;
+            }
+        }
+        setAssignmentItems(newAssignmentItems);
+        setSaveAssignmentItems({shouldSave: true, assignmentItems: newAssignmentItems});
+        setOpenDeleteAttachmentDialog({open: false, title: "", description: [], itemId: "", attachmentName: ""})
+    }
+
+    function handleDeleteAssignmentItem(item: AssignmentItem){
+        setOpenDeleteAttachmentDialog({
+            open: true,
+            title: intl.formatMessage({id: "button_delete"}),
+            description: [
+                intl.formatMessage({id: "confirm_delete_description"}),
+                item.attachmentName,
+            ],
+            itemId: item.itemId,
+            attachmentName: item.attachmentName
+        })
+    }
+
     return (
         <>
             <Grid
@@ -417,8 +479,9 @@ function HomeFunStudyContainer({
                 <Grid item xs>
                     <Box mb={2} mt={1}>
                         <Typography variant="subtitle1" align="center">{studyInfo?.title}</Typography>
-                        <Typography variant='body1' align="center" color='textSecondary'>Home fun
-                            study</Typography>
+                        <Typography variant='body1' align="center" color='textSecondary'>
+                            <FormattedMessage id={"home_fun_study"} />
+                            </Typography>
                     </Box>
                 </Grid>
                 <Grid item xs>
@@ -438,8 +501,8 @@ function HomeFunStudyContainer({
                     </Box>
                 </Grid>
                 <HomeFunStudyAssignment
-                    assignmentItems={assignmentItems}
-                    onClickUploadInfo={handleClickUploadInfo} onClickUpload={handleClickUpload} />
+                    assignmentItems={assignmentItems} onClickUploadInfo={handleClickUploadInfo}
+                    onClickUpload={handleClickUpload} onDeleteAssignment={handleDeleteAssignmentItem}/>
                 <HomeFunStudyComment
                     studyId={studyInfo?.id}
                     defaultComment={feedbacks && feedbacks.length > 0 ? feedbacks[0].comment : ""}
@@ -467,17 +530,27 @@ function HomeFunStudyContainer({
                                }}
                                title={openErrorDialog.title} description={openErrorDialog.description}
                                closeLabel={intl.formatMessage({id: "button_ok"})}/>
+            <DetailConfirmDialog open={openDeleteAttachmentDialog.open}
+                                 onClose={() => {
+                                     setOpenDeleteAttachmentDialog({open: false, title: "", description: [], itemId: "", attachmentName: ""})
+                                 }}
+                                 onConfirm={handleConfirmDeleteAssignmentItem}
+                                 title={openDeleteAttachmentDialog.title}
+                                 description={openDeleteAttachmentDialog.description}
+                                 closeLabel={intl.formatMessage({id: "button_cancel"})}
+                                 confirmLabel={intl.formatMessage({id: "button_delete"})}/>
         </>
     )
 }
 
 function HomeFunStudyAssignment({
-                                    assignmentItems,
-                                    onClickUploadInfo,
-                                    onClickUpload
-                                }: { assignmentItems: AssignmentItem[], onClickUploadInfo: () => void, onClickUpload: () => void }) {
+                                    assignmentItems, onClickUploadInfo,
+                                    onClickUpload, onDeleteAssignment,
+                                }: {
+    assignmentItems: AssignmentItem[], onClickUploadInfo: () => void,
+    onClickUpload: () => void, onDeleteAssignment: (item: AssignmentItem) => void
+}) {
     const classes = useStyles();
-
     return (
         <Grid item xs>
             <Box mb={2}>
@@ -523,7 +596,9 @@ function HomeFunStudyAssignment({
                                 <ListItemSecondaryAction>
                                     {
                                         item.status === AttachmentStatus.UPLOADED
-                                            ? <IconButton edge="end" aria-label="delete">
+                                            ? <IconButton edge="end" aria-label="delete" onClick={() => {
+                                                onDeleteAssignment(item)
+                                            }}>
                                                 <HighlightOffOutlined color="primary"/>
                                             </IconButton>
                                             : <CircularProgress size={20} thickness={4}/>
@@ -569,7 +644,11 @@ function HomeFunStudyComment({studyId, defaultComment}: { studyId?: string, defa
             let hasFeedback = false;
             for (let i = 0; i < newHFSFeedbacks.length; i++) {
                 if (newHFSFeedbacks[i].studyId == studyId) {
-                    newHFSFeedbacks[i] = {studyId: studyId, comment: newComment, assignmentItems: newHFSFeedbacks[i].assignmentItems};
+                    newHFSFeedbacks[i] = {
+                        studyId: studyId,
+                        comment: newComment,
+                        assignmentItems: newHFSFeedbacks[i].assignmentItems
+                    };
                     hasFeedback = true;
                     break;
                 }
