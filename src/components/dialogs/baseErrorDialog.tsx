@@ -29,6 +29,11 @@ interface Props {
     children: React.ReactNode
 }
 
+export type ErrorDialogState = {
+    open: boolean,
+    title: string,
+    description: string[]
+}
 export function BaseErrorDialog({
                                 open, onClose, title,
                                 closeLabel, children

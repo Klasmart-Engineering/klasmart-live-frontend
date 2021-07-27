@@ -16,6 +16,7 @@ const messages: Record<string, string> = {
     button_save: "Save",
     button_continue: "Continue",
     button_ok: "Ok",
+    button_delete: "Delete",
     label_not_defined: "Not defined",
     close_confirm_description_1: "Would you like to close the window?",
     close_confirm_description_2: "It will dismiss your change.",
@@ -23,6 +24,8 @@ const messages: Record<string, string> = {
     upload_please_check_your_file: "Please Check Your File!",
     upload_file_not_supported: "This file format is not supported. Please try another file.",
     upload_file_too_big: "Uploaded file should not be bigger than 100MB. Please try another file.",
+    confirm_delete_description: "Are you sure you want to Delete?",
+    home_fun_study: "Home Fun Study",
 
     err_button_home: "Home",
     err_button_signin: "Back to Sign In",
