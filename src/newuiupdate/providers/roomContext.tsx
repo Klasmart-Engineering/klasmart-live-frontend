@@ -1,13 +1,14 @@
 import Loading from "../../components/loading";
-import { MaterialTypename } from "../../lessonMaterialContext";
 import {
     Content,
-    ContentType,
     Message,
     Session,
 } from "../../pages/room/room";
 import { MUTATION_SHOW_CONTENT } from "../components/utils/graphql";
-import { defineContentType } from "../components/utils/utils";
+import {
+    defineContentId,
+    defineContentType,
+} from "../components/utils/utils";
 import {
     audioGloballyMutedState,
     classEndedState,
@@ -130,7 +131,7 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
 
         const material = interactiveMode !== InteractiveMode.OnStage && materialActiveIndex >= 0 && materialActiveIndex < materials.length ? materials[materialActiveIndex] : undefined;
         const type = defineContentType(material, interactiveMode);
-        const contentId = interactiveMode === InteractiveMode.OnStage ? sessionId : interactiveMode === InteractiveMode.Observe ? material?.url : streamId;
+        const contentId = defineContentId(material, interactiveMode, streamId, sessionId);
 
         showContent({
             variables: {

@@ -254,6 +254,20 @@ export const defineContentType = (material:any, interactiveMode:InteractiveMode)
         return ContentType.Stream;
     }
 };
+
+export const defineContentId = (material:any, interactiveMode:InteractiveMode, streamId:any, sessionId:any) => {
+    if(interactiveMode === InteractiveMode.OnStage) return sessionId;
+    if(interactiveMode === InteractiveMode.Observe) return material.url;
+
+    if(material.__typename === MaterialTypename.Video || (material.__typename === undefined && material.video) || material.__typename === MaterialTypename.Audio){
+        return sessionId;
+    }else if (material.__typename === MaterialTypename.Image) {
+        return material.url;
+    }else{
+        return streamId;
+    }
+};
+
 export interface BrandingType {
     iconImageURL: string;
     primaryColor: string;
