@@ -82,7 +82,6 @@ function ObserveWarning (props:any){
 
     useEffect(() => {
         setObserveContent(observeContent);
-        console.log(`observeWarning Opened`, observeContent);
     }, [ observeOpen ]);
 
     return(

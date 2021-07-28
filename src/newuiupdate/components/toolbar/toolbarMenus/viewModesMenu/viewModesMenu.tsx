@@ -32,8 +32,10 @@ function ViewModesMenu (props:ViewModesMenuProps) {
 
     const ObserveWarningActive = () => {
         const checkShow = localStorage.getItem(`ObserveWarning`) !== null ? localStorage.getItem(`ObserveWarning`) : `true`;
-        if(checkShow === `true`) setObserveOpen(true);
-        else setObserveContent(true); setInteractiveMode(InteractiveMode.Observe);
+        switch (checkShow) {
+            case `true`: setObserveOpen(true); break;
+            case `false`: setInteractiveMode(InteractiveMode.Observe); break;
+        }
     };
 
     return (
@@ -58,7 +60,7 @@ function ViewModesMenu (props:ViewModesMenuProps) {
                         id: `viewmodes_observe`,
                     })}
                     icon={<ObserveIcon />}
-                    active={interactiveMode === InteractiveMode.Observe}
+                    active={interactiveMode === InteractiveMode.Observe && !observeOpen}
                     onClick={() => ObserveWarningActive()}
                 />
 
@@ -74,7 +76,11 @@ function ViewModesMenu (props:ViewModesMenuProps) {
                 <ObserveWarning
                     open={observeOpen}
                     onClose={() => setObserveOpen(false)}
-                    onConfirm={() => { setObserveOpen(false); setObserveContent(!observeContent); setInteractiveMode(InteractiveMode.Observe);} }
+                    onConfirm={() => {
+                        setObserveOpen(false);
+                        setObserveContent(!observeContent);
+                        setInteractiveMode(InteractiveMode.Observe);
+                    }}
                 />
 
             </Grid>
