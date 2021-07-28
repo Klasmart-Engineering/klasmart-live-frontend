@@ -120,11 +120,9 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
         },
     });
 
-    if(loadingShowContent){
-        setIsShowContentLoading(true);
-    }else{
-        setIsShowContentLoading(false);
-    }
+    useEffect(() => {
+        setIsShowContentLoading(loadingShowContent);
+    }, [ loadingShowContent ]);
 
     useEffect(() => {
         if (!hasControls) return;
