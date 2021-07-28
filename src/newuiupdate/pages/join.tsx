@@ -551,6 +551,7 @@ function JoinRoomForm ({
         }
         setCamera(stream);
         setHasJoinedClassroom(true);
+        localStorage.setItem('ObserveWarning', 'true');
     }
 
     return (
