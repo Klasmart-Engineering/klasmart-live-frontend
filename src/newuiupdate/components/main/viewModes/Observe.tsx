@@ -1,8 +1,10 @@
 import { Session } from "../../../../pages/room/room";
 import { LocalSessionContext } from "../../../providers/providers";
 import { RoomContext } from "../../../providers/roomContext";
+import { isShowContentLoadingState } from "../../../states/layoutAtoms";
 import { Whiteboard } from "../../../whiteboard/components/Whiteboard";
 import { useSynchronizedState } from "../../../whiteboard/context-providers/SynchronizedStateProvider";
+import Loading from "../../utils/interactiveContent/loading";
 import { PreviewPlayer } from "../../utils/interactiveContent/previewPlayer";
 import { RecordedIframe } from "../../utils/interactiveContent/recordediframe";
 import { fullScreenById } from "../../utils/utils";
@@ -24,6 +26,7 @@ import React,
     useState,
 } from "react";
 import { useIntl } from "react-intl";
+import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -191,6 +194,8 @@ function StudentPreviewCard ({ session }: { session: Session }) {
     const cardConRef = useRef<HTMLDivElement>(null);
     const [ width, setWidth ] = useState<number>(0);
     const [ height, setHeight ] = useState<number>(0);
+    const [ loadingStreamId, setLoadingStreamId ] = useState<boolean>(true);
+    const [ isShowContentLoading, setIsShowContentLoading ] = useRecoilState(isShowContentLoadingState);
 
     const filterGroups = useMemo(() => {
         return [ session.id ];
@@ -204,6 +209,14 @@ function StudentPreviewCard ({ session }: { session: Session }) {
             setHeight(contHeight);
         }
     }, []);
+
+    useEffect(() => {
+        setLoadingStreamId(true);
+    }, [ isShowContentLoading ]);
+
+    useEffect(() => {
+        setLoadingStreamId(false);
+    }, [ session.streamId ]);
 
     return (
         <div
@@ -225,6 +238,7 @@ function StudentPreviewCard ({ session }: { session: Session }) {
                             <ExpandIcon size="0.75em" />
                         </div>
                         <PreviewPlayer
+                            loadingStreamId={loadingStreamId}
                             width={width}
                             height={height}
                             container={`observe:${session.streamId}`}
@@ -232,7 +246,7 @@ function StudentPreviewCard ({ session }: { session: Session }) {
                     </div>
                 </> :
                 <div className={classes.centerContent}>
-                    <OfflineIcon size="3em"/>
+                    <Loading messageId="Connecting student" />
                 </div>
             }
 
