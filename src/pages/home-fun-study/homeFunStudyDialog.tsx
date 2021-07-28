@@ -551,6 +551,17 @@ function HomeFunStudyAssignment({
     onClickUpload: () => void, onDeleteAssignment: (item: AssignmentItem) => void
 }) {
     const classes = useStyles();
+
+    const [shouldShowChooseFile, setShouldShowChooseFile] = useState(false);
+    
+    useEffect(() => {
+        if(assignmentItems.length >= 3){
+            setShouldShowChooseFile(false);
+        }else{
+            setShouldShowChooseFile(true);
+        }
+    }, [assignmentItems])
+
     return (
         <Grid item xs>
             <Box mb={2}>
@@ -569,14 +580,19 @@ function HomeFunStudyAssignment({
 
                     </Box>
                 </Box>
-                <Typography variant="caption" display="block" color="textSecondary">*Maximum three
-                    files</Typography>
+                {
+                    (shouldShowChooseFile)
+                        ? <Typography variant="caption" display="block" color="textSecondary"><FormattedMessage id={"home_fun_study_maximum_three_files"}/></Typography>
+                        :  <Typography variant="caption" display="block" color="secondary"><FormattedMessage id={"home_fun_study_maximum_three_files_limited"} /></Typography>
+                }
+
                 <Box my={2}>
                     <Button
                         variant="outlined"
                         color="primary"
                         className={classes.rounded_button}
                         onClick={onClickUpload}
+                        disabled={!shouldShowChooseFile}
                         startIcon={<StyledIcon icon={<UploadIcon/>} size="medium" color="primary"/>}
                     >
                         <Typography variant="body2">Choose File</Typography>
