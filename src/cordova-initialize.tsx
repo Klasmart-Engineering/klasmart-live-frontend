@@ -5,6 +5,8 @@ const useCordovaInitialize = (backExitApplication?: boolean, callbackBackButton?
     const [cordovaReady, setCordovaReady] = useState(false);
     const [permissions, setPermissions] = useState(false);
     const [keepAwake, setKeepAwake] = useState(true);
+    const [isIOS, setIsIOS] = useState<boolean>(false);
+    const [isAndroid, setIsAndroid] = useState<boolean>(false);
 
     const { updateLayout } = useVideoLayoutUpdate(null);
 
@@ -102,6 +104,9 @@ const useCordovaInitialize = (backExitApplication?: boolean, callbackBackButton?
                 wkWebView.injectCookie('.kidsloop.in/');
             }
 
+            setIsAndroid(cordova.platformId === `android`);
+            setIsIOS(cordova.platformId === `ios`);
+
             setCordovaReady(true);
         };
 
@@ -160,7 +165,7 @@ const useCordovaInitialize = (backExitApplication?: boolean, callbackBackButton?
         }
     }, [keepAwake]);
 
-    return { cordovaReady, permissions, requestPermissions, requestIosCameraPermission, keepAwake, setKeepAwake };
+    return { cordovaReady, permissions, requestPermissions, requestIosCameraPermission, keepAwake, setKeepAwake, isIOS, isAndroid };
 };
 
 export default useCordovaInitialize;
