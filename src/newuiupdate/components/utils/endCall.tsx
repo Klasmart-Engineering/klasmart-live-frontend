@@ -147,9 +147,6 @@ function DialogEndClass (props:any){
     const [ endClass ] = useMutation(MUTATION_ENDCLASS, {
         context: {
             target: LIVE_LINK,
-        },
-        onCompleted() {
-            localStorage.setItem('ObserveWarning', 'true');
         }
     });
 
