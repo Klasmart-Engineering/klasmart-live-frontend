@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {Header} from "../../components/header";
 import {
     Box,
@@ -40,6 +40,7 @@ import {DetailConfirmDialog} from "../../components/dialogs/detailConfirmDialog"
 import {ErrorDialogState} from "../../components/dialogs/baseErrorDialog";
 import {ConfirmDialogState} from "../../components/dialogs/baseConfirmDialog";
 import {isBlank} from "../../utils/StringUtils";
+import { CordovaSystemContext } from "../../context-provider/cordova-system-context";
 
 export type HomeFunStudyFeedback = {
     studyId: string,
@@ -219,11 +220,11 @@ function HomeFunStudyContainer({
         open: false, title: "", description: [], itemId: "", attachmentName: ""
     });
     const [assignmentItems, setAssignmentItems] = useState<AssignmentItem[]>([]);
-    const {fileSelectService} = useServices();
-    const {contentService} = useServices();
+    const {fileSelectService, contentService} = useServices();
     const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
     const hfsFeedbacks = useSelector((state: State) => state.data.hfsFeedbacks);
-    const [saveAssignmentItems, setSaveAssignmentItems] = useState<{ shouldSave: boolean, assignmentItems: AssignmentItem[] }>()
+    const [saveAssignmentItems, setSaveAssignmentItems] = useState<{ shouldSave: boolean, assignmentItems: AssignmentItem[] }>();
+    const { isIOS } = useContext(CordovaSystemContext);
 
     function generateAssignmentItemId() {
         return Math.random().toString(36).substring(7);
@@ -374,7 +375,11 @@ function HomeFunStudyContainer({
     }
 
     function handleClickUpload() {
-        setOpenButtonSelector(true);
+        if (isIOS) {
+            onSelectFile();
+        } else {
+            setOpenButtonSelector(true);
+        }
     }
 
     function onSelectFile() {
