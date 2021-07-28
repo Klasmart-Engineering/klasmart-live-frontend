@@ -107,6 +107,7 @@ export function Schedule() {
 
     useEffect(() => {
         lockOrientation(OrientationType.PORTRAIT, dispatch);
+        dispatch(setSelectHomeFunStudyDialogOpen(false))
     }, [])
 
     useEffect(() => {
