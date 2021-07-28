@@ -11,12 +11,14 @@ type Props = {
 
 type CordovaSystemContext = {
     ready: boolean,
+    isIOS: boolean,
+    isAndroid: boolean,
     devicePermissions: boolean,
     restart?: () => void,
     quit?: () => void,
 }
 
-const CordovaSystemContext = createContext<CordovaSystemContext>({ ready: false, devicePermissions: false });
+export const CordovaSystemContext = createContext<CordovaSystemContext>({ ready: false, devicePermissions: false, isIOS: false, isAndroid: false });
 
 export function CordovaSystemProvider({ children, history }: Props) {
     const [displayExitDialogue, setDisplayExitDialogue] = useState<boolean>(false);
@@ -29,7 +31,7 @@ export function CordovaSystemProvider({ children, history }: Props) {
         (navigator as any).app.exitApp();
     }, []);
 
-    const { cordovaReady, permissions } = useCordovaInitialize(false, () => {
+    const { cordovaReady, permissions, isIOS, isAndroid } = useCordovaInitialize(false, () => {
         const isRootPage = window.location.hash.includes("/schedule") || window.location.hash === "#/";
         if (window.location.hash.includes("/room")) {
             restart();
@@ -49,10 +51,6 @@ export function CordovaSystemProvider({ children, history }: Props) {
         return <Loading messageId="cordova_loading" />;
     }
 
-    const LoadingPermissions = () => {
-        return <Loading messageId="Camera and Microphone premissions required. Please grant the permissions and restart application." />;
-    }
-
     const Content = () => {
         return <>
             { children}
@@ -61,7 +59,7 @@ export function CordovaSystemProvider({ children, history }: Props) {
     }
 
     return (
-        <CordovaSystemContext.Provider value={{ ready: cordovaReady, devicePermissions: permissions, restart, quit }}>
+        <CordovaSystemContext.Provider value={{ ready: cordovaReady, devicePermissions: permissions, restart, quit, isIOS, isAndroid }}>
             { !cordovaReady ? <LoadingCordova /> : <Content /> }
         </CordovaSystemContext.Provider>
     )
