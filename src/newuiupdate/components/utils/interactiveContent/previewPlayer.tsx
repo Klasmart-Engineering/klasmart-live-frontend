@@ -44,10 +44,11 @@ export interface Props {
     height: any;
     frameProps?: React.DetailedHTMLProps<React.IframeHTMLAttributes<HTMLIFrameElement>, HTMLIFrameElement>;
     container?: any;
+    loadingStreamId?: boolean;
 }
 
 export function PreviewPlayer ({
-    streamId, frameProps, width, height, container,
+    streamId, frameProps, width, height, container, loadingStreamId,
 }: Props): JSX.Element {
     console.log(`flag3 PreviewPlayer steramId: `, streamId);
     const ref = useRef<HTMLIFrameElement>(null);
@@ -60,8 +61,6 @@ export function PreviewPlayer ({
     const [ isShowContentLoading, setIsShowContentLoading ] = useRecoilState(isShowContentLoadingState);
     const [ isLessonPlanOpen, setIsLessonPlanOpen ] = useRecoilState(isLessonPlanOpenState);
     const [ transformScale, setTransformScale ] = useState<number>(1);
-    const [ loadingPreviewPlayer, setLoadingPreviewPlayer ] = useState<boolean>(true);
-    const [ loadingParentEvents, setLoadingParentEvents ] = useState<boolean>(true);
 
     const { content } = useContext(RoomContext);
     const { isTeacher } = useContext(LocalSessionContext);
@@ -71,9 +70,6 @@ export function PreviewPlayer ({
 
     useEffect(() => {
         console.log(`flag3 loading true, contentId: `, content?.contentId);
-
-        setLoadingPreviewPlayer(true);
-        setLoadingParentEvents(true);
     }, [ content?.contentId ]);
 
     useEffect(() => {
@@ -176,8 +172,6 @@ export function PreviewPlayer ({
             }
             await sleep(800); // Await to make sure we resize correctly
         }
-
-        setLoadingPreviewPlayer(false);
     };
 
     useEffect(() => {
@@ -188,7 +182,6 @@ export function PreviewPlayer ({
             // When the page is ready, start sending buffered events
             if(event.data === `ready`) {
                 sendEvent();
-                setLoadingParentEvents(false);
             }
             if (event.data.width && event.data.height) {
                 const fWidth = Number(event.data.width.replace(`px`, ``));
@@ -203,7 +196,10 @@ export function PreviewPlayer ({
         return () => window.removeEventListener(`message`, onIframeEvents);
     }, [  ]);
 
-    if (loading || isShowContentLoading) {
+    if (loadingStreamId) {
+        return <Loading messageId="Waiting for a stream" />;
+    }
+    if (loading) {
         console.log(`flag3 loading: `, loading, `   streamId:`, streamId);
         return <Loading messageId="Page loading" />;
     }
@@ -217,15 +213,12 @@ export function PreviewPlayer ({
             alignItems: `center`,
             justifyContent: `center`,
         }}>
-        <>
-            {( loadingPreviewPlayer || loadingParentEvents ) && <Loading messageId="Activity loading" /> }
-        </>
         <iframe
             key={streamId}
             ref={ref}
             id={`preview:${streamId}`}
             style={{
-                visibility: loading || isShowContentLoading || loadingPreviewPlayer ? `hidden` : `visible`,
+                visibility: loading ? `hidden` : `visible`,
                 transformOrigin: `top left`,
                 transform: `scale(${transformScale})`,
                 position: `absolute`,
