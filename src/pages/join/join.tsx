@@ -90,6 +90,9 @@ export default function Join(): JSX.Element {
     useEffect(() => {
         const getCameraDevice = classtype == ClassType.LIVE;
 
+        console.log(`isAndroid: ${isAndroid}`);
+        console.log(`isIOS: ${isIOS}`);
+
         if (!permissions) {
             if (isAndroid) {
                 requestPermissions(getCameraDevice, true);
