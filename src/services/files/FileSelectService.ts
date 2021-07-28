@@ -4,6 +4,7 @@ import { IFileSelectService } from "./IFileSelectService";
 const DESTINATION_FILE_URI = 1;
 const SOURCE_PHOTOLIBRARY = 0;
 const SOURCE_CAMERA = 1;
+const MEDIA_TYPE_ALL = 2;
 
 export class FileSelectService implements IFileSelectService {
     async selectFile(): Promise<File> {
@@ -38,7 +39,8 @@ export class FileSelectService implements IFileSelectService {
 
         const options = {
             sourceType: SOURCE_PHOTOLIBRARY,
-            destinationType: DESTINATION_FILE_URI
+            destinationType: DESTINATION_FILE_URI,
+            mediaType: MEDIA_TYPE_ALL,
         };
 
         var selectGalleryProcedure = new Promise<File>((resolve, reject) => {
@@ -68,7 +70,8 @@ export class FileSelectService implements IFileSelectService {
 
         const options = {
             sourceType: SOURCE_CAMERA,
-            destinationType: DESTINATION_FILE_URI
+            destinationType: DESTINATION_FILE_URI,
+            mediaType: MEDIA_TYPE_ALL,
         };
 
         var selectGalleryProcedure = new Promise<File>((resolve, reject) => {
