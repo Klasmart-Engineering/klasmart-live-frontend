@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { FormattedMessage } from "react-intl";
 import { createStyles, makeStyles, useTheme, Theme } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
@@ -33,6 +33,7 @@ import { useHistory } from "react-router-dom";
 import { useUserInformation } from "../../context-provider/user-information-context";
 import { FacingType, useCameraContext } from "../../components/media/useCameraContext";
 import useCordovaInitialize from "../../cordova-initialize";
+import { CordovaSystemContext } from "../../context-provider/cordova-system-context";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -73,7 +74,13 @@ export default function Join(): JSX.Element {
     ]);
 
     const { error, stream, facing, setFacing, refreshCameras } = useCameraContext();
+
+    // TODO: Use th CordovaSystemContext instead of useCordovaInitialize to access
+    // permission status and functions. The useCordovaInitialize will run separately
+    // for each place it's used at. So while it behaves like something with global
+    // state, each invokation is actually separate.
     const { permissions, requestPermissions, requestIosCameraPermission } = useCordovaInitialize(undefined, undefined, true);
+    const { isAndroid, isIOS } = useContext(CordovaSystemContext);
 
     useEffect(() => {
         setFacing(videoDeviceId as FacingType);
@@ -83,9 +90,16 @@ export default function Join(): JSX.Element {
     useEffect(() => {
         const getCameraDevice = classtype == ClassType.LIVE;
 
+        console.log(`isAndroid: ${isAndroid}`);
+        console.log(`isIOS: ${isIOS}`);
+
         if (!permissions) {
-            // requestPermissions(getCameraDevice, true);
-            requestIosCameraPermission(getCameraDevice, true);
+            if (isAndroid) {
+                requestPermissions(getCameraDevice, true);
+            } else if(isIOS) {
+                requestIosCameraPermission(getCameraDevice, true);
+            }
+            
         } else if(getCameraDevice) {
             refreshCameras();
         }
