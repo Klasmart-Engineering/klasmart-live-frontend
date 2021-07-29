@@ -162,7 +162,7 @@ export function HomeFunStudyDialog() {
     useEffect(() => {
         function checkShowSubmitButtonCondition() {
             if (studyInfo && !studyInfo.exist_assessment && (studyInfo.due_at === 0 || studyInfo?.due_at >= todayTimeStamp)) {
-                const feedback = hfsFeedbacks.find(item => item.studyId === studyInfo.id)
+                const feedback = hfsFeedbacks?.find(item => item.studyId === studyInfo.id)
                 if (feedback && feedback.assignmentItems.length > 0 && !isBlank(feedback.comment)) {
                     return true;
                 }
@@ -263,7 +263,7 @@ function HomeFunStudyContainer({
                 return;
             let newAssignmentItems: AssignmentItem[] = [];
             if (hfsFeedbacks) {
-                const currentFeedback = hfsFeedbacks.find(feedback => feedback.studyId === studyInfo.id);
+                const currentFeedback = hfsFeedbacks?.find(feedback => feedback.studyId === studyInfo.id);
                 if (currentFeedback) {
                     newAssignmentItems = currentFeedback.assignmentItems;
                 }
