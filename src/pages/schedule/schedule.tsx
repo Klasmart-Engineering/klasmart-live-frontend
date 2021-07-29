@@ -462,6 +462,8 @@ function AnytimeStudyItem({ studyId, setSelectedSchedule, setOpenStudyDetail }: 
 
     const [studyInfo, setStudyInfo] = useState<ScheduleResponse>();
 
+    const dispatch = useDispatch();
+
     useEffect(() => {
         async function fetchEverything() {
             async function fetchScheduledStudyInfo() {
@@ -529,6 +531,8 @@ function ScheduledStudyItem({ studyId, setSelectedSchedule, setOpenStudyDetail }
     const [studyInfo, setStudyInfo] = useState<ScheduleResponse>();
     const [hasDueDate, setHasDueDate] = useState<boolean>(true);
     const [formattedDueDate, setFormattedDueDate] = useState<string>("");
+
+    const dispatch = useDispatch();
 
     useEffect(() => {
         async function fetchEverything() {
