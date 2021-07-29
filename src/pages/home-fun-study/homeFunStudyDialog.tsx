@@ -39,6 +39,7 @@ import {DetailErrorDialog} from "../../components/dialogs/detailErrorDialog";
 import {DetailConfirmDialog} from "../../components/dialogs/detailConfirmDialog";
 import {ErrorDialogState} from "../../components/dialogs/baseErrorDialog";
 import {ConfirmDialogState} from "../../components/dialogs/baseConfirmDialog";
+import {isBlank} from "../../utils/StringUtils";
 
 export type HomeFunStudyFeedback = {
     studyId: string,
@@ -86,6 +87,9 @@ const useStyles = makeStyles(() => ({
     }
 }));
 
+const now = new Date();
+const todayTimeStamp = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime() / 1000;
+
 export function HomeFunStudyDialog() {
     const [studyId, setStudyId] = useState<string>();
     const classes = useStyles();
@@ -98,7 +102,7 @@ export function HomeFunStudyDialog() {
     const [feedbacks, setFeedbacks] = useState<ScheduleFeedbackResponse[]>();
     const [key, setKey] = useState(Math.random().toString(36))
     const [loading, setLoading] = useState(false);
-    const [showSubmitButton, setShowSubmitButton] = useState(false);
+    const [shouldShowSubmitButton, setShouldShowSubmitButton] = useState(false);
 
     useEffect(() => {
         lockOrientation(OrientationType.PORTRAIT, dispatch);
@@ -155,15 +159,15 @@ export function HomeFunStudyDialog() {
 
     useEffect(() => {
         function checkShowSubmitButtonCondition(){
-            if(studyInfo && !studyInfo.exist_assessment){
+            if(studyInfo && !studyInfo.exist_assessment && (studyInfo.due_at === 0 || studyInfo?.due_at >= todayTimeStamp)){
                 const feedback = hfsFeedbacks.find(item => item.studyId === studyInfo.id)
-                if(feedback && feedback.assignmentItems.length > 0){
+                if(feedback && feedback.assignmentItems.length > 0 && !isBlank(feedback.comment)){
                     return true;
                 }
             }
             return false
         }
-        setShowSubmitButton(checkShowSubmitButtonCondition());
+        setShouldShowSubmitButton(checkShowSubmitButtonCondition());
     }, [studyInfo, hfsFeedbacks])
     return (
         <Dialog
@@ -186,7 +190,7 @@ export function HomeFunStudyDialog() {
                 <Button fullWidth variant="contained"
                         className={classes.rounded_button}
                         color="primary"
-                        disabled={!showSubmitButton}
+                        disabled={!shouldShowSubmitButton}
                         classes={{
                             disabled: classes.disabled_button,
                         }}
