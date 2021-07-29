@@ -99,7 +99,7 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
                 <DialogContent>
                     <Grid container direction={`column`} justify={`center`} alignItems={`center`} spacing={4}>
                         <Grid container item direction={`row`} spacing={1}>
-                            <Grid item xs={3}>
+                            <Grid item xs={4} sm={3}>
                                 <Typography variant="body1" className={rowHeaderText}>
                                     Description
                                 </Typography>
@@ -111,7 +111,7 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
                             </Grid>
                         </Grid>
                         { dueAt ? <Grid container item direction={`row`} spacing={1}>
-                            <Grid item xs={3}>
+                            <Grid item x={4} sm={3}>
                                 <Typography variant="body1" className={rowHeaderText}>
                                     Due Date
                                 </Typography>
@@ -123,7 +123,7 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
                             </Grid>
                         </Grid> : undefined }
                         { startAt ? <Grid container item direction={`row`} spacing={1}>
-                            <Grid item xs={3}>
+                            <Grid item xs={4} sm={3}>
                                 <Typography variant="body1" className={rowHeaderText}>
                                     Start Time
                                 </Typography>
@@ -135,7 +135,7 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
                             </Grid>
                         </Grid> : undefined }
                         { endAt ? <Grid container item direction={`row`} spacing={1}>
-                            <Grid item xs={3}>
+                            <Grid item xs={4} sm={3}>
                                 <Typography variant="body1" className={rowHeaderText}>
                                     End Time
                                 </Typography>
@@ -147,7 +147,7 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
                             </Grid>
                         </Grid> : undefined }
                         <Grid container item direction={`row`} spacing={1}>
-                            <Grid item xs={3}>
+                            <Grid item xs={4} sm={3}>
                                 <Typography variant="body1" className={rowHeaderText}>
                                     Class Name
                                 </Typography>
@@ -159,7 +159,7 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
                             </Grid>
                         </Grid>
                         <Grid container item direction={`row`} spacing={1}>
-                            <Grid item xs={3}>
+                            <Grid item xs={4} sm={3}>
                                 <Typography variant="body1" className={rowHeaderText}>
                                     Lesson Plan
                                 </Typography>
@@ -171,7 +171,7 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
                             </Grid>
                         </Grid>
                         <Grid container item direction={`row`} spacing={1}>
-                            <Grid item xs={3}>
+                            <Grid item xs={4} sm={3}>
                                 <Typography variant="body1" className={rowHeaderText}>
                                     Attachment
                                 </Typography>
