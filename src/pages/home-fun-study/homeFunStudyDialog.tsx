@@ -107,6 +107,7 @@ export function HomeFunStudyDialog() {
     useEffect(() => {
         lockOrientation(OrientationType.PORTRAIT, dispatch);
     }, [])
+
     useEffect(() => {
         if (selectHomeFunStudyDialog?.studyId) {
             setStudyId(selectHomeFunStudyDialog.studyId);
@@ -158,15 +159,16 @@ export function HomeFunStudyDialog() {
     }, [studyId, selectedOrg, key, selectedUserId])
 
     useEffect(() => {
-        function checkShowSubmitButtonCondition(){
-            if(studyInfo && !studyInfo.exist_assessment && (studyInfo.due_at === 0 || studyInfo?.due_at >= todayTimeStamp)){
+        function checkShowSubmitButtonCondition() {
+            if (studyInfo && !studyInfo.exist_assessment && (studyInfo.due_at === 0 || studyInfo?.due_at >= todayTimeStamp)) {
                 const feedback = hfsFeedbacks.find(item => item.studyId === studyInfo.id)
-                if(feedback && feedback.assignmentItems.length > 0 && !isBlank(feedback.comment)){
+                if (feedback && feedback.assignmentItems.length > 0 && !isBlank(feedback.comment)) {
                     return true;
                 }
             }
             return false
         }
+
         setShouldShowSubmitButton(checkShowSubmitButtonCondition());
     }, [studyInfo, hfsFeedbacks])
     return (
@@ -240,25 +242,26 @@ function HomeFunStudyContainer({
         function displayAssignments() {
             if (!studyInfo)
                 return;
-            let newAssignmentItems : AssignmentItem[] = [];
+            let newAssignmentItems: AssignmentItem[] = [];
             //Submitted feedback from CMS.
             // If the HFS have been submitted, it should be prioritized to show feedback from CMS first.
-            if(studyInfo.exist_feedback && feedbacks && feedbacks.length > 0){
+            if (studyInfo.exist_feedback && feedbacks && feedbacks.length > 0) {
                 const feedBackAssignments = feedbacks[0].assignments;
                 newAssignmentItems = convertAssignmentsToAssignmentItems(feedBackAssignments);
                 setAssignmentItems(newAssignmentItems);
                 setSaveAssignmentItems({shouldSave: true, assignmentItems: newAssignmentItems})
             }
         }
+
         displayAssignments()
     }, [studyInfo, feedbacks])
 
     useEffect(() => {
-        function displayAssignmentsFromLocal(){
-            if(!studyInfo)
+        function displayAssignmentsFromLocal() {
+            if (!studyInfo)
                 return;
-            let newAssignmentItems : AssignmentItem[] = [];
-            if(hfsFeedbacks){
+            let newAssignmentItems: AssignmentItem[] = [];
+            if (hfsFeedbacks) {
                 const currentFeedback = hfsFeedbacks.find(feedback => feedback.studyId === studyInfo.id);
                 if (currentFeedback) {
                     newAssignmentItems = currentFeedback.assignmentItems;
@@ -266,6 +269,7 @@ function HomeFunStudyContainer({
             }
             setAssignmentItems(newAssignmentItems);
         }
+
         displayAssignmentsFromLocal()
     }, [hfsFeedbacks])
 
@@ -298,7 +302,7 @@ function HomeFunStudyContainer({
             saveAssignments(saveAssignmentItems.assignmentItems)
         }
     }, [saveAssignmentItems])
-
+    
     useEffect(() => {
         //Check assignmentItems every time file is selected.
         //If it detects that the file is in selected state, then upload it.
@@ -505,8 +509,9 @@ function HomeFunStudyContainer({
                     </Box>
                 </Grid>
                 <HomeFunStudyAssignment
-                    assignmentItems={assignmentItems} onClickUploadInfo={handleClickUploadInfo}
-                    onClickUpload={handleClickUpload} onDeleteAssignment={handleDeleteAssignmentItem}/>
+                    assignmentItems={assignmentItems}
+                    onClickUploadInfo={handleClickUploadInfo} onClickUpload={handleClickUpload} 
+                    onDeleteAssignment={handleDeleteAssignmentItem} />
                 <HomeFunStudyComment
                     studyId={studyInfo?.id}
                     defaultComment={feedbacks && feedbacks.length > 0 ? feedbacks[0].comment : ""}
