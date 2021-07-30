@@ -6,17 +6,6 @@ import {
     getDefaultLanguageCode,
     getLanguage,
 } from "../../utils/locale";
-    MaterialTypename,
-} from "../../lessonMaterialContext";
-import {
-import React,
-{
-    createContext,
-    ReactChild,
-    ReactChildren,
-    useMemo,
-    useState,
-} from "../../utils/locale";
 import { themeProvider } from "../themeProvider";
 import { ThemeProvider } from "@material-ui/core";
 import jwt_decode from "jwt-decode";
