@@ -6,14 +6,24 @@ export async function fetchJsonData<T>(url: string, method: string, parameters?:
     headers.append("Accept", "application/json");
     headers.append("Content-Type", "application/json");
 
-    if (parameters) {
-        url = `${url}?${qs.stringify(parameters, { encodeValuesOnly: true })}`;
-    }
-
-    const init = {
+    let init : any = {
         headers,
         method
     };
+
+    if (parameters) {
+        switch (method){
+            case 'GET':
+                url = `${url}?${qs.stringify(parameters, { encodeValuesOnly: true })}`;
+                break;
+            case 'POST':
+                init = {
+                    ...init,
+                    body: JSON.stringify(parameters)
+                }
+                break;
+        }
+    }
 
     let response = await fetch(url, init);
     if (response.status === 401 && auth) {
