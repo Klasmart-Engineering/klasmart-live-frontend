@@ -111,7 +111,7 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
                             </Grid>
                         </Grid>
                         { dueAt ? <Grid container item direction={`row`} spacing={1}>
-                            <Grid item x={4} sm={3}>
+                            <Grid item xs={4} sm={3}>
                                 <Typography variant="body1" className={rowHeaderText}>
                                     Due Date
                                 </Typography>
