@@ -573,7 +573,7 @@ function ToggleControls (props:any){
         hostMutation({
             variables: {
                 roomId,
-                hostId: user.id,
+                nextHostId: user.id,
             },
         });
     }
