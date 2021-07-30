@@ -12,7 +12,7 @@ import {
     Typography
 } from "@material-ui/core";
 import {Edit, InfoOutlined, HighlightOffOutlined} from "@material-ui/icons";
-import {makeStyles, Theme} from "@material-ui/core/styles";
+import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {lockOrientation} from "../../utils/screenUtils";
 import {OrientationType} from "../../store/actions";
 import {useDispatch, useSelector} from "react-redux";
@@ -42,6 +42,8 @@ import {ConfirmDialogState} from "../../components/dialogs/baseConfirmDialog";
 import {isBlank} from "../../utils/StringUtils";
 import { CordovaSystemContext } from "../../context-provider/cordova-system-context";
 import {useSnackbar} from "kidsloop-px";
+import {blue} from "@material-ui/core/colors";
+import clsx from "clsx";
 
 export type HomeFunStudyFeedback = {
     studyId: string,
@@ -63,40 +65,62 @@ export enum AttachmentStatus {
     UPLOADED
 }
 
-const useStyles = makeStyles(() => ({
-    noPadding: {
-        padding: 0
-    },
-    dialogActionsPadding: {
-        padding: "10px 15px"
-    },
-    container: {
-        height: "100%"
-    },
-    rounded_button: {
-        borderRadius: "12px",
-        paddingTop: "10px",
-        paddingBottom: "10px",
-    },
-    disabled_button: {
-        backgroundColor: "#A9CDFF",
-    },
-    submit_button: {
-        backgroundColor: "#3671CE",
-    },
-    file_icon: {
-        maxBlockSize: "2rem"
+const useStyles = makeStyles((theme: Theme) =>
+    createStyles ({
+        noPadding: {
+            padding: 0
+        },
+        dialogActionsPadding: {
+            padding: "10px 15px"
+        },
+        container: {
+            height: "100%"
+        },
+        rounded_button: {
+            borderRadius: "12px",
+            paddingTop: "10px",
+            paddingBottom: "10px",
+        },
+        disabled_button: {
+            backgroundColor: "#A9CDFF",
+        },
+        submit_button: {
+            backgroundColor: "#3671CE",
+        },
+        file_icon: {
+            maxBlockSize: "2rem"
+        },
+        buttonWrapper: {
+            width: "100%",
+            margin: theme.spacing(1),
+            position: 'relative',
+        },
+        buttonSubmitting: {
+            backgroundColor:"#d7e4f5",
+        },
+        buttonProgress: {
+            color: blue[500],
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            marginTop: -12,
+            marginLeft: -12,
+        },
     }
-}));
+));
 
 const now = new Date();
 const todayTimeStamp = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime() / 1000;
 
+enum SubmitStatus {
+    NONE, SUBMITTING, SUCCESS
+}
 export function HomeFunStudyDialog() {
     const intl = useIntl();
     const [studyId, setStudyId] = useState<string>();
     const classes = useStyles();
     const dispatch = useDispatch();
+    const {enqueueSnackbar} = useSnackbar();
     const selectHomeFunStudyDialog = useSelector((state: State) => state.control.selectHomeFunStudyDialogOpen);
     const hfsFeedbacks = useSelector((state: State) => state.data.hfsFeedbacks);
     const {schedulerService} = useServices();
@@ -107,7 +131,7 @@ export function HomeFunStudyDialog() {
     const [loading, setLoading] = useState(false);
     const [shouldShowSubmitButton, setShouldShowSubmitButton] = useState(false);
     const [shouldSubmitFeedback, setShouldSubmitFeedback] = useState(false);
-    const {enqueueSnackbar} = useSnackbar();
+    const [submitStatus, setSubmitStatus] = useState(SubmitStatus.NONE);
 
     useEffect(() => {
         lockOrientation(OrientationType.PORTRAIT, dispatch);
@@ -116,6 +140,7 @@ export function HomeFunStudyDialog() {
     useEffect(() => {
         if (selectHomeFunStudyDialog?.studyId) {
             setStudyId(selectHomeFunStudyDialog.studyId);
+            setKey(Math.random().toString(36)); //force to refresh HFS detail
         }
     }, [selectHomeFunStudyDialog])
     useEffect(() => {
@@ -165,6 +190,8 @@ export function HomeFunStudyDialog() {
 
     useEffect(() => {
         function checkShowSubmitButtonCondition() {
+            if(submitStatus === SubmitStatus.SUBMITTING)
+                return false;
             if (studyInfo && !studyInfo.exist_assessment && (studyInfo.due_at === 0 || studyInfo?.due_at >= todayTimeStamp)) {
                 const feedback = hfsFeedbacks?.find(item => item.studyId === studyInfo.id)
                 if (feedback && feedback.assignmentItems.length > 0 && !isBlank(feedback.comment)) {
@@ -175,7 +202,7 @@ export function HomeFunStudyDialog() {
         }
 
         setShouldShowSubmitButton(checkShowSubmitButtonCondition());
-    }, [studyInfo, hfsFeedbacks])
+    }, [studyInfo, hfsFeedbacks, submitStatus])
 
     useEffect(() => {
         async function submitFeedback(){
@@ -184,14 +211,35 @@ export function HomeFunStudyDialog() {
             const currentFeedback = hfsFeedbacks.find(feedback => feedback.studyId === studyInfo.id);
             if(!currentFeedback)
                 return Promise.reject();
+
+            setShouldSubmitFeedback(false);
+            setSubmitStatus(SubmitStatus.SUBMITTING);
+
             const result = await schedulerService.postScheduleFeedback(
                 selectedOrg.organization_id, studyInfo.id, currentFeedback.comment,
                 currentFeedback.assignmentItems.map((item, index) => ({attachment_id: item.attachmentId, attachment_name: item.attachmentName, number: index})))
+
             if(result && result.data && result.data.id){
-                enqueueSnackbar(intl.formatMessage({id: "submission_successful"}))
+                setSubmitStatus(SubmitStatus.SUCCESS);
+                enqueueSnackbar(intl.formatMessage({id: "submission_successful"}), {
+                    variant: "success",
+                    anchorOrigin: {
+                        vertical: 'top',
+                        horizontal: 'center',
+                    }
+                })
+                dispatch(setSelectHomeFunStudyDialogOpen({open: false, submitted: true})) //trigger to refresh the schedule list
+            }else{
+                setSubmitStatus(SubmitStatus.NONE);
+                //TODO: popup error message
             }
         }
-        submitFeedback()
+        try{
+            submitFeedback()
+        }catch (err){
+            throw new Error(err);
+        }
+
     }, [selectedOrg, studyInfo, hfsFeedbacks, schedulerService, shouldSubmitFeedback])
 
     return (
@@ -212,15 +260,18 @@ export function HomeFunStudyDialog() {
                     }}/>}
             </DialogContent>
             <DialogActions className={classes.dialogActionsPadding}>
-                <Button fullWidth variant="contained"
-                        className={classes.rounded_button}
-                        color="primary"
-                        disabled={!shouldShowSubmitButton}
-                        onClick={() => {setShouldSubmitFeedback(true)}}
-                        classes={{
-                            disabled: classes.disabled_button,
-                        }}
-                > <FormattedMessage id="button_submit"/></Button>
+                <div className={classes.buttonWrapper}>
+                    <Button fullWidth variant="contained"
+                            className={clsx({
+                                [classes.buttonSubmitting]: submitStatus === SubmitStatus.SUBMITTING,
+                            }, classes.rounded_button)}
+                            color="primary"
+                            disabled={!shouldShowSubmitButton}
+                            onClick={() => {setShouldSubmitFeedback(true)}}
+                    > <FormattedMessage id="button_submit"/></Button>
+                    {submitStatus === SubmitStatus.SUBMITTING && <CircularProgress size={24} className={classes.buttonProgress} />}
+                </div>
+
             </DialogActions>
         </Dialog>)
 }
