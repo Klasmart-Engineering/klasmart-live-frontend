@@ -85,6 +85,7 @@ export function Schedule() {
     const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
     const selectedUserId = useSelector((state: State) => state.session.selectedUserId);
     const inFlight = useSelector((state: State) => state.communication.inFlight);
+    const selectHomeFunStudyDialogOpen = useSelector((state: State) => state.control.selectHomeFunStudyDialogOpen);
 
     const { schedulerService } = useServices();
 
@@ -109,6 +110,13 @@ export function Schedule() {
         lockOrientation(OrientationType.PORTRAIT, dispatch);
         dispatch(setSelectHomeFunStudyDialogOpen(false))
     }, [])
+
+    useEffect(() => {
+        if(selectHomeFunStudyDialogOpen && selectHomeFunStudyDialogOpen.submitted){
+            dispatch(setSelectHomeFunStudyDialogOpen({submitted: false}))
+            setKey(Math.random().toString(36)); //force to refresh the schedule list
+        }
+    },[selectHomeFunStudyDialogOpen])
 
     useEffect(() => {
         async function fetchEverything() {
