@@ -1,11 +1,11 @@
 import React, { createContext, ReactChild, ReactChildren, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { UserInformation } from "../services/user/IUserInformationService";
-import { setLocale, setRegionId, setSelectedOrg, setSelectedUserId } from "../store/reducers/session";
+import { setLocale, setRegionId, setSelectedOrg, setSelectedUserId, setTransferToken } from "../store/reducers/session";
 import { State } from "../store/store";
 import { useServices } from "./services-provider";
 
-// TODO (Axel): All of this context can be combined with the user-context from 
+// TODO (Axel): All of this context can be combined with the user-context from
 // the combined master branch. This would be preferred since they share
 // the same responsibilities. Not using the same name at this point to
 // prevent conflicts later when integrating.
@@ -54,7 +54,7 @@ const useAuthentication = () => {
 
     const { authenticationService } = useServices();
 
-    const [tokenFromAuth, setTokenFromAuth] = useState<string>();
+    const tokenFromAuth = useSelector((state: State) => state.session.transferToken);
 
     const dispatch = useDispatch();
 
@@ -115,10 +115,14 @@ const useAuthentication = () => {
     }, [authenticated, authenticationService]);
 
     useEffect(() => {
+        console.log('ready to transfer');
         if (!authenticationService) return;
+        console.log('ready to transfer with authenticationService:' + authenticationService);
         if (!tokenFromAuth) return;
-
+        console.log('ready to transfer with token:' + tokenFromAuth);
+        console.log("ready to transfer");
         authenticationService.transfer(tokenFromAuth).then(() => {
+            console.log("transfer successful");
             setSignedOut(false);
             refresh();
         }).catch(err => {
@@ -126,7 +130,7 @@ const useAuthentication = () => {
             setAuthError(true);
         });
 
-        setTokenFromAuth(undefined);
+        dispatch(setTransferToken(undefined))
 
     }, [authenticationService, tokenFromAuth]);
 
@@ -142,19 +146,22 @@ const useAuthentication = () => {
             }
 
             if (url.searchParams) {
+
                 const languageCode = url.searchParams.get("iso");
                 if (languageCode) {
                     dispatch(setLocale(languageCode))
                 }
 
                 const region = url.searchParams.get("region");
-
                 if (region) {
                     dispatch(setRegionId(region))
                 }
 
                 const token = url.searchParams.get("token");
-                setTokenFromAuth(token ?? undefined);
+                if(token){
+                    dispatch(setTransferToken(token))
+                }
+
             }
         };
 
