@@ -11,6 +11,7 @@ type SessionState = {
     selectedUserId: string | undefined;
     selectedOrg: OrganizationResponse | undefined;
     regionId: string;
+    transferToken: string | undefined,
 }
 
 const initialSessionState: SessionState = {
@@ -36,7 +37,8 @@ const initialSessionState: SessionState = {
     locale: getDefaultLanguageCode(),
     selectedUserId: undefined,
     selectedOrg: undefined,
-    regionId: "auth.alpha.kidsloop.net",
+    regionId: "auth.kidsloop.net",
+    transferToken: undefined,
 }
 
 const sessionSlice = createSlice({
@@ -63,6 +65,9 @@ const sessionSlice = createSlice({
         },
         setRegionId(state, action) {
             return { ...state, regionId: action.payload }
+        },
+        setTransferToken(state, action) {
+            return { ...state, transferToken: action.payload }
         }
     }
 })
@@ -74,7 +79,8 @@ export const {
     setLocale,
     setSelectedUserId,
     setSelectedOrg,
-    setRegionId
+    setRegionId,
+    setTransferToken
 } = sessionSlice.actions
 
 export default sessionSlice.reducer
