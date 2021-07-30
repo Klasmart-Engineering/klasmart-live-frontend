@@ -227,7 +227,7 @@ export function PreviewPlayer ({
                 width: frameWidth,
                 height: frameHeight,
             }}
-            src={`player.html`}
+            src={`player.html?streamId=${streamId}`}
             onLoad={() => onLoad()}
             {...frameProps}
         />
