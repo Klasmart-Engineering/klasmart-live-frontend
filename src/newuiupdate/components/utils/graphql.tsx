@@ -20,8 +20,8 @@ export const SEND_MESSAGE = gql`
 `;
 
 export const MUTATION_SET_HOST = gql`
-    mutation setHost($roomId: ID!, $hostId: ID!) {
-        setHost(roomId: $roomId, hostId: $hostId)
+    mutation setHost($roomId: ID!, $nextHostId: ID!) {
+        setHost(roomId: $roomId, nextHostId: $nextHostId)
     }
 `;
 
@@ -42,7 +42,6 @@ export const MUTATION_SHOW_CONTENT = gql`
         showContent(roomId: $roomId, type: $type, contentId: $contentId)
     }
 `;
-
 
 export const ORGANIZATION_BRANDING_QUERY = gql`
     query organization($organization_id: ID!) {

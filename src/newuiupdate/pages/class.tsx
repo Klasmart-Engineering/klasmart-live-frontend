@@ -155,15 +155,6 @@ function Class () {
         const host = teachers.find(session => session.isHost === true);
         if (host){
             host?.id === sessionId ? setHasControls(true) : setHasControls(false);
-        } else if (!host && teachers.length) {
-            const hostId = teachers[0].id;
-            hostMutation({
-                variables: {
-                    roomId,
-                    hostId,
-                },
-            });
-            setHasControls(true);
         }
     }, [ sessions.size, sessions ]);
 
