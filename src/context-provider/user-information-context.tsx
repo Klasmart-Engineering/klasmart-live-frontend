@@ -115,12 +115,9 @@ const useAuthentication = () => {
     }, [authenticated, authenticationService]);
 
     useEffect(() => {
-        console.log('ready to transfer');
         if (!authenticationService) return;
-        console.log('ready to transfer with authenticationService:' + authenticationService);
         if (!tokenFromAuth) return;
-        console.log('ready to transfer with token:' + tokenFromAuth);
-        console.log("ready to transfer");
+
         authenticationService.transfer(tokenFromAuth).then(() => {
             console.log("transfer successful");
             setSignedOut(false);
