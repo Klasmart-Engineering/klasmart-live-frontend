@@ -4,7 +4,7 @@ type ControlState = {
     themeMode: "light" | "dark";
     selectOrgDialogOpen: boolean;
     selectUserDialogOpen: boolean;
-    selectHomeFunStudyDialogOpen: { open: boolean, studyId?: string }
+    selectHomeFunStudyDialogOpen: { open: boolean, studyId?: string, submitted?: false }
     drawerOpen: boolean;
     drawerWidth: number;
     drawerTabIndex: number;
