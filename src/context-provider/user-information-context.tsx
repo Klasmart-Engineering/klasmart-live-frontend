@@ -119,7 +119,6 @@ const useAuthentication = () => {
         if (!tokenFromAuth) return;
 
         authenticationService.transfer(tokenFromAuth).then(() => {
-            console.log("transfer successful");
             setSignedOut(false);
             refresh();
         }).catch(err => {
