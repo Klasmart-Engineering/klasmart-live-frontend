@@ -182,6 +182,7 @@ const messages: Record<string, string> = {
     home_fun_study_your_comment: "Your Comment",
     home_fun_study_maximum_three_files: "*Maximum three files",
     home_fun_study_maximum_three_files_limited: "*Maximum three files limit has been reached. Delete uploaded file(s) to upload new file” is displayed on the screen",
+    submission_successful : "Submission successful",
 
     auth_waiting_for_authentication: "Waiting for authentication...",
 
