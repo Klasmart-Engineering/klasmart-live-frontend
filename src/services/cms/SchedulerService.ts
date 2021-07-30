@@ -7,7 +7,7 @@ import {
     TimeView,
     ScheduleLiveTokenType,
     ScheduleLiveTokenResponse,
-    ScheduleClassType, ScheduleFeedbackResponse,
+    ScheduleClassType, ScheduleFeedbackResponse, PostScheduleFeedbackResponse, Assignment,
 } from "./ISchedulerService";
 
 /**
@@ -73,6 +73,17 @@ export class SchedulerService implements ISchedulerService {
             org_id: organizationId,
             schedule_id: scheduleId,
             user_id: userId
+        }, this.auth);
+
+        return result;
+    }
+
+    async postScheduleFeedback(organizationId: string, scheduleId: string, comment: string, assignments: Assignment[]): Promise<PostScheduleFeedbackResponse> {
+        const url = `${this.endpoint}/v1/schedules_feedbacks?org_id=${organizationId}`;
+        const result = await fetchJsonData<PostScheduleFeedbackResponse>(url, "POST", {
+            schedule_id: scheduleId,
+            assignments: assignments,
+            comment: comment
         }, this.auth);
 
         return result;

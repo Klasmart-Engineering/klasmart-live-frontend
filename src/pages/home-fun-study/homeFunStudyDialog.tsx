@@ -41,6 +41,7 @@ import {ErrorDialogState} from "../../components/dialogs/baseErrorDialog";
 import {ConfirmDialogState} from "../../components/dialogs/baseConfirmDialog";
 import {isBlank} from "../../utils/StringUtils";
 import { CordovaSystemContext } from "../../context-provider/cordova-system-context";
+import {useSnackbar} from "kidsloop-px";
 
 export type HomeFunStudyFeedback = {
     studyId: string,
@@ -92,11 +93,12 @@ const now = new Date();
 const todayTimeStamp = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime() / 1000;
 
 export function HomeFunStudyDialog() {
+    const intl = useIntl();
     const [studyId, setStudyId] = useState<string>();
     const classes = useStyles();
     const dispatch = useDispatch();
     const selectHomeFunStudyDialog = useSelector((state: State) => state.control.selectHomeFunStudyDialogOpen);
-    const hfsFeedbacks = useSelector((state: State) => state.data.hfsFeedbacks); //TODO: Find the comment in this list to submit.
+    const hfsFeedbacks = useSelector((state: State) => state.data.hfsFeedbacks);
     const {schedulerService} = useServices();
     const {selectedOrg, selectedUserId} = useSelector((state: State) => state.session);
     const [studyInfo, setStudyInfo] = useState<ScheduleResponse>();
@@ -104,6 +106,8 @@ export function HomeFunStudyDialog() {
     const [key, setKey] = useState(Math.random().toString(36))
     const [loading, setLoading] = useState(false);
     const [shouldShowSubmitButton, setShouldShowSubmitButton] = useState(false);
+    const [shouldSubmitFeedback, setShouldSubmitFeedback] = useState(false);
+    const {enqueueSnackbar} = useSnackbar();
 
     useEffect(() => {
         lockOrientation(OrientationType.PORTRAIT, dispatch);
@@ -173,6 +177,23 @@ export function HomeFunStudyDialog() {
         setShouldShowSubmitButton(checkShowSubmitButtonCondition());
     }, [studyInfo, hfsFeedbacks])
 
+    useEffect(() => {
+        async function submitFeedback(){
+            if(!shouldSubmitFeedback || !selectedOrg || !studyInfo || !hfsFeedbacks || !schedulerService)
+                return Promise.reject();
+            const currentFeedback = hfsFeedbacks.find(feedback => feedback.studyId === studyInfo.id);
+            if(!currentFeedback)
+                return Promise.reject();
+            const result = await schedulerService.postScheduleFeedback(
+                selectedOrg.organization_id, studyInfo.id, currentFeedback.comment,
+                currentFeedback.assignmentItems.map((item, index) => ({attachment_id: item.attachmentId, attachment_name: item.attachmentName, number: index})))
+            if(result && result.data && result.data.id){
+                enqueueSnackbar(intl.formatMessage({id: "submission_successful"}))
+            }
+        }
+        submitFeedback()
+    }, [selectedOrg, studyInfo, hfsFeedbacks, schedulerService, shouldSubmitFeedback])
+
     return (
         <Dialog
             aria-labelledby="select-home-fun-study-dialog"
@@ -195,6 +216,7 @@ export function HomeFunStudyDialog() {
                         className={classes.rounded_button}
                         color="primary"
                         disabled={!shouldShowSubmitButton}
+                        onClick={() => {setShouldSubmitFeedback(true)}}
                         classes={{
                             disabled: classes.disabled_button,
                         }}
