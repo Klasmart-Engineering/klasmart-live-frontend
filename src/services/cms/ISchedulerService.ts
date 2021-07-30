@@ -100,6 +100,10 @@ export type ScheduleLiveTokenResponse = {
     token: string
 }
 
+export type PostScheduleFeedbackResponse = {
+    data: {id: string}
+}
+
 /**
  * Client side API interface for: https://swagger-ui.kidsloop.net/#/schedule
  */
@@ -114,4 +118,6 @@ export interface ISchedulerService {
     getScheduleToken(organizationId: string, scheduleId: string): Promise<ScheduleLiveTokenResponse>;
 
     getScheduleFeedbacks(organizationId: string, scheduleId: string, userId: string): Promise<ScheduleFeedbackResponse[]>;
+
+    postScheduleFeedback(organizationId: string, scheduleId: string, comment: string, assignments: Assignment[]) : Promise<PostScheduleFeedbackResponse>;
 }
