@@ -1,16 +1,29 @@
 import {
-    LIVE_LINK, LocalSessionContext, SFU_LINK,
+    LIVE_LINK,
+    LocalSessionContext,
+    SFU_LINK,
 } from "../../providers/providers";
 import { RoomContext } from "../../providers/roomContext";
 import {
     GLOBAL_MUTE_QUERY,
-    MUTE, MuteNotification, WebRTCContext,
+    MUTE,
+    MuteNotification,
+    WebRTCContext,
 } from "../../providers/WebRTCContext";
-import { hasControlsState,  pinnedUserState } from "../../states/layoutAtoms";
+import {
+    hasControlsState,
+    pinnedUserState,
+} from "../../states/layoutAtoms";
 import { useSynchronizedState } from "../../whiteboard/context-providers/SynchronizedStateProvider";
-import { MUTATION_REWARD_TROPHY, MUTATION_SET_HOST } from "../utils/graphql";
+import {
+    MUTATION_REWARD_TROPHY,
+    MUTATION_SET_HOST,
+} from "../utils/graphql";
 import { fullScreenById } from "../utils/utils";
-import { useMutation, useQuery } from "@apollo/client";
+import {
+    useMutation,
+    useQuery,
+} from "@apollo/client";
 import {
     Grid,
     IconButton,
@@ -213,7 +226,6 @@ function UserCameraActions (props: UserCameraActionsType) {
                 { expanded &&
                     <ExpandCamera user={user} />
                 }
-
 
                 <Grid item>
                     {isTeacher && !user.isTeacher &&
