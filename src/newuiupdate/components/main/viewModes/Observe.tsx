@@ -7,7 +7,10 @@ import { useSynchronizedState } from "../../../whiteboard/context-providers/Sync
 import Loading from "../../utils/interactiveContent/loading";
 import { PreviewPlayer } from "../../utils/interactiveContent/previewPlayer";
 import { RecordedIframe } from "../../utils/interactiveContent/recordediframe";
-import { fullScreenById } from "../../utils/utils";
+import {
+    fullScreenById,
+    sleep,
+} from "../../utils/utils";
 import {
     makeStyles,
     Theme,
@@ -201,6 +204,11 @@ function StudentPreviewCard ({ session }: { session: Session }) {
         return [ session.id ];
     }, [ session ]);
 
+    const loadStudentPreviewPlayer = async () => {
+        await sleep(1000); // Debug await (KLL-1025)
+        setLoadingStreamId(false);
+    };
+
     useEffect(() => {
         if (cardConRef.current) {
             const contWidth = cardConRef.current.getBoundingClientRect().width;
@@ -215,7 +223,7 @@ function StudentPreviewCard ({ session }: { session: Session }) {
     }, [ isShowContentLoading ]);
 
     useEffect(() => {
-        setLoadingStreamId(false);
+        loadStudentPreviewPlayer();
     }, [ session.streamId ]);
 
     return (

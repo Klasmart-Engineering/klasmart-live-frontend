@@ -1,10 +1,21 @@
-import { LessonMaterial, MaterialTypename } from "../../lessonMaterialContext";
-import { getDefaultLanguageCode, getLanguage } from "../../utils/locale";
+import {
+    LessonMaterial,
+    MaterialTypename,
+} from "../../lessonMaterialContext";
+import {
+    getDefaultLanguageCode,
+    getLanguage,
+} from "../../utils/locale";
 import { themeProvider } from "../themeProvider";
 import { ThemeProvider } from "@material-ui/core";
 import jwt_decode from "jwt-decode";
-import React, {
-    createContext, ReactChild, ReactChildren,  useMemo, useState,
+import React,
+{
+    createContext,
+    ReactChild,
+    ReactChildren,
+    useMemo,
+    useState,
 } from 'react';
 import { RawIntlProvider } from "react-intl";
 import { v4 as uuid } from "uuid";
@@ -159,7 +170,102 @@ function parseToken () {
                 isTeacher: payload.teacher ? Boolean(payload.teacher) : false,
                 name: payload.name ? String(payload.name) : undefined,
                 roomId: String(payload.roomid),
-                materials: parsedMaterials || [],
+                materials: [
+                    {
+                        __typename: MaterialTypename.Iframe,
+                        name: `Dropdown`,
+                        url: `/h5p/play/609e050cfeff9b0013f6c71b`,
+                    },
+                    {
+                        __typename : MaterialTypename.Iframe,
+                        name : `Drag and Drop`,
+                        url: `/h5p/play/609e0052df569400130f3783`,
+                    },
+                    {
+                        __typename: MaterialTypename.Iframe,
+                        name: `Question`,
+                        url: `/h5p/play/609e008ddf569400130f3784`,
+                    },
+                    {
+                        __typename: MaterialTypename.Iframe,
+                        name: `City name`,
+                        url: `/h5p/play/609e0263feff9b0013f6c717`,
+                    },
+                    {
+                        __typename: MaterialTypename.Iframe,
+                        name: `Interactive book`,
+                        url: `/h5p/play/609e02d4feff9b0013f6c718`,
+                    },
+                    {
+                        __typename: MaterialTypename.Iframe,
+                        name: `Course presentation 2`,
+                        url: `/h5p/play/60865f9c76be5300133fba76`,
+                    },
+                    {
+                        __typename: MaterialTypename.Iframe,
+                        name: `Cards`,
+                        url: `/h5p/play/609e03dbdf569400130f3786`,
+                    },
+                    {
+                        __typename: MaterialTypename.Iframe,
+                        name: `Question choices`,
+                        url: `/h5p/play/609e0410feff9b0013f6c719`,
+                    },
+                    {
+                        __typename: MaterialTypename.Iframe,
+                        name: `Flash cards`,
+                        url: `/h5p/play/609bb507aa2a8d001333c8c9`,
+                    },
+                    {
+                        __typename: MaterialTypename.Iframe,
+                        name: `Course presentation - Video`,
+                        url: `/h5p/play/60a22f864a8573001389a2bf`,
+                    },
+                    {
+                        __typename: MaterialTypename.Video,
+                        name: `Video`,
+                        url: `${process.env.ENDPOINT_TEST_ASSETS_S3 || `.`}/test_video.mp4`,
+                    },
+                    {
+                        __typename: MaterialTypename.Audio,
+                        name: `Audio`,
+                        url: `${process.env.ENDPOINT_TEST_ASSETS_S3 || `.`}/test_audio.m4a`,
+                    },
+                    {
+                        __typename: MaterialTypename.Iframe,
+                        name: `Portrait PDF`,
+                        url: `./test_pdf.pdf`,
+                    },
+                    {
+                        __typename: MaterialTypename.Image,
+                        name: `Portrait Image`,
+                        url: `./test_image-1.jpeg`,
+                    },
+                    {
+                        __typename: MaterialTypename.Image,
+                        name: `Landscape Image`,
+                        url: `./test_image-2.jpeg`,
+                    },
+                    {
+                        name: `Pairs - Legacy`,
+                        url: `/h5p/play/5ecf4e4b611e18398f7380ef`,
+                    },
+                    {
+                        name: `Video - Legacy`,
+                        video: `${process.env.ENDPOINT_TEST_ASSETS_S3 || `.`}/test_video.mp4`,
+                    },
+                    {
+                        __typename: MaterialTypename.Iframe,
+                        name: `Colum Presentation`,
+                        url: `/h5p/play/608b9065e5085e0014359f72`,
+                    },
+                    {
+                        __typename: MaterialTypename.Iframe,
+                        name: `Interactive video`,
+                        url: `/h5p/play/60b5f49e378c7c0013f8bdc1`,
+                    },
+
+                ],
             };
         }
         // TODO think of a better way to set up the debug environment
