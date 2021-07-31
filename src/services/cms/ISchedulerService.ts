@@ -101,7 +101,8 @@ export type ScheduleLiveTokenResponse = {
 }
 
 export type PostScheduleFeedbackResponse = {
-    data: {id: string}
+    data: {id: string},
+    label: string
 }
 
 /**
