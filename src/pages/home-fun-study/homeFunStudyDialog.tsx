@@ -44,7 +44,7 @@ import { CordovaSystemContext } from "../../context-provider/cordova-system-cont
 import {useSnackbar} from "kidsloop-px";
 import {blue} from "@material-ui/core/colors";
 import clsx from "clsx";
-import {usePopup} from "../../context-provider/popup-context";
+import {usePopupContext} from "../../context-provider/popup-context";
 
 export type HomeFunStudyFeedback = {
     studyId: string,
@@ -122,7 +122,7 @@ export function HomeFunStudyDialog() {
     const classes = useStyles();
     const dispatch = useDispatch();
     const {enqueueSnackbar} = useSnackbar();
-    const {showPopup} = usePopup();
+    const {showPopup} = usePopupContext();
     const selectHomeFunStudyDialog = useSelector((state: State) => state.control.selectHomeFunStudyDialogOpen);
     const hfsFeedbacks = useSelector((state: State) => state.data.hfsFeedbacks);
     const {schedulerService} = useServices();
@@ -242,13 +242,15 @@ export function HomeFunStudyDialog() {
                         dispatch(setSelectHomeFunStudyDialogOpen({open: false, submitted: true})) //trigger to refresh the schedule list
                     }else{
                         if(result && result.label){
-                            showPopup('detailError', {
+                            showPopup({
+                                variant: 'detailError',
                                 title: intl.formatMessage({id: "submission_failed"}),
                                 description: [ intl.formatMessage({id: "submission_failed_message"}), result.label ],
                                 closeLabel: intl.formatMessage({id: "button_ok"})
                             });
                         }else{
-                            showPopup('error', {
+                            showPopup({
+                                variant: 'error',
                                 title: intl.formatMessage({id: "submission_failed"}),
                                 description: [ intl.formatMessage({id: "submission_failed_message"}) ],
                                 closeLabel: intl.formatMessage({id: "button_ok"})
@@ -257,7 +259,9 @@ export function HomeFunStudyDialog() {
                     }
                     setSubmitStatus(SubmitStatus.NONE);
                 }).catch(err => {
-                    showPopup('detailError', {
+                    setSubmitStatus(SubmitStatus.NONE);
+                    showPopup({
+                        variant: 'detailError',
                         title: intl.formatMessage({id: "submission_failed"}),
                         description: [ intl.formatMessage({id: "submission_failed_message"}), err.message ],
                         closeLabel: intl.formatMessage({id: "button_ok"})
