@@ -1,14 +1,23 @@
-import React, {createContext, ReactChild, ReactChildren, useContext, useState} from "react";
+import React, {
+    createContext,
+    ReactNode,
+    useContext,
+    useReducer,
+} from "react";
 import {ConfirmDialog} from "../components/dialogs/confirmDialog";
 import {DetailConfirmDialog} from "../components/dialogs/detailConfirmDialog";
 import {DetailErrorDialog} from "../components/dialogs/detailErrorDialog";
 import {ErrorDialog} from "../components/dialogs/errorDialog";
 
 type Props = {
-    children: ReactChild | ReactChildren | null
+    children: ReactNode
 }
 
-type PopupDetail = {
+type VariantType = 'error' | 'detailError' | 'confirm' | 'detailConfirm'
+
+type PopupState = {
+    variant: VariantType,
+    open?: boolean,
     title: string,
     description: string[],
     closeLabel: string,
@@ -17,73 +26,99 @@ type PopupDetail = {
     onConfirm?: () => void
 }
 
-type VariantType = 'error' | 'detailError' | 'confirm' | 'detailConfirm'
+type PopupAction = {type: 'show' | 'close', state: PopupState}
 
-type PopupContext = {
-    showPopup: (variant: VariantType, popupDetail: PopupDetail) => void
+
+const initState: PopupState = {
+    variant: 'error',
+    open: false,
+    title: "",
+    description: [],
+    closeLabel: "",
+    onClose: () => {},
+    confirmLabel: "",
+    onConfirm: () => {}
 }
 
-const PopupContext = createContext<PopupContext>({showPopup: () => {}});
+type PopupContext = {
+    popupState: PopupState,
+    showPopup: (popupState : PopupState) => void,
+    closePopup: () => void
+}
+const PopupContext = createContext<PopupContext>({popupState: initState, showPopup: () => {}, closePopup: () => {}});
 
-export function PopupProvider({children} : Props){
-    const [title, setTitle] = useState("");
-    const [open, setOpen] = useState(false);
-    const [description, setDescription] = useState<string[]>([]);
-    const [closeLabel, setCloseLabel] = useState("");
-    const [confirmLabel, setConfirmLabel] = useState("");
-    const [variant, setVariant] = useState<VariantType>();
+const popupReducer = (state: PopupState, action: PopupAction) => {
+    switch (action.type){
+        case 'show':
+            return {...state, ...action.state}
+        case 'close':
+            return {...state, ...action.state}
+        default:
+            throw new Error("Unexpected popup action")
+    }
+}
+
+export function PopupElement(): JSX.Element {
+    const {popupState, closePopup } = usePopupContext();
 
     function handleClosePopup() {
         onClose();
-        setOpen(false);
+        closePopup();
     }
 
     function handleConfirmPopup() {
         onConfirm();
-        setOpen(false);
+        closePopup();
     }
 
     let onClose = () => {}
     let onConfirm = () => {}
-    const showPopup = (variant: VariantType, popupDetail: PopupDetail) => {
-        setVariant(variant);
-        setTitle(popupDetail.title);
-        setDescription(popupDetail.description);
-        setCloseLabel(popupDetail.closeLabel);
-        onClose = popupDetail.onClose ?? (() => {});
-        setConfirmLabel(popupDetail.confirmLabel ?? "");
-        onConfirm = popupDetail.onConfirm ?? (() => {});
-        setOpen(true);
+
+    switch (popupState.variant){
+        case "error":
+            return <ErrorDialog open={popupState.open ?? false} onClose={handleClosePopup} title={popupState.title} description={popupState.description} closeLabel={popupState.closeLabel}/>
+        case 'detailError':
+            return <DetailErrorDialog open={popupState.open ?? false} onClose={handleClosePopup} title={popupState.title} description={popupState.description} closeLabel={popupState.closeLabel}/>;
+        case 'confirm':
+            return <ConfirmDialog open={popupState.open ?? false} onClose={handleClosePopup} onConfirm={handleConfirmPopup} title={popupState.title} description={popupState.description} closeLabel={popupState.closeLabel} confirmLabel={popupState.confirmLabel ?? "Ok"}/>;
+        case 'detailConfirm':
+            return <DetailConfirmDialog open={popupState.open ?? false} onClose={handleClosePopup} onConfirm={handleConfirmPopup} title={popupState.title} description={popupState.description} closeLabel={popupState.closeLabel} confirmLabel={popupState.confirmLabel ?? "Ok"}/>;
+        default:
+            return <></>
+    }
+}
+export function PopupProvider({children} : Props){
+    const [popupState, popupDispatch] = useReducer(popupReducer, initState);
+    const showPopup = (popupState: PopupState) => {
+        popupDispatch({type: 'show', state: {
+            ...popupState,
+            onClose : popupState.onClose ?? (() => {}),
+            onConfirm : popupState.onConfirm ?? (() => {}),
+            confirmLabel: popupState.confirmLabel ?? "",
+            open: true
+        }})
+    }
+    const closePopup = () => {
+        popupDispatch({type: 'close', state: {
+            ...popupState,
+            open: false
+        }})
     }
 
-    function PopupElement({variant}:{variant?: VariantType}): JSX.Element {
-        switch (variant){
-            case "error":
-                return <ErrorDialog open={open} onClose={handleClosePopup} title={title} description={description} closeLabel={closeLabel}/>
-            case 'detailError':
-                return <DetailErrorDialog open={open} onClose={handleClosePopup} title={title} description={description} closeLabel={closeLabel}/>;
-            case 'confirm':
-                return <ConfirmDialog open={open} onClose={handleClosePopup} onConfirm={handleConfirmPopup} title={title} description={description} closeLabel={closeLabel} confirmLabel={confirmLabel}/>;
-            case 'detailConfirm':
-                return <DetailConfirmDialog open={open} onClose={handleClosePopup} onConfirm={handleConfirmPopup} title={title} description={description} closeLabel={closeLabel} confirmLabel={confirmLabel}/>;
-            default:
-                return <></>
-        }
+    const contextValue: PopupContext = {
+        popupState: popupState,
+        showPopup: showPopup,
+        closePopup: closePopup
     }
 
-    const Content = () => {
-        return <>
-            { children}
-            <PopupElement variant={variant}/>
-        </>
-    }
     return (
-        <PopupContext.Provider value={{showPopup: showPopup}}>
-            <Content />
+        <PopupContext.Provider value={contextValue}>
+            { children }
+            <PopupElement />
         </PopupContext.Provider>
     )
 }
 
-export function usePopup(){
+export function usePopupContext(){
     return useContext(PopupContext);
 }
