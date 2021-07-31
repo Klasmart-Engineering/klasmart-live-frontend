@@ -26,6 +26,7 @@ const messages: Record<string, string> = {
     upload_file_too_big: "Uploaded file should not be bigger than 100MB. Please try another file.",
     confirm_delete_description: "Are you sure you want to Delete?",
     home_fun_study: "Home Fun Study",
+    submission_failed_message: "Oops, an unexpected error occurred. Please try again.",
 
     err_button_home: "Home",
     err_button_signin: "Back to Sign In",
