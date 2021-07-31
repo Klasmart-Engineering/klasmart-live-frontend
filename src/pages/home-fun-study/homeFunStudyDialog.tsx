@@ -44,6 +44,7 @@ import { CordovaSystemContext } from "../../context-provider/cordova-system-cont
 import {useSnackbar} from "kidsloop-px";
 import {blue} from "@material-ui/core/colors";
 import clsx from "clsx";
+import {usePopup} from "../../context-provider/popup-context";
 
 export type HomeFunStudyFeedback = {
     studyId: string,
@@ -121,6 +122,7 @@ export function HomeFunStudyDialog() {
     const classes = useStyles();
     const dispatch = useDispatch();
     const {enqueueSnackbar} = useSnackbar();
+    const {showPopup} = usePopup();
     const selectHomeFunStudyDialog = useSelector((state: State) => state.control.selectHomeFunStudyDialogOpen);
     const hfsFeedbacks = useSelector((state: State) => state.data.hfsFeedbacks);
     const {schedulerService} = useServices();
@@ -206,7 +208,14 @@ export function HomeFunStudyDialog() {
 
     useEffect(() => {
         async function submitFeedback(){
-            if(!shouldSubmitFeedback || !selectedOrg || !studyInfo || !hfsFeedbacks || !schedulerService)
+            if (!schedulerService) {
+                throw new Error("Scheduler service not available.");
+            }
+
+            if (!selectedOrg) {
+                throw new Error("Organization is not selected.");
+            }
+            if(!shouldSubmitFeedback || !studyInfo || !hfsFeedbacks )
                 return Promise.reject();
             const currentFeedback = hfsFeedbacks.find(feedback => feedback.studyId === studyInfo.id);
             if(!currentFeedback)
@@ -217,38 +226,54 @@ export function HomeFunStudyDialog() {
             setShouldSubmitFeedback(false);
             setSubmitStatus(SubmitStatus.SUBMITTING);
 
-            const result = await schedulerService.postScheduleFeedback(
+            await schedulerService.postScheduleFeedback(
                 selectedOrg.organization_id, studyInfo.id, currentFeedback.comment,
                 currentFeedback.assignmentItems.map((item, index) => ({attachment_id: item.attachmentId, attachment_name: item.attachmentName, number: index})))
-
-            if(result && result.data && result.data.id){
-                setSubmitStatus(SubmitStatus.SUCCESS);
-                enqueueSnackbar(intl.formatMessage({id: "submission_successful"}), {
-                    variant: "success",
-                    anchorOrigin: {
-                        vertical: 'top',
-                        horizontal: 'center',
+                .then(result => {
+                    if(result && result.data && result.data.id){
+                        setSubmitStatus(SubmitStatus.SUCCESS);
+                        enqueueSnackbar(intl.formatMessage({id: "submission_successful"}), {
+                            variant: "success",
+                            anchorOrigin: {
+                                vertical: 'top',
+                                horizontal: 'center',
+                            }
+                        })
+                        dispatch(setSelectHomeFunStudyDialogOpen({open: false, submitted: true})) //trigger to refresh the schedule list
+                    }else{
+                        if(result && result.label){
+                            showPopup('detailError', {
+                                title: intl.formatMessage({id: "submission_failed"}),
+                                description: [ intl.formatMessage({id: "submission_failed_message"}), result.label ],
+                                closeLabel: intl.formatMessage({id: "button_ok"})
+                            });
+                        }else{
+                            showPopup('error', {
+                                title: intl.formatMessage({id: "submission_failed"}),
+                                description: [ intl.formatMessage({id: "submission_failed_message"}) ],
+                                closeLabel: intl.formatMessage({id: "button_ok"})
+                            });
+                        }
                     }
+                    setSubmitStatus(SubmitStatus.NONE);
+                }).catch(err => {
+                    showPopup('detailError', {
+                        title: intl.formatMessage({id: "submission_failed"}),
+                        description: [ intl.formatMessage({id: "submission_failed_message"}), err.message ],
+                        closeLabel: intl.formatMessage({id: "button_ok"})
+                    });
                 })
-                dispatch(setSelectHomeFunStudyDialogOpen({open: false, submitted: true})) //trigger to refresh the schedule list
-            }else{
-                setSubmitStatus(SubmitStatus.NONE);
-                //TODO: popup error message
-            }
         }
-        try{
-            submitFeedback()
-        }catch (err){
-            throw new Error(err);
-        }
-
+        submitFeedback().catch(err => {
+            console.log(err);
+        });
     }, [selectedOrg, studyInfo, hfsFeedbacks, schedulerService, shouldSubmitFeedback])
 
     return (
         <Dialog
             aria-labelledby="select-home-fun-study-dialog"
             fullScreen
-            open={selectHomeFunStudyDialog?.open}
+            open={selectHomeFunStudyDialog? selectHomeFunStudyDialog.open : false}
             onClose={() => dispatch(setSelectHomeFunStudyDialogOpen({open: false, studyInfo: undefined}))}
         >
             <DialogTitle className={classes.noPadding}>
@@ -271,7 +296,7 @@ export function HomeFunStudyDialog() {
                             disabled={!shouldShowSubmitButton}
                             onClick={() => {setShouldSubmitFeedback(true)}}
                     > <FormattedMessage id="button_submit"/></Button>
-                    {submitStatus === SubmitStatus.SUBMITTING && <CircularProgress size={24} className={classes.buttonProgress} />}
+                    {submitStatus === SubmitStatus.SUBMITTING ? <CircularProgress size={24} className={classes.buttonProgress} />: ''}
                 </div>
 
             </DialogActions>
@@ -423,6 +448,8 @@ function HomeFunStudyContainer({
                 updateAssignmentItemStatusToUploaded(assignmentItemId, contentResourceUploadPathResponse.resource_id);
             }
         } else {
+            deleteAssignmentItem(assignmentItemId);
+
             //TODO: Would be implement to alert the failed message (Hung)
         }
     }
@@ -524,17 +551,21 @@ function HomeFunStudyContainer({
         }
     }
 
-    function handleConfirmDeleteAssignmentItem() {
+    function deleteAssignmentItem(assignmentItemId: string) {
         const newAssignmentItems = assignmentItems.slice();
         for(let i = 0 ; i < newAssignmentItems.length ; i++){
-            if(newAssignmentItems[i].itemId === openDeleteAttachmentDialog.itemId){
+            if(newAssignmentItems[i].itemId === assignmentItemId){
                 newAssignmentItems.splice(i, 1);
                 break;
             }
         }
         setAssignmentItems(newAssignmentItems);
         setSaveAssignmentItems({shouldSave: true, assignmentItems: newAssignmentItems});
-        setOpenDeleteAttachmentDialog({open: false, title: "", description: [], itemId: "", attachmentName: ""})
+    }
+
+    function handleConfirmDeleteAssignmentItem() {
+        deleteAssignmentItem(openDeleteAttachmentDialog.itemId);
+        setOpenDeleteAttachmentDialog({open: false, title: "", description: [], itemId: "", attachmentName: ""});
     }
 
     function handleDeleteAssignmentItem(item: AssignmentItem){
