@@ -34,6 +34,7 @@ import { createHashHistory } from 'history'
 import { CordovaSystemProvider } from "./context-provider/cordova-system-context";
 import { CompositionRoot } from "./context-provider/composition-root";
 import { SnackbarProvider } from "kidsloop-px";
+import {PopupProvider} from "./context-provider/popup-context";
 
 function Entry() {
     const dispatch = useDispatch();
@@ -70,7 +71,9 @@ function Entry() {
                     <ThemeProvider theme={themeProvider(languageCode, themeMode)}>
                         <SnackbarProvider >
                             <CssBaseline />
-                            <App history={history} />
+                            <PopupProvider>
+                                <App history={history} />
+                            </PopupProvider>
                         </SnackbarProvider>
                     </ThemeProvider>
                 </CompositionRoot>
