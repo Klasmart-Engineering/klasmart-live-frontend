@@ -7,7 +7,7 @@ import {
 const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
 let hasReplayStarted = false;
-let hasReceivedFullSnapshot = false;
+const hasReceivedFullSnapshot = false;
 
 enum YoutubePlayerState {
     ENDED = 0,
@@ -48,13 +48,13 @@ window.addEventListener(`message`, ({ data }) => {
         if (!hasReplayStarted) {
             return;
         }
-        if (event.type === EventType.FullSnapshot) {
-            if(hasReceivedFullSnapshot) {
-                // don't rebuild full snapshot, it makes video appear glitchy
-                return;
-            }
-            hasReceivedFullSnapshot = true;
-        }
+        // if (event.type === EventType.FullSnapshot) {
+        //     if(hasReceivedFullSnapshot) {
+        //         // don't rebuild full snapshot, it makes video appear glitchy
+        //         return;
+        //     }
+        //     hasReceivedFullSnapshot = true;
+        // }
         if (event.type === EventType.Custom ) {
             // using rrwebPlayer.on('custom-event', handler) has latency issue
             onCustomEvent(event);
