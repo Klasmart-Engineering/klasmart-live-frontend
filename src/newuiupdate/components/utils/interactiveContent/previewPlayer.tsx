@@ -61,6 +61,7 @@ export function PreviewPlayer ({
     const [ isShowContentLoading, setIsShowContentLoading ] = useRecoilState(isShowContentLoadingState);
     const [ isLessonPlanOpen, setIsLessonPlanOpen ] = useRecoilState(isLessonPlanOpenState);
     const [ transformScale, setTransformScale ] = useState<number>(1);
+    const [ sizeLoading, setSizeLoading ] = useState<boolean>(false);
 
     const { content } = useContext(RoomContext);
     const { isTeacher } = useContext(LocalSessionContext);
@@ -82,6 +83,10 @@ export function PreviewPlayer ({
         frameHeight,
         size,
     ]);
+
+    useEffect(() => {
+        setSizeLoading(true);
+    }, [ streamId ]);
 
     const scale = (innerWidth: number, innerHeight: number) => {
         let currentWidth: number = size.width, currentHeight: number = size.height;
@@ -172,6 +177,8 @@ export function PreviewPlayer ({
             }
             await sleep(800); // Await to make sure we resize correctly
         }
+
+        setSizeLoading(false);
     };
 
     useEffect(() => {
@@ -213,12 +220,13 @@ export function PreviewPlayer ({
             alignItems: `center`,
             justifyContent: `center`,
         }}>
+        {sizeLoading && <Loading messageId="Loading stream" />}
         <iframe
             key={streamId}
             ref={ref}
             id={`preview:${streamId}`}
             style={{
-                visibility: loading ? `hidden` : `visible`,
+                visibility: loading || sizeLoading ? `hidden` : `visible`,
                 transformOrigin: `top left`,
                 transform: `scale(${transformScale})`,
                 position: `absolute`,
