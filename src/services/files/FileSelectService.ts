@@ -4,16 +4,32 @@ import { IFileSelectService } from "./IFileSelectService";
 const DESTINATION_FILE_URI = 1;
 const SOURCE_PHOTOLIBRARY = 0;
 const SOURCE_CAMERA = 1;
+const SOURCE_CAMERAROLL = 2;
 const MEDIA_TYPE_ALL = 2;
+
+const ACCEPT_MIME_TYPES = 
+    `application/pdf,` + 
+    `application/vnd.ms-powerpoint,` + 
+    `application/vnd.openxmlformats-officedocument.presentationml.presentation,` + 
+    `application/msword,` + 
+    `application/vnd.openxmlformats-officedocument.wordprocessingml.document,`;
+    `application/rtf,` + 
+    `text/plain,` + 
+    `text/csv,` + 
+    `audio/mpeg,` + 
+    `audio/x-m4a,` + 
+    `audio/*`;
 
 export class FileSelectService implements IFileSelectService {
     async selectFile(): Promise<File> {
         const input: HTMLInputElement = document.createElement(`input`);
         input.type = `file`;
+        input.accept = ACCEPT_MIME_TYPES;
 
         var selectFileProcedure = new Promise<File>((resolve, reject) => {
             input.onchange = (e: Event) => {
                 const target = e.target as HTMLInputElement ?? undefined;
+
                 if (target && target.files?.length) {
                     resolve(target.files[0]);
                 } else {
@@ -38,7 +54,7 @@ export class FileSelectService implements IFileSelectService {
         if (!camera) return Promise.reject(`No camera available.`);
 
         const options = {
-            sourceType: SOURCE_PHOTOLIBRARY,
+            sourceType: SOURCE_CAMERAROLL,
             destinationType: DESTINATION_FILE_URI,
             mediaType: MEDIA_TYPE_ALL,
         };
@@ -70,8 +86,7 @@ export class FileSelectService implements IFileSelectService {
 
         const options = {
             sourceType: SOURCE_CAMERA,
-            destinationType: DESTINATION_FILE_URI,
-            mediaType: MEDIA_TYPE_ALL,
+            destinationType: DESTINATION_FILE_URI
         };
 
         var selectGalleryProcedure = new Promise<File>((resolve, reject) => {

@@ -7,7 +7,7 @@ export function getFileExtensionFromName(fileName: string): string {
 export function validateFileExtension(extension: string): boolean {
     const validExtensions = ["avi", "mov", "mp4", "mp3", "wav", "jpg", "jpeg",
         "png", "gif", "bmp", "doc", "docx", "ppt", "pptx", "xls", "xlsx", "pdf"];
-    return validExtensions.includes(getFileExtensionFromName(extension));
+    return validExtensions.includes(getFileExtensionFromName(extension).toLowerCase());
 }
 
 export function validateFileType(file: File): boolean {

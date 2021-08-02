@@ -300,7 +300,6 @@ function HomeFunStudyContainer({
     const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
     const hfsFeedbacks = useSelector((state: State) => state.data.hfsFeedbacks);
     const [saveAssignmentItems, setSaveAssignmentItems] = useState<{ shouldSave: boolean, assignmentItems: AssignmentItem[] }>();
-    const { isIOS } = useContext(CordovaSystemContext);
 
     function generateAssignmentItemId() {
         return Math.random().toString(36).substring(7);
@@ -451,11 +450,7 @@ function HomeFunStudyContainer({
     }
 
     function handleClickUpload() {
-        if (isIOS) {
-            onSelectFile();
-        } else {
-            setOpenButtonSelector(true);
-        }
+        setOpenButtonSelector(true);
     }
 
     function onSelectFile() {
