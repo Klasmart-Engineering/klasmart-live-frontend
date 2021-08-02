@@ -620,11 +620,12 @@ function HomeFunStudyContainer({
                     </Box>
                 </Grid>
                 <HomeFunStudyAssignment
+                    studyInfo={studyInfo}
                     assignmentItems={assignmentItems}
                     onClickUploadInfo={handleClickUploadInfo} onClickUpload={handleClickUpload}
                     onDeleteAssignment={handleDeleteAssignmentItem} />
                 <HomeFunStudyComment
-                    studyId={studyInfo?.id}
+                    studyInfo={studyInfo}
                     defaultComment={feedbacks && feedbacks.length > 0 ? feedbacks[0].comment : ""}
                 />
             </Grid>
@@ -664,23 +665,24 @@ function HomeFunStudyContainer({
 }
 
 function HomeFunStudyAssignment({
+                                    studyInfo,
                                     assignmentItems, onClickUploadInfo,
                                     onClickUpload, onDeleteAssignment,
                                 }: {
-    assignmentItems: AssignmentItem[], onClickUploadInfo: () => void,
+    studyInfo: ScheduleResponse,assignmentItems: AssignmentItem[], onClickUploadInfo: () => void,
     onClickUpload: () => void, onDeleteAssignment: (item: AssignmentItem) => void
 }) {
     const classes = useStyles();
-
     const [shouldShowChooseFile, setShouldShowChooseFile] = useState(false);
+    const MAX_FILE_LIMIT = 3
 
     useEffect(() => {
-        if(assignmentItems.length >= 3){
+        if(assignmentItems.length >= MAX_FILE_LIMIT || studyInfo.complete_assessment){
             setShouldShowChooseFile(false);
         }else{
             setShouldShowChooseFile(true);
         }
-    }, [assignmentItems])
+    }, [assignmentItems, studyInfo])
 
     return (
         <Grid item xs>
@@ -701,7 +703,7 @@ function HomeFunStudyAssignment({
                     </Box>
                 </Box>
                 {
-                    (shouldShowChooseFile)
+                    (assignmentItems.length < MAX_FILE_LIMIT)
                         ? <Typography variant="caption" display="block" color="textSecondary"><FormattedMessage id={"home_fun_study_maximum_three_files"}/></Typography>
                         :  <Typography variant="caption" display="block" color="secondary"><FormattedMessage id={"home_fun_study_maximum_three_files_limited"} /></Typography>
                 }
@@ -711,7 +713,7 @@ function HomeFunStudyAssignment({
                         color="primary"
                         className={classes.rounded_button}
                         onClick={onClickUpload}
-                        disabled={!shouldShowChooseFile}
+                        disabled={!shouldShowChooseFile }
                         startIcon={<StyledIcon icon={<UploadIcon/>} size="medium" color="primary"/>}
                     >
                         <Typography variant="body2">Choose File</Typography>
@@ -728,17 +730,22 @@ function HomeFunStudyAssignment({
                                     primary={<Typography variant="body2"
                                                          color="textSecondary">{item.attachmentName}</Typography>}
                                 />
-                                <ListItemSecondaryAction>
-                                    {
-                                        item.status === AttachmentStatus.UPLOADED
-                                            ? <IconButton edge="end" aria-label="delete" onClick={() => {
-                                                onDeleteAssignment(item)
-                                            }}>
-                                                <HighlightOffOutlined color="primary"/>
-                                            </IconButton>
-                                            : <CircularProgress size={20} thickness={4}/>
-                                    }
-                                </ListItemSecondaryAction>
+                                {
+                                    !studyInfo.complete_assessment ?
+                                    <ListItemSecondaryAction>
+                                        {
+                                            item.status === AttachmentStatus.UPLOADED
+                                                ? <IconButton edge="end" aria-label="delete" onClick={() => {
+                                                    onDeleteAssignment(item)
+                                                }}>
+                                                    <HighlightOffOutlined color="primary"/>
+                                                </IconButton>
+                                                : <CircularProgress size={20} thickness={4}/>
+                                        }
+                                    </ListItemSecondaryAction>
+                                        : ''
+                                }
+
                             </ListItem>
                         ))}
                     </List>
@@ -748,7 +755,7 @@ function HomeFunStudyAssignment({
     );
 }
 
-function HomeFunStudyComment({studyId, defaultComment}: { studyId?: string, defaultComment: string }) {
+function HomeFunStudyComment({studyInfo, defaultComment}: { studyInfo: ScheduleResponse, defaultComment: string }) {
     const classes = useStyles();
 
     const dispatch = useDispatch();
@@ -757,9 +764,9 @@ function HomeFunStudyComment({studyId, defaultComment}: { studyId?: string, defa
     const hfsFeedbacks = useSelector((state: State) => state.data.hfsFeedbacks);
 
     useEffect(() => {
-        if (studyId) {
+        if (studyInfo.id) {
             for (let i = 0; hfsFeedbacks && i < hfsFeedbacks.length; i++) {
-                if (hfsFeedbacks[i].studyId == studyId) {
+                if (hfsFeedbacks[i].studyId == studyInfo.id) {
                     setComment(hfsFeedbacks[i].comment)
                     break;
                 }
@@ -773,13 +780,13 @@ function HomeFunStudyComment({studyId, defaultComment}: { studyId?: string, defa
 
     function handleSaveComment(newComment: string) {
         setComment(newComment);
-        if (studyId) {
+        if (studyInfo.id) {
             let newHFSFeedbacks = hfsFeedbacks ? hfsFeedbacks.slice() : [];
             let hasFeedback = false;
             for (let i = 0; i < newHFSFeedbacks.length; i++) {
-                if (newHFSFeedbacks[i].studyId == studyId) {
+                if (newHFSFeedbacks[i].studyId == studyInfo.id) {
                     newHFSFeedbacks[i] = {
-                        studyId: studyId,
+                        studyId: studyInfo.id,
                         comment: newComment,
                         assignmentItems: newHFSFeedbacks[i].assignmentItems
                     };
@@ -788,7 +795,7 @@ function HomeFunStudyComment({studyId, defaultComment}: { studyId?: string, defa
                 }
             }
             if (!hasFeedback) {
-                newHFSFeedbacks.push({studyId: studyId, comment: newComment, assignmentItems: []});
+                newHFSFeedbacks.push({studyId: studyInfo.id, comment: newComment, assignmentItems: []});
             }
             dispatch(setHomeFunStudies(newHFSFeedbacks));
         }
@@ -810,6 +817,7 @@ function HomeFunStudyComment({studyId, defaultComment}: { studyId?: string, defa
                     color="primary"
                     className={classes.rounded_button}
                     startIcon={<Edit/>}
+                    disabled={studyInfo.complete_assessment}
                     onClick={handleOnClickEditComment}
                 >
                     <Typography variant="body2">
