@@ -76,6 +76,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     listItemTextPrimary: {
         color: "#0C3680",
         fontWeight: 900
+    },
+    submittedText: {
+        color: "green"
     }
 }));
 
@@ -467,6 +470,7 @@ function AnytimeStudyItem({ studyId, setSelectedSchedule, setOpenStudyDetail }: 
     setSelectedSchedule: React.Dispatch<React.SetStateAction<ScheduleResponse | undefined>>,
     setOpenStudyDetail: React.Dispatch<React.SetStateAction<boolean>>
 }) {
+    const classes = useStyles();
     const { listItemAvatar, listItemTextPrimary } = useStyles();
     const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
 
@@ -518,9 +522,13 @@ function AnytimeStudyItem({ studyId, setSelectedSchedule, setOpenStudyDetail }: 
                 secondary={<Typography variant="caption" color="textSecondary"><FormattedMessage id={studyInfo?.is_home_fun ? "schedule_studyHomeFunStudy" : "schedule_studyAnytimeStudy"} /></Typography>}
             />
             {
-                studyInfo?.exist_feedback ?
+                studyInfo?.exist_assessment ?
                     <ListItemSecondaryAction>
-                        <Typography variant="subtitle2" color="textSecondary"><FormattedMessage id="schedule_studySubmittedFeedback" /></Typography>
+                        <Typography variant="subtitle2" color="textSecondary"><FormattedMessage id="schedule_studyAssessmentComplete" /></Typography>
+                    </ListItemSecondaryAction>
+                    : studyInfo?.exist_feedback
+                    ?<ListItemSecondaryAction>
+                        <Typography variant="subtitle2" className={classes.submittedText}><FormattedMessage id="schedule_studySubmittedFeedback" /></Typography>
                     </ListItemSecondaryAction> : ""
             }
         </ListItem>
@@ -532,7 +540,7 @@ function ScheduledStudyItem({ studyId, setSelectedSchedule, setOpenStudyDetail }
     setSelectedSchedule: React.Dispatch<React.SetStateAction<ScheduleResponse | undefined>>,
     setOpenStudyDetail: React.Dispatch<React.SetStateAction<boolean>>
 }) {
-    const { listRoot, listSubheaderText, listItemAvatar, listItemTextPrimary } = useStyles();
+    const { listRoot, listSubheaderText, listItemAvatar, listItemTextPrimary, submittedText } = useStyles();
     const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
     const { schedulerService } = useServices();
 
@@ -609,9 +617,13 @@ function ScheduledStudyItem({ studyId, setSelectedSchedule, setOpenStudyDetail }
                     </> : <Typography variant="caption" color="textSecondary"><FormattedMessage id="schedule_studyAnytimeStudy" /></Typography>}
                 />
                 {
-                    studyInfo?.exist_feedback ?
+                    studyInfo?.exist_assessment ?
                         <ListItemSecondaryAction>
-                            <Typography variant="subtitle2" color="textSecondary"><FormattedMessage id="schedule_studySubmittedFeedback" /></Typography>
+                            <Typography variant="subtitle2" color="textSecondary"><FormattedMessage id="schedule_studyAssessmentComplete" /></Typography>
+                        </ListItemSecondaryAction>
+                        : studyInfo?.exist_feedback
+                        ?<ListItemSecondaryAction>
+                            <Typography variant="subtitle2" className={submittedText}><FormattedMessage id="schedule_studySubmittedFeedback" /></Typography>
                         </ListItemSecondaryAction> : ""
                 }
             </ListItem>
