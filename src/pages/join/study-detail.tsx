@@ -23,11 +23,11 @@ const useStyles = makeStyles((theme: Theme) => ({
     }
 }));
 
-export default function StudyDetail({ schedule, open, onClose, joinStudy }: { 
-    schedule?: ScheduleResponse, 
+export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
+    schedule?: ScheduleResponse,
     open: boolean,
     onClose: () => void,
-    joinStudy: () => void }): JSX.Element 
+    joinStudy: () => void }): JSX.Element
 {
     const { dialogTitle, dialogTitleText, rowHeaderText, rowContentText } = useStyles();
 
@@ -69,7 +69,7 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
 
     // TODO: Will need to use a more specialized file saving mechanism
     // for Cordova. This opens the image in a new browser tab but the
-    // cookie for authentication isn't transferred over. So the user 
+    // cookie for authentication isn't transferred over. So the user
     // get authentication error trying to access the image.
     // NOTE: For now, because of file saving complexity, the app will
     // just support viewing the files. The only supported file type
@@ -178,11 +178,11 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
                             </Grid>
                             <Grid item xs>
                                 <Typography variant="body1" className={rowContentText}>
-                                    { attachmentDownloadLink && schedule?.attachment?.name ? 
+                                    { attachmentDownloadLink && schedule?.attachment?.name ?
                                         <Link variant="body1" href={`#`} onClick={() => openAttachmentLink()}>
                                             { schedule?.attachment?.name }
-                                        </Link> 
-                                        : `N/A` 
+                                        </Link>
+                                        : `N/A`
                                     }
                                 </Typography>
                             </Grid>
