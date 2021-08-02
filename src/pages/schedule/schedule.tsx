@@ -1,4 +1,4 @@
-import {ListItemSecondaryAction} from "@material-ui/core";
+import { ListItemSecondaryAction } from "@material-ui/core";
 
 const dateFormat = require("dateformat");
 import React, { useState, useEffect } from "react";
@@ -132,7 +132,7 @@ export function Schedule() {
 
                 const timeViewAll = thisMonthSchedules.concat(nextMonthSchedules);
                 const timeViewLiveAll = timeViewAll.filter((tv: ScheduleTimeViewResponse) => tv.class_type === ScheduleClassType.LIVE);
-                const timeViewStudyAll = timeViewAll.filter((tv: ScheduleTimeViewResponse) => tv.class_type === ScheduleClassType.STUDY && ( tv.is_home_fun && tv.due_at >= todayTimeStamp || !tv.is_home_fun && tv.due_at != 0));
+                const timeViewStudyAll = timeViewAll.filter((tv: ScheduleTimeViewResponse) => tv.class_type === ScheduleClassType.STUDY && (tv.is_home_fun && tv.due_at >= todayTimeStamp || !tv.is_home_fun && tv.due_at != 0));
 
                 dispatch(setScheduleTimeViewAll(timeViewAll));
                 dispatch(setScheduleTimeViewLiveAll(timeViewLiveAll));
@@ -207,18 +207,22 @@ export function Schedule() {
         if (!selectedSchedule) { return; }
         if (!selectedOrg) { return; }
 
-        dispatch(setLessonPlanIdOfSelectedSchedule(selectedSchedule.lesson_plan.id));
-        schedulerService.getScheduleToken(selectedOrg.organization_id, selectedSchedule.id).then((res) => {
-            if (res.token) {
-                setToken(res.token);
-                // TODO: Can we get rid of the token query parameter and just use
-                // react component state for keeping and parsing the token instead?
-                location.href = `#/join?token=${res.token}`;
-            } else {
-                setOpenAlert(true);
-                return;
-            }
-        })
+        if (selectedSchedule.is_home_fun) {
+            dispatch(setSelectHomeFunStudyDialogOpen({ open: true, studyId: selectedSchedule.id }))
+        } else {
+            dispatch(setLessonPlanIdOfSelectedSchedule(selectedSchedule.lesson_plan.id));
+            schedulerService.getScheduleToken(selectedOrg.organization_id, selectedSchedule.id).then((res) => {
+                if (res.token) {
+                    setToken(res.token);
+                    // TODO: Can we get rid of the token query parameter and just use
+                    // react component state for keeping and parsing the token instead?
+                    location.href = `#/join?token=${res.token}`;
+                } else {
+                    setOpenAlert(true);
+                    return;
+                }
+            })
+        }
     }
 
     if (userSelectErrorCode && userSelectErrorCode !== 401) {
@@ -253,7 +257,7 @@ export function Schedule() {
                 item
                 style={{ flexGrow: 1, overflowY: "auto", backgroundColor: "white" }}
             >
-                {classType === ClassType.LIVE ? <ScheduledLiveList setOpenAlert={setOpenAlert} /> : <ScheduledStudyList setSelectedSchedule={setSelectedSchedule} setOpenStudyDetail={setOpenStudyDetail}/>}
+                {classType === ClassType.LIVE ? <ScheduledLiveList setOpenAlert={setOpenAlert} /> : <ScheduledStudyList setSelectedSchedule={setSelectedSchedule} setOpenStudyDetail={setOpenStudyDetail} />}
             </Grid>
         }
         <ClassTypeSwitcher />
@@ -497,12 +501,8 @@ function AnytimeStudyItem({ studyId, setSelectedSchedule, setOpenStudyDetail }: 
     const displayScheduleInformation = () => {
         if (!studyInfo) return;
 
-        if(!studyInfo.is_home_fun) {
-            setSelectedSchedule(studyInfo);
-            setOpenStudyDetail(true);
-        } else{
-            dispatch(setSelectHomeFunStudyDialogOpen({open: true, studyId: studyInfo.id}))
-        }
+        setSelectedSchedule(studyInfo);
+        setOpenStudyDetail(true);
     }
 
     return (
@@ -515,7 +515,7 @@ function AnytimeStudyItem({ studyId, setSelectedSchedule, setOpenStudyDetail }: 
             <ListItemText
                 disableTypography
                 primary={<Typography variant="body1" className={listItemTextPrimary}>{studyInfo ? studyInfo.title : ""}</Typography>}
-                secondary={<Typography variant="caption" color="textSecondary"><FormattedMessage id={studyInfo?.is_home_fun ?"schedule_studyHomeFunStudy" : "schedule_studyAnytimeStudy"}/></Typography>}
+                secondary={<Typography variant="caption" color="textSecondary"><FormattedMessage id={studyInfo?.is_home_fun ? "schedule_studyHomeFunStudy" : "schedule_studyAnytimeStudy"} /></Typography>}
             />
             {
                 studyInfo?.exist_feedback ?
@@ -576,13 +576,8 @@ function ScheduledStudyItem({ studyId, setSelectedSchedule, setOpenStudyDetail }
     const displayScheduleInformation = () => {
         if (!studyInfo) return;
 
-        if(!studyInfo.is_home_fun){
-            setSelectedSchedule(studyInfo);
-            setOpenStudyDetail(true);
-
-        }else{
-            dispatch(setSelectHomeFunStudyDialogOpen({open: true, studyId: studyInfo.id}))
-        }
+        setSelectedSchedule(studyInfo);
+        setOpenStudyDetail(true);
     }
 
     return (
