@@ -211,6 +211,8 @@ export function HomeFunStudyDialog() {
             const currentFeedback = hfsFeedbacks.find(feedback => feedback.studyId === studyInfo.id);
             if(!currentFeedback)
                 return Promise.reject();
+            if(submitStatus === SubmitStatus.SUBMITTING)
+                return Promise.reject();
 
             setShouldSubmitFeedback(false);
             setSubmitStatus(SubmitStatus.SUBMITTING);
