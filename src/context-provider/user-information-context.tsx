@@ -245,6 +245,7 @@ export function UserInformationContextProvider({ children }: Props) {
         setSelectedUserProfile(undefined);
         setSelectedUserId(undefined);
         setMyUsers(undefined);
+        dispatch(setTransferToken(undefined))
     }, [signOut]);
 
     const context = useMemo<UserInformationContext>(() => {

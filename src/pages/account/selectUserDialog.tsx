@@ -18,7 +18,7 @@ import { useUserInformation } from "../../context-provider/user-information-cont
 import { useRegionSelect } from "../../context-provider/region-select-context";
 import { Header } from "../../components/header";
 import { State } from "../../store/store";
-import { setSelectedOrg, setSelectedUserId } from "../../store/reducers/session";
+import {setSelectedOrg, setSelectedUserId, setTransferToken} from "../../store/reducers/session";
 import { setSelectUserDialogOpen } from "../../store/reducers/control";
 import { UserInformation } from "../../services/user/IUserInformationService";
 import { List, ListItem, ListItemAvatar, ListItemIcon, ListItemText } from "@material-ui/core";
@@ -116,6 +116,7 @@ export function SelectUserDialog() {
         dispatch(setSelectUserDialogOpen(false));
         dispatch(setSelectedUserId(undefined));
         dispatch(setSelectedOrg(undefined));
+        dispatch(setTransferToken(undefined));
         actions?.signOutUser();
     }
 
