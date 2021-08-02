@@ -168,6 +168,7 @@ const messages: Record<string, string> = {
     schedule_studySubmittedFeedback: "Submitted",
     schedule_studyNoSchedule: "Nothing scheduled Study",
     schedule_selectOrgLoaded: "Please select an organization",
+    schedule_studyAssessmentComplete: "Assessment Complete",
 
     loading_mediaPermission: "Camera and Microphone premissions required. Please grant the permissions and restart application.",
 
