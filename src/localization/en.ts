@@ -29,6 +29,7 @@ const messages: Record<string, string> = {
     submission_failed_message: "Oops, an unexpected error occurred. Please try again.",
     label_info: "Info",
     block_for_assessment_completed: "This assignment has already been assessed by the teacher and can no longer be edited or re-submitted.",
+    file_upload_failed: "File upload failed. Please check your file and try again.",
 
     err_button_home: "Home",
     err_button_signin: "Back to Sign In",

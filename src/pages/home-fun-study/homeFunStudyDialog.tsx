@@ -303,9 +303,7 @@ export function HomeFunStudyDialog() {
                     });
                 })
         }
-        submitFeedback().catch(err => {
-            console.log(err);
-        });
+        submitFeedback()
     }, [selectedOrg, studyInfo, hfsFeedbacks, schedulerService, shouldSubmitFeedback])
 
     return (
@@ -348,6 +346,7 @@ function HomeFunStudyContainer({
                                }: { studyInfo?: ScheduleResponse, feedbacks?: ScheduleFeedbackResponse[] }) {
     const intl = useIntl();
     const dispatch = useDispatch();
+    const {enqueueSnackbar} = useSnackbar();
     const [openSupportFileInfo, setOpenSupportFileInfo] = useState(false);
     const [openButtonSelector, setOpenButtonSelector] = useState(false);
     const {showPopup} = usePopupContext()
@@ -480,8 +479,13 @@ function HomeFunStudyContainer({
             }
         } else {
             deleteAssignmentItem(assignmentItemId);
-
-            //TODO: Would be implement to alert the failed message (Hung)
+            enqueueSnackbar(intl.formatMessage({id: "file_upload_failed"}), {
+                variant: "error",
+                anchorOrigin: {
+                    vertical: 'bottom',
+                    horizontal: 'center',
+                }
+            })
         }
     }
 
