@@ -78,7 +78,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         fontWeight: 900
     },
     submittedText: {
-        color: "green"
+        color: "#5DBD3B"
     }
 }));
 
@@ -522,9 +522,12 @@ function AnytimeStudyItem({ studyId, setSelectedSchedule, setOpenStudyDetail }: 
                 secondary={<Typography variant="caption" color="textSecondary"><FormattedMessage id={studyInfo?.is_home_fun ? "schedule_studyHomeFunStudy" : "schedule_studyAnytimeStudy"} /></Typography>}
             />
             {
-                studyInfo?.exist_assessment ?
+                studyInfo?.complete_assessment ?
                     <ListItemSecondaryAction>
-                        <Typography variant="subtitle2" color="textSecondary"><FormattedMessage id="schedule_studyAssessmentComplete" /></Typography>
+                        <Grid direction={"column"}>
+                            <Grid item><Typography variant="subtitle2" color="textSecondary"><FormattedMessage id="schedule_studyAssessmentComplete1" /></Typography></Grid>
+                            <Grid item><Typography variant="subtitle2" color="textSecondary"><FormattedMessage id="schedule_studyAssessmentComplete2" /></Typography></Grid>
+                        </Grid>
                     </ListItemSecondaryAction>
                     : studyInfo?.exist_feedback
                     ?<ListItemSecondaryAction>
@@ -617,9 +620,12 @@ function ScheduledStudyItem({ studyId, setSelectedSchedule, setOpenStudyDetail }
                     </> : <Typography variant="caption" color="textSecondary"><FormattedMessage id="schedule_studyAnytimeStudy" /></Typography>}
                 />
                 {
-                    studyInfo?.exist_assessment ?
+                    studyInfo?.complete_assessment ?
                         <ListItemSecondaryAction>
-                            <Typography variant="subtitle2" color="textSecondary"><FormattedMessage id="schedule_studyAssessmentComplete" /></Typography>
+                            <Grid direction={"column"}>
+                                <Grid item><Typography variant="subtitle2" color="textSecondary"><FormattedMessage id="schedule_studyAssessmentComplete1" /></Typography></Grid>
+                                <Grid item><Typography variant="subtitle2" color="textSecondary"><FormattedMessage id="schedule_studyAssessmentComplete2" /></Typography></Grid>
+                            </Grid>
                         </ListItemSecondaryAction>
                         : studyInfo?.exist_feedback
                         ?<ListItemSecondaryAction>

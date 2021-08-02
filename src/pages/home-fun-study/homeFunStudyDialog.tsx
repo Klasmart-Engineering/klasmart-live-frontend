@@ -194,7 +194,7 @@ export function HomeFunStudyDialog() {
         function checkShowSubmitButtonCondition() {
             if(submitStatus === SubmitStatus.SUBMITTING)
                 return false;
-            if (studyInfo && !studyInfo.exist_assessment && (studyInfo.due_at === 0 || studyInfo?.due_at >= todayTimeStamp)) {
+            if (studyInfo && !studyInfo.complete_assessment && (studyInfo.due_at === 0 || studyInfo?.due_at >= todayTimeStamp)) {
                 const feedback = hfsFeedbacks?.find(item => item.studyId === studyInfo.id)
                 if (feedback && (feedback.assignmentItems.length > 0 || !isBlank(feedback.comment))) {
                     return true;
@@ -350,7 +350,7 @@ function HomeFunStudyContainer({
             let newAssignmentItems: AssignmentItem[] = [];
             //Submitted feedback from CMS.
             // If the HFS have been submitted, it should be prioritized to show feedback from CMS first.
-            if (studyInfo.exist_feedback && feedbacks && feedbacks.length > 0) {
+            if (studyInfo.complete_assessment && feedbacks && feedbacks.length > 0) {
                 const feedBackAssignments = feedbacks[0].assignments;
                 newAssignmentItems = convertAssignmentsToAssignmentItems(feedBackAssignments);
                 setAssignmentItems(newAssignmentItems);
