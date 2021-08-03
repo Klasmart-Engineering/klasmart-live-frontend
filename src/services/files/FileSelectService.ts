@@ -7,18 +7,15 @@ const SOURCE_CAMERA = 1;
 const SOURCE_CAMERAROLL = 2;
 const MEDIA_TYPE_ALL = 2;
 
-const ACCEPT_MIME_TYPES = 
-    `application/pdf,` + 
-    `application/vnd.ms-powerpoint,` + 
-    `application/vnd.openxmlformats-officedocument.presentationml.presentation,` + 
-    `application/msword,` + 
-    `application/vnd.openxmlformats-officedocument.wordprocessingml.document,`;
-    `application/rtf,` + 
-    `text/plain,` + 
-    `text/csv,` + 
-    `audio/mpeg,` + 
-    `audio/x-m4a,` + 
-    `audio/*`;
+const ACCEPT_MIME_TYPES =
+    `application/pdf,` +
+    `application/vnd.ms-powerpoint,` +
+    `application/vnd.openxmlformats-officedocument.presentationml.presentation,` +
+    `application/msword,` +
+    `application/vnd.openxmlformats-officedocument.wordprocessingml.document,` +
+    `application/rtf,` +
+    `text/plain,` +
+    `text/csv`;
 
 export class FileSelectService implements IFileSelectService {
     async selectFile(): Promise<File> {
@@ -61,12 +58,12 @@ export class FileSelectService implements IFileSelectService {
 
         var selectGalleryProcedure = new Promise<File>((resolve, reject) => {
             camera.getPicture((uri: string) => {
-                console.log(uri);
-                if(!uri.startsWith("file://") && !uri.startsWith("content://")){
-                    uri = "file://"+uri;
+                if (!uri.startsWith("file://") && !uri.startsWith("content://")) {
+                    uri = "file://" + uri;
                 }
+
                 window.resolveLocalFileSystemURL(uri, (entry) => {
-                    (entry as FileEntry).file((file)=>{
+                    (entry as FileEntry).file((file) => {
                         resolve(file);
                     })
                 }, (error) => {
@@ -93,7 +90,7 @@ export class FileSelectService implements IFileSelectService {
             camera.getPicture((uri: string) => {
                 console.log(uri);
                 window.resolveLocalFileSystemURL(uri, (entry) => {
-                    (entry as FileEntry).file((file)=>{
+                    (entry as FileEntry).file((file) => {
                         resolve(file);
                     })
                 }, (error) => {

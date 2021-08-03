@@ -1,6 +1,6 @@
-import {fetchJsonData} from "../../utils/requestUtils";
-import {instanceOfCMSErrorResponse} from "../../utils/typeUtils";
-import {IAuthenticationService} from "../auth/IAuthenticationService";
+import { fetchJsonData } from "../../utils/requestUtils";
+import { instanceOfCMSErrorResponse } from "../../utils/typeUtils";
+import { IAuthenticationService } from "../auth/IAuthenticationService";
 import {
     CMSErrorResponse,
     ContentListResponse,
@@ -10,7 +10,25 @@ import {
     IContentService,
     PublishStatus
 } from "./IContentService";
-import {shuffle} from "../../utils/arrayUtils";
+import { shuffle } from "../../utils/arrayUtils";
+
+const createBlobForUploading = (file: File): Promise<Blob> => {
+    return new Promise<Blob>((resolve, reject) => {
+        var reader = new FileReader();
+        reader.onloadend = () => {
+            const result = reader.result as ArrayBuffer;
+            var blob = new Blob([new Uint8Array(result)], { type: file.type });
+
+            resolve(blob);
+        };
+
+        reader.onerror = () => {
+            reject("couldn't read file");
+        };
+
+        reader.readAsArrayBuffer(file);
+    });
+}
 
 /**
  * Client side API implementation for: https://swagger-ui.kidsloop.net/#/content
@@ -118,14 +136,48 @@ export class ContentService implements IContentService {
         return result;
     }
 
-    async uploadAttachment(path: string, file: File): Promise<boolean>{
+    uploadAttachment(path: string, file: File): Promise<boolean> {
+        return new Promise<boolean>((resolve, reject) => {
+            createBlobForUploading(file).then(blob => {
+                var uploadRequest = new XMLHttpRequest();
+                uploadRequest.open("PUT", path, true);
+
+                uploadRequest.onreadystatechange = () => {
+                    // NOTE: readyState 4 == DONE (iOS)
+                    if (uploadRequest.readyState === XMLHttpRequest.DONE ||
+                        uploadRequest.readyState === 4) {
+                        resolve(true);
+                    }
+                };
+
+                uploadRequest.onerror = () => {
+                    reject(uploadRequest.statusText);
+                }
+
+                uploadRequest.ontimeout = () => {
+                    reject(`timeout`);
+                }
+
+                uploadRequest.send(blob);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+
+        /* NOTE: This code was causing errors on iOS when trying to upload files. I'm keeping it here in case we'll have to use it for Android later.
+        const headers = new Headers();
+        headers.append("Accept", "application/json");
+        headers.append("Content-Length", file.size.toString());
+        headers.append("Content-Type", file.type);
+
         const response = await fetch(path, {
             method: "PUT",
+            headers,
             body: file
         })
         if(!response.ok){
             throw new Error(response.statusText);
         }
-        return true;
+        return true; */
     }
 }
