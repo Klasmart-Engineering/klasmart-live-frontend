@@ -27,6 +27,8 @@ const messages: Record<string, string> = {
     confirm_delete_description: "Are you sure you want to Delete?",
     home_fun_study: "Home Fun Study",
     submission_failed_message: "Oops, an unexpected error occurred. Please try again.",
+    label_info: "Info",
+    block_for_assessment_completed: "This assignment has already been assessed by the teacher and can no longer be edited or re-submitted.",
 
     err_button_home: "Home",
     err_button_signin: "Back to Sign In",
