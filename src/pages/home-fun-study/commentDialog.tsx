@@ -8,7 +8,7 @@ import {
     TextField,
     Typography
 } from "@material-ui/core";
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {createStyles, makeStyles, useTheme} from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -17,7 +17,8 @@ import {CloseIconButton} from "../../components/closeIconButton";
 import {FormattedMessage, useIntl} from "react-intl";
 import {isBlank} from "../../utils/StringUtils";
 import {TransitionProps} from "@material-ui/core/transitions";
-import {ConfirmDialog} from "../../components/dialogs/confirmDialog";
+import {usePopupContext} from "../../context-provider/popup-context";
+import {CordovaSystemContext} from "../../context-provider/cordova-system-context";
 
 const useStyles = makeStyles((theme) =>
     createStyles({
@@ -65,6 +66,7 @@ interface Props {
 
 const MINIMUM_CHARACTER = 1;
 const MAXIMUM_CHARACTER = 100;
+const COMMENT_ON_BACK_ID = "commentOnBackID";
 
 export function CommentDialog({open, onClose, defaultComment, onSave}: Props): JSX.Element {
     const classes = useStyles();
@@ -72,16 +74,40 @@ export function CommentDialog({open, onClose, defaultComment, onSave}: Props): J
     const [isEdit, setIsEdit] = useState(false);
     const [canSave, setCanSave] = useState(false);
     const [currentComment, setCurrentComment] = useState(defaultComment);
-    const [openConfirmCloseDialog, setOpenConfirmCloseDialog] = useState(false);
+    const {showPopup} = usePopupContext()
+    const {addOnBack, removeOnBack} = useContext(CordovaSystemContext);
 
     useEffect(() => {
-        if (defaultComment && !isBlank(defaultComment)) {
-            setIsEdit(true);
-        } else {
-            setIsEdit(false);
+        function initTitle(){
+            if (defaultComment && !isBlank(defaultComment)) {
+                setIsEdit(true);
+            } else {
+                setIsEdit(false);
+            }
         }
 
-        setCurrentComment(defaultComment);
+        function initDefaultComment(){
+            setCurrentComment(defaultComment);
+        }
+
+        function initOnBack(){
+            if(open){
+                if(addOnBack){
+                    addOnBack({
+                        id: COMMENT_ON_BACK_ID,
+                        onBack: handleCloseDialog,
+                    })
+                }
+            }else{
+                if(removeOnBack){
+                    removeOnBack(COMMENT_ON_BACK_ID)
+                }
+            }
+        }
+
+        initTitle()
+        initDefaultComment()
+        initOnBack()
     }, [open, defaultComment]) //force to update current comment after open
 
     useEffect(() => {
@@ -106,12 +132,21 @@ export function CommentDialog({open, onClose, defaultComment, onSave}: Props): J
 
     function handleConfirmClose(){
         setCurrentComment("");
-        setOpenConfirmCloseDialog(false);
         onClose();
     }
     function handleCloseDialog(){
         if(currentComment && !isBlank(currentComment)){
-            setOpenConfirmCloseDialog(true);
+            showPopup({
+                variant: "confirm",
+                title:intl.formatMessage({id: "button_close"}),
+                description:[
+                    intl.formatMessage({id: "close_confirm_description_1"}),
+                    intl.formatMessage({id: "close_confirm_description_2"})
+                ],
+                closeLabel:intl.formatMessage({id: "button_cancel"}),
+                confirmLabel:intl.formatMessage({id: "button_continue"}),
+                onConfirm: handleConfirmClose
+            })
         }else{
             onClose();
         }
@@ -141,16 +176,6 @@ export function CommentDialog({open, onClose, defaultComment, onSave}: Props): J
                     </Box>
                 </DialogContent>
             </Dialog>
-            <ConfirmDialog open={openConfirmCloseDialog}
-                           onClose={() => {setOpenConfirmCloseDialog(false)}}
-                           onConfirm={handleConfirmClose}
-                           title={intl.formatMessage({id: "button_close"})}
-                           description={[
-                               intl.formatMessage({id: "close_confirm_description_1"}),
-                               intl.formatMessage({id: "close_confirm_description_2"})
-                           ]}
-                           closeLabel={intl.formatMessage({id: "button_cancel"})}
-                           confirmLabel={intl.formatMessage({id: "button_continue"})} />
         </React.Fragment>
     )
 }
