@@ -35,9 +35,6 @@ import {setSelectHomeFunStudyDialogOpen} from "../../store/reducers/control";
 import {CommentDialog} from "./commentDialog";
 import {setHomeFunStudies} from "../../store/reducers/data";
 import {BottomSelector} from "../../components/bottomSelector";
-import {DetailErrorDialog} from "../../components/dialogs/detailErrorDialog";
-import {DetailConfirmDialog} from "../../components/dialogs/detailConfirmDialog";
-import {ErrorDialogState} from "../../components/dialogs/baseErrorDialog";
 import {ConfirmDialogState} from "../../components/dialogs/baseConfirmDialog";
 import {isBlank} from "../../utils/StringUtils";
 import {useSnackbar} from "kidsloop-px";
@@ -115,6 +112,9 @@ const todayTimeStamp = new Date(now.getFullYear(), now.getMonth(), now.getDate()
 enum SubmitStatus {
     NONE, SUBMITTING, SUCCESS
 }
+
+const HFS_ON_BACK_ID = "hfs_onBack"
+
 export function HomeFunStudyDialog() {
     const intl = useIntl();
     const [studyId, setStudyId] = useState<string>();
@@ -133,12 +133,17 @@ export function HomeFunStudyDialog() {
     const [shouldShowSubmitButton, setShouldShowSubmitButton] = useState(false);
     const [shouldSubmitFeedback, setShouldSubmitFeedback] = useState(false);
     const [submitStatus, setSubmitStatus] = useState(SubmitStatus.NONE);
+    const { addOnBack, removeOnBack } = useContext(CordovaSystemContext);
 
     useEffect(() => {
         lockOrientation(OrientationType.PORTRAIT, dispatch);
         //Reset state for the first render
         dispatch(setSelectHomeFunStudyDialogOpen({open: false}))
     }, [])
+
+    function handleCloseHomeFunStudy() {
+        dispatch(setSelectHomeFunStudyDialogOpen({open: false, studyInfo: undefined}))
+    }
 
     useEffect(() => {
         //Wait for the reset state completed
@@ -158,6 +163,20 @@ export function HomeFunStudyDialog() {
         if (selectHomeFunStudyDialog?.studyId) {
             setStudyId(selectHomeFunStudyDialog.studyId);
             setKey(Math.random().toString(36)); //force to refresh HFS detail
+        }
+        if(selectHomeFunStudyDialog.open){
+            if (addOnBack) {
+                addOnBack({
+                    id: HFS_ON_BACK_ID,
+                    onBack: () => {
+                        handleCloseHomeFunStudy()
+                    }
+                })
+            }
+        }else{
+            if(removeOnBack){
+                removeOnBack(HFS_ON_BACK_ID)
+            }
         }
     }, [selectHomeFunStudyDialog])
 
@@ -294,7 +313,7 @@ export function HomeFunStudyDialog() {
             aria-labelledby="select-home-fun-study-dialog"
             fullScreen
             open={selectHomeFunStudyDialog? selectHomeFunStudyDialog.open : false}
-            onClose={() => dispatch(setSelectHomeFunStudyDialogOpen({open: false, studyInfo: undefined}))}
+            onClose={handleCloseHomeFunStudy}
         >
             <DialogTitle className={classes.noPadding}>
                 <Header setKey={setKey}/>
@@ -323,11 +342,6 @@ export function HomeFunStudyDialog() {
         </Dialog>)
 }
 
-interface ConfirmDeleteAttachmentDialogState extends ConfirmDialogState{
-    itemId: string,
-    attachmentName: string
-}
-
 function HomeFunStudyContainer({
                                    studyInfo,
                                    feedbacks
@@ -336,10 +350,7 @@ function HomeFunStudyContainer({
     const dispatch = useDispatch();
     const [openSupportFileInfo, setOpenSupportFileInfo] = useState(false);
     const [openButtonSelector, setOpenButtonSelector] = useState(false);
-    const [openErrorDialog, setOpenErrorDialog] = useState<ErrorDialogState>({open: false, title: "", description: []});
-    const [openDeleteAttachmentDialog, setOpenDeleteAttachmentDialog] = useState<ConfirmDeleteAttachmentDialogState>({
-        open: false, title: "", description: [], itemId: "", attachmentName: ""
-    });
+    const {showPopup} = usePopupContext()
     const [assignmentItems, setAssignmentItems] = useState<AssignmentItem[]>([]);
     const {fileSelectService, contentService} = useServices();
     const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
@@ -550,23 +561,25 @@ function HomeFunStudyContainer({
                 console.log(`validated file: ${file.name}`);
                 addAnSelectedAttachment(file);
             } else {
-                setOpenErrorDialog({
-                    open: true,
+                showPopup({
+                    variant: "detailError",
                     title: intl.formatMessage({id: "submission_failed"}),
                     description: [
                         intl.formatMessage({id: "upload_please_check_your_file"}),
                         intl.formatMessage({id: "upload_file_too_big"})
-                    ]
+                    ],
+                    closeLabel: intl.formatMessage({id: "button_ok"})
                 })
             }
         } else {
-            setOpenErrorDialog({
-                open: true,
+            showPopup({
+                variant: "detailError",
                 title: intl.formatMessage({id: "submission_failed"}),
                 description: [
                     intl.formatMessage({id: "upload_please_check_your_file"}),
                     intl.formatMessage({id: "upload_file_not_supported"})
-                ]
+                ],
+                closeLabel: intl.formatMessage({id: "button_ok"})
             })
         }
     }
@@ -583,21 +596,19 @@ function HomeFunStudyContainer({
         setSaveAssignmentItems({shouldSave: true, assignmentItems: newAssignmentItems});
     }
 
-    function handleConfirmDeleteAssignmentItem() {
-        deleteAssignmentItem(openDeleteAttachmentDialog.itemId);
-        setOpenDeleteAttachmentDialog({open: false, title: "", description: [], itemId: "", attachmentName: ""});
-    }
-
     function handleDeleteAssignmentItem(item: AssignmentItem){
-        setOpenDeleteAttachmentDialog({
-            open: true,
+        showPopup({
+            variant: "confirm",
             title: intl.formatMessage({id: "button_delete"}),
             description: [
                 intl.formatMessage({id: "confirm_delete_description"}),
                 item.attachmentName,
             ],
-            itemId: item.itemId,
-            attachmentName: item.attachmentName
+            closeLabel: intl.formatMessage({id: "button_cancel"}),
+            onConfirm: () => {
+                deleteAssignmentItem(item.itemId);
+            },
+            confirmLabel: intl.formatMessage({id: "button_delete"})
         })
     }
 
@@ -661,21 +672,6 @@ function HomeFunStudyContainer({
                 onSelectCamera={onSelectCamera}
                 onSelectGallery={onSelectGallery}
                 open={openButtonSelector}/>
-            <DetailErrorDialog open={openErrorDialog.open}
-                               onClose={() => {
-                                   setOpenErrorDialog({open: false, title: "", description: []})
-                               }}
-                               title={openErrorDialog.title} description={openErrorDialog.description}
-                               closeLabel={intl.formatMessage({id: "button_ok"})}/>
-            <DetailConfirmDialog open={openDeleteAttachmentDialog.open}
-                                 onClose={() => {
-                                     setOpenDeleteAttachmentDialog({open: false, title: "", description: [], itemId: "", attachmentName: ""})
-                                 }}
-                                 onConfirm={handleConfirmDeleteAssignmentItem}
-                                 title={openDeleteAttachmentDialog.title}
-                                 description={openDeleteAttachmentDialog.description}
-                                 closeLabel={intl.formatMessage({id: "button_cancel"})}
-                                 confirmLabel={intl.formatMessage({id: "button_delete"})}/>
         </>
     )
 }
