@@ -231,7 +231,7 @@ export function HomeFunStudyDialog() {
                 return false;
             if (studyInfo && !studyInfo.complete_assessment && (studyInfo.due_at === 0 || studyInfo?.due_at >= todayTimeStamp)) {
                 const feedback = hfsFeedbacks?.find(item => item.studyId === studyInfo.id)
-                if (feedback && (feedback.assignmentItems.length > 0 || !isBlank(feedback.comment))) {
+                if (feedback && feedback.assignmentItems.length > 0) {
                     return true;
                 }
             }
