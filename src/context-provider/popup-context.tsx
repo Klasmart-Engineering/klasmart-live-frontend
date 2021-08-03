@@ -1,13 +1,14 @@
 import React, {
     createContext,
     ReactNode,
-    useContext,
-    useReducer,
+    useContext, useEffect,
+    useState,
 } from "react";
 import {ConfirmDialog} from "../components/dialogs/confirmDialog";
 import {DetailConfirmDialog} from "../components/dialogs/detailConfirmDialog";
 import {DetailErrorDialog} from "../components/dialogs/detailErrorDialog";
 import {ErrorDialog} from "../components/dialogs/errorDialog";
+import {InfoDialog} from "../components/dialogs/infoDialog";
 
 type Props = {
     children: ReactNode
@@ -47,17 +48,6 @@ type PopupContext = {
 }
 const PopupContext = createContext<PopupContext>({popupState: initState, showPopup: () => {}, closePopup: () => {}});
 
-const popupReducer = (state: PopupState, action: PopupAction) => {
-    switch (action.type){
-        case 'show':
-            return {...state, ...action.state}
-        case 'close':
-            return {...state, ...action.state}
-        default:
-            throw new Error("Unexpected popup action")
-    }
-}
-
 export function PopupElement(): JSX.Element {
     const {popupState, closePopup } = usePopupContext();
 
@@ -88,21 +78,26 @@ export function PopupElement(): JSX.Element {
     }
 }
 export function PopupProvider({children} : Props){
-    const [popupState, popupDispatch] = useReducer(popupReducer, initState);
+    const [popupState, setPopupState] = useState(initState)
+
+    useEffect(() => {
+        closePopup() //Reset state when started at the first render
+    }, [])
+
     const showPopup = (popupState: PopupState) => {
-        popupDispatch({type: 'show', state: {
+        setPopupState({
             ...popupState,
             onClose : popupState.onClose ?? (() => {}),
             onConfirm : popupState.onConfirm ?? (() => {}),
             confirmLabel: popupState.confirmLabel ?? "",
             open: true
-        }})
+        })
     }
     const closePopup = () => {
-        popupDispatch({type: 'close', state: {
+        setPopupState({
             ...popupState,
             open: false
-        }})
+        })
     }
 
     const contextValue: PopupContext = {
