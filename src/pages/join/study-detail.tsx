@@ -161,13 +161,24 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
                         <Grid container item direction={`row`} spacing={1}>
                             <Grid item xs={4} sm={3}>
                                 <Typography variant="body1" className={rowHeaderText}>
-                                    Lesson Plan
+                                    { schedule?.is_home_fun ? "Teacher" : "Lesson Plan" }
                                 </Typography>
                             </Grid>
                             <Grid item xs>
-                                <Typography variant="body1" className={rowContentText}>
-                                    { schedule?.lesson_plan?.name || `N/A` }
-                                </Typography>
+                                {schedule?.is_home_fun ?
+                                    <Grid container direction={"column"}>
+                                        {schedule.teachers.map(item => (
+                                        <Grid item>
+                                            <Typography variant="body1" className={rowContentText}>
+                                                {item.name}
+                                            </Typography>
+                                        </Grid>
+                                        ))}
+                                    </Grid>
+                                    : <Typography variant="body1" className={rowContentText}>
+                                        {schedule?.lesson_plan?.name || `N/A`}
+                                    </Typography>
+                                }
                             </Grid>
                         </Grid>
                         <Grid container item direction={`row`} spacing={1}>
