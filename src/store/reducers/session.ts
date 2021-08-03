@@ -37,7 +37,7 @@ const initialSessionState: SessionState = {
     locale: getDefaultLanguageCode(),
     selectedUserId: undefined,
     selectedOrg: undefined,
-    regionId: "auth.kidsloop.net",
+    regionId: "auth.kidsloop.live",
     transferToken: undefined,
 }
 
