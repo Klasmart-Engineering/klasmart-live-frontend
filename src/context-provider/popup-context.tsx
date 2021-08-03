@@ -14,7 +14,7 @@ type Props = {
     children: ReactNode
 }
 
-type VariantType = 'error' | 'detailError' | 'confirm' | 'detailConfirm'
+type VariantType = 'error' | 'detailError' | 'confirm' | 'detailConfirm' | 'info'
 
 type PopupState = {
     variant: VariantType,
@@ -26,9 +26,6 @@ type PopupState = {
     confirmLabel?: string,
     onConfirm?: () => void
 }
-
-type PopupAction = {type: 'show' | 'close', state: PopupState}
-
 
 const initState: PopupState = {
     variant: 'error',
@@ -73,6 +70,8 @@ export function PopupElement(): JSX.Element {
             return <ConfirmDialog open={popupState.open ?? false} onClose={handleClosePopup} onConfirm={handleConfirmPopup} title={popupState.title} description={popupState.description} closeLabel={popupState.closeLabel} confirmLabel={popupState.confirmLabel ?? "Ok"}/>;
         case 'detailConfirm':
             return <DetailConfirmDialog open={popupState.open ?? false} onClose={handleClosePopup} onConfirm={handleConfirmPopup} title={popupState.title} description={popupState.description} closeLabel={popupState.closeLabel} confirmLabel={popupState.confirmLabel ?? "Ok"}/>;
+        case 'info':
+            return <InfoDialog open={popupState.open ?? false} onClose={handleClosePopup} description={popupState.description} title={popupState.title} closeLabel={popupState.closeLabel} />
         default:
             return <></>
     }
