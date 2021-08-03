@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Header} from "../../components/header";
 import {
     Box,
@@ -40,7 +40,6 @@ import {DetailConfirmDialog} from "../../components/dialogs/detailConfirmDialog"
 import {ErrorDialogState} from "../../components/dialogs/baseErrorDialog";
 import {ConfirmDialogState} from "../../components/dialogs/baseConfirmDialog";
 import {isBlank} from "../../utils/StringUtils";
-import { CordovaSystemContext } from "../../context-provider/cordova-system-context";
 import {useSnackbar} from "kidsloop-px";
 import {blue} from "@material-ui/core/colors";
 import clsx from "clsx";
@@ -137,7 +136,23 @@ export function HomeFunStudyDialog() {
 
     useEffect(() => {
         lockOrientation(OrientationType.PORTRAIT, dispatch);
+        //Reset state for the first render
+        dispatch(setSelectHomeFunStudyDialogOpen({open: false}))
     }, [])
+
+    useEffect(() => {
+        //Wait for the reset state completed
+        setTimeout(() => {
+            if(selectHomeFunStudyDialog.open && studyInfo?.complete_assessment){
+                showPopup({
+                    variant: "info",
+                    title: intl.formatMessage({id: "label_info"}),
+                    description: [intl.formatMessage({id: "block_for_assessment_completed"})],
+                    closeLabel: intl.formatMessage({id: "button_ok"})
+                })
+            }
+        },200)
+    }, [studyInfo])
 
     useEffect(() => {
         if (selectHomeFunStudyDialog?.studyId) {
@@ -145,6 +160,7 @@ export function HomeFunStudyDialog() {
             setKey(Math.random().toString(36)); //force to refresh HFS detail
         }
     }, [selectHomeFunStudyDialog])
+
     useEffect(() => {
         async function fetchEverything() {
             async function fetchScheduleStudyInfo() {
@@ -669,7 +685,7 @@ function HomeFunStudyAssignment({
                                     assignmentItems, onClickUploadInfo,
                                     onClickUpload, onDeleteAssignment,
                                 }: {
-    studyInfo: ScheduleResponse,assignmentItems: AssignmentItem[], onClickUploadInfo: () => void,
+    studyInfo?: ScheduleResponse,assignmentItems: AssignmentItem[], onClickUploadInfo: () => void,
     onClickUpload: () => void, onDeleteAssignment: (item: AssignmentItem) => void
 }) {
     const classes = useStyles();
@@ -677,7 +693,7 @@ function HomeFunStudyAssignment({
     const MAX_FILE_LIMIT = 3
 
     useEffect(() => {
-        if(assignmentItems.length >= MAX_FILE_LIMIT || studyInfo.complete_assessment){
+        if(studyInfo && (assignmentItems.length >= MAX_FILE_LIMIT || studyInfo.complete_assessment)){
             setShouldShowChooseFile(false);
         }else{
             setShouldShowChooseFile(true);
@@ -731,7 +747,7 @@ function HomeFunStudyAssignment({
                                                          color="textSecondary">{item.attachmentName}</Typography>}
                                 />
                                 {
-                                    !studyInfo.complete_assessment ?
+                                    studyInfo && !studyInfo.complete_assessment ?
                                     <ListItemSecondaryAction>
                                         {
                                             item.status === AttachmentStatus.UPLOADED
@@ -755,7 +771,7 @@ function HomeFunStudyAssignment({
     );
 }
 
-function HomeFunStudyComment({studyInfo, defaultComment}: { studyInfo: ScheduleResponse, defaultComment: string }) {
+function HomeFunStudyComment({studyInfo, defaultComment}: { studyInfo?: ScheduleResponse, defaultComment: string }) {
     const classes = useStyles();
 
     const dispatch = useDispatch();
@@ -764,7 +780,7 @@ function HomeFunStudyComment({studyInfo, defaultComment}: { studyInfo: ScheduleR
     const hfsFeedbacks = useSelector((state: State) => state.data.hfsFeedbacks);
 
     useEffect(() => {
-        if (studyInfo.id) {
+        if (studyInfo && studyInfo.id) {
             for (let i = 0; hfsFeedbacks && i < hfsFeedbacks.length; i++) {
                 if (hfsFeedbacks[i].studyId == studyInfo.id) {
                     setComment(hfsFeedbacks[i].comment)
@@ -772,7 +788,7 @@ function HomeFunStudyComment({studyInfo, defaultComment}: { studyInfo: ScheduleR
                 }
             }
         }
-    }, [hfsFeedbacks])
+    }, [studyInfo, hfsFeedbacks])
 
     function handleOnClickEditComment() {
         setOpenEditComment(true);
@@ -780,7 +796,7 @@ function HomeFunStudyComment({studyInfo, defaultComment}: { studyInfo: ScheduleR
 
     function handleSaveComment(newComment: string) {
         setComment(newComment);
-        if (studyInfo.id) {
+        if (studyInfo) {
             let newHFSFeedbacks = hfsFeedbacks ? hfsFeedbacks.slice() : [];
             let hasFeedback = false;
             for (let i = 0; i < newHFSFeedbacks.length; i++) {
@@ -817,7 +833,7 @@ function HomeFunStudyComment({studyInfo, defaultComment}: { studyInfo: ScheduleR
                     color="primary"
                     className={classes.rounded_button}
                     startIcon={<Edit/>}
-                    disabled={studyInfo.complete_assessment}
+                    disabled={studyInfo && studyInfo.complete_assessment}
                     onClick={handleOnClickEditComment}
                 >
                     <Typography variant="body2">
