@@ -315,7 +315,7 @@ export async function classGetInformation (schedule_id: any, org_id: any) {
         const headers = new Headers();
         headers.append(`Accept`, `application/json`);
         headers.append(`Content-Type`, `application/json`);
-        const ENDPOINT_CMS_URL = window.location.href.indexOf(`localhost`) > 0 ? `https://run.mocky.io/v3/a6b4aed5-a341-4d45-9a63-842d6ff1d53e` : `${process.env.ENDPOINT_CMS}/v1/schedules/${schedule_id}?${org_id}`;
+        const ENDPOINT_CMS_URL = window.location.href.indexOf(`localhost`) > 0 ? `https://run.mocky.io/v3/a6b4aed5-a341-4d45-9a63-842d6ff1d53e` : `${process.env.ENDPOINT_CMS}/v1/schedules/${schedule_id}?org_id=${org_id}`;
 
         const response = await fetch(`${ENDPOINT_CMS_URL}`, {
             headers,
