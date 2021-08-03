@@ -15,10 +15,36 @@ const ACCEPT_MIME_TYPES =
     `application/vnd.openxmlformats-officedocument.wordprocessingml.document,` +
     `application/rtf,` +
     `text/plain,` +
-    `text/csv`;
+    `text/csv,` + 
+    `audio/*,` + 
+    `video/*,` + 
+    `image/*`;
+
+// https://github.com/cyph/cordova-plugin-chooser
+declare var chooser: any;
 
 export class FileSelectService implements IFileSelectService {
     async selectFile(): Promise<File> {
+        var { uri, name } = await chooser.getFileMetadata(ACCEPT_MIME_TYPES);
+
+        if (!uri) {
+            throw new Error('No suitable file selected');
+        }
+
+        return new Promise<File>((resolve, reject) => {
+            if (!uri.startsWith("file://") && !uri.startsWith("content://")) {
+                uri = "file://" + uri;
+            }
+
+            window.resolveLocalFileSystemURL(uri, (entry) => {
+                (entry as FileEntry).file((file) => {
+                    resolve(file);
+                })
+            }, (error) => {
+                reject(error);
+            });
+        });
+
         const input: HTMLInputElement = document.createElement(`input`);
         input.type = `file`;
         input.accept = ACCEPT_MIME_TYPES;
