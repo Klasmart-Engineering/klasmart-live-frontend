@@ -320,6 +320,7 @@ export async function classGetInformation (schedule_id: any, org_id: any) {
         const response = await fetch(`${ENDPOINT_CMS_URL}`, {
             headers,
             method: `GET`,
+            credentials: `include`,
         });
 
         if (response.status === 200) return response.clone().json();
