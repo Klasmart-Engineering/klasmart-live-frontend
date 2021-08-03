@@ -111,7 +111,6 @@ export function Schedule() {
 
     useEffect(() => {
         lockOrientation(OrientationType.PORTRAIT, dispatch);
-        dispatch(setSelectHomeFunStudyDialogOpen({open: false}))
     }, [])
 
     useEffect(() => {
@@ -524,7 +523,7 @@ function AnytimeStudyItem({ studyId, setSelectedSchedule, setOpenStudyDetail }: 
             {
                 studyInfo?.complete_assessment ?
                     <ListItemSecondaryAction>
-                        <Grid direction={"column"}>
+                        <Grid container direction={"column"}>
                             <Grid item><Typography variant="subtitle2" color="textSecondary"><FormattedMessage id="schedule_studyAssessmentComplete1" /></Typography></Grid>
                             <Grid item><Typography variant="subtitle2" color="textSecondary"><FormattedMessage id="schedule_studyAssessmentComplete2" /></Typography></Grid>
                         </Grid>
@@ -622,7 +621,7 @@ function ScheduledStudyItem({ studyId, setSelectedSchedule, setOpenStudyDetail }
                 {
                     studyInfo?.complete_assessment ?
                         <ListItemSecondaryAction>
-                            <Grid direction={"column"}>
+                            <Grid container direction={"column"}>
                                 <Grid item><Typography variant="subtitle2" color="textSecondary"><FormattedMessage id="schedule_studyAssessmentComplete1" /></Typography></Grid>
                                 <Grid item><Typography variant="subtitle2" color="textSecondary"><FormattedMessage id="schedule_studyAssessmentComplete2" /></Typography></Grid>
                             </Grid>
