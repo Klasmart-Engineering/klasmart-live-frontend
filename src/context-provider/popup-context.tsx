@@ -9,6 +9,7 @@ import {DetailConfirmDialog} from "../components/dialogs/detailConfirmDialog";
 import {DetailErrorDialog} from "../components/dialogs/detailErrorDialog";
 import {ErrorDialog} from "../components/dialogs/errorDialog";
 import {InfoDialog} from "../components/dialogs/infoDialog";
+import {CordovaSystemContext} from "./cordova-system-context";
 
 type Props = {
     children: ReactNode
@@ -45,21 +46,43 @@ type PopupContext = {
 }
 const PopupContext = createContext<PopupContext>({popupState: initState, showPopup: () => {}, closePopup: () => {}});
 
+const POPUP_ON_BACK_ID = "popupOnBackID"
+
 export function PopupElement(): JSX.Element {
-    const {popupState, closePopup } = usePopupContext();
+    const {popupState, closePopup} = usePopupContext();
+    const {addOnBack, removeOnBack} = useContext(CordovaSystemContext);
+
+    useEffect(() => {
+        function initOnBack(){
+            if(popupState.open){
+                if(addOnBack){
+                    addOnBack({
+                        id: POPUP_ON_BACK_ID,
+                        onBack: handleClosePopup
+                    })
+                }
+            }else{
+                if(removeOnBack){
+                    removeOnBack(POPUP_ON_BACK_ID)
+                }
+            }
+        }
+        initOnBack()
+    }, [popupState])
 
     function handleClosePopup() {
-        onClose();
+        if(popupState.onClose){
+            popupState.onClose();
+        }
         closePopup();
     }
 
     function handleConfirmPopup() {
-        onConfirm();
+        if(popupState.onConfirm){
+            popupState.onConfirm();
+        }
         closePopup();
     }
-
-    let onClose = () => {}
-    let onConfirm = () => {}
 
     switch (popupState.variant){
         case "error":
