@@ -255,5 +255,10 @@
     "common_warning": "提示",
     "observe_warning_videotype_text": "在观察模式下观看视频时，你可能会遇到性能不稳定。若要继续，请点击确定。在播放视频时，请将参与者的麦克风静音以避免回声。",
     "common_ok": "确定",
-    "common_do_not_show_again": "不再显示"
+    "common_do_not_show_again": "不再显示",
+    "preview_guide_text_1": "预览课件仅支持15 分钟。",
+    "preview_guide_text_2": "点击教学课件，查看课件素材！",
+    "preview_guide_text_3": "预览功能暂不支持视频会议",
+    "common_teacher_count": "",
+    "common_student_count": ""
 }

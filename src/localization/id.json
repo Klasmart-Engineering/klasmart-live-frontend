@@ -255,5 +255,10 @@
     "common_warning": "Peringatan!",
     "observe_warning_videotype_text": "Anda mungkin mengalami pengalaman tidak terduga saat melihat video di mode Amati. Untuk melanjutkan, tekan OKE. Silakan bisukan mikrofon partisipan untuk menghindari gema saat video diputar.",
     "common_ok": "OKE",
-    "common_do_not_show_again": "Jangan tampilkan lagi"
+    "common_do_not_show_again": "Jangan tampilkan lagi",
+    "preview_guide_text_1": "Pratinjau Kelas Live hanya bisa diakses selama 15 menit.",
+    "preview_guide_text_2": "Klik Rencana Pelajaran untuk melihat materi pelajaran!",
+    "preview_guide_text_3": "Konferensi video tidak bisa diakses di Pratinjau Kelas Live",
+    "common_teacher_count": "",
+    "common_student_count": ""
 }

@@ -255,5 +255,10 @@
     "common_warning": "경고!",
     "observe_warning_videotype_text": "관찰 모드에서는 비디오를 사용하면 예측할 수 없는 오류가 발생할 수 있습니다. 계속하려면 확인을 누르세요. 동영상이 재생될 때 울림 현상을를 피하려면, 참가자의 마이크를 음소거하십시오.",
     "common_ok": "확인",
-    "common_do_not_show_again": "다시 표시하지 않기"
+    "common_do_not_show_again": "다시 표시하지 않기",
+    "preview_guide_text_1": "미리보기 라이브 클래스는 15분 동안만 사용할 수 있습니다.",
+    "preview_guide_text_2": "레슨 플랜을 클릭하여 수업 자료를 확인하세요.",
+    "preview_guide_text_3": "미리보기 라이브 클래스 에서는 비디오 기능을 지원하지 않습니다.",
+    "common_teacher_count": "{count, plural, =0 {교사} one {교사} other {교사}}",
+    "common_student_count": "{count, plural, =0 {학생} one {학생} other {학생}}"
 }

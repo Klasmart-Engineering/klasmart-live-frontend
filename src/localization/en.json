@@ -255,5 +255,10 @@
     "common_warning": "Warning!",
     "observe_warning_videotype_text": "You may experience unpredictable performance when viewing videos in Observe mode. To continue, press OK. Please mute participants’ microphone to avoid echo when video is playing.",
     "common_ok": "OK",
-    "common_do_not_show_again": "Do not show again"
+    "common_do_not_show_again": "Do not show again",
+    "preview_guide_text_1": "Preview Live Class is only available for 15 minutes.",
+    "preview_guide_text_2": "Click Lesson Plan to view lesson materials!",
+    "preview_guide_text_3": "Video conference is not supported in the Preview Live Class",
+    "common_teacher_count": "{count, plural, =0 {teacher} one {teacher} other {teachers}}",
+    "common_student_count": "{count, plural, =0 {student} one {student} other {students}}"
 }

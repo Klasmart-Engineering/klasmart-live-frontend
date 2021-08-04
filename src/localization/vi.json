@@ -255,5 +255,10 @@
     "common_warning": "Cảnh báo!",
     "observe_warning_videotype_text": "Bạn có thể gặp đặc tính không thể đoán trước khi xem video ở chế độ Quan sát. Để tiếp tục, hãy nhấn OK. Vui lòng tắt tiếng micrô của người tham gia để tránh tiếng vọng khi video đang phát.",
     "common_ok": "ĐỒNG Ý",
-    "common_do_not_show_again": "Không hiển thị lại"
+    "common_do_not_show_again": "Không hiển thị lại",
+    "preview_guide_text_1": "Xem trước Lớp học trực tuyến chỉ có thể dùng trong 15 phút.",
+    "preview_guide_text_2": "Nhấp vào Kế hoạch bài giảng để xem học liệu bài giảng!",
+    "preview_guide_text_3": "Hội thảo qua video không được hỗ trợ khi xem trước lớp học trực tuyến",
+    "common_teacher_count": "",
+    "common_student_count": ""
 }
