@@ -92,7 +92,7 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
         <React.Fragment>
             <Dialog fullWidth maxWidth={`sm`} scroll={`paper`} open={open} onClose={closeButtonHandler}>
                 <DialogTitle id="study-detail-title" className={dialogTitle}>
-                    <Typography noWrap variant="h6" className={dialogTitleText}>
+                    <Typography noWrap className={dialogTitleText}>
                         { schedule?.title || `N/A` }
                     </Typography>
                 </DialogTitle>
