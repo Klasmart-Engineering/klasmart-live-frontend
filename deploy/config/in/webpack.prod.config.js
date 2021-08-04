@@ -97,8 +97,10 @@ module.exports = {
             ENDPOINT_API: `https://api.kidsloop.in`,
             ENDPOINT_HUB: `https://hub.kidsloop.in`,
             ENDPOINT_CMS: `https://cms.kidsloop.in`,
-            ENDPOINT_PDF: `https://live.rumahkisah.in`,
+            ENDPOINT_PDF: `https://live.kidsloop.in`,
             PDF_VERSION: `SVG`,
+            ENDPOINT_REFRESH_COOKIE: `https://auth.kidsloop.in/refresh`,
+            LOGIN_PAGE_URL: `https://auth.kidsloop.in`,
         }),
         new HtmlWebpackPlugin({
             filename: `index.html`,

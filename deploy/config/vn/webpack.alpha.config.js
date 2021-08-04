@@ -97,8 +97,10 @@ module.exports = {
             ENDPOINT_API: `https://api.alpha.kidsloop.vn`,
             ENDPOINT_HUB: `https://hub.alpha.kidsloop.vn`,
             ENDPOINT_CMS: `https://cms.alpha.kidsloop.vn`,
-            ENDPOINT_PDF: `https://live.beta.kidsloop.vn`,
+            ENDPOINT_PDF: `https://live.alpha.kidsloop.vn`,
             PDF_VERSION: `SVG`,
+            ENDPOINT_REFRESH_COOKIE: `https://auth.alpha.kidsloop.vn/refresh`,
+            LOGIN_PAGE_URL: `https://auth.alpha.kidsloop.vn`,
         }),
         new HtmlWebpackPlugin({
             filename: `index.html`,
