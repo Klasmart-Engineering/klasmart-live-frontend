@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {Header} from "../../components/header";
 import {
     Box,
@@ -41,6 +41,7 @@ import {useSnackbar} from "kidsloop-px";
 import {blue} from "@material-ui/core/colors";
 import clsx from "clsx";
 import {usePopupContext} from "../../context-provider/popup-context";
+import { CordovaSystemContext } from "../../context-provider/cordova-system-context";
 
 export type HomeFunStudyFeedback = {
     studyId: string,
