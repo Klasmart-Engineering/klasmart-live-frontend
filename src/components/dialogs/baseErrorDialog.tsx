@@ -44,7 +44,7 @@ export function BaseErrorDialog({
             <Dialog fullWidth maxWidth={'sm'} className={classes.rounded_dialog}
                     classes={{paper: classes.rounded_dialog}} open={open} onClose={onClose}>
                 <DialogTitle className={classes.dialogTitle}>
-                    <Typography variant="h6" className={classes.dialogTitleText}>{title}</Typography>
+                    <Typography className={classes.dialogTitleText}>{title}</Typography>
                 </DialogTitle>
                 <DialogContent>
                     {children}
