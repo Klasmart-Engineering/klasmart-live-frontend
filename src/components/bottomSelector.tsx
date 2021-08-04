@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useContext } from "react";
 import {Box, Button, Grid, SwipeableDrawer, Typography} from "@material-ui/core";
 import {Camera as CameraIcon, File as FileIcon, Image as ImageIcon} from "@styled-icons/feather"
 import {FormattedMessage} from "react-intl";
 import {makeStyles, Theme} from "@material-ui/core/styles";
 import StyledIcon from "./styled/icon";
+import { CordovaSystemContext } from "../context-provider/cordova-system-context";
 
 const useStyles = makeStyles((theme: Theme) => ({
     drawer_paper: {
@@ -36,6 +37,9 @@ export function BottomSelector({
                                    onSelectGallery
                                }: Props): JSX.Element {
     const classes = useStyles();
+
+    const { isAndroid } = useContext(CordovaSystemContext);
+
     return (
         <React.Fragment>
             <SwipeableDrawer
@@ -93,7 +97,7 @@ export function BottomSelector({
                             </Box>
                         </Button>
                     </Grid>
-                    <Grid item xs>
+                    { !isAndroid ? <Grid item xs>
                         <Button fullWidth onClick={onSelectGallery}>
                             <Box py={5}>
                                 <Grid
@@ -111,7 +115,7 @@ export function BottomSelector({
                                 </Grid>
                             </Box>
                         </Button>
-                    </Grid>
+                    </Grid> : <></> }
                 </Grid>
             </SwipeableDrawer>
         </React.Fragment>
