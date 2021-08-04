@@ -37,7 +37,7 @@ export function InfoDialog({open, onClose, title, description, closeLabel}: Prop
         <React.Fragment>
             <Dialog fullWidth maxWidth={'sm'} className={classes.rounded_dialog} classes={{paper: classes.rounded_dialog}} open={open} onClose={onClose}>
                 <DialogTitle className={classes.dialogTitle}>
-                    <Typography variant="h6" className={classes.dialogTitleText}>
+                    <Typography className={classes.dialogTitleText}>
                         {
                             title? title : <FormattedMessage id="label_info"/>
                         }

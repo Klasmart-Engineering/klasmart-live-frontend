@@ -53,7 +53,7 @@ export function BaseConfirmDialog({
             <Dialog fullWidth maxWidth={'sm'} className={classes.rounded_dialog}
                     classes={{paper: classes.rounded_dialog}} open={open} onClose={onClose}>
                 <DialogTitle className={classes.dialogTitle}>
-                    <Typography variant="h6" className={classes.dialogText}>{title}</Typography>
+                    <Typography className={classes.dialogText}>{title}</Typography>
                 </DialogTitle>
                 <DialogContent>
                     {children}
