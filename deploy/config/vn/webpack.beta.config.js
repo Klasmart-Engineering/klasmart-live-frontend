@@ -99,6 +99,8 @@ module.exports = {
             ENDPOINT_CMS: `https://cms.beta.kidsloop.vn`,
             ENDPOINT_PDF: `https://live.beta.kidsloop.vn`,
             PDF_VERSION: `SVG`,
+            ENDPOINT_REFRESH_COOKIE: `https://auth.beta.kidsloop.vn/refresh`,
+            LOGIN_PAGE_URL: `https://auth.beta.kidsloop.vn`,
         }),
         new HtmlWebpackPlugin({
             filename: `index.html`,

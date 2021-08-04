@@ -97,6 +97,10 @@ module.exports = {
             ENDPOINT_API: `https://api.alpha.klpsre.com`,
             ENDPOINT_HUB: `https://hub.alpha.klpsre.com`,
             ENDPOINT_CMS: `https://cms.alpha.klpsre.com`,
+            ENDPOINT_PDF: `https://live.alpha.klpsre.com`,
+            PDF_VERSION: `SVG`,
+            ENDPOINT_REFRESH_COOKIE: `https://auth.alpha.klpsre.com/refresh`,
+            LOGIN_PAGE_URL: `https://auth.alpha.klpsre.com`,
         }),
         new HtmlWebpackPlugin({
             filename: `index.html`,

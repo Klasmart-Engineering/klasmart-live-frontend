@@ -100,6 +100,8 @@ module.exports = {
             ENDPOINT_CMS: `https://cms.beta.rumahkisah.net`,
             ENDPOINT_PDF: `https://live.beta.rumahkisah.net`,
             PDF_VERSION: `SVG`,
+            ENDPOINT_REFRESH_COOKIE: `https://auth.beta.rumahkisah.net/refresh`,
+            LOGIN_PAGE_URL: `https://auth.beta.rumahkisah.net`,
         }),
         new HtmlWebpackPlugin({
             filename: `index.html`,
