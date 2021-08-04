@@ -7,12 +7,12 @@ const SOURCE_CAMERA = 1;
 const SOURCE_CAMERAROLL = 2;
 const MEDIA_TYPE_ALL = 2;
 
-const ACCEPT_MIME_TYPES = 
+export const ACCEPT_MIME_TYPES = 
     `application/pdf,` + 
     `application/vnd.ms-powerpoint,` + 
     `application/vnd.openxmlformats-officedocument.presentationml.presentation,` + 
     `application/msword,` + 
-    `application/vnd.openxmlformats-officedocument.wordprocessingml.document,`;
+    `application/vnd.openxmlformats-officedocument.wordprocessingml.document,` +
     `application/rtf,` + 
     `application/vnd.ms-excel,` +
     `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,` +
