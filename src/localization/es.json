@@ -248,8 +248,17 @@
     "end_study_exit": "Abandonar estudio",
     "end_study_confirm": "¿Quiere abandonar la clase de estudio?",
     "end_study_bonus_content": "Contenido adicional",
-    "join_permissionAlertDialog_mic_blocked_title": "",
-    "join_permissionAlertDialog_mic_blocked_contentText_live": "",
-    "join_permissionAlertDialog_mic_not_exist_title": "",
-    "join_permissionAlertDialog_mic_not_exist_contentText_live": ""
+    "join_permissionAlertDialog_mic_blocked_title": "Por favor, conecte su micrófono.",
+    "join_permissionAlertDialog_mic_blocked_contentText_live": "Puede necesitar un micrófono para algunos de los contenidos interactivos. Recomendamos habilitar los permisos del micrófono para una mejor experiencia.",
+    "join_permissionAlertDialog_mic_not_exist_title": "Por favor, conecte su micrófono.",
+    "join_permissionAlertDialog_mic_not_exist_contentText_live": "Por desgracia, no pudimos encontrar un micrófono. Tenga en cuenta que su experiencia de usuario puede verse limitada.",
+    "common_warning": "¡Atención!",
+    "observe_warning_videotype_text": "Es posible que experimente resultados impredecibles al visualizar vídeos en el modo Observar. Para continuar, pulse OK. Para evitar ecos durante la reproducción del vídeo, silencie el micrófono de los participantes.",
+    "common_ok": "Aceptar",
+    "common_do_not_show_again": "No mostrar de nuevo",
+    "preview_guide_text_1": "",
+    "preview_guide_text_2": "",
+    "preview_guide_text_3": "",
+    "common_teacher_count": "",
+    "common_student_count": ""
 }
