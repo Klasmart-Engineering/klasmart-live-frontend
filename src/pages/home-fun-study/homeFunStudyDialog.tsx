@@ -474,9 +474,20 @@ function HomeFunStudyContainer({
         }
         const contentResourceUploadPathResponse = await contentService?.getContentResourceUploadPath(selectedOrg.organization_id, getFileExtensionFromName(file.name));
         if (contentResourceUploadPathResponse) {
-            const uploadResult = await contentService?.uploadAttachment(contentResourceUploadPathResponse.path, file);
-            if (uploadResult) {
-                updateAssignmentItemStatusToUploaded(assignmentItemId, contentResourceUploadPathResponse.resource_id);
+            try {
+                const uploadResult = await contentService?.uploadAttachment(contentResourceUploadPathResponse.path, file);
+                if (uploadResult) {
+                    updateAssignmentItemStatusToUploaded(assignmentItemId, contentResourceUploadPathResponse.resource_id);
+                } 
+            } catch(error) {
+                deleteAssignmentItem(assignmentItemId);
+                enqueueSnackbar(intl.formatMessage({ id: "file_upload_failed" }), {
+                    variant: "error",
+                    anchorOrigin: {
+                        vertical: 'bottom',
+                        horizontal: 'center',
+                    }
+                });
             }
         } else {
             deleteAssignmentItem(assignmentItemId);
@@ -486,7 +497,7 @@ function HomeFunStudyContainer({
                     vertical: 'bottom',
                     horizontal: 'center',
                 }
-            })
+            });
         }
     }
 
