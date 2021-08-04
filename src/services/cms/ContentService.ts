@@ -23,7 +23,8 @@ const createBlobForUploading = (file: File): Promise<Blob> => {
         };
 
         reader.onerror = () => {
-            reject("couldn't read file");
+            console.error(reader.error);
+            reject(reader.error);
         };
 
         reader.readAsArrayBuffer(file);
@@ -151,6 +152,7 @@ export class ContentService implements IContentService {
                 };
 
                 uploadRequest.onerror = () => {
+                    console.error(uploadRequest.statusText);
                     reject(uploadRequest.statusText);
                 }
 
