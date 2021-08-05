@@ -168,7 +168,7 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
                                 {schedule?.is_home_fun ?
                                     <Grid container direction={"column"}>
                                         {schedule.teachers.map(item => (
-                                        <Grid item>
+                                        <Grid key={item.id} item>
                                             <Typography variant="body1" className={rowContentText}>
                                                 {item.name}
                                             </Typography>
