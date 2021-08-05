@@ -1,14 +1,21 @@
-import { activeSettingsStateTab, activeTabState } from "../../../states/layoutAtoms";
+import {
+    activeSettingsStateTab,
+    activeTabState,
+} from "../../../../store/layoutAtoms";
 import Settings from "./settings/settings";
 import TabSettingsMenu from "./tabSettingsMenu";
 import {
-    Fade, Grid, makeStyles, Theme,
+    Fade,
+    Grid,
+    makeStyles,
+    Theme,
 } from "@material-ui/core";
 import { RecordCircleFill as RecordIcon } from "@styled-icons/bootstrap/RecordCircleFill";
 import { Calendar as ScheduleIcon } from "@styled-icons/boxicons-regular/Calendar";
 import { Settings2Outline as SettingsIcon } from "@styled-icons/evaicons-outline/Settings2Outline";
 import { Tool as ToolbarIcon } from "@styled-icons/feather/Tool";
-import React, { useEffect } from "react";
+import React,
+{ useEffect } from "react";
 import { useIntl } from "react-intl";
 import { useRecoilState } from "recoil";
 

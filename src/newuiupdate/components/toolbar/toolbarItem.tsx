@@ -1,4 +1,4 @@
-import { activeTabState } from "../../states/layoutAtoms";
+import { activeTabState } from "../../../store/layoutAtoms";
 import {
     Badge,
     makeStyles,
@@ -10,7 +10,8 @@ import {
 } from "@material-ui/core";
 import amber from "@material-ui/core/colors/amber";
 import clsx from "clsx";
-import React, { forwardRef } from "react";
+import React,
+{ forwardRef } from "react";
 import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({

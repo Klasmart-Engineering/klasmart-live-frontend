@@ -1,4 +1,4 @@
-import { isChatOpenState } from "../../../states/layoutAtoms";
+import { isChatOpenState } from "../../../../store/layoutAtoms";
 import { TabPanel } from "../../utils/utils";
 import Attachments from "./attachments/attachments";
 import Messages from "./messages/messages";
@@ -13,7 +13,10 @@ import {
 import { CloseCircle as CloseIcon } from "@styled-icons/ionicons-solid/CloseCircle";
 import React,
 { useState } from "react";
-import { FormattedMessage, useIntl } from "react-intl";
+import {
+    FormattedMessage,
+    useIntl,
+} from "react-intl";
 import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({

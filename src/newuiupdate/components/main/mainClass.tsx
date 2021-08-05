@@ -1,3 +1,6 @@
+import { ClassType } from "../../../store/actions";
+import { showEndStudyState } from "../../../store/layoutAtoms";
+import { LocalSessionContext } from "../../providers/providers";
 import { ClassContent } from "./classContent";
 import { WBToolbarContainer } from "./WBToolbar";
 import {
@@ -5,11 +8,9 @@ import {
     makeStyles,
     Theme,
 } from "@material-ui/core";
-import React, { useContext } from "react";
+import React,
+{ useContext } from "react";
 import { useRecoilState } from "recoil";
-import { showEndStudyState } from "../../states/layoutAtoms";
-import { LocalSessionContext } from "../../providers/providers";
-import { ClassType } from "../../../store/actions";
 
 const useStyles = makeStyles((theme: Theme) => ({}));
 

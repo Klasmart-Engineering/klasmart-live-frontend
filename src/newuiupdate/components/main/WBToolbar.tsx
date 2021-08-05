@@ -1,45 +1,55 @@
 import StyledIcon from "../../../components/styled/icon";
 import { ClassType } from "../../../store/actions";
+import { isCanvasOpenState } from "../../../store/layoutAtoms";
 import { LocalSessionContext } from "../../providers/providers";
 import { useSynchronizedState } from "../../whiteboard/context-providers/SynchronizedStateProvider";
-import Fab from "@material-ui/core/Fab";
-import { PencilAlt as WBIcon } from "@styled-icons/fa-solid/PencilAlt";
-import { CloseOutline as CloseIcon } from "@styled-icons/evaicons-outline/CloseOutline";
-import React, {useContext, useEffect, useState} from "react";
 import CanvasMenu from "../toolbar/toolbarMenus/canvasMenu";
-import {useRecoilState} from "recoil";
-import {isCanvasOpenState} from "../../states/layoutAtoms";
 import {
     Grid,
     makeStyles,
 } from "@material-ui/core";
+import Fab from "@material-ui/core/Fab";
+import { CloseOutline as CloseIcon } from "@styled-icons/evaicons-outline/CloseOutline";
+import { PencilAlt as WBIcon } from "@styled-icons/fa-solid/PencilAlt";
+import React,
+{
+    useContext,
+    useEffect,
+    useState,
+} from "react";
+import { useRecoilState } from "recoil";
 
 export const WB_TOOLBAR_MAX_HEIGHT = 80; // 64 + 16(padding top)
 
 const useStyles = makeStyles(() => ({
     root: {
         position: `relative`,
-        height: WB_TOOLBAR_MAX_HEIGHT
+        height: WB_TOOLBAR_MAX_HEIGHT,
     },
     buttonWrap: {
         position: `absolute`,
         zIndex: 999,
         bottom: 10,
         left: 10,
-        paddingTop: `15px`
+        paddingTop: `15px`,
     },
 }));
 
-export function WBToolbarContainer({ useLocalDisplay } : { useLocalDisplay?: boolean} ) {
+export function WBToolbarContainer ({ useLocalDisplay } : { useLocalDisplay?: boolean} ) {
     const classes = useStyles();
     const canvasRef = React.useRef<any>();
     const [ isCanvasOpen, setIsCanvasOpen ] = useRecoilState(isCanvasOpenState);
 
     const {
-        classtype, isTeacher, sessionId,
+        classtype,
+        isTeacher,
+        sessionId,
+
     } = useContext(LocalSessionContext);
     const {
-        state: { display, permissions, localDisplay }, actions: {
+        state: {
+            display, permissions, localDisplay,
+        }, actions: {
             setDisplay, setLocalDisplay, getPermissions, setPermissions,
         },
     } = useSynchronizedState();
@@ -71,17 +81,18 @@ export function WBToolbarContainer({ useLocalDisplay } : { useLocalDisplay?: boo
             item
             xs={12}
             className={classes.root}>
-            <div ref={canvasRef}
-                 className={classes.buttonWrap}>
+            <div
+                ref={canvasRef}
+                className={classes.buttonWrap}>
                 <Fab
                     aria-label="whiteboard toolbar opener"
                     disabled={!enableWB}
                     size="large"
                     color="primary"
-                    onClick={handleToggleWBToolbar}
                     style={{
-                        backgroundColor:`#bd6dd6`   
+                        backgroundColor:`#bd6dd6`,
                     }}
+                    onClick={handleToggleWBToolbar}
                 >
                     <StyledIcon
                         icon={isCanvasOpen ? <CloseIcon /> : <WBIcon />}

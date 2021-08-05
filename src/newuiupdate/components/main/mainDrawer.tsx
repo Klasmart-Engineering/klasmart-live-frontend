@@ -1,13 +1,14 @@
 import { ClassType } from "../../../store/actions";
-import { LocalSessionContext } from "../../providers/providers";
 import {
     isChatOpenState,
     isLessonPlanOpenState,
-} from "../../states/layoutAtoms";
+} from "../../../store/layoutAtoms";
+import { LocalSessionContext } from "../../providers/providers";
 import { StyledDrawer } from "../utils/utils";
 import Chat from "./chat/chat";
 import LessonPlan from "./lessonPlan/lessonPlan";
-import React, { useContext } from "react";
+import React,
+{ useContext } from "react";
 import { useRecoilState } from "recoil";
 
 function MainDrawer () {

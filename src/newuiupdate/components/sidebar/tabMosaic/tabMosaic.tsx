@@ -1,10 +1,10 @@
 import { Session } from "../../../../pages/utils";
-import { RoomContext } from "../../../providers/roomContext";
 import {
     activeTabState,
     isChatOpenState,
     mosaicViewSizeState,
-} from "../../../states/layoutAtoms";
+} from "../../../../store/layoutAtoms";
+import { RoomContext } from "../../../providers/roomContext";
 import Chat from "../../main/chat/chat";
 import Toolbar from "../../toolbar/toolbar";
 import UserCamera from "../../userCamera/userCamera";

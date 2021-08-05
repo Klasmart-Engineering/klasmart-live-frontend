@@ -1,17 +1,17 @@
 import { MaterialTypename } from "../../../../lessonMaterialContext";
 import { ContentType } from "../../../../pages/utils";
 import {
-    LIVE_LINK,
-    LocalSessionContext,
-} from "../../../providers/providers";
-import { RoomContext } from "../../../providers/roomContext";
-import {
     hasControlsState,
     interactiveModeState,
     isLessonPlanOpenState,
     materialActiveIndexState,
     streamIdState,
-} from "../../../states/layoutAtoms";
+} from "../../../../store/layoutAtoms";
+import {
+    LIVE_LINK,
+    LocalSessionContext,
+} from "../../../providers/providers";
+import { RoomContext } from "../../../providers/roomContext";
 import { MUTATION_SHOW_CONTENT } from "../../utils/graphql";
 import ActivityImage from "../../utils/interactiveContent/image";
 import { PreviewPlayer } from "../../utils/interactiveContent/previewPlayer";

@@ -1,17 +1,18 @@
-import { classInfoState } from "../../../../states/layoutAtoms";
+import { classInfoState } from "../../../../../store/layoutAtoms";
 import {
     makeStyles,
     Theme,
     Typography,
 } from "@material-ui/core";
-import React, { useContext } from "react";
+import React,
+{ useContext } from "react";
 import { FormattedMessage } from "react-intl";
 import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
     table: {
         width: `100%`,
-        borderCollapse: `collapse`
+        borderCollapse: `collapse`,
     },
     tbody: {
         "& > tr": {
@@ -20,7 +21,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
                 "&:nth-of-type(1)": {
                     color: theme.palette.text.primary,
-                    paddingRight: `30px`
+                    paddingRight: `30px`,
                 },
 
                 "&:nth-of-type(2)": {
@@ -39,12 +40,12 @@ const useStyles = makeStyles((theme: Theme) => ({
                     paddingBottom: `10px`,
 
                     "&:nth-of-type(1)": {
-                        paddingRight: `15px`
+                        paddingRight: `15px`,
                     },
-                }
+                },
             },
         },
-    }
+    },
 }));
 
 function ClassDetails () {
@@ -89,7 +90,9 @@ function ClassDetails () {
                     </tr>
                     <tr>
                         <td><Typography><FormattedMessage id="classdetails_lesson_materials" /></Typography></td>
-                        <td><Typography>{classInfo.materials} <span style={{textTransform: `lowercase`}}><FormattedMessage id="classdetails_lesson_materials" /></span></Typography></td>
+                        <td><Typography>{classInfo.materials} <span style={{
+                            textTransform: `lowercase`,
+                        }}><FormattedMessage id="classdetails_lesson_materials" /></span></Typography></td>
                     </tr>
                     <tr>
                         <td><Typography><FormattedMessage id="classdetails_start_time" /></Typography></td>

@@ -1,4 +1,4 @@
-import { mosaicViewSizeState } from "../../states/layoutAtoms";
+import { mosaicViewSizeState } from "../../../store/layoutAtoms";
 import {
     IconButton,
     makeStyles,

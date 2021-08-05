@@ -15,13 +15,13 @@ import {
     GlobalMuteNotification,
     WebRTCContext,
 } from "../../newuiupdate/providers/WebRTCContext";
+import { ClassType } from "../../store/actions";
 import {
     classInfoState,
     hasControlsState,
     isLessonPlanOpenState,
     studyRecommandUrlState,
-} from "../../newuiupdate/states/layoutAtoms";
-import { ClassType } from "../../store/actions";
+} from "../../store/layoutAtoms";
 import {
     useMutation,
     useQuery,

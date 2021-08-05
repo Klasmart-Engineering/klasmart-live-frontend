@@ -1,5 +1,5 @@
+import { classInfoState } from "../../../../../store/layoutAtoms";
 import { LocalSessionContext } from "../../../../providers/providers";
-import { classInfoState } from "../../../../states/layoutAtoms";
 import {
     Accordion,
     AccordionDetails,

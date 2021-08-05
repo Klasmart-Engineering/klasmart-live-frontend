@@ -5,6 +5,11 @@ import ClassLeft from '../pages/end/classLeft';
 import Join from '../pages/join/join';
 import { AuthTokenProvider } from "../services/auth-token/AuthTokenProvider";
 import {
+    classEndedState,
+    classLeftState,
+    hasJoinedClassroomState,
+} from "../store/layoutAtoms";
+import {
     redirectToLogin,
     refreshAuthenticationCookie,
 } from "../utils/authentication";
@@ -14,11 +19,6 @@ import {
     LocalSessionContext,
     sessionId,
 } from './providers/providers';
-import {
-    classEndedState,
-    classLeftState,
-    hasJoinedClassroomState,
-} from "./states/layoutAtoms";
 import {
     ApolloClient,
     ApolloProvider,

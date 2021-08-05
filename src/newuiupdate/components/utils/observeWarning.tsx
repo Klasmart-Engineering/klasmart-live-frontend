@@ -1,7 +1,7 @@
 import {
     observeContentState,
     observeWarningState,
-} from "../../states/layoutAtoms";
+} from "../../../store/layoutAtoms";
 import {
     Button,
     Checkbox,
@@ -16,9 +16,7 @@ import {
 import { Warning as WarningIcon } from "@styled-icons/entypo/Warning";
 import clsx from "clsx";
 import React,
-{
-    useEffect,
-} from "react";
+{ useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useRecoilState } from "recoil";
 

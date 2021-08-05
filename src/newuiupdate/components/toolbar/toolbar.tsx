@@ -1,15 +1,5 @@
 import { ContentType } from "../../../pages/utils";
 import {
-    LocalSessionContext,
-    SFU_LINK,
-} from "../../providers/providers";
-import { RoomContext } from "../../providers/roomContext";
-import {
-    MUTE,
-    MuteNotification,
-    WebRTCContext,
-} from "../../providers/WebRTCContext";
-import {
     activeTabState,
     hasControlsState,
     InteractiveMode,
@@ -22,7 +12,17 @@ import {
     isLessonPlanOpenState,
     isViewModesOpenState,
     unreadMessagesState,
-} from "../../states/layoutAtoms";
+} from "../../../store/layoutAtoms";
+import {
+    LocalSessionContext,
+    SFU_LINK,
+} from "../../providers/providers";
+import { RoomContext } from "../../providers/roomContext";
+import {
+    MUTE,
+    MuteNotification,
+    WebRTCContext,
+} from "../../providers/WebRTCContext";
 import { useSynchronizedState } from "../../whiteboard/context-providers/SynchronizedStateProvider";
 import {
     DialogEndClass,

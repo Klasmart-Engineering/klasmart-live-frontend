@@ -5,7 +5,7 @@ import {
     observeContentState,
     observeDisableState,
     observeWarningState,
-} from "../../../../states/layoutAtoms";
+} from "../../../../../store/layoutAtoms";
 import ObserveWarning from "../../../utils/observeWarning";
 import { StyledPopper } from "../../../utils/utils";
 import ViewMode from "./viewMode";
@@ -33,8 +33,8 @@ function ViewModesMenu (props:ViewModesMenuProps) {
     const ObserveWarningActive = () => {
         const checkShow = localStorage.getItem(`ObserveWarning`) !== null ? localStorage.getItem(`ObserveWarning`) : `true`;
         switch (checkShow) {
-            case `true`: setObserveOpen(true); break;
-            case `false`: setInteractiveMode(InteractiveMode.Observe); break;
+        case `true`: setObserveOpen(true); break;
+        case `false`: setInteractiveMode(InteractiveMode.Observe); break;
         }
     };
 

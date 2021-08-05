@@ -1,4 +1,7 @@
-import { activeTabState, isClassDetailsOpenState } from "../../states/layoutAtoms";
+import {
+    activeTabState,
+    isClassDetailsOpenState,
+} from "../../../store/layoutAtoms";
 import {
     Button,
     makeStyles,

@@ -1,4 +1,8 @@
 import { ClassType } from "../../../../store/actions";
+import {
+    isLessonPlanOpenState,
+    streamIdState,
+} from "../../../../store/layoutAtoms";
 import { redirectToLogin } from "../../../../utils/authentication";
 import { useWindowSize } from "../../../../utils/viewport";
 import {
@@ -6,10 +10,6 @@ import {
     LocalSessionContext,
 } from "../../../providers/providers";
 import { RoomContext } from "../../../providers/roomContext";
-import {
-    isLessonPlanOpenState,
-    streamIdState,
-} from "../../../states/layoutAtoms";
 import {
     gql,
     useMutation,
