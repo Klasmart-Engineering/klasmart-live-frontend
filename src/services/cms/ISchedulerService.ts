@@ -122,4 +122,6 @@ export interface ISchedulerService {
     getScheduleFeedbacks(organizationId: string, scheduleId: string, userId: string): Promise<ScheduleFeedbackResponse[]>;
 
     postScheduleFeedback(organizationId: string, scheduleId: string, comment: string, assignments: Assignment[]) : Promise<PostScheduleFeedbackResponse>;
+
+    getNewestFeedback(organizationId: string, scheduleId: string, userId: string): Promise<ScheduleFeedbackResponse>;
 }

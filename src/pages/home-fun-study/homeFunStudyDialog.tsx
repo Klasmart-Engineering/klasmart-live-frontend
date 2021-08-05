@@ -128,7 +128,7 @@ export function HomeFunStudyDialog() {
     const {schedulerService} = useServices();
     const {selectedOrg, selectedUserId} = useSelector((state: State) => state.session);
     const [studyInfo, setStudyInfo] = useState<ScheduleResponse>();
-    const [feedbacks, setFeedbacks] = useState<ScheduleFeedbackResponse[]>();
+    const [newestFeedback, setNewestFeedback] = useState<ScheduleFeedbackResponse>();
     const [key, setKey] = useState(Math.random().toString(36))
     const [loading, setLoading] = useState(false);
     const [shouldShowSubmitButton, setShouldShowSubmitButton] = useState(false);
@@ -210,8 +210,8 @@ export function HomeFunStudyDialog() {
                 if (!studyId) {
                     throw new Error("No studyId on query path");
                 }
-                const scheduleFeedbacksPayload = await schedulerService.getScheduleFeedbacks(selectedOrg.organization_id, studyId, selectedUserId);
-                setFeedbacks(scheduleFeedbacksPayload);
+                const newestFeedbackPayload = await schedulerService.getNewestFeedback(selectedOrg.organization_id, studyId, selectedUserId);
+                setNewestFeedback(newestFeedbackPayload);
             }
 
             try {
@@ -319,7 +319,7 @@ export function HomeFunStudyDialog() {
             </DialogTitle>
             <DialogContent>
                 {!loading ?
-                    <HomeFunStudyContainer studyInfo={studyInfo} feedbacks={feedbacks}/>
+                    <HomeFunStudyContainer studyInfo={studyInfo} newestFeedback={newestFeedback}/>
                     : <Loading messageId={"cordova_loading"} retryCallback={() => {
                         setKey(Math.random().toString(36))
                     }}/>}
@@ -343,8 +343,8 @@ export function HomeFunStudyDialog() {
 
 function HomeFunStudyContainer({
                                    studyInfo,
-                                   feedbacks
-                               }: { studyInfo?: ScheduleResponse, feedbacks?: ScheduleFeedbackResponse[] }) {
+                                   newestFeedback
+                               }: { studyInfo?: ScheduleResponse, newestFeedback?: ScheduleFeedbackResponse }) {
     const intl = useIntl();
     const dispatch = useDispatch();
     const {enqueueSnackbar} = useSnackbar();
@@ -377,8 +377,8 @@ function HomeFunStudyContainer({
             let newAssignmentItems: AssignmentItem[] = [];
             //Submitted feedback from CMS.
             // If the HFS have been submitted, it should be prioritized to show feedback from CMS first.
-            if (studyInfo.complete_assessment && feedbacks && feedbacks.length > 0) {
-                const feedBackAssignments = feedbacks[0].assignments;
+            if (studyInfo.complete_assessment && newestFeedback) {
+                const feedBackAssignments = newestFeedback.assignments;
                 newAssignmentItems = convertAssignmentsToAssignmentItems(feedBackAssignments);
                 setAssignmentItems(newAssignmentItems);
                 setSaveAssignmentItems({shouldSave: true, assignmentItems: newAssignmentItems})
@@ -386,7 +386,7 @@ function HomeFunStudyContainer({
         }
 
         displayAssignments()
-    }, [studyInfo, feedbacks])
+    }, [studyInfo, newestFeedback])
 
     useEffect(() => {
         function displayAssignmentsFromLocal() {
@@ -669,7 +669,7 @@ function HomeFunStudyContainer({
                     onDeleteAssignment={handleDeleteAssignmentItem} />
                 <HomeFunStudyComment
                     studyInfo={studyInfo}
-                    defaultComment={feedbacks && feedbacks.length > 0 ? feedbacks[0].comment : ""}
+                    defaultComment={newestFeedback ? newestFeedback.comment : ""}
                 />
             </Grid>
             <SupportFileInfo
