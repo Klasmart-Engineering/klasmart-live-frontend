@@ -1,4 +1,4 @@
-import { Feedback } from '../components/others/feedback';
+import { Feedback } from '../../newuiupdate/components/others/feedback';
 import {
     Fade,
     Grid,
@@ -7,19 +7,18 @@ import {
     Typography,
 } from '@material-ui/core';
 import { CalendarCheck as ClassEndedIcon } from "@styled-icons/boxicons-regular/CalendarCheck";
-import React,
-{ useContext } from 'react';
+import React from 'react';
 import { FormattedMessage } from 'react-intl';
 
 const useStyles = makeStyles((theme: Theme) => ({
-    container:{
+    container: {
         height: `100%`,
         backgroundColor: theme.palette.grey[200],
     },
     root: {
         textAlign: `center`,
     },
-    icon:{
+    icon: {
         color: theme.palette.text.primary,
         marginBottom: 10,
         "& svg": {
@@ -40,7 +39,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 }));
 
-function ClassLeft () {
+function ClassEnded () {
     const classes = useStyles();
     const HUB_ENDPOINT = process.env.ENDPOINT_HUB;
 
@@ -57,11 +56,11 @@ function ClassLeft () {
                     <div className={classes.icon}>
                         <ClassEndedIcon />
                     </div>
-                    <Typography variant="h3"><FormattedMessage id="class_ended_you_have_left" /></Typography>
+                    <Typography variant="h3"><FormattedMessage id="class_ended_title" /></Typography>
                     <Typography variant="body1"><FormattedMessage id="class_ended_thanks_for_attending" /></Typography>
 
                     <Typography variant="body1"><FormattedMessage id="class_ended_how_was_the_class" /></Typography>
-                    <Feedback type="END_CLASS" />
+                    <Feedback type={`END_CLASS`}/>
 
                     {HUB_ENDPOINT &&
                     <Typography className={classes.returnToHub}>
@@ -74,4 +73,4 @@ function ClassLeft () {
     );
 }
 
-export default ClassLeft;
+export default ClassEnded;

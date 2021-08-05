@@ -1,13 +1,13 @@
 import { Trophy } from "../components/trophies/trophy";
+import ClassEnded from '../pages/end/classEnded';
+import ClassLeft from '../pages/end/classLeft';
+import Join from '../pages/join/join';
 import { AuthTokenProvider } from "../services/auth-token/AuthTokenProvider";
 import {
     redirectToLogin,
     refreshAuthenticationCookie,
 } from "../utils/authentication";
 import Class from './pages/class';
-import ClassEnded from './pages/classEnded';
-import ClassLeft from './pages/classLeft';
-import Join from './pages/join';
 import ClassProviders from "./providers/classProviders";
 import {
     LIVE_LINK,
