@@ -88,4 +88,16 @@ export class SchedulerService implements ISchedulerService {
 
         return result;
     }
+
+    async getNewestFeedback(organizationId: string, scheduleId: string, userId: string): Promise<ScheduleFeedbackResponse> {
+        const url = `${this.endpoint}/v1/schedules/${scheduleId}/operator/newest_feedback`;
+        const result = await fetchJsonData<ScheduleFeedbackResponse>(url, "GET", {
+            org_id: organizationId,
+            schedule_id: scheduleId,
+            user_id: userId
+        }, this.auth);
+
+        return result;
+    }
+
 }
