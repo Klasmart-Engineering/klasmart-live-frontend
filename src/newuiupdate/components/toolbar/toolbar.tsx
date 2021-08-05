@@ -1,4 +1,4 @@
-import { ContentType } from "../../../pages/room/room";
+import { ContentType } from "../../../pages/utils";
 import {
     LocalSessionContext,
     SFU_LINK,

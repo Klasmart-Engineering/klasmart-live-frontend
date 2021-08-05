@@ -1,4 +1,4 @@
-import { Session } from "../../../../pages/room/room";
+import { Session } from "../../../../pages/utils";
 import { RoomContext } from "../../../providers/roomContext";
 import {
     activeTabState,
@@ -16,8 +16,11 @@ import {
     Theme,
 } from "@material-ui/core";
 import clsx from "clsx";
-import React, {
-    useContext, useEffect, useState,
+import React,
+{
+    useContext,
+    useEffect,
+    useState,
 } from "react";
 import { useRecoilState } from "recoil";
 

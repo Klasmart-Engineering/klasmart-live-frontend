@@ -1,4 +1,5 @@
 import { Trophy } from "../components/trophies/trophy";
+import Class from '../pages/class/class';
 import ClassEnded from '../pages/end/classEnded';
 import ClassLeft from '../pages/end/classLeft';
 import Join from '../pages/join/join';
@@ -7,7 +8,6 @@ import {
     redirectToLogin,
     refreshAuthenticationCookie,
 } from "../utils/authentication";
-import Class from './pages/class';
 import ClassProviders from "./providers/classProviders";
 import {
     LIVE_LINK,

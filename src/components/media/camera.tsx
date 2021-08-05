@@ -1,13 +1,41 @@
-import { useMutation, useQuery } from "@apollo/client";
-import Grid, { GridProps } from "@material-ui/core/Grid";
+import {
+    LocalSessionContext,
+    SFU_LINK,
+} from "../../entry";
+import { Session } from "../../pages/utils";
+import {
+    GLOBAL_MUTE_QUERY,
+    MUTE,
+    MuteNotification,
+    WebRTCContext,
+    WebRTCContextInterface,
+} from "../../providers/WebRTCContext";
+import { State } from "../../store/store";
+import PermissionControls from "../../whiteboard/components/WBPermissionControls";
+import { SessionsContext } from "../layout";
+import StyledIcon from "../styled/icon";
+import TrophyControls from "../trophies/trophyControls";
+import {
+    useMutation,
+    useQuery,
+} from "@apollo/client";
+import Grid,
+{ GridProps } from "@material-ui/core/Grid";
 import IconButton from '@material-ui/core/IconButton';
 import List from "@material-ui/core/List";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListSubheader from '@material-ui/core/ListSubheader';
-import Menu, { MenuProps } from "@material-ui/core/Menu";
+import Menu,
+{ MenuProps } from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import Paper from "@material-ui/core/Paper";
-import { createStyles, makeStyles, Theme, useTheme, withStyles } from "@material-ui/core/styles";
+import {
+    createStyles,
+    makeStyles,
+    Theme,
+    useTheme,
+    withStyles,
+} from "@material-ui/core/styles";
 import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
@@ -20,45 +48,40 @@ import { MicrophoneOff as MicrophoneOffIcon } from "@styled-icons/boxicons-solid
 import { Video as VideoOnIcon } from "@styled-icons/boxicons-solid/Video";
 import { VideoOff as VideoOffIcon } from "@styled-icons/boxicons-solid/VideoOff";
 import { VideocamOff as CameraOffIcon } from "@styled-icons/material-twotone/VideocamOff";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React,
+{
+    useContext,
+    useEffect,
+    useRef,
+    useState,
+} from "react";
 import { FormattedMessage } from "react-intl";
 import { useSelector } from "react-redux";
-import { LocalSessionContext, SFU_LINK } from "../../entry";
-import { Session } from "../../pages/room/room";
-import { GLOBAL_MUTE_QUERY, MUTE, MuteNotification, WebRTCContext, WebRTCContextInterface } from "../../providers/WebRTCContext";
-import { State } from "../../store/store";
-import PermissionControls from "../../whiteboard/components/WBPermissionControls";
-import { SessionsContext } from "../layout";
-import StyledIcon from "../styled/icon";
-import TrophyControls from "../trophies/trophyControls";
-
-
 
 const PARTICIPANT_INFO_ZINDEX = 1;
 const ICON_ZINDEX = 2;
-const PRIMARY_COLOR = "#0E78D5";
-const SECONDARY_COLOR = "#dc004e";
+const PRIMARY_COLOR = `#0E78D5`;
+const SECONDARY_COLOR = `#dc004e`;
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         iconGrid: {
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            paddingLeft: theme.spacing(0.5)
+            display: `flex`,
+            justifyContent: `center`,
+            alignItems: `center`,
+            paddingLeft: theme.spacing(0.5),
         },
         noHoverIcon: {
             "&:hover": {
-                color: "#FFF"
-            }
+                color: `#FFF`,
+            },
         },
         moreControlsMenuItem: {
             "&:hover": {
-                backgroundColor: "transparent"
-            }
-        }
-    })
-);
+                backgroundColor: `transparent`,
+            },
+        },
+    }));
 
 export enum CameraOrder {
     Default = 0,
@@ -70,7 +93,7 @@ export enum CameraOrder {
     Student = 10,
 }
 
-export function getCameraOrder(userSession: Session, isLocalUser: boolean): CameraOrder {
+export function getCameraOrder (userSession: Session, isLocalUser: boolean): CameraOrder {
     let order: CameraOrder;
     if (userSession.isHost)
         order = CameraOrder.HostTeacher;
@@ -81,7 +104,7 @@ export function getCameraOrder(userSession: Session, isLocalUser: boolean): Came
     else if (isLocalUser)
         order = CameraOrder.StudentSelf;
     else
-        order = CameraOrder.Student
+        order = CameraOrder.Student;
     return order;
 }
 
@@ -94,7 +117,7 @@ interface CameraProps extends GridProps {
     hidden?: boolean; // Maybe this prop will be deleted after classroom layout renewal.
 }
 
-export default function Camera({
+export default function Camera ({
     session,
     mediaStream,
     muted,
@@ -119,7 +142,7 @@ export default function Camera({
         if (videoRef.current) {
             videoRef.current.srcObject = mediaStream ? mediaStream : null;
         }
-    }, [videoRef.current, mediaStream]);
+    }, [ videoRef.current, mediaStream ]);
 
     const cameraRef = useRef<HTMLDivElement>(null);
     return (
@@ -129,54 +152,59 @@ export default function Camera({
                 component="div"
                 elevation={2}
                 style={{
-                    position: "relative",
-                    width: "100%",
-                    backgroundColor: "#193d6f",
+                    position: `relative`,
+                    width: `100%`,
+                    backgroundColor: `#193d6f`,
                     borderRadius: noBorderRadius ? 0 : 12,
                     height: 0,
-                    paddingBottom: square ? "75%" : "56.25%",
+                    paddingBottom: square ? `75%` : `56.25%`,
                 }}
             >
-                {session && <ParticipantInfo session={session} isSelf={isSelf} />}
+                {session && <ParticipantInfo
+                    session={session}
+                    isSelf={isSelf} />}
                 {mediaStream ?
                     <>
                         {session && <>
                             <MediaIndicators sessionId={session.id} />
-                            <MoreControlsButton session={session} isSelf={isSelf} cameraRef={cameraRef} />
+                            <MoreControlsButton
+                                session={session}
+                                isSelf={isSelf}
+                                cameraRef={cameraRef} />
                         </>}
                         <video
+                            ref={videoRef}
+                            playsInline
                             id={session ? `camera:${session.id}` : undefined}
                             autoPlay={true}
                             muted={true}
-                            playsInline
                             style={{
-                                backgroundColor: "#000",
+                                backgroundColor: `#000`,
                                 borderRadius: 12,
-                                objectFit: "cover",
-                                position: "absolute",
+                                objectFit: `cover`,
+                                position: `absolute`,
                                 top: 0,
                                 left: 0,
-                                width: "100%",
-                                height: "100%",
+                                width: `100%`,
+                                height: `100%`,
                             }}
-                            ref={videoRef}
                         />
                         <audio
+                            ref={audioRef}
                             autoPlay={true}
                             muted={muted}
-                            ref={audioRef}
                         />
                     </>
                     :
                     <Typography
                         align="center"
                         style={{
-                            color: "#FFF",
-                            top: "50%",
-                            left: "50%",
-                            marginRight: "-50%",
-                            position: "absolute",
-                            transform: "translate(-50%, -50%)",
+                            color: `#FFF`,
+                            top: `50%`,
+                            left: `50%`,
+                            marginRight: `-50%`,
+                            position: `absolute`,
+                            transform: `translate(-50%, -50%)`,
                         }}
                     >
                         <CameraOffIcon size="1.5rem" />
@@ -187,12 +215,12 @@ export default function Camera({
     );
 }
 
-function ParticipantInfo({ session, isSelf }: { session: Session, isSelf: boolean }): JSX.Element {
+function ParticipantInfo ({ session, isSelf }: { session: Session; isSelf: boolean }): JSX.Element {
     const theme = useTheme();
-    const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
+    const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
     const { iconGrid } = useStyles();
 
-    const [name, _] = useState<string | JSX.Element>(session.name ? session.name : <FormattedMessage id="error_unknown_user" />);
+    const [ name, _ ] = useState<string | JSX.Element>(session.name ? session.name : <FormattedMessage id="error_unknown_user" />);
 
     return (
         <Grid
@@ -201,14 +229,14 @@ function ParticipantInfo({ session, isSelf }: { session: Session, isSelf: boolea
             alignItems="center"
             style={{
                 zIndex: PARTICIPANT_INFO_ZINDEX,
-                position: "absolute",
+                position: `absolute`,
                 top: 0,
                 left: 0,
-                width: "100%",
+                width: `100%`,
                 padding: theme.spacing(0.5),
-                background: "linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0)",
-                borderRadius: "12px 12px 0 0",
-                textAlign: "center",
+                background: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0)`,
+                borderRadius: `12px 12px 0 0`,
+                textAlign: `center`,
             }}
         >
             {/* Participant's Name */}
@@ -216,23 +244,27 @@ function ParticipantInfo({ session, isSelf }: { session: Session, isSelf: boolea
                 <Tooltip
                     arrow
                     aria-label="Tooltip for participant's name"
-                    placement={"top"}
+                    placement={`top`}
                     title={name}
                 >
                     <Typography
-                        component="p"
-                        variant={isSmDown ? "caption" : "body1"}
                         noWrap
-                        style={{ color: "#FFF" }}
+                        component="p"
+                        variant={isSmDown ? `caption` : `body1`}
+                        style={{
+                            color: `#FFF`,
+                        }}
                     >
-                        {isSelf ? "You" : name}
+                        {isSelf ? `You` : name}
                     </Typography>
                 </Tooltip>
             </Grid>
 
             {/* ChalkboardIcon for teacher */}
             {session.isTeacher ?
-                <Grid item className={iconGrid}>
+                <Grid
+                    item
+                    className={iconGrid}>
                     <StyledIcon
                         icon={<ChalkboardIcon />}
                         size="small"
@@ -240,8 +272,12 @@ function ParticipantInfo({ session, isSelf }: { session: Session, isSelf: boolea
                         // TODO: https://calmisland.atlassian.net/browse/KL-4029
                         tooltip={{
                             children: <ChalkboardIcon />,
-                            placement: "top",
-                            title: <FormattedMessage id="camera_participantInfo_chalkboardIcon_tooltip" values={{ name }} />,
+                            placement: `top`,
+                            title: <FormattedMessage
+                                id="camera_participantInfo_chalkboardIcon_tooltip"
+                                values={{
+                                    name,
+                                }} />,
                         }}
                     />
                 </Grid> : null
@@ -250,7 +286,9 @@ function ParticipantInfo({ session, isSelf }: { session: Session, isSelf: boolea
             {/* CrownIcon for host teacher */}
             {/* host: teacher who can control the classroom(like toggle classroom mode, grant mic/cam permission, whiteboard permission, etc.) */}
             {session.isTeacher && session.isHost ?
-                <Grid item className={iconGrid}>
+                <Grid
+                    item
+                    className={iconGrid}>
                     <StyledIcon
                         icon={<CrownIcon />}
                         size="small"
@@ -258,17 +296,21 @@ function ParticipantInfo({ session, isSelf }: { session: Session, isSelf: boolea
                         // TODO: https://calmisland.atlassian.net/browse/KL-4029
                         tooltip={{
                             children: <CrownIcon />,
-                            placement: "top",
-                            title: <FormattedMessage id="camera_participantInfo_crownIcon_tooltip" values={{ name }} />
+                            placement: `top`,
+                            title: <FormattedMessage
+                                id="camera_participantInfo_crownIcon_tooltip"
+                                values={{
+                                    name,
+                                }} />,
                         }}
                     />
                 </Grid> : null
             }
         </Grid>
-    )
+    );
 }
 
-function MediaIndicators({ sessionId }: { sessionId: string }) {
+function MediaIndicators ({ sessionId }: { sessionId: string }) {
     const theme = useTheme();
 
     return (
@@ -278,22 +320,22 @@ function MediaIndicators({ sessionId }: { sessionId: string }) {
             alignItems="center"
             style={{
                 zIndex: ICON_ZINDEX,
-                position: "absolute",
+                position: `absolute`,
                 top: 0,
                 left: 0,
-                width: "100%",
+                width: `100%`,
                 padding: theme.spacing(0.5),
             }}
         >
             <FullScreenCameraButton sessionId={sessionId} />
             <MicIndicator sessionId={sessionId} />
         </Grid>
-    )
+    );
 }
 
-function FullScreenCameraButton({ sessionId }: { sessionId: string }): JSX.Element {
-    const toggleBtnId = `toggle-fullscreen-camera-button:${sessionId}`
-    const videoId = `camera:${sessionId}`
+function FullScreenCameraButton ({ sessionId }: { sessionId: string }): JSX.Element {
+    const toggleBtnId = `toggle-fullscreen-camera-button:${sessionId}`;
+    const videoId = `camera:${sessionId}`;
 
     const fullScreenCamera = async () => {
         const toggleBtn = document.getElementById(toggleBtnId) as HTMLButtonElement;
@@ -306,7 +348,7 @@ function FullScreenCameraButton({ sessionId }: { sessionId: string }): JSX.Eleme
             video.webkitRequestFullscreen(); // to support on Safari
         else if (video.msRequestFullScreen)
             video.msRequestFullScreen(); // to support on Edge
-    }
+    };
 
     return (
         <IconButton
@@ -321,30 +363,31 @@ function FullScreenCameraButton({ sessionId }: { sessionId: string }): JSX.Eleme
                 color="#FFF"
                 tooltip={{
                     children: <BoxArrowUpLeftIcon />,
-                    placement: "top",
-                    title: <FormattedMessage id="camera_fullScreenCameraButton_tooltip" />
+                    placement: `top`,
+                    title: <FormattedMessage id="camera_fullScreenCameraButton_tooltip" />,
                 }}
             />
         </IconButton>
-    )
+    );
 }
 
-
-function MicIndicator({ sessionId }: { sessionId: string }) {
+function MicIndicator ({ sessionId }: { sessionId: string }) {
     const { iconGrid, noHoverIcon } = useStyles();
     const sfuState = useContext(WebRTCContext);
 
-    const [micOn, setMicOn] = useState<boolean>(false);
+    const [ micOn, setMicOn ] = useState<boolean>(false);
 
     useEffect(() => {
-        setMicOn(sfuState.isLocalAudioEnabled(sessionId))
-    }, [sfuState.isLocalAudioEnabled(sessionId)])
+        setMicOn(sfuState.isLocalAudioEnabled(sessionId));
+    }, [ sfuState.isLocalAudioEnabled(sessionId) ]);
 
     return (micOn ? <></> :
         <Grid
             item
             className={iconGrid}
-            style={{ padding: 0 }}
+            style={{
+                padding: 0,
+            }}
         >
             <StyledIcon
                 icon={micOn ?
@@ -353,35 +396,40 @@ function MicIndicator({ sessionId }: { sessionId: string }) {
                     <MicrophoneOffIcon className={noHoverIcon} />
                 }
                 size="small"
-                color={micOn ? "#2EE2D8" : "#FFF"}
+                color={micOn ? `#2EE2D8` : `#FFF`}
             />
         </Grid>
-    )
+    );
 }
 
 const MoreControlsPopover = withStyles({
-    paper: { width: 250, border: "1px solid lightgrey" }
+    paper: {
+        width: 250,
+        border: `1px solid lightgrey`,
+    },
 })((props: MenuProps) => (
     <Menu
         elevation={0}
         getContentAnchorEl={null}
         // Anchor reference: https://material-ui.com/components/popover/#anchor-playground
         anchorOrigin={{
-            vertical: "center",
-            horizontal: "left"
+            vertical: `center`,
+            horizontal: `left`,
         }}
         transformOrigin={{
-            vertical: "bottom",
-            horizontal: "right"
+            vertical: `bottom`,
+            horizontal: `right`,
         }}
         {...props}
     />
 ));
 
-export function MoreControlsButton({ session, isSelf, cameraRef }: {
-    session: Session,
-    isSelf: boolean,
-    cameraRef: React.RefObject<HTMLElement>
+export function MoreControlsButton ({
+    session, isSelf, cameraRef,
+}: {
+    session: Session;
+    isSelf: boolean;
+    cameraRef: React.RefObject<HTMLElement>;
 }): JSX.Element {
     const { moreControlsMenuItem } = useStyles();
     const theme = useTheme();
@@ -389,7 +437,7 @@ export function MoreControlsButton({ session, isSelf, cameraRef }: {
     const { isTeacher } = useContext(LocalSessionContext);
     const sfuState = useContext(WebRTCContext);
 
-    const [moreEl, setMoreEl] = useState<null | HTMLElement>(null);
+    const [ moreEl, setMoreEl ] = useState<null | HTMLElement>(null);
     const handleMoreOpen = (event: React.SyntheticEvent<HTMLAnchorElement>) => { setMoreEl(event.currentTarget); };
     const handleMoreClose = () => { setMoreEl(null); };
 
@@ -400,13 +448,13 @@ export function MoreControlsButton({ session, isSelf, cameraRef }: {
             alignItems="center"
             style={{
                 zIndex: ICON_ZINDEX,
-                position: "absolute",
+                position: `absolute`,
                 bottom: 0,
                 left: 0,
-                width: "100%",
+                width: `100%`,
                 padding: theme.spacing(0.5),
-                background: "linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3)",
-                borderRadius: "0 0 12px 12px",
+                background: `linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3)`,
+                borderRadius: `0 0 12px 12px`,
             }}
         >
             <IconButton
@@ -417,15 +465,20 @@ export function MoreControlsButton({ session, isSelf, cameraRef }: {
                 size="small"
                 onClick={handleMoreOpen}
             >
-                <StyledIcon icon={<DotsVerticalRoundedIcon />} size="small" color="#FFF" />
+                <StyledIcon
+                    icon={<DotsVerticalRoundedIcon />}
+                    size="small"
+                    color="#FFF" />
             </IconButton>
             <MoreControlsPopover
-                id="more-controls-popover"
                 keepMounted
+                id="more-controls-popover"
                 anchorEl={moreEl}
                 open={Boolean(moreEl)}
+                MenuListProps={{
+                    onPointerLeave: handleMoreClose,
+                }}
                 onClose={handleMoreClose}
-                MenuListProps={{ onPointerLeave: handleMoreClose }}
             >
                 {/* Whiteboard & Trophy permissions
                 1. isSelf: User do not have to control user's own permissions.
@@ -467,12 +520,19 @@ export function MoreControlsButton({ session, isSelf, cameraRef }: {
                         </ListSubheader>
                     }
                 >
-                    <ToggleCamera session={session} sfuState={sfuState} isSelf={isSelf} cameraRef={cameraRef} />
-                    <ToggleMic session={session} sfuState={sfuState}  isSelf={isSelf}/>
+                    <ToggleCamera
+                        session={session}
+                        sfuState={sfuState}
+                        isSelf={isSelf}
+                        cameraRef={cameraRef} />
+                    <ToggleMic
+                        session={session}
+                        sfuState={sfuState}
+                        isSelf={isSelf}/>
                 </List>
             </MoreControlsPopover>
         </Grid>
-    )
+    );
 }
 
 /**
@@ -480,22 +540,35 @@ export function MoreControlsButton({ session, isSelf, cameraRef }: {
  * 1. Separate local / global
  * 2. Property for UI type - IconButton & MenuItem
  */
-function ToggleCamera({ session, sfuState, isSelf, cameraRef }: {
-    session: Session,
-    sfuState: WebRTCContextInterface,
-    isSelf: boolean,
-    cameraRef: React.RefObject<HTMLElement>
+function ToggleCamera ({
+    session, sfuState, isSelf, cameraRef,
+}: {
+    session: Session;
+    sfuState: WebRTCContextInterface;
+    isSelf: boolean;
+    cameraRef: React.RefObject<HTMLElement>;
 }): JSX.Element {
     const { noHoverIcon, moreControlsMenuItem } = useStyles();
     const { roomId, sessionId: localSessionId } = useContext(LocalSessionContext);
     const sessions = useContext(SessionsContext);
 
     const drawerTabIndex = useSelector((state: State) => state.control.drawerTabIndex);
-    const [cameraOn, setCameraOn] = useState<boolean>(false);
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [isVideoManuallyDisabled, setIsVideoManuallyDisabled] = useState<boolean>(false);
-    const [muteMutation] = useMutation(MUTE, {context: {target: SFU_LINK}});
-    const {refetch} = useQuery(GLOBAL_MUTE_QUERY, { variables: { roomId }, context: {target: SFU_LINK}});
+    const [ cameraOn, setCameraOn ] = useState<boolean>(false);
+    const [ isLoading, setIsLoading ] = useState<boolean>(true);
+    const [ isVideoManuallyDisabled, setIsVideoManuallyDisabled ] = useState<boolean>(false);
+    const [ muteMutation ] = useMutation(MUTE, {
+        context: {
+            target: SFU_LINK,
+        },
+    });
+    const { refetch } = useQuery(GLOBAL_MUTE_QUERY, {
+        variables: {
+            roomId,
+        },
+        context: {
+            target: SFU_LINK,
+        },
+    });
     const states = useContext(WebRTCContext);
     // NOTE: This is the logic for the frontend performance. If this logic goes well, we will restore it again.
     // const isCameraVisible = useIsElementInViewport(cameraRef);
@@ -504,7 +577,7 @@ function ToggleCamera({ session, sfuState, isSelf, cameraRef }: {
         if (isLoading && sfuState.isLocalVideoEnabled(session.id)) {
             setIsLoading(false);
         }
-    }, [sfuState.isLocalVideoEnabled(session.id)])
+    }, [ sfuState.isLocalVideoEnabled(session.id) ]);
 
     // NOTE: This is the logic for the frontend performance. If this logic goes well, we will restore it again.
     // useEffect(() => {
@@ -521,38 +594,42 @@ function ToggleCamera({ session, sfuState, isSelf, cameraRef }: {
         if (states.isLocalVideoEnabled(session.id) !== undefined) {
             setCameraOn(states.isLocalVideoEnabled(session.id));
         }
-    }, [states.isLocalVideoEnabled(session.id)])
+    }, [ states.isLocalVideoEnabled(session.id) ]);
 
-    async function toggleInboundVideoState() {
+    async function toggleInboundVideoState () {
         const localSession = sessions.get(localSessionId);
         if (localSession?.isHost) {
             const notification: MuteNotification = {
                 roomId,
                 sessionId: session.id,
-                video: !cameraOn
-            }
-            const muteNotification = await muteMutation({ variables: notification })
+                video: !cameraOn,
+            };
+            const muteNotification = await muteMutation({
+                variables: notification,
+            });
             if (muteNotification?.data?.mute?.video != null) {
-                setCameraOn(muteNotification.data.mute.video)
+                setCameraOn(muteNotification.data.mute.video);
             }
         } else {
             states.localVideoToggle(session.id);
         }
     }
 
-    async function toggleOutboundVideoState() {
+    async function toggleOutboundVideoState () {
         const notification: MuteNotification = {
             roomId,
             sessionId: session.id,
-            video: !cameraOn
-        }
-        const muteNotification = await muteMutation({ variables: notification })
+            video: !cameraOn,
+        };
+        const muteNotification = await muteMutation({
+            variables: notification,
+        });
         if (muteNotification?.data?.mute?.video != null) {
-            setCameraOn(muteNotification.data.mute.video)
+            setCameraOn(muteNotification.data.mute.video);
         }
     }
 
-    async function toggleVideoState(): Promise<void> {
+    async function toggleVideoState (): Promise<void> {
         const { data }= await refetch();
         const videoGloballyDisabled = data?.retrieveGlobalMute?.videoGloballyDisabled;
         if (isSelf) {
@@ -571,13 +648,18 @@ function ToggleCamera({ session, sfuState, isSelf, cameraRef }: {
     }
 
     return (
-        <MenuItem onClick={toggleVideoState} className={moreControlsMenuItem}>
+        <MenuItem
+            className={moreControlsMenuItem}
+            onClick={toggleVideoState}>
             <ListItemIcon>
-                <StyledIcon icon={cameraOn ? <VideoOnIcon className={noHoverIcon} /> : <VideoOffIcon className={noHoverIcon} />} size="medium" color={cameraOn ? PRIMARY_COLOR : SECONDARY_COLOR} />
+                <StyledIcon
+                    icon={cameraOn ? <VideoOnIcon className={noHoverIcon} /> : <VideoOffIcon className={noHoverIcon} />}
+                    size="medium"
+                    color={cameraOn ? PRIMARY_COLOR : SECONDARY_COLOR} />
             </ListItemIcon>
             {cameraOn ? <FormattedMessage id="turn_off_camera" /> : <FormattedMessage id="turn_on_camera" />}
         </MenuItem>
-    )
+    );
 }
 
 /**
@@ -585,55 +667,72 @@ function ToggleCamera({ session, sfuState, isSelf, cameraRef }: {
  * 1. Separate local / global
  * 2. Property for UI type - IconButton & MenuItem
  */
-function ToggleMic({ session, sfuState, isSelf }: {
-    session: Session,
-    sfuState: WebRTCContextInterface,
-    isSelf: boolean,
+function ToggleMic ({
+    session, sfuState, isSelf,
+}: {
+    session: Session;
+    sfuState: WebRTCContextInterface;
+    isSelf: boolean;
 }): JSX.Element {
     const { noHoverIcon, moreControlsMenuItem } = useStyles();
     const { roomId, sessionId: localSessionId } = useContext(LocalSessionContext);
     const sessions = useContext(SessionsContext);
-    const [micOn, setMicOn] = useState<boolean>(false);
-    const [muteMutation] = useMutation(MUTE, {context: {target: SFU_LINK}});
-    const {refetch} = useQuery(GLOBAL_MUTE_QUERY, { variables: { roomId }, context: {target: SFU_LINK}});
+    const [ micOn, setMicOn ] = useState<boolean>(false);
+    const [ muteMutation ] = useMutation(MUTE, {
+        context: {
+            target: SFU_LINK,
+        },
+    });
+    const { refetch } = useQuery(GLOBAL_MUTE_QUERY, {
+        variables: {
+            roomId,
+        },
+        context: {
+            target: SFU_LINK,
+        },
+    });
     const states = useContext(WebRTCContext);
 
     useEffect(() => {
         if (states.isLocalAudioEnabled(session.id) !== undefined) {
             setMicOn(states.isLocalAudioEnabled(session.id));
         }
-    }, [states.isLocalAudioEnabled(session.id)])
+    }, [ states.isLocalAudioEnabled(session.id) ]);
 
-    async function toggleInboundAudioState() {
+    async function toggleInboundAudioState () {
         const localSession = sessions.get(localSessionId);
         if (localSession?.isHost) {
             const notification: MuteNotification = {
                 roomId,
                 sessionId: session.id,
-                audio: !micOn
-            }
-            const muteNotification = await muteMutation({ variables: notification })
+                audio: !micOn,
+            };
+            const muteNotification = await muteMutation({
+                variables: notification,
+            });
             if (muteNotification?.data?.mute?.audio != null) {
-                setMicOn(muteNotification.data.mute.audio)
+                setMicOn(muteNotification.data.mute.audio);
             }
         } else {
             states.localAudioToggle(session.id);
         }
     }
 
-    async function toggleOutboundAudioState() {
+    async function toggleOutboundAudioState () {
         const notification: MuteNotification = {
             roomId,
             sessionId: session.id,
-            audio: !micOn
-        }
-        const muteNotification = await muteMutation({ variables: notification })
+            audio: !micOn,
+        };
+        const muteNotification = await muteMutation({
+            variables: notification,
+        });
         if (muteNotification?.data?.mute?.audio != null) {
-            setMicOn(muteNotification.data.mute.audio)
+            setMicOn(muteNotification.data.mute.audio);
         }
     }
 
-    async function toggleAudioState() {
+    async function toggleAudioState () {
         const { data }= await refetch();
         const audioGloballyMuted = data?.retrieveGlobalMute?.audioGloballyMuted;
         if (isSelf) {
@@ -651,11 +750,16 @@ function ToggleMic({ session, sfuState, isSelf }: {
     }
 
     return (
-        <MenuItem onClick={toggleAudioState} className={moreControlsMenuItem}>
+        <MenuItem
+            className={moreControlsMenuItem}
+            onClick={toggleAudioState}>
             <ListItemIcon>
-                <StyledIcon icon={micOn ? <MicrophoneOnIcon className={noHoverIcon} /> : <MicrophoneOffIcon className={noHoverIcon} />} size="medium" color={micOn ? PRIMARY_COLOR : SECONDARY_COLOR} />
+                <StyledIcon
+                    icon={micOn ? <MicrophoneOnIcon className={noHoverIcon} /> : <MicrophoneOffIcon className={noHoverIcon} />}
+                    size="medium"
+                    color={micOn ? PRIMARY_COLOR : SECONDARY_COLOR} />
             </ListItemIcon>
             {micOn ? <FormattedMessage id="turn_off_mic" /> : <FormattedMessage id="turn_on_mic" />}
         </MenuItem>
-    )
+    );
 }

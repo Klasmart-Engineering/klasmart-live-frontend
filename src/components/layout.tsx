@@ -11,7 +11,7 @@ import {
     Message,
     Session,
     StreamIdState,
-} from "../pages/room/room";
+} from "../pages/utils";
 import { RoomContext } from "../providers/RoomContext";
 import { WebRTCContext } from "../providers/WebRTCContext";
 import { SendMessage } from "../sendMessage";

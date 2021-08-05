@@ -1,11 +1,16 @@
 import { MaterialTypename } from "../../../../lessonMaterialContext";
-import { ContentType } from "../../../../pages/room/room";
-import { LIVE_LINK, LocalSessionContext } from "../../../providers/providers";
+import { ContentType } from "../../../../pages/utils";
+import {
+    LIVE_LINK,
+    LocalSessionContext,
+} from "../../../providers/providers";
 import { RoomContext } from "../../../providers/roomContext";
 import {
-    hasControlsState, interactiveModeState,
+    hasControlsState,
+    interactiveModeState,
     isLessonPlanOpenState,
-    materialActiveIndexState, streamIdState,
+    materialActiveIndexState,
+    streamIdState,
 } from "../../../states/layoutAtoms";
 import { MUTATION_SHOW_CONTENT } from "../../utils/graphql";
 import ActivityImage from "../../utils/interactiveContent/image";
@@ -15,10 +20,16 @@ import { ReplicaMedia } from "../../utils/interactiveContent/synchronized-video"
 import PreviewLessonPlan from "../previewLessonPlan";
 import { useMutation } from "@apollo/client";
 import {
-    Grid, makeStyles, Theme,
+    Grid,
+    makeStyles,
+    Theme,
 } from "@material-ui/core";
 import { PresentationChartBar as PresentIcon } from "@styled-icons/heroicons-solid/PresentationChartBar";
-import React, { useContext, useEffect } from "react";
+import React,
+{
+    useContext,
+    useEffect,
+} from "react";
 import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -34,8 +45,6 @@ function Present () {
     const { content } = useContext(RoomContext);
     const [ hasControls, setHasControls ] = useRecoilState(hasControlsState);
 
-
-
     /*
         const [ interactiveMode, setInteractiveMode ] = useRecoilState(interactiveModeState);
     const [ materialActiveIndex, setMaterialActiveIndex ] = useRecoilState(materialActiveIndexState);
@@ -50,7 +59,6 @@ function Present () {
             target: LIVE_LINK,
         },
     });
-
 
     useEffect(() => {
         if (material) {

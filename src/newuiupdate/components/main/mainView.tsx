@@ -1,4 +1,4 @@
-import { ContentType } from "../../../pages/room/room";
+import { ContentType } from "../../../pages/utils";
 import { RoomContext } from "../../providers/roomContext";
 import { ScreenShareContext } from "../../providers/screenShareProvider";
 import { WebRTCContext } from "../../providers/WebRTCContext";
