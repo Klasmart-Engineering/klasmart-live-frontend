@@ -1,10 +1,16 @@
 import { ClassType } from "../../../../store/actions";
+import {
+    hasControlsState,
+    isCanvasOpenState,
+} from "../../../../store/layoutAtoms";
 import { LocalSessionContext } from "../../../providers/providers";
-import { hasControlsState, isCanvasOpenState } from "../../../states/layoutAtoms";
 import { useSynchronizedState } from "../../../whiteboard/context-providers/SynchronizedStateProvider";
 import { StyledPopper } from "../../utils/utils";
 import {
-    Grid, makeStyles,  Theme, Tooltip,
+    Grid,
+    makeStyles,
+    Theme,
+    Tooltip,
 } from "@material-ui/core";
 import { Move as MoveIcon } from "@styled-icons/boxicons-regular/Move";
 import { Eraser as EraserIcon } from "@styled-icons/boxicons-solid/Eraser";
@@ -18,8 +24,12 @@ import { GridOn as GridOnIcon } from "@styled-icons/material/GridOn";
 import { TextFields as TextIcon } from "@styled-icons/material/TextFields";
 import clsx from "clsx";
 import { useToolbarContext } from "kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
-import React, {
-    useCallback, useContext, useEffect, useState,
+import React,
+{
+    useCallback,
+    useContext,
+    useEffect,
+    useState,
 } from "react";
 import { useIntl } from "react-intl";
 import { useRecoilState } from "recoil";
@@ -96,7 +106,7 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
             selectTool, selectColorByValue, clear,
         },
     } = useToolbarContext();
-    
+
     const selectObjectEraser = useCallback(() => {
         const eraserOptions = tools.eraser.options;
         if (eraserOptions) {
@@ -116,7 +126,7 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
 
     useEffect(()=>{
         if(classtype === ClassType.LIVE){
-            setToolbarItemsDisabled(!isGlobalCanvasEnabled)
+            setToolbarItemsDisabled(!isGlobalCanvasEnabled);
         }
 
         if(isGlobalCanvasEnabled){
@@ -216,7 +226,13 @@ interface CanvasMenuItemProps {
 const CanvasMenuItem = (props:CanvasMenuItemProps) => {
     const classes = useStyles();
     const {
-        onClick, active, icon, title, color, disabled,
+        onClick,
+        active,
+        icon,
+        title,
+        color,
+        disabled,
+
     } = props;
 
     return(

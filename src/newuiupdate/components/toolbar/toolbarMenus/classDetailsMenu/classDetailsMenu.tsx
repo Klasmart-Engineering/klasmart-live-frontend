@@ -1,9 +1,7 @@
-import { isClassDetailsOpenState } from "../../../../states/layoutAtoms";
+import { isClassDetailsOpenState } from "../../../../../store/layoutAtoms";
 import { StyledPopper } from "../../../utils/utils";
 import ClassDetails from "./classDetails";
 import ClassRoster from "./classRoster";
-import { Info as InfoIcon } from "@styled-icons/evaicons-solid/Info";
-import RosterIcon from '@material-ui/icons/AccessibilityNew';
 import {
     Box,
     makeStyles,
@@ -11,7 +9,10 @@ import {
     Tabs,
     Theme,
 } from "@material-ui/core";
-import React, { useState } from "react";
+import RosterIcon from '@material-ui/icons/AccessibilityNew';
+import { Info as InfoIcon } from "@styled-icons/evaicons-solid/Info";
+import React,
+{ useState } from "react";
 import { useIntl } from "react-intl";
 import { useRecoilState } from "recoil";
 
@@ -28,8 +29,8 @@ const useStyles = makeStyles((theme: Theme) => ({
                 flexDirection: `row`,
 
                 "& svg": {
-                  height: `14px`,
-                  margin: `0 6px 0 0 !important`,
+                    height: `14px`,
+                    margin: `0 6px 0 0 !important`,
                 },
             },
         },
@@ -44,7 +45,7 @@ const useStyles = makeStyles((theme: Theme) => ({
             minWidth: `0`,
             maxWidth: `calc(100vw - 30px)`,
         },
-    }
+    },
 }));
 
 interface GlobaActionsMenuProps {
@@ -69,11 +70,11 @@ function ClassDetailsMenu (props: GlobaActionsMenuProps) {
             anchorEl={anchor}>
             <div className={classes.popperStyle}>
                 <Tabs
+                    centered
                     className={classes.tabsWrap}
                     value={tabValue}
                     aria-label="Class Details Tabs"
                     onChange={handleChange}
-                    centered
                 >
                     <Tab
                         disableRipple
@@ -118,7 +119,10 @@ function TabPanel (props: TabPanelProps) {
     const classes = useStyles();
 
     const {
-        children, value, index, ...other
+        children,
+        value,
+        index,
+        ...other
     } = props;
 
     return (

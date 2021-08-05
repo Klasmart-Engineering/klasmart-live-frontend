@@ -1,8 +1,13 @@
 import { ClassType } from "../../../store/actions";
-import { LIVE_LINK, LocalSessionContext } from "../../providers/providers";
 import {
-    materialActiveIndexState, showEndStudyState, studyRecommandUrlState,
-} from "../../states/layoutAtoms";
+    materialActiveIndexState,
+    showEndStudyState,
+    studyRecommandUrlState,
+} from "../../../store/layoutAtoms";
+import {
+    LIVE_LINK,
+    LocalSessionContext,
+} from "../../providers/providers";
 import { Whiteboard } from "../../whiteboard/components/Whiteboard";
 import { MUTATION_REWARD_TROPHY } from "../utils/graphql";
 import PreviewLessonPlan from "./previewLessonPlan";
@@ -10,14 +15,21 @@ import { WB_TOOLBAR_MAX_HEIGHT } from "./WBToolbar";
 import { useMutation } from "@apollo/client";
 import { Typography } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
-import { makeStyles, Theme } from "@material-ui/core/styles";
+import {
+    makeStyles,
+    Theme,
+} from "@material-ui/core/styles";
 import { StarFill as BonusContentIcon } from "@styled-icons/bootstrap/StarFill";
 import { ChevronLeft as ArrowBackIcon } from "@styled-icons/boxicons-regular/ChevronLeft";
 import { ChevronRight as ArrowForwardIcon } from "@styled-icons/boxicons-regular/ChevronRight";
 import { Exit as ExitIcon } from "@styled-icons/icomoon/Exit";
 import clsx from "clsx";
-import React, {
-    useContext, useEffect, useRef, useState,
+import React,
+{
+    useContext,
+    useEffect,
+    useRef,
+    useState,
 } from "react";
 import { useIntl } from "react-intl";
 import { useRecoilState } from "recoil";
@@ -125,7 +137,12 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 export function ClassContent () {
     const {
-        classtype, isTeacher, materials, sessionId, roomId,
+        classtype,
+        isTeacher,
+        materials,
+        sessionId,
+        roomId,
+
     } = useContext(LocalSessionContext);
 
     const classes = useStyles();
@@ -226,7 +243,8 @@ export function ClassContent () {
                             id="activity-view-container">
                             <Whiteboard
                                 uniqueId={forStudent ? `student` : `teacher`}
-                                group={classtype !== ClassType.LIVE ? sessionId : undefined} useLocalDisplay={classtype !== ClassType.LIVE} />
+                                group={classtype !== ClassType.LIVE ? sessionId : undefined}
+                                useLocalDisplay={classtype !== ClassType.LIVE} />
                             <PreviewLessonPlan />
                         </div>
                     </div> }
@@ -251,7 +269,10 @@ export interface MaterialNavigationProps {
 
 const MaterialNavigation = (props:MaterialNavigationProps) => {
     const {
-        direction, disabled, onClick,
+        direction,
+        disabled,
+        onClick,
+
     } = props;
     const classes = useStyles();
 
@@ -275,7 +296,11 @@ export interface LargeButtonProps {
 
 const LargeButton = (props:LargeButtonProps) => {
     const {
-        variant, label, onClick, icon,
+        variant,
+        label,
+        onClick,
+        icon,
+
     } = props;
     const classes = useStyles();
 

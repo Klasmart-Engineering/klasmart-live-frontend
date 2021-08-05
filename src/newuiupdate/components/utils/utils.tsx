@@ -1,11 +1,11 @@
 import { MaterialTypename } from "../../../lessonMaterialContext";
 import { ContentType } from "../../../pages/utils";
-import { LocalSessionContext } from "../../providers/providers";
 import {
     activeTabState,
     classInfoState,
     InteractiveMode,
-} from "../../states/layoutAtoms";
+} from "../../../store/layoutAtoms";
+import { LocalSessionContext } from "../../providers/providers";
 import {
     Drawer,
     Fade,

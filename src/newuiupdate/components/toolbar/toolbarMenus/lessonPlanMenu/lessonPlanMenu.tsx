@@ -1,8 +1,10 @@
-import { isLessonPlanOpenState } from "../../../../states/layoutAtoms";
+import { isLessonPlanOpenState } from "../../../../../store/layoutAtoms";
 import LessonPlan from "../../../main/lessonPlan/lessonPlan";
 import { StyledPopper } from "../../../utils/utils";
 import {
-    Grid, makeStyles,  Theme,
+    Grid,
+    makeStyles,
+    Theme,
 } from "@material-ui/core";
 import React from "react";
 import { useRecoilState } from "recoil";

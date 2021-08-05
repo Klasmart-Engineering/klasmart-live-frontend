@@ -1,8 +1,13 @@
+import {  classLeftState } from "../../../store/layoutAtoms";
 import {
-    LIVE_LINK, LocalSessionContext, SFU_LINK,
+    LIVE_LINK,
+    LocalSessionContext,
+    SFU_LINK,
 } from "../../providers/providers";
-import {  classLeftState } from "../../states/layoutAtoms";
-import { MUTATION_ENDCLASS, MUTATION_LEAVECLASS } from "./graphql";
+import {
+    MUTATION_ENDCLASS,
+    MUTATION_LEAVECLASS,
+} from "./graphql";
 import { ParentCaptcha } from "./parentCaptcha";
 import { useMutation } from "@apollo/client";
 import {
@@ -22,7 +27,8 @@ import { useToolbarContext } from "kidsloop-canvas/lib/components/toolbar/toolba
 import React,
 {
     useContext,
-    useEffect, useState,
+    useEffect,
+    useState,
 } from "react";
 import { FormattedMessage } from "react-intl";
 import { useRecoilState } from "recoil";
@@ -147,7 +153,7 @@ function DialogEndClass (props:any){
     const [ endClass ] = useMutation(MUTATION_ENDCLASS, {
         context: {
             target: LIVE_LINK,
-        }
+        },
     });
 
     return(

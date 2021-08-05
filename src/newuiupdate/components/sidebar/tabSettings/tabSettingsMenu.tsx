@@ -1,12 +1,20 @@
 import { ThemeContext } from "../../../../entry";
+import { activeSettingsStateTab } from "../../../../store/layoutAtoms";
 import { LocalSessionContext } from "../../../providers/providers";
-import { activeSettingsStateTab } from "../../../states/layoutAtoms";
 import {
-    Grid, List, ListItem, ListItemIcon, ListItemText, makeStyles, Theme, Tooltip,
+    Grid,
+    List,
+    ListItem,
+    ListItemIcon,
+    ListItemText,
+    makeStyles,
+    Theme,
+    Tooltip,
     Typography,
 } from "@material-ui/core";
 import { UserAvatar } from "kidsloop-px";
-import React, { useContext } from "react";
+import React,
+{ useContext } from "react";
 import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({

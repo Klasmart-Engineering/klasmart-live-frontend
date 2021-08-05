@@ -1,4 +1,4 @@
-import { isLessonPlanOpenState } from "../../../states/layoutAtoms";
+import { isLessonPlanOpenState } from "../../../../store/layoutAtoms";
 import { TabPanel } from "../../utils/utils";
 import Manuals from "./manuals/manuals";
 import Plan from "./plan/plan";
@@ -11,8 +11,12 @@ import {
     Typography,
 } from "@material-ui/core";
 import { CloseCircle as CloseIcon } from "@styled-icons/ionicons-solid/CloseCircle";
-import React, { useState } from "react";
-import { FormattedMessage, useIntl } from "react-intl";
+import React,
+{ useState } from "react";
+import {
+    FormattedMessage,
+    useIntl,
+} from "react-intl";
 import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({

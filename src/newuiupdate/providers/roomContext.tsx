@@ -4,11 +4,6 @@ import {
     Message,
     Session,
 } from "../../pages/utils";
-import { MUTATION_SHOW_CONTENT } from "../components/utils/graphql";
-import {
-    defineContentId,
-    defineContentType,
-} from "../components/utils/utils";
 import {
     audioGloballyMutedState,
     classEndedState,
@@ -21,7 +16,12 @@ import {
     streamIdState,
     unreadMessagesState,
     videoGloballyMutedState,
-} from "../states/layoutAtoms";
+} from "../../store/layoutAtoms";
+import { MUTATION_SHOW_CONTENT } from "../components/utils/graphql";
+import {
+    defineContentId,
+    defineContentType,
+} from "../components/utils/utils";
 import {
     LIVE_LINK,
     LocalSessionContext,

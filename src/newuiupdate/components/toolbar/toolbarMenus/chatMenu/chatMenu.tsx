@@ -1,8 +1,10 @@
-import { isChatOpenState } from "../../../../states/layoutAtoms";
+import { isChatOpenState } from "../../../../../store/layoutAtoms";
 import Chat from "../../../main/chat/chat";
 import { StyledPopper } from "../../../utils/utils";
 import {
-    Grid, makeStyles,  Theme,
+    Grid,
+    makeStyles,
+    Theme,
 } from "@material-ui/core";
 import React from "react";
 import { useRecoilState } from "recoil";

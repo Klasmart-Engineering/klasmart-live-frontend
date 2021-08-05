@@ -1,5 +1,9 @@
 import { ContentType } from "../../../../../pages/utils";
 import {
+    isGlobalActionsOpenState,
+    videoGloballyMutedState,
+} from "../../../../../store/layoutAtoms";
+import {
     LIVE_LINK,
     LocalSessionContext,
     SFU_LINK,
@@ -11,10 +15,6 @@ import {
     GLOBAL_MUTE_QUERY,
     GlobalMuteNotification,
 } from "../../../../providers/WebRTCContext";
-import {
-    isGlobalActionsOpenState,
-    videoGloballyMutedState,
-} from "../../../../states/layoutAtoms";
 import { MUTATION_REWARD_TROPHY } from "../../../utils/graphql";
 import { StyledPopper } from "../../../utils/utils";
 import GlobalActionsMenuItem from "./globalAction";

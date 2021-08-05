@@ -1,16 +1,14 @@
 import { MaterialTypename } from "../../../lessonMaterialContext";
-import { LocalSessionContext } from "../../providers/providers";
 import {
     materialActiveIndexState,
     observeDisableState,
     studyRecommandUrlState,
-} from "../../states/layoutAtoms";
+} from "../../../store/layoutAtoms";
+import { LocalSessionContext } from "../../providers/providers";
 import ActivityImage from "../utils/interactiveContent/image";
 import { RecordedIframe } from "../utils/interactiveContent/recordediframe";
 import { ReplicatedMedia } from "../utils/interactiveContent/synchronized-video";
-import {
-    Typography,
-} from "@material-ui/core";
+import { Typography } from "@material-ui/core";
 import React,
 { useContext } from "react";
 import { FormattedMessage } from "react-intl";

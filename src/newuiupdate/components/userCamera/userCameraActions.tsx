@@ -1,4 +1,8 @@
 import {
+    hasControlsState,
+    pinnedUserState,
+} from "../../../store/layoutAtoms";
+import {
     LIVE_LINK,
     LocalSessionContext,
     SFU_LINK,
@@ -10,10 +14,6 @@ import {
     MuteNotification,
     WebRTCContext,
 } from "../../providers/WebRTCContext";
-import {
-    hasControlsState,
-    pinnedUserState,
-} from "../../states/layoutAtoms";
 import { useSynchronizedState } from "../../whiteboard/context-providers/SynchronizedStateProvider";
 import {
     MUTATION_REWARD_TROPHY,

@@ -1,8 +1,8 @@
 import { MaterialTypename } from "../../../../../lessonMaterialContext";
 import { ContentType } from "../../../../../pages/utils";
+import { materialActiveIndexState } from "../../../../../store/layoutAtoms";
 import { LocalSessionContext } from "../../../../providers/providers";
 import { RoomContext } from "../../../../providers/roomContext";
-import { materialActiveIndexState } from "../../../../states/layoutAtoms";
 import { NoItemList } from "../../../utils/utils";
 import {
     Grid,
