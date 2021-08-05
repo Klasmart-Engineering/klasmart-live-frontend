@@ -3,7 +3,7 @@ import {
     Content,
     Message,
     Session,
-} from "../../pages/room/room";
+} from "../../pages/utils";
 import { MUTATION_SHOW_CONTENT } from "../components/utils/graphql";
 import {
     defineContentId,

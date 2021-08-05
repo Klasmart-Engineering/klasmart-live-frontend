@@ -1,27 +1,27 @@
 import backgroundStudy from "../../assets/img/background/background_study.jpg";
-import { ClassType } from "../../store/actions";
-import Main from '../components/main/main';
-import Sidebar from '../components/sidebar/sidebar';
-import { MUTATION_SET_HOST } from "../components/utils/graphql";
-import { classGetInformation } from "../components/utils/utils";
+import Main from '../../newuiupdate/components/main/main';
+import Sidebar from '../../newuiupdate/components/sidebar/sidebar';
+import { MUTATION_SET_HOST } from "../../newuiupdate/components/utils/graphql";
+import { classGetInformation } from "../../newuiupdate/components/utils/utils";
 import {
     LIVE_LINK,
     LocalSessionContext,
     SFU_LINK,
-} from '../providers/providers';
-import { RoomContext } from "../providers/roomContext";
+} from '../../newuiupdate/providers/providers';
+import { RoomContext } from "../../newuiupdate/providers/roomContext";
 import {
     GLOBAL_MUTE_MUTATION,
     GLOBAL_MUTE_QUERY,
     GlobalMuteNotification,
     WebRTCContext,
-} from "../providers/WebRTCContext";
+} from "../../newuiupdate/providers/WebRTCContext";
 import {
     classInfoState,
     hasControlsState,
     isLessonPlanOpenState,
     studyRecommandUrlState,
-} from "../states/layoutAtoms";
+} from "../../newuiupdate/states/layoutAtoms";
+import { ClassType } from "../../store/actions";
 import {
     useMutation,
     useQuery,
@@ -162,28 +162,28 @@ function Class () {
         try {
             const dataR = await classGetInformation(schedule_id, org_id);
             const dateOption = {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-                hour: 'numeric',
-                minute: 'numeric',
-                hour12: true
-            }
+                year: `numeric`,
+                month: `2-digit`,
+                day: `2-digit`,
+                hour: `numeric`,
+                minute: `numeric`,
+                hour12: true,
+            };
 
             setClassInfo({
                 class_name: dataR.class.name,
                 lesson_name: dataR.title,
                 room_id: `${roomId}`,
                 class_type: dataR.class_type,
-                enrolled_participants: `${dataR.class_roster_students.length > 1 ? dataR.class_roster_students.length+' students' : dataR.class_roster_students.length+' student'}, ${dataR.class_roster_teachers.length > 1 ? dataR.class_roster_teachers.length+' teachers' : dataR.class_roster_teachers.length+' teacher'}`,
+                enrolled_participants: `${dataR.class_roster_students.length > 1 ? dataR.class_roster_students.length+` students` : dataR.class_roster_students.length+` student`}, ${dataR.class_roster_teachers.length > 1 ? dataR.class_roster_teachers.length+` teachers` : dataR.class_roster_teachers.length+` teacher`}`,
                 teachers: dataR.class_roster_teachers,
                 students: dataR.class_roster_students,
                 program: dataR.program.name,
                 subject: dataR.subjects[0].name,
                 lesson_plan: dataR.lesson_plan.name,
                 materials: dataR.lesson_plan.materials.length,
-                start_at: new Date(dataR.start_at*1000).toLocaleString('en-GB', dateOption),
-                end_at: new Date(dataR.end_at*1000).toLocaleString('en-GB', dateOption),
+                start_at: new Date(dataR.start_at*1000).toLocaleString(`en-GB`, dateOption),
+                end_at: new Date(dataR.end_at*1000).toLocaleString(`en-GB`, dateOption),
             });
         } catch (e) {
             console.log(e);

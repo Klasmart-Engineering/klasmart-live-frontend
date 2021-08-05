@@ -1,12 +1,17 @@
-import { ContentType } from "../../pages/room/room";
+import { ContentType } from "../../pages/utils";
 import { MUTATION_SHOW_CONTENT } from "../components/utils/graphql";
-import { LIVE_LINK, LocalSessionContext } from "./providers";
+import {
+    LIVE_LINK,
+    LocalSessionContext,
+} from "./providers";
 import { WebRTCContext } from "./WebRTCContext";
 import { useMutation } from "@apollo/client";
 import { types as MediaSoup } from "mediasoup-client";
-import React, {
+import React,
+{
     createContext,
-    useContext, useState,
+    useContext,
+    useState,
 } from "react";
 
 export interface ScreenShareContextInterface {

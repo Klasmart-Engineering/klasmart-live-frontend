@@ -1,4 +1,4 @@
-import { Session } from "../../../../pages/room/room";
+import { Session } from "../../../../pages/utils";
 import { LocalSessionContext } from "../../../providers/providers";
 import { RoomContext } from "../../../providers/roomContext";
 import UserCamera from "../../userCamera/userCamera";
@@ -13,14 +13,18 @@ import {
 } from "@material-ui/core";
 import { Person as UserIcon } from "@styled-icons/fluentui-system-regular/Person";
 import clsx from "clsx";
-import React, {
-    useContext, useEffect, useRef, useState,
+import React,
+{
+    useContext,
+    useEffect,
+    useRef,
+    useState,
 } from "react";
 import { useIntl } from "react-intl";
 
 const useStyles = makeStyles((theme: Theme) => ({
     rootSm:{
-        padding: '0 10px'
+        padding: `0 10px`,
     },
     cameraGrid: {
         display: `grid`,
@@ -69,7 +73,9 @@ function TabParticipants () {
             <Grid
                 container
                 direction="column"
-                className={clsx(classes.fullheight, {[classes.rootSm] : isSmDown})}>
+                className={clsx(classes.fullheight, {
+                    [classes.rootSm] : isSmDown,
+                })}>
                 <Grid
                     item
                     className={classes.gridContainerTeachers}>

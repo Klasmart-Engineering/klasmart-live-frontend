@@ -1,4 +1,4 @@
-import { ContentType } from "../../../pages/room/room";
+import { ContentType } from "../../../pages/utils";
 import { ClassType } from "../../../store/actions";
 import { LocalSessionContext } from "../../providers/providers";
 import { RoomContext } from "../../providers/roomContext";
@@ -17,7 +17,8 @@ import {
     useTheme,
 } from "@material-ui/core";
 import clsx from "clsx";
-import React, { useContext } from "react";
+import React,
+{ useContext } from "react";
 
 const useStyles = makeStyles((theme: Theme) => ({
     fullViewHeight: {

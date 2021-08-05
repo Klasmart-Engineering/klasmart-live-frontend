@@ -1,5 +1,5 @@
 import { MaterialTypename } from "../../../../../lessonMaterialContext";
-import { ContentType } from "../../../../../pages/room/room";
+import { ContentType } from "../../../../../pages/utils";
 import { LocalSessionContext } from "../../../../providers/providers";
 import { RoomContext } from "../../../../providers/roomContext";
 import { materialActiveIndexState } from "../../../../states/layoutAtoms";

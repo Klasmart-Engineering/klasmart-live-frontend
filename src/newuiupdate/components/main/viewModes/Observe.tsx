@@ -1,4 +1,4 @@
-import { Session } from "../../../../pages/room/room";
+import { Session } from "../../../../pages/utils";
 import { LocalSessionContext } from "../../../providers/providers";
 import { RoomContext } from "../../../providers/roomContext";
 import { isShowContentLoadingState } from "../../../states/layoutAtoms";
