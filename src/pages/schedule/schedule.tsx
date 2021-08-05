@@ -509,7 +509,7 @@ function AnytimeStudyItem({ studyId, setSelectedSchedule, setOpenStudyDetail }: 
     }
 
     return (
-        <ListItem button onClick={displayScheduleInformation}>
+        <ListItem key={studyId} button onClick={displayScheduleInformation}>
             <ListItemAvatar>
                 <Avatar alt={"Scheduled Study"} className={listItemAvatar}>
                     <img src={ScheduledStudyHouse} height={24} />
