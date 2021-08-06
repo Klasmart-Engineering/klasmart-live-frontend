@@ -251,7 +251,6 @@ export function RecordedIframe (props: Props): JSX.Element {
             if(!data) { return; }
             if (data.streamId) {
                 if (setStreamId) { setStreamId(data.streamId); }
-                console.log(`flag4 student streamId: `, streamId);
                 sendStreamId({
                     variables: {
                         roomId,
@@ -273,7 +272,6 @@ export function RecordedIframe (props: Props): JSX.Element {
     }, [ iframeRef.current ]);
 
     function startRecording () {
-        console.log(`flag5 recording: `, props.contentId);
         try{
             const iRef = window.document.getElementById(`recordediframe`) as HTMLIFrameElement;
             if (!iRef ||

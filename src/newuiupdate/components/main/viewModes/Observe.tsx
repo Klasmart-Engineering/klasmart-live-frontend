@@ -193,7 +193,6 @@ export default Observe;
 
 function StudentPreviewCard ({ session }: { session: Session }) {
     const classes = useStyles();
-    console.log(`flag2 StudentPreviewCard: `, session.streamId);
     const cardConRef = useRef<HTMLDivElement>(null);
     const [ width, setWidth ] = useState<number>(0);
     const [ height, setHeight ] = useState<number>(0);

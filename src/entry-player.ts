@@ -39,6 +39,7 @@ rrwebPlayer.on(`fullsnapshot-rebuilded`, () => onFullSnapshotRebuilded());
 
 window.addEventListener(`message`, ({ data }) => {
     if (!data || !data.event) { return; }
+    console.log(`entry: DATA COMING`);
     try {
         const event = JSON.parse(data.event);
         if (event.type === EventType.Meta && !hasReplayStarted) {
@@ -69,7 +70,7 @@ window.addEventListener(`message`, ({ data }) => {
 window.parent.postMessage(`ready`, `*`);
 
 function onCustomEvent (event: any){
-    console.log(`received custom event`, event);
+    console.log(`flag1 CUSTOM EVENT`);
     if(!event || !event.data){
         return;
     }
