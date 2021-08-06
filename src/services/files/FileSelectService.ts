@@ -24,6 +24,28 @@ export const ACCEPT_MIME_TYPES =
     `video/*,` +
     `image/*`;
 
+export const MIME_TO_EXTENSION = new Map<string, string>([
+    ["audio/wave", "wav"],
+    ["audio/wav", "wav"],
+    ["audio/x-wav", "wav"],
+    ["audio/x-pn-wav", "wav"],
+    ["audio/mpeg", "mp3"],
+    ["video/mp4", "mp4"],
+    ["video/x-msvideo", "avi"],
+    ["video/quicktime", "mov"],
+    ["image/jpeg", "jpg"],
+    ["image/png", "png"],
+    ["image/gif", "gif"],
+    ["image/bmp", "bmp"],
+    ["application/msword", "doc"],
+    ["application/vnd.openxmlformats-officedocument.wordprocessingml.document", "docx"],
+    ["application/vnd.ms-powerpoint", "ppt"],
+    ["application/vnd.openxmlformats-officedocument.presentationml.presentation", "pptx"],
+    ["application/vnd.ms-excel", "xls"],
+    ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "xlsx"],
+    ["application/pdf", "pdf"]
+]);
+
 // https://github.com/cyph/cordova-plugin-chooser
 declare var chooser: any;
 
