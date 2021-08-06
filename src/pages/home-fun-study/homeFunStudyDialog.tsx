@@ -150,7 +150,7 @@ export function HomeFunStudyDialog() {
     useEffect(() => {
         //Wait for the reset state completed
         setTimeout(() => {
-            if(selectHomeFunStudyDialog.open && newestFeedback?.is_allow_submit){
+            if(selectHomeFunStudyDialog.open && !newestFeedback?.is_allow_submit){
                 showPopup({
                     variant: "info",
                     title: intl.formatMessage({id: "label_info"}),
