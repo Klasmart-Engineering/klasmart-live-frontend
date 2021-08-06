@@ -1,4 +1,4 @@
-import { ACCEPT_MIME_TYPES } from "../services/files/FileSelectService";
+import { ACCEPT_MIME_TYPES, MIME_TO_EXTENSION } from "../services/files/FileSelectService";
 
 const MIME_TYPES_REGEX = ACCEPT_MIME_TYPES.split(",")
     .map(unescaped_mime => unescaped_mime.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
@@ -6,6 +6,11 @@ const MIME_TYPES_REGEX = ACCEPT_MIME_TYPES.split(",")
 
 export function getFileExtensionFromName(fileName: string): string {
     const fileExtension = fileName.split('.').pop();
+    return fileExtension ? fileExtension : "";
+}
+
+export function getFileExtensionFromType(fileType: string): string {
+    const fileExtension = MIME_TO_EXTENSION.get(fileType);
     return fileExtension ? fileExtension : "";
 }
 
