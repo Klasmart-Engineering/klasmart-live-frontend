@@ -5,7 +5,7 @@ import {
     Tooltip,
 } from "@material-ui/core";
 import red from "@material-ui/core/colors/red";
-import { fade } from '@material-ui/core/styles/colorManipulator';
+import { alpha } from "@material-ui/core/styles";
 import LockIcon from "@material-ui/icons/Lock";
 import { CameraVideoFill as CameraVideoFillIcon } from "@styled-icons/bootstrap/CameraVideoFill";
 import { CameraVideoOffFill as CameraDisabledIcon } from "@styled-icons/bootstrap/CameraVideoOffFill";
@@ -26,10 +26,10 @@ const useStyles = makeStyles((theme: Theme) => ({
         padding: 15,
         transition: `all 100ms ease-in-out`,
         color: red[500],
-        backgroundColor: fade(red[500], 0.1),
+        backgroundColor: alpha(red[500], 0.1),
         margin: `0 7px`,
         "&:hover": {
-            backgroundColor: fade(red[500], 0.2),
+            backgroundColor: alpha(red[500], 0.2),
         },
         "& svg" : {
             width: `1.75em`,
@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         backgroundColor: `inherit`,
         "&:hover": {
             color: `inherit`,
-            backgroundColor: fade(theme.palette.background.default, 0.3),
+            backgroundColor: alpha(theme.palette.background.default, 0.3),
         },
     },
     locked: {
