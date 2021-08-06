@@ -1,5 +1,5 @@
 import {
-    createMuiTheme,
+    createTheme,
     responsiveFontSizes,
     Theme,
 } from "@material-ui/core/styles";
@@ -104,7 +104,7 @@ export function themeProvider (languageCode: string, themeMode: string) {
 
                 "&.Mui-disabled": {
                     opacity: `0.3`,
-                }
+                },
             },
         },
         MuiStepLabel:{
@@ -161,7 +161,7 @@ export function themeProvider (languageCode: string, themeMode: string) {
         palette.type = `light`;
     }
 
-    theme = createMuiTheme({
+    theme = createTheme({
         overrides,
         palette,
         typography,
