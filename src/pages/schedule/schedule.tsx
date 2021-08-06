@@ -1,10 +1,8 @@
-import { ListItemSecondaryAction } from "@material-ui/core";
-
-const dateFormat = require("dateformat");
-import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { FormattedMessage } from "react-intl";
-import { makeStyles, Theme } from '@material-ui/core/styles';
+import {ListItemSecondaryAction} from "@material-ui/core";
+import React, {useContext, useEffect, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {FormattedMessage} from "react-intl";
+import {makeStyles, Theme} from '@material-ui/core/styles';
 import Grid from "@material-ui/core/Grid";
 import ListSubheader from '@material-ui/core/ListSubheader';
 import List from '@material-ui/core/List';
@@ -20,36 +18,44 @@ import ScheduledLivePopcorn from "../../assets/img/schedule_popcorn.svg";
 import ScheduledStudyHouse from "../../assets/img/study_house.svg";
 
 import ClassTypeSwitcher from "./classTypeSwitcher";
-import { useShouldSelectOrganization } from "../account/selectOrgDialog";
-import { Fallback } from "../fallback";
-import { Header } from "../../components/header";
+import {useShouldSelectOrganization} from "../account/selectOrgDialog";
+import {Fallback} from "../fallback";
+import {Header} from "../../components/header";
 import Loading from "../../components/loading";
-import { useSessionContext } from "../../context-provider/session-context";
-import { useServices } from "../../context-provider/services-provider";
-import { State } from "../../store/store";
-import { ScheduleClassType, ScheduleTimeViewResponse, ScheduleResponse, TimeView } from "../../services/cms/ISchedulerService";
-import { ClassType, OrientationType } from "../../store/actions";
-import { setInFlight } from "../../store/reducers/communication";
+import {useSessionContext} from "../../context-provider/session-context";
+import {useServices} from "../../context-provider/services-provider";
+import {State} from "../../store/store";
+import {
+    ScheduleClassType,
+    ScheduleResponse,
+    ScheduleTimeViewResponse,
+    TimeView
+} from "../../services/cms/ISchedulerService";
+import {ClassType, OrientationType} from "../../store/actions";
+import {setInFlight} from "../../store/reducers/communication";
 import {
     setSelectHomeFunStudyDialogOpen,
     setSelectOrgDialogOpen,
     setSelectUserDialogOpen
 } from "../../store/reducers/control";
 import {
+    setLessonPlanIdOfSelectedSchedule,
     setScheduleTimeViewAll,
     setScheduleTimeViewLiveAll,
-    setScheduleTimeViewStudyAll,
     setScheduleTimeViewLiveToday,
     setScheduleTimeViewLiveTomorrow,
     setScheduleTimeViewLiveUpcoming,
-    setLessonPlanIdOfSelectedSchedule,
+    setScheduleTimeViewStudyAll,
     setScheduleTimeViewStudyAnytime
 } from "../../store/reducers/data";
-import { lockOrientation } from "../../utils/screenUtils";
-import { autoHideDuration } from "../../utils/fixedValues";
-import { useShouldSelectUser } from "../account/selectUserDialog";
-import { useUserInformation } from "../../context-provider/user-information-context";
+import {lockOrientation} from "../../utils/screenUtils";
+import {autoHideDuration} from "../../utils/fixedValues";
+import {useShouldSelectUser} from "../account/selectUserDialog";
+import {useUserInformation} from "../../context-provider/user-information-context";
 import StudyDetail from "../join/study-detail";
+import {AssessmentForStudent, AssessmentStatusType, AssessmentType} from "../../services/cms/IAssessmentService";
+
+const dateFormat = require("dateformat");
 
 // NOTE: China API server(Go lang) accept 10 digits timestamp
 const now = new Date();
@@ -434,22 +440,59 @@ function ScheduledStudyList({ setSelectedSchedule, setOpenStudyDetail }: {
 }) {
     const scheduleTimeViewStudyAll = useSelector((state: State) => state.data.scheduleTimeViewStudyAll);
     const scheduleTimeViewStudyAnytime = useSelector((state: State) => state.data.scheduleTimeViewStudyAnytime);
+    const {assessmentService} = useServices()
+    const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
+
+    const [assessmentsForStudyAll, setAssessmentsForStudyAll] = useState<AssessmentForStudent[]>([]);
+    const [assessmentsForStudyAnytime, setAssessmentsForStudyAnytime] = useState<AssessmentForStudent[]>([]);
+
+    useEffect(() => {
+        async function fetchEverything() {
+            async function fetchHomeFunStudyAssessment(scheduleTimeViews: ScheduleTimeViewResponse[]): Promise<AssessmentForStudent[]>{
+                if(!assessmentService) return Promise.reject()
+                if(!scheduleTimeViewStudyAll) return Promise.reject()
+                if(!scheduleTimeViewStudyAnytime) return Promise.reject()
+                if(!selectedOrg) return Promise.reject()
+
+                return await assessmentService?.getAssessmentsForStudent(
+                    selectedOrg.organization_id,
+                    scheduleTimeViews.map((tv: ScheduleTimeViewResponse) => tv.id),
+                    AssessmentType.HOME_FUN_STUDY,
+                    0,
+                    1
+                );
+            }
+            async function fetchHomeFunStudyAssessmentForStudyAll(){
+                setAssessmentsForStudyAll(await fetchHomeFunStudyAssessment(scheduleTimeViewStudyAll));
+            }
+            async function fetchHomeFunStudyAssessmentForStudyAnytime(){
+                setAssessmentsForStudyAnytime(await fetchHomeFunStudyAssessment(scheduleTimeViewStudyAnytime));
+            }
+            try {
+                await Promise.all([fetchHomeFunStudyAssessmentForStudyAll(), fetchHomeFunStudyAssessmentForStudyAnytime()])
+            } catch (err) {
+                console.error(`Fail to fetchScheduledLiveInfo: ${err}`)
+            }
+        }
+        fetchEverything()
+    },[assessmentService, scheduleTimeViewStudyAll, scheduleTimeViewStudyAnytime, selectedOrg])
 
     return (scheduleTimeViewStudyAnytime.length === 0 && scheduleTimeViewStudyAll.length === 0 ?
         <Typography variant="body2" color="textSecondary">
             <FormattedMessage id="schedule_studyNoSchedule" />
         </Typography> : <>
-            <AnytimeStudyList timeViews={scheduleTimeViewStudyAnytime} setSelectedSchedule={setSelectedSchedule} setOpenStudyDetail={setOpenStudyDetail} />
+            <AnytimeStudyList timeViews={scheduleTimeViewStudyAnytime} assessmentForStudents={assessmentsForStudyAnytime} setSelectedSchedule={setSelectedSchedule} setOpenStudyDetail={setOpenStudyDetail} />
             <Grid item>
                 {scheduleTimeViewStudyAll.length === 0 ? null :
-                    scheduleTimeViewStudyAll.map((study: ScheduleTimeViewResponse) => <ScheduledStudyItem key={study.id} studyId={study.id} setSelectedSchedule={setSelectedSchedule} setOpenStudyDetail={setOpenStudyDetail} />)}
+                    scheduleTimeViewStudyAll.map((study: ScheduleTimeViewResponse) => <ScheduledStudyItem key={study.id} studyId={study.id} assessmentForStudent={assessmentsForStudyAll.find(assessment => assessment.schedule.id === study.id)} setSelectedSchedule={setSelectedSchedule} setOpenStudyDetail={setOpenStudyDetail} />)}
             </Grid>
         </>
     )
 }
 
-function AnytimeStudyList({ timeViews, setSelectedSchedule, setOpenStudyDetail }: {
+function AnytimeStudyList({ timeViews, assessmentForStudents, setSelectedSchedule, setOpenStudyDetail }: {
     timeViews: ScheduleTimeViewResponse[],
+    assessmentForStudents?: AssessmentForStudent[],
     setSelectedSchedule: React.Dispatch<React.SetStateAction<ScheduleResponse | undefined>>,
     setOpenStudyDetail: React.Dispatch<React.SetStateAction<boolean>>
 }) {
@@ -458,14 +501,15 @@ function AnytimeStudyList({ timeViews, setSelectedSchedule, setOpenStudyDetail }
     return (
         <Grid item>
             <List component="nav" aria-labelledby="study-subheader" className={listRoot}>
-                {timeViews.map(tv => <AnytimeStudyItem studyId={tv.id} setSelectedSchedule={setSelectedSchedule} setOpenStudyDetail={setOpenStudyDetail} />)}
+                {timeViews.map(tv => <AnytimeStudyItem studyId={tv.id} assessmentForStudent={assessmentForStudents?.find(assessment => assessment.schedule.id === tv.id)} setSelectedSchedule={setSelectedSchedule} setOpenStudyDetail={setOpenStudyDetail} />)}
             </List>
         </Grid>
     )
 }
 
-function AnytimeStudyItem({ studyId, setSelectedSchedule, setOpenStudyDetail }: {
+function AnytimeStudyItem({ studyId, assessmentForStudent, setSelectedSchedule, setOpenStudyDetail }: {
     studyId: string,
+    assessmentForStudent?: AssessmentForStudent,
     setSelectedSchedule: React.Dispatch<React.SetStateAction<ScheduleResponse | undefined>>,
     setOpenStudyDetail: React.Dispatch<React.SetStateAction<boolean>>
 }) {
@@ -521,14 +565,14 @@ function AnytimeStudyItem({ studyId, setSelectedSchedule, setOpenStudyDetail }: 
                 secondary={<Typography variant="caption" color="textSecondary"><FormattedMessage id={studyInfo?.is_home_fun ? "schedule_studyHomeFunStudy" : "schedule_studyAnytimeStudy"} /></Typography>}
             />
             {
-                studyInfo?.complete_assessment ?
+                assessmentForStudent?.status === AssessmentStatusType.COMPLETE ?
                     <ListItemSecondaryAction>
                         <Grid container direction={"column"}>
                             <Grid item><Typography variant="subtitle2" color="textSecondary"><FormattedMessage id="schedule_studyAssessmentComplete1" /></Typography></Grid>
                             <Grid item><Typography variant="subtitle2" color="textSecondary"><FormattedMessage id="schedule_studyAssessmentComplete2" /></Typography></Grid>
                         </Grid>
                     </ListItemSecondaryAction>
-                    : studyInfo?.exist_feedback
+                    : assessmentForStudent?.student_attachments && assessmentForStudent?.student_attachments.length > 0
                     ?<ListItemSecondaryAction>
                         <Typography variant="subtitle2" className={classes.submittedText}><FormattedMessage id="schedule_studySubmittedFeedback" /></Typography>
                     </ListItemSecondaryAction> : ""
@@ -537,8 +581,9 @@ function AnytimeStudyItem({ studyId, setSelectedSchedule, setOpenStudyDetail }: 
     )
 }
 
-function ScheduledStudyItem({ studyId, setSelectedSchedule, setOpenStudyDetail }: {
+function ScheduledStudyItem({ studyId, assessmentForStudent, setSelectedSchedule, setOpenStudyDetail }: {
     studyId: string,
+    assessmentForStudent?: AssessmentForStudent,
     setSelectedSchedule: React.Dispatch<React.SetStateAction<ScheduleResponse | undefined>>,
     setOpenStudyDetail: React.Dispatch<React.SetStateAction<boolean>>
 }) {
@@ -619,14 +664,14 @@ function ScheduledStudyItem({ studyId, setSelectedSchedule, setOpenStudyDetail }
                     </> : <Typography variant="caption" color="textSecondary"><FormattedMessage id="schedule_studyAnytimeStudy" /></Typography>}
                 />
                 {
-                    studyInfo?.complete_assessment ?
+                    assessmentForStudent?.status === AssessmentStatusType.COMPLETE ?
                         <ListItemSecondaryAction>
                             <Grid container direction={"column"}>
                                 <Grid item><Typography variant="subtitle2" color="textSecondary"><FormattedMessage id="schedule_studyAssessmentComplete1" /></Typography></Grid>
                                 <Grid item><Typography variant="subtitle2" color="textSecondary"><FormattedMessage id="schedule_studyAssessmentComplete2" /></Typography></Grid>
                             </Grid>
                         </ListItemSecondaryAction>
-                        : studyInfo?.exist_feedback
+                        : assessmentForStudent?.student_attachments && assessmentForStudent?.student_attachments.length > 0
                         ?<ListItemSecondaryAction>
                             <Typography variant="subtitle2" className={submittedText}><FormattedMessage id="schedule_studySubmittedFeedback" /></Typography>
                         </ListItemSecondaryAction> : ""
