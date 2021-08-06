@@ -149,7 +149,7 @@ function Sidebar () {
                     <Grid
                         container
                         direction="column"
-                        justify="space-between"
+                        justifyContent="space-between"
                         alignItems="center"
                         className={classes.fullheight}>
                         <Grid
