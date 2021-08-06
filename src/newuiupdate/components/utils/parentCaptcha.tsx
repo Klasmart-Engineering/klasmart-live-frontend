@@ -9,7 +9,10 @@ import red from "@material-ui/core/colors/red";
 import { Admin as ParentIcon } from "@styled-icons/remix-line/Admin";
 import clsx from "clsx";
 import React,
-{ useEffect, useState } from "react";
+{
+    useEffect,
+    useState,
+} from "react";
 import { FormattedMessage } from "react-intl";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -124,7 +127,7 @@ function ParentCaptcha (props:any){
             <Typography><FormattedMessage id="parents_captcha_description" /></Typography>
             <Grid
                 container
-                justify="center"
+                justifyContent="center"
                 className={classes.parentChecker}>
                 {checkNumbers.map((number, index) => (
                     <Grid

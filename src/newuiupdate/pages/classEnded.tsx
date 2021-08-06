@@ -1,6 +1,10 @@
 import { Feedback } from '../components/others/feedback';
 import {
-    Fade, Grid, makeStyles, Theme, Typography,
+    Fade,
+    Grid,
+    makeStyles,
+    Theme,
+    Typography,
 } from '@material-ui/core';
 import { CalendarCheck as ClassEndedIcon } from "@styled-icons/boxicons-regular/CalendarCheck";
 import React from 'react';
@@ -44,7 +48,7 @@ function ClassEnded () {
             <Grid
                 container
                 alignItems="center"
-                justify="center"
+                justifyContent="center"
                 className={classes.container}>
                 <Grid
                     item
@@ -56,7 +60,7 @@ function ClassEnded () {
                     <Typography variant="body1"><FormattedMessage id="class_ended_thanks_for_attending" /></Typography>
 
                     <Typography variant="body1"><FormattedMessage id="class_ended_how_was_the_class" /></Typography>
-                    <Feedback type={`END_CLASS`}/> 
+                    <Feedback type={`END_CLASS`}/>
 
                     {HUB_ENDPOINT &&
                     <Typography className={classes.returnToHub}>

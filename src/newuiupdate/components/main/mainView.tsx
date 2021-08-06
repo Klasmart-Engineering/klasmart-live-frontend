@@ -4,7 +4,8 @@ import { ScreenShareContext } from "../../providers/screenShareProvider";
 import { WebRTCContext } from "../../providers/WebRTCContext";
 import {
     hasControlsState,
-    isLessonPlanOpenState, isViewModesOpenState,
+    isLessonPlanOpenState,
+    isViewModesOpenState,
 } from "../../states/layoutAtoms";
 import PreviewLessonPlan from "./previewLessonPlan";
 import Observe from "./viewModes/Observe";
@@ -16,7 +17,11 @@ import {
     makeStyles,
     Theme,
 } from "@material-ui/core";
-import React, { useContext, useEffect } from "react";
+import React,
+{
+    useContext,
+    useEffect,
+} from "react";
 import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -114,7 +119,7 @@ function MainView () {
                 container
                 className={classes.root}
                 alignItems="center"
-                justify="center"
+                justifyContent="center"
             >
                 <Grid
                     item

@@ -6,10 +6,16 @@ import { isGlobalActionsOpenState } from "../../../states/layoutAtoms";
 import { StyledVideo } from "../../utils/styledVideo";
 import {
     Button,
-    Grid, makeStyles, Theme, Typography, useMediaQuery, useTheme,
+    Grid,
+    makeStyles,
+    Theme,
+    Typography,
+    useMediaQuery,
+    useTheme,
 } from "@material-ui/core";
 import PresentToAllIcon from '@material-ui/icons/PresentToAll';
-import React, { useContext } from "react";
+import React,
+{ useContext } from "react";
 import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -58,7 +64,7 @@ function Screenshare () {
                     {screenShare.stream ? (
                         <Grid
                             container
-                            justify="center">
+                            justifyContent="center">
                             <Grid
                                 item
                                 xs={6}>

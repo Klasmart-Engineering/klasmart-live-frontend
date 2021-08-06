@@ -309,7 +309,7 @@ export function RecordedIframe (props: Props): JSX.Element {
                 <Grid
                     container
                     direction="column"
-                    justify="center"
+                    justifyContent="center"
                     alignItems="center"
                     style={{
                         flexGrow: 1,
