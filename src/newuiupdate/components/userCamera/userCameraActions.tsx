@@ -34,7 +34,6 @@ import {
 } from "@material-ui/core";
 import amber from "@material-ui/core/colors/amber";
 import red from "@material-ui/core/colors/red";
-import { fade } from '@material-ui/core/styles/colorManipulator';
 import { ArrowsAngleExpand as ExpandIcon } from "@styled-icons/bootstrap/ArrowsAngleExpand";
 import { CameraVideoFill as CameraVideoFillIcon } from "@styled-icons/bootstrap/CameraVideoFill";
 import { CameraVideoOffFill as CameraDisabledIcon } from "@styled-icons/bootstrap/CameraVideoOffFill";

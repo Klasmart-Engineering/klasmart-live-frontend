@@ -1,9 +1,14 @@
 import { Feedback } from '../components/others/feedback';
 import {
-    Fade, Grid, makeStyles, Theme, Typography,
+    Fade,
+    Grid,
+    makeStyles,
+    Theme,
+    Typography,
 } from '@material-ui/core';
 import { CalendarCheck as ClassEndedIcon } from "@styled-icons/boxicons-regular/CalendarCheck";
-import React, { useContext } from 'react';
+import React,
+{ useContext } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -44,7 +49,7 @@ function ClassLeft () {
             <Grid
                 container
                 alignItems="center"
-                justify="center"
+                justifyContent="center"
                 className={classes.container}>
                 <Grid
                     item

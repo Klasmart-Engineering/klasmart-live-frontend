@@ -27,7 +27,7 @@ function NoCamera (props: NoCameraType) {
     return (
         <Grid
             container
-            justify="center">
+            justifyContent="center">
             <Grid item>
                 <UserAvatar
                     name={name}

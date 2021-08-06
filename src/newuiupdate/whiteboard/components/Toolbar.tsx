@@ -9,8 +9,13 @@ import { Trash as TrashIcon } from "@styled-icons/boxicons-solid/Trash";
 import { Brush as BrushIcon } from "@styled-icons/material/Brush";
 import { TextFields as TextIcon } from "@styled-icons/material/TextFields";
 import { useToolbarContext } from "kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
-import React, {
-    FunctionComponent, ReactChild, ReactChildren, useCallback, useContext,
+import React,
+{
+    FunctionComponent,
+    ReactChild,
+    ReactChildren,
+    useCallback,
+    useContext,
 } from "react";
 
 type Props = {
@@ -93,7 +98,7 @@ export const Toolbar: FunctionComponent<Props> = ({ children }: Props): JSX.Elem
             <Grid
                 container
                 direction="row"
-                justify="center"
+                justifyContent="center"
                 alignItems="center"
                 spacing={1}
                 style={{
@@ -109,7 +114,7 @@ export const Toolbar: FunctionComponent<Props> = ({ children }: Props): JSX.Elem
             <Grid
                 container
                 direction="row"
-                justify="center"
+                justifyContent="center"
                 alignItems="center"
                 spacing={1}
                 style={{

@@ -4,7 +4,8 @@ import {
     makeStyles,
     Theme,
 } from "@material-ui/core";
-import React, { useContext } from "react";
+import React,
+{ useContext } from "react";
 import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -41,7 +42,7 @@ function ActivityImage (props: any) {
         <Grid
             container
             alignItems="center"
-            justify="center"
+            justifyContent="center"
             className={classes.container}
         >
             <Grid
