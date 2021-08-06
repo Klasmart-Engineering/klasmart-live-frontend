@@ -115,7 +115,7 @@ export function Schedule() {
 
     useEffect(() => {
         if(selectHomeFunStudyDialogOpen && selectHomeFunStudyDialogOpen.submitted){
-            dispatch(setSelectHomeFunStudyDialogOpen({submitted: false}))
+            dispatch(setSelectHomeFunStudyDialogOpen({open: false, submitted: false}))
             setKey(Math.random().toString(36)); //force to refresh the schedule list
         }
     },[selectHomeFunStudyDialogOpen])

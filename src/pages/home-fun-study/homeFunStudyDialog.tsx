@@ -253,12 +253,12 @@ export function HomeFunStudyDialog() {
                 throw new Error("Organization is not selected.");
             }
             if(!shouldSubmitFeedback || !studyInfo || !hfsFeedbacks )
-                return Promise.reject();
+                return ;
             const currentFeedback = hfsFeedbacks.find(feedback => feedback.studyId === studyInfo.id);
             if(!currentFeedback)
-                return Promise.reject();
+                return ;
             if(submitStatus === SubmitStatus.SUBMITTING)
-                return Promise.reject();
+                return ;
 
             setShouldSubmitFeedback(false);
             setSubmitStatus(SubmitStatus.SUBMITTING);
@@ -479,7 +479,7 @@ function HomeFunStudyContainer({
                 const uploadResult = await contentService?.uploadAttachment(contentResourceUploadPathResponse.path, file);
                 if (uploadResult) {
                     updateAssignmentItemStatusToUploaded(assignmentItemId, contentResourceUploadPathResponse.resource_id);
-                } 
+                }
             } catch(error) {
                 deleteAssignmentItem(assignmentItemId);
                 enqueueSnackbar(intl.formatMessage({ id: "file_upload_failed" }), {
