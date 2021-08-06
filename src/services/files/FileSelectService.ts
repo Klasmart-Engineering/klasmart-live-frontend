@@ -58,15 +58,25 @@ export class FileSelectService implements IFileSelectService {
         }
 
         return new Promise<File>(async (resolve, reject) => {
+            console.log(`selected file with uri: ${uri}`);
+
             if (!uri.startsWith("file://") && !uri.startsWith("content://")) {
                 uri = "file://" + uri;
             }
+
+            /* TODO: It seems after converting to native path from content:// path the file can't be read because of FILE_NOT_FOUND error from FileReader.
+            // I'll comment this code out for now so the file upload feature can be tested on Android, and we can reimplement this once we have more time to
+            // investigate what's wrong.
             if(uri.startsWith("content://")){
                 //The file get from chooser on Android has not a correct full path.
                 //Ex: content://com.android.providers.media.documents/document/image%3A15970
                 //It need to convert to native path
                 uri = await FilePath.resolveNativePath(uri)
             }
+            */
+
+            console.log(`corrected uri: ${uri}`);
+
             window.resolveLocalFileSystemURL(uri, (entry) => {
                 (entry as FileEntry).file((file) => {
                     resolve(file);
