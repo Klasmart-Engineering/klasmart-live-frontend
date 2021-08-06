@@ -27,6 +27,7 @@ import Loading from "../../components/loading";
 import StyledIcon from "../../components/styled/icon";
 import {
     getFileExtensionFromName,
+    getFileExtensionFromType,
     validateFileSize,
     validateFileType
 } from "../../utils/fileUtils";
@@ -472,7 +473,7 @@ function HomeFunStudyContainer({
         if (!selectedOrg) {
             throw new Error("Organization is not selected.");
         }
-        const contentResourceUploadPathResponse = await contentService?.getContentResourceUploadPath(selectedOrg.organization_id, getFileExtensionFromName(file.name));
+        const contentResourceUploadPathResponse = await contentService?.getContentResourceUploadPath(selectedOrg.organization_id, getFileExtensionFromType(file.type));
         if (contentResourceUploadPathResponse) {
             try {
                 const uploadResult = await contentService?.uploadAttachment(contentResourceUploadPathResponse.path, file);
@@ -561,10 +562,24 @@ function HomeFunStudyContainer({
     function addAnSelectedAttachment(file: File) {
         const newAssignmentItems = assignmentItems.slice();
         const itemId = generateAssignmentItemId();
+
+        var name = file.name;
+        var extension = getFileExtensionFromType(file.type);
+
+        // NOTE: IF the file name is content we'll generate a more
+        // unique name with extension for the assignment.
+        if (name === `content`) {
+            if (extension.length) {
+                name = `attachment_${itemId}.${extension}`;
+            } else {
+                name = `attachment_${itemId}`;
+            }
+        }
+
         newAssignmentItems.push({
             itemId: itemId,
             attachmentId: "",
-            attachmentName: file.name,
+            attachmentName: name,
             status: AttachmentStatus.SELECTED,
             file: file
         });
