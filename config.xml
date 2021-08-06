@@ -48,6 +48,15 @@
         <edit-config file="*-Info.plist" mode="merge" target="NSPhotoLibraryAddUsageDescription">
             <string>KidsLoop Live wants to access photo library to save pictures for homework.</string>
         </edit-config>
+        <edit-config file="*-Info.plist" mode="merge" target="NSDocumentsFolderUsageDescription">
+            <string>KidsLoop Live wants to access documents folder to select files for homework.</string>
+        </edit-config>
+        <edit-config file="*-Info.plist" mode="merge" target="NSDesktopFolderUsageDescription">
+            <string>KidsLoop Live wants to access desktop folder to select files for homework.</string>
+        </edit-config>
+        <edit-config file="*-Info.plist" mode="merge" target="NSDownloadsFolderUsageDescription">
+            <string>KidsLoop Live wants to access downloads folder to select files for homework.</string>
+        </edit-config>
     </platform>
     <platform name="android">
         <preference name="AppendUserAgent" value="Cordova" />
