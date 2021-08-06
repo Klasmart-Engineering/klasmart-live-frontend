@@ -50,7 +50,6 @@ export interface Props {
 export function PreviewPlayer ({
     streamId, frameProps, width, height, container, loadingStreamId,
 }: Props): JSX.Element {
-    console.log(`flag3 PreviewPlayer steramId: `, streamId);
     const ref = useRef<HTMLIFrameElement>(null);
     // const [ scale, setScale ] = useState(1);
     const [ { frameWidth, frameHeight }, setWidthHeight ] = useState({
@@ -68,10 +67,6 @@ export function PreviewPlayer ({
 
     const containerHtml = window.document.getElementById(container) as HTMLIFrameElement;
     const size = useWindowSize();
-
-    useEffect(() => {
-        console.log(`flag3 loading true, contentId: `, content?.contentId);
-    }, [ content?.contentId ]);
 
     useEffect(() => {
         scale(frameWidth, frameHeight);
@@ -117,8 +112,6 @@ export function PreviewPlayer ({
     // Buffer events until we have a page ready to render them
     const { current: bufferedEvents } = useRef<string[]>([]);
     function sendEvent (event?: string) {
-        loading = false;
-        error = undefined;
         if (ref.current && ref.current.contentWindow && ((ref.current.contentWindow as any).PLAYER_READY)) {
             while (bufferedEvents.length > 0) {
                 const event = bufferedEvents.shift();
@@ -134,7 +127,7 @@ export function PreviewPlayer ({
         }
     }
 
-    let { loading, error } = useSubscription(SUB_EVENTS, {
+    const { loading, error } = useSubscription(SUB_EVENTS, {
         onSubscriptionData: e => sendEvent(e.subscriptionData.data.stream.event),
         variables: {
             streamId,
@@ -207,7 +200,6 @@ export function PreviewPlayer ({
         return <Loading messageId="Waiting for a stream" />;
     }
     if (loading) {
-        console.log(`flag3 loading: `, loading, `   streamId:`, streamId);
         return <Loading messageId="Page loading" />;
     }
     if (error) { return <Typography><FormattedMessage id="failed_to_connect" />: {JSON.stringify(error)}</Typography>; }

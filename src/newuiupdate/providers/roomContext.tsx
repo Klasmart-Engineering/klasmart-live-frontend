@@ -212,7 +212,6 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
     };
 
     const userJoin = (join: Session) => {
-        console.log(`flag1 userJoin: `, join.streamId);
         const now = Date.now() - 5000;
         const newSession = !sessions.has(join.id);
         setSessions(prev => new Map(prev.set(join.id, join)));
