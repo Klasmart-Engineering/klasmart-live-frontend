@@ -1,3 +1,5 @@
+import { LocalSessionContext } from "../../../../providers/providers";
+import { classInfoState } from "../../../../states/layoutAtoms";
 import {
     Accordion,
     AccordionDetails,
@@ -9,11 +11,10 @@ import {
 } from "@material-ui/core";
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { UserAvatar } from "kidsloop-px";
-import React, {useContext} from "react";
+import React,
+{ useContext } from "react";
 import { FormattedMessage } from "react-intl";
 import { useRecoilState } from "recoil";
-import { classInfoState } from "../../../../states/layoutAtoms";
-import { LocalSessionContext } from "../../../../providers/providers";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -22,7 +23,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
         [theme.breakpoints.down(`sm`)]: {
             minHeight: `347px`,
-        }
+        },
     },
     accordion: {
         margin: `0 !important`,
@@ -40,7 +41,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
         "& > div": {
             margin: `0 !important`,
-        }
+        },
     },
     accordionDetails: {
         flexWrap: `wrap`,
@@ -95,11 +96,10 @@ const useStyles = makeStyles((theme: Theme) => ({
 function ClassRoster () {
     const classes = useStyles();
 
-    // TODO : Switch to real data
     const [ users, setUsers ] = useRecoilState(classInfoState);
     const { isTeacher } = useContext(LocalSessionContext);
-    const teachers = users.teachers
-    const students = users.students
+    const teachers = users.teachers;
+    const students = users.students;
 
     // TODO : This is not optimal
     const resetPosition = (event: React.ChangeEvent<unknown>) => {
@@ -182,6 +182,7 @@ function ClassRoster () {
                     </Accordion>
 
                     <Accordion
+                        hidden // TODO : Absents informations + translation keys
                         elevation={0}
                         className={classes.accordion}
                         onChange={resetPosition}>
