@@ -471,26 +471,22 @@ function HomeFunStudyContainer({
         if (!selectedOrg) {
             throw new Error("Organization is not selected.");
         }
-        const contentResourceUploadPathResponse = await contentService?.getContentResourceUploadPath(selectedOrg.organization_id, getFileExtensionFromType(file.type));
-        if (contentResourceUploadPathResponse) {
-            try {
-                const uploadResult = await contentService?.uploadAttachment(contentResourceUploadPathResponse.path, file);
-                if (uploadResult) {
-                    updateAssignmentItemStatusToUploaded(assignmentItemId, contentResourceUploadPathResponse.resource_id);
-                }
-            } catch(error) {
-                deleteAssignmentItem(assignmentItemId);
-                enqueueSnackbar(intl.formatMessage({ id: "file_upload_failed" }), {
-                    variant: "error",
-                    anchorOrigin: {
-                        vertical: 'bottom',
-                        horizontal: 'center',
+        try {
+            const contentResourceUploadPathResponse = await contentService?.getContentResourceUploadPath(selectedOrg.organization_id, getFileExtensionFromType(file.type));
+            if (contentResourceUploadPathResponse) {
+
+                    const uploadResult = await contentService?.uploadAttachment(contentResourceUploadPathResponse.path, file);
+                    if (uploadResult) {
+                        updateAssignmentItemStatusToUploaded(assignmentItemId, contentResourceUploadPathResponse.resource_id);
+                    }else{
+                        throw new Error("Upload failed.")
                     }
-                });
+            } else {
+                throw new Error("Get upload path failed.")
             }
-        } else {
+        } catch(error) {
             deleteAssignmentItem(assignmentItemId);
-            enqueueSnackbar(intl.formatMessage({id: "file_upload_failed"}), {
+            enqueueSnackbar(intl.formatMessage({ id: "file_upload_failed" }), {
                 variant: "error",
                 anchorOrigin: {
                     vertical: 'bottom',
