@@ -150,7 +150,7 @@ export function HomeFunStudyDialog() {
     useEffect(() => {
         //Wait for the reset state completed
         setTimeout(() => {
-            if(selectHomeFunStudyDialog.open && studyInfo?.complete_assessment){
+            if(selectHomeFunStudyDialog.open && newestFeedback?.is_allow_submit){
                 showPopup({
                     variant: "info",
                     title: intl.formatMessage({id: "label_info"}),
@@ -159,7 +159,7 @@ export function HomeFunStudyDialog() {
                 })
             }
         },200)
-    }, [studyInfo])
+    }, [newestFeedback])
 
     useEffect(() => {
         if (selectHomeFunStudyDialog?.studyId) {
@@ -231,7 +231,7 @@ export function HomeFunStudyDialog() {
         function checkShowSubmitButtonCondition() {
             if(submitStatus === SubmitStatus.SUBMITTING)
                 return false;
-            if (studyInfo && !studyInfo.complete_assessment && (studyInfo.due_at === 0 || studyInfo?.due_at >= todayTimeStamp)) {
+            if (studyInfo && newestFeedback?.is_allow_submit && (studyInfo.due_at === 0 || studyInfo?.due_at >= todayTimeStamp)) {
                 const feedback = hfsFeedbacks?.find(item => item.studyId === studyInfo.id)
                 if (feedback && feedback.assignmentItems.length > 0) {
                     return true;
@@ -241,7 +241,7 @@ export function HomeFunStudyDialog() {
         }
 
         setShouldShowSubmitButton(checkShowSubmitButtonCondition());
-    }, [studyInfo, hfsFeedbacks, submitStatus])
+    }, [studyInfo, hfsFeedbacks, submitStatus, newestFeedback])
 
     useEffect(() => {
         async function submitFeedback(){
@@ -373,12 +373,10 @@ function HomeFunStudyContainer({
 
     useEffect(() => {
         function displayAssignments() {
-            if (!studyInfo)
-                return;
             let newAssignmentItems: AssignmentItem[] = [];
             //Submitted feedback from CMS.
             // If the HFS have been submitted, it should be prioritized to show feedback from CMS first.
-            if (studyInfo.complete_assessment && newestFeedback) {
+            if (newestFeedback) {
                 const feedBackAssignments = newestFeedback.assignments;
                 newAssignmentItems = convertAssignmentsToAssignmentItems(feedBackAssignments);
                 setAssignmentItems(newAssignmentItems);
@@ -387,7 +385,7 @@ function HomeFunStudyContainer({
         }
 
         displayAssignments()
-    }, [studyInfo, newestFeedback])
+    }, [newestFeedback])
 
     useEffect(() => {
         function displayAssignmentsFromLocal() {
@@ -679,11 +677,13 @@ function HomeFunStudyContainer({
                 </Grid>
                 <HomeFunStudyAssignment
                     studyInfo={studyInfo}
+                    newestFeedback={newestFeedback}
                     assignmentItems={assignmentItems}
                     onClickUploadInfo={handleClickUploadInfo} onClickUpload={handleClickUpload}
                     onDeleteAssignment={handleDeleteAssignmentItem} />
                 <HomeFunStudyComment
                     studyInfo={studyInfo}
+                    newestFeedback={newestFeedback}
                     defaultComment={newestFeedback ? newestFeedback.comment : ""}
                 />
             </Grid>
@@ -708,11 +708,11 @@ function HomeFunStudyContainer({
 }
 
 function HomeFunStudyAssignment({
-                                    studyInfo,
+                                    studyInfo, newestFeedback,
                                     assignmentItems, onClickUploadInfo,
                                     onClickUpload, onDeleteAssignment,
                                 }: {
-    studyInfo?: ScheduleResponse,assignmentItems: AssignmentItem[], onClickUploadInfo: () => void,
+    studyInfo?: ScheduleResponse, newestFeedback?: ScheduleFeedbackResponse, assignmentItems: AssignmentItem[], onClickUploadInfo: () => void,
     onClickUpload: () => void, onDeleteAssignment: (item: AssignmentItem) => void
 }) {
     const classes = useStyles();
@@ -720,12 +720,12 @@ function HomeFunStudyAssignment({
     const MAX_FILE_LIMIT = 3
 
     useEffect(() => {
-        if(studyInfo && (assignmentItems.length >= MAX_FILE_LIMIT || studyInfo.complete_assessment)){
-            setShouldShowChooseFile(false);
-        }else{
+        if(studyInfo && assignmentItems.length < MAX_FILE_LIMIT && newestFeedback?.is_allow_submit){
             setShouldShowChooseFile(true);
+        }else{
+            setShouldShowChooseFile(false);
         }
-    }, [assignmentItems, studyInfo])
+    }, [assignmentItems, studyInfo, newestFeedback])
 
     return (
         <Grid item xs>
@@ -774,7 +774,7 @@ function HomeFunStudyAssignment({
                                                          color="textSecondary">{item.attachmentName}</Typography>}
                                 />
                                 {
-                                    studyInfo && !studyInfo.complete_assessment ?
+                                    newestFeedback?.is_allow_submit ?
                                     <ListItemSecondaryAction>
                                         {
                                             item.status === AttachmentStatus.UPLOADED
@@ -798,7 +798,7 @@ function HomeFunStudyAssignment({
     );
 }
 
-function HomeFunStudyComment({studyInfo, defaultComment}: { studyInfo?: ScheduleResponse, defaultComment: string }) {
+function HomeFunStudyComment({studyInfo, newestFeedback, defaultComment}: { studyInfo?: ScheduleResponse, newestFeedback?: ScheduleFeedbackResponse, defaultComment: string }) {
     const classes = useStyles();
 
     const dispatch = useDispatch();
@@ -860,7 +860,7 @@ function HomeFunStudyComment({studyInfo, defaultComment}: { studyInfo?: Schedule
                     color="primary"
                     className={classes.rounded_button}
                     startIcon={<Edit/>}
-                    disabled={studyInfo && studyInfo.complete_assessment}
+                    disabled={!newestFeedback?.is_allow_submit}
                     onClick={handleOnClickEditComment}
                 >
                     <Typography variant="body2">
