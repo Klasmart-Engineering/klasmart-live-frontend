@@ -1,8 +1,21 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Link, makeStyles, Theme, Typography } from "@material-ui/core";
-import React, { useMemo, useState } from "react";
+import {
+    Button,
+    CircularProgress,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    Grid,
+    Link,
+    makeStyles,
+    Theme,
+    Typography
+} from "@material-ui/core";
+import React, {useEffect, useMemo, useState} from "react";
 import { useHttpEndpoint } from "../../context-provider/region-select-context";
 import { ScheduleResponse } from "../../services/cms/ISchedulerService";
-import StudyDetailPreview from "./study-detail-preview";
+import {blue} from "@material-ui/core/colors";
+import {useSnackbar} from "kidsloop-px";
 
 const useStyles = makeStyles((theme: Theme) => ({
     dialogTitle: {
@@ -20,8 +33,21 @@ const useStyles = makeStyles((theme: Theme) => ({
     rowContentText: {
         color: `#193756`,
         fontWeight: 600
-    }
-}));
+    },
+    wrapper: {
+        position: 'relative',
+    },
+    progress: {
+        color: blue[500],
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        marginTop: -12,
+        marginLeft: -12,
+    },
+    }));
+
+declare var FileTransfer: any;
 
 export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
     schedule?: ScheduleResponse,
@@ -29,9 +55,11 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
     onClose: () => void,
     joinStudy: () => void }): JSX.Element
 {
-    const { dialogTitle, dialogTitleText, rowHeaderText, rowContentText } = useStyles();
-
+    const { dialogTitle, dialogTitleText, rowHeaderText, rowContentText, wrapper, progress } = useStyles();
     const cms = useHttpEndpoint("cms");
+    const [downloading, setDownloading] = useState(false)
+    const [shouldDownload, setShouldDownload] = useState(false)
+    const {enqueueSnackbar} = useSnackbar()
 
     const startAt = useMemo<string | undefined>(() => {
         if (schedule?.start_at) {
@@ -65,7 +93,7 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
         }
     }, [schedule]);
 
-    const [previewOpen, setPreviewOpen] = useState<boolean>(false);
+    const [previewOpen, setPreviewOpen] = useState<{open: boolean, fileUrl: string}>({open: false, fileUrl: ""});
 
     // TODO: Will need to use a more specialized file saving mechanism
     // for Cordova. This opens the image in a new browser tab but the
@@ -76,9 +104,69 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
     // will be images, at least until there's a clearly defined list
     // of supported file types (with specialized viewers).
     const openAttachmentLink = () => {
-        setPreviewOpen(true);
+        setShouldDownload(true);
     };
 
+    useEffect(() => {
+        function startDownloadAttachment(){
+            setShouldDownload(false)
+            if(downloading)
+                return
+            if(attachmentDownloadLink && schedule){
+                const url = encodeURI(attachmentDownloadLink);
+                console.log(url)
+                const ft = new FileTransfer();
+                const cordova = (window as any).cordova;
+                setDownloading(true)
+                ft.download(
+                    url,
+                    cordova.file.externalCacheDirectory + schedule.attachment.name,
+                    (entry: any) => {
+                        console.log(entry)
+                        console.log(entry.toURL())
+                        setDownloading(false)
+                        setPreviewOpen({open: true, fileUrl: entry.toURL()})
+                    },
+                    (error: any) => {
+                        setDownloading(false)
+                        enqueueSnackbar(error.message, {
+                            variant: "error",
+                            anchorOrigin: {
+                                vertical: "bottom",
+                                horizontal: "center"
+                            }
+                        })
+
+                    }
+                )
+            }
+        }
+        if(shouldDownload){
+            startDownloadAttachment()
+        }
+    },[shouldDownload])
+
+    useEffect(() => {
+        if(previewOpen.open && open){
+            const previewAnyFile = (window as any).PreviewAnyFile;
+            previewAnyFile.previewPath(
+                (result: string) => {
+                    setPreviewOpen({open: false, fileUrl: ""})
+                },
+                (error: any) => {
+                    setPreviewOpen({open: false, fileUrl: ""})
+                    enqueueSnackbar(error.message, {
+                        variant: "error",
+                        anchorOrigin: {
+                            vertical: "bottom",
+                            horizontal: "center"
+                        }
+                    })
+                },
+                previewOpen.fileUrl
+            )
+        }
+    },[previewOpen])
     const closeButtonHandler = () => {
         onClose();
     };
@@ -188,14 +276,17 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
                                 </Typography>
                             </Grid>
                             <Grid item xs>
-                                <Typography variant="body1" className={rowContentText}>
                                     { attachmentDownloadLink && schedule?.attachment?.name ?
-                                        <Link variant="body1" href={`#`} onClick={() => openAttachmentLink()}>
-                                            { schedule?.attachment?.name }
-                                        </Link>
-                                        : `N/A`
+                                        <div className={wrapper}>
+                                            <Typography variant="body1" className={rowContentText}>
+                                                <Link variant="body1" href={`#`} color={downloading ? "textSecondary" : "primary"} aria-disabled={downloading} onClick={() => openAttachmentLink()}>
+                                                    { schedule?.attachment?.name }
+                                                </Link>
+                                            </Typography>
+                                            {downloading && <CircularProgress size={24} className={progress}/>}
+                                        </div>
+                                        : <Typography variant="body1" className={rowContentText}>N/A</Typography>
                                     }
-                                </Typography>
                             </Grid>
                         </Grid>
                     </Grid>
@@ -205,7 +296,7 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
                     <Button size={"large"} color={`primary`} variant={`contained`} onClick={joinButtonHandler} disabled={schedule === undefined}>Go Study</Button>
                 </DialogActions>
             </Dialog>
-            <StudyDetailPreview open={previewOpen} onClose={() => setPreviewOpen(false)} attachmentId={schedule?.attachment?.id} attachmentName={schedule?.attachment?.name} />
+            {/*<StudyDetailPreview open={previewOpen} onClose={() => setPreviewOpen(false)} attachmentId={schedule?.attachment?.id} attachmentName={schedule?.attachment?.name} />*/}
         </React.Fragment>
     )
 }
