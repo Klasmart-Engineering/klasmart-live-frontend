@@ -11,11 +11,12 @@ import {
     Theme,
     Typography
 } from "@material-ui/core";
-import React, {useEffect, useMemo, useState} from "react";
+import React, {useContext, useEffect, useMemo, useState} from "react";
 import { useHttpEndpoint } from "../../context-provider/region-select-context";
 import { ScheduleResponse } from "../../services/cms/ISchedulerService";
 import {blue} from "@material-ui/core/colors";
 import {useSnackbar} from "kidsloop-px";
+import {CordovaSystemContext} from "../../context-provider/cordova-system-context";
 
 const useStyles = makeStyles((theme: Theme) => ({
     dialogTitle: {
@@ -60,6 +61,7 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
     const [downloading, setDownloading] = useState(false)
     const [shouldDownload, setShouldDownload] = useState(false)
     const {enqueueSnackbar} = useSnackbar()
+    const { isIOS } = useContext(CordovaSystemContext);
 
     const startAt = useMemo<string | undefined>(() => {
         if (schedule?.start_at) {
@@ -117,10 +119,14 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
                 console.log(url)
                 const ft = new FileTransfer();
                 const cordova = (window as any).cordova;
+                let targetDirectory =  cordova.file.externalCacheDirectory;
+                if(isIOS){
+                    targetDirectory = cordova.file.tempDirectory;
+                }
                 setDownloading(true)
                 ft.download(
                     url,
-                    cordova.file.externalCacheDirectory + schedule.attachment.name,
+                    targetDirectory + schedule.attachment.name,
                     (entry: any) => {
                         console.log(entry)
                         console.log(entry.toURL())
@@ -129,7 +135,7 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
                     },
                     (error: any) => {
                         setDownloading(false)
-                        enqueueSnackbar(error.message, {
+                        enqueueSnackbar(error.body, {
                             variant: "error",
                             anchorOrigin: {
                                 vertical: "bottom",
