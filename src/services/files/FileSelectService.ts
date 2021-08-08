@@ -1,7 +1,5 @@
 import { IFileSelectService } from "./IFileSelectService";
 /// <reference types="cordova-plugin-file" />
-/// <reference types="cordova-plugin-filepath" />
-import {FilePath} from "@ionic-native/file-path"
 
 const DESTINATION_FILE_URI = 1;
 const SOURCE_PHOTOLIBRARY = 0;
@@ -48,6 +46,8 @@ export const MIME_TO_EXTENSION = new Map<string, string>([
 
 // https://github.com/cyph/cordova-plugin-chooser
 declare var chooser: any;
+
+declare var FilePath: any;
 
 export class FileSelectService implements IFileSelectService {
     async selectFile(): Promise<File> {
