@@ -1,3 +1,8 @@
+import {
+    LIVE_LINK,
+    LocalSessionContext,
+} from "../../../../providers/providers";
+import { RoomContext } from "../../../../providers/roomContext";
 import { ClassType } from "../../../../store/actions";
 import {
     isLessonPlanOpenState,
@@ -5,11 +10,6 @@ import {
 } from "../../../../store/layoutAtoms";
 import { redirectToLogin } from "../../../../utils/authentication";
 import { useWindowSize } from "../../../../utils/viewport";
-import {
-    LIVE_LINK,
-    LocalSessionContext,
-} from "../../../providers/providers";
-import { RoomContext } from "../../../providers/roomContext";
 import {
     gql,
     useMutation,

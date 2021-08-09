@@ -1,4 +1,4 @@
-import { LocalSessionContext } from "../../newuiupdate/providers/providers";
+import { LocalSessionContext } from "../../providers/providers";
 import { useSynchronizedState } from "../context-providers/SynchronizedStateProvider";
 import { IconButton } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid/Grid";

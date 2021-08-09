@@ -1,8 +1,8 @@
 import { ContentType } from "../../../pages/utils";
+import { LocalSessionContext } from "../../../providers/providers";
+import { RoomContext } from "../../../providers/roomContext";
 import { ClassType } from "../../../store/actions";
 import { Whiteboard } from "../../../whiteboard/components/Whiteboard";
-import { LocalSessionContext } from "../../providers/providers";
-import { RoomContext } from "../../providers/roomContext";
 import Toolbar from "../toolbar/toolbar";
 import MainClass from "./mainClass";
 import MainDrawer from "./mainDrawer";

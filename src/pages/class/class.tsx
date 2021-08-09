@@ -7,14 +7,14 @@ import {
     LIVE_LINK,
     LocalSessionContext,
     SFU_LINK,
-} from '../../newuiupdate/providers/providers';
-import { RoomContext } from "../../newuiupdate/providers/roomContext";
+} from '../../providers/providers';
+import { RoomContext } from "../../providers/roomContext";
 import {
     GLOBAL_MUTE_MUTATION,
     GLOBAL_MUTE_QUERY,
     GlobalMuteNotification,
     WebRTCContext,
-} from "../../newuiupdate/providers/WebRTCContext";
+} from "../../providers/WebRTCContext";
 import { ClassType } from "../../store/actions";
 import {
     classInfoState,

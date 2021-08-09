@@ -1,4 +1,4 @@
-import Providers from '../newuiupdate/providers/providers';
+import Providers from '../providers/providers';
 import Layout from './layout';
 import React from 'react';
 import { RecoilRoot } from 'recoil';

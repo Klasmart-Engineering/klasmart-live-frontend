@@ -1,13 +1,13 @@
 import {
+    LIVE_LINK,
+    LocalSessionContext,
+} from "../../../../providers/providers";
+import { RoomContext } from "../../../../providers/roomContext";
+import {
     isLessonPlanOpenState,
     isShowContentLoadingState,
 } from "../../../../store/layoutAtoms";
 import { useWindowSize } from "../../../../utils/viewport";
-import {
-    LIVE_LINK,
-    LocalSessionContext,
-} from "../../../providers/providers";
-import { RoomContext } from "../../../providers/roomContext";
 import { sleep } from "../utils";
 import Loading from "./loading";
 import {

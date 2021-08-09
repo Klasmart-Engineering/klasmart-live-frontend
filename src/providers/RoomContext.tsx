@@ -1,31 +1,59 @@
 import Loading from "../components/loading";
+import { MUTATION_SHOW_CONTENT } from "../newuiupdate/components/utils/graphql";
 import {
-    LIVE_LINK,
-    LocalSessionContext,
-} from "../entry";
+    defineContentId,
+    defineContentType,
+} from "../newuiupdate/components/utils/utils";
 import {
     Content,
     Message,
     Session,
 } from "../pages/utils";
 import {
+    audioGloballyMutedState,
+    classEndedState,
+    hasControlsState,
+    InteractiveMode,
+    interactiveModeState,
+    isChatOpenState,
+    isShowContentLoadingState,
+    materialActiveIndexState,
+    streamIdState,
+    unreadMessagesState,
+    videoGloballyMutedState,
+} from "../store/layoutAtoms";
+import {
+    LIVE_LINK,
+    LocalSessionContext,
+    SFU_LINK,
+} from "./providers";
+import { GLOBAL_MUTE_QUERY } from "./WebRTCContext";
+import {
     gql,
+    useMutation,
+    useQuery,
     useSubscription,
 } from "@apollo/client";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
+import { useSnackbar } from "kidsloop-px";
 import React,
 {
     createContext,
     useContext,
+    useEffect,
     useState,
 } from "react";
-import { FormattedMessage } from "react-intl";
+import {
+    FormattedMessage,
+    useIntl,
+} from "react-intl";
+import { useRecoilState } from "recoil";
 
 const SUB_ROOM = gql`
     subscription room($roomId: ID!, $name: String) {
         room(roomId: $roomId, name: $name) {
-            message { id, message, session { name } },
+            message { id, message, session { name, isTeacher } },
             content { type, contentId },
             join { id, name, streamId, isTeacher, isHost, joinedAt },
             leave { id },
@@ -42,6 +70,8 @@ export interface RoomContextInterface {
     content: Content | undefined;
     sessions: Map<string, Session>;
     trophy: any;
+    audioGloballyMuted: boolean;
+    videoGloballyMuted: boolean;
 }
 
 const defaultRoomContext = {
@@ -50,20 +80,79 @@ const defaultRoomContext = {
     content: undefined,
     sessions: new Map<string, Session>(),
     trophy: undefined,
+    audioGloballyMuted: false,
+    videoGloballyMuted: false,
 };
 
 export const RoomContext = createContext<RoomContextInterface>(defaultRoomContext);
 export const RoomProvider = (props: {children: React.ReactNode}) => {
+    const intl = useIntl();
     const {
         roomId,
         name,
         sessionId,
+        camera,
+        isTeacher,
+        materials,
+
     } = useContext(LocalSessionContext);
     const [ sfuAddress, setSfuAddress ] = useState<string>(``);
     const [ messages, setMessages ] = useState<Map<string, Message>>(new Map<string, Message>());
     const [ content, setContent ] = useState<Content>();
     const [ sessions, setSessions ] = useState<Map<string, Session>>(new Map<string, Session>());
     const [ trophy, setTrophy ] = useState();
+    const [ classEnded, setClassEnded ] = useRecoilState(classEndedState);
+    const [ unreadMessages, setUnreadMessages ] = useRecoilState(unreadMessagesState);
+    const [ isChatOpen, setIsChatOpen ] = useRecoilState(isChatOpenState);
+    const [ isShowContentLoading, setIsShowContentLoading ] = useRecoilState(isShowContentLoadingState);
+    const [ audioGloballyMuted, setAudioGloballyMuted ] = useRecoilState(audioGloballyMutedState);
+    const [ videoGloballyMuted, setVideoGloballyMuted ] = useRecoilState(videoGloballyMutedState);
+    const { enqueueSnackbar } = useSnackbar();
+
+    const [ materialActiveIndex, setMaterialActiveIndex ] = useRecoilState(materialActiveIndexState);
+    const [ streamId, setStreamId ] = useRecoilState(streamIdState);
+    const [ interactiveMode, setInteractiveMode ] = useRecoilState(interactiveModeState);
+    const [ hasControls, setHasControls ] = useRecoilState(hasControlsState);
+
+    const [ showContent, { loading: loadingShowContent } ] = useMutation(MUTATION_SHOW_CONTENT, {
+        context: {
+            target: LIVE_LINK,
+        },
+    });
+
+    useEffect(() => {
+        setIsShowContentLoading(loadingShowContent);
+    }, [ loadingShowContent ]);
+
+    useEffect(() => {
+        if (!hasControls) return;
+
+        const material = interactiveMode !== InteractiveMode.OnStage && materialActiveIndex >= 0 && materialActiveIndex < materials.length ? materials[materialActiveIndex] : undefined;
+        const type = defineContentType(material, interactiveMode);
+        const contentId = defineContentId(material, interactiveMode, streamId, sessionId);
+
+        showContent({
+            variables: {
+                roomId,
+                type,
+                contentId,
+            },
+        });
+    }, [
+        hasControls,
+        streamId,
+        materialActiveIndex,
+        interactiveMode,
+    ]);
+
+    useEffect(() => {
+        isChatOpen && setUnreadMessages(0);
+    }, [ isChatOpen, messages ]);
+
+    useEffect(() => {
+        fetchGlobalMute();
+    }, [ audioGloballyMuted, videoGloballyMuted ]);
+
     const { loading, error } = useSubscription(SUB_ROOM, {
         onSubscriptionData: ({ subscriptionData }) => {
             if (!subscriptionData?.data?.room) { return; }
@@ -97,31 +186,91 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
     });
 
     const addMessage = (newMessage: Message) => {
-        for (const id of messages.keys()) {
-            if (messages.size < 32) { break; }
-            setMessages((prev) => {
-                const newState = new Map(prev);
-                newState.delete(id);
-                return newState;
-            });
+        // for (const id of messages.keys()) {
+        //     if (messages.size < 32) { break; }
+        //     setMessages((prev) => {
+        //         const newState = new Map(prev);
+        //         newState.delete(id);
+        //         return newState;
+        //     });
+        // }
+
+        if(!isChatOpen){
+            const now = Date.now() - 5000;
+            const messageTime = Number(newMessage.id.split(`-`)[0]);
+
+            if(camera && now <= messageTime){
+                enqueueSnackbar(intl.formatMessage({
+                    id: `notification_user_sent_message`,
+                }, {
+                    user: newMessage.session.name,
+                }));
+            }
+            setUnreadMessages(unreadMessages + 1);
         }
         setMessages(prev => new Map(prev.set(newMessage.id, newMessage)));
     };
-    const userJoin = (join: Session) => setSessions(prev => new Map(prev.set(join.id, join)));
+
+    const userJoin = (join: Session) => {
+        console.log(`flag1 userJoin: `, join.streamId);
+        const now = Date.now() - 5000;
+        const newSession = !sessions.has(join.id);
+        setSessions(prev => new Map(prev.set(join.id, join)));
+
+        if(newSession && isTeacher && sessionId !== join.id && now <= join.joinedAt){
+            enqueueSnackbar(intl.formatMessage({
+                id: `notification_user_joined`,
+            }, {
+                user: join.name,
+            }));
+        }
+    };
 
     const userLeave = (leave: Session) => {
+        const user = sessions.get(leave.id);
+
         setSessions((prev) => {
             const newState = new Map(prev);
             newState.delete(leave.id);
             return newState;
         });
+
+        if(leave.id === sessionId){
+            setClassEnded(true);
+        }
+
+        if(isTeacher && user){
+            enqueueSnackbar(intl.formatMessage({
+                id: `notification_user_left`,
+            }, {
+                user: user.name,
+            }));
+        }
     };
+
+    const { refetch: refetchGlobalMute } = useQuery(GLOBAL_MUTE_QUERY, {
+        variables: {
+            roomId,
+        },
+        context: {
+            target: SFU_LINK,
+        },
+    });
+
+    const fetchGlobalMute = async () => {
+        const { data: globalMuteData } = await refetchGlobalMute();
+        setAudioGloballyMuted(globalMuteData.retrieveGlobalMute.audioGloballyMuted);
+        setVideoGloballyMuted(globalMuteData.retrieveGlobalMute.videoGloballyDisabled);
+    };
+
     const value = {
         sfuAddress,
         messages,
         content,
         sessions,
         trophy,
+        audioGloballyMuted,
+        videoGloballyMuted,
     };
 
     if (loading || !content) { return <Grid

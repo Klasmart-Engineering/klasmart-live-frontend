@@ -1,9 +1,9 @@
+import { LocalSessionContext } from "../../../providers/providers";
 import { ClassType } from "../../../store/actions";
 import {
     isChatOpenState,
     isLessonPlanOpenState,
 } from "../../../store/layoutAtoms";
-import { LocalSessionContext } from "../../providers/providers";
 import { StyledDrawer } from "../utils/utils";
 import Chat from "./chat/chat";
 import LessonPlan from "./lessonPlan/lessonPlan";

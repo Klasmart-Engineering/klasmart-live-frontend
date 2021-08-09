@@ -1,10 +1,10 @@
 import { Trophy } from "../components/trophies/trophy";
-import ClassProviders from "../newuiupdate/providers/classProviders";
+import ClassProviders from "../providers/classProviders";
 import {
     LIVE_LINK,
     LocalSessionContext,
     sessionId,
-} from '../newuiupdate/providers/providers';
+} from '../providers/providers';
 import { AuthTokenProvider } from "../services/auth-token/AuthTokenProvider";
 import {
     classEndedState,

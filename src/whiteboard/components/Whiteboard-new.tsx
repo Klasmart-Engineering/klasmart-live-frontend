@@ -1,6 +1,6 @@
 // This is temporary and will be removed after the App and Web merge.
 
-import { LocalSessionContext } from "../../newuiupdate/providers/providers";
+import { LocalSessionContext } from "../../providers/providers";
 import { whiteboard } from "../../utils/layerValues";
 import { useSynchronizedState } from "../context-providers/SynchronizedStateProvider";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";

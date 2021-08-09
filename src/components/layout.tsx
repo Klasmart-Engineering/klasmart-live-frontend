@@ -12,7 +12,7 @@ import {
     Session,
     StreamIdState,
 } from "../pages/utils";
-import { RoomContext } from "../providers/RoomContext";
+import { RoomContext } from '../providers/roomContext';
 import { WebRTCContext } from "../providers/WebRTCContext";
 import { SendMessage } from "../sendMessage";
 import {

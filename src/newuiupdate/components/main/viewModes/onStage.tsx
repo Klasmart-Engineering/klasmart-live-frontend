@@ -1,12 +1,18 @@
-import { LocalSessionContext } from "../../../providers/providers";
-import { RoomContext } from "../../../providers/roomContext";
+import { LocalSessionContext } from "../../../../providers/providers";
+import { RoomContext } from "../../../../providers/roomContext";
 import UserCamera from "../../userCamera/userCamera";
 import {
-    Grid, makeStyles, Theme, Typography,
+    Grid,
+    makeStyles,
+    Theme,
+    Typography,
 } from "@material-ui/core";
 import { UserVoice as OnStageIcon } from "@styled-icons/boxicons-solid/UserVoice";
-import React, {
-    useContext, useEffect, useState,
+import React,
+{
+    useContext,
+    useEffect,
+    useState,
 } from "react";
 import { FormattedMessage } from "react-intl";
 
