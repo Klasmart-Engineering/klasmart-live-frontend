@@ -588,7 +588,16 @@ function HomeFunStudyContainer({
         if (validateFileType(file)) {
             if (validateFileSize(file)) {
                 console.log(`validated file: ${file.name}`);
-                addAnSelectedAttachment(file);
+                showPopup({
+                    variant: "confirm",
+                    title: intl.formatMessage({id: "upload_file"}),
+                    description: [intl.formatMessage({id: "confirm_to_upload_file"})],
+                    closeLabel: intl.formatMessage({id: "button_cancel"}),
+                    confirmLabel: intl.formatMessage({id: "button_upload"}),
+                    onConfirm: () => {
+                        addAnSelectedAttachment(file);
+                    }
+                })
             } else {
                 showPopup({
                     variant: "detailError",
