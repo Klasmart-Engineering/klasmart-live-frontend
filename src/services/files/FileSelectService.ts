@@ -35,6 +35,7 @@ export const MIME_TO_EXTENSION = new Map<string, string>([
     ["image/png", "png"],
     ["image/gif", "gif"],
     ["image/bmp", "bmp"],
+    ["image/x-ms-bmp", "bmp"],
     ["application/msword", "doc"],
     ["application/vnd.openxmlformats-officedocument.wordprocessingml.document", "docx"],
     ["application/vnd.ms-powerpoint", "ppt"],
