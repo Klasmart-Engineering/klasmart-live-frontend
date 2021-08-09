@@ -76,7 +76,7 @@ export type Assignment  = {
 }
 
 export interface ScheduleFeedbackResponse {
-    assignments: Assignment[],
+    assignments?: Assignment[],
     comment: string,
     create_at: number,
     id: string,

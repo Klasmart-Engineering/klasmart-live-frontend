@@ -377,7 +377,7 @@ function HomeFunStudyContainer({
             //Submitted feedback from CMS.
             // If the HFS have been submitted, it should be prioritized to show feedback from CMS first.
             if (newestFeedback) {
-                const feedBackAssignments = newestFeedback.assignments;
+                const feedBackAssignments = newestFeedback.assignments ? newestFeedback.assignments : [];
                 newAssignmentItems = convertAssignmentsToAssignmentItems(feedBackAssignments);
                 setAssignmentItems(newAssignmentItems);
                 setSaveAssignmentItems({shouldSave: true, assignmentItems: newAssignmentItems})
