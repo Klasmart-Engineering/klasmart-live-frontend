@@ -472,7 +472,7 @@ function HomeFunStudyContainer({
             throw new Error("Organization is not selected.");
         }
         try {
-            const contentResourceUploadPathResponse = await contentService?.getContentResourceUploadPath(selectedOrg.organization_id, getFileExtensionFromName(file.name));
+            const contentResourceUploadPathResponse = await contentService?.getContentResourceUploadPath(selectedOrg.organization_id, getFileExtensionFromType(file.type));
             if (contentResourceUploadPathResponse) {
 
                     const uploadResult = await contentService?.uploadAttachment(contentResourceUploadPathResponse.path, file);
