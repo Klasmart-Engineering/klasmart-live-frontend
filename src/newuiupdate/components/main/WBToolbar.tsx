@@ -1,8 +1,8 @@
 import StyledIcon from "../../../components/styled/icon";
 import { ClassType } from "../../../store/actions";
 import { isCanvasOpenState } from "../../../store/layoutAtoms";
+import { useSynchronizedState } from "../../../whiteboard/context-providers/SynchronizedStateProvider";
 import { LocalSessionContext } from "../../providers/providers";
-import { useSynchronizedState } from "../../whiteboard/context-providers/SynchronizedStateProvider";
 import CanvasMenu from "../toolbar/toolbarMenus/canvasMenu";
 import {
     Grid,

@@ -1,28 +1,30 @@
-import React, { ReactChild, ReactChildren, FunctionComponent } from "react";
-import WhiteboardStateProvider, { useSynchronizedState } from "./SynchronizedStateProvider";
-import WhiteboardEventSerializer from "kidsloop-canvas/lib/domain/whiteboard/SharedEventSerializerProvider";
+import WhiteboardStateProvider,
+{ useSynchronizedState } from "./SynchronizedStateProvider";
 import KidsLoopCanvas from "kidsloop-canvas";
 import ToolbarContextProvider from "kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
+import WhiteboardEventSerializer from "kidsloop-canvas/lib/domain/whiteboard/SharedEventSerializerProvider";
+import React,
+{
+    FunctionComponent,
+    ReactChild,
+    ReactChildren,
+} from "react";
 
 type Props = {
     children?: ReactChild | ReactChildren | null | any;
 };
 
-const CanvasStateAndSynchronization: FunctionComponent<Props> = ({
-    children,
-}: Props): JSX.Element => {
+const CanvasStateAndSynchronization: FunctionComponent<Props> = ({ children }: Props): JSX.Element => {
     return (
         <WhiteboardEventSerializer>
             <WhiteboardStateProvider>
                 {children}
             </WhiteboardStateProvider>
         </WhiteboardEventSerializer>
-    )
-}
+    );
+};
 
-const CanvasWhiteboardAndToolbar: FunctionComponent<Props> = ({
-    children,
-}: Props): JSX.Element => {
+const CanvasWhiteboardAndToolbar: FunctionComponent<Props> = ({ children }: Props): JSX.Element => {
 
     const { state: { permissions } } = useSynchronizedState();
 
@@ -37,12 +39,10 @@ const CanvasWhiteboardAndToolbar: FunctionComponent<Props> = ({
                 {children}
             </ToolbarContextProvider>
         </KidsLoopCanvas.WhiteboardProvider>
-    )
-}
+    );
+};
 
-export const GlobalWhiteboardContext: FunctionComponent<Props> = ({
-    children,
-}: Props): JSX.Element => {
+export const GlobalWhiteboardContext: FunctionComponent<Props> = ({ children }: Props): JSX.Element => {
 
     return (
         <CanvasStateAndSynchronization>
@@ -51,4 +51,4 @@ export const GlobalWhiteboardContext: FunctionComponent<Props> = ({
             </CanvasWhiteboardAndToolbar>
         </CanvasStateAndSynchronization>
     );
-}
+};

@@ -4,11 +4,11 @@ import {
     showEndStudyState,
     studyRecommandUrlState,
 } from "../../../store/layoutAtoms";
+import { Whiteboard } from "../../../whiteboard/components/Whiteboard";
 import {
     LIVE_LINK,
     LocalSessionContext,
 } from "../../providers/providers";
-import { Whiteboard } from "../../whiteboard/components/Whiteboard";
 import { MUTATION_REWARD_TROPHY } from "../utils/graphql";
 import PreviewLessonPlan from "./previewLessonPlan";
 import { WB_TOOLBAR_MAX_HEIGHT } from "./WBToolbar";

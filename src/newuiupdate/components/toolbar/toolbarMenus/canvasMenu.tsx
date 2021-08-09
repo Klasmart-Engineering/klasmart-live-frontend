@@ -3,8 +3,8 @@ import {
     hasControlsState,
     isCanvasOpenState,
 } from "../../../../store/layoutAtoms";
+import { useSynchronizedState } from "../../../../whiteboard/context-providers/SynchronizedStateProvider";
 import { LocalSessionContext } from "../../../providers/providers";
-import { useSynchronizedState } from "../../../whiteboard/context-providers/SynchronizedStateProvider";
 import { StyledPopper } from "../../utils/utils";
 import {
     Grid,

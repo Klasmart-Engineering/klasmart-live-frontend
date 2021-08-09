@@ -13,6 +13,7 @@ import {
     isViewModesOpenState,
     unreadMessagesState,
 } from "../../../store/layoutAtoms";
+import { useSynchronizedState } from "../../../whiteboard/context-providers/SynchronizedStateProvider";
 import {
     LocalSessionContext,
     SFU_LINK,
@@ -23,7 +24,6 @@ import {
     MuteNotification,
     WebRTCContext,
 } from "../../providers/WebRTCContext";
-import { useSynchronizedState } from "../../whiteboard/context-providers/SynchronizedStateProvider";
 import {
     DialogEndClass,
     DialogLeaveClass,
