@@ -17,6 +17,7 @@ const messages: Record<string, string> = {
     button_continue: "Continue",
     button_ok: "Ok",
     button_delete: "Delete",
+    button_upload: "Upload",
     label_not_defined: "Not defined",
     close_confirm_description_1: "Would you like to close the window?",
     close_confirm_description_2: "It will dismiss your change.",
@@ -30,6 +31,8 @@ const messages: Record<string, string> = {
     label_info: "Info",
     block_for_assessment_completed: "This assignment has already been assessed by the teacher and can no longer be edited or re-submitted.",
     file_upload_failed: "File upload failed. Please check your file and try again.",
+    upload_file: "Upload file",
+    confirm_to_upload_file: "Selected file will be uploaded. Do you want to continue?",
 
     err_button_home: "Home",
     err_button_signin: "Back to Sign In",
