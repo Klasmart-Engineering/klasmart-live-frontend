@@ -1,4 +1,4 @@
-import { LocalSessionContext } from "../../../../providers/providers";
+import { LocalSessionContext } from "../../../../../providers/providers";
 import { NoItemList } from "../../../utils/utils";
 import Attachment from "./attachment";
 import {
@@ -8,8 +8,12 @@ import {
     Theme,
 } from "@material-ui/core";
 import { CloudUpload as UploadIcon } from "@styled-icons/boxicons-regular/CloudUpload";
-import React, { useContext } from "react";
-import { FormattedMessage, useIntl } from "react-intl";
+import React,
+{ useContext } from "react";
+import {
+    FormattedMessage,
+    useIntl,
+} from "react-intl";
 
 const useStyles = makeStyles((theme: Theme) => ({
     fullHeight:{

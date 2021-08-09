@@ -1,8 +1,8 @@
 /* eslint-disable modules-newline/import-declaration-newline */
 import ReactPlayer from "../../../components/react-player";
-import { LocalSessionContext } from "../../providers/providers";
-import { RoomContext } from "../../providers/roomContext";
-import { WebRTCContext } from "../../providers/WebRTCContext";
+import { LocalSessionContext } from "../../../providers/providers";
+import { RoomContext } from "../../../providers/roomContext";
+import { WebRTCContext } from "../../../providers/WebRTCContext";
 import NoCamera from "./noCamera";
 import UserCameraActions from "./userCameraActions";
 import UserCameraDetails from "./userCameraDetails";
@@ -168,7 +168,9 @@ function UserCamera (props: UserCameraType) {
                     user={user}
                     speakingActivity={speakingActivity}
                 />
-                {actions ? isHover && <UserCameraActions user={user} expanded={camOn} /> : null}
+                {actions ? isHover && <UserCameraActions
+                    user={user}
+                    expanded={camOn} /> : null}
                 {userCamera && userSession && camOn ? (
                     <ReactPlayer
                         autoPlay

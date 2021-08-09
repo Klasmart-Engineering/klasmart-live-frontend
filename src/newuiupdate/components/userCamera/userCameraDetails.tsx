@@ -1,5 +1,5 @@
-import { LocalSessionContext } from "../../providers/providers";
-import { WebRTCContext } from "../../providers/WebRTCContext";
+import { LocalSessionContext } from "../../../providers/providers";
+import { WebRTCContext } from "../../../providers/WebRTCContext";
 import {
     Grid,
     makeStyles,
@@ -13,8 +13,11 @@ import { MicMuteFill as MicDisabledIcon } from "@styled-icons/bootstrap/MicMuteF
 import { Crown as HasControlsIcon } from "@styled-icons/fa-solid/Crown";
 import { HatGraduation as TeacherIcon } from "@styled-icons/fluentui-system-filled/HatGraduation";
 import clsx from "clsx";
-import React, {
-    useContext, useEffect, useState,
+import React,
+{
+    useContext,
+    useEffect,
+    useState,
 } from "react";
 import { FormattedMessage } from "react-intl";
 
@@ -56,10 +59,10 @@ const useStyles = makeStyles((theme: Theme) => ({
                 maxWidth: `none`,
 
                 "& + svg": {
-                    minWidth: `20px`
-                }
-            }
-        }
+                    minWidth: `20px`,
+                },
+            },
+        },
     },
     topCamera:{
         textAlign: `center`,
@@ -83,9 +86,9 @@ const useStyles = makeStyles((theme: Theme) => ({
             marginRight: `5px`,
 
             "& + svg": {
-                minWidth: `11px`
-            }
-        }
+                minWidth: `11px`,
+            },
+        },
     },
     textOverflow: {
         display: `inline-block`,
@@ -94,7 +97,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         overflow: `hidden`,
         whiteSpace: `nowrap`,
         boxSizing: `border-box`,
-        maxWidth: `138px`
+        maxWidth: `138px`,
     },
     roles:{
         position: `absolute`,
@@ -128,11 +131,11 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     gridItem: {
         display: `block`,
-        width: `100%`
+        width: `100%`,
     },
     iconRootLarge: {
-        minWidth: `20px`
-    }
+        minWidth: `20px`,
+    },
 }));
 
 interface UserCameraDetailsType {
@@ -143,7 +146,10 @@ interface UserCameraDetailsType {
 
 function UserCameraDetails (props: UserCameraDetailsType) {
     const {
-        user, variant, speakingActivity,
+        user,
+        variant,
+        speakingActivity,
+
     } = props;
     const classes = useStyles();
     const theme = useTheme();

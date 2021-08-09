@@ -1,20 +1,20 @@
 import { ContentType } from "../../../../../pages/utils";
 import {
-    isGlobalActionsOpenState,
-    videoGloballyMutedState,
-} from "../../../../../store/layoutAtoms";
-import {
     LIVE_LINK,
     LocalSessionContext,
     SFU_LINK,
-} from "../../../../providers/providers";
-import { RoomContext } from "../../../../providers/roomContext";
-import { ScreenShareContext } from "../../../../providers/screenShareProvider";
+} from "../../../../../providers/providers";
+import { RoomContext } from "../../../../../providers/roomContext";
+import { ScreenShareContext } from "../../../../../providers/screenShareProvider";
 import {
     GLOBAL_MUTE_MUTATION,
     GLOBAL_MUTE_QUERY,
     GlobalMuteNotification,
-} from "../../../../providers/WebRTCContext";
+} from "../../../../../providers/WebRTCContext";
+import {
+    isGlobalActionsOpenState,
+    videoGloballyMutedState,
+} from "../../../../../store/layoutAtoms";
 import { MUTATION_REWARD_TROPHY } from "../../../utils/graphql";
 import { StyledPopper } from "../../../utils/utils";
 import GlobalActionsMenuItem from "./globalAction";

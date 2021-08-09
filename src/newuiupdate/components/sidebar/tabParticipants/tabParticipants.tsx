@@ -1,6 +1,6 @@
 import { Session } from "../../../../pages/utils";
-import { LocalSessionContext } from "../../../providers/providers";
-import { RoomContext } from "../../../providers/roomContext";
+import { LocalSessionContext } from "../../../../providers/providers";
+import { RoomContext } from "../../../../providers/roomContext";
 import UserCamera from "../../userCamera/userCamera";
 import { NoItemList } from "../../utils/utils";
 import {

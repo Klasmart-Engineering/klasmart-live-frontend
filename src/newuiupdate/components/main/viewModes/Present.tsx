@@ -1,17 +1,17 @@
 import { MaterialTypename } from "../../../../lessonMaterialContext";
 import { ContentType } from "../../../../pages/utils";
 import {
+    LIVE_LINK,
+    LocalSessionContext,
+} from "../../../../providers/providers";
+import { RoomContext } from "../../../../providers/roomContext";
+import {
     hasControlsState,
     interactiveModeState,
     isLessonPlanOpenState,
     materialActiveIndexState,
     streamIdState,
 } from "../../../../store/layoutAtoms";
-import {
-    LIVE_LINK,
-    LocalSessionContext,
-} from "../../../providers/providers";
-import { RoomContext } from "../../../providers/roomContext";
 import { MUTATION_SHOW_CONTENT } from "../../utils/graphql";
 import ActivityImage from "../../utils/interactiveContent/image";
 import { PreviewPlayer } from "../../utils/interactiveContent/previewPlayer";
@@ -44,65 +44,6 @@ function Present () {
     const classes = useStyles();
     const { content } = useContext(RoomContext);
     const [ hasControls, setHasControls ] = useRecoilState(hasControlsState);
-
-    /*
-        const [ interactiveMode, setInteractiveMode ] = useRecoilState(interactiveModeState);
-    const [ materialActiveIndex, setMaterialActiveIndex ] = useRecoilState(materialActiveIndexState);
-        const {
-        materials, roomId, sessionId,
-    } = useContext(LocalSessionContext);
-
-    const material = materialActiveIndex >= 0 && materialActiveIndex < materials.length ? materials[materialActiveIndex] : undefined;
-
-    const [ showContent, { loading: loadingShowContent } ] = useMutation(MUTATION_SHOW_CONTENT, {
-        context: {
-            target: LIVE_LINK,
-        },
-    });
-
-    useEffect(() => {
-        if (material) {
-            if (material.__typename === MaterialTypename.Video || (material.__typename === undefined && material.video)) {
-                showContent({
-                    variables: {
-                        roomId,
-                        type: ContentType.Video,
-                        contentId: sessionId,
-                    },
-                });
-            } else if (material.__typename === MaterialTypename.Audio) {
-                showContent({
-                    variables: {
-                        roomId,
-                        type: ContentType.Audio,
-                        contentId: sessionId,
-                    },
-                });
-            } else if (material.__typename === MaterialTypename.Image) {
-                showContent({
-                    variables: {
-                        roomId,
-                        type: ContentType.Image,
-                        contentId: material.url,
-                    },
-                });
-            } else if ((material.__typename === MaterialTypename.Iframe || (material.__typename === undefined && material.url)) && streamId) {
-                showContent({
-                    variables: {
-                        roomId,
-                        type: ContentType.Stream,
-                        contentId: streamId,
-                    },
-                });
-            }
-        }
-    }, [
-        interactiveMode,
-        material,
-        streamId,
-        sessionId,
-    ]);
-    */
 
     // IF TEACHER
     if(hasControls){

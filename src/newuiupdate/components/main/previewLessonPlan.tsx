@@ -1,10 +1,10 @@
 import { MaterialTypename } from "../../../lessonMaterialContext";
+import { LocalSessionContext } from "../../../providers/providers";
 import {
     materialActiveIndexState,
     observeDisableState,
     studyRecommandUrlState,
 } from "../../../store/layoutAtoms";
-import { LocalSessionContext } from "../../providers/providers";
 import ActivityImage from "../utils/interactiveContent/image";
 import { RecordedIframe } from "../utils/interactiveContent/recordediframe";
 import { ReplicatedMedia } from "../utils/interactiveContent/synchronized-video";

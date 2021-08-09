@@ -11,7 +11,7 @@ import QingseCrayon from "../../assets/img/canvas/crayons/qingse.svg";
 import RedCrayon from "../../assets/img/canvas/crayons/red.svg";
 import YellowCrayon from "../../assets/img/canvas/crayons/yellow.svg";
 import Eraser from "../../assets/img/canvas/eraser.svg";
-import { LocalSessionContext } from "../../newuiupdate/providers/providers";
+import { LocalSessionContext } from "../../providers/providers";
 import { ClassType } from "../../store/actions";
 import { useSynchronizedState } from "../context-providers/SynchronizedStateProvider";
 import {

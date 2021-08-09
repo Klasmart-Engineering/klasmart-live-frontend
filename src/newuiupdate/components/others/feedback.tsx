@@ -1,4 +1,7 @@
-import { LIVE_LINK, LocalSessionContext } from '../../providers/providers';
+import {
+    LIVE_LINK,
+    LocalSessionContext,
+} from '../../../providers/providers';
 import { MUTATION_SAVE_FEEDBACK } from "../utils/graphql";
 import { useMutation } from '@apollo/client';
 import {
@@ -15,10 +18,16 @@ import amber from "@material-ui/core/colors/amber";
 import { Star as StarEmptyIcon } from "@styled-icons/bootstrap/Star";
 import { StarFill as StarFillIcon } from "@styled-icons/bootstrap/StarFill";
 import clsx from "clsx";
-import React, {
-    useContext, useEffect, useState,
+import React,
+{
+    useContext,
+    useEffect,
+    useState,
 } from "react";
-import { FormattedMessage, useIntl } from "react-intl";
+import {
+    FormattedMessage,
+    useIntl,
+} from "react-intl";
 
 const useStyles = makeStyles((theme: Theme) => ({
     stars:{
@@ -86,8 +95,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     starBox: {
         flexWrap: `nowrap`,
-        whiteSpace: `nowrap`
-    }
+        whiteSpace: `nowrap`,
+    },
 }));
 
 export interface FeedbackProps {
@@ -216,8 +225,8 @@ function Feedback (props:FeedbackProps){
             <Grid item>
                 <div className={classes.stars}>
                     <Grid
-                        className={classes.starBox}
                         container
+                        className={classes.starBox}
                         spacing={3}>
                         {feedbackRatingItems.map(item => (
                             <Grid

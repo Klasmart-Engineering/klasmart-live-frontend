@@ -1,17 +1,29 @@
 import { FFT } from "../../../../components/fft";
 import ReactPlayer from "../../../../components/react-player/lazy";
 import { MaterialTypename } from "../../../../lessonMaterialContext";
-import { LIVE_LINK, LocalSessionContext } from '../../../providers/providers';
 import {
-    gql, useMutation, useSubscription,
+    LIVE_LINK,
+    LocalSessionContext,
+} from '../../../../providers/providers';
+import {
+    gql,
+    useMutation,
+    useSubscription,
 } from "@apollo/client";
 import {
-    CircularProgress, IconButton, makeStyles,
-    Theme, Typography,
+    CircularProgress,
+    IconButton,
+    makeStyles,
+    Theme,
+    Typography,
 } from "@material-ui/core";
 import { VolumeMute as AudioOffIcon } from "@styled-icons/boxicons-regular/VolumeMute";
-import React, {
-    useCallback, useContext, useEffect, useRef,
+import React,
+{
+    useCallback,
+    useContext,
+    useEffect,
+    useRef,
     useState,
 } from "react";
 
@@ -77,7 +89,9 @@ const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
 export function ReplicaMedia (props: React.VideoHTMLAttributes<HTMLMediaElement> & ReplicaVideoProps) {
     const {
-        sessionId, type, ...mediaProps
+        sessionId,
+        type,
+        ...mediaProps
     } = props;
     const classes = useStyles();
     const srcRef = useRef<string>();
@@ -128,7 +142,10 @@ export function ReplicaMedia (props: React.VideoHTMLAttributes<HTMLMediaElement>
             }
 
             const {
-                src, play, offset,
+                src,
+                play,
+                offset,
+
             } = subscriptionData.data
                 .video as VideoSynchronize;
 
@@ -217,7 +234,7 @@ export function ReplicaMedia (props: React.VideoHTMLAttributes<HTMLMediaElement>
         return <CircularProgress />;
     }
     if (error) {
-        console.log(error)
+        console.log(error);
         return <CircularProgress />;
     }
     switch (type) {
@@ -316,7 +333,9 @@ interface ReplicatedMediaProps {
 
 export function ReplicatedMedia (props: React.VideoHTMLAttributes<HTMLMediaElement> & ReplicatedMediaProps) {
     const {
-        type, src, ...mediaProps
+        type,
+        src,
+        ...mediaProps
     } = props;
     const classes = useStyles();
     const ref = useRef<HTMLMediaElement>(null);
@@ -480,7 +499,7 @@ export function ReplicatedMedia (props: React.VideoHTMLAttributes<HTMLMediaEleme
 
     // if(loading) {return <CircularProgress />;}
     if (error) {
-        console.log(error)
+        console.log(error);
         return <CircularProgress />;
     }
 

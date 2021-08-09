@@ -13,7 +13,7 @@ import {
     BrandingType,
     getOrganizationBranding,
 } from "../../newuiupdate/components/utils/utils";
-import { LocalSessionContext } from "../../newuiupdate/providers/providers";
+import { LocalSessionContext } from "../../providers/providers";
 import { ClassType } from "../../store/actions";
 import { hasJoinedClassroomState } from "../../store/layoutAtoms";
 import Button from '@material-ui/core/Button';

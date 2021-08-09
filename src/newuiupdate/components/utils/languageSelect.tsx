@@ -1,13 +1,20 @@
-import { ThemeContext } from "../../providers/providers";
+import { ThemeContext } from "../../../providers/providers";
 import { Button } from "@material-ui/core";
-import Menu, { MenuProps } from "@material-ui/core/Menu";
+import Menu,
+{ MenuProps } from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import {
-    createStyles, makeStyles, Theme, withStyles,
+    createStyles,
+    makeStyles,
+    Theme,
+    withStyles,
 } from "@material-ui/core/styles";
 import { ExpandMore as ExpandMoreIcon } from "@styled-icons/material/ExpandMore";
 import { Translate as LanguageIcon } from "@styled-icons/material/Translate";
-import { useContext, useState } from "react";
+import {
+    useContext,
+    useState,
+} from "react";
 import * as React from "react";
 import { FormattedMessage } from "react-intl";
 

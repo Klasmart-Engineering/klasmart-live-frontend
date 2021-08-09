@@ -1,3 +1,7 @@
+import {
+    LIVE_LINK,
+    LocalSessionContext,
+} from "../../../providers/providers";
 import { ClassType } from "../../../store/actions";
 import {
     materialActiveIndexState,
@@ -5,10 +9,6 @@ import {
     studyRecommandUrlState,
 } from "../../../store/layoutAtoms";
 import { Whiteboard } from "../../../whiteboard/components/Whiteboard";
-import {
-    LIVE_LINK,
-    LocalSessionContext,
-} from "../../providers/providers";
 import { MUTATION_REWARD_TROPHY } from "../utils/graphql";
 import PreviewLessonPlan from "./previewLessonPlan";
 import { WB_TOOLBAR_MAX_HEIGHT } from "./WBToolbar";

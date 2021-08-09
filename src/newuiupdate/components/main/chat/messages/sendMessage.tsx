@@ -1,4 +1,7 @@
-import { LIVE_LINK, LocalSessionContext } from "../../../../providers/providers";
+import {
+    LIVE_LINK,
+    LocalSessionContext,
+} from "../../../../../providers/providers";
 import { SEND_MESSAGE } from "../../../utils/graphql";
 import {  useMutation } from "@apollo/client";
 import {
@@ -9,7 +12,11 @@ import {
     Theme,
 } from "@material-ui/core";
 import { SendPlane as SendIcon } from "@styled-icons/remix-fill/SendPlane";
-import React, { useContext, useState } from "react";
+import React,
+{
+    useContext,
+    useState,
+} from "react";
 import { useIntl } from "react-intl";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -78,7 +85,9 @@ function SendMessage () {
                     root: classes.rootInput,
                     input: classes.input,
                 }}
-                inputProps={{ maxLength: 500 }}
+                inputProps={{
+                    maxLength: 500,
+                }}
                 onChange={(e) => setMessage(e.target.value)}
             />
             <IconButton

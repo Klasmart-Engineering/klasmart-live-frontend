@@ -1,6 +1,6 @@
+import { LocalSessionContext } from "../../../providers/providers";
 import { ClassType } from "../../../store/actions";
 import { showEndStudyState } from "../../../store/layoutAtoms";
-import { LocalSessionContext } from "../../providers/providers";
 import { ClassContent } from "./classContent";
 import { WBToolbarContainer } from "./WBToolbar";
 import {

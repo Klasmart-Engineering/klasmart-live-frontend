@@ -1,7 +1,7 @@
 import {
     LIVE_LINK,
     LocalSessionContext,
-} from "../../newuiupdate/providers/providers";
+} from "../../providers/providers";
 import {
     createEmptyPermissions,
     createPermissions,

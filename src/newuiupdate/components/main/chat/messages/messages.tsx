@@ -1,4 +1,4 @@
-import { RoomContext } from "../../../../providers/roomContext";
+import { RoomContext } from "../../../../../providers/roomContext";
 import { NoItemList } from "../../../utils/utils";
 import Message from "./message";
 import SendMessage from "./sendMessage";
@@ -9,8 +9,11 @@ import {
     Theme,
 } from "@material-ui/core";
 import { ChatSquareDotsFill as ChatIcon } from "@styled-icons/bootstrap/ChatSquareDotsFill";
-import React, {
-    useContext, useEffect, useRef,
+import React,
+{
+    useContext,
+    useEffect,
+    useRef,
 } from "react";
 import { useIntl } from "react-intl";
 
@@ -43,8 +46,8 @@ function Messages () {
 
         const objDiv = document.querySelectorAll(`.chat-container`);
         if(objDiv.length) {
-            for (let i of objDiv) {
-                i.scrollTop = i.scrollHeight
+            for (const i of objDiv) {
+                i.scrollTop = i.scrollHeight;
             }
         }
     }, [ messages ]);
@@ -59,7 +62,9 @@ function Messages () {
                 xs
                 // ref={messagesBox}
                 id="chat-container"
-                classes={{root: 'chat-container'}}
+                classes={{
+                    root: `chat-container`,
+                }}
                 className={classes.messagesContainer}>
                 {messages.length === 0 ?
                     <NoItemList
