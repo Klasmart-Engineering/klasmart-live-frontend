@@ -155,7 +155,7 @@ export function HomeFunStudyDialog() {
                     variant: "info",
                     title: intl.formatMessage({id: "label_info"}),
                     description: [intl.formatMessage({id: "block_for_assessment_completed"})],
-                    closeLabel: intl.formatMessage({id: "button_ok"})
+                    closeLabel: intl.formatMessage({id: "button_close"})
                 })
             }
         },200)
