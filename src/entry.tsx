@@ -4,7 +4,7 @@ import {
     LessonMaterial,
     MaterialTypename,
 } from "./lessonMaterialContext";
-import  NewUIEntry  from "./newuiupdate/entry";
+import  NewUIEntry  from "./pages/entry";
 import { setUserAgent } from "./store/reducers/session";
 import { createDefaultStore } from "./store/store";
 import { themeProvider } from "./themeProvider";
