@@ -1,8 +1,10 @@
 import { Trophy } from "../components/trophies/trophy";
-import Class from '../pages/class/class';
-import ClassEnded from '../pages/end/classEnded';
-import ClassLeft from '../pages/end/classLeft';
-import Join from '../pages/join/join';
+import ClassProviders from "../newuiupdate/providers/classProviders";
+import {
+    LIVE_LINK,
+    LocalSessionContext,
+    sessionId,
+} from '../newuiupdate/providers/providers';
 import { AuthTokenProvider } from "../services/auth-token/AuthTokenProvider";
 import {
     classEndedState,
@@ -13,12 +15,10 @@ import {
     redirectToLogin,
     refreshAuthenticationCookie,
 } from "../utils/authentication";
-import ClassProviders from "./providers/classProviders";
-import {
-    LIVE_LINK,
-    LocalSessionContext,
-    sessionId,
-} from './providers/providers';
+import Class from './class/class';
+import ClassEnded from './end/classEnded';
+import ClassLeft from './end/classLeft';
+import Join from './join/join';
 import {
     ApolloClient,
     ApolloProvider,

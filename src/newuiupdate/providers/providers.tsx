@@ -2,11 +2,11 @@ import {
     LessonMaterial,
     MaterialTypename,
 } from "../../lessonMaterialContext";
+import { themeProvider } from "../../themeProvider";
 import {
     getDefaultLanguageCode,
     getLanguage,
 } from "../../utils/locale";
-import { themeProvider } from "../themeProvider";
 import { ThemeProvider } from "@material-ui/core";
 import jwt_decode from "jwt-decode";
 import React,
