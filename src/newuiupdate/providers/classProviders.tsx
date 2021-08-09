@@ -1,9 +1,13 @@
-import { GlobalWhiteboardContext } from "../whiteboard/context-providers/GlobalWhiteboardContext";
+import { GlobalWhiteboardContext } from "../../whiteboard/context-providers/GlobalWhiteboardContext";
 import { RoomProvider } from "./roomContext";
 import { ScreenShareProvider } from "./screenShareProvider";
 import { WebRTCProvider } from "./WebRTCContext";
 import { SnackbarProvider } from "kidsloop-px";
-import React, { ReactChild, ReactChildren } from 'react';
+import React,
+{
+    ReactChild,
+    ReactChildren,
+} from 'react';
 import { useIntl } from "react-intl";
 
 type Props = {

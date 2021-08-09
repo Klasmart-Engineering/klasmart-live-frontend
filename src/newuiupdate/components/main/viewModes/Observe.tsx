@@ -1,9 +1,9 @@
 import { Session } from "../../../../pages/utils";
 import { isShowContentLoadingState } from "../../../../store/layoutAtoms";
+import { Whiteboard } from "../../../../whiteboard/components/Whiteboard";
+import { useSynchronizedState } from "../../../../whiteboard/context-providers/SynchronizedStateProvider";
 import { LocalSessionContext } from "../../../providers/providers";
 import { RoomContext } from "../../../providers/roomContext";
-import { Whiteboard } from "../../../whiteboard/components/Whiteboard";
-import { useSynchronizedState } from "../../../whiteboard/context-providers/SynchronizedStateProvider";
 import Loading from "../../utils/interactiveContent/loading";
 import { PreviewPlayer } from "../../utils/interactiveContent/previewPlayer";
 import { RecordedIframe } from "../../utils/interactiveContent/recordediframe";

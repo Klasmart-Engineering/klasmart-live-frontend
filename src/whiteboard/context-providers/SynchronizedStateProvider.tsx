@@ -1,4 +1,17 @@
-import { gql, useMutation, useSubscription } from "@apollo/client";
+import {
+    LIVE_LINK,
+    LocalSessionContext,
+} from "../../newuiupdate/providers/providers";
+import {
+    createEmptyPermissions,
+    createPermissions,
+    Permissions,
+} from "../types/Permissions";
+import {
+    gql,
+    useMutation,
+    useSubscription,
+} from "@apollo/client";
 import { PainterEvent } from "kidsloop-canvas/lib/domain/whiteboard/event-serializer/PainterEvent";
 import { useSharedEventSerializer } from "kidsloop-canvas/lib/domain/whiteboard/SharedEventSerializerProvider";
 import React, {
@@ -9,10 +22,8 @@ import React, {
     useCallback,
     useContext,
     useEffect,
-    useState
+    useState,
 } from "react";
-import { LIVE_LINK, LocalSessionContext, SFU_LINK } from "../../entry";
-import { createEmptyPermissions, createPermissions, Permissions } from "../types/Permissions";
 
 export type PainterEventFunction = (payload: PainterEvent) => void
 
@@ -60,10 +71,11 @@ const SUBSCRIBE_WHITEBOARD_PERMISSIONS = gql`
 
 interface ISynchronizedState {
     display: boolean;
-    eventsLoading: boolean,
-    stateLoading: boolean,
-    permissionsLoading: boolean,
-    permissions: Permissions,
+    localDisplay: boolean;
+    eventsLoading: boolean;
+    stateLoading: boolean;
+    permissionsLoading: boolean;
+    permissions: Permissions;
 }
 
 interface ISynchronizedStateContext {
@@ -74,6 +86,7 @@ interface ISynchronizedStateContext {
 const Context = createContext<ISynchronizedStateContext>({
     state: {
         display: true,
+        localDisplay: false,
         eventsLoading: false,
         stateLoading: false,
         permissionsLoading: false,
@@ -86,20 +99,35 @@ type Props = {
     children?: ReactChild | ReactChildren | null | any;
 };
 
-export const SynchronizedStateProvider: FunctionComponent<Props> = ({
-    children,
-}: Props): JSX.Element => {
-    const { sessionId, roomId, isTeacher } = useContext(LocalSessionContext);
-
-    const [events] = useState<PainterEvent[]>([]);
-
+export const SynchronizedStateProvider: FunctionComponent<Props> = ({ children }: Props): JSX.Element => {
     const {
-        state: { eventSerializer, eventController },
-    } = useSharedEventSerializer();
+        sessionId,
+        roomId,
+        isTeacher,
 
-    const [sendEventMutation] = useMutation(WHITEBOARD_SEND_EVENT, {context: {target: LIVE_LINK}});
-    const [sendDisplayMutation] = useMutation(WHITEBOARD_SEND_DISPLAY, {context: {target: LIVE_LINK}});
-    const [sendPermissionsMutation] = useMutation(WHITEBOARD_SEND_PERMISSIONS, {context: {target: LIVE_LINK}});
+    } = useContext(LocalSessionContext);
+
+    const [ events ] = useState<PainterEvent[]>([]);
+
+    const [ localDisplay, setLocalDisplay ] = useState<boolean>(false);
+
+    const { state: { eventSerializer, eventController } } = useSharedEventSerializer();
+
+    const [ sendEventMutation ] = useMutation(WHITEBOARD_SEND_EVENT, {
+        context: {
+            target: LIVE_LINK,
+        },
+    });
+    const [ sendDisplayMutation ] = useMutation(WHITEBOARD_SEND_DISPLAY, {
+        context: {
+            target: LIVE_LINK,
+        },
+    });
+    const [ sendPermissionsMutation ] = useMutation(WHITEBOARD_SEND_PERMISSIONS, {
+        context: {
+            target: LIVE_LINK,
+        },
+    });
 
     const { loading: eventsLoading } = useSubscription(SUBSCRIBE_WHITEBOARD_EVENTS, {
         onSubscriptionData: ({ subscriptionData: { data: { whiteboardEvents } } }) => {
@@ -109,8 +137,12 @@ export const SynchronizedStateProvider: FunctionComponent<Props> = ({
                 eventController.handlePainterEvent(whiteboardEvents);
             }
         },
-        variables: { roomId },
-        context: {target: LIVE_LINK},
+        variables: {
+            roomId,
+        },
+        context: {
+            target: LIVE_LINK,
+        },
     });
 
     const { loading: stateLoading } = useSubscription(SUBSCRIBE_WHITEBOARD_STATE, {
@@ -119,8 +151,12 @@ export const SynchronizedStateProvider: FunctionComponent<Props> = ({
                 setDisplay(whiteboardState.display);
             }
         },
-        variables: { roomId },
-        context: {target: LIVE_LINK},
+        variables: {
+            roomId,
+        },
+        context: {
+            target: LIVE_LINK,
+        },
     });
 
     const { loading: permissionsLoading } = useSubscription(SUBSCRIBE_WHITEBOARD_PERMISSIONS, {
@@ -133,68 +169,89 @@ export const SynchronizedStateProvider: FunctionComponent<Props> = ({
                 setSelfPermissions(permissions);
             }
         },
-        variables: { roomId, userId: sessionId },
-    context: {target: LIVE_LINK},
+        variables: {
+            roomId,
+            userId: sessionId,
+        },
+        context: {
+            target: LIVE_LINK,
+        },
     });
 
     const refetchEvents = useCallback(() => {
         if (!eventController) return;
         eventController.handlePainterEvent(events, true);
-    }, [eventController]);
+    }, [ eventController ]);
 
     useEffect(() => {
         if (!eventController) return;
 
         const refetchRequestHandler = () => {
             refetchEvents();
-        }
+        };
 
-        eventController.on('refetch', refetchRequestHandler);
+        eventController.on(`refetch`, refetchRequestHandler);
 
         return () => {
-            eventController.removeListener('refetch', refetchRequestHandler);
-        }
-    }, [eventController, refetchEvents]);
+            eventController.removeListener(`refetch`, refetchRequestHandler);
+        };
+    }, [ eventController, refetchEvents ]);
 
-    const [display, setDisplay] = useState<boolean>(false);
-    const [selfPermissions, setSelfPermissions] = useState<Permissions>(createPermissions(isTeacher));
-    const [userPermissions, setUserPermissions] = useState<Map<string, Permissions>>(new Map());
+    const [ display, setDisplay ] = useState<boolean>(false);
+    const [ selfPermissions, setSelfPermissions ] = useState<Permissions>(createPermissions(isTeacher));
+    const [ userPermissions, setUserPermissions ] = useState<Map<string, Permissions>>(new Map());
 
     const sendEventAction = useCallback((payload: PainterEvent) => {
-        sendEventMutation({ variables: { roomId, event: JSON.stringify(payload) } });
-    }, [sendEventMutation, roomId]);
+        sendEventMutation({
+            variables: {
+                roomId,
+                event: JSON.stringify(payload),
+            },
+        });
+    }, [ sendEventMutation, roomId ]);
 
     const setDisplayAction = useCallback((display: boolean) => {
-        sendDisplayMutation({ variables: { roomId: roomId, display: display } });
+        sendDisplayMutation({
+            variables: {
+                roomId: roomId,
+                display: display,
+            },
+        });
         setDisplay(display);
-    }, [setDisplay, roomId]);
+    }, [ setDisplay, roomId ]);
 
     const setPermissionsAction = useCallback((userId: string, permissions: Permissions) => {
         const permJson = JSON.stringify(permissions);
-        sendPermissionsMutation({ variables: { roomId, userId, permissions: permJson } });
+        sendPermissionsMutation({
+            variables: {
+                roomId,
+                userId,
+                permissions: permJson,
+            },
+        });
 
         userPermissions.set(userId, permissions);
         setUserPermissions(userPermissions);
-    }, [setUserPermissions, roomId]);
+    }, [ setUserPermissions, roomId ]);
 
     const refetchEventsAction = useCallback(() => {
         refetchEvents();
-    }, [refetchEvents]);
+    }, [ refetchEvents ]);
 
     useEffect(() => {
         if (!eventSerializer) return;
         const serializer = eventSerializer;
 
         const sendEventHandler = (payload: PainterEvent) => {
-            sendEventAction(payload)
+            sendEventAction(payload);
         };
 
-        serializer.on("event", sendEventHandler);
+        serializer.on(`event`, sendEventHandler);
 
         return () => {
-            serializer.removeListener("event", sendEventHandler);
-        }
-    }, [eventSerializer]);
+            serializer.removeListener(`event`, sendEventHandler);
+        };
+    }, [ eventSerializer ]);
 
     const getPermissionsAction = useCallback((userId: string): Permissions => {
         if (userPermissions.has(userId)) {
@@ -206,10 +263,16 @@ export const SynchronizedStateProvider: FunctionComponent<Props> = ({
         setUserPermissions(userPermissions);
 
         return permissions;
-    }, [userPermissions, setUserPermissions, isTeacher, sessionId]);
+    }, [
+        userPermissions,
+        setUserPermissions,
+        isTeacher,
+        sessionId,
+    ]);
 
     const SynchronizedStateProviderActions = {
         setDisplay: setDisplayAction,
+        setLocalDisplay: setLocalDisplay,
         setPermissions: setPermissionsAction,
         getPermissions: getPermissionsAction,
         refetchEvents: refetchEventsAction,
@@ -220,6 +283,7 @@ export const SynchronizedStateProvider: FunctionComponent<Props> = ({
             value={{
                 state: {
                     display,
+                    localDisplay,
                     eventsLoading,
                     stateLoading,
                     permissionsLoading,
@@ -233,7 +297,7 @@ export const SynchronizedStateProvider: FunctionComponent<Props> = ({
     );
 };
 
-export function useSynchronizedState(): ISynchronizedStateContext {
+export function useSynchronizedState (): ISynchronizedStateContext {
     return useContext(Context);
 }
 

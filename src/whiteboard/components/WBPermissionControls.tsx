@@ -1,19 +1,17 @@
-import React, { useCallback } from "react";
-import { FormattedMessage } from "react-intl";
-import MenuItem from "@material-ui/core/MenuItem";
+import StyledIcon from "../../components/styled/icon";
+import { useSynchronizedState } from "../context-providers/SynchronizedStateProvider";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-
+import MenuItem from "@material-ui/core/MenuItem";
 import { Eraser as EraserIcon } from "@styled-icons/boxicons-solid/Eraser";
 import { InvertColors as InvertColorsIcon } from "@styled-icons/material/InvertColors";
 import { InvertColorsOff as InvertColorsOffIcon } from "@styled-icons/material/InvertColorsOff";
-
-import StyledIcon from "../../components/styled/icon";
-
-import { useSynchronizedState } from "../context-providers/SynchronizedStateProvider";
 import { useToolbarContext } from "kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
+import React,
+{ useCallback } from "react";
+import { FormattedMessage } from "react-intl";
 
-export default function PermissionControls({ otherUserId }: { otherUserId: string }): JSX.Element {
+export default function PermissionControls ({ otherUserId }: { otherUserId: string }): JSX.Element {
     const { actions: { setPermissions, getPermissions } } = useSynchronizedState();
     const { actions: { clear } } = useToolbarContext();
 
@@ -24,13 +22,17 @@ export default function PermissionControls({ otherUserId }: { otherUserId: strin
             ...permissions,
             allowCreateShapes: !permissions.allowCreateShapes,
         };
-        setPermissions(otherUserId, newPermissions)
+        setPermissions(otherUserId, newPermissions);
 
-    }, [permissions, setPermissions, otherUserId]);
+    }, [
+        permissions,
+        setPermissions,
+        otherUserId,
+    ]);
 
     const clearUserWhiteboard = useCallback(() => {
-        clear([otherUserId]);
-    }, [otherUserId, clear]);
+        clear([ otherUserId ]);
+    }, [ otherUserId, clear ]);
 
     return (<>
         <MenuItem onClick={toggleAllowCreateShapes}>
@@ -38,7 +40,7 @@ export default function PermissionControls({ otherUserId }: { otherUserId: strin
                 <StyledIcon
                     icon={permissions.allowCreateShapes ? <InvertColorsIcon /> : <InvertColorsOffIcon />}
                     size="medium"
-                    color={permissions.allowCreateShapes ? "#0E78D5" : "#dc004e"}
+                    color={permissions.allowCreateShapes ? `#0E78D5` : `#dc004e`}
                 />
             </ListItemIcon>
             <ListItemText
@@ -50,7 +52,10 @@ export default function PermissionControls({ otherUserId }: { otherUserId: strin
         </MenuItem>
         <MenuItem onClick={clearUserWhiteboard}>
             <ListItemIcon>
-                <StyledIcon icon={<EraserIcon />} size={"medium"} color="#0E78D5" />
+                <StyledIcon
+                    icon={<EraserIcon />}
+                    size={`medium`}
+                    color="#0E78D5" />
             </ListItemIcon>
             <ListItemText primary={<FormattedMessage id="whiteboard_permissionControls_listItemText_clear" />} />
         </MenuItem>
