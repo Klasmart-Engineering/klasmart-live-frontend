@@ -259,6 +259,6 @@
     "preview_guide_text_1": "Pratinjau Kelas Live hanya bisa diakses selama 15 menit.",
     "preview_guide_text_2": "Klik Rencana Pelajaran untuk melihat materi pelajaran!",
     "preview_guide_text_3": "Konferensi video tidak bisa diakses di Pratinjau Kelas Live",
-    "common_teacher_count": "",
-    "common_student_count": ""
+    "common_teacher_count": "{count, plural, =0 { guru } one { guru } other { guru }}",
+    "common_student_count": "{count, plural, =0 { siswa } one { siswa } other { siswa }}"
 }
