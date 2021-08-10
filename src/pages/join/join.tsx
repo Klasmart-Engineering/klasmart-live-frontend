@@ -79,7 +79,8 @@ export default function Join(): JSX.Element {
     // for each place it's used at. So while it behaves like something with global
     // state, each invokation is actually separate.
     //const { permissions, requestPermissions, requestIosCameraPermission } = useCordovaInitialize(undefined, undefined, true);
-    const { isAndroid, isIOS, requestPermissions, devicePermissions : permissions } = useContext(CordovaSystemContext);
+    const { isAndroid, isIOS, requestPermissions } = useContext(CordovaSystemContext);
+    const [permissions, setPermissions] = useState(false)
 
     useEffect(() => {
         setFacing(videoDeviceId as FacingType);
@@ -97,7 +98,13 @@ export default function Join(): JSX.Element {
             if(getCameraDevice){
                 permissionTypesNeeded.push(PermissionType.CAMERA)
             }
-            requestPermissions({permissionTypes: permissionTypesNeeded})
+            requestPermissions({
+                permissionTypes: permissionTypesNeeded,
+                onSuccess: hasPermission => setPermissions(hasPermission),
+                onError: () => {
+                    setPermissions(false)
+                }
+            })
         } else if(getCameraDevice) {
             refreshCameras();
         }
