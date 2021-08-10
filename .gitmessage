@@ -1,0 +1,11 @@
+<type>(app): <description>
+
+[optional body]
+
+Jira: KLL-<ticket-number>
+
+# Examples
+# <type> can be fix, feat, refactor, chore, ci, docs
+# feat(app): display greeting when starting app first time
+# fix(app)!: change type of user_id from int to string
+# chore(app): regenerate changelog
