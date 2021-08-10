@@ -17,6 +17,8 @@ import { ScheduleResponse } from "../../services/cms/ISchedulerService";
 import {blue} from "@material-ui/core/colors";
 import {useSnackbar} from "kidsloop-px";
 import {CordovaSystemContext} from "../../context-provider/cordova-system-context";
+import { usePopupContext } from "../../context-provider/popup-context";
+import { useIntl } from "react-intl";
 
 const useStyles = makeStyles((theme: Theme) => ({
     dialogTitle: {
@@ -62,6 +64,10 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
     const [shouldDownload, setShouldDownload] = useState(false)
     const {enqueueSnackbar} = useSnackbar()
     const { isIOS } = useContext(CordovaSystemContext);
+    const { showPopup } = usePopupContext();
+    const intl = useIntl();
+
+    const [approvedCellularDownload, setApprovedCellularDownload] = useState(false);
 
     const startAt = useMemo<string | undefined>(() => {
         if (schedule?.start_at) {
@@ -107,6 +113,32 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
     // of supported file types (with specialized viewers).
     const openAttachmentLink = () => {
         setShouldDownload(true);
+    };
+
+    const confirmOpenAttachmentLink = () => {
+        // reference: https://cordova.apache.org/docs/en/10.x/reference/cordova-plugin-network-information/
+        const connectionType = (navigator as any).connection.type;
+        const isCellularConnection = connectionType == `2g` ||
+            connectionType == `3g` ||
+            connectionType == `4g` ||
+            connectionType == `5g` || // NOTE: Not sure if plugin supports 5g yet, adding it for future safery.
+            connectionType == `cellular`;
+
+        if (isCellularConnection && !approvedCellularDownload) {
+            showPopup({
+                variant: "confirm",
+                title: intl.formatMessage({ id: "confirm_download_file_title" }),
+                description: [intl.formatMessage({ id: "confirm_download_file_description" })],
+                closeLabel: intl.formatMessage({ id: "button_cancel" }),
+                confirmLabel: intl.formatMessage({ id: "button_continue" }),
+                onConfirm: () => {
+                    setApprovedCellularDownload(true);
+                    openAttachmentLink();
+                },
+            });
+        } else {
+            openAttachmentLink();
+        }
     };
 
     useEffect(() => {
@@ -285,7 +317,7 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
                                     { attachmentDownloadLink && schedule?.attachment?.name ?
                                         <div className={wrapper}>
                                             <Typography variant="body1" className={rowContentText}>
-                                                <Link variant="body1" href={`#`} color={downloading ? "textSecondary" : "primary"} aria-disabled={downloading} onClick={() => openAttachmentLink()}>
+                                                <Link variant="body1" href={`#`} color={downloading ? "textSecondary" : "primary"} aria-disabled={downloading} onClick={() => confirmOpenAttachmentLink()}>
                                                     { schedule?.attachment?.name }
                                                 </Link>
                                             </Typography>
