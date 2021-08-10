@@ -15,6 +15,9 @@ export type OnBackItem = {
     isAutoRemove?: boolean
 }
 
+type RequestPermissionsProps = {
+    permissionTypes: PermissionType[], onSuccess?: (hasPermission: boolean) => void, onError?: () => void
+}
 type CordovaSystemContext = {
     ready: boolean,
     isIOS: boolean,
@@ -23,14 +26,20 @@ type CordovaSystemContext = {
     restart?: () => void,
     quit?: () => void,
     addOnBack?: (onBackItem: OnBackItem) => void,
-    removeOnBack?: (id: string) => void
+    removeOnBack?: (id: string) => void,
+    requestPermissions: (props: RequestPermissionsProps) => void
 }
 
-export const CordovaSystemContext = createContext<CordovaSystemContext>({ ready: false, devicePermissions: false, isIOS: false, isAndroid: false });
+export enum PermissionType {
+    CAMERA, MIC, READ_STORAGE, WRITE_STORAGE
+}
+
+export const CordovaSystemContext = createContext<CordovaSystemContext>({ ready: false, devicePermissions: false, isIOS: false, isAndroid: false , requestPermissions: () => {}});
 
 export function CordovaSystemProvider({ children, history }: Props) {
     const [displayExitDialogue, setDisplayExitDialogue] = useState<boolean>(false);
     const [onBackQueue, setOnBackQueue] = useState<OnBackItem[]>([])
+    const [permissions, setPermissions] = useState(false);
 
     const addOnBack = (onBackItem: OnBackItem) => {
         console.log(onBackItem.id);
@@ -53,7 +62,7 @@ export function CordovaSystemProvider({ children, history }: Props) {
         (navigator as any).app.exitApp();
     }, []);
 
-    const { cordovaReady, permissions, isIOS, isAndroid } = useCordovaInitialize(false, () => {
+    const { cordovaReady, isIOS, isAndroid } = useCordovaInitialize(false, () => {
         const isRootPage = window.location.hash.includes("/schedule") || window.location.hash === "#/";
 
         if (window.location.hash.includes("/room")) {
@@ -78,12 +87,74 @@ export function CordovaSystemProvider({ children, history }: Props) {
         }
     });
 
+    const requestPermissions = ({permissionTypes, onSuccess, onError}: RequestPermissionsProps) => {
+        const cordova = (window as any).cordova;
+        if (!cordova || !cordova.plugins) return;
+
+        if(isAndroid){
+            if (cordova.plugins.permissions) {
+                console.log("Requesting android permissions...")
+                const permissions = cordova.plugins.permissions;
+
+                const permissionsList: string[] = [];
+                if (permissionTypes.includes(PermissionType.CAMERA)) {
+                    permissionsList.push(permissions.CAMERA);
+                }
+
+                if (permissionTypes.includes(PermissionType.MIC)) {
+                    permissionsList.push(permissions.RECORD_AUDIO);
+                    permissionsList.push(permissions.MODIFY_AUDIO_SETTINGS);
+                }
+
+                if (permissionTypes.includes(PermissionType.READ_STORAGE)) {
+                    permissionsList.push(permissions.READ_EXTERNAL_STORAGE);
+                }
+
+                if (permissionTypes.includes(PermissionType.WRITE_STORAGE)) {
+                    permissionsList.push(permissions.WRITE_EXTERNAL_STORAGE);
+                }
+
+                const onRequestError = () => {
+                    console.error(`Couldn't request permissions: ${permissionsList}`)
+                    onError ? onError() : ''
+                };
+
+                const onRequestSuccess = (status: { hasPermission: boolean }) => {
+                    console.log(`Successfully requested permissions: ${JSON.stringify(permissionsList)} ${status.hasPermission}`);
+                    setPermissions(status.hasPermission)
+                    onSuccess ? onSuccess(status.hasPermission) : ''
+                };
+
+                permissions.requestPermissions(permissionsList, onRequestSuccess, onRequestError);
+            }
+        }
+        if(isIOS){
+            if (cordova.plugins.iosrtc) {
+                console.log("Requesting iosrtc permissions...")
+                const camera = permissionTypes.includes(PermissionType.CAMERA)
+                const mic = permissionTypes.includes(PermissionType.MIC)
+                if( camera || mic){
+                    cordova.plugins.iosrtc.requestPermission(mic, camera, (approved: boolean) => {
+                        console.log("Permissions: ", approved ? "Granted" : "Rejected");
+                        setPermissions(approved);
+                        onSuccess ? onSuccess(approved) : ''
+                    });
+                }else{
+                    //In iOS, the system will ask permissions it self, don't need to handle for iOS
+                    setPermissions(true);
+                    onSuccess ? onSuccess(true) : ''
+                }
+            }
+        }
+
+    };
+
     const LoadingCordova = () => {
         return <Loading messageId="cordova_loading" />;
     }
 
     return (
-        <CordovaSystemContext.Provider value={{ ready: cordovaReady, devicePermissions: permissions, restart, quit, isIOS, isAndroid, addOnBack: addOnBack, removeOnBack: removeOnBack }}>
+        <CordovaSystemContext.Provider value={{ ready: cordovaReady, devicePermissions: permissions, restart, quit, isIOS, isAndroid, addOnBack: addOnBack, removeOnBack: removeOnBack, requestPermissions: requestPermissions }}>
             { !cordovaReady ? <LoadingCordova /> : '' }
             {cordovaReady ? children : ''}
             {cordovaReady ? <ExitDialog visible={displayExitDialogue} onCancel={() => setDisplayExitDialogue(false)} onConfirm={() => quit()} /> : ''}

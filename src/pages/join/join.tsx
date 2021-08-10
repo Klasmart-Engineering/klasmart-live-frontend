@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useContext } from "react";
-import { FormattedMessage } from "react-intl";
-import { createStyles, makeStyles, useTheme, Theme } from "@material-ui/core/styles";
+import React, {useContext, useEffect, useState} from "react";
+import {FormattedMessage} from "react-intl";
+import {createStyles, makeStyles, Theme, useTheme} from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import Container from "@material-ui/core/Container";
 import Card from "@material-ui/core/Card";
@@ -15,25 +15,24 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 
-import { InfoCircle as InfoCircleIcon } from "@styled-icons/boxicons-solid/InfoCircle";
+import {InfoCircle as InfoCircleIcon} from "@styled-icons/boxicons-solid/InfoCircle";
 import StyledIcon from "../../components/styled/icon";
 
 import StyledButton from "../../components/styled/button";
 import StyledTextField from "../../components/styled/textfield";
 import Camera from "../../components/media/camera";
 import Loading from "../../components/loading";
-import MediaDeviceSelect, { DeviceInfo } from "../../components/mediaDeviceSelect";
-import { ClassType } from '../../store/actions';
+import MediaDeviceSelect, {DeviceInfo} from "../../components/mediaDeviceSelect";
+import {ClassType} from '../../store/actions';
 
 import KidsLoopLiveTeachers from "../../assets/img/kidsloop_live_teachers.svg";
 import KidsLoopLiveStudents from "../../assets/img/kidsloop_live_students.svg";
 import KidsLoopStudyStudents from "../../assets/img/kidsloop_study_students.svg";
-import { useSessionContext } from '../../context-provider/session-context';
-import { useHistory } from "react-router-dom";
-import { useUserInformation } from "../../context-provider/user-information-context";
-import { FacingType, useCameraContext } from "../../components/media/useCameraContext";
-import useCordovaInitialize from "../../cordova-initialize";
-import { CordovaSystemContext } from "../../context-provider/cordova-system-context";
+import {useSessionContext} from '../../context-provider/session-context';
+import {useHistory} from "react-router-dom";
+import {useUserInformation} from "../../context-provider/user-information-context";
+import {FacingType, useCameraContext} from "../../components/media/useCameraContext";
+import {CordovaSystemContext, PermissionType} from "../../context-provider/cordova-system-context";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -79,8 +78,8 @@ export default function Join(): JSX.Element {
     // permission status and functions. The useCordovaInitialize will run separately
     // for each place it's used at. So while it behaves like something with global
     // state, each invokation is actually separate.
-    const { permissions, requestPermissions, requestIosCameraPermission } = useCordovaInitialize(undefined, undefined, true);
-    const { isAndroid, isIOS } = useContext(CordovaSystemContext);
+    //const { permissions, requestPermissions, requestIosCameraPermission } = useCordovaInitialize(undefined, undefined, true);
+    const { isAndroid, isIOS, requestPermissions, devicePermissions : permissions } = useContext(CordovaSystemContext);
 
     useEffect(() => {
         setFacing(videoDeviceId as FacingType);
@@ -94,11 +93,7 @@ export default function Join(): JSX.Element {
         console.log(`isIOS: ${isIOS}`);
 
         if (!permissions) {
-            if (isAndroid) {
-                requestPermissions(getCameraDevice, true);
-            } else if(isIOS) {
-                requestIosCameraPermission(getCameraDevice, true);
-            }
+            requestPermissions({permissionTypes: [PermissionType.CAMERA, PermissionType.MIC]})
         } else if(getCameraDevice) {
             refreshCameras();
         }
