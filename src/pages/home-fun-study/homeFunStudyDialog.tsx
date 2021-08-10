@@ -357,6 +357,7 @@ function HomeFunStudyContainer({
     const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
     const hfsFeedbacks = useSelector((state: State) => state.data.hfsFeedbacks);
     const [saveAssignmentItems, setSaveAssignmentItems] = useState<{ shouldSave: boolean, assignmentItems: AssignmentItem[] }>();
+    const [approvedCellularUpload, setApprovedCellularUpload] = useState(false);
 
     function generateAssignmentItemId() {
         return Math.random().toString(36).substring(7);
@@ -584,6 +585,33 @@ function HomeFunStudyContainer({
         if (validateFileType(file)) {
             if (validateFileSize(file)) {
                 console.log(`validated file: ${file.name}`);
+
+                const confirmCellularUpload = () => {
+                    // reference: https://cordova.apache.org/docs/en/10.x/reference/cordova-plugin-network-information/
+                    const connectionType = (navigator as any).connection.type;
+                    const isCellularConnection = connectionType == `2g` ||
+                        connectionType == `3g` ||
+                        connectionType == `4g` ||
+                        connectionType == `5g` || // NOTE: Not sure if plugin supports 5g yet, adding it for future safery.
+                        connectionType == `cellular`;
+
+                    if (isCellularConnection && !approvedCellularUpload) {
+                        showPopup({
+                            variant: "confirm",
+                            title: intl.formatMessage({ id: "confirm_upload_file_title" }),
+                            description: [intl.formatMessage({ id: "confirm_upload_file_description" })],
+                            closeLabel: intl.formatMessage({ id: "button_cancel" }),
+                            confirmLabel: intl.formatMessage({ id: "button_continue" }),
+                            onConfirm: () => {
+                                setApprovedCellularUpload(true);
+                                addAnSelectedAttachment(file);
+                            }
+                        });
+                    } else {
+                        addAnSelectedAttachment(file);
+                    }
+                };
+
                 showPopup({
                     variant: "confirm",
                     title: intl.formatMessage({id: "upload_file"}),
@@ -591,9 +619,13 @@ function HomeFunStudyContainer({
                     closeLabel: intl.formatMessage({id: "button_cancel"}),
                     confirmLabel: intl.formatMessage({id: "button_upload"}),
                     onConfirm: () => {
-                        addAnSelectedAttachment(file);
+                        // TODO: I have to use setTimeout for opening the nested
+                        // popup window because currently usePopupContext doesn't
+                        // support opening additional popup windows within the
+                        // onConfirm/onCancel callback functions.
+                        setTimeout(confirmCellularUpload, 10);
                     }
-                })
+                });
             } else {
                 showPopup({
                     variant: "detailError",
