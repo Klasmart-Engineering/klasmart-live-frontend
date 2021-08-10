@@ -124,8 +124,14 @@ export function CordovaSystemProvider({ children, history }: Props) {
                     setPermissions(status.hasPermission)
                     onSuccess ? onSuccess(status.hasPermission) : ''
                 };
+                permissions.checkPermission(permissionsList, (status: { hasPermission: boolean }) => {
+                    if(!status.hasPermission){
+                        permissions.requestPermissions(permissionsList, onRequestSuccess, onRequestError);
+                    }else{
+                        onRequestSuccess(status);
+                    }
+                }, onRequestError)
 
-                permissions.requestPermissions(permissionsList, onRequestSuccess, onRequestError);
             }
         }
         if(isIOS){
