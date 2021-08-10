@@ -35,9 +35,9 @@ const messages: Record<string, string> = {
     confirm_to_upload_file: "Selected file will be uploaded. Do you want to continue?",
 
     confirm_download_file_title: "Please connect to WiFi",
-    confirm_download_file_description: "You are currently not connected to WiFi. Do you want to continue downloading this file using cellular date?",
+    confirm_download_file_description: "You are currently not connected to WiFi. Do you want to continue downloading this file using cellular data?",
     confirm_upload_file_title: "Please connect to WiFi",
-    confirm_upload_file_description: "You are currently not connected to WiFi. Do you want to continue uploading this file using cellular date?",
+    confirm_upload_file_description: "You are currently not connected to WiFi. Do you want to continue uploading this file using cellular data?",
 
     err_button_home: "Home",
     err_button_signin: "Back to Sign In",
