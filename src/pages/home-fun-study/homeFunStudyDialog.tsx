@@ -2,16 +2,22 @@ import React, {useContext, useEffect, useState} from "react";
 import {Header} from "../../components/header";
 import {
     Box,
-    Button, CircularProgress,
-    Dialog, DialogActions, DialogContent, DialogTitle,
-    Grid, IconButton,
+    Button,
+    CircularProgress,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    Grid,
+    IconButton,
     List,
     ListItem,
-    ListItemIcon, ListItemSecondaryAction,
+    ListItemIcon,
+    ListItemSecondaryAction,
     ListItemText,
     Typography
 } from "@material-ui/core";
-import {Edit, InfoOutlined, HighlightOffOutlined} from "@material-ui/icons";
+import {Edit, HighlightOffOutlined, InfoOutlined} from "@material-ui/icons";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {lockOrientation} from "../../utils/screenUtils";
 import {OrientationType} from "../../store/actions";
@@ -36,13 +42,11 @@ import {setSelectHomeFunStudyDialogOpen} from "../../store/reducers/control";
 import {CommentDialog} from "./commentDialog";
 import {setHomeFunStudies} from "../../store/reducers/data";
 import {BottomSelector} from "../../components/bottomSelector";
-import {ConfirmDialogState} from "../../components/dialogs/baseConfirmDialog";
-import {isBlank} from "../../utils/StringUtils";
 import {useSnackbar} from "kidsloop-px";
 import {blue} from "@material-ui/core/colors";
 import clsx from "clsx";
 import {usePopupContext} from "../../context-provider/popup-context";
-import { CordovaSystemContext } from "../../context-provider/cordova-system-context";
+import {CordovaSystemContext, PermissionType} from "../../context-provider/cordova-system-context";
 
 export type HomeFunStudyFeedback = {
     studyId: string,
@@ -358,6 +362,7 @@ function HomeFunStudyContainer({
     const hfsFeedbacks = useSelector((state: State) => state.data.hfsFeedbacks);
     const [saveAssignmentItems, setSaveAssignmentItems] = useState<{ shouldSave: boolean, assignmentItems: AssignmentItem[] }>();
     const [approvedCellularUpload, setApprovedCellularUpload] = useState(false);
+    const {requestPermissions} = useContext(CordovaSystemContext)
 
     function generateAssignmentItemId() {
         return Math.random().toString(36).substring(7);
@@ -524,13 +529,38 @@ function HomeFunStudyContainer({
     }
 
     function onSelectFile() {
-        fileSelectService?.selectFile().then(file => {
-            console.log(`selected file: ${file.name}`);
-            setOpenButtonSelector(false);
-            handleSelectedFile(file);
-        }).catch(error => {
-            console.error(error);
-        });
+        requestPermissions({
+            permissionTypes: [PermissionType.READ_STORAGE],
+            onSuccess: (hasPermission) => {
+                if(hasPermission){
+                    fileSelectService?.selectFile().then(file => {
+                        console.log(`selected file: ${file.name}`);
+                        setOpenButtonSelector(false);
+                        handleSelectedFile(file);
+                    }).catch(error => {
+                        console.error(error);
+                    });
+                }else{
+                    enqueueSnackbar("Couldn't request permissions",{
+                        variant: "error",
+                        anchorOrigin: {
+                            vertical: "bottom",
+                            horizontal: "center"
+                        }
+                    })
+                }
+            },
+            onError: () => {
+                enqueueSnackbar("Couldn't request permissions",{
+                    variant: "error",
+                    anchorOrigin: {
+                        vertical: "bottom",
+                        horizontal: "center"
+                    }
+                })
+            }
+        })
+
     }
 
     function onSelectCamera() {
@@ -544,13 +574,37 @@ function HomeFunStudyContainer({
     }
 
     function onSelectGallery() {
-        fileSelectService?.selectFromGallery().then(file => {
-            console.log(`selected from gallery: ${file.name}`);
-            setOpenButtonSelector(false);
-            handleSelectedFile(file)
-        }).catch(error => {
-            console.error(error);
-        });
+        requestPermissions({
+            permissionTypes: [PermissionType.READ_STORAGE],
+            onSuccess: (hasPermission) => {
+                if(hasPermission){
+                    fileSelectService?.selectFromGallery().then(file => {
+                        console.log(`selected from gallery: ${file.name}`);
+                        setOpenButtonSelector(false);
+                        handleSelectedFile(file)
+                    }).catch(error => {
+                        console.error(error);
+                    });
+                }else{
+                    enqueueSnackbar("Couldn't request permissions",{
+                        variant: "error",
+                        anchorOrigin: {
+                            vertical: "bottom",
+                            horizontal: "center"
+                        }
+                    })
+                }
+            },
+            onError: () => {
+                enqueueSnackbar("Couldn't request permissions",{
+                    variant: "error",
+                    anchorOrigin: {
+                        vertical: "bottom",
+                        horizontal: "center"
+                    }
+                })
+            }
+        })
     }
 
     //Add selected attachment then update the assignmentItems. It would be trigger to upload the attachment.
