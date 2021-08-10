@@ -93,7 +93,11 @@ export default function Join(): JSX.Element {
         console.log(`isIOS: ${isIOS}`);
 
         if (!permissions) {
-            requestPermissions({permissionTypes: [PermissionType.CAMERA, PermissionType.MIC]})
+            const permissionTypesNeeded = [PermissionType.MIC]
+            if(getCameraDevice){
+                permissionTypesNeeded.push(PermissionType.CAMERA)
+            }
+            requestPermissions({permissionTypes: permissionTypesNeeded})
         } else if(getCameraDevice) {
             refreshCameras();
         }
