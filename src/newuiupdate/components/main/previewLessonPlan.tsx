@@ -1,3 +1,6 @@
+import ActivityImage from "../../../components/interactiveContent/image";
+import { RecordedIframe } from "../../../components/interactiveContent/recordediframe";
+import { ReplicatedMedia } from "../../../components/interactiveContent/synchronized-video";
 import { MaterialTypename } from "../../../lessonMaterialContext";
 import { LocalSessionContext } from "../../../providers/providers";
 import {
@@ -5,9 +8,6 @@ import {
     observeDisableState,
     studyRecommandUrlState,
 } from "../../../store/layoutAtoms";
-import ActivityImage from "../utils/interactiveContent/image";
-import { RecordedIframe } from "../utils/interactiveContent/recordediframe";
-import { ReplicatedMedia } from "../utils/interactiveContent/synchronized-video";
 import { Typography } from "@material-ui/core";
 import React,
 { useContext } from "react";

@@ -1,15 +1,15 @@
 import {
     LIVE_LINK,
     LocalSessionContext,
-} from "../../../../providers/providers";
-import { RoomContext } from "../../../../providers/roomContext";
-import { ClassType } from "../../../../store/actions";
+} from "../../providers/providers";
+import { RoomContext } from "../../providers/roomContext";
+import { ClassType } from "../../store/actions";
 import {
     isLessonPlanOpenState,
     streamIdState,
-} from "../../../../store/layoutAtoms";
-import { redirectToLogin } from "../../../../utils/authentication";
-import { useWindowSize } from "../../../../utils/viewport";
+} from "../../store/layoutAtoms";
+import { redirectToLogin } from "../../utils/authentication";
+import { useWindowSize } from "../../utils/viewport";
 import {
     gql,
     useMutation,

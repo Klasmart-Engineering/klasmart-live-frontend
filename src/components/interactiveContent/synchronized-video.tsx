@@ -1,10 +1,10 @@
-import { FFT } from "../../../../components/fft";
-import ReactPlayer from "../../../../components/react-player/lazy";
-import { MaterialTypename } from "../../../../lessonMaterialContext";
+import { MaterialTypename } from "../../lessonMaterialContext";
 import {
     LIVE_LINK,
     LocalSessionContext,
-} from '../../../../providers/providers';
+} from '../../providers/providers';
+import { FFT } from "../fft";
+import ReactPlayer from "../react-player/lazy";
 import {
     gql,
     useMutation,
