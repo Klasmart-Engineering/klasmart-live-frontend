@@ -1,12 +1,12 @@
+import Loading from "../../../../components/interactiveContent/loading";
+import { PreviewPlayer } from "../../../../components/interactiveContent/previewPlayer";
+import { RecordedIframe } from "../../../../components/interactiveContent/recordediframe";
 import { Session } from "../../../../pages/utils";
 import { LocalSessionContext } from "../../../../providers/providers";
 import { RoomContext } from "../../../../providers/roomContext";
 import { isShowContentLoadingState } from "../../../../store/layoutAtoms";
 import { Whiteboard } from "../../../../whiteboard/components/Whiteboard";
 import { useSynchronizedState } from "../../../../whiteboard/context-providers/SynchronizedStateProvider";
-import Loading from "../../utils/interactiveContent/loading";
-import { PreviewPlayer } from "../../utils/interactiveContent/previewPlayer";
-import { RecordedIframe } from "../../utils/interactiveContent/recordediframe";
 import {
     fullScreenById,
     sleep,

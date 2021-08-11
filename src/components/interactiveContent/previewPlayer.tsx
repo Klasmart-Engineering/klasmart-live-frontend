@@ -1,14 +1,14 @@
+import { sleep } from "../../newuiupdate/components/utils/utils";
 import {
     LIVE_LINK,
     LocalSessionContext,
-} from "../../../../providers/providers";
-import { RoomContext } from "../../../../providers/roomContext";
+} from "../../providers/providers";
+import { RoomContext } from "../../providers/roomContext";
 import {
     isLessonPlanOpenState,
     isShowContentLoadingState,
-} from "../../../../store/layoutAtoms";
-import { useWindowSize } from "../../../../utils/viewport";
-import { sleep } from "../utils";
+} from "../../store/layoutAtoms";
+import { useWindowSize } from "../../utils/viewport";
 import Loading from "./loading";
 import {
     gql,
