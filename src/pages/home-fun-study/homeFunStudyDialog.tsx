@@ -362,6 +362,7 @@ function HomeFunStudyContainer({
     const hfsFeedbacks = useSelector((state: State) => state.data.hfsFeedbacks);
     const [saveAssignmentItems, setSaveAssignmentItems] = useState<{ shouldSave: boolean, assignmentItems: AssignmentItem[] }>();
     const {requestPermissions} = useContext(CordovaSystemContext)
+    const [shouldSyncAssignments, setShouldSyncAssignments] = useState(false)
 
     function generateAssignmentItemId() {
         return Math.random().toString(36).substring(7);
@@ -376,38 +377,55 @@ function HomeFunStudyContainer({
         }));
     }
 
+    function getLocalAssignmentItems(studyId: string) {
+        return hfsFeedbacks.find(feedback => feedback.studyId === studyId)?.assignmentItems ?? []
+    }
+
     useEffect(() => {
-        function displayAssignments() {
+        setShouldSyncAssignments(true)
+    }, [newestFeedback])
+
+    useEffect(() => {
+        function mergeLocalAssignmentWithCMSAssignment(localAssignments: AssignmentItem[],  cmsAssignments: AssignmentItem[]) : AssignmentItem[]{
+            const hasNotSubmittedAssignments = localAssignments.filter(item => cmsAssignments.find(cmsItem => cmsItem.attachmentId === item.attachmentId) === undefined)
+            return cmsAssignments.concat(hasNotSubmittedAssignments)
+        }
+
+        function syncAssignments() {
+            if (!studyInfo) return;
+            if(!newestFeedback) return;
+            if(!hfsFeedbacks) return;
+
+            const localAssignmentItems: AssignmentItem[]  = getLocalAssignmentItems(studyInfo.id);
             let newAssignmentItems: AssignmentItem[] = [];
-            //Submitted feedback from CMS.
-            // If the HFS have been submitted, it should be prioritized to show feedback from CMS first.
+
             if (newestFeedback) {
                 const feedBackAssignments = newestFeedback.assignments ? newestFeedback.assignments : [];
                 newAssignmentItems = convertAssignmentsToAssignmentItems(feedBackAssignments);
+                newAssignmentItems = mergeLocalAssignmentWithCMSAssignment(localAssignmentItems, newAssignmentItems)
                 setAssignmentItems(newAssignmentItems);
                 setSaveAssignmentItems({shouldSave: true, assignmentItems: newAssignmentItems})
             }
         }
 
-        displayAssignments()
-    }, [newestFeedback])
+        if(shouldSyncAssignments){
+            setShouldSyncAssignments(false)
+            syncAssignments()
+        }
+
+    }, [newestFeedback, hfsFeedbacks, studyInfo, shouldSyncAssignments])
 
     useEffect(() => {
         function displayAssignmentsFromLocal() {
-            if (!studyInfo)
-                return;
-            let newAssignmentItems: AssignmentItem[] = [];
-            if (hfsFeedbacks) {
-                const currentFeedback = hfsFeedbacks?.find(feedback => feedback.studyId === studyInfo.id);
-                if (currentFeedback) {
-                    newAssignmentItems = currentFeedback.assignmentItems;
-                }
-            }
+            if (!studyInfo) return;
+            if(!hfsFeedbacks) return;
+
+            let newAssignmentItems: AssignmentItem[] = getLocalAssignmentItems(studyInfo.id);
             setAssignmentItems(newAssignmentItems);
         }
 
         displayAssignmentsFromLocal()
-    }, [hfsFeedbacks])
+    }, [hfsFeedbacks, studyInfo])
 
     useEffect(() => {
         //Save Assignments after uploaded
