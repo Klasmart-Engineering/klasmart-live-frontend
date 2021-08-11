@@ -1,4 +1,4 @@
-import { Feedback } from '../../newuiupdate/components/others/feedback';
+import { Feedback } from '../../components/feedback/feedback';
 import {
     Fade,
     Grid,
