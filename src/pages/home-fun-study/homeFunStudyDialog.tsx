@@ -361,7 +361,6 @@ function HomeFunStudyContainer({
     const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
     const hfsFeedbacks = useSelector((state: State) => state.data.hfsFeedbacks);
     const [saveAssignmentItems, setSaveAssignmentItems] = useState<{ shouldSave: boolean, assignmentItems: AssignmentItem[] }>();
-    const [approvedCellularUpload, setApprovedCellularUpload] = useState(false);
     const {requestPermissions} = useContext(CordovaSystemContext)
 
     function generateAssignmentItemId() {
@@ -649,7 +648,7 @@ function HomeFunStudyContainer({
                         connectionType == `5g` || // NOTE: Not sure if plugin supports 5g yet, adding it for future safery.
                         connectionType == `cellular`;
 
-                    if (isCellularConnection && !approvedCellularUpload) {
+                    if (isCellularConnection) {
                         showPopup({
                             variant: "confirm",
                             title: intl.formatMessage({ id: "confirm_upload_file_title" }),
@@ -657,7 +656,6 @@ function HomeFunStudyContainer({
                             closeLabel: intl.formatMessage({ id: "button_cancel" }),
                             confirmLabel: intl.formatMessage({ id: "button_continue" }),
                             onConfirm: () => {
-                                setApprovedCellularUpload(true);
                                 addAnSelectedAttachment(file);
                             }
                         });

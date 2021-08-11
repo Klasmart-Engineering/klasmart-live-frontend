@@ -67,8 +67,6 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
     const { showPopup } = usePopupContext();
     const intl = useIntl();
 
-    const [approvedCellularDownload, setApprovedCellularDownload] = useState(false);
-
     const startAt = useMemo<string | undefined>(() => {
         if (schedule?.start_at) {
             return new Date(Number(schedule.start_at) * 1000).toLocaleString();
@@ -124,7 +122,7 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
             connectionType == `5g` || // NOTE: Not sure if plugin supports 5g yet, adding it for future safery.
             connectionType == `cellular`;
 
-        if (isCellularConnection && !approvedCellularDownload) {
+        if (isCellularConnection) {
             showPopup({
                 variant: "confirm",
                 title: intl.formatMessage({ id: "confirm_download_file_title" }),
@@ -132,7 +130,6 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
                 closeLabel: intl.formatMessage({ id: "button_cancel" }),
                 confirmLabel: intl.formatMessage({ id: "button_continue" }),
                 onConfirm: () => {
-                    setApprovedCellularDownload(true);
                     openAttachmentLink();
                 },
             });
