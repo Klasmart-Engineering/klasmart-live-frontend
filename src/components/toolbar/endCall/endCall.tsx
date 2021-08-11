@@ -1,14 +1,13 @@
 import {
     LIVE_LINK,
     LocalSessionContext,
-    SFU_LINK,
 } from "../../../providers/providers";
 import {  classLeftState } from "../../../store/layoutAtoms";
 import {
     MUTATION_ENDCLASS,
     MUTATION_LEAVECLASS,
-} from "./graphql";
-import { ParentCaptcha } from "./parentCaptcha";
+} from "../../../utils/graphql";
+import { ParentCaptcha } from "../../parentCaptcha";
 import { useMutation } from "@apollo/client";
 import {
     Button,

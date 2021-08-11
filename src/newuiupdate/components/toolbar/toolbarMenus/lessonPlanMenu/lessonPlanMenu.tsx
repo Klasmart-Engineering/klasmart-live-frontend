@@ -1,6 +1,6 @@
 import { isLessonPlanOpenState } from "../../../../../store/layoutAtoms";
+import { StyledPopper } from "../../../../../utils/utils";
 import LessonPlan from "../../../main/lessonPlan/lessonPlan";
-import { StyledPopper } from "../../../utils/utils";
 import {
     Grid,
     makeStyles,

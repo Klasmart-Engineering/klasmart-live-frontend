@@ -1,5 +1,7 @@
-import React, {
-    useContext, useEffect, useRef, useState,
+import React,
+{
+    useEffect,
+    useRef,
 } from "react";
 
 export function StyledVideo (props: { stream?: MediaStream } & React.VideoHTMLAttributes<HTMLMediaElement>): JSX.Element {

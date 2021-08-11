@@ -5,12 +5,12 @@ import { Session } from "../../../../pages/utils";
 import { LocalSessionContext } from "../../../../providers/providers";
 import { RoomContext } from "../../../../providers/roomContext";
 import { isShowContentLoadingState } from "../../../../store/layoutAtoms";
-import { Whiteboard } from "../../../../whiteboard/components/Whiteboard";
-import { useSynchronizedState } from "../../../../whiteboard/context-providers/SynchronizedStateProvider";
 import {
     fullScreenById,
     sleep,
-} from "../../utils/utils";
+} from "../../../../utils/utils";
+import { Whiteboard } from "../../../../whiteboard/components/Whiteboard";
+import { useSynchronizedState } from "../../../../whiteboard/context-providers/SynchronizedStateProvider";
 import {
     makeStyles,
     Theme,

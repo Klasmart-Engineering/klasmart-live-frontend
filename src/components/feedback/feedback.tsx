@@ -1,8 +1,8 @@
-import { MUTATION_SAVE_FEEDBACK } from "../../newuiupdate/components/utils/graphql";
 import {
     LIVE_LINK,
     LocalSessionContext,
 } from '../../providers/providers';
+import { MUTATION_SAVE_FEEDBACK } from "../../utils/graphql";
 import { useMutation } from '@apollo/client';
 import {
     Button,

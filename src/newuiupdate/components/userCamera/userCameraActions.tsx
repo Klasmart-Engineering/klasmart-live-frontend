@@ -14,12 +14,12 @@ import {
     hasControlsState,
     pinnedUserState,
 } from "../../../store/layoutAtoms";
-import { useSynchronizedState } from "../../../whiteboard/context-providers/SynchronizedStateProvider";
 import {
     MUTATION_REWARD_TROPHY,
     MUTATION_SET_HOST,
-} from "../utils/graphql";
-import { fullScreenById } from "../utils/utils";
+} from "../../../utils/graphql";
+import { fullScreenById } from "../../../utils/utils";
+import { useSynchronizedState } from "../../../whiteboard/context-providers/SynchronizedStateProvider";
 import {
     useMutation,
     useQuery,
