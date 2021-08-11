@@ -1,7 +1,10 @@
 
-import LanguageSelect from "../../../utils/languageSelect";
+import LanguageSelect from "../../../../../components/languageSelect";
 import {
-    Grid, makeStyles, Theme, Typography,
+    Grid,
+    makeStyles,
+    Theme,
+    Typography,
 } from "@material-ui/core";
 import React from "react";
 import { FormattedMessage } from "react-intl";
