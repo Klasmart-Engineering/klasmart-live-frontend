@@ -1,7 +1,7 @@
 import {
     observeContentState,
     observeWarningState,
-} from "../../../store/layoutAtoms";
+} from "../store/layoutAtoms";
 import {
     Button,
     Checkbox,

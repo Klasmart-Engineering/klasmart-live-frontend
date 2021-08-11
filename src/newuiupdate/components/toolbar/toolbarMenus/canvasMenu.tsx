@@ -4,8 +4,8 @@ import {
     hasControlsState,
     isCanvasOpenState,
 } from "../../../../store/layoutAtoms";
+import { StyledPopper } from "../../../../utils/utils";
 import { useSynchronizedState } from "../../../../whiteboard/context-providers/SynchronizedStateProvider";
-import { StyledPopper } from "../../utils/utils";
 import {
     Grid,
     makeStyles,

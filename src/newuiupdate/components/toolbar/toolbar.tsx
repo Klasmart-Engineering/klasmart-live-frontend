@@ -1,3 +1,7 @@
+import {
+    DialogEndClass,
+    DialogLeaveClass,
+} from "../../../components/toolbar/endCall/endCall";
 import { ContentType } from "../../../pages/utils";
 import {
     LocalSessionContext,
@@ -24,10 +28,6 @@ import {
     unreadMessagesState,
 } from "../../../store/layoutAtoms";
 import { useSynchronizedState } from "../../../whiteboard/context-providers/SynchronizedStateProvider";
-import {
-    DialogEndClass,
-    DialogLeaveClass,
-} from "../utils/endCall";
 import ToolbarItem from "./toolbarItem";
 import ToolbarItemCall from "./toolbarItemCall";
 import ToolbarItemCamera from "./toolbarItemCamera";

@@ -16,7 +16,7 @@ import {
     materialActiveIndexState,
     streamIdState,
 } from "../../../../store/layoutAtoms";
-import { MUTATION_SHOW_CONTENT } from "../../utils/graphql";
+import { MUTATION_SHOW_CONTENT } from "../../../../utils/graphql";
 import PreviewLessonPlan from "../previewLessonPlan";
 import { useMutation } from "@apollo/client";
 import {

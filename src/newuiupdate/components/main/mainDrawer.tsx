@@ -4,7 +4,7 @@ import {
     isChatOpenState,
     isLessonPlanOpenState,
 } from "../../../store/layoutAtoms";
-import { StyledDrawer } from "../utils/utils";
+import { StyledDrawer } from "../../../utils/utils";
 import Chat from "./chat/chat";
 import LessonPlan from "./lessonPlan/lessonPlan";
 import React,

@@ -1,9 +1,4 @@
 import Loading from "../components/loading";
-import { MUTATION_SHOW_CONTENT } from "../newuiupdate/components/utils/graphql";
-import {
-    defineContentId,
-    defineContentType,
-} from "../newuiupdate/components/utils/utils";
 import {
     Content,
     Message,
@@ -22,6 +17,11 @@ import {
     unreadMessagesState,
     videoGloballyMutedState,
 } from "../store/layoutAtoms";
+import { MUTATION_SHOW_CONTENT } from "../utils/graphql";
+import {
+    defineContentId,
+    defineContentType,
+} from "../utils/utils";
 import {
     LIVE_LINK,
     LocalSessionContext,

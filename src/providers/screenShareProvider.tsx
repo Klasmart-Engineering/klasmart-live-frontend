@@ -1,5 +1,5 @@
-import { MUTATION_SHOW_CONTENT } from "../newuiupdate/components/utils/graphql";
 import { ContentType } from "../pages/utils";
+import { MUTATION_SHOW_CONTENT } from "../utils/graphql";
 import {
     LIVE_LINK,
     LocalSessionContext,

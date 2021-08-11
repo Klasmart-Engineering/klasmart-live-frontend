@@ -9,13 +9,13 @@ import MediaDeviceSelect from "../../components/mediaDeviceSelect";
 import StyledButton from "../../components/styled/button";
 import StyledIcon from "../../components/styled/icon";
 import StyledTextField from "../../components/styled/textfield";
-import {
-    BrandingType,
-    getOrganizationBranding,
-} from "../../newuiupdate/components/utils/utils";
 import { LocalSessionContext } from "../../providers/providers";
 import { ClassType } from "../../store/actions";
 import { hasJoinedClassroomState } from "../../store/layoutAtoms";
+import {
+    BrandingType,
+    getOrganizationBranding,
+} from "../../utils/utils";
 import Button from '@material-ui/core/Button';
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";

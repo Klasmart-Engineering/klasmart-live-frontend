@@ -3,7 +3,7 @@ import { ContentType } from "../../../../../pages/utils";
 import { LocalSessionContext } from "../../../../../providers/providers";
 import { RoomContext } from "../../../../../providers/roomContext";
 import { materialActiveIndexState } from "../../../../../store/layoutAtoms";
-import { NoItemList } from "../../../utils/utils";
+import { NoItemList } from "../../../../../utils/utils";
 import {
     Grid,
     makeStyles,

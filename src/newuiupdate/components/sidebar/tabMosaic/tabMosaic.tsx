@@ -5,10 +5,10 @@ import {
     isChatOpenState,
     mosaicViewSizeState,
 } from "../../../../store/layoutAtoms";
+import { StyledDrawer } from "../../../../utils/utils";
 import Chat from "../../main/chat/chat";
 import Toolbar from "../../toolbar/toolbar";
 import UserCamera from "../../userCamera/userCamera";
-import { StyledDrawer } from "../../utils/utils";
 import {
     Fade,
     Grid,

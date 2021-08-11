@@ -1,4 +1,3 @@
-import { sleep } from "../../newuiupdate/components/utils/utils";
 import {
     LIVE_LINK,
     LocalSessionContext,
@@ -8,6 +7,7 @@ import {
     isLessonPlanOpenState,
     isShowContentLoadingState,
 } from "../../store/layoutAtoms";
+import { sleep } from "../../utils/utils";
 import { useWindowSize } from "../../utils/viewport";
 import Loading from "./loading";
 import {

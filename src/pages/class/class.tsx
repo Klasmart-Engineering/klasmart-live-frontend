@@ -1,8 +1,6 @@
 import backgroundStudy from "../../assets/img/background/background_study.jpg";
 import Main from '../../newuiupdate/components/main/main';
 import Sidebar from '../../newuiupdate/components/sidebar/sidebar';
-import { MUTATION_SET_HOST } from "../../newuiupdate/components/utils/graphql";
-import { classGetInformation } from "../../newuiupdate/components/utils/utils";
 import {
     LIVE_LINK,
     LocalSessionContext,
@@ -22,6 +20,8 @@ import {
     isLessonPlanOpenState,
     studyRecommandUrlState,
 } from "../../store/layoutAtoms";
+import { MUTATION_SET_HOST } from "../../utils/graphql";
+import { classGetInformation } from "../../utils/utils";
 import {
     useMutation,
     useQuery,

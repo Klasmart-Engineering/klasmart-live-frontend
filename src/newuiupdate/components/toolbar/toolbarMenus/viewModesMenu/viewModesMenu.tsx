@@ -1,3 +1,4 @@
+import ObserveWarning from "../../../../../components/observeWarning";
 import {
     InteractiveMode,
     interactiveModeState,
@@ -6,8 +7,7 @@ import {
     observeDisableState,
     observeWarningState,
 } from "../../../../../store/layoutAtoms";
-import ObserveWarning from "../../../utils/observeWarning";
-import { StyledPopper } from "../../../utils/utils";
+import { StyledPopper } from "../../../../../utils/utils";
 import ViewMode from "./viewMode";
 import { Grid } from "@material-ui/core";
 import { UserVoice as OnStageIcon } from "@styled-icons/boxicons-solid/UserVoice";

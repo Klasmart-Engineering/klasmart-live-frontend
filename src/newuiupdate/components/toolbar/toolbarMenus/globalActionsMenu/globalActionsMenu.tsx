@@ -15,8 +15,8 @@ import {
     isGlobalActionsOpenState,
     videoGloballyMutedState,
 } from "../../../../../store/layoutAtoms";
-import { MUTATION_REWARD_TROPHY } from "../../../utils/graphql";
-import { StyledPopper } from "../../../utils/utils";
+import { MUTATION_REWARD_TROPHY } from "../../../../../utils/graphql";
+import { StyledPopper } from "../../../../../utils/utils";
 import GlobalActionsMenuItem from "./globalAction";
 import {
     useMutation,
