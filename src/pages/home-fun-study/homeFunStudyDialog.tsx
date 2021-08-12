@@ -49,6 +49,7 @@ import {usePopupContext} from "../../context-provider/popup-context";
 import {CordovaSystemContext, PermissionType} from "../../context-provider/cordova-system-context";
 
 export type HomeFunStudyFeedback = {
+    userId: string,
     studyId: string,
     comment: string,
     assignmentItems: AssignmentItem[]
@@ -231,12 +232,16 @@ export function HomeFunStudyDialog() {
         fetchEverything();
     }, [studyId, selectedOrg, key, selectedUserId])
 
+    function getLocalFeedback(userId: string, studyId: string) {
+        return hfsFeedbacks.find(feedback => feedback.userId === userId && feedback.studyId === studyId)
+    }
+
     useEffect(() => {
         function checkShowSubmitButtonCondition() {
             if(submitStatus === SubmitStatus.SUBMITTING)
                 return false;
-            if (studyInfo && newestFeedback?.is_allow_submit && (studyInfo.due_at === 0 || studyInfo?.due_at >= todayTimeStamp)) {
-                const feedback = hfsFeedbacks?.find(item => item.studyId === studyInfo.id)
+            if (selectedUserId && studyInfo && newestFeedback?.is_allow_submit && (studyInfo.due_at === 0 || studyInfo?.due_at >= todayTimeStamp)) {
+                const feedback = getLocalFeedback(selectedUserId, studyInfo.id);
                 if (feedback && feedback.assignmentItems.length > 0) {
                     return true;
                 }
@@ -245,7 +250,7 @@ export function HomeFunStudyDialog() {
         }
 
         setShouldShowSubmitButton(checkShowSubmitButtonCondition());
-    }, [studyInfo, hfsFeedbacks, submitStatus, newestFeedback])
+    }, [selectedUserId,studyInfo, hfsFeedbacks, submitStatus, newestFeedback])
 
     useEffect(() => {
         async function submitFeedback(){
@@ -256,9 +261,9 @@ export function HomeFunStudyDialog() {
             if (!selectedOrg) {
                 throw new Error("Organization is not selected.");
             }
-            if(!shouldSubmitFeedback || !studyInfo || !hfsFeedbacks )
+            if(!shouldSubmitFeedback || !studyInfo || !hfsFeedbacks || !selectedUserId)
                 return ;
-            const currentFeedback = hfsFeedbacks.find(feedback => feedback.studyId === studyInfo.id);
+            const currentFeedback = getLocalFeedback(selectedUserId, studyInfo.id);
             if(!currentFeedback)
                 return ;
             if(submitStatus === SubmitStatus.SUBMITTING)
@@ -373,6 +378,7 @@ function HomeFunStudyContainer({
     const [assignmentItems, setAssignmentItems] = useState<AssignmentItem[]>([]);
     const {fileSelectService, contentService} = useServices();
     const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
+    const selectedUserId = useSelector((state: State) => state.session.selectedUserId);
     const hfsFeedbacks = useSelector((state: State) => state.data.hfsFeedbacks);
     const [saveAssignmentItems, setSaveAssignmentItems] = useState<{ shouldSave: boolean, assignmentItems: AssignmentItem[] }>();
     const {requestPermissions} = useContext(CordovaSystemContext)
@@ -390,9 +396,12 @@ function HomeFunStudyContainer({
             status: AttachmentStatus.UPLOADED
         }));
     }
+    function getLocalFeedback(userId: string, studyId: string) {
+        return hfsFeedbacks.find(feedback => feedback.userId === userId && feedback.studyId === studyId)
+    }
 
-    function getLocalAssignmentItems(studyId: string) {
-        return hfsFeedbacks.find(feedback => feedback.studyId === studyId)?.assignmentItems ?? []
+    function getLocalAssignmentItems(userId: string, studyId: string) {
+        return getLocalFeedback(userId, studyId)?.assignmentItems ?? []
     }
 
     useEffect(() => {
@@ -406,11 +415,12 @@ function HomeFunStudyContainer({
         }
 
         function syncAssignments() {
+            if (!selectedUserId) return;
             if (!studyInfo) return;
             if(!newestFeedback) return;
             if(!hfsFeedbacks) return;
 
-            const localAssignmentItems: AssignmentItem[]  = getLocalAssignmentItems(studyInfo.id);
+            const localAssignmentItems: AssignmentItem[]  = getLocalAssignmentItems(selectedUserId, studyInfo.id);
             let newAssignmentItems: AssignmentItem[] = [];
 
             if (newestFeedback) {
@@ -427,40 +437,38 @@ function HomeFunStudyContainer({
             syncAssignments()
         }
 
-    }, [newestFeedback, hfsFeedbacks, studyInfo, shouldSyncAssignments])
+    }, [selectedUserId, newestFeedback, hfsFeedbacks, studyInfo, shouldSyncAssignments])
 
     useEffect(() => {
         function displayAssignmentsFromLocal() {
+            if(!selectedUserId) return;
             if (!studyInfo) return;
             if(!hfsFeedbacks) return;
 
-            let newAssignmentItems: AssignmentItem[] = getLocalAssignmentItems(studyInfo.id);
+            let newAssignmentItems: AssignmentItem[] = getLocalAssignmentItems(selectedUserId, studyInfo.id);
             setAssignmentItems(newAssignmentItems);
         }
 
         displayAssignmentsFromLocal()
-    }, [hfsFeedbacks, studyInfo])
+    }, [hfsFeedbacks, studyInfo, selectedUserId])
 
     useEffect(() => {
         //Save Assignments after uploaded
         function saveAssignments(assignmentItems: AssignmentItem[]) {
-            if (studyInfo) {
+            if (studyInfo && selectedUserId) {
                 let newHFSFeedbacks = hfsFeedbacks ? hfsFeedbacks.slice() : [];
-                let hasFeedback = false;
-                for (let i = 0; i < newHFSFeedbacks.length; i++) {
-                    if (newHFSFeedbacks[i].studyId == studyInfo.id) {
-                        const feedback = newHFSFeedbacks[i];
-                        newHFSFeedbacks[i] = {
-                            studyId: studyInfo.id,
-                            comment: feedback.comment,
-                            assignmentItems: assignmentItems
-                        };
-                        hasFeedback = true;
-                        break;
-                    }
+                const currentFeedbackIndex = newHFSFeedbacks.findIndex(item => item.userId === selectedUserId && item.studyId === studyInfo.id)
+                if(currentFeedbackIndex >= 0){
+                    const feedback = newHFSFeedbacks[currentFeedbackIndex];
+                    newHFSFeedbacks[currentFeedbackIndex] = {
+                        userId: selectedUserId,
+                        studyId: studyInfo.id,
+                        comment: feedback.comment,
+                        assignmentItems: assignmentItems
+                    };
                 }
-                if (!hasFeedback) {
-                    newHFSFeedbacks.push({studyId: studyInfo.id, comment: "", assignmentItems: assignmentItems});
+                else{
+                    newHFSFeedbacks.push({userId: selectedUserId, studyId: studyInfo.id, comment: "", assignmentItems: assignmentItems});
                 }
                 dispatch(setHomeFunStudies(newHFSFeedbacks));
             }
@@ -937,17 +945,18 @@ function HomeFunStudyComment({studyInfo, newestFeedback, defaultComment}: { stud
     const [openEditComment, setOpenEditComment] = useState(false);
     const [comment, setComment] = useState(defaultComment);
     const hfsFeedbacks = useSelector((state: State) => state.data.hfsFeedbacks);
+    const selectedUserId = useSelector((state: State) => state.session.selectedUserId);
 
     useEffect(() => {
-        if (studyInfo && studyInfo.id) {
+        if (studyInfo && studyInfo.id && selectedUserId) {
             for (let i = 0; hfsFeedbacks && i < hfsFeedbacks.length; i++) {
-                if (hfsFeedbacks[i].studyId == studyInfo.id) {
+                if (hfsFeedbacks[i].userId == selectedUserId && hfsFeedbacks[i].studyId == studyInfo.id) {
                     setComment(hfsFeedbacks[i].comment)
                     break;
                 }
             }
         }
-    }, [studyInfo, hfsFeedbacks])
+    }, [selectedUserId, studyInfo, hfsFeedbacks])
 
     function handleOnClickEditComment() {
         setOpenEditComment(true);
@@ -955,22 +964,19 @@ function HomeFunStudyComment({studyInfo, newestFeedback, defaultComment}: { stud
 
     function handleSaveComment(newComment: string) {
         setComment(newComment);
-        if (studyInfo) {
+        if (studyInfo && selectedUserId) {
             let newHFSFeedbacks = hfsFeedbacks ? hfsFeedbacks.slice() : [];
-            let hasFeedback = false;
-            for (let i = 0; i < newHFSFeedbacks.length; i++) {
-                if (newHFSFeedbacks[i].studyId == studyInfo.id) {
-                    newHFSFeedbacks[i] = {
-                        studyId: studyInfo.id,
-                        comment: newComment,
-                        assignmentItems: newHFSFeedbacks[i].assignmentItems
-                    };
-                    hasFeedback = true;
-                    break;
-                }
+            const currentFeedbackIndex = newHFSFeedbacks.findIndex(item => item.userId === selectedUserId && item.studyId === studyInfo.id);
+            if(currentFeedbackIndex >= 0){
+                newHFSFeedbacks[currentFeedbackIndex] = {
+                    userId: selectedUserId,
+                    studyId: studyInfo.id,
+                    comment: newComment,
+                    assignmentItems: newHFSFeedbacks[currentFeedbackIndex].assignmentItems
+                };
             }
-            if (!hasFeedback) {
-                newHFSFeedbacks.push({studyId: studyInfo.id, comment: newComment, assignmentItems: []});
+            else{
+                newHFSFeedbacks.push({userId: selectedUserId, studyId: studyInfo.id, comment: newComment, assignmentItems: []});
             }
             dispatch(setHomeFunStudies(newHFSFeedbacks));
         }
