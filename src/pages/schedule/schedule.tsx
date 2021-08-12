@@ -85,6 +85,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     submittedText: {
         color: "#5DBD3B"
+    },
+    listItemSecondAction: {
+        paddingRight: "6rem"
     }
 }));
 
@@ -587,7 +590,7 @@ function ScheduledStudyItem({ studyId, assessmentForStudent, setSelectedSchedule
     setSelectedSchedule: React.Dispatch<React.SetStateAction<ScheduleResponse | undefined>>,
     setOpenStudyDetail: React.Dispatch<React.SetStateAction<boolean>>
 }) {
-    const { listRoot, listSubheaderText, listItemAvatar, listItemTextPrimary, submittedText } = useStyles();
+    const { listRoot, listSubheaderText, listItemAvatar, listItemTextPrimary, submittedText, listItemSecondAction } = useStyles();
     const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
     const { schedulerService } = useServices();
 
@@ -648,7 +651,7 @@ function ScheduledStudyItem({ studyId, assessmentForStudent, setSelectedSchedule
             }
             className={listRoot}
         >
-            <ListItem button onClick={displayScheduleInformation}>
+            <ListItem button onClick={displayScheduleInformation} classes={{secondaryAction: listItemSecondAction}}>
                 <ListItemAvatar>
                     <Avatar alt={"Scheduled Study"} className={listItemAvatar}>
                         <img src={ScheduledStudyHouse} height={24} />
@@ -659,7 +662,7 @@ function ScheduledStudyItem({ studyId, assessmentForStudent, setSelectedSchedule
                     primary={<Typography variant="body1" className={listItemTextPrimary}>{studyInfo ? studyInfo.title : ""}</Typography>}
                     secondary={hasDueDate ? <>
                         {/* TODO (Isu): Show all teachers' name */}
-                        <Typography variant="caption" color="textSecondary">{`Assigned by: ${studyInfo && studyInfo.teachers ? studyInfo.teachers[0].name : ""}`}</Typography>
+                        <Typography variant="caption" color="textSecondary">{`Assigned by: ${studyInfo && studyInfo.teachers ? "Teacher 1 Report-ABCDEFGHIJKLMN"/*studyInfo.teachers[0].name*/ : ""}`}</Typography>
                         <Typography variant="caption" color="textSecondary" style={{ fontStyle: "italic" }}>{` - ${studyInfo ? studyInfo.program.name : ""}`}</Typography><br />
                     </> : <Typography variant="caption" color="textSecondary"><FormattedMessage id="schedule_studyAnytimeStudy" /></Typography>}
                 />
