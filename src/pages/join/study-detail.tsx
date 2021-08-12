@@ -19,6 +19,7 @@ import {useSnackbar} from "kidsloop-px";
 import {CordovaSystemContext} from "../../context-provider/cordova-system-context";
 import { usePopupContext } from "../../context-provider/popup-context";
 import { useIntl } from "react-intl";
+import { getFileExtensionFromType } from "../../utils/fileUtils";
 
 const useStyles = makeStyles((theme: Theme) => ({
     dialogTitle: {
@@ -49,8 +50,6 @@ const useStyles = makeStyles((theme: Theme) => ({
         marginLeft: -12,
     },
     }));
-
-declare var FileTransfer: any;
 
 export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
     schedule?: ScheduleResponse,
@@ -138,6 +137,65 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
         }
     };
 
+    const downloadDataBlob = (url: string): Promise<Blob> => {
+        return new Promise((resolve, reject) => {
+            const request = new XMLHttpRequest();
+            request.responseType = 'blob';
+            request.open('GET', url);
+
+            request.onreadystatechange = () => {
+                if (request.readyState === XMLHttpRequest.DONE ||
+                    request.readyState === 4) {
+                    resolve(request.response);
+                }
+            };
+
+            request.onerror = () => {
+                reject(request.statusText);
+            };
+
+            request.ontimeout = () => {
+                reject('timeout');
+            };
+
+            request.send();
+        });
+    };
+
+    const saveDataBlobToFile = (blob: Blob, fileName: string): Promise<string> => {
+        return new Promise((resolve, reject) => {
+
+            const cordova = (window as any).cordova;
+            let targetDirectory = cordova.file.externalCacheDirectory;
+            if(isIOS){
+                targetDirectory = cordova.file.tempDirectory;
+            }
+
+            window.resolveLocalFileSystemURL(targetDirectory, (entry) => {
+                (entry as DirectoryEntry).getFile(fileName, { create: true, exclusive: false }, (fileEntry) => {
+                    fileEntry.createWriter(writer => {
+                        writer.onwriteend = () => {
+                            resolve(fileEntry.toURL());
+                        };
+    
+                        writer.onerror = () => {
+                            console.error('could not write file: ', writer.error);
+                            reject(writer.error);
+                        }
+    
+                        writer.write(blob);
+                    });
+                }, (error) => {
+                    console.error('could not create file: ', error);
+                    reject(error);
+                });
+            }, (error) => {
+                console.error('could not retrieve directory: ', error);
+                reject(error);
+            })
+        });
+    };
+
     useEffect(() => {
         function startDownloadAttachment(){
             setShouldDownload(false)
@@ -146,34 +204,33 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
             if(attachmentDownloadLink && schedule){
                 const url = encodeURI(attachmentDownloadLink);
                 console.log(url)
-                const ft = new FileTransfer();
-                const cordova = (window as any).cordova;
-                let targetDirectory =  cordova.file.externalCacheDirectory;
-                if(isIOS){
-                    targetDirectory = cordova.file.tempDirectory;
-                }
-                setDownloading(true)
-                ft.download(
-                    url,
-                    targetDirectory + schedule.attachment.name,
-                    (entry: any) => {
-                        console.log(entry)
-                        console.log(entry.toURL())
-                        setDownloading(false)
-                        setPreviewOpen({open: true, fileUrl: entry.toURL()})
-                    },
-                    (error: any) => {
-                        setDownloading(false)
+
+                setDownloading(true);
+
+                downloadDataBlob(url).then(downloadedData => {
+                    saveDataBlobToFile(downloadedData, schedule.attachment.name).then(savedFilePath => {
+                        setPreviewOpen({open: true, fileUrl: savedFilePath});
+                    }).catch(error => {
+                        console.log(error);
                         enqueueSnackbar(error.body, {
                             variant: "error",
                             anchorOrigin: {
                                 vertical: "bottom",
                                 horizontal: "center"
                             }
-                        })
-
-                    }
-                )
+                        });
+                    });
+                }).catch(error => {
+                    enqueueSnackbar(error.body, {
+                        variant: "error",
+                        anchorOrigin: {
+                            vertical: "bottom",
+                            horizontal: "center"
+                        }
+                    });
+                }).finally(() => {
+                    setDownloading(false);
+                });
             }
         }
         if(shouldDownload){
