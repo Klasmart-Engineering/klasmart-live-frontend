@@ -13,7 +13,9 @@
     "start": "webpack-dev-server",
     "test": "mocha -r ts-node/register tests/**/*[Tt]est.ts",
     "coverage": "nyc -r lcov -e .ts -x \"*[Tt]est.ts\" npm run test",
-    "build:docker": "DOCKER_BUILDKIT=1 docker build --no-cache --ssh default -t kidsloop-live-frontend ."
+    "build:docker": "DOCKER_BUILDKIT=1 docker build --no-cache --ssh default -t kidsloop-live-frontend .",
+    "preversion": "git checkout master && git pull origin master && npm i",
+    "postversion": "git push && git push --tags"
   },
   "author": "",
   "license": "ISC",
