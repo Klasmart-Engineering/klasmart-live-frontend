@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, {useContext, useEffect, useState, useMemo} from "react";
 import {Header} from "../../components/header";
 import {
     Box,
@@ -855,17 +855,17 @@ function HomeFunStudyAssignment({
     studyInfo?: ScheduleResponse, newestFeedback?: ScheduleFeedbackResponse, assignmentItems: AssignmentItem[], onClickUploadInfo: () => void,
     onClickUpload: () => void, onDeleteAssignment: (item: AssignmentItem) => void
 }) {
-    const classes = useStyles();
-    const [shouldShowChooseFile, setShouldShowChooseFile] = useState(false);
     const MAX_FILE_LIMIT = 3
 
-    useEffect(() => {
-        if(studyInfo && assignmentItems.length < MAX_FILE_LIMIT && newestFeedback?.is_allow_submit){
-            setShouldShowChooseFile(true);
-        }else{
-            setShouldShowChooseFile(false);
+    const classes = useStyles();
+    const shouldShowChooseFile = useMemo(() => {
+        const fileIsBeingUploaded = assignmentItems.some(item => item.status === AttachmentStatus.UPLOADING);
+        if (fileIsBeingUploaded) {
+            return false;
         }
-    }, [assignmentItems, studyInfo, newestFeedback])
+
+        return studyInfo && assignmentItems.length < MAX_FILE_LIMIT && newestFeedback?.is_allow_submit;
+    }, [assignmentItems, studyInfo, newestFeedback]);
 
     return (
         <Grid item xs>
