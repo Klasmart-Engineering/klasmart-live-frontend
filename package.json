@@ -16,7 +16,7 @@
     "coverage": "nyc -r lcov -e .ts -x \"*[Tt]est.ts\" npm run test",
     "build:docker": "DOCKER_BUILDKIT=1 docker build --no-cache --ssh default -t kidsloop-live-frontend .",
     "browser": "ENDPOINT_SFU=wss://live.kidsloop.net/sfu ENDPOINT_WEBSOCKET=wss://live.kidsloop.net/graphql ENDPOINT_GQL=https://live.kidsloop.net/graphql ENDPOINT_CONTENT=https://live.kidsloop.net/ USE_TEST_TOKEN=1 DISABLE_BROWSER_GUIDE=1 DISABLE_SCREEN_SHARE=1 npm run build:app && cordova run browser",
-    "release": "standard-version",
+    "release": "standard-version -a",
     "cordova:sync:version": "cordova-version-sync && git add config.xml"
   },
   "author": "",
