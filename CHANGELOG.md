@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.16.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/compare/v1.15.0...v1.16.0) (2021-08-12)
+
+
+### Features
+
+* Multiple Profile Support for Home Fun Study ([4c00eb8](https://bitbucket.org/calmisland/kidsloop-live-frontend/commit/4c00eb8dcef763c7dc19e247cae94b204332789f))
+
+
+### Bug Fixes
+
+* disallow uploading multiple files at once ([e28f7b9](https://bitbucket.org/calmisland/kidsloop-live-frontend/commit/e28f7b98329f62a0600a756829ed68ed3d4e7ee4))
+* force a line break in a long file name ([f1205ed](https://bitbucket.org/calmisland/kidsloop-live-frontend/commit/f1205ed10fd69399ee9302751a654ba2cd7d7ed4))
+* Removed test script ([2f5cf88](https://bitbucket.org/calmisland/kidsloop-live-frontend/commit/2f5cf8878d0c9a456e0e78dea9bd80b288a417fd))
+* Schedule information appears as overlapped with Submitted string ([f3ed5b7](https://bitbucket.org/calmisland/kidsloop-live-frontend/commit/f3ed5b7db02ab868b0b8e0debee3fa0578f49f61))
+
 ## 1.15.0 (2021-08-12)
 
 
