@@ -116,7 +116,7 @@ const now = new Date();
 const todayTimeStamp = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime() / 1000;
 
 enum SubmitStatus {
-    NONE, SUBMITTING, SUCCESS
+    NONE, UPLOADING,SUBMITTING, SUCCESS
 }
 
 const HFS_ON_BACK_ID = "hfs_onBack"
@@ -309,7 +309,20 @@ export function HomeFunStudyDialog() {
                     });
                 })
         }
-        submitFeedback()
+        if(shouldSubmitFeedback === true){
+            setShouldSubmitFeedback(false)
+            if(submitStatus === SubmitStatus.UPLOADING){
+                showPopup({
+                    variant: "error",
+                    title: intl.formatMessage({id: "submission_failed"}),
+                    description: [intl.formatMessage({id: "err_try_after_uploaded"})],
+                    closeLabel: intl.formatMessage({id: "button_ok"})
+                })
+            }else{
+                submitFeedback()
+            }
+        }
+
     }, [selectedOrg, studyInfo, hfsFeedbacks, schedulerService, shouldSubmitFeedback])
 
     return (
@@ -324,7 +337,7 @@ export function HomeFunStudyDialog() {
             </DialogTitle>
             <DialogContent>
                 {!loading ?
-                    <HomeFunStudyContainer studyInfo={studyInfo} newestFeedback={newestFeedback}/>
+                    <HomeFunStudyContainer studyInfo={studyInfo} newestFeedback={newestFeedback} setSubmitStatus={setSubmitStatus}/>
                     : <Loading messageId={"cordova_loading"} retryCallback={() => {
                         setKey(Math.random().toString(36))
                     }}/>}
@@ -348,8 +361,9 @@ export function HomeFunStudyDialog() {
 
 function HomeFunStudyContainer({
                                    studyInfo,
-                                   newestFeedback
-                               }: { studyInfo?: ScheduleResponse, newestFeedback?: ScheduleFeedbackResponse }) {
+                                   newestFeedback,
+                                    setSubmitStatus
+                               }: { studyInfo?: ScheduleResponse, newestFeedback?: ScheduleFeedbackResponse, setSubmitStatus: (status: SubmitStatus) => void }) {
     const intl = useIntl();
     const dispatch = useDispatch();
     const {enqueueSnackbar} = useSnackbar();
@@ -487,7 +501,18 @@ function HomeFunStudyContainer({
             }
         }
 
+        function updateSubmitStatus(){
+            if(assignmentItems){
+                if(assignmentItems.filter(item => item.status === AttachmentStatus.UPLOADING).length > 0){
+                    setSubmitStatus(SubmitStatus.UPLOADING)
+                }else{
+                    setSubmitStatus(SubmitStatus.NONE)
+                }
+            }
+        }
+
         uploadSelectedAttachments();
+        updateSubmitStatus();
     }, [assignmentItems])
 
     async function uploadAttachment(assignmentItemId: string, file: File) {

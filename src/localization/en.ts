@@ -34,6 +34,8 @@ const messages: Record<string, string> = {
     upload_file: "Upload file",
     confirm_to_upload_file: "Selected file will be uploaded. Do you want to continue?",
 
+    err_try_after_uploaded: "Can't complete submitting. Please try after file uploading is finished.",
+
     confirm_download_file_title: "Please connect to WiFi",
     confirm_download_file_description: "You are currently not connected to WiFi. Do you want to continue downloading this file using cellular data?",
     confirm_upload_file_title: "Please connect to WiFi",
