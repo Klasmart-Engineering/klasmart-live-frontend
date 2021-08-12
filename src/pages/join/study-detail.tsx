@@ -36,7 +36,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     rowContentText: {
         color: `#193756`,
-        fontWeight: 600
+        fontWeight: 600,
+        overflowWrap: "break-word",
     },
     wrapper: {
         position: 'relative',
@@ -177,12 +178,12 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
                         writer.onwriteend = () => {
                             resolve(fileEntry.toURL());
                         };
-    
+
                         writer.onerror = () => {
                             console.error('could not write file: ', writer.error);
                             reject(writer.error);
                         }
-    
+
                         writer.write(blob);
                     });
                 }, (error) => {
