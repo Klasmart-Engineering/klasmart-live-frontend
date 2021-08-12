@@ -662,7 +662,7 @@ function ScheduledStudyItem({ studyId, assessmentForStudent, setSelectedSchedule
                     primary={<Typography variant="body1" className={listItemTextPrimary}>{studyInfo ? studyInfo.title : ""}</Typography>}
                     secondary={hasDueDate ? <>
                         {/* TODO (Isu): Show all teachers' name */}
-                        <Typography variant="caption" color="textSecondary">{`Assigned by: ${studyInfo && studyInfo.teachers ? "Teacher 1 Report-ABCDEFGHIJKLMN"/*studyInfo.teachers[0].name*/ : ""}`}</Typography>
+                        <Typography variant="caption" color="textSecondary">{`Assigned by: ${studyInfo && studyInfo.teachers ? studyInfo.teachers[0].name : ""}`}</Typography>
                         <Typography variant="caption" color="textSecondary" style={{ fontStyle: "italic" }}>{` - ${studyInfo ? studyInfo.program.name : ""}`}</Typography><br />
                     </> : <Typography variant="caption" color="textSecondary"><FormattedMessage id="schedule_studyAnytimeStudy" /></Typography>}
                 />
