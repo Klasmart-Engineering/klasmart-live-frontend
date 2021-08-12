@@ -1,4 +1,16 @@
+image: node:14
+
 pipelines:
+  pull-requests:
+    '**':
+      - parallel:
+        - step:
+            name: Build
+            caches:
+              - node
+            script:
+              - npm ci --no-audit --no-progress
+              - npm run build:alpha
   custom:
     deploy:
     - variables:
@@ -8,7 +20,7 @@ pipelines:
         name: 'Build NPM'
         image: node:lts
         script:
-          - npm i --unsafe-perm
+          - npm ci --no-audit --no-progress
           - mv deploy/config/$KIDSLOOP_REGION/webpack.$KIDSLOOP_ENV.config.js ./webpack.bitbucket.config.js
           - npm run build:bitbucket
         caches:
