@@ -1,12 +1,91 @@
-# Tokens for testing teacher / student
-Teacher: http://localhost:8080/?token=eyJhbGciOiJIUzI1NiJ9.eyJ0ZWFjaGVyIjp0cnVlLCJtYXRlcmlhbHMiOlt7Im5hbWUiOiJNYXRlcmlhbCAxIiwidXJsIjoiL2g1cC9wbGF5LzVlY2Y0ZTRiNjExZTE4Mzk4ZjczODBlZiJ9XSwicm9vbUlkIjoicm9vbTAxIn0.QicJnme4iNNXSKkXyOW4rGMOkKrSwVITXLYLevXjEYg
+# Local Setup
+## Prerequisites
+* Docker installed and running. [Download here](https://www.docker.com/products/docker-desktop).
+* Locally cloned versions of the folowing repositories:
+    * [kidsloop-live-server](https://bitbucket.org/calmisland/kidsloop-live-server)
+    * [kidsloop-sfu](https://bitbucket.org/calmisland/kidsloop-sfu)
+    * [kidsloop-sfu-gateway](https://bitbucket.org/calmisland/kidsloop-sfu-gateway)
 
-Student: http://localhost:8080/?token=eyJhbGciOiJIUzI1NiJ9.eyJ0ZWFjaGVyIjpmYWxzZSwibWF0ZXJpYWxzIjpbeyJuYW1lIjoiTWF0ZXJpYWwgMSIsInVybCI6Ii9oNXAvcGxheS81ZWNmNGU0YjYxMWUxODM5OGY3MzgwZWYifV0sInJvb21JZCI6InJvb20wMSJ9.3_LBVx8poa0yQd6Jgy8w2bMDywLl0NDAH98pdmpX17E
+### Mac
+Add the following to your `~/.bash_profile` file (or create the file if it doesn't exist)
+```bash
+export DEV_SECRET='iXtZx1D5AqEB0B9pfn+hRQ=='
+```
+*If you use a different terminal other than **Bash**, you might need to load the Bash config file into your terminal's config.*
+### Zsh
+Add the following to `~/.zshenv` (or create the file if it doesn't exist)
+```zsh
+source ~/.bash_profile
+```
 
-# Dev
-If you have trouble building this project due to issues cloning `kidsloop-canvas` then you can try adjusting your `.gitconfig` to have the following information:
+## 1. `kidsloop-live-server`
+Open up a terminal, and navigate to your local root of `kidsloop-live-server` and enter the following commands:
+```
+docker run --name some-redis -p 6379:6379 -d redis
+docker run --name postgres -e POSTGRES_PASSWORD=PASSWORD -p 5432:5432 -d postgres
+npm install
+npm start
+```
+
+## 2. `kidsloop-sfu-gateway`
+Open up a terminal, and navigate to your local root of `kidsloop-sfu-gateway` and enter the following commands:
+```
+npm install
+npm start
+```
+## 3. `kidsloop-sfu`
+Open up a terminal, and navigate to your local root of `kidsloop-sfu` and enter the following commands:
+```
+npm install
+USE_IP=1 npm start
+```
+## 4. `kidsloop-live-frontend`
+1. Add the following redirect config to your computer's `hosts` file
+```host
+local.alpha.kidsloop.net    localhost
+```
+2. Navigate to your local root of `kidsloop-live-frontend` and enter the following commands:
+```
+npm start
+```
+### Connect to a Live Class with a valid **Access Cookie**
+#### Generate a Teacher token
+1. Go to https://hub.alpha.kidsloop.net
+2. Sign in with an account that has a Teacher user
+3. Navigate to `/schedule`
+4. In the left toolbar, under Class Types, check the checkbox for "Live"
+5. Click on an ongoing class in the calendar
+6. Press the "Go Live"-button in the dialog that pops up
+7. Copy the `TOKEN` from the address bar (`.../?token=TOKEN`)
+8. Navigate to jwt.io
+9. Paste the `TOKEN` in the "Encoded" section
+10. In the "HEADER" section, add `"issuer": "calmid-debug"`
+11. In the "PAYLOAD" section, change the `"iss"` value to `"calmid-debug"`
+12. In the "VERIFY SIGNATURE" section, insert the `DEV_SECRET` as the `your-256-bit-secret`
+13. Copy the newly generated `TOKEN` from the "Encoded" section
+14. Open up a new tab and browse to https://local.alpha.kidsloop.net:8082/?token=TOKEN
+
+#### Generate a Student token
+1. Go back to step **11** above
+2. In the "PAYLOAD" section, change the `"teacher"` value to `false`
+3. Copy the newly generated `TOKEN` from the "Encoded" section
+4. Open up a new tab and browse to https://local.alpha.kidsloop.net:8082/?token=TOKEN
+
+# FAQ
+## Build Issues
+**I have trouble building `kidsloop-live-frontend` due to issues cloning `kidsloop-canvas`**
+
+Try adjusting your `.gitconfig` to have the following information:
 ```
 [url "ssh://git@bitbucket.org"]
 	insteadOf = https://bitbucket.org
 ```
-this should prevent npm from trying to use https when pulling down repos from bitbucket.  
+This should prevent npm from trying to use https when pulling down repos from bitbucket.
+
+## Live Class Issues
+**I have old Users (aka Ghost Users) that never leave my Class**
+
+SSH (attach shell) to the running `redis` docker container, and run the command:
+```
+redis-cli flushall
+```

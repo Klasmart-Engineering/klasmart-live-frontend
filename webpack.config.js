@@ -139,15 +139,16 @@ module.exports = {
     ],
     devServer: {
         https: true,
-        host: `0.0.0.0`,
+        host: `local.alpha.kidsloop.net`,
+        port: 8082,
         proxy: {
             "/graphql": {
-                target: `http://localhost:8000`,
+                target: `http://local.alpha.kidsloop.net:8000`,
                 changeOrigin: true,
                 ws: true,
             },
             "/sfu": {
-                target: `http://localhost:8002`,
+                target: `http://local.alpha.kidsloop.net:8002`,
                 changeOrigin: true,
                 ws: true,
             },
