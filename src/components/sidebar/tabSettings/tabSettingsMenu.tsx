@@ -1,6 +1,5 @@
-import { ThemeContext } from "../../../../entry";
-import { LocalSessionContext } from "../../../../providers/providers";
-import { activeSettingsStateTab } from "../../../../store/layoutAtoms";
+import { LocalSessionContext } from "../../../providers/providers";
+import { activeSettingsStateTab } from "../../../store/layoutAtoms";
 import {
     Grid,
     List,
@@ -59,13 +58,12 @@ function TabSettingsMenu (props: any) {
     const classes = useStyles();
 
     const [ activeSettingsTab, setActiveSettingsTab ] = useRecoilState(activeSettingsStateTab);
+    const { name } = useContext(LocalSessionContext);
 
     const handleListItemClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>,
         tab: string) => {
         setActiveSettingsTab(tab);
     };
-
-    const { name, isTeacher } = useContext(LocalSessionContext);
 
     return (
         <Grid
@@ -87,7 +85,6 @@ function TabSettingsMenu (props: any) {
                     </Grid>
                     <Grid>
                         <Typography variant="h5">{name}</Typography>
-                        {/* <Typography variant="body2">{isTeacher ? `Teacher` : `Student`}</Typography> */}
                     </Grid>
                 </Grid>
             </Grid>

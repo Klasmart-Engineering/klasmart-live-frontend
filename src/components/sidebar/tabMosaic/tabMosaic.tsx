@@ -1,14 +1,11 @@
-import { Session } from "../../../../pages/utils";
-import { RoomContext } from "../../../../providers/roomContext";
+import Toolbar from "../../../newuiupdate/components/toolbar/toolbar";
+import UserCamera from "../../../newuiupdate/components/userCamera/userCamera";
+import { Session } from "../../../pages/utils";
+import { RoomContext } from "../../../providers/roomContext";
 import {
     activeTabState,
-    isChatOpenState,
     mosaicViewSizeState,
-} from "../../../../store/layoutAtoms";
-import { StyledDrawer } from "../../../../utils/utils";
-import Chat from "../../main/chat/chat";
-import Toolbar from "../../toolbar/toolbar";
-import UserCamera from "../../userCamera/userCamera";
+} from "../../../store/layoutAtoms";
 import {
     Fade,
     Grid,
@@ -102,7 +99,6 @@ const useStyles = makeStyles((theme: Theme) => ({
 function TabMosaic () {
     const classes = useStyles();
 
-    const [ isChatOpen, setIsChatOpen ] = useRecoilState(isChatOpenState);
     const [ mosaicViewSize, setMosaicViewSize ] = useRecoilState(mosaicViewSizeState);
     const [ activeTab, setActiveTab ] = useRecoilState(activeTabState);
 
