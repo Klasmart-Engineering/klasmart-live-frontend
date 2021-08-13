@@ -1,3 +1,4 @@
+import { WB_TOOLBAR_MAX_HEIGHT } from "../../../components/classContent/WBToolbar";
 import {
     LIVE_LINK,
     LocalSessionContext,
@@ -11,7 +12,6 @@ import {
 import { MUTATION_REWARD_TROPHY } from "../../../utils/graphql";
 import { Whiteboard } from "../../../whiteboard/components/Whiteboard";
 import PreviewLessonPlan from "./previewLessonPlan";
-import { WB_TOOLBAR_MAX_HEIGHT } from "./WBToolbar";
 import { useMutation } from "@apollo/client";
 import { Typography } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
@@ -19,7 +19,6 @@ import {
     makeStyles,
     Theme,
 } from "@material-ui/core/styles";
-import { StarFill as BonusContentIcon } from "@styled-icons/bootstrap/StarFill";
 import { ChevronLeft as ArrowBackIcon } from "@styled-icons/boxicons-regular/ChevronLeft";
 import { ChevronRight as ArrowForwardIcon } from "@styled-icons/boxicons-regular/ChevronRight";
 import { Exit as ExitIcon } from "@styled-icons/icomoon/Exit";

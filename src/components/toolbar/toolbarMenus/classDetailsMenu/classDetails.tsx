@@ -1,4 +1,4 @@
-import { classInfoState } from "../../../../../store/layoutAtoms";
+import { classInfoState } from "../../../../store/layoutAtoms";
 import {
     makeStyles,
     Theme,
