@@ -1,8 +1,7 @@
-import { Session } from "../../../../pages/utils";
-import { LocalSessionContext } from "../../../../providers/providers";
-import { RoomContext } from "../../../../providers/roomContext";
-import { NoItemList } from "../../../../utils/utils";
-import UserCamera from "../../userCamera/userCamera";
+import UserCamera from "../../../newuiupdate/components/userCamera/userCamera";
+import { Session } from "../../../pages/utils";
+import { RoomContext } from "../../../providers/roomContext";
+import { NoItemList } from "../../../utils/utils";
 import {
     Fade,
     Grid,
@@ -17,7 +16,6 @@ import React,
 {
     useContext,
     useEffect,
-    useRef,
     useState,
 } from "react";
 import { useIntl } from "react-intl";

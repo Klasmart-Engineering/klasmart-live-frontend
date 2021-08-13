@@ -1,6 +1,6 @@
 import backgroundStudy from "../../assets/img/background/background_study.jpg";
+import Sidebar from '../../components/sidebar/sidebar';
 import Main from '../../newuiupdate/components/main/main';
-import Sidebar from '../../newuiupdate/components/sidebar/sidebar';
 import {
     LIVE_LINK,
     LocalSessionContext,
@@ -17,7 +17,6 @@ import { ClassType } from "../../store/actions";
 import {
     classInfoState,
     hasControlsState,
-    isLessonPlanOpenState,
     studyRecommandUrlState,
 } from "../../store/layoutAtoms";
 import { MUTATION_SET_HOST } from "../../utils/graphql";
@@ -57,7 +56,6 @@ function Class () {
     const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
 
     const [ hasControls, setHasControls ] = useRecoilState(hasControlsState);
-    const [ isLessonPlanOpen, setIsLessonPlanOpen ] = useRecoilState(isLessonPlanOpenState);
     const [ studyRecommandUrl, setStudyRecommandUrl ] = useRecoilState(studyRecommandUrlState);
     const [ classInfo, setClassInfo ] = useRecoilState(classInfoState);
 
@@ -70,18 +68,11 @@ function Class () {
         classtype,
         org_id,
         schedule_id,
-        materials,
     } = useContext(LocalSessionContext);
     const { sessions } = useContext(RoomContext);
     const webrtc = useContext(WebRTCContext);
 
     const localSession = sessions.get(sessionId);
-
-    const [ hostMutation ] = useMutation(MUTATION_SET_HOST, {
-        context: {
-            target: LIVE_LINK,
-        },
-    });
 
     const [ globalMuteMutation ] = useMutation(GLOBAL_MUTE_MUTATION, {
         context: {
