@@ -1,4 +1,4 @@
-import { activeTabState } from "../../../store/layoutAtoms";
+import { activeTabState } from "../../store/layoutAtoms";
 import {
     Badge,
     makeStyles,

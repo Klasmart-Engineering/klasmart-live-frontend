@@ -1,11 +1,11 @@
-import { LocalSessionContext } from "../../../../providers/providers";
-import { ClassType } from "../../../../store/actions";
+import { LocalSessionContext } from "../../../providers/providers";
+import { ClassType } from "../../../store/actions";
 import {
     hasControlsState,
     isCanvasOpenState,
-} from "../../../../store/layoutAtoms";
-import { StyledPopper } from "../../../../utils/utils";
-import { useSynchronizedState } from "../../../../whiteboard/context-providers/SynchronizedStateProvider";
+} from "../../../store/layoutAtoms";
+import { StyledPopper } from "../../../utils/utils";
+import { useSynchronizedState } from "../../../whiteboard/context-providers/SynchronizedStateProvider";
 import {
     Grid,
     makeStyles,
@@ -16,9 +16,7 @@ import { Move as MoveIcon } from "@styled-icons/boxicons-regular/Move";
 import { Eraser as EraserIcon } from "@styled-icons/boxicons-solid/Eraser";
 import { Trash as TrashIcon } from "@styled-icons/boxicons-solid/Trash";
 import { Pencil as PencilIcon } from "@styled-icons/entypo/Pencil";
-import { PeopleCommunity as PeopleCommunityIcon } from "@styled-icons/fluentui-system-filled/PeopleCommunity";
 import { SlideEraser as SlideEraserIcon } from "@styled-icons/fluentui-system-regular/SlideEraser";
-import { Brush as BrushIcon } from "@styled-icons/material/Brush";
 import { GridOff as GridOffIcon } from "@styled-icons/material/GridOff";
 import { GridOn as GridOnIcon } from "@styled-icons/material/GridOn";
 import { TextFields as TextIcon } from "@styled-icons/material/TextFields";

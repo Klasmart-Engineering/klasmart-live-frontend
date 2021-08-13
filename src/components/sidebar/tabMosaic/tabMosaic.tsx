@@ -1,4 +1,3 @@
-import Toolbar from "../../../newuiupdate/components/toolbar/toolbar";
 import UserCamera from "../../../newuiupdate/components/userCamera/userCamera";
 import { Session } from "../../../pages/utils";
 import { RoomContext } from "../../../providers/roomContext";
@@ -6,6 +5,7 @@ import {
     activeTabState,
     mosaicViewSizeState,
 } from "../../../store/layoutAtoms";
+import Toolbar from "../../toolbar/toolbar";
 import {
     Fade,
     Grid,

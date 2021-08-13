@@ -1,18 +1,14 @@
-import {
-    DialogEndClass,
-    DialogLeaveClass,
-} from "../../../components/toolbar/endCall/endCall";
-import { ContentType } from "../../../pages/utils";
+import { ContentType } from "../../pages/utils";
 import {
     LocalSessionContext,
     SFU_LINK,
-} from "../../../providers/providers";
-import { RoomContext } from "../../../providers/roomContext";
+} from "../../providers/providers";
+import { RoomContext } from "../../providers/roomContext";
 import {
     MUTE,
     MuteNotification,
     WebRTCContext,
-} from "../../../providers/WebRTCContext";
+} from "../../providers/WebRTCContext";
 import {
     activeTabState,
     hasControlsState,
@@ -26,8 +22,12 @@ import {
     isLessonPlanOpenState,
     isViewModesOpenState,
     unreadMessagesState,
-} from "../../../store/layoutAtoms";
-import { useSynchronizedState } from "../../../whiteboard/context-providers/SynchronizedStateProvider";
+} from "../../store/layoutAtoms";
+import { useSynchronizedState } from "../../whiteboard/context-providers/SynchronizedStateProvider";
+import {
+    DialogEndClass,
+    DialogLeaveClass,
+} from "./endCall/endCall";
 import ToolbarItem from "./toolbarItem";
 import ToolbarItemCall from "./toolbarItemCall";
 import ToolbarItemCamera from "./toolbarItemCamera";

@@ -1,5 +1,5 @@
-import { isClassDetailsOpenState } from "../../../../../store/layoutAtoms";
-import { StyledPopper } from "../../../../../utils/utils";
+import { isClassDetailsOpenState } from "../../../../store/layoutAtoms";
+import { StyledPopper } from "../../../../utils/utils";
 import ClassDetails from "./classDetails";
 import ClassRoster from "./classRoster";
 import {

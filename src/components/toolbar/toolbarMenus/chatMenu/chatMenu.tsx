@@ -1,6 +1,6 @@
-import { isLessonPlanOpenState } from "../../../../../store/layoutAtoms";
-import { StyledPopper } from "../../../../../utils/utils";
-import LessonPlan from "../../../main/lessonPlan/lessonPlan";
+import Chat from "../../../../newuiupdate/components/main/chat/chat";
+import { isChatOpenState } from "../../../../store/layoutAtoms";
+import { StyledPopper } from "../../../../utils/utils";
 import {
     Grid,
     makeStyles,
@@ -27,19 +27,19 @@ const useStyles = makeStyles((theme: Theme) => ({
     itemToggleCanvas:{},
 }));
 
-interface LessonPlanMenuProps {
+interface ChatMenuProps {
 	anchor?: any;
 }
 
-function LessonPlanMenu (props: LessonPlanMenuProps) {
+function ChatMenu (props: ChatMenuProps) {
     const { anchor } = props;
     const classes = useStyles();
 
-    const [ isLessonPlanOpen, setIsLessonPlanOpen ] = useRecoilState(isLessonPlanOpenState);
+    const [ isChatOpen, setIsChatOpen ] = useRecoilState(isChatOpenState);
 
     return (
         <StyledPopper
-            open={isLessonPlanOpen}
+            open={isChatOpen}
             anchorEl={anchor}>
             <Grid
                 container
@@ -48,11 +48,11 @@ function LessonPlanMenu (props: LessonPlanMenuProps) {
                 <Grid
                     item
                     xs>
-                    <LessonPlan />
+                    <Chat />
                 </Grid>
             </Grid>
         </StyledPopper>
     );
 }
 
-export default LessonPlanMenu;
+export default ChatMenu;
