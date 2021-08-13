@@ -48,8 +48,8 @@ local.alpha.kidsloop.net    localhost
 ```
 npm start
 ```
-### Connect to a Live Class with a valid **Access Cookie**
-#### Generate a Teacher token
+### Connect to a Local Live Class **with a valid Access Cookie**
+#### Generate a **Teacher** token
 1. Go to https://hub.alpha.kidsloop.net
 2. Sign in with an account that has a Teacher user
 3. Navigate to `/schedule`
@@ -58,18 +58,28 @@ npm start
 6. Press the "Go Live"-button in the dialog that pops up
 7. Copy the `TOKEN` from the address bar (`.../?token=TOKEN`)
 8. Navigate to jwt.io
-9. Paste the `TOKEN` in the "Encoded" section
-10. In the "HEADER" section, add `"issuer": "calmid-debug"`
-11. In the "PAYLOAD" section, change the `"iss"` value to `"calmid-debug"`
+9. Change the "Algorithm" to "HS256"
+10. Paste the `TOKEN` in the "Encoded" section
+11. In the "HEADER" section, add `"issuer": "calmid-debug"`
 12. In the "VERIFY SIGNATURE" section, insert the `DEV_SECRET` as the `your-256-bit-secret`
-13. Copy the newly generated `TOKEN` from the "Encoded" section
-14. Open up a new tab and browse to https://local.alpha.kidsloop.net:8082/?token=TOKEN
+13. In the "PAYLOAD" section, change the `"iss"` value to `"calmid-debug"`
+14. Copy the newly generated `TOKEN` from the "Encoded" section
+15. Open up a new tab and browse to https://local.alpha.kidsloop.net:8082/?token=TOKEN
 
-#### Generate a Student token
-1. Go back to step **11** above
+#### Generate a **Student** token
+1. Follow the all same steps in "Generate a **Teacher** token" until and including **Step 13**
 2. In the "PAYLOAD" section, change the `"teacher"` value to `false`
 3. Copy the newly generated `TOKEN` from the "Encoded" section
 4. Open up a new tab and browse to https://local.alpha.kidsloop.net:8082/?token=TOKEN
+### Connect to a Local Live Class **and bypass the valid Access Cookie check**
+1. In `kidsloop-live-server/src/main.ts` comment out the usage of:
+    * `checkToken` (lines ~ 58-64)
+    * `checkToken` (lines ~ 138-144)
+2. Restart `kidsloop-live-server`
+3. In `kidsloop-live-frontend/webpack.config.js` change `module.exports.devServer.https` to `false`
+4. Restart `kidsloop-live-frontend`
+
+*NOTE: When joining a class without a valid Access Cookie, you need to use the browser Safari. After you have successfully joined you can copy the web address in Safari and paste it into Chrome or any other browser.*
 
 # FAQ
 ## Build Issues
