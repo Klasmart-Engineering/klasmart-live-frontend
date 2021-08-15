@@ -383,6 +383,9 @@ function HomeFunStudyContainer({
     const [saveAssignmentItems, setSaveAssignmentItems] = useState<{ shouldSave: boolean, assignmentItems: AssignmentItem[] }>();
     const {requestPermissions} = useContext(CordovaSystemContext)
     const [shouldSyncAssignments, setShouldSyncAssignments] = useState(false)
+    const [attachmentFile, setAttachmentFile] = useState<File>()
+    const [uploadedAttachment, setUploadedAttachment] = useState<{itemId: string, resourceId: string}>()
+    const [deletedAssignmentItemId, setDeletedAssignmentItemId] = useState<string>()
 
     function generateAssignmentItemId() {
         return Math.random().toString(36).substring(7);
@@ -438,19 +441,6 @@ function HomeFunStudyContainer({
         }
 
     }, [selectedUserId, newestFeedback, hfsFeedbacks, studyInfo, shouldSyncAssignments])
-
-    useEffect(() => {
-        function displayAssignmentsFromLocal() {
-            if(!selectedUserId) return;
-            if (!studyInfo) return;
-            if(!hfsFeedbacks) return;
-
-            let newAssignmentItems: AssignmentItem[] = getLocalAssignmentItems(selectedUserId, studyInfo.id);
-            setAssignmentItems(newAssignmentItems);
-        }
-
-        displayAssignmentsFromLocal()
-    }, [hfsFeedbacks, studyInfo, selectedUserId])
 
     useEffect(() => {
         //Save Assignments after uploaded
@@ -533,7 +523,7 @@ function HomeFunStudyContainer({
 
                     const uploadResult = await contentService?.uploadAttachment(contentResourceUploadPathResponse.path, file);
                     if (uploadResult) {
-                        updateAssignmentItemStatusToUploaded(assignmentItemId, contentResourceUploadPathResponse.resource_id);
+                        setUploadedAttachment({itemId: assignmentItemId, resourceId: contentResourceUploadPathResponse.resource_id});
                     }else{
                         throw new Error("Upload failed.")
                     }
@@ -541,7 +531,7 @@ function HomeFunStudyContainer({
                 throw new Error("Get upload path failed.")
             }
         } catch(error) {
-            deleteAssignmentItem(assignmentItemId);
+            setDeletedAssignmentItemId(assignmentItemId);
             enqueueSnackbar(intl.formatMessage({ id: "file_upload_failed" }), {
                 variant: "error",
                 anchorOrigin: {
@@ -553,22 +543,29 @@ function HomeFunStudyContainer({
     }
 
     //Update the attachment's status to UPLOADED after upload successfully, then save it to local (only save the attachment_id and attachment_name without need to save the file)
-    function updateAssignmentItemStatusToUploaded(itemId: string, resourceId: string) {
-        let newAssignmentItems = assignmentItems.slice();
-        for (let i = 0; i < newAssignmentItems.length; i++) {
-            if (newAssignmentItems[i].itemId === itemId) {
-                newAssignmentItems[i] = {
-                    itemId: itemId,
-                    attachmentId: resourceId,
-                    attachmentName: newAssignmentItems[i].attachmentName,
-                    status: AttachmentStatus.UPLOADED
+    useEffect(() => {
+        function updateAssignmentItemStatusToUploaded(itemId: string, resourceId: string) {
+            if(!assignmentItems) return;
+            let newAssignmentItems = assignmentItems.slice();
+            for (let i = 0; i < newAssignmentItems.length; i++) {
+                if (newAssignmentItems[i].itemId === itemId) {
+                    newAssignmentItems[i] = {
+                        itemId: itemId,
+                        attachmentId: resourceId,
+                        attachmentName: newAssignmentItems[i].attachmentName,
+                        status: AttachmentStatus.UPLOADED
+                    }
+                    break;
                 }
-                break;
             }
+            setAssignmentItems(newAssignmentItems);
+            setSaveAssignmentItems({shouldSave: true, assignmentItems: newAssignmentItems.filter(item => item.status === AttachmentStatus.UPLOADED)});
         }
-        setAssignmentItems(newAssignmentItems);
-        setSaveAssignmentItems({shouldSave: true, assignmentItems: newAssignmentItems});
-    }
+        if(uploadedAttachment){
+            updateAssignmentItemStatusToUploaded(uploadedAttachment.itemId, uploadedAttachment.resourceId);
+            setUploadedAttachment(undefined)
+        }
+    }, [uploadedAttachment, assignmentItems])
 
     function handleClickUploadInfo() {
         setOpenSupportFileInfo(true);
@@ -658,32 +655,39 @@ function HomeFunStudyContainer({
     }
 
     //Add selected attachment then update the assignmentItems. It would be trigger to upload the attachment.
-    function addAnSelectedAttachment(file: File) {
-        const newAssignmentItems = assignmentItems.slice();
-        const itemId = generateAssignmentItemId();
+    useEffect(() => {
+        function addAnSelectedAttachment(file: File) {
+            if(!assignmentItems) return;
+            const newAssignmentItems = assignmentItems.slice();
+            const itemId = generateAssignmentItemId();
 
-        var name = file.name;
-        var extension = getFileExtensionFromType(file.type);
+            var name = file.name;
+            var extension = getFileExtensionFromType(file.type);
 
-        // NOTE: IF the file name is content we'll generate a more
-        // unique name with extension for the assignment.
-        if (name === `content`) {
-            if (extension.length) {
-                name = `attachment_${itemId}.${extension}`;
-            } else {
-                name = `attachment_${itemId}`;
+            // NOTE: IF the file name is content we'll generate a more
+            // unique name with extension for the assignment.
+            if (name === `content`) {
+                if (extension.length) {
+                    name = `attachment_${itemId}.${extension}`;
+                } else {
+                    name = `attachment_${itemId}`;
+                }
             }
+            newAssignmentItems.push({
+                itemId: itemId,
+                attachmentId: "",
+                attachmentName: name,
+                status: AttachmentStatus.SELECTED,
+                file: file
+            });
+            setAssignmentItems(newAssignmentItems);
         }
+        if(attachmentFile){
+            addAnSelectedAttachment(attachmentFile)
+            setAttachmentFile(undefined)
+        }
+    }, [attachmentFile, assignmentItems])
 
-        newAssignmentItems.push({
-            itemId: itemId,
-            attachmentId: "",
-            attachmentName: name,
-            status: AttachmentStatus.SELECTED,
-            file: file
-        });
-        setAssignmentItems(newAssignmentItems);
-    }
 
     function handleSelectedFile(file: File) {
         if (validateFileType(file)) {
@@ -707,11 +711,11 @@ function HomeFunStudyContainer({
                             closeLabel: intl.formatMessage({ id: "button_cancel" }),
                             confirmLabel: intl.formatMessage({ id: "button_continue" }),
                             onConfirm: () => {
-                                addAnSelectedAttachment(file);
+                                setAttachmentFile(file);
                             }
                         });
                     } else {
-                        addAnSelectedAttachment(file);
+                        setAttachmentFile(file);
                     }
                 };
 
@@ -753,17 +757,25 @@ function HomeFunStudyContainer({
         }
     }
 
-    function deleteAssignmentItem(assignmentItemId: string) {
-        const newAssignmentItems = assignmentItems.slice();
-        for(let i = 0 ; i < newAssignmentItems.length ; i++){
-            if(newAssignmentItems[i].itemId === assignmentItemId){
-                newAssignmentItems.splice(i, 1);
-                break;
+    useEffect(() => {
+        function deleteAssignmentItem(assignmentItemId: string) {
+            if(!assignmentItems) return;
+            const newAssignmentItems = assignmentItems.slice();
+            for(let i = 0 ; i < newAssignmentItems.length ; i++){
+                if(newAssignmentItems[i].itemId === assignmentItemId){
+                    newAssignmentItems.splice(i, 1);
+                    break;
+                }
             }
+            setAssignmentItems(newAssignmentItems);
+            setSaveAssignmentItems({shouldSave: true, assignmentItems: newAssignmentItems});
         }
-        setAssignmentItems(newAssignmentItems);
-        setSaveAssignmentItems({shouldSave: true, assignmentItems: newAssignmentItems});
-    }
+        if(deletedAssignmentItemId){
+            deleteAssignmentItem(deletedAssignmentItemId);
+            setDeletedAssignmentItemId(undefined)
+        }
+    }, [deletedAssignmentItemId, assignmentItems])
+
 
     function handleDeleteAssignmentItem(item: AssignmentItem){
         showPopup({
@@ -775,7 +787,7 @@ function HomeFunStudyContainer({
             ],
             closeLabel: intl.formatMessage({id: "button_cancel"}),
             onConfirm: () => {
-                deleteAssignmentItem(item.itemId);
+                setDeletedAssignmentItemId(item.itemId);
             },
             confirmLabel: intl.formatMessage({id: "button_delete"})
         })
@@ -859,10 +871,10 @@ function HomeFunStudyAssignment({
 
     const classes = useStyles();
     const shouldShowChooseFile = useMemo(() => {
-        const fileIsBeingUploaded = assignmentItems.some(item => item.status === AttachmentStatus.UPLOADING);
-        if (fileIsBeingUploaded) {
-            return false;
-        }
+        // const fileIsBeingUploaded = assignmentItems.some(item => item.status === AttachmentStatus.UPLOADING);
+        // if (fileIsBeingUploaded) {
+        //     return false;
+        // }
 
         return studyInfo && assignmentItems.length < MAX_FILE_LIMIT && newestFeedback?.is_allow_submit;
     }, [assignmentItems, studyInfo, newestFeedback]);
