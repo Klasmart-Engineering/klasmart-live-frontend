@@ -143,13 +143,13 @@ export class ContentService implements IContentService {
                 var uploadRequest = new XMLHttpRequest();
                 uploadRequest.open("PUT", path, true);
 
-                uploadRequest.onreadystatechange = () => {
-                    // NOTE: readyState 4 == DONE (iOS)
-                    if (uploadRequest.readyState === XMLHttpRequest.DONE ||
-                        uploadRequest.readyState === 4) {
-                        resolve(true);
-                    }
-                };
+                    uploadRequest.onreadystatechange = () => {
+                        // NOTE: readyState 4 == DONE (iOS)
+                        if ((uploadRequest.readyState === XMLHttpRequest.DONE ||
+                            uploadRequest.readyState === 4) && uploadRequest.status === 200) {
+                            resolve(true);
+                        }
+                    };
 
                 uploadRequest.onerror = () => {
                     console.error(uploadRequest.statusText);
