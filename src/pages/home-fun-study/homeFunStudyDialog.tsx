@@ -137,7 +137,6 @@ export function HomeFunStudyDialog() {
     const [newestFeedback, setNewestFeedback] = useState<ScheduleFeedbackResponse>();
     const [key, setKey] = useState(Math.random().toString(36))
     const [loading, setLoading] = useState(false);
-    const [shouldShowSubmitButton, setShouldShowSubmitButton] = useState(false);
     const [shouldSubmitFeedback, setShouldSubmitFeedback] = useState(false);
     const [submitStatus, setSubmitStatus] = useState(SubmitStatus.NONE);
     const { addOnBack, removeOnBack } = useContext(CordovaSystemContext);
@@ -236,21 +235,18 @@ export function HomeFunStudyDialog() {
         return hfsFeedbacks.find(feedback => feedback.userId === userId && feedback.studyId === studyId)
     }
 
-    useEffect(() => {
-        function checkShowSubmitButtonCondition() {
-            if(submitStatus === SubmitStatus.SUBMITTING)
-                return false;
-            if (selectedUserId && studyInfo && newestFeedback?.is_allow_submit && (studyInfo.due_at === 0 || studyInfo?.due_at >= todayTimeStamp)) {
-                const feedback = getLocalFeedback(selectedUserId, studyInfo.id);
-                if (feedback && feedback.assignmentItems.length > 0) {
-                    return true;
-                }
+    const shouldShowSubmitButton = useMemo(() => {
+        if(submitStatus === SubmitStatus.SUBMITTING)
+            return false;
+        if (selectedUserId && studyInfo && newestFeedback?.is_allow_submit && (studyInfo.due_at === 0 || studyInfo?.due_at >= todayTimeStamp)) {
+            const feedback = getLocalFeedback(selectedUserId, studyInfo.id);
+            if (feedback && feedback.assignmentItems.length > 0 && feedback.assignmentItems.length <= MAX_FILE_LIMIT) {
+                return true;
             }
-            return false
         }
+        return false
+    },[selectedUserId,studyInfo, hfsFeedbacks, submitStatus, newestFeedback])
 
-        setShouldShowSubmitButton(checkShowSubmitButtonCondition());
-    }, [selectedUserId,studyInfo, hfsFeedbacks, submitStatus, newestFeedback])
 
     useEffect(() => {
         async function submitFeedback(){
@@ -858,7 +854,7 @@ function HomeFunStudyContainer({
         </>
     )
 }
-
+const MAX_FILE_LIMIT = 3
 function HomeFunStudyAssignment({
                                     studyInfo, newestFeedback,
                                     assignmentItems, onClickUploadInfo,
@@ -867,7 +863,6 @@ function HomeFunStudyAssignment({
     studyInfo?: ScheduleResponse, newestFeedback?: ScheduleFeedbackResponse, assignmentItems: AssignmentItem[], onClickUploadInfo: () => void,
     onClickUpload: () => void, onDeleteAssignment: (item: AssignmentItem) => void
 }) {
-    const MAX_FILE_LIMIT = 3
 
     const classes = useStyles();
     const shouldShowChooseFile = useMemo(() => {
