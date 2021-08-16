@@ -137,7 +137,7 @@ export class ContentService implements IContentService {
         return result;
     }
 
-    uploadAttachment(path: string, file: File): Promise<boolean> {
+    uploadAttachment(path: string, file: File, onProgress?: (completed: number) => void): Promise<boolean> {
         return new Promise<boolean>((resolve, reject) => {
             createBlobForUploading(file).then(blob => {
                 var uploadRequest = new XMLHttpRequest();
@@ -150,6 +150,13 @@ export class ContentService implements IContentService {
                             resolve(true);
                         }
                     };
+
+                uploadRequest.upload.onprogress = (event) => {
+                     if(event.lengthComputable && onProgress){
+                         const completed = (event.loaded / event.total * 100 | 0);
+                         onProgress(completed)
+                     }
+                }
 
                 uploadRequest.onerror = () => {
                     console.error(uploadRequest.statusText);

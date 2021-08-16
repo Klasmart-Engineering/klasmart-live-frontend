@@ -141,5 +141,5 @@ export interface IContentService {
     getFeaturedContents(organizationId: string): Promise<ContentListResponse>
     getAllLessonMaterials(organizationId: string): Promise<ContentListResponse>
     getContentResourceUploadPath(organizationId: string, extension: string): Promise<ContentResourceUploadResponse>
-    uploadAttachment(path: string, file: File): Promise<boolean>
+    uploadAttachment(path: string, file: File, onProgress?: (completed: number) => void): Promise<boolean>
 }

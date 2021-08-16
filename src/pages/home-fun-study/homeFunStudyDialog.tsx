@@ -3,7 +3,6 @@ import {Header} from "../../components/header";
 import {
     Box,
     Button,
-    CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
@@ -17,6 +16,8 @@ import {
     ListItemText,
     Typography
 } from "@material-ui/core";
+import CircularProgress, { CircularProgressProps } from '@material-ui/core/CircularProgress';
+import PropTypes from 'prop-types';
 import {Edit, HighlightOffOutlined, InfoOutlined} from "@material-ui/icons";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {lockOrientation} from "../../utils/screenUtils";
@@ -60,7 +61,8 @@ export type AssignmentItem = {
     attachmentId: string,
     attachmentName: string,
     status: AttachmentStatus,
-    file?: File
+    file?: File,
+    uploadProgress?: number
 }
 
 export enum AttachmentStatus {
@@ -110,6 +112,9 @@ const useStyles = makeStyles((theme: Theme) =>
             marginTop: -12,
             marginLeft: -12,
         },
+        uploadProgress: {
+            fontSize: 7
+        }
     }
 ));
 
@@ -382,6 +387,7 @@ function HomeFunStudyContainer({
     const [attachmentFile, setAttachmentFile] = useState<File>()
     const [uploadedAttachment, setUploadedAttachment] = useState<{itemId: string, resourceId: string}>()
     const [deletedAssignmentItemId, setDeletedAssignmentItemId] = useState<string>()
+    const [uploadProgress, setUploadProgress] = useState<{itemId: string, progress: number}>()
 
     function generateAssignmentItemId() {
         return Math.random().toString(36).substring(7);
@@ -509,6 +515,25 @@ function HomeFunStudyContainer({
         updateSubmitStatus();
     }, [assignmentItems])
 
+    useEffect(() => {
+        function updateUploadProgressForAssignmentItem(itemId: string, progress: number) {
+            if(!assignmentItems) return;
+            const newAssignmentItems = assignmentItems.slice();
+            const itemIndex = newAssignmentItems.findIndex(item => item.itemId === itemId)
+            if(itemIndex >= 0){
+                newAssignmentItems[itemIndex] = {
+                    ...newAssignmentItems[itemIndex],
+                    uploadProgress: progress
+                }
+                setAssignmentItems(newAssignmentItems)
+            }
+        }
+        if(uploadProgress){
+            updateUploadProgressForAssignmentItem(uploadProgress.itemId, uploadProgress.progress)
+            setUploadProgress(undefined)
+        }
+    }, [uploadProgress, assignmentItems])
+
     async function uploadAttachment(assignmentItemId: string, file: File) {
         if (!selectedOrg) {
             throw new Error("Organization is not selected.");
@@ -517,7 +542,9 @@ function HomeFunStudyContainer({
             const contentResourceUploadPathResponse = await contentService?.getContentResourceUploadPath(selectedOrg.organization_id, getFileExtensionFromType(file.type));
             if (contentResourceUploadPathResponse) {
 
-                    const uploadResult = await contentService?.uploadAttachment(contentResourceUploadPathResponse.path, file);
+                    const uploadResult = await contentService?.uploadAttachment(contentResourceUploadPathResponse.path, file, (completed) => {
+                        setUploadProgress({itemId: assignmentItemId, progress: completed})
+                    });
                     if (uploadResult) {
                         setUploadedAttachment({itemId: assignmentItemId, resourceId: contentResourceUploadPathResponse.resource_id});
                     }else{
@@ -874,6 +901,29 @@ function HomeFunStudyAssignment({
         return studyInfo && assignmentItems.length < MAX_FILE_LIMIT && newestFeedback?.is_allow_submit;
     }, [assignmentItems, studyInfo, newestFeedback]);
 
+    function CircularProgressWithLabel(props: CircularProgressProps & { value: number }) {
+        const classes = useStyles()
+        return (
+            <Box position="relative" display="inline-flex">
+                <CircularProgress variant="determinate" {...props} />
+                <Box
+                    top={0}
+                    left={0}
+                    bottom={0}
+                    right={0}
+                    position="absolute"
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                >
+                    <Typography variant="caption" classes={{caption: classes.uploadProgress}} component="div" color="primary">{`${Math.round(
+                        props.value,
+                    )}%`}</Typography>
+                </Box>
+            </Box>
+        );
+    }
+
     return (
         <Grid item xs>
             <Box mb={2}>
@@ -930,7 +980,7 @@ function HomeFunStudyAssignment({
                                                 }}>
                                                     <HighlightOffOutlined color="primary"/>
                                                 </IconButton>
-                                                : <CircularProgress size={20} thickness={4}/>
+                                                : <CircularProgressWithLabel size={20} thickness={4} value={item.uploadProgress ?? 0}/>
                                         }
                                     </ListItemSecondaryAction>
                                         : ''
