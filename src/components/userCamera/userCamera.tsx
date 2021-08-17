@@ -1,8 +1,8 @@
 /* eslint-disable modules-newline/import-declaration-newline */
-import ReactPlayer from "../../../components/react-player";
-import { LocalSessionContext } from "../../../providers/providers";
-import { RoomContext } from "../../../providers/roomContext";
-import { WebRTCContext } from "../../../providers/WebRTCContext";
+import { LocalSessionContext } from "../../providers/providers";
+import { RoomContext } from "../../providers/roomContext";
+import { WebRTCContext } from "../../providers/WebRTCContext";
+import ReactPlayer from "../react-player";
 import NoCamera from "./noCamera";
 import UserCameraActions from "./userCameraActions";
 import UserCameraDetails from "./userCameraDetails";
