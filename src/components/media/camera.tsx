@@ -9,7 +9,6 @@ import {
 } from "../../providers/WebRTCContext";
 import { State } from "../../store/store";
 import PermissionControls from "../../whiteboard/components/WBPermissionControls";
-import { SessionsContext } from "../layout";
 import StyledIcon from "../styled/icon";
 import TrophyControls from "../trophies/trophyControls";
 import {
