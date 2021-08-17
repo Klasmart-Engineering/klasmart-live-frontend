@@ -1,5 +1,5 @@
-import { RoomContext } from "../../../../../providers/roomContext";
-import { NoItemList } from "../../../../../utils/utils";
+import { RoomContext } from "../../../../providers/roomContext";
+import { NoItemList } from "../../../../utils/utils";
 import Message from "./message";
 import SendMessage from "./sendMessage";
 import {
@@ -39,7 +39,6 @@ function Messages () {
     const { messages:messagesData } = useContext(RoomContext);
 
     const messages:any = Array.from(messagesData);
-    const messagesBox = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         // TODO, useref + scrollintoview (if possible),
@@ -60,7 +59,6 @@ function Messages () {
             <Grid
                 item
                 xs
-                // ref={messagesBox}
                 id="chat-container"
                 classes={{
                     root: `chat-container`,

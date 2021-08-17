@@ -11,7 +11,10 @@ import { HatGraduation as TeacherIcon } from "@styled-icons/fluentui-system-fill
 import clsx from "clsx";
 import { UserAvatar } from "kidsloop-px";
 import React from "react";
-import { FormattedDate, FormattedTime } from "react-intl";
+import {
+    FormattedDate,
+    FormattedTime,
+} from "react-intl";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root:{

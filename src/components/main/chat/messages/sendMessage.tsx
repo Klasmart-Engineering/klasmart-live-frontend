@@ -1,8 +1,8 @@
 import {
     LIVE_LINK,
     LocalSessionContext,
-} from "../../../../../providers/providers";
-import { SEND_MESSAGE } from "../../../../../utils/graphql";
+} from "../../../../providers/providers";
+import { SEND_MESSAGE } from "../../../../utils/graphql";
 import {  useMutation } from "@apollo/client";
 import {
     IconButton,
