@@ -268,7 +268,7 @@ export function Schedule() {
                 item
                 style={{ flexGrow: 1, overflowY: "auto", backgroundColor: "white" }}
             >
-                {classType === ClassType.LIVE ? <ScheduledLiveList setOpenAlert={setOpenAlert} /> : <ScheduledStudyList setSelectedSchedule={setSelectedSchedule} setOpenStudyDetail={setOpenStudyDetail} />}
+                {classType === ClassType.LIVE ? <ScheduledLiveList setOpenAlert={setOpenAlert} setSelectedSchedule={setSelectedSchedule} setOpenStudyDetail={setOpenStudyDetail} /> : <ScheduledStudyList setSelectedSchedule={setSelectedSchedule} setOpenStudyDetail={setOpenStudyDetail} />}
             </Grid>
         }
         <ClassTypeSwitcher />
@@ -281,7 +281,9 @@ export function Schedule() {
     </>)
 }
 
-function ScheduledLiveList({ setOpenAlert }: { setOpenAlert: React.Dispatch<React.SetStateAction<boolean>> }) {
+function ScheduledLiveList({ setOpenAlert, setSelectedSchedule, setOpenStudyDetail }: { setOpenAlert: React.Dispatch<React.SetStateAction<boolean>>,
+    setSelectedSchedule: React.Dispatch<React.SetStateAction<ScheduleResponse | undefined>>,
+    setOpenStudyDetail: React.Dispatch<React.SetStateAction<boolean>> }) {
     const { listRoot, listSubheaderText } = useStyles();
     const scheduleTimeViewLiveToday = useSelector((state: State) => state.data.scheduleTimeViewLiveToday);
     const scheduleTimeViewLiveTomorrow = useSelector((state: State) => state.data.scheduleTimeViewLiveTomorrow);
@@ -307,7 +309,7 @@ function ScheduledLiveList({ setOpenAlert }: { setOpenAlert: React.Dispatch<Reac
                             <FormattedMessage id="schedule_liveNoSchedule" />
                         </Typography>
                     </ListItem>
-                ) : scheduleTimeViewLiveToday.map((tv: ScheduleTimeViewResponse) => <ScheduledLiveItem key={tv.id} scheduleId={tv.id} setOpenAlert={setOpenAlert} />)}
+                ) : scheduleTimeViewLiveToday.map((tv: ScheduleTimeViewResponse) => <ScheduledLiveItem key={tv.id} scheduleId={tv.id} setOpenAlert={setOpenAlert} setSelectedSchedule={setSelectedSchedule} setOpenStudyDetail={setOpenStudyDetail} />)}
             </List>
         </Grid>
         <Grid item>
@@ -329,7 +331,7 @@ function ScheduledLiveList({ setOpenAlert }: { setOpenAlert: React.Dispatch<Reac
                             <FormattedMessage id="schedule_liveNoSchedule" />
                         </Typography>
                     </ListItem>
-                ) : scheduleTimeViewLiveTomorrow.map((tv: ScheduleTimeViewResponse) => <ScheduledLiveItem key={tv.id} scheduleId={tv.id} setOpenAlert={setOpenAlert} />)}
+                ) : scheduleTimeViewLiveTomorrow.map((tv: ScheduleTimeViewResponse) => <ScheduledLiveItem key={tv.id} scheduleId={tv.id} setOpenAlert={setOpenAlert} setSelectedSchedule={setSelectedSchedule} setOpenStudyDetail={setOpenStudyDetail} />)}
             </List>
         </Grid>
         <Grid item>
@@ -351,13 +353,16 @@ function ScheduledLiveList({ setOpenAlert }: { setOpenAlert: React.Dispatch<Reac
                             <FormattedMessage id="schedule_liveNoSchedule" />
                         </Typography>
                     </ListItem>
-                ) : scheduleTimeViewLiveUpcoming.map((tv: ScheduleTimeViewResponse) => <ScheduledLiveItem key={tv.id} scheduleId={tv.id} setOpenAlert={setOpenAlert} />)}
+                ) : scheduleTimeViewLiveUpcoming.map((tv: ScheduleTimeViewResponse) => <ScheduledLiveItem key={tv.id} scheduleId={tv.id} setOpenAlert={setOpenAlert} setSelectedSchedule={setSelectedSchedule} setOpenStudyDetail={setOpenStudyDetail}/>)}
             </List>
         </Grid>
     </>)
 }
 
-function ScheduledLiveItem({ scheduleId, setOpenAlert }: { scheduleId: string, setOpenAlert: React.Dispatch<React.SetStateAction<boolean>> }) {
+function ScheduledLiveItem({ scheduleId, setOpenAlert, setSelectedSchedule, setOpenStudyDetail }: { scheduleId: string,
+    setOpenAlert: React.Dispatch<React.SetStateAction<boolean>>,
+    setSelectedSchedule: React.Dispatch<React.SetStateAction<ScheduleResponse | undefined>>,
+    setOpenStudyDetail: React.Dispatch<React.SetStateAction<boolean>> }) {
     const { listItemAvatar, listItemTextPrimary } = useStyles();
     const dispatch = useDispatch();
     const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
@@ -402,27 +407,15 @@ function ScheduledLiveItem({ scheduleId, setOpenAlert }: { scheduleId: string, s
         setLiveTime(timeStr);
     }, [liveInfo])
 
-    const goJoin = () => {
-        if (!schedulerService) { return; }
-        if (!liveInfo) { return; }
-        if (!selectedOrg) { return; }
+    const displayScheduleInformation = () => {
+        if (!liveInfo) return;
 
-        dispatch(setLessonPlanIdOfSelectedSchedule(liveInfo.lesson_plan.id));
-        schedulerService.getScheduleToken(selectedOrg.organization_id, liveInfo.id).then((res) => {
-            if (res.token) {
-                setToken(res.token);
-                // TODO: Can we get rid of the token query parameter and just use
-                // react component state for keeping and parsing the token instead?
-                location.href = `#/join?token=${res.token}`;
-            } else {
-                setOpenAlert(true);
-                return;
-            }
-        })
+        setSelectedSchedule(liveInfo);
+        setOpenStudyDetail(true);
     }
 
     return (
-        <ListItem button onClick={goJoin}>
+        <ListItem button onClick={displayScheduleInformation}>
             <ListItemAvatar>
                 <Avatar alt={"Scheduled Live"} className={listItemAvatar}>
                     <img src={ScheduledLivePopcorn} height={24} />

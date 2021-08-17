@@ -18,6 +18,8 @@ const messages: Record<string, string> = {
     button_ok: "Ok",
     button_delete: "Delete",
     button_upload: "Upload",
+    button_go_live: "Go Live",
+    button_go_study: "Go Study",
     label_not_defined: "Not defined",
     close_confirm_description_1: "Would you like to close the window?",
     close_confirm_description_2: "It will dismiss your change.",

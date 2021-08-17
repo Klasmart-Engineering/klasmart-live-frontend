@@ -52,6 +52,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     }));
 
+const STUDY_DETAIL_ON_BACK_ID = "studyDetailOnBackID"
+
 export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
     schedule?: ScheduleResponse,
     open: boolean,
@@ -66,6 +68,24 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
     const { isIOS } = useContext(CordovaSystemContext);
     const { showPopup } = usePopupContext();
     const intl = useIntl();
+    const { addOnBack, removeOnBack } = useContext(CordovaSystemContext);
+
+    useEffect(() => {
+        if(open){
+            if (addOnBack) {
+                addOnBack({
+                    id: STUDY_DETAIL_ON_BACK_ID,
+                    onBack: () => {
+                        closeButtonHandler()
+                    }
+                })
+            }
+        }else{
+            if(removeOnBack){
+                removeOnBack(STUDY_DETAIL_ON_BACK_ID)
+            }
+        }
+    }, [open])
 
     const startAt = useMemo<string | undefined>(() => {
         if (schedule?.start_at) {
@@ -386,7 +406,9 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
                 </DialogContent>
                 <DialogActions>
                     <Button size={"large"} variant={`contained`} onClick={closeButtonHandler}>Cancel</Button>
-                    <Button size={"large"} color={`primary`} variant={`contained`} onClick={joinButtonHandler} disabled={schedule === undefined}>Go Study</Button>
+                    <Button size={"large"} color={`primary`} variant={`contained`} onClick={joinButtonHandler} disabled={schedule === undefined}>
+                        {schedule?.class_type === "OnlineClass" ? intl.formatMessage({id: 'button_go_live'}) :  intl.formatMessage({id: 'button_go_study'})}
+                    </Button>
                 </DialogActions>
             </Dialog>
             {/*<StudyDetailPreview open={previewOpen} onClose={() => setPreviewOpen(false)} attachmentId={schedule?.attachment?.id} attachmentName={schedule?.attachment?.name} />*/}
