@@ -2,6 +2,7 @@ import ActivityImage from "../../../../components/interactiveContent/image";
 import { PreviewPlayer } from "../../../../components/interactiveContent/previewPlayer";
 import { RecordedIframe } from "../../../../components/interactiveContent/recordediframe";
 import { ReplicaMedia } from "../../../../components/interactiveContent/synchronized-video";
+import PreviewLessonPlan from "../../../../components/main/previewLessonPlan";
 import { MaterialTypename } from "../../../../lessonMaterialContext";
 import { ContentType } from "../../../../pages/utils";
 import {
@@ -17,7 +18,6 @@ import {
     streamIdState,
 } from "../../../../store/layoutAtoms";
 import { MUTATION_SHOW_CONTENT } from "../../../../utils/graphql";
-import PreviewLessonPlan from "../previewLessonPlan";
 import { useMutation } from "@apollo/client";
 import {
     Grid,

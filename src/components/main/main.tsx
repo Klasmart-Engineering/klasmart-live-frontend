@@ -1,9 +1,9 @@
-import Toolbar from "../../../components/toolbar/toolbar";
-import { ContentType } from "../../../pages/utils";
-import { LocalSessionContext } from "../../../providers/providers";
-import { RoomContext } from "../../../providers/roomContext";
-import { ClassType } from "../../../store/actions";
-import { Whiteboard } from "../../../whiteboard/components/Whiteboard";
+import { ContentType } from "../../pages/utils";
+import { LocalSessionContext } from "../../providers/providers";
+import { RoomContext } from "../../providers/roomContext";
+import { ClassType } from "../../store/actions";
+import { Whiteboard } from "../../whiteboard/components/Whiteboard";
+import Toolbar from "../toolbar/toolbar";
 import MainClass from "./mainClass";
 import MainDrawer from "./mainDrawer";
 import MainView from "./mainView";

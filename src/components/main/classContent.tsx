@@ -1,16 +1,16 @@
-import { WB_TOOLBAR_MAX_HEIGHT } from "../../../components/classContent/WBToolbar";
 import {
     LIVE_LINK,
     LocalSessionContext,
-} from "../../../providers/providers";
-import { ClassType } from "../../../store/actions";
+} from "../../providers/providers";
+import { ClassType } from "../../store/actions";
 import {
     materialActiveIndexState,
     showEndStudyState,
     studyRecommandUrlState,
-} from "../../../store/layoutAtoms";
-import { MUTATION_REWARD_TROPHY } from "../../../utils/graphql";
-import { Whiteboard } from "../../../whiteboard/components/Whiteboard";
+} from "../../store/layoutAtoms";
+import { MUTATION_REWARD_TROPHY } from "../../utils/graphql";
+import { Whiteboard } from "../../whiteboard/components/Whiteboard";
+import { WB_TOOLBAR_MAX_HEIGHT } from "../classContent/WBToolbar";
 import PreviewLessonPlan from "./previewLessonPlan";
 import { useMutation } from "@apollo/client";
 import { Typography } from "@material-ui/core";

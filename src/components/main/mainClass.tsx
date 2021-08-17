@@ -1,7 +1,7 @@
-import { WBToolbarContainer } from "../../../components/classContent/WBToolbar";
-import { LocalSessionContext } from "../../../providers/providers";
-import { ClassType } from "../../../store/actions";
-import { showEndStudyState } from "../../../store/layoutAtoms";
+import { LocalSessionContext } from "../../providers/providers";
+import { ClassType } from "../../store/actions";
+import { showEndStudyState } from "../../store/layoutAtoms";
+import { WBToolbarContainer } from "../classContent/WBToolbar";
 import { ClassContent } from "./classContent";
 import React,
 { useContext } from "react";
