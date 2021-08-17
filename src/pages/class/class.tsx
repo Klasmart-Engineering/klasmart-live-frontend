@@ -1,8 +1,7 @@
 import backgroundStudy from "../../assets/img/background/background_study.jpg";
 import Sidebar from '../../components/sidebar/sidebar';
-import Main from '../../newuiupdate/components/main/main';
+import Main from '../../components/main/main';
 import {
-    LIVE_LINK,
     LocalSessionContext,
     SFU_LINK,
 } from '../../providers/providers';
@@ -19,7 +18,6 @@ import {
     hasControlsState,
     studyRecommandUrlState,
 } from "../../store/layoutAtoms";
-import { MUTATION_SET_HOST } from "../../utils/graphql";
 import { classGetInformation } from "../../utils/utils";
 import {
     useMutation,
