@@ -1,5 +1,5 @@
-import { isLessonPlanOpenState } from "../../../../store/layoutAtoms";
-import { TabPanel } from "../../../../utils/utils";
+import { isLessonPlanOpenState } from "../../../store/layoutAtoms";
+import { TabPanel } from "../../../utils/utils";
 import Manuals from "./manuals/manuals";
 import Plan from "./plan/plan";
 import {

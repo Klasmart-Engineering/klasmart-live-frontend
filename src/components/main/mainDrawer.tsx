@@ -1,7 +1,7 @@
-import LessonPlan from "../../newuiupdate/components/main/lessonPlan/lessonPlan";
 import { LocalSessionContext } from "../../providers/providers";
 import { ClassType } from "../../store/actions";
 import { StyledDrawer } from "../../utils/utils";
+import LessonPlan from "./lessonPlan/lessonPlan";
 import React,
 { useContext } from "react";
 
