@@ -324,7 +324,7 @@ export function HomeFunStudyDialog() {
             }
         }
 
-    }, [selectedOrg, studyInfo, hfsFeedbacks, schedulerService, shouldSubmitFeedback])
+    }, [selectedOrg, studyInfo, hfsFeedbacks, schedulerService, shouldSubmitFeedback, submitStatus])
 
     return (
         <Dialog
