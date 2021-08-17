@@ -14,7 +14,6 @@ import {
 } from "../pages/utils";
 import { RoomContext } from '../providers/roomContext';
 import { WebRTCContext } from "../providers/WebRTCContext";
-import { SendMessage } from "../sendMessage";
 import {
     setColsObserve,
     setContentIndex,
@@ -579,7 +578,6 @@ function TabInnerContent ({ title }: { title: string }) {
                         position: `absolute`,
                         bottom: 0,
                     }}>
-                    <SendMessage />
                 </Grid>
             </Grid>
         );

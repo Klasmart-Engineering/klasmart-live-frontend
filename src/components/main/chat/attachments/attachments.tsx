@@ -1,5 +1,5 @@
-import { LocalSessionContext } from "../../../../../providers/providers";
-import { NoItemList } from "../../../../../utils/utils";
+import { LocalSessionContext } from "../../../../providers/providers";
+import { NoItemList } from "../../../../utils/utils";
 import Attachment from "./attachment";
 import {
     Button,
