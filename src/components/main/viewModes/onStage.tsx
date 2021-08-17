@@ -1,6 +1,6 @@
-import UserCamera from "../../../../components/userCamera/userCamera";
-import { LocalSessionContext } from "../../../../providers/providers";
-import { RoomContext } from "../../../../providers/roomContext";
+import { LocalSessionContext } from "../../../providers/providers";
+import { RoomContext } from "../../../providers/roomContext";
+import UserCamera from "../../userCamera/userCamera";
 import {
     Grid,
     makeStyles,

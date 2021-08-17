@@ -1,23 +1,22 @@
-import Loading from "../../../../components/interactiveContent/loading";
-import { PreviewPlayer } from "../../../../components/interactiveContent/previewPlayer";
-import { RecordedIframe } from "../../../../components/interactiveContent/recordediframe";
-import { Session } from "../../../../pages/utils";
-import { LocalSessionContext } from "../../../../providers/providers";
-import { RoomContext } from "../../../../providers/roomContext";
-import { isShowContentLoadingState } from "../../../../store/layoutAtoms";
+import { Session } from "../../../pages/utils";
+import { LocalSessionContext } from "../../../providers/providers";
+import { RoomContext } from "../../../providers/roomContext";
+import { isShowContentLoadingState } from "../../../store/layoutAtoms";
 import {
     fullScreenById,
     sleep,
-} from "../../../../utils/utils";
-import { Whiteboard } from "../../../../whiteboard/components/Whiteboard";
-import { useSynchronizedState } from "../../../../whiteboard/context-providers/SynchronizedStateProvider";
+} from "../../../utils/utils";
+import { Whiteboard } from "../../../whiteboard/components/Whiteboard";
+import { useSynchronizedState } from "../../../whiteboard/context-providers/SynchronizedStateProvider";
+import Loading from "../../interactiveContent/loading";
+import { PreviewPlayer } from "../../interactiveContent/previewPlayer";
+import { RecordedIframe } from "../../interactiveContent/recordediframe";
 import {
     makeStyles,
     Theme,
     Typography,
 } from "@material-ui/core";
 import { ArrowsAngleExpand as ExpandIcon } from "@styled-icons/bootstrap/ArrowsAngleExpand";
-import { CloudOffline as OfflineIcon } from "@styled-icons/ionicons-outline/CloudOffline";
 import clsx from "clsx";
 import { useSnackbar } from "kidsloop-px";
 import React,
@@ -131,11 +130,8 @@ function Observe () {
     const intl = useIntl();
     const { enqueueSnackbar } = useSnackbar();
     const {
-        materials,
         sessionId,
-        roomId,
         isTeacher,
-
     } = useContext(LocalSessionContext);
     const { content, sessions } = useContext(RoomContext);
     const [ studentSessions, setStudentSessions ] = useState<Session[]>([]);
