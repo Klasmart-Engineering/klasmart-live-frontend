@@ -1,5 +1,5 @@
-import { LocalSessionContext } from "../../../providers/providers";
-import { WebRTCContext } from "../../../providers/WebRTCContext";
+import { LocalSessionContext } from "../../providers/providers";
+import { WebRTCContext } from "../../providers/WebRTCContext";
 import {
     Grid,
     makeStyles,

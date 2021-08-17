@@ -2,24 +2,24 @@ import {
     LIVE_LINK,
     LocalSessionContext,
     SFU_LINK,
-} from "../../../providers/providers";
-import { RoomContext } from "../../../providers/roomContext";
+} from "../../providers/providers";
+import { RoomContext } from "../../providers/roomContext";
 import {
     GLOBAL_MUTE_QUERY,
     MUTE,
     MuteNotification,
     WebRTCContext,
-} from "../../../providers/WebRTCContext";
+} from "../../providers/WebRTCContext";
 import {
     hasControlsState,
     pinnedUserState,
-} from "../../../store/layoutAtoms";
+} from "../../store/layoutAtoms";
 import {
     MUTATION_REWARD_TROPHY,
     MUTATION_SET_HOST,
-} from "../../../utils/graphql";
-import { fullScreenById } from "../../../utils/utils";
-import { useSynchronizedState } from "../../../whiteboard/context-providers/SynchronizedStateProvider";
+} from "../../utils/graphql";
+import { fullScreenById } from "../../utils/utils";
+import { useSynchronizedState } from "../../whiteboard/context-providers/SynchronizedStateProvider";
 import {
     useMutation,
     useQuery,
