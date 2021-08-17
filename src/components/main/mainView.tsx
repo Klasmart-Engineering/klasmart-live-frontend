@@ -1,13 +1,13 @@
-import Observe from "../../newuiupdate/components/main/viewModes/Observe";
-import OnStage from "../../newuiupdate/components/main/viewModes/onStage";
-import Present from "../../newuiupdate/components/main/viewModes/Present";
-import Screenshare from "../../newuiupdate/components/main/viewModes/Screenshare";
 import { ContentType } from "../../pages/utils";
 import { RoomContext } from "../../providers/roomContext";
 import { ScreenShareContext } from "../../providers/screenShareProvider";
 import { WebRTCContext } from "../../providers/WebRTCContext";
 import { isLessonPlanOpenState } from "../../store/layoutAtoms";
 import PreviewLessonPlan from "./previewLessonPlan";
+import Observe from "./viewModes/Observe";
+import OnStage from "./viewModes/onStage";
+import Present from "./viewModes/Present";
+import Screenshare from "./viewModes/Screenshare";
 import {
     Grid,
     makeStyles,
