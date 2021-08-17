@@ -1,4 +1,4 @@
-import { NoItemList } from "../../../../../utils/utils";
+import { NoItemList } from "../../../../utils/utils";
 import Manual from "./manual";
 import {
     Grid,
