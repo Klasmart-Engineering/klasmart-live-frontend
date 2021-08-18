@@ -363,7 +363,7 @@ function ScheduledLiveItem({ scheduleId, setOpenAlert, setSelectedSchedule, setO
     setOpenAlert: React.Dispatch<React.SetStateAction<boolean>>,
     setSelectedSchedule: React.Dispatch<React.SetStateAction<ScheduleResponse | undefined>>,
     setOpenStudyDetail: React.Dispatch<React.SetStateAction<boolean>> }) {
-    const { listItemAvatar, listItemTextPrimary } = useStyles();
+    const { listItemAvatar, listItemTextPrimary, listItemSecondAction } = useStyles();
     const dispatch = useDispatch();
     const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
 
@@ -415,7 +415,7 @@ function ScheduledLiveItem({ scheduleId, setOpenAlert, setSelectedSchedule, setO
     }
 
     return (
-        <ListItem button onClick={displayScheduleInformation}>
+        <ListItem button onClick={displayScheduleInformation} classes={{secondaryAction: listItemSecondAction}}>
             <ListItemAvatar>
                 <Avatar alt={"Scheduled Live"} className={listItemAvatar}>
                     <img src={ScheduledLivePopcorn} height={24} />
@@ -510,7 +510,7 @@ function AnytimeStudyItem({ studyId, assessmentForStudent, setSelectedSchedule, 
     setOpenStudyDetail: React.Dispatch<React.SetStateAction<boolean>>
 }) {
     const classes = useStyles();
-    const { listItemAvatar, listItemTextPrimary } = useStyles();
+    const { listItemAvatar, listItemTextPrimary, listItemSecondAction } = useStyles();
     const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
 
     const { schedulerService } = useServices();
@@ -549,7 +549,7 @@ function AnytimeStudyItem({ studyId, assessmentForStudent, setSelectedSchedule, 
     }
 
     return (
-        <ListItem key={studyId} button onClick={displayScheduleInformation}>
+        <ListItem key={studyId} button onClick={displayScheduleInformation} classes={{secondaryAction: listItemSecondAction}}>
             <ListItemAvatar>
                 <Avatar alt={"Scheduled Study"} className={listItemAvatar}>
                     <img src={ScheduledStudyHouse} height={24} />
