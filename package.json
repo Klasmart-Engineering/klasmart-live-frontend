@@ -181,7 +181,6 @@
         "MANUAL_INIT_AUDIO_DEVICE": "FALSE"
       },
       "cordova-plugin-insomnia": {},
-      "cordova-plugin-external-url-intercept": {},
       "cordova-plugin-camera": {
         "ANDROID_SUPPORT_V4_VERSION": "27.+"
       },
@@ -189,7 +188,8 @@
       "cordova-plugin-filepath": {},
       "cordova-plugin-preview-any-file": {},
       "cordova-plugin-file": {},
-      "cordova-plugin-network-information": {}
+      "cordova-plugin-network-information": {},
+      "cordova-plugin-external-url-intercept": {}
     },
     "platforms": [
       "ios",
