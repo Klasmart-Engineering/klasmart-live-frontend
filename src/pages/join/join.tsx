@@ -339,7 +339,7 @@ export default function Join (): JSX.Element {
             <Grid
                 container
                 direction="column"
-                justify="center"
+                justifyContent="center"
                 alignItems="center"
                 style={{
                     paddingBottom: `20px`,
@@ -351,7 +351,7 @@ export default function Join (): JSX.Element {
                             <Grid
                                 container
                                 direction={isSmDown ? `column-reverse` : `row`}
-                                justify="center"
+                                justifyContent="center"
                                 alignItems="center"
                                 spacing={4}
                             >
@@ -373,7 +373,7 @@ export default function Join (): JSX.Element {
                                     <Grid
                                         container
                                         direction="column"
-                                        justify="center"
+                                        justifyContent="center"
                                         alignItems="center"
                                     >
                                         <Grid item>
@@ -438,7 +438,7 @@ function CameraPreviewFallback ({ permissionError }: { permissionError: boolean 
         <Grid
             container
             direction="column"
-            justify="center"
+            justifyContent="center"
             alignItems="center"
             alignContent="center"
             style={{

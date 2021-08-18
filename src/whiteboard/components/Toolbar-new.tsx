@@ -486,7 +486,7 @@ export const WBToolbar: FunctionComponent<Props> = ({ children, useLocalDisplay 
             container
             id="wb-toolbar-student"
             direction="row"
-            justify="center"
+            justifyContent="center"
             alignItems="center"
             spacing={2}
             style={{
@@ -495,7 +495,7 @@ export const WBToolbar: FunctionComponent<Props> = ({ children, useLocalDisplay 
             <Grid
                 container
                 direction="row"
-                justify="space-between"
+                justifyContent="space-between"
                 alignItems="center"
                 alignContent="center" >
                 <ColorPicker />
@@ -521,7 +521,7 @@ export const WBToolbar: FunctionComponent<Props> = ({ children, useLocalDisplay 
             id="wb-toolbar-teacher">
             <Grid
                 container
-                justify="space-between"
+                justifyContent="space-between"
                 alignItems="center"
                 spacing={2}>
                 <Grid
@@ -529,7 +529,7 @@ export const WBToolbar: FunctionComponent<Props> = ({ children, useLocalDisplay 
                     xs>
                     <Grid
                         container
-                        justify="space-between"
+                        justifyContent="space-between"
                         alignItems="center"
                         alignContent="center" >
                         <ColorPicker />
@@ -538,7 +538,7 @@ export const WBToolbar: FunctionComponent<Props> = ({ children, useLocalDisplay 
                 <Grid item>
                     <Grid
                         container
-                        justify="space-between"
+                        justifyContent="space-between"
                         alignItems="center"
                         alignContent="center" >
                         <ToolButton
