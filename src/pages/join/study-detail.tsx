@@ -38,6 +38,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         color: `#193756`,
         fontWeight: 600,
         overflowWrap: "break-word",
+        wordWrap: "break-word"
     },
     wrapper: {
         position: 'relative',
