@@ -27,6 +27,7 @@ export const MIME_TO_EXTENSION = new Map<string, string>([
     ["audio/wav", "wav"],
     ["audio/x-wav", "wav"],
     ["audio/x-pn-wav", "wav"],
+    ["audio/vnd.wave", "wav"],
     ["audio/mpeg", "mp3"],
     ["video/mp4", "mp4"],
     ["video/x-msvideo", "avi"],
