@@ -98,7 +98,7 @@ export const Toolbar: FunctionComponent<Props> = ({ children }: Props): JSX.Elem
             <Grid
                 container
                 direction="row"
-                justify="center"
+                justifyContent="center"
                 alignItems="center"
                 spacing={1}
                 style={{
@@ -114,7 +114,7 @@ export const Toolbar: FunctionComponent<Props> = ({ children }: Props): JSX.Elem
             <Grid
                 container
                 direction="row"
-                justify="center"
+                justifyContent="center"
                 alignItems="center"
                 spacing={1}
                 style={{
