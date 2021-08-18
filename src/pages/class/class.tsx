@@ -1,6 +1,6 @@
 import backgroundStudy from "../../assets/img/background/background_study.jpg";
-import Sidebar from '../../components/sidebar/sidebar';
 import Main from '../../components/main/main';
+import Sidebar from '../../components/sidebar/sidebar';
 import {
     LocalSessionContext,
     SFU_LINK,
