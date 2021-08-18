@@ -752,7 +752,7 @@ function HomeFunStudyContainer({
                         // popup window because currently usePopupContext doesn't
                         // support opening additional popup windows within the
                         // onConfirm/onCancel callback functions.
-                        setTimeout(confirmCellularUpload, 10);
+                        setTimeout(confirmCellularUpload, 200);
                     }
                 });
             } else {
