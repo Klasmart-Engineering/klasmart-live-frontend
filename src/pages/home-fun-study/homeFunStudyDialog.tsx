@@ -48,6 +48,8 @@ import {blue} from "@material-ui/core/colors";
 import clsx from "clsx";
 import {usePopupContext} from "../../context-provider/popup-context";
 import {CordovaSystemContext, PermissionType} from "../../context-provider/cordova-system-context";
+import useCordovaInitialize from "../../cordova-initialize";
+import {CustomCircularProgress} from "../../components/customCircularProgress";
 
 export type HomeFunStudyFeedback = {
     userId: string,
@@ -112,9 +114,6 @@ const useStyles = makeStyles((theme: Theme) =>
             marginTop: -12,
             marginLeft: -12,
         },
-        uploadProgress: {
-            fontSize: 7
-        }
     }
 ));
 
@@ -890,7 +889,7 @@ function HomeFunStudyAssignment({
     studyInfo?: ScheduleResponse, newestFeedback?: ScheduleFeedbackResponse, assignmentItems: AssignmentItem[], onClickUploadInfo: () => void,
     onClickUpload: () => void, onDeleteAssignment: (item: AssignmentItem) => void
 }) {
-
+    const {isAndroid} = useCordovaInitialize();
     const classes = useStyles();
     const shouldShowChooseFile = useMemo(() => {
         // const fileIsBeingUploaded = assignmentItems.some(item => item.status === AttachmentStatus.UPLOADING);
@@ -900,29 +899,6 @@ function HomeFunStudyAssignment({
 
         return studyInfo && assignmentItems.length < MAX_FILE_LIMIT && newestFeedback?.is_allow_submit;
     }, [assignmentItems, studyInfo, newestFeedback]);
-
-    function CircularProgressWithLabel(props: CircularProgressProps & { value: number }) {
-        const classes = useStyles()
-        return (
-            <Box position="relative" display="inline-flex">
-                <CircularProgress variant="determinate" {...props} />
-                <Box
-                    top={0}
-                    left={0}
-                    bottom={0}
-                    right={0}
-                    position="absolute"
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                >
-                    <Typography variant="caption" classes={{caption: classes.uploadProgress}} component="div" color="primary">{`${Math.round(
-                        props.value,
-                    )}%`}</Typography>
-                </Box>
-            </Box>
-        );
-    }
 
     return (
         <Grid item xs>
@@ -980,7 +956,7 @@ function HomeFunStudyAssignment({
                                                 }}>
                                                     <HighlightOffOutlined color="primary"/>
                                                 </IconButton>
-                                                : <CircularProgressWithLabel size={20} thickness={4} value={item.uploadProgress ?? 0}/>
+                                                : isAndroid ? <CustomCircularProgress size={20} thickness={4} value={item.uploadProgress}/> : <CustomCircularProgress size={20} thickness={4}/>
                                         }
                                     </ListItemSecondaryAction>
                                         : ''
