@@ -349,7 +349,8 @@ export function HomeFunStudyDialog() {
             </DialogContent>
             <DialogActions className={classes.dialogActionsPadding}>
                 <div className={classes.buttonWrapper}>
-                    <Button fullWidth variant="contained"
+                    <Button key={`${!shouldShowSubmitButton}`}
+                            fullWidth variant="contained"
                             className={clsx({
                                 [classes.buttonSubmitting]: submitStatus === SubmitStatus.SUBMITTING,
                             }, classes.rounded_button)}
@@ -925,6 +926,7 @@ function HomeFunStudyAssignment({
                 }
                 <Box my={2}>
                     <Button
+                        key={`${!shouldShowChooseFile}`}
                         variant="outlined"
                         color="primary"
                         className={classes.rounded_button}
@@ -1027,6 +1029,7 @@ function HomeFunStudyComment({studyInfo, newestFeedback, defaultComment}: { stud
                     Comment
                 </Typography>
                 <Button
+                    key={`${!newestFeedback?.is_allow_submit}`}
                     variant="outlined"
                     color="primary"
                     className={classes.rounded_button}

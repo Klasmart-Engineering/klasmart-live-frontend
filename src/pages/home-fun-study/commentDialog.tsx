@@ -188,13 +188,6 @@ function CommentHeader({
                        }: { onClickClose: () => void, onClickSave: () => void, isEdit: boolean, canSave: boolean }): JSX.Element {
     const classes = useStyles();
     const theme = useTheme();
-    const [saveButtonKey, setSaveButtonKey] = useState(Math.random().toString(36))
-
-    useEffect(() => {
-        // The save button on the iOS platform doesn't auto re-render after the disabled argument was changed,
-        // need to set the key to force it re-render
-        setSaveButtonKey(Math.random().toString(36))
-    }, [canSave])
 
     return (
         <div className={classes.root}>
@@ -229,7 +222,7 @@ function CommentHeader({
                             </Grid>
 
                             <Grid item style={{flexGrow: 0}}>
-                                <Button key={saveButtonKey} disabled={!canSave} onClick={onClickSave} color={"primary"}>
+                                <Button key={`${!canSave}`} disabled={!canSave} onClick={onClickSave} color={"primary"}>
                                     <FormattedMessage id={"button_save"}/>
                                 </Button>
                             </Grid>
