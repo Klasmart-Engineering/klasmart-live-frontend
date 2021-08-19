@@ -593,7 +593,8 @@ export default function Layout(props: Props): JSX.Element {
             justify="space-between"
             wrap="nowrap"
             className={classes.layout}
-            style={{ backgroundColor: (material && material.__typename === MaterialTypename.Video) ? "#000" : "" }}
+            // TODO: Temporary hide this line to solve the black background issue, might be it work incorrectly and need to improve in the future.
+            // style={{ backgroundColor: (material && material.__typename === MaterialTypename.Video) ? "#000" : "" }}
         >
             <Grid item xs={12}>
                 <Container
