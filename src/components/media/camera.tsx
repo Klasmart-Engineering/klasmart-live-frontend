@@ -10,7 +10,6 @@ import {
 import { State } from "../../store/store";
 import PermissionControls from "../../whiteboard/components/WBPermissionControls";
 import StyledIcon from "../styled/icon";
-import TrophyControls from "../trophies/trophyControls";
 import {
     useMutation,
     useQuery,
