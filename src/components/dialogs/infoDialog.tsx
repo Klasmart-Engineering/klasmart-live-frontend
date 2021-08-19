@@ -39,7 +39,7 @@ export function InfoDialog({open, onClose, title, description, closeLabel}: Prop
                 <DialogTitle className={classes.dialogTitle}>
                     <Typography className={classes.dialogTitleText}>
                         {
-                            title? title : <FormattedMessage id="label_info"/>
+                            title? title : <FormattedMessage id="label_info" defaultMessage={"Info"}/>
                         }
                     </Typography>
                 </DialogTitle>
@@ -61,7 +61,7 @@ export function InfoDialog({open, onClose, title, description, closeLabel}: Prop
                 <DialogActions>
                     <Button onClick={handleCloseClick} className={classes.buttonClose}>
                         {
-                            closeLabel ? closeLabel : <FormattedMessage id="button_ok"/>
+                            closeLabel ? closeLabel : <FormattedMessage id="button_ok" defaultMessage={"Ok"}/>
                         }
 
                     </Button>

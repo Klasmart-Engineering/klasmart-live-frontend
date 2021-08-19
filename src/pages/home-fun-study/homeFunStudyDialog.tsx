@@ -161,9 +161,9 @@ export function HomeFunStudyDialog() {
             if(selectHomeFunStudyDialog.open && newestFeedback && !newestFeedback.is_allow_submit){
                 showPopup({
                     variant: "info",
-                    title: intl.formatMessage({id: "label_info"}),
-                    description: [intl.formatMessage({id: "block_for_assessment_completed"})],
-                    closeLabel: intl.formatMessage({id: "button_close"})
+                    title: intl.formatMessage({id: "label_info", defaultMessage: "Info"}),
+                    description: [intl.formatMessage({id: "block_for_assessment_completed", defaultMessage: "This assignment has already been assessed by the teacher and can no longer be edited or re-submitted."})],
+                    closeLabel: intl.formatMessage({id: "button_close", defaultMessage: "Close"})
                 })
             }
         },200)
@@ -278,7 +278,7 @@ export function HomeFunStudyDialog() {
                 .then(result => {
                     if(result && result.data && result.data.id){
                         setSubmitStatus(SubmitStatus.SUCCESS);
-                        enqueueSnackbar(intl.formatMessage({id: "submission_successful"}), {
+                        enqueueSnackbar(intl.formatMessage({id: "submission_successful", defaultMessage: "Submission successful"}), {
                             variant: "success",
                             anchorOrigin: {
                                 vertical: 'top',
@@ -290,16 +290,16 @@ export function HomeFunStudyDialog() {
                         if(result && result.label){
                             showPopup({
                                 variant: 'detailError',
-                                title: intl.formatMessage({id: "submission_failed"}),
-                                description: [ intl.formatMessage({id: "submission_failed_message"}), result.label ],
-                                closeLabel: intl.formatMessage({id: "button_ok"})
+                                title: intl.formatMessage({id: "submission_failed", defaultMessage: "Submission Failed"}),
+                                description: [ intl.formatMessage({id: "submission_failed_message", defaultMessage: "Oops, an unexpected error occurred. Please try again."}), result.label ],
+                                closeLabel: intl.formatMessage({id: "button_ok", defaultMessage: "Ok"})
                             });
                         }else{
                             showPopup({
                                 variant: 'error',
-                                title: intl.formatMessage({id: "submission_failed"}),
-                                description: [ intl.formatMessage({id: "submission_failed_message"}) ],
-                                closeLabel: intl.formatMessage({id: "button_ok"})
+                                title: intl.formatMessage({id: "submission_failed", defaultMessage: "Submission Failed"}),
+                                description: [ intl.formatMessage({id: "submission_failed_message", defaultMessage: "Oops, an unexpected error occurred. Please try again."}) ],
+                                closeLabel: intl.formatMessage({id: "button_ok", defaultMessage: "Ok"})
                             });
                         }
                     }
@@ -308,9 +308,9 @@ export function HomeFunStudyDialog() {
                     setSubmitStatus(SubmitStatus.NONE);
                     showPopup({
                         variant: 'detailError',
-                        title: intl.formatMessage({id: "submission_failed"}),
-                        description: [ intl.formatMessage({id: "submission_failed_message"}), err.message ],
-                        closeLabel: intl.formatMessage({id: "button_ok"})
+                        title: intl.formatMessage({id: "submission_failed", defaultMessage: "Submission Failed"}),
+                        description: [ intl.formatMessage({id: "submission_failed_message", defaultMessage: "Oops, an unexpected error occurred. Please try again."}), err.message ],
+                        closeLabel: intl.formatMessage({id: "button_ok", defaultMessage: "Ok"})
                     });
                 })
         }
@@ -319,9 +319,9 @@ export function HomeFunStudyDialog() {
             if(submitStatus === SubmitStatus.UPLOADING){
                 showPopup({
                     variant: "error",
-                    title: intl.formatMessage({id: "submission_failed"}),
-                    description: [intl.formatMessage({id: "err_try_after_uploaded"})],
-                    closeLabel: intl.formatMessage({id: "button_ok"})
+                    title: intl.formatMessage({id: "submission_failed", defaultMessage: "Submission Failed"}),
+                    description: [intl.formatMessage({id: "err_try_after_uploaded", defaultMessage: "Can't complete submitting. Please try after file uploading is finished."})],
+                    closeLabel: intl.formatMessage({id: "button_ok", defaultMessage: "Ok"})
                 })
             }else{
                 submitFeedback()
@@ -554,7 +554,7 @@ function HomeFunStudyContainer({
             }
         } catch(error) {
             setDeletedAssignmentItemId(assignmentItemId);
-            enqueueSnackbar(intl.formatMessage({ id: "file_upload_failed" }), {
+            enqueueSnackbar(intl.formatMessage({ id: "file_upload_failed", defaultMessage: "File upload failed. Please check your file and try again." }), {
                 variant: "error",
                 anchorOrigin: {
                     vertical: 'bottom',
@@ -728,10 +728,10 @@ function HomeFunStudyContainer({
                     if (isCellularConnection) {
                         showPopup({
                             variant: "confirm",
-                            title: intl.formatMessage({ id: "confirm_upload_file_title" }),
-                            description: [intl.formatMessage({ id: "confirm_upload_file_description" })],
-                            closeLabel: intl.formatMessage({ id: "button_cancel" }),
-                            confirmLabel: intl.formatMessage({ id: "button_continue" }),
+                            title: intl.formatMessage({ id: "confirm_upload_file_title", defaultMessage: "Please connect to WiFi" }),
+                            description: [intl.formatMessage({ id: "confirm_upload_file_description" , defaultMessage: "You are currently not connected to WiFi. Do you want to continue uploading this file using cellular data?"})],
+                            closeLabel: intl.formatMessage({ id: "button_cancel", defaultMessage: "Cancel" }),
+                            confirmLabel: intl.formatMessage({ id: "button_continue", defaultMessage: "Continue" }),
                             onConfirm: () => {
                                 setAttachmentFile(file);
                             }
@@ -743,10 +743,10 @@ function HomeFunStudyContainer({
 
                 showPopup({
                     variant: "confirm",
-                    title: intl.formatMessage({id: "upload_file"}),
-                    description: [intl.formatMessage({id: "confirm_to_upload_file"})],
-                    closeLabel: intl.formatMessage({id: "button_cancel"}),
-                    confirmLabel: intl.formatMessage({id: "button_upload"}),
+                    title: intl.formatMessage({id: "upload_file", defaultMessage: "Upload file"}),
+                    description: [intl.formatMessage({id: "confirm_to_upload_file", defaultMessage: "Selected file will be uploaded. Do you want to continue?"})],
+                    closeLabel: intl.formatMessage({id: "button_cancel", defaultMessage: "Cancel"}),
+                    confirmLabel: intl.formatMessage({id: "button_upload", defaultMessage: "Upload"}),
                     onConfirm: () => {
                         // TODO: I have to use setTimeout for opening the nested
                         // popup window because currently usePopupContext doesn't
@@ -758,23 +758,23 @@ function HomeFunStudyContainer({
             } else {
                 showPopup({
                     variant: "detailError",
-                    title: intl.formatMessage({id: "submission_failed"}),
+                    title: intl.formatMessage({id: "submission_failed", defaultMessage: "Submission Failed"}),
                     description: [
-                        intl.formatMessage({id: "upload_please_check_your_file"}),
-                        intl.formatMessage({id: "upload_file_too_big"})
+                        intl.formatMessage({id: "upload_please_check_your_file", defaultMessage: "Please Check Your File!"}),
+                        intl.formatMessage({id: "upload_file_too_big", defaultMessage: "Uploaded file should not be bigger than 100MB. Please try another file."})
                     ],
-                    closeLabel: intl.formatMessage({id: "button_ok"})
+                    closeLabel: intl.formatMessage({id: "button_ok", defaultMessage: "Ok"})
                 })
             }
         } else {
             showPopup({
                 variant: "detailError",
-                title: intl.formatMessage({id: "submission_failed"}),
+                title: intl.formatMessage({id: "submission_failed", defaultMessage: "Submission Failed"}),
                 description: [
-                    intl.formatMessage({id: "upload_please_check_your_file"}),
-                    intl.formatMessage({id: "upload_file_not_supported"})
+                    intl.formatMessage({id: "upload_please_check_your_file", defaultMessage: "Please Check Your File!"}),
+                    intl.formatMessage({id: "upload_file_not_supported", defaultMessage: "This file format is not supported. Please try another file."})
                 ],
-                closeLabel: intl.formatMessage({id: "button_ok"})
+                closeLabel: intl.formatMessage({id: "button_ok", defaultMessage: "Ok"})
             })
         }
     }
@@ -802,16 +802,16 @@ function HomeFunStudyContainer({
     function handleDeleteAssignmentItem(item: AssignmentItem){
         showPopup({
             variant: "confirm",
-            title: intl.formatMessage({id: "button_delete"}),
+            title: intl.formatMessage({id: "button_delete", defaultMessage: "Delete"}),
             description: [
-                intl.formatMessage({id: "confirm_delete_description"}),
+                intl.formatMessage({id: "confirm_delete_description", defaultMessage: "Are you sure you want to Delete?"}),
                 item.attachmentName,
             ],
-            closeLabel: intl.formatMessage({id: "button_cancel"}),
+            closeLabel: intl.formatMessage({id: "button_cancel", defaultMessage: "Cancel"}),
             onConfirm: () => {
                 setDeletedAssignmentItemId(item.itemId);
             },
-            confirmLabel: intl.formatMessage({id: "button_delete"})
+            confirmLabel: intl.formatMessage({id: "button_delete", defaultMessage: "Delete"})
         })
     }
 

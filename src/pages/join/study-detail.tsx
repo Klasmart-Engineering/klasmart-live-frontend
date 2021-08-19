@@ -408,7 +408,7 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
                 <DialogActions>
                     <Button size={"large"} variant={`contained`} onClick={closeButtonHandler}>Cancel</Button>
                     <Button size={"large"} color={`primary`} variant={`contained`} onClick={joinButtonHandler} disabled={schedule === undefined}>
-                        {schedule?.class_type === "OnlineClass" ? intl.formatMessage({id: 'button_go_live'}) :  intl.formatMessage({id: 'button_go_study'})}
+                        {schedule?.class_type === "OnlineClass" ? intl.formatMessage({id: 'button_go_live', defaultMessage: "Go Live"}) :  intl.formatMessage({id: 'button_go_study', defaultMessage: "Go Study"})}
                     </Button>
                 </DialogActions>
             </Dialog>
