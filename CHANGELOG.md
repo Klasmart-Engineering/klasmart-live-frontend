@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.17.0-alpha.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v1.16.0%0Dv1.17.0-alpha.0) (2021-08-20)
+
+
+### Features
+
+* Added CustomCircularProgress ([9b7fa8d](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/9b7fa8d7fc075951f9669d6f2784988b361d4faa))
+* Display Schedule popup for Live ([8fbcd8d](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/8fbcd8de400b776895e53383d43b5ac0c2c841ec))
+* Display the upload progress ([b65c993](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/b65c993410d4525281bb57e6d0b258448d8f7c7c))
+
+
+### Bug Fixes
+
+* 2nd file gets wiped out if user upload 2nd file while previous file upload is in progress ([5743af3](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/5743af3b493115bb2a9bf41c164de77d8ef06374))
+* Add submitStatus dependency ([b12b6f4](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/b12b6f4b042f3dbeff431203c1cc2dc475068535))
+* Added default messages ([fcfd0b7](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/fcfd0b7c1b168c02163e9800db815edf6a2e5344))
+* Apply paddingRight for all ScheduleItem's Lesson Name ([198849b](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/198849b7121c130df25c8037dd834f1bfe3f7ccf))
+* Force all Dialogs fit inside safe area ([8f942f0](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/8f942f04d4657a616bf5829d81da64f3410d1f86))
+* Improve button status for ios, force to re-render after disable status was changed ([4ea03bc](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/4ea03bcb777e2bcaaa598c831a022ac7460ba863))
+* Improve the submit button display function ([50ebedb](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/50ebedb286610d42ab3cddf7523dba664b672bb3))
+* Improve the UI for Android and iOS ([889cc51](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/889cc515bbf12c31f6ccb2c5cc04faaf97bd9eb9))
+* Increase timeout to solve disabled button problem ([31292ab](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/31292ab2b1f053204da428065a581a0ee2e5fd29))
+* **ios:** fix issue uploading wav files on iOS ([92f3f30](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/92f3f306885783a9674121d6d88ac4f8926db815))
+* **ios:** prevent users leaving app when clicking youtube links ([061f672](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/061f672d28a7451149f66e9bc4be3bedbe5d836a))
+* Only respond true if the status is 200 ([13a3c38](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/13a3c3854796ad89478d71a1f8f65c0dd9e00c7d))
+* Solve the black background problem at the Live class ([9a84935](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/9a84935c93aa9dca938160cc14f139a3c8b92847))
+* Use both overflow-wrap and word-wrap to support for more devices ([f006f1f](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/f006f1f39517abd7db7b1d93a3dfd54852989231))
+
 ## [1.16.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/compare/v1.15.0...v1.16.0) (2021-08-12)
 
 
