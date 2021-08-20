@@ -54,7 +54,6 @@
     "style-loader": "^1.2.1",
     "ts-jest": "27.0.5",
     "ts-loader": "^7.0.5",
-    "ts-mockito": "^2.6.1",
     "ts-node": "^8.10.2",
     "ttf-loader": "^1.0.2",
     "typescript": "^3.9.7",
