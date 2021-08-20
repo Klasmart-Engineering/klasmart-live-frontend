@@ -5,11 +5,12 @@ pipelines:
     '**':
       - parallel:
         - step:
-            name: Build
+            name: Test & Build
             caches:
               - node
             script:
               - npm ci --no-audit --no-progress
+              - npm test --coverage
               - npm run build:alpha
   custom:
     deploy:

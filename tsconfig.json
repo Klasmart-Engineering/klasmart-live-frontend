@@ -19,23 +19,30 @@
         "noImplicitAny": true,
         "outDir": "./dist",
         "removeComments": true,
-        "rootDir": "./src",
         "skipLibCheck": true,
         "strict": true,
         "target": "ES6",
         "types": [
             "react",
-            "node"
-        ]
+            "node",
+            "jest",
+            "@testing-library/jest-dom"
+        ],
+        "baseUrl": "./",
+        "paths": {
+            "@tests/*": [
+                "tests/*"
+            ]
+        }
     },
     "include": [
         "src/**/*",
+        "tests/**/*",
+        "**.ts",
         "**.js"
     ],
     "exclude": [
         "node_modules",
-        "dist",
-        "src/**/*.test.ts",
-        "src/**/*.test.tsx"
+        "dist"
     ]
 }
