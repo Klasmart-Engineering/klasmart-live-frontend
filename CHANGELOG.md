@@ -4,8 +4,6 @@ All notable changes to this project will be documented in this file. See [standa
 
 ## [1.17.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v1.17.0-alpha.0%0Dv1.17.0) (2021-08-20)
 
-## [1.17.0-alpha.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v1.16.0%0Dv1.17.0-alpha.0) (2021-08-20)
-
 
 ### Features
 
