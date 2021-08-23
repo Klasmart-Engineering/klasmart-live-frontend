@@ -11,7 +11,7 @@ import {
     Theme,
     Typography
 } from "@material-ui/core";
-import React, {useContext, useEffect, useMemo, useState} from "react";
+import React, {useCallback, useContext, useEffect, useMemo, useState} from "react";
 import { useHttpEndpoint } from "../../context-provider/region-select-context";
 import { ScheduleResponse } from "../../services/cms/ISchedulerService";
 import {blue} from "@material-ui/core/colors";
@@ -19,7 +19,6 @@ import {useSnackbar} from "kidsloop-px";
 import {CordovaSystemContext} from "../../context-provider/cordova-system-context";
 import { usePopupContext } from "../../context-provider/popup-context";
 import { useIntl } from "react-intl";
-import { getFileExtensionFromType } from "../../utils/fileUtils";
 
 const useStyles = makeStyles((theme: Theme) => ({
     dialogTitle: {
@@ -219,17 +218,6 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
         });
     };
 
-    const shouldEnableJoinButton = useMemo(() => {
-        if(schedule === undefined)
-            return false
-        if(schedule.class_type === "OnlineClass") {
-            const now = new Date().getTime() / 1000;
-            const timeBeforeClass = schedule.start_at - now;
-            return (timeBeforeClass < secondsBeforeClassCanStart);
-        }
-        return true;
-    }, [schedule, open])
-
     useEffect(() => {
         function startDownloadAttachment(){
             setShouldDownload(false)
@@ -297,10 +285,50 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
         onClose();
     };
 
-    const joinButtonHandler = () => {
+    function goJoin() {
         onClose();
         joinStudy();
-    };
+    }
+
+    const joinButtonHandler = useCallback(() => {
+        if(schedule === undefined)
+            return
+        if(!open)
+            return
+
+        if(schedule.class_type === "OnlineClass") {
+            const now = new Date().getTime() / 1000;
+            const timeBeforeClass = schedule.start_at - now;
+            console.log(`timeBeforeClass: ${timeBeforeClass}`)
+            if(schedule.end_at < now) {
+                enqueueSnackbar(
+                    intl.formatMessage({id: "time_expired", defaultMessage: "Time expired"}),
+                    {
+                        variant: "error",
+                        anchorOrigin: {
+                            vertical: "bottom",
+                            horizontal: "center"
+                        }
+                    }
+                )
+            }else if(timeBeforeClass > secondsBeforeClassCanStart) {
+                enqueueSnackbar(
+                    intl.formatMessage({id: "err_join_live_failed", defaultMessage: "You can only start a class 15 minutes before the start time."}),
+                    {
+                        variant: "warning",
+                        anchorOrigin: {
+                            vertical: "bottom",
+                            horizontal: "center"
+                        }
+                    }
+                )
+            }else {
+                goJoin();
+            }
+        }else{
+            goJoin();
+        }
+    },[schedule, open]);
 
     return (
         <React.Fragment>
@@ -419,7 +447,7 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
                 </DialogContent>
                 <DialogActions>
                     <Button size={"large"} variant={`contained`} onClick={closeButtonHandler}>Cancel</Button>
-                    <Button key={`${shouldEnableJoinButton}`} size={"large"} color={`primary`} variant={`contained`} onClick={joinButtonHandler} disabled={!shouldEnableJoinButton}>
+                    <Button key={`${schedule === undefined}`} size={"large"} color={`primary`} variant={`contained`} onClick={joinButtonHandler} disabled={schedule === undefined}>
                         {schedule?.class_type === "OnlineClass" ? intl.formatMessage({id: 'button_go_live', defaultMessage: "Go Live"}) :  intl.formatMessage({id: 'button_go_study', defaultMessage: "Go Study"})}
                     </Button>
                 </DialogActions>
