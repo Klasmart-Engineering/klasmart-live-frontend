@@ -51,9 +51,10 @@ const useStyles = makeStyles((theme: Theme) => ({
         marginTop: -12,
         marginLeft: -12,
     },
-    }));
+}));
 
 const STUDY_DETAIL_ON_BACK_ID = "studyDetailOnBackID"
+const secondsBeforeClassCanStart = 900;
 
 export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
     schedule?: ScheduleResponse,
@@ -218,6 +219,17 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
         });
     };
 
+    const shouldEnableJoinButton = useMemo(() => {
+        if(schedule === undefined)
+            return false
+        if(schedule.class_type === "OnlineClass") {
+            const now = new Date().getTime() / 1000;
+            const timeBeforeClass = schedule.start_at - now;
+            return (timeBeforeClass < secondsBeforeClassCanStart);
+        }
+        return true;
+    }, [schedule, open])
+
     useEffect(() => {
         function startDownloadAttachment(){
             setShouldDownload(false)
@@ -370,11 +382,11 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
                                 {schedule?.is_home_fun ?
                                     <Grid container direction={"column"}>
                                         {schedule.teachers.map(item => (
-                                        <Grid key={item.id} item>
-                                            <Typography variant="body1" className={rowContentText}>
-                                                {item.name}
-                                            </Typography>
-                                        </Grid>
+                                            <Grid key={item.id} item>
+                                                <Typography variant="body1" className={rowContentText}>
+                                                    {item.name}
+                                                </Typography>
+                                            </Grid>
                                         ))}
                                     </Grid>
                                     : <Typography variant="body1" className={rowContentText}>
@@ -390,24 +402,24 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
                                 </Typography>
                             </Grid>
                             <Grid item xs>
-                                    { attachmentDownloadLink && schedule?.attachment?.name ?
-                                        <div className={wrapper}>
-                                            <Typography variant="body1" className={rowContentText}>
-                                                <Link variant="body1" href={`#`} color={downloading ? "textSecondary" : "primary"} aria-disabled={downloading} onClick={() => confirmOpenAttachmentLink()}>
-                                                    { schedule?.attachment?.name }
-                                                </Link>
-                                            </Typography>
-                                            {downloading && <CircularProgress size={24} className={progress}/>}
-                                        </div>
-                                        : <Typography variant="body1" className={rowContentText}>N/A</Typography>
-                                    }
+                                { attachmentDownloadLink && schedule?.attachment?.name ?
+                                    <div className={wrapper}>
+                                        <Typography variant="body1" className={rowContentText}>
+                                            <Link variant="body1" href={`#`} color={downloading ? "textSecondary" : "primary"} aria-disabled={downloading} onClick={() => confirmOpenAttachmentLink()}>
+                                                { schedule?.attachment?.name }
+                                            </Link>
+                                        </Typography>
+                                        {downloading && <CircularProgress size={24} className={progress}/>}
+                                    </div>
+                                    : <Typography variant="body1" className={rowContentText}>N/A</Typography>
+                                }
                             </Grid>
                         </Grid>
                     </Grid>
                 </DialogContent>
                 <DialogActions>
                     <Button size={"large"} variant={`contained`} onClick={closeButtonHandler}>Cancel</Button>
-                    <Button size={"large"} color={`primary`} variant={`contained`} onClick={joinButtonHandler} disabled={schedule === undefined}>
+                    <Button key={`${shouldEnableJoinButton}`} size={"large"} color={`primary`} variant={`contained`} onClick={joinButtonHandler} disabled={shouldEnableJoinButton}>
                         {schedule?.class_type === "OnlineClass" ? intl.formatMessage({id: 'button_go_live', defaultMessage: "Go Live"}) :  intl.formatMessage({id: 'button_go_study', defaultMessage: "Go Study"})}
                     </Button>
                 </DialogActions>
