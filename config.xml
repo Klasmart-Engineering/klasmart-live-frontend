@@ -57,6 +57,12 @@
         <edit-config file="*-Info.plist" mode="merge" target="NSDownloadsFolderUsageDescription">
             <string>KidsLoop Live wants to access downloads folder to select files for homework.</string>
         </edit-config>
+        <config-file target="*-Info.plist" parent="UIFileSharingEnabled">
+            <true/>
+        </config-file>
+        <config-file target="*-Info.plist" parent="LSSupportsOpeningDocumentsInPlace">
+            <true/>
+        </config-file>
     </platform>
     <platform name="android">
         <preference name="AppendUserAgent" value="Cordova" />
