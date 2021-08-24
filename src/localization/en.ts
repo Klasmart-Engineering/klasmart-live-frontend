@@ -44,6 +44,9 @@ const messages: Record<string, string> = {
     confirm_upload_file_description: "You are currently not connected to WiFi. Do you want to continue uploading this file using cellular data?",
     err_join_live_failed: "You can only start a class 15 minutes before the start time.",
     time_expired: "Time expired",
+    label_download: "Download",
+    confirm_download_attachment_description: "Do you want to download?",
+    download_complete: "Download complete",
 
     err_button_home: "Home",
     err_button_signin: "Back to Sign In",

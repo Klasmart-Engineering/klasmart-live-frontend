@@ -1,4 +1,5 @@
 import {
+    Box,
     Button,
     CircularProgress,
     Dialog,
@@ -6,19 +7,21 @@ import {
     DialogContent,
     DialogTitle,
     Grid,
+    IconButton,
     Link,
     makeStyles,
     Theme,
     Typography
 } from "@material-ui/core";
 import React, {useCallback, useContext, useEffect, useMemo, useState} from "react";
-import { useHttpEndpoint } from "../../context-provider/region-select-context";
-import { ScheduleResponse } from "../../services/cms/ISchedulerService";
+import {useHttpEndpoint} from "../../context-provider/region-select-context";
+import {ScheduleResponse} from "../../services/cms/ISchedulerService";
 import {blue} from "@material-ui/core/colors";
 import {useSnackbar} from "kidsloop-px";
-import {CordovaSystemContext} from "../../context-provider/cordova-system-context";
-import { usePopupContext } from "../../context-provider/popup-context";
-import { useIntl } from "react-intl";
+import {CordovaSystemContext, PermissionType} from "../../context-provider/cordova-system-context";
+import {usePopupContext} from "../../context-provider/popup-context";
+import {useIntl} from "react-intl";
+import {GetApp} from "@material-ui/icons"
 
 const useStyles = makeStyles((theme: Theme) => ({
     dialogTitle: {
@@ -38,6 +41,11 @@ const useStyles = makeStyles((theme: Theme) => ({
         fontWeight: 600,
         overflowWrap: "break-word",
         wordWrap: "break-word"
+    },
+    attachmentName: {
+        color: `#193756`,
+        fontWeight: 600,
+        overflow: "hidden"
     },
     wrapper: {
         position: 'relative',
@@ -61,15 +69,17 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
     onClose: () => void,
     joinStudy: () => void }): JSX.Element
 {
-    const { dialogTitle, dialogTitleText, rowHeaderText, rowContentText, wrapper, progress } = useStyles();
+    const { dialogTitle, dialogTitleText, rowHeaderText, rowContentText, wrapper, progress, attachmentName } = useStyles();
     const cms = useHttpEndpoint("cms");
-    const [downloading, setDownloading] = useState(false)
-    const [shouldDownload, setShouldDownload] = useState(false)
+    const [downloadingPreview, setDownloadingPreview] = useState(false)
+    const [shouldDownloadPreview, setShouldDownloadPreview] = useState(false)
     const {enqueueSnackbar} = useSnackbar()
-    const { isIOS } = useContext(CordovaSystemContext);
+    const { isIOS, requestPermissions } = useContext(CordovaSystemContext);
     const { showPopup } = usePopupContext();
     const intl = useIntl();
     const { addOnBack, removeOnBack } = useContext(CordovaSystemContext);
+    const [downloadingAttachment, setDownloadingAttachment] = useState(false);
+    const [shouldDownloadAttachment, setShouldDownloadAttachment] = useState(false);
 
     useEffect(() => {
         if(open){
@@ -131,10 +141,14 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
     // will be images, at least until there's a clearly defined list
     // of supported file types (with specialized viewers).
     const openAttachmentLink = () => {
-        setShouldDownload(true);
+        setShouldDownloadPreview(true);
     };
 
-    const confirmOpenAttachmentLink = () => {
+    const downloadAttachment = () => {
+        setShouldDownloadAttachment(true)
+    }
+
+    const checkNetworkToConfirmDownload = (onConfirm: () => void) => {
         // reference: https://cordova.apache.org/docs/en/10.x/reference/cordova-plugin-network-information/
         const connectionType = (navigator as any).connection.type;
         const isCellularConnection = connectionType == `2g` ||
@@ -151,12 +165,20 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
                 closeLabel: intl.formatMessage({ id: "button_cancel" }),
                 confirmLabel: intl.formatMessage({ id: "button_continue" }),
                 onConfirm: () => {
-                    openAttachmentLink();
+                    onConfirm();
                 },
             });
         } else {
-            openAttachmentLink();
+            onConfirm();
         }
+    }
+
+    const confirmOpenAttachmentLink = () => {
+        checkNetworkToConfirmDownload(openAttachmentLink);
+    };
+
+    const confirmDownloadAttachment = () => {
+        checkNetworkToConfirmDownload(downloadAttachment);
     };
 
     const downloadDataBlob = (url: string): Promise<Blob> => {
@@ -184,15 +206,32 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
         });
     };
 
-    const saveDataBlobToFile = (blob: Blob, fileName: string): Promise<string> => {
-        return new Promise((resolve, reject) => {
-
-            const cordova = (window as any).cordova;
-            let targetDirectory = cordova.file.externalCacheDirectory;
+    const getCacheDirectory = useMemo(() => {
+        const cordova = (window as any).cordova;
+        let targetDirectory = "";
+        if(cordova !== undefined) {
+            targetDirectory = cordova.file.externalCacheDirectory;
             if(isIOS){
                 targetDirectory = cordova.file.tempDirectory;
             }
+        }
+        return targetDirectory
+    }, [window, isIOS])
 
+    const getDownloadDirectory = useMemo(() => {
+        const cordova = (window as any).cordova;
+        let targetDirectory = "";
+        if(cordova !== undefined) {
+            targetDirectory = `${cordova.file.externalRootDirectory}Download/`;
+            if(isIOS){
+                targetDirectory = cordova.file.documentsDirectory;
+            }
+        }
+        return targetDirectory
+    }, [window, isIOS])
+
+    const saveDataBlobToFile = (blob: Blob, targetDirectory: string, fileName: string): Promise<string> => {
+        return new Promise((resolve, reject) => {
             window.resolveLocalFileSystemURL(targetDirectory, (entry) => {
                 (entry as DirectoryEntry).getFile(fileName, { create: true, exclusive: false }, (fileEntry) => {
                     fileEntry.createWriter(writer => {
@@ -219,22 +258,19 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
     };
 
     useEffect(() => {
-        function startDownloadAttachment(){
-            setShouldDownload(false)
-            if(downloading)
+        function startDownloadPreview(){
+            setShouldDownloadPreview(false)
+            if(downloadingPreview)
                 return
             if(attachmentDownloadLink && schedule){
                 const url = encodeURI(attachmentDownloadLink);
-                console.log(url)
-
-                setDownloading(true);
+                setDownloadingPreview(true);
 
                 downloadDataBlob(url).then(downloadedData => {
-                    saveDataBlobToFile(downloadedData, schedule.attachment.name).then(savedFilePath => {
+                    saveDataBlobToFile(downloadedData, getCacheDirectory, schedule.attachment.name).then(savedFilePath => {
                         setPreviewOpen({open: true, fileUrl: savedFilePath});
                     }).catch(error => {
-                        console.log(error);
-                        enqueueSnackbar(error.body, {
+                        enqueueSnackbar(error.body ?? error.message, {
                             variant: "error",
                             anchorOrigin: {
                                 vertical: "bottom",
@@ -243,7 +279,7 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
                         });
                     });
                 }).catch(error => {
-                    enqueueSnackbar(error.body, {
+                    enqueueSnackbar(error.body ?? error.message, {
                         variant: "error",
                         anchorOrigin: {
                             vertical: "bottom",
@@ -251,14 +287,89 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
                         }
                     });
                 }).finally(() => {
-                    setDownloading(false);
+                    console.log("finally")
+                    setDownloadingPreview(false);
                 });
             }
         }
-        if(shouldDownload){
+        if(shouldDownloadPreview){
+            startDownloadPreview()
+        }
+    },[shouldDownloadPreview])
+
+    useEffect(() => {
+        function confirmDownload(onConfirm: () => void) {
+            showPopup({
+                variant: "detailConfirm",
+                title: intl.formatMessage({id: "label_download", defaultMessage: "Download"}),
+                description: [
+                    intl.formatMessage({
+                        id: "confirm_download_attachment_description",
+                        description: "Do you want to download?"
+                    }),
+                    schedule?.attachment.name ?? ""
+                ],
+                confirmLabel: intl.formatMessage({id: "label_download", defaultMessage: "Download"}),
+                onConfirm: () => {
+                    requestPermissions({
+                        permissionTypes: [PermissionType.READ_STORAGE, PermissionType.WRITE_STORAGE],
+                        onSuccess: (hasPermission) => {
+                            if(hasPermission)
+                                onConfirm();
+                        },
+                        onError: () => {
+
+                        }
+                    })
+                },
+                closeLabel: intl.formatMessage({id: "button_cancel", defaultMessage: "Cancel"})
+            })
+        }
+        function startDownloadAttachment() {
+            setShouldDownloadAttachment(false)
+            if(downloadingAttachment)
+                return
+            if(attachmentDownloadLink && schedule){
+                confirmDownload(() => {
+                    const url = encodeURI(attachmentDownloadLink);
+                    setDownloadingAttachment(true);
+
+                    downloadDataBlob(url).then(downloadedData => {
+                        saveDataBlobToFile(downloadedData, getDownloadDirectory, schedule.attachment.name).then(savedFilePath => {
+                            enqueueSnackbar(intl.formatMessage({id: "download_complete", defaultMessage: "Download complete"}), {
+                                variant: "success",
+                                anchorOrigin: {
+                                    vertical: "bottom",
+                                    horizontal: "center"
+                                }
+                            });
+                        }).catch(error => {
+                            enqueueSnackbar(error.body ?? error.message, {
+                                variant: "error",
+                                anchorOrigin: {
+                                    vertical: "bottom",
+                                    horizontal: "center"
+                                }
+                            });
+                        });
+                    }).catch(error => {
+                        enqueueSnackbar(error.body ?? error.message, {
+                            variant: "error",
+                            anchorOrigin: {
+                                vertical: "bottom",
+                                horizontal: "center"
+                            }
+                        });
+                    }).finally(() => {
+                        setDownloadingAttachment(false);
+                    });
+                })
+            }
+        }
+        if(shouldDownloadAttachment){
             startDownloadAttachment()
         }
-    },[shouldDownload])
+    },[shouldDownloadAttachment, schedule])
 
     useEffect(() => {
         if(previewOpen.open && open){
@@ -430,17 +541,29 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
                                 </Typography>
                             </Grid>
                             <Grid item xs>
-                                { attachmentDownloadLink && schedule?.attachment?.name ?
-                                    <div className={wrapper}>
-                                        <Typography variant="body1" className={rowContentText}>
-                                            <Link variant="body1" href={`#`} color={downloading ? "textSecondary" : "primary"} aria-disabled={downloading} onClick={() => confirmOpenAttachmentLink()}>
-                                                { schedule?.attachment?.name }
-                                            </Link>
-                                        </Typography>
-                                        {downloading && <CircularProgress size={24} className={progress}/>}
-                                    </div>
-                                    : <Typography variant="body1" className={rowContentText}>N/A</Typography>
-                                }
+                                    { attachmentDownloadLink && schedule?.attachment?.name ?
+                                        <Box display={"flex"}>
+                                            <Box flexGrow={1}>
+                                                <div className={wrapper}>
+                                                    <Typography variant="body1" noWrap className={attachmentName}>
+                                                        <Link key={`${downloadingPreview}`} variant="body1" href={`#`} color={downloadingPreview ? "textSecondary" : "primary"} aria-disabled={downloadingPreview} onClick={() => confirmOpenAttachmentLink()}>
+                                                            { schedule?.attachment?.name }
+                                                        </Link>
+                                                    </Typography>
+                                                    {downloadingPreview && <CircularProgress size={24} className={progress}/>}
+                                                </div>
+                                            </Box>
+                                            <Box>
+                                                <div className={wrapper}>
+                                                    <IconButton key={`${downloadingAttachment}`} onClick={() => {confirmDownloadAttachment()}} disabled={downloadingAttachment} color="primary" aria-label="Download attachment" component="span">
+                                                        <GetApp />
+                                                    </IconButton>
+                                                    {downloadingAttachment && <CircularProgress size={24} className={progress}/>}
+                                                </div>
+                                            </Box>
+                                        </Box>
+                                        : <Typography variant="body1" className={rowContentText}>N/A</Typography>
+                                    }
                             </Grid>
                         </Grid>
                     </Grid>
