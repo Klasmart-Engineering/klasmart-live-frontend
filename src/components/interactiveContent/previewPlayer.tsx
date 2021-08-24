@@ -1,14 +1,14 @@
+import { useWindowSize } from "../../../../utils/viewport";
 import {
     LIVE_LINK,
     LocalSessionContext,
-} from "../../providers/providers";
-import { RoomContext } from "../../providers/roomContext";
+} from "../../../providers/providers";
+import { RoomContext } from "../../../providers/roomContext";
 import {
     isLessonPlanOpenState,
     isShowContentLoadingState,
-} from "../../store/layoutAtoms";
-import { sleep } from "../../utils/utils";
-import { useWindowSize } from "../../utils/viewport";
+} from "../../../states/layoutAtoms";
+import { sleep } from "../utils";
 import Loading from "./loading";
 import {
     gql,
@@ -56,7 +56,6 @@ export function PreviewPlayer ({
         frameWidth: 0,
         frameHeight: 0,
     });
-
     const [ isShowContentLoading, setIsShowContentLoading ] = useRecoilState(isShowContentLoadingState);
     const [ isLessonPlanOpen, setIsLessonPlanOpen ] = useRecoilState(isLessonPlanOpenState);
     const [ transformScale, setTransformScale ] = useState<number>(1);
@@ -111,16 +110,19 @@ export function PreviewPlayer ({
 
     // Buffer events until we have a page ready to render them
     const { current: bufferedEvents } = useRef<string[]>([]);
-    function sendEvent (event?: string) {
+    function sendEvent (event?: string, streamId?: string) {
         if (ref.current && ref.current.contentWindow && ((ref.current.contentWindow as any).PLAYER_READY)) {
+            setSizeLoading(false);
             while (bufferedEvents.length > 0) {
                 const event = bufferedEvents.shift();
                 ref.current.contentWindow.postMessage({
                     event,
+                    streamId,
                 }, `*`);
             }
             if (event) { ref.current.contentWindow.postMessage({
                 event,
+                streamId,
             }, `*`); }
         } else if (event) {
             bufferedEvents.push(event);
@@ -128,7 +130,7 @@ export function PreviewPlayer ({
     }
 
     const { loading, error } = useSubscription(SUB_EVENTS, {
-        onSubscriptionData: e => sendEvent(e.subscriptionData.data.stream.event),
+        onSubscriptionData: e => sendEvent(e.subscriptionData.data.stream.event, streamId),
         variables: {
             streamId,
         },
