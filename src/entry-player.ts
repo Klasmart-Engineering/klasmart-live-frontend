@@ -7,7 +7,7 @@ import {
 const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
 let hasReplayStarted = false;
-const hasReceivedFullSnapshot = false;
+let fullSnapshotRebuilded = false;
 
 enum YoutubePlayerState {
     ENDED = 0,
@@ -39,9 +39,14 @@ rrwebPlayer.on(`fullsnapshot-rebuilded`, () => onFullSnapshotRebuilded());
 
 window.addEventListener(`message`, ({ data }) => {
     if (!data || !data.event) { return; }
-    console.log(`entry: DATA COMING`);
+
     try {
         const event = JSON.parse(data.event);
+        const streamId = data.streamId;console.log(`streamId: `, `  `, streamId);
+        if (!streamId){ // buffered event is coming, activity changed
+            fullSnapshotRebuilded = false;
+        }
+
         if (event.type === EventType.Meta && !hasReplayStarted) {
             rrwebPlayer.startLive(event.timestamp);
             hasReplayStarted = true;
@@ -49,17 +54,17 @@ window.addEventListener(`message`, ({ data }) => {
         if (!hasReplayStarted) {
             return;
         }
-        // if (event.type === EventType.FullSnapshot) {
-        //     if(hasReceivedFullSnapshot) {
-        //         // don't rebuild full snapshot, it makes video appear glitchy
-        //         return;
-        //     }
-        //     hasReceivedFullSnapshot = true;
-        // }
         if (event.type === EventType.Custom ) {
             // using rrwebPlayer.on('custom-event', handler) has latency issue
             onCustomEvent(event);
             return;
+        }
+
+        if (event.type === EventType.FullSnapshot){
+            if (fullSnapshotRebuilded){
+                return;
+            }
+            fullSnapshotRebuilded = true;
         }
         rrwebPlayer.addEvent(event);
     } catch (e) {
@@ -70,7 +75,6 @@ window.addEventListener(`message`, ({ data }) => {
 window.parent.postMessage(`ready`, `*`);
 
 function onCustomEvent (event: any){
-    console.log(`flag1 CUSTOM EVENT`);
     if(!event || !event.data){
         return;
     }
@@ -85,7 +89,6 @@ function onCustomEvent (event: any){
 }
 
 function onFullSnapshotRebuilded () {
-    console.log(`onFullSnapshotRebuilded`);
     const replayedIframe = window.document.getElementsByTagName(`iframe`)[0];
     const replayedWindow = replayedIframe.contentWindow;
     const replayedDocument = replayedIframe.contentDocument;
@@ -118,7 +121,6 @@ function onFullSnapshotRebuilded () {
             const youtubePlayer = youtubePlayers.get(id) ?? {
                 isReady: false,
             };
-            console.log(`onPlayerReady`, `id`, id, `event`, event, `player`, youtubePlayer);
             youtubePlayer.isReady = true;
             if (isSafari) {
                 youtubePlayer.player.mute();
@@ -133,24 +135,25 @@ function onFullSnapshotRebuilded () {
                 if (url.origin !== `https://www.youtube.com`) {
                     continue;
                 }
+
                 (iframe as HTMLIFrameElement).setAttribute(`src`, decodeURIComponent(src));
                 const id = (iframe as HTMLIFrameElement).getAttribute(`id`) ?? ``;
                 const youtubePlayer = youtubePlayers.get(id) ?? {
                     isReady: false,
                 };
+
                 youtubePlayer.player =  new (replayedWindow as any).YT.Player(id, {
                     events: {
                         onReady: onPlayerReady(id),
                     },
-                }),
+                });
+
                 youtubePlayers.set(id, youtubePlayer);
-                console.log(`replayed page got reference to YT player`, youtubePlayer, `id`, id);
             } catch {
                 continue;
             }
         }
     };
-
     if (!(replayedWindow as any).YT) {
         const tag = replayedDocument.createElement(`script`);
         (replayedWindow as any).onYouTubeIframeAPIReady = onYTAPIReady;
