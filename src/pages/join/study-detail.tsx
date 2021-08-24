@@ -45,6 +45,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     attachmentName: {
         color: `#193756`,
         fontWeight: 600,
+        textOverflow: `ellipsis`,
         overflow: "hidden"
     },
     wrapper: {
@@ -451,7 +452,7 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
                 </DialogTitle>
                 <DialogContent>
                     <Grid container direction={`column`} justify={`center`} alignItems={`center`} spacing={4}>
-                        <Grid container item direction={`row`} spacing={1}>
+                        <Grid container item direction={`row`} spacing={1} alignItems={"center"}>
                             <Grid item xs={4} sm={3}>
                                 <Typography variant="body1" className={rowHeaderText}>
                                     Description
@@ -463,7 +464,7 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
                                 </Typography>
                             </Grid>
                         </Grid>
-                        { dueAt ? <Grid container item direction={`row`} spacing={1}>
+                        { dueAt ? <Grid container item direction={`row`} spacing={1} alignItems={"center"}>
                             <Grid item xs={4} sm={3}>
                                 <Typography variant="body1" className={rowHeaderText}>
                                     Due Date
@@ -475,7 +476,7 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
                                 </Typography>
                             </Grid>
                         </Grid> : undefined }
-                        { startAt ? <Grid container item direction={`row`} spacing={1}>
+                        { startAt ? <Grid container item direction={`row`} spacing={1} alignItems={"center"}>
                             <Grid item xs={4} sm={3}>
                                 <Typography variant="body1" className={rowHeaderText}>
                                     Start Time
@@ -487,7 +488,7 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
                                 </Typography>
                             </Grid>
                         </Grid> : undefined }
-                        { endAt ? <Grid container item direction={`row`} spacing={1}>
+                        { endAt ? <Grid container item direction={`row`} spacing={1} alignItems={"center"}>
                             <Grid item xs={4} sm={3}>
                                 <Typography variant="body1" className={rowHeaderText}>
                                     End Time
@@ -499,7 +500,7 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
                                 </Typography>
                             </Grid>
                         </Grid> : undefined }
-                        <Grid container item direction={`row`} spacing={1}>
+                        <Grid container item direction={`row`} spacing={1} alignItems={"center"}>
                             <Grid item xs={4} sm={3}>
                                 <Typography variant="body1" className={rowHeaderText}>
                                     Class Name
@@ -511,7 +512,7 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
                                 </Typography>
                             </Grid>
                         </Grid>
-                        <Grid container item direction={`row`} spacing={1}>
+                        <Grid container item direction={`row`} spacing={1} alignItems={"center"}>
                             <Grid item xs={4} sm={3}>
                                 <Typography variant="body1" className={rowHeaderText}>
                                     { schedule?.is_home_fun ? "Teacher" : "Lesson Plan" }
@@ -534,16 +535,16 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
                                 }
                             </Grid>
                         </Grid>
-                        <Grid container item direction={`row`} spacing={1}>
+                        <Grid container item direction={`row`} spacing={1} alignItems={"center"}>
                             <Grid item xs={4} sm={3}>
                                 <Typography variant="body1" className={rowHeaderText}>
                                     Attachment
                                 </Typography>
                             </Grid>
-                            <Grid item xs>
+                            <Grid item xs={8}>
                                     { attachmentDownloadLink && schedule?.attachment?.name ?
-                                        <Box display={"flex"}>
-                                            <Box flexGrow={1}>
+                                        <Grid container direction={"row"} justify={"space-between"} alignItems={"center"}>
+                                            <Grid item xs={10} alignContent={"flex-start"}>
                                                 <div className={wrapper}>
                                                     <Typography variant="body1" noWrap className={attachmentName}>
                                                         <Link key={`${downloadingPreview}`} variant="body1" href={`#`} color={downloadingPreview ? "textSecondary" : "primary"} aria-disabled={downloadingPreview} onClick={() => confirmOpenAttachmentLink()}>
@@ -552,16 +553,16 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
                                                     </Typography>
                                                     {downloadingPreview && <CircularProgress size={24} className={progress}/>}
                                                 </div>
-                                            </Box>
-                                            <Box>
+                                            </Grid>
+                                            <Grid item xs={2} alignContent={"flex-end"}>
                                                 <div className={wrapper}>
                                                     <IconButton key={`${downloadingAttachment}`} onClick={() => {confirmDownloadAttachment()}} disabled={downloadingAttachment} color="primary" aria-label="Download attachment" component="span">
                                                         <GetApp />
                                                     </IconButton>
                                                     {downloadingAttachment && <CircularProgress size={24} className={progress}/>}
                                                 </div>
-                                            </Box>
-                                        </Box>
+                                            </Grid>
+                                        </Grid>
                                         : <Typography variant="body1" className={rowContentText}>N/A</Typography>
                                     }
                             </Grid>
