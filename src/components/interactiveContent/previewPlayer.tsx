@@ -1,24 +1,20 @@
-import { useWindowSize } from "../../../../utils/viewport";
 import {
     LIVE_LINK,
     LocalSessionContext,
-} from "../../../providers/providers";
-import { RoomContext } from "../../../providers/roomContext";
+} from "../../providers/providers";
+import { RoomContext } from "../../providers/roomContext";
 import {
     isLessonPlanOpenState,
     isShowContentLoadingState,
-} from "../../../states/layoutAtoms";
-import { sleep } from "../utils";
+} from "../../store/layoutAtoms";
+import { sleep } from "../../utils/utils";
+import { useWindowSize } from "../../utils/viewport";
 import Loading from "./loading";
 import {
     gql,
     useSubscription,
 } from "@apollo/client";
-import {
-    CircularProgress,
-    Grid,
-    Typography,
-} from "@material-ui/core";
+import { Typography } from "@material-ui/core";
 import React,
 {
     useContext,
