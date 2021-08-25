@@ -5,51 +5,33 @@ import {
     MaterialTypename,
 } from "./lessonMaterialContext";
 import  NewUIEntry  from "./pages/entry";
-import { setUserAgent } from "./store/reducers/session";
 import { createDefaultStore } from "./store/store";
-import { themeProvider } from "./themeProvider";
 import {
     getDefaultLanguageCode,
     getLanguage,
 } from "./utils/locale";
-import CssBaseline from "@material-ui/core/CssBaseline";
 import Grid from "@material-ui/core/Grid";
-import { ThemeProvider } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import * as Sentry from '@sentry/react';
+import Sentry from '@sentry/react';
 import jwt_decode from "jwt-decode";
 import React,
 {
     createContext,
-    useEffect,
-    useMemo,
     useState,
 } from "react";
 import {
-    isAndroid,
     isChrome,
-    isChromium,
-    isEdge,
-    isFirefox,
-    isIE,
     isIOS,
     isIOS13,
     isMacOs,
-    isMobileOnly,
-    isMobileSafari,
     isSafari,
-    isSmartTV,
-    isTablet,
 } from "react-device-detect";
 import { render } from "react-dom";
 import {
     FormattedMessage,
     RawIntlProvider,
 } from "react-intl";
-import {
-    Provider,
-    useDispatch,
-} from "react-redux";
+import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { v4 as uuid } from "uuid";
 

@@ -44,7 +44,8 @@ USE_IP=1 npm start
 ```host
 local.alpha.kidsloop.net    localhost
 ```
-2. Navigate to your local root of `kidsloop-live-frontend` and enter the following commands:
+2. Navigate to your local root of `kidsloop-live-frontend` and copy the contents of `env.example` (or fill out with the wanted values) and create a new file called `.env` and place it in the same folder:
+3. Enter the following commands in the terminal:
 ```
 npm start
 ```

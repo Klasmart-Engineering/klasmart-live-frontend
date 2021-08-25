@@ -1,4 +1,3 @@
-/* eslint-disable modules-newline/import-declaration-newline */
 import { LocalSessionContext } from "../../providers/providers";
 import { RoomContext } from "../../providers/roomContext";
 import { WebRTCContext } from "../../providers/WebRTCContext";

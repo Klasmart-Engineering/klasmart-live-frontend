@@ -30,7 +30,6 @@ RUN --mount=type=ssh if [ -z $NODE_MODULES ] ; then npm i ; fi
 COPY ./src ./src
 COPY ./tsconfig.json .
 COPY ./webpack.config.js .
-COPY ./webpack.prod.config.js .
 COPY ./.env .
 COPY ./.eslintrc.js .
 COPY ./utils ./utils
