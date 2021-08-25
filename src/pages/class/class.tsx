@@ -136,7 +136,7 @@ function Class () {
         } catch (err) {
             console.error(`Fail to fetchAllLessonMaterials in Study: ${err}`);
             setStudyRecommandUrl(``);
-        } finally { }
+        }
     }
 
     useEffect(() => {
@@ -157,7 +157,7 @@ function Class () {
                 hour: `numeric`,
                 minute: `numeric`,
                 hour12: true,
-            };
+            } as const;
 
             setClassInfo({
                 class_name: dataR.class.name,

@@ -11,7 +11,8 @@ pipelines:
             script:
               - npm ci --no-audit --no-progress
               - npm test -- --coverage
-              - npm run build:alpha
+              - mv deploy/config/internal/.env.alpha ./.env
+              - npm run build
   custom:
     deploy:
     - variables:
@@ -22,7 +23,7 @@ pipelines:
         image: node:lts
         script:
           - npm ci --no-audit --no-progress
-          - mv deploy/config/$KIDSLOOP_REGION/webpack.$KIDSLOOP_ENV.config.js ./webpack.bitbucket.config.js
+          - mv deploy/config/$KIDSLOOP_REGION/.env.$KIDSLOOP_ENV ./.env
           - npm run build:bitbucket
         caches:
           - nodemodules
