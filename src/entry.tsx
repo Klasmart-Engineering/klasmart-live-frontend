@@ -12,7 +12,6 @@ import {
 } from "./utils/locale";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
-import Sentry from '@sentry/react';
 import jwt_decode from "jwt-decode";
 import React,
 {
@@ -43,10 +42,6 @@ export const LIVE_LINK = `LIVE_LINK`;
     Most of the things that used to be done in this file is now done inside the /newuiupdate/providers/providers.tsx
     So this file contains lots of dead code which needs to be removed
 */
-Sentry.init({
-    dsn: `https://9f4fca35be3b4b7ca970a126f26a5e54@o412774.ingest.sentry.io/5388813`,
-    environment: process.env.NODE_ENV || `not-specified`,
-});
 
 export interface IThemeContext {
     themeMode: string;
