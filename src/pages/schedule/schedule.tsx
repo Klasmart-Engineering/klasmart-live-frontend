@@ -497,7 +497,7 @@ function AnytimeStudyList({ timeViews, assessmentForStudents, setSelectedSchedul
     return (
         <Grid item>
             <List component="nav" aria-labelledby="study-subheader" className={listRoot}>
-                {timeViews.map(tv => <AnytimeStudyItem studyId={tv.id} assessmentForStudent={assessmentForStudents?.find(assessment => assessment.schedule.id === tv.id)} setSelectedSchedule={setSelectedSchedule} setOpenStudyDetail={setOpenStudyDetail} />)}
+                {timeViews.map(tv => <AnytimeStudyItem key={tv.id} studyId={tv.id} assessmentForStudent={assessmentForStudents?.find(assessment => assessment.schedule.id === tv.id)} setSelectedSchedule={setSelectedSchedule} setOpenStudyDetail={setOpenStudyDetail} />)}
             </List>
         </Grid>
     )
