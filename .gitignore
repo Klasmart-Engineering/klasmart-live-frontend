@@ -8,3 +8,9 @@ coverage
 .idea
 .eslintcache
 .env
+*.ignore
+
+# Cordova
+/plugins/
+/platforms/
+/www/
