@@ -16,8 +16,7 @@ import {
     ListItemText,
     Typography
 } from "@material-ui/core";
-import CircularProgress, { CircularProgressProps } from '@material-ui/core/CircularProgress';
-import PropTypes from 'prop-types';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import {Edit, HighlightOffOutlined, InfoOutlined} from "@material-ui/icons";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {lockOrientation} from "../../utils/screenUtils";
@@ -235,21 +234,22 @@ export function HomeFunStudyDialog() {
         fetchEverything();
     }, [studyId, selectedOrg, key, selectedUserId])
 
-    function getLocalFeedback(userId: string, studyId: string) {
-        return hfsFeedbacks.find(feedback => feedback.userId === userId && feedback.studyId === studyId)
-    }
+    const localFeedback = useMemo(() => {
+        if(!hfsFeedbacks || !studyInfo || !selectedUserId)
+            return undefined
+        return hfsFeedbacks.find(feedback => feedback.userId === selectedUserId && feedback.studyId === studyInfo.id)
+    },[hfsFeedbacks, selectedUserId, studyInfo])
 
     const shouldShowSubmitButton = useMemo(() => {
         if(submitStatus === SubmitStatus.SUBMITTING)
             return false;
         if (selectedUserId && studyInfo && newestFeedback?.is_allow_submit && (studyInfo.due_at === 0 || studyInfo?.due_at >= todayTimeStamp)) {
-            const feedback = getLocalFeedback(selectedUserId, studyInfo.id);
-            if (feedback && feedback.assignmentItems.length > 0 && feedback.assignmentItems.length <= MAX_FILE_LIMIT) {
+            if (localFeedback && localFeedback.assignmentItems.length > 0 && localFeedback.assignmentItems.length <= MAX_FILE_LIMIT) {
                 return true;
             }
         }
         return false
-    },[selectedUserId,studyInfo, hfsFeedbacks, submitStatus, newestFeedback])
+    },[selectedUserId,studyInfo, hfsFeedbacks, submitStatus, newestFeedback, localFeedback])
 
 
     useEffect(() => {
@@ -261,10 +261,7 @@ export function HomeFunStudyDialog() {
             if (!selectedOrg) {
                 throw new Error("Organization is not selected.");
             }
-            if(!shouldSubmitFeedback || !studyInfo || !hfsFeedbacks || !selectedUserId)
-                return ;
-            const currentFeedback = getLocalFeedback(selectedUserId, studyInfo.id);
-            if(!currentFeedback)
+            if(!shouldSubmitFeedback || !studyInfo || !localFeedback || !selectedUserId)
                 return ;
             if(submitStatus === SubmitStatus.SUBMITTING)
                 return ;
@@ -273,8 +270,8 @@ export function HomeFunStudyDialog() {
             setSubmitStatus(SubmitStatus.SUBMITTING);
 
             await schedulerService.postScheduleFeedback(
-                selectedOrg.organization_id, studyInfo.id, currentFeedback.comment,
-                currentFeedback.assignmentItems.map((item, index) => ({attachment_id: item.attachmentId, attachment_name: item.attachmentName, number: index})))
+                selectedOrg.organization_id, studyInfo.id, localFeedback.comment,
+                localFeedback.assignmentItems.map((item, index) => ({attachment_id: item.attachmentId, attachment_name: item.attachmentName, number: index})))
                 .then(result => {
                     if(result && result.data && result.data.id){
                         setSubmitStatus(SubmitStatus.SUCCESS);
@@ -328,7 +325,7 @@ export function HomeFunStudyDialog() {
             }
         }
 
-    }, [selectedOrg, studyInfo, hfsFeedbacks, schedulerService, shouldSubmitFeedback, submitStatus])
+    }, [selectedOrg, studyInfo, localFeedback, schedulerService, shouldSubmitFeedback, submitStatus])
 
     return (
         <Dialog
@@ -401,13 +398,11 @@ function HomeFunStudyContainer({
             status: AttachmentStatus.UPLOADED
         }));
     }
-    function getLocalFeedback(userId: string, studyId: string) {
-        return hfsFeedbacks.find(feedback => feedback.userId === userId && feedback.studyId === studyId)
-    }
-
-    function getLocalAssignmentItems(userId: string, studyId: string) {
-        return getLocalFeedback(userId, studyId)?.assignmentItems ?? []
-    }
+    const localFeedback = useMemo(() => {
+        if(!hfsFeedbacks || !selectedUserId || !studyInfo)
+            return undefined
+        return hfsFeedbacks.find(feedback => feedback.userId === selectedUserId && feedback.studyId === studyInfo.id)
+    }, [hfsFeedbacks, selectedUserId, studyInfo])
 
     useEffect(() => {
         setShouldSyncAssignments(true)
@@ -425,7 +420,7 @@ function HomeFunStudyContainer({
             if(!newestFeedback) return;
             if(!hfsFeedbacks) return;
 
-            const localAssignmentItems: AssignmentItem[]  = getLocalAssignmentItems(selectedUserId, studyInfo.id);
+            const localAssignmentItems: AssignmentItem[]  = localFeedback?.assignmentItems ?? [];
             let newAssignmentItems: AssignmentItem[] = [];
 
             if (newestFeedback) {
@@ -442,7 +437,7 @@ function HomeFunStudyContainer({
             syncAssignments()
         }
 
-    }, [selectedUserId, newestFeedback, hfsFeedbacks, studyInfo, shouldSyncAssignments])
+    }, [selectedUserId, newestFeedback, hfsFeedbacks, studyInfo, shouldSyncAssignments, localFeedback])
 
     useEffect(() => {
         //Save Assignments after uploaded
