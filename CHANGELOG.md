@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.18.0-alpha.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v1.17.0%0Dv1.18.0-alpha.0) (2021-08-26)
+
+
+### Features
+
+* add download attachment functionality ([ef90c27](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/ef90c272143d24d3e574981edb388b5883e89291))
+
+
+### Bug Fixes
+
+* add key for AnytimeStudyItem ([a35f13d](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/a35f13d0d1d8aa346b29ce4f55c17744387b6de7))
+* Added condition for Go Live button ([c8b0cd3](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/c8b0cd323a45928973cce3ab36d5b84fc4e6490d))
+* Break all the text to make sure every text haven't overlapped anymore ([6503126](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/6503126fc384c07834464707ebcee1cc5ef90235))
+* improve study detail UI ([3c6f721](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/3c6f721fcaf5229190dc86e359aab62c4104607d))
+* Missing exclamation mark ([4d47170](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/4d47170893bc6ba011b2974434a859ddb3d05e68))
+* Re-handle joinButton to show the error messages. ([c221272](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/c2212728861e52c98da8e3657867db51a76fb7e7))
+* refactor getLocalFeedback function to improve performance and hide the error log ([4e8630e](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/4e8630e3f25ee79f05da44a0718be5031a53bfd8))
+
 ## [1.17.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v1.17.0-alpha.0%0Dv1.17.0) (2021-08-20)
 
 
