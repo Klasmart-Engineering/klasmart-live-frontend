@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+        id="cordova-plugin-external-url-intercept" version="0.1.0">
+    <name>External Url Intercept</name>
+    <description>Cordova External Url Intercept Plugin</description>
+    <license>Apache 2.0</license>
+    <keywords>cordova,url,navigation</keywords>
+    <js-module src="www/external-url-intercept.js" name="externalUrlIntercept">
+        <clobbers target="externalUrlIntercept" />
+    </js-module>
+    <platform name="android">
+        <source-file src="src/android/ExternalUrlIntercept.java" target-dir="src/com/kidsloop/externalurlintercept/" />
+        <config-file target="config.xml" parent="/*">
+            <feature name="ExternalUrlIntercept">
+                <param name="android-package" value="com.kidsloop.cordova.plugin.ExternalUrlIntercept" />
+            </feature>
+        </config-file>
+    </platform>
+    <platform name="ios">
+        <config-file target="config.xml" parent="/*">
+            <feature name="ExternalUrlIntercept">
+                <param name="ios-package" value="ExternalUrlIntercept"/>
+                <param name="onload" value="true" />
+            </feature>
+        </config-file>
+        <header-file src="src/ios/ExternalUrlIntercept.h" />
+        <source-file src="src/ios/ExternalUrlIntercept.m" />
+    </platform>
+</plugin>
