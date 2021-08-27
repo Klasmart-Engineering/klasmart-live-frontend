@@ -385,6 +385,7 @@ function HomeFunStudyContainer({
     const [uploadedAttachment, setUploadedAttachment] = useState<{itemId: string, resourceId: string}>()
     const [deletedAssignmentItemId, setDeletedAssignmentItemId] = useState<string>()
     const [uploadProgress, setUploadProgress] = useState<{itemId: string, progress: number}>()
+    const [shouldAskPermissionFromUser, setShouldAskPermissionFromUser] = useState(true)
 
     function generateAssignmentItemId() {
         return Math.random().toString(36).substring(7);
@@ -591,6 +592,24 @@ function HomeFunStudyContainer({
 
     function handleClickUpload() {
         setOpenButtonSelector(true);
+    }
+
+    function confirmPermissionToSelectFile() {
+        if(shouldAskPermissionFromUser){
+            setShouldAskPermissionFromUser(false)
+            showPopup({
+                variant: "confirm",
+                title: intl.formatMessage({id: "confirm_access_file_title", defaultMessage: "\"KidsLoop\" Would Like to Access Your Files"}),
+                description: [intl.formatMessage({id: "confirm_access_file_description", defaultMessage: "File access is needed to accomplish the assignments given to you."})],
+                confirmLabel: intl.formatMessage({id: "button_allow", defaultMessage: "Allow"}),
+                closeLabel: intl.formatMessage({id: "button_dont_allow", defaultMessage: "Don't Allow"}),
+                onConfirm: () => {
+                    onSelectFile()
+                }
+            })
+        }else{
+            onSelectFile()
+        }
     }
 
     function onSelectFile() {
@@ -869,7 +888,7 @@ function HomeFunStudyContainer({
                 onOpen={() => {
                     setOpenButtonSelector(true)
                 }}
-                onSelectFile={onSelectFile}
+                onSelectFile={confirmPermissionToSelectFile}
                 onSelectCamera={onSelectCamera}
                 onSelectGallery={onSelectGallery}
                 open={openButtonSelector}/>
