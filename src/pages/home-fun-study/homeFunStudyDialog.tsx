@@ -311,7 +311,7 @@ export function HomeFunStudyDialog() {
                     });
                 })
         }
-        if(shouldSubmitFeedback === true){
+        if(shouldSubmitFeedback){
             setShouldSubmitFeedback(false)
             if(submitStatus === SubmitStatus.UPLOADING){
                 showPopup({
@@ -354,7 +354,7 @@ export function HomeFunStudyDialog() {
                             color="primary"
                             disabled={!shouldShowSubmitButton}
                             onClick={() => {setShouldSubmitFeedback(true)}}
-                    > <FormattedMessage id="button_submit"/></Button>
+                    > <FormattedMessage id="button_submit" defaultMessage={"Submit"}/></Button>
                     {submitStatus === SubmitStatus.SUBMITTING ? <CircularProgress size={24} className={classes.buttonProgress} />: ''}
                 </div>
 
@@ -844,23 +844,23 @@ function HomeFunStudyContainer({
                     <Box mb={2} mt={1}>
                         <Typography variant="subtitle1" align="center">{studyInfo?.title}</Typography>
                         <Typography variant='body1' align="center" color='textSecondary'>
-                            <FormattedMessage id={"home_fun_study"} />
+                            <FormattedMessage id={"schedule_studyHomeFunStudy"} defaultMessage={"Home Fun Study"} />
                             </Typography>
                     </Box>
                 </Grid>
                 <Grid item xs>
                     <Box mb={3}>
                         <Typography variant='subtitle1'><FormattedMessage
-                            id="home_fun_study_your_task"/></Typography>
+                            id="home_fun_study_your_task" defaultMessage={"Your task"}/></Typography>
                         <Typography variant="body2"
-                                    color="textSecondary">{studyInfo?.description ? studyInfo.description : <FormattedMessage id={"label_not_defined"}/>}</Typography>
+                                    color="textSecondary">{studyInfo?.description ? studyInfo.description : <FormattedMessage id={"label_not_defined"} defaultMessage={"Not defined"}/>}</Typography>
                     </Box>
                 </Grid>
                 <Grid item xs>
                     <Box mb={3}>
                         <Typography variant='subtitle1'>Due date</Typography>
                         <Typography variant='body2' color="textSecondary">
-                            {studyInfo?.due_at && studyInfo.due_at !== 0 ? formatDueDate(studyInfo.due_at) : <FormattedMessage id={"label_not_defined"}/>}
+                            {studyInfo?.due_at && studyInfo.due_at !== 0 ? formatDueDate(studyInfo.due_at) : <FormattedMessage id={"label_not_defined"} defaultMessage={"Not defined"}/>}
                         </Typography>
                     </Box>
                 </Grid>
@@ -935,8 +935,8 @@ function HomeFunStudyAssignment({
                 </Box>
                 {
                     (assignmentItems.length < MAX_FILE_LIMIT)
-                        ? <Typography variant="caption" display="block" color="textSecondary"><FormattedMessage id={"home_fun_study_maximum_three_files"}/></Typography>
-                        :  <Typography variant="caption" display="block" color="secondary"><FormattedMessage id={"home_fun_study_maximum_three_files_limited"} /></Typography>
+                        ? <Typography variant="caption" display="block" color="textSecondary"><FormattedMessage id={"home_fun_study_maximum_three_files"} defaultMessage={"*Maximum three files"}/></Typography>
+                        :  <Typography variant="caption" display="block" color="secondary"><FormattedMessage id={"home_fun_study_maximum_three_files_limited"} defaultMessage={"Maximum three files limit has been reached. Delete uploaded file(s) to upload new file"}/></Typography>
                 }
                 <Box my={2}>
                     <Button
@@ -1052,13 +1052,13 @@ function HomeFunStudyComment({studyInfo, newestFeedback, defaultComment}: { stud
                     onClick={handleOnClickEditComment}
                 >
                     <Typography variant="body2">
-                        {comment ? <FormattedMessage id="button_edit_comment"/> :
-                            <FormattedMessage id="button_add_comment"/>}
+                        {comment ? <FormattedMessage id="button_edit_comment" defaultMessage={"Edit comment"}/> :
+                            <FormattedMessage id="button_add_comment" defaultMessage={"Add comment"}/>}
                     </Typography>
                 </Button>
             </Box>
             <Typography variant="body2" color="textSecondary">
-                {comment ? comment : <FormattedMessage id="home_fun_study_comment"/>}
+                {comment ? comment : <FormattedMessage id="home_fun_study_comment" defaultMessage={"Comment..."}/>}
             </Typography>
             <CommentDialog
                 open={openEditComment}

@@ -72,7 +72,7 @@ export function BottomSelector({
                                     </Grid>
                                     <Grid item>
                                         <Typography variant={"body2"} color={"textSecondary"}><FormattedMessage
-                                            id={"button_file"}/></Typography>
+                                            id={"button_file"} defaultMessage={"File"}/></Typography>
                                     </Grid>
                                 </Grid>
                             </Box>
@@ -91,7 +91,7 @@ export function BottomSelector({
                                     </Grid>
                                     <Grid item>
                                         <Typography variant={"body2"} color={"textSecondary"}><FormattedMessage
-                                            id={"button_camera"}/></Typography>
+                                            id={"button_camera"} defaultMessage={"Camera"}/></Typography>
                                     </Grid>
                                 </Grid>
                             </Box>
@@ -110,7 +110,7 @@ export function BottomSelector({
                                     </Grid>
                                     <Grid item>
                                         <Typography variant={"body2"} color={"textSecondary"}><FormattedMessage
-                                            id={"button_gallery"}/></Typography>
+                                            id={"button_gallery"} defaultMessage={"Gallery"}/></Typography>
                                     </Grid>
                                 </Grid>
                             </Box>

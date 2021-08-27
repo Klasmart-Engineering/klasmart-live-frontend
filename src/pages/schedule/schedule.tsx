@@ -1,5 +1,5 @@
 import {ListItemSecondaryAction} from "@material-ui/core";
-import React, {useContext, useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {FormattedMessage} from "react-intl";
 import {makeStyles, Theme} from '@material-ui/core/styles';
@@ -558,19 +558,23 @@ function AnytimeStudyItem({ studyId, assessmentForStudent, setSelectedSchedule, 
             <ListItemText
                 disableTypography
                 primary={<Typography variant="body1" className={listItemTextPrimary}>{studyInfo ? studyInfo.title : ""}</Typography>}
-                secondary={<Typography variant="caption" color="textSecondary"><FormattedMessage id={studyInfo?.is_home_fun ? "schedule_studyHomeFunStudy" : "schedule_studyAnytimeStudy"} /></Typography>}
+                secondary={
+                    <Typography variant="caption" color="textSecondary">
+                        <FormattedMessage id={studyInfo?.is_home_fun ? "schedule_studyHomeFunStudy" : "schedule_studyAnytimeStudy"}
+                                         defaultMessage={studyInfo?.is_home_fun ? "Home Fun Study" : "Anytime Study"} />
+                    </Typography>}
             />
             {
                 assessmentForStudent?.status === AssessmentStatusType.COMPLETE ?
                     <ListItemSecondaryAction>
                         <Grid container direction={"column"}>
-                            <Grid item><Typography variant="subtitle2" color="textSecondary"><FormattedMessage id="schedule_studyAssessmentComplete1" /></Typography></Grid>
-                            <Grid item><Typography variant="subtitle2" color="textSecondary"><FormattedMessage id="schedule_studyAssessmentComplete2" /></Typography></Grid>
+                            <Grid item><Typography variant="subtitle2" color="textSecondary"><FormattedMessage id="schedule_studyAssessmentComplete1" defaultMessage={"Assessment"} /></Typography></Grid>
+                            <Grid item><Typography variant="subtitle2" color="textSecondary"><FormattedMessage id="schedule_studyAssessmentComplete2" defaultMessage={"Complete"}/></Typography></Grid>
                         </Grid>
                     </ListItemSecondaryAction>
                     : assessmentForStudent?.student_attachments && assessmentForStudent?.student_attachments.length > 0
                     ?<ListItemSecondaryAction>
-                        <Typography variant="subtitle2" className={classes.submittedText}><FormattedMessage id="schedule_studySubmittedFeedback" /></Typography>
+                        <Typography variant="subtitle2" className={classes.submittedText}><FormattedMessage id="schedule_studySubmittedFeedback" defaultMessage={"Submitted"}/></Typography>
                     </ListItemSecondaryAction> : ""
             }
         </ListItem>
