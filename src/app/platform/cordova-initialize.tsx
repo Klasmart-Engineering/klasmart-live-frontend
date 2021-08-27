@@ -1,12 +1,16 @@
-import { useState, useEffect, useCallback } from "react";
-import useVideoLayoutUpdate from "./utils/video-layout-update";
+import useVideoLayoutUpdate from "./../utils/video-layout-update";
+import {
+    useCallback,
+    useEffect,
+    useState,
+} from "react";
 
 const useCordovaInitialize = (backExitApplication?: boolean, callbackBackButton?: () => void, skipInitEffects?: boolean) => {
-    const [cordovaReady, setCordovaReady] = useState(false);
-    const [permissions, setPermissions] = useState(false);
-    const [keepAwake, setKeepAwake] = useState(true);
-    const [isIOS, setIsIOS] = useState<boolean>(false);
-    const [isAndroid, setIsAndroid] = useState<boolean>(false);
+    const [ cordovaReady, setCordovaReady ] = useState(false);
+    const [ permissions, setPermissions ] = useState(false);
+    const [ keepAwake, setKeepAwake ] = useState(true);
+    const [ isIOS, setIsIOS ] = useState<boolean>(false);
+    const [ isAndroid, setIsAndroid ] = useState<boolean>(false);
 
     const { updateLayout } = useVideoLayoutUpdate(null);
 
@@ -16,35 +20,35 @@ const useCordovaInitialize = (backExitApplication?: boolean, callbackBackButton?
         if (AndroidFullScreen) {
             AndroidFullScreen.isSupported(() => {
                 AndroidFullScreen.immersiveMode(() => {
-                    console.log("Successfully set immersiveMode");
+                    console.log(`Successfully set immersiveMode`);
                 }, () => {
-                    console.error("Failed to set immersiveMode");
+                    console.error(`Failed to set immersiveMode`);
                 });
             }, (error: Error) => {
-                console.log(`AndroidFullScreen not available: ${error}`)
+                console.log(`AndroidFullScreen not available: ${error}`);
             });
         }
-    }
+    };
 
     const requestIosCameraPermission = useCallback((camera: boolean, mic: boolean) => {
         const cordova = (window as any).cordova;
         if (!cordova || !cordova.plugins) return;
 
         if (cordova.plugins.iosrtc) {
-            console.log("Requesting iosrtc permissions...")
+            console.log(`Requesting iosrtc permissions...`);
             cordova.plugins.iosrtc.requestPermission(mic, camera, (approved: boolean) => {
-                console.log("Permissions: ", approved ? "Granted" : "Rejected");
+                console.log(`Permissions: `, approved ? `Granted` : `Rejected`);
                 setPermissions(approved);
             });
         }
-    }, [setPermissions]);
+    }, [ setPermissions ]);
 
     const requestPermissions = useCallback((camera: boolean, mic: boolean) => {
         const cordova = (window as any).cordova;
         if (!cordova || !cordova.plugins) return;
 
         if (cordova.plugins.permissions) {
-            console.log("Requesting android permissions...")
+            console.log(`Requesting android permissions...`);
             const permissions = cordova.plugins.permissions;
 
             const permissionsList: string[] = [];
@@ -58,7 +62,7 @@ const useCordovaInitialize = (backExitApplication?: boolean, callbackBackButton?
             }
 
             const onRequestError = () => {
-                console.error(`Couldn't request permissions: ${permissionsList}`)
+                console.error(`Couldn't request permissions: ${permissionsList}`);
             };
 
             const onRequestSuccess = (status: { hasPermission: boolean }) => {
@@ -70,38 +74,38 @@ const useCordovaInitialize = (backExitApplication?: boolean, callbackBackButton?
         } else {
             requestIosCameraPermission(camera, mic);
         }
-    }, [setPermissions]);
+    }, [ setPermissions ]);
 
     useEffect(() => {
         if (skipInitEffects) return;
 
-        console.log("Waiting for deviceready event...");
+        console.log(`Waiting for deviceready event...`);
 
         const onDeviceReady = async () => {
-            console.log("Received deviceready event!");
+            console.log(`Received deviceready event!`);
 
             enableAndroidFullScreen();
 
             const cordova = (window as any).cordova;
 
             if (cordova && cordova.plugins && cordova.plugins.iosrtc) {
-                console.log("Registering iosrtc globals.");
+                console.log(`Registering iosrtc globals.`);
                 cordova.plugins.iosrtc.registerGlobals();
             }
 
             // NOTE: Copy cookies for iOS webview.
             const wkWebView = (window as any).wkWebView;
             if (wkWebView) {
-                wkWebView.injectCookie('kidsloop.net/refresh');
-                wkWebView.injectCookie('kidsloop.net/');
-                wkWebView.injectCookie('auth.alpha.kidsloop.net/refresh');
-                wkWebView.injectCookie('.alpha.kidsloop.net/');
-                wkWebView.injectCookie('kidsloop.live/refresh');
-                wkWebView.injectCookie('.kidsloop.live/');
-                wkWebView.injectCookie('kidsloop.vn/refresh');
-                wkWebView.injectCookie('.kidsloop.vn/');
-                wkWebView.injectCookie('kidsloop.in/refresh');
-                wkWebView.injectCookie('.kidsloop.in/');
+                wkWebView.injectCookie(`kidsloop.net/refresh`);
+                wkWebView.injectCookie(`kidsloop.net/`);
+                wkWebView.injectCookie(`auth.alpha.kidsloop.net/refresh`);
+                wkWebView.injectCookie(`.alpha.kidsloop.net/`);
+                wkWebView.injectCookie(`kidsloop.live/refresh`);
+                wkWebView.injectCookie(`.kidsloop.live/`);
+                wkWebView.injectCookie(`kidsloop.vn/refresh`);
+                wkWebView.injectCookie(`.kidsloop.vn/`);
+                wkWebView.injectCookie(`kidsloop.in/refresh`);
+                wkWebView.injectCookie(`.kidsloop.in/`);
             }
 
             setIsAndroid(cordova.platformId === `android`);
@@ -110,11 +114,11 @@ const useCordovaInitialize = (backExitApplication?: boolean, callbackBackButton?
             setCordovaReady(true);
         };
 
-        document.addEventListener("deviceready", onDeviceReady, false);
+        document.addEventListener(`deviceready`, onDeviceReady, false);
 
         return () => {
-            document.removeEventListener("deviceready", onDeviceReady);
-        }
+            document.removeEventListener(`deviceready`, onDeviceReady);
+        };
     }, []);
 
     useEffect(() => {
@@ -130,13 +134,13 @@ const useCordovaInitialize = (backExitApplication?: boolean, callbackBackButton?
             }
         };
 
-        document.addEventListener("backbutton", onBackButton, false);
+        document.addEventListener(`backbutton`, onBackButton, false);
 
         return () => {
-            document.removeEventListener("backbutton", onBackButton);
-        }
+            document.removeEventListener(`backbutton`, onBackButton);
+        };
 
-    }, [backExitApplication, callbackBackButton]);
+    }, [ backExitApplication, callbackBackButton ]);
 
     useEffect(() => {
         const vu = setInterval(() => {
@@ -163,9 +167,18 @@ const useCordovaInitialize = (backExitApplication?: boolean, callbackBackButton?
         } catch (error) {
             console.error(error);
         }
-    }, [keepAwake]);
+    }, [ keepAwake ]);
 
-    return { cordovaReady, permissions, requestPermissions, requestIosCameraPermission, keepAwake, setKeepAwake, isIOS, isAndroid };
+    return {
+        cordovaReady,
+        permissions,
+        requestPermissions,
+        requestIosCameraPermission,
+        keepAwake,
+        setKeepAwake,
+        isIOS,
+        isAndroid,
+    };
 };
 
 export default useCordovaInitialize;
