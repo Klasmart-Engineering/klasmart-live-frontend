@@ -78,6 +78,7 @@
     "graphql-request": "^2.0.0",
     "iframe-resizer-react": "^1.1.0",
     "inter-ui": "^3.18.0",
+    "js-cookie": "^3.0.0",
     "jwt-decode": "^2.2.0",
     "kidsloop-branding": "bitbucket:calmisland/kidsloop-branding#1.0.1",
     "kidsloop-canvas": "bitbucket:calmisland/kidsloop-canvas#release/npm",
