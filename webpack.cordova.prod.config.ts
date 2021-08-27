@@ -1,10 +1,10 @@
-const webpack = require(`webpack`);
-const path = require(`path`);
-const HtmlWebpackPlugin = require(`html-webpack-plugin`);
-const CopyWebpackPlugin = require(`copy-webpack-plugin`);
+import CopyWebpackPlugin from "copy-webpack-plugin";
+import HtmlWebpackPlugin from "html-webpack-plugin";
+import path from "path";
+import { EnvironmentPlugin } from "webpack";
 
 module.exports = {
-    mode: `development`,
+    mode: `production`,
     entry: {
         ui: `./src/app/entrypoint/entry-cordova.tsx`,
         record: `./src/entry-record.ts`,
@@ -79,18 +79,17 @@ module.exports = {
         path: path.resolve(__dirname, `www`),
         publicPath: ``,
     },
-    devtool: `source-map`,
     plugins: [
-        new webpack.EnvironmentPlugin([ `NODE_ENV` ], [ `APP_GIT_REV` ], [ `DISABLE_BROWSER_GUIDE` ], [ `DISABLE_SCREEN_SHARE` ], [ `USE_TEST_TOKEN` ], [ `WEBRTC_DEVICE_HANDLER_NAME` ], [ `CUSTOM_UA` ]),
+        new EnvironmentPlugin([ `NODE_ENV` ], [ `APP_GIT_REV` ], [ `DISABLE_BROWSER_GUIDE` ], [ `DISABLE_SCREEN_SHARE` ], [ `USE_TEST_TOKEN` ], [ `WEBRTC_DEVICE_HANDLER_NAME` ], [ `CUSTOM_UA` ]),
         new HtmlWebpackPlugin({
             filename: `index.html`,
             chunks: [ `ui` ],
-            template: `src/index.cordova.html`,
+            template: `src/app/index.cordova.html`,
         }),
         new HtmlWebpackPlugin({
             filename: `player.html`,
             chunks: [ `player` ],
-            template: `src/player.cordova.html`,
+            template: `src/app/player.cordova.html`,
         }),
         new HtmlWebpackPlugin({
             filename: `pdfviewer.html`,
@@ -110,44 +109,4 @@ module.exports = {
             ],
         }),
     ],
-    devServer: {
-        host: `0.0.0.0`,
-        historyApiFallback: true,
-        proxy: {
-            "/graphql": {
-                target: `http://localhost:8000`,
-                changeOrigin: true,
-                ws: true,
-            },
-            "/sfu": {
-                target: `http://localhost:8002`,
-                changeOrigin: true,
-                ws: true,
-            },
-            "/h5p": {
-                target: `https://zoo.kidsloop.net`,
-                changeOrigin: true,
-            },
-            "/auth": {
-                target: `https://prod.auth.badanamu.net/`,
-                changeOrigin: true,
-                pathRewrite: {
-                    "^/auth": ``,
-                },
-            },
-            "/account": {
-                target: `https://prod.account.badanamu.net/`,
-                changeOrigin: true,
-                pathRewrite: {
-                    "^/account": ``,
-                },
-            },
-            "/v1": {
-                target: `https://kl2-test.kidsloop.net/`,
-                secure: true,
-                changeOrigin: true,
-            },
-        },
-        disableHostCheck: true,
-    },
 };
