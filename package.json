@@ -40,6 +40,8 @@
     "clean-webpack-plugin": "4.0.0-alpha.0",
     "copy-webpack-plugin": "9.0.1",
     "cross-env": "7.0.3",
+    "cordova-android": "^9.1.0",
+    "cordova-ios": "^6.2.0",
     "css-loader": "^4.2.1",
     "css-modules-typescript-loader": "^4.0.0",
     "dotenv": "^8.2.0",
@@ -107,5 +109,44 @@
     "use-sound": "^1.0.2",
     "uuid": "8.3.2",
     "voice-activity-detection": "^0.0.5"
+  },
+  "cordova": {
+    "plugins": {
+      "cordova-plugin-whitelist": {},
+      "cordova-plugin-android-permissions": {},
+      "cordova-plugin-screen-orientation": {},
+      "cordova-plugin-inappbrowser": {},
+      "cordova-plugin-browsertab": {
+        "CUSTOM_TAB_COLOR_RGB": "#1a73e8"
+      },
+      "cordova-plugin-customurlscheme": {
+        "URL_SCHEME": "kidsloopstudent",
+        "ANDROID_SCHEME": " ",
+        "ANDROID_HOST": " ",
+        "ANDROID_PATHPREFIX": "/"
+      },
+      "cordova-plugin-fullscreen": {},
+      "cordova-plugin-wkwebview-cookie-sync": {},
+      "cordova-plugin-wkwebview-file-xhr": {},
+      "cordova-plugin-statusbar": {},
+      "cordova-plugin-iosrtc": {
+        "MANUAL_INIT_AUDIO_DEVICE": "FALSE"
+      },
+      "cordova-plugin-insomnia": {},
+      "cordova-plugin-camera": {
+        "ANDROID_SUPPORT_V4_VERSION": "27.+"
+      },
+      "cordova-plugin-chooser": {},
+      "cordova-plugin-filepath": {},
+      "cordova-plugin-preview-any-file": {},
+      "cordova-plugin-file": {},
+      "cordova-plugin-network-information": {},
+      "cordova-plugin-external-url-intercept": {}
+    },
+    "platforms": [
+      "ios",
+      "android",
+      "browser"
+    ]
   }
 }
