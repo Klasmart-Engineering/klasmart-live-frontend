@@ -199,7 +199,7 @@
   },
   "standard-version": {
     "scripts": {
-      "postbump": "npm run cordova:sync:version"
+      "precommit": "npm run cordova:sync:version"
     },
     "commitUrlFormat": "{{host}}/{{owner}}/{{repository}}/commits/{{hash}}",
     "compareUrlFormat": "{{host}}/{{owner}}/{{repository}}/branches/compare/{{previousTag}}%0D{{currentTag}}",
