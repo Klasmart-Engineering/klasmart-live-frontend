@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.18.0-alpha.1](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v1.18.0-alpha.0%0Dv1.18.0-alpha.1) (2021-08-30)
+
+
+### Features
+
+* Add a popup to ask for a permission to access to the files ([e4441bd](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/e4441bd67ef62241856025e23ea80327af126f3c))
+
 ## [1.18.0-alpha.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v1.17.0%0Dv1.18.0-alpha.0) (2021-08-26)
 
 
