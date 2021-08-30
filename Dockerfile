@@ -29,7 +29,7 @@ COPY $NODE_MODULES ./node_modules
 RUN --mount=type=ssh if [ -z $NODE_MODULES ] ; then npm i ; fi
 COPY ./src ./src
 COPY ./tsconfig.json .
-COPY ./webpack.config.js .
+COPY ./webpack.config.ts .
 COPY ./.env .
 COPY ./.eslintrc.js .
 COPY ./utils ./utils
