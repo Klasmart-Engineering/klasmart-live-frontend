@@ -1,7 +1,5 @@
-import {
-    LIVE_LINK,
-    LocalSessionContext,
-} from "../../providers/providers";
+import { LIVE_LINK } from "../../providers/providers";
+import { useSessionContext } from "../../providers/session-context";
 import {
     createEmptyPermissions,
     createPermissions,
@@ -104,8 +102,7 @@ export const SynchronizedStateProvider: FunctionComponent<Props> = ({ children }
         sessionId,
         roomId,
         isTeacher,
-
-    } = useContext(LocalSessionContext);
+    } = useSessionContext();
 
     const [ events ] = useState<PainterEvent[]>([]);
 

@@ -1,5 +1,5 @@
 import { Session } from "../../../pages/utils";
-import { LocalSessionContext } from "../../../providers/providers";
+import { useSessionContext } from "../../../providers/session-context";
 import { RoomContext } from "../../../providers/roomContext";
 import { isShowContentLoadingState } from "../../../store/layoutAtoms";
 import {
@@ -132,7 +132,7 @@ function Observe () {
     const {
         sessionId,
         isTeacher,
-    } = useContext(LocalSessionContext);
+    } = useSessionContext();
     const { content, sessions } = useContext(RoomContext);
     const [ studentSessions, setStudentSessions ] = useState<Session[]>([]);
     const { state: { display: isGlobalCanvasEnabled, permissions: permissionsGlobalCanvas } } = useSynchronizedState();

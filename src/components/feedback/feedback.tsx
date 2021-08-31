@@ -1,7 +1,5 @@
-import {
-    LIVE_LINK,
-    LocalSessionContext,
-} from '../../providers/providers';
+import { LIVE_LINK } from '../../providers/providers';
+import { useSessionContext } from "../../providers/session-context";
 import { MUTATION_SAVE_FEEDBACK } from "../../utils/graphql";
 import { useMutation } from '@apollo/client';
 import {
@@ -137,7 +135,7 @@ function getChoices (feedbackType: string, userType: string, stars: number) {
 function Feedback (props:FeedbackProps){
     const classes = useStyles();
     const intl = useIntl();
-    const { isTeacher } = useContext(LocalSessionContext);
+    const { isTeacher } = useSessionContext();
     const userType = isTeacher ? `teacher`: `student`;
     const { type: feedbackType } = props;
 

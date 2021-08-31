@@ -1,9 +1,9 @@
 import {
     LIVE_LINK,
-    LocalSessionContext,
     SFU_LINK,
 } from "../../providers/providers";
 import { RoomContext } from "../../providers/roomContext";
+import { useSessionContext } from "../../providers/session-context";
 import {
     GLOBAL_MUTE_QUERY,
     MUTE,
@@ -186,7 +186,7 @@ function UserCameraActions (props: UserCameraActionsType) {
     const { user, expanded } = props;
     const classes = useStyles();
 
-    const { isTeacher, roomId } = useContext(LocalSessionContext);
+    const { isTeacher, roomId } = useSessionContext();
 
     const [ hasControls, setHasControls ] = useRecoilState(hasControlsState);
     const [ pinnedUser, setPinnedUser ] = useRecoilState(pinnedUserState);
@@ -349,7 +349,7 @@ function ToggleCamera (props:any){
     const { user } = props;
     const classes = useStyles();
 
-    const { roomId, sessionId } = useContext(LocalSessionContext);
+    const { roomId, sessionId } = useSessionContext();
     const { sessions } = useContext(RoomContext);
     const webrtc = useContext(WebRTCContext);
 
@@ -458,7 +458,7 @@ function ToggleMic (props:any){
     const { user } = props;
     const classes = useStyles();
 
-    const { roomId, sessionId } = useContext(LocalSessionContext);
+    const { roomId, sessionId } = useSessionContext();
     const { sessions } = useContext(RoomContext);
     const isSelf = sessionId === user.id;
 
@@ -560,7 +560,7 @@ function ToggleControls (props:any){
     const { user } = props;
     const classes = useStyles();
 
-    const { roomId } = useContext(LocalSessionContext);
+    const { roomId } = useSessionContext();
 
     const [ hostMutation ] = useMutation(MUTATION_SET_HOST, {
         context: {

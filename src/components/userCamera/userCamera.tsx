@@ -1,5 +1,5 @@
-import { LocalSessionContext } from "../../providers/providers";
 import { RoomContext } from "../../providers/roomContext";
+import { useSessionContext } from "../../providers/session-context";
 import { WebRTCContext } from "../../providers/WebRTCContext";
 import ReactPlayer from "../react-player";
 import NoCamera from "./noCamera";
@@ -95,7 +95,7 @@ function UserCamera (props: UserCameraType) {
 
     const [ camOn, setCamOn ] = useState(true);
 
-    const { camera, sessionId } = useContext(LocalSessionContext);
+    const { camera, sessionId } = useSessionContext();
     const { sessions } = useContext(RoomContext);
     const webrtc = useContext(WebRTCContext);
 

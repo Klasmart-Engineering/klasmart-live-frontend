@@ -1,6 +1,6 @@
 import { ContentType } from "../../pages/utils";
-import { LocalSessionContext } from "../../providers/providers";
 import { RoomContext } from "../../providers/roomContext";
+import { useSessionContext } from "../../providers/session-context";
 import { ClassType } from "../../store/actions";
 import { Whiteboard } from "../../whiteboard/components/Whiteboard";
 import Toolbar from "../toolbar/toolbar";
@@ -55,7 +55,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 function Main () {
     const classes = useStyles();
-    const { classtype, isTeacher } = useContext(LocalSessionContext);
+    const { classType, isTeacher } = useSessionContext();
     const { content } = useContext(RoomContext);
 
     const theme = useTheme();
@@ -66,7 +66,7 @@ function Main () {
             container
             direction="column"
             className={clsx(classes.fullViewHeight, {
-                [classes.fullViewHeightSm]: isSmDown && classtype == ClassType.LIVE,
+                [classes.fullViewHeightSm]: isSmDown && classType == ClassType.LIVE,
             })}>
             <Grid
                 item
@@ -81,15 +81,15 @@ function Main () {
                             xs
                             className={classes.relative}
                         >
-                            {classtype == ClassType.LIVE && <div
+                            {classType == ClassType.LIVE && <div
                                 id="activity-view-container"
                                 className={classes.fullHeightCentered}
                             >
                                 {content?.type !== ContentType.Activity && <Whiteboard uniqueId={isTeacher ? `global` : `student`} />}
                                 <MainView />
                             </div> }
-                            {classtype == ClassType.STUDY && <MainClass /> }
-                            {classtype == ClassType.CLASSES && <MainClass /> }
+                            {classType == ClassType.STUDY && <MainClass /> }
+                            {classType == ClassType.CLASSES && <MainClass /> }
                         </Grid>
                         <Grid
                             item
@@ -99,7 +99,7 @@ function Main () {
                     </Grid>
                 </div>
             </Grid>
-            {classtype === ClassType.LIVE &&
+            {classType === ClassType.LIVE &&
              <Grid item>
                  <Toolbar />
              </Grid>

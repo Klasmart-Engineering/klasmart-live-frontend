@@ -24,9 +24,9 @@ import {
 } from "../utils/utils";
 import {
     LIVE_LINK,
-    LocalSessionContext,
     SFU_LINK,
 } from "./providers";
+import { useSessionContext } from "./session-context";
 import { GLOBAL_MUTE_QUERY } from "./WebRTCContext";
 import {
     gql,
@@ -95,7 +95,7 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
         isTeacher,
         materials,
 
-    } = useContext(LocalSessionContext);
+    } = useSessionContext();
     const [ sfuAddress, setSfuAddress ] = useState<string>(``);
     const [ messages, setMessages ] = useState<Map<string, Message>>(new Map<string, Message>());
     const [ content, setContent ] = useState<Content>();

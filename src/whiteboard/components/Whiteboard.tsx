@@ -1,4 +1,4 @@
-import { LocalSessionContext } from "../../providers/providers";
+import { useSessionContext } from "../../providers/session-context";
 import { whiteboard } from "../../utils/layerValues";
 import { useSynchronizedState } from "../context-providers/SynchronizedStateProvider";
 import {
@@ -56,7 +56,7 @@ export function Whiteboard ({
         },
     } = useSynchronizedState();
     const classes = useStyles();
-    const { sessionId } = useContext(LocalSessionContext);
+    const { sessionId } = useSessionContext();
     const { actions: { clear } } = useToolbarContext();
     const canvasUserId = useMemo(() => {
         if (group) {

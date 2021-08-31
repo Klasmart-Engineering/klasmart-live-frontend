@@ -1,7 +1,5 @@
-import {
-    LIVE_LINK,
-    LocalSessionContext,
-} from "../../../../providers/providers";
+import { LIVE_LINK } from "../../../../providers/providers";
+import { useSessionContext } from "../../../../providers/session-context";
 import { SEND_MESSAGE } from "../../../../utils/graphql";
 import {  useMutation } from "@apollo/client";
 import {
@@ -13,10 +11,7 @@ import {
 } from "@material-ui/core";
 import { SendPlane as SendIcon } from "@styled-icons/remix-fill/SendPlane";
 import React,
-{
-    useContext,
-    useState,
-} from "react";
+{ useState } from "react";
 import { useIntl } from "react-intl";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -50,7 +45,7 @@ function SendMessage () {
     const intl = useIntl();
 
     const [ message, setMessage ] = useState(``);
-    const { roomId } = useContext(LocalSessionContext);
+    const { roomId } = useSessionContext();
 
     const [ sendMessage, { loading } ] = useMutation(SEND_MESSAGE, {
         context: {

@@ -1,4 +1,4 @@
-import { LocalSessionContext } from "../../providers/providers";
+import { useSessionContext } from "../../providers/session-context";
 import { ClassType } from "../../store/actions";
 import { StyledDrawer } from "../../utils/utils";
 import LessonPlan from "./lessonPlan/lessonPlan";
@@ -6,11 +6,11 @@ import React,
 { useContext } from "react";
 
 function MainDrawer () {
-    const { classtype } = useContext(LocalSessionContext);
+    const { classType } = useSessionContext();
 
     return (
         <>
-            <StyledDrawer active={classtype === ClassType.CLASSES}>
+            <StyledDrawer active={classType === ClassType.CLASSES}>
                 <LessonPlan />
             </StyledDrawer>
         </>

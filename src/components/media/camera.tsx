@@ -1,6 +1,6 @@
 
 import { Session } from "../../pages/utils";
-import { LocalSessionContext } from "../../providers/providers";
+import { useSessionContext } from "../../providers/session-context";
 import {
     GLOBAL_MUTE_QUERY,
     MUTE,
@@ -123,7 +123,7 @@ export default function Camera ({
 }: CameraProps): JSX.Element {
     const theme = useTheme();
 
-    const { sessionId: userSelfSessionId } = useContext(LocalSessionContext);
+    const { sessionId: userSelfSessionId } = useSessionContext();
     const isSelf = session
         ? session.id === userSelfSessionId
         : true; // e.g. <Camera /> without session in join.tsx

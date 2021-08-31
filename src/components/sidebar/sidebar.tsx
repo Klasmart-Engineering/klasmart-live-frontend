@@ -1,4 +1,4 @@
-import { LocalSessionContext } from "../../providers/providers";
+import { useSessionContext } from "../../providers/session-context";
 import { activeTabState } from "../../store/layoutAtoms";
 import MosaicSlider from "./mosaicSlider";
 import SidebarMenuItem from "./sidebarMenuItem";
@@ -68,7 +68,7 @@ function Sidebar () {
     const intl = useIntl();
 
     const [ activeTab, setActiveTab ] = useRecoilState(activeTabState);
-    const { isTeacher } = useContext(LocalSessionContext);
+    const { isTeacher } = useSessionContext();
     const [ drawerWidth, setDrawerWidth ] = useState<any>(440);
 
     const theme = useTheme();

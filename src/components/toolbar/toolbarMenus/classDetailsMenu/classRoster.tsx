@@ -1,4 +1,4 @@
-import { LocalSessionContext } from "../../../../providers/providers";
+import { useSessionContext } from "../../../../providers/session-context";
 import { classInfoState } from "../../../../store/layoutAtoms";
 import {
     Accordion,
@@ -97,7 +97,7 @@ function ClassRoster () {
     const classes = useStyles();
 
     const [ users, setUsers ] = useRecoilState(classInfoState);
-    const { isTeacher } = useContext(LocalSessionContext);
+    const { isTeacher } = useSessionContext();
     const teachers = users.teachers;
     const students = users.students;
 
