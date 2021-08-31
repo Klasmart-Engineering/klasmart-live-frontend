@@ -1,7 +1,5 @@
-import {
-    LIVE_LINK,
-    LocalSessionContext,
-} from "../../providers/providers";
+import { LIVE_LINK } from "../../providers/providers";
+import { useSessionContext } from "../../providers/session-context";
 import { ClassType } from "../../store/actions";
 import {
     materialActiveIndexState,
@@ -136,13 +134,13 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 export function ClassContent () {
     const {
-        classtype,
+        classType,
         isTeacher,
         materials,
         sessionId,
         roomId,
 
-    } = useContext(LocalSessionContext);
+    } = useSessionContext();
 
     const classes = useStyles();
     const intl = useIntl();
@@ -156,7 +154,7 @@ export function ClassContent () {
 
     const rootDivRef = useRef<HTMLDivElement>(null);
     const [ squareSize, setSquareSize ] = useState<number>(0);
-    const forStudent = classtype === ClassType.STUDY || !isTeacher;
+    const forStudent = classType === ClassType.STUDY || !isTeacher;
     const HUB_ENDPOINT = process.env.ENDPOINT_HUB;
 
     const [ rewardTrophyMutation, { loading: loadingTrophy } ] = useMutation(MUTATION_REWARD_TROPHY, {
@@ -242,8 +240,8 @@ export function ClassContent () {
                             id="activity-view-container">
                             <Whiteboard
                                 uniqueId={forStudent ? `student` : `teacher`}
-                                group={classtype !== ClassType.LIVE ? sessionId : undefined}
-                                useLocalDisplay={classtype !== ClassType.LIVE} />
+                                group={classType !== ClassType.LIVE ? sessionId : undefined}
+                                useLocalDisplay={classType !== ClassType.LIVE} />
                             <PreviewLessonPlan />
                         </div>
                     </div> }

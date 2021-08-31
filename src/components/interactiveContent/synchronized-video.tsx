@@ -1,8 +1,6 @@
 import { MaterialTypename } from "../../lessonMaterialContext";
-import {
-    LIVE_LINK,
-    LocalSessionContext,
-} from '../../providers/providers';
+import { LIVE_LINK } from '../../providers/providers';
+import { useSessionContext } from "../../providers/session-context";
 import { FFT } from "../fft";
 import ReactPlayer from "../react-player/lazy";
 import {
@@ -100,7 +98,7 @@ export function ReplicaMedia (props: React.VideoHTMLAttributes<HTMLMediaElement>
 
     const [ muted, setMuted ] = useState<boolean>(isSafari);
 
-    const { roomId } = useContext(LocalSessionContext);
+    const { roomId } = useSessionContext();
 
     const ref = useRef<HTMLMediaElement>(null);
     const reactPlayerRef = useRef<ReactPlayer>(null);
@@ -346,7 +344,7 @@ export function ReplicatedMedia (props: React.VideoHTMLAttributes<HTMLMediaEleme
     >(undefined);
     const [ playing, setPlaying ] = useState<boolean>(false);
 
-    const { roomId, sessionId } = useContext(LocalSessionContext);
+    const { roomId, sessionId } = useSessionContext();
 
     const [ send, { loading, error } ] = useMutation(gql`
       mutation sendMessage(

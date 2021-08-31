@@ -9,7 +9,6 @@ import MediaDeviceSelect from "../../components/mediaDeviceSelect";
 import StyledButton from "../../components/styled/button";
 import StyledIcon from "../../components/styled/icon";
 import StyledTextField from "../../components/styled/textfield";
-import { LocalSessionContext } from "../../providers/providers";
 import { useSessionContext } from "../../providers/session-context";
 import { ClassType } from "../../store/actions";
 import { hasJoinedClassroomState } from "../../store/layoutAtoms";

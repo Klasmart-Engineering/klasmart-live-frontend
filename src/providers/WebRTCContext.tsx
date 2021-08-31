@@ -1,9 +1,7 @@
 // @ts-ignore
 import { Resolver } from "../resolver";
-import {
-    LocalSessionContext,
-    SFU_LINK,
-} from "./providers";
+import { SFU_LINK } from "./providers";
+import { useSessionContext } from "./session-context";
 import {
     gql,
     useMutation,
@@ -21,7 +19,6 @@ import {
 import React,
 {
     createContext,
-    useContext,
     useEffect,
     useState,
 } from "react";
@@ -161,7 +158,7 @@ export const WebRTCProvider = (props: { children: React.ReactNode }) => {
         camera,
         isTeacher,
 
-    } = useContext(LocalSessionContext);
+    } = useSessionContext();
     const [ device, setDevice ] = useState<Device | undefined | null>();
     const [ producerTransport, setProducerTransport ] = useState<MediaSoup.Transport | undefined | null>();
     const [ consumerTransport, setConsumerTransport ] = useState<MediaSoup.Transport | undefined | null>();

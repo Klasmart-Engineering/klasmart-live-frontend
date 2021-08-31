@@ -1,8 +1,6 @@
-import {
-    LIVE_LINK,
-    LocalSessionContext,
-} from "../../providers/providers";
+import { LIVE_LINK } from "../../providers/providers";
 import { RoomContext } from "../../providers/roomContext";
+import { useSessionContext } from "../../providers/session-context";
 import { ClassType } from "../../store/actions";
 import {
     isLessonPlanOpenState,
@@ -57,7 +55,7 @@ export function RecordedIframe (props: Props): JSX.Element {
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
 
-    const { roomId, classtype } = useContext(LocalSessionContext);
+    const { roomId, classType } = useSessionContext();
     const { sessions } = useContext(RoomContext);
     const [ streamId, setStreamId ] = useRecoilState(streamIdState);
     const [ isLessonPlanOpen, setIsLessonPlanOpen ] = useRecoilState(isLessonPlanOpenState);
@@ -94,7 +92,7 @@ export function RecordedIframe (props: Props): JSX.Element {
 
     useEffect(() => {
         scale(contentWidth, contentHeight);
-        if(classtype == ClassType.LIVE){
+        if(classType == ClassType.LIVE){
             setTimeout(function (){
                 scaleWhiteboard();
             }, 300);
@@ -373,8 +371,8 @@ export function RecordedIframe (props: Props): JSX.Element {
                     height: enableResize ? contentHeight : `100%`,
                     position: enableResize ? `absolute` : `static`,
                     transformOrigin: `top left`,
-                    top: classtype === ClassType.LIVE ? 0 : `auto`,
-                    left: classtype === ClassType.LIVE ? 0 : `auto`,
+                    top: classType === ClassType.LIVE ? 0 : `auto`,
+                    left: classType === ClassType.LIVE ? 0 : `auto`,
                     transform: enableResize ? `scale(${transformScale})` : `scale(1)`,
                     minWidth: `100%`,
                 }}

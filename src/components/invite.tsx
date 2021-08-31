@@ -1,4 +1,5 @@
 import StyledTextField from "../components/styled/textfield";
+import { useSessionContext } from "../providers/session-context";
 import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
 import Snackbar from "@material-ui/core/Snackbar";
@@ -7,20 +8,18 @@ import Tooltip from "@material-ui/core/Tooltip";
 import { ContentCopy as CopyIcon } from "@styled-icons/material/ContentCopy";
 import React,
 {
-    useContext,
     useEffect,
     useMemo,
     useRef,
     useState,
 } from "react";
 import { FormattedMessage } from "react-intl";
-import { LocalSessionContext } from "src/providers/providers";
 
 export default function InviteButton (): JSX.Element {
     const theme = useTheme();
     const [ openSnackbar, toggleSnackbar ] = useState(false);
 
-    const { roomId } = useContext(LocalSessionContext);
+    const { roomId } = useSessionContext();
     const url = useMemo(() => {
         const url = new URL(window.location.href);
         url.href = url.origin + url.pathname;

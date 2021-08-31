@@ -1,4 +1,4 @@
-import { LocalSessionContext } from "../../../providers/providers";
+import { useSessionContext } from "../../../providers/session-context";
 import { activeSettingsStateTab } from "../../../store/layoutAtoms";
 import {
     Grid,
@@ -58,7 +58,7 @@ function TabSettingsMenu (props: any) {
     const classes = useStyles();
 
     const [ activeSettingsTab, setActiveSettingsTab ] = useRecoilState(activeSettingsStateTab);
-    const { name } = useContext(LocalSessionContext);
+    const { name } = useSessionContext();
 
     const handleListItemClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>,
         tab: string) => {

@@ -1,4 +1,4 @@
-import { LocalSessionContext } from "../../../../providers/providers";
+import { useSessionContext } from "../../../../providers/session-context";
 import { NoItemList } from "../../../../utils/utils";
 import Attachment from "./attachment";
 import {
@@ -57,7 +57,7 @@ function Attachments () {
     const classes = useStyles();
     const intl = useIntl();
 
-    const { isTeacher } = useContext(LocalSessionContext);
+    const { isTeacher } = useSessionContext();
 
     return (
         <Grid

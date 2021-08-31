@@ -1,11 +1,9 @@
 import backgroundStudy from "../../assets/img/background/background_study.jpg";
 import Main from '../../components/main/main';
 import Sidebar from '../../components/sidebar/sidebar';
-import {
-    LocalSessionContext,
-    SFU_LINK,
-} from '../../providers/providers';
+import { SFU_LINK } from '../../providers/providers';
 import { RoomContext } from "../../providers/roomContext";
+import { useSessionContext } from "../../providers/session-context";
 import {
     GLOBAL_MUTE_MUTATION,
     GLOBAL_MUTE_QUERY,
@@ -63,10 +61,10 @@ function Class () {
     const {
         roomId,
         sessionId,
-        classtype,
-        org_id,
-        schedule_id,
-    } = useContext(LocalSessionContext);
+        classType,
+        organizationId,
+        scheduleId,
+    } = useSessionContext();
     const { sessions } = useContext(RoomContext);
     const webrtc = useContext(WebRTCContext);
 
@@ -101,7 +99,7 @@ function Class () {
             publish_status: `published`,
             order_by: `update_at`,
             content_type: 1,
-            org_id,
+            organizationId,
         }, {
             encodeValuesOnly: true,
         });
@@ -149,7 +147,7 @@ function Class () {
 
     const handleClassGetInformation = async () => {
         try {
-            const dataR = await classGetInformation(schedule_id, org_id);
+            const dataR = await classGetInformation(scheduleId, organizationId);
             const dateOption = {
                 year: `numeric`,
                 month: `2-digit`,
@@ -180,16 +178,16 @@ function Class () {
     };
 
     useEffect(() => {
-        if (classtype === ClassType.LIVE) {
+        if (classType === ClassType.LIVE) {
             handleClassGetInformation();
         }
 
-        if (classtype === ClassType.STUDY) {
-            if (org_id) {
+        if (classType === ClassType.STUDY) {
+            if (organizationId) {
                 fetchEverything();
             }
         }
-    }, [ classtype ]);
+    }, [ classType ]);
 
     const enforceGlobalMute = async () => {
         const { data } = await refetchGlobalMute();
@@ -245,14 +243,14 @@ function Class () {
         <Grid
             container
             direction={isSmDown ? `column` : `row`}
-            className={classtype === ClassType.STUDY ? classes.study : undefined}
+            className={classType === ClassType.STUDY ? classes.study : undefined}
         >
             <Grid
                 item
                 xs>
                 <Main />
             </Grid>
-            {classtype === ClassType.LIVE &&
+            {classType === ClassType.LIVE &&
                 <Grid item>
                     <Sidebar />
                 </Grid>

@@ -63,19 +63,6 @@ export interface IThemeContext {
     setThemeMode: React.Dispatch<React.SetStateAction<string>>;
     setLanguageCode: React.Dispatch<React.SetStateAction<string>>;
 }
-export interface ILocalSessionContext {
-    classtype: string; // "live" | "class" | "study" | "task"
-    org_id: string;
-    schedule_id: string;
-    isTeacher: boolean;
-    materials: LessonMaterial[];
-    roomId: string;
-    sessionId: string;
-    name?: string;
-    setName: React.Dispatch<React.SetStateAction<string | undefined>>;
-    camera?: MediaStream;
-    setCamera: React.Dispatch<React.SetStateAction<MediaStream | undefined>>;
-}
 
 export const ThemeContext = createContext<IThemeContext>({
     themeMode: ``,
@@ -83,10 +70,3 @@ export const ThemeContext = createContext<IThemeContext>({
     languageCode: ``,
     setLanguageCode: () => null,
 } as any as IThemeContext);
-
-export const LocalSessionContext = createContext<ILocalSessionContext>({
-    setName: () => null,
-    roomId: ``,
-    materials: [],
-    isTeacher: false,
-} as any as ILocalSessionContext);

@@ -1,4 +1,4 @@
-import { LocalSessionContext } from "../../../providers/providers";
+import { useSessionContext } from "../../../providers/session-context";
 import { ClassType } from "../../../store/actions";
 import {
     hasControlsState,
@@ -78,7 +78,7 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
     const [ selectedMove, setSelectedMove ] = useState<boolean>(false);
     const [ toolbarItemsDisabled, setToolbarItemsDisabled ] = useState<boolean>(false);
 
-    const { classtype, sessionId } = useContext(LocalSessionContext);
+    const { classType, sessionId } = useSessionContext();
 
     const colors = [
         `#000000`, // black
@@ -123,7 +123,7 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
     }, [ selectedPen ]);
 
     useEffect(()=>{
-        if(classtype === ClassType.LIVE){
+        if(classType === ClassType.LIVE){
             setToolbarItemsDisabled(!isGlobalCanvasEnabled);
         }
 
@@ -186,7 +186,7 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
                     icon={<SlideEraserIcon size="1.85rem"/>}
                     onClick={ () => { clear([ sessionId ]);} } />
 
-                {(hasControls && classtype === ClassType.LIVE) &&
+                {(hasControls && classType === ClassType.LIVE) &&
                 <>
                     <CanvasMenuItem
                         title={intl.formatMessage({

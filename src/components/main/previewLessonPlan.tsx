@@ -1,5 +1,5 @@
 import { MaterialTypename } from "../../lessonMaterialContext";
-import { LocalSessionContext } from "../../providers/providers";
+import { useSessionContext } from "../../providers/session-context";
 import {
     materialActiveIndexState,
     observeDisableState,
@@ -15,7 +15,7 @@ import { FormattedMessage } from "react-intl";
 import { useRecoilState } from "recoil";
 
 function PreviewLessonPlan () {
-    const {  materials } = useContext(LocalSessionContext);
+    const {  materials } = useSessionContext();
     const [ materialActiveIndex, setMaterialActiveIndex ] = useRecoilState(materialActiveIndexState);
     const [ studyRecommandUrl, setStudyRecommandUrl ] = useRecoilState(studyRecommandUrlState);
     const [ observeDisable, setObserveDisable ] = useRecoilState(observeDisableState);

@@ -1,4 +1,4 @@
-import { LocalSessionContext } from "../../providers/providers";
+import { useSessionContext } from "../../providers/session-context";
 import { ClassType } from "../../store/actions";
 import { showEndStudyState } from "../../store/layoutAtoms";
 import { WBToolbarContainer } from "../classContent/WBToolbar";
@@ -8,13 +8,13 @@ import React,
 import { useRecoilState } from "recoil";
 
 function MainClass () {
-    const { classtype } = useContext(LocalSessionContext);
+    const { classType } = useSessionContext();
     const [ showEndStudy, setShowEndStudy ] = useRecoilState(showEndStudyState);
 
     return (
         <>
             <ClassContent />
-            {!showEndStudy &&  <WBToolbarContainer useLocalDisplay={classtype !== ClassType.LIVE} />}
+            {!showEndStudy &&  <WBToolbarContainer useLocalDisplay={classType !== ClassType.LIVE} />}
         </>
     );
 }

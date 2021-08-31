@@ -1,6 +1,6 @@
 // This is temporary and will be removed after the App and Web merge.
 
-import { LocalSessionContext } from "../../providers/providers";
+import { useSessionContext } from "../../providers/session-context";
 import { whiteboard } from "../../utils/layerValues";
 import { useSynchronizedState } from "../context-providers/SynchronizedStateProvider";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
@@ -27,7 +27,7 @@ export function Whiteboard ({
 }: Props): JSX.Element {
     const { state: { permissions, display } } = useSynchronizedState();
 
-    const { sessionId } = useContext(LocalSessionContext);
+    const { sessionId } = useSessionContext();
 
     const canvasUserId = useMemo(() => {
         if (group) {

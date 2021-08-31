@@ -1,7 +1,5 @@
-import {
-    LIVE_LINK,
-    LocalSessionContext,
-} from "../../../providers/providers";
+import { LIVE_LINK } from "../../../providers/providers";
+import { useSessionContext } from "../../../providers/session-context";
 import {  classLeftState } from "../../../store/layoutAtoms";
 import {
     MUTATION_ENDCLASS,
@@ -25,7 +23,6 @@ import clsx from "clsx";
 import { useToolbarContext } from "kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
 import React,
 {
-    useContext,
     useEffect,
     useState,
 } from "react";
@@ -79,7 +76,7 @@ function DialogLeaveClass (props:any){
     const classes = useStyles();
     const { open, onClose } = props;
 
-    const { isTeacher, sessionId } = useContext(LocalSessionContext);
+    const { isTeacher, sessionId } = useSessionContext();
     const [ classLeft, setClassLeft ] = useRecoilState(classLeftState);
     const [ showParentCaptcha, setShowParentCaptcha ] = useState(false);
 

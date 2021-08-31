@@ -1,8 +1,6 @@
-import {
-    LIVE_LINK,
-    LocalSessionContext,
-} from "../../providers/providers";
+import { LIVE_LINK } from "../../providers/providers";
 import { RoomContext } from "../../providers/roomContext";
+import { useSessionContext } from "../../providers/session-context";
 import {
     isLessonPlanOpenState,
     isShowContentLoadingState,
@@ -58,7 +56,7 @@ export function PreviewPlayer ({
     const [ sizeLoading, setSizeLoading ] = useState<boolean>(false);
 
     const { content } = useContext(RoomContext);
-    const { isTeacher } = useContext(LocalSessionContext);
+    const { isTeacher } = useSessionContext();
 
     const containerHtml = window.document.getElementById(container) as HTMLIFrameElement;
     const size = useWindowSize();
