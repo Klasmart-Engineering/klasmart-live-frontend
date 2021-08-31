@@ -1,5 +1,6 @@
-import { LocalSessionContext } from "../../entry";
+
 import { Session } from "../../pages/utils";
+import { LocalSessionContext } from "../../providers/providers";
 import {
     GLOBAL_MUTE_QUERY,
     MUTE,
