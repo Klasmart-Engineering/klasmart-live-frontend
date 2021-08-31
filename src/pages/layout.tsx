@@ -2,9 +2,9 @@ import { Trophy } from "../components/trophies/trophy";
 import ClassProviders from "../providers/classProviders";
 import {
     LIVE_LINK,
-    LocalSessionContext,
     sessionId,
 } from '../providers/providers';
+import { useSessionContext } from "../providers/session-context";
 import { AuthTokenProvider } from "../services/auth-token/AuthTokenProvider";
 import {
     classEndedState,
@@ -87,7 +87,7 @@ export function getApolloClient (roomId: string) {
 }
 
 function Layout () {
-    const { camera, name } = useContext(LocalSessionContext);
+    const { camera, name } = useSessionContext();
     const [ hasJoinedClassroom, setHasJoinedClassroom ] = useRecoilState(hasJoinedClassroomState);
 
     if(hasJoinedClassroom || (!name || camera !== undefined)){
@@ -98,7 +98,7 @@ function Layout () {
 }
 
 function ClassWrapper () {
-    const { roomId } = useContext(LocalSessionContext);
+    const { roomId } = useSessionContext();
     const apolloClient = getApolloClient(roomId);
     return (
         <ApolloProvider client={apolloClient}>

@@ -1,5 +1,5 @@
+import { useSessionContext } from "../../providers/session-context";
 import useCordovaObservePause from "../platform/cordova-observe-pause";
-import { useSessionContext } from "./session-context";
 import React,
 {
     createContext,

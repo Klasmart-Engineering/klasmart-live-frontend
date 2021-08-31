@@ -10,6 +10,7 @@ import StyledButton from "../../components/styled/button";
 import StyledIcon from "../../components/styled/icon";
 import StyledTextField from "../../components/styled/textfield";
 import { LocalSessionContext } from "../../providers/providers";
+import { useSessionContext } from "../../providers/session-context";
 import { ClassType } from "../../store/actions";
 import { hasJoinedClassroomState } from "../../store/layoutAtoms";
 import {
@@ -118,17 +119,16 @@ const useStyles = makeStyles((theme: Theme) =>
     }));
 
 export default function Join (): JSX.Element {
-    const { card } = useStyles();
     const classes = useStyles();
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
 
     const {
-        classtype,
+        classType,
         name,
         isTeacher,
-        org_id,
-    } = useContext(LocalSessionContext);
+        organizationId,
+    } = useSessionContext();
 
     const [ dialogOpen, setDialogOpen ] = useState<boolean>(false);
     const handleDialogClose = () => setDialogOpen(false);
@@ -148,7 +148,7 @@ export default function Join (): JSX.Element {
     const handleOrganizationBranding = async () => {
         setLoading(true);
         try {
-            const dataBranding = await getOrganizationBranding(org_id);
+            const dataBranding = await getOrganizationBranding(organizationId);
             setBranding(dataBranding);
         } catch (e) {
             console.log(e);
@@ -162,7 +162,7 @@ export default function Join (): JSX.Element {
         if (!navigator.mediaDevices) { return; }
 
         const getMediaPermissions = async () => {
-            switch(classtype){
+            switch(classType){
             case ClassType.LIVE:
                 try{
                     await navigator.mediaDevices.getUserMedia({
@@ -217,7 +217,7 @@ export default function Join (): JSX.Element {
                 setAudioDeviceId(``);
             }
 
-            if (classtype === ClassType.LIVE) {
+            if (classType === ClassType.LIVE) {
                 const videoDevices = devices.filter((d) => d.kind == `videoinput`);
                 setVideoDeviceOptions(videoDevices);
 
@@ -294,7 +294,7 @@ export default function Join (): JSX.Element {
 
     useEffect(() => {
         if (!navigator.mediaDevices) { return; }
-        if (classtype === ClassType.LIVE) {
+        if (classType === ClassType.LIVE) {
             getCamStream(audioDeviceId, videoDeviceId);
         } else {
             getMicStream(audioDeviceId);
@@ -345,7 +345,7 @@ export default function Join (): JSX.Element {
                     paddingBottom: `20px`,
                 }}
             >
-                <Container maxWidth={classtype === ClassType.LIVE ? `md` : `xs`}>
+                <Container maxWidth={classType === ClassType.LIVE ? `md` : `xs`}>
                     <Card className={classes.card}>
                         <CardContent className={classes.cardContent}>
                             <Grid
@@ -355,7 +355,7 @@ export default function Join (): JSX.Element {
                                 alignItems="center"
                                 spacing={4}
                             >
-                                {classtype !== ClassType.LIVE ? null :
+                                {classType !== ClassType.LIVE ? null :
                                     <Grid
                                         item
                                         xs={12}
@@ -368,7 +368,7 @@ export default function Join (): JSX.Element {
                                 <Grid
                                     item
                                     xs={12}
-                                    md={classtype === ClassType.LIVE ? 5 : undefined}
+                                    md={classType === ClassType.LIVE ? 5 : undefined}
                                 >
                                     <Grid
                                         container
@@ -473,9 +473,9 @@ function CameraPreviewFallback ({ permissionError }: { permissionError: boolean 
 
 function ClassTypeLogo (): JSX.Element {
     const { logo } = useStyles();
-    const { classtype, isTeacher } = useContext(LocalSessionContext);
+    const { classType, isTeacher } = useSessionContext();
     const IMG_HEIGHT = `64px`;
-    const IMG_SRC = classtype === ClassType.LIVE ? (isTeacher ? KidsLoopLiveTeachers : KidsLoopLiveStudents) : classtype === ClassType.CLASSES ? KidsLoopClassTeachers : KidsLoopStudyStudents;
+    const IMG_SRC = classType === ClassType.LIVE ? (isTeacher ? KidsLoopLiveTeachers : KidsLoopLiveStudents) : classType === ClassType.CLASSES ? KidsLoopClassTeachers : KidsLoopStudyStudents;
 
     return (<img
         alt="KidsLoop Live"
@@ -508,13 +508,11 @@ function JoinRoomForm ({
     videoDeviceIdHandler,
 }: JoinRoomFormProps): JSX.Element {
     const {
-        classtype,
+        classType,
         setCamera,
         name,
         setName,
-        sessionId,
-
-    } = useContext(LocalSessionContext);
+    } = useSessionContext();
 
     const [ hasJoinedClassroom, setHasJoinedClassroom ] = useRecoilState(hasJoinedClassroomState);
 
@@ -567,7 +565,7 @@ function JoinRoomForm ({
                     /></Grid>
                 }
 
-                {classtype !== ClassType.LIVE ? null :
+                {classType !== ClassType.LIVE ? null :
                     <Grid
                         item
                         xs>
@@ -596,7 +594,7 @@ function JoinRoomForm ({
                     xs>
                     <StyledButton
                         fullWidth
-                        disabled={classtype === ClassType.LIVE && (mediaDeviceError || !stream)}
+                        disabled={classType === ClassType.LIVE && (mediaDeviceError || !stream)}
                         type="submit"
                         size="large"
                     >
@@ -617,7 +615,7 @@ function PermissionAlertDialog ({ dialogOpenHandler }: {
         deviceStatus: string;
     };
 }) {
-    const { classtype } = useContext(LocalSessionContext);
+    const { classType } = useSessionContext();
     const {
         dialogOpen,
         handleDialogClose,
@@ -627,7 +625,7 @@ function PermissionAlertDialog ({ dialogOpenHandler }: {
     const [ dialogContent, setDialogContent ] = useState(`join_permissionAlertDialog_contentText_live`);
 
     useEffect(() => {
-        if(classtype !== ClassType.LIVE){
+        if(classType !== ClassType.LIVE){
             if(DeviceStatus.MIC_NOT_ALLOWED){
                 setDialogTitle(`join_permissionAlertDialog_mic_blocked_title`);
                 setDialogContent(`join_permissionAlertDialog_mic_blocked_contentText_live`);
@@ -636,7 +634,7 @@ function PermissionAlertDialog ({ dialogOpenHandler }: {
                 setDialogContent(`join_permissionAlertDialog_mic_not_exist_contentText_live`);
             }
         }
-    }, [ classtype, deviceStatus ]);
+    }, [ classType, deviceStatus ]);
 
     return (
         <Dialog
