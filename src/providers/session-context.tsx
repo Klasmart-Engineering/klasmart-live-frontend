@@ -1,5 +1,5 @@
-import { LessonMaterial } from "../types/lessonMaterial";
-import { parseTokenParams } from "../utils/parseTokenUtils";
+import { LessonMaterial } from "../app/types/lessonMaterial";
+import { parseTokenParams } from "../app/utils/parseTokenUtils";
 import React,
 {
     createContext,
@@ -75,7 +75,7 @@ export function SessionContextProvider ({ children, sessionId }: Props) {
         const localContextState = {
             camera: selectedCamera,
             setCamera: setSelectedCamera,
-            name: selectedName,
+            name: params ? params.name : selectedName,
             setName: setSelectedName,
             token,
             sessionId,
