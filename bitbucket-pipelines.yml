@@ -24,7 +24,7 @@ pipelines:
         script:
           - npm ci --no-audit --no-progress
           - mv deploy/config/$KIDSLOOP_REGION/.env.$KIDSLOOP_ENV ./.env
-          - npm run build:bitbucket
+          - npm run build
         caches:
           - nodemodules
         artifacts:
