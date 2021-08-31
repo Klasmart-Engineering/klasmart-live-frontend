@@ -16,6 +16,7 @@ export interface ISessionContext {
     roomId: string;
     sessionId: string;
     organizationId: string;
+    scheduleId: string;
     classType: string; // "live" | "class" | "study" | "task"
     name?: string;
     token?: string;
@@ -34,6 +35,7 @@ const SessionContext = createContext<ISessionContext>({
     isTeacher: false,
     sessionId: ``,
     organizationId: ``,
+    scheduleId: ``,
     classType: ``,
 });
 
@@ -59,6 +61,7 @@ export function SessionContextProvider ({ children, sessionId }: Props) {
             isTeacher: false,
             materials: [],
             organizationId: ``,
+            scheduleId: ``,
             classType: `live`,
         };
 
@@ -69,6 +72,7 @@ export function SessionContextProvider ({ children, sessionId }: Props) {
                 materials: params.materials,
                 organizationId: params.org_id,
                 classType: params.classtype,
+                scheduleId: params.schedule_id,
             };
         }
 

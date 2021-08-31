@@ -1,9 +1,7 @@
 import { MaterialTypename } from "../lessonMaterialContext";
 import { ContentType } from "../pages/utils";
-import { LocalSessionContext } from "../providers/providers";
 import {
     activeTabState,
-    classInfoState,
     InteractiveMode,
 } from "../store/layoutAtoms";
 import {
@@ -16,10 +14,7 @@ import {
     Typography,
 } from "@material-ui/core";
 import React,
-{
-    useContext,
-    useState,
-} from "react";
+{ useState } from "react";
 import { useRecoilState } from "recoil";
 
 interface StyledDrawerProps {

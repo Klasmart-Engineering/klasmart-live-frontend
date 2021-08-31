@@ -1,4 +1,4 @@
-import { LocalSessionContext } from "../../providers/providers";
+import { useSessionContext } from "../../providers/session-context";
 import { WebRTCContext } from "../../providers/WebRTCContext";
 import {
     Grid,
@@ -155,7 +155,7 @@ function UserCameraDetails (props: UserCameraDetailsType) {
     const theme = useTheme();
 
     const [ micOn, setMicOn ] = useState(true);
-    const { sessionId } = useContext(LocalSessionContext);
+    const { sessionId } = useSessionContext();
     const webrtc = useContext(WebRTCContext);
 
     const isSelf = user.id === sessionId ? true : false;

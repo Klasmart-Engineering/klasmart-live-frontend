@@ -1,11 +1,11 @@
 import { ContentType } from "../../../../pages/utils";
 import {
     LIVE_LINK,
-    LocalSessionContext,
     SFU_LINK,
 } from "../../../../providers/providers";
 import { RoomContext } from "../../../../providers/roomContext";
 import { ScreenShareContext } from "../../../../providers/screenShareProvider";
+import { useSessionContext } from "../../../../providers/session-context";
 import {
     GLOBAL_MUTE_MUTATION,
     GLOBAL_MUTE_QUERY,
@@ -66,7 +66,7 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
 
     const [ camerasOn, setCamerasOn ] = useState(true);
     const [ micsOn, setMicsOn ] = useState(true);
-    const { roomId, sessionId } = useContext(LocalSessionContext);
+    const { roomId, sessionId } = useSessionContext();
     const { content } = useContext(RoomContext);
     const screenShare = useContext(ScreenShareContext);
 

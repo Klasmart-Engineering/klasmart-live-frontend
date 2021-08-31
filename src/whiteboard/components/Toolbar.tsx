@@ -1,4 +1,4 @@
-import { LocalSessionContext } from "../../providers/providers";
+import { useSessionContext } from "../../providers/session-context";
 import { useSynchronizedState } from "../context-providers/SynchronizedStateProvider";
 import { IconButton } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid/Grid";
@@ -31,7 +31,7 @@ export const Toolbar: FunctionComponent<Props> = ({ children }: Props): JSX.Elem
         },
     } = useToolbarContext();
 
-    const { sessionId } = useContext(LocalSessionContext);
+    const { sessionId } = useSessionContext();
 
     const theme = useTheme();
 

@@ -1,9 +1,7 @@
 import { ContentType } from "../pages/utils";
 import { MUTATION_SHOW_CONTENT } from "../utils/graphql";
-import {
-    LIVE_LINK,
-    LocalSessionContext,
-} from "./providers";
+import { LIVE_LINK } from "./providers";
+import { useSessionContext } from "./session-context";
 import { WebRTCContext } from "./WebRTCContext";
 import { useMutation } from "@apollo/client";
 import { types as MediaSoup } from "mediasoup-client";
@@ -34,7 +32,7 @@ export const ScreenShareProvider = (props: {children: React.ReactNode}) => {
     const [ starting, setStarting ] = useState<boolean>(false);
     const [ stopping, setStopping ] = useState<boolean>(false);
     const sfuState = useContext(WebRTCContext);
-    const { roomId, sessionId } = useContext(LocalSessionContext);
+    const { roomId, sessionId } = useSessionContext();
 
     const [ showContent, { loading: loadingShowContent } ] = useMutation(MUTATION_SHOW_CONTENT, {
         context: {

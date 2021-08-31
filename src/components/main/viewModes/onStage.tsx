@@ -1,4 +1,4 @@
-import { LocalSessionContext } from "../../../providers/providers";
+import { useSessionContext } from "../../../providers/session-context";
 import { RoomContext } from "../../../providers/roomContext";
 import UserCamera from "../../userCamera/userCamera";
 import {
@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 function OnStage () {
     const classes = useStyles();
     const { sessions } = useContext(RoomContext);
-    const { name } = useContext(LocalSessionContext);
+    const { name } = useSessionContext();
     const [ host, setHost ] = useState<any>(true);
 
     useEffect(() => {

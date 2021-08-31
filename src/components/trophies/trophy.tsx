@@ -1,5 +1,5 @@
-import { LocalSessionContext } from '../../providers/providers';
 import { RoomContext } from '../../providers/roomContext';
+import { useSessionContext } from '../../providers/session-context';
 import { ClassType } from '../../store/actions';
 import { ConfettiRain } from './confettiRain';
 import { Lights } from './lights';
@@ -86,7 +86,7 @@ function locationOfElement (elementId?: string): { x: number | string; y: number
 export function Trophy (props: Props): JSX.Element {
     const { children } = props;
     const room = useContext(RoomContext);
-    const { classtype } = useContext(LocalSessionContext);
+    const { classType } = useSessionContext();
     const [ display, setDisplay ] = useState(false);
     const [ showLights, setShowLights ] = useState(false);
     const [ showReward, setShowReward ] = useState(false);
@@ -107,7 +107,7 @@ export function Trophy (props: Props): JSX.Element {
     const containerRef = useRef<HTMLDivElement>(null);
 
     const handleTrophy = (trophy: Trophy) => {
-        setWithAudio((trophy.from === trophy.user) || classtype === ClassType.STUDY);
+        setWithAudio((trophy.from === trophy.user) || classType === ClassType.STUDY);
         setAppearAt(locationOfElement(`participant:${trophy.from}`));
         setDisappearAt(locationOfElement(trophy.from !== trophy.user ? `participant:${trophy.user}` : undefined));
         if (TrophyKinds[trophy.kind]) {

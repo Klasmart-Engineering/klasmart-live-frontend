@@ -11,7 +11,7 @@ import QingseCrayon from "../../assets/img/canvas/crayons/qingse.svg";
 import RedCrayon from "../../assets/img/canvas/crayons/red.svg";
 import YellowCrayon from "../../assets/img/canvas/crayons/yellow.svg";
 import Eraser from "../../assets/img/canvas/eraser.svg";
-import { LocalSessionContext } from "../../providers/providers";
+import { useSessionContext } from "../../providers/session-context";
 import { ClassType } from "../../store/actions";
 import { useSynchronizedState } from "../context-providers/SynchronizedStateProvider";
 import {
@@ -67,10 +67,10 @@ export const WBToolbar: FunctionComponent<Props> = ({ children, useLocalDisplay 
     } = useToolbarContext();
 
     const {
-        classtype,
+        classType,
         isTeacher,
         sessionId,
-    } = useContext(LocalSessionContext);
+    } = useSessionContext();
     const [ activedColor, setActivedColor ] = useState({
         black: false,
         blue: false,
@@ -90,7 +90,7 @@ export const WBToolbar: FunctionComponent<Props> = ({ children, useLocalDisplay 
         erase: false,
         clear: false,
     });
-    const forStudent = classtype === ClassType.STUDY || !isTeacher;
+    const forStudent = classType === ClassType.STUDY || !isTeacher;
 
     useEffect(() => {
         selectLine();
@@ -563,7 +563,7 @@ export const WBToolbar: FunctionComponent<Props> = ({ children, useLocalDisplay 
         </Grid>
     ));
 
-    if (classtype === ClassType.LIVE) {
+    if (classType === ClassType.LIVE) {
         return display && permissions.allowCreateShapes ? <VisibleToolbar /> : <></>;
     } else {
         return <VisibleToolbar />;

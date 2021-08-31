@@ -1,4 +1,4 @@
-import { LocalSessionContext } from "../../providers/providers";
+import { useSessionContext } from "../../providers/session-context";
 import { ClassType } from "../../store/actions";
 import { isCanvasOpenState } from "../../store/layoutAtoms";
 import { useSynchronizedState } from "../../whiteboard/context-providers/SynchronizedStateProvider";
@@ -37,11 +37,11 @@ export function WBToolbarContainer ({ useLocalDisplay } : { useLocalDisplay?: bo
     const [ isCanvasOpen, setIsCanvasOpen ] = useRecoilState(isCanvasOpenState);
 
     const {
-        classtype,
+        classType,
         isTeacher,
         sessionId,
 
-    } = useContext(LocalSessionContext);
+    } = useSessionContext();
     const {
         state: {
             display, permissions, localDisplay,
@@ -50,18 +50,18 @@ export function WBToolbarContainer ({ useLocalDisplay } : { useLocalDisplay?: bo
         },
     } = useSynchronizedState();
 
-    const enableWB = classtype === ClassType.LIVE ? (!isTeacher ? display && permissions.allowCreateShapes : display) : true;
+    const enableWB = classType === ClassType.LIVE ? (!isTeacher ? display && permissions.allowCreateShapes : display) : true;
 
     const handleToggleWBToolbar = () => {
         setIsCanvasOpen(!isCanvasOpen);
 
         if (useLocalDisplay) {
             setLocalDisplay(!localDisplay);
-        } else if (classtype !== ClassType.LIVE) {
+        } else if (classType !== ClassType.LIVE) {
             setDisplay(!display);
         }
 
-        if (classtype !== ClassType.LIVE) {
+        if (classType !== ClassType.LIVE) {
             const permissions = getPermissions(sessionId);
             const newPermissions = {
                 ...permissions,

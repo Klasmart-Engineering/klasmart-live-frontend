@@ -1,6 +1,6 @@
 import { MaterialTypename } from "../../../../lessonMaterialContext";
 import { ContentType } from "../../../../pages/utils";
-import { LocalSessionContext } from "../../../../providers/providers";
+import { useSessionContext } from "../../../../providers/session-context";
 import { RoomContext } from "../../../../providers/roomContext";
 import { materialActiveIndexState } from "../../../../store/layoutAtoms";
 import { NoItemList } from "../../../../utils/utils";
@@ -34,7 +34,7 @@ function Plan () {
     const classes = useStyles();
     const intl = useIntl();
     const [ materialActiveIndex, setMaterialActiveIndex ] = useRecoilState(materialActiveIndexState);
-    const { materials } = useContext(LocalSessionContext);
+    const { materials } = useSessionContext();
     const { content } = useContext(RoomContext);
 
     const checkDisable = (material:any) => {

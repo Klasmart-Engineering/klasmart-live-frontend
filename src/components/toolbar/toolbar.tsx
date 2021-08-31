@@ -1,9 +1,6 @@
-import { ContentType } from "../../pages/utils";
-import {
-    LocalSessionContext,
-    SFU_LINK,
-} from "../../providers/providers";
+import { SFU_LINK } from "../../providers/providers";
 import { RoomContext } from "../../providers/roomContext";
+import { useSessionContext } from "../../providers/session-context";
 import {
     MUTE,
     MuteNotification,
@@ -99,7 +96,7 @@ function Toolbar () {
         sessionId,
         roomId,
         materials,
-    } = useContext(LocalSessionContext);
+    } = useSessionContext();
     const webrtc = useContext(WebRTCContext);
     const { content } = useContext(RoomContext);
 
