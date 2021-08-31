@@ -1,4 +1,4 @@
-import { LocalSessionContext } from "../../entry";
+
 import {
     LessonMaterial,
     MaterialTypename,
@@ -33,6 +33,7 @@ import {
     useDispatch,
     useSelector,
 } from "react-redux";
+import { LocalSessionContext } from "src/providers/providers";
 
 export const DRAWER_TOOLBAR_WIDTH = 64;
 
