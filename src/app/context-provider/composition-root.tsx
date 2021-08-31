@@ -1,7 +1,7 @@
+import { SessionContextProvider } from "../../providers/session-context";
 import { CameraContextProvider } from "./camera-context";
 import { RegionSelectProvider } from "./region-select-context";
 import { ServicesProvider } from "./services-provider";
-import { SessionContextProvider } from "./session-context";
 import { UserInformationContextProvider } from "./user-information-context";
 import React, {
     ReactChild,

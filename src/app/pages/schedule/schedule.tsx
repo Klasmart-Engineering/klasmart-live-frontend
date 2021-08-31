@@ -1,8 +1,8 @@
+import { useSessionContext } from "../../../providers/session-context";
 import ScheduledLivePopcorn from "../../assets/img/schedule_popcorn.svg";
 import ScheduledStudyHouse from "../../assets/img/study_house.svg";
 import { Header } from "../../components/layout/header";
 import { useServices } from "../../context-provider/services-provider";
-import { useSessionContext } from "../../context-provider/session-context";
 import { useUserInformation } from "../../context-provider/user-information-context";
 import { useShouldSelectOrganization } from "../../dialogs/account/selectOrgDialog";
 import { useShouldSelectUser } from "../../dialogs/account/selectUserDialog";
