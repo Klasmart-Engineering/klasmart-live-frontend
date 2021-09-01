@@ -47,7 +47,7 @@ export const selectedUserState = atom({
 });
 
 export const errorState = atom({
-    key: `errorManagement`,
+    key: `errorState`,
     default: {
         isError: false,
         errorCode: null as number | null,
@@ -73,4 +73,9 @@ export const localeState = atom({
     default: {
         languageCode: `en`,
     },
+});
+
+export const historyState = atom({
+    key: `history`,
+    default: [] as string[],
 });
