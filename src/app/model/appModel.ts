@@ -1,3 +1,4 @@
+import { HomeFunStudyFeedback } from "../dialogs/home-fun-study/homeFunStudyDialog";
 import { OrganizationResponse } from "../services/user/IUserInformationService";
 import { atom } from "recoil";
 
@@ -22,11 +23,15 @@ export const dialogsState = atom({
 
 export const homeFunStudyState = atom({
     key: `homeFunStudy`,
-    default: undefined as {
+    default: {
+        open: false,
+        feedback: [],
+    } as {
         open: boolean;
-        submitted: boolean;
-        studyId: string | undefined;
-    } | undefined,
+        submitted?: boolean;
+        studyId?: string | undefined;
+        feedback: HomeFunStudyFeedback[];
+    },
 });
 
 export const selectedOrganizationState = atom({
