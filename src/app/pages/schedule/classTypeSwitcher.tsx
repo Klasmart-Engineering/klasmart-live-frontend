@@ -1,8 +1,6 @@
+import { ClassType } from "../../../store/actions";
 import LiveTab from "../../assets/img/live_tab.svg";
 import StudyTab from "../../assets/img/study_tab.svg";
-import { ClassType } from "../../store/actions";
-import { setClassType } from "../../store/reducers/session";
-import { State } from "../../store/store";
 import { heightActionButton } from "../../utils/fixedValues";
 import Button from "@material-ui/core/Button/Button";
 import Grid from "@material-ui/core/Grid";
@@ -10,21 +8,25 @@ import { useTheme } from '@material-ui/core/styles';
 import Typography from "@material-ui/core/Typography";
 import React from "react";
 import { FormattedMessage } from "react-intl";
-import {
-    useDispatch,
-    useSelector,
-} from "react-redux";
+import { useRecoilState } from "recoil";
+import { scheduleState } from "src/app/model/scheduleModel";
 
 export default function ClassTypeSwitcher () {
+    const [ schedule, setSchedule ] = useRecoilState(scheduleState);
+
     const theme = useTheme();
-    const dispatch = useDispatch();
     function handleClickLiveTab () {
-        dispatch(setClassType(ClassType.LIVE));
+        setSchedule({
+            ...schedule,
+            viewClassType: ClassType.LIVE,
+        });
     }
     function handleClickStudyTab () {
-        dispatch(setClassType(ClassType.STUDY));
+        setSchedule({
+            ...schedule,
+            viewClassType: ClassType.STUDY,
+        });
     }
-    const classType = useSelector((state: State) => state.session.classType);
 
     return (
         <Grid
@@ -41,7 +43,7 @@ export default function ClassTypeSwitcher () {
                 item
                 xs={6}
                 style={{
-                    backgroundColor: classType === ClassType.LIVE ? `#C5E9FB` : theme.palette.background.paper,
+                    backgroundColor: schedule.viewClassType === ClassType.LIVE ? `#C5E9FB` : theme.palette.background.paper,
                     borderTop: `1px solid ${theme.palette.divider}`,
                 }}>
                 <Button
@@ -69,7 +71,7 @@ export default function ClassTypeSwitcher () {
                 item
                 xs={6}
                 style={{
-                    backgroundColor: classType === ClassType.STUDY ? `#C5E9FB` : theme.palette.background.paper,
+                    backgroundColor: schedule.viewClassType === ClassType.STUDY ? `#C5E9FB` : theme.palette.background.paper,
                     borderTop: `1px solid ${theme.palette.divider}`,
                 }}>
                 <Button

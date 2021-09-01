@@ -1,4 +1,5 @@
 import { useSessionContext } from "../../../providers/session-context";
+import { ClassType } from "../../../store/actions";
 import ScheduledLivePopcorn from "../../assets/img/schedule_popcorn.svg";
 import ScheduledStudyHouse from "../../assets/img/study_house.svg";
 import { Header } from "../../components/layout/header";
@@ -18,27 +19,6 @@ import {
     ScheduleTimeViewResponse,
     TimeView,
 } from "../../services/cms/ISchedulerService";
-import {
-    ClassType,
-    OrientationType,
-} from "../../store/actions";
-import { setInFlight } from "../../store/reducers/communication";
-import {
-    setSelectHomeFunStudyDialogOpen,
-    setSelectOrgDialogOpen,
-    setSelectUserDialogOpen,
-} from "../../store/reducers/control";
-import {
-    setLessonPlanIdOfSelectedSchedule,
-    setScheduleTimeViewAll,
-    setScheduleTimeViewLiveAll,
-    setScheduleTimeViewLiveToday,
-    setScheduleTimeViewLiveTomorrow,
-    setScheduleTimeViewLiveUpcoming,
-    setScheduleTimeViewStudyAll,
-    setScheduleTimeViewStudyAnytime,
-} from "../../store/reducers/data";
-import { State } from "../../store/store";
 import { autoHideDuration } from "../../utils/fixedValues";
 import { lockOrientation } from "../../utils/screenUtils";
 import { Fallback } from "../fallback";
@@ -64,10 +44,16 @@ import React,
     useState,
 } from "react";
 import { FormattedMessage } from "react-intl";
+import { useRecoilState } from "recoil";
 import {
-    useDispatch,
-    useSelector,
-} from "react-redux";
+    dialogsState,
+    homeFunStudyState,
+    isProcessingRequestState,
+    OrientationType,
+    selectedOrganizationState,
+    selectedUserState,
+} from "src/app/model/appModel";
+import { scheduleState } from "src/app/model/scheduleModel";
 import Loading from "src/components/loading";
 
 const dateFormat = require(`dateformat`);
@@ -107,12 +93,12 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 export function Schedule () {
-    const dispatch = useDispatch();
-    const classType = useSelector((state: State) => state.session.classType);
-    const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
-    const selectedUserId = useSelector((state: State) => state.session.selectedUserId);
-    const inFlight = useSelector((state: State) => state.communication.inFlight);
-    const selectHomeFunStudyDialogOpen = useSelector((state: State) => state.control.selectHomeFunStudyDialogOpen);
+    const [ isProcessingRequest, setIsProcessingRequest ] = useRecoilState(isProcessingRequestState);
+    const [ selectedOrganization ] = useRecoilState(selectedOrganizationState);
+    const [ selectedUser ] = useRecoilState(selectedUserState);
+    const [ homeFunStudy, setHomeFunStudy ] = useRecoilState(homeFunStudyState);
+    const [ schedule, setSchedule ] = useRecoilState(scheduleState);
+    const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
 
     const { schedulerService } = useServices();
 
@@ -134,39 +120,35 @@ export function Schedule () {
     };
 
     useEffect(() => {
-        lockOrientation(OrientationType.PORTRAIT, dispatch);
+        lockOrientation(OrientationType.PORTRAIT);
     }, []);
 
     useEffect(() => {
-        if(selectHomeFunStudyDialogOpen && selectHomeFunStudyDialogOpen.submitted){
-            dispatch(setSelectHomeFunStudyDialogOpen({
+        if(homeFunStudy && homeFunStudy.submitted) {
+            setHomeFunStudy({
+                ...homeFunStudy,
                 open: false,
                 submitted: false,
-            }));
+            });
             setKey(Math.random().toString(36)); //force to refresh the schedule list
         }
-    }, [ selectHomeFunStudyDialogOpen ]);
+    }, [ setHomeFunStudy ]);
 
     useEffect(() => {
         async function fetchEverything () {
             async function fetchSchedules () {
                 if (!schedulerService) return Promise.reject();
                 if (!selectedUserProfile) return Promise.reject();
-                if (!selectedOrg) return Promise.reject();
+                if (!selectedOrganization) return Promise.reject();
 
                 // TODO (Isu): Apply more API params to filter. It makes don't need to do .filter().
-                const thisMonthSchedules = await schedulerService.getScheduleTimeViews(selectedOrg.organization_id, TimeView.MONTH, todayTimeStamp, timeZoneOffset);
-                const nextMonthSchedules = await schedulerService.getScheduleTimeViews(selectedOrg.organization_id, TimeView.MONTH, nextMonthTimeStamp, timeZoneOffset);
-                const timeViewStudyAnytime = await schedulerService.getAnytimeStudyScheduleTimeViews(selectedOrg.organization_id);
+                const thisMonthSchedules = await schedulerService.getScheduleTimeViews(selectedOrganization.organization_id, TimeView.MONTH, todayTimeStamp, timeZoneOffset);
+                const nextMonthSchedules = await schedulerService.getScheduleTimeViews(selectedOrganization.organization_id, TimeView.MONTH, nextMonthTimeStamp, timeZoneOffset);
+                const timeViewStudyAnytime = await schedulerService.getAnytimeStudyScheduleTimeViews(selectedOrganization.organization_id);
 
                 const timeViewAll = thisMonthSchedules.concat(nextMonthSchedules);
                 const timeViewLiveAll = timeViewAll.filter((tv: ScheduleTimeViewResponse) => tv.class_type === ScheduleClassType.LIVE);
                 const timeViewStudyAll = timeViewAll.filter((tv: ScheduleTimeViewResponse) => tv.class_type === ScheduleClassType.STUDY && (tv.is_home_fun && tv.due_at >= todayTimeStamp || !tv.is_home_fun && tv.due_at != 0));
-
-                dispatch(setScheduleTimeViewAll(timeViewAll));
-                dispatch(setScheduleTimeViewLiveAll(timeViewLiveAll));
-                dispatch(setScheduleTimeViewStudyAll(timeViewStudyAll));
-                dispatch(setScheduleTimeViewStudyAnytime(timeViewStudyAnytime));
 
                 let timeViewLiveToday: ScheduleTimeViewResponse[] = [],
                     timeViewLiveTomorrow: ScheduleTimeViewResponse[] = [],
@@ -176,26 +158,43 @@ export function Schedule () {
                     timeViewLiveTomorrow = timeViewLiveAll.filter((tv: ScheduleTimeViewResponse) => tv.start_at >= tomorrowTimeStamp && tv.end_at <= endOfTomorrowTimeStamp);
                     timeViewLiveUpcoming = timeViewLiveAll.filter((tv: ScheduleTimeViewResponse) => tv.start_at > endOfTomorrowTimeStamp);
                 }
-                dispatch(setScheduleTimeViewLiveToday(timeViewLiveToday));
-                dispatch(setScheduleTimeViewLiveTomorrow(timeViewLiveTomorrow));
-                dispatch(setScheduleTimeViewLiveUpcoming(timeViewLiveUpcoming));
+
+                const newSchedule = {
+                    ...schedule,
+                    timeViewAll,
+                    timeViewLiveAll,
+                    timeViewStudyAll,
+                    timeViewStudyAnytime,
+                    timeViewLiveToday,
+                    timeViewLiveTomorrow,
+                    timeViewLiveUpcoming,
+                };
+
+                setSchedule(newSchedule);
             }
 
             try {
                 await Promise.all([ fetchSchedules() ]);
             } catch (err) {
-                dispatch(setScheduleTimeViewAll([]));
-                dispatch(setScheduleTimeViewLiveAll([]));
-                dispatch(setScheduleTimeViewStudyAll([]));
-                dispatch(setScheduleTimeViewStudyAnytime([]));
-                dispatch(setScheduleTimeViewLiveToday([]));
-                dispatch(setScheduleTimeViewLiveTomorrow([]));
-                dispatch(setScheduleTimeViewLiveUpcoming([]));
+
+                const newSchedule = {
+                    ...schedule,
+                    timeViewAll: [],
+                    timeViewLiveAll: [],
+                    timeViewStudyAll: [],
+                    timeViewStudyAnytime: [],
+                    timeViewLiveToday: [],
+                    timeViewLiveTomorrow: [],
+                    timeViewLiveUpcoming: [],
+                };
+
+                setSchedule(newSchedule);
+
                 setAlertMessageId(`schedule_errorFetchTimeViews`);
                 setOpenAlert(true);
                 console.error(`Fail to fetchSchedules: ${err}`);
             } finally {
-                dispatch(setInFlight(false));
+                setIsProcessingRequest(false);
             }
         }
 
@@ -204,31 +203,35 @@ export function Schedule () {
         }
 
         if (shouldSelectUser) {
-            dispatch(setSelectUserDialogOpen(true));
+            setDialogs({
+                ...dialogs,
+                isSelectUserOpen: true,
+            });
             return;
         } else {
-            dispatch(setSelectUserDialogOpen(false));
+            setDialogs({
+                ...dialogs,
+                isSelectUserOpen: false,
+                isSelectOrganizationOpen: shouldSelectOrganization,
+            });
 
             if (shouldSelectOrganization) {
-                dispatch(setSelectOrgDialogOpen(true));
                 return;
-            } else {
-                dispatch(setSelectOrgDialogOpen(false));
             }
         }
 
-        const selectedValidUser = selectedUserId && selectedUserId === selectedUserProfile?.id;
-        const selectedValidOrg = selectedOrg && selectedUserProfile?.organizations?.some(o => o.organization.organization_id === selectedOrg?.organization_id);
+        const selectedValidUser = selectedUser.userId && selectedUser.userId === selectedUserProfile?.id;
+        const selectedValidOrg = selectedOrganization && selectedUserProfile?.organizations?.some(o => o.organization.organization_id === selectedOrganization?.organization_id);
 
         if (selectedValidUser && selectedValidOrg) {
-            dispatch(setInFlight(true));
+            setIsProcessingRequest(true);
 
             fetchEverything();
         }
     }, [
         shouldSelectUser,
         shouldSelectOrganization,
-        selectedOrg,
+        selectedOrganization,
         schedulerService,
         selectedUserProfile,
         key,
@@ -240,20 +243,26 @@ export function Schedule () {
     const joinStudy = () => {
         if (!schedulerService) { return; }
         if (!selectedSchedule) { return; }
-        if (!selectedOrg) { return; }
+        if (!selectedOrganization) { return; }
 
         if (selectedSchedule.is_home_fun) {
-            dispatch(setSelectHomeFunStudyDialogOpen({
+            setHomeFunStudy({
                 open: true,
+                submitted: false,
                 studyId: selectedSchedule.id,
-            }));
+            });
         } else {
-            dispatch(setLessonPlanIdOfSelectedSchedule(selectedSchedule.lesson_plan.id));
-            schedulerService.getScheduleToken(selectedOrg.organization_id, selectedSchedule.id).then((res) => {
+
+            setSchedule({
+                ...schedule,
+                lessonPlanIdOfSelectedSchedule: selectedSchedule.lesson_plan.id,
+            });
+
+            schedulerService.getScheduleToken(selectedOrganization.organization_id, selectedSchedule.id).then((res) => {
                 if (res.token) {
                     setToken(res.token);
-                    // TODO: Can we get rid of the token query parameter and just use
-                    // react component state for keeping and parsing the token instead?
+                    /* TODO: Can we get rid of the token query parameter and just use
+                    ** react component state for keeping and parsing the token instead? */
                     location.href = `#/join?token=${res.token}`;
                 } else {
                     setOpenAlert(true);
@@ -287,7 +296,7 @@ export function Schedule () {
         <Header
             isHomeRoute
             setKey={setKey} />
-        {inFlight ? <LoadingSchedule isOrgSelected={Boolean(selectedOrg?.organization_id)} /> :
+        { isProcessingRequest ? <LoadingSchedule isOrgSelected={Boolean(selectedOrganization?.organization_id)} /> :
             <Grid
                 container
                 item
@@ -301,12 +310,12 @@ export function Schedule () {
                     backgroundColor: `white`,
                 }}
             >
-                {classType === ClassType.LIVE ? <ScheduledLiveList
+                { schedule.viewClassType === ClassType.LIVE ? <ScheduledLiveList
                     setOpenAlert={setOpenAlert}
                     setSelectedSchedule={setSelectedSchedule}
                     setOpenStudyDetail={setOpenStudyDetail} /> : <ScheduledStudyList
                     setSelectedSchedule={setSelectedSchedule}
-                    setOpenStudyDetail={setOpenStudyDetail} />}
+                    setOpenStudyDetail={setOpenStudyDetail} /> }
             </Grid>
         }
         <ClassTypeSwitcher />
@@ -335,9 +344,7 @@ function ScheduledLiveList ({
     setSelectedSchedule: React.Dispatch<React.SetStateAction<ScheduleResponse | undefined>>;
     setOpenStudyDetail: React.Dispatch<React.SetStateAction<boolean>>; }) {
     const { listRoot, listSubheaderText } = useStyles();
-    const scheduleTimeViewLiveToday = useSelector((state: State) => state.data.scheduleTimeViewLiveToday);
-    const scheduleTimeViewLiveTomorrow = useSelector((state: State) => state.data.scheduleTimeViewLiveTomorrow);
-    const scheduleTimeViewLiveUpcoming = useSelector((state: State) => state.data.scheduleTimeViewLiveUpcoming);
+    const [ schedule ] = useRecoilState(scheduleState);
 
     return (<>
         <Grid item>
@@ -359,7 +366,7 @@ function ScheduledLiveList ({
                 }
                 className={listRoot}
             >
-                {scheduleTimeViewLiveToday === undefined || scheduleTimeViewLiveToday.length === 0 ? (
+                { schedule.scheduleTimeViewLiveToday === undefined || schedule.scheduleTimeViewLiveToday.length === 0 ? (
                     <ListItem>
                         <Typography
                             variant="body2"
@@ -367,12 +374,12 @@ function ScheduledLiveList ({
                             <FormattedMessage id="schedule_liveNoSchedule" />
                         </Typography>
                     </ListItem>
-                ) : scheduleTimeViewLiveToday.map((tv: ScheduleTimeViewResponse) => <ScheduledLiveItem
+                ) : schedule.scheduleTimeViewLiveToday.map((tv: ScheduleTimeViewResponse) => <ScheduledLiveItem
                     key={tv.id}
                     scheduleId={tv.id}
                     setOpenAlert={setOpenAlert}
                     setSelectedSchedule={setSelectedSchedule}
-                    setOpenStudyDetail={setOpenStudyDetail} />)}
+                    setOpenStudyDetail={setOpenStudyDetail} />) }
             </List>
         </Grid>
         <Grid item>
@@ -394,7 +401,7 @@ function ScheduledLiveList ({
                 }
                 className={listRoot}
             >
-                {scheduleTimeViewLiveTomorrow === undefined || scheduleTimeViewLiveTomorrow.length === 0 ? (
+                { schedule.scheduleTimeViewLiveTomorrow === undefined || schedule.scheduleTimeViewLiveTomorrow.length === 0 ? (
                     <ListItem>
                         <Typography
                             variant="body2"
@@ -402,12 +409,12 @@ function ScheduledLiveList ({
                             <FormattedMessage id="schedule_liveNoSchedule" />
                         </Typography>
                     </ListItem>
-                ) : scheduleTimeViewLiveTomorrow.map((tv: ScheduleTimeViewResponse) => <ScheduledLiveItem
+                ) : schedule.scheduleTimeViewLiveTomorrow.map((tv: ScheduleTimeViewResponse) => <ScheduledLiveItem
                     key={tv.id}
                     scheduleId={tv.id}
                     setOpenAlert={setOpenAlert}
                     setSelectedSchedule={setSelectedSchedule}
-                    setOpenStudyDetail={setOpenStudyDetail} />)}
+                    setOpenStudyDetail={setOpenStudyDetail} />) }
             </List>
         </Grid>
         <Grid item>
@@ -429,7 +436,7 @@ function ScheduledLiveList ({
                 }
                 className={listRoot}
             >
-                {scheduleTimeViewLiveUpcoming === undefined || scheduleTimeViewLiveUpcoming.length === 0 ? (
+                { schedule.scheduleTimeViewLiveUpcoming === undefined || schedule.scheduleTimeViewLiveUpcoming.length === 0 ? (
                     <ListItem>
                         <Typography
                             variant="body2"
@@ -437,19 +444,19 @@ function ScheduledLiveList ({
                             <FormattedMessage id="schedule_liveNoSchedule" />
                         </Typography>
                     </ListItem>
-                ) : scheduleTimeViewLiveUpcoming.map((tv: ScheduleTimeViewResponse) => <ScheduledLiveItem
+                ) : schedule.scheduleTimeViewLiveUpcoming.map((tv: ScheduleTimeViewResponse) => <ScheduledLiveItem
                     key={tv.id}
                     scheduleId={tv.id}
                     setOpenAlert={setOpenAlert}
                     setSelectedSchedule={setSelectedSchedule}
-                    setOpenStudyDetail={setOpenStudyDetail}/>)}
+                    setOpenStudyDetail={setOpenStudyDetail}/>) }
             </List>
         </Grid>
     </>);
 }
 
 function ScheduledLiveItem ({
-    scheduleId, setOpenAlert, setSelectedSchedule, setOpenStudyDetail,
+    scheduleId, setSelectedSchedule, setOpenStudyDetail,
 }: { scheduleId: string;
     setOpenAlert: React.Dispatch<React.SetStateAction<boolean>>;
     setSelectedSchedule: React.Dispatch<React.SetStateAction<ScheduleResponse | undefined>>;
@@ -459,14 +466,13 @@ function ScheduledLiveItem ({
         listItemTextPrimary,
         listItemSecondAction,
     } = useStyles();
-    const dispatch = useDispatch();
-    const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
+
+    const [ selectedOrganization ] = useRecoilState(selectedOrganizationState);
 
     const [ liveInfo, setLiveInfo ] = useState<ScheduleResponse>();
     const [ liveDate, setLiveDate ] = useState<string>(``);
     const [ liveTime, setLiveTime ] = useState<string>(``);
 
-    const { setToken } = useSessionContext();
     const { schedulerService } = useServices();
 
     useEffect(() => {
@@ -476,11 +482,11 @@ function ScheduledLiveItem ({
                     throw new Error(`Scheduler service not available.`);
                 }
 
-                if (!selectedOrg) {
+                if (!selectedOrganization) {
                     throw new Error(`Organization is not selected.`);
                 }
 
-                const live = await schedulerService.getScheduleInfo(selectedOrg.organization_id, scheduleId);
+                const live = await schedulerService.getScheduleInfo(selectedOrganization.organization_id, scheduleId);
                 setLiveInfo(live);
             }
             try {
@@ -542,10 +548,9 @@ function ScheduledStudyList ({ setSelectedSchedule, setOpenStudyDetail }: {
     setSelectedSchedule: React.Dispatch<React.SetStateAction<ScheduleResponse | undefined>>;
     setOpenStudyDetail: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-    const scheduleTimeViewStudyAll = useSelector((state: State) => state.data.scheduleTimeViewStudyAll);
-    const scheduleTimeViewStudyAnytime = useSelector((state: State) => state.data.scheduleTimeViewStudyAnytime);
+    const [ schedule ] = useRecoilState(scheduleState);
+    const [ selectedOrganization ] = useRecoilState(selectedOrganizationState);
     const { assessmentService } = useServices();
-    const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
 
     const [ assessmentsForStudyAll, setAssessmentsForStudyAll ] = useState<AssessmentForStudent[]>([]);
     const [ assessmentsForStudyAnytime, setAssessmentsForStudyAnytime ] = useState<AssessmentForStudent[]>([]);
@@ -554,17 +559,17 @@ function ScheduledStudyList ({ setSelectedSchedule, setOpenStudyDetail }: {
         async function fetchEverything () {
             async function fetchHomeFunStudyAssessment (scheduleTimeViews: ScheduleTimeViewResponse[]): Promise<AssessmentForStudent[]>{
                 if(!assessmentService) return Promise.reject();
-                if(!scheduleTimeViewStudyAll) return Promise.reject();
-                if(!scheduleTimeViewStudyAnytime) return Promise.reject();
-                if(!selectedOrg) return Promise.reject();
+                if(!schedule.scheduleTimeViewStudyAll) return Promise.reject();
+                if(!schedule.scheduleTimeViewStudyAnytime) return Promise.reject();
+                if(!selectedOrganization) return Promise.reject();
 
-                return await assessmentService?.getAssessmentsForStudent(selectedOrg.organization_id, scheduleTimeViews.map((tv: ScheduleTimeViewResponse) => tv.id), AssessmentType.HOME_FUN_STUDY, 0, 1);
+                return await assessmentService?.getAssessmentsForStudent(selectedOrganization.organization_id, scheduleTimeViews.map((tv: ScheduleTimeViewResponse) => tv.id), AssessmentType.HOME_FUN_STUDY, 0, 1);
             }
             async function fetchHomeFunStudyAssessmentForStudyAll (){
-                setAssessmentsForStudyAll(await fetchHomeFunStudyAssessment(scheduleTimeViewStudyAll));
+                setAssessmentsForStudyAll(await fetchHomeFunStudyAssessment(schedule.scheduleTimeViewStudyAll));
             }
             async function fetchHomeFunStudyAssessmentForStudyAnytime (){
-                setAssessmentsForStudyAnytime(await fetchHomeFunStudyAssessment(scheduleTimeViewStudyAnytime));
+                setAssessmentsForStudyAnytime(await fetchHomeFunStudyAssessment(schedule.scheduleTimeViewStudyAnytime));
             }
             try {
                 await Promise.all([ fetchHomeFunStudyAssessmentForStudyAll(), fetchHomeFunStudyAssessmentForStudyAnytime() ]);
@@ -575,30 +580,29 @@ function ScheduledStudyList ({ setSelectedSchedule, setOpenStudyDetail }: {
         fetchEverything();
     }, [
         assessmentService,
-        scheduleTimeViewStudyAll,
-        scheduleTimeViewStudyAnytime,
-        selectedOrg,
+        schedule,
+        selectedOrganization,
     ]);
 
-    return (scheduleTimeViewStudyAnytime.length === 0 && scheduleTimeViewStudyAll.length === 0 ?
+    return (schedule.scheduleTimeViewStudyAnytime.length === 0 && schedule.scheduleTimeViewStudyAll.length === 0 ?
         <Typography
             variant="body2"
             color="textSecondary">
             <FormattedMessage id="schedule_studyNoSchedule" />
         </Typography> : <>
             <AnytimeStudyList
-                timeViews={scheduleTimeViewStudyAnytime}
+                timeViews={schedule.scheduleTimeViewStudyAnytime}
                 assessmentForStudents={assessmentsForStudyAnytime}
                 setSelectedSchedule={setSelectedSchedule}
                 setOpenStudyDetail={setOpenStudyDetail} />
             <Grid item>
-                {scheduleTimeViewStudyAll.length === 0 ? null :
-                    scheduleTimeViewStudyAll.map((study: ScheduleTimeViewResponse) => <ScheduledStudyItem
+                { schedule.scheduleTimeViewStudyAll.length === 0 ? null :
+                    schedule.scheduleTimeViewStudyAll.map((study: ScheduleTimeViewResponse) => <ScheduledStudyItem
                         key={study.id}
                         studyId={study.id}
                         assessmentForStudent={assessmentsForStudyAll.find(assessment => assessment.schedule.id === study.id)}
                         setSelectedSchedule={setSelectedSchedule}
-                        setOpenStudyDetail={setOpenStudyDetail} />)}
+                        setOpenStudyDetail={setOpenStudyDetail} />) }
             </Grid>
         </>
     );
@@ -645,13 +649,9 @@ function AnytimeStudyItem ({
         listItemTextPrimary,
         listItemSecondAction,
     } = useStyles();
-    const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
-
+    const [ selectedOrganization ] = useRecoilState(selectedOrganizationState);
     const { schedulerService } = useServices();
-
     const [ studyInfo, setStudyInfo ] = useState<ScheduleResponse>();
-
-    const dispatch = useDispatch();
 
     useEffect(() => {
         async function fetchEverything () {
@@ -659,11 +659,11 @@ function AnytimeStudyItem ({
                 if (!schedulerService) {
                     throw new Error(`Scheduler service not available.`);
                 }
-                if (!selectedOrg) {
+                if (!selectedOrganization) {
                     throw new Error(`Organization is not selected.`);
                 }
 
-                const studyPayload = await schedulerService.getScheduleInfo(selectedOrg.organization_id, studyId);
+                const studyPayload = await schedulerService.getScheduleInfo(selectedOrganization.organization_id, studyId);
                 setStudyInfo(studyPayload);
             }
             try {
@@ -749,7 +749,7 @@ function ScheduledStudyItem ({
         submittedText,
         listItemSecondAction,
     } = useStyles();
-    const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
+    const [ selectedOrganization ] = useRecoilState(selectedOrganizationState);
     const { schedulerService } = useServices();
 
     const [ studyInfo, setStudyInfo ] = useState<ScheduleResponse>();
@@ -763,11 +763,11 @@ function ScheduledStudyItem ({
                     throw new Error(`Scheduler service not available.`);
                 }
 
-                if (!selectedOrg) {
+                if (!selectedOrganization) {
                     throw new Error(`Organization is not selected.`);
                 }
 
-                const studyPayload = await schedulerService.getScheduleInfo(selectedOrg!.organization_id, studyId);
+                const studyPayload = await schedulerService.getScheduleInfo(selectedOrganization.organization_id, studyId);
                 if (studyPayload.due_at !== 0) {
                     const formattedDueDate =
                         dateFormat(new Date(studyPayload.due_at * 1000), `shortTime`, false, false) + `, ` +
