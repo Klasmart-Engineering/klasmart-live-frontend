@@ -54,3 +54,17 @@ export const regionSelectState = atom({
         regionId: `auth.kidsloop.live`,
     },
 });
+
+export const authState = atom({
+    key: `authState`,
+    default: {
+        transferToken: undefined as string | undefined,
+    },
+});
+
+export const localeState = atom({
+    key: `locale`,
+    default: {
+        languageCode: `en`,
+    },
+});

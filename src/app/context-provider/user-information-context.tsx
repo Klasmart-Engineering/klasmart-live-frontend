@@ -1,12 +1,11 @@
-import { UserInformation } from "../services/user/IUserInformationService";
 import {
-    setLocale,
-    setRegionId,
-    setSelectedOrg,
-    setSelectedUserId,
-    setTransferToken,
-} from "../store/reducers/session";
-import { State } from "../store/store";
+    authState,
+    localeState,
+    regionSelectState,
+    selectedOrganizationState,
+    selectedUserState,
+} from "../model/appModel";
+import { UserInformation } from "../services/user/IUserInformationService";
 import { useServices } from "./services-provider";
 import React,
 {
@@ -19,10 +18,7 @@ import React,
     useMemo,
     useState,
 } from "react";
-import {
-    useDispatch,
-    useSelector,
-} from "react-redux";
+import { useRecoilState } from "recoil";
 
 /* TODO (Axel): All of this context can be combined with the user-context from
 ** the combined master branch. This would be preferred since they share
@@ -81,9 +77,9 @@ const useAuthentication = () => {
 
     const { authenticationService } = useServices();
 
-    const tokenFromAuth = useSelector((state: State) => state.session.transferToken);
-
-    const dispatch = useDispatch();
+    const [ auth, setAuth ] = useRecoilState(authState);
+    const [ regionSelect, setRegionSelect ] = useRecoilState(regionSelectState);
+    const [ locale, setLocale ] = useRecoilState(localeState);
 
     const refresh = useCallback(() => {
         if (!authenticationService) return;
@@ -143,9 +139,9 @@ const useAuthentication = () => {
 
     useEffect(() => {
         if (!authenticationService) return;
-        if (!tokenFromAuth) return;
+        if (!auth.transferToken) return;
 
-        authenticationService.transfer(tokenFromAuth).then(() => {
+        authenticationService.transfer(auth.transferToken).then(() => {
             setSignedOut(false);
             refresh();
         }).catch(err => {
@@ -153,9 +149,11 @@ const useAuthentication = () => {
             setAuthError(true);
         });
 
-        dispatch(setTransferToken(undefined));
-
-    }, [ authenticationService, tokenFromAuth ]);
+        setAuth({
+            ...auth,
+            transferToken: undefined,
+        });
+    }, [ authenticationService, auth ]);
 
     useEffect(() => {
         if (!authenticationService) return;
@@ -172,17 +170,26 @@ const useAuthentication = () => {
 
                 const languageCode = url.searchParams.get(`iso`);
                 if (languageCode) {
-                    dispatch(setLocale(languageCode));
+                    setLocale({
+                        ...locale,
+                        languageCode,
+                    });
                 }
 
                 const region = url.searchParams.get(`region`);
                 if (region) {
-                    dispatch(setRegionId(region));
+                    setRegionSelect({
+                        ...regionSelect,
+                        regionId: region,
+                    });
                 }
 
                 const token = url.searchParams.get(`token`);
                 if(token){
-                    dispatch(setTransferToken(token));
+                    setAuth({
+                        ...auth,
+                        transferToken: token,
+                    });
                 }
 
             }
@@ -207,13 +214,14 @@ const useAuthentication = () => {
 };
 
 export function UserInformationContextProvider ({ children }: Props) {
-    const dispatch = useDispatch();
-
     const [ error, setError ] = useState<boolean>(false);
     const [ loading, setLoading ] = useState<boolean>(false);
     const [ isSelectingUser, setIsSelectingUser ] = useState<boolean>(false);
 
-    const selectedUserId = useSelector((state: State) => state.session.selectedUserId);
+    const [ selectedUser, setSelectedUser ] = useRecoilState(selectedUserState);
+    const [ , setSelectedOrganization ] = useRecoilState(selectedOrganizationState);
+    const [ auth, setAuth ] = useRecoilState(authState);
+
     const [ selectedUserProfile, setSelectedUserProfile ] = useState<UserInformation>();
     const [ myUsers, setMyUsers ] = useState<UserInformation[]>();
 
@@ -268,8 +276,12 @@ export function UserInformationContextProvider ({ children }: Props) {
             setIsSelectingUser(true);
             await switchUser(userId);
 
-            dispatch(setSelectedUserId(userId));
-            dispatch(setSelectedOrg(undefined));
+            setSelectedUser({
+                ...selectedUser,
+                userId,
+            });
+
+            setSelectedOrganization(undefined);
 
             await fetchSelectedUser();
         } catch (error) {
@@ -283,9 +295,15 @@ export function UserInformationContextProvider ({ children }: Props) {
     const logOutUser = useCallback(async () => {
         await signOut();
         setSelectedUserProfile(undefined);
-        setSelectedUserId(undefined);
+        setSelectedUser({
+            ...selectedUser,
+            userId: undefined,
+        });
         setMyUsers(undefined);
-        dispatch(setTransferToken(undefined));
+        setAuth({
+            ...auth,
+            transferToken: undefined,
+        });
     }, [ signOut ]);
 
     const context = useMemo<UserInformationContext>(() => {
@@ -324,16 +342,19 @@ export function UserInformationContextProvider ({ children }: Props) {
     }, [ authenticated ]);
 
     useEffect(() => {
-        console.log(`auth: ${authenticated}, selectedId: ${selectedUserId}, user: ${selectedUserProfile?.id}`);
-        if (authenticated && selectedUserId !== undefined && selectedUserProfile?.id != selectedUserId) {
-            console.log(`selecting user: ${selectedUserId}`);
-            selectUser(selectedUserId).catch(error => {
+        console.log(`auth: ${authenticated}, selectedId: ${selectedUser.userId}, user: ${selectedUserProfile?.id}`);
+        if (authenticated && selectedUser.userId !== undefined && selectedUserProfile?.id != selectedUser.userId) {
+            console.log(`selecting user: ${selectedUser.userId}`);
+            selectUser(selectedUser.userId).catch(error => {
                 console.log(`select user error: ${error}`);
-                dispatch(setSelectedUserId(undefined));
+                setSelectedUser({
+                    ...selectedUser,
+                    userId: undefined,
+                });
             });
         }
     }, [
-        selectedUserId,
+        selectedUser,
         authenticated,
         selectedUserProfile,
     ]);
