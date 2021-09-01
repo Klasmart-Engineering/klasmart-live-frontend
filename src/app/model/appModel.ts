@@ -24,7 +24,7 @@ export const homeFunStudyState = atom({
     default: undefined as {
         open: boolean;
         submitted: boolean;
-        studyId: string;
+        studyId: string | undefined;
     } | undefined,
 });
 
@@ -37,5 +37,13 @@ export const selectedUserState = atom({
     key: `selectedUser`,
     default: {
         userId: undefined as string | undefined,
+    },
+});
+
+export const errorState = atom({
+    key: `errorManagement`,
+    default: {
+        isError: false,
+        errorCode: null as number | null,
     },
 });

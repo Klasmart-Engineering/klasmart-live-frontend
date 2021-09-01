@@ -1,12 +1,6 @@
 import StyledIcon from "../../../components/styled/icon";
 import { useUserInformation } from "../../context-provider/user-information-context";
 import KidsloopLogo from "../assets/img/kidsloop_icon.svg";
-import {
-    setSelectHomeFunStudyDialogOpen,
-    setSelectOrgDialogOpen,
-    setSelectUserDialogOpen,
-} from "../store/reducers/control";
-import { State } from "../store/store";
 import AppBar from "@material-ui/core/AppBar";
 import ButtonBase from "@material-ui/core/ButtonBase";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -28,11 +22,15 @@ import {
 } from "kidsloop-px";
 import React,
 { useState } from "react";
-import {
-    useDispatch,
-    useSelector,
-} from "react-redux";
 import { useHistory } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import {
+    dialogsState,
+    errorState,
+    homeFunStudyState,
+    isProcessingRequestState,
+    selectedOrganizationState,
+} from "src/app/model/appModel";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -59,13 +57,11 @@ const useStyles = makeStyles((theme: Theme) =>
 export function Header ({ isHomeRoute, setKey }: { isHomeRoute?: boolean; setKey?: React.Dispatch<React.SetStateAction<string>> }) {
     const { root, safeArea } = useStyles();
     const theme = useTheme();
-    const errCode = useSelector((state: State) => state.communication.errCode);
+    const [ error ] = useRecoilState(errorState);
+    const [ dialogs ] = useRecoilState(dialogsState);
+    const [ homeFunStudy ] = useRecoilState(homeFunStudyState);
 
-    const selectOrgDialogOpen = useSelector((state: State) => state.control.selectOrgDialogOpen);
-    const selectUserDialogOpen = useSelector((state: State) => state.control.selectUserDialogOpen);
-    const selectHomeFunStudyDialogOpen = useSelector((state: State) => state.control.selectHomeFunStudyDialogOpen);
-
-    return (errCode ? <></> :
+    return (error.errorCode ? <></> :
         <div className={root}>
             <AppBar
                 position="sticky"
@@ -95,7 +91,7 @@ export function Header ({ isHomeRoute, setKey }: { isHomeRoute?: boolean; setKey
                                 style={{
                                     flexGrow: 0,
                                 }}>
-                                {selectOrgDialogOpen || selectUserDialogOpen || selectHomeFunStudyDialogOpen?.open ? <CloseSelectOrgOrUserButton /> : (
+                                {dialogs.isSelectOrganizationOpen || dialogs.isSelectUserOpen || homeFunStudy?.open ? <CloseSelectOrgOrUserButton /> : (
                                     isHomeRoute ? <OpenSelectOrgButton /> : <GoBackButton />
                                 )}
                             </Grid>
@@ -144,26 +140,31 @@ export function Header ({ isHomeRoute, setKey }: { isHomeRoute?: boolean; setKey
 
 function CloseSelectOrgOrUserButton () {
     const { iconButton } = useStyles();
-    const dispatch = useDispatch();
 
-    const selectOrgDialogOpen = useSelector((state: State) => state.control.selectOrgDialogOpen);
-    const selectUserDialogOpen = useSelector((state: State) => state.control.selectUserDialogOpen);
-    const selectHomeFunStudyDialogOpen = useSelector((state: State) => state.control.selectHomeFunStudyDialogOpen);
+    const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
+    const [ homeFunStudy, setHomeFunStudy ] = useRecoilState(homeFunStudyState);
 
     return (
         <IconButton
             size="medium"
             className={iconButton}
             onClick={() => {
-                if (selectOrgDialogOpen) {
-                    dispatch(setSelectOrgDialogOpen(false));
-                } else if (selectUserDialogOpen) {
-                    dispatch(setSelectUserDialogOpen(false));
-                }else if(selectHomeFunStudyDialogOpen?.open){
-                    dispatch(setSelectHomeFunStudyDialogOpen({
+                if (dialogs.isSelectOrganizationOpen) {
+                    setDialogs({
+                        ...dialogs,
+                        isSelectOrganizationOpen: false,
+                    });
+                } else if (dialogs.isSelectUserOpen) {
+                    setDialogs({
+                        ...dialogs,
+                        isSelectUserOpen: false,
+                    });
+                } else if(homeFunStudy?.open){
+                    setHomeFunStudy({
+                        ...homeFunStudy,
                         open: false,
                         studyId: undefined,
-                    }));
+                    });
                 }
             }}
         >
@@ -176,15 +177,16 @@ function CloseSelectOrgOrUserButton () {
 
 function OpenSelectUserButton () {
     const { selectUserButton } = useStyles();
-
-    const dispatch = useDispatch();
-
     const { selectedUserProfile } = useUserInformation();
+    const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
 
     return (
         <ButtonBase
             className={selectUserButton}
-            onClick={() => dispatch(setSelectUserDialogOpen(true))}
+            onClick={() => setDialogs({
+                ...dialogs,
+                isSelectUserOpen: false,
+            })}
         >
             <UserAvatar
                 name={selectedUserProfile?.fullName ?? ``}
@@ -195,17 +197,19 @@ function OpenSelectUserButton () {
 
 function OpenSelectOrgButton () {
     const { selectOrganizationButton } = useStyles();
-
-    const dispatch = useDispatch();
-    const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
+    const [ selectedOrganization ] = useRecoilState(selectedOrganizationState);
+    const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
 
     return (
         <ButtonBase
             className={selectOrganizationButton}
-            onClick={() => dispatch(setSelectOrgDialogOpen(true))}
+            onClick={() => setDialogs({
+                ...dialogs,
+                isSelectOrganizationOpen: true,
+            })}
         >
             <OrganizationAvatar
-                name={selectedOrg?.organization_name ?? ``}
+                name={selectedOrganization?.organization_name ?? ``}
                 size={`medium`} />
         </ButtonBase>
     );
@@ -215,7 +219,7 @@ function GoBackButton () {
     const { iconButton } = useStyles();
     const history = useHistory();
 
-    const [ canGoBack, setCanGoBack ] = useState<boolean>(true);
+    const [ canGoBack ] = useState<boolean>(true);
 
     return (
         <IconButton
@@ -236,20 +240,20 @@ function GoBackButton () {
 // TODO (Isu): Will be changed to <RefreshButton /> that force Schedule component to rerender
 function MenuButton ({ setKey }: { setKey?: React.Dispatch<React.SetStateAction<string>> }) {
     const { iconButton } = useStyles();
-    const selectOrgDialogOpen = useSelector((state: State) => state.control.selectOrgDialogOpen);
-    const inFlight = useSelector((state: State) => state.communication.inFlight);
+    const [ dialogs ] = useRecoilState(dialogsState);
+    const [ isProcessingRequest ] = useRecoilState(isProcessingRequestState);
 
     return (
         <IconButton
             size="medium"
             className={iconButton}
             style={{
-                visibility: selectOrgDialogOpen ? `hidden` : `visible`,
+                visibility: dialogs.isSelectOrganizationOpen ? `hidden` : `visible`,
             }}
             onClick={() => setKey && setKey(Math.random().toString(36))}
         >
             <StyledIcon
-                icon={inFlight ? <CircularProgress size={16} /> : <RefreshIcon />}
+                icon={isProcessingRequest ? <CircularProgress size={16} /> : <RefreshIcon />}
                 size="medium" />
         </IconButton>
     );
