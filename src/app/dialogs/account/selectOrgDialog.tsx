@@ -8,12 +8,6 @@ import {
     Organization,
     OrganizationResponse,
 } from "../../services/user/IUserInformationService";
-import { setSelectOrgDialogOpen } from "../../store/reducers/control";
-import {
-    setSelectedOrg,
-    setSelectedUserId,
-} from "../../store/reducers/session";
-import { State } from "../../store/store";
 import { ParentalGate } from "../parentalGate";
 import {
     List,
@@ -44,10 +38,12 @@ import React,
     useState,
 } from "react";
 import { FormattedMessage } from "react-intl";
+import { useRecoilState } from "recoil";
 import {
-    useDispatch,
-    useSelector,
-} from "react-redux";
+    dialogsState,
+    selectedOrganizationState,
+    selectedUserState,
+} from "src/app/model/appModel";
 
 const useStyles = makeStyles(() => ({
     noPadding: {
@@ -61,17 +57,13 @@ const useStyles = makeStyles(() => ({
 }));
 
 export function useShouldSelectOrganization () {
-    const dispatch = useDispatch();
-    const isMobileOnly = useSelector((state: State) => state.session.userAgent.isMobileOnly);
-    const isTablet = useSelector((state: State) => state.session.userAgent.isTablet);
-    const isMobile = isMobileOnly || isTablet;
     const [ shouldSelectOrganization, setShouldSelectOrganization ] = useState<boolean>(false);
     const [ organizationSelectErrorCode, setOrganizationSelectErrorCode ] = useState<number | string | null>(null);
     const [ hasStudentRole, setHasStudentRole ] = useState<boolean | null>(null);
 
     const { selectedUserProfile } = useUserInformation();
 
-    const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
+    const [ selectedOrganization, setSelectedOrganization ] = useRecoilState(selectedOrganizationState);
 
     const setErrorState = (errorCode: number | string) => {
         setShouldSelectOrganization(false);
@@ -82,13 +74,12 @@ export function useShouldSelectOrganization () {
     const verifyOrganizationStudentRole = (organization: Organization) => {
         const roles = organization.roles;
         if (roles.length === 1) {
-            const isTeacher = isRoleTeacher(roles[0].role_name);
-            if (isMobile && isTeacher) {
+            if(isRoleTeacher(roles[0].role_name)) {
                 return false;
             }
         } else if (roles.length > 1) {
             const someRolesAreStudent = roles.some(role => !isRoleTeacher(role.role_name));
-            if (isMobile && !someRolesAreStudent) {
+            if (!someRolesAreStudent) {
                 return false;
             }
         }
@@ -104,8 +95,8 @@ export function useShouldSelectOrganization () {
         }
 
         // NOTE: User already selected organization.
-        if (selectedOrg) {
-            const selected = selectedUserProfile.organizations.find(o => o.organization.organization_id === selectedOrg?.organization_id);
+        if (selectedOrganization) {
+            const selected = selectedUserProfile.organizations.find(o => o.organization.organization_id === selectedOrganization?.organization_id);
             if (selected && verifyOrganizationStudentRole(selected)) {
                 setHasStudentRole(true);
                 setShouldSelectOrganization(false);
@@ -120,7 +111,11 @@ export function useShouldSelectOrganization () {
             setErrorState(`403x02`); //Students Only
         } else if (selectedUserProfile.organizations.length === 1) { // 2. User has 1 organization
             setShouldSelectOrganization(false);
-            const { organization_id, organization_name } = selectedUserProfile.organizations[0].organization;
+            const {
+                organization_id,
+                organization_name,
+                status,
+            } = selectedUserProfile.organizations[0].organization;
 
             if (!verifyOrganizationStudentRole(selectedUserProfile.organizations[0])) {
                 setHasStudentRole(false);
@@ -130,16 +125,17 @@ export function useShouldSelectOrganization () {
 
             setOrganizationSelectErrorCode(null);
             setHasStudentRole(true);
-            dispatch(setSelectedOrg({
+            setSelectedOrganization({
                 organization_id,
                 organization_name,
-            }));
+                status,
+            });
         } else { // 2. User has more than 2 organizations
             setShouldSelectOrganization(true);
             setHasStudentRole(true);
             setOrganizationSelectErrorCode(null);
         }
-    }, [ selectedUserProfile, selectedOrg ]);
+    }, [ selectedUserProfile, selectedOrganization ]);
 
     /**
      * ABOUT hasStudentRole (Isu)
@@ -161,8 +157,11 @@ export function useShouldSelectOrganization () {
 export function SelectOrgDialog () {
     const theme = useTheme();
     const { noPadding } = useStyles();
-    const dispatch = useDispatch();
-    const open = useSelector((state: State) => state.control.selectOrgDialogOpen);
+
+    const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
+    const [ , setSelectedOrganization ] = useRecoilState(selectedOrganizationState);
+    const [ selectedUser, setSelectedUser ] = useRecoilState(selectedUserState);
+
     const { region } = useRegionSelect();
     const { selectedUserProfile, actions } = useUserInformation();
 
@@ -198,9 +197,18 @@ export function SelectOrgDialog () {
     };
 
     async function handleSignOut () {
-        dispatch(setSelectOrgDialogOpen(false));
-        dispatch(setSelectedUserId(undefined));
-        dispatch(setSelectedOrg(undefined));
+        setDialogs({
+            ...dialogs,
+            isSelectOrganizationOpen: false,
+        });
+
+        setSelectedUser({
+            ...selectedUser,
+            userId: undefined,
+        });
+
+        setSelectedOrganization(undefined);
+
         actions?.signOutUser();
     }
 
@@ -212,8 +220,11 @@ export function SelectOrgDialog () {
         return <Dialog
             fullScreen
             aria-labelledby="select-org-dialog"
-            open={open}
-            onClose={() => dispatch(setParentalLock(false))}
+            open={dialogs.isSelectOrganizationOpen}
+            onClose={() => setDialogs({
+                ...dialogs,
+                isParentalLockOpen: false,
+            })}
         >
             <DialogTitle
                 disableTypography
@@ -230,8 +241,11 @@ export function SelectOrgDialog () {
         <Dialog
             fullScreen
             aria-labelledby="select-org-dialog"
-            open={open}
-            onClose={() => dispatch(setSelectOrgDialogOpen(false))}
+            open={dialogs.isSelectOrganizationOpen}
+            onClose={() => setDialogs({
+                ...dialogs,
+                isSelectOrganizationOpen: false,
+            })}
         >
             <DialogTitle
                 disableTypography
@@ -304,14 +318,17 @@ export function SelectOrgDialog () {
 }
 
 function OrgList ({ organizations }: { organizations: OrganizationResponse[] }) {
-    const dispatch = useDispatch();
     const theme = useTheme();
 
-    const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
+    const [ selectedOrganization, setSelectedOrganization ] = useRecoilState(selectedOrganizationState);
+    const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
 
     const changeOrganization = useCallback((organization: OrganizationResponse) => {
-        dispatch(setSelectedOrg(organization));
-        dispatch(setSelectOrgDialogOpen(false));
+        setSelectedOrganization(organization);
+        setDialogs({
+            ...dialogs,
+            isSelectOrganizationOpen: false,
+        });
     }, []);
 
     return (
@@ -328,7 +345,7 @@ function OrgList ({ organizations }: { organizations: OrganizationResponse[] }) 
                     <ListItemText
                         primary={organization.organization_name}
                     />
-                    {organization.organization_id === selectedOrg?.organization_id && (
+                    {organization.organization_id === selectedOrganization?.organization_id && (
                         <ListItemIcon>
                             <CheckIcon
                                 color={theme.palette.success.main}
