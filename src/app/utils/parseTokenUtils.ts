@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { MaterialTypename } from "../../types/lessonMaterial";
 import jwt_decode from "jwt-decode";
 
