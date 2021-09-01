@@ -1,4 +1,3 @@
-import { LessonMaterial } from "../lessonMaterialContext";
 import { themeProvider } from "../themeProvider";
 import {
     getDefaultLanguageCode,

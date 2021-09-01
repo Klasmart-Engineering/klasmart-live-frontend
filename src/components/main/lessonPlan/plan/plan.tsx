@@ -1,8 +1,8 @@
-import { MaterialTypename } from "../../../../lessonMaterialContext";
 import { ContentType } from "../../../../pages/utils";
-import { useSessionContext } from "../../../../providers/session-context";
 import { RoomContext } from "../../../../providers/roomContext";
+import { useSessionContext } from "../../../../providers/session-context";
 import { materialActiveIndexState } from "../../../../store/layoutAtoms";
+import { MaterialTypename } from "../../../../types/lessonMaterial";
 import { NoItemList } from "../../../../utils/utils";
 import {
     Grid,
@@ -38,7 +38,7 @@ function Plan () {
     const { content } = useContext(RoomContext);
 
     const checkDisable = (material:any) => {
-        if (content?.type === ContentType.Activity && material.__typename === MaterialTypename.Video) return true;
+        if (content?.type === ContentType.Activity && material.__typename === MaterialTypename.VIDEO) return true;
         else return false;
     };
 
