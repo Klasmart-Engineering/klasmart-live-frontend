@@ -48,8 +48,8 @@ export const errorState = atom({
     },
 });
 
-export const regionSelectState = atom({
-    key: `regionSelect`,
+export const selectedRegionState = atom({
+    key: `selectedRegion`,
     default: {
         regionId: `auth.kidsloop.live`,
     },

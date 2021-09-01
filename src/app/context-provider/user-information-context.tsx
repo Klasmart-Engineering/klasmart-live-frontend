@@ -1,8 +1,8 @@
 import {
     authState,
     localeState,
-    regionSelectState,
     selectedOrganizationState,
+    selectedRegionState,
     selectedUserState,
 } from "../model/appModel";
 import { UserInformation } from "../services/user/IUserInformationService";
@@ -78,7 +78,7 @@ const useAuthentication = () => {
     const { authenticationService } = useServices();
 
     const [ auth, setAuth ] = useRecoilState(authState);
-    const [ regionSelect, setRegionSelect ] = useRecoilState(regionSelectState);
+    const [ selectedRegion, setSelectedRegion ] = useRecoilState(selectedRegionState);
     const [ locale, setLocale ] = useRecoilState(localeState);
 
     const refresh = useCallback(() => {
@@ -178,8 +178,8 @@ const useAuthentication = () => {
 
                 const region = url.searchParams.get(`region`);
                 if (region) {
-                    setRegionSelect({
-                        ...regionSelect,
+                    setSelectedRegion({
+                        ...selectedRegion,
                         regionId: region,
                     });
                 }
