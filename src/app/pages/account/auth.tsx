@@ -1,6 +1,5 @@
 import { useHttpEndpoint } from "../../context-provider/region-select-context";
 import { useUserInformation } from "../../context-provider/user-information-context";
-import { OrientationType } from "../../store/actions";
 import { lockOrientation } from "../../utils/screenUtils";
 import { Grid } from "@material-ui/core";
 import createStyles from "@material-ui/core/styles/createStyles";
@@ -8,15 +7,15 @@ import makeStyles from "@material-ui/core/styles/makeStyles";
 import React,
 {
     useEffect,
-    useRef, 
-, useState
+    useRef,
+    useState,
 } from "react";
-import { useDispatch } from "react-redux";
 import { Redirect } from "react-router-dom";
 import { ParentalGate } from "src/app/dialogs/parentalGate";
+import { OrientationType } from "src/app/model/appModel";
 import Loading from "src/components/loading";
 
-const useStyles = makeStyles((_theme) => createStyles({
+const useStyles = makeStyles(() => createStyles({
     container: {
         margin: 0,
         padding: 0,
@@ -32,11 +31,10 @@ interface Props {
     useInAppBrowser: boolean;
 }
 
-export function Auth({ useInAppBrowser }: Props) {
+export function Auth ({ useInAppBrowser }: Props) {
     const classes = useStyles();
-    const dispatch = useDispatch();
     const frameRef = useRef<HTMLIFrameElement>(null);
-    const [key, setKey] = useState(Math.random().toString(36));
+    const [ key, setKey ] = useState(Math.random().toString(36));
 
     const authEndpoint = useHttpEndpoint(`auth`);
 
@@ -46,7 +44,7 @@ export function Auth({ useInAppBrowser }: Props) {
         actions,
     } = useUserInformation();
 
-    const [completedParentalChallenge, setCompletedParentalChallenge] = useState<boolean>(false);
+    const [ completedParentalChallenge, setCompletedParentalChallenge ] = useState<boolean>(false);
 
     useEffect(() => {
         if (!frameRef.current) return;
@@ -71,13 +69,13 @@ export function Auth({ useInAppBrowser }: Props) {
         return () => {
             parent.removeEventListener(`message`, onMessage);
         };
-    }, [frameRef.current]);
+    }, [ frameRef.current ]);
 
     useEffect(() => {
         if (loading) return;
         if (authenticated) return;
 
-        lockOrientation(OrientationType.PORTRAIT, dispatch);
+        lockOrientation(OrientationType.PORTRAIT);
         if (!useInAppBrowser) return;
 
         if (!completedParentalChallenge) return;
@@ -134,7 +132,7 @@ export function Auth({ useInAppBrowser }: Props) {
                 direction="row"
                 alignItems="center"
                 style={{
-                    height: `100%`
+                    height: `100%`,
                 }}
                 spacing={2}>
                 <Loading

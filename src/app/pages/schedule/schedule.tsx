@@ -247,6 +247,7 @@ export function Schedule () {
 
         if (selectedSchedule.is_home_fun) {
             setHomeFunStudy({
+                ...homeFunStudy,
                 open: true,
                 submitted: false,
                 studyId: selectedSchedule.id,
