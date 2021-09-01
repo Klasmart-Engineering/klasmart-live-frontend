@@ -2,13 +2,6 @@ import { Header } from "../../components/layout/header";
 import { useRegionSelect } from "../../context-provider/region-select-context";
 import { useUserInformation } from "../../context-provider/user-information-context";
 import { UserInformation } from "../../services/user/IUserInformationService";
-import { setSelectUserDialogOpen } from "../../store/reducers/control";
-import {
-    setSelectedOrg,
-    setSelectedUserId,
-    setTransferToken,
-} from "../../store/reducers/session";
-import { State } from "../../store/store";
 import { ParentalGate } from "../parentalGate";
 import {
     List,
@@ -41,10 +34,13 @@ import React,
     useState,
 } from "react";
 import { FormattedMessage } from "react-intl";
+import { useRecoilState } from "recoil";
 import {
-    useDispatch,
-    useSelector,
-} from "react-redux";
+    authState,
+    dialogsState,
+    selectedOrganizationState,
+    selectedUserState,
+} from "src/app/model/appModel";
 
 const useStyles = makeStyles(() => ({
     noPadding: {
@@ -58,7 +54,6 @@ const useStyles = makeStyles(() => ({
 }));
 
 export function useShouldSelectUser () {
-    const dispatch = useDispatch();
     const { enqueueSnackbar } = useSnackbar();
 
     const {
@@ -70,14 +65,15 @@ export function useShouldSelectUser () {
     const [ shouldSelectUser, setShouldSelectUser ] = useState<boolean>(false);
     const [ userSelectErrorCode ] = useState<number>();
 
-    const selectedUserId = useSelector((state: State) => state.session.selectedUserId);
+    const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
+    const [ selectedUser, setSelectedUser ] = useRecoilState(selectedUserState);
 
     useEffect(() => {
         if (!authenticated) return;
         if (!myUsers) return;
 
-        const didNotSelectUser = selectedUserId === undefined;
-        const invalidUserSelected = selectedUserId && myUsers && (myUsers?.some(u => selectedUserId === u.id) === false);
+        const didNotSelectUser = selectedUser.userId === undefined;
+        const invalidUserSelected = selectedUser.userId && myUsers && (myUsers?.some(u => selectedUser.userId === u.id) === false);
 
         if (didNotSelectUser || invalidUserSelected) {
             if (myUsers && myUsers.length > 1) {
@@ -87,8 +83,14 @@ export function useShouldSelectUser () {
 
                 if (myUsers && myUsers.length == 1) {
                     actions?.selectUser(myUsers[0].id).then(() => {
-                        dispatch(setSelectedUserId(myUsers[0].id));
-                        dispatch(setSelectUserDialogOpen(false));
+                        setSelectedUser({
+                            ...selectedUser,
+                            userId: myUsers[0].id,
+                        });
+                        setDialogs({
+                            ...dialogs,
+                            isSelectUserOpen: false,
+                        });
                     }).catch(error => {
                         console.error(error);
                         enqueueSnackbar(`Unable to select user`, {
@@ -102,7 +104,7 @@ export function useShouldSelectUser () {
         }
     }, [
         myUsers,
-        selectedUserId,
+        selectedUser,
         authenticated,
         actions,
     ]);
@@ -117,9 +119,10 @@ export function SelectUserDialog () {
     const theme = useTheme();
     const { noPadding } = useStyles();
 
-    const dispatch = useDispatch();
-
-    const open = useSelector((state: State) => state.control.selectUserDialogOpen);
+    const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
+    const [ selectedUser, setSelectedUser ] = useRecoilState(selectedUserState);
+    const [ , setSelectedOrganization ] = useRecoilState(selectedOrganizationState);
+    const [ auth, setAuth ] = useRecoilState(authState);
 
     const { myUsers } = useUserInformation();
     const { region } = useRegionSelect();
@@ -145,10 +148,23 @@ export function SelectUserDialog () {
     };
 
     async function handleSignOut () {
-        dispatch(setSelectUserDialogOpen(false));
-        dispatch(setSelectedUserId(undefined));
-        dispatch(setSelectedOrg(undefined));
-        dispatch(setTransferToken(undefined));
+        setDialogs({
+            ...dialogs,
+            isSelectUserOpen: false,
+        });
+
+        setSelectedUser({
+            ...selectedUser,
+            userId: undefined,
+        });
+
+        setSelectedOrganization(undefined);
+
+        setAuth({
+            ...auth,
+            transferToken: undefined,
+        });
+
         actions?.signOutUser();
     }
 
@@ -159,13 +175,16 @@ export function SelectUserDialog () {
     if (parentalLock) {
         return <Dialog
             fullScreen
-            aria-labelledby="select-org-dialog"
-            open={open}
-            onClose={() => dispatch(setParentalLock(false))}
+            aria-labelledby="select-user-dialog"
+            open={dialogs.isSelectUserOpen}
+            onClose={() => setDialogs({
+                ...dialogs,
+                isParentalLockOpen: false,
+            })}
         >
             <DialogTitle
                 disableTypography
-                id="select-org-dialog"
+                id="select-user-dialog"
                 className={noPadding}
             >
                 <Header />
@@ -177,9 +196,12 @@ export function SelectUserDialog () {
     return (
         <Dialog
             fullScreen
-            aria-labelledby="select-org-dialog"
-            open={open}
-            onClose={() => dispatch(setSelectUserDialogOpen(false))}
+            aria-labelledby="select-user-dialog"
+            open={dialogs.isSelectUserOpen}
+            onClose={() => setDialogs({
+                ...dialogs,
+                isSelectUserOpen: false,
+            })}
         >
             <DialogTitle
                 disableTypography
@@ -254,12 +276,16 @@ export function SelectUserDialog () {
 function UserList ({ users }: { users?: UserInformation[] }) {
     const { enqueueSnackbar } = useSnackbar();
     const { selectedUserProfile, actions } = useUserInformation();
-    const dispatch = useDispatch();
+
+    const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
 
     const selectUser = useCallback(async (userId: string) => {
         try {
             await actions?.selectUser(userId);
-            dispatch(setSelectUserDialogOpen(false));
+            setDialogs({
+                ...dialogs,
+                isSelectUserOpen: false,
+            });
         } catch (error) {
             enqueueSnackbar(`Couldn't select user.`, {
                 variant: `error`,
