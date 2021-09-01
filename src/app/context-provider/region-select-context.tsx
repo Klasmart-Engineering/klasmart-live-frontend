@@ -1,4 +1,4 @@
-import { regionSelectState } from "../model/appModel";
+import { selectedRegionState } from "../model/appModel";
 import React,
 {
     createContext,
@@ -147,24 +147,24 @@ const DefaultRegions: Region[] = [
 export function RegionSelectProvider ({ children, regionsUrl }: Props) {
     const [ regions, setRegions ] = useState<Region[]>(DefaultRegions);
     const [ loading, setLoading ] = useState<boolean>(false);
-    const [ regionSelect, setRegionSelect ] = useRecoilState(regionSelectState);
+    const [ selectedRegion, setSelectedRegion ] = useRecoilState(selectedRegionState);
 
     const region = useMemo<Region>(() => {
         if (!regions) {
-            console.error(`Can't select region with ID: ${regionSelect.regionId}. No regions available. Falling back to default.`);
+            console.error(`Can't select region with ID: ${selectedRegion.regionId}. No regions available. Falling back to default.`);
             return DefaultRegions[0];
         }
 
-        const selected = regions.find(region => region.id === regionSelect.regionId);
+        const selected = regions.find(region => region.id === selectedRegion.regionId);
         if (selected === undefined) {
-            console.error(`Can't select region with ID: ${regionSelect.regionId}. No region with ID. Falling back to default.`);
+            console.error(`Can't select region with ID: ${selectedRegion.regionId}. No region with ID. Falling back to default.`);
             return DefaultRegions[0];
         }
 
-        console.log(`Selected region with ID: ${regionSelect.regionId}`);
+        console.log(`Selected region with ID: ${selectedRegion.regionId}`);
 
         return selected;
-    }, [ regions, regionSelect ]);
+    }, [ regions, selectedRegion ]);
 
     const fetchRegions = useCallback(async () => {
         if (!regionsUrl) return;
@@ -188,7 +188,7 @@ export function RegionSelectProvider ({ children, regionsUrl }: Props) {
     }, []);
 
     const selectRegion = useCallback((id: string) => {
-        setRegionSelect({
+        setSelectedRegion({
             regionId: id,
         });
 
