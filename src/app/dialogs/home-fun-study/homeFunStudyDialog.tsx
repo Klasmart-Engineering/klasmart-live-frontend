@@ -1,8 +1,5 @@
 import Loading from "../../../components/loading";
 import StyledIcon from "../../../components/styled/icon";
-import { OrientationType } from "../../../store/actions";
-import { setSelectHomeFunStudyDialogOpen } from "../../../store/reducers/control";
-import { State } from "../../../store/store";
 import { FileIcon } from "../../components/icons/fileIcon";
 import { Header } from "../../components/layout/header";
 import { CustomCircularProgress } from "../../components/progress/customCircularProgress";
@@ -18,7 +15,6 @@ import {
     ScheduleFeedbackResponse,
     ScheduleResponse,
 } from "../../services/cms/ISchedulerService";
-import { setHomeFunStudies } from "../../store/reducers/data";
 import {
     getFileExtensionFromName,
     getFileExtensionFromType,
@@ -72,10 +68,13 @@ import {
     FormattedMessage,
     useIntl,
 } from "react-intl";
+import { useRecoilState } from "recoil";
 import {
-    useDispatch,
-    useSelector,
-} from "react-redux";
+    homeFunStudyState,
+    OrientationType,
+    selectedOrganizationState,
+    selectedUserState,
+} from "src/app/model/appModel";
 
 export type HomeFunStudyFeedback = {
     userId: string;
@@ -155,13 +154,12 @@ export function HomeFunStudyDialog () {
     const intl = useIntl();
     const [ studyId, setStudyId ] = useState<string>();
     const classes = useStyles();
-    const dispatch = useDispatch();
     const { enqueueSnackbar } = useSnackbar();
     const { showPopup } = usePopupContext();
-    const selectHomeFunStudyDialog = useSelector((state: State) => state.control.selectHomeFunStudyDialogOpen);
-    const hfsFeedbacks = useSelector((state: State) => state.data.hfsFeedbacks);
+    const [ homeFunStudy, setHomeFunStudy ] = useRecoilState(homeFunStudyState);
     const { schedulerService } = useServices();
-    const { selectedOrg, selectedUserId } = useSelector((state: State) => state.session);
+    const [ selectedOrganization ] = useRecoilState(selectedOrganizationState);
+    const [ selectedUser ] = useRecoilState(selectedUserState);
     const [ studyInfo, setStudyInfo ] = useState<ScheduleResponse>();
     const [ newestFeedback, setNewestFeedback ] = useState<ScheduleFeedbackResponse>();
     const [ key, setKey ] = useState(Math.random().toString(36));
@@ -171,24 +169,25 @@ export function HomeFunStudyDialog () {
     const { addOnBack, removeOnBack } = useContext(CordovaSystemContext);
 
     useEffect(() => {
-        lockOrientation(OrientationType.PORTRAIT, dispatch);
+        lockOrientation(OrientationType.PORTRAIT);
         //Reset state for the first render
-        dispatch(setSelectHomeFunStudyDialogOpen({
+        setHomeFunStudy({
+            ...homeFunStudy,
             open: false,
-        }));
+        });
     }, []);
 
     function handleCloseHomeFunStudy () {
-        dispatch(setSelectHomeFunStudyDialogOpen({
+        setHomeFunStudy({
+            ...homeFunStudy,
             open: false,
-            studyInfo: undefined,
-        }));
+        });
     }
 
     useEffect(() => {
         //Wait for the reset state completed
         setTimeout(() => {
-            if(selectHomeFunStudyDialog.open && newestFeedback && !newestFeedback.is_allow_submit){
+            if(homeFunStudy.open && newestFeedback && !newestFeedback.is_allow_submit){
                 showPopup({
                     variant: `info`,
                     title: intl.formatMessage({
@@ -211,11 +210,11 @@ export function HomeFunStudyDialog () {
     }, [ newestFeedback ]);
 
     useEffect(() => {
-        if (selectHomeFunStudyDialog?.studyId) {
-            setStudyId(selectHomeFunStudyDialog.studyId);
+        if (homeFunStudy?.studyId) {
+            setStudyId(homeFunStudy.studyId);
             setKey(Math.random().toString(36)); //force to refresh HFS detail
         }
-        if(selectHomeFunStudyDialog.open){
+        if(homeFunStudy.open){
             if (addOnBack) {
                 addOnBack({
                     id: HFS_ON_BACK_ID,
@@ -229,7 +228,7 @@ export function HomeFunStudyDialog () {
                 removeOnBack(HFS_ON_BACK_ID);
             }
         }
-    }, [ selectHomeFunStudyDialog ]);
+    }, [ homeFunStudy ]);
 
     useEffect(() => {
         async function fetchEverything () {
@@ -237,13 +236,13 @@ export function HomeFunStudyDialog () {
                 if (!schedulerService) {
                     throw new Error(`Scheduler service not available.`);
                 }
-                if (!selectedOrg) {
+                if (!selectedOrganization) {
                     throw new Error(`Organization is not selected`);
                 }
                 if (!studyId) {
                     throw new Error(`No studyId on query path`);
                 }
-                const scheduleInfoPayload = await schedulerService.getScheduleInfo(selectedOrg.organization_id, studyId);
+                const scheduleInfoPayload = await schedulerService.getScheduleInfo(selectedOrganization.organization_id, studyId);
                 setStudyInfo((scheduleInfoPayload));
             }
 
@@ -251,16 +250,16 @@ export function HomeFunStudyDialog () {
                 if (!schedulerService) {
                     throw new Error(`Scheduler service not available.`);
                 }
-                if (!selectedOrg) {
+                if (!selectedOrganization) {
                     throw new Error(`Organization is not selected`);
                 }
-                if (!selectedUserId) {
+                if (!selectedUser.userId) {
                     throw new Error(`User profile is not selected`);
                 }
                 if (!studyId) {
                     throw new Error(`No studyId on query path`);
                 }
-                const newestFeedbackPayload = await schedulerService.getNewestFeedback(selectedOrg.organization_id, studyId, selectedUserId);
+                const newestFeedbackPayload = await schedulerService.getNewestFeedback(selectedOrganization.organization_id, studyId, selectedUser.userId);
                 setNewestFeedback(newestFeedbackPayload);
             }
 
@@ -276,34 +275,37 @@ export function HomeFunStudyDialog () {
         fetchEverything();
     }, [
         studyId,
-        selectedOrg,
+        selectedOrganization,
         key,
-        selectedUserId,
+        selectedUser,
     ]);
 
     const localFeedback = useMemo(() => {
-        if(!hfsFeedbacks || !studyInfo || !selectedUserId)
+        if(!homeFunStudy.feedback || !studyInfo || !selectedUser.userId) {
             return undefined;
-        return hfsFeedbacks.find(feedback => feedback.userId === selectedUserId && feedback.studyId === studyInfo.id);
+        }
+
+        const hfsFeedbacks = homeFunStudy.feedback;
+        return hfsFeedbacks.find(feedback => feedback.userId === selectedUser.userId && feedback.studyId === studyInfo.id);
     }, [
-        hfsFeedbacks,
-        selectedUserId,
+        homeFunStudy,
+        selectedUser,
         studyInfo,
     ]);
 
     const shouldShowSubmitButton = useMemo(() => {
         if(submitStatus === SubmitStatus.SUBMITTING)
             return false;
-        if (selectedUserId && studyInfo && newestFeedback?.is_allow_submit && (studyInfo.due_at === 0 || studyInfo?.due_at >= todayTimeStamp)) {
+        if (selectedUser.userId && studyInfo && newestFeedback?.is_allow_submit && (studyInfo.due_at === 0 || studyInfo?.due_at >= todayTimeStamp)) {
             if (localFeedback && localFeedback.assignmentItems.length > 0 && localFeedback.assignmentItems.length <= MAX_FILE_LIMIT) {
                 return true;
             }
         }
         return false;
     }, [
-        selectedUserId,
+        selectedUser,
         studyInfo,
-        hfsFeedbacks,
+        homeFunStudy,
         submitStatus,
         newestFeedback,
         localFeedback,
@@ -315,10 +317,10 @@ export function HomeFunStudyDialog () {
                 throw new Error(`Scheduler service not available.`);
             }
 
-            if (!selectedOrg) {
+            if (!selectedOrganization) {
                 throw new Error(`Organization is not selected.`);
             }
-            if(!shouldSubmitFeedback || !studyInfo || !localFeedback || !selectedUserId)
+            if(!shouldSubmitFeedback || !studyInfo || !localFeedback || !selectedUser.userId)
                 return ;
             if(submitStatus === SubmitStatus.SUBMITTING)
                 return ;
@@ -326,7 +328,7 @@ export function HomeFunStudyDialog () {
             setShouldSubmitFeedback(false);
             setSubmitStatus(SubmitStatus.SUBMITTING);
 
-            await schedulerService.postScheduleFeedback(selectedOrg.organization_id, studyInfo.id, localFeedback.comment, localFeedback.assignmentItems.map((item, index) => ({
+            await schedulerService.postScheduleFeedback(selectedOrganization.organization_id, studyInfo.id, localFeedback.comment, localFeedback.assignmentItems.map((item, index) => ({
                 attachment_id: item.attachmentId,
                 attachment_name: item.attachmentName,
                 number: index,
@@ -344,10 +346,11 @@ export function HomeFunStudyDialog () {
                                 horizontal: `center`,
                             },
                         });
-                        dispatch(setSelectHomeFunStudyDialogOpen({
+                        setHomeFunStudy({
+                            ...homeFunStudy,
                             open: false,
                             submitted: true,
-                        })); //trigger to refresh the schedule list
+                        });
                     }else{
                         if(result && result.label){
                             showPopup({
@@ -437,7 +440,7 @@ export function HomeFunStudyDialog () {
         }
 
     }, [
-        selectedOrg,
+        selectedOrganization,
         studyInfo,
         localFeedback,
         schedulerService,
@@ -449,7 +452,7 @@ export function HomeFunStudyDialog () {
         <Dialog
             fullScreen
             aria-labelledby="select-home-fun-study-dialog"
-            open={selectHomeFunStudyDialog? selectHomeFunStudyDialog.open : false}
+            open={homeFunStudy ? homeFunStudy.open : false}
             onClose={handleCloseHomeFunStudy}
         >
             <DialogTitle className={classes.noPadding}>
@@ -495,16 +498,15 @@ function HomeFunStudyContainer ({
     setSubmitStatus,
 }: { studyInfo?: ScheduleResponse; newestFeedback?: ScheduleFeedbackResponse; setSubmitStatus: (status: SubmitStatus) => void }) {
     const intl = useIntl();
-    const dispatch = useDispatch();
     const { enqueueSnackbar } = useSnackbar();
     const [ openSupportFileInfo, setOpenSupportFileInfo ] = useState(false);
     const [ openButtonSelector, setOpenButtonSelector ] = useState(false);
     const { showPopup } = usePopupContext();
     const [ assignmentItems, setAssignmentItems ] = useState<AssignmentItem[]>([]);
     const { fileSelectService, contentService } = useServices();
-    const selectedOrg = useSelector((state: State) => state.session.selectedOrg);
-    const selectedUserId = useSelector((state: State) => state.session.selectedUserId);
-    const hfsFeedbacks = useSelector((state: State) => state.data.hfsFeedbacks);
+    const [ selectedOrganization ] = useRecoilState(selectedOrganizationState);
+    const [ selectedUser ] = useRecoilState(selectedUserState);
+    const [ homeFunStudy, setHomeFunStudy ] = useRecoilState(homeFunStudyState);
     const [ saveAssignmentItems, setSaveAssignmentItems ] = useState<{ shouldSave: boolean; assignmentItems: AssignmentItem[] }>();
     const { requestPermissions } = useContext(CordovaSystemContext);
     const [ shouldSyncAssignments, setShouldSyncAssignments ] = useState(false);
@@ -526,12 +528,14 @@ function HomeFunStudyContainer ({
         }));
     }
     const localFeedback = useMemo(() => {
-        if(!hfsFeedbacks || !selectedUserId || !studyInfo)
+        if(!homeFunStudy.feedback || !selectedUser.userId || !studyInfo) {
             return undefined;
-        return hfsFeedbacks.find((feedback: any) => feedback.userId === selectedUserId && feedback.studyId === studyInfo.id);
+        }
+        const hfsFeedbacks = homeFunStudy.feedback;
+        return hfsFeedbacks.find((feedback: any) => feedback.userId === selectedUser.userId && feedback.studyId === studyInfo.id);
     }, [
-        hfsFeedbacks,
-        selectedUserId,
+        homeFunStudy,
+        selectedUser.userId,
         studyInfo,
     ]);
 
@@ -546,10 +550,10 @@ function HomeFunStudyContainer ({
         }
 
         function syncAssignments () {
-            if (!selectedUserId) return;
+            if (!selectedUser.userId) return;
             if (!studyInfo) return;
-            if(!newestFeedback) return;
-            if(!hfsFeedbacks) return;
+            if (!newestFeedback) return;
+            if (!homeFunStudy.feedback) return;
 
             const localAssignmentItems: AssignmentItem[]  = localFeedback?.assignmentItems ?? [];
             let newAssignmentItems: AssignmentItem[] = [];
@@ -572,9 +576,9 @@ function HomeFunStudyContainer ({
         }
 
     }, [
-        selectedUserId,
+        selectedUser,
         newestFeedback,
-        hfsFeedbacks,
+        homeFunStudy,
         studyInfo,
         shouldSyncAssignments,
         localFeedback,
@@ -583,13 +587,13 @@ function HomeFunStudyContainer ({
     useEffect(() => {
         //Save Assignments after uploaded
         function saveAssignments (assignmentItems: AssignmentItem[]) {
-            if (studyInfo && selectedUserId) {
-                const newHFSFeedbacks = hfsFeedbacks ? hfsFeedbacks.slice() : [];
-                const currentFeedbackIndex = newHFSFeedbacks.findIndex(item => item.userId === selectedUserId && item.studyId === studyInfo.id);
+            if (studyInfo && selectedUser.userId) {
+                const newHFSFeedbacks = homeFunStudy.feedback ? homeFunStudy.feedback.slice() : [];
+                const currentFeedbackIndex = newHFSFeedbacks.findIndex(item => item.userId === selectedUser.userId && item.studyId === studyInfo.id);
                 if(currentFeedbackIndex >= 0){
                     const feedback = newHFSFeedbacks[currentFeedbackIndex];
                     newHFSFeedbacks[currentFeedbackIndex] = {
-                        userId: selectedUserId,
+                        userId: selectedUser.userId,
                         studyId: studyInfo.id,
                         comment: feedback.comment,
                         assignmentItems: assignmentItems,
@@ -597,13 +601,17 @@ function HomeFunStudyContainer ({
                 }
                 else{
                     newHFSFeedbacks.push({
-                        userId: selectedUserId,
+                        userId: selectedUser.userId,
                         studyId: studyInfo.id,
                         comment: ``,
                         assignmentItems: assignmentItems,
                     });
                 }
-                dispatch(setHomeFunStudies(newHFSFeedbacks));
+
+                setHomeFunStudy({
+                    ...homeFunStudy,
+                    feedback: newHFSFeedbacks,
+                });
             }
         }
 
@@ -676,11 +684,11 @@ function HomeFunStudyContainer ({
     }, [ uploadProgress, assignmentItems ]);
 
     async function uploadAttachment (assignmentItemId: string, file: File) {
-        if (!selectedOrg) {
+        if (!selectedOrganization) {
             throw new Error(`Organization is not selected.`);
         }
         try {
-            const contentResourceUploadPathResponse = await contentService?.getContentResourceUploadPath(selectedOrg.organization_id, getFileExtensionFromType(file.type));
+            const contentResourceUploadPathResponse = await contentService?.getContentResourceUploadPath(selectedOrganization.organization_id, getFileExtensionFromType(file.type));
             if (contentResourceUploadPathResponse) {
 
                 const uploadResult = await contentService?.uploadAttachment(contentResourceUploadPathResponse.path, file, (completed) => {
@@ -1250,25 +1258,26 @@ function HomeFunStudyComment ({
 }: { studyInfo?: ScheduleResponse; newestFeedback?: ScheduleFeedbackResponse; defaultComment: string }) {
     const classes = useStyles();
 
-    const dispatch = useDispatch();
     const [ openEditComment, setOpenEditComment ] = useState(false);
     const [ comment, setComment ] = useState(defaultComment);
-    const hfsFeedbacks = useSelector((state: State) => state.data.hfsFeedbacks);
-    const selectedUserId = useSelector((state: State) => state.session.selectedUserId);
+
+    const [ homeFunStudy, setHomeFunStudy ] = useRecoilState(homeFunStudyState);
+    const [ selectedUser ] = useRecoilState(selectedUserState);
 
     useEffect(() => {
-        if (studyInfo && studyInfo.id && selectedUserId) {
+        if (studyInfo && studyInfo.id && selectedUser.userId) {
+            const hfsFeedbacks = homeFunStudy.feedback;
             for (let i = 0; hfsFeedbacks && i < hfsFeedbacks.length; i++) {
-                if (hfsFeedbacks[i].userId == selectedUserId && hfsFeedbacks[i].studyId == studyInfo.id) {
+                if (hfsFeedbacks[i].userId == selectedUser.userId && hfsFeedbacks[i].studyId == studyInfo.id) {
                     setComment(hfsFeedbacks[i].comment);
                     break;
                 }
             }
         }
     }, [
-        selectedUserId,
+        selectedUser,
         studyInfo,
-        hfsFeedbacks,
+        homeFunStudy,
     ]);
 
     function handleOnClickEditComment () {
@@ -1277,12 +1286,12 @@ function HomeFunStudyComment ({
 
     function handleSaveComment (newComment: string) {
         setComment(newComment);
-        if (studyInfo && selectedUserId) {
-            const newHFSFeedbacks = hfsFeedbacks ? hfsFeedbacks.slice() : [];
-            const currentFeedbackIndex = newHFSFeedbacks.findIndex(item => item.userId === selectedUserId && item.studyId === studyInfo.id);
+        if (studyInfo && selectedUser.userId) {
+            const newHFSFeedbacks = homeFunStudy.feedback ? homeFunStudy.feedback.slice() : [];
+            const currentFeedbackIndex = newHFSFeedbacks.findIndex(item => item.userId === selectedUser.userId && item.studyId === studyInfo.id);
             if(currentFeedbackIndex >= 0){
                 newHFSFeedbacks[currentFeedbackIndex] = {
-                    userId: selectedUserId,
+                    userId: selectedUser.userId,
                     studyId: studyInfo.id,
                     comment: newComment,
                     assignmentItems: newHFSFeedbacks[currentFeedbackIndex].assignmentItems,
@@ -1290,13 +1299,16 @@ function HomeFunStudyComment ({
             }
             else{
                 newHFSFeedbacks.push({
-                    userId: selectedUserId,
+                    userId: selectedUser.userId,
                     studyId: studyInfo.id,
                     comment: newComment,
                     assignmentItems: [],
                 });
             }
-            dispatch(setHomeFunStudies(newHFSFeedbacks));
+            setHomeFunStudy({
+                ...homeFunStudy,
+                feedback: newHFSFeedbacks,
+            });
         }
         setOpenEditComment(false);
     }
