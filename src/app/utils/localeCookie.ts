@@ -1,6 +1,5 @@
 import { localeCodes } from "../../localization/localeCodes";
-import { setLocale } from "../../store/reducers/session";
-import { State } from "../../store/store";
+import { localeState } from "../model/appModel";
 import Cookies from "js-cookie";
 import {
     useCallback,
@@ -8,33 +7,33 @@ import {
     useMemo,
 } from "react";
 import { IntlShape } from "react-intl";
-import {
-    useDispatch,
-    useSelector,
-} from "react-redux";
+import { useRecoilState } from "recoil";
+import { getLanguage } from "src/utils/locale";
 
 export function useLocaleCookie (): [IntlShape, () => void] {
-    const dispatch = useDispatch();
-    const languageCode = useSelector((state: State) => state.session.locale);
+    const [ locale, setLocale ] = useRecoilState(localeState);
 
     const language = useMemo(() => {
-        return getLanguage(languageCode);
-    }, [ languageCode ]);
+        return getLanguage(locale.languageCode);
+    }, [ locale ]);
 
     useEffect(() => {
-        Cookies.set(`locale`, languageCode, {
+        Cookies.set(`locale`, locale.languageCode, {
             path: `/`,
             domain: `.kidsloop.net`,
         });
-    }, [ languageCode ]);
+    }, [ locale ]);
 
     const setLanguageFromLocaleCookie = useCallback(() => {
         const selectedLanguageCode = Cookies.get(`locale`);
 
         if (selectedLanguageCode && localeCodes.includes(selectedLanguageCode)) {
-            dispatch(setLocale(selectedLanguageCode));
+            setLocale({
+                ...locale,
+                languageCode: selectedLanguageCode,
+            });
         }
-    }, []);
+    }, [ setLocale ]);
 
     return [ language, setLanguageFromLocaleCookie ];
 }
