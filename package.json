@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "webpack",
+    "build": "webpack; mv dist/record*.js dist/record-3f6f2667.js",
+    "build:app": "webpack --config webpack.cordova.config.ts",
+    "build:app:release": "webpack --config webpack.cordova.prod.config.ts",
     "start": "cross-env NODE_ENV=development webpack serve",
     "test": "jest",
     "coverage": "jest --coverage",
