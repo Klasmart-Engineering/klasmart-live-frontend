@@ -47,3 +47,10 @@ export const errorState = atom({
         errorCode: null as number | null,
     },
 });
+
+export const regionSelectState = atom({
+    key: `regionSelect`,
+    default: {
+        regionId: `auth.kidsloop.live`,
+    },
+});
