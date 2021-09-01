@@ -3,14 +3,12 @@ import { CompositionRoot } from "../context-provider/composition-root";
 import { CordovaSystemProvider } from "../context-provider/cordova-system-context";
 import { PopupProvider } from "../context-provider/popup-context";
 import { App } from "../cordova-app";
-import { useLocaleCookie } from "../utils/localeCookie";
-import { setErrCode } from "./store/reducers/communication";
-import { setHistory } from "./store/reducers/location";
-import { setUserAgent } from "./store/reducers/session";
 import {
-    createDefaultStore,
-    State,
-} from "./store/store";
+    errorState,
+    historyState,
+    localeState,
+} from "../model/appModel";
+import { useLocaleCookie } from "../utils/localeCookie";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { ThemeProvider } from "@material-ui/core/styles";
 import { createHashHistory } from 'history';
@@ -38,7 +36,13 @@ import {
     useDispatch,
     useSelector,
 } from "react-redux";
+import { useRecoilState } from "recoil";
 import { PersistGate } from "redux-persist/integration/react";
+import { setUserAgent } from "src/store/reducers/session";
+import {
+    createDefaultStore,
+    State,
+} from "src/store/store";
 import { v4 as uuid } from "uuid";
 
 export const sessionId = uuid();
@@ -47,11 +51,20 @@ function Entry () {
     const dispatch = useDispatch();
     const themeMode = useSelector((state: State) => state.control.themeMode);
     const [ language ] = useLocaleCookie();
-    const languageCode = useSelector((state: State) => state.session.locale);
+
+    const [ locale ] = useRecoilState(localeState);
+    const [ , setError ] = useRecoilState(errorState);
+    const [ , setHistory ] = useRecoilState(historyState);
 
     useEffect(() => {
-        dispatch(setErrCode(null));
-        dispatch(setHistory([]));
+        setError({
+            isError: false,
+            errorCode: null,
+        });
+
+        // TODO: Is this history state necessary?
+        setHistory([]);
+
         dispatch(setUserAgent({
             isMobileOnly,
             isTablet,
@@ -75,7 +88,7 @@ function Entry () {
         <RawIntlProvider value={language}>
             <CordovaSystemProvider history={history}>
                 <CompositionRoot sessionId={sessionId}>
-                    <ThemeProvider theme={themeProvider(languageCode, themeMode)}>
+                    <ThemeProvider theme={themeProvider(locale.languageCode, themeMode)}>
                         <SnackbarProvider >
                             <CssBaseline />
                             <PopupProvider>
