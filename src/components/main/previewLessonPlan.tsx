@@ -1,10 +1,13 @@
-import { MaterialTypename } from "../../lessonMaterialContext";
 import { useSessionContext } from "../../providers/session-context";
 import {
     materialActiveIndexState,
     observeDisableState,
     studyRecommandUrlState,
 } from "../../store/layoutAtoms";
+import {
+    LessonMaterial,
+    MaterialTypename,
+} from "../../types/lessonMaterial";
 import ActivityImage from "../interactiveContent/image";
 import { RecordedIframe } from "../interactiveContent/recordediframe";
 import { ReplicatedMedia } from "../interactiveContent/synchronized-video";
@@ -30,20 +33,19 @@ function PreviewLessonPlan () {
         );
     }
 
-    if(material?.__typename === MaterialTypename.Image){
+    if(material?.__typename === MaterialTypename.IMAGE){
         setObserveDisable(false);
         return (
             <ActivityImage material={material.url} />
         );
     }
 
-    if(material?.__typename === MaterialTypename.Video ||
-        material?.__typename === MaterialTypename.Audio ||
+    if(material?.__typename === MaterialTypename.VIDEO ||
         (material?.__typename === undefined && material?.video)){
         setObserveDisable(true);
         return(
             <ReplicatedMedia
-                type={material?.__typename || MaterialTypename.Video}
+                type={material?.__typename || MaterialTypename.VIDEO}
                 src={(material?.__typename === undefined && material?.video) || material?.url}
                 style={{
                     width: `100%`,
@@ -52,11 +54,11 @@ function PreviewLessonPlan () {
         );
     }
 
-    if(material?.__typename === MaterialTypename.Audio) {
+    if(material?.__typename === MaterialTypename.AUDIO) {
         setObserveDisable(false);
     }
 
-    if(((material?.__typename === MaterialTypename.Iframe || material?.__typename === undefined) && material?.url)){
+    if(((material?.__typename === MaterialTypename.IFRAME || material?.__typename === undefined) && material?.url)){
         setObserveDisable(false);
         return(
             <RecordedIframe

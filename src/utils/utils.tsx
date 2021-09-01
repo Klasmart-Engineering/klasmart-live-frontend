@@ -1,9 +1,9 @@
-import { MaterialTypename } from "../lessonMaterialContext";
 import { ContentType } from "../pages/utils";
 import {
     activeTabState,
     InteractiveMode,
 } from "../store/layoutAtoms";
+import { MaterialTypename } from "../types/lessonMaterial";
 import {
     Drawer,
     Fade,
@@ -244,11 +244,11 @@ export const defineContentType = (material:any, interactiveMode:InteractiveMode)
     if(interactiveMode === InteractiveMode.OnStage) return ContentType.Blank;
     if(interactiveMode === InteractiveMode.Observe) return ContentType.Activity;
 
-    if(material.__typename === MaterialTypename.Video || (material.__typename === undefined && material.video)){
+    if(material.__typename === MaterialTypename.VIDEO || (material.__typename === undefined && material.video)){
         return ContentType.Video;
-    }else if (material.__typename === MaterialTypename.Audio) {
+    }else if (material.__typename === MaterialTypename.AUDIO) {
         return ContentType.Audio;
-    }else if (material.__typename === MaterialTypename.Image) {
+    }else if (material.__typename === MaterialTypename.IMAGE) {
         return ContentType.Image;
     }else{
         return ContentType.Stream;
@@ -259,9 +259,9 @@ export const defineContentId = (material:any, interactiveMode:InteractiveMode, s
     if(interactiveMode === InteractiveMode.OnStage) return sessionId;
     if(interactiveMode === InteractiveMode.Observe) return material.url;
 
-    if(material.__typename === MaterialTypename.Video || (material.__typename === undefined && material.video) || material.__typename === MaterialTypename.Audio){
+    if(material.__typename === MaterialTypename.VIDEO || (material.__typename === undefined && material.video) || material.__typename === MaterialTypename.AUDIO){
         return sessionId;
-    }else if (material.__typename === MaterialTypename.Image) {
+    }else if (material.__typename === MaterialTypename.IMAGE) {
         return material.url;
     }else{
         return streamId;
