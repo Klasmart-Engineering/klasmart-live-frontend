@@ -1,5 +1,4 @@
-import { setRegionId } from "../store/reducers/session";
-import { State } from "../store/store";
+import { regionSelectState } from "../model/appModel";
 import React,
 {
     createContext,
@@ -11,10 +10,7 @@ import React,
     useMemo,
     useState,
 } from "react";
-import {
-    useDispatch,
-    useSelector,
-} from "react-redux";
+import { useRecoilState } from "recoil";
 
 export type Service = "auth" | "live" | "cms" | "sfu" | "user" | "privacy"
 
@@ -151,26 +147,24 @@ const DefaultRegions: Region[] = [
 export function RegionSelectProvider ({ children, regionsUrl }: Props) {
     const [ regions, setRegions ] = useState<Region[]>(DefaultRegions);
     const [ loading, setLoading ] = useState<boolean>(false);
-    const regionId = useSelector((state: State) => state.session.regionId);
-
-    const dispatch = useDispatch();
+    const [ regionSelect, setRegionSelect ] = useRecoilState(regionSelectState);
 
     const region = useMemo<Region>(() => {
         if (!regions) {
-            console.error(`Can't select region with ID: ${regionId}. No regions available. Falling back to default.`);
+            console.error(`Can't select region with ID: ${regionSelect.regionId}. No regions available. Falling back to default.`);
             return DefaultRegions[0];
         }
 
-        const selected = regions.find(region => region.id === regionId);
+        const selected = regions.find(region => region.id === regionSelect.regionId);
         if (selected === undefined) {
-            console.error(`Can't select region with ID: ${regionId}. No region with ID. Falling back to default.`);
+            console.error(`Can't select region with ID: ${regionSelect.regionId}. No region with ID. Falling back to default.`);
             return DefaultRegions[0];
         }
 
-        console.log(`Selected region with ID: ${regionId}`);
+        console.log(`Selected region with ID: ${regionSelect.regionId}`);
 
         return selected;
-    }, [ regions, regionId ]);
+    }, [ regions, regionSelect ]);
 
     const fetchRegions = useCallback(async () => {
         if (!regionsUrl) return;
@@ -194,7 +188,10 @@ export function RegionSelectProvider ({ children, regionsUrl }: Props) {
     }, []);
 
     const selectRegion = useCallback((id: string) => {
-        dispatch(setRegionId(id));
+        setRegionSelect({
+            regionId: id,
+        });
+
     }, []);
 
     useEffect(() => {
