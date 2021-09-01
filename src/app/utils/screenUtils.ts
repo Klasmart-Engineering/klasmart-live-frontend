@@ -1,14 +1,10 @@
-import { Dispatch } from "redux";
-import { OrientationType } from "../store/actions";
-import { setDeviceOrientation } from "../store/reducers/location";
+import { OrientationType } from "../model/appModel";
 
-// Lock device orientation only in Cordova app
-export function lockOrientation(orientationType: OrientationType, dispatch: Dispatch<any>) {
+export function lockOrientation (orientationType: OrientationType) {
     if (screen.orientation && screen.orientation.lock) {
         screen.orientation.lock(orientationType)
-            .then(() => { dispatch(setDeviceOrientation(orientationType)); })
             .catch((err) => {
-                console.warn("Since this platform is not Cordova, screen.orientation.lock() will not work.");
-            })
+                console.warn(`Since this platform is not Cordova, screen.orientation.lock() will not work.`, err);
+            });
     }
 }
