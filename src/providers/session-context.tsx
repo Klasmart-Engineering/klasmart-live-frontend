@@ -1,5 +1,6 @@
-import { LessonMaterial } from "../app/types/lessonMaterial";
+
 import { parseTokenParams } from "../app/utils/parseTokenUtils";
+import { LessonMaterial } from "../types/lessonMaterial";
 import React,
 {
     createContext,
