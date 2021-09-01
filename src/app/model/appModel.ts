@@ -16,6 +16,7 @@ export const dialogsState = atom({
     default: {
         isSelectOrganizationOpen: false,
         isSelectUserOpen: false,
+        isParentalLockOpen: false,
     },
 });
 
