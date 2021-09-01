@@ -1,6 +1,6 @@
-import { MaterialTypename } from "../../lessonMaterialContext";
 import { LIVE_LINK } from '../../providers/providers';
 import { useSessionContext } from "../../providers/session-context";
+import { MaterialTypename } from '../../types/lessonMaterial';
 import { FFT } from "../fft";
 import ReactPlayer from "../react-player/lazy";
 import {
@@ -160,7 +160,7 @@ export function ReplicaMedia (props: React.VideoHTMLAttributes<HTMLMediaElement>
             if (src) {
                 srcRef.current = src;
 
-                if (type !== MaterialTypename.Audio) {
+                if (type !== MaterialTypename.AUDIO) {
                     const sources = createHlsDashUrlFromSrc(src);
 
                     sources.push(src);
@@ -236,7 +236,7 @@ export function ReplicaMedia (props: React.VideoHTMLAttributes<HTMLMediaElement>
         return <CircularProgress />;
     }
     switch (type) {
-    case MaterialTypename.Audio:
+    case MaterialTypename.AUDIO:
         return (
             <>
                 <FFT
@@ -262,7 +262,7 @@ export function ReplicaMedia (props: React.VideoHTMLAttributes<HTMLMediaElement>
             </>
         );
 
-    case MaterialTypename.Video:
+    case MaterialTypename.VIDEO:
     default:
         return (
             <>
@@ -326,7 +326,7 @@ export function ReplicaMedia (props: React.VideoHTMLAttributes<HTMLMediaElement>
 }
 
 interface ReplicatedMediaProps {
-    type: MaterialTypename.Video | MaterialTypename.Audio;
+    type: MaterialTypename.VIDEO | MaterialTypename.AUDIO;
 }
 
 export function ReplicatedMedia (props: React.VideoHTMLAttributes<HTMLMediaElement> & ReplicatedMediaProps) {
@@ -373,7 +373,7 @@ export function ReplicatedMedia (props: React.VideoHTMLAttributes<HTMLMediaEleme
         // NOTE: Reset playing to false when the source changes.
         setPlaying(false);
 
-        if (type !== MaterialTypename.Audio && src) {
+        if (type !== MaterialTypename.AUDIO && src) {
             const sources = createHlsDashUrlFromSrc(src);
 
             sources.push(src);
@@ -502,7 +502,7 @@ export function ReplicatedMedia (props: React.VideoHTMLAttributes<HTMLMediaEleme
     }
 
     switch (type) {
-    case MaterialTypename.Audio:
+    case MaterialTypename.AUDIO:
         return (
             <audio
                 ref={ref}
@@ -517,7 +517,7 @@ export function ReplicatedMedia (props: React.VideoHTMLAttributes<HTMLMediaEleme
             />
         );
 
-    case MaterialTypename.Video:
+    case MaterialTypename.VIDEO:
     default:
         return (
             <ReactPlayer
