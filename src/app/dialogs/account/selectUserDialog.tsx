@@ -1,6 +1,12 @@
 import { Header } from "../../components/layout/header";
 import { useRegionSelect } from "../../context-provider/region-select-context";
 import { useUserInformation } from "../../context-provider/user-information-context";
+import {
+    authState,
+    dialogsState,
+    selectedOrganizationState,
+    selectedUserState,
+} from "../../model/appModel";
 import { UserInformation } from "../../services/user/IUserInformationService";
 import { ParentalGate } from "../parentalGate";
 import {
@@ -35,12 +41,6 @@ import React,
 } from "react";
 import { FormattedMessage } from "react-intl";
 import { useRecoilState } from "recoil";
-import {
-    authState,
-    dialogsState,
-    selectedOrganizationState,
-    selectedUserState,
-} from "src/app/model/appModel";
 
 const useStyles = makeStyles(() => ({
     noPadding: {

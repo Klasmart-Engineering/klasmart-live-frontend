@@ -1,3 +1,8 @@
+import { setUserAgent } from "../../store/reducers/session";
+import {
+    createDefaultStore,
+    State,
+} from "../../store/store";
 import { themeProvider } from "../../themeProvider";
 import { CompositionRoot } from "../context-provider/composition-root";
 import { CordovaSystemProvider } from "../context-provider/cordova-system-context";
@@ -38,11 +43,6 @@ import {
 } from "react-redux";
 import { useRecoilState } from "recoil";
 import { PersistGate } from "redux-persist/integration/react";
-import { setUserAgent } from "src/store/reducers/session";
-import {
-    createDefaultStore,
-    State,
-} from "src/store/store";
 import { v4 as uuid } from "uuid";
 
 export const sessionId = uuid();

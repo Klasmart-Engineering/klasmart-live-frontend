@@ -5,6 +5,11 @@ import {
     useUserInformation,
 } from "../../context-provider/user-information-context";
 import {
+    dialogsState,
+    selectedOrganizationState,
+    selectedUserState,
+} from "../../model/appModel";
+import {
     Organization,
     OrganizationResponse,
 } from "../../services/user/IUserInformationService";
@@ -39,11 +44,6 @@ import React,
 } from "react";
 import { FormattedMessage } from "react-intl";
 import { useRecoilState } from "recoil";
-import {
-    dialogsState,
-    selectedOrganizationState,
-    selectedUserState,
-} from "src/app/model/appModel";
 
 const useStyles = makeStyles(() => ({
     noPadding: {
