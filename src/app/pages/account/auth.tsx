@@ -1,5 +1,8 @@
+import LoadingWithRetry from "../../components/loadingWithRetry";
 import { useHttpEndpoint } from "../../context-provider/region-select-context";
 import { useUserInformation } from "../../context-provider/user-information-context";
+import { ParentalGate } from "../../dialogs/parentalGate";
+import { OrientationType } from "../../model/appModel";
 import { lockOrientation } from "../../utils/screenUtils";
 import { Grid } from "@material-ui/core";
 import createStyles from "@material-ui/core/styles/createStyles";
@@ -11,9 +14,6 @@ import React,
     useState,
 } from "react";
 import { Redirect } from "react-router-dom";
-import { ParentalGate } from "src/app/dialogs/parentalGate";
-import { OrientationType } from "src/app/model/appModel";
-import Loading from "src/components/loading";
 
 const useStyles = makeStyles(() => createStyles({
     container: {
@@ -135,7 +135,7 @@ export function Auth ({ useInAppBrowser }: Props) {
                     height: `100%`,
                 }}
                 spacing={2}>
-                <Loading
+                <LoadingWithRetry
                     messageId="auth_waiting"
                     retryCallback={() => setKey(Math.random().toString(36))} />
                 {authenticated ? <Redirect to="/" /> : <></>}

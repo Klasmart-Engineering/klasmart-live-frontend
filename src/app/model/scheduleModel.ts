@@ -1,9 +1,9 @@
+import { ClassType } from "../../store/actions";
 import {
     ScheduleResponse,
     ScheduleTimeViewResponse,
 } from "../services/cms/ISchedulerService";
 import { atom } from "recoil";
-import { ClassType } from "src/store/actions";
 
 export const scheduleState = atom({
     key: `schedule`,

@@ -1,6 +1,7 @@
+import LiveTab from "../../../assets/img/live_tab.svg";
+import StudyTab from "../../../assets/img/study_tab.svg";
 import { ClassType } from "../../../store/actions";
-import LiveTab from "../../assets/img/live_tab.svg";
-import StudyTab from "../../assets/img/study_tab.svg";
+import { scheduleState } from "../../model/scheduleModel";
 import { heightActionButton } from "../../utils/fixedValues";
 import Button from "@material-ui/core/Button/Button";
 import Grid from "@material-ui/core/Grid";
@@ -9,7 +10,6 @@ import Typography from "@material-ui/core/Typography";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 import { useRecoilState } from "recoil";
-import { scheduleState } from "src/app/model/scheduleModel";
 
 export default function ClassTypeSwitcher () {
     const [ schedule, setSchedule ] = useRecoilState(scheduleState);

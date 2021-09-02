@@ -1,6 +1,13 @@
+import KidsloopLogo from "../../../assets/img/kidsloop_icon.svg";
 import StyledIcon from "../../../components/styled/icon";
 import { useUserInformation } from "../../context-provider/user-information-context";
-import KidsloopLogo from "../assets/img/kidsloop_icon.svg";
+import {
+    dialogsState,
+    errorState,
+    homeFunStudyState,
+    isProcessingRequestState,
+    selectedOrganizationState,
+} from "../../model/appModel";
 import AppBar from "@material-ui/core/AppBar";
 import ButtonBase from "@material-ui/core/ButtonBase";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -24,13 +31,6 @@ import React,
 { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useRecoilState } from "recoil";
-import {
-    dialogsState,
-    errorState,
-    homeFunStudyState,
-    isProcessingRequestState,
-    selectedOrganizationState,
-} from "src/app/model/appModel";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

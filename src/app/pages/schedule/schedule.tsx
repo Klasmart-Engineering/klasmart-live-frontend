@@ -1,13 +1,23 @@
+import ScheduledLivePopcorn from "../../../assets/img/schedule_popcorn.svg";
+import ScheduledStudyHouse from "../../../assets/img/study_house.svg";
+import Loading from "../../../components/loading";
 import { useSessionContext } from "../../../providers/session-context";
 import { ClassType } from "../../../store/actions";
-import ScheduledLivePopcorn from "../../assets/img/schedule_popcorn.svg";
-import ScheduledStudyHouse from "../../assets/img/study_house.svg";
 import { Header } from "../../components/layout/header";
 import { useServices } from "../../context-provider/services-provider";
 import { useUserInformation } from "../../context-provider/user-information-context";
 import { useShouldSelectOrganization } from "../../dialogs/account/selectOrgDialog";
 import { useShouldSelectUser } from "../../dialogs/account/selectUserDialog";
 import StudyDetail from "../../dialogs/study-detail/study-detail";
+import { scheduleState } from "../../model//scheduleModel";
+import {
+    dialogsState,
+    homeFunStudyState,
+    isProcessingRequestState,
+    OrientationType,
+    selectedOrganizationState,
+    selectedUserState,
+} from "../../model/appModel";
 import {
     AssessmentForStudent,
     AssessmentStatusType,
@@ -45,16 +55,6 @@ import React,
 } from "react";
 import { FormattedMessage } from "react-intl";
 import { useRecoilState } from "recoil";
-import {
-    dialogsState,
-    homeFunStudyState,
-    isProcessingRequestState,
-    OrientationType,
-    selectedOrganizationState,
-    selectedUserState,
-} from "src/app/model/appModel";
-import { scheduleState } from "src/app/model/scheduleModel";
-import Loading from "src/components/loading";
 
 const dateFormat = require(`dateformat`);
 

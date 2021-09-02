@@ -1,7 +1,7 @@
-import Loading from "../../../components/loading";
 import StyledIcon from "../../../components/styled/icon";
 import { FileIcon } from "../../components/icons/fileIcon";
 import { Header } from "../../components/layout/header";
+import LoadingWithRetry from "../../components/loadingWithRetry";
 import { CustomCircularProgress } from "../../components/progress/customCircularProgress";
 import {
     CordovaSystemContext,
@@ -9,6 +9,12 @@ import {
 } from "../../context-provider/cordova-system-context";
 import { usePopupContext } from "../../context-provider/popup-context";
 import { useServices } from "../../context-provider/services-provider";
+import {
+    homeFunStudyState,
+    OrientationType,
+    selectedOrganizationState,
+    selectedUserState,
+} from "../../model/appModel";
 import useCordovaInitialize from "../../platform/cordova-initialize";
 import {
     Assignment,
@@ -69,12 +75,6 @@ import {
     useIntl,
 } from "react-intl";
 import { useRecoilState } from "recoil";
-import {
-    homeFunStudyState,
-    OrientationType,
-    selectedOrganizationState,
-    selectedUserState,
-} from "src/app/model/appModel";
 
 export type HomeFunStudyFeedback = {
     userId: string;
@@ -464,7 +464,7 @@ export function HomeFunStudyDialog () {
                         studyInfo={studyInfo}
                         newestFeedback={newestFeedback}
                         setSubmitStatus={setSubmitStatus}/>
-                    : <Loading
+                    : <LoadingWithRetry
                         messageId={`cordova_loading`}
                         retryCallback={() => {
                             setKey(Math.random().toString(36));
