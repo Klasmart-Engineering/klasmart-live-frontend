@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 }));
 
-function Class () {
+export function Room () {
     const classes = useStyles();
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
@@ -258,5 +258,3 @@ function Class () {
         </Grid>
     );
 }
-
-export default Class;

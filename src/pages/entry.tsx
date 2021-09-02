@@ -1,5 +1,5 @@
 import Providers from '../providers/providers';
-import Layout from './layout';
+import { App } from './app';
 import React from 'react';
 import { RecoilRoot } from 'recoil';
 // import RecoilizeDebugger from 'recoilize';
@@ -9,7 +9,7 @@ function Entry () {
         <RecoilRoot>
             {/* <RecoilizeDebugger root={app} /> */}
             <Providers>
-                <Layout />
+                <App />
             </Providers>
         </RecoilRoot>
     );
