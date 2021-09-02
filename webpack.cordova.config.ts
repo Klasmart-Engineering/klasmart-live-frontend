@@ -10,7 +10,7 @@ module.exports = {
         record: `./src/entry-record.ts`,
         player: `./src/entry-player.ts`,
         pdfviewer: `./src/entry-pdfviewer.js`,
-        h5presize: `./src/ap/entrypoint/entry-h5p-resize.js`,
+        h5presize: `./src/app/entrypoint/entry-h5p-resize.js`,
     },
     module: {
         rules: [
@@ -81,7 +81,12 @@ module.exports = {
     },
     devtool: `source-map`,
     plugins: [
-        new EnvironmentPlugin([ `NODE_ENV` ], [ `APP_GIT_REV` ], [ `DISABLE_BROWSER_GUIDE` ], [ `DISABLE_SCREEN_SHARE` ], [ `USE_TEST_TOKEN` ], [ `WEBRTC_DEVICE_HANDLER_NAME` ], [ `CUSTOM_UA` ]),
+        new EnvironmentPlugin({
+            NODE_ENV: `development`,
+            USE_TEST_TOKEN: undefined,
+            WEBRTC_DEVICE_HANDLER_NAME: ``,
+            CUSTOM_UA: `cordova`,
+        }),
         new HtmlWebpackPlugin({
             filename: `index.html`,
             chunks: [ `ui` ],
