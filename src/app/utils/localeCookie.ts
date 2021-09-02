@@ -1,4 +1,5 @@
 import { localeCodes } from "../../localization/localeCodes";
+import { getLanguage } from "../../utils/locale";
 import { localeState } from "../model/appModel";
 import Cookies from "js-cookie";
 import {
@@ -8,7 +9,6 @@ import {
 } from "react";
 import { IntlShape } from "react-intl";
 import { useRecoilState } from "recoil";
-import { getLanguage } from "src/utils/locale";
 
 export function useLocaleCookie (): [IntlShape, () => void] {
     const [ locale, setLocale ] = useRecoilState(localeState);

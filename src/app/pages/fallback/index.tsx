@@ -1,9 +1,9 @@
+import Error1 from "../../../assets/img/error/1.png";
+import Error2 from "../../../assets/img/error/2.png";
+import Error3 from "../../../assets/img/error/3.png";
+import Error4 from "../../../assets/img/error/4.png";
+import KidsloopIcon from "../../../assets/img/kidsloop_icon.svg";
 import StyledButton from "../../../components/styled/button";
-import Error1 from "../../assets/img/error/1.png";
-import Error2 from "../../assets/img/error/2.png";
-import Error3 from "../../assets/img/error/3.png";
-import Error4 from "../../assets/img/error/4.png";
-import KidsloopIcon from "../../assets/img/kidsloop_icon.svg";
 import { useUserInformation } from "../../context-provider/user-information-context";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
