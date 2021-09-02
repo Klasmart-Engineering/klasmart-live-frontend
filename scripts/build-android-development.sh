@@ -1,8 +1,6 @@
 #!/bin/sh
 
 # Configure Environment
-export DISABLE_BROWSER_GUIDE=1
-export DISABLE_SCREEN_SHARE=1
 export USE_TEST_TOKEN=1
 
 # Clean Build

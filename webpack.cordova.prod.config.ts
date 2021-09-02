@@ -80,7 +80,12 @@ module.exports = {
         publicPath: ``,
     },
     plugins: [
-        new EnvironmentPlugin([ `NODE_ENV` ], [ `APP_GIT_REV` ], [ `DISABLE_BROWSER_GUIDE` ], [ `DISABLE_SCREEN_SHARE` ], [ `USE_TEST_TOKEN` ], [ `WEBRTC_DEVICE_HANDLER_NAME` ], [ `CUSTOM_UA` ]),
+        new EnvironmentPlugin({
+            NODE_ENV: `development`,
+            USE_TEST_TOKEN: undefined,
+            WEBRTC_DEVICE_HANDLER_NAME: ``,
+            CUSTOM_UA: `cordova`,
+        }),
         new HtmlWebpackPlugin({
             filename: `index.html`,
             chunks: [ `ui` ],
