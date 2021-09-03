@@ -1,4 +1,5 @@
 import Join from "../pages/join/join";
+import { RoomWithContext } from "../pages/room/room-with-context";
 import { SelectOrgDialog } from "./dialogs/account/selectOrgDialog";
 import { SelectUserDialog } from "./dialogs/account/selectUserDialog";
 import { ExternalNavigationDialog } from "./dialogs/externalNavigationDialog";
@@ -13,7 +14,6 @@ import {
     Router,
     Switch,
 } from "react-router-dom";
-import { RoomWithContext } from "src/pages/room/room-with-context";
 
 export function App ({ history }: {
     history: any;
