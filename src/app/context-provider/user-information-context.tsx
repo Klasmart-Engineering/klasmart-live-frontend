@@ -196,8 +196,8 @@ const useAuthentication = () => {
         };
 
         (window as any).handleOpenURL = (url: string) => {
-            // NOTE: Using setImmediate to prevent handleOpenURL from blocking app launch.
-            setImmediate(() => openUrlHandler(url));
+            // NOTE: Using setTimeout to prevent handleOpenURL from blocking app launch.
+            setTimeout(() => openUrlHandler(url), 0);
         };
 
         refresh();
