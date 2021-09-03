@@ -1,3 +1,4 @@
+import { useUserInformation } from "../../app/context-provider/user-information-context";
 import { LIVE_LINK } from "../../providers/providers";
 import { RoomContext } from "../../providers/roomContext";
 import { useSessionContext } from "../../providers/session-context";
@@ -6,7 +7,6 @@ import {
     isLessonPlanOpenState,
     streamIdState,
 } from "../../store/layoutAtoms";
-import { redirectToLogin } from "../../utils/authentication";
 import { useWindowSize } from "../../utils/viewport";
 import {
     gql,
@@ -80,6 +80,8 @@ export function RecordedIframe (props: Props): JSX.Element {
     const [ stylesLoaded, setStylesLoaded ] = useState(false);
 
     const size = useWindowSize();
+
+    const { actions } = useUserInformation();
 
     useEffect(() => {
         if (sessions.size > userCount && iframeRef && iframeRef.current && iframeRef.current.contentWindow) {
@@ -258,7 +260,7 @@ export function RecordedIframe (props: Props): JSX.Element {
             }
             switch(data.error){
             case `RedirectToLogin`:
-                redirectToLogin();
+                actions?.signOutUser();
                 break;
             }
         }
