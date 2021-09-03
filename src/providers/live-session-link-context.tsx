@@ -1,7 +1,6 @@
 import Loading from '../components/loading';
 import {
     LIVE_LINK,
-    LocalSessionContext,
     sessionId,
 } from '../providers/providers';
 import { AuthTokenProvider } from "../services/auth-token/AuthTokenProvider";
@@ -9,6 +8,7 @@ import {
     redirectToLogin,
     refreshAuthenticationCookie,
 } from "../utils/authentication";
+import { useSessionContext } from './session-context';
 import {
     ApolloClient,
     ApolloProvider,
@@ -95,7 +95,7 @@ type Props = {
 
 export function LiveSessionLinkProvider ({ children }: Props) {
 
-    const { roomId } = useContext(LocalSessionContext);
+    const { roomId } = useSessionContext();
     const apolloClient = getApolloClient(roomId);
 
     if (!apolloClient) {
