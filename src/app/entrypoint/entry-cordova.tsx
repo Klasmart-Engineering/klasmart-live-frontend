@@ -41,7 +41,10 @@ import {
     useDispatch,
     useSelector,
 } from "react-redux";
-import { useRecoilState } from "recoil";
+import {
+    RecoilRoot,
+    useRecoilState,
+} from "recoil";
 import { PersistGate } from "redux-persist/integration/react";
 import { v4 as uuid } from "uuid";
 
@@ -98,7 +101,7 @@ function Entry () {
                     </ThemeProvider>
                 </CompositionRoot>
             </CordovaSystemProvider>
-        </RawIntlProvider >
+        </RawIntlProvider>
     );
 }
 
@@ -109,7 +112,9 @@ async function main () {
             <PersistGate
                 loading={null}
                 persistor={persistor}>
-                <Entry />
+                <RecoilRoot>
+                    <Entry />
+                </RecoilRoot>
             </PersistGate>
         </Provider>
     );
