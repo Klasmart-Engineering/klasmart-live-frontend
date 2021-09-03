@@ -4,7 +4,6 @@ import { SelectUserDialog } from "./dialogs/account/selectUserDialog";
 import { ExternalNavigationDialog } from "./dialogs/externalNavigationDialog";
 import { HomeFunStudyDialog } from "./dialogs/home-fun-study/homeFunStudyDialog";
 import { Auth } from "./pages/account/auth";
-import { RoomWithContext } from "./pages/room/room";
 import { Schedule } from "./pages/schedule/schedule";
 import { UserRoute } from "./route/userRoute";
 import Grid from "@material-ui/core/Grid";
@@ -14,6 +13,7 @@ import {
     Router,
     Switch,
 } from "react-router-dom";
+import { RoomWithContext } from "src/pages/room/room-with-context";
 
 export function App ({ history }: {
     history: any;
