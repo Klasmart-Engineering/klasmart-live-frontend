@@ -1,4 +1,5 @@
 import CopyWebpackPlugin from "copy-webpack-plugin";
+import Dotenv from "dotenv-webpack";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import path from "path";
 import { EnvironmentPlugin } from "webpack";
@@ -80,9 +81,10 @@ module.exports = {
         publicPath: ``,
     },
     plugins: [
+        new Dotenv(),
         new EnvironmentPlugin({
-            NODE_ENV: `development`,
-            USE_TEST_TOKEN: undefined,
+            NODE_ENV: `production`,
+            USE_TEST_TOKEN: null,
             WEBRTC_DEVICE_HANDLER_NAME: ``,
             CUSTOM_UA: `cordova`,
         }),
