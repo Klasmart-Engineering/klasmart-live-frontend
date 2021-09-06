@@ -185,7 +185,7 @@ function OpenSelectUserButton () {
             className={selectUserButton}
             onClick={() => setDialogs({
                 ...dialogs,
-                isSelectUserOpen: false,
+                isSelectUserOpen: true,
             })}
         >
             <UserAvatar
