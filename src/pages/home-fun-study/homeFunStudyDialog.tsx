@@ -8,7 +8,7 @@ import {
     DialogContent,
     DialogTitle,
     Grid,
-    IconButton,
+    IconButton, Link,
     List,
     ListItem,
     ListItemIcon,
@@ -33,7 +33,7 @@ import Loading from "../../components/loading";
 import StyledIcon from "../../components/styled/icon";
 import {
     getFileExtensionFromName,
-    getFileExtensionFromType,
+    getFileExtensionFromType, saveDataBlobToFile,
     validateFileSize,
     validateFileType
 } from "../../utils/fileUtils";
@@ -49,6 +49,8 @@ import {usePopupContext} from "../../context-provider/popup-context";
 import {CordovaSystemContext, PermissionType} from "../../context-provider/cordova-system-context";
 import useCordovaInitialize from "../../cordova-initialize";
 import {CustomCircularProgress} from "../../components/customCircularProgress";
+import {useHttpEndpoint} from "../../context-provider/region-select-context";
+import {downloadDataBlob} from "../../utils/requestUtils";
 
 export type HomeFunStudyFeedback = {
     userId: string,
@@ -106,6 +108,17 @@ const useStyles = makeStyles((theme: Theme) =>
             backgroundColor:"#d7e4f5",
         },
         buttonProgress: {
+            color: blue[500],
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            marginTop: -12,
+            marginLeft: -12,
+        },
+        wrapper: {
+            position: 'relative',
+        },
+        progress: {
             color: blue[500],
             position: 'absolute',
             top: '50%',
@@ -904,16 +917,126 @@ function HomeFunStudyAssignment({
     studyInfo?: ScheduleResponse, newestFeedback?: ScheduleFeedbackResponse, assignmentItems: AssignmentItem[], onClickUploadInfo: () => void,
     onClickUpload: () => void, onDeleteAssignment: (item: AssignmentItem) => void
 }) {
-    const {isAndroid} = useCordovaInitialize();
+    const cms = useHttpEndpoint("cms");
+    const { isIOS, isAndroid, requestPermissions } = useContext(CordovaSystemContext);
     const classes = useStyles();
-    const shouldShowChooseFile = useMemo(() => {
-        // const fileIsBeingUploaded = assignmentItems.some(item => item.status === AttachmentStatus.UPLOADING);
-        // if (fileIsBeingUploaded) {
-        //     return false;
-        // }
+    const intl = useIntl();
+    const { showPopup } = usePopupContext();
+    const {enqueueSnackbar} = useSnackbar();
+    const [downloadingPreview, setDownloadingPreview] = useState<{itemId: string| undefined, downloading: boolean}>({itemId: undefined, downloading: false})
+    const [downloadPreview, setDownloadPreview] = useState<{shouldDownload: boolean, assignmentItem: AssignmentItem | undefined}>({shouldDownload: false, assignmentItem: undefined})
+    const [previewOpen, setPreviewOpen] = useState<{open: boolean, fileUrl: string}>({open: false, fileUrl: ""});
 
+    const shouldShowChooseFile = useMemo(() => {
         return studyInfo && assignmentItems.length < MAX_FILE_LIMIT && newestFeedback?.is_allow_submit;
     }, [assignmentItems, studyInfo, newestFeedback]);
+
+    const getCacheDirectory = useMemo(() => {
+        const cordova = (window as any).cordova;
+        let targetDirectory = "";
+        if(cordova !== undefined) {
+            targetDirectory = cordova.file.externalCacheDirectory;
+            if(isIOS){
+                targetDirectory = cordova.file.tempDirectory;
+            }
+        }
+        return targetDirectory
+    }, [window, isIOS])
+
+    useEffect(() => {
+        function startDownloadPreview(){
+            setDownloadPreview({ ...downloadPreview, shouldDownload : false})
+            if(downloadingPreview.downloading)
+                return
+            const assignmentItem = downloadPreview.assignmentItem;
+            if(assignmentItem){
+                const url = encodeURI(`${cms}/v1/contents_resources/${assignmentItem.attachmentId}`);
+                console.log(url);
+                setDownloadingPreview({downloading: true, itemId: assignmentItem.itemId});
+                downloadDataBlob(url).then(downloadedData => {
+                    saveDataBlobToFile(downloadedData, getCacheDirectory, assignmentItem.attachmentName).then(savedFilePath => {
+                        console.log(`savedFilePath: ${savedFilePath}`)
+                        setPreviewOpen({open: true, fileUrl: savedFilePath});
+                    }).catch(error => {
+                        enqueueSnackbar(error.body ?? error.message, {
+                            variant: "error",
+                            anchorOrigin: {
+                                vertical: "bottom",
+                                horizontal: "center"
+                            }
+                        });
+                    });
+                }).catch(error => {
+                    enqueueSnackbar(error.body ?? error.message, {
+                        variant: "error",
+                        anchorOrigin: {
+                            vertical: "bottom",
+                            horizontal: "center"
+                        }
+                    });
+                }).finally(() => {
+                    console.log("finally")
+                    setDownloadingPreview({downloading: false, itemId: undefined});
+                });
+            }
+        }
+        if(downloadPreview.shouldDownload){
+            startDownloadPreview()
+        }
+    },[downloadPreview])
+
+    useEffect(() => {
+        if(previewOpen.open && open){
+            const previewAnyFile = (window as any).PreviewAnyFile;
+            previewAnyFile.previewPath(
+                (result: string) => {
+                    setPreviewOpen({open: false, fileUrl: ""})
+                },
+                (error: any) => {
+                    setPreviewOpen({open: false, fileUrl: ""})
+                    enqueueSnackbar(error.message, {
+                        variant: "error",
+                        anchorOrigin: {
+                            vertical: "bottom",
+                            horizontal: "center"
+                        }
+                    })
+                },
+                previewOpen.fileUrl
+            )
+        }
+    },[previewOpen])
+
+    const checkNetworkToConfirmDownload = (onConfirm: () => void) => {
+        // reference: https://cordova.apache.org/docs/en/10.x/reference/cordova-plugin-network-information/
+        const connectionType = (navigator as any).connection.type;
+        const isCellularConnection = connectionType == `2g` ||
+            connectionType == `3g` ||
+            connectionType == `4g` ||
+            connectionType == `5g` || // NOTE: Not sure if plugin supports 5g yet, adding it for future safery.
+            connectionType == `cellular`;
+
+        if (isCellularConnection) {
+            showPopup({
+                variant: "confirm",
+                title: intl.formatMessage({ id: "confirm_download_file_title" }),
+                description: [intl.formatMessage({ id: "confirm_download_file_description" })],
+                closeLabel: intl.formatMessage({ id: "button_cancel" }),
+                confirmLabel: intl.formatMessage({ id: "button_continue" }),
+                onConfirm: () => {
+                    onConfirm();
+                },
+            });
+        } else {
+            onConfirm();
+        }
+    }
+
+    const confirmOpenAttachmentLink = (assignmentItem: AssignmentItem) => {
+        checkNetworkToConfirmDownload(() => {
+            setDownloadPreview({shouldDownload: true, assignmentItem: assignmentItem});
+        });
+    };
 
     return (
         <Grid item xs>
@@ -955,12 +1078,17 @@ function HomeFunStudyAssignment({
                     <List>
                         {assignmentItems.map((item) => (
                             <ListItem key={item.itemId}>
-                                <ListItemIcon>
-                                    <FileIcon fileType={getFileExtensionFromName(item.attachmentName)}/>
+                                <ListItemIcon onClick={() => confirmOpenAttachmentLink(item)}>
+                                    <div className={classes.wrapper}>
+                                        <FileIcon fileType={getFileExtensionFromName(item.attachmentName)}/>
+                                        {downloadingPreview.downloading && item.itemId == downloadingPreview.itemId ? <CircularProgress size={30} className={classes.progress}/> : ''}
+                                    </div>
+
                                 </ListItemIcon>
                                 <ListItemText
-                                    primary={<Typography variant="body2"
-                                                         color="textSecondary">{item.attachmentName}</Typography>}
+                                    primary={
+                                        <Typography variant="body2" color="textSecondary">{item.attachmentName}</Typography>
+                                        }
                                 />
                                 {
                                     newestFeedback?.is_allow_submit ?
