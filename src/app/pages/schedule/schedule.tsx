@@ -159,18 +159,16 @@ export function Schedule () {
                     timeViewLiveUpcoming = timeViewLiveAll.filter((tv: ScheduleTimeViewResponse) => tv.start_at > endOfTomorrowTimeStamp);
                 }
 
-                const newSchedule = {
+                setSchedule({
                     ...schedule,
-                    timeViewAll,
-                    timeViewLiveAll,
-                    timeViewStudyAll,
-                    timeViewStudyAnytime,
-                    timeViewLiveToday,
-                    timeViewLiveTomorrow,
-                    timeViewLiveUpcoming,
-                };
-
-                setSchedule(newSchedule);
+                    scheduleTimeViewAll: timeViewAll,
+                    scheduleTimeViewLiveAll: timeViewLiveAll,
+                    scheduleTimeViewStudyAll: timeViewStudyAll,
+                    scheduleTimeViewStudyAnytime: timeViewStudyAnytime,
+                    scheduleTimeViewLiveToday: timeViewLiveToday,
+                    scheduleTimeViewLiveTomorrow: timeViewLiveTomorrow,
+                    scheduleTimeViewLiveUpcoming: timeViewLiveUpcoming,
+                });
             }
 
             try {
@@ -179,13 +177,13 @@ export function Schedule () {
 
                 const newSchedule = {
                     ...schedule,
-                    timeViewAll: [],
-                    timeViewLiveAll: [],
-                    timeViewStudyAll: [],
-                    timeViewStudyAnytime: [],
-                    timeViewLiveToday: [],
-                    timeViewLiveTomorrow: [],
-                    timeViewLiveUpcoming: [],
+                    scheduleTimeViewAll: [],
+                    scheduleTimeViewLiveAll: [],
+                    scheduleTimeViewStudyAll: [],
+                    scheduleTimeViewStudyAnytime: [],
+                    scheduleTimeViewLiveToday: [],
+                    scheduleTimeViewLiveTomorrow: [],
+                    scheduleTimeViewLiveUpcoming: [],
                 };
 
                 setSchedule(newSchedule);
