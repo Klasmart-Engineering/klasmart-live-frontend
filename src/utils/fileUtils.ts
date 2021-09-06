@@ -9,6 +9,14 @@ export function getFileExtensionFromName(fileName: string): string {
     return fileExtension ? fileExtension : "";
 }
 
+export function getNameWithoutExtension(fileName: string): string {
+    return fileName.replace(/\.[^/.]+$/,"");
+}
+
+export function convertFileNameToUnderscores(fileName: string): string {
+    return `${getNameWithoutExtension(fileName).replace(/([^a-z0-9])/gi, '_')}.${getFileExtensionFromName(fileName)}`
+}
+
 export function getFileExtensionFromType(fileType: string): string {
     const fileExtension = MIME_TO_EXTENSION.get(fileType);
     return fileExtension ? fileExtension : "";
@@ -35,4 +43,32 @@ export function validateFileSize(file: File): boolean {
 
 export function bytesToMegaBytes(bytes: number): number {
     return bytes / (1024 * 1024);
+}
+
+export function saveDataBlobToFile (blob: Blob, targetDirectory: string, fileName: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+        window.resolveLocalFileSystemURL(targetDirectory, (entry) => {
+            const newFileName = convertFileNameToUnderscores(fileName);
+            (entry as DirectoryEntry).getFile( newFileName, { create: true, exclusive: false }, (fileEntry) => {
+                fileEntry.createWriter(writer => {
+                    writer.onwriteend = () => {
+                        resolve(fileEntry.toURL());
+                    };
+
+                    writer.onerror = () => {
+                        console.error('could not write file: ', writer.error);
+                        reject(writer.error);
+                    }
+
+                    writer.write(blob);
+                });
+            }, (error) => {
+                console.error('could not create file: ', error);
+                reject(error);
+            });
+        }, (error) => {
+            console.error('could not retrieve directory: ', error);
+            reject(error);
+        })
+    });
 }

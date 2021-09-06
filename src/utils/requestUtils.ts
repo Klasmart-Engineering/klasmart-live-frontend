@@ -39,3 +39,28 @@ export async function fetchJsonData<T>(url: string, method: string, parameters?:
 
     return await response.json();
 }
+
+export function downloadDataBlob (url: string): Promise<Blob> {
+    return new Promise((resolve, reject) => {
+        const request = new XMLHttpRequest();
+        request.responseType = 'blob';
+        request.open('GET', url);
+
+        request.onreadystatechange = () => {
+            if (request.readyState === XMLHttpRequest.DONE ||
+                request.readyState === 4) {
+                resolve(request.response);
+            }
+        };
+
+        request.onerror = () => {
+            reject(request.statusText);
+        };
+
+        request.ontimeout = () => {
+            reject('timeout');
+        };
+
+        request.send();
+    });
+}
