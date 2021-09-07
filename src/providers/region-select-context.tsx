@@ -1,4 +1,4 @@
-import { selectedRegionState } from "../model/appModel";
+import { selectedRegionState } from "../app/model/appModel";
 import React,
 {
     createContext,
@@ -144,12 +144,34 @@ const DefaultRegions: Region[] = [
     },
 ];
 
+function createRegionFromEnvironment (){
+    const hostWithOrigin = `${window.location.protocol}//${window.location.host}`;
+
+    return(
+        {
+            id: `env`,
+            name: `Environment`,
+            development: false,
+            services: {
+                auth: `${process.env.LOGIN_PAGE_URL}`,
+                live: `${process.env.ENDPOINT_LIVE || hostWithOrigin}`,
+                cms: `${process.env.ENDPOINT_CMS}`,
+                sfu: `${process.env.ENDPOINT_SFU || hostWithOrigin}/sfu`,
+                user: `${process.env.ENDPOINT_API || hostWithOrigin}/user/`,
+                privacy: `https://kidsloop.net/en/policies/privacy-notice`,
+            },
+        }
+    );
+}
+
 export function RegionSelectProvider ({ children, regionsUrl }: Props) {
     const [ regions, setRegions ] = useState<Region[]>(DefaultRegions);
     const [ loading, setLoading ] = useState<boolean>(false);
     const [ selectedRegion, setSelectedRegion ] = useRecoilState(selectedRegionState);
 
     const region = useMemo<Region>(() => {
+        if(selectedRegion.regionId === `env`){return createRegionFromEnvironment();}
+
         if (!regions) {
             console.error(`Can't select region with ID: ${selectedRegion.regionId}. No regions available. Falling back to default.`);
             return DefaultRegions[0];
@@ -165,7 +187,7 @@ export function RegionSelectProvider ({ children, regionsUrl }: Props) {
 
         return selected;
     }, [ regions, selectedRegion ]);
-
+    /*
     const fetchRegions = useCallback(async () => {
         if (!regionsUrl) return;
 
@@ -187,16 +209,18 @@ export function RegionSelectProvider ({ children, regionsUrl }: Props) {
         setLoading(false);
     }, []);
 
+    useEffect(() => {
+        if(!regionsUrl) return;
+        fetchRegions();
+    }, [ regionsUrl ]);
+*/
+
     const selectRegion = useCallback((id: string) => {
         setSelectedRegion({
             regionId: id,
         });
 
     }, []);
-
-    useEffect(() => {
-        fetchRegions();
-    }, [ regionsUrl ]);
 
     return (
         <RegionSelectContext.Provider value={{

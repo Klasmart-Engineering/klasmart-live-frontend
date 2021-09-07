@@ -1,4 +1,4 @@
-import { useHttpEndpoint } from "../../context-provider/region-select-context";
+import { useHttpEndpoint } from "../../../providers/region-select-context";
 import {
     AppBar,
     Dialog,

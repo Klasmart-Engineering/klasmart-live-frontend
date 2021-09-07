@@ -1,9 +1,9 @@
+import { useHttpEndpoint } from "../../../providers/region-select-context";
 import {
     CordovaSystemContext,
     PermissionType,
 } from "../../context-provider/cordova-system-context";
 import { usePopupContext } from "../../context-provider/popup-context";
-import { useHttpEndpoint } from "../../context-provider/region-select-context";
 import { ScheduleResponse } from "../../services/cms/ISchedulerService";
 import {
     Button,
