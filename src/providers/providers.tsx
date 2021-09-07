@@ -3,7 +3,7 @@ import {
     getDefaultLanguageCode,
     getLanguage,
 } from "../utils/locale";
-import { SessionContextProvider } from "./session-context";
+import { CompositionRoot } from "./composition-root";
 import { ThemeProvider } from "@material-ui/core";
 import React,
 {
@@ -43,13 +43,13 @@ function Providers ({ children }: Props) {
 
     return (
         <ThemeContext.Provider value={themeContext}>
-            <SessionContextProvider sessionId={sessionId}>
-                <RawIntlProvider value={locale}>
+            <RawIntlProvider value={locale}>
+                <CompositionRoot sessionId={sessionId}>
                     <ThemeProvider theme={themeProvider(`en`, `light`)}>
                         {children}
                     </ThemeProvider>
-                </RawIntlProvider>
-            </SessionContextProvider>
+                </CompositionRoot>
+            </RawIntlProvider>
         </ThemeContext.Provider>
     );
 }

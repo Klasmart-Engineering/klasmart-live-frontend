@@ -1,5 +1,5 @@
+import { useRegionSelect } from "../../../providers/region-select-context";
 import { Header } from "../../components/layout/header";
-import { useRegionSelect } from "../../context-provider/region-select-context";
 import { useUserInformation } from "../../context-provider/user-information-context";
 import {
     authState,

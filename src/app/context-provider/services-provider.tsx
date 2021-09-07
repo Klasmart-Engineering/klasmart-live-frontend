@@ -1,3 +1,4 @@
+import { useHttpEndpoint } from "../../providers/region-select-context";
 import { AuthenticationService } from "../services/auth/AuthenticationService";
 import { IAuthenticationService } from "../services/auth/IAuthenticationService";
 import { AssessmentService } from "../services/cms/AssessmentService";
@@ -10,7 +11,6 @@ import { FileSelectService } from "../services/files/FileSelectService";
 import { IFileSelectService } from "../services/files/IFileSelectService";
 import { IUserInformationService } from "../services/user/IUserInformationService";
 import { UserInformationService } from "../services/user/UserInformationService";
-import { useHttpEndpoint } from "./region-select-context";
 import React,
 {
     createContext,
