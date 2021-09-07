@@ -187,7 +187,7 @@ export function RegionSelectProvider ({ children, regionsUrl }: Props) {
 
         return selected;
     }, [ regions, selectedRegion ]);
-    /*
+
     const fetchRegions = useCallback(async () => {
         if (!regionsUrl) return;
 
@@ -213,13 +213,11 @@ export function RegionSelectProvider ({ children, regionsUrl }: Props) {
         if(!regionsUrl) return;
         fetchRegions();
     }, [ regionsUrl ]);
-*/
 
     const selectRegion = useCallback((id: string) => {
         setSelectedRegion({
             regionId: id,
         });
-
     }, []);
 
     return (
