@@ -4,6 +4,7 @@ import {
     Message,
     Session,
 } from "../pages/utils";
+import { ClassType } from "../store/actions";
 import {
     audioGloballyMutedState,
     classEndedState,
@@ -94,7 +95,7 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
         camera,
         isTeacher,
         materials,
-
+        classtype,
     } = useContext(LocalSessionContext);
     const [ sfuAddress, setSfuAddress ] = useState<string>(``);
     const [ messages, setMessages ] = useState<Map<string, Message>>(new Map<string, Message>());
@@ -126,16 +127,23 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
 
     useEffect(() => {
         if (!hasControls) return;
-
-        const material = interactiveMode !== InteractiveMode.OnStage && materialActiveIndex >= 0 && materialActiveIndex < materials.length ? materials[materialActiveIndex] : undefined;
+        let material = interactiveMode !== InteractiveMode.OnStage && materialActiveIndex >= 0 && materialActiveIndex < materials.length ? materials[materialActiveIndex] : undefined;
         const type = defineContentType(material, interactiveMode);
         const contentId = defineContentId(material, interactiveMode, streamId, sessionId);
+
+        if (classtype === ClassType.STUDY){
+            material = materialActiveIndex >= 0 && materialActiveIndex < materials.length ? materials[materialActiveIndex] : undefined;
+        }
+        const materialUrl = material?.url;
+        const activityTypeName = material?.__typename === `Iframe` ? `h5p` : material?.__typename;
 
         showContent({
             variables: {
                 roomId,
                 type,
                 contentId,
+                materialUrl,
+                activityTypeName,
             },
         });
     }, [
