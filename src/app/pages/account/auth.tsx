@@ -1,5 +1,5 @@
+import { useHttpEndpoint } from "../../../providers/region-select-context";
 import LoadingWithRetry from "../../components/loadingWithRetry";
-import { useHttpEndpoint } from "../../context-provider/region-select-context";
 import { useUserInformation } from "../../context-provider/user-information-context";
 import { ParentalGate } from "../../dialogs/parentalGate";
 import { OrientationType } from "../../model/appModel";

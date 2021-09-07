@@ -57,7 +57,7 @@ export const errorState = atom({
 export const selectedRegionState = atom({
     key: `selectedRegion`,
     default: {
-        regionId: `auth.kidsloop.live`,
+        regionId: `env`,
     },
 });
 
