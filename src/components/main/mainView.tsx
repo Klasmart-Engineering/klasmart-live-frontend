@@ -1,8 +1,8 @@
-import { ContentType } from "../../pages/utils";
-import { RoomContext } from "../../providers/roomContext";
-import { ScreenShareContext } from "../../providers/screenShareProvider";
-import { WebRTCContext } from "../../providers/WebRTCContext";
-import { isLessonPlanOpenState } from "../../store/layoutAtoms";
+import { ContentType } from "@/pages/utils";
+import { RoomContext } from "@/providers/roomContext";
+import { ScreenShareContext } from "@/providers/screenShareProvider";
+import { WebRTCContext } from "@/providers/WebRTCContext";
+import { isLessonPlanOpenState } from "@/store/layoutAtoms";
 import PreviewLessonPlan from "./previewLessonPlan";
 import Observe from "./viewModes/Observe";
 import OnStage from "./viewModes/onStage";

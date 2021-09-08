@@ -1,5 +1,5 @@
-import { useSessionContext } from "../../../../providers/session-context";
-import { NoItemList } from "../../../../utils/utils";
+import { useSessionContext } from "@/providers/session-context";
+import { NoItemList } from "@/utils/utils";
 import Attachment from "./attachment";
 import {
     Button,

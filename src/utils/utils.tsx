@@ -1,9 +1,9 @@
-import { ContentType } from "../pages/utils";
+import { ContentType } from "@/pages/utils";
 import {
     activeTabState,
     InteractiveMode,
-} from "../store/layoutAtoms";
-import { MaterialTypename } from "../types/lessonMaterial";
+} from "@/store/layoutAtoms";
+import { MaterialTypename } from "@/types/lessonMaterial";
 import {
     Drawer,
     Fade,

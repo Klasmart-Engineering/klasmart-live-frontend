@@ -1,5 +1,5 @@
-import ChromeLogo from "../assets/img/browser/chrome_logo.svg";
-import SafariLogo from "../assets/img/browser/safari_logo.png";
+import ChromeLogo from "@/assets/img/browser/chrome_logo.svg";
+import SafariLogo from "@/assets/img/browser/safari_logo.png";
 import {
     getDefaultLanguageCode,
     getLanguage,

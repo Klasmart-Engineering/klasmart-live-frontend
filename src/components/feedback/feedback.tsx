@@ -1,6 +1,6 @@
-import { LIVE_LINK } from '../../providers/providers';
-import { useSessionContext } from "../../providers/session-context";
-import { MUTATION_SAVE_FEEDBACK } from "../../utils/graphql";
+import { LIVE_LINK } from '@/providers/providers';
+import { useSessionContext } from "@/providers/session-context";
+import { MUTATION_SAVE_FEEDBACK } from "@/utils/graphql";
 import { useMutation } from '@apollo/client';
 import {
     Button,

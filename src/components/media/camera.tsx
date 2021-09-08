@@ -1,16 +1,16 @@
 
-import { Session } from "../../pages/utils";
-import { useSessionContext } from "../../providers/session-context";
+import { Session } from "@/pages/utils";
+import { useSessionContext } from "@/providers/session-context";
 import {
     GLOBAL_MUTE_QUERY,
     MUTE,
     MuteNotification,
     WebRTCContext,
     WebRTCContextInterface,
-} from "../../providers/WebRTCContext";
-import { State } from "../../store/store";
-import PermissionControls from "../../whiteboard/components/WBPermissionControls";
-import StyledIcon from "../styled/icon";
+} from "@/providers/WebRTCContext";
+import { State } from "@/store/store";
+import PermissionControls from "@/whiteboard/components/WBPermissionControls";
+import StyledIcon from "@/styled/icon";
 import {
     useMutation,
     useQuery,

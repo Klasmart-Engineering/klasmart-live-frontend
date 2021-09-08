@@ -1,5 +1,5 @@
-import { useSessionContext } from "../../../../providers/session-context";
-import { classInfoState } from "../../../../store/layoutAtoms";
+import { useSessionContext } from "@/providers/session-context";
+import { classInfoState } from "@/store/layoutAtoms";
 import {
     Accordion,
     AccordionDetails,

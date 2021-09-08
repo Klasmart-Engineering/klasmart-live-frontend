@@ -1,10 +1,10 @@
-import { LIVE_LINK } from "../../providers/providers";
-import { useSessionContext } from "../../providers/session-context";
+import { LIVE_LINK } from "@/providers/providers";
+import { useSessionContext } from "@/providers/session-context";
 import {
     createEmptyPermissions,
     createPermissions,
     Permissions,
-} from "../types/Permissions";
+} from "@/types/Permissions";
 import {
     gql,
     useMutation,

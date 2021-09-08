@@ -1,8 +1,8 @@
-import { LIVE_LINK } from '../../providers/providers';
-import { useSessionContext } from "../../providers/session-context";
-import { MaterialTypename } from '../../types/lessonMaterial';
-import { FFT } from "../fft";
-import ReactPlayer from "../react-player/lazy";
+import { LIVE_LINK } from '@/providers/providers';
+import { useSessionContext } from "@/providers/session-context";
+import { MaterialTypename } from '@/types/lessonMaterial';
+import { FFT } from "@/fft";
+import ReactPlayer from "@/react-player/lazy";
 import {
     gql,
     useMutation,

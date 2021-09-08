@@ -1,22 +1,22 @@
-import backgroundStudy from "../../assets/img/background/background_study.jpg";
-import Main from '../../components/main/main';
-import Sidebar from '../../components/sidebar/sidebar';
-import { SFU_LINK } from '../../providers/providers';
-import { RoomContext } from "../../providers/roomContext";
-import { useSessionContext } from "../../providers/session-context";
+import backgroundStudy from "@/assets/img/background/background_study.jpg";
+import Main from '@/components/main/main';
+import Sidebar from '@/components/sidebar/sidebar';
+import { SFU_LINK } from '@/providers/providers';
+import { RoomContext } from "@/providers/roomContext";
+import { useSessionContext } from "@/providers/session-context";
 import {
     GLOBAL_MUTE_MUTATION,
     GLOBAL_MUTE_QUERY,
     GlobalMuteNotification,
     WebRTCContext,
-} from "../../providers/WebRTCContext";
-import { ClassType } from "../../store/actions";
+} from "@/providers/WebRTCContext";
+import { ClassType } from "@/store/actions";
 import {
     classInfoState,
     hasControlsState,
     studyRecommandUrlState,
-} from "../../store/layoutAtoms";
-import { classGetInformation } from "../../utils/utils";
+} from "@/store/layoutAtoms";
+import { classGetInformation } from "@/utils/utils";
 import {
     useMutation,
     useQuery,

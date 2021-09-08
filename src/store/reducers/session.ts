@@ -1,10 +1,6 @@
-import { getDefaultLanguageCode } from "../../utils/locale";
-import {
-    ClassType,
-    UserAgent,
-    UserType,
-} from "../actions";
 import { createSlice } from "@reduxjs/toolkit";
+import { ClassType, UserAgent, UserType } from "@/store/actions";
+import { getDefaultLanguageCode } from "@/utils/locale";
 
 type SessionState = {
     userAgent: UserAgent;

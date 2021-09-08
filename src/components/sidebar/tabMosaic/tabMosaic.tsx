@@ -1,11 +1,11 @@
-import { Session } from "../../../pages/utils";
-import { RoomContext } from "../../../providers/roomContext";
+import { Session } from "@/pages/utils";
+import { RoomContext } from "@/providers/roomContext";
 import {
     activeTabState,
     mosaicViewSizeState,
-} from "../../../store/layoutAtoms";
-import Toolbar from "../../toolbar/toolbar";
-import UserCamera from "../../userCamera/userCamera";
+} from "@/store/layoutAtoms";
+import Toolbar from "@/toolbar/toolbar";
+import UserCamera from "@/userCamera/userCamera";
 import {
     Fade,
     Grid,

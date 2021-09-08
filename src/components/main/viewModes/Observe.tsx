@@ -1,16 +1,16 @@
-import { Session } from "../../../pages/utils";
-import { RoomContext } from "../../../providers/roomContext";
-import { useSessionContext } from "../../../providers/session-context";
-import { isShowContentLoadingState } from "../../../store/layoutAtoms";
+import { Session } from "@/pages/utils";
+import { useSessionContext } from "@/providers/session-context";
+import { RoomContext } from "@/providers/roomContext";
+import { isShowContentLoadingState } from "@/store/layoutAtoms";
 import {
     fullScreenById,
     sleep,
-} from "../../../utils/utils";
-import { Whiteboard } from "../../../whiteboard/components/Whiteboard";
-import { useSynchronizedState } from "../../../whiteboard/context-providers/SynchronizedStateProvider";
-import Loading from "../../interactiveContent/loading";
-import { PreviewPlayer } from "../../interactiveContent/previewPlayer";
-import { RecordedIframe } from "../../interactiveContent/recordediframe";
+} from "@/utils/utils";
+import { Whiteboard } from "@/whiteboard/components/Whiteboard";
+import { useSynchronizedState } from "@/whiteboard/context-providers/SynchronizedStateProvider";
+import Loading from "@/components/interactiveContent/loading";
+import { PreviewPlayer } from "@/components/interactiveContent/previewPlayer";
+import { RecordedIframe } from "@/components/interactiveContent/recordediframe";
 import {
     makeStyles,
     Theme,

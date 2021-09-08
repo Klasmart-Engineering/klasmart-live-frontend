@@ -1,4 +1,4 @@
-import lightRay from '../../assets/img/trophies/lightray2.png';
+import lightRay from '@/assets/img/trophies/lightray2.png';
 import React,
 { CSSProperties } from 'react';
 import { Transition } from 'react-transition-group';

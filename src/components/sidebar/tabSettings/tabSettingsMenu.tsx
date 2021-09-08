@@ -1,5 +1,5 @@
-import { useSessionContext } from "../../../providers/session-context";
-import { activeSettingsStateTab } from "../../../store/layoutAtoms";
+import { useSessionContext } from "@/providers/session-context";
+import { activeSettingsStateTab } from "@/store/layoutAtoms";
 import {
     Grid,
     List,

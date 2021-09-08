@@ -1,19 +1,19 @@
 // This is temporary and will be removed after the App and Web merge.
 
-import BlackCrayon from "../../assets/img/canvas/crayons/black.svg";
-import BlueCrayon from "../../assets/img/canvas/crayons/blue.svg";
-import BrownCrayon from "../../assets/img/canvas/crayons/brown.svg";
-import GreenCrayon from "../../assets/img/canvas/crayons/green.svg";
-import OrangeCrayon from "../../assets/img/canvas/crayons/orange.svg";
-import PinkCrayon from "../../assets/img/canvas/crayons/pink.svg";
-import PurpleCrayon from "../../assets/img/canvas/crayons/purple.svg";
-import QingseCrayon from "../../assets/img/canvas/crayons/qingse.svg";
-import RedCrayon from "../../assets/img/canvas/crayons/red.svg";
-import YellowCrayon from "../../assets/img/canvas/crayons/yellow.svg";
-import Eraser from "../../assets/img/canvas/eraser.svg";
-import { useSessionContext } from "../../providers/session-context";
-import { ClassType } from "../../store/actions";
-import { useSynchronizedState } from "../context-providers/SynchronizedStateProvider";
+import BlackCrayon from "@/assets/img/canvas/crayons/black.svg";
+import BlueCrayon from "@/assets/img/canvas/crayons/blue.svg";
+import BrownCrayon from "@/assets/img/canvas/crayons/brown.svg";
+import GreenCrayon from "@/assets/img/canvas/crayons/green.svg";
+import OrangeCrayon from "@/assets/img/canvas/crayons/orange.svg";
+import PinkCrayon from "@/assets/img/canvas/crayons/pink.svg";
+import PurpleCrayon from "@/assets/img/canvas/crayons/purple.svg";
+import QingseCrayon from "@/assets/img/canvas/crayons/qingse.svg";
+import RedCrayon from "@/assets/img/canvas/crayons/red.svg";
+import YellowCrayon from "@/assets/img/canvas/crayons/yellow.svg";
+import Eraser from "@/assets/img/canvas/eraser.svg";
+import { useSessionContext } from "@/providers/session-context";
+import { ClassType } from "@/store/actions";
+import { useSynchronizedState } from "@/context-providers/SynchronizedStateProvider";
 import {
     blue,
     brown,
