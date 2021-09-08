@@ -1,6 +1,6 @@
 import { isChatOpenState } from "@/store/layoutAtoms";
 import { StyledPopper } from "@/utils/utils";
-import Chat from "@/main/chat/chat";
+import Chat from "@/components/main/chat/chat";
 import {
     Grid,
     makeStyles,

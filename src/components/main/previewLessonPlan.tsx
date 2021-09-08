@@ -8,9 +8,9 @@ import {
     LessonMaterial,
     MaterialTypename,
 } from "@/types/lessonMaterial";
-import ActivityImage from "@/interactiveContent/image";
-import { RecordedIframe } from "@/interactiveContent/recordediframe";
-import { ReplicatedMedia } from "@/interactiveContent/synchronized-video";
+import ActivityImage from "@/components/interactiveContent/image";
+import { RecordedIframe } from "@/components/interactiveContent/recordediframe";
+import { ReplicatedMedia } from "@/components/interactiveContent/synchronized-video";
 import { Typography } from "@material-ui/core";
 import React,
 { useContext } from "react";

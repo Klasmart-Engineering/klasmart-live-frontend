@@ -10,7 +10,7 @@ import {
 } from "@/providers/WebRTCContext";
 import { State } from "@/store/store";
 import PermissionControls from "@/whiteboard/components/WBPermissionControls";
-import StyledIcon from "@/styled/icon";
+import StyledIcon from "@/components/styled/icon";
 import {
     useMutation,
     useQuery,

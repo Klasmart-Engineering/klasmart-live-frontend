@@ -4,8 +4,8 @@ import {
     activeTabState,
     mosaicViewSizeState,
 } from "@/store/layoutAtoms";
-import Toolbar from "@/toolbar/toolbar";
-import UserCamera from "@/userCamera/userCamera";
+import Toolbar from "@/components/toolbar/toolbar";
+import UserCamera from "@/components/userCamera/userCamera";
 import {
     Fade,
     Grid,
