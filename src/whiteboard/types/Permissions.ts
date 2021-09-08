@@ -1,15 +1,15 @@
 
 export interface Permissions {
-    allowShowHide: boolean
-    allowCreateShapes: boolean
+    allowShowHide: boolean;
+    allowCreateShapes: boolean;
     allowEditShapes: {
-        own: boolean
-        others: boolean
-    }
+        own: boolean;
+        others: boolean;
+    };
     allowDeleteShapes: {
-        own: boolean
-        others: boolean
-    }
+        own: boolean;
+        others: boolean;
+    };
 }
 
 export const createPermissions = (isTeacher: boolean): Permissions => {
@@ -26,12 +26,12 @@ export const createEmptyPermissions = (): Permissions => {
         allowCreateShapes: false,
         allowEditShapes: {
             own: false,
-            others: false
+            others: false,
         },
         allowDeleteShapes: {
             own: false,
-            others: false
-        }
+            others: false,
+        },
     };
 };
 
@@ -41,12 +41,12 @@ export const createTeacherPermissions = (): Permissions => {
         allowCreateShapes: true,
         allowEditShapes: {
             own: true,
-            others: true
+            others: true,
         },
         allowDeleteShapes: {
             own: true,
-            others: true
-        }
+            others: true,
+        },
     };
 };
 
@@ -56,11 +56,11 @@ export const createStudentPermissions = (): Permissions => {
         allowCreateShapes: false,
         allowEditShapes: {
             own: true,
-            others: false
+            others: false,
         },
         allowDeleteShapes: {
             own: true,
-            others: false
-        }
+            others: false,
+        },
     };
 };

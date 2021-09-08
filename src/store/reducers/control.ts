@@ -12,7 +12,7 @@ type ControlState = {
 }
 
 const initialControlState: ControlState = {
-    themeMode: "light",
+    themeMode: `light`,
     selectOrgDialogOpen: false,
     drawerOpen: true,
     drawerWidth: 0,
@@ -20,38 +20,62 @@ const initialControlState: ControlState = {
     colsCamera: 2,
     colsObserve: 2,
     contentIndex: 0,
-}
+};
 
 const controlSlice = createSlice({
-    name: "control",
+    name: `control`,
     initialState: initialControlState,
     reducers: {
-        setThemeMode(state, action) {
-            return { ...state, themeMode: action.payload }
+        setThemeMode (state, action) {
+            return {
+                ...state,
+                themeMode: action.payload,
+            };
         },
-        setSelectOrgDialogOpen(state, action) {
-            return { ...state, selectOrgDialogOpen: action.payload }
+        setSelectOrgDialogOpen (state, action) {
+            return {
+                ...state,
+                selectOrgDialogOpen: action.payload,
+            };
         },
-        setDrawerOpen(state, action) {
-            return { ...state, drawerOpen: action.payload }
+        setDrawerOpen (state, action) {
+            return {
+                ...state,
+                drawerOpen: action.payload,
+            };
         },
-        setDrawerWidth(state, action) {
-            return { ...state, drawerWidth: action.payload }
+        setDrawerWidth (state, action) {
+            return {
+                ...state,
+                drawerWidth: action.payload,
+            };
         },
-        setDrawerTabIndex(state, action) {
-            return { ...state, drawerTabIndex: action.payload }
+        setDrawerTabIndex (state, action) {
+            return {
+                ...state,
+                drawerTabIndex: action.payload,
+            };
         },
-        setColsCamera(state, action) {
-            return { ...state, colsCamera: action.payload }
+        setColsCamera (state, action) {
+            return {
+                ...state,
+                colsCamera: action.payload,
+            };
         },
-        setColsObserve(state, action) {
-            return { ...state, colsObserve: action.payload }
+        setColsObserve (state, action) {
+            return {
+                ...state,
+                colsObserve: action.payload,
+            };
         },
-        setContentIndex(state, action) {
-            return { ...state, contentIndex: action.payload }
+        setContentIndex (state, action) {
+            return {
+                ...state,
+                contentIndex: action.payload,
+            };
         },
-    }
-})
+    },
+});
 
 export const {
     setThemeMode,
@@ -62,6 +86,6 @@ export const {
     setColsCamera,
     setColsObserve,
     setContentIndex,
-} = controlSlice.actions
+} = controlSlice.actions;
 
-export default controlSlice.reducer
+export default controlSlice.reducer;

@@ -1,5 +1,8 @@
 import {
-    Grid, makeStyles, Theme, Tooltip,
+    Grid,
+    makeStyles,
+    Theme,
+    Tooltip,
 } from "@material-ui/core";
 import amber from "@material-ui/core/colors/amber";
 import red from "@material-ui/core/colors/red";
@@ -60,7 +63,14 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 function GlobalActionsMenuItem (props: GlobaActionsMenuProps) {
     const {
-        type, icon, title, variant, active, activeIcon, onClick,
+        type,
+        icon,
+        title,
+        variant,
+        active,
+        activeIcon,
+        onClick,
+
     } = props;
 
     const classes = useStyles();

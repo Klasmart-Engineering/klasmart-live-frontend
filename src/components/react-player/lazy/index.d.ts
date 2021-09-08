@@ -102,18 +102,18 @@ export interface ReactPlayerProps {
   onError?(error: any, data?: any, hlsInstance?: any, hlsGlobal?: any): void;
   onDuration?(duration: number): void;
   onSeek?(seconds: number): void;
-  onProgress?(state: { played: number, playedSeconds: number, loaded: number, loadedSeconds: number }): void;
+  onProgress?(state: { played: number; playedSeconds: number; loaded: number; loadedSeconds: number }): void;
   [otherProps: string]: any;
 }
 
 export default class ReactPlayer extends React.Component<ReactPlayerProps, any> {
-  static canPlay(url: string): boolean;
-  static canEnablePIP(url: string): boolean;
-  static addCustomPlayer(player: ReactPlayer): void;
-  static removeCustomPlayers(): void;
-  seekTo(amount: number, type?: 'seconds' | 'fraction'): void;
-  getCurrentTime(): number;
-  getDuration(): number;
-  getInternalPlayer(key?: string): Object;
-  showPreview(): void;
+    static canPlay(url: string): boolean;
+    static canEnablePIP(url: string): boolean;
+    static addCustomPlayer(player: ReactPlayer): void;
+    static removeCustomPlayers(): void;
+    seekTo(amount: number, type?: 'seconds' | 'fraction'): void;
+    getCurrentTime(): number;
+    getDuration(): number;
+    getInternalPlayer(key?: string): Object;
+    showPreview(): void;
 }

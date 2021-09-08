@@ -18,7 +18,7 @@ const TIMINGS = {
         enterDuration: 200,
         displayAfter: 100,
         displayDuration: 5000,
-    }
-}
+    },
+};
 
 export default TIMINGS;
