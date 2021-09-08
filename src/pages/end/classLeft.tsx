@@ -1,4 +1,4 @@
-import { Feedback } from '../../components/feedback/feedback';
+import { Feedback } from '@/components/feedback/feedback';
 import {
     Fade,
     Grid,

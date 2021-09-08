@@ -1,9 +1,9 @@
-import Loading from "../components/loading";
+import Loading from "@/components/loading";
 import {
     Content,
     Message,
     Session,
-} from "../pages/utils";
+} from "@/pages/utils";
 import {
     audioGloballyMutedState,
     classEndedState,
@@ -16,12 +16,12 @@ import {
     streamIdState,
     unreadMessagesState,
     videoGloballyMutedState,
-} from "../store/layoutAtoms";
-import { MUTATION_SHOW_CONTENT } from "../utils/graphql";
+} from "@/store/layoutAtoms";
+import { MUTATION_SHOW_CONTENT } from "@/utils/graphql";
 import {
     defineContentId,
     defineContentType,
-} from "../utils/utils";
+} from "@/utils/utils";
 import {
     LIVE_LINK,
     SFU_LINK,

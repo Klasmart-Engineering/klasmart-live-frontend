@@ -1,4 +1,4 @@
-import { SequencedEventData } from '../events/SequencedEvent';
+import { SequencedEventData } from '@/events/SequencedEvent';
 import { IEventUploader } from './IEventUploader';
 
 export class WebEventUploader implements IEventUploader {

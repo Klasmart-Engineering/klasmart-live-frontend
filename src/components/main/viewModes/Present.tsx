@@ -1,11 +1,11 @@
-import { ContentType } from "../../../pages/utils";
-import { RoomContext } from "../../../providers/roomContext";
-import { hasControlsState } from "../../../store/layoutAtoms";
-import ActivityImage from "../../interactiveContent/image";
-import { PreviewPlayer } from "../../interactiveContent/previewPlayer";
-import { RecordedIframe } from "../../interactiveContent/recordediframe";
-import { ReplicaMedia } from "../../interactiveContent/synchronized-video";
-import PreviewLessonPlan from "../previewLessonPlan";
+import { ContentType } from "@/pages/utils";
+import { RoomContext } from "@/providers/roomContext";
+import { hasControlsState } from "@/store/layoutAtoms";
+import ActivityImage from "@/interactiveContent/image";
+import { PreviewPlayer } from "@/interactiveContent/previewPlayer";
+import { RecordedIframe } from "@/interactiveContent/recordediframe";
+import { ReplicaMedia } from "@/interactiveContent/synchronized-video";
+import PreviewLessonPlan from "@/previewLessonPlan";
 import React,
 { useContext } from "react";
 import { useRecoilState } from "recoil";

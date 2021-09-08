@@ -1,8 +1,8 @@
 // This is temporary and will be removed after the App and Web merge.
 
-import { useSessionContext } from "../../providers/session-context";
-import { whiteboard } from "../../utils/layerValues";
-import { useSynchronizedState } from "../context-providers/SynchronizedStateProvider";
+import { useSessionContext } from "@/providers/session-context";
+import { whiteboard } from "@/utils/layerValues";
+import { useSynchronizedState } from "@/context-providers/SynchronizedStateProvider";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
 import { WhiteboardCanvas } from "kidsloop-canvas/lib/domain/whiteboard/WhiteboardCanvas";
 import React,

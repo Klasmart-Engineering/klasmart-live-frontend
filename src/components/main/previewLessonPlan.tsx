@@ -1,16 +1,16 @@
-import { useSessionContext } from "../../providers/session-context";
+import { useSessionContext } from "@/providers/session-context";
 import {
     materialActiveIndexState,
     observeDisableState,
     studyRecommandUrlState,
-} from "../../store/layoutAtoms";
+} from "@/store/layoutAtoms";
 import {
     LessonMaterial,
     MaterialTypename,
-} from "../../types/lessonMaterial";
-import ActivityImage from "../interactiveContent/image";
-import { RecordedIframe } from "../interactiveContent/recordediframe";
-import { ReplicatedMedia } from "../interactiveContent/synchronized-video";
+} from "@/types/lessonMaterial";
+import ActivityImage from "@/interactiveContent/image";
+import { RecordedIframe } from "@/interactiveContent/recordediframe";
+import { ReplicatedMedia } from "@/interactiveContent/synchronized-video";
 import { Typography } from "@material-ui/core";
 import React,
 { useContext } from "react";

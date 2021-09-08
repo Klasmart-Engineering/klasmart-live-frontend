@@ -1,7 +1,7 @@
-import { useServices } from "../app/context-provider/services-provider";
-import { useUserInformation } from "../app/context-provider/user-information-context";
-import Loading from '../components/loading';
-import { LIVE_LINK } from '../providers/providers';
+import { useServices } from "@/app/context-provider/services-provider";
+import { useUserInformation } from "@/app/context-provider/user-information-context";
+import Loading from '@/components/loading';
+import { LIVE_LINK } from '@/providers/providers';
 import { useWebsocketEndpoint } from "./region-select-context";
 import {
     ApolloClient,

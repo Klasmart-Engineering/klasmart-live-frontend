@@ -1,4 +1,4 @@
-import { ServicesProvider } from "../app/context-provider/services-provider";
+import { ServicesProvider } from "@/app/context-provider/services-provider";
 import { RegionSelectProvider } from "./region-select-context";
 import { SessionContextProvider } from "./session-context";
 import React, {

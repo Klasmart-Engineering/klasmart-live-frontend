@@ -1,8 +1,4 @@
-import {
-    fallbackLocale,
-    getIntl,
-    localeCodes,
-} from "../localization/localeCodes";
+import { localeCodes, fallbackLocale, getIntl } from "@/localization/localeCodes";
 
 const localeCache = new Map<string, ReturnType<typeof getIntl>>();
 

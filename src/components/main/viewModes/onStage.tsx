@@ -1,6 +1,6 @@
-import { RoomContext } from "../../../providers/roomContext";
-import { useSessionContext } from "../../../providers/session-context";
-import UserCamera from "../../userCamera/userCamera";
+import { useSessionContext } from "@/providers/session-context";
+import { RoomContext } from "@/providers/roomContext";
+import UserCamera from "@/components/userCamera/userCamera";
 import {
     Grid,
     makeStyles,

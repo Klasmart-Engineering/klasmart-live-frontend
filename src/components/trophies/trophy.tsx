@@ -1,6 +1,6 @@
-import { RoomContext } from '../../providers/roomContext';
-import { useSessionContext } from '../../providers/session-context';
-import { ClassType } from '../../store/actions';
+import { RoomContext } from '@/providers/roomContext';
+import { useSessionContext } from '@/providers/session-context';
+import { ClassType } from '@/store/actions';
 import { ConfettiRain } from './confettiRain';
 import { Lights } from './lights';
 import { Reward } from './reward';

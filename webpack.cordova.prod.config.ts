@@ -74,6 +74,9 @@ module.exports = {
             `.css`,
             `.ttf`,
         ],
+        alias: {
+            "@": path.resolve(__dirname, `src`),
+        },
     },
     output: {
         filename: `[name].js`,

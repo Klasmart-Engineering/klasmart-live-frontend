@@ -1,7 +1,7 @@
-import { useSessionContext } from "../../providers/session-context";
-import { ClassType } from "../../store/actions";
-import { showEndStudyState } from "../../store/layoutAtoms";
-import { WBToolbarContainer } from "../classContent/WBToolbar";
+import { useSessionContext } from "@/providers/session-context";
+import { ClassType } from "@/store/actions";
+import { showEndStudyState } from "@/store/layoutAtoms";
+import { WBToolbarContainer } from "@/classContent/WBToolbar";
 import { ClassContent } from "./classContent";
 import React,
 { useContext } from "react";

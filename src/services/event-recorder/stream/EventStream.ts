@@ -1,4 +1,4 @@
-import { EventStreamBuilder } from "../builder/EventStreamBuilder";
+import { EventStreamBuilder } from "@/builder/EventStreamBuilder";
 
 export interface EventStreamData {
     id: string;

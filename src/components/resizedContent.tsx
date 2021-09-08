@@ -1,6 +1,6 @@
-import { LessonMaterial } from "../types/lessonMaterial";
-import { imageFrame } from "../utils/layerValues";
-import { useWindowSize } from "../utils/viewport";
+import { LessonMaterial } from "@/types/lessonMaterial";
+import { imageFrame } from "@/utils/layerValues";
+import { useWindowSize } from "@/utils/viewport";
 import { Theme } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import {

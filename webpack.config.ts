@@ -92,6 +92,7 @@ const webpackConfig: Configuration = {
             `.ts`,
         ],
         alias: {
+            "@": path.resolve(__dirname, `src`),
             ...brandingOptions.webpack.resolve.alias,
         },
     },

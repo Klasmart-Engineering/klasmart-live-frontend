@@ -1,4 +1,4 @@
-import KidsloopLogo from "../../assets/img/kidsloop.svg";
+import KidsloopLogo from "@/assets/img/kidsloop.svg";
 import AppBar from "@material-ui/core/AppBar";
 import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";

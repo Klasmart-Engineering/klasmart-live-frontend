@@ -1,5 +1,5 @@
-import { refreshAuthenticationCookie } from "../../../utils/authentication";
-import { SequencedEventData } from "../events/SequencedEvent";
+import { refreshAuthenticationCookie } from "@/utils/authentication";
+import { SequencedEventData } from "@/events/SequencedEvent";
 import { IEventUploader } from "./IEventUploader";
 import { GraphQLClient } from "graphql-request";
 

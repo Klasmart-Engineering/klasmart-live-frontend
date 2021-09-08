@@ -1,7 +1,7 @@
 import {
     activeSettingsStateTab,
     activeTabState,
-} from "../../../store/layoutAtoms";
+} from "@/store/layoutAtoms";
 import Settings from "./settings/settings";
 import TabSettingsMenu from "./tabSettingsMenu";
 import {
