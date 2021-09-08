@@ -1,3 +1,4 @@
+import { DeviceStatus, useCameraContext } from "@/app/context-provider/camera-context";
 import KidsLoopClassTeachers from "@/assets/img/classtype/kidsloop_class_teachers.svg";
 import KidsLoopLiveStudents from "@/assets/img/classtype/kidsloop_live_students.svg";
 import KidsLoopLiveTeachers from "@/assets/img/classtype/kidsloop_live_teachers.svg";
@@ -38,7 +39,6 @@ import { InfoCircle as InfoCircleIcon } from "@styled-icons/boxicons-solid/InfoC
 import clsx from "clsx";
 import React,
 {
-    useContext,
     useEffect,
     useState,
 } from "react";
@@ -132,17 +132,24 @@ export default function Join (): JSX.Element {
     const [ dialogOpen, setDialogOpen ] = useState<boolean>(false);
     const handleDialogClose = () => setDialogOpen(false);
 
-    const [ deviceStatus, setDeviceStatus ] = useState<string>(``);
-    const [ permissionError, setPermissionError ] = useState<boolean>(false);
-    const [ loadError, setLoadError ] = useState<boolean>(false);
-    const [ audioDeviceOptions, setAudioDeviceOptions ] = useState<MediaDeviceInfo[]>([]);
-    const [ videoDeviceOptions, setVideoDeviceOptions ] = useState<MediaDeviceInfo[]>([]);
-    const [ audioDeviceId, setAudioDeviceId ] = useState<string>(``);
-    const [ videoDeviceId, setVideoDeviceId ] = useState<string>(``);
-    const [ stream, setStream ] = useState<MediaStream>();
     const [ loading, setLoading ] = useState(true);
     const [ branding, setBranding ] = useState<BrandingType|undefined>(undefined);
     const logo = branding?.iconImageURL || KidsLoopLogoSvg;
+
+    const {
+        setSelectedAudioDeviceId,
+        selectedAudioDeviceId,
+        availableAudioDevices,
+        setSelectedVideoDeviceId,
+        selectedVideoDeviceId,
+        availableVideoDevices,
+        setAcquireCameraDevice,
+        setHighQuality,
+        notFoundError,
+        permissionError,
+        cameraStream,
+        deviceStatus,
+    } = useCameraContext();
 
     const handleOrganizationBranding = async () => {
         setLoading(true);
@@ -150,155 +157,35 @@ export default function Join (): JSX.Element {
             const dataBranding = await getOrganizationBranding(organizationId);
             setBranding(dataBranding);
         } catch (e) {
-            console.log(e);
+            console.error(`couldn't get branding: ${e}`);
         }
         setLoading(false);
     };
 
     useEffect(() => {
-        handleOrganizationBranding();
-
-        if (!navigator.mediaDevices) { return; }
-
-        const getMediaPermissions = async () => {
-            switch(classType){
-            case ClassType.LIVE:
-                try{
-                    await navigator.mediaDevices.getUserMedia({
-                        audio: true,
-                        video: true,
-                    });
-                    await loadMediaDevices();
-                }
-                catch (e) {
-                    console.error(`getMediaPermissions Error - ${e}`);
-                    setPermissionError(true); setDialogOpen(true);
-                }
-                break;
-            default:
-                try {
-                    await navigator.mediaDevices.getUserMedia({
-                        audio: true,
-                    });
-                    await loadMediaDevices();
-                }
-                catch (e){
-                    if (isMediaNotFoundError(e)) {
-                        setDeviceStatus(DeviceStatus.MIC_NOT_FOUND);
-                    } else if (isMediaNotAllowedError(e)) {
-                        setDeviceStatus(DeviceStatus.MIC_NOT_ALLOWED);
-                    } else {
-                        setDeviceStatus(DeviceStatus.MIC_ERROR);
-                    }
-                    console.error(`getMediaPermissions Error - ${e}`);
-                    setPermissionError(false); setDialogOpen(true);
-                }
-            }
-        };
-        getMediaPermissions();
-
-        // When user disconnect or connect a media device, the media devices that connected to computer are reloaded.
-        navigator.mediaDevices.addEventListener(`devicechange`, loadMediaDevices);
-        return () => { navigator.mediaDevices.removeEventListener(`devicechange`, loadMediaDevices); };
-    }, []);
-
-    async function loadMediaDevices () {
-        try {
-            const devices = await navigator.mediaDevices.enumerateDevices();
-
-            const audioDevices = devices.filter((d) => d.kind == `audioinput`);
-            setAudioDeviceOptions(audioDevices);
-
-            if (audioDevices.length > 0) {
-                // Select the first mic only if there is no mic selected
-                if (audioDeviceId === ``) setAudioDeviceId(audioDevices[0].deviceId);
-            } else {
-                setAudioDeviceId(``);
-            }
-
-            if (classType === ClassType.LIVE) {
-                const videoDevices = devices.filter((d) => d.kind == `videoinput`);
-                setVideoDeviceOptions(videoDevices);
-
-                if (videoDevices.length > 0) {
-                    // Select the first cam only if there is no cam selected
-                    if (videoDeviceId === ``) setVideoDeviceId(videoDevices[0].deviceId);
-                } else {
-                    setVideoDeviceId(``);
-                }
-            }
-        } catch (e) {
-            console.error(`loadMediaDevices Error - ${e}`);
-            setLoadError(true);
-        }
-    }
-
-    function getMicStream (deviceId: string) {
-        navigator.mediaDevices.getUserMedia({
-            audio: {
-                deviceId,
-            },
-        }).then((s) => {
-            setStream(s);
-            setLoadError(false);
-        }).catch((e) => {
-            console.error(`getMicStream Error - ${e}`);
-            setStream(undefined);
-            setLoadError(true);
-        });
-    }
-
-    function getCamStream (audioDeviceId: string, videoDeviceId: string) {
-        const videoConstraints: MediaTrackConstraints = {
-            width: {
-                max: 720,
-                ideal: isTeacher?720:180,
-            },
-            height: {
-                max: 540,
-                ideal: isTeacher?405:96,
-            },
-            frameRate: {
-                max: 15,
-                ideal: isTeacher?15:10,
-            },
-        };
-
-        navigator.mediaDevices.getUserMedia({
-            audio: {
-                deviceId: audioDeviceId,
-            },
-            video: {
-                deviceId: videoDeviceId,
-            },
-        }).then((s) => {
-            const track = s.getVideoTracks()[0];
-            track.applyConstraints(videoConstraints);
-            setStream(s);
-            setLoadError(false);
-        }).catch((e) => {
-            console.error(`getCamStream Error - ${e}`);
-            setStream(undefined);
-            setLoadError(true);
-        });
-    }
-
-    function isMediaNotFoundError (error: any) {
-        return error.name === `NotFoundError` || error.name === `DevicesNotFoundError`;
-    }
-
-    function isMediaNotAllowedError (error: any) {
-        return error.name === `NotAllowedError` || error.name === `PermissionDeniedError`;
-    }
+        setHighQuality(isTeacher);
+        setAcquireCameraDevice(classType === ClassType.LIVE);
+    }, [ isTeacher, classType ]);
 
     useEffect(() => {
-        if (!navigator.mediaDevices) { return; }
+        handleOrganizationBranding();
+    }, []);
+
+    useEffect(() => {
         if (classType === ClassType.LIVE) {
-            getCamStream(audioDeviceId, videoDeviceId);
+            if (!selectedVideoDeviceId && availableVideoDevices.length > 0) {
+                setSelectedVideoDeviceId(availableVideoDevices[0].deviceId);
+            }
         } else {
-            getMicStream(audioDeviceId);
+            setSelectedVideoDeviceId(``);
         }
-    }, [ videoDeviceId, audioDeviceId ]);
+        
+        if (!selectedAudioDeviceId && availableAudioDevices.length > 0) {
+            setSelectedAudioDeviceId(availableAudioDevices[0].deviceId);
+        }
+
+        setDialogOpen(permissionError || notFoundError);
+    }, [ selectedVideoDeviceId, selectedAudioDeviceId, availableVideoDevices, availableAudioDevices, classType, permissionError, notFoundError ]);
 
     if (loading) {
         return <Grid
@@ -361,7 +248,7 @@ export default function Join (): JSX.Element {
                                         md={7}>
                                         <CameraPreview
                                             permissionError={permissionError}
-                                            videoStream={stream} />
+                                            videoStream={cameraStream} />
                                     </Grid>
                                 }
                                 <Grid
@@ -380,17 +267,17 @@ export default function Join (): JSX.Element {
                                         </Grid>
                                     </Grid>
                                     <JoinRoomForm
-                                        mediaDeviceError={permissionError || loadError}
-                                        stream={stream}
-                                        audioDeviceOptions={audioDeviceOptions}
+                                        mediaDeviceError={permissionError || notFoundError}
+                                        stream={cameraStream}
+                                        audioDeviceOptions={availableAudioDevices}
                                         audioDeviceIdHandler={{
-                                            audioDeviceId,
-                                            setAudioDeviceId,
+                                            audioDeviceId: selectedAudioDeviceId,
+                                            setAudioDeviceId: setSelectedAudioDeviceId,
                                         }}
-                                        videoDeviceOptions={videoDeviceOptions}
+                                        videoDeviceOptions={availableVideoDevices}
                                         videoDeviceIdHandler={{
-                                            videoDeviceId,
-                                            setVideoDeviceId,
+                                            videoDeviceId: selectedVideoDeviceId,
+                                            setVideoDeviceId: setSelectedVideoDeviceId,
                                         }}
                                     />
                                 </Grid>
@@ -659,10 +546,4 @@ function PermissionAlertDialog ({ dialogOpenHandler }: {
             </DialogActions>
         </Dialog>
     );
-}
-
-export enum DeviceStatus {
-    MIC_ERROR = `mic_error`,
-    MIC_NOT_FOUND = `mic_not_found`,
-    MIC_NOT_ALLOWED = `mic_not_allowed`
 }

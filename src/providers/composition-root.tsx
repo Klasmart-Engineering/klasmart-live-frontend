@@ -5,6 +5,7 @@ import React, {
     ReactChild,
     ReactChildren,
 } from "react";
+import { CameraContextProvider } from "../app/context-provider/camera-context";
 
 type Props = {
     children: ReactChild | ReactChildren | null;
@@ -16,7 +17,9 @@ export function CompositionRoot ({ children, sessionId }: Props) {
         <RegionSelectProvider>
             <ServicesProvider>
                 <SessionContextProvider sessionId={sessionId}>
-                    { children }
+                    <CameraContextProvider>
+                        { children }
+                    </CameraContextProvider>
                 </SessionContextProvider>
             </ServicesProvider>
         </RegionSelectProvider>
