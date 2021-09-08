@@ -16,7 +16,6 @@ declare module "react-router-transition"
 
   interface AnimatedRouteProps extends RouteProps { }
 
-
   export const AnimatedSwitch: React.ComponentClass<AnimatedSwitchProps>;
   export const AnimatedRoute: React.ComponentClass<AnimatedRouteProps>;
   export const RouteTransition: React.ComponentClass<AnimatedSwitchProps>;

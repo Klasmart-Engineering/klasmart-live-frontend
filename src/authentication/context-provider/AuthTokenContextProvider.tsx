@@ -1,6 +1,15 @@
-import { gql, useQuery } from "@apollo/client";
-import React, { createContext, FunctionComponent, ReactChild, ReactChildren, useContext } from "react";
-
+import {
+    gql,
+    useQuery,
+} from "@apollo/client";
+import React,
+{
+    createContext,
+    FunctionComponent,
+    ReactChild,
+    ReactChildren,
+    useContext,
+} from "react";
 
 const QUERY_VERIFY_TOKEN = gql`
     query token {
@@ -17,15 +26,15 @@ const QUERY_VERIFY_TOKEN = gql`
 `;
 
 export interface IToken {
-    userName: string,
-    roomId: string,
-    isTeacher: boolean,
-    materials: { name: string, url: string}[],
+    userName: string;
+    roomId: string;
+    isTeacher: boolean;
+    materials: { name: string; url: string}[];
 }
 
 interface IAuthTokenState {
-    isLoading: boolean,
-    token: IToken | undefined,
+    isLoading: boolean;
+    token: IToken | undefined;
 }
 
 interface IAuthTokenContext {
@@ -34,8 +43,11 @@ interface IAuthTokenContext {
 }
 
 const Context = createContext<IAuthTokenContext>({
-    state: {isLoading: true, token: undefined}, 
-    actions: {}
+    state: {
+        isLoading: true,
+        token: undefined,
+    },
+    actions: {},
 });
 
 type Props = {
@@ -60,7 +72,7 @@ export const AuthTokenContextProvider: FunctionComponent<Props> = ({ children }:
     );
 };
 
-export function useAuthToken(): IAuthTokenContext {
+export function useAuthToken (): IAuthTokenContext {
     return useContext(Context);
 }
 

@@ -1,41 +1,42 @@
-import { useEffect, useState } from "react"
+import {
+    useEffect,
+    useState,
+} from "react";
 
-export function useIsElementInViewport(ref: React.RefObject<HTMLElement>): boolean {
+export function useIsElementInViewport (ref: React.RefObject<HTMLElement>): boolean {
 
-    const [isIntersecting, setIntersecting] = useState(false)
-    const observer = new IntersectionObserver(
-        ([entry]) => setIntersecting(entry.isIntersecting)
-    )
+    const [ isIntersecting, setIntersecting ] = useState(false);
+    const observer = new IntersectionObserver(([ entry ]) => setIntersecting(entry.isIntersecting));
 
     useEffect(() => {
         if (ref.current) {
-            observer.observe(ref.current)
+            observer.observe(ref.current);
         }
         // Remove the observer as soon as the component is unmounted
         return () => {
-            observer.disconnect()
-        }
-    }, [])
+            observer.disconnect();
+        };
+    }, []);
 
-    return isIntersecting
+    return isIntersecting;
 }
 
-export function useWindowSize() {
-    const [windowSize, setWindowSize] = useState({
+export function useWindowSize () {
+    const [ windowSize, setWindowSize ] = useState({
         width: window.innerWidth,
         height: window.innerHeight,
     });
 
     useEffect(() => {
-        function handleResize() {
+        function handleResize () {
             setWindowSize({
                 width: window.innerWidth,
                 height: window.innerHeight,
             });
         }
-        window.addEventListener("resize", handleResize);
+        window.addEventListener(`resize`, handleResize);
         handleResize();
-        return () => window.removeEventListener("resize", handleResize);
+        return () => window.removeEventListener(`resize`, handleResize);
     }, []);
 
     return windowSize;

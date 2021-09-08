@@ -30,7 +30,9 @@ const container = document.getElementById(`viewerContainer`);
 const eventBus = new pdfjsViewer.EventBus();
 
 let pdfLinkService = useLinkService
-    ? new pdfjsViewer.PDFLinkService({ eventBus })
+    ? new pdfjsViewer.PDFLinkService({
+        eventBus,
+    })
     : undefined;
 
 const pdfViewerParams = {
@@ -53,7 +55,7 @@ if (typeof scale !== `number` && !scaleLiterals.includes(scale)) {
 }
 eventBus.on(`pagesinit`, function () {
 // We can use pdfViewer now, e.g. let's change default scale.
-  pdfViewer.currentScaleValue = scale;
+    pdfViewer.currentScaleValue = scale;
 });
 
 // Loading document.
