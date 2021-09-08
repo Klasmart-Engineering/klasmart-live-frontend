@@ -63,7 +63,7 @@ export function LiveSessionLinkProvider ({
             // TODO: Redirect user to login page.
             if (!successful) actions?.signOutUser();
         }).catch(exception => {
-            console.exception(exception);
+            console.error(exception);
         });
     }, [ authenticationService ]);
 
