@@ -13,6 +13,9 @@ npm install
 # Package using webpack
 npm run build:app:release
 
+# Exit if webpack build failed
+[ $? -ne 0 ] && echo "Failed to build webpack" && exit 1
+
 # Prepare android platform
 cordova prepare android
 
