@@ -45,7 +45,7 @@ import React,
 import { FormattedMessage } from "react-intl";
 import { useRecoilState } from "recoil";
 
-const config = require(`@/package.json`);
+const config = require(`@/../package.json`);
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

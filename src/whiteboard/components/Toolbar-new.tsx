@@ -13,7 +13,7 @@ import YellowCrayon from "@/assets/img/canvas/crayons/yellow.svg";
 import Eraser from "@/assets/img/canvas/eraser.svg";
 import { useSessionContext } from "@/providers/session-context";
 import { ClassType } from "@/store/actions";
-import { useSynchronizedState } from "@/context-providers/SynchronizedStateProvider";
+import { useSynchronizedState } from "@/whiteboard/context-providers/SynchronizedStateProvider";
 import {
     blue,
     brown,

@@ -5,7 +5,7 @@ import {
     MUTATION_ENDCLASS,
     MUTATION_LEAVECLASS,
 } from "@/utils/graphql";
-import { ParentCaptcha } from "@/parentCaptcha";
+import { ParentCaptcha } from "@/components/parentCaptcha";
 import { useMutation } from "@apollo/client";
 import {
     Button,
