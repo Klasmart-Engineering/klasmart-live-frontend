@@ -1,6 +1,8 @@
 import LanguageCard from "./languageCard";
 import {
-    Grid, makeStyles, Theme,
+    Grid,
+    makeStyles,
+    Theme,
 } from "@material-ui/core";
 import React from "react";
 

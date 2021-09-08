@@ -9,6 +9,7 @@
     "build:app:release": "webpack --config webpack.cordova.prod.config.ts",
     "start": "cross-env NODE_ENV=development webpack serve",
     "test": "jest",
+    "lint": "eslint .",
     "coverage": "jest --coverage",
     "build:docker": "DOCKER_BUILDKIT=1 docker build --no-cache --ssh default -t kidsloop-live-frontend .",
     "preversion": "git checkout master && git pull origin master",
@@ -18,7 +19,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@kidsloop/eslint-config": "bitbucket:calmisland/kidsloop-eslint-config#1.0.0",
+    "@kidsloop/eslint-config": "bitbucket:calmisland/kidsloop-eslint-config#1.1.1",
     "@testing-library/jest-dom": "5.14.1",
     "@testing-library/react": "12.0.0",
     "@testing-library/react-hooks": "7.0.1",

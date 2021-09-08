@@ -1,8 +1,12 @@
-import { localeCodes, fallbackLocale, getIntl } from "../localization/localeCodes";
+import {
+    fallbackLocale,
+    getIntl,
+    localeCodes,
+} from "../localization/localeCodes";
 
 const localeCache = new Map<string, ReturnType<typeof getIntl>>();
 
-export function getLanguage(languageCode: string) {
+export function getLanguage (languageCode: string) {
     let language = localeCache.get(languageCode);
     if (language !== undefined) { return language; }
     language = getIntl(languageCode);
@@ -13,7 +17,7 @@ export function getLanguage(languageCode: string) {
 
 // It's a temporary that sending a ui value as a url parameter.
 // Later we may be able to send the hub UI's redux value like <Live lang={lang} theme={theme} />
-export function getDefaultLanguageCode() {
+export function getDefaultLanguageCode () {
     const languages = navigator.languages || [
         (navigator as any).language,
         (navigator as any).browerLanguage,
@@ -25,5 +29,5 @@ export function getDefaultLanguageCode() {
             return language;
         }
     }
-    return "en";
+    return `en`;
 }

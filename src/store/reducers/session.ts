@@ -1,6 +1,10 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { ClassType, UserAgent, UserType } from "../actions";
 import { getDefaultLanguageCode } from "../../utils/locale";
+import {
+    ClassType,
+    UserAgent,
+    UserType,
+} from "../actions";
+import { createSlice } from "@reduxjs/toolkit";
 
 type SessionState = {
     userAgent: UserAgent;
@@ -24,20 +28,21 @@ const initialSessionState: SessionState = {
         isChromium: false,
         isMobileSafari: false,
     },
-}
+};
 
 const sessionSlice = createSlice({
-    name: "session",
+    name: `session`,
     initialState: initialSessionState,
     reducers: {
-        setUserAgent(state, action) {
-            return { ...state, userAgent: action.payload }
+        setUserAgent (state, action) {
+            return {
+                ...state,
+                userAgent: action.payload,
+            };
         },
-    }
-})
+    },
+});
 
-export const {
-    setUserAgent,
-} = sessionSlice.actions
+export const { setUserAgent } = sessionSlice.actions;
 
-export default sessionSlice.reducer
+export default sessionSlice.reducer;

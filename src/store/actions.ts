@@ -20,14 +20,14 @@ export interface Action<T extends ActionTypes, P> {
 
 export interface Payload {
     total: number;
-    data: any[]
+    data: any[];
 }
 
 export enum ClassType {
-    LIVE = "live",
-    CLASSES = "class",
-    STUDY = "study",
-    TASK = "task"
+    LIVE = `live`,
+    CLASSES = `class`,
+    STUDY = `study`,
+    TASK = `task`
 }
 export type SetClassType = Action<ActionTypes.CLASS_TYPE, ClassType>;
 
@@ -56,8 +56,8 @@ export type SetUserAgent = Action<ActionTypes.USER_AGENT, UserAgent>;
 
 // In the future, might be need more specific types for student
 export enum UserType {
-    TEACHER = "teacher",
-    STUDENT = "student",
+    TEACHER = `teacher`,
+    STUDENT = `student`,
 }
 export type SetUserType = Action<ActionTypes.USER_TYPE, UserType>;
 export type SetLocale = Action<ActionTypes.LOCALE, string>;

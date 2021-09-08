@@ -11,42 +11,41 @@ export class EventStream {
     readonly tag: string;
     private sequence: number;
 
-    private constructor(id: string, sequence: number, tag: string) {
+    private constructor (id: string, sequence: number, tag: string) {
         this.id = id;
         this.sequence = sequence;
         this.tag = tag;
     }
 
-    getId() : string {
-        return this.id
+    getId () : string {
+        return this.id;
     }
 
-    getSequence() : number {
-        return this.sequence
+    getSequence () : number {
+        return this.sequence;
     }
 
-    getTag() : string {
-        return this.tag
+    getTag () : string {
+        return this.tag;
     }
 
-    increaseSequence() : void {
-        this.sequence = this.sequence === Number.MAX_SAFE_INTEGER ? 0 : this.sequence + 1
+    increaseSequence () : void {
+        this.sequence = this.sequence === Number.MAX_SAFE_INTEGER ? 0 : this.sequence + 1;
     }
 
     toData (): EventStreamData {
-      return {
-        id: this.id,
-        sequence: this.sequence,
-        tag: this.tag
-      }
+        return {
+            id: this.id,
+            sequence: this.sequence,
+            tag: this.tag,
+        };
     }
 
     static fromData (data: EventStreamData) : EventStream {
-      return new EventStream(data.id, data.sequence, data.tag)
+        return new EventStream(data.id, data.sequence, data.tag);
     }
 
     static builder (eventStream?: EventStream) : EventStreamBuilder {
-      return new EventStreamBuilder(eventStream)
+        return new EventStreamBuilder(eventStream);
     }
 }
-
