@@ -1,11 +1,11 @@
-import { SFU_LINK } from "../../providers/providers";
-import { RoomContext } from "../../providers/roomContext";
-import { useSessionContext } from "../../providers/session-context";
+import { SFU_LINK } from "@/providers/providers";
+import { RoomContext } from "@/providers/roomContext";
+import { useSessionContext } from "@/providers/session-context";
 import {
     MUTE,
     MuteNotification,
     WebRTCContext,
-} from "../../providers/WebRTCContext";
+} from "@/providers/WebRTCContext";
 import {
     activeTabState,
     hasControlsState,
@@ -19,8 +19,8 @@ import {
     isLessonPlanOpenState,
     isViewModesOpenState,
     unreadMessagesState,
-} from "../../store/layoutAtoms";
-import { useSynchronizedState } from "../../whiteboard/context-providers/SynchronizedStateProvider";
+} from "@/store/layoutAtoms";
+import { useSynchronizedState } from "@/whiteboard/context-providers/SynchronizedStateProvider";
 import {
     DialogEndClass,
     DialogLeaveClass,

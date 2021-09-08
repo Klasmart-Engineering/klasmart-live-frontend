@@ -1,5 +1,5 @@
 // @ts-ignore
-import { Resolver } from "../resolver";
+import { Resolver } from "@/resolver";
 import { SFU_LINK } from "./providers";
 import { useSessionContext } from "./session-context";
 import {

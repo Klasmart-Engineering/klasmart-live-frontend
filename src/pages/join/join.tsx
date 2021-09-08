@@ -1,21 +1,21 @@
-import KidsLoopClassTeachers from "../../assets/img/classtype/kidsloop_class_teachers.svg";
-import KidsLoopLiveStudents from "../../assets/img/classtype/kidsloop_live_students.svg";
-import KidsLoopLiveTeachers from "../../assets/img/classtype/kidsloop_live_teachers.svg";
-import KidsLoopStudyStudents from "../../assets/img/classtype/kidsloop_study_students.svg";
-import KidsLoopLogoSvg from "../../assets/img/kidsloop.svg";
-import Loading from "../../components/loading";
-import Camera from "../../components/media/camera";
-import MediaDeviceSelect from "../../components/mediaDeviceSelect";
-import StyledButton from "../../components/styled/button";
-import StyledIcon from "../../components/styled/icon";
-import StyledTextField from "../../components/styled/textfield";
-import { useSessionContext } from "../../providers/session-context";
-import { ClassType } from "../../store/actions";
-import { hasJoinedClassroomState } from "../../store/layoutAtoms";
+import KidsLoopClassTeachers from "@/assets/img/classtype/kidsloop_class_teachers.svg";
+import KidsLoopLiveStudents from "@/assets/img/classtype/kidsloop_live_students.svg";
+import KidsLoopLiveTeachers from "@/assets/img/classtype/kidsloop_live_teachers.svg";
+import KidsLoopStudyStudents from "@/assets/img/classtype/kidsloop_study_students.svg";
+import KidsLoopLogoSvg from "@/assets/img/kidsloop.svg";
+import Loading from "@/components/loading";
+import Camera from "@/components/media/camera";
+import MediaDeviceSelect from "@/components/mediaDeviceSelect";
+import StyledButton from "@/components/styled/button";
+import StyledIcon from "@/components/styled/icon";
+import StyledTextField from "@/components/styled/textfield";
+import { useSessionContext } from "@/providers/session-context";
+import { ClassType } from "@/store/actions";
+import { hasJoinedClassroomState } from "@/store/layoutAtoms";
 import {
     BrandingType,
     getOrganizationBranding,
-} from "../../utils/utils";
+} from "@/utils/utils";
 import Button from '@material-ui/core/Button';
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
@@ -45,7 +45,7 @@ import React,
 import { FormattedMessage } from "react-intl";
 import { useRecoilState } from "recoil";
 
-const config = require(`../../../package.json`);
+const config = require(`@/package.json`);
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

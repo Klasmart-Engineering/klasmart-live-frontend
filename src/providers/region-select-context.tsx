@@ -1,4 +1,4 @@
-import { selectedRegionState } from "../app/model/appModel";
+import { selectedRegionState } from "@/app/model/appModel";
 import React,
 {
     createContext,

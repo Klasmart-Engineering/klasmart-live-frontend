@@ -1,9 +1,9 @@
-import { ContentType } from "../../../../pages/utils";
-import { RoomContext } from "../../../../providers/roomContext";
-import { useSessionContext } from "../../../../providers/session-context";
-import { materialActiveIndexState } from "../../../../store/layoutAtoms";
-import { MaterialTypename } from "../../../../types/lessonMaterial";
-import { NoItemList } from "../../../../utils/utils";
+import { ContentType } from "@/pages/utils";
+import { RoomContext } from "@/providers/roomContext";
+import { useSessionContext } from "@/providers/session-context";
+import { materialActiveIndexState } from "@/store/layoutAtoms";
+import { MaterialTypename } from "@/types/lessonMaterial";
+import { NoItemList } from "@/utils/utils";
 import {
     Grid,
     makeStyles,

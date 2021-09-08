@@ -1,4 +1,4 @@
-import { GlobalWhiteboardContext } from "../whiteboard/context-providers/GlobalWhiteboardContext";
+import { GlobalWhiteboardContext } from "@/whiteboard/context-providers/GlobalWhiteboardContext";
 import { RoomProvider } from "./roomContext";
 import { ScreenShareProvider } from "./screenShareProvider";
 import { WebRTCProvider } from "./WebRTCContext";

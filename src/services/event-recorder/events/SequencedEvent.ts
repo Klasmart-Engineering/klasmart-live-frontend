@@ -1,4 +1,4 @@
-import { SqeuencedEventBuilder } from '../builder/SequencedEventBuilder';
+import { SqeuencedEventBuilder } from '@/services/event-recorder/builder/SequencedEventBuilder'
 
 export interface SequencedEventData {
     streamId: string;

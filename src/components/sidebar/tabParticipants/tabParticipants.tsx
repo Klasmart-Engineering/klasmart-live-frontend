@@ -1,7 +1,7 @@
-import { Session } from "../../../pages/utils";
-import { RoomContext } from "../../../providers/roomContext";
-import { NoItemList } from "../../../utils/utils";
-import UserCamera from "../../userCamera/userCamera";
+import { Session } from "@/pages/utils";
+import { RoomContext } from "@/providers/roomContext";
+import { NoItemList } from "@/utils/utils";
+import UserCamera from "@/userCamera/userCamera";
 import {
     Fade,
     Grid,

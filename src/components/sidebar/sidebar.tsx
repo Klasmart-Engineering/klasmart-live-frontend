@@ -1,5 +1,5 @@
-import { useSessionContext } from "../../providers/session-context";
-import { activeTabState } from "../../store/layoutAtoms";
+import { useSessionContext } from "@/providers/session-context";
+import { activeTabState } from "@/store/layoutAtoms";
 import MosaicSlider from "./mosaicSlider";
 import SidebarMenuItem from "./sidebarMenuItem";
 import TabMosaic from "./tabMosaic/tabMosaic";

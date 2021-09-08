@@ -1,8 +1,5 @@
-import { isBlank } from "../../../utils/StringUtils";
-import {
-    EventStream,
-    EventStreamData,
-} from "../stream/EventStream";
+import { EventStream, EventStreamData } from "@/services/event-recorder/stream/EventStream";
+import { isBlank } from "@/utils/StringUtils";
 import { v4 as uuid } from "uuid";
 
 export class EventStreamBuilder {

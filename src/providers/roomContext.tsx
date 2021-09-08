@@ -1,10 +1,16 @@
-import Loading from "../components/loading";
+import {
+    LIVE_LINK,
+    SFU_LINK,
+} from "./providers";
+import { useSessionContext } from "./session-context";
+import { GLOBAL_MUTE_QUERY } from "./WebRTCContext";
+import Loading from "@/components/loading";
 import {
     Content,
     Message,
     Session,
-} from "../pages/utils";
-import { ClassType } from "../store/actions";
+} from "@/pages/utils";
+import { ClassType } from "@/store/actions";
 import {
     audioGloballyMutedState,
     classEndedState,
@@ -17,21 +23,15 @@ import {
     streamIdState,
     unreadMessagesState,
     videoGloballyMutedState,
-} from "../store/layoutAtoms";
+} from "@/store/layoutAtoms";
 import {
     MUTATION_SEND_STUDENT_USAGE_RECORD_EVENT,
     MUTATION_SHOW_CONTENT,
-} from "../utils/graphql";
+} from "@/utils/graphql";
 import {
     defineContentId,
     defineContentType,
-} from "../utils/utils";
-import {
-    LIVE_LINK,
-    SFU_LINK,
-} from "./providers";
-import { useSessionContext } from "./session-context";
-import { GLOBAL_MUTE_QUERY } from "./WebRTCContext";
+} from "@/utils/utils";
 import {
     gql,
     useMutation,
@@ -98,7 +98,7 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
         camera,
         isTeacher,
         materials,
-        classtype,
+        classType,
     } = useSessionContext();
     const [ sfuAddress, setSfuAddress ] = useState<string>(``);
     const [ messages, setMessages ] = useState<Map<string, Message>>(new Map<string, Message>());
@@ -154,8 +154,8 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
     ]);
 
     useEffect(() => {
-        if (hasControls && interactiveMode === InteractiveMode.OnStage && classtype === ClassType.LIVE) return;
-        if (!hasControls && classtype !==  ClassType.STUDY) return;
+        if (hasControls && interactiveMode === InteractiveMode.OnStage && classType === ClassType.LIVE) return;
+        if (!hasControls && classType !==  ClassType.STUDY) return;
         const material = materials?.[materialActiveIndex];
         const materialUrl = material?.url;
         const activityTypeName = material?.__typename === `Iframe` ? `h5p` : material?.__typename;

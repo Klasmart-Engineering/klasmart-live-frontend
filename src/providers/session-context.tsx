@@ -1,7 +1,7 @@
 
-import { parseTokenParams } from "../app/utils/parseTokenUtils";
-import { AuthTokenProvider } from "../services/auth-token/AuthTokenProvider";
-import { LessonMaterial } from "../types/lessonMaterial";
+import { parseTokenParams } from "@/app/utils/parseTokenUtils";
+import { AuthTokenProvider } from "@/services/auth-token/AuthTokenProvider";
+import { LessonMaterial } from "@/types/lessonMaterial";
 import React,
 {
     createContext,

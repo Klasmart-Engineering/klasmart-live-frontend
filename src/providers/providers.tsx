@@ -1,8 +1,8 @@
-import { themeProvider } from "../themeProvider";
+import { themeProvider } from "@/themeProvider";
 import {
     getDefaultLanguageCode,
     getLanguage,
-} from "../utils/locale";
+} from "@/utils/locale";
 import { CompositionRoot } from "./composition-root";
 import { ThemeProvider } from "@material-ui/core";
 import React,

@@ -1,11 +1,11 @@
-import { useSessionContext } from "../../../providers/session-context";
-import { ClassType } from "../../../store/actions";
+import { useSessionContext } from "@/providers/session-context";
+import { ClassType } from "@/store/actions";
 import {
     hasControlsState,
     isCanvasOpenState,
-} from "../../../store/layoutAtoms";
-import { StyledPopper } from "../../../utils/utils";
-import { useSynchronizedState } from "../../../whiteboard/context-providers/SynchronizedStateProvider";
+} from "@/store/layoutAtoms";
+import { StyledPopper } from "@/utils/utils";
+import { useSynchronizedState } from "@/whiteboard/context-providers/SynchronizedStateProvider";
 import {
     Grid,
     makeStyles,

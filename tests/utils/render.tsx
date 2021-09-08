@@ -1,4 +1,4 @@
-import { fallbackLocale } from '../../src/localization/localeCodes';
+import { fallbackLocale } from '@/localization/localeCodes';
 import {
     MockedProvider,
     MockedResponse,

@@ -1,9 +1,9 @@
-import { isBlank } from "../../../utils/StringUtils";
+import { isBlank } from "@/utils/StringUtils";
 import {
     SequencedEvent,
     SequencedEventData,
-} from "../events/SequencedEvent";
-import { EventStream } from "../stream/EventStream";
+} from "@/events/SequencedEvent";
+import { EventStream } from "@/stream/EventStream";
 import { v4 as uuid } from "uuid";
 
 export class SqeuencedEventBuilder {
