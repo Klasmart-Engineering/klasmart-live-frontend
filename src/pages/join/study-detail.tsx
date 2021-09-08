@@ -23,6 +23,10 @@ import {useIntl} from "react-intl";
 import {GetApp} from "@material-ui/icons"
 import {saveDataBlobToFile} from "../../utils/fileUtils";
 import {downloadDataBlob} from "../../utils/requestUtils";
+import {ParentalGate} from "../../components/parentalGate";
+import {useDispatch} from "react-redux";
+import StyledIcon from "../../components/styled/icon";
+import {ArrowBackIos as ArrowBackIcon} from "@styled-icons/material/ArrowBackIos";
 
 const useStyles = makeStyles((theme: Theme) => ({
     dialogTitle: {
@@ -60,6 +64,9 @@ const useStyles = makeStyles((theme: Theme) => ({
         marginTop: -12,
         marginLeft: -12,
     },
+    buttonBackPadding: {
+        padding: 10
+    },
 }));
 
 const STUDY_DETAIL_ON_BACK_ID = "studyDetailOnBackID"
@@ -71,7 +78,7 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
     onClose: () => void,
     joinStudy: () => void }): JSX.Element
 {
-    const { dialogTitle, dialogTitleText, rowHeaderText, rowContentText, wrapper, progress, attachmentName } = useStyles();
+    const { dialogTitle, dialogTitleText, rowHeaderText, rowContentText, wrapper, progress, attachmentName, buttonBackPadding } = useStyles();
     const cms = useHttpEndpoint("cms");
     const [downloadingPreview, setDownloadingPreview] = useState(false)
     const [shouldDownloadPreview, setShouldDownloadPreview] = useState(false)
@@ -82,6 +89,9 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
     const { addOnBack, removeOnBack } = useContext(CordovaSystemContext);
     const [downloadingAttachment, setDownloadingAttachment] = useState(false);
     const [shouldDownloadAttachment, setShouldDownloadAttachment] = useState(false);
+    const [hyperLink, setHyperLink] = useState<string|undefined>();
+    const [parentalLock, setParentalLock] = useState<boolean>(false);
+    const dispatch = useDispatch();
 
     useEffect(() => {
         if(open){
@@ -404,6 +414,71 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
         }
     },[schedule, open]);
 
+
+    function generateDescriptionHasHyperLink(description: string) {
+        const linkRegex = /(http|ftp|https):\/\/([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?/g;
+        const texts = description.split(' ');
+        return texts.map(
+            text => linkRegex.test(text)
+                ? <><Link variant="body1" href="#" onClick={() => {setHyperLink(text);}}>{text}</Link> </> : `${text} ` )
+    }
+
+    const openHyperLink = (link?: string) => {
+        if(!link)
+            return;
+        const cordova = (window as any).cordova;
+        let browser: any;
+        if (!cordova) return;
+
+        cordova.plugins.browsertab.isAvailable((result: any) => {
+            if (!result) {
+                browser = cordova.InAppBrowser.open(link, "_system", "location=no, zoom=no");
+            } else {
+                cordova.plugins.browsertab.openUrl(
+                    link,
+                    (successResp: any) => { console.log(successResp) },
+                    (failureResp: any) => {
+                        console.error("no browser tab available");
+                    }
+                )
+            }
+        })
+    }
+
+    useEffect(() => {
+        if(hyperLink){
+            setParentalLock(true);
+        }
+    }, [hyperLink])
+
+    useEffect(() => {
+        if(!parentalLock) {
+            setHyperLink(undefined);
+        }
+    },[parentalLock])
+    if (parentalLock) {
+        return <Dialog
+            aria-labelledby="select-org-dialog"
+            fullScreen
+            open={open}
+            onClose={() => dispatch(setParentalLock(false))}
+        >
+            <DialogTitle
+                id="select-org-dialog"
+                disableTypography
+                className={buttonBackPadding}
+            >
+                <IconButton
+                    onClick={() => { setParentalLock(false); }}
+                    size="medium"
+                >
+                    <StyledIcon icon={<ArrowBackIcon />} size="medium" />
+                </IconButton >
+            </DialogTitle>
+            <ParentalGate onCompleted={() => { openHyperLink(hyperLink); setParentalLock(false); }} />
+        </Dialog>
+    }
+
     return (
         <React.Fragment>
             <Dialog fullWidth maxWidth={`sm`} scroll={`paper`} open={open} onClose={closeButtonHandler}>
@@ -422,7 +497,7 @@ export default function StudyDetail({ schedule, open, onClose, joinStudy }: {
                             </Grid>
                             <Grid item xs>
                                 <Typography variant="body1" className={rowContentText}>
-                                    { schedule?.description || `N/A` }
+                                    { schedule?.description ? generateDescriptionHasHyperLink(schedule.description) : `N/A` }
                                 </Typography>
                             </Grid>
                         </Grid>
