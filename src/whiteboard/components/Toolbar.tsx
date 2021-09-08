@@ -1,5 +1,5 @@
 import { useSessionContext } from "@/providers/session-context";
-import { useSynchronizedState } from "@/context-providers/SynchronizedStateProvider";
+import { useSynchronizedState } from "@/whiteboard/context-providers/SynchronizedStateProvider";
 import { IconButton } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid/Grid";
 import useTheme from "@material-ui/core/styles/useTheme";

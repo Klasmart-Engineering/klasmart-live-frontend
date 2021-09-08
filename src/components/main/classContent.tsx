@@ -8,7 +8,7 @@ import {
 } from "@/store/layoutAtoms";
 import { MUTATION_REWARD_TROPHY } from "@/utils/graphql";
 import { Whiteboard } from "@/whiteboard/components/Whiteboard";
-import { WB_TOOLBAR_MAX_HEIGHT } from "@/classContent/WBToolbar";
+import { WB_TOOLBAR_MAX_HEIGHT } from "@/components/classContent/WBToolbar";
 import PreviewLessonPlan from "./previewLessonPlan";
 import { useMutation } from "@apollo/client";
 import { Typography } from "@material-ui/core";

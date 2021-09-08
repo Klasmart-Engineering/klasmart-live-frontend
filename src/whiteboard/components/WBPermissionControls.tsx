@@ -1,5 +1,5 @@
 import StyledIcon from "@/components/styled/icon";
-import { useSynchronizedState } from "@/context-providers/SynchronizedStateProvider";
+import { useSynchronizedState } from "@/whiteboard/context-providers/SynchronizedStateProvider";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import MenuItem from "@material-ui/core/MenuItem";

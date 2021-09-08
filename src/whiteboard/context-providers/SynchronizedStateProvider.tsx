@@ -4,7 +4,7 @@ import {
     createEmptyPermissions,
     createPermissions,
     Permissions,
-} from "@/types/Permissions";
+} from "@/whiteboard/types/Permissions";
 import {
     gql,
     useMutation,

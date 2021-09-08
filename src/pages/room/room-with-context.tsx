@@ -6,8 +6,8 @@ import {
     classEndedState,
     classLeftState,
 } from "@/store/layoutAtoms";
-import ClassEnded from "@/end/classEnded";
-import ClassLeft from "@/end/classLeft";
+import ClassEnded from "@/pages/end/classEnded";
+import ClassLeft from "@/pages/end/classLeft";
 import { Room } from "./room";
 import React from 'react';
 import { useRecoilState } from "recoil";

@@ -2,8 +2,6 @@ import { useSessionContext } from "@/providers/session-context";
 import { ClassType } from "@/store/actions";
 import { isCanvasOpenState } from "@/store/layoutAtoms";
 import { useSynchronizedState } from "@/whiteboard/context-providers/SynchronizedStateProvider";
-import StyledIcon from "@/styled/icon";
-import CanvasMenu from "@/toolbar/toolbarMenus/canvasMenu";
 import {
     Grid,
     makeStyles,
@@ -14,6 +12,8 @@ import { PencilAlt as WBIcon } from "@styled-icons/fa-solid/PencilAlt";
 import React,
 { useContext } from "react";
 import { useRecoilState } from "recoil";
+import StyledIcon from "@/components/styled/icon";
+import CanvasMenu from "@/components/toolbar/toolbarMenus/canvasMenu";
 
 export const WB_TOOLBAR_MAX_HEIGHT = 80; // 64 + 16(padding top)
 
