@@ -1,12 +1,12 @@
+import MainClass from "./mainClass";
+import MainDrawer from "./mainDrawer";
+import MainView from "./mainView";
+import Toolbar from "@/components/toolbar/toolbar";
 import { ContentType } from "@/pages/utils";
 import { RoomContext } from "@/providers/roomContext";
 import { useSessionContext } from "@/providers/session-context";
 import { ClassType } from "@/store/actions";
 import { Whiteboard } from "@/whiteboard/components/Whiteboard";
-import Toolbar from "@/components/toolbar/toolbar";
-import MainClass from "./mainClass";
-import MainDrawer from "./mainDrawer";
-import MainView from "./mainView";
 import {
     Grid,
     makeStyles,

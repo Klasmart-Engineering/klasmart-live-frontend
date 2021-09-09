@@ -1,3 +1,4 @@
+import { ParentCaptcha } from "@/components/parentCaptcha";
 import { LIVE_LINK } from "@/providers/providers";
 import { useSessionContext } from "@/providers/session-context";
 import {  classLeftState } from "@/store/layoutAtoms";
@@ -5,7 +6,6 @@ import {
     MUTATION_ENDCLASS,
     MUTATION_LEAVECLASS,
 } from "@/utils/graphql";
-import { ParentCaptcha } from "@/components/parentCaptcha";
 import { useMutation } from "@apollo/client";
 import {
     Button,

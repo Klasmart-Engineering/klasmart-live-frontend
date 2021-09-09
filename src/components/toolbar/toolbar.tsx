@@ -1,3 +1,17 @@
+import {
+    DialogEndClass,
+    DialogLeaveClass,
+} from "./endCall/endCall";
+import ToolbarItem from "./toolbarItem";
+import ToolbarItemCall from "./toolbarItemCall";
+import ToolbarItemCamera from "./toolbarItemCamera";
+import ToolbarItemMicrophone from "./toolbarItemMicrophone";
+import CanvasMenu from "./toolbarMenus/canvasMenu";
+import ChatMenu from "./toolbarMenus/chatMenu/chatMenu";
+import ClassDetailsMenu from "./toolbarMenus/classDetailsMenu/classDetailsMenu";
+import GlobalActionsMenu from "./toolbarMenus/globalActionsMenu/globalActionsMenu";
+import LessonPlanMenu from "./toolbarMenus/lessonPlanMenu/lessonPlanMenu";
+import ViewModesMenu from "./toolbarMenus/viewModesMenu/viewModesMenu";
 import { SFU_LINK } from "@/providers/providers";
 import { RoomContext } from "@/providers/roomContext";
 import { useSessionContext } from "@/providers/session-context";
@@ -21,20 +35,6 @@ import {
     unreadMessagesState,
 } from "@/store/layoutAtoms";
 import { useSynchronizedState } from "@/whiteboard/context-providers/SynchronizedStateProvider";
-import {
-    DialogEndClass,
-    DialogLeaveClass,
-} from "./endCall/endCall";
-import ToolbarItem from "./toolbarItem";
-import ToolbarItemCall from "./toolbarItemCall";
-import ToolbarItemCamera from "./toolbarItemCamera";
-import ToolbarItemMicrophone from "./toolbarItemMicrophone";
-import CanvasMenu from "./toolbarMenus/canvasMenu";
-import ChatMenu from "./toolbarMenus/chatMenu/chatMenu";
-import ClassDetailsMenu from "./toolbarMenus/classDetailsMenu/classDetailsMenu";
-import GlobalActionsMenu from "./toolbarMenus/globalActionsMenu/globalActionsMenu";
-import LessonPlanMenu from "./toolbarMenus/lessonPlanMenu/lessonPlanMenu";
-import ViewModesMenu from "./toolbarMenus/viewModesMenu/viewModesMenu";
 import { useMutation } from "@apollo/client";
 import {
     Grid,

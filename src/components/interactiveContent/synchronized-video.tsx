@@ -1,7 +1,7 @@
 import { FFT } from "@/components/fft";
+import ReactPlayer from "@/components/react-player/lazy";
 import { LIVE_LINK } from '@/providers/providers';
 import { useSessionContext } from "@/providers/session-context";
-import ReactPlayer from "@/components/react-player/lazy";
 import { MaterialTypename } from '@/types/lessonMaterial';
 import {
     gql,

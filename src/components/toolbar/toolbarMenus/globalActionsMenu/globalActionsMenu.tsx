@@ -1,3 +1,4 @@
+import GlobalActionsMenuItem from "./globalAction";
 import { ContentType } from "@/pages/utils";
 import {
     LIVE_LINK,
@@ -17,7 +18,6 @@ import {
 } from "@/store/layoutAtoms";
 import { MUTATION_REWARD_TROPHY } from "@/utils/graphql";
 import { StyledPopper } from "@/utils/utils";
-import GlobalActionsMenuItem from "./globalAction";
 import {
     useMutation,
     useQuery,

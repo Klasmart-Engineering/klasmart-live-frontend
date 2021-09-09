@@ -1,6 +1,6 @@
-import { refreshAuthenticationCookie } from "@/utils/authentication";
-import { SequencedEventData } from "@/services/event-recorder//events/SequencedEvent";
 import { IEventUploader } from "./IEventUploader";
+import { SequencedEventData } from "@/services/event-recorder//events/SequencedEvent";
+import { refreshAuthenticationCookie } from "@/utils/authentication";
 import { GraphQLClient } from "graphql-request";
 
 interface PageEventIn {

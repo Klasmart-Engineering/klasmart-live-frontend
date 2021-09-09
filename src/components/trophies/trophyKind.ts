@@ -1,13 +1,13 @@
-import heart2 from "@/assets/img/trophies/heart2.png";
-import star3 from "@/assets/img/trophies/star3.png";
-import trophy from "@/assets/img/trophies/trophy.png";
-import goldMedal from "@/assets/img/trophies/medals/medal_gold_2.png";
+import rewardSound1 from "@/assets/audio/trophies/reward1.mp3";
+import rewardSound2 from "@/assets/audio/trophies/reward2.mp3";
 import awesome from "@/assets/img/trophies/encourage/awesome.png";
 import greatJob from "@/assets/img/trophies/encourage/great_job.png";
 import looksGreat from "@/assets/img/trophies/encourage/looks_great.png";
 import wellDone from "@/assets/img/trophies/encourage/well_done.png";
-import rewardSound1 from "@/assets/audio/trophies/reward1.mp3";
-import rewardSound2 from "@/assets/audio/trophies/reward2.mp3";
+import heart2 from "@/assets/img/trophies/heart2.png";
+import goldMedal from "@/assets/img/trophies/medals/medal_gold_2.png";
+import star3 from "@/assets/img/trophies/star3.png";
+import trophy from "@/assets/img/trophies/trophy.png";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
 
 export type TrophyKind = {

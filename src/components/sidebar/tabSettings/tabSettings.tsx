@@ -1,9 +1,9 @@
+import Settings from "./settings/settings";
+import TabSettingsMenu from "./tabSettingsMenu";
 import {
     activeSettingsStateTab,
     activeTabState,
 } from "@/store/layoutAtoms";
-import Settings from "./settings/settings";
-import TabSettingsMenu from "./tabSettingsMenu";
 import {
     Fade,
     Grid,

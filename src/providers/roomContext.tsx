@@ -1,3 +1,9 @@
+import {
+    LIVE_LINK,
+    SFU_LINK,
+} from "./providers";
+import { useSessionContext } from "./session-context";
+import { GLOBAL_MUTE_QUERY } from "./WebRTCContext";
 import Loading from "@/components/loading";
 import {
     Content,
@@ -22,12 +28,6 @@ import {
     defineContentId,
     defineContentType,
 } from "@/utils/utils";
-import {
-    LIVE_LINK,
-    SFU_LINK,
-} from "./providers";
-import { useSessionContext } from "./session-context";
-import { GLOBAL_MUTE_QUERY } from "./WebRTCContext";
 import {
     gql,
     useMutation,

@@ -1,5 +1,5 @@
-import { fallbackLocale } from "@/localization/localeCodes";
 import Loading from "./loading";
+import { fallbackLocale } from "@/localization/localeCodes";
 import { screen } from "@testing-library/react";
 import { render } from "@tests/utils/render";
 import React from "react";

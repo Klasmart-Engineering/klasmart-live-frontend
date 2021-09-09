@@ -1,6 +1,6 @@
-import { EventRecorderService } from '@/services/event-recorder/EventRecorderService'
-import { IEventUploader } from '@/services/event-recorder/uploader/IEventUploader'
-import { MockEventUploader } from '@/services/event-recorder/uploader/MockEventUploader'
+import { EventRecorderService } from '@/services/event-recorder/EventRecorderService';
+import { IEventUploader } from '@/services/event-recorder/uploader/IEventUploader';
+import { MockEventUploader } from '@/services/event-recorder/uploader/MockEventUploader';
 
 export class EventRecorderServiceBuilder {
     private uploader: IEventUploader;
