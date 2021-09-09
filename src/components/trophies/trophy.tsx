@@ -1,12 +1,12 @@
-import { RoomContext } from '@/providers/roomContext';
-import { useSessionContext } from '@/providers/session-context';
-import { ClassType } from '@/store/actions';
 import { ConfettiRain } from './confettiRain';
 import { Lights } from './lights';
 import { Reward } from './reward';
 import TrophyKinds,
 { TrophyKind } from './trophyKind';
 import TIMINGS from './trophyTimings';
+import { RoomContext } from '@/providers/roomContext';
+import { useSessionContext } from '@/providers/session-context';
+import { ClassType } from '@/store/actions';
 import React,
 {
     CSSProperties,

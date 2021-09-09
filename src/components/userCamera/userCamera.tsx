@@ -1,10 +1,10 @@
-import { RoomContext } from "@/providers/roomContext";
-import { useSessionContext } from "@/providers/session-context";
-import { WebRTCContext } from "@/providers/WebRTCContext";
-import ReactPlayer from "@/components/react-player";
 import NoCamera from "./noCamera";
 import UserCameraActions from "./userCameraActions";
 import UserCameraDetails from "./userCameraDetails";
+import ReactPlayer from "@/components/react-player";
+import { RoomContext } from "@/providers/roomContext";
+import { useSessionContext } from "@/providers/session-context";
+import { WebRTCContext } from "@/providers/WebRTCContext";
 import {
     Grid,
     makeStyles,

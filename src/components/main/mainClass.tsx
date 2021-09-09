@@ -1,8 +1,8 @@
+import { ClassContent } from "./classContent";
+import { WBToolbarContainer } from "@/components/classContent/WBToolbar";
 import { useSessionContext } from "@/providers/session-context";
 import { ClassType } from "@/store/actions";
 import { showEndStudyState } from "@/store/layoutAtoms";
-import { WBToolbarContainer } from "@/components/classContent/WBToolbar";
-import { ClassContent } from "./classContent";
 import React,
 { useContext } from "react";
 import { useRecoilState } from "recoil";

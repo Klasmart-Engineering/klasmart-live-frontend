@@ -1,7 +1,7 @@
-import { GlobalWhiteboardContext } from "@/whiteboard/context-providers/GlobalWhiteboardContext";
 import { RoomProvider } from "./roomContext";
 import { ScreenShareProvider } from "./screenShareProvider";
 import { WebRTCProvider } from "./WebRTCContext";
+import { GlobalWhiteboardContext } from "@/whiteboard/context-providers/GlobalWhiteboardContext";
 import { SnackbarProvider } from "kidsloop-px";
 import React,
 {

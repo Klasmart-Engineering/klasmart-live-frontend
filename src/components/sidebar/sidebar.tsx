@@ -1,10 +1,10 @@
-import { useSessionContext } from "@/providers/session-context";
-import { activeTabState } from "@/store/layoutAtoms";
 import MosaicSlider from "./mosaicSlider";
 import SidebarMenuItem from "./sidebarMenuItem";
 import TabMosaic from "./tabMosaic/tabMosaic";
 import TabParticipants from "./tabParticipants/tabParticipants";
 import TabSettings from "./tabSettings/tabSettings";
+import { useSessionContext } from "@/providers/session-context";
+import { activeTabState } from "@/store/layoutAtoms";
 import {
     Drawer,
     Grid,

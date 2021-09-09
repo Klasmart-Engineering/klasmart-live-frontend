@@ -1,7 +1,7 @@
-import { useSessionContext } from "@/providers/session-context";
-import { hasJoinedClassroomState } from "@/store/layoutAtoms";
 import Join from './join/join';
 import { RoomWithContext } from './room/room-with-context';
+import { useSessionContext } from "@/providers/session-context";
+import { hasJoinedClassroomState } from "@/store/layoutAtoms";
 import React from 'react';
 import { useRecoilState } from "recoil";
 

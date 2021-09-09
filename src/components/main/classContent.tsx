@@ -1,3 +1,5 @@
+import PreviewLessonPlan from "./previewLessonPlan";
+import { WB_TOOLBAR_MAX_HEIGHT } from "@/components/classContent/WBToolbar";
 import { LIVE_LINK } from "@/providers/providers";
 import { useSessionContext } from "@/providers/session-context";
 import { ClassType } from "@/store/actions";
@@ -8,8 +10,6 @@ import {
 } from "@/store/layoutAtoms";
 import { MUTATION_REWARD_TROPHY } from "@/utils/graphql";
 import { Whiteboard } from "@/whiteboard/components/Whiteboard";
-import { WB_TOOLBAR_MAX_HEIGHT } from "@/components/classContent/WBToolbar";
-import PreviewLessonPlan from "./previewLessonPlan";
 import { useMutation } from "@apollo/client";
 import { Typography } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";

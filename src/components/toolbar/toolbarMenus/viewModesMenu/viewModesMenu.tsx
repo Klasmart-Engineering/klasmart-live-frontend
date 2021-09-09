@@ -1,3 +1,4 @@
+import ViewMode from "./viewMode";
 import ObserveWarning from "@/components/observeWarning";
 import {
     InteractiveMode,
@@ -8,7 +9,6 @@ import {
     observeWarningState,
 } from "@/store/layoutAtoms";
 import { StyledPopper } from "@/utils/utils";
-import ViewMode from "./viewMode";
 import { Grid } from "@material-ui/core";
 import { UserVoice as OnStageIcon } from "@styled-icons/boxicons-solid/UserVoice";
 import { Eye as ObserveIcon } from "@styled-icons/fa-regular/Eye";
