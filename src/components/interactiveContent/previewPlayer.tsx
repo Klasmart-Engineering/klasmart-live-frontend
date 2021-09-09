@@ -1,3 +1,4 @@
+import Loading from "./loading";
 import { LIVE_LINK } from "@/providers/providers";
 import { RoomContext } from "@/providers/roomContext";
 import { useSessionContext } from "@/providers/session-context";
@@ -7,7 +8,6 @@ import {
 } from "@/store/layoutAtoms";
 import { sleep } from "@/utils/utils";
 import { useWindowSize } from "@/utils/viewport";
-import Loading from "./loading";
 import {
     gql,
     useSubscription,

@@ -1,5 +1,5 @@
-import { SequencedEventData } from '@/services/event-recorder/events/SequencedEvent';
 import { IEventUploader } from './IEventUploader';
+import { SequencedEventData } from '@/services/event-recorder/events/SequencedEvent';
 
 export class WebEventUploader implements IEventUploader {
     private readonly endpoint: string;

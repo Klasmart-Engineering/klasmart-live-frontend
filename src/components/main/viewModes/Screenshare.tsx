@@ -1,8 +1,8 @@
+import { StyledVideo } from "@/components/interactiveContent/styledVideo";
 import { RoomContext } from "@/providers/roomContext";
 import { ScreenShareContext } from "@/providers/screenShareProvider";
 import { WebRTCContext } from "@/providers/WebRTCContext";
 import { isGlobalActionsOpenState } from "@/store/layoutAtoms";
-import { StyledVideo } from "@/components/interactiveContent/styledVideo";
 import {
     Button,
     Grid,

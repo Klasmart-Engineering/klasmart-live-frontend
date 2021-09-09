@@ -1,9 +1,9 @@
+import { CompositionRoot } from "./composition-root";
 import { themeProvider } from "@/themeProvider";
 import {
     getDefaultLanguageCode,
     getLanguage,
 } from "@/utils/locale";
-import { CompositionRoot } from "./composition-root";
 import { ThemeProvider } from "@material-ui/core";
 import React,
 {

@@ -1,4 +1,5 @@
 
+import StyledIcon from "@/components/styled/icon";
 import { Session } from "@/pages/utils";
 import { useSessionContext } from "@/providers/session-context";
 import {
@@ -10,7 +11,6 @@ import {
 } from "@/providers/WebRTCContext";
 import { State } from "@/store/store";
 import PermissionControls from "@/whiteboard/components/WBPermissionControls";
-import StyledIcon from "@/components/styled/icon";
 import {
     useMutation,
     useQuery,

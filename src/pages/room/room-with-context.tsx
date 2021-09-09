@@ -1,4 +1,7 @@
+import { Room } from "./room";
 import { Trophy } from "@/components/trophies/trophy";
+import ClassEnded from "@/pages/end/classEnded";
+import ClassLeft from "@/pages/end/classLeft";
 import ClassProviders from "@/providers/classProviders";
 import { LiveSessionLinkProvider } from "@/providers/live-session-link-context";
 import { useSessionContext } from "@/providers/session-context";
@@ -6,9 +9,6 @@ import {
     classEndedState,
     classLeftState,
 } from "@/store/layoutAtoms";
-import ClassEnded from "@/pages/end/classEnded";
-import ClassLeft from "@/pages/end/classLeft";
-import { Room } from "./room";
 import React from 'react';
 import { useRecoilState } from "recoil";
 
