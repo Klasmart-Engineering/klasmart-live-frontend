@@ -90,6 +90,7 @@ module.exports = {
             USE_TEST_TOKEN: null,
             WEBRTC_DEVICE_HANDLER_NAME: ``,
             CUSTOM_UA: `cordova`,
+            IS_CORDOVA_BUILD: true,
         }),
         new HtmlWebpackPlugin({
             filename: `index.html`,
