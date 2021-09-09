@@ -44,6 +44,7 @@ import React,
 } from "react";
 import { FormattedMessage } from "react-intl";
 import { useRecoilState } from "recoil";
+import { useHistory } from "react-router-dom";
 
 const config = require(`@/../package.json`);
 
@@ -137,12 +138,7 @@ export default function Join (): JSX.Element {
     const logo = branding?.iconImageURL || KidsLoopLogoSvg;
 
     const {
-        setSelectedAudioDeviceId,
-        selectedAudioDeviceId,
-        availableAudioDevices,
-        setSelectedVideoDeviceId,
-        selectedVideoDeviceId,
-        availableVideoDevices,
+        setAcquireDevices,
         setAcquireCameraDevice,
         setHighQuality,
         notFoundError,
@@ -165,27 +161,12 @@ export default function Join (): JSX.Element {
     useEffect(() => {
         setHighQuality(isTeacher);
         setAcquireCameraDevice(classType === ClassType.LIVE);
+        setAcquireDevices(true);
     }, [ isTeacher, classType ]);
 
     useEffect(() => {
         handleOrganizationBranding();
     }, []);
-
-    useEffect(() => {
-        if (classType === ClassType.LIVE) {
-            if (!selectedVideoDeviceId && availableVideoDevices.length > 0) {
-                setSelectedVideoDeviceId(availableVideoDevices[0].deviceId);
-            }
-        } else {
-            setSelectedVideoDeviceId(``);
-        }
-        
-        if (!selectedAudioDeviceId && availableAudioDevices.length > 0) {
-            setSelectedAudioDeviceId(availableAudioDevices[0].deviceId);
-        }
-
-        setDialogOpen(permissionError || notFoundError);
-    }, [ selectedVideoDeviceId, selectedAudioDeviceId, availableVideoDevices, availableAudioDevices, classType, permissionError, notFoundError ]);
 
     if (loading) {
         return <Grid
@@ -269,16 +250,6 @@ export default function Join (): JSX.Element {
                                     <JoinRoomForm
                                         mediaDeviceError={permissionError || notFoundError}
                                         stream={cameraStream}
-                                        audioDeviceOptions={availableAudioDevices}
-                                        audioDeviceIdHandler={{
-                                            audioDeviceId: selectedAudioDeviceId,
-                                            setAudioDeviceId: setSelectedAudioDeviceId,
-                                        }}
-                                        videoDeviceOptions={availableVideoDevices}
-                                        videoDeviceIdHandler={{
-                                            videoDeviceId: selectedVideoDeviceId,
-                                            setVideoDeviceId: setSelectedVideoDeviceId,
-                                        }}
                                     />
                                 </Grid>
                             </Grid>
@@ -373,25 +344,11 @@ function ClassTypeLogo (): JSX.Element {
 interface JoinRoomFormProps {
     mediaDeviceError: boolean;
     stream: MediaStream | undefined;
-    audioDeviceOptions: MediaDeviceInfo[];
-    audioDeviceIdHandler: {
-        audioDeviceId: string;
-        setAudioDeviceId: React.Dispatch<React.SetStateAction<string>>;
-    };
-    videoDeviceOptions: MediaDeviceInfo[];
-    videoDeviceIdHandler: {
-        videoDeviceId: string;
-        setVideoDeviceId: React.Dispatch<React.SetStateAction<string>>;
-    };
 }
 
 function JoinRoomForm ({
     mediaDeviceError,
     stream,
-    audioDeviceOptions,
-    videoDeviceOptions,
-    audioDeviceIdHandler,
-    videoDeviceIdHandler,
 }: JoinRoomFormProps): JSX.Element {
     const {
         classType,
@@ -402,11 +359,19 @@ function JoinRoomForm ({
 
     const [ hasJoinedClassroom, setHasJoinedClassroom ] = useRecoilState(hasJoinedClassroomState);
 
-    const { audioDeviceId, setAudioDeviceId } = audioDeviceIdHandler;
-    const { videoDeviceId, setVideoDeviceId } = videoDeviceIdHandler;
-
     const [ user, setUser ] = useState<string>(``);
     const [ nameError, setNameError ] = useState<JSX.Element | null>(null);
+
+    const {
+        setSelectedAudioDeviceId,
+        selectedAudioDeviceId,
+        availableAudioDevices,
+        setSelectedVideoDeviceId,
+        selectedVideoDeviceId,
+        availableVideoDevices,
+    } = useCameraContext();
+
+    const history = useHistory();
 
     function join (e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -431,6 +396,10 @@ function JoinRoomForm ({
         setCamera(stream);
         setHasJoinedClassroom(true);
         localStorage.setItem(`ObserveWarning`, `true`);
+
+        if (process.env.IS_CORDOVA_BUILD) {
+            history.push(`/room`);
+        }
     }
 
     return (
@@ -456,11 +425,11 @@ function JoinRoomForm ({
                         item
                         xs>
                         <MediaDeviceSelect
-                            disabled={videoDeviceOptions.length <= 1}
+                            disabled={availableVideoDevices.length <= 1}
                             deviceType="video"
-                            deviceId={videoDeviceId}
-                            devices={videoDeviceOptions}
-                            onChange={(e) => setVideoDeviceId(e.target.value as string)}
+                            deviceId={selectedVideoDeviceId}
+                            devices={availableVideoDevices}
+                            onChange={(e) => setSelectedVideoDeviceId(e.target.value as string) }
                         />
                     </Grid>
                 }
@@ -468,11 +437,11 @@ function JoinRoomForm ({
                     item
                     xs>
                     <MediaDeviceSelect
-                        disabled={audioDeviceOptions.length <= 1}
+                        disabled={availableAudioDevices.length <= 1}
                         deviceType="audio"
-                        deviceId={audioDeviceId}
-                        devices={audioDeviceOptions}
-                        onChange={(e) => setAudioDeviceId(e.target.value as string)}
+                        deviceId={selectedAudioDeviceId}
+                        devices={availableAudioDevices}
+                        onChange={(e) => setSelectedAudioDeviceId(e.target.value as string)}
                     />
                 </Grid>
                 <Grid
