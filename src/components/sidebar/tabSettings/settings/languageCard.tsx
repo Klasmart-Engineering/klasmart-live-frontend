@@ -1,5 +1,5 @@
 
-import LanguageSelect from "@/languageSelect";
+import LanguageSelect from "@/components/languageSelect";
 import {
     Grid,
     makeStyles,
