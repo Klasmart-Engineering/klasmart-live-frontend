@@ -126,11 +126,10 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
     }, [ loadingShowContent ]);
 
     useEffect(() => {
-        if (!hasControls) return;
+        if (!hasControls && classtype !==  ClassType.STUDY) return;
         let material = interactiveMode !== InteractiveMode.OnStage && materialActiveIndex >= 0 && materialActiveIndex < materials.length ? materials[materialActiveIndex] : undefined;
         const type = defineContentType(material, interactiveMode);
         const contentId = defineContentId(material, interactiveMode, streamId, sessionId);
-
         if (classtype === ClassType.STUDY){
             material = materialActiveIndex >= 0 && materialActiveIndex < materials.length ? materials[materialActiveIndex] : undefined;
         }
