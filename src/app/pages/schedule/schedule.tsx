@@ -259,6 +259,8 @@ export function Schedule () {
 
             schedulerService.getScheduleToken(selectedOrganization.organization_id, selectedSchedule.id).then((res) => {
                 if (res.token) {
+                    lockOrientation(OrientationType.LANDSCAPE);
+
                     setToken(res.token);
                     /* TODO: Can we get rid of the token query parameter and just use
                     ** react component state for keeping and parsing the token instead? */
