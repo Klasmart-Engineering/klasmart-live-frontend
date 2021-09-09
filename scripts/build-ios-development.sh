@@ -5,6 +5,7 @@ export ENDPOINT_GQL=https://live.kidsloop.net/graphql
 export USE_TEST_TOKEN=1
 export WEBRTC_DEVICE_HANDLER_NAME=Safari12
 export CUSTOM_UA=cordovaios
+export IS_CORDOVA_BUILD="true"
 
 # Clean Build
 rm -rf ./www
