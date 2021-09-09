@@ -9,6 +9,7 @@ import React,
     useEffect,
     useState,
 } from "react";
+import { PermissionType, useCordovaSystemContext } from "./cordova-system-context";
 
 export interface ICameraContext {
     selectedAudioDeviceId: string,
@@ -17,6 +18,7 @@ export interface ICameraContext {
     selectedVideoDeviceId: string,
     setSelectedVideoDeviceId: React.Dispatch<React.SetStateAction<string>>,
     availableVideoDevices: MediaDeviceInfo[],
+    setAcquireDevices: React.Dispatch<React.SetStateAction<boolean>>,
     setAcquireCameraDevice: React.Dispatch<React.SetStateAction<boolean>>,
     setHighQuality: React.Dispatch<React.SetStateAction<boolean>>,
     cameraStream: MediaStream | undefined;
@@ -61,27 +63,64 @@ export const CameraContextProvider = ({ children }: Props) => {
 
     const [ deviceStatus, setDeviceStatus ] = useState<string>(``);
 
+    const [ acquireDevices, setAcquireDevices ] = useState<boolean>(false);
     const [ acquireCameraDevice, setAcquireCameraDevice ] = useState<boolean>(true);
+
+    // TODO: The cordova system context is not available on web.
+    const { requestPermissions: requestNativePermissions } = useCordovaSystemContext();
 
     const requestPermissions = useCallback(async () => {
         console.log(`request media permissions`);
-        return await navigator.mediaDevices.getUserMedia({
-            audio: true,
-            video: true,
-        }).then(stream => {
-            stream.getTracks().forEach(track => {
-                track.stop();
-            })
-        });
+
+        /* TODO: Can this if statement be abstracted away by replacing `requestPermissions` with a
+        ** generic function from interface with different implementations for web and app? */
+        if (process.env.IS_CORDOVA_BUILD) {
+            const permissionTypes = acquireCameraDevice ? [
+                PermissionType.CAMERA,
+                PermissionType.MIC,
+            ] : [PermissionType.MIC];
+
+            return new Promise<void>((resolve, reject) => {
+                requestNativePermissions({
+                    permissionTypes, onSuccess: (successful) => {
+                        if (successful) resolve();
+                        else reject();
+                    }, onError: () => {
+                        reject();
+                    }
+                });
+            });
+        } else {
+            return await navigator.mediaDevices.getUserMedia({
+                audio: true,
+                video: acquireCameraDevice,
+            }).then(stream => {
+                stream.getTracks().forEach(track => {
+                    track.stop();
+                })
+            });
+        }
     }, []);
 
     const getAvailableDevices = useCallback(async () => {
         try {
             const devices = await navigator.mediaDevices.enumerateDevices();
-            console.log(`enumerated ${devices?.length} devices`);
+            console.log(`enumerated ${devices?.length ?? 0} devices`);
+            console.log(devices);
 
-            setAvailableVideoDevices(devices?.filter(d => d.kind === `videoinput`) ?? []);
-            setAvailableAudioDevices(devices?.filter(d => d.kind === `audioinput`) ?? []);
+            const videoDevices = devices?.filter(d => d.kind === `videoinput`) ?? [];
+            const audioDevices = devices?.filter(d => d.kind === `audioinput`) ?? []
+
+            setAvailableVideoDevices(videoDevices);
+            setAvailableAudioDevices(audioDevices);
+
+            if (!selectedVideoDeviceId && videoDevices.length > 0) {
+                setSelectedVideoDeviceId(videoDevices[0].deviceId);
+            }
+
+            if (!selectedAudioDeviceId && audioDevices.length > 0) {
+                setSelectedAudioDeviceId(audioDevices[0].deviceId);
+            }
 
             setPermissionError(false);
             setNotFoundError(false);
@@ -94,11 +133,12 @@ export const CameraContextProvider = ({ children }: Props) => {
                 setNotFoundError(true);
             }
         }
-    }, []);
+    }, [ selectedVideoDeviceId, selectedAudioDeviceId ]);
 
     const releaseCameraStream = useCallback(() => {
         if (!cameraStream) return;
 
+        console.log(`releasing camera: `, cameraStream);
         cameraStream.getTracks()
             .forEach(t => t.stop());
         setCameraStream(undefined);
@@ -111,7 +151,9 @@ export const CameraContextProvider = ({ children }: Props) => {
             return;
         }
 
-        console.log(`acquire camera stream: videoDevice ${selectedVideoDeviceId}, audioDevice ${selectedAudioDeviceId}`);
+        console.log(`acquire camera stream`);
+        console.log(`video: ${selectedVideoDeviceId}`);
+        console.log(`audio: ${selectedAudioDeviceId}`);
 
         const audioConstraints: MediaTrackConstraints | boolean = {
             deviceId: selectedAudioDeviceId,
@@ -160,13 +202,16 @@ export const CameraContextProvider = ({ children }: Props) => {
                 }
             }
         });
-    }, []);
+    }, [ selectedVideoDeviceId, selectedAudioDeviceId, acquireCameraDevice, highQuality ]);
 
     const refreshCameras = useCallback(async () => {
         console.log(`refreshing cameras`);
         
         try {
             await requestPermissions();
+            setPermissionError(false);
+
+            console.log(`got camera permission; enumerating devices`)
             await getAvailableDevices();
 
             releaseCameraStream();
@@ -178,19 +223,26 @@ export const CameraContextProvider = ({ children }: Props) => {
     }, []);
 
     useEffect(() => {
-        acquireCameraStream();
+        if (!acquireDevices) { return; }
+
+        if (selectedAudioDeviceId || selectedVideoDeviceId) {
+            acquireCameraStream();
+        }
 
         return () => {
             releaseCameraStream();
         };
-    }, [ selectedAudioDeviceId, selectedVideoDeviceId, acquireCameraDevice ]);
+    }, [ selectedAudioDeviceId, selectedVideoDeviceId, acquireDevices, acquireCameraDevice ]);
 
     useEffect(() => {
+        if (!acquireDevices) { return };
+
         refreshCameras();
-    }, []);
+    }, [ acquireDevices ]);
 
     useEffect(() => {
         if (!navigator.mediaDevices) { return; }
+        if (!acquireDevices) { return; }
 
         const onDeviceChange = () => {
             refreshCameras();
@@ -200,7 +252,7 @@ export const CameraContextProvider = ({ children }: Props) => {
         return () => {
             navigator.mediaDevices.removeEventListener(`devicechange`, onDeviceChange);
         };
-    }, [ refreshCameras, refreshCameras ]);
+    }, [ refreshCameras, refreshCameras, acquireDevices ]);
 
     const onPauseStateChanged = useCallback((paused: boolean) => {
         if (paused) {
@@ -220,6 +272,7 @@ export const CameraContextProvider = ({ children }: Props) => {
             selectedAudioDeviceId,
             setSelectedAudioDeviceId,
             availableAudioDevices,
+            setAcquireDevices,
             setAcquireCameraDevice,
             setHighQuality,
             cameraStream,

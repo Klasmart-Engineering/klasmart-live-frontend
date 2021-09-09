@@ -8,6 +8,7 @@ import React,
     ReactChild,
     ReactChildren,
     useCallback,
+    useContext,
     useState,
 } from "react";
 
@@ -201,4 +202,8 @@ export function CordovaSystemProvider ({ children, history }: Props) {
                 onConfirm={() => quit()} /> : ``}
         </CordovaSystemContext.Provider>
     );
+}
+
+export function useCordovaSystemContext () {
+    return useContext(CordovaSystemContext);
 }
