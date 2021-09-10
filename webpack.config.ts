@@ -142,7 +142,7 @@ const webpackConfig: Configuration = {
                 ws: true,
             },
             "/sfu": {
-                target: `http://localhost:8002`,
+                target: `http://local.alpha.kidsloop.net:8002`,
                 changeOrigin: true,
                 ws: true,
             },
