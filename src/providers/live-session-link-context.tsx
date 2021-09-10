@@ -51,20 +51,22 @@ export function LiveSessionLinkProvider ({
 
     const connectionCallback = useCallback((errors: Error[] | Error) => {
         // TODO: We need to test this and make sure if the errors parameter is array or not. According to both documentation and type information it's array.
-        if (!(errors instanceof Array)) { errors = [ errors ]; }
+        if (errors) {
+            if (!(errors instanceof Array)) { errors = [ errors ]; }
 
-        const authenticationError = errors.some((e) => e.message === `AuthenticationExpired` || e.message === `AuthenticationInvalid`);
-        if (!authenticationError) {
-            return;
+            const authenticationError = errors.some((e) => e.message === `AuthenticationExpired` || e.message === `AuthenticationInvalid`);
+            if (!authenticationError) {
+                return;
+            }
+
+            authenticationService?.refresh().then(successful => {
+                // TODO: We should present some sort of message / error to the user about the failed connection. Not good to just throw them back to login page without notice.
+                // TODO: Redirect user to login page.
+                if (!successful) actions?.signOutUser();
+            }).catch(exception => {
+                console.error(exception);
+            });
         }
-
-        authenticationService?.refresh().then(successful => {
-            // TODO: We should present some sort of message / error to the user about the failed connection. Not good to just throw them back to login page without notice.
-            // TODO: Redirect user to login page.
-            if (!successful) actions?.signOutUser();
-        }).catch(exception => {
-            console.error(exception);
-        });
     }, [ authenticationService ]);
 
     useEffect(() => {
