@@ -96,7 +96,7 @@ const webpackConfig: Configuration = {
         },
     },
     output: {
-        filename: `[name].[contenthash].js`,
+        filename: `[name].js`,
         path: path.resolve(__dirname, `dist`),
     },
     plugins: [
@@ -142,7 +142,7 @@ const webpackConfig: Configuration = {
                 ws: true,
             },
             "/sfu": {
-                target: `http://local.alpha.kidsloop.net:8002`,
+                target: `http://localhost:8002`,
                 changeOrigin: true,
                 ws: true,
             },
