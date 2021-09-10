@@ -130,12 +130,11 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
         let material = interactiveMode !== InteractiveMode.OnStage && materialActiveIndex >= 0 && materialActiveIndex < materials.length ? materials[materialActiveIndex] : undefined;
         const type = defineContentType(material, interactiveMode);
         const contentId = defineContentId(material, interactiveMode, streamId, sessionId);
-        if (classtype === ClassType.STUDY){
+        if (classtype === ClassType.STUDY || classtype === ClassType.CLASSES){
             material = materialActiveIndex >= 0 && materialActiveIndex < materials.length ? materials[materialActiveIndex] : undefined;
         }
         const materialUrl = material?.url;
         const activityTypeName = material?.__typename === `Iframe` ? `h5p` : material?.__typename;
-
         showContent({
             variables: {
                 roomId,
