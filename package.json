@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "webpack; mv dist/record*.js dist/record-3f6f2667.js",
+    "build": "rm -rf dist/*; webpack; mv dist/record*.js dist/record-3f6f2667.js",
     "start": "cross-env NODE_ENV=development webpack serve",
     "test": "jest",
     "coverage": "jest --coverage",
