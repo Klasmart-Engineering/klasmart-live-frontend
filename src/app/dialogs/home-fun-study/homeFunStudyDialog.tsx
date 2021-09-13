@@ -152,7 +152,6 @@ const HFS_ON_BACK_ID = `hfs_onBack`;
 
 export function HomeFunStudyDialog () {
     const intl = useIntl();
-    const [ studyId, setStudyId ] = useState<string>();
     const classes = useStyles();
     const { enqueueSnackbar } = useSnackbar();
     const { showPopup } = usePopupContext();
@@ -211,7 +210,6 @@ export function HomeFunStudyDialog () {
 
     useEffect(() => {
         if (homeFunStudy?.studyId) {
-            setStudyId(homeFunStudy.studyId);
             setKey(Math.random().toString(36)); //force to refresh HFS detail
         }
         if(homeFunStudy.open){
@@ -228,7 +226,7 @@ export function HomeFunStudyDialog () {
                 removeOnBack(HFS_ON_BACK_ID);
             }
         }
-    }, [ homeFunStudy ]);
+    }, [ homeFunStudy.open, homeFunStudy.studyId ]);
 
     useEffect(() => {
         async function fetchEverything () {
@@ -239,10 +237,10 @@ export function HomeFunStudyDialog () {
                 if (!selectedOrganization) {
                     throw new Error(`Organization is not selected`);
                 }
-                if (!studyId) {
+                if (!homeFunStudy?.studyId) {
                     throw new Error(`No studyId on query path`);
                 }
-                const scheduleInfoPayload = await schedulerService.getScheduleInfo(selectedOrganization.organization_id, studyId);
+                const scheduleInfoPayload = await schedulerService.getScheduleInfo(selectedOrganization.organization_id, homeFunStudy.studyId);
                 setStudyInfo((scheduleInfoPayload));
             }
 
@@ -256,10 +254,10 @@ export function HomeFunStudyDialog () {
                 if (!selectedUser.userId) {
                     throw new Error(`User profile is not selected`);
                 }
-                if (!studyId) {
+                if (!homeFunStudy?.studyId) {
                     throw new Error(`No studyId on query path`);
                 }
-                const newestFeedbackPayload = await schedulerService.getNewestFeedback(selectedOrganization.organization_id, studyId, selectedUser.userId);
+                const newestFeedbackPayload = await schedulerService.getNewestFeedback(selectedOrganization.organization_id, homeFunStudy.studyId, selectedUser.userId);
                 setNewestFeedback(newestFeedbackPayload);
             }
 
@@ -274,7 +272,7 @@ export function HomeFunStudyDialog () {
         setLoading(true);
         fetchEverything();
     }, [
-        studyId,
+        homeFunStudy.studyId,
         selectedOrganization,
         key,
         selectedUser,
@@ -288,7 +286,7 @@ export function HomeFunStudyDialog () {
         const hfsFeedbacks = homeFunStudy.feedback;
         return hfsFeedbacks.find(feedback => feedback.userId === selectedUser.userId && feedback.studyId === studyInfo.id);
     }, [
-        homeFunStudy,
+        homeFunStudy.feedback,
         selectedUser,
         studyInfo,
     ]);
@@ -534,7 +532,7 @@ function HomeFunStudyContainer ({
         const hfsFeedbacks = homeFunStudy.feedback;
         return hfsFeedbacks.find((feedback: any) => feedback.userId === selectedUser.userId && feedback.studyId === studyInfo.id);
     }, [
-        homeFunStudy,
+        homeFunStudy.feedback,
         selectedUser.userId,
         studyInfo,
     ]);
@@ -578,7 +576,7 @@ function HomeFunStudyContainer ({
     }, [
         selectedUser,
         newestFeedback,
-        homeFunStudy,
+        homeFunStudy.feedback,
         studyInfo,
         shouldSyncAssignments,
         localFeedback,
