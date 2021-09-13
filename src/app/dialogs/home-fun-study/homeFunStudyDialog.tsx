@@ -1,21 +1,20 @@
 import StyledIcon from "../../../components/styled/icon";
-import { FileIcon } from "../../components/icons/fileIcon";
-import { Header } from "../../components/layout/header";
+import {FileIcon} from "../../components/icons/fileIcon";
+import {Header} from "../../components/layout/header";
 import LoadingWithRetry from "../../components/loadingWithRetry";
-import { CustomCircularProgress } from "../../components/progress/customCircularProgress";
+import {CustomCircularProgress} from "../../components/progress/customCircularProgress";
 import {
     CordovaSystemContext,
-    PermissionType,
+    PermissionType, useCordovaSystemContext,
 } from "../../context-provider/cordova-system-context";
-import { usePopupContext } from "../../context-provider/popup-context";
-import { useServices } from "../../context-provider/services-provider";
+import {usePopupContext} from "../../context-provider/popup-context";
+import {useServices} from "../../context-provider/services-provider";
 import {
     homeFunStudyState,
     OrientationType,
     selectedOrganizationState,
     selectedUserState,
 } from "../../model/appModel";
-import useCordovaInitialize from "../../platform/cordova-initialize";
 import {
     Assignment,
     ScheduleFeedbackResponse,
@@ -23,15 +22,15 @@ import {
 } from "../../services/cms/ISchedulerService";
 import {
     getFileExtensionFromName,
-    getFileExtensionFromType,
+    getFileExtensionFromType, saveDataBlobToFile,
     validateFileSize,
     validateFileType,
 } from "../../utils/fileUtils";
-import { lockOrientation } from "../../utils/screenUtils";
-import { formatDueDate } from "../../utils/timeUtils";
-import { BottomSelector } from "./bottomSelector";
-import { CommentDialog } from "./commentDialog";
-import { SupportFileInfo } from "./supportFileInfo";
+import {lockOrientation} from "../../utils/screenUtils";
+import {formatDueDate} from "../../utils/timeUtils";
+import {BottomSelector} from "./bottomSelector";
+import {CommentDialog} from "./commentDialog";
+import {SupportFileInfo} from "./supportFileInfo";
 import {
     Box,
     Button,
@@ -49,7 +48,7 @@ import {
     Typography,
 } from "@material-ui/core";
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { blue } from "@material-ui/core/colors";
+import {blue} from "@material-ui/core/colors";
 import {
     createStyles,
     makeStyles,
@@ -60,9 +59,9 @@ import {
     HighlightOffOutlined,
     InfoOutlined,
 } from "@material-ui/icons";
-import { Upload as UploadIcon } from "@styled-icons/bootstrap/Upload";
+import {Upload as UploadIcon} from "@styled-icons/bootstrap/Upload";
 import clsx from "clsx";
-import { useSnackbar } from "kidsloop-px";
+import {useSnackbar} from "kidsloop-px";
 import React,
 {
     useContext,
@@ -74,7 +73,9 @@ import {
     FormattedMessage,
     useIntl,
 } from "react-intl";
-import { useRecoilState } from "recoil";
+import {useRecoilState} from "recoil";
+import {useHttpEndpoint} from "@/providers/region-select-context";
+import {downloadDataBlob} from "@/app/utils/requestUtils";
 
 export type HomeFunStudyFeedback = {
     userId: string;
@@ -99,7 +100,7 @@ export enum AttachmentStatus {
 }
 
 const useStyles = makeStyles((theme: Theme) =>
-    createStyles ({
+    createStyles({
         noPadding: {
             padding: 0,
         },
@@ -129,9 +130,20 @@ const useStyles = makeStyles((theme: Theme) =>
             position: `relative`,
         },
         buttonSubmitting: {
-            backgroundColor:`#d7e4f5`,
+            backgroundColor: `#d7e4f5`,
         },
         buttonProgress: {
+            color: blue[500],
+            position: `absolute`,
+            top: `50%`,
+            left: `50%`,
+            marginTop: -12,
+            marginLeft: -12,
+        },
+        wrapper: {
+            position: `relative`,
+        },
+        progress: {
             color: blue[500],
             position: `absolute`,
             top: `50%`,
@@ -150,22 +162,22 @@ enum SubmitStatus {
 
 const HFS_ON_BACK_ID = `hfs_onBack`;
 
-export function HomeFunStudyDialog () {
+export function HomeFunStudyDialog() {
     const intl = useIntl();
     const classes = useStyles();
-    const { enqueueSnackbar } = useSnackbar();
-    const { showPopup } = usePopupContext();
-    const [ homeFunStudy, setHomeFunStudy ] = useRecoilState(homeFunStudyState);
-    const { schedulerService } = useServices();
-    const [ selectedOrganization ] = useRecoilState(selectedOrganizationState);
-    const [ selectedUser ] = useRecoilState(selectedUserState);
-    const [ studyInfo, setStudyInfo ] = useState<ScheduleResponse>();
-    const [ newestFeedback, setNewestFeedback ] = useState<ScheduleFeedbackResponse>();
-    const [ key, setKey ] = useState(Math.random().toString(36));
-    const [ loading, setLoading ] = useState(false);
-    const [ shouldSubmitFeedback, setShouldSubmitFeedback ] = useState(false);
-    const [ submitStatus, setSubmitStatus ] = useState(SubmitStatus.NONE);
-    const { addOnBack, removeOnBack } = useContext(CordovaSystemContext);
+    const {enqueueSnackbar} = useSnackbar();
+    const {showPopup} = usePopupContext();
+    const [homeFunStudy, setHomeFunStudy] = useRecoilState(homeFunStudyState);
+    const {schedulerService} = useServices();
+    const [selectedOrganization] = useRecoilState(selectedOrganizationState);
+    const [selectedUser] = useRecoilState(selectedUserState);
+    const [studyInfo, setStudyInfo] = useState<ScheduleResponse>();
+    const [newestFeedback, setNewestFeedback] = useState<ScheduleFeedbackResponse>();
+    const [key, setKey] = useState(Math.random().toString(36));
+    const [loading, setLoading] = useState(false);
+    const [shouldSubmitFeedback, setShouldSubmitFeedback] = useState(false);
+    const [submitStatus, setSubmitStatus] = useState(SubmitStatus.NONE);
+    const {addOnBack, removeOnBack} = useContext(CordovaSystemContext);
 
     useEffect(() => {
         lockOrientation(OrientationType.PORTRAIT);
@@ -176,7 +188,7 @@ export function HomeFunStudyDialog () {
         });
     }, []);
 
-    function handleCloseHomeFunStudy () {
+    function handleCloseHomeFunStudy() {
         setHomeFunStudy({
             ...homeFunStudy,
             open: false,
@@ -186,7 +198,7 @@ export function HomeFunStudyDialog () {
     useEffect(() => {
         //Wait for the reset state completed
         setTimeout(() => {
-            if(homeFunStudy.open && newestFeedback && !newestFeedback.is_allow_submit){
+            if (homeFunStudy.open && newestFeedback && !newestFeedback.is_allow_submit) {
                 showPopup({
                     variant: `info`,
                     title: intl.formatMessage({
@@ -206,13 +218,13 @@ export function HomeFunStudyDialog () {
                 });
             }
         }, 200);
-    }, [ newestFeedback ]);
+    }, [newestFeedback]);
 
     useEffect(() => {
         if (homeFunStudy?.studyId) {
             setKey(Math.random().toString(36)); //force to refresh HFS detail
         }
-        if(homeFunStudy.open){
+        if (homeFunStudy.open) {
             if (addOnBack) {
                 addOnBack({
                     id: HFS_ON_BACK_ID,
@@ -221,16 +233,16 @@ export function HomeFunStudyDialog () {
                     },
                 });
             }
-        }else{
-            if(removeOnBack){
+        } else {
+            if (removeOnBack) {
                 removeOnBack(HFS_ON_BACK_ID);
             }
         }
-    }, [ homeFunStudy.open, homeFunStudy.studyId ]);
+    }, [homeFunStudy.open, homeFunStudy.studyId]);
 
     useEffect(() => {
-        async function fetchEverything () {
-            async function fetchScheduleStudyInfo () {
+        async function fetchEverything() {
+            async function fetchScheduleStudyInfo() {
                 if (!schedulerService) {
                     throw new Error(`Scheduler service not available.`);
                 }
@@ -244,7 +256,7 @@ export function HomeFunStudyDialog () {
                 setStudyInfo((scheduleInfoPayload));
             }
 
-            async function fetchScheduleFeedback () {
+            async function fetchScheduleFeedback() {
                 if (!schedulerService) {
                     throw new Error(`Scheduler service not available.`);
                 }
@@ -262,7 +274,7 @@ export function HomeFunStudyDialog () {
             }
 
             try {
-                await Promise.all([ fetchScheduleStudyInfo(), fetchScheduleFeedback() ]);
+                await Promise.all([fetchScheduleStudyInfo(), fetchScheduleFeedback()]);
                 setLoading(false);
             } catch (err) {
                 console.log(`Fail to fetchScheduleInfo or fetchHomeFunStudyInfo ${err}`);
@@ -279,7 +291,7 @@ export function HomeFunStudyDialog () {
     ]);
 
     const localFeedback = useMemo(() => {
-        if(!homeFunStudy.feedback || !studyInfo || !selectedUser.userId) {
+        if (!homeFunStudy.feedback || !studyInfo || !selectedUser.userId) {
             return undefined;
         }
 
@@ -292,7 +304,7 @@ export function HomeFunStudyDialog () {
     ]);
 
     const shouldShowSubmitButton = useMemo(() => {
-        if(submitStatus === SubmitStatus.SUBMITTING)
+        if (submitStatus === SubmitStatus.SUBMITTING)
             return false;
         if (selectedUser.userId && studyInfo && newestFeedback?.is_allow_submit && (studyInfo.due_at === 0 || studyInfo?.due_at >= todayTimeStamp)) {
             if (localFeedback && localFeedback.assignmentItems.length > 0 && localFeedback.assignmentItems.length <= MAX_FILE_LIMIT) {
@@ -310,7 +322,7 @@ export function HomeFunStudyDialog () {
     ]);
 
     useEffect(() => {
-        async function submitFeedback (){
+        async function submitFeedback() {
             if (!schedulerService) {
                 throw new Error(`Scheduler service not available.`);
             }
@@ -318,10 +330,10 @@ export function HomeFunStudyDialog () {
             if (!selectedOrganization) {
                 throw new Error(`Organization is not selected.`);
             }
-            if(!shouldSubmitFeedback || !studyInfo || !localFeedback || !selectedUser.userId)
-                return ;
-            if(submitStatus === SubmitStatus.SUBMITTING)
-                return ;
+            if (!shouldSubmitFeedback || !studyInfo || !localFeedback || !selectedUser.userId)
+                return;
+            if (submitStatus === SubmitStatus.SUBMITTING)
+                return;
 
             setShouldSubmitFeedback(false);
             setSubmitStatus(SubmitStatus.SUBMITTING);
@@ -332,7 +344,7 @@ export function HomeFunStudyDialog () {
                 number: index,
             })))
                 .then(result => {
-                    if(result && result.data && result.data.id){
+                    if (result && result.data && result.data.id) {
                         setSubmitStatus(SubmitStatus.SUCCESS);
                         enqueueSnackbar(intl.formatMessage({
                             id: `submission_successful`,
@@ -349,8 +361,8 @@ export function HomeFunStudyDialog () {
                             open: false,
                             submitted: true,
                         });
-                    }else{
-                        if(result && result.label){
+                    } else {
+                        if (result && result.label) {
                             showPopup({
                                 variant: `detailError`,
                                 title: intl.formatMessage({
@@ -369,7 +381,7 @@ export function HomeFunStudyDialog () {
                                     defaultMessage: `Ok`,
                                 }),
                             });
-                        }else{
+                        } else {
                             showPopup({
                                 variant: `error`,
                                 title: intl.formatMessage({
@@ -412,9 +424,10 @@ export function HomeFunStudyDialog () {
                     });
                 });
         }
-        if(shouldSubmitFeedback){
+
+        if (shouldSubmitFeedback) {
             setShouldSubmitFeedback(false);
-            if(submitStatus === SubmitStatus.UPLOADING){
+            if (submitStatus === SubmitStatus.UPLOADING) {
                 showPopup({
                     variant: `error`,
                     title: intl.formatMessage({
@@ -432,7 +445,7 @@ export function HomeFunStudyDialog () {
                         defaultMessage: `Ok`,
                     }),
                 });
-            }else{
+            } else {
                 submitFeedback();
             }
         }
@@ -479,45 +492,47 @@ export function HomeFunStudyDialog () {
                         }, classes.rounded_button)}
                         color="primary"
                         disabled={!shouldShowSubmitButton}
-                        onClick={() => {setShouldSubmitFeedback(true);}}
+                        onClick={() => {
+                            setShouldSubmitFeedback(true);
+                        }}
                     > <FormattedMessage id="button_submit"/></Button>
                     {submitStatus === SubmitStatus.SUBMITTING ? <CircularProgress
                         size={24}
-                        className={classes.buttonProgress} />: ``}
+                        className={classes.buttonProgress}/> : ``}
                 </div>
 
             </DialogActions>
         </Dialog>);
 }
 
-function HomeFunStudyContainer ({
-    studyInfo,
-    newestFeedback,
-    setSubmitStatus,
-}: { studyInfo?: ScheduleResponse; newestFeedback?: ScheduleFeedbackResponse; setSubmitStatus: (status: SubmitStatus) => void }) {
+function HomeFunStudyContainer({
+                                   studyInfo,
+                                   newestFeedback,
+                                   setSubmitStatus,
+                               }: { studyInfo?: ScheduleResponse; newestFeedback?: ScheduleFeedbackResponse; setSubmitStatus: (status: SubmitStatus) => void }) {
     const intl = useIntl();
-    const { enqueueSnackbar } = useSnackbar();
-    const [ openSupportFileInfo, setOpenSupportFileInfo ] = useState(false);
-    const [ openButtonSelector, setOpenButtonSelector ] = useState(false);
-    const { showPopup } = usePopupContext();
-    const [ assignmentItems, setAssignmentItems ] = useState<AssignmentItem[]>([]);
-    const { fileSelectService, contentService } = useServices();
-    const [ selectedOrganization ] = useRecoilState(selectedOrganizationState);
-    const [ selectedUser ] = useRecoilState(selectedUserState);
-    const [ homeFunStudy, setHomeFunStudy ] = useRecoilState(homeFunStudyState);
-    const [ saveAssignmentItems, setSaveAssignmentItems ] = useState<{ shouldSave: boolean; assignmentItems: AssignmentItem[] }>();
-    const { requestPermissions } = useContext(CordovaSystemContext);
-    const [ shouldSyncAssignments, setShouldSyncAssignments ] = useState(false);
-    const [ attachmentFile, setAttachmentFile ] = useState<File>();
-    const [ uploadedAttachment, setUploadedAttachment ] = useState<{itemId: string; resourceId: string}>();
-    const [ deletedAssignmentItemId, setDeletedAssignmentItemId ] = useState<string>();
-    const [ uploadProgress, setUploadProgress ] = useState<{itemId: string; progress: number}>();
+    const {enqueueSnackbar} = useSnackbar();
+    const [openSupportFileInfo, setOpenSupportFileInfo] = useState(false);
+    const [openButtonSelector, setOpenButtonSelector] = useState(false);
+    const {showPopup} = usePopupContext();
+    const [assignmentItems, setAssignmentItems] = useState<AssignmentItem[]>([]);
+    const {fileSelectService, contentService} = useServices();
+    const [selectedOrganization] = useRecoilState(selectedOrganizationState);
+    const [selectedUser] = useRecoilState(selectedUserState);
+    const [homeFunStudy, setHomeFunStudy] = useRecoilState(homeFunStudyState);
+    const [saveAssignmentItems, setSaveAssignmentItems] = useState<{ shouldSave: boolean; assignmentItems: AssignmentItem[] }>();
+    const {requestPermissions} = useContext(CordovaSystemContext);
+    const [shouldSyncAssignments, setShouldSyncAssignments] = useState(false);
+    const [attachmentFile, setAttachmentFile] = useState<File>();
+    const [uploadedAttachment, setUploadedAttachment] = useState<{ itemId: string; resourceId: string }>();
+    const [deletedAssignmentItemId, setDeletedAssignmentItemId] = useState<string>();
+    const [uploadProgress, setUploadProgress] = useState<{ itemId: string; progress: number }>();
 
-    function generateAssignmentItemId () {
+    function generateAssignmentItemId() {
         return Math.random().toString(36).substring(7);
     }
 
-    function convertAssignmentsToAssignmentItems (assignments: Assignment[]) {
+    function convertAssignmentsToAssignmentItems(assignments: Assignment[]) {
         return assignments.map(item => ({
             itemId: generateAssignmentItemId(),
             attachmentId: item.attachment_id,
@@ -525,8 +540,9 @@ function HomeFunStudyContainer ({
             status: AttachmentStatus.UPLOADED,
         }));
     }
+
     const localFeedback = useMemo(() => {
-        if(!homeFunStudy.feedback || !selectedUser.userId || !studyInfo) {
+        if (!homeFunStudy.feedback || !selectedUser.userId || !studyInfo) {
             return undefined;
         }
         const hfsFeedbacks = homeFunStudy.feedback;
@@ -539,21 +555,21 @@ function HomeFunStudyContainer ({
 
     useEffect(() => {
         setShouldSyncAssignments(true);
-    }, [ newestFeedback ]);
+    }, [newestFeedback]);
 
     useEffect(() => {
-        function mergeLocalAssignmentWithCMSAssignment (localAssignments: AssignmentItem[],  cmsAssignments: AssignmentItem[]) : AssignmentItem[]{
+        function mergeLocalAssignmentWithCMSAssignment(localAssignments: AssignmentItem[], cmsAssignments: AssignmentItem[]): AssignmentItem[] {
             const hasNotSubmittedAssignments = localAssignments.filter(item => cmsAssignments.find(cmsItem => cmsItem.attachmentId === item.attachmentId) === undefined);
             return cmsAssignments.concat(hasNotSubmittedAssignments);
         }
 
-        function syncAssignments () {
+        function syncAssignments() {
             if (!selectedUser.userId) return;
             if (!studyInfo) return;
             if (!newestFeedback) return;
             if (!homeFunStudy.feedback) return;
 
-            const localAssignmentItems: AssignmentItem[]  = localFeedback?.assignmentItems ?? [];
+            const localAssignmentItems: AssignmentItem[] = localFeedback?.assignmentItems ?? [];
             let newAssignmentItems: AssignmentItem[] = [];
 
             if (newestFeedback) {
@@ -568,7 +584,7 @@ function HomeFunStudyContainer ({
             }
         }
 
-        if(shouldSyncAssignments){
+        if (shouldSyncAssignments) {
             setShouldSyncAssignments(false);
             syncAssignments();
         }
@@ -584,11 +600,11 @@ function HomeFunStudyContainer ({
 
     useEffect(() => {
         //Save Assignments after uploaded
-        function saveAssignments (assignmentItems: AssignmentItem[]) {
+        function saveAssignments(assignmentItems: AssignmentItem[]) {
             if (studyInfo && selectedUser.userId) {
                 const newHFSFeedbacks = homeFunStudy.feedback ? homeFunStudy.feedback.slice() : [];
                 const currentFeedbackIndex = newHFSFeedbacks.findIndex(item => item.userId === selectedUser.userId && item.studyId === studyInfo.id);
-                if(currentFeedbackIndex >= 0){
+                if (currentFeedbackIndex >= 0) {
                     const feedback = newHFSFeedbacks[currentFeedbackIndex];
                     newHFSFeedbacks[currentFeedbackIndex] = {
                         userId: selectedUser.userId,
@@ -596,8 +612,7 @@ function HomeFunStudyContainer ({
                         comment: feedback.comment,
                         assignmentItems: assignmentItems,
                     };
-                }
-                else{
+                } else {
                     newHFSFeedbacks.push({
                         userId: selectedUser.userId,
                         studyId: studyInfo.id,
@@ -616,12 +631,12 @@ function HomeFunStudyContainer ({
         if (saveAssignmentItems && saveAssignmentItems.shouldSave) {
             saveAssignments(saveAssignmentItems.assignmentItems);
         }
-    }, [ saveAssignmentItems ]);
+    }, [saveAssignmentItems]);
 
     useEffect(() => {
         //Check assignmentItems every time file is selected.
         //If it detects that the file is in selected state, then upload it.
-        function uploadSelectedAttachments () {
+        function uploadSelectedAttachments() {
             if (assignmentItems) {
                 let isNeedUpload = false;
                 const newAssignmentItems = assignmentItems.slice();
@@ -648,11 +663,11 @@ function HomeFunStudyContainer ({
             }
         }
 
-        function updateSubmitStatus (){
-            if(assignmentItems){
-                if(assignmentItems.filter(item => item.status === AttachmentStatus.UPLOADING).length > 0){
+        function updateSubmitStatus() {
+            if (assignmentItems) {
+                if (assignmentItems.filter(item => item.status === AttachmentStatus.UPLOADING).length > 0) {
                     setSubmitStatus(SubmitStatus.UPLOADING);
-                }else{
+                } else {
                     setSubmitStatus(SubmitStatus.NONE);
                 }
             }
@@ -660,14 +675,14 @@ function HomeFunStudyContainer ({
 
         uploadSelectedAttachments();
         updateSubmitStatus();
-    }, [ assignmentItems ]);
+    }, [assignmentItems]);
 
     useEffect(() => {
-        function updateUploadProgressForAssignmentItem (itemId: string, progress: number) {
-            if(!assignmentItems) return;
+        function updateUploadProgressForAssignmentItem(itemId: string, progress: number) {
+            if (!assignmentItems) return;
             const newAssignmentItems = assignmentItems.slice();
             const itemIndex = newAssignmentItems.findIndex(item => item.itemId === itemId);
-            if(itemIndex >= 0){
+            if (itemIndex >= 0) {
                 newAssignmentItems[itemIndex] = {
                     ...newAssignmentItems[itemIndex],
                     uploadProgress: progress,
@@ -675,13 +690,14 @@ function HomeFunStudyContainer ({
                 setAssignmentItems(newAssignmentItems);
             }
         }
-        if(uploadProgress){
+
+        if (uploadProgress) {
             updateUploadProgressForAssignmentItem(uploadProgress.itemId, uploadProgress.progress);
             setUploadProgress(undefined);
         }
-    }, [ uploadProgress, assignmentItems ]);
+    }, [uploadProgress, assignmentItems]);
 
-    async function uploadAttachment (assignmentItemId: string, file: File) {
+    async function uploadAttachment(assignmentItemId: string, file: File) {
         if (!selectedOrganization) {
             throw new Error(`Organization is not selected.`);
         }
@@ -700,13 +716,13 @@ function HomeFunStudyContainer ({
                         itemId: assignmentItemId,
                         resourceId: contentResourceUploadPathResponse.resource_id,
                     });
-                }else{
+                } else {
                     throw new Error(`Upload failed.`);
                 }
             } else {
                 throw new Error(`Get upload path failed.`);
             }
-        } catch(error) {
+        } catch (error) {
             setDeletedAssignmentItemId(assignmentItemId);
             enqueueSnackbar(intl.formatMessage({
                 id: `file_upload_failed`,
@@ -723,8 +739,8 @@ function HomeFunStudyContainer ({
 
     //Update the attachment's status to UPLOADED after upload successfully, then save it to local (only save the attachment_id and attachment_name without need to save the file)
     useEffect(() => {
-        function updateAssignmentItemStatusToUploaded (itemId: string, resourceId: string) {
-            if(!assignmentItems) return;
+        function updateAssignmentItemStatusToUploaded(itemId: string, resourceId: string) {
+            if (!assignmentItems) return;
             const newAssignmentItems = assignmentItems.slice();
             for (let i = 0; i < newAssignmentItems.length; i++) {
                 if (newAssignmentItems[i].itemId === itemId) {
@@ -743,25 +759,26 @@ function HomeFunStudyContainer ({
                 assignmentItems: newAssignmentItems.filter(item => item.status === AttachmentStatus.UPLOADED),
             });
         }
-        if(uploadedAttachment){
+
+        if (uploadedAttachment) {
             updateAssignmentItemStatusToUploaded(uploadedAttachment.itemId, uploadedAttachment.resourceId);
             setUploadedAttachment(undefined);
         }
-    }, [ uploadedAttachment, assignmentItems ]);
+    }, [uploadedAttachment, assignmentItems]);
 
-    function handleClickUploadInfo () {
+    function handleClickUploadInfo() {
         setOpenSupportFileInfo(true);
     }
 
-    function handleClickUpload () {
+    function handleClickUpload() {
         setOpenButtonSelector(true);
     }
 
-    function onSelectFile () {
+    function onSelectFile() {
         requestPermissions({
-            permissionTypes: [ PermissionType.READ_STORAGE ],
+            permissionTypes: [PermissionType.READ_STORAGE],
             onSuccess: (hasPermission) => {
-                if(hasPermission){
+                if (hasPermission) {
                     fileSelectService?.selectFile().then(file => {
                         console.log(`selected file: ${file.name}`);
                         setOpenButtonSelector(false);
@@ -769,7 +786,7 @@ function HomeFunStudyContainer ({
                     }).catch(error => {
                         console.error(error);
                     });
-                }else{
+                } else {
                     enqueueSnackbar(`Couldn't request permissions`, {
                         variant: `error`,
                         anchorOrigin: {
@@ -792,7 +809,7 @@ function HomeFunStudyContainer ({
 
     }
 
-    function onSelectCamera () {
+    function onSelectCamera() {
         fileSelectService?.selectFromCamera().then(file => {
             console.log(`selected from camera: ${file.name}`);
             setOpenButtonSelector(false);
@@ -802,11 +819,11 @@ function HomeFunStudyContainer ({
         });
     }
 
-    function onSelectGallery () {
+    function onSelectGallery() {
         requestPermissions({
-            permissionTypes: [ PermissionType.READ_STORAGE ],
+            permissionTypes: [PermissionType.READ_STORAGE],
             onSuccess: (hasPermission) => {
-                if(hasPermission){
+                if (hasPermission) {
                     fileSelectService?.selectFromGallery().then(file => {
                         console.log(`selected from gallery: ${file.name}`);
                         setOpenButtonSelector(false);
@@ -814,7 +831,7 @@ function HomeFunStudyContainer ({
                     }).catch(error => {
                         console.error(error);
                     });
-                }else{
+                } else {
                     enqueueSnackbar(`Couldn't request permissions`, {
                         variant: `error`,
                         anchorOrigin: {
@@ -838,8 +855,8 @@ function HomeFunStudyContainer ({
 
     //Add selected attachment then update the assignmentItems. It would be trigger to upload the attachment.
     useEffect(() => {
-        function addAnSelectedAttachment (file: File) {
-            if(!assignmentItems) return;
+        function addAnSelectedAttachment(file: File) {
+            if (!assignmentItems) return;
             const newAssignmentItems = assignmentItems.slice();
             const itemId = generateAssignmentItemId();
 
@@ -864,13 +881,14 @@ function HomeFunStudyContainer ({
             });
             setAssignmentItems(newAssignmentItems);
         }
-        if(attachmentFile){
+
+        if (attachmentFile) {
             addAnSelectedAttachment(attachmentFile);
             setAttachmentFile(undefined);
         }
-    }, [ attachmentFile, assignmentItems ]);
+    }, [attachmentFile, assignmentItems]);
 
-    function handleSelectedFile (file: File) {
+    function handleSelectedFile(file: File) {
         if (validateFileType(file)) {
             if (validateFileSize(file)) {
                 console.log(`validated file: ${file.name}`);
@@ -991,11 +1009,11 @@ function HomeFunStudyContainer ({
     }
 
     useEffect(() => {
-        function deleteAssignmentItem (assignmentItemId: string) {
-            if(!assignmentItems) return;
+        function deleteAssignmentItem(assignmentItemId: string) {
+            if (!assignmentItems) return;
             const newAssignmentItems = assignmentItems.slice();
-            for(let i = 0 ; i < newAssignmentItems.length ; i++){
-                if(newAssignmentItems[i].itemId === assignmentItemId){
+            for (let i = 0; i < newAssignmentItems.length; i++) {
+                if (newAssignmentItems[i].itemId === assignmentItemId) {
                     newAssignmentItems.splice(i, 1);
                     break;
                 }
@@ -1006,13 +1024,14 @@ function HomeFunStudyContainer ({
                 assignmentItems: newAssignmentItems,
             });
         }
-        if(deletedAssignmentItemId){
+
+        if (deletedAssignmentItemId) {
             deleteAssignmentItem(deletedAssignmentItemId);
             setDeletedAssignmentItemId(undefined);
         }
-    }, [ deletedAssignmentItemId, assignmentItems ]);
+    }, [deletedAssignmentItemId, assignmentItems]);
 
-    function handleDeleteAssignmentItem (item: AssignmentItem){
+    function handleDeleteAssignmentItem(item: AssignmentItem) {
         showPopup({
             variant: `confirm`,
             title: intl.formatMessage({
@@ -1067,7 +1086,7 @@ function HomeFunStudyContainer ({
                             variant='body1'
                             align="center"
                             color='textSecondary'>
-                            <FormattedMessage id={`home_fun_study`} />
+                            <FormattedMessage id={`home_fun_study`}/>
                         </Typography>
                     </Box>
                 </Grid>
@@ -1079,7 +1098,8 @@ function HomeFunStudyContainer ({
                             id="home_fun_study_your_task"/></Typography>
                         <Typography
                             variant="body2"
-                            color="textSecondary">{studyInfo?.description ? studyInfo.description : <FormattedMessage id={`label_not_defined`}/>}</Typography>
+                            color="textSecondary">{studyInfo?.description ? studyInfo.description :
+                            <FormattedMessage id={`label_not_defined`}/>}</Typography>
                     </Box>
                 </Grid>
                 <Grid
@@ -1090,7 +1110,8 @@ function HomeFunStudyContainer ({
                         <Typography
                             variant='body2'
                             color="textSecondary">
-                            {studyInfo?.due_at && studyInfo.due_at !== 0 ? formatDueDate(studyInfo.due_at) : <FormattedMessage id={`label_not_defined`}/>}
+                            {studyInfo?.due_at && studyInfo.due_at !== 0 ? formatDueDate(studyInfo.due_at) :
+                                <FormattedMessage id={`label_not_defined`}/>}
                         </Typography>
                     </Box>
                 </Grid>
@@ -1100,7 +1121,7 @@ function HomeFunStudyContainer ({
                     assignmentItems={assignmentItems}
                     onClickUploadInfo={handleClickUploadInfo}
                     onClickUpload={handleClickUpload}
-                    onDeleteAssignment={handleDeleteAssignmentItem} />
+                    onDeleteAssignment={handleDeleteAssignmentItem}/>
                 <HomeFunStudyComment
                     studyInfo={studyInfo}
                     newestFeedback={newestFeedback}
@@ -1126,29 +1147,147 @@ function HomeFunStudyContainer ({
         </>
     );
 }
+
 const MAX_FILE_LIMIT = 3;
-function HomeFunStudyAssignment ({
-    studyInfo, newestFeedback,
-    assignmentItems, onClickUploadInfo,
-    onClickUpload, onDeleteAssignment,
-}: {
+
+function HomeFunStudyAssignment({
+                                    studyInfo, newestFeedback,
+                                    assignmentItems, onClickUploadInfo,
+                                    onClickUpload, onDeleteAssignment,
+                                }: {
     studyInfo?: ScheduleResponse; newestFeedback?: ScheduleFeedbackResponse; assignmentItems: AssignmentItem[]; onClickUploadInfo: () => void;
     onClickUpload: () => void; onDeleteAssignment: (item: AssignmentItem) => void;
 }) {
-    const { isAndroid } = useCordovaInitialize();
     const classes = useStyles();
-    const shouldShowChooseFile = useMemo(() => {
-        // const fileIsBeingUploaded = assignmentItems.some(item => item.status === AttachmentStatus.UPLOADING);
-        // if (fileIsBeingUploaded) {
-        //     return false;
-        // }
+    const {isAndroid, isIOS} = useCordovaSystemContext();
+    const cms = useHttpEndpoint('cms');
+    const intl = useIntl();
+    const {showPopup} = usePopupContext();
+    const {enqueueSnackbar} = useSnackbar();
+    const [downloadingPreview, setDownloadingPreview] = useState<{ itemId: string | undefined, downloading: boolean }>({
+        itemId: undefined,
+        downloading: false
+    })
+    const [downloadPreview, setDownloadPreview] = useState<{ shouldDownload: boolean, assignmentItem: AssignmentItem | undefined }>({
+        shouldDownload: false,
+        assignmentItem: undefined
+    })
+    const [previewOpen, setPreviewOpen] = useState<{ open: boolean, fileUrl: string }>({open: false, fileUrl: ""});
 
+    const shouldShowChooseFile = useMemo(() => {
         return studyInfo && assignmentItems.length < MAX_FILE_LIMIT && newestFeedback?.is_allow_submit;
     }, [
         assignmentItems,
         studyInfo,
         newestFeedback,
     ]);
+
+    const getCacheDirectory = useMemo(() => {
+        const cordova = (window as any).cordova;
+        let targetDirectory = "";
+        if(cordova !== undefined) {
+            targetDirectory = cordova.file.externalCacheDirectory;
+            if(isIOS){
+                targetDirectory = cordova.file.tempDirectory;
+            }
+        }
+        return targetDirectory
+    }, [window, isIOS])
+
+    useEffect(() => {
+        function startDownloadPreview(){
+            setDownloadPreview({ ...downloadPreview, shouldDownload : false})
+            if(downloadingPreview.downloading)
+                return
+            const assignmentItem = downloadPreview.assignmentItem;
+            if(assignmentItem){
+                const url = encodeURI(`${cms}/v1/contents_resources/${assignmentItem.attachmentId}`);
+                console.log(url);
+                setDownloadingPreview({downloading: true, itemId: assignmentItem.itemId});
+                downloadDataBlob(url).then(downloadedData => {
+                    saveDataBlobToFile(downloadedData, getCacheDirectory, assignmentItem.attachmentName).then(savedFilePath => {
+                        console.log(`savedFilePath: ${savedFilePath}`)
+                        setPreviewOpen({open: true, fileUrl: savedFilePath});
+                    }).catch(error => {
+                        enqueueSnackbar(error.body ?? error.message, {
+                            variant: "error",
+                            anchorOrigin: {
+                                vertical: "bottom",
+                                horizontal: "center"
+                            }
+                        });
+                    });
+                }).catch(error => {
+                    enqueueSnackbar(error.body ?? error.message, {
+                        variant: "error",
+                        anchorOrigin: {
+                            vertical: "bottom",
+                            horizontal: "center"
+                        }
+                    });
+                }).finally(() => {
+                    console.log("finally")
+                    setDownloadingPreview({downloading: false, itemId: undefined});
+                });
+            }
+        }
+        if(downloadPreview.shouldDownload){
+            startDownloadPreview()
+        }
+    },[downloadPreview])
+
+    useEffect(() => {
+        if(previewOpen.open && open){
+            const previewAnyFile = (window as any).PreviewAnyFile;
+            previewAnyFile.previewPath(
+                (result: string) => {
+                    setPreviewOpen({open: false, fileUrl: ""})
+                },
+                (error: any) => {
+                    setPreviewOpen({open: false, fileUrl: ""})
+                    enqueueSnackbar(error.message, {
+                        variant: "error",
+                        anchorOrigin: {
+                            vertical: "bottom",
+                            horizontal: "center"
+                        }
+                    })
+                },
+                previewOpen.fileUrl
+            )
+        }
+    },[previewOpen])
+
+    const checkNetworkToConfirmDownload = (onConfirm: () => void) => {
+        // reference: https://cordova.apache.org/docs/en/10.x/reference/cordova-plugin-network-information/
+        const connectionType = (navigator as any).connection.type;
+        const isCellularConnection = connectionType == `2g` ||
+            connectionType == `3g` ||
+            connectionType == `4g` ||
+            connectionType == `5g` || // NOTE: Not sure if plugin supports 5g yet, adding it for future safery.
+            connectionType == `cellular`;
+
+        if (isCellularConnection) {
+            showPopup({
+                variant: "confirm",
+                title: intl.formatMessage({ id: "confirm_download_file_title" }),
+                description: [intl.formatMessage({ id: "confirm_download_file_description" })],
+                closeLabel: intl.formatMessage({ id: "button_cancel" }),
+                confirmLabel: intl.formatMessage({ id: "button_continue" }),
+                onConfirm: () => {
+                    onConfirm();
+                },
+            });
+        } else {
+            onConfirm();
+        }
+    }
+
+    const confirmOpenAttachmentLink = (assignmentItem: AssignmentItem) => {
+        checkNetworkToConfirmDownload(() => {
+            setDownloadPreview({shouldDownload: true, assignmentItem: assignmentItem});
+        });
+    };
 
     return (
         <Grid
@@ -1185,10 +1324,11 @@ function HomeFunStudyAssignment ({
                             variant="caption"
                             display="block"
                             color="textSecondary"><FormattedMessage id={`home_fun_study_maximum_three_files`}/></Typography>
-                        :  <Typography
+                        : <Typography
                             variant="caption"
                             display="block"
-                            color="secondary"><FormattedMessage id={`home_fun_study_maximum_three_files_limited`} /></Typography>
+                            color="secondary"><FormattedMessage
+                            id={`home_fun_study_maximum_three_files_limited`}/></Typography>
                 }
                 <Box my={2}>
                     <Button
@@ -1196,7 +1336,7 @@ function HomeFunStudyAssignment ({
                         variant="outlined"
                         color="primary"
                         className={classes.rounded_button}
-                        disabled={!shouldShowChooseFile }
+                        disabled={!shouldShowChooseFile}
                         startIcon={<StyledIcon
                             icon={<UploadIcon/>}
                             size="medium"
@@ -1210,8 +1350,11 @@ function HomeFunStudyAssignment ({
                     <List>
                         {assignmentItems.map((item) => (
                             <ListItem key={item.itemId}>
-                                <ListItemIcon>
-                                    <FileIcon fileType={getFileExtensionFromName(item.attachmentName)}/>
+                                <ListItemIcon onClick={() => confirmOpenAttachmentLink(item)}>
+                                    <div className={classes.wrapper}>
+                                        <FileIcon fileType={getFileExtensionFromName(item.attachmentName)}/>
+                                        {downloadingPreview.downloading && item.itemId == downloadingPreview.itemId ? <CircularProgress size={30} className={classes.progress}/> : ''}
+                                    </div>
                                 </ListItemIcon>
                                 <ListItemText
                                     primary={<Typography
@@ -1251,27 +1394,27 @@ function HomeFunStudyAssignment ({
     );
 }
 
-function HomeFunStudyComment ({
-    studyInfo, newestFeedback, defaultComment,
-}: { studyInfo?: ScheduleResponse; newestFeedback?: ScheduleFeedbackResponse; defaultComment: string }) {
+function HomeFunStudyComment({
+                                 studyInfo, newestFeedback, defaultComment,
+                             }: { studyInfo?: ScheduleResponse; newestFeedback?: ScheduleFeedbackResponse; defaultComment: string }) {
     const classes = useStyles();
 
-    const [ openEditComment, setOpenEditComment ] = useState(false);
-    const [ comment, setComment ] = useState(defaultComment);
+    const [openEditComment, setOpenEditComment] = useState(false);
+    const [comment, setComment] = useState(defaultComment);
 
-    const [ homeFunStudy, setHomeFunStudy ] = useRecoilState(homeFunStudyState);
-    const [ selectedUser ] = useRecoilState(selectedUserState);
+    const [homeFunStudy, setHomeFunStudy] = useRecoilState(homeFunStudyState);
+    const [selectedUser] = useRecoilState(selectedUserState);
 
     useEffect(() => {
         let syncedComment = ``;
-        if(newestFeedback && newestFeedback.comment){
+        if (newestFeedback && newestFeedback.comment) {
             syncedComment = newestFeedback.comment;
         }
         if (studyInfo && studyInfo.id && selectedUser.userId) {
             const hfsFeedbacks = homeFunStudy.feedback;
             for (let i = 0; hfsFeedbacks && i < hfsFeedbacks.length; i++) {
                 if (hfsFeedbacks[i].userId == selectedUser.userId && hfsFeedbacks[i].studyId == studyInfo.id) {
-                    if(hfsFeedbacks[i].comment != `` && hfsFeedbacks[i].comment != syncedComment){
+                    if (hfsFeedbacks[i].comment != `` && hfsFeedbacks[i].comment != syncedComment) {
                         syncedComment = hfsFeedbacks[i].comment;
                     }
                     break;
@@ -1286,24 +1429,23 @@ function HomeFunStudyComment ({
         newestFeedback
     ]);
 
-    function handleOnClickEditComment () {
+    function handleOnClickEditComment() {
         setOpenEditComment(true);
     }
 
-    function handleSaveComment (newComment: string) {
+    function handleSaveComment(newComment: string) {
         setComment(newComment);
         if (studyInfo && selectedUser.userId) {
             const newHFSFeedbacks = homeFunStudy.feedback ? homeFunStudy.feedback.slice() : [];
             const currentFeedbackIndex = newHFSFeedbacks.findIndex(item => item.userId === selectedUser.userId && item.studyId === studyInfo.id);
-            if(currentFeedbackIndex >= 0){
+            if (currentFeedbackIndex >= 0) {
                 newHFSFeedbacks[currentFeedbackIndex] = {
                     userId: selectedUser.userId,
                     studyId: studyInfo.id,
                     comment: newComment,
                     assignmentItems: newHFSFeedbacks[currentFeedbackIndex].assignmentItems,
                 };
-            }
-            else{
+            } else {
                 newHFSFeedbacks.push({
                     userId: selectedUser.userId,
                     studyId: studyInfo.id,
@@ -1319,7 +1461,7 @@ function HomeFunStudyComment ({
         setOpenEditComment(false);
     }
 
-    function handleCloseComment () {
+    function handleCloseComment() {
         setOpenEditComment(false);
     }
 
