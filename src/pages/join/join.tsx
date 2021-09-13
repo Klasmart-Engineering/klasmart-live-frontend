@@ -297,7 +297,7 @@ export default function Join (): JSX.Element {
                 </Container>
             </Grid>
 
-            {process.env.IS_CORDOVA_BUILD && <Typography className={classes.version}>{config.version}</Typography>}
+            {!process.env.IS_CORDOVA_BUILD && <Typography className={classes.version}>{config.version}</Typography>}
 
             <PermissionAlertDialog dialogOpenHandler={{
                 dialogOpen,
