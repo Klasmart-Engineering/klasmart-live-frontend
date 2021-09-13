@@ -412,7 +412,7 @@ export function HomeFunStudyDialog () {
                     });
                 });
         }
-        if(shouldSubmitFeedback === true){
+        if(shouldSubmitFeedback){
             setShouldSubmitFeedback(false);
             if(submitStatus === SubmitStatus.UPLOADING){
                 showPopup({
@@ -1263,19 +1263,27 @@ function HomeFunStudyComment ({
     const [ selectedUser ] = useRecoilState(selectedUserState);
 
     useEffect(() => {
+        let syncedComment = ``;
+        if(newestFeedback && newestFeedback.comment){
+            syncedComment = newestFeedback.comment;
+        }
         if (studyInfo && studyInfo.id && selectedUser.userId) {
             const hfsFeedbacks = homeFunStudy.feedback;
             for (let i = 0; hfsFeedbacks && i < hfsFeedbacks.length; i++) {
                 if (hfsFeedbacks[i].userId == selectedUser.userId && hfsFeedbacks[i].studyId == studyInfo.id) {
-                    setComment(hfsFeedbacks[i].comment);
+                    if(hfsFeedbacks[i].comment != `` && hfsFeedbacks[i].comment != syncedComment){
+                        syncedComment = hfsFeedbacks[i].comment;
+                    }
                     break;
                 }
             }
+            setComment(syncedComment);
         }
     }, [
         selectedUser,
         studyInfo,
         homeFunStudy,
+        newestFeedback
     ]);
 
     function handleOnClickEditComment () {
