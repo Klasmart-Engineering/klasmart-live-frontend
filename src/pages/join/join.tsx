@@ -1,4 +1,8 @@
-import { DeviceStatus, useCameraContext } from "@/app/context-provider/camera-context";
+import { BackButton } from "@/app/components/icons/backButton";
+import {
+    DeviceStatus,
+    useCameraContext,
+} from "@/app/context-provider/camera-context";
 import KidsLoopClassTeachers from "@/assets/img/classtype/kidsloop_class_teachers.svg";
 import KidsLoopLiveStudents from "@/assets/img/classtype/kidsloop_live_students.svg";
 import KidsLoopLiveTeachers from "@/assets/img/classtype/kidsloop_live_teachers.svg";
@@ -43,8 +47,8 @@ import React,
     useState,
 } from "react";
 import { FormattedMessage } from "react-intl";
-import { useRecoilState } from "recoil";
 import { useHistory } from "react-router-dom";
+import { useRecoilState } from "recoil";
 
 const config = require(`@/../package.json`);
 
@@ -63,8 +67,7 @@ const useStyles = makeStyles((theme: Theme) =>
         cardContent:{
             padding: `22px !important`,
             [theme.breakpoints.down(`sm`)]: {
-                maxWidth: 360,
-                margin: `0 auto`,
+                padding: `12px 14px !important`,
             },
         },
         logo: {
@@ -75,9 +78,24 @@ const useStyles = makeStyles((theme: Theme) =>
             maxHeight: `26px`,
             objectFit: `contain`,
         },
+        appHeader: {
+            position: `fixed`,
+            top: 0,
+            left: 0,
+            width: `100%`,
+        },
         header:{
             color: `#fff`,
             padding: `5rem 0 3rem 0`,
+            [theme.breakpoints.down(`sm`)]: {
+                padding: `2.5rem 0 2rem 0`,
+            },
+        },
+        headerText:{
+            fontWeight: 600,
+            [theme.breakpoints.down(`sm`)]: {
+                fontSize: `1.6rem`,
+            },
         },
         headerBg:{
             position: `fixed`,
@@ -99,6 +117,9 @@ const useStyles = makeStyles((theme: Theme) =>
                 left: `50%`,
                 transform: `translateX(-50%)`,
             },
+            [theme.breakpoints.down(`sm`)]: {
+                height: `490px`,
+            },
         },
         footer:{
             textAlign: `center`,
@@ -107,6 +128,10 @@ const useStyles = makeStyles((theme: Theme) =>
                 width: 150,
                 margin: `2rem 0`,
                 height: `auto`,
+                [theme.breakpoints.down(`sm`)]: {
+                    width: 110,
+                    margin: `1.2rem 0`,
+                },
             },
         },
         version:{
@@ -122,6 +147,7 @@ export default function Join (): JSX.Element {
     const classes = useStyles();
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
+    const isXsDown = useMediaQuery(theme.breakpoints.down(`xs`));
 
     const {
         classType,
@@ -136,6 +162,8 @@ export default function Join (): JSX.Element {
     const [ loading, setLoading ] = useState(true);
     const [ branding, setBranding ] = useState<BrandingType|undefined>(undefined);
     const logo = branding?.iconImageURL || KidsLoopLogoSvg;
+
+    const history = useHistory();
 
     const {
         setAcquireDevices,
@@ -181,13 +209,18 @@ export default function Join (): JSX.Element {
         <div className={clsx(classes.root, {
             [classes.rootTeacher]: isTeacher,
         })}>
+            {process.env.IS_CORDOVA_BUILD &&
+                <div className={classes.appHeader}>
+                    <BackButton onClick={() => history.push(`/schedule`) } />
+                </div>
+            }
             <div className={classes.header}>
                 <Typography
                     noWrap
                     align="center"
                     variant="h3"
+                    className={classes.headerText}
                     style={{
-                        fontWeight: 600,
                         color: branding?.primaryColor && theme.palette.getContrastText(branding?.primaryColor),
                     }}
                 >
@@ -217,7 +250,7 @@ export default function Join (): JSX.Element {
                         <CardContent className={classes.cardContent}>
                             <Grid
                                 container
-                                direction={isSmDown ? `column-reverse` : `row`}
+                                direction={isXsDown ? `column-reverse` : `row`}
                                 justifyContent="center"
                                 alignItems="center"
                                 spacing={4}
@@ -225,7 +258,7 @@ export default function Join (): JSX.Element {
                                 {classType !== ClassType.LIVE ? null :
                                     <Grid
                                         item
-                                        xs={12}
+                                        xs={6}
                                         md={7}>
                                         <CameraPreview
                                             permissionError={permissionError}
@@ -234,7 +267,7 @@ export default function Join (): JSX.Element {
                                 }
                                 <Grid
                                     item
-                                    xs={12}
+                                    xs={6}
                                     md={classType === ClassType.LIVE ? 5 : undefined}
                                 >
                                     <Grid
@@ -243,9 +276,12 @@ export default function Join (): JSX.Element {
                                         justifyContent="center"
                                         alignItems="center"
                                     >
+                                        {!isSmDown &&
                                         <Grid item>
                                             <ClassTypeLogo />
                                         </Grid>
+                                        }
+
                                     </Grid>
                                     <JoinRoomForm
                                         mediaDeviceError={permissionError || notFoundError}
@@ -260,7 +296,9 @@ export default function Join (): JSX.Element {
                     </div>
                 </Container>
             </Grid>
-            <Typography className={classes.version}>{config.version}</Typography>
+
+            {process.env.IS_CORDOVA_BUILD && <Typography className={classes.version}>{config.version}</Typography>}
+
             <PermissionAlertDialog dialogOpenHandler={{
                 dialogOpen,
                 handleDialogClose,
