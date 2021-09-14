@@ -1,7 +1,6 @@
-import { useHttpEndpoint } from "../../../providers/region-select-context";
+import { useHttpEndpoint } from "@/providers/region-select-context";
 import {
-    CordovaSystemContext,
-    PermissionType,
+    PermissionType, useCordovaSystemContext,
 } from "../../context-provider/cordova-system-context";
 import { usePopupContext } from "../../context-provider/popup-context";
 import { ScheduleResponse } from "../../services/cms/ISchedulerService";
@@ -24,12 +23,14 @@ import { useSnackbar } from "kidsloop-px";
 import React,
 {
     useCallback,
-    useContext,
     useEffect,
     useMemo,
     useState,
 } from "react";
 import { useIntl } from "react-intl";
+import {ParentalGate} from "@/app/dialogs/parentalGate";
+import StyledIcon from "@/components/styled/icon";
+import {ArrowBackIos as ArrowBackIcon} from "@styled-icons/material/ArrowBackIos";
 
 const useStyles = makeStyles(() => ({
     dialogTitle: {
@@ -67,6 +68,9 @@ const useStyles = makeStyles(() => ({
         marginTop: -12,
         marginLeft: -12,
     },
+    headerBackButton: {
+        padding: 10
+    },
 }));
 
 const STUDY_DETAIL_ON_BACK_ID = `studyDetailOnBackID`;
@@ -88,17 +92,19 @@ export default function StudyDetail ({
         wrapper,
         progress,
         attachmentName,
+        headerBackButton
     } = useStyles();
     const cms = useHttpEndpoint(`cms`);
     const [ downloadingPreview, setDownloadingPreview ] = useState(false);
     const [ shouldDownloadPreview, setShouldDownloadPreview ] = useState(false);
     const { enqueueSnackbar } = useSnackbar();
-    const { isIOS, requestPermissions } = useContext(CordovaSystemContext);
+    const { isIOS, requestPermissions, addOnBack, removeOnBack } = useCordovaSystemContext();
     const { showPopup } = usePopupContext();
     const intl = useIntl();
-    const { addOnBack, removeOnBack } = useContext(CordovaSystemContext);
     const [ downloadingAttachment, setDownloadingAttachment ] = useState(false);
     const [ shouldDownloadAttachment, setShouldDownloadAttachment ] = useState(false);
+    const [hyperLink, setHyperLink] = useState<string|undefined>();
+    const [parentalLock, setParentalLock] = useState<boolean>(false);
 
     useEffect(() => {
         if(open){
@@ -491,6 +497,70 @@ export default function StudyDetail ({
         }
     }, [ schedule, open ]);
 
+    function generateDescriptionHasHyperLink(description: string) {
+        const linkRegex = /(http|ftp|https):\/\/([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?/g;
+        const texts = description.split(' ');
+        return texts.map(
+            text => linkRegex.test(text)
+                ? <><Link variant="body1" href="#" onClick={() => {setHyperLink(text);}}>{text}</Link> </> : `${text} ` )
+    }
+
+    const openHyperLink = (link?: string) => {
+        if(!link)
+            return;
+        const cordova = (window as any).cordova;
+        let browser: any;
+        if (!cordova) return;
+
+        cordova.plugins.browsertab.isAvailable((result: any) => {
+            if (!result) {
+                browser = cordova.InAppBrowser.open(link, "_system", "location=no, zoom=no");
+            } else {
+                cordova.plugins.browsertab.openUrl(
+                    link,
+                    (successResp: any) => { console.log(successResp) },
+                    (failureResp: any) => {
+                        console.error("no browser tab available");
+                    }
+                )
+            }
+        })
+    }
+
+    useEffect(() => {
+        if(hyperLink){
+            setParentalLock(true);
+        }
+    }, [hyperLink])
+
+    useEffect(() => {
+        if(!parentalLock) {
+            setHyperLink(undefined);
+        }
+    },[parentalLock])
+    if (parentalLock) {
+        return <Dialog
+            aria-labelledby="select-org-dialog"
+            fullScreen
+            open={open}
+            onClose={() => setParentalLock(false)}
+        >
+            <DialogTitle
+                id="select-org-dialog"
+                disableTypography
+                className={headerBackButton}
+            >
+                <IconButton
+                    onClick={() => { setParentalLock(false); }}
+                    size="medium"
+                >
+                    <StyledIcon icon={<ArrowBackIcon />} size="medium" />
+                </IconButton >
+            </DialogTitle>
+            <ParentalGate onCompleted={() => { openHyperLink(hyperLink); setParentalLock(false); }} />
+        </Dialog>
+    }
+
     return (
         <React.Fragment>
             <Dialog
@@ -537,7 +607,7 @@ export default function StudyDetail ({
                                 <Typography
                                     variant="body1"
                                     className={rowContentText}>
-                                    { schedule?.description || `N/A` }
+                                    { schedule?.description ? generateDescriptionHasHyperLink(schedule.description) : `N/A` }
                                 </Typography>
                             </Grid>
                         </Grid>
