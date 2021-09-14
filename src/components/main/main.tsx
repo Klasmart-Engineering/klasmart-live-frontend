@@ -23,9 +23,9 @@ const useStyles = makeStyles((theme: Theme) => ({
         height: `100vh`,
         flexWrap: `nowrap`,
     },
-    fullViewHeightSm:{
-        height: `90vh`,
-        minHeight: 350,
+    fullViewHeightXs:{
+        // height: `90vh`,
+        // minHeight: 350,
     },
     fullHeightCentered:{
         height: `100%`,
@@ -59,14 +59,14 @@ function Main () {
     const { content } = useContext(RoomContext);
 
     const theme = useTheme();
-    const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
+    const isXsDown = useMediaQuery(theme.breakpoints.down(`xs`));
 
     return (
         <Grid
             container
             direction="column"
             className={clsx(classes.fullViewHeight, {
-                [classes.fullViewHeightSm]: isSmDown && classType == ClassType.LIVE,
+                [classes.fullViewHeightXs]: isXsDown && classType == ClassType.LIVE,
             })}>
             <Grid
                 item

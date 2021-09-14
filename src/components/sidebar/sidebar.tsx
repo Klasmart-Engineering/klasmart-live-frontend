@@ -69,10 +69,14 @@ function Sidebar () {
 
     const [ activeTab, setActiveTab ] = useRecoilState(activeTabState);
     const { isTeacher } = useSessionContext();
-    const [ drawerWidth, setDrawerWidth ] = useState<any>(440);
+    const narrowDrawer = 240;
+    const largeDrawer = 440;
+    const [ defaultDrawerWidth, setDefaultDrawerWidth ] = useState<any>(largeDrawer);
+    const [ drawerWidth, setDrawerWidth ] = useState<any>(defaultDrawerWidth);
 
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
+    const isXsDown = useMediaQuery(theme.breakpoints.down(`xs`));
 
     const sidebarTabs = [
         {
@@ -108,16 +112,22 @@ function Sidebar () {
     const activeTabContent = sidebarTabs.find(item => item.name === activeTab)?.content;
 
     useEffect(() => {
-        activeTab !== `participants` ? setDrawerWidth(`100%`) : setDrawerWidth(440);
+        activeTab !== `participants` ? setDrawerWidth(`100%`) : setDrawerWidth(defaultDrawerWidth);
     }, [ activeTab ]);
 
     useEffect(()=>{
         setTimeout(function (){
             window.dispatchEvent(new Event(`resize`));
         }, 1000);
+
+        isSmDown ? setDefaultDrawerWidth(narrowDrawer) : setDefaultDrawerWidth(largeDrawer);
     }, [ isSmDown ]);
 
-    if(isSmDown){
+    useEffect(()=>{
+        setDrawerWidth(defaultDrawerWidth);
+    }, [ defaultDrawerWidth ]);
+
+    if(isXsDown){
         return(sidebarTabs[0].content);
     }
 

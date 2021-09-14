@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 export function Room () {
     const classes = useStyles();
     const theme = useTheme();
-    const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
+    const isXsDown = useMediaQuery(theme.breakpoints.down(`xs`));
 
     const [ hasControls, setHasControls ] = useRecoilState(hasControlsState);
     const [ studyRecommandUrl, setStudyRecommandUrl ] = useRecoilState(studyRecommandUrlState);
@@ -242,7 +242,7 @@ export function Room () {
     return (
         <Grid
             container
-            direction={isSmDown ? `column` : `row`}
+            direction={isXsDown ? `column` : `row`}
             className={classType === ClassType.STUDY ? classes.study : undefined}
         >
             <Grid
