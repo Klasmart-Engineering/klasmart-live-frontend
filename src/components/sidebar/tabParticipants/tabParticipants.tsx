@@ -23,6 +23,13 @@ import { useIntl } from "react-intl";
 const useStyles = makeStyles((theme: Theme) => ({
     rootSm:{
         padding: `0 10px`,
+        "& $cameraGridSingleTeacher":{
+            padding: `0`,
+            minHeight: `auto`,
+        },
+        "& $cameraGrid":{
+            gridTemplateColumns: `1fr`,
+        },
     },
     cameraGrid: {
         display: `grid`,

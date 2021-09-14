@@ -96,6 +96,7 @@ const useStyles = makeStyles((theme: Theme) =>
             [theme.breakpoints.down(`sm`)]: {
                 fontSize: `1.6rem`,
             },
+            padding: `1rem 0 3rem 0`, // DONT COMMIT THIS GAEL PLEASE
         },
         headerBg:{
             position: `fixed`,
