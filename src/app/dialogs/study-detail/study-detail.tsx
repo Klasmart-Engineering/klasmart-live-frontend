@@ -31,6 +31,8 @@ import { useIntl } from "react-intl";
 import {ParentalGate} from "@/app/dialogs/parentalGate";
 import StyledIcon from "@/components/styled/icon";
 import {ArrowBackIos as ArrowBackIcon} from "@styled-icons/material/ArrowBackIos";
+import {downloadDataBlob} from "@/app/utils/requestUtils";
+import {saveDataBlobToFile} from "@/app/utils/fileUtils";
 
 const useStyles = makeStyles(() => ({
     dialogTitle: {
@@ -219,31 +221,6 @@ export default function StudyDetail ({
         checkNetworkToConfirmDownload(downloadAttachment);
     };
 
-    const downloadDataBlob = (url: string): Promise<Blob> => {
-        return new Promise((resolve, reject) => {
-            const request = new XMLHttpRequest();
-            request.responseType = `blob`;
-            request.open(`GET`, url);
-
-            request.onreadystatechange = () => {
-                if (request.readyState === XMLHttpRequest.DONE ||
-                    request.readyState === 4) {
-                    resolve(request.response);
-                }
-            };
-
-            request.onerror = () => {
-                reject(request.statusText);
-            };
-
-            request.ontimeout = () => {
-                reject(`timeout`);
-            };
-
-            request.send();
-        });
-    };
-
     const getCacheDirectory = useMemo(() => {
         const cordova = (window as any).cordova;
         let targetDirectory = ``;
@@ -267,36 +244,6 @@ export default function StudyDetail ({
         }
         return targetDirectory;
     }, [ window, isIOS ]);
-
-    const saveDataBlobToFile = (blob: Blob, targetDirectory: string, fileName: string): Promise<string> => {
-        return new Promise((resolve, reject) => {
-            (window as any).resolveLocalFileSystemURL(targetDirectory, (entry: any) => {
-                entry.getFile(fileName, {
-                    create: true,
-                    exclusive: false,
-                }, (fileEntry: any) => {
-                    fileEntry.createWriter((writer: any) => {
-                        writer.onwriteend = () => {
-                            resolve(fileEntry.toURL());
-                        };
-
-                        writer.onerror = () => {
-                            console.error(`could not write file: `, writer.error);
-                            reject(writer.error);
-                        };
-
-                        writer.write(blob);
-                    });
-                }, (error: any) => {
-                    console.error(`could not create file: `, error);
-                    reject(error);
-                });
-            }, (error: any) => {
-                console.error(`could not retrieve directory: `, error);
-                reject(error);
-            });
-        });
-    };
 
     useEffect(() => {
         function startDownloadPreview (){
