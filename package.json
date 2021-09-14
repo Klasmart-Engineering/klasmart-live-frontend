@@ -175,7 +175,8 @@
       "cordova-plugin-external-url-intercept": {},
       "cordova-plugin-compat": {},
       "cordova-plugin-androidx-adapter": {},
-      "cordova-plugin-androidx": {}
+      "cordova-plugin-androidx": {},
+      "cordova-plugin-x-socialsharing": {}
     },
     "platforms": [
       "ios",

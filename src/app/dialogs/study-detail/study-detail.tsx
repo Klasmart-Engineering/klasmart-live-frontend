@@ -233,18 +233,6 @@ export default function StudyDetail ({
         return targetDirectory;
     }, [ window, isIOS ]);
 
-    const getDownloadDirectory = useMemo(() => {
-        const cordova = (window as any).cordova;
-        let targetDirectory = ``;
-        if(cordova !== undefined) {
-            targetDirectory = `${cordova.file.externalRootDirectory}Download/`;
-            if(isIOS){
-                targetDirectory = cordova.file.documentsDirectory;
-            }
-        }
-        return targetDirectory;
-    }, [ window, isIOS ]);
-
     useEffect(() => {
         function startDownloadPreview (){
             setShouldDownloadPreview(false);
@@ -333,17 +321,8 @@ export default function StudyDetail ({
                     setDownloadingAttachment(true);
 
                     downloadDataBlob(url).then(downloadedData => {
-                        saveDataBlobToFile(downloadedData, getDownloadDirectory, schedule.attachment.name).then(savedFilePath => {
-                            enqueueSnackbar(intl.formatMessage({
-                                id: `download_complete`,
-                                defaultMessage: `Download complete`,
-                            }), {
-                                variant: `success`,
-                                anchorOrigin: {
-                                    vertical: `bottom`,
-                                    horizontal: `center`,
-                                },
-                            });
+                        saveDataBlobToFile(downloadedData, getCacheDirectory, schedule.attachment.name).then(savedFilePath => {
+                            shareFile(schedule.attachment.name, savedFilePath);
                         }).catch(error => {
                             enqueueSnackbar(error.body ?? error.message, {
                                 variant: `error`,
@@ -366,6 +345,38 @@ export default function StudyDetail ({
                     });
                 });
             }
+        }
+
+        function shareFile(fileName: string, filePath: string){
+            const options = {
+                message: fileName, // not supported on some apps (Facebook, Instagram)
+                subject: 'Download attachment from KidsLoop', // fi. for email
+                files: [filePath], // an array of filenames either locally or remotely
+                url: filePath,
+                chooserTitle: 'Complete action using', // Android only, you can override the default share sheet title
+                //iPadCoordinates: '0,0,0,0'
+            }
+            const onSuccess = (result : any) => {
+                if(result.completed){
+                    enqueueSnackbar(intl.formatMessage({id: "download_complete", defaultMessage: "Download complete"}), {
+                        variant: "success",
+                        anchorOrigin: {
+                            vertical: "bottom",
+                            horizontal: "center"
+                        }
+                    });
+                }
+            }
+            const onError = (message: string) => {
+                enqueueSnackbar(message, {
+                    variant: "error",
+                    anchorOrigin: {
+                        vertical: "bottom",
+                        horizontal: "center"
+                    }
+                });
+            }
+            (window as any).plugins.socialsharing.shareWithOptions(options,onSuccess, onError);
         }
         if(shouldDownloadAttachment){
             startDownloadAttachment();
