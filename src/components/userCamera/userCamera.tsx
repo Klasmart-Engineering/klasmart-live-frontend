@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         },
     },
     rootSm:{
-        minHeight: 120,
+        minHeight: 100,
         "& video": {
             objectFit: `contain`,
         },
