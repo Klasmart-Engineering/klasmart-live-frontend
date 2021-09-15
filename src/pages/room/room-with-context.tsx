@@ -1,7 +1,6 @@
 import { Room } from "./room";
 import { Trophy } from "@/components/trophies/trophy";
-import ClassEnded from "@/pages/end/classEnded";
-import ClassLeft from "@/pages/end/classLeft";
+import EndClass from "@/pages/end/endClass";
 import ClassProviders from "@/providers/classProviders";
 import { LiveSessionLinkProvider } from "@/providers/live-session-link-context";
 import { useSessionContext } from "@/providers/session-context";
@@ -34,10 +33,8 @@ function ClassRoom (): JSX.Element {
     const [ classLeft ] = useRecoilState(classLeftState);
     const [ classEnded ] = useRecoilState(classEndedState);
 
-    if(classLeft){
-        return <ClassLeft />;
-    }else if(classEnded){
-        return <ClassEnded />;
+    if(classLeft || classEnded){
+        return <EndClass />;
     }
 
     return (
