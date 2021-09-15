@@ -13,8 +13,6 @@ import React from 'react';
 import { useRecoilState } from "recoil";
 
 export function RoomWithContext (): JSX.Element {
-    const [ classLeft ] = useRecoilState(classLeftState);
-    const [ classEnded ] = useRecoilState(classEndedState);
 
     const {
         sessionId,
@@ -22,25 +20,32 @@ export function RoomWithContext (): JSX.Element {
         roomId,
     } = useSessionContext();
 
-    if (classLeft) {
-        return (<ClassLeft />);
-    }
-
-    if (classEnded) {
-        return (<ClassEnded />);
-    }
-
     return (
         <LiveSessionLinkProvider
             token={token}
             roomId={roomId}
             sessionId={sessionId}>
-            <ClassProviders>
-                <>
-                    <Room />
-                    <Trophy />
-                </>
-            </ClassProviders>
+            <ClassRoom />
         </LiveSessionLinkProvider>
+    );
+}
+
+function ClassRoom (): JSX.Element {
+    const [ classLeft ] = useRecoilState(classLeftState);
+    const [ classEnded ] = useRecoilState(classEndedState);
+
+    if(classLeft){
+        return <ClassLeft />;
+    }else if(classEnded){
+        return <ClassEnded />;
+    }
+
+    return (
+        <ClassProviders>
+            <>
+                <Room />
+                <Trophy />
+            </>
+        </ClassProviders>
     );
 }
