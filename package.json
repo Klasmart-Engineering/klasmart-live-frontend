@@ -1,6 +1,6 @@
 {
   "name": "client",
-  "version": "2.0.15",
+  "version": "2.1.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -8,7 +8,6 @@
     "start": "cross-env NODE_ENV=development webpack serve",
     "test": "jest",
     "coverage": "jest --coverage",
-
     "build:docker": "DOCKER_BUILDKIT=1 docker build --no-cache --ssh default -t kidsloop-live-frontend .",
     "preversion": "git checkout master && git pull origin master",
     "postversion": "git push && git push --tags"
