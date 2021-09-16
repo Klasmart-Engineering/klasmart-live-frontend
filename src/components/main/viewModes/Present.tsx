@@ -6,6 +6,7 @@ import PreviewLessonPlan from "@/components/main/previewLessonPlan";
 import { ContentType } from "@/pages/utils";
 import { RoomContext } from "@/providers/roomContext";
 import { hasControlsState } from "@/store/layoutAtoms";
+import { useContentToHref } from "@/utils/contentUtils";
 import React,
 { useContext } from "react";
 import { useRecoilState } from "recoil";
@@ -13,6 +14,7 @@ import { useRecoilState } from "recoil";
 function Present () {
     const { content } = useContext(RoomContext);
     const [ hasControls, setHasControls ] = useRecoilState(hasControlsState);
+    const [ contentHref ] = useContentToHref(content);
 
     // IF TEACHER
     if(hasControls){
@@ -21,7 +23,7 @@ function Present () {
 
     if(content && content.type === ContentType.Image){
         return (
-            <ActivityImage material={content?.contentId} />
+            <ActivityImage material={contentHref} />
         );
     }
 
@@ -37,7 +39,7 @@ function Present () {
 
     if(content && content.type === ContentType.Activity){
         return (
-            <RecordedIframe contentId={content?.contentId}  />
+            <RecordedIframe contentHref={contentHref}  />
         );
     }
 
