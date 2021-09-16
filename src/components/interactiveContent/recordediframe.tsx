@@ -1,5 +1,7 @@
 import { useUserInformation } from "@/app/context-provider/user-information-context";
+import { injectIframeScript } from "@/app/utils/injectIframeScript";
 import { LIVE_LINK } from "@/providers/providers";
+import { useHttpEndpoint } from "@/providers/region-select-context";
 import { RoomContext } from "@/providers/roomContext";
 import { useSessionContext } from "@/providers/session-context";
 import { ClassType } from "@/store/actions";
@@ -24,6 +26,7 @@ import React,
 {
     useContext,
     useEffect,
+    useMemo,
     useRef,
     useState,
 } from "react";
@@ -49,68 +52,79 @@ enum LoadStatus {
     Finished,
 }
 
-export function RecordedIframe (props: Props): JSX.Element {
+export function RecordedIframe(props: Props): JSX.Element {
     const MAX_LOADING_COUNT = 60;
     const iframeRef = useRef<HTMLIFrameElement>(null);
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
 
-    const { roomId, classType } = useSessionContext();
+    const { roomId, classType, token } = useSessionContext();
     const { sessions } = useContext(RoomContext);
-    const [ , setStreamId ] = useRecoilState(streamIdState);
-    const [ isLessonPlanOpen, ] = useRecoilState(isLessonPlanOpenState);
+    const [, setStreamId] = useRecoilState(streamIdState);
+    const [isLessonPlanOpen,] = useRecoilState(isLessonPlanOpenState);
 
     const { contentHref } = props;
-    const [ sendStreamId ] = useMutation(SET_STREAMID, {
+    const [sendStreamId] = useMutation(SET_STREAMID, {
         context: {
             target: LIVE_LINK,
         },
     });
 
-    const [ transformScale, setTransformScale ] = useState<number>(1);
-    const [ openDialog, setOpenDialog ] = useState(true);
-    const [ seconds, setSeconds ] = useState(MAX_LOADING_COUNT);
-    const [ loadStatus, setLoadStatus ] = useState(LoadStatus.Loading);
-    const [ intervalId, setIntervalId ] = useState<number>();
-    const [ contentWidth, setContentWidth ] = useState(1600);
-    const [ contentHeight, setContentHeight ] = useState(1400);
-    const [ userCount, setUserCount ] = useState(sessions.size);
+    const [transformScale, setTransformScale] = useState<number>(1);
+    const [openDialog, setOpenDialog] = useState(true);
+    const [seconds, setSeconds] = useState(MAX_LOADING_COUNT);
+    const [loadStatus, setLoadStatus] = useState(LoadStatus.Loading);
+    const [intervalId, setIntervalId] = useState<number>();
+    const [contentWidth, setContentWidth] = useState(1600);
+    const [contentHeight, setContentHeight] = useState(1400);
+    const [userCount, setUserCount] = useState(sessions.size);
 
-    const [ enableResize, setEnableResize ] = useState(true);
-    const [ stylesLoaded, ] = useState(false);
+    const [enableResize, setEnableResize] = useState(true);
+    const [stylesLoaded,] = useState(false);
 
     const size = useWindowSize();
 
     const { actions } = useUserInformation();
 
+    const recorderEndpoint = useHttpEndpoint("live");
+
+    const contentHrefWithToken = useMemo<string>(() => {
+        const encodedEndpoint = encodeURIComponent(recorderEndpoint);
+        if (contentHref.endsWith(`.pdf`)) {
+            return `pdfviewer.html?pdfSrc=${contentHref}&token=${token}&endpoint=${encodedEndpoint}`;
+        } else {
+            return `${contentHref}?token=${token}&endpoint=${encodedEndpoint}`;
+        }
+    }, [contentHref, token, recorderEndpoint]);
+
     useEffect(() => {
         if (sessions.size > userCount && iframeRef && iframeRef.current && iframeRef.current.contentWindow) {
             iframeRef.current.contentWindow.postMessage({
-                type:`USER_JOIN`,
+                type: `USER_JOIN`,
             }, `*`);
         }
         setUserCount(sessions.size);
-    }, [ sessions ]);
+    }, [sessions]);
 
     useEffect(() => {
         scale(contentWidth, contentHeight);
-        if(classType == ClassType.LIVE){
-            setTimeout(function (){
+        if (classType == ClassType.LIVE) {
+            setTimeout(function () {
                 scaleWhiteboard();
             }, 300);
         }
-    }, [ size ]);
+    }, [size]);
 
     useEffect(() => {
-        setTimeout(function (){
+        setTimeout(function () {
             window.dispatchEvent(new Event(`resize`));
         }, 300);
-    }, [ isLessonPlanOpen ]);
+    }, [isLessonPlanOpen]);
 
     useEffect(() => {
         setSeconds(MAX_LOADING_COUNT);
         setLoadStatus(LoadStatus.Loading);
-    }, [ contentHref ]);
+    }, [contentHrefWithToken]);
 
     useEffect(() => {
         if (loadStatus === LoadStatus.Loading) {
@@ -120,7 +134,7 @@ export function RecordedIframe (props: Props): JSX.Element {
             }, 1000);
             setIntervalId(interval);
         } else if (loadStatus === LoadStatus.Finished) {
-            setTimeout(function (){
+            setTimeout(function () {
                 setOpenDialog(false);
                 clearInterval(intervalId);
                 onLoad();
@@ -130,7 +144,7 @@ export function RecordedIframe (props: Props): JSX.Element {
             clearInterval(intervalId);
         }
         return () => clearInterval(intervalId);
-    }, [ loadStatus ]);
+    }, [loadStatus]);
 
     const scale = (innerWidth: number, innerHeight: number) => {
         let currentWidth: number = size.width, currentHeight: number = size.height;
@@ -152,7 +166,7 @@ export function RecordedIframe (props: Props): JSX.Element {
         const recordediframe = window.document.getElementById(`recordediframe`) as HTMLIFrameElement;
         const recordediframeStyles = recordediframe.getAttribute(`style`);
         const whiteboard = window.document.getElementsByClassName(`canvas-container`)[0];
-        if(recordediframeStyles){
+        if (recordediframeStyles) {
             whiteboard.setAttribute(`style`, recordediframeStyles);
         }
     };
@@ -162,13 +176,13 @@ export function RecordedIframe (props: Props): JSX.Element {
         const svgTransformer = (contentId: string) => `/pdfviewer.html?pdfSrc=${contentId}`;
 
         switch (process.env.PDF_VERSION) {
-        case `JPEG`: return jpegTransformer;
-        case `SVG`: return svgTransformer;
-        default: return svgTransformer;
+            case `JPEG`: return jpegTransformer;
+            case `SVG`: return svgTransformer;
+            default: return svgTransformer;
         }
     };
 
-    function onLoad () {
+    function onLoad() {
         // TODO the client-side rendering version of H5P is ready! we can probably delete this function and the scale function above
         // if we switch over to it! Ask me (Daiki) about the details.
         const iframeElement = window.document.getElementById(`recordediframe`) as HTMLIFrameElement;
@@ -178,7 +192,7 @@ export function RecordedIframe (props: Props): JSX.Element {
         if (!contentWindow || !contentDoc) { return; }
 
         // Custom styles when needed
-        if(!stylesLoaded){
+        if (!stylesLoaded) {
             const style = document.createElement(`style`);
             style.innerHTML = `
             img{max-width: 100%; height: auto; object-fit:contain}
@@ -205,10 +219,10 @@ export function RecordedIframe (props: Props): JSX.Element {
         const h5pTypeAccordion = contentDoc.body.getElementsByClassName(`h5p-accordion`).length;
 
         if (h5pDivCollection.length > 0) {
-            if(h5pTypeColumn || h5pTypeAccordion){
+            if (h5pTypeColumn || h5pTypeAccordion) {
                 setEnableResize(false);
                 h5pDivCollection[0].setAttribute(`style`, `width: 100% !important;`);
-            }else{
+            } else {
                 setEnableResize(true);
                 h5pDivCollection[0].setAttribute(`style`, `width: auto !important;`);
             }
@@ -223,10 +237,10 @@ export function RecordedIframe (props: Props): JSX.Element {
         } else {
             setEnableResize(true);
 
-            if(contentDoc.body.getElementsByTagName(`img`).length){
+            if (contentDoc.body.getElementsByTagName(`img`).length) {
                 const imageWidth = contentDoc.body.getElementsByTagName(`img`)[0].getBoundingClientRect().width;
                 const imageHeight = contentDoc.body.getElementsByTagName(`img`)[0].getBoundingClientRect().height;
-                if(imageWidth && imageHeight){
+                if (imageWidth && imageHeight) {
                     setContentWidth(imageWidth);
                     setContentHeight(imageHeight);
                 }
@@ -237,9 +251,9 @@ export function RecordedIframe (props: Props): JSX.Element {
                     return;
                 }
 
-            }else if(contentDoc.body.getElementsByTagName(`video`).length){
+            } else if (contentDoc.body.getElementsByTagName(`video`).length) {
                 setEnableResize(false);
-            }else{
+            } else {
                 setContentWidth(1024);
                 setContentHeight(1024);
             }
@@ -247,8 +261,8 @@ export function RecordedIframe (props: Props): JSX.Element {
     }
 
     useEffect(() => {
-        function onMessage ({ data }: MessageEvent) {
-            if(!data) { return; }
+        function onMessage({ data }: MessageEvent) {
+            if (!data) { return; }
             if (data.streamId) {
                 if (setStreamId) { setStreamId(data.streamId); }
                 sendStreamId({
@@ -258,10 +272,10 @@ export function RecordedIframe (props: Props): JSX.Element {
                     },
                 });
             }
-            switch(data.error){
-            case `RedirectToLogin`:
-                actions?.signOutUser();
-                break;
+            switch (data.error) {
+                case `RedirectToLogin`:
+                    actions?.signOutUser();
+                    break;
             }
         }
         window.addEventListener(`message`, onMessage);
@@ -269,26 +283,42 @@ export function RecordedIframe (props: Props): JSX.Element {
             window.removeEventListener(`message`, onMessage);
             setStreamId(``);
         };
-    }, [ iframeRef.current ]);
+    }, [iframeRef.current]);
 
-    function startRecording () {
-        try{
-            const iRef = window.document.getElementById(`recordediframe`) as HTMLIFrameElement;
-            if (!iRef ||
-                !iRef.contentWindow ||
-                (iRef.contentWindow as any).kidslooplive ||
-                !iRef.contentDocument) { return; }
-            const doc = iRef.contentDocument;
-            const script = doc.createElement(`script`);
-            script.setAttribute(`type`, `text/javascript`);
-            const matches = window.location.pathname.match(/^(.*\/+)([^/]*)$/);
-            const prefix = matches && matches.length >= 2 ? matches[1] : ``;
-            script.setAttribute(`src`, `${prefix}record-3f6f2667.js`);
-            doc.head.appendChild(script);
+    function startRecording() {
+        if (process.env.IS_CORDOVA_BUILD) {
+            try {
+                const iRef = window.document.getElementById(`recordediframe`) as HTMLIFrameElement;
+                if (!iRef ||
+                    !iRef.contentWindow ||
+                    (iRef.contentWindow as any).kidslooplive ||
+                    !iRef.contentDocument) { return; }
+
+                injectIframeScript(iRef, `record`);
+            } catch (error) {
+                console.error(error);
+            }
+        } else {
+            try {
+                const iRef = window.document.getElementById(`recordediframe`) as HTMLIFrameElement;
+                if (!iRef ||
+                    !iRef.contentWindow ||
+                    (iRef.contentWindow as any).kidslooplive ||
+                    !iRef.contentDocument) { return; }
+                const doc = iRef.contentDocument;
+                const script = doc.createElement(`script`);
+                script.setAttribute(`type`, `text/javascript`);
+                const matches = window.location.pathname.match(/^(.*\/+)([^/]*)$/);
+                const prefix = matches && matches.length >= 2 ? matches[1] : ``;
+                script.setAttribute(`src`, `${prefix}record-3f6f2667.js`);
+                doc.head.appendChild(script);
+            }
+            catch (e) {
+                console.log(e);
+            }
         }
-        catch(e){
-            console.log(e);
-        }
+
+
     }
 
     return (
@@ -367,7 +397,7 @@ export function RecordedIframe (props: Props): JSX.Element {
                 id="recordediframe"
                 src={contentHref.endsWith(`.pdf`)
                     ? getPDFURLTransformer()(contentHref)
-                    : contentHref}
+                    : contentHrefWithToken}
                 style={{
                     width: enableResize ? contentWidth : `100%`,
                     height: enableResize ? contentHeight : `100%`,
@@ -378,7 +408,7 @@ export function RecordedIframe (props: Props): JSX.Element {
                     transform: enableResize ? `scale(${transformScale})` : `scale(1)`,
                     minWidth: `100%`,
                 }}
-                onLoad={() =>  {setLoadStatus(LoadStatus.Finished); window.dispatchEvent(new Event(`resize`));}}
+                onLoad={() => { setLoadStatus(LoadStatus.Finished); window.dispatchEvent(new Event(`resize`)); }}
             />
         </React.Fragment>
     );
