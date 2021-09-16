@@ -5,6 +5,7 @@ import { Session } from "@/pages/utils";
 import { RoomContext } from "@/providers/roomContext";
 import { useSessionContext } from "@/providers/session-context";
 import { isShowContentLoadingState } from "@/store/layoutAtoms";
+import { useContentToHref } from "@/utils/contentUtils";
 import {
     fullScreenById,
     sleep,
@@ -136,6 +137,7 @@ function Observe () {
     const { content, sessions } = useContext(RoomContext);
     const [ studentSessions, setStudentSessions ] = useState<Session[]>([]);
     const { state: { display: isGlobalCanvasEnabled, permissions: permissionsGlobalCanvas } } = useSynchronizedState();
+    const [ contentHref ] = useContentToHref(content);
 
     useEffect(() => {
         if(!isTeacher){
@@ -177,7 +179,7 @@ function Observe () {
                         filterGroups={studentModeFilterGroups} />
                 </div>
                 <div className={`${classes.studentWrapItem} ${classes.studentWrapItemContent}`}>
-                    {content && <RecordedIframe contentId={content.contentId}  />}
+                    {content && <RecordedIframe contentHref={contentHref}  />}
                 </div>
             </div>
         );
