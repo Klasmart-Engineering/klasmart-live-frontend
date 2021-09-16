@@ -37,7 +37,7 @@ const SET_STREAMID = gql`
 `;
 
 export interface Props {
-    contentId: string;
+    contentHref: string;
 }
 
 enum LoadStatus {
@@ -57,10 +57,10 @@ export function RecordedIframe (props: Props): JSX.Element {
 
     const { roomId, classType } = useSessionContext();
     const { sessions } = useContext(RoomContext);
-    const [ streamId, setStreamId ] = useRecoilState(streamIdState);
-    const [ isLessonPlanOpen, setIsLessonPlanOpen ] = useRecoilState(isLessonPlanOpenState);
+    const [ , setStreamId ] = useRecoilState(streamIdState);
+    const [ isLessonPlanOpen, ] = useRecoilState(isLessonPlanOpenState);
 
-    const { contentId } = props;
+    const { contentHref } = props;
     const [ sendStreamId ] = useMutation(SET_STREAMID, {
         context: {
             target: LIVE_LINK,
@@ -77,7 +77,7 @@ export function RecordedIframe (props: Props): JSX.Element {
     const [ userCount, setUserCount ] = useState(sessions.size);
 
     const [ enableResize, setEnableResize ] = useState(true);
-    const [ stylesLoaded, setStylesLoaded ] = useState(false);
+    const [ stylesLoaded, ] = useState(false);
 
     const size = useWindowSize();
 
@@ -110,7 +110,7 @@ export function RecordedIframe (props: Props): JSX.Element {
     useEffect(() => {
         setSeconds(MAX_LOADING_COUNT);
         setLoadStatus(LoadStatus.Loading);
-    }, [ contentId ]);
+    }, [ contentHref ]);
 
     useEffect(() => {
         if (loadStatus === LoadStatus.Loading) {
@@ -231,7 +231,7 @@ export function RecordedIframe (props: Props): JSX.Element {
                     setContentHeight(imageHeight);
                 }
 
-                if (process.env.PDF_VERSION?.toUpperCase() === `JPEG` && contentId.endsWith(`.pdf`)) {
+                if (process.env.PDF_VERSION?.toUpperCase() === `JPEG` && contentHref.endsWith(`.pdf`)) {
                     // Override automatic resizing of PDF documents
                     setEnableResize(false);
                     return;
@@ -365,9 +365,9 @@ export function RecordedIframe (props: Props): JSX.Element {
             <iframe
                 ref={iframeRef}
                 id="recordediframe"
-                src={contentId.endsWith(`.pdf`)
-                    ? getPDFURLTransformer()(contentId)
-                    : contentId}
+                src={contentHref.endsWith(`.pdf`)
+                    ? getPDFURLTransformer()(contentHref)
+                    : contentHref}
                 style={{
                     width: enableResize ? contentWidth : `100%`,
                     height: enableResize ? contentHeight : `100%`,

@@ -7,28 +7,26 @@ import {
     observeDisableState,
     studyRecommandUrlState,
 } from "@/store/layoutAtoms";
-import {
-    LessonMaterial,
-    MaterialTypename,
-} from "@/types/lessonMaterial";
+import { MaterialTypename } from "@/types/lessonMaterial";
+import { useMaterialToHref } from "@/utils/contentUtils";
 import { Typography } from "@material-ui/core";
-import React,
-{ useContext } from "react";
+import React from "react";
 import { FormattedMessage } from "react-intl";
 import { useRecoilState } from "recoil";
 
 function PreviewLessonPlan () {
     const {  materials } = useSessionContext();
-    const [ materialActiveIndex, setMaterialActiveIndex ] = useRecoilState(materialActiveIndexState);
-    const [ studyRecommandUrl, setStudyRecommandUrl ] = useRecoilState(studyRecommandUrlState);
-    const [ observeDisable, setObserveDisable ] = useRecoilState(observeDisableState);
+    const [ materialActiveIndex ] = useRecoilState(materialActiveIndexState);
+    const [ studyRecommandUrl ] = useRecoilState(studyRecommandUrlState);
+    const [ , setObserveDisable ] = useRecoilState(observeDisableState);
     const material = materialActiveIndex >= 0 && materialActiveIndex < materials.length ? materials[materialActiveIndex] : undefined;
+    const [ contentHref ] = useMaterialToHref(material);
 
     // If recommanded content in study mode
     if(materialActiveIndex === materials.length && studyRecommandUrl){
         return(
             <RecordedIframe
-                contentId={studyRecommandUrl}
+                contentHref={studyRecommandUrl}
             />
         );
     }
@@ -36,7 +34,7 @@ function PreviewLessonPlan () {
     if(material?.__typename === MaterialTypename.IMAGE){
         setObserveDisable(false);
         return (
-            <ActivityImage material={material.url} />
+            <ActivityImage material={contentHref} />
         );
     }
 
@@ -46,7 +44,7 @@ function PreviewLessonPlan () {
         return(
             <ReplicatedMedia
                 type={material?.__typename || MaterialTypename.VIDEO}
-                src={(material?.__typename === undefined && material?.video) || material?.url}
+                src={(material?.__typename === undefined && material?.video) || contentHref}
                 style={{
                     width: `100%`,
                 }}
@@ -62,7 +60,7 @@ function PreviewLessonPlan () {
         setObserveDisable(false);
         return(
             <RecordedIframe
-                contentId={material.url}
+                contentHref={contentHref}
             />
         );
     }
