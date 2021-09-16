@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.18.0-alpha.2](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v1.18.0-alpha.1%0Dv1.18.0-alpha.2) (2021-09-16)
+
+
+### Features
+
+* Enable hyperlink in description for Schedule Popup ([65340d2](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/65340d24ff66d90bc6bcb6dfeecede70110badb5))
+* Preview the attachment when user click the file icon ([40e030a](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/40e030afd11070ca537267f32b8ff4d512b8f2a3))
+* Use share functionality to save the attachment ([7e20860](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/7e20860d85f883e6e90e8ae8f0203ed32a5c424d))
+
+
+### Bug Fixes
+
+* [KLL-1263] Disable JoinButton if the schedule is expired ([ab6ad11](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/ab6ad11ae7a0e4e5bb6b3516e8cfd85401921f14))
+* Moved downloadDataBlob and saveDataBlobToFile to Utils ([5644378](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/5644378d23a5b9e2a87745a03e1adfe4ca79b496))
+
 ## [1.18.0-alpha.1](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v1.18.0-alpha.0%0Dv1.18.0-alpha.1) (2021-08-30)
 
 
