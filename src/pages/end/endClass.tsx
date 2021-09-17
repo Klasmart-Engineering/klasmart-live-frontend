@@ -62,8 +62,14 @@ function EndClass () {
     const HUB_ENDPOINT = process.env.ENDPOINT_HUB;
     const history = useHistory();
 
-    const [ classLeft ] = useRecoilState(classLeftState);
-    const [ classEnded ] = useRecoilState(classEndedState);
+    const [ classLeft, setClassEnded ] = useRecoilState(classLeftState);
+    const [ classEnded, setClassLeft ] = useRecoilState(classEndedState);
+
+    const onCloseButtonClick = () => {
+        setClassEnded(false);
+        setClassLeft(false);
+        history.push(`/schedule`)
+    }
 
     return (
         <Fade in={true}>
@@ -71,7 +77,7 @@ function EndClass () {
                 {process.env.IS_CORDOVA_BUILD &&
                     <div className={classes.appHeader}>
                         <div className={classes.appHeaderRight}>
-                            <CloseIconButton onClick={() => history.push(`/schedule`) } />
+                            <CloseIconButton onClick={onCloseButtonClick} />
                         </div>
                     </div>
                 }
