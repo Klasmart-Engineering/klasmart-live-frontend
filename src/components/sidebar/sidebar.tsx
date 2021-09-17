@@ -71,8 +71,8 @@ function Sidebar () {
     const { isTeacher } = useSessionContext();
     const narrowDrawer = 240;
     const largeDrawer = 440;
-    const [ defaultDrawerWidth, setDefaultDrawerWidth ] = useState(largeDrawer);
-    const [ drawerWidth, setDrawerWidth ] = useState(defaultDrawerWidth);
+    const [ defaultDrawerWidth, setDefaultDrawerWidth ] = useState<React.CSSProperties[`width`]>(largeDrawer);
+    const [ drawerWidth, setDrawerWidth ] = useState<React.CSSProperties[`width`]>(defaultDrawerWidth);
 
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
