@@ -91,7 +91,7 @@ export function RecordedIframe(props: Props): JSX.Element {
     const contentHrefWithToken = useMemo<string>(() => {
         const encodedEndpoint = encodeURIComponent(recorderEndpoint);
         if (contentHref.endsWith(`.pdf`)) {
-            return `pdfviewer.html?pdfSrc=${contentHref}&token=${token}&endpoint=${encodedEndpoint}`;
+            return `${contentHref.replace(`${recorderEndpoint}/asset`,`pdfviewer.html?pdfSrc=/asset`)}&token=${token}&endpoint=${encodedEndpoint}`;
         } else {
             return `${contentHref}?token=${token}&endpoint=${encodedEndpoint}`;
         }
@@ -168,17 +168,6 @@ export function RecordedIframe(props: Props): JSX.Element {
         const whiteboard = window.document.getElementsByClassName(`canvas-container`)[0];
         if (recordediframeStyles) {
             whiteboard.setAttribute(`style`, recordediframeStyles);
-        }
-    };
-
-    const getPDFURLTransformer = () => {
-        const jpegTransformer = (contentId: string) => `${contentId.replace(`/assets/`, `/pdf/`)}/view.html`;
-        const svgTransformer = (contentId: string) => `/pdfviewer.html?pdfSrc=${contentId}`;
-
-        switch (process.env.PDF_VERSION) {
-            case `JPEG`: return jpegTransformer;
-            case `SVG`: return svgTransformer;
-            default: return svgTransformer;
         }
     };
 
@@ -393,11 +382,10 @@ export function RecordedIframe(props: Props): JSX.Element {
             </Dialog>
 
             <iframe
+                key={contentHref}
                 ref={iframeRef}
                 id="recordediframe"
-                src={contentHref.endsWith(`.pdf`)
-                    ? getPDFURLTransformer()(contentHref)
-                    : contentHrefWithToken}
+                src={contentHrefWithToken}
                 style={{
                     width: enableResize ? contentWidth : `100%`,
                     height: enableResize ? contentHeight : `100%`,
