@@ -848,7 +848,10 @@ export const WebRTCProvider = (props: { children: React.ReactNode }) => {
     });
 
     useEffect(() => {
-        callstats.initialize(`881714000`, `OV6YSSRJ0fOA:vr7quqij46jLPMpaBXTAF50F2wFTqP4acrxXWVs9BIk=`, name + `:` + localSessionId);
+        if(!process.env.IS_CORDOVA_BUILD){
+            // TODO: Temporarily hide this line for the app to avoid crashing on iOS, it needs to be investigated further.
+            callstats.initialize(`881714000`, `OV6YSSRJ0fOA:vr7quqij46jLPMpaBXTAF50F2wFTqP4acrxXWVs9BIk=`, name + `:` + localSessionId);
+        }
     }, [ name, localSessionId ]);
 
     useEffect(() => {
