@@ -1,8 +1,4 @@
 import { BackButton } from "@/app/components/icons/backButton";
-import {
-    DeviceStatus,
-    useCameraContext,
-} from "@/app/context-provider/camera-context";
 import KidsLoopClassTeachers from "@/assets/img/classtype/kidsloop_class_teachers.svg";
 import KidsLoopLiveStudents from "@/assets/img/classtype/kidsloop_live_students.svg";
 import KidsLoopLiveTeachers from "@/assets/img/classtype/kidsloop_live_teachers.svg";
@@ -14,6 +10,10 @@ import MediaDeviceSelect from "@/components/mediaDeviceSelect";
 import StyledButton from "@/components/styled/button";
 import StyledIcon from "@/components/styled/icon";
 import StyledTextField from "@/components/styled/textfield";
+import {
+    DeviceStatus,
+    useCameraContext,
+} from "@/providers/Camera";
 import { useSessionContext } from "@/providers/session-context";
 import { ClassType } from "@/store/actions";
 import { hasJoinedClassroomState } from "@/store/layoutAtoms";
@@ -403,10 +403,10 @@ function JoinRoomForm ({
     const {
         setSelectedAudioDeviceId,
         selectedAudioDeviceId,
-        availableAudioDevices,
+        availableNamedAudioConstraints,
         setSelectedVideoDeviceId,
         selectedVideoDeviceId,
-        availableVideoDevices,
+        availableNamedVideoConstraints,
     } = useCameraContext();
 
     const history = useHistory();
@@ -463,10 +463,10 @@ function JoinRoomForm ({
                         item
                         xs>
                         <MediaDeviceSelect
-                            disabled={availableVideoDevices.length <= 1}
+                            disabled={availableNamedVideoConstraints.length <= 1}
                             deviceType="video"
                             deviceId={selectedVideoDeviceId}
-                            devices={availableVideoDevices}
+                            devices={availableNamedVideoConstraints}
                             onChange={(e) => setSelectedVideoDeviceId(e.target.value as string) }
                         />
                     </Grid>
@@ -475,10 +475,10 @@ function JoinRoomForm ({
                     item
                     xs>
                     <MediaDeviceSelect
-                        disabled={availableAudioDevices.length <= 1}
+                        disabled={availableNamedAudioConstraints.length <= 1}
                         deviceType="audio"
                         deviceId={selectedAudioDeviceId}
-                        devices={availableAudioDevices}
+                        devices={availableNamedAudioConstraints}
                         onChange={(e) => setSelectedAudioDeviceId(e.target.value as string)}
                     />
                 </Grid>
@@ -505,7 +505,7 @@ function PermissionAlertDialog ({ dialogOpenHandler }: {
     dialogOpenHandler: {
         dialogOpen: boolean;
         handleDialogClose: () => void;
-        deviceStatus: string;
+        deviceStatus: DeviceStatus | undefined;
     };
 }) {
     const { classType } = useSessionContext();
@@ -518,14 +518,16 @@ function PermissionAlertDialog ({ dialogOpenHandler }: {
     const [ dialogContent, setDialogContent ] = useState(`join_permissionAlertDialog_contentText_live`);
 
     useEffect(() => {
-        if(classType !== ClassType.LIVE){
-            if(DeviceStatus.MIC_NOT_ALLOWED){
-                setDialogTitle(`join_permissionAlertDialog_mic_blocked_title`);
-                setDialogContent(`join_permissionAlertDialog_mic_blocked_contentText_live`);
-            }else if(DeviceStatus.MIC_NOT_FOUND){
-                setDialogTitle(`join_permissionAlertDialog_mic_not_exist_title`);
-                setDialogContent(`join_permissionAlertDialog_mic_not_exist_contentText_live`);
-            }
+        if (classType === ClassType.LIVE) return;
+        switch (deviceStatus) {
+        case DeviceStatus.MIC_NOT_ALLOWED:
+            setDialogTitle(`join_permissionAlertDialog_mic_blocked_title`);
+            setDialogContent(`join_permissionAlertDialog_mic_blocked_contentText_live`);
+            break;
+        case DeviceStatus.MIC_NOT_FOUND:
+            setDialogTitle(`join_permissionAlertDialog_mic_not_exist_title`);
+            setDialogContent(`join_permissionAlertDialog_mic_not_exist_contentText_live`);
+            break;
         }
     }, [ classType, deviceStatus ]);
 
