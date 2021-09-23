@@ -1,4 +1,5 @@
 import StyledIcon from "./styled/icon";
+import { NamedDeviceConstraints } from "@/providers/Camera";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -23,7 +24,7 @@ interface Props {
     disabled: boolean;
     deviceType: "video" | "audio";
     deviceId?: string;
-    devices: MediaDeviceInfo[];
+    devices: NamedDeviceConstraints[];
     onChange: ((event: React.ChangeEvent<{ name?: string | undefined; value: unknown }>, child: React.ReactNode) => void) | undefined;
 }
 
@@ -67,12 +68,12 @@ export default function MediaDeviceSelect (props: Props) {
                 onChange={onChange}
             >
                 {
-                    devices.map((device: MediaDeviceInfo) => (
+                    devices.map((device) => (
                         <MenuItem
-                            key={device.kind + `:` + device.label + `:` + device.deviceId}
+                            key={device.deviceId}
                             value={device.deviceId}
                         >
-                            {`${device.label ? device.label.charAt(0).toUpperCase() + device.label.slice(1) : `Unknown Device`}(${device.deviceId.slice(0, 4)})`}
+                            {`${device.name ? `${device.name.charAt(0).toUpperCase()} ${device.name.slice(1)}` : `Unknown Device`} (${device.deviceId.slice(0, 4)})`}
                         </MenuItem>
                     ))
                 }
