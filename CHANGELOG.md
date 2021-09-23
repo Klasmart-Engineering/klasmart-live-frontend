@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.18.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v1.18.0-alpha.2%0Dv1.18.0) (2021-09-23)
+
+
+### Bug Fixes
+
+* add region definition for Pakistan ([9bd63a7](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/9bd63a7e763eb49218581b51a84e446992bbcd4c))
+
 ## [1.18.0-alpha.2](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v1.18.0-alpha.1%0Dv1.18.0-alpha.2) (2021-09-16)
 
 
