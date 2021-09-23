@@ -79,8 +79,8 @@ const STUDY_DETAIL_ON_BACK_ID = `studyDetailOnBackID`;
 const secondsBeforeClassCanStart = 900;
 
 export default function StudyDetail ({
-                                         schedule, open, onClose, joinStudy,
-                                     }: {
+    schedule, open, onClose, joinStudy,
+}: {
     schedule?: ScheduleResponse;
     open: boolean;
     onClose: () => void;
@@ -432,17 +432,17 @@ export default function StudyDetail ({
         if(!open)
             return;
 
-        if(schedule.class_type === "OnlineClass") {
+        if(schedule.class_type === `OnlineClass`) {
             const now = new Date().getTime() / 1000;
             const timeBeforeClass = schedule.start_at - now;
             if(timeBeforeClass > secondsBeforeClassCanStart) {
                 enqueueSnackbar(
-                    intl.formatMessage({id: "err_join_live_failed", defaultMessage: "You can only start a class 15 minutes before the start time."}),
+                    intl.formatMessage({id: `err_join_live_failed`, defaultMessage: `You can only start a class 15 minutes before the start time.`}),
                     {
-                        variant: "warning",
+                        variant: `warning`,
                         anchorOrigin: {
-                            vertical: "bottom",
-                            horizontal: "center"
+                            vertical: `bottom`,
+                            horizontal: `center`
                         }
                     }
                 )
@@ -798,15 +798,15 @@ export default function StudyDetail ({
                         variant={`contained`}
                         onClick={closeButtonHandler}>Cancel</Button>
                     <Button key={`${shouldEnableJoinButton}`}
-                            size={"large"} color={`primary`} variant={`contained`}
+                            size={`large`} color={`primary`} variant={`contained`}
                             onClick={joinButtonHandler}
                             disabled={!shouldEnableJoinButton}>
-                        {schedule?.class_type === "OnlineClass" ? intl.formatMessage({
+                        {schedule?.class_type === `OnlineClass` ? intl.formatMessage({
                             id: 'button_go_live',
-                            defaultMessage: "Go Live",
+                            defaultMessage: `Go Live`,
                         }) :  intl.formatMessage({
                             id: 'button_go_study',
-                            defaultMessage: "Go Study",
+                            defaultMessage: `Go Study`,
                         })}
                     </Button>
                 </DialogActions>
