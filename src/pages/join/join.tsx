@@ -258,7 +258,7 @@ export default function Join (): JSX.Element {
                     paddingBottom: `20px`,
                 }}
             >
-                <Container maxWidth={classType === ClassType.LIVE ? `md` : `xs`}>
+                <Container maxWidth={classType === ClassType.LIVE ? isSmDown ? `sm` : `md` : `xs`}>
                     <Card className={classes.card}>
                         <CardContent className={classes.cardContent}>
                             <Grid

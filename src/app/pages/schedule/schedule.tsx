@@ -30,7 +30,10 @@ import {
     TimeView,
 } from "../../services/cms/ISchedulerService";
 import { autoHideDuration } from "../../utils/fixedValues";
-import { lockOrientation } from "../../utils/screenUtils";
+import {
+    enableFullScreen,
+    lockOrientation,
+} from "../../utils/screenUtils";
 import { Fallback } from "../fallback";
 import ClassTypeSwitcher from "./classTypeSwitcher";
 import { ListItemSecondaryAction } from "@material-ui/core";
@@ -124,6 +127,7 @@ export function Schedule () {
     useEffect(() => {
         setAcquireDevices(false);
         lockOrientation(OrientationType.PORTRAIT);
+        enableFullScreen(false);
     }, []);
 
     useEffect(() => {
@@ -263,7 +267,7 @@ export function Schedule () {
             schedulerService.getScheduleToken(selectedOrganization.organization_id, selectedSchedule.id).then((res) => {
                 if (res.token) {
                     lockOrientation(OrientationType.LANDSCAPE);
-
+                    enableFullScreen(true);
                     setToken(res.token);
                     /* TODO: Can we get rid of the token query parameter and just use
                     ** react component state for keeping and parsing the token instead? */
