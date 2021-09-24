@@ -399,12 +399,7 @@ export default function StudyDetail ({
 
         function shareFile(fileName: string, filePath: string){
             const options = {
-                message: fileName, // not supported on some apps (Facebook, Instagram)
-                subject: 'Download attachment from KidsLoop', // fi. for email
-                files: [filePath], // an array of filenames either locally or remotely
-                url: filePath,
-                chooserTitle: 'Complete action using', // Android only, you can override the default share sheet title
-                //iPadCoordinates: '0,0,0,0'
+                files: [filePath]
             }
             const onSuccess = (result : any) => {
                 if(result.completed){
