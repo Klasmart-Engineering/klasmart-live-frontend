@@ -539,7 +539,13 @@ export const WebRTCProvider = (props: { children: React.ReactNode }) => {
         }
         setDevice(null);
 
-        const webRTCDevice = new Device();
+        let webRTCDevice: Device;
+        if (process.env.WEBRTC_DEVICE_HANDLER_NAME) {
+            webRTCDevice = new Device({ handlerName: process.env.WEBRTC_DEVICE_HANDLER_NAME as any });
+        } else {
+            webRTCDevice = new Device();
+        }
+
         await webRTCDevice.load({
             routerRtpCapabilities,
         });
