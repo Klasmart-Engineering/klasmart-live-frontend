@@ -100,7 +100,11 @@ function EndClass () {
 
                         {HUB_ENDPOINT &&
                             <Typography className={classes.returnToHub}>
-                                <a href={HUB_ENDPOINT}><FormattedMessage id="class_ended_return_to_hub" /></a>
+                                {
+                                    process.env.IS_CORDOVA_BUILD
+                                        ? <a onClick={onCloseButtonClick} href="#"><FormattedMessage id="class_ended_return_to_hub" /></a>
+                                        : <a href={HUB_ENDPOINT}><FormattedMessage id="class_ended_return_to_hub" /></a>
+                                }
                             </Typography>
                         }
                     </Grid>
