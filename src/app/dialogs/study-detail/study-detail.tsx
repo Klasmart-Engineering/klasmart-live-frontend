@@ -1,9 +1,9 @@
-import { useHttpEndpoint } from "@/providers/region-select-context";
+import {useHttpEndpoint} from "@/providers/region-select-context";
 import {
     PermissionType, useCordovaSystemContext,
 } from "../../context-provider/cordova-system-context";
-import { usePopupContext } from "../../context-provider/popup-context";
-import { ScheduleResponse } from "../../services/cms/ISchedulerService";
+import {usePopupContext} from "../../context-provider/popup-context";
+import {ScheduleResponse} from "../../services/cms/ISchedulerService";
 import {
     Button,
     CircularProgress,
@@ -17,9 +17,9 @@ import {
     makeStyles,
     Typography,
 } from "@material-ui/core";
-import { blue } from "@material-ui/core/colors";
-import { GetApp } from "@material-ui/icons";
-import { useSnackbar } from "kidsloop-px";
+import {blue} from "@material-ui/core/colors";
+import {GetApp} from "@material-ui/icons";
+import {useSnackbar} from "kidsloop-px";
 import React,
 {
     useCallback,
@@ -27,7 +27,7 @@ import React,
     useMemo,
     useState,
 } from "react";
-import { useIntl } from "react-intl";
+import {useIntl} from "react-intl";
 import {ParentalGate} from "@/app/dialogs/parentalGate";
 import StyledIcon from "@/components/styled/icon";
 import {ArrowBackIos as ArrowBackIcon} from "@styled-icons/material/ArrowBackIos";
@@ -83,14 +83,14 @@ const useStyles = makeStyles(() => ({
 const STUDY_DETAIL_ON_BACK_ID = `studyDetailOnBackID`;
 const secondsBeforeClassCanStart = 900;
 
-export default function StudyDetail ({
-    schedule, open, onClose, joinStudy,
-}: {
+export default function StudyDetail({
+                                        schedule, open, onClose, joinStudy,
+                                    }: {
     schedule?: ScheduleResponse;
     open: boolean;
     onClose: () => void;
-    joinStudy: () => void; }): JSX.Element
-{
+    joinStudy: () => void;
+}): JSX.Element {
     const {
         dialogTitle,
         dialogTitleText,
@@ -102,19 +102,19 @@ export default function StudyDetail ({
         headerBackButton
     } = useStyles();
     const cms = useHttpEndpoint(`cms`);
-    const [ downloadingPreview, setDownloadingPreview ] = useState(false);
-    const [ shouldDownloadPreview, setShouldDownloadPreview ] = useState(false);
-    const { enqueueSnackbar } = useSnackbar();
-    const { isIOS, requestPermissions, addOnBack, removeOnBack } = useCordovaSystemContext();
-    const { showPopup } = usePopupContext();
+    const [downloadingPreview, setDownloadingPreview] = useState(false);
+    const [shouldDownloadPreview, setShouldDownloadPreview] = useState(false);
+    const {enqueueSnackbar} = useSnackbar();
+    const {isIOS, requestPermissions, addOnBack, removeOnBack} = useCordovaSystemContext();
+    const {showPopup} = usePopupContext();
     const intl = useIntl();
-    const [ downloadingAttachment, setDownloadingAttachment ] = useState(false);
-    const [ shouldDownloadAttachment, setShouldDownloadAttachment ] = useState(false);
-    const [hyperLink, setHyperLink] = useState<string|undefined>();
+    const [downloadingAttachment, setDownloadingAttachment] = useState(false);
+    const [shouldDownloadAttachment, setShouldDownloadAttachment] = useState(false);
+    const [hyperLink, setHyperLink] = useState<string | undefined>();
     const [parentalLock, setParentalLock] = useState<boolean>(false);
 
     useEffect(() => {
-        if(open){
+        if (open) {
             if (addOnBack) {
                 addOnBack({
                     id: STUDY_DETAIL_ON_BACK_ID,
@@ -123,12 +123,12 @@ export default function StudyDetail ({
                     },
                 });
             }
-        }else{
-            if(removeOnBack){
+        } else {
+            if (removeOnBack) {
                 removeOnBack(STUDY_DETAIL_ON_BACK_ID);
             }
         }
-    }, [ open ]);
+    }, [open]);
 
     const startAt = useMemo<string | undefined>(() => {
         if (schedule?.start_at) {
@@ -136,7 +136,7 @@ export default function StudyDetail ({
         } else {
             return undefined;
         }
-    }, [ schedule ]);
+    }, [schedule]);
 
     const endAt = useMemo<string | undefined>(() => {
         if (schedule?.end_at) {
@@ -144,7 +144,7 @@ export default function StudyDetail ({
         } else {
             return undefined;
         }
-    }, [ schedule ]);
+    }, [schedule]);
 
     const dueAt = useMemo<string | undefined>(() => {
         if (schedule?.due_at) {
@@ -152,7 +152,7 @@ export default function StudyDetail ({
         } else {
             return undefined;
         }
-    }, [ schedule ]);
+    }, [schedule]);
 
     const attachmentDownloadLink = useMemo<string | undefined>(() => {
         if (schedule?.attachment) {
@@ -160,9 +160,9 @@ export default function StudyDetail ({
         } else {
             return undefined;
         }
-    }, [ schedule ]);
+    }, [schedule]);
 
-    const [ previewOpen, setPreviewOpen ] = useState<{open: boolean; fileUrl: string}>({
+    const [previewOpen, setPreviewOpen] = useState<{ open: boolean; fileUrl: string }>({
         open: false,
         fileUrl: ``,
     });
@@ -229,9 +229,9 @@ export default function StudyDetail ({
     const getCacheDirectory = useMemo(() => {
         const cordova = (window as any).cordova;
         let targetDirectory = ``;
-        if(cordova !== undefined) {
+        if (cordova !== undefined) {
             targetDirectory = cordova.file.externalCacheDirectory;
-            if(isIOS){
+            if (isIOS) {
                 targetDirectory = cordova.file.tempDirectory;
             }
         }
@@ -251,16 +251,16 @@ export default function StudyDetail ({
     }, [window, isIOS]);
 
     useEffect(() => {
-        function startDownloadPreview (){
+        function startDownloadPreview() {
             setShouldDownloadPreview(false);
-            if(downloadingPreview)
+            if (downloadingPreview)
                 return;
-            if(attachmentDownloadLink && schedule){
+            if (attachmentDownloadLink && schedule) {
                 const url = encodeURI(attachmentDownloadLink);
                 setDownloadingPreview(true);
 
                 downloadDataBlob(url).then(downloadedData => {
-                    saveDataBlobToFile(downloadedData, getCacheDirectory, schedule.attachment.name).then(savedFilePath => {
+                    saveDataBlobToFile(downloadedData, getCacheDirectory, convertFileNameToUnderscores(schedule.attachment.name)).then(savedFilePath => {
                         setPreviewOpen({
                             open: true,
                             fileUrl: savedFilePath,
@@ -283,18 +283,18 @@ export default function StudyDetail ({
                         },
                     });
                 }).finally(() => {
-                    console.log(`finally`);
                     setDownloadingPreview(false);
                 });
             }
         }
-        if(shouldDownloadPreview){
+
+        if (shouldDownloadPreview) {
             startDownloadPreview();
         }
-    }, [ shouldDownloadPreview ]);
+    }, [shouldDownloadPreview]);
 
     useEffect(() => {
-        function confirmDownload (onConfirm: () => void) {
+        function confirmDownload(onConfirm: () => void) {
             showPopup({
                 variant: `detailConfirm`,
                 title: intl.formatMessage({
@@ -314,9 +314,9 @@ export default function StudyDetail ({
                 }),
                 onConfirm: () => {
                     requestPermissions({
-                        permissionTypes: [ PermissionType.READ_STORAGE, PermissionType.WRITE_STORAGE ],
+                        permissionTypes: [PermissionType.READ_STORAGE, PermissionType.WRITE_STORAGE],
                         onSuccess: (hasPermission) => {
-                            if(hasPermission)
+                            if (hasPermission)
                                 onConfirm();
                         },
                         onError: () => undefined,
@@ -372,9 +372,9 @@ export default function StudyDetail ({
 
         function startDownloadAttachment() {
             setShouldDownloadAttachment(false);
-            if(downloadingAttachment)
+            if (downloadingAttachment)
                 return;
-            if(attachmentDownloadLink && schedule){
+            if (attachmentDownloadLink && schedule) {
                 confirmDownload(() => {
                     const url = encodeURI(attachmentDownloadLink);
                     setDownloadingAttachment(true);
@@ -397,13 +397,16 @@ export default function StudyDetail ({
             }
         }
 
-        function shareFile(fileName: string, filePath: string){
+        function shareFile(fileName: string, filePath: string) {
             const options = {
                 files: [filePath]
             }
-            const onSuccess = (result : any) => {
-                if(result.completed){
-                    enqueueSnackbar(intl.formatMessage({id: "download_complete", defaultMessage: "Download complete"}), {
+            const onSuccess = (result: any) => {
+                if (result.completed) {
+                    enqueueSnackbar(intl.formatMessage({
+                        id: "download_complete",
+                        defaultMessage: "Download complete"
+                    }), {
                         variant: "success",
                         anchorOrigin: {
                             vertical: "bottom",
@@ -421,15 +424,16 @@ export default function StudyDetail ({
                     }
                 });
             }
-            (window as any).plugins.socialsharing.shareWithOptions(options,onSuccess, onError);
+            (window as any).plugins.socialsharing.shareWithOptions(options, onSuccess, onError);
         }
-        if(shouldDownloadAttachment){
+
+        if (shouldDownloadAttachment) {
             startDownloadAttachment();
         }
-    }, [ shouldDownloadAttachment, schedule ]);
+    }, [shouldDownloadAttachment, schedule]);
 
     useEffect(() => {
-        if(previewOpen.open && open){
+        if (previewOpen.open && open) {
             const previewAnyFile = (window as any).PreviewAnyFile;
             previewAnyFile.previewPath((result: string) => {
                 setPreviewOpen({
@@ -450,39 +454,42 @@ export default function StudyDetail ({
                 });
             }, previewOpen.fileUrl);
         }
-    }, [ previewOpen ]);
+    }, [previewOpen]);
     const closeButtonHandler = () => {
         onClose();
     };
 
-    function goJoin () {
+    function goJoin() {
         onClose();
         joinStudy();
     }
 
     const shouldEnableJoinButton = useMemo(() => {
-        if(schedule === undefined)
+        if (schedule === undefined)
             return false;
-        if(!open)
+        if (!open)
             return false;
-        if(!schedule.end_at)
+        if (!schedule.end_at)
             return true;
         const now = new Date().getTime() / 1000;
         return schedule.end_at > now
     }, [schedule, open])
 
     const joinButtonHandler = useCallback(() => {
-        if(schedule === undefined)
+        if (schedule === undefined)
             return;
-        if(!open)
+        if (!open)
             return;
 
-        if(schedule.class_type === `OnlineClass`) {
+        if (schedule.class_type === `OnlineClass`) {
             const now = new Date().getTime() / 1000;
             const timeBeforeClass = schedule.start_at - now;
-            if(timeBeforeClass > secondsBeforeClassCanStart) {
+            if (timeBeforeClass > secondsBeforeClassCanStart) {
                 enqueueSnackbar(
-                    intl.formatMessage({id: `err_join_live_failed`, defaultMessage: `You can only start a class 15 minutes before the start time.`}),
+                    intl.formatMessage({
+                        id: `err_join_live_failed`,
+                        defaultMessage: `You can only start a class 15 minutes before the start time.`
+                    }),
                     {
                         variant: `warning`,
                         anchorOrigin: {
@@ -491,24 +498,26 @@ export default function StudyDetail ({
                         }
                     }
                 )
-            }else {
+            } else {
                 goJoin();
             }
-        }else{
+        } else {
             goJoin();
         }
-    }, [ schedule, open ]);
+    }, [schedule, open]);
 
     function generateDescriptionHasHyperLink(description: string) {
         const linkRegex = /(http|ftp|https):\/\/([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?/g;
         const texts = description.split(' ');
         return texts.map(
             text => linkRegex.test(text)
-                ? <><Link variant="body1" href="#" onClick={() => {setHyperLink(text);}}>{text}</Link> </> : `${text} ` )
+                ? <><Link variant="body1" href="#" onClick={() => {
+                    setHyperLink(text);
+                }}>{text}</Link> </> : `${text} `)
     }
 
     const openHyperLink = (link?: string) => {
-        if(!link)
+        if (!link)
             return;
         const cordova = (window as any).cordova;
         let browser: any;
@@ -520,7 +529,9 @@ export default function StudyDetail ({
             } else {
                 cordova.plugins.browsertab.openUrl(
                     link,
-                    (successResp: any) => { console.log(successResp) },
+                    (successResp: any) => {
+                        console.log(successResp)
+                    },
                     (failureResp: any) => {
                         console.error("no browser tab available");
                     }
@@ -530,16 +541,16 @@ export default function StudyDetail ({
     }
 
     useEffect(() => {
-        if(hyperLink){
+        if (hyperLink) {
             setParentalLock(true);
         }
     }, [hyperLink])
 
     useEffect(() => {
-        if(!parentalLock) {
+        if (!parentalLock) {
             setHyperLink(undefined);
         }
-    },[parentalLock])
+    }, [parentalLock])
     if (parentalLock) {
         return <Dialog
             aria-labelledby="select-org-dialog"
@@ -553,13 +564,18 @@ export default function StudyDetail ({
                 className={headerBackButton}
             >
                 <IconButton
-                    onClick={() => { setParentalLock(false); }}
+                    onClick={() => {
+                        setParentalLock(false);
+                    }}
                     size="medium"
                 >
-                    <StyledIcon icon={<ArrowBackIcon />} size="medium" />
-                </IconButton >
+                    <StyledIcon icon={<ArrowBackIcon/>} size="medium"/>
+                </IconButton>
             </DialogTitle>
-            <ParentalGate onCompleted={() => { openHyperLink(hyperLink); setParentalLock(false); }} />
+            <ParentalGate onCompleted={() => {
+                openHyperLink(hyperLink);
+                setParentalLock(false);
+            }}/>
         </Dialog>
     }
 
@@ -577,7 +593,7 @@ export default function StudyDetail ({
                     <Typography
                         noWrap
                         className={dialogTitleText}>
-                        { schedule?.title || `N/A` }
+                        {schedule?.title || `N/A`}
                     </Typography>
                 </DialogTitle>
                 <DialogContent>
@@ -609,11 +625,11 @@ export default function StudyDetail ({
                                 <Typography
                                     variant="body1"
                                     className={rowContentText}>
-                                    { schedule?.description ? generateDescriptionHasHyperLink(schedule.description) : `N/A` }
+                                    {schedule?.description ? generateDescriptionHasHyperLink(schedule.description) : `N/A`}
                                 </Typography>
                             </Grid>
                         </Grid>
-                        { dueAt ? <Grid
+                        {dueAt ? <Grid
                             container
                             item
                             direction={`row`}
@@ -635,11 +651,11 @@ export default function StudyDetail ({
                                 <Typography
                                     variant="body1"
                                     className={rowContentText}>
-                                    { dueAt || `N/A`}
+                                    {dueAt || `N/A`}
                                 </Typography>
                             </Grid>
-                        </Grid> : undefined }
-                        { startAt ? <Grid
+                        </Grid> : undefined}
+                        {startAt ? <Grid
                             container
                             item
                             direction={`row`}
@@ -661,11 +677,11 @@ export default function StudyDetail ({
                                 <Typography
                                     variant="body1"
                                     className={rowContentText}>
-                                    { startAt || `N/A` }
+                                    {startAt || `N/A`}
                                 </Typography>
                             </Grid>
-                        </Grid> : undefined }
-                        { endAt ? <Grid
+                        </Grid> : undefined}
+                        {endAt ? <Grid
                             container
                             item
                             direction={`row`}
@@ -687,10 +703,10 @@ export default function StudyDetail ({
                                 <Typography
                                     variant="body1"
                                     className={rowContentText}>
-                                    { endAt || `N/A` }
+                                    {endAt || `N/A`}
                                 </Typography>
                             </Grid>
-                        </Grid> : undefined }
+                        </Grid> : undefined}
                         <Grid
                             container
                             item
@@ -713,7 +729,7 @@ export default function StudyDetail ({
                                 <Typography
                                     variant="body1"
                                     className={rowContentText}>
-                                    { schedule?.class?.name || `N/A` }
+                                    {schedule?.class?.name || `N/A`}
                                 </Typography>
                             </Grid>
                         </Grid>
@@ -730,7 +746,7 @@ export default function StudyDetail ({
                                 <Typography
                                     variant="body1"
                                     className={rowHeaderText}>
-                                    { schedule?.is_home_fun ? `Teacher` : `Lesson Plan` }
+                                    {schedule?.is_home_fun ? `Teacher` : `Lesson Plan`}
                                 </Typography>
                             </Grid>
                             <Grid
@@ -779,7 +795,7 @@ export default function StudyDetail ({
                             <Grid
                                 item
                                 xs={8}>
-                                { attachmentDownloadLink && schedule?.attachment?.name ?
+                                {attachmentDownloadLink && schedule?.attachment?.name ?
                                     <Grid
                                         container
                                         direction={`row`}
@@ -801,7 +817,7 @@ export default function StudyDetail ({
                                                         color={downloadingPreview ? `textSecondary` : `primary`}
                                                         aria-disabled={downloadingPreview}
                                                         onClick={() => confirmOpenAttachmentLink()}>
-                                                        { schedule?.attachment?.name }
+                                                        {schedule?.attachment?.name}
                                                     </Link>
                                                 </Typography>
                                                 {downloadingPreview && <CircularProgress
@@ -813,20 +829,22 @@ export default function StudyDetail ({
                                             item
                                             xs={2}
                                             alignContent={`flex-end`}>
-                                            <div className={wrapper}>
-                                                <IconButton
-                                                    key={`${downloadingAttachment}`}
-                                                    disabled={downloadingAttachment}
-                                                    color="primary"
-                                                    aria-label="Download attachment"
-                                                    component="span"
-                                                    onClick={() => {confirmDownloadAttachment();}}>
-                                                    <GetApp />
-                                                </IconButton>
-                                                {downloadingAttachment && <CircularProgress
-                                                    size={24}
-                                                    className={progress}/>}
-                                            </div>
+                                            <IconButton
+                                                key={`${downloadingAttachment}`}
+                                                disabled={downloadingAttachment}
+                                                color="primary"
+                                                aria-label="Download attachment"
+                                                component="span"
+                                                onClick={() => {
+                                                    confirmDownloadAttachment();
+                                                }}>
+                                                <div className={wrapper}>
+                                                    <GetApp/>
+                                                    {downloadingAttachment && <CircularProgress
+                                                        size={24}
+                                                        className={progress}/>}
+                                                </div>
+                                            </IconButton>
                                         </Grid>
                                     </Grid>
                                     : <Typography
@@ -849,7 +867,7 @@ export default function StudyDetail ({
                         {schedule?.class_type === `OnlineClass` ? intl.formatMessage({
                             id: 'button_go_live',
                             defaultMessage: `Go Live`,
-                        }) :  intl.formatMessage({
+                        }) : intl.formatMessage({
                             id: 'button_go_study',
                             defaultMessage: `Go Study`,
                         })}
