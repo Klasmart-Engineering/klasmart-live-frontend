@@ -38,8 +38,8 @@ export const MUTATION_LEAVECLASS = gql`
 `;
 
 export const MUTATION_SHOW_CONTENT = gql`
-    mutation showContent($roomId: ID!, $type: ContentType!, $contentId: ID, $materialUrl: String, $activityTypeName: String) {
-        showContent(roomId: $roomId, type: $type, contentId: $contentId, materialUrl: $materialUrl, activityTypeName: $activityTypeName)
+    mutation showContent($roomId: ID!, $type: ContentType!, $contentId: ID) {
+        showContent(roomId: $roomId, type: $type, contentId: $contentId)
     }
 `;
 
