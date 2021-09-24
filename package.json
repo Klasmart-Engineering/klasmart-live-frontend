@@ -14,7 +14,8 @@
     "build:docker": "DOCKER_BUILDKIT=1 docker build --no-cache --ssh default -t kidsloop-live-frontend .",
     "preversion": "git checkout master && git pull origin master",
     "postversion": "git push && git push --tags",
-    "cordova:sync:version": "cordova-version-sync && git add config.xml"
+    "cordova:sync:version": "cordova-version-sync && git add config.xml",
+    "release": "standard-version -a"
   },
   "author": "",
   "license": "ISC",
