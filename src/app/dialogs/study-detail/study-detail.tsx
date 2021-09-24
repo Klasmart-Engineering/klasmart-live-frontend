@@ -32,7 +32,12 @@ import {ParentalGate} from "@/app/dialogs/parentalGate";
 import StyledIcon from "@/components/styled/icon";
 import {ArrowBackIos as ArrowBackIcon} from "@styled-icons/material/ArrowBackIos";
 import {downloadDataBlob} from "@/app/utils/requestUtils";
-import {saveDataBlobToFile} from "@/app/utils/fileUtils";
+import {
+    convertFileNameToUnderscores,
+    generateUniqueFileName,
+    getFilesInDirectory,
+    saveDataBlobToFile
+} from "@/app/utils/fileUtils";
 
 const useStyles = makeStyles(() => ({
     dialogTitle: {
@@ -231,7 +236,19 @@ export default function StudyDetail ({
             }
         }
         return targetDirectory;
-    }, [ window, isIOS ]);
+    }, [window, isIOS]);
+
+    const getDownloadDirectory = useMemo(() => {
+        const cordova = (window as any).cordova;
+        let targetDirectory = ``;
+        if (cordova !== undefined) {
+            targetDirectory = `${cordova.file.externalRootDirectory}Download/`;
+            if (isIOS) {
+                targetDirectory = cordova.file.documentsDirectory;
+            }
+        }
+        return targetDirectory;
+    }, [window, isIOS]);
 
     useEffect(() => {
         function startDownloadPreview (){
@@ -311,7 +328,49 @@ export default function StudyDetail ({
                 }),
             });
         }
-        function startDownloadAttachment () {
+
+        function handleDownloadForAndroid(downloadedData: Blob, fileName: string) {
+            getFilesInDirectory(getDownloadDirectory).then((fileNames: string[]) => {
+                const targetFileName = generateUniqueFileName(fileNames, convertFileNameToUnderscores(fileName));
+                saveDataBlobToFile(downloadedData, getDownloadDirectory, targetFileName).then(savedFilePath => {
+                    enqueueSnackbar(intl.formatMessage({
+                        id: `download_complete`,
+                        defaultMessage: `Download complete`,
+                    }), {
+                        variant: `success`,
+                        anchorOrigin: {
+                            vertical: `bottom`,
+                            horizontal: `center`,
+                        },
+                    });
+                }).catch(error => {
+                    enqueueSnackbar(error.body ?? error.message, {
+                        variant: `error`,
+                        anchorOrigin: {
+                            vertical: `bottom`,
+                            horizontal: `center`,
+                        },
+                    });
+                });
+            });
+
+        }
+
+        function handleDownloadForIOS(downloadedData: Blob, fileName: string) {
+            saveDataBlobToFile(downloadedData, getCacheDirectory, convertFileNameToUnderscores(fileName)).then(savedFilePath => {
+                shareFile(fileName, savedFilePath);
+            }).catch(error => {
+                enqueueSnackbar(error.body ?? error.message, {
+                    variant: `error`,
+                    anchorOrigin: {
+                        vertical: `bottom`,
+                        horizontal: `center`,
+                    },
+                });
+            });
+        }
+
+        function startDownloadAttachment() {
             setShouldDownloadAttachment(false);
             if(downloadingAttachment)
                 return;
@@ -321,17 +380,8 @@ export default function StudyDetail ({
                     setDownloadingAttachment(true);
 
                     downloadDataBlob(url).then(downloadedData => {
-                        saveDataBlobToFile(downloadedData, getCacheDirectory, schedule.attachment.name).then(savedFilePath => {
-                            shareFile(schedule.attachment.name, savedFilePath);
-                        }).catch(error => {
-                            enqueueSnackbar(error.body ?? error.message, {
-                                variant: `error`,
-                                anchorOrigin: {
-                                    vertical: `bottom`,
-                                    horizontal: `center`,
-                                },
-                            });
-                        });
+                        if (isIOS) handleDownloadForIOS(downloadedData, schedule.attachment.name);
+                        else handleDownloadForAndroid(downloadedData, schedule.attachment.name);
                     }).catch(error => {
                         enqueueSnackbar(error.body ?? error.message, {
                             variant: `error`,
