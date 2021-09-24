@@ -88,10 +88,20 @@ export function RecordedIframe(props: Props): JSX.Element {
 
     const recorderEndpoint = useHttpEndpoint("live");
 
+    const getPDFURLTransformer = (contentHref: string, token: string | undefined, recorderEndpoint: string, encodedEndpoint: string) => {
+        const jpegTransformer = `${contentHref.replace(`/assets/`,`/pdf/`)}/view.html?token=${token}&endpoint=${encodedEndpoint}`;
+        const svgTransformer = `${contentHref.replace(`${recorderEndpoint}/assets`,`pdfviewer.html?pdfSrc=/assets`)}&token=${token}&endpoint=${encodedEndpoint}`;
+        switch (process.env.PDF_VERSION) {
+            case `JPEG`: return jpegTransformer;
+            case `SVG`: return svgTransformer;
+            default: return svgTransformer;
+        }
+    };
+
     const contentHrefWithToken = useMemo<string>(() => {
         const encodedEndpoint = encodeURIComponent(recorderEndpoint);
         if (contentHref.endsWith(`.pdf`)) {
-            return `${contentHref.replace(`${recorderEndpoint}/asset`,`pdfviewer.html?pdfSrc=/asset`)}&token=${token}&endpoint=${encodedEndpoint}`;
+            return getPDFURLTransformer(contentHref, token, recorderEndpoint, encodedEndpoint);
         } else {
             return `${contentHref}?token=${token}&endpoint=${encodedEndpoint}`;
         }
@@ -171,7 +181,7 @@ export function RecordedIframe(props: Props): JSX.Element {
         }
     };
 
-    function onLoad() {
+    function onLoad () {
         // TODO the client-side rendering version of H5P is ready! we can probably delete this function and the scale function above
         // if we switch over to it! Ask me (Daiki) about the details.
         const iframeElement = window.document.getElementById(`recordediframe`) as HTMLIFrameElement;
