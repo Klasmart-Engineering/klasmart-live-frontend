@@ -10,6 +10,7 @@ import {
     GlobalMuteNotification,
     WebRTCContext,
 } from "@/providers/WebRTCContext";
+import { useHttpEndpoint } from "@/providers/region-select-context";
 import { ClassType } from "@/store/actions";
 import {
     classInfoState,
@@ -145,9 +146,11 @@ export function Room () {
         }
     }, [ sessions.size, sessions ]);
 
+    const cmsEndpoint = useHttpEndpoint(`cms`);
+
     const handleClassGetInformation = async () => {
         try {
-            const dataR = await classGetInformation(scheduleId, organizationId);
+            const dataR = await classGetInformation(scheduleId, organizationId, cmsEndpoint);
             const dateOption = {
                 year: `numeric`,
                 month: `2-digit`,
