@@ -68,8 +68,7 @@ export function convertFileNameToUnderscores(fileName: string): string {
 export function saveDataBlobToFile (blob: Blob, targetDirectory: string, fileName: string): Promise<string> {
     return new Promise((resolve, reject) => {
         (window as any).resolveLocalFileSystemURL(targetDirectory, (entry: any) => {
-            const newFileName = convertFileNameToUnderscores(fileName);
-            entry.getFile( newFileName, { create: true, exclusive: false }, (fileEntry: any) => {
+            entry.getFile( fileName, { create: true, exclusive: false }, (fileEntry: any) => {
                 fileEntry.createWriter((writer: any) => {
                     writer.onwriteend = () => {
                         resolve(fileEntry.toURL());
@@ -93,3 +92,30 @@ export function saveDataBlobToFile (blob: Blob, targetDirectory: string, fileNam
     });
 }
 
+export function getFilesInDirectory (targetDirectory: string): Promise<string[]> {
+    return new Promise((resolve, reject) => {
+        (window as any).resolveLocalFileSystemURL(targetDirectory, (entry: any) => {
+            let reader = entry.createReader();
+            reader.readEntries((entries: any) => {
+                resolve(entries.map((entry: any) => entry.name));
+            }, (error: any) => {
+                console.error('could not create file: ', error);
+                reject(error);
+            });
+        }, (error: any) => {
+            console.error('could not retrieve directory: ', error);
+            reject(error);
+        })
+    });
+}
+
+export function generateUniqueFileName(fileNames: string[], targetFileName: string, increaseNumber : number = 0): string {
+    let newFileName = targetFileName;
+    if(increaseNumber !== 0)
+        newFileName = `${getNameWithoutExtension(targetFileName)}(${increaseNumber}).${getFileExtensionFromName(targetFileName)}`;
+    if(!fileNames.includes(newFileName)){
+        return newFileName;
+    }else{
+        return generateUniqueFileName(fileNames, targetFileName, increaseNumber + 1 );
+    }
+}
