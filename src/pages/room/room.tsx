@@ -29,6 +29,7 @@ import {
     useMediaQuery,
     useTheme,
 } from '@material-ui/core';
+import clsx from "clsx";
 import React,
 {
     useContext,
@@ -40,6 +41,11 @@ import { useRecoilState } from "recoil";
 const qs = require(`qs`);
 
 const useStyles = makeStyles((theme: Theme) => ({
+    root: {
+        paddingLeft: `env(safe-area-inset-left)`,
+        paddingRight: `env(safe-area-inset-right)`,
+        paddingBottom: `env(safe-area-inset-bottom)`,
+    },
     study: {
         backgroundImage: `url('${backgroundStudy}')`,
         backgroundSize: `cover`,
@@ -246,7 +252,9 @@ export function Room () {
         <Grid
             container
             direction={isXsDown ? `column` : `row`}
-            className={classType === ClassType.STUDY ? classes.study : undefined}
+            className={clsx(classes.root, {
+                [classes.study] : classType === ClassType.STUDY,
+            })}
         >
             <Grid
                 item
