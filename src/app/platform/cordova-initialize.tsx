@@ -1,4 +1,6 @@
+import { enableFullScreen } from "../utils/screenUtils";
 import useVideoLayoutUpdate from "./../utils/video-layout-update";
+import { sleep } from "@/utils/utils";
 import {
     useCallback,
     useEffect,
@@ -13,22 +15,6 @@ const useCordovaInitialize = (backExitApplication?: boolean, callbackBackButton?
     const [ isAndroid, setIsAndroid ] = useState<boolean>(false);
 
     const { updateLayout } = useVideoLayoutUpdate(null);
-
-    const enableAndroidFullScreen = () => {
-        // cordova-plugin-fullscreen
-        const AndroidFullScreen = (window as any).AndroidFullScreen;
-        if (AndroidFullScreen) {
-            AndroidFullScreen.isSupported(() => {
-                AndroidFullScreen.immersiveMode(() => {
-                    console.log(`Successfully set immersiveMode`);
-                }, () => {
-                    console.error(`Failed to set immersiveMode`);
-                });
-            }, (error: Error) => {
-                console.log(`AndroidFullScreen not available: ${error}`);
-            });
-        }
-    };
 
     const requestIosCameraPermission = useCallback((camera: boolean, mic: boolean) => {
         const cordova = (window as any).cordova;
@@ -84,9 +70,9 @@ const useCordovaInitialize = (backExitApplication?: boolean, callbackBackButton?
         const onDeviceReady = async () => {
             console.log(`Received deviceready event!`);
 
-            enableAndroidFullScreen();
-
             const cordova = (window as any).cordova;
+
+            enableFullScreen(false);
 
             if (cordova && cordova.plugins && cordova.plugins.iosrtc) {
                 console.log(`Registering iosrtc globals.`);
