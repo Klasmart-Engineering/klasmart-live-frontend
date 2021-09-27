@@ -92,14 +92,19 @@ const LOW_QUALITY_HEIGHT = 96;
 const LOW_QUALITY_FRAME_RATE = 15;
 
 interface VideoConstraintsOptions {
-    facing?: FacingType;
+    facingMode?: FacingType;
     deviceId?: string;
     highQuality?: boolean;
 }
 
 const getVideoContraints = (options: VideoConstraintsOptions): MediaTrackConstraints => {
-    const { deviceId, highQuality } = options;
+    const {
+        facingMode,
+        deviceId,
+        highQuality,
+    } = options;
     return {
+        facingMode,
         deviceId,
         width: {
             max: HIGH_QUALITY_WIDTH,
@@ -203,7 +208,7 @@ export const CameraContextProvider = (props: Props) => {
             deviceId: FacingType.USER,
             name: `Front Camera`, // TODO: translate
             constraints: getVideoContraints({
-                facing: FacingType.USER,
+                facingMode: FacingType.USER,
                 highQuality,
             }),
         },
@@ -211,7 +216,7 @@ export const CameraContextProvider = (props: Props) => {
             deviceId: FacingType.ENVIRONMENT,
             name: `Back Camera`, // TODO: translate
             constraints: getVideoContraints({
-                facing: FacingType.ENVIRONMENT,
+                facingMode: FacingType.ENVIRONMENT,
                 highQuality,
             }),
         },

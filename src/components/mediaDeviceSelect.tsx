@@ -73,7 +73,7 @@ export default function MediaDeviceSelect (props: Props) {
                             key={device.deviceId}
                             value={device.deviceId}
                         >
-                            {`${device.name ? `${device.name.charAt(0).toUpperCase()} ${device.name.slice(1)}` : `Unknown Device`} (${device.deviceId.slice(0, 4)})`}
+                            {`${device.name ? `${device.name.charAt(0).toUpperCase()}${device.name.slice(1)}` : `Unknown Device`} (${device.deviceId.slice(0, 4)})`}
                         </MenuItem>
                     ))
                 }
