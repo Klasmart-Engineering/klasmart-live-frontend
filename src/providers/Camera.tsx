@@ -270,14 +270,12 @@ export const CameraContextProvider = (props: Props) => {
         }
 
         const audioConstraints = availableNamedAudioConstraints.find((constraints) => constraints.deviceId === selectedAudioDeviceId);
-        const videoConstraints = acquireCameraDevice
-            ? availableNamedVideoConstraints.find((constraints) => constraints.deviceId === selectedVideoDeviceId)
-            : false;
+        const videoConstraints = availableNamedVideoConstraints.find((constraints) => constraints.deviceId === selectedVideoDeviceId);
 
         try {
             const stream = await navigator.mediaDevices.getUserMedia({
-                audio: audioConstraints,
-                video: videoConstraints,
+                audio: audioConstraints?.constraints,
+                video: acquireCameraDevice ? videoConstraints?.constraints : false,
             });
             setDeviceStatus(undefined);
             resetAllErrors();
