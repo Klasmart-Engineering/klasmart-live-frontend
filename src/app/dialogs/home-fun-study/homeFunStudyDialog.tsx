@@ -816,6 +816,13 @@ function HomeFunStudyContainer({
             handleSelectedFile(file);
         }).catch(error => {
             console.error(error);
+            enqueueSnackbar(error, {
+                variant: `error`,
+                anchorOrigin: {
+                    vertical: `bottom`,
+                    horizontal: `center`,
+                },
+            });
         });
     }
 
