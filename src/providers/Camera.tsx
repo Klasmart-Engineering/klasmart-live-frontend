@@ -27,8 +27,7 @@ export interface ICameraContext {
     cameraStream: MediaStream | undefined;
     refreshCameras: () => void;
     deviceStatus: DeviceStatus | undefined;
-    permissionError: boolean;
-    notFoundError: boolean;
+    cameraError: CameraError | undefined;
 }
 
 interface AvaliableDevices {
@@ -53,19 +52,30 @@ export enum DeviceStatus {
     MIC_NOT_ALLOWED = `mic_not_allowed`
 }
 
-export enum DeviceError {
+export enum CameraError {
+    CAMERA_UNAVAILABLE_ERROR = `camera_unavailable_error`,
+    CAMERA_PERMISSION_ERROR = `camera_permission_error`,
+    CAMERA_NOT_FOUND_ERROR = `camera_not_found_error`
+}
+
+export enum ErrorNameLookup {
     NOT_FOUND = `NotFoundError`,
     DEVICES_NOT_FOUND = `DevicesNotFoundError`,
     NOT_ALLOWED = `NotAllowedError`,
     PERMISSION_DENIED = `PermissionDeniedError`,
+    UNDEFINED = `TypeError`,
 }
 
 function isDeviceNotFoundError (error: any) {
-    return error.name === DeviceError.NOT_FOUND || error.name === DeviceError.DEVICES_NOT_FOUND;
+    return error.name === ErrorNameLookup.NOT_FOUND || error.name === ErrorNameLookup.DEVICES_NOT_FOUND;
 }
 
 function isDeviceNotAllowedError (error: any) {
-    return error.name === DeviceError.NOT_ALLOWED || error.name === DeviceError.PERMISSION_DENIED;
+    return error.name === ErrorNameLookup.NOT_ALLOWED || error.name === ErrorNameLookup.PERMISSION_DENIED;
+}
+
+function isUndefinedError (error: any) {
+    return error.name === ErrorNameLookup.UNDEFINED;
 }
 
 export interface NamedDeviceConstraints {
@@ -126,9 +136,7 @@ export const CameraContextProvider = (props: Props) => {
     const { children } = props;
     const [ highQuality, setHighQuality ] = useState(false);
     const [ cameraStream, setCameraStream ] = useState<MediaStream>();
-
-    const [ notFoundError, setNotFoundError ] = useState(false);
-    const [ permissionError, setPermissionError ] = useState(false);
+    const [ cameraError, setCameraError ] = useState<CameraError>();
 
     const [ availableNamedAudioConstraints, setAvailableNamedAudioConstraints ] = useState<NamedDeviceConstraints[]>([]);
     const [ availableNamedVideoConstraints, setAvailableNamedVideoConstraints ] = useState<NamedDeviceConstraints[]>([]);
@@ -168,7 +176,6 @@ export const CameraContextProvider = (props: Props) => {
             return requestAppPermissions();
         }
 
-
         const stream = await navigator.mediaDevices.getUserMedia({
             audio: true,
             video: acquireCameraDevice,
@@ -177,17 +184,18 @@ export const CameraContextProvider = (props: Props) => {
     }, []);
 
     const resetAllErrors = () => {
-        setPermissionError(false);
-        setNotFoundError(false);
+        setCameraError(undefined);
     };
 
     const handleError = (error: any) => {
         console.error(error);
 
-        if (isDeviceNotAllowedError(error)) {
-            setPermissionError(true);
+        if (isUndefinedError(error)) {
+            setCameraError(CameraError.CAMERA_UNAVAILABLE_ERROR);
+        } else if (isDeviceNotAllowedError(error)) {
+            setCameraError(CameraError.CAMERA_PERMISSION_ERROR);
         } else {
-            setNotFoundError(true);
+            setCameraError(CameraError.CAMERA_NOT_FOUND_ERROR);
         }
     };
 
@@ -273,7 +281,7 @@ export const CameraContextProvider = (props: Props) => {
     const acquireCameraStream = useCallback(async () => {
         if (!selectedAudioDeviceId || !selectedVideoDeviceId) {
             setCameraStream(undefined);
-            setNotFoundError(true);
+            setCameraError(CameraError.CAMERA_NOT_FOUND_ERROR);
             return;
         }
 
@@ -291,7 +299,11 @@ export const CameraContextProvider = (props: Props) => {
         } catch (error) {
             console.error(error);
             if (selectedVideoDeviceId) {
-                setPermissionError(true);
+                if (isUndefinedError(error)) {
+                    setCameraError(CameraError.CAMERA_UNAVAILABLE_ERROR);
+                } else {
+                    setCameraError(CameraError.CAMERA_PERMISSION_ERROR);
+                }
             } else {
                 handleError(error);
                 if (isDeviceNotFoundError(error)) {
@@ -313,15 +325,19 @@ export const CameraContextProvider = (props: Props) => {
     const refreshCameras = useCallback(async () => {
         try {
             await requestPermissions();
-            setPermissionError(false);
+            setCameraError(undefined);
 
             await loadAllDeviceConstraints();
 
             releaseCameraStream();
             acquireCameraStream();
         } catch (error) {
-            console.error(`no camera permissions: ${error}`);
-            setPermissionError(true);
+            console.error(error);
+            if (isUndefinedError(error)) {
+                setCameraError(CameraError.CAMERA_UNAVAILABLE_ERROR);
+            } else {
+                setCameraError(CameraError.CAMERA_PERMISSION_ERROR);
+            }
         }
     }, []);
 
@@ -349,7 +365,17 @@ export const CameraContextProvider = (props: Props) => {
         if (!acquireDevices) return;
 
         const onDeviceChange = () => {
-            // refreshCameras();
+            // TODO: On iOS the devicechange event keep being called when the camera
+            // device is retrieved. Doing refreshCameras at that point puts the app 
+            // in an endless loop of refreshing cameras. We'll have to investigate 
+            // this behaviour further.
+            if (process.env.IS_CORDOVA_BUILD) {
+                if (!isIOS) {
+                    refreshCameras();
+                }
+            } else {
+                refreshCameras();
+            }
         };
 
         navigator.mediaDevices.addEventListener(`devicechange`, onDeviceChange);
@@ -380,8 +406,7 @@ export const CameraContextProvider = (props: Props) => {
             setAcquireCameraDevice,
             setHighQuality,
             cameraStream,
-            notFoundError,
-            permissionError,
+            cameraError,
             deviceStatus,
             refreshCameras,
         }}>

@@ -55,6 +55,7 @@ import React,
 } from "react";
 import { FormattedMessage } from "react-intl";
 import { useRecoilState } from "recoil";
+import { useCameraContext } from "@/providers/Camera";
 
 const dateFormat = require(`dateformat`);
 
@@ -101,6 +102,7 @@ export function Schedule () {
     const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
 
     const { schedulerService } = useServices();
+    const { setAcquireDevices } = useCameraContext();
 
     const { shouldSelectUser, userSelectErrorCode } = useShouldSelectUser();
     const { shouldSelectOrganization, organizationSelectErrorCode } = useShouldSelectOrganization();
@@ -120,6 +122,7 @@ export function Schedule () {
     };
 
     useEffect(() => {
+        setAcquireDevices(false);
         lockOrientation(OrientationType.PORTRAIT);
     }, []);
 
