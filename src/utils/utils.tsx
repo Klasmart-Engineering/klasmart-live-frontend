@@ -273,7 +273,7 @@ export interface BrandingType {
     primaryColor: string;
 }
 
-export async function getOrganizationBranding (organization_id:any) {
+export async function getOrganizationBranding (organization_id:any, endpoint: string) {
     const GET_ORGANIZATION_BRANDING = `
         query organization($organization_id: ID!){
             organization(organization_id: $organization_id){
@@ -288,7 +288,7 @@ export async function getOrganizationBranding (organization_id:any) {
     const headers = new Headers();
     headers.append(`Accept`, `application/json`);
     headers.append(`Content-Type`, `application/json`);
-    const response = await fetch(`${process.env.ENDPOINT_API}/user/`, {
+    const response = await fetch(`${endpoint}`, {
         method: `POST`,
         headers,
         body: JSON.stringify({
