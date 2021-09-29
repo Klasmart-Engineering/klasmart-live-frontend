@@ -4,6 +4,7 @@ import {
     Message,
     Session,
 } from "../pages/utils";
+import { ClassType } from "../store/actions";
 import {
     audioGloballyMutedState,
     classEndedState,
@@ -17,7 +18,10 @@ import {
     unreadMessagesState,
     videoGloballyMutedState,
 } from "../store/layoutAtoms";
-import { MUTATION_SHOW_CONTENT } from "../utils/graphql";
+import {
+    MUTATION_SHOW_CONTENT,
+    MUTATION_STUDENT_REPORT,
+} from "../utils/graphql";
 import {
     defineContentId,
     defineContentType,
@@ -94,7 +98,7 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
         camera,
         isTeacher,
         materials,
-
+        classtype,
     } = useContext(LocalSessionContext);
     const [ sfuAddress, setSfuAddress ] = useState<string>(``);
     const [ messages, setMessages ] = useState<Map<string, Message>>(new Map<string, Message>());
@@ -120,6 +124,11 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
         },
     });
 
+    const [ studentReport ] = useMutation(MUTATION_STUDENT_REPORT, {
+        context: {
+            target: LIVE_LINK,
+        },
+    });
     useEffect(() => {
         setIsShowContentLoading(loadingShowContent);
     }, [ loadingShowContent ]);
@@ -144,6 +153,21 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
         materialActiveIndex,
         interactiveMode,
     ]);
+
+    useEffect(() => {
+        if(interactiveMode === InteractiveMode.OnStage) return;
+        if (!hasControls && classtype !==  ClassType.STUDY) return;
+        const material = materials?.[materialActiveIndex];
+        const materialUrl = material?.url;
+        const activityTypeName = material?.__typename === `Iframe` ? `h5p` : material?.__typename;
+        studentReport({
+            variables: {
+                roomId,
+                materialUrl,
+                activityTypeName,
+            },
+        });
+    }, [ materialActiveIndex, interactiveMode ]);
 
     useEffect(() => {
         isChatOpen && setUnreadMessages(0);
