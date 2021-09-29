@@ -16,6 +16,7 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useHistory } from 'react-router-dom';
 import { useRecoilState } from "recoil";
+import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
 
 const useStyles = makeStyles((theme: Theme) => ({
     container:{
@@ -65,10 +66,20 @@ function EndClass () {
     const [ classLeft, setClassEnded ] = useRecoilState(classLeftState);
     const [ classEnded, setClassLeft ] = useRecoilState(classEndedState);
 
+    const { restart } = useCordovaSystemContext();
+
     const onCloseButtonClick = () => {
         setClassEnded(false);
         setClassLeft(false);
-        history.push(`/schedule`)
+
+        // TODO: The WebRTC context can't properly initiate another session unless the context
+        // is completely restarted. This is something we'd have to solve at some point, but 
+        // the current workaround is to reload the entire app instead.
+        if (restart) {
+            restart();
+        } else {
+            history.push(`/schedule`)
+        }
     }
 
     return (
