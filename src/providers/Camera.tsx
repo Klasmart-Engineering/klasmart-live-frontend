@@ -12,6 +12,7 @@ import React,
     useEffect,
     useState,
 } from "react";
+import { FragmentsOnCompositeTypesRule } from "graphql";
 
 export interface ICameraContext {
     selectedAudioDeviceId: string;
@@ -141,7 +142,7 @@ export const CameraContextProvider = (props: Props) => {
     const [ acquireCameraDevice, setAcquireCameraDevice ] = useState(true);
 
     // WARNING: The cordova system context is not available on web.
-    const { requestPermissions: requestNativePermissions } = useCordovaSystemContext();
+    const { requestPermissions: requestNativePermissions, isIOS } = useCordovaSystemContext();
 
     const requestAppPermissions = () => {
         if (!process.env.IS_CORDOVA_BUILD) return;
@@ -161,7 +162,12 @@ export const CameraContextProvider = (props: Props) => {
     };
 
     const requestPermissions = useCallback(async () => {
-        if (process.env.IS_CORDOVA_BUILD) return requestAppPermissions();
+        // NOTE: iOS 14.3 and above supports WebRTC in web view, so for iOS we 
+        // don't have to use the native permission request function anymore.
+        if (process.env.IS_CORDOVA_BUILD && !isIOS) {
+            return requestAppPermissions();
+        }
+
 
         const stream = await navigator.mediaDevices.getUserMedia({
             audio: true,
@@ -176,6 +182,8 @@ export const CameraContextProvider = (props: Props) => {
     };
 
     const handleError = (error: any) => {
+        console.error(error);
+
         if (isDeviceNotAllowedError(error)) {
             setPermissionError(true);
         } else {
@@ -281,6 +289,7 @@ export const CameraContextProvider = (props: Props) => {
             resetAllErrors();
             setCameraStream(stream);
         } catch (error) {
+            console.error(error);
             if (selectedVideoDeviceId) {
                 setPermissionError(true);
             } else {
@@ -340,7 +349,7 @@ export const CameraContextProvider = (props: Props) => {
         if (!acquireDevices) return;
 
         const onDeviceChange = () => {
-            refreshCameras();
+            // refreshCameras();
         };
 
         navigator.mediaDevices.addEventListener(`devicechange`, onDeviceChange);
