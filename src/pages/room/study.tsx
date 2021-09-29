@@ -12,23 +12,52 @@ import { getContentHref } from "../../utils/contentUtils";
 import { GlobalWhiteboardContext } from "../../whiteboard/context-providers/GlobalWhiteboardContext";
 import { Layout } from "./layout-new";
 import { InteractiveModeState, StreamIdState } from "./room";
+import {gql, useMutation} from "@apollo/client";
+import {SESSION_LINK_LIVE} from "../../context-provider/live-session-link-context";
 
 interface StudyProps {
     interactiveModeState: InteractiveModeState;
     streamIdState: StreamIdState;
 }
 
+const MUTATION_STUDENT_REPORT = gql`
+    mutation studentReport($roomId: ID!, $materialUrl: String, $activityTypeName: String){
+        studentReport(roomId: $roomId, materialUrl: $materialUrl, activityTypeName: $activityTypeName)
+    }
+`;
+
 export function Study({
     interactiveModeState,
     streamIdState,
 }: StudyProps): JSX.Element {
-    const { classType: classtype, materials } = useSessionContext();
+    const { classType: classtype, materials, roomId } = useSessionContext();
     const dispatch = useDispatch();
     const contentIndex = useSelector((store: State) => store.control.contentIndex);
     const material = contentIndex >= 0 && contentIndex < materials.length ? materials[contentIndex] : undefined;
 
     const [tabIndex, setTabIndex] = useState(0);
     const [materialKey, setMaterialKey] = useState(Math.random());
+
+    const [ studentReport ] = useMutation(MUTATION_STUDENT_REPORT, {
+        context: {
+            target: SESSION_LINK_LIVE,
+        },
+    });
+
+    useEffect(() => {
+        if (classtype !==  ClassType.STUDY) return;
+        if(!roomId) return;
+        if(!material) return;
+        const materialUrl = material?.url;
+        const activityTypeName = material?.__typename === `Iframe` ? `h5p` : material?.__typename;
+        studentReport({
+            variables: {
+                roomId,
+                materialUrl,
+                activityTypeName,
+            },
+        });
+    }, [ material, roomId, classtype ]);
 
     useEffect(() => {
         dispatch(setDrawerOpen(classtype === ClassType.STUDY ? false : true));
