@@ -12,6 +12,8 @@ import React,
     useState,
 } from "react";
 
+const initialHref = location.href;
+
 type Props = {
     children: ReactChild | ReactChildren | null;
     history: History<unknown>;
@@ -69,11 +71,13 @@ export function CordovaSystemProvider ({ children, history }: Props) {
     };
 
     const restart = useCallback(() => {
-        (navigator as any).app.loadUrl(`file:///android_asset/www/index.html`, {
-            wait: 0,
-            loadingDialog: `Wait,Loading App`,
-            loadUrlTimeoutValue: 60000,
-        });
+        const app = (navigator as any).app;
+        if (app) {
+            app.loadUrl(initialHref, { wait: 0, loadingDialog: "Wait, Loading App", loadUrlTimeoutValue: 60000 });
+        } else {
+            (navigator as any).splashscreen.show();
+            location.href = initialHref;
+        }
     }, []);
 
     const quit = useCallback(() => {
