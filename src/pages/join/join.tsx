@@ -13,6 +13,7 @@ import StyledTextField from "@/components/styled/textfield";
 import {
     DeviceStatus,
     useCameraContext,
+    CameraError,
 } from "@/providers/Camera";
 import { useSessionContext } from "@/providers/session-context";
 import { ClassType } from "@/store/actions";
@@ -170,8 +171,7 @@ export default function Join (): JSX.Element {
         setAcquireDevices,
         setAcquireCameraDevice,
         setHighQuality,
-        notFoundError,
-        permissionError,
+        cameraError,
         cameraStream,
         deviceStatus,
     } = useCameraContext();
@@ -264,7 +264,7 @@ export default function Join (): JSX.Element {
                                         xs={6}
                                         md={7}>
                                         <CameraPreview
-                                            permissionError={permissionError}
+                                            cameraError={cameraError}
                                             videoStream={cameraStream} />
                                     </Grid>
                                 }
@@ -287,7 +287,7 @@ export default function Join (): JSX.Element {
 
                                     </Grid>
                                     <JoinRoomForm
-                                        mediaDeviceError={permissionError || notFoundError}
+                                        mediaDeviceError={cameraError !== undefined}
                                         stream={cameraStream}
                                     />
                                 </Grid>
@@ -311,14 +311,14 @@ export default function Join (): JSX.Element {
     );
 }
 
-function CameraPreview ({ permissionError, videoStream }: {
-    permissionError: boolean;
+function CameraPreview ({ cameraError, videoStream }: {
+    cameraError: CameraError | undefined;
     videoStream: MediaStream | undefined;
 }): JSX.Element {
 
     return (
-        permissionError ?
-            <CameraPreviewFallback permissionError /> : (
+        cameraError ?
+            <CameraPreviewFallback cameraError={cameraError} /> : (
                 videoStream && videoStream.getVideoTracks().length > 0 && videoStream.getVideoTracks().every((t) => t.readyState === `live`) && videoStream.active ?
                     <Camera
                         mediaStream={videoStream}
@@ -328,7 +328,7 @@ function CameraPreview ({ permissionError, videoStream }: {
     );
 }
 
-function CameraPreviewFallback ({ permissionError }: { permissionError: boolean }) {
+function CameraPreviewFallback ({ cameraError }: { cameraError: CameraError }) {
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
 
@@ -360,13 +360,20 @@ function CameraPreviewFallback ({ permissionError }: { permissionError: boolean 
                     color: `#FFF`,
                 }}
             >
-                {permissionError ?
-                    <FormattedMessage id="join_cameraPreviewFallback_allowMediaPermissions" /> :
-                    <FormattedMessage id="connect_camera" />
-                }
+                <CameraErrorMessage cameraError={cameraError} />
             </Typography>
         </Grid>
     );
+}
+
+function CameraErrorMessage({ cameraError } : { cameraError: CameraError | undefined }): JSX.Element {
+    if (cameraError === CameraError.CAMERA_PERMISSION_ERROR) {
+        return <FormattedMessage id="join_cameraPreviewFallback_allowMediaPermissions" />;
+    } else if (cameraError === CameraError.CAMERA_UNAVAILABLE_ERROR) {
+        return <FormattedMessage id="join_cameraPreviewFallback_cameraUnavailableOnPlatform" />;
+    } else {
+        return <FormattedMessage id="connect_camera" />;
+    }
 }
 
 function ClassTypeLogo (): JSX.Element {
