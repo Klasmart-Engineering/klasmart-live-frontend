@@ -49,6 +49,7 @@ import React,
 import { FormattedMessage } from "react-intl";
 import { useHistory } from "react-router-dom";
 import { useRecoilState } from "recoil";
+import { useHttpEndpoint } from "@/providers/region-select-context";
 
 const config = require(`@/../package.json`);
 
@@ -175,10 +176,12 @@ export default function Join (): JSX.Element {
         deviceStatus,
     } = useCameraContext();
 
+    const brandingEndpoint = useHttpEndpoint(`user`);
+
     const handleOrganizationBranding = async () => {
         setLoading(true);
         try {
-            const dataBranding = await getOrganizationBranding(organizationId);
+            const dataBranding = await getOrganizationBranding(organizationId, brandingEndpoint);
             setBranding(dataBranding);
         } catch (e) {
             console.error(`couldn't get branding: ${e}`);
@@ -194,7 +197,7 @@ export default function Join (): JSX.Element {
 
     useEffect(() => {
         handleOrganizationBranding();
-    }, []);
+    }, [ brandingEndpoint ]);
 
     if (loading) {
         return <Grid
