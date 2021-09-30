@@ -260,5 +260,6 @@
     "preview_guide_text_2": "레슨 플랜을 클릭하여 수업 자료를 확인하세요.",
     "preview_guide_text_3": "미리보기 라이브 클래스 에서는 비디오 기능을 지원하지 않습니다.",
     "common_teacher_count": "{count, plural, =0 {교사} one {교사} other {교사}}",
-    "common_student_count": "{count, plural, =0 {학생} one {학생} other {학생}}"
+    "common_student_count": "{count, plural, =0 {학생} one {학생} other {학생}}",
+    "join_cameraPreviewFallback_cameraUnavailableOnPlatform": "Camera unavailable on this platform or version. Please update the device."
 }

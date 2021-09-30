@@ -260,5 +260,6 @@
     "preview_guide_text_2": "点击教学课件，查看课件素材！",
     "preview_guide_text_3": "预览功能暂不支持视频会议",
     "common_teacher_count": "{count, plural, =0 {teacher} one {teacher} other {teachers}}",
-    "common_student_count": "{count, plural, =0 {student} one {student} other {students}}"
+    "common_student_count": "{count, plural, =0 {student} one {student} other {students}}",
+    "join_cameraPreviewFallback_cameraUnavailableOnPlatform": "Camera unavailable on this platform or version. Please update the device."
 }

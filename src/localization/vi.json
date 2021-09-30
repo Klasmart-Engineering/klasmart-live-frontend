@@ -112,7 +112,7 @@
     "classdetails_roster": "Danh sách lớp",
     "classdetails_roster_teachers": "Giáo viên",
     "classdetails_roster_students": "Học sinh",
-    "classdetails_roster_absents": "Học sinh vắng mặt",
+    "classdetails_roster_absents": "Người không tham gia",
     "viewmodes_on_stage": "Chế độ mặc định",
     "viewmodes_observe": "Quan sát",
     "viewmodes_present": "Trình bày",
@@ -260,5 +260,6 @@
     "preview_guide_text_2": "Nhấp vào Kế hoạch bài giảng để xem học liệu bài giảng!",
     "preview_guide_text_3": "Hội thảo qua video không được hỗ trợ khi xem trước lớp học trực tuyến",
     "common_teacher_count": "{count, plural, =0 {giáo viên} one {giáo viên} other {giáo viên}}",
-    "common_student_count": "{count, plural, =0 {học sinh} one {học sinh} other {học sinh}}"
+    "common_student_count": "{count, plural, =0 {học sinh} one {học sinh} other {học sinh}}",
+    "join_cameraPreviewFallback_cameraUnavailableOnPlatform": "Camera unavailable on this platform or version. Please update the device."
 }
