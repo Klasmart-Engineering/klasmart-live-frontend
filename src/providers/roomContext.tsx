@@ -155,7 +155,7 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
     ]);
 
     useEffect(() => {
-        if (interactiveMode === InteractiveMode.OnStage) return;
+        if (hasControls && interactiveMode === InteractiveMode.OnStage) return;
         if (!hasControls && classtype !==  ClassType.STUDY) return;
         const material = materials?.[materialActiveIndex];
         const materialUrl = material?.url;
