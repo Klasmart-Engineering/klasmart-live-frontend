@@ -14,7 +14,8 @@ import {
     dialogsState,
     homeFunStudyState,
     isProcessingRequestState,
-    OrientationType,
+    LayoutMode,
+    layoutModeState,
     selectedOrganizationState,
     selectedUserState,
 } from "../../model/appModel";
@@ -30,12 +31,9 @@ import {
     TimeView,
 } from "../../services/cms/ISchedulerService";
 import { autoHideDuration } from "../../utils/fixedValues";
-import {
-    enableFullScreen,
-    lockOrientation,
-} from "../../utils/screenUtils";
 import { Fallback } from "../fallback";
 import ClassTypeSwitcher from "./classTypeSwitcher";
+import { useCameraContext } from "@/providers/Camera";
 import { ListItemSecondaryAction } from "@material-ui/core";
 import Avatar from '@material-ui/core/Avatar';
 import Grid from "@material-ui/core/Grid";
@@ -58,7 +56,6 @@ import React,
 } from "react";
 import { FormattedMessage } from "react-intl";
 import { useRecoilState } from "recoil";
-import { useCameraContext } from "@/providers/Camera";
 
 const dateFormat = require(`dateformat`);
 
@@ -103,6 +100,7 @@ export function Schedule () {
     const [ homeFunStudy, setHomeFunStudy ] = useRecoilState(homeFunStudyState);
     const [ schedule, setSchedule ] = useRecoilState(scheduleState);
     const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
+    const [ layoutMode, setLayoutMode ] = useRecoilState(layoutModeState);
 
     const { schedulerService } = useServices();
     const { setAcquireDevices } = useCameraContext();
@@ -126,8 +124,7 @@ export function Schedule () {
 
     useEffect(() => {
         setAcquireDevices(false);
-        lockOrientation(OrientationType.PORTRAIT);
-        enableFullScreen(false);
+        setLayoutMode(LayoutMode.DEFAULT);
     }, []);
 
     useEffect(() => {
@@ -266,8 +263,7 @@ export function Schedule () {
 
             schedulerService.getScheduleToken(selectedOrganization.organization_id, selectedSchedule.id).then((res) => {
                 if (res.token) {
-                    lockOrientation(OrientationType.LANDSCAPE);
-                    enableFullScreen(true);
+                    setLayoutMode(LayoutMode.CLASSROOM);
                     setToken(res.token);
                     /* TODO: Can we get rid of the token query parameter and just use
                     ** react component state for keeping and parsing the token instead? */

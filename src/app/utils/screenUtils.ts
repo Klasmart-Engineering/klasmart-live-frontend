@@ -51,3 +51,16 @@ export function enableFullScreen (enabled:boolean) {
 
     }
 }
+
+export function enableKeepAwake (enabled:boolean) {
+    const plugins = (window as any).plugins;
+    if (!plugins) return;
+
+    const insomnia = (window as any).plugins.insomnia;
+
+    if (enabled) {
+        insomnia.keepAwake();
+    }else{
+        insomnia.allowSleepAgain();
+    }
+}
