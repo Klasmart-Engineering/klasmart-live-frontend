@@ -22,6 +22,7 @@ import React,
     useEffect,
     useState,
 } from "react";
+import { BuiltinHandlerName } from "mediasoup-client/lib/types";
 
 const callstats: any = require(`callstats-js/callstats.min`);
 
@@ -539,12 +540,10 @@ export const WebRTCProvider = (props: { children: React.ReactNode }) => {
         }
         setDevice(null);
 
-        let webRTCDevice: Device;
-        if (process.env.WEBRTC_DEVICE_HANDLER_NAME) {
-            webRTCDevice = new Device({ handlerName: process.env.WEBRTC_DEVICE_HANDLER_NAME as any });
-        } else {
-            webRTCDevice = new Device();
-        }
+        const webRTCDevice = process.env.WEBRTC_DEVICE_HANDLER_NAME ?
+            new Device({
+                handlerName: process.env.WEBRTC_DEVICE_HANDLER_NAME as BuiltinHandlerName,
+            }) : new Device();
 
         await webRTCDevice.load({
             routerRtpCapabilities,
