@@ -1,6 +1,16 @@
 import Loading from "../../components/loading";
 import { ExitDialog } from "../dialogs/exitDialog";
+import {
+    LayoutMode,
+    layoutModeState,
+    OrientationType,
+} from "../model/appModel";
 import useCordovaInitialize from "../platform/cordova-initialize";
+import {
+    enableFullScreen,
+    enableKeepAwake,
+    lockOrientation,
+} from "../utils/screenUtils";
 import { History } from "history";
 import React,
 {
@@ -9,8 +19,10 @@ import React,
     ReactChildren,
     useCallback,
     useContext,
+    useEffect,
     useState,
 } from "react";
+import { useRecoilState } from "recoil";
 
 const initialHref = location.href;
 
@@ -56,6 +68,7 @@ export function CordovaSystemProvider ({ children, history }: Props) {
     const [ displayExitDialogue, setDisplayExitDialogue ] = useState<boolean>(false);
     const [ onBackQueue, setOnBackQueue ] = useState<OnBackItem[]>([]);
     const [ permissions, setPermissions ] = useState(false);
+    const [ layoutMode, setLayoutMode ] = useRecoilState(layoutModeState);
 
     const addOnBack = (onBackItem: OnBackItem) => {
         console.log(onBackItem.id);
@@ -63,6 +76,18 @@ export function CordovaSystemProvider ({ children, history }: Props) {
         newOnBackQueue.push(onBackItem);
         setOnBackQueue(newOnBackQueue);
     };
+
+    useEffect(()=>{
+        if(layoutMode === LayoutMode.CLASSROOM){
+            lockOrientation(OrientationType.LANDSCAPE);
+            enableFullScreen(true);
+            enableKeepAwake(true);
+        }else{
+            lockOrientation(OrientationType.PORTRAIT);
+            enableFullScreen(false);
+            enableKeepAwake(false);
+        }
+    }, [ layoutMode ]);
 
     const removeOnBack = (id: string) => {
         console.log(id);

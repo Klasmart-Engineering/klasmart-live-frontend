@@ -10,7 +10,6 @@ import {
 const useCordovaInitialize = (backExitApplication?: boolean, callbackBackButton?: () => void, skipInitEffects?: boolean) => {
     const [ cordovaReady, setCordovaReady ] = useState(false);
     const [ permissions, setPermissions ] = useState(false);
-    const [ keepAwake, setKeepAwake ] = useState(true);
     const [ isIOS, setIsIOS ] = useState<boolean>(false);
     const [ isAndroid, setIsAndroid ] = useState<boolean>(false);
 
@@ -72,7 +71,7 @@ const useCordovaInitialize = (backExitApplication?: boolean, callbackBackButton?
 
             const cordova = (window as any).cordova;
 
-            enableFullScreen(false);
+            // enableFullScreen(false);
 
             if (cordova && cordova.plugins && cordova.plugins.iosrtc) {
                 console.log(`Registering iosrtc globals.`);
@@ -138,30 +137,11 @@ const useCordovaInitialize = (backExitApplication?: boolean, callbackBackButton?
         };
     }, []);
 
-    useEffect(() => {
-        if (skipInitEffects) return;
-
-        const plugins = (window as any).plugins;
-        if (!plugins) return;
-
-        try {
-            if (keepAwake) {
-                (window as any).plugins.insomnia.keepAwake();
-            } else {
-                (window as any).plugins.insomnia.allowSleepAgain();
-            }
-        } catch (error) {
-            console.error(error);
-        }
-    }, [ keepAwake ]);
-
     return {
         cordovaReady,
         permissions,
         requestPermissions,
         requestIosCameraPermission,
-        keepAwake,
-        setKeepAwake,
         isIOS,
         isAndroid,
     };

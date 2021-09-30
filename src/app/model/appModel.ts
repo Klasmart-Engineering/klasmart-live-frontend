@@ -7,6 +7,10 @@ export enum OrientationType {
     LANDSCAPE = `landscape`,
 }
 
+export enum LayoutMode {
+    DEFAULT, CLASSROOM
+}
+
 export const isProcessingRequestState = atom({
     key: `isProcessingRequest`,
     default: false,
@@ -78,4 +82,9 @@ export const localeState = atom({
 export const historyState = atom({
     key: `history`,
     default: [] as string[],
+});
+
+export const layoutModeState = atom<LayoutMode>({
+    key: `layoutMode`,
+    default: LayoutMode.DEFAULT,
 });
