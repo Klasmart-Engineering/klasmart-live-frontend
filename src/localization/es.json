@@ -256,9 +256,10 @@
     "observe_warning_videotype_text": "Es posible que experimente resultados impredecibles al visualizar vídeos en el modo Observar. Para continuar, pulse OK. Para evitar ecos durante la reproducción del vídeo, silencie el micrófono de los participantes.",
     "common_ok": "Aceptar",
     "common_do_not_show_again": "No mostrar de nuevo",
-    "preview_guide_text_1": "",
-    "preview_guide_text_2": "",
-    "preview_guide_text_3": "",
-    "common_teacher_count": "",
-    "common_student_count": ""
+    "preview_guide_text_1": "Preview Live Class is only available for 15 minutes.",
+    "preview_guide_text_2": "Click Lesson Plan to view lesson materials!",
+    "preview_guide_text_3": "Video conference is not supported in the Preview Live Class",
+    "common_teacher_count": "{count, plural, =0 {teacher} one {teacher} other {teachers}}",
+    "common_student_count": "{count, plural, =0 {student} one {student} other {students}}",
+    "join_cameraPreviewFallback_cameraUnavailableOnPlatform": "Camera unavailable on this platform or version. Please update the device."
 }

@@ -261,5 +261,6 @@
     "preview_guide_text_2": "Click Lesson Plan to view lesson materials!",
     "preview_guide_text_3": "Video conference is not supported in the Preview Live Class",
     "common_teacher_count": "{count, plural, =0 {teacher} one {teacher} other {teachers}}",
-    "common_student_count": "{count, plural, =0 {student} one {student} other {students}}"
+    "common_student_count": "{count, plural, =0 {student} one {student} other {students}}",
+    "join_cameraPreviewFallback_cameraUnavailableOnPlatform": "Camera unavailable on this platform or version. Please update the device."
 }
