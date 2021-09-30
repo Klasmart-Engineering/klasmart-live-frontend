@@ -19,8 +19,8 @@ import {
     videoGloballyMutedState,
 } from "../store/layoutAtoms";
 import {
+    MUTATION_SEND_STUDENT_USAGE_RECORD_EVENT,
     MUTATION_SHOW_CONTENT,
-    MUTATION_STUDENT_REPORT,
 } from "../utils/graphql";
 import {
     defineContentId,
@@ -124,7 +124,7 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
         },
     });
 
-    const [ studentReport ] = useMutation(MUTATION_STUDENT_REPORT, {
+    const [ sendStudentUsageRecordEvent ] = useMutation(MUTATION_SEND_STUDENT_USAGE_RECORD_EVENT, {
         context: {
             target: LIVE_LINK,
         },
@@ -155,12 +155,12 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
     ]);
 
     useEffect(() => {
-        if(interactiveMode === InteractiveMode.OnStage) return;
+        if (interactiveMode === InteractiveMode.OnStage) return;
         if (!hasControls && classtype !==  ClassType.STUDY) return;
         const material = materials?.[materialActiveIndex];
         const materialUrl = material?.url;
         const activityTypeName = material?.__typename === `Iframe` ? `h5p` : material?.__typename;
-        studentReport({
+        sendStudentUsageRecordEvent({
             variables: {
                 roomId,
                 materialUrl,
