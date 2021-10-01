@@ -2,6 +2,113 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-internal.1](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v2.0.15%0Dv3.0.0-internal.1) (2021-10-01)
+
+
+### ⚠ BREAKING CHANGES
+
+* **app:** replace redux state with recoil state for schedule
+* **app:** replace redux with recoil for entry-cordova
+* **app:** replace redux state with recoil state for hfs
+* **app:** replace redux state with recoil state for selectUserDialog
+* **app:** replace redux state with recoil state for selectOrgDialog
+* **app:** use recoil state in user-information-context
+* **app:** use recoil state for region-select-context
+* **app:** use recoil state in Header component
+* **app:** replace redux state with recoil state for schedule
+* added app specific pages, dialogs, components, and utilities.
+
+### Features
+
+* add back button to join page on app ([8b047da](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/8b047daec50eb37991cee3ed128ad4c53bc23d27))
+* add exit button on app on endClass page (feedback page) ([ae16bf9](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/ae16bf9069a7d4cb3b7521dbca30044d0b9a3688))
+* Added preview the attachment when touch on the file icon ([847380f](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/847380f1104fa5429f17d0eb716da73f94df378c))
+* **app:** add loading component with retry button ([0754208](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/07542081731da150518277b4b76a1503c7335fa8))
+* **app:** Get files in directory to generate an unique file name ([8725a1f](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/8725a1fc63b6988c9e86451461ab39617140d791))
+* Enable hyperlink in description for schedule popup ([f4e5b8e](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/f4e5b8e961d69a9d61782809614dbc35cffafbce))
+* iOS CORS workaround(native) ([bf5c3a4](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/bf5c3a40669cfaf8146ff987fc60b7a57c2dfcc5))
+* merge web with app localizations ([7a887bc](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/7a887bcf7d5b7aa7af772e3d4716de78513388c5))
+* Show error message if select camera was failed ([571e795](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/571e7955774d9295876f65dd71210b93b8800c89))
+
+
+### Bug Fixes
+
+* add Dotenv webpack plugin ([2ec0f62](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/2ec0f62c8c0acdbce49eb3809259b090f97b7be4))
+* add missing env files ([a73d69c](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/a73d69c951b1ab43ffb8852a04df3fad15ff8015))
+* add missing translations ([68771c2](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/68771c2540d30b0751e693cbb522fa03aa66a2bf))
+* add RecoilRoot for to entry-cordova ([458b5f7](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/458b5f72efa8bdab2a7b80abcc28c7361c5c0a35))
+* added app specific pages, dialogs, components, and utilities. ([066d0ab](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/066d0abfb1f57f89309bcaa9e25614ff721696e1))
+* **app:** add the h5p resize entry and update webpack ([8d33fbb](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/8d33fbb3655d475d81d445fb0042b0ca753db037))
+* **app:** auth and schedule compatibility with updated model ([817d8f5](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/817d8f5859a15b277390226fe36a72622418d5c5))
+* **app:** fix cross-origin origin error and record script inject ([9703d3c](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/9703d3c46006f6ebf97e51f260462011b166db8e))
+* **app:** fix issue with live room graphql connection ([6da2ffe](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/6da2ffebfe54200c891c5d3e16959642f8ac9063))
+* **app:** iOS download duplicate files and many text files ([c3563c4](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/c3563c4e0abd3beb5f9bf76aad9a83fc872bc1f6))
+* **app:** lock orientation to landscape on join page ([4a203c6](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/4a203c6f567f7b5f24ec5ed327b5096200b3bfe6))
+* **app:** replace absolute import paths with relative paths ([d71a5b6](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/d71a5b6eafd338f6f06169053687e231a99947c7))
+* **app:** replace redux state with recoil state for hfs ([b478686](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/b478686fb9fa4caaa8fb6ea112533c97097799ec))
+* **app:** replace redux state with recoil state for schedule ([eff76b8](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/eff76b87e17adca9bd46f50545410606a86236c6))
+* **app:** replace redux state with recoil state for schedule ([53645a1](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/53645a1a3dd9c5543a7034f3d7dac1f7f38858f5))
+* **app:** replace redux state with recoil state for selectOrgDialog ([7c72665](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/7c726651b36a2729e48ac85d43997db53daf2771))
+* **app:** replace redux state with recoil state for selectUserDialog ([db37872](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/db37872b3de0ed9f5f965e219c1f50fe4ca23483))
+* **app:** replace redux with recoil for entry-cordova ([23fac01](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/23fac0111602322830bb8056c710cf3856cda8b9))
+* **app:** select regionId based on cordova build variable ([01ec01b](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/01ec01b010c14ddcf708dd05ed0ba371c229ec77))
+* **app:** Separately handle the download function for Android and iOS ([72b1ab0](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/72b1ab00b002b7a94949cbf53f8bb04f38f1ec8c))
+* **app:** use absolute content url instead of relative ([8ef5226](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/8ef5226622af91b5d33b841775d33ae824f11a40))
+* **app:** use native camera permissions in cordova build ([5415957](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/54159572928c94c84fc01e27132eebaf7500413d))
+* **app:** use recoil state for region-select-context ([22c8cfa](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/22c8cfaf96c8643c7c85bd37688ba72ee426d468))
+* **app:** use recoil state in Header component ([498e0ae](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/498e0aec627494ef426b241bc254a72e8a6417ed))
+* **app:** use recoil state in user-information-context ([44c3f99](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/44c3f99dcb2e6996479540cd54e5f6ff3ab105a6))
+* **app:** use region select endpoint for class information ([974ceb9](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/974ceb94f834eabbcdb68807a8d727ba6f2de024))
+* **app:** User cannot return to home page ([1e08f58](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/1e08f5844f0e07dca759f4bffcfd2c43301a89df))
+* build pipeline ([795022d](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/795022d4367f6f9b9e70ef86b0007862856cd18f))
+* Camera height size adjustment on mobile ([ba16784](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/ba167847006f3ece31e472285e6c142bd31a3370))
+* **camera:** use correct constraints ([840b524](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/840b5242ec59ceea4c52eeb5299bb19dcd40c1c4))
+* Clean web entry + separate browserGuide ([f740df3](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/f740df3cf426103a10477da5a63d68c5e59b9162))
+* clear git cache ([00c6b81](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/00c6b819446bc2bc1099b21a62baceb93bd38e05))
+* end/leave page not showing ([1fb8757](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/1fb87576830131f0ddd1dbbfb97453e92b78ea9d))
+* Fixed empty comment issue ([baefcac](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/baefcacd04898eeb03c53c7d3c96741cae5946a9))
+* Fixed infinity loading ([e662805](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/e662805586a3e478e7cb350b46d0f181dc06b83a))
+* hide version on join page (app only) ([823ceca](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/823cecabe3145a8977b826813f601a056473adf8))
+* imports ([44549fd](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/44549fdaf1bad3daf5ccd6221e73f6564890df22))
+* **ios:** add message about unsupported platform ([3c060ae](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/3c060ae44e78b54b6e08d30fd77471899c62f9c0))
+* **ios:** pass webrtc device handler name if configured ([8054d60](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/8054d6034ca8397a6fee266b1a4ec7f8fa8d5a2c))
+* **ios:** reload webview when exiting to allow webrtc init to work ([6727164](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/6727164ec94b7886baf4b30051333b8d8c43b212))
+* **ios:** use the webrtc implementation provided in iOS 14.3 ([7d3cd59](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/7d3cd5912be464ccda999a7a1827058500e18314))
+* **join:** use camera-context to manage video/audio stream ([6c06520](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/6c0652064d93d42c8e639d853921b1ed42c0bf51))
+* **join:** use correct endpoint to fetch branding ([88bd1cd](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/88bd1cd1d92510d5ee13dc54b691ae2928e83bfc))
+* Keep support for both two preview pdf version ([cb85c93](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/cb85c93bb92cc348c2be52b4723c0d12233faa7d))
+* languageSelect import ([795d075](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/795d0752f8164fdb15bd6c51643188bbf23b6865))
+* Live class was exited automatically on iOS. ([ee14f45](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/ee14f4514f7c6573e34ba01f0c891d6b3bd0e057))
+* live Room small UI on app (landscape optimisation) ([8134df6](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/8134df69825a2698b2edceb69f27df2542123a7f))
+* **localization:** general localization fixes ([a46ed6e](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/a46ed6e402e120e83e6f03963ec46388f4408dee))
+* Moved saveDataBlobToFile and downloadDataBlob into Utils ([ddbe945](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/ddbe945c0c69fb195a1e71d0693cce88371e259c))
+* re-enable fullViewHeightXs on mobile portrait ([682b767](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/682b767d9b8f78f0088aae6a0b629663e460217a))
+* reformat code ([1bc02e2](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/1bc02e22659d1c8767161b6eb312ba08b87b0289))
+* remove authentication dependency from live-session-link ([ab70631](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/ab706316fb6c557f256a89d89f5b997306596b6c))
+* remove authentication util dependency from recordediframe ([c4311da](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/c4311da77aa2e70363aae3c108f60a43b392f7e0))
+* remove sentry ([24e3bda](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/24e3bda48ea541c8a377194baab8b97e18bcdc33))
+* replace absolute import path with relative path ([d7f87ee](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/d7f87eead3bef1f9f6b2737b3edbe53d0f1b1c28))
+* replace console.exception with console.error ([1f9f6b5](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/1f9f6b5d0c3947bc18c5125ed97d21a46df4926d))
+* replace setImmediate with setTimeout(fn, 0) ([8a589ba](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/8a589ba73d13a2b1b2d9671ebd2f498442b8bd58))
+* **schedule:** fix issue with select user button ([681745d](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/681745d0aae9862c4cec2050d8afbcab8d1deb08))
+* **schedule:** fix schedule state field names ([c1462a1](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/c1462a1a6d331605187ea60a16e12d3da99c1666))
+* **translation:** add new camera unavailable on platform or version translation ([f8b8ef3](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/f8b8ef3584c9db3a4ca31f4413edd58e9bdddc99))
+* TS errors related to Material type ([4b7765e](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/4b7765e6cc3ea090cea2e44961892ab441eeb04e))
+* type error (this file might be deprecated though) ([078c9f8](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/078c9f83ca5ee214692722bc0f452357efbb0bac))
+* Uncomment fetch regions for App region-select-context ([d02bc44](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/d02bc44c753ccc37d70c599528fda87193beef43))
+* Update imports of Local providers ([17b2ec7](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/17b2ec79d29882c2192d13e634398409658654bf))
+* Update imports session-context ([c7c8a64](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/c7c8a643364f2187ddb4d9395204e3db2bd3ed73))
+* Update LessonMaterial type import ([0916fef](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/0916fef2ec9ddf6c1238cc860d4c126622da99bf))
+* Use "Room" instead of "Class".  + Rename App / layout files ([e4c0acf](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/e4c0acf5450317c213b32d5cead9fbc218811932))
+* Use correct useSessionContext file ([3a318a1](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/3a318a17b9e04ea758596734b3a03ed8aabb6115))
+* Use downloadDataBlob and saveDataBlobToFile functions in Utils ([9f3348c](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/9f3348c9c5c3ec65112ae7a8223514ec173ad021))
+* Use live-session-link-context.tsx (Apollo provider for the Room) ([c014199](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/c01419966d509bdf6ccfd2cbed070aa896596ec4))
+* Use session-context.tsx instead of LocalSessionContext ([29763da](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/29763da73138068e29d2f0d98b1144bd947f2cfb))
+* Use the share function to save the attachment ([5cffbc4](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/5cffbc4900cfca94652ad6620c3dc6869d367f35))
+* Use updated RoomWithContext file for App room ([215ba15](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/215ba153ce8283be7636a24dc342718af0840500))
+* User can't join another live class after leaving ([31695b2](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/31695b24e50b4a482e19c820ecb02aabd91f21ca))
+* Youtube video doesn't play and showing the popup about external page navigation while loading pdf content. ([8e0d46f](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/8e0d46f168762c94c61ddedb3fb7d97f3525fe03))
+
 ## [3.0.0-internal.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v2.0.15%0Dv3.0.0-internal.0) (2021-09-24)
 
 
