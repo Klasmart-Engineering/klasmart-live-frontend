@@ -11,10 +11,11 @@ import StyledButton from "@/components/styled/button";
 import StyledIcon from "@/components/styled/icon";
 import StyledTextField from "@/components/styled/textfield";
 import {
+    CameraError,
     DeviceStatus,
     useCameraContext,
-    CameraError,
 } from "@/providers/Camera";
+import { useHttpEndpoint } from "@/providers/region-select-context";
 import { useSessionContext } from "@/providers/session-context";
 import { ClassType } from "@/store/actions";
 import { hasJoinedClassroomState } from "@/store/layoutAtoms";
@@ -51,7 +52,7 @@ import { FormattedMessage } from "react-intl";
 import { useHistory } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { useHttpEndpoint } from "@/providers/region-select-context";
-import {useCordovaSystemContext} from "@/app/context-provider/cordova-system-context";
+import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
 
 const config = require(`@/../package.json`);
 
@@ -258,7 +259,7 @@ export default function Join (): JSX.Element {
                     paddingBottom: `20px`,
                 }}
             >
-                <Container maxWidth={classType === ClassType.LIVE ? isSmDown ? `sm` : `md` : `xs`}>
+                <Container maxWidth={classType === ClassType.LIVE ? (isSmDown ? `sm` : `md`) : `xs`}>
                     <Card className={classes.card}>
                         <CardContent className={classes.cardContent}>
                             <Grid
@@ -376,7 +377,7 @@ function CameraPreviewFallback ({ cameraError }: { cameraError: CameraError }) {
     );
 }
 
-function CameraErrorMessage({ cameraError } : { cameraError: CameraError | undefined }): JSX.Element {
+function CameraErrorMessage ({ cameraError } : { cameraError: CameraError | undefined }): JSX.Element {
     if (cameraError === CameraError.CAMERA_PERMISSION_ERROR) {
         return <FormattedMessage id="join_cameraPreviewFallback_allowMediaPermissions" />;
     } else if (cameraError === CameraError.CAMERA_UNAVAILABLE_ERROR) {
