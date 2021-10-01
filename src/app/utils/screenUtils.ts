@@ -57,6 +57,7 @@ export function enableKeepAwake (enabled:boolean) {
     if (!plugins) return;
 
     const insomnia = (window as any).plugins.insomnia;
+    if (!insomnia) return;
 
     if (enabled) {
         insomnia.keepAwake();
