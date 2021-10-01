@@ -3,6 +3,7 @@ import {
     responsiveFontSizes,
     Theme,
 } from "@material-ui/core/styles";
+import createBreakpoints from '@material-ui/core/styles/createBreakpoints';
 import { PaletteOptions } from "@material-ui/core/styles/createPalette";
 
 export function themeProvider (languageCode: string, themeMode: string) {
@@ -56,6 +57,16 @@ export function themeProvider (languageCode: string, themeMode: string) {
         fontWeightRegular: localeTypography.localeWeightRegular,
         fontSize: 12,
     } as any;
+
+    const breakpoints = {
+        values: {
+            xs: 0,
+            sm: 600,
+            md: 1024,
+            lg: 1280,
+            xl: 1920,
+        },
+    };
 
     const overrides = {
         MuiTabs: {
@@ -165,6 +176,7 @@ export function themeProvider (languageCode: string, themeMode: string) {
         overrides,
         palette,
         typography,
+        breakpoints,
     });
 
     return (theme = responsiveFontSizes(theme));
