@@ -173,7 +173,8 @@
       "cordova-plugin-compat": {},
       "cordova-plugin-androidx-adapter": {},
       "cordova-plugin-androidx": {},
-      "cordova-plugin-x-socialsharing": {}
+      "cordova-plugin-x-socialsharing": {},
+      "cordova-plugin-insomnia": {}
     },
     "platforms": [
       "ios",
