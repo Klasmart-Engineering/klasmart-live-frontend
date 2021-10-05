@@ -202,6 +202,10 @@ export function CordovaSystemProvider ({ children, history }: Props) {
                     setPermissions(true);
                     onSuccess ? onSuccess(true) : ``;
                 }
+            } else {
+                //In iOS, the system will ask permissions it self, don't need to handle for iOS
+                setPermissions(true);
+                onSuccess ? onSuccess(true) : ``;
             }
         }
 
