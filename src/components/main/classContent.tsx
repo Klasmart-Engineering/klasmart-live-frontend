@@ -4,6 +4,8 @@ import { LIVE_LINK } from "@/providers/providers";
 import { useSessionContext } from "@/providers/session-context";
 import { ClassType } from "@/store/actions";
 import {
+    classEndedState,
+    classLeftState,
     materialActiveIndexState,
     showEndStudyState,
     studyRecommandUrlState,
@@ -30,6 +32,8 @@ import React,
 } from "react";
 import { useIntl } from "react-intl";
 import { useRecoilState } from "recoil";
+import {useCordovaSystemContext} from "@/app/context-provider/cordova-system-context";
+import {useHistory} from "react-router-dom";
 
 const useStyles = makeStyles((theme: Theme) => ({
     arrowButton:{
@@ -149,6 +153,10 @@ export function ClassContent () {
     const [ materialActiveIndex, setMaterialActiveIndex ] = useRecoilState(materialActiveIndexState);
     const [ studyRecommandUrl, setStudyRecommandUrl ] = useRecoilState(studyRecommandUrlState);
     const [ showEndStudy, setShowEndStudy ] = useRecoilState(showEndStudyState);
+    const [ classLeft, setClassEnded ] = useRecoilState(classLeftState);
+    const [ classEnded, setClassLeft ] = useRecoilState(classEndedState);
+    const { restart } = useCordovaSystemContext();
+    const history = useHistory();
 
     const materialsLength = studyRecommandUrl ? materials.length + 1 : materials.length;
 
@@ -174,6 +182,17 @@ export function ClassContent () {
             setShowEndStudy(true);
         }
     };
+
+    const onCloseButtonClick = () => {
+        setClassEnded(false);
+        setClassLeft(false);
+
+        if (restart) {
+            restart();
+        } else {
+            history.push(`/schedule`)
+        }
+    }
 
     useEffect(() => {
         if (!rootDivRef || !rootDivRef.current) { return; }
@@ -215,17 +234,27 @@ export function ClassContent () {
                 xs>
                 {showEndStudy ?
                     <div className={classes.centeredContent}>
-                        <a
-                            href={HUB_ENDPOINT}
-                            className={classes.defaultLink}>
-                            <LargeButton
-                                icon={<ExitIcon size="5em" />}
-                                label={intl.formatMessage({
-                                    id: `end_study_exit`,
-                                })}
-                            />
-                        </a>
-
+                        {
+                            (process.env.IS_CORDOVA_BUILD)
+                            ?   <a  onClick={onCloseButtonClick}
+                                    className={classes.defaultLink}>
+                                    <LargeButton
+                                        icon={<ExitIcon size="5em" />}
+                                        label={intl.formatMessage({
+                                            id: `end_study_exit`,
+                                        })}
+                                    />
+                                </a>
+                            :   <a  href={HUB_ENDPOINT}
+                                    className={classes.defaultLink}>
+                                    <LargeButton
+                                        icon={<ExitIcon size="5em" />}
+                                        label={intl.formatMessage({
+                                            id: `end_study_exit`,
+                                        })}
+                                    />
+                                </a>
+                        }
                         {/* TODO : Bonus content
                             <LargeButton
                             icon={<BonusContentIcon size="5em" />}
