@@ -51,6 +51,7 @@ import { FormattedMessage } from "react-intl";
 import { useHistory } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { useHttpEndpoint } from "@/providers/region-select-context";
+import {useCordovaSystemContext} from "@/app/context-provider/cordova-system-context";
 
 const config = require(`@/../package.json`);
 
@@ -166,6 +167,7 @@ export default function Join (): JSX.Element {
     const logo = branding?.iconImageURL || KidsLoopLogoSvg;
 
     const history = useHistory();
+    const { restart } = useCordovaSystemContext();
 
     const {
         setAcquireDevices,
@@ -208,13 +210,21 @@ export default function Join (): JSX.Element {
             }}><Loading messageId="loading" /></Grid>;
     }
 
+    const onCloseButtonClick = () => {
+        if (restart) {
+            restart();
+        } else {
+            history.push(`/schedule`)
+        }
+    }
+
     return (
         <div className={clsx(classes.root, {
             [classes.rootTeacher]: isTeacher,
         })}>
             {process.env.IS_CORDOVA_BUILD &&
                 <div className={classes.appHeader}>
-                    <BackButton onClick={() => history.push(`/schedule`) } />
+                    <BackButton onClick={onCloseButtonClick} />
                 </div>
             }
             <div className={classes.header}>
