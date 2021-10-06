@@ -81,7 +81,7 @@ export default function StudyDetailPreview ({
                         <Grid
                             container
                             item
-                            justify={`center`}
+                            justifyContent={`center`}
                             alignItems={`center`}>
                             <Typography
                                 variant="h6"
@@ -97,7 +97,7 @@ export default function StudyDetailPreview ({
                         item
                         xs
                         className={imageContainer}
-                        justify={`center`}
+                        justifyContent={`center`}
                         alignItems={`center`}>
                         <img
                             className={imagePreview}

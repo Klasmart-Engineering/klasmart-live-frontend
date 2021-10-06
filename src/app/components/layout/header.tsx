@@ -74,7 +74,7 @@ export function Header ({ isHomeRoute, setKey }: { isHomeRoute?: boolean; setKey
                     <Grid
                         container
                         direction="row"
-                        justify="space-between"
+                        justifyContent="space-between"
                         alignItems="center"
                     >
                         <Grid
@@ -82,7 +82,7 @@ export function Header ({ isHomeRoute, setKey }: { isHomeRoute?: boolean; setKey
                             item
                             xs={12}
                             direction="row"
-                            justify="space-between"
+                            justifyContent="space-between"
                             alignItems="center"
                             wrap="nowrap"
                         >

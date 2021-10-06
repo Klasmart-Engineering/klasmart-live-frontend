@@ -143,7 +143,7 @@ export default function Lightswitch (props: Props) {
                 <Grid
                     container
                     item
-                    justify="flex-end"
+                    justifyContent="flex-end"
                     xs={2}>
                     <Checkbox
                         checked={!toggled}

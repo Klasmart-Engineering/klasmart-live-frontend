@@ -307,7 +307,7 @@ export function Schedule () {
                 id="schedule-container"
                 wrap="nowrap"
                 direction="column"
-                justify="flex-start"
+                justifyContent="flex-start"
                 style={{
                     flexGrow: 1,
                     overflowY: `auto`,

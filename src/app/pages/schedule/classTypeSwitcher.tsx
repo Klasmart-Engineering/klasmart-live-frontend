@@ -33,7 +33,7 @@ export default function ClassTypeSwitcher () {
             container
             item
             direction="row"
-            justify="space-between"
+            justifyContent="space-between"
             style={{
                 flexGrow: 0,
                 height: heightActionButton,
@@ -52,7 +52,7 @@ export default function ClassTypeSwitcher () {
                     <Grid
                         container
                         direction="column"
-                        justify="center"
+                        justifyContent="center"
                         alignItems="center">
                         <Grid item>
                             <img
@@ -80,7 +80,7 @@ export default function ClassTypeSwitcher () {
                     <Grid
                         container
                         direction="column"
-                        justify="center"
+                        justifyContent="center"
                         alignItems="center">
                         <Grid item>
                             <img

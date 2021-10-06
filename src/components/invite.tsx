@@ -46,7 +46,7 @@ export default function InviteButton (): JSX.Element {
                 container
                 item
                 direction="row"
-                justify="space-between"
+                justifyContent="space-between"
                 alignItems="center"
                 xs={12}
                 style={{

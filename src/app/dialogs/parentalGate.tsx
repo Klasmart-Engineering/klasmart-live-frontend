@@ -1,4 +1,3 @@
-import StyledButton from "../../components/styled/button";
 import {
     Input,
     useTheme,
@@ -51,7 +50,7 @@ export function ParentalGate ({ onCompleted, message }: Props): JSX.Element {
             container
             item
             direction="column"
-            justify="center"
+            justifyContent="center"
             alignItems="center"
             style={{
                 flex: 1,
@@ -85,7 +84,7 @@ export function ParentalGate ({ onCompleted, message }: Props): JSX.Element {
                     container
                     item
                     direction="row"
-                    justify="center"
+                    justifyContent="center"
                     alignItems="center"
                     style={{
                         flex: 1,
