@@ -135,7 +135,6 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
 
     useEffect(() => {
         if (!hasControls) return;
-
         const material = interactiveMode !== InteractiveMode.OnStage && materialActiveIndex >= 0 && materialActiveIndex < materials.length ? materials[materialActiveIndex] : undefined;
         const type = defineContentType(material, interactiveMode);
         const contentId = defineContentId(material, interactiveMode, streamId, sessionId);
@@ -155,10 +154,7 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
     ]);
 
     useEffect(() => {
-        console.log(`student_report HASCONTROLS: `, hasControls);
-        console.log(`student_report INTERACTIVEMODE: `, interactiveMode);
-        console.log(`student_report CLASSTYPE: `, classtype);
-        if (hasControls && interactiveMode === InteractiveMode.OnStage) return;
+        if (hasControls && interactiveMode === InteractiveMode.OnStage && classtype === ClassType.LIVE) return;
         if (!hasControls && classtype !==  ClassType.STUDY) return;
         const material = materials?.[materialActiveIndex];
         const materialUrl = material?.url;
@@ -170,7 +166,11 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
                 activityTypeName,
             },
         });
-    }, [ materialActiveIndex, interactiveMode ]);
+    }, [
+        materialActiveIndex,
+        interactiveMode,
+        hasControls,
+    ]);
 
     useEffect(() => {
         isChatOpen && setUnreadMessages(0);
