@@ -64,7 +64,7 @@ export function BottomSelector ({
                 onOpen={onOpen}>
                 <Grid
                     container
-                    justify="center">
+                    justifyContent="center">
                     <Grid item>
                         <Box
                             mt={1}
@@ -74,7 +74,7 @@ export function BottomSelector ({
                 <Grid
                     container
                     direction={`row`}
-                    justify={`space-between`}
+                    justifyContent={`space-between`}
                 >
                     <Grid
                         item

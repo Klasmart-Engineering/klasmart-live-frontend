@@ -64,7 +64,7 @@ export function Fallback ({
         <Grid
             container
             direction="column"
-            justify="space-around"
+            justifyContent="space-around"
             alignItems="center"
             className={classes.pageWrapper}
         >
@@ -74,7 +74,7 @@ export function Fallback ({
                         <Grid
                             container
                             direction="row"
-                            justify="center"
+                            justifyContent="center"
                             alignItems="center"
                             spacing={4}>
                             <Grid

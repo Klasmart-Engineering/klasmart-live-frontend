@@ -242,7 +242,7 @@ function CommentHeader ({
                     <Grid
                         container
                         direction="row"
-                        justify="space-between"
+                        justifyContent="space-between"
                         alignItems="center"
                     >
                         <Grid
@@ -250,7 +250,7 @@ function CommentHeader ({
                             item
                             xs={12}
                             direction="row"
-                            justify="space-between"
+                            justifyContent="space-between"
                             alignItems="center"
                             wrap="nowrap"
                         >
