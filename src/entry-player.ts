@@ -8,7 +8,7 @@ const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
 let hasReplayStarted = false;
 let fullSnapshotRebuilded = false;
-
+let isYTVideo = false;
 enum YoutubePlayerState {
     ENDED = 0,
     PLAYING,
@@ -42,11 +42,7 @@ window.addEventListener(`message`, ({ data }) => {
 
     try {
         const event = JSON.parse(data.event);
-        const streamId = data.streamId;console.log(`streamId: `, `  `, streamId);
-        if (!streamId){ // buffered event is coming, activity changed
-            fullSnapshotRebuilded = false;
-        }
-
+        isYTVideo = isYouTubeVideo(event);
         if (event.type === EventType.Meta && !hasReplayStarted) {
             rrwebPlayer.startLive(event.timestamp);
             hasReplayStarted = true;
@@ -59,13 +55,13 @@ window.addEventListener(`message`, ({ data }) => {
             onCustomEvent(event);
             return;
         }
-
-        if (event.type === EventType.FullSnapshot){
-            if (fullSnapshotRebuilded){
-                return;
-            }
+        if (event.type === EventType.FullSnapshot && fullSnapshotRebuilded && isYTVideo) {
+            return;
+        }
+        if (event.type === EventType.FullSnapshot) {
             fullSnapshotRebuilded = true;
         }
+
         rrwebPlayer.addEvent(event);
     } catch (e) {
         console.error(e);
@@ -74,12 +70,12 @@ window.addEventListener(`message`, ({ data }) => {
 (window as any).PLAYER_READY = true;
 window.parent.postMessage(`ready`, `*`);
 
-function onCustomEvent (event: any){
-    if(!event || !event.data){
+function onCustomEvent (event: any) {
+    if (!event || !event.data) {
         return;
     }
     const { tag, payload } = event.data;
-    if(tag === `ytPlayerStateChange`) {
+    if (tag === `ytPlayerStateChange`) {
         const youtubePlayer = youtubePlayers.get(payload.id) ?? {
             isReady: false,
         };
@@ -162,6 +158,7 @@ function onFullSnapshotRebuilded () {
         head?.appendChild(tag);
     } else {
         onYTAPIReady();
+
     }
 }
 
@@ -178,7 +175,7 @@ function updateYoutubePlayerInfo (youtubePlayer: YoutubePlayerReference, id: str
 
     const { player, info } = youtubePlayer;
     player.seekTo(info.currentTime);
-    switch(info.playerState){
+    switch(info.playerState) {
     case YoutubePlayerState.ENDED:
         player.stopVideo();
         break;
@@ -191,4 +188,10 @@ function updateYoutubePlayerInfo (youtubePlayer: YoutubePlayerReference, id: str
     default:
         break;
     }
+}
+
+function isYouTubeVideo (event: any) {
+    const eventString = JSON.stringify(event);
+    const exist = eventString.search(`https://www.youtube.com`);
+    return exist >= 0;
 }
