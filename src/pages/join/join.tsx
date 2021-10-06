@@ -1,4 +1,5 @@
 import { BackButton } from "@/app/components/icons/backButton";
+import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
 import KidsLoopClassTeachers from "@/assets/img/classtype/kidsloop_class_teachers.svg";
 import KidsLoopLiveStudents from "@/assets/img/classtype/kidsloop_live_students.svg";
 import KidsLoopLiveTeachers from "@/assets/img/classtype/kidsloop_live_teachers.svg";
@@ -51,8 +52,6 @@ import React,
 import { FormattedMessage } from "react-intl";
 import { useHistory } from "react-router-dom";
 import { useRecoilState } from "recoil";
-import { useHttpEndpoint } from "@/providers/region-select-context";
-import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
 
 const config = require(`@/../package.json`);
 
@@ -215,9 +214,9 @@ export default function Join (): JSX.Element {
         if (restart) {
             restart();
         } else {
-            history.push(`/schedule`)
+            history.push(`/schedule`);
         }
-    }
+    };
 
     return (
         <div className={clsx(classes.root, {
