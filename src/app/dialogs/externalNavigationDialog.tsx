@@ -88,7 +88,7 @@ export function ExternalNavigationDialog (): JSX.Element {
                     <Grid
                         container
                         item
-                        justify={`center`}
+                        justifyContent={`center`}
                         alignItems={`center`}>
                         <Typography
                             variant="h6"

@@ -23,7 +23,7 @@ export function App ({ history }: {
             container
             wrap="nowrap"
             direction="column"
-            justify="space-between"
+            justifyContent="space-between"
             style={{
                 height: `100%`,
                 overflow: `hidden`,

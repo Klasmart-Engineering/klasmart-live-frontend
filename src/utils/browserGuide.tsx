@@ -29,7 +29,7 @@ export function BrowserGuide () {
     return (
         <Grid
             container
-            justify="center"
+            justifyContent="center"
             alignItems="center"
             style={{
                 display: `flex`,

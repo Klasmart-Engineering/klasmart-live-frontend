@@ -31,7 +31,7 @@ export default function NoCamera ({ messageId }: { messageId: string }) {
         <Grid
             container
             className={classes.root}
-            justify="space-between"
+            justifyContent="space-between"
             alignItems="center"
             style={{
                 paddingTop: `75%`,
