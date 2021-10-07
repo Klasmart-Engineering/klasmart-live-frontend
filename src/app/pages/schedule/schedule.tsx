@@ -62,6 +62,8 @@ const dateFormat = require(`dateformat`);
 // NOTE: China API server(Go lang) accept 10 digits timestamp
 const now = new Date();
 const todayTimeStamp = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime() / 1000;
+const endOfToday = new Date(todayTimeStamp * 1000); endOfToday.setHours(23, 59, 59);
+const endOfTodayTimeStamp = endOfToday.getTime() / 1000;
 const nextMonthTimeStamp = new Date(now.getFullYear(), now.getMonth() + 1, 1).getTime() / 1000;
 const timeZoneOffset = now.getTimezoneOffset() * 60 * -1; // to make seconds
 const tomorrow = new Date(todayTimeStamp * 1000); tomorrow.setDate(tomorrow.getDate() + 1);
@@ -159,8 +161,8 @@ export function Schedule () {
                     timeViewLiveTomorrow: ScheduleTimeViewResponse[] = [],
                     timeViewLiveUpcoming: ScheduleTimeViewResponse[] = [];
                 if (timeViewLiveAll.length > 0) {
-                    timeViewLiveToday = timeViewLiveAll.filter((tv: ScheduleTimeViewResponse) => tv.start_at >= todayTimeStamp && tv.end_at < tomorrowTimeStamp);
-                    timeViewLiveTomorrow = timeViewLiveAll.filter((tv: ScheduleTimeViewResponse) => tv.start_at >= tomorrowTimeStamp && tv.end_at <= endOfTomorrowTimeStamp);
+                    timeViewLiveToday = timeViewLiveAll.filter((tv: ScheduleTimeViewResponse) => ((tv.start_at >= todayTimeStamp && tv.start_at <= endOfTodayTimeStamp) || (tv.end_at >= todayTimeStamp && tv.end_at <= endOfTodayTimeStamp) || (tv.start_at <= todayTimeStamp && tv.end_at >= endOfTodayTimeStamp)));
+                    timeViewLiveTomorrow = timeViewLiveAll.filter((tv: ScheduleTimeViewResponse) => ((tv.start_at >= tomorrowTimeStamp && tv.start_at <= endOfTomorrowTimeStamp) || (tv.end_at >= tomorrowTimeStamp && tv.end_at <= endOfTomorrowTimeStamp) || (tv.start_at <= tomorrowTimeStamp && tv.end_at >= endOfTomorrowTimeStamp)));
                     timeViewLiveUpcoming = timeViewLiveAll.filter((tv: ScheduleTimeViewResponse) => tv.start_at > endOfTomorrowTimeStamp);
                 }
 
