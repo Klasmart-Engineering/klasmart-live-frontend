@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.19.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v1.18.0%0Dv1.19.0) (2021-10-07)
+
+
+### Features
+
+* Send event for an open ‘Study’ class type ([b508fb7](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/b508fb77848cc958dec74ae5a2127686d0728f1a))
+
+
+### Bug Fixes
+
+* Study class shouldn't record events if it's in Black (OnStage) interactive mode. ([254f951](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/254f951b1193a5098aa51ed5e6188ae6ef402612))
+
 ## [1.18.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v1.18.0-alpha.2%0Dv1.18.0) (2021-09-23)
 
 
