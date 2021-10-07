@@ -1,3 +1,4 @@
+import { ClassType } from "../store/actions";
 import {
     LIVE_LINK,
     SFU_LINK,
@@ -23,7 +24,10 @@ import {
     unreadMessagesState,
     videoGloballyMutedState,
 } from "@/store/layoutAtoms";
-import { MUTATION_SHOW_CONTENT } from "@/utils/graphql";
+import {
+    MUTATION_SEND_STUDENT_USAGE_RECORD_EVENT,
+    MUTATION_SHOW_CONTENT,
+} from "@/utils/graphql";
 import {
     defineContentId,
     defineContentType,
@@ -94,7 +98,7 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
         camera,
         isTeacher,
         materials,
-
+        classType,
     } = useSessionContext();
     const [ sfuAddress, setSfuAddress ] = useState<string>(``);
     const [ messages, setMessages ] = useState<Map<string, Message>>(new Map<string, Message>());
@@ -115,6 +119,12 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
     const [ hasControls, setHasControls ] = useRecoilState(hasControlsState);
 
     const [ showContent, { loading: loadingShowContent } ] = useMutation(MUTATION_SHOW_CONTENT, {
+        context: {
+            target: LIVE_LINK,
+        },
+    });
+
+    const [ sendStudentUsageRecordEvent ] = useMutation(MUTATION_SEND_STUDENT_USAGE_RECORD_EVENT, {
         context: {
             target: LIVE_LINK,
         },
@@ -143,6 +153,25 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
         streamId,
         materialActiveIndex,
         interactiveMode,
+    ]);
+
+    useEffect(() => {
+        if (hasControls && interactiveMode === InteractiveMode.OnStage && classType === ClassType.LIVE) return;
+        if (!hasControls && classType !==  ClassType.STUDY) return;
+        const material = materials?.[materialActiveIndex];
+        const materialUrl = material?.url;
+        const activityTypeName = material?.__typename === `Iframe` ? `h5p` : material?.__typename;
+        sendStudentUsageRecordEvent({
+            variables: {
+                roomId,
+                materialUrl,
+                activityTypeName,
+            },
+        });
+    }, [
+        materialActiveIndex,
+        interactiveMode,
+        hasControls,
     ]);
 
     useEffect(() => {

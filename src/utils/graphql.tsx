@@ -54,3 +54,9 @@ export const ORGANIZATION_BRANDING_QUERY = gql`
         }
     }
 `;
+
+export const MUTATION_SEND_STUDENT_USAGE_RECORD_EVENT = gql`
+    mutation sendStudentUsageRecordEvent($roomId: ID!, $materialUrl: String, $activityTypeName: String){
+        studentReport(roomId: $roomId, materialUrl: $materialUrl, activityTypeName: $activityTypeName)
+    }
+`;
