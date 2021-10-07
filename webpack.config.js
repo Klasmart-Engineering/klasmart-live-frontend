@@ -7,6 +7,14 @@ require(`dotenv`).config();
 
 const brandingOptions = loadBrandingOptions(process.env.BRAND);
 
+const newRelicConfig = {
+    newRelicAccountID: `3286825`,
+    newRelicAgentID: `322534677`,
+    newRelicTrustKey: `3286825`,
+    newRelicLicenseKey: `NRJS-eff8c9c844416a5083f`,
+    newRelicApplicationID: `322534677`,
+};
+
 module.exports = {
     mode: `development`,
     entry: {
@@ -113,16 +121,19 @@ module.exports = {
             chunks: [ `ui` ],
             template: `src/index.html`,
             ...brandingOptions.webpack.html,
+            ...newRelicConfig,
         }),
         new HtmlWebpackPlugin({
             filename: `player.html`,
             chunks: [ `player` ],
             template: `src/player.html`,
+            ...newRelicConfig,git
         }),
         new HtmlWebpackPlugin({
             filename: `pdfviewer.html`,
             chunks: [ `pdfviewer` ],
             template: `src/pdfviewer.html`,
+            ...newRelicConfig,
         }),
         new CopyWebpackPlugin({
             patterns: [

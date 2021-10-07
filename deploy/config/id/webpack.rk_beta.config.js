@@ -108,16 +108,19 @@ module.exports = {
             chunks: [ `ui` ],
             template: `src/index.html`,
             ...brandingOptions.webpack.html,
+            ...newRelicConfig,
         }),
         new HtmlWebpackPlugin({
             filename: `player.html`,
             chunks: [ `player` ],
             template: `src/player.html`,
+            ...newRelicConfig,
         }),
         new HtmlWebpackPlugin({
             filename: `pdfviewer.html`,
             chunks: [ `pdfviewer` ],
             template: `src/pdfviewer.html`,
+            ...newRelicConfig,
         }),
         new SentryWebpackPlugin({
             include: `.`,
