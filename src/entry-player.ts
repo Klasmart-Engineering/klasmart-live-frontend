@@ -42,7 +42,7 @@ window.addEventListener(`message`, ({ data }) => {
 
     try {
         const event = JSON.parse(data.event);
-        isYTVideo = isYouTubeVideo(event);
+        isYTVideo = isYouTubeVideo(data.event);
         if (event.type === EventType.Meta && !hasReplayStarted) {
             rrwebPlayer.startLive(event.timestamp);
             hasReplayStarted = true;
@@ -191,7 +191,6 @@ function updateYoutubePlayerInfo (youtubePlayer: YoutubePlayerReference, id: str
 }
 
 function isYouTubeVideo (event: any) {
-    const eventString = JSON.stringify(event);
-    const exist = eventString.search(`https://www.youtube.com`);
+    const exist = event.search(`https://www.youtube.com`);
     return exist >= 0;
 }
