@@ -7,7 +7,9 @@ import Grid from "@material-ui/core/Grid/Grid";
 import Typography from "@material-ui/core/Typography/Typography";
 import React,
 {
+    useEffect,
     useMemo,
+    useRef,
     useState,
 } from 'react';
 
@@ -27,6 +29,22 @@ export function ParentalGate ({ onCompleted, message }: Props): JSX.Element {
     }, [ challenge1, challenge2 ]);
 
     const [ completed, setCompleted ] = useState<boolean>(false);
+
+    const inputRef = useRef<HTMLInputElement>();
+
+    useEffect(() => {
+        if(!inputRef.current) return;
+        inputRef.current.focus();
+
+        const Keyboard = (window as any).Keyboard;
+        if(!Keyboard) return;
+        Keyboard.show();
+    }, []);
+
+    useEffect(() => {
+        if(!completed) return;
+        onCompleted();
+    }, [ completed ]);
 
     return (
         <Grid
@@ -86,34 +104,25 @@ export function ParentalGate ({ onCompleted, message }: Props): JSX.Element {
                             margin: theme.spacing(1),
                         }}>
                         <Input
+                            autoFocus
+                            inputRef={inputRef}
                             type="number"
+                            inputProps={{
+                                min:`0`,
+                                max:`99`,
+                                size:`1`,
+                                maxLength:`2`,
+                                inputMode:`numeric`,
+                                pattern:`[0-9]*`,
+                            }}
+                            error={!completed && inputRef.current && inputRef.current.value.length > 0}
+                            onBlur={() => inputRef.current && inputRef.current.focus()}
                             onChange={(e) => {
                                 const answer = Number(e.target.value);
                                 setCompleted(answer === correctAnswer);
                             }} />
                     </Grid>
                 </Grid>
-            </Grid>
-            <Grid
-                container
-                item
-                direction="row"
-                alignItems="center"
-                justify="center">
-                <StyledButton
-                    type="submit"
-                    size="large"
-                    disabled={!completed}
-                    onClick={() => {
-                        if (!completed) return;
-
-                        onCompleted();
-                    }}
-                >
-                    <Typography>
-                        Continue
-                    </Typography>
-                </StyledButton>
             </Grid>
         </Grid>
     );
