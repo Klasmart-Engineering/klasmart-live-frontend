@@ -68,6 +68,9 @@ export function RecordedIframe (props: Props): JSX.Element {
     const [ isLessonPlanOpen ] = useRecoilState(isLessonPlanOpenState);
 
     const { contentHref } = props;
+
+    const isPdfContent = contentHref.endsWith(`.pdf`);
+
     const [ sendStreamId ] = useMutation(SET_STREAMID, {
         context: {
             target: LIVE_LINK,
@@ -84,6 +87,7 @@ export function RecordedIframe (props: Props): JSX.Element {
     const [ userCount, setUserCount ] = useState(sessions.size);
 
     const [ enableResize, setEnableResize ] = useState(true);
+    const [ useDoubleSize, setUseDoubleSize ] = useState(false);
     const [ stylesLoaded ] = useState(false);
 
     const size = useWindowSize();
@@ -225,6 +229,8 @@ export function RecordedIframe (props: Props): JSX.Element {
         const h5pTypeColumn = contentDoc.body.getElementsByClassName(`h5p-column`).length;
         const h5pTypeAccordion = contentDoc.body.getElementsByClassName(`h5p-accordion`).length;
 
+        setUseDoubleSize(h5pTypeColumn > 0);
+
         if (h5pDivCollection.length > 0) {
             if (h5pTypeColumn || h5pTypeAccordion) {
                 setEnableResize(false);
@@ -264,6 +270,10 @@ export function RecordedIframe (props: Props): JSX.Element {
                 setContentWidth(1024);
                 setContentHeight(1024);
             }
+        }
+
+        if (!isPdfContent) {
+            injectIframeScript(iframeElement, `h5presize`);
         }
     }
 
@@ -403,14 +413,17 @@ export function RecordedIframe (props: Props): JSX.Element {
                 ref={iframeRef}
                 id="recordediframe"
                 src={contentHrefWithToken}
+                allow="microphone"
+                data-h5p-width={contentWidth}
+                data-h5p-height={contentHeight}
                 style={{
-                    width: enableResize ? contentWidth : `100%`,
-                    height: enableResize ? contentHeight : `100%`,
+                    width: enableResize ? contentWidth : (useDoubleSize ? `50%` : `100%`),
+                    height: enableResize ? contentHeight : (useDoubleSize ? `50%` : `100%`),
                     position: enableResize ? `absolute` : `static`,
                     transformOrigin: `top left`,
                     top: classType === ClassType.LIVE ? 0 : `auto`,
                     left: classType === ClassType.LIVE ? 0 : `auto`,
-                    transform: enableResize ? `scale(${transformScale})` : `scale(1)`,
+                    transform: enableResize ? `scale(${transformScale})` : (useDoubleSize ? `scale(2)` : `scale(1)`),
                     minWidth: `100%`,
                 }}
                 onLoad={() => { setLoadStatus(LoadStatus.Finished); window.dispatchEvent(new Event(`resize`)); }}
