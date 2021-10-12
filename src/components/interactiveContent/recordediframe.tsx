@@ -52,49 +52,53 @@ enum LoadStatus {
     Finished,
 }
 
-export function RecordedIframe(props: Props): JSX.Element {
+export function RecordedIframe (props: Props): JSX.Element {
     const MAX_LOADING_COUNT = 60;
     const iframeRef = useRef<HTMLIFrameElement>(null);
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
 
-    const { roomId, classType, token } = useSessionContext();
+    const {
+        roomId,
+        classType,
+        token,
+    } = useSessionContext();
     const { sessions } = useContext(RoomContext);
-    const [, setStreamId] = useRecoilState(streamIdState);
-    const [isLessonPlanOpen,] = useRecoilState(isLessonPlanOpenState);
+    const [ , setStreamId ] = useRecoilState(streamIdState);
+    const [ isLessonPlanOpen ] = useRecoilState(isLessonPlanOpenState);
 
     const { contentHref } = props;
-    const [sendStreamId] = useMutation(SET_STREAMID, {
+    const [ sendStreamId ] = useMutation(SET_STREAMID, {
         context: {
             target: LIVE_LINK,
         },
     });
 
-    const [transformScale, setTransformScale] = useState<number>(1);
-    const [openDialog, setOpenDialog] = useState(true);
-    const [seconds, setSeconds] = useState(MAX_LOADING_COUNT);
-    const [loadStatus, setLoadStatus] = useState(LoadStatus.Loading);
-    const [intervalId, setIntervalId] = useState<number>();
-    const [contentWidth, setContentWidth] = useState(1600);
-    const [contentHeight, setContentHeight] = useState(1400);
-    const [userCount, setUserCount] = useState(sessions.size);
+    const [ transformScale, setTransformScale ] = useState<number>(1);
+    const [ openDialog, setOpenDialog ] = useState(true);
+    const [ seconds, setSeconds ] = useState(MAX_LOADING_COUNT);
+    const [ loadStatus, setLoadStatus ] = useState(LoadStatus.Loading);
+    const [ intervalId, setIntervalId ] = useState<number>();
+    const [ contentWidth, setContentWidth ] = useState(1600);
+    const [ contentHeight, setContentHeight ] = useState(1400);
+    const [ userCount, setUserCount ] = useState(sessions.size);
 
-    const [enableResize, setEnableResize] = useState(true);
-    const [stylesLoaded,] = useState(false);
+    const [ enableResize, setEnableResize ] = useState(true);
+    const [ stylesLoaded ] = useState(false);
 
     const size = useWindowSize();
 
     const { actions } = useUserInformation();
 
-    const recorderEndpoint = useHttpEndpoint("live");
+    const recorderEndpoint = useHttpEndpoint(`live`);
 
     const getPDFURLTransformer = (contentHref: string, token: string | undefined, recorderEndpoint: string, encodedEndpoint: string) => {
-        const jpegTransformer = `${contentHref.replace(`/assets/`,`/pdf/`)}/view.html?token=${token}&endpoint=${encodedEndpoint}`;
-        const svgTransformer = `${contentHref.replace(`${recorderEndpoint}/assets`,`pdfviewer.html?pdfSrc=/assets`)}&token=${token}&endpoint=${encodedEndpoint}`;
+        const jpegTransformer = `${contentHref.replace(`/assets/`, `/pdf/`)}/view.html?token=${token}&endpoint=${encodedEndpoint}`;
+        const svgTransformer = `${contentHref.replace(`${recorderEndpoint}/assets`, `pdfviewer.html?pdfSrc=/assets`)}&token=${token}&endpoint=${encodedEndpoint}`;
         switch (process.env.PDF_VERSION) {
-            case `JPEG`: return jpegTransformer;
-            case `SVG`: return svgTransformer;
-            default: return svgTransformer;
+        case `JPEG`: return jpegTransformer;
+        case `SVG`: return svgTransformer;
+        default: return svgTransformer;
         }
     };
 
@@ -105,7 +109,11 @@ export function RecordedIframe(props: Props): JSX.Element {
         } else {
             return `${contentHref}?token=${token}&endpoint=${encodedEndpoint}`;
         }
-    }, [contentHref, token, recorderEndpoint]);
+    }, [
+        contentHref,
+        token,
+        recorderEndpoint,
+    ]);
 
     useEffect(() => {
         if (sessions.size > userCount && iframeRef && iframeRef.current && iframeRef.current.contentWindow) {
@@ -114,7 +122,7 @@ export function RecordedIframe(props: Props): JSX.Element {
             }, `*`);
         }
         setUserCount(sessions.size);
-    }, [sessions]);
+    }, [ sessions ]);
 
     useEffect(() => {
         scale(contentWidth, contentHeight);
@@ -123,18 +131,18 @@ export function RecordedIframe(props: Props): JSX.Element {
                 scaleWhiteboard();
             }, 300);
         }
-    }, [size]);
+    }, [ size ]);
 
     useEffect(() => {
         setTimeout(function () {
             window.dispatchEvent(new Event(`resize`));
         }, 300);
-    }, [isLessonPlanOpen]);
+    }, [ isLessonPlanOpen ]);
 
     useEffect(() => {
         setSeconds(MAX_LOADING_COUNT);
         setLoadStatus(LoadStatus.Loading);
-    }, [contentHrefWithToken]);
+    }, [ contentHrefWithToken ]);
 
     useEffect(() => {
         if (loadStatus === LoadStatus.Loading) {
@@ -154,7 +162,7 @@ export function RecordedIframe(props: Props): JSX.Element {
             clearInterval(intervalId);
         }
         return () => clearInterval(intervalId);
-    }, [loadStatus]);
+    }, [ loadStatus ]);
 
     const scale = (innerWidth: number, innerHeight: number) => {
         let currentWidth: number = size.width, currentHeight: number = size.height;
@@ -260,7 +268,7 @@ export function RecordedIframe(props: Props): JSX.Element {
     }
 
     useEffect(() => {
-        function onMessage({ data }: MessageEvent) {
+        function onMessage ({ data }: MessageEvent) {
             if (!data) { return; }
             if (data.streamId) {
                 if (setStreamId) { setStreamId(data.streamId); }
@@ -272,9 +280,9 @@ export function RecordedIframe(props: Props): JSX.Element {
                 });
             }
             switch (data.error) {
-                case `RedirectToLogin`:
-                    actions?.signOutUser();
-                    break;
+            case `RedirectToLogin`:
+                actions?.signOutUser();
+                break;
             }
         }
         window.addEventListener(`message`, onMessage);
@@ -282,9 +290,9 @@ export function RecordedIframe(props: Props): JSX.Element {
             window.removeEventListener(`message`, onMessage);
             setStreamId(``);
         };
-    }, [iframeRef.current]);
+    }, [ iframeRef.current ]);
 
-    function startRecording() {
+    function startRecording () {
         if (process.env.IS_CORDOVA_BUILD) {
             try {
                 const iRef = window.document.getElementById(`recordediframe`) as HTMLIFrameElement;
@@ -316,7 +324,6 @@ export function RecordedIframe(props: Props): JSX.Element {
                 console.log(e);
             }
         }
-
 
     }
 
