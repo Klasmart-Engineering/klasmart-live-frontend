@@ -61,6 +61,14 @@ export function getNameWithoutExtension(fileName: string): string {
     return fileName.replace(/\.[^/.]+$/, "");
 }
 
+export function getFileNameInURI(uri: string): string | undefined{
+    const decodedURI = decodeURIComponent(uri);
+    const fileName = decodedURI.replace(/^.*[\\\/]/,'');
+    if(validateFileExtension(getFileExtensionFromName(fileName ?? '')))
+        return fileName;
+    return undefined;
+}
+
 export function convertFileNameToUnderscores(fileName: string): string {
     return `${getNameWithoutExtension(fileName).replace(/([^a-z0-9])/gi, '_')}.${getFileExtensionFromName(fileName)}`
 }
