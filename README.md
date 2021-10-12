@@ -165,5 +165,18 @@ adb install -r ./platforms/android/app/build/outputs/apk/debug/app-debug.apk
 ## Building for Production
 
 ### Android
+Execute the following command to build a production aab file:
+
+```
+./scripts/build-android-release.sh
+```
+
+If there wasn't any errors the command will produce an AAB file in this location:
+
+```
+./platforms/android/app/build/outputs/bundle/release/app-release.aab
+```
+
+This file can then be uploaded to Google Play using the Google Play developer console.
 
 ### iOS
