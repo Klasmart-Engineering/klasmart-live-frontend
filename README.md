@@ -100,3 +100,70 @@ SSH (attach shell) to the running `redis` docker container, and run the command:
 ```
 redis-cli flushall
 ```
+
+# Cordova
+
+This section describes how to prepare and build the cordova apps for iOS and Android inside this repository.
+
+## Prerequisites
+Follow the steps described fo the desired platform to ensure all prerequisites is installed on the developer machine for each platform.
+
+### Android
+
+**Official Cordova documentation** 
+
+The easiest way to install all the Android requirements is to follow the official cordova documentation. This can be found at this URL: https://cordova.apache.org/docs/en/10.x/guide/platforms/android/index.html#installing-the-requirements
+
+**Verifying all the requirements is in place**
+
+Run the following command to veirfy the Android prerequisites is available and configured:
+```
+cordova requirements android
+```
+
+Fix any missing requirements the previous command detected and then move on to the Building section.
+
+### iOS
+
+**Official Cordova documentation** 
+
+The easiest way to install all the iOS requirements is to follow the official cordova documentation. This can be found at this URL: https://cordova.apache.org/docs/en/10.x/guide/platforms/ios/index.html#installing-the-requirements
+
+**Verifying all the requirements is in place**
+
+Run the following command to veirfy the iOS prerequisites is available and configured:
+```
+cordova requirements ios
+```
+
+Fix any missing requirements the previous command detected and then move on to the Building section.
+
+## Building for Development
+Building for development is separated in two different steps. One step to generate the native platform project and files and another step to build the native applications. In the KidsLoop Live repository there's scripts to help do these steps.
+
+### Android
+Execute the following command to build a development apk file:
+
+```
+./scripts/build-android-development.sh
+```
+
+If there wasn't any errors the command will produce an APK file in this location:
+
+```
+./platforms/android/app/build/outputs/apk/debug/app-debug.apk
+```
+
+This file can be installed on device or emulator using the command:
+
+```
+adb install -r ./platforms/android/app/build/outputs/apk/debug/app-debug.apk
+```
+
+### iOS
+
+## Building for Production
+
+### Android
+
+### iOS
