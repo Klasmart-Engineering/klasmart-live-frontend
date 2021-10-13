@@ -77,16 +77,12 @@ export function RecordedIframe (props: Props): JSX.Element {
         },
     });
 
-    const [ transformScale, setTransformScale ] = useState<number>(1);
     const [ openDialog, setOpenDialog ] = useState(true);
     const [ seconds, setSeconds ] = useState(MAX_LOADING_COUNT);
     const [ loadStatus, setLoadStatus ] = useState(LoadStatus.Loading);
     const [ intervalId, setIntervalId ] = useState<number>();
-    const [ contentWidth, setContentWidth ] = useState(1600);
-    const [ contentHeight, setContentHeight ] = useState(1400);
     const [ userCount, setUserCount ] = useState(sessions.size);
 
-    const [ enableResize, setEnableResize ] = useState(true);
     const [ useDoubleSize, setUseDoubleSize ] = useState(false);
     const [ stylesLoaded ] = useState(false);
 
@@ -129,7 +125,6 @@ export function RecordedIframe (props: Props): JSX.Element {
     }, [ sessions ]);
 
     useEffect(() => {
-        scale(contentWidth, contentHeight);
         if (classType == ClassType.LIVE) {
             setTimeout(function () {
                 scaleWhiteboard();
@@ -168,21 +163,6 @@ export function RecordedIframe (props: Props): JSX.Element {
         return () => clearInterval(intervalId);
     }, [ loadStatus ]);
 
-    const scale = (innerWidth: number, innerHeight: number) => {
-        let currentWidth: number = size.width, currentHeight: number = size.height;
-
-        const iRef = window.document.getElementById(`activity-view-container`) as HTMLIFrameElement;
-        if (iRef) {
-            currentWidth = iRef.getBoundingClientRect().width;
-            currentHeight = iRef.getBoundingClientRect().height;
-        }
-
-        const shrinkRatioX = (currentWidth / innerWidth) > 1 ? 1 : currentWidth / innerWidth;
-        const shrinkRatioY = (currentHeight / innerHeight) > 1 ? 1 : currentHeight / innerHeight;
-        const shrinkRatio = Math.min(shrinkRatioX, shrinkRatioY);
-        setTransformScale(shrinkRatio);
-    };
-
     // TODO : Find a better system to scale the Whiteboard to the h5p
     const scaleWhiteboard = () => {
         const recordediframe = window.document.getElementById(`recordediframe`) as HTMLIFrameElement;
@@ -219,58 +199,14 @@ export function RecordedIframe (props: Props): JSX.Element {
             }
             `;
             contentDoc.head.appendChild(style);
-            // setStylesLoaded(true);
         }
 
         // IP Protection: Contents should not be able to be downloaded by right-clicking.
         const blockRightClick = (e: MouseEvent) => { e.preventDefault(); };
         contentWindow.addEventListener(`contextmenu`, (e) => blockRightClick(e), false);
-        const h5pDivCollection = contentDoc.body.getElementsByClassName(`h5p-content`);
         const h5pTypeColumn = contentDoc.body.getElementsByClassName(`h5p-column`).length;
-        const h5pTypeAccordion = contentDoc.body.getElementsByClassName(`h5p-accordion`).length;
 
-        setUseDoubleSize(h5pTypeColumn > 0);
-
-        if (h5pDivCollection.length > 0) {
-            if (h5pTypeColumn || h5pTypeAccordion) {
-                setEnableResize(false);
-                h5pDivCollection[0].setAttribute(`style`, `width: 100% !important;`);
-            } else {
-                setEnableResize(true);
-                h5pDivCollection[0].setAttribute(`style`, `width: auto !important;`);
-            }
-
-            const h5pContainer = h5pDivCollection[0] as HTMLDivElement;
-            h5pContainer.setAttribute(`data-iframe-height`, ``);
-            const h5pWidth = h5pContainer.getBoundingClientRect().width;
-            const h5pHeight = h5pContainer.getBoundingClientRect().height;
-            setContentWidth(h5pWidth);
-            setContentHeight(h5pHeight);
-            scale(h5pWidth, h5pHeight);
-        } else {
-            setEnableResize(true);
-
-            if (contentDoc.body.getElementsByTagName(`img`).length) {
-                const imageWidth = contentDoc.body.getElementsByTagName(`img`)[0].getBoundingClientRect().width;
-                const imageHeight = contentDoc.body.getElementsByTagName(`img`)[0].getBoundingClientRect().height;
-                if (imageWidth && imageHeight) {
-                    setContentWidth(imageWidth);
-                    setContentHeight(imageHeight);
-                }
-
-                if (process.env.PDF_VERSION?.toUpperCase() === `JPEG` && contentHref.endsWith(`.pdf`)) {
-                    // Override automatic resizing of PDF documents
-                    setEnableResize(false);
-                    return;
-                }
-
-            } else if (contentDoc.body.getElementsByTagName(`video`).length) {
-                setEnableResize(false);
-            } else {
-                setContentWidth(1024);
-                setContentHeight(1024);
-            }
-        }
+        setUseDoubleSize(!isPdfContent && h5pTypeColumn > 0);
 
         if (!isPdfContent) {
             injectIframeScript(iframeElement, `h5presize`);
@@ -414,17 +350,11 @@ export function RecordedIframe (props: Props): JSX.Element {
                 id="recordediframe"
                 src={contentHrefWithToken}
                 allow="microphone"
-                data-h5p-width={contentWidth}
-                data-h5p-height={contentHeight}
                 style={{
-                    width: enableResize ? contentWidth : (useDoubleSize ? `50%` : `100%`),
-                    height: enableResize ? contentHeight : (useDoubleSize ? `50%` : `100%`),
-                    position: enableResize ? `absolute` : `static`,
+                    width: (useDoubleSize ? `82%` : `100%`),
+                    height: (useDoubleSize ? `82%` : `100%`),
                     transformOrigin: `top left`,
-                    top: classType === ClassType.LIVE ? 0 : `auto`,
-                    left: classType === ClassType.LIVE ? 0 : `auto`,
-                    transform: enableResize ? `scale(${transformScale})` : (useDoubleSize ? `scale(2)` : `scale(1)`),
-                    minWidth: `100%`,
+                    transform: (useDoubleSize ? `scale(1.2)` : `scale(1)`),
                 }}
                 onLoad={() => { setLoadStatus(LoadStatus.Finished); window.dispatchEvent(new Event(`resize`)); }}
             />
