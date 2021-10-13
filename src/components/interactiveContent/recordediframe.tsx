@@ -281,7 +281,7 @@ export function RecordedIframe (props: Props): JSX.Element {
         function onMessage ({ data }: MessageEvent) {
             if (!data) { return; }
             if (data.streamId) {
-                if (setStreamId) { setStreamId(data.streamId); }
+                setStreamId?.(data.streamId);
                 sendStreamId({
                     variables: {
                         roomId,
