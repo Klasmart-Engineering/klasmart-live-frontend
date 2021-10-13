@@ -142,13 +142,13 @@ Fix any missing requirements the previous command detected and then move on to t
 Building for development is separated in two different steps. One step to generate the native platform project and files and another step to build the native applications. In the KidsLoop Live repository there's scripts to help do these steps.
 
 ### Android
-Execute the following command to build a development apk file:
+Execute the following command to build a development `apk` file:
 
 ```
 ./scripts/build-android-development.sh
 ```
 
-If there wasn't any errors the command will produce an APK file in this location:
+If there wasn't any errors the command will produce an `apk` file in this location:
 
 ```
 ./platforms/android/app/build/outputs/apk/debug/app-debug.apk
@@ -161,17 +161,23 @@ adb install -r ./platforms/android/app/build/outputs/apk/debug/app-debug.apk
 ```
 
 ### iOS
+Execute the following command to build and open a XCode project:
+```
+./scripts/build-ios-development.sh
+```
+
+If there wasn't any errors the command will open the generated XCode project. Use the XCode project to debug or archive the `ipa` file as usual.
 
 ## Building for Production
 
 ### Android
-Execute the following command to build a production aab file:
+Execute the following command to build a production `aab` file:
 
 ```
 ./scripts/build-android-release.sh
 ```
 
-If there wasn't any errors the command will produce an AAB file in this location:
+If there wasn't any errors the command will produce an `aab` file in this location:
 
 ```
 ./platforms/android/app/build/outputs/bundle/release/app-release.aab
@@ -180,3 +186,70 @@ If there wasn't any errors the command will produce an AAB file in this location
 This file can then be uploaded to Google Play using the Google Play developer console.
 
 ### iOS
+Execute the following command to build and open a XCode project:
+```
+./scripts/build-ios-development.sh
+```
+
+If there wasn't any errors the command will open the generated XCode project.
+
+**Add build phase script to remove x86 architectures from included frameworks**
+
+Go to the project properties and `Build Phases` page in XCode. Add the following script as a last `Build Phase`:
+```
+echo "Target architectures: $ARCHS"
+
+APP_PATH="${TARGET_BUILD_DIR}/${WRAPPER_NAME}"
+
+find "$APP_PATH" -name '*.framework' -type d | while read -r FRAMEWORK
+do
+FRAMEWORK_EXECUTABLE_NAME=$(defaults read "$FRAMEWORK/Info.plist" CFBundleExecutable)
+FRAMEWORK_EXECUTABLE_PATH="$FRAMEWORK/$FRAMEWORK_EXECUTABLE_NAME"
+echo "Executable is $FRAMEWORK_EXECUTABLE_PATH"
+echo $(lipo -info "$FRAMEWORK_EXECUTABLE_PATH")
+
+FRAMEWORK_TMP_PATH="$FRAMEWORK_EXECUTABLE_PATH-tmp"
+
+# remove simulator's archs if location is not simulator's directory
+case "${TARGET_BUILD_DIR}" in
+*"iphonesimulator")
+    echo "No need to remove archs"
+    ;;
+*)
+    if $(lipo "$FRAMEWORK_EXECUTABLE_PATH" -verify_arch "i386") ; then
+    lipo -output "$FRAMEWORK_TMP_PATH" -remove "i386" "$FRAMEWORK_EXECUTABLE_PATH"
+    echo "i386 architecture removed"
+    rm "$FRAMEWORK_EXECUTABLE_PATH"
+    mv "$FRAMEWORK_TMP_PATH" "$FRAMEWORK_EXECUTABLE_PATH"
+    fi
+    if $(lipo "$FRAMEWORK_EXECUTABLE_PATH" -verify_arch "x86_64") ; then
+    lipo -output "$FRAMEWORK_TMP_PATH" -remove "x86_64" "$FRAMEWORK_EXECUTABLE_PATH"
+    echo "x86_64 architecture removed"
+    rm "$FRAMEWORK_EXECUTABLE_PATH"
+    mv "$FRAMEWORK_TMP_PATH" "$FRAMEWORK_EXECUTABLE_PATH"
+    fi
+    ;;
+esac
+
+echo "Completed for executable $FRAMEWORK_EXECUTABLE_PATH"
+echo $(lipo -info "$FRAMEWORK_EXECUTABLE_PATH")
+
+done
+```
+
+**Disable Validate Workspace**
+
+Find the settings `Validate Workspace` in XCode project settings. Set the value to `No`. Doing this will prevent XCode failing the build due to issue with the included `cordova-plugin-iosrtc` framework.
+
+**Configure Code Signing**
+
+The KidsLoop distribution certificate with private key have to be in the `Key Chain` before doing this step. Configure the code signing as illustrated in this image:
+
+![Alt text](docs/code-signing-config-ios.png "Code Signing Configuration")
+
+**Archive the iOS binary**
+
+Now it's possible to archive the binary and then distribute and upload to App Store as usual.
+
+
+
