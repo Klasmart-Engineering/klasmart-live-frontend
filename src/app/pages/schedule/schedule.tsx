@@ -62,13 +62,16 @@ const dateFormat = require(`dateformat`);
 // NOTE: China API server(Go lang) accept 10 digits timestamp
 const now = new Date();
 const todayTimeStamp = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime() / 1000;
-const endOfToday = new Date(todayTimeStamp * 1000); endOfToday.setHours(23, 59, 59);
+const endOfToday = new Date(todayTimeStamp * 1000);
+endOfToday.setHours(23, 59, 59);
 const endOfTodayTimeStamp = endOfToday.getTime() / 1000;
 const nextMonthTimeStamp = new Date(now.getFullYear(), now.getMonth() + 1, 1).getTime() / 1000;
 const timeZoneOffset = now.getTimezoneOffset() * 60 * -1; // to make seconds
-const tomorrow = new Date(todayTimeStamp * 1000); tomorrow.setDate(tomorrow.getDate() + 1);
+const tomorrow = new Date(todayTimeStamp * 1000);
+tomorrow.setDate(tomorrow.getDate() + 1);
 const tomorrowTimeStamp = tomorrow.getTime() / 1000;
-const endOfTomorrow = new Date(tomorrowTimeStamp * 1000); endOfTomorrow.setHours(23, 59, 59);
+const endOfTomorrow = new Date(tomorrowTimeStamp * 1000);
+endOfTomorrow.setHours(23, 59, 59);
 const endOfTomorrowTimeStamp = endOfTomorrow.getTime() / 1000;
 
 const useStyles = makeStyles((theme: Theme) => ({
