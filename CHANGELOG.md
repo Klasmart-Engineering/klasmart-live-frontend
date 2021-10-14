@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-internal.2](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.0.0-internal.1%0Dv3.0.0-internal.2) (2021-10-14)
+
+
+### Features
+
+* **app:** add student report KLL-1472 ([b1175b8](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/b1175b8a4cce0ec7a909d63f3dbb1aa00a91a625))
+* parentalGate : Auto open keyboard + auto validate if answer is good ([33aa855](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/33aa855d1d51040f37b0150437e532870997ed48))
+
+
+### Bug Fixes
+
+* add h5p resize entry to webpack config ([e056839](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/e056839ab883fb90c9d6d85a98073618ee2ff2dd))
+* App UI fullscreen behavior (android) ([f2e64a0](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/f2e64a0dd811e01b2845f2598ebacb0b7a4a8843))
+* **app:** Can not join Live class after exit the Join page and join again. ([d2339be](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/d2339be34ce6ec9ac779e18dd5fe46ba1540144b))
+* **app:** user can not exit study class ([6d74ced](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/6d74ced0b2ee4aac3d712124a06ffbcd84c6b04b))
+* check if IFrame is YT video in every event ([119eb60](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/119eb607cbc218836f5784962b2ebe3e80baa57b))
+* custom Breakpoints to supports < 1024 devices adaptive layouts ([76ac0bb](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/76ac0bbea7478854110be27fbe5557b01a4a255e))
+* **h5p:** inject h5p-resize script unless pdf ([82ea508](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/82ea50881460560f414dedf300dc1dd9fece82e2))
+* **h5p:** remove complicated resizing code ([ec8896c](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/ec8896c62482cea5dff0d35a5d41c01d45240965))
+* **ios:** trigger permissions callback without iosrtc ([97cfbd9](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/97cfbd90cdedc47c77a07c132320f79233e8e0a3))
+* Keep awake behavior on app using a new "layoutMode" state ([2d5c5df](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/2d5c5dfb72f9194aa65b96105ca155dea152b258))
+* Keep Awake feature ([057eb39](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/057eb39c9edb54aa8c8b08d6e610f9766e11de66))
+* Live room safe padding (iOs) ([947d58a](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/947d58a3d2acde5facb3d4ebca19ea1bf52d7778))
+* Record script error on web local ([620ae43](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/620ae436cffc3f93d460d87dc099257cebac9391))
+* search both TY related urls from stream event ([9dc189e](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/9dc189e7334e0a6b4d48b7070e675b961b0bf672))
+* Shows correct schedule for today and tomorrow if class starts on an other day then today ([337ba4e](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/337ba4e5b3b9ed0ffe9fd2a3a2ff05094e550138))
+* Sort study schedule by date (start_at) ([f3ab170](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/f3ab170c3999da4efa873193c205f2e1834adc79))
+* Sorting Study : handle case where multiple study starts at the same time ([fe3c3c2](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/fe3c3c2306de7f4da446f1644d5ba59d50bcb052))
+* use const variable rather than let ([801ce20](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/801ce20bc0a578972065c5959ef12c4a870058fb))
+
 ## [3.0.0-internal.1](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v2.0.15%0Dv3.0.0-internal.1) (2021-10-01)
 
 
