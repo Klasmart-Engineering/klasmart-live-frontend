@@ -153,7 +153,7 @@ export function Schedule () {
                 const timeViewAll = thisMonthSchedules.concat(nextMonthSchedules);
                 const timeViewLiveAll = timeViewAll.filter((tv: ScheduleTimeViewResponse) => tv.class_type === ScheduleClassType.LIVE);
                 const timeViewStudyAll = timeViewAll.filter((tv: ScheduleTimeViewResponse) => tv.class_type === ScheduleClassType.STUDY && (tv.is_home_fun && tv.due_at >= todayTimeStamp || !tv.is_home_fun && tv.due_at != 0));
-                const timeViewStudyAllOrderedByDate = [ ...timeViewStudyAll ].sort((a, b) => a.start_at < b.start_at ? -1 : 1);
+                const timeViewStudyAllOrderedByDate = [ ...timeViewStudyAll ].sort((a, b) => a.start_at - b.start_at);
 
                 let timeViewLiveToday: ScheduleTimeViewResponse[] = [],
                     timeViewLiveTomorrow: ScheduleTimeViewResponse[] = [],
