@@ -174,7 +174,7 @@ function updateYoutubePlayerInfo (youtubePlayer: YoutubePlayerReference, id: str
 
     const { player, info } = youtubePlayer;
     player.seekTo(info.currentTime);
-    switch(info.playerState) {
+    switch (info.playerState) {
     case YoutubePlayerState.ENDED:
         player.stopVideo();
         break;
