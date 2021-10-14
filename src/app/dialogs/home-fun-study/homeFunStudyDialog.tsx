@@ -180,7 +180,10 @@ export function HomeFunStudyDialog () {
     const [ loading, setLoading ] = useState(false);
     const [ shouldSubmitFeedback, setShouldSubmitFeedback ] = useState(false);
     const [ submitStatus, setSubmitStatus ] = useState(SubmitStatus.NONE);
-    const { addOnBack, removeOnBack } = useContext(CordovaSystemContext);
+    const {
+        addOnBack,
+        removeOnBack,
+    } = useContext(CordovaSystemContext);
 
     useEffect(() => {
         lockOrientation(OrientationType.PORTRAIT);
@@ -519,7 +522,10 @@ function HomeFunStudyContainer ({
     const [ openButtonSelector, setOpenButtonSelector ] = useState(false);
     const { showPopup } = usePopupContext();
     const [ assignmentItems, setAssignmentItems ] = useState<AssignmentItem[]>([]);
-    const { fileSelectService, contentService } = useServices();
+    const {
+        fileSelectService,
+        contentService,
+    } = useServices();
     const [ selectedOrganization ] = useRecoilState(selectedOrganizationState);
     const [ selectedUser ] = useRecoilState(selectedUserState);
     const [ homeFunStudy, setHomeFunStudy ] = useRecoilState(homeFunStudyState);
@@ -1096,9 +1102,9 @@ function HomeFunStudyContainer ({
                             variant="subtitle1"
                             align="center">{studyInfo?.title}</Typography>
                         <Typography
-                            variant='body1'
+                            variant="body1"
                             align="center"
-                            color='textSecondary'>
+                            color="textSecondary">
                             <FormattedMessage id={`home_fun_study`}/>
                         </Typography>
                     </Box>
@@ -1107,21 +1113,24 @@ function HomeFunStudyContainer ({
                     item
                     xs>
                     <Box mb={3}>
-                        <Typography variant='subtitle1'><FormattedMessage
+                        <Typography variant="subtitle1"><FormattedMessage
                             id="home_fun_study_your_task"/></Typography>
                         <Typography
                             variant="body2"
-                            color="textSecondary">{studyInfo?.description ? studyInfo.description :
-                                <FormattedMessage id={`label_not_defined`}/>}</Typography>
+                            color="textSecondary">
+                            {studyInfo?.description
+                                ? studyInfo.description
+                                : <FormattedMessage id={`label_not_defined`}/>}
+                        </Typography>
                     </Box>
                 </Grid>
                 <Grid
                     item
                     xs>
                     <Box mb={3}>
-                        <Typography variant='subtitle1'>Due date</Typography>
+                        <Typography variant="subtitle1">Due date</Typography>
                         <Typography
-                            variant='body2'
+                            variant="body2"
                             color="textSecondary">
                             {studyInfo?.due_at && studyInfo.due_at !== 0 ? formatDueDate(studyInfo.due_at) :
                                 <FormattedMessage id={`label_not_defined`}/>}
@@ -1164,15 +1173,21 @@ function HomeFunStudyContainer ({
 const MAX_FILE_LIMIT = 3;
 
 function HomeFunStudyAssignment ({
-    studyInfo, newestFeedback,
-    assignmentItems, onClickUploadInfo,
-    onClickUpload, onDeleteAssignment,
+    studyInfo,
+    newestFeedback,
+    assignmentItems,
+    onClickUploadInfo,
+    onClickUpload,
+    onDeleteAssignment,
 }: {
     studyInfo?: ScheduleResponse; newestFeedback?: ScheduleFeedbackResponse; assignmentItems: AssignmentItem[]; onClickUploadInfo: () => void;
     onClickUpload: () => void; onDeleteAssignment: (item: AssignmentItem) => void;
 }) {
     const classes = useStyles();
-    const { isAndroid, isIOS } = useCordovaSystemContext();
+    const {
+        isAndroid,
+        isIOS,
+    } = useCordovaSystemContext();
     const cms = useHttpEndpoint(`cms`);
     const intl = useIntl();
     const { showPopup } = usePopupContext();
@@ -1201,9 +1216,9 @@ function HomeFunStudyAssignment ({
     const getCacheDirectory = useMemo(() => {
         const cordova = (window as any).cordova;
         let targetDirectory = ``;
-        if(cordova !== undefined) {
+        if (cordova !== undefined) {
             targetDirectory = cordova.file.externalCacheDirectory;
-            if(isIOS){
+            if (isIOS) {
                 targetDirectory = cordova.file.tempDirectory;
             }
         }
@@ -1211,15 +1226,15 @@ function HomeFunStudyAssignment ({
     }, [ window, isIOS ]);
 
     useEffect(() => {
-        function startDownloadPreview (){
+        function startDownloadPreview () {
             setDownloadPreview({
                 ...downloadPreview,
-                shouldDownload : false,
+                shouldDownload: false,
             });
-            if(downloadingPreview.downloading)
+            if (downloadingPreview.downloading)
                 return;
             const assignmentItem = downloadPreview.assignmentItem;
-            if(assignmentItem){
+            if (assignmentItem) {
                 const url = encodeURI(`${cms}/v1/contents_resources/${assignmentItem.attachmentId}`);
                 console.log(url);
                 setDownloadingPreview({
@@ -1259,13 +1274,14 @@ function HomeFunStudyAssignment ({
                 });
             }
         }
-        if(downloadPreview.shouldDownload){
+
+        if (downloadPreview.shouldDownload) {
             startDownloadPreview();
         }
     }, [ downloadPreview ]);
 
     useEffect(() => {
-        if(previewOpen.open && open){
+        if (previewOpen.open && open) {
             const previewAnyFile = (window as any).PreviewAnyFile;
             previewAnyFile.previewPath((result: string) => {
                 setPreviewOpen({
@@ -1341,7 +1357,7 @@ function HomeFunStudyAssignment ({
                     display="flex"
                     alignItems="center">
                     <Typography
-                        variant='subtitle1'
+                        variant="subtitle1"
                         display="inline">
                         Upload your Assignment
                     </Typography>
@@ -1355,7 +1371,7 @@ function HomeFunStudyAssignment ({
                             fontSize="small"/>
                         <Box ml={1}>
                             <Typography
-                                variant='caption'
+                                variant="caption"
                                 color="primary">Info</Typography>
                         </Box>
 
@@ -1370,8 +1386,10 @@ function HomeFunStudyAssignment ({
                         : <Typography
                             variant="caption"
                             display="block"
-                            color="secondary"><FormattedMessage
-                                id={`home_fun_study_maximum_three_files_limited`}/></Typography>
+                            color="secondary">
+                            <FormattedMessage
+                                id={`home_fun_study_maximum_three_files_limited`}/>
+                        </Typography>
                 }
                 <Box my={2}>
                     <Button
@@ -1396,9 +1414,10 @@ function HomeFunStudyAssignment ({
                                 <ListItemIcon onClick={() => confirmOpenAttachmentLink(item)}>
                                     <div className={classes.wrapper}>
                                         <FileIcon fileType={getFileExtensionFromName(item.attachmentName)}/>
-                                        {downloadingPreview.downloading && item.itemId == downloadingPreview.itemId ? <CircularProgress
-                                            size={30}
-                                            className={classes.progress}/> : ``}
+                                        {downloadingPreview.downloading && item.itemId == downloadingPreview.itemId ?
+                                            <CircularProgress
+                                                size={30}
+                                                className={classes.progress}/> : ``}
                                     </div>
                                 </ListItemIcon>
                                 <ListItemText
@@ -1440,7 +1459,9 @@ function HomeFunStudyAssignment ({
 }
 
 function HomeFunStudyComment ({
-    studyInfo, newestFeedback, defaultComment,
+    studyInfo,
+    newestFeedback,
+    defaultComment,
 }: { studyInfo?: ScheduleResponse; newestFeedback?: ScheduleFeedbackResponse; defaultComment: string }) {
     const classes = useStyles();
 
@@ -1515,7 +1536,7 @@ function HomeFunStudyComment ({
             item
             xs>
             <Box mb={1}>
-                <Typography variant='subtitle1'>
+                <Typography variant="subtitle1">
                     Comment
                 </Typography>
                 <Button

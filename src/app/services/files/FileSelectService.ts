@@ -127,7 +127,7 @@ export class FileSelectService implements IFileSelectService {
         return selectGalleryProcedure;
     }
 
-    async selectFromCamera (): Promise<File> {
+    selectFromCamera (): Promise<File> {
         const camera = (navigator as any).camera;
         if (!camera) return Promise.reject(`No camera available.`);
 
