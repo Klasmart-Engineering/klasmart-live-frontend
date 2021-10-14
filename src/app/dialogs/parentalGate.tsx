@@ -33,16 +33,16 @@ export function ParentalGate ({ onCompleted, message }: Props): JSX.Element {
     const inputRef = useRef<HTMLInputElement>();
 
     useEffect(() => {
-        if(!inputRef.current) return;
+        if (!inputRef.current) return;
         inputRef.current.focus();
 
         const Keyboard = (window as any).Keyboard;
-        if(!Keyboard) return;
+        if (!Keyboard) return;
         Keyboard.show();
     }, []);
 
     useEffect(() => {
-        if(!completed) return;
+        if (!completed) return;
         onCompleted();
     }, [ completed ]);
 
@@ -115,8 +115,8 @@ export function ParentalGate ({ onCompleted, message }: Props): JSX.Element {
                                 inputMode:`numeric`,
                                 pattern:`[0-9]*`,
                             }}
-                            error={!completed && inputRef.current && inputRef.current.value.length > 0}
-                            onBlur={() => inputRef.current && inputRef.current.focus()}
+                            error={!completed && (inputRef.current?.value.length ?? 0) > 0}
+                            onBlur={() => inputRef.current?.focus()}
                             onChange={(e) => {
                                 const answer = Number(e.target.value);
                                 setCompleted(answer === correctAnswer);
