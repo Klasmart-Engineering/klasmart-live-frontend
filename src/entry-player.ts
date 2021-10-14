@@ -190,7 +190,7 @@ function updateYoutubePlayerInfo (youtubePlayer: YoutubePlayerReference, id: str
     }
 }
 
-function isYouTubeVideo (event: any) {
-    const exist = event.search(`https://www.youtube.com`);
+function isYouTubeVideo (event: string) {
+    const exist = event.search(`https://www.youtube.com`) || event.search(`https://www.youtu.be`);
     return exist >= 0;
 }
