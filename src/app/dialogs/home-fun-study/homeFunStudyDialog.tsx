@@ -24,6 +24,7 @@ import {
 import {
     getFileExtensionFromName,
     getFileExtensionFromType,
+    getFileNameInURI,
     saveDataBlobToFile,
     validateFileSize,
     validateFileType,
@@ -871,7 +872,7 @@ function HomeFunStudyContainer ({
 
             let name = file.name;
             const extension = getFileExtensionFromType(file.type);
-
+            console.log(`original file name: ${name}`);
             // NOTE: IF the file name is content we'll generate a more
             // unique name with extension for the assignment.
             if (name === `content`) {
@@ -880,7 +881,10 @@ function HomeFunStudyContainer ({
                 } else {
                     name = `attachment_${itemId}`;
                 }
+                // File from cordova-plugin-file, not default File from Typescript
+                name = getFileNameInURI((file as any).localURL) ?? name;
             }
+            console.log(`changed file name: ${name}`);
             newAssignmentItems.push({
                 itemId: itemId,
                 attachmentId: ``,
