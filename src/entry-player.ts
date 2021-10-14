@@ -8,7 +8,6 @@ const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
 let hasReplayStarted = false;
 let fullSnapshotRebuilded = false;
-let isYTVideo = false;
 enum YoutubePlayerState {
     ENDED = 0,
     PLAYING,
@@ -42,7 +41,7 @@ window.addEventListener(`message`, ({ data }) => {
 
     try {
         const event = JSON.parse(data.event);
-        isYTVideo = isYouTubeVideo(data.event);
+        const isYTVideo = isYouTubeVideo(data.event);
         if (event.type === EventType.Meta && !hasReplayStarted) {
             rrwebPlayer.startLive(event.timestamp);
             hasReplayStarted = true;
