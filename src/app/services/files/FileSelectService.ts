@@ -48,7 +48,7 @@ export const MIME_TO_EXTENSION = new Map<string, string>([
     [ `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`, `xlsx` ],
     [ `application/pdf`, `pdf` ],
 ]);
-import {getFileNameInURI} from "@/app/utils/fileUtils";
+
 // https://github.com/cyph/cordova-plugin-chooser
 declare const chooser: any;
 
@@ -85,8 +85,6 @@ export class FileSelectService implements IFileSelectService {
                 // TODO: type information for FileEntry
                 // (entry as FileEntry).file((file) => {
                 (entry as any).file((file: any) => {
-                    file.name = getFileNameInURI(uri) ?? file.name;
-                    console.log(`fileName: ${file.name}`);
                     resolve(file);
                 });
             }, (error: any) => {
