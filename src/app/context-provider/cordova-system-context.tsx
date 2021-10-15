@@ -11,6 +11,7 @@ import {
     enableKeepAwake,
     lockOrientation,
 } from "../utils/screenUtils";
+import { sleep } from "@/utils/utils";
 import { History } from "history";
 import React,
 {
@@ -78,15 +79,23 @@ export function CordovaSystemProvider ({ children, history }: Props) {
     };
 
     useEffect(()=>{
-        if(layoutMode === LayoutMode.CLASSROOM){
-            lockOrientation(OrientationType.LANDSCAPE);
-            enableFullScreen(true);
-            enableKeepAwake(true);
-        }else{
-            lockOrientation(OrientationType.PORTRAIT);
-            enableFullScreen(false);
-            enableKeepAwake(false);
-        }
+        (async function () {
+            try {
+                if(layoutMode === LayoutMode.CLASSROOM){
+                    lockOrientation(OrientationType.LANDSCAPE);
+                    await sleep(1000);
+                    enableFullScreen(true);
+                    enableKeepAwake(true);
+                }else{
+                    lockOrientation(OrientationType.PORTRAIT);
+                    await sleep(1000);
+                    enableFullScreen(false);
+                    enableKeepAwake(false);
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        })();
     }, [ layoutMode ]);
 
     const removeOnBack = (id: string) => {
@@ -98,7 +107,11 @@ export function CordovaSystemProvider ({ children, history }: Props) {
     const restart = useCallback(() => {
         const app = (navigator as any).app;
         if (app) {
-            app.loadUrl(initialHref, { wait: 0, loadingDialog: "Wait, Loading App", loadUrlTimeoutValue: 60000 });
+            app.loadUrl(initialHref, {
+                wait: 0,
+                loadingDialog: `Wait, Loading App`,
+                loadUrlTimeoutValue: 60000,
+            });
         } else {
             (navigator as any).splashscreen.show();
             location.href = initialHref;
