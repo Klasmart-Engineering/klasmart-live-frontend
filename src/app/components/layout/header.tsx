@@ -105,7 +105,7 @@ export function Header ({ isHomeRoute, setKey }: { isHomeRoute?: boolean; setKey
                                 style={{
                                     flexGrow: 0,
                                 }}>
-                                { isHomeRoute ? <OpenSelectOrgButton /> : showCloseButton ? <CloseSelectOrgOrUserButton /> : `` }
+                                { isHomeRoute ? <OpenSelectOrgButton /> : showCloseButton && <CloseSelectOrgOrUserButton /> }
                             </Grid>
                             <Grid
                                 item
