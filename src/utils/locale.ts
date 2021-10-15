@@ -3,6 +3,7 @@ import {
     getIntl,
     localeCodes,
 } from "@/localization/localeCodes";
+import Cookies from "js-cookie";
 
 const localeCache = new Map<string, ReturnType<typeof getIntl>>();
 
@@ -18,6 +19,9 @@ export function getLanguage (languageCode: string) {
 // It's a temporary that sending a ui value as a url parameter.
 // Later we may be able to send the hub UI's redux value like <Live lang={lang} theme={theme} />
 export function getDefaultLanguageCode () {
+    const selectedLanguageCode = Cookies.get(`locale`);
+    if(selectedLanguageCode) return selectedLanguageCode;
+
     const languages = navigator.languages || [
         (navigator as any).language,
         (navigator as any).browerLanguage,

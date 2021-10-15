@@ -98,15 +98,6 @@ function Sidebar () {
             content: <TabMosaic />,
             role: `teacher`,
         },
-        {
-            id: 3,
-            name: `settings`,
-            label: intl.formatMessage({
-                id: `title_settings`,
-            }),
-            icon: <SettingsIcon />,
-            content: <TabSettings />,
-        },
     ];
 
     const activeTabContent = sidebarTabs.find(item => item.name === activeTab)?.content;
