@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-internal.3](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.0.0-internal.2%0Dv3.0.0-internal.3) (2021-10-15)
+
+
+### Bug Fixes
+
+* **app:** File name gets automatically renamed when to upload file ([51415c6](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/51415c6b2309bcf8623c7abb5224a1cd845c8b70))
+* **app:** Move rename function into HomeFunStudy, without rename in FileSelectService. ([270175e](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/270175ebeb25e3c8aea843ddb6226f6810756d70))
+* FullScreen turn off when going back to schedule ([c521114](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/c521114720e2c5fd2275f7711e6c4d5e710aa865))
+* use cordova hook to modify info plist file ([82303cf](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/82303cfa9e1bea255f96fe48e5d487e2397bb7a3))
+
 ## [3.0.0-internal.2](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.0.0-internal.1%0Dv3.0.0-internal.2) (2021-10-14)
 
 
