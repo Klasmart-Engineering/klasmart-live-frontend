@@ -7,6 +7,7 @@ import {
     homeFunStudyState,
     isProcessingRequestState,
     selectedOrganizationState,
+    selectedUserState,
 } from "../../model/appModel";
 import AppBar from "@material-ui/core/AppBar";
 import ButtonBase from "@material-ui/core/ButtonBase";
@@ -52,14 +53,28 @@ const useStyles = makeStyles((theme: Theme) =>
         selectUserButton: {
             borderRadius: `50%`,
         },
+        centeredLogo:{
+            position: `absolute`,
+            textAlign: `center`,
+            zIndex: -1,
+            width: `100%`,
+            left: `0`,
+        },
     }));
 
 export function Header ({ isHomeRoute, setKey }: { isHomeRoute?: boolean; setKey?: React.Dispatch<React.SetStateAction<string>> }) {
-    const { root, safeArea } = useStyles();
+    const {
+        root,
+        safeArea,
+        centeredLogo,
+    } = useStyles();
     const theme = useTheme();
     const [ error ] = useRecoilState(errorState);
     const [ dialogs ] = useRecoilState(dialogsState);
     const [ homeFunStudy ] = useRecoilState(homeFunStudyState);
+    const { selectedUserProfile } = useUserInformation();
+
+    const showCloseButton = selectedUserProfile !== undefined && (dialogs.isSelectOrganizationOpen || dialogs.isSelectUserOpen || homeFunStudy?.open);
 
     return (error.errorCode ? <></> :
         <div className={root}>
@@ -91,26 +106,12 @@ export function Header ({ isHomeRoute, setKey }: { isHomeRoute?: boolean; setKey
                                 style={{
                                     flexGrow: 0,
                                 }}>
-                                {dialogs.isSelectOrganizationOpen || dialogs.isSelectUserOpen || homeFunStudy?.open ? <CloseSelectOrgOrUserButton /> : (
-                                    isHomeRoute ? <OpenSelectOrgButton /> : <GoBackButton />
-                                )}
+                                { isHomeRoute ? <OpenSelectOrgButton /> : showCloseButton ? <CloseSelectOrgOrUserButton /> : `` }
                             </Grid>
                             <Grid
                                 item
-                                style={{
-                                    flexGrow: 0,
-                                }}>
-                                { isHomeRoute && <div style={{
-                                    width: 44,
-                                    height: 44,
-                                }} /> }
-                            </Grid>
-                            <Grid
-                                item
-                                style={{
-                                    flexGrow: 1,
-                                    textAlign: `center`,
-                                }}>
+                                className={centeredLogo}
+                            >
                                 <img
                                     alt="KidsLoop Logo"
                                     src={KidsloopLogo}
@@ -121,14 +122,12 @@ export function Header ({ isHomeRoute, setKey }: { isHomeRoute?: boolean; setKey
                                 style={{
                                     flexGrow: 0,
                                 }}>
-                                <MenuButton setKey={setKey} />
-                            </Grid>
-                            <Grid
-                                item
-                                style={{
-                                    flexGrow: 0,
-                                }}>
-                                { isHomeRoute && <OpenSelectUserButton /> }
+                                { isHomeRoute &&
+                                    <>
+                                        <MenuButton setKey={setKey} />
+                                        <OpenSelectUserButton />
+                                    </>
+                                }
                             </Grid>
                         </Grid>
                     </Grid>
