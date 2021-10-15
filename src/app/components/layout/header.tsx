@@ -7,7 +7,6 @@ import {
     homeFunStudyState,
     isProcessingRequestState,
     selectedOrganizationState,
-    selectedUserState,
 } from "../../model/appModel";
 import AppBar from "@material-ui/core/AppBar";
 import ButtonBase from "@material-ui/core/ButtonBase";
