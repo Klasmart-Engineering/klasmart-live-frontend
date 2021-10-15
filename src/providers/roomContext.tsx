@@ -44,7 +44,6 @@ import { useSnackbar } from "kidsloop-px";
 import React,
 {
     createContext,
-    useContext,
     useEffect,
     useState,
 } from "react";
@@ -105,18 +104,18 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
     const [ content, setContent ] = useState<Content>();
     const [ sessions, setSessions ] = useState<Map<string, Session>>(new Map<string, Session>());
     const [ trophy, setTrophy ] = useState();
-    const [ classEnded, setClassEnded ] = useRecoilState(classEndedState);
+    const [ , setClassEnded ] = useRecoilState(classEndedState);
     const [ unreadMessages, setUnreadMessages ] = useRecoilState(unreadMessagesState);
-    const [ isChatOpen, setIsChatOpen ] = useRecoilState(isChatOpenState);
-    const [ isShowContentLoading, setIsShowContentLoading ] = useRecoilState(isShowContentLoadingState);
+    const [ isChatOpen ] = useRecoilState(isChatOpenState);
+    const [ , setIsShowContentLoading ] = useRecoilState(isShowContentLoadingState);
     const [ audioGloballyMuted, setAudioGloballyMuted ] = useRecoilState(audioGloballyMutedState);
     const [ videoGloballyMuted, setVideoGloballyMuted ] = useRecoilState(videoGloballyMutedState);
     const { enqueueSnackbar } = useSnackbar();
 
-    const [ materialActiveIndex, setMaterialActiveIndex ] = useRecoilState(materialActiveIndexState);
-    const [ streamId, setStreamId ] = useRecoilState(streamIdState);
-    const [ interactiveMode, setInteractiveMode ] = useRecoilState(interactiveModeState);
-    const [ hasControls, setHasControls ] = useRecoilState(hasControlsState);
+    const [ materialActiveIndex ] = useRecoilState(materialActiveIndexState);
+    const [ streamId  ] = useRecoilState(streamIdState);
+    const [ interactiveMode ] = useRecoilState(interactiveModeState);
+    const [ hasControls ] = useRecoilState(hasControlsState);
 
     const [ showContent, { loading: loadingShowContent } ] = useMutation(MUTATION_SHOW_CONTENT, {
         context: {
@@ -188,7 +187,6 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
                 content,
                 join,
                 leave,
-                session,
                 sfu,
                 trophy,
             } = subscriptionData.data.room;
