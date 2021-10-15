@@ -36,33 +36,7 @@
         <preference name="AllowInlineMediaPlayback" value="true"/>
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
-        <edit-config file="*-Info.plist" mode="merge" target="NSCameraUsageDescription">
-            <string>KidsLoop Live wants to have camera permission for classroom video conference.</string>
-        </edit-config>
-        <edit-config file="*-Info.plist" mode="merge" target="NSMicrophoneUsageDescription">
-            <string>KidsLoop Live wants to have microphone permission for classroom video conference.</string>
-        </edit-config>
-        <edit-config file="*-Info.plist" mode="merge" target="NSPhotoLibraryUsageDescription">
-            <string>KidsLoop Live wants to access photo library to select pictures for homework.</string>
-        </edit-config>
-        <edit-config file="*-Info.plist" mode="merge" target="NSPhotoLibraryAddUsageDescription">
-            <string>KidsLoop Live wants to access photo library to save pictures for homework.</string>
-        </edit-config>
-        <edit-config file="*-Info.plist" mode="merge" target="NSDocumentsFolderUsageDescription">
-            <string>KidsLoop Live wants to access documents folder to select files for homework.</string>
-        </edit-config>
-        <edit-config file="*-Info.plist" mode="merge" target="NSDesktopFolderUsageDescription">
-            <string>KidsLoop Live wants to access desktop folder to select files for homework.</string>
-        </edit-config>
-        <edit-config file="*-Info.plist" mode="merge" target="NSDownloadsFolderUsageDescription">
-            <string>KidsLoop Live wants to access downloads folder to select files for homework.</string>
-        </edit-config>
-        <config-file target="*-Info.plist" parent="UIFileSharingEnabled">
-            <true/>
-        </config-file>
-        <config-file target="*-Info.plist" parent="LSSupportsOpeningDocumentsInPlace">
-            <true/>
-        </config-file>
+        <hook type="after_prepare" src="scripts/setup-info-plist.js" />
     </platform>
     <platform name="android">
         <preference name="AppendUserAgent" value="Cordova" />

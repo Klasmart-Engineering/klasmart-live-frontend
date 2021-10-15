@@ -32,6 +32,7 @@
     "@types/js-cookie": "^2.2.7",
     "@types/jwt-decode": "^2.2.1",
     "@types/pdfjs-dist": "bitbucket:calmisland/pdfjs-dist",
+    "@types/plist": "^3.0.2",
     "@types/react-color": "^3.0.4",
     "@types/react-dom": "^16.9.8",
     "@types/react-router-dom": "^5.1.5",
