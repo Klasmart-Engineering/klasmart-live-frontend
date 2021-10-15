@@ -1,3 +1,4 @@
+import Loading from "@/components/loading";
 import { useSessionContext } from "@/providers/session-context";
 import { whiteboard } from "@/utils/layerValues";
 import { useSynchronizedState } from "@/whiteboard/context-providers/SynchronizedStateProvider";
@@ -15,6 +16,8 @@ import React,
     useMemo,
 } from "react";
 
+const canvasSize = Math.min(window.screen.width, window.screen.height);
+
 const useStyles = makeStyles((theme: Theme) => ({
     whiteboard: {
         "& div": {
@@ -22,8 +25,8 @@ const useStyles = makeStyles((theme: Theme) => ({
             position: `relative`,
         },
         "& canvas": {
-            width: `2048px !important`,
-            height: `2048px !important`,
+            width: `${canvasSize}px !important`,
+            height: `${canvasSize}px !important`,
         },
     },
     whiteboardResizer:{
@@ -105,8 +108,8 @@ export function Whiteboard ({
                     initialStyle={canvasStyle}
                     filterUsers={filterUsers}
                     filterGroups={filterGroups}
-                    pixelWidth={2048}
-                    pixelHeight={2048}
+                    pixelWidth={canvasSize}
+                    pixelHeight={canvasSize}
                     display={useLocalDisplay ? localDisplay : display}
                     scaleMode={`ScaleToFill`}
                     centerHorizontally={centerHorizontally !== undefined ? centerHorizontally : true}
