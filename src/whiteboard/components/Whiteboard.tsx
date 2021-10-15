@@ -1,4 +1,3 @@
-import Loading from "@/components/loading";
 import { useSessionContext } from "@/providers/session-context";
 import { whiteboard } from "@/utils/layerValues";
 import { useSynchronizedState } from "@/whiteboard/context-providers/SynchronizedStateProvider";
@@ -11,7 +10,6 @@ import { useToolbarContext } from "kidsloop-canvas/lib/components/toolbar/toolba
 import { WhiteboardCanvas } from "kidsloop-canvas/lib/domain/whiteboard/WhiteboardCanvas";
 import React,
 {
-    useContext,
     useEffect,
     useMemo,
 } from "react";
@@ -29,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) => ({
             height: `${canvasSize}px !important`,
         },
     },
-    whiteboardResizer:{
+    whiteboardResizer: {
         position: `absolute`,
         top: `0`,
         left: `0`,
@@ -51,11 +49,21 @@ type Props = {
 }
 
 export function Whiteboard ({
-    group, width, height, filterUsers, filterGroups, uniqueId, centerHorizontally, centerVertically, useLocalDisplay,
+    group,
+    width,
+    height,
+    filterUsers,
+    filterGroups,
+    uniqueId,
+    centerHorizontally,
+    centerVertically,
+    useLocalDisplay,
 }: Props): JSX.Element {
     const {
         state: {
-            permissions, display, localDisplay,
+            permissions,
+            display,
+            localDisplay,
         },
     } = useSynchronizedState();
     const classes = useStyles();
@@ -69,11 +77,11 @@ export function Whiteboard ({
         }
     }, [ sessionId, group ]);
 
-    useEffect(()=>{
+    useEffect(() => {
         window.dispatchEvent(new Event(`resize`));
     }, [ display ]);
 
-    useEffect(()=>{
+    useEffect(() => {
         window.onbeforeunload = () => clear([ sessionId ]);
     }, []);
 
