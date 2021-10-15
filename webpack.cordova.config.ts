@@ -92,6 +92,7 @@ module.exports = {
             WEBRTC_DEVICE_HANDLER_NAME: ``,
             CUSTOM_UA: `cordova`,
             IS_CORDOVA_BUILD: true,
+            PDF_VERSION: `JPEG`,
         }),
         new HtmlWebpackPlugin({
             filename: `index.html`,
