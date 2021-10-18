@@ -139,6 +139,12 @@ export function themeProvider (languageCode: string, themeMode: string) {
                 color: `#344966`,
             },
         },
+        MuiAppBar: {
+            colorPrimary: {
+                color: `#344966`,
+                backgroundColor: `#ffffff`,
+            },
+        },
     };
 
     const palette: PaletteOptions = {
