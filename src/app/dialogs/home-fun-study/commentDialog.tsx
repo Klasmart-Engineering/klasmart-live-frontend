@@ -38,9 +38,6 @@ const useStyles = makeStyles((theme) =>
             flexGrow: 0,
             borderBottom: `1px solid ${theme.palette.divider}`,
         },
-        safeArea: {
-            backgroundColor: theme.palette.background.paper,
-        },
         noPadding: {
             padding: 0,
         },
@@ -232,7 +229,6 @@ function CommentHeader ({
             <AppBar
                 position="sticky"
                 elevation={0}
-                className={classes.safeArea}
             >
                 <Toolbar style={{
                     padding: theme.spacing(0, 1),
