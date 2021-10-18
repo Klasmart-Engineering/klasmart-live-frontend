@@ -51,6 +51,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     tabInner: {
         backgroundColor: theme.palette.background.default,
         padding: 10,
+        paddingRight: screen.orientation.type.match(`landscape-secondary`) ? `env(safe-area-inset-right)` : 0, // iPhone Notch
     },
     sliderIconButton:{
         color: theme.palette.text.primary,

@@ -2,6 +2,7 @@ import backgroundStudy from "@/assets/img/background/background_study.jpg";
 import Main from '@/components/main/main';
 import Sidebar from '@/components/sidebar/sidebar';
 import { SFU_LINK } from '@/providers/providers';
+import { useHttpEndpoint } from "@/providers/region-select-context";
 import { RoomContext } from "@/providers/roomContext";
 import { useSessionContext } from "@/providers/session-context";
 import {
@@ -10,7 +11,6 @@ import {
     GlobalMuteNotification,
     WebRTCContext,
 } from "@/providers/WebRTCContext";
-import { useHttpEndpoint } from "@/providers/region-select-context";
 import { ClassType } from "@/store/actions";
 import {
     classInfoState,
@@ -42,8 +42,8 @@ const qs = require(`qs`);
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
-        paddingLeft: `env(safe-area-inset-left)`,
-        paddingRight: `env(safe-area-inset-right)`,
+        height: `100vh`,
+        paddingLeft: screen.orientation.type.match(`landscape-primary`) ? `env(safe-area-inset-left)` : 0, // iPhone Notch
         paddingBottom: `env(safe-area-inset-bottom)`,
     },
     study: {

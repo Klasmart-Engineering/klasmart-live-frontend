@@ -38,11 +38,6 @@ const useStyles = makeStyles((theme: Theme) =>
             flexGrow: 0,
             borderBottom: `1px solid ${theme.palette.divider}`,
         },
-        safeArea: {
-            paddingLeft: `env(safe-area-inset-left)`,
-            paddingRight: `env(safe-area-inset-right)`,
-            backgroundColor: theme.palette.background.paper,
-        },
         iconButton: {
             backgroundColor: theme.palette.background.paper,
         },
@@ -64,7 +59,6 @@ const useStyles = makeStyles((theme: Theme) =>
 export function Header ({ isHomeRoute, setKey }: { isHomeRoute?: boolean; setKey?: React.Dispatch<React.SetStateAction<string>> }) {
     const {
         root,
-        safeArea,
         centeredLogo,
     } = useStyles();
     const theme = useTheme();
@@ -80,7 +74,6 @@ export function Header ({ isHomeRoute, setKey }: { isHomeRoute?: boolean; setKey
             <AppBar
                 position="sticky"
                 elevation={0}
-                className={safeArea}
             >
                 <Toolbar style={{
                     padding: theme.spacing(0, 1),

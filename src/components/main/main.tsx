@@ -20,7 +20,7 @@ import React,
 
 const useStyles = makeStyles((theme: Theme) => ({
     fullViewHeight: {
-        height: `100vh`,
+        height: `100%`,
         flexWrap: `nowrap`,
     },
     fullViewHeightXs:{
