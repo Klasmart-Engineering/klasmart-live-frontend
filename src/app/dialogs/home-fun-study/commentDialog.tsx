@@ -39,8 +39,6 @@ const useStyles = makeStyles((theme) =>
             borderBottom: `1px solid ${theme.palette.divider}`,
         },
         safeArea: {
-            paddingLeft: `env(safe-area-inset-left)`,
-            paddingRight: `env(safe-area-inset-right)`,
             backgroundColor: theme.palette.background.paper,
         },
         noPadding: {
