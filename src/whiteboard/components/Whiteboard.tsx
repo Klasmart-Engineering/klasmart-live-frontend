@@ -14,7 +14,11 @@ import React,
     useMemo,
 } from "react";
 
-const canvasSize = Math.min(window.screen.width, window.screen.height);
+// Generate a landscape size for the canvas
+const canvasSize = {
+    width: Math.max(window.screen.width, window.screen.height),
+    height: Math.min(window.screen.width, window.screen.height),
+};
 
 const useStyles = makeStyles((theme: Theme) => ({
     whiteboard: {
@@ -23,8 +27,8 @@ const useStyles = makeStyles((theme: Theme) => ({
             position: `relative`,
         },
         "& canvas": {
-            width: `${canvasSize}px !important`,
-            height: `${canvasSize}px !important`,
+            width: `${canvasSize.width}px !important`,
+            height: `${canvasSize.height}px !important`,
         },
     },
     whiteboardResizer: {
@@ -116,8 +120,8 @@ export function Whiteboard ({
                     initialStyle={canvasStyle}
                     filterUsers={filterUsers}
                     filterGroups={filterGroups}
-                    pixelWidth={canvasSize}
-                    pixelHeight={canvasSize}
+                    pixelWidth={canvasSize.width}
+                    pixelHeight={canvasSize.height}
                     display={useLocalDisplay ? localDisplay : display}
                     scaleMode={`ScaleToFill`}
                     centerHorizontally={centerHorizontally !== undefined ? centerHorizontally : true}
