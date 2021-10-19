@@ -1,4 +1,5 @@
 import PreviewLessonPlan from "./previewLessonPlan";
+import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
 import { WB_TOOLBAR_MAX_HEIGHT } from "@/components/classContent/WBToolbar";
 import { LIVE_LINK } from "@/providers/providers";
 import { useSessionContext } from "@/providers/session-context";
@@ -25,15 +26,13 @@ import { Exit as ExitIcon } from "@styled-icons/icomoon/Exit";
 import clsx from "clsx";
 import React,
 {
-    useContext,
     useEffect,
     useRef,
     useState,
 } from "react";
 import { useIntl } from "react-intl";
+import { useHistory } from "react-router-dom";
 import { useRecoilState } from "recoil";
-import {useCordovaSystemContext} from "@/app/context-provider/cordova-system-context";
-import {useHistory} from "react-router-dom";
 
 const useStyles = makeStyles((theme: Theme) => ({
     arrowButton:{
@@ -71,6 +70,9 @@ const useStyles = makeStyles((theme: Theme) => ({
         boxShadow: `0 10px 15px rgb(0 0 0 / 13%), 0 3px 8px rgb(0 0 0 / 13%)`,
         padding: 20,
         boxSizing: `border-box`,
+        [theme.breakpoints.down(`sm`)]: {
+            padding: 10,
+        },
     },
     fullHeight:{
         position: `relative`,
@@ -83,7 +85,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         alignItems: `center`,
         justifyContent: `center`,
         [theme.breakpoints.down(`sm`)]: {
-            width: 80,
+            width: 50,
         },
     },
     centeredContent:{
@@ -190,9 +192,9 @@ export function ClassContent () {
         if (restart) {
             restart();
         } else {
-            history.push(`/schedule`)
+            history.push(`/schedule`);
         }
-    }
+    };
 
     useEffect(() => {
         if (!rootDivRef || !rootDivRef.current) { return; }
@@ -218,9 +220,7 @@ export function ClassContent () {
     return(
         <Grid
             container
-            style={{
-                height: `calc(100% - ${WB_TOOLBAR_MAX_HEIGHT}px)`,
-            }}>
+            className={classes.fullHeight}>
             <Grid
                 item
                 className={classes.navigationColumn}>
@@ -236,8 +236,9 @@ export function ClassContent () {
                     <div className={classes.centeredContent}>
                         {
                             (process.env.IS_CORDOVA_BUILD)
-                            ?   <a  onClick={onCloseButtonClick}
-                                    className={classes.defaultLink}>
+                                ?   <a
+                                    className={classes.defaultLink}
+                                    onClick={onCloseButtonClick}>
                                     <LargeButton
                                         icon={<ExitIcon size="5em" />}
                                         label={intl.formatMessage({
@@ -245,7 +246,8 @@ export function ClassContent () {
                                         })}
                                     />
                                 </a>
-                            :   <a  href={HUB_ENDPOINT}
+                                :   <a
+                                    href={HUB_ENDPOINT}
                                     className={classes.defaultLink}>
                                     <LargeButton
                                         icon={<ExitIcon size="5em" />}
