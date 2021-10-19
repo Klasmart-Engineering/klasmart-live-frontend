@@ -197,6 +197,24 @@ export function RecordedIframe (props: Props): JSX.Element {
             .h5p-column .h5p-dragquestion > .h5p-question-content > .h5p-inner{
                 width: 100% !important
             }
+            ::-webkit-scrollbar {
+                -webkit-appearance: none;
+            }
+            ::-webkit-scrollbar:vertical {
+                width: 20px;
+            }
+            ::-webkit-scrollbar:horizontal {
+                height: 20px;
+            }
+            ::-webkit-scrollbar-thumb {
+                background-color: #619bd8;
+                border-radius: 10px;
+                border: 5px solid #ffffff;
+            }
+            ::-webkit-scrollbar-track {
+                border-radius: 10px;
+                background-color: #ffffff;
+            }
             `;
             contentDoc.head.appendChild(style);
         }
