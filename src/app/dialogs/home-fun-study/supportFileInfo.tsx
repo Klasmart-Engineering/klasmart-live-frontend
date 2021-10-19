@@ -1,3 +1,4 @@
+import { CordovaSystemContext } from "@/app/context-provider/cordova-system-context";
 import {
     Button,
     Dialog,
@@ -8,7 +9,11 @@ import {
     Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import React from "react";
+import React,
+{
+    useContext,
+    useEffect,
+} from "react";
 import { FormattedMessage } from "react-intl";
 
 const useStyles = makeStyles({
@@ -28,6 +33,28 @@ const useStyles = makeStyles({
 
 export function SupportFileInfo ({ open, onClose }: { open: boolean; onClose: () => void }): JSX.Element {
     const classes = useStyles();
+    const {
+        addOnBack,
+        removeOnBack,
+    } = useContext(CordovaSystemContext);
+
+    useEffect(() => {
+        const SUPPORT_FILE_INFO_BACK_ID = `supportFileInfoBackID`;
+        if(open){
+            if (addOnBack) {
+                addOnBack({
+                    id: SUPPORT_FILE_INFO_BACK_ID,
+                    onBack: () => {
+                        handleCloseClick();
+                    },
+                });
+            }
+        }else{
+            if (removeOnBack) {
+                removeOnBack(SUPPORT_FILE_INFO_BACK_ID);
+            }
+        }
+    }, [ open ]);
 
     const handleCloseClick = () => {
         onClose();
