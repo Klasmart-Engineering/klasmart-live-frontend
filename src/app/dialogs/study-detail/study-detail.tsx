@@ -759,7 +759,7 @@ export default function StudyDetail ({
                                     <Grid
                                         container
                                         direction={`column`}>
-                                        {schedule.teachers.map(item => (
+                                        {schedule?.teachers?.map(item => (
                                             <Grid
                                                 key={item.id}
                                                 item>
