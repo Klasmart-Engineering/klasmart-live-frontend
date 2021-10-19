@@ -20,14 +20,11 @@ export const WB_TOOLBAR_MAX_HEIGHT = 80; // 64 + 16(padding top)
 const useStyles = makeStyles(() => ({
     root: {
         position: `relative`,
-        height: WB_TOOLBAR_MAX_HEIGHT,
     },
     buttonWrap: {
         position: `absolute`,
         zIndex: 999,
         bottom: 10,
-        left: 10,
-        paddingTop: `15px`,
     },
 }));
 
