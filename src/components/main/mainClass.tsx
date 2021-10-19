@@ -3,7 +3,10 @@ import { WBToolbarContainer } from "@/components/classContent/WBToolbar";
 import { useSessionContext } from "@/providers/session-context";
 import { ClassType } from "@/store/actions";
 import { showEndStudyState } from "@/store/layoutAtoms";
-import { makeStyles } from "@material-ui/core";
+import {
+    makeStyles,
+    Theme,
+} from "@material-ui/core";
 import React,
 { useContext } from "react";
 import { useRecoilState } from "recoil";
