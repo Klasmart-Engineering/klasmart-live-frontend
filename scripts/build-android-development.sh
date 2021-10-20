@@ -18,7 +18,7 @@ npm run build:app
 [ $? -ne 0 ] && echo "Failed to build webpack" && exit 1
 
 # Override compile SDK version to 31 (solving issue trying to reference missing lStar value)
-export ORG_GRADLE_PROJECT_cdvCompileSdkVersion=31
+# export ORG_GRADLE_PROJECT_cdvCompileSdkVersion=31
 
 # Prepare android platform
 cordova prepare android
