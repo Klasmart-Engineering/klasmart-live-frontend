@@ -8,7 +8,7 @@ export IS_CORDOVA_BUILD="true"
 rm -rf ./www
 rm -rf ./platforms/android
 
-# Ensure packages is installed
+# Ensure packages are installed
 npm install
 
 # Package using webpack

@@ -7,11 +7,15 @@ export WEBRTC_DEVICE_HANDLER_NAME=Safari12
 export CUSTOM_UA=cordovaios
 export IS_CORDOVA_BUILD="true"
 
-# Clean Build
-rm -rf ./www
-#rm -rf ./platforms/ios
+# Clean build (optional)
+if [ "$1" == "clean" ]; then
+  rm -rf ./node_modules
+  rm -rf ./plugins
+  rm -rf ./www
+  rm -rf ./platforms
+fi
 
-# Ensure packages is installed
+# Ensure packages are installed
 npm install
 
 # Package using webpack
