@@ -142,7 +142,17 @@ This section describes how to prepare and build the cordova apps for iOS and And
 
 ## Prerequisites
 
-Follow the steps described for the desired platform to ensure all prerequisites are installed on the developer machine for each platform.
+### Generic
+
+```sh
+mkdir www
+```
+
+This folder is required for Cordova to recognise the project.
+
+Install the Cordova CLI by following these [instructions](https://cordova.apache.org/docs/en/10.x/guide/cli/index.html#installing-the-cordova-cli).
+
+Once these are complete, move onto the steps described for the desired platform to ensure all prerequisites are installed on the developer machine for each platform.
 
 ### Android
 
