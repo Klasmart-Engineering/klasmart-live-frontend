@@ -169,7 +169,7 @@ function UserCamera (props: UserCameraType) {
                 />
                 {actions ? isHover && <UserCameraActions
                     user={user}
-                    expanded={camOn} /> : null}
+                    expanded={camOn && !process.env.IS_CORDOVA_BUILD} /> : null}
                 {userCamera && userSession && camOn ? (
                     <ReactPlayer
                         autoPlay
