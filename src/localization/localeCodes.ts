@@ -3,6 +3,7 @@ import indonesian from "./id.json";
 import korean from "./ko.json";
 import vietnamese from "./vi.json";
 import chinese from "./zh_CN.json";
+import thai from "./th.json";
 import {
     createIntl,
     createIntlCache,
@@ -14,6 +15,7 @@ export const localeCodes = [
     `zh-CN`,
     `vi`,
     `id`,
+    `th`,
 ];
 
 const intlCache = createIntlCache();
@@ -47,6 +49,11 @@ export function getIntl (locale: string) {
         return createIntl({
             locale: `id`,
             messages: indonesian,
+        }, intlCache);
+    case `th`:
+        return createIntl({
+            locale: `th`,
+            messages: thai,
         }, intlCache);
     }
 }
