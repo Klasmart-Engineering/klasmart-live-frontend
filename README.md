@@ -139,7 +139,7 @@ This section describes how to prepare and build the cordova apps for iOS and And
 
 ## Prerequisites
 
-Follow the steps described fo the desired platform to ensure all prerequisites is installed on the developer machine for each platform.
+Follow the steps described for the desired platform to ensure all prerequisites are installed on the developer machine for each platform.
 
 ### Android
 
@@ -149,7 +149,7 @@ The easiest way to install all the Android requirements is to follow the officia
 
 **Verifying all the requirements is in place**
 
-Run the following command to veirfy the Android prerequisites is available and configured:
+Run the following command to verify the Android prerequisites are available and configured:
 
 ```sh
 cordova requirements android
@@ -165,7 +165,7 @@ The easiest way to install all the iOS requirements is to follow the official co
 
 **Verifying all the requirements is in place**
 
-Run the following command to veirfy the iOS prerequisites is available and configured:
+Run the following command to verify the iOS prerequisites are available and configured:
 
 ```sh
 cordova requirements ios
