@@ -86,6 +86,7 @@
     "imagemin-gifsicle": "^7.0.0",
     "mocha": "^8.4.0",
     "mozjpeg": "^7.0.0",
+    "newrelic-cordova-plugin": "github:newrelic/newrelic-cordova-plugin",
     "nyc": "^15.1.0",
     "react-app": "^1.1.2",
     "standard-version": "^9.3.1",
@@ -194,6 +195,12 @@
       "cordova-plugin-x-socialsharing": {
         "PHOTO_LIBRARY_ADD_USAGE_DESCRIPTION": "This app requires photo library access to function properly.",
         "PHOTO_LIBRARY_USAGE_DESCRIPTION": "This app requires photo library access to function properly."
+      },
+      "newrelic-cordova-plugin": {
+        "IOS_APP_TOKEN": "eu01xx7a4fcd22f8a0a19445e0413aa08c9455adfc-NRMA",
+        "ANDROID_APP_TOKEN": "eu01xx4cd47606eb91539213bbbabcb6b169f8799c-NRMA",
+        "PLUGIN_VERSION": "5.0.0",
+        "ANDROID_AGENT_VER": "6.3.1"
       }
     },
     "platforms": [
