@@ -41,18 +41,14 @@ export function SupportFileInfo ({ open, onClose }: { open: boolean; onClose: ()
     useEffect(() => {
         const SUPPORT_FILE_INFO_BACK_ID = `supportFileInfoBackID`;
         if(open){
-            if (addOnBack) {
-                addOnBack({
-                    id: SUPPORT_FILE_INFO_BACK_ID,
-                    onBack: () => {
-                        handleCloseClick();
-                    },
-                });
-            }
+            addOnBack?.({
+                id: SUPPORT_FILE_INFO_BACK_ID,
+                onBack: () => {
+                    handleCloseClick();
+                },
+            });
         }else{
-            if (removeOnBack) {
-                removeOnBack(SUPPORT_FILE_INFO_BACK_ID);
-            }
+            removeOnBack?.(SUPPORT_FILE_INFO_BACK_ID);
         }
     }, [ open ]);
 
