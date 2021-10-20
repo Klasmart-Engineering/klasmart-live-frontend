@@ -1,7 +1,6 @@
 {
     "activity_link": "Activity Link",
     "join_cameraPreviewFallback_allowMediaPermissions": "Allow media device permissions",
-    "join_cameraPreviewFallback_cameraUnavailableOnPlatform": "Camera unavailable on this platform or version. Please update the device.",
     "join_permissionAlertDialog_title": "Allow to use your media device for Live",
     "join_permissionAlertDialog_contentText_live": "Live needs access to the camera and microphone in order for other class participants to see you and hear you.",
     "join_permissionAlertDialog_contentText_classesStudy": "Live needs access to the microphone for in-class interactive contents.",
