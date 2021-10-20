@@ -186,6 +186,67 @@ cordova requirements ios
 
 Fix any missing requirements the previous command detected and then move on to the Building section.
 
+## Troubleshooting
+
+### Missing DX
+
+```text
+Build-tool 31.0.0 is missing DX at /lib/Android/Sdk/build-tools/31.0.0/dx
+
+FAILURE: Build failed with an exception.
+
+-   What went wrong:
+    Could not determine the dependencies of task ':app:compileDebugJavaWithJavac'.
+    > Installed Build Tools revision 31.0.0 is corrupted. Remove and install again using the SDK Manager.
+```
+
+```sh
+# change below to your Android SDK path
+ANDROID_SDK_HOME=/usr/lib/Android/Sdk
+cd ANDROID_SDK_HOME/build-tools/31.0.0 \
+  && sudo mv d8 dx \
+  && cd lib  \
+  && sudo mv d8.jar dx.jar
+```
+
+### Android resource linking failed
+
+```text
+> Task :app:processDebugResources FAILED
+
+FAILURE: Build failed with an exception.
+
+-   What went wrong:
+    Execution failed for task ':app:processDebugResources'.
+    > A failure occurred while executing com.android.build.gradle.internal.tasks.Workers$ActionFacade
+    > Android resource linking failed
+         kidsloop-live-frontend/platforms/android/app/src/main/AndroidManifest.xml:13:13-112: AAPT: error: resource xml/file_paths (aka com.kidsloop.platform.student:xml/file_paths) not found.
+```
+
+Perform the following before re-running the build script.
+
+```sh
+rm -rf plugins
+rm -rf platforms
+```
+
+### Unrecognized Attribute name MODULE
+
+```text
+> Task :app:compileDebugJavaWithJavac FAILED
+An exception has occurred in the compiler (1.8.0_292). Please file a bug against the Java compiler via the Java bug reporting page (http://bugreport.java.com) after checking the Bug Database (http://bugs.java.com) for duplicates. Include your program and the following diagnostic in your report. Thank you.
+java.lang.AssertionError: annotationType(): unrecognized Attribute name MODULE (class com.sun.tools.javac.util.UnsharedNameTable$NameImpl)
+        at com.sun.tools.javac.util.Assert.error(Assert.java:133)
+```
+
+Check the `export ORG_GRADLE_PROJECT_cdvCompileSdkVersion=31` line in the build script file, and reduce the version number (e.g. to 29 or 30).
+
+Note, you will need to make sure the corresponding Android SDK is installed (e.g. 29 = Android 10.0 - Q).
+
+### Broken images in app output
+
+Ensure `git lfs` is setup (see Local Setup - Prerequisites), then rebuild the application.
+
 ## Building for Development
 
 Building for development is separated in two different steps. One step to generate the native platform project and files and another step to build the native applications. In the KidsLoop Live repository there's scripts to help do these steps.
