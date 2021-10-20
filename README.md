@@ -1,25 +1,35 @@
 # Local Setup
+
 ## Prerequisites
-* Docker installed and running. [Download here](https://www.docker.com/products/docker-desktop).
-* Locally cloned versions of the folowing repositories:
-    * [kidsloop-live-server](https://bitbucket.org/calmisland/kidsloop-live-server)
-    * [kidsloop-sfu](https://bitbucket.org/calmisland/kidsloop-sfu)
-    * [kidsloop-sfu-gateway](https://bitbucket.org/calmisland/kidsloop-sfu-gateway)
+
+-   Docker installed and running. [Download here](https://www.docker.com/products/docker-desktop).
+-   Locally cloned versions of the folowing repositories:
+    -   [kidsloop-live-server](https://bitbucket.org/calmisland/kidsloop-live-server)
+    -   [kidsloop-sfu](https://bitbucket.org/calmisland/kidsloop-sfu)
+    -   [kidsloop-sfu-gateway](https://bitbucket.org/calmisland/kidsloop-sfu-gateway)
 
 ### Mac
+
 Add the following to your `~/.bash_profile` file (or create the file if it doesn't exist)
+
 ```bash
 export DEV_SECRET='iXtZx1D5AqEB0B9pfn+hRQ=='
 ```
-*If you use a different terminal other than **Bash**, you might need to load the Bash config file into your terminal's config.*
+
+_If you use a different terminal other than **Bash**, you might need to load the Bash config file into your terminal's config._
+
 ### Zsh
+
 Add the following to `~/.zshenv` (or create the file if it doesn't exist)
+
 ```zsh
 source ~/.bash_profile
 ```
 
 ## 1. `kidsloop-live-server`
+
 Open up a terminal, and navigate to your local root of `kidsloop-live-server` and enter the following commands:
+
 ```
 docker run --name some-redis -p 6379:6379 -d redis
 docker run --name postgres -e POSTGRES_PASSWORD=PASSWORD -p 5432:5432 -d postgres
@@ -28,29 +38,42 @@ npm start
 ```
 
 ## 2. `kidsloop-sfu-gateway`
+
 Open up a terminal, and navigate to your local root of `kidsloop-sfu-gateway` and enter the following commands:
+
 ```
 npm install
 npm start
 ```
+
 ## 3. `kidsloop-sfu`
+
 Open up a terminal, and navigate to your local root of `kidsloop-sfu` and enter the following commands:
+
 ```
 npm install
 USE_IP=1 npm start
 ```
+
 ## 4. `kidsloop-live-frontend`
+
 1. Add the following redirect config to your computer's `hosts` file
+
 ```host
 local.alpha.kidsloop.net    localhost
 ```
+
 2. Navigate to your local root of `kidsloop-live-frontend` and copy the contents of `env.example` (or fill out with the wanted values) and create a new file called `.env` and place it in the same folder:
 3. Enter the following commands in the terminal:
+
 ```
 npm start
 ```
+
 ### Connect to a Local Live Class **with a valid Access Cookie**
+
 #### Generate a **Teacher** token
+
 1. Go to https://hub.alpha.kidsloop.net
 2. Sign in with an account that has a Teacher user
 3. Navigate to `/schedule`
@@ -68,35 +91,44 @@ npm start
 15. Open up a new tab and browse to https://local.alpha.kidsloop.net:8082/?token=TOKEN
 
 #### Generate a **Student** token
+
 1. Follow the all same steps in "Generate a **Teacher** token" until and including **Step 13**
 2. In the "PAYLOAD" section, change the `"teacher"` value to `false`
 3. Copy the newly generated `TOKEN` from the "Encoded" section
 4. Open up a new tab and browse to https://local.alpha.kidsloop.net:8082/?token=TOKEN
+
 ### Connect to a Local Live Class **and bypass the valid Access Cookie check**
+
 1. In `kidsloop-live-server/src/main.ts` comment out the usage of:
-    * `checkToken` (lines ~ 58-64)
-    * `checkToken` (lines ~ 138-144)
+    - `checkToken` (lines ~ 58-64)
+    - `checkToken` (lines ~ 138-144)
 2. Restart `kidsloop-live-server`
 3. In `kidsloop-live-frontend/webpack.config.js` change `module.exports.devServer.https` to `false`
 4. Restart `kidsloop-live-frontend`
 
-*NOTE: When joining a class without a valid Access Cookie, you need to use the browser Safari. After you have successfully joined you can copy the web address in Safari and paste it into Chrome or any other browser.*
+_NOTE: When joining a class without a valid Access Cookie, you need to use the browser Safari. After you have successfully joined you can copy the web address in Safari and paste it into Chrome or any other browser._
 
 # FAQ
+
 ## Build Issues
+
 **I have trouble building `kidsloop-live-frontend` due to issues cloning `kidsloop-canvas`**
 
 Try adjusting your `.gitconfig` to have the following information:
+
 ```
 [url "ssh://git@bitbucket.org"]
 	insteadOf = https://bitbucket.org
 ```
+
 This should prevent npm from trying to use https when pulling down repos from bitbucket.
 
 ## Live Class Issues
+
 **I have old Users (aka Ghost Users) that never leave my Class**
 
 SSH (attach shell) to the running `redis` docker container, and run the command:
+
 ```
 redis-cli flushall
 ```
@@ -106,17 +138,19 @@ redis-cli flushall
 This section describes how to prepare and build the cordova apps for iOS and Android inside this repository.
 
 ## Prerequisites
+
 Follow the steps described fo the desired platform to ensure all prerequisites is installed on the developer machine for each platform.
 
 ### Android
 
-**Official Cordova documentation** 
+**Official Cordova documentation**
 
 The easiest way to install all the Android requirements is to follow the official cordova documentation. This can be found at this URL: https://cordova.apache.org/docs/en/10.x/guide/platforms/android/index.html#installing-the-requirements
 
 **Verifying all the requirements is in place**
 
 Run the following command to veirfy the Android prerequisites is available and configured:
+
 ```
 cordova requirements android
 ```
@@ -125,13 +159,14 @@ Fix any missing requirements the previous command detected and then move on to t
 
 ### iOS
 
-**Official Cordova documentation** 
+**Official Cordova documentation**
 
 The easiest way to install all the iOS requirements is to follow the official cordova documentation. This can be found at this URL: https://cordova.apache.org/docs/en/10.x/guide/platforms/ios/index.html#installing-the-requirements
 
 **Verifying all the requirements is in place**
 
 Run the following command to veirfy the iOS prerequisites is available and configured:
+
 ```
 cordova requirements ios
 ```
@@ -139,9 +174,11 @@ cordova requirements ios
 Fix any missing requirements the previous command detected and then move on to the Building section.
 
 ## Building for Development
+
 Building for development is separated in two different steps. One step to generate the native platform project and files and another step to build the native applications. In the KidsLoop Live repository there's scripts to help do these steps.
 
 ### Android
+
 Execute the following command to build a development `apk` file:
 
 ```
@@ -161,7 +198,9 @@ adb install -r ./platforms/android/app/build/outputs/apk/debug/app-debug.apk
 ```
 
 ### iOS
+
 Execute the following command to build and open a XCode project:
+
 ```
 ./scripts/build-ios-development.sh
 ```
@@ -171,6 +210,7 @@ If there wasn't any errors the command will open the generated XCode project. Us
 ## Building for Production
 
 ### Android
+
 Execute the following command to build a production `aab` file:
 
 ```
@@ -186,7 +226,9 @@ If there wasn't any errors the command will produce an `aab` file in this locati
 This file can then be uploaded to Google Play using the Google Play developer console.
 
 ### iOS
+
 Execute the following command to build and open a XCode project:
+
 ```
 ./scripts/build-ios-development.sh
 ```
@@ -196,6 +238,7 @@ If there wasn't any errors the command will open the generated XCode project.
 **Add build phase script to remove x86 architectures from included frameworks**
 
 Go to the project properties and `Build Phases` page in XCode. Add the following script as a last `Build Phase`:
+
 ```
 echo "Target architectures: $ARCHS"
 
@@ -250,6 +293,3 @@ The KidsLoop distribution certificate with private key have to be in the `Key Ch
 **Archive the iOS binary**
 
 Now it's possible to archive the binary and then distribute and upload to App Store as usual.
-
-
-
