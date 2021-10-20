@@ -30,7 +30,7 @@ source ~/.bash_profile
 
 Open up a terminal, and navigate to your local root of `kidsloop-live-server` and enter the following commands:
 
-```
+```sh
 docker run --name some-redis -p 6379:6379 -d redis
 docker run --name postgres -e POSTGRES_PASSWORD=PASSWORD -p 5432:5432 -d postgres
 npm install
@@ -41,7 +41,7 @@ npm start
 
 Open up a terminal, and navigate to your local root of `kidsloop-sfu-gateway` and enter the following commands:
 
-```
+```sh
 npm install
 npm start
 ```
@@ -50,7 +50,7 @@ npm start
 
 Open up a terminal, and navigate to your local root of `kidsloop-sfu` and enter the following commands:
 
-```
+```sh
 npm install
 USE_IP=1 npm start
 ```
@@ -66,7 +66,7 @@ local.alpha.kidsloop.net    localhost
 2. Navigate to your local root of `kidsloop-live-frontend` and copy the contents of `env.example` (or fill out with the wanted values) and create a new file called `.env` and place it in the same folder:
 3. Enter the following commands in the terminal:
 
-```
+```sh
 npm start
 ```
 
@@ -129,7 +129,7 @@ This should prevent npm from trying to use https when pulling down repos from bi
 
 SSH (attach shell) to the running `redis` docker container, and run the command:
 
-```
+```sh
 redis-cli flushall
 ```
 
@@ -151,7 +151,7 @@ The easiest way to install all the Android requirements is to follow the officia
 
 Run the following command to veirfy the Android prerequisites is available and configured:
 
-```
+```sh
 cordova requirements android
 ```
 
@@ -167,7 +167,7 @@ The easiest way to install all the iOS requirements is to follow the official co
 
 Run the following command to veirfy the iOS prerequisites is available and configured:
 
-```
+```sh
 cordova requirements ios
 ```
 
@@ -181,7 +181,7 @@ Building for development is separated in two different steps. One step to genera
 
 Execute the following command to build a development `apk` file:
 
-```
+```sh
 ./scripts/build-android-development.sh
 ```
 
@@ -193,7 +193,7 @@ If there wasn't any errors the command will produce an `apk` file in this locati
 
 This file can be installed on device or emulator using the command:
 
-```
+```sh
 adb install -r ./platforms/android/app/build/outputs/apk/debug/app-debug.apk
 ```
 
@@ -201,7 +201,7 @@ adb install -r ./platforms/android/app/build/outputs/apk/debug/app-debug.apk
 
 Execute the following command to build and open a XCode project:
 
-```
+```sh
 ./scripts/build-ios-development.sh
 ```
 
@@ -213,7 +213,7 @@ If there wasn't any errors the command will open the generated XCode project. Us
 
 Execute the following command to build a production `aab` file:
 
-```
+```sh
 ./scripts/build-android-release.sh
 ```
 
@@ -229,7 +229,7 @@ This file can then be uploaded to Google Play using the Google Play developer co
 
 Execute the following command to build and open a XCode project:
 
-```
+```sh
 ./scripts/build-ios-development.sh
 ```
 
@@ -239,7 +239,7 @@ If there wasn't any errors the command will open the generated XCode project.
 
 Go to the project properties and `Build Phases` page in XCode. Add the following script as a last `Build Phase`:
 
-```
+```sh
 echo "Target architectures: $ARCHS"
 
 APP_PATH="${TARGET_BUILD_DIR}/${WRAPPER_NAME}"
