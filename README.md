@@ -7,6 +7,9 @@
     -   [kidsloop-live-server](https://bitbucket.org/calmisland/kidsloop-live-server)
     -   [kidsloop-sfu](https://bitbucket.org/calmisland/kidsloop-sfu)
     -   [kidsloop-sfu-gateway](https://bitbucket.org/calmisland/kidsloop-sfu-gateway)
+-   git lfs setup
+    -   follow installation [instructions](https://github.com/git-lfs/git-lfs/blob/main/INSTALLING.md#installing-packages)
+    -   `git lfs install`
 
 ### Mac
 
