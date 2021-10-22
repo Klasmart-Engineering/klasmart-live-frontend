@@ -1,6 +1,6 @@
 {
   "name": "client",
-  "version": "3.0.0-internal.3",
+  "version": "3.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
