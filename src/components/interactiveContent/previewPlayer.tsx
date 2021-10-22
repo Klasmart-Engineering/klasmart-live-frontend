@@ -22,6 +22,7 @@ import React,
 } from "react";
 import { FormattedMessage } from "react-intl";
 import { useRecoilState } from "recoil";
+import { useHttpEndpoint } from "@/providers/region-select-context";
 
 const SUB_EVENTS = gql`
   subscription stream($streamId: ID!) {
@@ -42,7 +43,7 @@ export interface Props {
 }
 
 export function PreviewPlayer ({
-    streamId, frameProps, width, height, container, loadingStreamId,
+    streamId, frameProps, width, height, container, loadingStreamId
 }: Props): JSX.Element {
     const ref = useRef<HTMLIFrameElement>(null);
     // const [ scale, setScale ] = useState(1);
@@ -57,6 +58,7 @@ export function PreviewPlayer ({
 
     const { content } = useContext(RoomContext);
     const { isTeacher } = useSessionContext();
+    const liveEndPoint = useHttpEndpoint(`live`);
 
     const containerHtml = window.document.getElementById(container) as HTMLIFrameElement;
     const size = useWindowSize();
@@ -223,7 +225,7 @@ export function PreviewPlayer ({
                 width: frameWidth,
                 height: frameHeight,
             }}
-            src={`player.html?streamId=${streamId}`}
+            src={`${process.env.IS_CORDOVA_BUILD ? `${liveEndPoint}/`  : ``}player.html?streamId=${streamId}`}
             onLoad={() => onLoad()}
             {...frameProps}
         />
