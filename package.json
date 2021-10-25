@@ -14,7 +14,6 @@
     "build:docker": "DOCKER_BUILDKIT=1 docker build --no-cache --ssh default -t kidsloop-live-frontend .",
     "preversion": "git checkout master && git pull origin master",
     "postversion": "git push && git push --tags",
-    "cordova:sync:version": "cordova-version-sync && git add config.xml",
     "release": "standard-version -a"
   },
   "author": "",
@@ -193,15 +192,22 @@
     ]
   },
   "standard-version": {
-    "scripts": {
-      "precommit": "npm run cordova:sync:version"
-    },
     "commitUrlFormat": "{{host}}/{{owner}}/{{repository}}/commits/{{hash}}",
     "compareUrlFormat": "{{host}}/{{owner}}/{{repository}}/branches/compare/{{previousTag}}%0D{{currentTag}}",
     "issueUrlFormat": "https://calmisland.atlassian.net/browse/{{id}}",
     "issuePrefixes": [
       "#",
       "Jira: "
+    ],
+    "bumpFiles": [
+      {
+        "filename": "package.json",
+        "type": "json"
+      },
+      {
+        "filename": "config.xml",
+        "updater": "scripts/bump-cordova-version.js"
+      }
     ]
   }
 }
