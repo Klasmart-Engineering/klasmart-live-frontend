@@ -576,7 +576,7 @@ export const WebRTCProvider = (props: { children: React.ReactNode }) => {
         console.log(`Producer: wait send transport`, params);
         const transport = device.createSendTransport(params);
 
-        attachCallstatsFabric(transport, params, roomId, callstats.transmissionDirection.sendonly);
+        attachCallstatsFabric(transport, params, roomId, callstats.transmissionDirection?.sendonly);
 
         setDestructors(new Map(destructors.set(transport.id, () => {
             terminateCallstatsFabric(transport, roomId);
@@ -646,7 +646,7 @@ export const WebRTCProvider = (props: { children: React.ReactNode }) => {
         console.log(`Consumer: create recv transport`);
         const transport = device.createRecvTransport(params);
 
-        attachCallstatsFabric(transport, params, roomId, callstats.transmissionDirection.receiveonly);
+        attachCallstatsFabric(transport, params, roomId, callstats.transmissionDirection?.receiveonly);
 
         setDestructors(new Map(destructors.set(transport.id, () => {
             terminateCallstatsFabric(transport, roomId);
