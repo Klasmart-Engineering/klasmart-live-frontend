@@ -1,4 +1,3 @@
-// @ts-ignore
 import { SFU_LINK } from "./providers";
 import { useSessionContext } from "./session-context";
 import { Resolver } from "@/resolver";
@@ -24,7 +23,8 @@ import React,
     useState,
 } from "react";
 
-const callstats: any = require(`callstats-js/callstats.min`);
+const Callstats = require(`callstats-js/callstats.min.js`);
+const callstats = new Callstats();
 
 const SEND_RTP_CAPABILITIES = gql`
     mutation rtpCapabilities($rtpCapabilities: String!) {
