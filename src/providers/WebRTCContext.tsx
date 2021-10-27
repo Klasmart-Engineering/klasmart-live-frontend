@@ -23,7 +23,7 @@ import React,
     useState,
 } from "react";
 
-const Callstats = require(`callstats-js/callstats.min.js`);
+const Callstats: any = require(`callstats-js/callstats.min`);
 const callstats = new Callstats();
 
 const SEND_RTP_CAPABILITIES = gql`
