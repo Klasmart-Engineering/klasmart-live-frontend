@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.1.0-internal.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.0.0%0Dv3.1.0-internal.0) (2021-10-27)
+
+
+### Features
+
+* (app) Use PDF to JPEG ([e33cd6f](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/e33cd6f87e0b75aa09d3e034e5536ba70a9f2140))
+* (web) Use hub language in Live + remove settings panel ([43a8319](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/43a83195a5d1a18dcc5698115d6ba1d9ba7d98dd))
+* Add scollbar inside scrollable h5p ([a20ef1e](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/a20ef1e01c148bdd4db741d7c23ab08bf25df69c))
+* Bigger study view ([609b2ef](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/609b2ef4789ac45b2988f2d1f80ba60ac8e2e171))
+* Remove close icon if profile is not autoselected ([251c6a0](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/251c6a03cae6e6b60a188de0d07ecc8c61aaaaa6))
+* Switch to JPEG PDF ([ba8e286](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/ba8e286f68919b008a3181caaac56f1b08d011fb))
+
+
+### Bug Fixes
+
+* add Safe Area for Study view ([b061e8a](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/b061e8a84e1333fabf9f95860943ca884e8c2edb))
+* **app:** Added SupportFileInfo popup into BackQueue ([cb7db2e](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/cb7db2e1ae6e9316b075fc4b2053bf983e9052c9))
+* Appbar in theme + remove un-needed in commentDialog.tsx ([23267d2](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/23267d2889451412641be7a48c0fd681e1158760))
+* **app:** Youtube video doesn't play on Cordova in Present Mode ([77016f0](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/77016f0667e0de0b1ea85aea3b20de069bebf80c))
+* autofocus on iOs (parentalGate) ([172f583](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/172f58340a7e0b4b881481e5301191e816be48c0))
+* Generate the canvas size to fit the screen size. ([5c58917](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/5c58917c787edda17127f72a6755e5484ae9e112))
+* iOs safe area ([053c8e0](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/053c8e0ec275f094d4eec846d6e930142d56c383))
+* Live class goes white blank ([5764f43](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/5764f438cfd7e7b684eef5b105ce2fe2a71e5bee))
+* update config files pdf version ([b592e09](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/b592e09fa6b591614f7897c1a04218c515fc221d))
+
 ## [3.0.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v2.3.0%0Dv3.0.0) (2021-10-22)
 
 
