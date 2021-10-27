@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.1.0-internal.1](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.1.0-internal.0%0Dv3.1.0-internal.1) (2021-10-27)
+
+
+### Bug Fixes
+
+* undefined error trying to read send/recv- only field ([19331be](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/19331be229803b5d2aefc94871d5b4c40d5bd86f))
+
 ## [3.1.0-internal.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.0.0%0Dv3.1.0-internal.0) (2021-10-27)
 
 
