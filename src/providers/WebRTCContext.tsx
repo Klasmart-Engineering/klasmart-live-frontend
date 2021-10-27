@@ -16,13 +16,13 @@ import {
     Producer,
     ProducerOptions,
 } from "mediasoup-client/lib/Producer";
+import { BuiltinHandlerName } from "mediasoup-client/lib/types";
 import React,
 {
     createContext,
     useEffect,
     useState,
 } from "react";
-import { BuiltinHandlerName } from "mediasoup-client/lib/types";
 
 const callstats: any = require(`callstats-js/callstats.min`);
 
@@ -576,7 +576,7 @@ export const WebRTCProvider = (props: { children: React.ReactNode }) => {
         console.log(`Producer: wait send transport`, params);
         const transport = device.createSendTransport(params);
 
-        attachCallstatsFabric(transport, params, roomId, callstats.transmissionDirection?.sendonly);
+        attachCallstatsFabric(transport, params, roomId, FabricTransmissionDirection.SENDONLY);
 
         setDestructors(new Map(destructors.set(transport.id, () => {
             terminateCallstatsFabric(transport, roomId);
@@ -646,7 +646,7 @@ export const WebRTCProvider = (props: { children: React.ReactNode }) => {
         console.log(`Consumer: create recv transport`);
         const transport = device.createRecvTransport(params);
 
-        attachCallstatsFabric(transport, params, roomId, callstats.transmissionDirection?.receiveonly);
+        attachCallstatsFabric(transport, params, roomId, FabricTransmissionDirection.RECEIVEONLY);
 
         setDestructors(new Map(destructors.set(transport.id, () => {
             terminateCallstatsFabric(transport, roomId);
@@ -853,10 +853,10 @@ export const WebRTCProvider = (props: { children: React.ReactNode }) => {
     });
 
     useEffect(() => {
-        if(!process.env.IS_CORDOVA_BUILD){
-            // TODO: Temporarily hide this line for the app to avoid crashing on iOS, it needs to be investigated further.
-            callstats.initialize(`881714000`, `OV6YSSRJ0fOA:vr7quqij46jLPMpaBXTAF50F2wFTqP4acrxXWVs9BIk=`, name + `:` + localSessionId);
+        if (process.env.CALLSTATS_ENABLE !== `TRUE`) {
+            return;
         }
+        callstats.initialize(`881714000`, `OV6YSSRJ0fOA:vr7quqij46jLPMpaBXTAF50F2wFTqP4acrxXWVs9BIk=`, name + `:` + localSessionId);
     }, [ name, localSessionId ]);
 
     useEffect(() => {
@@ -982,4 +982,10 @@ function getVP9SvcScalabilityMode () {
         console.log(`Unknown video codec scalability mode '${mode}' defaulting to '${defaultMode}'`);
         return defaultMode;
     }
+}
+
+enum FabricTransmissionDirection {
+    SENDONLY = `sendonly`,
+    RECEIVEONLY = `receiveonly`,
+    SENDRECV = `sendrecv`,
 }
