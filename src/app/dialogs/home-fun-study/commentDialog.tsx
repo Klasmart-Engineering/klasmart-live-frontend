@@ -1,7 +1,7 @@
-import { isBlank } from "../../../utils/StringUtils";
 import { CloseIconButton } from "../../components/icons/closeIconButton";
 import { CordovaSystemContext } from "../../context-provider/cordova-system-context";
 import { usePopupContext } from "../../context-provider/popup-context";
+import { isBlank } from "@/utils/StringUtils";
 import {
     Box,
     Button,
@@ -23,6 +23,7 @@ import Toolbar from "@material-ui/core/Toolbar";
 import { TransitionProps } from "@material-ui/core/transitions";
 import React,
 {
+    useCallback,
     useContext,
     useEffect,
     useState,
@@ -85,6 +86,16 @@ export function CommentDialog ({
     const [ currentComment, setCurrentComment ] = useState(defaultComment);
     const { showPopup } = usePopupContext();
     const { addOnBack, removeOnBack } = useContext(CordovaSystemContext);
+    const [ shouldCloseComment, setShouldCloseComment ] = useState(false);
+
+    function addCommentDialogToBackQueue () {
+        addOnBack?.({
+            id: COMMENT_ON_BACK_ID,
+            onBack: () => {
+                setShouldCloseComment(true);
+            },
+        });
+    }
 
     useEffect(() => {
         function initTitle (){
@@ -101,16 +112,9 @@ export function CommentDialog ({
 
         function initOnBack (){
             if(open){
-                if(addOnBack){
-                    addOnBack({
-                        id: COMMENT_ON_BACK_ID,
-                        onBack: handleCloseDialog,
-                    });
-                }
+                addCommentDialogToBackQueue();
             }else{
-                if(removeOnBack){
-                    removeOnBack(COMMENT_ON_BACK_ID);
-                }
+                removeOnBack?.(COMMENT_ON_BACK_ID);
             }
         }
 
@@ -130,9 +134,6 @@ export function CommentDialog ({
     function handleOnSave () {
         if (currentComment && currentComment.length >= MINIMUM_CHARACTER && currentComment.length <= MAXIMUM_CHARACTER)
             onSave(currentComment);
-        else {
-            //TODO: Alert invalid comment message
-        }
     }
 
     function handleOnCommentChange (event: React.ChangeEvent<HTMLInputElement>) {
@@ -143,7 +144,7 @@ export function CommentDialog ({
         setCurrentComment(``);
         onClose();
     }
-    function handleCloseDialog (){
+    const handleCloseDialog = useCallback(() => {
         if(currentComment && !isBlank(currentComment)){
             showPopup({
                 variant: `confirm`,
@@ -165,11 +166,20 @@ export function CommentDialog ({
                     id: `button_continue`,
                 }),
                 onConfirm: handleConfirmClose,
+                onClose: addCommentDialogToBackQueue,
             });
         }else{
             onClose();
         }
-    }
+    }, [ currentComment ]);
+
+    useEffect(() => {
+        if(shouldCloseComment){
+            setShouldCloseComment(false);
+            handleCloseDialog();
+        }
+    }, [ shouldCloseComment, handleCloseDialog ]);
+
     return (
         <React.Fragment>
             <Dialog
