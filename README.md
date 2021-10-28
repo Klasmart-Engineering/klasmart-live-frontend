@@ -1,5 +1,10 @@
 # Local Setup
 
+## Install Husky commit hooks
+This project is using [Husky](https://typicode.github.io/husky/#/) to lint commit messages. Run the following command to set up these hooks before making any commits to the project. The linting is configured to follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
+```
+npm run prepare
+```
 ## Prerequisites
 
 -   Docker installed and running. [Download here](https://www.docker.com/products/docker-desktop).
