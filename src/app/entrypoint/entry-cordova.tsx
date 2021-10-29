@@ -8,6 +8,7 @@ import { CompositionRoot } from "../context-provider/composition-root";
 import { CordovaSystemProvider } from "../context-provider/cordova-system-context";
 import { PopupProvider } from "../context-provider/popup-context";
 import { App } from "../cordova-app";
+import { UserServiceApolloClient } from "../data/user/userServiceApolloClient";
 import {
     errorState,
     historyState,
@@ -91,21 +92,23 @@ function Entry () {
         <RawIntlProvider value={language}>
             <CordovaSystemProvider history={history}>
                 <CompositionRoot sessionId={sessionId}>
-                    <ThemeProvider theme={themeProvider(locale.languageCode, themeMode)}>
-                        <SnackbarProvider >
-                            <CssBaseline />
-                            <PopupProvider>
-                                <App history={history} />
-                            </PopupProvider>
-                        </SnackbarProvider>
-                    </ThemeProvider>
+                    <UserServiceApolloClient>
+                        <ThemeProvider theme={themeProvider(locale.languageCode, themeMode)}>
+                            <SnackbarProvider >
+                                <CssBaseline />
+                                <PopupProvider>
+                                    <App history={history} />
+                                </PopupProvider>
+                            </SnackbarProvider>
+                        </ThemeProvider>
+                    </UserServiceApolloClient>
                 </CompositionRoot>
             </CordovaSystemProvider>
         </RawIntlProvider>
     );
 }
 
-async function main () {
+function main () {
     const { store, persistor } = createDefaultStore();
     const renderComponent = (
         <Provider store={store}>

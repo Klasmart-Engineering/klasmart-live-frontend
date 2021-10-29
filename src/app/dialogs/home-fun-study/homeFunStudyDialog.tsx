@@ -13,8 +13,6 @@ import { useServices } from "../../context-provider/services-provider";
 import {
     homeFunStudyState,
     OrientationType,
-    selectedOrganizationState,
-    selectedUserState,
 } from "../../model/appModel";
 import {
     Assignment,
@@ -34,6 +32,10 @@ import { formatDueDate } from "../../utils/timeUtils";
 import { BottomSelector } from "./bottomSelector";
 import { CommentDialog } from "./commentDialog";
 import { SupportFileInfo } from "./supportFileInfo";
+import {
+    useSelectedOrganizationValue,
+    useSelectedUserValue,
+} from "@/app/data/user/atom";
 import { downloadDataBlob } from "@/app/utils/requestUtils";
 import { useHttpEndpoint } from "@/providers/region-select-context";
 import {
@@ -172,8 +174,8 @@ export function HomeFunStudyDialog () {
     const { showPopup } = usePopupContext();
     const [ homeFunStudy, setHomeFunStudy ] = useRecoilState(homeFunStudyState);
     const { schedulerService } = useServices();
-    const [ selectedOrganization ] = useRecoilState(selectedOrganizationState);
-    const [ selectedUser ] = useRecoilState(selectedUserState);
+    const selectedOrganization = useSelectedOrganizationValue();
+    const selectedUser = useSelectedUserValue();
     const [ studyInfo, setStudyInfo ] = useState<ScheduleResponse>();
     const [ newestFeedback, setNewestFeedback ] = useState<ScheduleFeedbackResponse>();
     const [ key, setKey ] = useState(Math.random().toString(36));
@@ -269,13 +271,13 @@ export function HomeFunStudyDialog () {
                 if (!selectedOrganization) {
                     throw new Error(`Organization is not selected`);
                 }
-                if (!selectedUser.userId) {
+                if (!selectedUser?.user_id) {
                     throw new Error(`User profile is not selected`);
                 }
                 if (!homeFunStudy?.studyId) {
                     throw new Error(`No studyId on query path`);
                 }
-                const newestFeedbackPayload = await schedulerService.getNewestFeedback(selectedOrganization.organization_id, homeFunStudy.studyId, selectedUser.userId);
+                const newestFeedbackPayload = await schedulerService.getNewestFeedback(selectedOrganization.organization_id, homeFunStudy.studyId, selectedUser?.user_id);
                 setNewestFeedback(newestFeedbackPayload);
             }
 
@@ -297,12 +299,12 @@ export function HomeFunStudyDialog () {
     ]);
 
     const localFeedback = useMemo(() => {
-        if (!homeFunStudy.feedback || !studyInfo || !selectedUser.userId) {
+        if (!homeFunStudy.feedback || !studyInfo || !selectedUser?.user_id) {
             return undefined;
         }
 
         const hfsFeedbacks = homeFunStudy.feedback;
-        return hfsFeedbacks.find(feedback => feedback.userId === selectedUser.userId && feedback.studyId === studyInfo.id);
+        return hfsFeedbacks.find(feedback => feedback.userId === selectedUser?.user_id && feedback.studyId === studyInfo.id);
     }, [
         homeFunStudy.feedback,
         selectedUser,
@@ -312,7 +314,7 @@ export function HomeFunStudyDialog () {
     const shouldShowSubmitButton = useMemo(() => {
         if (submitStatus === SubmitStatus.SUBMITTING)
             return false;
-        if (selectedUser.userId && studyInfo && newestFeedback?.is_allow_submit && (studyInfo.due_at === 0 || studyInfo?.due_at >= todayTimeStamp)) {
+        if (selectedUser?.user_id && studyInfo && newestFeedback?.is_allow_submit && (studyInfo.due_at === 0 || studyInfo?.due_at >= todayTimeStamp)) {
             if (localFeedback && localFeedback.assignmentItems.length > 0 && localFeedback.assignmentItems.length <= MAX_FILE_LIMIT) {
                 return true;
             }
@@ -336,7 +338,7 @@ export function HomeFunStudyDialog () {
             if (!selectedOrganization) {
                 throw new Error(`Organization is not selected.`);
             }
-            if (!shouldSubmitFeedback || !studyInfo || !localFeedback || !selectedUser.userId)
+            if (!shouldSubmitFeedback || !studyInfo || !localFeedback || !selectedUser?.user_id)
                 return;
             if (submitStatus === SubmitStatus.SUBMITTING)
                 return;
@@ -526,8 +528,8 @@ function HomeFunStudyContainer ({
         fileSelectService,
         contentService,
     } = useServices();
-    const [ selectedOrganization ] = useRecoilState(selectedOrganizationState);
-    const [ selectedUser ] = useRecoilState(selectedUserState);
+    const selectedOrganization = useSelectedOrganizationValue();
+    const selectedUser = useSelectedUserValue();
     const [ homeFunStudy, setHomeFunStudy ] = useRecoilState(homeFunStudyState);
     const [ saveAssignmentItems, setSaveAssignmentItems ] = useState<{ shouldSave: boolean; assignmentItems: AssignmentItem[] }>();
     const { requestPermissions } = useContext(CordovaSystemContext);
@@ -551,14 +553,14 @@ function HomeFunStudyContainer ({
     }
 
     const localFeedback = useMemo(() => {
-        if (!homeFunStudy.feedback || !selectedUser.userId || !studyInfo) {
+        if (!homeFunStudy.feedback || !selectedUser?.user_id || !studyInfo) {
             return undefined;
         }
         const hfsFeedbacks = homeFunStudy.feedback;
-        return hfsFeedbacks.find((feedback: any) => feedback.userId === selectedUser.userId && feedback.studyId === studyInfo.id);
+        return hfsFeedbacks.find((feedback: any) => feedback.userId === selectedUser?.user_id && feedback.studyId === studyInfo.id);
     }, [
         homeFunStudy.feedback,
-        selectedUser.userId,
+        selectedUser,
         studyInfo,
     ]);
 
@@ -573,7 +575,7 @@ function HomeFunStudyContainer ({
         }
 
         function syncAssignments () {
-            if (!selectedUser.userId) return;
+            if (!selectedUser?.user_id) return;
             if (!studyInfo) return;
             if (!newestFeedback) return;
             if (!homeFunStudy.feedback) return;
@@ -610,20 +612,20 @@ function HomeFunStudyContainer ({
     useEffect(() => {
         //Save Assignments after uploaded
         function saveAssignments (assignmentItems: AssignmentItem[]) {
-            if (studyInfo && selectedUser.userId) {
+            if (studyInfo && selectedUser?.user_id) {
                 const newHFSFeedbacks = homeFunStudy.feedback ? homeFunStudy.feedback.slice() : [];
-                const currentFeedbackIndex = newHFSFeedbacks.findIndex(item => item.userId === selectedUser.userId && item.studyId === studyInfo.id);
+                const currentFeedbackIndex = newHFSFeedbacks.findIndex(item => item.userId === selectedUser?.user_id && item.studyId === studyInfo.id);
                 if (currentFeedbackIndex >= 0) {
                     const feedback = newHFSFeedbacks[currentFeedbackIndex];
                     newHFSFeedbacks[currentFeedbackIndex] = {
-                        userId: selectedUser.userId,
+                        userId: selectedUser?.user_id,
                         studyId: studyInfo.id,
                         comment: feedback.comment,
                         assignmentItems: assignmentItems,
                     };
                 } else {
                     newHFSFeedbacks.push({
-                        userId: selectedUser.userId,
+                        userId: selectedUser?.user_id,
                         studyId: studyInfo.id,
                         comment: ``,
                         assignmentItems: assignmentItems,
@@ -1283,7 +1285,7 @@ function HomeFunStudyAssignment ({
     useEffect(() => {
         if (previewOpen.open && open) {
             const previewAnyFile = (window as any).PreviewAnyFile;
-            previewAnyFile.previewPath((result: string) => {
+            previewAnyFile.previewPath(() => {
                 setPreviewOpen({
                     open: false,
                     fileUrl: ``,
@@ -1469,17 +1471,17 @@ function HomeFunStudyComment ({
     const [ comment, setComment ] = useState(defaultComment);
 
     const [ homeFunStudy, setHomeFunStudy ] = useRecoilState(homeFunStudyState);
-    const [ selectedUser ] = useRecoilState(selectedUserState);
+    const selectedUser = useSelectedUserValue();
 
     useEffect(() => {
         let syncedComment = ``;
         if (newestFeedback && newestFeedback.comment) {
             syncedComment = newestFeedback.comment;
         }
-        if (studyInfo && studyInfo.id && selectedUser.userId) {
+        if (studyInfo && studyInfo.id && selectedUser?.user_id) {
             const hfsFeedbacks = homeFunStudy.feedback;
             for (let i = 0; hfsFeedbacks && i < hfsFeedbacks.length; i++) {
-                if (hfsFeedbacks[i].userId == selectedUser.userId && hfsFeedbacks[i].studyId == studyInfo.id) {
+                if (hfsFeedbacks[i].userId == selectedUser?.user_id && hfsFeedbacks[i].studyId == studyInfo.id) {
                     if (hfsFeedbacks[i].comment != `` && hfsFeedbacks[i].comment != syncedComment) {
                         syncedComment = hfsFeedbacks[i].comment;
                     }
@@ -1501,19 +1503,19 @@ function HomeFunStudyComment ({
 
     function handleSaveComment (newComment: string) {
         setComment(newComment);
-        if (studyInfo && selectedUser.userId) {
+        if (studyInfo && selectedUser?.user_id) {
             const newHFSFeedbacks = homeFunStudy.feedback ? homeFunStudy.feedback.slice() : [];
-            const currentFeedbackIndex = newHFSFeedbacks.findIndex(item => item.userId === selectedUser.userId && item.studyId === studyInfo.id);
+            const currentFeedbackIndex = newHFSFeedbacks.findIndex(item => item.userId === selectedUser?.user_id && item.studyId === studyInfo.id);
             if (currentFeedbackIndex >= 0) {
                 newHFSFeedbacks[currentFeedbackIndex] = {
-                    userId: selectedUser.userId,
+                    userId: selectedUser?.user_id,
                     studyId: studyInfo.id,
                     comment: newComment,
                     assignmentItems: newHFSFeedbacks[currentFeedbackIndex].assignmentItems,
                 };
             } else {
                 newHFSFeedbacks.push({
-                    userId: selectedUser.userId,
+                    userId: selectedUser?.user_id,
                     studyId: studyInfo.id,
                     comment: newComment,
                     assignmentItems: [],

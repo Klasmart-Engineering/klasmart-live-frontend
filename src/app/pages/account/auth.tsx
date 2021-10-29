@@ -1,6 +1,6 @@
 import { useHttpEndpoint } from "../../../providers/region-select-context";
 import LoadingWithRetry from "../../components/loadingWithRetry";
-import { useUserInformation } from "../../context-provider/user-information-context";
+import { useAuthenticationContext } from "../../context-provider/authentication-context";
 import { ParentalGate } from "../../dialogs/parentalGate";
 import { OrientationType } from "../../model/appModel";
 import { lockOrientation } from "../../utils/screenUtils";
@@ -42,7 +42,7 @@ export function Auth ({ useInAppBrowser }: Props) {
         loading,
         authenticated,
         actions,
-    } = useUserInformation();
+    } = useAuthenticationContext();
 
     const [ completedParentalChallenge, setCompletedParentalChallenge ] = useState<boolean>(false);
 

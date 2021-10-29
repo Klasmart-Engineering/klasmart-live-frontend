@@ -5,7 +5,6 @@ import { useSessionContext } from "../../../providers/session-context";
 import { ClassType } from "../../../store/actions";
 import { Header } from "../../components/layout/header";
 import { useServices } from "../../context-provider/services-provider";
-import { useUserInformation } from "../../context-provider/user-information-context";
 import { useShouldSelectOrganization } from "../../dialogs/account/selectOrgDialog";
 import { useShouldSelectUser } from "../../dialogs/account/selectUserDialog";
 import StudyDetail from "../../dialogs/study-detail/study-detail";
@@ -16,8 +15,6 @@ import {
     isProcessingRequestState,
     LayoutMode,
     layoutModeState,
-    selectedOrganizationState,
-    selectedUserState,
 } from "../../model/appModel";
 import {
     AssessmentForStudent,
@@ -33,6 +30,8 @@ import {
 import { autoHideDuration } from "../../utils/fixedValues";
 import { Fallback } from "../fallback";
 import ClassTypeSwitcher from "./classTypeSwitcher";
+import { useSelectedOrganizationValue } from "@/app/data/user/atom";
+import { useMeQuery } from "@/app/data/user/queries/meQuery";
 import { useCameraContext } from "@/providers/Camera";
 import { ListItemSecondaryAction } from "@material-ui/core";
 import Avatar from '@material-ui/core/Avatar';
@@ -55,7 +54,10 @@ import React,
     useState,
 } from "react";
 import { FormattedMessage } from "react-intl";
-import { useRecoilState } from "recoil";
+import {
+    useRecoilState,
+    useSetRecoilState,
+} from "recoil";
 
 const dateFormat = require(`dateformat`);
 
@@ -100,20 +102,23 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 export function Schedule () {
     const [ isProcessingRequest, setIsProcessingRequest ] = useRecoilState(isProcessingRequestState);
-    const [ selectedOrganization ] = useRecoilState(selectedOrganizationState);
-    const [ selectedUser ] = useRecoilState(selectedUserState);
     const [ homeFunStudy, setHomeFunStudy ] = useRecoilState(homeFunStudyState);
     const [ schedule, setSchedule ] = useRecoilState(scheduleState);
     const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
-    const [ layoutMode, setLayoutMode ] = useRecoilState(layoutModeState);
+    const setLayoutMode = useSetRecoilState(layoutModeState);
 
     const { schedulerService } = useServices();
     const { setAcquireDevices } = useCameraContext();
 
-    const { shouldSelectUser, userSelectErrorCode } = useShouldSelectUser();
+    const {
+        shouldSelectUser,
+        loading: selectUserLoading,
+        selectedValidUser,
+    } = useShouldSelectUser();
     const { shouldSelectOrganization, organizationSelectErrorCode } = useShouldSelectOrganization();
 
-    const { selectedUserProfile, isSelectingUser } = useUserInformation();
+    const { data: meData } = useMeQuery();
+    const selectedOrganization = useSelectedOrganizationValue();
 
     const [ key, setKey ] = useState(Math.random().toString(36));
     const [ alertMessageId, setAlertMessageId ] = useState<string>();
@@ -147,7 +152,7 @@ export function Schedule () {
         async function fetchEverything () {
             async function fetchSchedules () {
                 if (!schedulerService) return Promise.reject();
-                if (!selectedUserProfile) return Promise.reject();
+                if (!meData?.me) return Promise.reject();
                 if (!selectedOrganization) return Promise.reject();
 
                 // TODO (Isu): Apply more API params to filter. It makes don't need to do .filter().
@@ -206,7 +211,7 @@ export function Schedule () {
             }
         }
 
-        if (isSelectingUser) {
+        if (!selectedValidUser || selectUserLoading) {
             return;
         }
 
@@ -228,22 +233,16 @@ export function Schedule () {
             }
         }
 
-        const selectedValidUser = selectedUser.userId && selectedUser.userId === selectedUserProfile?.id;
-        const selectedValidOrg = selectedOrganization && selectedUserProfile?.organizations?.some(o => o.organization.organization_id === selectedOrganization?.organization_id);
-
-        if (selectedValidUser && selectedValidOrg) {
-            setIsProcessingRequest(true);
-
-            fetchEverything();
-        }
+        setIsProcessingRequest(true);
+        fetchEverything();
     }, [
+        selectUserLoading,
         shouldSelectUser,
         shouldSelectOrganization,
         selectedOrganization,
         schedulerService,
-        selectedUserProfile,
+        meData,
         key,
-        isSelectingUser,
     ]);
 
     const { setToken } = useSessionContext();
@@ -282,6 +281,7 @@ export function Schedule () {
         }
     };
 
+    /* TODO:
     if (userSelectErrorCode && userSelectErrorCode !== 401) {
         return (
             <Fallback
@@ -291,6 +291,7 @@ export function Schedule () {
             />
         );
     }
+    */
 
     if (organizationSelectErrorCode && organizationSelectErrorCode !== 401) {
         return (
@@ -477,7 +478,7 @@ function ScheduledLiveItem ({
         listItemSecondAction,
     } = useStyles();
 
-    const [ selectedOrganization ] = useRecoilState(selectedOrganizationState);
+    const selectedOrganization = useSelectedOrganizationValue();
 
     const [ liveInfo, setLiveInfo ] = useState<ScheduleResponse>();
     const [ liveDate, setLiveDate ] = useState<string>(``);
@@ -559,7 +560,7 @@ function ScheduledStudyList ({ setSelectedSchedule, setOpenStudyDetail }: {
     setOpenStudyDetail: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
     const [ schedule ] = useRecoilState(scheduleState);
-    const [ selectedOrganization ] = useRecoilState(selectedOrganizationState);
+    const selectedOrganization = useSelectedOrganizationValue();
     const { assessmentService } = useServices();
 
     const [ assessmentsForStudyAll, setAssessmentsForStudyAll ] = useState<AssessmentForStudent[]>([]);
@@ -567,13 +568,13 @@ function ScheduledStudyList ({ setSelectedSchedule, setOpenStudyDetail }: {
 
     useEffect(() => {
         async function fetchEverything () {
-            async function fetchHomeFunStudyAssessment (scheduleTimeViews: ScheduleTimeViewResponse[]): Promise<AssessmentForStudent[]>{
+            function fetchHomeFunStudyAssessment (scheduleTimeViews: ScheduleTimeViewResponse[]): Promise<AssessmentForStudent[]>{
                 if(!assessmentService) return Promise.reject();
                 if(!schedule.scheduleTimeViewStudyAll) return Promise.reject();
                 if(!schedule.scheduleTimeViewStudyAnytime) return Promise.reject();
                 if(!selectedOrganization) return Promise.reject();
 
-                return await assessmentService?.getAssessmentsForStudent(selectedOrganization.organization_id, scheduleTimeViews.map((tv: ScheduleTimeViewResponse) => tv.id), AssessmentType.HOME_FUN_STUDY, 0, 1);
+                return assessmentService?.getAssessmentsForStudent(selectedOrganization.organization_id, scheduleTimeViews.map((tv: ScheduleTimeViewResponse) => tv.id), AssessmentType.HOME_FUN_STUDY, 0, 1);
             }
             async function fetchHomeFunStudyAssessmentForStudyAll (){
                 setAssessmentsForStudyAll(await fetchHomeFunStudyAssessment(schedule.scheduleTimeViewStudyAll));
@@ -659,7 +660,7 @@ function AnytimeStudyItem ({
         listItemTextPrimary,
         listItemSecondAction,
     } = useStyles();
-    const [ selectedOrganization ] = useRecoilState(selectedOrganizationState);
+    const selectedOrganization = useSelectedOrganizationValue();
     const { schedulerService } = useServices();
     const [ studyInfo, setStudyInfo ] = useState<ScheduleResponse>();
 
@@ -759,7 +760,7 @@ function ScheduledStudyItem ({
         submittedText,
         listItemSecondAction,
     } = useStyles();
-    const [ selectedOrganization ] = useRecoilState(selectedOrganizationState);
+    const selectedOrganization = useSelectedOrganizationValue();
     const { schedulerService } = useServices();
 
     const [ studyInfo, setStudyInfo ] = useState<ScheduleResponse>();

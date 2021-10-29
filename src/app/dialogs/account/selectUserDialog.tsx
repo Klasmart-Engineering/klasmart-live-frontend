@@ -1,21 +1,18 @@
-import { useRegionSelect } from "../../../providers/region-select-context";
 import { Header } from "../../components/layout/header";
-import { useUserInformation } from "../../context-provider/user-information-context";
-import {
-    authState,
-    dialogsState,
-    selectedOrganizationState,
-    selectedUserState,
-} from "../../model/appModel";
-import { UserInformation } from "../../services/user/IUserInformationService";
+import { useAuthenticationContext } from "../../context-provider/authentication-context";
+import { dialogsState } from "../../model/appModel";
 import { ParentalGate } from "../parentalGate";
+import { useSignOut } from "./useSignOut";
+import { UserList } from "@/app/components/user/userList";
+import { useServices } from "@/app/context-provider/services-provider";
 import {
-    List,
-    ListItem,
-    ListItemAvatar,
-    ListItemIcon,
-    ListItemText,
-} from "@material-ui/core";
+    useSelectedUser,
+    useSetSelectedUser,
+} from "@/app/data/user/atom";
+import { ReadUserDto } from "@/app/data/user/dto/readUserDto";
+import { useMeQuery } from "@/app/data/user/queries/meQuery";
+import { useMyUsersQuery } from "@/app/data/user/queries/myUsersQuery";
+import { useDisplayPrivacyPolicy } from "@/app/utils/privacyPolicyUtils";
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -28,19 +25,19 @@ import {
     useTheme,
 } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import { Check as CheckIcon } from "@styled-icons/fa-solid/Check";
-import {
-    UserAvatar,
-    useSnackbar,
-} from "kidsloop-px";
+import { useSnackbar } from "kidsloop-px";
 import React,
 {
     useCallback,
     useEffect,
+    useMemo,
     useState,
 } from "react";
 import { FormattedMessage } from "react-intl";
-import { useRecoilState } from "recoil";
+import {
+    useRecoilValue,
+    useSetRecoilState,
+} from "recoil";
 
 const useStyles = makeStyles(() => ({
     noPadding: {
@@ -56,62 +53,96 @@ const useStyles = makeStyles(() => ({
 export function useShouldSelectUser () {
     const { enqueueSnackbar } = useSnackbar();
 
-    const {
-        myUsers,
-        actions,
-        authenticated,
-    } = useUserInformation();
+    const { authenticated } = useAuthenticationContext();
+    const { authenticationService } = useServices();
 
     const [ shouldSelectUser, setShouldSelectUser ] = useState<boolean>(false);
-    const [ userSelectErrorCode ] = useState<number>();
 
-    const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
-    const [ selectedUser, setSelectedUser ] = useRecoilState(selectedUserState);
+    const {
+        data: meData,
+        loading: meLoading,
+        refetch,
+    } = useMeQuery();
+    const { data: myUsersData, loading: myUsersLoading } = useMyUsersQuery();
+    const loading = useMemo(() => meLoading || myUsersLoading, [ meLoading, myUsersLoading ]);
+
+    const [ selectedUser, setSelectedUser ] = useSelectedUser();
+
+    const selectedValidUser = useMemo(() => {
+        return selectedUser &&
+            meData?.me?.user_id === selectedUser.user_id &&
+            myUsersData?.my_users?.some(user => selectedUser.user_id === user.user_id);
+    }, [
+        selectedUser,
+        myUsersData,
+        meData,
+    ]);
+
+    const switchUser = useCallback(async (selectUser: ReadUserDto) => {
+        try {
+            await authenticationService?.switchUser(selectUser.user_id);
+        } catch (error) {
+            console.error(error);
+            enqueueSnackbar(`Unable to select user`, {
+                variant: `error`,
+            });
+
+            return;
+        }
+        await refetch();
+    }, [
+        authenticationService,
+        enqueueSnackbar,
+        refetch,
+    ]);
+
+    const selectUser = useCallback((selectUser: ReadUserDto) => {
+        setSelectedUser(selectUser);
+    }, [ setSelectedUser ]);
+
+    useEffect(() => {
+        if (!selectedUser || meLoading) return;
+
+        if (selectedUser.user_id !== meData?.me?.user_id) {
+            console.log(`switching to user ${selectedUser.user_id}, meLoading: ${meLoading}`);
+            switchUser(selectedUser);
+        }
+    }, [
+        selectedUser,
+        meData,
+        selectUser,
+        meLoading,
+        switchUser,
+    ]);
 
     useEffect(() => {
         if (!authenticated) return;
-        if (!myUsers) return;
+        if (!myUsersData) return;
+        if (loading) return;
 
-        const didNotSelectUser = selectedUser.userId === undefined;
-        const invalidUserSelected = selectedUser.userId && myUsers && (myUsers?.some(u => selectedUser.userId === u.id) === false);
-
-        if (didNotSelectUser || invalidUserSelected) {
-            if (myUsers && myUsers.length > 1) {
+        if (!selectedValidUser) {
+            if (myUsersData.my_users.length > 1) {
                 setShouldSelectUser(true);
-            } else {
-                setShouldSelectUser(false);
-
-                if (myUsers && myUsers.length == 1) {
-                    actions?.selectUser(myUsers[0].id).then(() => {
-                        setSelectedUser({
-                            ...selectedUser,
-                            userId: myUsers[0].id,
-                        });
-                        setDialogs({
-                            ...dialogs,
-                            isSelectUserOpen: false,
-                        });
-                    }).catch(error => {
-                        console.error(error);
-                        enqueueSnackbar(`Unable to select user`, {
-                            variant: `error`,
-                        });
-                    });
-                }
+                return;
             }
+
+            selectUser(myUsersData.my_users[0]);
         } else {
             setShouldSelectUser(false);
         }
     }, [
-        myUsers,
-        selectedUser,
+        myUsersData,
+        selectedValidUser,
         authenticated,
-        actions,
+        authenticationService,
+        loading,
+        selectUser,
     ]);
 
     return {
-        userSelectErrorCode,
+        selectedValidUser,
         shouldSelectUser,
+        loading,
     };
 }
 
@@ -119,58 +150,27 @@ export function SelectUserDialog () {
     const theme = useTheme();
     const { noPadding } = useStyles();
 
-    const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
-    const [ selectedUser, setSelectedUser ] = useRecoilState(selectedUserState);
-    const [ , setSelectedOrganization ] = useRecoilState(selectedOrganizationState);
-    const [ auth, setAuth ] = useRecoilState(authState);
+    const dialogs = useRecoilValue(dialogsState);
+    const setDialogs = useSetRecoilState(dialogsState);
 
-    const { myUsers } = useUserInformation();
-    const { region } = useRegionSelect();
-    const { actions } = useUserInformation();
+    const { data: myUsersData } = useMyUsersQuery();
+    const { data: meData } = useMeQuery();
+    const setSelectedUser = useSetSelectedUser();
 
     const [ parentalLock, setParentalLock ] = useState<boolean>(false);
 
-    const openPrivacyPolicy = () => {
-        const cordova = (window as any).cordova;
-        if (!cordova) return;
+    const displayPrivacyPolicy = useDisplayPrivacyPolicy();
 
-        const privacyEndpoint = region?.services.privacy ?? `https://www.kidsloop.net/policies/privacy-notice/`;
+    const { signOut } = useSignOut();
 
-        cordova.plugins.browsertab.isAvailable((result: any) => {
-            if (!result) {
-                cordova.InAppBrowser.open(privacyEndpoint, `_system`, `location=no, zoom=no`);
-            } else {
-                cordova.plugins.browsertab.openUrl(privacyEndpoint, (successResp: any) => { console.log(successResp); }, () => {
-                    console.error(`no browser tab available`);
-                });
-            }
-        });
-    };
-
-    async function handleSignOut () {
-        setDialogs({
-            ...dialogs,
-            isSelectUserOpen: false,
-        });
-
-        setSelectedUser({
-            ...selectedUser,
-            userId: undefined,
-        });
-
-        setSelectedOrganization(undefined);
-
-        setAuth({
-            ...auth,
-            transferToken: undefined,
-        });
-
-        actions?.signOutUser();
-    }
+    const selectUser = useCallback((user: ReadUserDto) => {
+        console.log(`selecting user: ${user.user_id}`);
+        setSelectedUser(user);
+    }, [ setSelectedUser ]);
 
     useEffect(() => {
         setParentalLock(false);
-    }, [ open ]);
+    }, []);
 
     if (parentalLock) {
         return <Dialog
@@ -189,7 +189,10 @@ export function SelectUserDialog () {
             >
                 <Header />
             </DialogTitle>
-            <ParentalGate onCompleted={() => { openPrivacyPolicy(); setParentalLock(false); }} />
+            <ParentalGate onCompleted={() => {
+                displayPrivacyPolicy();
+                setParentalLock(false);
+            }} />
         </Dialog>;
     }
 
@@ -228,7 +231,11 @@ export function SelectUserDialog () {
                         <FormattedMessage id="account_selectUser_whichUser" />
                     </Typography>
                 </Grid>
-                <UserList users={myUsers} />
+                <UserList
+                    users={myUsersData?.my_users ?? []}
+                    selectedUser={meData?.me}
+                    onClick={user => selectUser(user)}
+                />
             </DialogContent>
             <DialogActions className={noPadding}>
                 <Grid
@@ -257,7 +264,7 @@ export function SelectUserDialog () {
                     <Link
                         href="#"
                         variant="subtitle2"
-                        onClick={() => handleSignOut()}
+                        onClick={() => signOut()}
                     >
                         <Typography
                             align="center"
@@ -270,62 +277,5 @@ export function SelectUserDialog () {
                 </Grid>
             </DialogActions>
         </Dialog>
-    );
-}
-
-function UserList ({ users }: { users?: UserInformation[] }) {
-    const { enqueueSnackbar } = useSnackbar();
-    const { selectedUserProfile, actions } = useUserInformation();
-
-    const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
-
-    const selectUser = useCallback(async (userId: string) => {
-        try {
-            await actions?.selectUser(userId);
-            setDialogs({
-                ...dialogs,
-                isSelectUserOpen: false,
-            });
-        } catch (error) {
-            enqueueSnackbar(`Couldn't select user.`, {
-                variant: `error`,
-            });
-        }
-    }, [ actions ]);
-
-    const theme = useTheme();
-
-    return (
-        <List>
-            {users && users.map((user) => {
-                const givenName = user.givenName ?? ``;
-                const familyName = user.familyName ?? ``;
-                const fullName = givenName + ` ` + familyName;
-                const username = user.username ?? ``;
-                const userName = fullName === ` ` ? username ?? `Name undefined` : fullName;
-                return <ListItem
-                    key={user.id}
-                    button
-                    onClick={() => selectUser(user.id)}
-                >
-                    <ListItemAvatar>
-                        <UserAvatar name={userName} />
-                    </ListItemAvatar>
-                    <ListItemText
-                        primary={userName}
-                        secondary={userName === `Name undefined` ?
-                            `Please update your profile` :
-                            user.dateOfBirth ? `Birthday: ` + user.dateOfBirth : ``}
-                    />
-                    {user.id === selectedUserProfile?.id && (
-                        <ListItemIcon>
-                            <CheckIcon
-                                color={theme.palette.success.main}
-                                size={24} />
-                        </ListItemIcon>
-                    )}
-                </ListItem>;
-            })}
-        </List>
     );
 }

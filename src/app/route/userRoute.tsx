@@ -1,4 +1,4 @@
-import { useUserInformation } from "../context-provider/user-information-context";
+import { useAuthenticationContext } from "../context-provider/authentication-context";
 import React from "react";
 import {
     Redirect,
@@ -7,7 +7,7 @@ import {
 } from "react-router-dom";
 
 export function UserRoute (props: RouteProps) {
-    const { authenticated } = useUserInformation();
+    const { authenticated } = useAuthenticationContext();
 
     return ( authenticated ? <Route { ...props }  /> : <Redirect to="/auth" /> );
 }

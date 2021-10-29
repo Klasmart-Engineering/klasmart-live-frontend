@@ -1,5 +1,6 @@
 import Join from "../pages/join/join";
 import { RoomWithContext } from "../pages/room/room-with-context";
+import { useAuthenticationContext } from "./context-provider/authentication-context";
 import { SelectOrgDialog } from "./dialogs/account/selectOrgDialog";
 import { SelectUserDialog } from "./dialogs/account/selectUserDialog";
 import { ExternalNavigationDialog } from "./dialogs/externalNavigationDialog";
@@ -18,6 +19,9 @@ import {
 export function App ({ history }: {
     history: any;
 }): JSX.Element {
+
+    const { authenticated } = useAuthenticationContext();
+
     return (
         <Grid
             container
@@ -48,10 +52,14 @@ export function App ({ history }: {
                         component={Schedule} />
                 </Switch>
             </Router>
-            <SelectOrgDialog />
-            <SelectUserDialog />
+            { authenticated && (
+                <>
+                    <SelectOrgDialog />
+                    <SelectUserDialog />
+                    <HomeFunStudyDialog />
+                </>
+            )}
             <ExternalNavigationDialog />
-            <HomeFunStudyDialog />
         </Grid>
     );
 }

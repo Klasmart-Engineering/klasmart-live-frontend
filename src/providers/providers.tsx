@@ -19,6 +19,7 @@ import { v4 as uuid } from "uuid";
 export const sessionId = uuid();
 export const LIVE_LINK = `LIVE_LINK`;
 export const SFU_LINK = `SFU_LINK`;
+export const USER_LINK = `USER_LINK`;
 
 type Props = {
     children?: ReactChild | ReactChildren | null;

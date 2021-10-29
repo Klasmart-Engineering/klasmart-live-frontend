@@ -9,8 +9,6 @@ import { ISchedulerService } from "../services/cms/ISchedulerService";
 import { SchedulerService } from "../services/cms/SchedulerService";
 import { FileSelectService } from "../services/files/FileSelectService";
 import { IFileSelectService } from "../services/files/IFileSelectService";
-import { IUserInformationService } from "../services/user/IUserInformationService";
-import { UserInformationService } from "../services/user/UserInformationService";
 import React,
 {
     createContext,
@@ -28,7 +26,6 @@ type ServicesContext = {
     authenticationService?: IAuthenticationService;
     schedulerService?: ISchedulerService;
     contentService?: IContentService;
-    userInformationService?: IUserInformationService;
     fileSelectService?: IFileSelectService;
     assessmentService?: IAssessmentService;
 }
@@ -38,7 +35,6 @@ const ServicesContext = createContext<ServicesContext>({});
 export function ServicesProvider ({ children }: Props) {
     const authenticationServiceEndpoint = useHttpEndpoint(`auth`);
     const cmsServiceEndpoint = useHttpEndpoint(`cms`);
-    const userInformationEndpoint = useHttpEndpoint(`user`);
 
     const authenticationService = useMemo(() => {
         return new AuthenticationService(authenticationServiceEndpoint);
@@ -51,10 +47,6 @@ export function ServicesProvider ({ children }: Props) {
     const contentService = useMemo(() => {
         return new ContentService(cmsServiceEndpoint, authenticationService);
     }, [ cmsServiceEndpoint, authenticationService ]);
-
-    const userInformationService = useMemo(() => {
-        return new UserInformationService(userInformationEndpoint, authenticationService);
-    }, [ userInformationEndpoint, authenticationService ]);
 
     const fileSelectService = useMemo(() => {
         return new FileSelectService();
@@ -69,7 +61,6 @@ export function ServicesProvider ({ children }: Props) {
             authenticationService,
             schedulerService,
             contentService,
-            userInformationService,
             fileSelectService,
             assessmentService,
         }}>
