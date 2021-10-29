@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.1.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.1.0-internal.1%0Dv3.1.0) (2021-10-29)
+
+
+### Bug Fixes
+
+* Can not access functions in callstats ([4d952a0](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/4d952a089b7550f2ad15b4f7763e06188a60db2a))
+* Can not access functions in callstats ([723455d](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/723455d9ea881f5da11a0dd0c9a9ed8d9cc38a35))
+* confirm close comment popup cannot be dismissed by android back key ([dce6a6c](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/dce6a6cdc482e4dc52d0ae819df3fdac150ba01b))
+* Disable CALLSTATS ([cac4127](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/cac412750a520ecff900d661dcb3555c5c1d1887))
+* height view study 100% ([d5940a0](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/d5940a05a477ac4c651b3f6eb3ef081cdc6aa941)), closes [#561](https://calmisland.atlassian.net/browse/561)
+* update webpack-cli (crash on npm run) ([9a74c8c](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/9a74c8c39f88814c8fd0edd255551b76bb03824c)), closes [#558](https://calmisland.atlassian.net/browse/558)
+
 ## [3.1.0-internal.1](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.1.0-internal.0%0Dv3.1.0-internal.1) (2021-10-27)
 
 
