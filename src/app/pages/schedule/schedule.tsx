@@ -146,7 +146,7 @@ export function Schedule () {
             });
             setKey(Math.random().toString(36)); //force to refresh the schedule list
         }
-    }, [ setHomeFunStudy ]);
+    }, [ homeFunStudy, setHomeFunStudy ]);
 
     useEffect(() => {
         async function fetchEverything () {
