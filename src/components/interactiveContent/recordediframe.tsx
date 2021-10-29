@@ -1,4 +1,4 @@
-import { useUserInformation } from "@/app/context-provider/user-information-context";
+import { useServices } from "@/app/context-provider/services-provider";
 import { injectIframeScript } from "@/app/utils/injectIframeScript";
 import { LIVE_LINK } from "@/providers/providers";
 import { useHttpEndpoint } from "@/providers/region-select-context";
@@ -88,7 +88,7 @@ export function RecordedIframe (props: Props): JSX.Element {
 
     const size = useWindowSize();
 
-    const { actions } = useUserInformation();
+    const { authenticationService } = useServices();
 
     const recorderEndpoint = useHttpEndpoint(`live`);
 
@@ -247,7 +247,7 @@ export function RecordedIframe (props: Props): JSX.Element {
             }
             switch (data.error) {
             case `RedirectToLogin`:
-                actions?.signOutUser();
+                authenticationService?.signout();
                 break;
             }
         }

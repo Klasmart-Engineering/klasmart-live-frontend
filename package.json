@@ -136,6 +136,7 @@
     "react-router-dom": "^5.2.0",
     "react-transition-group": "^4.4.1",
     "recoil": "^0.2.0",
+    "recoil-persist": "^3.0.0",
     "recoilize": "^1.0.0",
     "redux-logger": "^3.0.6",
     "redux-persist": "^6.0.0",

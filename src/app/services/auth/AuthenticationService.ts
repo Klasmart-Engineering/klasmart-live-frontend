@@ -66,7 +66,7 @@ export class AuthenticationService implements IAuthenticationService {
         if (!response.ok) {
             const refreshed = await this.refresh();
             if (refreshed && retry) {
-                return await this.switchUser(userId, false);
+                return this.switchUser(userId, false);
             }
         }
 

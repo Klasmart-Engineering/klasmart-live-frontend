@@ -1,11 +1,8 @@
 import {
     authState,
     localeState,
-    selectedOrganizationState,
     selectedRegionState,
-    selectedUserState,
 } from "../model/appModel";
-import { UserInformation } from "../services/user/IUserInformationService";
 import { useServices } from "./services-provider";
 import React,
 {
@@ -20,40 +17,27 @@ import React,
 } from "react";
 import { useRecoilState } from "recoil";
 
-/* TODO (Axel): All of this context can be combined with the user-context from
-** the combined master branch. This would be preferred since they share
-** the same responsibilities. Not using the same name at this point to
-** prevent conflicts later when integrating. */
-
 type Props = {
     children?: ReactChild | ReactChildren | null;
 }
 
-type UserInformationActions = {
-    selectUser: (userId: string) => Promise<void>;
-    signOutUser: () => Promise<void>;
+type AuthenticationActions = {
+    signOut: () => void;
     refreshAuthenticationToken: () => void;
-    refreshUserInformation: () => Promise<void>;
 }
 
-type UserInformationContext = {
+type AuthenticationContext = {
     loading: boolean;
     error: boolean;
     authenticated: boolean;
-    isSelectingUser: boolean;
-    selectedUserProfile?: UserInformation;
-    actions?: UserInformationActions;
-    myUsers?: UserInformation[];
+    actions?: AuthenticationActions;
 }
 
-const UserInformationContext = createContext<UserInformationContext>({
+const AuthenticationContext = createContext<AuthenticationContext>({
     loading: true,
     authenticated: false,
     error: false,
-    isSelectingUser: false,
-    selectedUserProfile: undefined,
     actions: undefined,
-    myUsers: [],
 });
 
 export function isRoleTeacher (role: string) {
@@ -213,159 +197,35 @@ const useAuthentication = () => {
     };
 };
 
-export function UserInformationContextProvider ({ children }: Props) {
-    const [ error, setError ] = useState<boolean>(false);
-    const [ loading, setLoading ] = useState<boolean>(false);
-    const [ isSelectingUser, setIsSelectingUser ] = useState<boolean>(false);
-
-    const [ selectedUser, setSelectedUser ] = useRecoilState(selectedUserState);
-    const [ , setSelectedOrganization ] = useRecoilState(selectedOrganizationState);
-    const [ auth, setAuth ] = useRecoilState(authState);
-
-    const [ selectedUserProfile, setSelectedUserProfile ] = useState<UserInformation>();
-    const [ myUsers, setMyUsers ] = useState<UserInformation[]>();
+export function AuthenticationContextProvider ({ children }: Props) {
 
     const {
         authenticated,
         refresh,
         authReady,
+        authError,
         signOut,
-        switchUser,
     } = useAuthentication();
 
-    const { userInformationService } = useServices();
-
-    const fetchMyUsers = useCallback(async () => {
-        if (!userInformationService) return;
-        if (loading) return;
-
-        setLoading(true);
-
-        try {
-            const myUsers = await userInformationService.getMyUsers();
-            setMyUsers(myUsers);
-        } catch (error) {
-            console.error(error);
-            setSelectedUserProfile(undefined);
-            setMyUsers(undefined);
-            setError(true);
-        } finally {
-            setLoading(false);
-        }
-
-    }, [ userInformationService ]);
-
-    const fetchSelectedUser = useCallback(async () => {
-        if (!userInformationService) return;
-        if (loading) return;
-
-        setLoading(true);
-
-        try {
-            const selectedUser = await userInformationService.me();
-            setSelectedUserProfile(selectedUser);
-        } catch (error) {
-            console.error(error);
-        } finally {
-            setLoading(false);
-        }
-    }, [ userInformationService ]);
-
-    const selectUser = useCallback(async (userId: string) => {
-        try {
-            setIsSelectingUser(true);
-            await switchUser(userId);
-
-            setSelectedUser({
-                ...selectedUser,
-                userId,
-            });
-
-            setSelectedOrganization(undefined);
-
-            await fetchSelectedUser();
-        } catch (error) {
-            console.error(error);
-        } finally {
-            setIsSelectingUser(false);
-        }
-
-    }, [ switchUser, fetchSelectedUser ]);
-
-    const logOutUser = useCallback(async () => {
-        await signOut();
-        setSelectedUserProfile(undefined);
-        setSelectedUser({
-            ...selectedUser,
-            userId: undefined,
-        });
-        setMyUsers(undefined);
-        setAuth({
-            ...auth,
-            transferToken: undefined,
-        });
-    }, [ signOut ]);
-
-    const context = useMemo<UserInformationContext>(() => {
+    const context = useMemo<AuthenticationContext>(() => {
         return {
             authenticated,
-            loading: loading || !authReady,
-            error,
-            isSelectingUser,
-            selectedUserProfile,
+            loading: !authReady,
+            error: authError,
             actions: {
-                signOutUser: logOutUser,
-                refreshUserInformation: fetchMyUsers,
+                signOut,
                 refreshAuthenticationToken: refresh,
-                selectUser,
             },
-            myUsers,
         };
-    }, [
-        selectedUserProfile,
-        loading,
-        authReady,
-        error,
-        fetchMyUsers,
-        authenticated,
-        isSelectingUser,
-        myUsers,
-    ]);
-
-    useEffect(() => {
-        if (authenticated) {
-            fetchMyUsers();
-        } else {
-            setMyUsers(undefined);
-            setSelectedUserProfile(undefined);
-        }
-    }, [ authenticated ]);
-
-    useEffect(() => {
-        console.log(`auth: ${authenticated}, selectedId: ${selectedUser.userId}, user: ${selectedUserProfile?.id}`);
-        if (authenticated && selectedUser.userId !== undefined && selectedUserProfile?.id != selectedUser.userId) {
-            console.log(`selecting user: ${selectedUser.userId}`);
-            selectUser(selectedUser.userId).catch(error => {
-                console.log(`select user error: ${error}`);
-                setSelectedUser({
-                    ...selectedUser,
-                    userId: undefined,
-                });
-            });
-        }
-    }, [
-        selectedUser,
-        authenticated,
-        selectedUserProfile,
-    ]);
+    }, [ authReady, authenticated ]);
 
     return (
-        <UserInformationContext.Provider value={context}>
+        <AuthenticationContext.Provider value={context}>
             {children}
-        </UserInformationContext.Provider >
+        </AuthenticationContext.Provider >
     );
 }
 
-export function useUserInformation () {
-    return useContext(UserInformationContext);
+export function useAuthenticationContext () {
+    return useContext(AuthenticationContext);
 }

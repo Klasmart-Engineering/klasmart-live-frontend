@@ -1,5 +1,4 @@
 import { HomeFunStudyFeedback } from "../dialogs/home-fun-study/homeFunStudyDialog";
-import { OrganizationResponse } from "../services/user/IUserInformationService";
 import { atom } from "recoil";
 
 export enum OrientationType {
@@ -38,18 +37,6 @@ export const homeFunStudyState = atom({
     },
 });
 
-export const selectedOrganizationState = atom({
-    key: `selectedOrganization`,
-    default: undefined as OrganizationResponse | undefined,
-});
-
-export const selectedUserState = atom({
-    key: `selectedUser`,
-    default: {
-        userId: undefined as string | undefined,
-    },
-});
-
 export const errorState = atom({
     key: `errorState`,
     default: {
@@ -65,10 +52,10 @@ export const selectedRegionState = atom({
     },
 });
 
-export const authState = atom({
+export const authState = atom<{transferToken?: string}>({
     key: `authState`,
     default: {
-        transferToken: undefined as string | undefined,
+        transferToken: undefined,
     },
 });
 

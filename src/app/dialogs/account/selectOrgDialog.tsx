@@ -1,26 +1,15 @@
-import { useRegionSelect } from "../../../providers/region-select-context";
 import { Header } from "../../components/layout/header";
-import {
-    isRoleTeacher,
-    useUserInformation,
-} from "../../context-provider/user-information-context";
-import {
-    dialogsState,
-    selectedOrganizationState,
-    selectedUserState,
-} from "../../model/appModel";
-import {
-    Organization,
-    OrganizationResponse,
-} from "../../services/user/IUserInformationService";
+import { isRoleTeacher } from "../../context-provider/authentication-context";
+import { dialogsState } from "../../model/appModel";
 import { ParentalGate } from "../parentalGate";
-import {
-    List,
-    ListItem,
-    ListItemAvatar,
-    ListItemIcon,
-    ListItemText,
-} from "@material-ui/core";
+import { useSignOut } from "./useSignOut";
+import { OrganizationList } from "@/app/components/organization/organizationList";
+import { useSelectedOrganization } from "@/app/data/user/atom";
+import { ReadMembershipDto } from "@/app/data/user/dto/readMembershipDto";
+import { ReadOrganizationDto } from "@/app/data/user/dto/readOrganizationDto";
+import { RoleStatus } from "@/app/data/user/dto/readRoleDto";
+import { useMeQuery } from "@/app/data/user/queries/meQuery";
+import { useDisplayPrivacyPolicy } from "@/app/utils/privacyPolicyUtils";
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -33,11 +22,8 @@ import {
     useTheme,
 } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import { Check as CheckIcon } from "@styled-icons/fa-solid/Check";
-import { OrganizationAvatar } from "kidsloop-px";
 import React,
 {
-    useCallback,
     useEffect,
     useMemo,
     useState,
@@ -61,9 +47,9 @@ export function useShouldSelectOrganization () {
     const [ organizationSelectErrorCode, setOrganizationSelectErrorCode ] = useState<number | string | null>(null);
     const [ hasStudentRole, setHasStudentRole ] = useState<boolean | null>(null);
 
-    const { selectedUserProfile } = useUserInformation();
+    const { data: meData, loading: meDataLoading } = useMeQuery();
 
-    const [ selectedOrganization, setSelectedOrganization ] = useRecoilState(selectedOrganizationState);
+    const [ selectedOrganization, setSelectedOrganization ] = useSelectedOrganization();
 
     const setErrorState = (errorCode: number | string) => {
         setShouldSelectOrganization(false);
@@ -71,15 +57,16 @@ export function useShouldSelectOrganization () {
         setOrganizationSelectErrorCode(errorCode);
     };
 
-    const verifyOrganizationStudentRole = (organization: Organization) => {
-        const roles = organization.roles;
+    const verifyMembershipStudentRole = (membership: ReadMembershipDto) => {
+        if (!membership.roles) return false;
+
+        const roles = membership.roles.filter(r => r.status === RoleStatus.ACTIVE);
         if (roles.length === 1) {
-            if(isRoleTeacher(roles[0].role_name)) {
+            if (isRoleTeacher(roles[0].role_name ?? ``)) {
                 return false;
             }
         } else if (roles.length > 1) {
-            const someRolesAreStudent = roles.some(role => !isRoleTeacher(role.role_name));
-            if (!someRolesAreStudent) {
+            if (!roles.some(role => !isRoleTeacher(role.role_name ?? ``))) {
                 return false;
             }
         }
@@ -88,36 +75,37 @@ export function useShouldSelectOrganization () {
     };
 
     useEffect(() => {
+        if (meDataLoading) return;
+
         // 1. User profile haven't been selected
-        if (!selectedUserProfile) {
+        if (!meData?.me) {
             setErrorState(401);
             return;
         }
 
         // NOTE: User already selected organization.
         if (selectedOrganization) {
-            const selected = selectedUserProfile.organizations.find(o => o.organization.organization_id === selectedOrganization?.organization_id);
-            if (selected && verifyOrganizationStudentRole(selected)) {
+            const selected = meData.me.memberships?.find(membership =>
+                membership.organization_id === selectedOrganization?.organization_id);
+            if (selected && verifyMembershipStudentRole(selected)) {
                 setHasStudentRole(true);
                 setShouldSelectOrganization(false);
                 setOrganizationSelectErrorCode(null);
                 return;
+            } else {
+                setSelectedOrganization(undefined);
             }
         }
 
         // 1. information exists
-        if (selectedUserProfile.organizations.length === 0) { // 2. User has no organization.
+        if (!meData.me.memberships?.length) { // 2. User has no organization.
             // If a teacher accesses there will be no organization, because we only fetch organizations with student permissions.
             setErrorState(`403x02`); //Students Only
-        } else if (selectedUserProfile.organizations.length === 1) { // 2. User has 1 organization
+        } else if (meData.me.memberships?.length === 1) { // 2. User has 1 organization
             setShouldSelectOrganization(false);
-            const {
-                organization_id,
-                organization_name,
-                status,
-            } = selectedUserProfile.organizations[0].organization;
 
-            if (!verifyOrganizationStudentRole(selectedUserProfile.organizations[0])) {
+            const membership = meData.me.memberships[0];
+            if (!verifyMembershipStudentRole(membership)) {
                 setHasStudentRole(false);
                 setOrganizationSelectErrorCode(`403x01`); //Access Restricted
                 return;
@@ -125,17 +113,18 @@ export function useShouldSelectOrganization () {
 
             setOrganizationSelectErrorCode(null);
             setHasStudentRole(true);
-            setSelectedOrganization({
-                organization_id,
-                organization_name,
-                status,
-            });
+            setSelectedOrganization(membership.organization);
         } else { // 2. User has more than 2 organizations
             setShouldSelectOrganization(true);
             setHasStudentRole(true);
             setOrganizationSelectErrorCode(null);
         }
-    }, [ selectedUserProfile, selectedOrganization ]);
+    }, [
+        meData,
+        meDataLoading,
+        selectedOrganization,
+        setSelectedOrganization,
+    ]);
 
     /**
      * ABOUT hasStudentRole (Isu)
@@ -159,62 +148,27 @@ export function SelectOrgDialog () {
     const { noPadding } = useStyles();
 
     const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
-    const [ , setSelectedOrganization ] = useRecoilState(selectedOrganizationState);
-    const [ selectedUser, setSelectedUser ] = useRecoilState(selectedUserState);
-
-    const { region } = useRegionSelect();
-    const { selectedUserProfile, actions } = useUserInformation();
+    const [ selectedOrganization, setSelectedOrganization ] = useSelectedOrganization();
+    const { data: meData } = useMeQuery();
 
     const [ parentalLock, setParentalLock ] = useState<boolean>(false);
 
+    const displayPrivacyPolicy = useDisplayPrivacyPolicy();
+
     const organizations = useMemo(() => {
-        if (!selectedUserProfile) return [];
+        if (!meData?.me?.memberships) return [];
+        const memberships = meData.me.memberships;
 
-        return selectedUserProfile.organizations.map(o => {
-            return {
-                organization_id: o.organization.organization_id,
-                organization_name: o.organization.organization_name,
-                status: o.organization.status,
-            };
-        });
-    }, [ selectedUserProfile ]);
+        return memberships
+            .map(membership => membership.organization)
+            .filter(organization => organization) as ReadOrganizationDto[];
+    }, [ meData ]);
 
-    const openPrivacyPolicy = () => {
-        const cordova = (window as any).cordova;
-        if (!cordova) return;
-
-        const privacyEndpoint = region?.services.privacy ?? `https://www.kidsloop.net/policies/privacy-notice/`;
-
-        cordova.plugins.browsertab.isAvailable((result: any) => {
-            if (!result) {
-                cordova.InAppBrowser.open(privacyEndpoint, `_system`, `location=no, zoom=no`);
-            } else {
-                cordova.plugins.browsertab.openUrl(privacyEndpoint, (successResp: any) => { console.log(successResp); }, () => {
-                    console.error(`no browser tab available`);
-                });
-            }
-        });
-    };
-
-    async function handleSignOut () {
-        setDialogs({
-            ...dialogs,
-            isSelectOrganizationOpen: false,
-        });
-
-        setSelectedUser({
-            ...selectedUser,
-            userId: undefined,
-        });
-
-        setSelectedOrganization(undefined);
-
-        actions?.signOutUser();
-    }
+    const { signOut } = useSignOut();
 
     useEffect(() => {
         setParentalLock(false);
-    }, [ open ]);
+    }, []);
 
     if (parentalLock) {
         return <Dialog
@@ -233,7 +187,7 @@ export function SelectOrgDialog () {
             >
                 <Header />
             </DialogTitle>
-            <ParentalGate onCompleted={() => { openPrivacyPolicy(); setParentalLock(false); }} />
+            <ParentalGate onCompleted={() => { displayPrivacyPolicy(); setParentalLock(false); }} />
         </Dialog>;
     }
 
@@ -272,7 +226,11 @@ export function SelectOrgDialog () {
                         <FormattedMessage id="account_selectOrg_whichOrg" />
                     </Typography>
                 </Grid>
-                <OrgList organizations={organizations} />
+                <OrganizationList
+                    organizations={organizations}
+                    selectedOrganization={selectedOrganization}
+                    onClick={org => setSelectedOrganization(org)}
+                />
             </DialogContent>
             <DialogActions className={noPadding}>
                 <Grid
@@ -301,7 +259,7 @@ export function SelectOrgDialog () {
                     <Link
                         href="#"
                         variant="subtitle2"
-                        onClick={() => handleSignOut()}
+                        onClick={() => signOut()}
                     >
                         <Typography
                             align="center"
@@ -314,46 +272,5 @@ export function SelectOrgDialog () {
                 </Grid>
             </DialogActions>
         </Dialog>
-    );
-}
-
-function OrgList ({ organizations }: { organizations: OrganizationResponse[] }) {
-    const theme = useTheme();
-
-    const [ selectedOrganization, setSelectedOrganization ] = useRecoilState(selectedOrganizationState);
-    const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
-
-    const changeOrganization = useCallback((organization: OrganizationResponse) => {
-        setSelectedOrganization(organization);
-        setDialogs({
-            ...dialogs,
-            isSelectOrganizationOpen: false,
-        });
-    }, []);
-
-    return (
-        <List>
-            {organizations.map((organization) => {
-                return <ListItem
-                    key={organization.organization_id}
-                    button
-                    onClick={() => changeOrganization(organization)}
-                >
-                    <ListItemAvatar>
-                        <OrganizationAvatar name={organization.organization_name} />
-                    </ListItemAvatar>
-                    <ListItemText
-                        primary={organization.organization_name}
-                    />
-                    {organization.organization_id === selectedOrganization?.organization_id && (
-                        <ListItemIcon>
-                            <CheckIcon
-                                color={theme.palette.success.main}
-                                size={24} />
-                        </ListItemIcon>
-                    )}
-                </ListItem>;
-            })}
-        </List>
     );
 }

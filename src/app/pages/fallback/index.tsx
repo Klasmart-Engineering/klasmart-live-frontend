@@ -4,7 +4,8 @@ import Error3 from "../../../assets/img/error/3.png";
 import Error4 from "../../../assets/img/error/4.png";
 import KidsloopIcon from "../../../assets/img/kidsloop_icon.svg";
 import StyledButton from "../../../components/styled/button";
-import { useUserInformation } from "../../context-provider/user-information-context";
+import { useAuthenticationContext } from "../../context-provider/authentication-context";
+import { useServices } from "@/app/context-provider/services-provider";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import Container from "@material-ui/core/Container";
@@ -137,13 +138,14 @@ export function Fallback ({
 }
 
 function NextStepButton ({ errCode }: { errCode: string }) {
-    const { actions } = useUserInformation();
+    const { actions } = useAuthenticationContext();
+    const { authenticationService } = useServices();
     const [ shouldSignOut, setShouldSignOut ] = useState<boolean>(false);
     const [ btnTitle, setBtnTitle ] = useState<JSX.Element>(<FormattedMessage id="err_button_home" />);
 
     const handleClick = () => {
         if (shouldSignOut) {
-            actions?.signOutUser();
+            authenticationService?.signout();
         } else {
             actions?.refreshAuthenticationToken(); // TODO (Isu): It's temporary and needs to be implemented more detail
         }

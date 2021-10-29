@@ -1,13 +1,15 @@
 import KidsloopLogo from "../../../assets/img/kidsloop_icon.svg";
 import StyledIcon from "../../../components/styled/icon";
-import { useUserInformation } from "../../context-provider/user-information-context";
 import {
     dialogsState,
     errorState,
     homeFunStudyState,
     isProcessingRequestState,
-    selectedOrganizationState,
 } from "../../model/appModel";
+import {
+    useSelectedOrganizationValue,
+    useSelectedUserValue,
+} from "@/app/data/user/atom";
 import AppBar from "@material-ui/core/AppBar";
 import ButtonBase from "@material-ui/core/ButtonBase";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -20,16 +22,13 @@ import {
     useTheme,
 } from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
-import { ArrowBackIos as ArrowBackIcon } from "@styled-icons/material/ArrowBackIos";
 import { Close as CloseIcon } from "@styled-icons/material/Close";
 import { Refresh as RefreshIcon } from "@styled-icons/material/Refresh";
 import {
     OrganizationAvatar,
     UserAvatar,
 } from "kidsloop-px";
-import React,
-{ useState } from "react";
-import { useHistory } from "react-router-dom";
+import React from "react";
 import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -65,9 +64,9 @@ export function Header ({ isHomeRoute, setKey }: { isHomeRoute?: boolean; setKey
     const [ error ] = useRecoilState(errorState);
     const [ dialogs ] = useRecoilState(dialogsState);
     const [ homeFunStudy ] = useRecoilState(homeFunStudyState);
-    const { selectedUserProfile } = useUserInformation();
+    const selectedUser = useSelectedUserValue();
 
-    const showCloseButton = selectedUserProfile !== undefined && (dialogs.isSelectOrganizationOpen || dialogs.isSelectUserOpen || homeFunStudy?.open);
+    const showCloseButton = selectedUser && (dialogs.isSelectOrganizationOpen || dialogs.isSelectUserOpen || homeFunStudy?.open);
 
     return (error.errorCode ? <></> :
         <div className={root}>
@@ -168,7 +167,7 @@ function CloseSelectOrgOrUserButton () {
 
 function OpenSelectUserButton () {
     const { selectUserButton } = useStyles();
-    const { selectedUserProfile } = useUserInformation();
+    const selectedUser = useSelectedUserValue();
     const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
 
     return (
@@ -180,7 +179,7 @@ function OpenSelectUserButton () {
             })}
         >
             <UserAvatar
-                name={selectedUserProfile?.fullName ?? ``}
+                name={`${selectedUser?.given_name} ${selectedUser?.family_name}`}
                 size={`medium`} />
         </ButtonBase>
     );
@@ -188,7 +187,7 @@ function OpenSelectUserButton () {
 
 function OpenSelectOrgButton () {
     const { selectOrganizationButton } = useStyles();
-    const [ selectedOrganization ] = useRecoilState(selectedOrganizationState);
+    const selectedOrganization = useSelectedOrganizationValue();
     const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
 
     return (
@@ -203,28 +202,6 @@ function OpenSelectOrgButton () {
                 name={selectedOrganization?.organization_name ?? ``}
                 size={`medium`} />
         </ButtonBase>
-    );
-}
-
-function GoBackButton () {
-    const { iconButton } = useStyles();
-    const history = useHistory();
-
-    const [ canGoBack ] = useState<boolean>(true);
-
-    return (
-        <IconButton
-            size="medium"
-            className={iconButton}
-            style={{
-                visibility: canGoBack ? `visible` : `hidden`,
-            }}
-            onClick={() => { history.goBack(); }}
-        >
-            <StyledIcon
-                icon={<ArrowBackIcon />}
-                size="medium" />
-        </IconButton >
     );
 }
 
