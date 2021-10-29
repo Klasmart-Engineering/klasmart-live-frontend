@@ -7,14 +7,14 @@ import {
     makeStyles,
     Theme,
 } from "@material-ui/core";
-import React,
-{ useContext } from "react";
+import React from "react";
 import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
     safeArea: {
         marginLeft: `env(safe-area-inset-left)`,
         marginRight: `env(safe-area-inset-right)`,
+        height: `100%`,
     },
 }));
 
