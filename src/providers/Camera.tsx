@@ -3,6 +3,7 @@ import {
     useCordovaSystemContext,
 } from "@/app/context-provider/cordova-system-context";
 import useCordovaObservePause from "@/app/platform/cordova-observe-pause";
+import { FragmentsOnCompositeTypesRule } from "graphql";
 import React,
 {
     createContext,
@@ -12,7 +13,6 @@ import React,
     useEffect,
     useState,
 } from "react";
-import { FragmentsOnCompositeTypesRule } from "graphql";
 
 export interface ICameraContext {
     selectedAudioDeviceId: string;
@@ -170,7 +170,7 @@ export const CameraContextProvider = (props: Props) => {
     };
 
     const requestPermissions = useCallback(async () => {
-        // NOTE: iOS 14.3 and above supports WebRTC in web view, so for iOS we 
+        // NOTE: iOS 14.3 and above supports WebRTC in web view, so for iOS we
         // don't have to use the native permission request function anymore.
         if (process.env.IS_CORDOVA_BUILD && !isIOS) {
             return requestAppPermissions();
@@ -181,7 +181,7 @@ export const CameraContextProvider = (props: Props) => {
             video: acquireCameraDevice,
         });
         stream.getTracks().forEach((track) => track.stop());
-    }, []);
+    }, [ acquireCameraDevice ]);
 
     const resetAllErrors = () => {
         setCameraError(undefined);
@@ -339,7 +339,11 @@ export const CameraContextProvider = (props: Props) => {
                 setCameraError(CameraError.CAMERA_PERMISSION_ERROR);
             }
         }
-    }, []);
+    }, [
+        requestPermissions,
+        releaseCameraStream,
+        acquireCameraStream,
+    ]);
 
     useEffect(() => {
         if (!acquireDevices) return;
@@ -366,8 +370,8 @@ export const CameraContextProvider = (props: Props) => {
 
         const onDeviceChange = () => {
             // TODO: On iOS the devicechange event keep being called when the camera
-            // device is retrieved. Doing refreshCameras at that point puts the app 
-            // in an endless loop of refreshing cameras. We'll have to investigate 
+            // device is retrieved. Doing refreshCameras at that point puts the app
+            // in an endless loop of refreshing cameras. We'll have to investigate
             // this behaviour further.
             if (process.env.IS_CORDOVA_BUILD) {
                 if (!isIOS) {
