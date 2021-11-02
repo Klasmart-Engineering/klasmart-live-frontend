@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.20.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v1.19.0%0Dv1.20.0) (2021-11-02)
+
+
+### Features
+
+* **app:** new relic logging ([cb1cd9c](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/cb1cd9c803be902a9555e44f1bd85570915becf2))
+
 ## [1.19.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v1.18.0%0Dv1.19.0) (2021-10-07)
 
 
