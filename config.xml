@@ -68,6 +68,7 @@
         <preference name="AppendUserAgent" value="Cordova" />
         <preference name="Fullscreen" value="true" />
         <preference name="android-minSdkVersion" value="22" />
+        <preference name="android-targetSdkVersion" value="30" />
         <config-file target="AndroidManifest.xml" parent="/*" mode="merge">
             <uses-permission android:name="android.permission.CAMERA" />
             <uses-permission android:name="android.permission.RECORD_AUDIO" />
