@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.20.2](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v1.20.1%0Dv1.20.2) (2021-11-02)
+
+
+### Bug Fixes
+
+* issue on Android 11 where login page opens in system browser ([de3e236](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/de3e2361db241ca92de99c1587755633b6ad5320))
+
 ### [1.20.1](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v1.20.0%0Dv1.20.1) (2021-11-02)
 
 
