@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.20.1](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v1.20.0%0Dv1.20.1) (2021-11-02)
+
+
+### Bug Fixes
+
+* set android target sdk version to 30 ([d52e901](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/d52e9011c41a1d6334a9b10dc1748f112534e004))
+
 ## [1.20.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v1.19.0%0Dv1.20.0) (2021-11-02)
 
 
