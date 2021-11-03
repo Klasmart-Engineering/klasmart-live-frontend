@@ -170,19 +170,19 @@ function UserCamera (props: UserCameraType) {
                 {actions ? isHover && <UserCameraActions
                     user={user}
                     expanded={camOn && !process.env.IS_CORDOVA_BUILD} /> : null}
-                {userCamera && userSession && camOn ? (
-                    <ReactPlayer
-                        autoPlay
-                        url={userCamera}
-                        playing={true}
-                        playsinline={true}
-                        muted={true}
-                        id={`camera:${userSession.id}`}
-                        className={classes.video}
-                    />
-                ) : <NoCamera
-                    name={user.name}
-                    variant={variant} />
+                <ReactPlayer
+                    autoPlay
+                    url={userCamera}
+                    playing={true}
+                    playsinline={true}
+                    muted={true}
+                    id={`camera:${userSession?.id}`}
+                    className={classes.video}
+                />
+                {
+                    !userCamera || !userSession || !camOn ? <NoCamera
+                        name={user.name}
+                        variant={variant} /> : <></>
                 }
                 <audio
                     ref={audioRef}
