@@ -827,6 +827,8 @@ function HomeFunStudyContainer ({
             handleSelectedFile(file);
         }).catch(error => {
             console.error(error);
+            if(error.toLowerCase() === `no image selected`)
+                return;
             enqueueSnackbar(error, {
                 variant: `error`,
                 anchorOrigin: {
