@@ -62,7 +62,7 @@ export function WBToolbarContainer ({ useLocalDisplay } : { useLocalDisplay?: bo
             const permissions = getPermissions(sessionId);
             const newPermissions = {
                 ...permissions,
-                allowCreateShapes: !permissions.allowCreateShapes,
+                allowCreateShapes: true,
             };
             setPermissions(sessionId, newPermissions);
         }
