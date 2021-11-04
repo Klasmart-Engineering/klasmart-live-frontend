@@ -1,9 +1,12 @@
 import { Room } from "./room";
 import { Trophy } from "@/components/trophies/trophy";
+import { LiveServiceApolloClient } from "@/data/live/liveServiceApolloClient";
+import { LiveSfuServicesProvider } from "@/data/liveSfuServicesProvider";
 import EndClass from "@/pages/end/endClass";
-import LiveClassProvider from "@/providers/liveClassProvider";
-import { LiveSessionLinkProvider } from "@/providers/live-session-link-context";
+import LiveClassProvider from "@/providers/class/liveClassProvider";
+import StudyClassProvider from "@/providers/class/studyClassProvider";
 import { useSessionContext } from "@/providers/session-context";
+import { ClassType } from "@/store/actions";
 import {
     classEndedState,
     classLeftState,
@@ -17,19 +20,27 @@ export function RoomWithContext (): JSX.Element {
         sessionId,
         token,
         roomId,
+        classType,
     } = useSessionContext();
 
     return (
-        <LiveSessionLinkProvider
-            token={token}
-            roomId={roomId}
-            sessionId={sessionId}>
-            <ClassRoom />
-        </LiveSessionLinkProvider>
+        classType === ClassType.STUDY ?
+            <LiveServiceApolloClient
+                token={token}
+                sessionId={sessionId}
+            >
+                <StudyRoom />
+            </LiveServiceApolloClient> :
+            <LiveSfuServicesProvider
+                token={token}
+                roomId={roomId}
+                sessionId={sessionId}>
+                <LiveRoom />
+            </LiveSfuServicesProvider>
     );
 }
 
-function ClassRoom (): JSX.Element {
+function LiveRoom (): JSX.Element {
     const [ classLeft ] = useRecoilState(classLeftState);
     const [ classEnded ] = useRecoilState(classEndedState);
 
@@ -44,5 +55,16 @@ function ClassRoom (): JSX.Element {
                 <Trophy />
             </>
         </LiveClassProvider>
+    );
+}
+
+function StudyRoom (): JSX.Element {
+    return (
+        <StudyClassProvider>
+            <>
+                <Room />
+                <Trophy />
+            </>
+        </StudyClassProvider>
     );
 }
