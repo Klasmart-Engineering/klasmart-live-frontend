@@ -211,10 +211,6 @@ export function Schedule () {
             }
         }
 
-        if (!selectedValidUser || selectUserLoading) {
-            return;
-        }
-
         if (shouldSelectUser) {
             setDialogs({
                 ...dialogs,
@@ -231,6 +227,10 @@ export function Schedule () {
             if (shouldSelectOrganization) {
                 return;
             }
+        }
+
+        if (!selectedValidUser || selectUserLoading) {
+            return;
         }
 
         setIsProcessingRequest(true);
