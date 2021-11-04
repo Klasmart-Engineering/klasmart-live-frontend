@@ -133,19 +133,19 @@ export interface WebRTCContextInterface {
 }
 
 const defaultWebRTCContext = {
-    getAuxStream: (sessionId: string) => { return undefined; },
-    getCameraStream: (sessionId: string) => { return undefined; },
-    transmitStream: async (id: string, stream: MediaStream, simulcast = true) => { return []; },
-    toggleAudioByProducer: (id?: string) => { return; },
-    isAudioEnabledByProducer: (id?: string) => { return false; },
-    enableAudioByProducer: (id?: string, enabled?: boolean) => { return; },
-    toggleLocalAudio: (id?: string) => { return; },
-    isAudioDisabledLocally: (id?: string) => { return false; },
-    toggleVideoByProducer: (id?: string) => { return; },
-    isVideoEnabledByProducer: (id?: string) => { return false; },
-    enableVideoByProducer: (id?: string, enabled?: boolean) => { return; },
-    toggleLocalVideo: (id?: string) => { return; },
-    isVideoDisabledLocally: (id?: string) => { return false; },
+    getAuxStream: () => undefined,
+    getCameraStream: () => undefined,
+    transmitStream: () => Promise.resolve([]),
+    toggleAudioByProducer: () => { return; },
+    isAudioEnabledByProducer: () => false,
+    enableAudioByProducer: () => { return; },
+    toggleLocalAudio: () => { return; },
+    isAudioDisabledLocally: () => false,
+    toggleVideoByProducer: () => { return; },
+    isVideoEnabledByProducer: () =>  false,
+    enableVideoByProducer: () => { return; },
+    toggleLocalVideo: () => { return; },
+    isVideoDisabledLocally: () => false,
     inboundStreams: new Map<string, StreamDescription>(),
 };
 
@@ -778,10 +778,10 @@ export const WebRTCProvider = (props: { children: React.ReactNode }) => {
         }
     };
 
-    const closeMessage = async (id: string) => {
+    const closeMessage = (id: string) => {
         const destructor = destructors.get(id);
         if (!destructor) {
-            return;
+            return Promise.resolve();
         }
         setDestructors((prev) => {
             const newState = new Map(prev);
@@ -789,6 +789,7 @@ export const WebRTCProvider = (props: { children: React.ReactNode }) => {
             return newState;
         });
         destructor();
+        return Promise.resolve();
     };
 
     const value = {
