@@ -54,6 +54,15 @@ function PreviewLessonPlan () {
 
     if(material?.__typename === MaterialTypename.AUDIO) {
         setObserveDisable(false);
+        return (
+            <ReplicatedMedia
+                type={MaterialTypename.AUDIO}
+                src={contentHref}
+                style={{
+                    width: `100%`,
+                }}
+            />
+        );
     }
 
     if(((material?.__typename === MaterialTypename.IFRAME || material?.__typename === undefined) && material?.url)){
