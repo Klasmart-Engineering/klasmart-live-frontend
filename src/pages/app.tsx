@@ -15,5 +15,5 @@ export function App () {
         );
     }
 
-    return  <Join />;
+    return <Join />;
 }

@@ -3,6 +3,7 @@ import SidebarMenuItem from "./sidebarMenuItem";
 import TabMosaic from "./tabMosaic/tabMosaic";
 import TabParticipants from "./tabParticipants/tabParticipants";
 import TabSettings from "./tabSettings/tabSettings";
+import { useDeviceOrientationValue } from "@/app/model/appModel";
 import { useSessionContext } from "@/providers/session-context";
 import { activeTabState } from "@/store/layoutAtoms";
 import {
@@ -16,6 +17,7 @@ import {
 import { Grid as MosaicIcon } from "@styled-icons/bootstrap/Grid";
 import { PeopleOutline as ParticipantsIcon } from "@styled-icons/evaicons-outline/PeopleOutline";
 import { UserSettings as SettingsIcon } from "@styled-icons/remix-line/UserSettings";
+import clsx from "clsx";
 import React,
 {
     useContext,
@@ -51,7 +53,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     tabInner: {
         backgroundColor: theme.palette.background.default,
         padding: 10,
-        paddingRight: screen.orientation.type.match(`landscape-secondary`) ? `env(safe-area-inset-right)` : 0, // iPhone Notch
+    },
+    tabInnerSafeArea:{
+        paddingRight: `env(safe-area-inset-right)`, // iPhone Notch
     },
     sliderIconButton:{
         color: theme.palette.text.primary,
@@ -69,6 +73,7 @@ function Sidebar () {
     const intl = useIntl();
 
     const [ activeTab, setActiveTab ] = useRecoilState(activeTabState);
+    const deviceOrientation = useDeviceOrientationValue();
     const { isTeacher } = useSessionContext();
     const narrowDrawer = 240;
     const largeDrawer = 440;
@@ -184,7 +189,10 @@ function Sidebar () {
                 <Grid
                     item
                     xs
-                    className={classes.tabInner}>
+                    className={clsx(classes.tabInner, {
+                        [classes.tabInnerSafeArea] : deviceOrientation === `landscape-secondary`,
+                    })}
+                >
                     {activeTabContent}
                 </Grid>
             </Grid>

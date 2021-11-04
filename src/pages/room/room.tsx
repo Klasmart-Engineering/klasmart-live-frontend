@@ -1,3 +1,4 @@
+import { useDeviceOrientationValue } from "@/app/model/appModel";
 import backgroundStudy from "@/assets/img/background/background_study.jpg";
 import Main from '@/components/main/main';
 import Sidebar from '@/components/sidebar/sidebar';
@@ -43,8 +44,10 @@ const qs = require(`qs`);
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
         height: `100vh`,
-        paddingLeft: screen.orientation.type.match(`landscape-primary`) ? `env(safe-area-inset-left)` : 0, // iPhone Notch
         paddingBottom: `env(safe-area-inset-bottom)`,
+    },
+    rootSafeArea:{
+        paddingLeft: `env(safe-area-inset-left)`, // iPhone Notch
     },
     study: {
         backgroundImage: `url('${backgroundStudy}')`,
@@ -61,6 +64,7 @@ export function Room () {
     const [ hasControls, setHasControls ] = useRecoilState(hasControlsState);
     const [ studyRecommandUrl, setStudyRecommandUrl ] = useRecoilState(studyRecommandUrlState);
     const [ classInfo, setClassInfo ] = useRecoilState(classInfoState);
+    const deviceOrientation = useDeviceOrientationValue();
 
     const [ camerasOn, setCamerasOn ] = useState(true);
     const [ micsOn, setMicsOn ] = useState(true);
@@ -254,6 +258,7 @@ export function Room () {
             direction={isXsDown ? `column` : `row`}
             className={clsx(classes.root, {
                 [classes.study] : classType === ClassType.STUDY,
+                [classes.rootSafeArea] : deviceOrientation === `landscape-primary`,
             })}
         >
             <Grid

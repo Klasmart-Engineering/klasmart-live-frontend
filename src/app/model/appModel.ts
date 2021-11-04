@@ -1,5 +1,10 @@
 import { HomeFunStudyFeedback } from "../dialogs/home-fun-study/homeFunStudyDialog";
-import { atom } from "recoil";
+import {
+    atom,
+    useRecoilState,
+    useRecoilValue,
+    useSetRecoilState,
+} from "recoil";
 
 export enum OrientationType {
     PORTRAIT = `portrait`,
@@ -75,3 +80,14 @@ export const layoutModeState = atom<LayoutMode>({
     key: `layoutMode`,
     default: LayoutMode.DEFAULT,
 });
+export const useLayoutMode = () => useRecoilState(layoutModeState);
+export const useLayoutModeValue = () => useRecoilValue(layoutModeState);
+export const useSetLayoutMode = () => useSetRecoilState(layoutModeState);
+
+export const deviceOrientationState = atom({
+    key: `deviceOrientationState`,
+    default: `portrait`,
+});
+export const useDeviceOrientation = () => useRecoilState(deviceOrientationState);
+export const useDeviceOrientationValue = () => useRecoilValue(deviceOrientationState);
+export const useSetDeviceOrientation = () => useSetRecoilState(deviceOrientationState);

@@ -1,16 +1,17 @@
 import Loading from "../../components/loading";
 import { ExitDialog } from "../dialogs/exitDialog";
-import {
-    LayoutMode,
-    layoutModeState,
-    OrientationType,
-} from "../model/appModel";
 import useCordovaInitialize from "../platform/cordova-initialize";
 import {
     enableFullScreen,
     enableKeepAwake,
     lockOrientation,
 } from "../utils/screenUtils";
+import {
+    LayoutMode,
+    OrientationType,
+    useLayoutModeValue,
+    useSetDeviceOrientation,
+} from "@/app/model/appModel";
 import { sleep } from "@/utils/utils";
 import { History } from "history";
 import React,
@@ -23,7 +24,6 @@ import React,
     useEffect,
     useState,
 } from "react";
-import { useRecoilState } from "recoil";
 
 const initialHref = location.href;
 
@@ -69,7 +69,8 @@ export function CordovaSystemProvider ({ children, history }: Props) {
     const [ displayExitDialogue, setDisplayExitDialogue ] = useState<boolean>(false);
     const [ onBackQueue, setOnBackQueue ] = useState<OnBackItem[]>([]);
     const [ permissions, setPermissions ] = useState(false);
-    const [ layoutMode, setLayoutMode ] = useRecoilState(layoutModeState);
+    const layoutMode = useLayoutModeValue();
+    const setDeviceOrientation = useSetDeviceOrientation();
 
     const addOnBack = (onBackItem: OnBackItem) => {
         console.log(onBackItem.id);
@@ -97,6 +98,18 @@ export function CordovaSystemProvider ({ children, history }: Props) {
             }
         })();
     }, [ layoutMode ]);
+
+    useEffect(() => {
+        if(!screen.orientation) return;
+
+        const orientationChangeListener = () => {
+            setDeviceOrientation(screen.orientation.type);
+        };
+        window.addEventListener(`orientationchange`, orientationChangeListener);
+        return () => {
+            window.removeEventListener(`orientationchange`, orientationChangeListener);
+        };
+    }, []);
 
     const removeOnBack = (id: string) => {
         console.log(id);
