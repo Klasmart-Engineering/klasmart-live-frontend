@@ -1,7 +1,7 @@
 import { Room } from "./room";
 import { Trophy } from "@/components/trophies/trophy";
 import EndClass from "@/pages/end/endClass";
-import ClassProviders from "@/providers/classProviders";
+import LiveClassProvider from "@/providers/liveClassProvider";
 import { LiveSessionLinkProvider } from "@/providers/live-session-link-context";
 import { useSessionContext } from "@/providers/session-context";
 import {
@@ -38,11 +38,11 @@ function ClassRoom (): JSX.Element {
     }
 
     return (
-        <ClassProviders>
+        <LiveClassProvider>
             <>
                 <Room />
                 <Trophy />
             </>
-        </ClassProviders>
+        </LiveClassProvider>
     );
 }

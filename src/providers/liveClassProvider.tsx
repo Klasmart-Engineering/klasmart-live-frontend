@@ -14,7 +14,7 @@ type Props = {
     children?: ReactChild | ReactChildren | null;
 }
 
-function ClassProviders ({ children }: Props) {
+function LiveClassProvider ({ children }: Props) {
     const intl = useIntl();
 
     return (
@@ -41,4 +41,4 @@ function ClassProviders ({ children }: Props) {
     );
 }
 
-export default ClassProviders;
+export default LiveClassProvider;
