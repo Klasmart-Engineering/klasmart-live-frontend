@@ -47,9 +47,6 @@ type Props = {
     sessionId: string;
 }
 
-/* TODO: Somehow unify this with the user-information-context as the name and state
-** overlap. Some state kept by this user-context might not be relevant for this
-** context though, like the selected camera stream. */
 export function SessionContextProvider ({ children, sessionId }: Props) {
     const [ token, setToken ] = useState<string>();
 
