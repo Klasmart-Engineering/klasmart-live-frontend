@@ -1,9 +1,7 @@
-import { LIVE_LINK } from "./providers";
 import { useSessionContext } from "./session-context";
 import { WebRTCContext } from "./WebRTCContext";
+import { useShowContentMutation } from "@/data/live/mutations/useShowContentMutation";
 import { ContentType } from "@/pages/utils";
-import { MUTATION_SHOW_CONTENT } from "@/utils/graphql";
-import { useMutation } from "@apollo/client";
 import { types as MediaSoup } from "mediasoup-client";
 import React,
 {
@@ -20,8 +18,8 @@ export interface ScreenShareContextInterface {
 
 const defaultScreenShareContext = {
     stream: undefined,
-    start: async () => {},
-    stop: async () => {},
+    start: () => Promise.resolve(),
+    stop: () => Promise.resolve(),
 };
 
 export const ScreenShareContext = createContext<ScreenShareContextInterface>(defaultScreenShareContext);
@@ -34,13 +32,9 @@ export const ScreenShareProvider = (props: {children: React.ReactNode}) => {
     const sfuState = useContext(WebRTCContext);
     const { roomId, sessionId } = useSessionContext();
 
-    const [ showContent, { loading: loadingShowContent } ] = useMutation(MUTATION_SHOW_CONTENT, {
-        context: {
-            target: LIVE_LINK,
-        },
-    });
+    const [ showContent ] = useShowContentMutation();
 
-    window.addEventListener(`beforeunload`, function (e){
+    window.addEventListener(`beforeunload`, () => {
         stop();
     }, false);
 
@@ -75,9 +69,11 @@ export const ScreenShareProvider = (props: {children: React.ReactNode}) => {
         }
     };
 
-    const stop = async () => {
-        if(!stream) {return;}
-        if(stopping) {return;}
+    const stop = () => {
+        if(!stream || stopping) {
+            return Promise.resolve();
+        }
+
         try {
             setStopping(true);
             for(const producer of producers) {
@@ -98,6 +94,8 @@ export const ScreenShareProvider = (props: {children: React.ReactNode}) => {
         } finally {
             setStopping(false);
         }
+
+        return Promise.resolve();
     };
     const value = {
         stream,

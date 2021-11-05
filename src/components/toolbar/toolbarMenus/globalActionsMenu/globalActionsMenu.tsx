@@ -1,31 +1,20 @@
 import GlobalActionsMenuItem from "./globalAction";
+import { useRewardTrophyMutation } from "@/data/live/mutations/useRewardTrophyMutation";
+import { useGlobalMuteMutation } from "@/data/sfu/mutations/useGlobalMuteMutation";
+import { useGlobalMuteQuery } from "@/data/sfu/queries/useGlobalMuteQuery";
 import { ContentType } from "@/pages/utils";
-import {
-    LIVE_LINK,
-    SFU_LINK,
-} from "@/providers/providers";
 import { RoomContext } from "@/providers/roomContext";
 import { ScreenShareContext } from "@/providers/screenShareProvider";
 import { useSessionContext } from "@/providers/session-context";
-import {
-    GLOBAL_MUTE_MUTATION,
-    GLOBAL_MUTE_QUERY,
-    GlobalMuteNotification,
-} from "@/providers/WebRTCContext";
+import { GlobalMuteNotification } from "@/providers/WebRTCContext";
 import {
     isGlobalActionsOpenState,
     videoGloballyMutedState,
 } from "@/store/layoutAtoms";
-import { MUTATION_REWARD_TROPHY } from "@/utils/graphql";
 import { StyledPopper } from "@/utils/utils";
-import {
-    useMutation,
-    useQuery,
-} from "@apollo/client";
 import {
     Grid,
     makeStyles,
-    Theme,
 } from "@material-ui/core";
 import { CameraVideoFill as CameraVideoFillIcon } from "@styled-icons/bootstrap/CameraVideoFill";
 import { CameraVideoOffFill as CameraDisabledIcon } from "@styled-icons/bootstrap/CameraVideoOffFill";
@@ -44,9 +33,12 @@ import React,
 } from "react";
 import { isMobile } from "react-device-detect";
 import { useIntl } from "react-intl";
-import { useRecoilState } from "recoil";
+import {
+    useRecoilState,
+    useRecoilValue,
+} from "recoil";
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles(() => ({
     root: {
         padding: 4,
     },
@@ -61,7 +53,7 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
     const classes = useStyles();
     const intl = useIntl();
 
-    const [ isGlobalActionsOpen, setIsGlobalActionsOpen ] = useRecoilState(isGlobalActionsOpenState);
+    const isGlobalActionsOpen = useRecoilValue(isGlobalActionsOpenState);
     const [ videoGloballyMuted, setVideoGloballyMuted ] = useRecoilState(videoGloballyMutedState);
 
     const [ camerasOn, setCamerasOn ] = useState(true);
@@ -70,26 +62,15 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
     const { content } = useContext(RoomContext);
     const screenShare = useContext(ScreenShareContext);
 
-    const [ globalMuteMutation ] = useMutation(GLOBAL_MUTE_MUTATION, {
-        context: {
-            target: SFU_LINK,
-        },
-    });
+    const [ globalMuteMutation ] = useGlobalMuteMutation();
 
-    const { refetch: refetchGlobalMute } = useQuery(GLOBAL_MUTE_QUERY, {
+    const { refetch: refetchGlobalMute } = useGlobalMuteQuery({
         variables: {
             roomId,
         },
-        context: {
-            target: SFU_LINK,
-        },
     });
 
-    const [ rewardTrophyMutation, { loading: loadingTrophy } ] = useMutation(MUTATION_REWARD_TROPHY, {
-        context: {
-            target: LIVE_LINK,
-        },
-    });
+    const [ rewardTrophyMutation ] = useRewardTrophyMutation();
 
     const rewardTrophy = (user: string, kind: string) => {
         rewardTrophyMutation({

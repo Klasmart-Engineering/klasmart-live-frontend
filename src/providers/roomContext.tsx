@@ -1,10 +1,10 @@
-import {
-    LIVE_LINK,
-    SFU_LINK,
-} from "./providers";
 import { useSessionContext } from "./session-context";
-import { GLOBAL_MUTE_QUERY } from "./WebRTCContext";
 import Loading from "@/components/loading";
+import { ReadTrophyDto } from "@/data/live/dto/readRoomDto";
+import { useSendStudentUsageRecordMutation } from "@/data/live/mutations/useSendStudentUsageRecordMutation";
+import { useShowContentMutation } from "@/data/live/mutations/useShowContentMutation";
+import { useRoomSubscription } from "@/data/live/subscriptions/useRoomSubscription";
+import { useGlobalMuteQuery } from "@/data/sfu/queries/useGlobalMuteQuery";
 import {
     Content,
     Message,
@@ -25,19 +25,9 @@ import {
     videoGloballyMutedState,
 } from "@/store/layoutAtoms";
 import {
-    MUTATION_SEND_STUDENT_USAGE_RECORD_EVENT,
-    MUTATION_SHOW_CONTENT,
-} from "@/utils/graphql";
-import {
     defineContentId,
     defineContentType,
 } from "@/utils/utils";
-import {
-    gql,
-    useMutation,
-    useQuery,
-    useSubscription,
-} from "@apollo/client";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { useSnackbar } from "kidsloop-px";
@@ -53,26 +43,12 @@ import {
 } from "react-intl";
 import { useRecoilState } from "recoil";
 
-const SUB_ROOM = gql`
-    subscription room($roomId: ID!, $name: String) {
-        room(roomId: $roomId, name: $name) {
-            message { id, message, session { name, isTeacher } },
-            content { type, contentId },
-            join { id, name, streamId, isTeacher, isHost, joinedAt },
-            leave { id },
-            session { webRTC { sessionId, description, ice, stream { name, streamId } } },
-            sfu,
-            trophy { from, user, kind },
-        }
-    }
-`;
-
 export interface RoomContextInterface {
     sfuAddress: string;
     messages: Map<string, Message>;
     content: Content | undefined;
     sessions: Map<string, Session>;
-    trophy: any;
+    trophy?: ReadTrophyDto;
     audioGloballyMuted: boolean;
     videoGloballyMuted: boolean;
 }
@@ -103,7 +79,7 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
     const [ messages, setMessages ] = useState<Map<string, Message>>(new Map<string, Message>());
     const [ content, setContent ] = useState<Content>();
     const [ sessions, setSessions ] = useState<Map<string, Session>>(new Map<string, Session>());
-    const [ trophy, setTrophy ] = useState();
+    const [ trophy, setTrophy ] = useState<ReadTrophyDto>();
     const [ , setClassEnded ] = useRecoilState(classEndedState);
     const [ unreadMessages, setUnreadMessages ] = useRecoilState(unreadMessagesState);
     const [ isChatOpen ] = useRecoilState(isChatOpenState);
@@ -117,17 +93,10 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
     const [ interactiveMode ] = useRecoilState(interactiveModeState);
     const [ hasControls ] = useRecoilState(hasControlsState);
 
-    const [ showContent, { loading: loadingShowContent } ] = useMutation(MUTATION_SHOW_CONTENT, {
-        context: {
-            target: LIVE_LINK,
-        },
-    });
+    const [ showContent, { loading: loadingShowContent } ] = useShowContentMutation();
 
-    const [ sendStudentUsageRecordEvent ] = useMutation(MUTATION_SEND_STUDENT_USAGE_RECORD_EVENT, {
-        context: {
-            target: LIVE_LINK,
-        },
-    });
+    const [ sendStudentUsageRecordEvent ] = useSendStudentUsageRecordMutation();
+
     useEffect(() => {
         setIsShowContentLoading(loadingShowContent);
     }, [ loadingShowContent ]);
@@ -179,7 +148,7 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
         fetchGlobalMute();
     }, [ audioGloballyMuted, videoGloballyMuted ]);
 
-    const { loading, error } = useSubscription(SUB_ROOM, {
+    const { loading, error } = useRoomSubscription({
         onSubscriptionData: ({ subscriptionData }) => {
             if (!subscriptionData?.data?.room) { return; }
             const {
@@ -204,9 +173,6 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
         variables: {
             roomId,
             name,
-        },
-        context: {
-            target: LIVE_LINK,
         },
     });
 
@@ -273,12 +239,9 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
         }
     };
 
-    const { refetch: refetchGlobalMute } = useQuery(GLOBAL_MUTE_QUERY, {
+    const { refetch: refetchGlobalMute } = useGlobalMuteQuery({
         variables: {
             roomId,
-        },
-        context: {
-            target: SFU_LINK,
         },
     });
 

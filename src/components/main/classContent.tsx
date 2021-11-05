@@ -1,7 +1,6 @@
 import PreviewLessonPlan from "./previewLessonPlan";
 import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
-import { WB_TOOLBAR_MAX_HEIGHT } from "@/components/classContent/WBToolbar";
-import { LIVE_LINK } from "@/providers/providers";
+import { useRewardTrophyMutation } from "@/data/live/mutations/useRewardTrophyMutation";
 import { useSessionContext } from "@/providers/session-context";
 import { ClassType } from "@/store/actions";
 import {
@@ -11,9 +10,7 @@ import {
     showEndStudyState,
     studyRecommandUrlState,
 } from "@/store/layoutAtoms";
-import { MUTATION_REWARD_TROPHY } from "@/utils/graphql";
 import { Whiteboard } from "@/whiteboard/components/Whiteboard";
-import { useMutation } from "@apollo/client";
 import { Typography } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import {
@@ -32,7 +29,11 @@ import React,
 } from "react";
 import { useIntl } from "react-intl";
 import { useHistory } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import {
+    useRecoilState,
+    useRecoilValue,
+    useSetRecoilState,
+} from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
     arrowButton:{
@@ -151,27 +152,22 @@ export function ClassContent () {
     const classes = useStyles();
     const intl = useIntl();
 
-    const iframeRef = useRef<HTMLIFrameElement>(null);
     const [ materialActiveIndex, setMaterialActiveIndex ] = useRecoilState(materialActiveIndexState);
-    const [ studyRecommandUrl, setStudyRecommandUrl ] = useRecoilState(studyRecommandUrlState);
+    const studyRecommandUrl = useRecoilValue(studyRecommandUrlState);
     const [ showEndStudy, setShowEndStudy ] = useRecoilState(showEndStudyState);
-    const [ classLeft, setClassEnded ] = useRecoilState(classLeftState);
-    const [ classEnded, setClassLeft ] = useRecoilState(classEndedState);
+    const setClassEnded = useSetRecoilState(classLeftState);
+    const setClassLeft = useSetRecoilState(classEndedState);
     const { restart } = useCordovaSystemContext();
     const history = useHistory();
 
     const materialsLength = studyRecommandUrl ? materials.length + 1 : materials.length;
 
     const rootDivRef = useRef<HTMLDivElement>(null);
-    const [ squareSize, setSquareSize ] = useState<number>(0);
+    const [ , setSquareSize ] = useState<number>(0);
     const forStudent = classType === ClassType.STUDY || !isTeacher;
     const HUB_ENDPOINT = process.env.ENDPOINT_HUB;
 
-    const [ rewardTrophyMutation, { loading: loadingTrophy } ] = useMutation(MUTATION_REWARD_TROPHY, {
-        context: {
-            target: LIVE_LINK,
-        },
-    });
+    const [ rewardTrophyMutation ] = useRewardTrophyMutation();
 
     const handlePrev = () => {
         setMaterialActiveIndex(materialActiveIndex - 1);

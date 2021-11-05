@@ -1,7 +1,5 @@
-import { LIVE_LINK } from '@/providers/providers';
+import { useSaveFeedbackMutation } from "@/data/live/mutations/useSaveFeedbackMutation";
 import { useSessionContext } from "@/providers/session-context";
-import { MUTATION_SAVE_FEEDBACK } from "@/utils/graphql";
-import { useMutation } from '@apollo/client';
 import {
     Button,
     Chip,
@@ -18,7 +16,6 @@ import { StarFill as StarFillIcon } from "@styled-icons/bootstrap/StarFill";
 import clsx from "clsx";
 import React,
 {
-    useContext,
     useEffect,
     useState,
 } from "react";
@@ -144,11 +141,7 @@ function Feedback (props:FeedbackProps){
     const [ quickFeedback, setQuickFeedback ] = useState<Array<any>>(new Array<any>());
     const [ comment, setComment ] = useState<string>(``);
 
-    const [ saveFeedbackMutation ] = useMutation(MUTATION_SAVE_FEEDBACK, {
-        context: {
-            target: LIVE_LINK,
-        },
-    });
+    const [ saveFeedbackMutation ] = useSaveFeedbackMutation();
 
     useEffect(() => setQuickFeedback([]), [ stars ]);
 

@@ -1,7 +1,7 @@
 import { useServices } from "@/app/context-provider/services-provider";
 import { useCustomFlashCard } from "@/app/utils/customFlashCard";
 import { injectIframeScript } from "@/app/utils/injectIframeScript";
-import { LIVE_LINK } from "@/providers/providers";
+import { useSetStreamIdMutation } from "@/data/live/mutations/useSetStreamIdMutation";
 import { useHttpEndpoint } from "@/providers/region-select-context";
 import { RoomContext } from "@/providers/roomContext";
 import { useSessionContext } from "@/providers/session-context";
@@ -11,10 +11,6 @@ import {
     streamIdState,
 } from "@/store/layoutAtoms";
 import { useWindowSize } from "@/utils/viewport";
-import {
-    gql,
-    useMutation,
-} from "@apollo/client";
 import { Button } from "@material-ui/core";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Dialog from "@material-ui/core/Dialog";
@@ -33,12 +29,6 @@ import React,
 } from "react";
 import { FormattedMessage } from "react-intl";
 import { useRecoilState } from "recoil";
-
-const SET_STREAMID = gql`
-    mutation setSessionStreamId($roomId: ID!, $streamId: ID!) {
-        setSessionStreamId(roomId: $roomId, streamId: $streamId)
-    }
-`;
 
 export interface Props {
     contentHref: string;
@@ -72,11 +62,7 @@ export function RecordedIframe (props: Props): JSX.Element {
 
     const isPdfContent = contentHref.endsWith(`.pdf`);
 
-    const [ sendStreamId ] = useMutation(SET_STREAMID, {
-        context: {
-            target: LIVE_LINK,
-        },
-    });
+    const [ sendStreamId ] = useSetStreamIdMutation();
 
     const [ openDialog, setOpenDialog ] = useState(true);
     const [ seconds, setSeconds ] = useState(MAX_LOADING_COUNT);

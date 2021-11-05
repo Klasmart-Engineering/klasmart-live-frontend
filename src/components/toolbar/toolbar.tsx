@@ -12,11 +12,9 @@ import ClassDetailsMenu from "./toolbarMenus/classDetailsMenu/classDetailsMenu";
 import GlobalActionsMenu from "./toolbarMenus/globalActionsMenu/globalActionsMenu";
 import LessonPlanMenu from "./toolbarMenus/lessonPlanMenu/lessonPlanMenu";
 import ViewModesMenu from "./toolbarMenus/viewModesMenu/viewModesMenu";
-import { SFU_LINK } from "@/providers/providers";
-import { RoomContext } from "@/providers/roomContext";
+import { useMuteMutation } from "@/data/sfu/mutations/useMuteMutation";
 import { useSessionContext } from "@/providers/session-context";
 import {
-    MUTE,
     MuteNotification,
     WebRTCContext,
 } from "@/providers/WebRTCContext";
@@ -35,7 +33,6 @@ import {
     unreadMessagesState,
 } from "@/store/layoutAtoms";
 import { useSynchronizedState } from "@/whiteboard/context-providers/SynchronizedStateProvider";
-import { useMutation } from "@apollo/client";
 import {
     Grid,
     makeStyles,
@@ -61,7 +58,10 @@ import React,
     useState,
 } from "react";
 import { useIntl } from "react-intl";
-import { useRecoilState } from "recoil";
+import {
+    useRecoilState,
+    useRecoilValue,
+} from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -98,18 +98,17 @@ function Toolbar () {
         materials,
     } = useSessionContext();
     const webrtc = useContext(WebRTCContext);
-    const { content } = useContext(RoomContext);
 
     const [ isGlobalActionsOpen, setIsGlobalActionsOpen ] = useRecoilState(isGlobalActionsOpenState);
     const [ isLessonPlanOpen, setIsLessonPlanOpen ] = useRecoilState(isLessonPlanOpenState);
     const [ isViewModesOpen, setIsViewModesOpen ] = useRecoilState(isViewModesOpenState);
-    const [ interactiveMode, setInteractiveMode ] = useRecoilState(interactiveModeState);
-    const [ activeTab, setActiveTab ] = useRecoilState(activeTabState);
+    const interactiveMode = useRecoilValue(interactiveModeState);
+    const activeTab = useRecoilValue(activeTabState);
     const [ isChatOpen, setIsChatOpen ] = useRecoilState(isChatOpenState);
     const [ isClassDetailsOpen, setIsClassDetailsOpen ] = useRecoilState(isClassDetailsOpenState);
     const [ isCanvasOpen, setIsCanvasOpen ] = useRecoilState(isCanvasOpenState);
-    const [ unreadMessages, setUnreadMessages ] = useRecoilState(unreadMessagesState);
-    const [ hasControls, setHasControls ] = useRecoilState(hasControlsState);
+    const unreadMessages = useRecoilValue(unreadMessagesState);
+    const hasControls = useRecoilValue(hasControlsState);
 
     const theme = useTheme();
     const isMdDown = useMediaQuery(theme.breakpoints.down(`md`));
@@ -136,30 +135,26 @@ function Toolbar () {
         setIsViewModesOpen(false);
     };
 
-    const [ muteMutation ] = useMutation(MUTE, {
-        context: {
-            target: SFU_LINK,
-        },
-    });
+    const [ muteMutation ] = useMuteMutation();
 
-    async function toggleOutboundAudioState () {
+    function toggleOutboundAudioState () {
         const notification: MuteNotification = {
             roomId,
             sessionId,
             audio: !micOn,
         };
-        const muteNotification = await muteMutation({
+        return muteMutation({
             variables: notification,
         });
     }
 
-    async function toggleOutboundVideoState () {
+    function toggleOutboundVideoState () {
         const notification: MuteNotification = {
             roomId,
             sessionId,
             video: !camOn,
         };
-        const muteNotification = await muteMutation({
+        return muteMutation({
             variables: notification,
         });
     }
@@ -210,7 +205,7 @@ function Toolbar () {
                             active={isClassDetailsOpen}
                             disabled={Boolean(handleTooltip(`classDetails`))}
                             tooltip={handleTooltip(`classDetails`)}
-                            onClick={(e: Event) => {
+                            onClick={() => {
                                 resetDrawers();
                                 setIsClassDetailsOpen(!isClassDetailsOpen);
                             }}
@@ -226,7 +221,7 @@ function Toolbar () {
                             active={isCanvasOpen}
                             disabled={Boolean(handleTooltip(`canvas`))}
                             tooltip={handleTooltip(`canvas`)}
-                            onClick={(e: Event) => {
+                            onClick={() => {
                                 resetDrawers();
                                 setIsCanvasOpen(!isCanvasOpen);
                             }}
@@ -274,7 +269,7 @@ function Toolbar () {
                             disabled={Boolean(handleTooltip(`globalActions`))}
                             tooltip={handleTooltip(`globalActions`)}
                             active={isGlobalActionsOpen}
-                            onClick={(e: Event) => {
+                            onClick={() => {
                                 resetDrawers();
                                 setIsGlobalActionsOpen(!isGlobalActionsOpen);
                             }}
@@ -307,7 +302,7 @@ function Toolbar () {
                             badge={viewModesBadge}
                             disabled={Boolean(handleTooltip(`viewModes`))}
                             tooltip={handleTooltip(`viewModes`)}
-                            onClick={(e: Event) => {
+                            onClick={() => {
                                 resetDrawers();
                                 setIsViewModesOpen(!isViewModesOpen);
                             }}
@@ -322,7 +317,7 @@ function Toolbar () {
                             })}
                             badge={unreadMessages ? unreadMessages : null}
                             active={isChatOpen}
-                            onClick={(e: Event) => {
+                            onClick={() => {
                                 resetDrawers();
                                 setIsChatOpen(!isChatOpen);
                             }}
@@ -358,8 +353,8 @@ export default Toolbar;
 
 function handleTooltip (item: string){
     const intl = useIntl();
-    const [ isActiveGlobalScreenshare, setIsActiveGlobalScreenshare ] = useRecoilState( isActiveGlobalScreenshareState);
-    const [ activeTab, setActiveTab ] = useRecoilState(activeTabState);
+    const isActiveGlobalScreenshare = useRecoilValue(isActiveGlobalScreenshareState);
+    const activeTab = useRecoilValue(activeTabState);
 
     const tooltips:any = {
         classDetails: {
