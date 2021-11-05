@@ -11,6 +11,7 @@ import React,
     useRef,
     useState,
 } from 'react';
+import { FormattedMessage } from "react-intl";
 
 interface Props {
     onCompleted: () => void;
@@ -64,7 +65,7 @@ export function ParentalGate ({ onCompleted, message }: Props): JSX.Element {
                     gutterBottom
                     variant="h3"
                     align="center">
-                    Notice for parents
+                    <FormattedMessage id="parentalGate.title" />
                 </Typography>
             </Grid>
             <Grid
@@ -76,7 +77,7 @@ export function ParentalGate ({ onCompleted, message }: Props): JSX.Element {
                     gutterBottom
                     variant="subtitle1"
                     align="center">
-                    { message ? message : `This application contains user generated content. The content have been approved by qualified lesson material administrators. Please acknowlege this by completing the challenge below.` }
+                    { message ? message : <FormattedMessage id="parentalGate.body.default" /> }
                 </Typography>
             </Grid>
             <Grid item>
@@ -95,7 +96,12 @@ export function ParentalGate ({ onCompleted, message }: Props): JSX.Element {
                         style={{
                             margin: theme.spacing(1),
                         }}>
-                        What is {challenge1} + {challenge2}?
+                        <FormattedMessage
+                            id="parentalGate.challenge"
+                            values={{
+                                number1: challenge1,
+                                number2: challenge2,
+                            }} />
                     </Grid>
                     <Grid
                         item

@@ -1,34 +1,19 @@
+import "inter-ui";
 import {
     createTheme,
     responsiveFontSizes,
     Theme,
 } from "@material-ui/core/styles";
-import createBreakpoints from '@material-ui/core/styles/createBreakpoints';
 import { PaletteOptions } from "@material-ui/core/styles/createPalette";
 
 export function themeProvider (languageCode: string, themeMode: string) {
     function setTypography (languageCode: string) {
-        let localeFontFamily = `Source Sans Pro`;
-        const localeWeightLight = 400;
-        const localeWeightMedium = 600;
-        let localeWeightRegular = 400;
+        let localeFontFamily = `Inter`;
+        const localeWeightLight = 300;
+        const localeWeightRegular = 400;
+        const localeWeightMedium = 500;
         const localeWeightBold = 700;
 
-        switch (languageCode) {
-        case `en`:
-            localeFontFamily = `Source Sans Pro`;
-            localeWeightRegular = 500;
-            break;
-        case `ko`:
-            localeFontFamily = `NanumSquareRound`;
-            localeWeightRegular = 600;
-            break;
-        case `zh-CN`:
-            localeFontFamily = `Source Han Sans SC`;
-            break;
-        default:
-            break;
-        }
         localeFontFamily = [
             localeFontFamily,
             `-apple-system`,
@@ -65,6 +50,26 @@ export function themeProvider (languageCode: string, themeMode: string) {
             md: 1024,
             lg: 1280,
             xl: 1920,
+        },
+    };
+
+    const palette: PaletteOptions = {
+        background: {
+            default: `#cfe1f9`,
+            paper: `#ffffff`,
+        },
+        primary: {
+            contrastText: `#FFF`,
+            dark: `#1896ea`,
+            light: `#344966`,
+            main: `#344966`,
+        },
+        text: {
+            primary: `#344966`,
+            secondary: `#9e9e9e`,
+        },
+        grey:{
+            200: `#f1f6fc`,
         },
     };
 
@@ -136,34 +141,26 @@ export function themeProvider (languageCode: string, themeMode: string) {
         },
         MuiAccordionSummary:{
             expandIcon:{
-                color: `#344966`,
+                color: palette.text?.primary,
             },
         },
         MuiAppBar: {
             colorPrimary: {
-                color: `#344966`,
+                color: palette.text?.primary,
                 backgroundColor: `#ffffff`,
             },
         },
-    };
-
-    const palette: PaletteOptions = {
-        background: {
-            default: `#cfe1f9`,
-            paper: `#ffffff`,
+        MuiListItemText:{
+            secondary: {
+                fontSize: `0.68rem`,
+            },
         },
-        primary: {
-            contrastText: `#FFF`,
-            dark: `#1896ea`,
-            light: `#344966`,
-            main: `#344966`,
-        },
-        text: {
-            primary: `#344966`,
-            secondary: `#9e9e9e`,
-        },
-        grey:{
-            200: `#f1f6fc`,
+        MuiListSubheader:{
+            root:{
+                fontWeight: localeTypography.localeWeightBold,
+                color: palette.text?.secondary,
+                lineHeight: `28px`,
+            },
         },
     };
 

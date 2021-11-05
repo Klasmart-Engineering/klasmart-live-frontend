@@ -3,6 +3,8 @@ import { RoomWithContext } from "../pages/room/room-with-context";
 import { useAuthenticationContext } from "./context-provider/authentication-context";
 import { SelectOrgDialog } from "./dialogs/account/selectOrgDialog";
 import { SelectUserDialog } from "./dialogs/account/selectUserDialog";
+import { SettingsDialog } from "./dialogs/account/settingsDialog";
+import { SettingsLanguageDialog } from "./dialogs/account/settingsLanguageDialog";
 import { ExternalNavigationDialog } from "./dialogs/externalNavigationDialog";
 import { HomeFunStudyDialog } from "./dialogs/home-fun-study/homeFunStudyDialog";
 import { Auth } from "./pages/account/auth";
@@ -57,6 +59,8 @@ export function App ({ history }: {
                     <SelectOrgDialog />
                     <SelectUserDialog />
                     <HomeFunStudyDialog />
+                    <SettingsDialog />
+                    <SettingsLanguageDialog />
                 </>
             )}
             <ExternalNavigationDialog />

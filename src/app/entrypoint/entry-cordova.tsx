@@ -15,6 +15,7 @@ import {
     localeState,
 } from "../model/appModel";
 import { useLocaleCookie } from "../utils/localeCookie";
+import { getIntl } from "@/app/localization/localeCodes";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { ThemeProvider } from "@material-ui/core/styles";
 import { createHashHistory } from 'history';
@@ -54,11 +55,16 @@ export const sessionId = uuid();
 function Entry () {
     const dispatch = useDispatch();
     const themeMode = useSelector((state: State) => state.control.themeMode);
+
+    /* TODO (Gael): I don't know what this things does
     const [ language ] = useLocaleCookie();
+    */
 
     const [ locale ] = useRecoilState(localeState);
     const [ , setError ] = useRecoilState(errorState);
     const [ , setHistory ] = useRecoilState(historyState);
+
+    const language = getIntl(locale.languageCode);
 
     useEffect(() => {
         setError({
@@ -94,7 +100,7 @@ function Entry () {
                 <CompositionRoot sessionId={sessionId}>
                     <UserServiceApolloClient>
                         <ThemeProvider theme={themeProvider(locale.languageCode, themeMode)}>
-                            <SnackbarProvider >
+                            <SnackbarProvider>
                                 <CssBaseline />
                                 <PopupProvider>
                                     <App history={history} />
