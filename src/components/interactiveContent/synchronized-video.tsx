@@ -24,6 +24,8 @@ import React,
     useRef,
     useState,
 } from "react";
+import { useHttpEndpoint } from "@/providers/region-select-context";
+import { getContentHref } from "@/utils/contentUtils";
 
 interface VideoSynchronize {
     src?: string;
@@ -104,9 +106,10 @@ export function ReplicaMedia (props: React.VideoHTMLAttributes<HTMLMediaElement>
     const reactPlayerRef = useRef<ReactPlayer>(null);
 
     const [ videoSources, setVideoSources ] = useState<
-        string | string[] | undefined
+        string | undefined
     >(undefined);
     const [ videoReady, setVideoReady ] = useState<boolean>(false);
+    const contentEndpoint = useHttpEndpoint("live");
 
     const reactPlayerError = useCallback((reason) => {
         // NOTE: Fallback to original src if there's an error.
@@ -227,6 +230,12 @@ export function ReplicaMedia (props: React.VideoHTMLAttributes<HTMLMediaElement>
             video.pause();
         }
     }, [ ref.current ]);
+
+    useEffect(() => {
+        if (!videoSources || videoSources.includes(contentEndpoint)) return;
+        const contentHref = getContentHref(videoSources, contentEndpoint);
+        setVideoSources(contentHref);
+    }, [ videoSources, contentEndpoint ]);
 
     if (loading) {
         return <CircularProgress />;
