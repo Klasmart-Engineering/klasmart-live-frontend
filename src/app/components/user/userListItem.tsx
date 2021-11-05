@@ -10,6 +10,7 @@ import { Check as CheckIcon } from "@styled-icons/fa-solid/Check";
 import { UserAvatar } from "kidsloop-px";
 import React,
 { useMemo } from "react";
+import { useIntl } from "react-intl";
 
 interface Props {
     user: ReadUserDto;
@@ -21,6 +22,7 @@ export const UserListItem: React.FC<Props> = ({
     user, isSelected, onClick,
 }) => {
     const theme = useTheme();
+    const intl = useIntl();
 
     const displayName = useMemo(() => {
         if (user.given_name && user.family_name) {
@@ -36,13 +38,17 @@ export const UserListItem: React.FC<Props> = ({
 
     const subTitle = useMemo(() => {
         if (!displayName) {
-            // TODO: Localize
-            return `Please update your profile`;
+            return  intl.formatMessage({
+                id: `selectUser.updateProfile`,
+            });
         }
 
         // TODO: Localize date/time formatting
-        return user.date_of_birth ?
-            `Birtday ${user.date_of_birth}` : ``;
+        return user.date_of_birth ? intl.formatMessage({
+            id: `selectUser.birthday`,
+        }, {
+            date: user.date_of_birth,
+        }) : ``;
     }, [ user, displayName ]);
 
     return (

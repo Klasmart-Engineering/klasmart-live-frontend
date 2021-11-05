@@ -33,6 +33,7 @@ import ClassTypeSwitcher from "./classTypeSwitcher";
 import { useSelectedOrganizationValue } from "@/app/data/user/atom";
 import { useMeQuery } from "@/app/data/user/queries/meQuery";
 import { useCameraContext } from "@/providers/Camera";
+import { fromSecondsToMilliseconds } from "@/utils/utils";
 import { ListItemSecondaryAction } from "@material-ui/core";
 import Avatar from '@material-ui/core/Avatar';
 import Grid from "@material-ui/core/Grid";
@@ -53,7 +54,10 @@ import React,
     useEffect,
     useState,
 } from "react";
-import { FormattedMessage } from "react-intl";
+import {
+    FormattedMessage,
+    useIntl,
+} from "react-intl";
 import {
     useRecoilState,
     useSetRecoilState,
@@ -82,15 +86,11 @@ const useStyles = makeStyles((theme: Theme) => ({
         backgroundColor: theme.palette.background.paper,
         marginTop: theme.spacing(2),
     },
-    listSubheaderText: {
-        fontWeight: 900,
-    },
     listItemAvatar: {
         backgroundColor: `#C5E9FB`,
     },
     listItemTextPrimary: {
-        color: `#0C3680`,
-        fontWeight: 900,
+        fontWeight: theme.typography.fontWeightBold,
     },
     submittedText: {
         color: `#5DBD3B`,
@@ -354,7 +354,7 @@ function ScheduledLiveList ({
 }: { setOpenAlert: React.Dispatch<React.SetStateAction<boolean>>;
     setSelectedSchedule: React.Dispatch<React.SetStateAction<ScheduleResponse | undefined>>;
     setOpenStudyDetail: React.Dispatch<React.SetStateAction<boolean>>; }) {
-    const { listRoot, listSubheaderText } = useStyles();
+    const { listRoot } = useStyles();
     const [ schedule ] = useRecoilState(scheduleState);
 
     return (<>
@@ -366,13 +366,7 @@ function ScheduledLiveList ({
                     <ListSubheader
                         component="div"
                         id="list-subheader-today">
-                        <Typography
-                            component="p"
-                            variant="subtitle1"
-                            color="textSecondary"
-                            className={listSubheaderText}>
-                            <FormattedMessage id="schedule_liveSubheaderToday" />
-                        </Typography>
+                        <FormattedMessage id="schedule_liveSubheaderToday" />
                     </ListSubheader>
                 }
                 className={listRoot}
@@ -401,13 +395,7 @@ function ScheduledLiveList ({
                     <ListSubheader
                         component="div"
                         id="list-subheader-tomorrow">
-                        <Typography
-                            component="p"
-                            variant="subtitle1"
-                            color="textSecondary"
-                            className={listSubheaderText}>
-                            <FormattedMessage id="schedule_liveSubheaderTomorrow" />
-                        </Typography>
+                        <FormattedMessage id="schedule_liveSubheaderTomorrow" />
                     </ListSubheader>
                 }
                 className={listRoot}
@@ -436,13 +424,7 @@ function ScheduledLiveList ({
                     <ListSubheader
                         component="div"
                         id="list-subheader-upcoming">
-                        <Typography
-                            component="p"
-                            variant="subtitle1"
-                            color="textSecondary"
-                            className={listSubheaderText}>
-                            <FormattedMessage id="schedule_liveSubheaderUpcoming" />
-                        </Typography>
+                        <FormattedMessage id="schedule_liveSubheaderUpcoming" />
                     </ListSubheader>
                 }
                 className={listRoot}
@@ -474,15 +456,14 @@ function ScheduledLiveItem ({
     setOpenStudyDetail: React.Dispatch<React.SetStateAction<boolean>>; }) {
     const {
         listItemAvatar,
-        listItemTextPrimary,
         listItemSecondAction,
+        listItemTextPrimary,
     } = useStyles();
+    const intl = useIntl();
 
     const selectedOrganization = useSelectedOrganizationValue();
 
     const [ liveInfo, setLiveInfo ] = useState<ScheduleResponse>();
-    const [ liveDate, setLiveDate ] = useState<string>(``);
-    const [ liveTime, setLiveTime ] = useState<string>(``);
 
     const { schedulerService } = useServices();
 
@@ -509,22 +490,22 @@ function ScheduledLiveItem ({
         fetchEverything();
     }, []);
 
-    useEffect(() => {
-        if (!liveInfo) { return; }
-        const fullDateStr = dateFormat(new Date(liveInfo.start_at * 1000), `fullDate`, false, false);
-        setLiveDate(fullDateStr);
-        const startAtStr = dateFormat(new Date(liveInfo.start_at * 1000), `shortTime`, false, false);
-        const endAtStr = dateFormat(new Date(liveInfo.end_at * 1000), `shortTime`, false, false);
-        const timeStr = startAtStr + ` - ` + endAtStr;
-        setLiveTime(timeStr);
-    }, [ liveInfo ]);
-
     const displayScheduleInformation = () => {
         if (!liveInfo) return;
 
         setSelectedSchedule(liveInfo);
         setOpenStudyDetail(true);
     };
+
+    const liveDate =  liveInfo && intl.formatDate(fromSecondsToMilliseconds(liveInfo.start_at), {
+        day: `numeric`,
+        month: `long`,
+        year: `numeric`,
+        weekday: `long`,
+    });
+    const startAtStr =  liveInfo && intl.formatTime(fromSecondsToMilliseconds(liveInfo.start_at));
+    const endAtStr =  liveInfo && intl.formatTime(fromSecondsToMilliseconds(liveInfo.end_at));
+    const liveTime = `${startAtStr} - ${endAtStr}`;
 
     return (
         <ListItem
@@ -543,13 +524,11 @@ function ScheduledLiveItem ({
                 </Avatar>
             </ListItemAvatar>
             <ListItemText
-                disableTypography
-                primary={<Typography
-                    variant="body1"
-                    className={listItemTextPrimary}>{liveInfo ? liveInfo.title : ``}</Typography>}
-                secondary={liveInfo ? <Typography
-                    variant="caption"
-                    color="textSecondary">{`${liveTime}, ${liveDate}`}</Typography> : ``}
+                classes={{
+                    primary: listItemTextPrimary,
+                }}
+                primary={liveInfo?.title}
+                secondary={(liveTime && liveDate) && <>{liveTime}, {liveDate}</>}
             />
         </ListItem>
     );
@@ -660,6 +639,7 @@ function AnytimeStudyItem ({
         listItemTextPrimary,
         listItemSecondAction,
     } = useStyles();
+    const intl = useIntl();
     const selectedOrganization = useSelectedOrganizationValue();
     const { schedulerService } = useServices();
     const [ studyInfo, setStudyInfo ] = useState<ScheduleResponse>();
@@ -693,6 +673,11 @@ function AnytimeStudyItem ({
         setOpenStudyDetail(true);
     };
 
+    const listItemPrimary = studyInfo && studyInfo.title;
+    const listItemSecondary = intl.formatMessage({
+        id:  studyInfo?.is_home_fun ? `schedule_studyHomeFunStudy` : `schedule_studyAnytimeStudy`,
+    });
+
     return (
         <ListItem
             key={studyId}
@@ -711,13 +696,11 @@ function AnytimeStudyItem ({
                 </Avatar>
             </ListItemAvatar>
             <ListItemText
-                disableTypography
-                primary={<Typography
-                    variant="body1"
-                    className={listItemTextPrimary}>{studyInfo ? studyInfo.title : ``}</Typography>}
-                secondary={<Typography
-                    variant="caption"
-                    color="textSecondary"><FormattedMessage id={studyInfo?.is_home_fun ? `schedule_studyHomeFunStudy` : `schedule_studyAnytimeStudy`} /></Typography>}
+                classes={{
+                    primary: listItemTextPrimary,
+                }}
+                primary={listItemPrimary}
+                secondary={listItemSecondary}
             />
             {
                 assessmentForStudent?.status === AssessmentStatusType.COMPLETE ?
@@ -754,7 +737,6 @@ function ScheduledStudyItem ({
 }) {
     const {
         listRoot,
-        listSubheaderText,
         listItemAvatar,
         listItemTextPrimary,
         submittedText,
@@ -762,10 +744,10 @@ function ScheduledStudyItem ({
     } = useStyles();
     const selectedOrganization = useSelectedOrganizationValue();
     const { schedulerService } = useServices();
+    const intl = useIntl();
 
     const [ studyInfo, setStudyInfo ] = useState<ScheduleResponse>();
     const [ hasDueDate, setHasDueDate ] = useState<boolean>(true);
-    const [ formattedDueDate, setFormattedDueDate ] = useState<string>(``);
 
     useEffect(() => {
         async function fetchEverything () {
@@ -780,12 +762,9 @@ function ScheduledStudyItem ({
 
                 const studyPayload = await schedulerService.getScheduleInfo(selectedOrganization.organization_id, studyId);
                 if (studyPayload.due_at !== 0) {
-                    const formattedDueDate =
-                        dateFormat(new Date(studyPayload.due_at * 1000), `shortTime`, false, false) + `, ` +
-                        dateFormat(new Date(studyPayload.due_at * 1000), `fullDate`, false, false);
-                    setHasDueDate(true); setFormattedDueDate(formattedDueDate);
+                    setHasDueDate(true);
                 } else {
-                    setHasDueDate(false); setFormattedDueDate(``);
+                    setHasDueDate(false);
                 }
                 setStudyInfo(studyPayload);
             }
@@ -805,6 +784,24 @@ function ScheduledStudyItem ({
         setOpenStudyDetail(true);
     };
 
+    const studyDate =  studyInfo && intl.formatDate(fromSecondsToMilliseconds(studyInfo.due_at), {
+        day: `numeric`,
+        month: `long`,
+        year: `numeric`,
+        weekday: `long`,
+    });
+    const studyTime =  studyInfo && intl.formatTime(fromSecondsToMilliseconds(studyInfo.due_at));
+
+    const listItemPrimary = studyInfo && studyInfo.title;
+    const listItemSecondary = hasDueDate ? intl.formatMessage({
+        id: `schedule.assignedBy`,
+    }, {
+        teacher: studyInfo?.teachers[0]?.name,
+        program: studyInfo?.program?.name,
+    }) : intl.formatMessage({
+        id: `schedule_studyAnytimeStudy`,
+    });
+
     return (
         <List
             component="nav"
@@ -813,13 +810,7 @@ function ScheduledStudyItem ({
                 <ListSubheader
                     component="div"
                     id={`${hasDueDate ? `` : `anytime-`}study-subheader`}>
-                    <Typography
-                        component="p"
-                        variant="subtitle1"
-                        color="textSecondary"
-                        className={listSubheaderText}>
-                        {formattedDueDate}
-                    </Typography>
+                    {studyTime}, {studyDate}
                 </ListSubheader>
             }
             className={listRoot}
@@ -840,24 +831,11 @@ function ScheduledStudyItem ({
                     </Avatar>
                 </ListItemAvatar>
                 <ListItemText
-                    disableTypography
-                    primary={<Typography
-                        variant="body1"
-                        className={listItemTextPrimary}>{studyInfo ? studyInfo.title : ``}</Typography>}
-                    secondary={hasDueDate ? <>
-                        {/* TODO (Isu): Show all teachers' name */}
-                        <Typography
-                            variant="caption"
-                            color="textSecondary">{`Assigned by: ${studyInfo && studyInfo.teachers ? studyInfo.teachers[0].name : ``}`}</Typography>
-                        <Typography
-                            variant="caption"
-                            color="textSecondary"
-                            style={{
-                                fontStyle: `italic`,
-                            }}>{` - ${studyInfo ? studyInfo.program.name : ``}`}</Typography><br />
-                    </> : <Typography
-                        variant="caption"
-                        color="textSecondary"><FormattedMessage id="schedule_studyAnytimeStudy" /></Typography>}
+                    classes={{
+                        primary: listItemTextPrimary,
+                    }}
+                    primary={listItemPrimary}
+                    secondary={listItemSecondary}
                 />
                 {
                     assessmentForStudent?.status === AssessmentStatusType.COMPLETE ?
@@ -887,7 +865,15 @@ function ScheduledStudyItem ({
 
 function LoadingSchedule ({ isOrgSelected }: { isOrgSelected: boolean }) {
     return (
-        isOrgSelected ? <Loading messageId={`schedule_loadingSelectOrg`} /> :
-            <Loading messageId={`schedule_selectOrgLoaded`} />
+        <Grid
+            container
+            direction="column"
+            justifyContent="center"
+        >
+            <Grid item>
+                { isOrgSelected ? <Loading messageId={`schedule_loadingSelectOrg`} /> :
+                    <Loading messageId={`schedule_selectOrgLoaded`} />}
+            </Grid>
+        </Grid>
     );
 }

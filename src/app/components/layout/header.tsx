@@ -1,15 +1,15 @@
-import KidsloopLogo from "../../../assets/img/kidsloop_icon.svg";
-import StyledIcon from "../../../components/styled/icon";
+import {
+    useSelectedOrganizationValue,
+    useSelectedUserValue,
+} from "@/app/data/user/atom";
 import {
     dialogsState,
     errorState,
     homeFunStudyState,
     isProcessingRequestState,
-} from "../../model/appModel";
-import {
-    useSelectedOrganizationValue,
-    useSelectedUserValue,
-} from "@/app/data/user/atom";
+} from "@/app/model/appModel";
+import KidsloopLogo from "@/assets/img/kidsloop_icon.svg";
+import StyledIcon from "@/components/styled/icon";
 import AppBar from "@material-ui/core/AppBar";
 import ButtonBase from "@material-ui/core/ButtonBase";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -22,14 +22,18 @@ import {
     useTheme,
 } from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
+import { ArrowBack as ArrowBackIcon } from "@styled-icons/material/ArrowBack";
 import { Close as CloseIcon } from "@styled-icons/material/Close";
 import { Refresh as RefreshIcon } from "@styled-icons/material/Refresh";
+import { Settings as SettingsIcon } from "@styled-icons/material/Settings";
 import {
     OrganizationAvatar,
     UserAvatar,
 } from "kidsloop-px";
 import React from "react";
 import { useRecoilState } from "recoil";
+
+const SPACING_HEADER_ITEM = 10;
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -66,7 +70,8 @@ export function Header ({ isHomeRoute, setKey }: { isHomeRoute?: boolean; setKey
     const [ homeFunStudy ] = useRecoilState(homeFunStudyState);
     const selectedUser = useSelectedUserValue();
 
-    const showCloseButton = selectedUser && (dialogs.isSelectOrganizationOpen || dialogs.isSelectUserOpen || homeFunStudy?.open);
+    const showCloseButton = selectedUser && (dialogs.isSelectOrganizationOpen || dialogs.isSelectUserOpen || dialogs.isSettingsOpen || homeFunStudy?.open);
+    const showBackButton = dialogs.isSettingsLanguageOpen;
 
     return (error.errorCode ? <></> :
         <div className={root}>
@@ -92,12 +97,16 @@ export function Header ({ isHomeRoute, setKey }: { isHomeRoute?: boolean; setKey
                             alignItems="center"
                             wrap="nowrap"
                         >
-                            <Grid
-                                item
-                                style={{
-                                    flexGrow: 0,
-                                }}>
-                                { isHomeRoute ? <OpenSelectOrgButton /> : showCloseButton && <CloseSelectOrgOrUserButton /> }
+                            <Grid item>
+                                { isHomeRoute ?
+                                    <>
+                                        <OpenSelectOrgButton />
+                                        <span style={{
+                                            marginLeft: SPACING_HEADER_ITEM,
+                                        }}>
+                                            <OpenSettingsButton />
+                                        </span>
+                                    </> : showBackButton ? <BackButton /> : showCloseButton && <CloseSelectOrgOrUserButton />}
                             </Grid>
                             <Grid
                                 item
@@ -108,14 +117,14 @@ export function Header ({ isHomeRoute, setKey }: { isHomeRoute?: boolean; setKey
                                     src={KidsloopLogo}
                                     height={32} />
                             </Grid>
-                            <Grid
-                                item
-                                style={{
-                                    flexGrow: 0,
-                                }}>
+                            <Grid item>
                                 { isHomeRoute &&
                                     <>
-                                        <MenuButton setKey={setKey} />
+                                        <span style={{
+                                            marginRight: SPACING_HEADER_ITEM,
+                                        }}>
+                                            <MenuButton setKey={setKey} />
+                                        </span>
                                         <OpenSelectUserButton />
                                     </>
                                 }
@@ -148,6 +157,16 @@ function CloseSelectOrgOrUserButton () {
                     setDialogs({
                         ...dialogs,
                         isSelectUserOpen: false,
+                    });
+                } else if (dialogs.isSettingsOpen) {
+                    setDialogs({
+                        ...dialogs,
+                        isSettingsOpen: false,
+                    });
+                } else if (dialogs.isSettingsLanguageOpen) {
+                    setDialogs({
+                        ...dialogs,
+                        isSettingsLanguageOpen: false,
                     });
                 } else if(homeFunStudy?.open){
                     setHomeFunStudy({
@@ -205,6 +224,32 @@ function OpenSelectOrgButton () {
     );
 }
 
+function BackButton () {
+    const { iconButton } = useStyles();
+    const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
+
+    const handleClick = () => {
+        if (dialogs.isSettingsLanguageOpen) {
+            setDialogs({
+                ...dialogs,
+                isSettingsLanguageOpen: false,
+            });
+        }
+    };
+
+    return (
+        <IconButton
+            size="medium"
+            className={iconButton}
+            onClick={handleClick}
+        >
+            <StyledIcon
+                icon={<ArrowBackIcon />}
+                size="medium" />
+        </IconButton >
+    );
+}
+
 // TODO (Isu): Will be changed to <RefreshButton /> that force Schedule component to rerender
 function MenuButton ({ setKey }: { setKey?: React.Dispatch<React.SetStateAction<string>> }) {
     const { iconButton } = useStyles();
@@ -222,6 +267,26 @@ function MenuButton ({ setKey }: { setKey?: React.Dispatch<React.SetStateAction<
         >
             <StyledIcon
                 icon={isProcessingRequest ? <CircularProgress size={16} /> : <RefreshIcon />}
+                size="medium" />
+        </IconButton>
+    );
+}
+
+function OpenSettingsButton () {
+    const { iconButton } = useStyles();
+    const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
+
+    return (
+        <IconButton
+            size="medium"
+            className={iconButton}
+            onClick={() => setDialogs({
+                ...dialogs,
+                isSettingsOpen: true,
+            })}
+        >
+            <StyledIcon
+                icon={<SettingsIcon />}
                 size="medium" />
         </IconButton>
     );

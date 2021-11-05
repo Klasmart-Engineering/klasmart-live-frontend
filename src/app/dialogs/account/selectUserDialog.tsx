@@ -33,7 +33,10 @@ import React,
     useMemo,
     useState,
 } from "react";
-import { FormattedMessage } from "react-intl";
+import {
+    FormattedMessage,
+    useIntl,
+} from "react-intl";
 import {
     useRecoilValue,
     useSetRecoilState,

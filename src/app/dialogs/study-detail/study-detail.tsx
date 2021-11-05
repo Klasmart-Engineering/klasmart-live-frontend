@@ -38,7 +38,10 @@ import React,
     useMemo,
     useState,
 } from "react";
-import { useIntl } from "react-intl";
+import {
+    FormattedMessage,
+    useIntl,
+} from "react-intl";
 
 const useStyles = makeStyles(() => ({
     dialogTitle: {
@@ -596,7 +599,7 @@ export default function StudyDetail ({
                     <Typography
                         noWrap
                         className={dialogTitleText}>
-                        {schedule?.title || `N/A`}
+                        {schedule?.title || <FormattedMessage id="scheduleDetails.notApplicable" />}
                     </Typography>
                 </DialogTitle>
                 <DialogContent>
@@ -619,7 +622,7 @@ export default function StudyDetail ({
                                 <Typography
                                     variant="body1"
                                     className={rowHeaderText}>
-                                    Description
+                                    <FormattedMessage id="scheduleDetails.description" />
                                 </Typography>
                             </Grid>
                             <Grid
@@ -628,7 +631,7 @@ export default function StudyDetail ({
                                 <Typography
                                     variant="body1"
                                     className={rowContentText}>
-                                    {schedule?.description ? generateDescriptionHasHyperLink(schedule.description) : `N/A`}
+                                    {schedule?.description ? generateDescriptionHasHyperLink(schedule.description) : <FormattedMessage id="scheduleDetails.notApplicable" />}
                                 </Typography>
                             </Grid>
                         </Grid>
@@ -645,7 +648,7 @@ export default function StudyDetail ({
                                 <Typography
                                     variant="body1"
                                     className={rowHeaderText}>
-                                    Due Date
+                                    <FormattedMessage id="scheduleDetails.dueDate" />
                                 </Typography>
                             </Grid>
                             <Grid
@@ -654,7 +657,7 @@ export default function StudyDetail ({
                                 <Typography
                                     variant="body1"
                                     className={rowContentText}>
-                                    {dueAt || `N/A`}
+                                    {dueAt || <FormattedMessage id="scheduleDetails.notApplicable" />}
                                 </Typography>
                             </Grid>
                         </Grid> : undefined}
@@ -671,7 +674,7 @@ export default function StudyDetail ({
                                 <Typography
                                     variant="body1"
                                     className={rowHeaderText}>
-                                    Start Time
+                                    <FormattedMessage id="scheduleDetails.startTime" />
                                 </Typography>
                             </Grid>
                             <Grid
@@ -680,7 +683,7 @@ export default function StudyDetail ({
                                 <Typography
                                     variant="body1"
                                     className={rowContentText}>
-                                    {startAt || `N/A`}
+                                    {startAt || <FormattedMessage id="scheduleDetails.notApplicable" />}
                                 </Typography>
                             </Grid>
                         </Grid> : undefined}
@@ -697,7 +700,7 @@ export default function StudyDetail ({
                                 <Typography
                                     variant="body1"
                                     className={rowHeaderText}>
-                                    End Time
+                                    <FormattedMessage id="scheduleDetails.emdTime" />
                                 </Typography>
                             </Grid>
                             <Grid
@@ -706,7 +709,7 @@ export default function StudyDetail ({
                                 <Typography
                                     variant="body1"
                                     className={rowContentText}>
-                                    {endAt || `N/A`}
+                                    {endAt || <FormattedMessage id="scheduleDetails.notApplicable" />}
                                 </Typography>
                             </Grid>
                         </Grid> : undefined}
@@ -723,7 +726,7 @@ export default function StudyDetail ({
                                 <Typography
                                     variant="body1"
                                     className={rowHeaderText}>
-                                    Class Name
+                                    <FormattedMessage id="scheduleDetails.className" />
                                 </Typography>
                             </Grid>
                             <Grid
@@ -732,7 +735,7 @@ export default function StudyDetail ({
                                 <Typography
                                     variant="body1"
                                     className={rowContentText}>
-                                    {schedule?.class?.name || `N/A`}
+                                    {schedule?.class?.name || <FormattedMessage id="scheduleDetails.notApplicable" />}
                                 </Typography>
                             </Grid>
                         </Grid>
@@ -749,7 +752,7 @@ export default function StudyDetail ({
                                 <Typography
                                     variant="body1"
                                     className={rowHeaderText}>
-                                    {schedule?.is_home_fun ? `Teacher` : `Lesson Plan`}
+                                    {schedule?.is_home_fun ? <FormattedMessage id="scheduleDetails.teacher" /> : <FormattedMessage id="scheduleDetails.lessonPlan" />}
                                 </Typography>
                             </Grid>
                             <Grid
@@ -774,7 +777,7 @@ export default function StudyDetail ({
                                     : <Typography
                                         variant="body1"
                                         className={rowContentText}>
-                                        {schedule?.lesson_plan?.name || `N/A`}
+                                        {schedule?.lesson_plan?.name || <FormattedMessage id="scheduleDetails.notApplicable" />}
                                     </Typography>
                                 }
                             </Grid>
@@ -792,7 +795,7 @@ export default function StudyDetail ({
                                 <Typography
                                     variant="body1"
                                     className={rowHeaderText}>
-                                    Attachment
+                                    <FormattedMessage id="scheduleDetails.attachment" />
                                 </Typography>
                             </Grid>
                             <Grid
@@ -852,7 +855,7 @@ export default function StudyDetail ({
                                     </Grid>
                                     : <Typography
                                         variant="body1"
-                                        className={rowContentText}>N/A</Typography>
+                                        className={rowContentText}><FormattedMessage id="scheduleDetails.notApplicable" /></Typography>
                                 }
                             </Grid>
                         </Grid>
@@ -862,7 +865,9 @@ export default function StudyDetail ({
                     <Button
                         size={`large`}
                         variant={`contained`}
-                        onClick={closeButtonHandler}>Cancel</Button>
+                        onClick={closeButtonHandler}>
+                        <FormattedMessage id="button_cancel" />
+                    </Button>
                     <Button
                         key={`${shouldEnableJoinButton}`}
                         size={`large`}

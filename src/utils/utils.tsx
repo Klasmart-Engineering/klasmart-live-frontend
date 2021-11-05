@@ -268,6 +268,7 @@ export const defineContentId = (material:any, interactiveMode:InteractiveMode, s
     }
 };
 
+export const fromSecondsToMilliseconds = (duration: number) => duration * 1000;
 export interface BrandingType {
     iconImageURL: string;
     primaryColor: string;

@@ -17,6 +17,10 @@ import React,
     useEffect,
     useState,
 } from "react";
+import {
+    FormattedMessage,
+    useIntl,
+} from "react-intl";
 
 declare let cordova: any;
 declare let externalUrlIntercept: any;
@@ -35,6 +39,7 @@ const useStyles = makeStyles(() => ({
 
 export function ExternalNavigationDialog (): JSX.Element {
     const { appBar, dialogTitleText } = useStyles();
+    const intl = useIntl();
 
     const [ awaitingNavigationConfirm, setAwaitingNavigationConfirm ] = useState(false);
     const [ awaitingParentalLock, setAwaitingParentalLock ] = useState(false);
@@ -93,14 +98,16 @@ export function ExternalNavigationDialog (): JSX.Element {
                         <Typography
                             variant="h6"
                             className={dialogTitleText}>
-                                Visit external page?
+                            <FormattedMessage id="parentalGate.title.externalLink" />
                         </Typography>
                     </Grid>
                 </Toolbar>
             </AppBar>
             <DialogContent>
                 <ParentalGate
-                    message={`Please ask your parent to confirm the navigation to external website.`}
+                    message={intl.formatMessage({
+                        id: `parentalGate.body.externalLink`,
+                    })}
                     onCompleted={completeExternalNavigation} />
             </DialogContent>
         </Dialog> : undefined }

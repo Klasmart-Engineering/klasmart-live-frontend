@@ -1109,7 +1109,7 @@ function HomeFunStudyContainer ({
                             variant="body1"
                             align="center"
                             color="textSecondary">
-                            <FormattedMessage id={`home_fun_study`}/>
+                            <FormattedMessage id={`homeFunStudy.title`}/>
                         </Typography>
                     </Box>
                 </Grid>
@@ -1132,7 +1132,7 @@ function HomeFunStudyContainer ({
                     item
                     xs>
                     <Box mb={3}>
-                        <Typography variant="subtitle1">Due date</Typography>
+                        <Typography variant="subtitle1"><FormattedMessage id="scheduleDetails.dueDate" /></Typography>
                         <Typography
                             variant="body2"
                             color="textSecondary">
@@ -1363,7 +1363,7 @@ function HomeFunStudyAssignment ({
                     <Typography
                         variant="subtitle1"
                         display="inline">
-                        Upload your Assignment
+                        <FormattedMessage id={`homeFunStudy.uploadAssignment`}/>
                     </Typography>
                     <Box
                         ml={2}
@@ -1376,7 +1376,9 @@ function HomeFunStudyAssignment ({
                         <Box ml={1}>
                             <Typography
                                 variant="caption"
-                                color="primary">Info</Typography>
+                                color="primary">
+                                <FormattedMessage id={`homeFunStudy.info`}/>
+                            </Typography>
                         </Box>
 
                     </Box>
@@ -1408,7 +1410,9 @@ function HomeFunStudyAssignment ({
                             color="primary"/>}
                         onClick={onClickUpload}
                     >
-                        <Typography variant="body2">Choose File</Typography>
+                        <Typography variant="body2">
+                            <FormattedMessage id={`homeFunStudy.chooseFile`}/>
+                        </Typography>
                     </Button>
                 </Box>
                 <Box>
@@ -1541,7 +1545,7 @@ function HomeFunStudyComment ({
             xs>
             <Box mb={1}>
                 <Typography variant="subtitle1">
-                    Comment
+                    <FormattedMessage id={`homeFunStudy.comment`}/>
                 </Typography>
                 <Button
                     key={`${!newestFeedback?.is_allow_submit}`}

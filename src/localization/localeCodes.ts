@@ -1,9 +1,9 @@
 import english from "./en.json";
 import indonesian from "./id.json";
 import korean from "./ko.json";
+import thai from "./th.json";
 import vietnamese from "./vi.json";
 import chinese from "./zh_CN.json";
-import thai from "./th.json";
 import {
     createIntl,
     createIntlCache,
@@ -54,6 +54,11 @@ export function getIntl (locale: string) {
         return createIntl({
             locale: `th`,
             messages: thai,
+        }, intlCache);
+    default:
+        return createIntl({
+            locale: `en`,
+            messages: english,
         }, intlCache);
     }
 }

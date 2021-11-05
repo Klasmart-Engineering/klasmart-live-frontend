@@ -5,6 +5,9 @@ import {
     useRecoilValue,
     useSetRecoilState,
 } from "recoil";
+import { recoilPersist } from "recoil-persist";
+
+const { persistAtom } = recoilPersist();
 
 export enum OrientationType {
     PORTRAIT = `portrait`,
@@ -26,6 +29,8 @@ export const dialogsState = atom({
         isSelectOrganizationOpen: false,
         isSelectUserOpen: false,
         isParentalLockOpen: false,
+        isSettingsOpen: false,
+        isSettingsLanguageOpen: false,
     },
 });
 
@@ -69,6 +74,7 @@ export const localeState = atom({
     default: {
         languageCode: `en`,
     },
+    effects_UNSTABLE: [ persistAtom ],
 });
 
 export const historyState = atom({
