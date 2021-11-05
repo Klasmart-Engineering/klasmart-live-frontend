@@ -3,7 +3,6 @@ import {
     useCordovaSystemContext,
 } from "@/app/context-provider/cordova-system-context";
 import useCordovaObservePause from "@/app/platform/cordova-observe-pause";
-import { FragmentsOnCompositeTypesRule } from "graphql";
 import React,
 {
     createContext,
@@ -13,6 +12,7 @@ import React,
     useEffect,
     useState,
 } from "react";
+import { isSafari } from "react-device-detect";
 
 export interface ICameraContext {
     selectedAudioDeviceId: string;
@@ -368,18 +368,14 @@ export const CameraContextProvider = (props: Props) => {
         if (!navigator.mediaDevices) return;
         if (!acquireDevices) return;
 
+        // TODO: On iOS and Safari the devicechange event keep being called when the camera
+        // device is retrieved. Doing refreshCameras at that point puts the app
+        // in an endless loop of refreshing cameras. We'll have to investigate
+        // this behaviour further.
+        if(isSafari || isIOS) return;
+
         const onDeviceChange = () => {
-            // TODO: On iOS the devicechange event keep being called when the camera
-            // device is retrieved. Doing refreshCameras at that point puts the app
-            // in an endless loop of refreshing cameras. We'll have to investigate
-            // this behaviour further.
-            if (process.env.IS_CORDOVA_BUILD) {
-                if (!isIOS) {
-                    refreshCameras();
-                }
-            } else {
-                refreshCameras();
-            }
+            refreshCameras();
         };
 
         navigator.mediaDevices.addEventListener(`devicechange`, onDeviceChange);
