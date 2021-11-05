@@ -1,29 +1,16 @@
-import {
-    LIVE_LINK,
-    SFU_LINK,
-} from "@/providers/providers";
+import { useRewardTrophyMutation } from "@/data/live/mutations/useRewardTrophyMutation";
+import { useSetHostMutation } from "@/data/live/mutations/useSetHostMutation";
+import { useMuteMutation } from "@/data/sfu/mutations/useMuteMutation";
+import { useGlobalMuteQuery } from "@/data/sfu/queries/useGlobalMuteQuery";
 import { RoomContext } from "@/providers/roomContext";
 import { useSessionContext } from "@/providers/session-context";
 import {
-    GLOBAL_MUTE_QUERY,
-    MUTE,
     MuteNotification,
     WebRTCContext,
 } from "@/providers/WebRTCContext";
-import {
-    hasControlsState,
-    pinnedUserState,
-} from "@/store/layoutAtoms";
-import {
-    MUTATION_REWARD_TROPHY,
-    MUTATION_SET_HOST,
-} from "@/utils/graphql";
+import { hasControlsState } from "@/store/layoutAtoms";
 import { fullScreenById } from "@/utils/utils";
 import { useSynchronizedState } from "@/whiteboard/context-providers/SynchronizedStateProvider";
-import {
-    useMutation,
-    useQuery,
-} from "@apollo/client";
 import {
     Grid,
     IconButton,
@@ -44,12 +31,9 @@ import { MicMuteFill as MicDisabledIcon } from "@styled-icons/bootstrap/MicMuteF
 import { StarFill as StarFillIcon } from "@styled-icons/bootstrap/StarFill";
 import { TrophyFill as TrophyIcon } from "@styled-icons/bootstrap/TrophyFill";
 import { DotsVerticalRounded as DotsVerticalRoundedIcon } from "@styled-icons/boxicons-regular/DotsVerticalRounded";
-import { Pin as PinIcon } from "@styled-icons/entypo/Pin";
 import { Crown as HasControlsIcon } from "@styled-icons/fa-solid/Crown";
 import { InvertColors as InvertColors } from "@styled-icons/material/InvertColors";
-import { InvertColorsOff as InvertColorsOff } from "@styled-icons/material/InvertColorsOff";
 import clsx from "clsx";
-import { useToolbarContext } from "kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
 import React,
 {
     useCallback,
@@ -58,7 +42,8 @@ import React,
     useState,
 } from "react";
 import { FormattedMessage } from "react-intl";
-import { useRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
+import { InvertColorsOff } from "styled-icons/material";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -188,8 +173,7 @@ function UserCameraActions (props: UserCameraActionsType) {
 
     const { isTeacher, roomId } = useSessionContext();
 
-    const [ hasControls, setHasControls ] = useRecoilState(hasControlsState);
-    const [ pinnedUser, setPinnedUser ] = useRecoilState(pinnedUserState);
+    const hasControls = useRecoilValue(hasControlsState);
 
     const [ moreEl, setMoreEl ] = useState<null | HTMLElement>(null);
     const handleMoreOpen = (event: React.SyntheticEvent<HTMLAnchorElement>) => { setMoreEl(event.currentTarget); };
@@ -199,11 +183,7 @@ function UserCameraActions (props: UserCameraActionsType) {
     const handleTrophyOpen = (event: React.SyntheticEvent<HTMLAnchorElement>) => { setTrophyEl(event.currentTarget); };
     const handleTrophyClose = () => { setTrophyEl(null); };
 
-    const [ rewardTrophyMutation ] = useMutation(MUTATION_REWARD_TROPHY, {
-        context: {
-            target: LIVE_LINK,
-        },
-    });
+    const [ rewardTrophyMutation ] = useRewardTrophyMutation();
     const rewardTrophy = (user: string, kind: string) => rewardTrophyMutation({
         variables: {
             roomId,
@@ -211,10 +191,6 @@ function UserCameraActions (props: UserCameraActionsType) {
             kind,
         },
     });
-
-    function handlePinnedUser (id: any){
-        id === pinnedUser ? setPinnedUser(undefined) : setPinnedUser(id);
-    }
 
     return (
         <div
@@ -356,17 +332,10 @@ function ToggleCamera (props:any){
     const [ camOn, setCamOn ] = useState<boolean>(true);
 
     const [ isLoading, setIsLoading ] = useState<boolean>(true);
-    const [ muteMutation ] = useMutation(MUTE, {
-        context: {
-            target: SFU_LINK,
-        },
-    });
-    const { refetch } = useQuery(GLOBAL_MUTE_QUERY, {
+    const [ muteMutation ] = useMuteMutation();
+    const { refetch } = useGlobalMuteQuery({
         variables: {
             roomId,
-        },
-        context: {
-            target: SFU_LINK,
         },
     });
 
@@ -464,17 +433,10 @@ function ToggleMic (props:any){
 
     const [ micOn, setMicOn ] = useState<boolean>(true);
 
-    const [ muteMutation ] = useMutation(MUTE, {
-        context: {
-            target: SFU_LINK,
-        },
-    });
-    const { refetch } = useQuery(GLOBAL_MUTE_QUERY, {
+    const [ muteMutation ] = useMuteMutation();
+    const { refetch } = useGlobalMuteQuery({
         variables: {
             roomId,
-        },
-        context: {
-            target: SFU_LINK,
         },
     });
 
@@ -562,11 +524,7 @@ function ToggleControls (props:any){
 
     const { roomId } = useSessionContext();
 
-    const [ hostMutation ] = useMutation(MUTATION_SET_HOST, {
-        context: {
-            target: LIVE_LINK,
-        },
-    });
+    const [ hostMutation ] = useSetHostMutation();
 
     function giveControls (user:any){
         hostMutation({
@@ -595,7 +553,6 @@ function ToggleCanvas (props:any){
     const classes = useStyles();
 
     const { actions: { setPermissions, getPermissions } } = useSynchronizedState();
-    const { actions: { clear } } = useToolbarContext();
 
     const permissions = getPermissions(user.id);
 
@@ -656,6 +613,5 @@ function ExpandCamera (props:any){
                 <ExpandIcon size="0.75em" />
             </IconButton>
         </div>
-
     );
 }

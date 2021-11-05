@@ -1,37 +1,17 @@
 import Loading from "./loading";
-import { LIVE_LINK } from "@/providers/providers";
-import { RoomContext } from "@/providers/roomContext";
+import { useEventsSubscription } from "@/data/live/subscriptions/useEventsSubscription";
+import { useHttpEndpoint } from "@/providers/region-select-context";
 import { useSessionContext } from "@/providers/session-context";
-import {
-    isLessonPlanOpenState,
-    isShowContentLoadingState,
-} from "@/store/layoutAtoms";
 import { sleep } from "@/utils/utils";
 import { useWindowSize } from "@/utils/viewport";
-import {
-    gql,
-    useSubscription,
-} from "@apollo/client";
 import { Typography } from "@material-ui/core";
 import React,
 {
-    useContext,
     useEffect,
     useRef,
     useState,
 } from "react";
 import { FormattedMessage } from "react-intl";
-import { useRecoilState } from "recoil";
-import { useHttpEndpoint } from "@/providers/region-select-context";
-
-const SUB_EVENTS = gql`
-  subscription stream($streamId: ID!) {
-    stream(streamId: $streamId) {
-      id,
-      event
-    }
-  }
-`;
 
 export interface Props {
     streamId: string;
@@ -43,7 +23,7 @@ export interface Props {
 }
 
 export function PreviewPlayer ({
-    streamId, frameProps, width, height, container, loadingStreamId
+    streamId, frameProps, container, loadingStreamId,
 }: Props): JSX.Element {
     const ref = useRef<HTMLIFrameElement>(null);
     // const [ scale, setScale ] = useState(1);
@@ -51,12 +31,9 @@ export function PreviewPlayer ({
         frameWidth: 0,
         frameHeight: 0,
     });
-    const [ isShowContentLoading, setIsShowContentLoading ] = useRecoilState(isShowContentLoadingState);
-    const [ isLessonPlanOpen, setIsLessonPlanOpen ] = useRecoilState(isLessonPlanOpenState);
     const [ transformScale, setTransformScale ] = useState<number>(1);
     const [ sizeLoading, setSizeLoading ] = useState<boolean>(false);
 
-    const { content } = useContext(RoomContext);
     const { isTeacher } = useSessionContext();
     const liveEndPoint = useHttpEndpoint(`live`);
 
@@ -125,13 +102,10 @@ export function PreviewPlayer ({
         }
     }
 
-    const { loading, error } = useSubscription(SUB_EVENTS, {
-        onSubscriptionData: e => sendEvent(e.subscriptionData.data.stream.event, streamId),
+    const { loading, error } = useEventsSubscription({
+        onSubscriptionData: e => sendEvent(e.subscriptionData.data?.stream?.event, streamId),
         variables: {
             streamId,
-        },
-        context: {
-            target: LIVE_LINK,
         },
     });
 

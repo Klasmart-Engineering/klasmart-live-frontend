@@ -1,12 +1,8 @@
 import { ParentCaptcha } from "@/components/parentCaptcha";
-import { LIVE_LINK } from "@/providers/providers";
+import { useEndClassMutation } from "@/data/live/mutations/useEndClassMutation";
+import { useLeaveClassMutation } from "@/data/live/mutations/useLeaveClassMutation";
 import { useSessionContext } from "@/providers/session-context";
 import {  classLeftState } from "@/store/layoutAtoms";
-import {
-    MUTATION_ENDCLASS,
-    MUTATION_LEAVECLASS,
-} from "@/utils/graphql";
-import { useMutation } from "@apollo/client";
 import {
     Button,
     Dialog,
@@ -27,7 +23,7 @@ import React,
     useState,
 } from "react";
 import { FormattedMessage } from "react-intl";
-import { useRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
     dialogTitle:{
@@ -77,7 +73,7 @@ function DialogLeaveClass (props:any){
     const { open, onClose } = props;
 
     const { isTeacher, sessionId } = useSessionContext();
-    const [ classLeft, setClassLeft ] = useRecoilState(classLeftState);
+    const setClassLeft = useSetRecoilState(classLeftState);
     const [ showParentCaptcha, setShowParentCaptcha ] = useState(false);
 
     const { actions: { clear } } = useToolbarContext();
@@ -88,11 +84,7 @@ function DialogLeaveClass (props:any){
         }, [ open ]);
     }
 
-    const [ leaveClass ] = useMutation(MUTATION_LEAVECLASS, {
-        context: {
-            target: LIVE_LINK,
-        },
-    });
+    const [ leaveClass ] = useLeaveClassMutation();
     const onClick = async () => {
         clear([ sessionId ]);
         await leaveClass();
@@ -146,11 +138,7 @@ function DialogEndClass (props:any){
     const classes = useStyles();
     const { open, onClose } = props;
 
-    const [ endClass ] = useMutation(MUTATION_ENDCLASS, {
-        context: {
-            target: LIVE_LINK,
-        },
-    });
+    const [ endClass ] = useEndClassMutation();
 
     return(
         <Dialog

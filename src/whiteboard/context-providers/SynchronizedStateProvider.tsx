@@ -1,15 +1,15 @@
-import { LIVE_LINK } from "@/providers/providers";
+import { useWhiteboardDisplayMutation } from "@/data/live/mutations/useWhiteboardDisplayMutation";
+import { useWhiteboardEventMutation } from "@/data/live/mutations/useWhiteboardEventMutation";
+import { useWhiteboardPermissionsMutation } from "@/data/live/mutations/useWhiteboardPermissionsMutation";
+import { useWhiteboardEventsSubscription } from "@/data/live/subscriptions/useWhiteboardEventsSubscription";
+import { useWhiteboardPermissionsSubscription } from "@/data/live/subscriptions/useWhiteboardPermissionsSubscription";
+import { useWhiteboardStateSubscription } from "@/data/live/subscriptions/useWhiteboardStateSubscription";
 import { useSessionContext } from "@/providers/session-context";
 import {
     createEmptyPermissions,
     createPermissions,
     Permissions,
 } from "@/whiteboard/types/Permissions";
-import {
-    gql,
-    useMutation,
-    useSubscription,
-} from "@apollo/client";
 import { PainterEvent } from "kidsloop-canvas/lib/domain/whiteboard/event-serializer/PainterEvent";
 import { useSharedEventSerializer } from "kidsloop-canvas/lib/domain/whiteboard/SharedEventSerializerProvider";
 import React, {
@@ -24,48 +24,6 @@ import React, {
 } from "react";
 
 export type PainterEventFunction = (payload: PainterEvent) => void
-
-const WHITEBOARD_SEND_EVENT = gql`
-  mutation whiteboardSendEvent($roomId: ID!, $event: String) {
-    whiteboardSendEvent(roomId: $roomId, event: $event)
-  }
-`;
-
-const SUBSCRIBE_WHITEBOARD_EVENTS = gql`
-  subscription whiteboardEvents($roomId: ID!) {
-    whiteboardEvents(roomId: $roomId) {
-      type
-      id
-      generatedBy
-      objectType
-      param
-    }
-  }
-`;
-
-const WHITEBOARD_SEND_DISPLAY = gql`
-  mutation whiteboardSendDisplay($roomId: ID!, $display: Boolean) {
-      whiteboardSendDisplay(roomId: $roomId, display: $display)
-  }
-`;
-
-const WHITEBOARD_SEND_PERMISSIONS = gql`
-  mutation whiteboardSendPermissions($roomId: ID!, $userId: ID!, $permissions: String) {
-      whiteboardSendPermissions(roomId: $roomId, userId: $userId, permissions: $permissions)
-  }
-`;
-
-const SUBSCRIBE_WHITEBOARD_STATE = gql`
-  subscription whiteboardState($roomId: ID!) {
-      whiteboardState(roomId: $roomId) {
-          display
-      }
-  }`;
-
-const SUBSCRIBE_WHITEBOARD_PERMISSIONS = gql`
-  subscription whiteboardPermissions($roomId: ID! $userId: ID!) {
-      whiteboardPermissions(roomId: $roomId, userId: $userId)
-  }`;
 
 interface ISynchronizedState {
     display: boolean;
@@ -110,24 +68,13 @@ export const SynchronizedStateProvider: FunctionComponent<Props> = ({ children }
 
     const { state: { eventSerializer, eventController } } = useSharedEventSerializer();
 
-    const [ sendEventMutation ] = useMutation(WHITEBOARD_SEND_EVENT, {
-        context: {
-            target: LIVE_LINK,
-        },
-    });
-    const [ sendDisplayMutation ] = useMutation(WHITEBOARD_SEND_DISPLAY, {
-        context: {
-            target: LIVE_LINK,
-        },
-    });
-    const [ sendPermissionsMutation ] = useMutation(WHITEBOARD_SEND_PERMISSIONS, {
-        context: {
-            target: LIVE_LINK,
-        },
-    });
+    const [ sendEventMutation ] = useWhiteboardEventMutation();
+    const [ sendDisplayMutation ] = useWhiteboardDisplayMutation();
+    const [ sendPermissionsMutation ] = useWhiteboardPermissionsMutation();
 
-    const { loading: eventsLoading } = useSubscription(SUBSCRIBE_WHITEBOARD_EVENTS, {
-        onSubscriptionData: ({ subscriptionData: { data: { whiteboardEvents } } }) => {
+    const { loading: eventsLoading } = useWhiteboardEventsSubscription({
+        onSubscriptionData: ({ subscriptionData: { data } }) => {
+            const whiteboardEvents = data?.whiteboardEvents;
             if (whiteboardEvents && eventController) {
                 events.push(...whiteboardEvents);
 
@@ -137,13 +84,11 @@ export const SynchronizedStateProvider: FunctionComponent<Props> = ({ children }
         variables: {
             roomId,
         },
-        context: {
-            target: LIVE_LINK,
-        },
     });
 
-    const { loading: stateLoading } = useSubscription(SUBSCRIBE_WHITEBOARD_STATE, {
-        onSubscriptionData: ({ subscriptionData: { data: { whiteboardState } } }) => {
+    const { loading: stateLoading } = useWhiteboardStateSubscription({
+        onSubscriptionData: ({ subscriptionData: { data } }) => {
+            const whiteboardState = data?.whiteboardState;
             if (whiteboardState) {
                 setDisplay(whiteboardState.display);
             }
@@ -151,15 +96,13 @@ export const SynchronizedStateProvider: FunctionComponent<Props> = ({ children }
         variables: {
             roomId,
         },
-        context: {
-            target: LIVE_LINK,
-        },
     });
 
-    const { loading: permissionsLoading } = useSubscription(SUBSCRIBE_WHITEBOARD_PERMISSIONS, {
-        onSubscriptionData: ({ subscriptionData: { data: { whiteboardPermissions } } }) => {
+    const { loading: permissionsLoading } = useWhiteboardPermissionsSubscription({
+        onSubscriptionData: ({ subscriptionData: { data } }) => {
+            const whiteboardPermissions = data?.whiteboardPermissions;
             if (whiteboardPermissions) {
-                const permissions = JSON.parse(whiteboardPermissions as string);
+                const permissions = JSON.parse(whiteboardPermissions);
                 userPermissions.set(sessionId, permissions);
 
                 setUserPermissions(userPermissions);
@@ -169,9 +112,6 @@ export const SynchronizedStateProvider: FunctionComponent<Props> = ({ children }
         variables: {
             roomId,
             userId: sessionId,
-        },
-        context: {
-            target: LIVE_LINK,
         },
     });
 
@@ -251,8 +191,9 @@ export const SynchronizedStateProvider: FunctionComponent<Props> = ({ children }
     }, [ eventSerializer ]);
 
     const getPermissionsAction = useCallback((userId: string): Permissions => {
-        if (userPermissions.has(userId)) {
-            return userPermissions.get(userId)!;
+        const existingPermissions = userPermissions.get(userId);
+        if (existingPermissions) {
+            return existingPermissions;
         }
 
         const permissions = createPermissions(userId === sessionId && isTeacher);

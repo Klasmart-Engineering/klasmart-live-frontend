@@ -1,7 +1,4 @@
-import {
-    gql,
-    useSubscription,
-} from '@apollo/client';
+import { useStreamSubscription } from '@/data/live/subscriptions/useStreamSubscription';
 import {
     CircularProgress,
     Typography,
@@ -15,16 +12,6 @@ import React,
     useState,
 } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { LIVE_LINK } from 'src/providers/providers';
-
-const SUB_EVENTS = gql`
-  subscription stream($streamId: ID!) {
-    stream(streamId: $streamId) {
-      id,
-      event
-    }
-  }
-`;
 
 export interface Props {
     streamId: string;
@@ -77,13 +64,10 @@ export function Player ({
         };
     }, [ ref.current, ref.current && ref.current.contentWindow ]);
 
-    const { loading, error } = useSubscription(SUB_EVENTS, {
-        onSubscriptionData: e => sendEvent(e.subscriptionData.data.stream.event),
+    const { loading, error } = useStreamSubscription({
+        onSubscriptionData: e => sendEvent(e?.subscriptionData?.data?.stream.event),
         variables: {
             streamId,
-        },
-        context: {
-            target: LIVE_LINK,
         },
     });
 

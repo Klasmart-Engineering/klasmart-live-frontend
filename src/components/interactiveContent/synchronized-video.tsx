@@ -1,18 +1,13 @@
 import { FFT } from "@/components/fft";
 import ReactPlayer from "@/components/react-player/lazy";
-import { LIVE_LINK } from '@/providers/providers';
+import { useSendVideoMessageMutation } from "@/data/live/mutations/useSendVideoMessageMutation";
+import { useVideoSubscription } from "@/data/live/subscriptions/useVideoSubscription";
 import { useSessionContext } from "@/providers/session-context";
 import { MaterialTypename } from '@/types/lessonMaterial';
-import {
-    gql,
-    useMutation,
-    useSubscription,
-} from "@apollo/client";
 import {
     CircularProgress,
     IconButton,
     makeStyles,
-    Theme,
 } from "@material-ui/core";
 import { VolumeMute as AudioOffIcon } from "@styled-icons/boxicons-regular/VolumeMute";
 import React,
@@ -23,7 +18,7 @@ import React,
     useState,
 } from "react";
 
-interface VideoSynchronize {
+export interface VideoSynchronize {
     src?: string;
     play?: boolean;
     offset?: number;
@@ -37,7 +32,7 @@ interface ReplicaVideoProps {
 const PLAYLIST_FILE_NAME = `master`;
 const PLAYLIST_FILE_HOST = `/video`;
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles(() => ({
     video: {
         width: `100% !important`,
         height: `100% !important`,
@@ -122,7 +117,7 @@ export function ReplicaMedia (props: React.VideoHTMLAttributes<HTMLMediaElement>
     >(undefined);
     const [ videoReady, setVideoReady ] = useState<boolean>(false);
 
-    const reactPlayerError = useCallback((reason) => {
+    const reactPlayerError = useCallback(() => {
         // NOTE: Fallback to original src if there's an error.
         if (srcRef.current && videoSources !== srcRef.current) {
             setVideoSources(srcRef.current);
@@ -133,15 +128,7 @@ export function ReplicaMedia (props: React.VideoHTMLAttributes<HTMLMediaElement>
         setVideoSources,
     ]);
 
-    const { loading, error } = useSubscription(gql`
-      subscription video($roomId: ID!, $sessionId: ID!) {
-        video(roomId: $roomId, sessionId: $sessionId) {
-          src
-          play
-          offset
-        }
-      }
-    `, {
+    const { loading, error } = useVideoSubscription({
         onSubscriptionData: ({ subscriptionData }) => {
             if (!subscriptionData) {
                 return;
@@ -158,8 +145,7 @@ export function ReplicaMedia (props: React.VideoHTMLAttributes<HTMLMediaElement>
                 play,
                 offset,
 
-            } = subscriptionData.data
-                .video as VideoSynchronize;
+            } = subscriptionData.data.video;
 
             if (src && srcRef.current !== src) {
                 setPlaying(false);
@@ -194,7 +180,7 @@ export function ReplicaMedia (props: React.VideoHTMLAttributes<HTMLMediaElement>
                     ref.current.currentTime = offset;
                 }
                 if (play === true) {
-                    ref.current.play().catch((e) => { });
+                    ref.current.play().catch((e) => { console.error(e); });
                 }
                 if (play === false) {
                     ref.current.pause();
@@ -211,9 +197,6 @@ export function ReplicaMedia (props: React.VideoHTMLAttributes<HTMLMediaElement>
             roomId,
             sessionId,
         },
-        context: {
-            target: LIVE_LINK,
-        },
     });
 
     useEffect(() => {
@@ -228,7 +211,7 @@ export function ReplicaMedia (props: React.VideoHTMLAttributes<HTMLMediaElement>
             video.currentTime = timeRef.current;
         }
         if (playing === true) {
-            video.play().catch(() => { });
+            video.play().catch((e) => { console.error(e); });
         }
         if (playing === false) {
             video.pause();
@@ -301,7 +284,7 @@ export function ReplicaMedia (props: React.VideoHTMLAttributes<HTMLMediaElement>
                         setVideoReady(true);
 
                     }}
-                    onError={(_, reason) => reactPlayerError(reason)}
+                    onError={() => reactPlayerError()}
                 />
                 {videoReady && muted ?
                     <div
@@ -353,28 +336,7 @@ export function ReplicatedMedia (props: React.VideoHTMLAttributes<HTMLMediaEleme
 
     const { roomId, sessionId } = useSessionContext();
 
-    const [ send, { loading, error } ] = useMutation(gql`
-      mutation sendMessage(
-        $roomId: ID!
-        $sessionId: ID!
-        $src: String
-        $play: Boolean
-        $offset: Float
-      ) {
-        video(
-          roomId: $roomId
-          sessionId: $sessionId
-          src: $src
-          play: $play
-          offset: $offset
-        )
-      }
-    `
-    , {
-        context: {
-            target: LIVE_LINK,
-        },
-    });
+    const [ send, { error } ] = useSendVideoMessageMutation();
 
     useEffect(() => {
         // NOTE: Reset playing to false when the source changes.

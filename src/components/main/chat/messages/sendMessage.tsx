@@ -1,7 +1,5 @@
-import { LIVE_LINK } from "@/providers/providers";
+import { useSendMessageMutation } from "@/data/live/mutations/useSendMessageMutation";
 import { useSessionContext } from "@/providers/session-context";
-import { SEND_MESSAGE } from "@/utils/graphql";
-import {  useMutation } from "@apollo/client";
 import {
     IconButton,
     InputBase,
@@ -47,11 +45,7 @@ function SendMessage () {
     const [ message, setMessage ] = useState(``);
     const { roomId } = useSessionContext();
 
-    const [ sendMessage, { loading } ] = useMutation(SEND_MESSAGE, {
-        context: {
-            target: LIVE_LINK,
-        },
-    });
+    const [ sendMessage ] = useSendMessageMutation();
 
     const submitMessage = (e: React.FormEvent<HTMLDivElement>) => {
         e.preventDefault();

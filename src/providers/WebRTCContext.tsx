@@ -1,12 +1,12 @@
-import { SFU_LINK } from "./providers";
 import { useSessionContext } from "./session-context";
+import { useConsumerMutation } from "@/data/sfu/mutations/useConsumerMutation";
+import { useProducerMutation } from "@/data/sfu/mutations/useProducerMutation";
+import { useSendRtpCapabilitiesMutation } from "@/data/sfu/mutations/useSendRtpCapabilitiesMutation";
+import { useStreamMutation } from "@/data/sfu/mutations/useStreamMutation";
+import { useTransportMutation } from "@/data/sfu/mutations/useTransportMutation";
+import { useIndividualMuteQuery } from "@/data/sfu/queries/useIndividualMuteQuery";
+import { useMediaSubscription } from "@/data/sfu/subscriptions/useMediaSubscription";
 import { Resolver } from "@/resolver";
-import {
-    gql,
-    useMutation,
-    useQuery,
-    useSubscription,
-} from "@apollo/client";
 import {
     Device,
     types as MediaSoup,
@@ -26,95 +26,6 @@ import React,
 const Callstats: any = require(`callstats-js/callstats.min`);
 const callstats = new Callstats();
 
-const SEND_RTP_CAPABILITIES = gql`
-    mutation rtpCapabilities($rtpCapabilities: String!) {
-        rtpCapabilities(rtpCapabilities: $rtpCapabilities)
-    }
-`;
-const TRANSPORT = gql`
-    mutation transport($producer: Boolean!, $params: String!) {
-        transport(producer: $producer, params: $params)
-    }
-`;
-const PRODUCER = gql`
-    mutation producer($params: String!) {
-        producer(params: $params)
-    }
-`;
-const CONSUMER = gql`
-    mutation consumer($id: String!, $pause: Boolean) {
-        consumer(id: $id, pause: $pause)
-    }
-`;
-const STREAM = gql`
-    mutation stream($id: String!, $producerIds: [String]!) {
-        stream(id: $id, producerIds: $producerIds)
-    }
-`;
-export const MUTE = gql`
-    mutation mute($roomId: String!, $sessionId: String!, $audio: Boolean, $video: Boolean) {
-        mute(roomId: $roomId, sessionId: $sessionId, audio: $audio, video: $video) {
-            roomId,
-            sessionId,
-            audio,
-            video,
-        }
-    }
-`;
-export const GLOBAL_MUTE_MUTATION = gql`
-    mutation updateGlobalMute($roomId: String!, $audioGloballyMuted: Boolean, $videoGloballyDisabled: Boolean) {
-        updateGlobalMute(roomId: $roomId, audioGloballyMuted: $audioGloballyMuted, videoGloballyDisabled: $videoGloballyDisabled) {
-            roomId,
-            audioGloballyMuted,
-            videoGloballyDisabled,
-        }
-    }
-`;
-export const ENDCLASS = gql`
-    mutation endClass($roomId: String) {
-        endClass(roomId: $roomId)
-    }
-`;
-export const GLOBAL_MUTE_QUERY = gql`
-    query retrieveGlobalMute($roomId: String!) {
-        retrieveGlobalMute(roomId: $roomId) {
-            roomId,
-            audioGloballyMuted,
-            videoGloballyDisabled,
-        }
-    }
-`;
-export const INDIVIDUAL_MUTE_QUERY = gql`
-    query retrieveMuteStatuses {
-        retrieveMuteStatuses {
-            roomId,
-            sessionId,
-            audio,
-            video,
-        }
-    }
-`;
-const SUBSCRIBE = gql`
-    subscription media($roomId: ID!) {
-        media(roomId: $roomId) {
-            rtpCapabilities,
-            producerTransport,
-            consumerTransport,
-            consumer,
-            stream {
-                id,
-                sessionId,
-                producerIds,
-            },
-            mute {
-                roomId,
-                sessionId,
-                audio,
-                video,
-            },
-        }
-    }
-`;
 export interface WebRTCContextInterface {
     getAuxStream: (sessionId: string) => MediaStream | undefined;
     getCameraStream: (sessionId: string) => MediaStream | undefined;
@@ -169,36 +80,12 @@ export const WebRTCProvider = (props: { children: React.ReactNode }) => {
     const [ destructors, setDestructors ] = useState<Map<string, () => any>>(new Map<string, () => any>());
     const [ muteStatuses, setMuteStatuses ] = useState<Map<string, MuteNotification>>(new Map<string, MuteNotification>());
 
-    const [ rtpCapabilitiesMutation ] = useMutation(SEND_RTP_CAPABILITIES, {
-        context: {
-            target: SFU_LINK,
-        },
-    });
-    const [ transportMutation ] = useMutation(TRANSPORT, {
-        context: {
-            target: SFU_LINK,
-        },
-    });
-    const [ producerMutation ] = useMutation(PRODUCER, {
-        context: {
-            target: SFU_LINK,
-        },
-    });
-    const [ consumerMutation ] = useMutation(CONSUMER, {
-        context: {
-            target: SFU_LINK,
-        },
-    });
-    const [ streamMutation ] = useMutation(STREAM, {
-        context: {
-            target: SFU_LINK,
-        },
-    });
-    const { refetch } = useQuery(INDIVIDUAL_MUTE_QUERY, {
-        context: {
-            target: SFU_LINK,
-        },
-    });
+    const [ rtpCapabilitiesMutation ] = useSendRtpCapabilitiesMutation();
+    const [ transportMutation ] = useTransportMutation();
+    const [ producerMutation ] = useProducerMutation();
+    const [ consumerMutation ] = useConsumerMutation();
+    const [ streamMutation ] = useStreamMutation();
+    const { refetch } = useIndividualMuteQuery();
     // const [endClassMutation] = useMutation(ENDCLASS);
     const devicePrePromise = Resolver<Device>();
     const producerTransportPrePromise = Resolver<MediaSoup.Transport>();
@@ -614,7 +501,7 @@ export const WebRTCProvider = (props: { children: React.ReactNode }) => {
                     throw errors;
                 }
                 callback({
-                    id: data.producer,
+                    id: data?.producer,
                 });
             } catch (error) {
                 attachCallstatsError(transport, roomId, error);
@@ -809,7 +696,7 @@ export const WebRTCProvider = (props: { children: React.ReactNode }) => {
         inboundStreams,
     };
 
-    useSubscription(SUBSCRIBE, {
+    useMediaSubscription({
         onSubscriptionData: ({ subscriptionData }) => {
             if (!subscriptionData?.data?.media) {
                 return;
@@ -847,9 +734,6 @@ export const WebRTCProvider = (props: { children: React.ReactNode }) => {
         },
         variables: {
             roomId,
-        },
-        context: {
-            target: SFU_LINK,
         },
     });
 
@@ -895,7 +779,7 @@ export const WebRTCProvider = (props: { children: React.ReactNode }) => {
     );
 };
 
-interface StreamDescription {
+export interface StreamDescription {
     id: string;
     sessionId: string;
     producerIds: string[];

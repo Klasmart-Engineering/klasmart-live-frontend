@@ -2,13 +2,12 @@ import { useDeviceOrientationValue } from "@/app/model/appModel";
 import backgroundStudy from "@/assets/img/background/background_study.jpg";
 import Main from '@/components/main/main';
 import Sidebar from '@/components/sidebar/sidebar';
-import { SFU_LINK } from '@/providers/providers';
+import { useGlobalMuteMutation } from "@/data/sfu/mutations/useGlobalMuteMutation";
+import { useGlobalMuteQuery } from "@/data/sfu/queries/useGlobalMuteQuery";
 import { useHttpEndpoint } from "@/providers/region-select-context";
 import { RoomContext } from "@/providers/roomContext";
 import { useSessionContext } from "@/providers/session-context";
 import {
-    GLOBAL_MUTE_MUTATION,
-    GLOBAL_MUTE_QUERY,
     GlobalMuteNotification,
     WebRTCContext,
 } from "@/providers/WebRTCContext";
@@ -20,13 +19,8 @@ import {
 } from "@/store/layoutAtoms";
 import { classGetInformation } from "@/utils/utils";
 import {
-    useMutation,
-    useQuery,
-} from "@apollo/client";
-import {
     Grid,
     makeStyles,
-    Theme,
     useMediaQuery,
     useTheme,
 } from '@material-ui/core';
@@ -37,11 +31,11 @@ import React,
     useEffect,
     useState,
 } from 'react';
-import { useRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 
 const qs = require(`qs`);
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles(() => ({
     root: {
         height: `100vh`,
         paddingBottom: `env(safe-area-inset-bottom)`,
@@ -61,9 +55,9 @@ export function Room () {
     const theme = useTheme();
     const isXsDown = useMediaQuery(theme.breakpoints.down(`xs`));
 
-    const [ hasControls, setHasControls ] = useRecoilState(hasControlsState);
-    const [ studyRecommandUrl, setStudyRecommandUrl ] = useRecoilState(studyRecommandUrlState);
-    const [ classInfo, setClassInfo ] = useRecoilState(classInfoState);
+    const setHasControls = useSetRecoilState(hasControlsState);
+    const setStudyRecommandUrl = useSetRecoilState(studyRecommandUrlState);
+    const setClassInfo = useSetRecoilState(classInfoState);
     const deviceOrientation = useDeviceOrientationValue();
 
     const [ camerasOn, setCamerasOn ] = useState(true);
@@ -81,18 +75,11 @@ export function Room () {
 
     const localSession = sessions.get(sessionId);
 
-    const [ globalMuteMutation ] = useMutation(GLOBAL_MUTE_MUTATION, {
-        context: {
-            target: SFU_LINK,
-        },
-    });
+    const [ globalMuteMutation ] = useGlobalMuteMutation();
 
-    const { refetch: refetchGlobalMute } = useQuery(GLOBAL_MUTE_QUERY, {
+    const { refetch: refetchGlobalMute } = useGlobalMuteQuery({
         variables: {
             roomId,
-        },
-        context: {
-            target: SFU_LINK,
         },
     });
 
