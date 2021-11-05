@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.2.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.1.0%0Dv3.2.0) (2021-11-05)
+
+
+### Features
+
+* add new translations ([c4f23c6](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/c4f23c6c5a72c223afa62ae7ce4195c4a19da73c)), closes [#572](https://calmisland.atlassian.net/browse/572)
+* **app:** add setting modal with language select ([da66681](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/da666815f0ae44bd057bb5fb4531cf11251f7dab)), closes [#567](https://calmisland.atlassian.net/browse/567)
+
+
+### Bug Fixes
+
+* add Safari as exception for refreshCameras on join page ([7f74d4e](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/7f74d4eec33137bcbaa86adb40c352ab6e5d781f))
+* **app:** app saying that no image is selected when cancel Camera in HFS ([5a73258](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/5a732588b314a6caa2a9ec3889b41d6d7c893744))
+* **app:** status of Home Fun Study is not updated even after the submission ([6da8a6c](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/6da8a6c9e02e5fca366304c7edf44192b9abc123))
+* auto open selectUserDialog if no profile is selected ([c91601f](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/c91601f2b72591b9d37b83b65357751aaa173234)), closes [#578](https://calmisland.atlassian.net/browse/578)
+* dont record pdf content ([a3b24f6](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/a3b24f6a8120c0d4bec58ecab92a3fb35e7ea0a2))
+* **ios:** student can go to youtube without a parental lock ([05bb315](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/05bb315c40b1f7e9a314c7635daa3a58b7f20851))
+* remove gtag and missing page icon reference and change html index author ([d8d9bec](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/d8d9bec49b25d53a9ed2e1604f099e01c8fa75d0)), closes [#582](https://calmisland.atlassian.net/browse/582)
+* safeArea updates on device orientation changes ([9ec73b1](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/9ec73b1e1af76cae61bd0e8be58d72edadb0ca5c)), closes [#569](https://calmisland.atlassian.net/browse/569)
+* set permissions.allowCreateShapes true when classType is CLASSES ([6dab07c](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/6dab07cd178fe0901197da222ee51e1eef989809))
+* students are not able to use MP3/WAV content on study ([0b07703](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/0b07703b968512cc0d5240dcc3f194b6ce2505ba))
+* unable to play non-h5p videos ([386d214](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/386d214d482d2fb20f07c133f1d464e63724d589))
+* use apollo client for user api ([6a1b10c](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/6a1b10cd71890e705182cc10916955f8636da62b))
+* user is asked to provide consent to Camera when joining a Study on iOS ([af3944d](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/af3944d8d5afb645c6cc62451038f8dea5eabf3f)), closes [#570](https://calmisland.atlassian.net/browse/570)
+* user's camera appears as frozen when to turn off/on it quickly ([730c613](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/730c61358e59bd8a14bb43f1e684d493cf0bd55f))
+
 ## [3.1.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.1.0-internal.1%0Dv3.1.0) (2021-10-29)
 
 
