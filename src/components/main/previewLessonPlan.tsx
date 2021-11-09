@@ -10,7 +10,8 @@ import {
 import { MaterialTypename } from "@/types/lessonMaterial";
 import { useMaterialToHref } from "@/utils/contentUtils";
 import { Typography } from "@material-ui/core";
-import React from "react";
+import React,
+{ useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useRecoilState } from "recoil";
 
@@ -22,6 +23,19 @@ function PreviewLessonPlan () {
     const material = materialActiveIndex >= 0 && materialActiveIndex < materials.length ? materials[materialActiveIndex] : undefined;
     const [ contentHref ] = useMaterialToHref(material);
 
+    useEffect(() => {
+        if (material?.__typename === MaterialTypename.IMAGE) {
+            setObserveDisable(false);
+        } else if (material?.__typename === MaterialTypename.VIDEO ||
+            (material?.__typename === undefined && material?.video)) {
+            setObserveDisable(true);
+        } else if(material?.__typename === MaterialTypename.AUDIO) {
+            setObserveDisable(false);
+        } else if (((material?.__typename === MaterialTypename.IFRAME || material?.__typename === undefined) && material?.url)) {
+            setObserveDisable(false);
+        }
+    }, [ material ]);
+
     // If recommanded content in study mode
     if(materialActiveIndex === materials.length && studyRecommandUrl){
         return(
@@ -32,7 +46,6 @@ function PreviewLessonPlan () {
     }
 
     if(material?.__typename === MaterialTypename.IMAGE){
-        setObserveDisable(false);
         return (
             <ActivityImage material={contentHref} />
         );
@@ -40,7 +53,6 @@ function PreviewLessonPlan () {
 
     if(material?.__typename === MaterialTypename.VIDEO ||
         (material?.__typename === undefined && material?.video)){
-        setObserveDisable(true);
         return(
             <ReplicatedMedia
                 type={material?.__typename || MaterialTypename.VIDEO}
@@ -53,7 +65,6 @@ function PreviewLessonPlan () {
     }
 
     if(material?.__typename === MaterialTypename.AUDIO) {
-        setObserveDisable(false);
         return (
             <ReplicatedMedia
                 type={MaterialTypename.AUDIO}
@@ -66,7 +77,6 @@ function PreviewLessonPlan () {
     }
 
     if(((material?.__typename === MaterialTypename.IFRAME || material?.__typename === undefined) && material?.url)){
-        setObserveDisable(false);
         return(
             <RecordedIframe
                 contentHref={contentHref}
