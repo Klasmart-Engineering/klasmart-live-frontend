@@ -16,9 +16,7 @@ export const useRewardTrophyMutation = (options?: MutationHookOptions<void, Oper
 
     const mutation = useMutation(MUTATION_REWARD_TROPHY, {
         ...options,
-        context: {
-            client,
-        },
+        client,
     });
 
     return mutation;

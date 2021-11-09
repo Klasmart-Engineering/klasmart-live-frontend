@@ -24,8 +24,6 @@ export const useWhiteboardEventsSubscription = (options?: SubscriptionHookOption
 
     return useSubscription<ReadWhiteboardEventsDto>(SUBSCRIBE_WHITEBOARD_EVENTS, {
         ...options,
-        context: {
-            client,
-        },
+        client,
     });
 };

@@ -29,9 +29,7 @@ export const useSendVideoMessageMutation = (options?: MutationHookOptions<void, 
 
     const mutation = useMutation(SEND_VIDEO_MESSAGE, {
         ...options,
-        context: {
-            client,
-        },
+        client,
     });
 
     return mutation;

@@ -17,9 +17,7 @@ export const useWhiteboardDisplayMutation = (options?: MutationHookOptions<void,
 
     const mutation = useMutation(WHITEBOARD_SEND_DISPLAY, {
         ...options,
-        context: {
-            client,
-        },
+        client,
     });
 
     return mutation;

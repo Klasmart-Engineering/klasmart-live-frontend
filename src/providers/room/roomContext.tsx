@@ -1,10 +1,11 @@
-import { useSessionContext } from "./session-context";
+import { useSessionContext } from "../session-context";
+import { ConferenceContextProvider } from "./conferenceContext";
 import Loading from "@/components/loading";
 import { ReadTrophyDto } from "@/data/live/dto/readRoomDto";
 import { useSendStudentUsageRecordMutation } from "@/data/live/mutations/useSendStudentUsageRecordMutation";
 import { useShowContentMutation } from "@/data/live/mutations/useShowContentMutation";
 import { useRoomSubscription } from "@/data/live/subscriptions/useRoomSubscription";
-import { useGlobalMuteQuery } from "@/data/sfu/queries/useGlobalMuteQuery";
+import { SfuServiceApolloClient } from "@/data/sfu/sfuServiceApolloClient";
 import {
     Content,
     Message,
@@ -12,7 +13,6 @@ import {
 } from "@/pages/utils";
 import { ClassType } from "@/store/actions";
 import {
-    audioGloballyMutedState,
     classEndedState,
     hasControlsState,
     InteractiveMode,
@@ -22,7 +22,6 @@ import {
     materialActiveIndexState,
     streamIdState,
     unreadMessagesState,
-    videoGloballyMutedState,
 } from "@/store/layoutAtoms";
 import {
     defineContentId,
@@ -43,14 +42,16 @@ import {
 } from "react-intl";
 import { useRecoilState } from "recoil";
 
+interface Props {
+    enableConferencing: boolean;
+}
+
 export interface RoomContextInterface {
     sfuAddress: string;
     messages: Map<string, Message>;
     content: Content | undefined;
     sessions: Map<string, Session>;
     trophy?: ReadTrophyDto;
-    audioGloballyMuted: boolean;
-    videoGloballyMuted: boolean;
 }
 
 const defaultRoomContext = {
@@ -59,12 +60,10 @@ const defaultRoomContext = {
     content: undefined,
     sessions: new Map<string, Session>(),
     trophy: undefined,
-    audioGloballyMuted: false,
-    videoGloballyMuted: false,
 };
 
 export const RoomContext = createContext<RoomContextInterface>(defaultRoomContext);
-export const RoomProvider = (props: {children: React.ReactNode}) => {
+export const RoomProvider: React.FC<Props> = ({ children, enableConferencing }) => {
     const intl = useIntl();
     const {
         roomId,
@@ -74,6 +73,7 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
         isTeacher,
         materials,
         classType,
+        token,
     } = useSessionContext();
     const [ sfuAddress, setSfuAddress ] = useState<string>(``);
     const [ messages, setMessages ] = useState<Map<string, Message>>(new Map<string, Message>());
@@ -84,12 +84,10 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
     const [ unreadMessages, setUnreadMessages ] = useRecoilState(unreadMessagesState);
     const [ isChatOpen ] = useRecoilState(isChatOpenState);
     const [ , setIsShowContentLoading ] = useRecoilState(isShowContentLoadingState);
-    const [ audioGloballyMuted, setAudioGloballyMuted ] = useRecoilState(audioGloballyMutedState);
-    const [ videoGloballyMuted, setVideoGloballyMuted ] = useRecoilState(videoGloballyMutedState);
     const { enqueueSnackbar } = useSnackbar();
 
     const [ materialActiveIndex ] = useRecoilState(materialActiveIndexState);
-    const [ streamId  ] = useRecoilState(streamIdState);
+    const [ streamId ] = useRecoilState(streamIdState);
     const [ interactiveMode ] = useRecoilState(interactiveModeState);
     const [ hasControls ] = useRecoilState(hasControlsState);
 
@@ -144,10 +142,6 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
         isChatOpen && setUnreadMessages(0);
     }, [ isChatOpen, messages ]);
 
-    useEffect(() => {
-        fetchGlobalMute();
-    }, [ audioGloballyMuted, videoGloballyMuted ]);
-
     const { loading, error } = useRoomSubscription({
         onSubscriptionData: ({ subscriptionData }) => {
             if (!subscriptionData?.data?.room) { return; }
@@ -177,15 +171,6 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
     });
 
     const addMessage = (newMessage: Message) => {
-        // for (const id of messages.keys()) {
-        //     if (messages.size < 32) { break; }
-        //     setMessages((prev) => {
-        //         const newState = new Map(prev);
-        //         newState.delete(id);
-        //         return newState;
-        //     });
-        // }
-
         if(!isChatOpen){
             const now = Date.now() - 5000;
             const messageTime = Number(newMessage.id.split(`-`)[0]);
@@ -239,36 +224,56 @@ export const RoomProvider = (props: {children: React.ReactNode}) => {
         }
     };
 
-    const { refetch: refetchGlobalMute } = useGlobalMuteQuery({
-        variables: {
-            roomId,
-        },
-    });
-
-    const fetchGlobalMute = async () => {
-        const { data: globalMuteData } = await refetchGlobalMute();
-        setAudioGloballyMuted(globalMuteData.retrieveGlobalMute.audioGloballyMuted);
-        setVideoGloballyMuted(globalMuteData.retrieveGlobalMute.videoGloballyDisabled);
-    };
-
     const value = {
         sfuAddress,
         messages,
         content,
         sessions,
         trophy,
-        audioGloballyMuted,
-        videoGloballyMuted,
     };
 
-    if (loading || !content) { return <Grid
-        container
-        alignItems="center"
-        style={{
-            height: `100%`,
-        }}><Loading messageId="loading" /></Grid>; }
-    if (error) { return <Typography><FormattedMessage id="failed_to_connect" />{JSON.stringify(error)}</Typography>; }
-    return <RoomContext.Provider value={value} >
-        {props.children}
-    </RoomContext.Provider>;
+    if (loading || !content) {
+        return (
+            <Grid
+                container
+                alignItems="center"
+                style={{
+                    height: `100%`,
+                }}
+            >
+                <Loading messageId="loading" />
+            </Grid>
+        );
+    }
+
+    if (error) {
+        return (
+            <Typography>
+                <FormattedMessage id="failed_to_connect" />{JSON.stringify(error)}
+            </Typography>
+        );
+    }
+
+    return (
+        <RoomContext.Provider value={value}>
+            { enableConferencing ?
+                <SfuServiceApolloClient
+                    token={token}
+                    sessionId={sessionId}
+                    roomId={roomId}
+                >
+                    <ConferenceContextProvider
+                        sessionId={sessionId}
+                        roomId={roomId}
+                    >
+                        {children}
+                    </ConferenceContextProvider>
+                </SfuServiceApolloClient> :
+                <>
+                    {children}
+                </>
+
+            }
+        </RoomContext.Provider>
+    );
 };

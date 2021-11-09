@@ -23,9 +23,7 @@ export const useMyUsersQuery = (options?: QueryHookOptions<ReadMyUsersDto, Opera
     const { client } = useUserServiceApolloClient();
     const query = useQuery<ReadMyUsersDto>(QUERY_MY_USERS, {
         ...options,
-        context: {
-            client,
-        },
+        client,
     });
 
     return query;

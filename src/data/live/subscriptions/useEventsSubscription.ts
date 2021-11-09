@@ -21,8 +21,6 @@ export const useEventsSubscription = (options?: SubscriptionHookOptions<ReadEven
 
     return useSubscription<ReadEventDto>(SUB_EVENTS, {
         ...options,
-        context: {
-            client,
-        },
+        client,
     });
 };

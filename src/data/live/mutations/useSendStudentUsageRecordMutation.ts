@@ -17,8 +17,6 @@ export const useSendStudentUsageRecordMutation = (options?: MutationHookOptions<
 
     return useMutation<void>(MUTATION_SEND_STUDENT_USAGE_RECORD_EVENT, {
         ...options,
-        context: {
-            client,
-        },
+        client,
     });
 };

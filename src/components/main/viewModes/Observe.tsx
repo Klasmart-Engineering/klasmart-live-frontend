@@ -2,7 +2,7 @@ import Loading from "@/components/interactiveContent/loading";
 import { PreviewPlayer } from "@/components/interactiveContent/previewPlayer";
 import { RecordedIframe } from "@/components/interactiveContent/recordediframe";
 import { Session } from "@/pages/utils";
-import { RoomContext } from "@/providers/roomContext";
+import { RoomContext } from "@/providers/room/roomContext";
 import { useSessionContext } from "@/providers/session-context";
 import { isShowContentLoadingState } from "@/store/layoutAtoms";
 import { useContentToHref } from "@/utils/contentUtils";

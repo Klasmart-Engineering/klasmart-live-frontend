@@ -2,7 +2,7 @@ import { useRewardTrophyMutation } from "@/data/live/mutations/useRewardTrophyMu
 import { useSetHostMutation } from "@/data/live/mutations/useSetHostMutation";
 import { useMuteMutation } from "@/data/sfu/mutations/useMuteMutation";
 import { useGlobalMuteQuery } from "@/data/sfu/queries/useGlobalMuteQuery";
-import { RoomContext } from "@/providers/roomContext";
+import { RoomContext } from "@/providers/room/roomContext";
 import { useSessionContext } from "@/providers/session-context";
 import {
     MuteNotification,

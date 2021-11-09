@@ -23,9 +23,7 @@ export const useIndividualMuteQuery = (options?: MutationHookOptions<QueryIndivi
 
     const mutation = useQuery(INDIVIDUAL_MUTE_QUERY, {
         ...options,
-        context: {
-            client,
-        },
+        client,
     });
 
     return mutation;

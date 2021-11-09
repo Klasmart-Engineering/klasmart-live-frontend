@@ -23,9 +23,7 @@ export const useMuteMutation = (options?: MutationHookOptions<UpdateMuteDto, Ope
 
     const mutation = useMutation(MUTE, {
         ...options,
-        context: {
-            client,
-        },
+        client,
     });
 
     return mutation;

@@ -22,8 +22,6 @@ export const useVideoSubscription = (options?: SubscriptionHookOptions<ReadVideo
 
     return useSubscription<ReadVideoDto>(VIDEO_SUBSCRIPTION, {
         ...options,
-        context: {
-            client,
-        },
+        client,
     });
 };

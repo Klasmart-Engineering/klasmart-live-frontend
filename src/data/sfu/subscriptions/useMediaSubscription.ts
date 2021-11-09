@@ -14,6 +14,7 @@ const SUBSCRIBE = gql`
             producerTransport,
             consumerTransport,
             consumer,
+            close,
             stream {
                 id,
                 sessionId,
@@ -34,8 +35,6 @@ export const useMediaSubscription = (options?: SubscriptionHookOptions<ReadMedia
 
     return useSubscription<ReadMediaDto>(SUBSCRIBE, {
         ...options,
-        context: {
-            client,
-        },
+        client,
     });
 };

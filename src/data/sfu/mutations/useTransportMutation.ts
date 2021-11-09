@@ -17,9 +17,7 @@ export const useTransportMutation = (options?: MutationHookOptions<void, Operati
 
     const mutation = useMutation(TRANSPORT, {
         ...options,
-        context: {
-            client,
-        },
+        client,
     });
 
     return mutation;

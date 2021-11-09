@@ -22,9 +22,7 @@ export const useGlobalMuteQuery = (options?: QueryHookOptions<QueryGlobalMuteDto
 
     const query = useQuery<QueryGlobalMuteDto>(GLOBAL_MUTE_QUERY, {
         ...options,
-        context: {
-            client,
-        },
+        client,
     });
 
     return query;

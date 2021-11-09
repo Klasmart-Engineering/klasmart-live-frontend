@@ -26,8 +26,6 @@ export const useRoomSubscription = (options?: SubscriptionHookOptions<ReadRoomDt
 
     return useSubscription<ReadRoomDto>(SUB_ROOM, {
         ...options,
-        context: {
-            client,
-        },
+        client,
     });
 };

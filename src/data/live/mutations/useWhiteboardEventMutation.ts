@@ -17,9 +17,7 @@ export const useWhiteboardEventMutation = (options?: MutationHookOptions<void, O
 
     const mutation = useMutation(WHITEBOARD_SEND_EVENT, {
         ...options,
-        context: {
-            client,
-        },
+        client,
     });
 
     return mutation;

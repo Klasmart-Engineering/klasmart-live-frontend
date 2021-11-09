@@ -1,6 +1,6 @@
 import UserCamera from "@/components/userCamera/userCamera";
 import { Session } from "@/pages/utils";
-import { RoomContext } from "@/providers/roomContext";
+import { RoomContext } from "@/providers/room/roomContext";
 import { NoItemList } from "@/utils/utils";
 import {
     Fade,
