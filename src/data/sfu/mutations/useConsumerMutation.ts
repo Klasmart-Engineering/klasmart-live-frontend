@@ -17,9 +17,7 @@ export const useConsumerMutation = (options?: MutationHookOptions<void, Operatio
 
     const mutation = useMutation(CONSUMER, {
         ...options,
-        context: {
-            client,
-        },
+        client,
     });
 
     return mutation;

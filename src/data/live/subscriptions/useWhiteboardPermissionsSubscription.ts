@@ -17,8 +17,6 @@ export const useWhiteboardPermissionsSubscription = (options?: SubscriptionHookO
 
     return useSubscription<ReadWhiteboardPermissionsDto>(SUBSCRIBE_WHITEBOARD_PERMISSIONS, {
         ...options,
-        context: {
-            client,
-        },
+        client,
     });
 };

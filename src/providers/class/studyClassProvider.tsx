@@ -1,4 +1,4 @@
-import { RoomProvider } from "../roomContext";
+import { RoomProvider } from "../room/roomContext";
 import { GlobalWhiteboardContext } from "@/whiteboard/context-providers/GlobalWhiteboardContext";
 import { SnackbarProvider } from "kidsloop-px";
 import React,
@@ -24,7 +24,7 @@ function StudyClassProvider ({ children }: Props) {
             closeButtonLabel={intl.formatMessage({
                 id: `common_dismiss`,
             })}>
-            <RoomProvider>
+            <RoomProvider enableConferencing={false}>
                 <GlobalWhiteboardContext>
                     <>
                         {children}

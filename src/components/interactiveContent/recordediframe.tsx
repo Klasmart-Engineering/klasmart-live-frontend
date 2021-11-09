@@ -3,7 +3,7 @@ import { useCustomFlashCard } from "@/app/utils/customFlashCard";
 import { injectIframeScript } from "@/app/utils/injectIframeScript";
 import { useSetStreamIdMutation } from "@/data/live/mutations/useSetStreamIdMutation";
 import { useHttpEndpoint } from "@/providers/region-select-context";
-import { RoomContext } from "@/providers/roomContext";
+import { RoomContext } from "@/providers/room/roomContext";
 import { useSessionContext } from "@/providers/session-context";
 import { ClassType } from "@/store/actions";
 import {

@@ -1,5 +1,5 @@
 import { ContentType } from "@/pages/utils";
-import { RoomContext } from "@/providers/roomContext";
+import { RoomContext } from "@/providers/room/roomContext";
 import { useSessionContext } from "@/providers/session-context";
 import { materialActiveIndexState } from "@/store/layoutAtoms";
 import { MaterialTypename } from "@/types/lessonMaterial";

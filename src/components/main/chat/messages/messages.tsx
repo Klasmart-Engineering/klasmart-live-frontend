@@ -1,6 +1,6 @@
 import Message from "./message";
 import SendMessage from "./sendMessage";
-import { RoomContext } from "@/providers/roomContext";
+import { RoomContext } from "@/providers/room/roomContext";
 import { NoItemList } from "@/utils/utils";
 import {
     Box,

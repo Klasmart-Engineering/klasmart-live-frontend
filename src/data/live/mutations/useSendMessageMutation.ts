@@ -19,9 +19,7 @@ export const useSendMessageMutation = (options?: MutationHookOptions<void, Opera
 
     const mutation = useMutation(SEND_MESSAGE, {
         ...options,
-        context: {
-            client,
-        },
+        client,
     });
 
     return mutation;

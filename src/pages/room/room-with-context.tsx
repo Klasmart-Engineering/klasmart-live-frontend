@@ -1,7 +1,6 @@
 import { Room } from "./room";
 import { Trophy } from "@/components/trophies/trophy";
 import { LiveServiceApolloClient } from "@/data/live/liveServiceApolloClient";
-import { LiveSfuServicesProvider } from "@/data/liveSfuServicesProvider";
 import EndClass from "@/pages/end/endClass";
 import LiveClassProvider from "@/providers/class/liveClassProvider";
 import StudyClassProvider from "@/providers/class/studyClassProvider";
@@ -15,32 +14,23 @@ import React from 'react';
 import { useRecoilState } from "recoil";
 
 export function RoomWithContext (): JSX.Element {
-
     const {
         sessionId,
         token,
-        roomId,
         classType,
     } = useSessionContext();
 
     return (
-        classType === ClassType.STUDY ?
-            <LiveServiceApolloClient
-                token={token}
-                sessionId={sessionId}
-            >
-                <StudyRoom />
-            </LiveServiceApolloClient> :
-            <LiveSfuServicesProvider
-                token={token}
-                roomId={roomId}
-                sessionId={sessionId}>
-                <LiveRoom />
-            </LiveSfuServicesProvider>
+        <LiveServiceApolloClient
+            token={token}
+            sessionId={sessionId}
+        >
+            { classType == ClassType.STUDY ? <StudyRoom /> : <LiveRoom /> }
+        </LiveServiceApolloClient>
     );
 }
 
-function LiveRoom (): JSX.Element {
+const LiveRoom: React.FC = () => {
     const [ classLeft ] = useRecoilState(classLeftState);
     const [ classEnded ] = useRecoilState(classEndedState);
 
@@ -56,9 +46,9 @@ function LiveRoom (): JSX.Element {
             </>
         </LiveClassProvider>
     );
-}
+};
 
-function StudyRoom (): JSX.Element {
+const StudyRoom: React.FC = () => {
     return (
         <StudyClassProvider>
             <>
@@ -67,4 +57,4 @@ function StudyRoom (): JSX.Element {
             </>
         </StudyClassProvider>
     );
-}
+};

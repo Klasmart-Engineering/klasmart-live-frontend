@@ -16,9 +16,7 @@ export const useSaveFeedbackMutation = (options?: MutationHookOptions<void, Oper
 
     const mutation = useMutation(MUTATION_SAVE_FEEDBACK, {
         ...options,
-        context: {
-            client,
-        },
+        client,
     });
 
     return mutation;

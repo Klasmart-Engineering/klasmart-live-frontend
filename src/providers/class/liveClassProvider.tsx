@@ -1,4 +1,4 @@
-import { RoomProvider } from "../roomContext";
+import { RoomProvider } from "../room/roomContext";
 import { ScreenShareProvider } from "../screenShareProvider";
 import { WebRTCProvider } from "../WebRTCContext";
 import { GlobalWhiteboardContext } from "@/whiteboard/context-providers/GlobalWhiteboardContext";
@@ -26,7 +26,7 @@ function LiveClassProvider ({ children }: Props) {
             closeButtonLabel={intl.formatMessage({
                 id: `common_dismiss`,
             })}>
-            <RoomProvider>
+            <RoomProvider enableConferencing={true}>
                 <WebRTCProvider>
                     <ScreenShareProvider>
                         <GlobalWhiteboardContext>

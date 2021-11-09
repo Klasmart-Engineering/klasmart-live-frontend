@@ -2,15 +2,9 @@ import { useDeviceOrientationValue } from "@/app/model/appModel";
 import backgroundStudy from "@/assets/img/background/background_study.jpg";
 import Main from '@/components/main/main';
 import Sidebar from '@/components/sidebar/sidebar';
-import { useGlobalMuteMutation } from "@/data/sfu/mutations/useGlobalMuteMutation";
-import { useGlobalMuteQuery } from "@/data/sfu/queries/useGlobalMuteQuery";
 import { useHttpEndpoint } from "@/providers/region-select-context";
-import { RoomContext } from "@/providers/roomContext";
+import { RoomContext } from "@/providers/room/roomContext";
 import { useSessionContext } from "@/providers/session-context";
-import {
-    GlobalMuteNotification,
-    WebRTCContext,
-} from "@/providers/WebRTCContext";
 import { ClassType } from "@/store/actions";
 import {
     classInfoState,
@@ -29,7 +23,6 @@ import React,
 {
     useContext,
     useEffect,
-    useState,
 } from 'react';
 import { useSetRecoilState } from "recoil";
 
@@ -60,9 +53,6 @@ export function Room () {
     const setClassInfo = useSetRecoilState(classInfoState);
     const deviceOrientation = useDeviceOrientationValue();
 
-    const [ camerasOn, setCamerasOn ] = useState(true);
-    const [ micsOn, setMicsOn ] = useState(true);
-
     const {
         roomId,
         sessionId,
@@ -71,17 +61,6 @@ export function Room () {
         scheduleId,
     } = useSessionContext();
     const { sessions } = useContext(RoomContext);
-    const webrtc = useContext(WebRTCContext);
-
-    const localSession = sessions.get(sessionId);
-
-    const [ globalMuteMutation ] = useGlobalMuteMutation();
-
-    const { refetch: refetchGlobalMute } = useGlobalMuteQuery({
-        variables: {
-            roomId,
-        },
-    });
 
     function ramdomInt (min: number, max: number) {
         return Math.floor(Math.random() * (max - min)) + min;
@@ -188,56 +167,6 @@ export function Room () {
             }
         }
     }, [ classType ]);
-
-    const enforceGlobalMute = async () => {
-        const { data } = await refetchGlobalMute();
-        const videoGloballyDisabled = data?.retrieveGlobalMute?.videoGloballyDisabled;
-        if (videoGloballyDisabled) {
-            toggleVideoStates(videoGloballyDisabled);
-        }
-        const audioGloballyMuted = data?.retrieveGlobalMute?.audioGloballyMuted;
-        if (audioGloballyMuted) {
-            toggleAudioStates(audioGloballyMuted);
-        }
-    };
-
-    useEffect(() => {
-        enforceGlobalMute();
-    }, [
-        roomId,
-        localSession?.isHost,
-        webrtc?.inboundStreams.size,
-    ]);
-
-    async function toggleVideoStates (isOn?: boolean) {
-        const notification: GlobalMuteNotification = {
-            roomId,
-            audioGloballyMuted: undefined,
-            videoGloballyDisabled: isOn ?? camerasOn,
-        };
-        const data = await globalMuteMutation({
-            variables: notification,
-        });
-        const videoGloballyDisabled = data?.data?.updateGlobalMute?.videoGloballyDisabled;
-        if (videoGloballyDisabled != null) {
-            setCamerasOn(!videoGloballyDisabled);
-        }
-    }
-
-    async function toggleAudioStates (isOn?: boolean) {
-        const notification: GlobalMuteNotification = {
-            roomId,
-            audioGloballyMuted: isOn ?? micsOn,
-            videoGloballyDisabled: undefined,
-        };
-        const data = await globalMuteMutation({
-            variables: notification,
-        });
-        const audioGloballyMuted = data?.data?.updateGlobalMute?.audioGloballyMuted;
-        if (audioGloballyMuted != null) {
-            setMicsOn(!audioGloballyMuted);
-        }
-    }
 
     return (
         <Grid

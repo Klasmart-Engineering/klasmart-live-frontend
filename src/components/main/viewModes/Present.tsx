@@ -4,7 +4,7 @@ import { RecordedIframe } from "@/components/interactiveContent/recordediframe";
 import { ReplicaMedia } from "@/components/interactiveContent/synchronized-video";
 import PreviewLessonPlan from "@/components/main/previewLessonPlan";
 import { ContentType } from "@/pages/utils";
-import { RoomContext } from "@/providers/roomContext";
+import { RoomContext } from "@/providers/room/roomContext";
 import { hasControlsState } from "@/store/layoutAtoms";
 import { useContentToHref } from "@/utils/contentUtils";
 import React,

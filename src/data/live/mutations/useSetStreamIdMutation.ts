@@ -17,9 +17,7 @@ export const useSetStreamIdMutation = (options?: MutationHookOptions<void, Opera
 
     const mutation = useMutation(SET_STREAMID, {
         ...options,
-        context: {
-            client,
-        },
+        client,
     });
 
     return mutation;

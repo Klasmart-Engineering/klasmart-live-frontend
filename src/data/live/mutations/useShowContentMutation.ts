@@ -17,8 +17,6 @@ export const useShowContentMutation = (options?: MutationHookOptions<void, Opera
 
     return useMutation<void>(MUTATION_SHOW_CONTENT, {
         ...options,
-        context: {
-            client,
-        },
+        client,
     });
 };

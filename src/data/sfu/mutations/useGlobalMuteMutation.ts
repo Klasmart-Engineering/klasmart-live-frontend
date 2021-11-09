@@ -22,9 +22,7 @@ export const useGlobalMuteMutation = (options?: MutationHookOptions<UpdateGlobal
 
     const mutation = useMutation(GLOBAL_MUTE_MUTATION, {
         ...options,
-        context: {
-            client,
-        },
+        client,
     });
 
     return mutation;

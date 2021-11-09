@@ -17,9 +17,7 @@ export const useWhiteboardPermissionsMutation = (options?: MutationHookOptions<v
 
     const mutation = useMutation(WHITEBOARD_SEND_PERMISSIONS, {
         ...options,
-        context: {
-            client,
-        },
+        client,
     });
 
     return mutation;

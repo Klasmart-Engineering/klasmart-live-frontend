@@ -18,9 +18,7 @@ export const useProducerMutation = (options?: MutationHookOptions<ProducerMutati
 
     const mutation = useMutation(PRODUCER, {
         ...options,
-        context: {
-            client,
-        },
+        client,
     });
 
     return mutation;

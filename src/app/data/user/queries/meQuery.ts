@@ -40,9 +40,7 @@ export const useMeQuery = (options?: QueryHookOptions<ReadMeDto, OperationVariab
 
     const query = useQuery<ReadMeDto>(QUERY_ME, {
         ...options,
-        context: {
-            client,
-        },
+        client,
     });
 
     return query;

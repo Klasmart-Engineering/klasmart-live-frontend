@@ -17,9 +17,7 @@ export const useLeaveClassMutation = (options?: MutationHookOptions<void, Operat
 
     const mutation = useMutation(MUTATION_LEAVECLASS, {
         ...options,
-        context: {
-            client,
-        },
+        client,
     });
 
     return mutation;

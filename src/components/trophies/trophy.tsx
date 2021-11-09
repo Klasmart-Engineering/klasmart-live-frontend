@@ -4,7 +4,7 @@ import { Reward } from './reward';
 import TrophyKinds,
 { TrophyKind } from './trophyKind';
 import TIMINGS from './trophyTimings';
-import { RoomContext } from '@/providers/roomContext';
+import { RoomContext } from '@/providers/room/roomContext';
 import { useSessionContext } from '@/providers/session-context';
 import { ClassType } from '@/store/actions';
 import React,

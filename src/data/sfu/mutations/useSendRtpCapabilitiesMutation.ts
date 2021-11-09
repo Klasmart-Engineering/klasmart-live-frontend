@@ -17,9 +17,7 @@ export const useSendRtpCapabilitiesMutation = (options?: MutationHookOptions<voi
 
     const mutation = useMutation(SEND_RTP_CAPABILITIES, {
         ...options,
-        context: {
-            client,
-        },
+        client,
     });
 
     return mutation;

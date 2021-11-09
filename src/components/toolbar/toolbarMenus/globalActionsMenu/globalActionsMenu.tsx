@@ -3,7 +3,7 @@ import { useRewardTrophyMutation } from "@/data/live/mutations/useRewardTrophyMu
 import { useGlobalMuteMutation } from "@/data/sfu/mutations/useGlobalMuteMutation";
 import { useGlobalMuteQuery } from "@/data/sfu/queries/useGlobalMuteQuery";
 import { ContentType } from "@/pages/utils";
-import { RoomContext } from "@/providers/roomContext";
+import { RoomContext } from "@/providers/room/roomContext";
 import { ScreenShareContext } from "@/providers/screenShareProvider";
 import { useSessionContext } from "@/providers/session-context";
 import { GlobalMuteNotification } from "@/providers/WebRTCContext";

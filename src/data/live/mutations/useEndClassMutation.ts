@@ -17,9 +17,7 @@ export const useEndClassMutation = (options?: MutationHookOptions<void, Operatio
 
     const mutation = useMutation(MUTATION_ENDCLASS, {
         ...options,
-        context: {
-            client,
-        },
+        client,
     });
 
     return mutation;

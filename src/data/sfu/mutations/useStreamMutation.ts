@@ -17,9 +17,7 @@ export const useStreamMutation = (options?: MutationHookOptions<void, OperationV
 
     const mutation = useMutation(STREAM, {
         ...options,
-        context: {
-            client,
-        },
+        client,
     });
 
     return mutation;

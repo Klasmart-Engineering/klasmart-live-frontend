@@ -19,8 +19,6 @@ export const useWhiteboardStateSubscription = (options?: SubscriptionHookOptions
 
     return useSubscription<ReadWhiteboardStateDto>(SUBSCRIBE_WHITEBOARD_STATE, {
         ...options,
-        context: {
-            client,
-        },
+        client,
     });
 };

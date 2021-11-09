@@ -17,9 +17,7 @@ export const useSetHostMutation = (options?: MutationHookOptions<void, Operation
 
     const mutation = useMutation(MUTATION_SET_HOST, {
         ...options,
-        context: {
-            client,
-        },
+        client,
     });
 
     return mutation;
