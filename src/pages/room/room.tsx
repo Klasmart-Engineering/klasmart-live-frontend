@@ -21,6 +21,7 @@ import {
 import clsx from "clsx";
 import React,
 {
+    useCallback,
     useContext,
     useEffect,
 } from 'react';
@@ -66,9 +67,9 @@ export function Room () {
         return Math.floor(Math.random() * (max - min)) + min;
     }
 
-    // https://swagger-ui.kidsloop.net/#/content/searchContents
-    async function getAllLessonMaterials () {
-        const CMS_ENDPOINT = `${process.env.ENDPOINT_CMS}`;
+    const cmsEndpoint = useHttpEndpoint(`cms`);
+
+    const getAllLessonMaterials = useCallback(async () => {
         const headers = new Headers();
         headers.append(`Accept`, `application/json`);
         headers.append(`Content-Type`, `application/json`);
@@ -80,12 +81,13 @@ export function Room () {
         }, {
             encodeValuesOnly: true,
         });
-        const response = await fetch(`${CMS_ENDPOINT}/v1/contents?${encodedParams}`, {
+        const response = await fetch(`${cmsEndpoint}/v1/contents?${encodedParams}`, {
             headers,
             method: `GET`,
         });
         if (response.status === 200) { return response.json(); }
-    }
+
+    }, [ cmsEndpoint ]);
 
     async function fetchEverything () {
         async function fetchAllLessonMaterials () {
@@ -121,8 +123,6 @@ export function Room () {
             host?.id === sessionId ? setHasControls(true) : setHasControls(false);
         }
     }, [ sessions.size, sessions ]);
-
-    const cmsEndpoint = useHttpEndpoint(`cms`);
 
     const handleClassGetInformation = async () => {
         try {
