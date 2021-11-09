@@ -616,6 +616,7 @@ function HomeFunStudyContainer ({
                 const newHFSFeedbacks = homeFunStudy.feedback ? homeFunStudy.feedback.slice() : [];
                 const currentFeedbackIndex = newHFSFeedbacks.findIndex(item => item.userId === selectedUser?.user_id && item.studyId === studyInfo.id);
                 if (currentFeedbackIndex >= 0) {
+                    // Check if HFS is exist in localStorage, then re-save it.
                     const feedback = newHFSFeedbacks[currentFeedbackIndex];
                     newHFSFeedbacks[currentFeedbackIndex] = {
                         userId: selectedUser?.user_id,
@@ -624,6 +625,7 @@ function HomeFunStudyContainer ({
                         assignmentItems: assignmentItems,
                     };
                 } else {
+                    // If HFS doesn't exist in localStorage, push a new one.
                     newHFSFeedbacks.push({
                         userId: selectedUser?.user_id,
                         studyId: studyInfo.id,
@@ -640,7 +642,8 @@ function HomeFunStudyContainer ({
         }
 
         if (saveAssignmentItems && saveAssignmentItems.shouldSave) {
-            saveAssignments(saveAssignmentItems.assignmentItems);
+            // Only save the assignments uploaded already
+            saveAssignments(saveAssignmentItems.assignmentItems.filter((item) =>  item.status === AttachmentStatus.UPLOADED));
         }
     }, [ saveAssignmentItems ]);
 
