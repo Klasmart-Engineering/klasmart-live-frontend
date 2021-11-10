@@ -35,6 +35,11 @@ export async function fetchJsonData<T> (url: string, method: string, parameters?
         }
     }
 
+    // the CMS response status 400 if not success.
+    if(response.status === 400) {
+        return await response.json();
+    }
+
     if (!response.ok) {
         throw new Error(response.statusText);
     }

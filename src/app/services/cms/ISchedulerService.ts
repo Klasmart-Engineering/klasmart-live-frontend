@@ -106,6 +106,9 @@ export type PostScheduleFeedbackResponse = {
     label: string;
 }
 
+export enum ScheduleErrorLabel {
+    CAN_NOT_SUBMIT= `schedule_msg_cannot_submit`
+}
 /**
  * Client side API interface for: https://swagger-ui.kidsloop.net/#/schedule
  */

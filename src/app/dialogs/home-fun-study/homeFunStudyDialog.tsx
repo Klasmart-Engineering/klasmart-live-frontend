@@ -16,6 +16,7 @@ import {
 } from "../../model/appModel";
 import {
     Assignment,
+    ScheduleErrorLabel,
     ScheduleFeedbackResponse,
     ScheduleResponse,
 } from "../../services/cms/ISchedulerService";
@@ -329,6 +330,26 @@ export function HomeFunStudyDialog () {
         localFeedback,
     ]);
 
+    function showSubmitFailedError () {
+        showPopup({
+            variant: `error`,
+            title: intl.formatMessage({
+                id: `submission_failed`,
+                defaultMessage: `Submission Failed`,
+            }),
+            description: [
+                intl.formatMessage({
+                    id: `submission_failed_message`,
+                    defaultMessage: `Oops, an unexpected error occurred. Please try again.`,
+                }),
+            ],
+            closeLabel: intl.formatMessage({
+                id: `button_ok`,
+                defaultMessage: `Ok`,
+            }),
+        });
+    }
+
     useEffect(() => {
         async function submitFeedback () {
             if (!schedulerService) {
@@ -338,7 +359,7 @@ export function HomeFunStudyDialog () {
             if (!selectedOrganization) {
                 throw new Error(`Organization is not selected.`);
             }
-            if (!shouldSubmitFeedback || !studyInfo || !localFeedback || !selectedUser?.user_id)
+            if (!shouldSubmitFeedback || !studyInfo || !localFeedback || !selectedUser?.user_id || !homeFunStudy)
                 return;
             if (submitStatus === SubmitStatus.SUBMITTING)
                 return;
@@ -370,26 +391,7 @@ export function HomeFunStudyDialog () {
                             submitted: true,
                         });
                     } else {
-                        if (result && result.label) {
-                            showPopup({
-                                variant: `detailError`,
-                                title: intl.formatMessage({
-                                    id: `submission_failed`,
-                                    defaultMessage: `Submission Failed`,
-                                }),
-                                description: [
-                                    intl.formatMessage({
-                                        id: `submission_failed_message`,
-                                        defaultMessage: `Oops, an unexpected error occurred. Please try again.`,
-                                    }),
-                                    result.label,
-                                ],
-                                closeLabel: intl.formatMessage({
-                                    id: `button_ok`,
-                                    defaultMessage: `Ok`,
-                                }),
-                            });
-                        } else {
+                        if (result && result.label === ScheduleErrorLabel.CAN_NOT_SUBMIT) {
                             showPopup({
                                 variant: `error`,
                                 title: intl.formatMessage({
@@ -398,8 +400,8 @@ export function HomeFunStudyDialog () {
                                 }),
                                 description: [
                                     intl.formatMessage({
-                                        id: `submission_failed_message`,
-                                        defaultMessage: `Oops, an unexpected error occurred. Please try again.`,
+                                        id: `homeFunStudy.submission.error.rejected`,
+                                        defaultMessage: `This assignment has already been assessed by your teacher and cannot be re-submitted.`,
                                     }),
                                 ],
                                 closeLabel: intl.formatMessage({
@@ -407,29 +409,14 @@ export function HomeFunStudyDialog () {
                                     defaultMessage: `Ok`,
                                 }),
                             });
+                        } else {
+                            showSubmitFailedError();
                         }
                     }
                     setSubmitStatus(SubmitStatus.NONE);
                 }).catch(err => {
                     setSubmitStatus(SubmitStatus.NONE);
-                    showPopup({
-                        variant: `detailError`,
-                        title: intl.formatMessage({
-                            id: `submission_failed`,
-                            defaultMessage: `Submission Failed`,
-                        }),
-                        description: [
-                            intl.formatMessage({
-                                id: `submission_failed_message`,
-                                defaultMessage: `Oops, an unexpected error occurred. Please try again.`,
-                            }),
-                            err.message,
-                        ],
-                        closeLabel: intl.formatMessage({
-                            id: `button_ok`,
-                            defaultMessage: `Ok`,
-                        }),
-                    });
+                    showSubmitFailedError();
                 });
         }
 
@@ -461,6 +448,7 @@ export function HomeFunStudyDialog () {
     }, [
         selectedOrganization,
         studyInfo,
+        homeFunStudy,
         localFeedback,
         schedulerService,
         shouldSubmitFeedback,
