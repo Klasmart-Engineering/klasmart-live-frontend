@@ -1,4 +1,5 @@
 import { useServices } from "@/app/context-provider/services-provider";
+import { useCustomFlashCard } from "@/app/utils/customFlashCard";
 import { injectIframeScript } from "@/app/utils/injectIframeScript";
 import { LIVE_LINK } from "@/providers/providers";
 import { useHttpEndpoint } from "@/providers/region-select-context";
@@ -114,6 +115,10 @@ export function RecordedIframe (props: Props): JSX.Element {
         token,
         recorderEndpoint,
     ]);
+
+    useCustomFlashCard({
+        iframe: iframeRef.current,
+    });
 
     useEffect(() => {
         if (sessions.size > userCount && iframeRef && iframeRef.current && iframeRef.current.contentWindow) {
@@ -251,6 +256,7 @@ export function RecordedIframe (props: Props): JSX.Element {
                 break;
             }
         }
+
         window.addEventListener(`message`, onMessage);
         return () => {
             window.removeEventListener(`message`, onMessage);

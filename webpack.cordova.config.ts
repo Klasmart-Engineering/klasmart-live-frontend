@@ -12,6 +12,7 @@ module.exports = {
         player: `./src/entry-player.ts`,
         pdfviewer: `./src/entry-pdfviewer.js`,
         h5presize: `./src/entry-h5p-resize.js`,
+        flashcard: `./src/entry-flashcard.ts`,
     },
     module: {
         rules: [
