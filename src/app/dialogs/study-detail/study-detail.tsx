@@ -700,7 +700,7 @@ export default function StudyDetail ({
                                 <Typography
                                     variant="body1"
                                     className={rowHeaderText}>
-                                    <FormattedMessage id="scheduleDetails.emdTime" />
+                                    <FormattedMessage id="scheduleDetails.endTime" />
                                 </Typography>
                             </Grid>
                             <Grid
