@@ -17,6 +17,7 @@ module.exports = function () {
     obj.NSDocumentsFolderUsageDescription = "KidsLoop Live wants to access documents folder to select files for homework.";
     obj.NSDesktopFolderUsageDescription = "KidsLoop Live wants to access desktop folder to select files for homework.";
     obj.NSDownloadsFolderUsageDescription = "KidsLoop Live wants to access downloads folder to select files for homework.";
+    obj.NSSpeechRecognitionUsageDescription = "KidsLoop Live wants to access SpeechRecognition for homework.";
 
     xml = plist.build(obj);
     fs.writeFileSync(FILEPATH, xml, { encoding: 'utf8' });
