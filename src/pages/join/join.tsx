@@ -57,7 +57,10 @@ const config = require(`@/../package.json`);
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
-        root:{},
+        root:{
+            position: `relative`,
+            zIndex: 1,
+        },
         rootTeacher:{
             "& $headerBg": {
                 background: `linear-gradient(87deg, rgba(103,161,214,1) 0%, rgba(82,141,195,1) 100%)`,
