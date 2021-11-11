@@ -15,19 +15,29 @@ import React,
     useCallback,
     useContext,
     useMemo,
+    useState,
 } from "react";
 import { ClientOptions } from "subscriptions-transport-ws";
 
 interface SfuServiceApolloClientState {
     client?: ApolloClient<NormalizedCacheObject>;
+    isLoading: boolean;
+    isError: boolean;
 }
 
-const SfuServiceApolloClientContext = createContext<SfuServiceApolloClientState>({});
+const SfuServiceApolloClientContext = createContext<SfuServiceApolloClientState>({
+    isLoading: true,
+    isError: false,
+});
 
 interface Props {
     sessionId?: string;
     token?: string;
     roomId?: string;
+}
+
+interface ConnectionCallbackData {
+    message: string;
 }
 
 export const SfuServiceApolloClient: React.FC<Props> = ({
@@ -36,24 +46,45 @@ export const SfuServiceApolloClient: React.FC<Props> = ({
     const { authenticated } = useAuthenticationContext();
     const endpointSfu = useWebsocketEndpoint(`sfu`);
 
+    const [ isLoading, setIsLoading ] = useState(true);
+    const [ isError, setIsError ] = useState(false);
+
     const { authenticationService } = useServices();
 
-    const connectionCallback = useCallback((errors: Error[]) => {
-        if (!errors) return;
+    const isTokenError = (data: ConnectionCallbackData) => {
+        return data.message === `Error: Missing JWT token` ||
+            data.message === `Error: JWT Payload is incorrect` ||
+            data.message === `Error: JWT Issuer is incorrect` ||
+            data.message === `Error: JWT IssuerOptions are incorrect`;
+    };
 
-        const authenticationError = errors.some((e) => e.message === `AuthenticationExpired` || e.message === `AuthenticationInvalid`);
-        if (!authenticationError) {
-            return;
+    const connectionCallback = useCallback((result: Error[] | ConnectionCallbackData | undefined) => {
+        setIsLoading(false);
+
+        const errors = result as Error[] | undefined;
+        const data = result as ConnectionCallbackData | undefined;
+
+        let isAuthenticationError = false;
+        if (data?.message && data.message.startsWith(`Error: `)) {
+            isAuthenticationError = isTokenError(data);
+            setIsError(true);
+        } else if (errors?.length) {
+            setIsError(true);
+            isAuthenticationError = errors.some((e) => e.message === `AuthenticationExpired` || e.message === `AuthenticationInvalid`);
         }
 
-        authenticationService?.refresh().then(successful => {
-            if (!successful) authenticationService?.signout();
-        }).catch(exception => {
-            console.error(exception);
-        });
+        if (isAuthenticationError) {
+            setIsLoading(true);
+            authenticationService?.refresh().then(successful => {
+                if (!successful) authenticationService?.signout();
+            }).catch(exception => {
+                console.error(exception);
+            });
+        }
     }, [ authenticationService ]);
 
     const client = useMemo(() => {
+        setIsLoading(true);
         const options: ClientOptions = {
             connectionCallback,
             reconnect: true,
@@ -90,6 +121,8 @@ export const SfuServiceApolloClient: React.FC<Props> = ({
     return (
         <SfuServiceApolloClientContext.Provider value={{
             client,
+            isLoading,
+            isError,
         }}>
             <ApolloProvider client={client}>
                 {children}
