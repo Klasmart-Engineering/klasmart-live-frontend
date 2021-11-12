@@ -10,6 +10,15 @@ const useStyles = makeStyles((theme: Theme) => ({
     avatar: {
         pointerEvents: `none`,
     },
+    noCameraBackground: {
+        backgroundColor: `#31313c`,
+        position: `absolute`,
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0,
+        height: `100%`,
+    },
 }));
 
 interface NoCameraType {
@@ -27,7 +36,10 @@ function NoCamera (props: NoCameraType) {
     return (
         <Grid
             container
-            justifyContent="center">
+            className={classes.noCameraBackground}
+            justifyContent="center"
+            alignItems="center"
+        >
             <Grid item>
                 <UserAvatar
                     name={name}
