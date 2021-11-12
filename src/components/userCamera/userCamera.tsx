@@ -2,6 +2,7 @@ import NoCamera from "./noCamera";
 import UserCameraActions from "./userCameraActions";
 import UserCameraDetails from "./userCameraDetails";
 import ReactPlayer from "@/components/react-player";
+import { useCameraContext } from "@/providers/Camera";
 import { RoomContext } from "@/providers/roomContext";
 import { useSessionContext } from "@/providers/session-context";
 import { WebRTCContext } from "@/providers/WebRTCContext";
@@ -94,8 +95,12 @@ function UserCamera (props: UserCameraType) {
     const [ speakingActivity, setSpeakingActivity ] = useState(0);
 
     const [ camOn, setCamOn ] = useState(true);
-
-    const { camera, sessionId } = useSessionContext();
+    const { cameraStream, refreshCameras } = useCameraContext();
+    const {
+        camera,
+        setCamera,
+        sessionId,
+    } = useSessionContext();
     const { sessions } = useContext(RoomContext);
     const webrtc = useContext(WebRTCContext);
 
@@ -106,6 +111,25 @@ function UserCamera (props: UserCameraType) {
 
     const audioRef = useRef<HTMLAudioElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
+
+    useEffect(() => {
+        function onResume () {
+            if(!userCamera) return;
+
+            if(!userCamera.active){
+                refreshCameras();
+            }
+        }
+
+        document.addEventListener(`resume`, onResume, false);
+        return () => {
+            window.removeEventListener(`resume`, onResume, false);
+        };
+    }, [ userCamera?.active ]);
+
+    useEffect(() => {
+        setCamera(cameraStream);
+    }, [ cameraStream ]);
 
     function audioDetector (stream:any) {
         const audioContext = new AudioContext();
@@ -131,6 +155,7 @@ function UserCamera (props: UserCameraType) {
             videoRef.current.srcObject = userCamera ? userCamera : null;
         }
     }, [
+        audioRef.current,
         videoRef.current,
         userCamera,
         camOn,
@@ -171,6 +196,7 @@ function UserCamera (props: UserCameraType) {
                     user={user}
                     expanded={camOn && !process.env.IS_CORDOVA_BUILD} /> : null}
                 <ReactPlayer
+                    key={`${userCamera?.id}${userCamera?.active}`}
                     autoPlay
                     url={userCamera}
                     playing={true}
