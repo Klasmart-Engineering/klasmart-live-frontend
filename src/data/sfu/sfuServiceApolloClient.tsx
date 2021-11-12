@@ -7,7 +7,6 @@ import {
     InMemoryCache,
     NormalizedCacheObject,
 } from "@apollo/client";
-import { RetryLink } from "@apollo/client/link/retry";
 import { WebSocketLink } from "@apollo/client/link/ws";
 import React,
 {
@@ -18,6 +17,21 @@ import React,
     useState,
 } from "react";
 import { ClientOptions } from "subscriptions-transport-ws";
+
+interface Loading {
+    type: `Loading`;
+}
+
+interface Error {
+    type: `Error`;
+    messages: string[];
+}
+
+interface Ready {
+    type: `Ready`;
+}
+
+type State = Loading | Error | Ready;
 
 interface SfuServiceApolloClientState {
     client?: ApolloClient<NormalizedCacheObject>;
@@ -36,7 +50,7 @@ interface Props {
     roomId?: string;
 }
 
-interface ConnectionCallbackData {
+interface ErrorData {
     message: string;
 }
 
@@ -46,45 +60,63 @@ export const SfuServiceApolloClient: React.FC<Props> = ({
     const { authenticated } = useAuthenticationContext();
     const endpointSfu = useWebsocketEndpoint(`sfu`);
 
-    const [ isLoading, setIsLoading ] = useState(true);
-    const [ isError, setIsError ] = useState(false);
+    const [ state, setState ] = useState<State>({
+        type: `Loading`,
+    });
 
     const { authenticationService } = useServices();
 
-    const isTokenError = (data: ConnectionCallbackData) => {
-        return data.message === `Error: Missing JWT token` ||
-            data.message === `Error: JWT Payload is incorrect` ||
-            data.message === `Error: JWT Issuer is incorrect` ||
-            data.message === `Error: JWT IssuerOptions are incorrect`;
+    const isJwtTokenError = (error: ErrorData) => {
+        return error.message === `Error: Missing JWT token` ||
+            error.message === `Error: JWT Payload is incorrect` ||
+            error.message === `Error: JWT Issuer is incorrect` ||
+            error.message === `Error: JWT IssuerOptions are incorrect`;
     };
 
-    const connectionCallback = useCallback((result: Error[] | ConnectionCallbackData | undefined) => {
-        setIsLoading(false);
+    const isAuthenticationError = (error: ErrorData) => {
+        return error.message === `AuthenticationExpired` || error.message === `AuthenticationInvalid`;
+    };
 
-        const errors = result as Error[] | undefined;
-        const data = result as ConnectionCallbackData | undefined;
-
-        let isAuthenticationError = false;
-        if (data?.message && data.message.startsWith(`Error: `)) {
-            isAuthenticationError = isTokenError(data);
-            setIsError(true);
-        } else if (errors?.length) {
-            setIsError(true);
-            isAuthenticationError = errors.some((e) => e.message === `AuthenticationExpired` || e.message === `AuthenticationInvalid`);
-        }
-
-        if (isAuthenticationError) {
-            setIsLoading(true);
-            authenticationService?.refresh().then(successful => {
-                if (!successful) authenticationService?.signout();
-            }).catch(exception => {
-                console.error(exception);
+    const connectionCallback = useCallback((errors?: ErrorData[] | ErrorData) => {
+        if (!errors) {
+            setState({
+                type: `Ready`,
             });
+
+            return;
         }
+
+        if (!(errors instanceof Array)) { errors = [ errors ]; }
+
+        const refreshAuthToken = errors.some((e) => {
+            return isAuthenticationError(e) || isJwtTokenError(e);
+        });
+
+        if (!refreshAuthToken) {
+            setState({
+                type: `Error`,
+                messages: errors.map(e => e.message),
+            });
+
+            return;
+        }
+
+        setState({
+            type: `Loading`,
+        });
+
+        authenticationService?.refresh().then(successful => {
+            if (!successful) authenticationService?.signout();
+        }).catch(exception => {
+            console.error(exception);
+        });
     }, [ authenticationService ]);
 
     const client = useMemo(() => {
-        setIsLoading(true);
+        setState({
+            type: `Loading`,
+        });
+
         const options: ClientOptions = {
             connectionCallback,
             reconnect: true,
@@ -94,21 +126,10 @@ export const SfuServiceApolloClient: React.FC<Props> = ({
             },
         };
 
-        const liveLink = new WebSocketLink({
+        const link = new WebSocketLink({
             uri: `${endpointSfu}/${roomId}`,
             options,
         });
-
-        const retryLink = new RetryLink({
-            delay: {
-                max: 300,
-            },
-            attempts: {
-                max: Infinity,
-            },
-        });
-
-        const link = retryLink.concat(liveLink);
 
         const client = new ApolloClient({
             cache: new InMemoryCache(),
@@ -121,8 +142,8 @@ export const SfuServiceApolloClient: React.FC<Props> = ({
     return (
         <SfuServiceApolloClientContext.Provider value={{
             client,
-            isLoading,
-            isError,
+            isLoading: state.type === `Loading`,
+            isError: state.type === `Error`,
         }}>
             <ApolloProvider client={client}>
                 {children}
