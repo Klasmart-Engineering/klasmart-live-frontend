@@ -160,9 +160,7 @@ export function RecordedIframe (props: Props): JSX.Element {
                 setOpenDialog(false);
                 clearInterval(intervalId);
                 onLoad();
-                if(!isPdfContent) {
-                    startRecording();
-                }
+                startRecording();
             }, 500);
         } else if (seconds <= 0 || loadStatus === LoadStatus.Error) {
             clearInterval(intervalId);
