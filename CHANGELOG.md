@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.2.1](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.2.0%0Dv3.2.1) (2021-11-12)
+
+
+### Bug Fixes
+
+* **app:** camera/mic not work after resume ([23459d2](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/23459d2fcd589beec35e9ad5257eef101f8f9d71))
+* **app:** flash card unable to use speech recognition on APP ([8a603ac](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/8a603ac4e1168d497ee8a3c5812d2267c39cfe05))
+* apply background #ffffff to body (prevent the overriding of dark mode on devices) ([87c3656](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/87c365655bebd69661cfc633b4bec7fd6c88eb55))
+* **app:** the HFS becomes infinite spinner ([6904c0a](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/6904c0a8f88b761a4bae9fe4a46e8f2bc6018d8c))
+* **app:** unexpected error is thrown when user submit HFS if assessment is completed ([3a7cc51](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/3a7cc51d7d27101340e8af42752c46e0f3bd2fa2))
+* record pdf content ([bbdc049](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/bbdc049195ba5dd6980b1182c3d21ae765c4ad93))
+* teacher can see the last video frame when student's cam muted ([2fbfd1b](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/2fbfd1ba176564f71947b571c70af24b9775224b))
+* translation typo ([606a9b0](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/606a9b013505495445f95b8d7580f8657bbba021))
+
 ## [3.2.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.1.0%0Dv3.2.0) (2021-11-05)
 
 
