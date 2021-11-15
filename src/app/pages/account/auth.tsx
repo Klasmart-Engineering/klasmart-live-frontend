@@ -83,36 +83,14 @@ export function Auth ({ useInAppBrowser }: Props) {
         const cordova = (window as any).cordova;
         if (!cordova) return;
 
-        let browser: any;
-        cordova.plugins.browsertab.isAvailable((result: any) => {
-            if (!result) {
-                browser = cordova.InAppBrowser.open(authEndpoint, `_system`, `location=no,zoom=no`);
-            } else {
-                cordova.plugins.browsertab.openUrl(`${authEndpoint}/?ua=${CUSTOM_UA}`, (successResp: any) => { console.log(successResp); }, (failureResp: any) => {
-                    console.error(`no browser tab available`);
-                    console.error(failureResp);
-                });
+        cordova.plugins.browsertab.openUrl(
+            `${authEndpoint}/?ua=${CUSTOM_UA}`,
+            (successResp: any) => { console.log(successResp) },
+            (failureResp: any) => {
+                console.error("no browser tab available");
+                console.error(failureResp);
             }
-        });
-
-        const onExit = () => {
-            actions?.refreshAuthenticationToken();
-        };
-
-        // params = InAppBrowserEvent
-        const onMessage = (params: any) => {
-            const messageData = params.data;
-            if (messageData.message === `message`) {
-                actions?.refreshAuthenticationToken();
-
-                browser.close();
-            }
-        };
-
-        if (browser) {
-            browser.addEventListener(`exit`, onExit, false);
-            browser.addEventListener(`message`, onMessage, false);
-        }
+        );
     }, [
         key,
         authenticated,
