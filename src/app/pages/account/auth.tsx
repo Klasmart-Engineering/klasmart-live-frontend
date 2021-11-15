@@ -83,14 +83,10 @@ export function Auth ({ useInAppBrowser }: Props) {
         const cordova = (window as any).cordova;
         if (!cordova) return;
 
-        cordova.plugins.browsertab.openUrl(
-            `${authEndpoint}/?ua=${CUSTOM_UA}`,
-            (successResp: any) => { console.log(successResp) },
-            (failureResp: any) => {
-                console.error("no browser tab available");
-                console.error(failureResp);
-            }
-        );
+        cordova.plugins.browsertab.openUrl(`${authEndpoint}/?ua=${CUSTOM_UA}`, (successResp: any) => { console.log(successResp); }, (failureResp: any) => {
+            console.error(`no browser tab available`);
+            console.error(failureResp);
+        });
     }, [
         key,
         authenticated,
