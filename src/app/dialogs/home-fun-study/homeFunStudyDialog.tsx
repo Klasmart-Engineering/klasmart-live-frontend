@@ -29,7 +29,6 @@ import {
     validateFileType,
 } from "../../utils/fileUtils";
 import { lockOrientation } from "../../utils/screenUtils";
-import { formatDueDate } from "../../utils/timeUtils";
 import { BottomSelector } from "./bottomSelector";
 import { CommentDialog } from "./commentDialog";
 import { SupportFileInfo } from "./supportFileInfo";
@@ -39,6 +38,7 @@ import {
 } from "@/app/data/user/atom";
 import { downloadDataBlob } from "@/app/utils/requestUtils";
 import { useHttpEndpoint } from "@/providers/region-select-context";
+import { fromSecondsToMilliseconds } from "@/utils/utils";
 import {
     Box,
     Button,
@@ -78,7 +78,9 @@ import React,
     useState,
 } from "react";
 import {
+    FormattedDate,
     FormattedMessage,
+    FormattedTime,
     useIntl,
 } from "react-intl";
 import { useRecoilState } from "recoil";
@@ -1127,8 +1129,17 @@ function HomeFunStudyContainer ({
                         <Typography
                             variant="body2"
                             color="textSecondary">
-                            {studyInfo?.due_at && studyInfo.due_at !== 0 ? formatDueDate(studyInfo.due_at) :
-                                <FormattedMessage id={`label_not_defined`}/>}
+                            {studyInfo?.due_at && studyInfo.due_at !== 0 ? <>
+                                <FormattedTime value={fromSecondsToMilliseconds(studyInfo.due_at)} />, <FormattedDate
+                                    value={fromSecondsToMilliseconds(studyInfo.due_at)}
+                                    day= "numeric"
+                                    month= "long"
+                                    year= "numeric"
+                                    weekday= "long"
+                                />
+                            </> :
+                                <FormattedMessage id={`label_not_defined`}/>
+                            }
                         </Typography>
                     </Box>
                 </Grid>

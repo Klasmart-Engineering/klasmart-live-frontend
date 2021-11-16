@@ -111,7 +111,6 @@
     "@types/react-redux": "^7.1.11",
     "callstats-js": "^3.68.1",
     "clsx": "^1.1.1",
-    "dateformat": "^4.5.1",
     "graphql": "^15.5.0",
     "graphql-request": "^2.0.0",
     "iframe-resizer-react": "^1.1.0",
