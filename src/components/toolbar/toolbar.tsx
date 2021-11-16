@@ -13,6 +13,7 @@ import GlobalActionsMenu from "./toolbarMenus/globalActionsMenu/globalActionsMen
 import LessonPlanMenu from "./toolbarMenus/lessonPlanMenu/lessonPlanMenu";
 import ViewModesMenu from "./toolbarMenus/viewModesMenu/viewModesMenu";
 import { useMuteMutation } from "@/data/sfu/mutations/useMuteMutation";
+import useCordovaObservePause from "@/app/platform/cordova-observe-pause";
 import { useSessionContext } from "@/providers/session-context";
 import {
     MuteNotification,
@@ -137,26 +138,34 @@ function Toolbar () {
 
     const [ muteMutation ] = useMuteMutation();
 
-    function toggleOutboundAudioState () {
+    async function setOutboundAudioState (isMicOn: boolean) {
         const notification: MuteNotification = {
             roomId,
             sessionId,
-            audio: !micOn,
+            audio: isMicOn,
         };
         return muteMutation({
             variables: notification,
         });
     }
 
-    function toggleOutboundVideoState () {
+    async function setOutboundVideoState (isCamOn: boolean) {
         const notification: MuteNotification = {
             roomId,
             sessionId,
-            video: !camOn,
+            video: isCamOn,
         };
         return muteMutation({
             variables: notification,
         });
+    }
+
+    async function toggleOutboundAudioState () {
+        await setOutboundAudioState(!micOn);
+    }
+
+    async function toggleOutboundVideoState () {
+        await setOutboundVideoState(!camOn);
     }
 
     function endCall () {
@@ -183,6 +192,18 @@ function Toolbar () {
     useEffect(() => {
         setCamOn(webrtc.isVideoEnabledByProducer(sessionId) && !webrtc.isVideoDisabledLocally(sessionId));
     }, [ webrtc.isVideoEnabledByProducer(sessionId), webrtc.isVideoDisabledLocally(sessionId) ]);
+
+    async function onPauseStateChanged (isPaused: boolean) {
+        if (isPaused) {
+            await setOutboundAudioState(false);
+            await setOutboundVideoState(false);
+        }else{
+            await setOutboundAudioState(true);
+            await setOutboundVideoState(true);
+        }
+    }
+
+    useCordovaObservePause(onPauseStateChanged);
 
     return (
         <>
