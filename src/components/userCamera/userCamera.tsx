@@ -95,7 +95,7 @@ function UserCamera (props: UserCameraType) {
     const [ speakingActivity, setSpeakingActivity ] = useState(0);
 
     const [ camOn, setCamOn ] = useState(true);
-    const { cameraStream, refreshCameras } = useCameraContext();
+    const { cameraStream } = useCameraContext();
     const {
         camera,
         setCamera,
@@ -113,23 +113,10 @@ function UserCamera (props: UserCameraType) {
     const videoRef = useRef<HTMLVideoElement>(null);
 
     useEffect(() => {
-        function onResume () {
-            if(!userCamera) return;
-
-            if(!userCamera.active){
-                refreshCameras();
-            }
+        if(isSelf){
+            setCamera(cameraStream);
         }
-
-        document.addEventListener(`resume`, onResume, false);
-        return () => {
-            window.removeEventListener(`resume`, onResume, false);
-        };
-    }, [ userCamera?.active ]);
-
-    useEffect(() => {
-        setCamera(cameraStream);
-    }, [ cameraStream ]);
+    }, [ cameraStream, isSelf ]);
 
     function audioDetector (stream:any) {
         const audioContext = new AudioContext();
