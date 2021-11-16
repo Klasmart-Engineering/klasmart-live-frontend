@@ -63,8 +63,6 @@ import {
     useSetRecoilState,
 } from "recoil";
 
-const dateFormat = require(`dateformat`);
-
 // NOTE: China API server(Go lang) accept 10 digits timestamp
 const now = new Date();
 const todayTimeStamp = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime() / 1000;
