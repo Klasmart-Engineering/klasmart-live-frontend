@@ -13,19 +13,15 @@ import {
     IconButton,
     makeStyles,
     Theme,
-    Typography,
 } from "@material-ui/core";
 import { VolumeMute as AudioOffIcon } from "@styled-icons/boxicons-regular/VolumeMute";
 import React,
 {
     useCallback,
-    useContext,
     useEffect,
     useRef,
     useState,
 } from "react";
-import { useHttpEndpoint } from "@/providers/region-select-context";
-import { getContentHref } from "@/utils/contentUtils";
 
 interface VideoSynchronize {
     src?: string;
@@ -84,6 +80,22 @@ const createHlsDashUrlFromSrc = (src: string): string[] => {
     return urls;
 };
 
+// Generate multiple playable links (Not sure of it current usage so disabled it to fix KLL-1899)
+const enableMultiVideoSources = false;
+
+const handleVideoSources = (src:string, setVideoSources:React.Dispatch<React.SetStateAction<string | string[] | undefined>>) => {
+    if(enableMultiVideoSources){
+        const sources = createHlsDashUrlFromSrc(src);
+        sources.push(src);
+        const playable = sources.filter((s) => ReactPlayer.canPlay(s));
+        if (playable.length > 0) {
+            setVideoSources(playable[0]);
+        }
+    }else{
+        setVideoSources(src);
+    }
+};
+
 // Reference: https://stackoverflow.com/a/23522755
 const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
@@ -106,10 +118,9 @@ export function ReplicaMedia (props: React.VideoHTMLAttributes<HTMLMediaElement>
     const reactPlayerRef = useRef<ReactPlayer>(null);
 
     const [ videoSources, setVideoSources ] = useState<
-        string | undefined
+        string | string[] | undefined
     >(undefined);
     const [ videoReady, setVideoReady ] = useState<boolean>(false);
-    const contentEndpoint = useHttpEndpoint("live");
 
     const reactPlayerError = useCallback((reason) => {
         // NOTE: Fallback to original src if there's an error.
@@ -164,14 +175,7 @@ export function ReplicaMedia (props: React.VideoHTMLAttributes<HTMLMediaElement>
                 srcRef.current = src;
 
                 if (type !== MaterialTypename.AUDIO) {
-                    const sources = createHlsDashUrlFromSrc(src);
-
-                    sources.push(src);
-
-                    const playable = sources.filter((s) => ReactPlayer.canPlay(s));
-                    if (playable.length > 0) {
-                        setVideoSources(playable[0]);
-                    }
+                    handleVideoSources(src, setVideoSources);
                 } else {
                     setVideoSources(undefined);
                 }
@@ -230,12 +234,6 @@ export function ReplicaMedia (props: React.VideoHTMLAttributes<HTMLMediaElement>
             video.pause();
         }
     }, [ ref.current ]);
-
-    useEffect(() => {
-        if (!videoSources || videoSources.includes(contentEndpoint)) return;
-        const contentHref = getContentHref(videoSources, contentEndpoint);
-        setVideoSources(contentHref);
-    }, [ videoSources, contentEndpoint ]);
 
     if (loading) {
         return <CircularProgress />;
@@ -383,14 +381,7 @@ export function ReplicatedMedia (props: React.VideoHTMLAttributes<HTMLMediaEleme
         setPlaying(false);
 
         if (type !== MaterialTypename.AUDIO && src) {
-            const sources = createHlsDashUrlFromSrc(src);
-
-            sources.push(src);
-
-            const playable = sources.filter((s) => ReactPlayer.canPlay(s));
-            if (playable.length > 0) {
-                setVideoSources(playable[0]);
-            }
+            handleVideoSources(src, setVideoSources);
         } else {
             setVideoSources(undefined);
         }
