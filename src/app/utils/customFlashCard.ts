@@ -3,7 +3,12 @@ import {
     useCordovaSystemContext,
 } from "@/app/context-provider/cordova-system-context";
 import { injectIframeScript } from "@/app/utils/injectIframeScript";
-import { useEffect } from "react";
+import { LoadStatus } from "@/components/interactiveContent/recordediframe";
+import { useSnackbar } from "kidsloop-px";
+import {
+    useEffect,
+    useState,
+} from "react";
 
 export enum H5PClassName {
     H5P_FLASH_CARDS = `h5p-flashcards`,
@@ -27,27 +32,46 @@ export enum FlashCardAction {
 }
 
 export interface CustomFlashCardProps {
-    iframe: HTMLIFrameElement | null;
+    iframeID: string;
+    loadStatus: LoadStatus;
+    openLoadingDialog: boolean;
+    setOpenLoadingDialog: (value: boolean) => void;
 }
 
-export function useCustomFlashCard ({ iframe } : CustomFlashCardProps) {
+export function useCustomFlashCard ({
+    iframeID, loadStatus, openLoadingDialog, setOpenLoadingDialog,
+} : CustomFlashCardProps) {
     const { requestPermissions } = useCordovaSystemContext();
+    const { enqueueSnackbar } = useSnackbar();
+    const [ iframe, setIframe ] = useState<HTMLIFrameElement>();
+    const [ shouldCustomFlashCard, setShouldCustomFlashCard ] = useState(false);
+
+    useEffect(() => {
+        if(shouldCustomFlashCard && !openLoadingDialog) {
+            setOpenLoadingDialog(true);
+        }
+    }, [ shouldCustomFlashCard, openLoadingDialog ]);
 
     useEffect(() => {
         if (!process.env.IS_CORDOVA_BUILD) return;
-        if (!iframe) return;
 
-        function checkIfFlashCardContent () {
-            const flashCardElement = iframe?.contentDocument?.querySelector(`.${H5PClassName.H5P_FLASH_CARDS}`);
+        function checkIfFlashCardContent (iframe: HTMLIFrameElement) {
+            const flashCardElement = iframe.contentDocument?.querySelector(`.${H5PClassName.H5P_FLASH_CARDS}`);
             return !!flashCardElement;
         }
 
-        function onIFrameLoad () {
-            if (!iframe) return;
-            if(checkIfFlashCardContent()){
+        if(loadStatus === LoadStatus.Finished) {
+            const iframe = window.document.getElementById(iframeID) as HTMLIFrameElement;
+            setIframe(iframe);
+            if(iframe && checkIfFlashCardContent(iframe)){
+                setShouldCustomFlashCard(true);
                 injectIframeScript(iframe, `flashcard`);
             }
         }
+    }, [ loadStatus ]);
+
+    useEffect(() => {
+        if (!process.env.IS_CORDOVA_BUILD) return;
 
         function startListen () {
             const speechRecognitionOptions = {
@@ -63,6 +87,13 @@ export function useCustomFlashCard ({ iframe } : CustomFlashCardProps) {
                 }, `*`);
             }, (err: any) => {
                 console.error(err);
+                enqueueSnackbar(err, {
+                    variant: `error`,
+                    anchorOrigin: {
+                        horizontal: `center`,
+                        vertical: `bottom`,
+                    },
+                });
             }, speechRecognitionOptions);
         }
 
@@ -76,6 +107,8 @@ export function useCustomFlashCard ({ iframe } : CustomFlashCardProps) {
                 iframe?.contentWindow?.postMessage({
                     action: FlashCardAction.START_CUSTOM_FLASHCARDS,
                 }, `*`);
+                setShouldCustomFlashCard(false);
+                setOpenLoadingDialog(false);
                 break;
             case FlashCardAction.START_LISTEN:
                 startListen();
@@ -109,7 +142,6 @@ export function useCustomFlashCard ({ iframe } : CustomFlashCardProps) {
             }
         }
 
-        iframe.onload = onIFrameLoad;
         window.addEventListener(`message`, onMessage);
         return () => {
             window.removeEventListener(`message`, onMessage);

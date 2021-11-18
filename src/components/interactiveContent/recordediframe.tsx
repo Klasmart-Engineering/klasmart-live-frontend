@@ -44,7 +44,7 @@ export interface Props {
     contentHref: string;
 }
 
-enum LoadStatus {
+export enum LoadStatus {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     Error,
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -117,7 +117,10 @@ export function RecordedIframe (props: Props): JSX.Element {
     ]);
 
     useCustomFlashCard({
-        iframe: iframeRef.current,
+        iframeID: `recordediframe`,
+        loadStatus:  loadStatus,
+        openLoadingDialog: openDialog,
+        setOpenLoadingDialog: setOpenDialog,
     });
 
     useEffect(() => {
