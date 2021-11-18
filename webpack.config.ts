@@ -66,19 +66,8 @@ const webpackConfig: Configuration = {
                 ],
             },
             {
-                test: /\.(gif|png|jpe?g|svg)$/i,
-                use: [
-                    `file-loader`,
-                    {
-                        loader: `image-webpack-loader`,
-                        options: {
-                            pngquant: {
-                                quality: [ 0.65, 0.90 ],
-                                speed: 4,
-                            },
-                        },
-                    },
-                ],
+                test: /\.(png|svg|jpg|jpeg|gif)$/i,
+                type: `asset/resource`,
             },
             {
                 test: /\.(woff|woff2|eot|ttf|otf)$/i,
