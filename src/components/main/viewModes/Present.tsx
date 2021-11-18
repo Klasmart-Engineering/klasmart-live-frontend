@@ -9,11 +9,11 @@ import { hasControlsState } from "@/store/layoutAtoms";
 import { useContentToHref } from "@/utils/contentUtils";
 import React,
 { useContext } from "react";
-import { useRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
 
 function Present () {
     const { content } = useContext(RoomContext);
-    const [ hasControls, setHasControls ] = useRecoilState(hasControlsState);
+    const hasControls = useRecoilValue(hasControlsState);
     const [ contentHref ] = useContentToHref(content);
 
     // IF TEACHER
@@ -32,8 +32,7 @@ function Present () {
             <PreviewPlayer
                 streamId={content?.contentId}
                 container="activity-view-container"
-                width="100%"
-                height="100%" />
+            />
         );
     }
 
