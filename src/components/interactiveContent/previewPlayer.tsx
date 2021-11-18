@@ -15,8 +15,6 @@ import { FormattedMessage } from "react-intl";
 
 export interface Props {
     streamId: string;
-    width: any;
-    height: any;
     frameProps?: React.DetailedHTMLProps<React.IframeHTMLAttributes<HTMLIFrameElement>, HTMLIFrameElement>;
     container?: any;
     loadingStreamId?: boolean;

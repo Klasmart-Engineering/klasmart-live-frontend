@@ -29,7 +29,7 @@ import React,
     useState,
 } from "react";
 import { useIntl } from "react-intl";
-import { useRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -95,10 +95,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         fontWeight: 600,
         borderRadius: `0 10px 0 0`,
     },
-    studentWrap: {
-        // position: `relative`,
-        // width: `100%`,
-    },
+    studentWrap: {},
     studentWrapItem: {
         position: `absolute`,
         top: 0,
@@ -192,10 +189,8 @@ export default Observe;
 function StudentPreviewCard ({ session }: { session: Session }) {
     const classes = useStyles();
     const cardConRef = useRef<HTMLDivElement>(null);
-    const [ width, setWidth ] = useState<number>(0);
-    const [ height, setHeight ] = useState<number>(0);
     const [ loadingStreamId, setLoadingStreamId ] = useState<boolean>(true);
-    const [ isShowContentLoading, setIsShowContentLoading ] = useRecoilState(isShowContentLoadingState);
+    const isShowContentLoading = useRecoilValue(isShowContentLoadingState);
 
     const filterGroups = useMemo(() => {
         return [ session.id ];
@@ -205,15 +200,6 @@ function StudentPreviewCard ({ session }: { session: Session }) {
         await sleep(1000); // Debug await (KLL-1025)
         setLoadingStreamId(false);
     };
-
-    useEffect(() => {
-        if (cardConRef.current) {
-            const contWidth = cardConRef.current.getBoundingClientRect().width;
-            const contHeight = cardConRef.current.getBoundingClientRect().height;
-            setWidth(contWidth);
-            setHeight(contHeight);
-        }
-    }, []);
 
     useEffect(() => {
         setLoadingStreamId(true);
@@ -244,8 +230,6 @@ function StudentPreviewCard ({ session }: { session: Session }) {
                         </div>
                         <PreviewPlayer
                             loadingStreamId={loadingStreamId}
-                            width={width}
-                            height={height}
                             container={`observe:${session.streamId}`}
                             streamId={session?.streamId} />
                     </div>
