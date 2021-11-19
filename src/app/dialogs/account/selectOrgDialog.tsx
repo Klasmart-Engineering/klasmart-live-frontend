@@ -1,13 +1,11 @@
 import { Header } from "../../components/layout/header";
-import { isRoleTeacher } from "../../context-provider/authentication-context";
 import { dialogsState } from "../../model/appModel";
 import { ParentalGate } from "../parentalGate";
-import { useSignOut } from "./useSignOut";
 import { OrganizationList } from "@/app/components/organization/organizationList";
+import { useAuthenticationContext } from "@/app/context-provider/authentication-context";
+import { useServices } from "@/app/context-provider/services-provider";
 import { useSelectedOrganization } from "@/app/data/user/atom";
-import { ReadMembershipDto } from "@/app/data/user/dto/readMembershipDto";
-import { ReadOrganizationDto } from "@/app/data/user/dto/readOrganizationDto";
-import { RoleStatus } from "@/app/data/user/dto/readRoleDto";
+import { EntityStatus } from "@/app/data/user/dto/sharedDto";
 import { useMeQuery } from "@/app/data/user/queries/meQuery";
 import { useDisplayPrivacyPolicy } from "@/app/utils/privacyPolicyUtils";
 import Dialog from '@material-ui/core/Dialog';
@@ -51,27 +49,12 @@ export function useShouldSelectOrganization () {
 
     const [ selectedOrganization, setSelectedOrganization ] = useSelectedOrganization();
 
+    const activeOrganizations = useMemo(() => meData?.me?.organizationsWithPermission.filter((membership) => membership.status === EntityStatus.ACTIVE) ?? [], [ meData ]);
+
     const setErrorState = (errorCode: number | string) => {
         setShouldSelectOrganization(false);
         setHasStudentRole(null);
         setOrganizationSelectErrorCode(errorCode);
-    };
-
-    const verifyMembershipStudentRole = (membership: ReadMembershipDto) => {
-        if (!membership.roles) return false;
-
-        const roles = membership.roles.filter(r => r.status === RoleStatus.ACTIVE);
-        if (roles.length === 1) {
-            if (isRoleTeacher(roles[0].role_name ?? ``)) {
-                return false;
-            }
-        } else if (roles.length > 1) {
-            if (!roles.some(role => !isRoleTeacher(role.role_name ?? ``))) {
-                return false;
-            }
-        }
-
-        return true;
     };
 
     useEffect(() => {
@@ -85,9 +68,8 @@ export function useShouldSelectOrganization () {
 
         // NOTE: User already selected organization.
         if (selectedOrganization) {
-            const selected = meData.me.memberships?.find(membership =>
-                membership.organization_id === selectedOrganization?.organization_id);
-            if (selected && verifyMembershipStudentRole(selected)) {
+            const selected = activeOrganizations.find((membership) => membership.organization.organization_id === selectedOrganization?.organization_id);
+            if (selected) {
                 setHasStudentRole(true);
                 setShouldSelectOrganization(false);
                 setOrganizationSelectErrorCode(null);
@@ -98,19 +80,12 @@ export function useShouldSelectOrganization () {
         }
 
         // 1. information exists
-        if (!meData.me.memberships?.length) { // 2. User has no organization.
+        if (!activeOrganizations.length) { // 2. User has no organization.
             // If a teacher accesses there will be no organization, because we only fetch organizations with student permissions.
             setErrorState(`403x02`); //Students Only
-        } else if (meData.me.memberships?.length === 1) { // 2. User has 1 organization
+        } else if (activeOrganizations.length === 1) { // 2. User has 1 organization
             setShouldSelectOrganization(false);
-
-            const membership = meData.me.memberships[0];
-            if (!verifyMembershipStudentRole(membership)) {
-                setHasStudentRole(false);
-                setOrganizationSelectErrorCode(`403x01`); //Access Restricted
-                return;
-            }
-
+            const membership = activeOrganizations[0];
             setOrganizationSelectErrorCode(null);
             setHasStudentRole(true);
             setSelectedOrganization(membership.organization);
@@ -146,7 +121,7 @@ export function useShouldSelectOrganization () {
 export function SelectOrgDialog () {
     const theme = useTheme();
     const { noPadding } = useStyles();
-
+    const { actions } = useAuthenticationContext();
     const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
     const [ selectedOrganization, setSelectedOrganization ] = useSelectedOrganization();
     const { data: meData } = useMeQuery();
@@ -155,16 +130,8 @@ export function SelectOrgDialog () {
 
     const displayPrivacyPolicy = useDisplayPrivacyPolicy();
 
-    const organizations = useMemo(() => {
-        if (!meData?.me?.memberships) return [];
-        const memberships = meData.me.memberships;
-
-        return memberships
-            .map(membership => membership.organization)
-            .filter(organization => organization) as ReadOrganizationDto[];
-    }, [ meData ]);
-
-    const { signOut } = useSignOut();
+    const activeOrganizationMemberships = useMemo(() => meData?.me?.organizationsWithPermission.filter((membership) => membership.status === EntityStatus.ACTIVE) ?? [], [ meData ]);
+    const activeOrganizations = useMemo(() => activeOrganizationMemberships.map((membership) => membership.organization), [ activeOrganizationMemberships ]);
 
     useEffect(() => {
         setParentalLock(false);
@@ -227,7 +194,7 @@ export function SelectOrgDialog () {
                     </Typography>
                 </Grid>
                 <OrganizationList
-                    organizations={organizations}
+                    organizations={activeOrganizations}
                     selectedOrganization={selectedOrganization}
                     onClick={org => setSelectedOrganization(org)}
                 />
@@ -259,7 +226,7 @@ export function SelectOrgDialog () {
                     <Link
                         href="#"
                         variant="subtitle2"
-                        onClick={() => signOut()}
+                        onClick={() => actions?.signOut()}
                     >
                         <Typography
                             align="center"

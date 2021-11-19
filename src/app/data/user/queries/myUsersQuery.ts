@@ -8,13 +8,20 @@ import {
 } from "@apollo/client";
 
 const QUERY_MY_USERS = gql`
-    query {
+    query queryMyUsers {
         my_users {
             user_id
             username
             given_name
             family_name
             date_of_birth
+            organizationsWithPermission (permission_name: "attend_live_class_as_a_student_187") {
+                status
+                organization {
+                    organization_id
+                    organization_name
+                }
+            }
         }
     }
 `;

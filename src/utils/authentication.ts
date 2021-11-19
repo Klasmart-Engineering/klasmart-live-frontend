@@ -1,6 +1,6 @@
 
 let refreshRequestMutex: Promise<boolean> | undefined;
-export async function refreshAuthenticationCookie (): Promise<boolean> {
+export function refreshAuthenticationCookie (): Promise<boolean> {
     if (refreshRequestMutex) { return refreshRequestMutex; }
     // eslint-disable-next-line no-async-promise-executor
     return refreshRequestMutex = new Promise<boolean>(async (resolve) => {

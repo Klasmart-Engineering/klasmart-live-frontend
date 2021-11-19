@@ -1,21 +1,22 @@
-import { setUserAgent } from "../../store/reducers/session";
-import {
-    createDefaultStore,
-    State,
-} from "../../store/store";
-import { themeProvider } from "../../themeProvider";
-import { CompositionRoot } from "../context-provider/composition-root";
-import { CordovaSystemProvider } from "../context-provider/cordova-system-context";
-import { PopupProvider } from "../context-provider/popup-context";
-import { App } from "../cordova-app";
-import { UserServiceApolloClient } from "../data/user/userServiceApolloClient";
+import CmsApiClientProvider from "@/app/context-provider/CmsApiClientProvider";
+import { CompositionRoot } from "@/app/context-provider/composition-root";
+import { CordovaSystemProvider } from "@/app/context-provider/cordova-system-context";
+import { PopupProvider } from "@/app/context-provider/popup-context";
+import { App } from "@/app/cordova-app";
+import { UserServiceApolloClient } from "@/app/data/user/userServiceApolloClient";
+import { getIntl } from "@/app/localization/localeCodes";
 import {
     errorState,
     historyState,
     localeState,
-} from "../model/appModel";
-import { useLocaleCookie } from "../utils/localeCookie";
-import { getIntl } from "@/app/localization/localeCodes";
+} from "@/app/model/appModel";
+import { setUserAgent } from "@/store/reducers/session";
+import {
+    createDefaultStore,
+    State,
+} from "@/store/store";
+import { themeProvider } from "@/themeProvider";
+import { ReactQueryDevtools } from "@kidsloop/cms-api-client";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { ThemeProvider } from "@material-ui/core/styles";
 import { createHashHistory } from 'history';
@@ -56,10 +57,6 @@ function Entry () {
     const dispatch = useDispatch();
     const themeMode = useSelector((state: State) => state.control.themeMode);
 
-    /* TODO (Gael): I don't know what this things does
-    const [ language ] = useLocaleCookie();
-    */
-
     const [ locale ] = useRecoilState(localeState);
     const [ , setError ] = useRecoilState(errorState);
     const [ , setHistory ] = useRecoilState(historyState);
@@ -98,16 +95,19 @@ function Entry () {
         <RawIntlProvider value={language}>
             <CordovaSystemProvider history={history}>
                 <CompositionRoot sessionId={sessionId}>
-                    <UserServiceApolloClient>
-                        <ThemeProvider theme={themeProvider(locale.languageCode, themeMode)}>
-                            <SnackbarProvider>
-                                <CssBaseline />
-                                <PopupProvider>
-                                    <App history={history} />
-                                </PopupProvider>
-                            </SnackbarProvider>
-                        </ThemeProvider>
-                    </UserServiceApolloClient>
+                    <CmsApiClientProvider>
+                        <UserServiceApolloClient>
+                            <ThemeProvider theme={themeProvider(locale.languageCode, themeMode)}>
+                                <SnackbarProvider >
+                                    <CssBaseline />
+                                    <PopupProvider>
+                                        <App history={history} />
+                                    </PopupProvider>
+                                </SnackbarProvider>
+                            </ThemeProvider>
+                        </UserServiceApolloClient>
+                        {process.env.NODE_ENV === `development` && <ReactQueryDevtools />}
+                    </CmsApiClientProvider>
                 </CompositionRoot>
             </CordovaSystemProvider>
         </RawIntlProvider>
@@ -120,7 +120,8 @@ function main () {
         <Provider store={store}>
             <PersistGate
                 loading={null}
-                persistor={persistor}>
+                persistor={persistor}
+            >
                 <RecoilRoot>
                     <Entry />
                 </RecoilRoot>

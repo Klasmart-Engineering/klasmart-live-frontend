@@ -140,14 +140,14 @@ export function CordovaSystemProvider ({ children, history }: Props) {
         isIOS,
         isAndroid,
     } = useCordovaInitialize(false, () => {
-        const isRootPage = window.location.hash.includes(`/schedule`) || window.location.hash === `#/`;
-        if (window.location.hash.includes(`/room`)) {
+        const isRootPage = window.location.hash === `#/schedule` || window.location.hash === `#/`;
+        if (window.location.hash === `#/room`) {
             restart();
         } else if (isRootPage) {
-            if(onBackQueue.length > 0){
+            if (onBackQueue.length > 0) {
                 const latestOnBackItem = onBackQueue[onBackQueue.length - 1];
                 latestOnBackItem.onBack();
-                if(latestOnBackItem.isAutoRemove === undefined || latestOnBackItem.isAutoRemove){
+                if (latestOnBackItem.isAutoRemove === undefined || latestOnBackItem.isAutoRemove) {
                     removeOnBack(latestOnBackItem.id);
                 }
                 return;

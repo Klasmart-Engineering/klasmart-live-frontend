@@ -1,6 +1,4 @@
-import { enableFullScreen } from "../utils/screenUtils";
 import useVideoLayoutUpdate from "./../utils/video-layout-update";
-import { sleep } from "@/utils/utils";
 import {
     useCallback,
     useEffect,
@@ -113,10 +111,7 @@ const useCordovaInitialize = (backExitApplication?: boolean, callbackBackButton?
             if (!backExitApplication) {
                 e.preventDefault();
             }
-
-            if (callbackBackButton) {
-                callbackBackButton();
-            }
+            callbackBackButton?.();
         };
 
         document.addEventListener(`backbutton`, onBackButton, false);

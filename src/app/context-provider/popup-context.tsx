@@ -19,7 +19,7 @@ type Props = {
 
 type VariantType = 'error' | 'detailError' | 'confirm' | 'detailConfirm' | 'info'
 
-type PopupState = {
+export type PopupState = {
     variant: VariantType;
     open?: boolean;
     title: string;

@@ -8,28 +8,20 @@ import {
 } from "@apollo/client";
 
 const QUERY_ME = gql`
-    query {
+    query queryMe {
         me {
             user_id
             username
             given_name
             family_name
             date_of_birth
-            memberships {
-                organization_id
+            organizationsWithPermission(
+                permission_name: "attend_live_class_as_a_student_187"
+            ) {
                 status
-                roles {
-                    role_id
-                    role_name
-                    status
-                }
                 organization {
                     organization_id
                     organization_name
-                    branding {
-                        iconImageURL
-                        primaryColor
-                    }
                 }
             }
         }

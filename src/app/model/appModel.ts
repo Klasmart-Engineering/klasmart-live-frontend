@@ -18,11 +18,6 @@ export enum LayoutMode {
     DEFAULT, CLASSROOM
 }
 
-export const isProcessingRequestState = atom({
-    key: `isProcessingRequest`,
-    default: false,
-});
-
 export const dialogsState = atom({
     key: `dialogs`,
     default: {

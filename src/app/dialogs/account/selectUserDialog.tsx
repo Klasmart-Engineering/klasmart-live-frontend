@@ -1,9 +1,6 @@
-import { Header } from "../../components/layout/header";
-import { useAuthenticationContext } from "../../context-provider/authentication-context";
-import { dialogsState } from "../../model/appModel";
-import { ParentalGate } from "../parentalGate";
-import { useSignOut } from "./useSignOut";
+import { Header } from "@/app/components/layout/header";
 import { UserList } from "@/app/components/user/userList";
+import { useAuthenticationContext } from "@/app/context-provider/authentication-context";
 import { useServices } from "@/app/context-provider/services-provider";
 import {
     useSelectedUser,
@@ -12,7 +9,10 @@ import {
 import { ReadUserDto } from "@/app/data/user/dto/readUserDto";
 import { useMeQuery } from "@/app/data/user/queries/meQuery";
 import { useMyUsersQuery } from "@/app/data/user/queries/myUsersQuery";
+import { ParentalGate } from "@/app/dialogs/parentalGate";
+import { dialogsState } from "@/app/model/appModel";
 import { useDisplayPrivacyPolicy } from "@/app/utils/privacyPolicyUtils";
+import { useQueryClient } from "@kidsloop/cms-api-client";
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -33,10 +33,7 @@ import React,
     useMemo,
     useState,
 } from "react";
-import {
-    FormattedMessage,
-    useIntl,
-} from "react-intl";
+import { FormattedMessage } from "react-intl";
 import {
     useRecoilValue,
     useSetRecoilState,
@@ -65,8 +62,12 @@ export function useShouldSelectUser () {
         data: meData,
         loading: meLoading,
         refetch,
-    } = useMeQuery();
-    const { data: myUsersData, loading: myUsersLoading } = useMyUsersQuery();
+    } = useMeQuery({
+        skip: !authenticated,
+    });
+    const { data: myUsersData, loading: myUsersLoading } = useMyUsersQuery({
+        skip: !authenticated,
+    });
     const loading = useMemo(() => meLoading || myUsersLoading, [ meLoading, myUsersLoading ]);
 
     const [ selectedUser, setSelectedUser ] = useSelectedUser();
@@ -104,13 +105,14 @@ export function useShouldSelectUser () {
     }, [ setSelectedUser ]);
 
     useEffect(() => {
-        if (!selectedUser || meLoading) return;
+        if (!selectedUser || meLoading || !authenticated) return;
 
         if (selectedUser.user_id !== meData?.me?.user_id) {
             console.log(`switching to user ${selectedUser.user_id}, meLoading: ${meLoading}`);
             switchUser(selectedUser);
         }
     }, [
+        authenticated,
         selectedUser,
         meData,
         selectUser,
@@ -153,6 +155,7 @@ export function SelectUserDialog () {
     const theme = useTheme();
     const { noPadding } = useStyles();
 
+    const { actions } = useAuthenticationContext();
     const dialogs = useRecoilValue(dialogsState);
     const setDialogs = useSetRecoilState(dialogsState);
 
@@ -163,10 +166,11 @@ export function SelectUserDialog () {
     const [ parentalLock, setParentalLock ] = useState<boolean>(false);
 
     const displayPrivacyPolicy = useDisplayPrivacyPolicy();
-
-    const { signOut } = useSignOut();
+    const cmsQueryClient = useQueryClient();
 
     const selectUser = useCallback((user: ReadUserDto) => {
+        cmsQueryClient.getQueryCache().clear();
+        cmsQueryClient.getMutationCache().clear();
         console.log(`selecting user: ${user.user_id}`);
         setSelectedUser(user);
     }, [ setSelectedUser ]);
@@ -267,7 +271,7 @@ export function SelectUserDialog () {
                     <Link
                         href="#"
                         variant="subtitle2"
-                        onClick={() => signOut()}
+                        onClick={() => actions?.signOut()}
                     >
                         <Typography
                             align="center"

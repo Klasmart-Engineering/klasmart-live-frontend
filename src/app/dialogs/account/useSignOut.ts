@@ -14,10 +14,9 @@ export const useSignOut = () => {
     const setSelectedUser = useSetSelectedUser();
     const setSelectedOrganization = useSetSelectedOrganization();
 
-    const setAuth = useSetRecoilState(authState);
-
     const { actions } = useAuthenticationContext();
 
+    const setAuth = useSetRecoilState(authState);
     const setDialogs = useSetRecoilState(dialogsState);
 
     const handleSignOut = useCallback(() => {
