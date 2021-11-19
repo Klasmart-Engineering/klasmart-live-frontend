@@ -1,12 +1,10 @@
+import { Session } from "@/pages/utils";
 import { useSessionContext } from "@/providers/session-context";
 import { WebRTCContext } from "@/providers/WebRTCContext";
 import {
-    Grid,
     makeStyles,
     Theme,
     Typography,
-    useMediaQuery,
-    useTheme,
 } from "@material-ui/core";
 import amber from "@material-ui/core/colors/amber";
 import { MicMuteFill as MicDisabledIcon } from "@styled-icons/bootstrap/MicMuteFill";
@@ -34,16 +32,13 @@ const useStyles = makeStyles((theme: Theme) => ({
         justifyContent: `space-between`,
         textAlign:`left`,
     },
-    rootTeacher:{
-        "& $name":{
-            position: `absolute`,
-            left: `0`,
-            bottom: `0`,
-            borderRadius: `0 12px 0`,
-        },
-    },
+    rootTeacher:{},
     rootSmall:{},
     rootLarge:{
+        "& $nameContainer":{
+            position: `static`,
+            textAlign: `center`,
+        },
         "& $name":{
             position: `relative`,
             backgroundColor: `rgba(255,255,255,0.3)`,
@@ -62,25 +57,25 @@ const useStyles = makeStyles((theme: Theme) => ({
                     minWidth: `20px`,
                 },
             },
+
+            "&:after":{
+                content: `inherit`,
+            },
         },
     },
-    topCamera:{
-        textAlign: `center`,
-    },
-    bottomCamera:{
-        position: `relative`,
-        zIndex: 9,
+    nameContainer:{
+        position: `absolute`,
+        left: 0,
+        bottom: 0,
+        width: `100%`,
     },
     name: {
         color: `#fff`,
-        display: `inline-block`,
         verticalAlign: `bottom`,
         padding: `6px 10px`,
-        lineHeight: `1.2`,
         fontSize: `0.8em`,
         fontWeight: 600,
-        backgroundColor: `rgba(0, 0, 0, 0.25)`,
-        borderRadius: `0 12px 0`,
+        position: `relative`,
 
         "& > span": {
             marginRight: `5px`,
@@ -89,6 +84,17 @@ const useStyles = makeStyles((theme: Theme) => ({
                 minWidth: `11px`,
             },
         },
+
+        "&:after":{
+            content: `''`,
+            position: `absolute`,
+            bottom: 0,
+            left: 0,
+            height: `100%`,
+            width: `35%`,
+            background: `linear-gradient(90deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0) 100%)`,
+            zIndex: `-1`,
+        },
     },
     textOverflow: {
         display: `inline-block`,
@@ -96,8 +102,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         textOverflow: `ellipsis`,
         overflow: `hidden`,
         whiteSpace: `nowrap`,
-        boxSizing: `border-box`,
-        maxWidth: `138px`,
+        maxWidth: `calc(100% - 20px)`,
     },
     roles:{
         position: `absolute`,
@@ -139,85 +144,79 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface UserCameraDetailsType {
-    user: any;
+    user: Session;
     variant?: "medium" | "large" | "small";
-    speakingActivity?: number;
 }
 
 function UserCameraDetails (props: UserCameraDetailsType) {
     const {
         user,
         variant,
-        speakingActivity,
-
     } = props;
     const classes = useStyles();
-    const theme = useTheme();
-
     const [ micOn, setMicOn ] = useState(true);
-    const { sessionId } = useSessionContext();
     const webrtc = useContext(WebRTCContext);
-
-    const isSelf = user.id === sessionId ? true : false;
 
     useEffect(() => {
         setMicOn(webrtc.isAudioEnabledByProducer(user.id) && !webrtc.isAudioDisabledLocally(user.id));
     }, [ webrtc.isAudioEnabledByProducer(user.id), webrtc.isAudioDisabledLocally(user.id) ]);
 
-    if(user.isTeacher){
-        return(
-            <div className={clsx(classes.root, classes.rootTeacher, {
-                [classes.rootSmall]: variant === `small`,
-                [classes.rootLarge]: variant === `large`,
-            })}>
-                <div className={classes.topCamera}>
-                    <Typography className={classes.name}>{isSelf ? <span><FormattedMessage id="you"/></span> : <span className={classes.textOverflow}>{user.name}</span>} {!micOn && <MicDisabledIcon size="0.85em"/>}</Typography>
-                    <div className={classes.roles}>
-                        <TeacherIcon
-                            size="1em"
-                            className={classes.roleIcon}/>
-                        {user.isHost && <HasControlsIcon
-                            size="1em"
-                            className={`${classes.roleIcon} ${classes.roleHasControlsIcon}`}/>}
-                    </div>
-                </div>
-            </div>
-        );
-    }
-
     return (
-        <div
-            className={classes.root}>
-            <div className={classes.topCamera}></div>
-            <Grid
-                container
-                alignItems="center"
-                className={classes.bottomCamera}>
-                <Grid
-                    item
-                    className={classes.gridItem}>
-                    <Typography className={classes.name}>
-                        {isSelf ? <span><FormattedMessage id="you"/></span> : <span className={classes.textOverflow}>{user.name}</span>} {!micOn && <MicDisabledIcon size="0.85em"/>}
-                    </Typography>
-                </Grid>
-                {Boolean(speakingActivity) && speakingActivity  &&
-                    <Grid item>
-                        <div className={classes.speakingActivity}>
-                            <div style={{
-                                height: `${speakingActivity* 100 * 0.9}%`,
-                            }}></div>
-                            <div style={{
-                                height: `${speakingActivity* 100 * 1.8}%`,
-                            }}></div>
-                            <div style={{
-                                height: `${speakingActivity* 100 * 0.9}%`,
-                            }}></div>
-                        </div>
-                    </Grid>
-                }
-            </Grid>
+        <div className={clsx(classes.root, {
+            [classes.rootTeacher]: user.isTeacher,
+            [classes.rootSmall]: variant === `small`,
+            [classes.rootLarge]: variant === `large`,
+        })}>
+            {user.isTeacher && <UserRoles user={user} />}
+            <UserName
+                user={user}
+                micOn={micOn} />
         </div>
     );
 }
 
 export default UserCameraDetails;
+
+interface UserRolesType {
+    user: Session;
+}
+
+function UserRoles (props: UserRolesType){
+    const { user } = props;
+    const classes = useStyles();
+
+    return(
+        <div className={classes.roles}>
+            <TeacherIcon
+                size="1em"
+                className={classes.roleIcon} />
+            {user.isHost && <HasControlsIcon
+                size="1em"
+                className={`${classes.roleIcon} ${classes.roleHasControlsIcon}`} />}
+        </div>
+    );
+}
+
+interface UserNameType {
+    user: Session;
+    micOn?: boolean;
+}
+
+function UserName (props: UserNameType){
+    const { user, micOn } = props;
+    const classes = useStyles();
+
+    const { sessionId } = useSessionContext();
+    const isSelf = user.id === sessionId;
+
+    return(
+        <div className={classes.nameContainer}>
+            <Typography className={classes.name}>
+                <span className={classes.textOverflow}>
+                    {isSelf ? <FormattedMessage id="you"/> : user.name}
+                </span>
+                {!micOn && <MicDisabledIcon size="0.85em"/>}
+            </Typography>
+        </div>
+    );
+}
