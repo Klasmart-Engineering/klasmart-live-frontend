@@ -2,6 +2,7 @@ import NoCamera from "./noCamera";
 import UserCameraActions from "./userCameraActions";
 import UserCameraDetails from "./userCameraDetails";
 import ReactPlayer from "@/components/react-player";
+import { useSessions } from "@/data/live/state/useSessions";
 import { useCameraContext } from "@/providers/Camera";
 import { useSessionContext } from "@/providers/session-context";
 import { WebRTCContext } from "@/providers/WebRTCContext";
@@ -20,8 +21,6 @@ import React,
     useRef,
     useState,
 } from "react";
-import  vad  from "voice-activity-detection";
-import { useSessions } from "@/data/live/state/useSessions";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -65,10 +64,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     videoDisabled:{
         order: 109,
     },
-    speaking:{
-        order: 2,
-        boxShadow: `0px 0px 0px 2px #ffe000, 0px 6px 4px 1px rgb(255 224 0 / 10%)`,
-    },
 }));
 
 interface UserCameraType {
@@ -89,10 +84,6 @@ function UserCamera (props: UserCameraType) {
 
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
-
-    const enableSpeakingActivity = false;
-    const [ isSpeaking, setIsSpeaking ] = useState(false);
-    const [ speakingActivity, setSpeakingActivity ] = useState(0);
 
     const [ camOn, setCamOn ] = useState(true);
     const { cameraStream } = useCameraContext();
@@ -119,22 +110,6 @@ function UserCamera (props: UserCameraType) {
         }
     }, [ cameraStream, isSelf ]);
 
-    function audioDetector (stream:any) {
-        const audioContext = new AudioContext();
-
-        const options = {
-            minNoiseLevel: 0.3,
-            maxNoiseLevel: 0.7,
-            noiseCaptureDuration: 1500,
-            avgNoiseMultiplier: 0.3,
-            smoothingTimeConstant: 0.9,
-            onVoiceStart: function () { setIsSpeaking(true); },
-            onVoiceStop: function () { setIsSpeaking(false); },
-            onUpdate: function (val:any) { setSpeakingActivity(val); },
-        };
-        vad(audioContext, stream, options);
-    }
-
     useEffect(() => {
         if (audioRef.current) {
             audioRef.current.srcObject = userCamera ? userCamera : null;
@@ -153,15 +128,10 @@ function UserCamera (props: UserCameraType) {
         setCamOn(webrtc.isVideoEnabledByProducer(user.id) && !webrtc.isVideoDisabledLocally(user.id));
     }, [ webrtc.isVideoEnabledByProducer(user.id), webrtc.isVideoDisabledLocally(user.id) ]);
 
-    useEffect(() => {
-        userCamera && enableSpeakingActivity && audioDetector(userCamera);
-    }, [ userCamera ]);
-
     return (
         <Grid
             container
             className={clsx(classes.root, {
-                // [classes.speaking]: isSpeaking,
                 [classes.self]: isSelf,
                 [classes.videoDisabled]: !isSelf && !webrtc.isVideoEnabledByProducer(user.id),
                 [classes.rootSm]: isSmDown,
@@ -178,7 +148,6 @@ function UserCamera (props: UserCameraType) {
                 <UserCameraDetails
                     variant={variant}
                     user={user}
-                    speakingActivity={speakingActivity}
                 />
                 {actions ? isHover && <UserCameraActions
                     user={user}
