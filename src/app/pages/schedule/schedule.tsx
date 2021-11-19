@@ -44,6 +44,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import Snackbar from "@material-ui/core/Snackbar";
 import {
+    createStyles,
     makeStyles,
     Theme,
 } from '@material-ui/core/styles';
@@ -78,25 +79,26 @@ const endOfTomorrow = new Date(tomorrowTimeStamp * 1000);
 endOfTomorrow.setHours(23, 59, 59);
 const endOfTomorrowTimeStamp = endOfTomorrow.getTime() / 1000;
 
-const useStyles = makeStyles((theme: Theme) => ({
-    listRoot: {
-        width: `100%`,
-        backgroundColor: theme.palette.background.paper,
-        marginTop: theme.spacing(2),
-    },
-    listItemAvatar: {
-        backgroundColor: `#C5E9FB`,
-    },
-    listItemTextPrimary: {
-        fontWeight: theme.typography.fontWeightBold,
-    },
-    submittedText: {
-        color: `#5DBD3B`,
-    },
-    listItemSecondAction: {
-        paddingRight: `6rem`,
-    },
-}));
+const useStyles = makeStyles((theme: Theme) =>
+    createStyles({
+        listRoot: {
+            width: `100%`,
+            backgroundColor: theme.palette.background.paper,
+            marginTop: theme.spacing(2),
+        },
+        listItemAvatar: {
+            backgroundColor: `#C5E9FB`,
+        },
+        listItemTextPrimary: {
+            fontWeight: 600, // theme.typography.fontWeightBold
+        },
+        submittedText: {
+            color: `#5DBD3B`,
+        },
+        listItemSecondAction: {
+            paddingRight: `6rem`,
+        },
+    }));
 
 export function Schedule () {
     const [ isProcessingRequest, setIsProcessingRequest ] = useRecoilState(isProcessingRequestState);
