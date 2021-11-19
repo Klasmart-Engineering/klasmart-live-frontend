@@ -42,19 +42,8 @@ module.exports = {
                 use: [ `file-loader` ],
             },
             {
-                test: /\.(gif|png|jpe?g|svg)$/i,
-                use: [
-                    `file-loader`,
-                    {
-                        loader: `image-webpack-loader`,
-                        options: {
-                            pngquant: {
-                                quality: [ 0.65, 0.9 ],
-                                speed: 4,
-                            },
-                        },
-                    },
-                ],
+                test: /\.(png|svg|jpg|jpeg|gif)$/i,
+                type: `asset/resource`,
             },
             {
                 test: /\.mp3$/i,
