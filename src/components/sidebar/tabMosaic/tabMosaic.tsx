@@ -1,7 +1,7 @@
 import Toolbar from "@/components/toolbar/toolbar";
 import UserCamera from "@/components/userCamera/userCamera";
+import { useSessions } from "@/data/live/state/useSessions";
 import { Session } from "@/pages/utils";
-import { RoomContext } from "@/providers/room/roomContext";
 import {
     activeTabState,
     mosaicViewSizeState,
@@ -15,7 +15,6 @@ import {
 import clsx from "clsx";
 import React,
 {
-    useContext,
     useEffect,
     useState,
 } from "react";
@@ -102,7 +101,7 @@ function TabMosaic () {
     const [ mosaicViewSize, setMosaicViewSize ] = useRecoilState(mosaicViewSizeState);
     const [ activeTab, setActiveTab ] = useRecoilState(activeTabState);
 
-    const { sessions } = useContext(RoomContext);
+    const sessions = useSessions();
     const [ studentsSessions, setStudentsSessions ] = useState<Session[]>([]);
     const [ teachersSessions, setTeachersSessions ] = useState<Session[]>([]);
 

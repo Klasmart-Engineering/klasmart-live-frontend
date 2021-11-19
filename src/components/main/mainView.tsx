@@ -3,8 +3,8 @@ import Observe from "./viewModes/Observe";
 import OnStage from "./viewModes/onStage";
 import Present from "./viewModes/Present";
 import Screenshare from "./viewModes/Screenshare";
+import { useContent } from "@/data/live/state/useContent";
 import { ContentType } from "@/pages/utils";
-import { RoomContext } from "@/providers/room/roomContext";
 import { ScreenShareContext } from "@/providers/screenShareProvider";
 import { WebRTCContext } from "@/providers/WebRTCContext";
 import { isLessonPlanOpenState } from "@/store/layoutAtoms";
@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 function MainView () {
     const classes = useStyles();
-    const { content } = useContext(RoomContext);
+    const content = useContent();
     const screenShare = useContext(ScreenShareContext);
     const webrtc = useContext(WebRTCContext);
 

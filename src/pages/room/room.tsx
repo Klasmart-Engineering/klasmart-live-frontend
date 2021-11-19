@@ -2,8 +2,8 @@ import { useDeviceOrientationValue } from "@/app/model/appModel";
 import backgroundStudy from "@/assets/img/background/background_study.jpg";
 import Main from '@/components/main/main';
 import Sidebar from '@/components/sidebar/sidebar';
+import { useSessions } from "@/data/live/state/useSessions";
 import { useHttpEndpoint } from "@/providers/region-select-context";
-import { RoomContext } from "@/providers/room/roomContext";
 import { useSessionContext } from "@/providers/session-context";
 import { ClassType } from "@/store/actions";
 import {
@@ -22,7 +22,6 @@ import clsx from "clsx";
 import React,
 {
     useCallback,
-    useContext,
     useEffect,
 } from 'react';
 import { useSetRecoilState } from "recoil";
@@ -61,7 +60,7 @@ export function Room () {
         organizationId,
         scheduleId,
     } = useSessionContext();
-    const { sessions } = useContext(RoomContext);
+    const sessions = useSessions();
 
     function ramdomInt (min: number, max: number) {
         return Math.floor(Math.random() * (max - min)) + min;

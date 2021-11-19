@@ -1,6 +1,6 @@
 import Message from "./message";
 import SendMessage from "./sendMessage";
-import { RoomContext } from "@/providers/room/roomContext";
+import { useMessages } from "@/data/live/state/useMessages";
 import { NoItemList } from "@/utils/utils";
 import {
     Box,
@@ -10,11 +10,7 @@ import {
 } from "@material-ui/core";
 import { ChatSquareDotsFill as ChatIcon } from "@styled-icons/bootstrap/ChatSquareDotsFill";
 import React,
-{
-    useContext,
-    useEffect,
-    useRef,
-} from "react";
+{ useEffect } from "react";
 import { useIntl } from "react-intl";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -36,9 +32,8 @@ function Messages () {
     const classes = useStyles();
     const intl = useIntl();
 
-    const { messages:messagesData } = useContext(RoomContext);
-
-    const messages:any = Array.from(messagesData);
+    const messagesData = useMessages();
+    const messages = Array.from(messagesData);
 
     useEffect(() => {
         // TODO, useref + scrollintoview (if possible),

@@ -2,8 +2,8 @@ import MainClass from "./mainClass";
 import MainDrawer from "./mainDrawer";
 import MainView from "./mainView";
 import Toolbar from "@/components/toolbar/toolbar";
+import { useContent } from "@/data/live/state/useContent";
 import { ContentType } from "@/pages/utils";
-import { RoomContext } from "@/providers/room/roomContext";
 import { useSessionContext } from "@/providers/session-context";
 import { ClassType } from "@/store/actions";
 import { Whiteboard } from "@/whiteboard/components/Whiteboard";
@@ -15,8 +15,7 @@ import {
     useTheme,
 } from "@material-ui/core";
 import clsx from "clsx";
-import React,
-{ useContext } from "react";
+import React from "react";
 
 const useStyles = makeStyles((theme: Theme) => ({
     fullViewHeight: {
@@ -55,7 +54,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 function Main () {
     const classes = useStyles();
     const { classType, isTeacher } = useSessionContext();
-    const { content } = useContext(RoomContext);
+    const content = useContent();
 
     const theme = useTheme();
     const isXsDown = useMediaQuery(theme.breakpoints.down(`xs`));

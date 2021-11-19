@@ -1,9 +1,9 @@
 import GlobalActionsMenuItem from "./globalAction";
 import { useRewardTrophyMutation } from "@/data/live/mutations/useRewardTrophyMutation";
+import { useContent } from "@/data/live/state/useContent";
 import { useGlobalMuteMutation } from "@/data/sfu/mutations/useGlobalMuteMutation";
 import { useGlobalMuteQuery } from "@/data/sfu/queries/useGlobalMuteQuery";
 import { ContentType } from "@/pages/utils";
-import { RoomContext } from "@/providers/room/roomContext";
 import { ScreenShareContext } from "@/providers/screenShareProvider";
 import { useSessionContext } from "@/providers/session-context";
 import { GlobalMuteNotification } from "@/providers/WebRTCContext";
@@ -59,7 +59,7 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
     const [ camerasOn, setCamerasOn ] = useState(true);
     const [ micsOn, setMicsOn ] = useState(true);
     const { roomId, sessionId } = useSessionContext();
-    const { content } = useContext(RoomContext);
+    const content = useContent();
     const screenShare = useContext(ScreenShareContext);
 
     const [ globalMuteMutation ] = useGlobalMuteMutation();

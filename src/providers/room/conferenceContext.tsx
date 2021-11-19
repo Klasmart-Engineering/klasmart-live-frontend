@@ -2,7 +2,6 @@ import {
     GlobalMuteNotification,
     WebRTCContext,
 } from "../WebRTCContext";
-import { RoomContext } from "./roomContext";
 import { useGlobalMuteMutation } from "@/data/sfu/mutations/useGlobalMuteMutation";
 import { useGlobalMuteQuery } from "@/data/sfu/queries/useGlobalMuteQuery";
 import {
@@ -17,6 +16,7 @@ import React,
     useState,
 } from "react";
 import { useRecoilState } from "recoil";
+import { useSessions } from "@/data/live/state/useSessions";
 
 interface Props {
     sessionId: string;
@@ -36,7 +36,7 @@ const ConferenceContext= createContext<ConferenceState>({
 export const ConferenceContextProvider: React.FC<Props> = ({
     children, sessionId, roomId,
 }) => {
-    const { sessions } = useContext(RoomContext);
+    const sessions = useSessions();
     const webrtc = useContext(WebRTCContext);
 
     const localSession = sessions.get(sessionId);
