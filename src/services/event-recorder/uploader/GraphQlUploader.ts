@@ -1,7 +1,7 @@
 import { IEventUploader } from "./IEventUploader";
 import { SequencedEventData } from "@/services/event-recorder//events/SequencedEvent";
 import { refreshAuthenticationCookie } from "@/utils/authentication";
-import { GraphQLClient } from "graphql-request";
+import { ClientError, GraphQLClient } from "graphql-request";
 
 interface PageEventIn {
   sequenceNumber: number;
@@ -52,9 +52,11 @@ export class GraphQlUploader implements IEventUploader {
               pageEvents: mappedEvents,
           });
       } catch (e) {
-          const errors: unknown[] = e?.response?.errors || [];
-          const authenticationError = errors.some((e: any) => e.extensions.code === `AuthenticationInvalid` || e.extensions.code === `AuthenticationExpired`);
-          if (authenticationError) { handleAuthenticationError(); }
+          if(e instanceof ClientError) {
+              const errors: unknown[] = e.response.errors || [];
+              const authenticationError = errors.some((e: any) => e.extensions.code === `AuthenticationInvalid` || e.extensions.code === `AuthenticationExpired`);
+              if (authenticationError) { handleAuthenticationError(); }
+          }
           return Promise.reject(e);
       }
   }
