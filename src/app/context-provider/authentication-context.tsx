@@ -22,8 +22,8 @@ type Props = {
 }
 
 type AuthenticationActions = {
-    signOut: () => void;
-    refreshAuthenticationToken: () => void;
+    signOut: () => Promise<void>;
+    refreshAuthenticationToken: () => Promise<void>;
 }
 
 type AuthenticationContext = {
@@ -40,19 +40,6 @@ const AuthenticationContext = createContext<AuthenticationContext>({
     actions: undefined,
 });
 
-export function isRoleTeacher (role: string) {
-    const teacherRoleNames = [
-        `Organization Admin`,
-        `School Admin`,
-        `Teacher`,
-    ].map(v => v.toLowerCase());
-
-    return teacherRoleNames.includes(role.toLowerCase());
-}
-
-// NOTE: Minutes * 60 * 1000
-const TOKEN_REFRESH_TIMEOUT_MS = 10 * 60 * 1000;
-
 const useAuthentication = () => {
     const [ authReady, setAuthReady ] = useState<boolean>(false);
     const [ authenticated, setAuthenticated ] = useState<boolean>(false);
@@ -65,14 +52,14 @@ const useAuthentication = () => {
     const [ selectedRegion, setSelectedRegion ] = useRecoilState(selectedRegionState);
     const [ locale, setLocale ] = useRecoilState(localeState);
 
-    const refresh = useCallback(() => {
+    const refresh = useCallback(async () => {
         if (!authenticationService) return;
         if (signedOut) return;
 
         setAuthReady(false);
         setAuthError(false);
 
-        authenticationService.refresh()
+        await authenticationService.refresh()
             .then(ok => {
                 setAuthenticated(ok);
             }).catch(err => {
@@ -102,24 +89,6 @@ const useAuthentication = () => {
 
         await authenticationService.switchUser(userId);
     }, [ authenticationService, authenticated ]);
-
-    useEffect(() => {
-        if (!authenticated) return;
-        if (!authenticationService) return;
-
-        const repeatedTokenRefresh = setInterval(() => {
-            authenticationService.refresh()
-                .then((authenticated) => {
-                    if (!authenticated) {
-                        setAuthenticated(false);
-                    }
-                });
-        }, TOKEN_REFRESH_TIMEOUT_MS);
-
-        return () => {
-            clearInterval(repeatedTokenRefresh);
-        };
-    }, [ authenticated, authenticationService ]);
 
     useEffect(() => {
         if (!authenticationService) return;

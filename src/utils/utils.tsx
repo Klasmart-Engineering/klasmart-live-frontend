@@ -274,7 +274,7 @@ export interface BrandingType {
     primaryColor: string;
 }
 
-export async function getOrganizationBranding (organization_id:any, endpoint: string) {
+export async function getOrganizationBranding (organizationId: string, endpoint: string) {
     const GET_ORGANIZATION_BRANDING = `
         query organization($organization_id: ID!){
             organization(organization_id: $organization_id){
@@ -295,7 +295,7 @@ export async function getOrganizationBranding (organization_id:any, endpoint: st
         body: JSON.stringify({
             query: GET_ORGANIZATION_BRANDING,
             variables: {
-                organization_id,
+                organization_id: organizationId,
             },
         }),
         credentials: `include`,
@@ -304,14 +304,14 @@ export async function getOrganizationBranding (organization_id:any, endpoint: st
     return data.organization.branding;
 }
 
-export async function classGetInformation (schedule_id: any, org_id: any, endpoint: string) {
+export async function classGetInformation (scheduleId: any, orgId: any, endpoint: string) {
     let data:any = {};
 
     async function classAPI () {
         const headers = new Headers();
         headers.append(`Accept`, `application/json`);
         headers.append(`Content-Type`, `application/json`);
-        const ENDPOINT_CMS_URL = window.location.href.indexOf(`localhost`) > 0 ? `https://run.mocky.io/v3/a6b4aed5-a341-4d45-9a63-842d6ff1d53e` : `${endpoint}/v1/schedules/${schedule_id}?org_id=${org_id}`;
+        const ENDPOINT_CMS_URL = window.location.href.indexOf(`localhost`) > 0 ? `https://run.mocky.io/v3/a6b4aed5-a341-4d45-9a63-842d6ff1d53e` : `${endpoint}/v1/schedules/${scheduleId}?org_id=${orgId}`;
 
         const response = await fetch(`${ENDPOINT_CMS_URL}`, {
             headers,

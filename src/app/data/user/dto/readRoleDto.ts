@@ -1,11 +1,7 @@
-
-export enum RoleStatus {
-    ACTIVE = `active`,
-    INACTIVE = `inactive`,
-}
+import { EntityStatus } from "./sharedDto";
 
 export interface ReadRoleDto {
     role_id: string;
     role_name?: string;
-    status: RoleStatus;
+    status: EntityStatus;
 }

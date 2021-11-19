@@ -20,6 +20,7 @@ import {
     ScheduleFeedbackResponse,
     ScheduleResponse,
 } from "../../services/cms/ISchedulerService";
+import { formatDueDateMillis } from "../../utils/dateTimeUtils";
 import {
     getFileExtensionFromName,
     getFileExtensionFromType,
@@ -291,6 +292,8 @@ export function HomeFunStudyDialog () {
                 console.log(`Fail to fetchScheduleInfo or fetchHomeFunStudyInfo ${err}`);
             }
         }
+
+        if (!homeFunStudy.studyId || !selectedOrganization) return;
 
         setLoading(true);
         fetchEverything();
@@ -1129,16 +1132,9 @@ function HomeFunStudyContainer ({
                         <Typography
                             variant="body2"
                             color="textSecondary">
-                            {studyInfo?.due_at && studyInfo.due_at !== 0 ? <>
-                                <FormattedTime value={fromSecondsToMilliseconds(studyInfo.due_at)} />, <FormattedDate
-                                    value={fromSecondsToMilliseconds(studyInfo.due_at)}
-                                    day= "numeric"
-                                    month= "long"
-                                    year= "numeric"
-                                    weekday= "long"
-                                />
-                            </> :
-                                <FormattedMessage id={`label_not_defined`}/>
+                            {studyInfo?.due_at && studyInfo.due_at !== 0
+                                ? formatDueDateMillis(fromSecondsToMilliseconds(studyInfo.due_at), intl)
+                                : <FormattedMessage id={`label_not_defined`}/>
                             }
                         </Typography>
                     </Box>

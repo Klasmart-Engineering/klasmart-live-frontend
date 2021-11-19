@@ -10,10 +10,9 @@ if [ "$1" == "clean" ]; then
   rm -rf ./plugins
   rm -rf ./www
   rm -rf ./platforms
+  # Ensure packages are installed
+  npm install
 fi
-
-# Ensure packages are installed
-npm install
 
 # Package using webpack
 npm run build:app
@@ -29,3 +28,6 @@ cordova prepare android
 
 # Build apk
 cordova build android -- --buildConfig
+
+# Install build on device
+adb install -r ./platforms/android/app/build/outputs/apk/debug/app-debug.apk

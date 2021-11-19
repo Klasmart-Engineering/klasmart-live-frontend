@@ -1,4 +1,4 @@
-import { ReadMembershipDto } from "./readMembershipDto";
+import { EntityStatus } from "./sharedDto";
 
 export interface ReadUserDto {
     user_id: string;
@@ -6,5 +6,11 @@ export interface ReadUserDto {
     given_name?: string;
     family_name?: string;
     date_of_birth?: string;
-    memberships?: ReadMembershipDto[];
+    organizationsWithPermission: {
+        status: EntityStatus;
+        organization: {
+            organization_id: string;
+            organization_name: string;
+        };
+    }[];
 }

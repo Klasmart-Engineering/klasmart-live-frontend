@@ -1,3 +1,4 @@
+import BackButton from "./BackButton";
 import {
     useSelectedOrganizationValue,
     useSelectedUserValue,
@@ -6,13 +7,11 @@ import {
     dialogsState,
     errorState,
     homeFunStudyState,
-    isProcessingRequestState,
 } from "@/app/model/appModel";
 import KidsloopLogo from "@/assets/img/kidsloop_icon.svg";
 import StyledIcon from "@/components/styled/icon";
 import AppBar from "@material-ui/core/AppBar";
 import ButtonBase from "@material-ui/core/ButtonBase";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
 import {
@@ -22,9 +21,7 @@ import {
     useTheme,
 } from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
-import { ArrowBack as ArrowBackIcon } from "@styled-icons/material/ArrowBack";
 import { Close as CloseIcon } from "@styled-icons/material/Close";
-import { Refresh as RefreshIcon } from "@styled-icons/material/Refresh";
 import { Settings as SettingsIcon } from "@styled-icons/material/Settings";
 import {
     OrganizationAvatar,
@@ -66,12 +63,22 @@ export function Header ({ isHomeRoute, setKey }: { isHomeRoute?: boolean; setKey
     } = useStyles();
     const theme = useTheme();
     const [ error ] = useRecoilState(errorState);
-    const [ dialogs ] = useRecoilState(dialogsState);
     const [ homeFunStudy ] = useRecoilState(homeFunStudyState);
+    const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
+
     const selectedUser = useSelectedUserValue();
 
     const showCloseButton = selectedUser && (dialogs.isSelectOrganizationOpen || dialogs.isSelectUserOpen || dialogs.isSettingsOpen || homeFunStudy?.open);
     const showBackButton = dialogs.isSettingsLanguageOpen;
+
+    const handleBackClick = () => {
+        if (dialogs.isSettingsLanguageOpen) {
+            setDialogs({
+                ...dialogs,
+                isSettingsLanguageOpen: false,
+            });
+        }
+    };
 
     return (error.errorCode ? <></> :
         <div className={root}>
@@ -101,12 +108,7 @@ export function Header ({ isHomeRoute, setKey }: { isHomeRoute?: boolean; setKey
                                 { isHomeRoute ?
                                     <>
                                         <OpenSelectOrgButton />
-                                        <span style={{
-                                            marginLeft: SPACING_HEADER_ITEM,
-                                        }}>
-                                            <OpenSettingsButton />
-                                        </span>
-                                    </> : showBackButton ? <BackButton /> : showCloseButton && <CloseSelectOrgOrUserButton />}
+                                    </> : showBackButton ? <BackButton onClick={handleBackClick} /> : showCloseButton && <CloseSelectOrgOrUserButton />}
                             </Grid>
                             <Grid
                                 item
@@ -118,16 +120,16 @@ export function Header ({ isHomeRoute, setKey }: { isHomeRoute?: boolean; setKey
                                     height={32} />
                             </Grid>
                             <Grid item>
-                                { isHomeRoute &&
+                                {isHomeRoute && (
                                     <>
                                         <span style={{
                                             marginRight: SPACING_HEADER_ITEM,
                                         }}>
-                                            <MenuButton setKey={setKey} />
+                                            <OpenSettingsButton />
                                         </span>
                                         <OpenSelectUserButton />
                                     </>
-                                }
+                                )}
                             </Grid>
                         </Grid>
                     </Grid>
@@ -221,54 +223,6 @@ function OpenSelectOrgButton () {
                 name={selectedOrganization?.organization_name ?? ``}
                 size={`medium`} />
         </ButtonBase>
-    );
-}
-
-function BackButton () {
-    const { iconButton } = useStyles();
-    const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
-
-    const handleClick = () => {
-        if (dialogs.isSettingsLanguageOpen) {
-            setDialogs({
-                ...dialogs,
-                isSettingsLanguageOpen: false,
-            });
-        }
-    };
-
-    return (
-        <IconButton
-            size="medium"
-            className={iconButton}
-            onClick={handleClick}
-        >
-            <StyledIcon
-                icon={<ArrowBackIcon />}
-                size="medium" />
-        </IconButton >
-    );
-}
-
-// TODO (Isu): Will be changed to <RefreshButton /> that force Schedule component to rerender
-function MenuButton ({ setKey }: { setKey?: React.Dispatch<React.SetStateAction<string>> }) {
-    const { iconButton } = useStyles();
-    const [ dialogs ] = useRecoilState(dialogsState);
-    const [ isProcessingRequest ] = useRecoilState(isProcessingRequestState);
-
-    return (
-        <IconButton
-            size="medium"
-            className={iconButton}
-            style={{
-                visibility: dialogs.isSelectOrganizationOpen ? `hidden` : `visible`,
-            }}
-            onClick={() => setKey && setKey(Math.random().toString(36))}
-        >
-            <StyledIcon
-                icon={isProcessingRequest ? <CircularProgress size={16} /> : <RefreshIcon />}
-                size="medium" />
-        </IconButton>
     );
 }
 

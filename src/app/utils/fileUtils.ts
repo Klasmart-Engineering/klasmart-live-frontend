@@ -1,23 +1,23 @@
 import {
     ACCEPT_MIME_TYPES,
     MIME_TO_EXTENSION,
-} from "../services/files/FileSelectService";
+} from "@/app/services/files/FileSelectService";
 
 const MIME_TYPES_REGEX = ACCEPT_MIME_TYPES.split(`,`)
     .map(unescapedMime => unescapedMime.replace(/[.*+?^${}()|[\]\\]/g, `\\$&`))
     .map(escapedMime => new RegExp(`^` + escapedMime.replace(/\*/g, `.*`)));
 
-export function getFileExtensionFromName(fileName: string): string {
+export function getFileExtensionFromName (fileName: string): string {
     const fileExtension = fileName.split(`.`).pop();
     return fileExtension ? fileExtension : ``;
 }
 
-export function getFileExtensionFromType(fileType: string): string {
+export function getFileExtensionFromType (fileType: string): string {
     const fileExtension = MIME_TO_EXTENSION.get(fileType);
     return fileExtension ? fileExtension : ``;
 }
 
-export function validateFileExtension(extension: string): boolean {
+export function validateFileExtension (extension: string): boolean {
     const validExtensions = [
         `avi`,
         `mov`,
@@ -41,83 +41,86 @@ export function validateFileExtension(extension: string): boolean {
     return validExtensions.includes(getFileExtensionFromName(extension).toLowerCase());
 }
 
-export function validateFileMimeType(file: File): boolean {
+export function validateFileMimeType (file: File): boolean {
     return MIME_TYPES_REGEX.some(mime => mime.test(file.type));
 }
 
-export function validateFileType(file: File): boolean {
+export function validateFileType (file: File): boolean {
     return validateFileMimeType(file);
 }
 
-export function validateFileSize(file: File): boolean {
+export function validateFileSize (file: File): boolean {
     return bytesToMegaBytes(file.size) <= 100;
 }
 
-export function bytesToMegaBytes(bytes: number): number {
+export function bytesToMegaBytes (bytes: number): number {
     return bytes / (1024 * 1024);
 }
 
-export function getNameWithoutExtension(fileName: string): string {
-    return fileName.replace(/\.[^/.]+$/, "");
+export function getNameWithoutExtension (fileName: string): string {
+    return fileName.replace(/\.[^/.]+$/, ``);
 }
 
-export function getFileNameInURI(uri: string): string | undefined{
+export function getFileNameInURI (uri: string): string | undefined{
     const decodedURI = decodeURIComponent(uri);
-    const fileName = decodedURI.replace(/^.*[\\\/]/,'');
-    if(validateFileExtension(getFileExtensionFromName(fileName ?? '')))
+    const fileName = decodedURI.replace(/^.*[\\\/]/, ``);
+    if(validateFileExtension(getFileExtensionFromName(fileName ?? ``)))
         return fileName;
     return undefined;
 }
 
-export function convertFileNameToUnderscores(fileName: string): string {
-    return `${getNameWithoutExtension(fileName).replace(/([^a-z0-9])/gi, '_')}.${getFileExtensionFromName(fileName)}`
+export function convertFileNameToUnderscores (fileName: string): string {
+    return `${getNameWithoutExtension(fileName).replace(/([^a-z0-9])/gi, `_`)}.${getFileExtensionFromName(fileName)}`;
 }
 
 export function saveDataBlobToFile (blob: Blob, targetDirectory: string, fileName: string): Promise<string> {
     return new Promise((resolve, reject) => {
         (window as any).resolveLocalFileSystemURL(targetDirectory, (entry: any) => {
-            entry.getFile( fileName, { create: true, exclusive: false }, (fileEntry: any) => {
+            entry.getFile( fileName, {
+                create: true,
+                exclusive: false,
+            }, (fileEntry: any) => {
                 fileEntry.createWriter((writer: any) => {
                     writer.onwriteend = () => {
                         resolve(fileEntry.toURL());
                     };
 
                     writer.onerror = () => {
-                        console.error('could not write file: ', writer.error);
+                        console.error(`could not write file: `, writer.error);
                         reject(writer.error);
-                    }
+                    };
 
                     writer.write(blob);
                 });
             }, (error: any) => {
-                console.error('could not create file: ', error);
+                console.error(`could not create file: `, error);
                 reject(error);
             });
         }, (error: any) => {
-            console.error('could not retrieve directory: ', error);
+            console.error(`could not retrieve directory: `, error);
             reject(error);
-        })
+        });
     });
 }
 
 export function getFilesInDirectory (targetDirectory: string): Promise<string[]> {
     return new Promise((resolve, reject) => {
         (window as any).resolveLocalFileSystemURL(targetDirectory, (entry: any) => {
-            let reader = entry.createReader();
+            const reader = entry.createReader();
             reader.readEntries((entries: any) => {
                 resolve(entries.map((entry: any) => entry.name));
             }, (error: any) => {
-                console.error('could not create file: ', error);
+                console.error(`could not create file: `, error);
                 reject(error);
             });
         }, (error: any) => {
-            console.error('could not retrieve directory: ', error);
+            console.error(`could not retrieve directory: `, error);
             reject(error);
-        })
+        });
     });
 }
 
-export function generateUniqueFileName(fileNames: string[], targetFileName: string, increaseNumber : number = 0): string {
+export function generateUniqueFileName (fileNames: string[], targetFileName: string, increaseNumber = 0): string {
     let newFileName = targetFileName;
     if(increaseNumber !== 0)
         newFileName = `${getNameWithoutExtension(targetFileName)}(${increaseNumber}).${getFileExtensionFromName(targetFileName)}`;
@@ -126,4 +129,18 @@ export function generateUniqueFileName(fileNames: string[], targetFileName: stri
     }else{
         return generateUniqueFileName(fileNames, targetFileName, increaseNumber + 1 );
     }
+}
+
+export function getCacheDirectory (isIOS: boolean) {
+    const cordova = (window as any).cordova;
+    if (!cordova) return;
+    if (isIOS) return cordova.file.tempDirectory;
+    return cordova.file.externalCacheDirectory;
+}
+
+export function getDownloadDirectory (isIOS: boolean) {
+    const cordova = (window as any).cordova;
+    if (!cordova) return;
+    if (isIOS) return cordova.file.documentsDirectory;
+    return `${cordova.file.externalRootDirectory}Download/`;
 }

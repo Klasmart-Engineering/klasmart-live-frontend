@@ -1,23 +1,25 @@
-import { ClassType } from "../../store/actions";
 import {
-    ScheduleResponse,
-    ScheduleTimeViewResponse,
-} from "../services/cms/ISchedulerService";
-import { atom } from "recoil";
+    atom,
+    useRecoilState,
+    useRecoilValue,
+    useSetRecoilState,
+} from "recoil";
+import { recoilPersist } from "recoil-persist";
 
-export const scheduleState = atom({
-    key: `schedule`,
-    default: {
-        viewClassType: ClassType.LIVE,
-        scheduleTimeViewAll: [] as ScheduleTimeViewResponse[],
-        scheduleTimeViewLiveAll: [] as ScheduleTimeViewResponse[],
-        scheduleTimeViewLiveToday: [] as ScheduleTimeViewResponse[],
-        scheduleTimeViewLiveTomorrow: [] as ScheduleTimeViewResponse[],
-        scheduleTimeViewLiveUpcoming: [] as ScheduleTimeViewResponse[],
-        scheduleTimeViewStudyAll: [] as ScheduleTimeViewResponse[],
-        scheduleTimeViewStudyAnytime: [] as ScheduleTimeViewResponse[],
-        scheduleStudyAnytime: [] as ScheduleResponse[],
-        scheduleStudyDueDate: [] as ScheduleResponse[],
-        lessonPlanIdOfSelectedSchedule: ``,
-    },
+const { persistAtom } = recoilPersist();
+
+export enum ScheduleAppBarItem {
+    LIVE = `live`,
+    STUDY = `study`,
+}
+
+export const scheduleAppBarState = atom({
+    key: `scheduleTab`,
+    default: ScheduleAppBarItem.LIVE,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    effects_UNSTABLE: [ persistAtom ],
 });
+
+export const useScheduleTab = () => useRecoilState(scheduleAppBarState);
+export const useScheduleTabValue = () => useRecoilValue(scheduleAppBarState);
+export const useSetScheduleTab = () => useSetRecoilState(scheduleAppBarState);

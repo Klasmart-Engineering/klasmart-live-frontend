@@ -362,7 +362,6 @@ export default function StudyDetail ({
                     });
                 });
             });
-
         }
 
         function handleDownloadForIOS (downloadedData: Blob, fileName: string) {
