@@ -2,7 +2,10 @@ import { useHttpEndpoint } from "../../../providers/region-select-context";
 import LoadingWithRetry from "../../components/loadingWithRetry";
 import { useAuthenticationContext } from "../../context-provider/authentication-context";
 import { ParentalGate } from "../../dialogs/parentalGate";
-import { OrientationType } from "../../model/appModel";
+import {
+    localeState,
+    OrientationType,
+} from "../../model/appModel";
 import { lockOrientation } from "../../utils/screenUtils";
 import { Grid } from "@material-ui/core";
 import createStyles from "@material-ui/core/styles/createStyles";
@@ -14,6 +17,7 @@ import React,
     useState,
 } from "react";
 import { Redirect } from "react-router-dom";
+import { useRecoilValue } from "recoil";
 
 const useStyles = makeStyles(() => createStyles({
     container: {
@@ -35,7 +39,7 @@ export function Auth ({ useInAppBrowser }: Props) {
     const classes = useStyles();
     const frameRef = useRef<HTMLIFrameElement>(null);
     const [ key, setKey ] = useState(Math.random().toString(36));
-
+    const locale = useRecoilValue(localeState);
     const authEndpoint = useHttpEndpoint(`auth`);
 
     const {
@@ -83,7 +87,7 @@ export function Auth ({ useInAppBrowser }: Props) {
         const cordova = (window as any).cordova;
         if (!cordova) return;
 
-        cordova.plugins.browsertab.openUrl(`${authEndpoint}/?ua=${CUSTOM_UA}`, (successResp: any) => { console.log(successResp); }, (failureResp: any) => {
+        cordova.plugins.browsertab.openUrl(`${authEndpoint}/?ua=${CUSTOM_UA}&locale=${locale.languageCode}`, (successResp: any) => { console.log(successResp); }, (failureResp: any) => {
             console.error(`no browser tab available`);
             console.error(failureResp);
         });
