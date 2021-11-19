@@ -81,7 +81,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         width: `100%`,
     },
     navigationColumn:{
-        width: `15vw`,
+        width: 70,
         display: `flex`,
         alignItems: `center`,
         justifyContent: `center`,
