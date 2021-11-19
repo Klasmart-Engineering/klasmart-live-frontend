@@ -1,8 +1,8 @@
 import { useRewardTrophyMutation } from "@/data/live/mutations/useRewardTrophyMutation";
 import { useSetHostMutation } from "@/data/live/mutations/useSetHostMutation";
+import { useSessions } from "@/data/live/state/useSessions";
 import { useMuteMutation } from "@/data/sfu/mutations/useMuteMutation";
 import { useGlobalMuteQuery } from "@/data/sfu/queries/useGlobalMuteQuery";
-import { RoomContext } from "@/providers/room/roomContext";
 import { useSessionContext } from "@/providers/session-context";
 import {
     MuteNotification,
@@ -326,7 +326,8 @@ function ToggleCamera (props:any){
     const classes = useStyles();
 
     const { roomId, sessionId } = useSessionContext();
-    const { sessions } = useContext(RoomContext);
+
+    const sessions = useSessions();
     const webrtc = useContext(WebRTCContext);
 
     const [ camOn, setCamOn ] = useState<boolean>(true);
@@ -428,7 +429,7 @@ function ToggleMic (props:any){
     const classes = useStyles();
 
     const { roomId, sessionId } = useSessionContext();
-    const { sessions } = useContext(RoomContext);
+    const sessions = useSessions();
     const isSelf = sessionId === user.id;
 
     const [ micOn, setMicOn ] = useState<boolean>(true);

@@ -4,14 +4,13 @@ import { Reward } from './reward';
 import TrophyKinds,
 { TrophyKind } from './trophyKind';
 import TIMINGS from './trophyTimings';
-import { RoomContext } from '@/providers/room/roomContext';
+import { useTrophy } from '@/data/live/state/useTrophy';
 import { useSessionContext } from '@/providers/session-context';
 import { ClassType } from '@/store/actions';
 import React,
 {
     CSSProperties,
     useCallback,
-    useContext,
     useEffect,
     useRef,
     useState,
@@ -85,7 +84,7 @@ function locationOfElement (elementId?: string): { x: number | string; y: number
 
 export function Trophy (props: Props): JSX.Element {
     const { children } = props;
-    const room = useContext(RoomContext);
+    const trophy = useTrophy();
     const { classType } = useSessionContext();
     const [ display, setDisplay ] = useState(false);
     const [ showLights, setShowLights ] = useState(false);
@@ -117,11 +116,11 @@ export function Trophy (props: Props): JSX.Element {
     };
 
     useEffect(() => {
-        if (room.trophy) {
-            handleTrophy(room.trophy);
+        if (trophy) {
+            handleTrophy(trophy);
         }
     }, [
-        room.trophy,
+        trophy,
         setAppearAt,
         setDisappearAt,
         setDisplay,

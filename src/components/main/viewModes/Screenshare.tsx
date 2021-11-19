@@ -1,5 +1,5 @@
 import { StyledVideo } from "@/components/interactiveContent/styledVideo";
-import { RoomContext } from "@/providers/room/roomContext";
+import { useContent } from "@/data/live/state/useContent";
 import { ScreenShareContext } from "@/providers/screenShareProvider";
 import { WebRTCContext } from "@/providers/WebRTCContext";
 import { isGlobalActionsOpenState } from "@/store/layoutAtoms";
@@ -40,7 +40,7 @@ function Screenshare () {
     const classes = useStyles();
     const screenShare = useContext(ScreenShareContext);
     const webrtc = useContext(WebRTCContext);
-    const { content } = useContext(RoomContext);
+    const content = useContent();
 
     const [ isGlobalActionsOpen, setIsGlobalActionsOpen ] = useRecoilState(isGlobalActionsOpenState);
 

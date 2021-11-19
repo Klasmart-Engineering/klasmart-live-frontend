@@ -1,8 +1,9 @@
 import Loading from "@/components/interactiveContent/loading";
 import { PreviewPlayer } from "@/components/interactiveContent/previewPlayer";
 import { RecordedIframe } from "@/components/interactiveContent/recordediframe";
+import { useContent } from "@/data/live/state/useContent";
+import { useSessions } from "@/data/live/state/useSessions";
 import { Session } from "@/pages/utils";
-import { RoomContext } from "@/providers/room/roomContext";
 import { useSessionContext } from "@/providers/session-context";
 import { isShowContentLoadingState } from "@/store/layoutAtoms";
 import { useContentToHref } from "@/utils/contentUtils";
@@ -22,7 +23,6 @@ import clsx from "clsx";
 import { useSnackbar } from "kidsloop-px";
 import React,
 {
-    useContext,
     useEffect,
     useMemo,
     useRef,
@@ -131,7 +131,8 @@ function Observe () {
         sessionId,
         isTeacher,
     } = useSessionContext();
-    const { content, sessions } = useContext(RoomContext);
+    const content = useContent();
+    const sessions = useSessions();
     const [ studentSessions, setStudentSessions ] = useState<Session[]>([]);
     const { state: { display: isGlobalCanvasEnabled, permissions: permissionsGlobalCanvas } } = useSynchronizedState();
     const [ contentHref ] = useContentToHref(content);

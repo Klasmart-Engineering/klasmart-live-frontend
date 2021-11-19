@@ -1,5 +1,5 @@
 import UserCamera from "@/components/userCamera/userCamera";
-import { RoomContext } from "@/providers/room/roomContext";
+import { useSessions } from "@/data/live/state/useSessions";
 import { useSessionContext } from "@/providers/session-context";
 import {
     Grid,
@@ -10,7 +10,6 @@ import {
 import { UserVoice as OnStageIcon } from "@styled-icons/boxicons-solid/UserVoice";
 import React,
 {
-    useContext,
     useEffect,
     useState,
 } from "react";
@@ -26,7 +25,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 function OnStage () {
     const classes = useStyles();
-    const { sessions } = useContext(RoomContext);
+    const sessions = useSessions();
     const { name } = useSessionContext();
     const [ host, setHost ] = useState<any>(true);
 

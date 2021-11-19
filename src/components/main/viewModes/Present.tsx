@@ -3,16 +3,15 @@ import { PreviewPlayer } from "@/components/interactiveContent/previewPlayer";
 import { RecordedIframe } from "@/components/interactiveContent/recordediframe";
 import { ReplicaMedia } from "@/components/interactiveContent/synchronized-video";
 import PreviewLessonPlan from "@/components/main/previewLessonPlan";
+import { useContent } from "@/data/live/state/useContent";
 import { ContentType } from "@/pages/utils";
-import { RoomContext } from "@/providers/room/roomContext";
 import { hasControlsState } from "@/store/layoutAtoms";
 import { useContentToHref } from "@/utils/contentUtils";
-import React,
-{ useContext } from "react";
+import React from "react";
 import { useRecoilValue } from "recoil";
 
 function Present () {
-    const { content } = useContext(RoomContext);
+    const content = useContent();
     const hasControls = useRecoilValue(hasControlsState);
     const [ contentHref ] = useContentToHref(content);
 

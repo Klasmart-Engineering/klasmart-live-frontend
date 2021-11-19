@@ -1,6 +1,6 @@
 import UserCamera from "@/components/userCamera/userCamera";
+import { useSessions } from "@/data/live/state/useSessions";
 import { Session } from "@/pages/utils";
-import { RoomContext } from "@/providers/room/roomContext";
 import { NoItemList } from "@/utils/utils";
 import {
     Fade,
@@ -14,7 +14,6 @@ import { Person as UserIcon } from "@styled-icons/fluentui-system-regular/Person
 import clsx from "clsx";
 import React,
 {
-    useContext,
     useEffect,
     useState,
 } from "react";
@@ -58,7 +57,8 @@ const useStyles = makeStyles((theme: Theme) => ({
 function TabParticipants () {
     const classes = useStyles();
     const intl = useIntl();
-    const { sessions } = useContext(RoomContext);
+    const sessions = useSessions();
+
     const [ studentsSessions, setStudentsSessions ] = useState<Session[]>([]);
     const [ teachersSessions, setTeachersSessions ] = useState<Session[]>([]);
 

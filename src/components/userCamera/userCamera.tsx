@@ -3,7 +3,6 @@ import UserCameraActions from "./userCameraActions";
 import UserCameraDetails from "./userCameraDetails";
 import ReactPlayer from "@/components/react-player";
 import { useCameraContext } from "@/providers/Camera";
-import { RoomContext } from "@/providers/room/roomContext";
 import { useSessionContext } from "@/providers/session-context";
 import { WebRTCContext } from "@/providers/WebRTCContext";
 import {
@@ -22,6 +21,7 @@ import React,
     useState,
 } from "react";
 import  vad  from "voice-activity-detection";
+import { useSessions } from "@/data/live/state/useSessions";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -101,7 +101,8 @@ function UserCamera (props: UserCameraType) {
         setCamera,
         sessionId,
     } = useSessionContext();
-    const { sessions } = useContext(RoomContext);
+
+    const sessions = useSessions();
     const webrtc = useContext(WebRTCContext);
 
     const isSelf = user.id === sessionId ? true : false;

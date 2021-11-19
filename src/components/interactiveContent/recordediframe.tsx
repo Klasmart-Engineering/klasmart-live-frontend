@@ -2,8 +2,8 @@ import { useServices } from "@/app/context-provider/services-provider";
 import { useCustomFlashCard } from "@/app/utils/customFlashCard";
 import { injectIframeScript } from "@/app/utils/injectIframeScript";
 import { useSetStreamIdMutation } from "@/data/live/mutations/useSetStreamIdMutation";
+import { useSessions } from "@/data/live/state/useSessions";
 import { useHttpEndpoint } from "@/providers/region-select-context";
-import { RoomContext } from "@/providers/room/roomContext";
 import { useSessionContext } from "@/providers/session-context";
 import { ClassType } from "@/store/actions";
 import {
@@ -21,7 +21,6 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { Refresh as RefreshIcon } from "@styled-icons/material/Refresh";
 import React,
 {
-    useContext,
     useEffect,
     useMemo,
     useRef,
@@ -54,7 +53,7 @@ export function RecordedIframe (props: Props): JSX.Element {
         classType,
         token,
     } = useSessionContext();
-    const { sessions } = useContext(RoomContext);
+    const sessions = useSessions();
     const [ , setStreamId ] = useRecoilState(streamIdState);
     const [ isLessonPlanOpen ] = useRecoilState(isLessonPlanOpenState);
 

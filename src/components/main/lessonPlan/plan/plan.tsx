@@ -1,5 +1,5 @@
+import { useContent } from "@/data/live/state/useContent";
 import { ContentType } from "@/pages/utils";
-import { RoomContext } from "@/providers/room/roomContext";
 import { useSessionContext } from "@/providers/session-context";
 import { materialActiveIndexState } from "@/store/layoutAtoms";
 import { MaterialTypename } from "@/types/lessonMaterial";
@@ -14,8 +14,7 @@ import {
     Theme,
 } from "@material-ui/core";
 import { Book as PlanIcon } from "@styled-icons/boxicons-regular/Book";
-import React,
-{ useContext } from "react";
+import React from "react";
 import { useIntl } from "react-intl";
 import { useRecoilState } from "recoil";
 
@@ -35,7 +34,7 @@ function Plan () {
     const intl = useIntl();
     const [ materialActiveIndex, setMaterialActiveIndex ] = useRecoilState(materialActiveIndexState);
     const { materials } = useSessionContext();
-    const { content } = useContext(RoomContext);
+    const content = useContent();
 
     const checkDisable = (material:any) => {
         if (content?.type === ContentType.Activity && material.__typename === MaterialTypename.VIDEO) return true;
