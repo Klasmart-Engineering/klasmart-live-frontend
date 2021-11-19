@@ -24,7 +24,7 @@ import React,
 } from "react";
 
 const Callstats: any = require(`callstats-js/callstats.min`);
-const callstats = new Callstats();
+const callstats = process.env.CALLSTATS_ENABLE === `TRUE` ? new Callstats() : undefined;
 
 export interface WebRTCContextInterface {
     getAuxStream: (sessionId: string) => MediaStream | undefined;
@@ -566,7 +566,7 @@ export const WebRTCProvider = (props: { children: React.ReactNode }) => {
     };
 
     const attachCallstatsFabric = (transport: MediaSoup.Transport, params: any, roomId: string, direction: any) => {
-        if (process.env.CALLSTATS_ENABLE !== `TRUE`) {
+        if (process.env.CALLSTATS_ENABLE !== `TRUE` || !callstats) {
             return;
         }
         // Experimental, may not work on all browsers
@@ -584,7 +584,7 @@ export const WebRTCProvider = (props: { children: React.ReactNode }) => {
     };
 
     const attachCallstatsError = (transport: MediaSoup.Transport, roomId: string, err: any) => {
-        if (process.env.CALLSTATS_ENABLE !== `TRUE`) {
+        if (process.env.CALLSTATS_ENABLE !== `TRUE` || !callstats) {
             return;
         }
         // Experimental, may not work on all browsers
@@ -598,7 +598,7 @@ export const WebRTCProvider = (props: { children: React.ReactNode }) => {
     };
 
     const terminateCallstatsFabric = (transport: MediaSoup.Transport, roomId: string) => {
-        if (process.env.CALLSTATS_ENABLE !== `TRUE`) {
+        if (process.env.CALLSTATS_ENABLE !== `TRUE` || !callstats) {
             return;
         }
         // Experimental, may not work on all browsers
@@ -738,7 +738,7 @@ export const WebRTCProvider = (props: { children: React.ReactNode }) => {
     });
 
     useEffect(() => {
-        if (process.env.CALLSTATS_ENABLE !== `TRUE`) {
+        if (process.env.CALLSTATS_ENABLE !== `TRUE` || !callstats) {
             return;
         }
         callstats.initialize(`881714000`, `OV6YSSRJ0fOA:vr7quqij46jLPMpaBXTAF50F2wFTqP4acrxXWVs9BIk=`, name + `:` + localSessionId);
