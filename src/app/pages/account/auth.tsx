@@ -5,19 +5,28 @@ import { ParentalGate } from "../../dialogs/parentalGate";
 import {
     localeState,
     OrientationType,
+    selectedRegionState,
 } from "../../model/appModel";
 import { lockOrientation } from "../../utils/screenUtils";
-import { Grid } from "@material-ui/core";
+import {
+    Button,
+    Grid,
+} from "@material-ui/core";
 import createStyles from "@material-ui/core/styles/createStyles";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import React,
 {
+    useCallback,
     useEffect,
     useRef,
     useState,
 } from "react";
+import { FormattedMessage } from "react-intl";
 import { Redirect } from "react-router-dom";
-import { useRecoilValue } from "recoil";
+import {
+    useRecoilState,
+    useRecoilValue,
+} from "recoil";
 
 const useStyles = makeStyles(() => createStyles({
     container: {
@@ -40,6 +49,9 @@ export function Auth ({ useInAppBrowser }: Props) {
     const frameRef = useRef<HTMLIFrameElement>(null);
     const [ key, setKey ] = useState(Math.random().toString(36));
     const locale = useRecoilValue(localeState);
+
+    const [ selectedRegion, setSelectedRegion ] = useRecoilState(selectedRegionState);
+
     const authEndpoint = useHttpEndpoint(`auth`);
 
     const {
@@ -98,6 +110,17 @@ export function Auth ({ useInAppBrowser }: Props) {
         completedParentalChallenge,
     ]);
 
+    const selectRegionWithId = useCallback((regionId: string) => {
+        setSelectedRegion({
+            ...selectedRegion,
+            regionId,
+        });
+    }, []);
+
+    useEffect(() => {
+        setKey(Math.random().toString(36));
+    }, [ selectedRegion ]);
+
     if (!loading && !authenticated && !completedParentalChallenge) {
         return <ParentalGate onCompleted={() => { setCompletedParentalChallenge(true); }} />;
     }
@@ -117,6 +140,19 @@ export function Auth ({ useInAppBrowser }: Props) {
                     messageId="auth_waiting"
                     retryCallback={() => setKey(Math.random().toString(36))} />
                 {authenticated ? <Redirect to="/" /> : <></>}
+                {process.env.NODE_ENV === `development` && (
+                    <Grid
+                        item
+                        xs={12}
+                        style={{
+                            textAlign: `center`,
+                        }}
+                    >
+                        <Button onClick={() => { selectRegionWithId(`auth.alpha.kidsloop.net`); }}><FormattedMessage id={`select_region_alpha`} /></Button>
+                        <Button onClick={() => { selectRegionWithId(`auth.stage.kidsloop.live`); }}><FormattedMessage id={`select_region_staging`} /></Button>
+                        <Button onClick={() => { selectRegionWithId(`auth.kidsloop.live`); }}><FormattedMessage id={`select_region_production`} /></Button>
+                    </Grid>
+                )}
             </Grid>
         );
     } else {

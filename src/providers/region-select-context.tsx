@@ -130,6 +130,19 @@ const DefaultRegions: Region[] = [
         },
     },
     {
+        id: `auth.stage.kidsloop.live`,
+        name: `Staging`,
+        development: true,
+        services: {
+            auth: `https://auth.stage.kidsloop.live`,
+            live: `https://live.stage.kidsloop.live`,
+            cms: `https://cms.stage.kidsloop.live`,
+            sfu: `https://live.stage.kidsloop.live/sfu`,
+            user: `https://api.stage.kidsloop.live/user/`,
+            privacy: `https://kidsloop.net/en/policies/privacy-notice`,
+        },
+    },
+    {
         id: `auth.alpha.kidsloop.net`,
         name: `Alpha`,
         development: true,
