@@ -59,6 +59,8 @@ export function RecordedIframe (props: Props): JSX.Element {
 
     const { contentHref } = props;
 
+    const imageExtensionPattern = /\.(jpe?g|png|gif|bmp)$/gi;
+    const isImageContent = contentHref?.match(imageExtensionPattern);
     const isPdfContent = contentHref.endsWith(`.pdf`);
 
     const [ sendStreamId ] = useSetStreamIdMutation();
@@ -70,7 +72,6 @@ export function RecordedIframe (props: Props): JSX.Element {
     const [ userCount, setUserCount ] = useState(sessions.size);
 
     const [ useDoubleSize, setUseDoubleSize ] = useState(false);
-    const [ stylesLoaded ] = useState(false);
 
     const size = useWindowSize();
 
@@ -175,41 +176,32 @@ export function RecordedIframe (props: Props): JSX.Element {
 
         if (!contentWindow || !contentDoc) { return; }
 
-        // Custom styles when needed
-        if (!stylesLoaded) {
-            const style = document.createElement(`style`);
-            style.innerHTML = `
-            img{max-width: 100%; height: auto; object-fit:contain}
-            body > video{width: 100%; height: 100vh}
-            .h5p-single-choice-set{
-                max-height: 300px !important;
-            }
-            .h5p-alternative-inner{
-                height: auto !important;
-            }
-            .h5p-column .h5p-dragquestion > .h5p-question-content > .h5p-inner{
-                width: 100% !important
-            }
-            ::-webkit-scrollbar {
-                -webkit-appearance: none;
-            }
-            ::-webkit-scrollbar:vertical {
-                width: 20px;
-            }
-            ::-webkit-scrollbar:horizontal {
-                height: 20px;
-            }
-            ::-webkit-scrollbar-thumb {
-                background-color: #619bd8;
-                border-radius: 10px;
-                border: 5px solid #ffffff;
-            }
-            ::-webkit-scrollbar-track {
-                border-radius: 10px;
-                background-color: #ffffff;
-            }
-            `;
-            contentDoc.head.appendChild(style);
+        // Remove styles if exists
+        document.getElementById(`kidsloop-live-frontend-styles`)?.remove();
+        document.getElementById(`kidsloop-live-frontend-image-styles`)?.remove();
+
+        // Custom styles when needed (general)
+        const style = document.createElement(`style`);
+        style.setAttribute(`id`, `kidsloop-live-frontend-styles`);
+        style.innerHTML = `
+        img { max-width: 100%; height: auto; object-fit:contain }
+        body > video { width: 100%; height: 100vh }
+        .h5p-single-choice-set { max-height: 300px !important; }
+        .h5p-alternative-inner{ height: auto !important; }
+        .h5p-column .h5p-dragquestion > .h5p-question-content > .h5p-inner{ width: 100% !important }
+        ::-webkit-scrollbar { -webkit-appearance: none; }
+        ::-webkit-scrollbar:vertical { width: 20px; }
+        ::-webkit-scrollbar:horizontal { height: 20px; }
+        ::-webkit-scrollbar-thumb { background-color: #619bd8; border-radius: 10px; border: 5px solid #ffffff; }
+        ::-webkit-scrollbar-track { border-radius: 10px; background-color: #ffffff; }
+        `;
+        contentDoc.head.appendChild(style);
+
+        if(isImageContent){
+            const imageStyle = document.createElement(`style`);
+            imageStyle.setAttribute(`id`, `kidsloop-live-frontend-image-styles`);
+            imageStyle.innerHTML = `img { pointer-events: none }`;
+            contentDoc.head.appendChild(imageStyle);
         }
 
         // IP Protection: Contents should not be able to be downloaded by right-clicking.

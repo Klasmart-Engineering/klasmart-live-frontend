@@ -4,14 +4,9 @@ import {
     makeStyles,
     Theme,
 } from "@material-ui/core";
-import React,
-{ useContext } from "react";
-import { useRecoilState } from "recoil";
+import React from "react";
 
 const useStyles = makeStyles((theme: Theme) => ({
-    container:{
-        height: `calc(100vh - 140px)`, // TODO replace with toolbar height
-    },
     imageBackground: {
         height: `100%`,
         position: `absolute`,
@@ -25,16 +20,27 @@ const useStyles = makeStyles((theme: Theme) => ({
         backgroundSize: `cover`,
         opacity: `0.8`,
     },
-    image:{
-        zIndex: 9,
+    image: {
+        position: `absolute`,
+        zIndex: 2,
         objectFit: `contain`,
         width: `100%`,
         textAlign: `center`,
         maxHeight: `100%`,
+        padding: theme.spacing(1),
+        boxSizing: `border-box`,
+
+        "&[draggable='false']": {
+            pointerEvents: `none`,
+        },
     },
 }));
 
-function ActivityImage (props: any) {
+interface Props {
+    material: string;
+}
+
+function ActivityImage (props: Props) {
     const classes = useStyles();
     const { material } = props;
 
@@ -43,18 +49,17 @@ function ActivityImage (props: any) {
             container
             alignItems="center"
             justifyContent="center"
-            className={classes.container}
         >
-            <Grid
-                item
+            <img
+                draggable="false"
+                className={classes.image}
+                src={material}
+            />
+            <div
                 className={classes.imageBackground}
                 style={{
                     backgroundImage: `url(${material})`,
                 }}
-            />
-            <img
-                className={classes.image}
-                src={material}
             />
         </Grid>
     );
