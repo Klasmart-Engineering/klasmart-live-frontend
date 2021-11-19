@@ -49,7 +49,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     relative:{
         position: `relative`,
         height: `100%`,
-        overflow: `auto`,
     },
 }));
 
