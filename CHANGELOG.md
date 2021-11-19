@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.3.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.2.2%0Dv3.3.0) (2021-11-19)
+
+
+### Features
+
+* add loading and error screens for grapqh connections ([172e84b](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/172e84b06340db84078b8d0e83d56a2ac3eaf68b))
+* add locale parameter to auth login ([7c4d49d](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/7c4d49d876f5e464b3362e58f4d4f79b0ba908c5)), closes [#616](https://calmisland.atlassian.net/browse/616)
+* add pagination and other optimizations to schedule page ([5b0ff68](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/5b0ff6842e24d4b9540f6090f0c2ee94c55df6fa))
+* add region select buttons in development builds ([e5fe1a7](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/e5fe1a725b11b3e6716609ca5c06774e4b299510))
+
+
+### Bug Fixes
+
+* adaptive name width in userCamera + remove speaking activity (unused) ([e92d6ce](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/e92d6ce2c3d7491417daf1dc262e3c1942833594))
+* **app:** camera,mic become malfunction after resume ([cf09feb](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/cf09feb3a5415c38df06c6a61595a7ba8e26416d))
+* **app:** unable to use speech recognition in Observe mode ([dee0b90](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/dee0b903fd73cc0ee62064e7c410562686363d6c))
+* connect sfu after live is connected ([9b74a80](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/9b74a80e461d42b5dba70951ec1f02c068176899))
+* don't setState during render ([163c638](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/163c638f7241b6d5a95d14bc024173854a5fc685))
+* mp4 file source not loading properly ([ce34174](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/ce341749b5acd94dff059afa96a42760ca9050c5))
+* remove drag and drop image ([cecdb6a](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/cecdb6a305f4ff897829567d2cf9e83138fe89f4))
+* separate providers for live and study ([ff9028a](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/ff9028aa8dc69f51fe548e147b9cab7fe90bcc59))
+* use actual cms endpont for recommended content query ([5606c6e](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/5606c6ea5a25c9fae098fcb39f59441c039cc33a))
+* use createStyles at settingDialog.tsx & schedule.tsx ([eae7162](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/eae71627e77ed3e76e9851f81d44dd1298493b09))
+
 ### [3.2.2](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.2.1%0Dv3.2.2) (2021-11-15)
 
 
