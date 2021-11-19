@@ -17,6 +17,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Grid from '@material-ui/core/Grid';
 import {
+    createStyles,
     makeStyles,
     Theme,
     useTheme,
@@ -32,22 +33,23 @@ import {
 } from "react-intl";
 import { useRecoilState } from "recoil";
 
-const useStyles = makeStyles((theme: Theme) => ({
-    noPadding: {
-        padding: 0,
-    },
-    icon: {
-        "&:hover": {
-            color: `white`,
+const useStyles = makeStyles((theme: Theme) =>
+    createStyles({
+        noPadding: {
+            padding: 0,
         },
-    },
-    avatarLanguage: {
-        backgroundColor: `#E78FAD`,
-    },
-    listItemTextPrimary: {
-        fontWeight: theme.typography.fontWeightBold,
-    },
-}));
+        icon: {
+            "&:hover": {
+                color: `white`,
+            },
+        },
+        avatarLanguage: {
+            backgroundColor: `#E78FAD`,
+        },
+        listItemTextPrimary: {
+            fontWeight: 600, // theme.typography.fontWeightBold
+        },
+    }));
 
 export function SettingsDialog () {
     const theme = useTheme();
