@@ -1,3 +1,4 @@
+import { ChatMessage } from "@/data/live/state/useMessages";
 import {
     Grid,
     makeStyles,
@@ -10,7 +11,8 @@ import { TimeFive as TimestampIcon } from "@styled-icons/boxicons-regular/TimeFi
 import { HatGraduation as TeacherIcon } from "@styled-icons/fluentui-system-filled/HatGraduation";
 import clsx from "clsx";
 import { UserAvatar } from "kidsloop-px";
-import React from "react";
+import React,
+{ FC } from "react";
 import {
     FormattedDate,
     FormattedTime,
@@ -78,30 +80,26 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 }));
 
-export interface MessageProps {
-    id: string;
-    message: string;
-    session: any;
-}
-
-function Message (props: MessageProps) {
+const Message: FC<{message: ChatMessage}> = ({
+    message: {
+        text, timestamp, user,
+    },
+}) => {
     const classes = useStyles();
-    const {
-        id,
-        message,
-        session,
-    } = props;
+    const name = user?.name || `Unknown User`;
+    const isTeacher = user?.isTeacher || false;
+    const date = new Date(timestamp);
 
     return (
         <Grid
             container
             alignItems="center"
             className={clsx(classes.root, {
-                [classes.rootTeacher]: session.isTeacher,
+                [classes.rootTeacher]: isTeacher,
             })}>
             <Grid item>
                 <UserAvatar
-                    name={session.name}
+                    name={name}
                     size="medium"
                 />
             </Grid>
@@ -110,8 +108,8 @@ function Message (props: MessageProps) {
                 xs
                 className={classes.messageGrid}>
                 <Typography className={classes.author}>
-                    {session.name}
-                    {session.isTeacher && <TeacherIcon
+                    {name}
+                    {isTeacher && <TeacherIcon
                         size="1rem"
                         className={classes.teacherIcon} />}
 
@@ -119,7 +117,7 @@ function Message (props: MessageProps) {
                         placement="top"
                         title={
                             <>
-                                <FormattedDate value={new Date(Number(id.split(`-`)[0]))} /> - <FormattedTime value={new Date(Number(id.split(`-`)[0]))} />
+                                <FormattedDate value={date} /> - <FormattedTime value={date} />
                             </>
                         }
                     >
@@ -129,11 +127,11 @@ function Message (props: MessageProps) {
                     </Tooltip>
                 </Typography>
                 <div className={classes.message}>
-                    <Typography>{message}</Typography>
+                    <Typography>{text}</Typography>
                 </div>
             </Grid>
         </Grid>
     );
-}
+};
 
 export default Message;

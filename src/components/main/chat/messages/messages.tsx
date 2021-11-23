@@ -32,8 +32,7 @@ function Messages () {
     const classes = useStyles();
     const intl = useIntl();
 
-    const messagesData = useMessages();
-    const messages = Array.from(messagesData);
+    const messages = useMessages();
 
     useEffect(() => {
         // TODO, useref + scrollintoview (if possible),
@@ -65,15 +64,13 @@ function Messages () {
                         text={intl.formatMessage({
                             id: `chat_messages_noresults`,
                         })} /> :
-                    (<Box
-                        className={classes.container}>
-                        {messages.map((message:any) => (
-                            <Message
-                                key={message[1].id}
-                                id={message[1].id}
-                                session={message[1].session}
-                                message={message[1].message} />
-                        ))}
+                    (<Box className={classes.container}>
+                        {
+                            messages.map((m, i) => <Message
+                                key={i}
+                                message={m}
+                            />)
+                        }
                     </Box>)
                 }
             </Grid>

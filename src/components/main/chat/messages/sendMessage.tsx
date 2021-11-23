@@ -43,18 +43,11 @@ function SendMessage () {
     const intl = useIntl();
 
     const [ message, setMessage ] = useState(``);
-    const { roomId } = useSessionContext();
-
-    const [ sendMessage ] = useSendMessageMutation();
+    const sendMessage = useSendMessageMutation();
 
     const submitMessage = (e: React.FormEvent<HTMLDivElement>) => {
         e.preventDefault();
-        sendMessage({
-            variables: {
-                roomId,
-                message,
-            },
-        });
+        sendMessage(message);
         setMessage(``);
     };
 

@@ -5,6 +5,7 @@ import {
     OperationVariables,
     useMutation,
 } from "@apollo/client";
+import { useSessionContext } from "@/providers/session-context";
 
 const SEND_MESSAGE = gql`
     mutation sendMessage($roomId: ID!, $message: String) {
@@ -14,13 +15,16 @@ const SEND_MESSAGE = gql`
         }
     }`;
 
-export const useSendMessageMutation = (options?: MutationHookOptions<void, OperationVariables>) => {
+export const useSendMessageMutation = () => {
+    const { roomId } = useSessionContext();
     const { client } = useLiveServiceApolloClient();
 
-    const mutation = useMutation(SEND_MESSAGE, {
-        ...options,
-        client,
-    });
+    const [sendMessage] = useMutation(SEND_MESSAGE, { client });
 
-    return mutation;
+    return (text: string) => sendMessage({
+        variables: {
+            roomId,
+            message: text,
+        },
+    })
 };
