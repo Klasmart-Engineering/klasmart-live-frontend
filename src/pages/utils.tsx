@@ -21,7 +21,7 @@ export enum InteractiveMode {
 }
 export interface Session {
     id: string;
-    name?: string;
+    name: string;
     streamId?: string;
     isTeacher?: boolean;
     isHost?: boolean;

@@ -91,6 +91,9 @@ const webpackConfig: Configuration = {
         ],
         alias: {
             "@": path.resolve(__dirname, `src`),
+            react: path.resolve(`./node_modules/react`),
+            'react-dom': path.resolve(`./node_modules/react-dom`),
+            'react-redux': path.resolve(`./node_modules/react-redux`),
             ...brandingOptions.webpack.resolve.alias,
         },
     },
