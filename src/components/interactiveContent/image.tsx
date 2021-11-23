@@ -7,6 +7,9 @@ import {
 import React from "react";
 
 const useStyles = makeStyles((theme: Theme) => ({
+    root: {
+        height: `100%`,
+    },
     imageBackground: {
         height: `100%`,
         position: `absolute`,
@@ -49,6 +52,7 @@ function ActivityImage (props: Props) {
             container
             alignItems="center"
             justifyContent="center"
+            className={classes.root}
         >
             <img
                 draggable="false"
