@@ -5,7 +5,8 @@ import {
 } from "@/config";
 import { useHttpEndpoint } from "@/providers/region-select-context";
 import { CmsApiClientProvider as KLCmsApiClientProvider } from "@kidsloop/cms-api-client";
-import React from "react";
+import React,
+{ useCallback } from "react";
 
 interface Props {
     children: React.ReactNode;
@@ -15,6 +16,16 @@ export default function CmsApiClientProvider (props: Props) {
     const { children } = props;
     const cmsServiceEndpoint = useHttpEndpoint(`cms`);
     const { actions } = useAuthenticationContext();
+
+    const onRejected = useCallback(async (err) => {
+        if (err?.response?.status !== 401 || err?.response?.data.label !== `general_error_unauthorized`) return err;
+        try {
+            await actions?.refreshAuthenticationToken();
+        } catch (err) {
+            await actions?.signOut();
+            return err;
+        }
+    }, [ actions ]);
 
     return (
         <KLCmsApiClientProvider
@@ -32,15 +43,7 @@ export default function CmsApiClientProvider (props: Props) {
             }}
             interceptors={[
                 {
-                    onRejected: async (err) => {
-                        if (err?.response?.status !== 401 || err?.response?.data.label !== `general_error_unauthorized`) return err;
-                        try {
-                            await actions?.refreshAuthenticationToken();
-                        } catch (err) {
-                            await actions?.signOut();
-                            return err;
-                        }
-                    },
+                    onRejected,
                 },
             ]}
         >

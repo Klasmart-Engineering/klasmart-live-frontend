@@ -130,6 +130,19 @@ const DefaultRegions: Region[] = [
         },
     },
     {
+        id: `auth.kidsloop.lk`,
+        name: `Sri Lanka`,
+        development: false,
+        services: {
+            auth: `https://auth.kidsloop.lk`,
+            live: `https://live.kidsloop.lk`,
+            cms: `https://cms.kidsloop.lk`,
+            sfu: `https://live.kidsloop.lk/sfu`,
+            user: `https://api.kidsloop.lk/user/`,
+            privacy: `https://kidsloop.net/policies/privacy-notice`,
+        },
+    },
+    {
         id: `auth.stage.kidsloop.live`,
         name: `Staging`,
         development: true,

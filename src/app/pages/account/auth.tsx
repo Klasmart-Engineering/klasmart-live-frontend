@@ -8,6 +8,7 @@ import {
     selectedRegionState,
 } from "../../model/appModel";
 import { lockOrientation } from "../../utils/screenUtils";
+import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
 import {
     Button,
     Grid,
@@ -110,16 +111,18 @@ export function Auth ({ useInAppBrowser }: Props) {
         completedParentalChallenge,
     ]);
 
+    const { restart } = useCordovaSystemContext();
+
     const selectRegionWithId = useCallback((regionId: string) => {
         setSelectedRegion({
             ...selectedRegion,
             regionId,
         });
-    }, []);
 
-    useEffect(() => {
-        setKey(Math.random().toString(36));
-    }, [ selectedRegion ]);
+        if (restart) {
+            restart();
+        }
+    }, [ selectedRegion, restart ]);
 
     if (!loading && !authenticated && !completedParentalChallenge) {
         return <ParentalGate onCompleted={() => { setCompletedParentalChallenge(true); }} />;
