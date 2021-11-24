@@ -6,8 +6,6 @@ import {
 
 const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
-let hasReplayStarted = false;
-let fullSnapshotRebuilded = false;
 enum YoutubePlayerState {
     ENDED = 0,
     PLAYING,
@@ -36,12 +34,15 @@ rrwebPlayer.on(`resize`, () => window.parent.postMessage({
 
 rrwebPlayer.on(`fullsnapshot-rebuilded`, () => onFullSnapshotRebuilded());
 
+let hasReplayStarted = false;
+let isH5PIframe = false;
+
 window.addEventListener(`message`, ({ data }) => {
     if (!data || !data.event) { return; }
 
     try {
         const event = JSON.parse(data.event);
-        const isYTVideo = isYouTubeVideo(data.event);
+
         if (event.type === EventType.Meta && !hasReplayStarted) {
             rrwebPlayer.startLive(event.timestamp);
             hasReplayStarted = true;
@@ -54,11 +55,8 @@ window.addEventListener(`message`, ({ data }) => {
             onCustomEvent(event);
             return;
         }
-        if (event.type === EventType.FullSnapshot && fullSnapshotRebuilded && isYTVideo) {
+        if (event.type === EventType.FullSnapshot && isH5PIframe) {
             return;
-        }
-        if (event.type === EventType.FullSnapshot) {
-            fullSnapshotRebuilded = true;
         }
 
         rrwebPlayer.addEvent(event);
@@ -149,6 +147,13 @@ function onFullSnapshotRebuilded () {
             }
         }
     };
+
+    // check if content H5P iframe
+    const html = replayedDocument.getElementsByTagName(`html`)[0];
+    if (!isH5PIframe && html.className.startsWith(`h5p-iframe`)) {
+        isH5PIframe = true;
+    }
+
     if (!(replayedWindow as any).YT) {
         const tag = replayedDocument.createElement(`script`);
         (replayedWindow as any).onYouTubeIframeAPIReady = onYTAPIReady;
@@ -187,9 +192,4 @@ function updateYoutubePlayerInfo (youtubePlayer: YoutubePlayerReference, id: str
     default:
         break;
     }
-}
-
-function isYouTubeVideo (event: string) {
-    const exist = event.search(`https://www.youtube.com`) || event.search(`https://www.youtu.be`);
-    return exist >= 0;
 }
