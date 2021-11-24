@@ -52,9 +52,9 @@ const useAuthentication = () => {
     const [ selectedRegion, setSelectedRegion ] = useRecoilState(selectedRegionState);
     const [ locale, setLocale ] = useRecoilState(localeState);
 
-    const refresh = useCallback(async () => {
+    const refresh = useCallback(async (force?: boolean) => {
         if (!authenticationService) return;
-        if (signedOut) return;
+        if (signedOut && !force) return;
 
         setAuthReady(false);
         setAuthError(false);
@@ -67,7 +67,7 @@ const useAuthentication = () => {
             }).finally(() => {
                 setAuthReady(true);
             });
-    }, [ authenticationService ]);
+    }, [ authenticationService, signedOut ]);
 
     const signOut = useCallback(async () => {
         if (!authenticationService) return;
@@ -96,7 +96,7 @@ const useAuthentication = () => {
 
         authenticationService.transfer(auth.transferToken).then(() => {
             setSignedOut(false);
-            refresh();
+            refresh(true);
         }).catch(err => {
             console.error(err);
             setAuthError(true);
@@ -109,8 +109,6 @@ const useAuthentication = () => {
     }, [ authenticationService, auth ]);
 
     useEffect(() => {
-        if (!authenticationService) return;
-
         const openUrlHandler = (urlString: string) => {
             const url = new URL(urlString);
 
@@ -120,7 +118,6 @@ const useAuthentication = () => {
             }
 
             if (url.searchParams) {
-
                 const languageCode = url.searchParams.get(`iso`);
                 if (languageCode) {
                     setLocale({
@@ -144,7 +141,6 @@ const useAuthentication = () => {
                         transferToken: token,
                     });
                 }
-
             }
         };
 
@@ -152,7 +148,13 @@ const useAuthentication = () => {
             // NOTE: Using setTimeout to prevent handleOpenURL from blocking app launch.
             setTimeout(() => openUrlHandler(url), 0);
         };
+    }, [
+        selectedRegion,
+        auth,
+        locale,
+    ]);
 
+    useEffect(() => {
         refresh();
     }, []);
 
@@ -186,7 +188,11 @@ export function AuthenticationContextProvider ({ children }: Props) {
                 refreshAuthenticationToken: refresh,
             },
         };
-    }, [ authReady, authenticated ]);
+    }, [
+        authReady,
+        authenticated,
+        authError,
+    ]);
 
     return (
         <AuthenticationContext.Provider value={context}>

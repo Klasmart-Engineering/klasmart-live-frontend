@@ -14,7 +14,7 @@ import { generateDescriptionHasHyperLink } from "@/app/utils/link";
 import { useSessionContext } from "@/providers/session-context";
 import { fromSecondsToMilliseconds } from "@/utils/utils";
 import {
-    getLiveTokenByScheduleId,
+    useCmsApiClient,
     useGetScheduleById,
 } from "@kidsloop/cms-api-client";
 import {
@@ -69,6 +69,8 @@ export default function StudyDetailsDialog (props: Props) {
     const { push } = useHistory();
     const organization = useSelectedOrganizationValue();
 
+    const { actions } = useCmsApiClient();
+
     const organizationId = organization?.organization_id ?? ``;
 
     const { data: scheduleData, isFetching: isFetchingSchedule } = useGetScheduleById({
@@ -84,7 +86,7 @@ export default function StudyDetailsDialog (props: Props) {
         if (!scheduleId) return;
         setGetTokenLoading(true);
         try {
-            const { token } = await getLiveTokenByScheduleId({
+            const { token } = await actions.getLiveTokenByScheduleId({
                 org_id: organizationId,
                 schedule_id: scheduleId,
                 live_token_type: ScheduleLiveTokenType.LIVE,

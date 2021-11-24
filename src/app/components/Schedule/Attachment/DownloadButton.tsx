@@ -8,7 +8,7 @@ import {
     handleDownloadForAndroid,
     handleDownloadForIOS,
 } from "@/app/utils/networkUtils";
-import { getContentResourcePathById } from "@kidsloop/cms-api-client";
+import { useCmsApiClient } from "@kidsloop/cms-api-client";
 import {
     CircularProgress,
     createStyles,
@@ -50,6 +50,8 @@ export default function AttachmentDownloadButton (props: Props) {
     const { showPopup } = usePopupContext();
     const { isIOS, requestPermissions } = useCordovaSystemContext();
     const [ downloadingAttachment, setDownloadingAttachment ] = useState(false);
+
+    const { actions } = useCmsApiClient();
 
     const confirmDownloadAttachment = () => {
         checkNetworkToConfirmDownload(startDownloadAttachment, showPopup, intl);
@@ -93,7 +95,7 @@ export default function AttachmentDownloadButton (props: Props) {
         confirmDownload(async () => {
             setDownloadingAttachment(true);
             try {
-                const resourceBlob = await getContentResourcePathById({
+                const resourceBlob = await actions.getContentResourcePathById({
                     resource_id: attachmentId,
                 });
                 if (isIOS) await handleDownloadForIOS(resourceBlob, attachmentName, shareFile);

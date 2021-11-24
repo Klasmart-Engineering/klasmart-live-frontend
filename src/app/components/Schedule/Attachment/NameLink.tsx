@@ -6,7 +6,7 @@ import {
     saveDataBlobToFile,
 } from "@/app/utils/fileUtils";
 import { checkNetworkToConfirmDownload } from "@/app/utils/networkUtils";
-import { getContentResourcePathById } from "@kidsloop/cms-api-client";
+import { useCmsApiClient } from "@kidsloop/cms-api-client";
 import {
     CircularProgress,
     createStyles,
@@ -55,6 +55,8 @@ export default function AttachmentNameLink (props: Props) {
     const { isIOS } = useCordovaSystemContext();
     const [ downloadingPreview, setDownloadingPreview ] = useState(false);
 
+    const { actions } = useCmsApiClient();
+
     const confirmOpenAttachmentLink = () => {
         checkNetworkToConfirmDownload(startDownloadPreview, showPopup, intl);
     };
@@ -63,7 +65,7 @@ export default function AttachmentNameLink (props: Props) {
         if (downloadingPreview) return;
         setDownloadingPreview(true);
         try {
-            const resourceBlob = await getContentResourcePathById({
+            const resourceBlob = await actions.getContentResourcePathById({
                 resource_id: attachmentId,
             });
             const filePath = await saveDataBlobToFile(resourceBlob, getCacheDirectory(isIOS), convertFileNameToUnderscores(attachmentName));

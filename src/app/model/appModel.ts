@@ -55,6 +55,7 @@ export const selectedRegionState = atom({
     default: {
         regionId: process.env.IS_CORDOVA_BUILD ? `auth.alpha.kidsloop.net` : `env`,
     },
+    effects_UNSTABLE: [ persistAtom ],
 });
 
 export const authState = atom<{transferToken?: string}>({
