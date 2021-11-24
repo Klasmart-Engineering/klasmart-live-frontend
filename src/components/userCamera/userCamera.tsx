@@ -3,6 +3,7 @@ import UserCameraActions from "./userCameraActions";
 import UserCameraDetails from "./userCameraDetails";
 import ReactPlayer from "@/components/react-player";
 import { useSessions } from "@/data/live/state/useSessions";
+import { Session } from "@/pages/utils";
 import { useCameraContext } from "@/providers/Camera";
 import { useSessionContext } from "@/providers/session-context";
 import { WebRTCContext } from "@/providers/WebRTCContext";
@@ -66,19 +67,17 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 }));
 
-interface UserCameraType {
-    user: any;
+interface UserCameraProps {
+    user: Session;
     actions?: boolean;
     variant?: "medium" | "large" | "small";
 }
 
-function UserCamera (props: UserCameraType) {
-    const {
-        user,
-        variant,
-        actions = true,
-
-    } = props;
+const UserCamera =  ({
+    user,
+    variant,
+    actions = true,
+}: UserCameraProps) => {
     const classes = useStyles();
     const [ isHover, setIsHover ] = useState(false);
 
@@ -175,6 +174,6 @@ function UserCamera (props: UserCameraType) {
             </Grid>
         </Grid>
     );
-}
+};
 
 export default UserCamera;

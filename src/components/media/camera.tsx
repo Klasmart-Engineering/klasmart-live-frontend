@@ -21,21 +21,6 @@ export enum CameraOrder {
     STUDENT = 10,
 }
 
-export function getCameraOrder (userSession: Session, isLocalUser: boolean): CameraOrder {
-    let order: CameraOrder;
-    if (userSession.isHost)
-        order = CameraOrder.HOST_TEACHER;
-    else if (userSession.isTeacher && isLocalUser)
-        order = CameraOrder.TEACHER_SELF;
-    else if (userSession.isTeacher)
-        order = CameraOrder.TEACHER;
-    else if (isLocalUser)
-        order = CameraOrder.STUDENT_SELF;
-    else
-        order = CameraOrder.STUDENT;
-    return order;
-}
-
 interface CameraProps extends GridProps {
     session?: Session;
     mediaStream?: MediaStream;

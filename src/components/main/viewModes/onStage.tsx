@@ -7,12 +7,8 @@ import {
     Theme,
     Typography,
 } from "@material-ui/core";
-import { UserVoice as OnStageIcon } from "@styled-icons/boxicons-solid/UserVoice";
 import React,
-{
-    useEffect,
-    useState,
-} from "react";
+{ useMemo } from "react";
 import { FormattedMessage } from "react-intl";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -27,12 +23,11 @@ function OnStage () {
     const classes = useStyles();
     const sessions = useSessions();
     const { name } = useSessionContext();
-    const [ host, setHost ] = useState<any>(true);
 
-    useEffect(() => {
+    const host = useMemo(() => {
         const teachers = [ ...sessions.values() ].filter(session => session.isTeacher === true).sort((a, b) => a.joinedAt - b.joinedAt);
         const host = teachers.find(session => session.isHost === true);
-        host ? setHost(host) : setHost(null);
+        return host;
     }, [ sessions ]);
 
     if(host){
