@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     title:{
         fontSize: `1rem`,
-        fontWeight: 600,
+        fontWeight: theme.typography.fontWeightBold as number,
         textAlign: `center`,
         marginTop: -5,
         marginBottom: 5,

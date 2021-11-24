@@ -24,7 +24,7 @@ import { useIntl } from "react-intl";
 const useStyles = makeStyles((theme) => createStyles({
     attachmentName: {
         color: `#193756`,
-        fontWeight: 600,
+        fontWeight: theme.typography.fontWeightBold as number,
         textOverflow: `ellipsis`,
         overflow: `hidden`,
     },

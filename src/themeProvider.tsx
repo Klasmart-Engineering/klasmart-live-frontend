@@ -5,6 +5,7 @@ import {
     Theme,
 } from "@material-ui/core/styles";
 import { PaletteOptions } from "@material-ui/core/styles/createPalette";
+import { TypographyOptions } from "@material-ui/core/styles/createTypography";
 
 export function themeProvider (languageCode: string, themeMode: string) {
     function setTypography (languageCode: string) {
@@ -31,7 +32,7 @@ export function themeProvider (languageCode: string, themeMode: string) {
     }
 
     const localeTypography = setTypography(languageCode);
-    const typography = {
+    const typography: TypographyOptions = {
         button: {
             textTransform: `none`,
         },
@@ -41,7 +42,7 @@ export function themeProvider (languageCode: string, themeMode: string) {
         fontWeightMedium: localeTypography.localeWeightMedium,
         fontWeightRegular: localeTypography.localeWeightRegular,
         fontSize: 12,
-    } as any;
+    };
 
     const breakpoints = {
         values: {
@@ -130,7 +131,7 @@ export function themeProvider (languageCode: string, themeMode: string) {
                 fontSize: `0.85rem`,
                 "&$active":{
                     opacity: 1,
-                    fontWeight: 600,
+                    fontWeight: localeTypography.localeWeightBold,
                 },
             },
         },

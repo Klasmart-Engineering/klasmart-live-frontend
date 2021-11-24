@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme: Theme) =>
             backgroundColor: `#E78FAD`,
         },
         listItemTextPrimary: {
-            fontWeight: 600, // theme.typography.fontWeightBold
+            fontWeight: theme.typography.fontWeightBold as number,
         },
     }));
 

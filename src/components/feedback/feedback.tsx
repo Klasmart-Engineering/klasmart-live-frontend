@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         },
     },
     moreTitle:{
-        fontWeight: 600,
+        fontWeight: theme.typography.fontWeightBold as number,
         marginTop: theme.spacing(2),
     },
     moreSubtitle:{

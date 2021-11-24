@@ -10,7 +10,7 @@ import React from "react";
 const useStyles = makeStyles((theme) => createStyles({
     rowHeaderText: {
         color: `#193756`,
-        fontWeight: 600, // theme.typography.fontWeightBold
+        fontWeight: theme.typography.fontWeightBold as number,
     },
 }));
 

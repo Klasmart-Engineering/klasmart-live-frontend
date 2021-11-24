@@ -34,7 +34,7 @@ import { useSetRecoilState } from "recoil";
 const useStyles = makeStyles((theme) => createStyles({
     rowContentText: {
         color: `#193756`,
-        fontWeight: 600,
+        fontWeight: theme.typography.fontWeightBold as number,
         overflowWrap: `break-word`,
         wordWrap: `break-word`,
     },

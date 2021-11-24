@@ -9,7 +9,7 @@ const useStyles = makeStyles((theme) => createStyles({
     listSubheaderText: {
         paddingTop: theme.spacing(1),
         paddingBottom: theme.spacing(1),
-        fontWeight: 600, // theme.typography.fontWeightBold
+        fontWeight: theme.typography.fontWeightBold as number,
     },
 }));
 
