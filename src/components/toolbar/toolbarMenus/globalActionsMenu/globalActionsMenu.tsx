@@ -1,16 +1,11 @@
 import GlobalActionsMenuItem from "./globalAction";
 import { useRewardTrophyMutation } from "@/data/live/mutations/useRewardTrophyMutation";
 import { useContent } from "@/data/live/state/useContent";
-import { useGlobalMuteMutation } from "@/data/sfu/mutations/useGlobalMuteMutation";
-import { useGlobalMuteQuery } from "@/data/sfu/queries/useGlobalMuteQuery";
 import { ContentType } from "@/pages/utils";
+import { useConferenceContext } from "@/providers/room/conferenceContext";
 import { ScreenShareContext } from "@/providers/screenShareProvider";
 import { useSessionContext } from "@/providers/session-context";
-import { GlobalMuteNotification } from "@/providers/WebRTCContext";
-import {
-    isGlobalActionsOpenState,
-    videoGloballyMutedState,
-} from "@/store/layoutAtoms";
+import { isGlobalActionsOpenState } from "@/store/layoutAtoms";
 import { StyledPopper } from "@/utils/utils";
 import {
     Grid,
@@ -26,17 +21,10 @@ import { StarFill as StarFillIcon } from "@styled-icons/bootstrap/StarFill";
 import { TrophyFill as TrophyFillIcon } from "@styled-icons/bootstrap/TrophyFill";
 import { TvFill as ScreenShareIcon } from "@styled-icons/bootstrap/TvFill";
 import React,
-{
-    useContext,
-    useEffect,
-    useState,
-} from "react";
+{ useContext } from "react";
 import { isMobile } from "react-device-detect";
 import { useIntl } from "react-intl";
-import {
-    useRecoilState,
-    useRecoilValue,
-} from "recoil";
+import { useRecoilValue } from "recoil";
 
 const useStyles = makeStyles(() => ({
     root: {
@@ -54,21 +42,16 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
     const intl = useIntl();
 
     const isGlobalActionsOpen = useRecoilValue(isGlobalActionsOpenState);
-    const [ videoGloballyMuted, setVideoGloballyMuted ] = useRecoilState(videoGloballyMutedState);
 
-    const [ camerasOn, setCamerasOn ] = useState(true);
-    const [ micsOn, setMicsOn ] = useState(true);
+    const {
+        audioGloballyMuted,
+        videoGloballyMuted,
+        toggleAudioStates,
+        toggleVideoStates,
+    } = useConferenceContext();
     const { roomId, sessionId } = useSessionContext();
     const content = useContent();
     const screenShare = useContext(ScreenShareContext);
-
-    const [ globalMuteMutation ] = useGlobalMuteMutation();
-
-    const { refetch: refetchGlobalMute } = useGlobalMuteQuery({
-        variables: {
-            roomId,
-        },
-    });
 
     const [ rewardTrophyMutation ] = useRewardTrophyMutation();
 
@@ -90,39 +73,6 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
         }
     };
 
-    async function toggleVideoStates (isOn?: boolean) {
-        const notification: GlobalMuteNotification = {
-            roomId,
-            audioGloballyMuted: undefined,
-            videoGloballyDisabled: isOn ?? camerasOn,
-        };
-        const data = await globalMuteMutation({
-            variables: notification,
-        });
-        const videoGloballyDisabled = data?.data?.updateGlobalMute?.videoGloballyDisabled;
-        if (videoGloballyDisabled != null) {
-            setCamerasOn(!videoGloballyDisabled);
-            setVideoGloballyMuted(!videoGloballyDisabled);
-        }
-
-        setVideoGloballyMuted(!videoGloballyMuted);
-    }
-
-    async function toggleAudioStates (isOn?: boolean) {
-        const notification: GlobalMuteNotification = {
-            roomId,
-            audioGloballyMuted: isOn ?? micsOn,
-            videoGloballyDisabled: undefined,
-        };
-        const data = await globalMuteMutation({
-            variables: notification,
-        });
-        const audioGloballyMuted = data?.data?.updateGlobalMute?.audioGloballyMuted;
-        if (audioGloballyMuted != null) {
-            setMicsOn(!audioGloballyMuted);
-        }
-    }
-
     const items = [
         {
             id: `1`,
@@ -143,24 +93,24 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
         {
             id: `4`,
             title: intl.formatMessage({
-                id: micsOn ? `toggle_all_microphones_off` : `toggle_all_microphones_on`,
+                id: audioGloballyMuted ? `toggle_all_microphones_off` : `toggle_all_microphones_on`,
             }),
             icon: <MicFillIcon size="1.4rem" />,
             activeIcon: <MicDisabledIcon size="1.4rem" />,
             variant: `blue`,
-            isActive: !micsOn,
-            onClick: () => toggleAudioStates(),
+            isActive: audioGloballyMuted,
+            onClick: () => toggleAudioStates?.(),
         },
         {
             id: `5`,
             title: intl.formatMessage({
-                id: camerasOn ? `toggle_all_cameras_off` : `toggle_all_cameras_on`,
+                id: videoGloballyMuted ? `toggle_all_cameras_off` : `toggle_all_cameras_on`,
             }),
             icon: <CameraVideoFillIcon size="1.4rem" />,
             activeIcon: <CameraDisabledIcon size="1.4rem" />,
             variant: `blue`,
-            isActive: !camerasOn,
-            onClick: () => toggleVideoStates(),
+            isActive: videoGloballyMuted,
+            onClick: () => toggleVideoStates?.(),
         },
         {
             id: `6`,
@@ -200,16 +150,6 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
             variant: `red`,
         },
     ];
-
-    const fetchGlobalMute = async () => {
-        const { data: globalMuteData } = await refetchGlobalMute();
-        setMicsOn(!globalMuteData.retrieveGlobalMute.audioGloballyMuted);
-        setCamerasOn(!globalMuteData.retrieveGlobalMute.videoGloballyDisabled);
-    };
-
-    useEffect(()=>{
-        fetchGlobalMute();
-    }, []);
 
     return (
         <StyledPopper
