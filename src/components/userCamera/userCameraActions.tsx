@@ -3,6 +3,7 @@ import { useSetHostMutation } from "@/data/live/mutations/useSetHostMutation";
 import { useSessions } from "@/data/live/state/useSessions";
 import { useMuteMutation } from "@/data/sfu/mutations/useMuteMutation";
 import { useGlobalMuteQuery } from "@/data/sfu/queries/useGlobalMuteQuery";
+import { Session } from "@/pages/utils";
 import { useSessionContext } from "@/providers/session-context";
 import {
     MuteNotification,
@@ -162,13 +163,12 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 }));
 
-interface UserCameraActionsType {
-    user: any;
+interface UserCameraActionsProps {
+    user: Session;
     expanded: boolean;
 }
 
-function UserCameraActions (props: UserCameraActionsType) {
-    const { user, expanded } = props;
+const UserCameraActions = ({ user, expanded }: UserCameraActionsProps) => {
     const classes = useStyles();
 
     const { isTeacher, roomId } = useSessionContext();
@@ -216,23 +216,6 @@ function UserCameraActions (props: UserCameraActionsType) {
                             <TrophyIcon size="0.85em"/>
                         </IconButton>
                     }
-
-                    {/* TODO: Pin user
-                    hasControls &&
-                        <IconButton
-                            component="a"
-                            aria-label="More controls button"
-                            aria-controls="more-controls-popover"
-                            aria-haspopup="true"
-                            size="small"
-                            className={clsx(classes.controlsIcon, {
-                                [classes.controlsIconActive] : user.id === pinnedUser,
-                            })}
-                            onClick={() => handlePinnedUser(user.id)}
-                        >
-                            <PinIcon size="1em"/>
-                        </IconButton>
-                        */}
 
                     {isTeacher &&
                         <IconButton
@@ -317,12 +300,15 @@ function UserCameraActions (props: UserCameraActionsType) {
             </Grid>
         </div>
     );
-}
+};
 
 export default UserCameraActions;
 
-function ToggleCamera (props:any){
-    const { user } = props;
+interface ToggleCameraProps {
+    user: Session;
+}
+
+const ToggleCamera = ({ user }: ToggleCameraProps) => {
     const classes = useStyles();
 
     const { roomId, sessionId } = useSessionContext();
@@ -422,10 +408,13 @@ function ToggleCamera (props:any){
             }
         </MenuItem>
     );
+};
+
+interface ToggleMicProps {
+    user: Session;
 }
 
-function ToggleMic (props:any){
-    const { user } = props;
+function ToggleMic ({ user }: ToggleMicProps){
     const classes = useStyles();
 
     const { roomId, sessionId } = useSessionContext();
@@ -519,15 +508,18 @@ function ToggleMic (props:any){
     );
 }
 
-function ToggleControls (props:any){
-    const { user } = props;
+interface ToggleControlsProps {
+    user: Session;
+}
+
+function ToggleControls ({ user }: ToggleControlsProps){
     const classes = useStyles();
 
     const { roomId } = useSessionContext();
 
     const [ hostMutation ] = useSetHostMutation();
 
-    function giveControls (user:any){
+    function giveControls (user: Session){
         hostMutation({
             variables: {
                 roomId,
@@ -549,8 +541,11 @@ function ToggleControls (props:any){
     );
 }
 
-function ToggleCanvas (props:any){
-    const { user } = props;
+interface ToggleCanvasProps {
+    user: Session;
+}
+
+function ToggleCanvas ({ user }:ToggleCanvasProps) {
     const classes = useStyles();
 
     const { actions: { setPermissions, getPermissions } } = useSynchronizedState();
@@ -595,8 +590,11 @@ function ToggleCanvas (props:any){
     );
 }
 
-function ExpandCamera (props:any){
-    const { user } = props;
+interface ExpandCameraProps {
+    user: Session;
+}
+
+function ExpandCamera ({ user }:ExpandCameraProps){
     const classes = useStyles();
 
     return(
