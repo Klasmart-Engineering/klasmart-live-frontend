@@ -92,7 +92,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         zIndex: 9,
         padding: `10px 20px`,
         background: `rgb(255 255 255 / 55%)`,
-        fontWeight: 600,
+        fontWeight: theme.typography.fontWeightBold as number,
         borderRadius: `0 10px 0 0`,
     },
     studentWrap: {},

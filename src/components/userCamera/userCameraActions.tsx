@@ -80,7 +80,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         padding: `4px 6px`,
         fontSize: `0.75rem`,
         lineHeight: `1.2`,
-        fontWeight: 600,
+        fontWeight: theme.typography.fontWeightBold as number,
     },
     roles:{
         position: `absolute`,
@@ -139,7 +139,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     menuItem:{
         color: theme.palette.grey[800],
-        fontWeight: 600,
+        fontWeight: theme.typography.fontWeightBold as number,
     },
     menuItemIcon:{
         marginRight: 10,

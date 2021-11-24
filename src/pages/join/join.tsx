@@ -98,7 +98,7 @@ const useStyles = makeStyles((theme: Theme) =>
             },
         },
         headerText:{
-            fontWeight: 600,
+            fontWeight: theme.typography.fontWeightBold as number,
             [theme.breakpoints.down(`sm`)]: {
                 fontSize: `1.6rem`,
             },

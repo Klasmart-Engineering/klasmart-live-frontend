@@ -1,4 +1,5 @@
 import { CloseIconButton } from "@/app/components/icons/closeIconButton";
+import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
 import { Feedback } from '@/components/feedback/feedback';
 import {
     classEndedState,
@@ -16,7 +17,6 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useHistory } from 'react-router-dom';
 import { useRecoilState } from "recoil";
-import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
 
 const useStyles = makeStyles((theme: Theme) => ({
     container:{
@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         },
     },
     returnToHub:{
-        fontWeight: 600,
+        fontWeight: theme.typography.fontWeightBold as number,
         marginTop: theme.spacing(4),
         "& a": {
             color: theme.palette.text.primary,
@@ -73,14 +73,14 @@ function EndClass () {
         setClassLeft(false);
 
         // TODO: The WebRTC context can't properly initiate another session unless the context
-        // is completely restarted. This is something we'd have to solve at some point, but 
+        // is completely restarted. This is something we'd have to solve at some point, but
         // the current workaround is to reload the entire app instead.
         if (restart) {
             restart();
         } else {
-            history.push(`/schedule`)
+            history.push(`/schedule`);
         }
-    }
+    };
 
     return (
         <Fade in={true}>
@@ -113,7 +113,9 @@ function EndClass () {
                             <Typography className={classes.returnToHub}>
                                 {
                                     process.env.IS_CORDOVA_BUILD
-                                        ? <a onClick={onCloseButtonClick} href="#"><FormattedMessage id="class_ended_return_to_hub" /></a>
+                                        ? <a
+                                            href="#"
+                                            onClick={onCloseButtonClick}><FormattedMessage id="class_ended_return_to_hub" /></a>
                                         : <a href={HUB_ENDPOINT}><FormattedMessage id="class_ended_return_to_hub" /></a>
                                 }
                             </Typography>

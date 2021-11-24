@@ -74,7 +74,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         verticalAlign: `bottom`,
         padding: `6px 10px`,
         fontSize: `0.8em`,
-        fontWeight: 600,
+        fontWeight: theme.typography.fontWeightBold as number,
         position: `relative`,
 
         "& > span": {
