@@ -263,7 +263,6 @@ export const RoomProvider: React.FC<Props> = ({ children, enableConferencing }) 
                     roomId={roomId}
                 >
                     <ConferenceContextProvider
-                        sessionId={sessionId}
                         roomId={roomId}
                     >
                         {children}

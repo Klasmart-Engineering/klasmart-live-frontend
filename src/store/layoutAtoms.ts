@@ -126,16 +126,6 @@ export const hasControlsState = atom({
     default: false,
 });
 
-export const videoGloballyMutedState = atom({
-    key: `videoGloballyMutedState`,
-    default: false,
-});
-
-export const audioGloballyMutedState = atom({
-    key: `audioGloballyMutedState`,
-    default: false,
-});
-
 export const studyRecommandUrlState = atom({
     key: `studyRecommandUrlState`,
     default: ``,

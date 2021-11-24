@@ -7,7 +7,7 @@ import {
     useQuery,
 } from "@apollo/client";
 
-const GLOBAL_MUTE_QUERY = gql`
+export const GLOBAL_MUTE_QUERY = gql`
     query retrieveGlobalMute($roomId: String!) {
         retrieveGlobalMute(roomId: $roomId) {
             roomId,
