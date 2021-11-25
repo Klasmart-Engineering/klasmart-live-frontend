@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.3.1](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.3.0%0Dv3.3.1) (2021-11-25)
+
+
+### Bug Fixes
+
+* add Sri Lanka and staging region ([8d384fc](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/8d384fc604dfe0ddf6c0bb4be379a5afcc0e944d))
+* **app:** android back key input repeatedly leads App crash ([5e5566f](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/5e5566fd02c4b351e847b01826bbc8c2196996bd))
+* **entry-player.ts:** only use full snapshot once for h5p ([f8f1978](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/f8f1978e6235a2f39b6b7c731ea16672244b52c6))
+* image not centered in study ([27523f6](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/27523f67ea3066f0dfee4d0217e7a9c0e9224204)), closes [#622](https://calmisland.atlassian.net/browse/622)
+* overlapping in find words activity ([03d88e6](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/03d88e66be98bba41f2bc7049c6ec6c8bd493946))
+* unable to use speech recognition for Android 11 ([462c444](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/462c44412f7573d99be3309353e1b18ca07a7e6d))
+* use bold from themeProvider ([978c78f](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/978c78f8aa0503a5b357d0afd4fff41f92b85b77))
+* wrong sync teacher/student in present mode when there's content to be scrollable ([0767990](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/07679901407d230762ab5df8027f47334d1b380d))
+
 ## [3.3.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.2.2%0Dv3.3.0) (2021-11-19)
 
 
