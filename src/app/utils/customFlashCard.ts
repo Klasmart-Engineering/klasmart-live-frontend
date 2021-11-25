@@ -24,6 +24,7 @@ export enum FlashCardAction {
     FLASH_CARD_LOADED = `FlashCardLoaded`,
     START_LISTEN = `StartListen`,
     STOP_LISTEN = `StopListen`,
+    OFF_RECORD_BUTTON = `OffRecordButton`,
     START_CUSTOM_FLASHCARDS = `StartCustomFlashCards`,
     ANSWER = `Answer`,
     ASK_SPEECH_RECOGNITION_PERMISSION = `AskSpeechRecognitionPermission`,
@@ -70,12 +71,19 @@ export function useCustomFlashCard ({
         }
     }, [ loadStatus ]);
 
+    function sendMessageToIframe(action: FlashCardAction, data: string) {
+        iframe?.contentWindow?.postMessage({
+            action: action,
+            data: data
+        }, `*`);
+    }
+
     useEffect(() => {
         if (!process.env.IS_CORDOVA_BUILD) return;
 
-        function startListen () {
+        function startListen (lang: string) {
             const speechRecognitionOptions = {
-                language: `en-US`, //Change the language if needed
+                language: lang, //Change the language if needed
                 matches: 1,
                 showPartial: true,
                 showPopup: true, //Android only
@@ -87,6 +95,8 @@ export function useCustomFlashCard ({
                 }, `*`);
             }, (err: any) => {
                 console.error(err);
+                sendMessageToIframe(FlashCardAction.OFF_RECORD_BUTTON, ``);
+                if(!err || err === `0`) return;
                 enqueueSnackbar(err, {
                     variant: `error`,
                     anchorOrigin: {
@@ -111,7 +121,7 @@ export function useCustomFlashCard ({
                 setOpenLoadingDialog(false);
                 break;
             case FlashCardAction.START_LISTEN:
-                startListen();
+                startListen(data.data);
                 break;
             case FlashCardAction.STOP_LISTEN:
                 stopListen();
