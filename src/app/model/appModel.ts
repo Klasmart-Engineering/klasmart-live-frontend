@@ -53,7 +53,7 @@ export const errorState = atom({
 export const selectedRegionState = atom({
     key: `selectedRegion`,
     default: {
-        regionId: process.env.IS_CORDOVA_BUILD ? `auth.alpha.kidsloop.net` : `env`,
+        regionId: process.env.IS_CORDOVA_BUILD ? `auth.kidsloop.live` : `env`,
     },
     effects_UNSTABLE: [ persistAtom ],
 });
