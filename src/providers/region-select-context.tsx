@@ -143,6 +143,19 @@ const DefaultRegions: Region[] = [
         },
     },
     {
+        id: `auth.kidsloop.co.th`,
+        name: `Thai`,
+        development: false,
+        services: {
+            auth: `https://auth.kidsloop.co.th`,
+            live: `https://live.kidsloop.co.th`,
+            cms: `https://cms.kidsloop.co.th`,
+            sfu: `https://live.kidsloop.co.th/sfu`,
+            user: `https://api.kidsloop.co.th/user/`,
+            privacy: `https://kidsloop.net/policies/privacy-notice`,
+        },
+    },
+    {
         id: `auth.stage.kidsloop.live`,
         name: `Staging`,
         development: true,
