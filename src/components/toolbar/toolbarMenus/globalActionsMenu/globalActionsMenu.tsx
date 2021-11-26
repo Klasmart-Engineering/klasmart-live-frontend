@@ -46,8 +46,8 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
     const {
         audioGloballyMuted,
         videoGloballyMuted,
-        toggleAudioStates,
-        toggleVideoStates,
+        setGlobalMuteAudio,
+        setGlobalMuteVideo,
     } = useConferenceContext();
     const { roomId, sessionId } = useSessionContext();
     const content = useContent();
@@ -99,7 +99,7 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
             activeIcon: <MicDisabledIcon size="1.4rem" />,
             variant: `blue`,
             isActive: audioGloballyMuted,
-            onClick: () => toggleAudioStates?.(),
+            onClick: () => setGlobalMuteAudio?.(!audioGloballyMuted),
         },
         {
             id: `5`,
@@ -110,7 +110,7 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
             activeIcon: <CameraDisabledIcon size="1.4rem" />,
             variant: `blue`,
             isActive: videoGloballyMuted,
-            onClick: () => toggleVideoStates?.(),
+            onClick: () => setGlobalMuteVideo?.(!videoGloballyMuted),
         },
         {
             id: `6`,
