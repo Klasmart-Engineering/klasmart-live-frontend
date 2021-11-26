@@ -1,3 +1,4 @@
+import { useConferenceContext } from "./room/conferenceContext";
 import { useSessionContext } from "./session-context";
 import { useConsumerMutation } from "@/data/sfu/mutations/useConsumerMutation";
 import { useProducerMutation } from "@/data/sfu/mutations/useProducerMutation";
@@ -75,7 +76,12 @@ export const WebRTCProvider = (props: { children: React.ReactNode }) => {
     const [ producerTransport, setProducerTransport ] = useState<MediaSoup.Transport | undefined | null>();
     const [ consumerTransport, setConsumerTransport ] = useState<MediaSoup.Transport | undefined | null>();
     const [ consumers, setConsumers ] = useState<Map<string, MediaSoup.Consumer>>(new Map<string, MediaSoup.Consumer>());
-    const [ inboundStreams, setInboundStreams ] = useState<Map<string, StreamDescription>>(new Map<string, StreamDescription>());
+
+    const {
+        inboundStreams,
+        setInboundStreams,
+    } = useConferenceContext();
+
     const [ outboundStreams, setOutboundStreams ] = useState<Map<string, Stream>>(new Map<string, Stream>());
     const [ destructors, setDestructors ] = useState<Map<string, () => any>>(new Map<string, () => any>());
     const [ muteStatuses, setMuteStatuses ] = useState<Map<string, MuteNotification>>(new Map<string, MuteNotification>());
