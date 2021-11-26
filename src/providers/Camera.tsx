@@ -28,6 +28,7 @@ export interface ICameraContext {
     refreshCameras: () => void;
     deviceStatus: DeviceStatus | undefined;
     cameraError: CameraError | undefined;
+    setIsListeningOnDeviceChange: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 interface AvaliableDevices {
@@ -148,6 +149,8 @@ export const CameraContextProvider = (props: Props) => {
 
     const [ acquireDevices, setAcquireDevices ] = useState(false);
     const [ acquireCameraDevice, setAcquireCameraDevice ] = useState(true);
+
+    const [ isListeningOnDeviceChange, setIsListeningOnDeviceChange ] = useState(false);
 
     // WARNING: The cordova system context is not available on web.
     const { requestPermissions: requestNativePermissions, isIOS } = useCordovaSystemContext();
@@ -365,6 +368,7 @@ export const CameraContextProvider = (props: Props) => {
     }, [ acquireDevices ]);
 
     useEffect(() => {
+        if (!isListeningOnDeviceChange) return;
         if (!navigator.mediaDevices) return;
         if (!acquireDevices) return;
 
@@ -382,7 +386,11 @@ export const CameraContextProvider = (props: Props) => {
         return () => {
             navigator.mediaDevices.removeEventListener(`devicechange`, onDeviceChange);
         };
-    }, [ refreshCameras, acquireDevices ]);
+    }, [
+        refreshCameras,
+        acquireDevices,
+        isListeningOnDeviceChange,
+    ]);
 
     const onPauseStateChanged = useCallback((isPaused: boolean) => {
         if (!isPaused) {
@@ -409,6 +417,7 @@ export const CameraContextProvider = (props: Props) => {
             cameraError,
             deviceStatus,
             refreshCameras,
+            setIsListeningOnDeviceChange,
         }}>
             {children}
         </CameraContext.Provider >

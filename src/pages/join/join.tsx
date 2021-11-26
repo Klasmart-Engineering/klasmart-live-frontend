@@ -179,6 +179,7 @@ export default function Join (): JSX.Element {
         cameraError,
         cameraStream,
         deviceStatus,
+        setIsListeningOnDeviceChange,
     } = useCameraContext();
 
     const brandingEndpoint = useHttpEndpoint(`user`);
@@ -193,6 +194,11 @@ export default function Join (): JSX.Element {
         }
         setLoading(false);
     };
+
+    useEffect(() => {
+        setIsListeningOnDeviceChange(true);
+        return () => setIsListeningOnDeviceChange(false);
+    }, []);
 
     useEffect(() => {
         setHighQuality(isTeacher);
