@@ -50,6 +50,8 @@ import {
     useIntl,
 } from "react-intl";
 import { useHistory } from "react-router";
+import {useRecoilValue} from "recoil";
+import {homeFunStudyState} from "@/app/model/appModel";
 
 const useStyles = makeStyles((theme) => createStyles({
     listRoot: {
@@ -89,6 +91,7 @@ export default function StudyScheduleList (props: Props) {
     const [ page, setPage ] = useState(SCHEDULE_PAGE_START);
     const [ items, setItems ] = useState<SchedulesTimeViewListItem[]>([]);
     const organization = useSelectedOrganizationValue();
+    const homeFunStudy = useRecoilValue(homeFunStudyState);
 
     const organizationId = organization?.organization_id ?? ``;
     const now = new Date();
@@ -161,6 +164,11 @@ export default function StudyScheduleList (props: Props) {
         offset: window.innerHeight / 2, // detect scrolling with an offset of half of the screen height from the bottom
         debounce: SCHEDULE_PAGINATION_DELAY,
     });
+
+    useEffect(() => {
+        if(!homeFunStudy.submitted) return;
+        refetchSchedules();
+    }, [homeFunStudy.submitted]);
 
     useEffect(() => {
         if (scheduleError) setItems([]);
