@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.3.2](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.3.1%0Dv3.3.2) (2021-11-26)
+
+
+### Bug Fixes
+
+* add thai region ([a7d63ab](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/a7d63ab54666e421b1647f25d3cb3de6ad7f3d02)), closes [#636](https://calmisland.atlassian.net/browse/636)
+* **app:** hfs is not updated even after the submission ([853b6b7](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/853b6b71b26a5476ce2c58926ab0fe6a43bb2205))
+* enforce global mute on new joins ([9358998](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/935899856c9b6727e1c9292fb8b347d2b6999535))
+* listen ondevicechange only in the join page ([91efd4d](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/91efd4d80dc7b25a0c0f7ac3ddb3a399ad5514b7))
+
 ### [3.3.1](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.3.0%0Dv3.3.1) (2021-11-25)
 
 
