@@ -18,6 +18,10 @@ import React,
     useState,
 } from "react";
 import { useIntl } from "react-intl";
+import { useRecoilState } from "recoil";
+import {
+    classInfoState,
+} from "../../../store/layoutAtoms";
 
 const useStyles = makeStyles((theme: Theme) => ({
     rootSm:{
@@ -58,20 +62,35 @@ function TabParticipants () {
     const classes = useStyles();
     const intl = useIntl();
     const sessions = useSessions();
-
-    const [ studentsSessions, setStudentsSessions ] = useState<Session[]>([]);
-    const [ teachersSessions, setTeachersSessions ] = useState<Session[]>([]);
-
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
 
+    const [ studentsSessions, setStudentsSessions ] = useState<Session[]>([]);
+    const [ teachersSessions, setTeachersSessions ] = useState<Session[]>([]);
+    const [ classInfo, setClassInfo ] = useRecoilState(classInfoState);
+
     useEffect(() => {
+        if(!classInfo.room_id) return; //Skip the default classInfo
+
         const teachers = [ ...sessions.values() ].filter(session => session.isTeacher === true);
         setTeachersSessions(teachers);
-
         const students = [ ...sessions.values() ].filter(session => session.isTeacher !== true);
         setStudentsSessions(students);
-    }, [ sessions, sessions.size ]);
+
+        const studentsInClass = classInfo.students.filter(student => !student.isAbsent);
+        if(studentsInClass.length === students.length) return;
+
+        let newClassInfo = {
+            ...classInfo,
+            students: classInfo.students.map(studentInfo => ({
+                ...studentInfo,
+                isAbsent : !students.find(student => student.name === studentInfo.name)
+            }))
+        };
+
+        setClassInfo(newClassInfo);
+
+    }, [ sessions, classInfo ]);
 
     return (
         <Fade in>
