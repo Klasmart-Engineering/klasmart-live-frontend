@@ -54,6 +54,7 @@ export function ParentalGate ({ onCompleted, message }: Props): JSX.Element {
             justifyContent="center"
             alignItems="center"
             style={{
+                overflow: `scroll`,
                 flex: 1,
                 height: `100%`,
                 backgroundColor: `white`,

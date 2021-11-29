@@ -12,8 +12,8 @@ import ClassDetailsMenu from "./toolbarMenus/classDetailsMenu/classDetailsMenu";
 import GlobalActionsMenu from "./toolbarMenus/globalActionsMenu/globalActionsMenu";
 import LessonPlanMenu from "./toolbarMenus/lessonPlanMenu/lessonPlanMenu";
 import ViewModesMenu from "./toolbarMenus/viewModesMenu/viewModesMenu";
-import { useMuteMutation } from "@/data/sfu/mutations/useMuteMutation";
 import useCordovaObservePause from "@/app/platform/cordova-observe-pause";
+import { useMuteMutation } from "@/data/sfu/mutations/useMuteMutation";
 import { useSessionContext } from "@/providers/session-context";
 import {
     MuteNotification,
