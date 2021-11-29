@@ -199,11 +199,12 @@
   },
   "standard-version": {
     "commitUrlFormat": "{{host}}/{{owner}}/{{repository}}/commits/{{hash}}",
-    "compareUrlFormat": "{{host}}/{{owner}}/{{repository}}/branches/compare/{{previousTag}}%0D{{currentTag}}",
+    "compareUrlFormat": "{{host}}/{{owner}}/{{repository}}/branches/compare/{{currentTag}}%0D{{previousTag}}",
     "issueUrlFormat": "https://calmisland.atlassian.net/browse/{{id}}",
     "issuePrefixes": [
       "#",
-      "Jira: "
+      "Jira: ",
+      "KLL-"
     ],
     "bumpFiles": [
       {
