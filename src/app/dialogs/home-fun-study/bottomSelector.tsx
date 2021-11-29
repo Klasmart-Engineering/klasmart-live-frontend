@@ -1,5 +1,6 @@
 import StyledIcon from "../../../components/styled/icon";
 import { CordovaSystemContext } from "../../context-provider/cordova-system-context";
+import { THEME_COLOR_PRIMARY_DEFAULT } from "@/config";
 import {
     Box,
     Button,
@@ -23,7 +24,7 @@ const useStyles = makeStyles(() => ({
     },
     top_bar: {
         borderRadius: 15,
-        backgroundColor: `#3676CE`,
+        backgroundColor: THEME_COLOR_PRIMARY_DEFAULT,
         width: `50px`,
         height: `5px`,
 
@@ -92,7 +93,7 @@ export function BottomSelector ({
                                         <StyledIcon
                                             icon={<FileIcon/>}
                                             size={`3rem`}
-                                            color={`#3676CE`}/>
+                                            color={THEME_COLOR_PRIMARY_DEFAULT}/>
                                     </Grid>
                                     <Grid item>
                                         <Typography
@@ -120,7 +121,7 @@ export function BottomSelector ({
                                         <StyledIcon
                                             icon={<CameraIcon/>}
                                             size={`3rem`}
-                                            color={`#3676CE`}/>
+                                            color={THEME_COLOR_PRIMARY_DEFAULT}/>
                                     </Grid>
                                     <Grid item>
                                         <Typography
@@ -148,7 +149,7 @@ export function BottomSelector ({
                                         <StyledIcon
                                             icon={<ImageIcon/>}
                                             size={`3rem`}
-                                            color={`#3676CE`}/>
+                                            color={THEME_COLOR_PRIMARY_DEFAULT}/>
                                     </Grid>
                                     <Grid item>
                                         <Typography
