@@ -11,7 +11,7 @@ const { persistAtom } = recoilPersist();
 
 export enum OrientationType {
     PORTRAIT = `portrait`,
-    LANDSCAPE = `landscape`,
+    LANDSCAPE = `landscape-primary`,
 }
 
 export enum LayoutMode {
