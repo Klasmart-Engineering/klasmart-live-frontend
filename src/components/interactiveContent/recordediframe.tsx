@@ -185,16 +185,10 @@ export function RecordedIframe (props: Props): JSX.Element {
         style.setAttribute(`id`, `kidsloop-live-frontend-styles`);
         style.innerHTML = `
         img { max-width: 100%; height: auto; object-fit:contain }
-        body { overflow-y: overlay; } // Makes the Scrollbar in absolute position and won't impact the size (KLL-1935), fallback to auto for unsupported browsers
         body > video { width: 100%; height: 100vh }
         .h5p-single-choice-set { max-height: 300px !important; }
         .h5p-alternative-inner{ height: auto !important; }
         .h5p-column .h5p-dragquestion > .h5p-question-content > .h5p-inner{ width: 100% !important }
-        ::-webkit-scrollbar { -webkit-appearance: none; }
-        ::-webkit-scrollbar:vertical { width: 14px; }
-        ::-webkit-scrollbar:horizontal { height: 14px; }
-        ::-webkit-scrollbar-thumb { background-color: #619bd8; border-radius: 10px;  }
-        ::-webkit-scrollbar-track { border-radius: 10px; }
         `;
         contentDoc.head.appendChild(style);
 
