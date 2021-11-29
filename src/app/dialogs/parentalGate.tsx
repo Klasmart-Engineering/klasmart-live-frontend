@@ -83,6 +83,7 @@ export function ParentalGate ({ onCompleted, message }: Props): JSX.Element {
             direction="column"
             justifyContent="center"
             alignItems="center"
+            wrap="nowrap"
             style={{
                 overflow: `scroll`,
                 flex: 1,
