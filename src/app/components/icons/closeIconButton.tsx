@@ -1,4 +1,5 @@
 import StyledIcon from "../../../components/styled/icon";
+import { THEME_COLOR_PRIMARY_DEFAULT } from "@/config";
 import IconButton from "@material-ui/core/IconButton";
 import {
     createStyles,
@@ -30,7 +31,7 @@ export function CloseIconButton ({ onClick }: Props): JSX.Element {
             <StyledIcon
                 icon={<CloseIcon/>}
                 size="medium"
-                color={`#3676CE`}/>
+                color={THEME_COLOR_PRIMARY_DEFAULT}/>
         </IconButton>
     );
 }

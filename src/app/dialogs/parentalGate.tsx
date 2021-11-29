@@ -1,7 +1,12 @@
+import { THEME_COLOR_PRIMARY_DEFAULT } from "@/config";
 import {
+    createStyles,
     Input,
+    makeStyles,
+    Theme,
     useTheme,
 } from "@material-ui/core";
+import red from "@material-ui/core/colors/red";
 import Grid from "@material-ui/core/Grid/Grid";
 import Typography from "@material-ui/core/Typography/Typography";
 import React,
@@ -18,8 +23,19 @@ interface Props {
     message?: string;
 }
 
+const useStyles = makeStyles((theme: Theme) => createStyles({
+    titleText: {
+        color: THEME_COLOR_PRIMARY_DEFAULT,
+        fontWeight: theme.typography.fontWeightBold as number,
+    },
+    errorText: {
+        color: red[500],
+    },
+}));
+
 export function ParentalGate ({ onCompleted, message }: Props): JSX.Element {
     const theme = useTheme();
+    const classes = useStyles();
 
     const [ challenge1 ] = useState<number>(Math.ceil(Math.random() * 50));
     const [ challenge2 ] = useState<number>(Math.ceil(Math.random() * 50));
@@ -28,9 +44,28 @@ export function ParentalGate ({ onCompleted, message }: Props): JSX.Element {
         return challenge1 + challenge2;
     }, [ challenge1, challenge2 ]);
 
-    const [ completed, setCompleted ] = useState<boolean>(false);
+    const [ isShowError, setShowError ]  = useState<boolean>(false);
 
     const inputRef = useRef<HTMLInputElement>();
+
+    const handleChangeInputText = (inputValue:string): void => {
+        if(!inputRef.current) return;
+
+        const answer = Number(inputValue);
+        if(answer === correctAnswer){
+            onCompleted();
+            return;
+        }
+
+        if(inputValue === ``){
+            setShowError(false);
+            return;
+        }
+
+        if(inputValue.length >= correctAnswer.toString().length){
+            setShowError(true);
+        }
+    };
 
     useEffect(() => {
         if (!inputRef.current) return;
@@ -40,11 +75,6 @@ export function ParentalGate ({ onCompleted, message }: Props): JSX.Element {
         if (!Keyboard) return;
         Keyboard.show();
     }, []);
-
-    useEffect(() => {
-        if (!completed) return;
-        onCompleted();
-    }, [ completed ]);
 
     return (
         <Grid
@@ -65,7 +95,8 @@ export function ParentalGate ({ onCompleted, message }: Props): JSX.Element {
                 <Typography
                     gutterBottom
                     variant="h3"
-                    align="center">
+                    align="center"
+                    className={classes.titleText}>
                     <FormattedMessage id="parentalGate.title" />
                 </Typography>
             </Grid>
@@ -73,6 +104,8 @@ export function ParentalGate ({ onCompleted, message }: Props): JSX.Element {
                 item
                 style={{
                     width: `75%`,
+                    marginTop: theme.spacing(3),
+                    marginBottom: theme.spacing(3),
                 }}>
                 <Typography
                     gutterBottom
@@ -80,6 +113,20 @@ export function ParentalGate ({ onCompleted, message }: Props): JSX.Element {
                     align="center">
                     { message ? message : <FormattedMessage id="parentalGate.body.default" /> }
                 </Typography>
+            </Grid>
+            <Grid
+                item
+                style={{
+                    height: 10,
+                }}>
+                {isShowError && (
+                    <Typography
+                        gutterBottom
+                        variant="subtitle1"
+                        align="center"
+                        className={classes.errorText}>
+                        <FormattedMessage id="parentalGate.error.incorrect" />
+                    </Typography>)}
             </Grid>
             <Grid item>
                 <Grid
@@ -90,7 +137,7 @@ export function ParentalGate ({ onCompleted, message }: Props): JSX.Element {
                     alignItems="center"
                     style={{
                         flex: 1,
-                        margin: theme.spacing(2),
+                        margin: theme.spacing(1),
                     }}>
                     <Grid
                         item
@@ -120,12 +167,14 @@ export function ParentalGate ({ onCompleted, message }: Props): JSX.Element {
                                 maxLength:`2`,
                                 inputMode:`numeric`,
                                 pattern:`[0-9]*`,
+                                style: {
+                                    textAlign: `center`,
+                                },
                             }}
-                            error={!completed && (inputRef.current?.value.length ?? 0) > 0}
+                            className={isShowError ? classes.errorText : ``}
                             onBlur={() => inputRef.current?.focus()}
                             onChange={(e) => {
-                                const answer = Number(e.target.value);
-                                setCompleted(answer === correctAnswer);
+                                handleChangeInputText(e.target.value);
                             }} />
                     </Grid>
                 </Grid>

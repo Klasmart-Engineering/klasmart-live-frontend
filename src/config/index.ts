@@ -9,3 +9,4 @@ export const REQUEST_RETRY_COUNT_MAX = 1;
 export const URL_REGEX = /(ftp|https?):\/\/([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?/g;
 export const AUDIO_GLOBALLY_MUTED_DEFAULT = true;
 export const VIDEO_GLOBALLY_MUTED_DEFAULT = true;
+export const THEME_COLOR_PRIMARY_DEFAULT = `#3676ce`;
