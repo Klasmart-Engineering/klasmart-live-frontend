@@ -220,5 +220,9 @@
     "homeFunStudy.title": "学生需提交",
     "homeFunStudy.info": "信息",
     "homeFunStudy.chooseFile": "选择文件",
-    "homeFunStudy.comment": "评论"
+    "homeFunStudy.comment": "评论",
+    "homeFunStudy.submission.error.rejected": "这个作业已经被老师评估过了，不能再编辑或重新提交了。",
+    "parentalGate.error.incorrect": "Incorrect input value",
+    "signin.title.loading": "Just a second",
+    "signin.body.loading": "KidsLoop is trying to sign you in..."
 }
