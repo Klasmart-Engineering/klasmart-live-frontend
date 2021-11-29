@@ -4,8 +4,7 @@ import {
     Theme,
     Typography,
 } from "@material-ui/core";
-import React,
-{ useContext } from "react";
+import React from "react";
 import { FormattedMessage } from "react-intl";
 import { useRecoilState } from "recoil";
 
@@ -17,7 +16,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     tbody: {
         "& > tr": {
             "& > td": {
-                paddingBottom: `20px`,
+                paddingBottom: `15px`,
 
                 "&:nth-of-type(1)": {
                     color: theme.palette.text.primary,
@@ -50,7 +49,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 function ClassDetails () {
     const classes = useStyles();
-    const [ classInfo, setClassInfo ] = useRecoilState(classInfoState);
+    const [ classInfo ] = useRecoilState(classInfoState);
 
     return (
         <div>
@@ -74,7 +73,12 @@ function ClassDetails () {
                     </tr>
                     <tr>
                         <td><Typography><FormattedMessage id="classdetails_enrolled_participants" /></Typography></td>
-                        <td><Typography>{classInfo.enrolled_participants}</Typography></td>
+                        <td>
+                            <Typography>
+                                {classInfo.teachers.length} <FormattedMessage id="common_teacher_count" values={{ count: classInfo.teachers.length }} />,&nbsp;
+                                {classInfo.students.length} <FormattedMessage id="common_student_count" values={{ count: classInfo.students.length }} />
+                            </Typography>
+                        </td>
                     </tr>
                     <tr>
                         <td><Typography><FormattedMessage id="classdetails_program" /></Typography></td>

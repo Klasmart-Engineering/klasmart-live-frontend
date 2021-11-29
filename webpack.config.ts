@@ -137,22 +137,22 @@ const webpackConfig: Configuration = {
         }),
     ],
     devServer: {
-        https: true,
-        host: `local.alpha.kidsloop.net`,
+        https: false,
+        host: `localhost`,
         port: 8082,
         proxy: {
             "/graphql": {
-                target: `http://local.alpha.kidsloop.net:8000`,
+                target: `http://localhost:8000`,
                 changeOrigin: true,
                 ws: true,
             },
             "/sfu": {
-                target: `http://local.alpha.kidsloop.net:8002`,
+                target: `http://localhost:8002`,
                 changeOrigin: true,
                 ws: true,
             },
             "/h5p": {
-                target: `https://live.kidsloop.net`,
+                target: `https://live.alpha.kidsloop.net`,
                 changeOrigin: true,
             },
             "/pdf": {

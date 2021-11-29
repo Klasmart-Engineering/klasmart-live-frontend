@@ -168,7 +168,6 @@ export const classInfoState = atom({
         lesson_name: ``,
         room_id: ``,
         class_type: ``,
-        enrolled_participants: ``,
         teachers: [
             {
                 id: ``,
@@ -179,6 +178,7 @@ export const classInfoState = atom({
             {
                 id: ``,
                 name: ``,
+                isAbsent: true
             },
         ],
         program: ``,

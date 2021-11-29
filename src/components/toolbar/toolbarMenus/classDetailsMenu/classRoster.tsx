@@ -1,5 +1,7 @@
 import { useSessionContext } from "@/providers/session-context";
-import { classInfoState } from "@/store/layoutAtoms";
+import {
+    classInfoState,
+} from "@/store/layoutAtoms";
 import {
     Accordion,
     AccordionDetails,
@@ -11,10 +13,10 @@ import {
 } from "@material-ui/core";
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { UserAvatar } from "kidsloop-px";
-import React,
-{ useContext } from "react";
+import React from "react";
 import { FormattedMessage } from "react-intl";
-import { useRecoilState } from "recoil";
+import { useRecoilState, selector } from "recoil";
+import clsx from "clsx";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -32,7 +34,12 @@ const useStyles = makeStyles((theme: Theme) => ({
             display: `none`,
         },
         "&:after": {
-            display: `none`,
+            content: `''`,
+            display: `block`,
+            width : `100%`,
+            height: 1,
+            margin: `10px 0`,
+            backgroundColor: theme.palette.grey[300],
         },
     },
     accordionSummary: {
@@ -64,9 +71,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     number: {
         backgroundColor: theme.palette.text.primary,
         color: `#fff`,
-        width: `14px`,
-        height: `14px`,
-        fontSize: `8px`,
+        width: 22,
+        height: 22,
         display: `inline-flex`,
         alignItems: `center`,
         justifyContent: `center`,
@@ -88,6 +94,10 @@ const useStyles = makeStyles((theme: Theme) => ({
             marginRight: 0,
         },
     },
+    isAbsentStyle: {
+        filter: `grayscale(100%)`,
+        opacity: `0.3`,
+    },
     avatar: {
         marginRight: 10,
     },
@@ -96,7 +106,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 function ClassRoster () {
     const classes = useStyles();
 
-    const [ users, setUsers ] = useRecoilState(classInfoState);
+    const [ users ] = useRecoilState(classInfoState);
     const { isTeacher } = useSessionContext();
     const teachers = users.teachers;
     const students = users.students;
@@ -167,7 +177,9 @@ function ClassRoster () {
                                 {students.map((user) => (
                                     <Box
                                         key={user.id}
-                                        className={classes.userItem}
+                                        className={clsx(classes.userItem, {
+                                            [classes.isAbsentStyle]: user.isAbsent,
+                                        })}
                                     >
                                         <UserAvatar
                                             name={user.name}
@@ -178,30 +190,6 @@ function ClassRoster () {
                                     </Box>
                                 ))}
                             </Box>
-                        </AccordionDetails>
-                    </Accordion>
-
-                    <Accordion
-                        hidden // TODO : Absents informations + translation keys
-                        elevation={0}
-                        className={classes.accordion}
-                        onChange={resetPosition}>
-                        <AccordionSummary
-                            className={classes.accordionSummary}
-                            expandIcon={<ExpandMoreIcon />}
-                            aria-controls="panel3a-content"
-                            id="panel3a-header"
-                        >
-                            <Typography className={classes.heading}>
-                                Absents <span className={classes.number}>0</span>
-                            </Typography>
-                        </AccordionSummary>
-                        <AccordionDetails
-                            className={classes.accordionDetails}
-                        >
-                            <Typography>
-                                No informations.
-                            </Typography>
                         </AccordionDetails>
                     </Accordion>
                 </>

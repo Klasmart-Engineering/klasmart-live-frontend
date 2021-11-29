@@ -140,7 +140,6 @@ export function Room () {
                 lesson_name: dataR.title,
                 room_id: `${roomId}`,
                 class_type: dataR.class_type,
-                enrolled_participants: `${dataR.class_roster_students.length > 1 ? dataR.class_roster_students.length+` students` : dataR.class_roster_students.length+` student`}, ${dataR.class_roster_teachers.length > 1 ? dataR.class_roster_teachers.length+` teachers` : dataR.class_roster_teachers.length+` teacher`}`,
                 teachers: dataR.class_roster_teachers,
                 students: dataR.class_roster_students,
                 program: dataR.program.name,
