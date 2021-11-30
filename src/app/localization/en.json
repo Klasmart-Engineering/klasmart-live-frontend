@@ -193,8 +193,8 @@
     "cordova_loading": "Loading...",
     "cordova_permissions_error": "Camera and Microphone permissions required. Please grant the permissions and restart application.",
     "auth_waiting": "Waiting for authentication...",
-    "loading_try_again": "Try again",
-    "parentalGate.title": "Welcome to KidsLoop!",
+    "loading_try_again": "Try Again",
+    "parentalGate.title": "Welcome to KidsLoop",
     "parentalGate.body.default": "All materials in this application have been approved by education administrators. Please acknowledge your understanding by completing the challenge below.",
     "parentalGate.body.externalLink": "Please ask your parent to confirm the navigation to external website.",
     "parentalGate.challenge": "What is {number1} + {number2} ?",
@@ -223,6 +223,6 @@
     "homeFunStudy.comment": "Comment",
     "homeFunStudy.submission.error.rejected": "This assignment has already been assessed by your teacher and cannot be re-submitted.",
     "parentalGate.error.incorrect": "Incorrect input value",
-    "signin.title.loading": "Just a second",
+    "signin.title.loading": "Just a Second",
     "signin.body.loading": "KidsLoop is trying to sign you in..."
 }
