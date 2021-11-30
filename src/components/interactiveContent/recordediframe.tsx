@@ -71,6 +71,8 @@ export function RecordedIframe (props: Props): JSX.Element {
     const [ intervalId, setIntervalId ] = useState<number>();
     const [ userCount, setUserCount ] = useState(sessions.size);
 
+    const [ useDoubleSize, setUseDoubleSize ] = useState(false);
+
     const size = useWindowSize();
 
     const { authenticationService } = useServices();
@@ -202,8 +204,8 @@ export function RecordedIframe (props: Props): JSX.Element {
         contentWindow.addEventListener(`contextmenu`, (e) => blockRightClick(e), false);
         const h5pTypeColumn = contentDoc.body.getElementsByClassName(`h5p-column`).length;
 
-        if (!isPdfContent) {
-            if (!process.env.IS_CORDOVA_BUILD) return;
+        if(process.env.IS_CORDOVA_BUILD && !isPdfContent){
+            setUseDoubleSize(h5pTypeColumn > 0);
             injectIframeScript(iframeElement, `h5presize`);
         }
     }
@@ -347,10 +349,10 @@ export function RecordedIframe (props: Props): JSX.Element {
                 src={contentHrefWithToken}
                 allow="microphone"
                 style={{
-                    width: `100%`,
-                    height: `100%`,
+                    width: (useDoubleSize ? `82%` : `100%`),
+                    height: (useDoubleSize ? `82%` : `100%`),
                     transformOrigin: `top left`,
-                    transform: `scale(1)`,
+                    transform: (useDoubleSize ? `scale(1.2)` : `scale(1)`),
                 }}
                 onLoad={() => { setLoadStatus(LoadStatus.Finished); window.dispatchEvent(new Event(`resize`)); }}
             />
