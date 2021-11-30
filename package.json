@@ -110,7 +110,6 @@
     "@types/react-redux": "^7.1.11",
     "callstats-js": "3.73.4",
     "clsx": "^1.1.1",
-    "cordova-plugin-ionic-keyboard": "2.2.0",
     "graphql": "^15.5.0",
     "graphql-request": "^2.0.0",
     "iframe-resizer-react": "^1.1.0",
@@ -190,8 +189,7 @@
         "PLUGIN_VERSION": "5.0.0",
         "ANDROID_AGENT_VER": "6.2.1"
       },
-      "cordova-plugin-speechrecognition": {},
-      "cordova-plugin-ionic-keyboard": {}
+      "cordova-plugin-speechrecognition": {}
     },
     "platforms": [
       "ios",
