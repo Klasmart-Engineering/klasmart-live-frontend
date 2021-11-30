@@ -12,6 +12,10 @@ import {
 } from "@/app/components/Schedule/shared";
 import { useSelectedOrganizationValue } from "@/app/data/user/atom";
 import { formatStartEndDateTimeMillis } from "@/app/utils/dateTimeUtils";
+import {
+    isFocused,
+    useWindowOnFocusChange,
+} from "@/app/utils/windowEvents";
 import ScheduledLivePopcorn from "@/assets/img/schedule_popcorn.svg";
 import {
     SCHEDULE_FETCH_INTERVAL_MINUTES,
@@ -40,6 +44,7 @@ import {
 } from "lodash";
 import React,
 {
+    useCallback,
     useEffect,
     useState,
 } from "react";
@@ -131,6 +136,15 @@ export default function LiveScheduleList (props: Props) {
         const newItems = schedulesData?.data ?? [];
         setItems((oldItems) => uniqBy([ ...newItems, ...oldItems ], (item) => item.id).sort((a, b) => a.start_at - b.start_at));
     }, [ scheduleError, schedulesData ]);
+
+    const onFocusChange = useCallback(() => {
+        if (isFocused()) return;
+        if (page === SCHEDULE_PAGE_START) return;
+        setItems([]);
+        setPage(SCHEDULE_PAGE_START);
+    }, [ page ]);
+
+    useWindowOnFocusChange(onFocusChange);
 
     const todayLiveSchedules = items.filter(filterTodaySchedules);
     const tomorrowLiveSchedules = items.filter(filterTomorrowSchedules);
