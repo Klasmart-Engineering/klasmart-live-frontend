@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.4.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.4.0%0Dv3.3.2) (2021-11-30)
+
+
+### Features
+
+* fetch amount of items depending screen size ([e329bab](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/e329babff28aae5e3fbb473938e9953733a2875e))
+* **localization:** added new translations and updated some existing ones as well ([671fdd4](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/671fdd4a480d275765965d4d583de4169518175c)), closes [#643](https://calmisland.atlassian.net/browse/643)
+
+
+### Bug Fixes
+
+* correctly show bottom action bar ([f6dc1dd](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/f6dc1dd5a27ed220fc516e7ef1db5763d4829785)), closes [#652](https://calmisland.atlassian.net/browse/652)
+* injectIframeScript only on mobile ([596f972](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/596f972b19fe900fcbae2a4658e3ef6e68a6b47c))
+* refresh the first schedule pagination page when refocusing the app ([8a9337c](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/8a9337c6ad3c93a8a22b5ab8a602422f3b8561d3)), closes [fix/KLL-2137](https://calmisland.atlassian.net/browse/2137) [#653](https://calmisland.atlassian.net/browse/653) [KLL-2137](https://calmisland.atlassian.net/browse/2137) [fix/KLL-2137](https://calmisland.atlassian.net/browse/2137)
+* remove scrollbar from activity (h5p/pdf) ([18fbfd5](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/18fbfd56544764e961f7854adc89658ece8ed280)), closes [KLL-1935](https://calmisland.atlassian.net/browse/1935)
+* remove useDoubleSize for column activity [KLL-1858](https://calmisland.atlassian.net/browse/1858) ([bfd1c87](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/bfd1c87cee0619e003b85d21543a4eff91a0e290))
+* update enrolled_participants ([abae41f](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/abae41f8efcd5caed70373333ec27da52693fee2)), closes [KLL-1395](https://calmisland.atlassian.net/browse/1395) [KLL-1395](https://calmisland.atlassian.net/browse/1395) [KLL-1395](https://calmisland.atlassian.net/browse/1395) [KLL-1395](https://calmisland.atlassian.net/browse/1395) [KLL-1395](https://calmisland.atlassian.net/browse/1395) [KLL-1395](https://calmisland.atlassian.net/browse/1395) [KLL-1395](https://calmisland.atlassian.net/browse/1395) [KLL-1395](https://calmisland.atlassian.net/browse/1395) [KLL-1395](https://calmisland.atlassian.net/browse/1395)
+* use a timer for "Go Live" (schedule details) ([2a78cdc](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/2a78cdc5a28cba0f1623aca6fc45793991cf5210)), closes [fix/KLL-2070](https://calmisland.atlassian.net/browse/2070) [#645](https://calmisland.atlassian.net/browse/645) [KLL-2070](https://calmisland.atlassian.net/browse/2070)
+* useDoubleSize for mobile only ([be041d5](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/be041d5fd2bd6855613017488aea88828eb67e0f))
+
 ### [3.3.2](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.3.1%0Dv3.3.2) (2021-11-26)
 
 
