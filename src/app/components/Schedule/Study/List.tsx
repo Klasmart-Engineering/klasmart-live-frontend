@@ -9,15 +9,17 @@ import {
 } from "@/app/components/Schedule/shared";
 import StudyDetailsDialog from "@/app/components/Schedule/Study/Dialog/Details";
 import { useSelectedOrganizationValue } from "@/app/data/user/atom";
+import { homeFunStudyState } from "@/app/model/appModel";
 import { formatDueDateMillis } from "@/app/utils/dateTimeUtils";
 import ScheduledStudyHouse from "@/assets/img/study_house.svg";
 import {
     SCHEDULE_FETCH_INTERVAL_MINUTES,
     SCHEDULE_FETCH_MONTH_DIFF,
     SCHEDULE_HOME_FUN_STUDY_DISPLAY_COUNT_MAX,
-    SCHEDULE_PAGE_SIZE,
+    SCHEDULE_PAGE_ITEM_HEIGHT_MIN,
     SCHEDULE_PAGE_START,
     SCHEDULE_PAGINATION_DELAY,
+    schedulePageWindowItemHeightToPageSize,
 } from "@/config";
 import { fromSecondsToMilliseconds } from "@/utils/utils";
 import {
@@ -50,8 +52,7 @@ import {
     useIntl,
 } from "react-intl";
 import { useHistory } from "react-router";
-import {useRecoilValue} from "recoil";
-import {homeFunStudyState} from "@/app/model/appModel";
+import { useRecoilValue } from "recoil";
 
 const useStyles = makeStyles((theme) => createStyles({
     listRoot: {
@@ -102,6 +103,7 @@ export default function StudyScheduleList (props: Props) {
     const twoMonthsFromNow = new Date(now);
     twoMonthsFromNow.setMonth(twoMonthsFromNow.getMonth() + SCHEDULE_FETCH_MONTH_DIFF);
     const twoMonthsFromNowInSeconds = Math.floor(twoMonthsFromNow.getTime() / 1000);
+    const pageSize = schedulePageWindowItemHeightToPageSize(window.innerHeight, SCHEDULE_PAGE_ITEM_HEIGHT_MIN);
 
     const {
         data: anytimeSchedulesData,
@@ -112,7 +114,7 @@ export default function StudyScheduleList (props: Props) {
         view_type: `full_view`,
         time_boundary: `union`,
         page: 1,
-        page_size: SCHEDULE_PAGE_SIZE,
+        page_size: pageSize,
         time_at: 0, // any time is ok together with view_type=`full_view`,
         with_assessment_status: true,
         time_zone_offset: timeZoneOffset,
@@ -133,7 +135,7 @@ export default function StudyScheduleList (props: Props) {
         order_by: `schedule_at`,
         view_type: `full_view`,
         page,
-        page_size: SCHEDULE_PAGE_SIZE,
+        page_size: pageSize,
         time_at: 0, // any time is ok together with view_type=`full_view`,
         with_assessment_status: true,
         start_at_ge: nowInSeconds,
@@ -156,7 +158,7 @@ export default function StudyScheduleList (props: Props) {
 
     const scrollRef = useBottomScrollListener<HTMLUListElement>(() => {
         if (isSchedulesFetching) return;
-        const lastPage = Math.floor((schedulesData?.total ?? 0) / SCHEDULE_PAGE_SIZE + 1);
+        const lastPage = Math.ceil((schedulesData?.total ?? 0) / pageSize);
         const newPage = clamp(page + 1, SCHEDULE_PAGE_START, lastPage);
         if (newPage === page) return;
         setPage(newPage);
@@ -166,9 +168,9 @@ export default function StudyScheduleList (props: Props) {
     });
 
     useEffect(() => {
-        if(!homeFunStudy.submitted) return;
+        if (!homeFunStudy.submitted) return;
         refetchSchedules();
-    }, [homeFunStudy.submitted]);
+    }, [ homeFunStudy.submitted ]);
 
     useEffect(() => {
         if (scheduleError) setItems([]);
