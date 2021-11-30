@@ -10,12 +10,14 @@ import {
 } from "@/app/components/Schedule/shared";
 import StudyDetailsDialog from "@/app/components/Schedule/Study/Dialog/Details";
 import { useSelectedOrganizationValue } from "@/app/data/user/atom";
+import { homeFunStudyState } from "@/app/model/appModel";
 import ScheduledStudyHouse from "@/assets/img/study_house.svg";
 import {
     SCHEDULE_FETCH_INTERVAL_MINUTES,
-    SCHEDULE_PAGE_SIZE,
+    SCHEDULE_PAGE_ITEM_HEIGHT_MIN,
     SCHEDULE_PAGE_START,
     SCHEDULE_PAGINATION_DELAY,
+    schedulePageWindowItemHeightToPageSize,
 } from "@/config";
 import {
     SchedulesTimeViewListItem,
@@ -43,8 +45,7 @@ import {
     FormattedMessage,
     useIntl,
 } from "react-intl";
-import {useRecoilValue} from "recoil";
-import {homeFunStudyState} from "@/app/model/appModel";
+import { useRecoilValue } from "recoil";
 
 const useStyles = makeStyles((theme) => createStyles({
     listRoot: {
@@ -78,6 +79,7 @@ export default function AnytimeStudyScheduleList (props: Props) {
     const now = new Date();
     const timeZoneOffset = now.getTimezoneOffset() * 60 * -1;
     now.setMinutes(Math.floor(now.getMinutes() / SCHEDULE_FETCH_INTERVAL_MINUTES) * SCHEDULE_FETCH_INTERVAL_MINUTES);
+    const pageSize = schedulePageWindowItemHeightToPageSize(window.innerHeight, SCHEDULE_PAGE_ITEM_HEIGHT_MIN);
 
     const {
         data: schedulesData,
@@ -90,7 +92,7 @@ export default function AnytimeStudyScheduleList (props: Props) {
         view_type: `full_view`,
         time_boundary: `union`,
         page,
-        page_size: SCHEDULE_PAGE_SIZE,
+        page_size: pageSize,
         time_at: 0, // any time is ok together with view_type=`full_view`,
         with_assessment_status: true,
         time_zone_offset: timeZoneOffset,
@@ -112,7 +114,7 @@ export default function AnytimeStudyScheduleList (props: Props) {
 
     const scrollRef = useBottomScrollListener<HTMLUListElement>(() => {
         if (isSchedulesFetching) return;
-        const lastPage = Math.floor((schedulesData?.total ?? 0) / SCHEDULE_PAGE_SIZE + 1);
+        const lastPage = Math.ceil((schedulesData?.total ?? 0) / pageSize);
         const newPage = clamp(page + 1, SCHEDULE_PAGE_START, lastPage);
         if (newPage === page) return;
         setPage(newPage);
@@ -124,13 +126,14 @@ export default function AnytimeStudyScheduleList (props: Props) {
     useEffect(() => {
         if(!homeFunStudy.submitted) return;
         refetchSchedules();
-    }, [homeFunStudy.submitted]);
+    }, [ homeFunStudy.submitted ]);
 
     useEffect(() => {
         if (scheduleError) setItems([]);
         if (!schedulesData) return;
         const newItems = schedulesData?.data ?? [];
-        setItems((oldItems) => uniqBy([ ...newItems, ...oldItems ], (item) => item.id).sort((a, b) => a.start_at - b.start_at));
+        // newItems can only be added before oldItems once https://calmisland.atlassian.net/browse/KLS-227 is completed and when sorted by `create_at`
+        setItems((oldItems) => uniqBy([ ...oldItems, ...newItems ], (item) => item.id));
     }, [ scheduleError, schedulesData ]);
 
     if (scheduleError) {

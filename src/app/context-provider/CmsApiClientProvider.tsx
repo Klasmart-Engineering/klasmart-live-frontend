@@ -18,7 +18,7 @@ export default function CmsApiClientProvider (props: Props) {
     const { actions } = useAuthenticationContext();
 
     const onRejected = useCallback(async (err) => {
-        if (err?.response?.status !== 401 || err?.response?.data.label !== `general_error_unauthorized`) return err;
+        if (err?.response?.status !== 401 || err?.response?.data.label !== `general_error_unauthorized`) throw err;
         try {
             await actions?.refreshAuthenticationToken();
         } catch (err) {

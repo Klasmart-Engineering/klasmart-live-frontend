@@ -16,9 +16,10 @@ import ScheduledLivePopcorn from "@/assets/img/schedule_popcorn.svg";
 import {
     SCHEDULE_FETCH_INTERVAL_MINUTES,
     SCHEDULE_FETCH_MONTH_DIFF,
-    SCHEDULE_PAGE_SIZE,
+    SCHEDULE_PAGE_ITEM_HEIGHT_MIN,
     SCHEDULE_PAGE_START,
     SCHEDULE_PAGINATION_DELAY,
+    schedulePageWindowItemHeightToPageSize,
 } from "@/config";
 import { fromSecondsToMilliseconds } from "@/utils/utils";
 import {
@@ -88,6 +89,7 @@ export default function LiveScheduleList (props: Props) {
     const twoMonthsFromNow = new Date(now);
     twoMonthsFromNow.setMonth(twoMonthsFromNow.getMonth() + SCHEDULE_FETCH_MONTH_DIFF);
     const twoMonthsFromNowInSeconds = Math.floor(twoMonthsFromNow.getTime() / 1000);
+    const pageSize = schedulePageWindowItemHeightToPageSize(window.innerHeight, SCHEDULE_PAGE_ITEM_HEIGHT_MIN);
 
     const {
         data: schedulesData,
@@ -99,7 +101,7 @@ export default function LiveScheduleList (props: Props) {
         view_type: `full_view`,
         time_boundary: `union`,
         page,
-        page_size: SCHEDULE_PAGE_SIZE,
+        page_size: pageSize,
         time_at: 0, // any time is ok together with view_type=`full_view`,
         start_at_ge: nowInSeconds,
         end_at_le: twoMonthsFromNowInSeconds,
@@ -114,7 +116,7 @@ export default function LiveScheduleList (props: Props) {
 
     const scrollRef = useBottomScrollListener<HTMLUListElement>(() => {
         if (isSchedulesFetching) return;
-        const lastPage = Math.floor((schedulesData?.total ?? 0) / SCHEDULE_PAGE_SIZE + 1);
+        const lastPage = Math.ceil((schedulesData?.total ?? 0) / pageSize);
         const newPage = clamp(page + 1, SCHEDULE_PAGE_START, lastPage);
         if (newPage === page) return;
         setPage(newPage);
