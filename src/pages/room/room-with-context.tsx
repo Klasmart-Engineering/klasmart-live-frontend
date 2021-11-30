@@ -20,9 +20,10 @@ import {
     Typography,
 } from "@material-ui/core";
 import React,
-{ useMemo } from "react";
+{useEffect, useMemo} from "react";
 import { FormattedMessage } from "react-intl";
 import { useRecoilState } from "recoil";
+import {useCordovaSystemContext} from "@/app/context-provider/cordova-system-context";
 
 export function RoomWithContext (): JSX.Element {
     const {
@@ -41,9 +42,18 @@ export function RoomWithContext (): JSX.Element {
     );
 }
 
+export const LIVE_ON_BACK_ID = `liveOnBackID`;
+
 const LiveRoom: React.FC = () => {
+    const { removeOnBack } = useCordovaSystemContext();
     const [ classLeft ] = useRecoilState(classLeftState);
     const [ classEnded ] = useRecoilState(classEndedState);
+
+    useEffect(() => {
+        if(classLeft || classEnded) {
+            removeOnBack?.(LIVE_ON_BACK_ID);
+        }
+    }, [ classLeft, classEnded]);
 
     if(classLeft || classEnded){
         return <EndClass />;

@@ -24,6 +24,7 @@ import React,
 } from "react";
 import { FormattedMessage } from "react-intl";
 import { useSetRecoilState } from "recoil";
+import {useCordovaSystemContext} from "@/app/context-provider/cordova-system-context";
 
 const useStyles = makeStyles((theme: Theme) => ({
     dialogTitle:{
@@ -69,14 +70,27 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 function DialogLeaveClass (props:any){
+    const DIALOG_LEAVE_CLASS_ID = `dialogLeaveCLassID`;
     const classes = useStyles();
     const { open, onClose } = props;
 
+    const { addOnBack, removeOnBack } = useCordovaSystemContext();
     const { isTeacher, sessionId } = useSessionContext();
     const setClassLeft = useSetRecoilState(classLeftState);
     const [ showParentCaptcha, setShowParentCaptcha ] = useState(false);
 
     const { actions: { clear } } = useToolbarContext();
+
+    useEffect(() => {
+        if(open) {
+            addOnBack?.({
+                id: DIALOG_LEAVE_CLASS_ID,
+                onBack: onClose
+            })
+        }else {
+            removeOnBack?.(DIALOG_LEAVE_CLASS_ID)
+        }
+    }, [open]);
 
     if(!isTeacher){
         useEffect(() => {
@@ -135,10 +149,23 @@ function DialogLeaveClass (props:any){
 export { DialogLeaveClass };
 
 function DialogEndClass (props:any){
+    const DIALOG_END_CLASS_ID = `dialogEndClassID`;
     const classes = useStyles();
     const { open, onClose } = props;
+    const { addOnBack, removeOnBack } = useCordovaSystemContext();
 
     const [ endClass ] = useEndClassMutation();
+
+    useEffect(() => {
+        if(open) {
+            addOnBack?.({
+                id: DIALOG_END_CLASS_ID,
+                onBack: onClose
+            })
+        }else {
+            removeOnBack?.(DIALOG_END_CLASS_ID)
+        }
+    }, [open]);
 
     return(
         <Dialog

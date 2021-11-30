@@ -63,6 +63,8 @@ import {
     useRecoilState,
     useRecoilValue,
 } from "recoil";
+import {useCordovaSystemContext} from "@/app/context-provider/cordova-system-context";
+import {LIVE_ON_BACK_ID} from "@/pages/room/room-with-context";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -99,7 +101,7 @@ function Toolbar () {
         materials,
     } = useSessionContext();
     const webrtc = useContext(WebRTCContext);
-
+    const { addOnBack } = useCordovaSystemContext();
     const [ isGlobalActionsOpen, setIsGlobalActionsOpen ] = useRecoilState(isGlobalActionsOpenState);
     const [ isLessonPlanOpen, setIsLessonPlanOpen ] = useRecoilState(isLessonPlanOpenState);
     const [ isViewModesOpen, setIsViewModesOpen ] = useRecoilState(isViewModesOpenState);
@@ -203,7 +205,20 @@ function Toolbar () {
         }
     }
 
-    useCordovaObservePause(onPauseStateChanged);
+    useCordovaObservePause(onPauseStateChanged)
+
+    useEffect(() => {
+        function initOnBack (){
+            addOnBack?.({
+                id: LIVE_ON_BACK_ID,
+                isAutoRemove: false,
+                onBack: () => {
+                    endCall();
+                },
+            })
+        }
+        initOnBack();
+    }, []);
 
     return (
         <>
@@ -234,7 +249,7 @@ function Toolbar () {
                     </div>
                     <div ref={canvasRef}>
                         <ToolbarItem
-                            display={activeTab === `mosaic` ? false : hasControls ? true : isGlobalCanvasEnabled && permissionsGlobalCanvas.allowCreateShapes ? true : false}
+                            display={activeTab === `mosaic` ? false : hasControls ? true : isGlobalCanvasEnabled && permissionsGlobalCanvas.allowCreateShapes}
                             icon={<CanvasIcon />}
                             label={intl.formatMessage({
                                 id: `toolbar_canvas`,
