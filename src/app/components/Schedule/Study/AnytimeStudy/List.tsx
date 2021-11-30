@@ -11,6 +11,10 @@ import {
 import StudyDetailsDialog from "@/app/components/Schedule/Study/Dialog/Details";
 import { useSelectedOrganizationValue } from "@/app/data/user/atom";
 import { homeFunStudyState } from "@/app/model/appModel";
+import {
+    isFocused,
+    useWindowOnFocusChange,
+} from "@/app/utils/windowEvents";
 import ScheduledStudyHouse from "@/assets/img/study_house.svg";
 import {
     SCHEDULE_FETCH_INTERVAL_MINUTES,
@@ -37,6 +41,7 @@ import {
 } from "lodash";
 import React,
 {
+    useCallback,
     useEffect,
     useState,
 } from "react";
@@ -135,6 +140,15 @@ export default function AnytimeStudyScheduleList (props: Props) {
         // newItems can only be added before oldItems once https://calmisland.atlassian.net/browse/KLS-227 is completed and when sorted by `create_at`
         setItems((oldItems) => uniqBy([ ...oldItems, ...newItems ], (item) => item.id));
     }, [ scheduleError, schedulesData ]);
+
+    const onFocusChange = useCallback(() => {
+        if (isFocused()) return;
+        if (page === SCHEDULE_PAGE_START) return;
+        setItems([]);
+        setPage(SCHEDULE_PAGE_START);
+    }, [ page ]);
+
+    useWindowOnFocusChange(onFocusChange);
 
     if (scheduleError) {
         if (isSchedulesFetching) return <ScheduleLoading />;

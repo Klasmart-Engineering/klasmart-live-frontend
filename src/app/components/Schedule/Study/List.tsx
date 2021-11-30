@@ -11,6 +11,10 @@ import StudyDetailsDialog from "@/app/components/Schedule/Study/Dialog/Details";
 import { useSelectedOrganizationValue } from "@/app/data/user/atom";
 import { homeFunStudyState } from "@/app/model/appModel";
 import { formatDueDateMillis } from "@/app/utils/dateTimeUtils";
+import {
+    isFocused,
+    useWindowOnFocusChange,
+} from "@/app/utils/windowEvents";
 import ScheduledStudyHouse from "@/assets/img/study_house.svg";
 import {
     SCHEDULE_FETCH_INTERVAL_MINUTES,
@@ -43,6 +47,7 @@ import {
 } from "lodash";
 import React,
 {
+    useCallback,
     useEffect,
     useState,
 } from "react";
@@ -178,6 +183,15 @@ export default function StudyScheduleList (props: Props) {
         const newItems = schedulesData?.data ?? [];
         setItems((oldItems) => uniqBy([ ...newItems, ...oldItems ], (item) => item.id).sort((a, b) => a.start_at - b.start_at));
     }, [ scheduleError, schedulesData ]);
+
+    const onFocusChange = useCallback(() => {
+        if (isFocused()) return;
+        if (page === SCHEDULE_PAGE_START) return;
+        setItems([]);
+        setPage(SCHEDULE_PAGE_START);
+    }, [ page ]);
+
+    useWindowOnFocusChange(onFocusChange);
 
     const displayHomeFunStudyCount = () => {
         const count = (anytimeSchedulesData?.total ?? 0);
