@@ -21,7 +21,7 @@ import React,
     ReactChildren,
     useCallback,
     useContext,
-    useEffect,
+    useEffect, useRef,
     useState,
 } from "react";
 
@@ -67,17 +67,18 @@ export const CordovaSystemContext = createContext<CordovaSystemContext>({
 
 export function CordovaSystemProvider ({ children, history }: Props) {
     const [ displayExitDialogue, setDisplayExitDialogue ] = useState<boolean>(false);
-    const [ onBackQueue, setOnBackQueue ] = useState<OnBackItem[]>([]);
+    const onBackQueue = useRef<OnBackItem[]>([]); //useState is not enough fast for backPressed behaviour
     const [ permissions, setPermissions ] = useState(false);
     const layoutMode = useLayoutModeValue();
     const setDeviceOrientation = useSetDeviceOrientation();
 
-    const addOnBack = (onBackItem: OnBackItem) => {
-        console.log(onBackItem.id);
-        const newOnBackQueue = onBackQueue.slice();
-        newOnBackQueue.push(onBackItem);
-        setOnBackQueue(newOnBackQueue);
-    };
+    function addOnBack (onBackItem: OnBackItem) {
+        onBackQueue.current.push(onBackItem)
+    }
+
+    function removeOnBack (id: string) {
+        onBackQueue.current = onBackQueue.current.filter(item => item.id !== id);
+    }
 
     useEffect(()=>{
         (async function () {
@@ -111,12 +112,6 @@ export function CordovaSystemProvider ({ children, history }: Props) {
         };
     }, []);
 
-    const removeOnBack = (id: string) => {
-        console.log(id);
-        const newOnBackQueue = onBackQueue.filter(item => item.id !== id);
-        setOnBackQueue(newOnBackQueue);
-    };
-
     const restart = useCallback(() => {
         const app = (navigator as any).app;
         if (app) {
@@ -141,11 +136,11 @@ export function CordovaSystemProvider ({ children, history }: Props) {
         isAndroid,
     } = useCordovaInitialize(false, () => {
         const isRootPage = window.location.hash === `#/schedule` || window.location.hash === `#/`;
-        if (window.location.hash === `#/room`) {
-            restart();
-        } else if (isRootPage) {
-            if (onBackQueue.length > 0) {
-                const latestOnBackItem = onBackQueue[onBackQueue.length - 1];
+        const isRoomPage = window.location.hash === `#/room`;
+
+        if (isRootPage || isRoomPage) {
+            if (onBackQueue.current.length > 0) {
+                const latestOnBackItem = onBackQueue.current[onBackQueue.current.length - 1];
                 latestOnBackItem.onBack();
                 if (latestOnBackItem.isAutoRemove === undefined || latestOnBackItem.isAutoRemove) {
                     removeOnBack(latestOnBackItem.id);

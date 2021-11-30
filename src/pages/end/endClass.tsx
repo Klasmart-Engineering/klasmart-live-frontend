@@ -13,7 +13,7 @@ import {
     Typography,
 } from '@material-ui/core';
 import { CalendarCheck as ClassEndedIcon } from "@styled-icons/boxicons-regular/CalendarCheck";
-import React from 'react';
+import React, {useEffect} from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useHistory } from 'react-router-dom';
 import { useRecoilState } from "recoil";
@@ -59,10 +59,12 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 function EndClass () {
+    const END_CLASS_ON_BACK_ID = `endClassOnBackID`;
     const classes = useStyles();
     const HUB_ENDPOINT = process.env.ENDPOINT_HUB;
     const history = useHistory();
 
+    const { addOnBack } = useCordovaSystemContext();
     const [ classLeft, setClassEnded ] = useRecoilState(classLeftState);
     const [ classEnded, setClassLeft ] = useRecoilState(classEndedState);
 
@@ -81,6 +83,13 @@ function EndClass () {
             history.push(`/schedule`);
         }
     };
+
+    useEffect(() => {
+        addOnBack?.({
+            id: END_CLASS_ON_BACK_ID,
+            onBack: onCloseButtonClick
+        });
+    }, [])
 
     return (
         <Fade in={true}>
