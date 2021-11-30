@@ -203,6 +203,7 @@ export function RecordedIframe (props: Props): JSX.Element {
         const h5pTypeColumn = contentDoc.body.getElementsByClassName(`h5p-column`).length;
 
         if (!isPdfContent) {
+            if (!process.env.IS_CORDOVA_BUILD) return;
             injectIframeScript(iframeElement, `h5presize`);
         }
     }
