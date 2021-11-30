@@ -80,14 +80,20 @@ export default function LiveDetailsDialog (props: Props) {
 
     useEffect(() => {
         if (!scheduleData) return;
-        const timer = setInterval(() => {
-            const nowInSeconds = new Date().getTime() / 1000;
-            const timeBeforeClassSeconds = scheduleData.start_at - nowInSeconds;
-            setTimeBeforeClassSeconds(timeBeforeClassSeconds);
-        }, 1000);
+
+        const nowInSeconds = new Date().getTime() / 1000;
+        const timeBeforeClassSeconds = scheduleData.start_at - nowInSeconds;
+        const timeRemainingBeforeCanEnterClass = timeBeforeClassSeconds - SECONDS_BEFORE_CLASS_CAN_START;
+
+        setTimeBeforeClassSeconds(timeBeforeClassSeconds);
+
+        const timeOut = setTimeout(() => {
+            setTimeBeforeClassSeconds(0);
+        }, fromSecondsToMilliseconds(timeRemainingBeforeCanEnterClass));
+
         return () => {
-            clearInterval(timer);
             setTimeBeforeClassSeconds(Number.MAX_SAFE_INTEGER);
+            clearTimeout(timeOut);
         };
     }, [ scheduleData ]);
 
