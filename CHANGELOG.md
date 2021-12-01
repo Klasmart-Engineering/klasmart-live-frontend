@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.5.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.5.0%0Dv3.4.0) (2021-12-01)
+
+
+### Features
+
+* make android back button behave same as 'X' icon ([f34808d](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/f34808d90aecc22fbba5f6d1131a3e3ea1648a27)), closes [feature/KLL-1834](https://calmisland.atlassian.net/browse/KLL-1834) [KLL-1834](https://calmisland.atlassian.net/browse/KLL-1834)
+
+
+### Bug Fixes
+
+* hide scrollbar cross-browser for live + style for study and class ([b86f638](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/b86f63834451af07f752ba0547716a338ceb0a5c)), closes [fix/KLL-1935](https://calmisland.atlassian.net/browse/KLL-1935) [KLL-1935](https://calmisland.atlassian.net/browse/KLL-1935)
+* remove notice parents title ([3114499](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/31144999f2149dc2c5393df4623bd38211483f83))
+* use correct auth endpoint in record ([74a4bcc](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/74a4bcc0302fd69f90c5ada542e85db29b78d738))
+
 ## [3.4.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.4.0%0Dv3.3.2) (2021-11-30)
 
 
