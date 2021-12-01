@@ -1,6 +1,7 @@
 import { useServices } from "@/app/context-provider/services-provider";
 import { useCustomFlashCard } from "@/app/utils/customFlashCard";
 import { injectIframeScript } from "@/app/utils/injectIframeScript";
+import { THEME_COLOR_PRIMARY_DEFAULT } from "@/config";
 import { useSetStreamIdMutation } from "@/data/live/mutations/useSetStreamIdMutation";
 import { useSessions } from "@/data/live/state/useSessions";
 import { useHttpEndpoint } from "@/providers/region-select-context";
@@ -121,7 +122,7 @@ export function RecordedIframe (props: Props): JSX.Element {
     }, [ sessions ]);
 
     useEffect(() => {
-        if (classType == ClassType.LIVE) {
+        if (classType === ClassType.LIVE) {
             setTimeout(function () {
                 scaleWhiteboard();
             }, 300);
@@ -181,16 +182,17 @@ export function RecordedIframe (props: Props): JSX.Element {
         // Remove styles if exists
         document.getElementById(`kidsloop-live-frontend-styles`)?.remove();
         document.getElementById(`kidsloop-live-frontend-image-styles`)?.remove();
+        document.getElementById(`kidsloop-live-frontend-scrollbar`)?.remove();
 
         // Custom styles when needed (general)
         const style = document.createElement(`style`);
         style.setAttribute(`id`, `kidsloop-live-frontend-styles`);
         style.innerHTML = `
-        img { max-width: 100%; height: auto; object-fit:contain }
-        body > video { width: 100%; height: 100vh }
-        .h5p-single-choice-set { max-height: 300px !important; }
-        .h5p-alternative-inner{ height: auto !important; }
-        .h5p-column .h5p-dragquestion > .h5p-question-content > .h5p-inner{ width: 100% !important }
+            img { max-width: 100%; height: auto; object-fit:contain }
+            body > video { width: 100%; height: 100vh }
+            .h5p-single-choice-set { max-height: 300px !important; }
+            .h5p-alternative-inner{ height: auto !important; }
+            .h5p-column .h5p-dragquestion > .h5p-question-content > .h5p-inner{ width: 100% !important }
         `;
         contentDoc.head.appendChild(style);
 
@@ -200,6 +202,28 @@ export function RecordedIframe (props: Props): JSX.Element {
             imageStyle.innerHTML = `img { pointer-events: none }`;
             contentDoc.head.appendChild(imageStyle);
         }
+
+        // Scrollbar styles
+        // 1. Remove Scrollbar cross-browsers for Live class activities H5P/PDF/.. RRWEB don't replay the scrollbar so content is shifted (KLL-1935)
+        // 2. Stylize Scrollbar for Study and Class
+        const scrollbarStyle = document.createElement(`style`);
+        scrollbarStyle.setAttribute(`id`, `kidsloop-live-frontend-scrollbar`);
+
+        if(classType === ClassType.LIVE){
+            scrollbarStyle.innerHTML = `
+                body { scrollbar-width: none; -ms-overflow-style: none; }
+                body::-webkit-scrollbar { width: 0; height: 0 }
+            `;
+        }else{
+            scrollbarStyle.innerHTML = `
+                body::-webkit-scrollbar { -webkit-appearance: none; }
+                body::-webkit-scrollbar:vertical { width: 14px; }
+                body::-webkit-scrollbar:horizontal { height: 14px; }
+                body::-webkit-scrollbar-thumb { background-color: ${THEME_COLOR_PRIMARY_DEFAULT}; border-radius: 10px;  }
+                body::-webkit-scrollbar-track { border-radius: 10px; }
+            `;
+        }
+        contentDoc.head.appendChild(scrollbarStyle);
 
         // IP Protection: Contents should not be able to be downloaded by right-clicking.
         const blockRightClick = (e: MouseEvent) => { e.preventDefault(); };
