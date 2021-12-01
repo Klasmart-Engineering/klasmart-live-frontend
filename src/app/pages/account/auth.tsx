@@ -131,7 +131,11 @@ export function Auth ({ useInAppBrowser }: Props) {
     }, [ selectedRegion, restart ]);
 
     if (!loading && !authenticated && !completedParentalChallenge) {
-        return <ParentalGate onCompleted={() => { setCompletedParentalChallenge(true); }} />;
+        return (
+            <ParentalGate
+                showHeader
+                onCompleted={() => { setCompletedParentalChallenge(true); }} />
+        );
     }
 
     if (useInAppBrowser) {

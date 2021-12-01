@@ -1,3 +1,4 @@
+import { useDeviceOrientationValue } from "@/app/model/appModel";
 import { THEME_COLOR_SECONDARY_DEFAULT } from "@/config";
 import {
     createStyles,
@@ -21,6 +22,7 @@ import { FormattedMessage } from "react-intl";
 interface Props {
     onCompleted: () => void;
     message?: string;
+    showHeader?: boolean;
 }
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
@@ -33,9 +35,14 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
 }));
 
-export function ParentalGate ({ onCompleted, message }: Props): JSX.Element {
+export function ParentalGate ({
+    onCompleted,
+    message,
+    showHeader,
+}: Props): JSX.Element {
     const theme = useTheme();
     const classes = useStyles();
+    const deviceOrientation = useDeviceOrientationValue();
 
     const [ challenge1 ] = useState<number>(Math.ceil(Math.random() * 50));
     const [ challenge2 ] = useState<number>(Math.ceil(Math.random() * 50));
@@ -87,26 +94,27 @@ export function ParentalGate ({ onCompleted, message }: Props): JSX.Element {
             style={{
                 overflow: `scroll`,
                 flex: 1,
-                height: `100%`,
+                height: deviceOrientation === `portrait` ?  `100%` : `auto`,
                 backgroundColor: `white`,
                 padding: theme.spacing(2),
             }}
         >
-            <Grid item>
-                <Typography
-                    gutterBottom
-                    variant="h3"
-                    align="center"
-                    className={classes.titleText}>
-                    <FormattedMessage id="parentalGate.title" />
-                </Typography>
-            </Grid>
+            {showHeader && (
+                <Grid item>
+                    <Typography
+                        gutterBottom
+                        variant="h3"
+                        align="center"
+                        className={classes.titleText}>
+                        <FormattedMessage id="parentalGate.title" />
+                    </Typography>
+                </Grid>)}
             <Grid
                 item
                 style={{
                     width: `75%`,
-                    marginTop: theme.spacing(3),
-                    marginBottom: theme.spacing(3),
+                    marginTop: theme.spacing(deviceOrientation === `portrait` ? 3 : 1),
+                    marginBottom: theme.spacing(deviceOrientation === `portrait` ? 3 : 1),
                 }}>
                 <Typography
                     gutterBottom
