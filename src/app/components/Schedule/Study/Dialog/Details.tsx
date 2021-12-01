@@ -260,13 +260,6 @@ export default function StudyDetailsDialog (props: Props) {
                 actions={[
                     {
                         label: intl.formatMessage({
-                            id: `button_cancel`,
-                        }),
-                        align: `end`,
-                        onClick: onClose,
-                    },
-                    {
-                        label: intl.formatMessage({
                             id: `button_go_study`,
                         }),
                         align: `end`,
