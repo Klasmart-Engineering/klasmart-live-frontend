@@ -16,7 +16,9 @@ if (!(window as any).kidslooplive) {
   `;
 
     const url = new URL(window.location.href);
-    const endpoint = url.searchParams.get('endpoint') || `${process.env.ENDPOINT_GQL || window.location.origin}`;
+    const endpoint = url.searchParams.get(`endpoint`) || `${process.env.ENDPOINT_GQL || window.location.origin}`;
+    const auth = url.searchParams.get(`auth`) || `${process.env.LOGIN_PAGE_URL}`;
+    const refreshEndpoint = `${decodeURIComponent(auth)}/refresh`;
 
     const token = AuthTokenProvider.retrieveToken();
 
@@ -38,7 +40,7 @@ if (!(window as any).kidslooplive) {
         .withId(streamId)
         .build();
 
-    const uploader = new GraphQlUploader(client, POST_EVENTS);
+    const uploader = new GraphQlUploader(client, POST_EVENTS, refreshEndpoint);
 
     const eventRecorder = EventRecorderService.builder()
         .withUploader(uploader)

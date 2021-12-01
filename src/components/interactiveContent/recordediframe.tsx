@@ -78,10 +78,11 @@ export function RecordedIframe (props: Props): JSX.Element {
     const { authenticationService } = useServices();
 
     const recorderEndpoint = useHttpEndpoint(`live`);
+    const authEndpoint = useHttpEndpoint(`auth`);
 
-    const getPDFURLTransformer = (contentHref: string, token: string | undefined, recorderEndpoint: string, encodedEndpoint: string) => {
-        const jpegTransformer = `${contentHref.replace(`/assets/`, `/pdf/`)}/view.html?token=${token}&endpoint=${encodedEndpoint}`;
-        const svgTransformer = `${contentHref.replace(`${recorderEndpoint}/assets`, `pdfviewer.html?pdfSrc=/assets`)}&token=${token}&endpoint=${encodedEndpoint}`;
+    const getPDFURLTransformer = (contentHref: string, token: string | undefined, recorderEndpoint: string, encodedEndpoint: string, encodedAuthEndpoint: string) => {
+        const jpegTransformer = `${contentHref.replace(`/assets/`, `/pdf/`)}/view.html?token=${token}&endpoint=${encodedEndpoint}&auth=${encodedAuthEndpoint}`;
+        const svgTransformer = `${contentHref.replace(`${recorderEndpoint}/assets`, `pdfviewer.html?pdfSrc=/assets`)}&token=${token}&endpoint=${encodedEndpoint}&auth=${encodedAuthEndpoint}`;
         switch (process.env.PDF_VERSION) {
         case `JPEG`: return jpegTransformer;
         case `SVG`: return svgTransformer;
@@ -91,10 +92,11 @@ export function RecordedIframe (props: Props): JSX.Element {
 
     const contentHrefWithToken = useMemo<string>(() => {
         const encodedEndpoint = encodeURIComponent(recorderEndpoint);
+        const encodedAuthEndpoint = encodeURIComponent(authEndpoint);
         if (contentHref.endsWith(`.pdf`)) {
-            return getPDFURLTransformer(contentHref, token, recorderEndpoint, encodedEndpoint);
+            return getPDFURLTransformer(contentHref, token, recorderEndpoint, encodedEndpoint, encodedAuthEndpoint);
         } else {
-            return `${contentHref}?token=${token}&endpoint=${encodedEndpoint}`;
+            return `${contentHref}?token=${token}&endpoint=${encodedEndpoint}&auth=${encodedAuthEndpoint}`;
         }
     }, [
         contentHref,

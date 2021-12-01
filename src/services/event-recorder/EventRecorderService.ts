@@ -52,15 +52,6 @@ export class EventRecorderService implements IEventRecorderService {
                 EventRecorderService.eventUploadHandler(events, this.uploader, this.uploadRetryTimeoutMillis).then(() => {
                     resolve();
                 }, (reason) => {
-                    /* TODO: Should the failed events be added to the event queue again?
-                events
-                    .map(x => SequencedEvent.fromData(x))
-                    .reverse()
-                    .forEach((x, i) => {
-                        this.queuedEvents.unshift(x);
-                    });
-                */
-
                     reject(reason);
                 });
             }
