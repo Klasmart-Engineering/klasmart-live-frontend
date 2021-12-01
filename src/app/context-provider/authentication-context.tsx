@@ -2,6 +2,7 @@ import {
     authState,
     localeState,
     selectedRegionState,
+    shouldClearCookieState,
 } from "../model/appModel";
 import { useServices } from "./services-provider";
 import React,
@@ -15,7 +16,10 @@ import React,
     useMemo,
     useState,
 } from "react";
-import { useRecoilState } from "recoil";
+import {
+    useRecoilState,
+    useRecoilValue,
+} from "recoil";
 
 type Props = {
     children?: ReactChild | ReactChildren | null;
@@ -51,6 +55,7 @@ const useAuthentication = () => {
     const [ auth, setAuth ] = useRecoilState(authState);
     const [ selectedRegion, setSelectedRegion ] = useRecoilState(selectedRegionState);
     const [ locale, setLocale ] = useRecoilState(localeState);
+    const shouldClearCookie = useRecoilValue(shouldClearCookieState);
 
     const refresh = useCallback(async (force?: boolean) => {
         if (!authenticationService) return;
@@ -58,6 +63,12 @@ const useAuthentication = () => {
 
         setAuthReady(false);
         setAuthError(false);
+
+        if (shouldClearCookie) {
+            setAuthenticated(false);
+            setAuthReady(true);
+            return;
+        }
 
         await authenticationService.refresh()
             .then(ok => {
@@ -67,7 +78,11 @@ const useAuthentication = () => {
             }).finally(() => {
                 setAuthReady(true);
             });
-    }, [ authenticationService, signedOut ]);
+    }, [
+        authenticationService,
+        signedOut,
+        shouldClearCookie,
+    ]);
 
     const signOut = useCallback(async () => {
         if (!authenticationService) return;
