@@ -290,13 +290,6 @@ export default function LiveDetailsDialog (props: Props) {
             actions={[
                 {
                     label: intl.formatMessage({
-                        id: `button_cancel`,
-                    }),
-                    align: `end`,
-                    onClick: onClose,
-                },
-                {
-                    label: intl.formatMessage({
                         id: `button_go_live`,
                     }),
                     align: `end`,

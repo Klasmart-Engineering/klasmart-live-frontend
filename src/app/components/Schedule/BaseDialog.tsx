@@ -1,5 +1,6 @@
 import BaseScheduleDialogContent,
 { DialogContentItem } from "./BaseDialogContent";
+import StyledIcon from "@/components/styled/icon";
 import {
     Box,
     Button,
@@ -7,10 +8,12 @@ import {
     Dialog,
     DialogActions,
     DialogTitle,
+    Grid,
     makeStyles,
     PropTypes,
     Typography,
 } from "@material-ui/core";
+import { Close as CloseIcon } from "@styled-icons/material/Close";
 import React from "react";
 
 const useStyles = makeStyles((theme) => createStyles({
@@ -21,6 +24,16 @@ const useStyles = makeStyles((theme) => createStyles({
         color: `#193756`,
         textOverflow: `ellipsis`,
         overflow: `hidden`,
+        marginRight: 8,
+    },
+    dialogCloseIconButton: {
+        borderRadius: `50%`,
+        width: `2rem`,
+        height: `2rem`,
+        background: theme.palette.common.white,
+        display: `flex`,
+        alignItems: `center`,
+        justifyContent: `center`,
     },
 }));
 
@@ -59,12 +72,37 @@ export default function BaseScheduleDialog (props: Props) {
             onClose={onClose}
         >
             <DialogTitle className={classes.dialogTitle}>
-                <Typography
-                    noWrap
-                    className={classes.dialogTitleText}
+                <Grid
+                    container
+                    direction="row"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    wrap="nowrap"
                 >
-                    {title}
-                </Typography>
+                    <Grid
+                        item
+                        style={{
+                            overflowX: `hidden`,
+                        }}>
+                        <Typography
+                            noWrap
+                            className={classes.dialogTitleText}
+                        >
+                            {title}
+                        </Typography>
+                    </Grid>
+                    <Grid
+                        item
+                        onClick={onClose}
+                    >
+                        <div className={classes.dialogCloseIconButton}>
+                            <StyledIcon
+                                icon={<CloseIcon />}
+                                size={`large`}
+                            />
+                        </div>
+                    </Grid>
+                </Grid>
             </DialogTitle>
             <BaseScheduleDialogContent items={contentItems} />
             <DialogActions>
