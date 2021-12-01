@@ -1,4 +1,4 @@
-import { THEME_COLOR_PRIMARY_DEFAULT } from "@/config";
+import { THEME_COLOR_SECONDARY_DEFAULT } from "@/config";
 import {
     createStyles,
     Input,
@@ -25,7 +25,7 @@ interface Props {
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     titleText: {
-        color: THEME_COLOR_PRIMARY_DEFAULT,
+        color: THEME_COLOR_SECONDARY_DEFAULT,
         fontWeight: theme.typography.fontWeightBold as number,
     },
     errorText: {

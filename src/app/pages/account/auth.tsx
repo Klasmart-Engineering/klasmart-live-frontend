@@ -140,7 +140,7 @@ export function Auth ({ useInAppBrowser }: Props) {
                 }}
                 spacing={2}>
                 <LoadingWithRetry
-                    messageId="auth_waiting"
+                    messageId="auth_waiting_for_authentication"
                     retryCallback={() => setKey(Math.random().toString(36))} />
                 {authenticated ? <Redirect to="/" /> : <></>}
                 {process.env.NODE_ENV === `development` && (
