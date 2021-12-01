@@ -1,4 +1,6 @@
 import Loading from "../../components/loading";
+import { useSelectedUserValue } from "../data/user/atom";
+import { useSignOut } from "../dialogs/account/useSignOut";
 import { ExitDialog } from "../dialogs/exitDialog";
 import useCordovaInitialize from "../platform/cordova-initialize";
 import {
@@ -7,8 +9,10 @@ import {
     lockOrientation,
 } from "../utils/screenUtils";
 import {
+    dialogsState,
     LayoutMode,
     OrientationType,
+    shouldClearCookieState,
     useLayoutModeValue,
     useSetDeviceOrientation,
 } from "@/app/model/appModel";
@@ -21,9 +25,14 @@ import React,
     ReactChildren,
     useCallback,
     useContext,
-    useEffect, useRef,
+    useEffect,
+    useRef,
     useState,
 } from "react";
+import {
+    useRecoilState,
+    useSetRecoilState,
+} from "recoil";
 
 const initialHref = location.href;
 
@@ -71,9 +80,13 @@ export function CordovaSystemProvider ({ children, history }: Props) {
     const [ permissions, setPermissions ] = useState(false);
     const layoutMode = useLayoutModeValue();
     const setDeviceOrientation = useSetDeviceOrientation();
+    const selectedUser = useSelectedUserValue();
+    const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
+    const setShouldClearCookie = useSetRecoilState(shouldClearCookieState);
+    const isBackToPreviousScreen = selectedUser && (dialogs.isSelectOrganizationOpen || dialogs.isSelectUserOpen);
 
     function addOnBack (onBackItem: OnBackItem) {
-        onBackQueue.current.push(onBackItem)
+        onBackQueue.current.push(onBackItem);
     }
 
     function removeOnBack (id: string) {
@@ -127,8 +140,12 @@ export function CordovaSystemProvider ({ children, history }: Props) {
     }, []);
 
     const quit = useCallback(() => {
+        //Fake clear cookie when users first sign in and they're at profile page
+        if (selectedUser === undefined && dialogs.isSelectUserOpen) {
+            setShouldClearCookie(true);
+        }
         (navigator as any).app.exitApp();
-    }, []);
+    }, [ dialogs.isSelectUserOpen, selectedUser ]);
 
     const {
         cordovaReady,
@@ -144,6 +161,20 @@ export function CordovaSystemProvider ({ children, history }: Props) {
                 latestOnBackItem.onBack();
                 if (latestOnBackItem.isAutoRemove === undefined || latestOnBackItem.isAutoRemove) {
                     removeOnBack(latestOnBackItem.id);
+                }
+                return;
+            }
+            if (isBackToPreviousScreen) {
+                if (dialogs.isSelectOrganizationOpen) {
+                    setDialogs({
+                        ...dialogs,
+                        isSelectOrganizationOpen: false,
+                    });
+                } else if (dialogs.isSelectUserOpen) {
+                    setDialogs({
+                        ...dialogs,
+                        isSelectUserOpen: false,
+                    });
                 }
                 return;
             }

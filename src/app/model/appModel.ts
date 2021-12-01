@@ -93,3 +93,9 @@ export const deviceOrientationState = atom({
 export const useDeviceOrientation = () => useRecoilState(deviceOrientationState);
 export const useDeviceOrientationValue = () => useRecoilValue(deviceOrientationState);
 export const useSetDeviceOrientation = () => useSetRecoilState(deviceOrientationState);
+
+export const shouldClearCookieState = atom({
+    key: `shouldClearCookie`,
+    default: false,
+    effects_UNSTABLE: [ persistAtom ],
+});

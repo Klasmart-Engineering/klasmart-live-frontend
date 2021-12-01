@@ -6,6 +6,7 @@ import {
     localeState,
     OrientationType,
     selectedRegionState,
+    shouldClearCookieState,
 } from "../../model/appModel";
 import { lockOrientation } from "../../utils/screenUtils";
 import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
@@ -27,6 +28,7 @@ import { Redirect } from "react-router-dom";
 import {
     useRecoilState,
     useRecoilValue,
+    useSetRecoilState,
 } from "recoil";
 
 const useStyles = makeStyles(() => createStyles({
@@ -52,6 +54,7 @@ export function Auth ({ useInAppBrowser }: Props) {
     const locale = useRecoilValue(localeState);
 
     const [ selectedRegion, setSelectedRegion ] = useRecoilState(selectedRegionState);
+    const setShouldClearCookie = useSetRecoilState(shouldClearCookieState);
 
     const authEndpoint = useHttpEndpoint(`auth`);
 
@@ -99,6 +102,9 @@ export function Auth ({ useInAppBrowser }: Props) {
 
         const cordova = (window as any).cordova;
         if (!cordova) return;
+
+        //Set this flag to false to receive response from authenticationService.refresh()
+        setShouldClearCookie(false);
 
         cordova.plugins.browsertab.openUrl(`${authEndpoint}/?ua=${CUSTOM_UA}&locale=${locale.languageCode}`, (successResp: any) => { console.log(successResp); }, (failureResp: any) => {
             console.error(`no browser tab available`);
