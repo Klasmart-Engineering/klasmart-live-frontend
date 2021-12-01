@@ -1,5 +1,17 @@
 import "inter-ui";
 import {
+    TEXT_COLOR_CONSTRAST_DEFAULT,
+    TEXT_COLOR_PRIMARY_DEFAULT,
+    TEXT_COLOR_SECONDARY_DEFAULT,
+    THEME_COLOR_BACKGROUND_DEFAULT,
+    THEME_COLOR_BACKGROUND_PAPER,
+    THEME_COLOR_GREY_200,
+    THEME_COLOR_PRIMARY_DARK_DEFAULT,
+    THEME_COLOR_PRIMARY_DEFAULT,
+    THEME_COLOR_PRIMARY_LIGHT_DEFAULT,
+    THEME_COLOR_SECONDARY_DEFAULT,
+} from "@/config";
+import {
     createTheme,
     responsiveFontSizes,
     Theme,
@@ -56,21 +68,24 @@ export function themeProvider (languageCode: string, themeMode: string) {
 
     const palette: PaletteOptions = {
         background: {
-            default: `#cfe1f9`,
-            paper: `#ffffff`,
+            default:  THEME_COLOR_BACKGROUND_DEFAULT,
+            paper: THEME_COLOR_BACKGROUND_PAPER,
         },
         primary: {
-            contrastText: `#FFF`,
-            dark: `#1896ea`,
-            light: `#344966`,
-            main: `#344966`,
+            contrastText: TEXT_COLOR_CONSTRAST_DEFAULT,
+            dark: THEME_COLOR_PRIMARY_DARK_DEFAULT,
+            light: THEME_COLOR_PRIMARY_LIGHT_DEFAULT,
+            main: THEME_COLOR_PRIMARY_DEFAULT,
+        },
+        secondary: {
+            main: THEME_COLOR_SECONDARY_DEFAULT,
         },
         text: {
-            primary: `#344966`,
-            secondary: `#9e9e9e`,
+            primary: TEXT_COLOR_PRIMARY_DEFAULT,
+            secondary: TEXT_COLOR_SECONDARY_DEFAULT,
         },
         grey:{
-            200: `#f1f6fc`,
+            200: THEME_COLOR_GREY_200,
         },
     };
 

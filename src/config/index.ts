@@ -9,6 +9,14 @@ export const REQUEST_RETRY_COUNT_MAX = 1;
 export const URL_REGEX = /(ftp|https?):\/\/([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?/g;
 export const AUDIO_GLOBALLY_MUTED_DEFAULT = true;
 export const VIDEO_GLOBALLY_MUTED_DEFAULT = true;
-export const THEME_COLOR_PRIMARY_DEFAULT = `#3676ce`;
-
 export const schedulePageWindowItemHeightToPageSize = (windowHeight: number, itemHeight: number) => Math.floor((windowHeight * 1.5) / itemHeight);
+export const THEME_COLOR_PRIMARY_DARK_DEFAULT = `#1896ea`;
+export const THEME_COLOR_PRIMARY_LIGHT_DEFAULT = `#344966`;
+export const THEME_COLOR_PRIMARY_DEFAULT = `#344966`;
+export const THEME_COLOR_SECONDARY_DEFAULT = `#3676ce`;
+export const TEXT_COLOR_PRIMARY_DEFAULT = `#344966`;
+export const TEXT_COLOR_SECONDARY_DEFAULT = `#9e9e9e`;
+export const TEXT_COLOR_CONSTRAST_DEFAULT = `#fff`;
+export const THEME_COLOR_GREY_200 = `#f1f6fc`;
+export const THEME_COLOR_BACKGROUND_DEFAULT = `#cfe1f9`;
+export const THEME_COLOR_BACKGROUND_PAPER = `#fff`;
