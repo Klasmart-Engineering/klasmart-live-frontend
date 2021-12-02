@@ -12,8 +12,10 @@ import ClassDetailsMenu from "./toolbarMenus/classDetailsMenu/classDetailsMenu";
 import GlobalActionsMenu from "./toolbarMenus/globalActionsMenu/globalActionsMenu";
 import LessonPlanMenu from "./toolbarMenus/lessonPlanMenu/lessonPlanMenu";
 import ViewModesMenu from "./toolbarMenus/viewModesMenu/viewModesMenu";
+import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
 import useCordovaObservePause from "@/app/platform/cordova-observe-pause";
 import { useMuteMutation } from "@/data/sfu/mutations/useMuteMutation";
+import { LIVE_ON_BACK_ID } from "@/pages/room/room-with-context";
 import { useSessionContext } from "@/providers/session-context";
 import {
     MuteNotification,
@@ -24,6 +26,8 @@ import {
     hasControlsState,
     InteractiveMode,
     interactiveModeState,
+    isActiveGlobalMuteAudioState,
+    isActiveGlobalMuteVideoState,
     isActiveGlobalScreenshareState,
     isCanvasOpenState,
     isChatOpenState,
@@ -63,8 +67,6 @@ import {
     useRecoilState,
     useRecoilValue,
 } from "recoil";
-import {useCordovaSystemContext} from "@/app/context-provider/cordova-system-context";
-import {LIVE_ON_BACK_ID} from "@/pages/room/room-with-context";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -128,6 +130,9 @@ function Toolbar () {
 
     const [ camOn, setCamOn ] = useState<boolean>(true);
     const [ micOn, setMicOn ] = useState<boolean>(true);
+
+    const [ camOnRecoil, setCamOnRecoil ] = useRecoilState<boolean>(isActiveGlobalMuteAudioState);
+    const [ micOnRecoil, setMicOnRecoil ] = useRecoilState<boolean>(isActiveGlobalMuteVideoState);
 
     const resetDrawers = () => {
         setIsGlobalActionsOpen(false);
@@ -199,13 +204,15 @@ function Toolbar () {
         if (isPaused) {
             await setOutboundAudioState(false);
             await setOutboundVideoState(false);
+            setMicOnRecoil(micOn);
+            setCamOnRecoil(camOn);
         }else{
-            await setOutboundAudioState(true);
-            await setOutboundVideoState(true);
+            await setOutboundAudioState(micOnRecoil);
+            await setOutboundVideoState(camOnRecoil);
         }
     }
 
-    useCordovaObservePause(onPauseStateChanged)
+    useCordovaObservePause(onPauseStateChanged);
 
     useEffect(() => {
         function initOnBack (){
@@ -215,7 +222,7 @@ function Toolbar () {
                 onBack: () => {
                     endCall();
                 },
-            })
+            });
         }
         initOnBack();
     }, []);

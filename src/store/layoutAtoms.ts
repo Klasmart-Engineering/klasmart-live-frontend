@@ -76,11 +76,11 @@ export const isActiveGlobalCanvasState = atom({
 });
 export const isActiveGlobalMuteAudioState = atom<boolean>({
     key: `isActiveGlobalMuteAudioState`,
-    default: false,
+    default: true,
 });
 export const isActiveGlobalMuteVideoState = atom<boolean>({
     key: `isActiveGlobalMuteVideoState`,
-    default: false,
+    default: true,
 });
 
 // VIEW MODES
