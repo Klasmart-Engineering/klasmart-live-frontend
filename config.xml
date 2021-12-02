@@ -39,6 +39,9 @@
         <preference name="EnableViewportScale" value="true" />
         <preference name="MediaTypesRequiringUserActionForPlayback" value="none"/>
         <preference name="AllowInlineMediaPlayback" value="true"/>
+        <config-file parent="UIUserInterfaceStyle" platform="ios" target="*-Info.plist">
+            <string>Light</string>
+        </config-file>
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
         <hook type="after_prepare" src="scripts/setup-info-plist.js" />
