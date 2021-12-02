@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.5.1](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.5.1%0Dv3.5.0) (2021-12-02)
+
+
+### Bug Fixes
+
+* fix splash screen doesn't show on android device ([4780519](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/47805199d2be03c611b43751ded1dc73d49de669)), closes [fix/KLL-1793](https://calmisland.atlassian.net/browse/KLL-1793) [KLL-1793](https://calmisland.atlassian.net/browse/KLL-1793)
+* remove recursive effect setState behavior ([a91ca8a](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/a91ca8aa63db245ea5554b0f8704618fa68e4c30))
+* status bar hidden when dark mode ([fe3a6ab](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/fe3a6aba029a912c0eee0348b89729a071154193)), closes [fix/KLL-1679](https://calmisland.atlassian.net/browse/KLL-1679)
+
 ## [3.5.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.5.0%0Dv3.4.0) (2021-12-01)
 
 
