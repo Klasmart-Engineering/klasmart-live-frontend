@@ -7,6 +7,7 @@ import { useHttpEndpoint } from "@/providers/region-select-context";
 import { useSessionContext } from "@/providers/session-context";
 import { ClassType } from "@/store/actions";
 import {
+    ClassInformation,
     classInfoState,
     hasControlsState,
     studyRecommandUrlState,
@@ -23,6 +24,7 @@ import React,
 {
     useCallback,
     useEffect,
+    useState,
 } from 'react';
 import { useSetRecoilState } from "recoil";
 
@@ -48,9 +50,11 @@ export function Room () {
     const theme = useTheme();
     const isXsDown = useMediaQuery(theme.breakpoints.down(`xs`));
 
+    const [ classInfo, setClassInfo ] = useState<ClassInformation>();
+    const setRecoilClassInfo = useSetRecoilState(classInfoState);
+
     const setHasControls = useSetRecoilState(hasControlsState);
     const setStudyRecommandUrl = useSetRecoilState(studyRecommandUrlState);
-    const setClassInfo = useSetRecoilState(classInfoState);
     const deviceOrientation = useDeviceOrientationValue();
 
     const {
@@ -122,6 +126,27 @@ export function Room () {
             host?.id === sessionId ? setHasControls(true) : setHasControls(false);
         }
     }, [ sessions.size, sessions ]);
+
+    useEffect(() => {
+        if (!classInfo?.room_id) return;
+
+        const teachers = [ ...sessions.values() ].filter(session => session.isTeacher);
+        const students = [ ...sessions.values() ].filter(session => !session.isTeacher);
+
+        const newClassInfo = {
+            ...classInfo,
+            teachers: classInfo.teachers.map(teacher => ({
+                ...teacher,
+                isAbsent: !teachers.find(teacherInSession => teacher.name === teacherInSession.name),
+            })),
+            students: classInfo.students.map(student => ({
+                ...student,
+                isAbsent: !students.find(studentInSession => student.name === studentInSession.name),
+            })),
+        };
+
+        setRecoilClassInfo(newClassInfo);
+    }, [ sessions, classInfo ]);
 
     const handleClassGetInformation = async () => {
         try {
