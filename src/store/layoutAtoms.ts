@@ -161,26 +161,36 @@ export const observeDisableState = atom({
     default: false,
 });
 
-export const classInfoState = atom({
+export interface Participant {
+    id: string;
+    name: string;
+    isAbsent: boolean;
+}
+
+export interface ClassInformation {
+    class_name: string;
+    lesson_name: string;
+    room_id: string;
+    class_type: string;
+    teachers: Participant[];
+    students: Participant[];
+    program: string;
+    subject: string;
+    lesson_plan: string;
+    materials: number;
+    start_at: string;
+    end_at: string;
+}
+
+export const classInfoState = atom<ClassInformation>({
     key: `classInfoState`,
     default: {
         class_name: ``,
         lesson_name: ``,
         room_id: ``,
         class_type: ``,
-        teachers: [
-            {
-                id: ``,
-                name: ``,
-            },
-        ],
-        students: [
-            {
-                id: ``,
-                name: ``,
-                isAbsent: true
-            },
-        ],
+        teachers: [],
+        students: [],
         program: ``,
         subject: ``,
         lesson_plan: ``,
