@@ -1,32 +1,28 @@
 import { useHttpEndpoint } from "../../../providers/region-select-context";
+import { DevSelectRegion } from "../../components/auth/devSelectRegion";
 import LoadingWithRetry from "../../components/loadingWithRetry";
 import { useAuthenticationContext } from "../../context-provider/authentication-context";
 import { ParentalGate } from "../../dialogs/parentalGate";
 import {
     localeState,
     OrientationType,
-    selectedRegionState,
     shouldClearCookieState,
 } from "../../model/appModel";
 import { lockOrientation } from "../../utils/screenUtils";
-import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
 import {
-    Button,
     Grid,
+    useTheme,
 } from "@material-ui/core";
 import createStyles from "@material-ui/core/styles/createStyles";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import React,
 {
-    useCallback,
     useEffect,
     useRef,
     useState,
 } from "react";
-import { FormattedMessage } from "react-intl";
 import { Redirect } from "react-router-dom";
 import {
-    useRecoilState,
     useRecoilValue,
     useSetRecoilState,
 } from "recoil";
@@ -49,11 +45,11 @@ interface Props {
 
 export function Auth ({ useInAppBrowser }: Props) {
     const classes = useStyles();
+    const theme = useTheme();
     const frameRef = useRef<HTMLIFrameElement>(null);
     const [ key, setKey ] = useState(Math.random().toString(36));
     const locale = useRecoilValue(localeState);
 
-    const [ selectedRegion, setSelectedRegion ] = useRecoilState(selectedRegionState);
     const setShouldClearCookie = useSetRecoilState(shouldClearCookieState);
 
     const authEndpoint = useHttpEndpoint(`auth`);
@@ -117,19 +113,6 @@ export function Auth ({ useInAppBrowser }: Props) {
         completedParentalChallenge,
     ]);
 
-    const { restart } = useCordovaSystemContext();
-
-    const selectRegionWithId = useCallback((regionId: string) => {
-        setSelectedRegion({
-            ...selectedRegion,
-            regionId,
-        });
-
-        if (restart) {
-            restart();
-        }
-    }, [ selectedRegion, restart ]);
-
     if (!loading && !authenticated && !completedParentalChallenge) {
         return (
             <ParentalGate
@@ -147,6 +130,7 @@ export function Auth ({ useInAppBrowser }: Props) {
                 alignItems="center"
                 style={{
                     height: `100%`,
+                    padding: theme.spacing(2),
                 }}
                 spacing={2}>
                 <LoadingWithRetry
@@ -157,13 +141,8 @@ export function Auth ({ useInAppBrowser }: Props) {
                     <Grid
                         item
                         xs={12}
-                        style={{
-                            textAlign: `center`,
-                        }}
                     >
-                        <Button onClick={() => { selectRegionWithId(`auth.alpha.kidsloop.net`); }}><FormattedMessage id={`select_region_alpha`} /></Button>
-                        <Button onClick={() => { selectRegionWithId(`auth.stage.kidsloop.live`); }}><FormattedMessage id={`select_region_staging`} /></Button>
-                        <Button onClick={() => { selectRegionWithId(`auth.kidsloop.live`); }}><FormattedMessage id={`select_region_production`} /></Button>
+                        <DevSelectRegion />
                     </Grid>
                 )}
             </Grid>
