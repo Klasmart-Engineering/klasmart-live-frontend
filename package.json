@@ -190,7 +190,8 @@
         "PLUGIN_VERSION": "5.0.0",
         "ANDROID_AGENT_VER": "6.2.1"
       },
-      "cordova-plugin-speechrecognition": {}
+      "cordova-plugin-speechrecognition": {},
+      "cordova-plugin-splashscreen": {}
     },
     "platforms": [
       "ios",
