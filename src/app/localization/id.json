@@ -224,5 +224,12 @@
     "homeFunStudy.submission.error.rejected": "Tugas ini telah dinilai oleh guru Anda dan tidak dapat dikirim ulang.",
     "parentalGate.error.incorrect": "Nilai input salah",
     "signin.title.loading": "Tunggu sebentar",
-    "signin.body.loading": "Mencoba masuk ke KidsLoop..."
+    "signin.body.loading": "Mencoba masuk ke KidsLoop...",
+    "live.button.shareScreen.notAvailable": "‘Share Screen’ is not available on mobile browsers.",
+    "live.button.leaveClass": "Leave Class",
+    "signin.title.noOrg": "No Organization Found",
+    "signin.body.noOrg": "Please contact your school administrator for support.",
+    "signin.button.goBack": "Go Back",
+    "live.title.classConnect": "Loading {className}...",
+    "live.title.classConnectFail": "Oh no, something went wrong.\\nPlease refresh to try again."
 }
