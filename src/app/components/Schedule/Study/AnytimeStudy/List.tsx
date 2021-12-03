@@ -10,7 +10,6 @@ import {
 } from "@/app/components/Schedule/shared";
 import StudyDetailsDialog from "@/app/components/Schedule/Study/Dialog/Details";
 import { useSelectedOrganizationValue } from "@/app/data/user/atom";
-import { homeFunStudyState } from "@/app/model/appModel";
 import {
     isFocused,
     useWindowOnFocusChange,
@@ -50,7 +49,6 @@ import {
     FormattedMessage,
     useIntl,
 } from "react-intl";
-import { useRecoilValue } from "recoil";
 
 const useStyles = makeStyles((theme) => createStyles({
     listRoot: {
@@ -78,7 +76,6 @@ export default function AnytimeStudyScheduleList (props: Props) {
     const [ page, setPage ] = useState(SCHEDULE_PAGE_START);
     const [ items, setItems ] = useState<SchedulesTimeViewListItem[]>([]);
     const organization = useSelectedOrganizationValue();
-    const homeFunStudy = useRecoilValue(homeFunStudyState);
 
     const organizationId = organization?.organization_id ?? ``;
     const now = new Date();
@@ -129,16 +126,10 @@ export default function AnytimeStudyScheduleList (props: Props) {
     });
 
     useEffect(() => {
-        if(!homeFunStudy.submitted) return;
-        refetchSchedules();
-    }, [ homeFunStudy.submitted ]);
-
-    useEffect(() => {
         if (scheduleError) setItems([]);
         if (!schedulesData) return;
         const newItems = schedulesData?.data ?? [];
-        // newItems can only be added before oldItems once https://calmisland.atlassian.net/browse/KLS-227 is completed and when sorted by `create_at`
-        setItems((oldItems) => uniqBy([ ...oldItems, ...newItems ], (item) => item.id));
+        setItems((oldItems) => uniqBy([ ...newItems, ...oldItems ], (item) => item.id).sort((a, b) => a.created_at - b.created_at));
     }, [ scheduleError, schedulesData ]);
 
     const onFocusChange = useCallback(() => {

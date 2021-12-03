@@ -9,7 +9,6 @@ import {
 } from "@/app/components/Schedule/shared";
 import StudyDetailsDialog from "@/app/components/Schedule/Study/Dialog/Details";
 import { useSelectedOrganizationValue } from "@/app/data/user/atom";
-import { homeFunStudyState } from "@/app/model/appModel";
 import { formatDueDateMillis } from "@/app/utils/dateTimeUtils";
 import {
     isFocused,
@@ -57,7 +56,6 @@ import {
     useIntl,
 } from "react-intl";
 import { useHistory } from "react-router";
-import { useRecoilValue } from "recoil";
 
 const useStyles = makeStyles((theme) => createStyles({
     listRoot: {
@@ -97,7 +95,6 @@ export default function StudyScheduleList (props: Props) {
     const [ page, setPage ] = useState(SCHEDULE_PAGE_START);
     const [ items, setItems ] = useState<SchedulesTimeViewListItem[]>([]);
     const organization = useSelectedOrganizationValue();
-    const homeFunStudy = useRecoilValue(homeFunStudyState);
 
     const organizationId = organization?.organization_id ?? ``;
     const now = new Date();
@@ -171,11 +168,6 @@ export default function StudyScheduleList (props: Props) {
         offset: window.innerHeight / 2, // detect scrolling with an offset of half of the screen height from the bottom
         debounce: SCHEDULE_PAGINATION_DELAY,
     });
-
-    useEffect(() => {
-        if (!homeFunStudy.submitted) return;
-        refetchSchedules();
-    }, [ homeFunStudy.submitted ]);
 
     useEffect(() => {
         if (scheduleError) setItems([]);
