@@ -36,6 +36,7 @@ rrwebPlayer.on(`fullsnapshot-rebuilded`, () => onFullSnapshotRebuilded());
 
 let hasReplayStarted = false;
 let isH5PIframe = false;
+let youtubeApiAdded = false;
 
 window.addEventListener(`message`, ({ data }) => {
     if (!data || !data.event) { return; }
@@ -154,15 +155,17 @@ function onFullSnapshotRebuilded () {
         isH5PIframe = true;
     }
 
-    if (!(replayedWindow as any).YT) {
+    if (!youtubeApiAdded) {
+        youtubeApiAdded = true;
         const tag = replayedDocument.createElement(`script`);
         (replayedWindow as any).onYouTubeIframeAPIReady = onYTAPIReady;
         const head = replayedDocument.getElementsByTagName(`head`)[0];
         tag.src = `https://www.youtube.com/iframe_api`;
         head?.appendChild(tag);
-    } else {
-        onYTAPIReady();
+    }
 
+    if ((replayedWindow as any).YT) {
+        onYTAPIReady();
     }
 }
 
