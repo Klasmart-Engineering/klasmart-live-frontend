@@ -40,6 +40,7 @@ import {
 import { downloadDataBlob } from "@/app/utils/requestUtils";
 import { useHttpEndpoint } from "@/providers/region-select-context";
 import { fromSecondsToMilliseconds } from "@/utils/utils";
+import { usePostScheduleFeedback } from "@kidsloop/cms-api-client";
 import {
     Box,
     Button,
@@ -79,9 +80,7 @@ import React,
     useState,
 } from "react";
 import {
-    FormattedDate,
     FormattedMessage,
-    FormattedTime,
     useIntl,
 } from "react-intl";
 import { useRecoilState } from "recoil";
@@ -190,6 +189,8 @@ export function HomeFunStudyDialog () {
         addOnBack,
         removeOnBack,
     } = useContext(CordovaSystemContext);
+
+    const { mutateAsync: postScheduleFeedback } = usePostScheduleFeedback();
 
     useEffect(() => {
         lockOrientation(OrientationType.PORTRAIT);
@@ -372,11 +373,16 @@ export function HomeFunStudyDialog () {
             setShouldSubmitFeedback(false);
             setSubmitStatus(SubmitStatus.SUBMITTING);
 
-            await schedulerService.postScheduleFeedback(selectedOrganization.organization_id, studyInfo.id, localFeedback.comment, localFeedback.assignmentItems.map((item, index) => ({
-                attachment_id: item.attachmentId,
-                attachment_name: item.attachmentName,
-                number: index,
-            })))
+            await postScheduleFeedback({
+                assignments: localFeedback.assignmentItems.map((item, index) => ({
+                    attachment_id: item.attachmentId,
+                    attachment_name: item.attachmentName,
+                    number: index,
+                })),
+                comment: localFeedback.comment,
+                org_id: selectedOrganization.organization_id,
+                schedule_id: studyInfo.id,
+            })
                 .then(result => {
                     if (result && result.data && result.data.id) {
                         setSubmitStatus(SubmitStatus.SUCCESS);
