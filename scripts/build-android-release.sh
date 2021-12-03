@@ -4,10 +4,12 @@
 export USE_TEST_TOKEN=1
 export IS_CORDOVA_BUILD="true"
 
-# Clean Build
+# Always clean build releases
+rm -rf ./node_modules
+rm -rf ./plugins
 rm -rf ./www
-rm -rf ./platforms/android
-
+rm -rf ./platforms
+  
 # Ensure packages are installed
 npm install
 
@@ -18,7 +20,7 @@ npm run build:app:release
 [ $? -ne 0 ] && echo "Failed to build webpack" && exit 1
 
 # Override compile SDK version to 31 (solving issue trying to reference missing lStar value)
-export ORG_GRADLE_PROJECT_cdvCompileSdkVersion=31
+# export ORG_GRADLE_PROJECT_cdvCompileSdkVersion=31
 
 # Prepare android platform
 cordova prepare android
