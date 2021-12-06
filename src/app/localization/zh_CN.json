@@ -225,11 +225,11 @@
     "parentalGate.error.incorrect": "输入不正确",
     "signin.title.loading": "请稍等",
     "signin.body.loading": "KidsLoop 正在授权您的登录...",
-    "live.button.shareScreen.notAvailable": "“共享屏幕”在手机浏览器上不可用。",
-    "live.button.leaveClass": "退出",
-    "signin.title.noOrg": "No Organization Found",
-    "signin.body.noOrg": "Please contact your school administrator for support.",
-    "signin.button.goBack": "Go Back",
-    "live.title.classConnect": "Loading {className}...",
-    "live.title.classConnectFail": "Oh no, something went wrong.\\nPlease refresh to try again."
+    "live.class.shareScreen.error.notAvailable": "“共享屏幕”在手机浏览器上不可用。",
+    "live.class.leave": "退出",
+    "signIn.noOrganization.title": "No Organization Found",
+    "signIn.noOrganization.body": "Please contact your school administrator for support.",
+    "common.goBack": "Go Back",
+    "live.class.connecting": "Connecting <strong>{className}</strong>...",
+    "live.class.connecting.error.failed": "Oh no, something went wrong.\\nPlease refresh to try again."
 }
