@@ -159,6 +159,7 @@ export function ClassContent () {
     const setClassLeft = useSetRecoilState(classEndedState);
     const { restart } = useCordovaSystemContext();
     const history = useHistory();
+    const { addOnBack } = useCordovaSystemContext();
 
     const materialsLength = studyRecommandUrl ? materials.length + 1 : materials.length;
 
@@ -191,6 +192,15 @@ export function ClassContent () {
             history.push(`/schedule`);
         }
     };
+
+    useEffect(() => {
+        const CLASS_CONTENT_BACK_ID = `classContentBackID`;
+
+        addOnBack?.({
+            id: CLASS_CONTENT_BACK_ID,
+            onBack: onCloseButtonClick
+        })
+    }, []);
 
     useEffect(() => {
         if (!rootDivRef || !rootDivRef.current) { return; }
