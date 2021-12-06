@@ -6,7 +6,6 @@ import { ParentalGate } from "../../dialogs/parentalGate";
 import {
     localeState,
     OrientationType,
-    shouldClearCookieState,
 } from "../../model/appModel";
 import { lockOrientation } from "../../utils/screenUtils";
 import {
@@ -22,10 +21,7 @@ import React,
     useState,
 } from "react";
 import { Redirect } from "react-router-dom";
-import {
-    useRecoilValue,
-    useSetRecoilState,
-} from "recoil";
+import { useRecoilValue } from "recoil";
 
 const useStyles = makeStyles(() => createStyles({
     container: {
@@ -49,8 +45,6 @@ export function Auth ({ useInAppBrowser }: Props) {
     const frameRef = useRef<HTMLIFrameElement>(null);
     const [ key, setKey ] = useState(Math.random().toString(36));
     const locale = useRecoilValue(localeState);
-
-    const setShouldClearCookie = useSetRecoilState(shouldClearCookieState);
 
     const authEndpoint = useHttpEndpoint(`auth`);
 
@@ -98,9 +92,6 @@ export function Auth ({ useInAppBrowser }: Props) {
 
         const cordova = (window as any).cordova;
         if (!cordova) return;
-
-        //Set this flag to false to receive response from authenticationService.refresh()
-        setShouldClearCookie(false);
 
         cordova.plugins.browsertab.openUrl(`${authEndpoint}/?ua=${CUSTOM_UA}&locale=${locale.languageCode}`, (successResp: any) => { console.log(successResp); }, (failureResp: any) => {
             console.error(`no browser tab available`);

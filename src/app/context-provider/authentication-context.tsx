@@ -16,10 +16,7 @@ import React,
     useMemo,
     useState,
 } from "react";
-import {
-    useRecoilState,
-    useRecoilValue,
-} from "recoil";
+import { useRecoilState } from "recoil";
 
 type Props = {
     children?: ReactChild | ReactChildren | null;
@@ -55,7 +52,7 @@ const useAuthentication = () => {
     const [ auth, setAuth ] = useRecoilState(authState);
     const [ selectedRegion, setSelectedRegion ] = useRecoilState(selectedRegionState);
     const [ locale, setLocale ] = useRecoilState(localeState);
-    const shouldClearCookie = useRecoilValue(shouldClearCookieState);
+    const [ shouldClearCookie, setShouldClearCookie ] = useRecoilState(shouldClearCookieState);
 
     const refresh = useCallback(async (force?: boolean) => {
         if (!authenticationService) return;
@@ -131,6 +128,9 @@ const useAuthentication = () => {
             if (cordova) {
                 cordova.plugins.browsertab.close();
             }
+
+            //Set this flag to false to receive response from authenticationService.refresh()
+            setShouldClearCookie(false);
 
             if (url.searchParams) {
                 const languageCode = url.searchParams.get(`iso`);
