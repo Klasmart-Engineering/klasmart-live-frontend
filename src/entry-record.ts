@@ -59,7 +59,7 @@ if (!(window as any).kidslooplive) {
     };
 
     record({
-        checkoutEveryNms: 1000 * 10,
+        checkoutEveryNms: 1000 * 1, // take full snapshot every x seconds
         emit: (e, isCheckout) => {
             // TODO: Should client or server keep track of the
             // number of events emitted since last keyframe?
