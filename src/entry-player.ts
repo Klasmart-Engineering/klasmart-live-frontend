@@ -37,6 +37,17 @@ rrwebPlayer.on(`fullsnapshot-rebuilded`, () => onFullSnapshotRebuilded());
 let hasReplayStarted = false;
 let isH5PIframe = false;
 let youtubeApiAdded = false;
+let isForceUpdateFullSnapshot = false;
+const _warn = console.warn;
+
+// rrweb doesn't have onError event, so we have to listen the log to detect the "Node id #id" not found" issue.
+// https://github.com/rrweb-io/rrweb/blob/78526a3aae6ba35016ad2836477ba3186eacf250/packages/rrweb/src/replay/index.ts#L1851
+console.warn = function(...args: any[]) {
+    if(args.length > 2 && args[0].includes(`replayer`) && args[1].includes(`Node with id`)) {
+        isForceUpdateFullSnapshot = true;
+    }
+    return _warn.apply(console, args);
+};
 
 window.addEventListener(`message`, ({ data }) => {
     if (!data || !data.event) { return; }
@@ -56,8 +67,11 @@ window.addEventListener(`message`, ({ data }) => {
             onCustomEvent(event);
             return;
         }
-        if (event.type === EventType.FullSnapshot && isH5PIframe) {
+        if (event.type === EventType.FullSnapshot && isH5PIframe && !isForceUpdateFullSnapshot) {
             return;
+        }
+        if(event.type === EventType.FullSnapshot  && isForceUpdateFullSnapshot) {
+            isForceUpdateFullSnapshot = false;
         }
 
         rrwebPlayer.addEvent(event);
