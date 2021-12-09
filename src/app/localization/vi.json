@@ -225,11 +225,16 @@
     "parentalGate.error.incorrect": "Giá trị đầu vào không chính xác",
     "signin.title.loading": "Chờ đợi trong giây lát",
     "signin.body.loading": "KidsLoop đang cố gắng đăng nhập cho bạn ...",
-    "live.class.shareScreen.error.notAvailable": "‘Share Screen’ is not available on mobile browsers.",
-    "live.class.leave": "Leave Class",
-    "signIn.noOrganization.title": "No Organization Found",
-    "signIn.noOrganization.body": "Please contact your school administrator for support.",
-    "common.goBack": "Go Back",
-    "live.class.connecting": "Connecting <strong>{className}</strong>...",
-    "live.class.connecting.error.failed": "Oh no, something went wrong.\\nPlease refresh to try again."
+    "live.class.shareScreen.error.notAvailable": "'Chia sẻ màn hình' không khả dụng trên trình duyệt di động.",
+    "live.class.leave": "Rời khỏi lớp học",
+    "signIn.noOrganization.title": "Không tìm thấy tổ chức nào",
+    "signIn.noOrganization.body": "Vui lòng liên hệ với quản trị viên của trường để được hỗ trợ.",
+    "common.goBack": "Quay lại",
+    "live.class.connecting": "Đang kết nối <strong>{className}</strong>...",
+    "live.class.connecting.error.failed": "Ồ không, đã xảy ra lỗi. \\n Vui lòng làm mới để thử lại.",
+    "signIn.noStudentProfile.title": "Bạn không phải là học sinh",
+    "signIn.noStudentProfile.body": "Bạn cần có hồ sơ học sinh để tiếp tục sử dụng ứng dụng",
+    "forParents.title": "For Parents",
+    "forParents.body": "To continue, please tap the numbers in ascending order",
+    "forParents.incorrect": "Incorrect, please try again"
 }
