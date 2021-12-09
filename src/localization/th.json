@@ -113,9 +113,9 @@
     "classdetails_roster_teachers": "ครูผู้สอน",
     "classdetails_roster_students": "นักเรียน",
     "classdetails_roster_absents": "ใครพลาด",
-    "viewmodes_on_stage": "บนเวที",
-    "viewmodes_observe": "สังเกต",
-    "viewmodes_present": "ปัจจุบัน",
+    "viewMode.onStage": "บนเวที",
+    "viewMode.observe": "สังเกต",
+    "viewMode.present": "ปัจจุบัน",
     "chat_messages": "ข้อความ",
     "chat_messages_write_placeholder": "เขียนข้อความของคุณ",
     "chat_messages_noresults": "ไม่มีข้อความ",
@@ -261,5 +261,8 @@
     "preview_guide_text_3": "ไม่รองรับการประชุมทางวิดีโอใน Preview Live Class",
     "common_teacher_count": "{count, plural, =0 { ครู } one { ครู } other { ครู }}",
     "common_student_count": "{count, plural, =0 { นักเรียน } one { นักเรียน } other { นักเรียน }}",
-    "join_cameraPreviewFallback_cameraUnavailableOnPlatform": "กล้องไม่พร้อมใช้งานบนแพลตฟอร์มหรือเวอร์ชันนี้ โปรดอัปเดตอุปกรณ์"
+    "join_cameraPreviewFallback_cameraUnavailableOnPlatform": "กล้องไม่พร้อมใช้งานบนแพลตฟอร์มหรือเวอร์ชันนี้ โปรดอัปเดตอุปกรณ์",
+    "screenShare.presenting": "You are presenting to everyone",
+    "screenShare.stop": "Stop Presenting",
+    "viewMode.screenShare": "Share Screen"
 }

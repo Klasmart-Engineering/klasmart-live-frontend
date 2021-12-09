@@ -113,9 +113,9 @@
     "classdetails_roster_teachers": "Guru",
     "classdetails_roster_students": "Siswa",
     "classdetails_roster_absents": "Tidak hadir",
-    "viewmodes_on_stage": "Di Panggung",
-    "viewmodes_observe": "Mengamati",
-    "viewmodes_present": "Presentasi",
+    "viewMode.onStage": "Di Panggung",
+    "viewMode.observe": "Mengamati",
+    "viewMode.present": "Presentasi",
     "chat_messages": "Pesan",
     "chat_messages_write_placeholder": "Tulis pesan Anda",
     "chat_messages_noresults": "Tidak ada pesan",
@@ -261,5 +261,8 @@
     "preview_guide_text_3": "Konferensi video tidak bisa diakses di Pratinjau Kelas Live",
     "common_teacher_count": "{count, plural, =0 { guru } one { guru } other { guru }}",
     "common_student_count": "{count, plural, =0 { siswa } one { siswa } other { siswa }}",
-    "join_cameraPreviewFallback_cameraUnavailableOnPlatform": "Camera unavailable on this platform or version. Please update the device."
+    "join_cameraPreviewFallback_cameraUnavailableOnPlatform": "Kamera tidak dapat digunakan di platform atau versi ini. Silakan perbarui perangkatmu.",
+    "screenShare.presenting": "You are presenting to everyone",
+    "screenShare.stop": "Stop Presenting",
+    "viewMode.screenShare": "Share Screen"
 }

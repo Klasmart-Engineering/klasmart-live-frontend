@@ -113,9 +113,9 @@
     "classdetails_roster_teachers": "老师",
     "classdetails_roster_students": "学生",
     "classdetails_roster_absents": "缺席学生",
-    "viewmodes_on_stage": "上台",
-    "viewmodes_observe": "观察",
-    "viewmodes_present": "演示",
+    "viewMode.onStage": "上台",
+    "viewMode.observe": "观察",
+    "viewMode.present": "演示",
     "chat_messages": "留言",
     "chat_messages_write_placeholder": "写下你的留言",
     "chat_messages_noresults": "没有留言",
@@ -261,5 +261,8 @@
     "preview_guide_text_3": "预览功能暂不支持视频会议",
     "common_teacher_count": "{count, plural, =0 {teacher} one {teacher} other {teachers}}",
     "common_student_count": "{count, plural, =0 {student} one {student} other {students}}",
-    "join_cameraPreviewFallback_cameraUnavailableOnPlatform": "该平台或版本上的相机不可用。请更新设备。"
+    "join_cameraPreviewFallback_cameraUnavailableOnPlatform": "该平台或版本上的相机不可用。请更新设备。",
+    "screenShare.presenting": "您正在向所有人演示",
+    "screenShare.stop": "Stop Presenting",
+    "viewMode.screenShare": "Share Screen"
 }
