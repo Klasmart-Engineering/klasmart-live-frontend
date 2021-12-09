@@ -14,8 +14,12 @@ import { SettingsLanguageDialog } from "./dialogs/account/settingsLanguageDialog
 import { useSignOut } from "./dialogs/account/useSignOut";
 import { ExternalNavigationDialog } from "./dialogs/externalNavigationDialog";
 import { HomeFunStudyDialog } from "./dialogs/home-fun-study/homeFunStudyDialog";
-import { dialogsState } from "./model/appModel";
+import {
+    dialogsState,
+    shouldShowNoOrgProfileState,
+} from "./model/appModel";
 import { Auth } from "./pages/account/auth";
+import { NoOrgDialog } from "./pages/no-organization/noOrgDialog";
 import SchedulePage from "./pages/schedule";
 import AnytimeStudyPage from "./pages/schedule/anytime-study";
 import { UserRoute } from "./route/userRoute";
@@ -28,7 +32,10 @@ import {
     Router,
     Switch,
 } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import {
+    useRecoilState,
+    useRecoilValue,
+} from "recoil";
 
 export function App ({ history }: {
     history: any;
@@ -42,6 +49,7 @@ export function App ({ history }: {
     const { shouldSelectOrganization } = useShouldSelectOrganization();
     const { signOut } = useSignOut();
     const cmsQueryClient = useQueryClient();
+    const shouldShowNoOrgProfile = useRecoilValue(shouldShowNoOrgProfileState);
 
     useEffect(() => {
         console.log({
@@ -60,12 +68,14 @@ export function App ({ history }: {
             ...dialogs,
             isSelectUserOpen: shouldSelectUser,
             isSelectOrganizationOpen: !shouldSelectUser && shouldSelectOrganization,
+            isShowNoOrgProfile: shouldShowNoOrgProfile,
         });
     }, [
         authenticated,
         loading,
         shouldSelectUser,
         shouldSelectOrganization,
+        shouldShowNoOrgProfile,
     ]);
 
     return (
@@ -114,6 +124,7 @@ export function App ({ history }: {
                     <HomeFunStudyDialog />
                     <SettingsDialog />
                     <SettingsLanguageDialog />
+                    <NoOrgDialog />
                 </>
             )}
             <ExternalNavigationDialog />

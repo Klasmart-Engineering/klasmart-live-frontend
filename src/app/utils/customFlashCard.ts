@@ -81,34 +81,36 @@ export function useCustomFlashCard ({
     useEffect(() => {
         if (!process.env.IS_CORDOVA_BUILD) return;
 
-        function startListen (lang: string) {
-            const speechRecognitionOptions = {
-                language: lang, //Change the language if needed
-                matches: 1,
-                showPartial: true,
-                showPopup: true, //Android only
+        function startListen () {
+            let options = {
+                partialResultRequired: true,
             };
-            (window as any).plugins.speechRecognition.startListening((result: any) => {
-                iframe?.contentWindow?.postMessage({
-                    action: FlashCardAction.ANSWER,
-                    data: result[0],
-                }, `*`);
-            }, (err: any) => {
-                console.error(err);
-                sendMessageToIframe(FlashCardAction.OFF_RECORD_BUTTON, ``);
-                if(!err || err === `0`) return;
-                enqueueSnackbar(err, {
-                    variant: `error`,
-                    anchorOrigin: {
-                        horizontal: `center`,
-                        vertical: `bottom`,
-                    },
-                });
-            }, speechRecognitionOptions);
+
+            (window as any).Speech.startRecognition(
+                (success: { isFinal: boolean, text: string}) => {
+                    sendMessageToIframe(FlashCardAction.ANSWER, success.text);
+                    sendMessageToIframe(FlashCardAction.STOP_LISTEN, ``);
+                }, (err: string) => {
+                    console.log(err);
+                    sendMessageToIframe(FlashCardAction.OFF_RECORD_BUTTON, ``);
+                    if(!err || err === `0`) return;
+                    enqueueSnackbar(err, {
+                        variant: `error`,
+                        anchorOrigin: {
+                            horizontal: `center`,
+                            vertical: `bottom`,
+                        },
+                    });
+                }, options);
         }
 
         function stopListen () {
-            (window as any).plugins.speechRecognition.stopListening();
+            (window as any).Speech.stopRecognition(
+                (success: any) => {
+                    console.log(success);
+                }, (err: any) => {
+                    console.log(err);
+                })
         }
 
         function onMessage ({ data }: MessageEvent) {
@@ -121,7 +123,7 @@ export function useCustomFlashCard ({
                 setOpenLoadingDialog(false);
                 break;
             case FlashCardAction.START_LISTEN:
-                startListen(data.data);
+                startListen();
                 break;
             case FlashCardAction.STOP_LISTEN:
                 stopListen();
@@ -130,22 +132,16 @@ export function useCustomFlashCard ({
                 requestPermissions({
                     permissionTypes: [ PermissionType.MIC ],
                     onSuccess: () => {
-                        (window as any).plugins.speechRecognition.hasPermission(() => {
-                            (window as any).plugins.speechRecognition.requestPermission(() => {
-                                iframe?.contentWindow?.postMessage({
-                                    action: FlashCardAction.GRANTED_SPEECH_RECOGNITION_PERMISSION,
-                                }, `*`);
-                            }, () => {
-                                iframe?.contentWindow?.postMessage({
-                                    action: FlashCardAction.DENY_SPEECH_RECOGNITION_PERMISSION,
-                                }, `*`);
-                            });
+                        (window as any).Speech.initRecognition((success: any) => {
+                            sendMessageToIframe(FlashCardAction.GRANTED_SPEECH_RECOGNITION_PERMISSION, ``);
+                        }, (err: string) => {
+                            console.log(err);
+                        }, {
+                            language: data.data
                         });
                     },
                     onError: () => {
-                        iframe?.contentWindow?.postMessage({
-                            action: FlashCardAction.DENY_SPEECH_RECOGNITION_PERMISSION,
-                        }, `*`);
+                        sendMessageToIframe(FlashCardAction.DENY_SPEECH_RECOGNITION_PERMISSION, ``);
                     },
                 });
                 break;
@@ -154,6 +150,7 @@ export function useCustomFlashCard ({
 
         window.addEventListener(`message`, onMessage);
         return () => {
+            stopListen();
             window.removeEventListener(`message`, onMessage);
         };
     }, [ iframe ]);

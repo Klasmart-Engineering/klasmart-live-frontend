@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.6.0-internal.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.6.0-internal.0%0Dv3.5.1) (2021-12-08)
+
+
+### Features
+
+* add no organization found page ([891c554](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/891c5541528a8fe4bc200a483ffb72828947b136)), closes [KLL-2130](https://calmisland.atlassian.net/browse/KLL-2130) [KLL-2130](https://calmisland.atlassian.net/browse/KLL-2130) [KLL-1696](https://calmisland.atlassian.net/browse/KLL-1696)
+* automated schedule list refetch when submitting home fun study ([c552f6e](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/c552f6e666db5b764c90ec244cd2b3bd87a4c841)), closes [fix/KLL-2162](https://calmisland.atlassian.net/browse/KLL-2162) [KLL-2162](https://calmisland.atlassian.net/browse/KLL-2162)
+* **localization:** add new translations ([73ca556](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/73ca556e670233391ee5d4cf7695f57df0071dbf))
+
+
+### Bug Fixes
+
+* **app:** app gets frozen after the Speech Recognition on iOS ([25ba420](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/25ba420bb07f7598cabb3b65813a0fb38c4ae45d)), closes [KLL-2121](https://calmisland.atlassian.net/browse/KLL-2121)
+* **app:** implement android back button for study class ([1b538a7](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/1b538a70dcdf9a5ecf48ccdaf63d186890078d7b)), closes [KLL-1844](https://calmisland.atlassian.net/browse/KLL-1844)
+* **app:** remove grey splashscreen ([d30f70f](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/d30f70f0cb6bd5fed37b22f3e4778ca62387fabd)), closes [KLL-1793](https://calmisland.atlassian.net/browse/KLL-1793)
+* don't add the youtube API to the page multiple times ([c2c8189](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/c2c81892b05fce88973986169fc64b0950f50e11))
+* find words activity appeared to be stored in Observe mode ([7062f8e](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/7062f8e2e2968b4807c9ab6f1767b67d87769e07)), closes [KLL-1879](https://calmisland.atlassian.net/browse/KLL-1879)
+* **localization:** change translation keys ([1dd7c68](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/1dd7c680ab2c97d24cb578a822dc3c07b9866f0f))
+* only some of the supported files can be selected from google drive ([d14c051](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/d14c05183ec468a9582e895c74ca55808e4b5689)), closes [KLL-1788](https://calmisland.atlassian.net/browse/KLL-1788)
+* reduce logo size on splash screen ([35044d5](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/35044d5403a550cd67ccc9415cd8dd034846f2ef)), closes [KLL-1793](https://calmisland.atlassian.net/browse/KLL-1793)
+* resume from background invalidate mute in Live class ([94e9b87](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/94e9b871d9d0cae47c1c3d3c1eec4a0b0ac716e6)), closes [KLL-1964](https://calmisland.atlassian.net/browse/KLL-1964)
+* student receives end Class event when they switches from Cellular to WiFi ([214d24b](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/214d24be6a702a9fc66754d9a1945b32ca263fa8)), closes [KLL-1967](https://calmisland.atlassian.net/browse/KLL-1967)
+
 ### [3.5.1](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.5.1%0Dv3.5.0) (2021-12-02)
 
 

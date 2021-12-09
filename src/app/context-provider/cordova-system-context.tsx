@@ -1,6 +1,5 @@
 import Loading from "../../components/loading";
 import { useSelectedUserValue } from "../data/user/atom";
-import { useSignOut } from "../dialogs/account/useSignOut";
 import { ExitDialog } from "../dialogs/exitDialog";
 import useCordovaInitialize from "../platform/cordova-initialize";
 import {

@@ -18,7 +18,7 @@ window.addEventListener(`message`, ({data}) => {
             onAnswer(data.data);
             break;
         case FlashCardAction.GRANTED_SPEECH_RECOGNITION_PERMISSION:
-            enableRecordButtons();
+            checkPermissionInIframeAndEnableButtons();
             break;
         case FlashCardAction.DENY_SPEECH_RECOGNITION_PERMISSION:
             disableRecordButtons();
@@ -86,6 +86,16 @@ function customRecordButtons() {
     }
 }
 
+function checkPermissionInIframeAndEnableButtons() {
+    navigator.mediaDevices.getUserMedia({ audio: true })
+        .then(function(stream) {
+            enableRecordButtons();
+        })
+        .catch(function(err) {
+            disableRecordButtons();
+        });
+}
+
 function enableRecordButtons() {
     const buttons = getAllRecordButtons();
     for (let i = 0; i < buttons.length; i++) {
@@ -108,7 +118,7 @@ function startListen() {
     if (volumeButton)
         volumeButton.style.visibility = `hidden`;
     getCurrentRecordButton()?.classList.add(H5PClassName.H5P_SPEECH_RECOGNITION_LISTENING);
-    sendMessageToParent(FlashCardAction.START_LISTEN, inputLanguage);
+    sendMessageToParent(FlashCardAction.START_LISTEN, ``);
 }
 
 function offRecordButton() {
@@ -141,7 +151,7 @@ function onAnswer(answer: string) {
 }
 
 function askSpeechRecognitionPermission() {
-    sendMessageToParent(FlashCardAction.ASK_SPEECH_RECOGNITION_PERMISSION);
+    sendMessageToParent(FlashCardAction.ASK_SPEECH_RECOGNITION_PERMISSION, inputLanguage);
 }
 
 sendMessageToParent(FlashCardAction.FLASH_CARD_LOADED);

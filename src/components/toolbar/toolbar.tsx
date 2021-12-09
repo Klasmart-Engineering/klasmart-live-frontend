@@ -12,8 +12,10 @@ import ClassDetailsMenu from "./toolbarMenus/classDetailsMenu/classDetailsMenu";
 import GlobalActionsMenu from "./toolbarMenus/globalActionsMenu/globalActionsMenu";
 import LessonPlanMenu from "./toolbarMenus/lessonPlanMenu/lessonPlanMenu";
 import ViewModesMenu from "./toolbarMenus/viewModesMenu/viewModesMenu";
+import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
 import useCordovaObservePause from "@/app/platform/cordova-observe-pause";
 import { useMuteMutation } from "@/data/sfu/mutations/useMuteMutation";
+import { LIVE_ON_BACK_ID } from "@/pages/room/room-with-context";
 import { useSessionContext } from "@/providers/session-context";
 import {
     MuteNotification,
@@ -63,8 +65,6 @@ import {
     useRecoilState,
     useRecoilValue,
 } from "recoil";
-import {useCordovaSystemContext} from "@/app/context-provider/cordova-system-context";
-import {LIVE_ON_BACK_ID} from "@/pages/room/room-with-context";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -129,6 +129,9 @@ function Toolbar () {
     const [ camOn, setCamOn ] = useState<boolean>(true);
     const [ micOn, setMicOn ] = useState<boolean>(true);
 
+    const camOnRef = React.useRef<any>(null);
+    const micOnRef = React.useRef<any>(null);
+
     const resetDrawers = () => {
         setIsGlobalActionsOpen(false);
         setIsLessonPlanOpen(false);
@@ -170,6 +173,20 @@ function Toolbar () {
         await setOutboundVideoState(!camOn);
     }
 
+    async function setCurrentOutboundAudioState () {
+        if (micOnRef.current !== null) {
+            await setOutboundAudioState(micOnRef.current);
+            micOnRef.current = null;
+        }
+    }
+
+    async function setCurrentOutboundVideoState () {
+        if (camOnRef.current !== null) {
+            await setOutboundVideoState(camOnRef.current);
+            camOnRef.current = null;
+        }
+    }
+
     function endCall () {
         hasControls ? setOpenEndClassDialog(true) : setOpenLeaveClassDialog(true);
     }
@@ -197,15 +214,17 @@ function Toolbar () {
 
     async function onPauseStateChanged (isPaused: boolean) {
         if (isPaused) {
+            micOnRef.current = micOn;
+            camOnRef.current = camOn;
             await setOutboundAudioState(false);
             await setOutboundVideoState(false);
         }else{
-            await setOutboundAudioState(true);
-            await setOutboundVideoState(true);
+            setCurrentOutboundAudioState();
+            setCurrentOutboundVideoState();
         }
     }
 
-    useCordovaObservePause(onPauseStateChanged)
+    useCordovaObservePause(onPauseStateChanged);
 
     useEffect(() => {
         function initOnBack (){
@@ -215,7 +234,7 @@ function Toolbar () {
                 onBack: () => {
                     endCall();
                 },
-            })
+            });
         }
         initOnBack();
     }, []);
@@ -269,7 +288,7 @@ function Toolbar () {
                     className={classes.iconGroup}>
                     <ToolbarItemMicrophone
                         // locked={}
-                        active={micOn}
+                        active={micOnRef.current === null ? micOn : micOnRef.current}
                         // tooltip={user.isTeacherAudioMuted ? intl.formatMessage({
                         //     id: `toolbar_microphonelocked`,
                         // }) : undefined}
@@ -285,7 +304,7 @@ function Toolbar () {
                     />
                     <ToolbarItemCamera
                         // locked={videoGloballyMuted}
-                        active={camOn}
+                        active={camOnRef.current === null ? camOn : camOnRef.current}
                         // tooltip={videoGloballyMutedState ? intl.formatMessage({
                         //     id: `toolbar_camera_locked`,
                         // }) : undefined}
