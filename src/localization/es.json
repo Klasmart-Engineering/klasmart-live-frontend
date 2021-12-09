@@ -113,9 +113,9 @@
     "classdetails_roster_teachers": "Profesores",
     "classdetails_roster_students": "Estudiantes",
     "classdetails_roster_absents": "Ausencias",
-    "viewmodes_on_stage": "En primer plano",
-    "viewmodes_observe": "Observar",
-    "viewmodes_present": "Presentar",
+    "viewMode.onStage": "En primer plano",
+    "viewMode.observe": "Observar",
+    "viewMode.present": "Presentar",
     "chat_messages": "Mensajes",
     "chat_messages_write_placeholder": "Escribe tu mensaje",
     "chat_messages_noresults": "No hay mensajes",
@@ -261,5 +261,8 @@
     "preview_guide_text_3": "Video conference is not supported in the Preview Live Class",
     "common_teacher_count": "{count, plural, =0 {teacher} one {teacher} other {teachers}}",
     "common_student_count": "{count, plural, =0 {student} one {student} other {students}}",
-    "join_cameraPreviewFallback_cameraUnavailableOnPlatform": "Camera unavailable on this platform or version. Please update the device."
+    "join_cameraPreviewFallback_cameraUnavailableOnPlatform": "Camera unavailable on this platform or version. Please update the device.",
+    "screenShare.presenting": "You are presenting to everyone",
+    "screenShare.stop": "Stop Presenting",
+    "viewMode.screenShare": "Share Screen"
 }

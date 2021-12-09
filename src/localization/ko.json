@@ -109,13 +109,13 @@
     "classdetails_lesson_materials": "수업 재료",
     "classdetails_start_time": "시작 시간",
     "classdetails_end_time": "종료 시간",
-    "classdetails_roster": "클래스 구성",
+    "classdetails_roster": "수업 참가자",
     "classdetails_roster_teachers": "선생님",
     "classdetails_roster_students": "학습자",
     "classdetails_roster_absents": "현재 미참여자",
-    "viewmodes_on_stage": "스테이지 모드",
-    "viewmodes_observe": "관찰 모드",
-    "viewmodes_present": "발표 모드",
+    "viewMode.onStage": "스테이지 모드",
+    "viewMode.observe": "관찰 모드",
+    "viewMode.present": "발표 모드",
     "chat_messages": "메시지",
     "chat_messages_write_placeholder": "메시지를 쓰세요",
     "chat_messages_noresults": "메시지 없음",
@@ -261,5 +261,8 @@
     "preview_guide_text_3": "미리보기 라이브 클래스 에서는 비디오 기능을 지원하지 않습니다.",
     "common_teacher_count": "{count, plural, =0 {교사} one {교사} other {교사}}",
     "common_student_count": "{count, plural, =0 {학생} one {학생} other {학생}}",
-    "join_cameraPreviewFallback_cameraUnavailableOnPlatform": "Camera unavailable on this platform or version. Please update the device."
+    "join_cameraPreviewFallback_cameraUnavailableOnPlatform": "이 플랫폼 또는 버전에서 카메라를 사용할 수 없습니다. 장치를 업데이트하십시오.",
+    "screenShare.presenting": "모든 참여자에게 화면을 공유하는 중입니다.",
+    "screenShare.stop": "Stop Presenting",
+    "viewMode.screenShare": "Share Screen"
 }
