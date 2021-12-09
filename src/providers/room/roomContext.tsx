@@ -80,6 +80,7 @@ export const RoomProvider: React.FC<Props> = ({ children, enableConferencing }) 
     const [ content, setContent ] = useState<Content>();
     const [ sessions, setSessions ] = useState<Map<string, Session>>(new Map<string, Session>());
     const [ trophy, setTrophy ] = useState<ReadTrophyDto>();
+    const [ currentConnection, setCurrentConnection ] = useState<ConnectionType>();
     const [ , setClassEnded ] = useRecoilState(classEndedState);
     const [ unreadMessages, setUnreadMessages ] = useRecoilState(unreadMessagesState);
     const [ isChatOpen ] = useRecoilState(isChatOpenState);
@@ -142,6 +143,18 @@ export const RoomProvider: React.FC<Props> = ({ children, enableConferencing }) 
         isChatOpen && setUnreadMessages(0);
     }, [ isChatOpen, messages ]);
 
+    useEffect(() => {
+        const connectionType = navigator.connection.type;
+        setCurrentConnection(connectionType);
+    }, []);
+
+    const isConnectionTypeChange = () => {
+        if(!currentConnection) return;
+        const connectionType = navigator.connection.type;
+        if (connectionType !== currentConnection && connectionType !== `none`) return true;
+        return false;
+    };
+
     const { loading, error } = useRoomSubscription({
         onSubscriptionData: ({ subscriptionData }) => {
             if (!subscriptionData?.data?.room) { return; }
@@ -162,6 +175,11 @@ export const RoomProvider: React.FC<Props> = ({ children, enableConferencing }) 
                 if (trophy.from === trophy.user || trophy.user === sessionId || trophy.from === sessionId) {
                     setTrophy(trophy);
                 }
+            }
+
+            const connectionType = navigator.connection.type;
+            if(currentConnection !== connectionType){
+                setCurrentConnection(connectionType);
             }
         },
         variables: {
@@ -203,6 +221,7 @@ export const RoomProvider: React.FC<Props> = ({ children, enableConferencing }) 
     };
 
     const userLeave = (leave: Session) => {
+        if(leave.id === sessionId && isConnectionTypeChange()) return;
         const user = sessions.get(leave.id);
 
         setSessions((prev) => {

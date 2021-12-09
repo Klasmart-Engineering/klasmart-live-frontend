@@ -39,6 +39,9 @@ export default function CmsApiClientProvider (props: Props) {
                         staleTime: DATA_STALE_TIME,
                         retry: REQUEST_RETRY_COUNT_MAX,
                     },
+                    mutations: {
+                        retry: REQUEST_RETRY_COUNT_MAX,
+                    },
                 },
             }}
             interceptors={[

@@ -7,6 +7,11 @@ const SOURCE_CAMERAROLL = 2;
 const MEDIA_TYPE_ALL = 2;
 
 export const ACCEPT_MIME_TYPES =
+    `text/plain,` +
+    `text/csv,` +
+    `audio/*,` +
+    `video/*,` +
+    `image/*` +
     `application/pdf,` +
     `application/vnd.ms-powerpoint,` +
     `application/vnd.openxmlformats-officedocument.presentationml.presentation,` +
@@ -15,11 +20,32 @@ export const ACCEPT_MIME_TYPES =
     `application/rtf,` +
     `application/vnd.ms-excel,` +
     `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,` +
-    `text/plain,` +
-    `text/csv,` +
-    `audio/*,` +
-    `video/*,` +
-    `image/*`;
+    `application/msdoc,` +
+    `application/msdocx,` +
+    `application/vnd.google-apps.document,` +
+    `application/vnd.google-apps.kix,` +
+    `application/vnd.google-apps.spreadsheet,` +
+    `application/vnd.google-apps.drawing,` +
+    `application/vnd.google-apps.form,` +
+    `application/vnd.google-apps.presentation,` +
+    `audio/wave,` +
+    `audio/x-wav,` +
+    `audio/x-pn-wav,` +
+    `audio/vnd.wave,` +
+    `audio/wav,` +
+    `audio/mpeg,` +
+    `video/avi,` +
+    `video/quicktime,` +
+    `video/x-msvideo,` +
+    `video/mp4,` +
+    `image/x-ms-bmp,` +
+    `image/x-windows-bmp,` +
+    `image/x-windows-bmp,` +    
+    `image/png,` +
+    `image/gif,` +
+    `image/jpeg,` +    
+    `image/bmp,` +    
+    `image/jpg`;
 
 export const MIME_TO_EXTENSION = new Map<string, string>([
     [ `audio/wave`, `wav` ],

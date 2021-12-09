@@ -1,5 +1,6 @@
 import { useConferenceContext } from "./room/conferenceContext";
 import { useSessionContext } from "./session-context";
+import useCordovaObservePause from "@/app/platform/cordova-observe-pause";
 import { useConsumerMutation } from "@/data/sfu/mutations/useConsumerMutation";
 import { useProducerMutation } from "@/data/sfu/mutations/useProducerMutation";
 import { useSendRtpCapabilitiesMutation } from "@/data/sfu/mutations/useSendRtpCapabilitiesMutation";
@@ -85,6 +86,7 @@ export const WebRTCProvider = (props: { children: React.ReactNode }) => {
     const [ outboundStreams, setOutboundStreams ] = useState<Map<string, Stream>>(new Map<string, Stream>());
     const [ destructors, setDestructors ] = useState<Map<string, () => any>>(new Map<string, () => any>());
     const [ muteStatuses, setMuteStatuses ] = useState<Map<string, MuteNotification>>(new Map<string, MuteNotification>());
+    const statusPauseRef = React.useRef<boolean>(false);
 
     const [ rtpCapabilitiesMutation ] = useSendRtpCapabilitiesMutation();
     const [ transportMutation ] = useTransportMutation();
@@ -751,7 +753,12 @@ export const WebRTCProvider = (props: { children: React.ReactNode }) => {
     }, [ name, localSessionId ]);
 
     useEffect(() => {
-        if (!camera) {
+        //if from background dont need app connect new stream
+        if (!camera || statusPauseRef.current) {
+            if (statusPauseRef.current) {
+                statusPauseRef.current = false;
+            }
+
             return;
         }
         const useSimulcast = isTeacher;
@@ -764,6 +771,14 @@ export const WebRTCProvider = (props: { children: React.ReactNode }) => {
             }));
         };
     }, [ camera, producerTransport ]);
+
+    function onPauseStateChanged (isPaused: boolean) {
+        if (!isPaused) {
+            statusPauseRef.current = true;
+        }
+    }
+
+    useCordovaObservePause(onPauseStateChanged);
 
     const syncMuteStatuses = async () => {
         const { data } = await refetch();

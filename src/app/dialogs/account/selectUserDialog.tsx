@@ -10,7 +10,10 @@ import { ReadUserDto } from "@/app/data/user/dto/readUserDto";
 import { useMeQuery } from "@/app/data/user/queries/meQuery";
 import { useMyUsersQuery } from "@/app/data/user/queries/myUsersQuery";
 import { ParentalGate } from "@/app/dialogs/parentalGate";
-import { dialogsState } from "@/app/model/appModel";
+import {
+    dialogsState,
+    shouldShowNoOrgProfileState,
+} from "@/app/model/appModel";
 import { useDisplayPrivacyPolicy } from "@/app/utils/privacyPolicyUtils";
 import { useQueryClient } from "@kidsloop/cms-api-client";
 import Dialog from '@material-ui/core/Dialog';
@@ -57,6 +60,7 @@ export function useShouldSelectUser () {
     const { authenticationService } = useServices();
 
     const [ shouldSelectUser, setShouldSelectUser ] = useState<boolean>(false);
+    const setShouldShowNoOrgProfile = useSetRecoilState(shouldShowNoOrgProfileState);
 
     const {
         data: meData,
@@ -128,10 +132,12 @@ export function useShouldSelectUser () {
         if (!selectedValidUser) {
             if (myUsersData.my_users.length > 1) {
                 setShouldSelectUser(true);
+                setShouldShowNoOrgProfile(false);
                 return;
             }
 
             selectUser(myUsersData.my_users[0]);
+            setShouldShowNoOrgProfile(true);
         } else {
             setShouldSelectUser(false);
         }
