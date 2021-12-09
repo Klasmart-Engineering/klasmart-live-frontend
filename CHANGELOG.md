@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.5.2-hotfix.1](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.5.2-hotfix.1%0Dv3.5.2-hotfix.0) (2021-12-09)
+
 ### [3.5.1](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.5.1%0Dv3.5.0) (2021-12-02)
 
 
