@@ -48,7 +48,7 @@ const DefaultRegions: Region[] = [
             cms: `https://cms.kidsloop.live`,
             sfu: `https://live.kidsloop.live/sfu`,
             user: `https://api.kidsloop.live/user/`,
-            privacy: `https://kidsloop.live/en/policies/privacy-notice`,
+            privacy: `https://kidsloop.net/policies/privacy-notice`,
         },
     },
     {
@@ -61,7 +61,7 @@ const DefaultRegions: Region[] = [
             cms: `https://cms.kidsloop.live`,
             sfu: `https://live.kidsloop.live/sfu`,
             user: `https://api.kidsloop.live/user/`,
-            privacy: `https://kidsloop.live/policies/privacy-notice`,
+            privacy: `https://kidsloop.net/policies/privacy-notice`,
         },
     },
     {
@@ -165,7 +165,7 @@ const DefaultRegions: Region[] = [
             cms: `https://cms.stage.kidsloop.live`,
             sfu: `https://live.stage.kidsloop.live/sfu`,
             user: `https://api.stage.kidsloop.live/user/`,
-            privacy: `https://kidsloop.net/en/policies/privacy-notice`,
+            privacy: `https://kidsloop.net/policies/privacy-notice`,
         },
     },
     {
@@ -178,7 +178,7 @@ const DefaultRegions: Region[] = [
             cms: `https://cms.alpha.kidsloop.net`,
             sfu: `https://live.alpha.kidsloop.net/sfu`,
             user: `https://api.alpha.kidsloop.net/user/`,
-            privacy: `https://kidsloop.net/en/policies/privacy-notice`,
+            privacy: `https://kidsloop.net/policies/privacy-notice`,
         },
     },
 ];
