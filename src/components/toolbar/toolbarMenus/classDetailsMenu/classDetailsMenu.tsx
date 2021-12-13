@@ -14,7 +14,7 @@ import { Info as InfoIcon } from "@styled-icons/evaicons-solid/Info";
 import React,
 { useState } from "react";
 import { useIntl } from "react-intl";
-import { useRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
     boxStyle: {
@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface GlobaActionsMenuProps {
-	anchor?: any;
+	anchor?: HTMLElement;
 }
 
 function ClassDetailsMenu (props: GlobaActionsMenuProps) {
@@ -57,7 +57,7 @@ function ClassDetailsMenu (props: GlobaActionsMenuProps) {
     const classes = useStyles();
     const intl = useIntl();
 
-    const [ isClassDetailsOpen, setIsClassDetailsOpen ] = useRecoilState(isClassDetailsOpenState);
+    const isClassDetailsOpen = useRecoilValue(isClassDetailsOpenState);
     const [ tabValue, setTabValue ] = useState(0);
 
     const handleChange = (event: React.ChangeEvent<{}>, newTabValue: number) => {

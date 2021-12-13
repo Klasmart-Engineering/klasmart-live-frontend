@@ -12,12 +12,11 @@ export enum ContentType {
     Screen = `Screen`,
 }
 
-// TODO create a new file for enums
 export enum InteractiveMode {
-    Blank,
-    Present,
-    Observe,
-    ShareScreen,
+    ONSTAGE,
+    OBSERVE,
+    PRESENT,
+    SCREENSHARE,
 }
 export interface Session {
     id: string;
@@ -37,10 +36,6 @@ export interface Message {
     id: string;
     message: string;
     session: Session;
-}
-export interface InteractiveModeState {
-    interactiveMode: number;
-    setInteractiveMode: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export interface StreamIdState {

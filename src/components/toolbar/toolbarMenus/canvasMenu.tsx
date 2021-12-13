@@ -60,7 +60,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface GlobaActionsMenuProps {
-	anchor?: any;
+	anchor?: HTMLElement;
 }
 
 function CanvasMenu (props: GlobaActionsMenuProps) {
@@ -202,7 +202,7 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
                         })}
                         active={isGlobalCanvasEnabled}
                         icon={isGlobalCanvasEnabled ? <GridOnIcon size="1.85rem"/> : <GridOffIcon size="1.85rem"/>}
-                        onClick={ () => {setIsGlobalCanvasEnabled(!isGlobalCanvasEnabled);} } />
+                        onClick={ () => { setIsGlobalCanvasEnabled(!isGlobalCanvasEnabled); } } />
                 </>
                 }
             </Grid>

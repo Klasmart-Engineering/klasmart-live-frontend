@@ -1,8 +1,8 @@
-import { ContentType } from "@/pages/utils";
 import {
-    activeTabState,
+    ContentType,
     InteractiveMode,
-} from "@/store/layoutAtoms";
+} from "@/pages/utils";
+import { activeTabState } from "@/store/layoutAtoms";
 import { MaterialTypename } from "@/types/lessonMaterial";
 import {
     Drawer,
@@ -241,8 +241,9 @@ export function fullScreenById (id:any) {
 export const sleep = (m:number) => new Promise(r => setTimeout(r, m));
 
 export const defineContentType = (material:any, interactiveMode:InteractiveMode) => {
-    if(interactiveMode === InteractiveMode.OnStage) return ContentType.Blank;
-    if(interactiveMode === InteractiveMode.Observe) return ContentType.Activity;
+    if(interactiveMode === InteractiveMode.ONSTAGE) return ContentType.Blank;
+    if(interactiveMode === InteractiveMode.OBSERVE) return ContentType.Activity;
+    if(interactiveMode === InteractiveMode.SCREENSHARE) return ContentType.Stream;
 
     if(material.__typename === MaterialTypename.VIDEO || (material.__typename === undefined && material.video)){
         return ContentType.Video;
@@ -256,8 +257,8 @@ export const defineContentType = (material:any, interactiveMode:InteractiveMode)
 };
 
 export const defineContentId = (material:any, interactiveMode:InteractiveMode, streamId:any, sessionId:any) => {
-    if(interactiveMode === InteractiveMode.OnStage) return sessionId;
-    if(interactiveMode === InteractiveMode.Observe) return material.url;
+    if(interactiveMode === InteractiveMode.ONSTAGE) return sessionId;
+    if(interactiveMode === InteractiveMode.OBSERVE) return material.url;
 
     if(material.__typename === MaterialTypename.VIDEO || (material.__typename === undefined && material.video) || material.__typename === MaterialTypename.AUDIO){
         return sessionId;

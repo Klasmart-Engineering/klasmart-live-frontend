@@ -8,6 +8,7 @@ import { useRoomSubscription } from "@/data/live/subscriptions/useRoomSubscripti
 import { SfuServiceApolloClient } from "@/data/sfu/sfuServiceApolloClient";
 import {
     Content,
+    InteractiveMode,
     Message,
     Session,
 } from "@/pages/utils";
@@ -15,7 +16,6 @@ import { ClassType } from "@/store/actions";
 import {
     classEndedState,
     hasControlsState,
-    InteractiveMode,
     interactiveModeState,
     isChatOpenState,
     isShowContentLoadingState,
@@ -102,7 +102,9 @@ export const RoomProvider: React.FC<Props> = ({ children, enableConferencing }) 
 
     useEffect(() => {
         if (!hasControls) return;
-        const material = interactiveMode !== InteractiveMode.OnStage && materialActiveIndex >= 0 && materialActiveIndex < materials.length ? materials[materialActiveIndex] : undefined;
+        if (interactiveMode === InteractiveMode.SCREENSHARE) return; // Prevent duplicated showContent
+
+        const material = interactiveMode !== InteractiveMode.ONSTAGE && materialActiveIndex >= 0 && materialActiveIndex < materials.length ? materials[materialActiveIndex] : undefined;
         const type = defineContentType(material, interactiveMode);
         const contentId = defineContentId(material, interactiveMode, streamId, sessionId);
 
@@ -121,7 +123,7 @@ export const RoomProvider: React.FC<Props> = ({ children, enableConferencing }) 
     ]);
 
     useEffect(() => {
-        if (hasControls && interactiveMode === InteractiveMode.OnStage && classType === ClassType.LIVE) return;
+        if (hasControls && interactiveMode === InteractiveMode.ONSTAGE && classType === ClassType.LIVE) return;
         if (!hasControls && classType !==  ClassType.STUDY) return;
         const material = materials?.[materialActiveIndex];
         const materialUrl = material?.url;

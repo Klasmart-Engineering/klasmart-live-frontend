@@ -1,7 +1,11 @@
 import { useSessionContext } from "./session-context";
 import { WebRTCContext } from "./WebRTCContext";
 import { useShowContentMutation } from "@/data/live/mutations/useShowContentMutation";
-import { ContentType } from "@/pages/utils";
+import {
+    ContentType,
+    InteractiveMode,
+} from "@/pages/utils";
+import { interactiveModeState } from "@/store/layoutAtoms";
 import { types as MediaSoup } from "mediasoup-client";
 import React,
 {
@@ -9,6 +13,7 @@ import React,
     useContext,
     useState,
 } from "react";
+import { useSetRecoilState } from "recoil";
 
 export interface ScreenShareContextInterface {
     stream: MediaStream | undefined;
@@ -31,6 +36,7 @@ export const ScreenShareProvider = (props: {children: React.ReactNode}) => {
     const [ stopping, setStopping ] = useState<boolean>(false);
     const sfuState = useContext(WebRTCContext);
     const { roomId, sessionId } = useSessionContext();
+    const  setInteractiveMode = useSetRecoilState(interactiveModeState);
 
     const [ showContent ] = useShowContentMutation();
 
@@ -62,6 +68,7 @@ export const ScreenShareProvider = (props: {children: React.ReactNode}) => {
                     contentId: sessionId,
                 },
             });
+            setInteractiveMode(InteractiveMode.SCREENSHARE);
         } catch(e) {
             console.log(e);
         } finally {
@@ -91,6 +98,7 @@ export const ScreenShareProvider = (props: {children: React.ReactNode}) => {
                     contentId: sessionId,
                 },
             });
+            setInteractiveMode(InteractiveMode.ONSTAGE);
         } finally {
             setStopping(false);
         }
