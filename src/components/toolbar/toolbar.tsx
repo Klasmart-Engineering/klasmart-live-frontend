@@ -16,6 +16,7 @@ import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-c
 import useCordovaObservePause from "@/app/platform/cordova-observe-pause";
 import { useMuteMutation } from "@/data/sfu/mutations/useMuteMutation";
 import { LIVE_ON_BACK_ID } from "@/pages/room/room-with-context";
+import { InteractiveMode } from "@/pages/utils";
 import { useSessionContext } from "@/providers/session-context";
 import {
     MuteNotification,
@@ -24,7 +25,6 @@ import {
 import {
     activeTabState,
     hasControlsState,
-    InteractiveMode,
     interactiveModeState,
     isActiveGlobalScreenshareState,
     isCanvasOpenState,
@@ -51,6 +51,7 @@ import { Globe as GlobalActionsIcon } from "@styled-icons/entypo/Globe";
 import { Info as InfoIcon } from "@styled-icons/evaicons-solid/Info";
 import { Eye as ObserveIcon } from "@styled-icons/fa-regular/Eye";
 import { PresentationChartBar as PresentIcon } from "@styled-icons/heroicons-solid/PresentationChartBar";
+import { ScreenShare as ScreenShareIcon } from "@styled-icons/material/ScreenShare";
 import { ChevronBottom as ViewModesIcon } from "@styled-icons/open-iconic/ChevronBottom";
 import { FilePaper as LessonPlanIcon } from "@styled-icons/remix-fill/FilePaper";
 import clsx from "clsx";
@@ -91,6 +92,21 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 }));
 
+export const viewModesBadge = (interactiveMode: InteractiveMode) => {
+    switch (interactiveMode) {
+    case InteractiveMode.ONSTAGE:
+        return <OnStageIcon />;
+    case InteractiveMode.OBSERVE:
+        return <ObserveIcon />;
+    case InteractiveMode.PRESENT:
+        return <PresentIcon />;
+    case InteractiveMode.SCREENSHARE:
+        return <ScreenShareIcon />;
+    default:
+        return <OnStageIcon />;
+    }
+};
+
 function Toolbar () {
     const classes = useStyles();
     const intl = useIntl();
@@ -98,7 +114,6 @@ function Toolbar () {
         isTeacher,
         sessionId,
         roomId,
-        materials,
     } = useSessionContext();
     const webrtc = useContext(WebRTCContext);
     const { addOnBack } = useCordovaSystemContext();
@@ -190,8 +205,6 @@ function Toolbar () {
     function endCall () {
         hasControls ? setOpenEndClassDialog(true) : setOpenLeaveClassDialog(true);
     }
-
-    const viewModesBadge = interactiveMode === InteractiveMode.Observe ? <ObserveIcon /> : interactiveMode === InteractiveMode.Present ? <PresentIcon /> : <OnStageIcon />;
 
     useEffect(()=> {
         resetDrawers();
@@ -348,13 +361,13 @@ function Toolbar () {
                     </div>
                     <div ref={viewModesRef}>
                         <ToolbarItem
-                            display={hasControls && Boolean(materials.length) && activeTab !== `mosaic`}
+                            display={hasControls && activeTab !== `mosaic`}
                             icon={<ViewModesIcon />}
                             label={intl.formatMessage({
                                 id: `toolbar_view_modes`,
                             })}
                             active={isViewModesOpen}
-                            badge={viewModesBadge}
+                            badge={viewModesBadge(interactiveMode)}
                             disabled={Boolean(handleTooltip(`viewModes`))}
                             tooltip={handleTooltip(`viewModes`)}
                             onClick={() => {

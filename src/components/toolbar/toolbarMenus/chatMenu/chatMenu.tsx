@@ -7,7 +7,7 @@ import {
     Theme,
 } from "@material-ui/core";
 import React from "react";
-import { useRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -28,14 +28,14 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface ChatMenuProps {
-	anchor?: any;
+	anchor?: HTMLElement;
 }
 
 function ChatMenu (props: ChatMenuProps) {
     const { anchor } = props;
     const classes = useStyles();
 
-    const [ isChatOpen, setIsChatOpen ] = useRecoilState(isChatOpenState);
+    const isChatOpen = useRecoilValue(isChatOpenState);
 
     return (
         <StyledPopper

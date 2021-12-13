@@ -7,7 +7,7 @@ import {
     Theme,
 } from "@material-ui/core";
 import React from "react";
-import { useRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -28,14 +28,14 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface LessonPlanMenuProps {
-	anchor?: any;
+	anchor?: HTMLElement;
 }
 
 function LessonPlanMenu (props: LessonPlanMenuProps) {
     const { anchor } = props;
     const classes = useStyles();
 
-    const [ isLessonPlanOpen, setIsLessonPlanOpen ] = useRecoilState(isLessonPlanOpenState);
+    const isLessonPlanOpen = useRecoilValue(isLessonPlanOpenState);
 
     return (
         <StyledPopper

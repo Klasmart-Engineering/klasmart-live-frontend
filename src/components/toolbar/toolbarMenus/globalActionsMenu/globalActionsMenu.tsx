@@ -1,9 +1,7 @@
-import GlobalActionsMenuItem from "./globalAction";
+import GlobalActionsMenuItem,
+{ GlobaActionsMenuItem } from "./globalAction";
 import { useRewardTrophyMutation } from "@/data/live/mutations/useRewardTrophyMutation";
-import { useContent } from "@/data/live/state/useContent";
-import { ContentType } from "@/pages/utils";
 import { useConferenceContext } from "@/providers/room/conferenceContext";
-import { ScreenShareContext } from "@/providers/screenShareProvider";
 import { useSessionContext } from "@/providers/session-context";
 import { isGlobalActionsOpenState } from "@/store/layoutAtoms";
 import { StyledPopper } from "@/utils/utils";
@@ -19,10 +17,7 @@ import { MicFill as MicFillIcon } from "@styled-icons/bootstrap/MicFill";
 import { MicMuteFill as MicDisabledIcon } from "@styled-icons/bootstrap/MicMuteFill";
 import { StarFill as StarFillIcon } from "@styled-icons/bootstrap/StarFill";
 import { TrophyFill as TrophyFillIcon } from "@styled-icons/bootstrap/TrophyFill";
-import { TvFill as ScreenShareIcon } from "@styled-icons/bootstrap/TvFill";
-import React,
-{ useContext } from "react";
-import { isMobile } from "react-device-detect";
+import React from "react";
 import { useIntl } from "react-intl";
 import { useRecoilValue } from "recoil";
 
@@ -33,7 +28,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 interface GlobaActionsMenuProps {
-	anchor?: any;
+	anchor?: HTMLElement;
 }
 
 function GlobalActionsMenu (props: GlobaActionsMenuProps) {
@@ -50,8 +45,6 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
         setGlobalMuteVideo,
     } = useConferenceContext();
     const { roomId, sessionId } = useSessionContext();
-    const content = useContent();
-    const screenShare = useContext(ScreenShareContext);
 
     const [ rewardTrophyMutation ] = useRewardTrophyMutation();
 
@@ -65,59 +58,31 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
         });
     };
 
-    const toggleScreenshare = () => {
-        if(content?.type === ContentType.Screen) {
-            screenShare.stop();
-        }else{
-            screenShare.start();
-        }
-    };
-
-    const items = [
+    const items: GlobaActionsMenuItem[] = [
         {
-            id: `1`,
-            title: intl.formatMessage({
-                id: content?.type === ContentType.Screen ? `toolbar_global_actions_turn_of_screenshare` : `toolbar_global_actions_turn_on_screenshare`,
-            }),
-            icon: <ScreenShareIcon size="1.7rem" />,
-            variant: `blue`,
-            isActive: content?.type === ContentType.Screen,
-            onClick: () => {toggleScreenshare();},
-            hidden: isMobile,
-        },
-        {
-            id: `3`,
-            type: `divider`,
-            hidden: isMobile,
-        },
-        {
-            id: `4`,
             title: intl.formatMessage({
                 id: audioGloballyMuted ? `toggle_all_microphones_off` : `toggle_all_microphones_on`,
             }),
             icon: <MicFillIcon size="1.4rem" />,
             activeIcon: <MicDisabledIcon size="1.4rem" />,
             variant: `blue`,
-            isActive: audioGloballyMuted,
+            active: audioGloballyMuted,
             onClick: () => setGlobalMuteAudio?.(!audioGloballyMuted),
         },
         {
-            id: `5`,
             title: intl.formatMessage({
                 id: videoGloballyMuted ? `toggle_all_cameras_off` : `toggle_all_cameras_on`,
             }),
             icon: <CameraVideoFillIcon size="1.4rem" />,
             activeIcon: <CameraDisabledIcon size="1.4rem" />,
             variant: `blue`,
-            isActive: videoGloballyMuted,
+            active: videoGloballyMuted,
             onClick: () => setGlobalMuteVideo?.(!videoGloballyMuted),
         },
         {
-            id: `6`,
-            type: `divider`,
+            type: `divider` as const,
         },
         {
-            id: `7`,
             title: intl.formatMessage({
                 id: `give_trophy`,
             }),
@@ -125,7 +90,6 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
             onClick: () => rewardTrophy(sessionId, `trophy`),
         },
         {
-            id: `8`,
             title: intl.formatMessage({
                 id: `encourage`,
             }),
@@ -133,7 +97,6 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
             onClick: () => rewardTrophy(sessionId, `great_job`),
         },
         {
-            id: `9`,
             title: intl.formatMessage({
                 id: `give_star`,
             }),
@@ -141,7 +104,6 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
             onClick: () => rewardTrophy(sessionId, `star`),
         },
         {
-            id: `10`,
             title: intl.formatMessage({
                 id: `give_heart`,
             }),
@@ -154,21 +116,22 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
     return (
         <StyledPopper
             open={isGlobalActionsOpen}
-            anchorEl={anchor}>
+            anchorEl={anchor}
+        >
             <Grid
                 container
                 alignItems="stretch"
-                className={classes.root}>
-
-                {items.map((item) => (
-                    !item.hidden && <GlobalActionsMenuItem
-                        key={item.id}
+                className={classes.root}
+            >
+                {items.map((item, i) => (
+                    <GlobalActionsMenuItem
+                        key={`global-action-${i}`}
                         title={item.title}
                         icon={item.icon}
                         activeIcon={item.activeIcon}
                         type={item.type}
                         variant={item.variant}
-                        active={item.isActive}
+                        active={item.active}
                         onClick={item.onClick}
                     />
                 ))}

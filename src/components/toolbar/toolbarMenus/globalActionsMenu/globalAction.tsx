@@ -8,15 +8,17 @@ import amber from "@material-ui/core/colors/amber";
 import red from "@material-ui/core/colors/red";
 import clsx from "clsx";
 import React from "react";
+import { StyledIconProps } from "styled-icons/types";
 
-interface GlobaActionsMenuProps {
-	type?: any;
-	icon?: any;
-	title?: any;
-	variant?: any;
-	active?: any;
-	activeIcon?: any;
-	onClick?: any;
+type GlobaActionType = `divider`;
+export interface GlobaActionsMenuItem {
+	type?: GlobaActionType;
+	icon?: StyledIconProps;
+	title?: string;
+	variant?: string;
+	active?: boolean;
+	activeIcon?: StyledIconProps;
+	onClick?: () => void;
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -61,7 +63,11 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 }));
 
-function GlobalActionsMenuItem (props: GlobaActionsMenuProps) {
+export interface Props extends GlobaActionsMenuItem {
+
+}
+
+function GlobalActionsMenuItem (props: Props) {
     const {
         type,
         icon,
@@ -70,30 +76,32 @@ function GlobalActionsMenuItem (props: GlobaActionsMenuProps) {
         active,
         activeIcon,
         onClick,
-
     } = props;
 
     const classes = useStyles();
 
-    if (type === `divider`) return <Grid
-        item
-        className={classes.divider}></Grid>;
+    if (type === `divider`){
+        return (
+            <Grid
+                item
+                className={classes.divider}></Grid>);
+    }
 
     return (
         <Tooltip
-            title={title}
+            title={title || ``}
             placement="top">
             <Grid
                 item
                 className={clsx(classes.root, {
-                    [classes.active]:  active,
-                    [classes.variantBlue]:  variant === `blue` && !active,
-                    [classes.variantRed]:  variant === `red` && !active,
+                    [classes.active]: active,
+                    [classes.variantBlue]: variant === `blue` && !active,
+                    [classes.variantRed]: variant === `red` && !active,
                 })}
                 onClick={onClick}
             >
                 <div className={classes.icon}>
-                    {activeIcon ? active ? activeIcon : icon: icon}
+                    {activeIcon ? ( active ? activeIcon : icon ) : icon}
                 </div>
             </Grid>
         </Tooltip>

@@ -1,3 +1,4 @@
+import { InteractiveMode } from "@/pages/utils";
 import { atom } from "recoil";
 
 // THEME
@@ -83,21 +84,9 @@ export const isActiveGlobalMuteVideoState = atom<boolean>({
     default: false,
 });
 
-// VIEW MODES
-type viewModeStateType = "onstage" | "observe" | "present";
-export const viewModeState = atom<viewModeStateType>({
-    key: `viewModeState`,
-    default: `onstage`,
-});
-
-export enum InteractiveMode {
-    OnStage,
-    Observe,
-    Present,
-}
 export const interactiveModeState = atom<InteractiveMode>({
     key: `interactiveModeState`,
-    default: InteractiveMode.OnStage,
+    default: InteractiveMode.ONSTAGE,
 });
 
 export const streamIdState = atom({
