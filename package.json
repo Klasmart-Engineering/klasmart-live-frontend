@@ -12,7 +12,6 @@
     "lint": "eslint .",
     "coverage": "jest --coverage",
     "build:docker": "DOCKER_BUILDKIT=1 docker build --no-cache --ssh default -t kidsloop-live-frontend .",
-    "preversion": "git checkout master && git pull origin master",
     "postversion": "git push && git push --tags",
     "release": "standard-version -a",
     "prepare": "husky install"
