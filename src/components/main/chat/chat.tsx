@@ -1,62 +1,30 @@
-import Attachments from "./attachments/attachments";
 import Messages from "./messages/messages";
-import { isChatOpenState } from "@/store/layoutAtoms";
-import { TabPanel } from "@/utils/utils";
 import {
     Grid,
     makeStyles,
-    Tab,
-    Tabs,
     Theme,
     Typography,
 } from "@material-ui/core";
-import { CloseCircle as CloseIcon } from "@styled-icons/ionicons-solid/CloseCircle";
-import React,
-{ useState } from "react";
-import {
-    FormattedMessage,
-    useIntl,
-} from "react-intl";
-import { useRecoilState } from "recoil";
+import Divider from "@material-ui/core/Divider";
+import React from 'react';
+import { FormattedMessage } from "react-intl";
 
 const useStyles = makeStyles((theme: Theme) => ({
     fullHeight:{
         height: `100%`,
     },
-    tabs:{
-        margin: `0 -10px`,
-        borderTop: `1px solid rgba(0,0,0,0.1)`,
-        borderBottom: `1px solid rgba(0,0,0,0.1)`,
-    },
-    tabsFlexContainer:{
-        display: `block`,
-        textAlign: `center`,
-    },
     title:{
         fontSize: `1rem`,
         fontWeight: theme.typography.fontWeightBold as number,
         textAlign: `center`,
-        marginTop: -5,
-        marginBottom: 5,
     },
-    closeTab:{
-        cursor: `pointer`,
-        position: `absolute`,
-        right: 5,
-        top: 5,
-        display: `none`,
+    divider: {
+        height: 1,
     },
 }));
 
 function Chat () {
     const classes = useStyles();
-    const intl = useIntl();
-    const [ isChatOpen, setIsChatOpen ] = useRecoilState(isChatOpenState);
-    const [ tabValue, setTabValue ] = useState(0);
-
-    const handleChange = (event: React.ChangeEvent<{}>, newTabValue: number) => {
-        setTabValue(newTabValue);
-    };
 
     return (
         <Grid
@@ -67,48 +35,15 @@ function Chat () {
                 <Typography className={classes.title}>
                     <FormattedMessage id="toolbar_chat" />
                 </Typography>
-                <div
-                    title={intl.formatMessage({
-                        id: `common_close_tab`,
-                    })}
-                    className={classes.closeTab}
-                    onClick={() => setIsChatOpen(false)}>
-                    <CloseIcon size="1.25rem" />
-                </div>
-                <Tabs
-                    value={tabValue}
-                    classes={{
-                        root: classes.tabs,
-                        flexContainer: classes.tabsFlexContainer,
-                    }}
-                    onChange={handleChange}
-                >
-                    <Tab
-                        disableRipple
-                        label={intl.formatMessage({
-                            id: `chat_messages`,
-                        })} />
-                    {/* TODO : KLL-478 (Attachments feature), see with Jubilee for more details
-                    <Tab
-                        disableRipple
-                        label={intl.formatMessage({
-                            id: `chat_attachments`,
-                        })} /> */}
-                </Tabs>
             </Grid>
+            <Divider
+                flexItem
+                className={classes.divider}
+                orientation="horizontal" />
             <Grid
                 item
                 xs>
-                <TabPanel
-                    value={tabValue}
-                    index={0}>
-                    <Messages />
-                </TabPanel>
-                <TabPanel
-                    value={tabValue}
-                    index={1}>
-                    <Attachments />
-                </TabPanel>
+                <Messages />
             </Grid>
         </Grid>
     );
