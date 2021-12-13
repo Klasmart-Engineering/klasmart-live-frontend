@@ -17,7 +17,8 @@ export enum H5PClassName {
     H5P_SPEECH_RECOGNITION_DISABLED = `h5p-speech-recognition-disabled`,
     H5P_SPEECH_RECOGNITION_INPUT = `h5p-uses-speech-recognition`,
     H5P_SPEECH_RECOGNITION_LISTENING = `h5p-speech-recognition-listening`,
-    H5P_VOLUME_BUTTON = `h5p-audio-minimal-button`
+    H5P_VOLUME_BUTTON = `h5p-audio-minimal-button`,
+    H5P_CARD = `h5p-card`
 }
 
 export enum FlashCardAction {

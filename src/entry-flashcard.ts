@@ -4,6 +4,8 @@ import {
 } from "@/app/utils/customFlashCard";
 
 declare const H5PIntegration: any; //This variable is get from H5P iframe,
+// @ts-ignore
+const MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 
 let inputLanguage = `en-US`;
 
@@ -38,13 +40,17 @@ function sendMessageToParent(action: string, data: string | undefined = undefine
     }, `*`);
 }
 
-function initInputLanguage() {
+function getH5PJsonContent() {
     const contents = H5PIntegration?.contents;
-    if(!contents) return;
+    if(!contents) return null;
     const contentsKeys = Object.keys(contents);
-    if (contentsKeys.length === 0) return;
+    if (contentsKeys.length === 0) return null;
     const cid = Object.keys(contents)[0];
-    inputLanguage = JSON.parse(contents[cid].jsonContent).inputLanguage ?? `en-US`;
+    return JSON.parse(contents[cid].jsonContent);
+}
+
+function initInputLanguage() {
+    inputLanguage = getH5PJsonContent()?.inputLanguage ?? `en-US`;
 }
 
 function getCurrentFlashCard() {
@@ -154,4 +160,22 @@ function askSpeechRecognitionPermission() {
     sendMessageToParent(FlashCardAction.ASK_SPEECH_RECOGNITION_PERMISSION, inputLanguage);
 }
 
+const observer = new MutationObserver(function(mutations, observer) {
+    // Observe the H5P content to detect if it's retried (renew the flashcards).
+    const cards = getH5PJsonContent()?.cards ?? [];
+    const cardElements = mutations.filter(item => item.type === `childList` && (item.target as Element).className.includes(H5PClassName.H5P_CARD));
+
+    if(cards.length === cardElements.length) {
+        sendMessageToParent(FlashCardAction.FLASH_CARD_LOADED);
+    }
+});
+
+function startObserveH5PFlashCards() {
+    observer.observe(document.querySelector(`.${H5PClassName.H5P_FLASH_CARDS}`) as Node, {
+        childList: true,
+        subtree: true
+    });
+}
+
+startObserveH5PFlashCards();
 sendMessageToParent(FlashCardAction.FLASH_CARD_LOADED);
