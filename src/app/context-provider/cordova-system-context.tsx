@@ -133,7 +133,6 @@ export function CordovaSystemProvider ({ children, history }: Props) {
                 loadUrlTimeoutValue: 60000,
             });
         } else {
-            (navigator as any).splashscreen.show();
             location.href = initialHref;
         }
     }, []);
