@@ -181,6 +181,19 @@ const DefaultRegions: Region[] = [
             privacy: `https://kidsloop.net/policies/privacy-notice`,
         },
     },
+    {
+        id: `auth.alpha.kidsloop.dev`,
+        name: `Global Alpha`,
+        development: true,
+        services: {
+            auth: `https://auth.alpha.kidsloop.dev`,
+            live: `https://live.alpha.kidsloop.dev`,
+            cms: `https://cms.alpha.kidsloop.dev`,
+            sfu: `https://live.alpha.kidsloop.dev/sfu`,
+            user: `https://api.alpha.kidsloop.dev/user/`,
+            privacy: `https://kidsloop.net/policies/privacy-notice`,
+        },
+    },
 ];
 
 function createRegionFromEnvironment (){

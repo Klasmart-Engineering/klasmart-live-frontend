@@ -32,6 +32,10 @@ export function DevSelectRegion (){
 
     const regions = [
         {
+            id: `auth.alpha.kidsloop.dev`,
+            name: `Global Alpha`,
+        },
+        {
             id: `auth.alpha.kidsloop.net`,
             name: `Alpha`,
         },
