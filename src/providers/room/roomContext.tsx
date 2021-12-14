@@ -146,13 +146,13 @@ export const RoomProvider: React.FC<Props> = ({ children, enableConferencing }) 
     }, [ isChatOpen, messages ]);
 
     useEffect(() => {
-        const connectionType = navigator.connection.type;
+        const connectionType = (navigator as any).connection?.type;
         setCurrentConnection(connectionType);
     }, []);
 
     const isConnectionTypeChange = () => {
         if(!currentConnection) return;
-        const connectionType = navigator.connection.type;
+        const connectionType =  (navigator as any).connection?.type;
         if (connectionType !== currentConnection && connectionType !== `none`) return true;
         return false;
     };
@@ -179,7 +179,7 @@ export const RoomProvider: React.FC<Props> = ({ children, enableConferencing }) 
                 }
             }
 
-            const connectionType = navigator.connection.type;
+            const connectionType = (navigator as any).connection?.type;
             if(currentConnection !== connectionType){
                 setCurrentConnection(connectionType);
             }
