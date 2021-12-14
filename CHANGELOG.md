@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.6.1-internal.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.6.1-internal.0%0Dv3.6.0) (2021-12-14)
+
+
+### Bug Fixes
+
+* detect read plugin network connection type only for android ([6c040e1](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/6c040e13191b0c0cc31b177fb004dfd70b2838c0)), closes [fix/KLL-1967](https://calmisland.atlassian.net/browse/KLL-1967)
+
 ## [3.6.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.6.0%0Dv3.5.2-hotfix.0) (2021-12-13)
 
 
