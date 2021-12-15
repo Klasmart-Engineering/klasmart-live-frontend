@@ -137,7 +137,7 @@ export function useShouldSelectUser () {
             }
 
             selectUser(myUsersData.my_users[0]);
-            setShouldShowNoOrgProfile(true);
+            setShouldSelectUser(false);
         } else {
             setShouldSelectUser(false);
         }
