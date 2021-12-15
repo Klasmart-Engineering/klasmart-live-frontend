@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.7.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.7.0%0Dv3.6.1-internal.0) (2021-12-15)
+
+
+### Features
+
+* add app version to settings page ([79ad226](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/79ad2262d7f91ea6fa2ce7c20f606b940ff41c35)), closes [feature/KLL-2198](https://calmisland.atlassian.net/browse/KLL-2198)
+* **localization:** add new translations ([2b03ef4](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/2b03ef4647b1659b72871542195c113e43ccced0))
+* update design of icons on schedule list ([aaceabb](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/aaceabb9a055a5d40854b6983d7501e012cafd42)), closes [feat/KLL-1895](https://calmisland.atlassian.net/browse/KLL-1895)
+
+
+### Bug Fixes
+
+* don't display no org dialog when there's one profile ([122b817](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/122b817159f65092aaaed893825bcf1305d3c941))
+* issue with white screen in study ([dc1dcc5](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/dc1dcc57f76d276ee2b7f6036c41ad373174eec3))
+
 ### [3.6.1-internal.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.6.1-internal.0%0Dv3.6.0) (2021-12-14)
 
 
