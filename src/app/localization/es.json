@@ -236,5 +236,7 @@
     "signIn.noStudentProfile.body": "You need to have a Student profile to continue using the app",
     "forParents.title": "For Parents",
     "forParents.body": "To continue, please tap the numbers in ascending order",
-    "forParents.incorrect": "Incorrect, please try again"
+    "forParents.incorrect": "Incorrect, please try again",
+    "settings.version": "Version {version}",
+    "scheduleDetails.error.downloadFail": "Download failed. Check your internet connection and try again."
 }
