@@ -14,13 +14,14 @@ import {
     isFocused,
     useWindowOnFocusChange,
 } from "@/app/utils/windowEvents";
-import ScheduledStudyHouse from "@/assets/img/study_house.svg";
 import {
     SCHEDULE_FETCH_INTERVAL_MINUTES,
     SCHEDULE_PAGE_ITEM_HEIGHT_MIN,
     SCHEDULE_PAGE_START,
     SCHEDULE_PAGINATION_DELAY,
     schedulePageWindowItemHeightToPageSize,
+    THEME_COLOR_BACKGROUND_STUDY,
+    THEME_COLOR_HOME_FUN_STUDY,
 } from "@/config";
 import {
     SchedulesTimeViewListItem,
@@ -34,6 +35,8 @@ import {
     makeStyles,
     Typography,
 } from "@material-ui/core";
+import { Star as HomeFunStudyIcon } from "@styled-icons/fa-solid/Star";
+import { Book as StudyIcon } from "@styled-icons/fluentui-system-filled/Book";
 import {
     clamp,
     uniqBy,
@@ -178,8 +181,8 @@ export default function AnytimeStudyScheduleList (props: Props) {
                                     key={studySchedule.id}
                                     leading={(
                                         <ListItemAvatar
-                                            src={ScheduledStudyHouse}
-                                            alt={studySchedule.title}
+                                            src={studySchedule.is_home_fun ? <HomeFunStudyIcon /> : <StudyIcon />}
+                                            color={studySchedule.is_home_fun ? THEME_COLOR_HOME_FUN_STUDY : THEME_COLOR_BACKGROUND_STUDY}
                                         />
                                     )}
                                     title={studySchedule.title}

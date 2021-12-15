@@ -1,4 +1,5 @@
 import StyledTextField from "@/components/styled/textfield";
+import { THEME_COLOR_SECONDARY_DEFAULT } from "@/config";
 import { useSessionContext } from "@/providers/session-context";
 import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
@@ -81,7 +82,7 @@ export default function InviteButton (): JSX.Element {
                                 >
                                     <CopyIcon
                                         size="1rem"
-                                        color="#0E78D5" />
+                                        color={THEME_COLOR_SECONDARY_DEFAULT} />
                                 </IconButton>
                             </Tooltip>,
                         readOnly: true,

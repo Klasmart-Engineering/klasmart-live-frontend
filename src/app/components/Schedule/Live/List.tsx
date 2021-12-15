@@ -16,7 +16,6 @@ import {
     isFocused,
     useWindowOnFocusChange,
 } from "@/app/utils/windowEvents";
-import ScheduledLivePopcorn from "@/assets/img/schedule_popcorn.svg";
 import {
     SCHEDULE_FETCH_INTERVAL_MINUTES,
     SCHEDULE_FETCH_MONTH_DIFF,
@@ -24,6 +23,7 @@ import {
     SCHEDULE_PAGE_START,
     SCHEDULE_PAGINATION_DELAY,
     schedulePageWindowItemHeightToPageSize,
+    THEME_COLOR_SECONDARY_DEFAULT,
 } from "@/config";
 import { fromSecondsToMilliseconds } from "@/utils/utils";
 import {
@@ -38,6 +38,7 @@ import {
     makeStyles,
     Typography,
 } from "@material-ui/core";
+import { Video as LiveIcon } from "@styled-icons/fa-solid/Video";
 import {
     clamp,
     uniqBy,
@@ -220,8 +221,8 @@ export default function LiveScheduleList (props: Props) {
                                     key={liveSchedule.id}
                                     leading={(
                                         <ListItemAvatar
-                                            src={ScheduledLivePopcorn}
-                                            alt={liveSchedule.title}
+                                            src={<LiveIcon />}
+                                            color={THEME_COLOR_SECONDARY_DEFAULT}
                                         />
                                     )}
                                     title={liveSchedule.title}

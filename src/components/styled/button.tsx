@@ -1,3 +1,4 @@
+import { THEME_COLOR_SECONDARY_DEFAULT } from "@/config";
 import Button,
 { ButtonProps } from "@material-ui/core/Button";
 import Hidden from "@material-ui/core/Hidden";
@@ -20,7 +21,7 @@ const StyledBtn = withStyles({
             transform: `translateY(-2px)`,
             transition: `all .4s ease`,
         },
-        background: `#0E78D5`,
+        background: THEME_COLOR_SECONDARY_DEFAULT,
         borderRadius: 12,
         color: `#FFF`,
 

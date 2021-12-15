@@ -1,3 +1,4 @@
+import { THEME_COLOR_SECONDARY_DEFAULT } from "@/config";
 import {
     createStyles,
     makeStyles,
@@ -14,22 +15,22 @@ const useStyles = makeStyles((theme: Theme) =>
             minWidth: `auto`,
             padding: 0,
             "&:hover": {
-                color: `#0E78D5`,
+                color: THEME_COLOR_SECONDARY_DEFAULT,
                 opacity: 1,
                 transform: `translateX(-2px)`,
             },
             "&$tabSelected": {
-                color: `#0E78D5`,
+                color: THEME_COLOR_SECONDARY_DEFAULT,
                 opacity: 1,
             },
             "&:focus": {
-                color: `#0E78D5`,
+                color:THEME_COLOR_SECONDARY_DEFAULT,
             },
             "-webkit-transition": `all .4s ease`,
             transition: `all .4s ease`,
         },
         tabSelected: {
-            color: `#0E78D5`,
+            color: THEME_COLOR_SECONDARY_DEFAULT,
             opacity: 1,
         },
     }));

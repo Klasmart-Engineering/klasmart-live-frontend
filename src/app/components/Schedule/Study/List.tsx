@@ -14,7 +14,6 @@ import {
     isFocused,
     useWindowOnFocusChange,
 } from "@/app/utils/windowEvents";
-import ScheduledStudyHouse from "@/assets/img/study_house.svg";
 import {
     SCHEDULE_FETCH_INTERVAL_MINUTES,
     SCHEDULE_FETCH_MONTH_DIFF,
@@ -23,6 +22,9 @@ import {
     SCHEDULE_PAGE_START,
     SCHEDULE_PAGINATION_DELAY,
     schedulePageWindowItemHeightToPageSize,
+    THEME_COLOR_BACKGROUND_STUDY,
+    THEME_COLOR_HOME_FUN_STUDY,
+    THEME_COLOR_SECONDARY_DEFAULT,
 } from "@/config";
 import { fromSecondsToMilliseconds } from "@/utils/utils";
 import {
@@ -38,6 +40,8 @@ import {
     makeStyles,
     Typography,
 } from "@material-ui/core";
+import { Star as HomeFunStudyIcon } from "@styled-icons/fa-solid/Star";
+import { Book as StudyIcon } from "@styled-icons/fluentui-system-filled/Book";
 import { ChevronRight } from "@styled-icons/material";
 import {
     clamp,
@@ -79,7 +83,7 @@ const useStyles = makeStyles((theme) => createStyles({
         color: `#5DBD3B`,
     },
     anytimeStudyAvatar: {
-        backgroundColor: theme.palette.primary.main,
+        backgroundColor: THEME_COLOR_SECONDARY_DEFAULT,
         color: theme.palette.common.white,
     },
 }));
@@ -250,8 +254,8 @@ export default function StudyScheduleList (props: Props) {
                                     key={studySchedule.id}
                                     leading={(
                                         <ListItemAvatar
-                                            src={ScheduledStudyHouse}
-                                            alt={studySchedule.title}
+                                            src={studySchedule.is_home_fun ? <HomeFunStudyIcon /> : <StudyIcon />}
+                                            color={studySchedule.is_home_fun ? THEME_COLOR_HOME_FUN_STUDY : THEME_COLOR_BACKGROUND_STUDY}
                                         />
                                     )}
                                     title={studySchedule.title}

@@ -1,31 +1,38 @@
+import StyledIcon from "../../../components/styled/icon";
 import {
     Avatar,
     createStyles,
     makeStyles,
 } from "@material-ui/core";
-import React from "react";
+import React,
+{
+    JSXElementConstructor,
+    ReactElement,
+} from "react";
 
 const useStyles = makeStyles((theme) => createStyles({
     listItemAvatar: {
-        backgroundColor: `#C5E9FB`,
+        backgroundColor: theme.palette.common.white,
     },
 }));
 
 interface Props {
-    src: string;
-    alt: HTMLImageElement[`alt`];
+    src: ReactElement<any, string | JSXElementConstructor<any>>;
+    color: string | undefined;
 }
 
 export default function ScheduleListItemAvatar (props: Props) {
-    const { src: src, alt } = props;
+    const { src: src, color } = props;
     const classes = useStyles();
 
     return (
-        <Avatar className={classes.listItemAvatar}>
-            <img
-                alt={alt}
-                src={src}
-                height={24}
+        <Avatar
+            data-testid="schedule-list-item-avatar"
+            className={classes.listItemAvatar}>
+            <StyledIcon
+                icon={src}
+                size="large"
+                color={color}
             />
         </Avatar>
     );
