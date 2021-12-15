@@ -236,5 +236,7 @@
     "signIn.noStudentProfile.body": "앱을 계속 사용하려면 학생 프로필이 있어야 합니다.",
     "forParents.title": "학부모 전용",
     "forParents.body": "To continue, please tap the numbers in ascending order",
-    "forParents.incorrect": "Incorrect, please try again"
+    "forParents.incorrect": "Incorrect, please try again",
+    "settings.version": "Version {version}",
+    "scheduleDetails.error.downloadFail": "Download failed. Check your internet connection and try again."
 }
