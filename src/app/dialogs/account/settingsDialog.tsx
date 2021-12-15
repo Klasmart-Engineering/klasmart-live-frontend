@@ -33,8 +33,13 @@ import {
 } from "react-intl";
 import { useRecoilState } from "recoil";
 
+const config = require(`@/../package.json`);
+
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
+        fullHeight: {
+            height: `100%`,
+        },
         noPadding: {
             padding: 0,
         },
@@ -49,6 +54,9 @@ const useStyles = makeStyles((theme: Theme) =>
         listItemTextPrimary: {
             fontWeight: theme.typography.fontWeightBold as number,
         },
+        version: {
+            fontWeight: theme.typography.fontWeightBold as number,
+        },
     }));
 
 export function SettingsDialog () {
@@ -58,6 +66,8 @@ export function SettingsDialog () {
         noPadding,
         avatarLanguage,
         listItemTextPrimary,
+        fullHeight,
+        version,
     } = useStyles();
     const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
     const [ locale ] = useRecoilState(localeState);
@@ -86,53 +96,75 @@ export function SettingsDialog () {
                     padding: 0,
                 }}>
                 <Grid
-                    item
-                    xs={12}
-                    style={{
-                        paddingTop: theme.spacing(2),
-                        paddingBottom: theme.spacing(4),
-                    }}>
-                    <Typography
-                        variant="h4"
-                        align="center">
-                        <FormattedMessage id="settings.title" />
-                    </Typography>
-                </Grid>
-                <List
-                    subheader={
-                        <ListSubheader
-                            component="div"
-                            id="settings-general">
-                            <FormattedMessage id="settings.general.title" />
-                        </ListSubheader>
-                    }>
-                    <ListItem
-                        button
-                        onClick={() => setDialogs({
-                            ...dialogs,
-                            isSettingsLanguageOpen: true,
-                        })}>
-                        <ListItemAvatar>
-                            <Avatar className={avatarLanguage}>
-                                <LanguageIcon
-                                    color={`#ffffff`}
+                    container
+                    alignContent="space-between"
+                    className={fullHeight}>
+                    <Grid
+                        item
+                        xs={12}>
+                        <div style={{
+                            paddingTop: theme.spacing(2),
+                            paddingBottom: theme.spacing(4),
+                        }}>
+                            <Typography
+                                variant="h4"
+                                align="center">
+                                <FormattedMessage id="settings.title" />
+                            </Typography>
+                        </div>
+                        <List
+                            subheader={
+                                <ListSubheader
+                                    component="div"
+                                    id="settings-general">
+                                    <FormattedMessage id="settings.general.title" />
+                                </ListSubheader>
+                            }>
+                            <ListItem
+                                button
+                                onClick={() => setDialogs({
+                                    ...dialogs,
+                                    isSettingsLanguageOpen: true,
+                                })}>
+                                <ListItemAvatar>
+                                    <Avatar className={avatarLanguage}>
+                                        <LanguageIcon
+                                            color={`#ffffff`}
+                                            size={24} />
+                                    </Avatar>
+                                </ListItemAvatar>
+                                <ListItemText
+                                    classes={{
+                                        primary: listItemTextPrimary,
+                                    }}
+                                    primary={intl.formatMessage({
+                                        id: `settings.general.language`,
+                                    })}
+                                    secondary={langText?.text}
+                                />
+                                <NextIcon
+                                    color={theme.palette.grey[600]}
                                     size={24} />
-                            </Avatar>
-                        </ListItemAvatar>
-                        <ListItemText
-                            classes={{
-                                primary: listItemTextPrimary,
-                            }}
-                            primary={intl.formatMessage({
-                                id: `settings.general.language`,
-                            })}
-                            secondary={langText?.text}
-                        />
-                        <NextIcon
-                            color={theme.palette.grey[600]}
-                            size={24} />
-                    </ListItem>
-                </List>
+                            </ListItem>
+                        </List>
+                    </Grid>
+                    <Grid
+                        item
+                        xs={12}>
+                        <div style={{
+                            paddingTop: theme.spacing(3),
+                            paddingBottom: theme.spacing(3),
+                        }}>
+                            <Typography
+                                noWrap
+                                variant="body1"
+                                align="center"
+                                className={version}>
+                                Version {config.version}
+                            </Typography>
+                        </div>
+                    </Grid>
+                </Grid>
             </DialogContent>
         </Dialog>
     );
