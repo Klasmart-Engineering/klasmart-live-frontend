@@ -1,4 +1,5 @@
 import StyledIcon from "@/components/styled/icon";
+import { THEME_COLOR_SECONDARY_DEFAULT } from "@/config";
 import { useSynchronizedState } from "@/whiteboard/context-providers/SynchronizedStateProvider";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
@@ -40,7 +41,7 @@ export default function PermissionControls ({ otherUserId }: { otherUserId: stri
                 <StyledIcon
                     icon={permissions.allowCreateShapes ? <InvertColorsIcon /> : <InvertColorsOffIcon />}
                     size="medium"
-                    color={permissions.allowCreateShapes ? `#0E78D5` : `#dc004e`}
+                    color={permissions.allowCreateShapes ? THEME_COLOR_SECONDARY_DEFAULT : `#dc004e`}
                 />
             </ListItemIcon>
             <ListItemText
@@ -55,7 +56,7 @@ export default function PermissionControls ({ otherUserId }: { otherUserId: stri
                 <StyledIcon
                     icon={<EraserIcon />}
                     size={`medium`}
-                    color="#0E78D5" />
+                    color={THEME_COLOR_SECONDARY_DEFAULT} />
             </ListItemIcon>
             <ListItemText primary={<FormattedMessage id="whiteboard_permissionControls_listItemText_clear" />} />
         </MenuItem>

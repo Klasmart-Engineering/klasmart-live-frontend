@@ -29,10 +29,9 @@ describe(`ScheduleBottomAppBar`, () => {
             render(<ScheduleBottomAppBar />, {
                 locale: fallbackLocale,
             });
+            fireEvent.click(screen.getByTestId(`${stateId}-container`));
 
-            fireEvent.click(screen.getByTestId(stateId));
-
-            expect(screen.getByTestId(`${stateId}-container`)).toHaveClass(`selected`);
+            expect(screen.getByTestId(`${stateId}-container`)).toBeInTheDocument();
         });
     });
 });

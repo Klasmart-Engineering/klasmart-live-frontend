@@ -1,3 +1,4 @@
+import { THEME_COLOR_SECONDARY_DEFAULT } from "@/config";
 import Fab,
 { FabProps } from "@material-ui/core/Fab";
 import Hidden from "@material-ui/core/Hidden";
@@ -21,7 +22,7 @@ const StyledFab = withStyles({
             transform: `translateY(-2px)`,
             transition: `all .4s ease`,
         },
-        background: `#0E78D5`,
+        background: THEME_COLOR_SECONDARY_DEFAULT,
         color: `#FFF`,
 
     },
