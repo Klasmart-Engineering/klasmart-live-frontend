@@ -72,10 +72,10 @@ export function useCustomFlashCard ({
         }
     }, [ loadStatus ]);
 
-    function sendMessageToIframe(action: FlashCardAction, data: string) {
+    function sendMessageToIframe (action: FlashCardAction, data: string) {
         iframe?.contentWindow?.postMessage({
             action: action,
-            data: data
+            data: data,
         }, `*`);
     }
 
@@ -83,12 +83,9 @@ export function useCustomFlashCard ({
         if (!process.env.IS_CORDOVA_BUILD) return;
 
         function startListen () {
-            let options = {
-                partialResultRequired: true,
-            };
 
-            (window as any).Speech.startRecognition(
-                (success: { isFinal: boolean, text: string}) => {
+            try {
+                (window as any).Speech.startRecognition((success: { isFinal: boolean; text: string}) => {
                     sendMessageToIframe(FlashCardAction.ANSWER, success.text);
                     sendMessageToIframe(FlashCardAction.STOP_LISTEN, ``);
                 }, (err: string) => {
@@ -102,21 +99,31 @@ export function useCustomFlashCard ({
                             vertical: `bottom`,
                         },
                     });
-                }, options);
+                }, {
+                    partialResultRequired: true,
+                });
+            } catch (error) {
+                console.error(`couldn't start speech recognition: ${error}`);
+            }
         }
 
         function stopListen () {
-            (window as any).Speech.stopRecognition(
-                (success: any) => {
+            try {
+                (window as any).Speech.stopRecognition((success: any) => {
                     console.log(success);
                 }, (err: any) => {
                     console.log(err);
-                })
+                });
+            } catch (error) {
+                console.error(`couldn't stop speech recognition: ${error}`);
+            }
         }
 
+        let isFlashCards = false;
         function onMessage ({ data }: MessageEvent) {
             switch (data.action) {
             case FlashCardAction.FLASH_CARD_LOADED:
+                isFlashCards = true;
                 iframe?.contentWindow?.postMessage({
                     action: FlashCardAction.START_CUSTOM_FLASHCARDS,
                 }, `*`);
@@ -133,13 +140,17 @@ export function useCustomFlashCard ({
                 requestPermissions({
                     permissionTypes: [ PermissionType.MIC ],
                     onSuccess: () => {
-                        (window as any).Speech.initRecognition((success: any) => {
-                            sendMessageToIframe(FlashCardAction.GRANTED_SPEECH_RECOGNITION_PERMISSION, ``);
-                        }, (err: string) => {
-                            console.log(err);
-                        }, {
-                            language: data.data
-                        });
+                        try {
+                            (window as any).Speech.initRecognition(() => {
+                                sendMessageToIframe(FlashCardAction.GRANTED_SPEECH_RECOGNITION_PERMISSION, ``);
+                            }, (err: string) => {
+                                console.log(err);
+                            }, {
+                                language: data.data,
+                            });
+                        } catch (error) {
+                            console.error(`couldn't initialize speech recognition: ${error}`);
+                        }
                     },
                     onError: () => {
                         sendMessageToIframe(FlashCardAction.DENY_SPEECH_RECOGNITION_PERMISSION, ``);
@@ -151,7 +162,9 @@ export function useCustomFlashCard ({
 
         window.addEventListener(`message`, onMessage);
         return () => {
-            stopListen();
+            if (isFlashCards) {
+                stopListen();
+            }
             window.removeEventListener(`message`, onMessage);
         };
     }, [ iframe ]);

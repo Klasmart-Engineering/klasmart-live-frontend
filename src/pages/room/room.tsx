@@ -10,7 +10,6 @@ import {
     ClassInformation,
     classInfoState,
     hasControlsState,
-    studyRecommandUrlState,
 } from "@/store/layoutAtoms";
 import { classGetInformation } from "@/utils/utils";
 import {
@@ -27,8 +26,6 @@ import React,
     useState,
 } from 'react';
 import { useSetRecoilState } from "recoil";
-
-const qs = require(`qs`);
 
 const useStyles = makeStyles(() => ({
     root: {
@@ -54,7 +51,6 @@ export function Room () {
     const setRecoilClassInfo = useSetRecoilState(classInfoState);
 
     const setHasControls = useSetRecoilState(hasControlsState);
-    const setStudyRecommandUrl = useSetRecoilState(studyRecommandUrlState);
     const deviceOrientation = useDeviceOrientationValue();
 
     const {
@@ -66,58 +62,7 @@ export function Room () {
     } = useSessionContext();
     const sessions = useSessions();
 
-    function ramdomInt (min: number, max: number) {
-        return Math.floor(Math.random() * (max - min)) + min;
-    }
-
     const cmsEndpoint = useHttpEndpoint(`cms`);
-
-    const getAllLessonMaterials = useCallback(async () => {
-        const headers = new Headers();
-        headers.append(`Accept`, `application/json`);
-        headers.append(`Content-Type`, `application/json`);
-        const encodedParams = qs.stringify({
-            publish_status: `published`,
-            order_by: `update_at`,
-            content_type: 1,
-            organizationId,
-        }, {
-            encodeValuesOnly: true,
-        });
-        const response = await fetch(`${cmsEndpoint}/v1/contents?${encodedParams}`, {
-            headers,
-            method: `GET`,
-        });
-        if (response.status === 200) { return response.json(); }
-
-    }, [ cmsEndpoint ]);
-
-    async function fetchEverything () {
-        async function fetchAllLessonMaterials () {
-            const payload = await getAllLessonMaterials();
-            const matList = payload.list;
-            const dnds = matList.filter((mat: any) => {
-                const obj = JSON.parse(mat.data);
-                return obj.file_type === 5;
-            });
-            let randomIdx: number;
-            if (dnds.length === 0) {
-                randomIdx = ramdomInt(0, matList.length - 1);
-                const data = JSON.parse(matList[randomIdx].data);
-                setStudyRecommandUrl(`/h5p/play/${data.source}`);
-            } else {
-                randomIdx = ramdomInt(0, dnds.length - 1);
-                const data = JSON.parse(dnds[randomIdx].data);
-                setStudyRecommandUrl(`/h5p/play/${data.source}`);
-            }
-        }
-        try {
-            await Promise.all([ fetchAllLessonMaterials() ]);
-        } catch (err) {
-            console.error(`Fail to fetchAllLessonMaterials in Study: ${err}`);
-            setStudyRecommandUrl(``);
-        }
-    }
 
     useEffect(() => {
         const teachers = [ ...sessions.values() ].filter(session => session.isTeacher === true).sort((a, b) => a.joinedAt - b.joinedAt);
@@ -148,47 +93,51 @@ export function Room () {
         setRecoilClassInfo(newClassInfo);
     }, [ sessions, classInfo ]);
 
-    const handleClassGetInformation = async () => {
-        try {
-            const dataR = await classGetInformation(scheduleId, organizationId, cmsEndpoint);
-            const dateOption = {
-                year: `numeric`,
-                month: `2-digit`,
-                day: `2-digit`,
-                hour: `numeric`,
-                minute: `numeric`,
-                hour12: true,
-            } as const;
+    const updateClassInformation = useCallback(() => {
+        classGetInformation(scheduleId, organizationId, cmsEndpoint)
+            .then(classInformationData => {
+                const dateOptions: Intl.DateTimeFormatOptions = {
+                    year: `numeric`,
+                    month: `2-digit`,
+                    day: `2-digit`,
+                    hour: `numeric`,
+                    minute: `numeric`,
+                    hour12: true,
+                };
 
-            setClassInfo({
-                class_name: dataR.class.name,
-                lesson_name: dataR.title,
-                room_id: `${roomId}`,
-                class_type: dataR.class_type,
-                teachers: dataR.class_roster_teachers ?? [],
-                students: dataR.class_roster_students ?? [],
-                program: dataR.program.name,
-                subject: dataR.subjects[0].name,
-                lesson_plan: dataR.lesson_plan.name,
-                materials: dataR.lesson_plan.materials.length,
-                start_at: new Date(dataR.start_at*1000).toLocaleString(`en-GB`, dateOption),
-                end_at: new Date(dataR.end_at*1000).toLocaleString(`en-GB`, dateOption),
+                const startAt = new Date(classInformationData.start_at * 1000).toLocaleString(`en-GB`, dateOptions);
+                const endAt = new Date(classInformationData.end_at * 1000).toLocaleString(`en-GB`, dateOptions);
+
+                const subject = classInformationData.subjects?.at(0) ?? undefined;
+
+                setClassInfo({
+                    class_name: classInformationData.class?.name ?? `N/A`,
+                    lesson_name: classInformationData.title,
+                    room_id: roomId,
+                    class_type: classInformationData.class_type,
+                    teachers: classInformationData.class_roster_teachers ?? [],
+                    students: classInformationData.class_roster_students ?? [],
+                    program: classInformationData.program?.name ?? `N/A`,
+                    subject: subject?.name ?? `N/A`,
+                    lesson_plan: classInformationData.lesson_plan?.name ?? `N/A`,
+                    materials: classInformationData.lesson_plan.materials?.length ?? 0,
+                    start_at: startAt,
+                    end_at: endAt,
+                });
+
+            }).catch(error => {
+                console.error(error);
             });
-        } catch (e) {
-            console.log(e);
-        }
-    };
+    }, [
+        cmsEndpoint,
+        scheduleId,
+        organizationId,
+    ]);
 
     useEffect(() => {
-        if (classType === ClassType.LIVE) {
-            handleClassGetInformation();
-        }
+        if (classType !== ClassType.LIVE) return;
 
-        if (classType === ClassType.STUDY) {
-            if (organizationId) {
-                fetchEverything();
-            }
-        }
+        updateClassInformation();
     }, [ classType ]);
 
     return (

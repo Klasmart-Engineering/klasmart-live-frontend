@@ -2,20 +2,20 @@ import { InteractiveMode } from "@/pages/utils";
 import { atom } from "recoil";
 
 // THEME
-type themeStateType = "light" | "dark" | "student";
-export const themeState = atom<themeStateType>({
+type ThemeStateType = "light" | "dark" | "student";
+export const themeState = atom<ThemeStateType>({
     key: `themeState`,
     default: `light`,
 });
 
 // LAYOUT
-type activeTabStateType = "participants" | "mosaic" | "settings";
+export type ActiveTabStateType = "participants" | "mosaic" | "settings";
 export const activeTabState = atom({
     key: `activeTabState`,
     default: `participants`,
 });
 
-type activeSettingsTabStateType = "schedule" | "settings" | "toolbar" | "record";
+export type ActiveSettingsTabStateType = "schedule" | "settings" | "toolbar" | "record";
 export const activeSettingsStateTab = atom({
     key: `activeSettingsStateTab`,
     default: `settings`,
@@ -113,11 +113,6 @@ export const mosaicViewSizeState = atom<number|string|Array<number|string>>({
 export const hasControlsState = atom({
     key: `hasControlsState`,
     default: false,
-});
-
-export const studyRecommandUrlState = atom({
-    key: `studyRecommandUrlState`,
-    default: ``,
 });
 
 export const showEndStudyState = atom({

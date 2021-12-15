@@ -8,7 +8,6 @@ import {
     classLeftState,
     materialActiveIndexState,
     showEndStudyState,
-    studyRecommandUrlState,
 } from "@/store/layoutAtoms";
 import { Whiteboard } from "@/whiteboard/components/Whiteboard";
 import { Typography } from "@material-ui/core";
@@ -31,7 +30,6 @@ import { useIntl } from "react-intl";
 import { useHistory } from "react-router-dom";
 import {
     useRecoilState,
-    useRecoilValue,
     useSetRecoilState,
 } from "recoil";
 
@@ -153,15 +151,12 @@ export function ClassContent () {
     const intl = useIntl();
 
     const [ materialActiveIndex, setMaterialActiveIndex ] = useRecoilState(materialActiveIndexState);
-    const studyRecommandUrl = useRecoilValue(studyRecommandUrlState);
     const [ showEndStudy, setShowEndStudy ] = useRecoilState(showEndStudyState);
     const setClassEnded = useSetRecoilState(classLeftState);
     const setClassLeft = useSetRecoilState(classEndedState);
     const { restart } = useCordovaSystemContext();
     const history = useHistory();
     const { addOnBack } = useCordovaSystemContext();
-
-    const materialsLength = studyRecommandUrl ? materials.length + 1 : materials.length;
 
     const rootDivRef = useRef<HTMLDivElement>(null);
     const [ , setSquareSize ] = useState<number>(0);
@@ -198,8 +193,8 @@ export function ClassContent () {
 
         addOnBack?.({
             id: CLASS_CONTENT_BACK_ID,
-            onBack: onCloseButtonClick
-        })
+            onBack: onCloseButtonClick,
+        });
     }, []);
 
     useEffect(() => {
@@ -288,7 +283,7 @@ export function ClassContent () {
                 className={classes.navigationColumn}>
                 <MaterialNavigation
                     direction="next"
-                    disabled={materialActiveIndex >=  materialsLength}
+                    disabled={materialActiveIndex >=  materials.length}
                     onClick={() => handleNext()}/>
             </Grid>
         </Grid>
