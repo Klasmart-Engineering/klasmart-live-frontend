@@ -265,5 +265,5 @@
     "screenShare.presenting": "You are presenting to everyone",
     "screenShare.stop": "Stop Presenting",
     "viewMode.screenShare": "Share Screen",
-    "live.class.shareScreen.error.notAvailable": "<strong>‘Share Screen’</strong> is not available on mobile browsers."
+    "live.class.shareScreen.error.notAvailable": "<strong>‘Share Screen’</strong> is not available on mobile browsers"
 }
