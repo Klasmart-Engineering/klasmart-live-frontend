@@ -264,5 +264,6 @@
     "join_cameraPreviewFallback_cameraUnavailableOnPlatform": "Camera không khả dụng trên nền tảng hoặc phiên bản này. Vui lòng cập nhật thiết bị.",
     "screenShare.presenting": "Bạn đang trình bày với mọi người",
     "screenShare.stop": "Stop Presenting",
-    "viewMode.screenShare": "Share Screen"
+    "viewMode.screenShare": "Share Screen",
+    "live.class.shareScreen.error.notAvailable": "<strong>'Chia sẻ màn hình'</strong> không khả dụng trên trình duyệt di động"
 }

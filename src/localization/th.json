@@ -264,5 +264,6 @@
     "join_cameraPreviewFallback_cameraUnavailableOnPlatform": "กล้องไม่พร้อมใช้งานบนแพลตฟอร์มหรือเวอร์ชันนี้ โปรดอัปเดตอุปกรณ์",
     "screenShare.presenting": "You are presenting to everyone",
     "screenShare.stop": "Stop Presenting",
-    "viewMode.screenShare": "Share Screen"
+    "viewMode.screenShare": "Share Screen",
+    "live.class.shareScreen.error.notAvailable": "<strong>‘Share Screen’</strong> is not available on mobile browsers."
 }

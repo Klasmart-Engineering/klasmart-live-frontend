@@ -262,7 +262,8 @@
     "common_teacher_count": "{count, plural, =0 { guru } one { guru } other { guru }}",
     "common_student_count": "{count, plural, =0 { siswa } one { siswa } other { siswa }}",
     "join_cameraPreviewFallback_cameraUnavailableOnPlatform": "Kamera tidak dapat digunakan di platform atau versi ini. Silakan perbarui perangkatmu.",
-    "screenShare.presenting": "You are presenting to everyone",
+    "screenShare.presenting": "Sedang presentasi ke semua",
     "screenShare.stop": "Stop Presenting",
-    "viewMode.screenShare": "Share Screen"
+    "viewMode.screenShare": "Share Screen",
+    "live.class.shareScreen.error.notAvailable": "<strong>'Bagikan Layar'</strong> tidak tersedia di browser seluler"
 }
