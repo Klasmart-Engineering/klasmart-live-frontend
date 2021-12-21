@@ -12,54 +12,13 @@ import koreanWeb from "@/localization/ko.json";
 import thaiWeb from "@/localization/th.json";
 import vietnameseWeb from "@/localization/vi.json";
 import chineseWeb from "@/localization/zh_CN.json";
-import { Language } from "kidsloop-px/dist/types/components/LanguageSelect";
 import {
     createIntl,
     createIntlCache,
 } from "react-intl";
 
-export const localeCodes = [
-    `en`,
-    `ko`,
-    `zh-CN`,
-    `vi`,
-    `id`,
-    `es`,
-    `th`,
-];
-
-export const LANGUAGES_LABEL: Language[] = [
-    {
-        code: `en`,
-        text: `English`,
-    },
-    {
-        code: `es`,
-        text: `Español`,
-    },
-    {
-        code: `ko`,
-        text: `한국어`,
-    },
-    {
-        code: `zh-CN`,
-        text: `汉语 (简体)`,
-    },
-    {
-        code: `vi`,
-        text: `Tiếng Việt`,
-    },
-    {
-        code: `id`,
-        text: `Indonesian`,
-    },
-    {
-        code: `th`,
-        text: `ไทย`,
-    },
-];
-
 const intlCache = createIntlCache();
+
 export const fallbackLocale = createIntl({
     locale: `en`,
     messages: {
@@ -67,6 +26,7 @@ export const fallbackLocale = createIntl({
         ...englishWeb,
     },
 }, intlCache);
+
 export function getIntl (locale: string) {
     switch (locale) {
     case `en`:
