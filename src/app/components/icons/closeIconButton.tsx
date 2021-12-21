@@ -1,37 +1,39 @@
 import StyledIcon from "../../../components/styled/icon";
-import { THEME_COLOR_SECONDARY_DEFAULT } from "@/config";
-import IconButton from "@material-ui/core/IconButton";
 import {
-    createStyles,
-    makeStyles,
-    Theme,
-} from "@material-ui/core/styles";
+    THEME_COLOR_BACKGROUND_PAPER,
+    THEME_COLOR_SECONDARY_DEFAULT,
+} from "@/config";
+import IconButton from "@material-ui/core/IconButton";
 import { Close as CloseIcon } from "@styled-icons/material/Close";
 import React from "react";
 
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        iconButton: {
-            backgroundColor: theme.palette.background.paper,
-        },
-    }));
-
 interface Props {
+    buttonSize?: `small` | `medium`;
+    iconSize?: `small` | `medium` | `large` | `xlarge` | string;
+    color?: string;
+    backgroundColor?: string;
     onClick: () => void;
 }
 
-export function CloseIconButton ({ onClick }: Props): JSX.Element {
-    const classes = useStyles();
+export function CloseIconButton ({
+    buttonSize = `medium`,
+    iconSize = `medium`,
+    color = THEME_COLOR_SECONDARY_DEFAULT,
+    backgroundColor = THEME_COLOR_BACKGROUND_PAPER,
+    onClick,
+}: Props): JSX.Element {
     return (
         <IconButton
-            size="medium"
-            className={classes.iconButton}
+            size={buttonSize}
+            style={{
+                backgroundColor: backgroundColor,
+            }}
             onClick={onClick}
         >
             <StyledIcon
                 icon={<CloseIcon/>}
-                size="medium"
-                color={THEME_COLOR_SECONDARY_DEFAULT}/>
+                size={iconSize}
+                color={color}/>
         </IconButton>
     );
 }
