@@ -2,6 +2,10 @@ import { CloseIconButton } from "@/app/components/icons/closeIconButton";
 import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
 import { Feedback } from '@/components/feedback/feedback';
 import {
+    TEXT_COLOR_CONSTRAST_DEFAULT,
+    TEXT_COLOR_PRIMARY_DEFAULT,
+} from "@/config";
+import {
     classEndedState,
     classLeftState,
 } from "@/store/layoutAtoms";
@@ -13,7 +17,8 @@ import {
     Typography,
 } from '@material-ui/core';
 import { CalendarCheck as ClassEndedIcon } from "@styled-icons/boxicons-regular/CalendarCheck";
-import React, {useEffect} from 'react';
+import React,
+{ useEffect } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useHistory } from 'react-router-dom';
 import { useRecoilState } from "recoil";
@@ -55,6 +60,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     appHeaderRight:{
         textAlign: `right`,
+        marginTop: theme.spacing(3),
+        marginRight: theme.spacing(4),
     },
 }));
 
@@ -87,9 +94,9 @@ function EndClass () {
     useEffect(() => {
         addOnBack?.({
             id: END_CLASS_ON_BACK_ID,
-            onBack: onCloseButtonClick
+            onBack: onCloseButtonClick,
         });
-    }, [])
+    }, []);
 
     return (
         <Fade in={true}>
@@ -97,7 +104,12 @@ function EndClass () {
                 {process.env.IS_CORDOVA_BUILD &&
                     <div className={classes.appHeader}>
                         <div className={classes.appHeaderRight}>
-                            <CloseIconButton onClick={onCloseButtonClick} />
+                            <CloseIconButton
+                                iconSize="xlarge"
+                                buttonSize="small"
+                                color={TEXT_COLOR_CONSTRAST_DEFAULT}
+                                backgroundColor={TEXT_COLOR_PRIMARY_DEFAULT}
+                                onClick={onCloseButtonClick} />
                         </div>
                     </div>
                 }
@@ -109,9 +121,11 @@ function EndClass () {
                     <Grid
                         item
                         className={classes.root}>
-                        <div className={classes.icon}>
-                            <ClassEndedIcon />
-                        </div>
+                        {!process.env.IS_CORDOVA_BUILD &&
+                            <div className={classes.icon}>
+                                <ClassEndedIcon />
+                            </div>
+                        }
                         <Typography variant="h3"><FormattedMessage id={classLeft ? `class_ended_you_have_left` : `class_ended_title`} /></Typography>
                         <Typography variant="body1"><FormattedMessage id="class_ended_thanks_for_attending" /></Typography>
 
