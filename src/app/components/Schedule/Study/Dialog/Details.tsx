@@ -268,6 +268,7 @@ export default function StudyDetailsDialog (props: Props) {
                         onClick: () => scheduleData?.is_home_fun ? handleJoinHomeFunStudyClass() : handleJoinStudyClass(),
                     },
                 ]}
+                isLoading = {isFetchingSchedule}
                 onClose={onClose}
             />
             <DialogParentalLock
