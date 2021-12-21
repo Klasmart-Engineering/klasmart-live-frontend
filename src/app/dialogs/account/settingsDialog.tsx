@@ -1,9 +1,9 @@
 import { Header } from "@/app/components/layout/header";
-import { LANGUAGES_LABEL } from "@/app/localization/localeCodes";
 import {
     dialogsState,
     localeState,
 } from "@/app/model/appModel";
+import { LANGUAGES_LABEL } from "@/localization/localeCodes";
 import {
     Avatar,
     List,

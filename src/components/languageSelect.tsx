@@ -1,3 +1,4 @@
+import { LANGUAGES_LABEL } from "@/localization/localeCodes";
 import { ThemeContext } from "@/providers/providers";
 import { Button } from "@material-ui/core";
 import Menu,
@@ -17,29 +18,6 @@ import {
 } from "react";
 import * as React from "react";
 import { FormattedMessage } from "react-intl";
-
-const LANGUAGES_LABEL: Language[] = [
-    {
-        code: `en`,
-        text: `English`,
-    },
-    {
-        code: `ko`,
-        text: `한국어`,
-    },
-    {
-        code: `zh-CN`,
-        text: `汉语 (简体)`,
-    },
-    {
-        code: `vi`,
-        text: `Tiếng Việt`,
-    },
-    {
-        code: `id`,
-        text: `Indonesian`,
-    },
-];
 
 interface Props {
     noIcon?: boolean;

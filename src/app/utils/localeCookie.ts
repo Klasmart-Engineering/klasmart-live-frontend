@@ -1,6 +1,6 @@
-import { localeCodes } from "../../localization/localeCodes";
-import { getIntl } from "../localization/localeCodes";
 import { localeState } from "../model/appModel";
+import { getIntl } from "@/app/localization/localeCodes";
+import { localeCodes } from "@/localization/localeCodes";
 import Cookies from "js-cookie";
 import {
     useCallback,
