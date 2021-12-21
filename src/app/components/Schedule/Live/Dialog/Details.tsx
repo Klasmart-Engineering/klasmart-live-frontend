@@ -298,6 +298,7 @@ export default function LiveDetailsDialog (props: Props) {
                     onClick: () => handleJoinLiveClass(),
                 },
             ]}
+            isLoading={isFetchingSchedule}
             onClose={onClose}
         />
     );

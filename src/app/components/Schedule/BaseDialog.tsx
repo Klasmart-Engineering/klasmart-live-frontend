@@ -1,5 +1,6 @@
 import BaseScheduleDialogContent,
 { DialogContentItem } from "./BaseDialogContent";
+import Loading from "@/components/loading";
 import StyledIcon from "@/components/styled/icon";
 import {
     Box,
@@ -35,6 +36,20 @@ const useStyles = makeStyles((theme) => createStyles({
         alignItems: `center`,
         justifyContent: `center`,
     },
+    dialogContent: {
+        position: `relative`,
+    },
+    dialogLoadingContent: {
+        position: `absolute`,
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        justifyContent: `center`,
+        alignItems: `center`,
+        backgroundColor: `white`,
+        display: `flex`,
+    },
 }));
 
 export interface DialogAction {
@@ -50,6 +65,7 @@ export interface Props {
     contentItems: DialogContentItem[];
     actions: DialogAction[];
     open: boolean;
+    isLoading: boolean;
     onClose: () => void;
 }
 
@@ -59,6 +75,7 @@ export default function BaseScheduleDialog (props: Props) {
         contentItems,
         actions,
         open,
+        isLoading,
         onClose,
     } = props;
     const classes = useStyles();
@@ -104,40 +121,45 @@ export default function BaseScheduleDialog (props: Props) {
                     </Grid>
                 </Grid>
             </DialogTitle>
-            <BaseScheduleDialogContent items={contentItems} />
-            <DialogActions>
-                {actions
-                    .filter((action) => action.align === `start`)
-                    .map((action, i) => (
-                        <Button
-                            key={`action-start-${i}`}
-                            size={`large`}
-                            variant={`contained`}
-                            disabled={action.disabled}
-                            color={action.color}
-                            onClick={action.onClick}
-                        >
-                            {action.label}
-                        </Button>
-                    ))
-                }
-                <Box flex="1" />
-                {actions
-                    .filter((action) => action.align === `end` || !action.align)
-                    .map((action, i) => (
-                        <Button
-                            key={`action-end-${i}`}
-                            size={`large`}
-                            variant={`contained`}
-                            disabled={action.disabled}
-                            color={action.color}
-                            onClick={action.onClick}
-                        >
-                            {action.label}
-                        </Button>
-                    ))
-                }
-            </DialogActions>
+            <div className={classes.dialogContent}>
+                <BaseScheduleDialogContent items={contentItems} />
+                <DialogActions>
+                    {actions
+                        .filter((action) => action.align === `start`)
+                        .map((action, i) => (
+                            <Button
+                                key={`action-start-${i}`}
+                                size={`large`}
+                                variant={`contained`}
+                                disabled={action.disabled}
+                                color={action.color}
+                                onClick={action.onClick}
+                            >
+                                {action.label}
+                            </Button>
+                        ))
+                    }
+                    <Box flex="1" />
+                    {actions
+                        .filter((action) => action.align === `end` || !action.align)
+                        .map((action, i) => (
+                            <Button
+                                key={`action-end-${i}`}
+                                size={`large`}
+                                variant={`contained`}
+                                disabled={action.disabled}
+                                color={action.color}
+                                onClick={action.onClick}
+                            >
+                                {action.label}
+                            </Button>
+                        ))
+                    }
+                </DialogActions>
+                {isLoading && (<div className={classes.dialogLoadingContent}>
+                    <Loading />
+                </div>)}
+            </div>
         </Dialog>
     );
 }
