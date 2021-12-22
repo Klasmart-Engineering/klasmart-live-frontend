@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.5.3](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.5.3%0Dv3.5.2-hotfix.1) (2021-12-22)
+
+
+### Bug Fixes
+
+* add app version to settings page ([2337e65](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/2337e659da72f76c50488ba624bae57e22b23604)), closes [feature/KLL-2198](https://calmisland.atlassian.net/browse/KLL-2198)
+* add translation app version ([bfa3200](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/bfa3200dae2590eef7646fd4ff25df2eec931612)), closes [KLL-2198](https://calmisland.atlassian.net/browse/KLL-2198)
+* add version localization string ([b656e71](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/b656e71fc0c69a465bd9bab0ace17ae6c215b86d))
+
 ### [3.5.2-hotfix.1](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.5.2-hotfix.1%0Dv3.5.2-hotfix.0) (2021-12-09)
 
 ### [3.5.1](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.5.1%0Dv3.5.0) (2021-12-02)
