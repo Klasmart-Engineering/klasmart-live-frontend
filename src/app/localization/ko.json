@@ -224,5 +224,6 @@
     "homeFunStudy.submission.error.rejected": "해당 과제는 이미 선생님께서 평가를 완료하여 다시 제출할 수 없습니다.",
     "parentalGate.error.incorrect": "틀린 답입니다.",
     "signin.title.loading": "잠시 기다려주세요",
-    "signin.body.loading": "키즈룹에서 로그인을 시도하고 있습니다..."
+    "signin.body.loading": "키즈룹에서 로그인을 시도하고 있습니다...",
+    "settings.version": "Version {version}"
 }

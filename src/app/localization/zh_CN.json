@@ -224,5 +224,6 @@
     "homeFunStudy.submission.error.rejected": "这个作业已经被老师评估过了，不能再编辑或重新提交了。",
     "parentalGate.error.incorrect": "输入不正确",
     "signin.title.loading": "请稍等",
-    "signin.body.loading": "KidsLoop 正在授权您的登录..."
+    "signin.body.loading": "KidsLoop 正在授权您的登录...",
+    "settings.version": "Version {version}"
 }

@@ -224,5 +224,6 @@
     "homeFunStudy.submission.error.rejected": "Bài tập này đã được giáo viên của bạn đánh giá và không thể nộp lại.",
     "parentalGate.error.incorrect": "Giá trị đầu vào không chính xác",
     "signin.title.loading": "Chờ đợi trong giây lát",
-    "signin.body.loading": "KidsLoop đang cố gắng đăng nhập cho bạn ..."
+    "signin.body.loading": "KidsLoop đang cố gắng đăng nhập cho bạn ...",
+    "settings.version": "Version {version}"
 }

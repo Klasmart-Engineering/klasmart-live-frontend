@@ -224,5 +224,6 @@
     "homeFunStudy.submission.error.rejected": "This assignment has already been assessed by your teacher and cannot be re-submitted.",
     "parentalGate.error.incorrect": "Incorrect input value",
     "signin.title.loading": "Just a Second",
-    "signin.body.loading": "KidsLoop is trying to sign you in..."
+    "signin.body.loading": "KidsLoop is trying to sign you in...",
+    "settings.version": "Version {version}"
 }

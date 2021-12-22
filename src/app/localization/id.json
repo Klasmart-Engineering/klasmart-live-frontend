@@ -224,5 +224,6 @@
     "homeFunStudy.submission.error.rejected": "Tugas ini telah dinilai oleh guru Anda dan tidak dapat dikirim ulang.",
     "parentalGate.error.incorrect": "Nilai input salah",
     "signin.title.loading": "Tunggu sebentar",
-    "signin.body.loading": "Mencoba masuk ke KidsLoop..."
+    "signin.body.loading": "Mencoba masuk ke KidsLoop...",
+    "settings.version": "Version {version}"
 }
