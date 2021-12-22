@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.5.4](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.5.4%0Dv3.5.3) (2021-12-22)
+
+
+### Bug Fixes
+
+* privacy notice page url ([4fbfe1a](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/4fbfe1a5e7999bc29e25de46853d2ec322e6afb2)), closes [KLL-2306](https://calmisland.atlassian.net/browse/KLL-2306)
+
 ### [3.5.3](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.5.3%0Dv3.5.2-hotfix.1) (2021-12-22)
 
 
