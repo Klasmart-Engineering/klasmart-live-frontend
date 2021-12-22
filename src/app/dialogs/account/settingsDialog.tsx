@@ -160,7 +160,11 @@ export function SettingsDialog () {
                                 variant="body1"
                                 align="center"
                                 className={version}>
-                                Version {config.version}
+                                <FormattedMessage
+                                    id="settings.version"
+                                    values={{
+                                        version: config.version,
+                                    }} />
                             </Typography>
                         </div>
                     </Grid>
