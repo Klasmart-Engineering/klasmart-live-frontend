@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.5.5](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.5.5%0Dv3.5.4) (2021-12-23)
+
+
+### Bug Fixes
+
+* don't automatically redirect after sign in ([44f6746](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/44f67463d75c6f8cb5483e871d565f3eb7696c59))
+* package-lock correct version of kidsloop-live-state ([7bc8060](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/7bc8060f40acb62dc40b85bb87a3dc9ca3b3d16a))
+* use kidsloop-live-state 1.0.4-es2017 release ([42650f1](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/42650f17858efba2bfe4f2217b80fa4d29314808))
+
 ### [3.5.4](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.5.4%0Dv3.5.3) (2021-12-22)
 
 
