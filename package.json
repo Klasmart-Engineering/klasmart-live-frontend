@@ -118,7 +118,7 @@
     "jwt-decode": "^2.2.0",
     "kidsloop-branding": "bitbucket:calmisland/kidsloop-branding#1.0.1",
     "kidsloop-canvas": "bitbucket:calmisland/kidsloop-canvas#0.5.0",
-    "kidsloop-live-state": "bitbucket:calmisland/kidsloop-live-state#1.0.1",
+    "kidsloop-live-state": "bitbucket:calmisland/kidsloop-live-state#1.0.4-es2017",
     "kidsloop-px": "bitbucket:calmisland/kidsloop-px#1.0.9",
     "lodash": "4.17.21",
     "mediasoup-client": "^3.6.12",
