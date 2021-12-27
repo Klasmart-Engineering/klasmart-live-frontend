@@ -1,10 +1,6 @@
 import { useAuthenticationContext } from "@/app/context-provider/authentication-context";
-import {
-    dialogsState,
-    shouldClearCookieState,
-} from "@/app/model/appModel";
+import { shouldClearCookieState } from "@/app/model/appModel";
 import BackIcon from "@/assets/img/back_icon.svg";
-import NoOrgFoundLogo from "@/assets/img/not_found.svg";
 import { TEXT_COLOR_SECONDARY_DEFAULT } from "@/config";
 import {
     Button,
@@ -16,14 +12,12 @@ import {
 import { makeStyles } from "@material-ui/styles";
 import React from "react";
 import { FormattedMessage } from "react-intl";
-import {
-    useRecoilValue,
-    useSetRecoilState,
-} from "recoil";
+import { useSetRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
     container: {
         padding: theme.spacing(4),
+        paddingTop: theme.spacing(8),
     },
     content: {
         textAlign: `center`,
@@ -35,9 +29,6 @@ const useStyles = makeStyles((theme: Theme) => ({
         fontWeight: theme.typography.fontWeightBold as number,
         color: TEXT_COLOR_SECONDARY_DEFAULT,
     },
-    noOrgIcon: {
-        marginLeft: theme.spacing(6),
-    },
     goBackContainer: {
         position: `absolute`,
         bottom: theme.spacing(16),
@@ -46,21 +37,26 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 }));
 
-export function NoOrgDialog (): JSX.Element {
+interface Props {
+    open: boolean;
+    title: string;
+    body: string;
+    imgSrc: string;
+    onClose: ((event: {}, reason: "backdropClick" | "escapeKeyDown") => void) | undefined;
+}
+
+export function NoPageFoundDialog ({
+    open, title, body, imgSrc, onClose,
+}: Props): JSX.Element {
     const { actions } = useAuthenticationContext();
     const classes = useStyles();
-    const dialogs = useRecoilValue(dialogsState);
-    const setDialogs = useSetRecoilState(dialogsState);
     const setShouldClearCookie = useSetRecoilState(shouldClearCookieState);
 
     return (
         <Dialog
             fullScreen
-            open={dialogs.isShowNoOrgProfile}
-            onClose={() => setDialogs({
-                ...dialogs,
-                isShowNoOrgProfile: false,
-            })}>
+            open={open}
+            onClose={onClose}>
             <Grid
                 container
                 className={classes.container}
@@ -69,16 +65,15 @@ export function NoOrgDialog (): JSX.Element {
                 alignItems="center">
                 <Grid item>
                     <img
-                        className={classes.noOrgIcon}
                         alt="No Organization Found Logo"
-                        src={NoOrgFoundLogo}
+                        src={imgSrc}
                     />
                 </Grid>
                 <Grid item>
                     <Typography
                         className={classes.titleText}
                         variant="h4">
-                        <FormattedMessage id="signIn.noOrganization.title" />
+                        <FormattedMessage id={title} />
                     </Typography>
                 </Grid>
                 <Grid item>
@@ -88,7 +83,7 @@ export function NoOrgDialog (): JSX.Element {
                         style={{
                             color: TEXT_COLOR_SECONDARY_DEFAULT,
                         }}>
-                        <FormattedMessage id="signIn.noOrganization.body" />
+                        <FormattedMessage id={body} />
                     </Typography>
                 </Grid>
                 <Grid

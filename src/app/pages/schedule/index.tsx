@@ -11,6 +11,7 @@ import {
 import {
     shouldClearCookieState,
     shouldShowNoOrgProfileState,
+    shouldShowNoStudentRoleState,
 } from "@/app/model/appModel";
 import {
     ScheduleAppBarItem,
@@ -41,10 +42,11 @@ export default function SchedulePage (props: Props) {
     const user = useSelectedUserValue();
     const organization = useSelectedOrganizationValue();
     const shouldShowNoOrgProfile = useRecoilValue(shouldShowNoOrgProfileState);
+    const shouldShowNoStudentRole = useRecoilValue(shouldShowNoStudentRoleState);
     const { addOnBack, removeOnBack } = useCordovaSystemContext();
     const { actions } = useAuthenticationContext();
     const setShouldClearCookie = useSetRecoilState(shouldClearCookieState);
-    const NO_ORG_BACK_BUTTON_CLICKED_ID = `noOrgBackButtonClickedID`;
+    const NO_PAGE_FOUND_BACK_BUTTON_CLICKED_ID = `noPageFoundBackButtonClickedID`;
 
     const SelectedScheduleTabContent = useCallback((scheduleTab: ScheduleAppBarItem) => {
         switch (scheduleTab) {
@@ -59,15 +61,15 @@ export default function SchedulePage (props: Props) {
     };
 
     useEffect(() => {
-        if (shouldShowNoOrgProfile) {
+        if (shouldShowNoOrgProfile || shouldShowNoStudentRole) {
             addOnBack?.({
-                id: NO_ORG_BACK_BUTTON_CLICKED_ID,
+                id: NO_PAGE_FOUND_BACK_BUTTON_CLICKED_ID,
                 onBack: onNoOrgBackButtonClicked,
             });
         } else {
-            removeOnBack?.(NO_ORG_BACK_BUTTON_CLICKED_ID);
+            removeOnBack?.(NO_PAGE_FOUND_BACK_BUTTON_CLICKED_ID);
         }
-    }, [ shouldShowNoOrgProfile ]);
+    }, [ shouldShowNoOrgProfile, shouldShowNoStudentRole ]);
 
     return (
         <React.Fragment key={`${user?.user_id}-${organization?.organization_id}`}>

@@ -17,6 +17,9 @@ const QUERY_MY_USERS = gql`
             date_of_birth
             organizationsWithPermission (permission_name: "attend_live_class_as_a_student_187") {
                 status
+                roles {
+                    role_name
+                }
                 organization {
                     organization_id
                     organization_name

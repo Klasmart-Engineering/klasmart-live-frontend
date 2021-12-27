@@ -27,6 +27,7 @@ export const dialogsState = atom({
         isSettingsOpen: false,
         isSettingsLanguageOpen: false,
         isShowNoOrgProfile: false,
+        isShowNoStudentRole: false,
     },
 });
 
@@ -103,5 +104,10 @@ export const shouldClearCookieState = atom({
 
 export const shouldShowNoOrgProfileState = atom({
     key: `shouldShowNoOrgProfile`,
+    default: false,
+});
+
+export const shouldShowNoStudentRoleState = atom({
+    key: `shouldShowNoStudentRole`,
     default: false,
 });

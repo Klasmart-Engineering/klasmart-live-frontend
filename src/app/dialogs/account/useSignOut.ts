@@ -7,6 +7,7 @@ import {
     authState,
     dialogsState,
     shouldShowNoOrgProfileState,
+    shouldShowNoStudentRoleState,
 } from "@/app/model/appModel";
 import { useCallback } from "react";
 import { useSetRecoilState } from "recoil";
@@ -21,6 +22,7 @@ export const useSignOut = () => {
     const setDialogs = useSetRecoilState(dialogsState);
 
     const setShouldShowNoOrgProfile = useSetRecoilState(shouldShowNoOrgProfileState);
+    const setShouldShowNoStudentRole = useSetRecoilState(shouldShowNoStudentRoleState);
 
     const handleSignOut = useCallback(() => {
         setDialogs((state) => {
@@ -29,12 +31,14 @@ export const useSignOut = () => {
                 isSelectUserOpen: false,
                 isSelectOrganizationOpen: false,
                 isShowNoOrgProfile: false,
+                isShowNoStudentRole: false,
             };
         });
 
         setSelectedUser(() => undefined);
         setSelectedOrganization(() => undefined);
         setShouldShowNoOrgProfile(false);
+        setShouldShowNoStudentRole(false);
 
         setAuth({
             transferToken: undefined,
