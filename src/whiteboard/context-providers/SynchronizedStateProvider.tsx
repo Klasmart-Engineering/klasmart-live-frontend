@@ -22,6 +22,7 @@ import React, {
     useEffect,
     useState,
 } from "react";
+import { ClassType } from "@/store/actions";
 
 export type PainterEventFunction = (payload: PainterEvent) => void
 
@@ -60,6 +61,7 @@ export const SynchronizedStateProvider: FunctionComponent<Props> = ({ children }
         sessionId,
         roomId,
         isTeacher,
+        classType,
     } = useSessionContext();
 
     const [ events ] = useState<PainterEvent[]>([]);
@@ -176,7 +178,7 @@ export const SynchronizedStateProvider: FunctionComponent<Props> = ({ children }
     }, [ refetchEvents ]);
 
     useEffect(() => {
-        if (!eventSerializer) return;
+        if (!eventSerializer || classType === ClassType.STUDY) return;
         const serializer = eventSerializer;
 
         const sendEventHandler = (payload: PainterEvent) => {
