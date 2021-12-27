@@ -16,6 +16,7 @@ import {
     isFocused,
     useWindowOnFocusChange,
 } from "@/app/utils/windowEvents";
+import LiveIcon from "@/assets/img/schedule-icon/live_icon.svg";
 import {
     SCHEDULE_FETCH_INTERVAL_MINUTES,
     SCHEDULE_FETCH_MONTH_DIFF,
@@ -23,6 +24,7 @@ import {
     SCHEDULE_PAGE_START,
     SCHEDULE_PAGINATION_DELAY,
     schedulePageWindowItemHeightToPageSize,
+    THEME_COLOR_BACKGROUND_LIST,
     THEME_COLOR_SECONDARY_DEFAULT,
 } from "@/config";
 import { fromSecondsToMilliseconds } from "@/utils/utils";
@@ -38,7 +40,6 @@ import {
     makeStyles,
     Typography,
 } from "@material-ui/core";
-import { Video as LiveIcon } from "@styled-icons/fa-solid/Video";
 import {
     clamp,
     uniqBy,
@@ -55,16 +56,12 @@ import {
     useIntl,
 } from "react-intl";
 
-const useStyles = makeStyles((theme) => createStyles({
+const useStyles = makeStyles(() => createStyles({
     listRoot: {
         width: `100%`,
-        backgroundColor: theme.palette.background.paper,
+        backgroundColor: THEME_COLOR_BACKGROUND_LIST,
         overflowY: `scroll`,
         flex: 1,
-    },
-    listItemTextPrimary: {
-        color: `#0C3680`,
-        fontWeight: theme.typography.fontWeightBold as number,
     },
     listSection: {
         backgroundColor: `inherit`,
@@ -75,10 +72,7 @@ const useStyles = makeStyles((theme) => createStyles({
     },
 }));
 
-interface Props {
-}
-
-export default function LiveScheduleList (props: Props) {
+export default function LiveScheduleList () {
     const classes = useStyles();
     const intl = useIntl();
     const [ selectedScheduleId, setSelectedScheduleId ] = useState<string>();
@@ -221,7 +215,8 @@ export default function LiveScheduleList (props: Props) {
                                     key={liveSchedule.id}
                                     leading={(
                                         <ListItemAvatar
-                                            src={<LiveIcon />}
+                                            imgType
+                                            src={LiveIcon}
                                             color={THEME_COLOR_SECONDARY_DEFAULT}
                                         />
                                     )}

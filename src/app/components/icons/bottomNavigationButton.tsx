@@ -1,6 +1,10 @@
 
 import { heightActionButton } from "@/app/utils/fixedValues";
 import {
+    BG_BUTTON_LIVE_COLOR,
+    BG_BUTTON_STUDY_COLOR,
+    TEXT_COLOR_LIVE_PRIMARY,
+    TEXT_COLOR_STUDY_PRIMARY,
     THEME_COLOR_INACTIVE_BUTTON,
     THEME_COLOR_SECONDARY_DEFAULT,
 } from "@/config";
@@ -26,12 +30,20 @@ const useStyles = makeStyles((theme) => createStyles({
         display: `flex`,
         width: `100%`,
     },
-    active : {
-        backgroundColor: `#C5E9FB`,
-        color: THEME_COLOR_SECONDARY_DEFAULT,
+    activeLive : {
+        backgroundColor: BG_BUTTON_LIVE_COLOR,
     },
-    icon: {
-        marginBottom: 3,
+    activeStudy : {
+        backgroundColor: BG_BUTTON_STUDY_COLOR,
+    },
+    titleText: {
+        fontWeight: theme.typography.fontWeightBold as number,
+    },
+    titleLiveColor: {
+        color: TEXT_COLOR_LIVE_PRIMARY,
+    },
+    titleStudyColor: {
+        color: TEXT_COLOR_STUDY_PRIMARY,
     },
 }));
 
@@ -40,6 +52,7 @@ interface Props {
     title: string;
     icon: ReactElement<any, string>;
     active: boolean;
+    type: string;
 }
 
 export function BottomNavigationButton (props: Props) {
@@ -48,12 +61,14 @@ export function BottomNavigationButton (props: Props) {
         title,
         icon,
         active,
+        type,
     } = props;
     const classes = useStyles();
     return (
         <ButtonBase
             className={clsx(classes.root, {
-                [classes.active]: active,
+                [classes.activeLive]: active && type === `live`,
+                [classes.activeStudy]: active && type === `study`,
             })}
             onClick={onClick}
         >
@@ -65,12 +80,15 @@ export function BottomNavigationButton (props: Props) {
             >
                 <Grid
                     item
-                    className={classes.icon}
                 >
                     {icon}
                 </Grid>
                 <Grid item>
                     <Typography
+                        className={clsx(classes.titleText, {
+                            [classes.titleLiveColor]: type === `live`,
+                            [classes.titleStudyColor]: type === `study`,
+                        })}
                         variant="subtitle2">
                         <FormattedMessage id={title} />
                     </Typography>

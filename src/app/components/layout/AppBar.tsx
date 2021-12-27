@@ -28,12 +28,16 @@ const useStyles = makeStyles((theme) => createStyles({
         paddingBottom: theme.spacing(4),
         flex: 0,
     },
+    titleInAppBar: {
+        fontWeight: theme.typography.fontWeightBold as number,
+    },
 }));
 
 interface Props {
     title?: string;
     leading?: React.ReactNode;
     trailing?: React.ReactNode;
+    showTitleInAppbar?: string;
 }
 
 export default function AppBar (props: Props) {
@@ -41,6 +45,7 @@ export default function AppBar (props: Props) {
         title,
         leading,
         trailing,
+        showTitleInAppbar,
     } = props;
     const classes = useStyles();
 
@@ -72,11 +77,19 @@ export default function AppBar (props: Props) {
                                 item
                                 className={classes.centeredLogo}
                             >
-                                <img
-                                    alt="KidsLoop Logo"
-                                    src={KidsloopLogo}
-                                    height={32}
-                                />
+                                {showTitleInAppbar ?
+                                    <Typography
+                                        variant="subtitle1"
+                                        align="center"
+                                        className={classes.titleInAppBar}
+                                    >
+                                        {showTitleInAppbar}
+                                    </Typography>:
+                                    <img
+                                        alt="KidsLoop Logo"
+                                        src={KidsloopLogo}
+                                        height={32}
+                                    />}
                             </Grid>
                             <Grid item>{trailing}</Grid>
                         </Grid>

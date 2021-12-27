@@ -10,6 +10,7 @@ import {
 import { ScheduleLiveTokenType } from "@/app/services/cms/ISchedulerService";
 import { formatDateTimeMillis } from "@/app/utils/dateTimeUtils";
 import { generateDescriptionHasHyperLink } from "@/app/utils/link";
+import { BG_COLOR_GO_LIVE_BUTTON } from "@/config";
 import { useSessionContext } from "@/providers/session-context";
 import { fromSecondsToMilliseconds } from "@/utils/utils";
 import {
@@ -147,6 +148,7 @@ export default function LiveDetailsDialog (props: Props) {
     return (
         <BaseScheduleDialog
             open={open}
+            color={BG_COLOR_GO_LIVE_BUTTON}
             title={scheduleData?.title ?? intl.formatMessage({
                 id: `scheduleDetails.notApplicable`,
             })}

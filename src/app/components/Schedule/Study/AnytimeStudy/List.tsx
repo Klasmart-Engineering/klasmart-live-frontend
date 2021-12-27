@@ -14,14 +14,15 @@ import {
     isFocused,
     useWindowOnFocusChange,
 } from "@/app/utils/windowEvents";
+import HomeFunStudyIcon from "@/assets/img/schedule-icon/home_fun_study.svg";
+import StudyIcon from "@/assets/img/schedule-icon/study_icon.svg";
 import {
     SCHEDULE_FETCH_INTERVAL_MINUTES,
     SCHEDULE_PAGE_ITEM_HEIGHT_MIN,
     SCHEDULE_PAGE_START,
     SCHEDULE_PAGINATION_DELAY,
     schedulePageWindowItemHeightToPageSize,
-    THEME_COLOR_BACKGROUND_STUDY,
-    THEME_COLOR_HOME_FUN_STUDY,
+    THEME_COLOR_BACKGROUND_LIST,
 } from "@/config";
 import {
     SchedulesTimeViewListItem,
@@ -35,8 +36,6 @@ import {
     makeStyles,
     Typography,
 } from "@material-ui/core";
-import { Star as HomeFunStudyIcon } from "@styled-icons/fa-solid/Star";
-import { Book as StudyIcon } from "@styled-icons/fluentui-system-filled/Book";
 import {
     clamp,
     uniqBy,
@@ -53,10 +52,10 @@ import {
     useIntl,
 } from "react-intl";
 
-const useStyles = makeStyles((theme) => createStyles({
+const useStyles = makeStyles(() => createStyles({
     listRoot: {
         width: `100%`,
-        backgroundColor: theme.palette.background.paper,
+        backgroundColor: THEME_COLOR_BACKGROUND_LIST,
         overflowY: `scroll`,
         flex: 1,
     },
@@ -69,10 +68,7 @@ const useStyles = makeStyles((theme) => createStyles({
     },
 }));
 
-interface Props {
-}
-
-export default function AnytimeStudyScheduleList (props: Props) {
+export default function AnytimeStudyScheduleList () {
     const classes = useStyles();
     const intl = useIntl();
     const [ selectedScheduleId, setSelectedScheduleId ] = useState<string>();
@@ -179,10 +175,11 @@ export default function AnytimeStudyScheduleList (props: Props) {
                             {studySchedulesSection.schedules.map((studySchedule) => (
                                 <ScheduleListItem
                                     key={studySchedule.id}
+                                    isStudySchedule
                                     leading={(
                                         <ListItemAvatar
-                                            src={studySchedule.is_home_fun ? <HomeFunStudyIcon /> : <StudyIcon />}
-                                            color={studySchedule.is_home_fun ? THEME_COLOR_HOME_FUN_STUDY : THEME_COLOR_BACKGROUND_STUDY}
+                                            imgType
+                                            src={studySchedule.is_home_fun ? HomeFunStudyIcon : StudyIcon}
                                         />
                                     )}
                                     title={studySchedule.title}

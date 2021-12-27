@@ -10,6 +10,7 @@ describe(`ScheduleListItemAvatar`, () => {
     describe(`Render`, () => {
         test(`default props`, () => {
             render(<ScheduleListItemAvatar
+                imgType={false}
                 src={<HomeFunStudyIcon />}
                 color={THEME_COLOR_SECONDARY_DEFAULT}
             />);
