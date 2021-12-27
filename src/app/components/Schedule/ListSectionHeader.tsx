@@ -2,14 +2,16 @@ import {
     createStyles,
     ListSubheader,
     makeStyles,
+    Typography,
 } from "@material-ui/core";
+import grey from "@material-ui/core/colors/grey";
 import React from "react";
 
 const useStyles = makeStyles((theme) => createStyles({
     listSubheaderText: {
-        paddingTop: theme.spacing(1),
-        paddingBottom: theme.spacing(1),
+        padding: `24px 32px 0px`,
         fontWeight: theme.typography.fontWeightBold as number,
+        color: grey[700],
     },
 }));
 
@@ -23,9 +25,11 @@ export default function ScheduleListSectionHeader (props: Props) {
     return (
         <ListSubheader
             component="div"
-            className={classes.listSubheaderText}
         >
-            {title}
+            <Typography
+                variant="subtitle1"
+                className={classes.listSubheaderText}
+            >{title}</Typography>
         </ListSubheader>
     );
 }

@@ -19,13 +19,14 @@ import React from "react";
 
 const useStyles = makeStyles((theme) => createStyles({
     dialogTitle: {
-        backgroundColor: `#cce8f9`,
+        backgroundColor: theme.palette.background.paper,
+        padding: `16px 24px 0px`,
     },
     dialogTitleText: {
-        color: `#193756`,
         textOverflow: `ellipsis`,
         overflow: `hidden`,
         marginRight: 8,
+        fontWeight: theme.typography.fontWeightBold as number,
     },
     dialogCloseIconButton: {
         borderRadius: `50%`,
@@ -38,6 +39,7 @@ const useStyles = makeStyles((theme) => createStyles({
     },
     dialogContent: {
         position: `relative`,
+        paddingTop: 0,
     },
     dialogLoadingContent: {
         position: `absolute`,
@@ -62,6 +64,7 @@ export interface DialogAction {
 
 export interface Props {
     title: string;
+    color?: string;
     contentItems: DialogContentItem[];
     actions: DialogAction[];
     open: boolean;
@@ -76,6 +79,7 @@ export default function BaseScheduleDialog (props: Props) {
         actions,
         open,
         isLoading,
+        color,
         onClose,
     } = props;
     const classes = useStyles();
@@ -86,6 +90,11 @@ export default function BaseScheduleDialog (props: Props) {
             maxWidth={`sm`}
             scroll={`paper`}
             open={open}
+            PaperProps={{
+                style: {
+                    borderRadius: 9,
+                },
+            }}
             onClose={onClose}
         >
             <DialogTitle className={classes.dialogTitle}>
@@ -103,6 +112,10 @@ export default function BaseScheduleDialog (props: Props) {
                         }}>
                         <Typography
                             noWrap
+                            style={{
+                                color: color,
+                            }}
+                            variant="subtitle1"
                             className={classes.dialogTitleText}
                         >
                             {title}
@@ -133,6 +146,9 @@ export default function BaseScheduleDialog (props: Props) {
                                 variant={`contained`}
                                 disabled={action.disabled}
                                 color={action.color}
+                                style={{
+                                    backgroundColor: !action.disabled ? color : ``,
+                                }}
                                 onClick={action.onClick}
                             >
                                 {action.label}
@@ -149,6 +165,9 @@ export default function BaseScheduleDialog (props: Props) {
                                 variant={`contained`}
                                 disabled={action.disabled}
                                 color={action.color}
+                                style={{
+                                    backgroundColor: !action.disabled ? color : ``,
+                                }}
                                 onClick={action.onClick}
                             >
                                 {action.label}

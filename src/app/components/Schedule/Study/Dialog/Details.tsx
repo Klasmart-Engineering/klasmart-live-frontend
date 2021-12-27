@@ -11,6 +11,7 @@ import {
 import { ScheduleLiveTokenType } from "@/app/services/cms/ISchedulerService";
 import { formatDateTimeMillis } from "@/app/utils/dateTimeUtils";
 import { generateDescriptionHasHyperLink } from "@/app/utils/link";
+import { BG_COLOR_GO_STUDY_PRIMARY } from "@/config";
 import { useSessionContext } from "@/providers/session-context";
 import { fromSecondsToMilliseconds } from "@/utils/utils";
 import {
@@ -131,6 +132,7 @@ export default function StudyDetailsDialog (props: Props) {
         <>
             <BaseScheduleDialog
                 key={`BaseScheduleDialog`}
+                color={BG_COLOR_GO_STUDY_PRIMARY}
                 open={open}
                 title={scheduleData?.title || intl.formatMessage({
                     id: `scheduleDetails.notApplicable`,

@@ -14,7 +14,10 @@ import {
     isFocused,
     useWindowOnFocusChange,
 } from "@/app/utils/windowEvents";
+import HomeFunStudyIcon from "@/assets/img/schedule-icon/home_fun_study.svg";
+import StudyIcon from "@/assets/img/schedule-icon/study_icon.svg";
 import {
+    BG_AVT_ANYTIME_STUDY_DEFAULT,
     SCHEDULE_FETCH_INTERVAL_MINUTES,
     SCHEDULE_FETCH_MONTH_DIFF,
     SCHEDULE_HOME_FUN_STUDY_DISPLAY_COUNT_MAX,
@@ -22,9 +25,7 @@ import {
     SCHEDULE_PAGE_START,
     SCHEDULE_PAGINATION_DELAY,
     schedulePageWindowItemHeightToPageSize,
-    THEME_COLOR_BACKGROUND_STUDY,
-    THEME_COLOR_HOME_FUN_STUDY,
-    THEME_COLOR_SECONDARY_DEFAULT,
+    THEME_COLOR_BACKGROUND_LIST,
 } from "@/config";
 import { fromSecondsToMilliseconds } from "@/utils/utils";
 import {
@@ -40,8 +41,6 @@ import {
     makeStyles,
     Typography,
 } from "@material-ui/core";
-import { Star as HomeFunStudyIcon } from "@styled-icons/fa-solid/Star";
-import { Book as StudyIcon } from "@styled-icons/fluentui-system-filled/Book";
 import { ChevronRight } from "@styled-icons/material";
 import {
     clamp,
@@ -64,13 +63,9 @@ import { useHistory } from "react-router";
 const useStyles = makeStyles((theme) => createStyles({
     listRoot: {
         width: `100%`,
-        backgroundColor: theme.palette.background.paper,
+        backgroundColor: THEME_COLOR_BACKGROUND_LIST,
         overflowY: `scroll`,
         flex: 1,
-    },
-    listItemTextPrimary: {
-        color: `#0C3680`,
-        fontWeight: theme.typography.fontWeightBold as number,
     },
     listSection: {
         backgroundColor: `inherit`,
@@ -83,15 +78,12 @@ const useStyles = makeStyles((theme) => createStyles({
         color: `#5DBD3B`,
     },
     anytimeStudyAvatar: {
-        backgroundColor: THEME_COLOR_SECONDARY_DEFAULT,
+        backgroundColor: BG_AVT_ANYTIME_STUDY_DEFAULT,
         color: theme.palette.common.white,
     },
 }));
 
-interface Props {
-}
-
-export default function StudyScheduleList (props: Props) {
+export default function StudyScheduleList () {
     const classes = useStyles();
     const intl = useIntl();
     const history = useHistory();
@@ -225,6 +217,7 @@ export default function StudyScheduleList (props: Props) {
                 className={classes.listRoot}
             >
                 <ScheduleListItem
+                    isAnytimeStudy
                     leading={(
                         <Avatar className={classes.anytimeStudyAvatar}>
                             {isAnytimeSchedulesFetching
@@ -252,10 +245,11 @@ export default function StudyScheduleList (props: Props) {
                             {studySchedulesSection.schedules.map((studySchedule) => (
                                 <ScheduleListItem
                                     key={studySchedule.id}
+                                    isStudySchedule
                                     leading={(
                                         <ListItemAvatar
-                                            src={studySchedule.is_home_fun ? <HomeFunStudyIcon /> : <StudyIcon />}
-                                            color={studySchedule.is_home_fun ? THEME_COLOR_HOME_FUN_STUDY : THEME_COLOR_BACKGROUND_STUDY}
+                                            imgType
+                                            src={studySchedule.is_home_fun ? HomeFunStudyIcon : StudyIcon}
                                         />
                                     )}
                                     title={studySchedule.title}

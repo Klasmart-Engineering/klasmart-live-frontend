@@ -1,4 +1,8 @@
 import {
+    TEXT_COLOR_LIVE_PRIMARY,
+    TEXT_COLOR_STUDY_PRIMARY,
+} from "@/config";
+import {
     createStyles,
     ListItem,
     ListItemAvatar,
@@ -11,15 +15,36 @@ import clsx from "clsx";
 import React from "react";
 
 const useStyles = makeStyles((theme) => createStyles({
+    listItemRoot: {
+        width: `auto`,
+        margin: `24px 16px`,
+        borderRadius: 10,
+        backgroundColor: theme.palette.background.paper,
+        '&:last-child':{
+            marginBottom: 0,
+        },
+        '&:first-child':{
+            marginTop: theme.spacing(2),
+        },
+        "&:hover ": {
+            background: theme.palette.background.paper,
+        },
+    },
     listItemSecondAction: {
         paddingRight: `6rem`,
     },
-    listItemTextPrimary: {
-        color: `#0C3680`,
+    listItemText: {
         fontWeight: theme.typography.fontWeightBold as number,
+    },
+    listItemTextLivePrimary: {
+        color: TEXT_COLOR_LIVE_PRIMARY,
+    },
+    listItemTextStudyPrimary: {
+        color: TEXT_COLOR_STUDY_PRIMARY,
     },
     listItemTrailing: {
         pointerEvents: `none`,
+        right: 40,
     },
 }));
 
@@ -29,6 +54,8 @@ export interface Props {
     subtitle?: string;
     trailing?: React.ReactNode;
     onClick?: () => void | Promise<void>;
+    isStudySchedule?: boolean;
+    isAnytimeStudy?: boolean;
 }
 
 export default function ScheduleListItem (props: Props) {
@@ -38,13 +65,15 @@ export default function ScheduleListItem (props: Props) {
         subtitle,
         trailing,
         onClick,
+        isStudySchedule,
+        isAnytimeStudy,
     } = props;
     const classes = useStyles();
 
     return (
         <ListItem
             button
-            className={clsx({
+            className={clsx(classes.listItemRoot, {
                 [classes.listItemSecondAction]: !!trailing,
             })}
             onClick={onClick}
@@ -55,7 +84,10 @@ export default function ScheduleListItem (props: Props) {
                 primary={(
                     <Typography
                         variant="body1"
-                        className={classes.listItemTextPrimary}
+                        className={clsx(classes.listItemText, {
+                            [classes.listItemTextLivePrimary]: !isAnytimeStudy,
+                            [classes.listItemTextStudyPrimary]: isStudySchedule,
+                        })}
                     >
                         {title}
                     </Typography>

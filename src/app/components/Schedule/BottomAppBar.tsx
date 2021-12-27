@@ -3,18 +3,21 @@ import {
     ScheduleAppBarItem,
     useScheduleTab,
 } from "@/app/model/scheduleModel";
+import LiveIcon from "@/assets/img/schedule-icon/tab_live_icon.svg";
+import StudyIcon from "@/assets/img/schedule-icon/tab_study_icon.svg";
 import {
     createStyles,
     Grid,
     makeStyles,
 } from "@material-ui/core";
-import { Video as LiveIcon } from "@styled-icons/fa-solid/Video";
-import { Book as StudyIcon } from "@styled-icons/fluentui-system-filled/Book";
 import React from "react";
 
 const useStyles = makeStyles((theme) => createStyles({
     root: {
         borderTop: `1px solid ${theme.palette.divider}`,
+    },
+    icon: {
+        marginTop: theme.spacing(1),
     },
 }));
 
@@ -39,8 +42,14 @@ export default function ScheduleBottomAppBar () {
             >
                 <BottomNavigationButton
                     title={`schedule_liveTab`}
+                    type="live"
                     active={selectedItem === ScheduleAppBarItem.LIVE}
-                    icon={<LiveIcon size="1.5rem" />}
+                    icon={
+                        <img
+                            alt="Live Icon"
+                            src={LiveIcon}
+                            className={classes.icon}
+                        />}
                     data-testid={`${ScheduleAppBarItem.LIVE}-container`}
                     onClick={() => setSelectedItem(ScheduleAppBarItem.LIVE)}
 
@@ -53,8 +62,13 @@ export default function ScheduleBottomAppBar () {
             >
                 <BottomNavigationButton
                     title={`schedule_studyTab`}
+                    type="study"
                     active={selectedItem === ScheduleAppBarItem.STUDY}
-                    icon={<StudyIcon size="1.5rem" />}
+                    icon={ <img
+                        alt="Study Icon"
+                        src={StudyIcon}
+                        className={classes.icon}
+                    />}
                     data-testid={ScheduleAppBarItem.STUDY}
                     onClick={() => setSelectedItem(ScheduleAppBarItem.STUDY)}
                 />

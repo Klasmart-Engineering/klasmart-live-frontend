@@ -1,13 +1,12 @@
 import { IntlShape } from "react-intl";
 
 export function formatDueDateMillis (dueDateMillis: number, intl: IntlShape) {
-    const time = intl.formatTime(dueDateMillis);
     const date = intl.formatDate(dueDateMillis, {
         day: `numeric`,
         month: `long`,
         weekday: `long`,
     });
-    return `${time}, ${date}`;
+    return `${date}`;
 }
 
 export function formatStartEndDateTimeMillis (startTimeMillis: number, endTimeMillis: number, intl: IntlShape) {
