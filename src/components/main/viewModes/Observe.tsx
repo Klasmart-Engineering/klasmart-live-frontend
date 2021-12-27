@@ -30,6 +30,7 @@ import React,
 } from "react";
 import { useIntl } from "react-intl";
 import { useRecoilValue } from "recoil";
+import {useInViewport} from "react-in-viewport";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -192,6 +193,7 @@ function StudentPreviewCard ({ session }: { session: Session }) {
     const cardConRef = useRef<HTMLDivElement>(null);
     const [ loadingStreamId, setLoadingStreamId ] = useState<boolean>(true);
     const isShowContentLoading = useRecoilValue(isShowContentLoadingState);
+    const {inViewport} = useInViewport(cardConRef);
 
     const filterGroups = useMemo(() => {
         return [ session.id ];
@@ -232,7 +234,9 @@ function StudentPreviewCard ({ session }: { session: Session }) {
                         <PreviewPlayer
                             loadingStreamId={loadingStreamId}
                             container={`observe:${session.streamId}`}
-                            streamId={session?.streamId} />
+                            streamId={session?.streamId}
+                            inViewport={inViewport}
+                        />
                     </div>
                 </> :
                 <div className={classes.centerContent}>
