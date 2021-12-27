@@ -26,6 +26,8 @@ import {
     activeTabState,
     hasControlsState,
     interactiveModeState,
+    isActiveGlobalMuteAudioState,
+    isActiveGlobalMuteVideoState,
     isActiveGlobalScreenshareState,
     isCanvasOpenState,
     isChatOpenState,
@@ -35,6 +37,7 @@ import {
     isViewModesOpenState,
     unreadMessagesState,
 } from "@/store/layoutAtoms";
+import { sleep } from "@/utils/utils";
 import { useSynchronizedState } from "@/whiteboard/context-providers/SynchronizedStateProvider";
 import {
     Grid,
@@ -65,6 +68,7 @@ import { useIntl } from "react-intl";
 import {
     useRecoilState,
     useRecoilValue,
+    useSetRecoilState,
 } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -144,8 +148,8 @@ function Toolbar () {
     const [ camOn, setCamOn ] = useState<boolean>(true);
     const [ micOn, setMicOn ] = useState<boolean>(true);
 
-    const camOnRef = React.useRef<any>(null);
-    const micOnRef = React.useRef<any>(null);
+    const [ micMuteCurrent, setMicMuteCurrent ] = useRecoilState(isActiveGlobalMuteAudioState);
+    const [ camMuteCurrent, setCamMuteCurrent ] = useRecoilState(isActiveGlobalMuteVideoState);
 
     const resetDrawers = () => {
         setIsGlobalActionsOpen(false);
@@ -189,17 +193,26 @@ function Toolbar () {
     }
 
     async function setCurrentOutboundAudioState () {
-        if (micOnRef.current !== null) {
-            await setOutboundAudioState(micOnRef.current);
-            micOnRef.current = null;
+        if (micMuteCurrent === false) {
+            //wait for update from UI
+            await sleep(300);
+            await setOutboundAudioState(false);
         }
+        setMicMuteCurrent(null);
     }
 
     async function setCurrentOutboundVideoState () {
-        if (camOnRef.current !== null) {
-            await setOutboundVideoState(camOnRef.current);
-            camOnRef.current = null;
+        if (camMuteCurrent === false) {
+            await setOutboundVideoState(false);
         }
+        setCamMuteCurrent(null);
+    }
+
+    async function resetOutboundVideoStateBackground () {
+        await setOutboundAudioState(true);
+        await setOutboundVideoState(true);
+        setCurrentOutboundAudioState();
+        setCurrentOutboundVideoState();
     }
 
     function endCall () {
@@ -227,13 +240,24 @@ function Toolbar () {
 
     async function onPauseStateChanged (isPaused: boolean) {
         if (isPaused) {
-            micOnRef.current = micOn;
-            camOnRef.current = camOn;
+            setMicMuteCurrent(micOn);
+            setCamMuteCurrent(camOn);
             await setOutboundAudioState(false);
             await setOutboundVideoState(false);
-        }else{
-            setCurrentOutboundAudioState();
-            setCurrentOutboundVideoState();
+        } else {
+            //Check stream of producer is connected successfully
+            let countInterval = 0;
+            const interval = setInterval(() => {
+                if (webrtc.isConnectedTransmitStream()) {
+                    resetOutboundVideoStateBackground();
+                    clearInterval(interval);
+                } else {
+                    countInterval++;
+                    if (countInterval >= 10) {
+                        clearInterval(interval);
+                    }
+                }
+            }, 1000);
         }
     }
 
@@ -301,7 +325,7 @@ function Toolbar () {
                     className={classes.iconGroup}>
                     <ToolbarItemMicrophone
                         // locked={}
-                        active={micOnRef.current === null ? micOn : micOnRef.current}
+                        active={micMuteCurrent === null ? micOn : micMuteCurrent}
                         // tooltip={user.isTeacherAudioMuted ? intl.formatMessage({
                         //     id: `toolbar_microphonelocked`,
                         // }) : undefined}
@@ -317,7 +341,7 @@ function Toolbar () {
                     />
                     <ToolbarItemCamera
                         // locked={videoGloballyMuted}
-                        active={camOnRef.current === null ? camOn : camOnRef.current}
+                        active={camMuteCurrent === null ? camOn : camMuteCurrent}
                         // tooltip={videoGloballyMutedState ? intl.formatMessage({
                         //     id: `toolbar_camera_locked`,
                         // }) : undefined}

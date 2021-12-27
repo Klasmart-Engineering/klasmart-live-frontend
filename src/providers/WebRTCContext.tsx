@@ -1,6 +1,5 @@
 import { useConferenceContext } from "./room/conferenceContext";
 import { useSessionContext } from "./session-context";
-import useCordovaObservePause from "@/app/platform/cordova-observe-pause";
 import { useConsumerMutation } from "@/data/sfu/mutations/useConsumerMutation";
 import { useProducerMutation } from "@/data/sfu/mutations/useProducerMutation";
 import { useSendRtpCapabilitiesMutation } from "@/data/sfu/mutations/useSendRtpCapabilitiesMutation";
@@ -9,6 +8,10 @@ import { useTransportMutation } from "@/data/sfu/mutations/useTransportMutation"
 import { useIndividualMuteQuery } from "@/data/sfu/queries/useIndividualMuteQuery";
 import { useMediaSubscription } from "@/data/sfu/subscriptions/useMediaSubscription";
 import { Resolver } from "@/resolver";
+import {
+    isActiveGlobalMuteAudioState,
+    isActiveGlobalMuteVideoState,
+} from "@/store/layoutAtoms";
 import {
     Device,
     types as MediaSoup,
@@ -24,6 +27,7 @@ import React,
     useEffect,
     useState,
 } from "react";
+import { useRecoilValue } from "recoil";
 
 const Callstats: any = require(`callstats-js/callstats.min`);
 const callstats = process.env.CALLSTATS_ENABLE === `TRUE` ? new Callstats() : undefined;
@@ -43,6 +47,7 @@ export interface WebRTCContextInterface {
     toggleLocalVideo: (id?: string) => void;
     isVideoDisabledLocally: (id?: string) => boolean;
     inboundStreams: Map<string, StreamDescription>;
+    isConnectedTransmitStream: () => boolean;
 }
 
 const defaultWebRTCContext = {
@@ -59,6 +64,7 @@ const defaultWebRTCContext = {
     enableVideoByProducer: () => { return; },
     toggleLocalVideo: () => { return; },
     isVideoDisabledLocally: () => false,
+    isConnectedTransmitStream: () => false,
     inboundStreams: new Map<string, StreamDescription>(),
 };
 
@@ -86,7 +92,10 @@ export const WebRTCProvider = (props: { children: React.ReactNode }) => {
     const [ outboundStreams, setOutboundStreams ] = useState<Map<string, Stream>>(new Map<string, Stream>());
     const [ destructors, setDestructors ] = useState<Map<string, () => any>>(new Map<string, () => any>());
     const [ muteStatuses, setMuteStatuses ] = useState<Map<string, MuteNotification>>(new Map<string, MuteNotification>());
-    const statusPauseRef = React.useRef<boolean>(false);
+
+    const micMuteCurrent = useRecoilValue(isActiveGlobalMuteAudioState);
+    const camMuteCurrent = useRecoilValue(isActiveGlobalMuteVideoState);
+    const statusProducer = React.useRef<boolean>(false);
 
     const [ rtpCapabilitiesMutation ] = useSendRtpCapabilitiesMutation();
     const [ transportMutation ] = useTransportMutation();
@@ -108,6 +117,7 @@ export const WebRTCProvider = (props: { children: React.ReactNode }) => {
     };
 
     const transmitStream = async (id: string, stream: MediaStream, simulcast = true): Promise<MediaSoup.Producer[]> => {
+        statusProducer.current = false;
         console.log(`Transmit ${id}`);
         const transport = await initProducerTransport();
         console.log(`Transport`);
@@ -205,8 +215,8 @@ export const WebRTCProvider = (props: { children: React.ReactNode }) => {
         setOutboundStreams(new Map(outboundStreams.set(id, {
             id,
             producers,
-            audioEnabledByProducer: true,
-            videoEnabledByProducer: true,
+            audioEnabledByProducer: micMuteCurrent === null ? true : micMuteCurrent,
+            videoEnabledByProducer: camMuteCurrent === null ? true : camMuteCurrent,
         })));
         const producerIds = producers.map(producer => producer.id);
         console.log(`Stream()(${producerIds})`);
@@ -220,6 +230,7 @@ export const WebRTCProvider = (props: { children: React.ReactNode }) => {
             throw errors;
         }
         console.log(`Got stream`);
+        statusProducer.current = true;
         return producers;
     };
 
@@ -387,6 +398,10 @@ export const WebRTCProvider = (props: { children: React.ReactNode }) => {
             return false;
         }
         return stream.videoDisabledLocally;
+    };
+
+    const isConnectedTransmitStream = (): boolean => {
+        return statusProducer.current;
     };
 
     const initDevice = async () => {
@@ -664,6 +679,7 @@ export const WebRTCProvider = (props: { children: React.ReactNode }) => {
         if (muteNotification.audio && !isAudioEnabledByProducer(muteNotification.sessionId)) {
             toggleAudioByProducer(muteNotification.sessionId);
         } else if (muteNotification.audio === false && isAudioEnabledByProducer(muteNotification.sessionId)) {
+            statusProducer.current = false;
             toggleAudioByProducer(muteNotification.sessionId);
         }
         if (muteNotification.video && !isVideoEnabledByProducer(muteNotification.sessionId)) {
@@ -702,6 +718,7 @@ export const WebRTCProvider = (props: { children: React.ReactNode }) => {
         toggleLocalVideo,
         isVideoDisabledLocally,
         inboundStreams,
+        isConnectedTransmitStream,
     };
 
     useMediaSubscription({
@@ -745,6 +762,11 @@ export const WebRTCProvider = (props: { children: React.ReactNode }) => {
         },
     });
 
+    const getTransmitStream = async (camera: MediaStream, useSimulcast: boolean) => {
+        const promise = await transmitStream(`camera`, camera, useSimulcast);
+        return promise;
+    };
+
     useEffect(() => {
         if (process.env.CALLSTATS_ENABLE !== `TRUE` || !callstats) {
             return;
@@ -753,16 +775,11 @@ export const WebRTCProvider = (props: { children: React.ReactNode }) => {
     }, [ name, localSessionId ]);
 
     useEffect(() => {
-        //if from background dont need app connect new stream
-        if (!camera || statusPauseRef.current) {
-            if (statusPauseRef.current) {
-                statusPauseRef.current = false;
-            }
-
+        if (!camera) {
             return;
         }
         const useSimulcast = isTeacher;
-        const promise = transmitStream(`camera`, camera, useSimulcast);
+        const promise = getTransmitStream(camera, useSimulcast);
         return () => {
             promise.then((producers) => producers.forEach(producer => {
                 if (producer) {
@@ -771,14 +788,6 @@ export const WebRTCProvider = (props: { children: React.ReactNode }) => {
             }));
         };
     }, [ camera, producerTransport ]);
-
-    function onPauseStateChanged (isPaused: boolean) {
-        if (!isPaused) {
-            statusPauseRef.current = true;
-        }
-    }
-
-    useCordovaObservePause(onPauseStateChanged);
 
     const syncMuteStatuses = async () => {
         const { data } = await refetch();

@@ -7,6 +7,7 @@ import { Session } from "@/pages/utils";
 import { useCameraContext } from "@/providers/Camera";
 import { useSessionContext } from "@/providers/session-context";
 import { WebRTCContext } from "@/providers/WebRTCContext";
+import { isActiveGlobalMuteVideoState } from "@/store/layoutAtoms";
 import {
     Grid,
     makeStyles,
@@ -22,6 +23,7 @@ import React,
     useRef,
     useState,
 } from "react";
+import { useRecoilValue } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -84,6 +86,8 @@ const UserCamera =  ({
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
 
+    const camMuteCurrent = useRecoilValue(isActiveGlobalMuteVideoState);
+
     const [ camOn, setCamOn ] = useState(true);
     const { cameraStream } = useCameraContext();
     const {
@@ -124,7 +128,11 @@ const UserCamera =  ({
     ]);
 
     useEffect(() => {
-        setCamOn(webrtc.isVideoEnabledByProducer(user.id) && !webrtc.isVideoDisabledLocally(user.id));
+        if (camMuteCurrent !== null) {
+            setCamOn(camMuteCurrent);
+        } else {
+            setCamOn(webrtc.isVideoEnabledByProducer(user.id) && !webrtc.isVideoDisabledLocally(user.id));
+        }
     }, [ webrtc.isVideoEnabledByProducer(user.id), webrtc.isVideoDisabledLocally(user.id) ]);
 
     return (
