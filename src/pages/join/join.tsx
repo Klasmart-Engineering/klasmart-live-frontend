@@ -44,6 +44,7 @@ import Typography from "@material-ui/core/Typography";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { InfoCircle as InfoCircleIcon } from "@styled-icons/boxicons-solid/InfoCircle";
 import clsx from "clsx";
+import Cookies from "js-cookie";
 import React,
 {
     useEffect,
@@ -160,6 +161,9 @@ export default function Join (): JSX.Element {
         name,
         isTeacher,
         organizationId,
+        user_id,
+        roomId,
+        sessionId,
     } = useSessionContext();
 
     const [ dialogOpen, setDialogOpen ] = useState<boolean>(false);
@@ -196,6 +200,8 @@ export default function Join (): JSX.Element {
     };
 
     useEffect(() => {
+        Cookies.set(`roomUserId`, `${roomId}:${user_id}`); // Used to cache H5P answers (H5P-342)
+
         setIsListeningOnDeviceChange(true);
         return () => setIsListeningOnDeviceChange(false);
     }, []);

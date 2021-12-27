@@ -24,6 +24,7 @@ export interface ISessionContext {
     name?: string;
     token?: string;
     camera?: MediaStream;
+    user_id?: string;
     setName: React.Dispatch<React.SetStateAction<string | undefined>>;
     setToken: React.Dispatch<React.SetStateAction<string | undefined>>;
     setCamera: React.Dispatch<React.SetStateAction<MediaStream | undefined>>;
@@ -40,6 +41,7 @@ const SessionContext = createContext<ISessionContext>({
     organizationId: ``,
     scheduleId: ``,
     classType: ``,
+    user_id: ``,
 });
 
 type Props = {
@@ -70,6 +72,7 @@ export function SessionContextProvider ({ children, sessionId }: Props) {
             organizationId: ``,
             scheduleId: ``,
             classType: `live`,
+            user_id: ``,
         };
 
         if (params) {
@@ -80,6 +83,7 @@ export function SessionContextProvider ({ children, sessionId }: Props) {
                 organizationId: params.org_id,
                 classType: params.classtype,
                 scheduleId: params.schedule_id,
+                user_id: params.user_id,
             };
         }
 
