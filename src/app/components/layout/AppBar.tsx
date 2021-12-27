@@ -96,20 +96,6 @@ export default function AppBar (props: Props) {
                     </Grid>
                 </Toolbar>
             </MUIAppBar>
-            {title && (
-                <Grid
-                    item
-                    xs={12}
-                    className={classes.title}
-                >
-                    <Typography
-                        variant="h4"
-                        align="center"
-                    >
-                        {title}
-                    </Typography>
-                </Grid>
-            )}
         </div>
     );
 }

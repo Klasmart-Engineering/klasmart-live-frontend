@@ -16,6 +16,9 @@ import {
     isFocused,
     useWindowOnFocusChange,
 } from "@/app/utils/windowEvents";
+import backgroundStudy from "@/assets/img/background/background_study.jpg";
+import NoSchedule from "@/assets/img/icon_no_schedule.svg";
+import NoScheduleTip from "@/assets/img/icon_no_schedule_tip.svg";
 import LiveIcon from "@/assets/img/schedule-icon/live_icon.svg";
 import {
     SCHEDULE_FETCH_INTERVAL_MINUTES,
@@ -24,6 +27,8 @@ import {
     SCHEDULE_PAGE_START,
     SCHEDULE_PAGINATION_DELAY,
     schedulePageWindowItemHeightToPageSize,
+    TEXT_COLOR_LIVE_PRIMARY,
+    THEME_COLOR_BACKGROUND_BLUE,
     THEME_COLOR_BACKGROUND_LIST,
     THEME_COLOR_SECONDARY_DEFAULT,
 } from "@/config";
@@ -36,6 +41,7 @@ import {
     Box,
     CircularProgress,
     createStyles,
+    Grid,
     List,
     makeStyles,
     Typography,
@@ -56,7 +62,7 @@ import {
     useIntl,
 } from "react-intl";
 
-const useStyles = makeStyles(() => createStyles({
+const useStyles = makeStyles((theme) => createStyles({
     listRoot: {
         width: `100%`,
         backgroundColor: THEME_COLOR_BACKGROUND_LIST,
@@ -69,6 +75,40 @@ const useStyles = makeStyles(() => createStyles({
     ul: {
         backgroundColor: `inherit`,
         padding: 0,
+    },
+    noScheduleContainer: {
+        position: `relative`,
+    },
+    noScheduleText: {
+        display: `flex`,
+        alignItems: `center`,
+        justifyContent: `center`,
+        width: `30%`,
+        backgroundColor: THEME_COLOR_BACKGROUND_BLUE,
+        color: TEXT_COLOR_LIVE_PRIMARY,
+        borderRadius: 25,
+        bottom: 10,
+        position: `relative`,
+        padding: `10px 20px`,
+        "&:after": {
+            content: `''`,
+            position: `absolute`,
+            width: 30,
+            height: 30,
+            backgroundImage: `url(${NoScheduleTip})`,
+            backgroundRepeat: `no-repeat`,
+            bottom: -25,
+            marginLeft: theme.spacing(3),
+        },
+        [theme.breakpoints.down(`xs`)]: {
+            width: `60%`,
+        },
+    },
+    noScheduleImage: {
+        width: `70%`,
+        [theme.breakpoints.down(`xs`)]: {
+            width: `100%`,
+        },
     },
 }));
 
@@ -186,13 +226,36 @@ export default function LiveScheduleList () {
     if (!items.length) {
         if (isSchedulesFetching) return <ScheduleLoading />;
         return (
-            <Typography
-                variant="body2"
-                color="textSecondary"
-                align="center"
-            >
-                <FormattedMessage id="schedule_liveNoSchedule" />
-            </Typography>
+            <Grid
+                container
+                className={classes.noScheduleContainer}
+                alignItems="center"
+                justifyContent="center"
+                direction="column">
+                <Grid
+                    item
+                    className={classes.noScheduleText}>
+                    <Typography
+                        style={{
+                            fontWeight: 700,
+                            width: `90%`,
+                        }}
+                        variant="h5"
+                        align="center"
+                    >
+                        <FormattedMessage id="schedule_liveNoSchedule" />
+                    </Typography>
+                </Grid>
+                <Grid
+                    item
+                    className={classes.noScheduleImage}
+                >
+                    <img
+                        alt="No Schedule"
+                        src={NoSchedule}
+                    />
+                </Grid>
+            </Grid>
         );
     }
 

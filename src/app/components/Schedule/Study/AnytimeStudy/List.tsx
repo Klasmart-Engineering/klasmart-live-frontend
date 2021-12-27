@@ -14,14 +14,18 @@ import {
     isFocused,
     useWindowOnFocusChange,
 } from "@/app/utils/windowEvents";
+import NoHomework from "@/assets/img/icon_no_homework.svg";
+import NoHomeworkTip from "@/assets/img/icon_no_homework_tip.svg";
 import HomeFunStudyIcon from "@/assets/img/schedule-icon/home_fun_study.svg";
 import StudyIcon from "@/assets/img/schedule-icon/study_icon.svg";
 import {
+    BG_BUTTON_STUDY_COLOR,
     SCHEDULE_FETCH_INTERVAL_MINUTES,
     SCHEDULE_PAGE_ITEM_HEIGHT_MIN,
     SCHEDULE_PAGE_START,
     SCHEDULE_PAGINATION_DELAY,
     schedulePageWindowItemHeightToPageSize,
+    TEXT_COLOR_STUDY_PRIMARY,
     THEME_COLOR_BACKGROUND_LIST,
 } from "@/config";
 import {
@@ -32,6 +36,7 @@ import {
     Box,
     CircularProgress,
     createStyles,
+    Grid,
     List,
     makeStyles,
     Typography,
@@ -52,7 +57,7 @@ import {
     useIntl,
 } from "react-intl";
 
-const useStyles = makeStyles(() => createStyles({
+const useStyles = makeStyles((theme) => createStyles({
     listRoot: {
         width: `100%`,
         backgroundColor: THEME_COLOR_BACKGROUND_LIST,
@@ -65,6 +70,40 @@ const useStyles = makeStyles(() => createStyles({
     ul: {
         backgroundColor: `inherit`,
         padding: 0,
+    },
+    noHomeworkContainer: {
+        position: `relative`,
+    },
+    noHomeworkText: {
+        display: `flex`,
+        alignItems: `center`,
+        justifyContent: `center`,
+        width: `30%`,
+        backgroundColor: BG_BUTTON_STUDY_COLOR,
+        color: TEXT_COLOR_STUDY_PRIMARY,
+        borderRadius: 25,
+        bottom: 10,
+        position: `relative`,
+        padding: `10px 20px`,
+        "&:after": {
+            content: `''`,
+            position: `absolute`,
+            width: 30,
+            height: 30,
+            backgroundImage: `url(${NoHomeworkTip})`,
+            backgroundRepeat: `no-repeat`,
+            bottom: -25,
+            marginLeft: theme.spacing(2),
+        },
+        [theme.breakpoints.down(`xs`)]: {
+            width: `60%`,
+        },
+    },
+    noHomeworkImage: {
+        width: `60%`,
+        [theme.breakpoints.down(`xs`)]: {
+            width: `100%`,
+        },
     },
 }));
 
@@ -148,13 +187,36 @@ export default function AnytimeStudyScheduleList () {
     if (!items.length) {
         if (isSchedulesFetching) return <ScheduleLoading />;
         return (
-            <Typography
-                variant="body2"
-                color="textSecondary"
-                align="center"
-            >
-                <FormattedMessage id="schedule_studyNoSchedule" />
-            </Typography>
+            <Grid
+                container
+                className={classes.noHomeworkContainer}
+                alignItems="center"
+                justifyContent="center"
+                direction="column">
+                <Grid
+                    item
+                    className={classes.noHomeworkText}>
+                    <Typography
+                        style={{
+                            fontWeight: 700,
+                            width: `90%`,
+                        }}
+                        variant="h5"
+                        align="center"
+                    >
+                        <FormattedMessage id="schedule_studyNoSchedule" />
+                    </Typography>
+                </Grid>
+                <Grid
+                    item
+                    className={classes.noHomeworkImage}
+                >
+                    <img
+                        alt="No Homework"
+                        src={NoHomework}
+                    />
+                </Grid>
+            </Grid>
         );
     }
 
