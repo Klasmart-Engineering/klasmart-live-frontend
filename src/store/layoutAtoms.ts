@@ -75,13 +75,13 @@ export const isActiveGlobalCanvasState = atom({
     key: `isActiveGlobalCanvasState`,
     default: false,
 });
-export const isActiveGlobalMuteAudioState = atom<boolean>({
+export const isActiveGlobalMuteAudioState = atom<any>({
     key: `isActiveGlobalMuteAudioState`,
-    default: false,
+    default: null,
 });
-export const isActiveGlobalMuteVideoState = atom<boolean>({
+export const isActiveGlobalMuteVideoState = atom<any>({
     key: `isActiveGlobalMuteVideoState`,
-    default: false,
+    default: null,
 });
 
 export const interactiveModeState = atom<InteractiveMode>({

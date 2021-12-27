@@ -1,6 +1,7 @@
 import { Session } from "@/pages/utils";
 import { useSessionContext } from "@/providers/session-context";
 import { WebRTCContext } from "@/providers/WebRTCContext";
+import { isActiveGlobalMuteAudioState } from "@/store/layoutAtoms";
 import {
     makeStyles,
     Theme,
@@ -18,6 +19,7 @@ import React,
     useState,
 } from "react";
 import { FormattedMessage } from "react-intl";
+import { useRecoilValue } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -155,10 +157,15 @@ function UserCameraDetails (props: UserCameraDetailsType) {
     } = props;
     const classes = useStyles();
     const [ micOn, setMicOn ] = useState(true);
+    const micMuteCurrent = useRecoilValue(isActiveGlobalMuteAudioState);
     const webrtc = useContext(WebRTCContext);
 
     useEffect(() => {
-        setMicOn(webrtc.isAudioEnabledByProducer(user.id) && !webrtc.isAudioDisabledLocally(user.id));
+        if (micMuteCurrent !== null) {
+            setMicOn(micMuteCurrent);
+        } else {
+            setMicOn(webrtc.isAudioEnabledByProducer(user.id) && !webrtc.isAudioDisabledLocally(user.id));
+        }
     }, [ webrtc.isAudioEnabledByProducer(user.id), webrtc.isAudioDisabledLocally(user.id) ]);
 
     return (
