@@ -101,7 +101,10 @@ export default function AttachmentDownloadButton (props: Props) {
                 if (isIOS) await handleDownloadForIOS(resourceBlob, attachmentName, shareFile);
                 else await handleDownloadForAndroid(resourceBlob, attachmentName);
             } catch (error: any) {
-                enqueueSnackbar(error.body ?? error.message, {
+                enqueueSnackbar(intl.formatMessage({
+                    id: `scheduleDetails.error.downloadFail`,
+                    defaultMessage: error.body ?? error.message,
+                }), {
                     variant: `error`,
                     anchorOrigin: {
                         vertical: `bottom`,
