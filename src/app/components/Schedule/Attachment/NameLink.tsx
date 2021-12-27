@@ -73,7 +73,10 @@ export default function AttachmentNameLink (props: Props) {
             previewAnyFile.previewPath((result: string) => {
                 console.log(`file preview finalized: `, result);
             }, (error: any) => {
-                enqueueSnackbar(error.message, {
+                enqueueSnackbar(intl.formatMessage({
+                    id: `scheduleDetails.error.downloadFail`,
+                    defaultMessage: error.message,
+                }), {
                     variant: `error`,
                     anchorOrigin: {
                         vertical: `bottom`,
@@ -82,7 +85,10 @@ export default function AttachmentNameLink (props: Props) {
                 });
             }, filePath);
         } catch (error: any) {
-            enqueueSnackbar(error.body ?? error.message, {
+            enqueueSnackbar(intl.formatMessage({
+                id: `scheduleDetails.error.downloadFail`,
+                defaultMessage: error.body ?? error.message,
+            }), {
                 variant: `error`,
                 anchorOrigin: {
                     vertical: `bottom`,
