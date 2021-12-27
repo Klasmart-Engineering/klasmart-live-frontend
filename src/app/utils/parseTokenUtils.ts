@@ -16,6 +16,7 @@ type TokenDto = {
     org_id?: string;
     schedule_id?: string;
     materials: MaterialDto[];
+    user_id: string;
 }
 
 const url = new URL(window.location.href);
@@ -95,6 +96,7 @@ function parseParamsFromUrlQuery () {
         org_id: url.searchParams.get(`org_id`) || ``,
         schedule_id: url.searchParams.get(`schedule_id`) || ``,
         classtype: url.searchParams.get(`classtype`) || `live`,
+        user_id: url.searchParams.get(`user_id`) || ``,
     };
 }
 
@@ -140,6 +142,7 @@ function parseParamsFromToken (token?: string) {
             name: payload.name ? String(payload.name) : undefined,
             roomId: String(payload.roomid),
             materials: parsedMaterials || [],
+            user_id: String(payload.user_id) || ``,
         };
         // eslint-disable-next-line no-empty
     } catch (e) {
