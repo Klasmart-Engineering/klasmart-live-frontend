@@ -17,12 +17,15 @@ import { HomeFunStudyDialog } from "./dialogs/home-fun-study/homeFunStudyDialog"
 import {
     dialogsState,
     shouldShowNoOrgProfileState,
+    shouldShowNoStudentRoleState,
 } from "./model/appModel";
 import { Auth } from "./pages/account/auth";
-import { NoOrgDialog } from "./pages/no-organization/noOrgDialog";
+import { NoPageFoundDialog } from "./pages/no-pages/noPageFoundDialog";
 import SchedulePage from "./pages/schedule";
 import AnytimeStudyPage from "./pages/schedule/anytime-study";
 import { UserRoute } from "./route/userRoute";
+import NoOrgFoundLogo from "@/assets/img/no_org_found_icon.svg";
+import NoStudentRoleLogo from "@/assets/img/no_student_role_icon.svg";
 import { useQueryClient } from "@kidsloop/cms-api-client";
 import Grid from "@material-ui/core/Grid";
 import React,
@@ -50,6 +53,7 @@ export function App ({ history }: {
     const { signOut } = useSignOut();
     const cmsQueryClient = useQueryClient();
     const shouldShowNoOrgProfile = useRecoilValue(shouldShowNoOrgProfileState);
+    const shouldShowNoStudentRole = useRecoilValue(shouldShowNoStudentRoleState);
 
     useEffect(() => {
         console.log({
@@ -69,6 +73,7 @@ export function App ({ history }: {
             isSelectUserOpen: shouldSelectUser,
             isSelectOrganizationOpen: !shouldSelectUser && shouldSelectOrganization,
             isShowNoOrgProfile: shouldShowNoOrgProfile,
+            isShowNoStudentRole: shouldShowNoStudentRole,
         });
     }, [
         authenticated,
@@ -76,6 +81,7 @@ export function App ({ history }: {
         shouldSelectUser,
         shouldSelectOrganization,
         shouldShowNoOrgProfile,
+        shouldShowNoStudentRole,
     ]);
 
     return (
@@ -124,7 +130,24 @@ export function App ({ history }: {
                     <HomeFunStudyDialog />
                     <SettingsDialog />
                     <SettingsLanguageDialog />
-                    <NoOrgDialog />
+                    <NoPageFoundDialog
+                        open={dialogs.isShowNoOrgProfile}
+                        title="signIn.noOrganization.title"
+                        body="signIn.noOrganization.body"
+                        imgSrc={NoOrgFoundLogo}
+                        onClose={() => setDialogs({
+                            ...dialogs,
+                            isShowNoOrgProfile: false,
+                        })} />
+                    <NoPageFoundDialog
+                        open={dialogs.isShowNoStudentRole}
+                        title="signIn.noStudentProfile.title"
+                        body="signIn.noStudentProfile.body"
+                        imgSrc={NoStudentRoleLogo}
+                        onClose={() => setDialogs({
+                            ...dialogs,
+                            isShowNoStudentRole: false,
+                        })} />
                 </>
             )}
             <ExternalNavigationDialog />

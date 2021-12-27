@@ -8,9 +8,14 @@ export interface ReadUserDto {
     date_of_birth?: string;
     organizationsWithPermission: {
         status: EntityStatus;
+        roles: Role[];
         organization: {
             organization_id: string;
             organization_name: string;
         };
     }[];
+}
+
+interface Role {
+    role_name: string;
 }

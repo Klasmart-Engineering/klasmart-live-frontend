@@ -6,6 +6,7 @@ import {
     useSelectedUser,
     useSetSelectedUser,
 } from "@/app/data/user/atom";
+import { ReadMyUsersDto } from "@/app/data/user/dto/readMyUsersDto";
 import { ReadUserDto } from "@/app/data/user/dto/readUserDto";
 import { useMeQuery } from "@/app/data/user/queries/meQuery";
 import { useMyUsersQuery } from "@/app/data/user/queries/myUsersQuery";
@@ -13,6 +14,7 @@ import { ParentalGate } from "@/app/dialogs/parentalGate";
 import {
     dialogsState,
     shouldShowNoOrgProfileState,
+    shouldShowNoStudentRoleState,
 } from "@/app/model/appModel";
 import { useDisplayPrivacyPolicy } from "@/app/utils/privacyPolicyUtils";
 import { useQueryClient } from "@kidsloop/cms-api-client";
@@ -61,6 +63,7 @@ export function useShouldSelectUser () {
 
     const [ shouldSelectUser, setShouldSelectUser ] = useState<boolean>(false);
     const setShouldShowNoOrgProfile = useSetRecoilState(shouldShowNoOrgProfileState);
+    const setShouldShowNoStudentRole = useSetRecoilState(shouldShowNoStudentRoleState);
 
     const {
         data: meData,
@@ -76,13 +79,35 @@ export function useShouldSelectUser () {
 
     const [ selectedUser, setSelectedUser ] = useSelectedUser();
 
+    const [ filteredMyUsersData, setFilteredMyUsersData ] = useState<ReadMyUsersDto>();
+
+    useEffect(() => {
+        const filteredStudentProfiles: ReadMyUsersDto = {
+            my_users: [],
+        };
+
+        myUsersData?.my_users.map((user) => {
+            for (const organization of user.organizationsWithPermission) {
+                for (const role of organization.roles) {
+                    if (role.role_name.toLowerCase() === `student`) {
+                        filteredStudentProfiles.my_users.push(user);
+                    }
+                }
+            }
+        });
+
+        if (myUsersData) {
+            setFilteredMyUsersData(filteredStudentProfiles);
+        }
+    }, [ myUsersData ]);
+
     const selectedValidUser = useMemo(() => {
         return selectedUser &&
             meData?.me?.user_id === selectedUser.user_id &&
-            myUsersData?.my_users?.some(user => selectedUser.user_id === user.user_id);
+            filteredMyUsersData?.my_users?.some(user => selectedUser.user_id === user.user_id);
     }, [
         selectedUser,
-        myUsersData,
+        filteredMyUsersData,
         meData,
     ]);
 
@@ -126,22 +151,34 @@ export function useShouldSelectUser () {
 
     useEffect(() => {
         if (!authenticated) return;
+        if (!filteredMyUsersData) return;
         if (!myUsersData) return;
         if (loading) return;
 
         if (!selectedValidUser) {
+            if (filteredMyUsersData.my_users.length === 0 && myUsersData.my_users.length > 0) {
+                setShouldSelectUser(false);
+                setShouldShowNoStudentRole(true);
+                return;
+            } else if (myUsersData.my_users.length === 0) {
+                setShouldSelectUser(false);
+                setShouldShowNoOrgProfile(true);
+                return;
+            }
             if (myUsersData.my_users.length > 1) {
                 setShouldSelectUser(true);
                 setShouldShowNoOrgProfile(false);
+                setShouldShowNoStudentRole(false);
                 return;
             }
 
-            selectUser(myUsersData.my_users[0]);
+            selectUser(filteredMyUsersData.my_users[0]);
             setShouldSelectUser(false);
         } else {
             setShouldSelectUser(false);
         }
     }, [
+        filteredMyUsersData,
         myUsersData,
         selectedValidUser,
         authenticated,
@@ -174,6 +211,10 @@ export function SelectUserDialog () {
     const displayPrivacyPolicy = useDisplayPrivacyPolicy();
     const cmsQueryClient = useQueryClient();
 
+    const [ filteredMyUsersData, setFilteredMyUsersData ] = useState<ReadMyUsersDto>({
+        my_users: [],
+    });
+
     const selectUser = useCallback((user: ReadUserDto) => {
         cmsQueryClient.getQueryCache().clear();
         cmsQueryClient.getMutationCache().clear();
@@ -184,6 +225,20 @@ export function SelectUserDialog () {
     useEffect(() => {
         setParentalLock(false);
     }, []);
+
+    useEffect(() => {
+        myUsersData?.my_users.map((user) => {
+            for (const organization of user.organizationsWithPermission) {
+                for (const role of organization.roles) {
+                    if (role.role_name.toLowerCase() === `student`) {
+                        filteredMyUsersData.my_users.push(user);
+                    }
+                }
+            }
+        });
+
+        setFilteredMyUsersData(filteredMyUsersData);
+    }, [ myUsersData ]);
 
     if (parentalLock) {
         return <Dialog
@@ -245,7 +300,7 @@ export function SelectUserDialog () {
                     </Typography>
                 </Grid>
                 <UserList
-                    users={myUsersData?.my_users ?? []}
+                    users={filteredMyUsersData?.my_users ?? []}
                     selectedUser={meData?.me}
                     onClick={user => selectUser(user)}
                 />
