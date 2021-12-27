@@ -107,7 +107,7 @@ export function Auth ({ useInAppBrowser }: Props) {
     if (!loading && !authenticated && !completedParentalChallenge) {
         return (
             <ParentalGate
-                showHeader
+                isWelcomeScreen
                 onCompleted={() => { setCompletedParentalChallenge(true); }} />
         );
     }

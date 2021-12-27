@@ -32,3 +32,6 @@ export const BG_BUTTON_LIVE_COLOR = `#e1f2ff`;
 export const BG_BUTTON_STUDY_COLOR = `#f7e9f7`;
 export const BG_AVT_ANYTIME_STUDY_DEFAULT = `#3676ce`;
 export const THEME_COLOR_BACKGROUND_BLUE = `#e9f1f7`;
+export const THEME_COLOR_BACKGROUND_PARENTAL_LOCK = `#eefeff`;
+export const THEME_COLOR_BACKGROUND_ICON_PARENTAL_LOCK = `#f2f6fb`;
+export const THEME_COLOR_ICON_PARENTAL_LOCK = `#6599d1`;

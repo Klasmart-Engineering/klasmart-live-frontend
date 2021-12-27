@@ -3,7 +3,6 @@ import { dialogsState } from "../../model/appModel";
 import { ParentalGate } from "../parentalGate";
 import { OrganizationList } from "@/app/components/organization/organizationList";
 import { useAuthenticationContext } from "@/app/context-provider/authentication-context";
-import { useServices } from "@/app/context-provider/services-provider";
 import { useSelectedOrganization } from "@/app/data/user/atom";
 import { EntityStatus } from "@/app/data/user/dto/sharedDto";
 import { useMeQuery } from "@/app/data/user/queries/meQuery";
@@ -147,14 +146,10 @@ export function SelectOrgDialog () {
                 isParentalLockOpen: false,
             })}
         >
-            <DialogTitle
-                disableTypography
-                id="select-org-dialog"
-                className={noPadding}
-            >
-                <Header />
-            </DialogTitle>
-            <ParentalGate onCompleted={() => { displayPrivacyPolicy(); setParentalLock(false); }} />
+            <ParentalGate
+                setClosedDialog={() => setParentalLock(false)}
+                onCompleted={() => { displayPrivacyPolicy(); setParentalLock(false); }}
+            />
         </Dialog>;
     }
 

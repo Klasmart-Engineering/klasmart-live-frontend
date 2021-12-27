@@ -250,17 +250,10 @@ export function SelectUserDialog () {
                 isParentalLockOpen: false,
             })}
         >
-            <DialogTitle
-                disableTypography
-                id="select-user-dialog"
-                className={noPadding}
-            >
-                <Header />
-            </DialogTitle>
-            <ParentalGate onCompleted={() => {
-                displayPrivacyPolicy();
-                setParentalLock(false);
-            }} />
+            <ParentalGate
+                setClosedDialog={() => setParentalLock(false)}
+                onCompleted={() => { displayPrivacyPolicy(); setParentalLock(false); }}
+            />
         </Dialog>;
     }
 
