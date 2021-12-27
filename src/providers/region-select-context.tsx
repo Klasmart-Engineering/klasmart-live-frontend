@@ -1,6 +1,5 @@
-import { selectedRegionState } from "@/app/model/appModel";
-import React,
-{
+import {selectedRegionState} from "@/app/model/appModel";
+import React, {
     createContext,
     ReactChild,
     ReactChildren,
@@ -10,7 +9,8 @@ import React,
     useMemo,
     useState,
 } from "react";
-import { useRecoilState } from "recoil";
+import {useRecoilState} from "recoil";
+import {FeatureFlag} from "@/providers/feature-context";
 
 export type Service = "auth" | "live" | "cms" | "sfu" | "user" | "privacy"
 
@@ -19,6 +19,7 @@ export type Region = {
     name: string;
     development: boolean;
     services: Record<Service, string>;
+    features: FeatureFlag[];
 }
 
 export interface IRegionSelectContext {
@@ -50,6 +51,7 @@ const DefaultRegions: Region[] = [
             user: `https://api.kidsloop.live/user/`,
             privacy: `https://kidsloop.net/policies/privacy-notice`,
         },
+        features: []
     },
     {
         id: `auth.kidsloop.net`,
@@ -63,6 +65,7 @@ const DefaultRegions: Region[] = [
             user: `https://api.kidsloop.live/user/`,
             privacy: `https://kidsloop.net/policies/privacy-notice`,
         },
+        features: []
     },
     {
         id: `auth.kidsloop.co.uk`,
@@ -76,6 +79,7 @@ const DefaultRegions: Region[] = [
             user: `https://api.kidsloop.co.uk/user/`,
             privacy: `https://kidsloop.net/policies/privacy-notice`,
         },
+        features: []
     },
     {
         id: `auth.kidsloop.in`,
@@ -89,6 +93,7 @@ const DefaultRegions: Region[] = [
             user: `https://api.kidsloop.in/user/`,
             privacy: `https://kidsloop.net/policies/privacy-notice`,
         },
+        features: []
     },
     {
         id: `auth.kidsloop.id`,
@@ -102,6 +107,7 @@ const DefaultRegions: Region[] = [
             user: `https://api.kidsloop.id/user/`,
             privacy: `https://kidsloop.net/policies/privacy-notice`,
         },
+        features: []
     },
     {
         id: `auth.kidsloop.cn`,
@@ -115,6 +121,7 @@ const DefaultRegions: Region[] = [
             user: `https://api.kidsloop.cn/user/`,
             privacy: `https://kidsloop.net/policies/privacy-notice`,
         },
+        features: []
     },
     {
         id: `auth.kidsloop.vn`,
@@ -128,6 +135,7 @@ const DefaultRegions: Region[] = [
             user: `https://api.kidsloop.vn/user/`,
             privacy: `https://kidsloop.net/policies/privacy-notice`,
         },
+        features: [ FeatureFlag.ONLY_OBSERVE_IN_VIEWPORT ]
     },
     {
         id: `auth.kidsloop.lk`,
@@ -141,6 +149,7 @@ const DefaultRegions: Region[] = [
             user: `https://api.kidsloop.lk/user/`,
             privacy: `https://kidsloop.net/policies/privacy-notice`,
         },
+        features: []
     },
     {
         id: `auth.kidsloop.co.th`,
@@ -154,6 +163,7 @@ const DefaultRegions: Region[] = [
             user: `https://api.kidsloop.co.th/user/`,
             privacy: `https://kidsloop.net/policies/privacy-notice`,
         },
+        features: []
     },
     {
         id: `auth.stage.kidsloop.live`,
@@ -167,6 +177,7 @@ const DefaultRegions: Region[] = [
             user: `https://api.stage.kidsloop.live/user/`,
             privacy: `https://kidsloop.net/policies/privacy-notice`,
         },
+        features: []
     },
     {
         id: `auth.alpha.kidsloop.net`,
@@ -180,6 +191,7 @@ const DefaultRegions: Region[] = [
             user: `https://api.alpha.kidsloop.net/user/`,
             privacy: `https://kidsloop.net/policies/privacy-notice`,
         },
+        features: [ FeatureFlag.ONLY_OBSERVE_IN_VIEWPORT ]
     },
     {
         id: `auth.alpha.kidsloop.dev`,
@@ -193,10 +205,11 @@ const DefaultRegions: Region[] = [
             user: `https://api.alpha.kidsloop.dev/user/`,
             privacy: `https://kidsloop.net/policies/privacy-notice`,
         },
+        features: [ FeatureFlag.ONLY_OBSERVE_IN_VIEWPORT ]
     },
 ];
 
-function createRegionFromEnvironment (){
+function createRegionFromEnvironment (): Region {
     const hostWithOrigin = `${window.location.protocol}//${window.location.host}`;
 
     return(
@@ -212,6 +225,9 @@ function createRegionFromEnvironment (){
                 user: `${process.env.ENDPOINT_API || hostWithOrigin}/user/`,
                 privacy: `https://kidsloop.net/en/policies/privacy-notice`,
             },
+            features: [
+                process.env.ONLY_OBSERVE_IN_VIEWPORT === `TRUE` ? FeatureFlag.ONLY_OBSERVE_IN_VIEWPORT : FeatureFlag.NONE
+            ]
         }
     );
 }

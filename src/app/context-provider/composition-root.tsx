@@ -7,6 +7,7 @@ import React, {
     ReactChild,
     ReactChildren,
 } from "react";
+import {FeatureProvider} from "@/providers/feature-context";
 
 type Props = {
     children: ReactChild | ReactChildren | null;
@@ -16,15 +17,17 @@ type Props = {
 export function CompositionRoot ({ children, sessionId }: Props) {
     return (
         <RegionSelectProvider>
-            <ServicesProvider>
-                <SessionContextProvider sessionId={sessionId}>
-                    <AuthenticationContextProvider>
-                        <CameraContextProvider>
-                            { children }
-                        </CameraContextProvider>
-                    </AuthenticationContextProvider>
-                </SessionContextProvider>
-            </ServicesProvider>
+            <FeatureProvider>
+                <ServicesProvider>
+                    <SessionContextProvider sessionId={sessionId}>
+                        <AuthenticationContextProvider>
+                                <CameraContextProvider>
+                                    { children }
+                                </CameraContextProvider>
+                        </AuthenticationContextProvider>
+                    </SessionContextProvider>
+                </ServicesProvider>
+            </FeatureProvider>
         </RegionSelectProvider>
     );
 }
