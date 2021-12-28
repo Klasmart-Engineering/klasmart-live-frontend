@@ -95,6 +95,12 @@ const useCordovaInitialize = (backExitApplication?: boolean, callbackBackButton?
             setIsIOS(cordova.platformId === `ios`);
 
             setCordovaReady(true);
+
+            const SplashScreen = (navigator as any).splashscreen;
+            if (SplashScreen) {
+                SplashScreen.hide();
+            }
+
         };
 
         document.addEventListener(`deviceready`, onDeviceReady, false);
