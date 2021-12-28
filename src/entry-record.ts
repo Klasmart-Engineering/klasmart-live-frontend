@@ -45,6 +45,7 @@ if (!(window as any).kidslooplive) {
     const eventRecorder = EventRecorderService.builder()
         .withUploader(uploader)
         .withUploadRetryTimeoutMillis(500)
+        .withUploadWaitTimeoutMills(300)
         .build();
 
     let eventsSinceKeyframe = 0;
@@ -59,7 +60,7 @@ if (!(window as any).kidslooplive) {
     };
 
     record({
-        checkoutEveryNms: 1000 * 1, // take full snapshot every x seconds
+        checkoutEveryNms: 1000 * 10, // take full snapshot every x seconds
         emit: (e, isCheckout) => {
             // TODO: Should client or server keep track of the
             // number of events emitted since last keyframe?
