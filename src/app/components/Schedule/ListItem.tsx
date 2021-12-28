@@ -17,16 +17,14 @@ import React from "react";
 const useStyles = makeStyles((theme) => createStyles({
     listItemRoot: {
         width: `auto`,
-        margin: `24px 16px`,
+        margin: theme.spacing(2),
+        marginBottom: theme.spacing(3),
         borderRadius: 10,
         backgroundColor: theme.palette.background.paper,
-        '&:last-child':{
-            marginBottom: 0,
+        "&:last-child":{
+            marginBottom: theme.spacing(1),
         },
-        '&:first-child':{
-            marginTop: theme.spacing(2),
-        },
-        "&:hover ": {
+        "&:hover": {
             background: theme.palette.background.paper,
         },
     },
@@ -45,6 +43,9 @@ const useStyles = makeStyles((theme) => createStyles({
     listItemTrailing: {
         pointerEvents: `none`,
         right: 40,
+    },
+    noMarginBottom: {
+        marginBottom: 0,
     },
 }));
 
@@ -75,6 +76,7 @@ export default function ScheduleListItem (props: Props) {
             button
             className={clsx(classes.listItemRoot, {
                 [classes.listItemSecondAction]: !!trailing,
+                [classes.noMarginBottom]: isAnytimeStudy,
             })}
             onClick={onClick}
         >
