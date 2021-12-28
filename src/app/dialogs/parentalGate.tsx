@@ -48,6 +48,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         height: `100%`,
         position: `relative`,
         backgroundColor: THEME_COLOR_BACKGROUND_PARENTAL_LOCK,
+        background: `linear-gradient(180deg, ${THEME_COLOR_BACKGROUND_PAPER} 0%, ${THEME_COLOR_BACKGROUND_PARENTAL_LOCK} 25%)`,
     },
     bgImage: {
         width: `100%`,

@@ -3,6 +3,8 @@ import ScheduleListItem from "@/app/components/Schedule/ListItem";
 import ListItemAvatar from "@/app/components/Schedule/ListItemAvatar";
 import ScheduleListSectionHeader from "@/app/components/Schedule/ListSectionHeader";
 import ScheduleLoading from "@/app/components/Schedule/Loading";
+import NoSchedule,
+{ NoScheduleVariant } from "@/app/components/Schedule/NoSchedule";
 import {
     getStudyType,
     StudyAssessmentStatus,
@@ -14,13 +16,10 @@ import {
     isFocused,
     useWindowOnFocusChange,
 } from "@/app/utils/windowEvents";
-import NoHomework from "@/assets/img/icon_no_homework.svg";
-import NoHomeworkTip from "@/assets/img/icon_no_homework_tip.svg";
 import HomeFunStudyIcon from "@/assets/img/schedule-icon/home_fun_study.svg";
 import StudyIcon from "@/assets/img/schedule-icon/study_icon.svg";
 import {
     BG_AVT_ANYTIME_STUDY_DEFAULT,
-    BG_BUTTON_STUDY_COLOR,
     SCHEDULE_FETCH_INTERVAL_MINUTES,
     SCHEDULE_FETCH_MONTH_DIFF,
     SCHEDULE_HOME_FUN_STUDY_DISPLAY_COUNT_MAX,
@@ -28,7 +27,6 @@ import {
     SCHEDULE_PAGE_START,
     SCHEDULE_PAGINATION_DELAY,
     schedulePageWindowItemHeightToPageSize,
-    TEXT_COLOR_STUDY_PRIMARY,
     THEME_COLOR_BACKGROUND_LIST,
 } from "@/config";
 import { fromSecondsToMilliseconds } from "@/utils/utils";
@@ -41,10 +39,8 @@ import {
     Box,
     CircularProgress,
     createStyles,
-    Grid,
     List,
     makeStyles,
-    Typography,
 } from "@material-ui/core";
 import { ChevronRight } from "@styled-icons/material";
 import {
@@ -59,10 +55,7 @@ import React,
     useState,
 } from "react";
 import { useBottomScrollListener } from "react-bottom-scroll-listener";
-import {
-    FormattedMessage,
-    useIntl,
-} from "react-intl";
+import { useIntl } from "react-intl";
 import { useHistory } from "react-router";
 
 const useStyles = makeStyles((theme) => createStyles({
@@ -85,40 +78,6 @@ const useStyles = makeStyles((theme) => createStyles({
     anytimeStudyAvatar: {
         backgroundColor: BG_AVT_ANYTIME_STUDY_DEFAULT,
         color: theme.palette.common.white,
-    },
-    noHomeworkContainer: {
-        position: `relative`,
-    },
-    noHomeworkText: {
-        display: `flex`,
-        alignItems: `center`,
-        justifyContent: `center`,
-        width: `30%`,
-        backgroundColor: BG_BUTTON_STUDY_COLOR,
-        color: TEXT_COLOR_STUDY_PRIMARY,
-        borderRadius: 25,
-        bottom: 10,
-        position: `relative`,
-        padding: `10px 20px`,
-        "&:after": {
-            content: `''`,
-            position: `absolute`,
-            width: 30,
-            height: 30,
-            backgroundImage: `url(${NoHomeworkTip})`,
-            backgroundRepeat: `no-repeat`,
-            bottom: -25,
-            marginLeft: theme.spacing(2),
-        },
-        [theme.breakpoints.down(`xs`)]: {
-            width: `60%`,
-        },
-    },
-    noHomeworkImage: {
-        width: `60%`,
-        [theme.breakpoints.down(`xs`)]: {
-            width: `100%`,
-        },
     },
 }));
 
@@ -237,38 +196,7 @@ export default function StudyScheduleList () {
 
     if (!items.length && !anytimeSchedulesData?.total) {
         if (isSchedulesFetching || isAnytimeSchedulesFetching) return <ScheduleLoading />;
-        return (
-            <Grid
-                container
-                className={classes.noHomeworkContainer}
-                alignItems="center"
-                justifyContent="center"
-                direction="column">
-                <Grid
-                    item
-                    className={classes.noHomeworkText}>
-                    <Typography
-                        style={{
-                            fontWeight: 700,
-                            width: `90%`,
-                        }}
-                        variant="h5"
-                        align="center"
-                    >
-                        <FormattedMessage id="schedule_studyNoSchedule" />
-                    </Typography>
-                </Grid>
-                <Grid
-                    item
-                    className={classes.noHomeworkImage}
-                >
-                    <img
-                        alt="No Homework"
-                        src={NoHomework}
-                    />
-                </Grid>
-            </Grid>
-        );
+        return <NoSchedule variant={NoScheduleVariant.STUDY} />;
     }
 
     return (
