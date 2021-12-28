@@ -9,18 +9,19 @@ import { EventStream } from './stream/EventStream';
 import { IEventUploader } from './uploader/IEventUploader';
 
 const MaximumUploadAttemptCount = 3;
-export const MaximumEventsEachUpload = 10;
+export const MaximumEventsEachUpload = 50;
 
 export class EventRecorderService implements IEventRecorderService {
     private readonly uploader: IEventUploader;
     private readonly queuedEvents: SequencedEvent[] = [];
     private readonly uploadRetryTimeoutMillis: number = 1000;
-
+    private readonly uploadWaitTimeoutMillis: number = 300;
     private uploadInProgress: Promise<void> | null = null;
 
-    constructor (uploader: IEventUploader, uploadRetryTimeoutMillis?: number) {
+    constructor (uploader: IEventUploader, uploadRetryTimeoutMillis?: number, uploadWaitTimeoutMillis?: number) {
         this.uploader = uploader;
         this.uploadRetryTimeoutMillis = uploadRetryTimeoutMillis !== undefined ? uploadRetryTimeoutMillis : this.uploadRetryTimeoutMillis;
+        this.uploadWaitTimeoutMillis = uploadWaitTimeoutMillis !== undefined ? uploadWaitTimeoutMillis : this.uploadWaitTimeoutMillis;
     }
 
     recordEvent (stream: EventStream, data: string, isKeyFrame: boolean): void {
@@ -49,7 +50,7 @@ export class EventRecorderService implements IEventRecorderService {
                 const uploadCount = Math.min(MaximumEventsEachUpload, this.queuedEvents.length);
                 const events = this.queuedEvents.splice(0, uploadCount).map(x => x.toData());
 
-                EventRecorderService.eventUploadHandler(events, this.uploader, this.uploadRetryTimeoutMillis).then(() => {
+                EventRecorderService.eventUploadHandler(events, this.uploader, this.uploadRetryTimeoutMillis, this.uploadWaitTimeoutMillis).then(() => {
                     resolve();
                 }, (reason) => {
                     reject(reason);
@@ -69,11 +70,12 @@ export class EventRecorderService implements IEventRecorderService {
         return new EventRecorderServiceBuilder();
     }
 
-    private static async eventUploadHandler (events: SequencedEventData[], uploader: IEventUploader, uploadTimeoutRetryMillis: number) {
+    private static async eventUploadHandler (events: SequencedEventData[], uploader: IEventUploader, uploadTimeoutRetryMillis: number, uploadSleepTimeoutMillis: number) {
         let uploadAttempt = 0;
         let successful = false;
 
         while (uploadAttempt < MaximumUploadAttemptCount) {
+            await EventRecorderService.sleep(uploadSleepTimeoutMillis);
             await uploader.upload(events)
                 .then(() => {
                     successful = true;
