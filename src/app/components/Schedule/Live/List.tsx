@@ -16,7 +16,6 @@ import {
     isFocused,
     useWindowOnFocusChange,
 } from "@/app/utils/windowEvents";
-import backgroundStudy from "@/assets/img/background/background_study.jpg";
 import NoSchedule from "@/assets/img/icon_no_schedule.svg";
 import NoScheduleTip from "@/assets/img/icon_no_schedule_tip.svg";
 import LiveIcon from "@/assets/img/schedule-icon/live_icon.svg";

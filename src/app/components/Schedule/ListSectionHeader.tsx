@@ -9,7 +9,7 @@ import React from "react";
 
 const useStyles = makeStyles((theme) => createStyles({
     listSubheaderText: {
-        padding: `24px 32px 0px`,
+        padding: theme.spacing(3, 2, 0),
         fontWeight: theme.typography.fontWeightBold as number,
         color: grey[700],
     },
