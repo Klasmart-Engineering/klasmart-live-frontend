@@ -104,12 +104,18 @@ export function Auth ({ useInAppBrowser }: Props) {
         completedParentalChallenge,
     ]);
 
+    if(loading) return null;
+
     if (!loading && !authenticated && !completedParentalChallenge) {
         return (
             <ParentalGate
                 isWelcomeScreen
                 onCompleted={() => { setCompletedParentalChallenge(true); }} />
         );
+    }
+
+    if(authenticated){
+        return(<Redirect to="/" />);
     }
 
     if (useInAppBrowser) {
@@ -127,7 +133,6 @@ export function Auth ({ useInAppBrowser }: Props) {
                 <LoadingWithRetry
                     messageId="auth_waiting_for_authentication"
                     retryCallback={() => setKey(Math.random().toString(36))} />
-                {authenticated ? <Redirect to="/" /> : <></>}
                 {process.env.NODE_ENV === `development` && (
                     <Grid
                         item

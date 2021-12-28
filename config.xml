@@ -22,6 +22,7 @@
     <preference name="loadUrlTimeoutValue" value="700000" />
     <preference name="ShowSplashScreenSpinner" value="false" />
     <preference name="SplashMaintainAspectRatio" value="true" />
+    <preference name="AutoHideSplashScreen" value="false" />
     <platform name="android">
         <preference name="StatusBarBackgroundColor" value="#ffffff" />
         <preference name="StatusBarStyle" value="default" />
@@ -36,7 +37,6 @@
         <preference name="MediaPlaybackAllowsAirPlay" value="false" />
         <preference name="AllowBackForwardNavigationGestures" value="false" />
         <preference name="Allow3DTouchLinkPreview" value="false" />
-        <preference name="AutoHideSplashScreen" value="true" />
         <preference name="KeyboardDisplayRequiresUserAction" value="false" />
         <preference name="EnableViewportScale" value="true" />
         <preference name="MediaTypesRequiringUserActionForPlayback" value="none" />

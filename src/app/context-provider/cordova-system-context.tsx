@@ -1,4 +1,3 @@
-import Loading from "../../components/loading";
 import { useSelectedUserValue } from "../data/user/atom";
 import { ExitDialog } from "../dialogs/exitDialog";
 import useCordovaInitialize from "../platform/cordova-initialize";
@@ -261,10 +260,6 @@ export function CordovaSystemProvider ({ children, history }: Props) {
 
     };
 
-    const LoadingCordova = () => {
-        return <Loading messageId="cordova_loading" />;
-    };
-
     return (
         <CordovaSystemContext.Provider value={{
             ready: cordovaReady,
@@ -277,12 +272,15 @@ export function CordovaSystemProvider ({ children, history }: Props) {
             removeOnBack: removeOnBack,
             requestPermissions: requestPermissions,
         }}>
-            { !cordovaReady ? <LoadingCordova /> : `` }
-            {cordovaReady ? children : ``}
-            {cordovaReady ? <ExitDialog
-                visible={displayExitDialogue}
-                onCancel={() => setDisplayExitDialogue(false)}
-                onConfirm={() => quit()} /> : ``}
+            {cordovaReady &&
+                <>
+                    {children}
+                    <ExitDialog
+                        visible={displayExitDialogue}
+                        onCancel={() => setDisplayExitDialogue(false)}
+                        onConfirm={() => quit()} />
+                </>
+            }
         </CordovaSystemContext.Provider>
     );
 }
