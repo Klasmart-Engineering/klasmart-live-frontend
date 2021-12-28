@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.8.0-internal.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.8.0-internal.0%0Dv3.7.0) (2021-12-28)
+
+
+### Features
+
+* add loading indicator for a schedule ([f752f56](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/f752f56e2274b761ec073fe76ce2a49c92f9acb4)), closes [KLL-2063](https://calmisland.atlassian.net/browse/KLL-2063)
+* add new user_id cookie for h5p ([3e93597](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/3e93597b6fa8dc8d38aa6b50cb8ae01751d1b7c0)), closes [KLL-2211](https://calmisland.atlassian.net/browse/KLL-2211) [KLL-2211](https://calmisland.atlassian.net/browse/KLL-2211)
+* display error message when downloading with network problem ([d71622c](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/d71622c5b28906d5c2e0fdb85ebcdd876641a743)), closes [KLL-1942](https://calmisland.atlassian.net/browse/KLL-1942)
+* display student-only profiles when sign in ([e96b824](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/e96b824f8e92db33998225b02dca8f5f286bed6e)), closes [KLL-1939](https://calmisland.atlassian.net/browse/KLL-1939)
+* implement mechanism for parent lock screen ([22120ec](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/22120ec2977eb2ed51977fe9253405f80ba07d7c)), closes [KLL-2150](https://calmisland.atlassian.net/browse/KLL-2150)
+* **localization:** add new translations ([2c41299](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/2c41299548ada24f1a72243cbd65da322ed0b6f2))
+* observe students in viewport ([7a26ff6](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/7a26ff60230b141c0a358f6cd6377a336a78d0e1)), closes [KLL-2222](https://calmisland.atlassian.net/browse/KLL-2222)
+* update pages when there is no Live/Study schedule ([631beaf](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/631beafde5adee63d911f664675b7e0a36ac10c0)), closes [KLL-2348](https://calmisland.atlassian.net/browse/KLL-2348)
+* update schedule design ([a9927c7](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/a9927c7e5ba8671b30d88362f62e1ee29d98f537)), closes [KLL-2346](https://calmisland.atlassian.net/browse/KLL-2346)
+
+
+### Bug Fixes
+
+* add translation app version ([d67718b](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/d67718b06507c6c71b21bebbfab35db2377d229e)), closes [KLL-2198](https://calmisland.atlassian.net/browse/KLL-2198)
+* custom padding to fit the UI design ([aa8aa99](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/aa8aa99d59d4fbe36c6a5f2a202b8910b357020b)), closes [KLL-2346](https://calmisland.atlassian.net/browse/KLL-2346)
+* es language is not working in WEB ([3db9af2](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/3db9af2f5c28d7a4f7bad56fd43125cd46ae451d)), closes [KLL-2319](https://calmisland.atlassian.net/browse/KLL-2319)
+* remove unwanted loading screens [KLL-2194](https://calmisland.atlassian.net/browse/KLL-2194) ([dc5e72c](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/dc5e72cc6f4edfbe986e849ef140945d7eeb8d84))
+* reposition X icon on feedback screen ([4c19480](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/4c19480e9d18340a2ed09ea8bf2edad47f9c2669)), closes [KLL-2073](https://calmisland.atlassian.net/browse/KLL-2073)
+* reposition X icon on feedback screen ([0fb075d](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/0fb075d86d218f55a61402f6e08ac43ade727b45)), closes [KLL-2073](https://calmisland.atlassian.net/browse/KLL-2073)
+* resume from background invalidate mute in Live class ([33b015f](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/33b015f5ed79a3be0c03faa30c86cdd7953d7fdf)), closes [KLL-1964](https://calmisland.atlassian.net/browse/KLL-1964)
+* setWaitTimeout while upload events ([97144fc](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/97144fc7171da53eb49207bcd81132eeef534c96)), closes [KLL-2304](https://calmisland.atlassian.net/browse/KLL-2304)
+* smoother style parentalGate ([fe15ef1](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/fe15ef1478592ccd2700360d7e160c05f5189d30))
+* stop sendEventHandler when class type is STUDY ([dd23135](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/dd2313516c6830b58978125522cc3ca90b1439e9)), closes [KLL-1812](https://calmisland.atlassian.net/browse/KLL-1812)
+
 ## [3.7.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.7.0%0Dv3.6.1-internal.0) (2021-12-15)
 
 
