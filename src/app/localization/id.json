@@ -225,7 +225,7 @@
     "parentalGate.error.incorrect": "Nilai input salah",
     "signin.title.loading": "Tunggu sebentar",
     "signin.body.loading": "Mencoba masuk ke KidsLoop...",
-    "live.class.shareScreen.error.notAvailable": "'Bagikan Layar' tidak tersedia di browser seluler.",
+    "live.class.shareScreen.error.notAvailable": "<strong>'Bagikan Layar'</strong> tidak tersedia di browser seluler",
     "live.class.leave": "Tinggalkan Kelas",
     "signIn.noOrganization.title": "Organisasi Tidak Ditemukan",
     "signIn.noOrganization.body": "Silakan hubungi administrator sekolah untuk mendapatkan bantuan.",
@@ -238,5 +238,8 @@
     "forParents.body": "To continue, please tap the numbers in ascending order",
     "forParents.incorrect": "Incorrect, please try again",
     "settings.version": "Version {version}",
-    "scheduleDetails.error.downloadFail": "Download failed. Check your internet connection and try again."
+    "scheduleDetails.error.downloadFail": "Download failed. Check your internet connection and try again.",
+    "live.speechRecognition.error.accessDisabled": "Access to speech recognition is disabled",
+    "live.class.updateRequired.title": "iOS Update Required",
+    "live.class.updateRequired.body": "We recommend that you update your device to {version} or later to enjoy the full KidsLoop experience."
 }

@@ -225,7 +225,7 @@
     "parentalGate.error.incorrect": "틀린 답입니다.",
     "signin.title.loading": "잠시 기다려주세요",
     "signin.body.loading": "로그인 중입니다...",
-    "live.class.shareScreen.error.notAvailable": "모바일 브라우저에서는 '화면 공유'를 사용할 수 없습니다.",
+    "live.class.shareScreen.error.notAvailable": "모바일 브라우저에서는 <strong>'화면 공유'</strong>를 사용할 수 없습니다",
     "live.class.leave": "클래스 나가기",
     "signIn.noOrganization.title": "기관이 없어요",
     "signIn.noOrganization.body": "기관 추가를 원하신다면 학교 관리자에게 문의해주세요.",
@@ -235,8 +235,11 @@
     "signIn.noStudentProfile.title": "학생이 아니군요!",
     "signIn.noStudentProfile.body": "앱을 계속 사용하려면 학생 프로필이 있어야 합니다.",
     "forParents.title": "학부모 전용",
-    "forParents.body": "To continue, please tap the numbers in ascending order",
-    "forParents.incorrect": "Incorrect, please try again",
-    "settings.version": "Version {version}",
-    "scheduleDetails.error.downloadFail": "Download failed. Check your internet connection and try again."
+    "forParents.body": "계속하시려면, 작은 숫자부터 큰 숫자까지 순서대로 골라 주세요.",
+    "forParents.incorrect": "잘못되었습니다. 다시 시도해 주세요.",
+    "settings.version": "버전 {version}",
+    "scheduleDetails.error.downloadFail": "다운로드가 실패했습니다. 인터넷 연결을 확인하고 다시 시도하십시오.",
+    "live.speechRecognition.error.accessDisabled": "Access to speech recognition is disabled",
+    "live.class.updateRequired.title": "iOS Update Required",
+    "live.class.updateRequired.body": "We recommend that you update your device to {version} or later to enjoy the full KidsLoop experience."
 }

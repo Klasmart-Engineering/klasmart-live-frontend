@@ -225,7 +225,7 @@
     "parentalGate.error.incorrect": "输入不正确",
     "signin.title.loading": "请稍等",
     "signin.body.loading": "KidsLoop 正在授权您的登录...",
-    "live.class.shareScreen.error.notAvailable": "“共享屏幕”在手机浏览器上不可用。",
+    "live.class.shareScreen.error.notAvailable": "<strong>“共享屏幕”</strong>在手机浏览器上不可用",
     "live.class.leave": "退出",
     "signIn.noOrganization.title": "未找到组织",
     "signIn.noOrganization.body": "请联系您的学校管理员寻求帮助。",
@@ -234,9 +234,12 @@
     "live.class.connecting.error.failed": "抱歉，发生了错误，请重试",
     "signIn.noStudentProfile.title": "您不是学生",
     "signIn.noStudentProfile.body": "您需要有学生档案才能继续使用该应用",
-    "forParents.title": "For Parents",
+    "forParents.title": "家长使用",
     "forParents.body": "若要继续，请按升序选择数字",
     "forParents.incorrect": "不正确，请重试",
-    "settings.version": "Version {version}",
-    "scheduleDetails.error.downloadFail": "Download failed. Check your internet connection and try again."
+    "settings.version": "版本{version}",
+    "scheduleDetails.error.downloadFail": "下载失败。请检查您的网络连接并重试。",
+    "live.speechRecognition.error.accessDisabled": "Access to speech recognition is disabled",
+    "live.class.updateRequired.title": "iOS Update Required",
+    "live.class.updateRequired.body": "We recommend that you update your device to {version} or later to enjoy the full KidsLoop experience."
 }
