@@ -7,10 +7,7 @@ import { useSessions } from "@/data/live/state/useSessions";
 import { useHttpEndpoint } from "@/providers/region-select-context";
 import { useSessionContext } from "@/providers/session-context";
 import { ClassType } from "@/store/actions";
-import {
-    isLessonPlanOpenState,
-    streamIdState,
-} from "@/store/layoutAtoms";
+import { streamIdState } from "@/store/layoutAtoms";
 import { useWindowSize } from "@/utils/viewport";
 import { Button } from "@material-ui/core";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -56,7 +53,6 @@ export function RecordedIframe (props: Props): JSX.Element {
     } = useSessionContext();
     const sessions = useSessions();
     const [ , setStreamId ] = useRecoilState(streamIdState);
-    const [ isLessonPlanOpen ] = useRecoilState(isLessonPlanOpenState);
 
     const { contentHref } = props;
 
@@ -128,12 +124,6 @@ export function RecordedIframe (props: Props): JSX.Element {
             }, 300);
         }
     }, [ size ]);
-
-    useEffect(() => {
-        setTimeout(function () {
-            window.dispatchEvent(new Event(`resize`));
-        }, 300);
-    }, [ isLessonPlanOpen ]);
 
     useEffect(() => {
         setSeconds(MAX_LOADING_COUNT);
@@ -230,9 +220,32 @@ export function RecordedIframe (props: Props): JSX.Element {
         contentWindow.addEventListener(`contextmenu`, (e) => blockRightClick(e), false);
         const h5pTypeColumn = contentDoc.body.getElementsByClassName(`h5p-column`).length;
 
-        if(process.env.IS_CORDOVA_BUILD && !isPdfContent){
-            setUseDoubleSize(h5pTypeColumn > 0);
-            injectIframeScript(iframeElement, `h5presize`);
+        if(!isPdfContent){
+            if(process.env.IS_CORDOVA_BUILD){
+                setUseDoubleSize(h5pTypeColumn > 0);
+                injectIframeScript(iframeElement, `h5presize`);
+            }else{
+                const browserResizeEvent = new Event(`iframe-browser-resize`);
+                window.addEventListener(`resize`, function (e) {
+                    contentWindow.dispatchEvent(browserResizeEvent);
+                });
+
+                const iframeScript = document.createElement(`script`);
+                iframeScript.setAttribute(`id`, `kidsloop-live-frontend-script-inject`);
+
+                iframeScript.innerHTML = `
+                    const triggerH5pResize = () => {
+                        if (!H5P) {
+                            console.error('H5P not available on this page.');
+                            return;
+                        }
+                        console.log('[H5P] Trigger resize');
+                        H5P.trigger(H5P.instances[0], 'resize');
+                    }
+                    window.addEventListener('iframe-browser-resize', triggerH5pResize, false);
+                `;
+                contentDoc.head.appendChild(iframeScript);
+            }
         }
     }
 
