@@ -26,17 +26,17 @@ function LiveClassProvider ({ children }: Props) {
             closeButtonLabel={intl.formatMessage({
                 id: `common_dismiss`,
             })}>
-            <RoomProvider enableConferencing={true}>
-                <WebRTCProvider>
-                    <ScreenShareProvider>
-                        <GlobalWhiteboardContext>
+            <GlobalWhiteboardContext>
+                <RoomProvider enableConferencing={true}>
+                    <WebRTCProvider>
+                        <ScreenShareProvider>
                             <>
                                 {children}
                             </>
-                        </GlobalWhiteboardContext>
-                    </ScreenShareProvider>
-                </WebRTCProvider>
-            </RoomProvider>
+                        </ScreenShareProvider>
+                    </WebRTCProvider>
+                </RoomProvider>
+            </GlobalWhiteboardContext>
         </SnackbarProvider>
     );
 }

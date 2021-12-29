@@ -6,7 +6,6 @@ import {
     Theme,
 } from "@material-ui/core";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
-import { useToolbarContext } from "kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
 import { WhiteboardCanvas } from "kidsloop-canvas/lib/domain/whiteboard/WhiteboardCanvas";
 import React,
 {
@@ -72,7 +71,6 @@ export function Whiteboard ({
     } = useSynchronizedState();
     const classes = useStyles();
     const { sessionId } = useSessionContext();
-    const { actions: { clear } } = useToolbarContext();
     const canvasUserId = useMemo(() => {
         if (group) {
             return `${sessionId}:${group}`;
@@ -84,10 +82,6 @@ export function Whiteboard ({
     useEffect(() => {
         window.dispatchEvent(new Event(`resize`));
     }, [ display ]);
-
-    useEffect(() => {
-        window.onbeforeunload = () => clear([ sessionId ]);
-    }, []);
 
     const canvasStyle: CSSProperties = {
         zIndex: whiteboard,
