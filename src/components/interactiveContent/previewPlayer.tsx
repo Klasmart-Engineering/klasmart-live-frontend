@@ -105,7 +105,7 @@ export function PreviewPlayer ({
             streamId,
         },
     }, {
-        onlyObserveInViewport: isFeatureEnabled(features, FeatureFlag.ONLY_OBSERVE_IN_VIEWPORT),
+        onlyObserveInViewport: isFeatureEnabled(features, FeatureFlag.ONLY_OBSERVE_IN_VIEWPORT) && inViewport !== undefined,
         inViewport: !!inViewport
     });
 
