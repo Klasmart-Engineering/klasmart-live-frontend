@@ -70,7 +70,7 @@ export const useEventsObserve = (options?: SubscriptionHookOptions<ReadEventDto,
             setLoading(true);
             subscription?.unsubscribe();
         };
-    }, [ inViewPort, client ]);
+    }, [ inViewPort, client, options?.variables?.streamId ]);
 
     return {
         data,
