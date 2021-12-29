@@ -24,13 +24,13 @@ function StudyClassProvider ({ children }: Props) {
             closeButtonLabel={intl.formatMessage({
                 id: `common_dismiss`,
             })}>
-            <RoomProvider enableConferencing={false}>
-                <GlobalWhiteboardContext>
+            <GlobalWhiteboardContext>
+                <RoomProvider enableConferencing={false}>
                     <>
                         {children}
                     </>
-                </GlobalWhiteboardContext>
-            </RoomProvider>
+                </RoomProvider>
+            </GlobalWhiteboardContext>
         </SnackbarProvider>
     );
 }
