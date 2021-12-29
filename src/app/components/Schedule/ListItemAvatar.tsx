@@ -16,6 +16,9 @@ const useStyles = makeStyles((theme) => createStyles({
     },
     image: {
         marginRight: theme.spacing(2),
+        width: 54,
+        height: 33,
+        marginTop: 3,
     },
 }));
 

@@ -27,6 +27,7 @@ const useStyles = makeStyles((theme) => createStyles({
         "&:hover": {
             background: theme.palette.background.paper,
         },
+        paddingLeft: theme.spacing(1),
     },
     listItemSecondAction: {
         paddingRight: `6rem`,
@@ -44,8 +45,15 @@ const useStyles = makeStyles((theme) => createStyles({
         pointerEvents: `none`,
         right: 40,
     },
-    noMarginBottom: {
+    listItemStudySchedule: {
+        paddingLeft: theme.spacing(1),
+    },
+    listItemAnytimeStudy: {
         marginBottom: 0,
+        padding: theme.spacing(2),
+    },
+    listItemTextAnyTimeStudy: {
+        marginLeft: 6,
     },
 }));
 
@@ -76,7 +84,8 @@ export default function ScheduleListItem (props: Props) {
             button
             className={clsx(classes.listItemRoot, {
                 [classes.listItemSecondAction]: !!trailing,
-                [classes.noMarginBottom]: isAnytimeStudy,
+                [classes.listItemAnytimeStudy]: isAnytimeStudy,
+                [classes.listItemStudySchedule]: isStudySchedule,
             })}
             onClick={onClick}
         >
@@ -89,6 +98,7 @@ export default function ScheduleListItem (props: Props) {
                         className={clsx(classes.listItemText, {
                             [classes.listItemTextLivePrimary]: !isAnytimeStudy,
                             [classes.listItemTextStudyPrimary]: isStudySchedule,
+                            [classes.listItemTextAnyTimeStudy]: isAnytimeStudy,
                         })}
                     >
                         {title}

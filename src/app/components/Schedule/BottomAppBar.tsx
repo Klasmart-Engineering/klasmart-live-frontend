@@ -3,8 +3,8 @@ import {
     ScheduleAppBarItem,
     useScheduleTab,
 } from "@/app/model/scheduleModel";
-import LiveIcon from "@/assets/img/schedule-icon/tab_live_icon.svg";
-import StudyIcon from "@/assets/img/schedule-icon/tab_study_icon.svg";
+import LiveIcon from "@/assets/img/schedule-icon/live_icon.svg";
+import StudyIcon from "@/assets/img/schedule-icon/study_icon.svg";
 import {
     createStyles,
     Grid,
@@ -49,6 +49,8 @@ export default function ScheduleBottomAppBar () {
                             alt="Live Icon"
                             src={LiveIcon}
                             className={classes.icon}
+                            width={71}
+                            height={45}
                         />}
                     data-testid={`${ScheduleAppBarItem.LIVE}-container`}
                     onClick={() => setSelectedItem(ScheduleAppBarItem.LIVE)}
@@ -68,6 +70,8 @@ export default function ScheduleBottomAppBar () {
                         alt="Study Icon"
                         src={StudyIcon}
                         className={classes.icon}
+                        width={71}
+                        height={45}
                     />}
                     data-testid={ScheduleAppBarItem.STUDY}
                     onClick={() => setSelectedItem(ScheduleAppBarItem.STUDY)}

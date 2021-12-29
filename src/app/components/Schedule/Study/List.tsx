@@ -71,6 +71,9 @@ const useStyles = makeStyles((theme) => createStyles({
     ul: {
         backgroundColor: `inherit`,
         padding: 0,
+        "& > li:last-child > :first-child": {
+            marginBottom: theme.spacing(1),
+        },
     },
     submittedText: {
         color: `#5DBD3B`,

@@ -3,6 +3,8 @@ import {
     ListSubheader,
     makeStyles,
     Typography,
+    useMediaQuery,
+    useTheme,
 } from "@material-ui/core";
 import grey from "@material-ui/core/colors/grey";
 import React from "react";
@@ -21,13 +23,15 @@ interface Props {
 
 export default function ScheduleListSectionHeader (props: Props) {
     const { title } = props;
+    const theme = useTheme();
     const classes = useStyles();
+    const isXsDown = useMediaQuery(theme.breakpoints.down(`xs`));
     return (
         <ListSubheader
             component="div"
         >
             <Typography
-                variant="subtitle1"
+                variant={isXsDown ? `subtitle1` : `h6`}
                 className={classes.listSubheaderText}
             >{title}</Typography>
         </ListSubheader>
