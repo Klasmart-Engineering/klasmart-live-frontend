@@ -11,7 +11,7 @@ export const ACCEPT_MIME_TYPES =
     `text/csv,` +
     `audio/*,` +
     `video/*,` +
-    `image/*` +
+    `image/*,` +
     `application/pdf,` +
     `application/vnd.ms-powerpoint,` +
     `application/vnd.openxmlformats-officedocument.presentationml.presentation,` +
