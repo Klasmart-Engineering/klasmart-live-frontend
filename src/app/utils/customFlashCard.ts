@@ -9,6 +9,7 @@ import {
     useEffect,
     useState,
 } from "react";
+import {useIntl} from "react-intl";
 
 export enum H5PClassName {
     H5P_FLASH_CARDS = `h5p-flashcards`,
@@ -47,6 +48,7 @@ export function useCustomFlashCard ({
     const { enqueueSnackbar } = useSnackbar();
     const [ iframe, setIframe ] = useState<HTMLIFrameElement>();
     const [ shouldCustomFlashCard, setShouldCustomFlashCard ] = useState(false);
+    const intl = useIntl();
 
     useEffect(() => {
         if(shouldCustomFlashCard && !openLoadingDialog) {
@@ -145,6 +147,16 @@ export function useCustomFlashCard ({
                                 sendMessageToIframe(FlashCardAction.GRANTED_SPEECH_RECOGNITION_PERMISSION, ``);
                             }, (err: string) => {
                                 console.log(err);
+                                enqueueSnackbar(intl.formatMessage({
+                                    id: `live.speechRecognition.error.accessDisabled`,
+                                    defaultMessage: `Access to speech recognition is disabled`
+                                }), {
+                                    variant: `error`,
+                                    anchorOrigin: {
+                                        horizontal: `center`,
+                                        vertical: `bottom`,
+                                    },
+                                });
                             }, {
                                 language: data.data,
                             });
