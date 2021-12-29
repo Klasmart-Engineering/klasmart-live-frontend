@@ -221,7 +221,9 @@ export default function StudyScheduleList () {
                             }
                         </Avatar>
                     )}
-                    title={`Anytime Study`}
+                    title={intl.formatMessage({
+                        id: `schedule_studyAnytimeStudy`,
+                    })}
                     trailing={<ChevronRight size={24} />}
                     onClick={handleAnytimeStudyClick}
                 />
