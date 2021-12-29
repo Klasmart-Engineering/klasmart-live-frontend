@@ -20,7 +20,7 @@ import React from "react";
 const useStyles = makeStyles((theme) => createStyles({
     dialogTitle: {
         backgroundColor: theme.palette.background.paper,
-        padding: `16px 24px 0px`,
+        paddingBottom: 0,
     },
     dialogTitleText: {
         textOverflow: `ellipsis`,
@@ -39,7 +39,6 @@ const useStyles = makeStyles((theme) => createStyles({
     },
     dialogContent: {
         position: `relative`,
-        paddingTop: 0,
     },
     dialogLoadingContent: {
         position: `absolute`,
@@ -51,6 +50,10 @@ const useStyles = makeStyles((theme) => createStyles({
         alignItems: `center`,
         backgroundColor: `white`,
         display: `flex`,
+    },
+    dialogActions:{
+        padding: theme.spacing(3),
+        paddingTop: theme.spacing(1),
     },
 }));
 
@@ -136,7 +139,7 @@ export default function BaseScheduleDialog (props: Props) {
             </DialogTitle>
             <div className={classes.dialogContent}>
                 <BaseScheduleDialogContent items={contentItems} />
-                <DialogActions>
+                <DialogActions className={classes.dialogActions}>
                     {actions
                         .filter((action) => action.align === `start`)
                         .map((action, i) => (

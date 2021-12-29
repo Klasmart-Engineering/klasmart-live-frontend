@@ -9,7 +9,6 @@ import React from "react";
 
 const useStyles = makeStyles((theme) => createStyles({
     rowHeaderText: {
-        color: `#193756`,
         fontWeight: theme.typography.fontWeightBold as number,
     },
 }));
@@ -54,7 +53,7 @@ export default function BaseScheduleDialogContent (props: Props) {
                         >
                             <Grid
                                 item
-                                xs={4}
+                                xs={5}
                                 sm={3}
                             >
                                 <Typography
