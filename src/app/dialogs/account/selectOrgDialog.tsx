@@ -1,19 +1,13 @@
 import { Header } from "../../components/layout/header";
 import { dialogsState } from "../../model/appModel";
-import { ParentalGate } from "../parentalGate";
 import { OrganizationList } from "@/app/components/organization/organizationList";
-import { useAuthenticationContext } from "@/app/context-provider/authentication-context";
 import { useSelectedOrganization } from "@/app/data/user/atom";
 import { EntityStatus } from "@/app/data/user/dto/sharedDto";
 import { useMeQuery } from "@/app/data/user/queries/meQuery";
-import { useDisplayPrivacyPolicy } from "@/app/utils/privacyPolicyUtils";
 import Dialog from '@material-ui/core/Dialog';
-import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import Divider from "@material-ui/core/Divider";
 import Grid from '@material-ui/core/Grid';
-import Link from "@material-ui/core/Link";
 import {
     makeStyles,
     useTheme,
@@ -120,38 +114,12 @@ export function useShouldSelectOrganization () {
 export function SelectOrgDialog () {
     const theme = useTheme();
     const { noPadding } = useStyles();
-    const { actions } = useAuthenticationContext();
     const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
     const [ selectedOrganization, setSelectedOrganization ] = useSelectedOrganization();
     const { data: meData } = useMeQuery();
 
-    const [ parentalLock, setParentalLock ] = useState<boolean>(false);
-
-    const displayPrivacyPolicy = useDisplayPrivacyPolicy();
-
     const activeOrganizationMemberships = useMemo(() => meData?.me?.organizationsWithPermission.filter((membership) => membership.status === EntityStatus.ACTIVE) ?? [], [ meData ]);
     const activeOrganizations = useMemo(() => activeOrganizationMemberships.map((membership) => membership.organization), [ activeOrganizationMemberships ]);
-
-    useEffect(() => {
-        setParentalLock(false);
-    }, []);
-
-    if (parentalLock) {
-        return <Dialog
-            fullScreen
-            aria-labelledby="select-org-dialog"
-            open={dialogs.isSelectOrganizationOpen}
-            onClose={() => setDialogs({
-                ...dialogs,
-                isParentalLockOpen: false,
-            })}
-        >
-            <ParentalGate
-                setClosedDialog={() => setParentalLock(false)}
-                onCompleted={() => { displayPrivacyPolicy(); setParentalLock(false); }}
-            />
-        </Dialog>;
-    }
 
     return (
         <Dialog
@@ -194,45 +162,6 @@ export function SelectOrgDialog () {
                     onClick={org => setSelectedOrganization(org)}
                 />
             </DialogContent>
-            <DialogActions className={noPadding}>
-                <Grid
-                    item
-                    xs={6}>
-                    <Link
-                        href="#"
-                        variant="subtitle2"
-                        onClick={() => { setParentalLock(true); }}
-                    >
-                        <Typography
-                            align="center"
-                            style={{
-                                padding: theme.spacing(2, 0),
-                            }}>
-                            <FormattedMessage id="account_selectOrg_privacyPolicy" />
-                        </Typography>
-                    </Link>
-                </Grid>
-                <Divider
-                    flexItem
-                    orientation="vertical" />
-                <Grid
-                    item
-                    xs={6}>
-                    <Link
-                        href="#"
-                        variant="subtitle2"
-                        onClick={() => actions?.signOut()}
-                    >
-                        <Typography
-                            align="center"
-                            style={{
-                                padding: theme.spacing(2, 0),
-                            }}>
-                            <FormattedMessage id="account_selectOrg_signOut" />
-                        </Typography>
-                    </Link>
-                </Grid>
-            </DialogActions>
         </Dialog>
     );
 }

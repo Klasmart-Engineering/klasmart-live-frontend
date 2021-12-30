@@ -1,12 +1,11 @@
 import BackButton from "./BackButton";
-import {
-    useSelectedOrganizationValue,
-    useSelectedUserValue,
-} from "@/app/data/user/atom";
+import MenuDrawer from './menuDrawer';
+import { useSelectedUserValue } from "@/app/data/user/atom";
 import {
     dialogsState,
     errorState,
     homeFunStudyState,
+    useSetMenuOpen,
 } from "@/app/model/appModel";
 import KidsloopLogo from "@/assets/img/kidsloop_icon.svg";
 import StyledIcon from "@/components/styled/icon";
@@ -21,16 +20,11 @@ import {
     useTheme,
 } from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
+import { Menu as MenuIcon } from "@styled-icons/boxicons-regular/Menu";
 import { Close as CloseIcon } from "@styled-icons/material/Close";
-import { Settings as SettingsIcon } from "@styled-icons/material/Settings";
-import {
-    OrganizationAvatar,
-    UserAvatar,
-} from "kidsloop-px";
+import { UserAvatar } from "kidsloop-px";
 import React from "react";
 import { useRecoilState } from "recoil";
-
-const SPACING_HEADER_ITEM = 10;
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -107,7 +101,7 @@ export function Header ({ isHomeRoute, setKey }: { isHomeRoute?: boolean; setKey
                             <Grid item>
                                 { isHomeRoute ?
                                     <>
-                                        <OpenSelectOrgButton />
+                                        <OpenMenuButton />
                                     </> : showBackButton ? <BackButton onClick={handleBackClick} /> : showCloseButton && <CloseSelectOrgOrUserButton />}
                             </Grid>
                             <Grid
@@ -121,21 +115,30 @@ export function Header ({ isHomeRoute, setKey }: { isHomeRoute?: boolean; setKey
                             </Grid>
                             <Grid item>
                                 {isHomeRoute && (
-                                    <>
-                                        <span style={{
-                                            marginRight: SPACING_HEADER_ITEM,
-                                        }}>
-                                            <OpenSettingsButton />
-                                        </span>
-                                        <OpenSelectUserButton />
-                                    </>
+                                    <OpenSelectUserButton />
                                 )}
                             </Grid>
                         </Grid>
                     </Grid>
                 </Toolbar>
             </AppBar>
+            <MenuDrawer />
         </div>
+    );
+}
+
+function OpenMenuButton () {
+    const { iconButton } = useStyles();
+    const setMenuOpen = useSetMenuOpen();
+    return(
+        <IconButton
+            className={iconButton}
+            onClick={() => setMenuOpen(true)}
+        >
+            <StyledIcon
+                icon={<MenuIcon />}
+                size="xlarge" />
+        </IconButton>
     );
 }
 
@@ -203,45 +206,5 @@ function OpenSelectUserButton () {
                 name={`${selectedUser?.given_name} ${selectedUser?.family_name}`}
                 size={`medium`} />
         </ButtonBase>
-    );
-}
-
-function OpenSelectOrgButton () {
-    const { selectOrganizationButton } = useStyles();
-    const selectedOrganization = useSelectedOrganizationValue();
-    const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
-
-    return (
-        <ButtonBase
-            className={selectOrganizationButton}
-            onClick={() => setDialogs({
-                ...dialogs,
-                isSelectOrganizationOpen: true,
-            })}
-        >
-            <OrganizationAvatar
-                name={selectedOrganization?.organization_name ?? ``}
-                size={`medium`} />
-        </ButtonBase>
-    );
-}
-
-function OpenSettingsButton () {
-    const { iconButton } = useStyles();
-    const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
-
-    return (
-        <IconButton
-            size="medium"
-            className={iconButton}
-            onClick={() => setDialogs({
-                ...dialogs,
-                isSettingsOpen: true,
-            })}
-        >
-            <StyledIcon
-                icon={<SettingsIcon />}
-                size="medium" />
-        </IconButton>
     );
 }
