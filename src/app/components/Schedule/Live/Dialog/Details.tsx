@@ -147,9 +147,7 @@ export default function LiveDetailsDialog (props: Props) {
         <BaseScheduleDialog
             open={open}
             color={BG_COLOR_GO_LIVE_BUTTON}
-            title={scheduleData?.title ?? intl.formatMessage({
-                id: `scheduleDetails.notApplicable`,
-            })}
+            title={scheduleData?.title ?? ``}
             contentItems={[
                 {
                     header: intl.formatMessage({

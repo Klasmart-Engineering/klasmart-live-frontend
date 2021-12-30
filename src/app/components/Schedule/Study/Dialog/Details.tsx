@@ -132,9 +132,7 @@ export default function StudyDetailsDialog (props: Props) {
                 key={`BaseScheduleDialog`}
                 color={BG_COLOR_GO_STUDY_PRIMARY}
                 open={open}
-                title={scheduleData?.title || intl.formatMessage({
-                    id: `scheduleDetails.notApplicable`,
-                })}
+                title={scheduleData?.title ?? ``}
                 contentItems={[
                     {
                         header: intl.formatMessage({
