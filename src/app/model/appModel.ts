@@ -111,3 +111,12 @@ export const shouldShowNoStudentRoleState = atom({
     key: `shouldShowNoStudentRole`,
     default: false,
 });
+
+export const menuOpenState = atom({
+    key: `menuOpenState`,
+    default: false,
+});
+
+export const useMenuOpen = () => useRecoilState(menuOpenState);
+export const useMenuOpenValue = () => useRecoilValue(menuOpenState);
+export const useSetMenuOpen = () => useSetRecoilState(menuOpenState);
