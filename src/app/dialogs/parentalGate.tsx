@@ -1,4 +1,7 @@
-import { useDeviceOrientationValue } from "@/app/model/appModel";
+import {
+    LayoutMode,
+    useLayoutModeValue,
+} from "@/app/model/appModel";
 import TopBackground from "@/assets/img/background_parental_lock.svg";
 import BadaCharacter from "@/assets/img/bada_character.svg";
 import { CaptchaLogic } from "@/components/captchaLogic";
@@ -57,7 +60,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         position: `relative`,
         height: `100%`,
     },
-    contentWrapperPortraitMode: {
+    contentWrapperStudyMode: {
         position: `absolute`,
         top: `27%`,
         bottom: 0,
@@ -75,14 +78,14 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
     },
-    contentPortraitMode:{
+    contentStudyMode:{
         position: `absolute`,
         bottom: 0,
         zIndex: 5,
         top: 67,
         padding: theme.spacing(3),
     },
-    landscapeLayout: {
+    classroomLayout: {
         padding: 0,
         [theme.breakpoints.up(`md`)]: {
             justifyContent: `center`,
@@ -91,7 +94,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     contentWidth:{
         width: `40%`,
     },
-    contentWidthPortraitMode:{
+    contentWidthStudyMode:{
         width: `85%`,
     },
     characterImg: {
@@ -136,12 +139,12 @@ export function ParentalGate ({
 }: Props): JSX.Element {
     const classes = useStyles();
     const { height } = useWindowSize();
-    const deviceOrientation = useDeviceOrientationValue();
+    const layoutMode = useLayoutModeValue();
 
     const [ header, setHeader ] = useState<string>(`parentalGate.title`);
     const [ isShowError, setShowError ]  = useState<boolean>(false);
     const [ showParentCaptcha, setShowParentCaptcha ] = useState<boolean>(true);
-    const [ isPortrait, setPortrait ] = useState<boolean>(deviceOrientation.includes(`portrait`));
+    const [ isLayoutModeStudy, setLayoutModeStudy ] = useState<boolean>(layoutMode === LayoutMode.DEFAULT);
     const [ isSmallHeight ] = useState<boolean>(height <= 680);
 
     useEffect(() => {
@@ -156,8 +159,12 @@ export function ParentalGate ({
     }, [ showParentCaptcha ]);
 
     useEffect(() => {
-        setPortrait(deviceOrientation.includes(`portrait`));
-    }, [ deviceOrientation ]);
+        if(layoutMode === LayoutMode.CLASSROOM){
+            setLayoutModeStudy(false);
+        }else{
+            setLayoutModeStudy(true);
+        }
+    }, [ layoutMode ]);
 
     return (
         <Grid
@@ -178,7 +185,7 @@ export function ParentalGate ({
                         />
                     </div>
                 </Grid>)}
-            {isPortrait && (
+            {isLayoutModeStudy && (
                 <Grid
                     item
                     className={classes.bgImage}>
@@ -193,10 +200,10 @@ export function ParentalGate ({
                 direction="column"
                 alignItems="center"
                 className={clsx(classes.contentWrapper, {
-                    [classes.contentWrapperPortraitMode] : isPortrait,
-                    [classes.contentWrapperSmallHeight]: isPortrait && isSmallHeight,
+                    [classes.contentWrapperStudyMode] : isLayoutModeStudy,
+                    [classes.contentWrapperSmallHeight]: isLayoutModeStudy && isSmallHeight,
                 })}>
-                {isPortrait && (
+                {isLayoutModeStudy && (
                     <Grid
                         item
                         className={classes.characterImg}
@@ -211,9 +218,9 @@ export function ParentalGate ({
                     justifyContent="flex-start"
                     alignItems="center"
                     className={clsx(classes.content, {
-                        [classes.contentPortraitMode] : isPortrait,
-                        [classes.landscapeLayout]: !isPortrait,
-                        [classes.paddingTopSmallHeight] : isSmallHeight && isPortrait,
+                        [classes.contentStudyMode] : isLayoutModeStudy,
+                        [classes.classroomLayout]: !isLayoutModeStudy,
+                        [classes.paddingTopSmallHeight] : isSmallHeight && isLayoutModeStudy,
                     })}>
                     <Grid
                         item
@@ -235,7 +242,7 @@ export function ParentalGate ({
                     <Grid
                         item
                         className={clsx(classes.contentWidth, {
-                            [classes.contentWidthPortraitMode] : isPortrait,
+                            [classes.contentWidthStudyMode] : isLayoutModeStudy,
                         })}>
                         <Typography
                             gutterBottom
@@ -248,8 +255,8 @@ export function ParentalGate ({
                     <Grid
                         item
                         className={clsx(classes.contentWidth, {
-                            [classes.paddingSmallHeight] : !isSmallHeight && isPortrait,
-                            [classes.contentWidthPortraitMode] : isPortrait,
+                            [classes.paddingSmallHeight] : !isSmallHeight && isLayoutModeStudy,
+                            [classes.contentWidthStudyMode] : isLayoutModeStudy,
                         })}>
                         <CaptchaLogic
                             setError={setShowError}
