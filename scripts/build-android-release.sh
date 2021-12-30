@@ -3,6 +3,7 @@
 # Configure Environment
 export USE_TEST_TOKEN=1
 export IS_CORDOVA_BUILD="true"
+export CUSTOM_UA=cordovaios
 
 # Always clean build releases
 rm -rf ./node_modules
