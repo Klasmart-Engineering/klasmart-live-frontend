@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.8.0-internal.1](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.8.0-internal.1%0Dv3.8.0-internal.0) (2021-12-30)
+
+
+### Features
+
+* add resize listener h5p [KLL-2339](https://calmisland.atlassian.net/browse/KLL-2339) ([07cf48c](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/07cf48cf2ef67e2e401223f7345836d1d7fe483d))
+* **app:** show denied speech recognition message ([583898b](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/583898bc15899b1946cdceffb93e46045f553bb8)), closes [KLL-2392](https://calmisland.atlassian.net/browse/KLL-2392)
+* create display hamburger menu ([1fbebf3](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/1fbebf340d0ea8658c22b1c9190ec792888df8f0)), closes [KLL-2344](https://calmisland.atlassian.net/browse/KLL-2344) [KLL-2233](https://calmisland.atlassian.net/browse/KLL-2233) [KLL-2343](https://calmisland.atlassian.net/browse/KLL-2343)
+
+
+### Bug Fixes
+
+* better design schedule details ([27685b4](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/27685b41fc8ebf3ef5941cbc05cc1f7da8205a4f))
+* handle show image in parental lock by layout mode instead orientation ([ec63b2d](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/ec63b2dfec6a2b0675490c5309d1f986ba5069f0)), closes [KLL-2150](https://calmisland.atlassian.net/browse/KLL-2150)
+* **hfs:** can't upload pdf files ([863577a](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/863577a9dd40a725ac724269e261e8b6807c5a1e)), closes [KLL-2420](https://calmisland.atlassian.net/browse/KLL-2420)
+* improve the canvas clearing functionality ([2856a0b](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/2856a0b6a0099333d8e1a221d57f1b3455435b7d)), closes [KLL-2069](https://calmisland.atlassian.net/browse/KLL-2069)
+* improving observe in viewport feature ([3ecd32c](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/3ecd32cdbd2d3441cf05b389eabfa8ff8ff9d662)), closes [KLL-2222](https://calmisland.atlassian.net/browse/KLL-2222)
+* missing translation for anytime study ([0e23066](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/0e23066b65a00b725a6e2d5e00f250f64f7095f5))
+* remove n/a when load schedule dialog ([8f1aacd](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/8f1aacdff826e60c35038e8da4d2a035b33d6442)), closes [KLL-2063](https://calmisland.atlassian.net/browse/KLL-2063)
+* update schedule design ([ba6fc2c](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/ba6fc2cd68771189a8492a12af2005ae3ebaec8c)), closes [Feat/KLL-2346](https://calmisland.atlassian.net/browse/KLL-2346) [KLL-2346](https://calmisland.atlassian.net/browse/KLL-2346)
+
 ## [3.8.0-internal.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.8.0-internal.0%0Dv3.7.0) (2021-12-28)
 
 
