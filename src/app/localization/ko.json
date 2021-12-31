@@ -241,5 +241,6 @@
     "scheduleDetails.error.downloadFail": "다운로드가 실패했습니다. 인터넷 연결을 확인하고 다시 시도하십시오.",
     "live.speechRecognition.error.accessDisabled": "Access to speech recognition is disabled",
     "live.class.updateRequired.title": "iOS Update Required",
-    "live.class.updateRequired.body": "We recommend that you update your device to {version} or later to enjoy the full KidsLoop experience."
+    "live.class.updateRequired.body": "We recommend that you update your device to {version} or later to enjoy the full KidsLoop experience.",
+    "hamburger.organization": "Organization"
 }
