@@ -241,5 +241,6 @@
     "scheduleDetails.error.downloadFail": "Download failed. Check your internet connection and try again.",
     "live.speechRecognition.error.accessDisabled": "Access to speech recognition is disabled",
     "live.class.updateRequired.title": "iOS Update Required",
-    "live.class.updateRequired.body": "We recommend that you update your device to {version} or later to enjoy the full KidsLoop experience."
+    "live.class.updateRequired.body": "We recommend that you update your device to {version} or later to enjoy the full KidsLoop experience.",
+    "hamburger.organization": "Organization"
 }
