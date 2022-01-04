@@ -47,6 +47,10 @@ export function DevSelectRegion (){
             id: `auth.kidsloop.live`,
             name: `Production`,
         },
+        {
+            id: `auth.sso.kidsloop.live`,
+            name: `SSO`,
+        }
     ];
 
     const [ selectedRegion, setSelectedRegion ] = useRecoilState(selectedRegionState);
