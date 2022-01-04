@@ -207,6 +207,20 @@ const DefaultRegions: Region[] = [
         },
         features: [ FeatureFlag.ONLY_OBSERVE_IN_VIEWPORT ]
     },
+    {
+        id: `auth.sso.kidsloop.live`,
+        name: `SSO`,
+        development: true,
+        services: {
+            auth: `https://auth.sso.kidsloop.live`,
+            live: `https://live.sso.kidsloop.live`,
+            cms: `https://cms.sso.kidsloop.live`,
+            sfu: `https://live.sso.kidsloop.live/sfu`,
+            user: `https://api.sso.kidsloop.live/user/`,
+            privacy: `https://kidsloop.net/policies/privacy-notice`,
+        },
+        features: [ FeatureFlag.ONLY_OBSERVE_IN_VIEWPORT ]
+    },
 ];
 
 function createRegionFromEnvironment (): Region {
