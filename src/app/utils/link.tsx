@@ -7,8 +7,8 @@ export function generateDescriptionHasHyperLink (description: string, onClick: (
     return texts.map((url) => URL_REGEX.test(url)
         ? (
             <Link
+                href={undefined}
                 variant="body1"
-                href="#"
                 onClick={() => onClick(url)}
             >
                 {`${url} `}
