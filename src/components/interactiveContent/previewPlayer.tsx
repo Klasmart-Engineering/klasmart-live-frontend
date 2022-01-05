@@ -133,16 +133,20 @@ export function PreviewPlayer ({
             if(isTeacher){
                 // DEFAULT VIDEO
                 const video = recordedIframeItem?.contentWindow?.document.getElementsByTagName(`video`);
-                const videoList = Array.prototype.slice.call(video);
-                videoList.forEach(video => video.muted=true);
+                if(video) {
+                    const videoList = Array.prototype.slice.call(video);
+                    videoList.forEach(video => video.muted=true);
+                }
 
                 // YOUTUBE
                 const h5pYoutube = recordedIframeItem?.contentWindow?.document.getElementsByClassName(`h5p-youtube`);
-                const youtubeVideoList = Array.prototype.slice.call(h5pYoutube);
-                youtubeVideoList.forEach(video => {
-                    const iframeYoutube = video.getElementsByTagName(`iframe`)[0];
-                    iframeYoutube.src += `&mute=1`;
-                });
+                if(h5pYoutube) {
+                    const youtubeVideoList = Array.prototype.slice.call(h5pYoutube);
+                    youtubeVideoList.forEach(video => {
+                        const iframeYoutube = video.getElementsByTagName(`iframe`)[0];
+                        iframeYoutube.src += `&mute=1`;
+                    });
+                }
             }
             await sleep(800); // Await to make sure we resize correctly
         }
