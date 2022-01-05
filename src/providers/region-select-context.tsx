@@ -156,6 +156,19 @@ const DefaultRegions: Region[] = [
         },
     },
     {
+        id: `auth.kidsloop.pk`,
+        name: `Pakistan`,
+        development: false,
+        services: {
+            auth: `https://auth.kidsloop.pk`,
+            live: `https://live.kidsloop.pk`,
+            cms: `https://cms.kidsloop.pk`,
+            sfu: `https://live.kidsloop.pk/sfu`,
+            user: `https://api.kidsloop.pk/user/`,
+            privacy: `https://kidsloop.net/policies/privacy-notice`,
+        },
+    },
+    {
         id: `auth.stage.kidsloop.live`,
         name: `Staging`,
         development: true,
