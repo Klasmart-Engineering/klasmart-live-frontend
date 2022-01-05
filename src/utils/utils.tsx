@@ -1,3 +1,4 @@
+import StyledIcon from "@/components/styled/icon";
 import {
     ContentType,
     InteractiveMode,
@@ -7,15 +8,17 @@ import { MaterialTypename } from "@/types/lessonMaterial";
 import {
     Drawer,
     Fade,
+    Grid,
     makeStyles,
     Paper,
     Popper,
     Theme,
     Typography,
 } from "@material-ui/core";
-import React,
-{ useState } from "react";
-import { useRecoilState } from "recoil";
+import { grey } from "@material-ui/core/colors";
+import { ExclamationCircleFill as WarningIcon } from '@styled-icons/bootstrap/ExclamationCircleFill';
+import React from "react";
+import { useRecoilValue } from "recoil";
 
 interface StyledDrawerProps {
 	children?: any;
@@ -56,15 +59,21 @@ const useStyles = makeStyles((theme: Theme) => ({
         overflowY: `auto`,
         boxShadow: `0 1px 2px 0 rgba(0, 0, 0, 0.075), 0 2px 12px 0px rgba(0, 0, 0, 0.065)`,
     },
+    alertPopper: {
+        backgroundColor: grey[100],
+        color: grey[700],
+        padding: theme.spacing(1),
+        width: 411,
+    },
 }));
 
 function StyledDrawer (props: StyledDrawerProps) {
     const classes = useStyles();
 
-    const [ drawerWidth, setDrawerWidth ] = useState<any>(340);
+    const DRAWER_WIDTH = 340;
     const { children, active } = props;
 
-    const [ activeTab, setActiveTab ] = useRecoilState(activeTabState);
+    const activeTab = useRecoilValue(activeTabState);
 
     return (
         <Drawer
@@ -77,7 +86,7 @@ function StyledDrawer (props: StyledDrawerProps) {
             PaperProps={{
                 style: {
                     position: `absolute`,
-                    width: drawerWidth,
+                    width: DRAWER_WIDTH,
                 },
             }}
             BackdropProps={{
@@ -92,7 +101,7 @@ function StyledDrawer (props: StyledDrawerProps) {
             }}
             variant="persistent"
             style={{
-                width: active ? drawerWidth : 0,
+                width: active ? DRAWER_WIDTH : 0,
             }}
         >
             <div
@@ -109,21 +118,21 @@ export { StyledDrawer };
 interface StyledPopperProps {
 	children: any;
 	open?: boolean;
-	anchorEl?: any;
+	anchorEl?: HTMLElement;
 }
 
 function StyledPopper (props: StyledPopperProps) {
     const classes = useStyles();
     const {
         children,
-        open,
+        open = false,
         anchorEl,
     } = props;
 
     return (
         <Popper
             transition
-            open={open ? true : false}
+            open={open}
             anchorEl={anchorEl}
             disablePortal={false}
             placement="top"
@@ -143,6 +152,66 @@ function StyledPopper (props: StyledPopperProps) {
 
 export { StyledPopper };
 
+interface AlertPopperProps {
+	title: React.ReactNode;
+	open?: boolean;
+	anchorEl?: HTMLElement;
+}
+
+function AlertPopper (props: AlertPopperProps) {
+    const classes = useStyles();
+    const {
+        title,
+        open = false,
+        anchorEl,
+    } = props;
+
+    return (
+        <Popper
+            transition
+            open={open}
+            anchorEl={anchorEl}
+            disablePortal={false}
+            placement="top"
+            modifiers={{
+                preventOverflow: {
+                    boundariesElement: document.getElementById(`main-content`),
+                },
+                offset: {
+                    enabled: true,
+                    offset: `10,10`,
+                },
+            }}
+            className={classes.popperRoot}
+        >
+            <Fade in={open}>
+                <Paper className={classes.popperPapper}>
+                    <Grid
+                        container
+                        direction="row"
+                        alignItems="center"
+                        justifyContent="space-around"
+                        className={classes.alertPopper}
+                    >
+                        <Grid item>
+                            <StyledIcon
+                                icon={<WarningIcon />}
+                                size={`medium`}
+                                color={grey[400]}
+                            />
+                        </Grid>
+                        <Grid item>
+                            <Typography>{title}</Typography>
+                        </Grid>
+                    </Grid>
+                </Paper>
+            </Fade>
+        </Popper>
+    );
+}
+
+export { AlertPopper };
+
 interface TabPanelProps {
 	children?: React.ReactNode;
 	index: any;
@@ -156,7 +225,6 @@ function TabPanel (props: TabPanelProps) {
         index,
         ...other
     } = props;
-    const classes = useStyles();
 
     return (
         <div

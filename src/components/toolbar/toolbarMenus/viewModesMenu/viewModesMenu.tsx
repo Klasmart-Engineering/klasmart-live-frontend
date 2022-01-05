@@ -17,7 +17,7 @@ import { PresentationChartBar as PresentIcon } from "@styled-icons/heroicons-sol
 import { ScreenShare as ScreenShareIcon } from "@styled-icons/material/ScreenShare";
 import React,
 { useContext } from "react";
-import { BrowserView  } from "react-device-detect";
+import { isBrowser } from "react-device-detect";
 import { useIntl } from "react-intl";
 import {
     useRecoilState,
@@ -56,7 +56,8 @@ function ViewModesMenu (props:ViewModesMenuProps) {
         case InteractiveMode.PRESENT :
             setInteractiveMode(InteractiveMode.PRESENT);
             break;
-        case InteractiveMode.SCREENSHARE :
+        case InteractiveMode.SCREENSHARE:
+            if (!isBrowser) return;
             screenShare.start();
             break;
         }
@@ -74,7 +75,7 @@ function ViewModesMenu (props:ViewModesMenuProps) {
                     title={intl.formatMessage({
                         id: `viewMode.onStage`,
                     })}
-                    icon={<OnStageIcon />}
+                    icon={OnStageIcon}
                     active={interactiveMode === InteractiveMode.ONSTAGE}
                     onClick={() => handleViewModesClick(InteractiveMode.ONSTAGE)}
                 />
@@ -84,7 +85,7 @@ function ViewModesMenu (props:ViewModesMenuProps) {
                     title={intl.formatMessage({
                         id: `viewMode.observe`,
                     })}
-                    icon={<ObserveIcon />}
+                    icon={ObserveIcon}
                     active={interactiveMode === InteractiveMode.OBSERVE && !observeOpen}
                     onClick={() => handleViewModesClick(InteractiveMode.OBSERVE)}
                 />
@@ -93,22 +94,24 @@ function ViewModesMenu (props:ViewModesMenuProps) {
                     title={intl.formatMessage({
                         id: `viewMode.present`,
                     })}
-                    icon={<PresentIcon />}
+                    icon={PresentIcon}
                     active={interactiveMode === InteractiveMode.PRESENT}
                     onClick={() => handleViewModesClick(InteractiveMode.PRESENT)}
                 />
-
-                <BrowserView>
-                    <ViewMode
-                        title={intl.formatMessage({
-                            id: `viewMode.screenShare`,
-                        })}
-                        icon={<ScreenShareIcon />}
-                        active={interactiveMode === InteractiveMode.SCREENSHARE}
-                        onClick={() => handleViewModesClick(InteractiveMode.SCREENSHARE)}
-                    />
-                </BrowserView>
-
+                <ViewMode
+                    title={intl.formatMessage({
+                        id: `viewMode.screenShare`,
+                    })}
+                    icon={ScreenShareIcon}
+                    active={interactiveMode === InteractiveMode.SCREENSHARE && isBrowser}
+                    disabled={!isBrowser}
+                    disabledTooltip={intl.formatMessage({
+                        id: `live.class.shareScreen.error.notAvailable`,
+                    }, {
+                        strong: (modeName) => <strong>{modeName}</strong>,
+                    })}
+                    onClick={() => handleViewModesClick(InteractiveMode.SCREENSHARE)}
+                />
                 <ObserveWarning
                     open={observeOpen}
                     onClose={() => setObserveOpen(false)}
@@ -118,7 +121,6 @@ function ViewModesMenu (props:ViewModesMenuProps) {
                         setInteractiveMode(InteractiveMode.OBSERVE);
                     }}
                 />
-
             </Grid>
         </StyledPopper>
     );
