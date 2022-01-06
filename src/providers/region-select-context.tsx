@@ -177,6 +177,7 @@ const DefaultRegions: Region[] = [
             user: `https://api.kidsloop.pk/user/`,
             privacy: `https://kidsloop.net/policies/privacy-notice`,
         },
+        features: [ FeatureFlag.ONLY_OBSERVE_IN_VIEWPORT ]
     },
     {
         id: `auth.stage.kidsloop.live`,
