@@ -38,6 +38,7 @@ import React,
     useState,
 } from "react";
 import { FormattedMessage } from "react-intl";
+import { useHistory } from "react-router-dom";
 import { useRecoilState } from "recoil";
 
 const config = require(`@/../package.json`);
@@ -91,6 +92,7 @@ export default function MenuDrawer () {
     const { width } = useWindowSize();
     const theme = useTheme();
     const { actions } = useAuthenticationContext();
+    const history = useHistory();
     const isSmUp = useMediaQuery(theme.breakpoints.up(`sm`));
     const selectedOrganization = useSelectedOrganizationValue();
     const displayPrivacyPolicy = useDisplayPrivacyPolicy();
@@ -133,10 +135,7 @@ export default function MenuDrawer () {
             });
             break;
         case MenuDrawerItem.SETTINGS:
-            setDialogs({
-                ...dialogs,
-                isSettingsOpen: true,
-            });
+            history.push(`/settings`);
             break;
         case MenuDrawerItem.POLICY:
             setParentalLock(true);

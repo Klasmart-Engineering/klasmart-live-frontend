@@ -24,8 +24,6 @@ export const dialogsState = atom({
         isSelectOrganizationOpen: false,
         isSelectUserOpen: false,
         isParentalLockOpen: false,
-        isSettingsOpen: false,
-        isSettingsLanguageOpen: false,
         isShowNoOrgProfile: false,
         isShowNoStudentRole: false,
     },
