@@ -1,5 +1,6 @@
 import ViewMode from "./viewMode";
 import ObserveWarning from "@/components/observeWarning";
+import { OBSERVE_WARNING_DEFAULT } from "@/config";
 import { InteractiveMode } from "@/pages/utils";
 import { ScreenShareContext } from "@/providers/screenShareProvider";
 import {
@@ -39,7 +40,7 @@ function ViewModesMenu (props:ViewModesMenuProps) {
     const screenShare = useContext(ScreenShareContext);
 
     const ObserveWarningActive = () => {
-        const checkShow = localStorage.getItem(`ObserveWarning`) !== null ? localStorage.getItem(`ObserveWarning`) : `true`;
+        const checkShow = (localStorage.getItem(`ObserveWarning`) ?? OBSERVE_WARNING_DEFAULT) === `true`;
         checkShow ? setObserveOpen(true) : setInteractiveMode(InteractiveMode.OBSERVE);
     };
 
