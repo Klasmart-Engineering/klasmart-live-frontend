@@ -5,6 +5,7 @@ const DESTINATION_FILE_URI = 1;
 const SOURCE_CAMERA = 1;
 const SOURCE_CAMERAROLL = 2;
 const MEDIA_TYPE_ALL = 2;
+const MEDIA_TYPE_PHOTO = 0;
 
 export const ACCEPT_MIME_TYPES =
     `text/plain,` +
@@ -119,14 +120,14 @@ export class FileSelectService implements IFileSelectService {
         });
     }
 
-    selectFromGallery (): Promise<File> {
+    selectFromGallery (isAndroid: boolean): Promise<File> {
         const camera = (navigator as any).camera;
         if (!camera) return Promise.reject(`No camera available.`);
 
         const options = {
             sourceType: SOURCE_CAMERAROLL,
             destinationType: DESTINATION_FILE_URI,
-            mediaType: MEDIA_TYPE_ALL,
+            mediaType: isAndroid ? MEDIA_TYPE_PHOTO : MEDIA_TYPE_ALL,
         };
 
         const selectGalleryProcedure = new Promise<File>((resolve, reject) => {
