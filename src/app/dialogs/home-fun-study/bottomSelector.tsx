@@ -133,7 +133,7 @@ export function BottomSelector ({
                             </Box>
                         </Button>
                     </Grid>
-                    { !isAndroid ? <Grid
+                    <Grid
                         item
                         xs>
                         <Button
@@ -160,7 +160,7 @@ export function BottomSelector ({
                                 </Grid>
                             </Box>
                         </Button>
-                    </Grid> : <></> }
+                    </Grid>
                 </Grid>
             </SwipeableDrawer>
         </React.Fragment>

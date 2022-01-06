@@ -537,6 +537,7 @@ function HomeFunStudyContainer ({
     const [ uploadedAttachment, setUploadedAttachment ] = useState<{ itemId: string; resourceId: string }>();
     const [ deletedAssignmentItemId, setDeletedAssignmentItemId ] = useState<string>();
     const [ uploadProgress, setUploadProgress ] = useState<{ itemId: string; progress: number }>();
+    const { isAndroid } = useContext(CordovaSystemContext);
 
     function generateAssignmentItemId () {
         return Math.random().toString(36).substring(7);
@@ -846,7 +847,7 @@ function HomeFunStudyContainer ({
             permissionTypes: [ PermissionType.READ_STORAGE ],
             onSuccess: (hasPermission) => {
                 if (hasPermission) {
-                    fileSelectService?.selectFromGallery().then(file => {
+                    fileSelectService?.selectFromGallery(isAndroid).then(file => {
                         console.log(`selected from gallery: ${file.name}`);
                         setOpenButtonSelector(false);
                         handleSelectedFile(file);
