@@ -120,3 +120,9 @@ export const menuOpenState = atom({
 export const useMenuOpen = () => useRecoilState(menuOpenState);
 export const useMenuOpenValue = () => useRecoilValue(menuOpenState);
 export const useSetMenuOpen = () => useSetRecoilState(menuOpenState);
+
+export const showedUpgradeDevicePopupState = atom({
+    key: `showedUpgradeDevicePopup`,
+    default: false,
+    effects_UNSTABLE: [ persistAtom ]
+})

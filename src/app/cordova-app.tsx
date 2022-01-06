@@ -1,5 +1,5 @@
 import Join from "../pages/join/join";
-import { RoomWithContext } from "../pages/room/room-with-context";
+import { RoomWithContext } from "@/pages/room/room-with-context";
 import { useAuthenticationContext } from "./context-provider/authentication-context";
 import {
     SelectOrgDialog,
@@ -18,6 +18,7 @@ import {
     dialogsState,
     shouldShowNoOrgProfileState,
     shouldShowNoStudentRoleState,
+    showedUpgradeDevicePopupState,
 } from "./model/appModel";
 import { Auth } from "./pages/account/auth";
 import { NoPageFoundDialog } from "./pages/no-pages/noPageFoundDialog";
@@ -39,6 +40,10 @@ import {
     useRecoilState,
     useRecoilValue,
 } from "recoil";
+import {useSelectedUserValue} from "@/app/data/user/atom";
+import {useCordovaSystemContext} from "@/app/context-provider/cordova-system-context";
+import {usePopupContext} from "@/app/context-provider/popup-context";
+import {useIntl} from "react-intl";
 
 export function App ({ history }: {
     history: any;
@@ -54,6 +59,11 @@ export function App ({ history }: {
     const cmsQueryClient = useQueryClient();
     const shouldShowNoOrgProfile = useRecoilValue(shouldShowNoOrgProfileState);
     const shouldShowNoStudentRole = useRecoilValue(shouldShowNoStudentRoleState);
+    const user = useSelectedUserValue();
+    const { isIOS, isAndroid, shouldUpgradeDevice } = useCordovaSystemContext();
+    const [ showedUpgradeDevicePopup, setShowedUpgradeDevicePopup ] = useRecoilState(showedUpgradeDevicePopupState);
+    const { showPopup } = usePopupContext();
+    const intl = useIntl();
 
     useEffect(() => {
         console.log({
@@ -83,6 +93,36 @@ export function App ({ history }: {
         shouldShowNoOrgProfile,
         shouldShowNoStudentRole,
     ]);
+
+    useEffect(() => {
+        if(!user || !shouldUpgradeDevice || showedUpgradeDevicePopup) return;
+
+        setShowedUpgradeDevicePopup(true);
+        if(isIOS) {
+            showPopup({
+                variant: `info`,
+                title: intl.formatMessage({
+                    id: `live.class.updateRequired.title`,
+                    defaultMessage: `iOS Update Required`,
+                }),
+                description: [
+                    intl.formatMessage({
+                        id: `live.class.updateRequired.body`,
+                        defaultMessage: `We recommend that you update your device to {version} or later to enjoy the full KidsLoop experience`,
+                    }, {version: `<b>iOS 15.1</b>`}),
+                ],
+                closeLabel: intl.formatMessage({
+                    id: `common_ok`,
+                    defaultMessage: `OK`,
+                }),
+            });
+        }
+        else if(isAndroid) {
+            // TODO: Implement popup for Android if needed
+        }
+
+
+    }, [user, isIOS, showedUpgradeDevicePopup, shouldUpgradeDevice]);
 
     return (
         <Grid

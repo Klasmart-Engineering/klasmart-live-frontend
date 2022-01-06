@@ -4,12 +4,16 @@ import {
     useEffect,
     useState,
 } from "react";
+import {Device} from "@/app/types/device";
+
+declare var device: Device; // device from plugin cordova-plugin-device
 
 const useCordovaInitialize = (backExitApplication?: boolean, callbackBackButton?: () => void, skipInitEffects?: boolean) => {
     const [ cordovaReady, setCordovaReady ] = useState(false);
     const [ permissions, setPermissions ] = useState(false);
     const [ isIOS, setIsIOS ] = useState<boolean>(false);
     const [ isAndroid, setIsAndroid ] = useState<boolean>(false);
+    const [ deviceInfo, setDeviceInfo ] = useState<Device>();
 
     const { updateLayout } = useVideoLayoutUpdate(null);
 
@@ -93,6 +97,7 @@ const useCordovaInitialize = (backExitApplication?: boolean, callbackBackButton?
 
             setIsAndroid(cordova.platformId === `android`);
             setIsIOS(cordova.platformId === `ios`);
+            setDeviceInfo(device);
 
             setCordovaReady(true);
 
@@ -145,6 +150,7 @@ const useCordovaInitialize = (backExitApplication?: boolean, callbackBackButton?
         requestIosCameraPermission,
         isIOS,
         isAndroid,
+        deviceInfo
     };
 };
 

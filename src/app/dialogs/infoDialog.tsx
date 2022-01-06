@@ -76,8 +76,9 @@ export function InfoDialog ({
                                     item
                                     xs>
                                     <Typography
+                                        component={"div"}
                                         variant="body2"
-                                        color={`textSecondary`}>{item}</Typography>
+                                        color={`textSecondary`}><div dangerouslySetInnerHTML={{__html: item}}/></Typography>
                                 </Grid>)
                         }
                     </Grid>
