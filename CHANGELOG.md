@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.8.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.8.0%0Dv3.8.0-internal.2) (2022-01-06)
+
+
+### Features
+
+* add gallery option and enable access for android ([28af4c4](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/28af4c4181aa7f750b13d7b098389c1bbd59eab8)), closes [KLL-1410](https://calmisland.atlassian.net/browse/KLL-1410)
+* inform teacher unsupported screen ([defabef](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/defabef612ecd40b5fd67c61ca1842674d392af5)), closes [feat/KLL-2040](https://calmisland.atlassian.net/browse/KLL-2040)
+* settings and selectLanguage as Pages ([297893d](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/297893dea702760fc0ad4b13659dc81fd1cfd932)), closes [KLL-2209](https://calmisland.atlassian.net/browse/KLL-2209) [KLL-2208](https://calmisland.atlassian.net/browse/KLL-2208)
+
+
+### Bug Fixes
+
+* add SSO region definition ([da0adbe](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/da0adbe7059bf15a0ddd18b2b8d17d8f120ca7da))
+* **app:** add pop-up to inform users about limitations with specific iOS versions ([af4d8a4](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/af4d8a4702a575699b4167f28bfd1b6497e60e50)), closes [KLL-1917](https://calmisland.atlassian.net/browse/KLL-1917)
+* check if exist before mute video on Observe Mode ([07424c8](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/07424c8b76e43a1cdaa91518de687c245d8e3bb7))
+* observe warning popup ([84f5d55](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/84f5d55fd180d6eed35758e5ceb5493275131683)), closes [KLL-2432](https://calmisland.atlassian.net/browse/KLL-2432)
+* parental lock screen is not displayed when user tap on hyperlink in anytime study ([2425229](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/24252295a84a1f4d70a8371dc9ce1703ceb56f54)), closes [fix/KLL-2342](https://calmisland.atlassian.net/browse/KLL-2342)
+* parentalGate image to cover the sides of round rect ([4af90e6](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/4af90e67604e7511b3d04de54ee092d6c8bb4524))
+
 ## [3.8.0-internal.2](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.8.0-internal.2%0Dv3.8.0-internal.1) (2021-12-30)
 
 
