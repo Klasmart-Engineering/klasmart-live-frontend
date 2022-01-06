@@ -31,6 +31,8 @@ import {
     useRecoilState,
     useSetRecoilState,
 } from "recoil";
+import {Device} from "@/app/types/device";
+import semver from "semver";
 
 const initialHref = location.href;
 
@@ -52,6 +54,8 @@ type CordovaSystemContext = {
     ready: boolean;
     isIOS: boolean;
     isAndroid: boolean;
+    deviceInfo: Device | undefined;
+    shouldUpgradeDevice: boolean;
     devicePermissions: boolean;
     restart?: () => void;
     quit?: () => void;
@@ -69,6 +73,8 @@ export const CordovaSystemContext = createContext<CordovaSystemContext>({
     devicePermissions: false,
     isIOS: false,
     isAndroid: false,
+    deviceInfo: undefined,
+    shouldUpgradeDevice: false,
     requestPermissions: () => undefined,
 });
 
@@ -82,6 +88,7 @@ export function CordovaSystemProvider ({ children, history }: Props) {
     const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
     const setShouldClearCookie = useSetRecoilState(shouldClearCookieState);
     const isBackToPreviousScreen = selectedUser && (dialogs.isSelectOrganizationOpen || dialogs.isSelectUserOpen);
+    const [ shouldUpgradeDevice, setShouldUpgradeDevice ] = useState(false);
 
     function addOnBack (onBackItem: OnBackItem) {
         onBackQueue.current.push(onBackItem);
@@ -148,6 +155,7 @@ export function CordovaSystemProvider ({ children, history }: Props) {
         cordovaReady,
         isIOS,
         isAndroid,
+        deviceInfo
     } = useCordovaInitialize(false, () => {
         const isRootPage = window.location.hash === `#/schedule` || window.location.hash === `#/`;
         const isRoomPage = window.location.hash === `#/room`;
@@ -260,6 +268,18 @@ export function CordovaSystemProvider ({ children, history }: Props) {
 
     };
 
+    useEffect(() => {
+        if(!deviceInfo) return;
+
+        // use semver.coerce to parse 15.1 to 15.1.0
+        if(isIOS && !semver.satisfies(semver.coerce(deviceInfo.version)?.version ?? deviceInfo.version, `14.3.0 - 14.8.0 || >=15.1.0`)) {
+            setShouldUpgradeDevice(true);
+        }
+        else if(isAndroid) {
+            // TODO: Implement for Android if needed
+        }
+    }, [isIOS, isAndroid, deviceInfo]);
+
     return (
         <CordovaSystemContext.Provider value={{
             ready: cordovaReady,
@@ -268,6 +288,8 @@ export function CordovaSystemProvider ({ children, history }: Props) {
             quit,
             isIOS,
             isAndroid,
+            deviceInfo,
+            shouldUpgradeDevice,
             addOnBack: addOnBack,
             removeOnBack: removeOnBack,
             requestPermissions: requestPermissions,
