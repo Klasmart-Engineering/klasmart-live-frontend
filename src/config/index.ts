@@ -10,6 +10,7 @@ export const URL_REGEX = /(ftp|https?):\/\/([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=
 export const AUDIO_GLOBALLY_MUTED_DEFAULT = true;
 export const VIDEO_GLOBALLY_MUTED_DEFAULT = true;
 export const schedulePageWindowItemHeightToPageSize = (windowHeight: number, itemHeight: number) => Math.floor((windowHeight * 1.5) / itemHeight);
+export const OBSERVE_WARNING_DEFAULT = `true`;
 export const THEME_COLOR_PRIMARY_DARK_DEFAULT = `#1896ea`;
 export const THEME_COLOR_PRIMARY_LIGHT_DEFAULT = `#344966`;
 export const THEME_COLOR_PRIMARY_DEFAULT = `#344966`;

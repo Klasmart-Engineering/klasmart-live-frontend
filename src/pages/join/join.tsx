@@ -11,6 +11,7 @@ import MediaDeviceSelect from "@/components/mediaDeviceSelect";
 import StyledButton from "@/components/styled/button";
 import StyledIcon from "@/components/styled/icon";
 import StyledTextField from "@/components/styled/textfield";
+import { OBSERVE_WARNING_DEFAULT } from "@/config";
 import {
     CameraError,
     DeviceStatus,
@@ -468,7 +469,7 @@ function JoinRoomForm ({
         }
         setCamera(stream);
         setHasJoinedClassroom(true);
-        localStorage.setItem(`ObserveWarning`, `true`);
+        localStorage.setItem(`ObserveWarning`, OBSERVE_WARNING_DEFAULT);
 
         if (process.env.IS_CORDOVA_BUILD) {
             history.push(`/room`);
