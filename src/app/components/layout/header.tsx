@@ -1,4 +1,3 @@
-import BackButton from "./BackButton";
 import MenuDrawer from './menuDrawer';
 import { useSelectedUserValue } from "@/app/data/user/atom";
 import {
@@ -58,21 +57,11 @@ export function Header ({ isHomeRoute, setKey }: { isHomeRoute?: boolean; setKey
     const theme = useTheme();
     const [ error ] = useRecoilState(errorState);
     const [ homeFunStudy ] = useRecoilState(homeFunStudyState);
-    const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
+    const [ dialogs ] = useRecoilState(dialogsState);
 
     const selectedUser = useSelectedUserValue();
 
-    const showCloseButton = selectedUser && (dialogs.isSelectOrganizationOpen || dialogs.isSelectUserOpen || dialogs.isSettingsOpen || homeFunStudy?.open);
-    const showBackButton = dialogs.isSettingsLanguageOpen;
-
-    const handleBackClick = () => {
-        if (dialogs.isSettingsLanguageOpen) {
-            setDialogs({
-                ...dialogs,
-                isSettingsLanguageOpen: false,
-            });
-        }
-    };
+    const showCloseButton = selectedUser && (dialogs.isSelectOrganizationOpen || dialogs.isSelectUserOpen || homeFunStudy?.open);
 
     return (error.errorCode ? <></> :
         <div className={root}>
@@ -102,7 +91,7 @@ export function Header ({ isHomeRoute, setKey }: { isHomeRoute?: boolean; setKey
                                 { isHomeRoute ?
                                     <>
                                         <OpenMenuButton />
-                                    </> : showBackButton ? <BackButton onClick={handleBackClick} /> : showCloseButton && <CloseSelectOrgOrUserButton />}
+                                    </> : showCloseButton && <CloseSelectOrgOrUserButton />}
                             </Grid>
                             <Grid
                                 item
@@ -162,16 +151,6 @@ function CloseSelectOrgOrUserButton () {
                     setDialogs({
                         ...dialogs,
                         isSelectUserOpen: false,
-                    });
-                } else if (dialogs.isSettingsOpen) {
-                    setDialogs({
-                        ...dialogs,
-                        isSettingsOpen: false,
-                    });
-                } else if (dialogs.isSettingsLanguageOpen) {
-                    setDialogs({
-                        ...dialogs,
-                        isSettingsLanguageOpen: false,
                     });
                 } else if(homeFunStudy?.open){
                     setHomeFunStudy({

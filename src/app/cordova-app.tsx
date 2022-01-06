@@ -9,8 +9,6 @@ import {
     SelectUserDialog,
     useShouldSelectUser,
 } from "./dialogs/account/selectUserDialog";
-import { SettingsDialog } from "./dialogs/account/settingsDialog";
-import { SettingsLanguageDialog } from "./dialogs/account/settingsLanguageDialog";
 import { useSignOut } from "./dialogs/account/useSignOut";
 import { ExternalNavigationDialog } from "./dialogs/externalNavigationDialog";
 import { HomeFunStudyDialog } from "./dialogs/home-fun-study/homeFunStudyDialog";
@@ -24,6 +22,8 @@ import { Auth } from "./pages/account/auth";
 import { NoPageFoundDialog } from "./pages/no-pages/noPageFoundDialog";
 import SchedulePage from "./pages/schedule";
 import AnytimeStudyPage from "./pages/schedule/anytime-study";
+import SettingsPage from "./pages/settings";
+import SelectLanguagePage from "./pages/settings/select-language";
 import { UserRoute } from "./route/userRoute";
 import NoOrgFoundLogo from "@/assets/img/no_org_found_icon.svg";
 import NoStudentRoleLogo from "@/assets/img/no_student_role_icon.svg";
@@ -138,6 +138,14 @@ export function App ({ history }: {
             <Router history={history}>
                 <Switch>
                     <UserRoute
+                        path="/settings/select-language"
+                        component={SelectLanguagePage}
+                    />
+                    <UserRoute
+                        path="/settings"
+                        component={SettingsPage}
+                    />
+                    <UserRoute
                         path="/schedule/anytime-study"
                         component={AnytimeStudyPage}
                     />
@@ -168,8 +176,6 @@ export function App ({ history }: {
                     <SelectOrgDialog />
                     <SelectUserDialog />
                     <HomeFunStudyDialog />
-                    <SettingsDialog />
-                    <SettingsLanguageDialog />
                     <NoPageFoundDialog
                         open={dialogs.isShowNoOrgProfile}
                         title="signIn.noOrganization.title"

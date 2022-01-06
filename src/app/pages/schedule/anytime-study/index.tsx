@@ -8,7 +8,6 @@ import { useHistory } from "react-router";
 
 export default function AnytimeStudyPage () {
     const intl = useIntl();
-
     const history = useHistory();
 
     const handleBackClick = () => {
