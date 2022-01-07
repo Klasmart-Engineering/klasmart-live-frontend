@@ -166,9 +166,9 @@
     "schedule_studyTab": "Bài tập về nhà",
     "schedule_loadingSelectOrg": "Vui lòng chọn một tổ chức trước bằng cách nhấn vào góc trên bên trái!",
     "schedule_errorFetchTimeViews": "Rất tiếc, tải trang không thành công.",
-    "schedule_liveSubheaderToday": "HÔM NAY",
-    "schedule_liveSubheaderTomorrow": "NGÀY MAI",
-    "schedule_liveSubheaderUpcoming": "TIẾP ĐẾN",
+    "schedule_liveSubheaderToday": "Hôm nay",
+    "schedule_liveSubheaderTomorrow": "Ngày mai",
+    "schedule_liveSubheaderUpcoming": "Tiếp đến",
     "schedule_liveNoSchedule": "Không có lịch trực tuyến",
     "schedule_studyAnytimeStudy": "Bài tập không thời hạn",
     "schedule_studyHomeFunStudy": "Nhiệm vụ về nhà",
@@ -239,8 +239,8 @@
     "forParents.incorrect": "Không chính xác, vui lòng thử lại",
     "settings.version": "Phiên bản {version}",
     "scheduleDetails.error.downloadFail": "Tải xuống không thành công. Kiểm tra kết nối internet của bạn và thử lại.",
-    "live.speechRecognition.error.accessDisabled": "Access to speech recognition is disabled",
-    "live.class.updateRequired.title": "iOS Update Required",
-    "live.class.updateRequired.body": "We recommend that you update your device to {version} or later to enjoy the full KidsLoop experience.",
-    "hamburger.organization": "Organization"
+    "live.speechRecognition.error.accessDisabled": "Quyền truy cập nhận dạng giọng nói không khả dụng",
+    "live.class.updateRequired.title": "Yêu cầu cập nhật iOS",
+    "live.class.updateRequired.body": "Chúng tôi khuyên bạn nên cập nhật thiết bị của mình lên {version} để  trải nghiệm KidsLoop một cách đầy đủ.",
+    "hamburger.organization": "Tổ chức"
 }
