@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.9.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.9.0%0Dv3.8.2) (2022-01-07)
+
+
+### Features
+
+* updated icons ([f80d6f2](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/f80d6f2cb6a0067c7589aea53340d84f0a96f7fd)), closes [KLL-2429](https://calmisland.atlassian.net/browse/KLL-2429)
+
+
+### Bug Fixes
+
+* add scroll in mainViewContainer (observe mode breaks layout toolbar bottom) ([e8170fc](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/e8170fc5ed9c3c02f4e41dab1baa5e9b04906269))
+* android minimum sdk version set to 26 (8.0) ([4ebe96f](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/4ebe96f1137ed8fc5c1cd68509a2bb4d52affec1)), closes [KLL-2490](https://calmisland.atlassian.net/browse/KLL-2490)
+* remove duplicated profiles ([544d439](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/544d43956a2d9b435d167faf578a5d3ab80d1317)), closes [KLL-2496](https://calmisland.atlassian.net/browse/KLL-2496)
+* scroll bar UI is broken in schedule page on iOS ([d9eae1c](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/d9eae1ccd11e86571caffbae9b227e1ca8ba68a8)), closes [fix/KLL-2423](https://calmisland.atlassian.net/browse/KLL-2423)
+
 ### [3.8.2](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.8.2%0Dv3.8.1) (2022-01-06)
 
 
