@@ -204,8 +204,8 @@
     },
     "platforms": [
       "ios",
-      "android",
-      "browser"
+      "browser",
+      "android"
     ]
   },
   "standard-version": {

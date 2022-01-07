@@ -51,7 +51,7 @@
     <platform name="android">
         <preference name="AppendUserAgent" value="Cordova" />
         <preference name="Fullscreen" value="false" />
-        <preference name="android-minSdkVersion" value="22" />
+        <preference name="android-minSdkVersion" value="26" />
         <preference name="android-targetSdkVersion" value="30" />
         <config-file mode="merge" parent="/*" target="AndroidManifest.xml">
             <uses-permission android:name="android.permission.CAMERA" />
