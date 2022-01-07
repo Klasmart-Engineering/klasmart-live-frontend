@@ -6,8 +6,8 @@
     "join_PermissionAlertDialog_Button_close": "닫기",
     "button_submit": "제출하기",
     "button_close": "닫기",
-    "button_add_comment": "나의 의견 쓰기",
-    "button_edit_comment": "코멘트 수정",
+    "button_add_comment": "메세지 추가",
+    "button_edit_comment": "메세지 수정",
     "button_file": "파일",
     "button_camera": "카메라",
     "button_gallery": "갤러리",
@@ -184,7 +184,7 @@
     "support_file_max_size": "최대",
     "support_files": "지원되는 파일",
     "home_fun_study_your_task": "과제 설명",
-    "home_fun_study_comment": "의견을 작성해 주세요..",
+    "home_fun_study_comment": "메세지를 작성해 주세요..",
     "home_fun_study_your_comment": "나의 의견 쓰기",
     "home_fun_study_maximum_three_files": "*최대 3개의 파일",
     "home_fun_study_maximum_three_files_limited": "첨부 파일 개수는 최대 3개입니다. 새로운 파일을 추가하려면 먼저 업로드 된 파일을 삭제해주세요.",
@@ -220,7 +220,7 @@
     "homeFunStudy.title": "홈펀스터디",
     "homeFunStudy.info": "정보",
     "homeFunStudy.chooseFile": "파일 선택",
-    "homeFunStudy.comment": "메시지 남기기",
+    "homeFunStudy.comment": "나의 메세지",
     "homeFunStudy.submission.error.rejected": "해당 과제는 이미 선생님께서 평가를 완료하여 다시 제출할 수 없습니다.",
     "parentalGate.error.incorrect": "틀린 답입니다.",
     "signin.title.loading": "잠시 기다려주세요",
@@ -242,5 +242,5 @@
     "live.speechRecognition.error.accessDisabled": "Access to speech recognition is disabled",
     "live.class.updateRequired.title": "iOS Update Required",
     "live.class.updateRequired.body": "We recommend that you update your device to {version} or later to enjoy the full KidsLoop experience.",
-    "hamburger.organization": "Organization"
+    "hamburger.organization": "기관"
 }

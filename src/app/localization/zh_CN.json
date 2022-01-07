@@ -239,8 +239,8 @@
     "forParents.incorrect": "不正确，请重试",
     "settings.version": "版本{version}",
     "scheduleDetails.error.downloadFail": "下载失败。请检查您的网络连接并重试。",
-    "live.speechRecognition.error.accessDisabled": "Access to speech recognition is disabled",
-    "live.class.updateRequired.title": "iOS Update Required",
-    "live.class.updateRequired.body": "We recommend that you update your device to {version} or later to enjoy the full KidsLoop experience.",
-    "hamburger.organization": "Organization"
+    "live.speechRecognition.error.accessDisabled": "访问语音识别功能被禁用",
+    "live.class.updateRequired.title": "需要更新 iOS",
+    "live.class.updateRequired.body": "我们建议您将设备更新到{version}或更高版本，以享受完整的 KidsLoop 体验。",
+    "hamburger.organization": "机构"
 }
