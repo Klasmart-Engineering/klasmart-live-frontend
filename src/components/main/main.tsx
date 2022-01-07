@@ -33,6 +33,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     mainViewContainer: {
         display: `flex`,
+        overflowY: `auto`,
     },
     mainView: {
         padding: 10,
