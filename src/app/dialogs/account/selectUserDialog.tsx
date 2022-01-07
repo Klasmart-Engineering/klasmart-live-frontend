@@ -74,12 +74,10 @@ export function useShouldSelectUser () {
 
     const [ selectedUser, setSelectedUser ] = useSelectedUser();
 
-    const [ filteredMyUsersData, setFilteredMyUsersData ] = useState<ReadUserDto[]>([]);
+    const [ filteredMyUsersData, setFilteredMyUsersData ] = useState<ReadUserDto[]>();
 
     useEffect(() => {
-        const studentProfiles = myUsersData?.my_users
-            .filter((user) => user.organizationsWithPermission.some((organizationMembership) => organizationMembership.status === EntityStatus.ACTIVE))
-            ?? [];
+        const studentProfiles = myUsersData?.my_users.filter((user) => user.organizationsWithPermission.some((organizationMembership) => organizationMembership.status === EntityStatus.ACTIVE));
 
         setFilteredMyUsersData(studentProfiles);
     }, [ myUsersData ]);
@@ -189,7 +187,7 @@ export function SelectUserDialog () {
     const setSelectedUser = useSetSelectedUser();
     const cmsQueryClient = useQueryClient();
 
-    const [ filteredMyUsersData, setFilteredMyUsersData ] = useState<ReadUserDto[]>([]);
+    const [ filteredMyUsersData, setFilteredMyUsersData ] = useState<ReadUserDto[]>();
 
     const selectUser = useCallback((user: ReadUserDto) => {
         cmsQueryClient.getQueryCache().clear();
@@ -199,9 +197,7 @@ export function SelectUserDialog () {
     }, [ setSelectedUser ]);
 
     useEffect(() => {
-        const studentProfiles = myUsersData?.my_users
-            .filter((user) => user.organizationsWithPermission.some((organizationMembership) => organizationMembership.status === EntityStatus.ACTIVE))
-            ?? [];
+        const studentProfiles = myUsersData?.my_users.filter((user) => user.organizationsWithPermission.some((organizationMembership) => organizationMembership.status === EntityStatus.ACTIVE));
 
         setFilteredMyUsersData(studentProfiles);
     }, [ myUsersData ]);
@@ -242,7 +238,7 @@ export function SelectUserDialog () {
                     </Typography>
                 </Grid>
                 <UserList
-                    users={filteredMyUsersData}
+                    users={filteredMyUsersData ?? []}
                     selectedUser={meData?.me}
                     onClick={user => selectUser(user)}
                 />
