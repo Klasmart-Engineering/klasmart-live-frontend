@@ -6,8 +6,8 @@ import {
     useSelectedUser,
     useSetSelectedUser,
 } from "@/app/data/user/atom";
-import { ReadMyUsersDto } from "@/app/data/user/dto/readMyUsersDto";
 import { ReadUserDto } from "@/app/data/user/dto/readUserDto";
+import { EntityStatus } from "@/app/data/user/dto/sharedDto";
 import { useMeQuery } from "@/app/data/user/queries/meQuery";
 import { useMyUsersQuery } from "@/app/data/user/queries/myUsersQuery";
 import {
@@ -74,32 +74,20 @@ export function useShouldSelectUser () {
 
     const [ selectedUser, setSelectedUser ] = useSelectedUser();
 
-    const [ filteredMyUsersData, setFilteredMyUsersData ] = useState<ReadMyUsersDto>();
+    const [ filteredMyUsersData, setFilteredMyUsersData ] = useState<ReadUserDto[]>([]);
 
     useEffect(() => {
-        const filteredStudentProfiles: ReadMyUsersDto = {
-            my_users: [],
-        };
+        const studentProfiles = myUsersData?.my_users
+            .filter((user) => user.organizationsWithPermission.some((organizationMembership) => organizationMembership.status === EntityStatus.ACTIVE))
+            ?? [];
 
-        myUsersData?.my_users.map((user) => {
-            for (const organization of user.organizationsWithPermission) {
-                for (const role of organization.roles) {
-                    if (role.role_name.toLowerCase() === `student`) {
-                        filteredStudentProfiles.my_users.push(user);
-                    }
-                }
-            }
-        });
-
-        if (myUsersData) {
-            setFilteredMyUsersData(filteredStudentProfiles);
-        }
+        setFilteredMyUsersData(studentProfiles);
     }, [ myUsersData ]);
 
     const selectedValidUser = useMemo(() => {
         return selectedUser &&
             meData?.me?.user_id === selectedUser.user_id &&
-            filteredMyUsersData?.my_users?.some(user => selectedUser.user_id === user.user_id);
+            filteredMyUsersData?.some(user => selectedUser.user_id === user.user_id);
     }, [
         selectedUser,
         filteredMyUsersData,
@@ -151,7 +139,7 @@ export function useShouldSelectUser () {
         if (loading) return;
 
         if (!selectedValidUser) {
-            if (filteredMyUsersData.my_users.length === 0 && myUsersData.my_users.length > 0) {
+            if (filteredMyUsersData.length === 0 && myUsersData.my_users.length > 0) {
                 setShouldSelectUser(false);
                 setShouldShowNoStudentRole(true);
                 return;
@@ -167,7 +155,7 @@ export function useShouldSelectUser () {
                 return;
             }
 
-            selectUser(filteredMyUsersData.my_users[0]);
+            selectUser(filteredMyUsersData[0]);
             setShouldSelectUser(false);
         } else {
             setShouldSelectUser(false);
@@ -201,9 +189,7 @@ export function SelectUserDialog () {
     const setSelectedUser = useSetSelectedUser();
     const cmsQueryClient = useQueryClient();
 
-    const [ filteredMyUsersData, setFilteredMyUsersData ] = useState<ReadMyUsersDto>({
-        my_users: [],
-    });
+    const [ filteredMyUsersData, setFilteredMyUsersData ] = useState<ReadUserDto[]>([]);
 
     const selectUser = useCallback((user: ReadUserDto) => {
         cmsQueryClient.getQueryCache().clear();
@@ -213,17 +199,11 @@ export function SelectUserDialog () {
     }, [ setSelectedUser ]);
 
     useEffect(() => {
-        myUsersData?.my_users.map((user) => {
-            for (const organization of user.organizationsWithPermission) {
-                for (const role of organization.roles) {
-                    if (role.role_name.toLowerCase() === `student`) {
-                        filteredMyUsersData.my_users.push(user);
-                    }
-                }
-            }
-        });
+        const studentProfiles = myUsersData?.my_users
+            .filter((user) => user.organizationsWithPermission.some((organizationMembership) => organizationMembership.status === EntityStatus.ACTIVE))
+            ?? [];
 
-        setFilteredMyUsersData(filteredMyUsersData);
+        setFilteredMyUsersData(studentProfiles);
     }, [ myUsersData ]);
 
     return (
@@ -262,7 +242,7 @@ export function SelectUserDialog () {
                     </Typography>
                 </Grid>
                 <UserList
-                    users={filteredMyUsersData?.my_users ?? []}
+                    users={filteredMyUsersData}
                     selectedUser={meData?.me}
                     onClick={user => selectUser(user)}
                 />
