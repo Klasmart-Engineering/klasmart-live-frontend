@@ -263,7 +263,7 @@
     "common_student_count": "{count, plural, =0 {học sinh} one {học sinh} other {học sinh}}",
     "join_cameraPreviewFallback_cameraUnavailableOnPlatform": "Camera không khả dụng trên nền tảng hoặc phiên bản này. Vui lòng cập nhật thiết bị.",
     "screenShare.presenting": "Bạn đang trình bày với mọi người",
-    "screenShare.stop": "Stop Presenting",
-    "viewMode.screenShare": "Share Screen",
+    "screenShare.stop": "Dừng trình bày",
+    "viewMode.screenShare": "Chia sẻ màn hình",
     "live.class.shareScreen.error.notAvailable": "<strong>'Chia sẻ màn hình'</strong> không khả dụng trên trình duyệt di động"
 }
