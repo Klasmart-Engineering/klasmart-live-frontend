@@ -226,7 +226,6 @@
     "signin.title.loading": "잠시 기다려주세요",
     "signin.body.loading": "로그인 중입니다...",
     "live.class.shareScreen.error.notAvailable": "모바일 브라우저에서는 <strong>'화면 공유'</strong>를 사용할 수 없습니다",
-    "live.class.leave": "클래스 나가기",
     "signIn.noOrganization.title": "기관이 없어요",
     "signIn.noOrganization.body": "기관 추가를 원하신다면 학교 관리자에게 문의해주세요.",
     "common.goBack": "뒤로가기",
