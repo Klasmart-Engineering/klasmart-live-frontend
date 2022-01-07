@@ -15,6 +15,9 @@ const useStyles = makeStyles((theme) => createStyles({
         fontWeight: theme.typography.fontWeightBold as number,
         color: grey[700],
     },
+    listSubheaderRoot: {
+        margin: theme.spacing(0, 2),
+    },
 }));
 
 interface Props {
@@ -28,7 +31,9 @@ export default function ScheduleListSectionHeader (props: Props) {
     const isXsDown = useMediaQuery(theme.breakpoints.down(`xs`));
     return (
         <ListSubheader
+            disableGutters
             component="div"
+            className={classes.listSubheaderRoot}
         >
             <Typography
                 variant={isXsDown ? `subtitle1` : `h6`}
