@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.9.1](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.9.1%0Dv3.9.0) (2022-01-10)
+
+
+### Bug Fixes
+
+* no profile selected when relaunching app ([106bca0](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/106bca0eb610d2db03d2ad05d75516cc81ddf611)), closes [KLL-2496](https://calmisland.atlassian.net/browse/KLL-2496)
+
 ## [3.9.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.9.0%0Dv3.8.2) (2022-01-07)
 
 
