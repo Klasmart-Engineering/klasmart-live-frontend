@@ -20,7 +20,7 @@ import {
 import { useHttpEndpoint } from "@/providers/region-select-context";
 import { useSessionContext } from "@/providers/session-context";
 import { ClassType } from "@/store/actions";
-import { hasJoinedClassroomState } from "@/store/layoutAtoms";
+import { classEndedState, classLeftState, hasJoinedClassroomState } from "@/store/layoutAtoms";
 import {
     BrandingType,
     getOrganizationBranding,
@@ -53,7 +53,7 @@ import React,
 } from "react";
 import { FormattedMessage } from "react-intl";
 import { useHistory } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 
 const config = require(`@/../package.json`);
 
@@ -173,6 +173,8 @@ export default function Join (): JSX.Element {
     const [ loading, setLoading ] = useState(true);
     const [ branding, setBranding ] = useState<BrandingType|undefined>(undefined);
     const logo = branding?.iconImageURL || KidsLoopLogoSvg;
+    const setClassEnded = useSetRecoilState(classLeftState);
+    const setClassLeft = useSetRecoilState(classEndedState);
 
     const history = useHistory();
     const { restart } = useCordovaSystemContext();
@@ -201,6 +203,8 @@ export default function Join (): JSX.Element {
     };
 
     useEffect(() => {
+        setClassEnded(false);
+        setClassLeft(false);
         Cookies.set(`roomUserId`, `${roomId}:${user_id}`); // Used to cache H5P answers (H5P-342)
 
         setIsListeningOnDeviceChange(true);

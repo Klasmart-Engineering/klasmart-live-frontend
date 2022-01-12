@@ -5,10 +5,7 @@ import {
     TEXT_COLOR_CONSTRAST_DEFAULT,
     TEXT_COLOR_PRIMARY_DEFAULT,
 } from "@/config";
-import {
-    classEndedState,
-    classLeftState,
-} from "@/store/layoutAtoms";
+import { classLeftState } from "@/store/layoutAtoms";
 import {
     Fade,
     Grid,
@@ -21,7 +18,7 @@ import React,
 { useEffect } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useHistory } from 'react-router-dom';
-import { useRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
     container:{
@@ -72,15 +69,11 @@ function EndClass () {
     const history = useHistory();
 
     const { addOnBack } = useCordovaSystemContext();
-    const [ classLeft, setClassEnded ] = useRecoilState(classLeftState);
-    const [ classEnded, setClassLeft ] = useRecoilState(classEndedState);
+    const classLeft = useRecoilValue(classLeftState);
 
     const { restart } = useCordovaSystemContext();
 
     const onCloseButtonClick = () => {
-        setClassEnded(false);
-        setClassLeft(false);
-
         // TODO: The WebRTC context can't properly initiate another session unless the context
         // is completely restarted. This is something we'd have to solve at some point, but
         // the current workaround is to reload the entire app instead.
