@@ -1,9 +1,8 @@
 import { AssessmentStatusType } from "@/app/services/cms/IAssessmentService";
+import StyledIcon from "@/components/styled/icon";
 import { SchedulesTimeViewListItem } from "@kidsloop/cms-api-client/dist/api/schedule";
-import {
-    Grid,
-    Typography,
-} from "@material-ui/core";
+import { Typography } from "@material-ui/core";
+import { Envelope as AssessmentCompleteIcon } from "@styled-icons/fa-regular/Envelope";
 import React from "react";
 import {
     FormattedMessage,
@@ -66,27 +65,10 @@ export const StudyAssessmentStatus = (schedule: SchedulesTimeViewListItem) => {
     if (!schedule.is_home_fun) return; // currently status is only accurate for home fun studies
     switch (schedule.assessment_status) {
     case AssessmentStatusType.COMPLETE: return (
-        <Grid
-            container
-            direction="column"
-        >
-            <Grid item>
-                <Typography
-                    variant="subtitle2"
-                    color="textSecondary"
-                >
-                    <FormattedMessage id="schedule_studyAssessmentComplete1" />
-                </Typography>
-            </Grid>
-            <Grid item>
-                <Typography
-                    variant="subtitle2"
-                    color="textSecondary"
-                >
-                    <FormattedMessage id="schedule_studyAssessmentComplete2" />
-                </Typography>
-            </Grid>
-        </Grid>
+        <StyledIcon
+            icon={<AssessmentCompleteIcon/>}
+            size="medium"
+            color="#9E9E9E" />
     );
     case AssessmentStatusType.IN_PROGRESS: return (
         <Typography
