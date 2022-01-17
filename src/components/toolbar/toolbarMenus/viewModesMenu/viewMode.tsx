@@ -1,4 +1,3 @@
-import { AlertPopper } from "@/utils/utils";
 import {
     Grid,
     makeStyles,
@@ -9,11 +8,7 @@ import { grey } from "@material-ui/core/colors";
 import { StyledIcon } from '@styled-icons/styled-icon';
 import clsx from "clsx";
 import React,
-{
-    useCallback,
-    useRef,
-    useState,
-} from "react";
+{ useRef } from "react";
 import {
     LongPressDetectEvents,
     useLongPress,
@@ -57,46 +52,30 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 interface ViewModeProps {
 	active: boolean;
-	onClick: () => void;
+	onClick: (buttonRef?: React.MutableRefObject<HTMLDivElement | null>) => void;
+    onCloseAlert?: () => void;
 	icon: StyledIcon;
 	title: string;
     disabled?: boolean;
-    disabledTooltip?: React.ReactNode;
 }
 
 function ViewMode (props: ViewModeProps) {
     const {
         active,
         onClick,
+        onCloseAlert,
         icon: Icon,
         title,
         disabled,
-        disabledTooltip,
     } = props;
 
-    const buttonRef = useRef<any>();
+    const buttonRef = useRef<HTMLDivElement | null>(null);
     const classes = useStyles();
-    const [ anchorEl, setAnchorEl ] = useState<HTMLElement>();
-    const openAlertPopper = Boolean(anchorEl);
 
-    const onShow = () => {
-        if(disabled && disabledTooltip){
-            setAnchorEl(buttonRef.current);
-        }
-        onClick();
-    };
-
-    const onHide = useCallback(() => {
-        if (!disabledTooltip) return;
-        setTimeout(() => {
-            setAnchorEl(undefined);
-        }, 1500);
-    }, [ anchorEl ]);
-
-    const clickEvent = useLongPress(onShow, {
-        onStart: () => onShow(),
-        onFinish: () => onHide(),
-        onCancel: () => onHide(),
+    const clickEvent = useLongPress(() => onClick(buttonRef), {
+        onStart: () => onClick(buttonRef),
+        onFinish: () => onCloseAlert && onCloseAlert(),
+        onCancel: () => onCloseAlert && onCloseAlert(),
         threshold: 500,
         captureEvent: true,
         cancelOnMovement: false,
@@ -104,33 +83,28 @@ function ViewMode (props: ViewModeProps) {
     });
 
     return (
-        <>
-            <Grid item>
+        <Grid item>
+            <Grid
+                ref={buttonRef}
+                container
+                direction="column"
+                alignItems="center"
+                className={clsx(classes.item, {
+                    [classes.active]: active,
+                    [classes.disabled]: !active && disabled && !onCloseAlert,
+                    [classes.disabledShowTooltip]: onCloseAlert && disabled,
+                })}
+                {...clickEvent}>
                 <Grid
-                    ref={buttonRef}
-                    container
-                    direction="column"
-                    alignItems="center"
-                    className={clsx(classes.item, {
-                        [classes.active]: active,
-                        [classes.disabled]: !active && disabled && !disabledTooltip,
-                        [classes.disabledShowTooltip]: disabledTooltip && disabled,
-                    })}
-                    {...clickEvent}>
-                    <Grid item>
-                        <div className={classes.itemIcon}>{<Icon />}</div>
-                    </Grid>
-                    <Grid item>
-                        <Typography>{title}</Typography>
-                    </Grid>
+                    item
+                    className={classes.itemIcon}>
+                    <Icon />
+                </Grid>
+                <Grid item>
+                    <Typography>{title}</Typography>
                 </Grid>
             </Grid>
-            <AlertPopper
-                open={openAlertPopper}
-                anchorEl={anchorEl}
-                title={disabledTooltip}
-            />
-        </>
+        </Grid>
     );
 }
 
