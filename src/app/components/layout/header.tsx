@@ -7,6 +7,7 @@ import {
     useSetMenuOpen,
 } from "@/app/model/appModel";
 import KidsloopLogo from "@/assets/img/kidsloop_icon.svg";
+import KidsloopTextLogo from "@/assets/img/kidsloop_logo.svg";
 import StyledIcon from "@/components/styled/icon";
 import AppBar from "@material-ui/core/AppBar";
 import ButtonBase from "@material-ui/core/ButtonBase";
@@ -99,7 +100,7 @@ export function Header ({ isHomeRoute, setKey }: { isHomeRoute?: boolean; setKey
                             >
                                 <img
                                     alt="KidsLoop Logo"
-                                    src={KidsloopLogo}
+                                    src={isHomeRoute ? KidsloopTextLogo : KidsloopLogo}
                                     height={32} />
                             </Grid>
                             <Grid item>
