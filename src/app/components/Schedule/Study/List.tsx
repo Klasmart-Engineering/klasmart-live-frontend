@@ -11,6 +11,7 @@ import {
 } from "@/app/components/Schedule/shared";
 import StudyDetailsDialog from "@/app/components/Schedule/Study/Dialog/Details";
 import { useSelectedOrganizationValue } from "@/app/data/user/atom";
+import { useMeQuery } from "@/app/data/user/queries/meQuery";
 import { formatDueDateMillis } from "@/app/utils/dateTimeUtils";
 import {
     isFocused,
@@ -92,6 +93,7 @@ export default function StudyScheduleList () {
     const [ page, setPage ] = useState(SCHEDULE_PAGE_START);
     const [ items, setItems ] = useState<SchedulesTimeViewListItem[]>([]);
     const organization = useSelectedOrganizationValue();
+    const { data: meData } = useMeQuery();
 
     const organizationId = organization?.organization_id ?? ``;
     const now = new Date();
@@ -107,6 +109,7 @@ export default function StudyScheduleList () {
     const {
         data: anytimeSchedulesData,
         isFetching: isAnytimeSchedulesFetching,
+        refetch: refetchAnytimeSchedules,
     } = usePostSchedulesTimeViewList({
         org_id: organizationId,
         order_by: `schedule_at`,
@@ -147,6 +150,11 @@ export default function StudyScheduleList () {
             enabled: !!organizationId,
         },
     });
+
+    useEffect(() => {
+        refetchAnytimeSchedules();
+        refetchSchedules();
+    }, [ meData ]);
 
     const studyScheduleSections = Object
         .entries(groupBy(items, (schedule) => formatDueDateMillis(fromSecondsToMilliseconds(schedule.due_at), intl)))
