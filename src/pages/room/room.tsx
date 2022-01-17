@@ -108,7 +108,8 @@ export function Room () {
                 const startAt = new Date(classInformationData.start_at * 1000).toLocaleString(`en-GB`, dateOptions);
                 const endAt = new Date(classInformationData.end_at * 1000).toLocaleString(`en-GB`, dateOptions);
 
-                const subject = classInformationData.subjects?.at(0) ?? undefined;
+                const subject = classInformationData && classInformationData.subjects
+                                && classInformationData.subjects.length > 0 ? classInformationData.subjects[0] : undefined;
 
                 setClassInfo({
                     class_name: classInformationData.class?.name ?? `N/A`,
