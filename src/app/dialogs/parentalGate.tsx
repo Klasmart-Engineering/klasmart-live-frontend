@@ -17,6 +17,8 @@ import {
     createStyles,
     makeStyles,
     Theme,
+    useMediaQuery,
+    useTheme,
 } from "@material-ui/core";
 import red from "@material-ui/core/colors/red";
 import Grid from "@material-ui/core/Grid/Grid";
@@ -66,7 +68,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         bottom: 0,
 
         [theme.breakpoints.up(`sm`)]: {
-            top: `45%`,
+            top: `38%`,
         },
     },
     contentWrapperSmallHeight: {
@@ -84,6 +86,11 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         zIndex: 5,
         top: 67,
         padding: theme.spacing(3),
+
+        [theme.breakpoints.up(`sm`)]: {
+            paddingTop: theme.spacing(12),
+            top: 150,
+        },
     },
     classroomLayout: {
         padding: 0,
@@ -96,6 +103,17 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
     contentWidthStudyMode:{
         width: `85%`,
+
+        [theme.breakpoints.up(`sm`)]: {
+            width: `37%`,
+        },
+    },
+    captchaWidthStudyMode:{
+        width: `85%`,
+
+        [theme.breakpoints.up(`sm`)]: {
+            width: `50%`,
+        },
     },
     characterImg: {
         zIndex: 10,
@@ -140,12 +158,17 @@ export function ParentalGate ({
     const classes = useStyles();
     const { height } = useWindowSize();
     const layoutMode = useLayoutModeValue();
+    const theme = useTheme();
+    const isSmUp = useMediaQuery(theme.breakpoints.up(`sm`));
 
     const [ header, setHeader ] = useState<string>(`parentalGate.title`);
     const [ isShowError, setShowError ]  = useState<boolean>(false);
     const [ showParentCaptcha, setShowParentCaptcha ] = useState<boolean>(true);
     const [ isLayoutModeStudy, setLayoutModeStudy ] = useState<boolean>(layoutMode === LayoutMode.DEFAULT);
     const [ isSmallHeight ] = useState<boolean>(height <= 680);
+    const BADA_CHARACTER_WIDTH_MOBILE = 88;
+    const BADA_CHARACTER_WIDTH_TABLET = 200;
+
 
     useEffect(() => {
         setHeader(isWelcomeScreen ? `parentalGate.title` : `forParents.title`);
@@ -209,6 +232,7 @@ export function ParentalGate ({
                         className={classes.characterImg}
                     >
                         <img
+                            width={!isSmUp ? BADA_CHARACTER_WIDTH_MOBILE : BADA_CHARACTER_WIDTH_TABLET}
                             src={BadaCharacter} />
                     </Grid>)}
                 <Grid
@@ -256,7 +280,7 @@ export function ParentalGate ({
                         item
                         className={clsx(classes.contentWidth, {
                             [classes.paddingSmallHeight] : !isSmallHeight && isLayoutModeStudy,
-                            [classes.contentWidthStudyMode] : isLayoutModeStudy,
+                            [classes.captchaWidthStudyMode] : isLayoutModeStudy,
                         })}>
                         <CaptchaLogic
                             setError={setShowError}
