@@ -13,6 +13,7 @@ import {
     ScheduleListSection,
 } from "@/app/components/Schedule/shared";
 import { useSelectedOrganizationValue } from "@/app/data/user/atom";
+import { useMeQuery } from "@/app/data/user/queries/meQuery";
 import { formatStartEndDateTimeMillis } from "@/app/utils/dateTimeUtils";
 import {
     isFocused,
@@ -77,6 +78,7 @@ export default function LiveScheduleList () {
     const [ page, setPage ] = useState(SCHEDULE_PAGE_START);
     const [ items, setItems ] = useState<SchedulesTimeViewListItem[]>([]);
     const organization = useSelectedOrganizationValue();
+    const { data: meData } = useMeQuery();
 
     const organizationId = organization?.organization_id ?? ``;
     const now = new Date();
@@ -122,6 +124,10 @@ export default function LiveScheduleList () {
         offset: window.innerHeight / 2, // detect scrolling with an offset of half of the screen height from the bottom
         debounce: SCHEDULE_PAGINATION_DELAY,
     });
+
+    useEffect(() => {
+        refetchSchedules();
+    }, [ meData ]);
 
     useEffect(() => {
         if (scheduleError) setItems([]);
