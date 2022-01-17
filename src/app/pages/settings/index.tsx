@@ -29,8 +29,6 @@ import {
 import { useHistory } from "react-router";
 import { useRecoilState } from "recoil";
 
-const config = require(`@/../package.json`);
-
 const useStyles = makeStyles((theme: Theme) => createStyles({
     fullHeight: {
         height: `100%`,
@@ -47,9 +45,6 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         backgroundColor: `#E78FAD`,
     },
     listItemTextPrimary: {
-        fontWeight: theme.typography.fontWeightBold as number,
-    },
-    version: {
         fontWeight: theme.typography.fontWeightBold as number,
     },
 }));
@@ -124,26 +119,6 @@ export default function SettingsPage () {
                                 size={24} />
                         </ListItem>
                     </List>
-                </Grid>
-                <Grid
-                    item
-                    xs={12}>
-                    <div style={{
-                        paddingTop: theme.spacing(3),
-                        paddingBottom: theme.spacing(3),
-                    }}>
-                        <Typography
-                            noWrap
-                            variant="body1"
-                            align="center"
-                            className={classes.version}>
-                            <FormattedMessage
-                                id="settings.version"
-                                values={{
-                                    version: config.version,
-                                }} />
-                        </Typography>
-                    </div>
                 </Grid>
             </Grid>
         </>
