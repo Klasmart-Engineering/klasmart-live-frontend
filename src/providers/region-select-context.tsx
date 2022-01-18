@@ -1,4 +1,5 @@
-import {selectedRegionState} from "@/app/model/appModel";
+import { selectedRegionState } from "@/app/model/appModel";
+import { FeatureFlag } from "@/providers/feature-context";
 import React, {
     createContext,
     ReactChild,
@@ -9,8 +10,7 @@ import React, {
     useMemo,
     useState,
 } from "react";
-import {useRecoilState} from "recoil";
-import {FeatureFlag} from "@/providers/feature-context";
+import { useRecoilState } from "recoil";
 
 export type Service = "auth" | "live" | "cms" | "sfu" | "user" | "privacy"
 
@@ -51,7 +51,7 @@ const DefaultRegions: Region[] = [
             user: `https://api.kidsloop.live/user/`,
             privacy: `https://kidsloop.net/policies/privacy-notice`,
         },
-        features: []
+        features: [],
     },
     {
         id: `auth.kidsloop.net`,
@@ -65,7 +65,7 @@ const DefaultRegions: Region[] = [
             user: `https://api.kidsloop.live/user/`,
             privacy: `https://kidsloop.net/policies/privacy-notice`,
         },
-        features: []
+        features: [],
     },
     {
         id: `auth.kidsloop.co.uk`,
@@ -79,7 +79,7 @@ const DefaultRegions: Region[] = [
             user: `https://api.kidsloop.co.uk/user/`,
             privacy: `https://kidsloop.net/policies/privacy-notice`,
         },
-        features: []
+        features: [],
     },
     {
         id: `auth.kidsloop.in`,
@@ -93,7 +93,7 @@ const DefaultRegions: Region[] = [
             user: `https://api.kidsloop.in/user/`,
             privacy: `https://kidsloop.net/policies/privacy-notice`,
         },
-        features: []
+        features: [],
     },
     {
         id: `auth.kidsloop.id`,
@@ -107,7 +107,7 @@ const DefaultRegions: Region[] = [
             user: `https://api.kidsloop.id/user/`,
             privacy: `https://kidsloop.net/policies/privacy-notice`,
         },
-        features: []
+        features: [],
     },
     {
         id: `auth.kidsloop.cn`,
@@ -121,7 +121,7 @@ const DefaultRegions: Region[] = [
             user: `https://api.kidsloop.cn/user/`,
             privacy: `https://kidsloop.net/policies/privacy-notice`,
         },
-        features: []
+        features: [],
     },
     {
         id: `auth.kidsloop.vn`,
@@ -135,7 +135,7 @@ const DefaultRegions: Region[] = [
             user: `https://api.kidsloop.vn/user/`,
             privacy: `https://kidsloop.net/policies/privacy-notice`,
         },
-        features: [ FeatureFlag.ONLY_OBSERVE_IN_VIEWPORT ]
+        features: [ FeatureFlag.ONLY_OBSERVE_IN_VIEWPORT ],
     },
     {
         id: `auth.kidsloop.lk`,
@@ -149,7 +149,7 @@ const DefaultRegions: Region[] = [
             user: `https://api.kidsloop.lk/user/`,
             privacy: `https://kidsloop.net/policies/privacy-notice`,
         },
-        features: []
+        features: [],
     },
     {
         id: `auth.kidsloop.co.th`,
@@ -163,7 +163,7 @@ const DefaultRegions: Region[] = [
             user: `https://api.kidsloop.co.th/user/`,
             privacy: `https://kidsloop.net/policies/privacy-notice`,
         },
-        features: []
+        features: [],
     },
     {
         id: `auth.kidsloop.pk`,
@@ -177,7 +177,7 @@ const DefaultRegions: Region[] = [
             user: `https://api.kidsloop.pk/user/`,
             privacy: `https://kidsloop.net/policies/privacy-notice`,
         },
-        features: [ FeatureFlag.ONLY_OBSERVE_IN_VIEWPORT ]
+        features: [ FeatureFlag.ONLY_OBSERVE_IN_VIEWPORT ],
     },
     {
         id: `auth.stage.kidsloop.live`,
@@ -191,7 +191,7 @@ const DefaultRegions: Region[] = [
             user: `https://api.stage.kidsloop.live/user/`,
             privacy: `https://kidsloop.net/policies/privacy-notice`,
         },
-        features: []
+        features: [],
     },
     {
         id: `auth.alpha.kidsloop.net`,
@@ -205,7 +205,7 @@ const DefaultRegions: Region[] = [
             user: `https://api.alpha.kidsloop.net/user/`,
             privacy: `https://kidsloop.net/policies/privacy-notice`,
         },
-        features: [ FeatureFlag.ONLY_OBSERVE_IN_VIEWPORT ]
+        features: [ FeatureFlag.ONLY_OBSERVE_IN_VIEWPORT ],
     },
     {
         id: `auth.alpha.kidsloop.dev`,
@@ -219,7 +219,7 @@ const DefaultRegions: Region[] = [
             user: `https://api.alpha.kidsloop.dev/user/`,
             privacy: `https://kidsloop.net/policies/privacy-notice`,
         },
-        features: [ FeatureFlag.ONLY_OBSERVE_IN_VIEWPORT ]
+        features: [ FeatureFlag.ONLY_OBSERVE_IN_VIEWPORT ],
     },
     {
         id: `auth.sso.kidsloop.live`,
@@ -233,7 +233,49 @@ const DefaultRegions: Region[] = [
             user: `https://api.sso.kidsloop.live/user/`,
             privacy: `https://kidsloop.net/policies/privacy-notice`,
         },
-        features: [ FeatureFlag.ONLY_OBSERVE_IN_VIEWPORT ]
+        features: [ FeatureFlag.ONLY_OBSERVE_IN_VIEWPORT ],
+    },
+    {
+        id: `hub.beta.kidsloop.id`,
+        name: `Indonesia Beta`,
+        development: true,
+        services: {
+            auth: `https://auth.beta.kidsloop.id`,
+            live: `https://live.beta.kidsloop.id`,
+            cms: `https://cms.beta.kidsloop.id`,
+            sfu: `https://live.beta.kidsloop.id/sfu`,
+            user: `https://api.beta.kidsloop.id/user/`,
+            privacy: `https://kidsloop.net/policies/privacy-notice`,
+        },
+        features: [ FeatureFlag.ONLY_OBSERVE_IN_VIEWPORT ],
+    },
+    {
+        id: `hub.beta.kidsloop.vn`,
+        name: `Vietnam Beta`,
+        development: true,
+        services: {
+            auth: `https://auth.beta.kidsloop.vn`,
+            live: `https://live.beta.kidsloop.vn`,
+            cms: `https://cms.beta.kidsloop.vn`,
+            sfu: `https://live.beta.kidsloop.vn/sfu`,
+            user: `https://api.beta.kidsloop.vn/user/`,
+            privacy: `https://kidsloop.net/policies/privacy-notice`,
+        },
+        features: [ FeatureFlag.ONLY_OBSERVE_IN_VIEWPORT ],
+    },
+    {
+        id: `hub.research.kidsloop.live`,
+        name: `R&D Korea`,
+        development: true,
+        services: {
+            auth: `https://auth.research.kidsloop.live`,
+            live: `https://live.research.kidsloop.live`,
+            cms: `https://cms.research.kidsloop.live`,
+            sfu: `https://live.research.kidsloop.live/sfu`,
+            user: `https://api.research.kidsloop.live/user/`,
+            privacy: `https://kidsloop.net/policies/privacy-notice`,
+        },
+        features: [ FeatureFlag.ONLY_OBSERVE_IN_VIEWPORT ],
     },
 ];
 
@@ -253,9 +295,7 @@ function createRegionFromEnvironment (): Region {
                 user: `${process.env.ENDPOINT_API || hostWithOrigin}/user/`,
                 privacy: `https://kidsloop.net/en/policies/privacy-notice`,
             },
-            features: [
-                process.env.ONLY_OBSERVE_IN_VIEWPORT === `TRUE` ? FeatureFlag.ONLY_OBSERVE_IN_VIEWPORT : FeatureFlag.NONE
-            ]
+            features: [ process.env.ONLY_OBSERVE_IN_VIEWPORT === `TRUE` ? FeatureFlag.ONLY_OBSERVE_IN_VIEWPORT : FeatureFlag.NONE ],
         }
     );
 }
