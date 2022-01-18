@@ -6,6 +6,7 @@ import { useSessionContext } from "@/providers/session-context";
 import { MaterialTypename } from '@/types/lessonMaterial';
 import {
     CircularProgress,
+    Grid,
     IconButton,
     makeStyles,
 } from "@material-ui/core";
@@ -33,6 +34,13 @@ const PLAYLIST_FILE_NAME = `master`;
 const PLAYLIST_FILE_HOST = `/video`;
 
 const useStyles = makeStyles(() => ({
+    audio: {
+        width: `100%`,
+        minWidth: 200,
+        maxWidth: 600,
+        display: `block`,
+        margin: `0 auto`,
+    },
     video: {
         width: `100% !important`,
         height: `100% !important`,
@@ -466,17 +474,31 @@ export function ReplicatedMedia (props: React.VideoHTMLAttributes<HTMLMediaEleme
     switch (type) {
     case MaterialTypename.AUDIO:
         return (
-            <audio
-                ref={ref}
-                controls
-                playsInline
-                src={src}
-                crossOrigin="anonymous"
-                controlsList="nodownload"
-                preload="auto"
-                onContextMenu={(e) => e.preventDefault()}
-                {...mediaProps}
-            />
+            <Grid
+                container
+                style={{
+                    height: `100%`,
+                }}
+                alignItems="center"
+                justifyContent="center">
+                <Grid
+                    item
+                    xs
+                    justifyContent="center">
+                    <audio
+                        ref={ref}
+                        controls
+                        playsInline
+                        className={classes.audio}
+                        src={src}
+                        crossOrigin="anonymous"
+                        controlsList="nodownload"
+                        preload="auto"
+                        onContextMenu={(e) => e.preventDefault()}
+                        {...mediaProps}
+                    />
+                </Grid>
+            </Grid>
         );
 
     case MaterialTypename.VIDEO:
