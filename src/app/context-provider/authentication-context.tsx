@@ -70,6 +70,10 @@ const useAuthentication = () => {
         await authenticationService.refresh()
             .then(ok => {
                 setAuthenticated(ok);
+                const cookiesSync = (window as any).cookiesSync;
+                if(cookiesSync) {
+                    cookiesSync.sync();
+                }
             }).catch(err => {
                 console.error(err);
             }).finally(() => {

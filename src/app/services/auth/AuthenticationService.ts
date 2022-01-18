@@ -28,6 +28,7 @@ export class AuthenticationService implements IAuthenticationService {
                 token,
             }),
             method: `POST`,
+            credentials: `include`,
         });
 
         return response.ok;
