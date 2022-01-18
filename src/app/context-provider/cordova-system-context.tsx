@@ -12,6 +12,7 @@ import {
     OrientationType,
     shouldClearCookieState,
     useLayoutModeValue,
+    useSetLayoutMode,
     useSetDeviceOrientation,
 } from "@/app/model/appModel";
 import { sleep } from "@/utils/utils";
@@ -83,6 +84,7 @@ export function CordovaSystemProvider ({ children, history }: Props) {
     const onBackQueue = useRef<OnBackItem[]>([]); //useState is not enough fast for backPressed behaviour
     const [ permissions, setPermissions ] = useState(false);
     const layoutMode = useLayoutModeValue();
+    const setLayoutMode = useSetLayoutMode();
     const setDeviceOrientation = useSetDeviceOrientation();
     const selectedUser = useSelectedUserValue();
     const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
@@ -97,6 +99,25 @@ export function CordovaSystemProvider ({ children, history }: Props) {
     function removeOnBack (id: string) {
         onBackQueue.current = onBackQueue.current.filter(item => item.id !== id);
     }
+
+    useEffect(() => {
+        history.listen((location) => {
+            switch (location.pathname) {
+                case `/schedule/anytime-study`:
+                    setLayoutMode(LayoutMode.DEFAULT);
+                    break;
+                case `/join`:
+                    setLayoutMode(LayoutMode.CLASSROOM);
+                    break;
+                case `/room`:
+                    setLayoutMode(LayoutMode.CLASSROOM);
+                    break;
+                default:
+                    setLayoutMode(LayoutMode.DEFAULT);
+                    break;
+            }
+        })
+    }, []);
 
     useEffect(()=>{
         (async function () {

@@ -59,7 +59,6 @@ export default function StudyDetailsDialog (props: Props) {
     const { enqueueSnackbar } = useSnackbar();
     const intl = useIntl();
     const classes = useStyles();
-    const setLayoutMode = useSetRecoilState(layoutModeState);
     const [ getTokenLoading, setGetTokenLoading ] = useState(false);
     const [ parentalLock, setParentalLock ] = useState(false);
     const [ homeFunStudy, setHomeFunStudy ] = useRecoilState(homeFunStudyState);
@@ -90,7 +89,6 @@ export default function StudyDetailsDialog (props: Props) {
                 schedule_id: scheduleId,
                 live_token_type: ScheduleLiveTokenType.LIVE,
             });
-            setLayoutMode(LayoutMode.CLASSROOM);
             setToken(token);
             onClose();
             push(`/join?token=${token}`);

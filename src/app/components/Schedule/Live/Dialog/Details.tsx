@@ -56,7 +56,6 @@ export default function LiveDetailsDialog (props: Props) {
     const classes = useStyles();
     const { enqueueSnackbar } = useSnackbar();
     const intl = useIntl();
-    const setLayoutMode = useSetRecoilState(layoutModeState);
     const [ timeBeforeClassSeconds, setTimeBeforeClassSeconds ] = useState(Number.MAX_SAFE_INTEGER);
     const [ getTokenLoading, setGetTokenLoading ] = useState(false);
     const [ parentalLock, setParentalLock ] = useState(false);
@@ -105,7 +104,6 @@ export default function LiveDetailsDialog (props: Props) {
                 schedule_id: scheduleId,
                 live_token_type: ScheduleLiveTokenType.LIVE,
             });
-            setLayoutMode(LayoutMode.CLASSROOM);
             setToken(token);
             onClose();
             /* TODO: Can we get rid of the token query parameter and just use
