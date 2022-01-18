@@ -50,7 +50,19 @@ export function DevSelectRegion (){
         {
             id: `auth.sso.kidsloop.live`,
             name: `SSO`,
-        }
+        },
+        {
+            id: `auth.beta.kidsloop.id`,
+            name: `Indonesia Beta`,
+        },
+        {
+            id: `auth.beta.kidsloop.vn`,
+            name: `Vietnam Beta`,
+        },
+        {
+            id: `auth.research.kidsloop.live`,
+            name: `R&D Korea`,
+        },
     ];
 
     const [ selectedRegion, setSelectedRegion ] = useRecoilState(selectedRegionState);
