@@ -183,6 +183,7 @@ const useStylesNoItemList = makeStyles((theme: Theme) => ({
         display: `flex`,
         flexDirection: `column`,
         alignItems: `center`,
+        textAlign: `center`,
     },
     icon:{
         marginBottom: 10,

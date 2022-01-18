@@ -37,3 +37,4 @@ export const THEME_COLOR_BACKGROUND_PARENTAL_LOCK = `#eefeff`;
 export const THEME_COLOR_BACKGROUND_ICON_PARENTAL_LOCK = `#f2f6fb`;
 export const THEME_COLOR_ICON_PARENTAL_LOCK = `#6599d1`;
 export const TEXT_COLOR_MENU_DRAWER = `#000`;
+export const BG_COLOR_CAMERA = `#31313c`;

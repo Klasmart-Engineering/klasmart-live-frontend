@@ -1,3 +1,4 @@
+import { BG_COLOR_CAMERA } from "@/config";
 import {
     Grid,
     makeStyles,
@@ -11,7 +12,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         pointerEvents: `none`,
     },
     noCameraBackground: {
-        backgroundColor: `#31313c`,
+        backgroundColor: BG_COLOR_CAMERA,
         position: `absolute`,
         top: 0,
         bottom: 0,

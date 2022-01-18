@@ -2,6 +2,7 @@ import NoCamera from "./noCamera";
 import UserCameraActions from "./userCameraActions";
 import UserCameraDetails from "./userCameraDetails";
 import ReactPlayer from "@/components/react-player";
+import { BG_COLOR_CAMERA } from "@/config";
 import { useSessions } from "@/data/live/state/useSessions";
 import { Session } from "@/pages/utils";
 import { useCameraContext } from "@/providers/Camera";
@@ -27,8 +28,9 @@ import { useRecoilValue } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
-        backgroundColor: `#31313c`,
+        backgroundColor: BG_COLOR_CAMERA,
         borderRadius: 12,
+        transform: `translateZ(0)`, // Apply border-radius for Safari
         width: `100%`,
         minHeight: 96,
         margin: `0 auto`,
