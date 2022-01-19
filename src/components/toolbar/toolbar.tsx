@@ -14,6 +14,7 @@ import LessonPlanMenu from "./toolbarMenus/lessonPlanMenu/lessonPlanMenu";
 import ViewModesMenu from "./toolbarMenus/viewModesMenu/viewModesMenu";
 import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
 import useCordovaObservePause from "@/app/platform/cordova-observe-pause";
+import LeaveClassIcon from "@/assets/img/icon_leave_class.svg";
 import { useMuteMutation } from "@/data/sfu/mutations/useMuteMutation";
 import { LIVE_ON_BACK_ID } from "@/pages/room/room-with-context";
 import { InteractiveMode } from "@/pages/utils";
@@ -46,7 +47,6 @@ import {
     useMediaQuery,
     useTheme,
 } from "@material-ui/core";
-import PhoneInTalkIcon from "@material-ui/icons/PhoneInTalk";
 import { ChatSquareDotsFill as ChatIcon } from "@styled-icons/bootstrap/ChatSquareDotsFill";
 import { PencilFill as CanvasIcon } from "@styled-icons/bootstrap/PencilFill";
 import { UserVoice as OnStageIcon } from "@styled-icons/boxicons-solid/UserVoice";
@@ -68,7 +68,6 @@ import { useIntl } from "react-intl";
 import {
     useRecoilState,
     useRecoilValue,
-    useSetRecoilState,
 } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -333,10 +332,11 @@ function Toolbar () {
                     />
                     <ToolbarItemCall
                         locked={!isTeacher}
+                        isHost={hasControls}
                         tooltip={!isTeacher ? intl.formatMessage({
                             id: `toolbar_endcall_ask_to_leave`,
                         }) : undefined}
-                        icon={<PhoneInTalkIcon />}
+                        src={LeaveClassIcon}
                         onClick={() => endCall()}
                     />
                     <ToolbarItemCamera
