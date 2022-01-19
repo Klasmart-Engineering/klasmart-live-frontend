@@ -1,20 +1,44 @@
 import {
+    alpha,
     Badge,
     makeStyles,
     Theme,
     Tooltip,
+    Typography,
+    useMediaQuery,
+    useTheme,
 } from "@material-ui/core";
 import red from "@material-ui/core/colors/red";
 import LockIcon from "@material-ui/icons/Lock";
 import clsx from "clsx";
-import React,
-{ useContext } from "react";
+import React from "react";
+import { FormattedMessage } from "react-intl";
 
 const useStyles = makeStyles((theme: Theme) => ({
     itemRoot: {
         position: `relative`,
+        display: `flex`,
+        flexDirection: `column`,
+        alignItems: `center`,
+        padding: `0.9em`,
+        borderRadius: 12,
+        cursor: `pointer`,
+        "&:hover": {
+            backgroundColor: alpha(theme.palette.background.default, 0.3),
+        },
+    },
+    itemRootMd: {
+        padding: `0.1em`,
+        "& $leaveTitle": {
+            fontWeight: theme.typography.fontWeightMedium as number,
+        },
     },
     root: {
+        width: 34,
+        height: 34,
+        position: `relative`,
+        top: -5,
+        justifyContent: `center`,
         display: `flex`,
         flexDirection: `column`,
         alignItems: `center`,
@@ -23,9 +47,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         boxShadow: `0 3px 6px #fe434361`,
         borderRadius: 50,
         cursor: `pointer`,
-        padding: 15,
         transition: `all 100ms ease-in-out`,
-        margin: `0 7px`,
         "&:hover": {
             transform: `scale(1.1)`,
         },
@@ -43,8 +65,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     active: {},
     badgeRoot: {
         position: `absolute`,
-        top: 0,
-        right: 10,
+        right: 18,
     },
     badge: {
         background: `#fff`,
@@ -54,12 +75,16 @@ const useStyles = makeStyles((theme: Theme) => ({
     badgeContent: {
         fontSize: `1em`,
     },
+    leaveTitle: {
+        fontSize: `0.8em`,
+    },
 }));
 
 interface ToolbarItemCallProps {
-	icon?: any;
+	src?: string | undefined;
 	onClick?: any;
-	disabled?: boolean;
+    disabled?: boolean;
+    isHost?: boolean;
 	active?: boolean;
 	locked?: boolean;
 	tooltip?: string;
@@ -67,15 +92,18 @@ interface ToolbarItemCallProps {
 
 function ToolbarItemCall (props: ToolbarItemCallProps) {
     const {
-        icon,
+        src,
         onClick,
         disabled,
         active,
         locked,
         tooltip = false,
+        isHost = false,
     } = props;
     const classes = useStyles();
     const hasTooltip = tooltip ? true : false;
+    const theme = useTheme();
+    const isMdDown = useMediaQuery(theme.breakpoints.down(`md`));
 
     return (
         <>
@@ -84,7 +112,11 @@ function ToolbarItemCall (props: ToolbarItemCallProps) {
                 disableFocusListener={!hasTooltip}
                 disableHoverListener={!hasTooltip}
                 disableTouchListener={!hasTooltip}>
-                <div className={classes.itemRoot}>
+                <div
+                    className={clsx(classes.itemRoot, {
+                        [classes.itemRootMd]: isMdDown,
+                    })}
+                    onClick={onClick}>
                     {locked && (
                         <Badge
                             classes={{
@@ -97,10 +129,20 @@ function ToolbarItemCall (props: ToolbarItemCallProps) {
 
                     <div
                         className={clsx(classes.root, disabled && classes.disabled, active && classes.active, locked && classes.locked)}
-                        onClick={onClick}
                     >
-                        {icon}
+                        <img
+                            alt="Leave class icon"
+                            src={src}
+                            width={19}
+                            height={20}
+                        />
                     </div>
+                    <Typography
+                        align="center"
+                        className={classes.leaveTitle}
+                    >
+                        <FormattedMessage id={isHost ? `end_class` : `leave_class`} />
+                    </Typography>
                 </div>
             </Tooltip>
         </>
