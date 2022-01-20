@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.10.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.10.0%0Dv3.9.1) (2022-01-20)
+
+
+### Features
+
+* refactor alert popper in view mode menu ([6debb53](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/6debb5339800009d18c9d218c3af0fed03cabd00)), closes [KLL-2454](https://calmisland.atlassian.net/browse/KLL-2454) [KLL-2040](https://calmisland.atlassian.net/browse/KLL-2040)
+
+
+### Bug Fixes
+
+* all users gets kicked out with error when Student from App leaves Live class ([3f300ad](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/3f300ad7007a9edc36aa25ac16ee0e2cea287418)), closes [KLL-2442](https://calmisland.atlassian.net/browse/KLL-2442)
+* **app:** screen stays in landscape mode if user exit from Camera/Mic setup page by Android Back key ([9e6c439](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/9e6c439758165e82e794e2b68caf9ddac4c7875e)), closes [KLL-2089](https://calmisland.atlassian.net/browse/KLL-2089)
+* **app:** the schedule is not displayed correctly when student changes to another profile ([88f02ef](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/88f02ef699a2ceaec4bd37da76eb21ee9facaf33)), closes [KLL-2308](https://calmisland.atlassian.net/browse/KLL-2308)
+* **app:** users get logged out when they login then restart app ([d776de7](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/d776de7e1e85dddff1a93ed5d44dc58006c2102e)), closes [KLL-2192](https://calmisland.atlassian.net/browse/KLL-2192)
+* borderRadius for Safari cameras + camera default bg ([14b88ae](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/14b88ae410d83a273be826c124ee93de020a0fec))
+* center audio player ([f59a451](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/f59a45177144580535466897349c6fc32d569210)), closes [KLL-1915](https://calmisland.atlassian.net/browse/KLL-1915)
+* replace 'Assessment Complete' status with indicator for teacher's feedback ([37f9700](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/37f97002e4a6e5793f1735084c551f21eb89df9e)), closes [KLL-1896](https://calmisland.atlassian.net/browse/KLL-1896)
+* replace logo icon with KidsLoop logo in live class the app header ([6154fb3](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/6154fb37a1a9603591a64e81b2a8bd2e39e5b923)), closes [KLL-2345](https://calmisland.atlassian.net/browse/KLL-2345)
+* the distance number on parental lock screen is too far ([882d933](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/882d93342fd0d7f94e8adc2a53bebdb4b3c74a8a)), closes [KLL-2422](https://calmisland.atlassian.net/browse/KLL-2422)
+* the teacher can not see the class detail in Live Class ([34119d9](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/34119d95649557914ecce0e4fc2061515bf55239)), closes [KLL-2451](https://calmisland.atlassian.net/browse/KLL-2451)
+* The version number should not show in the settingspage ([8d1eb8a](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/8d1eb8a50d146196f51b87097a433d3054a1cefc)), closes [KLL-2515](https://calmisland.atlassian.net/browse/KLL-2515)
+* updated leave class icon ([c99cbe8](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/c99cbe877853d03cf181139ac19fcf514857ba63)), closes [KLL-1947](https://calmisland.atlassian.net/browse/KLL-1947)
+
 ### [3.9.1](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.9.1%0Dv3.9.0) (2022-01-10)
 
 
