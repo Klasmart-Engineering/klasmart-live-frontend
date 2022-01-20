@@ -3,23 +3,46 @@ import BackButton from "@/app/components/layout/BackButton";
 import { localeState } from "@/app/model/appModel";
 import { LANGUAGES_LABEL } from "@/localization/localeCodes";
 import {
+    Divider,
     List,
     ListItem,
     ListItemIcon,
     ListItemText,
 } from "@material-ui/core";
 import Grid from '@material-ui/core/Grid';
-import { useTheme } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
-import { Check as CheckIcon } from "@styled-icons/fa-solid/Check";
+import { makeStyles } from '@material-ui/core/styles';
+import { Check as CheckIcon } from "@styled-icons/bootstrap/Check";
+import clsx from "clsx";
 import React from "react";
-import { FormattedMessage } from "react-intl";
+import { useIntl } from "react-intl";
 import { useHistory } from "react-router";
 import { useRecoilState } from "recoil";
 
+const useStyles = makeStyles((theme) => ({
+    root: {
+        paddingTop: theme.spacing(2),
+        paddingBottom: theme.spacing(2),
+    },
+    listItemSelected: {
+        fontWeight: theme.typography.fontWeightBold as number,
+    },
+    divider: {
+        margin: theme.spacing(0, 2),
+    },
+    listContainer: {
+        paddingLeft: theme.spacing(2),
+        paddingRight: theme.spacing(2),
+    },
+    checkIcon: {
+        color: theme.palette.success.main,
+        margin: `0 auto`,
+    },
+}));
+
 export default function SelectLanguagePage () {
-    const theme = useTheme();
     const history = useHistory();
+    const intl = useIntl();
+    const classes = useStyles();
 
     const [ locale, setLocale ] = useRecoilState(localeState);
 
@@ -29,41 +52,49 @@ export default function SelectLanguagePage () {
 
     return (
         <>
-            <AppBar leading={<BackButton onClick={handleBackClick} />} />
+            <AppBar
+                showTitleInAppbar={intl.formatMessage({
+                    id: `settings.language.title`,
+                })}
+                leading={<BackButton onClick={handleBackClick} />}
+            />
             <Grid
                 item
                 xs={12}
-                style={{
-                    paddingTop: theme.spacing(2),
-                    paddingBottom: theme.spacing(4),
-                }}>
-                <Typography
-                    variant="h4"
-                    align="center">
-                    <FormattedMessage id="settings.language.title" />
-                </Typography>
-                <List>
+            >
+                <List className={classes.listContainer}>
                     {LANGUAGES_LABEL.map((language) => {
-                        const selected = locale.languageCode === language.code;
+                        const isSelected = locale.languageCode === language.code;
 
                         return(
-                            <ListItem
-                                key={language.code}
-                                button
-                                onClick={() => setLocale({
-                                    ...locale,
-                                    languageCode: language.code,
-                                })}
-                            >
-                                <ListItemText>{language.text}</ListItemText>
-                                {selected &&
-                                    <ListItemIcon>
-                                        <CheckIcon
-                                            color={theme.palette.success.main}
-                                            size={24} />
-                                    </ListItemIcon>
-                                }
-                            </ListItem>
+                            <>
+                                <ListItem
+                                    key={language.code}
+                                    button
+                                    className={classes.root}
+                                    onClick={() => setLocale({
+                                        ...locale,
+                                        languageCode: language.code,
+                                    })}
+                                >
+                                    <ListItemText
+                                        primary={language.text}
+                                        primaryTypographyProps={{
+                                            className: clsx({
+                                                [classes.listItemSelected] : isSelected,
+                                            }),
+                                        }}
+                                    />
+                                    {isSelected &&
+                                        <ListItemIcon>
+                                            <CheckIcon
+                                                className={classes.checkIcon}
+                                                size={36} />
+                                        </ListItemIcon>
+                                    }
+                                </ListItem>
+                                <Divider className={classes.divider} />
+                            </>
                         );
                     })}
                 </List>
