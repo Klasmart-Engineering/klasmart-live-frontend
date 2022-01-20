@@ -1,16 +1,38 @@
 import { ReadUserDto } from "@/app/data/user/dto/readUserDto";
 import {
+    Divider,
     ListItem,
     ListItemAvatar,
     ListItemIcon,
     ListItemText,
 } from "@material-ui/core";
-import { useTheme } from "@material-ui/core/styles";
-import { Check as CheckIcon } from "@styled-icons/fa-solid/Check";
+import {
+    makeStyles,
+    useTheme,
+} from "@material-ui/core/styles";
+import { Check as CheckIcon } from "@styled-icons/bootstrap/Check";
+import clsx from "clsx";
 import { UserAvatar } from "kidsloop-px";
 import React,
 { useMemo } from "react";
 import { useIntl } from "react-intl";
+
+const useStyles = makeStyles((theme) => ({
+    root: {
+        paddingTop: theme.spacing(2),
+        paddingBottom: theme.spacing(2),
+    },
+    listItemSelected: {
+        fontWeight: theme.typography.fontWeightBold as number,
+    },
+    divider: {
+        margin: theme.spacing(0, 2),
+    },
+    checkIcon: {
+        color: theme.palette.success.main,
+        margin: `0 auto`,
+    },
+}));
 
 interface Props {
     user: ReadUserDto;
@@ -21,8 +43,8 @@ interface Props {
 export const UserListItem: React.FC<Props> = ({
     user, isSelected, onClick,
 }) => {
-    const theme = useTheme();
     const intl = useIntl();
+    const classes = useStyles();
 
     const displayName = useMemo(() => {
         if (user.given_name && user.family_name) {
@@ -52,23 +74,33 @@ export const UserListItem: React.FC<Props> = ({
     }, [ user, displayName ]);
 
     return (
-        <ListItem
-            button
-            onClick={onClick ? () => onClick(user) : undefined}
-        >
-            <ListItemAvatar>
-                <UserAvatar name={displayName ?? ``} />
-            </ListItemAvatar>
-            <ListItemText
-                primary={displayName ?? ``}
-                secondary={subTitle}
-            />
-            {isSelected && (
-                <ListItemIcon>
-                    <CheckIcon
-                        color={theme.palette.success.main}
-                        size={24} />
-                </ListItemIcon>
-            )}
-        </ListItem>);
+        <>
+            <ListItem
+                button
+                className={classes.root}
+                onClick={() => onClick?.(user)}
+            >
+                <ListItemAvatar>
+                    <UserAvatar name={displayName ?? ``} />
+                </ListItemAvatar>
+                <ListItemText
+                    primary={displayName ?? ``}
+                    secondary={subTitle}
+                    primaryTypographyProps={{
+                        className: clsx({
+                            [classes.listItemSelected] : isSelected,
+                        }),
+                    }}
+                />
+                {isSelected &&
+                    <ListItemIcon>
+                        <CheckIcon
+                            className={classes.checkIcon}
+                            size={36} />
+                    </ListItemIcon>
+                }
+            </ListItem>
+            <Divider className={classes.divider} />
+        </>
+    );
 };

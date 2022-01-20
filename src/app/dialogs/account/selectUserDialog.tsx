@@ -1,4 +1,5 @@
-import { Header } from "@/app/components/layout/header";
+import AppBar from "@/app/components/layout/AppBar";
+import BackButton from "@/app/components/layout/BackButton";
 import { UserList } from "@/app/components/user/userList";
 import { useAuthenticationContext } from "@/app/context-provider/authentication-context";
 import { useServices } from "@/app/context-provider/services-provider";
@@ -18,13 +19,7 @@ import {
 import { useQueryClient } from "@kidsloop/cms-api-client";
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import Grid from '@material-ui/core/Grid';
-import {
-    makeStyles,
-    useTheme,
-} from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
+import { makeStyles } from '@material-ui/core/styles';
 import { useSnackbar } from "kidsloop-px";
 import React,
 {
@@ -33,20 +28,16 @@ import React,
     useMemo,
     useState,
 } from "react";
-import { FormattedMessage } from "react-intl";
+import { useIntl } from "react-intl";
 import {
     useRecoilValue,
     useSetRecoilState,
 } from "recoil";
 
-const useStyles = makeStyles(() => ({
-    noPadding: {
-        padding: 0,
-    },
-    icon: {
-        "&:hover": {
-            color: `white`,
-        },
+const useStyles = makeStyles((theme) => ({
+    content: {
+        paddingLeft: theme.spacing(2),
+        paddingRight: theme.spacing(2),
     },
 }));
 
@@ -176,8 +167,8 @@ export function useShouldSelectUser () {
 }
 
 export function SelectUserDialog () {
-    const theme = useTheme();
-    const { noPadding } = useStyles();
+    const classes = useStyles();
+    const intl = useIntl();
 
     const dialogs = useRecoilValue(dialogsState);
     const setDialogs = useSetRecoilState(dialogsState);
@@ -202,41 +193,25 @@ export function SelectUserDialog () {
         setFilteredMyUsersData(studentProfiles);
     }, [ myUsersData ]);
 
+    const handleBackClick = () => setDialogs({
+        ...dialogs,
+        isSelectUserOpen: false,
+    });
+
     return (
         <Dialog
             fullScreen
             aria-labelledby="select-user-dialog"
             open={dialogs.isSelectUserOpen}
-            onClose={() => setDialogs({
-                ...dialogs,
-                isSelectUserOpen: false,
-            })}
+            onClose={handleBackClick}
         >
-            <DialogTitle
-                disableTypography
-                id="select-user-dialog"
-                className={noPadding}
-            >
-                <Header />
-            </DialogTitle>
-            <DialogContent
-                dividers
-                style={{
-                    padding: 0,
-                }}>
-                <Grid
-                    item
-                    xs={12}
-                    style={{
-                        paddingTop: theme.spacing(2),
-                        paddingBottom: theme.spacing(4),
-                    }}>
-                    <Typography
-                        variant="h4"
-                        align="center">
-                        <FormattedMessage id="account_selectUser_whichUser" />
-                    </Typography>
-                </Grid>
+            <AppBar
+                showTitleInAppbar={intl.formatMessage({
+                    id: `account_selectUser_whichUser`,
+                })}
+                leading={<BackButton onClick={handleBackClick} />}
+            />
+            <DialogContent className={classes.content}>
                 <UserList
                     users={filteredMyUsersData ?? []}
                     selectedUser={meData?.me}

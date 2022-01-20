@@ -1,35 +1,26 @@
-import { Header } from "../../components/layout/header";
-import { dialogsState } from "../../model/appModel";
+import AppBar from "@/app/components/layout/AppBar";
+import BackButton from "@/app/components/layout/BackButton";
 import { OrganizationList } from "@/app/components/organization/organizationList";
 import { useSelectedOrganization } from "@/app/data/user/atom";
 import { EntityStatus } from "@/app/data/user/dto/sharedDto";
 import { useMeQuery } from "@/app/data/user/queries/meQuery";
+import { dialogsState } from "@/app/model/appModel";
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import Grid from '@material-ui/core/Grid';
-import {
-    makeStyles,
-    useTheme,
-} from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
+import { makeStyles } from '@material-ui/core/styles';
 import React,
 {
     useEffect,
     useMemo,
     useState,
 } from "react";
-import { FormattedMessage } from "react-intl";
+import { useIntl } from "react-intl";
 import { useRecoilState } from "recoil";
 
-const useStyles = makeStyles(() => ({
-    noPadding: {
-        padding: 0,
-    },
-    icon: {
-        "&:hover": {
-            color: `white`,
-        },
+const useStyles = makeStyles((theme) => ({
+    content: {
+        paddingLeft: theme.spacing(2),
+        paddingRight: theme.spacing(2),
     },
 }));
 
@@ -112,8 +103,8 @@ export function useShouldSelectOrganization () {
 }
 
 export function SelectOrgDialog () {
-    const theme = useTheme();
-    const { noPadding } = useStyles();
+    const classes = useStyles();
+    const intl = useIntl();
     const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
     const [ selectedOrganization, setSelectedOrganization ] = useSelectedOrganization();
     const { data: meData } = useMeQuery();
@@ -121,41 +112,25 @@ export function SelectOrgDialog () {
     const activeOrganizationMemberships = useMemo(() => meData?.me?.organizationsWithPermission.filter((membership) => membership.status === EntityStatus.ACTIVE) ?? [], [ meData ]);
     const activeOrganizations = useMemo(() => activeOrganizationMemberships.map((membership) => membership.organization), [ activeOrganizationMemberships ]);
 
+    const handleBackClick = () => setDialogs({
+        ...dialogs,
+        isSelectOrganizationOpen: false,
+    });
+
     return (
         <Dialog
             fullScreen
             aria-labelledby="select-org-dialog"
             open={dialogs.isSelectOrganizationOpen}
-            onClose={() => setDialogs({
-                ...dialogs,
-                isSelectOrganizationOpen: false,
-            })}
+            onClose={handleBackClick}
         >
-            <DialogTitle
-                disableTypography
-                id="select-org-dialog"
-                className={noPadding}
-            >
-                <Header />
-            </DialogTitle>
-            <DialogContent
-                dividers
-                style={{
-                    padding: 0,
-                }}>
-                <Grid
-                    item
-                    xs={12}
-                    style={{
-                        paddingTop: theme.spacing(2),
-                        paddingBottom: theme.spacing(4),
-                    }}>
-                    <Typography
-                        variant="h4"
-                        align="center">
-                        <FormattedMessage id="account_selectOrg_whichOrg" />
-                    </Typography>
-                </Grid>
+            <AppBar
+                showTitleInAppbar={intl.formatMessage({
+                    id: `account_selectOrg_whichOrg`,
+                })}
+                leading={<BackButton onClick={handleBackClick} />}
+            />
+            <DialogContent className={classes.content}>
                 <OrganizationList
                     organizations={activeOrganizations}
                     selectedOrganization={selectedOrganization}

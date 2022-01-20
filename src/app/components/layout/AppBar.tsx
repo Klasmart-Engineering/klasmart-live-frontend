@@ -30,6 +30,7 @@ const useStyles = makeStyles((theme) => createStyles({
     },
     titleInAppBar: {
         fontWeight: theme.typography.fontWeightBold as number,
+        fontSize: `1rem`,
     },
 }));
 

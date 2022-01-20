@@ -1,6 +1,7 @@
 import AppBar from "@/app/components/layout/AppBar";
 import BackButton from "@/app/components/layout/BackButton";
 import { localeState } from "@/app/model/appModel";
+import { THEME_COLOR_BACKGROUND_LIST } from "@/config";
 import { LANGUAGES_LABEL } from "@/localization/localeCodes";
 import {
     Avatar,
@@ -32,17 +33,16 @@ import { useRecoilState } from "recoil";
 const useStyles = makeStyles((theme: Theme) => createStyles({
     fullHeight: {
         height: `100%`,
-    },
-    noPadding: {
-        padding: 0,
-    },
-    icon: {
-        "&:hover": {
-            color: `white`,
-        },
+        backgroundColor: THEME_COLOR_BACKGROUND_LIST,
     },
     avatarLanguage: {
         backgroundColor: `#E78FAD`,
+    },
+    listContainer: {
+        paddingTop: theme.spacing(2),
+    },
+    listItem: {
+        backgroundColor: theme.palette.background.paper,
     },
     listItemTextPrimary: {
         fontWeight: theme.typography.fontWeightBold as number,
@@ -69,24 +69,20 @@ export default function SettingsPage () {
 
     return (
         <>
-            <AppBar leading={<BackButton onClick={handleBackClick} />} />
+            <AppBar
+                showTitleInAppbar={intl.formatMessage({
+                    id: `settings.title`,
+                })}
+                leading={<BackButton onClick={handleBackClick} />} />
             <Grid
                 container
                 alignContent="space-between"
                 className={classes.fullHeight}>
                 <Grid
                     item
-                    xs={12}>
-                    <div style={{
-                        paddingTop: theme.spacing(2),
-                        paddingBottom: theme.spacing(4),
-                    }}>
-                        <Typography
-                            variant="h4"
-                            align="center">
-                            <FormattedMessage id="settings.title" />
-                        </Typography>
-                    </div>
+                    xs={12}
+                    className={classes.listContainer}
+                >
                     <List
                         subheader={
                             <ListSubheader
@@ -97,7 +93,9 @@ export default function SettingsPage () {
                         }>
                         <ListItem
                             button
-                            onClick={handleSelectLanguageClick}>
+                            className={classes.listItem}
+                            onClick={handleSelectLanguageClick}
+                        >
                             <ListItemAvatar>
                                 <Avatar className={classes.avatarLanguage}>
                                     <LanguageIcon
