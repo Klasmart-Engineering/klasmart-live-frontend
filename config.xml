@@ -53,6 +53,7 @@
         <preference name="Fullscreen" value="false" />
         <preference name="android-minSdkVersion" value="26" />
         <preference name="android-targetSdkVersion" value="30" />
+        <preference name="AndroidXEnabled" value="true" />
         <config-file mode="merge" parent="/*" target="AndroidManifest.xml">
             <uses-permission android:name="android.permission.CAMERA" />
             <uses-permission android:name="android.permission.RECORD_AUDIO" />
@@ -71,6 +72,9 @@
             <provider android:authorities="${applicationId}.fileprovider" android:exported="false" android:grantUriPermissions="true" android:name="android.support.v4.content.FileProvider">
                 <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_paths" />
             </provider>
+        </config-file>
+        <config-file parent="application" target="AndroidManifest.xml">
+            <activity android:launchMode="singleTop" android:name="com.onetrust.cordova.CMPActivity" android:theme="@style/Theme.AppCompat.Dialog" />
         </config-file>
         <edit-config file="AndroidManifest.xml" mode="merge" target="/manifest/application">
             <application android:allowBackup="false" />

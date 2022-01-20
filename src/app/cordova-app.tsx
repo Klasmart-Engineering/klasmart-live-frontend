@@ -205,6 +205,7 @@ export function CordovaApp ({ history }: {
                 </>
             )}
             <ExternalNavigationDialog />
+            <Onetrust />
         </Grid>
     );
 }
