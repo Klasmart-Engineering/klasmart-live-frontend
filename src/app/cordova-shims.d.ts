@@ -25,3 +25,4 @@
 /// <reference types="cordova-plugin-window-background" />
 /// <reference types="cordova-plugin-wkwebview-cookie-sync" />
 /// <reference types="cordova-plugin-wkwebview-file-xhr" />
+/// <reference types="cordova-plugin-onetrust-cmp" />
