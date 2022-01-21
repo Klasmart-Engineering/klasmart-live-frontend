@@ -84,6 +84,7 @@ import {
     useIntl,
 } from "react-intl";
 import { useRecoilState } from "recoil";
+import { TEXT_COLOR_FILE_NAME } from "@/config";
 
 export type HomeFunStudyFeedback = {
     userId: string;
@@ -158,6 +159,11 @@ const useStyles = makeStyles((theme: Theme) =>
             left: `50%`,
             marginTop: -12,
             marginLeft: -12,
+        },
+        clickableText: {
+            textDecoration: `underline`,
+            color: TEXT_COLOR_FILE_NAME,
+            fontFamily: `sans-serif`,
         },
     }));
 
@@ -1433,8 +1439,10 @@ function HomeFunStudyAssignment ({
                                                 className={classes.progress}/> : ``}
                                     </div>
                                 </ListItemIcon>
-                                <ListItemText
+                                <ListItemText 
+                                    onClick={() => confirmOpenAttachmentLink(item)}
                                     primary={<Typography
+                                        className={classes.clickableText}
                                         variant="body2"
                                         color="textSecondary">{item.attachmentName}</Typography>}
                                 />
