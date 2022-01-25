@@ -1,5 +1,6 @@
 import Message from "./message";
-import SendMessage from "./sendMessage";
+import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
+import { isKeyboardVisibleState } from "@/app/model/appModel";
 import { useMessages } from "@/data/live/state/useMessages";
 import { NoItemList } from "@/utils/utils";
 import {
@@ -10,8 +11,12 @@ import {
 } from "@material-ui/core";
 import { ChatSquareDotsFill as ChatIcon } from "@styled-icons/bootstrap/ChatSquareDotsFill";
 import React,
-{ useEffect } from "react";
+{
+    useEffect,
+    useRef,
+} from "react";
 import { useIntl } from "react-intl";
+import { useRecoilValue } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
     fullHeight:{
@@ -22,8 +27,6 @@ const useStyles = makeStyles((theme: Theme) => ({
         paddingBottom: 0,
     },
     messagesContainer:{
-        overflowY: `scroll`,
-        minHeight: 300,
         minWidth: 280,
     },
 }));
@@ -34,16 +37,22 @@ function Messages () {
 
     const messages = useMessages();
 
-    useEffect(() => {
-        // TODO, useref + scrollintoview (if possible),
+    const messagesContainerEl = useRef<null | HTMLDivElement>(null);
 
-        const objDiv = document.querySelectorAll(`.chat-container`);
-        if(objDiv.length) {
-            for (const i of objDiv) {
-                i.scrollTop = i.scrollHeight;
-            }
-        }
+    const { isIOS } = useCordovaSystemContext();
+    const isKeyboardVisible = useRecoilValue(isKeyboardVisibleState);
+
+    useEffect(() => {
+        messagesContainerEl?.current?.children[messages.length - 1].scrollIntoView();
     }, [ messages ]);
+
+    useEffect(() => {
+        if (isKeyboardVisible && isIOS) {
+            setTimeout(() => {
+                messagesContainerEl?.current?.children[messages.length - 1].scrollIntoView();
+            }, 500);
+        }
+    });
 
     return (
         <Grid
@@ -64,18 +73,17 @@ function Messages () {
                         text={intl.formatMessage({
                             id: `chat_messages_noresults`,
                         })} /> :
-                    (<Box className={classes.container}>
+                    (<div
+                        ref={messagesContainerEl}
+                        className={classes.container}>
                         {
                             messages.map((m, i) => <Message
                                 key={i}
                                 message={m}
                             />)
                         }
-                    </Box>)
+                    </div>)
                 }
-            </Grid>
-            <Grid item>
-                <SendMessage />
             </Grid>
         </Grid>
     );

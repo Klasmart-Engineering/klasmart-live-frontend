@@ -10,9 +10,11 @@ import {
     makeStyles,
     Paper,
     Popper,
+    PopperPlacementType,
     Theme,
     Typography,
 } from "@material-ui/core";
+import clsx from "clsx";
 import React from "react";
 import { useRecoilValue } from "recoil";
 
@@ -49,11 +51,20 @@ const useStyles = makeStyles((theme: Theme) => ({
         zIndex: 1200,
     },
     popperPapper: {
+        display: `flex`,
+        maxHeight: `calc(100vh - 95px)`,
         borderRadius: 12,
         overflow: `hidden`,
-        maxHeight: `calc(100vh - 150px)`,
         overflowY: `auto`,
         boxShadow: `0 1px 2px 0 rgba(0, 0, 0, 0.075), 0 2px 12px 0px rgba(0, 0, 0, 0.065)`,
+    },
+    popperPapperNoScrollbar: {
+        '&::-webkit-scrollbar': {
+            width: `0em`,
+        },
+    },
+    popperPapperKeyboard: {
+        maxHeight: `none`,
     },
 }));
 
@@ -108,7 +119,12 @@ export { StyledDrawer };
 interface StyledPopperProps {
 	children: any;
 	open?: boolean;
-	anchorEl?: HTMLElement;
+    anchorEl?: HTMLElement;
+    placement?: PopperPlacementType;
+    height?: number | string;
+    showScrollbar?: boolean;
+    modifiers?: object;
+    isKeyboardVisible?: boolean;
 }
 
 function StyledPopper (props: StyledPopperProps) {
@@ -117,6 +133,15 @@ function StyledPopper (props: StyledPopperProps) {
         children,
         open = false,
         anchorEl,
+        placement = `top`,
+        height,
+        showScrollbar = false,
+        modifiers = {
+            preventOverflow: {
+                boundariesElement: document.getElementById(`main-content`),
+            },
+        },
+        isKeyboardVisible = false,
     } = props;
 
     return (
@@ -125,16 +150,19 @@ function StyledPopper (props: StyledPopperProps) {
             open={open}
             anchorEl={anchorEl}
             disablePortal={false}
-            placement="top"
-            modifiers={{
-                preventOverflow: {
-                    boundariesElement: document.getElementById(`main-content`),
-                },
-            }}
+            placement={placement}
+            modifiers={modifiers}
             className={classes.popperRoot}
         >
             <Fade in={open}>
-                <Paper className={classes.popperPapper}>{children}</Paper>
+                <Paper
+                    className={clsx(classes.popperPapper, {
+                        [classes.popperPapperNoScrollbar]: showScrollbar,
+                        [classes.popperPapperKeyboard]: isKeyboardVisible,
+                    })}
+                    style={{
+                        height,
+                    }}>{children}</Paper>
             </Fade>
         </Popper>
     );

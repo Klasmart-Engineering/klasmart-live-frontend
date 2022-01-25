@@ -122,5 +122,10 @@ export const useSetMenuOpen = () => useSetRecoilState(menuOpenState);
 export const showedUpgradeDevicePopupState = atom({
     key: `showedUpgradeDevicePopup`,
     default: false,
-    effects_UNSTABLE: [ persistAtom ]
-})
+    effects_UNSTABLE: [ persistAtom ],
+});
+
+export const isKeyboardVisibleState = atom({
+    key: `isKeyboardVisible`,
+    default: false,
+});
