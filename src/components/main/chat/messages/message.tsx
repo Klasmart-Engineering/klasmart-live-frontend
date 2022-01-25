@@ -80,14 +80,18 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 }));
 
-const Message: FC<{message: ChatMessage}> = ({
+interface MessageProps {
+    message: ChatMessage;
+}
+
+const Message: FC<MessageProps> = ({
     message: {
         text, timestamp, user,
     },
 }) => {
     const classes = useStyles();
-    const name = user?.name || `Unknown User`;
-    const isTeacher = user?.isTeacher || false;
+    const name = user?.name ?? `Unknown User`;
+    const isTeacher = !!user?.isTeacher;
     const date = new Date(timestamp);
 
     return (

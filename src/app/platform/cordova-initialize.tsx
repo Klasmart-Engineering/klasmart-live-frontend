@@ -1,12 +1,14 @@
+import { isKeyboardVisibleState } from "../model/appModel";
 import useVideoLayoutUpdate from "./../utils/video-layout-update";
+import { Device } from "@/app/types/device";
 import {
     useCallback,
     useEffect,
     useState,
 } from "react";
-import {Device} from "@/app/types/device";
+import { useSetRecoilState } from "recoil";
 
-declare var device: Device; // device from plugin cordova-plugin-device
+declare let device: Device; // device from plugin cordova-plugin-device
 
 const useCordovaInitialize = (backExitApplication?: boolean, callbackBackButton?: () => void, skipInitEffects?: boolean) => {
     const [ cordovaReady, setCordovaReady ] = useState(false);
@@ -14,6 +16,7 @@ const useCordovaInitialize = (backExitApplication?: boolean, callbackBackButton?
     const [ isIOS, setIsIOS ] = useState<boolean>(false);
     const [ isAndroid, setIsAndroid ] = useState<boolean>(false);
     const [ deviceInfo, setDeviceInfo ] = useState<Device>();
+    const setKeyboardVisible = useSetRecoilState(isKeyboardVisibleState);
 
     const { updateLayout } = useVideoLayoutUpdate(null);
 
@@ -106,6 +109,14 @@ const useCordovaInitialize = (backExitApplication?: boolean, callbackBackButton?
                 SplashScreen.hide();
             }
 
+            window.addEventListener(`keyboardWillShow`, (event) => {
+                setKeyboardVisible(true);
+            });
+
+            window.addEventListener(`keyboardWillHide`, (event) => {
+                setKeyboardVisible(false);
+            });
+
         };
 
         document.addEventListener(`deviceready`, onDeviceReady, false);
@@ -150,7 +161,7 @@ const useCordovaInitialize = (backExitApplication?: boolean, callbackBackButton?
         requestIosCameraPermission,
         isIOS,
         isAndroid,
-        deviceInfo
+        deviceInfo,
     };
 };
 

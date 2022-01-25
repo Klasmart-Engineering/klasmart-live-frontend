@@ -1,4 +1,5 @@
 import Messages from "./messages/messages";
+import SendMessage from "./messages/sendMessage";
 import {
     Grid,
     makeStyles,
@@ -35,15 +36,21 @@ function Chat () {
                 <Typography className={classes.title}>
                     <FormattedMessage id="toolbar_chat" />
                 </Typography>
+                <Divider
+                    flexItem
+                    className={classes.divider}
+                    orientation="horizontal" />
             </Grid>
-            <Divider
-                flexItem
-                className={classes.divider}
-                orientation="horizontal" />
             <Grid
                 item
-                xs>
+                xs
+                style={{
+                    overflowY: `auto`,
+                }}>
                 <Messages />
+            </Grid>
+            <Grid item>
+                <SendMessage />
             </Grid>
         </Grid>
     );
