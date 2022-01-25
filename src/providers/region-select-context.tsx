@@ -236,7 +236,7 @@ const DefaultRegions: Region[] = [
         features: [ FeatureFlag.ONLY_OBSERVE_IN_VIEWPORT ],
     },
     {
-        id: `hub.beta.kidsloop.id`,
+        id: `auth.beta.kidsloop.id`,
         name: `Indonesia Beta`,
         development: true,
         services: {
@@ -250,7 +250,7 @@ const DefaultRegions: Region[] = [
         features: [ FeatureFlag.ONLY_OBSERVE_IN_VIEWPORT ],
     },
     {
-        id: `hub.beta.kidsloop.vn`,
+        id: `auth.beta.kidsloop.vn`,
         name: `Vietnam Beta`,
         development: true,
         services: {
@@ -264,7 +264,7 @@ const DefaultRegions: Region[] = [
         features: [ FeatureFlag.ONLY_OBSERVE_IN_VIEWPORT ],
     },
     {
-        id: `hub.research.kidsloop.live`,
+        id: `auth.research.kidsloop.live`,
         name: `R&D Korea`,
         development: true,
         services: {
