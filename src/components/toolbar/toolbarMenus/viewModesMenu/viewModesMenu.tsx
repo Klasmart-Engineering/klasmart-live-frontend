@@ -22,10 +22,6 @@ import React,
     useContext,
     useState,
 } from "react";
-import {
-    isBrowser,
-    isTablet,
-} from "react-device-detect";
 import { useIntl } from "react-intl";
 import {
     useRecoilState,
@@ -55,7 +51,7 @@ function ViewModesMenu (props:ViewModesMenuProps) {
     const observeDisable = useRecoilValue(observeDisableState);
     const screenShare = useContext(ScreenShareContext);
     const [ alert, setAlert ] = useState<AlertProps>();
-    const isMobile = isTablet || !isBrowser;
+    const isDisabledShareScreen = !navigator.mediaDevices;
 
     const ObserveWarningActive = () => {
         const checkShow = (localStorage.getItem(`ObserveWarning`) ?? OBSERVE_WARNING_DEFAULT) === `true`;
@@ -63,7 +59,7 @@ function ViewModesMenu (props:ViewModesMenuProps) {
     };
 
     const onCloseAlert = useCallback(() => {
-        if (!isMobile) return;
+        if (!isDisabledShareScreen) return;
         setTimeout(() => {
             setAlert({
                 ...alert,
@@ -87,7 +83,7 @@ function ViewModesMenu (props:ViewModesMenuProps) {
             setInteractiveMode(InteractiveMode.PRESENT);
             break;
         case InteractiveMode.SCREENSHARE:
-            if (!isMobile) {
+            if (!isDisabledShareScreen) {
                 screenShare.start();
                 return;
             }
@@ -147,7 +143,7 @@ function ViewModesMenu (props:ViewModesMenuProps) {
                         })}
                         icon={ScreenShareIcon}
                         active={interactiveMode === InteractiveMode.SCREENSHARE}
-                        disabled={isMobile}
+                        disabled={isDisabledShareScreen}
                         onCloseAlert={onCloseAlert}
                         onClick={(buttonRef) => handleViewModesClick(InteractiveMode.SCREENSHARE, buttonRef)}
                     />
