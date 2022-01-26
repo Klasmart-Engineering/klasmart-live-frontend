@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.11.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.11.0%0Dv3.10.0) (2022-01-26)
+
+
+### Features
+
+* improve chat window scrolling and detect android keyboard ([59c3f5a](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/59c3f5a407e60874308d1eb145c954902b818011)), closes [KLL-1709](https://calmisland.atlassian.net/browse/KLL-1709)
+
+
+### Bug Fixes
+
+* can not load flashcard activity on production ([40b3aa2](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/40b3aa2bf2e0e4eb1f07caf806fe723805500cce)), closes [KLL-2627](https://calmisland.atlassian.net/browse/KLL-2627)
+* correct region id's for beta regions ([b54798a](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/b54798a163a813b0ad2129547949d6525198b4ec))
+* show alert message in mobile browser for both desktop view and mobile view ([cd6f4d9](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/cd6f4d9cb380469db07fcc5539dd951528b69174)), closes [KLL-2040](https://calmisland.atlassian.net/browse/KLL-2040)
+
 ## [3.10.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.10.0%0Dv3.9.1) (2022-01-20)
 
 
