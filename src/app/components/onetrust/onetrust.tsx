@@ -74,15 +74,6 @@ export function Onetrust () {
                 variant="contained"
                 size="large"
                 className={clsx(classes.button)}
-                onClick={() => { startSDK(); }}
-            >
-                OneTrust: Start SDK
-            </Button>
-            <Button
-                fullWidth
-                variant="contained"
-                size="large"
-                className={clsx(classes.button)}
                 onClick={() => { showBanner(); }}
             >
                 OneTrust: Show Banner UI
