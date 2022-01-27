@@ -29,6 +29,7 @@ export function enableFullScreen (enabled:boolean) {
         }
 
         StatusBar.overlaysWebView(true);
+        StatusBar.hide();
     }else{
         if (AndroidFullScreen) {
             AndroidFullScreen.isSupported(() => {
@@ -44,6 +45,7 @@ export function enableFullScreen (enabled:boolean) {
 
         StatusBar.overlaysWebView(false);
         StatusBar.backgroundColorByHexString(`#fff`);
+        StatusBar.show();
 
         setTimeout(() => {
             StatusBar.styleDefault();
