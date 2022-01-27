@@ -23,8 +23,8 @@ export interface GlobaActionsMenuItem {
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
-        padding: `8px 16px`,
-        margin: `0 4px`,
+        padding: theme.spacing(1, 2),
+        margin: theme.spacing(0, 0.5),
         cursor: `pointer`,
         borderRadius: 10,
         display: `flex`,
@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     active: {
         backgroundColor: theme.palette.text.primary,
         filter: `none`,
-        color: `#fff`,
+        color: theme.palette.common.white,
         "&:hover": {
             backgroundColor: theme.palette.text.primary,
         },
@@ -54,8 +54,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     divider: {
         width: 1,
-        backgroundColor: theme.palette.grey[200],
-        margin: `0 4px`,
+        backgroundColor: theme.palette.grey[300],
+        margin: theme.spacing(0.75, 0.5),
     },
     icon: {
         display: `flex`,
@@ -89,7 +89,7 @@ function GlobalActionsMenuItem (props: Props) {
 
     return (
         <Tooltip
-            title={title || ``}
+            title={title ?? ``}
             placement="top">
             <Grid
                 item

@@ -6,7 +6,7 @@ import ToolbarItem from "./toolbarItem";
 import ToolbarItemCall from "./toolbarItemCall";
 import ToolbarItemCamera from "./toolbarItemCamera";
 import ToolbarItemMicrophone from "./toolbarItemMicrophone";
-import CanvasMenu from "./toolbarMenus/canvasMenu";
+import CanvasMenu from "./toolbarMenus/canvasMenu/canvasMenu";
 import ChatMenu from "./toolbarMenus/chatMenu/chatMenu";
 import ClassDetailsMenu from "./toolbarMenus/classDetailsMenu/classDetailsMenu";
 import GlobalActionsMenu from "./toolbarMenus/globalActionsMenu/globalActionsMenu";
@@ -222,11 +222,13 @@ function Toolbar () {
         resetDrawers();
     }, [ activeTab ]);
 
-    const { state: { display: isGlobalCanvasEnabled, permissions: permissionsGlobalCanvas } } = useSynchronizedState();
+    const {
+        state: { display: isGlobalCanvasEnabled, permissions: permissionsGlobalCanvas },
+        actions: { setDisplay: setIsGlobalCanvasEnabled },
+    } = useSynchronizedState();
 
     useEffect(() => {
-        activeTab !== `mosaic` && isGlobalCanvasEnabled && setIsCanvasOpen(permissionsGlobalCanvas.allowCreateShapes);
-        !isGlobalCanvasEnabled && setIsCanvasOpen(false);
+        setIsCanvasOpen(isGlobalCanvasEnabled && permissionsGlobalCanvas.allowCreateShapes);
     }, [ isGlobalCanvasEnabled, permissionsGlobalCanvas.allowCreateShapes ]);
 
     useEffect(() => {
@@ -314,7 +316,11 @@ function Toolbar () {
                             tooltip={handleTooltip(`canvas`)}
                             onClick={() => {
                                 resetDrawers();
-                                setIsCanvasOpen(!isCanvasOpen);
+                                if(hasControls){
+                                    setIsGlobalCanvasEnabled(!isGlobalCanvasEnabled);
+                                }else{
+                                    setIsCanvasOpen(!isCanvasOpen);
+                                }
                             }}
                         />
                     </div>

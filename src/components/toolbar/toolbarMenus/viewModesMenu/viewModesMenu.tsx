@@ -32,7 +32,7 @@ const ALERT_FALLBACK_WIDTH = 411;
 const ALERT_VISIBLE_TIME = 1500;
 
 interface ViewModesMenuProps {
-	anchor?: HTMLElement;
+	anchor: HTMLElement;
 }
 
 interface AlertProps {

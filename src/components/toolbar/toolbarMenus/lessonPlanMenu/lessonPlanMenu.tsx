@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface LessonPlanMenuProps {
-	anchor?: HTMLElement;
+	anchor: HTMLElement;
 }
 
 function LessonPlanMenu (props: LessonPlanMenuProps) {

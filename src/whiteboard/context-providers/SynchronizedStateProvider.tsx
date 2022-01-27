@@ -5,6 +5,7 @@ import { useWhiteboardEventsSubscription } from "@/data/live/subscriptions/useWh
 import { useWhiteboardPermissionsSubscription } from "@/data/live/subscriptions/useWhiteboardPermissionsSubscription";
 import { useWhiteboardStateSubscription } from "@/data/live/subscriptions/useWhiteboardStateSubscription";
 import { useSessionContext } from "@/providers/session-context";
+import { ClassType } from "@/store/actions";
 import {
     createEmptyPermissions,
     createPermissions,
@@ -22,7 +23,6 @@ import React, {
     useEffect,
     useState,
 } from "react";
-import { ClassType } from "@/store/actions";
 
 export type PainterEventFunction = (payload: PainterEvent) => void
 
@@ -33,6 +33,7 @@ interface ISynchronizedState {
     stateLoading: boolean;
     permissionsLoading: boolean;
     permissions: Permissions;
+    userPermissions: Map<string, Permissions>;
 }
 
 interface ISynchronizedStateContext {
@@ -48,6 +49,7 @@ const Context = createContext<ISynchronizedStateContext>({
         stateLoading: false,
         permissionsLoading: false,
         permissions: createEmptyPermissions(),
+        userPermissions: new Map(),
     },
     actions: {},
 });
@@ -228,6 +230,7 @@ export const SynchronizedStateProvider: FunctionComponent<Props> = ({ children }
                     stateLoading,
                     permissionsLoading,
                     permissions: selfPermissions,
+                    userPermissions,
                 },
                 actions: SynchronizedStateProviderActions,
             }}

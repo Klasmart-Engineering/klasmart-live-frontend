@@ -28,7 +28,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 interface GlobaActionsMenuProps {
-	anchor?: HTMLElement;
+	anchor: HTMLElement;
 }
 
 function GlobalActionsMenu (props: GlobaActionsMenuProps) {

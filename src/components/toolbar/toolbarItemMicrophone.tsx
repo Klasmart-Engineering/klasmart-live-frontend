@@ -74,7 +74,6 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface ToolbarItemMicrophoneProps {
-	icon?: any;
 	onClick?: any;
 	disabled?: boolean;
 	active?: boolean;
@@ -84,23 +83,17 @@ interface ToolbarItemMicrophoneProps {
 
 function ToolbarItemMicrophone (props: ToolbarItemMicrophoneProps) {
     const {
-        icon,
         onClick,
         disabled,
         active,
         locked,
-        tooltip = false,
+        tooltip = ``,
     } = props;
     const classes = useStyles();
-    const hasTooltip = tooltip ? true : false;
 
     return (
         <>
-            <Tooltip
-                title={tooltip}
-                disableFocusListener={!hasTooltip}
-                disableHoverListener={!hasTooltip}
-                disableTouchListener={!hasTooltip}>
+            <Tooltip title={tooltip}>
                 <div className={classes.itemRoot}>
                     {locked && (
                         <Badge

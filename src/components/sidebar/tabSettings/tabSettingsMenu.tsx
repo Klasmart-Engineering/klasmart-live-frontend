@@ -100,10 +100,7 @@ function TabSettingsMenu (props: any) {
                     {menu.map((item: any) => (
                         <Tooltip
                             key={item.id}
-                            title={item.tooltip || `tooltip`}
-                            disableFocusListener={!item.tooltip}
-                            disableHoverListener={!item.tooltip}
-                            disableTouchListener={!item.tooltip}
+                            title={item.tooltip ?? ``}
                             placement="right">
                             <div>
                                 <ListItem
