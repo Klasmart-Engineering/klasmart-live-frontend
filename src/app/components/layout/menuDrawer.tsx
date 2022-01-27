@@ -2,8 +2,11 @@ import { useAuthenticationContext } from "@/app/context-provider/authentication-
 import { useSelectedOrganizationValue } from "@/app/data/user/atom";
 import { ParentalGate } from "@/app/dialogs/parentalGate";
 import {
+    completeParentalGate,
     dialogsState,
+    isOpenLandingPage,
     menuOpenState,
+    shouldClearCookieState,
 } from "@/app/model/appModel";
 import { useDisplayPrivacyPolicy } from "@/app/utils/privacyPolicyUtils";
 import StyledIcon from "@/components/styled/icon";
@@ -39,7 +42,10 @@ import React,
 } from "react";
 import { FormattedMessage } from "react-intl";
 import { useHistory } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import {
+    useRecoilState,
+    useSetRecoilState,
+} from "recoil";
 
 const config = require(`@/../package.json`);
 
@@ -99,6 +105,9 @@ export default function MenuDrawer () {
     const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
     const [ isMenuOpen, setMenuOpen ] = useRecoilState(menuOpenState);
     const [ parentalLock, setParentalLock ] = useState<boolean>(false);
+    const setIsShowLandingPage = useSetRecoilState(isOpenLandingPage);
+    const setShouldClearCookie = useSetRecoilState(shouldClearCookieState);
+    const setCompletedParentalChallenge = useSetRecoilState(completeParentalGate);
 
     const menuArray = [
         {
@@ -252,7 +261,12 @@ export default function MenuDrawer () {
                             variant="text"
                             size="large"
                             className={classes.signOutButton}
-                            onClick={() => actions?.signOut()}
+                            onClick={() => {
+                                actions?.signOut();
+                                setIsShowLandingPage(true);
+                                setShouldClearCookie(true);
+                                setCompletedParentalChallenge(false);
+                            }}
                         >
                             <Typography
                                 color="primary"

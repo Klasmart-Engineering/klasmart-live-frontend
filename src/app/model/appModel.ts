@@ -110,6 +110,16 @@ export const shouldShowNoStudentRoleState = atom({
     default: false,
 });
 
+export const isOpenLandingPage = atom<boolean>({
+    key: `isOpenLandingPage`,
+    default: true,
+});
+
+export const completeParentalGate = atom<boolean>({
+    key: `completeParentalGate`,
+    default: false,
+});
+
 export const menuOpenState = atom({
     key: `menuOpenState`,
     default: false,

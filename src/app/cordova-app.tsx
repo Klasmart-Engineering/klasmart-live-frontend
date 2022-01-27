@@ -19,6 +19,7 @@ import {
     showedUpgradeDevicePopupState,
 } from "./model/appModel";
 import { Auth } from "./pages/account/auth";
+import { LandingPage } from "./pages/landing/landingPage";
 import { NoPageFoundDialog } from "./pages/no-pages/noPageFoundDialog";
 import SchedulePage from "./pages/schedule";
 import AnytimeStudyPage from "./pages/schedule/anytime-study";
@@ -131,7 +132,7 @@ export function App ({ history }: {
             direction="column"
             justifyContent="space-between"
             style={{
-                height: `100%`,
+                height: `100vh`,
                 overflow: `hidden`,
             }}
         >
@@ -164,6 +165,10 @@ export function App ({ history }: {
                     <Route
                         path="/auth"
                         render={() => <Auth useInAppBrowser={true} />}
+                    />
+                    <Route
+                        path="/landing"
+                        component={LandingPage}
                     />
                     <UserRoute
                         path="/"
