@@ -1,83 +1,149 @@
-image: node:16
-
 clone:
   lfs: true
   depth: 1
 
+definitions:
+  caches:
+    nodemodules: ./node_modules
+  scripts:
+    - script:
+      - &skip-bitbucket-authored-commits
+        '[[ $(git log -1 --pretty=%an) == "bitbucket-pipelines" ]] && echo "Commit author is bitbucket-pipelines - exiting Pipeline" && exit 0'
+
+  steps:
+    - step: &slack-notification
+        name: Slack Notification
+        script:
+          - pipe: atlassian/slack-notify:1.0.1
+            variables:
+              WEBHOOK_URL: ''
+              MESSAGE: '($BITBUCKET_COMMIT) for "$BITBUCKET_BRANCH"'
+    - step: &slack-notification-build
+        name: '🔔 Slack: Build'
+        script:
+          - pipe: docker://cabauman/slack-notify-commits:0.6.0
+            variables:
+              WEBHOOK_URL: $SLACK_WEBHOOK
+              MESSAGE: '"🚀 A new build of Assessment Service ($BITBUCKET_TAG) has been pushed to ECR"'
+              BITBUCKET_USER: $PIPELINE_READER_BITBUCKET_USER
+              BITBUCKET_APP_PASSWORD: $PIPELINE_READER_BITBUCKET_APP_PASSWORD
+    - step: &step-secret-check
+        name: Atlassian Security Secrets Scan
+        script:
+          - pipe: atlassian/git-secrets-scan:0.5.1
+    - step: &step-build-npm
+        name: "Test and Build NPM"
+        image: node:16
+        size: 2x
+        script:
+          - npm i --no-audit --no-progress
+          - npm test -- --coverage
+          - mv deploy/config/internal/.env.alpha ./.env
+          - npm run build
+          # - npm prune --production
+        caches:
+          - nodemodules
+          - node
+        artifacts:
+          - node_modules/**
+          - dist/**
+    - step: &step-build-android-apk
+        name: Build Android APK
+        size: 2x
+        trigger: manual
+        script:
+          - docker build --build-arg SSH_PRIVATE_KEY=$BITBUCKET_PRIVATE_KEY -f BuildApp.Dockerfile -t cordovabuild .
+          - docker create -ti --name cordovabuild cordovabuild bash
+          - docker cp cordovabuild:/app/build ./
+          - docker rm -f cordovabuild
+        artifacts:
+          - build/apk/debug/**
+        services:
+          - docker
+        caches:
+          - docker
+    - step: &step-deploy-alpha
+        name: "Deploy Alpha Dev"
+        image: python:3.9-alpine
+        script:
+          - pip3 install -U awscli
+          - export AWS_ACCESS_KEY_ID=$BBU_AWS_ACCESS_KEY_ID
+          - export AWS_SECRET_ACCESS_KEY=$BBU_AWS_SECRET_ACCESS_KEY
+          - aws s3 sync dist s3://kidsloop-alpha-live-crack-drake/
+          - aws cloudfront create-invalidation --paths "/*" --distribution-id E2694SIA1FLALO
+    - step: &step-build-custom-target
+        name: "Build NPM custom"
+        image: node:16
+        script:
+          - npm ci --no-audit --no-progress
+          - mv deploy/config/$KIDSLOOP_REGION/.env.$KIDSLOOP_ENV ./.env
+          - npm run build
+        caches:
+          - nodemodules
+        artifacts:
+          - dist/**
+    - step: &step-dockerize
+        name: "Build & Push Docker image"
+        image: python:3.9-alpine
+        script:
+          - pip3 install -U awscli
+          - mv dist deploy/
+
+          - export BRANCH_TAG=$([[ ! -z "$BITBUCKET_BRANCH" ]] && echo "$BITBUCKET_BRANCH" | sed -E 's/([^0-9a-zA-Z]+)/-/g' | awk '{print tolower($0)}' || echo "master")
+          - export REPO=$DOCKER_REPO_URL/kidsloop-live-frontend # DOCKER_REPO_URL is workspace wide variable
+          - export COMMIT_TAG=$(echo $BITBUCKET_COMMIT | cut -c1-7)
+          - printf '"Git tag":"%s", "Git commit":"%s" "ECR repo":"%s"' $BRANCH_TAG $COMMIT_TAG $REPO
+
+          - aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin $DOCKER_REPO_URL
+          
+          - export MAJOR_VERSION=$(echo $BITBUCKET_TAG | grep -o "[v][0-9]")
+          - export MINOR_VERSION=$(echo $BITBUCKET_TAG | grep -o "[v][0-9].[0-9]")
+          - export PATCH_VERSION=$(echo $BITBUCKET_TAG | grep -o "[v][0-9].[0-9].[0-9]")
+          - echo "$MAJOR_VERSION, $MINOR_VERSION, $PATCH_VERSION"
+          
+          - docker build -t live-frontend deploy/
+
+          - docker tag live-frontend:latest $REPO:$MAJOR_VERSION
+          - docker tag live-frontend:latest $REPO:$MINOR_VERSION
+          - docker tag live-frontend:latest $REPO:$BITBUCKET_TAG
+          - docker tag live-frontend:latest $REPO:$BRANCH_TAG
+          - docker tag live-frontend:latest $REPO:$BRANCH_TAG-latest
+          - docker tag live-frontend:latest $REPO:$BRANCH_TAG-$BITBUCKET_BUILD_NUMBER
+          - docker tag live-frontend:latest $REPO:$BRANCH_TAG-$COMMIT_TAG
+
+          - docker push $REPO:$MAJOR_VERSION
+          - docker push $REPO:$MINOR_VERSION
+          - docker push $REPO:$BITBUCKET_TAG
+          - docker push $REPO:$BRANCH_TAG
+          - docker push $REPO:$BRANCH_TAG-latest
+          - docker push $REPO:$BRANCH_TAG-$BITBUCKET_BUILD_NUMBER
+          - docker push $REPO:$BRANCH_TAG-$COMMIT_TAG
+
+        services:
+          - docker
+
 pipelines:
   pull-requests:
     "**":
-      - step:
-          name: Test & Build
-          size: 2x
-          caches:
-            - node
-          script:
-            - npm ci --no-audit --no-progress
-            - npm test -- --coverage
-            - mv deploy/config/internal/.env.alpha ./.env
-            - npm run build
-      - step:
-          name: Build Android APK
-          size: 2x
-          trigger: manual
-          script:
-            - docker build --build-arg SSH_PRIVATE_KEY=$BITBUCKET_PRIVATE_KEY -f BuildApp.Dockerfile -t cordovabuild .
-            - docker create -ti --name cordovabuild cordovabuild bash
-            - docker cp cordovabuild:/app/build ./
-            - docker rm -f cordovabuild
-          artifacts:
-            - build/apk/debug/**
-          services:
-            - docker
-          caches:
-            - docker
+      - step: *step-secret-check
+      - step: *step-build-npm
+      # - step: *step-build-android-apk # temporarily disabled
+  tags:
+    '*':
+      - step: *step-secret-check
+      - step: *step-build-npm
+      - step: *step-build-npm
+      - step: *step-deploy-alpha
+      - step: *step-dockerize
+      - step: *slack-notification-build
   custom:
+    deploy-alpha:
+      - step: *step-secret-check
+      - step: *step-build-npm
+      - step: *step-deploy-alpha
     deploy:
       - variables:
           - name: KIDSLOOP_REGION
           - name: KIDSLOOP_ENV
-      - step:
-          name: "Build NPM"
-          image: node:lts
-          script:
-            - npm ci --no-audit --no-progress
-            - mv deploy/config/$KIDSLOOP_REGION/.env.$KIDSLOOP_ENV ./.env
-            - npm run build
-          caches:
-            - nodemodules
-          artifacts:
-            - dist/**
-
-      - step:
-          name: "Build & Push Docker image"
-          image: python:3.9-alpine
-          script:
-            - pip3 install -U awscli
-            - mv dist deploy/
-
-            - export BRANCH_TAG=$(echo "$BITBUCKET_BRANCH" | sed -E 's/([^0-9a-zA-Z]+)/-/g' | awk '{print tolower($0)}')
-            - export REPO=$DOCKER_REPO_URL/kidsloop-live-frontend # DOCKER_REPO_URL is workspace wide variable
-            - export COMMIT_TAG=$(echo $BITBUCKET_COMMIT | cut -c1-7)
-            - if test -z "$BRANCH_TAG"; then export TAG=commit-$KIDSLOOP_REGION-$KIDSLOOP_ENV; else export TAG=$BRANCH_TAG-$KIDSLOOP_REGION-$KIDSLOOP_ENV; fi
-            - printf '"Git tag":"%s", "Git commit":"%s" "ECR repo":"%s"' $BRANCH_TAG $COMMIT_TAG $REPO
-
-            - aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin $DOCKER_REPO_URL
-            - docker build -t live-frontend deploy/
-
-            - docker tag live-frontend:latest $REPO:$TAG
-            - docker tag live-frontend:latest $REPO:$TAG-latest
-            - docker tag live-frontend:latest $REPO:$TAG-$BITBUCKET_BUILD_NUMBER
-            - docker tag live-frontend:latest $REPO:$TAG-$COMMIT_TAG
-
-            - if test -n "$BRANCH_TAG"; then docker push $REPO:$TAG; fi
-            - if test -n "$BRANCH_TAG"; then docker push $REPO:$TAG-latest; fi
-            - docker push $REPO:$TAG-$BITBUCKET_BUILD_NUMBER
-            - docker push $REPO:$TAG-$COMMIT_TAG
-
-          services:
-            - docker
-
-definitions:
-  caches:
-    nodemodules: ./node_modules
+      - step: *step-build-custom-target
+      - step: *step-dockerize
