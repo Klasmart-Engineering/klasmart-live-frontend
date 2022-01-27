@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface ChatMenuProps {
-	anchor?: HTMLElement;
+	anchor: HTMLElement;
 }
 
 function ChatMenu (props: ChatMenuProps) {

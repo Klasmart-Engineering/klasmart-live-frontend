@@ -97,21 +97,16 @@ function ToolbarItemCall (props: ToolbarItemCallProps) {
         disabled,
         active,
         locked,
-        tooltip = false,
+        tooltip = ``,
         isHost = false,
     } = props;
     const classes = useStyles();
-    const hasTooltip = tooltip ? true : false;
     const theme = useTheme();
     const isMdDown = useMediaQuery(theme.breakpoints.down(`md`));
 
     return (
         <>
-            <Tooltip
-                title={tooltip}
-                disableFocusListener={!hasTooltip}
-                disableHoverListener={!hasTooltip}
-                disableTouchListener={!hasTooltip}>
+            <Tooltip title={tooltip}>
                 <div
                     className={clsx(classes.itemRoot, {
                         [classes.itemRootMd]: isMdDown,

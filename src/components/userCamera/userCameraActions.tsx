@@ -1,3 +1,5 @@
+import PencilIconOff from "@/assets/img/canvas/pencil_icon_off.svg";
+import PencilIconOn from "@/assets/img/canvas/pencil_icon_on.svg";
 import { useRewardTrophyMutation } from "@/data/live/mutations/useRewardTrophyMutation";
 import { useSetHostMutation } from "@/data/live/mutations/useSetHostMutation";
 import { useSessions } from "@/data/live/state/useSessions";
@@ -21,7 +23,6 @@ import {
     Theme,
 } from "@material-ui/core";
 import amber from "@material-ui/core/colors/amber";
-import red from "@material-ui/core/colors/red";
 import { ArrowsAngleExpand as ExpandIcon } from "@styled-icons/bootstrap/ArrowsAngleExpand";
 import { CameraVideoFill as CameraVideoFillIcon } from "@styled-icons/bootstrap/CameraVideoFill";
 import { CameraVideoOffFill as CameraDisabledIcon } from "@styled-icons/bootstrap/CameraVideoOffFill";
@@ -31,9 +32,7 @@ import { MicFill as MicFillIcon } from "@styled-icons/bootstrap/MicFill";
 import { MicMuteFill as MicDisabledIcon } from "@styled-icons/bootstrap/MicMuteFill";
 import { StarFill as StarFillIcon } from "@styled-icons/bootstrap/StarFill";
 import { TrophyFill as TrophyIcon } from "@styled-icons/bootstrap/TrophyFill";
-import { DotsVerticalRounded as DotsVerticalRoundedIcon } from "@styled-icons/boxicons-regular/DotsVerticalRounded";
 import { Crown as HasControlsIcon } from "@styled-icons/fa-solid/Crown";
-import { InvertColors as InvertColors } from "@styled-icons/material/InvertColors";
 import clsx from "clsx";
 import React,
 {
@@ -42,9 +41,7 @@ import React,
     useEffect,
     useState,
 } from "react";
-import { FormattedMessage } from "react-intl";
 import { useRecoilValue } from "recoil";
-import { InvertColorsOff } from "styled-icons/material";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -58,44 +55,6 @@ const useStyles = makeStyles((theme: Theme) => ({
         flexDirection: `column`,
         justifyContent: `space-between`,
         textAlign:`left`,
-    },
-    rootTeacher:{
-        "& $name":{
-            backgroundColor: `rgba(255,255,255,0.3)`,
-            padding: `0 10px`,
-            marginTop: 4,
-            borderRadius: 20,
-        },
-
-    },
-    topCamera:{
-        textAlign: `center`,
-    },
-    bottomCamera:{
-        position: `relative`,
-        zIndex: 9,
-    },
-    name: {
-        color: `#fff`,
-        display: `inline-block`,
-        padding: `4px 6px`,
-        fontSize: `0.75rem`,
-        lineHeight: `1.2`,
-        fontWeight: theme.typography.fontWeightBold as number,
-    },
-    roles:{
-        position: `absolute`,
-        top: 0,
-        right: 0,
-        backgroundColor: `#fff`,
-        borderRadius: `0 0 0 10px`,
-        padding : `0 10px`,
-    },
-    roleIcon:{
-        margin: `2px 4px`,
-    },
-    roleHasControlsIcon:{
-        color: amber[500],
     },
     controls:{
         position: `absolute`,
@@ -122,15 +81,6 @@ const useStyles = makeStyles((theme: Theme) => ({
         color: `#fff`,
         "&:hover":{},
     },
-    controlsIconActive:{
-        backgroundColor: amber[500],
-        "&:hover":{
-            backgroundColor: amber[500],
-        },
-    },
-    menuPaper:{
-        borderRadius: 10,
-    },
     menuPaperTrophies:{
         borderRadius: 30,
         "& $menuItem":{
@@ -142,14 +92,6 @@ const useStyles = makeStyles((theme: Theme) => ({
         color: theme.palette.grey[800],
         fontWeight: theme.typography.fontWeightBold as number,
     },
-    menuItemIcon:{
-        marginRight: 10,
-        padding: 5,
-        color: `#0c78d5`,
-    },
-    menuItemIconActive:{
-        color: red[500],
-    },
     expand:{
         position: `absolute`,
         top: 5,
@@ -159,7 +101,14 @@ const useStyles = makeStyles((theme: Theme) => ({
         },
     },
     iconButton:{
-        fontSize: `inherit`,
+        color: theme.palette.common.white,
+        margin: `0 -5px`,
+    },
+    iconButtonDisabled: {},
+    iconsContainer: {
+        borderRadius: 40,
+        background: `rgb(0 0 0 / 50%)`,
+        padding: `0 6px`,
     },
 }));
 
@@ -171,16 +120,19 @@ interface UserCameraActionsProps {
 const UserCameraActions = ({ user, expanded }: UserCameraActionsProps) => {
     const classes = useStyles();
 
-    const { isTeacher, roomId } = useSessionContext();
+    const {
+        isTeacher,
+        roomId,
+        sessionId,
+    } = useSessionContext();
 
     const hasControls = useRecoilValue(hasControlsState);
 
-    const [ moreEl, setMoreEl ] = useState<null | HTMLElement>(null);
-    const handleMoreOpen = (event: React.SyntheticEvent<HTMLAnchorElement>) => { setMoreEl(event.currentTarget); };
-    const handleMoreClose = () => { setMoreEl(null); };
+    const isSelf = sessionId === user.id;
+    const subTeacher = !user.isHost && user.isTeacher;
 
     const [ trophyEl, setTrophyEl ] = useState<null | HTMLElement>(null);
-    const handleTrophyOpen = (event: React.SyntheticEvent<HTMLAnchorElement>) => { setTrophyEl(event.currentTarget); };
+    const handleTrophyOpen = (event: React.MouseEvent<HTMLElement>) => { setTrophyEl(event.currentTarget); };
     const handleTrophyClose = () => { setTrophyEl(null); };
 
     const [ rewardTrophyMutation ] = useRewardTrophyMutation();
@@ -198,106 +150,82 @@ const UserCameraActions = ({ user, expanded }: UserCameraActionsProps) => {
             <Grid className={clsx(classes.controls, {
                 [classes.controlsTeacher] : isTeacher,
             })}>
-                { expanded &&
-                    <ExpandCamera user={user} />
+                {expanded && <ExpandCamera user={user} /> }
+
+                {isTeacher &&
+                    <Grid item>
+                        <Grid
+                            container
+                            className={classes.iconsContainer}>
+                            <Grid item>
+                                <ToggleMic user={user} />
+                            </Grid>
+                            <Grid item>
+                                <ToggleCamera user={user} />
+                            </Grid>
+                            {!isSelf && (
+                                <Grid item>
+                                    <IconButton
+                                        aria-label="Trophy"
+                                        className={classes.iconButton}
+                                        onClick={handleTrophyOpen}>
+                                        <TrophyIcon size="0.7em"/>
+                                    </IconButton>
+                                </Grid>
+                            )}
+                            {hasControls && (
+                                <>
+                                    {!isSelf && (
+                                        <Grid item>
+                                            <ToggleCanvas user={user} />
+                                        </Grid>
+                                    )}
+                                    {subTeacher && (
+                                        <Grid item>
+                                            <ToggleControls user={user} />
+                                        </Grid>
+                                    )}
+                                </>
+                            )}
+                        </Grid>
+                    </Grid>
                 }
-
-                <Grid item>
-                    {isTeacher && !user.isTeacher &&
-                        <IconButton
-                            component="a"
-                            aria-label="Trophy button"
-                            aria-controls="trophy-popover"
-                            aria-haspopup="true"
-                            size="small"
-                            className={classes.controlsIcon}
-                            onClick={handleTrophyOpen}
-                        >
-                            <TrophyIcon size="0.85em"/>
-                        </IconButton>
-                    }
-
-                    {isTeacher &&
-                        <IconButton
-                            component="a"
-                            aria-label="More controls button"
-                            aria-controls="more-controls-popover"
-                            aria-haspopup="true"
-                            size="small"
-                            className={classes.controlsIcon}
-                            onClick={handleMoreOpen}
-                        >
-                            <DotsVerticalRoundedIcon size="1em"/>
-                        </IconButton>
-                    }
-
-                    <Menu
-                        id="control-menu"
-                        anchorEl={moreEl}
-                        getContentAnchorEl={null}
-                        anchorOrigin={{
-                            vertical: `bottom`,
-                            horizontal: `center`,
-                        }}
-                        transformOrigin={{
-                            vertical: `top`,
-                            horizontal: `center`,
-                        }}
-                        open={Boolean(moreEl)}
-                        MenuListProps={{
-                            onPointerLeave: handleMoreClose,
-                        }}
-                        onClose={handleMoreClose}
-                    >
-
-                        <ToggleMic user={user} />
-                        <ToggleCamera user={user} />
-
-                        {hasControls && <ToggleCanvas user={user} />}
-
-                        {hasControls && !user.isHost && user.isTeacher &&
-                            <ToggleControls user={user} />
-                        }
-
-                    </Menu>
-
-                    <Menu
-                        id="trophy-menu"
-                        anchorEl={trophyEl}
-                        getContentAnchorEl={null}
-                        anchorOrigin={{
-                            vertical: `bottom`,
-                            horizontal: `center`,
-                        }}
-                        transformOrigin={{
-                            vertical: `top`,
-                            horizontal: `center`,
-                        }}
-                        open={Boolean(trophyEl)}
-                        MenuListProps={{
-                            onPointerLeave: handleTrophyClose,
-                            disablePadding: true,
-                        }}
-                        classes={{
-                            paper: classes.menuPaperTrophies,
-                        }}
-                        onClose={handleTrophyClose}
-                    >
-                        <MenuItem
-                            className={classes.menuItem}
-                            onClick={() => rewardTrophy(user.id, `trophy`)}><TrophyIcon size="1.2rem"/></MenuItem>
-                        <MenuItem
-                            className={classes.menuItem}
-                            onClick={() => rewardTrophy(user.id, `awesome`)}><HandThumbsUpFillIcon size="1.2rem"/></MenuItem>
-                        <MenuItem
-                            className={classes.menuItem}
-                            onClick={() => rewardTrophy(user.id, `star`)}><StarFillIcon size="1.2rem"/></MenuItem>
-                        <MenuItem
-                            className={classes.menuItem}
-                            onClick={() => rewardTrophy(user.id, `heart`)}><HeartFillIcon size="1.2rem"/></MenuItem>
-                    </Menu>
-                </Grid>
             </Grid>
+            <Menu
+                id="trophy-menu"
+                anchorEl={trophyEl}
+                getContentAnchorEl={null}
+                anchorOrigin={{
+                    vertical: `bottom`,
+                    horizontal: `center`,
+                }}
+                transformOrigin={{
+                    vertical: `top`,
+                    horizontal: `center`,
+                }}
+                open={Boolean(trophyEl)}
+                MenuListProps={{
+                    onPointerLeave: handleTrophyClose,
+                    disablePadding: true,
+                }}
+                classes={{
+                    paper: classes.menuPaperTrophies,
+                }}
+                onClose={handleTrophyClose}
+            >
+                <MenuItem
+                    className={classes.menuItem}
+                    onClick={() => rewardTrophy(user.id, `trophy`)}><TrophyIcon size="1.2rem"/></MenuItem>
+                <MenuItem
+                    className={classes.menuItem}
+                    onClick={() => rewardTrophy(user.id, `awesome`)}><HandThumbsUpFillIcon size="1.2rem"/></MenuItem>
+                <MenuItem
+                    className={classes.menuItem}
+                    onClick={() => rewardTrophy(user.id, `star`)}><StarFillIcon size="1.2rem"/></MenuItem>
+                <MenuItem
+                    className={classes.menuItem}
+                    onClick={() => rewardTrophy(user.id, `heart`)}><HeartFillIcon size="1.2rem"/></MenuItem>
+            </Menu>
         </div>
     );
 };
@@ -389,24 +317,15 @@ const ToggleCamera = ({ user }: ToggleCameraProps) => {
     }
 
     return (
-        <MenuItem
-            className={classes.menuItem}
-            onClick={toggleVideoState}>
-            {camOn ?
-                <>
-                    <CameraVideoFillIcon
-                        className={classes.menuItemIcon}
-                        size="1rem"/>
-                    <FormattedMessage id="toggle_camera_off"/>
-                </> :
-                <>
-                    <CameraDisabledIcon
-                        className={clsx(classes.menuItemIcon, classes.menuItemIconActive)}
-                        size="1rem"/>
-                    <FormattedMessage id="toggle_camera_on"/>
-                </>
-            }
-        </MenuItem>
+        <IconButton
+            aria-label="Camera"
+            className={clsx(classes.iconButton, {
+                [classes.iconButtonDisabled]: !camOn,
+            })}
+            onClick={toggleVideoState}
+        >
+            {camOn ? <CameraVideoFillIcon size="0.7em"/> : <CameraDisabledIcon size="0.7em"/>}
+        </IconButton>
     );
 };
 
@@ -487,24 +406,15 @@ function ToggleMic ({ user }: ToggleMicProps){
     }
 
     return (
-        <MenuItem
-            className={classes.menuItem}
-            onClick={toggleAudioState}>
-            {micOn ?
-                <>
-                    <MicFillIcon
-                        className={classes.menuItemIcon}
-                        size="1rem"/>
-                    <FormattedMessage id="toggle_microphone_off"/>
-                </> :
-                <>
-                    <MicDisabledIcon
-                        className={clsx(classes.menuItemIcon, classes.menuItemIconActive)}
-                        size="1rem"/>
-                    <FormattedMessage id="toggle_microphone_on"/>
-                </>
-            }
-        </MenuItem>
+        <IconButton
+            aria-label="Microphone"
+            className={clsx(classes.iconButton, {
+                [classes.iconButtonDisabled]: !micOn,
+            })}
+            onClick={toggleAudioState}
+        >
+            {micOn ? <MicFillIcon size="0.7em"/> : <MicDisabledIcon size="0.7em"/>}
+        </IconButton>
     );
 }
 
@@ -529,15 +439,13 @@ function ToggleControls ({ user }: ToggleControlsProps){
     }
 
     return (
-        <>
-            <MenuItem
-                className={classes.menuItem}
-                onClick={() => giveControls(user)}>
-                <HasControlsIcon
-                    className={classes.menuItemIcon}
-                    size="1rem" /><FormattedMessage id="toggle_room_controls"/>
-            </MenuItem>
-        </>
+        <IconButton
+            aria-label="Give controls"
+            className={classes.iconButton}
+            onClick={() => giveControls(user)}
+        >
+            <HasControlsIcon size="0.7em"/>
+        </IconButton>
     );
 }
 
@@ -566,27 +474,17 @@ function ToggleCanvas ({ user }:ToggleCanvasProps) {
     ]);
 
     return (
-        <>
-            <MenuItem
-                className={classes.menuItem}
-                onClick={toggleAllowCreateShapes}>
-
-                {permissions.allowCreateShapes ?
-                    <>
-                        <InvertColors
-                            className={classes.menuItemIcon}
-                            size="1rem"/>
-                        <FormattedMessage id="whiteboard_permissionControls_listItemText_disallow"/>
-                    </> :
-                    <>
-                        <InvertColorsOff
-                            className={clsx(classes.menuItemIcon, classes.menuItemIconActive)}
-                            size="1rem"/>
-                        <FormattedMessage id="whiteboard_permissionControls_listItemText_allow"/>
-                    </>
-                }
-            </MenuItem>
-        </>
+        <IconButton
+            aria-label="Canvas"
+            className={clsx(classes.iconButton, {
+                [classes.iconButtonDisabled]: !permissions.allowCreateShapes,
+            })}
+            onClick={toggleAllowCreateShapes}>
+            <img
+                src={permissions.allowCreateShapes ? PencilIconOn : PencilIconOff}
+                width="15px"
+                height="15px" />
+        </IconButton>
     );
 }
 

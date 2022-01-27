@@ -1,5 +1,5 @@
 import StyledIcon from "@/components/styled/icon";
-import CanvasMenu from "@/components/toolbar/toolbarMenus/canvasMenu";
+import CanvasMenu from "@/components/toolbar/toolbarMenus/canvasMenu/canvasMenu";
 import { useSessionContext } from "@/providers/session-context";
 import { ClassType } from "@/store/actions";
 import { isCanvasOpenState } from "@/store/layoutAtoms";

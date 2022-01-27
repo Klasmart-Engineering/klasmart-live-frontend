@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface GlobaActionsMenuProps {
-	anchor?: HTMLElement;
+	anchor: HTMLElement;
 }
 
 function ClassDetailsMenu (props: GlobaActionsMenuProps) {

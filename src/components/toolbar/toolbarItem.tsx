@@ -10,9 +10,9 @@ import {
 } from "@material-ui/core";
 import amber from "@material-ui/core/colors/amber";
 import clsx from "clsx";
-import React,
-{ forwardRef } from "react";
-import { useRecoilState } from "recoil";
+import React from "react";
+import { useRecoilValue } from "recoil";
+import { StyledIcon } from "styled-icons/types";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -90,14 +90,14 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 interface ToolbarItemProps {
 	display?: boolean;
-	ref?: any;
+	ref?: React.MutableRefObject<HTMLDivElement>;
 	icon?: any;
 	label?: string;
-	onClick?: any;
+	onClick?: (event:React.MouseEvent<HTMLElement>) => void;
 	disabled?: boolean;
 	active?: boolean;
 	badge?: any;
-	tooltip?: string | boolean;
+	tooltip?: string;
 }
 
 function ToolbarItem (props: ToolbarItemProps) {
@@ -109,10 +109,10 @@ function ToolbarItem (props: ToolbarItemProps) {
         disabled,
         active,
         badge,
-        tooltip = false,
+        tooltip = ``,
     } = props;
     const classes = useStyles();
-    const [ activeTab, setActiveTab ] = useRecoilState(activeTabState);
+    const activeTab = useRecoilValue(activeTabState);
 
     const theme = useTheme();
     const isMdDown = useMediaQuery(theme.breakpoints.down(`md`));
@@ -123,11 +123,7 @@ function ToolbarItem (props: ToolbarItemProps) {
 
     return (
         <>
-            <Tooltip
-                title={tooltip || `tooltip`}
-                disableFocusListener={!tooltip}
-                disableHoverListener={!tooltip}
-                disableTouchListener={!tooltip}>
+            <Tooltip title={tooltip}>
                 <div
                     className={clsx(classes.root, {
                         [classes.rootMosaic] : activeTab === `mosaic`,
