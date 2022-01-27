@@ -26,6 +26,13 @@ const rrwebPlayer: Replayer = new Replayer([], {
     liveMode: true,
     speed: 1.5,
     UNSAFE_replayCanvas: true,
+    insertStyleRules: [
+        `
+        .h5p-interactive-video .h5p-interaction.h5p-poster {
+            background-color: transparent !important;
+        }
+    `,
+    ],
 });
 
 rrwebPlayer.on(`resize`, () => window.parent.postMessage({
