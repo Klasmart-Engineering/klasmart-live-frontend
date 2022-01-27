@@ -25,7 +25,7 @@ export interface ICameraContext {
     setAcquireCameraDevice: React.Dispatch<React.SetStateAction<boolean>>;
     setHighQuality: React.Dispatch<React.SetStateAction<boolean>>;
     cameraStream: MediaStream | undefined;
-    refreshCameras: () => void;
+    refreshCameras: (streamOptions: StreamOptions) => void;
     deviceStatus: DeviceStatus | undefined;
     cameraError: CameraError | undefined;
     setIsListeningOnDeviceChange: React.Dispatch<React.SetStateAction<boolean>>;
@@ -132,6 +132,11 @@ const getVideoContraints = (options: VideoConstraintsOptions): MediaTrackConstra
         },
     };
 };
+
+interface StreamOptions {
+    camOn: boolean;
+    micOn: boolean;
+}
 
 export const CameraContextProvider = (props: Props) => {
     const { children } = props;
@@ -281,7 +286,7 @@ export const CameraContextProvider = (props: Props) => {
         setCameraStream(undefined);
     }, [ cameraStream, setCameraStream ]);
 
-    const acquireCameraStream = useCallback(async () => {
+    const acquireCameraStream = useCallback(async ({ camOn, micOn }: StreamOptions) => {
         if (!selectedAudioDeviceId || !selectedVideoDeviceId) {
             setCameraStream(undefined);
             setCameraError(CameraError.CAMERA_NOT_FOUND_ERROR);
@@ -293,8 +298,8 @@ export const CameraContextProvider = (props: Props) => {
 
         try {
             const stream = await navigator.mediaDevices.getUserMedia({
-                audio: audioConstraints?.constraints,
-                video: acquireCameraDevice ? videoConstraints?.constraints : false,
+                audio: micOn ? audioConstraints?.constraints : false,
+                video: camOn ? (acquireCameraDevice ? videoConstraints?.constraints : false) : false,
             });
             setDeviceStatus(undefined);
             resetAllErrors();
@@ -325,15 +330,22 @@ export const CameraContextProvider = (props: Props) => {
         highQuality,
     ]);
 
-    const refreshCameras = useCallback(async () => {
+    const refreshCameras = useCallback(async ({ camOn, micOn }: StreamOptions) => {
         try {
+            if(!camOn && !micOn) {
+                releaseCameraStream();
+                return;
+            }
             await requestPermissions();
             setCameraError(undefined);
 
             await loadAllDeviceConstraints();
 
             releaseCameraStream();
-            acquireCameraStream();
+            acquireCameraStream({
+                camOn: camOn,
+                micOn: micOn,
+            });
         } catch (error) {
             console.error(error);
             if (isUndefinedError(error)) {
@@ -350,7 +362,10 @@ export const CameraContextProvider = (props: Props) => {
 
     useEffect(() => {
         if (!acquireDevices) return;
-        acquireCameraStream();
+        acquireCameraStream({
+            camOn: true,
+            micOn: true,
+        });
 
         return () => {
             releaseCameraStream();
@@ -364,7 +379,10 @@ export const CameraContextProvider = (props: Props) => {
 
     useEffect(() => {
         if (!acquireDevices) return;
-        refreshCameras();
+        refreshCameras({
+            camOn: true,
+            micOn: true,
+        });
     }, [ acquireDevices ]);
 
     useEffect(() => {
@@ -379,7 +397,10 @@ export const CameraContextProvider = (props: Props) => {
         if(isSafari || isIOS) return;
 
         const onDeviceChange = () => {
-            refreshCameras();
+            refreshCameras({
+                camOn: true,
+                micOn: true,
+            });
         };
 
         navigator.mediaDevices.addEventListener(`devicechange`, onDeviceChange);
@@ -394,7 +415,10 @@ export const CameraContextProvider = (props: Props) => {
 
     const onPauseStateChanged = useCallback((isPaused: boolean) => {
         if (!isPaused) {
-            acquireCameraStream();
+            acquireCameraStream({
+                camOn: true,
+                micOn: true,
+            });
             return;
         }
         releaseCameraStream();
