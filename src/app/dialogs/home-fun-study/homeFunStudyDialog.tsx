@@ -38,6 +38,12 @@ import {
     useSelectedUserValue,
 } from "@/app/data/user/atom";
 import { downloadDataBlob } from "@/app/utils/requestUtils";
+import {
+    HOME_FUN_STUDY_DISABLE_BUTTON_COLOR,
+    HOME_FUN_STUDY_SUBMIT_BUTTON_BACKGROUND_COLOR,
+    HOME_FUN_STUDY_SUBMITTING_BUTTON_BACKGROUND_COLOR,
+    TEXT_COLOR_FILE_NAME,
+} from "@/config";
 import { useHttpEndpoint } from "@/providers/region-select-context";
 import { fromSecondsToMilliseconds } from "@/utils/utils";
 import { usePostScheduleFeedback } from "@kidsloop/cms-api-client";
@@ -124,10 +130,10 @@ const useStyles = makeStyles((theme: Theme) =>
             paddingBottom: `10px`,
         },
         disabled_button: {
-            backgroundColor: `#A9CDFF`,
+            backgroundColor: HOME_FUN_STUDY_DISABLE_BUTTON_COLOR,
         },
         submit_button: {
-            backgroundColor: `#3671CE`,
+            backgroundColor: HOME_FUN_STUDY_SUBMIT_BUTTON_BACKGROUND_COLOR,
         },
         file_icon: {
             maxBlockSize: `2rem`,
@@ -138,7 +144,7 @@ const useStyles = makeStyles((theme: Theme) =>
             position: `relative`,
         },
         buttonSubmitting: {
-            backgroundColor: `#d7e4f5`,
+            backgroundColor: HOME_FUN_STUDY_SUBMITTING_BUTTON_BACKGROUND_COLOR,
         },
         buttonProgress: {
             color: blue[500],
@@ -158,6 +164,10 @@ const useStyles = makeStyles((theme: Theme) =>
             left: `50%`,
             marginTop: -12,
             marginLeft: -12,
+        },
+        clickableText: {
+            textDecoration: `underline`,
+            color: TEXT_COLOR_FILE_NAME,
         },
     }));
 
@@ -1435,8 +1445,10 @@ function HomeFunStudyAssignment ({
                                 </ListItemIcon>
                                 <ListItemText
                                     primary={<Typography
+                                        className={classes.clickableText}
                                         variant="body2"
                                         color="textSecondary">{item.attachmentName}</Typography>}
+                                    onClick={() => confirmOpenAttachmentLink(item)}
                                 />
                                 {
                                     newestFeedback?.is_allow_submit ?

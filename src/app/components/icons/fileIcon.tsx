@@ -8,7 +8,7 @@ const useStyles = makeStyles({
         color: `white`,
         fontSize: `xx-small`,
         height: `12px`,
-        fontFamily: `Roboto`,
+        fontFamily: `sans-serif`,
         paddingLeft: `5px`,
         paddingRight: `5px`,
     },
