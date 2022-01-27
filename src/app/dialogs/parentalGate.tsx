@@ -197,17 +197,16 @@ export function ParentalGate ({
             justifyContent="flex-start"
             alignItems="center"
             className={classes.container}>
-            {!isWelcomeScreen && (
-                <Grid
-                    item
-                    onClick={setClosedDialog}>
-                    <div className={classes.dialogCloseIconButton}>
-                        <StyledIcon
-                            icon={<CloseIcon />}
-                            size={`large`}
-                        />
-                    </div>
-                </Grid>)}
+            <Grid
+                item
+                onClick={setClosedDialog}>
+                <div className={classes.dialogCloseIconButton}>
+                    <StyledIcon
+                        icon={<CloseIcon />}
+                        size={`large`}
+                    />
+                </div>
+            </Grid>
             {isLayoutModeStudy && (
                 <Grid
                     item
