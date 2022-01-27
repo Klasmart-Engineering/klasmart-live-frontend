@@ -1,6 +1,7 @@
 import {
     EventType,
     Replayer,
+    unpack,
 } from 'rrweb';
 // eslint-disable-next-line no-unused-vars
 
@@ -42,7 +43,7 @@ const _warn = console.warn;
 
 // rrweb doesn't have onError event, so we have to listen the log to detect the "Node id #id" not found" issue.
 // https://github.com/rrweb-io/rrweb/blob/78526a3aae6ba35016ad2836477ba3186eacf250/packages/rrweb/src/replay/index.ts#L1851
-console.warn = function(...args: any[]) {
+console.warn = function (...args: any[]) {
     if(args.length > 2 && args[0].includes(`replayer`) && args[1].includes(`Node with id`)) {
         isForceUpdateFullSnapshot = true;
     }
@@ -53,7 +54,7 @@ window.addEventListener(`message`, ({ data }) => {
     if (!data || !data.event) { return; }
 
     try {
-        const event = JSON.parse(data.event);
+        const event = unpack(JSON.parse(data.event));
 
         if (event.type === EventType.Meta && !hasReplayStarted) {
             rrwebPlayer.startLive(event.timestamp);

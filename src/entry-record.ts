@@ -3,7 +3,10 @@ import { EventRecorderService } from './services/event-recorder/EventRecorderSer
 import { EventStream } from './services/event-recorder/stream/EventStream';
 import { GraphQlUploader } from './services/event-recorder/uploader/GraphQlUploader';
 import { GraphQLClient } from 'graphql-request';
-import { record } from 'rrweb';
+import {
+    pack,
+    record,
+} from 'rrweb';
 import { v4 as uuid } from 'uuid';
 
 if (!(window as any).kidslooplive) {
@@ -82,6 +85,7 @@ if (!(window as any).kidslooplive) {
             eventRecorder.uploadEvents();
         },
         keepIframeSrcFn,
+        packFn: pack,
     });
 }
 
