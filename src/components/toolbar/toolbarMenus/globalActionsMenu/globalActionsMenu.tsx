@@ -61,7 +61,7 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
     const items: GlobaActionsMenuItem[] = [
         {
             title: intl.formatMessage({
-                id: audioGloballyMuted ? `toggle_all_microphones_off` : `toggle_all_microphones_on`,
+                id: audioGloballyMuted ? `toggle_all_microphones_on` : `toggle_all_microphones_off`,
             }),
             icon: <MicFillIcon size="1.4rem" />,
             activeIcon: <MicDisabledIcon size="1.4rem" />,
@@ -71,7 +71,7 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
         },
         {
             title: intl.formatMessage({
-                id: videoGloballyMuted ? `toggle_all_cameras_off` : `toggle_all_cameras_on`,
+                id: videoGloballyMuted ? `toggle_all_cameras_on` : `toggle_all_cameras_off`,
             }),
             icon: <CameraVideoFillIcon size="1.4rem" />,
             activeIcon: <CameraDisabledIcon size="1.4rem" />,

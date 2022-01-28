@@ -329,11 +329,10 @@ function Toolbar () {
                     item
                     className={classes.iconGroup}>
                     <ToolbarItemMicrophone
-                        // locked={}
                         active={micMuteCurrent === null ? micOn : micMuteCurrent}
-                        // tooltip={user.isTeacherAudioMuted ? intl.formatMessage({
-                        //     id: `toolbar_microphonelocked`,
-                        // }) : undefined}
+                        tooltip={intl.formatMessage({
+                            id: micOn ? `toggle_microphone_off` :  `toggle_microphone_on`,
+                        })}
                         onClick={() =>  toggleOutboundAudioState() }
                     />
                     <ToolbarItemCall
@@ -346,11 +345,10 @@ function Toolbar () {
                         onClick={() => endCall()}
                     />
                     <ToolbarItemCamera
-                        // locked={videoGloballyMuted}
                         active={camMuteCurrent === null ? camOn : camMuteCurrent}
-                        // tooltip={videoGloballyMutedState ? intl.formatMessage({
-                        //     id: `toolbar_camera_locked`,
-                        // }) : undefined}
+                        tooltip={intl.formatMessage({
+                            id: camOn ? `toggle_camera_off` :  `toggle_camera_on`,
+                        })}
                         onClick={() =>  toggleOutboundVideoState() }
                     />
                 </Grid>
