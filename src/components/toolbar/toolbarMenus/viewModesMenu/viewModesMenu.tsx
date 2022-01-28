@@ -51,7 +51,7 @@ function ViewModesMenu (props:ViewModesMenuProps) {
     const observeDisable = useRecoilValue(observeDisableState);
     const screenShare = useContext(ScreenShareContext);
     const [ alert, setAlert ] = useState<AlertProps>();
-    const isDisabledShareScreen = !navigator.mediaDevices;
+    const isDisabledShareScreen = typeof navigator.mediaDevices?.getDisplayMedia !== `function`;
 
     const ObserveWarningActive = () => {
         const checkShow = (localStorage.getItem(`ObserveWarning`) ?? OBSERVE_WARNING_DEFAULT) === `true`;
