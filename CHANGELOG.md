@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.11.1](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.11.1%0Dv3.11.0) (2022-01-28)
+
+
+### Bug Fixes
+
+* change detect disabled share screen button using getDisplayMedia ([3cd7b72](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/3cd7b722a1bb42a0a8215dd06be3799d79c4f55f)), closes [KLL-2040](https://calmisland.atlassian.net/browse/KLL-2040)
+
 ## [3.11.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.11.0%0Dv3.10.0) (2022-01-26)
 
 
