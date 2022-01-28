@@ -1,11 +1,11 @@
 import { useSendMessageMutation } from "@/data/live/mutations/useSendMessageMutation";
-import { useSessionContext } from "@/providers/session-context";
 import {
     IconButton,
     InputBase,
     makeStyles,
     Paper,
     Theme,
+    Tooltip,
 } from "@material-ui/core";
 import { SendPlane as SendIcon } from "@styled-icons/remix-fill/SendPlane";
 import React,
@@ -72,13 +72,21 @@ function SendMessage () {
                 }}
                 onChange={(e) => setMessage(e.target.value)}
             />
-            <IconButton
-                aria-label="send"
-                className={classes.iconButton}
-                type="submit"
+            <Tooltip
+                title={intl.formatMessage({
+                    id: `live.class.chat.sendMessage`,
+                    defaultMessage: `Send message`,
+                })}
+                placement="top"
             >
-                <SendIcon size="1.2rem"/>
-            </IconButton>
+                <IconButton
+                    aria-label="send"
+                    className={classes.iconButton}
+                    type="submit"
+                >
+                    <SendIcon size="1.2rem"/>
+                </IconButton>
+            </Tooltip>
         </Paper>
     );
 }
