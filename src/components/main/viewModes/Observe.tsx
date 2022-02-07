@@ -9,6 +9,7 @@ import { isShowContentLoadingState } from "@/store/layoutAtoms";
 import { useContentToHref } from "@/utils/contentUtils";
 import {
     fullScreenById,
+    NoItemList,
     sleep,
 } from "@/utils/utils";
 import { Whiteboard } from "@/whiteboard/components/Whiteboard";
@@ -19,6 +20,7 @@ import {
     Typography,
 } from "@material-ui/core";
 import { ArrowsAngleExpand as ExpandIcon } from "@styled-icons/bootstrap/ArrowsAngleExpand";
+import { Person as UserIcon } from "@styled-icons/fluentui-system-regular/Person";
 import clsx from "clsx";
 import { useSnackbar } from "kidsloop-px";
 import React,
@@ -28,9 +30,9 @@ import React,
     useRef,
     useState,
 } from "react";
+import { useInViewport } from "react-in-viewport";
 import { useIntl } from "react-intl";
 import { useRecoilValue } from "recoil";
-import {useInViewport} from "react-in-viewport";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -156,16 +158,27 @@ function Observe () {
     }, [ sessionId ]);
 
     if(isTeacher){
-        return(
-            <div className={classes.fullHeight}>
-                <div className={classes.root}>
-                    {studentSessions.map(session =>
-                        <StudentPreviewCard
-                            key={session.id}
-                            session={session} />)}
+        if(studentSessions.length){
+            return(
+                <div className={classes.fullHeight}>
+                    <div className={classes.root}>
+                        {studentSessions.map(session =>
+                            <StudentPreviewCard
+                                key={session.id}
+                                session={session} />)}
+                    </div>
                 </div>
-            </div>
-        );
+            );
+        }
+        else{
+            return(
+                <NoItemList
+                    icon={<UserIcon />}
+                    text={intl.formatMessage({
+                        id: `no_students_connected`,
+                    })} />
+            );
+        }
     }else{
         return(
             <div className={classes.studentWrap}>
@@ -193,7 +206,7 @@ function StudentPreviewCard ({ session }: { session: Session }) {
     const cardConRef = useRef<HTMLDivElement>(null);
     const [ loadingStreamId, setLoadingStreamId ] = useState<boolean>(true);
     const isShowContentLoading = useRecoilValue(isShowContentLoadingState);
-    const {inViewport} = useInViewport(cardConRef);
+    const { inViewport } = useInViewport(cardConRef);
 
     const filterGroups = useMemo(() => {
         return [ session.id ];

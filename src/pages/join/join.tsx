@@ -11,7 +11,6 @@ import MediaDeviceSelect from "@/components/mediaDeviceSelect";
 import StyledButton from "@/components/styled/button";
 import StyledIcon from "@/components/styled/icon";
 import StyledTextField from "@/components/styled/textfield";
-import { OBSERVE_WARNING_DEFAULT } from "@/config";
 import {
     CameraError,
     DeviceStatus,
@@ -20,7 +19,11 @@ import {
 import { useHttpEndpoint } from "@/providers/region-select-context";
 import { useSessionContext } from "@/providers/session-context";
 import { ClassType } from "@/store/actions";
-import { classEndedState, classLeftState, hasJoinedClassroomState } from "@/store/layoutAtoms";
+import {
+    classEndedState,
+    classLeftState,
+    hasJoinedClassroomState,
+} from "@/store/layoutAtoms";
 import {
     BrandingType,
     getOrganizationBranding,
@@ -53,7 +56,10 @@ import React,
 } from "react";
 import { FormattedMessage } from "react-intl";
 import { useHistory } from "react-router-dom";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import {
+    useRecoilState,
+    useSetRecoilState,
+} from "recoil";
 
 const config = require(`@/../package.json`);
 
@@ -473,7 +479,6 @@ function JoinRoomForm ({
         }
         setCamera(stream);
         setHasJoinedClassroom(true);
-        localStorage.setItem(`ObserveWarning`, OBSERVE_WARNING_DEFAULT);
 
         if (process.env.IS_CORDOVA_BUILD) {
             history.push(`/room`);
