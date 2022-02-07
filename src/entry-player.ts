@@ -31,6 +31,10 @@ const rrwebPlayer: Replayer = new Replayer([], {
             background-color: transparent !important;
         }
     `,
+        `.h5p-find-the-words .dom-drawing-marker { 
+            stroke: transparent !important 
+        }
+    `,
     ],
     pauseAnimation: false,
 });
