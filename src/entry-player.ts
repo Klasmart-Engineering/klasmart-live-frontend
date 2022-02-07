@@ -34,7 +34,7 @@ const rrwebPlayer: Replayer = new Replayer([], {
     `,
     ],
 });
-
+rrwebPlayer.iframe.src = `stream-landing.html`;
 rrwebPlayer.on(`resize`, () => window.parent.postMessage({
     width: rrwebPlayer.iframe.width,
     height: rrwebPlayer.iframe.height,
