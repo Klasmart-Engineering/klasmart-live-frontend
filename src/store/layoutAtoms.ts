@@ -1,3 +1,7 @@
+import {
+    CanvasColor,
+    CanvasToolbarItems,
+} from "@/components/toolbar/toolbarMenus/canvasMenu/canvasMenu";
 import { InteractiveMode } from "@/pages/utils";
 import { atom } from "recoil";
 
@@ -182,4 +186,14 @@ export const classInfoState = atom<ClassInformation>({
         start_at: ``,
         end_at: ``,
     },
+});
+
+export const canvasDrawColorState = atom({
+    key: `canvasDrawColorState`,
+    default: CanvasColor.BLACK,
+});
+
+export const canvasSelectedItemState = atom({
+    key: `canvasSelectedItemState`,
+    default: CanvasToolbarItems.PENCIL,
 });
