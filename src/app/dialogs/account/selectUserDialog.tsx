@@ -181,11 +181,14 @@ export function SelectUserDialog () {
     const [ filteredMyUsersData, setFilteredMyUsersData ] = useState<ReadUserDto[]>();
 
     const selectUser = useCallback((user: ReadUserDto) => {
-        cmsQueryClient.getQueryCache().clear();
-        cmsQueryClient.getMutationCache().clear();
         console.log(`selecting user: ${user.user_id}`);
         setSelectedUser(user);
     }, [ setSelectedUser ]);
+
+    useEffect(() => {
+        cmsQueryClient.getQueryCache().clear();
+        cmsQueryClient.getMutationCache().clear();
+    }, [ meData ]);
 
     useEffect(() => {
         const studentProfiles = myUsersData?.my_users.filter((user) => user.organizationsWithPermission.some((organizationMembership) => organizationMembership.status === EntityStatus.ACTIVE));

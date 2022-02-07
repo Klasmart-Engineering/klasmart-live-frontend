@@ -78,7 +78,6 @@ export default function LiveScheduleList () {
     const [ page, setPage ] = useState(SCHEDULE_PAGE_START);
     const [ items, setItems ] = useState<SchedulesTimeViewListItem[]>([]);
     const organization = useSelectedOrganizationValue();
-    const { data: meData } = useMeQuery();
 
     const organizationId = organization?.organization_id ?? ``;
     const now = new Date();
@@ -126,15 +125,20 @@ export default function LiveScheduleList () {
     });
 
     useEffect(() => {
-        refetchSchedules();
-    }, [ meData ]);
-
-    useEffect(() => {
         if (scheduleError) setItems([]);
         if (!schedulesData) return;
         const newItems = schedulesData?.data ?? [];
+
+        if(page === SCHEDULE_PAGE_START) {
+            setItems(newItems);
+            return;
+        }
         setItems((oldItems) => uniqBy([ ...newItems, ...oldItems ], (item) => item.id).sort((a, b) => a.start_at - b.start_at));
-    }, [ scheduleError, schedulesData ]);
+    }, [
+        scheduleError,
+        schedulesData,
+        page,
+    ]);
 
     const onFocusChange = useCallback(() => {
         if (isFocused()) return;
