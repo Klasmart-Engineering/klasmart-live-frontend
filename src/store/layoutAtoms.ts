@@ -136,12 +136,7 @@ export const isShowContentLoadingState = atom({
 
 export const observeWarningState = atom({
     key: `observeWarningState`,
-    default: false,
-});
-
-export const observeContentState = atom({
-    key: `observeContentState`,
-    default: false,
+    default: true,
 });
 
 export const observeDisableState = atom({

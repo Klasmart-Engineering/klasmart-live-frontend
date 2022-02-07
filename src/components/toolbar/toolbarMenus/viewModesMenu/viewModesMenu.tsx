@@ -1,7 +1,5 @@
 import ViewMode from "./viewMode";
 import AlertPopper from "@/components/common/AlertPopper";
-import ObserveWarning from "@/components/observeWarning";
-import { OBSERVE_WARNING_DEFAULT } from "@/config";
 import { InteractiveMode } from "@/pages/utils";
 import { ScreenShareContext } from "@/providers/screenShareProvider";
 import {
@@ -16,6 +14,7 @@ import { UserVoice as OnStageIcon } from "@styled-icons/boxicons-solid/UserVoice
 import { Eye as ObserveIcon } from "@styled-icons/fa-regular/Eye";
 import { PresentationChartBar as PresentIcon } from "@styled-icons/heroicons-solid/PresentationChartBar";
 import { ScreenShare as ScreenShareIcon } from "@styled-icons/material/ScreenShare";
+import { useSnackbar } from "kidsloop-px";
 import React,
 {
     useCallback,
@@ -46,17 +45,13 @@ function ViewModesMenu (props:ViewModesMenuProps) {
     const { anchor } = props;
     const intl = useIntl();
     const [ interactiveMode, setInteractiveMode ] = useRecoilState(interactiveModeState);
-    const [ observeOpen, setObserveOpen ] = useRecoilState(observeWarningState);
+    const [ observeWarning, setObserveWarning ] = useRecoilState(observeWarningState);
     const isViewModesOpen = useRecoilValue(isViewModesOpenState);
     const observeDisable = useRecoilValue(observeDisableState);
     const screenShare = useContext(ScreenShareContext);
     const [ alert, setAlert ] = useState<AlertProps>();
     const isDisabledShareScreen = typeof navigator.mediaDevices?.getDisplayMedia !== `function`;
-
-    const ObserveWarningActive = () => {
-        const checkShow = (localStorage.getItem(`ObserveWarning`) ?? OBSERVE_WARNING_DEFAULT) === `true`;
-        checkShow ? setObserveOpen(true) : setInteractiveMode(InteractiveMode.OBSERVE);
-    };
+    const { enqueueSnackbar } = useSnackbar();
 
     const onCloseAlert = useCallback(() => {
         if (!isDisabledShareScreen) return;
@@ -77,7 +72,13 @@ function ViewModesMenu (props:ViewModesMenuProps) {
             setInteractiveMode(InteractiveMode.ONSTAGE);
             break;
         case InteractiveMode.OBSERVE :
-            ObserveWarningActive();
+            setInteractiveMode(InteractiveMode.OBSERVE);
+            if(observeWarning){
+                setObserveWarning(false);
+                enqueueSnackbar(intl.formatMessage({
+                    id: `observe_warning_videotype_text`,
+                }));
+            }
             break;
         case InteractiveMode.PRESENT :
             setInteractiveMode(InteractiveMode.PRESENT);
@@ -125,7 +126,7 @@ function ViewModesMenu (props:ViewModesMenuProps) {
                             id: `viewMode.observe`,
                         })}
                         icon={ObserveIcon}
-                        active={interactiveMode === InteractiveMode.OBSERVE && !observeOpen}
+                        active={interactiveMode === InteractiveMode.OBSERVE}
                         onClick={() => handleViewModesClick(InteractiveMode.OBSERVE)}
                     />
 
@@ -146,14 +147,6 @@ function ViewModesMenu (props:ViewModesMenuProps) {
                         disabled={isDisabledShareScreen}
                         onCloseAlert={onCloseAlert}
                         onClick={(buttonRef) => handleViewModesClick(InteractiveMode.SCREENSHARE, buttonRef)}
-                    />
-                    <ObserveWarning
-                        open={observeOpen}
-                        onClose={() => setObserveOpen(false)}
-                        onConfirm={() => {
-                            setObserveOpen(false);
-                            setInteractiveMode(InteractiveMode.OBSERVE);
-                        }}
                     />
                 </Grid>
             </StyledPopper>
