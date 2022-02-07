@@ -3,10 +3,7 @@ import { EventRecorderService } from './services/event-recorder/EventRecorderSer
 import { EventStream } from './services/event-recorder/stream/EventStream';
 import { GraphQlUploader } from './services/event-recorder/uploader/GraphQlUploader';
 import { GraphQLClient } from 'graphql-request';
-import {
-    pack,
-    record,
-} from 'rrweb';
+import { record } from 'rrweb';
 import { v4 as uuid } from 'uuid';
 
 if (!(window as any).kidslooplive) {
@@ -52,7 +49,13 @@ if (!(window as any).kidslooplive) {
         .build();
 
     let eventsSinceKeyframe = 0;
-
+    let isYT = false;
+    const scripts = window.document.head.getElementsByTagName(`script`);
+    for( const script of scripts) {
+        if(script.src === `https://www.youtube.com/iframe_api`) {
+            isYT = true;
+        }
+    }
     const keepIframeSrcFn = (src: string): boolean => {
         try {
             const url = new URL(src);
@@ -62,7 +65,7 @@ if (!(window as any).kidslooplive) {
         }
     };
 
-    record({
+    record<any>({
         checkoutEveryNms: 1000 * 10, // take full snapshot every x seconds
         emit: (e, isCheckout) => {
             // TODO: Should client or server keep track of the
@@ -74,7 +77,7 @@ if (!(window as any).kidslooplive) {
                     addCustomEvent(id, player.playerInfo, true);
                 });
             }
-
+            e.isYT = isYT;
             const eventData = JSON.stringify({
                 checkout: isCheckout || false,
                 event: e,
@@ -85,12 +88,10 @@ if (!(window as any).kidslooplive) {
             eventRecorder.uploadEvents();
         },
         keepIframeSrcFn,
-        packFn: pack,
     });
 }
 
 const youtubePlayers = new Map<string, any>();
-
 window.addEventListener(`message`, ({ data }) => {
     if (!data || data.type !== `USER_JOIN`) { return; }
     youtubePlayers.forEach((player, id) => {
