@@ -6,6 +6,8 @@ import { useSessions } from "@/data/live/state/useSessions";
 import { useSessionContext } from "@/providers/session-context";
 import { ClassType } from "@/store/actions";
 import {
+    canvasDrawColorState,
+    canvasSelectedItemState,
     hasControlsState,
     isCanvasOpenState,
 } from "@/store/layoutAtoms";
@@ -31,7 +33,10 @@ import React,
     useState,
 } from "react";
 import { useIntl } from "react-intl";
-import { useRecoilValue } from "recoil";
+import {
+    useRecoilState,
+    useRecoilValue,
+} from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -44,7 +49,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 }));
 
-enum CanvasToolbarItems {
+export enum CanvasToolbarItems {
     PENCIL,
     TEXT,
     MOVE,
@@ -84,9 +89,11 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
 
     const [ isCanvasColorsOpen, setIsCanvasColorsOpen ] = useState<boolean>(false);
     const [ colorsMenuAnchor, setColorsMenuAnchor ] = useState<null|undefined|HTMLElement>();
-    const [ activeColor, setActiveColor ] = useState<string>(CanvasColor.BLACK);
+
+    const [ canvasDrawColor, setCanvasDrawColor ] = useRecoilState(canvasDrawColorState);
+    const [ canvasSelectedItem, setCanvasSelectedItem ] = useRecoilState(canvasSelectedItemState);
+
     const [ usersDraw, setUsersDraw ] = useState<boolean>(false);
-    const [ selectedItem, setSelectedItem ] = useState<CanvasToolbarItems>(CanvasToolbarItems.PENCIL);
 
     const { classType, sessionId } = useSessionContext();
     const sessions = useSessions();
@@ -130,9 +137,9 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
     }, [ selectTool, tools.eraser.options ]);
 
     useEffect(() => {
-        if(selectedItem !== CanvasToolbarItems.PENCIL && selectedItem !== CanvasToolbarItems.TEXT) setIsCanvasColorsOpen(false);
+        if(canvasSelectedItem !== CanvasToolbarItems.PENCIL && canvasSelectedItem !== CanvasToolbarItems.TEXT) setIsCanvasColorsOpen(false);
 
-        switch (selectedItem) {
+        switch (canvasSelectedItem) {
         case CanvasToolbarItems.PENCIL:
             setColorsMenuAnchor(pencilRef.current);
             setIsCanvasColorsOpen(true);
@@ -154,13 +161,13 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
         default:
             break;
         }
-    }, [ selectedItem, pencilRef.current ]);
+    }, [ canvasSelectedItem, pencilRef.current ]);
 
     useEffect(()=>{
-        if(!activeColor) return;
-        selectColorByValue(activeColor);
+        if(!canvasDrawColor) return;
+        selectColorByValue(canvasDrawColor);
         setIsCanvasColorsOpen(false);
-    }, [ activeColor ]);
+    }, [ canvasDrawColor ]);
 
     useEffect(() => {
         setUsersDraw(studentsAndSubTeachers.size === currentUserPermissions.size);
@@ -192,9 +199,9 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
 
     // Styles for PENCIL and TEXT active
     const activeCustomStyles = {
-        color: activeColor === CanvasColor.WHITE ? theme.palette.getContrastText(activeColor) : theme.palette.common.white,
-        backgroundColor: activeColor,
-        boxShadow: activeColor === CanvasColor.WHITE ? `inset 0px 0px 0px 3px ${theme.palette.getContrastText(activeColor)}` : `inherit`,
+        color: canvasDrawColor === CanvasColor.WHITE ? theme.palette.getContrastText(canvasDrawColor) : theme.palette.common.white,
+        backgroundColor: canvasDrawColor,
+        boxShadow: canvasDrawColor === CanvasColor.WHITE ? `inset 0px 0px 0px 3px ${theme.palette.getContrastText(canvasDrawColor)}` : `inherit`,
     };
 
     return (
@@ -212,27 +219,27 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
                         title={intl.formatMessage({
                             id: `canvas.tool.pen`,
                         })}
-                        active={selectedItem === CanvasToolbarItems.PENCIL}
+                        active={canvasSelectedItem === CanvasToolbarItems.PENCIL}
                         activeStyles={activeCustomStyles}
                         icon={<PencilIcon size="1.85rem" />}
-                        onClick={() => { selectedItem !== CanvasToolbarItems.PENCIL ? setSelectedItem(CanvasToolbarItems.PENCIL) : setIsCanvasColorsOpen(!isCanvasColorsOpen); }} />
+                        onClick={() => { canvasSelectedItem !== CanvasToolbarItems.PENCIL ? setCanvasSelectedItem(CanvasToolbarItems.PENCIL) : setIsCanvasColorsOpen(!isCanvasColorsOpen); }} />
                     <CanvasMenuItem
                         ref={textRef}
                         hasSubmenu
                         title={intl.formatMessage({
                             id: `canvas.tool.text`,
                         })}
-                        active={selectedItem === CanvasToolbarItems.TEXT}
+                        active={canvasSelectedItem === CanvasToolbarItems.TEXT}
                         activeStyles={activeCustomStyles}
                         icon={<TextIcon size="1.85rem" />}
-                        onClick={() => { selectedItem !== CanvasToolbarItems.TEXT ? setSelectedItem(CanvasToolbarItems.TEXT) : setIsCanvasColorsOpen(!isCanvasColorsOpen); }} />
+                        onClick={() => { canvasSelectedItem !== CanvasToolbarItems.TEXT ? setCanvasSelectedItem(CanvasToolbarItems.TEXT) : setIsCanvasColorsOpen(!isCanvasColorsOpen); }} />
                     <CanvasMenuItem
-                        active={selectedItem === CanvasToolbarItems.MOVE}
+                        active={canvasSelectedItem === CanvasToolbarItems.MOVE}
                         icon={<MoveIcon size="1.85rem"/>}
                         title={intl.formatMessage({
                             id: `canvas.tool.move`,
                         })}
-                        onClick={() => setSelectedItem(CanvasToolbarItems.MOVE)} />
+                        onClick={() => setCanvasSelectedItem(CanvasToolbarItems.MOVE)} />
                     <Grid
                         item
                         className={classes.divider}></Grid>
@@ -240,9 +247,9 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
                         title={intl.formatMessage({
                             id: `canvas.tool.eraser`,
                         })}
-                        active={selectedItem === CanvasToolbarItems.ERASER}
+                        active={canvasSelectedItem === CanvasToolbarItems.ERASER}
                         icon={<EraserIcon size="1.85rem"/>}
-                        onClick={() => setSelectedItem(CanvasToolbarItems.ERASER)} />
+                        onClick={() => setCanvasSelectedItem(CanvasToolbarItems.ERASER)} />
                     <CanvasMenuItem
                         title={intl.formatMessage({
                             id: `canvas.tool.eraseAll`,
@@ -292,9 +299,9 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
                     }}
                     anchorEl={colorsMenuAnchor}>
                     <CanvasColorSelector
-                        activeColor={activeColor}
+                        activeColor={canvasDrawColor}
                         palette={Object.values(CanvasColor)}
-                        onSelectColor={setActiveColor} />
+                        onSelectColor={setCanvasDrawColor} />
                 </StyledPopper>
             }
         </>
