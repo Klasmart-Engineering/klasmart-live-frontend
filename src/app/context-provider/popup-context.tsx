@@ -28,6 +28,7 @@ export type PopupState = {
     onClose?: () => void;
     confirmLabel?: string;
     onConfirm?: () => void;
+    showCloseIcon?: boolean;
 }
 
 const initState: PopupState = {
@@ -76,8 +77,8 @@ export function PopupElement (): JSX.Element {
         initOnBack();
     }, [ popupState ]);
 
-    function handleClosePopup () {
-        if(popupState.onClose){
+    function handleClosePopup (reason?: "backdropClick" | "escapeKeyDown") {
+        if (popupState.onClose && reason !== `backdropClick`) {
             popupState.onClose();
         }
         closePopup();
@@ -136,6 +137,7 @@ export function PopupElement (): JSX.Element {
                 description={popupState.description}
                 title={popupState.title}
                 closeLabel={popupState.closeLabel}
+                showCloseIcon={popupState.showCloseIcon ?? false}
                 onClose={handleClosePopup} />;
         default:
             return <></>;
