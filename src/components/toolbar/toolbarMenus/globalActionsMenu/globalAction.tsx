@@ -12,6 +12,7 @@ import { StyledIconProps } from "styled-icons/types";
 
 type GlobaActionType = `divider`;
 export interface GlobaActionsMenuItem {
+    id?: string;
 	type?: GlobaActionType;
 	icon?: StyledIconProps;
 	title?: string;
@@ -69,6 +70,7 @@ export interface Props extends GlobaActionsMenuItem {
 
 function GlobalActionsMenuItem (props: Props) {
     const {
+        id,
         type,
         icon,
         title,
@@ -93,6 +95,7 @@ function GlobalActionsMenuItem (props: Props) {
             placement="top">
             <Grid
                 item
+                id={id}
                 className={clsx(classes.root, {
                     [classes.active]: active,
                     [classes.variantBlue]: variant === `blue` && !active,

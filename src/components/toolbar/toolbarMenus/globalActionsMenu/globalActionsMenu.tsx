@@ -60,6 +60,7 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
 
     const items: GlobaActionsMenuItem[] = [
         {
+            id: `global-action-toggle-all-microphones`,
             title: intl.formatMessage({
                 id: audioGloballyMuted ? `toggle_all_microphones_on` : `toggle_all_microphones_off`,
             }),
@@ -70,6 +71,7 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
             onClick: () => setGlobalMuteAudio?.(!audioGloballyMuted),
         },
         {
+            id: `global-action-toggle-all-cameras`,
             title: intl.formatMessage({
                 id: videoGloballyMuted ? `toggle_all_cameras_on` : `toggle_all_cameras_off`,
             }),
@@ -83,6 +85,7 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
             type: `divider` as const,
         },
         {
+            id: `global-action-give-trophy`,
             title: intl.formatMessage({
                 id: `give_trophy`,
             }),
@@ -90,6 +93,7 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
             onClick: () => rewardTrophy(sessionId, `trophy`),
         },
         {
+            id: `global-action-encourage`,
             title: intl.formatMessage({
                 id: `encourage`,
             }),
@@ -97,6 +101,7 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
             onClick: () => rewardTrophy(sessionId, `great_job`),
         },
         {
+            id: `global-action-give-star`,
             title: intl.formatMessage({
                 id: `give_star`,
             }),
@@ -104,6 +109,7 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
             onClick: () => rewardTrophy(sessionId, `star`),
         },
         {
+            id: `global-action-give-heart`,
             title: intl.formatMessage({
                 id: `give_heart`,
             }),
@@ -126,6 +132,7 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
                 {items.map((item, i) => (
                     <GlobalActionsMenuItem
                         key={`global-action-${i}`}
+                        id={item.id}
                         title={item.title}
                         icon={item.icon}
                         activeIcon={item.activeIcon}

@@ -8,7 +8,10 @@ import { Session } from "@/pages/utils";
 import { useCameraContext } from "@/providers/Camera";
 import { useSessionContext } from "@/providers/session-context";
 import { WebRTCContext } from "@/providers/WebRTCContext";
-import { isActiveGlobalMuteVideoState } from "@/store/layoutAtoms";
+import {
+    isActiveGlobalMuteAudioState,
+    isActiveGlobalMuteVideoState,
+} from "@/store/layoutAtoms";
 import {
     Grid,
     makeStyles,
@@ -21,9 +24,11 @@ import React,
 {
     useContext,
     useEffect,
+    useMemo,
     useRef,
     useState,
 } from "react";
+import { useIntl } from "react-intl";
 import { useRecoilValue } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -83,6 +88,7 @@ const UserCamera =  ({
     actions = true,
 }: UserCameraProps) => {
     const classes = useStyles();
+    const intl = useIntl();
     const [ isHover, setIsHover ] = useState(false);
 
     const theme = useTheme();
@@ -91,6 +97,8 @@ const UserCamera =  ({
     const camMuteCurrent = useRecoilValue(isActiveGlobalMuteVideoState);
 
     const [ camOn, setCamOn ] = useState(true);
+    const [ micOn, setMicOn ] = useState(true);
+    const micMuteCurrent = useRecoilValue(isActiveGlobalMuteAudioState);
     const { cameraStream } = useCameraContext();
     const {
         camera,
@@ -137,6 +145,22 @@ const UserCamera =  ({
         }
     }, [ webrtc.isVideoEnabledByProducer(user.id), webrtc.isVideoDisabledLocally(user.id) ]);
 
+    useEffect(() => {
+        if (micMuteCurrent !== null) {
+            setMicOn(micMuteCurrent);
+        } else {
+            setMicOn(webrtc.isAudioEnabledByProducer(user.id) && !webrtc.isAudioDisabledLocally(user.id));
+        }
+    }, [ webrtc.isAudioEnabledByProducer(user.id), webrtc.isAudioDisabledLocally(user.id) ]);
+
+    const isNoCamera = useMemo(() => {
+        return !userCamera || !userSession || !camOn;
+    }, [
+        userCamera,
+        userSession,
+        camOn,
+    ]);
+
     return (
         <Grid
             container
@@ -147,6 +171,22 @@ const UserCamera =  ({
                 [classes.rootLarge]: variant === `large`,
             })}
             id={`participant:${user.id}`}
+            aria-videostream={
+                isNoCamera ? intl.formatMessage({
+                    id: `off`,
+                    defaultMessage: `OFF`,
+                }) : intl.formatMessage({
+                    id: `on`,
+                    defaultMessage: `ON`,
+                })}
+            aria-audiostream={
+                micOn ? intl.formatMessage({
+                    id: `on`,
+                    defaultMessage: `ON`,
+                }) : intl.formatMessage({
+                    id: `off`,
+                    defaultMessage: `OFF`,
+                })}
             onMouseEnter={() => setIsHover(true)}
             onMouseLeave={() => setIsHover(false)}
         >
@@ -172,9 +212,9 @@ const UserCamera =  ({
                     className={classes.video}
                 />
                 {
-                    !userCamera || !userSession || !camOn ? <NoCamera
+                    isNoCamera && <NoCamera
                         name={user.name}
-                        variant={variant} /> : <></>
+                        variant={variant} />
                 }
                 <audio
                     ref={audioRef}
