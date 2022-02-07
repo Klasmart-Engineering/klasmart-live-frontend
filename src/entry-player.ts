@@ -33,6 +33,7 @@ const rrwebPlayer: Replayer = new Replayer([], {
         }
     `,
     ],
+    pauseAnimation: false,
 });
 rrwebPlayer.iframe.src = `stream-landing.html`;
 rrwebPlayer.on(`resize`, () => window.parent.postMessage({
