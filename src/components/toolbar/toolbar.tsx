@@ -329,6 +329,7 @@ function Toolbar () {
                     item
                     className={classes.iconGroup}>
                     <ToolbarItemMicrophone
+                        id="toolbar-item-microphone"
                         active={micMuteCurrent === null ? micOn : micMuteCurrent}
                         tooltip={intl.formatMessage({
                             id: micOn ? `toggle_microphone_off` :  `toggle_microphone_on`,
@@ -336,6 +337,7 @@ function Toolbar () {
                         onClick={() =>  toggleOutboundAudioState() }
                     />
                     <ToolbarItemCall
+                        id="toolbar-item-call"
                         locked={!isTeacher}
                         isHost={hasControls}
                         tooltip={!isTeacher ? intl.formatMessage({
@@ -345,6 +347,7 @@ function Toolbar () {
                         onClick={() => endCall()}
                     />
                     <ToolbarItemCamera
+                        id="toolbar-item-camera"
                         active={camMuteCurrent === null ? camOn : camMuteCurrent}
                         tooltip={intl.formatMessage({
                             id: camOn ? `toggle_camera_off` :  `toggle_camera_on`,
