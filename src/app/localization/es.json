@@ -13,7 +13,7 @@
     "button_gallery": "Gallery",
     "button_save": "Save",
     "button_continue": "Continue",
-    "button_ok": "Ok",
+    "button_ok": "OK",
     "button_delete": "Delete",
     "button_upload": "Upload",
     "button_go_live": "Go Live",
@@ -241,5 +241,17 @@
     "live.speechRecognition.error.accessDisabled": "Access to speech recognition is disabled",
     "live.class.updateRequired.title": "iOS Update Required",
     "live.class.updateRequired.body": "We recommend that you update your device to {version} or later to enjoy the full KidsLoop experience.",
-    "hamburger.organization": "Organization"
+    "hamburger.organization": "Organization",
+    "scheduleDetails.viewFeedback": "View Feedback",
+    "homeFunStudy.feedback.title": "Teacher’s Feedback",
+    "homeFunStudy.feedback.score.excellent": "Excellent",
+    "homeFunStudy.feedback.score.good": "Good",
+    "homeFunStudy.feedback.score.average": "Average",
+    "homeFunStudy.feedback.score.fair": "Fair",
+    "homeFunStudy.feedback.score.poor": "Poor",
+    "landingPage.title": "Education Platform for Students",
+    "landingPage.signIn": "Sign In",
+    "scheduleDetails.error.live.ended": "You cannot enter because this class has ended",
+    "scheduleDetails.error.study.ended": "You cannot enter because it’s passed due date",
+    "homeFunStudy.feedback.notAvailable": "No teacher comment available"
 }
