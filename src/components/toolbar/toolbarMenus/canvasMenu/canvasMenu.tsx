@@ -264,7 +264,7 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
                                 className={classes.divider}></Grid>
                             <CanvasMenuItem
                                 title={intl.formatMessage({
-                                    id: isGlobalCanvasEnabled ? `canvas.tool.allCanvas.off` :  `canvas.tool.allCanvas.on`,
+                                    id: usersDraw ? `canvas.tool.allCanvas.off` :  `canvas.tool.allCanvas.on`,
                                 })}
                                 active={usersDraw}
                                 icon={<UsersDrawIcon size="1.6rem"/>}
