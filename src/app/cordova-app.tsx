@@ -1,37 +1,41 @@
-import Join from "../pages/join/join";
-import { RoomWithContext } from "@/pages/room/room-with-context";
-import { useAuthenticationContext } from "./context-provider/authentication-context";
+import { LandingPage } from "./pages/landing/landingPage";
+import { useAuthenticationContext } from "@/app/context-provider/authentication-context";
+import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
+import { usePopupContext } from "@/app/context-provider/popup-context";
+import { useSelectedUserValue } from "@/app/data/user/atom";
 import {
     SelectOrgDialog,
     useShouldSelectOrganization,
-} from "./dialogs/account/selectOrgDialog";
+} from "@/app/dialogs/account/selectOrgDialog";
 import {
     SelectUserDialog,
     useShouldSelectUser,
-} from "./dialogs/account/selectUserDialog";
-import { useSignOut } from "./dialogs/account/useSignOut";
-import { ExternalNavigationDialog } from "./dialogs/externalNavigationDialog";
-import { HomeFunStudyDialog } from "./dialogs/home-fun-study/homeFunStudyDialog";
+} from "@/app/dialogs/account/selectUserDialog";
+import { useSignOut } from "@/app/dialogs/account/useSignOut";
+import { ExternalNavigationDialog } from "@/app/dialogs/externalNavigationDialog";
 import {
     dialogsState,
     shouldShowNoOrgProfileState,
     shouldShowNoStudentRoleState,
     showedUpgradeDevicePopupState,
-} from "./model/appModel";
-import { Auth } from "./pages/account/auth";
-import { LandingPage } from "./pages/landing/landingPage";
-import { NoPageFoundDialog } from "./pages/no-pages/noPageFoundDialog";
-import SchedulePage from "./pages/schedule";
-import AnytimeStudyPage from "./pages/schedule/anytime-study";
-import SettingsPage from "./pages/settings";
-import SelectLanguagePage from "./pages/settings/select-language";
-import { UserRoute } from "./route/userRoute";
+} from "@/app/model/appModel";
+import { Auth } from "@/app/pages/account/auth";
+import { NoPageFoundDialog } from "@/app/pages/no-pages/noPageFoundDialog";
+import SchedulePage from "@/app/pages/schedule";
+import AnytimeStudyPage from "@/app/pages/schedule/anytime-study";
+import HomeFunStudyPage from "@/app/pages/schedule/home-fun-study/[scheduleId]";
+import SettingsPage from "@/app/pages/settings";
+import SelectLanguagePage from "@/app/pages/settings/select-language";
+import { UserRoute } from "@/app/route/userRoute";
 import NoOrgFoundLogo from "@/assets/img/no_org_found_icon.svg";
 import NoStudentRoleLogo from "@/assets/img/no_student_role_icon.svg";
+import Join from "@/pages/join/join";
+import { RoomWithContext } from "@/pages/room/room-with-context";
 import { useQueryClient } from "@kidsloop/cms-api-client";
 import Grid from "@material-ui/core/Grid";
 import React,
 { useEffect } from "react";
+import { useIntl } from "react-intl";
 import {
     Route,
     Router,
@@ -41,10 +45,6 @@ import {
     useRecoilState,
     useRecoilValue,
 } from "recoil";
-import {useSelectedUserValue} from "@/app/data/user/atom";
-import {useCordovaSystemContext} from "@/app/context-provider/cordova-system-context";
-import {usePopupContext} from "@/app/context-provider/popup-context";
-import {useIntl} from "react-intl";
 
 export function App ({ history }: {
     history: any;
@@ -61,7 +61,11 @@ export function App ({ history }: {
     const shouldShowNoOrgProfile = useRecoilValue(shouldShowNoOrgProfileState);
     const shouldShowNoStudentRole = useRecoilValue(shouldShowNoStudentRoleState);
     const user = useSelectedUserValue();
-    const { isIOS, isAndroid, shouldUpgradeDevice } = useCordovaSystemContext();
+    const {
+        isIOS,
+        isAndroid,
+        shouldUpgradeDevice,
+    } = useCordovaSystemContext();
     const [ showedUpgradeDevicePopup, setShowedUpgradeDevicePopup ] = useRecoilState(showedUpgradeDevicePopupState);
     const { showPopup } = usePopupContext();
     const intl = useIntl();
@@ -110,7 +114,9 @@ export function App ({ history }: {
                     intl.formatMessage({
                         id: `live.class.updateRequired.body`,
                         defaultMessage: `We recommend that you update your device to {version} or later to enjoy the full KidsLoop experience`,
-                    }, {version: `<b>iOS 15.1</b>`}),
+                    }, {
+                        version: `<b>iOS 15.1</b>`,
+                    }),
                 ],
                 closeLabel: intl.formatMessage({
                     id: `common_ok`,
@@ -122,8 +128,12 @@ export function App ({ history }: {
             // TODO: Implement popup for Android if needed
         }
 
-
-    }, [user, isIOS, showedUpgradeDevicePopup, shouldUpgradeDevice]);
+    }, [
+        user,
+        isIOS,
+        showedUpgradeDevicePopup,
+        shouldUpgradeDevice,
+    ]);
 
     return (
         <Grid
@@ -138,6 +148,10 @@ export function App ({ history }: {
         >
             <Router history={history}>
                 <Switch>
+                    <UserRoute
+                        path="/schedule/home-fun-study/:scheduleId"
+                        component={HomeFunStudyPage}
+                    />
                     <UserRoute
                         path="/settings/select-language"
                         component={SelectLanguagePage}
@@ -164,7 +178,7 @@ export function App ({ history }: {
                     />
                     <Route
                         path="/auth"
-                        render={() => <Auth useInAppBrowser={true} />}
+                        render={() => <Auth useInAppBrowser />}
                     />
                     <Route
                         path="/landing"
@@ -176,11 +190,10 @@ export function App ({ history }: {
                     />
                 </Switch>
             </Router>
-            { authenticated && (
+            {authenticated && (
                 <>
                     <SelectOrgDialog />
                     <SelectUserDialog />
-                    <HomeFunStudyDialog />
                     <NoPageFoundDialog
                         open={dialogs.isShowNoOrgProfile}
                         title="signIn.noOrganization.title"

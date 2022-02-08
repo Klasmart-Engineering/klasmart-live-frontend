@@ -1,6 +1,6 @@
 declare module "react-router-transition"
 {
-  import { RouteProps } from "react-router";
+  import { RouteProps } from "react-router-dom";
 
   interface AnimatedSwitchProps {
     atEnter: React.CSSProperties;

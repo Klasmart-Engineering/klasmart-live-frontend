@@ -1,13 +1,21 @@
 import Loading from "./loading";
-import {useEventsSubscription} from "@/data/live/subscriptions/useEventsSubscription";
-import {useHttpEndpoint} from "@/providers/region-select-context";
-import {useSessionContext} from "@/providers/session-context";
-import {sleep} from "@/utils/utils";
-import {useWindowSize} from "@/utils/viewport";
-import {Typography} from "@material-ui/core";
-import React, {useEffect, useRef, useState,} from "react";
-import {FormattedMessage} from "react-intl";
-import {FeatureFlag, useFeatureFlags} from "@/providers/feature-context";
+import { useEventsSubscription } from "@/data/live/subscriptions/useEventsSubscription";
+import {
+    FeatureFlag,
+    useFeatureFlags,
+} from "@/providers/feature-context";
+import { useHttpEndpoint } from "@/providers/region-select-context";
+import { useSessionContext } from "@/providers/session-context";
+import { sleep } from "@/utils/utils";
+import { useWindowSize } from "@/utils/viewport";
+import { Typography } from "@material-ui/core";
+import React,
+{
+    useEffect,
+    useRef,
+    useState,
+} from "react";
+import { FormattedMessage } from "react-intl";
 
 export interface Props {
     streamId: string;
@@ -18,7 +26,7 @@ export interface Props {
 }
 
 export function PreviewPlayer ({
-    streamId, frameProps, container, loadingStreamId, inViewport
+    streamId, frameProps, container, loadingStreamId, inViewport,
 }: Props): JSX.Element {
     const ref = useRef<HTMLIFrameElement>(null);
     const playerRef = useRef<HTMLDivElement>(null);
@@ -100,18 +108,22 @@ export function PreviewPlayer ({
         }
     }
 
-    const { data, loading, error } = useEventsSubscription({
+    const {
+        data,
+        loading,
+        error,
+    } = useEventsSubscription({
         variables: {
             streamId,
         },
     }, {
         onlyObserveInViewport: isFeatureEnabled(features, FeatureFlag.ONLY_OBSERVE_IN_VIEWPORT) && inViewport !== undefined,
-        inViewport: !!inViewport
+        inViewport: !!inViewport,
     });
 
     useEffect(() => {
-        sendEvent(data?.stream.event, streamId)
-    }, [data]);
+        sendEvent(data?.stream.event, streamId);
+    }, [ data ]);
 
     const onLoad = async () => {
         if (ref.current == null || ref.current.contentWindow == null) { return; }
@@ -184,8 +196,8 @@ export function PreviewPlayer ({
     }
     if (error) { return <Typography><FormattedMessage id="failed_to_connect" />: {JSON.stringify(error)}</Typography>; }
     return <div
-        id="preview-iframe-container"
         ref={playerRef}
+        id="preview-iframe-container"
         style={{
             display: `flex`,
             height: `100%`,

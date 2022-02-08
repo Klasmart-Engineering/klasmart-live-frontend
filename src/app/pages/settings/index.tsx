@@ -18,7 +18,6 @@ import {
     Theme,
     useTheme,
 } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
 import { NavigateNext as NextIcon } from "@styled-icons/material/NavigateNext";
 import { Translate as LanguageIcon } from "@styled-icons/material/Translate";
 import { Language } from "kidsloop-px/dist/types/components/LanguageSelect";
@@ -70,7 +69,7 @@ export default function SettingsPage () {
     return (
         <>
             <AppBar
-                showTitleInAppbar={intl.formatMessage({
+                title={intl.formatMessage({
                     id: `settings.title`,
                 })}
                 leading={<BackButton onClick={handleBackClick} />} />

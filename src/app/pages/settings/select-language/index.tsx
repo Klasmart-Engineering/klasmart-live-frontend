@@ -53,7 +53,7 @@ export default function SelectLanguagePage () {
     return (
         <>
             <AppBar
-                showTitleInAppbar={intl.formatMessage({
+                title={intl.formatMessage({
                     id: `settings.language.title`,
                 })}
                 leading={<BackButton onClick={handleBackClick} />}

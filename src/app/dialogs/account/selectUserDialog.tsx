@@ -209,7 +209,7 @@ export function SelectUserDialog () {
             onClose={handleBackClick}
         >
             <AppBar
-                showTitleInAppbar={intl.formatMessage({
+                title={intl.formatMessage({
                     id: `account_selectUser_whichUser`,
                 })}
                 leading={<BackButton onClick={handleBackClick} />}

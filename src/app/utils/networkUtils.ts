@@ -9,16 +9,19 @@ import {
 import { PopupState } from "@/app/context-provider/popup-context";
 import { IntlShape } from "react-intl";
 
-export const checkNetworkToConfirmDownload = (onConfirm: () => void, showPopup: (popupState: PopupState) => void, intl: IntlShape) => {
-    // reference: https://cordova.apache.org/docs/en/10.x/reference/cordova-plugin-network-information/
-    const connectionType = (navigator as any).connection.type;
-    const isCellularConnection = connectionType == `2g` ||
-      connectionType == `3g` ||
-      connectionType == `4g` ||
-      connectionType == `5g` || // NOTE: Not sure if plugin supports 5g yet, adding it for future safery.
-      connectionType == `cellular`;
+export const isCellularConnection = () => {
+    switch (navigator.connection.type) {
+    case Connection.CELL:
+    case Connection.CELL_2G:
+    case Connection.CELL_3G:
+    case Connection.CELL_4G:
+        return true;
+    default: return false;
+    }
+};
 
-    if (isCellularConnection) {
+export const checkNetworkToConfirmDownload = (onConfirm: () => void, showPopup: (popupState: PopupState) => void, intl: IntlShape) => {
+    if (isCellularConnection()) {
         showPopup({
             variant: `confirm`,
             title: intl.formatMessage({
@@ -39,9 +42,9 @@ export const checkNetworkToConfirmDownload = (onConfirm: () => void, showPopup: 
                 onConfirm();
             },
         });
-    } else {
-        onConfirm();
+        return;
     }
+    onConfirm();
 };
 
 export const handleDownloadForIOS = async (downloadedData: Blob, fileName: string, shareFile: (fileName: string, filePath: string) => void) => {

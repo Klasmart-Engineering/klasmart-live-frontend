@@ -125,7 +125,7 @@ export function SelectOrgDialog () {
             onClose={handleBackClick}
         >
             <AppBar
-                showTitleInAppbar={intl.formatMessage({
+                title={intl.formatMessage({
                     id: `account_selectOrg_whichOrg`,
                 })}
                 leading={<BackButton onClick={handleBackClick} />}

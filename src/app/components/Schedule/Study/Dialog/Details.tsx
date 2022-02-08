@@ -3,11 +3,6 @@ import AttachmentDownloadButton from "@/app/components/Schedule/Attachment/Downl
 import AttachmentNameLink from "@/app/components/Schedule/Attachment/NameLink";
 import BaseScheduleDialog from "@/app/components/Schedule/BaseDialog";
 import { useSelectedOrganizationValue } from "@/app/data/user/atom";
-import {
-    homeFunStudyState,
-    LayoutMode,
-    layoutModeState,
-} from "@/app/model/appModel";
 import { ScheduleLiveTokenType } from "@/app/services/cms/ISchedulerService";
 import { formatDateTimeMillis } from "@/app/utils/dateTimeUtils";
 import { generateDescriptionHasHyperLink } from "@/app/utils/link";
@@ -31,11 +26,7 @@ import React,
     useState,
 } from "react";
 import { useIntl } from "react-intl";
-import { useHistory } from "react-router";
-import {
-    useRecoilState,
-    useSetRecoilState,
-} from "recoil";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => createStyles({
     rowContentText: {
@@ -61,7 +52,6 @@ export default function StudyDetailsDialog (props: Props) {
     const classes = useStyles();
     const [ getTokenLoading, setGetTokenLoading ] = useState(false);
     const [ parentalLock, setParentalLock ] = useState(false);
-    const [ homeFunStudy, setHomeFunStudy ] = useRecoilState(homeFunStudyState);
     const [ hyperlink, setHyperlink ] = useState<string>();
     const { setToken } = useSessionContext();
     const { push } = useHistory();
@@ -103,13 +93,8 @@ export default function StudyDetailsDialog (props: Props) {
     };
 
     const handleJoinHomeFunStudyClass = () => {
-        if (!scheduleData) return;
-        setHomeFunStudy({
-            ...homeFunStudy,
-            open: true,
-            submitted: false,
-            studyId: scheduleData.id,
-        });
+        if (!scheduleData?.id) return;
+        push(`/schedule/home-fun-study/${scheduleData.id}`);
     };
 
     useEffect(() => {

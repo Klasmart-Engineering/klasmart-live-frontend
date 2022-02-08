@@ -10,11 +10,12 @@ import React from "react";
 const useStyles = makeStyles((theme) => createStyles({}));
 
 interface Props {
+    color?: string;
     onClick: () => any | Promise<any>;
 }
 
 export default function BackButton (props: Props) {
-    const { onClick } = props;
+    const { color, onClick } = props;
     const classes = useStyles();
 
     return (
@@ -23,6 +24,7 @@ export default function BackButton (props: Props) {
             onClick={onClick}
         >
             <StyledIcon
+                color={color}
                 icon={<ArrowBackIcon />}
                 size="medium"
             />

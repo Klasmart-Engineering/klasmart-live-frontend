@@ -1,4 +1,4 @@
-import { BackButton } from "@/app/components/icons/backButton";
+import BackButton from "@/app/components/layout/BackButton";
 import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
 import KidsLoopClassTeachers from "@/assets/img/classtype/kidsloop_class_teachers.svg";
 import KidsLoopLiveStudents from "@/assets/img/classtype/kidsloop_live_students.svg";

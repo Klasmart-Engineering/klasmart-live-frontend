@@ -52,7 +52,7 @@ export const ConferenceContextProvider: React.FC<Props> = ({ children, roomId })
     const [ globalMuteAudioMutation ] = useGlobalMuteAudioMutation();
     const [ globalMuteVideoMutation ] = useGlobalMuteVideoMutation();
 
-    const { data: globalMuteData } = useGlobalMuteQuery({
+    const { data: globalMuteData, error } = useGlobalMuteQuery({
         variables: {
             roomId,
         },

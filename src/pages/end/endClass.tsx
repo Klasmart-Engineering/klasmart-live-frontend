@@ -102,7 +102,8 @@ function EndClass () {
                                 buttonSize="small"
                                 color={TEXT_COLOR_CONSTRAST_DEFAULT}
                                 backgroundColor={TEXT_COLOR_PRIMARY_DEFAULT}
-                                onClick={onCloseButtonClick} />
+                                onClick={onCloseButtonClick}
+                            />
                         </div>
                     </div>
                 }
