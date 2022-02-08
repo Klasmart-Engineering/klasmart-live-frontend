@@ -278,11 +278,14 @@
     "globalMute.notification.camOff": "Camera của bạn được tắt cho mọi người",
     "globalMute.notification.micOn": "Micrô của bạn được bật cho mọi người",
     "globalMute.notification.camOn": "Camera của bạn được bật cho mọi người",
-    "homeFunStudy.feedback.notAvailable": "Không có nhận xét của giáo viên",
     "live.class.stickers": "Hình dán",
     "canvas.turnOn": "Mở bảng trắng",
     "canvas.turnOff": "Tắt bảng trắng",
     "speechRecognition.error.notSupported": "Tính năng Nhận dạng giọng nói không được hỗ trợ trên trình duyệt di động",
     "study.exit.title": "Bạn có chắc muốn thoát không?",
-    "study.exit.body": "Tiến trình của bạn sẽ không được lưu."
+    "study.exit.body": "Tiến trình của bạn sẽ không được lưu.",
+    "live.class.chat.sendMessage": "Gửi tin nhắn",
+    "content.pdf.page": "Page",
+    "content.pdf.chapter": "Chapter",
+    "classtype.preview.live": "Preview Live"
 }

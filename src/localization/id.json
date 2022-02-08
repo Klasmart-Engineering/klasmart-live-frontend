@@ -278,11 +278,14 @@
     "globalMute.notification.camOff": "Kamera Anda dimatikan untuk semua",
     "globalMute.notification.micOn": "Mikrofon Anda dinyalakan untuk semua",
     "globalMute.notification.camOn": "Kamera Anda dinyalakan untuk semua",
-    "homeFunStudy.feedback.notAvailable": "No teacher comment available",
     "live.class.stickers": "Stickers",
     "canvas.turnOn": "Turn canvas on",
     "canvas.turnOff": "Turn canvas off",
     "speechRecognition.error.notSupported": "Speech Recognition feature not supported on mobile browsers",
     "study.exit.title": "Are you sure you want to exit?",
-    "study.exit.body": "Your progress will not be saved."
+    "study.exit.body": "Your progress will not be saved.",
+    "live.class.chat.sendMessage": "Send message",
+    "content.pdf.page": "Page",
+    "content.pdf.chapter": "Chapter",
+    "classtype.preview.live": "Preview Live"
 }
