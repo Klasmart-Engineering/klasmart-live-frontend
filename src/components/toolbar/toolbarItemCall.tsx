@@ -81,6 +81,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface ToolbarItemCallProps {
+    id?: string;
 	src?: string | undefined;
 	onClick?: any;
     disabled?: boolean;
@@ -92,6 +93,7 @@ interface ToolbarItemCallProps {
 
 function ToolbarItemCall (props: ToolbarItemCallProps) {
     const {
+        id,
         src,
         onClick,
         disabled,
@@ -108,6 +110,8 @@ function ToolbarItemCall (props: ToolbarItemCallProps) {
         <>
             <Tooltip title={tooltip}>
                 <div
+                    id={id}
+                    role="button"
                     className={clsx(classes.itemRoot, {
                         [classes.itemRootMd]: isMdDown,
                     })}

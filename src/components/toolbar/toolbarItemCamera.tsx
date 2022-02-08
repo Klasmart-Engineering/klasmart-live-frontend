@@ -1,5 +1,6 @@
 import {
     Badge,
+    Button,
     makeStyles,
     Theme,
     Tooltip,
@@ -74,6 +75,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface ToolbarItemCameraProps {
+    id: string;
 	onClick?: any;
 	disabled?: boolean;
 	active?: boolean;
@@ -83,6 +85,7 @@ interface ToolbarItemCameraProps {
 
 function ToolbarItemCamera (props: ToolbarItemCameraProps) {
     const {
+        id,
         onClick,
         disabled,
         active,
@@ -93,26 +96,28 @@ function ToolbarItemCamera (props: ToolbarItemCameraProps) {
 
     return (
         <>
-            <Tooltip title={tooltip}>
-                <div className={classes.itemRoot}>
-                    {locked && (
-                        <Badge
-                            classes={{
-                                badge: classes.badge,
-                                root: classes.badgeRoot,
-                            }}
-                            badgeContent={<LockIcon className={classes.badgeContent} />}
-                        ></Badge>
-                    )}
-
-                    <div
+            <div
+                className={classes.itemRoot}>
+                {locked && (
+                    <Badge
+                        classes={{
+                            badge: classes.badge,
+                            root: classes.badgeRoot,
+                        }}
+                        badgeContent={<LockIcon className={classes.badgeContent} />}
+                    ></Badge>
+                )}
+                <Tooltip title={tooltip}>
+                    <Button
+                        disableRipple
+                        id={id}
                         className={clsx(classes.root, disabled && classes.disabled, active && classes.active, locked && classes.locked)}
                         onClick={onClick}
                     >
                         {active ? <CameraVideoFillIcon /> : <CameraDisabledIcon />}
-                    </div>
-                </div>
-            </Tooltip>
+                    </Button>
+                </Tooltip>
+            </div>
         </>
     );
 }
