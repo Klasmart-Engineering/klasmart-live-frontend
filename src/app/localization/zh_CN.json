@@ -220,7 +220,7 @@
     "homeFunStudy.title": "学生需提交",
     "homeFunStudy.info": "信息",
     "homeFunStudy.chooseFile": "选择文件",
-    "homeFunStudy.comment": "评论",
+    "homeFunStudy.comment": "我的评论",
     "homeFunStudy.submission.error.rejected": "这个作业已经被老师评估过了，不能再编辑或重新提交了。",
     "parentalGate.error.incorrect": "输入不正确",
     "signin.title.loading": "请稍等",
@@ -241,5 +241,17 @@
     "live.speechRecognition.error.accessDisabled": "访问语音识别功能被禁用",
     "live.class.updateRequired.title": "需要更新 iOS",
     "live.class.updateRequired.body": "我们建议您将设备更新到{version}或更高版本，以享受完整的 KidsLoop 体验。",
-    "hamburger.organization": "机构"
+    "hamburger.organization": "机构",
+    "scheduleDetails.viewFeedback": "查看反馈",
+    "homeFunStudy.feedback.title": "老师的反馈",
+    "homeFunStudy.feedback.score.excellent": "优秀",
+    "homeFunStudy.feedback.score.good": "很好",
+    "homeFunStudy.feedback.score.average": "中等",
+    "homeFunStudy.feedback.score.fair": "及格",
+    "homeFunStudy.feedback.score.poor": "较差",
+    "landingPage.title": "学生教育平台",
+    "landingPage.signIn": "登录",
+    "scheduleDetails.error.live.ended": "课程已经结束，无法加入！",
+    "scheduleDetails.error.study.ended": "课程已经过期，无法加入！",
+    "homeFunStudy.feedback.notAvailable": "暂无老师评语"
 }
