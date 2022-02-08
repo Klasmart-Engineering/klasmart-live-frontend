@@ -57,7 +57,7 @@ import React,
 } from "react";
 import { useBottomScrollListener } from "react-bottom-scroll-listener";
 import { useIntl } from "react-intl";
-import { useHistory } from "react-router";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => createStyles({
     listRoot: {

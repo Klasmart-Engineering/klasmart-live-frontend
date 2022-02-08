@@ -286,7 +286,6 @@ export function CordovaSystemProvider ({ children, history }: Props) {
                 onSuccess ? onSuccess(true) : ``;
             }
         }
-
     };
 
     useEffect(() => {

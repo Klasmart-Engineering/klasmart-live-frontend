@@ -27,6 +27,7 @@
     "@testing-library/react-hooks": "7.0.1",
     "@testing-library/user-event": "13.2.1",
     "@types/copy-webpack-plugin": "8.0.1",
+    "@types/cordova": "0.0.34",
     "@types/dateformat": "^3.0.1",
     "@types/dotenv-webpack": "7.0.3",
     "@types/jest": "27.0.1",
@@ -107,7 +108,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.4.0-beta.21",
-    "@kidsloop/cms-api-client": "bitbucket:calmisland/kidsloop-cms-api-client#1.1.0",
+    "@kidsloop/cms-api-client": "bitbucket:calmisland/kidsloop-cms-api-client#1.2.0",
     "@material-ui/core": "^4.10.1",
     "@material-ui/lab": "^4.0.0-alpha.56",
     "@reduxjs/toolkit": "^1.5.0",

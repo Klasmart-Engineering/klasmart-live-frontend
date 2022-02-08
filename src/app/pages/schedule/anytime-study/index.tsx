@@ -4,7 +4,7 @@ import AnytimeStudyScheduleList from "@/app/components/Schedule/Study/AnytimeStu
 import { Box } from "@material-ui/core";
 import React from "react";
 import { useIntl } from "react-intl";
-import { useHistory } from "react-router";
+import { useHistory } from "react-router-dom";
 
 export default function AnytimeStudyPage () {
     const intl = useIntl();
@@ -17,7 +17,7 @@ export default function AnytimeStudyPage () {
     return (
         <>
             <AppBar
-                showTitleInAppbar={intl.formatMessage({
+                title={intl.formatMessage({
                     id: `schedule_studyAnytimeStudy`,
                 })}
                 leading={<BackButton onClick={handleBackClick} />}

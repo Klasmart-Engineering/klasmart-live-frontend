@@ -3,7 +3,6 @@ import { useSelectedUserValue } from "@/app/data/user/atom";
 import {
     dialogsState,
     errorState,
-    homeFunStudyState,
     useSetMenuOpen,
 } from "@/app/model/appModel";
 import KidsloopLogo from "@/assets/img/kidsloop_icon.svg";
@@ -57,12 +56,11 @@ export function Header ({ isHomeRoute, setKey }: { isHomeRoute?: boolean; setKey
     } = useStyles();
     const theme = useTheme();
     const [ error ] = useRecoilState(errorState);
-    const [ homeFunStudy ] = useRecoilState(homeFunStudyState);
     const [ dialogs ] = useRecoilState(dialogsState);
 
     const selectedUser = useSelectedUserValue();
 
-    const showCloseButton = selectedUser && (dialogs.isSelectOrganizationOpen || dialogs.isSelectUserOpen || homeFunStudy?.open);
+    const showCloseButton = selectedUser && (dialogs.isSelectOrganizationOpen || dialogs.isSelectUserOpen);
 
     return (error.errorCode ? <></> :
         <div className={root}>
@@ -136,7 +134,6 @@ function CloseSelectOrgOrUserButton () {
     const { iconButton } = useStyles();
 
     const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
-    const [ homeFunStudy, setHomeFunStudy ] = useRecoilState(homeFunStudyState);
 
     return (
         <IconButton
@@ -152,12 +149,6 @@ function CloseSelectOrgOrUserButton () {
                     setDialogs({
                         ...dialogs,
                         isSelectUserOpen: false,
-                    });
-                } else if(homeFunStudy?.open){
-                    setHomeFunStudy({
-                        ...homeFunStudy,
-                        open: false,
-                        studyId: undefined,
                     });
                 }
             }}

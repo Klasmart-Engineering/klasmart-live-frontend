@@ -38,7 +38,6 @@ interface Props {
     title?: string;
     leading?: React.ReactNode;
     trailing?: React.ReactNode;
-    showTitleInAppbar?: string;
 }
 
 export default function AppBar (props: Props) {
@@ -46,7 +45,6 @@ export default function AppBar (props: Props) {
         title,
         leading,
         trailing,
-        showTitleInAppbar,
     } = props;
     const classes = useStyles();
 
@@ -78,13 +76,13 @@ export default function AppBar (props: Props) {
                                 item
                                 className={classes.centeredLogo}
                             >
-                                {showTitleInAppbar ?
+                                {title ?
                                     <Typography
                                         variant="subtitle1"
                                         align="center"
                                         className={classes.titleInAppBar}
                                     >
-                                        {showTitleInAppbar}
+                                        {title}
                                     </Typography>:
                                     <img
                                         alt="KidsLoop Logo"

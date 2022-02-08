@@ -1,4 +1,4 @@
-import { HomeFunStudyFeedback } from "../dialogs/home-fun-study/homeFunStudyDialog";
+import { HomeFunStudyFeedback } from "@/app/pages/schedule/home-fun-study/[scheduleId]";
 import {
     atom,
     useRecoilState,
@@ -15,7 +15,8 @@ export enum OrientationType {
 }
 
 export enum LayoutMode {
-    DEFAULT, CLASSROOM
+    DEFAULT,
+    CLASSROOM,
 }
 
 export const dialogsState = atom({
@@ -26,19 +27,6 @@ export const dialogsState = atom({
         isParentalLockOpen: false,
         isShowNoOrgProfile: false,
         isShowNoStudentRole: false,
-    },
-});
-
-export const homeFunStudyState = atom({
-    key: `homeFunStudy`,
-    default: {
-        open: false,
-        feedback: [],
-    } as {
-        open: boolean;
-        submitted?: boolean;
-        studyId?: string | undefined;
-        feedback: HomeFunStudyFeedback[];
     },
 });
 
@@ -55,6 +43,7 @@ export const selectedRegionState = atom({
     default: {
         regionId: process.env.IS_CORDOVA_BUILD ? `auth.kidsloop.live` : `env`,
     },
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     effects_UNSTABLE: [ persistAtom ],
 });
 
@@ -70,6 +59,7 @@ export const localeState = atom({
     default: {
         languageCode: `en`,
     },
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     effects_UNSTABLE: [ persistAtom ],
 });
 
@@ -97,6 +87,14 @@ export const useSetDeviceOrientation = () => useSetRecoilState(deviceOrientation
 export const shouldClearCookieState = atom({
     key: `shouldClearCookie`,
     default: false,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    effects_UNSTABLE: [ persistAtom ],
+});
+
+export const homeFunStudiesState = atom<HomeFunStudyFeedback[]>({
+    key: `homeFunStudies`,
+    default: [],
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     effects_UNSTABLE: [ persistAtom ],
 });
 

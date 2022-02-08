@@ -1,5 +1,4 @@
 import { IFileSelectService } from "./IFileSelectService";
-/// <reference types="cordova-plugin-file" />
 
 const DESTINATION_FILE_URI = 1;
 const SOURCE_CAMERA = 1;
@@ -41,11 +40,11 @@ export const ACCEPT_MIME_TYPES =
     `video/mp4,` +
     `image/x-ms-bmp,` +
     `image/x-windows-bmp,` +
-    `image/x-windows-bmp,` +    
+    `image/x-windows-bmp,` +
     `image/png,` +
     `image/gif,` +
-    `image/jpeg,` +    
-    `image/bmp,` +    
+    `image/jpeg,` +
+    `image/bmp,` +
     `image/jpg`;
 
 export const MIME_TO_EXTENSION = new Map<string, string>([
@@ -108,21 +107,18 @@ export class FileSelectService implements IFileSelectService {
             console.log(`corrected uri: ${uri}`);
 
             // TODO: Type information for resolveLocalFileSystemURL
-            (window as any).resolveLocalFileSystemURL(uri, (entry: any) => {
-                // TODO: type information for FileEntry
-                // (entry as FileEntry).file((file) => {
-                (entry as any).file((file: any) => {
-                    resolve(file);
+            window.resolveLocalFileSystemURL(uri, (entry: Entry) => {
+                (entry as FileEntry).file((file: File) => {
+                    resolve(file as File);
                 });
-            }, (error: any) => {
+            }, (error: FileError) => {
                 reject(error);
             });
         });
     }
 
     selectFromGallery (isAndroid: boolean): Promise<File> {
-        const camera = (navigator as any).camera;
-        if (!camera) return Promise.reject(`No camera available.`);
+        if (!navigator.camera) return Promise.reject(`No camera available.`);
 
         const options = {
             sourceType: SOURCE_CAMERAROLL,
@@ -131,22 +127,21 @@ export class FileSelectService implements IFileSelectService {
         };
 
         const selectGalleryProcedure = new Promise<File>((resolve, reject) => {
-            camera.getPicture((uri: string) => {
+            navigator.camera.getPicture((uri) => {
                 if (!uri.startsWith(`file://`) && !uri.startsWith(`content://`)) {
                     uri = `file://` + uri;
                 }
 
-                // TODO: Type information for resolveLocalFileSystemURL
-                (window as any).resolveLocalFileSystemURL(uri, (entry: any) => {
+                window.resolveLocalFileSystemURL(uri, (entry: Entry) => {
                     // TODO: type information for FileEntry
                     // (entry as FileEntry).file((file) => {
-                    (entry as any).file((file: any) => {
+                    (entry as FileEntry).file((file: File) => {
                         resolve(file);
                     });
-                }, (error: any) => {
+                }, (error: FileError) => {
                     reject(error);
                 });
-            }, (message: string) => {
+            }, (message) => {
                 reject(message);
             }, options);
         });
@@ -155,8 +150,7 @@ export class FileSelectService implements IFileSelectService {
     }
 
     selectFromCamera (): Promise<File> {
-        const camera = (navigator as any).camera;
-        if (!camera) return Promise.reject(`No camera available.`);
+        if (!navigator.camera) return Promise.reject(`No camera available.`);
 
         const options = {
             sourceType: SOURCE_CAMERA,
@@ -164,16 +158,16 @@ export class FileSelectService implements IFileSelectService {
         };
 
         const selectGalleryProcedure = new Promise<File>((resolve, reject) => {
-            camera.getPicture((uri: string) => {
+            navigator.camera.getPicture((uri: string) => {
                 console.log(uri);
                 // TODO: Type information for resolveLocalFileSystemURL
-                (window as any).resolveLocalFileSystemURL(uri, (entry: any) => {
+                window.resolveLocalFileSystemURL(uri, (entry: Entry) => {
                     // TODO: type information for FileEntry
                     // (entry as FileEntry).file((file) => {
-                    (entry as any).file((file: any) => {
+                    (entry as FileEntry).file((file: File) => {
                         resolve(file);
                     });
-                }, (error: any) => {
+                }, (error: FileError) => {
                     reject(error);
                 });
             }, (message: string) => {
