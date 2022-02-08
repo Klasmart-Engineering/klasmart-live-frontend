@@ -278,11 +278,14 @@
     "globalMute.notification.camOff": "您的相机已对所有人关闭",
     "globalMute.notification.micOn": "您的麦克风已对所有人开启",
     "globalMute.notification.camOn": "您的相机已对所有人开启",
-    "homeFunStudy.feedback.notAvailable": "暂无老师评语",
     "live.class.stickers": "贴纸",
     "canvas.turnOn": "打开白板",
     "canvas.turnOff": "关闭白板",
     "speechRecognition.error.notSupported": "手机浏览器不支持语音识别功能",
-    "study.exit.title": "Are you sure you want to exit?",
-    "study.exit.body": "Your progress will not be saved."
+    "study.exit.title": "您确定要退出吗？",
+    "study.exit.body": "您的进度将不会被保存。",
+    "live.class.chat.sendMessage": "留言",
+    "content.pdf.page": "Page",
+    "content.pdf.chapter": "Chapter",
+    "classtype.preview.live": "Preview Live"
 }
