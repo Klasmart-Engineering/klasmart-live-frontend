@@ -80,6 +80,7 @@ export default function StyledIcon (props: Props) {
             title={tooltip.title || ``}
         >
             <BaseIcon
+                className={className}
                 theme={theme}
                 color={color}
                 size={determinedSize}>
@@ -88,6 +89,7 @@ export default function StyledIcon (props: Props) {
         </Tooltip>
     ) : (
         <BaseIcon
+            className={className}
             theme={theme}
             color={color}
             size={determinedSize}>

@@ -1,6 +1,7 @@
 import HomeFunStudyAttachmentsSection from "@/app/components/HomeFunStudy/Attachments/Section";
 import BottomSelector from "@/app/components/HomeFunStudy/BottomSelector";
 import HomeFunStudyCommentSection from "@/app/components/HomeFunStudy/Comment/Section";
+import HomeFunStudyTeacherFeedback from "@/app/components/HomeFunStudy/TeacherFeedback/Section";
 import AppBar from "@/app/components/layout/AppBar";
 import BackButton from "@/app/components/layout/BackButton";
 import ScheduleLoading from "@/app/components/Schedule/Loading";
@@ -501,58 +502,65 @@ export default function () {
                 )}
                 title={scheduleData?.title}
             />
-            {isFetchingSchedule
-                ? <ScheduleLoading />
-                : (
-                    <Box
-                        px={3}
-                        py={2}
-                        height="100%"
-                    >
-                        <Box mb={3}>
-                            <Typography variant="subtitle1">
-                                <FormattedMessage id="home_fun_study_your_task" />
-                            </Typography>
-                            <Typography
-                                variant="body2"
-                                color="textSecondary"
-                            >
-                                {scheduleData?.description
-                                    ? scheduleData.description
-                                    : <FormattedMessage id="label_not_defined" />
-                                }
-                            </Typography>
-                        </Box>
-                        <Box mb={3}>
-                            <Typography variant="subtitle1">
-                                <FormattedMessage id="scheduleDetails.dueDate" />
-                            </Typography>
-                            <Typography
-                                variant="body2"
-                                color="textSecondary"
-                            >
-                                {(scheduleData?.due_at && scheduleData.due_at !== 0)
-                                    ? formatDueDateMillis(fromSecondsToMilliseconds(scheduleData.due_at), intl)
-                                    : <FormattedMessage id="label_not_defined"/>
-                                }
-                            </Typography>
-                        </Box>
-                        <Box mb={2}>
-                            <HomeFunStudyAttachmentsSection
+            <Box
+                component="div"
+                height="100%"
+                overflow="auto">
+                {isFetchingSchedule
+                    ? <ScheduleLoading />
+                    : (
+                        <Box
+                            px={3}
+                            py={2}
+                        >
+                            <Box mb={2}>
+                                <Typography variant="subtitle1">
+                                    <FormattedMessage id="home_fun_study_your_task" />
+                                </Typography>
+                                <Typography
+                                    variant="body2"
+                                    color="textSecondary"
+                                >
+                                    {scheduleData?.description
+                                        ? scheduleData.description
+                                        : <FormattedMessage id="label_not_defined" />
+                                    }
+                                </Typography>
+                            </Box>
+                            <Box mb={3}>
+                                <Typography variant="subtitle1">
+                                    <FormattedMessage id="scheduleDetails.dueDate" />
+                                </Typography>
+                                <Typography
+                                    variant="body2"
+                                    color="textSecondary"
+                                >
+                                    {(scheduleData?.due_at && scheduleData.due_at !== 0)
+                                        ? formatDueDateMillis(fromSecondsToMilliseconds(scheduleData.due_at), intl)
+                                        : <FormattedMessage id="label_not_defined"/>
+                                    }
+                                </Typography>
+                            </Box>
+                            <Box mb={2}>
+                                <HomeFunStudyAttachmentsSection
+                                    canEdit={homeFunStudyFeedback.status !== `submitting`}
+                                    attachments={homeFunStudyFeedback.attachments}
+                                    onClickChooseFile={() => setOpenBottomSelector(true)}
+                                    onRemoveAttachment={onRemoveAttachment}
+                                />
+                            </Box>
+                            <HomeFunStudyCommentSection
                                 canEdit={homeFunStudyFeedback.status !== `submitting`}
-                                attachments={homeFunStudyFeedback.attachments}
-                                onClickChooseFile={() => setOpenBottomSelector(true)}
-                                onRemoveAttachment={onRemoveAttachment}
+                                comment={homeFunStudyFeedback.comment}
+                                onChange={handleOnCommentChange}
                             />
                         </Box>
-                        <HomeFunStudyCommentSection
-                            canEdit={homeFunStudyFeedback.status !== `submitting`}
-                            comment={homeFunStudyFeedback.comment}
-                            onChange={handleOnCommentChange}
-                        />
-                    </Box>
-                )}
-            <div className={classes.buttonWrapper}>
+                    )}
+                {!(scheduleNewestFeedbackData?.is_allow_submit) && <HomeFunStudyTeacherFeedback
+                    organizationId={organizationId}
+                    scheduleId={scheduleId}/>}
+            </Box>
+            {(scheduleNewestFeedbackData?.is_allow_submit) && <div className={classes.buttonWrapper}>
                 <Button
                     fullWidth
                     variant="contained"
@@ -571,7 +579,7 @@ export default function () {
                         className={classes.buttonProgress}
                     />
                 )}
-            </div>
+            </div>}
             <BottomSelector
                 open={openBottomSelector}
                 onClose={() => {
