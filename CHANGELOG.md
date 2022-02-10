@@ -2,6 +2,46 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.0.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v4.0.0%0Dv3.11.0) (2022-02-10)
+
+
+### ⚠ BREAKING CHANGES
+
+* **api:** pack and unpack rrweb event to reduce data size
+
+### Features
+
+* add x option to study activity ([320b2dd](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/320b2dd26b40fcc4fa4144bc2b04730c7bbf0c04)), closes [KLL-2230](https://calmisland.atlassian.net/browse/KLL-2230)
+* **api:** pack and unpack rrweb event to reduce data size ([c6ab282](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/c6ab2827b75cf2fa91fb3c1c252d7723f18a0dec))
+* change the observe warning popup to snackback [KLL-1940](https://calmisland.atlassian.net/browse/KLL-1940) ([d45c4d5](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/d45c4d5df09283f404d1edceff4e1c7b0f105604))
+* create and display landing page ([decc25a](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/decc25a04619c82f2f11788da1408de120159e16)), closes [KLL-2227](https://calmisland.atlassian.net/browse/KLL-2227)
+* display teachers feedback on hfs screen ([abdb8d9](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/abdb8d98e328b7651efb3ea91804241ef5f37d91)), closes [KLL-2369](https://calmisland.atlassian.net/browse/KLL-2369)
+* enable file preview when selecting file name on home fun study screen ([6971185](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/6971185afe1d3c4120121ae2e95b07b18b4e17f2)), closes [KLL-2522](https://calmisland.atlassian.net/browse/KLL-2522)
+* improve canvas toolbar ([1704729](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/170472910d48be299d77fe9e0b98ec4fdcc6424f)), closes [KLL-2359](https://calmisland.atlassian.net/browse/KLL-2359) [KLL-2362](https://calmisland.atlassian.net/browse/KLL-2362) [KLL-2358](https://calmisland.atlassian.net/browse/KLL-2358) [KLL-2359](https://calmisland.atlassian.net/browse/KLL-2359) [KLL-2362](https://calmisland.atlassian.net/browse/KLL-2362)
+* use canvas colors as drawing cursor [KLL-2488](https://calmisland.atlassian.net/browse/KLL-2488) ([90557fd](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/90557fd02cd2e00f35dd993eb90b697f7a97a6fb))
+
+
+### Bug Fixes
+
+* change detect disabled share screen button using getDisplayMedia ([d484413](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/d484413d395bbdb38ef84bdc524d1e606dc13762)), closes [KLL-2040](https://calmisland.atlassian.net/browse/KLL-2040)
+* icons overlapping cameras ([c35113b](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/c35113bacaf0b56580a32d8ec3bedbcb266567d4)), closes [KLL-2774](https://calmisland.atlassian.net/browse/KLL-2774)
+* implement stable-id and additional attribute for mic and cam ([d50dfb8](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/d50dfb895ae5e6e9032514cc606a2c42d235a693)), closes [KLL-2656](https://calmisland.atlassian.net/browse/KLL-2656)
+* interactive video display white box ([17ae212](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/17ae2124193722a31bb4544ae180bd6b3b667081)), closes [KLL-2425](https://calmisland.atlassian.net/browse/KLL-2425)
+* overlap status bar on ipad ([4aa72d0](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/4aa72d05957b17155358e85e35842bdbda248749)), closes [KLL-2332](https://calmisland.atlassian.net/browse/KLL-2332)
+* **rrweb:** disable fullsnapshot for youtube videos ([10abd35](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/10abd35a56a75ad3078453b36ea0e84568ca8f15))
+* **rrweb:** make transparent wrong drawings from student in FindWord activity ([f19be8d](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/f19be8decb8f1326e03f67ab02f4c3d4ba1085d1)), closes [KLL-1879](https://calmisland.atlassian.net/browse/KLL-1879)
+* **rrweb:** set default src value to rrweb iframe ([50115a2](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/50115a2a1f84b86817f68df5b5c7ce5c56edac10)), closes [KLL-1949](https://calmisland.atlassian.net/browse/KLL-1949)
+* **rrweb:** set option to play animation ([a49d69d](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/a49d69d2d4b6fc9c1262ec080a5079043903bdc4)), closes [KLL-1357](https://calmisland.atlassian.net/browse/KLL-1357)
+* stable id for camera stream element and global action menu item ([fccd443](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/fccd443f65598dde528de8f33f2fcec1218d42c0)), closes [KLL-2706](https://calmisland.atlassian.net/browse/KLL-2706)
+* the application is using the camera even when it is turned off ([7dc1772](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/7dc1772e372658411328baacbe534449d0103da0)), closes [KLL-1218](https://calmisland.atlassian.net/browse/KLL-1218)
+* update tooltip for button in live class ([9158d9f](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/9158d9f98c6f1851164c4f6b713636938b4d9a11)), closes [KLL-1957](https://calmisland.atlassian.net/browse/KLL-1957)
+* use callback for hfs score ([5393ed1](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/5393ed106f6d31b44674436338d616610b84f412)), closes [KLL-2369](https://calmisland.atlassian.net/browse/KLL-2369)
+
+
+### Refactor
+
+* split home fun study into components ([6d30bbe](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/6d30bbea7dac8d66c5754fa86adc32079f1fdc32)), closes [KLL-2204](https://calmisland.atlassian.net/browse/KLL-2204) [KLL-2204](https://calmisland.atlassian.net/browse/KLL-2204) [KLL-2204](https://calmisland.atlassian.net/browse/KLL-2204) [KLL-2204](https://calmisland.atlassian.net/browse/KLL-2204) [KLL-2204](https://calmisland.atlassian.net/browse/KLL-2204)
+
 ## [3.11.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v3.11.0%0Dv3.10.0) (2022-01-26)
 
 
