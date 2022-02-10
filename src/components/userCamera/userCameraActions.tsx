@@ -15,7 +15,7 @@ import { hasControlsState } from "@/store/layoutAtoms";
 import { fullScreenById } from "@/utils/utils";
 import { useSynchronizedState } from "@/whiteboard/context-providers/SynchronizedStateProvider";
 import {
-    Grid,
+    Box,
     IconButton,
     makeStyles,
     Menu,
@@ -44,47 +44,29 @@ import React,
 import { useRecoilValue } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
-    root: {
+    root:{
         position: `absolute`,
         zIndex: 9,
         width: `100%`,
         height: `100%`,
-        top: 0,
-        left: 0,
-        display: `flex`,
-        flexDirection: `column`,
-        justifyContent: `space-between`,
-        textAlign:`left`,
-    },
-    controls:{
-        position: `absolute`,
-        width: `100%`,
-        height: `100%`,
-        display: `flex`,
-        justifyContent:`center`,
-        alignItems:`center`,
         bottom: 0,
         right: 0,
         opacity: 1,
         transition: `all 100ms ease-in-out`,
         visibility: `visible`,
     },
-    controlsTeacher:{
+    backdropOverlay:{
         backdropFilter: `blur(2px)`,
         backgroundColor: `rgba(0,0,0,0.3)`,
     },
     controlsIcon:{
-        margin: `5px`,
-        backgroundColor: `rgba(255,255,255,0.3)`,
-        padding: 5,
-        fontSize: `inherit`,
-        color: `#fff`,
-        "&:hover":{},
+        padding: theme.spacing(1),
+        color: theme.palette.common.white,
     },
     menuPaperTrophies:{
         borderRadius: 30,
         "& $menuItem":{
-            padding: 5,
+            padding: theme.spacing(0.75),
             color: amber[500],
         },
     },
@@ -94,21 +76,18 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     expand:{
         position: `absolute`,
-        top: 5,
-        left: 5,
-        "& svg":{
-            color: `#fff`,
-        },
+        top: theme.spacing(1),
+        left: theme.spacing(1),
     },
     iconButton:{
         color: theme.palette.common.white,
-        margin: `0 -5px`,
+        margin: theme.spacing(0, -0.5),
+        padding: theme.spacing(1, 1.25),
     },
-    iconButtonDisabled: {},
     iconsContainer: {
         borderRadius: 40,
-        background: `rgb(0 0 0 / 50%)`,
-        padding: `0 6px`,
+        background: `rgba(0,0,0,0.5)`,
+        padding: theme.spacing(0, 0.75),
     },
 }));
 
@@ -145,52 +124,42 @@ const UserCameraActions = ({ user, expanded }: UserCameraActionsProps) => {
     });
 
     return (
-        <div
-            className={classes.root}>
-            <Grid className={clsx(classes.controls, {
-                [classes.controlsTeacher] : isTeacher,
-            })}>
-                {expanded && <ExpandCamera user={user} /> }
-
-                {isTeacher &&
-                    <Grid item>
-                        <Grid
-                            container
-                            className={classes.iconsContainer}>
-                            <Grid item>
-                                <ToggleMic user={user} />
-                            </Grid>
-                            <Grid item>
-                                <ToggleCamera user={user} />
-                            </Grid>
-                            {!isSelf && (
-                                <Grid item>
-                                    <IconButton
-                                        aria-label="Trophy"
-                                        className={classes.iconButton}
-                                        onClick={handleTrophyOpen}>
-                                        <TrophyIcon size="0.7em"/>
-                                    </IconButton>
-                                </Grid>
-                            )}
-                            {hasControls && (
-                                <>
-                                    {!isSelf && (
-                                        <Grid item>
-                                            <ToggleCanvas user={user} />
-                                        </Grid>
-                                    )}
-                                    {subTeacher && (
-                                        <Grid item>
-                                            <ToggleControls user={user} />
-                                        </Grid>
-                                    )}
-                                </>
-                            )}
-                        </Grid>
-                    </Grid>
-                }
-            </Grid>
+        <>
+            <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                className={clsx(classes.root, {
+                    [classes.backdropOverlay] : isTeacher,
+                })}>
+                {expanded && (<ExpandCamera user={user} />) }
+                {isTeacher && (
+                    <Box
+                        display="flex"
+                        className={classes.iconsContainer}>
+                        <ToggleMic user={user} />
+                        <ToggleCamera user={user} />
+                        {!isSelf && (
+                            <IconButton
+                                aria-label="Trophy"
+                                className={classes.iconButton}
+                                onClick={handleTrophyOpen}>
+                                <TrophyIcon size="0.7em"/>
+                            </IconButton>
+                        )}
+                        {hasControls && (
+                            <>
+                                {!isSelf && (
+                                    <ToggleCanvas user={user} />
+                                )}
+                                {subTeacher && (
+                                    <ToggleControls user={user} />
+                                )}
+                            </>
+                        )}
+                    </Box>
+                )}
+            </Box>
             <Menu
                 id="trophy-menu"
                 anchorEl={trophyEl}
@@ -226,7 +195,7 @@ const UserCameraActions = ({ user, expanded }: UserCameraActionsProps) => {
                     className={classes.menuItem}
                     onClick={() => rewardTrophy(user.id, `heart`)}><HeartFillIcon size="1.2rem"/></MenuItem>
             </Menu>
-        </div>
+        </>
     );
 };
 
@@ -319,9 +288,7 @@ const ToggleCamera = ({ user }: ToggleCameraProps) => {
     return (
         <IconButton
             aria-label="Camera"
-            className={clsx(classes.iconButton, {
-                [classes.iconButtonDisabled]: !camOn,
-            })}
+            className={classes.iconButton}
             onClick={toggleVideoState}
         >
             {camOn ? <CameraVideoFillIcon size="0.7em"/> : <CameraDisabledIcon size="0.7em"/>}
@@ -408,9 +375,7 @@ function ToggleMic ({ user }: ToggleMicProps){
     return (
         <IconButton
             aria-label="Microphone"
-            className={clsx(classes.iconButton, {
-                [classes.iconButtonDisabled]: !micOn,
-            })}
+            className={classes.iconButton}
             onClick={toggleAudioState}
         >
             {micOn ? <MicFillIcon size="0.7em"/> : <MicDisabledIcon size="0.7em"/>}
@@ -476,9 +441,7 @@ function ToggleCanvas ({ user }:ToggleCanvasProps) {
     return (
         <IconButton
             aria-label="Canvas"
-            className={clsx(classes.iconButton, {
-                [classes.iconButtonDisabled]: !permissions.allowCreateShapes,
-            })}
+            className={classes.iconButton}
             onClick={toggleAllowCreateShapes}>
             <img
                 src={permissions.allowCreateShapes ? PencilIconOn : PencilIconOff}
@@ -502,9 +465,6 @@ function ExpandCamera ({ user }:ExpandCameraProps){
                 aria-label="Expand video"
                 size="small"
                 className={classes.controlsIcon}
-                style={{
-                    background: `none`,
-                }}
                 onClick={() => fullScreenById(`camera:${user.id}`)}
             >
                 <ExpandIcon size="0.75em" />
