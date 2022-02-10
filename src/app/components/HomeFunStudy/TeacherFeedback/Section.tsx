@@ -17,7 +17,10 @@ import {
 } from "@material-ui/core";
 import clsx from "clsx";
 import React,
-{ useMemo } from "react";
+{
+    useCallback,
+    useMemo,
+} from "react";
 import { FormattedMessage } from "react-intl";
 
 const useStyles = makeStyles((theme) => createStyles({
@@ -47,7 +50,7 @@ export interface HomeFunStudyTeacherFeedbackProps {
 
 interface TeacherFeedback {
     comment: string;
-    score: Score;
+    score: number;
 }
 
 export default function HomeFunStudyTeacherFeedback ({ organizationId, scheduleId }: HomeFunStudyTeacherFeedbackProps) {
@@ -73,6 +76,11 @@ export default function HomeFunStudyTeacherFeedback ({ organizationId, scheduleI
             score: studentAssessment.score,
         };
     }, [ studentAssessmentsData ]);
+
+    const isValidFeedbackScore = useCallback((score?: number) => {
+        if(!score) return false;
+        return Object.values(Score).includes(score);
+    }, []);
 
     if (isFetchingStudentAssessments) return <ScheduleLoading />;
     if (!teacherFeedback) return null;
@@ -119,7 +127,7 @@ export default function HomeFunStudyTeacherFeedback ({ organizationId, scheduleI
                 </Box>
             </Grid>
             <Grid item>
-                <FeedbackScore score={teacherFeedback.score}/>
+                {isValidFeedbackScore(teacherFeedback.score) && <FeedbackScore score={teacherFeedback.score}/>}
             </Grid>
         </Grid>
         <img
