@@ -70,6 +70,7 @@ module.exports = {
             'react-dom': path.resolve(`./node_modules/react-dom`),
             'react-redux': path.resolve(`./node_modules/react-redux`),
         },
+        symlinks: false,
     },
     output: {
         filename: `[name].js`,

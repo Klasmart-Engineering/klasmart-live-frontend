@@ -22,7 +22,7 @@ jobs:
           CUSTOM_UA: cordovaios
           IS_CORDOVA_BUILD: "true"
         run: |
-          npm install
+          npm install --legacy-peer-deps
           npm run build:app
           [ $? -ne 0 ] && echo "Failed to build webpack" && exit 1
           cordova prepare ios

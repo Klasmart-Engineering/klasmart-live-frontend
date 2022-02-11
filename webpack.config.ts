@@ -96,6 +96,7 @@ const webpackConfig: Configuration = {
             'react-redux': path.resolve(`./node_modules/react-redux`),
             ...brandingOptions.webpack.resolve.alias,
         },
+        symlinks: false,
     },
     output: {
         filename: `[name].js`,

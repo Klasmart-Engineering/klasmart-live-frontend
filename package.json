@@ -90,7 +90,7 @@
     "html-webpack-plugin": "5.3.2",
     "husky": "^7.0.0",
     "jest": "27.0.6",
-    "newrelic-cordova-plugin": "github:newrelic/newrelic-cordova-plugin",
+    "newrelic-cordova-plugin": "github.com:newrelic/newrelic-cordova-plugin",
     "nyc": "^15.1.0",
     "react-app": "^1.1.2",
     "standard-version": "^9.3.1",
