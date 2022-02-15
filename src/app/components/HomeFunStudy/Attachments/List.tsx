@@ -9,7 +9,10 @@ import {
 } from "@/app/utils/fileUtils";
 import { isCellularConnection } from "@/app/utils/networkUtils";
 import { downloadDataBlob } from "@/app/utils/requestUtils";
-import { DIRECTORY_TARGET_FALLBACK } from "@/config";
+import {
+    DIRECTORY_TARGET_FALLBACK,
+    TEXT_COLOR_FILE_NAME,
+} from "@/config";
 import { useHttpEndpoint } from "@/providers/region-select-context";
 import {
     CircularProgress,
@@ -51,6 +54,10 @@ const useStyles = makeStyles((theme) => createStyles({
     },
     wrapper: {
         position: `relative`,
+    },
+    clickableText: {
+        textDecoration: `underline`,
+        color: TEXT_COLOR_FILE_NAME,
     },
 }));
 
@@ -171,12 +178,14 @@ export default function  AttachmentsList (props: Props) {
                     <ListItemText
                         primary={(
                             <Typography
+                                className={classes.clickableText}
                                 variant="body2"
                                 color="textSecondary"
                             >
                                 {attachment.attachment_name}
                             </Typography>
                         )}
+                        onClick={() => confirmOpenAttachmentLink(attachment)}
                     />
                     <ListItemSecondaryAction>
                         <AttachmentSecondaryAction
