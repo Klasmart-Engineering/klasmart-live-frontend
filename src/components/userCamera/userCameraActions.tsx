@@ -139,7 +139,7 @@ const UserCameraActions = ({ user, expanded }: UserCameraActionsProps) => {
                         className={classes.iconsContainer}>
                         <ToggleMic user={user} />
                         <ToggleCamera user={user} />
-                        {!isSelf && (
+                        {!user.isTeacher && (
                             <IconButton
                                 aria-label="Trophy"
                                 className={classes.iconButton}
