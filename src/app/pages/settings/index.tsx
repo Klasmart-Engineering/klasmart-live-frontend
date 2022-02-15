@@ -42,6 +42,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
     listItem: {
         backgroundColor: theme.palette.background.paper,
+        "&:hover": {
+            backgroundColor: theme.palette.background.paper,
+        },
     },
     listItemTextPrimary: {
         fontWeight: theme.typography.fontWeightBold as number,
