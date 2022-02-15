@@ -136,30 +136,28 @@ const useAuthentication = () => {
             //Set this flag to false to receive response from authenticationService.refresh()
             setShouldClearCookie(false);
 
-            if (url.searchParams) {
-                const languageCode = url.searchParams.get(`iso`);
-                if (languageCode) {
-                    setLocale({
-                        ...locale,
-                        languageCode,
-                    });
-                }
+            const languageCode = url.searchParams.get(`iso`);
+            if (languageCode) {
+                setLocale({
+                    ...locale,
+                    languageCode,
+                });
+            }
 
-                const region = url.searchParams.get(`region`);
-                if (region) {
-                    setSelectedRegion({
-                        ...selectedRegion,
-                        regionId: region,
-                    });
-                }
+            const region = url.searchParams.get(`region`);
+            if (region) {
+                setSelectedRegion({
+                    ...selectedRegion,
+                    regionId: region,
+                });
+            }
 
-                const token = url.searchParams.get(`token`);
-                if(token){
-                    setAuth({
-                        ...auth,
-                        transferToken: token,
-                    });
-                }
+            const token = url.searchParams.get(`token`);
+            if(token){
+                setAuth({
+                    ...auth,
+                    transferToken: token,
+                });
             }
         };
 
