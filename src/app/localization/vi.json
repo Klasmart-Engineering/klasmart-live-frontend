@@ -253,5 +253,12 @@
     "landingPage.signIn": "Sign In",
     "scheduleDetails.error.live.ended": "Bạn không thể vào vì lớp học này đã kết thúc",
     "scheduleDetails.error.study.ended": "Bạn không thể vào vì đã hết hạn",
-    "homeFunStudy.feedback.notAvailable": "Không có nhận xét của giáo viên"
+    "homeFunStudy.feedback.notAvailable": "Không có nhận xét của giáo viên",
+    "hamburger.signOut.confirm": "Are you sure you want to sign out?",
+    "onboarding.slider.title.1": "Bài tập về nhà",
+    "onboarding.slider.body.1": "Let’s jump into KidsLoop!",
+    "onboarding.slider.title.2": "Nhiệm vụ về nhà",
+    "onboarding.slider.body.2": "Let’s jump into KidsLoop!",
+    "onboarding.slider.title.3": "Trực tuyến",
+    "onboarding.slider.body.3": "Let’s jump into KidsLoop!"
 }

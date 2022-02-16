@@ -253,5 +253,12 @@
     "landingPage.signIn": "登录",
     "scheduleDetails.error.live.ended": "课程已经结束，无法加入！",
     "scheduleDetails.error.study.ended": "课程已经过期，无法加入！",
-    "homeFunStudy.feedback.notAvailable": "暂无老师评语"
+    "homeFunStudy.feedback.notAvailable": "暂无老师评语",
+    "hamburger.signOut.confirm": "Are you sure you want to sign out?",
+    "onboarding.slider.title.1": "家庭作业",
+    "onboarding.slider.body.1": "Let’s jump into KidsLoop!",
+    "onboarding.slider.title.2": "学生需提交",
+    "onboarding.slider.body.2": "Let’s jump into KidsLoop!",
+    "onboarding.slider.title.3": "在线课堂",
+    "onboarding.slider.body.3": "Let’s jump into KidsLoop!"
 }

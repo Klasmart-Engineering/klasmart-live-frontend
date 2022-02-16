@@ -249,9 +249,16 @@
     "homeFunStudy.feedback.score.average": "Average",
     "homeFunStudy.feedback.score.fair": "Fair",
     "homeFunStudy.feedback.score.poor": "Poor",
-    "landingPage.title": "Education Platform for Students",
+    "landingPage.title": "Platform Edukasi Untuk Siswa",
     "landingPage.signIn": "Sign In",
-    "scheduleDetails.error.live.ended": "You cannot enter because this class has ended",
-    "scheduleDetails.error.study.ended": "You cannot enter because it’s passed due date",
-    "homeFunStudy.feedback.notAvailable": "No teacher comment available"
+    "scheduleDetails.error.live.ended": "Tidak bisa masuk karena kelas sudah berakhir",
+    "scheduleDetails.error.study.ended": "Tidak bisa masuk karena melewati tenggat waktu",
+    "homeFunStudy.feedback.notAvailable": "No teacher comment available",
+    "hamburger.signOut.confirm": "Are you sure you want to sign out?",
+    "onboarding.slider.title.1": "Study",
+    "onboarding.slider.body.1": "Let’s jump into KidsLoop!",
+    "onboarding.slider.title.2": "Home Fun Study",
+    "onboarding.slider.body.2": "Let’s jump into KidsLoop!",
+    "onboarding.slider.title.3": "Live",
+    "onboarding.slider.body.3": "Let’s jump into KidsLoop!"
 }
