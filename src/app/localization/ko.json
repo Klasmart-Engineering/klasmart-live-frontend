@@ -253,5 +253,12 @@
     "landingPage.signIn": "Sign In",
     "scheduleDetails.error.live.ended": "이 수업이 종료되었으므로 입장할 수 없습니다.",
     "scheduleDetails.error.study.ended": "마감일이 지났으므로 입장할 수 없습니다.",
-    "homeFunStudy.feedback.notAvailable": "입력된 선생님 코멘트가 없습니다."
+    "homeFunStudy.feedback.notAvailable": "입력된 선생님 코멘트가 없습니다.",
+    "hamburger.signOut.confirm": "Are you sure you want to sign out?",
+    "onboarding.slider.title.1": "스터디",
+    "onboarding.slider.body.1": "Let’s jump into KidsLoop!",
+    "onboarding.slider.title.2": "홈펀스터디",
+    "onboarding.slider.body.2": "Let’s jump into KidsLoop!",
+    "onboarding.slider.title.3": "라이브",
+    "onboarding.slider.body.3": "Let’s jump into KidsLoop!"
 }
