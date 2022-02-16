@@ -287,5 +287,8 @@
     "live.class.chat.sendMessage": "Send message",
     "content.pdf.page": "Page",
     "content.pdf.chapter": "Chapter",
-    "classtype.preview.live": "Preview Live"
+    "classtype.preview.live": "Preview Live",
+    "study.exit.leave": "Leave",
+    "study.exit.startAgain": "Start Again",
+    "class.exit.exitClass": "Exit Class"
 }

@@ -285,7 +285,10 @@
     "study.exit.title": "您确定要退出吗？",
     "study.exit.body": "您的进度将不会被保存。",
     "live.class.chat.sendMessage": "留言",
-    "content.pdf.page": "Page",
-    "content.pdf.chapter": "Chapter",
-    "classtype.preview.live": "Preview Live"
+    "content.pdf.page": "页",
+    "content.pdf.chapter": "章节",
+    "classtype.preview.live": "线上课程预览",
+    "study.exit.leave": "Leave",
+    "study.exit.startAgain": "Start Again",
+    "class.exit.exitClass": "Exit Class"
 }
