@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.1.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v4.1.0%0Dv4.0.0) (2022-02-16)
+
+
+### Features
+
+* **localization:** add new translations (App) ([ae67691](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/ae67691a38eeb9b8d6d5f90d738d226cb2ce407e))
+* **localization:** add new translations (web) ([646d375](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/646d375771322118d6a8ed4c9b9349206b19c693))
+* show View Feedback button and hide buttons in HFS for Completed Assessment ([81d9297](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/81d9297c74ca21b8d2d34dd0e3e8ae99886b58f8)), closes [bugfix/KLL-2369](https://calmisland.atlassian.net/browse/KLL-2369) [feat/KLL-2369](https://calmisland.atlassian.net/browse/KLL-2369) [KLL-2369](https://calmisland.atlassian.net/browse/KLL-2369)
+
+
+### Bug Fixes
+
+* enable preview when selecting file name ([d53fb18](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/d53fb18cd05fff918130f63586ab5a79bc244c31)), closes [fix/KLL-2522](https://calmisland.atlassian.net/browse/KLL-2522)
+* remove unnecessary if condition ([55df5e2](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/55df5e27c392756f92e14183bab8f0955c8f11fb))
+* skip fullsnapshot build in h5p videos ([48504d7](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/48504d7f454da3ae46cabcce770c848d3f0f543a))
+* transparent list items background on iOS ([e3ec293](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/e3ec2931572352eb99e631ef2b1f943cc6bfa4ac)), closes [fix/KLL-2853](https://calmisland.atlassian.net/browse/KLL-2853)
+* trophy only for student ([1f32928](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/1f3292827b67cb80a8a0cf296e4db2d68ad3727e)), closes [fix/KLL-2489](https://calmisland.atlassian.net/browse/KLL-2489) [KLL-2489](https://calmisland.atlassian.net/browse/KLL-2489)
+
 ## [4.0.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v4.0.0%0Dv3.11.0) (2022-02-10)
 
 
