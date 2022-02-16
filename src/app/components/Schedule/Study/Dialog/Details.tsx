@@ -241,7 +241,7 @@ export default function StudyDetailsDialog (props: Props) {
                 actions={[
                     {
                         label: intl.formatMessage({
-                            id: `button_go_study`,
+                            id: scheduleData?.is_home_fun && scheduleData.complete_assessment ? `scheduleDetails.viewFeedback` : `button_go_study`,
                         }),
                         align: `end`,
                         color: `primary`,

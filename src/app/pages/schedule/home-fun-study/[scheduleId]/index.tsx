@@ -25,6 +25,7 @@ import {
     writeFileToStorage,
 } from "@/app/utils/fileUtils";
 import {
+    HFSVisibilityState,
     HomeFunStudyFeedbackId,
     useHomeFunStudies,
 } from "@/app/utils/homeFunStudy";
@@ -217,6 +218,12 @@ export default function () {
             }),
         });
     };
+
+    const visibilityState = useMemo((): HFSVisibilityState => {
+        if(scheduleData?.complete_assessment) return `hidden`;
+        if(homeFunStudyFeedback.status === `submitting`) return `disabled`;
+        return `visible`;
+    }, [ homeFunStudyFeedback, scheduleData ]);
 
     useEffect(() => {
         if (isFetchingScheduleNewestFeedback) return;
@@ -543,14 +550,14 @@ export default function () {
                             </Box>
                             <Box mb={2}>
                                 <HomeFunStudyAttachmentsSection
-                                    canEdit={homeFunStudyFeedback.status !== `submitting`}
+                                    visibilityState={visibilityState}
                                     attachments={homeFunStudyFeedback.attachments}
                                     onClickChooseFile={() => setOpenBottomSelector(true)}
                                     onRemoveAttachment={onRemoveAttachment}
                                 />
                             </Box>
                             <HomeFunStudyCommentSection
-                                canEdit={homeFunStudyFeedback.status !== `submitting`}
+                                visibilityState={visibilityState}
                                 comment={homeFunStudyFeedback.comment}
                                 onChange={handleOnCommentChange}
                             />
