@@ -7,6 +7,7 @@ import {
     getFileExtensionFromName,
     saveDataBlobToFile,
 } from "@/app/utils/fileUtils";
+import { HFSVisibilityState } from "@/app/utils/homeFunStudy";
 import { isCellularConnection } from "@/app/utils/networkUtils";
 import { downloadDataBlob } from "@/app/utils/requestUtils";
 import {
@@ -63,14 +64,14 @@ const useStyles = makeStyles((theme) => createStyles({
 
 interface Props {
     attachments: Attachment[];
-    canEdit: boolean;
+    visibilityState: HFSVisibilityState;
     onRemoveAttachment: (attachment: Attachment) => void;
 }
 
 export default function  AttachmentsList (props: Props) {
     const {
         attachments,
-        canEdit,
+        visibilityState,
         onRemoveAttachment,
     } = props;
     const classes = useStyles();
@@ -188,11 +189,13 @@ export default function  AttachmentsList (props: Props) {
                         onClick={() => confirmOpenAttachmentLink(attachment)}
                     />
                     <ListItemSecondaryAction>
-                        <AttachmentSecondaryAction
-                            canEdit
-                            attachment={attachment}
-                            onRemoveAttachment={() => handleRemoveAttachment(attachment)}
-                        />
+                        {
+                            <AttachmentSecondaryAction
+                                canEdit={visibilityState === `visible`}
+                                attachment={attachment}
+                                onRemoveAttachment={() => handleRemoveAttachment(attachment)}
+                            />
+                        }
                     </ListItemSecondaryAction>
                 </ListItem>
             ))}

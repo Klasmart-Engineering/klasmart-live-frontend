@@ -11,6 +11,8 @@ export interface HomeFunStudyFeedbackId {
   scheduleId: string;
 }
 
+export type HFSVisibilityState =  "visible" | "hidden" | "disabled";
+
 export const useHomeFunStudies = () => {
     const [ homeFunStudies, setHomeFunStudies ] = useRecoilState(homeFunStudiesState);
 
