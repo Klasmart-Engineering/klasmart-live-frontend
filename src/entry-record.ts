@@ -49,12 +49,16 @@ if (!(window as any).kidslooplive) {
         .build();
 
     let eventsSinceKeyframe = 0;
-    let isYT = false;
+    let skipFullSnapshot = false;
     const scripts = window.document.head.getElementsByTagName(`script`);
-    for( const script of scripts) {
+    for (const script of scripts) {
         if(script.src === `https://www.youtube.com/iframe_api`) {
-            isYT = true;
+            skipFullSnapshot = true;
         }
+    }
+    const videos = window.document.getElementsByTagName(`video`);
+    if (videos.length >= 1) {
+        skipFullSnapshot = true
     }
     const keepIframeSrcFn = (src: string): boolean => {
         try {
@@ -65,7 +69,7 @@ if (!(window as any).kidslooplive) {
         }
     };
 
-    record<any>({
+    record({
         checkoutEveryNms: 1000 * 10, // take full snapshot every x seconds
         emit: (e, isCheckout) => {
             // TODO: Should client or server keep track of the
@@ -77,10 +81,11 @@ if (!(window as any).kidslooplive) {
                     addCustomEvent(id, player.playerInfo, true);
                 });
             }
-            e.isYT = isYT;
+            const event = e as any;
+            event.skipFullSnapshot = skipFullSnapshot;
             const eventData = JSON.stringify({
                 checkout: isCheckout || false,
-                event: e,
+                event: event,
                 index: eventsSinceKeyframe++,
             });
 
