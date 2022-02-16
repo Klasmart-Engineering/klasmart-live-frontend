@@ -286,6 +286,9 @@
     "study.exit.body": "진행 상황이 저장되지 않습니다.",
     "live.class.chat.sendMessage": "메시지 보내기",
     "content.pdf.page": "페이지",
-    "content.pdf.chapter": "Chapter",
-    "classtype.preview.live": "Preview Live"
+    "content.pdf.chapter": "챕터",
+    "classtype.preview.live": "라이브 미리보기",
+    "study.exit.leave": "나가기",
+    "study.exit.startAgain": "재시도",
+    "class.exit.exitClass": "클래스 나가기"
 }
