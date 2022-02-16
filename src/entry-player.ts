@@ -2,6 +2,7 @@ import {
     EventType,
     Replayer,
 } from 'rrweb';
+import { eventWithTime } from 'rrweb/typings/types';
 // eslint-disable-next-line no-unused-vars
 
 const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
@@ -62,18 +63,20 @@ window.addEventListener(`message`, ({ data }) => {
         if (!hasReplayStarted) {
             return;
         }
-        if (event.type === EventType.Custom ) {
+        if (event.type === EventType.Custom) {
             // using rrwebPlayer.on('custom-event', handler) has latency issue
             onCustomEvent(event);
             return;
         }
 
-        if (event.type === EventType.FullSnapshot && event.isYT && isFullSnapshotRebuilded ) {
+        if (event.type === EventType.FullSnapshot && event.skipFullSnapshot && isFullSnapshotRebuilded) {
             return;
-        } else if (event.type === EventType.FullSnapshot && event.isYT && !isFullSnapshotRebuilded) {
+        } else if (event.type === EventType.FullSnapshot && event.skipFullSnapshot && !isFullSnapshotRebuilded) {
             isFullSnapshotRebuilded = true;
         }
-        rrwebPlayer.addEvent(event);
+        delete event.skipFullSnapshot;
+        const eventWithType = event as eventWithTime;
+        rrwebPlayer.addEvent(eventWithType);
     } catch (e) {
         console.error(e);
     }
