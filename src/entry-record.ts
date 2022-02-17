@@ -59,6 +59,11 @@ if (!(window as any).kidslooplive) {
     const videos = window.document.getElementsByTagName(`video`);
     if (videos.length >= 1) {
         skipFullSnapshot = true
+        for (const video of videos) {
+            // skip initial iframe to prevent black thumbnail
+            video.src = video.src + `#t=0.005`;
+            video.preload = `auto`;
+        }
     }
     const keepIframeSrcFn = (src: string): boolean => {
         try {
