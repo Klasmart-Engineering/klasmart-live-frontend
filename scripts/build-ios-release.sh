@@ -32,6 +32,7 @@ webViewEngineFilePath='./platforms/ios/CordovaLib/Classes/Private/Plugins/CDVWeb
 wkWebViewConfigurationLine='WKWebViewConfiguration\* configuration = \[\[WKWebViewConfiguration alloc\] init\]\;'
 allowFileAccessFromFileURLsLine='\[configuration.preferences setValue\:\@TRUE forKey\:\@\"allowFileAccessFromFileURLs\"\]\;'
 allowUniversalAccessFromFileURLsLine='\[configuration setValue\:\@\"TRUE\" forKey\:\@\"allowUniversalAccessFromFileURLs\"\]\;'
+cp -f './fixiOS/CDVWebViewUIDelegate.m' './platforms/ios/CordovaLib/Classes/Private/Plugins/CDVWebViewEngine/CDVWebViewUIDelegate.m'
 
 if ! grep -q "allowUniversalAccessFromFileURLs" "$webViewEngineFilePath"; then
   printf "\e[1;33m\nWarning: The CDVWebViewEngine need to be modified that set\e[0m \e[1;34mallowUniversalAccessFromFileURLs\e0m \e[1;33mto TRUE.\e[0m\n"
