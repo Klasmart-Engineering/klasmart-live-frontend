@@ -288,7 +288,10 @@
     "content.pdf.page": "Trang",
     "content.pdf.chapter": "Chương",
     "classtype.preview.live": "Xem trước trực tuyến",
-    "study.exit.leave": "Leave",
-    "study.exit.startAgain": "Start Again",
-    "class.exit.exitClass": "Exit Class"
+    "study.exit.leave": "Rời khỏi",
+    "study.exit.startAgain": "Bắt đầu lại",
+    "class.exit.exitClass": "Rời khỏi lớp học",
+    "stream.loading": "Trying to connect...",
+    "stream.waiting": "Trying to connect...",
+    "page.loading": "Page loading..."
 }

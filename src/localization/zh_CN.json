@@ -288,7 +288,10 @@
     "content.pdf.page": "页",
     "content.pdf.chapter": "章节",
     "classtype.preview.live": "线上课程预览",
-    "study.exit.leave": "Leave",
-    "study.exit.startAgain": "Start Again",
-    "class.exit.exitClass": "Exit Class"
+    "study.exit.leave": "退出",
+    "study.exit.startAgain": "重新开始",
+    "class.exit.exitClass": "退出教室",
+    "stream.loading": "Trying to connect...",
+    "stream.waiting": "Trying to connect...",
+    "page.loading": "Page loading..."
 }
