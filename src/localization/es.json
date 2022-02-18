@@ -290,5 +290,8 @@
     "classtype.preview.live": "Preview Live",
     "study.exit.leave": "Leave",
     "study.exit.startAgain": "Start Again",
-    "class.exit.exitClass": "Exit Class"
+    "class.exit.exitClass": "Exit Class",
+    "stream.loading": "Trying to connect...",
+    "stream.waiting": "Trying to connect...",
+    "page.loading": "Page loading..."
 }

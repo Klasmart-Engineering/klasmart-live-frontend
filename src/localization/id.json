@@ -288,7 +288,10 @@
     "content.pdf.page": "Halaman",
     "content.pdf.chapter": "Bab",
     "classtype.preview.live": "Pratinjau Langsung",
-    "study.exit.leave": "Leave",
-    "study.exit.startAgain": "Start Again",
-    "class.exit.exitClass": "Exit Class"
+    "study.exit.leave": "Keluar",
+    "study.exit.startAgain": "Mulai Lagi",
+    "class.exit.exitClass": "Keluar Kelas",
+    "stream.loading": "Trying to connect...",
+    "stream.waiting": "Trying to connect...",
+    "page.loading": "Page loading..."
 }

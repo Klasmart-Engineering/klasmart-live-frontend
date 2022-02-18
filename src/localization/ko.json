@@ -290,5 +290,8 @@
     "classtype.preview.live": "라이브 미리보기",
     "study.exit.leave": "나가기",
     "study.exit.startAgain": "재시도",
-    "class.exit.exitClass": "클래스 나가기"
+    "class.exit.exitClass": "클래스 나가기",
+    "stream.loading": "Trying to connect...",
+    "stream.waiting": "Trying to connect...",
+    "page.loading": "Page loading..."
 }

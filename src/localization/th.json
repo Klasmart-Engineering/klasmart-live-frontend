@@ -288,7 +288,10 @@
     "content.pdf.page": "หน้าหนังสือ",
     "content.pdf.chapter": "บท",
     "classtype.preview.live": "ดูตัวอย่างสด",
-    "study.exit.leave": "Leave",
-    "study.exit.startAgain": "Start Again",
-    "class.exit.exitClass": "Exit Class"
+    "study.exit.leave": "ทิ้ง",
+    "study.exit.startAgain": "เริ่มต้นอีกครั้ง",
+    "class.exit.exitClass": "ออกจากชั้นเรียน",
+    "stream.loading": "Trying to connect...",
+    "stream.waiting": "Trying to connect...",
+    "page.loading": "Page loading..."
 }
