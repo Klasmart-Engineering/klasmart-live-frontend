@@ -1,14 +1,14 @@
-import { FFT } from "@/components/fft";
 import ReactPlayer from "@/components/react-player/lazy";
 import { useSendVideoMessageMutation } from "@/data/live/mutations/useSendVideoMessageMutation";
 import { useVideoSubscription } from "@/data/live/subscriptions/useVideoSubscription";
 import { useSessionContext } from "@/providers/session-context";
 import { MaterialTypename } from '@/types/lessonMaterial';
 import {
+    Box,
     CircularProgress,
-    Grid,
     IconButton,
     makeStyles,
+    useTheme,
 } from "@material-ui/core";
 import { VolumeMute as AudioOffIcon } from "@styled-icons/boxicons-regular/VolumeMute";
 import React,
@@ -40,6 +40,11 @@ const useStyles = makeStyles(() => ({
         maxWidth: 600,
         display: `block`,
         margin: `0 auto`,
+    },
+    audioOverlay: {
+        position: `absolute`,
+        width: `100%`,
+        height: `100%`,
     },
     video: {
         width: `100% !important`,
@@ -109,6 +114,7 @@ export function ReplicaMedia (props: React.VideoHTMLAttributes<HTMLMediaElement>
         ...mediaProps
     } = props;
     const classes = useStyles();
+    const theme = useTheme();
     const srcRef = useRef<string>();
     const [ playing, setPlaying ] = useState<boolean>(false);
     const timeRef = useRef<number>();
@@ -236,28 +242,27 @@ export function ReplicaMedia (props: React.VideoHTMLAttributes<HTMLMediaElement>
     switch (type) {
     case MaterialTypename.AUDIO:
         return (
-            <>
-                <FFT
-                    input={ref.current}
-                    output={true}
-                    style={{
-                        width: `100%`,
-                    }}
-                    width={1000}
-                    height={500}
-                />
+            <Box
+                position="relative"
+                height="100%"
+                width="100%"
+                display="flex"
+                alignItems="center"
+                justifyContent="center">
                 <audio
                     ref={ref}
+                    controls
                     playsInline
+                    className={classes.audio}
                     src={srcRef.current}
                     crossOrigin="anonymous"
-                    controls={false}
                     controlsList="nodownload"
                     preload="auto"
                     onContextMenu={(e) => e.preventDefault()}
                     {...mediaProps}
                 />
-            </>
+                <div className={classes.audioOverlay} />
+            </Box>
         );
 
     case MaterialTypename.VIDEO:
@@ -474,31 +479,25 @@ export function ReplicatedMedia (props: React.VideoHTMLAttributes<HTMLMediaEleme
     switch (type) {
     case MaterialTypename.AUDIO:
         return (
-            <Grid
-                container
-                style={{
-                    height: `100%`,
-                }}
+            <Box
+                height="100%"
+                width="100%"
+                display="flex"
                 alignItems="center"
                 justifyContent="center">
-                <Grid
-                    item
-                    xs
-                    justifyContent="center">
-                    <audio
-                        ref={ref}
-                        controls
-                        playsInline
-                        className={classes.audio}
-                        src={src}
-                        crossOrigin="anonymous"
-                        controlsList="nodownload"
-                        preload="auto"
-                        onContextMenu={(e) => e.preventDefault()}
-                        {...mediaProps}
-                    />
-                </Grid>
-            </Grid>
+                <audio
+                    ref={ref}
+                    controls
+                    playsInline
+                    className={classes.audio}
+                    src={src}
+                    crossOrigin="anonymous"
+                    controlsList="nodownload"
+                    preload="auto"
+                    onContextMenu={(e) => e.preventDefault()}
+                    {...mediaProps}
+                />
+            </Box>
         );
 
     case MaterialTypename.VIDEO:
