@@ -12,8 +12,14 @@ jobs:
     runs-on: macos-11
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16
+          token: ${{ secrets.PAT_NPM_GITHUB_REPO }}
+      - run: npm ci
+        env:
+          NPM_GITHUB_TOKEN: ${{secrets.PAT_NPM_GITHUB_REPO}}
       - name: Prep iOS development
         env:
           ENDPOINT_GQL: "https://live.kidsloop.net/graphql"
@@ -22,7 +28,6 @@ jobs:
           CUSTOM_UA: cordovaios
           IS_CORDOVA_BUILD: "true"
         run: |
-          npm install --legacy-peer-deps
           npm run build:app
           [ $? -ne 0 ] && echo "Failed to build webpack" && exit 1
           cordova prepare ios
