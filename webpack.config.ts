@@ -153,7 +153,7 @@ const webpackConfig: Configuration = {
     ],
     devServer: {
         https: false,
-        host: `localhost`,
+        host: `0.0.0.0`,
         port: 8082,
         proxy: {
             "/graphql": {

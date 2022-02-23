@@ -40,6 +40,21 @@ const RegionSelectContext = createContext<IRegionSelectContext>({
 
 const DefaultRegions: Region[] = [
     {
+        id: `localhost`,
+        name: `Localhost`,
+        development: true,
+        services: {
+            auth: `https://auth.alpha.kidsloop.net`,
+            live: `${process.env.ENDPOINT_LIVE}`,
+            cms: `https://cms.alpha.kidsloop.net`,
+            sfu: `${process.env.ENDPOINT_SFU}`,
+            user: `https://api.alpha.kidsloop.net/user/`,
+            privacy: `https://kidsloop.net/policies/privacy-notice`,
+            pdf: `https://api.alpha.kidsloop.net/pdf`,
+        },
+        features: [],
+    },
+    {
         id: `auth.kidsloop.live`,
         name: `Live Global`,
         development: false,
