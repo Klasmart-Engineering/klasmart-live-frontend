@@ -9,7 +9,6 @@ import {
     materialActiveIndexState,
     showEndStudyState,
 } from "@/store/layoutAtoms";
-import { Whiteboard } from "@/whiteboard/components/Whiteboard";
 import { Typography } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import {
@@ -160,7 +159,7 @@ export function ClassContent () {
 
     const rootDivRef = useRef<HTMLDivElement>(null);
     const [ , setSquareSize ] = useState<number>(0);
-    const forStudent = classType === ClassType.STUDY || !isTeacher;
+    const isStudent = classType === ClassType.STUDY || !isTeacher;
     const HUB_ENDPOINT = process.env.ENDPOINT_HUB;
 
     const [ rewardTrophyMutation ] = useRewardTrophyMutation();
@@ -267,13 +266,7 @@ export function ClassContent () {
                             })}/> */}
                     </div> :
                     <div className={classes.content}>
-                        <div
-                            className={classes.fullHeight}
-                            id="activity-view-container">
-                            <Whiteboard
-                                uniqueId={forStudent ? `student` : `teacher`}
-                                group={classType !== ClassType.LIVE ? sessionId : undefined}
-                                useLocalDisplay={classType !== ClassType.LIVE} />
+                        <div className={classes.fullHeight}>
                             <PreviewLessonPlan />
                         </div>
                     </div> }

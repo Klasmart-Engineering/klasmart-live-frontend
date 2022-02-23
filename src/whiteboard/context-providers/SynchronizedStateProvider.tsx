@@ -38,7 +38,20 @@ interface ISynchronizedState {
 
 interface ISynchronizedStateContext {
     state: ISynchronizedState;
-    actions: any;
+    actions: {
+        setDisplay: (display: boolean) => void;
+        setLocalDisplay: React.Dispatch<React.SetStateAction<boolean>>;
+        setPermissions: (userId: string, permissions: Permissions) => void;
+        getPermissions: (userId: string) => Permissions;
+        refetchEvents: () => void;
+    };
+}
+
+class WhiteboardNoProviderError extends Error {
+    constructor () {
+        super(`useSynchronizedState must be used within a WhiteboardStateProvider`);
+        this.name = `WHITEBOARD_NO_PROVIDER_ERROR`;
+    }
 }
 
 const Context = createContext<ISynchronizedStateContext>({
@@ -51,7 +64,13 @@ const Context = createContext<ISynchronizedStateContext>({
         permissions: createEmptyPermissions(),
         userPermissions: new Map(),
     },
-    actions: {},
+    actions: {
+        setDisplay: () => { throw new WhiteboardNoProviderError(); },
+        setLocalDisplay: () => { throw new WhiteboardNoProviderError(); },
+        setPermissions: () => { throw new WhiteboardNoProviderError(); },
+        getPermissions: () => { throw new WhiteboardNoProviderError(); },
+        refetchEvents: () => { throw new WhiteboardNoProviderError(); },
+    },
 });
 
 type Props = {
@@ -212,7 +231,7 @@ export const SynchronizedStateProvider: FunctionComponent<Props> = ({ children }
         sessionId,
     ]);
 
-    const SynchronizedStateProviderActions = {
+    const synchronizedStateProviderActions = {
         setDisplay: setDisplayAction,
         setLocalDisplay: setLocalDisplay,
         setPermissions: setPermissionsAction,
@@ -232,7 +251,7 @@ export const SynchronizedStateProvider: FunctionComponent<Props> = ({ children }
                     permissions: selfPermissions,
                     userPermissions,
                 },
-                actions: SynchronizedStateProviderActions,
+                actions: synchronizedStateProviderActions,
             }}
         >
             {children}

@@ -29,6 +29,7 @@ import {
 } from "@/utils/utils";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
+import { useToolbarContext } from "kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
 import { useSnackbar } from "kidsloop-px";
 import React,
 {
@@ -41,7 +42,6 @@ import {
     useIntl,
 } from "react-intl";
 import { useRecoilState } from "recoil";
-import {useToolbarContext} from "kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
 
 interface Props {
     enableConferencing: boolean;
@@ -156,11 +156,11 @@ export const RoomProvider: React.FC<Props> = ({ children, enableConferencing }) 
     useEffect(() => {
         window.onbeforeunload = () => {
             try {
-                clear([sessionId]);
+                clear([ sessionId ]);
             }catch (err) {
                 console.error(err);
             }
-        }
+        };
     }, []);
 
     useEffect(() => {
@@ -168,11 +168,15 @@ export const RoomProvider: React.FC<Props> = ({ children, enableConferencing }) 
             if(isTeacher)
                 clear();
             else {
-                clear([sessionId]);
+                clear([ sessionId ]);
             }
         }catch (err) {
             console.error(err);
-        }}, [content, interactiveMode, materialActiveIndex]);
+        }}, [
+        content,
+        interactiveMode,
+        materialActiveIndex,
+    ]);
 
     const isConnectionTypeChange = () => {
         if(!currentConnection) return;
@@ -257,12 +261,12 @@ export const RoomProvider: React.FC<Props> = ({ children, enableConferencing }) 
         });
 
         if(leave.id === sessionId){
-            clear([sessionId]);
+            clear([ sessionId ]);
             setClassEnded(true);
         }
 
         if(isTeacher && user){
-            clear([user.id]);
+            clear([ user.id ]);
             enqueueSnackbar(intl.formatMessage({
                 id: `notification_user_left`,
             }, {

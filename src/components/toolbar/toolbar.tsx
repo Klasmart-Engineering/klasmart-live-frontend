@@ -73,7 +73,6 @@ import {
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
         padding: 10,
-        marginTop: -10,
         justifyContent: `space-between`,
         color: theme.palette.text.primary,
         position: `relative`,
@@ -161,7 +160,7 @@ function Toolbar () {
 
     const [ muteMutation ] = useMuteMutation();
 
-    async function setOutboundAudioState (isMicOn: boolean) {
+    function setOutboundAudioState (isMicOn: boolean) {
         const notification: MuteNotification = {
             roomId,
             sessionId,
@@ -172,7 +171,7 @@ function Toolbar () {
         });
     }
 
-    async function setOutboundVideoState (isCamOn: boolean) {
+    function setOutboundVideoState (isCamOn: boolean) {
         const notification: MuteNotification = {
             roomId,
             sessionId,

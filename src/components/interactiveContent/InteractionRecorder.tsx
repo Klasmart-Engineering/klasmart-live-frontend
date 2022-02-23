@@ -1,21 +1,29 @@
 import { useServices } from "@/app/context-provider/services-provider";
 import { useCustomFlashCard } from "@/app/utils/customFlashCard";
 import { injectIframeScript } from "@/app/utils/injectIframeScript";
-import { THEME_COLOR_PRIMARY_DEFAULT } from "@/config";
+import {
+    CANVAS_RESOLUTION_MAX,
+    THEME_COLOR_PRIMARY_DEFAULT,
+} from "@/config";
 import { useSetStreamIdMutation } from "@/data/live/mutations/useSetStreamIdMutation";
 import { useSessions } from "@/data/live/state/useSessions";
 import { useHttpEndpoint } from "@/providers/region-select-context";
 import { useSessionContext } from "@/providers/session-context";
 import { ClassType } from "@/store/actions";
 import { streamIdState } from "@/store/layoutAtoms";
-import { useWindowSize } from "@/utils/viewport";
-import { Button } from "@material-ui/core";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import Dialog from "@material-ui/core/Dialog";
-import Grid from "@material-ui/core/Grid";
-import { useTheme } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { BaseWhiteboard } from "@/whiteboard/components/BaseWhiteboard";
+import WhiteboardBorder from "@/whiteboard/components/Border";
+import {
+    Button,
+    CircularProgress,
+    createStyles,
+    Dialog,
+    Grid,
+    makeStyles,
+    Typography,
+    useMediaQuery,
+    useTheme,
+} from "@material-ui/core";
 import { Refresh as RefreshIcon } from "@styled-icons/material/Refresh";
 import React,
 {
@@ -25,10 +33,29 @@ import React,
     useState,
 } from "react";
 import { FormattedMessage } from "react-intl";
-import { useRecoilState } from "recoil";
+import { useResizeDetector } from "react-resize-detector";
+import { useSetRecoilState } from "recoil";
+
+const useStyles = makeStyles((theme) => createStyles({
+    activityContainer: {
+        width: `100%`,
+        height: `100%`,
+        display: `flex`,
+        alignItems: `center`,
+        justifyContent: `center`,
+    },
+    activity: {
+        width: `100%`,
+        height: `100%`,
+        position: `absolute`,
+        background: theme.palette.common.white,
+    },
+}));
 
 export interface Props {
     contentHref: string;
+    group?: string;
+    filterGroups?: string[];
 }
 
 export enum LoadStatus {
@@ -40,8 +67,14 @@ export enum LoadStatus {
     Finished,
 }
 
-export function RecordedIframe (props: Props): JSX.Element {
+export default function InteractionRecorder (props: Props): JSX.Element {
+    const {
+        contentHref,
+        group,
+        filterGroups,
+    } = props;
     const MAX_LOADING_COUNT = 60;
+    const classes = useStyles();
     const iframeRef = useRef<HTMLIFrameElement>(null);
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
@@ -52,9 +85,7 @@ export function RecordedIframe (props: Props): JSX.Element {
         token,
     } = useSessionContext();
     const sessions = useSessions();
-    const [ , setStreamId ] = useRecoilState(streamIdState);
-
-    const { contentHref } = props;
+    const setStreamId = useSetRecoilState(streamIdState);
 
     const imageExtensionPattern = /\.(jpe?g|png|gif|bmp)$/gi;
     const isImageContent = contentHref?.match(imageExtensionPattern);
@@ -64,18 +95,47 @@ export function RecordedIframe (props: Props): JSX.Element {
 
     const [ openDialog, setOpenDialog ] = useState(true);
     const [ seconds, setSeconds ] = useState(MAX_LOADING_COUNT);
-    const [ loadStatus, setLoadStatus ] = useState(LoadStatus.Loading);
+    const [ loadStatus, setLoadStatus ] = useState(LoadStatus.Finished);
     const [ intervalId, setIntervalId ] = useState<number>();
     const [ userCount, setUserCount ] = useState(sessions.size);
-
-    const [ useDoubleSize, setUseDoubleSize ] = useState(false);
-
-    const size = useWindowSize();
+    const [ initialActivityArea, setInitialActivityArea ] = useState({
+        width: 0,
+        height: 0,
+    });
 
     const { authenticationService } = useServices();
 
     const recorderEndpoint = useHttpEndpoint(`live`);
     const authEndpoint = useHttpEndpoint(`auth`);
+
+    const {
+        width: activityWidth = 0,
+        height: activityHeight = 0,
+        ref: activityAreaRef,
+    } = useResizeDetector();
+
+    useEffect(() => {
+        if (!activityWidth || !activityHeight || initialActivityArea.width || initialActivityArea.height) return;
+        setInitialActivityArea({
+            width: activityWidth,
+            height: activityHeight,
+        });
+    }, [
+        activityWidth,
+        activityHeight,
+        initialActivityArea.height,
+        initialActivityArea.width,
+    ]);
+
+    const activityAreaScale = useMemo(() => {
+        if (!activityWidth || !activityHeight || !initialActivityArea.width || !initialActivityArea.height) return 1;
+        return Math.min(activityWidth / initialActivityArea.width, activityHeight / initialActivityArea.height);
+    }, [
+        activityWidth,
+        activityHeight,
+        initialActivityArea.height,
+        initialActivityArea.width,
+    ]);
 
     const getPDFURLTransformer = (contentHref: string, token: string | undefined, recorderEndpoint: string, encodedEndpoint: string, encodedAuthEndpoint: string) => {
         const jpegTransformer = `${contentHref.replace(`/assets/`, `/pdf/`)}/view.html?token=${token}&endpoint=${encodedEndpoint}&auth=${encodedAuthEndpoint}`;
@@ -99,6 +159,7 @@ export function RecordedIframe (props: Props): JSX.Element {
         contentHref,
         token,
         recorderEndpoint,
+        authEndpoint,
     ]);
 
     useCustomFlashCard({
@@ -116,14 +177,6 @@ export function RecordedIframe (props: Props): JSX.Element {
         }
         setUserCount(sessions.size);
     }, [ sessions ]);
-
-    useEffect(() => {
-        if (classType === ClassType.LIVE) {
-            setTimeout(function () {
-                scaleWhiteboard();
-            }, 300);
-        }
-    }, [ size ]);
 
     useEffect(() => {
         setSeconds(MAX_LOADING_COUNT);
@@ -149,16 +202,6 @@ export function RecordedIframe (props: Props): JSX.Element {
         }
         return () => clearInterval(intervalId);
     }, [ loadStatus ]);
-
-    // TODO : Find a better system to scale the Whiteboard to the h5p
-    const scaleWhiteboard = () => {
-        const recordediframe = window.document.getElementById(`recordediframe`) as HTMLIFrameElement;
-        const recordediframeStyles = recordediframe.getAttribute(`style`);
-        const whiteboard = window.document.getElementsByClassName(`canvas-container`)[0];
-        if (recordediframeStyles) {
-            whiteboard.setAttribute(`style`, recordediframeStyles);
-        }
-    };
 
     function onLoad () {
         // TODO the client-side rendering version of H5P is ready! we can probably delete this function and the scale function above
@@ -218,18 +261,11 @@ export function RecordedIframe (props: Props): JSX.Element {
         // IP Protection: Contents should not be able to be downloaded by right-clicking.
         const blockRightClick = (e: MouseEvent) => { e.preventDefault(); };
         contentWindow.addEventListener(`contextmenu`, (e) => blockRightClick(e), false);
-        const h5pTypeColumn = contentDoc.body.getElementsByClassName(`h5p-column`).length;
 
         if(!isPdfContent){
-            if(process.env.IS_CORDOVA_BUILD){
-                setUseDoubleSize(h5pTypeColumn > 0);
+            if (process.env.IS_CORDOVA_BUILD){
                 injectIframeScript(iframeElement, `h5presize`);
-            }else{
-                const browserResizeEvent = new Event(`iframe-browser-resize`);
-                window.addEventListener(`resize`, function (e) {
-                    contentWindow.dispatchEvent(browserResizeEvent);
-                });
-
+            } else {
                 const iframeScript = document.createElement(`script`);
                 iframeScript.setAttribute(`id`, `kidsloop-live-frontend-script-inject`);
 
@@ -307,11 +343,44 @@ export function RecordedIframe (props: Props): JSX.Element {
                 console.log(e);
             }
         }
-
     }
 
     return (
-        <React.Fragment>
+        <>
+            <div
+                ref={activityAreaRef}
+                className={classes.activityContainer}
+            >
+                <div
+                    style={{
+                        transform: `scale(${activityAreaScale})`,
+                        width: initialActivityArea.width,
+                        height: initialActivityArea.height,
+                        transformOrigin: `center`,
+                        position: `absolute`,
+                    }}
+                >
+                    <iframe
+                        key={contentHref}
+                        ref={iframeRef}
+                        id="recordediframe"
+                        src={contentHrefWithToken}
+                        allow="microphone"
+                        className={classes.activity}
+                        onLoad={() => setLoadStatus(LoadStatus.Finished)}
+                    />
+                    <BaseWhiteboard
+                        group={group}
+                        filterGroups={filterGroups}
+                        width={initialActivityArea.width * (CANVAS_RESOLUTION_MAX / initialActivityArea.width)}
+                        height={initialActivityArea.height * (CANVAS_RESOLUTION_MAX / initialActivityArea.width)}
+                    />
+                </div>
+                <WhiteboardBorder
+                    width={initialActivityArea.width * activityAreaScale}
+                    height={initialActivityArea.height * activityAreaScale}
+                />
+            </div>
             <Dialog
                 fullScreen
                 hideBackdrop
@@ -380,21 +449,6 @@ export function RecordedIframe (props: Props): JSX.Element {
                     </Grid>
                 </Grid>
             </Dialog>
-
-            <iframe
-                key={contentHref}
-                ref={iframeRef}
-                id="recordediframe"
-                src={contentHrefWithToken}
-                allow="microphone"
-                style={{
-                    width: (useDoubleSize ? `82%` : `100%`),
-                    height: (useDoubleSize ? `82%` : `100%`),
-                    transformOrigin: `top left`,
-                    transform: (useDoubleSize ? `scale(1.2)` : `scale(1)`),
-                }}
-                onLoad={() => { setLoadStatus(LoadStatus.Finished); window.dispatchEvent(new Event(`resize`)); }}
-            />
-        </React.Fragment>
+        </>
     );
 }

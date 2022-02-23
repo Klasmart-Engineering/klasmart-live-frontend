@@ -9,7 +9,7 @@ export function App () {
     const { camera, name } = useSessionContext();
     const [ hasJoinedClassroom, setHasJoinedClassroom ] = useRecoilState(hasJoinedClassroomState);
 
-    if(hasJoinedClassroom || (!name || camera !== undefined)){
+    if (hasJoinedClassroom || (!name || camera !== undefined)) {
         return (
             <RoomWithContext />
         );

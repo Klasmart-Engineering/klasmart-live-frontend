@@ -71,11 +71,6 @@ export function App ({ history }: {
     const intl = useIntl();
 
     useEffect(() => {
-        console.log({
-            authenticated,
-            loading,
-        });
-
         if (loading) return;
         if (!authenticated) {
             cmsQueryClient.getQueryCache().clear();
@@ -142,7 +137,7 @@ export function App ({ history }: {
             direction="column"
             justifyContent="space-between"
             style={{
-                height: `100vh`,
+                height: `100%`,
                 overflow: `hidden`,
             }}
         >

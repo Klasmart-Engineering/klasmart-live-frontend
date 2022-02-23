@@ -40,10 +40,12 @@ export function WBToolbarContainer ({ useLocalDisplay } : { useLocalDisplay?: bo
 
     } = useSessionContext();
     const {
-        state: {
-            display, permissions, localDisplay,
-        }, actions: {
-            setDisplay, setLocalDisplay, getPermissions, setPermissions,
+        state: { display, permissions },
+        actions: {
+            setDisplay,
+            setLocalDisplay,
+            getPermissions,
+            setPermissions,
         },
     } = useSynchronizedState();
 
@@ -53,7 +55,7 @@ export function WBToolbarContainer ({ useLocalDisplay } : { useLocalDisplay?: bo
         setIsCanvasOpen(!isCanvasOpen);
 
         if (useLocalDisplay) {
-            setLocalDisplay(!localDisplay);
+            setLocalDisplay((localDisplay) => !localDisplay);
         } else if (classType !== ClassType.LIVE) {
             setDisplay(!display);
         }

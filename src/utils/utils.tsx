@@ -3,7 +3,10 @@ import {
     InteractiveMode,
 } from "@/pages/utils";
 import { activeTabState } from "@/store/layoutAtoms";
-import { MaterialTypename } from "@/types/lessonMaterial";
+import {
+    LessonMaterial,
+    MaterialTypename,
+} from "@/types/lessonMaterial";
 import {
     Drawer,
     Fade,
@@ -123,7 +126,7 @@ interface StyledPopperProps {
     placement?: PopperPlacementType;
     height?: number | string;
     showScrollbar?: boolean;
-    modifiers?: object;
+    modifiers?: Record<string, unknown>;
     isKeyboardVisible?: boolean;
 }
 
@@ -250,14 +253,33 @@ function NoItemList (props: NoItemListProps) {
 
 export { NoItemList };
 
-export function fullScreenById (id:any) {
-    const doc: any = window.document;
-    const docEl = doc.getElementById(id) as any;
+declare global {
+    interface Document {
+        mozCancelFullScreen?: () => Promise<void>;
+        msExitFullscreen?: () => Promise<void>;
+        webkitExitFullscreen?: () => Promise<void>;
+        mozFullScreenElement?: Element;
+        msFullscreenElement?: Element;
+        webkitFullscreenElement?: Element;
+      }
 
-    const requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
-    const cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
+      interface HTMLElement {
+        msRequestFullscreen?: () => Promise<void>;
+        mozRequestFullscreen?: () => Promise<void>;
+        webkitRequestFullscreen?: () => Promise<void>;
+      }
+}
 
-    if (!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
+export function toggleFullScreenById (id: string) {
+    const doc = window.document;
+    const docEl = doc.getElementById(id);
+    if (!docEl) return;
+
+    const requestFullScreen = docEl.requestFullscreen ?? docEl?.mozRequestFullscreen ?? docEl?.webkitRequestFullscreen ?? docEl.msRequestFullscreen;
+    const cancelFullScreen = doc.exitFullscreen ?? doc.mozCancelFullScreen ?? doc.webkitExitFullscreen ?? doc.msExitFullscreen;
+    const fullScreenElement = doc.fullscreenElement ?? doc.mozFullScreenElement ?? doc.webkitFullscreenElement ?? doc.msFullscreenElement;
+
+    if (!fullScreenElement) {
         requestFullScreen.call(docEl);
     } else {
         cancelFullScreen.call(doc);
@@ -266,32 +288,33 @@ export function fullScreenById (id:any) {
 
 export const sleep = (m:number) => new Promise(r => setTimeout(r, m));
 
-export const defineContentType = (material:any, interactiveMode:InteractiveMode) => {
-    if(interactiveMode === InteractiveMode.ONSTAGE) return ContentType.Blank;
-    if(interactiveMode === InteractiveMode.OBSERVE) return ContentType.Activity;
-    if(interactiveMode === InteractiveMode.SCREENSHARE) return ContentType.Stream;
-
-    if(material.__typename === MaterialTypename.VIDEO || (material.__typename === undefined && material.video)){
-        return ContentType.Video;
-    }else if (material.__typename === MaterialTypename.AUDIO) {
-        return ContentType.Audio;
-    }else if (material.__typename === MaterialTypename.IMAGE) {
-        return ContentType.Image;
-    }else{
-        return ContentType.Stream;
+export const defineContentType = (material: LessonMaterial | undefined, interactiveMode: InteractiveMode) => {
+    switch (interactiveMode) {
+    case InteractiveMode.ONSTAGE: return ContentType.Blank;
+    case InteractiveMode.OBSERVE: return ContentType.Activity;
+    case InteractiveMode.SCREENSHARE: return ContentType.Stream;
+    default:
+        if (material?.__typename === MaterialTypename.VIDEO || (material?.__typename === undefined && material?.video)) {
+            return ContentType.Video;
+        } else if (material?.__typename === MaterialTypename.AUDIO) {
+            return ContentType.Audio;
+        } else {
+            return ContentType.Stream;
+        }
     }
+
 };
 
-export const defineContentId = (material:any, interactiveMode:InteractiveMode, streamId:any, sessionId:any) => {
-    if(interactiveMode === InteractiveMode.ONSTAGE) return sessionId;
-    if(interactiveMode === InteractiveMode.OBSERVE) return material.url;
-
-    if(material.__typename === MaterialTypename.VIDEO || (material.__typename === undefined && material.video) || material.__typename === MaterialTypename.AUDIO){
-        return sessionId;
-    }else if (material.__typename === MaterialTypename.IMAGE) {
-        return material.url;
-    }else{
-        return streamId;
+export const defineContentId = (material: LessonMaterial | undefined, interactiveMode: InteractiveMode, streamId: string, sessionId: string) => {
+    switch (interactiveMode) {
+    case InteractiveMode.ONSTAGE: return sessionId;
+    case InteractiveMode.OBSERVE: return material?.url;
+    default:
+        if (material?.__typename === MaterialTypename.VIDEO || (material?.__typename === undefined && material?.video) || material?.__typename === MaterialTypename.AUDIO) {
+            return sessionId;
+        } else {
+            return streamId;
+        }
     }
 };
 
@@ -351,5 +374,5 @@ export async function classGetInformation (scheduleId: any, orgId: any, endpoint
 
     try { data = await Promise.all([ classAPI() ]); }
     catch (err) { console.error(`Fail to classGetInformation in Live: ${err}`); }
-    finally { return data[0]; }
+    return data[0];
 }

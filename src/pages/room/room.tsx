@@ -13,6 +13,7 @@ import {
 } from "@/store/layoutAtoms";
 import { classGetInformation } from "@/utils/utils";
 import {
+    Box,
     Grid,
     makeStyles,
     useMediaQuery,
@@ -29,8 +30,9 @@ import { useSetRecoilState } from "recoil";
 
 const useStyles = makeStyles(() => ({
     root: {
-        height: `100vh`,
+        height: `100%`,
         paddingBottom: `env(safe-area-inset-bottom)`,
+        display: `flex`,
     },
     rootSafeArea:{
         paddingLeft: `env(safe-area-inset-left)`, // iPhone Notch
@@ -142,24 +144,17 @@ export function Room () {
     }, [ classType ]);
 
     return (
-        <Grid
-            container
-            direction={isXsDown ? `column` : `row`}
+        <Box
+            flexDirection={isXsDown ? `column` : `row`}
             className={clsx(classes.root, {
-                [classes.study] : classType === ClassType.STUDY,
-                [classes.rootSafeArea] : deviceOrientation === `landscape-primary`,
+                [classes.study]: classType === ClassType.STUDY,
+                [classes.rootSafeArea]: deviceOrientation === `landscape-primary`,
             })}
         >
-            <Grid
-                item
-                xs>
-                <Main />
-            </Grid>
-            {classType === ClassType.LIVE &&
-                <Grid item>
-                    <Sidebar />
-                </Grid>
-            }
-        </Grid>
+            <Main />
+            {classType === ClassType.LIVE && (
+                <Sidebar />
+            )}
+        </Box>
     );
 }

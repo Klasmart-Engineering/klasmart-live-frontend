@@ -3,6 +3,7 @@ import { useSendVideoMessageMutation } from "@/data/live/mutations/useSendVideoM
 import { useVideoSubscription } from "@/data/live/subscriptions/useVideoSubscription";
 import { useSessionContext } from "@/providers/session-context";
 import { MaterialTypename } from '@/types/lessonMaterial';
+import { WhiteboardLoadableElement } from "@/whiteboard/components/ContainedWhiteboard";
 import {
     Box,
     CircularProgress,
@@ -18,6 +19,7 @@ import React,
     useRef,
     useState,
 } from "react";
+import { isSafari } from "react-device-detect";
 
 export interface VideoSynchronize {
     src?: string;
@@ -25,7 +27,7 @@ export interface VideoSynchronize {
     offset?: number;
 }
 
-interface ReplicaVideoProps {
+interface ReplicaVideoProps extends Omit<React.VideoHTMLAttributes<HTMLMediaElement>, "onLoad">, WhiteboardLoadableElement {
     sessionId: string;
     type: 'Audio' | 'Video';
 }
@@ -47,16 +49,9 @@ const useStyles = makeStyles(() => ({
         height: `100%`,
     },
     video: {
-        width: `100% !important`,
-        height: `100% !important`,
-        position: `relative`,
         "& video":{
-            objectFit: `contain`,
-            position: `absolute`,
-            top: 0,
-            left: 0,
-            width: `100%`,
-            height: `100%`,
+            display: `block`,
+            width: `initial`,
         },
     },
 }));
@@ -104,13 +99,11 @@ const handleVideoSources = (src:string, setVideoSources:React.Dispatch<React.Set
     }
 };
 
-// Reference: https://stackoverflow.com/a/23522755
-const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-
-export function ReplicaMedia (props: React.VideoHTMLAttributes<HTMLMediaElement> & ReplicaVideoProps) {
+export function ReplicaMedia (props: ReplicaVideoProps) {
     const {
         sessionId,
         type,
+        onLoad,
         ...mediaProps
     } = props;
     const classes = useStyles();
@@ -126,9 +119,7 @@ export function ReplicaMedia (props: React.VideoHTMLAttributes<HTMLMediaElement>
     const ref = useRef<HTMLMediaElement>(null);
     const reactPlayerRef = useRef<ReactPlayer>(null);
 
-    const [ videoSources, setVideoSources ] = useState<
-        string | string[] | undefined
-    >(undefined);
+    const [ videoSources, setVideoSources ] = useState<string | string[] | undefined>(undefined);
     const [ videoReady, setVideoReady ] = useState<boolean>(false);
 
     const reactPlayerError = useCallback(() => {
@@ -203,7 +194,7 @@ export function ReplicaMedia (props: React.VideoHTMLAttributes<HTMLMediaElement>
 
             if (reactPlayerRef.current && videoReady) {
                 if (offset !== undefined) {
-                    reactPlayerRef.current.seekTo(offset);
+                    reactPlayerRef.current.seekTo(offset, `seconds`);
                 }
             }
         },
@@ -271,13 +262,15 @@ export function ReplicaMedia (props: React.VideoHTMLAttributes<HTMLMediaElement>
             <>
                 <ReactPlayer
                     key={srcRef.current}
-                    ref={reactPlayerRef as React.RefObject<ReactPlayer>}
+                    ref={reactPlayerRef}
                     playsinline
                     controls={false}
                     playing={videoReady && playing}
                     url={videoSources}
                     muted={muted}
                     className={classes.video}
+                    height="100%"
+                    width="100%"
                     config={{
                         file: {
                             attributes: {
@@ -288,26 +281,28 @@ export function ReplicaMedia (props: React.VideoHTMLAttributes<HTMLMediaElement>
                             },
                         },
                     }}
-                    width="100%"
-                    onReady={() => {
-                        if (!videoReady && reactPlayerRef.current) {
-                            reactPlayerRef.current.seekTo(timeRef.current || 0.0);
-                        }
-
+                    onReady={(reactPlayer) => {
+                        const videoElement = (reactPlayer as unknown as any).wrapper?.childNodes?.[0] as HTMLVideoElement;
+                        if (!videoElement) return;
+                        const { videoHeight, videoWidth } = videoElement;
+                        onLoad?.({
+                            height: videoHeight,
+                            width: videoWidth,
+                        });
+                        if (videoReady) return;
+                        reactPlayer.seekTo(timeRef.current || 0.0, `seconds`);
                         setVideoReady(true);
-
                     }}
                     onError={() => reactPlayerError()}
                 />
-                {videoReady && muted ?
+                {(videoReady && muted) && (
                     <div
                         id="video-unmute-overlay"
                         style={{
                             position: `absolute`,
-                            width: `100%`,
-                            height: `100%`,
-                            zIndex: 2000,
-                        }}>
+                            zIndex: 1,
+                        }}
+                    >
                         <IconButton
                             color={`primary`}
                             style={{
@@ -321,30 +316,29 @@ export function ReplicaMedia (props: React.VideoHTMLAttributes<HTMLMediaElement>
                         >
                             <AudioOffIcon size="3.5rem" />
                         </IconButton>
-                    </div> : <></>
-                }
+                    </div>
+                )}
             </>
         );
     }
 }
 
-interface ReplicatedMediaProps {
+interface ReplicatedMediaProps extends Omit<React.VideoHTMLAttributes<HTMLMediaElement>, "onLoad">, WhiteboardLoadableElement {
     type: MaterialTypename.VIDEO | MaterialTypename.AUDIO;
 }
 
-export function ReplicatedMedia (props: React.VideoHTMLAttributes<HTMLMediaElement> & ReplicatedMediaProps) {
+export function ReplicatedMedia (props: ReplicatedMediaProps) {
     const {
         type,
         src,
+        onLoad,
         ...mediaProps
     } = props;
     const classes = useStyles();
     const ref = useRef<HTMLMediaElement>(null);
 
     const reactPlayerRef = useRef<ReactPlayer>(null);
-    const [ videoSources, setVideoSources ] = useState<
-        string | string[] | undefined
-    >(undefined);
+    const [ videoSources, setVideoSources ] = useState<string | string[] | undefined>(undefined);
     const [ playing, setPlaying ] = useState<boolean>(false);
 
     const { roomId, sessionId } = useSessionContext();
@@ -470,7 +464,6 @@ export function ReplicatedMedia (props: React.VideoHTMLAttributes<HTMLMediaEleme
         videoSources,
     ]);
 
-    // if(loading) {return <CircularProgress />;}
     if (error) {
         console.log(error);
         return <CircularProgress />;
@@ -504,12 +497,13 @@ export function ReplicatedMedia (props: React.VideoHTMLAttributes<HTMLMediaEleme
     default:
         return (
             <ReactPlayer
-                ref={reactPlayerRef as React.RefObject<ReactPlayer>}
+                ref={reactPlayerRef}
                 controls
                 playsinline
                 url={videoSources}
-                width="100%"
                 className={classes.video}
+                height="100%"
+                width="100%"
                 config={{
                     file: {
                         attributes: {
@@ -520,7 +514,14 @@ export function ReplicatedMedia (props: React.VideoHTMLAttributes<HTMLMediaEleme
                         },
                     },
                 }}
-                onReady={() => {
+                onReady={(reactPlayer) => {
+                    const videoElement = (reactPlayer as unknown as any).wrapper?.childNodes?.[0] as HTMLVideoElement;
+                    if (!videoElement) return;
+                    const { videoHeight, videoWidth } = videoElement;
+                    onLoad?.({
+                        height: videoHeight,
+                        width: videoWidth,
+                    });
                     reactPlayerSynchronizeState();
                 }}
                 onStart={() => {

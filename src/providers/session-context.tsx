@@ -1,6 +1,10 @@
 
 import { parseTokenParams } from "@/app/utils/parseTokenUtils";
 import { AuthTokenProvider } from "@/services/auth-token/AuthTokenProvider";
+import {
+    CLASS_TYPES,
+    ClassType,
+} from "@/store/actions";
 import { LessonMaterial } from "@/types/lessonMaterial";
 import React,
 {
@@ -13,6 +17,17 @@ import React,
     useState,
 } from "react";
 
+const DEFAULT_SESSION_CONTEXT = {
+    roomId: ``,
+    materials: [],
+    isTeacher: false,
+    sessionId: ``,
+    organizationId: ``,
+    scheduleId: ``,
+    classType: ClassType.LIVE,
+    user_id: ``,
+};
+
 export interface ISessionContext {
     isTeacher: boolean;
     materials: LessonMaterial[];
@@ -20,7 +35,7 @@ export interface ISessionContext {
     sessionId: string;
     organizationId: string;
     scheduleId: string;
-    classType: string; // "live" | "class" | "study" | "task"
+    classType: ClassType; // "live" | "class" | "study" | "task"
     name?: string;
     token?: string;
     camera?: MediaStream;
@@ -34,14 +49,7 @@ const SessionContext = createContext<ISessionContext>({
     setCamera: () => null,
     setName: () => null,
     setToken: () => null,
-    roomId: ``,
-    materials: [],
-    isTeacher: false,
-    sessionId: ``,
-    organizationId: ``,
-    scheduleId: ``,
-    classType: ``,
-    user_id: ``,
+    ...DEFAULT_SESSION_CONTEXT,
 });
 
 type Props = {
@@ -65,28 +73,6 @@ export function SessionContextProvider ({ children, sessionId }: Props) {
     const userContext = useMemo<ISessionContext>(() => {
         const params = parseTokenParams(token);
 
-        let parsedTokenState = {
-            roomId: ``,
-            isTeacher: false,
-            materials: [],
-            organizationId: ``,
-            scheduleId: ``,
-            classType: `live`,
-            user_id: ``,
-        };
-
-        if (params) {
-            parsedTokenState = {
-                roomId: params.roomId,
-                isTeacher: params.teacher,
-                materials: params.materials,
-                organizationId: params.org_id,
-                classType: params.classtype,
-                scheduleId: params.schedule_id,
-                user_id: params.user_id,
-            };
-        }
-
         const localContextState = {
             camera: selectedCamera,
             setCamera: setSelectedCamera,
@@ -96,6 +82,18 @@ export function SessionContextProvider ({ children, sessionId }: Props) {
             sessionId,
             setToken,
         };
+
+        const parsedTokenState = params
+            ? {
+                roomId: params.roomId,
+                isTeacher: params.teacher,
+                materials: params.materials,
+                organizationId: params.org_id,
+                scheduleId: params.schedule_id,
+                classType: params.classtype as ClassType,
+                user_id: params.user_id,
+            }
+            : DEFAULT_SESSION_CONTEXT;
 
         return {
             ...localContextState,

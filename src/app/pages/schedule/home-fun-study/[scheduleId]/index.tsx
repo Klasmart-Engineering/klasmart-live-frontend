@@ -231,7 +231,6 @@ export default function () {
             scheduleId,
             userId,
         });
-
         if (!localHomeFunStudy) {
             const submittedHomeFunStudy: SubmittedHomeFunStudyFeedback = {
                 status: `submitted`,

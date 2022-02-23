@@ -39,6 +39,7 @@ export const THEME_COLOR_ICON_PARENTAL_LOCK = `#6599d1`;
 export const TEXT_COLOR_MENU_DRAWER = `#000`;
 export const COMMENT_CHAR_LIMIT_MIN = 0;
 export const COMMENT_CHAR_LIMIT_MAX = 100;
+export const CANVAS_RESOLUTION_MAX = 512;
 export const schedulePageWindowItemHeightToPageSize = (windowHeight: number, itemHeight: number) => Math.floor((windowHeight * 1.5) / itemHeight);
 export const BG_COLOR_CAMERA = `#31313c`;
 export const TEXT_COLOR_FILE_NAME = `#0C3680`;

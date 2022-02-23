@@ -1,5 +1,4 @@
-import ActivityImage from "@/components/interactiveContent/image";
-import { RecordedIframe } from "@/components/interactiveContent/recordediframe";
+import InteractionRecorder from "@/components/interactiveContent/InteractionRecorder";
 import { ReplicatedMedia } from "@/components/interactiveContent/synchronized-video";
 import { useSessionContext } from "@/providers/session-context";
 import {
@@ -8,6 +7,7 @@ import {
 } from "@/store/layoutAtoms";
 import { MaterialTypename } from "@/types/lessonMaterial";
 import { useMaterialToHref } from "@/utils/contentUtils";
+import ContainedWhiteboard from "@/whiteboard/components/ContainedWhiteboard";
 import { Typography } from "@material-ui/core";
 import React,
 { useEffect } from "react";
@@ -34,26 +34,29 @@ function PreviewLessonPlan () {
         }
     }, [ material ]);
 
-    if(material?.__typename === MaterialTypename.IMAGE){
+    if (material?.__typename === MaterialTypename.IMAGE) {
         return (
-            <ActivityImage material={contentHref} />
-        );
-    }
-
-    if(material?.__typename === MaterialTypename.VIDEO ||
-        (material?.__typename === undefined && material?.video)){
-        return(
-            <ReplicatedMedia
-                type={material?.__typename || MaterialTypename.VIDEO}
-                src={(material?.__typename === undefined && material?.video) || contentHref}
-                style={{
-                    width: `100%`,
-                }}
+            <InteractionRecorder
+                contentHref={contentHref}
             />
         );
     }
 
-    if(material?.__typename === MaterialTypename.AUDIO) {
+    if (material?.__typename === MaterialTypename.VIDEO || (material?.__typename === undefined && material?.video)) {
+        return (
+            <ContainedWhiteboard>
+                <ReplicatedMedia
+                    type={material?.__typename || MaterialTypename.VIDEO}
+                    src={(material?.__typename === undefined && material?.video) || contentHref}
+                    style={{
+                        width: `100%`,
+                    }}
+                />
+            </ContainedWhiteboard>
+        );
+    }
+
+    if (material?.__typename === MaterialTypename.AUDIO) {
         return (
             <ReplicatedMedia
                 type={MaterialTypename.AUDIO}
@@ -65,15 +68,19 @@ function PreviewLessonPlan () {
         );
     }
 
-    if(((material?.__typename === MaterialTypename.IFRAME || material?.__typename === undefined) && material?.url)){
-        return(
-            <RecordedIframe
+    if (((material?.__typename === MaterialTypename.IFRAME || material?.__typename === undefined) && material?.url)) {
+        return (
+            <InteractionRecorder
                 contentHref={contentHref}
             />
         );
     }
 
-    return(<Typography><FormattedMessage id="loading_activity_error" /></Typography>);
+    return (
+        <Typography>
+            <FormattedMessage id="loading_activity_error" />
+        </Typography>
+    );
 
 }
 
