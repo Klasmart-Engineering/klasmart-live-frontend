@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.2.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v4.2.0%0Dv4.1.0) (2022-02-23)
+
+
+### Features
+
+* **localization:** add new translations (loading messages) ([e316dd2](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/e316dd24dc7eeb385e3fa3134292d4b2c97c171f))
+* **localization:** add new translations (loading translations) ([64db1a8](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/64db1a8480992bdb2b2443a3892c03bd06f77674))
+* show audio player for student [KLL-2639](https://calmisland.atlassian.net/browse/KLL-2639) ([ed5b65e](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/ed5b65e41f41168dd8e9ad7e0f29cfa6a441bb55))
+
+
+### Bug Fixes
+
+* improved canvas resizing and scaling ([41ec77f](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/41ec77ff1d591ba31b5d3b7c60a559c2559145ac)), closes [KLL-2849](https://calmisland.atlassian.net/browse/KLL-2849)
+* prevent iOS asking mic/camera permissions twice ([1a1a636](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/1a1a636faeeb46311b6c3094aebdbe404112b554)), closes [KLL-1948](https://calmisland.atlassian.net/browse/KLL-1948)
+* skip initial frame to prevent black thumbnail ([7d7f3c2](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/7d7f3c23a5c54b3e6bc2367f5f7568a8ddab1d3b)), closes [KLL-2431](https://calmisland.atlassian.net/browse/KLL-2431)
+
 ## [4.1.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v4.1.0%0Dv4.0.0) (2022-02-16)
 
 
