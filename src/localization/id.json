@@ -291,7 +291,8 @@
     "study.exit.leave": "Keluar",
     "study.exit.startAgain": "Mulai Lagi",
     "class.exit.exitClass": "Keluar Kelas",
-    "stream.loading": "Trying to connect...",
-    "stream.waiting": "Trying to connect...",
-    "page.loading": "Page loading..."
+    "stream.loading": "Loading stream",
+    "stream.waiting": "Waiting stream",
+    "page.loading": "Page loading...",
+    "student.connecting": "Connecting student"
 }

@@ -291,7 +291,8 @@
     "study.exit.leave": "나가기",
     "study.exit.startAgain": "재시도",
     "class.exit.exitClass": "클래스 나가기",
-    "stream.loading": "Trying to connect...",
-    "stream.waiting": "Trying to connect...",
-    "page.loading": "Page loading..."
+    "stream.loading": "Loading stream",
+    "stream.waiting": "Waiting stream",
+    "page.loading": "Page loading...",
+    "student.connecting": "Connecting student"
 }

@@ -291,7 +291,8 @@
     "study.exit.leave": "退出",
     "study.exit.startAgain": "重新开始",
     "class.exit.exitClass": "退出教室",
-    "stream.loading": "Trying to connect...",
-    "stream.waiting": "Trying to connect...",
-    "page.loading": "Page loading..."
+    "stream.loading": "Loading stream",
+    "stream.waiting": "Waiting stream",
+    "page.loading": "Page loading...",
+    "student.connecting": "Connecting student"
 }

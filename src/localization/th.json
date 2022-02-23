@@ -291,7 +291,8 @@
     "study.exit.leave": "ทิ้ง",
     "study.exit.startAgain": "เริ่มต้นอีกครั้ง",
     "class.exit.exitClass": "ออกจากชั้นเรียน",
-    "stream.loading": "Trying to connect...",
-    "stream.waiting": "Trying to connect...",
-    "page.loading": "Page loading..."
+    "stream.loading": "กำลังพยายามเชื่อมต่อ...",
+    "stream.waiting": "กำลังพยายามเชื่อมต่อ...",
+    "page.loading": "กำลังโหลดหน้า...",
+    "student.connecting": "Connecting student"
 }
