@@ -20,7 +20,7 @@ import {
 } from '@material-ui/core/styles';
 import { NavigateNext as NextIcon } from "@styled-icons/material/NavigateNext";
 import { Translate as LanguageIcon } from "@styled-icons/material/Translate";
-import { Language } from "kidsloop-px/dist/types/components/LanguageSelect";
+import { Language } from "@kl-engineering/kidsloop-px/dist/types/components/LanguageSelect";
 import React from "react";
 import {
     FormattedMessage,
