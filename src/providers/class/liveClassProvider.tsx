@@ -2,7 +2,7 @@ import { RoomProvider } from "../room/roomContext";
 import { ScreenShareProvider } from "../screenShareProvider";
 import { WebRTCProvider } from "../WebRTCContext";
 import { GlobalWhiteboardContext } from "@/whiteboard/context-providers/GlobalWhiteboardContext";
-import { SnackbarProvider } from "kidsloop-px";
+import { SnackbarProvider } from "@kl-engineering/kidsloop-px";
 import React,
 {
     ReactChild,

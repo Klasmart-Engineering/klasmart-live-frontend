@@ -12,7 +12,7 @@ import {
     Typography,
 } from "@material-ui/core";
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { UserAvatar } from "kidsloop-px";
+import { UserAvatar } from "@kl-engineering/kidsloop-px";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 import { useRecoilState, selector } from "recoil";

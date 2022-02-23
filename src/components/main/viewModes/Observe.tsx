@@ -22,7 +22,7 @@ import {
 import { ArrowsAngleExpand as ExpandIcon } from "@styled-icons/bootstrap/ArrowsAngleExpand";
 import { Person as UserIcon } from "@styled-icons/fluentui-system-regular/Person";
 import clsx from "clsx";
-import { useSnackbar } from "kidsloop-px";
+import { useSnackbar } from "@kl-engineering/kidsloop-px";
 import React,
 {
     useEffect,

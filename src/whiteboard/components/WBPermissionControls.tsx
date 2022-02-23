@@ -7,7 +7,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import { Eraser as EraserIcon } from "@styled-icons/boxicons-solid/Eraser";
 import { InvertColors as InvertColorsIcon } from "@styled-icons/material/InvertColors";
 import { InvertColorsOff as InvertColorsOffIcon } from "@styled-icons/material/InvertColorsOff";
-import { useToolbarContext } from "kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
+import { useToolbarContext } from "@kl-engineering/kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
 import React,
 { useCallback } from "react";
 import { FormattedMessage } from "react-intl";

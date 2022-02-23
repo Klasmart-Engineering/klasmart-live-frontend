@@ -28,7 +28,7 @@ import {
     HighlightOffOutlined as HighlightOffOutlinedIcon,
     Save as SaveIcon,
 } from "@material-ui/icons";
-import { useSnackbar } from "kidsloop-px";
+import { useSnackbar } from "@kl-engineering/kidsloop-px";
 import React,
 {
     useMemo,

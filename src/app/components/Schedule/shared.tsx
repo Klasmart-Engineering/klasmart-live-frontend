@@ -1,6 +1,6 @@
 import { AssessmentStatusType } from "@/app/services/cms/IAssessmentService";
 import StyledIcon from "@/components/styled/icon";
-import { SchedulesTimeViewListItem } from "@kidsloop/cms-api-client/dist/api/schedule";
+import { SchedulesTimeViewListItem } from "@kl-engineering/cms-api-client/dist/api/schedule";
 import { Typography } from "@material-ui/core";
 import { Envelope as AssessmentCompleteIcon } from "@styled-icons/fa-regular/Envelope";
 import React from "react";

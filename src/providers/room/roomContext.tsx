@@ -29,7 +29,7 @@ import {
 } from "@/utils/utils";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
-import { useSnackbar } from "kidsloop-px";
+import { useSnackbar } from "@kl-engineering/kidsloop-px";
 import React,
 {
     createContext,
@@ -41,7 +41,7 @@ import {
     useIntl,
 } from "react-intl";
 import { useRecoilState } from "recoil";
-import {useToolbarContext} from "kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
+import {useToolbarContext} from "@kl-engineering/kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
 
 interface Props {
     enableConferencing: boolean;

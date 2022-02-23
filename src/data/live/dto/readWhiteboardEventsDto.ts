@@ -1,4 +1,4 @@
-import { PainterEvent } from "kidsloop-canvas/lib/domain/whiteboard/event-serializer/PainterEvent";
+import { PainterEvent } from "@kl-engineering/kidsloop-canvas/lib/domain/whiteboard/event-serializer/PainterEvent";
 
 export interface ReadWhiteboardEventsDto {
     whiteboardEvents: PainterEvent[];

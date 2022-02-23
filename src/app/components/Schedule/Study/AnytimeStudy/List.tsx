@@ -29,7 +29,7 @@ import {
 import {
     SchedulesTimeViewListItem,
     usePostSchedulesTimeViewList,
-} from "@kidsloop/cms-api-client";
+} from "@kl-engineering/cms-api-client";
 import {
     Box,
     CircularProgress,

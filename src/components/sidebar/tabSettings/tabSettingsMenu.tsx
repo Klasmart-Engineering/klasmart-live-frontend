@@ -11,7 +11,7 @@ import {
     Tooltip,
     Typography,
 } from "@material-ui/core";
-import { UserAvatar } from "kidsloop-px";
+import { UserAvatar } from "@kl-engineering/kidsloop-px";
 import React,
 { useContext } from "react";
 import { useRecoilState } from "recoil";

@@ -8,7 +8,7 @@ import { Eraser as EraserIcon } from "@styled-icons/boxicons-solid/Eraser";
 import { Trash as TrashIcon } from "@styled-icons/boxicons-solid/Trash";
 import { Brush as BrushIcon } from "@styled-icons/material/Brush";
 import { TextFields as TextIcon } from "@styled-icons/material/TextFields";
-import { useToolbarContext } from "kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
+import { useToolbarContext } from "@kl-engineering/kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
 import React,
 {
     FunctionComponent,

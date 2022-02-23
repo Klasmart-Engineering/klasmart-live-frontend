@@ -11,7 +11,7 @@ import {
     Theme,
 } from "@material-ui/core";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
-import { WhiteboardCanvas } from "kidsloop-canvas/lib/domain/whiteboard/WhiteboardCanvas";
+import { WhiteboardCanvas } from "@kl-engineering/kidsloop-canvas/lib/domain/whiteboard/WhiteboardCanvas";
 import React,
 {
     useEffect,

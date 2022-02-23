@@ -4,7 +4,7 @@ import {
     makeStyles,
     Theme,
 } from "@material-ui/core";
-import { UserAvatar } from "kidsloop-px";
+import { UserAvatar } from "@kl-engineering/kidsloop-px";
 import React from "react";
 
 const useStyles = makeStyles((theme: Theme) => ({

@@ -12,7 +12,7 @@ import { fromSecondsToMilliseconds } from "@/utils/utils";
 import {
     useCmsApiClient,
     useGetScheduleById,
-} from "@kidsloop/cms-api-client";
+} from "@kl-engineering/cms-api-client";
 import {
     createStyles,
     Grid,

@@ -4,7 +4,7 @@ import {
 } from "@/app/context-provider/cordova-system-context";
 import { injectIframeScript } from "@/app/utils/injectIframeScript";
 import { LoadStatus } from "@/components/interactiveContent/recordediframe";
-import { useSnackbar } from "kidsloop-px";
+import { useSnackbar } from "@kl-engineering/kidsloop-px";
 import {
     useEffect,
     useState,

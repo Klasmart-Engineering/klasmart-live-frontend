@@ -9,7 +9,7 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import { Check as CheckIcon } from "@styled-icons/bootstrap/Check";
 import clsx from "clsx";
-import { OrganizationAvatar } from "kidsloop-px";
+import { OrganizationAvatar } from "@kl-engineering/kidsloop-px";
 import React from "react";
 
 const useStyles = makeStyles((theme) => ({

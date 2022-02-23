@@ -6,7 +6,7 @@ import {
     newTimestamp,
     roles,
     UserRole,
-} from "kidsloop-live-state/ui";
+} from "@kl-engineering/kidsloop-live-state/ui";
 import { useContext } from "react";
 
 export function useMessages (): ChatMessage[] {

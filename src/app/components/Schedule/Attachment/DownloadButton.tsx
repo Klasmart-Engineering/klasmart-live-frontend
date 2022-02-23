@@ -8,7 +8,7 @@ import {
     handleDownloadForAndroid,
     handleDownloadForIOS,
 } from "@/app/utils/networkUtils";
-import { useCmsApiClient } from "@kidsloop/cms-api-client";
+import { useCmsApiClient } from "@kl-engineering/cms-api-client";
 import {
     CircularProgress,
     createStyles,

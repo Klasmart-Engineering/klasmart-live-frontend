@@ -12,7 +12,7 @@ import {
 } from "@material-ui/core/styles";
 import { Check as CheckIcon } from "@styled-icons/bootstrap/Check";
 import clsx from "clsx";
-import { UserAvatar } from "kidsloop-px";
+import { UserAvatar } from "@kl-engineering/kidsloop-px";
 import React,
 { useMemo } from "react";
 import { useIntl } from "react-intl";

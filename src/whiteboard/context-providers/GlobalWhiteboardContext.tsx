@@ -1,8 +1,8 @@
 import WhiteboardStateProvider,
 { useSynchronizedState } from "./SynchronizedStateProvider";
-import KidsLoopCanvas from "kidsloop-canvas";
-import ToolbarContextProvider from "kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
-import WhiteboardEventSerializer from "kidsloop-canvas/lib/domain/whiteboard/SharedEventSerializerProvider";
+import KidsLoopCanvas from "@kl-engineering/kidsloop-canvas";
+import ToolbarContextProvider from "@kl-engineering/kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
+import WhiteboardEventSerializer from "@kl-engineering/kidsloop-canvas/lib/domain/whiteboard/SharedEventSerializerProvider";
 import React,
 {
     FunctionComponent,

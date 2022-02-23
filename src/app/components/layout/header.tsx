@@ -21,7 +21,7 @@ import {
 import Toolbar from "@material-ui/core/Toolbar";
 import { Menu as MenuIcon } from "@styled-icons/boxicons-regular/Menu";
 import { Close as CloseIcon } from "@styled-icons/material/Close";
-import { UserAvatar } from "kidsloop-px";
+import { UserAvatar } from "@kl-engineering/kidsloop-px";
 import React from "react";
 import { useRecoilState } from "recoil";
 

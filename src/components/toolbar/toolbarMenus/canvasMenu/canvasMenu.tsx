@@ -25,7 +25,7 @@ import { Pencil as PencilIcon } from "@styled-icons/boxicons-regular/Pencil";
 import { Eraser as EraserIcon } from "@styled-icons/boxicons-solid/Eraser";
 import { Trash as TrashIcon } from "@styled-icons/boxicons-solid/Trash";
 import { Text as TextIcon } from "@styled-icons/evaicons-solid/Text";
-import { useToolbarContext } from "kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
+import { useToolbarContext } from "@kl-engineering/kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
 import React,
 {
     useCallback,
