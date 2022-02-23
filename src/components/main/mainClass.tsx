@@ -20,6 +20,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     safeArea: {
         marginLeft: `env(safe-area-inset-left)`,
         marginRight: `env(safe-area-inset-right)`,
+        width: `100%`,
         height: `100%`,
     },
     closeButton: {

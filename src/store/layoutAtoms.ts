@@ -144,6 +144,14 @@ export const observeDisableState = atom({
     default: false,
 });
 
+export const mainActivitySizeState = atom({
+    key: `activityAreaScalingState`,
+    default: {
+        width: 0,
+        height: 0,
+    },
+});
+
 export interface Participant {
     id: string;
     name: string;

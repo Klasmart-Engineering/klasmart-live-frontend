@@ -29,6 +29,9 @@ export enum ClassType {
     STUDY = `study`,
     TASK = `task`
 }
+
+export const CLASS_TYPES = Object.values(ClassType);
+
 export type SetClassType = Action<ActionTypes.CLASS_TYPE, ClassType>;
 
 export interface UserAgent {

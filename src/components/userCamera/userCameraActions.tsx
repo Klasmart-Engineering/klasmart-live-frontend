@@ -12,7 +12,7 @@ import {
     WebRTCContext,
 } from "@/providers/WebRTCContext";
 import { hasControlsState } from "@/store/layoutAtoms";
-import { fullScreenById } from "@/utils/utils";
+import { toggleFullScreenById } from "@/utils/utils";
 import { useSynchronizedState } from "@/whiteboard/context-providers/SynchronizedStateProvider";
 import {
     Box,
@@ -465,7 +465,7 @@ function ExpandCamera ({ user }:ExpandCameraProps){
                 aria-label="Expand video"
                 size="small"
                 className={classes.controlsIcon}
-                onClick={() => fullScreenById(`camera:${user.id}`)}
+                onClick={() => toggleFullScreenById(`camera:${user.id}`)}
             >
                 <ExpandIcon size="0.75em" />
             </IconButton>

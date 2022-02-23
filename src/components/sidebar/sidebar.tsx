@@ -2,11 +2,11 @@ import MosaicSlider from "./mosaicSlider";
 import SidebarMenuItem from "./sidebarMenuItem";
 import TabMosaic from "./tabMosaic/tabMosaic";
 import TabParticipants from "./tabParticipants/tabParticipants";
-import TabSettings from "./tabSettings/tabSettings";
 import { useDeviceOrientationValue } from "@/app/model/appModel";
 import { useSessionContext } from "@/providers/session-context";
 import { activeTabState } from "@/store/layoutAtoms";
 import {
+    Box,
     Drawer,
     Grid,
     makeStyles,
@@ -16,39 +16,35 @@ import {
 } from "@material-ui/core";
 import { Grid as MosaicIcon } from "@styled-icons/bootstrap/Grid";
 import { PeopleOutline as ParticipantsIcon } from "@styled-icons/evaicons-outline/PeopleOutline";
-import { UserSettings as SettingsIcon } from "@styled-icons/remix-line/UserSettings";
 import clsx from "clsx";
-import React,
-{
-    useContext,
-    useEffect,
-    useState,
-} from "react";
+import React from "react";
 import { useIntl } from "react-intl";
-import { useRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
+
+export const SMALL_DRAWER_WIDTH = 240;
+export const LARGE_DRAWER_WIDTH = 440;
+export const FULL_DRAWER_WIDTH = `100%`;
 
 const useStyles = makeStyles((theme: Theme) => ({
     drawer: {
-        flexShrink: 0,
+        flexBasis: LARGE_DRAWER_WIDTH,
+        [theme.breakpoints.down(`sm`)]: {
+            flexBasis: SMALL_DRAWER_WIDTH,
+        },
     },
     drawerPaper: {
-        transition: theme.transitions.create(`width`, {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.shortest,
-        }),
         border: 0,
+
+        width: LARGE_DRAWER_WIDTH,
+        [theme.breakpoints.down(`sm`)]: {
+            width: SMALL_DRAWER_WIDTH,
+        },
+    },
+    drawerPaperFull: {
+        width: FULL_DRAWER_WIDTH,
     },
     fullheight: {
         height: `100%`,
-    },
-    tabNav: {
-        display: `flex`,
-        flexDirection: `column`,
-        overflow: `hidden`,
-        paddingBottom: 20,
-    },
-    tabNavMore: {
-        margin: `20px 0`,
     },
     tabInner: {
         backgroundColor: theme.palette.background.default,
@@ -72,16 +68,11 @@ function Sidebar () {
     const classes = useStyles();
     const intl = useIntl();
 
-    const [ activeTab, setActiveTab ] = useRecoilState(activeTabState);
+    const activeTab = useRecoilValue(activeTabState);
     const deviceOrientation = useDeviceOrientationValue();
     const { isTeacher } = useSessionContext();
-    const narrowDrawer = 240;
-    const largeDrawer = 440;
-    const [ defaultDrawerWidth, setDefaultDrawerWidth ] = useState<React.CSSProperties[`width`]>(largeDrawer);
-    const [ drawerWidth, setDrawerWidth ] = useState<React.CSSProperties[`width`]>(defaultDrawerWidth);
 
     const theme = useTheme();
-    const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
     const isXsDown = useMediaQuery(theme.breakpoints.down(`xs`));
 
     const sidebarTabs = [
@@ -108,63 +99,41 @@ function Sidebar () {
 
     const activeTabContent = sidebarTabs.find(item => item.name === activeTab)?.content;
 
-    useEffect(() => {
-        activeTab !== `participants` ? setDrawerWidth(`100%`) : setDrawerWidth(defaultDrawerWidth);
-    }, [ activeTab ]);
-
-    useEffect(()=>{
-        setTimeout(function (){
-            window.dispatchEvent(new Event(`resize`));
-        }, 1000);
-
-        isSmDown ? setDefaultDrawerWidth(narrowDrawer) : setDefaultDrawerWidth(largeDrawer);
-    }, [ isSmDown ]);
-
-    useEffect(()=>{
-        setDrawerWidth(defaultDrawerWidth);
-    }, [ defaultDrawerWidth ]);
-
-    if(isXsDown){
-        return(sidebarTabs[0].content);
-    }
+    if (isXsDown) return sidebarTabs[0].content;
 
     return (
         <Drawer
-            variant="persistent"
+            open
+            variant={activeTab === `participants` ? `persistent` : `temporary`}
             anchor="right"
-            open={true}
             classes={{
                 root: classes.drawer,
-                paper: classes.drawerPaper,
-            }}
-            style={{
-                width: drawerWidth,
+                paper: clsx(classes.drawerPaper, {
+                    [classes.drawerPaperFull]: activeTab !== `participants`,
+                }),
             }}
             transitionDuration={0}
-            PaperProps={{
-                style: {
-                    width: drawerWidth,
-                },
-            }}
         >
             <Grid
                 container
                 className={classes.fullheight}>
-                <Grid
-                    item
-                    className={classes.tabNav}>
+                <Grid item>
                     <Grid
                         container
                         direction="column"
                         justifyContent="space-between"
                         alignItems="center"
                         className={classes.fullheight}>
-                        <Grid
-                            item
-                            className={classes.tabNav}>
-                            {sidebarTabs.map((sidebarTab) => {
-                                const permission = sidebarTab.role === undefined || (sidebarTab.role === `teacher` && isTeacher);
-                                if(permission){
+                        <Grid item>
+                            <Box
+                                display="flex"
+                                flexDirection="column"
+                                overflow="hidden"
+                                paddingBottom={2}
+                            >
+                                {sidebarTabs.map((sidebarTab) => {
+                                    const permission = sidebarTab.role === undefined || (sidebarTab.role === `teacher` && isTeacher);
+                                    if(!permission) return;
                                     return (
                                         <SidebarMenuItem
                                             key={sidebarTab.id}
@@ -174,16 +143,16 @@ function Sidebar () {
                                             active={activeTab === sidebarTab.name}
                                         />
                                     );
-                                }
-                            })}
+                                })}
+                            </Box>
                         </Grid>
-                        {activeTab === `mosaic` &&
-                        <Grid
-                            item
-                            className={classes.tabNavMore}>
-                            <MosaicSlider />
-                        </Grid>
-                        }
+                        {activeTab === `mosaic` && (
+                            <Grid item>
+                                <Box py={3}>
+                                    <MosaicSlider />
+                                </Box>
+                            </Grid>
+                        )}
                     </Grid>
                 </Grid>
                 <Grid

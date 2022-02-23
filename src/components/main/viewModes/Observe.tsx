@@ -1,6 +1,7 @@
+import { InteractionPlayer } from "@/components/interactiveContent/InteractionPlayer";
+import InteractionRecorder from "@/components/interactiveContent/InteractionRecorder";
 import Loading from "@/components/interactiveContent/loading";
-import { PreviewPlayer } from "@/components/interactiveContent/previewPlayer";
-import { RecordedIframe } from "@/components/interactiveContent/recordediframe";
+import { THEME_COLOR_GREY_200 } from "@/config";
 import { useContent } from "@/data/live/state/useContent";
 import { useSessions } from "@/data/live/state/useSessions";
 import { Session } from "@/pages/utils";
@@ -8,12 +9,9 @@ import { useSessionContext } from "@/providers/session-context";
 import { isShowContentLoadingState } from "@/store/layoutAtoms";
 import { useContentToHref } from "@/utils/contentUtils";
 import {
-    fullScreenById,
     NoItemList,
-    sleep,
+    toggleFullScreenById,
 } from "@/utils/utils";
-import { Whiteboard } from "@/whiteboard/components/Whiteboard";
-import { useSynchronizedState } from "@/whiteboard/context-providers/SynchronizedStateProvider";
 import {
     makeStyles,
     Theme,
@@ -21,17 +19,16 @@ import {
 } from "@material-ui/core";
 import { ArrowsAngleExpand as ExpandIcon } from "@styled-icons/bootstrap/ArrowsAngleExpand";
 import { Person as UserIcon } from "@styled-icons/fluentui-system-regular/Person";
-import clsx from "clsx";
 import { useSnackbar } from "kidsloop-px";
 import React,
 {
     useEffect,
     useMemo,
-    useRef,
     useState,
 } from "react";
 import { useInViewport } from "react-in-viewport";
 import { useIntl } from "react-intl";
+import { useResizeDetector } from "react-resize-detector";
 import { useRecoilValue } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -43,7 +40,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     item:{
         minHeight: 260,
-        background: theme.palette.background.paper,
+        background: THEME_COLOR_GREY_200,
         borderRadius: 12,
         boxShadow: `2px 2px 3px 1px rgb(0 0 0 / 5%)`,
         position: `relative`,
@@ -98,7 +95,6 @@ const useStyles = makeStyles((theme: Theme) => ({
         fontWeight: theme.typography.fontWeightBold as number,
         borderRadius: `0 10px 0 0`,
     },
-    studentWrap: {},
     studentWrapItem: {
         position: `absolute`,
         top: 0,
@@ -117,7 +113,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     studentWrapItemContent: {
         zIndex: 1,
-
         '&:before': {
             content: ``,
             display: `block`,
@@ -126,7 +121,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 }));
 
-function Observe () {
+interface Props {
+}
+
+export default function Observe (props: Props) {
     const classes = useStyles();
     const intl = useIntl();
     const { enqueueSnackbar } = useSnackbar();
@@ -137,11 +135,10 @@ function Observe () {
     const content = useContent();
     const sessions = useSessions();
     const [ studentSessions, setStudentSessions ] = useState<Session[]>([]);
-    const { state: { display: isGlobalCanvasEnabled, permissions: permissionsGlobalCanvas } } = useSynchronizedState();
     const [ contentHref ] = useContentToHref(content);
 
     useEffect(() => {
-        if(!isTeacher){
+        if (!isTeacher){
             enqueueSnackbar(intl.formatMessage({
                 id: `notification_observe_content_interactive`,
             }));
@@ -149,7 +146,7 @@ function Observe () {
     }, []);
 
     useEffect(() => {
-        const students = [ ...sessions.values() ].filter(session => session.isTeacher !== true);
+        const students = [ ...sessions.values() ].filter((session) => !session.isTeacher);
         setStudentSessions(students);
     }, [ sessions, sessions.size ]);
 
@@ -157,63 +154,67 @@ function Observe () {
         return [ sessionId ];
     }, [ sessionId ]);
 
-    if(isTeacher){
-        if(studentSessions.length){
-            return(
+    if (isTeacher) {
+        if (studentSessions.length) {
+            return (
                 <div className={classes.fullHeight}>
                     <div className={classes.root}>
-                        {studentSessions.map(session =>
+                        {studentSessions.map((session) => (
                             <StudentPreviewCard
                                 key={session.id}
-                                session={session} />)}
+                                session={session}
+                            />
+                        ))}
                     </div>
                 </div>
             );
-        }
-        else{
-            return(
+        } else {
+            return (
                 <NoItemList
                     icon={<UserIcon />}
                     text={intl.formatMessage({
                         id: `no_students_connected`,
-                    })} />
+                    })}
+                />
             );
         }
-    }else{
-        return(
-            <div className={classes.studentWrap}>
-                <div className={clsx(classes.studentWrapItem, classes.studentWrapItemBoard, {
-                    [`active`] :  permissionsGlobalCanvas.allowCreateShapes && isGlobalCanvasEnabled,
-                })}>
-                    <Whiteboard
+    } else {
+        return (
+            <>
+                {content && (
+                    <InteractionRecorder
+                        contentHref={contentHref}
                         group={sessionId}
-                        uniqueId="student"
-                        filterGroups={studentModeFilterGroups} />
-                </div>
-                <div className={`${classes.studentWrapItem} ${classes.studentWrapItemContent}`}>
-                    {content && <RecordedIframe contentHref={contentHref}  />}
-                </div>
-            </div>
+                        filterGroups={studentModeFilterGroups}
+                    />
+                )}
+            </>
         );
     }
 
 }
 
-export default Observe;
+interface StudentPreviewCardProps {
+    session: Session;
+}
 
-function StudentPreviewCard ({ session }: { session: Session }) {
+function StudentPreviewCard (props: StudentPreviewCardProps) {
+    const { session } = props;
     const classes = useStyles();
-    const cardConRef = useRef<HTMLDivElement>(null);
+    const {
+        ref: cardRef,
+        height: cardHeight = 0,
+        width: cardWidth = 0,
+    } = useResizeDetector<HTMLDivElement>();
     const [ loadingStreamId, setLoadingStreamId ] = useState<boolean>(true);
     const isShowContentLoading = useRecoilValue(isShowContentLoadingState);
-    const { inViewport } = useInViewport(cardConRef);
+    const { inViewport } = useInViewport(cardRef);
 
     const filterGroups = useMemo(() => {
         return [ session.id ];
     }, [ session ]);
 
-    const loadStudentPreviewPlayer = async () => {
-        await sleep(1000); // Debug await (KLL-1025)
+    const loadStudentPreviewPlayer = () => {
         setLoadingStreamId(false);
     };
 
@@ -227,36 +228,38 @@ function StudentPreviewCard ({ session }: { session: Session }) {
 
     return (
         <div
-            ref={cardConRef}
+            ref={cardRef}
             id={`observe:${session.streamId}`}
             className={classes.item}
         >
             <Typography className={classes.previewName}>{session.name}</Typography>
-            {session?.streamId ?
-                <>
-                    <Whiteboard
-                        group={session.id}
-                        uniqueId={session.id}
-                        filterGroups={filterGroups} />
+            {session?.streamId
+                ? (
                     <div className={classes.centerContent}>
                         <div
                             className={classes.previewExpand}
-                            onClick={() => fullScreenById(`observe:${session.streamId}`) }>
+                            onClick={() => toggleFullScreenById(`observe:${session.streamId}`) }>
                             <ExpandIcon size="0.75em" />
                         </div>
-                        <PreviewPlayer
+                        <InteractionPlayer
+                            group={session.id}
                             loadingStreamId={loadingStreamId}
-                            container={`observe:${session.streamId}`}
                             streamId={session?.streamId}
                             inViewport={inViewport}
+                            filterGroups={filterGroups}
+                            sizeConstraints={{
+                                height: cardHeight,
+                                width: cardWidth,
+                            }}
                         />
                     </div>
-                </> :
-                <div className={classes.centerContent}>
-                    <Loading messageId="Connecting student" />
-                </div>
+                )
+                : (
+                    <div className={classes.centerContent}>
+                        <Loading messageId="Connecting student" />
+                    </div>
+                )
             }
-
         </div>
     );
 

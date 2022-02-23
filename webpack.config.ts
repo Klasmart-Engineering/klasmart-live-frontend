@@ -133,6 +133,10 @@ const webpackConfig: Configuration = {
                     from: `node_modules/pdfjs-dist`,
                     to: `pdfjs-dist/`,
                 },
+                {
+                    from: `public`,
+                    to: ``, // not `dist` as it will then be place at `dist/dist`
+                },
             ],
         }),
     ],
@@ -160,15 +164,15 @@ const webpackConfig: Configuration = {
                 changeOrigin: true,
             },
             "/assets": {
-                target: `https://live.kidsloop.net`,
+                target: `https://live.alpha.kidsloop.net`,
                 changeOrigin: true,
             },
             "/video": {
-                target: `https://live.kidsloop.net`,
+                target: `https://live.alpha.kidsloop.net`,
                 changeOrigin: true,
             },
             "/v1": {
-                target: `https://kl2-test.kidsloop.net`,
+                target: `https://cms.alpha.kidsloop.net`,
                 changeOrigin: true,
             },
         },

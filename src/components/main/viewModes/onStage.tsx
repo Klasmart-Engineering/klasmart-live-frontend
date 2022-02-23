@@ -19,41 +19,49 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 }));
 
-function OnStage () {
+interface Props {
+}
+
+export default function OnStage (props: Props) {
     const classes = useStyles();
     const sessions = useSessions();
-    const { name } = useSessionContext();
+    const context = useSessionContext();
+    const { name } = context;
 
     const host = useMemo(() => {
-        const teachers = [ ...sessions.values() ].filter(session => session.isTeacher === true).sort((a, b) => a.joinedAt - b.joinedAt);
-        const host = teachers.find(session => session.isHost === true);
+        const teachers = [ ...sessions.values() ].filter(session => session.isTeacher).sort((a, b) => a.joinedAt - b.joinedAt);
+        const host = teachers.find(session => session.isHost);
         return host;
     }, [ sessions ]);
 
-    if(host){
-        return(
-            <UserCamera
-                user={host}
-                actions={false}
-                variant="large"
-            />
+    if (!host) {
+        return (
+            <Grid
+                container
+                className={classes.root}
+            >
+                <Grid item>
+                    <Typography variant="h4">
+                        <FormattedMessage
+                            id="hello"
+                            values={{
+                                name,
+                            }}
+                        />
+                    </Typography>
+                    <Typography>
+                        <FormattedMessage id="waiting_for_class" />
+                    </Typography>
+                </Grid>
+            </Grid>
         );
     }
 
     return (
-        <Grid
-            container
-            className={classes.root}>
-            <Grid item>
-                <Typography variant="h4"><FormattedMessage
-                    id={`hello`}
-                    values={{
-                        name,
-                    }} /></Typography>
-                <Typography><FormattedMessage id={`waiting_for_class`} /></Typography>
-            </Grid>
-        </Grid>
+        <UserCamera
+            user={host}
+            actions={false}
+            variant="large"
+        />
     );
 }
-
-export default OnStage;

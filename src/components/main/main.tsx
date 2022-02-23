@@ -1,109 +1,94 @@
-import MainClass from "./mainClass";
-import MainDrawer from "./mainDrawer";
-import MainView from "./mainView";
+import MainClass from "@/components/main/mainClass";
+import MainDrawer from "@/components/main/mainDrawer";
+import MainView from "@/components/main/mainView";
 import Toolbar from "@/components/toolbar/toolbar";
-import { useContent } from "@/data/live/state/useContent";
-import { ContentType } from "@/pages/utils";
+import { THEME_COLOR_GREY_200 } from "@/config";
 import { useSessionContext } from "@/providers/session-context";
 import { ClassType } from "@/store/actions";
-import { Whiteboard } from "@/whiteboard/components/Whiteboard";
+import { mainActivitySizeState } from "@/store/layoutAtoms";
 import {
     Grid,
     makeStyles,
     Theme,
-    useMediaQuery,
-    useTheme,
 } from "@material-ui/core";
 import clsx from "clsx";
-import React from "react";
+import React,
+{ useEffect } from "react";
+import { useResizeDetector } from 'react-resize-detector';
+import { useSetRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
-    fullViewHeight: {
+    fullHeight: {
         height: `100%`,
-        flexWrap: `nowrap`,
     },
-    fullViewHeightXs:{
-        height: `90vh`,
-        minHeight: 350,
+    contentContainer: {
+        padding: theme.spacing(1, 1, 0, 1),
     },
-    fullHeightCentered:{
-        height: `100%`,
+    activityContainer: {
+        backgroundColor: THEME_COLOR_GREY_200,
+        borderRadius: theme.spacing(1.5),
         display: `flex`,
         alignItems: `center`,
-    },
-    mainViewContainer: {
-        display: `flex`,
-        overflowY: `auto`,
-    },
-    mainView: {
-        padding: 10,
-        overflow: `hidden`,
-        display: `flex`,
-        flex: 1,
-        position: `relative`,
-        // height: `calc(100vh - 115px)`,
-    },
-    mainViewDrawer: {
-        position: `relative`,
-    },
-    relative:{
-        position: `relative`,
-        height: `100%`,
+        justifyContent: `center`,
     },
 }));
 
 function Main () {
     const classes = useStyles();
-    const { classType, isTeacher } = useSessionContext();
-    const content = useContent();
+    const { classType } = useSessionContext();
+    const setMainActivitySize = useSetRecoilState(mainActivitySizeState);
+    const {
+        ref: containerRef,
+        height: containerHeight = 0,
+        width: containerWidth = 0,
+    } = useResizeDetector();
 
-    const theme = useTheme();
-    const isXsDown = useMediaQuery(theme.breakpoints.down(`xs`));
+    useEffect(() => {
+        setMainActivitySize({
+            height: containerHeight,
+            width: containerWidth,
+        });
+    }, [ containerWidth, containerHeight ]);
 
     return (
         <Grid
             container
             direction="column"
-            className={clsx(classes.fullViewHeight, {
-                [classes.fullViewHeightXs]: isXsDown && classType == ClassType.LIVE,
-            })}>
+            className={classes.fullHeight}
+        >
             <Grid
                 item
                 xs
-                className={classes.mainViewContainer}>
-                <div className={classes.mainView}>
+                className={classes.contentContainer}
+            >
+                <Grid
+                    container
+                    className={classes.fullHeight}
+                >
                     <Grid
-                        container
-                        id="main-content">
-                        <Grid
-                            item
-                            xs
-                            className={classes.relative}
+                        item
+                        xs
+                    >
+                        <div
+                            ref={containerRef}
+                            id="main-content"
+                            className={clsx(classes.activityContainer, classes.fullHeight)}
                         >
-                            {classType == ClassType.LIVE && <div
-                                id="activity-view-container"
-                                className={classes.fullHeightCentered}
-                            >
-                                {content?.type !== ContentType.Activity && <Whiteboard uniqueId={isTeacher ? `global` : `student`} />}
-                                <MainView />
-                            </div> }
-                            {classType == ClassType.STUDY && <MainClass /> }
-                            {classType == ClassType.CLASSES && <MainClass /> }
-                        </Grid>
-                        <Grid
-                            item
-                            className={classes.mainViewDrawer}>
-                            <MainDrawer />
-                        </Grid>
+                            {classType === ClassType.LIVE ? <MainView /> : <MainClass />}
+                        </div>
                     </Grid>
-                </div>
+                    <Grid item>
+                        <MainDrawer />
+                    </Grid>
+                </Grid>
             </Grid>
-            {classType === ClassType.LIVE &&
-             <Grid item>
-                 <Toolbar />
-             </Grid>
-            }
+            {classType === ClassType.LIVE && (
+                <Grid item>
+                    <Toolbar />
+                </Grid>
+            )}
         </Grid>
+
     );
 }
 
