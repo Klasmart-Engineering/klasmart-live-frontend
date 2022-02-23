@@ -7,7 +7,6 @@ import { useStreamMutation } from "@/data/sfu/mutations/useStreamMutation";
 import { useTransportMutation } from "@/data/sfu/mutations/useTransportMutation";
 import { useIndividualMuteQuery } from "@/data/sfu/queries/useIndividualMuteQuery";
 import { useMediaSubscription } from "@/data/sfu/subscriptions/useMediaSubscription";
-import { useCameraContext } from "@/providers/Camera";
 import { Resolver } from "@/resolver";
 import {
     isActiveGlobalMuteAudioState,
@@ -97,7 +96,6 @@ export const WebRTCProvider = (props: { children: React.ReactNode }) => {
     const micMuteCurrent = useRecoilValue(isActiveGlobalMuteAudioState);
     const camMuteCurrent = useRecoilValue(isActiveGlobalMuteVideoState);
     const statusProducer = React.useRef<boolean>(false);
-    const { refreshCameras } = useCameraContext();
 
     const [ rtpCapabilitiesMutation ] = useSendRtpCapabilitiesMutation();
     const [ transportMutation ] = useTransportMutation();
@@ -214,12 +212,11 @@ export const WebRTCProvider = (props: { children: React.ReactNode }) => {
             producers.push(producer);
         }
         console.log(`Got producers`);
-        const currentOutboundStream = outboundStreams.get(id);
         setOutboundStreams(new Map(outboundStreams.set(id, {
             id,
             producers,
-            audioEnabledByProducer: currentOutboundStream ? currentOutboundStream.audioEnabledByProducer : (micMuteCurrent === null ? true : micMuteCurrent),
-            videoEnabledByProducer: currentOutboundStream ? currentOutboundStream.videoEnabledByProducer : (camMuteCurrent === null ? true : camMuteCurrent),
+            audioEnabledByProducer: micMuteCurrent === null ? true : micMuteCurrent,
+            videoEnabledByProducer: camMuteCurrent === null ? true : camMuteCurrent,
         })));
         const producerIds = producers.map(producer => producer.id);
         console.log(`Stream()(${producerIds})`);
@@ -275,10 +272,6 @@ export const WebRTCProvider = (props: { children: React.ReactNode }) => {
                     }
                 }
             }
-            refreshCameras({
-                camOn: stream.videoEnabledByProducer,
-                micOn: stream.audioEnabledByProducer,
-            });
         } else {
             // Other Camera
             const stream = inboundStreams.get(`${id}_camera`);
@@ -365,10 +358,6 @@ export const WebRTCProvider = (props: { children: React.ReactNode }) => {
                     }
                 }
             }
-            refreshCameras({
-                camOn: stream.videoEnabledByProducer,
-                micOn: stream.audioEnabledByProducer,
-            });
         } else {
             // Other Camera
             const stream = inboundStreams.get(`${id}_camera`);
