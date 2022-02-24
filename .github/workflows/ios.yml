@@ -24,6 +24,7 @@ jobs:
       - name: Dependencies install and build
         # fixes cache issue
         run: |
+          sudo rm -rf /Users/runner/.npm/_cacache/*
           npm ci
           npm run build:app
           [ $? -ne 0 ] && echo "Failed to build webpack" && exit 1
