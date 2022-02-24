@@ -18,10 +18,15 @@ jobs:
           node-version: 16
           token: ${{ secrets.PAT_NPM_GITHUB_REPO }}
           cache: 'npm'
-      - run: |
+      - name: Setup Cordova
+        run: |
           sudo npm install -g cordova
           cordova telemetry off
-      - run: npm i
+      - name: Dependencies install and build
+        run: |
+          npm i
+          npm run build:app
+          [ $? -ne 0 ] && echo "Failed to build webpack" && exit 1
         env:
           NPM_GITHUB_TOKEN: ${{secrets.PAT_NPM_GITHUB_REPO}}
       - name: Prep iOS development
@@ -32,8 +37,7 @@ jobs:
           CUSTOM_UA: cordovaios
           IS_CORDOVA_BUILD: "true"
         run: |
-          npm run build:app
-          [ $? -ne 0 ] && echo "Failed to build webpack" && exit 1
+          ./scripts/parse-cordova-private-plugins.sh
           cordova prepare ios
           ls -al ./platforms
       # - name: Set Default Scheme
