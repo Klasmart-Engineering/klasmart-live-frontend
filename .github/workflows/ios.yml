@@ -23,7 +23,9 @@ jobs:
           sudo npm install -g cordova
           cordova telemetry off
       - name: Dependencies install and build
+        # fixes cache issue
         run: |
+          sudo chown -R 501:20 "/Users/runner/.npm"
           npm i
           npm run build:app
           [ $? -ne 0 ] && echo "Failed to build webpack" && exit 1
