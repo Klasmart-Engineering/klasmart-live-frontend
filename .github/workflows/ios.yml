@@ -21,15 +21,15 @@ jobs:
         run: |
           sudo npm install -g cordova
           cordova telemetry off
-      - name: Dependencies install and build
-        # fixes cache issue
-        run: |
-          sudo rm -rf /Users/runner/.npm/_cacache/*
-          npm ci
-          npm run build:app
-          [ $? -ne 0 ] && echo "Failed to build webpack" && exit 1
-        env:
-          NPM_GITHUB_TOKEN: ${{secrets.PAT_NPM_GITHUB_REPO}}
+      # - name: Dependencies install and build
+      #   # fixes cache issue
+      #   # [ $? -ne 0 ] && echo "Failed to build webpack" && exit 1
+      #   # sudo rm -rf /Users/runner/.npm/_cacache/*
+      #   run: |
+      #     npm ci
+      #     npm run build:app
+      #   env:
+      #     NPM_GITHUB_TOKEN: ${{secrets.PAT_NPM_GITHUB_REPO}}
       - name: Prep iOS development
         env:
           ENDPOINT_GQL: "https://live.kidsloop.net/graphql"
@@ -37,10 +37,17 @@ jobs:
           WEBRTC_DEVICE_HANDLER_NAME: Safari12
           CUSTOM_UA: cordovaios
           IS_CORDOVA_BUILD: "true"
+
+          NPM_GITHUB_TOKEN: ${{secrets.PAT_NPM_GITHUB_REPO}}
         run: |
-          ./scripts/parse-cordova-private-plugins.sh
+          npm ci
+          npm run build:app
+          ./scripts/parse-cordova-private-plugins.sh          
           cordova prepare ios
+          ./scripts/edit-ios-platform.sh
           ls -al ./platforms
+          echo "================"
+          ls -al ./platforms/ios/KidsLoop.xcworkspace
       # - name: Set Default Scheme
       #   run: |
       #     scheme_list=$(xcodebuild -list -json | tr -d "\n")
