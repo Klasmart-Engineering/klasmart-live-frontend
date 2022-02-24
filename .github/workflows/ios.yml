@@ -17,7 +17,11 @@ jobs:
         with:
           node-version: 16
           token: ${{ secrets.PAT_NPM_GITHUB_REPO }}
-      - run: npm ci
+          cache: 'npm'
+      - run: |
+          sudo npm install -g cordova
+          cordova telemetry off
+      - run: npm i
         env:
           NPM_GITHUB_TOKEN: ${{secrets.PAT_NPM_GITHUB_REPO}}
       - name: Prep iOS development
