@@ -17,7 +17,6 @@ jobs:
         with:
           node-version: 16
           token: ${{ secrets.PAT_NPM_GITHUB_REPO }}
-          cache: 'npm'
       - name: Setup Cordova
         run: |
           sudo npm install -g cordova
@@ -25,7 +24,6 @@ jobs:
       - name: Dependencies install and build
         # fixes cache issue
         run: |
-          sudo chown -R 501:20 "/Users/runner/.npm"
           npm i
           npm run build:app
           [ $? -ne 0 ] && echo "Failed to build webpack" && exit 1
