@@ -23,6 +23,8 @@ import { useRecoilValue } from "recoil";
 
 export const SMALL_DRAWER_WIDTH = 240;
 export const LARGE_DRAWER_WIDTH = 440;
+export const SMALL_DRAWER_WIDTH_ST = 190;
+export const LARGE_DRAWER_WIDTH_ST = 390;
 export const FULL_DRAWER_WIDTH = `100%`;
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -32,12 +34,24 @@ const useStyles = makeStyles((theme: Theme) => ({
             flexBasis: SMALL_DRAWER_WIDTH,
         },
     },
+    drawerStudent: {
+        flexBasis: LARGE_DRAWER_WIDTH_ST,
+        [theme.breakpoints.down(`sm`)]: {
+            flexBasis: SMALL_DRAWER_WIDTH_ST,
+        },
+    },
     drawerPaper: {
         border: 0,
-
         width: LARGE_DRAWER_WIDTH,
         [theme.breakpoints.down(`sm`)]: {
             width: SMALL_DRAWER_WIDTH,
+        },
+    },
+    drawerPaperStudent: {
+        border: 0,
+        width: LARGE_DRAWER_WIDTH_ST,
+        [theme.breakpoints.down(`sm`)]: {
+            width: SMALL_DRAWER_WIDTH_ST,
         },
     },
     drawerPaperFull: {
@@ -107,9 +121,12 @@ function Sidebar () {
             variant={activeTab === `participants` ? `persistent` : `temporary`}
             anchor="right"
             classes={{
-                root: classes.drawer,
+                root: clsx(classes.drawer, {
+                    [classes.drawerStudent]: !isTeacher,
+                }),
                 paper: clsx(classes.drawerPaper, {
                     [classes.drawerPaperFull]: activeTab !== `participants`,
+                    [classes.drawerPaperStudent]: !isTeacher,
                 }),
             }}
             transitionDuration={0}
@@ -117,7 +134,7 @@ function Sidebar () {
             <Grid
                 container
                 className={classes.fullheight}>
-                <Grid item>
+                {isTeacher && <Grid item>
                     <Grid
                         container
                         direction="column"
@@ -154,7 +171,7 @@ function Sidebar () {
                             </Grid>
                         )}
                     </Grid>
-                </Grid>
+                </Grid>}
                 <Grid
                     item
                     xs
