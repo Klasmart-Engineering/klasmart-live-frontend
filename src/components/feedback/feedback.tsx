@@ -1,3 +1,5 @@
+import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
+import { isKeyboardVisibleState } from "@/app/model/appModel";
 import { useSaveFeedbackMutation } from "@/data/live/mutations/useSaveFeedbackMutation";
 import { useSessionContext } from "@/providers/session-context";
 import {
@@ -17,12 +19,14 @@ import clsx from "clsx";
 import React,
 {
     useEffect,
+    useRef,
     useState,
 } from "react";
 import {
     FormattedMessage,
     useIntl,
 } from "react-intl";
+import { useRecoilValue } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
     stars:{
@@ -140,10 +144,18 @@ function Feedback (props:FeedbackProps){
     const [ feedbackSent, setFeedbackSent ] = useState<boolean>(false);
     const [ quickFeedback, setQuickFeedback ] = useState<Array<any>>(new Array<any>());
     const [ comment, setComment ] = useState<string>(``);
+    const { isIOS } = useCordovaSystemContext();
+    const isKeyboardVisible = useRecoilValue(isKeyboardVisibleState);
 
     const [ saveFeedbackMutation ] = useSaveFeedbackMutation();
 
+    const submitButtonEl = useRef<null | HTMLButtonElement>(null);
+
     useEffect(() => setQuickFeedback([]), [ stars ]);
+
+    useEffect(() => {
+        isIOS && setTimeout(() => submitButtonEl?.current?.scrollIntoView(), 500);
+    }, [ isKeyboardVisible ]);
 
     const onQuickFeedback = (type: string, active: boolean) => {
         let qFeedback = quickFeedback;
@@ -270,6 +282,7 @@ function Feedback (props:FeedbackProps){
                                 />
                             </form>
                             <Button
+                                ref={submitButtonEl}
                                 className={classes.submitButton}
                                 variant="contained"
                                 color="primary"
