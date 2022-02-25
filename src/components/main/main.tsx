@@ -31,6 +31,10 @@ const useStyles = makeStyles((theme: Theme) => ({
         alignItems: `center`,
         justifyContent: `center`,
     },
+    activityContainerStudy: {
+        backgroundColor: `transparent`,
+        paddingBottom: theme.spacing(1),
+    },
 }));
 
 function Main () {
@@ -72,7 +76,9 @@ function Main () {
                         <div
                             ref={containerRef}
                             id="main-content"
-                            className={clsx(classes.activityContainer, classes.fullHeight)}
+                            className={clsx(classes.activityContainer, classes.fullHeight, {
+                                [classes.activityContainerStudy]: classType === ClassType.STUDY,
+                            })}
                         >
                             {classType === ClassType.LIVE ? <MainView /> : <MainClass />}
                         </div>

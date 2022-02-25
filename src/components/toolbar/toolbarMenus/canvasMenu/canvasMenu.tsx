@@ -208,7 +208,13 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
         <>
             <StyledPopper
                 open={isCanvasOpen}
-                anchorEl={anchor}>
+                anchorEl={anchor}
+                modifiers={ classType === ClassType.STUDY ? {
+                    offset: {
+                        enabled: true,
+                        offset: `0, 4`,
+                    },
+                } : undefined}>
                 <Grid
                     container
                     alignItems="stretch"
