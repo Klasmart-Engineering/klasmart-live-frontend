@@ -1,4 +1,5 @@
 import { Room } from "./room";
+import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
 import Loading from "@/components/loading";
 import { Trophy } from "@/components/trophies/trophy";
 import {
@@ -15,15 +16,14 @@ import {
     classEndedState,
     classLeftState,
 } from "@/store/layoutAtoms";
-import {
-    Grid,
-    Typography,
-} from "@material-ui/core";
+import { Typography } from "@material-ui/core";
 import React,
-{useEffect, useMemo} from "react";
+{
+    useEffect,
+    useMemo,
+} from "react";
 import { FormattedMessage } from "react-intl";
 import { useRecoilState } from "recoil";
-import {useCordovaSystemContext} from "@/app/context-provider/cordova-system-context";
 
 export function RoomWithContext (): JSX.Element {
     const {
@@ -53,7 +53,7 @@ const LiveRoom: React.FC = () => {
         if(classLeft || classEnded) {
             removeOnBack?.(LIVE_ON_BACK_ID);
         }
-    }, [ classLeft, classEnded]);
+    }, [ classLeft, classEnded ]);
 
     if(classLeft || classEnded){
         return <EndClass />;
@@ -77,17 +77,7 @@ const LiveLoading: React.FC = ({ children }) => {
     const isError = useMemo(() => liveError || sfuError, [ liveError, sfuError ]);
 
     if (isLoading) {
-        return (
-            <Grid
-                container
-                alignItems="center"
-                style={{
-                    height: `100%`,
-                }}
-            >
-                <Loading messageId="loading" />
-            </Grid>
-        );
+        return <Loading messageId="loading" />;
     }
 
     if (isError) {
@@ -109,17 +99,7 @@ const StudyLoading: React.FC = ({ children }) => {
     const { isLoading, isError } = useLiveServiceApolloClient();
 
     if (isLoading) {
-        return (
-            <Grid
-                container
-                alignItems="center"
-                style={{
-                    height: `100%`,
-                }}
-            >
-                <Loading messageId="loading" />
-            </Grid>
-        );
+        return <Loading messageId="loading" />;
     }
 
     if (isError) {

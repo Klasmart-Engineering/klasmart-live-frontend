@@ -228,12 +228,7 @@ export default function Join (): JSX.Element {
     }, [ brandingEndpoint ]);
 
     if (loading) {
-        return <Grid
-            container
-            alignItems="center"
-            style={{
-                height: `100%`,
-            }}><Loading messageId="loading" /></Grid>;
+        return <Loading messageId="loading" />;
     }
 
     const onCloseButtonClick = () => {
