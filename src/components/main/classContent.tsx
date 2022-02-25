@@ -15,8 +15,8 @@ import {
     makeStyles,
     Theme,
 } from "@material-ui/core/styles";
-import { ChevronLeft as ArrowBackIcon } from "@styled-icons/boxicons-regular/ChevronLeft";
-import { ChevronRight as ArrowForwardIcon } from "@styled-icons/boxicons-regular/ChevronRight";
+import { ChevronLeft as ArrowBackIcon } from "@styled-icons/entypo/ChevronLeft";
+import { ChevronRight as ArrowForwardIcon } from "@styled-icons/entypo/ChevronRight";
 import { Exit as ExitIcon } from "@styled-icons/icomoon/Exit";
 import clsx from "clsx";
 import React,
@@ -33,10 +33,12 @@ import {
 } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
-    arrowButton:{
+    arrowButtonStudy: {
         cursor: `pointer`,
+        color: theme.palette.common.white,
+    },
+    arrowButton: {
         borderRadius: 50,
-        color: `#fff`,
         background: `#619bd8`,
         boxShadow: `0 10px 15px rgb(97 155 216 / 23%), 0 3px 8px rgb(61 108 156 / 39%)`,
         "&:hover":{
@@ -52,12 +54,14 @@ const useStyles = makeStyles((theme: Theme) => ({
             },
         },
     },
+    arrowButtonRight: {
+        paddingRight: theme.spacing(5),
+    },
     arrowButtonDisabled:{
         opacity: 0,
         pointerEvents: `none`,
     },
     content:{
-        margin: `0 20px`,
         background: theme.palette.background.paper,
         borderRadius: 20,
         height: `100%`,
@@ -133,6 +137,12 @@ const useStyles = makeStyles((theme: Theme) => ({
         "100%": {
             opacity: 1,
         },
+    },
+    navigationColumnActions: {
+        marginLeft: theme.spacing(2.5),
+    },
+    contentClass: {
+        margin: theme.spacing(0, 2.5),
     },
 }));
 
@@ -265,15 +275,21 @@ export function ClassContent () {
                                 id: `end_study_bonus_content`,
                             })}/> */}
                     </div> :
-                    <div className={classes.content}>
-                        <div className={classes.fullHeight}>
+                    <div className={clsx(classes.content, {
+                        [classes.contentClass]: classType === ClassType.CLASSES,
+                    })}>
+                        <div
+                            className={classes.fullHeight}
+                            id="activity-view-container">
                             <PreviewLessonPlan />
                         </div>
                     </div> }
             </Grid>
             <Grid
                 item
-                className={classes.navigationColumn}>
+                className={clsx(classes.navigationColumn, {
+                    [classes.navigationColumnActions]: classType === ClassType.STUDY,
+                })}>
                 <MaterialNavigation
                     direction="next"
                     disabled={materialActiveIndex >=  materials.length}
@@ -297,11 +313,14 @@ const MaterialNavigation = (props:MaterialNavigationProps) => {
 
     } = props;
     const classes = useStyles();
+    const { classType } = useSessionContext();
 
     return (
         <div
-            className={clsx(classes.arrowButton, {
+            className={clsx(classes.arrowButtonStudy, {
                 [classes.arrowButtonDisabled]: disabled,
+                [classes.arrowButton]: classType !== ClassType.STUDY,
+                [classes.arrowButtonRight]: direction === `next` && classType === ClassType.STUDY,
             })}
             onClick={onClick}>
             {direction === `prev` ? <ArrowBackIcon size="5em" /> : <ArrowForwardIcon size="5em" />}

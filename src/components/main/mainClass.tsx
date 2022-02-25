@@ -3,7 +3,11 @@ import { CloseIconButton } from "@/app/components/icons/closeIconButton";
 import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
 import { usePopupContext } from "@/app/context-provider/popup-context";
 import { WBToolbarContainer } from "@/components/classContent/WBToolbar";
-import { TEXT_COLOR_SECONDARY_DEFAULT } from "@/config";
+import StyledIcon from "@/components/styled/icon";
+import {
+    TEXT_COLOR_SECONDARY_DEFAULT,
+    THEME_COLOR_BACKGROUND_PAPER,
+} from "@/config";
 import { useSessionContext } from "@/providers/session-context";
 import { ClassType } from "@/store/actions";
 import { showEndStudyState } from "@/store/layoutAtoms";
@@ -11,6 +15,8 @@ import {
     makeStyles,
     Theme,
 } from "@material-ui/core";
+import { Close as CloseIcon } from "@styled-icons/material/Close";
+import clsx from "clsx";
 import React from "react";
 import { useIntl } from "react-intl";
 import { useHistory } from "react-router-dom";
@@ -20,13 +26,15 @@ const useStyles = makeStyles((theme: Theme) => ({
     safeArea: {
         marginLeft: `env(safe-area-inset-left)`,
         marginRight: `env(safe-area-inset-right)`,
+    },
+    fullHeight: {
         width: `100%`,
         height: `100%`,
     },
     closeButton: {
         position: `fixed`,
         top: theme.spacing(1.5),
-        right: theme.spacing(2),
+        right: theme.spacing(3),
     },
 }));
 
@@ -68,16 +76,22 @@ function MainClass () {
     };
 
     return (
-        <div className={classes.safeArea}>
+        <div className={clsx(classes.fullHeight, {
+            [classes.safeArea]: !process.env.IS_CORDOVA_BUILD,
+        })}>
             <ClassContent />
             {!showEndStudy && <>
                 <WBToolbarContainer useLocalDisplay={classType !== ClassType.LIVE} />
-                <div className={classes.closeButton}>
-                    <CloseIconButton
-                        buttonSize="small"
-                        color={TEXT_COLOR_SECONDARY_DEFAULT}
-                        onClick={onCloseButtonClick} />
-                </div>
+                {
+                    classType === ClassType.STUDY && process.env.IS_CORDOVA_BUILD && <div
+                        className={classes.closeButton}
+                        onClick={onCloseButtonClick}>
+                        <StyledIcon
+                            icon={<CloseIcon />}
+                            size={`xlarge`}
+                            color={THEME_COLOR_BACKGROUND_PAPER} />
+                    </div>
+                }
             </> }
         </div>
     );

@@ -1,5 +1,5 @@
 import { useDeviceOrientationValue } from "@/app/model/appModel";
-import backgroundStudy from "@/assets/img/background/background_study.jpg";
+import backgroundStudy from "@/assets/img/background/background_study.svg";
 import Main from '@/components/main/main';
 import Sidebar from '@/components/sidebar/sidebar';
 import { useSessions } from "@/data/live/state/useSessions";

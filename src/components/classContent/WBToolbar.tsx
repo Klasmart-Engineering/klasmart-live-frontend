@@ -1,5 +1,11 @@
+import PencilIcon from "@/assets/img/canvas/pencil_icon.svg";
 import StyledIcon from "@/components/styled/icon";
 import CanvasMenu from "@/components/toolbar/toolbarMenus/canvasMenu/canvasMenu";
+import {
+    FAB_DEFAULT_COLOR,
+    TEXT_COLOR_MENU_DRAWER,
+    THEME_COLOR_BACKGROUND_PAPER,
+} from "@/config";
 import { useSessionContext } from "@/providers/session-context";
 import { ClassType } from "@/store/actions";
 import { isCanvasOpenState } from "@/store/layoutAtoms";
@@ -7,17 +13,19 @@ import { useSynchronizedState } from "@/whiteboard/context-providers/Synchronize
 import {
     Grid,
     makeStyles,
+    Theme,
 } from "@material-ui/core";
 import Fab from "@material-ui/core/Fab";
 import { CloseOutline as CloseIcon } from "@styled-icons/evaicons-outline/CloseOutline";
 import { PencilAlt as WBIcon } from "@styled-icons/fa-solid/PencilAlt";
+import clsx from "clsx";
 import React,
 { useContext } from "react";
 import { useRecoilState } from "recoil";
 
 export const WB_TOOLBAR_MAX_HEIGHT = 80; // 64 + 16(padding top)
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme: Theme) => ({
     root: {
         position: `relative`,
     },
@@ -25,6 +33,23 @@ const useStyles = makeStyles(() => ({
         position: `absolute`,
         zIndex: 999,
         bottom: 10,
+    },
+    buttonWrapStudy: {
+        bottom: 0,
+        right: theme.spacing(0.5),
+    },
+    pencilIcon: {
+        width: `1.5rem`,
+        height: `1.5rem`,
+    },
+    fab: {
+        backgroundColor: FAB_DEFAULT_COLOR,
+    },
+    fabStudy: {
+        backgroundColor: THEME_COLOR_BACKGROUND_PAPER,
+        "&:hover": {
+            backgroundColor: THEME_COLOR_BACKGROUND_PAPER,
+        },
     },
 }));
 
@@ -78,21 +103,29 @@ export function WBToolbarContainer ({ useLocalDisplay } : { useLocalDisplay?: bo
             className={classes.root}>
             <div
                 ref={canvasRef}
-                className={classes.buttonWrap}>
+                className={clsx(classes.buttonWrap, {
+                    [classes.buttonWrapStudy]: classType === ClassType.STUDY,
+                })}>
                 <Fab
                     aria-label="whiteboard toolbar opener"
                     disabled={!enableWB}
+                    className={clsx(classes.fab, {
+                        [classes.fabStudy]: classType === ClassType.STUDY,
+                    })}
                     size="large"
                     color="primary"
-                    style={{
-                        backgroundColor:`#bd6dd6`,
-                    }}
                     onClick={handleToggleWBToolbar}
                 >
                     <StyledIcon
-                        icon={isCanvasOpen ? <CloseIcon /> : <WBIcon />}
                         size="large"
-                        color="white" />
+                        color={classType !== ClassType.STUDY ? THEME_COLOR_BACKGROUND_PAPER : TEXT_COLOR_MENU_DRAWER}
+                        icon={isCanvasOpen ? <CloseIcon /> : classType === ClassType.STUDY ?
+                            <img
+                                src={PencilIcon}
+                                className={classes.pencilIcon} /> :
+                            <WBIcon />
+                        }
+                    />
                 </Fab>
             </div>
             <CanvasMenu anchor={canvasRef.current} />
