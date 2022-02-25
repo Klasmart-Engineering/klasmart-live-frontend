@@ -27,7 +27,6 @@ import {
     defineContentId,
     defineContentType,
 } from "@/utils/utils";
-import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { useToolbarContext } from "kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
 import { useSnackbar } from "kidsloop-px";
@@ -284,17 +283,7 @@ export const RoomProvider: React.FC<Props> = ({ children, enableConferencing }) 
     };
 
     if (loading || !content) {
-        return (
-            <Grid
-                container
-                alignItems="center"
-                style={{
-                    height: `100%`,
-                }}
-            >
-                <Loading messageId="loading" />
-            </Grid>
-        );
+        return <Loading messageId="loading" />;
     }
 
     if (error) {
