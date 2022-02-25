@@ -9,7 +9,7 @@ import {
     observeWarningState,
 } from "@/store/layoutAtoms";
 import { StyledPopper } from "@/utils/utils";
-import { Grid } from "@material-ui/core";
+import { Box } from "@material-ui/core";
 import { UserVoice as OnStageIcon } from "@styled-icons/boxicons-solid/UserVoice";
 import { Eye as ObserveIcon } from "@styled-icons/fa-regular/Eye";
 import { PresentationChartBar as PresentIcon } from "@styled-icons/heroicons-solid/PresentationChartBar";
@@ -36,7 +36,7 @@ interface ViewModesMenuProps {
 
 interface AlertProps {
     open: boolean;
-    anchorEl: HTMLDivElement | null;
+    anchorEl: HTMLDivElement | HTMLButtonElement | null;
     title?: React.ReactNode;
     width?: number;
 }
@@ -64,7 +64,7 @@ function ViewModesMenu (props:ViewModesMenuProps) {
         }, ALERT_VISIBLE_TIME);
     }, [ alert?.anchorEl ]);
 
-    const handleViewModesClick = (interactiveMode: InteractiveMode, buttonRef?:React.MutableRefObject<HTMLDivElement | null>) => {
+    const handleViewModesClick = (interactiveMode: InteractiveMode, buttonRef?:React.MutableRefObject<HTMLDivElement | HTMLButtonElement | null>) => {
         if(screenShare.stream) screenShare.stop();
 
         switch(interactiveMode){
@@ -107,10 +107,7 @@ function ViewModesMenu (props:ViewModesMenuProps) {
             <StyledPopper
                 open={isViewModesOpen}
                 anchorEl={anchor}>
-                <Grid
-                    container
-                    alignItems="stretch">
-
+                <Box display="flex" >
                     <ViewMode
                         title={intl.formatMessage({
                             id: `viewMode.onStage`,
@@ -119,7 +116,6 @@ function ViewModesMenu (props:ViewModesMenuProps) {
                         active={interactiveMode === InteractiveMode.ONSTAGE}
                         onClick={() => handleViewModesClick(InteractiveMode.ONSTAGE)}
                     />
-
                     <ViewMode
                         disabled={observeDisable}
                         title={intl.formatMessage({
@@ -129,7 +125,6 @@ function ViewModesMenu (props:ViewModesMenuProps) {
                         active={interactiveMode === InteractiveMode.OBSERVE}
                         onClick={() => handleViewModesClick(InteractiveMode.OBSERVE)}
                     />
-
                     <ViewMode
                         title={intl.formatMessage({
                             id: `viewMode.present`,
@@ -148,7 +143,7 @@ function ViewModesMenu (props:ViewModesMenuProps) {
                         onCloseAlert={onCloseAlert}
                         onClick={(buttonRef) => handleViewModesClick(InteractiveMode.SCREENSHARE, buttonRef)}
                     />
-                </Grid>
+                </Box>
             </StyledPopper>
             <AlertPopper {...alert} />
         </>

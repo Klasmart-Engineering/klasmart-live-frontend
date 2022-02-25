@@ -1,4 +1,7 @@
 import {
+    Box,
+    Button,
+    ButtonBase,
     Grid,
     makeStyles,
     Theme,
@@ -15,25 +18,23 @@ import {
 } from "use-long-press";
 
 const useStyles = makeStyles((theme: Theme) => ({
-    item:{
-        cursor: `pointer`,
-        padding: `12px 20px`,
+    root: {
+        padding: theme.spacing(1.5, 2.5),
+        display: `flex`,
+        flexDirection: `column`,
         "&:hover": {
             backgroundColor: theme.palette.grey[200],
         },
     },
-    itemIcon:{
-        padding: 10,
-        background: `#fff`,
+    itemIcon: {
+        padding: theme.spacing(1.25),
+        background: theme.palette.common.white,
         border: `1px solid`,
-        borderRadius: 50,
-        marginBottom: 10,
-        "& svg":{
-            height: 20,
-            width: 20,
-        },
+        borderRadius: theme.spacing(5),
+        marginBottom: theme.spacing(1.25),
+        width: 20,
     },
-    active:{
+    active: {
         backgroundColor: theme.palette.background.default,
         pointerEvents: `none`,
     },
@@ -51,8 +52,8 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface ViewModeProps {
-	active: boolean;
-	onClick: (buttonRef?: React.MutableRefObject<HTMLDivElement | null>) => void;
+	active?: boolean;
+	onClick: (buttonRef?: React.MutableRefObject<HTMLDivElement | HTMLButtonElement | null>) => void;
     onCloseAlert?: () => void;
 	icon: StyledIcon;
 	title: string;
@@ -69,7 +70,7 @@ function ViewMode (props: ViewModeProps) {
         disabled,
     } = props;
 
-    const buttonRef = useRef<HTMLDivElement | null>(null);
+    const buttonRef = useRef<HTMLButtonElement | null>(null);
     const classes = useStyles();
 
     const clickEvent = useLongPress(() => onClick(buttonRef), {
@@ -83,28 +84,21 @@ function ViewMode (props: ViewModeProps) {
     });
 
     return (
-        <Grid item>
-            <Grid
-                ref={buttonRef}
-                container
-                direction="column"
-                alignItems="center"
-                className={clsx(classes.item, {
-                    [classes.active]: active,
-                    [classes.disabled]: !active && disabled && !onCloseAlert,
-                    [classes.disabledShowTooltip]: onCloseAlert && disabled,
-                })}
-                {...clickEvent}>
-                <Grid
-                    item
-                    className={classes.itemIcon}>
-                    <Icon />
-                </Grid>
-                <Grid item>
-                    <Typography>{title}</Typography>
-                </Grid>
-            </Grid>
-        </Grid>
+        <ButtonBase
+            ref={buttonRef}
+            disableRipple
+            title={title}
+            className={clsx(classes.root, {
+                [classes.active]: active,
+                [classes.disabled]: !active && disabled && !onCloseAlert,
+                [classes.disabledShowTooltip]: onCloseAlert && disabled,
+            })}
+            {...clickEvent}>
+            <div className={classes.itemIcon}>
+                <Icon />
+            </div>
+            <Typography>{title}</Typography>
+        </ButtonBase>
     );
 }
 

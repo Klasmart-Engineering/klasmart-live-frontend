@@ -1,6 +1,7 @@
 import { activeTabState } from "@/store/layoutAtoms";
 import {
     Badge,
+    ButtonBase,
     makeStyles,
     Theme,
     Tooltip,
@@ -12,9 +13,11 @@ import amber from "@material-ui/core/colors/amber";
 import clsx from "clsx";
 import React from "react";
 import { useRecoilValue } from "recoil";
-import { StyledIcon } from "styled-icons/types";
 
 const useStyles = makeStyles((theme: Theme) => ({
+    itemRoot: {
+        position: `relative`,
+    },
     root: {
         display: `flex`,
         flexDirection: `column`,
@@ -28,15 +31,15 @@ const useStyles = makeStyles((theme: Theme) => ({
         "&:hover": {
             backgroundColor: theme.palette.grey[200],
         },
-        "& > svg":{
-            height: `1.5em`,
+        "& > svg": {
+            height: `1.5rem`,
         },
     },
-    rootMosaic:{
+    rootMosaic: {
         "&:hover": {
             backgroundColor: `rgba(255, 255, 255, 0.15)`,
         },
-        "&$active":{
+        "&$active": {
             color: theme.palette.text.primary,
             backgroundColor: theme.palette.background.paper,
             "&:hover": {
@@ -44,7 +47,6 @@ const useStyles = makeStyles((theme: Theme) => ({
             },
         },
     },
-    rootMd:{},
     active: {
         backgroundColor: theme.palette.background.default,
         "&:hover": {
@@ -58,9 +60,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     label: {
         marginTop: 10,
-        fontSize: `0.8em`,
+        fontSize: `0.8rem`,
     },
-    labelMd:{
+    labelMd: {
         display: `none`,
     },
     badgeRoot: {
@@ -123,31 +125,36 @@ function ToolbarItem (props: ToolbarItemProps) {
 
     return (
         <>
-            <Tooltip title={tooltip}>
-                <div
-                    className={clsx(classes.root, {
-                        [classes.rootMosaic] : activeTab === `mosaic`,
-                        [classes.rootMd] : isMdDown,
-                        [classes.active] : active,
-                        [classes.disabled] : disabled,
-                    })}
-                    onClick={onClick}
-                >
-                    {badge && (
-                        <Badge
-                            classes={{
-                                badge: classes.badge,
-                                root: classes.badgeRoot,
-                            }}
-                            badgeContent={<div className={classes.badgeContent}>{badge}</div>}
-                        />
-                    )}
-                    {icon}
-                    {label && <Typography className={clsx(classes.label, {
-                        [classes.labelMd] : isMdDown,
-                    })}>{label}</Typography>}
-                </div>
-            </Tooltip>
+            <div className={classes.itemRoot}>
+                {badge && (
+                    <Badge
+                        classes={{
+                            badge: classes.badge,
+                            root: classes.badgeRoot,
+                        }}
+                        badgeContent={<div className={classes.badgeContent}>{badge}</div>}
+                    />
+                )}
+                <Tooltip title={tooltip}>
+                    <ButtonBase
+                        disableRipple
+                        className={clsx(classes.root, {
+                            [classes.rootMosaic] : activeTab === `mosaic`,
+                            [classes.active] : active,
+                            [classes.disabled] : disabled,
+                        })}
+                        onClick={onClick}>
+                        {icon}
+                        {label && (
+                            <Typography className={clsx(classes.label, {
+                                [classes.labelMd] : isMdDown,
+                            })}>
+                                {label}
+                            </Typography>
+                        )}
+                    </ButtonBase>
+                </Tooltip>
+            </div>
         </>
     );
 }
