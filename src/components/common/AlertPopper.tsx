@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 interface Props {
 	title?: React.ReactNode;
 	open?: boolean;
-	anchorEl?: HTMLDivElement | null;
+	anchorEl?: HTMLDivElement | HTMLButtonElement | null;
     width?: number;
 }
 
