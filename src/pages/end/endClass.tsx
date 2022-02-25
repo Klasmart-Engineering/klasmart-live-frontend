@@ -24,6 +24,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     container:{
         height: `100%`,
         backgroundColor: theme.palette.grey[200],
+        overflowY: `auto`,
     },
     root: {
         textAlign: `center`,
