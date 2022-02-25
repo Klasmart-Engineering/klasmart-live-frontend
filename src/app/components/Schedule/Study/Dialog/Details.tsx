@@ -3,9 +3,13 @@ import AttachmentDownloadButton from "@/app/components/Schedule/Attachment/Downl
 import AttachmentNameLink from "@/app/components/Schedule/Attachment/NameLink";
 import BaseScheduleDialog from "@/app/components/Schedule/BaseDialog";
 import { useSelectedOrganizationValue } from "@/app/data/user/atom";
+import { dialogsState } from "@/app/model/appModel";
 import { ScheduleLiveTokenType } from "@/app/services/cms/ISchedulerService";
 import { formatDateTimeMillis } from "@/app/utils/dateTimeUtils";
-import { generateDescriptionHasHyperLink } from "@/app/utils/link";
+import {
+    generateDescriptionHasHyperLink,
+    openHyperLink,
+} from "@/app/utils/link";
 import { BG_COLOR_GO_STUDY_PRIMARY } from "@/config";
 import { useSessionContext } from "@/providers/session-context";
 import { fromSecondsToMilliseconds } from "@/utils/utils";
@@ -26,9 +30,10 @@ import React,
     useState,
 } from "react";
 import { useIntl } from "react-intl";
-import { useHistory } from "react-router-dom";
+import { useHistory } from "react-router";
+import { useRecoilState } from "recoil";
 
-const useStyles = makeStyles((theme) => createStyles({
+const useStyles = makeStyles(() => createStyles({
     rowContentText: {
         overflowWrap: `break-word`,
         wordWrap: `break-word`,
@@ -51,7 +56,7 @@ export default function StudyDetailsDialog (props: Props) {
     const intl = useIntl();
     const classes = useStyles();
     const [ getTokenLoading, setGetTokenLoading ] = useState(false);
-    const [ parentalLock, setParentalLock ] = useState(false);
+    const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
     const [ hyperlink, setHyperlink ] = useState<string>();
     const { setToken } = useSessionContext();
     const { push } = useHistory();
@@ -69,6 +74,13 @@ export default function StudyDetailsDialog (props: Props) {
             enabled: !!scheduleId && !!organizationId,
         },
     });
+
+    const setParentalLock = (open: boolean) => {
+        setDialogs({
+            ...dialogs,
+            isParentalLockOpen: open,
+        });
+    };
 
     const handleJoinStudyClass = async () => {
         if (!scheduleId) return;
@@ -104,10 +116,10 @@ export default function StudyDetailsDialog (props: Props) {
     }, [ hyperlink ]);
 
     useEffect(() => {
-        if (!parentalLock) {
+        if (!dialogs.isParentalLockOpen) {
             setHyperlink(undefined);
         }
-    }, [ parentalLock ]);
+    }, [ dialogs.isParentalLockOpen ]);
 
     return (
         <>
@@ -252,12 +264,13 @@ export default function StudyDetailsDialog (props: Props) {
                 isLoading = {isFetchingSchedule}
                 onClose={onClose}
             />
-            <DialogParentalLock
+            {hyperlink && <DialogParentalLock
                 key={`DialogParentalLock`}
-                hyperlink={hyperlink ?? ``}
-                open={parentalLock}
-                onClose={() => setParentalLock(false)}
-            />
+                onCompleted={() => {
+                    openHyperLink(hyperlink ?? ``);
+                    setParentalLock(false);
+                }}
+            />}
         </>
     );
 }

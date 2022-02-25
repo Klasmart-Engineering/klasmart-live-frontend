@@ -1,8 +1,6 @@
-import { ParentalGate } from "../../dialogs/parentalGate";
-import {
-    completeParentalGate,
-    isOpenLandingPage,
-} from "../../model/appModel";
+import { completeParentalGate } from "../../model/appModel";
+import DialogParentalLock from "@/app/components/ParentalLock";
+import { dialogsState } from "@/app/model/appModel";
 import KidsloopTextLogo from "@/assets/img/kidsloop_logo.svg";
 import BackgroundCloudsBalloon from "@/assets/img/landing/background_clouds_balloon.svg";
 import BackgroundGreenGrass from "@/assets/img/landing/background_green_grass.svg";
@@ -16,11 +14,13 @@ import {
 } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid/Grid";
 import Typography from "@material-ui/core/Typography/Typography";
-import React,
-{ useState } from 'react';
+import React from 'react';
 import { FormattedMessage } from "react-intl";
 import { useHistory } from "react-router-dom";
-import { useSetRecoilState } from "recoil";
+import {
+    useRecoilState,
+    useSetRecoilState,
+} from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     fullHeight: {
@@ -88,17 +88,21 @@ export function LandingPage (): JSX.Element {
     const isSmUp = useMediaQuery(theme.breakpoints.up(`sm`));
     const history = useHistory();
     const setCompletedParentalChallenge = useSetRecoilState(completeParentalGate);
-    const setIsShowLandingPage = useSetRecoilState(isOpenLandingPage);
-    const [ parentalLock, setParentalLock ] = useState<boolean>(false);
+    const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
 
-    if (parentalLock) {
-        return (
-            <ParentalGate
+    const setParentalLock = (open: boolean) => {
+        setDialogs({
+            ...dialogs,
+            isParentalLockOpen: open,
+        });
+    };
+
+    if(dialogs.isParentalLockOpen){
+        return(
+            <DialogParentalLock
                 isWelcomeScreen
-                setClosedDialog={()=> {setParentalLock(false);}}
                 onCompleted={() => {
                     setCompletedParentalChallenge(true);
-                    setIsShowLandingPage(false);
                     history.push(`/`);
                 }}
             />

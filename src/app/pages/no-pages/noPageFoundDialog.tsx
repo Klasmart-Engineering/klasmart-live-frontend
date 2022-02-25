@@ -1,7 +1,6 @@
 import { useAuthenticationContext } from "@/app/context-provider/authentication-context";
 import {
     completeParentalGate,
-    isOpenLandingPage,
     shouldClearCookieState,
 } from "@/app/model/appModel";
 import BackIcon from "@/assets/img/back_icon.svg";
@@ -55,7 +54,6 @@ export function NoPageFoundDialog ({
     const { actions } = useAuthenticationContext();
     const classes = useStyles();
     const setShouldClearCookie = useSetRecoilState(shouldClearCookieState);
-    const setIsShowLandingPage = useSetRecoilState(isOpenLandingPage);
     const setCompletedParentalChallenge = useSetRecoilState(completeParentalGate);
     return (
         <Dialog
@@ -102,7 +100,6 @@ export function NoPageFoundDialog ({
                             variant="contained"
                             onClick={() => {
                                 actions?.signOut();
-                                setIsShowLandingPage(true);
                                 setShouldClearCookie(true);
                                 setCompletedParentalChallenge(false);
                             }}>

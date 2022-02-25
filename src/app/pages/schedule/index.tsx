@@ -10,7 +10,6 @@ import {
 } from "@/app/data/user/atom";
 import {
     completeParentalGate,
-    isOpenLandingPage,
     shouldClearCookieState,
     shouldShowNoOrgProfileState,
     shouldShowNoStudentRoleState,
@@ -19,10 +18,6 @@ import {
     ScheduleAppBarItem,
     useScheduleTabValue,
 } from "@/app/model/scheduleModel";
-import {
-    createStyles,
-    makeStyles,
-} from "@material-ui/core";
 import React,
 {
     useCallback,
@@ -33,13 +28,7 @@ import {
     useSetRecoilState,
 } from "recoil";
 
-const useStyles = makeStyles((theme) => createStyles({}));
-
-interface Props {
-}
-
-export default function SchedulePage (props: Props) {
-    const classes = useStyles();
+export default function SchedulePage () {
     const scheduleTab = useScheduleTabValue();
     const user = useSelectedUserValue();
     const organization = useSelectedOrganizationValue();
@@ -48,7 +37,6 @@ export default function SchedulePage (props: Props) {
     const { addOnBack, removeOnBack } = useCordovaSystemContext();
     const { actions } = useAuthenticationContext();
     const setShouldClearCookie = useSetRecoilState(shouldClearCookieState);
-    const setIsShowLandingPage = useSetRecoilState(isOpenLandingPage);
     const setCompletedParentalChallenge = useSetRecoilState(completeParentalGate);
     const NO_PAGE_FOUND_BACK_BUTTON_CLICKED_ID = `noPageFoundBackButtonClickedID`;
 
@@ -62,7 +50,6 @@ export default function SchedulePage (props: Props) {
     const onNoOrgBackButtonClicked = () => {
         actions?.signOut();
         setShouldClearCookie(true);
-        setIsShowLandingPage(true);
         setCompletedParentalChallenge(false);
     };
 

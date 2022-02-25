@@ -1,21 +1,18 @@
+import DialogParentalLock from "@/app/components/ParentalLock";
 import { useAuthenticationContext } from "@/app/context-provider/authentication-context";
 import { useSelectedOrganizationValue } from "@/app/data/user/atom";
-import { ParentalGate } from "@/app/dialogs/parentalGate";
 import {
     completeParentalGate,
     dialogsState,
-    isOpenLandingPage,
     menuOpenState,
     shouldClearCookieState,
 } from "@/app/model/appModel";
 import { useDisplayPrivacyPolicy } from "@/app/utils/privacyPolicyUtils";
 import StyledIcon from "@/components/styled/icon";
-import { TEXT_COLOR_MENU_DRAWER } from "@/config";
 import { useWindowSize } from "@/utils/viewport";
 import {
     Button,
     createStyles,
-    Dialog,
     Divider,
     Grid,
     IconButton,
@@ -36,10 +33,7 @@ import { PrivacyTip as PolicyIcon } from "@styled-icons/material-outlined/Privac
 import clsx from "clsx";
 import { OrganizationAvatar } from "kidsloop-px";
 import React,
-{
-    useEffect,
-    useState,
-} from "react";
+{ useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useHistory } from "react-router-dom";
 import {
@@ -104,8 +98,6 @@ export default function MenuDrawer () {
     const displayPrivacyPolicy = useDisplayPrivacyPolicy();
     const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
     const [ isMenuOpen, setMenuOpen ] = useRecoilState(menuOpenState);
-    const [ parentalLock, setParentalLock ] = useState<boolean>(false);
-    const setIsShowLandingPage = useSetRecoilState(isOpenLandingPage);
     const setShouldClearCookie = useSetRecoilState(shouldClearCookieState);
     const setCompletedParentalChallenge = useSetRecoilState(completeParentalGate);
 
@@ -154,19 +146,26 @@ export default function MenuDrawer () {
         }
     };
 
+    const setParentalLock = (open: boolean) => {
+        setDialogs({
+            ...dialogs,
+            isParentalLockOpen: open,
+        });
+    };
+
     useEffect(() => {
         setParentalLock(false);
     }, []);
 
-    if (parentalLock) {
-        return <Dialog
-            fullScreen
-            open={parentalLock}>
-            <ParentalGate
-                setClosedDialog={() => setParentalLock(false)}
-                onCompleted={() => { displayPrivacyPolicy(); setParentalLock(false); }}
+    if (dialogs.isParentalLockOpen) {
+        return (
+            <DialogParentalLock
+                onCompleted={() => {
+                    displayPrivacyPolicy();
+                    setParentalLock(false);
+                }}
             />
-        </Dialog>;
+        );
     }
 
     return (
@@ -263,7 +262,6 @@ export default function MenuDrawer () {
                             className={classes.signOutButton}
                             onClick={() => {
                                 actions?.signOut();
-                                setIsShowLandingPage(true);
                                 setShouldClearCookie(true);
                                 setCompletedParentalChallenge(false);
                             }}

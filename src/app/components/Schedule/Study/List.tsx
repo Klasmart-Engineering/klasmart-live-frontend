@@ -11,7 +11,7 @@ import {
 } from "@/app/components/Schedule/shared";
 import StudyDetailsDialog from "@/app/components/Schedule/Study/Dialog/Details";
 import { useSelectedOrganizationValue } from "@/app/data/user/atom";
-import { useMeQuery } from "@/app/data/user/queries/meQuery";
+import { dialogsState } from "@/app/model/appModel";
 import { formatDueDateMillis } from "@/app/utils/dateTimeUtils";
 import {
     isFocused,
@@ -57,7 +57,8 @@ import React,
 } from "react";
 import { useBottomScrollListener } from "react-bottom-scroll-listener";
 import { useIntl } from "react-intl";
-import { useHistory } from "react-router-dom";
+import { useHistory } from "react-router";
+import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme) => createStyles({
     listRoot: {
@@ -89,6 +90,7 @@ export default function StudyScheduleList () {
     const classes = useStyles();
     const intl = useIntl();
     const history = useHistory();
+    const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
     const [ selectedScheduleId, setSelectedScheduleId ] = useState<string>();
     const [ page, setPage ] = useState(SCHEDULE_PAGE_START);
     const [ items, setItems ] = useState<SchedulesTimeViewListItem[]>([]);
@@ -202,6 +204,14 @@ export default function StudyScheduleList () {
         history.push(`/schedule/anytime-study`);
     };
 
+    const setStudyDetailOpen = (scheduleId?: string) => {
+        setDialogs({
+            ...dialogs,
+            isStudyDetailOpen: !!scheduleId,
+        });
+        setSelectedScheduleId(scheduleId);
+    };
+
     if (scheduleError) {
         if (isSchedulesFetching || isAnytimeSchedulesFetching) return <ScheduleLoading />;
         return <ScheduleErrorRetryButton onClick={() => refetchSchedules()}/>;
@@ -260,7 +270,7 @@ export default function StudyScheduleList () {
                                     title={studySchedule.title}
                                     subtitle={getStudyType(studySchedule, intl)}
                                     trailing={StudyAssessmentStatus(studySchedule)}
-                                    onClick={() => setSelectedScheduleId(studySchedule.id)}
+                                    onClick={() => setStudyDetailOpen(studySchedule.id)}
                                 />
                             ))}
                         </ul>
@@ -277,9 +287,9 @@ export default function StudyScheduleList () {
             </List>
             <StudyDetailsDialog
                 scheduleId={selectedScheduleId}
-                open={!!selectedScheduleId}
+                open={dialogs.isStudyDetailOpen}
                 onClose={() => {
-                    setSelectedScheduleId(undefined);
+                    setStudyDetailOpen(undefined);
                 }}
             />
         </>

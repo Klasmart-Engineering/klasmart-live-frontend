@@ -2,10 +2,8 @@ import { useHttpEndpoint } from "../../../providers/region-select-context";
 import { DevSelectRegion } from "../../components/auth/devSelectRegion";
 import LoadingWithRetry from "../../components/loadingWithRetry";
 import { useAuthenticationContext } from "../../context-provider/authentication-context";
-import { ParentalGate } from "../../dialogs/parentalGate";
 import {
     completeParentalGate,
-    isOpenLandingPage,
     localeState,
     OrientationType,
 } from "../../model/appModel";
@@ -23,10 +21,7 @@ import React,
     useState,
 } from "react";
 import { Redirect } from "react-router-dom";
-import {
-    useRecoilState,
-    useRecoilValue,
-} from "recoil";
+import { useRecoilValue } from "recoil";
 
 const useStyles = makeStyles(() => createStyles({
     container: {
@@ -50,8 +45,8 @@ export function Auth ({ useInAppBrowser }: Props) {
     const frameRef = useRef<HTMLIFrameElement>(null);
     const [ key, setKey ] = useState(Math.random().toString(36));
     const locale = useRecoilValue(localeState);
+
     const authEndpoint = useHttpEndpoint(`auth`);
-    const isShowLandingPage = useRecoilValue(isOpenLandingPage);
     const completedParentalChallenge =  useRecoilValue(completeParentalGate);
     const {
         loading,
@@ -109,7 +104,7 @@ export function Auth ({ useInAppBrowser }: Props) {
 
     if(loading) return null;
 
-    if (!loading && !authenticated && isShowLandingPage) {
+    if (!loading && !authenticated && !completedParentalChallenge) {
         return(<Redirect to="/landing" />);
     }
 
