@@ -169,7 +169,6 @@ export function ParentalGate ({
     const BADA_CHARACTER_WIDTH_MOBILE = 88;
     const BADA_CHARACTER_WIDTH_TABLET = 200;
 
-
     useEffect(() => {
         setHeader(isWelcomeScreen ? `parentalGate.title` : `forParents.title`);
     }, [ isWelcomeScreen ]);

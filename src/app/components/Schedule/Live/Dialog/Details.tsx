@@ -3,13 +3,13 @@ import AttachmentDownloadButton from "@/app/components/Schedule/Attachment/Downl
 import AttachmentNameLink from "@/app/components/Schedule/Attachment/NameLink";
 import BaseScheduleDialog from "@/app/components/Schedule/BaseDialog";
 import { useSelectedOrganizationValue } from "@/app/data/user/atom";
-import {
-    LayoutMode,
-    layoutModeState,
-} from "@/app/model/appModel";
+import { dialogsState } from "@/app/model/appModel";
 import { ScheduleLiveTokenType } from "@/app/services/cms/ISchedulerService";
 import { formatDateTimeMillis } from "@/app/utils/dateTimeUtils";
-import { generateDescriptionHasHyperLink } from "@/app/utils/link";
+import {
+    generateDescriptionHasHyperLink,
+    openHyperLink,
+} from "@/app/utils/link";
 import { BG_COLOR_GO_LIVE_BUTTON } from "@/config";
 import { useSessionContext } from "@/providers/session-context";
 import { fromSecondsToMilliseconds } from "@/utils/utils";
@@ -30,9 +30,9 @@ import React,
     useState,
 } from "react";
 import { useIntl } from "react-intl";
-import { useSetRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
 
-const useStyles = makeStyles((theme) => createStyles({
+const useStyles = makeStyles(() => createStyles({
     rowContentText: {
         overflowWrap: `break-word`,
         wordWrap: `break-word`,
@@ -58,7 +58,7 @@ export default function LiveDetailsDialog (props: Props) {
     const intl = useIntl();
     const [ timeBeforeClassSeconds, setTimeBeforeClassSeconds ] = useState(Number.MAX_SAFE_INTEGER);
     const [ getTokenLoading, setGetTokenLoading ] = useState(false);
-    const [ parentalLock, setParentalLock ] = useState(false);
+    const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
     const [ hyperlink, setHyperlink ] = useState<string>();
     const { setToken } = useSessionContext();
     const organization = useSelectedOrganizationValue();
@@ -95,6 +95,13 @@ export default function LiveDetailsDialog (props: Props) {
         };
     }, [ scheduleData ]);
 
+    const setParentalLock = (open: boolean) => {
+        setDialogs({
+            ...dialogs,
+            isParentalLockOpen: open,
+        });
+    };
+
     const handleJoinLiveClass = async () => {
         if (!scheduleId) return;
         setGetTokenLoading(true);
@@ -126,17 +133,18 @@ export default function LiveDetailsDialog (props: Props) {
     }, [ hyperlink ]);
 
     useEffect(() => {
-        if (!parentalLock) {
+        if (!dialogs.isParentalLockOpen) {
             setHyperlink(undefined);
         }
-    }, [ parentalLock ]);
+    }, [ dialogs.isParentalLockOpen ]);
 
-    if (parentalLock && hyperlink) {
+    if (dialogs.isParentalLockOpen && hyperlink) {
         return (
             <DialogParentalLock
-                hyperlink={hyperlink}
-                open={parentalLock}
-                onClose={() => setParentalLock(false)}
+                onCompleted={() => {
+                    openHyperLink(hyperlink ?? ``);
+                    setParentalLock(false);
+                }}
             />
         );
     }

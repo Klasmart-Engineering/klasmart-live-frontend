@@ -1,5 +1,4 @@
 import { useSelectedUserValue } from "../data/user/atom";
-import { ExitDialog } from "../dialogs/exitDialog";
 import useCordovaInitialize from "../platform/cordova-initialize";
 import {
     enableFullScreen,
@@ -9,12 +8,13 @@ import {
 import {
     dialogsState,
     LayoutMode,
+    menuOpenState,
     OrientationType,
-    shouldClearCookieState,
     useLayoutModeValue,
-    useSetLayoutMode,
     useSetDeviceOrientation,
+    useSetLayoutMode,
 } from "@/app/model/appModel";
+import { Device } from "@/app/types/device";
 import { sleep } from "@/utils/utils";
 import { History } from "history";
 import React,
@@ -28,11 +28,7 @@ import React,
     useRef,
     useState,
 } from "react";
-import {
-    useRecoilState,
-    useSetRecoilState,
-} from "recoil";
-import {Device} from "@/app/types/device";
+import { useRecoilState } from "recoil";
 import semver from "semver";
 
 const initialHref = location.href;
@@ -80,7 +76,6 @@ export const CordovaSystemContext = createContext<CordovaSystemContext>({
 });
 
 export function CordovaSystemProvider ({ children, history }: Props) {
-    const [ displayExitDialogue, setDisplayExitDialogue ] = useState<boolean>(false);
     const onBackQueue = useRef<OnBackItem[]>([]); //useState is not enough fast for backPressed behaviour
     const [ permissions, setPermissions ] = useState(false);
     const layoutMode = useLayoutModeValue();
@@ -88,8 +83,9 @@ export function CordovaSystemProvider ({ children, history }: Props) {
     const setDeviceOrientation = useSetDeviceOrientation();
     const selectedUser = useSelectedUserValue();
     const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
-    const setShouldClearCookie = useSetRecoilState(shouldClearCookieState);
-    const isBackToPreviousScreen = selectedUser && (dialogs.isSelectOrganizationOpen || dialogs.isSelectUserOpen);
+    const [ isMenuOpen, setMenuOpen ] = useRecoilState(menuOpenState);
+    const isAnyDialogOpen = Object.values(dialogs).includes(true) && !dialogs.isShowNoStudentRole && !dialogs.isShowNoOrgProfile;
+    const isBackToPreviousScreen = selectedUser && (isAnyDialogOpen || isMenuOpen);
     const [ shouldUpgradeDevice, setShouldUpgradeDevice ] = useState(false);
 
     function addOnBack (onBackItem: OnBackItem) {
@@ -103,20 +99,20 @@ export function CordovaSystemProvider ({ children, history }: Props) {
     useEffect(() => {
         history.listen((location) => {
             switch (location.pathname) {
-                case `/schedule/anytime-study`:
-                    setLayoutMode(LayoutMode.DEFAULT);
-                    break;
-                case `/join`:
-                    setLayoutMode(LayoutMode.CLASSROOM);
-                    break;
-                case `/room`:
-                    setLayoutMode(LayoutMode.CLASSROOM);
-                    break;
-                default:
-                    setLayoutMode(LayoutMode.DEFAULT);
-                    break;
+            case `/schedule/anytime-study`:
+                setLayoutMode(LayoutMode.DEFAULT);
+                break;
+            case `/join`:
+                setLayoutMode(LayoutMode.CLASSROOM);
+                break;
+            case `/room`:
+                setLayoutMode(LayoutMode.CLASSROOM);
+                break;
+            default:
+                setLayoutMode(LayoutMode.DEFAULT);
+                break;
             }
-        })
+        });
     }, []);
 
     useEffect(()=>{
@@ -165,23 +161,41 @@ export function CordovaSystemProvider ({ children, history }: Props) {
     }, []);
 
     const quit = useCallback(() => {
-        //Fake clear cookie when users first sign in and they're at profile page
-        if (selectedUser === undefined && dialogs.isSelectUserOpen) {
-            setShouldClearCookie(true);
-        }
         (navigator as any).app.exitApp();
-    }, [ dialogs.isSelectUserOpen, selectedUser ]);
+    }, []);
 
     const {
         cordovaReady,
         isIOS,
         isAndroid,
-        deviceInfo
+        deviceInfo,
     } = useCordovaInitialize(false, () => {
         const isRootPage = window.location.hash === `#/schedule` || window.location.hash === `#/`;
         const isRoomPage = window.location.hash === `#/room`;
 
-        if (isRootPage || isRoomPage) {
+        if (dialogs.isParentalLockOpen){
+            setDialogs({
+                ...dialogs,
+                isParentalLockOpen: false,
+            });
+            return;
+        }
+
+        if (isBackToPreviousScreen) {
+            setDialogs({
+                isSelectOrganizationOpen: false,
+                isSelectUserOpen: false,
+                isParentalLockOpen: false,
+                isShowNoOrgProfile: false,
+                isShowNoStudentRole: false,
+                isLiveClassDetailOpen: false,
+                isStudyDetailOpen: false,
+            });
+            setMenuOpen(false);
+            return;
+        }
+
+        if (isRootPage || isRoomPage || !selectedUser) {
             if (onBackQueue.current.length > 0) {
                 const latestOnBackItem = onBackQueue.current[onBackQueue.current.length - 1];
                 latestOnBackItem.onBack();
@@ -190,25 +204,7 @@ export function CordovaSystemProvider ({ children, history }: Props) {
                 }
                 return;
             }
-            if (isBackToPreviousScreen) {
-                if (dialogs.isSelectOrganizationOpen) {
-                    setDialogs({
-                        ...dialogs,
-                        isSelectOrganizationOpen: false,
-                    });
-                } else if (dialogs.isSelectUserOpen) {
-                    setDialogs({
-                        ...dialogs,
-                        isSelectUserOpen: false,
-                    });
-                }
-                return;
-            }
-            if (displayExitDialogue) {
-                quit();
-            } else {
-                setDisplayExitDialogue(true);
-            }
+            quit();
         }
         else {
             history.goBack();
@@ -298,7 +294,11 @@ export function CordovaSystemProvider ({ children, history }: Props) {
         else if(isAndroid) {
             // TODO: Implement for Android if needed
         }
-    }, [isIOS, isAndroid, deviceInfo]);
+    }, [
+        isIOS,
+        isAndroid,
+        deviceInfo,
+    ]);
 
     return (
         <CordovaSystemContext.Provider value={{
@@ -314,15 +314,7 @@ export function CordovaSystemProvider ({ children, history }: Props) {
             removeOnBack: removeOnBack,
             requestPermissions: requestPermissions,
         }}>
-            {cordovaReady &&
-                <>
-                    {children}
-                    <ExitDialog
-                        visible={displayExitDialogue}
-                        onCancel={() => setDisplayExitDialogue(false)}
-                        onConfirm={() => quit()} />
-                </>
-            }
+            {cordovaReady && children}
         </CordovaSystemContext.Provider>
     );
 }

@@ -14,6 +14,7 @@ import {
 } from "@/app/components/Schedule/shared";
 import { useSelectedOrganizationValue } from "@/app/data/user/atom";
 import { useMeQuery } from "@/app/data/user/queries/meQuery";
+import { dialogsState } from "@/app/model/appModel";
 import { formatStartEndDateTimeMillis } from "@/app/utils/dateTimeUtils";
 import {
     isFocused,
@@ -54,8 +55,9 @@ import React,
 } from "react";
 import { useBottomScrollListener } from 'react-bottom-scroll-listener';
 import { useIntl } from "react-intl";
+import { useRecoilState } from "recoil";
 
-const useStyles = makeStyles((theme) => createStyles({
+const useStyles = makeStyles(() => createStyles({
     listRoot: {
         width: `100%`,
         backgroundColor: THEME_COLOR_BACKGROUND_LIST,
@@ -75,6 +77,7 @@ export default function LiveScheduleList () {
     const classes = useStyles();
     const intl = useIntl();
     const [ selectedScheduleId, setSelectedScheduleId ] = useState<string>();
+    const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
     const [ page, setPage ] = useState(SCHEDULE_PAGE_START);
     const [ items, setItems ] = useState<SchedulesTimeViewListItem[]>([]);
     const organization = useSelectedOrganizationValue();
@@ -186,6 +189,14 @@ export default function LiveScheduleList () {
             : [],
     ];
 
+    const setLiveClassDetailOpen = (scheduleId?: string) => {
+        setDialogs({
+            ...dialogs,
+            isLiveClassDetailOpen: !!scheduleId,
+        });
+        setSelectedScheduleId(scheduleId);
+    };
+
     if (scheduleError) {
         if (isSchedulesFetching) return <ScheduleLoading />;
         return <ScheduleErrorRetryButton onClick={() => refetchSchedules()}/>;
@@ -222,7 +233,7 @@ export default function LiveScheduleList () {
                                     )}
                                     title={liveSchedule.title}
                                     subtitle={formatStartEndDateTimeMillis(fromSecondsToMilliseconds(liveSchedule.start_at), fromSecondsToMilliseconds(liveSchedule.end_at), intl)}
-                                    onClick={() => setSelectedScheduleId(liveSchedule.id)}
+                                    onClick={() => setLiveClassDetailOpen(liveSchedule.id)}
                                 />
                             ))}
                         </ul>
@@ -239,9 +250,9 @@ export default function LiveScheduleList () {
             </List>
             <LiveClassDetailsDialog
                 scheduleId={selectedScheduleId}
-                open={!!selectedScheduleId}
+                open={dialogs.isLiveClassDetailOpen}
                 onClose={() => {
-                    setSelectedScheduleId(undefined);
+                    setLiveClassDetailOpen(undefined);
                 }}
             />
         </>

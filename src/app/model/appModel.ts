@@ -27,6 +27,8 @@ export const dialogsState = atom({
         isParentalLockOpen: false,
         isShowNoOrgProfile: false,
         isShowNoStudentRole: false,
+        isLiveClassDetailOpen: false,
+        isStudyDetailOpen: false,
     },
 });
 
@@ -106,11 +108,6 @@ export const shouldShowNoOrgProfileState = atom({
 export const shouldShowNoStudentRoleState = atom({
     key: `shouldShowNoStudentRole`,
     default: false,
-});
-
-export const isOpenLandingPage = atom<boolean>({
-    key: `isOpenLandingPage`,
-    default: true,
 });
 
 export const completeParentalGate = atom<boolean>({
