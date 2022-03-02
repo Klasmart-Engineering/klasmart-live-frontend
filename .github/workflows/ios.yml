@@ -53,6 +53,7 @@ jobs:
           xcodebuild -list -workspace ./platforms/ios/KidsLoop.xcworkspace
           xcodebuild -list -project ./platforms/ios/KidsLoop.xcodeproj
 
+          sudo chown -R 501:20 "/Users/runner/.npm"
           cordova build ios --buildFlag='-UseModernBuildSystem=0'
       - name: Archive app build
         uses: actions/upload-artifact@v2
