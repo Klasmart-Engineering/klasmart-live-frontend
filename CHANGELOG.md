@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.2.1-hotfix.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v4.2.1-hotfix.0%0Dv4.2.0) (2022-03-02)
+
+
+### Bug Fixes
+
+* load record script on iframe finished loading ([cbd7896](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/cbd78960eef44e6c0dfed9e9e325d5feb043a410))
+
 ## [4.2.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v4.2.0%0Dv4.1.0) (2022-02-23)
 
 
