@@ -97,7 +97,7 @@ export default function InteractionRecorder (props: Props): JSX.Element {
 
     const [ openDialog, setOpenDialog ] = useState(true);
     const [ seconds, setSeconds ] = useState(MAX_LOADING_COUNT);
-    const [ loadStatus, setLoadStatus ] = useState(LoadStatus.Finished);
+    const [ loadStatus, setLoadStatus ] = useState(LoadStatus.Loading);
     const [ intervalId, setIntervalId ] = useState<number>();
     const [ userCount, setUserCount ] = useState(sessions.size);
     const [ initialActivityArea, setInitialActivityArea ] = useState({
@@ -181,36 +181,20 @@ export default function InteractionRecorder (props: Props): JSX.Element {
     }, [ sessions ]);
 
     useEffect(() => {
-        setSeconds(MAX_LOADING_COUNT);
         setLoadStatus(LoadStatus.Loading);
+        setSeconds(MAX_LOADING_COUNT);
+        setOpenDialog(true);
+        const interval = window.setInterval(() => {
+            setSeconds(seconds => seconds - 1);
+        }, 1000);
+        setIntervalId(interval);
+        return () => clearInterval(intervalId);
     }, [ contentHrefWithToken ]);
 
-    useEffect(() => {
-        if (loadStatus === LoadStatus.Loading) {
-            setOpenDialog(true);
-            const interval = window.setInterval(() => {
-                setSeconds(seconds => seconds - 1);
-            }, 1000);
-            setIntervalId(interval);
-        } else if (loadStatus === LoadStatus.Finished) {
-            setTimeout(function () {
-                setOpenDialog(false);
-                clearInterval(intervalId);
-                onLoad();
-                startRecording();
-            }, 500);
-        } else if (seconds <= 0 || loadStatus === LoadStatus.Error) {
-            clearInterval(intervalId);
-        }
-        return () => clearInterval(intervalId);
-    }, [ loadStatus ]);
-
     function onLoad () {
-        // TODO the client-side rendering version of H5P is ready! we can probably delete this function and the scale function above
-        // if we switch over to it! Ask me (Daiki) about the details.
-        const iframeElement = window.document.getElementById(`recordediframe`) as HTMLIFrameElement;
-        const contentWindow = iframeElement.contentWindow;
-        const contentDoc = iframeElement.contentDocument;
+        const iframeElement = iframeRef.current;
+        const contentWindow = iframeElement?.contentWindow;
+        const contentDoc = iframeElement?.contentDocument;
 
         if (!contentWindow || !contentDoc) { return; }
 
@@ -316,7 +300,7 @@ export default function InteractionRecorder (props: Props): JSX.Element {
     function startRecording () {
         if (process.env.IS_CORDOVA_BUILD) {
             try {
-                const iRef = window.document.getElementById(`recordediframe`) as HTMLIFrameElement;
+                const iRef = iframeRef.current;
                 if (!iRef ||
                     !iRef.contentWindow ||
                     (iRef.contentWindow as any).kidslooplive ||
@@ -328,7 +312,7 @@ export default function InteractionRecorder (props: Props): JSX.Element {
             }
         } else {
             try {
-                const iRef = window.document.getElementById(`recordediframe`) as HTMLIFrameElement;
+                const iRef = iframeRef.current;
                 if (!iRef ||
                     !iRef.contentWindow ||
                     (iRef.contentWindow as any).kidslooplive ||
@@ -369,7 +353,17 @@ export default function InteractionRecorder (props: Props): JSX.Element {
                         src={contentHrefWithToken}
                         allow="microphone"
                         className={classes.activity}
-                        onLoad={() => setLoadStatus(LoadStatus.Finished)}
+                        onLoad={() => {
+                            onLoad();
+                            startRecording();
+                            setLoadStatus(LoadStatus.Finished);
+                            clearInterval(intervalId);
+                            setOpenDialog(false);
+                        }}
+                        onError={() => {
+                            setLoadStatus(LoadStatus.Error);
+                            clearInterval(intervalId);
+                        }}
                     />
                     <BaseWhiteboard
                         group={group}
