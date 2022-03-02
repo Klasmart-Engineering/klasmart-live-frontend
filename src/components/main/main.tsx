@@ -61,6 +61,7 @@ function Main () {
                 item
                 xs
                 className={classes.contentContainer}
+                id="content-container"
             >
                 <Grid
                     container
