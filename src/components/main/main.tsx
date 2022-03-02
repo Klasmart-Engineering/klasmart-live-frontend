@@ -23,6 +23,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     contentContainer: {
         padding: theme.spacing(1, 1, 0, 1),
+        overflowY: `auto`,
     },
     activityContainer: {
         backgroundColor: THEME_COLOR_GREY_200,
