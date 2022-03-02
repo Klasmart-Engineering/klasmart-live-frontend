@@ -55,7 +55,7 @@ export default function AlertPopper (props: Props) {
             placement="top"
             modifiers={{
                 preventOverflow: {
-                    boundariesElement: document.getElementById(`content-container`),
+                    boundariesElement: document.getElementById(`main-content`),
                 },
                 offset: {
                     enabled: true,
