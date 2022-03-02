@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.2.1-hotfix.3](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v4.2.1-hotfix.3%0Dv4.2.1-hotfix.2) (2022-03-02)
+
+
+### Bug Fixes
+
+* set better boundaries element ([899c55b](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/899c55b0124fadb77128535eeae855fbe5233494))
+
 ### [4.2.1-hotfix.2](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v4.2.1-hotfix.2%0Dv4.2.1-hotfix.1) (2022-03-02)
 
 
