@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.2.1-hotfix.2](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v4.2.1-hotfix.2%0Dv4.2.1-hotfix.1) (2022-03-02)
+
+
+### Bug Fixes
+
+* boundaries of Popper elements (content-container) ([aa1b066](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/aa1b066e49f20d0f600b55e7741e4ca40f25d660))
+
 ### [4.2.1-hotfix.1](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v4.2.1-hotfix.1%0Dv4.2.1-hotfix.0) (2022-03-02)
 
 
