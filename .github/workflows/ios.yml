@@ -1,0 +1,100 @@
+name: iOS starter workflow
+
+on:
+  push:
+    branches: [ "unlfs-ios" ]
+  pull_request:
+    branches: [ "unlfs-ios" ]
+
+jobs:
+  build:
+    name: Build and Test default scheme using any available iPhone simulator
+    runs-on: macos-11
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          lfs: 'true'
+          submodules: 'recursive'
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16
+          token: ${{ secrets.PAT_NPM_GITHUB_REPO }}
+      - name: setup ios build
+        run: |
+          ruby --version
+          brew install fastlane
+          brew install git-lfs
+          git lfs pull
+      - name: Setup Cordova
+        run: |
+          sudo npm install -g cordova
+          cordova telemetry off
+      # - name: Dependencies install and build
+      #   # fixes cache issue
+      #   # [ $? -ne 0 ] && echo "Failed to build webpack" && exit 1
+      #   # sudo rm -rf /Users/runner/.npm/_cacache/*
+      #   run: |
+      #     npm ci
+      #     npm run build:app
+      #   env:
+      #     NPM_GITHUB_TOKEN: ${{secrets.PAT_NPM_GITHUB_REPO}}
+      - name: Prep iOS development
+        env:
+          ENDPOINT_GQL: "https://live.kidsloop.net/graphql"
+          USE_TEST_TOKEN: 1
+          WEBRTC_DEVICE_HANDLER_NAME: Safari12
+          CUSTOM_UA: cordovaios
+          IS_CORDOVA_BUILD: "true"
+
+          NPM_GITHUB_TOKEN: ${{secrets.PAT_NPM_GITHUB_REPO}}
+        run: |
+          npm ci
+          npm run build:app
+          ./scripts/parse-cordova-private-plugins.sh          
+          cordova prepare ios
+          ./scripts/edit-ios-platform.sh
+
+          xcodebuild -list -workspace ./platforms/ios/KidsLoop.xcworkspace
+          xcodebuild -list -project ./platforms/ios/KidsLoop.xcodeproj
+
+          sudo chown -R 501:20 "/Users/runner/.npm"
+          cordova build ios --buildFlag='-UseModernBuildSystem=0'
+      - name: Archive app build
+        uses: actions/upload-artifact@v2
+        with:
+          name: KidsLoop.app
+          path: ./platforms/ios/build/emulator/KidsLoop.app
+      # xcodebuild -list -project ./platforms/ios/KidsLoop.xcodeproj -json | tr -d "\n" | jq -M
+      # KidsLoop - scheme
+      # - name: Set Default Scheme
+      #   run: |
+      #     scheme_list=$(xcodebuild -list -json | tr -d "\n")
+      #     default=$(echo $scheme_list | ruby -e "require 'json'; puts JSON.parse(STDIN.gets)['project']['targets'][0]")
+      #     echo $default | cat >default
+      #     echo Using default scheme: $default
+      # - name: Build
+      #   env:
+      #     scheme: "KidsLoop"
+      #     platform: ${{ 'iOS Simulator' }}
+      #   run: |
+      #     # xcrun xctrace returns via stderr, not the expected stdout (see https://developer.apple.com/forums/thread/663959)
+      #     device=`xcrun xctrace list devices 2>&1 | grep -oE 'iPhone.*?[^\(]+' | head -1 | awk '{$1=$1;print}'`
+      #     if [ $scheme = default ]; then scheme=$(cat default); fi
+      #     if [ "`ls -A | grep -i \\.xcworkspace\$`" ]; then filetype_parameter="workspace" && file_to_build="`ls -A | grep -i \\.xcworkspace\$`"; else filetype_parameter="project" && file_to_build="`ls -A | grep -i \\.xcodeproj\$`"; fi
+      #     file_to_build=`echo $file_to_build | awk '{$1=$1;print}'`
+      #     xcodebuild build-for-testing -scheme "$scheme" -"$filetype_parameter" "$file_to_build" -destination "platform=$platform,name=$device"
+      # - name: Test
+      #   env:
+      #     scheme: ${{ 'default' }}
+      #     platform: ${{ 'iOS Simulator' }}
+      #   run: |
+      #     # xcrun xctrace returns via stderr, not the expected stdout (see https://developer.apple.com/forums/thread/663959)
+      #     device=`xcrun xctrace list devices 2>&1 | grep -oE 'iPhone.*?[^\(]+' | head -1 | awk '{$1=$1;print}'`
+      #     if [ $scheme = default ]; then scheme=$(cat default); fi
+      #     if [ "`ls -A | grep -i \\.xcworkspace\$`" ]; then filetype_parameter="workspace" && file_to_build="`ls -A | grep -i \\.xcworkspace\$`"; else filetype_parameter="project" && file_to_build="`ls -A | grep -i \\.xcodeproj\$`"; fi
+      #     file_to_build=`echo $file_to_build | awk '{$1=$1;print}'`
+      #     xcodebuild test-without-building -scheme "$scheme" -"$filetype_parameter" "$file_to_build" -destination "platform=$platform,name=$device"
+      # xcodebuild -scheme ./platforms/ios/KidsLoop build
+      # xcodebuild -workspace ./platforms/ios/KidsLoop.xcworkspace -scheme KidsLoop
+          
