@@ -365,7 +365,16 @@ export const CameraContextProvider = (props: Props) => {
     useEffect(() => {
         if (!acquireDevices) return;
         refreshCameras();
-    }, [ acquireDevices, selectedVideoDeviceId ]);
+    }, [ acquireDevices ]);
+
+    useEffect(() => {
+        !isIOS && requestCameraOnAndroid();
+    }, [ selectedVideoDeviceId ]);
+
+    const requestCameraOnAndroid = () => {
+        releaseCameraStream();
+        acquireCameraStream();
+    };
 
     useEffect(() => {
         if (!isListeningOnDeviceChange) return;
