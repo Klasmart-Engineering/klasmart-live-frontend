@@ -22,7 +22,8 @@ const useStyles = makeStyles((theme: Theme) => ({
         height: `100%`,
     },
     contentContainer: {
-        padding: theme.spacing(1, 1, 0, 1),
+        margin: theme.spacing(1, 1, 0, 1),
+        overflowY: `auto`,
     },
     activityContainer: {
         backgroundColor: THEME_COLOR_GREY_200,
@@ -64,6 +65,7 @@ function Main () {
                 item
                 xs
                 className={classes.contentContainer}
+                id="main-content"
             >
                 <Grid
                     container
@@ -75,7 +77,6 @@ function Main () {
                     >
                         <div
                             ref={containerRef}
-                            id="main-content"
                             className={clsx(classes.activityContainer, classes.fullHeight, {
                                 [classes.activityContainerStudy]: classType === ClassType.STUDY,
                             })}
