@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.3.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v4.3.0%0Dv4.2.0) (2022-03-08)
+
+
+### Features
+
+* re-design study activity ([ebfff39](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/ebfff3989c0c942a7f920b6979086d558e255617)), closes [feat/KLL-2786](https://calmisland.atlassian.net/browse/KLL-2786)
+* remove participant tab for student role ([f7df964](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/f7df9648b3148f0294d01248c1c7866f95ab0e47)), closes [feat/KLL-2640](https://calmisland.atlassian.net/browse/KLL-2640) [feat/KLL-2640](https://calmisland.atlassian.net/browse/KLL-2640)
+* remove quitting logic ([ab8eb23](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/ab8eb2363b737eb76b02fcfec473b69e3e8233b3)), closes [KLL-2318](https://calmisland.atlassian.net/browse/KLL-2318)
+
+
+### Bug Fixes
+
+* add version to record script to prevent cache issue ([92362d5](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/92362d5416cb77986b6e68840065bb1c77a53f99))
+* keyboard hides comment field in feedback screen ([1ff6da9](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/1ff6da9f33b8054fdb1280f9ab5a37e87bad94b6)), closes [fix/KLL-2438](https://calmisland.atlassian.net/browse/KLL-2438)
+* load record script on iframe finished loading ([99b0a96](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/99b0a96f7374a159011d7d061ed00849f805088f))
+* scroll in the view (from  4.2.0-hotfix.3) ([49cd936](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/49cd93682c3f23d4405cb3b0b670d6408c859728))
+
+
+### Refactor
+
+* <Loading/> component ([934a30e](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/934a30eb2769016617516fea08de3cde3b6e90c8))
+* use <ButtonBase/> for toolbar item ([1808a6a](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/1808a6a8bf00f8497502b6284f29f9f325d71799))
+
 ## [4.2.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v4.2.0%0Dv4.1.0) (2022-02-23)
 
 
