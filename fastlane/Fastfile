@@ -1,0 +1,26 @@
+fastlane_require 'dotenv'
+
+
+
+
+default_platform(:ios)
+
+platform :ios do
+  before_all do
+    Dotenv.overload('.env', '.env.secret')
+  end
+
+  desc "Sync signing"
+  lane :signing do
+    match(type: "development", readonly: is_ci)
+  end
+  desc "build ios app"
+  lane :build do
+    signing
+  end
+  desc "publish"
+  lane :publish do
+    build
+  end
+
+end

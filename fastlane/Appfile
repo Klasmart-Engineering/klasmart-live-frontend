@@ -1,0 +1,8 @@
+app_identifier("com.kidsloop.platform.student") # The bundle identifier of your app
+# apple_id("build-machine@calmid.com") # Your Apple email address
+
+# itc_team_id("990163") # App Store Connect Team ID
+# team_id("H5LAQS44DF") # Developer Portal Team ID
+
+# # For more information about the Appfile, see:
+# #     https://docs.fastlane.tools/advanced/#appfile

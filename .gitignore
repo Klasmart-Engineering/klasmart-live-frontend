@@ -15,5 +15,7 @@ coverage
 /platforms/
 /www/
 
+# Fastlane
+.env.secret
 *.secret
 *.secrets
