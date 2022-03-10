@@ -23,9 +23,7 @@ jobs:
       - name: setup ios build
         run: |
           ruby --version
-          brew install fastlane
-          brew install git-lfs
-          git lfs pull
+          gem install bundler:1.17.2
           bundle init
           bundle install
       - name: Setup Cordova
@@ -60,8 +58,9 @@ jobs:
           xcodebuild -list -workspace ./platforms/ios/KidsLoop.xcworkspace
           xcodebuild -list -project ./platforms/ios/KidsLoop.xcodeproj
 
-          sudo chown -R 501:20 "/Users/runner/.npm"
-          cordova build ios --buildFlag='-UseModernBuildSystem=0'
+        # temporarily disable the full cordova emulator build
+        # sudo chown -R 501:20 "/Users/runner/.npm"
+        # cordova build ios --buildFlag='-UseModernBuildSystem=0'
       - name: fastlane stuff
         env:
           FASTLANE: 1
