@@ -12,10 +12,7 @@ import {
 import { Person as UserIcon } from "@styled-icons/fluentui-system-regular/Person";
 import clsx from "clsx";
 import React,
-{
-    useEffect,
-    useState,
-} from "react";
+{ useMemo } from "react";
 import { useIntl } from "react-intl";
 
 const useStyles = makeStyles(() => ({
@@ -43,8 +40,6 @@ const useStyles = makeStyles(() => ({
         marginBottom: `15px`,
     },
     gridContainerStudents: {
-        overflowX : `hidden`,
-        overflowY : `auto`,
         marginBottom: -10,
         paddingBottom: 10,
     },
@@ -60,15 +55,13 @@ function TabParticipants () {
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
 
-    const [ studentsSessions, setStudentsSessions ] = useState<Session[]>([]);
-    const [ teachersSessions, setTeachersSessions ] = useState<Session[]>([]);
+    const studentsSessions = useMemo(() => [ ...sessions.values() ]
+        .filter(s => s.isTeacher)
+        .sort(sessionComparator), [ sessions ]);
 
-    useEffect(() => {
-        const teachers = [ ...sessions.values() ].filter(session => session.isTeacher === true);
-        setTeachersSessions(teachers);
-        const students = [ ...sessions.values() ].filter(session => session.isTeacher !== true);
-        setStudentsSessions(students);
-    }, [ sessions ]);
+    const teachersSessions = useMemo(() => [ ...sessions.values() ]
+        .filter(s => !s.isTeacher)
+        .sort(sessionComparator), [ sessions ]);
 
     return (
         <Fade in>
@@ -88,7 +81,8 @@ function TabParticipants () {
                             {teachersSessions.map((user) => (
                                 <UserCamera
                                     key={user.id}
-                                    user={user} />
+                                    user={user}
+                                />
                             ))}
                         </div>
                     ) : <NoItemList
@@ -123,5 +117,13 @@ function TabParticipants () {
         </Fade>
     );
 }
+
+const sessionComparator = (a: Session, b: Session) => {
+    if (Boolean(a.isHost) !== Boolean(b.isHost)) {
+        return a.isHost ? 1 : -1;
+    }
+
+    return a.name.localeCompare(b.name);
+};
 
 export default TabParticipants;

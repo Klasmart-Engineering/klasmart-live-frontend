@@ -6,7 +6,6 @@ import {
     LiveServiceApolloClient,
     useLiveServiceApolloClient,
 } from "@/data/live/liveServiceApolloClient";
-import { useSfuServiceApolloClient } from "@/data/sfu/sfuServiceApolloClient";
 import EndClass from "@/pages/end/endClass";
 import LiveClassProvider from "@/providers/class/liveClassProvider";
 import StudyClassProvider from "@/providers/class/studyClassProvider";
@@ -71,10 +70,9 @@ const LiveRoom: React.FC = () => {
 
 const LiveLoading: React.FC = ({ children }) => {
     const { isLoading: liveLoading, isError: liveError } = useLiveServiceApolloClient();
-    const { isLoading: sfuLoading, isError: sfuError } = useSfuServiceApolloClient();
 
-    const isLoading = useMemo(() => liveLoading || sfuLoading, [ liveLoading, sfuLoading ]);
-    const isError = useMemo(() => liveError || sfuError, [ liveError, sfuError ]);
+    const isLoading = useMemo(() => liveLoading, [ liveLoading ]);
+    const isError = useMemo(() => liveError, [ liveError ]);
 
     if (isLoading) {
         return <Loading messageId="loading" />;

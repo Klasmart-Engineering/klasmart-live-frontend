@@ -1,13 +1,12 @@
 import { AuthenticationContextProvider } from "./authentication-context";
 import { ServicesProvider } from "./services-provider";
-import { CameraContextProvider } from "@/providers/Camera";
+import { FeatureProvider } from "@/providers/feature-context";
 import { RegionSelectProvider } from "@/providers/region-select-context";
 import { SessionContextProvider } from "@/providers/session-context";
 import React, {
     ReactChild,
     ReactChildren,
 } from "react";
-import {FeatureProvider} from "@/providers/feature-context";
 
 type Props = {
     children: ReactChild | ReactChildren | null;
@@ -21,9 +20,7 @@ export function CompositionRoot ({ children, sessionId }: Props) {
                 <ServicesProvider>
                     <SessionContextProvider sessionId={sessionId}>
                         <AuthenticationContextProvider>
-                                <CameraContextProvider>
-                                    { children }
-                                </CameraContextProvider>
+                            { children }
                         </AuthenticationContextProvider>
                     </SessionContextProvider>
                 </ServicesProvider>

@@ -11,7 +11,10 @@ import { grey } from "@material-ui/core/colors";
 import { StyledIcon } from '@styled-icons/styled-icon';
 import clsx from "clsx";
 import React,
-{ useRef } from "react";
+{
+    RefObject,
+    useRef,
+} from "react";
 import {
     LongPressDetectEvents,
     useLongPress,
@@ -53,8 +56,8 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 interface ViewModeProps {
 	active?: boolean;
-	onClick: (buttonRef?: React.MutableRefObject<HTMLDivElement | HTMLButtonElement | null>) => void;
-    onCloseAlert?: () => void;
+	onClick: (buttonRef: RefObject<HTMLButtonElement>) => unknown;
+    onCloseAlert?: () => unknown;
 	icon: StyledIcon;
 	title: string;
     disabled?: boolean;
@@ -70,7 +73,7 @@ function ViewMode (props: ViewModeProps) {
         disabled,
     } = props;
 
-    const buttonRef = useRef<HTMLButtonElement | null>(null);
+    const buttonRef = useRef<HTMLButtonElement>(null);
     const classes = useStyles();
 
     const clickEvent = useLongPress(() => onClick(buttonRef), {

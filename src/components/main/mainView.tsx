@@ -5,15 +5,12 @@ import Present from "./viewModes/Present";
 import Screenshare from "./viewModes/Screenshare";
 import { useContent } from "@/data/live/state/useContent";
 import { ContentType } from "@/pages/utils";
-import { ScreenShareContext } from "@/providers/screenShareProvider";
-import { WebRTCContext } from "@/providers/WebRTCContext";
 import { isLessonPlanOpenState } from "@/store/layoutAtoms";
 import {
     makeStyles,
     Theme,
 } from "@material-ui/core";
-import React,
-{ useContext } from "react";
+import React from "react";
 import { useRecoilValue } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({}));
@@ -24,18 +21,15 @@ interface Props {
 function MainView (props: Props) {
     const classes = useStyles();
     const content = useContent();
-    const screenShare = useContext(ScreenShareContext);
-    const webrtc = useContext(WebRTCContext);
 
     const isLessonPlanOpen = useRecoilValue(isLessonPlanOpenState);
 
-    const activeScreenshare = screenShare.stream || content && webrtc.getAuxStream(content.contentId);
     const activePresent = content?.type === ContentType.Stream || content?.type === ContentType.Video || content?.type === ContentType.Audio || content?.type === ContentType.Image;
 
     // SCREENSHARE VIEW
     // TEACHER and STUDENTS : Host Screen
-    if (content?.type === ContentType.Screen && activeScreenshare) return (
-        <Screenshare />
+    if (content?.type === ContentType.Screen) return (
+        <Screenshare sessionId={content.contentId}/>
     );
 
     // PRESENT VIEW

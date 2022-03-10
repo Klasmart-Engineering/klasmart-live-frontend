@@ -1,7 +1,5 @@
 import { Session } from "@/pages/utils";
 import { useSessionContext } from "@/providers/session-context";
-import { WebRTCContext } from "@/providers/WebRTCContext";
-import { isActiveGlobalMuteAudioState } from "@/store/layoutAtoms";
 import {
     makeStyles,
     Theme,
@@ -9,17 +7,15 @@ import {
 } from "@material-ui/core";
 import amber from "@material-ui/core/colors/amber";
 import { MicMuteFill as MicDisabledIcon } from "@styled-icons/bootstrap/MicMuteFill";
+import { Microphone as MicIcon } from '@styled-icons/boxicons-solid/Microphone';
 import { Crown as HasControlsIcon } from "@styled-icons/fa-solid/Crown";
 import { HatGraduation as TeacherIcon } from "@styled-icons/fluentui-system-filled/HatGraduation";
+import { SpeakerOff } from '@styled-icons/fluentui-system-filled/SpeakerOff';
 import clsx from "clsx";
+import { Track } from "kidsloop-live-state/ui";
 import React,
-{
-    useContext,
-    useEffect,
-    useState,
-} from "react";
+{ VoidFunctionComponent } from "react";
 import { FormattedMessage } from "react-intl";
-import { useRecoilValue } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -148,25 +144,16 @@ const useStyles = makeStyles((theme: Theme) => ({
 interface UserCameraDetailsType {
     user: Session;
     variant?: "medium" | "large" | "small";
+    mic: Track;
 }
 
 function UserCameraDetails (props: UserCameraDetailsType) {
     const {
         user,
         variant,
+        mic,
     } = props;
     const classes = useStyles();
-    const [ micOn, setMicOn ] = useState(true);
-    const micMuteCurrent = useRecoilValue(isActiveGlobalMuteAudioState);
-    const webrtc = useContext(WebRTCContext);
-
-    useEffect(() => {
-        if (micMuteCurrent !== null) {
-            setMicOn(micMuteCurrent);
-        } else {
-            setMicOn(webrtc.isAudioEnabledByProducer(user.id) && !webrtc.isAudioDisabledLocally(user.id));
-        }
-    }, [ webrtc.isAudioEnabledByProducer(user.id), webrtc.isAudioDisabledLocally(user.id) ]);
 
     return (
         <div className={clsx(classes.root, {
@@ -177,7 +164,8 @@ function UserCameraDetails (props: UserCameraDetailsType) {
             {user.isTeacher && <UserRoles user={user} />}
             <UserName
                 user={user}
-                micOn={micOn} />
+                mic={mic}
+            />
         </div>
     );
 }
@@ -204,13 +192,10 @@ function UserRoles (props: UserRolesType){
     );
 }
 
-interface UserNameType {
+const UserName: VoidFunctionComponent<{
     user: Session;
-    micOn?: boolean;
-}
-
-function UserName (props: UserNameType){
-    const { user, micOn } = props;
+    mic: Track;
+}> = ({ user, mic }) => {
     const classes = useStyles();
 
     const { sessionId } = useSessionContext();
@@ -222,8 +207,13 @@ function UserName (props: UserNameType){
                 <span className={classes.textOverflow}>
                     {isSelf ? <FormattedMessage id="you"/> : user.name}
                 </span>
-                {!micOn && <MicDisabledIcon size="0.85em"/>}
+                {
+                    mic.isMine !== undefined && <>
+                        {mic.isPausedAtSource ? <MicDisabledIcon size="0.85em"/> : <MicIcon size="0.85em"/>}
+                        {((mic.isPausedLocally && mic.isMine === false) || mic.isPausedGlobally) && <SpeakerOff size="1em" />}
+                    </>
+                }
             </Typography>
         </div>
     );
-}
+};

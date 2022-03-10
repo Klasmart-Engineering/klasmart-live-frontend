@@ -2,25 +2,20 @@ import PencilIconOff from "@/assets/img/canvas/pencil_icon_off.svg";
 import PencilIconOn from "@/assets/img/canvas/pencil_icon_on.svg";
 import { useRewardTrophyMutation } from "@/data/live/mutations/useRewardTrophyMutation";
 import { useSetHostMutation } from "@/data/live/mutations/useSetHostMutation";
-import { useSessions } from "@/data/live/state/useSessions";
-import { useMuteMutation } from "@/data/sfu/mutations/useMuteMutation";
-import { useGlobalMuteQuery } from "@/data/sfu/queries/useGlobalMuteQuery";
 import { Session } from "@/pages/utils";
 import { useSessionContext } from "@/providers/session-context";
-import {
-    MuteNotification,
-    WebRTCContext,
-} from "@/providers/WebRTCContext";
 import { hasControlsState } from "@/store/layoutAtoms";
 import { toggleFullScreenById } from "@/utils/utils";
 import { useSynchronizedState } from "@/whiteboard/context-providers/SynchronizedStateProvider";
 import {
     Box,
+    Button,
     IconButton,
     makeStyles,
     Menu,
     MenuItem,
     Theme,
+    Tooltip,
 } from "@material-ui/core";
 import amber from "@material-ui/core/colors/amber";
 import { ArrowsAngleExpand as ExpandIcon } from "@styled-icons/bootstrap/ArrowsAngleExpand";
@@ -34,13 +29,14 @@ import { StarFill as StarFillIcon } from "@styled-icons/bootstrap/StarFill";
 import { TrophyFill as TrophyIcon } from "@styled-icons/bootstrap/TrophyFill";
 import { Crown as HasControlsIcon } from "@styled-icons/fa-solid/Crown";
 import clsx from "clsx";
+import { Track } from "kidsloop-live-state/ui";
 import React,
 {
     useCallback,
-    useContext,
-    useEffect,
     useState,
+    VoidFunctionComponent,
 } from "react";
+import { useIntl } from "react-intl";
 import { useRecoilValue } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -94,9 +90,16 @@ const useStyles = makeStyles((theme: Theme) => ({
 interface UserCameraActionsProps {
     user: Session;
     expanded: boolean;
+    camera: Track;
+    mic: Track;
 }
 
-const UserCameraActions = ({ user, expanded }: UserCameraActionsProps) => {
+const UserCameraActions = ({
+    user,
+    expanded,
+    camera,
+    mic,
+}: UserCameraActionsProps) => {
     const classes = useStyles();
 
     const {
@@ -109,6 +112,7 @@ const UserCameraActions = ({ user, expanded }: UserCameraActionsProps) => {
 
     const isSelf = sessionId === user.id;
     const subTeacher = !user.isHost && user.isTeacher;
+    const hasPermission = isTeacher || !user.isTeacher
 
     const [ trophyEl, setTrophyEl ] = useState<null | HTMLElement>(null);
     const handleTrophyOpen = (event: React.MouseEvent<HTMLElement>) => { setTrophyEl(event.currentTarget); };
@@ -133,13 +137,21 @@ const UserCameraActions = ({ user, expanded }: UserCameraActionsProps) => {
                     [classes.backdropOverlay] : isTeacher,
                 })}>
                 {expanded && (<ExpandCamera user={user} />) }
-                {isTeacher && (
+                {
                     <Box
                         display="flex"
                         className={classes.iconsContainer}>
-                        <ToggleMic user={user} />
-                        <ToggleCamera user={user} />
-                        {!user.isTeacher && (
+                        { mic.hasLocation && hasPermission && <ToggleMic
+                            track={mic}
+                            local={!isTeacher}
+                        />
+                        }
+                        { camera.hasLocation && hasPermission && <ToggleCamera
+                            track={camera}
+                            local={!isTeacher}
+                        />
+                        }
+                        {!isSelf && isTeacher && (
                             <IconButton
                                 aria-label="Trophy"
                                 className={classes.iconButton}
@@ -158,7 +170,7 @@ const UserCameraActions = ({ user, expanded }: UserCameraActionsProps) => {
                             </>
                         )}
                     </Box>
-                )}
+                }
             </Box>
             <Menu
                 id="trophy-menu"
@@ -201,187 +213,60 @@ const UserCameraActions = ({ user, expanded }: UserCameraActionsProps) => {
 
 export default UserCameraActions;
 
-interface ToggleCameraProps {
-    user: Session;
-}
-
-const ToggleCamera = ({ user }: ToggleCameraProps) => {
+const ToggleCamera: VoidFunctionComponent<{
+    track: Track;
+    local: boolean;
+}> = ({ track, local }) => {
+    const intl = useIntl();
     const classes = useStyles();
-
-    const { roomId, sessionId } = useSessionContext();
-
-    const sessions = useSessions();
-    const webrtc = useContext(WebRTCContext);
-
-    const [ camOn, setCamOn ] = useState<boolean>(true);
-
-    const [ isLoading, setIsLoading ] = useState<boolean>(true);
-    const [ muteMutation ] = useMuteMutation();
-    const { refetch } = useGlobalMuteQuery({
-        variables: {
-            roomId,
-        },
+    const isPaused = (local ? track.isPausedLocally : track.isPausedGlobally);
+    const everyone = !local || track.isMine;
+    const toggleVideoState = () => local ? toggleTrackLocally(track) : toggleTrackGlobally(track);
+    const title = intl.formatMessage({
+        id: `turn_${isPaused?`on`:`off`}_camera_for_${everyone?`everyone`:`me`}`,
     });
 
-    const isSelf = sessionId === user.id;
-
-    useEffect(() => {
-        if (isLoading && webrtc.isVideoEnabledByProducer(user.id)) {
-            setIsLoading(false);
-        }
-    }, [ webrtc.isVideoEnabledByProducer(user.id) ]);
-
-    useEffect(() => {
-        setCamOn(webrtc.isVideoEnabledByProducer(user.id) && !webrtc.isVideoDisabledLocally(user.id));
-    }, [ webrtc.isVideoEnabledByProducer(user.id), webrtc.isVideoDisabledLocally(user.id) ]);
-
-    async function toggleInboundVideoState () {
-        const localSession = sessions.get(sessionId);
-        if (localSession?.isHost) {
-            const notification: MuteNotification = {
-                roomId,
-                sessionId: user.id,
-                video: !camOn,
-            };
-            const muteNotification = await muteMutation({
-                variables: notification,
-            });
-            if (muteNotification?.data?.mute?.video != null) {
-                setCamOn(muteNotification.data.mute.video);
-            }
-        } else {
-            webrtc.toggleLocalVideo(user.id);
-        }
-    }
-
-    async function toggleOutboundVideoState () {
-        const notification: MuteNotification = {
-            roomId,
-            sessionId: user.id,
-            video: !camOn,
-        };
-        const muteNotification = await muteMutation({
-            variables: notification,
-        });
-        if (muteNotification?.data?.mute?.video != null) {
-            setCamOn(muteNotification.data.mute.video);
-        }
-    }
-
-    async function toggleVideoState (): Promise<void> {
-        const { data }= await refetch();
-        const videoGloballyDisabled = data?.retrieveGlobalMute?.videoGloballyDisabled;
-        if (isSelf) {
-            const localSession = sessions.get(sessionId);
-            if (videoGloballyDisabled && !localSession?.isTeacher) {
-                return;
-            }
-            await toggleOutboundVideoState();
-        } else {
-            if (videoGloballyDisabled && !user?.isTeacher) {
-                return;
-            }
-            await toggleInboundVideoState();
-        }
-    }
-
     return (
-        <IconButton
-            aria-label="Camera"
-            className={classes.iconButton}
-            onClick={toggleVideoState}
-        >
-            {camOn ? <CameraVideoFillIcon size="0.7em"/> : <CameraDisabledIcon size="0.7em"/>}
-        </IconButton>
+        <Tooltip title={title}>
+            <IconButton
+                aria-label="Camera"
+                className={classes.iconButton}
+                onClick={toggleVideoState}
+            >
+                {isPaused ? <CameraVideoFillIcon size="0.7em"/> : <CameraDisabledIcon size="0.7em"/>}
+            </IconButton>
+        </Tooltip>
     );
 };
 
-interface ToggleMicProps {
-    user: Session;
-}
-
-function ToggleMic ({ user }: ToggleMicProps){
+const ToggleMic: VoidFunctionComponent<{
+    local: boolean;
+    track: Track;
+}> = ({ local, track }) => {
+    const intl = useIntl();
     const classes = useStyles();
-
-    const { roomId, sessionId } = useSessionContext();
-    const sessions = useSessions();
-    const isSelf = sessionId === user.id;
-
-    const [ micOn, setMicOn ] = useState<boolean>(true);
-
-    const [ muteMutation ] = useMuteMutation();
-    const { refetch } = useGlobalMuteQuery({
-        variables: {
-            roomId,
-        },
+    const isPaused = (local ? track.isPausedLocally : track.isPausedGlobally);
+    const everyone = !local || track.isMine;
+    const toggleAudioState = () => local ? toggleTrackLocally(track) : toggleTrackGlobally(track);
+    const title = intl.formatMessage({
+        id: `turn_${isPaused?`on`:`off`}_microphone_for_${everyone?`everyone`:`me`}`,
     });
-
-    const webrtc = useContext(WebRTCContext);
-
-    useEffect(() => {
-        setMicOn(webrtc.isAudioEnabledByProducer(user.id) && !webrtc.isAudioDisabledLocally(user.id));
-    }, [ webrtc.isAudioEnabledByProducer(user.id), webrtc.isAudioDisabledLocally(user.id) ]);
-
-    async function toggleInboundAudioState () {
-        const localSession = sessions.get(sessionId);
-        if (localSession?.isHost) {
-            const notification: MuteNotification = {
-                roomId,
-                sessionId: user.id,
-                audio: !micOn,
-            };
-            const muteNotification = await muteMutation({
-                variables: notification,
-            });
-            if (muteNotification?.data?.mute?.audio != null) {
-                setMicOn(muteNotification.data.mute.audio);
-            }
-        } else {
-            webrtc.toggleLocalAudio(user.id);
-        }
-    }
-
-    async function toggleOutboundAudioState () {
-        const notification: MuteNotification = {
-            roomId,
-            sessionId: user.id,
-            audio: !micOn,
-        };
-        const muteNotification = await muteMutation({
-            variables: notification,
-        });
-        if (muteNotification?.data?.mute?.audio != null) {
-            setMicOn(muteNotification.data.mute.audio);
-        }
-    }
-
-    async function toggleAudioState (): Promise<void> {
-        const { data }= await refetch();
-        const audioGloballyMuted = data?.retrieveGlobalMute?.audioGloballyMuted;
-        if (isSelf) {
-            const localSession = sessions.get(sessionId);
-            if (audioGloballyMuted && !localSession?.isTeacher) {
-                return;
-            }
-            await toggleOutboundAudioState();
-        } else {
-            if (audioGloballyMuted && !user.isTeacher) {
-                return;
-            }
-            await toggleInboundAudioState();
-        }
-    }
-
     return (
-        <IconButton
-            aria-label="Microphone"
-            className={classes.iconButton}
-            onClick={toggleAudioState}
-        >
-            {micOn ? <MicFillIcon size="0.7em"/> : <MicDisabledIcon size="0.7em"/>}
-        </IconButton>
+        <Tooltip title={title}>
+
+            <IconButton
+                aria-label="Microphone"
+                className={classes.iconButton}
+                onClick={toggleAudioState}
+            >
+                {isPaused ? <MicFillIcon size="0.7em"/> : <MicDisabledIcon size="0.7em"/>}
+            </IconButton>
+        </Tooltip>
     );
-}
+};
+
+const toggleTrackLocally = (track: Track) => track.pause.execute(!track.isPausedLocally);
+const toggleTrackGlobally = (track: Track) => track.globalPause.execute(!track.isPausedGlobally);
 
 interface ToggleControlsProps {
     user: Session;

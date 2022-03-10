@@ -1,4 +1,4 @@
-import { App } from './app';
+import { WebApp } from './webApp';
 import Providers from '@/providers/providers';
 import React from 'react';
 import { RecoilRoot } from 'recoil';
@@ -7,7 +7,7 @@ function Entry () {
     return (
         <RecoilRoot>
             <Providers>
-                <App />
+                <WebApp />
             </Providers>
         </RecoilRoot>
     );

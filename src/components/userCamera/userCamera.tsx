@@ -1,37 +1,34 @@
+import {
+    pauseAllCamerasState,
+    pauseAllMicrophonesState,
+} from "../toolbar/toolbarMenus/globalActionsMenu/globalActionsMenu";
 import NoCamera from "./noCamera";
 import UserCameraActions from "./userCameraActions";
 import UserCameraDetails from "./userCameraDetails";
-import ReactPlayer from "@/components/react-player";
 import { BG_COLOR_CAMERA } from "@/config";
 import { useSessions } from "@/data/live/state/useSessions";
 import { Session } from "@/pages/utils";
-import { useCameraContext } from "@/providers/Camera";
 import { useSessionContext } from "@/providers/session-context";
-import { WebRTCContext } from "@/providers/WebRTCContext";
-import {
-    isActiveGlobalMuteAudioState,
-    isActiveGlobalMuteVideoState,
-} from "@/store/layoutAtoms";
 import {
     Grid,
     makeStyles,
-    Theme,
     useMediaQuery,
     useTheme,
 } from "@material-ui/core";
 import clsx from "clsx";
+import { useStream } from "kidsloop-live-state/ui";
 import React,
 {
-    useContext,
     useEffect,
-    useMemo,
     useRef,
     useState,
 } from "react";
 import { useIntl } from "react-intl";
 import { useRecoilValue } from "recoil";
 
-const useStyles = makeStyles((theme: Theme) => ({
+const ACTIVE_AUDIO_THRESHOLD = 0.2;
+
+const useStyles = makeStyles(() => ({
     root: {
         backgroundColor: BG_COLOR_CAMERA,
         borderRadius: 12,
@@ -45,6 +42,8 @@ const useStyles = makeStyles((theme: Theme) => ({
         position: `relative`,
         overflow: `hidden`,
         order: 99,
+        outline: `0px solid rgba(20,100,200,0.5)`,
+        transition: `outline-width 100ms linear`,
         "& video": {
             objectFit: `cover`,
         },
@@ -60,6 +59,9 @@ const useStyles = makeStyles((theme: Theme) => ({
         "& video": {
             objectFit: `contain`,
         },
+    },
+    activeAudio: {
+        outlineWidth: `3px`,
     },
     video:{
         width: `100% !important`,
@@ -94,99 +96,60 @@ const UserCamera =  ({
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
 
-    const camMuteCurrent = useRecoilValue(isActiveGlobalMuteVideoState);
-
-    const [ camOn, setCamOn ] = useState(true);
-    const [ micOn, setMicOn ] = useState(true);
-    const micMuteCurrent = useRecoilValue(isActiveGlobalMuteAudioState);
-    const { cameraStream } = useCameraContext();
-    const {
-        camera,
-        setCamera,
-        sessionId,
-    } = useSessionContext();
-
+    const mySession = useSessionContext();
+    const isSelf = (user.id === mySession.sessionId);
     const sessions = useSessions();
-    const webrtc = useContext(WebRTCContext);
-
-    const isSelf = user.id === sessionId ? true : false;
-
     const userSession = sessions.get(user.id);
-    const userCamera = isSelf ? camera : webrtc.getCameraStream(user.id);
+    const {
+        audio,
+        video,
+        stream: mediaStream,
+    } = useStream(user.id);
 
-    const audioRef = useRef<HTMLAudioElement>(null);
-    const videoRef = useRef<HTMLVideoElement>(null);
-
-    useEffect(() => {
-        if(isSelf){
-            setCamera(cameraStream);
-        }
-    }, [ cameraStream, isSelf ]);
+    const mediaRef = useRef<HTMLVideoElement>(null);
+    const isAudioActive = false;
 
     useEffect(() => {
-        if (audioRef.current) {
-            audioRef.current.srcObject = userCamera ? userCamera : null;
-        }
-        if (videoRef.current) {
-            videoRef.current.srcObject = userCamera ? userCamera : null;
-        }
-    }, [
-        audioRef.current,
-        videoRef.current,
-        userCamera,
-        camOn,
-    ]);
+        if(!mediaRef.current) { return; }
+        mediaRef.current.srcObject = mediaStream || null;
+    }, [ mediaRef.current, mediaStream ]);
 
-    useEffect(() => {
-        if (camMuteCurrent !== null) {
-            setCamOn(camMuteCurrent);
-        } else {
-            setCamOn(webrtc.isVideoEnabledByProducer(user.id) && !webrtc.isVideoDisabledLocally(user.id));
-        }
-    }, [ webrtc.isVideoEnabledByProducer(user.id), webrtc.isVideoDisabledLocally(user.id) ]);
+    {
+        const sessions = useSessions();
+        const localSession = sessions.get(mySession.sessionId);
+        const pauseAllMicrophones = useRecoilValue(pauseAllMicrophonesState);
+        useEffect(() => {
+            if(!localSession?.isHost || !mySession.isTeacher || userSession?.isTeacher) { return; }
+            audio.globalPause.execute(pauseAllMicrophones);
+        }, [
+            localSession?.isHost,
+            pauseAllMicrophones,
+            audio.track,
+        ]);
 
-    useEffect(() => {
-        if (micMuteCurrent !== null) {
-            setMicOn(micMuteCurrent);
-        } else {
-            setMicOn(webrtc.isAudioEnabledByProducer(user.id) && !webrtc.isAudioDisabledLocally(user.id));
-        }
-    }, [ webrtc.isAudioEnabledByProducer(user.id), webrtc.isAudioDisabledLocally(user.id) ]);
-
-    const isNoCamera = useMemo(() => {
-        return !userCamera || !userSession || !camOn;
-    }, [
-        userCamera,
-        userSession,
-        camOn,
-    ]);
+        const pauseAllCameras = useRecoilValue(pauseAllCamerasState);
+        useEffect(() => {
+            if(!localSession?.isHost || !mySession.isTeacher || userSession?.isTeacher) { return; }
+            video.globalPause.execute(pauseAllCameras);
+        }, [
+            localSession?.isHost,
+            pauseAllCameras,
+            video.track,
+        ]);
+    }
 
     return (
         <Grid
             container
             className={clsx(classes.root, {
                 [classes.self]: isSelf,
-                [classes.videoDisabled]: !isSelf && !webrtc.isVideoEnabledByProducer(user.id),
+                [classes.videoDisabled]: !video.isConsumable,
                 [classes.rootSm]: isSmDown,
                 [classes.rootLarge]: variant === `large`,
+                [classes.activeAudio]: variant !== `large` && isAudioActive,
             })}
             id={`participant:${user.id}`}
-            aria-videostream={
-                isNoCamera ? intl.formatMessage({
-                    id: `off`,
-                    defaultMessage: `OFF`,
-                }) : intl.formatMessage({
-                    id: `on`,
-                    defaultMessage: `ON`,
-                })}
-            aria-audiostream={
-                micOn ? intl.formatMessage({
-                    id: `on`,
-                    defaultMessage: `ON`,
-                }) : intl.formatMessage({
-                    id: `off`,
-                    defaultMessage: `OFF`,
-                })}
+            onClick={() => {console.log(`mic`, audio); console.log(`cam`, video);}}
             onMouseEnter={() => setIsHover(true)}
             onMouseLeave={() => setIsHover(false)}
         >
@@ -197,30 +160,32 @@ const UserCamera =  ({
                 <UserCameraDetails
                     variant={variant}
                     user={user}
+                    mic={audio}
                 />
-                {actions ? isHover && <UserCameraActions
-                    user={user}
-                    expanded={camOn && !process.env.IS_CORDOVA_BUILD} /> : null}
-                <ReactPlayer
-                    key={`${userCamera?.id}${userCamera?.active}`}
+                {
+                    actions && isHover &&
+                    <UserCameraActions
+                        user={user}
+                        expanded={video.isConsumable && !process.env.IS_CORDOVA_BUILD}
+                        mic={audio}
+                        camera={video}
+                    />
+                }
+                <video
+                    ref={mediaRef}
                     autoPlay
-                    url={userCamera}
-                    playing={true}
-                    playsinline={true}
-                    muted={true}
+                    playsInline={true}
+                    muted={isSelf}
                     id={`camera:${userSession?.id}`}
                     className={classes.video}
                 />
                 {
-                    isNoCamera && <NoCamera
+                    !video.isConsumable &&
+                    <NoCamera
                         name={user.name}
-                        variant={variant} />
+                        variant={variant}
+                    />
                 }
-                <audio
-                    ref={audioRef}
-                    autoPlay={true}
-                    muted={isSelf}
-                />
             </Grid>
         </Grid>
     );

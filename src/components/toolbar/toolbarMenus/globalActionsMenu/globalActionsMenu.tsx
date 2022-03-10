@@ -1,7 +1,6 @@
 import GlobalActionsMenuItem,
 { GlobaActionsMenuItem } from "./globalAction";
 import { useRewardTrophyMutation } from "@/data/live/mutations/useRewardTrophyMutation";
-import { useConferenceContext } from "@/providers/room/conferenceContext";
 import { useSessionContext } from "@/providers/session-context";
 import { isGlobalActionsOpenState } from "@/store/layoutAtoms";
 import { StyledPopper } from "@/utils/utils";
@@ -19,7 +18,11 @@ import { StarFill as StarFillIcon } from "@styled-icons/bootstrap/StarFill";
 import { TrophyFill as TrophyFillIcon } from "@styled-icons/bootstrap/TrophyFill";
 import React from "react";
 import { useIntl } from "react-intl";
-import { useRecoilValue } from "recoil";
+import {
+    atom,
+    useRecoilState,
+    useRecoilValue,
+} from "recoil";
 
 const useStyles = makeStyles(() => ({
     root: {
@@ -31,19 +34,25 @@ interface GlobaActionsMenuProps {
 	anchor: HTMLElement;
 }
 
+export const pauseAllMicrophonesState = atom<boolean>({
+    key: `pauseAllMicrophones`,
+    default: false,
+});
+
+export const pauseAllCamerasState = atom<boolean>({
+    key: `pauseAllCameras`,
+    default: false,
+});
+
 function GlobalActionsMenu (props: GlobaActionsMenuProps) {
     const { anchor } = props;
     const classes = useStyles();
     const intl = useIntl();
 
     const isGlobalActionsOpen = useRecoilValue(isGlobalActionsOpenState);
+    const [ allMicrophonesPaused, setAllMicrophonesPaused ] = useRecoilState(pauseAllMicrophonesState);
+    const [ allCamerasPause, setAllCamerasPause ] = useRecoilState(pauseAllCamerasState);
 
-    const {
-        audioGloballyMuted,
-        videoGloballyMuted,
-        setGlobalMuteAudio,
-        setGlobalMuteVideo,
-    } = useConferenceContext();
     const { roomId, sessionId } = useSessionContext();
 
     const [ rewardTrophyMutation ] = useRewardTrophyMutation();
@@ -62,24 +71,24 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
         {
             id: `global-action-toggle-all-microphones`,
             title: intl.formatMessage({
-                id: audioGloballyMuted ? `toggle_all_microphones_on` : `toggle_all_microphones_off`,
+                id: allMicrophonesPaused ? `toggle_all_microphones_on` : `toggle_all_microphones_off`,
             }),
             icon: <MicFillIcon size="1.4rem" />,
             activeIcon: <MicDisabledIcon size="1.4rem" />,
             variant: `blue`,
-            active: audioGloballyMuted,
-            onClick: () => setGlobalMuteAudio?.(!audioGloballyMuted),
+            active: allMicrophonesPaused,
+            onClick: () => setAllMicrophonesPaused(x => !x),
         },
         {
             id: `global-action-toggle-all-cameras`,
             title: intl.formatMessage({
-                id: videoGloballyMuted ? `toggle_all_cameras_on` : `toggle_all_cameras_off`,
+                id: allCamerasPause ? `toggle_all_cameras_on` : `toggle_all_cameras_off`,
             }),
             icon: <CameraVideoFillIcon size="1.4rem" />,
             activeIcon: <CameraDisabledIcon size="1.4rem" />,
             variant: `blue`,
-            active: videoGloballyMuted,
-            onClick: () => setGlobalMuteVideo?.(!videoGloballyMuted),
+            active: allCamerasPause,
+            onClick: () => setAllCamerasPause(x => !x),
         },
         {
             type: `divider` as const,

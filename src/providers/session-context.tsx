@@ -38,15 +38,12 @@ export interface ISessionContext {
     classType: ClassType; // "live" | "class" | "study" | "task"
     name?: string;
     token?: string;
-    camera?: MediaStream;
     user_id?: string;
     setName: React.Dispatch<React.SetStateAction<string | undefined>>;
     setToken: React.Dispatch<React.SetStateAction<string | undefined>>;
-    setCamera: React.Dispatch<React.SetStateAction<MediaStream | undefined>>;
 }
 
 const SessionContext = createContext<ISessionContext>({
-    setCamera: () => null,
     setName: () => null,
     setToken: () => null,
     ...DEFAULT_SESSION_CONTEXT,

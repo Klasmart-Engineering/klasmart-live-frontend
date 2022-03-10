@@ -15,7 +15,7 @@ function fetchJson (url: string, overrideInit: RequestInit): Promise<Response> {
 }
 
 export class AuthenticationService implements IAuthenticationService {
-    private endpoint: string;
+    private readonly endpoint: string;
 
     constructor (endpoint: string) {
         this.endpoint = endpoint;
@@ -41,6 +41,12 @@ export class AuthenticationService implements IAuthenticationService {
         });
 
         return response.ok;
+    }
+
+    public redirectToLogin (continuePage = window.location) {
+        const url = new URL(this.endpoint);
+        if(continuePage) { url.searchParams.set(`continue`, continuePage.toString()); }
+        window.location.replace(url.toString());
     }
 
     async signout (): Promise<void> {

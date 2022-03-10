@@ -322,7 +322,7 @@ export default function InteractionRecorder (props: Props): JSX.Element {
                 script.setAttribute(`type`, `text/javascript`);
                 const matches = window.location.pathname.match(/^(.*\/+)([^/]*)$/);
                 const prefix = matches && matches.length >= 2 ? matches[1] : ``;
-                script.setAttribute(`src`, `${prefix}record-3f6f2667.js?version=${config.version}`);
+                script.setAttribute(`src`, `${prefix}record.${process.env.BUILD_TAG}.js`);
                 doc.head.appendChild(script);
             }
             catch (e) {

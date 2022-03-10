@@ -29,8 +29,7 @@ import SelectLanguagePage from "@/app/pages/settings/select-language";
 import { UserRoute } from "@/app/route/userRoute";
 import NoOrgFoundLogo from "@/assets/img/no_org_found_icon.svg";
 import NoStudentRoleLogo from "@/assets/img/no_student_role_icon.svg";
-import Join from "@/pages/join/join";
-import { RoomWithContext } from "@/pages/room/room-with-context";
+import { WebApp } from "@/pages/webApp";
 import { useQueryClient } from "@kidsloop/cms-api-client";
 import Grid from "@material-ui/core/Grid";
 import React,
@@ -46,7 +45,7 @@ import {
     useRecoilValue,
 } from "recoil";
 
-export function App ({ history }: {
+export function CordovaApp ({ history }: {
     history: any;
 }): JSX.Element {
     const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
@@ -164,12 +163,8 @@ export function App ({ history }: {
                         component={SchedulePage}
                     />
                     <UserRoute
-                        path="/join"
-                        component={Join}
-                    />
-                    <UserRoute
                         path="/room"
-                        component={RoomWithContext}
+                        component={WebApp}
                     />
                     <Route
                         path="/auth"

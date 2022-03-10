@@ -102,9 +102,6 @@ export function CordovaSystemProvider ({ children, history }: Props) {
             case `/schedule/anytime-study`:
                 setLayoutMode(LayoutMode.DEFAULT);
                 break;
-            case `/join`:
-                setLayoutMode(LayoutMode.CLASSROOM);
-                break;
             case `/room`:
                 setLayoutMode(LayoutMode.CLASSROOM);
                 break;

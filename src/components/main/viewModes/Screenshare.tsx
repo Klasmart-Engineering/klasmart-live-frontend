@@ -1,8 +1,11 @@
 import { StyledVideo } from "@/components/interactiveContent/styledVideo";
-import { useContent } from "@/data/live/state/useContent";
-import { ScreenShareContext } from "@/providers/screenShareProvider";
-import { WebRTCContext } from "@/providers/WebRTCContext";
-import { isGlobalActionsOpenState } from "@/store/layoutAtoms";
+import Loading from "@/components/loading";
+import { InteractiveMode } from "@/pages/utils";
+import { useSessionContext } from "@/providers/session-context";
+import {
+    interactiveModeState,
+    isGlobalActionsOpenState,
+} from "@/store/layoutAtoms";
 import {
     Button,
     Grid,
@@ -13,8 +16,16 @@ import {
     useTheme,
 } from "@material-ui/core";
 import PresentToAllIcon from '@material-ui/icons/PresentToAll';
+import {
+    useMediaStreamTracks,
+    useScreenshare,
+    useStream,
+} from "kidsloop-live-state/ui";
 import React,
-{ useContext } from "react";
+{
+    useEffect,
+    VoidFunctionComponent,
+} from "react";
 import { FormattedMessage } from "react-intl";
 import { useSetRecoilState } from "recoil";
 
@@ -37,46 +48,53 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 }));
 
-function Screenshare () {
+const Screenshare: VoidFunctionComponent<{
+    sessionId: string;
+}> = ({ sessionId }) => {
     const classes = useStyles();
-    const screenShare = useContext(ScreenShareContext);
-
-    const webrtc = useContext(WebRTCContext);
-    const content = useContent();
-
-    const teacherStream = screenShare.stream;
-    const studentStream = content && webrtc.getAuxStream(content.contentId);
-
+    const { sessionId: mySessionId } = useSessionContext();
     return(
         <Grid
             container
             className={classes.root}>
             <Grid
                 item
-                xs={12}>
-                { teacherStream ? <ScreenshareTeacher stream={teacherStream} /> : <ScreenshareStudent stream={studentStream} /> }
+                xs={12}
+            >
+                {
+                    sessionId === mySessionId
+                        ? <ScreensharePresent />
+                        : <ScreenshareView sessionId={sessionId} />
+                }
             </Grid>
         </Grid>
     );
-}
+};
 
 export default Screenshare;
 
-function ScreenshareTeacher (props: { stream?: MediaStream } & React.VideoHTMLAttributes<HTMLMediaElement>) {
-    const { stream } = props;
+const ScreensharePresent: VoidFunctionComponent<{}>  = () => {
     const classes = useStyles();
-    const screenShare = useContext(ScreenShareContext);
 
+    const setInteractiveMode = useSetRecoilState(interactiveModeState);
     const setIsGlobalActionsOpen = useSetRecoilState(isGlobalActionsOpenState);
 
     const theme = useTheme();
     const isMdDown = useMediaQuery(theme.breakpoints.down(`md`));
 
-    const stopScreenSharing = () => {
-        screenShare.stop();
+    const screenshare = useScreenshare();
+    useEffect(() => {
+        screenshare.setSending.execute(true);
+        return () => { screenshare.setSending.execute(false); };
+    }, []);
+
+    const stopScreenshare = () => {
+        screenshare.setSending.execute(false);
+        setInteractiveMode(InteractiveMode.ONSTAGE);
         setIsGlobalActionsOpen(false);
     };
 
+    const stream = useMediaStreamTracks(screenshare.track);
     return(
         <Grid
             container
@@ -102,7 +120,7 @@ function ScreenshareTeacher (props: { stream?: MediaStream } & React.VideoHTMLAt
                         <Button
                             variant="contained"
                             color="primary"
-                            onClick={() => { stopScreenSharing(); }}
+                            onClick={stopScreenshare}
                         >
                             <FormattedMessage id="screenShare.stop" />
                         </Button>
@@ -113,14 +131,19 @@ function ScreenshareTeacher (props: { stream?: MediaStream } & React.VideoHTMLAt
                 item
                 xs={6}
                 className={classes.relative}
-                hidden={isMdDown}>
+                hidden={isMdDown}
+            >
                 <StyledVideo stream={stream} />
             </Grid>
         </Grid>
     );
-}
+};
 
-function ScreenshareStudent (props: { stream?: MediaStream } & React.VideoHTMLAttributes<HTMLMediaElement>) {
-    const { stream } = props;
-    return <StyledVideo stream={stream} />;
-}
+const ScreenshareView: VoidFunctionComponent<{
+    sessionId: string;
+}>  = ({ sessionId }) => {
+    const { stream } = useStream(sessionId, `screenshare`);
+    return (
+        <StyledVideo stream={stream} />
+    );
+};

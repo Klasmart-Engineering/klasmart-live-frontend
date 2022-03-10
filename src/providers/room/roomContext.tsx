@@ -1,13 +1,12 @@
 import { useSessionContext } from "../session-context";
-import { ConferenceContextProvider } from "./conferenceContext";
 import Loading from "@/components/loading";
 import { ReadTrophyDto } from "@/data/live/dto/readRoomDto";
 import { useSendStudentUsageRecordMutation } from "@/data/live/mutations/useSendStudentUsageRecordMutation";
 import { useShowContentMutation } from "@/data/live/mutations/useShowContentMutation";
 import { useRoomSubscription } from "@/data/live/subscriptions/useRoomSubscription";
-import { SfuServiceApolloClient } from "@/data/sfu/sfuServiceApolloClient";
 import {
     Content,
+    ContentType,
     InteractiveMode,
     Message,
     Session,
@@ -69,11 +68,9 @@ export const RoomProvider: React.FC<Props> = ({ children, enableConferencing }) 
         roomId,
         name,
         sessionId,
-        camera,
         isTeacher,
         materials,
         classType,
-        token,
     } = useSessionContext();
     const [ sfuAddress, setSfuAddress ] = useState<string>(``);
     const [ messages, setMessages ] = useState<Map<string, Message>>(new Map<string, Message>());
@@ -104,19 +101,29 @@ export const RoomProvider: React.FC<Props> = ({ children, enableConferencing }) 
 
     useEffect(() => {
         if (!hasControls) return;
-        if (interactiveMode === InteractiveMode.SCREENSHARE) return; // Prevent duplicated showContent
+        switch(interactiveMode) {
+        case InteractiveMode.SCREENSHARE:
+            showContent({
+                variables: {
+                    roomId,
+                    type: ContentType.Screen,
+                    contentId: sessionId,
+                },
+            });
+            return;
+        default:
+        {
+            const material = interactiveMode !== InteractiveMode.ONSTAGE && materialActiveIndex >= 0 && materialActiveIndex < materials.length ? materials[materialActiveIndex] : undefined;
+            showContent({
+                variables: {
+                    roomId,
+                    type: defineContentType(material, interactiveMode),
+                    contentId: defineContentId(material, interactiveMode, streamId, sessionId),
+                },
+            });
+        }
+        }
 
-        const material = interactiveMode !== InteractiveMode.ONSTAGE && materialActiveIndex >= 0 && materialActiveIndex < materials.length ? materials[materialActiveIndex] : undefined;
-        const type = defineContentType(material, interactiveMode);
-        const contentId = defineContentId(material, interactiveMode, streamId, sessionId);
-
-        showContent({
-            variables: {
-                roomId,
-                type,
-                contentId,
-            },
-        });
     }, [
         hasControls,
         streamId,
@@ -222,7 +229,7 @@ export const RoomProvider: React.FC<Props> = ({ children, enableConferencing }) 
             const now = Date.now() - 5000;
             const messageTime = Number(newMessage.id.split(`-`)[0]);
 
-            if(camera && now <= messageTime){
+            if(now <= messageTime){
                 enqueueSnackbar(intl.formatMessage({
                     id: `notification_user_sent_message`,
                 }, {
@@ -296,23 +303,7 @@ export const RoomProvider: React.FC<Props> = ({ children, enableConferencing }) 
 
     return (
         <RoomContext.Provider value={value}>
-            { enableConferencing ?
-                <SfuServiceApolloClient
-                    token={token}
-                    sessionId={sessionId}
-                    roomId={roomId}
-                >
-                    <ConferenceContextProvider
-                        roomId={roomId}
-                    >
-                        {children}
-                    </ConferenceContextProvider>
-                </SfuServiceApolloClient> :
-                <>
-                    {children}
-                </>
-
-            }
+            {children}
         </RoomContext.Provider>
     );
 };

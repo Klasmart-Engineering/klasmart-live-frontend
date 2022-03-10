@@ -2,7 +2,7 @@ import CmsApiClientProvider from "@/app/context-provider/CmsApiClientProvider";
 import { CompositionRoot } from "@/app/context-provider/composition-root";
 import { CordovaSystemProvider } from "@/app/context-provider/cordova-system-context";
 import { PopupProvider } from "@/app/context-provider/popup-context";
-import { App } from "@/app/cordova-app";
+import { CordovaApp } from "@/app/cordova-app";
 import { UserServiceApolloClient } from "@/app/data/user/userServiceApolloClient";
 import { getIntl } from "@/app/localization/localeCodes";
 import {
@@ -101,7 +101,7 @@ function Entry () {
                                 <SnackbarProvider >
                                     <CssBaseline />
                                     <PopupProvider>
-                                        <App history={history} />
+                                        <CordovaApp history={history} />
                                     </PopupProvider>
                                 </SnackbarProvider>
                             </ThemeProvider>

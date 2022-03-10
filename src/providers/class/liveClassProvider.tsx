@@ -1,6 +1,4 @@
 import { RoomProvider } from "../room/roomContext";
-import { ScreenShareProvider } from "../screenShareProvider";
-import { WebRTCProvider } from "../WebRTCContext";
 import { GlobalWhiteboardContext } from "@/whiteboard/context-providers/GlobalWhiteboardContext";
 import { SnackbarProvider } from "kidsloop-px";
 import React,
@@ -16,7 +14,6 @@ type Props = {
 
 function LiveClassProvider ({ children }: Props) {
     const intl = useIntl();
-
     return (
         <SnackbarProvider
             anchorOrigin={{
@@ -28,13 +25,7 @@ function LiveClassProvider ({ children }: Props) {
             })}>
             <GlobalWhiteboardContext>
                 <RoomProvider enableConferencing={true}>
-                    <WebRTCProvider>
-                        <ScreenShareProvider>
-                            <>
-                                {children}
-                            </>
-                        </ScreenShareProvider>
-                    </WebRTCProvider>
+                    {children}
                 </RoomProvider>
             </GlobalWhiteboardContext>
         </SnackbarProvider>

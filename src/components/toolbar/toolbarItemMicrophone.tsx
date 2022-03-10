@@ -11,7 +11,9 @@ import LockIcon from "@material-ui/icons/Lock";
 import { MicFill as MicFillIcon } from "@styled-icons/bootstrap/MicFill";
 import { MicMuteFill as MicDisabledIcon } from "@styled-icons/bootstrap/MicMuteFill";
 import clsx from "clsx";
+import { useMicrophone } from "kidsloop-live-state/ui";
 import React from "react";
+import { useIntl } from "react-intl";
 
 const useStyles = makeStyles((theme: Theme) => ({
     itemRoot: {
@@ -34,7 +36,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         },
         "& svg" : {
             width: `1.75em`,
-    		height: `1.75em`,
+            height: `1.75em`,
         },
     },
     active: {
@@ -75,24 +77,27 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface ToolbarItemMicrophoneProps {
-    id: string;
-	onClick?: any;
 	disabled?: boolean;
-	active?: boolean;
 	locked?: boolean;
-	tooltip?: string;
 }
 
 function ToolbarItemMicrophone (props: ToolbarItemMicrophoneProps) {
     const {
-        id,
-        onClick,
         disabled,
-        active,
         locked,
-        tooltip = ``,
     } = props;
     const classes = useStyles();
+    const intl = useIntl();
+
+    const microphone = useMicrophone();
+    const onClick = () => microphone.setSending.execute(microphone.isPausedLocally);
+
+    const active = !microphone.isPausedLocally;
+    const tooltip = intl.formatMessage({
+        id: active
+            ? `toggle_microphone_off`
+            : `toggle_microphone_on`,
+    });
 
     return (
         <>
@@ -110,7 +115,7 @@ function ToolbarItemMicrophone (props: ToolbarItemMicrophoneProps) {
                 <Tooltip title={tooltip}>
                     <Button
                         disableRipple
-                        id={id}
+                        id="toolbar-item-microphone"
                         className={clsx(classes.root, disabled && classes.disabled, active && classes.active, locked && classes.locked)}
                         onClick={onClick}
                     >

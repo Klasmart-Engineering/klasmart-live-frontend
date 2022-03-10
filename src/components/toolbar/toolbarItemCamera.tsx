@@ -11,7 +11,9 @@ import LockIcon from "@material-ui/icons/Lock";
 import { CameraVideoFill as CameraVideoFillIcon } from "@styled-icons/bootstrap/CameraVideoFill";
 import { CameraVideoOffFill as CameraDisabledIcon } from "@styled-icons/bootstrap/CameraVideoOffFill";
 import clsx from "clsx";
+import { useCamera } from "kidsloop-live-state/ui";
 import React from "react";
+import { useIntl } from "react-intl";
 
 const useStyles = makeStyles((theme: Theme) => ({
     itemRoot: {
@@ -75,25 +77,25 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface ToolbarItemCameraProps {
-    id: string;
-	onClick?: any;
 	disabled?: boolean;
-	active?: boolean;
 	locked?: boolean;
-	tooltip?: string;
 }
 
 function ToolbarItemCamera (props: ToolbarItemCameraProps) {
     const {
-        id,
-        onClick,
         disabled,
-        active,
         locked,
-        tooltip = ``,
     } = props;
     const classes = useStyles();
+    const intl = useIntl();
 
+    const camera = useCamera();
+
+    const onClick = () => camera.setSending.execute(camera.isPausedLocally);
+    const active = !camera.isPausedLocally;
+    const tooltip = intl.formatMessage({
+        id: active ? `toggle_camera_off` :  `toggle_camera_on`,
+    });
     return (
         <>
             <div
@@ -110,7 +112,7 @@ function ToolbarItemCamera (props: ToolbarItemCameraProps) {
                 <Tooltip title={tooltip}>
                     <Button
                         disableRipple
-                        id={id}
+                        id="toolbar-item-camera"
                         className={clsx(classes.root, disabled && classes.disabled, active && classes.active, locked && classes.locked)}
                         onClick={onClick}
                     >

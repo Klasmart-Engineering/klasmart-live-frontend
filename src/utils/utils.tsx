@@ -324,7 +324,7 @@ export interface BrandingType {
     primaryColor: string;
 }
 
-export async function getOrganizationBranding (organizationId: string, endpoint: string) {
+export async function getOrganizationBranding (organizationId: string, endpoint: string): Promise<BrandingType> {
     const GET_ORGANIZATION_BRANDING = `
         query organization($organization_id: ID!){
             organization(organization_id: $organization_id){

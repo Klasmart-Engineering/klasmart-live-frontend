@@ -5,7 +5,10 @@ import { config } from "dotenv";
 import Dotenv from "dotenv-webpack";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import path from "path";
-import { Configuration } from "webpack";
+import {
+    Configuration,
+    EnvironmentPlugin,
+} from "webpack";
 
 config();
 
@@ -19,6 +22,9 @@ type Mode = typeof modes[number];
 const dirtyNodeEnv = process.env.NODE_ENV as Mode;
 const nodeEnv = (modes.includes(dirtyNodeEnv) ? dirtyNodeEnv : undefined) ?? `production`;
 const isDev = nodeEnv === `development`;
+const packageJson = require(`./package.json`);
+const buildTag = process.env.BUILD_TAG = isDev ? Date.now().toString() : packageJson.version;
+console.log(`Build Tag:`, buildTag);
 
 const { loadBrandingOptions } = require(`kidsloop-branding`);
 const brandingOptions = loadBrandingOptions(process.env.BRAND);
@@ -36,7 +42,7 @@ const webpackConfig: Configuration = {
     devtool: isDev ? `eval-cheap-module-source-map`: undefined,
     entry: {
         ui: `./src/entry.tsx`,
-        "record-3f6f2667": `./src/entry-record.ts`,
+        record: `./src/entry-record.ts`,
         player: `./src/entry-player.ts`,
         pdfviewer: `./src/entry-pdfviewer.js`,
         h5presize: `./src/entry-h5p-resize.js`,
@@ -98,11 +104,14 @@ const webpackConfig: Configuration = {
         },
     },
     output: {
-        filename: `[name].js`,
+        filename: `[name].${buildTag}.js`,
         path: path.resolve(__dirname, `dist`),
     },
     plugins: [
         new CleanWebpackPlugin(),
+        new EnvironmentPlugin({
+            BUILD_TAG: buildTag,
+        }),
         new Dotenv(),
         new HtmlWebpackPlugin({
             filename: `index.html`,
@@ -150,7 +159,17 @@ const webpackConfig: Configuration = {
                 changeOrigin: true,
                 ws: true,
             },
+            "/room": {
+                target: `http://localhost:8002`,
+                changeOrigin: true,
+                ws: true,
+            },
             "/sfu": {
+                target: `http://localhost:8002`,
+                changeOrigin: true,
+                ws: true,
+            },
+            "/sfuid": {
                 target: `http://localhost:8002`,
                 changeOrigin: true,
                 ws: true,

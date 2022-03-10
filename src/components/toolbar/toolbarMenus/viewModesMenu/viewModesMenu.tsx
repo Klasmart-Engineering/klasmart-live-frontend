@@ -1,7 +1,6 @@
 import ViewMode from "./viewMode";
 import AlertPopper from "@/components/common/AlertPopper";
 import { InteractiveMode } from "@/pages/utils";
-import { ScreenShareContext } from "@/providers/screenShareProvider";
 import {
     interactiveModeState,
     isViewModesOpenState,
@@ -17,8 +16,8 @@ import { ScreenShare as ScreenShareIcon } from "@styled-icons/material/ScreenSha
 import { useSnackbar } from "kidsloop-px";
 import React,
 {
+    RefObject,
     useCallback,
-    useContext,
     useState,
 } from "react";
 import { useIntl } from "react-intl";
@@ -48,7 +47,6 @@ function ViewModesMenu (props:ViewModesMenuProps) {
     const [ observeWarning, setObserveWarning ] = useRecoilState(observeWarningState);
     const isViewModesOpen = useRecoilValue(isViewModesOpenState);
     const observeDisable = useRecoilValue(observeDisableState);
-    const screenShare = useContext(ScreenShareContext);
     const [ alert, setAlert ] = useState<AlertProps>();
     const isDisabledShareScreen = typeof navigator.mediaDevices?.getDisplayMedia !== `function`;
     const { enqueueSnackbar } = useSnackbar();
@@ -64,41 +62,32 @@ function ViewModesMenu (props:ViewModesMenuProps) {
         }, ALERT_VISIBLE_TIME);
     }, [ alert?.anchorEl ]);
 
-    const handleViewModesClick = (interactiveMode: InteractiveMode, buttonRef?:React.MutableRefObject<HTMLDivElement | HTMLButtonElement | null>) => {
-        if(screenShare.stream) screenShare.stop();
+    const onClickOnStage = () => setInteractiveMode(InteractiveMode.ONSTAGE);
+    const onClickPresent = () => setInteractiveMode(InteractiveMode.PRESENT);
 
-        switch(interactiveMode){
-        case InteractiveMode.ONSTAGE :
-            setInteractiveMode(InteractiveMode.ONSTAGE);
-            break;
-        case InteractiveMode.OBSERVE :
-            setInteractiveMode(InteractiveMode.OBSERVE);
-            if(observeWarning){
-                setObserveWarning(false);
-                enqueueSnackbar(intl.formatMessage({
-                    id: `observe_warning_videotype_text`,
-                }));
-            }
-            break;
-        case InteractiveMode.PRESENT :
-            setInteractiveMode(InteractiveMode.PRESENT);
-            break;
-        case InteractiveMode.SCREENSHARE:
-            if (!isDisabledShareScreen) {
-                screenShare.start();
-                return;
-            }
+    const onClickObserver = () => {
+        setInteractiveMode(InteractiveMode.OBSERVE);
+        if(observeWarning){
+            setObserveWarning(false);
+            enqueueSnackbar(intl.formatMessage({
+                id: `observe_warning_videotype_text`,
+            }));
+        }
+    };
+    const onClickScreenshare = (buttonRef: RefObject<HTMLButtonElement>) => {
+        if(!isDisabledShareScreen) {
+            setInteractiveMode(InteractiveMode.SCREENSHARE);
+        } else {
             setAlert({
                 open: true,
-                anchorEl: buttonRef?.current ?? null,
+                anchorEl: buttonRef.current ?? null,
                 title: intl.formatMessage({
                     id: `live.class.shareScreen.error.notAvailable`,
                 }, {
                     strong: (modeName) => <strong>{modeName}</strong>,
                 }),
-                width: buttonRef?.current?.offsetParent?.clientWidth ?? ALERT_FALLBACK_WIDTH,
+                width: buttonRef.current?.offsetParent?.clientWidth ?? ALERT_FALLBACK_WIDTH,
             });
-            break;
         }
     };
 
@@ -114,7 +103,7 @@ function ViewModesMenu (props:ViewModesMenuProps) {
                         })}
                         icon={OnStageIcon}
                         active={interactiveMode === InteractiveMode.ONSTAGE}
-                        onClick={() => handleViewModesClick(InteractiveMode.ONSTAGE)}
+                        onClick={onClickOnStage}
                     />
                     <ViewMode
                         disabled={observeDisable}
@@ -123,7 +112,7 @@ function ViewModesMenu (props:ViewModesMenuProps) {
                         })}
                         icon={ObserveIcon}
                         active={interactiveMode === InteractiveMode.OBSERVE}
-                        onClick={() => handleViewModesClick(InteractiveMode.OBSERVE)}
+                        onClick={onClickObserver}
                     />
                     <ViewMode
                         title={intl.formatMessage({
@@ -131,7 +120,7 @@ function ViewModesMenu (props:ViewModesMenuProps) {
                         })}
                         icon={PresentIcon}
                         active={interactiveMode === InteractiveMode.PRESENT}
-                        onClick={() => handleViewModesClick(InteractiveMode.PRESENT)}
+                        onClick={onClickPresent}
                     />
                     <ViewMode
                         title={intl.formatMessage({
@@ -141,7 +130,7 @@ function ViewModesMenu (props:ViewModesMenuProps) {
                         active={interactiveMode === InteractiveMode.SCREENSHARE}
                         disabled={isDisabledShareScreen}
                         onCloseAlert={onCloseAlert}
-                        onClick={(buttonRef) => handleViewModesClick(InteractiveMode.SCREENSHARE, buttonRef)}
+                        onClick={onClickScreenshare}
                     />
                 </Box>
             </StyledPopper>

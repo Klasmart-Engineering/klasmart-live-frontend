@@ -1,8 +1,3 @@
-import {
-    MuteNotification,
-    StreamDescription,
-} from "@/providers/WebRTCContext";
-
 export interface ReadMediaDto {
     media: {
         rtpCapabilities?: string;
@@ -13,4 +8,21 @@ export interface ReadMediaDto {
         mute?: MuteNotification;
         close: string;
     };
+}
+
+export interface StreamDescription {
+    id: string;
+    sessionId: string;
+    producerIds: string[];
+    videoEnabledByProducer: boolean;
+    videoDisabledLocally: boolean;
+    audioEnabledByProducer: boolean;
+    audioDisabledLocally: boolean;
+    stream?: MediaStream;
+}
+export interface MuteNotification {
+    roomId: string;
+    sessionId: string;
+    audio?: boolean;
+    video?: boolean;
 }

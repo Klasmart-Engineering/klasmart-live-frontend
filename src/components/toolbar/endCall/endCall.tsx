@@ -1,3 +1,4 @@
+import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
 import { ParentCaptcha } from "@/components/parentCaptcha";
 import { useEndClassMutation } from "@/data/live/mutations/useEndClassMutation";
 import { useLeaveClassMutation } from "@/data/live/mutations/useLeaveClassMutation";
@@ -16,6 +17,7 @@ import {
 import red from "@material-ui/core/colors/red";
 import { Warning as WarningIcon } from "@styled-icons/entypo/Warning";
 import clsx from "clsx";
+import { useWebrtcCloseCallback } from "kidsloop-live-state/ui";
 import React,
 {
     useEffect,
@@ -23,7 +25,6 @@ import React,
 } from "react";
 import { FormattedMessage } from "react-intl";
 import { useSetRecoilState } from "recoil";
-import {useCordovaSystemContext} from "@/app/context-provider/cordova-system-context";
 
 const useStyles = makeStyles((theme: Theme) => ({
     dialogTitle:{
@@ -82,12 +83,12 @@ function DialogLeaveClass (props:any){
         if(open) {
             addOnBack?.({
                 id: DIALOG_LEAVE_CLASS_ID,
-                onBack: onClose
-            })
+                onBack: onClose,
+            });
         }else {
-            removeOnBack?.(DIALOG_LEAVE_CLASS_ID)
+            removeOnBack?.(DIALOG_LEAVE_CLASS_ID);
         }
-    }, [open]);
+    }, [ open ]);
 
     if(!isTeacher){
         useEffect(() => {
@@ -95,9 +96,10 @@ function DialogLeaveClass (props:any){
         }, [ open ]);
     }
 
+    const closeConference = useWebrtcCloseCallback();
     const [ leaveClass ] = useLeaveClassMutation();
     const onClick = async () => {
-        await leaveClass();
+        await Promise.allSettled([ leaveClass(), closeConference.execute() ]);
         setClassLeft(true);
     };
 
@@ -135,7 +137,7 @@ function DialogLeaveClass (props:any){
                 {!showParentCaptcha && <Button
                     variant="contained"
                     color="primary"
-                    onClick={() => onClick()}>
+                    onClick={onClick}>
                     <FormattedMessage id="leave_class" />
                 </Button>}
             </DialogActions>
@@ -151,17 +153,20 @@ function DialogEndClass (props:any){
     const { addOnBack, removeOnBack } = useCordovaSystemContext();
 
     const [ endClass ] = useEndClassMutation();
+    const closeConference = useWebrtcCloseCallback();
 
     useEffect(() => {
         if(open) {
             addOnBack?.({
                 id: DIALOG_END_CLASS_ID,
-                onBack: onClose
-            })
+                onBack: onClose,
+            });
         }else {
-            removeOnBack?.(DIALOG_END_CLASS_ID)
+            removeOnBack?.(DIALOG_END_CLASS_ID);
         }
-    }, [open]);
+    }, [ open ]);
+
+    const onClick = () => Promise.allSettled([ endClass(), closeConference.execute() ]);
 
     return(
         <Dialog
@@ -191,7 +196,7 @@ function DialogEndClass (props:any){
                 <Button
                     variant="contained"
                     color="primary"
-                    onClick={() => endClass() }>
+                    onClick={onClick}>
                     <FormattedMessage id="end_class" />
                 </Button>
             </DialogActions>

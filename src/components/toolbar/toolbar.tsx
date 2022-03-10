@@ -13,22 +13,14 @@ import GlobalActionsMenu from "./toolbarMenus/globalActionsMenu/globalActionsMen
 import LessonPlanMenu from "./toolbarMenus/lessonPlanMenu/lessonPlanMenu";
 import ViewModesMenu from "./toolbarMenus/viewModesMenu/viewModesMenu";
 import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
-import useCordovaObservePause from "@/app/platform/cordova-observe-pause";
 import LeaveClassIcon from "@/assets/img/icon_leave_class.svg";
-import { useMuteMutation } from "@/data/sfu/mutations/useMuteMutation";
 import { LIVE_ON_BACK_ID } from "@/pages/room/room-with-context";
 import { InteractiveMode } from "@/pages/utils";
 import { useSessionContext } from "@/providers/session-context";
 import {
-    MuteNotification,
-    WebRTCContext,
-} from "@/providers/WebRTCContext";
-import {
     activeTabState,
     hasControlsState,
     interactiveModeState,
-    isActiveGlobalMuteAudioState,
-    isActiveGlobalMuteVideoState,
     isActiveGlobalScreenshareState,
     isCanvasOpenState,
     isChatOpenState,
@@ -38,7 +30,6 @@ import {
     isViewModesOpenState,
     unreadMessagesState,
 } from "@/store/layoutAtoms";
-import { sleep } from "@/utils/utils";
 import { useSynchronizedState } from "@/whiteboard/context-providers/SynchronizedStateProvider";
 import {
     Grid,
@@ -60,7 +51,6 @@ import { FilePaper as LessonPlanIcon } from "@styled-icons/remix-fill/FilePaper"
 import clsx from "clsx";
 import React,
 {
-    useContext,
     useEffect,
     useState,
 } from "react";
@@ -112,12 +102,7 @@ export const viewModesBadge = (interactiveMode: InteractiveMode) => {
 function Toolbar () {
     const classes = useStyles();
     const intl = useIntl();
-    const {
-        isTeacher,
-        sessionId,
-        roomId,
-    } = useSessionContext();
-    const webrtc = useContext(WebRTCContext);
+    const { isTeacher } = useSessionContext();
     const { addOnBack } = useCordovaSystemContext();
     const [ isGlobalActionsOpen, setIsGlobalActionsOpen ] = useRecoilState(isGlobalActionsOpenState);
     const [ isLessonPlanOpen, setIsLessonPlanOpen ] = useRecoilState(isLessonPlanOpenState);
@@ -143,12 +128,6 @@ function Toolbar () {
     const [ openEndClassDialog, setOpenEndClassDialog ] = useState(false);
     const [ openLeaveClassDialog, setOpenLeaveClassDialog ] = useState(false);
 
-    const [ camOn, setCamOn ] = useState<boolean>(true);
-    const [ micOn, setMicOn ] = useState<boolean>(true);
-
-    const [ micMuteCurrent, setMicMuteCurrent ] = useRecoilState(isActiveGlobalMuteAudioState);
-    const [ camMuteCurrent, setCamMuteCurrent ] = useRecoilState(isActiveGlobalMuteVideoState);
-
     const resetDrawers = () => {
         setIsGlobalActionsOpen(false);
         setIsLessonPlanOpen(false);
@@ -157,61 +136,6 @@ function Toolbar () {
         setIsCanvasOpen(false);
         setIsViewModesOpen(false);
     };
-
-    const [ muteMutation ] = useMuteMutation();
-
-    function setOutboundAudioState (isMicOn: boolean) {
-        const notification: MuteNotification = {
-            roomId,
-            sessionId,
-            audio: isMicOn,
-        };
-        return muteMutation({
-            variables: notification,
-        });
-    }
-
-    function setOutboundVideoState (isCamOn: boolean) {
-        const notification: MuteNotification = {
-            roomId,
-            sessionId,
-            video: isCamOn,
-        };
-        return muteMutation({
-            variables: notification,
-        });
-    }
-
-    async function toggleOutboundAudioState () {
-        await setOutboundAudioState(!micOn);
-    }
-
-    async function toggleOutboundVideoState () {
-        await setOutboundVideoState(!camOn);
-    }
-
-    async function setCurrentOutboundAudioState () {
-        if (micMuteCurrent === false) {
-            //wait for update from UI
-            await sleep(300);
-            await setOutboundAudioState(false);
-        }
-        setMicMuteCurrent(null);
-    }
-
-    async function setCurrentOutboundVideoState () {
-        if (camMuteCurrent === false) {
-            await setOutboundVideoState(false);
-        }
-        setCamMuteCurrent(null);
-    }
-
-    async function resetOutboundVideoStateBackground () {
-        await setOutboundAudioState(true);
-        await setOutboundVideoState(true);
-        setCurrentOutboundAudioState();
-        setCurrentOutboundVideoState();
-    }
 
     function endCall () {
         hasControls ? setOpenEndClassDialog(true) : setOpenLeaveClassDialog(true);
@@ -229,39 +153,6 @@ function Toolbar () {
     useEffect(() => {
         setIsCanvasOpen(isGlobalCanvasEnabled && permissionsGlobalCanvas.allowCreateShapes);
     }, [ isGlobalCanvasEnabled, permissionsGlobalCanvas.allowCreateShapes ]);
-
-    useEffect(() => {
-        setMicOn(webrtc.isAudioEnabledByProducer(sessionId) && !webrtc.isAudioDisabledLocally(sessionId));
-    }, [ webrtc.isAudioEnabledByProducer(sessionId), webrtc.isAudioDisabledLocally(sessionId) ]);
-
-    useEffect(() => {
-        setCamOn(webrtc.isVideoEnabledByProducer(sessionId) && !webrtc.isVideoDisabledLocally(sessionId));
-    }, [ webrtc.isVideoEnabledByProducer(sessionId), webrtc.isVideoDisabledLocally(sessionId) ]);
-
-    async function onPauseStateChanged (isPaused: boolean) {
-        if (isPaused) {
-            setMicMuteCurrent(micOn);
-            setCamMuteCurrent(camOn);
-            await setOutboundAudioState(false);
-            await setOutboundVideoState(false);
-        } else {
-            //Check stream of producer is connected successfully
-            let countInterval = 0;
-            const interval = setInterval(() => {
-                if (webrtc.isConnectedTransmitStream()) {
-                    resetOutboundVideoStateBackground();
-                    clearInterval(interval);
-                } else {
-                    countInterval++;
-                    if (countInterval >= 10) {
-                        clearInterval(interval);
-                    }
-                }
-            }, 1000);
-        }
-    }
-
-    useCordovaObservePause(onPauseStateChanged);
 
     useEffect(() => {
         function initOnBack (){
@@ -327,14 +218,7 @@ function Toolbar () {
                 <Grid
                     item
                     className={classes.iconGroup}>
-                    <ToolbarItemMicrophone
-                        id="toolbar-item-microphone"
-                        active={micMuteCurrent === null ? micOn : micMuteCurrent}
-                        tooltip={intl.formatMessage({
-                            id: micOn ? `toggle_microphone_off` :  `toggle_microphone_on`,
-                        })}
-                        onClick={() =>  toggleOutboundAudioState() }
-                    />
+                    <ToolbarItemMicrophone />
                     <ToolbarItemCall
                         id="toolbar-item-call"
                         locked={!isTeacher}
@@ -345,14 +229,7 @@ function Toolbar () {
                         src={LeaveClassIcon}
                         onClick={() => endCall()}
                     />
-                    <ToolbarItemCamera
-                        id="toolbar-item-camera"
-                        active={camMuteCurrent === null ? camOn : camMuteCurrent}
-                        tooltip={intl.formatMessage({
-                            id: camOn ? `toggle_camera_off` :  `toggle_camera_on`,
-                        })}
-                        onClick={() =>  toggleOutboundVideoState() }
-                    />
+                    <ToolbarItemCamera />
                 </Grid>
                 <Grid
                     item

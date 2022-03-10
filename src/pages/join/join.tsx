@@ -1,3 +1,5 @@
+import { CameraPreview } from "./cameraPreview";
+import { MicrophonePreview } from "./microphonePreview";
 import BackButton from "@/app/components/layout/BackButton";
 import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
 import KidsLoopClassTeachers from "@/assets/img/classtype/kidsloop_class_teachers.svg";
@@ -6,16 +8,10 @@ import KidsLoopLiveTeachers from "@/assets/img/classtype/kidsloop_live_teachers.
 import KidsLoopStudyStudents from "@/assets/img/classtype/kidsloop_study_students.svg";
 import KidsLoopLogoSvg from "@/assets/img/kidsloop.svg";
 import Loading from "@/components/loading";
-import Camera from "@/components/media/camera";
-import MediaDeviceSelect from "@/components/mediaDeviceSelect";
+import { MediaDeviceSelect } from "@/components/mediaDeviceSelect";
 import StyledButton from "@/components/styled/button";
 import StyledIcon from "@/components/styled/icon";
 import StyledTextField from "@/components/styled/textfield";
-import {
-    CameraError,
-    DeviceStatus,
-    useCameraContext,
-} from "@/providers/Camera";
 import { useHttpEndpoint } from "@/providers/region-select-context";
 import { useSessionContext } from "@/providers/session-context";
 import { ClassType } from "@/store/actions";
@@ -24,20 +20,16 @@ import {
     classLeftState,
     hasJoinedClassroomState,
 } from "@/store/layoutAtoms";
+import { getOrganizationBranding } from "@/utils/utils";
 import {
-    BrandingType,
-    getOrganizationBranding,
-} from "@/utils/utils";
-import Button from '@material-ui/core/Button';
+    Box,
+    Grid,
+    IconButton,
+} from "@material-ui/core";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
+import { red } from "@material-ui/core/colors";
 import Container from "@material-ui/core/Container";
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Grid from "@material-ui/core/Grid";
 import {
     createStyles,
     makeStyles,
@@ -46,20 +38,29 @@ import {
 } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { CameraVideoFill as CameraVideoFillIcon } from "@styled-icons/bootstrap/CameraVideoFill";
+import { CameraVideoOffFill as CameraDisabledIcon } from "@styled-icons/bootstrap/CameraVideoOffFill";
+import { MicFill as MicFillIcon } from "@styled-icons/bootstrap/MicFill";
+import { MicMuteFill as MicDisabledIcon } from "@styled-icons/bootstrap/MicMuteFill";
 import { InfoCircle as InfoCircleIcon } from "@styled-icons/boxicons-solid/InfoCircle";
 import clsx from "clsx";
 import Cookies from "js-cookie";
+import {
+    useCamera,
+    useMicrophone,
+} from "kidsloop-live-state/ui";
 import React,
 {
+    Dispatch,
+    SetStateAction,
     useEffect,
     useState,
+    VoidFunctionComponent,
 } from "react";
+import { useAsync } from "react-async-hook";
 import { FormattedMessage } from "react-intl";
 import { useHistory } from "react-router-dom";
-import {
-    useRecoilState,
-    useSetRecoilState,
-} from "recoil";
+import { useSetRecoilState } from "recoil";
 
 const config = require(`@/../package.json`);
 
@@ -170,64 +171,28 @@ export default function Join (): JSX.Element {
         organizationId,
         user_id,
         roomId,
-        sessionId,
     } = useSessionContext();
 
-    const [ dialogOpen, setDialogOpen ] = useState<boolean>(false);
-    const handleDialogClose = () => setDialogOpen(false);
+    const brandingEndpoint = useHttpEndpoint(`user`);
+    const brandingAsync = useAsync((id: string, endpoint: string) => getOrganizationBranding(id, endpoint), [ organizationId, brandingEndpoint ]);
+    const logo = brandingAsync.result?.iconImageURL || KidsLoopLogoSvg;
 
-    const [ loading, setLoading ] = useState(true);
-    const [ branding, setBranding ] = useState<BrandingType|undefined>(undefined);
-    const logo = branding?.iconImageURL || KidsLoopLogoSvg;
     const setClassEnded = useSetRecoilState(classLeftState);
     const setClassLeft = useSetRecoilState(classEndedState);
 
     const history = useHistory();
     const { restart } = useCordovaSystemContext();
 
-    const {
-        setAcquireDevices,
-        setAcquireCameraDevice,
-        setHighQuality,
-        cameraError,
-        cameraStream,
-        deviceStatus,
-        setIsListeningOnDeviceChange,
-    } = useCameraContext();
-
-    const brandingEndpoint = useHttpEndpoint(`user`);
-
-    const handleOrganizationBranding = async () => {
-        setLoading(true);
-        try {
-            const dataBranding = await getOrganizationBranding(organizationId, brandingEndpoint);
-            setBranding(dataBranding);
-        } catch (e) {
-            console.error(`couldn't get branding: ${e}`);
-        }
-        setLoading(false);
-    };
-
     useEffect(() => {
         setClassEnded(false);
         setClassLeft(false);
         Cookies.set(`roomUserId`, `${roomId}:${user_id}`); // Used to cache H5P answers (H5P-342)
-
-        setIsListeningOnDeviceChange(true);
-        return () => setIsListeningOnDeviceChange(false);
     }, []);
 
-    useEffect(() => {
-        setHighQuality(isTeacher);
-        setAcquireCameraDevice(classType === ClassType.LIVE);
-        setAcquireDevices(true);
-    }, [ isTeacher, classType ]);
+    const [ cameraPaused, setCameraPaused ] = useState(false);
+    const [ microphonePaused, setMicrophonePaused ] = useState(false);
 
-    useEffect(() => {
-        handleOrganizationBranding();
-    }, [ brandingEndpoint ]);
-
-    if (loading) {
+    if (brandingAsync.loading) {
         return <Loading messageId="loading" />;
     }
 
@@ -255,7 +220,7 @@ export default function Join (): JSX.Element {
                     variant="h3"
                     className={classes.headerText}
                     style={{
-                        color: branding?.primaryColor && theme.palette.getContrastText(branding?.primaryColor),
+                        color: brandingAsync.result?.primaryColor && theme.palette.getContrastText(brandingAsync.result?.primaryColor),
                     }}
                 >
                     <FormattedMessage
@@ -267,7 +232,7 @@ export default function Join (): JSX.Element {
                 <div
                     className={classes.headerBg}
                     style={{
-                        background: branding?.primaryColor && branding?.primaryColor,
+                        background: brandingAsync.result?.primaryColor && brandingAsync.result?.primaryColor,
                     }}></div>
             </div>
             <Grid
@@ -294,9 +259,18 @@ export default function Join (): JSX.Element {
                                         item
                                         xs={6}
                                         md={7}>
-                                        <CameraPreview
-                                            cameraError={cameraError}
-                                            videoStream={cameraStream} />
+                                        <Box position="relative">
+                                            <CameraPreview paused={cameraPaused}/>
+
+                                            <Box
+                                                position="absolute"
+                                                bottom="20px"
+                                                width="100%"
+                                                display="flex"
+                                                justifyContent="center">
+                                                <MicrophonePreview paused={microphonePaused}/>
+                                            </Box>
+                                        </Box>
                                     </Grid>
                                 }
                                 <Grid
@@ -304,22 +278,11 @@ export default function Join (): JSX.Element {
                                     xs={6}
                                     md={classType === ClassType.LIVE ? 5 : undefined}
                                 >
-                                    <Grid
-                                        container
-                                        direction="column"
-                                        justifyContent="center"
-                                        alignItems="center"
-                                    >
-                                        {!isSmDown &&
-                                        <Grid item>
-                                            <ClassTypeLogo />
-                                        </Grid>
-                                        }
-
-                                    </Grid>
                                     <JoinRoomForm
-                                        mediaDeviceError={cameraError !== undefined}
-                                        stream={cameraStream}
+                                        cameraPaused={cameraPaused}
+                                        setCameraPaused={setCameraPaused}
+                                        microphonePaused={microphonePaused}
+                                        setMicrophonePaused={setMicrophonePaused}
                                     />
                                 </Grid>
                             </Grid>
@@ -332,79 +295,8 @@ export default function Join (): JSX.Element {
             </Grid>
 
             {!process.env.IS_CORDOVA_BUILD && <Typography className={classes.version}>{config.version}</Typography>}
-
-            <PermissionAlertDialog dialogOpenHandler={{
-                dialogOpen,
-                handleDialogClose,
-                deviceStatus,
-            }} />
         </div>
     );
-}
-
-function CameraPreview ({ cameraError, videoStream }: {
-    cameraError: CameraError | undefined;
-    videoStream: MediaStream | undefined;
-}): JSX.Element {
-
-    return (
-        cameraError ?
-            <CameraPreviewFallback cameraError={cameraError} /> : (
-                videoStream && videoStream.getVideoTracks().length > 0 && videoStream.getVideoTracks().every((t) => t.readyState === `live`) && videoStream.active ?
-                    <Camera
-                        mediaStream={videoStream}
-                        muted={true} /> :
-                    <Loading messageId="allow_media_permission" />
-            )
-    );
-}
-
-function CameraPreviewFallback ({ cameraError }: { cameraError: CameraError }) {
-    const theme = useTheme();
-    const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
-
-    return (
-        <Grid
-            container
-            direction="column"
-            justifyContent="center"
-            alignItems="center"
-            alignContent="center"
-            style={{
-                position: `relative`,
-                height: 0,
-                paddingBottom: `56.25%`, // 16:9
-                backgroundColor: `#000`,
-                borderRadius: 12,
-            }}
-        >
-            <Typography
-                variant={isSmDown ? `caption` : `body1`}
-                align="center"
-                style={{
-                    position: `absolute`,
-                    top: `50%`,
-                    left: `50%`,
-                    transform: `translate(-50%, -50%)`,
-                    whiteSpace: `pre-line`,
-                    wordBreak: `break-word`,
-                    color: `#FFF`,
-                }}
-            >
-                <CameraErrorMessage cameraError={cameraError} />
-            </Typography>
-        </Grid>
-    );
-}
-
-function CameraErrorMessage ({ cameraError } : { cameraError: CameraError | undefined }): JSX.Element {
-    if (cameraError === CameraError.CAMERA_PERMISSION_ERROR) {
-        return <FormattedMessage id="join_cameraPreviewFallback_allowMediaPermissions" />;
-    } else if (cameraError === CameraError.CAMERA_UNAVAILABLE_ERROR) {
-        return <FormattedMessage id="join_cameraPreviewFallback_cameraUnavailableOnPlatform" />;
-    } else {
-        return <FormattedMessage id="connect_camera" />;
-    }
 }
 
 function ClassTypeLogo (): JSX.Element {
@@ -420,65 +312,73 @@ function ClassTypeLogo (): JSX.Element {
         className={logo} />);
 }
 
-interface JoinRoomFormProps {
-    mediaDeviceError: boolean;
-    stream: MediaStream | undefined;
-}
+const useStylesJoinRoomForm = makeStyles((theme) => createStyles({
+    iconButton: {
+        padding: theme.spacing(2.5),
+        border: `1px solid ${theme.palette.grey[300]}`,
+    },
+    iconButtonPaused: {
+        borderColor: `transparent`,
+        backgroundColor: red[500],
+        color: `white`,
+        "&:hover": {
+            backgroundColor: red[500],
+        },
+    },
+}));
 
-function JoinRoomForm ({
-    mediaDeviceError,
-    stream,
-}: JoinRoomFormProps): JSX.Element {
+const JoinRoomForm: VoidFunctionComponent<{
+    cameraPaused: boolean;
+    setCameraPaused: Dispatch<SetStateAction<boolean>>;
+    microphonePaused: boolean;
+    setMicrophonePaused: Dispatch<SetStateAction<boolean>>;
+}> = ({
+    cameraPaused,
+    setCameraPaused,
+    microphonePaused,
+    setMicrophonePaused,
+}) => {
     const {
         classType,
-        setCamera,
         name,
         setName,
     } = useSessionContext();
-
-    const [ hasJoinedClassroom, setHasJoinedClassroom ] = useRecoilState(hasJoinedClassroomState);
+    const classes = useStylesJoinRoomForm();
+    const setHasJoinedClassroom = useSetRecoilState(hasJoinedClassroomState);
 
     const [ user, setUser ] = useState<string>(``);
-    const [ nameError, setNameError ] = useState<JSX.Element | null>(null);
+    const [ hasNameError, setHasNameError ] = useState(false);
 
-    const {
-        setSelectedAudioDeviceId,
-        selectedAudioDeviceId,
-        availableNamedAudioConstraints,
-        setSelectedVideoDeviceId,
-        selectedVideoDeviceId,
-        availableNamedVideoConstraints,
-    } = useCameraContext();
+    const camera = useCamera();
+    const microphone = useMicrophone();
 
-    const history = useHistory();
+    const theme = useTheme();
+    const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
 
     function join (e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
-        setNameError(null);
-        if (!user) {
-            setNameError(<span style={{
-                display: `flex`,
-                alignItems: `center`,
-            }}>
-                <StyledIcon
-                    icon={<InfoCircleIcon />}
-                    size="small"
-                    color="#dc004e" />
-                <Typography variant="caption">
-                    <FormattedMessage id="error_empty_name" />
-                </Typography>
-            </span>);
-        }
-        if (!name) {
-            setName(user);
-        }
-        setCamera(stream);
+
+        setHasNameError(!user);
+        if (!name) { setName(user); }
+
         setHasJoinedClassroom(true);
 
-        if (process.env.IS_CORDOVA_BUILD) {
-            history.push(`/room`);
-        }
+        if(!cameraPaused) { camera.setSending.execute(true); }
+        if(!microphonePaused) { microphone.setSending.execute(true); }
     }
+
+    const nameHelperText = <span style={{
+        display: `flex`,
+        alignItems: `center`,
+    }}>
+        <StyledIcon
+            icon={<InfoCircleIcon />}
+            size="small"
+            color="#dc004e" />
+        <Typography variant="caption">
+            <FormattedMessage id="error_empty_name" />
+        </Typography>
+    </span>;
 
     return (
         <form onSubmit={join}>
@@ -486,48 +386,77 @@ function JoinRoomForm ({
                 container
                 direction="column"
                 spacing={2}>
+                {!isSmDown && (
+                    <Grid item>
+                        <ClassTypeLogo />
+                    </Grid>
+                )}
                 {!name && <Grid
                     item
                     xs><StyledTextField
                         fullWidth
                         label={<FormattedMessage id="what_is_your_name" />}
                         value={user}
-                        error={nameError !== null}
-                        helperText={nameError}
+                        error={hasNameError}
+                        helperText={nameHelperText}
                         onChange={(e) => setUser(e.target.value)}
                     /></Grid>
                 }
-
-                {classType !== ClassType.LIVE ? null :
+                <Grid
+                    item
+                    xs>
                     <Grid
-                        item
-                        xs>
-                        <MediaDeviceSelect
-                            disabled={availableNamedVideoConstraints.length <= 1}
-                            deviceType="video"
-                            deviceId={selectedVideoDeviceId}
-                            devices={availableNamedVideoConstraints}
-                            onChange={(e) => setSelectedVideoDeviceId(e.target.value as string) }
-                        />
+                        container
+                        spacing={2}
+                        alignItems="center"
+                        justifyContent="center"
+                    >
+                        <Grid item>
+                            <IconButton
+                                className={clsx(classes.iconButton, {
+                                    [classes.iconButtonPaused]: microphonePaused,
+                                })}
+                                onClick={() => setMicrophonePaused(x => !x)} >
+                                {!microphonePaused  ? <MicFillIcon size="1.25em"/> : <MicDisabledIcon size="1.25em"/>}
+                            </IconButton>
+                        </Grid>
+                        {classType === ClassType.LIVE && (
+                            <Grid item>
+                                <IconButton
+                                    classes={{
+                                        root: clsx(classes.iconButton, {
+                                            [classes.iconButtonPaused]: cameraPaused,
+                                        }),
+                                    }}
+                                    onClick={() => setCameraPaused(x => !x)}
+                                >
+                                    {!cameraPaused ? <CameraVideoFillIcon size="1.25em"/> : <CameraDisabledIcon size="1.25em"/>}
+                                </IconButton>
+                            </Grid>
+                        )}
                     </Grid>
-                }
-                <Grid
-                    item
-                    xs>
-                    <MediaDeviceSelect
-                        disabled={availableNamedAudioConstraints.length <= 1}
-                        deviceType="audio"
-                        deviceId={selectedAudioDeviceId}
-                        devices={availableNamedAudioConstraints}
-                        onChange={(e) => setSelectedAudioDeviceId(e.target.value as string)}
-                    />
                 </Grid>
+
                 <Grid
                     item
                     xs>
+                    <Box
+                        my={1}
+                        display="flex"
+                        justifyContent="center">
+                        <MediaDeviceSelect kind="audioinput" />
+                    </Box>
+                    <Box
+                        my={1}
+                        display="flex"
+                        justifyContent="center">
+                        <MediaDeviceSelect kind="videoinput" />
+                    </Box>
+                </Grid>
+
+                <Grid item>
                     <StyledButton
                         fullWidth
-                        disabled={classType === ClassType.LIVE && (mediaDeviceError || !stream)}
                         type="submit"
                         size="large"
                     >
@@ -539,60 +468,4 @@ function JoinRoomForm ({
             </Grid>
         </form>
     );
-}
-
-function PermissionAlertDialog ({ dialogOpenHandler }: {
-    dialogOpenHandler: {
-        dialogOpen: boolean;
-        handleDialogClose: () => void;
-        deviceStatus: DeviceStatus | undefined;
-    };
-}) {
-    const { classType } = useSessionContext();
-    const {
-        dialogOpen,
-        handleDialogClose,
-        deviceStatus,
-    } = dialogOpenHandler;
-    const [ dialogTitle, setDialogTitle ] = useState(`join_permissionAlertDialog_title`);
-    const [ dialogContent, setDialogContent ] = useState(`join_permissionAlertDialog_contentText_live`);
-
-    useEffect(() => {
-        if (classType === ClassType.LIVE) return;
-        switch (deviceStatus) {
-        case DeviceStatus.MIC_NOT_ALLOWED:
-            setDialogTitle(`join_permissionAlertDialog_mic_blocked_title`);
-            setDialogContent(`join_permissionAlertDialog_mic_blocked_contentText_live`);
-            break;
-        case DeviceStatus.MIC_NOT_FOUND:
-            setDialogTitle(`join_permissionAlertDialog_mic_not_exist_title`);
-            setDialogContent(`join_permissionAlertDialog_mic_not_exist_contentText_live`);
-            break;
-        }
-    }, [ classType, deviceStatus ]);
-
-    return (
-        <Dialog
-            open={dialogOpen}
-            aria-labelledby="media-permission-alert-title"
-            aria-describedby="media-permission-alert-description"
-            onClose={handleDialogClose}
-        >
-            <DialogTitle id="media-permission-alert-title">
-                <FormattedMessage id={dialogTitle} />
-            </DialogTitle>
-            <DialogContent>
-                <DialogContentText id="media-permission-alert-description">
-                    <FormattedMessage id={dialogContent} />
-                </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-                <Button
-                    color="primary"
-                    onClick={handleDialogClose}>
-                    <FormattedMessage id="join_permissionAlertDialog_action_close" />
-                </Button>
-            </DialogActions>
-        </Dialog>
-    );
-}
+};

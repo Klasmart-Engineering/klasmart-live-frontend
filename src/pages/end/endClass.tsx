@@ -14,6 +14,7 @@ import {
     Typography,
 } from '@material-ui/core';
 import { CalendarCheck as ClassEndedIcon } from "@styled-icons/boxicons-regular/CalendarCheck";
+import { useWebrtcClose } from "kidsloop-live-state/ui";
 import React,
 { useEffect } from 'react';
 import { FormattedMessage } from 'react-intl';
@@ -68,6 +69,7 @@ function EndClass () {
     const classes = useStyles();
     const HUB_ENDPOINT = process.env.ENDPOINT_HUB;
     const history = useHistory();
+    useWebrtcClose();
 
     const { addOnBack } = useCordovaSystemContext();
     const classLeft = useRecoilValue(classLeftState);

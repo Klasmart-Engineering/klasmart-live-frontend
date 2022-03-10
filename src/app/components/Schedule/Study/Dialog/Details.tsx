@@ -93,7 +93,7 @@ export default function StudyDetailsDialog (props: Props) {
             });
             setToken(token);
             onClose();
-            push(`/join?token=${token}`);
+            push(`/room?token=${token}`);
         } catch (err) {
             enqueueSnackbar(intl.formatMessage({
                 id: `error_unknown_error`,

@@ -115,7 +115,7 @@ export default function LiveDetailsDialog (props: Props) {
             onClose();
             /* TODO: Can we get rid of the token query parameter and just use
             ** react component state for keeping and parsing the token instead? */
-            location.href = `#/join?token=${token}`;
+            location.href = `#/room?token=${token}`;
         } catch (err) {
             enqueueSnackbar(intl.formatMessage({
                 id: `error_unknown_error`,
