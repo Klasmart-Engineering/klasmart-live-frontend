@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.0.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v5.0.0%0Dv4.3.0) (2022-03-10)
+
+
+### ⚠ BREAKING CHANGES
+
+* implementation of new  sfu2 solution
+
+### Features
+
+* implementation of new  sfu2 solution ([1239113](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/12391135cd10203babb8df6e9fd707eb38d469bc))
+
 ## [4.3.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v4.3.0%0Dv4.2.0) (2022-03-08)
 
 
