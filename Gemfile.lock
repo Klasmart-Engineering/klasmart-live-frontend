@@ -212,8 +212,8 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  dotenv
-  fastlane
+  dotenv (= 2.7.6)
+  fastlane (= 2.204.3)
 
 BUNDLED WITH
    1.17.2

@@ -1,3 +1,19 @@
+# s3_bucket("")
+
+# storage_mode("s3")
+
+# type("development") # The default type, can be: appstore, adhoc, enterprise or development
+
+# # app_identifier(["tools.fastlane.app", "tools.fastlane.app2"])
+# # username("user@fastlane.tools") # Your Apple Developer Portal username
+
+# # For all available options run `fastlane match --help`
+# # Remove the # in the beginning of the line to enable the other options
+
+# # The docs are available on https://docs.fastlane.tools/actions/match
+
+
+
 git_url("https://github.com/KL-Engineering/kidsloop-live-frontend")
 
 storage_mode("git")
@@ -6,7 +22,7 @@ type("development") # The default type, can be: appstore, adhoc, enterprise or d
 
 # app_identifier(["tools.fastlane.app", "tools.fastlane.app2"])
 # username("user@fastlane.tools") # Your Apple Developer Portal username
-keychain_name("github-build-machine.keychain")
+# keychain_name("github-build-machine.keychain")
 # For all available options run `fastlane match --help`
 # Remove the # in the beginning of the line to enable the other options
 
