@@ -4,12 +4,16 @@ import {
 } from "@/app/context-provider/cordova-system-context";
 import { injectIframeScript } from "@/app/utils/injectIframeScript";
 import { LoadStatus } from "@/components/interactiveContent/InteractionRecorder";
+import {
+    isAndroidBrowser,
+    isMobileBrowser,
+} from "@/utils/userAgent";
 import { useSnackbar } from "kidsloop-px";
 import {
     useEffect,
     useState,
 } from "react";
-import {useIntl} from "react-intl";
+import { useIntl } from "react-intl";
 
 export enum H5PClassName {
     H5P_FLASH_CARDS = `h5p-flashcards`,
@@ -25,9 +29,11 @@ export enum H5PClassName {
 export enum FlashCardAction {
     FLASH_CARD_LOADED = `FlashCardLoaded`,
     START_LISTEN = `StartListen`,
+    DISPLAY_NOT_SUPPORTED_MESSAGE = `DisplayNotSupportedMessage`,
     STOP_LISTEN = `StopListen`,
     OFF_RECORD_BUTTON = `OffRecordButton`,
     START_CUSTOM_FLASHCARDS = `StartCustomFlashCards`,
+    START_CUSTOM_FLASHCARDS_ANDROID_WEB = `StartCustomFlashCardsMobileWeb`,
     ANSWER = `Answer`,
     ASK_SPEECH_RECOGNITION_PERMISSION = `AskSpeechRecognitionPermission`,
     GRANTED_SPEECH_RECOGNITION_PERMISSION = `GrantedSpeechRecognitionPermission`,
@@ -49,6 +55,7 @@ export function useCustomFlashCard ({
     const [ iframe, setIframe ] = useState<HTMLIFrameElement>();
     const [ shouldCustomFlashCard, setShouldCustomFlashCard ] = useState(false);
     const intl = useIntl();
+    const { isAndroid } = useCordovaSystemContext();
 
     useEffect(() => {
         if(shouldCustomFlashCard && !openLoadingDialog) {
@@ -57,8 +64,6 @@ export function useCustomFlashCard ({
     }, [ shouldCustomFlashCard, openLoadingDialog ]);
 
     useEffect(() => {
-        if (!process.env.IS_CORDOVA_BUILD) return;
-
         function checkIfFlashCardContent (iframe: HTMLIFrameElement) {
             const flashCardElement = iframe.contentDocument?.querySelector(`.${H5PClassName.H5P_FLASH_CARDS}`);
             return !!flashCardElement;
@@ -67,9 +72,23 @@ export function useCustomFlashCard ({
         if(loadStatus === LoadStatus.Finished) {
             const iframe = window.document.getElementById(iframeID) as HTMLIFrameElement;
             setIframe(iframe);
-            if(iframe && checkIfFlashCardContent(iframe)){
-                setShouldCustomFlashCard(true);
-                injectIframeScript(iframe, `flashcard`);
+            if (iframe && checkIfFlashCardContent(iframe)) {
+                if (process.env.IS_CORDOVA_BUILD) {
+                    setShouldCustomFlashCard(true);
+                    injectIframeScript(iframe, `flashcard`);
+                } else {
+                    if (!iframe.contentDocument || !iframe.contentWindow) { return; }
+                    if (!isAndroidBrowser) return;
+
+                    setShouldCustomFlashCard(true);
+                    const doc = iframe.contentDocument;
+                    const script = doc.createElement(`script`);
+                    script.setAttribute(`type`, `text/javascript`);
+                    const matches = window.location.pathname.match(/^(.*\/+)([^/]*)$/);
+                    const prefix = matches && matches.length >= 2 ? matches[1] : ``;
+                    script.setAttribute(`src`, `${prefix}flashcard.js`);
+                    doc.head.appendChild(script);
+                }
             }
         }
     }, [ loadStatus ]);
@@ -82,7 +101,7 @@ export function useCustomFlashCard ({
     }
 
     useEffect(() => {
-        if (!process.env.IS_CORDOVA_BUILD) return;
+        if (!isMobileBrowser && !process.env.IS_CORDOVA_BUILD) return;
 
         function startListen () {
 
@@ -127,7 +146,7 @@ export function useCustomFlashCard ({
             case FlashCardAction.FLASH_CARD_LOADED:
                 isFlashCards = true;
                 iframe?.contentWindow?.postMessage({
-                    action: FlashCardAction.START_CUSTOM_FLASHCARDS,
+                    action: isAndroidBrowser && !isAndroid ? FlashCardAction.START_CUSTOM_FLASHCARDS_ANDROID_WEB : FlashCardAction.START_CUSTOM_FLASHCARDS,
                 }, `*`);
                 setShouldCustomFlashCard(false);
                 setOpenLoadingDialog(false);
@@ -137,6 +156,18 @@ export function useCustomFlashCard ({
                 break;
             case FlashCardAction.STOP_LISTEN:
                 stopListen();
+                break;
+            case FlashCardAction.DISPLAY_NOT_SUPPORTED_MESSAGE:
+                enqueueSnackbar(intl.formatMessage({
+                    id: `speechRecognition.error.notSupported`,
+                    defaultMessage: `Speech Recognition feature not supported on mobile browsers`,
+                }), {
+                    variant: `error`,
+                    anchorOrigin: {
+                        horizontal: `center`,
+                        vertical: `top`,
+                    },
+                });
                 break;
             case FlashCardAction.ASK_SPEECH_RECOGNITION_PERMISSION:
                 requestPermissions({
@@ -149,7 +180,7 @@ export function useCustomFlashCard ({
                                 console.log(err);
                                 enqueueSnackbar(intl.formatMessage({
                                     id: `live.speechRecognition.error.accessDisabled`,
-                                    defaultMessage: `Access to speech recognition is disabled`
+                                    defaultMessage: `Access to speech recognition is disabled`,
                                 }), {
                                     variant: `error`,
                                     anchorOrigin: {

@@ -9,25 +9,29 @@ const MutationObserver = window.MutationObserver || window.WebKitMutationObserve
 
 let inputLanguage = `en-US`;
 
-window.addEventListener(`message`, ({data}) => {
+window.addEventListener(`message`, ({ data }) => {
     switch (data.action) {
-        case FlashCardAction.START_CUSTOM_FLASHCARDS:
-            initInputLanguage();
-            customRecordButtons();
-            askSpeechRecognitionPermission();
-            break;
-        case FlashCardAction.ANSWER:
-            onAnswer(data.data);
-            break;
-        case FlashCardAction.GRANTED_SPEECH_RECOGNITION_PERMISSION:
-            checkPermissionInIframeAndEnableButtons();
-            break;
-        case FlashCardAction.DENY_SPEECH_RECOGNITION_PERMISSION:
-            disableRecordButtons();
-            break;
-        case FlashCardAction.OFF_RECORD_BUTTON:
-            offRecordButton();
-            break;
+    case FlashCardAction.START_CUSTOM_FLASHCARDS:
+        initInputLanguage();
+        customRecordButtons();
+        askSpeechRecognitionPermission();
+        break;
+    case FlashCardAction.START_CUSTOM_FLASHCARDS_ANDROID_WEB:
+        customRecordButtons();
+        enableRecordButtons(true);
+        break;
+    case FlashCardAction.ANSWER:
+        onAnswer(data.data);
+        break;
+    case FlashCardAction.GRANTED_SPEECH_RECOGNITION_PERMISSION:
+        checkPermissionInIframeAndEnableButtons();
+        break;
+    case FlashCardAction.DENY_SPEECH_RECOGNITION_PERMISSION:
+        disableRecordButtons();
+        break;
+    case FlashCardAction.OFF_RECORD_BUTTON:
+        offRecordButton();
+        break;
     }
 });
 
@@ -102,12 +106,12 @@ function checkPermissionInIframeAndEnableButtons() {
         });
 }
 
-function enableRecordButtons() {
+function enableRecordButtons(isAndroidBrowser = false) {
     const buttons = getAllRecordButtons();
     for (let i = 0; i < buttons.length; i++) {
         buttons[i].classList.remove(H5PClassName.H5P_SPEECH_RECOGNITION_DISABLED);
         buttons[i].removeAttribute(`disabled`);
-        buttons[i].addEventListener(`click`, onSpeechRecognitionButtonClick);
+        buttons[i].addEventListener(`click`, !isAndroidBrowser ? onSpeechRecognitionButtonClick : onSpeechRecognitionAndroidBrowserButtonClick);
     }
 }
 
@@ -149,6 +153,10 @@ function onSpeechRecognitionButtonClick() {
     } else {
         startListen();
     }
+}
+
+function onSpeechRecognitionAndroidBrowserButtonClick() {
+    sendMessageToParent(FlashCardAction.DISPLAY_NOT_SUPPORTED_MESSAGE);
 }
 
 function onAnswer(answer: string) {

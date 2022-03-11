@@ -36,3 +36,9 @@ export function whichBrowser (): UserBrowser {
         return `Other`;
     }
 }
+
+//Currently, when user switch between mobile site and desktop site, user-agent returns unexpected values that we can't detect mobile browser.
+//Instead, we have to detect through getDisplayMedia
+export const isMobileBrowser = typeof navigator.mediaDevices?.getDisplayMedia !== `function`;
+export const isIOSBrowser = (/iPad|iPhone|iPod/.test(navigator.platform) || (navigator.platform === `MacIntel` && navigator.maxTouchPoints > 1));
+export const isAndroidBrowser = isMobileBrowser && !isIOSBrowser;
