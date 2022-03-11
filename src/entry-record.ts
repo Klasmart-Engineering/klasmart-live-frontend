@@ -98,6 +98,7 @@ if (!(window as any).kidslooplive) {
             eventRecorder.uploadEvents();
         },
         keepIframeSrcFn,
+        inlineStylesheet: false,
     });
 }
 
