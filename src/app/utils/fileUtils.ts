@@ -284,8 +284,11 @@ export const copyFileToDirectory = (filePath: string, targetDirectory: string) =
             resolve(entry.nativeURL);
         };
         const onGetDirectory = (dirEntry: DirectoryEntry) => {
-            window.resolveLocalFileSystemURL(filePath, entry => {
+            window.resolveLocalFileSystemURL(filePath, async entry => {
                 const fileEntry = entry as FileEntry;
+                const targetFilePath = `${dirEntry.nativeURL}/${fileEntry.name}`;
+                if(await isFileInStorage(targetFilePath))
+                    await removeFileFromStorage(`${dirEntry.nativeURL}/${fileEntry.name}`);
                 fileEntry.copyTo(dirEntry, fileEntry.name, onCopyFile, onError(`onCopyFile`));
             });
         };
