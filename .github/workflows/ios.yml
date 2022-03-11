@@ -63,6 +63,7 @@ jobs:
       - name: fastlane stuff
         env:
           FASTLANE: 1
+          FASTLANE_PASSWORD: ${{secrets.FASTLANE_PASSWORD}}
         run: |
           bundle exec fastlane precheck --verbose
           bundle exec fastlane ios build
