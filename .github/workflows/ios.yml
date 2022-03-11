@@ -20,6 +20,7 @@ jobs:
         with:
           node-version: 16
           token: ${{ secrets.PAT_NPM_GITHUB_REPO }}
+          cache: 'npm'
       - name: setup ios build
         run: |
           ruby --version
@@ -67,6 +68,7 @@ jobs:
         env:
           FASTLANE: 1
           FASTLANE_PASSWORD: ${{secrets.FASTLANE_PASSWORD}}
+          SPACESHIP_SKIP_2FA_UPGRADE: 1 #magic config to skip 2FA
         run: |
           bundle exec fastlane precheck --verbose
           bundle exec fastlane ios build
