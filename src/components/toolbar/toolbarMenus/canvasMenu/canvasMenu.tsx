@@ -209,6 +209,7 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
             <StyledPopper
                 open={isCanvasOpen}
                 anchorEl={anchor}
+                placement={classType === ClassType.STUDY ? `top-end` : `top`}
                 modifiers={ classType === ClassType.STUDY ? {
                     offset: {
                         enabled: true,

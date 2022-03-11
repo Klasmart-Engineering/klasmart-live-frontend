@@ -1,15 +1,12 @@
+import ExitStudy from "./exitStudy/exitStudy";
 import PreviewLessonPlan from "./previewLessonPlan";
-import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
 import { useRewardTrophyMutation } from "@/data/live/mutations/useRewardTrophyMutation";
 import { useSessionContext } from "@/providers/session-context";
 import { ClassType } from "@/store/actions";
 import {
-    classEndedState,
-    classLeftState,
     materialActiveIndexState,
     showEndStudyState,
 } from "@/store/layoutAtoms";
-import { Typography } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import {
     makeStyles,
@@ -25,12 +22,7 @@ import React,
     useRef,
     useState,
 } from "react";
-import { useIntl } from "react-intl";
-import { useHistory } from "react-router-dom";
-import {
-    useRecoilState,
-    useSetRecoilState,
-} from "recoil";
+import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
     arrowButtonStudy: {
@@ -97,36 +89,6 @@ const useStyles = makeStyles((theme: Theme) => ({
         display: `flex`,
         animation: `$showEndStudyButtons 5000ms ease-in-out`,
     },
-    defaultLink:{
-        textDecoration: `none`,
-        color: `inherit`,
-    },
-    largeButton:{
-        margin: `0 3em`,
-        cursor: `pointer`,
-        textAlign: `center`,
-        [theme.breakpoints.down(`sm`)]: {
-            "& svg":{
-                height: `3.5em`,
-                width: `3.5em`,
-            },
-        },
-    },
-    largeButtonIcon:{
-        background: `#619bd8`,
-        boxShadow: `0 10px 15px rgb(97 155 216 / 23%), 0 3px 8px rgb(61 108 156 / 39%)`,
-        padding: 24,
-        borderRadius: 80,
-        color: `#fff`,
-    },
-    largeButtonIconYellow:{
-        background: `#f7c244`,
-        boxShadow: `0 10px 15px rgb(97 155 216 / 23%), 0 3px 8px rgb(61 108 156 / 39%)`,
-    },
-    largeButtonLabel:{
-        fontSize: `1.25em`,
-        marginTop: 14,
-    },
     "@keyframes showEndStudyButtons": {
         "0%": {
             opacity: 0,
@@ -157,21 +119,12 @@ export function ClassContent () {
     } = useSessionContext();
 
     const classes = useStyles();
-    const intl = useIntl();
 
     const [ materialActiveIndex, setMaterialActiveIndex ] = useRecoilState(materialActiveIndexState);
     const [ showEndStudy, setShowEndStudy ] = useRecoilState(showEndStudyState);
-    const setClassEnded = useSetRecoilState(classLeftState);
-    const setClassLeft = useSetRecoilState(classEndedState);
-    const { restart } = useCordovaSystemContext();
-    const history = useHistory();
-    const { addOnBack } = useCordovaSystemContext();
-
     const rootDivRef = useRef<HTMLDivElement>(null);
     const [ , setSquareSize ] = useState<number>(0);
-    const isStudent = classType === ClassType.STUDY || !isTeacher;
-    const HUB_ENDPOINT = process.env.ENDPOINT_HUB;
-
+    const forStudent = classType === ClassType.STUDY || !isTeacher;
     const [ rewardTrophyMutation ] = useRewardTrophyMutation();
 
     const handlePrev = () => {
@@ -185,26 +138,6 @@ export function ClassContent () {
             setShowEndStudy(true);
         }
     };
-
-    const onCloseButtonClick = () => {
-        setClassEnded(false);
-        setClassLeft(false);
-
-        if (restart) {
-            restart();
-        } else {
-            history.push(`/schedule`);
-        }
-    };
-
-    useEffect(() => {
-        const CLASS_CONTENT_BACK_ID = `classContentBackID`;
-
-        addOnBack?.({
-            id: CLASS_CONTENT_BACK_ID,
-            onBack: onCloseButtonClick,
-        });
-    }, []);
 
     useEffect(() => {
         if (!rootDivRef || !rootDivRef.current) { return; }
@@ -230,6 +163,7 @@ export function ClassContent () {
     return(
         <Grid
             container
+            wrap="nowrap"
             className={classes.fullHeight}>
             <Grid
                 item
@@ -239,41 +173,13 @@ export function ClassContent () {
                     disabled={materialActiveIndex <= 0}
                     onClick={() => handlePrev()} />
             </Grid>
+
             <Grid
                 item
                 xs>
                 {showEndStudy ?
                     <div className={classes.centeredContent}>
-                        {
-                            (process.env.IS_CORDOVA_BUILD)
-                                ?   <a
-                                    className={classes.defaultLink}
-                                    onClick={onCloseButtonClick}>
-                                    <LargeButton
-                                        icon={<ExitIcon size="5em" />}
-                                        label={intl.formatMessage({
-                                            id: `end_study_exit`,
-                                        })}
-                                    />
-                                </a>
-                                :   <a
-                                    href={HUB_ENDPOINT}
-                                    className={classes.defaultLink}>
-                                    <LargeButton
-                                        icon={<ExitIcon size="5em" />}
-                                        label={intl.formatMessage({
-                                            id: `end_study_exit`,
-                                        })}
-                                    />
-                                </a>
-                        }
-                        {/* TODO : Bonus content
-                            <LargeButton
-                            icon={<BonusContentIcon size="5em" />}
-                            variant="yellow"
-                            label={intl.formatMessage({
-                                id: `end_study_bonus_content`,
-                            })}/> */}
+                        <ExitStudy />
                     </div> :
                     <div className={clsx(classes.content, {
                         [classes.contentClass]: classType === ClassType.CLASSES,
@@ -324,35 +230,6 @@ const MaterialNavigation = (props:MaterialNavigationProps) => {
             })}
             onClick={onClick}>
             {direction === `prev` ? <ArrowBackIcon size="5em" /> : <ArrowForwardIcon size="5em" />}
-        </div>
-    );
-};
-
-export interface LargeButtonProps {
-    icon: any;
-    variant?: "blue" | "yellow";
-    label?: string;
-    onClick?: any;
-}
-
-const LargeButton = (props:LargeButtonProps) => {
-    const {
-        variant,
-        label,
-        onClick,
-        icon,
-
-    } = props;
-    const classes = useStyles();
-
-    return (
-        <div
-            className={classes.largeButton}
-            onClick={onClick}>
-            <div className={clsx(classes.largeButtonIcon, {
-                [classes.largeButtonIconYellow] : variant === `yellow`,
-            })}>{icon}</div>
-            <Typography className={classes.largeButtonLabel}>{label}</Typography>
         </div>
     );
 };

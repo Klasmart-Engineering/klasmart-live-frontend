@@ -1,5 +1,5 @@
 import { useDeviceOrientationValue } from "@/app/model/appModel";
-import backgroundStudy from "@/assets/img/background/background_study.svg";
+import background_study_blue from "@/assets/img/background/background_study.svg";
 import Main from '@/components/main/main';
 import Sidebar from '@/components/sidebar/sidebar';
 import { useSessions } from "@/data/live/state/useSessions";
@@ -38,7 +38,7 @@ const useStyles = makeStyles(() => ({
         paddingLeft: `env(safe-area-inset-left)`, // iPhone Notch
     },
     study: {
-        backgroundImage: `url('${backgroundStudy}')`,
+        backgroundImage: `url('${background_study_blue}')`,
         backgroundSize: `cover`,
         backgroundPosition: `left bottom`,
     },

@@ -1,4 +1,10 @@
 import { TrophyKind } from './trophyKind';
+import { useSessionContext } from '@/providers/session-context';
+import { ClassType } from '@/store/actions';
+import {
+    useMediaQuery,
+    useTheme,
+} from '@material-ui/core';
 import React,
 { CSSProperties } from 'react';
 import { Transition } from 'react-transition-group';
@@ -24,6 +30,8 @@ export function Reward (props: Props): JSX.Element {
         exitLocation,
         kind,
     } = props;
+
+    const { classType } = useSessionContext();
 
     const rewardStyle: CSSProperties = {
         position: `absolute`,
@@ -81,6 +89,18 @@ export function Reward (props: Props): JSX.Element {
         exited: exitingExitedState.exited,
         unmounted: undefined,
     };
+
+    const isGreatJob = kind.name === `Great Job`;
+    if(isGreatJob && classType === ClassType.STUDY) {
+        const theme = useTheme();
+        const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
+        rewardStyle.top = isSmDown ? `36%` : `25%`;
+        kind.style.width = isSmDown ? 400 : `auto`;
+        delete rewardTransitionStates.exiting.top;
+        delete rewardTransitionStates.exited.top;
+        delete rewardTransitionStates.entering.top;
+        delete rewardTransitionStates.entered.top;
+    }
 
     const timeout = {
         appear: 0,

@@ -68,7 +68,7 @@ const TrophyKinds: Record<string, TrophyKind> = {
         image: greatJob,
         audio: rewardSound2,
         style: {
-            width: 580,
+            width: 510,
         },
     },
     looks_great: {
