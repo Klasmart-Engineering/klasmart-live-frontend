@@ -21,7 +21,7 @@ jobs:
           node-version: 16
           token: ${{ secrets.PAT_NPM_GITHUB_REPO }}
           cache: 'npm'
-      - name: setup ios build
+      - name: setup fastlane
         run: |
           ruby --version
           gem install bundler:1.17.2
@@ -29,19 +29,19 @@ jobs:
           bundle info bundler
           bundle info fastlane
           bundle info dotenv
+      - name: Cache gems
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-ruby-gems
+        with:
+          path: /usr/local/lib/ruby/gems/2.7.0/gems/
+          key: ${{ env.cache-name }}-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ env.cache-name }}-
       - name: Setup Cordova
         run: |
           sudo npm install -g cordova
           cordova telemetry off
-      # - name: Dependencies install and build
-      #   # fixes cache issue
-      #   # [ $? -ne 0 ] && echo "Failed to build webpack" && exit 1
-      #   # sudo rm -rf /Users/runner/.npm/_cacache/*
-      #   run: |
-      #     npm ci
-      #     npm run build:app
-      #   env:
-      #     NPM_GITHUB_TOKEN: ${{secrets.PAT_NPM_GITHUB_REPO}}
       - name: Prep iOS development
         env:
           ENDPOINT_GQL: "https://live.kidsloop.net/graphql"
@@ -49,13 +49,12 @@ jobs:
           WEBRTC_DEVICE_HANDLER_NAME: Safari12
           CUSTOM_UA: cordovaios
           IS_CORDOVA_BUILD: "true"
-
           NPM_GITHUB_TOKEN: ${{secrets.PAT_NPM_GITHUB_REPO}}
         run: |
           sudo chown -R 501:20 "/Users/runner/.npm"
           npm ci
           npm run build:app
-          ./scripts/parse-cordova-private-plugins.sh          
+          ./scripts/parse-cordova-private-plugins.sh
           cordova prepare ios
           ./scripts/edit-ios-platform.sh
 
