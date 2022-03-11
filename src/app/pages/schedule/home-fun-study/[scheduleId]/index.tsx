@@ -22,6 +22,8 @@ import {
     readFileFromStorage,
     removeDirectory,
     removeFileFromStorage,
+    validateFileSize,
+    validateFileType,
     writeFileToStorage,
 } from "@/app/utils/fileUtils";
 import {
@@ -331,8 +333,64 @@ export default function () {
         });
     };
 
+    const showNotSupportedFilePopup = () => {
+        showPopup({
+            variant: `detailError`,
+            title: intl.formatMessage({
+                id: `submission_failed`,
+                defaultMessage: `Submission Failed`,
+            }),
+            description: [
+                intl.formatMessage({
+                    id: `upload_please_check_your_file`,
+                    defaultMessage: `Please Check Your File!`,
+                }),
+                intl.formatMessage({
+                    id: `upload_file_not_supported`,
+                    defaultMessage: `This file format is not supported. Please try another file.`,
+                }),
+            ],
+            closeLabel: intl.formatMessage({
+                id: `button_ok`,
+                defaultMessage: `Ok`,
+            }),
+        });
+    };
+
+    const showFileSizeBiggerThan100MBPopup = () => {
+        showPopup({
+            variant: `detailError`,
+            title: intl.formatMessage({
+                id: `submission_failed`,
+                defaultMessage: `Submission Failed`,
+            }),
+            description: [
+                intl.formatMessage({
+                    id: `upload_please_check_your_file`,
+                    defaultMessage: `Please Check Your File!`,
+                }),
+                intl.formatMessage({
+                    id: `upload_file_too_big`,
+                    defaultMessage: `Uploaded file should not be bigger than 100MB. Please try another file.`,
+                }),
+            ],
+            closeLabel: intl.formatMessage({
+                id: `button_ok`,
+                defaultMessage: `Ok`,
+            }),
+        });
+    };
+
     const onSelectedFile = async (file: File) => {
         setOpenBottomSelector(false);
+        if(!validateFileType(file)) {
+            showNotSupportedFilePopup();
+            return;
+        }
+        if(!validateFileSize(file)) {
+            showFileSizeBiggerThan100MBPopup();
+            return;
+        }
         const temporaryAttachmentId = generateRandomString();
         const mFile = await writeAttachmentToStorage(temporaryAttachmentId, file);
         const draftAttachment: DraftAttachment = {
