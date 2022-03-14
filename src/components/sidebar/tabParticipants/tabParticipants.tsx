@@ -56,11 +56,11 @@ function TabParticipants () {
     const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
 
     const studentsSessions = useMemo(() => [ ...sessions.values() ]
-        .filter(s => s.isTeacher)
+        .filter(s => !s.isTeacher)
         .sort(sessionComparator), [ sessions ]);
 
     const teachersSessions = useMemo(() => [ ...sessions.values() ]
-        .filter(s => !s.isTeacher)
+        .filter(s => s.isTeacher)
         .sort(sessionComparator), [ sessions ]);
 
     return (
