@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.1.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v5.1.0%0Dv5.0.0) (2022-03-14)
+
+
+### Features
+
+* display message when speech recognition is unsupported ([608f620](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/608f620f396a6ed3dce00afa150a8bbd03f3d14a)), closes [KLL-2118](https://calmisland.atlassian.net/browse/KLL-2118)
+* redesign exit study screen ([2810a29](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/2810a296d1b54caf8cae3c66e868a35c2d5b1f58)), closes [KLL-2356](https://calmisland.atlassian.net/browse/KLL-2356)
+
+
+### Bug Fixes
+
+* add inlineStylesheet option to rrweb recorder ([7692318](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/7692318237e1ad4480d38ed026f2c50fc0699917)), closes [KLL-2460](https://calmisland.atlassian.net/browse/KLL-2460)
+* file validation missing in HFS page ([3f07608](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/3f07608699f02d38540b0744f1826b4932f4da7e)), closes [KLL-2988](https://calmisland.atlassian.net/browse/KLL-2988) [KLL-2986](https://calmisland.atlassian.net/browse/KLL-2986)
+* mismatch teachers/students in the sidebar UI [KLL-3266](https://calmisland.atlassian.net/browse/KLL-3266) ([3715223](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/37152231862469bbd36d57fa5ca0f070eca6f793))
+* student can't preview file after attached ([ff5e9dd](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/ff5e9dd8e192c3029d2c4e326a11bf54defa5d0c)), closes [KLL-3011](https://calmisland.atlassian.net/browse/KLL-3011)
+
 ## [5.0.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v5.0.0%0Dv4.3.0) (2022-03-10)
 
 
