@@ -1,6 +1,7 @@
 import Join from './join/join';
 import { RoomWithContext } from './room/room-with-context';
-import { useServices } from "@/app/context-provider/services-provider";
+import { useAuthenticationContext } from '@/app/context-provider/authentication-context';
+import { useServices } from '@/app/context-provider/services-provider';
 import { useRegionSelect } from '@/providers/region-select-context';
 import { useSessionContext } from '@/providers/session-context';
 import { AuthTokenProvider } from "@/services/auth-token/AuthTokenProvider";
@@ -15,26 +16,10 @@ const TOKEN_REFRESH_INTERVAL_MS = 10 * 60 * 1000; //Ten Minutes
 
 export function WebApp () {
     const { name, sessionId } = useSessionContext();
-    const { authenticationService  } = useServices();
-    const refreshToken = async () => {
-        if (!authenticationService) {
-            console.error(`No authentication service`);
-            return;
-        }
-        const refreshed = await authenticationService.refresh().catch(e => {
-            console.error(`Failed to refresh token`, e);
-            return false;
-        });
+    const { actions } = useAuthenticationContext();
+    const { authenticationService } = useServices();
+    useInterval(authenticationService?.refresh, TOKEN_REFRESH_INTERVAL_MS);
 
-        if (refreshed) { return; }
-
-        console.error(`Failed to refresh token, signing out`);
-        try {
-            await authenticationService.signout();
-        } finally {
-            authenticationService.redirectToLogin();
-        }
-    };
     const schedule = () => {
         const ENDPOINT_HUB = process.env.ENDPOINT_HUB;
         if (ENDPOINT_HUB) {
@@ -57,16 +42,15 @@ export function WebApp () {
         return url;
     }, [ region ]);
 
-    useInterval(refreshToken, TOKEN_REFRESH_INTERVAL_MS);
     return <WebRtcProvider
         sessionId={sessionId}
         endpoint={endpoint}
         onAuthorizationExpired={schedule}
         onAuthorizationInvalid={schedule}
-        onAuthenticationInvalid={refreshToken}
-        onAuthenticationExpired={refreshToken}
+        onAuthenticationInvalid={actions?.refreshAuthenticationToken}
+        onAuthenticationExpired={actions?.refreshAuthenticationToken}
         onTokenMismatch={schedule}
-        onMissingAuthenticationToken={refreshToken}
+        onMissingAuthenticationToken={actions?.refreshAuthenticationToken}
         onMissingAuthorizationToken={schedule}
     >
         {
