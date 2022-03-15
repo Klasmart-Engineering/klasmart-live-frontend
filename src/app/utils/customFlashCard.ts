@@ -86,7 +86,7 @@ export function useCustomFlashCard ({
                     script.setAttribute(`type`, `text/javascript`);
                     const matches = window.location.pathname.match(/^(.*\/+)([^/]*)$/);
                     const prefix = matches && matches.length >= 2 ? matches[1] : ``;
-                    script.setAttribute(`src`, `${prefix}flashcard.js`);
+                    script.setAttribute(`src`, `${prefix}flashcard.${process.env.BUILD_TAG}.js`);
                     doc.head.appendChild(script);
                 }
             }
