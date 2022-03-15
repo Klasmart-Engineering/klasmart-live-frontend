@@ -3,6 +3,8 @@ import { useSessionContext } from "@/providers/session-context";
 import {
     canvasDrawColorState,
     canvasSelectedItemState,
+    hasControlsState,
+    isCanvasOpenState,
 } from "@/store/layoutAtoms";
 import { whiteboard } from "@/utils/layerValues";
 import { useSynchronizedState } from "@/whiteboard/context-providers/SynchronizedStateProvider";
@@ -76,6 +78,22 @@ export function BaseWhiteboard (props: Props) {
     });
     const canvasDrawColor = useRecoilValue(canvasDrawColorState);
     const canvasSelectedItem = useRecoilValue(canvasSelectedItemState);
+    const isCanvasOpen = useRecoilValue(isCanvasOpenState);
+    const hasControls = useRecoilValue(hasControlsState);
+
+    const displayWhiteboard = useMemo(() => {
+        if (hasControls) {
+            return (localDisplay || display);
+        } else {
+            return (localDisplay || (permissions.allowCreateShapes ? isCanvasOpen : display) );
+        }
+    }, [
+        localDisplay,
+        display,
+        isCanvasOpen,
+        hasControls,
+        permissions.allowCreateShapes,
+    ]);
 
     useEffect(() => {
         if (initialSize.height || initialSize.width || !width || !height) return;
@@ -107,7 +125,7 @@ export function BaseWhiteboard (props: Props) {
                     filterGroups={filterGroups}
                     pixelWidth={initialSize.width}
                     pixelHeight={initialSize.height}
-                    display={localDisplay || display}
+                    display={displayWhiteboard}
                     scaleMode="ScaleToFit"
                 />
             </div>

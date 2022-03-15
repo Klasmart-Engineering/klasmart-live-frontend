@@ -133,7 +133,6 @@ function Toolbar () {
         setIsLessonPlanOpen(false);
         setIsChatOpen(false);
         setIsClassDetailsOpen(false);
-        setIsCanvasOpen(false);
         setIsViewModesOpen(false);
     };
 
@@ -302,7 +301,11 @@ function Toolbar () {
             </Grid>
 
             <ClassDetailsMenu anchor={classDetailsRef.current} />
-            <CanvasMenu anchor={canvasRef.current} />
+
+            {activeTab !== `mosaic` && (
+                <CanvasMenu anchor={canvasRef.current} />
+            )}
+
             <ChatMenu anchor={chatRef.current} />
             {hasControls &&
                 <>

@@ -122,7 +122,7 @@ export { StyledDrawer };
 interface StyledPopperProps {
 	children: any;
 	open?: boolean;
-    anchorEl?: HTMLElement;
+    anchorEl?: HTMLElement | null;
     placement?: PopperPlacementType;
     height?: number | string;
     showScrollbar?: boolean;
