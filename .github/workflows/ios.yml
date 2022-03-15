@@ -71,7 +71,7 @@ jobs:
           SPACESHIP_SKIP_2FA_UPGRADE: 1 #magic config to skip 2FA
         run: |
           bundle exec fastlane precheck --verbose
-          bundle exec fastlane match appstore
+          bundle exec fastlane ios signing
           bundle exec fastlane ios build
       # - name: Archive app build
       #   uses: actions/upload-artifact@v2
@@ -79,3 +79,4 @@ jobs:
       #     name: KidsLoop.app
       #     path: ./platforms/ios/build/emulator/KidsLoop.app
       
+          # bundle exec fastlane action update_code_signing_settings

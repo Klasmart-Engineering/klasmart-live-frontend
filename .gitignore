@@ -19,3 +19,6 @@ coverage
 .env.secret
 *.secret
 *.secrets
+fastlane/report.xml
+build/
+culprits.txt
