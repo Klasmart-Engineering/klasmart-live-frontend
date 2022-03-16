@@ -275,7 +275,7 @@ export default function Join (): JSX.Element {
                                 }
                                 <Grid
                                     item
-                                    xs={6}
+                                    xs={classType === ClassType.LIVE ? 6 : 10}
                                     md={classType === ClassType.LIVE ? 5 : undefined}
                                 >
                                     <JoinRoomForm

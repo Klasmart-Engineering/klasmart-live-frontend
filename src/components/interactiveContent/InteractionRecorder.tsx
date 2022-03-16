@@ -235,11 +235,8 @@ export default function InteractionRecorder (props: Props): JSX.Element {
             `;
         }else{
             scrollbarStyle.innerHTML = `
-                body::-webkit-scrollbar { -webkit-appearance: none; }
-                body::-webkit-scrollbar:vertical { width: 14px; }
-                body::-webkit-scrollbar:horizontal { height: 14px; }
-                body::-webkit-scrollbar-thumb { background-color: ${THEME_COLOR_PRIMARY_DEFAULT}; border-radius: 10px;  }
-                body::-webkit-scrollbar-track { border-radius: 10px; }
+                body::-webkit-scrollbar { -webkit-appearance: none; width: 14px; }
+                body::-webkit-scrollbar-thumb { background-color: ${THEME_COLOR_PRIMARY_DEFAULT}; border-radius: 10px; border: 3px solid #ffffff; }
             `;
         }
         contentDoc.head.appendChild(scrollbarStyle);
