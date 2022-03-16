@@ -15,10 +15,13 @@ import {
     Popper,
     PopperPlacementType,
     Theme,
+    Tooltip,
     Typography,
 } from "@material-ui/core";
 import clsx from "clsx";
-import React from "react";
+import React,
+{ ReactElement } from "react";
+import { useIntl } from "react-intl";
 import { useRecoilValue } from "recoil";
 
 interface StyledDrawerProps {
@@ -376,3 +379,22 @@ export async function classGetInformation (scheduleId: any, orgId: any, endpoint
     catch (err) { console.error(`Fail to classGetInformation in Live: ${err}`); }
     return data[0];
 }
+
+interface TooltipIntlProps {
+    id: string;
+    children: ReactElement;
+}
+
+function TooltipIntl ({ id, children }: TooltipIntlProps) {
+    const intl = useIntl();
+
+    return(
+        <Tooltip title={intl.formatMessage({
+            id: id,
+        })}>
+            { children }
+        </Tooltip>
+    );
+}
+
+export { TooltipIntl };

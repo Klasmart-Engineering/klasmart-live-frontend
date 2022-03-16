@@ -5,7 +5,10 @@ import { useSetHostMutation } from "@/data/live/mutations/useSetHostMutation";
 import { Session } from "@/pages/utils";
 import { useSessionContext } from "@/providers/session-context";
 import { hasControlsState } from "@/store/layoutAtoms";
-import { toggleFullScreenById } from "@/utils/utils";
+import {
+    toggleFullScreenById,
+    TooltipIntl,
+} from "@/utils/utils";
 import { useSynchronizedState } from "@/whiteboard/context-providers/SynchronizedStateProvider";
 import {
     Box,
@@ -38,6 +41,7 @@ import React,
 } from "react";
 import { useIntl } from "react-intl";
 import { useRecoilValue } from "recoil";
+import { StyledIconProps } from "styled-icons/types";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root:{
@@ -112,7 +116,7 @@ const UserCameraActions = ({
 
     const isSelf = sessionId === user.id;
     const subTeacher = !user.isHost && user.isTeacher;
-    const hasPermission = isTeacher || !user.isTeacher
+    const hasPermission = isTeacher || !user.isTeacher;
 
     const [ trophyEl, setTrophyEl ] = useState<null | HTMLElement>(null);
     const handleTrophyOpen = (event: React.MouseEvent<HTMLElement>) => { setTrophyEl(event.currentTarget); };
@@ -152,12 +156,14 @@ const UserCameraActions = ({
                         />
                         }
                         {!isSelf && isTeacher && (
-                            <IconButton
-                                aria-label="Trophy"
-                                className={classes.iconButton}
-                                onClick={handleTrophyOpen}>
-                                <TrophyIcon size="0.7em"/>
-                            </IconButton>
+                            <TooltipIntl id="live.class.stickers">
+                                <IconButton
+                                    aria-label="Trophy"
+                                    className={classes.iconButton}
+                                    onClick={handleTrophyOpen}>
+                                    <TrophyIcon size="0.7em"/>
+                                </IconButton>
+                            </TooltipIntl>
                         )}
                         {hasControls && (
                             <>
@@ -194,18 +200,22 @@ const UserCameraActions = ({
                 }}
                 onClose={handleTrophyClose}
             >
-                <MenuItem
-                    className={classes.menuItem}
-                    onClick={() => rewardTrophy(user.id, `trophy`)}><TrophyIcon size="1.2rem"/></MenuItem>
-                <MenuItem
-                    className={classes.menuItem}
-                    onClick={() => rewardTrophy(user.id, `awesome`)}><HandThumbsUpFillIcon size="1.2rem"/></MenuItem>
-                <MenuItem
-                    className={classes.menuItem}
-                    onClick={() => rewardTrophy(user.id, `star`)}><StarFillIcon size="1.2rem"/></MenuItem>
-                <MenuItem
-                    className={classes.menuItem}
-                    onClick={() => rewardTrophy(user.id, `heart`)}><HeartFillIcon size="1.2rem"/></MenuItem>
+                <ToolTipMenuItem
+                    id="give_trophy"
+                    icon={<TrophyIcon size="1.2rem"/>}
+                    onClick={() => rewardTrophy(user.id, `trophy`)} />
+                <ToolTipMenuItem
+                    id="encourage"
+                    icon={<HandThumbsUpFillIcon size="1.2rem"/>}
+                    onClick={() => rewardTrophy(user.id, `awesome`)} />
+                <ToolTipMenuItem
+                    id="give_star"
+                    icon={<StarFillIcon size="1.2rem"/>}
+                    onClick={() => rewardTrophy(user.id, `star`)} />
+                <ToolTipMenuItem
+                    id="give_heart"
+                    icon={<HeartFillIcon size="1.2rem"/>}
+                    onClick={() => rewardTrophy(user.id, `heart`)} />
             </Menu>
         </>
     );
@@ -289,13 +299,15 @@ function ToggleControls ({ user }: ToggleControlsProps){
     }
 
     return (
-        <IconButton
-            aria-label="Give controls"
-            className={classes.iconButton}
-            onClick={() => giveControls(user)}
-        >
-            <HasControlsIcon size="0.7em"/>
-        </IconButton>
+        <TooltipIntl id="toggle_room_controls">
+            <IconButton
+                aria-label="Give controls"
+                className={classes.iconButton}
+                onClick={() => giveControls(user)}
+            >
+                <HasControlsIcon size="0.7em"/>
+            </IconButton>
+        </TooltipIntl>
     );
 }
 
@@ -324,15 +336,17 @@ function ToggleCanvas ({ user }:ToggleCanvasProps) {
     ]);
 
     return (
-        <IconButton
-            aria-label="Canvas"
-            className={classes.iconButton}
-            onClick={toggleAllowCreateShapes}>
-            <img
-                src={permissions.allowCreateShapes ? PencilIconOn : PencilIconOff}
-                width="15px"
-                height="15px" />
-        </IconButton>
+        <TooltipIntl id={permissions.allowCreateShapes ? `canvas.turnOn` : `canvas.turnOff`}>
+            <IconButton
+                aria-label="Canvas"
+                className={classes.iconButton}
+                onClick={toggleAllowCreateShapes}>
+                <img
+                    src={permissions.allowCreateShapes ? PencilIconOn : PencilIconOff}
+                    width="15px"
+                    height="15px" />
+            </IconButton>
+        </TooltipIntl>
     );
 }
 
@@ -355,5 +369,31 @@ function ExpandCamera ({ user }:ExpandCameraProps){
                 <ExpandIcon size="0.75em" />
             </IconButton>
         </div>
+    );
+}
+
+interface MenuProps {
+    id: string;
+    icon: StyledIconProps;
+    onClick: () => void;
+}
+
+function ToolTipMenuItem ({
+    id,
+    icon,
+    onClick,
+}: MenuProps) {
+    const classes = useStyles();
+    const intl = useIntl();
+
+    return(
+        <Tooltip title={intl.formatMessage({
+            id: id,
+        })}>
+            <MenuItem
+                className={classes.menuItem}
+                onClick={onClick}>
+                {icon}</MenuItem>
+        </Tooltip>
     );
 }
