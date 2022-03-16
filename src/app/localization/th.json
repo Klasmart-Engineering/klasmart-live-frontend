@@ -255,10 +255,16 @@
     "scheduleDetails.error.study.ended": "เข้าไม่ได้เพราะเลยวันครบกำหนด",
     "homeFunStudy.feedback.notAvailable": "ไม่มีความคิดเห็นของครู",
     "hamburger.signOut.confirm": "คุณแน่ใจว่าคุณต้องการที่จะออกจากระบบ?",
-    "onboarding.slider.title.1": "Study",
-    "onboarding.slider.body.1": "Let’s jump into KidsLoop!",
-    "onboarding.slider.title.2": "Home Fun Study",
-    "onboarding.slider.body.2": "Let’s jump into KidsLoop!",
-    "onboarding.slider.title.3": "Live",
-    "onboarding.slider.body.3": "Let’s jump into KidsLoop!"
+    "onboarding.slider.title.1": "ศึกษา",
+    "onboarding.slider.body.1": "มากระโดดเข้าสู่ KidsLoop กันเถอะ!",
+    "onboarding.slider.title.2": "เรียนสนุกที่บ้าน",
+    "onboarding.slider.body.2": "มากระโดดเข้าสู่ KidsLoop กันเถอะ!",
+    "onboarding.slider.title.3": "สด",
+    "onboarding.slider.body.3": "มากระโดดเข้าสู่ KidsLoop กันเถอะ!",
+    "review.title": "Review",
+    "button_start_review": "Start Review",
+    "account_selectUser": "Select a Profile",
+    "account_selectOrg": "Select an Organization",
+    "study.enter.startStudying": "Start Studying",
+    "schedule_review_class_name": "รีวิว: {value} วัสดุ"
 }

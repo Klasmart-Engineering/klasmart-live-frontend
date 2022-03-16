@@ -160,8 +160,8 @@
     "browser_guide_body": "Please download a supported browser and try again.",
     "account_selectOrg_privacyPolicy": "Privacy Policy",
     "account_selectOrg_signOut": "Sign Out",
-    "account_selectOrg_whichOrg": "Select an Organization",
-    "account_selectUser_whichUser": "Select a Profile",
+    "account_selectOrg_whichOrg": "Which organization are you studying with?",
+    "account_selectUser_whichUser": "Who’s studying today?",
     "schedule_liveTab": "Live",
     "schedule_studyTab": "Study",
     "schedule_loadingSelectOrg": "Please select an organization first by tapping the top-left corner!",
@@ -260,5 +260,11 @@
     "onboarding.slider.title.2": "Home Fun Study",
     "onboarding.slider.body.2": "Let’s jump into KidsLoop!",
     "onboarding.slider.title.3": "Live",
-    "onboarding.slider.body.3": "Let’s jump into KidsLoop!"
+    "onboarding.slider.body.3": "Let’s jump into KidsLoop!",
+    "review.title": "Review",
+    "button_start_review": "Start Review",
+    "account_selectUser": "Select a Profile",
+    "account_selectOrg": "Select an Organization",
+    "study.enter.startStudying": "Start Studying",
+    "schedule_review_class_name": "Review: {value} Materials"
 }
