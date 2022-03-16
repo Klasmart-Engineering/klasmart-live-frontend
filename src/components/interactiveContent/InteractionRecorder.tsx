@@ -52,8 +52,6 @@ const useStyles = makeStyles((theme) => createStyles({
     },
 }));
 
-const config = require(`@/../package.json`);
-
 export interface Props {
     contentHref: string;
     group?: string;
@@ -319,7 +317,7 @@ export default function InteractionRecorder (props: Props): JSX.Element {
                 script.setAttribute(`type`, `text/javascript`);
                 const matches = window.location.pathname.match(/^(.*\/+)([^/]*)$/);
                 const prefix = matches && matches.length >= 2 ? matches[1] : ``;
-                script.setAttribute(`src`, `${prefix}record.${process.env.BUILD_TAG}.js`);
+                script.setAttribute(`src`, `${prefix}record.${process.env.GIT_COMMIT}.js`);
                 doc.head.appendChild(script);
             }
             catch (e) {

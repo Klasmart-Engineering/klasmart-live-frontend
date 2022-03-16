@@ -1,4 +1,6 @@
 import 'webpack-dev-server';
+import pkg from "./package.json";
+import { execSync } from "child_process";
 import { CleanWebpackPlugin } from "clean-webpack-plugin";
 import CopyWebpackPlugin from "copy-webpack-plugin";
 import { config } from "dotenv";
@@ -22,9 +24,7 @@ type Mode = typeof modes[number];
 const dirtyNodeEnv = process.env.NODE_ENV as Mode;
 const nodeEnv = (modes.includes(dirtyNodeEnv) ? dirtyNodeEnv : undefined) ?? `production`;
 const isDev = nodeEnv === `development`;
-const packageJson = require(`./package.json`);
-const buildTag = process.env.BUILD_TAG = isDev ? Date.now().toString() : packageJson.version;
-console.log(`Build Tag:`, buildTag);
+const gitCommit = execSync(`git rev-parse HEAD`).toString().trim().slice(0, 7);
 
 const { loadBrandingOptions } = require(`kidsloop-branding`);
 const brandingOptions = loadBrandingOptions(process.env.BRAND);
@@ -105,15 +105,16 @@ const webpackConfig: Configuration = {
         },
     },
     output: {
-        filename: `[name].${buildTag}.js`,
+        filename: `[name].${gitCommit}.js`,
         path: path.resolve(__dirname, `dist`),
     },
     plugins: [
         new CleanWebpackPlugin(),
-        new EnvironmentPlugin({
-            BUILD_TAG: buildTag,
-        }),
         new Dotenv(),
+        new EnvironmentPlugin({
+            VERSION: pkg.version,
+            GIT_COMMIT: gitCommit,
+        }),
         new HtmlWebpackPlugin({
             filename: `index.html`,
             chunks: [ `ui` ],

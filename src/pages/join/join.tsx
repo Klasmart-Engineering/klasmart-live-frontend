@@ -62,8 +62,6 @@ import { FormattedMessage } from "react-intl";
 import { useHistory } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
 
-const config = require(`@/../package.json`);
-
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root:{
@@ -293,8 +291,6 @@ export default function Join (): JSX.Element {
                     </div>
                 </Container>
             </Grid>
-
-            {!process.env.IS_CORDOVA_BUILD && <Typography className={classes.version}>{config.version}</Typography>}
         </div>
     );
 }

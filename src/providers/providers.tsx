@@ -1,4 +1,5 @@
 import { CompositionRoot } from "./composition-root";
+import RouterProvider from "@/router/Provider";
 import { themeProvider } from "@/themeProvider";
 import {
     getDefaultLanguageCode,
@@ -44,7 +45,9 @@ function Providers ({ children }: Props) {
             <RawIntlProvider value={locale}>
                 <CompositionRoot sessionId={sessionId}>
                     <ThemeProvider theme={themeProvider(`en`, `light`)}>
-                        {children}
+                        <RouterProvider>
+                            {children}
+                        </RouterProvider>
                     </ThemeProvider>
                 </CompositionRoot>
             </RawIntlProvider>

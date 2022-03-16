@@ -1,3 +1,5 @@
+import pkg from "./package.json";
+import { execSync } from "child_process";
 import CopyWebpackPlugin from "copy-webpack-plugin";
 import Dotenv from "dotenv-webpack";
 import HtmlWebpackPlugin from "html-webpack-plugin";
@@ -86,6 +88,8 @@ module.exports = {
             CUSTOM_UA: `cordova`,
             IS_CORDOVA_BUILD: true,
             PDF_VERSION: `JPEG`,
+            VERSION: pkg.version,
+            GIT_COMMIT: execSync(`git rev-parse HEAD`).toString().trim().slice(0, 7),
         }),
         new HtmlWebpackPlugin({
             filename: `index.html`,

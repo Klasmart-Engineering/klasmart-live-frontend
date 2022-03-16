@@ -41,8 +41,6 @@ import {
     useSetRecoilState,
 } from "recoil";
 
-const config = require(`@/../package.json`);
-
 enum MenuDrawerItem {
     ORGANIZATION,
     SETTINGS,
@@ -242,7 +240,7 @@ export default function MenuDrawer () {
                             <FormattedMessage
                                 id="settings.version"
                                 values={{
-                                    version: config.version,
+                                    version: `${process.env.VERSION} (${process.env.GIT_COMMIT})`,
                                 }} />
                         </Typography>
                     </Grid>
