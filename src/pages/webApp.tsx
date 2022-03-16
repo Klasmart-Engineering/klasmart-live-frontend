@@ -10,23 +10,29 @@ import { useInterval } from '@/utils/useInterval';
 import { WebRtcProvider } from "kidsloop-live-state/ui";
 import React,
 { useMemo } from 'react';
+import { useHistory } from 'react-router-dom';
 import { useRecoilValue } from "recoil";
 
 const TOKEN_REFRESH_INTERVAL_MS = 10 * 60 * 1000; //Ten Minutes
 
 export function WebApp () {
+    const history = useHistory();
     const { name, sessionId } = useSessionContext();
     const { actions } = useAuthenticationContext();
     const { authenticationService } = useServices();
     useInterval(authenticationService?.refresh, TOKEN_REFRESH_INTERVAL_MS);
 
     const schedule = () => {
-        const ENDPOINT_HUB = process.env.ENDPOINT_HUB;
-        if (ENDPOINT_HUB) {
-            // Use replace, so they don't immediately click the back button
-            window.location.replace(`${ENDPOINT_HUB}/#/schedule`);
+        if (process.env.IS_CORDOVA_BUILD) {
+            history.replace(`/schedule`);
         } else {
-            console.error(`ENDPOINT_HUB not set`);
+            const ENDPOINT_HUB = process.env.ENDPOINT_HUB;
+            if (ENDPOINT_HUB) {
+                // Use replace, so they don't immediately click the back button
+                window.location.replace(`${ENDPOINT_HUB}/#/schedule`);
+            } else {
+                console.error(`ENDPOINT_HUB not set`);
+            }
         }
     };
     const hasJoinedClassroom = useRecoilValue(hasJoinedClassroomState);
