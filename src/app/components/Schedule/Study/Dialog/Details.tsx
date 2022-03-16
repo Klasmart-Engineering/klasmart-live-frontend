@@ -82,6 +82,18 @@ export default function StudyDetailsDialog (props: Props) {
         });
     };
 
+    const handleJoinClass = (isHomeFun?: boolean) => {
+        if(isHomeFun){
+            handleJoinHomeFunStudyClass();
+        } else {
+            handleJoinStudyClass();
+        }
+        setDialogs({
+            ...dialogs,
+            isStudyDetailOpen: false,
+        });
+    };
+
     const handleJoinStudyClass = async () => {
         if (!scheduleId) return;
         setGetTokenLoading(true);
@@ -258,7 +270,7 @@ export default function StudyDetailsDialog (props: Props) {
                         align: `end`,
                         color: `primary`,
                         disabled: getTokenLoading || isFetchingSchedule,
-                        onClick: () => scheduleData?.is_home_fun ? handleJoinHomeFunStudyClass() : handleJoinStudyClass(),
+                        onClick: () => handleJoinClass(scheduleData?.is_home_fun),
                     },
                 ]}
                 isLoading = {isFetchingSchedule}
