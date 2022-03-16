@@ -291,8 +291,17 @@
     "study.exit.leave": "退出",
     "study.exit.startAgain": "重新开始",
     "class.exit.exitClass": "退出教室",
-    "stream.loading": "Loading stream",
-    "stream.waiting": "Waiting stream",
-    "page.loading": "Page loading...",
-    "student.connecting": "Connecting student"
+    "stream.loading": "正在加载",
+    "stream.waiting": "等待数据流",
+    "page.loading": "页面加载中",
+    "student.connecting": "正在接入学生",
+    "review.class.leave": "Leave",
+    "camera.local.enable": "Turn on camera for me",
+    "camera.global.enable": "Turn on camera for everyone",
+    "camera.local.disable": "Turn off camera for me",
+    "camera.global.disable": "Turn off camera for everyone",
+    "microphone.local.enable": "Turn on microphone for me",
+    "microphone.global.enable": "Turn on microphone for everyone",
+    "microphone.local.disable": "Turn off microphone for me",
+    "microphone.global.disable": "Turn off microphone for everyone"
 }

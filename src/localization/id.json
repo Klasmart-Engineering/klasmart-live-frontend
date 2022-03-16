@@ -291,8 +291,17 @@
     "study.exit.leave": "Keluar",
     "study.exit.startAgain": "Mulai Lagi",
     "class.exit.exitClass": "Keluar Kelas",
-    "stream.loading": "Loading stream",
-    "stream.waiting": "Waiting stream",
-    "page.loading": "Page loading...",
-    "student.connecting": "Connecting student"
+    "stream.loading": "Memuat siaran",
+    "stream.waiting": "Menunggu siaran",
+    "page.loading": "Memuat halaman...",
+    "student.connecting": "Menghubungkan siswa",
+    "review.class.leave": "Leave",
+    "camera.local.enable": "Turn on camera for me",
+    "camera.global.enable": "Turn on camera for everyone",
+    "camera.local.disable": "Turn off camera for me",
+    "camera.global.disable": "Turn off camera for everyone",
+    "microphone.local.enable": "Turn on microphone for me",
+    "microphone.global.enable": "Turn on microphone for everyone",
+    "microphone.local.disable": "Turn off microphone for me",
+    "microphone.global.disable": "Turn off microphone for everyone"
 }

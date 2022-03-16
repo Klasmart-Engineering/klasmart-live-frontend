@@ -294,5 +294,14 @@
     "stream.loading": "Đang kết nối...",
     "stream.waiting": "Đang kết nối...",
     "page.loading": "Đang tải trang ...",
-    "student.connecting": "Connecting student"
+    "student.connecting": "Đang kết nối với học sinh",
+    "review.class.leave": "Rời khỏi",
+    "camera.local.enable": "Turn on camera for me",
+    "camera.global.enable": "Turn on camera for everyone",
+    "camera.local.disable": "Turn off camera for me",
+    "camera.global.disable": "Turn off camera for everyone",
+    "microphone.local.enable": "Turn on microphone for me",
+    "microphone.global.enable": "Turn on microphone for everyone",
+    "microphone.local.disable": "Turn off microphone for me",
+    "microphone.global.disable": "Turn off microphone for everyone"
 }
