@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.2.0-alpha.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v5.2.0-alpha.0%0Dv5.1.0) (2022-03-16)
+
+
+### Features
+
+* add tooltip to web for student and teacher ([596570f](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/596570f5c8a367e3d28f515e85843d652b731a42)), closes [KLL-2674](https://calmisland.atlassian.net/browse/KLL-2674)
+* add version and health pages ([12ab0e7](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/12ab0e7865ca82719ea921526acbc209533f8fbe))
+* **localization:** add new translations ([5a4e543](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/5a4e543b17411c284685538a89597acb74e66357))
+
+
+### Bug Fixes
+
+* add version when injecting flashcard.js ([3d944c7](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/3d944c7e77a9a282b80edfec781515efa68113cc)), closes [KLL-2118](https://calmisland.atlassian.net/browse/KLL-2118)
+* bigger mic selector join page Study and Class + scrollbar style study ([7086f83](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/7086f83b65f248246bea4309481e3075a376218e))
+* canvas toolbar improvements ([ec97508](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/ec97508b05426b7f24e3f9fcf0edf78cbc56fb8a)), closes [KLL-2722](https://calmisland.atlassian.net/browse/KLL-2722) [KLL-2722](https://calmisland.atlassian.net/browse/KLL-2722)
+* **cordova:** use relative path (href) ([cfa474c](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/cfa474c8c3558e342bbeee78ad15dc66580cdf14)), closes [KLL-3246](https://calmisland.atlassian.net/browse/KLL-3246)
+* don't redirect to login useAuthenticationContext ([f6af5c1](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/f6af5c1b4a0cb8d895ec7166c85a4bb0ce099eb2)), closes [KLL-3243](https://calmisland.atlassian.net/browse/KLL-3243)
+* non-host teacher does not see canvas unless given canvas permission by host ([a6e129a](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/a6e129a1630c90c36103b08f2539c78356d5f769)), closes [KLL-2841](https://calmisland.atlassian.net/browse/KLL-2841)
+* show camera settings only in Live ([ff203cc](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/ff203cca640ffbfd1d2b94dda0091c696665c4ac))
+* **translation:** add new translations ([057a671](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/057a6716a450348b1feb1634ca6afca22096834a))
+
 ## [5.1.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v5.1.0%0Dv5.0.0) (2022-03-14)
 
 
