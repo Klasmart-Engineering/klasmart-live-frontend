@@ -6,6 +6,7 @@ import { useWhiteboardPermissionsSubscription } from "@/data/live/subscriptions/
 import { useWhiteboardStateSubscription } from "@/data/live/subscriptions/useWhiteboardStateSubscription";
 import { useSessionContext } from "@/providers/session-context";
 import { ClassType } from "@/store/actions";
+import { hasControlsState } from "@/store/layoutAtoms";
 import {
     createEmptyPermissions,
     createPermissions,
@@ -23,6 +24,7 @@ import React, {
     useEffect,
     useState,
 } from "react";
+import { useRecoilValue } from "recoil";
 
 export type PainterEventFunction = (payload: PainterEvent) => void
 
@@ -84,6 +86,8 @@ export const SynchronizedStateProvider: FunctionComponent<Props> = ({ children }
         isTeacher,
         classType,
     } = useSessionContext();
+
+    const hasControls = useRecoilValue(hasControlsState);
 
     const [ events ] = useState<PainterEvent[]>([]);
 
@@ -158,7 +162,10 @@ export const SynchronizedStateProvider: FunctionComponent<Props> = ({ children }
     }, [ eventController, refetchEvents ]);
 
     const [ display, setDisplay ] = useState<boolean>(false);
-    const [ selfPermissions, setSelfPermissions ] = useState<Permissions>(createPermissions(isTeacher));
+    const [ selfPermissions, setSelfPermissions ] = useState<Permissions>(createEmptyPermissions());
+    useEffect(() => {
+        setSelfPermissions(createPermissions(hasControls));
+    }, [ hasControls ]);
     const [ userPermissions, setUserPermissions ] = useState<Map<string, Permissions>>(new Map());
 
     const sendEventAction = useCallback((payload: PainterEvent) => {

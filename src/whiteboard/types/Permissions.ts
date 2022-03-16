@@ -12,8 +12,8 @@ export interface Permissions {
     };
 }
 
-export const createPermissions = (isTeacher: boolean): Permissions => {
-    if (isTeacher) {
+export const createPermissions = (hasControls: boolean): Permissions => {
+    if (hasControls) {
         return createTeacherPermissions();
     } else {
         return createStudentPermissions();
