@@ -1,6 +1,6 @@
 {
   "name": "client",
-  "version": "4.2.1-hotfix.4",
+  "version": "4.2.2",
   "description": "",
   "main": "index.js",
   "scripts": {
