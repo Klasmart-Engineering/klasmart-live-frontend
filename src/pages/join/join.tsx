@@ -446,12 +446,14 @@ const JoinRoomForm: VoidFunctionComponent<{
                         justifyContent="center">
                         <MediaDeviceSelect kind="audioinput" />
                     </Box>
-                    <Box
-                        my={1}
-                        display="flex"
-                        justifyContent="center">
-                        <MediaDeviceSelect kind="videoinput" />
-                    </Box>
+                    {classType === ClassType.LIVE && (
+                        <Box
+                            my={1}
+                            display="flex"
+                            justifyContent="center">
+                            <MediaDeviceSelect kind="videoinput" />
+                        </Box>
+                    )}
                 </Grid>
 
                 <Grid item>
