@@ -266,5 +266,7 @@
     "account_selectUser": "프로필 선택하기",
     "account_selectOrg": "기관을 선택해 주세요",
     "study.enter.startStudying": "Start Studying",
-    "schedule_review_class_name": "Review: {value} Materials"
+    "schedule_review_class_name": "Review: {value} Materials",
+    "live.enter.tardyDuration": "Started {value} minutes ago",
+    "live.enter.joinLive": "Join Live Class"
 }

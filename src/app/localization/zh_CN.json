@@ -266,5 +266,7 @@
     "account_selectUser": "选择一个档案",
     "account_selectOrg": "选择一个机构",
     "study.enter.startStudying": "Start Studying",
-    "schedule_review_class_name": "适应性复习: {value}教学素材"
+    "schedule_review_class_name": "适应性复习: {value}教学素材",
+    "live.enter.tardyDuration": "Started {value} minutes ago",
+    "live.enter.joinLive": "Join Live Class"
 }

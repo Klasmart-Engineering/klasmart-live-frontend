@@ -266,5 +266,7 @@
     "account_selectUser": "Select a Profile",
     "account_selectOrg": "Select an Organization",
     "study.enter.startStudying": "Start Studying",
-    "schedule_review_class_name": "Ôn tập: {value} Học liệu"
+    "schedule_review_class_name": "Ôn tập: {value} Học liệu",
+    "live.enter.tardyDuration": "Started {value} minutes ago",
+    "live.enter.joinLive": "Join Live Class"
 }
