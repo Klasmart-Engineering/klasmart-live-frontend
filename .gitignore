@@ -22,3 +22,4 @@ coverage
 fastlane/report.xml
 build/
 culprits.txt
+.bundle

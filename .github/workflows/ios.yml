@@ -73,6 +73,8 @@ jobs:
           bundle exec fastlane precheck --verbose
           bundle exec fastlane ios signing
           bundle exec fastlane ios build
+          bundle exec fastlane ios publish
+
       # - name: Archive app build
       #   uses: actions/upload-artifact@v2
       #   with:

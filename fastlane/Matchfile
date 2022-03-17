@@ -1,18 +1,22 @@
-# s3_bucket("")
-# storage_mode("s3")
-
-# # For all available options run `fastlane match --help`
-# # Remove the # in the beginning of the line to enable the other options
-
-# # The docs are available on https://docs.fastlane.tools/actions/match
-git_url("https://github.com/KL-Engineering/kidsloop-live-frontend")
-storage_mode("git")
-type("development") # The default type, can be: appstore, adhoc, enterprise or development
-
-# app_identifier(["tools.fastlane.app", "tools.fastlane.app2"])
-# username("user@fastlane.tools") # Your Apple Developer Portal username
-# keychain_name("github-build-machine.keychain")
-# For all available options run `fastlane match --help`
-# Remove the # in the beginning of the line to enable the other options
-
 # The docs are available on https://docs.fastlane.tools/actions/match
+storage_mode("git")
+shallow_clone(true)
+# clone_branch_directly(true) # requires the branch to exist or it will fail
+git_url("https://github.com/KL-Engineering/kidsloop-live-frontend")
+git_branch("ios-build")
+readonly(false) # if true only fetches existing certs
+
+generate_apple_certs(false)
+
+# must use the following with the CI account
+# keychain_name("github-build-machine.keychain")
+# api_key_path - https://docs.fastlane.tools/app-store-connect-api/#using-fastlane-api-key-json-file
+# api_key - https://docs.fastlane.tools/app-store-connect-api/#using-fastlane-api-key-hash-option
+# profile_name("")
+
+app_identifier(["com.kidsloop.platform.student"])
+skip_confirmation(true)
+safe_remove_certs(true)
+skip_docs(true)
+
+verbose(true)

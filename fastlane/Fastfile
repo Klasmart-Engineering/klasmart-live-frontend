@@ -4,10 +4,14 @@ platform :ios do
   before_all do
     Dotenv.overload('.env', '.env.secret')
   end
-
+  desc "Alias for signing"
+  lane :sign do
+    signing
+  end
   desc "Sync signing"
   lane :signing do
-    match(type: "development", readonly: is_ci)
+    match(type: "adhoc" , readonly: is_ci)
+    match(type: "appstore" , readonly: is_ci)
 
     mapping = Actions.lane_context[SharedValues::MATCH_PROVISIONING_PROFILE_MAPPING]
     update_code_signing_settings(
@@ -22,6 +26,6 @@ platform :ios do
   desc "publish"
   lane :publish do
     build
+    upload_to_app_store # deliver
   end
-
 end
