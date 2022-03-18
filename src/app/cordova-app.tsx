@@ -1,4 +1,5 @@
 import { OnBoardingPage } from "./pages/on-boarding/onBoardingPage";
+import { Onetrust } from "./components/onetrust/onetrust";
 import { useAuthenticationContext } from "@/app/context-provider/authentication-context";
 import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
 import { usePopupContext } from "@/app/context-provider/popup-context";
