@@ -1,3 +1,4 @@
+import { Onetrust } from "./components/onetrust/onetrust";
 import { LandingPage } from "./pages/landing/landingPage";
 import { useAuthenticationContext } from "@/app/context-provider/authentication-context";
 import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
