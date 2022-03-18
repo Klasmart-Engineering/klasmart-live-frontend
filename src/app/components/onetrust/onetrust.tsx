@@ -23,11 +23,14 @@ const useStyles = makeStyles((theme) => createStyles({
     },
 }));
 
+const ONETRUST_CDN_LOCATION = `cdn-ukwest.onetrust.com`;
+const ONETRUST_APP_ID = `8894f33b-5bc6-4a2e-8c1d-6bb490912f01`;
+
 export function Onetrust () {
     const classes = useStyles();
 
-    const [ storageLocation ] = useState(`cdn-ukwest.onetrust.com`);
-    const [ domainId ] = useState(`8894f33b-5bc6-4a2e-8c1d-6bb490912f01-test`);
+    const [ storageLocation ] = useState(ONETRUST_CDN_LOCATION);
+    const [ domainId ] = useState(ONETRUST_APP_ID);
     const [ languageCode ] = useState(`en`);
     const [ params ] = useState(undefined);
 
@@ -47,18 +50,6 @@ export function Onetrust () {
         languageCode,
     ]);
 
-    const startSDK = useCallback(() => {
-        (window as any).OneTrust.startSDK(storageLocation, domainId, languageCode, params, () => {
-            console.log(`OneTrust startSDK: success`);
-        }, (error: any) => {
-            console.error(`OneTrust startSDK error: ${JSON.stringify(error)}`);
-        });
-    }, [
-        storageLocation,
-        domainId,
-        languageCode,
-    ]);
-
     const showBanner = useCallback(() => {
         (window as any).OneTrust.showBannerUI();
     }, []);
@@ -68,7 +59,7 @@ export function Onetrust () {
     }, []);
 
     return (
-        <>
+        process.env.NODE_ENV === `development` ? <>
             <Button
                 fullWidth
                 variant="contained"
@@ -87,6 +78,6 @@ export function Onetrust () {
             >
                 OneTrust: Show Preference Center
             </Button>
-        </>
+        </> : <></>
     );
 }
