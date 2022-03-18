@@ -305,5 +305,6 @@
     "microphone.local.disable": "关闭我的麦克风",
     "microphone.global.disable": "禁用全部麦克风",
     "class.attendance.confirm": "Confirm",
-    "class.attendance.title": "Who is in Class today?"
+    "class.attendance.title": "Who is in Class today?",
+    "class.attendance.selectAll": "Select all participants"
 }
