@@ -303,5 +303,7 @@
     "microphone.local.enable": "Turn on microphone for me",
     "microphone.global.enable": "Turn on microphone for everyone",
     "microphone.local.disable": "Turn off microphone for me",
-    "microphone.global.disable": "Turn off microphone for everyone"
+    "microphone.global.disable": "Turn off microphone for everyone",
+    "class.attendance.confirm": "Confirm",
+    "class.attendance.title": "Who is in Class today?"
 }
