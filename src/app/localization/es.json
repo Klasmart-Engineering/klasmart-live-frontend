@@ -267,6 +267,6 @@
     "account_selectOrg": "Select an Organization",
     "study.enter.startStudying": "Start Studying",
     "schedule_review_class_name": "Review: {value} Materials",
-    "live.enter.tardyDuration": "Started {value} minutes ago",
+    "live.enter.tardyDuration": "Started {value} {value, plural, =0 {minute} one {minute} other {minutes}} ago",
     "live.enter.joinLive": "Join Live Class"
 }
