@@ -6,6 +6,7 @@ import ScheduleLoading from "@/app/components/Schedule/Loading";
 import NoSchedule,
 { NoScheduleVariant } from "@/app/components/Schedule/NoSchedule";
 import {
+    getIconStudyType,
     getStudyType,
     ScheduleListSection,
     StudyAssessmentStatus,
@@ -17,8 +18,6 @@ import {
     isFocused,
     useWindowOnFocusChange,
 } from "@/app/utils/windowEvents";
-import HomeFunStudyIcon from "@/assets/img/schedule-icon/home_fun_study.svg";
-import StudyIcon from "@/assets/img/schedule-icon/study_icon.svg";
 import {
     SCHEDULE_FETCH_INTERVAL_MINUTES,
     SCHEDULE_PAGE_ITEM_HEIGHT_MIN,
@@ -180,7 +179,7 @@ export default function AnytimeStudyScheduleList () {
                                     leading={(
                                         <ListItemAvatar
                                             imgType
-                                            src={studySchedule.is_home_fun ? HomeFunStudyIcon : StudyIcon}
+                                            src={getIconStudyType(studySchedule)}
                                         />
                                     )}
                                     title={studySchedule.title}

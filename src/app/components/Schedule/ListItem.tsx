@@ -59,7 +59,7 @@ const useStyles = makeStyles((theme) => createStyles({
 
 export interface Props {
     leading: React.ReactElement;
-    title: string;
+    title: string | JSX.Element;
     subtitle?: string;
     trailing?: React.ReactNode;
     onClick?: () => void | Promise<void>;

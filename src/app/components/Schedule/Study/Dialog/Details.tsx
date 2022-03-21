@@ -1,3 +1,4 @@
+import { getIdStudyType, getTitleReview } from "../../shared";
 import DialogParentalLock from "@/app/components/ParentalLock";
 import AttachmentDownloadButton from "@/app/components/Schedule/Attachment/DownloadButton";
 import AttachmentNameLink from "@/app/components/Schedule/Attachment/NameLink";
@@ -5,7 +6,9 @@ import BaseScheduleDialog from "@/app/components/Schedule/BaseDialog";
 import { useSelectedOrganizationValue } from "@/app/data/user/atom";
 import { dialogsState } from "@/app/model/appModel";
 import { ScheduleLiveTokenType } from "@/app/services/cms/ISchedulerService";
-import { formatDateTimeMillis } from "@/app/utils/dateTimeUtils";
+import {
+    formatDateTimeMillis,
+} from "@/app/utils/dateTimeUtils";
 import {
     generateDescriptionHasHyperLink,
     openHyperLink,
@@ -29,7 +32,9 @@ import React,
     useEffect,
     useState,
 } from "react";
-import { useIntl } from "react-intl";
+import {
+    useIntl,
+} from "react-intl";
 import { useHistory } from "react-router";
 import { useRecoilState } from "recoil";
 
@@ -139,7 +144,7 @@ export default function StudyDetailsDialog (props: Props) {
                 key={`BaseScheduleDialog`}
                 color={BG_COLOR_GO_STUDY_PRIMARY}
                 open={open}
-                title={scheduleData?.title ?? ``}
+                title={scheduleData?.is_review ? getTitleReview(scheduleData, scheduleData.class.name, intl) : scheduleData?.title ?? ``}
                 contentItems={[
                     {
                         header: intl.formatMessage({
@@ -214,58 +219,62 @@ export default function StudyDetailsDialog (props: Props) {
                             </Grid>
                         ),
                     },
-                    {
-                        header: intl.formatMessage({
-                            id: `scheduleDetails.lessonPlan`,
-                        }),
-                        content: (
-                            <Typography
-                                variant="body1"
-                                className={classes.rowContentText}
-                            >
-                                {scheduleData?.lesson_plan?.name || intl.formatMessage({
-                                    id: `scheduleDetails.notApplicable`,
-                                })}
-                            </Typography>
-                        ),
-                    },
-                    {
-                        header: intl.formatMessage({
-                            id: `scheduleDetails.attachment`,
-                        }),
-                        content: scheduleData?.attachment?.name
-                            ? (
-                                <Grid
-                                    container
-                                    direction={`row`}
-                                    justifyContent={`space-between`}
-                                    alignItems={`center`}
-                                >
-                                    <AttachmentNameLink
-                                        attachmentId={scheduleData.attachment.id}
-                                        attachmentName={scheduleData.attachment.name}
-                                    />
-                                    <AttachmentDownloadButton
-                                        attachmentId={scheduleData.attachment.id}
-                                        attachmentName={scheduleData.attachment.name}
-                                    />
-                                </Grid>
-                            ) : (
+                    ...scheduleData?.is_review ? [] : [
+                        {
+                            header: intl.formatMessage({
+                                id: `scheduleDetails.lessonPlan`,
+                            }),
+                            content: (
                                 <Typography
                                     variant="body1"
                                     className={classes.rowContentText}
                                 >
-                                    {intl.formatMessage({
+                                    {scheduleData?.lesson_plan?.name || intl.formatMessage({
                                         id: `scheduleDetails.notApplicable`,
                                     })}
                                 </Typography>
                             ),
-                    },
+                        },
+                    ],
+                    ...scheduleData?.is_review ? [] :[
+                        {
+                            header: intl.formatMessage({
+                                id: `scheduleDetails.attachment`,
+                            }),
+                            content: scheduleData?.attachment?.name
+                                ? (
+                                    <Grid
+                                        container
+                                        direction={`row`}
+                                        justifyContent={`space-between`}
+                                        alignItems={`center`}
+                                    >
+                                        <AttachmentNameLink
+                                            attachmentId={scheduleData.attachment.id}
+                                            attachmentName={scheduleData.attachment.name}
+                                        />
+                                        <AttachmentDownloadButton
+                                            attachmentId={scheduleData.attachment.id}
+                                            attachmentName={scheduleData.attachment.name}
+                                        />
+                                    </Grid>
+                                ) : (
+                                    <Typography
+                                        variant="body1"
+                                        className={classes.rowContentText}
+                                    >
+                                        {intl.formatMessage({
+                                            id: `scheduleDetails.notApplicable`,
+                                        })}
+                                    </Typography>
+                                ),
+                        },
+                    ],
                 ]}
                 actions={[
                     {
                         label: intl.formatMessage({
-                            id: scheduleData?.is_home_fun && scheduleData.complete_assessment ? `scheduleDetails.viewFeedback` : `button_go_study`,
+                            id: getIdStudyType(scheduleData),
                         }),
                         align: `end`,
                         color: `primary`,

@@ -1,6 +1,14 @@
 import { AssessmentStatusType } from "@/app/services/cms/IAssessmentService";
+import { formatDueDayMonth } from "@/app/utils/dateTimeUtils";
+import HomeFunStudyIcon from "@/assets/img/schedule-icon/home_fun_study.svg";
+import ReviewIcon from "@/assets/img/schedule-icon/review_icon.svg";
+import StudyIcon from "@/assets/img/schedule-icon/study_icon.svg";
 import StyledIcon from "@/components/styled/icon";
-import { SchedulesTimeViewListItem } from "@kidsloop/cms-api-client/dist/api/schedule";
+import { fromSecondsToMilliseconds } from "@/utils/utils";
+import {
+    GetScheduleByIdResponse,
+    SchedulesTimeViewListItem,
+} from "@kidsloop/cms-api-client/dist/api/schedule";
 import { Typography } from "@material-ui/core";
 import { Envelope as AssessmentCompleteIcon } from "@styled-icons/fa-regular/Envelope";
 import React from "react";
@@ -53,14 +61,48 @@ export function filterUpcomingSchedules (schedule: SchedulesTimeViewListItem) {
 }
 
 export const getStudyType = (studyClass: SchedulesTimeViewListItem, intl: IntlShape) => {
+    if (studyClass.is_review) return intl.formatMessage({
+        id: `review.title`,
+    });
+
     if (studyClass.is_home_fun) return intl.formatMessage({
         id: `schedule_studyHomeFunStudy`,
     });
+
     return intl.formatMessage({
         id: `schedule_studyTab`,
     });
 };
 
+export const getIconStudyType = (studyClass: SchedulesTimeViewListItem) => {
+    if (studyClass.is_review) return ReviewIcon;
+
+    if (studyClass.is_home_fun) return HomeFunStudyIcon;
+
+    return StudyIcon;
+};
+
+export const getIdStudyType = (studyClass?: GetScheduleByIdResponse) => {
+    if (studyClass?.is_review) return `button_start_review`;
+
+    if (studyClass?.is_home_fun && studyClass?.complete_assessment) return `scheduleDetails.viewFeedback`;
+
+    return `button_go_study`;
+};
+
+ export const getTitleReview = (studySchedule: SchedulesTimeViewListItem | GetScheduleByIdResponse, className: string, intl: IntlShape) => {
+        const value = className + ` `
+            + `${formatDueDayMonth(fromSecondsToMilliseconds(studySchedule?.content_start_at ?? 0), intl)}`
+            + `~`
+            + `${formatDueDayMonth(fromSecondsToMilliseconds(studySchedule?.content_end_at ?? 0), intl)}`;
+
+        return <FormattedMessage
+            id="schedule_review_class_name"
+            values={{
+                value,
+            }}/>;
+ };
+    
 export const StudyAssessmentStatus = (schedule: SchedulesTimeViewListItem) => {
     if (!schedule.is_home_fun) return; // currently status is only accurate for home fun studies
     switch (schedule.assessment_status) {

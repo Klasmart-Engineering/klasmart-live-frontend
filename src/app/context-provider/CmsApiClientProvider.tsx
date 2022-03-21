@@ -44,7 +44,7 @@ export default function CmsApiClientProvider (props: Props) {
                     },
                 },
             }}
-            interceptors={[
+            responseInterceptors={[
                 {
                     onRejected,
                 },

@@ -6,7 +6,7 @@ import ScheduleLoading from "@/app/components/Schedule/Loading";
 import JessIcon from "@/assets/img/home-fun-study/jess.svg";
 import { THEME_COLOR_BACKGROUND_LIST } from "@/config";
 import { useGetStudentAssessments } from "@kidsloop/cms-api-client";
-import { TeacherComment } from "@kidsloop/cms-api-client/dist/api/schedule";
+import { TeacherComment } from "@kidsloop/cms-api-client/dist/api/assessment";
 import {
     Box,
     createStyles,

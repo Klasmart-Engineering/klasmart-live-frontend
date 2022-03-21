@@ -6,7 +6,9 @@ import ScheduleLoading from "@/app/components/Schedule/Loading";
 import NoSchedule,
 { NoScheduleVariant } from "@/app/components/Schedule/NoSchedule";
 import {
+    getIconStudyType,
     getStudyType,
+    getTitleReview,
     StudyAssessmentStatus,
 } from "@/app/components/Schedule/shared";
 import StudyDetailsDialog from "@/app/components/Schedule/Study/Dialog/Details";
@@ -17,8 +19,6 @@ import {
     isFocused,
     useWindowOnFocusChange,
 } from "@/app/utils/windowEvents";
-import HomeFunStudyIcon from "@/assets/img/schedule-icon/home_fun_study.svg";
-import StudyIcon from "@/assets/img/schedule-icon/study_icon.svg";
 import {
     BG_AVT_ANYTIME_STUDY_DEFAULT,
     SCHEDULE_FETCH_INTERVAL_MINUTES,
@@ -264,10 +264,10 @@ export default function StudyScheduleList () {
                                     leading={(
                                         <ListItemAvatar
                                             imgType
-                                            src={studySchedule.is_home_fun ? HomeFunStudyIcon : StudyIcon}
+                                            src={getIconStudyType(studySchedule)}
                                         />
                                     )}
-                                    title={studySchedule.title}
+                                    title={studySchedule.is_review ? getTitleReview(studySchedule, studySchedule.title, intl) : studySchedule.title}
                                     subtitle={getStudyType(studySchedule, intl)}
                                     trailing={StudyAssessmentStatus(studySchedule)}
                                     onClick={() => setStudyDetailOpen(studySchedule.id)}

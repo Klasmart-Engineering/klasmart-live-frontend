@@ -66,7 +66,7 @@ export interface DialogAction {
 }
 
 export interface Props {
-    title: string;
+    title: string | JSX.Element;
     color?: string;
     contentItems: DialogContentItem[];
     actions: DialogAction[];

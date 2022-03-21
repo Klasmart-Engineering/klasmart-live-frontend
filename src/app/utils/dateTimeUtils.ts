@@ -6,7 +6,15 @@ export function formatDueDateMillis (dueDateMillis: number, intl: IntlShape) {
         month: `long`,
         weekday: `long`,
     });
-    return `${date}`;
+    return date;
+}
+
+export function formatDueDayMonth (dueDateMillis: number, intl: IntlShape) {
+    const date = intl.formatDate(dueDateMillis, {
+        day: `numeric`,
+        month: `short`,
+    });
+    return date;
 }
 
 export function formatStartEndDateTimeMillis (startTimeMillis: number, endTimeMillis: number, intl: IntlShape) {
