@@ -26,6 +26,7 @@ const DEFAULT_SESSION_CONTEXT = {
     scheduleId: ``,
     classType: ClassType.LIVE,
     user_id: ``,
+    isReview: false,
 };
 
 export interface ISessionContext {
@@ -39,6 +40,7 @@ export interface ISessionContext {
     name?: string;
     token?: string;
     user_id?: string;
+    isReview?: boolean;
     setName: React.Dispatch<React.SetStateAction<string | undefined>>;
     setToken: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
@@ -89,6 +91,7 @@ export function SessionContextProvider ({ children, sessionId }: Props) {
                 scheduleId: params.schedule_id,
                 classType: params.classtype as ClassType,
                 user_id: params.user_id,
+                isReview: params.is_review,
             }
             : DEFAULT_SESSION_CONTEXT;
 

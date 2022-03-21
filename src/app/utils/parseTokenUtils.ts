@@ -17,6 +17,7 @@ type TokenDto = {
     schedule_id?: string;
     materials: MaterialDto[];
     user_id: string;
+    is_review?: boolean;
 }
 
 const url = new URL(window.location.href);
@@ -97,6 +98,7 @@ function parseParamsFromUrlQuery () {
         schedule_id: url.searchParams.get(`schedule_id`) || ``,
         classtype: url.searchParams.get(`classtype`) || `live`,
         user_id: url.searchParams.get(`user_id`) || ``,
+        is_review: url.searchParams.get(`is_review`) !== null,
     };
 }
 
@@ -143,6 +145,7 @@ function parseParamsFromToken (token?: string) {
             roomId: String(payload.roomid),
             materials: parsedMaterials || [],
             user_id: String(payload.user_id) || ``,
+            is_review: payload.is_review ? Boolean(payload.is_review) : false,
         };
         // eslint-disable-next-line no-empty
     } catch (e) {

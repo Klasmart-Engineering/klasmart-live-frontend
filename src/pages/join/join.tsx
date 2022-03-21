@@ -5,6 +5,7 @@ import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-c
 import KidsLoopClassTeachers from "@/assets/img/classtype/kidsloop_class_teachers.svg";
 import KidsLoopLiveStudents from "@/assets/img/classtype/kidsloop_live_students.svg";
 import KidsLoopLiveTeachers from "@/assets/img/classtype/kidsloop_live_teachers.svg";
+import KidsLoopReviewStudents from "@/assets/img/classtype/kidsloop_review_students.svg";
 import KidsLoopStudyStudents from "@/assets/img/classtype/kidsloop_study_students.svg";
 import KidsLoopLogoSvg from "@/assets/img/kidsloop.svg";
 import Loading from "@/components/loading";
@@ -250,7 +251,7 @@ export default function Join (): JSX.Element {
                                 direction={isXsDown ? `column-reverse` : `row`}
                                 justifyContent="center"
                                 alignItems="center"
-                                spacing={4}
+                                spacing={classType === ClassType.LIVE ? 4 : 0}
                             >
                                 {classType !== ClassType.LIVE ? null :
                                     <Grid
@@ -271,6 +272,16 @@ export default function Join (): JSX.Element {
                                         </Box>
                                     </Grid>
                                 }
+                                {!isSmDown && classType !== ClassType.LIVE && (
+                                    <Grid
+                                        container
+                                        justifyContent="center"
+                                        alignItems="center">
+                                        <Grid item>
+                                            <ClassTypeLogo />
+                                        </Grid>
+                                    </Grid>
+                                )}
                                 <Grid
                                     item
                                     xs={classType === ClassType.LIVE ? 6 : 10}
@@ -297,13 +308,28 @@ export default function Join (): JSX.Element {
 
 function ClassTypeLogo (): JSX.Element {
     const { logo } = useStyles();
-    const { classType, isTeacher } = useSessionContext();
+    const {
+        classType,
+        isTeacher,
+        isReview,
+    } = useSessionContext();
     const IMG_HEIGHT = `64px`;
-    const IMG_SRC = classType === ClassType.LIVE ? (isTeacher ? KidsLoopLiveTeachers : KidsLoopLiveStudents) : classType === ClassType.CLASSES ? KidsLoopClassTeachers : KidsLoopStudyStudents;
+
+    const getImgSrc = () => {
+        switch (classType) {
+        case ClassType.LIVE:
+            return isTeacher ? KidsLoopLiveTeachers : KidsLoopLiveStudents;
+        case ClassType.CLASSES:
+            return KidsLoopClassTeachers;
+        default:
+            if (isReview) return KidsLoopReviewStudents;
+            return KidsLoopStudyStudents;
+        }
+    };
 
     return (<img
         alt="KidsLoop Live"
-        src={IMG_SRC}
+        src={getImgSrc()}
         height={IMG_HEIGHT}
         className={logo} />);
 }
@@ -382,7 +408,7 @@ const JoinRoomForm: VoidFunctionComponent<{
                 container
                 direction="column"
                 spacing={2}>
-                {!isSmDown && (
+                {!isSmDown && classType === ClassType.LIVE && (
                     <Grid item>
                         <ClassTypeLogo />
                     </Grid>

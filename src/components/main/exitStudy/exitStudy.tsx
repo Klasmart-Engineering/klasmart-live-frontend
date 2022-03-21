@@ -3,6 +3,8 @@ import StudyLeaveIcon from "@/assets/img/study_leave_icon.svg";
 import StudyStartAgainIcon from "@/assets/img/study_start_again_icon.svg";
 import RoundButton from "@/components/common/roundButton/RoundButton";
 import TrophyKinds from "@/components/trophies/trophyKind";
+import { useSessionContext } from "@/providers/session-context";
+import { ClassType } from "@/store/actions";
 import {
     classEndedState,
     classLeftState,
@@ -41,6 +43,7 @@ export default function ExitStudy (){
     const { addOnBack } = useCordovaSystemContext();
     const setMaterialActiveIndex = useSetRecoilState(materialActiveIndexState);
     const setShowEndStudy = useSetRecoilState(showEndStudyState);
+    const { classType, isReview } = useSessionContext();
 
     const onCloseButtonClick = () => {
         if (process.env.IS_CORDOVA_BUILD) {
@@ -94,12 +97,12 @@ export default function ExitStudy (){
                     alignItems="center"
                     mt={isSmDown ? 1 : 4}
                 >
-                    <RoundButton
+                    {!isReview && <RoundButton
                         id="study.exit.startAgain"
                         alt="start again Icon"
                         src={StudyStartAgainIcon}
                         onClick={onTryAgainClick}
-                    />
+                    />}
                     <RoundButton
                         id="study.exit.leave"
                         alt="study leave Icon"

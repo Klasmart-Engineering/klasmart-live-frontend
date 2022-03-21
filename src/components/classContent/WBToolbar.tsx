@@ -62,7 +62,6 @@ export function WBToolbarContainer ({ useLocalDisplay } : { useLocalDisplay?: bo
         classType,
         isTeacher,
         sessionId,
-
     } = useSessionContext();
     const {
         state: { display, permissions },

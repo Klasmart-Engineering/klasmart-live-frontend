@@ -17,7 +17,7 @@ import {
 } from "@material-ui/core";
 import { Close as CloseIcon } from "@styled-icons/material/Close";
 import clsx from "clsx";
-import React from "react";
+import React, { useEffect } from "react";
 import { useIntl } from "react-intl";
 import { useHistory } from "react-router-dom";
 import { useRecoilState } from "recoil";
