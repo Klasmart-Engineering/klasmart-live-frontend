@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.2.0-alpha.1](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v5.2.0-alpha.1%0Dv5.2.0-alpha.0) (2022-03-22)
+
+
+### Features
+
+* add isReview field to token ([ca8c0ac](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/ca8c0acf436f6babba5fe03c78841e98aba2c739)), closes [KLL-1343](https://calmisland.atlassian.net/browse/KLL-1343)
+* display title and class type for review type ([45dd32d](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/45dd32d603fbe608e1f71af0829a3476e9c1d7bc)), closes [KLL-1344](https://calmisland.atlassian.net/browse/KLL-1344)
+* **localization:** add new translations ([dea76a6](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/dea76a65c4aabcd297e2b584455185df91af249d))
+* **localization:** add new translations ([c47b384](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/c47b384d40fea46df9e5080d4ec3e4f98bda191c))
+* **localization:** add new translations ([23476c3](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/23476c3fa3adaa74a9e062e60a36b3f485ccf820))
+* **localization:** add new translations ([74f5ef1](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/74f5ef1c92d2ddcd665388c00d6f60126e950930))
+* **localization:** add new translations (live.enter) ([293cb60](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/293cb60fcb32b049ec74e15767ec07412ef3cbaa))
+
 ## [5.2.0-alpha.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v5.2.0-alpha.0%0Dv5.1.0) (2022-03-16)
 
 
