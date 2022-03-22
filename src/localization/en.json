@@ -306,5 +306,6 @@
     "microphone.global.disable": "Turn off microphone for everyone",
     "class.attendance.confirm": "Confirm",
     "class.attendance.title": "Who is in Class today?",
-    "class.attendance.selectAll": "Select all participants"
+    "class.attendance.selectAll": "Select all participants",
+    "canvas.tool.select": "Select"
 }
