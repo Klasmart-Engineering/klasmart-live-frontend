@@ -1,3 +1,4 @@
+import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
 import {
     Button,
     createStyles,
@@ -24,13 +25,16 @@ const useStyles = makeStyles((theme) => createStyles({
 }));
 
 const ONETRUST_CDN_LOCATION = `cdn-ukwest.onetrust.com`;
-const ONETRUST_APP_ID = `8894f33b-5bc6-4a2e-8c1d-6bb490912f01`;
+const ONETRUST_APP_ID_ANDROID = `344ed2bc-5559-42fa-ad9d-867b6f9ee3a0-test`;
+const ONETRUST_APP_ID_IOS = `8894f33b-5bc6-4a2e-8c1d-6bb490912f01-test`;
 
 export function Onetrust () {
     const classes = useStyles();
 
+    const { isIOS } = useCordovaSystemContext();
+
     const [ storageLocation ] = useState(ONETRUST_CDN_LOCATION);
-    const [ domainId ] = useState(ONETRUST_APP_ID);
+    const [ domainId ] = useState(isIOS ? ONETRUST_APP_ID_IOS : ONETRUST_APP_ID_ANDROID);
     const [ languageCode ] = useState(`en`);
     const [ params ] = useState(undefined);
 
