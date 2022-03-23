@@ -632,7 +632,7 @@ export default function () {
                         [classes.buttonSubmitting]: isLoadingPostScheduleFeedback,
                     }, classes.roundedButton)}
                     color="primary"
-                    disabled={!canSubmit || homeFunStudyFeedback.status !== `draft`}
+                    disabled={!canSubmit || homeFunStudyFeedback.status !== `draft` || homeFunStudyFeedback.attachments.length === 0}
                     onClick={() => submitFeedback()}
                 >
                     <FormattedMessage id="button_submit"/>
