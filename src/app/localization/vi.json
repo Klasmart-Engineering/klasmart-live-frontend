@@ -268,5 +268,6 @@
     "study.enter.startStudying": "Start Studying",
     "schedule_review_class_name": "Ôn tập: {value} Học liệu",
     "live.enter.tardyDuration": "Started {value} {value, plural, =0 {minute} one {minute} other {minutes}} ago",
-    "live.enter.joinLive": "Join Live Class"
+    "live.enter.joinLive": "Join Live Class",
+    "live.enter.teacherCount": "+{value} more {value, plural, one {person} other {people}}"
 }
