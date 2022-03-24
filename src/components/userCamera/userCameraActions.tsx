@@ -144,12 +144,12 @@ const UserCameraActions = ({
                     <Box
                         display="flex"
                         className={classes.iconsContainer}>
-                        { mic.hasLocation && hasPermission && <ToggleMic
+                        { mic.hasLocation && hasPermission && (isSelf || isTeacher) && <ToggleMic
                             track={mic}
                             local={!isTeacher || isSelf}
                         />
                         }
-                        { camera.hasLocation && hasPermission && <ToggleCamera
+                        { camera.hasLocation && hasPermission && (isSelf || isTeacher) && <ToggleCamera
                             track={camera}
                             local={!isTeacher || isSelf}
                         />
