@@ -26,15 +26,17 @@ const useStyles = makeStyles((theme: Theme) => ({
         overflowY: `auto`,
     },
     activityContainer: {
-        backgroundColor: THEME_COLOR_GREY_200,
-        borderRadius: theme.spacing(1.5),
         display: `flex`,
         alignItems: `center`,
         justifyContent: `center`,
     },
     activityContainerStudy: {
-        backgroundColor: `transparent`,
-        paddingBottom: theme.spacing(1),
+        padding: theme.spacing(1, 2, 2, 2),
+        boxSizing: `border-box`,
+    },
+    activityContainerLive: {
+        backgroundColor: THEME_COLOR_GREY_200,
+        borderRadius: theme.spacing(1.5),
     },
 }));
 
@@ -78,7 +80,8 @@ function Main () {
                         <div
                             ref={containerRef}
                             className={clsx(classes.activityContainer, classes.fullHeight, {
-                                [classes.activityContainerStudy]: classType === ClassType.STUDY,
+                                [classes.activityContainerStudy]: classType === ClassType.STUDY || classType === ClassType.CLASSES,
+                                [classes.activityContainerLive]: classType === ClassType.LIVE,
                             })}
                         >
                             {classType === ClassType.LIVE ? <MainView /> : <MainClass />}

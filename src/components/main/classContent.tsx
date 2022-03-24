@@ -74,13 +74,9 @@ const useStyles = makeStyles((theme: Theme) => ({
         width: `100%`,
     },
     navigationColumn:{
-        width: 70,
         display: `flex`,
         alignItems: `center`,
         justifyContent: `center`,
-        [theme.breakpoints.down(`sm`)]: {
-            width: 50,
-        },
     },
     centeredContent:{
         height: `100%`,
@@ -193,9 +189,7 @@ export function ClassContent () {
             </Grid>
             <Grid
                 item
-                className={clsx(classes.navigationColumn, {
-                    [classes.navigationColumnActions]: classType === ClassType.STUDY,
-                })}>
+                className={classes.navigationColumn}>
                 <MaterialNavigation
                     direction="next"
                     disabled={materialActiveIndex >=  materials.length}

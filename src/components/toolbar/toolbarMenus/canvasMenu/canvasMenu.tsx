@@ -209,12 +209,16 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
                 open={isCanvasOpen}
                 anchorEl={anchor}
                 placement={classType === ClassType.STUDY ? `top-end` : `top`}
-                modifiers={ classType === ClassType.STUDY ? {
+                modifiers={classType === ClassType.STUDY || classType === ClassType.CLASSES ? {
                     offset: {
                         enabled: true,
                         offset: `0, 4`,
                     },
-                } : undefined}>
+                    preventOverflow: {
+                        boundariesElement: document.getElementById(`main-content`),
+                    },
+                } : undefined}
+            >
                 <Grid
                     container
                     alignItems="stretch"
@@ -301,6 +305,9 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
                         offset: {
                             enabled: true,
                             offset: `-4,8`,
+                        },
+                        preventOverflow: {
+                            boundariesElement: document.getElementById(`main-content`),
                         },
                     }}
                     anchorEl={colorsMenuAnchor}>
