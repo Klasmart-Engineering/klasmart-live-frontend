@@ -9,6 +9,7 @@ import React,
 {
     useCallback,
     useEffect,
+    useMemo,
     useState,
 } from "react";
 
@@ -24,9 +25,11 @@ const useStyles = makeStyles((theme) => createStyles({
     },
 }));
 
+const DISPLAY_ONETRUST_DEBUG_BUTTONS = false; // process.env.NODE_ENV === `development`
+
 const ONETRUST_CDN_LOCATION = `cdn-ukwest.onetrust.com`;
-const ONETRUST_APP_ID_ANDROID = `344ed2bc-5559-42fa-ad9d-867b6f9ee3a0-test`;
-const ONETRUST_APP_ID_IOS = `8894f33b-5bc6-4a2e-8c1d-6bb490912f01-test`;
+const ONETRUST_APP_ID_ANDROID = `344ed2bc-5559-42fa-ad9d-867b6f9ee3a0`;
+const ONETRUST_APP_ID_IOS = `8894f33b-5bc6-4a2e-8c1d-6bb490912f01`;
 
 export function Onetrust () {
     const classes = useStyles();
@@ -63,7 +66,7 @@ export function Onetrust () {
     }, []);
 
     return (
-        process.env.NODE_ENV === `development` ? <>
+        DISPLAY_ONETRUST_DEBUG_BUTTONS ? <>
             <Button
                 fullWidth
                 variant="contained"
