@@ -25,6 +25,7 @@ import { Pencil as PencilIcon } from "@styled-icons/boxicons-regular/Pencil";
 import { Eraser as EraserIcon } from "@styled-icons/boxicons-solid/Eraser";
 import { Trash as TrashIcon } from "@styled-icons/boxicons-solid/Trash";
 import { Text as TextIcon } from "@styled-icons/evaicons-solid/Text";
+import { Cursor as CursorIcon } from "@styled-icons/fluentui-system-regular/Cursor";
 import { useToolbarContext } from "kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
 import React,
 {
@@ -52,6 +53,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 export enum CanvasToolbarItems {
     PENCIL,
     TEXT,
+    CURSOR,
     MOVE,
     ERASER,
     ALLOW_EVERYONE
@@ -154,6 +156,9 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
         case CanvasToolbarItems.ERASER:
             selectObjectEraser();
             break;
+        case CanvasToolbarItems.CURSOR:
+            selectTool(`clickthrough`);
+            break;
         case CanvasToolbarItems.ALLOW_EVERYONE:
             break;
         default:
@@ -250,6 +255,13 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
                             id: `canvas.tool.move`,
                         })}
                         onClick={() => setCanvasSelectedItem(CanvasToolbarItems.MOVE)} />
+                    <CanvasMenuItem
+                        active={canvasSelectedItem === CanvasToolbarItems.CURSOR}
+                        icon={<CursorIcon size="1.85rem"/>}
+                        title={intl.formatMessage({
+                            id: `canvas.tool.select`,
+                        })}
+                        onClick={() => setCanvasSelectedItem(CanvasToolbarItems.CURSOR)} />
                     <Grid
                         item
                         className={classes.divider}></Grid>
