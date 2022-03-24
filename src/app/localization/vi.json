@@ -263,11 +263,11 @@
     "onboarding.slider.body.3": "Hãy tham gia vào KidsLoop!",
     "review.title": "Ôn tập",
     "button_start_review": "Bắt đầu ôn tập",
-    "account_selectUser": "Select a Profile",
-    "account_selectOrg": "Select an Organization",
-    "study.enter.startStudying": "Start Studying",
+    "account_selectUser": "Chọn một hồ sơ",
+    "account_selectOrg": "Chọn một tổ chức",
+    "study.enter.startStudying": "Bắt đầu học",
     "schedule_review_class_name": "Ôn tập: {value} Học liệu",
-    "live.enter.tardyDuration": "Started {value} {value, plural, =0 {minute} one {minute} other {minutes}} ago",
-    "live.enter.joinLive": "Join Live Class",
-    "live.enter.teacherCount": "+{value} more {value, plural, one {person} other {people}}"
+    "live.enter.tardyDuration": "Đã bắt đầu {value} {value, plural, =0 { phút } one { phút } other { phút }} trước",
+    "live.enter.joinLive": "Tham gia lớp học trực tuyến",
+    "live.enter.teacherCount": "+ {value} hơn {value, plural, one { người } other { người }}"
 }

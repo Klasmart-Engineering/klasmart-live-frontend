@@ -263,11 +263,11 @@
     "onboarding.slider.body.3": "มากระโดดเข้าสู่ KidsLoop กันเถอะ!",
     "review.title": "Review",
     "button_start_review": "Start Review",
-    "account_selectUser": "Select a Profile",
-    "account_selectOrg": "Select an Organization",
-    "study.enter.startStudying": "Start Studying",
+    "account_selectUser": "เลือกโปรไฟล์",
+    "account_selectOrg": "เลือกองค์กร",
+    "study.enter.startStudying": "เริ่มเรียน",
     "schedule_review_class_name": "รีวิว: {value} วัสดุ",
-    "live.enter.tardyDuration": "Started {value} {value, plural, =0 {minute} one {minute} other {minutes}} ago",
-    "live.enter.joinLive": "Join Live Class",
-    "live.enter.teacherCount": "+{value} more {value, plural, one {person} other {people}}"
+    "live.enter.tardyDuration": "เริ่มแล้ว {value} {value, plural, =0 { minute } one { { minutes } } other { minutes }} ที่แล้ว",
+    "live.enter.joinLive": "เข้าร่วมคลาสสด",
+    "live.enter.teacherCount": "+{value} มากกว่า {value, plural, one {person} other {people}}"
 }
