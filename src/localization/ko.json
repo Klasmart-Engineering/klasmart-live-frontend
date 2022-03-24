@@ -307,5 +307,8 @@
     "class.attendance.confirm": "Confirm",
     "class.attendance.title": "Who is in Class today?",
     "class.attendance.selectAll": "Select all participants",
-    "canvas.tool.select": "Select"
+    "canvas.tool.select": "Select",
+    "screenShare.error.default": "Error: Unable to share screen",
+    "screenShare.error.NotAllowedError": "You need to grant permission to share your screen",
+    "screenShare.error.NotReadableError": "Error: Your system does not have permission to share screen"
 }
