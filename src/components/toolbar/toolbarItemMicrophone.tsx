@@ -1,6 +1,7 @@
 import {
     Badge,
     Button,
+    CircularProgress,
     makeStyles,
     Theme,
     Tooltip,
@@ -34,10 +35,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         "&:hover": {
             backgroundColor: alpha(red[500], 0.2),
         },
-        "& svg" : {
-            width: `1.75em`,
-            height: `1.75em`,
-        },
+        position: `relative`,
     },
     active: {
         color: `inherit`,
@@ -73,6 +71,13 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     badgeContent: {
         fontSize: `1em`,
+    },
+    loadingSpinner: {
+        position: `absolute`,
+    },
+    icon: {
+        width: `1.75em`,
+        height: `1.75em`,
     },
 }));
 
@@ -116,10 +121,15 @@ function ToolbarItemMicrophone (props: ToolbarItemMicrophoneProps) {
                     <Button
                         disableRipple
                         id="toolbar-item-microphone"
-                        className={clsx(classes.root, disabled && classes.disabled, active && classes.active, locked && classes.locked)}
+                        className={clsx(classes.root, (disabled || microphone.setSending.loading) && classes.disabled, active && classes.active, locked && classes.locked)}
                         onClick={onClick}
                     >
-                        {active ? <MicFillIcon /> : <MicDisabledIcon />}
+                        {active ? <MicFillIcon className={classes.icon} /> : <MicDisabledIcon className={classes.icon} />}
+                        {microphone.setSending.loading && <CircularProgress
+                            className={classes.loadingSpinner}
+                            size={25}
+                            color="inherit"
+                        />}
                     </Button>
                 </Tooltip>
             </div>
