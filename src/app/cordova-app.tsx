@@ -1,4 +1,4 @@
-import { LandingPage } from "./pages/landing/landingPage";
+import { OnBoardingPage } from "./pages/on-boarding/onBoardingPage";
 import { useAuthenticationContext } from "@/app/context-provider/authentication-context";
 import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
 import { usePopupContext } from "@/app/context-provider/popup-context";
@@ -171,8 +171,8 @@ export function CordovaApp ({ history }: {
                         render={() => <Auth useInAppBrowser />}
                     />
                     <Route
-                        path="/landing"
-                        component={LandingPage}
+                        path="/on-boarding"
+                        component={OnBoardingPage}
                     />
                     <UserRoute
                         path="/"

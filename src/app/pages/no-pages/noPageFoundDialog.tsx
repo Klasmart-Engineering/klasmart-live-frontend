@@ -1,6 +1,6 @@
 import { useAuthenticationContext } from "@/app/context-provider/authentication-context";
 import {
-    completeParentalGate,
+    isShowOnBoardingState,
     shouldClearCookieState,
 } from "@/app/model/appModel";
 import BackIcon from "@/assets/img/back_icon.svg";
@@ -54,7 +54,7 @@ export function NoPageFoundDialog ({
     const { actions } = useAuthenticationContext();
     const classes = useStyles();
     const setShouldClearCookie = useSetRecoilState(shouldClearCookieState);
-    const setCompletedParentalChallenge = useSetRecoilState(completeParentalGate);
+    const setShowOnBoarding = useSetRecoilState(isShowOnBoardingState);
     return (
         <Dialog
             fullScreen
@@ -101,7 +101,7 @@ export function NoPageFoundDialog ({
                             onClick={() => {
                                 actions?.signOut();
                                 setShouldClearCookie(true);
-                                setCompletedParentalChallenge(false);
+                                setShowOnBoarding(true);
                             }}>
                             <img
                                 alt="No Organization Found Back"

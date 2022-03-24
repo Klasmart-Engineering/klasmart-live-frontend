@@ -110,11 +110,6 @@ export const shouldShowNoStudentRoleState = atom({
     default: false,
 });
 
-export const completeParentalGate = atom<boolean>({
-    key: `completeParentalGate`,
-    default: false,
-});
-
 export const menuOpenState = atom({
     key: `menuOpenState`,
     default: false,
@@ -133,4 +128,9 @@ export const showedUpgradeDevicePopupState = atom({
 export const isKeyboardVisibleState = atom({
     key: `isKeyboardVisible`,
     default: false,
+});
+
+export const isShowOnBoardingState = atom({
+    key: `isShowOnBoardingState`,
+    default: true,
 });

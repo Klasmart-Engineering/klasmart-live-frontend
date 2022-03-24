@@ -9,7 +9,7 @@ import {
     useSelectedUserValue,
 } from "@/app/data/user/atom";
 import {
-    completeParentalGate,
+    isShowOnBoardingState,
     shouldClearCookieState,
     shouldShowNoOrgProfileState,
     shouldShowNoStudentRoleState,
@@ -37,7 +37,7 @@ export default function SchedulePage () {
     const { addOnBack, removeOnBack } = useCordovaSystemContext();
     const { actions } = useAuthenticationContext();
     const setShouldClearCookie = useSetRecoilState(shouldClearCookieState);
-    const setCompletedParentalChallenge = useSetRecoilState(completeParentalGate);
+    const setShowOnBoarding = useSetRecoilState(isShowOnBoardingState);
     const NO_PAGE_FOUND_BACK_BUTTON_CLICKED_ID = `noPageFoundBackButtonClickedID`;
 
     const SelectedScheduleTabContent = useCallback((scheduleTab: ScheduleAppBarItem) => {
@@ -50,7 +50,7 @@ export default function SchedulePage () {
     const onNoOrgBackButtonClicked = () => {
         actions?.signOut();
         setShouldClearCookie(true);
-        setCompletedParentalChallenge(false);
+        setShowOnBoarding(true);
     };
 
     useEffect(() => {

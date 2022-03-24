@@ -129,6 +129,7 @@
     "lodash": "4.17.21",
     "mediasoup-client": "^3.6.50",
     "node-source-han-sans-sc": "^1.1.0-2.001R",
+    "nuka-carousel": "^4.8.4",
     "pdfjs-dist": "git+git@bitbucket.org:calmisland/pdfjs-dist",
     "query-string": "^6.13.0",
     "react": "17.0.2",

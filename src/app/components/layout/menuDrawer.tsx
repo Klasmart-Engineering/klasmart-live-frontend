@@ -2,8 +2,8 @@ import DialogParentalLock from "@/app/components/ParentalLock";
 import { useAuthenticationContext } from "@/app/context-provider/authentication-context";
 import { useSelectedOrganizationValue } from "@/app/data/user/atom";
 import {
-    completeParentalGate,
     dialogsState,
+    isShowOnBoardingState,
     menuOpenState,
     shouldClearCookieState,
 } from "@/app/model/appModel";
@@ -97,7 +97,7 @@ export default function MenuDrawer () {
     const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
     const [ isMenuOpen, setMenuOpen ] = useRecoilState(menuOpenState);
     const setShouldClearCookie = useSetRecoilState(shouldClearCookieState);
-    const setCompletedParentalChallenge = useSetRecoilState(completeParentalGate);
+    const setShowOnBoarding = useSetRecoilState(isShowOnBoardingState);
 
     const menuArray = [
         {
@@ -261,7 +261,7 @@ export default function MenuDrawer () {
                             onClick={() => {
                                 actions?.signOut();
                                 setShouldClearCookie(true);
-                                setCompletedParentalChallenge(false);
+                                setShowOnBoarding(true);
                             }}
                         >
                             <Typography

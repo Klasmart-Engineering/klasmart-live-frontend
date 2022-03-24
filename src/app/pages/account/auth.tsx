@@ -3,7 +3,7 @@ import { DevSelectRegion } from "../../components/auth/devSelectRegion";
 import LoadingWithRetry from "../../components/loadingWithRetry";
 import { useAuthenticationContext } from "../../context-provider/authentication-context";
 import {
-    completeParentalGate,
+    isShowOnBoardingState,
     localeState,
     OrientationType,
 } from "../../model/appModel";
@@ -47,7 +47,7 @@ export function Auth ({ useInAppBrowser }: Props) {
     const locale = useRecoilValue(localeState);
 
     const authEndpoint = useHttpEndpoint(`auth`);
-    const completedParentalChallenge =  useRecoilValue(completeParentalGate);
+    const isShowOnBoarding =  useRecoilValue(isShowOnBoardingState);
     const {
         loading,
         authenticated,
@@ -86,7 +86,7 @@ export function Auth ({ useInAppBrowser }: Props) {
         lockOrientation(OrientationType.PORTRAIT);
         if (!useInAppBrowser) return;
 
-        if (!completedParentalChallenge) return;
+        if (isShowOnBoarding) return;
 
         const cordova = (window as any).cordova;
         if (!cordova) return;
@@ -99,13 +99,13 @@ export function Auth ({ useInAppBrowser }: Props) {
         key,
         authenticated,
         loading,
-        completedParentalChallenge,
+        isShowOnBoarding,
     ]);
 
     if(loading) return null;
 
-    if (!loading && !authenticated && !completedParentalChallenge) {
-        return(<Redirect to="/landing" />);
+    if (!loading && !authenticated && isShowOnBoarding) {
+        return(<Redirect to="/on-boarding" />);
     }
 
     if(authenticated){
