@@ -6,8 +6,8 @@ set -Eeuo pipefail
 trap cleanup SIGINT SIGTERM ERR EXIT
 
 # CHANGE ALLOWED TARGETS to deploy to a new region/environment combination
-allowed_target_environment=("stage" "prod" "alpha" "sso" "loadtest" "onboarding")
-allowed_target_region=("in" "pk" "global" "uk" "lk" "th")
+allowed_target_environment=("stage" "prod" "alpha" "sso" "loadtest" "onboarding" "nextgen" "showroom" "uat")
+allowed_target_region=("in" "pk" "global" "uk" "lk" "th" "mb")
 
 
 script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd -P)
@@ -129,6 +129,18 @@ elif [ $env == "alpha" ] && [ $region == "global"  ]
 then
   S3_ENDPOINT=s3://klglobal-alpha-live
   CLOUDFRONT_ID=E4IZSLBB2S52A
+elif [ $env == "nextgen" ] && [ $region == "global"  ]
+then
+  S3_ENDPOINT=s3://klglobal-nextgen-live
+  CLOUDFRONT_ID=EZT0U923U236W
+elif [ $env == "showroom" ] && [ $region == "global"  ]
+then
+  S3_ENDPOINT=s3://klglobal-showroom-live
+  CLOUDFRONT_ID=EIOE4O4AIHX92
+elif [ $env == "uat" ] && [ $region == "mb"  ]
+then
+  S3_ENDPOINT=s3://klmumbai-uat-live
+  CLOUDFRONT_ID=E1QZ86KG3WIAMN
 fi
 
 # script logic here
@@ -149,6 +161,9 @@ msg "npm build for ${env} in region ${region}"
 ## to do get npm working in docker while accessing a private bitbucket repo.
 #docker  run  -it --name cmsBuilder --rm --mount type=bind,source="$(pwd)",target=/app -w /app node:14 npm run build
 npm run build
+
+Version="$(git describe --tags)" Tag="$(git rev-parse HEAD | cut -c1-7)"; jq --arg version "$Version" --arg tag "$Tag" "{\"Version\":\"$Version\",\"Commit\":\"$Tag\"}" --raw-output --null-input > dist/version.txt
+
 
 msg "----------------------"
 msg "${GREEN}syncing current latest to backup${NOFORMAT}"
