@@ -90,19 +90,19 @@ export const getIdStudyType = (studyClass?: GetScheduleByIdResponse) => {
     return `button_go_study`;
 };
 
- export const getTitleReview = (studySchedule: SchedulesTimeViewListItem | GetScheduleByIdResponse, className: string, intl: IntlShape) => {
-        const value = className + ` `
+export const getTitleReview = (studySchedule: SchedulesTimeViewListItem | GetScheduleByIdResponse, className: string, intl: IntlShape) => {
+    const value = className + ` `
             + `${formatDueDayMonth(fromSecondsToMilliseconds(studySchedule?.content_start_at ?? 0), intl)}`
             + `~`
             + `${formatDueDayMonth(fromSecondsToMilliseconds(studySchedule?.content_end_at ?? 0), intl)}`;
 
-        return <FormattedMessage
-            id="schedule_review_class_name"
-            values={{
-                value,
-            }}/>;
- };
-    
+    return <FormattedMessage
+        id="schedule_review_class_name"
+        values={{
+            value,
+        }}/>;
+};
+
 export const StudyAssessmentStatus = (schedule: SchedulesTimeViewListItem) => {
     if (!schedule.is_home_fun) return; // currently status is only accurate for home fun studies
     switch (schedule.assessment_status) {

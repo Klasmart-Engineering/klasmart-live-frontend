@@ -1,4 +1,7 @@
-import { getIdStudyType, getTitleReview } from "../../shared";
+import {
+    getIdStudyType,
+    getTitleReview,
+} from "../../shared";
 import DialogParentalLock from "@/app/components/ParentalLock";
 import AttachmentDownloadButton from "@/app/components/Schedule/Attachment/DownloadButton";
 import AttachmentNameLink from "@/app/components/Schedule/Attachment/NameLink";
@@ -6,9 +9,7 @@ import BaseScheduleDialog from "@/app/components/Schedule/BaseDialog";
 import { useSelectedOrganizationValue } from "@/app/data/user/atom";
 import { dialogsState } from "@/app/model/appModel";
 import { ScheduleLiveTokenType } from "@/app/services/cms/ISchedulerService";
-import {
-    formatDateTimeMillis,
-} from "@/app/utils/dateTimeUtils";
+import { formatDateTimeMillis } from "@/app/utils/dateTimeUtils";
 import {
     generateDescriptionHasHyperLink,
     openHyperLink,
@@ -32,9 +33,7 @@ import React,
     useEffect,
     useState,
 } from "react";
-import {
-    useIntl,
-} from "react-intl";
+import { useIntl } from "react-intl";
 import { useHistory } from "react-router";
 import { useRecoilState } from "recoil";
 
