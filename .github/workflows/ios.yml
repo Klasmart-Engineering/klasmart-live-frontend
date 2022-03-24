@@ -50,7 +50,7 @@ jobs:
           WEBRTC_DEVICE_HANDLER_NAME: Safari12
           CUSTOM_UA: cordovaios
           IS_CORDOVA_BUILD: "true"
-          NPM_GITHUB_TOKEN: ${{secrets.PAT_NPM_GITHUB_REPO}}
+          NPM_GITHUB_TOKEN: ${{secrets.PACKAGES_TOKEN}}
         run: |
           sudo chown -R 501:20 "/Users/runner/.npm"
           npm ci
