@@ -9,14 +9,6 @@ export function formatDueDateMillis (dueDateMillis: number, intl: IntlShape) {
     return date;
 }
 
-export function formatDueDayMonth (dueDateMillis: number, intl: IntlShape) {
-    const date = intl.formatDate(dueDateMillis, {
-        day: `numeric`,
-        month: `short`,
-    });
-    return date;
-}
-
 export function formatStartEndDateTimeMillis (startTimeMillis: number, endTimeMillis: number, intl: IntlShape) {
     const date = intl.formatDate(startTimeMillis, {
         day: `numeric`,

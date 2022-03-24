@@ -1,10 +1,8 @@
 import { AssessmentStatusType } from "@/app/services/cms/IAssessmentService";
-import { formatDueDayMonth } from "@/app/utils/dateTimeUtils";
 import HomeFunStudyIcon from "@/assets/img/schedule-icon/home_fun_study.svg";
 import ReviewIcon from "@/assets/img/schedule-icon/review_icon.svg";
 import StudyIcon from "@/assets/img/schedule-icon/study_icon.svg";
 import StyledIcon from "@/components/styled/icon";
-import { fromSecondsToMilliseconds } from "@/utils/utils";
 import {
     GetScheduleByIdResponse,
     SchedulesTimeViewListItem,
@@ -88,19 +86,6 @@ export const getIdStudyType = (studyClass?: GetScheduleByIdResponse) => {
     if (studyClass?.is_home_fun && studyClass?.complete_assessment) return `scheduleDetails.viewFeedback`;
 
     return `button_go_study`;
-};
-
-export const getTitleReview = (studySchedule: SchedulesTimeViewListItem | GetScheduleByIdResponse, className: string, intl: IntlShape) => {
-    const value = className + ` `
-            + `${formatDueDayMonth(fromSecondsToMilliseconds(studySchedule?.content_start_at ?? 0), intl)}`
-            + `~`
-            + `${formatDueDayMonth(fromSecondsToMilliseconds(studySchedule?.content_end_at ?? 0), intl)}`;
-
-    return <FormattedMessage
-        id="schedule_review_class_name"
-        values={{
-            value,
-        }}/>;
 };
 
 export const StudyAssessmentStatus = (schedule: SchedulesTimeViewListItem) => {

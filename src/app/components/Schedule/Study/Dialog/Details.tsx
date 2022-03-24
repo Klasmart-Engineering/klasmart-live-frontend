@@ -1,7 +1,4 @@
-import {
-    getIdStudyType,
-    getTitleReview,
-} from "../../shared";
+import { getIdStudyType } from "../../shared";
 import DialogParentalLock from "@/app/components/ParentalLock";
 import AttachmentDownloadButton from "@/app/components/Schedule/Attachment/DownloadButton";
 import AttachmentNameLink from "@/app/components/Schedule/Attachment/NameLink";
@@ -143,7 +140,7 @@ export default function StudyDetailsDialog (props: Props) {
                 key={`BaseScheduleDialog`}
                 color={BG_COLOR_GO_STUDY_PRIMARY}
                 open={open}
-                title={scheduleData?.is_review ? getTitleReview(scheduleData, scheduleData.class.name, intl) : scheduleData?.title ?? ``}
+                title={scheduleData?.title ?? ``}
                 contentItems={[
                     {
                         header: intl.formatMessage({

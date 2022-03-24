@@ -8,7 +8,6 @@ import NoSchedule,
 import {
     getIconStudyType,
     getStudyType,
-    getTitleReview,
     StudyAssessmentStatus,
 } from "@/app/components/Schedule/shared";
 import StudyDetailsDialog from "@/app/components/Schedule/Study/Dialog/Details";
@@ -267,7 +266,7 @@ export default function StudyScheduleList () {
                                             src={getIconStudyType(studySchedule)}
                                         />
                                     )}
-                                    title={studySchedule.is_review ? getTitleReview(studySchedule, studySchedule.title, intl) : studySchedule.title}
+                                    title={studySchedule.title}
                                     subtitle={getStudyType(studySchedule, intl)}
                                     trailing={StudyAssessmentStatus(studySchedule)}
                                     onClick={() => setStudyDetailOpen(studySchedule.id)}
