@@ -1,3 +1,4 @@
+import { THEME_COLOR_BACKGROUND_DEFAULT } from "@/config";
 import { useSendMessageMutation } from "@/data/live/mutations/useSendMessageMutation";
 import {
     IconButton,
@@ -8,8 +9,12 @@ import {
     Tooltip,
 } from "@material-ui/core";
 import { SendPlane as SendIcon } from "@styled-icons/remix-fill/SendPlane";
+import clsx from "clsx";
 import React,
-{ useState } from "react";
+{
+    useMemo,
+    useState,
+} from "react";
 import { useIntl } from "react-intl";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -19,6 +24,10 @@ const useStyles = makeStyles((theme: Theme) => ({
         alignItems: `center`,
         borderRadius: 10,
         background: theme.palette.grey[200],
+        border: `2px solid transparent`,
+    },
+    rootFocused:{
+        borderColor: THEME_COLOR_BACKGROUND_DEFAULT,
     },
     rootInput:{
         flex: 1,
@@ -43,6 +52,7 @@ function SendMessage () {
     const intl = useIntl();
 
     const [ message, setMessage ] = useState(``);
+    const [ formFocus, setFormFocus ] = useState(false);
     const sendMessage = useSendMessageMutation();
 
     const submitMessage = (e: React.FormEvent<HTMLDivElement>) => {
@@ -51,14 +61,26 @@ function SendMessage () {
         setMessage(``);
     };
 
+    const inputRef = React.useRef<HTMLInputElement>();
+
+    const eventHandlers = useMemo(() => ({
+        onFocus: () => setFormFocus(true),
+        onBlur: () => setFormFocus(false),
+        onClick: () => inputRef.current?.focus(),
+    }), []);
+
     return (
         <Paper
             component="form"
-            className={classes.root}
+            className={clsx(classes.root, {
+                [classes.rootFocused]: formFocus,
+            })}
             elevation={0}
+            {...eventHandlers}
             onSubmit={submitMessage}
         >
             <InputBase
+                inputRef={inputRef}
                 placeholder={intl.formatMessage({
                     id: `chat_messages_write_placeholder`,
                 })}

@@ -1,5 +1,6 @@
 import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
 import { isKeyboardVisibleState } from "@/app/model/appModel";
+import { THEME_COLOR_BACKGROUND_DEFAULT } from "@/config";
 import { useSaveFeedbackMutation } from "@/data/live/mutations/useSaveFeedbackMutation";
 import { useSessionContext } from "@/providers/session-context";
 import {
@@ -80,7 +81,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     activeChip:{
         color:` #406ba7`,
-        border: `1px solid #cfe1f9`,
+        border: `1px solid ${THEME_COLOR_BACKGROUND_DEFAULT}`,
         background: `#e6f1ff !important`,
     },
     inputField:{

@@ -1,5 +1,6 @@
 
 import LanguageSelect from "@/components/languageSelect";
+import { THEME_COLOR_BACKGROUND_DEFAULT } from "@/config";
 import {
     Grid,
     makeStyles,
@@ -16,7 +17,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     head:{
         padding: theme.spacing(2),
-        borderBottom: `1px solid #cfe1f9`,
+        borderBottom: `1px solid ${THEME_COLOR_BACKGROUND_DEFAULT}`,
         textAlign: `center`,
     },
     body:{

@@ -101,7 +101,7 @@ export function themeProvider (languageCode: string, themeMode: string) {
                 },
             },
             indicator: {
-                backgroundColor: `#cfe1f9`,
+                backgroundColor: THEME_COLOR_BACKGROUND_DEFAULT,
                 height: `100%`,
                 borderRadius: 40,
             },
