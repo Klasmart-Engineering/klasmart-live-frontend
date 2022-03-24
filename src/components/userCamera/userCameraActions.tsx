@@ -12,7 +12,6 @@ import {
 import { useSynchronizedState } from "@/whiteboard/context-providers/SynchronizedStateProvider";
 import {
     Box,
-    Button,
     IconButton,
     makeStyles,
     Menu,
@@ -147,12 +146,12 @@ const UserCameraActions = ({
                         className={classes.iconsContainer}>
                         { mic.hasLocation && hasPermission && <ToggleMic
                             track={mic}
-                            local={!isTeacher}
+                            local={!isTeacher || isSelf}
                         />
                         }
                         { camera.hasLocation && hasPermission && <ToggleCamera
                             track={camera}
-                            local={!isTeacher}
+                            local={!isTeacher || isSelf}
                         />
                         }
                         {!isSelf && isTeacher && (
@@ -233,7 +232,7 @@ const ToggleCamera: VoidFunctionComponent<{
     const everyone = !local || track.isMine;
     const toggleVideoState = () => local ? toggleTrackLocally(track) : toggleTrackGlobally(track);
     const title = intl.formatMessage({
-        id: `turn_${isPaused?`on`:`off`}_camera_for_${everyone?`everyone`:`me`}`,
+        id: `camera.${everyone?`global`:`local`}.${isPaused?`enable`:`disable`}`,
     });
 
     return (
@@ -243,7 +242,7 @@ const ToggleCamera: VoidFunctionComponent<{
                 className={classes.iconButton}
                 onClick={toggleVideoState}
             >
-                {isPaused ? <CameraVideoFillIcon size="0.7em"/> : <CameraDisabledIcon size="0.7em"/>}
+                {!isPaused ? <CameraVideoFillIcon size="0.7em"/> : <CameraDisabledIcon size="0.7em"/>}
             </IconButton>
         </Tooltip>
     );
@@ -259,17 +258,16 @@ const ToggleMic: VoidFunctionComponent<{
     const everyone = !local || track.isMine;
     const toggleAudioState = () => local ? toggleTrackLocally(track) : toggleTrackGlobally(track);
     const title = intl.formatMessage({
-        id: `turn_${isPaused?`on`:`off`}_microphone_for_${everyone?`everyone`:`me`}`,
+        id: `microphone.${everyone?`global`:`local`}.${isPaused?`enable`:`disable`}`,
     });
     return (
         <Tooltip title={title}>
-
             <IconButton
                 aria-label="Microphone"
                 className={classes.iconButton}
                 onClick={toggleAudioState}
             >
-                {isPaused ? <MicFillIcon size="0.7em"/> : <MicDisabledIcon size="0.7em"/>}
+                {!isPaused ? <MicFillIcon size="0.7em"/> : <MicDisabledIcon size="0.7em"/>}
             </IconButton>
         </Tooltip>
     );
