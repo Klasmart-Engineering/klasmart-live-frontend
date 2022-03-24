@@ -13,11 +13,13 @@ import {
     Theme,
 } from "@material-ui/core";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
+import { useToolbarContext } from "kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
 import { WhiteboardCanvas } from "kidsloop-canvas/lib/domain/whiteboard/WhiteboardCanvas";
 import React,
 {
     useEffect,
     useMemo,
+    useRef,
     useState,
 } from "react";
 import { useRecoilValue } from "recoil";
@@ -69,6 +71,7 @@ export function BaseWhiteboard (props: Props) {
             localDisplay,
         },
     } = useSynchronizedState();
+    const { actions: { selectColorByValue } } = useToolbarContext();
     const classes = useStyles();
     const { sessionId } = useSessionContext();
     const canvasUserId = useMemo(() => group ? `${sessionId}:${group}` : sessionId, [ sessionId, group ]);
@@ -94,6 +97,7 @@ export function BaseWhiteboard (props: Props) {
         hasControls,
         permissions.allowCreateShapes,
     ]);
+    const canvasChildRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if (initialSize.height || initialSize.width || !width || !height) return;
@@ -102,6 +106,12 @@ export function BaseWhiteboard (props: Props) {
             height,
         });
     }, [ width, height ]);
+
+    useEffect(() => {
+        if (!canvasDrawColor) return;
+
+        selectColorByValue(canvasDrawColor);
+    }, [ canvasChildRef?.current ]);
 
     const canvasStyle: CSSProperties = {
         zIndex: whiteboard,
@@ -127,7 +137,13 @@ export function BaseWhiteboard (props: Props) {
                     pixelHeight={initialSize.height}
                     display={displayWhiteboard}
                     scaleMode="ScaleToFit"
-                />
+                >
+                    <div
+                        ref={canvasChildRef}
+                        style={{
+                            display: `none`,
+                        }} />
+                </WhiteboardCanvas>
             </div>
         </StyledCursor>
     );
