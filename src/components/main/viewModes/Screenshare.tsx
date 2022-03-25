@@ -73,7 +73,7 @@ const Screenshare: VoidFunctionComponent<{
 
 export default Screenshare;
 
-const ScreensharePresent: VoidFunctionComponent<{}>  = () => {
+const ScreensharePresent: VoidFunctionComponent  = () => {
     const classes = useStyles();
 
     const setInteractiveMode = useSetRecoilState(interactiveModeState);
@@ -93,6 +93,13 @@ const ScreensharePresent: VoidFunctionComponent<{}>  = () => {
         setInteractiveMode(InteractiveMode.ONSTAGE);
         setIsGlobalActionsOpen(false);
     };
+
+    useEffect(() => {
+        if (!screenshare.track) return;
+        screenshare.track.onended = () => {
+            stopScreenshare();
+        };
+    }, [ screenshare.track ]);
 
     const stream = useMediaStreamTracks(screenshare.track);
     return(
