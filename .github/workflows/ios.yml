@@ -76,11 +76,8 @@ jobs:
         run: |
           eval $(bundle exec fastlane spaceauth -u build-machine@calmid.com 2>/dev/null | grep "export FASTLANE_SESSION")
           bundle exec fastlane run opt_out_usage
-          bundle exec fastlane precheck --verbose
           bundle exec fastlane ios signing
           bundle exec fastlane ios build
           bundle exec fastlane ios publish
 
-# this seems to hang the pipeline
-# yes | bundle exec fastlane spaceauth -u build-machine@calmid.com
-# export FASTLANE_SESSION=$(pbpaste)
+# bundle exec fastlane precheck --verbose
