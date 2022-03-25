@@ -18,8 +18,24 @@ platform :ios do
   desc "Sync signing"
   lane :signing do
     setup_ci if ENV['CI']
+    if is_ci
+      create_keychain(
+        name: ENV['MATCH_KEYCHAIN_NAME'],
+        password: ENV["MATCH_KEYCHAIN_PASSWORD"],
+        default_keychain: true,
+        unlock: true,
+        timeout: 3600,
+        lock_when_sleeps: false
+      )
+    end
     match(type: "adhoc" , readonly: is_ci)
-    match(type: "appstore" , readonly: is_ci)
+    match(
+      type: "appstore",
+      readonly: is_ci,
+      keychain_name: ENV['MATCH_KEYCHAIN_NAME'],
+      keychain_password: ENV["MATCH_KEYCHAIN_PASSWORD"],
+    )
+    # match(type: "appstore" , readonly: is_ci)
 
     mapping = Actions.lane_context[SharedValues::MATCH_PROVISIONING_PROFILE_MAPPING]
     update_code_signing_settings(
