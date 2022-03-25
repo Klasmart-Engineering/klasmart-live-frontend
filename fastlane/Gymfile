@@ -23,5 +23,5 @@ project("./platforms/ios/KidsLoop.xcodeproj")
 output_directory("./build/ios")
 output_name("KidsLoop")
 
-export_method("development")
+export_method("app-store")
 export_team_id("H5LAQS44DF")
