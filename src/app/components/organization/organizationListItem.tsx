@@ -1,31 +1,61 @@
 import { ReadOrganizationDto } from "@/app/data/user/dto/readOrganizationDto";
 import {
-    Divider,
+    COLOR_ORG_ICON_DEFAULT,
+    THEME_COLOR_INACTIVE_BUTTON,
+    THEME_COLOR_PRIMARY_SELECT_DIALOG,
+} from "@/config";
+import {
     ListItem,
     ListItemAvatar,
     ListItemIcon,
     ListItemText,
+    useMediaQuery,
+    useTheme,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { Check as CheckIcon } from "@styled-icons/bootstrap/Check";
+import { KeyboardArrowRight as ArrowRight } from "@styled-icons/material-rounded/KeyboardArrowRight";
 import clsx from "clsx";
 import { OrganizationAvatar } from "kidsloop-px";
 import React from "react";
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        paddingTop: theme.spacing(2),
-        paddingBottom: theme.spacing(2),
+        padding: theme.spacing(3),
+        paddingRight: 0,
+        borderRadius: theme.spacing(2),
+        backgroundColor: theme.palette.common.white,
+        marginBottom: theme.spacing(1),
+        "&:hover":{
+            backgroundColor: theme.palette.common.white,
+        },
+        [theme.breakpoints.up(`sm`)]: {
+            marginBottom: theme.spacing(3),
+            padding: theme.spacing(3),
+        },
+    },
+    listItem: {
+        marginLeft: theme.spacing(2),
+        color: THEME_COLOR_INACTIVE_BUTTON,
     },
     listItemSelected: {
+        color: THEME_COLOR_PRIMARY_SELECT_DIALOG,
         fontWeight: theme.typography.fontWeightBold as number,
     },
-    divider: {
-        margin: theme.spacing(0, 2),
-    },
-    checkIcon: {
-        color: theme.palette.success.main,
+    icon: {
+        color: COLOR_ORG_ICON_DEFAULT,
         margin: `0 auto`,
+    },
+    iconSelected: {
+        color: THEME_COLOR_PRIMARY_SELECT_DIALOG,
+    },
+    orgAvatar: {
+        borderRadius: `${theme.spacing(1.5)}px !important`,
+
+        [theme.breakpoints.down(`xs`)]: {
+            width: `50px !important`,
+            height: `50px !important`,
+            fontSize: `12px !important`,
+        },
     },
 }));
 interface Props {
@@ -38,6 +68,8 @@ export const OrganizationListItem: React.FC<Props> = ({
     organization, isSelected, onClick,
 }) => {
     const classes = useStyles();
+    const theme = useTheme();
+    const isSmUp = useMediaQuery(theme.breakpoints.up(`sm`));
 
     return (
         <>
@@ -47,25 +79,28 @@ export const OrganizationListItem: React.FC<Props> = ({
                 onClick={() => onClick?.(organization)}
             >
                 <ListItemAvatar>
-                    <OrganizationAvatar name={organization.organization_name ?? ``} />
+                    <OrganizationAvatar
+                        size="large"
+                        name={organization.organization_name ?? ``}
+                        className={classes.orgAvatar} />
                 </ListItemAvatar>
                 <ListItemText
                     primary={organization.organization_name}
                     primaryTypographyProps={{
-                        className: clsx({
+                        className: clsx(classes.listItem, {
                             [classes.listItemSelected] : isSelected,
                         }),
+                        variant: isSmUp ? `h5` : `h6`,
                     }}
                 />
-                {isSelected &&
-                    <ListItemIcon>
-                        <CheckIcon
-                            className={classes.checkIcon}
-                            size={36} />
-                    </ListItemIcon>
-                }
+                <ListItemIcon>
+                    <ArrowRight
+                        className={clsx(classes.icon, {
+                            [classes.iconSelected]: isSelected,
+                        })}
+                        size={42} />
+                </ListItemIcon>
             </ListItem>
-            <Divider className={classes.divider} />
         </>
     );
 };

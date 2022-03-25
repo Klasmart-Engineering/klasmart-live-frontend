@@ -5,22 +5,49 @@ import { useSelectedOrganization } from "@/app/data/user/atom";
 import { EntityStatus } from "@/app/data/user/dto/sharedDto";
 import { useMeQuery } from "@/app/data/user/queries/meQuery";
 import { dialogsState } from "@/app/model/appModel";
-import Dialog from '@material-ui/core/Dialog';
-import DialogContent from "@material-ui/core/DialogContent";
-import { makeStyles } from '@material-ui/core/styles';
+import {
+    THEME_BACKGROUND_SELECT_DIALOG,
+    THEME_COLOR_PRIMARY_SELECT_DIALOG,
+} from "@/config";
+import {
+    Dialog,
+    DialogContent,
+    Grid,
+    makeStyles,
+    Typography,
+    useMediaQuery,
+    useTheme,
+} from "@material-ui/core";
 import React,
 {
     useEffect,
     useMemo,
     useState,
 } from "react";
-import { useIntl } from "react-intl";
+import {
+    FormattedMessage,
+    useIntl,
+} from "react-intl";
 import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme) => ({
+    fullWidth: {
+        width: `100%`,
+    },
     content: {
-        paddingLeft: theme.spacing(2),
-        paddingRight: theme.spacing(2),
+        padding: theme.spacing(5, 2, 2),
+        backgroundColor: THEME_BACKGROUND_SELECT_DIALOG,
+
+        [theme.breakpoints.up(`sm`)]: {
+            padding: theme.spacing(8, 4, 2),
+        },
+    },
+    header: {
+        fontWeight: theme.typography.fontWeightBold as number,
+        color: THEME_COLOR_PRIMARY_SELECT_DIALOG,
+        paddingBottom: theme.spacing(4),
+        textAlign: `center`,
+        lineHeight: 1.5,
     },
 }));
 
@@ -105,9 +132,11 @@ export function useShouldSelectOrganization () {
 export function SelectOrgDialog () {
     const classes = useStyles();
     const intl = useIntl();
+    const theme = useTheme();
     const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
     const [ selectedOrganization, setSelectedOrganization ] = useSelectedOrganization();
     const { data: meData } = useMeQuery();
+    const isSmUp = useMediaQuery(theme.breakpoints.up(`sm`));
 
     const activeOrganizationMemberships = useMemo(() => meData?.me?.organizationsWithPermission.filter((membership) => membership.status === EntityStatus.ACTIVE) ?? [], [ meData ]);
     const activeOrganizations = useMemo(() => activeOrganizationMemberships.map((membership) => membership.organization), [ activeOrganizationMemberships ]);
@@ -126,16 +155,39 @@ export function SelectOrgDialog () {
         >
             <AppBar
                 title={intl.formatMessage({
-                    id: `account_selectOrg_whichOrg`,
+                    id: `account_selectOrg`,
+                    defaultMessage: `Select an Organization`,
                 })}
                 leading={<BackButton onClick={handleBackClick} />}
             />
             <DialogContent className={classes.content}>
-                <OrganizationList
-                    organizations={activeOrganizations}
-                    selectedOrganization={selectedOrganization}
-                    onClick={org => setSelectedOrganization(org)}
-                />
+                <Grid
+                    container
+                    alignItems="center"
+                    justifyContent="flex-start"
+                    direction="column">
+                    <Grid
+                        item
+                        xs={8}
+                        sm={6}>
+                        <Typography
+                            variant={isSmUp ? `h4` : `h5`}
+                            className={classes.header}>
+                            <FormattedMessage
+                                id="account_selectOrg_whichOrg"
+                                defaultMessage="Which organization are you studying with?" />
+                        </Typography>
+                    </Grid>
+                    <Grid
+                        item
+                        className={classes.fullWidth}>
+                        <OrganizationList
+                            organizations={activeOrganizations}
+                            selectedOrganization={selectedOrganization}
+                            onClick={org => setSelectedOrganization(org)}
+                        />
+                    </Grid>
+                </Grid>
             </DialogContent>
         </Dialog>
     );
