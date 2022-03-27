@@ -19,7 +19,7 @@ import {
     File as FileIcon,
     Image as ImageIcon,
 } from "@styled-icons/feather";
-import { useSnackbar } from "kidsloop-px";
+import { useSnackbar } from "@kl-engineering/kidsloop-px";
 import React,
 {
     useContext,

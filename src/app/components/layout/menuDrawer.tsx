@@ -31,7 +31,7 @@ import { Close as CloseIcon } from "@styled-icons/material/Close";
 import { Settings as SettingsIcon } from "@styled-icons/material/Settings";
 import { PrivacyTip as PolicyIcon } from "@styled-icons/material-outlined/PrivacyTip";
 import clsx from "clsx";
-import { OrganizationAvatar } from "kidsloop-px";
+import { OrganizationAvatar } from "@kl-engineering/kidsloop-px";
 import React,
 { useEffect } from "react";
 import { FormattedMessage } from "react-intl";

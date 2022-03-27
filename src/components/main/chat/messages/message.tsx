@@ -1,4 +1,5 @@
 import { ChatMessage } from "@/data/live/state/useMessages";
+import { UserAvatar } from "@kl-engineering/kidsloop-px";
 import {
     Grid,
     makeStyles,
@@ -10,7 +11,6 @@ import amber from "@material-ui/core/colors/amber";
 import { TimeFive as TimestampIcon } from "@styled-icons/boxicons-regular/TimeFive";
 import { HatGraduation as TeacherIcon } from "@styled-icons/fluentui-system-filled/HatGraduation";
 import clsx from "clsx";
-import { UserAvatar } from "kidsloop-px";
 import React,
 { FC } from "react";
 import {

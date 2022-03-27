@@ -4,7 +4,7 @@ import {
     REQUEST_RETRY_COUNT_MAX,
 } from "@/config";
 import { useHttpEndpoint } from "@/providers/region-select-context";
-import { CmsApiClientProvider as KLCmsApiClientProvider } from "@kidsloop/cms-api-client";
+import { CmsApiClientProvider as KLCmsApiClientProvider } from "@kl-engineering/cms-api-client";
 import React,
 { useCallback } from "react";
 

@@ -6,7 +6,7 @@ import StyledIcon from "@/components/styled/icon";
 import {
     GetScheduleByIdResponse,
     SchedulesTimeViewListItem,
-} from "@kidsloop/cms-api-client/dist/api/schedule";
+} from "@kl-engineering/cms-api-client/dist/api/schedule";
 import { Typography } from "@material-ui/core";
 import { Envelope as AssessmentCompleteIcon } from "@styled-icons/fa-regular/Envelope";
 import React from "react";

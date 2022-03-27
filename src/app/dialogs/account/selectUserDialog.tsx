@@ -16,11 +16,11 @@ import {
     shouldShowNoOrgProfileState,
     shouldShowNoStudentRoleState,
 } from "@/app/model/appModel";
-import { useQueryClient } from "@kidsloop/cms-api-client";
+import { useQueryClient } from "@kl-engineering/cms-api-client";
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from "@material-ui/core/DialogContent";
 import { makeStyles } from '@material-ui/core/styles';
-import { useSnackbar } from "kidsloop-px";
+import { useSnackbar } from "@kl-engineering/kidsloop-px";
 import React,
 {
     useCallback,

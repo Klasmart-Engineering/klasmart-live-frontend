@@ -30,7 +30,7 @@ import { UserRoute } from "@/app/route/userRoute";
 import NoOrgFoundLogo from "@/assets/img/no_org_found_icon.svg";
 import NoStudentRoleLogo from "@/assets/img/no_student_role_icon.svg";
 import { WebApp } from "@/pages/webApp";
-import { useQueryClient } from "@kidsloop/cms-api-client";
+import { useQueryClient } from "@kl-engineering/cms-api-client";
 import Grid from "@material-ui/core/Grid";
 import React,
 { useEffect } from "react";

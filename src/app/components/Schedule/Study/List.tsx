@@ -33,7 +33,7 @@ import { fromSecondsToMilliseconds } from "@/utils/utils";
 import {
     SchedulesTimeViewListItem,
     usePostSchedulesTimeViewList,
-} from "@kidsloop/cms-api-client";
+} from "@kl-engineering/cms-api-client";
 import {
     Avatar,
     Box,

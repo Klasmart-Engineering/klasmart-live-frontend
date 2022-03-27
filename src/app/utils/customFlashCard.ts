@@ -8,7 +8,7 @@ import {
     isAndroidBrowser,
     isMobileBrowser,
 } from "@/utils/userAgent";
-import { useSnackbar } from "kidsloop-px";
+import { useSnackbar } from "@kl-engineering/kidsloop-px";
 import {
     useEffect,
     useState,

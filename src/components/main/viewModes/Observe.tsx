@@ -12,6 +12,7 @@ import {
     NoItemList,
     toggleFullScreenById,
 } from "@/utils/utils";
+import { useSnackbar } from "@kl-engineering/kidsloop-px";
 import {
     makeStyles,
     Theme,
@@ -19,7 +20,6 @@ import {
 } from "@material-ui/core";
 import { ArrowsAngleExpand as ExpandIcon } from "@styled-icons/bootstrap/ArrowsAngleExpand";
 import { Person as UserIcon } from "@styled-icons/fluentui-system-regular/Person";
-import { useSnackbar } from "kidsloop-px";
 import React,
 {
     useEffect,

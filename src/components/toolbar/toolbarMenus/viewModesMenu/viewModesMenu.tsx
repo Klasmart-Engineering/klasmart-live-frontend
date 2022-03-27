@@ -13,7 +13,7 @@ import { UserVoice as OnStageIcon } from "@styled-icons/boxicons-solid/UserVoice
 import { Eye as ObserveIcon } from "@styled-icons/fa-regular/Eye";
 import { PresentationChartBar as PresentIcon } from "@styled-icons/heroicons-solid/PresentationChartBar";
 import { ScreenShare as ScreenShareIcon } from "@styled-icons/material/ScreenShare";
-import { useSnackbar } from "kidsloop-px";
+import { useSnackbar } from "@kl-engineering/kidsloop-px";
 import React,
 {
     RefObject,

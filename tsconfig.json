@@ -39,9 +39,11 @@
         }
     },
     "include": [
-        "src/**/*",
-        "**.ts",
-        "**.js"
+        ".eslintrc.js",
+        "**/*.js",
+        "**/*.jsx",
+        "**/*.ts",
+        "**/*.tsx"
     ],
     "exclude": [
         "node_modules",

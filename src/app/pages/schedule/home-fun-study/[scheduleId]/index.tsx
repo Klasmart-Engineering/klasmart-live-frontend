@@ -39,7 +39,7 @@ import {
     useGetScheduleById,
     useGetScheduleNewestFeedbackById,
     usePostScheduleFeedback,
-} from "@kidsloop/cms-api-client";
+} from "@kl-engineering/cms-api-client";
 import {
     Box,
     Button,
@@ -50,7 +50,7 @@ import {
 } from "@material-ui/core";
 import { blue } from "@material-ui/core/colors";
 import clsx from "clsx";
-import { useSnackbar } from "kidsloop-px";
+import { useSnackbar } from "@kl-engineering/kidsloop-px";
 import React,
 {
     useEffect,

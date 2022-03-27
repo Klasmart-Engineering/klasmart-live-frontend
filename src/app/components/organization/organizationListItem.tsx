@@ -15,7 +15,7 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import { KeyboardArrowRight as ArrowRight } from "@styled-icons/material-rounded/KeyboardArrowRight";
 import clsx from "clsx";
-import { OrganizationAvatar } from "kidsloop-px";
+import { OrganizationAvatar } from "@kl-engineering/kidsloop-px";
 import React from "react";
 
 const useStyles = makeStyles((theme) => ({

@@ -16,11 +16,11 @@ import {
     State,
 } from "@/store/store";
 import { themeProvider } from "@/themeProvider";
-import { ReactQueryDevtools } from "@kidsloop/cms-api-client";
+import { ReactQueryDevtools } from "@kl-engineering/cms-api-client";
+import { SnackbarProvider } from "@kl-engineering/kidsloop-px";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { ThemeProvider } from "@material-ui/core/styles";
 import { createHashHistory } from 'history';
-import { SnackbarProvider } from "kidsloop-px";
 import React,
 { useEffect } from "react";
 import {
