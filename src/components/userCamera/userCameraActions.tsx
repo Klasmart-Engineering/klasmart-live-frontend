@@ -1,3 +1,4 @@
+/* eslint-disable react/no-multi-comp */
 import PencilIconOff from "@/assets/img/canvas/pencil_icon_off.svg";
 import PencilIconOn from "@/assets/img/canvas/pencil_icon_on.svg";
 import { useRewardTrophyMutation } from "@/data/live/mutations/useRewardTrophyMutation";
@@ -10,6 +11,7 @@ import {
     TooltipIntl,
 } from "@/utils/utils";
 import { useSynchronizedState } from "@/whiteboard/context-providers/SynchronizedStateProvider";
+import { Track } from "@kl-engineering/live-state/ui";
 import {
     Box,
     IconButton,
@@ -31,7 +33,6 @@ import { StarFill as StarFillIcon } from "@styled-icons/bootstrap/StarFill";
 import { TrophyFill as TrophyIcon } from "@styled-icons/bootstrap/TrophyFill";
 import { Crown as HasControlsIcon } from "@styled-icons/fa-solid/Crown";
 import clsx from "clsx";
-import { Track } from "@kl-engineering/live-state/ui";
 import React,
 {
     useCallback,
@@ -138,18 +139,22 @@ const UserCameraActions = ({
                 alignItems="center"
                 className={clsx(classes.root, {
                     [classes.backdropOverlay] : isTeacher,
-                })}>
+                })}
+            >
                 {expanded && (<ExpandCamera user={user} />) }
                 {
                     <Box
                         display="flex"
-                        className={classes.iconsContainer}>
-                        { mic.hasLocation && hasPermission && (isSelf || isTeacher) && <ToggleMic
+                        className={classes.iconsContainer}
+                    >
+                        { mic.hasLocation && hasPermission && (isSelf || isTeacher) &&
+                        <ToggleMic
                             track={mic}
                             local={!isTeacher || isSelf}
                         />
                         }
-                        { camera.hasLocation && hasPermission && (isSelf || isTeacher) && <ToggleCamera
+                        { camera.hasLocation && hasPermission && (isSelf || isTeacher) &&
+                        <ToggleCamera
                             track={camera}
                             local={!isTeacher || isSelf}
                         />
@@ -159,8 +164,9 @@ const UserCameraActions = ({
                                 <IconButton
                                     aria-label="Trophy"
                                     className={classes.iconButton}
-                                    onClick={handleTrophyOpen}>
-                                    <TrophyIcon size="0.7em"/>
+                                    onClick={handleTrophyOpen}
+                                >
+                                    <TrophyIcon size="0.7em" />
                                 </IconButton>
                             </TooltipIntl>
                         )}
@@ -201,20 +207,24 @@ const UserCameraActions = ({
             >
                 <ToolTipMenuItem
                     id="give_trophy"
-                    icon={<TrophyIcon size="1.2rem"/>}
-                    onClick={() => rewardTrophy(user.id, `trophy`)} />
+                    icon={<TrophyIcon size="1.2rem" />}
+                    onClick={() => rewardTrophy(user.id, `trophy`)}
+                />
                 <ToolTipMenuItem
                     id="encourage"
-                    icon={<HandThumbsUpFillIcon size="1.2rem"/>}
-                    onClick={() => rewardTrophy(user.id, `awesome`)} />
+                    icon={<HandThumbsUpFillIcon size="1.2rem" />}
+                    onClick={() => rewardTrophy(user.id, `awesome`)}
+                />
                 <ToolTipMenuItem
                     id="give_star"
-                    icon={<StarFillIcon size="1.2rem"/>}
-                    onClick={() => rewardTrophy(user.id, `star`)} />
+                    icon={<StarFillIcon size="1.2rem" />}
+                    onClick={() => rewardTrophy(user.id, `star`)}
+                />
                 <ToolTipMenuItem
                     id="give_heart"
-                    icon={<HeartFillIcon size="1.2rem"/>}
-                    onClick={() => rewardTrophy(user.id, `heart`)} />
+                    icon={<HeartFillIcon size="1.2rem" />}
+                    onClick={() => rewardTrophy(user.id, `heart`)}
+                />
             </Menu>
         </>
     );
@@ -242,7 +252,7 @@ const ToggleCamera: VoidFunctionComponent<{
                 className={classes.iconButton}
                 onClick={toggleVideoState}
             >
-                {!isPaused ? <CameraVideoFillIcon size="0.7em"/> : <CameraDisabledIcon size="0.7em"/>}
+                {!isPaused ? <CameraVideoFillIcon size="0.7em" /> : <CameraDisabledIcon size="0.7em" />}
             </IconButton>
         </Tooltip>
     );
@@ -267,7 +277,7 @@ const ToggleMic: VoidFunctionComponent<{
                 className={classes.iconButton}
                 onClick={toggleAudioState}
             >
-                {!isPaused ? <MicFillIcon size="0.7em"/> : <MicDisabledIcon size="0.7em"/>}
+                {!isPaused ? <MicFillIcon size="0.7em" /> : <MicDisabledIcon size="0.7em" />}
             </IconButton>
         </Tooltip>
     );
@@ -303,7 +313,7 @@ function ToggleControls ({ user }: ToggleControlsProps){
                 className={classes.iconButton}
                 onClick={() => giveControls(user)}
             >
-                <HasControlsIcon size="0.7em"/>
+                <HasControlsIcon size="0.7em" />
             </IconButton>
         </TooltipIntl>
     );
@@ -313,7 +323,7 @@ interface ToggleCanvasProps {
     user: Session;
 }
 
-function ToggleCanvas ({ user }:ToggleCanvasProps) {
+function ToggleCanvas ({ user }: ToggleCanvasProps) {
     const classes = useStyles();
 
     const { actions: { setPermissions, getPermissions } } = useSynchronizedState();
@@ -334,15 +344,18 @@ function ToggleCanvas ({ user }:ToggleCanvasProps) {
     ]);
 
     return (
-        <TooltipIntl id={permissions.allowCreateShapes ? `canvas.turnOn` : `canvas.turnOff`}>
+        <TooltipIntl id={permissions.allowCreateShapes ? `canvas.turnOff` : `canvas.turnOn`}>
             <IconButton
                 aria-label="Canvas"
                 className={classes.iconButton}
-                onClick={toggleAllowCreateShapes}>
+                onClick={toggleAllowCreateShapes}
+            >
                 <img
-                    src={permissions.allowCreateShapes ? PencilIconOn : PencilIconOff}
+                    alt={``}
+                    src={permissions.allowCreateShapes ? PencilIconOff : PencilIconOn}
                     width="15px"
-                    height="15px" />
+                    height="15px"
+                />
             </IconButton>
         </TooltipIntl>
     );
@@ -352,7 +365,7 @@ interface ExpandCameraProps {
     user: Session;
 }
 
-function ExpandCamera ({ user }:ExpandCameraProps){
+function ExpandCamera ({ user }: ExpandCameraProps){
     const classes = useStyles();
 
     return(
@@ -387,11 +400,14 @@ function ToolTipMenuItem ({
     return(
         <Tooltip title={intl.formatMessage({
             id: id,
-        })}>
+        })}
+        >
             <MenuItem
                 className={classes.menuItem}
-                onClick={onClick}>
-                {icon}</MenuItem>
+                onClick={onClick}
+            >
+                {icon}
+            </MenuItem>
         </Tooltip>
     );
 }
