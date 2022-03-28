@@ -12,7 +12,7 @@ import { Crown as HasControlsIcon } from "@styled-icons/fa-solid/Crown";
 import { HatGraduation as TeacherIcon } from "@styled-icons/fluentui-system-filled/HatGraduation";
 import { SpeakerOff } from '@styled-icons/fluentui-system-filled/SpeakerOff';
 import clsx from "clsx";
-import { Track } from "kidsloop-live-state/ui";
+import { Track } from "@kl-engineering/live-state/ui";
 import React,
 { VoidFunctionComponent } from "react";
 import { FormattedMessage } from "react-intl";

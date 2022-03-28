@@ -109,7 +109,7 @@
   "dependencies": {
     "@apollo/client": "^3.4.0-beta.21",
     "@kl-engineering/cms-api-client": "2.2.3",
-    "@kl-engineering/kidsloop-branding": "1.0.2",
+    "@kl-engineering/kidsloop-branding": "2.0.5",
     "@kl-engineering/kidsloop-canvas": "0.5.3-internal",
     "@kl-engineering/kidsloop-px": "1.8.1",
     "@kl-engineering/live-state": "1.4.2",

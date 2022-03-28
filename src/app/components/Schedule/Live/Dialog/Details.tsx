@@ -17,13 +17,13 @@ import {
     useCmsApiClient,
     useGetScheduleById,
 } from "@kl-engineering/cms-api-client";
+import { useSnackbar } from "@kl-engineering/kidsloop-px";
 import {
     createStyles,
     Grid,
     makeStyles,
     Typography,
 } from "@material-ui/core";
-import { useSnackbar } from "notistack";
 import React,
 {
     useEffect,

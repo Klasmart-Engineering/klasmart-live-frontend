@@ -14,7 +14,7 @@ import {
     Typography,
 } from '@material-ui/core';
 import { CalendarCheck as ClassEndedIcon } from "@styled-icons/boxicons-regular/CalendarCheck";
-import { useWebrtcClose } from "kidsloop-live-state/ui";
+import { useWebrtcClose } from "@kl-engineering/live-state/ui";
 import React,
 { useEffect } from 'react';
 import { FormattedMessage } from 'react-intl';

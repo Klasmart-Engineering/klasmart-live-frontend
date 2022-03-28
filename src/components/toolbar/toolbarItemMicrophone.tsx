@@ -12,7 +12,7 @@ import LockIcon from "@material-ui/icons/Lock";
 import { MicFill as MicFillIcon } from "@styled-icons/bootstrap/MicFill";
 import { MicMuteFill as MicDisabledIcon } from "@styled-icons/bootstrap/MicMuteFill";
 import clsx from "clsx";
-import { useMicrophone } from "kidsloop-live-state/ui";
+import { useMicrophone } from "@kl-engineering/live-state/ui";
 import React from "react";
 import { useIntl } from "react-intl";
 

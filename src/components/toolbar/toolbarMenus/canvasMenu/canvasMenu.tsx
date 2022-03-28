@@ -13,6 +13,7 @@ import {
 } from "@/store/layoutAtoms";
 import { StyledPopper } from "@/utils/utils";
 import { useSynchronizedState } from "@/whiteboard/context-providers/SynchronizedStateProvider";
+import { useToolbarContext } from "@kl-engineering/kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
 import {
     Grid,
     makeStyles,
@@ -26,7 +27,6 @@ import { Eraser as EraserIcon } from "@styled-icons/boxicons-solid/Eraser";
 import { Trash as TrashIcon } from "@styled-icons/boxicons-solid/Trash";
 import { Text as TextIcon } from "@styled-icons/evaicons-solid/Text";
 import { Cursor as CursorIcon } from "@styled-icons/fluentui-system-regular/Cursor";
-import { useToolbarContext } from "kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
 import React,
 {
     useCallback,
@@ -192,7 +192,7 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
         });
     };
 
-    const selectItemWithColor = (newSelectedItem:CanvasToolbarItems) => (previousSelectedItem:CanvasToolbarItems) => {
+    const selectItemWithColor = (newSelectedItem: CanvasToolbarItems) => (previousSelectedItem: CanvasToolbarItems) => {
         if (previousSelectedItem === newSelectedItem) {
             setIsCanvasColorsOpen((isOpen) => !isOpen);
         } else {
@@ -227,7 +227,8 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
                 <Grid
                     container
                     alignItems="stretch"
-                    className={classes.root}>
+                    className={classes.root}
+                >
                     <CanvasMenuItem
                         ref={pencilRef}
                         hasSubmenu
@@ -237,7 +238,8 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
                         active={canvasSelectedItem === CanvasToolbarItems.PENCIL}
                         activeStyles={activeCustomStyles}
                         icon={<PencilIcon size="1.85rem" />}
-                        onClick={() => setCanvasSelectedItem(selectItemWithColor(CanvasToolbarItems.PENCIL))} />
+                        onClick={() => setCanvasSelectedItem(selectItemWithColor(CanvasToolbarItems.PENCIL))}
+                    />
                     <CanvasMenuItem
                         ref={textRef}
                         hasSubmenu
@@ -247,62 +249,73 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
                         active={canvasSelectedItem === CanvasToolbarItems.TEXT}
                         activeStyles={activeCustomStyles}
                         icon={<TextIcon size="1.85rem" />}
-                        onClick={() => setCanvasSelectedItem(selectItemWithColor(CanvasToolbarItems.TEXT))} />
+                        onClick={() => setCanvasSelectedItem(selectItemWithColor(CanvasToolbarItems.TEXT))}
+                    />
                     <CanvasMenuItem
                         active={canvasSelectedItem === CanvasToolbarItems.MOVE}
-                        icon={<MoveIcon size="1.85rem"/>}
+                        icon={<MoveIcon size="1.85rem" />}
                         title={intl.formatMessage({
                             id: `canvas.tool.move`,
                         })}
-                        onClick={() => setCanvasSelectedItem(CanvasToolbarItems.MOVE)} />
+                        onClick={() => setCanvasSelectedItem(CanvasToolbarItems.MOVE)}
+                    />
                     <CanvasMenuItem
                         active={canvasSelectedItem === CanvasToolbarItems.CURSOR}
-                        icon={<CursorIcon size="1.85rem"/>}
+                        icon={<CursorIcon size="1.85rem" />}
                         title={intl.formatMessage({
                             id: `canvas.tool.select`,
                         })}
-                        onClick={() => setCanvasSelectedItem(CanvasToolbarItems.CURSOR)} />
+                        onClick={() => setCanvasSelectedItem(CanvasToolbarItems.CURSOR)}
+                    />
                     <Grid
                         item
-                        className={classes.divider}></Grid>
+                        className={classes.divider}
+                    />
                     <CanvasMenuItem
                         title={intl.formatMessage({
                             id: `canvas.tool.eraser`,
                         })}
                         active={canvasSelectedItem === CanvasToolbarItems.ERASER}
-                        icon={<EraserIcon size="1.85rem"/>}
-                        onClick={() => setCanvasSelectedItem(CanvasToolbarItems.ERASER)} />
+                        icon={<EraserIcon size="1.85rem" />}
+                        onClick={() => setCanvasSelectedItem(CanvasToolbarItems.ERASER)}
+                    />
                     <CanvasMenuItem
                         title={intl.formatMessage({
                             id: `canvas.tool.eraseAll`,
                         })}
-                        icon={<TrashIcon size="1.85rem"/>}
-                        onClick={() => clear([ sessionId ])} />
+                        icon={<TrashIcon size="1.85rem" />}
+                        onClick={() => clear([ sessionId ])}
+                    />
 
                     {(hasControls && classType === ClassType.LIVE) &&
                         <>
                             <Grid
                                 item
-                                className={classes.divider}></Grid>
+                                className={classes.divider}
+                            />
                             <CanvasMenuItem
                                 title={intl.formatMessage({
-                                    id: usersDraw ? `canvas.tool.allCanvas.off` :  `canvas.tool.allCanvas.on`,
+                                    id: usersDraw ? `canvas.tool.allCanvas.off` : `canvas.tool.allCanvas.on`,
                                 })}
                                 active={usersDraw}
-                                icon={<UsersDrawIcon size="1.6rem"/>}
-                                onClick={handleClickUsersDraw} />
+                                icon={<UsersDrawIcon size="1.6rem" />}
+                                onClick={handleClickUsersDraw}
+                            />
                             <Grid
                                 item
-                                className={classes.divider}></Grid>
+                                className={classes.divider}
+                            />
                             <Grid item>
                                 <Tooltip
                                     placement="top"
                                     title={intl.formatMessage({
                                         id: `canvas.tool.myCanvas.off`,
-                                    })}>
+                                    })}
+                                >
                                     <Switch
                                         checked={isGlobalCanvasEnabled}
-                                        onChange={() => setIsGlobalCanvasEnabled(!isGlobalCanvasEnabled)} />
+                                        onChange={() => setIsGlobalCanvasEnabled(!isGlobalCanvasEnabled)}
+                                    />
                                 </Tooltip>
                             </Grid>
                         </>
@@ -322,11 +335,13 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
                             boundariesElement: document.getElementById(`main-content`),
                         },
                     }}
-                    anchorEl={colorsMenuAnchor}>
+                    anchorEl={colorsMenuAnchor}
+                >
                     <CanvasColorSelector
                         activeColor={canvasDrawColor}
                         palette={Object.values(CanvasColor)}
-                        onSelectColor={setCanvasDrawColor} />
+                        onSelectColor={setCanvasDrawColor}
+                    />
                 </StyledPopper>
             }
         </>

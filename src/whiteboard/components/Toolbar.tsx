@@ -1,5 +1,6 @@
 import { useSessionContext } from "@/providers/session-context";
 import { useSynchronizedState } from "@/whiteboard/context-providers/SynchronizedStateProvider";
+import { useToolbarContext } from "@kl-engineering/kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
 import { IconButton } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid/Grid";
 import useTheme from "@material-ui/core/styles/useTheme";
@@ -8,7 +9,6 @@ import { Eraser as EraserIcon } from "@styled-icons/boxicons-solid/Eraser";
 import { Trash as TrashIcon } from "@styled-icons/boxicons-solid/Trash";
 import { Brush as BrushIcon } from "@styled-icons/material/Brush";
 import { TextFields as TextIcon } from "@styled-icons/material/TextFields";
-import { useToolbarContext } from "kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
 import React,
 {
     FunctionComponent,
@@ -50,18 +50,19 @@ export const Toolbar: FunctionComponent<Props> = ({ children }: Props): JSX.Elem
             md={2}
             style={{
                 textAlign: `center`,
-            }}>
+            }}
+        >
             <Grid
                 item
-                xs={6}>
+                xs={6}
+            >
                 <IconButton
                     color={`primary`}
                     style={{
                         backgroundColor: colorValue,
                     }}
                     onClick={() => { selectColorByValue(colorValue); }}
-                >
-                </IconButton>
+                />
             </Grid>
         </Grid>
     );
@@ -76,10 +77,12 @@ export const Toolbar: FunctionComponent<Props> = ({ children }: Props): JSX.Elem
             md={2}
             style={{
                 textAlign: `center`,
-            }}>
+            }}
+        >
             <Grid
                 item
-                xs={6}>
+                xs={6}
+            >
                 <IconButton
                     color={`primary`}
                     style={{
@@ -104,7 +107,8 @@ export const Toolbar: FunctionComponent<Props> = ({ children }: Props): JSX.Elem
                 style={{
                     flexGrow: 0,
                     padding: theme.spacing(2),
-                }}>
+                }}
+            >
                 <ToolButton clicked={() => selectTool(`move`)}><MoveIcon size="1.5rem" /></ToolButton>
                 <ToolButton clicked={() => selectTool(`line`)}><BrushIcon size="1.5rem" /></ToolButton>
                 <ToolButton clicked={() => selectTool(`text`)}><TextIcon size="1.5rem" /></ToolButton>
@@ -120,7 +124,8 @@ export const Toolbar: FunctionComponent<Props> = ({ children }: Props): JSX.Elem
                 style={{
                     flexGrow: 0,
                     padding: theme.spacing(2),
-                }}>
+                }}
+            >
                 <ColorButton colorValue={`#ff0000`} />
                 <ColorButton colorValue={`#00ff00`} />
                 <ColorButton colorValue={`#0000ff`} />

@@ -8,13 +8,13 @@ import {
 } from "@/store/layoutAtoms";
 import { whiteboard } from "@/utils/layerValues";
 import { useSynchronizedState } from "@/whiteboard/context-providers/SynchronizedStateProvider";
+import { useToolbarContext } from "@kl-engineering/kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
+import { WhiteboardCanvas } from "@kl-engineering/kidsloop-canvas/lib/domain/whiteboard/WhiteboardCanvas";
 import {
     makeStyles,
     Theme,
 } from "@material-ui/core";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
-import { useToolbarContext } from "kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
-import { WhiteboardCanvas } from "kidsloop-canvas/lib/domain/whiteboard/WhiteboardCanvas";
 import React,
 {
     useEffect,
@@ -142,7 +142,8 @@ export function BaseWhiteboard (props: Props) {
                         ref={canvasChildRef}
                         style={{
                             display: `none`,
-                        }} />
+                        }}
+                    />
                 </WhiteboardCanvas>
             </div>
         </StyledCursor>

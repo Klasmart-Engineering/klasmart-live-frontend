@@ -26,9 +26,9 @@ import {
     defineContentId,
     defineContentType,
 } from "@/utils/utils";
-import Typography from "@material-ui/core/Typography";
-import { useToolbarContext } from "kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
+import { useToolbarContext } from "@kl-engineering/kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
 import { useSnackbar } from "@kl-engineering/kidsloop-px";
+import Typography from "@material-ui/core/Typography";
 import React,
 {
     createContext,
@@ -133,7 +133,7 @@ export const RoomProvider: React.FC<Props> = ({ children, enableConferencing }) 
 
     useEffect(() => {
         if (hasControls && interactiveMode === InteractiveMode.ONSTAGE && classType === ClassType.LIVE) return;
-        if (!hasControls && classType !==  ClassType.STUDY) return;
+        if (!hasControls && classType !== ClassType.STUDY) return;
         const material = materials?.[materialActiveIndex];
         const materialUrl = material?.url;
         const activityTypeName = material?.__typename === `Iframe` ? `h5p` : material?.__typename;
@@ -186,7 +186,7 @@ export const RoomProvider: React.FC<Props> = ({ children, enableConferencing }) 
 
     const isConnectionTypeChange = () => {
         if(!currentConnection) return;
-        const connectionType =  (navigator as any).connection?.type;
+        const connectionType = (navigator as any).connection?.type;
         if (connectionType !== currentConnection && connectionType !== `none`) return true;
         return false;
     };

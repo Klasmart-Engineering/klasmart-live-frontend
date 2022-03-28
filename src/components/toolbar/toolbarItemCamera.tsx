@@ -12,7 +12,7 @@ import LockIcon from "@material-ui/icons/Lock";
 import { CameraVideoFill as CameraVideoFillIcon } from "@styled-icons/bootstrap/CameraVideoFill";
 import { CameraVideoOffFill as CameraDisabledIcon } from "@styled-icons/bootstrap/CameraVideoOffFill";
 import clsx from "clsx";
-import { useCamera } from "kidsloop-live-state/ui";
+import { useCamera } from "@kl-engineering/live-state/ui";
 import React from "react";
 import { useIntl } from "react-intl";
 

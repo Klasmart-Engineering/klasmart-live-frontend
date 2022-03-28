@@ -49,7 +49,7 @@ import Cookies from "js-cookie";
 import {
     useCamera,
     useMicrophone,
-} from "kidsloop-live-state/ui";
+} from "@kl-engineering/live-state/ui";
 import React,
 {
     Dispatch,

@@ -7,7 +7,7 @@ import { useSessionContext } from '@/providers/session-context';
 import { AuthTokenProvider } from "@/services/auth-token/AuthTokenProvider";
 import { hasJoinedClassroomState } from "@/store/layoutAtoms";
 import { useInterval } from '@/utils/useInterval';
-import { WebRtcProvider } from "kidsloop-live-state/ui";
+import { WebRtcProvider } from "@kl-engineering/live-state/ui";
 import React,
 { useMemo } from 'react';
 import { useHistory } from 'react-router-dom';

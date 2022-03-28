@@ -10,7 +10,7 @@ import {
     makeStyles,
 } from "@material-ui/core/styles";
 import { Settings } from "@styled-icons/fluentui-system-filled/Settings";
-import { useWebRtcConstraints } from "kidsloop-live-state/ui";
+import { useWebRtcConstraints } from "@kl-engineering/live-state/ui";
 import React,
 {
     useEffect,

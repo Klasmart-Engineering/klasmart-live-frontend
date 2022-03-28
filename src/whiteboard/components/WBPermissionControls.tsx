@@ -1,13 +1,13 @@
 import StyledIcon from "@/components/styled/icon";
 import { THEME_COLOR_SECONDARY_DEFAULT } from "@/config";
 import { useSynchronizedState } from "@/whiteboard/context-providers/SynchronizedStateProvider";
+import { useToolbarContext } from "@kl-engineering/kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import MenuItem from "@material-ui/core/MenuItem";
 import { Eraser as EraserIcon } from "@styled-icons/boxicons-solid/Eraser";
 import { InvertColors as InvertColorsIcon } from "@styled-icons/material/InvertColors";
 import { InvertColorsOff as InvertColorsOffIcon } from "@styled-icons/material/InvertColorsOff";
-import { useToolbarContext } from "kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
 import React,
 { useCallback } from "react";
 import { FormattedMessage } from "react-intl";
@@ -56,9 +56,10 @@ export default function PermissionControls ({ otherUserId }: { otherUserId: stri
                 <StyledIcon
                     icon={<EraserIcon />}
                     size={`medium`}
-                    color={THEME_COLOR_SECONDARY_DEFAULT} />
+                    color={THEME_COLOR_SECONDARY_DEFAULT}
+                />
             </ListItemIcon>
             <ListItemText primary={<FormattedMessage id="whiteboard_permissionControls_listItemText_clear" />} />
         </MenuItem>
-    </>);
+            </>);
 }

@@ -26,7 +26,7 @@ const nodeEnv = (modes.includes(dirtyNodeEnv) ? dirtyNodeEnv : undefined) ?? `pr
 const isDev = nodeEnv === `development`;
 const gitCommit = execSync(`git rev-parse HEAD`).toString().trim().slice(0, 7);
 
-const { loadBrandingOptions } = require(`kidsloop-branding`);
+const { loadBrandingOptions } = require(`@kl-engineering/kidsloop-branding`);
 const brandingOptions = loadBrandingOptions(process.env.BRAND);
 
 const newRelicConfig = {
@@ -137,11 +137,11 @@ const webpackConfig: Configuration = {
         new CopyWebpackPlugin({
             patterns: [
                 {
-                    from: `node_modules/pdfjs-dist/cmaps`,
+                    from: `node_modules/@kl-engineering/pdfjs-dist/cmaps`,
                     to: `cmaps/`,
                 },
                 {
-                    from: `node_modules/pdfjs-dist`,
+                    from: `node_modules/@kl-engineering/pdfjs-dist`,
                     to: `pdfjs-dist/`,
                 },
                 {

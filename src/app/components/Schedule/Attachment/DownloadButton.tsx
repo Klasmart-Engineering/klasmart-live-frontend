@@ -9,6 +9,7 @@ import {
     handleDownloadForIOS,
 } from "@/app/utils/networkUtils";
 import { useCmsApiClient } from "@kl-engineering/cms-api-client";
+import { useSnackbar } from "@kl-engineering/kidsloop-px";
 import {
     CircularProgress,
     createStyles,
@@ -18,7 +19,6 @@ import {
 } from "@material-ui/core";
 import { blue } from "@material-ui/core/colors";
 import { GetApp as GetAppIcon } from "@styled-icons/material";
-import { useSnackbar } from "notistack";
 import React,
 { useState } from "react";
 import { useIntl } from "react-intl";

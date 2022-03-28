@@ -109,11 +109,11 @@ module.exports = {
         new CopyWebpackPlugin({
             patterns: [
                 {
-                    from: `node_modules/pdfjs-dist/cmaps`,
+                    from: `node_modules/@kl-engineering/pdfjs-dist/cmaps`,
                     to: `cmaps/`,
                 },
                 {
-                    from: `node_modules/pdfjs-dist`,
+                    from: `node_modules/@kl-engineering/pdfjs-dist`,
                     to: `pdfjs-dist/`,
                 },
             ],

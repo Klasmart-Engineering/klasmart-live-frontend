@@ -3,6 +3,7 @@ import BackButton from "@/app/components/layout/BackButton";
 import { localeState } from "@/app/model/appModel";
 import { THEME_COLOR_BACKGROUND_LIST } from "@/config";
 import { LANGUAGES_LABEL } from "@/localization/localeCodes";
+import { Language } from "@kl-engineering/kidsloop-px/dist/types/components/LanguageSelect";
 import {
     Avatar,
     List,
@@ -20,7 +21,6 @@ import {
 } from '@material-ui/core/styles';
 import { NavigateNext as NextIcon } from "@styled-icons/material/NavigateNext";
 import { Translate as LanguageIcon } from "@styled-icons/material/Translate";
-import { Language } from "kidsloop-px/dist/types/components/LanguageSelect";
 import React from "react";
 import {
     FormattedMessage,
@@ -67,7 +67,7 @@ export default function SettingsPage () {
         history.push(`/settings/select-language`);
     };
 
-    const langText = LANGUAGES_LABEL.find((language:Language) => language.code === locale.languageCode);
+    const langText = LANGUAGES_LABEL.find((language: Language) => language.code === locale.languageCode);
 
     return (
         <>
@@ -75,11 +75,13 @@ export default function SettingsPage () {
                 title={intl.formatMessage({
                     id: `settings.title`,
                 })}
-                leading={<BackButton onClick={handleBackClick} />} />
+                leading={<BackButton onClick={handleBackClick} />}
+            />
             <Grid
                 container
                 alignContent="space-between"
-                className={classes.fullHeight}>
+                className={classes.fullHeight}
+            >
                 <Grid
                     item
                     xs={12}
@@ -89,10 +91,12 @@ export default function SettingsPage () {
                         subheader={
                             <ListSubheader
                                 component="div"
-                                id="settings-general">
+                                id="settings-general"
+                            >
                                 <FormattedMessage id="settings.general.title" />
                             </ListSubheader>
-                        }>
+                        }
+                    >
                         <ListItem
                             button
                             className={classes.listItem}
@@ -102,7 +106,8 @@ export default function SettingsPage () {
                                 <Avatar className={classes.avatarLanguage}>
                                     <LanguageIcon
                                         color={`#ffffff`}
-                                        size={24} />
+                                        size={24}
+                                    />
                                 </Avatar>
                             </ListItemAvatar>
                             <ListItemText
@@ -116,7 +121,8 @@ export default function SettingsPage () {
                             />
                             <NextIcon
                                 color={theme.palette.grey[600]}
-                                size={24} />
+                                size={24}
+                            />
                         </ListItem>
                     </List>
                 </Grid>

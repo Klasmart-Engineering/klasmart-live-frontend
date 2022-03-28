@@ -20,7 +20,7 @@ import {
     useMediaStreamTracks,
     useScreenshare,
     useStream,
-} from "kidsloop-live-state/ui";
+} from "@kl-engineering/live-state/ui";
 import React,
 {
     useEffect,

@@ -7,6 +7,7 @@ import {
 } from "@/app/utils/fileUtils";
 import { checkNetworkToConfirmDownload } from "@/app/utils/networkUtils";
 import { useCmsApiClient } from "@kl-engineering/cms-api-client";
+import { useSnackbar } from "@kl-engineering/kidsloop-px";
 import {
     CircularProgress,
     createStyles,
@@ -16,7 +17,6 @@ import {
     Typography,
 } from "@material-ui/core";
 import { blue } from "@material-ui/core/colors";
-import { useSnackbar } from "notistack";
 import React,
 { useState } from "react";
 import { useIntl } from "react-intl";

@@ -17,7 +17,7 @@ import {
 import red from "@material-ui/core/colors/red";
 import { Warning as WarningIcon } from "@styled-icons/entypo/Warning";
 import clsx from "clsx";
-import { useWebrtcCloseCallback } from "kidsloop-live-state/ui";
+import { useWebrtcCloseCallback } from "@kl-engineering/live-state/ui";
 import React,
 {
     useEffect,

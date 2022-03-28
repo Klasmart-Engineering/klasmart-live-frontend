@@ -16,7 +16,7 @@ import {
     useTheme,
 } from "@material-ui/core";
 import clsx from "clsx";
-import { useStream } from "kidsloop-live-state/ui";
+import { useStream } from "@kl-engineering/live-state/ui";
 import React,
 {
     useEffect,
