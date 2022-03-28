@@ -74,14 +74,18 @@ jobs:
           # APP_STORE_CONNECT_API_KEY_KEY_ID: ${{secrets.APPSTORE_KEY_ID}}
           # APP_STORE_CONNECT_API_KEY_KEY: ${{secrets.APPSTORE_KEY_PRIVATE}}
           PRIVATE_KEY: ${{ secrets.READONLY_SSH_PRIVATE_KEY }}
+          SSH_PASSPHRASE: ${{ secrets.READONLY_SSH_PASSPHRASE }}
         run: |
           eval $(bundle exec fastlane spaceauth -u build-machine@calmid.com 2>/dev/null | grep "export FASTLANE_SESSION")
 
+          ssh-agent -a $SSH_AUTH_SOCK > /dev/null
+          echo 'echo $SSH_PASSPHRASE' > ~/.ssh_askpass && chmod +x ~/.ssh_askpass
           SSH_PATH="$HOME/.ssh"
           mkdir -p "$SSH_PATH"
           touch "$SSH_PATH/known_hosts"
           echo "$PRIVATE_KEY" > "$SSH_PATH/build-machine-calmid-rsa"
           chmod 700 "$SSH_PATH"
+          DISPLAY=None SSH_ASKPASS=~/.ssh_askpass ssh-add "$SSH_PATH/build-machine-calmid-rsa"
           ssh-keyscan github.com >> ~/.ssh/known_hosts
           chmod 600 "$SSH_PATH/known_hosts"
           chmod 600 "$SSH_PATH/build-machine-calmid-rsa"
