@@ -1,12 +1,11 @@
 # This workflow will run tests using node and then publish a package to GitHub Packages when a release is created
 # For more information see: https://help.github.com/actions/language-and-framework-guides/publishing-nodejs-packages
 
-name: Deploy to Alpha with New Tag
+name: Pull Requests
 
 on:
-  push:
-    tags:        
-      - '**' # Push events to every tag including hierarchical tags like v1.0/beta
+  pull_request:
+    types: [opened, reopened]
 
 jobs:
   test:
@@ -24,8 +23,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{secrets.PACKAGES_TOKEN}}
       - run: npm ci
       - run: npm test -- --coverage --coverageReporters="text-summary"
-  build-and-deploy:
-    needs: [test]
+  build:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -38,15 +36,6 @@ jobs:
           registry-url: https://npm.pkg.github.com/
         env:
           NODE_AUTH_TOKEN: ${{secrets.PACKAGES_TOKEN}}
-      - uses: actions/setup-python@v3
-        with:
-          python-version: '3.x'
-        env:
-          AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID_ALPHA_DEV}}
-          AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY_ALPHA_DEV}}
       - run: npm ci
       - run: cp deploy/config/internal/.env.alpha ./.env
       - run: npm run build
-      - run: pip3 install -U awscli
-      - run: aws s3 sync dist s3://kidsloop-alpha-live-crack-drake/
-      - run: aws cloudfront create-invalidation --paths "/*" --distribution-id E2694SIA1FLALO
