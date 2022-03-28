@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.3.0](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v5.3.0%0Dv5.2.0-alpha.1) (2022-03-28)
+
+
+### Features
+
+* add onetrust SDK ([cd21833](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/cd218337f60f0cb1b9e20238395fa9e9a2496ea9))
+
+
+### Bug Fixes
+
+* add missing onetrust files ([d951860](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/d9518602533f213be25861bdd7a3c9955c9e8147))
+* remove cordova-plugin-window-background style conflict ([5c2db18](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/5c2db185d7eda4aae9ec56c56d0941a0ad2895cb))
+* remove the start sdk debug button ([04a9e69](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/04a9e69f8a7762131ca004ab1c8a723f731ce9aa))
+* update onetrust sdk and app IDs ([34dc10c](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/34dc10c1500c9f563e99b7254933c87bf49e46eb))
+* use onetrust production app ID ([fb640ba](https://bitbucket.org/calmisland/kidsloop-live-frontend/commits/fb640badeab7793b33f20c66c22f8be128189f2f))
+
 ## [5.2.0-alpha.1](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v5.2.0-alpha.1%0Dv5.2.0-alpha.0) (2022-03-22)
 
 
