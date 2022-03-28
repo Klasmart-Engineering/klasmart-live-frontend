@@ -80,8 +80,10 @@ jobs:
 
           SSH_PATH="$HOME/.ssh"
           mkdir -p "$SSH_PATH/SSHConnections"
+          mkdir -p "$SSH_PATH/sockets"
           chmod 700 "$SSH_PATH"
           chmod 700 "$SSH_PATH/SSHConnections"
+          chmod 700 "$SSH_PATH/sockets"
           ssh-agent -a $SSH_AUTH_SOCK > /dev/null
           echo 'echo $SSH_PASSPHRASE' > ~/.ssh_askpass && chmod +x ~/.ssh_askpass
           touch "$SSH_PATH/known_hosts"
