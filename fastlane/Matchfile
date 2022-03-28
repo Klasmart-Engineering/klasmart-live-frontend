@@ -2,7 +2,7 @@
 storage_mode("git")
 shallow_clone(true)
 # clone_branch_directly(true) # requires the branch to exist or it will fail
-git_url("https://github.com/KL-Engineering/kidsloop-live-frontend")
+git_url("git@github.com:KL-Engineering/kidsloop-live-frontend.git")
 git_branch("ios-build")
 readonly(false) # if true only fetches existing certs
 
