@@ -78,13 +78,14 @@ jobs:
         run: |
           eval $(bundle exec fastlane spaceauth -u build-machine@calmid.com 2>/dev/null | grep "export FASTLANE_SESSION")
 
+          SSH_PATH="$HOME/.ssh"
+          mkdir -p "$SSH_PATH/SSHConnections"
+          chmod 700 "$SSH_PATH"
+          chmod 700 "$SSH_PATH/SSHConnections"
           ssh-agent -a $SSH_AUTH_SOCK > /dev/null
           echo 'echo $SSH_PASSPHRASE' > ~/.ssh_askpass && chmod +x ~/.ssh_askpass
-          SSH_PATH="$HOME/.ssh"
-          mkdir -p "$SSH_PATH"
           touch "$SSH_PATH/known_hosts"
           echo "$PRIVATE_KEY" > "$SSH_PATH/build-machine-calmid-rsa"
-          chmod 700 "$SSH_PATH"
           DISPLAY=None SSH_ASKPASS=~/.ssh_askpass ssh-add "$SSH_PATH/build-machine-calmid-rsa"
           ssh-keyscan github.com >> ~/.ssh/known_hosts
           chmod 600 "$SSH_PATH/known_hosts"
