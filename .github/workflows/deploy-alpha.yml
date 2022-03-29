@@ -33,6 +33,9 @@ jobs:
         environment:
             name: alpha-dev
             url: https://hub.alpha.kidsloop.net
+        steps:
+            - name: Debug message
+              run: echo Echo
     deploy:
         needs: [confirm-deployment]
         uses: ./.github/workflows/deploy-aws.yml
