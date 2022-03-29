@@ -1,4 +1,4 @@
-name: Deploy to Alpha with New Tag
+name: Deploy to Alpha
 
 on:
     push:
