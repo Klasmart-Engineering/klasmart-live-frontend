@@ -42,7 +42,7 @@ Open up a terminal, and navigate to your local root of `kidsloop-live-server` an
 docker run --name some-redis -p 6379:6379 -d redis
 docker run --name postgres -e POSTGRES_PASSWORD=PASSWORD -p 5432:5432 -d postgres
 npm install
-npm start
+npm run dev
 ```
 
 ## 2. `kidsloop-sfu-gateway`
@@ -51,7 +51,7 @@ Open up a terminal, and navigate to your local root of `kidsloop-sfu-gateway` an
 
 ```sh
 npm install
-npm start
+npm run dev
 ```
 
 ## 3. `kidsloop-sfu`
@@ -60,7 +60,7 @@ Open up a terminal, and navigate to your local root of `kidsloop-sfu` and enter 
 
 ```sh
 npm install
-USE_IP=1 npm start
+USE_IP=1 npm run dev
 ```
 
 ## 4. `kidsloop-live-frontend`
