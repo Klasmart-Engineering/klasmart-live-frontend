@@ -38,7 +38,6 @@ import {
     useSelectedUserValue,
 } from "@/app/data/user/atom";
 import { downloadDataBlob } from "@/app/utils/requestUtils";
-import { TEXT_COLOR_FILE_NAME } from "@/config";
 import {
     HOME_FUN_STUDY_DISABLE_BUTTON_COLOR,
     HOME_FUN_STUDY_SUBMIT_BUTTON_BACKGROUND_COLOR,
