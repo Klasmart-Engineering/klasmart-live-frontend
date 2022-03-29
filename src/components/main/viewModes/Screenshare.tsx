@@ -1,5 +1,4 @@
 import { StyledVideo } from "@/components/interactiveContent/styledVideo";
-import Loading from "@/components/loading";
 import { InteractiveMode } from "@/pages/utils";
 import { useSessionContext } from "@/providers/session-context";
 import {
@@ -7,6 +6,7 @@ import {
     isGlobalActionsOpenState,
 } from "@/store/layoutAtoms";
 import {
+    Box,
     Button,
     Grid,
     makeStyles,
@@ -30,44 +30,39 @@ import { FormattedMessage } from "react-intl";
 import { useSetRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
-    root: {
-        height: `100%`,
-        alignItems: `center`,
-        justifyContent: `center`,
-        textAlign: `center`,
-    },
-    icon:{
+    icon: {
         color: theme.palette.text.primary,
         "& svg": {
             fontSize: `3rem`,
         },
     },
-    button:{},
-    relative:{
-        position: `relative`,
+    screenshareViewVideo: {
+        position: `absolute`,
+        top: 0,
+        left: 0,
+        width: `100%`,
+        height: `100%`,
     },
 }));
 
 const Screenshare: VoidFunctionComponent<{
     sessionId: string;
 }> = ({ sessionId }) => {
-    const classes = useStyles();
     const { sessionId: mySessionId } = useSessionContext();
     return(
-        <Grid
-            container
-            className={classes.root}>
-            <Grid
-                item
-                xs={12}
-            >
-                {
-                    sessionId === mySessionId
-                        ? <ScreensharePresent />
-                        : <ScreenshareView sessionId={sessionId} />
-                }
-            </Grid>
-        </Grid>
+        <Box
+            height="100%"
+            width="100%"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            textAlign="center"
+            position="relative">
+            {sessionId === mySessionId
+                ? <ScreensharePresent />
+                : <ScreenshareView sessionId={sessionId} />
+            }
+        </Box>
     );
 };
 
@@ -105,7 +100,10 @@ const ScreensharePresent: VoidFunctionComponent  = () => {
     return(
         <Grid
             container
-            justifyContent="center">
+            justifyContent="center"
+            spacing={4}
+            xs={12}
+        >
             <Grid
                 item
                 xs={6}>
@@ -137,7 +135,6 @@ const ScreensharePresent: VoidFunctionComponent  = () => {
             <Grid
                 item
                 xs={6}
-                className={classes.relative}
                 hidden={isMdDown}
             >
                 <StyledVideo stream={stream} />
@@ -149,8 +146,11 @@ const ScreensharePresent: VoidFunctionComponent  = () => {
 const ScreenshareView: VoidFunctionComponent<{
     sessionId: string;
 }>  = ({ sessionId }) => {
+    const classes = useStyles();
     const { stream } = useStream(sessionId, `screenshare`);
     return (
-        <StyledVideo stream={stream} />
+        <StyledVideo
+            stream={stream}
+            className={classes.screenshareViewVideo} />
     );
 };
