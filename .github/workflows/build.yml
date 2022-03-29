@@ -1,0 +1,51 @@
+name: Build
+
+on:
+    workflow_call:
+        inputs:
+            region:
+                required: true
+                type: string
+            environment:
+                required: true
+                type: string
+            save:
+                required: false
+                default: false
+                type: boolean
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            packages: write
+        steps:
+          - uses: actions/checkout@v2
+          - uses: actions/setup-node@v2
+            with:
+                node-version: 16
+                registry-url: https://npm.pkg.github.com/
+            env:
+                NODE_AUTH_TOKEN: ${{ secrets.PACKAGES_TOKEN }}
+
+          - name: Find node_modules cache
+            id: cache-node_modules
+            uses: actions/cache@v3
+            with:
+                path: ./node_modules
+                key: ${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+          - name: Build
+            run: |
+                cp deploy/config/${{ inputs.region }}/.env.${{ inputs.environment }} .env
+                npm run build
+
+          - name: Upload build
+            uses: actions/upload-artifact@v3
+            if: ${{ success() && inputs.save }}
+            with:
+                name: build-${{ inputs.region }}-${{ inputs.environment }}
+                path: dist
+                retention-days: 1
+                if-no-files-found: error

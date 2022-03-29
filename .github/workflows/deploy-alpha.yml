@@ -1,0 +1,34 @@
+name: Deploy to Alpha with New Tag
+
+on:
+    push:
+        tags: [ v*.*.* ]
+    workflow_dispatch:
+
+jobs:
+    install:
+        uses: ./.github/workflows/install.yml
+    test-unit:
+        needs: [install]
+        uses: ./.github/workflows/test-unit.yml
+    # lint:
+    #     needs: [install]
+    #     uses: ./.github/workflows/lint.yml
+    build:
+        needs: [install]
+        uses: ./.github/workflows/build.yml
+        with:
+            environment: alpha
+            region: internal
+            save: true
+    deploy:
+        needs: [test, build]
+        uses: ./.github/workflows/deploy-aws.yml
+        with:
+            environment: alpha
+            region: internal
+            aws-region: ap-northeast-2
+            aws-s3-bucket: kidsloop-alpha-live-crack-drake
+            aws-cloudfront-distribution-id: E2694SIA1FLALO
+
+

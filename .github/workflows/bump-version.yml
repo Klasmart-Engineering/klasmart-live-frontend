@@ -1,0 +1,11 @@
+name: Bump Version
+
+on:
+    workflow_dispatch:
+
+jobs:
+    install:
+        uses: ./.github/workflows/install.yml
+    generate-version:
+        needs: [install]
+        uses: ./.github/workflows/generate-version.yml
