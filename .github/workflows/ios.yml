@@ -69,15 +69,19 @@ jobs:
           FASTLANE: 1
           FASTLANE_DISABLE_COLORS: 1
           FASTLANE_PASSWORD: ${{secrets.FASTLANE_PASSWORD}}
-          MATCH_PASSWORD: ${{secrets.FASTLANE_PASSWORD}}
+          MATCH_PASSWORD: ${{secrets.MATCH_PASSWORD}}
           MATCH_KEYCHAIN_PASSWORD: ${{secrets.MATCH_KEYCHAIN_PASSWORD}}
           # APP_STORE_CONNECT_API_KEY_KEY_ID: ${{secrets.APPSTORE_KEY_ID}}
           # APP_STORE_CONNECT_API_KEY_KEY: ${{secrets.APPSTORE_KEY_PRIVATE}}
           PRIVATE_KEY: ${{ secrets.READONLY_SSH_PRIVATE_KEY }}
           SSH_KEYNAME: "readonly_pipeline_ed25519"
         run: |
+          echo "==KL============================="
+          echo "Authenticating with Apple connect. Creates a valid cookie and FASTLANE_SESSION" 
           eval $(bundle exec fastlane spaceauth -u build-machine@calmid.com 2>/dev/null | grep "export FASTLANE_SESSION")
 
+          echo "==KL============================="
+          echo "ssh magic(TM) workaround because fastlane's ruby decides it's convenient to forget how to read from the current repo"
           SSH_PATH="$HOME/.ssh"
           chmod 700 "$SSH_PATH"
           touch "$SSH_PATH/known_hosts"
@@ -88,9 +92,18 @@ jobs:
           eval $(ssh-agent)
           ssh-add "$SSH_PATH/$SSH_KEYNAME"
 
+          echo "==KL============================="
+          echo "disabling sensitive output"
           bundle exec fastlane run opt_out_usage
+
+          echo "==KL============================="
+          echo "signing certificates"
           bundle exec fastlane ios signing
+          echo "==KL============================="
+          echo "building the app"
           bundle exec fastlane ios build
+          echo "==KL============================="
+          echo "uploading to testflight/firebase/appStore"
           bundle exec fastlane ios publish
 
 # bundle exec fastlane precheck --verbose
