@@ -1,15 +1,25 @@
 name: (Job) Generate version
 
+concurrency: 
+    group: VersionGeneration
+    cancel-in-progress: true
+
 on:
     workflow_call:
+        secrets:
+            NODE_AUTH_TOKEN:
+                required: true
 
 jobs:
     generate-version:
         runs-on: ubuntu-latest
+        environment:
+            name: alpha-dev
+            url: https://hub.alpha.kidsloop.net
         steps:
           - uses: actions/checkout@v2
             with:
-                # persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal access token.
+                persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal access token.
                 fetch-depth: 0 # otherwise, there would be errors pushing refs to the destination repository.
           - uses: actions/setup-node@v2
             with:
@@ -34,6 +44,6 @@ jobs:
           - name: Push changes
             uses: ad-m/github-push-action@master
             with:
-                github_token: ${{ secrets.GITHUB_TOKEN }}
+                github_token: ${{ secrets.NODE_AUTH_TOKEN }}
                 branch: ${{ github.ref }}
                 tags: true

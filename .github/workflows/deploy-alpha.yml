@@ -1,5 +1,9 @@
 name: Deploy to Alpha
 
+concurrency: 
+    group: AlphaDeployment
+    cancel-in-progress: true
+
 on:
     push:
         tags: [ v*.*.* ]
@@ -23,8 +27,14 @@ jobs:
             environment: alpha
             region: internal
             save: true
-    deploy:
+    confirm-deployment:
         needs: [test-unit, build]
+        runs-on: ubuntu-latest
+        environment:
+            name: alpha-dev
+            url: https://hub.alpha.kidsloop.net
+    deploy:
+        needs: [confirm-deployment]
         uses: ./.github/workflows/deploy-aws.yml
         with:
             environment: alpha
