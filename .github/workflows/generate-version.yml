@@ -23,6 +23,11 @@ jobs:
                 path: ./node_modules
                 key: ${{ runner.os }}-${{ hashFiles('package-lock.json') }}
 
+          - name: Setup git user config
+            run: |
+                git config --global user.email "github-action@kidsloop.live"
+                git config --global user.name "GitHub Action"
+
           - name: Generate version
             run: npm run release
 
