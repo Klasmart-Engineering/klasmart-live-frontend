@@ -8,6 +8,8 @@ on:
 jobs:
     install:
         uses: ./.github/workflows/install.yml
+        secrets:
+            NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
     test-unit:
         needs: [install]
         uses: ./.github/workflows/test-unit.yml
@@ -22,7 +24,7 @@ jobs:
             region: internal
             save: true
     deploy:
-        needs: [test, build]
+        needs: [test-unit, build]
         uses: ./.github/workflows/deploy-aws.yml
         with:
             environment: alpha
@@ -30,5 +32,8 @@ jobs:
             aws-region: ap-northeast-2
             aws-s3-bucket: kidsloop-alpha-live-crack-drake
             aws-cloudfront-distribution-id: E2694SIA1FLALO
+        secrets:
+            AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_ALPHA_DEV }}
+            AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_ALPHA_DEV }}
 
 

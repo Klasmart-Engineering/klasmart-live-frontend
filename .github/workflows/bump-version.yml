@@ -6,6 +6,10 @@ on:
 jobs:
     install:
         uses: ./.github/workflows/install.yml
+        secrets:
+            NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
     generate-version:
         needs: [install]
         uses: ./.github/workflows/generate-version.yml
+        secrets:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -2,6 +2,9 @@ name: (Job) Install dependencies
 
 on:
     workflow_call:
+        secrets:
+            NODE_AUTH_TOKEN:
+                required: true
 
 jobs:
     install:
@@ -27,4 +30,4 @@ jobs:
             if: steps.cache-node_modules.outputs.cache-hit != 'true'
             run: npm ci
             env:
-                NODE_AUTH_TOKEN: ${{ secrets.PACKAGES_TOKEN }}
+                NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}

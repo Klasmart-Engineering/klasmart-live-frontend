@@ -18,6 +18,11 @@ on:
             aws-cloudfront-distribution-id:
                 required: true
                 type: string
+        secrets:
+            AWS_ACCESS_KEY_ID:
+                required: true
+            AWS_SECRET_ACCESS_KEY:
+                required: true
 
 jobs:
     deploy:
@@ -35,8 +40,8 @@ jobs:
               with:
                   aws-region: ${{ inputs.aws-region }}
               env:
-                  aws-access-key-id: ${{ secrets.PACKAGES_TOKEN }}
-                  aws-secret-access-key: ${{ secrets.PACKAGES_TOKEN }}
+                  aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                  aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
             - name: Upload to S3
               run: aws s3 sync dist s3://${{ inputs.aws-s3-bucket }}/
