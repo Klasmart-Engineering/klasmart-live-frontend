@@ -34,9 +34,7 @@ jobs:
     confirm-deployment:
         needs: [test-unit, build]
         runs-on: ubuntu-latest
-        environment:
-            name: alpha-dev
-            url: https://hub.alpha.kidsloop.net
+        environment: alpha-dev
         steps:
             - name: Debug message
               run: echo Deployment confirmed
