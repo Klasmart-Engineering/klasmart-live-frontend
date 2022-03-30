@@ -4,19 +4,21 @@ shallow_clone(true)
 # clone_branch_directly(true) # requires the branch to exist or it will fail
 git_url("git@github.com:KL-Engineering/kidsloop-live-frontend.git")
 git_branch("ios-build")
-readonly(false) # if true only fetches existing certs
-
+readonly(true) # if true only fetches existing certs
 generate_apple_certs(false)
-
 # must use the following with the CI account
-# keychain_name("github-build-machine.keychain")
-# api_key_path - https://docs.fastlane.tools/app-store-connect-api/#using-fastlane-api-key-json-file
-# api_key - https://docs.fastlane.tools/app-store-connect-api/#using-fastlane-api-key-hash-option
-# profile_name("")
+keychain_name("github-build-machine.keychain")
 
 app_identifier(["com.kidsloop.platform.student"])
 skip_confirmation(true)
 safe_remove_certs(true)
 skip_docs(true)
-
 verbose(true)
+username("build-machine@calmid.com")
+
+# MATCH_TYPE=appstore
+# MATCH_PLATFORM=ios
+
+# api_key_path - https://docs.fastlane.tools/app-store-connect-api/#using-fastlane-api-key-json-file
+# api_key - https://docs.fastlane.tools/app-store-connect-api/#using-fastlane-api-key-hash-option
+# profile_name("")
