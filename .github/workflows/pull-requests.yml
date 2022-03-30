@@ -9,12 +9,15 @@ jobs:
         uses: ./.github/workflows/install.yml
         secrets:
             NODE_AUTH_TOKEN: ${{ secrets.PACKAGES_TOKEN }}
+
     test-unit:
         needs: [install]
         uses: ./.github/workflows/test-unit.yml
+
     # lint:
     #     needs: [install]
     #     uses: ./.github/workflows/lint.yml
+
     build:
         needs: [install]
         uses: ./.github/workflows/build.yml

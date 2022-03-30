@@ -14,12 +14,15 @@ jobs:
         uses: ./.github/workflows/install.yml
         secrets:
             NODE_AUTH_TOKEN: ${{ secrets.PACKAGES_TOKEN }}
+
     test-unit:
         needs: [install]
         uses: ./.github/workflows/test-unit.yml
+
     # lint:
     #     needs: [install]
     #     uses: ./.github/workflows/lint.yml
+
     build:
         needs: [install]
         uses: ./.github/workflows/build.yml
@@ -27,6 +30,7 @@ jobs:
             environment: alpha
             region: internal
             save: true
+
     confirm-deployment:
         needs: [test-unit, build]
         runs-on: ubuntu-latest
@@ -35,7 +39,8 @@ jobs:
             url: https://hub.alpha.kidsloop.net
         steps:
             - name: Debug message
-              run: echo Echo
+              run: echo Deployment confirmed
+
     deploy:
         needs: [confirm-deployment]
         uses: ./.github/workflows/deploy-aws.yml
@@ -48,5 +53,3 @@ jobs:
         secrets:
             AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_ALPHA_DEV }}
             AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_ALPHA_DEV }}
-
-

@@ -6,6 +6,11 @@ concurrency:
 
 on:
     workflow_call:
+        inputs:
+            prerelease:
+                required: false
+                type: string
+                default: ''
         secrets:
             NODE_AUTH_TOKEN:
                 required: true
@@ -13,9 +18,6 @@ on:
 jobs:
     generate-version:
         runs-on: ubuntu-latest
-        environment:
-            name: alpha-dev
-            url: https://hub.alpha.kidsloop.net
         steps:
           - uses: actions/checkout@v2
             with:
@@ -35,10 +37,15 @@ jobs:
 
           - name: Setup git user config
             run: |
-                git config --global user.email "github-action@kidsloop.live"
-                git config --global user.name "GitHub Action"
+                git config --global user.email "KLG-SVC-Github-User@kidsloop.live"
+                git config --global user.name "github-user-kidsloop"
+
+          - name: Generate prerelease version
+            if: ${{ inputs.prerelease != '' }}
+            run: npm run release -- --prerelease ${{ inputs.prerelease }}
 
           - name: Generate version
+            if: ${{ inputs.prerelease == '' }}
             run: npm run release
 
           - name: Push changes

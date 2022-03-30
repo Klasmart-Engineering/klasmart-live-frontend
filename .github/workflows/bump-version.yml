@@ -2,12 +2,27 @@ name: Bump version
 
 on:
     workflow_dispatch:
+        inputs:
+            prerelease:
+                description: 'Prerelease tag (optional)'
+                required: false
+                type: string
+                default: ''
 
 jobs:
+    confirm-version-generation:
+        runs-on: ubuntu-latest
+        environment: alpha-dev
+        steps:
+            - name: Debug message
+              run: echo Version generation confirmed
+
     install:
+        needs: [confirm-version-generation]
         uses: ./.github/workflows/install.yml
         secrets:
             NODE_AUTH_TOKEN: ${{ secrets.PACKAGES_TOKEN }}
+
     generate-version:
         needs: [install]
         uses: ./.github/workflows/generate-version.yml
