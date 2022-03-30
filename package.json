@@ -111,7 +111,7 @@
     "@kl-engineering/cms-api-client": "2.2.3",
     "@kl-engineering/kidsloop-branding": "2.0.5",
     "@kl-engineering/kidsloop-canvas": "0.5.3-internal",
-    "@kl-engineering/kidsloop-px": "1.8.1",
+    "@kl-engineering/kidsloop-px": "1.0.9",
     "@kl-engineering/live-state": "1.4.2",
     "@kl-engineering/pdfjs-dist": "2.9.325",
     "@material-ui/core": "^4.10.1",
