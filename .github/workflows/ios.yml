@@ -21,7 +21,17 @@ jobs:
           node-version: 16
           token: ${{ secrets.PACKAGES_TOKEN }}
           cache: 'npm'
-      - name: setup fastlane
+
+      - name: Cache gems
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-ruby-gems
+        with:
+          path: /usr/local/lib/ruby/gems/2.7.0/gems/
+          key: ${{ env.cache-name }}-${{ hashFiles('**/Gemfile.lock') }}
+
+      - name: setup fastlane gems
+        if: steps.ache-ruby-gems.outputs.cache-hit != 'true'
         run: |
           ruby --version
           gem install bundler:1.17.2
@@ -30,19 +40,25 @@ jobs:
           bundle info fastlane
           bundle info dotenv
           gem cleanup
-      - name: Cache gems
-        uses: actions/cache@v2
-        env:
-          cache-name: cache-ruby-gems
-        with:
-          path: /usr/local/lib/ruby/gems/2.7.0/gems/
-          key: ${{ env.cache-name }}-${{ hashFiles('**/Gemfile.lock') }}
-          restore-keys: |
-            ${{ env.cache-name }}-
+
       - name: Setup Cordova
         run: |
           sudo npm install -g cordova
           cordova telemetry off
+
+      - name: Find node_modules cache
+        id: cache-node_modules
+        uses: actions/cache@v3
+        with:
+            path: ./node_modules
+            key: ${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+            
+      - name: Install dependencies
+        if: steps.cache-node_modules.outputs.cache-hit != 'true'
+        run: npm ci
+        env:
+            NPM_GITHUB_TOKEN: ${{ secrets.PACKAGES_TOKEN }}
+
       - name: Prep iOS development
         env:
           ENDPOINT_GQL: "https://live.kidsloop.net/graphql"
