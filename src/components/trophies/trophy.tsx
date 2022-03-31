@@ -6,7 +6,6 @@ import TrophyKinds,
 import TIMINGS from './trophyTimings';
 import { useTrophy } from '@/data/live/state/useTrophy';
 import { useSessionContext } from '@/providers/session-context';
-import { ClassType } from '@/store/actions';
 import React,
 {
     CSSProperties,
@@ -85,7 +84,7 @@ function locationOfElement (elementId?: string): { x: number | string; y: number
 export function Trophy (props: Props): JSX.Element {
     const { children } = props;
     const trophy = useTrophy();
-    const { classType } = useSessionContext();
+    const { isTeacher } = useSessionContext();
     const [ display, setDisplay ] = useState(false);
     const [ showLights, setShowLights ] = useState(false);
     const [ showReward, setShowReward ] = useState(false);
@@ -106,7 +105,9 @@ export function Trophy (props: Props): JSX.Element {
     const containerRef = useRef<HTMLDivElement>(null);
 
     const handleTrophy = (trophy: Trophy) => {
-        setWithAudio((trophy.from === trophy.user) || classType === ClassType.STUDY);
+        if(!isTeacher) {
+            setWithAudio(true);
+        }
         setAppearAt(locationOfElement(`participant:${trophy.from}`));
         setDisappearAt(locationOfElement(trophy.from !== trophy.user ? `participant:${trophy.user}` : undefined));
         if (TrophyKinds[trophy.kind]) {
@@ -187,14 +188,16 @@ export function Trophy (props: Props): JSX.Element {
     return (
         <div style={{
             pointerEvents: `none`,
-        }}>
+        }}
+        >
             <Transition
+                mountOnEnter
+                unmountOnExit
                 in={display}
                 timeout={TIMINGS.enterDuration}
-                mountOnEnter={true}
-                unmountOnExit={true}
                 onEntering={entering}
-                onEntered={entered}>
+                onEntered={entered}
+            >
                 {state => (
                     <div
                         ref={containerRef}
@@ -202,11 +205,13 @@ export function Trophy (props: Props): JSX.Element {
                         style={{
                             ...containerStyle,
                             ...containerTransitionStates[state],
-                        }}>
+                        }}
+                    >
                         <Lights
                             display={showLights}
                             enterDuration={TIMINGS.lights.enterDuration}
-                            angle={lightAngle} />
+                            angle={lightAngle}
+                        />
                         <Reward
                             display={showReward}
                             enterDuration={TIMINGS.reward.enterDuration}
@@ -223,7 +228,8 @@ export function Trophy (props: Props): JSX.Element {
                 display={showConfetti}
                 width={containerWidth}
                 height={containerHeight}
-                enterDuration={TIMINGS.confetti.enterDuration} />
+                enterDuration={TIMINGS.confetti.enterDuration}
+            />
         </div>
     );
 }
