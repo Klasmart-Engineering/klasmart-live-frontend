@@ -4,7 +4,7 @@ on:
     workflow_dispatch:
         inputs:
             prerelease:
-                description: 'Prerelease tag (optional)'
+                description: Prerelease tag (optional)
                 required: false
                 type: string
                 default: ''
@@ -19,12 +19,12 @@ jobs:
 
     install:
         needs: [confirm-version-generation]
-        uses: ./.github/workflows/install.yml
+        uses: KL-Engineering/github-action-workflows/.github/workflows/npm-ci.yml@v1.1.4
         secrets:
             NODE_AUTH_TOKEN: ${{ secrets.PACKAGES_TOKEN }}
 
     generate-version:
         needs: [install]
-        uses: ./.github/workflows/generate-version.yml
+        uses: KL-Engineering/github-action-workflows/.github/workflows/npm-generate-version.yml@v1.1.4
         secrets:
             NODE_AUTH_TOKEN: ${{ secrets.PACKAGES_TOKEN }}

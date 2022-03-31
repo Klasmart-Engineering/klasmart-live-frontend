@@ -218,28 +218,6 @@
       "android"
     ]
   },
-  "standard-version": {
-    "commitUrlFormat": "{{host}}/{{owner}}/{{repository}}/commits/{{hash}}",
-    "compareUrlFormat": "{{host}}/{{owner}}/{{repository}}/branches/compare/{{currentTag}}%0D{{previousTag}}",
-    "issueUrlFormat": "https://calmisland.atlassian.net/browse/KLL-{{id}}",
-    "issuePrefixes": [
-      "KLL-"
-    ],
-    "bumpFiles": [
-      {
-        "filename": "package.json",
-        "type": "json"
-      },
-      {
-        "filename": "package-lock.json",
-        "type": "json"
-      },
-      {
-        "filename": "config.xml",
-        "updater": "scripts/bump-cordova-version.js"
-      }
-    ]
-  },
   "config": {
     "commitizen": {
       "path": "cz-conventional-changelog"
