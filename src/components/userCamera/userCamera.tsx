@@ -9,6 +9,7 @@ import { BG_COLOR_CAMERA } from "@/config";
 import { useSessions } from "@/data/live/state/useSessions";
 import { Session } from "@/pages/utils";
 import { useSessionContext } from "@/providers/session-context";
+import { useStream } from "@kl-engineering/live-state/ui";
 import {
     Grid,
     makeStyles,
@@ -16,13 +17,13 @@ import {
     useTheme,
 } from "@material-ui/core";
 import clsx from "clsx";
-import { useStream } from "@kl-engineering/live-state/ui";
 import React,
 {
     useEffect,
     useRef,
     useState,
 } from "react";
+import { useInViewport } from "react-in-viewport";
 import { useIntl } from "react-intl";
 import { useRecoilValue } from "recoil";
 
@@ -84,7 +85,7 @@ interface UserCameraProps {
     variant?: "medium" | "large" | "small";
 }
 
-const UserCamera =  ({
+const UserCamera = ({
     user,
     variant,
     actions = true,
@@ -108,6 +109,7 @@ const UserCamera =  ({
 
     const mediaRef = useRef<HTMLVideoElement>(null);
     const isAudioActive = false;
+    const { inViewport } = useInViewport(mediaRef);
 
     useEffect(() => {
         if(!mediaRef.current) { return; }
@@ -137,6 +139,27 @@ const UserCamera =  ({
             video.track,
         ]);
     }
+
+    const pauseCameraTimeout = useRef<NodeJS.Timeout>();
+    useEffect(() => {
+        if (variant === `large` || isSelf || userSession?.isHost) return;
+        if (inViewport) {
+            if (pauseCameraTimeout.current) {
+                clearTimeout(pauseCameraTimeout.current);
+            }
+            video.pause.execute(false);
+        } else {
+            pauseCameraTimeout.current = setTimeout(() => {
+                video.pause.execute(true);
+            }, 3000);
+        }
+
+        return () => {
+            if (pauseCameraTimeout.current) {
+                clearTimeout(pauseCameraTimeout.current);
+            }
+        };
+    }, [ inViewport, userSession?.isHost ]);
 
     return (
         <Grid
@@ -174,7 +197,7 @@ const UserCamera =  ({
                 <video
                     ref={mediaRef}
                     autoPlay
-                    playsInline={true}
+                    playsInline
                     muted={isSelf}
                     id={`camera:${userSession?.id}`}
                     className={classes.video}
