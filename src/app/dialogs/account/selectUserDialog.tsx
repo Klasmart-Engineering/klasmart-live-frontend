@@ -17,6 +17,7 @@ import {
     shouldShowNoStudentRoleState,
 } from "@/app/model/appModel";
 import { useQueryClient } from "@kl-engineering/cms-api-client";
+import { THEME_BACKGROUND_SELECT_DIALOG } from "@/config";
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from "@material-ui/core/DialogContent";
 import { makeStyles } from '@material-ui/core/styles';
@@ -38,6 +39,7 @@ const useStyles = makeStyles((theme) => ({
     content: {
         paddingLeft: theme.spacing(2),
         paddingRight: theme.spacing(2),
+        backgroundColor: THEME_BACKGROUND_SELECT_DIALOG,
     },
 }));
 
@@ -210,7 +212,8 @@ export function SelectUserDialog () {
         >
             <AppBar
                 title={intl.formatMessage({
-                    id: `account_selectUser_whichUser`,
+                    id: `account_selectUser`,
+                    defaultMessage: `Select a Profile`,
                 })}
                 leading={<BackButton onClick={handleBackClick} />}
             />

@@ -1,16 +1,13 @@
 import { ReadUserDto } from "@/app/data/user/dto/readUserDto";
 import {
-    Divider,
-    ListItem,
-    ListItemAvatar,
-    ListItemIcon,
+    THEME_COLOR_INACTIVE_BUTTON,
+    THEME_COLOR_PRIMARY_SELECT_DIALOG,
+} from "@/config";
+import {
+    Grid,
     ListItemText,
 } from "@material-ui/core";
-import {
-    makeStyles,
-    useTheme,
-} from "@material-ui/core/styles";
-import { Check as CheckIcon } from "@styled-icons/bootstrap/Check";
+import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import { UserAvatar } from "@kl-engineering/kidsloop-px";
 import React,
@@ -19,11 +16,8 @@ import { useIntl } from "react-intl";
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        paddingTop: theme.spacing(2),
-        paddingBottom: theme.spacing(2),
-    },
-    listItemSelected: {
-        fontWeight: theme.typography.fontWeightBold as number,
+        paddingTop: theme.spacing(3),
+        paddingBottom: theme.spacing(3),
     },
     divider: {
         margin: theme.spacing(0, 2),
@@ -31,6 +25,34 @@ const useStyles = makeStyles((theme) => ({
     checkIcon: {
         color: theme.palette.success.main,
         margin: `0 auto`,
+    },
+    profileName: {
+        textAlign: `center`,
+        paddingTop: theme.spacing(1),
+        fontWeight: theme.typography.fontWeightMedium as number,
+        color: THEME_COLOR_INACTIVE_BUTTON,
+        display: `-webkit-box`,
+        overflow: `hidden`,
+        WebkitBoxOrient: `vertical`,
+        WebkitLineClamp: 2,
+        [theme.breakpoints.down(`sm`)]: {
+            fontSize: `1rem`,
+        },
+    },
+    listItemSelected: {
+        color: THEME_COLOR_PRIMARY_SELECT_DIALOG,
+        fontWeight: theme.typography.fontWeightBold as number,
+    },
+    userAvatar: {
+        border: `solid 3px transparent`,
+        borderRadius: 70,
+        [theme.breakpoints.up(`sm`)]: {
+            width: `100px !important`,
+            height: `100px !important`,
+        },
+    },
+    userAvatarSelected: {
+        border: `solid 3px ${THEME_COLOR_PRIMARY_SELECT_DIALOG}`,
     },
 }));
 
@@ -75,32 +97,36 @@ export const UserListItem: React.FC<Props> = ({
 
     return (
         <>
-            <ListItem
-                button
+            <Grid
+                container
                 className={classes.root}
+                direction="column"
+                justifyContent="center"
+                alignItems="center"
                 onClick={() => onClick?.(user)}
             >
-                <ListItemAvatar>
-                    <UserAvatar name={displayName ?? ``} />
-                </ListItemAvatar>
-                <ListItemText
-                    primary={displayName ?? ``}
-                    secondary={subTitle}
-                    primaryTypographyProps={{
-                        className: clsx({
-                            [classes.listItemSelected] : isSelected,
-                        }),
-                    }}
-                />
-                {isSelected &&
-                    <ListItemIcon>
-                        <CheckIcon
-                            className={classes.checkIcon}
-                            size={36} />
-                    </ListItemIcon>
-                }
-            </ListItem>
-            <Divider className={classes.divider} />
+                <Grid item>
+                    <UserAvatar
+                        className={clsx(classes.userAvatar, {
+                            [classes.userAvatarSelected]: isSelected,
+                        })}
+                        name={displayName ?? ``}
+                        size="large"
+                    />
+                </Grid>
+                <Grid item>
+                    <ListItemText
+                        primary={displayName ?? ``}
+                        secondary={subTitle}
+                        primaryTypographyProps={{
+                            className: clsx(classes.profileName, {
+                                [classes.listItemSelected]: isSelected,
+                            }),
+                            variant: `h5`,
+                        }}
+                    />
+                </Grid>
+            </Grid>
         </>
     );
 };
