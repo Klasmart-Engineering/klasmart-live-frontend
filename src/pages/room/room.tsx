@@ -10,11 +10,11 @@ import {
     ClassInformation,
     classInfoState,
     hasControlsState,
+    showEndStudyState,
 } from "@/store/layoutAtoms";
 import { classGetInformation } from "@/utils/utils";
 import {
     Box,
-    Grid,
     makeStyles,
     useMediaQuery,
     useTheme,
@@ -26,7 +26,10 @@ import React,
     useEffect,
     useState,
 } from 'react';
-import { useSetRecoilState } from "recoil";
+import {
+    useRecoilValue,
+    useSetRecoilState,
+} from "recoil";
 
 const useStyles = makeStyles(() => ({
     root: {
@@ -37,7 +40,7 @@ const useStyles = makeStyles(() => ({
     rootSafeArea:{
         paddingLeft: `env(safe-area-inset-left)`, // iPhone Notch
     },
-    study: {
+    blueBackground: {
         backgroundImage: `url('${background_study_blue}')`,
         backgroundSize: `cover`,
         backgroundPosition: `left bottom`,
@@ -51,8 +54,8 @@ export function Room () {
 
     const [ classInfo, setClassInfo ] = useState<ClassInformation>();
     const setRecoilClassInfo = useSetRecoilState(classInfoState);
-
     const setHasControls = useSetRecoilState(hasControlsState);
+    const showEndStudy = useRecoilValue(showEndStudyState);
     const deviceOrientation = useDeviceOrientationValue();
 
     const {
@@ -147,7 +150,7 @@ export function Room () {
         <Box
             flexDirection={isXsDown ? `column` : `row`}
             className={clsx(classes.root, {
-                [classes.study]: classType === ClassType.STUDY,
+                [classes.blueBackground]: classType === ClassType.STUDY || showEndStudy,
                 [classes.rootSafeArea]: deviceOrientation === `landscape-primary`,
             })}
         >

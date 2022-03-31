@@ -5,7 +5,10 @@ import Toolbar from "@/components/toolbar/toolbar";
 import { THEME_COLOR_GREY_200 } from "@/config";
 import { useSessionContext } from "@/providers/session-context";
 import { ClassType } from "@/store/actions";
-import { mainActivitySizeState } from "@/store/layoutAtoms";
+import {
+    mainActivitySizeState,
+    showEndStudyState,
+} from "@/store/layoutAtoms";
 import {
     Grid,
     makeStyles,
@@ -15,7 +18,10 @@ import clsx from "clsx";
 import React,
 { useEffect } from "react";
 import { useResizeDetector } from 'react-resize-detector';
-import { useSetRecoilState } from "recoil";
+import {
+    useRecoilValue,
+    useSetRecoilState,
+} from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
     fullHeight: {
@@ -44,6 +50,8 @@ function Main () {
     const classes = useStyles();
     const { classType } = useSessionContext();
     const setMainActivitySize = useSetRecoilState(mainActivitySizeState);
+    const showEndStudy = useRecoilValue(showEndStudyState);
+
     const {
         ref: containerRef,
         height: containerHeight = 0,
@@ -87,9 +95,11 @@ function Main () {
                             {classType === ClassType.LIVE ? <MainView /> : <MainClass />}
                         </div>
                     </Grid>
-                    <Grid item>
-                        <MainDrawer />
-                    </Grid>
+                    {!showEndStudy && (
+                        <Grid item>
+                            <MainDrawer />
+                        </Grid>
+                    )}
                 </Grid>
             </Grid>
             {classType === ClassType.LIVE && (

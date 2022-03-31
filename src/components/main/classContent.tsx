@@ -14,7 +14,6 @@ import {
 } from "@material-ui/core/styles";
 import { ChevronLeft as ArrowBackIcon } from "@styled-icons/entypo/ChevronLeft";
 import { ChevronRight as ArrowForwardIcon } from "@styled-icons/entypo/ChevronRight";
-import { Exit as ExitIcon } from "@styled-icons/icomoon/Exit";
 import clsx from "clsx";
 import React,
 {
@@ -107,11 +106,9 @@ const useStyles = makeStyles((theme: Theme) => ({
 export function ClassContent () {
     const {
         classType,
-        isTeacher,
         materials,
         sessionId,
         roomId,
-
     } = useSessionContext();
 
     const classes = useStyles();
@@ -120,7 +117,6 @@ export function ClassContent () {
     const [ showEndStudy, setShowEndStudy ] = useRecoilState(showEndStudyState);
     const rootDivRef = useRef<HTMLDivElement>(null);
     const [ , setSquareSize ] = useState<number>(0);
-    const forStudent = classType === ClassType.STUDY || !isTeacher;
     const [ rewardTrophyMutation ] = useRewardTrophyMutation();
 
     const handlePrev = () => {
@@ -173,10 +169,10 @@ export function ClassContent () {
             <Grid
                 item
                 xs>
-                {showEndStudy ?
+                {showEndStudy ? (
                     <div className={classes.centeredContent}>
                         <ExitStudy />
-                    </div> :
+                    </div> ) : (
                     <div className={clsx(classes.content, {
                         [classes.contentClass]: classType === ClassType.CLASSES,
                     })}>
@@ -185,7 +181,8 @@ export function ClassContent () {
                             id="activity-view-container">
                             <PreviewLessonPlan />
                         </div>
-                    </div> }
+                    </div>
+                )}
             </Grid>
             <Grid
                 item
