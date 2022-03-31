@@ -55,7 +55,9 @@ jobs:
             
       - name: Install dependencies
         if: steps.cache-node_modules.outputs.cache-hit != 'true'
-        run: npm ci
+        run: |
+          sudo chown -R 501:20 "/Users/runner/.npm"
+          npm ci
         env:
             NPM_GITHUB_TOKEN: ${{ secrets.PACKAGES_TOKEN }}
 
@@ -68,8 +70,6 @@ jobs:
           IS_CORDOVA_BUILD: "true"
           NPM_GITHUB_TOKEN: ${{secrets.PACKAGES_TOKEN}}
         run: |
-          sudo chown -R 501:20 "/Users/runner/.npm"
-          npm ci
           npm run build:app
           ./scripts/parse-cordova-private-plugins.sh
           cordova prepare ios
