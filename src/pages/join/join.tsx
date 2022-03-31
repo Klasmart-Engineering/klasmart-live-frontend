@@ -1,3 +1,4 @@
+/* eslint-disable react/no-multi-comp */
 import { CameraPreview } from "./cameraPreview";
 import { MicrophonePreview } from "./microphonePreview";
 import BackButton from "@/app/components/layout/BackButton";
@@ -20,8 +21,13 @@ import {
     classEndedState,
     classLeftState,
     hasJoinedClassroomState,
+    showSelectAttendeesState,
 } from "@/store/layoutAtoms";
 import { getOrganizationBranding } from "@/utils/utils";
+import {
+    useCamera,
+    useMicrophone,
+} from "@kl-engineering/live-state/ui";
 import {
     Box,
     Grid,
@@ -46,10 +52,6 @@ import { MicMuteFill as MicDisabledIcon } from "@styled-icons/bootstrap/MicMuteF
 import { InfoCircle as InfoCircleIcon } from "@styled-icons/boxicons-solid/InfoCircle";
 import clsx from "clsx";
 import Cookies from "js-cookie";
-import {
-    useCamera,
-    useMicrophone,
-} from "@kl-engineering/live-state/ui";
 import React,
 {
     Dispatch,
@@ -178,6 +180,7 @@ export default function Join (): JSX.Element {
 
     const setClassEnded = useSetRecoilState(classLeftState);
     const setClassLeft = useSetRecoilState(classEndedState);
+    const setShowSelectAttendees = useSetRecoilState(showSelectAttendeesState);
 
     const history = useHistory();
     const { restart } = useCordovaSystemContext();
@@ -185,6 +188,8 @@ export default function Join (): JSX.Element {
     useEffect(() => {
         setClassEnded(false);
         setClassLeft(false);
+        setShowSelectAttendees(classType === ClassType.CLASSES);
+
         Cookies.set(`roomUserId`, `${roomId}:${user_id}`); // Used to cache H5P answers (H5P-342)
     }, []);
 
@@ -206,7 +211,8 @@ export default function Join (): JSX.Element {
     return (
         <div className={clsx(classes.root, {
             [classes.rootTeacher]: isTeacher,
-        })}>
+        })}
+        >
             {process.env.IS_CORDOVA_BUILD &&
                 <div className={classes.appHeader}>
                     <BackButton onClick={onCloseButtonClick} />
@@ -226,13 +232,15 @@ export default function Join (): JSX.Element {
                         id={name ? `hello` : `join_your_class`}
                         values={{
                             name,
-                        }} />
+                        }}
+                    />
                 </Typography>
                 <div
                     className={classes.headerBg}
                     style={{
                         background: brandingAsync.result?.primaryColor && brandingAsync.result?.primaryColor,
-                    }}></div>
+                    }}
+                />
             </div>
             <Grid
                 container
@@ -257,17 +265,19 @@ export default function Join (): JSX.Element {
                                     <Grid
                                         item
                                         xs={6}
-                                        md={7}>
+                                        md={7}
+                                    >
                                         <Box position="relative">
-                                            <CameraPreview paused={cameraPaused}/>
+                                            <CameraPreview paused={cameraPaused} />
 
                                             <Box
                                                 position="absolute"
                                                 bottom="20px"
                                                 width="100%"
                                                 display="flex"
-                                                justifyContent="center">
-                                                <MicrophonePreview paused={microphonePaused}/>
+                                                justifyContent="center"
+                                            >
+                                                <MicrophonePreview paused={microphonePaused} />
                                             </Box>
                                         </Box>
                                     </Grid>
@@ -276,7 +286,8 @@ export default function Join (): JSX.Element {
                                     <Grid
                                         container
                                         justifyContent="center"
-                                        alignItems="center">
+                                        alignItems="center"
+                                    >
                                         <Grid item>
                                             <ClassTypeLogo />
                                         </Grid>
@@ -327,11 +338,14 @@ function ClassTypeLogo (): JSX.Element {
         }
     };
 
-    return (<img
-        alt="KidsLoop Live"
-        src={getImgSrc()}
-        height={IMG_HEIGHT}
-        className={logo} />);
+    return (
+        <img
+            alt="KidsLoop Live"
+            src={getImgSrc()}
+            height={IMG_HEIGHT}
+            className={logo}
+        />
+    );
 }
 
 const useStylesJoinRoomForm = makeStyles((theme) => createStyles({
@@ -389,44 +403,54 @@ const JoinRoomForm: VoidFunctionComponent<{
         if(!microphonePaused) { microphone.setSending.execute(true); }
     }
 
-    const nameHelperText = <span style={{
-        display: `flex`,
-        alignItems: `center`,
-    }}>
-        <StyledIcon
-            icon={<InfoCircleIcon />}
-            size="small"
-            color="#dc004e" />
-        <Typography variant="caption">
-            <FormattedMessage id="error_empty_name" />
-        </Typography>
-    </span>;
+    const nameHelperText = (
+        <span style={{
+            display: `flex`,
+            alignItems: `center`,
+        }}
+        >
+            <StyledIcon
+                icon={<InfoCircleIcon />}
+                size="small"
+                color="#dc004e"
+            />
+            <Typography variant="caption">
+                <FormattedMessage id="error_empty_name" />
+            </Typography>
+        </span>
+    );
 
     return (
         <form onSubmit={join}>
             <Grid
                 container
                 direction="column"
-                spacing={2}>
+                spacing={2}
+            >
                 {!isSmDown && classType === ClassType.LIVE && (
                     <Grid item>
                         <ClassTypeLogo />
                     </Grid>
                 )}
-                {!name && <Grid
+                {!name &&
+                <Grid
                     item
-                    xs><StyledTextField
+                    xs
+                >
+                    <StyledTextField
                         fullWidth
                         label={<FormattedMessage id="what_is_your_name" />}
                         value={user}
                         error={hasNameError}
                         helperText={nameHelperText}
                         onChange={(e) => setUser(e.target.value)}
-                    /></Grid>
+                    />
+                </Grid>
                 }
                 <Grid
                     item
-                    xs>
+                    xs
+                >
                     <Grid
                         container
                         spacing={2}
@@ -438,8 +462,9 @@ const JoinRoomForm: VoidFunctionComponent<{
                                 className={clsx(classes.iconButton, {
                                     [classes.iconButtonPaused]: microphonePaused,
                                 })}
-                                onClick={() => setMicrophonePaused(x => !x)} >
-                                {!microphonePaused  ? <MicFillIcon size="1.25em"/> : <MicDisabledIcon size="1.25em"/>}
+                                onClick={() => setMicrophonePaused(x => !x)}
+                            >
+                                {!microphonePaused ? <MicFillIcon size="1.25em" /> : <MicDisabledIcon size="1.25em" />}
                             </IconButton>
                         </Grid>
                         {classType === ClassType.LIVE && (
@@ -452,7 +477,7 @@ const JoinRoomForm: VoidFunctionComponent<{
                                     }}
                                     onClick={() => setCameraPaused(x => !x)}
                                 >
-                                    {!cameraPaused ? <CameraVideoFillIcon size="1.25em"/> : <CameraDisabledIcon size="1.25em"/>}
+                                    {!cameraPaused ? <CameraVideoFillIcon size="1.25em" /> : <CameraDisabledIcon size="1.25em" />}
                                 </IconButton>
                             </Grid>
                         )}
@@ -461,18 +486,21 @@ const JoinRoomForm: VoidFunctionComponent<{
 
                 <Grid
                     item
-                    xs>
+                    xs
+                >
                     <Box
                         my={1}
                         display="flex"
-                        justifyContent="center">
+                        justifyContent="center"
+                    >
                         <MediaDeviceSelect kind="audioinput" />
                     </Box>
                     {classType === ClassType.LIVE && (
                         <Box
                             my={1}
                             display="flex"
-                            justifyContent="center">
+                            justifyContent="center"
+                        >
                             <MediaDeviceSelect kind="videoinput" />
                         </Box>
                     )}

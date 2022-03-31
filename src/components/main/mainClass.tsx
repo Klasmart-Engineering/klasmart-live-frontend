@@ -1,26 +1,35 @@
+/* eslint-disable react/no-multi-comp */
+import ClassAttendeesList from "../classAttendeesList/ClassAttendeesList";
+import ClassDrawer from "../classDrawer/ClassDrawer";
+import ClassSidebar from "../classSidebar/ClassSidebar";
 import { ClassContent } from "./classContent";
-import { CloseIconButton } from "@/app/components/icons/closeIconButton";
-import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
-import { usePopupContext } from "@/app/context-provider/popup-context";
-import { WBToolbarContainer } from "@/components/classContent/WBToolbar";
+import Plan from "./lessonPlan/plan/plan";
 import StyledIcon from "@/components/styled/icon";
-import {
-    TEXT_COLOR_SECONDARY_DEFAULT,
-    THEME_COLOR_BACKGROUND_PAPER,
-} from "@/config";
+import { THEME_COLOR_PRIMARY_DEFAULT } from "@/config";
 import { useSessionContext } from "@/providers/session-context";
 import { ClassType } from "@/store/actions";
-import { showEndStudyState } from "@/store/layoutAtoms";
 import {
+    ActiveClassDrawerState,
+    selectedAttendeesState,
+    showEndStudyState,
+    showSelectAttendeesState,
+} from "@/store/layoutAtoms";
+import {
+    Box,
+    Grid,
+    IconButton,
     makeStyles,
     Theme,
 } from "@material-ui/core";
-import { Close as CloseIcon } from "@styled-icons/material/Close";
+import { PencilFill as SelectAttendeesIcon } from "@styled-icons/bootstrap/PencilFill";
 import clsx from "clsx";
-import React, { useEffect } from "react";
-import { useIntl } from "react-intl";
-import { useHistory } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import React from "react";
+import { FormattedMessage } from "react-intl";
+import {
+    useRecoilState,
+    useRecoilValue,
+    useSetRecoilState,
+} from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
     safeArea: {
@@ -36,64 +45,84 @@ const useStyles = makeStyles((theme: Theme) => ({
         top: theme.spacing(1.5),
         right: theme.spacing(3),
     },
+    iconButton: {
+        backgroundColor: THEME_COLOR_PRIMARY_DEFAULT,
+        padding: theme.spacing(0.75),
+        "& svg": {
+            color: theme.palette.common.white,
+        },
+        "&:hover": {
+            backgroundColor: THEME_COLOR_PRIMARY_DEFAULT,
+        },
+    },
 }));
 
 function MainClass () {
     const classes = useStyles();
-    const { classType } = useSessionContext();
-    const [ showEndStudy, setShowEndStudy ] = useRecoilState(showEndStudyState);
-    const history = useHistory();
-    const { restart } = useCordovaSystemContext();
-    const { showPopup } = usePopupContext();
-    const intl = useIntl();
+    const showEndStudy = useRecoilValue(showEndStudyState);
+    const selectedAttendees = useRecoilValue(selectedAttendeesState);
+    const setShowSelectParticipants = useSetRecoilState(showSelectAttendeesState);
+    const [ activeClassDrawer, setActiveClassDrawer ] = useRecoilState(ActiveClassDrawerState);
 
-    const onCloseButtonClick = () => {
-        showPopup({
-            variant: `info`,
-            title: intl.formatMessage({
-                id: `study.exit.title`,
-                defaultMessage: `Are you sure you want to exit?`,
-            }),
-            description: [
-                intl.formatMessage({
-                    id: `study.exit.body`,
-                    defaultMessage: `Your progress will not be saved.`,
-                }),
-            ],
-            closeLabel: intl.formatMessage({
-                id: `common_ok`,
-                defaultMessage: `OK`,
-            }),
-            showCloseIcon: true,
-            onClose: () => {
-                if (restart) {
-                    restart();
-                } else {
-                    history.push(`/schedule`);
-                }
-            },
-        });
+    const { classType } = useSessionContext();
+
+    const ButtonSelectAttendees = () => {
+        return (
+            <IconButton
+                className={classes.iconButton}
+                onClick={()=> {
+                    setShowSelectParticipants(true);
+                    setActiveClassDrawer(``);
+                }}
+            >
+                <StyledIcon
+                    icon={<SelectAttendeesIcon />}
+                    size="1rem"
+                />
+            </IconButton>
+        );
     };
 
     return (
-        <div className={clsx(classes.fullHeight, {
-            [classes.safeArea]: !process.env.IS_CORDOVA_BUILD,
-        })}>
-            <ClassContent />
-            {!showEndStudy && <>
-                <WBToolbarContainer useLocalDisplay={classType !== ClassType.LIVE} />
-                {
-                    classType === ClassType.STUDY && process.env.IS_CORDOVA_BUILD && <div
-                        className={classes.closeButton}
-                        onClick={onCloseButtonClick}>
-                        <StyledIcon
-                            icon={<CloseIcon />}
-                            size={`xlarge`}
-                            color={THEME_COLOR_BACKGROUND_PAPER} />
-                    </div>
-                }
-            </> }
-        </div>
+        <>
+            <Grid
+                container
+                className={clsx(classes.fullHeight, {
+                    [classes.safeArea]: !process.env.IS_CORDOVA_BUILD,
+                })}
+            >
+                {!showEndStudy && classType === ClassType.CLASSES && (
+                    <Grid item>
+                        <ClassSidebar />
+                    </Grid>
+                )}
+                <Grid
+                    item
+                    xs
+                >
+                    <Box
+                        py={4}
+                        height="100%"
+                        boxSizing="border-box"
+                    >
+                        <ClassContent />
+                    </Box>
+                </Grid>
+            </Grid>
+            <ClassDrawer
+                active={Boolean(activeClassDrawer === `participants`)}
+                title={<FormattedMessage id="title_participants" />}
+                titleAction={<ButtonSelectAttendees />}
+            >
+                <ClassAttendeesList attendees={selectedAttendees} />
+            </ClassDrawer>
+            <ClassDrawer
+                active={Boolean(activeClassDrawer === `lessonPlan`)}
+                title={<FormattedMessage id="title_lesson_plan" />}
+            >
+                <Plan />
+            </ClassDrawer>
+        </>
     );
 }
 

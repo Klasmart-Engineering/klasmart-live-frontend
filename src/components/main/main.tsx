@@ -1,5 +1,4 @@
 import MainClass from "@/components/main/mainClass";
-import MainDrawer from "@/components/main/mainDrawer";
 import MainView from "@/components/main/mainView";
 import Toolbar from "@/components/toolbar/toolbar";
 import { THEME_COLOR_GREY_200 } from "@/config";
@@ -36,10 +35,6 @@ const useStyles = makeStyles((theme: Theme) => ({
         alignItems: `center`,
         justifyContent: `center`,
     },
-    activityContainerStudy: {
-        padding: theme.spacing(1, 2, 2, 2),
-        boxSizing: `border-box`,
-    },
     activityContainerLive: {
         backgroundColor: THEME_COLOR_GREY_200,
         borderRadius: theme.spacing(1.5),
@@ -74,33 +69,17 @@ function Main () {
             <Grid
                 item
                 xs
-                className={classes.contentContainer}
+                className={clsx({
+                    [classes.contentContainer]: classType === ClassType.LIVE,
+                })}
                 id="main-content"
             >
-                <Grid
-                    container
-                    className={classes.fullHeight}
+                <div
+                    ref={containerRef}
+                    className={clsx(classes.activityContainer, classes.fullHeight)}
                 >
-                    <Grid
-                        item
-                        xs
-                    >
-                        <div
-                            ref={containerRef}
-                            className={clsx(classes.activityContainer, classes.fullHeight, {
-                                [classes.activityContainerStudy]: classType === ClassType.STUDY || classType === ClassType.CLASSES,
-                                [classes.activityContainerLive]: classType === ClassType.LIVE,
-                            })}
-                        >
-                            {classType === ClassType.LIVE ? <MainView /> : <MainClass />}
-                        </div>
-                    </Grid>
-                    {!showEndStudy && (
-                        <Grid item>
-                            <MainDrawer />
-                        </Grid>
-                    )}
-                </Grid>
+                    {classType === ClassType.LIVE ? <MainView /> : <MainClass />}
+                </div>
             </Grid>
             {classType === ClassType.LIVE && (
                 <Grid item>

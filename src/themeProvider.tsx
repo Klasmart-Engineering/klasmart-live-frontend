@@ -15,11 +15,14 @@ import {
     createTheme,
     responsiveFontSizes,
     Theme,
+    useTheme,
 } from "@material-ui/core/styles";
 import { PaletteOptions } from "@material-ui/core/styles/createPalette";
 import { TypographyOptions } from "@material-ui/core/styles/createTypography";
 
 export function themeProvider (languageCode: string, themeMode: string) {
+    const defaultTheme = useTheme();
+
     function setTypography (languageCode: string) {
         let localeFontFamily = `Inter`;
         const localeWeightLight = 300;
@@ -123,28 +126,38 @@ export function themeProvider (languageCode: string, themeMode: string) {
                 borderRadius: 8,
             },
         },
-        MuiStepper:{
-            root:{
+        MuiStepper: {
+            root: {
                 background: `transparent`,
+                padding: 0,
+            },
+        },
+        MuiStep: {
+            root: {
+                margin: defaultTheme.spacing(0.5, 0),
+                padding: defaultTheme.spacing(1.25),
+                borderRadius: defaultTheme.spacing(1),
+            },
+        },
+        MuiStepConnector: {
+            root: {
+                display: `none`,
             },
         },
         MuiStepButton: {
             root: {
-                cursor: `pointer`,
-                marginBottom: 8,
-                marginLeft: -1,
-
                 "&.Mui-disabled": {
                     opacity: `0.3`,
                 },
             },
         },
-        MuiStepLabel:{
-            label:{
+        MuiStepLabel: {
+            label: {
                 color: `inherit`,
                 opacity: 0.6,
                 fontSize: `0.85rem`,
-                "&$active":{
+                textAlign: `left` as const,
+                "&$active": {
                     opacity: 1,
                     fontWeight: localeTypography.localeWeightBold,
                 },
@@ -179,12 +192,6 @@ export function themeProvider (languageCode: string, themeMode: string) {
             },
         },
     };
-
-    if (themeMode === `student`) {
-        palette.background = {
-            default: `red`,
-        };
-    }
 
     let theme: Theme;
     if (themeMode === `light`) {

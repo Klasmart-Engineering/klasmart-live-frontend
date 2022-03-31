@@ -1,5 +1,7 @@
+/* eslint-disable react/no-multi-comp */
 import ExitStudy from "./exitStudy/exitStudy";
 import PreviewLessonPlan from "./previewLessonPlan";
+import { TEXT_COLOR_LIVE_PRIMARY } from "@/config";
 import { useRewardTrophyMutation } from "@/data/live/mutations/useRewardTrophyMutation";
 import { useSessionContext } from "@/providers/session-context";
 import { ClassType } from "@/store/actions";
@@ -24,26 +26,9 @@ import React,
 import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
-    arrowButtonStudy: {
+    arrowButton: {
         cursor: `pointer`,
         color: theme.palette.common.white,
-    },
-    arrowButton: {
-        borderRadius: 50,
-        background: `#619bd8`,
-        boxShadow: `0 10px 15px rgb(97 155 216 / 23%), 0 3px 8px rgb(61 108 156 / 39%)`,
-        "&:hover":{
-            background: `#4c87c5`,
-        },
-        "&:active":{
-            background: `#bd6dd6`,
-        },
-        [theme.breakpoints.down(`sm`)]: {
-            "& svg":{
-                height: `3.5em`,
-                width: `3.5em`,
-            },
-        },
     },
     arrowButtonRight: {
         paddingRight: theme.spacing(5),
@@ -51,6 +36,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     arrowButtonDisabled:{
         opacity: 0,
         pointerEvents: `none`,
+    },
+    arrowButtonClass: {
+        color: TEXT_COLOR_LIVE_PRIMARY,
     },
     content:{
         background: theme.palette.background.paper,
@@ -156,29 +144,35 @@ export function ClassContent () {
         <Grid
             container
             wrap="nowrap"
-            className={classes.fullHeight}>
+            className={classes.fullHeight}
+        >
             <Grid
                 item
-                className={classes.navigationColumn}>
+                className={classes.navigationColumn}
+            >
                 <MaterialNavigation
                     direction="prev"
                     disabled={materialActiveIndex <= 0}
-                    onClick={() => handlePrev()} />
+                    onClick={() => handlePrev()}
+                />
             </Grid>
 
             <Grid
                 item
-                xs>
+                xs
+            >
                 {showEndStudy ? (
                     <div className={classes.centeredContent}>
                         <ExitStudy />
                     </div> ) : (
                     <div className={clsx(classes.content, {
                         [classes.contentClass]: classType === ClassType.CLASSES,
-                    })}>
+                    })}
+                    >
                         <div
                             className={classes.fullHeight}
-                            id="activity-view-container">
+                            id="activity-view-container"
+                        >
                             <PreviewLessonPlan />
                         </div>
                     </div>
@@ -186,11 +180,13 @@ export function ClassContent () {
             </Grid>
             <Grid
                 item
-                className={classes.navigationColumn}>
+                className={classes.navigationColumn}
+            >
                 <MaterialNavigation
                     direction="next"
-                    disabled={materialActiveIndex >=  materials.length}
-                    onClick={() => handleNext()}/>
+                    disabled={materialActiveIndex >= materials.length}
+                    onClick={() => handleNext()}
+                />
             </Grid>
         </Grid>
     );
@@ -202,7 +198,7 @@ export interface MaterialNavigationProps {
     onClick?: any;
 }
 
-const MaterialNavigation = (props:MaterialNavigationProps) => {
+const MaterialNavigation = (props: MaterialNavigationProps) => {
     const {
         direction,
         disabled,
@@ -214,12 +210,13 @@ const MaterialNavigation = (props:MaterialNavigationProps) => {
 
     return (
         <div
-            className={clsx(classes.arrowButtonStudy, {
+            className={clsx(classes.arrowButton, {
                 [classes.arrowButtonDisabled]: disabled,
-                [classes.arrowButton]: classType !== ClassType.STUDY,
                 [classes.arrowButtonRight]: direction === `next` && classType === ClassType.STUDY,
+                [classes.arrowButtonClass]: classType === ClassType.CLASSES,
             })}
-            onClick={onClick}>
+            onClick={onClick}
+        >
             {direction === `prev` ? <ArrowBackIcon size="5em" /> : <ArrowForwardIcon size="5em" />}
         </div>
     );

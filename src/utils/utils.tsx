@@ -1,8 +1,11 @@
+/* eslint-disable react/no-multi-comp */
+import { CLASS_SIDEBAR_ZINDEX } from "@/config";
 import {
     ContentType,
     InteractiveMode,
 } from "@/pages/utils";
 import { activeTabState } from "@/store/layoutAtoms";
+import { UserNode } from "@/types/attendee";
 import {
     LessonMaterial,
     MaterialTypename,
@@ -54,7 +57,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         height: `100%`,
     },
     popperRoot:{
-        zIndex: 1200,
+        zIndex: CLASS_SIDEBAR_ZINDEX + 100,
     },
     popperPapper: {
         display: `flex`,
@@ -115,7 +118,9 @@ function StyledDrawer (props: StyledDrawerProps) {
                 className={classes.styledDrawerInner}
                 style={{
                     marginBottom: activeTab === `mosaic` ? 20 : ``,
-                }}>{children}</div>
+                }}
+            >{children}
+            </div>
         </Drawer>
     );
 }
@@ -168,7 +173,9 @@ function StyledPopper (props: StyledPopperProps) {
                     })}
                     style={{
                         height,
-                    }}>{children}</Paper>
+                    }}
+                >{children}
+                </Paper>
             </Fade>
         </Popper>
     );
@@ -289,7 +296,7 @@ export function toggleFullScreenById (id: string) {
     }
 }
 
-export const sleep = (m:number) => new Promise(r => setTimeout(r, m));
+export const sleep = (m: number) => new Promise(r => setTimeout(r, m));
 
 export const defineContentType = (material: LessonMaterial | undefined, interactiveMode: InteractiveMode) => {
     switch (interactiveMode) {
@@ -358,7 +365,7 @@ export async function getOrganizationBranding (organizationId: string, endpoint:
 }
 
 export async function classGetInformation (scheduleId: any, orgId: any, endpoint: string) {
-    let data:any = {};
+    let data: any = {};
 
     async function classAPI () {
         const headers = new Headers();
@@ -391,10 +398,112 @@ function TooltipIntl ({ id, children }: TooltipIntlProps) {
     return(
         <Tooltip title={intl.formatMessage({
             id: id,
-        })}>
+        })}
+        >
             { children }
         </Tooltip>
     );
 }
 
 export { TooltipIntl };
+
+export async function getClassAttendeesIds (scheduleId: string, endpoint: string) {
+    let data: any = {};
+
+    const headers = new Headers();
+    headers.append(`Accept`, `application/json`);
+    headers.append(`Content-Type`, `application/json`);
+
+    const mockDataUrl = `https://run.mocky.io/v3/67a61b31-dedb-41b7-a6c9-557433ef2d6d`;
+    const fetchUrl = window.location.href.indexOf(`localhost`) > 0 ? mockDataUrl : `${endpoint}/v1/internal/schedules/${scheduleId}/relation_ids`;
+
+    try{
+        const response = await fetch(fetchUrl, {
+            headers,
+            method: `GET`,
+            credentials: `include`,
+        });
+        data = await response.json();
+    } catch (err) {
+        console.error(`Fail getClassAttendeesIds: ${err}`);
+    }
+
+    return data;
+}
+
+export const getAttendeesFullNames = async ( ids: string[], endpoint: string) => {
+    let data: any={};
+    const userIds = ids.map((id) => ({
+        userId: {
+            value: id,
+            operator: `eq`,
+        },
+    }));
+
+    const filter = {
+        OR: userIds,
+    };
+
+    const graphqlQuery = {
+        query: `query attendees($filter: UserFilter) {
+            usersConnection (direction:FORWARD, filter:$filter) {
+              edges {
+                node {
+                  id
+                  givenName
+                  familyName
+                }
+              }
+            }
+          }`,
+        variables: {
+            filter,
+        },
+    };
+
+    const mockDataUrl = `https://run.mocky.io/v3/28cd39c1-debe-46f5-a35e-e9c1fa07a0c5`;
+    const fetchUrl = window.location.href.indexOf(`localhost`) > 0 ? mockDataUrl : endpoint;
+
+    const headers = new Headers();
+    headers.append(`Accept`, `application/json`);
+    headers.append(`Content-Type`, `application/json`);
+
+    try{
+        const response = await fetch(fetchUrl, {
+            headers,
+            method: `POST`,
+            credentials: `include`,
+            body: JSON.stringify(graphqlQuery),
+        });
+        data = await response.json();
+    } catch (err) { console.error(`Fail getAttendeesFullNames: ${err}`); }
+
+    return data.data.usersConnection.edges as UserNode[];
+};
+
+export async function getAttendeeFullName (userId: string, endpoint: string) {
+    let data: any = {};
+
+    const graphqlQuery = {
+        query: `query organization($user_id: ID!) {user(user_id: $user_id) {full_name }}`,
+        variables: {
+            user_id: userId,
+        },
+    };
+
+    const headers = new Headers();
+    headers.append(`Accept`, `application/json`);
+    headers.append(`Content-Type`, `application/json`);
+
+    try{
+        const response = await fetch(endpoint, {
+            headers,
+            method: `POST`,
+            credentials: `include`,
+            body: JSON.stringify(graphqlQuery),
+        });
+        data = await response.json();
+    } catch (err) { console.error(`Fail getUserFullName: ${err}`); }
+
+    return data.data.user.full_name;
+}

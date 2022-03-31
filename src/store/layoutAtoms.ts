@@ -3,6 +3,7 @@ import {
     CanvasToolbarItems,
 } from "@/components/toolbar/toolbarMenus/canvasMenu/canvasMenu";
 import { InteractiveMode } from "@/pages/utils";
+import { AttendeeType } from "@/types/attendee";
 import { atom } from "recoil";
 
 // THEME
@@ -199,4 +200,20 @@ export const canvasDrawColorState = atom({
 export const canvasSelectedItemState = atom({
     key: `canvasSelectedItemState`,
     default: CanvasToolbarItems.PENCIL,
+});
+
+export const showSelectAttendeesState = atom({
+    key: `showSelectAttendeesState`,
+    default: false,
+});
+
+export const selectedAttendeesState = atom<AttendeeType[]>({
+    key: `selectedAttendeesState`,
+    default: [],
+});
+
+export type ActiveClassDrawerStateType = "participants" | "lessonPlan" | null;
+export const ActiveClassDrawerState = atom({
+    key: `ActiveClassDrawerState`,
+    default: ``,
 });

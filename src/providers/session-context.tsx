@@ -1,10 +1,7 @@
 
 import { parseTokenParams } from "@/app/utils/parseTokenUtils";
 import { AuthTokenProvider } from "@/services/auth-token/AuthTokenProvider";
-import {
-    CLASS_TYPES,
-    ClassType,
-} from "@/store/actions";
+import { ClassType } from "@/store/actions";
 import { LessonMaterial } from "@/types/lessonMaterial";
 import React,
 {
@@ -62,7 +59,7 @@ export function SessionContextProvider ({ children, sessionId }: Props) {
     const [ selectedName, setSelectedName ] = useState<string>();
     const [ selectedCamera, setSelectedCamera ] = useState<MediaStream>();
 
-    useEffect(()=>{
+    useEffect(() => {
         const authToken = AuthTokenProvider.retrieveToken();
         if(!authToken) return;
 

@@ -1,3 +1,4 @@
+/* eslint-disable react/no-multi-comp */
 import { Room } from "./room";
 import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
 import Loading from "@/components/loading";
@@ -10,7 +11,6 @@ import EndClass from "@/pages/end/endClass";
 import LiveClassProvider from "@/providers/class/liveClassProvider";
 import StudyClassProvider from "@/providers/class/studyClassProvider";
 import { useSessionContext } from "@/providers/session-context";
-import { ClassType } from "@/store/actions";
 import {
     classEndedState,
     classLeftState,
@@ -24,11 +24,10 @@ import React,
 import { FormattedMessage } from "react-intl";
 import { useRecoilState } from "recoil";
 
-export function RoomWithContext (): JSX.Element {
+export const RoomWithContext: React.FC = ({ children }) => {
     const {
         sessionId,
         token,
-        classType,
     } = useSessionContext();
 
     return (
@@ -36,14 +35,14 @@ export function RoomWithContext (): JSX.Element {
             token={token}
             sessionId={sessionId}
         >
-            { classType == ClassType.STUDY ? <StudyRoom /> : <LiveRoom /> }
+            {children}
         </LiveServiceApolloClient>
     );
-}
+};
 
 export const LIVE_ON_BACK_ID = `liveOnBackID`;
 
-const LiveRoom: React.FC = () => {
+export const LiveRoom: React.FC = () => {
     const { removeOnBack } = useCordovaSystemContext();
     const [ classLeft ] = useRecoilState(classLeftState);
     const [ classEnded ] = useRecoilState(classEndedState);
@@ -115,7 +114,7 @@ const StudyLoading: React.FC = ({ children }) => {
     );
 };
 
-const StudyRoom: React.FC = () => {
+export const StudyRoom: React.FC = () => {
     return (
         <StudyClassProvider>
             <StudyLoading>

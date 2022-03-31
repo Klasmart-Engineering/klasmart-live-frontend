@@ -1,11 +1,20 @@
 import Join from './join/join';
-import { RoomWithContext } from './room/room-with-context';
+import {
+    LiveRoom,
+    RoomWithContext,
+    StudyRoom,
+} from './room/room-with-context';
+import { ClassSelectAttendees } from './selectAttendees';
 import { useAuthenticationContext } from '@/app/context-provider/authentication-context';
 import { useServices } from '@/app/context-provider/services-provider';
 import { useRegionSelect } from '@/providers/region-select-context';
 import { useSessionContext } from '@/providers/session-context';
 import { AuthTokenProvider } from "@/services/auth-token/AuthTokenProvider";
-import { hasJoinedClassroomState } from "@/store/layoutAtoms";
+import { ClassType } from '@/store/actions';
+import {
+    hasJoinedClassroomState,
+    showSelectAttendeesState,
+} from "@/store/layoutAtoms";
 import { useInterval } from '@/utils/useInterval';
 import { WebRtcProvider } from "@kl-engineering/live-state/ui";
 import React,
@@ -17,10 +26,15 @@ const TOKEN_REFRESH_INTERVAL_MS = 10 * 60 * 1000; //Ten Minutes
 
 export function WebApp () {
     const history = useHistory();
-    const { name, sessionId } = useSessionContext();
+    const {
+        name,
+        sessionId,
+        classType,
+    } = useSessionContext();
     const { actions } = useAuthenticationContext();
     const { authenticationService } = useServices();
     useInterval(authenticationService?.refresh, TOKEN_REFRESH_INTERVAL_MS);
+    const showSelectParticipants = useRecoilValue(showSelectAttendeesState);
 
     const schedule = () => {
         if (process.env.IS_CORDOVA_BUILD) {
@@ -48,6 +62,17 @@ export function WebApp () {
         return url;
     }, [ region ]);
 
+    const renderChildren = () => {
+        if(showSelectParticipants) return <ClassSelectAttendees />;
+
+        switch(classType){
+        case ClassType.STUDY:
+            return <StudyRoom />;
+        default :
+            return <LiveRoom />;
+        }
+    };
+
     return <WebRtcProvider
         sessionId={sessionId}
         endpoint={endpoint}
@@ -59,10 +84,10 @@ export function WebApp () {
         onMissingAuthenticationToken={actions?.refreshAuthenticationToken}
         onMissingAuthorizationToken={schedule}
     >
-        {
-            hasJoinedClassroom && name
-                ? <RoomWithContext />
-                : <Join />
+        {hasJoinedClassroom && name ? (
+            <RoomWithContext>{renderChildren()}</RoomWithContext>
+        )
+            : <Join />
         }
     </WebRtcProvider>;
 }

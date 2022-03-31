@@ -29,11 +29,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     root: {
         position: `relative`,
     },
-    buttonWrap: {
-        position: `absolute`,
-        zIndex: 999,
-        bottom: 10,
-    },
     buttonWrapStudy: {
         bottom: 0,
         right: theme.spacing(0.5),
@@ -43,9 +38,6 @@ const useStyles = makeStyles((theme: Theme) => ({
         height: `1.5rem`,
     },
     fab: {
-        backgroundColor: FAB_DEFAULT_COLOR,
-    },
-    fabStudy: {
         backgroundColor: THEME_COLOR_BACKGROUND_PAPER,
         "&:hover": {
             backgroundColor: THEME_COLOR_BACKGROUND_PAPER,
@@ -53,7 +45,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 }));
 
-export function WBToolbarContainer ({ useLocalDisplay } : { useLocalDisplay?: boolean} ) {
+export function WBToolbarContainer ({ useLocalDisplay }: { useLocalDisplay?: boolean} ) {
     const classes = useStyles();
     const canvasRef = React.useRef<any>();
     const [ isCanvasOpen, setIsCanvasOpen ] = useRecoilState(isCanvasOpenState);
@@ -99,30 +91,30 @@ export function WBToolbarContainer ({ useLocalDisplay } : { useLocalDisplay?: bo
         <Grid
             item
             xs={12}
-            className={classes.root}>
+            className={classes.root}
+        >
             <div
                 ref={canvasRef}
-                className={clsx(classes.buttonWrap, {
+                className={clsx({
                     [classes.buttonWrapStudy]: classType === ClassType.STUDY,
-                })}>
+                })}
+            >
                 <Fab
                     aria-label="whiteboard toolbar opener"
                     disabled={!enableWB}
-                    className={clsx(classes.fab, {
-                        [classes.fabStudy]: classType === ClassType.STUDY,
-                    })}
+                    className={classes.fab}
                     size="large"
                     color="primary"
                     onClick={handleToggleWBToolbar}
                 >
                     <StyledIcon
                         size="large"
-                        color={classType !== ClassType.STUDY ? THEME_COLOR_BACKGROUND_PAPER : TEXT_COLOR_MENU_DRAWER}
-                        icon={isCanvasOpen ? <CloseIcon /> : classType === ClassType.STUDY ?
+                        icon={isCanvasOpen ? <CloseIcon /> :
                             <img
+                                alt={``}
                                 src={PencilIcon}
-                                className={classes.pencilIcon} /> :
-                            <WBIcon />
+                                className={classes.pencilIcon}
+                            />
                         }
                     />
                 </Fab>
