@@ -1,5 +1,6 @@
 /* eslint-disable react/no-multi-comp */
 import { CameraPreview } from "./cameraPreview";
+import JoinStudyApp from "./joinStudyApp";
 import { MicrophonePreview } from "./microphonePreview";
 import BackButton from "@/app/components/layout/BackButton";
 import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
@@ -207,6 +208,10 @@ export default function Join (): JSX.Element {
             history.push(`/schedule`);
         }
     };
+
+    if(classType === ClassType.STUDY && process.env.IS_CORDOVA_BUILD){
+        return <JoinStudyApp />;
+    }
 
     return (
         <div className={clsx(classes.root, {

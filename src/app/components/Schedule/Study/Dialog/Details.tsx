@@ -59,7 +59,12 @@ export default function StudyDetailsDialog (props: Props) {
     const [ getTokenLoading, setGetTokenLoading ] = useState(false);
     const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
     const [ hyperlink, setHyperlink ] = useState<string>();
-    const { setToken } = useSessionContext();
+    const {
+        setToken,
+        setTitle,
+        setDueDate,
+        setTeachers,
+    } = useSessionContext();
     const { push } = useHistory();
     const organization = useSelectedOrganizationValue();
 
@@ -104,6 +109,9 @@ export default function StudyDetailsDialog (props: Props) {
                 schedule_id: scheduleId,
                 live_token_type: ScheduleLiveTokenType.LIVE,
             });
+            setTitle(scheduleData?.title);
+            setDueDate(scheduleData?.due_at);
+            setTeachers(scheduleData?.teachers);
             setToken(token);
             onClose();
             push(`/room?token=${token}`);
@@ -287,7 +295,8 @@ export default function StudyDetailsDialog (props: Props) {
                     openHyperLink(hyperlink ?? ``);
                     setParentalLock(false);
                 }}
-                          />}
+                          />
+            }
         </>
     );
 }

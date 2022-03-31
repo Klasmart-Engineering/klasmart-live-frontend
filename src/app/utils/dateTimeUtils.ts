@@ -28,3 +28,14 @@ export function formatDateTimeMillis (millis: number, intl: IntlShape) {
     const time = intl.formatTime(millis);
     return `${date}, ${time}`;
 }
+
+export function formatDateMonthYearMillis (millis: number, intl: IntlShape) {
+    const day =  intl.formatDate(millis, {
+        day: `numeric`,
+    });
+    const monthWithYear = intl.formatDate(millis, {
+        month: `short`,
+        year: `numeric`,
+    });
+    return `${day} ${monthWithYear}`;
+}
