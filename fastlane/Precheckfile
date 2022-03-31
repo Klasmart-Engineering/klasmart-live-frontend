@@ -17,12 +17,15 @@
 # when triggered, this rule will cause an error to be displayed and it will prevent any further fastlane commands from running after precheck finishes
 
 # Examples:
-# negative_apple_sentiment(level: :skip)
-# curse_words(level: :warn)
-# future_functionality(level: :error)
-# other_platforms(level: :error)
-# placeholder_text(level: :error)
-# test_words(level: :error)
-# unreachable_urls(level: :error)
 # custom_text(data: ["fabric"], level: :warn)
+negative_apple_sentiment(level: :error)
+curse_words(level: :error)
+future_functionality(level: :error)
+other_platforms(level: :error)
+placeholder_text(level: :error)
+test_words(level: :error)
+unreachable_urls(level: :error)
 copyright_date(level: :skip)
+team_id("H5LAQS44DF")
+
+include_in_app_purchases(false) # doesn't work with APIKEY ¯\_(ツ)_/¯
