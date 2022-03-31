@@ -2,6 +2,40 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.2.0](https://github.com/KL-Engineering/kidsloop-live-frontend/branches/compare/v5.2.0%0Dv5.2.0-alpha.1) (2022-03-31)
+
+
+### Features
+
+* add new cursor in canvas action ([64a89a9](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/64a89a92d6c47f4a369acc27903522e1c4a1b121)), closes [KLL-2364](https://calmisland.atlassian.net/browse/KLL-2364)
+* as a student, hide cam/mic mute buttons for other students ([6743c3f](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/6743c3f11f95d3e3295244f463f15f84d999191a)), closes [KLL-3017](https://calmisland.atlassian.net/browse/KLL-3017)
+* disable toolbar mic and camera buttons and add spinner when waiting for startup or shutdown ([9f6bb35](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/9f6bb35b9e0e39531a793db7b77317fe5f33e714)), closes [KLL-3104](https://calmisland.atlassian.net/browse/KLL-3104)
+* improved onboarding experience ([34f69ea](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/34f69ead98812e6d755e116c8474d9e72aff0571)), closes [KLL-2228](https://calmisland.atlassian.net/browse/KLL-2228)
+* **localization:** add new translations ([05e1c26](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/05e1c26cd5c023d20fdad7eafcc05821ae03d746))
+* **localization:** add new translations ([40a9645](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/40a9645aad51161376648c5e731ea02ca6474f3c))
+* **localization:** add new translations ([fedf77a](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/fedf77a0ee3294db22bf701b328295f9095b494a))
+* redesign select organization screen ([b68d355](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/b68d355d4abc5cb372f9504fa4011cb39041b743)), closes [KLL-2354](https://calmisland.atlassian.net/browse/KLL-2354)
+* replace design for no org screen ([8f6f2de](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/8f6f2de0c968aa9adf0329826e92b80ad033d4f8)), closes [KLL-3220](https://calmisland.atlassian.net/browse/KLL-3220)
+
+
+### Bug Fixes
+
+* chat input focus zone bigger ([20523aa](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/20523aaa88213f395752df617e412626a83f5f0d)), closes [KLL-2846](https://calmisland.atlassian.net/browse/KLL-2846)
+* dependency paths ([8dff902](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/8dff902636d724d2e38c10d2efa8ef41c4d0257a))
+* disable submit when no attachment file ([f531b2f](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/f531b2f5172afc4ddd444c4a4d2dc58546ae7297)), closes [fix/KLL-2876](https://calmisland.atlassian.net/browse/KLL-2876) [Fix/KLL-2876](https://calmisland.atlassian.net/browse/KLL-2876)
+* fix tooltips to show correct permission state of canvas ([e72fbe6](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/e72fbe6ea173c266f4e0f3e63202d06d23361d48))
+* install workflow ([6372aa8](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/6372aa82d87e40310a6970dbba327cc74cc70ffb))
+* load assets with git lfs ([5f873f6](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/5f873f64f96517cd7f555a49dde748bd3cd5a36c))
+* make screenshareViewVideo fit in the screen [KLL-3347](https://calmisland.atlassian.net/browse/KLL-3347) (#5) ([8966b9a](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/8966b9acde2601440c88b0588f45fe40a47a4898))
+* re-apply selectColorByValue when canvas is rendered [KLL-3209](https://calmisland.atlassian.net/browse/KLL-3209) ([7115b37](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/7115b3758187e65fa5550ec367986e5f75f7cd17))
+* remove clashing secret ([62d2578](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/62d25783fadb7f5bc481fc850bb218817f39b9e5))
+* remove great job title ([e0876de](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/e0876ded6a3c2908f84db6744bd4b171643e2e28)), closes [KLL-2356](https://calmisland.atlassian.net/browse/KLL-2356)
+* remove unwanted scrollbars breaking layout in Study / Class + force CanvasColor toolbar in the view ([ff6339a](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/ff6339a3ccdc7b1a8a1bdf4b442419cb50396394))
+* **screenshare.tsx:** stop screen share when clicking "Stop Sharing" from the OS ([c4d6848](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/c4d6848a010510b1913f37228375cca62411cbe2)), closes [KLL-3188](https://calmisland.atlassian.net/browse/KLL-3188)
+* snackbar makes the product crash [KLL-3376](https://calmisland.atlassian.net/browse/KLL-3376) (#21) ([a410086](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/a4100867ae7ee9d5695083db4ac48924ab19d329))
+* update title and popup title, this field get from title response ([44fd216](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/44fd2164a3054565e3c7c644ce0628ba3ba9459e)), closes [KLL-1344](https://calmisland.atlassian.net/browse/KLL-1344)
+* userActions translations and fix state of mic/cam ([75c815d](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/75c815d89533a5fb3ae09c1a0a5042e7317bd6e9)), closes [KLL-3290](https://calmisland.atlassian.net/browse/KLL-3290)
+
 ## [5.2.0-alpha.1](https://bitbucket.org/calmisland/kidsloop-live-frontend/branches/compare/v5.2.0-alpha.1%0Dv5.2.0-alpha.0) (2022-03-22)
 
 
