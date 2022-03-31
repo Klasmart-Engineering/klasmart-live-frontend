@@ -95,7 +95,7 @@ jobs:
         run: |
           echo "==KL============================="
           echo "set up Auth"
-          echo ${APPSTORE_KEY_PRIVATE} > ./fastlane/AuthKey_DW9C8JLCRK.p8
+          # echo ${APPSTORE_KEY_PRIVATE} > ./fastlane/AuthKey_DW9C8JLCRK.p8
 
           echo "==KL============================="
           echo "prechecks"
