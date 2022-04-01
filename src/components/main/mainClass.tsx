@@ -1,15 +1,17 @@
 /* eslint-disable react/no-multi-comp */
-import ClassAttendeesList from "../classAttendeesList/ClassAttendeesList";
-import ClassDrawer from "../classDrawer/ClassDrawer";
-import ClassSidebar from "../classSidebar/ClassSidebar";
-import { ClassContent } from "./classContent";
-import Plan from "./lessonPlan/plan/plan";
+import ClassActiveUser from "@/components/classActiveUser/ClassActiveUser";
+import ClassAttendeesList from "@/components/classAttendeesList/ClassAttendeesList";
+import ClassDrawer from "@/components/classDrawer/ClassDrawer";
+import ClassSidebar from "@/components/classSidebar/ClassSidebar";
+import { ClassContent } from "@/components/main/classContent";
+import Plan from "@/components/main/lessonPlan/plan/plan";
 import StyledIcon from "@/components/styled/icon";
 import { THEME_COLOR_PRIMARY_DEFAULT } from "@/config";
 import { useSessionContext } from "@/providers/session-context";
 import { ClassType } from "@/store/actions";
 import {
     ActiveClassDrawerState,
+    classActiveUserIdState,
     selectedAttendeesState,
     showEndStudyState,
     showSelectAttendeesState,
@@ -47,7 +49,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     iconButton: {
         backgroundColor: THEME_COLOR_PRIMARY_DEFAULT,
-        padding: theme.spacing(0.75),
+        padding: theme.spacing(1),
         "& svg": {
             color: theme.palette.common.white,
         },
@@ -61,6 +63,7 @@ function MainClass () {
     const classes = useStyles();
     const showEndStudy = useRecoilValue(showEndStudyState);
     const selectedAttendees = useRecoilValue(selectedAttendeesState);
+    const classActiveUserId = useRecoilValue(classActiveUserIdState);
     const setShowSelectParticipants = useSetRecoilState(showSelectAttendeesState);
     const [ activeClassDrawer, setActiveClassDrawer ] = useRecoilState(ActiveClassDrawerState);
 
@@ -83,6 +86,8 @@ function MainClass () {
         );
     };
 
+    const activeUser = selectedAttendees.find(attendee => attendee.id === classActiveUserId);
+
     return (
         <>
             <Grid
@@ -101,27 +106,43 @@ function MainClass () {
                     xs
                 >
                     <Box
-                        py={4}
+                        pt={activeUser ? 0 : 4}
+                        pb={4}
+                        display="flex"
+                        flexDirection="column"
                         height="100%"
                         boxSizing="border-box"
                     >
-                        <ClassContent />
+                        {!showEndStudy && activeUser && (
+                            <Box
+                                display="flex"
+                                justifyContent="center"
+                                my={2}
+                            >
+                                <ClassActiveUser user={activeUser} />
+                            </Box>
+                        )}
+                        <Box flex="1">
+                            <ClassContent />
+                        </Box>
                     </Box>
                 </Grid>
             </Grid>
-            <ClassDrawer
-                active={Boolean(activeClassDrawer === `participants`)}
-                title={<FormattedMessage id="title_participants" />}
-                titleAction={<ButtonSelectAttendees />}
-            >
-                <ClassAttendeesList attendees={selectedAttendees} />
-            </ClassDrawer>
-            <ClassDrawer
-                active={Boolean(activeClassDrawer === `lessonPlan`)}
-                title={<FormattedMessage id="title_lesson_plan" />}
-            >
-                <Plan />
-            </ClassDrawer>
+            <>
+                <ClassDrawer
+                    active={Boolean(activeClassDrawer === `participants`)}
+                    title={<FormattedMessage id="title_participants" />}
+                    titleAction={<ButtonSelectAttendees />}
+                >
+                    <ClassAttendeesList attendees={selectedAttendees} />
+                </ClassDrawer>
+                <ClassDrawer
+                    active={Boolean(activeClassDrawer === `lessonPlan`)}
+                    title={<FormattedMessage id="title_lesson_plan" />}
+                >
+                    <Plan />
+                </ClassDrawer>
+            </>
         </>
     );
 }

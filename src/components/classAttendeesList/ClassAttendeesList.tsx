@@ -1,4 +1,5 @@
 import { THEME_COLOR_PRIMARY_DEFAULT } from "@/config";
+import { classActiveUserIdState } from "@/store/layoutAtoms";
 import { AttendeeType } from "@/types/attendee";
 import {
     List,
@@ -9,18 +10,17 @@ import {
     Theme,
 } from "@material-ui/core";
 import { Person as ParticipantsIcon } from "@styled-icons/material/Person";
+import clsx from "clsx";
 import React from "react";
-
-interface Props {
-    attendees: AttendeeType[];
-}
+import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
-    listItem: {
+    item: {
         borderRadius: theme.spacing(1),
         padding: theme.spacing(1),
+        margin: theme.spacing(0.5, 0),
     },
-    listItemActive: {
+    active: {
         backgroundColor: `rgb(0 0 0 / 10%)`,
     },
     icon: {
@@ -35,10 +35,19 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 }));
 
+interface Props {
+    attendees: AttendeeType[];
+}
+
 function ClassAttendeesList (props: Props) {
     const classes = useStyles();
 
     const { attendees } = props;
+    const [ classActiveUserId, setClassActiveUserId ] = useRecoilState(classActiveUserIdState);
+
+    const handleClick = (id: string) => {
+        setClassActiveUserId(id);
+    };
 
     return (
         <List>
@@ -46,7 +55,10 @@ function ClassAttendeesList (props: Props) {
                 <ListItem
                     key={attendee.id}
                     button
-                    className={classes.listItem}
+                    className={clsx(classes.item, {
+                        [classes.active]: classActiveUserId === attendee.id,
+                    })}
+                    onClick={() => handleClick(attendee.id)}
                 >
                     <ListItemIcon className={classes.icon}>
                         <ParticipantsIcon

@@ -217,3 +217,8 @@ export const ActiveClassDrawerState = atom({
     key: `ActiveClassDrawerState`,
     default: ``,
 });
+
+export const classActiveUserIdState = atom<string | undefined>({
+    key: `classActiveUserIdState`,
+    default: undefined,
+});

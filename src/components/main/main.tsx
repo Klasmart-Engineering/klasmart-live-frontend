@@ -1,3 +1,4 @@
+import MainStudy from "./mainStudy";
 import MainClass from "@/components/main/mainClass";
 import MainView from "@/components/main/mainView";
 import Toolbar from "@/components/toolbar/toolbar";
@@ -60,6 +61,14 @@ function Main () {
         });
     }, [ containerWidth, containerHeight ]);
 
+    const renderContent = () => {
+        switch(classType){
+        case(ClassType.LIVE): return <MainView />;
+        case(ClassType.STUDY): return <MainStudy />;
+        case(ClassType.CLASSES): return <MainClass />;
+        }
+    };
+
     return (
         <Grid
             container
@@ -78,7 +87,7 @@ function Main () {
                     ref={containerRef}
                     className={clsx(classes.activityContainer, classes.fullHeight)}
                 >
-                    {classType === ClassType.LIVE ? <MainView /> : <MainClass />}
+                    {renderContent()}
                 </div>
             </Grid>
             {classType === ClassType.LIVE && (

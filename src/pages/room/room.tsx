@@ -7,6 +7,7 @@ import { useHttpEndpoint } from "@/providers/region-select-context";
 import { useSessionContext } from "@/providers/session-context";
 import { ClassType } from "@/store/actions";
 import {
+    classActiveUserIdState,
     ClassInformation,
     classInfoState,
     hasControlsState,
@@ -56,6 +57,7 @@ export function Room () {
     const setRecoilClassInfo = useSetRecoilState(classInfoState);
     const setHasControls = useSetRecoilState(hasControlsState);
     const showEndStudy = useRecoilValue(showEndStudyState);
+    const setClassActiveUserId = useSetRecoilState(classActiveUserIdState);
     const deviceOrientation = useDeviceOrientationValue();
 
     const {
@@ -64,10 +66,15 @@ export function Room () {
         classType,
         organizationId,
         scheduleId,
+        user_id,
     } = useSessionContext();
     const sessions = useSessions();
 
     const cmsEndpoint = useHttpEndpoint(`cms`);
+
+    useEffect(() => {
+        setClassActiveUserId(user_id);
+    }, []);
 
     useEffect(() => {
         const teachers = [ ...sessions.values() ].filter(session => session.isTeacher === true).sort((a, b) => a.joinedAt - b.joinedAt);

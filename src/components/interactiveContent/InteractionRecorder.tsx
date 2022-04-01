@@ -10,7 +10,7 @@ import { useSessions } from "@/data/live/state/useSessions";
 import { useHttpEndpoint } from "@/providers/region-select-context";
 import { useSessionContext } from "@/providers/session-context";
 import { ClassType } from "@/store/actions";
-import { streamIdState } from "@/store/layoutAtoms";
+import { classActiveUserIdState, streamIdState } from "@/store/layoutAtoms";
 import { BaseWhiteboard } from "@/whiteboard/components/BaseWhiteboard";
 import WhiteboardBorder from "@/whiteboard/components/Border";
 import {
@@ -34,7 +34,7 @@ import React,
 } from "react";
 import { FormattedMessage } from "react-intl";
 import { useResizeDetector } from "react-resize-detector";
-import { useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme) => createStyles({
     activityContainer: {
@@ -86,6 +86,7 @@ export default function InteractionRecorder (props: Props): JSX.Element {
     } = useSessionContext();
     const sessions = useSessions();
     const setStreamId = useSetRecoilState(streamIdState);
+    const classActiveUserId = useRecoilValue(classActiveUserIdState);
 
     const imageExtensionPattern = /\.(jpe?g|png|gif|bmp)$/gi;
     const isImageContent = contentHref?.match(imageExtensionPattern);
@@ -177,6 +178,13 @@ export default function InteractionRecorder (props: Props): JSX.Element {
         }
         setUserCount(sessions.size);
     }, [ sessions ]);
+
+    useEffect(() => {
+        iframeRef?.current?.contentWindow?.postMessage({
+            type: `CLASS_ACTIVE_USER`,
+            user: classActiveUserId,
+        }, `*`);
+    }, [ classActiveUserId, iframeRef.current ]);
 
     useEffect(() => {
         setLoadStatus(LoadStatus.Loading);
