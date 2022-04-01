@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.0.0](https://github.com/KL-Engineering/kidsloop-live-frontend/branches/compare/v6.0.0%0Dv5.2.0) (2022-04-01)
+
+
+### ⚠ BREAKING CHANGES
+
+* upgrade websocket package to graphql-ws KLL-3294
+
+### 🐛 Bug Fixes
+
+* [class] layout broken on last page [KLL-3348](https://calmisland.atlassian.net/browse/KLL-3348) (#17) ([d563e9b](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/d563e9b8beda08030201be6bd6a2b02519d2a457))
+* play trophy audio for everyone except teacher (#26) ([57d0887](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/57d088723bf39bd7e674af3170aa3e76b6e43a33))
+
+
+### ⚙️ Continuous Integrations
+
+* update reusable workflows to load assets with git lfs ([b84967b](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/b84967bbe1a7224fcde67ab98aba4014b5200858))
+* use reusable workflows (#27) ([d653b9c](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/d653b9cabcb093e2159f110399d1f7ab74822bb2))
+
+
+### ✨ Features
+
+* add ClassActiveUser in the Class interface [KLL-3015](https://calmisland.atlassian.net/browse/KLL-3015) ([dd090d6](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/dd090d68db250639afa5a2822fdc6ec410e8eed0))
+* redesign select profile [KLL-2353](https://calmisland.atlassian.net/browse/KLL-2353) ([3d9e132](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/3d9e1329717051a51a646ac5ff66169bdde7e032))
+* **translation:** update translations (#30) ([351d02e](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/351d02e1657edbcf309fd061ad353b0911d3741c))
+* upgrade websocket package to graphql-ws [KLL-3294](https://calmisland.atlassian.net/browse/KLL-3294) ([0865550](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/086555053e934db8be8cf339103dbc0dd56ed35f))
+* web add manual attendance for class [KLL-3014](https://calmisland.atlassian.net/browse/KLL-3014)  [KLL-3291](https://calmisland.atlassian.net/browse/KLL-3291) ([da9327b](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/da9327b5cac3a70955066b7929f8879eb7f86b38))
+
 ## [5.2.0](https://github.com/KL-Engineering/kidsloop-live-frontend/branches/compare/v5.2.0%0Dv5.2.0-alpha.1) (2022-03-31)
 
 
