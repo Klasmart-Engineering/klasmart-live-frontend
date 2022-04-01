@@ -165,7 +165,7 @@
     "schedule_liveTab": "라이브",
     "schedule_studyTab": "스터디",
     "schedule_loadingSelectOrg": "먼저 왼쪽 상단 버튼을 탭하여 기관을 선택하세요!",
-    "schedule_errorFetchTimeViews": "이런! 스케줄을 불러오지 못했어요.",
+    "schedule_errorFetchTimeViews": "이런!<br>스케줄을 불러오지 못했어요.",
     "schedule_liveSubheaderToday": "오늘",
     "schedule_liveSubheaderTomorrow": "내일",
     "schedule_liveSubheaderUpcoming": "이후 스케줄",
@@ -221,7 +221,7 @@
     "homeFunStudy.info": "정보",
     "homeFunStudy.chooseFile": "파일 선택",
     "homeFunStudy.comment": "나의 메세지",
-    "homeFunStudy.submission.error.rejected": "해당 과제는 이미 선생님께서 평가를 완료하여 다시 제출할 수 없습니다.",
+    "homeFunStudy.submission.error.rejected": "This assignment has already been assessed by the teacher. You can no longer edit or submit your work.",
     "parentalGate.error.incorrect": "틀린 답입니다.",
     "signin.title.loading": "잠시 기다려주세요",
     "signin.body.loading": "로그인 중입니다...",
@@ -269,5 +269,8 @@
     "schedule_review_class_name": "Review: {value} Materials",
     "live.enter.tardyDuration": "Started {value} {value, plural, =0 {minute} one {minute} other {minutes}} ago",
     "live.enter.joinLive": "Join Live Class",
-    "live.enter.teacherCount": "+{value} more {value, plural, one {person} other {people}}"
+    "live.enter.teacherCount": "+{value} more {value, plural, one {person} other {people}}",
+    "homeFunStudy.submission.error.rejected.title": "Assignment Complete",
+    "homeFunStudy.discardChange.title": "Discard Changes?",
+    "homeFunStudy.discardChange": "Closing the window will discard any changes you have made."
 }

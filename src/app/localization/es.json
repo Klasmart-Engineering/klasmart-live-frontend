@@ -165,7 +165,7 @@
     "schedule_liveTab": "Live",
     "schedule_studyTab": "Study",
     "schedule_loadingSelectOrg": "Please select an organization first by tapping the top-left corner!",
-    "schedule_errorFetchTimeViews": "Oops, page loading failed.",
+    "schedule_errorFetchTimeViews": "Oops!<br>Page Loading failed.",
     "schedule_liveSubheaderToday": "Today",
     "schedule_liveSubheaderTomorrow": "Tomorrow",
     "schedule_liveSubheaderUpcoming": "Upcoming",
@@ -221,7 +221,7 @@
     "homeFunStudy.info": "Info",
     "homeFunStudy.chooseFile": "Choose File",
     "homeFunStudy.comment": "My Comment",
-    "homeFunStudy.submission.error.rejected": "This assignment has already been assessed by your teacher and cannot be re-submitted.",
+    "homeFunStudy.submission.error.rejected": "This assignment has already been assessed by the teacher. You can no longer edit or submit your work.",
     "parentalGate.error.incorrect": "Incorrect input value",
     "signin.title.loading": "Just a Second",
     "signin.body.loading": "KidsLoop is trying to sign you in...",
@@ -269,5 +269,8 @@
     "schedule_review_class_name": "Review: {value} Materials",
     "live.enter.tardyDuration": "Started {value} {value, plural, =0 {minute} one {minute} other {minutes}} ago",
     "live.enter.joinLive": "Join Live Class",
-    "live.enter.teacherCount": "+{value} more {value, plural, one {person} other {people}}"
+    "live.enter.teacherCount": "+{value} more {value, plural, one {person} other {people}}",
+    "homeFunStudy.submission.error.rejected.title": "Assignment Complete",
+    "homeFunStudy.discardChange.title": "Discard Changes?",
+    "homeFunStudy.discardChange": "Closing the window will discard any changes you have made."
 }

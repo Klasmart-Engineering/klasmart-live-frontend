@@ -269,5 +269,8 @@
     "schedule_review_class_name": "รีวิว: {value} วัสดุ",
     "live.enter.tardyDuration": "เริ่มแล้ว {value} {value, plural, =0 { minute } one { { minutes } } other { minutes }} ที่แล้ว",
     "live.enter.joinLive": "เข้าร่วมคลาสสด",
-    "live.enter.teacherCount": "+{value} มากกว่า {value, plural, one {person} other {people}}"
+    "live.enter.teacherCount": "+{value} มากกว่า {value, plural, one {person} other {people}}",
+    "homeFunStudy.submission.error.rejected.title": "Assignment Complete",
+    "homeFunStudy.discardChange.title": "Discard Changes?",
+    "homeFunStudy.discardChange": "Closing the window will discard any changes you have made."
 }

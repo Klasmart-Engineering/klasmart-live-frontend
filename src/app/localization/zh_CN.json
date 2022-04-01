@@ -221,7 +221,7 @@
     "homeFunStudy.info": "信息",
     "homeFunStudy.chooseFile": "选择文件",
     "homeFunStudy.comment": "我的评论",
-    "homeFunStudy.submission.error.rejected": "这个作业已经被老师评估过了，不能再编辑或重新提交了。",
+    "homeFunStudy.submission.error.rejected": "This assignment has already been assessed by the teacher. You can no longer edit or submit your work.",
     "parentalGate.error.incorrect": "输入不正确",
     "signin.title.loading": "请稍等",
     "signin.body.loading": "KidsLoop 正在授权您的登录...",
@@ -265,9 +265,12 @@
     "button_start_review": "开始回顾学习",
     "account_selectUser": "选择一个档案",
     "account_selectOrg": "选择一个机构",
-    "study.enter.startStudying": "Start Studying",
+    "study.enter.startStudying": "开始学习",
     "schedule_review_class_name": "适应性复习: {value}教学素材",
-    "live.enter.tardyDuration": "Started {value} {value, plural, =0 {minute} one {minute} other {minutes}} ago",
-    "live.enter.joinLive": "Join Live Class",
-    "live.enter.teacherCount": "+{value} more {value, plural, one {person} other {people}}"
+    "live.enter.tardyDuration": "{value} {value, plural, =0 { minute } one { minute } other { minutes }}之前开始",
+    "live.enter.joinLive": "进入直播课",
+    "live.enter.teacherCount": "+ {value} 更多 {value, plural, one { person } other { people }}",
+    "homeFunStudy.submission.error.rejected.title": "Assignment Complete",
+    "homeFunStudy.discardChange.title": "Discard Changes?",
+    "homeFunStudy.discardChange": "Closing the window will discard any changes you have made."
 }

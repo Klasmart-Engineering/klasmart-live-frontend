@@ -165,7 +165,7 @@
     "schedule_liveTab": "Trực tuyến",
     "schedule_studyTab": "Bài tập về nhà",
     "schedule_loadingSelectOrg": "Vui lòng chọn một tổ chức trước bằng cách nhấn vào góc trên bên trái!",
-    "schedule_errorFetchTimeViews": "Rất tiếc, tải trang không thành công.",
+    "schedule_errorFetchTimeViews": "Rất tiếc!<br>Tải Trang không thành công.",
     "schedule_liveSubheaderToday": "Hôm nay",
     "schedule_liveSubheaderTomorrow": "Ngày mai",
     "schedule_liveSubheaderUpcoming": "Tiếp đến",
@@ -221,7 +221,7 @@
     "homeFunStudy.info": "Thông tin",
     "homeFunStudy.chooseFile": "Chọn Tệp",
     "homeFunStudy.comment": "Bình luận",
-    "homeFunStudy.submission.error.rejected": "Bài tập này đã được giáo viên của bạn đánh giá và không thể nộp lại.",
+    "homeFunStudy.submission.error.rejected": "Bài tập này đã được giáo viên đánh giá. Bạn không thể chỉnh sửa hoặc gửi bài tập được nữa.",
     "parentalGate.error.incorrect": "Giá trị đầu vào không chính xác",
     "signin.title.loading": "Chờ đợi trong giây lát",
     "signin.body.loading": "KidsLoop đang cố gắng đăng nhập cho bạn ...",
@@ -269,5 +269,8 @@
     "schedule_review_class_name": "Ôn tập: {value} Học liệu",
     "live.enter.tardyDuration": "Đã bắt đầu {value} {value, plural, =0 { phút } one { phút } other { phút }} trước",
     "live.enter.joinLive": "Tham gia lớp học trực tuyến",
-    "live.enter.teacherCount": "+ {value} hơn {value, plural, one { người } other { người }}"
+    "live.enter.teacherCount": "+ {value} hơn {value, plural, one { người } other { người }}",
+    "homeFunStudy.submission.error.rejected.title": "Hoàn thành bài tập",
+    "homeFunStudy.discardChange.title": "Hủy bỏ những thay đổi?",
+    "homeFunStudy.discardChange": "Đóng cửa sổ sẽ hủy bỏ bất kỳ thay đổi nào bạn đã thực hiện."
 }
