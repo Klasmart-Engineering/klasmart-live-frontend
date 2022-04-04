@@ -257,7 +257,11 @@ export const RoomProvider: React.FC<Props> = ({ children, enableConferencing }) 
     };
 
     const userLeave = (leave: Session) => {
-        if(leave.id === sessionId && isConnectionTypeChange()) return;
+        if(
+            leave.id === sessionId && isConnectionTypeChange()
+            || classType !== ClassType.LIVE
+        ) return;
+
         const user = sessions.get(leave.id);
 
         setSessions((prev) => {

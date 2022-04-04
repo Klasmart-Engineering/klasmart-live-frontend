@@ -66,28 +66,30 @@ export function WebApp () {
         if(showSelectParticipants) return <ClassSelectAttendees />;
 
         switch(classType){
-        case ClassType.STUDY:
-            return <StudyRoom />;
-        default :
+        case ClassType.LIVE:
             return <LiveRoom />;
+        default :
+            return <StudyRoom />;
         }
     };
 
-    return <WebRtcProvider
-        sessionId={sessionId}
-        endpoint={endpoint}
-        onAuthorizationExpired={schedule}
-        onAuthorizationInvalid={schedule}
-        onAuthenticationInvalid={actions?.refreshAuthenticationToken}
-        onAuthenticationExpired={actions?.refreshAuthenticationToken}
-        onTokenMismatch={schedule}
-        onMissingAuthenticationToken={actions?.refreshAuthenticationToken}
-        onMissingAuthorizationToken={schedule}
-    >
-        {hasJoinedClassroom && name ? (
-            <RoomWithContext>{renderChildren()}</RoomWithContext>
-        )
-            : <Join />
-        }
-    </WebRtcProvider>;
+    return (
+        <WebRtcProvider
+            sessionId={sessionId}
+            endpoint={endpoint}
+            onAuthorizationExpired={schedule}
+            onAuthorizationInvalid={schedule}
+            onAuthenticationInvalid={actions?.refreshAuthenticationToken}
+            onAuthenticationExpired={actions?.refreshAuthenticationToken}
+            onTokenMismatch={schedule}
+            onMissingAuthenticationToken={actions?.refreshAuthenticationToken}
+            onMissingAuthorizationToken={schedule}
+        >
+            {hasJoinedClassroom && name ? (
+                <RoomWithContext>{renderChildren()}</RoomWithContext>
+            )
+                : <Join />
+            }
+        </WebRtcProvider>
+    );
 }
