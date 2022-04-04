@@ -65,7 +65,8 @@ export function getNameWithoutExtension (fileName: string): string {
 export function getFileNameInURI (uri: string): string | undefined {
     const decodedURI = decodeURIComponent(uri);
     const fileName = decodedURI.replace(/^.*[\\/]/, ``);
-    if (validateFileExtension(getFileExtensionFromName(fileName ?? ``))) return fileName;
+    if (validateFileExtension(getFileExtensionFromName(fileName ?? ``)))
+        return fileName;
     return undefined;
 }
 
@@ -84,31 +85,9 @@ export function convertFileNameToUnderscores (fileName: string): string {
 
 export function saveDataBlobToFile (blob: Blob, targetDirectory: string, fileName: string): Promise<string> {
     return new Promise((resolve, reject) => {
-        window.resolveLocalFileSystemURL(targetDirectory, (entry: Entry) => {
-            (entry as DirectoryEntry).getFile( fileName, {
-                create: true,
-                exclusive: false,
-            }, (fileEntry: any) => {
-                fileEntry.createWriter((writer: any) => {
-                    writer.onwriteend = () => {
-                        resolve(fileEntry.toURL());
-                    };
-
-                    writer.onerror = () => {
-                        console.error(`could not write file: `, writer.error);
-                        reject(writer.error);
-                    };
-
-                    writer.write(blob);
-                });
-            }, (error: any) => {
-                console.error(`could not create file: `, error);
-                reject(error);
-            });
-        }, (error: any) => {
-            console.error(`could not retrieve directory: `, error);
-            reject(error);
-        });
+        writeInChunk(blob, fileName, targetDirectory)
+            .then(fileEntry => resolve(fileEntry.toURL()))
+            .catch(error => reject(error));
     });
 }
 
@@ -131,12 +110,12 @@ export function getFilesInDirectory (targetDirectory: string): Promise<string[]>
 
 export function generateUniqueFileName (fileNames: string[], targetFileName: string, increaseNumber = 0): string {
     let newFileName = targetFileName;
-    if(increaseNumber !== 0)
+    if (increaseNumber !== 0)
         newFileName = `${getNameWithoutExtension(targetFileName)}(${increaseNumber}).${getFileExtensionFromName(targetFileName)}`;
-    if(!fileNames.includes(newFileName)){
+    if (!fileNames.includes(newFileName)) {
         return newFileName;
-    }else{
-        return generateUniqueFileName(fileNames, targetFileName, increaseNumber + 1 );
+    } else {
+        return generateUniqueFileName(fileNames, targetFileName, increaseNumber + 1);
     }
 }
 
@@ -172,34 +151,57 @@ export const createDirectory = (directoryName: string, rootDirectory = cordova.f
     });
 };
 
-export const writeFileToStorage = (file: File, directory = cordova.file.dataDirectory) => {
-    const fileName = detectFileName(file);
-
-    return new Promise<File>((resolve, reject) => {
+export const writeInChunk = (blob: Blob, fileName: string, directory = cordova.file.dataDirectory) => {
+    let offset = 0;
+    const BLOCK_SIZE = 1 * 1024 * 1024; // write blocks of 1MB at a time
+    return new Promise<FileEntry>((resolve, reject) => {
         const onError = (functionName: string) => (fileError: FileError) => {
             reject(`writeFileToStorage failed at ${functionName}: ${fileError.code}`);
         };
-        const onWriteFile = (fileEntry: FileEntry) => {
-            fileEntry.file(file => resolve({
-                ...file,
-                localURL: fileEntry.nativeURL,
-            }));
+        const writeNext = (fileEntry: FileEntry, fileWriter: FileWriter) => {
+            const blockSize = Math.min(BLOCK_SIZE, blob.size - offset);
+            const block = blob.slice(offset, offset + blockSize);
+
+            //append to the end
+            fileWriter.seek(fileWriter.length);
+            fileWriter.onwriteend = function () {
+                if (offset < blob.size) {
+                    offset += blockSize;
+                    writeNext(fileEntry, fileWriter);
+                } else {
+                    resolve(fileEntry);
+                }
+            };
+            fileWriter.write(block);
         };
         const onCreateFileWriter = (fileEntry: FileEntry) => (fileWriter: FileWriter) => {
-            fileWriter.onwriteend = () => onWriteFile(fileEntry);
-            fileWriter.onerror = () => reject(`writeFile failed at write`);
-            fileWriter.write(file);
+            fileWriter.onerror = () => onError(`writeFile failed at write`);
+            writeNext(fileEntry, fileWriter);
         };
         const onCreateFile = (fileEntry: FileEntry) => {
             fileEntry.createWriter(onCreateFileWriter(fileEntry), onError(`onCreateFileWriter`));
         };
-        window.resolveLocalFileSystemURL(directory, entry => {
+        window.resolveLocalFileSystemURL(directory, (entry) => {
             const dirEntry = entry as unknown as DirectoryEntry;
             dirEntry.getFile(fileName, {
                 create: true,
                 exclusive: false,
             }, onCreateFile, onError(`onCreateFile`));
         });
+    });
+};
+
+export const writeFileToStorage = (file: File,
+    directory = cordova.file.dataDirectory) => {
+    const fileName = detectFileName(file);
+
+    return new Promise<File>((resolve, reject) => {
+        writeInChunk(file, fileName, directory)
+            .then(fileEntry => fileEntry.file(file => resolve({
+                ...file,
+                localURL: fileEntry.nativeURL,
+            })))
+            .catch(error => reject(error));
     });
 };
 
@@ -287,7 +289,7 @@ export const copyFileToDirectory = (filePath: string, targetDirectory: string) =
             window.resolveLocalFileSystemURL(filePath, async entry => {
                 const fileEntry = entry as FileEntry;
                 const targetFilePath = `${dirEntry.nativeURL}/${fileEntry.name}`;
-                if(await isFileInStorage(targetFilePath))
+                if (await isFileInStorage(targetFilePath))
                     await removeFileFromStorage(`${dirEntry.nativeURL}/${fileEntry.name}`);
                 fileEntry.copyTo(dirEntry, fileEntry.name, onCopyFile, onError(`onCopyFile`));
             });
