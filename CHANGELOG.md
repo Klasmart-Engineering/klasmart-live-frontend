@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.0.1](https://github.com/KL-Engineering/kidsloop-live-frontend/branches/compare/v6.0.1%0Dv6.0.0) (2022-04-04)
+
+
+### 🐛 Bug Fixes
+
+* can not leave class after confirm leave popup (#13) ([35a3f13](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/35a3f138d75736bd39bc3ad61555bf1fed3c5853))
+* class is ending abruptly after selecting students in Class Mode [KLL-3437](https://calmisland.atlassian.net/browse/KLL-3437) ([d14d929](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/d14d92940f62572754982c2598a5ce48ec415229))
+* crashed when writing large file (#16) ([9a51577](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/9a5157707402eb8c9027700d797a2eba7046b644)), closes [KLL-2986](https://calmisland.atlassian.net/browse/KLL-2986)
+* use kl-engineering alias for custom cordova plugins (#33) ([38632cf](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/38632cfec94ff475e604ca5cbb3e20f7c6e469d9))
+
 ## [6.0.0](https://github.com/KL-Engineering/kidsloop-live-frontend/branches/compare/v6.0.0%0Dv5.2.0) (2022-04-01)
 
 
