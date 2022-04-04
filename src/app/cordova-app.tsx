@@ -1,4 +1,5 @@
 import { OnBoardingPage } from "./pages/on-boarding/onBoardingPage";
+import { ParentDashboardPage } from "./pages/parent/parentDashboardPage";
 import { useAuthenticationContext } from "@/app/context-provider/authentication-context";
 import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
 import { usePopupContext } from "@/app/context-provider/popup-context";
@@ -174,6 +175,10 @@ export function CordovaApp ({ history }: {
                         path="/on-boarding"
                         component={OnBoardingPage}
                     />
+                    <Route
+                        path="/parent-dashboard"
+                        component={ParentDashboardPage}
+                    />
                     <UserRoute
                         path="/"
                         component={SchedulePage}
@@ -192,7 +197,8 @@ export function CordovaApp ({ history }: {
                         onClose={() => setDialogs({
                             ...dialogs,
                             isShowNoOrgProfile: false,
-                        })} />
+                        })}
+                    />
                     <NoPageFoundDialog
                         open={dialogs.isShowNoStudentRole}
                         title="signIn.noStudentProfile.title"
@@ -201,7 +207,8 @@ export function CordovaApp ({ history }: {
                         onClose={() => setDialogs({
                             ...dialogs,
                             isShowNoStudentRole: false,
-                        })} />
+                        })}
+                    />
                     <ExternalNavigationDialog />
                 </>
             )}

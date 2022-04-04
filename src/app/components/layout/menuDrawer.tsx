@@ -10,6 +10,7 @@ import {
 import { useDisplayPrivacyPolicy } from "@/app/utils/privacyPolicyUtils";
 import StyledIcon from "@/components/styled/icon";
 import { useWindowSize } from "@/utils/viewport";
+import { OrganizationAvatar } from "@kl-engineering/kidsloop-px";
 import {
     Button,
     createStyles,
@@ -31,7 +32,6 @@ import { Close as CloseIcon } from "@styled-icons/material/Close";
 import { Settings as SettingsIcon } from "@styled-icons/material/Settings";
 import { PrivacyTip as PolicyIcon } from "@styled-icons/material-outlined/PrivacyTip";
 import clsx from "clsx";
-import { OrganizationAvatar } from "@kl-engineering/kidsloop-px";
 import React,
 { useEffect } from "react";
 import { FormattedMessage } from "react-intl";
@@ -42,6 +42,7 @@ import {
 } from "recoil";
 
 enum MenuDrawerItem {
+    PARENT_DASHBOARD,
     ORGANIZATION,
     SETTINGS,
     POLICY
@@ -101,25 +102,36 @@ export default function MenuDrawer () {
 
     const menuArray = [
         {
+            id: MenuDrawerItem.PARENT_DASHBOARD,
+            text: `hamburger.organization`,
+            icon: <OrganizationAvatar
+                name={selectedOrganization?.organization_name ?? ``}
+                size={`small`}
+            />,
+        },
+        {
             id: MenuDrawerItem.ORGANIZATION,
             text: `hamburger.organization`,
             icon: <OrganizationAvatar
                 name={selectedOrganization?.organization_name ?? ``}
-                size={`small`} />,
+                size={`small`}
+            />,
         },
         {
             id: MenuDrawerItem.SETTINGS,
             text: `title_settings`,
             icon: <StyledIcon
                 icon={<SettingsIcon />}
-                size="large" />,
+                size="large"
+            />,
         },
         {
             id: MenuDrawerItem.POLICY,
             text: `account_selectOrg_privacyPolicy`,
             icon: <StyledIcon
                 icon={<PolicyIcon />}
-                size="large" />,
+                size="large"
+            />,
         },
     ];
 
@@ -138,6 +150,9 @@ export default function MenuDrawer () {
             break;
         case MenuDrawerItem.POLICY:
             setParentalLock(true);
+            break;
+        case MenuDrawerItem.PARENT_DASHBOARD:
+            history.push(`/parent-dashboard`);
             break;
         default:
             break;
@@ -187,21 +202,24 @@ export default function MenuDrawer () {
             >
                 <Grid
                     item
-                    className={classes.fullWidth}>
+                    className={classes.fullWidth}
+                >
                     <Grid
                         item
                         container
                         direction="column"
                         alignItems="flex-start"
                         justifyContent="flex-end"
-                        className={classes.closeIconWrapper}>
+                        className={classes.closeIconWrapper}
+                    >
                         <IconButton
                             className={classes.iconButton}
                             onClick={() => setMenuOpen(false)}
                         >
                             <StyledIcon
                                 icon={<CloseIcon />}
-                                size="medium" />
+                                size="medium"
+                            />
                         </IconButton>
                     </Grid>
                     <Grid item>
@@ -215,7 +233,8 @@ export default function MenuDrawer () {
                                         key={item.id}
                                         button
                                         className={classes.drawerItem}
-                                        onClick={() => handleMenuItemClick(item.id)}>
+                                        onClick={() => handleMenuItemClick(item.id)}
+                                    >
                                         <ListItemIcon>{item.icon}</ListItemIcon>
                                         <ListItemText>
                                             <FormattedMessage id={item.text} />
@@ -232,16 +251,19 @@ export default function MenuDrawer () {
                     container
                     direction="column"
                     justifyContent="center"
-                    className={classes.fullWidth}>
+                    className={classes.fullWidth}
+                >
                     <Grid item>
                         <Typography
                             align="center"
-                            className={clsx(classes.versionText)}>
+                            className={clsx(classes.versionText)}
+                        >
                             <FormattedMessage
                                 id="settings.version"
                                 values={{
                                     version: `${process.env.VERSION} (${process.env.GIT_COMMIT})`,
-                                }} />
+                                }}
+                            />
                         </Typography>
                     </Grid>
                     <Grid item>
@@ -252,7 +274,8 @@ export default function MenuDrawer () {
                         container
                         direction="column"
                         justifyContent="flex-start"
-                        className={classes.drawerSignOutButton}>
+                        className={classes.drawerSignOutButton}
+                    >
                         <Button
                             fullWidth
                             variant="text"
@@ -266,7 +289,8 @@ export default function MenuDrawer () {
                         >
                             <Typography
                                 color="primary"
-                                align="center">
+                                align="center"
+                            >
                                 <FormattedMessage id="account_selectOrg_signOut" />
                             </Typography>
                         </Button>
