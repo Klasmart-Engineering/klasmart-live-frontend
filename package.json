@@ -177,7 +177,7 @@
         "ANDROID_HOST": " ",
         "ANDROID_PATHPREFIX": "/"
       },
-      "cordova-plugin-fullscreen": {},
+      "@kl-engineering/cordova-plugin-fullscreen": {},
       "cordova-plugin-wkwebview-cookie-sync": {},
       "cordova-plugin-wkwebview-file-xhr": {},
       "cordova-plugin-statusbar": {},
@@ -189,7 +189,7 @@
       "cordova-plugin-preview-any-file": {},
       "cordova-plugin-file": {},
       "cordova-plugin-network-information": {},
-      "cordova-plugin-external-url-intercept": {},
+      "@kl-engineering/cordova-plugin-external-url-intercept": {},
       "cordova-plugin-compat": {},
       "cordova-plugin-androidx-adapter": {},
       "cordova-plugin-androidx": {},
@@ -202,14 +202,14 @@
         "PLUGIN_VERSION": "5.0.0",
         "ANDROID_AGENT_VER": "6.2.1"
       },
-      "cordova-plugin-speechrecognition": {},
+      "@kl-engineering/cordova-plugin-speechrecognition": {},
       "cordova-plugin-window-background": {
         "WINDOW_BACKGROUND_COLOR": "#ffffff"
       },
-      "cordova-plugin-screen-orientation": {},
-      "cordova-plugin-splashscreen": {},
+      "@kl-engineering/cordova-plugin-screen-orientation": {},
+      "@kl-engineering/cordova-plugin-splashscreen": {},
       "cordova-plugin-device": {},
-      "cordova-plugin-cookies-sync": {},
+      "@kl-engineering/cordova-plugin-cookies-sync": {},
       "cordova-plugin-ionic-keyboard": {}
     },
     "platforms": [
