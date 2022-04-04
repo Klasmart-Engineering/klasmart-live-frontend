@@ -28,3 +28,18 @@ export function formatDateTimeMillis (millis: number, intl: IntlShape) {
     const time = intl.formatTime(millis);
     return `${date}, ${time}`;
 }
+
+export function formatCalendarDates (dueDateMillis: number, intl: IntlShape, sevenDays: number) {
+    const date = intl.formatDate(dueDateMillis, {
+        month: `short`,
+        year: `numeric`,
+    });
+    const today = intl.formatDate(dueDateMillis, {
+        day: `numeric`,
+    });
+
+    const lastday = intl.formatDate(dueDateMillis - sevenDays, {
+        day: `numeric`,
+    });
+    return `${lastday} -  ${today} ${date}`;
+}

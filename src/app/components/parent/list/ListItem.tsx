@@ -1,7 +1,10 @@
 import ForwardIcon from "@/assets//img/parent-dashboard/forward_arrow.svg";
 import {
-    TEXT_COLOR_LIVE_PRIMARY,
-    TEXT_COLOR_STUDY_PRIMARY,
+    BACKGROUND_PROCESS_GREY,
+    BODY_TEXT,
+    LEARNING_OUTCOMES_COLOR,
+    LIVE_COLOR,
+    STUDY_COLOR,
 } from "@/config";
 import {
     Avatar,
@@ -37,7 +40,7 @@ const useStyles = makeStyles((theme) => createStyles({
         },
     },
     list: {
-        padding: `10px 10px 0 10px`,
+        padding: `10px 20px 0 20px`,
     },
     listAssesment: {
         paddingBottom: `10px`,
@@ -45,28 +48,60 @@ const useStyles = makeStyles((theme) => createStyles({
     listItem: {
         padding: `5px 0 5px`,
     },
+    title: {
+        fontWeight: theme.typography.fontWeightRegular as number,
+        color: BODY_TEXT,
+    },
     linear: {
-        marginLeft: theme.spacing(2),
-        width: `100%`,
+        marginLeft: theme.spacing(1),
+        flex: `auto`,
         height: 10,
     },
     listItemText: {
-        width: 80,
-        marginLeft: theme.spacing(2),
+        marginLeft: theme.spacing(1),
         fontWeight: theme.typography.fontWeightMedium as number,
-        fontSize: `1.5rem`,
+        fontSize: `1rem`,
     },
     lisItemTextBottom: {
-        fontWeight: theme.typography.fontWeightBold as number,
+        fontWeight: theme.typography.fontWeightMedium as number,
+        color: BODY_TEXT,
     },
     linearProcess: {
         [`&.${linearProgressClasses.colorPrimary}`]: {
-            backgroundColor: `#C4CBD0`,
+            borderRadius: 5,
+            backgroundColor: BACKGROUND_PROCESS_GREY,
         },
+    },
+    linearStudy: {
         [`& .${linearProgressClasses.bar}`]: {
             borderRadius: 5,
-            backgroundColor: `#FFBC00`,
+            backgroundColor: STUDY_COLOR,
         },
+    },
+    linearLiveClass: {
+        [`& .${linearProgressClasses.bar}`]: {
+            borderRadius: 5,
+            backgroundColor: LIVE_COLOR,
+        },
+    },
+    linearLearningOutcomes: {
+        [`& .${linearProgressClasses.bar}`]: {
+            borderRadius: 5,
+            backgroundColor: LEARNING_OUTCOMES_COLOR,
+        },
+    },
+    statusText: {
+        fontWeight: theme.typography.fontWeightMedium as number,
+        minInlineSize: `min-content`,
+    },
+    statusStudyText: {
+        color: STUDY_COLOR,
+    },
+    statusLiveText: {
+        color: LIVE_COLOR,
+    },
+    statusLearningOutcomes: {
+        color: LEARNING_OUTCOMES_COLOR,
     },
 }));
 
@@ -75,7 +110,9 @@ export interface Props {
   status: string;
   assessment: string;
   icon: string;
-  isAssessment: boolean;
+  isLiveClassAt: boolean;
+  isStudyAssessments: boolean;
+  isLearningOutcomes: boolean;
 }
 
 export default function ParentListItem (props: Props) {
@@ -84,10 +121,12 @@ export default function ParentListItem (props: Props) {
         status,
         assessment,
         icon,
-        isAssessment,
+        isLiveClassAt,
+        isStudyAssessments,
+        isLearningOutcomes,
     } = props;
     const classes = useStyles();
-
+    const isAssessment = true;
     return (
         <Box className={classes.boxRoot}>
             <List className = {clsx(classes.list, {
@@ -99,7 +138,8 @@ export default function ParentListItem (props: Props) {
                     disableTypography
                     primary={
                         <Typography
-                            variant="body1"
+                            className={classes.title}
+                            variant="body2"
                         > {title}
                         </Typography>}
                 />
@@ -107,6 +147,10 @@ export default function ParentListItem (props: Props) {
                     <img
                         alt="study icon"
                         src={icon}
+                        style={{
+                            width: 38,
+                            height: 38,
+                        }}
                     />
                     <div className={classes.linear}>
                         <LinearProgress
@@ -114,26 +158,29 @@ export default function ParentListItem (props: Props) {
                                 height: `10px`,
                                 borderRadius: 10,
                             }}
-                            className={classes.linearProcess}
+                            className={clsx(classes.linearProcess, {
+                                [classes.linearLiveClass]: isLiveClassAt,
+                                [classes.linearStudy]: isStudyAssessments,
+                                [classes.linearLearningOutcomes] : isLearningOutcomes,
+                            })}
                             variant="determinate"
-                            value={50}
+                            value={60}
                         />
                     </div>
-                    <ListItemText
-                        disableTypography
-                        className={classes.listItemText}
-                        primary={
-                            <Typography
-                                variant="subtitle1"
-                            > {status}
-                            </Typography>}
-                    />
+                    <Typography
+                        className={clsx(classes.statusText, classes.listItemText, {
+                            [classes.statusStudyText]: isStudyAssessments,
+                            [classes.statusLiveText]: isLiveClassAt,
+                            [classes.statusLearningOutcomes] : isLearningOutcomes,
+                        })}
+                    > {status}
+                    </Typography>
                 </ListItem>
             </List>
             {isAssessment &&
           <List>
               <Divider />
-              <ListItem >
+              <ListItem className={classes.list}>
                   <ListItemText
                       disableTypography
                       primary={

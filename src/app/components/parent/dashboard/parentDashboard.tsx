@@ -1,18 +1,11 @@
+import { CustomCalendar } from "../calendar/customCalendar";
 import ParentListItem from "../list/ListItem";
 import ScheduleErrorRetryButton from "@/app/components/Schedule/ErrorRetryButton";
-import ScheduleListItem from "@/app/components/Schedule/ListItem";
-import ListItemAvatar from "@/app/components/Schedule/ListItemAvatar";
 import ScheduleListSectionHeader from "@/app/components/Schedule/ListSectionHeader";
 import ScheduleLoading from "@/app/components/Schedule/Loading";
 import NoSchedule,
 { NoScheduleVariant } from "@/app/components/Schedule/NoSchedule";
-import {
-    getIconStudyType,
-    getStudyType,
-    ScheduleListSection,
-    StudyAssessmentStatus,
-} from "@/app/components/Schedule/shared";
-import StudyDetailsDialog from "@/app/components/Schedule/Study/Dialog/Details";
+import { ScheduleListSection } from "@/app/components/Schedule/shared";
 import { useSelectedOrganizationValue } from "@/app/data/user/atom";
 import { dialogsState } from "@/app/model/appModel";
 import {
@@ -36,6 +29,7 @@ import {
 } from "@kl-engineering/cms-api-client";
 import {
     createStyles,
+    Grid,
     List,
     makeStyles,
 } from "@material-ui/core";
@@ -159,33 +153,53 @@ export default function ParentDashboard () {
     }
 
     return (
-        <>
-            <List
-                ref={scrollRef}
-                subheader={<li />}
-                className={classes.listRoot}
+        <Grid
+            container
+            direction="column"
+            alignItems="center"
+            style={{
+                height: `100%`,
+                display: `block`,
+            }}
+        >
+            <Grid
+                item
             >
-                {studyScheduleSections.map((studySchedulesSection, sectionId) => (
-                    <li
-                        key={`section-${sectionId}`}
-                        className={classes.listSection}
-                    >
-                        <ul className={classes.ul}>
-                            {studySchedulesSection.title && <ScheduleListSectionHeader title={studySchedulesSection.title} />}
-                            {studySchedulesSection.schedules.map((studySchedule, index) => (
-                                <ParentListItem
-                                    key={studySchedule.id}
-                                    title={studySchedule.title}
-                                    status={`5/10`}
-                                    isAssessment={studySchedule.is_home_fun}
-                                    icon={studySchedule.is_home_fun ? (index % 2 === 0) ? StudyTaskIcon : LearningOutComesIcon : LiveIcon}
-                                    assessment={studySchedule.class_type}
-                                />
-                            ))}
-                        </ul>
-                    </li>
-                ))}
-            </List>
-        </>
+                <CustomCalendar />
+            </Grid>
+            <Grid
+                item
+            >
+                <List
+                    ref={scrollRef}
+                    subheader={<li />}
+                    className={classes.listRoot}
+                >
+                    {studyScheduleSections.map((studySchedulesSection, sectionId) => (
+                        <li
+                            key={`section-${sectionId}`}
+                            className={classes.listSection}
+                        >
+                            <ul className={classes.ul}>
+                                {studySchedulesSection.title && <ScheduleListSectionHeader title={studySchedulesSection.title} />}
+                                {studySchedulesSection.schedules.map((studySchedule, index) => (
+
+                                    <ParentListItem
+                                        key={studySchedule.id}
+                                        title={studySchedule.title}
+                                        status={`6/10`}
+                                        isLiveClassAt={studySchedule.is_home_fun && (index % 2 !== 0)}
+                                        isStudyAssessments = {studySchedule.is_home_fun && (index % 2 === 0)}
+                                        isLearningOutcomes = {!studySchedule.is_home_fun}
+                                        icon={studySchedule.is_home_fun ? ((index % 2 === 0) ? StudyTaskIcon : LiveIcon) : LearningOutComesIcon}
+                                        assessment={studySchedule.class_type}
+                                    />
+                                ))}
+                            </ul>
+                        </li>
+                    ))}
+                </List>
+            </Grid>
+        </Grid>
     );
 }
