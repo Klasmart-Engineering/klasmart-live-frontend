@@ -315,7 +315,7 @@ export default function Join (): JSX.Element {
                                 className={classes.subTitle}
                             >
                                 {dueDate && <FormattedMessage
-                                    id="new_lokalise_later"
+                                    id="study.enter.due"
                                     values={{
                                         value: formatDateMonthYearMillis(fromSecondsToMilliseconds(dueDate ?? 0), intl),
                                     }}
