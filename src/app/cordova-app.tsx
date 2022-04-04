@@ -202,9 +202,9 @@ export function CordovaApp ({ history }: {
                             ...dialogs,
                             isShowNoStudentRole: false,
                         })} />
+                    <ExternalNavigationDialog />
                 </>
             )}
-            <ExternalNavigationDialog />
         </Grid>
     );
 }

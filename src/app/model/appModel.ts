@@ -29,6 +29,7 @@ export const dialogsState = atom({
         isShowNoStudentRole: false,
         isLiveClassDetailOpen: false,
         isStudyDetailOpen: false,
+        isExternalNavigationOpen: false,
     },
 });
 

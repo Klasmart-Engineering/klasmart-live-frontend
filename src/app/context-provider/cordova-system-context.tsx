@@ -187,6 +187,7 @@ export function CordovaSystemProvider ({ children, history }: Props) {
                 isShowNoStudentRole: false,
                 isLiveClassDetailOpen: false,
                 isStudyDetailOpen: false,
+                isExternalNavigationOpen: false,
             });
             setMenuOpen(false);
             return;
