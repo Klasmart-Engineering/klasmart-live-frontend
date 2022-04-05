@@ -7,19 +7,22 @@ import {
 } from "@/store/layoutAtoms";
 import { MaterialTypename } from "@/types/lessonMaterial";
 import { useMaterialToHref } from "@/utils/contentUtils";
+import { NoItemList } from "@/utils/utils";
+import { Book as PlanIcon } from "@styled-icons/boxicons-regular/Book";
 import ContainedWhiteboard from "@/whiteboard/components/ContainedWhiteboard";
 import { Typography } from "@material-ui/core";
 import React,
 { useEffect } from "react";
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 import { useRecoilState } from "recoil";
 
 function PreviewLessonPlan () {
-    const {  materials } = useSessionContext();
+    const { materials } = useSessionContext();
     const [ materialActiveIndex ] = useRecoilState(materialActiveIndexState);
     const [ , setObserveDisable ] = useRecoilState(observeDisableState);
     const material = materialActiveIndex >= 0 && materialActiveIndex < materials.length ? materials[materialActiveIndex] : undefined;
     const [ contentHref ] = useMaterialToHref(material);
+    const intl = useIntl();
 
     useEffect(() => {
         if (material?.__typename === MaterialTypename.IMAGE) {
@@ -33,6 +36,17 @@ function PreviewLessonPlan () {
             setObserveDisable(false);
         }
     }, [ material ]);
+
+    if( !materials.length ){
+        return(
+            <NoItemList
+                icon={<PlanIcon />}
+                text={intl.formatMessage({
+                    id: `lessonplan_content_noresults`,
+                })}
+            />
+        );
+    }
 
     if (material?.__typename === MaterialTypename.IMAGE) {
         return (

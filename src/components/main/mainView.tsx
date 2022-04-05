@@ -29,7 +29,7 @@ function MainView (props: Props) {
     // SCREENSHARE VIEW
     // TEACHER and STUDENTS : Host Screen
     if (content?.type === ContentType.Screen) return (
-        <Screenshare sessionId={content.contentId}/>
+        <Screenshare sessionId={content.contentId} />
     );
 
     // PRESENT VIEW

@@ -1,3 +1,4 @@
+/* eslint-disable react/no-multi-comp */
 import { InteractionPlayer } from "@/components/interactiveContent/InteractionPlayer";
 import InteractionRecorder from "@/components/interactiveContent/InteractionRecorder";
 import Loading from "@/components/interactiveContent/loading";
@@ -19,6 +20,7 @@ import {
     Typography,
 } from "@material-ui/core";
 import { ArrowsAngleExpand as ExpandIcon } from "@styled-icons/bootstrap/ArrowsAngleExpand";
+import { Book as PlanIcon } from "@styled-icons/boxicons-regular/Book";
 import { Person as UserIcon } from "@styled-icons/fluentui-system-regular/Person";
 import React,
 {
@@ -131,6 +133,7 @@ export default function Observe (props: Props) {
     const {
         sessionId,
         isTeacher,
+        materials,
     } = useSessionContext();
     const content = useContent();
     const sessions = useSessions();
@@ -153,6 +156,17 @@ export default function Observe (props: Props) {
     const studentModeFilterGroups = useMemo(() => {
         return [ sessionId ];
     }, [ sessionId ]);
+
+    if( !materials.length ){
+        return(
+            <NoItemList
+                icon={<PlanIcon />}
+                text={intl.formatMessage({
+                    id: `lessonplan_content_noresults`,
+                })}
+            />
+        );
+    }
 
     if (isTeacher) {
         if (studentSessions.length) {
@@ -238,7 +252,8 @@ function StudentPreviewCard (props: StudentPreviewCardProps) {
                     <div className={classes.centerContent}>
                         <div
                             className={classes.previewExpand}
-                            onClick={() => toggleFullScreenById(`observe:${session.streamId}`) }>
+                            onClick={() => toggleFullScreenById(`observe:${session.streamId}`)}
+                        >
                             <ExpandIcon size="0.75em" />
                         </div>
                         <InteractionPlayer
