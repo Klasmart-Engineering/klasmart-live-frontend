@@ -29,7 +29,7 @@ jobs:
         with:
             environment: alpha
             region: internal
-            save: true
+            upload: true
 
     confirm-deployment:
         needs: [test-unit, build]
