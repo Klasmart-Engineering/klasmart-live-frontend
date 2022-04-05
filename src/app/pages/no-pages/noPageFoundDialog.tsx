@@ -61,7 +61,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         fontSize: `1.15rem`,
         lineHeight: 1.334,
         fontWeight: theme.typography.fontWeightBold as number,
-        backgroundColor: THEME_COLOR_BACKGROUND_ON_BOARDING,
+        backgroundColor: BG_COLOR_SIGN_IN_BUTTON,
         color: theme.palette.common.white,
         padding: theme.spacing(2),
         borderRadius: theme.spacing(3, 1, 3, 3),
@@ -92,19 +92,22 @@ export function NoPageFoundDialog ({
         <Dialog
             fullScreen
             open={open}
-            onClose={onClose}>
+            onClose={onClose}
+        >
             <Grid
                 container
                 className={classes.container}
                 direction="column"
                 justifyContent={isSmUp ? `space-around` : `space-between`}
-                alignItems="center">
+                alignItems="center"
+            >
                 <Grid
                     container
                     alignItems="center"
                     direction="column"
                     justifyContent="flex-end"
-                    className={classes.content}>
+                    className={classes.content}
+                >
                     <Grid item>
                         <img
                             className={classes.img}
@@ -115,23 +118,27 @@ export function NoPageFoundDialog ({
                     <Grid item>
                         <Typography
                             className={classes.title}
-                            variant="h4">
+                            variant="h4"
+                        >
                             <FormattedMessage id={title} />
                         </Typography>
                     </Grid>
                     <Grid
                         item
-                        className={classes.bodyContainer}>
+                        className={classes.bodyContainer}
+                    >
                         <Typography
                             variant="h5"
-                            align="center">
+                            align="center"
+                        >
                             <FormattedMessage id={body} />
                         </Typography>
                     </Grid>
                 </Grid>
                 <Grid
                     item
-                    className={classes.fullWidth}>
+                    className={classes.fullWidth}
+                >
                     <Button
                         disableElevation
                         className={classes.goBackButton}
@@ -140,7 +147,8 @@ export function NoPageFoundDialog ({
                             actions?.signOut();
                             setShouldClearCookie(true);
                             setShowOnBoarding(true);
-                        }}>
+                        }}
+                    >
                         <FormattedMessage id="common.goBack" />
                     </Button>
                 </Grid>
