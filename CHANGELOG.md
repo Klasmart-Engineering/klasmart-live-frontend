@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.0.2](https://github.com/KL-Engineering/kidsloop-live-frontend/branches/compare/v6.0.2%0Dv6.0.1) (2022-04-05)
+
+
+### 🐛 Bug Fixes
+
+* update style to correct background (#34) ([1aeffd2](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/1aeffd2cdd72c842b93fee2f9fbfed380ca018ee))
+
 ### [6.0.1](https://github.com/KL-Engineering/kidsloop-live-frontend/branches/compare/v6.0.1%0Dv6.0.0) (2022-04-04)
 
 
