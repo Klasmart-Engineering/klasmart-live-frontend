@@ -7,21 +7,16 @@ import {
     STUDY_COLOR,
 } from "@/config";
 import {
-    Avatar,
     Box,
     createStyles,
     Divider,
+    LinearProgress,
     List,
     ListItem,
-    ListItemAvatar,
-    ListItemIcon,
-    ListItemSecondaryAction,
     ListItemText,
     makeStyles,
     Typography,
 } from "@material-ui/core";
-import LinearProgress,
-{ linearProgressClasses } from "@mui/material/LinearProgress";
 import clsx from "clsx";
 import React from "react";
 
@@ -67,28 +62,20 @@ const useStyles = makeStyles((theme) => createStyles({
         color: BODY_TEXT,
     },
     linearProcess: {
-        [`&.${linearProgressClasses.colorPrimary}`]: {
-            borderRadius: 5,
-            backgroundColor: BACKGROUND_PROCESS_GREY,
-        },
+        borderRadius: 5,
+        backgroundColor: BACKGROUND_PROCESS_GREY,
     },
     linearStudy: {
-        [`& .${linearProgressClasses.bar}`]: {
-            borderRadius: 5,
-            backgroundColor: STUDY_COLOR,
-        },
+        borderRadius: 5,
+        backgroundColor: STUDY_COLOR,
     },
     linearLiveClass: {
-        [`& .${linearProgressClasses.bar}`]: {
-            borderRadius: 5,
-            backgroundColor: LIVE_COLOR,
-        },
+        borderRadius: 5,
+        backgroundColor: LIVE_COLOR,
     },
     linearLearningOutcomes: {
-        [`& .${linearProgressClasses.bar}`]: {
-            borderRadius: 5,
-            backgroundColor: LEARNING_OUTCOMES_COLOR,
-        },
+        borderRadius: 5,
+        backgroundColor: LEARNING_OUTCOMES_COLOR,
     },
     statusText: {
         fontWeight: theme.typography.fontWeightMedium as number,
@@ -158,11 +145,14 @@ export default function ParentListItem (props: Props) {
                                 height: `10px`,
                                 borderRadius: 10,
                             }}
-                            className={clsx(classes.linearProcess, {
-                                [classes.linearLiveClass]: isLiveClassAt,
-                                [classes.linearStudy]: isStudyAssessments,
-                                [classes.linearLearningOutcomes] : isLearningOutcomes,
-                            })}
+                            classes={{
+                                colorPrimary: classes.linearProcess,
+                                barColorPrimary: clsx({
+                                    [classes.linearStudy]: isLiveClassAt,
+                                    [classes.linearLearningOutcomes]: isLearningOutcomes,
+                                    [classes.linearLiveClass] : isStudyAssessments,
+                                }),
+                            }}
                             variant="determinate"
                             value={60}
                         />

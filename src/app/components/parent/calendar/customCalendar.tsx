@@ -20,7 +20,7 @@ import { useIntl } from "react-intl";
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
-            height: `100%`,
+            height: 46,
             flexDirection: `row`,
         },
         calendar:{
@@ -35,12 +35,21 @@ const useStyles = makeStyles((theme: Theme) =>
         }
     }));
 
-export function CustomCalendar () {
+interface Props {
+    onOpenCalendar?: () => void;
+}
+
+export function CustomCalendar(props: Props) {
+    
+    const {
+        onOpenCalendar
+    } = props;
+    
     const classes = useStyles();
     const sevenDays = 7 * 24 * 60 * 60 * 1000;
     const intl = useIntl();
     const [date, setDate] = useState(new Date().getTime());
-    
+
     const onClickedPrevious = useCallback(() => {
         const previousDate = date - sevenDays;
         setDate(previousDate);
@@ -77,6 +86,7 @@ export function CustomCalendar () {
             <Grid
                 item
                 className={classes.calendar}
+                onClick={onOpenCalendar}
             >
                 <img
                     alt="previous icon"

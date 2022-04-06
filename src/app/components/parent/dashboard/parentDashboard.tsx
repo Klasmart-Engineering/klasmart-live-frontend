@@ -1,4 +1,5 @@
 import { CustomCalendar } from "../calendar/customCalendar";
+import { CalendarDialog } from "../calendar/dialog/calendarDialog";
 import ParentListItem from "../list/ListItem";
 import ScheduleErrorRetryButton from "@/app/components/Schedule/ErrorRetryButton";
 import ScheduleListSectionHeader from "@/app/components/Schedule/ListSectionHeader";
@@ -48,6 +49,10 @@ import { useIntl } from "react-intl";
 import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles(() => createStyles({
+    root: {
+        height: `100%`,
+        display: `contents`,
+    },
     listRoot: {
         width: `100%`,
         backgroundColor: THEME_COLOR_BACKGROUND_LIST,
@@ -66,7 +71,7 @@ const useStyles = makeStyles(() => createStyles({
 export default function ParentDashboard () {
     const classes = useStyles();
     const intl = useIntl();
-    const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
+    const [ openCalendar, setOpenCalendar ] = useState(false);
     const [ page, setPage ] = useState(SCHEDULE_PAGE_START);
     const [ items, setItems ] = useState<SchedulesTimeViewListItem[]>([]);
     const organization = useSelectedOrganizationValue();
@@ -135,11 +140,8 @@ export default function ParentDashboard () {
 
     useWindowOnFocusChange(onFocusChange);
 
-    const setStudyDetailOpen = (scheduleId?: string) => {
-        setDialogs({
-            ...dialogs,
-            isStudyDetailOpen: !!scheduleId,
-        });
+    const onOpenCalendar = () => {
+        setOpenCalendar(!openCalendar);
     };
 
     if (scheduleError) {
@@ -153,53 +155,61 @@ export default function ParentDashboard () {
     }
 
     return (
-        <Grid
-            container
-            direction="column"
-            alignItems="center"
-            style={{
-                height: `100%`,
-                display: `block`,
-            }}
-        >
+        <>
             <Grid
-                item
+                container
+                direction="column"
+                alignItems="center"
+                className={classes.root}
             >
-                <CustomCalendar />
-            </Grid>
-            <Grid
-                item
-            >
-                <List
-                    ref={scrollRef}
-                    subheader={<li />}
-                    className={classes.listRoot}
+                <Grid
+                    item
                 >
-                    {studyScheduleSections.map((studySchedulesSection, sectionId) => (
-                        <li
-                            key={`section-${sectionId}`}
-                            className={classes.listSection}
-                        >
-                            <ul className={classes.ul}>
-                                {studySchedulesSection.title && <ScheduleListSectionHeader title={studySchedulesSection.title} />}
-                                {studySchedulesSection.schedules.map((studySchedule, index) => (
+                    <CustomCalendar onOpenCalendar={onOpenCalendar} />
+                </Grid>
+                <Grid
+                    item
+                    style={{
+                        overflowY: `scroll`,
+                    }}
+                >
+                    <List
+                        ref={scrollRef}
+                        subheader={<li />}
+                        className={classes.listRoot}
+                    >
+                        {studyScheduleSections.map((studySchedulesSection, sectionId) => (
+                            <li
+                                key={`section-${sectionId}`}
+                                className={classes.listSection}
+                            >
+                                <ul className={classes.ul}>
+                                    {studySchedulesSection.title && <ScheduleListSectionHeader title={studySchedulesSection.title} />}
+                                    {studySchedulesSection.schedules.map((studySchedule, index) => (
 
-                                    <ParentListItem
-                                        key={studySchedule.id}
-                                        title={studySchedule.title}
-                                        status={`6/10`}
-                                        isLiveClassAt={studySchedule.is_home_fun && (index % 2 !== 0)}
-                                        isStudyAssessments = {studySchedule.is_home_fun && (index % 2 === 0)}
-                                        isLearningOutcomes = {!studySchedule.is_home_fun}
-                                        icon={studySchedule.is_home_fun ? ((index % 2 === 0) ? StudyTaskIcon : LiveIcon) : LearningOutComesIcon}
-                                        assessment={studySchedule.class_type}
-                                    />
-                                ))}
-                            </ul>
-                        </li>
-                    ))}
-                </List>
+                                        <ParentListItem
+                                            key={studySchedule.id}
+                                            title={studySchedule.title}
+                                            status={`6/10`}
+                                            isLiveClassAt={studySchedule.is_home_fun && (index % 2 !== 0)}
+                                            isStudyAssessments = {studySchedule.is_home_fun && (index % 2 === 0)}
+                                            isLearningOutcomes = {!studySchedule.is_home_fun}
+                                            icon={studySchedule.is_home_fun ? ((index % 2 === 0) ? StudyTaskIcon : LiveIcon) : LearningOutComesIcon}
+                                            assessment={studySchedule.class_type}
+                                        />
+                                    ))}
+                                </ul>
+                            </li>
+                        ))}
+                    </List>
+                </Grid>
             </Grid>
-        </Grid>
+            <CalendarDialog
+                open={openCalendar}
+                onClose={() => {
+                    setOpenCalendar(false);
+                }}
+            />
+        </>
     );
 }
