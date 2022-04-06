@@ -21,20 +21,12 @@ jobs:
           config: >- # more at semgrep.dev/explore
             p/security-audit
             p/secrets
-          # publishToken: ${{ secrets.SEMGREP_APP_TOKEN }}
           generateSarif: "1"
       - name: Archive code coverage results
         uses: actions/upload-artifact@v3
         with:
           name: semgrep-scan
           path: semgrep.sarif
-      # Upload findings to GitHub Advanced Security Dashboard [step 2/2]
-      # - name: Upload SARIF file for GitHub Advanced Security Dashboard
-      #   uses: github/codeql-action/upload-sarif@v1
-      #   with:
-      #     sarif_file: semgrep.sarif
-      #   if: always()
-
   build:
     needs: [codeScannigWithSemGrep]
     name: Build and Test default scheme using any available iPhone simulator
@@ -151,7 +143,7 @@ jobs:
 
           echo "==KL============================="
           echo "signing certificates"
-          bundle exec fastlane ios signing
+          bundle exec fastlane ios signing --env development
 
           echo "==KL============================="
           echo "building the app"

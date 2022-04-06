@@ -14,7 +14,7 @@ skip_confirmation(true)
 safe_remove_certs(true)
 skip_docs(true)
 verbose(true)
-username("build-machine@calmid.com")
+# username("build-machine@calmid.com")
 
 # MATCH_TYPE=appstore
 # MATCH_PLATFORM=ios
