@@ -11,6 +11,7 @@ jobs:
     name: Build and Test default scheme using any available iPhone simulator
     runs-on: macos-11
 
+
     steps:
       - uses: actions/checkout@v2
         with:
@@ -63,6 +64,22 @@ jobs:
           npm ci
         env:
             NPM_GITHUB_TOKEN: ${{ secrets.PACKAGES_TOKEN }}
+
+      # semgrep scan
+      - uses: returntocorp/semgrep-action@v1
+        with:
+          config: >- # more at semgrep.dev/explore
+            p/security-audit
+            p/secrets
+          publishToken: ${{ secrets.SEMGREP_APP_TOKEN }}
+          generateSarif: "1"
+
+      # Upload findings to GitHub Advanced Security Dashboard [step 2/2]
+      - name: Upload SARIF file for GitHub Advanced Security Dashboard
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: semgrep.sarif
+        if: always()
 
       - name: Prep iOS development
         env:
