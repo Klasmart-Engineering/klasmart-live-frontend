@@ -41,7 +41,7 @@ jobs:
         with:
           node-version: 16
           token: ${{ secrets.PACKAGES_TOKEN }}
-          cache: 'npm'
+          registry-url: https://npm.pkg.github.com/
 
       - name: Cache gems
         uses: actions/cache@v3
@@ -66,16 +66,23 @@ jobs:
         run: |
           sudo npm install -g cordova
           cordova telemetry off
-
+      
       - name: Find node_modules cache
         id: cache-node_modules
         uses: actions/cache@v3
         with:
-            path: ./node_modules
-            key: ${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-            restore-keys: |
-              ${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-              ${{ runner.os }}-
+          path: ./node_modules
+          key: ${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+      # - name: Find node_modules cache
+      #   id: cache-node_modules
+      #   uses: actions/cache@v3
+      #   with:
+      #       path: ./node_modules
+      #       key: ${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+      #       restore-keys: |
+      #         ${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+      #         ${{ runner.os }}-
             
       - name: Install dependencies
         if: steps.cache-node_modules.outputs.cache-hit != 'true'

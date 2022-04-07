@@ -11,24 +11,24 @@ keychain_path = "#{ENV['MATCH_KEYCHAIN_PATH']}"
 
 platform :ios do
   before_all do
-    # Delete possible leftover keychain file, otherwise creation of a new temporary keychain would fail
-    # Not needed if we can have a keychain file in the current working directory,
-    # because we always perform clean git checkout.
-    if File.exists?(keychain_path)
-      puts("Deleting old keychain file: #{keychain_path}")
-      delete_keychain(path: keychain_path)
-      FileUtils.rm_f(keychain_path)
-    end
-    create_keychain(
-      path: keychain_path,
-      password: ENV["MATCH_KEYCHAIN_PASSWORD"],
-      default_keychain: true,
-      unlock: true,
-      timeout: 600,
-      lock_when_sleeps: false,
-      lock_after_timeout: false,
-      require_create: true
-    )
+    # # Delete possible leftover keychain file, otherwise creation of a new temporary keychain would fail
+    # # Not needed if we can have a keychain file in the current working directory,
+    # # because we always perform clean git checkout.
+    # if File.exists?(keychain_path)
+    #   puts("Deleting old keychain file: #{keychain_path}")
+    #   delete_keychain(path: keychain_path)
+    #   FileUtils.rm_f(keychain_path)
+    # end
+    # create_keychain(
+    #   path: keychain_path,
+    #   password: ENV["MATCH_KEYCHAIN_PASSWORD"],
+    #   default_keychain: true,
+    #   unlock: true,
+    #   timeout: 600,
+    #   lock_when_sleeps: false,
+    #   lock_after_timeout: false,
+    #   require_create: true
+    # )
 
     api_key = ""
     if __is_ci
@@ -75,17 +75,20 @@ platform :ios do
 
   desc "Sync signing"
   lane :signing do
-    match(
-      type: "adhoc" , 
-      readonly: __is_ci,
-      keychain_name: ENV['MATCH_KEYCHAIN_NAME'],
-      keychain_password: ENV["MATCH_KEYCHAIN_PASSWORD"],)
-    match(
-      type: "appstore",
-      readonly: __is_ci,
-      keychain_name: ENV['MATCH_KEYCHAIN_NAME'],
-      keychain_password: ENV["MATCH_KEYCHAIN_PASSWORD"],
-    )
+    get_certificates # invokes cert
+    get_provisioning_profile # invokes sigh
+    # match(
+    #   type: "adhoc" , 
+    #   readonly: __is_ci,
+    #   # keychain_name: ENV['MATCH_KEYCHAIN_NAME'],
+    #   # keychain_password: ENV["MATCH_KEYCHAIN_PASSWORD"],
+    #   )
+    # match(
+    #   type: "appstore",
+    #   readonly: __is_ci,
+    #   keychain_name: ENV['MATCH_KEYCHAIN_NAME'],
+    #   keychain_password: ENV["MATCH_KEYCHAIN_PASSWORD"],
+    # )
     mapping = Actions.lane_context[SharedValues::MATCH_PROVISIONING_PROFILE_MAPPING]
     update_code_signing_settings(
       profile_name: mapping[ENV['MATCH_APP_IDENTIFIER']]
