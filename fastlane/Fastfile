@@ -43,24 +43,6 @@ platform :ios do
       duration: 1200, # optional (maximum 1200)
       in_house: false # optional but may be required if using match/sigh
     )
-
-    print api_key
-    print "#{ENV['GITHUB_ACTIONS']}"
-    print "____"
-    # print ENV['TEST']
-    # print "____"
-    # print ENV['MATCH_KEYCHAIN_NAME']
-    # print ENV["MATCH_KEYCHAIN_PASSWORD"]
-    # print ENV['MATCH_PASSWORD']
-    # print "__"
-
-    # print "Continue (y/n)?"
-    # line = $stdin.readline()
-    # if ("y" != line)
-    #   print "I quit"
-    #   raise("Destroyed...")
-    # end
-    # print "continuing..."
   end
 
   desc "Running prechecks"
@@ -75,18 +57,18 @@ platform :ios do
 
   desc "Sync signing"
   lane :signing do
-    get_certificates(
-      type: "adhoc",
-      force: false,
+    # get_certificates(
+    #   type: "adhoc",
+    #   force: false,
+    #   keychain_password: ENV["MATCH_KEYCHAIN_PASSWORD"],
+    #   ) # invokes cert
+    # get_provisioning_profile # invokes sigh
+    match(
+      type: "adhoc" , 
+      readonly: __is_ci,
+      # keychain_name: ENV['MATCH_KEYCHAIN_NAME'],
       keychain_password: ENV["MATCH_KEYCHAIN_PASSWORD"],
-      ) # invokes cert
-    get_provisioning_profile # invokes sigh
-    # match(
-    #   type: "adhoc" , 
-    #   readonly: __is_ci,
-    #   # keychain_name: ENV['MATCH_KEYCHAIN_NAME'],
-    #   # keychain_password: ENV["MATCH_KEYCHAIN_PASSWORD"],
-    #   )
+      )
     # match(
     #   type: "appstore",
     #   readonly: __is_ci,
