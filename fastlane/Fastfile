@@ -7,12 +7,20 @@ default_platform(:ios)
 
 # because default fastlane is_ci doesn't work on github actions
 __is_ci = is_ci || "true" == "#{ENV['GITHUB_ACTIONS']}"
+keychain_path = "#{ENV['MATCH_KEYCHAIN_PATH']}"
 
 platform :ios do
   before_all do
-    delete_keychain(name: ENV['MATCH_KEYCHAIN_NAME'])
+    # Delete possible leftover keychain file, otherwise creation of a new temporary keychain would fail
+    # Not needed if we can have a keychain file in the current working directory,
+    # because we always perform clean git checkout.
+    if File.exists?(keychain_path)
+      puts("Deleting old keychain file: #{keychain_path}")
+      delete_keychain(path: keychain_path)
+      FileUtils.rm_f(keychain_path)
+    end
     create_keychain(
-      name: ENV['MATCH_KEYCHAIN_NAME'],
+      path: keychain_path,
       password: ENV["MATCH_KEYCHAIN_PASSWORD"],
       default_keychain: true,
       unlock: true,
