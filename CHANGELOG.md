@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.0.3](https://github.com/KL-Engineering/kidsloop-live-frontend/branches/compare/v6.0.3%0Dv6.0.2) (2022-04-07)
+
+
+### 🐛 Bug Fixes
+
+* live class crashes without material [KLL-2838](https://calmisland.atlassian.net/browse/KLL-2838) (#36) ([7e68156](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/7e68156fc46a62cfe8f1b5ab0058ef5159f2b403))
+
+
+### ⚙️ Continuous Integrations
+
+* add conventional pr title workflow (#37) ([3c554f9](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/3c554f922cbd46155786f35cefc72608b894d571))
+* fix workflow input variable name ([b7ec1d0](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/b7ec1d0e9f11c113da76443eeffe5e06e09047df))
+* run tests before commit ([67dae81](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/67dae8175a4c1d8f259ecbf0a24efa152b457d01))
+* separate pr workflows for meta info and commits ([f4353ae](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/f4353ae1b737a5e73271a54d5af735e6f51d24ae))
+
+
+### 💎 Style
+
+* format workflow file ([793fab3](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/793fab3056445345ab4d58945eb831a997f74880))
+
+
+### 🗑 Reverts
+
+* apollo upgrade version (feature KLL- 3294) #47 ([0741265](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/0741265d10b301991e87882036a84c79d062355a))
+
 ### [6.0.2](https://github.com/KL-Engineering/kidsloop-live-frontend/branches/compare/v6.0.2%0Dv6.0.1) (2022-04-05)
 
 
