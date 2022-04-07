@@ -75,7 +75,11 @@ platform :ios do
 
   desc "Sync signing"
   lane :signing do
-    get_certificates # invokes cert
+    get_certificates(
+      type: "adhoc",
+      force: false,
+      keychain_password: ENV["MATCH_KEYCHAIN_PASSWORD"],
+      ) # invokes cert
     get_provisioning_profile # invokes sigh
     # match(
     #   type: "adhoc" , 
