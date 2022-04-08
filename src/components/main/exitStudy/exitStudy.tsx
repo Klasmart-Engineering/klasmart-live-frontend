@@ -2,6 +2,7 @@ import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-c
 import StudyLeaveIcon from "@/assets/img/study_leave_icon.svg";
 import StudyStartAgainIcon from "@/assets/img/study_start_again_icon.svg";
 import RoundButton from "@/components/common/roundButton/RoundButton";
+import { useEndClassMutation } from "@/data/live/mutations/useEndClassMutation";
 import { useSessionContext } from "@/providers/session-context";
 import { ClassType } from "@/store/actions";
 import {
@@ -10,6 +11,7 @@ import {
     materialActiveIndexState,
     showEndStudyState,
 } from "@/store/layoutAtoms";
+import { useWebrtcCloseCallback } from "@kl-engineering/live-state/ui";
 import { Box } from "@material-ui/core";
 import React,
 { useEffect } from "react";
@@ -27,8 +29,14 @@ export default function ExitStudy (){
     const setMaterialActiveIndex = useSetRecoilState(materialActiveIndexState);
     const setShowEndStudy = useSetRecoilState(showEndStudyState);
     const { isReview, classType } = useSessionContext();
+    const closeConference = useWebrtcCloseCallback();
+    const [ endClass ] = useEndClassMutation();
 
-    const onCloseButtonClick = () => {
+    const onCloseButtonClick = async () => {
+        if(classType === ClassType.CLASSES){
+            await Promise.allSettled([ endClass(), closeConference.execute() ]);
+        }
+
         if (process.env.IS_CORDOVA_BUILD) {
             setClassEnded(false);
             setClassLeft(false);
