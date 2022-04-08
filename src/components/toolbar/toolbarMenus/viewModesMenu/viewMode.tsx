@@ -1,8 +1,5 @@
 import {
-    Box,
-    Button,
     ButtonBase,
-    Grid,
     makeStyles,
     Theme,
     Typography,
@@ -61,6 +58,7 @@ interface ViewModeProps {
 	icon: StyledIcon;
 	title: string;
     disabled?: boolean;
+    disableLongPress?: boolean;
 }
 
 function ViewMode (props: ViewModeProps) {
@@ -71,12 +69,13 @@ function ViewMode (props: ViewModeProps) {
         icon: Icon,
         title,
         disabled,
+        disableLongPress,
     } = props;
 
     const buttonRef = useRef<HTMLButtonElement>(null);
     const classes = useStyles();
 
-    const clickEvent = useLongPress(() => onClick(buttonRef), {
+    const clickEvent = useLongPress(disableLongPress ? null : () => onClick(buttonRef), {
         onStart: () => onClick(buttonRef),
         onFinish: () => onCloseAlert && onCloseAlert(),
         onCancel: () => onCloseAlert && onCloseAlert(),
@@ -96,7 +95,9 @@ function ViewMode (props: ViewModeProps) {
                 [classes.disabled]: !active && disabled && !onCloseAlert,
                 [classes.disabledShowTooltip]: onCloseAlert && disabled,
             })}
-            {...clickEvent}>
+            onClick={() => disableLongPress && onClick(buttonRef)}
+            {...clickEvent}
+        >
             <div className={classes.itemIcon}>
                 <Icon />
             </div>

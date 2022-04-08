@@ -8,12 +8,13 @@ import {
     observeWarningState,
 } from "@/store/layoutAtoms";
 import { StyledPopper } from "@/utils/utils";
+import { useSnackbar } from "@kl-engineering/kidsloop-px";
+import { useScreenshare } from "@kl-engineering/live-state/ui";
 import { Box } from "@material-ui/core";
 import { UserVoice as OnStageIcon } from "@styled-icons/boxicons-solid/UserVoice";
 import { Eye as ObserveIcon } from "@styled-icons/fa-regular/Eye";
 import { PresentationChartBar as PresentIcon } from "@styled-icons/heroicons-solid/PresentationChartBar";
 import { ScreenShare as ScreenShareIcon } from "@styled-icons/material/ScreenShare";
-import { useSnackbar } from "@kl-engineering/kidsloop-px";
 import React,
 {
     RefObject,
@@ -40,7 +41,7 @@ interface AlertProps {
     width?: number;
 }
 
-function ViewModesMenu (props:ViewModesMenuProps) {
+function ViewModesMenu (props: ViewModesMenuProps) {
     const { anchor } = props;
     const intl = useIntl();
     const [ interactiveMode, setInteractiveMode ] = useRecoilState(interactiveModeState);
@@ -74,9 +75,32 @@ function ViewModesMenu (props:ViewModesMenuProps) {
             }));
         }
     };
+
+    const screenshare = useScreenshare();
+
+    const stopScreenshare = () => {
+        screenshare.setSending.execute(false);
+        setInteractiveMode(InteractiveMode.ONSTAGE);
+    };
+
     const onClickScreenshare = (buttonRef: RefObject<HTMLButtonElement>) => {
         if(!isDisabledShareScreen) {
-            setInteractiveMode(InteractiveMode.SCREENSHARE);
+            screenshare.setSending.execute(true).then(() => {
+                setInteractiveMode(InteractiveMode.SCREENSHARE);
+            }).catch((e: unknown) => {
+                stopScreenshare();
+                let id = `screenShare.error.default`;
+                if( e instanceof Error) {
+                    switch(e.name) {
+                    case `NotAllowedError`:
+                    case `NotReadableError`:
+                        id = `screenShare.error.${e.name}`;
+                    }
+                }
+                enqueueSnackbar(intl.formatMessage({
+                    id,
+                }));
+            });
         } else {
             setAlert({
                 open: true,
@@ -95,7 +119,8 @@ function ViewModesMenu (props:ViewModesMenuProps) {
         <>
             <StyledPopper
                 open={isViewModesOpen}
-                anchorEl={anchor}>
+                anchorEl={anchor}
+            >
                 <Box display="flex" >
                     <ViewMode
                         title={intl.formatMessage({
@@ -123,6 +148,7 @@ function ViewModesMenu (props:ViewModesMenuProps) {
                         onClick={onClickPresent}
                     />
                     <ViewMode
+                        disableLongPress={!isDisabledShareScreen}
                         title={intl.formatMessage({
                             id: `viewMode.screenShare`,
                         })}

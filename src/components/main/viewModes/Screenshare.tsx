@@ -1,3 +1,4 @@
+/* eslint-disable react/no-multi-comp */
 import { StyledVideo } from "@/components/interactiveContent/styledVideo";
 import { InteractiveMode } from "@/pages/utils";
 import { useSessionContext } from "@/providers/session-context";
@@ -5,6 +6,11 @@ import {
     interactiveModeState,
     isGlobalActionsOpenState,
 } from "@/store/layoutAtoms";
+import {
+    useMediaStreamTracks,
+    useScreenshare,
+    useStream,
+} from "@kl-engineering/live-state/ui";
 import {
     Box,
     Button,
@@ -16,11 +22,6 @@ import {
     useTheme,
 } from "@material-ui/core";
 import PresentToAllIcon from '@material-ui/icons/PresentToAll';
-import {
-    useMediaStreamTracks,
-    useScreenshare,
-    useStream,
-} from "@kl-engineering/live-state/ui";
 import React,
 {
     useEffect,
@@ -57,7 +58,8 @@ const Screenshare: VoidFunctionComponent<{
             alignItems="center"
             justifyContent="center"
             textAlign="center"
-            position="relative">
+            position="relative"
+        >
             {sessionId === mySessionId
                 ? <ScreensharePresent />
                 : <ScreenshareView sessionId={sessionId} />
@@ -68,7 +70,7 @@ const Screenshare: VoidFunctionComponent<{
 
 export default Screenshare;
 
-const ScreensharePresent: VoidFunctionComponent  = () => {
+const ScreensharePresent: VoidFunctionComponent = () => {
     const classes = useStyles();
 
     const setInteractiveMode = useSetRecoilState(interactiveModeState);
@@ -78,10 +80,6 @@ const ScreensharePresent: VoidFunctionComponent  = () => {
     const isMdDown = useMediaQuery(theme.breakpoints.down(`md`));
 
     const screenshare = useScreenshare();
-    useEffect(() => {
-        screenshare.setSending.execute(true);
-        return () => { screenshare.setSending.execute(false); };
-    }, []);
 
     const stopScreenshare = () => {
         screenshare.setSending.execute(false);
@@ -106,11 +104,13 @@ const ScreensharePresent: VoidFunctionComponent  = () => {
         >
             <Grid
                 item
-                xs={6}>
+                xs={6}
+            >
                 <Grid
                     container
                     direction="column"
-                    spacing={3}>
+                    spacing={3}
+                >
                     <Grid item>
                         <div className={classes.icon}>
                             <PresentToAllIcon />
@@ -145,12 +145,13 @@ const ScreensharePresent: VoidFunctionComponent  = () => {
 
 const ScreenshareView: VoidFunctionComponent<{
     sessionId: string;
-}>  = ({ sessionId }) => {
+}> = ({ sessionId }) => {
     const classes = useStyles();
     const { stream } = useStream(sessionId, `screenshare`);
     return (
         <StyledVideo
             stream={stream}
-            className={classes.screenshareViewVideo} />
+            className={classes.screenshareViewVideo}
+        />
     );
 };
