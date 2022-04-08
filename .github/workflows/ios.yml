@@ -119,16 +119,15 @@ jobs:
           MATCH_PASSWORD: ${{secrets.MATCH_PASSWORD}}
           MATCH_KEYCHAIN_PATH: "./ci.keychain"
           MATCH_KEYCHAIN_PASSWORD: ${{secrets.MATCH_KEYCHAIN_PASSWORD}}
-          # APP_STORE_CONNECT_API_KEY_KEY_ID: ${{secrets.APPSTORE_KEY_ID}}
-          # APP_STORE_CONNECT_API_KEY_KEY: ${{secrets.APPSTORE_KEY_PRIVATE}}
-          APPSTORE_KEY_PRIVATE: ${{secrets.APPSTORE_KEY_PRIVATE}}
           PRIVATE_KEY: ${{ secrets.READONLY_SSH_PRIVATE_KEY }}
           SSH_KEYNAME: "readonly_pipeline_ed25519"
-        run: |
-          echo "==KL============================="
-          echo "set up Auth"
-          # echo ${APPSTORE_KEY_PRIVATE} > ./fastlane/AuthKey_DW9C8JLCRK.p8
 
+          APP_STORE_CONNECT_API_KEY_ID: "DW9C8JLCRK"
+          APP_STORE_CONNECT_API_ISSUER_ID: "69a6de8d-4b17-47e3-e053-5b8c7c11a4d1"
+          APP_STORE_CONNECT_API_KEY_IN_HOUSE: true
+          APP_STORE_CONNECT_API_KEY_DURATION: 1200
+          APP_STORE_CONNECT_API_KEY_KEY: ${{secrets.APPSTORE_KEY_PRIVATE}}
+        run: |
           echo "==KL============================="
           echo "prechecks"
           bundle exec fastlane check_metadata --env development
@@ -164,3 +163,6 @@ jobs:
   # echo "==KL============================="
   # echo "Authenticating with Apple connect. Creates a valid cookie and FASTLANE_SESSION" 
   # eval $(bundle exec fastlane spaceauth -u build-machine@calmid.com 2>/dev/null | grep "export FASTLANE_SESSION")
+#  echo "==KL============================="
+#           echo "set up Auth"
+#           # echo ${APPSTORE_KEY_PRIVATE} > ./fastlane/AuthKey_DW9C8JLCRK.p8
