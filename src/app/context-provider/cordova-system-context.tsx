@@ -121,8 +121,10 @@ export function CordovaSystemProvider ({ children, history }: Props) {
                     enableFullScreen(true);
                     enableKeepAwake(true);
                 }else{
-                    lockOrientation(OrientationType.PORTRAIT);
+                    // Add some time delay before locking to make sure the system fully loaded
                     await sleep(1000);
+                    lockOrientation(OrientationType.PORTRAIT);
+                    await sleep(700);
                     enableFullScreen(false);
                     enableKeepAwake(false);
                 }
