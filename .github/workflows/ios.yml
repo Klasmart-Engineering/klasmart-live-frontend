@@ -161,8 +161,6 @@ jobs:
           echo "uploading to testflight/firebase/appStore"
           bundle exec fastlane ios publish
 
-# bundle exec fastlane precheck --verbose
-
   # echo "==KL============================="
   # echo "Authenticating with Apple connect. Creates a valid cookie and FASTLANE_SESSION" 
   # eval $(bundle exec fastlane spaceauth -u build-machine@calmid.com 2>/dev/null | grep "export FASTLANE_SESSION")
