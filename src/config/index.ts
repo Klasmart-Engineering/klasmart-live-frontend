@@ -61,3 +61,5 @@ export const LEARNING_OUTCOMES_COLOR = `#00bf9f`;
 export const STUDY_COLOR = `#ffbc00`;
 export const LIVE_COLOR = `#40b8f4`;
 export const BODY_TEXT = `#6d8199`;
+export const COLOR_CONTENT_TEXT = `#b4bbbf`;
+export const COLOR_RANGE_CALENDAR = `#5a86ee`;

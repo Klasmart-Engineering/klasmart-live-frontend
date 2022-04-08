@@ -1,51 +1,35 @@
-import "react-date-range/dist/styles.css"; // main style file
-import "react-date-range/dist/theme/default.css"; // theme css file
-import { dialogsState } from "@/app/model/appModel";
+import "./css/styles.css"; 
+import "./css/default.css"; 
 import {
-    THEME_BACKGROUND_SELECT_DIALOG,
-    THEME_COLOR_PRIMARY_SELECT_DIALOG,
+    COLOR_RANGE_CALENDAR,
 } from "@/config";
 import {
     Dialog,
     DialogContent,
-    Grid,
     makeStyles,
-    TextField,
-    Typography,
-    useTheme,
 } from "@material-ui/core";
-import { vi } from "date-fns/locale";
 import React,
 {
-    useEffect,
-    useMemo,
     useState,
 } from "react";
-import { Calendar, DateRange } from "react-date-range";
+import { DateRange, RangeKeyDict, Range } from "react-date-range";
+
 import {
-    FormattedMessage,
-    useIntl,
-} from "react-intl";
-import { useRecoilState } from "recoil";
+  startOfWeek,
+  endOfWeek,
+} from 'date-fns';
 
 const useStyles = makeStyles((theme) => ({
-    fullWidth: {
-        width: `100%`,
-    },
     content: {
+        display: `flex`,
         padding: theme.spacing(5, 2, 2),
-        backgroundColor: THEME_BACKGROUND_SELECT_DIALOG,
+        backgroundColor: `transparent`,
 
         [theme.breakpoints.up(`sm`)]: {
             padding: theme.spacing(8, 4, 2),
         },
-    },
-    header: {
-        fontWeight: theme.typography.fontWeightBold as number,
-        color: THEME_COLOR_PRIMARY_SELECT_DIALOG,
-        paddingBottom: theme.spacing(4),
-        textAlign: `center`,
-        lineHeight: 1.5,
+        justifyContent: `center`,
+        alignItems: `center`,
     },
 }));
 
@@ -60,55 +44,41 @@ export function CalendarDialog (props: Props) {
         onClose,
     } = props;
     const classes = useStyles();
-    const intl = useIntl();
-    const theme = useTheme();
-    const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
 
-    const [ selectedDate, handleDateChange ] = useState(new Date());
-
-    const handleBackClick = () => setDialogs({
-        ...dialogs,
-        isSelectOrganizationOpen: false,
+    const [selectionRange, setSelectionRange] = useState<Range>({
+        startDate: startOfWeek(new Date()),
+        endDate: endOfWeek(new Date()),
+        key: `selection`,
     });
 
-    const toggle = () => onClose();
-
-    const handleSelect = (ranges: any) => {
-        console.log(ranges);
+    const handleSelect = (ranges: RangeKeyDict) => {
+        const newRanges = { ...ranges };
+        const range = newRanges['selection'];
+        range.startDate = startOfWeek(range.startDate ?? new Date());
+        range.endDate = endOfWeek(range.startDate ?? new Date());
+        setSelectionRange(range);
     };
-    const [ state, setState ] = useState({
-        startDate: new Date(),
-        endDate: new Date(),
-        key: `selection`,
-    }); // remo
     return (
         <Dialog
-            fullScreen
-            aria-labelledby="select-org-dialog"
+            aria-labelledby="select-calendar-dialog"
             open={open}
-            onClose={handleBackClick}
+            PaperProps={{
+                style: {
+                    backgroundColor: `transparent`,
+                    boxShadow: `none`,
+                },
+            }}
+            onClose={onClose}
         >
             <DialogContent className={classes.content}>
-                <Grid
-                    container
-                    alignItems="center"
-                    justifyContent="flex-start"
-                    direction="column"
-                >
-                    <Typography>
-                        Helllo
-                    </Typography>
-                    <Calendar
-                        locale={vi}
-                        date={new Date()}
-                        onChange={handleSelect}
-                    />
-                    <DateRange
-                        moveRangeOnFirstSelection={false}
-                        ranges={[ state ]}
-                        onChange={(item) => console.log(item)}
-                    />
-                </Grid>
+                <DateRange
+                    rangeColors={[ COLOR_RANGE_CALENDAR ]}
+                    showDateDisplay={false}
+                    showMonthAndYearPickers={false}
+                    ranges={[ selectionRange ]}
+                    onChange={handleSelect}
+                    showPreview={false}
+                />
             </DialogContent>
         </Dialog>
     );

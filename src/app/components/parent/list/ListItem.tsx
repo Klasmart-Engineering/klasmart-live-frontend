@@ -1,3 +1,5 @@
+import { ParentListEmptyItem } from "./emptyCard/parentListEmptyItem";
+import { InsignCommentItem } from "./insignCard/insignCommentItem";
 import ForwardIcon from "@/assets//img/parent-dashboard/forward_arrow.svg";
 import {
     BACKGROUND_PROCESS_GREY,
@@ -21,7 +23,7 @@ import clsx from "clsx";
 import React from "react";
 
 const useStyles = makeStyles((theme) => createStyles({
-    boxRoot: {
+    root: {
         width: `auto`,
         margin: theme.spacing(2),
         marginBottom: theme.spacing(3),
@@ -79,7 +81,6 @@ const useStyles = makeStyles((theme) => createStyles({
     },
     statusText: {
         fontWeight: theme.typography.fontWeightMedium as number,
-        minInlineSize: `min-content`,
     },
     statusStudyText: {
         color: STUDY_COLOR,
@@ -100,6 +101,7 @@ export interface Props {
   isLiveClassAt: boolean;
   isStudyAssessments: boolean;
   isLearningOutcomes: boolean;
+  index: number;
 }
 
 export default function ParentListItem (props: Props) {
@@ -111,16 +113,28 @@ export default function ParentListItem (props: Props) {
         isLiveClassAt,
         isStudyAssessments,
         isLearningOutcomes,
+        index,
     } = props;
     const classes = useStyles();
     const isAssessment = true;
+
+    if (index === 0) {
+        return (<InsignCommentItem messageId="id" />);
+    }
+
+    if (index === 1) {
+        return (<ParentListEmptyItem
+            title={title}
+            messageId="id"
+        />);
+    }
+
     return (
-        <Box className={classes.boxRoot}>
-            <List className = {clsx(classes.list, {
+        <Box className={classes.root}>
+            <List className={clsx(classes.list, {
                 [classes.listAssesment] : !isAssessment,
             })}
             >
-
                 <ListItemText
                     disableTypography
                     primary={
@@ -148,9 +162,9 @@ export default function ParentListItem (props: Props) {
                             classes={{
                                 colorPrimary: classes.linearProcess,
                                 barColorPrimary: clsx({
-                                    [classes.linearStudy]: isLiveClassAt,
+                                    [classes.linearStudy]: isStudyAssessments,
                                     [classes.linearLearningOutcomes]: isLearningOutcomes,
-                                    [classes.linearLiveClass] : isStudyAssessments,
+                                    [classes.linearLiveClass] : isLiveClassAt,
                                 }),
                             }}
                             variant="determinate"

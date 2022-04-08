@@ -189,6 +189,7 @@ export default function ParentDashboard () {
 
                                         <ParentListItem
                                             key={studySchedule.id}
+                                            index={index}
                                             title={studySchedule.title}
                                             status={`6/10`}
                                             isLiveClassAt={studySchedule.is_home_fun && (index % 2 !== 0)}
