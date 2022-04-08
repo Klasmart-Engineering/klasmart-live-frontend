@@ -135,3 +135,13 @@ export const isShowOnBoardingState = atom({
     key: `isShowOnBoardingState`,
     default: true,
 });
+
+export const cameraErrorState = atom({
+    key: `cameraErrorState`,
+    default: false,
+});
+
+export const microphoneErrorState = atom({
+    key: `microphoneErrorState`,
+    default: false,
+});

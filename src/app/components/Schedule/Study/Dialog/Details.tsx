@@ -295,7 +295,7 @@ export default function StudyDetailsDialog (props: Props) {
                     openHyperLink(hyperlink ?? ``);
                     setParentalLock(false);
                 }}
-                          />
+            />
             }
         </>
     );

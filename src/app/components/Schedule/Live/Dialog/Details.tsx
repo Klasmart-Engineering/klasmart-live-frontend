@@ -60,7 +60,12 @@ export default function LiveDetailsDialog (props: Props) {
     const [ getTokenLoading, setGetTokenLoading ] = useState(false);
     const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
     const [ hyperlink, setHyperlink ] = useState<string>();
-    const { setToken } = useSessionContext();
+    const {
+        setToken,
+        setTitle,
+        setTeachers,
+        setStartTime,
+    } = useSessionContext();
     const organization = useSelectedOrganizationValue();
 
     const organizationId = organization?.organization_id ?? ``;
@@ -112,6 +117,9 @@ export default function LiveDetailsDialog (props: Props) {
                 live_token_type: ScheduleLiveTokenType.LIVE,
             });
             setToken(token);
+            setTitle(scheduleData?.title);
+            setTeachers(scheduleData?.teachers);
+            setStartTime(scheduleData?.start_at);
             onClose();
             /* TODO: Can we get rid of the token query parameter and just use
             ** react component state for keeping and parsing the token instead? */

@@ -46,11 +46,13 @@ export interface ISessionContext {
     title?: string;
     teachers?: Teacher[];
     dueDate?: number;
+    startTime?: number;
     setName: React.Dispatch<React.SetStateAction<string | undefined>>;
     setToken: React.Dispatch<React.SetStateAction<string | undefined>>;
     setTitle: React.Dispatch<React.SetStateAction<string | undefined>>;
     setTeachers: React.Dispatch<React.SetStateAction<Teacher[] | undefined>>;
     setDueDate: React.Dispatch<React.SetStateAction<number | undefined>>;
+    setStartTime: React.Dispatch<React.SetStateAction<number | undefined>>;
 }
 
 const SessionContext = createContext<ISessionContext>({
@@ -59,6 +61,7 @@ const SessionContext = createContext<ISessionContext>({
     setTitle: () => null,
     setTeachers: () => null,
     setDueDate: () => null,
+    setStartTime: () => null,
     ...DEFAULT_SESSION_CONTEXT,
 });
 
@@ -74,6 +77,7 @@ export function SessionContextProvider ({ children, sessionId }: Props) {
     const [ selectedCamera, setSelectedCamera ] = useState<MediaStream>();
 
     const [ title, setTitle ] = useState<string>();
+    const [ startTime, setStartTime ] = useState<number>();
     const [ teachers, setTeachers ] = useState<Teacher[]>();
     const [ dueDate, setDueDate ] = useState<number>();
 
@@ -97,10 +101,12 @@ export function SessionContextProvider ({ children, sessionId }: Props) {
             title,
             teachers,
             dueDate,
+            startTime,
             setToken,
             setTitle,
             setTeachers,
             setDueDate,
+            setStartTime,
         };
 
         const parsedTokenState = params
@@ -129,6 +135,7 @@ export function SessionContextProvider ({ children, sessionId }: Props) {
         title,
         dueDate,
         teachers,
+        startTime,
     ]);
 
     return (

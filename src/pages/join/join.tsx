@@ -1,6 +1,6 @@
 /* eslint-disable react/no-multi-comp */
 import { CameraPreview } from "./cameraPreview";
-import JoinStudyApp from "./joinStudyApp";
+import JoinApp from "./joinApp";
 import { MicrophonePreview } from "./microphonePreview";
 import BackButton from "@/app/components/layout/BackButton";
 import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
@@ -209,8 +209,8 @@ export default function Join (): JSX.Element {
         }
     };
 
-    if(classType === ClassType.STUDY && process.env.IS_CORDOVA_BUILD){
-        return <JoinStudyApp />;
+    if(process.env.IS_CORDOVA_BUILD){
+        return <JoinApp />;
     }
 
     return (
@@ -314,7 +314,10 @@ export default function Join (): JSX.Element {
                         </CardContent>
                     </Card>
                     <div className={classes.footer}>
-                        <img src={logo} />
+                        <img
+                            src={logo}
+                            alt=""
+                        />
                     </div>
                 </Container>
             </Grid>
