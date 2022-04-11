@@ -80,5 +80,6 @@ module.exports = {
         `AD-`,
         `DT-`,
         `KLL-`,
+        `NAT-`,
     ],
 };
