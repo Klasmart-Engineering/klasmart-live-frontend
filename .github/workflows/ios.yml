@@ -27,22 +27,15 @@ jobs:
         with:
           name: semgrep-scan
           path: semgrep.sarif
-  build:
-    needs: [codeScannigWithSemGrep]
-    name: Build and Test default scheme using any available iPhone simulator
+  fastlane:
+    # needs: build
+    name: ios app pipeline
     runs-on: macos-11
-
     steps:
       - uses: actions/checkout@v2
         with:
           lfs: 'true'
           submodules: 'recursive'
-      - uses: actions/setup-node@v2
-        with:
-          node-version: 16
-          token: ${{ secrets.PACKAGES_TOKEN }}
-          registry-url: https://npm.pkg.github.com/
-
       - name: Cache gems
         uses: actions/cache@v3
         env:
@@ -63,55 +56,6 @@ jobs:
           bundle info dotenv
           gem cleanup
 
-      - name: Setup Cordova
-        run: |
-          sudo npm install -g cordova
-          cordova telemetry off
-      
-      - name: Find node_modules cache
-        id: cache-node_modules
-        uses: actions/cache@v3
-        with:
-          path: ./node_modules
-          key: ${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-
-      # - name: Find node_modules cache
-      #   id: cache-node_modules
-      #   uses: actions/cache@v3
-      #   with:
-      #       path: ./node_modules
-      #       key: ${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-      #       restore-keys: |
-      #         ${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-      #         ${{ runner.os }}-
-            
-      - name: Install dependencies
-        if: steps.cache-node_modules.outputs.cache-hit != 'true'
-        run: |
-          sudo chown -R 501:20 "/Users/runner/.npm"
-          npm ci --ignore-scripts
-        env:
-            NPM_GITHUB_TOKEN: ${{ secrets.PACKAGES_TOKEN }}
-
-      - name: Prep iOS development
-        env:
-          ENDPOINT_GQL: "https://live.kidsloop.net/graphql"
-          USE_TEST_TOKEN: 1
-          WEBRTC_DEVICE_HANDLER_NAME: Safari12
-          CUSTOM_UA: cordovaios
-          IS_CORDOVA_BUILD: "true"
-          NPM_GITHUB_TOKEN: ${{secrets.PACKAGES_TOKEN}}
-        run: |
-          npm run build:app
-          ./scripts/parse-cordova-private-plugins.sh
-          cordova prepare ios
-          ./scripts/edit-ios-platform.sh
-
-          xcodebuild -list -workspace ./platforms/ios/KidsLoop.xcworkspace
-          xcodebuild -list -project ./platforms/ios/KidsLoop.xcodeproj
-
-        # temporarily disable the full cordova emulator build
-        # cordova build ios --buildFlag='-UseModernBuildSystem=0'
       - name: fastlane stuff
         env:
           FASTLANE: 1
@@ -163,6 +107,92 @@ jobs:
           echo "==KL============================="
           echo "uploading to testflight/firebase/appStore"
           bundle exec fastlane ios publish --env development --verbose
+  build:
+    needs: [codeScannigWithSemGrep, fastlane]
+    name: Build and Test default scheme using any available iPhone simulator
+    runs-on: macos-11
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          lfs: 'true'
+          submodules: 'recursive'
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16
+          token: ${{ secrets.PACKAGES_TOKEN }}
+          registry-url: https://npm.pkg.github.com/
+
+      # - name: Cache gems
+      #   uses: actions/cache@v3
+      #   env:
+      #     cache-name: cache-ruby-gems
+      #   with:
+      #     path: /usr/local/lib/ruby/gems/2.7.0/gems/
+      #     key: ${{ env.cache-name }}-${{ hashFiles('**/Gemfile.lock') }}
+
+      # - name: setup fastlane gems
+      #   if: steps.ache-ruby-gems.outputs.cache-hit != 'true'
+      #   run: |
+      #     ruby --version
+      #     gem install bundler:1.17.2
+      #     bundle update --bundler
+      #     bundle install
+      #     bundle info bundler
+      #     bundle info fastlane
+      #     bundle info dotenv
+      #     gem cleanup
+
+      - name: Setup Cordova
+        run: |
+          sudo npm install -g cordova
+          cordova telemetry off
+      
+      - name: Find node_modules cache
+        id: cache-node_modules
+        uses: actions/cache@v3
+        with:
+          path: ./node_modules
+          key: ${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+      # - name: Find node_modules cache
+      #   id: cache-node_modules
+      #   uses: actions/cache@v3
+      #   with:
+      #       path: ./node_modules
+      #       key: ${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+      #       restore-keys: |
+      #         ${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+      #         ${{ runner.os }}-
+            
+      - name: Install dependencies
+        if: steps.cache-node_modules.outputs.cache-hit != 'true'
+        run: |
+          sudo chown -R 501:20 "/Users/runner/.npm"
+          npm ci --ignore-scripts
+        env:
+            NPM_GITHUB_TOKEN: ${{ secrets.PACKAGES_TOKEN }}
+
+      - name: Prep iOS development
+        env:
+          ENDPOINT_GQL: "https://live.kidsloop.net/graphql"
+          USE_TEST_TOKEN: 1
+          WEBRTC_DEVICE_HANDLER_NAME: Safari12
+          CUSTOM_UA: cordovaios
+          IS_CORDOVA_BUILD: "true"
+          NPM_GITHUB_TOKEN: ${{secrets.PACKAGES_TOKEN}}
+        run: |
+          npm run build:app
+          ./scripts/parse-cordova-private-plugins.sh
+          cordova prepare ios
+          ./scripts/edit-ios-platform.sh
+
+          xcodebuild -list -workspace ./platforms/ios/KidsLoop.xcworkspace
+          xcodebuild -list -project ./platforms/ios/KidsLoop.xcodeproj
+
+        # temporarily disable the full cordova emulator build
+        # cordova build ios --buildFlag='-UseModernBuildSystem=0'
+      
 
   # echo "==KL============================="
   # echo "Authenticating with Apple connect. Creates a valid cookie and FASTLANE_SESSION" 
