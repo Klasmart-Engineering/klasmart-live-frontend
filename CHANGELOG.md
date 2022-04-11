@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.1.0](https://github.com/KL-Engineering/kidsloop-live-frontend/branches/compare/v6.1.0%0Dv6.0.3) (2022-04-11)
+
+
+### 🐛 Bug Fixes
+
+* fix screen stays in landscape mode if user exit from camera mic setup (#40) ([eee6a4d](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/eee6a4d4abc2cdaa96210cb186d1b97434b62206)), closes [KLL-2089](https://calmisland.atlassian.net/browse/KLL-2089)
+* screenshare not working on safari [KLL-3433](https://calmisland.atlassian.net/browse/KLL-3433) (#46) ([565bcc4](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/565bcc40df583b2aa4c590f0836406fd802be068))
+* trigger endClass mutation on leave of class type (#52) ([4f3d941](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/4f3d94196ed7ae3eea5fad31adb2156ab17c5c67)), closes [KLL-3484](https://calmisland.atlassian.net/browse/KLL-3484)
+
+
+### ⚙️ Continuous Integrations
+
+* enabling deployments to kidskube env landing zone ([31abca5](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/31abca5eb1f1c924fd7092a8a088aa55fa93c523))
+
+
+### ✨ Features
+
+* hamburger menu renewal (#45) ([a72f014](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/a72f014be32ad726f99fecae1181b821579cb2d8)), closes [NAT-63](https://calmisland.atlassian.net/browse/NAT-63)
+* redesign loading page failed (#44) ([13a2750](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/13a2750fb701271f53c3539b07e2397cbaf56e70)), closes [NAT-495](https://calmisland.atlassian.net/browse/NAT-495)
+
+
+### ♻️ Chores
+
+* add NAT jira tickets link to version releases (#56) ([1fa93b4](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/1fa93b4ae153590b8fd034715ec93bd25eec82d2))
+* bump live state version SFU-70 (#48) ([0c59ad1](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/0c59ad1db51570e263daf25095a7a1216c159185))
+* bump live-state to 1.4.5 (#55) ([cf550f9](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/cf550f95b2399de9a6833090810ee3c6a4002b37))
+
 ### [6.0.3](https://github.com/KL-Engineering/kidsloop-live-frontend/branches/compare/v6.0.3%0Dv6.0.2) (2022-04-07)
 
 
