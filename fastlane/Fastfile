@@ -40,6 +40,7 @@ platform :ios do
       issuer_id: "69a6de8d-4b17-47e3-e053-5b8c7c11a4d1",
       key_filepath: "./fastlane/AuthKey_DW9C8JLCRK.p8",
       duration: 1200,
+      is_key_content_base64: true,
       in_house: true
     )
   end
