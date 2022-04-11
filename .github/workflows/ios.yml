@@ -155,11 +155,11 @@ jobs:
 
           echo "==KL============================="
           echo "building the app"
-          bundle exec fastlane ios build
+          bundle exec fastlane ios build --env development
 
           echo "==KL============================="
           echo "uploading to testflight/firebase/appStore"
-          bundle exec fastlane ios publish
+          bundle exec fastlane ios publish --env development
 
   # echo "==KL============================="
   # echo "Authenticating with Apple connect. Creates a valid cookie and FASTLANE_SESSION" 
