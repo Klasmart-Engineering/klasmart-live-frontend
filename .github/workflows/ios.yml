@@ -89,7 +89,7 @@ jobs:
         if: steps.cache-node_modules.outputs.cache-hit != 'true'
         run: |
           sudo chown -R 501:20 "/Users/runner/.npm"
-          npm ci
+          npm ci --ignore-scripts
         env:
             NPM_GITHUB_TOKEN: ${{ secrets.PACKAGES_TOKEN }}
 
@@ -116,22 +116,25 @@ jobs:
         env:
           FASTLANE: 1
           FASTLANE_DISABLE_COLORS: 1
+          SPACESHIP_SKIP_2FA_UPGRADE: 1
+          LC_CTYPE: UTF-8
           FASTLANE_PASSWORD: ${{secrets.FASTLANE_PASSWORD}}
           MATCH_PASSWORD: ${{secrets.MATCH_PASSWORD}}
           MATCH_KEYCHAIN_PATH: "./ci.keychain"
+          MATCH_KEYCHAIN_NAME: "cikeychain"
           MATCH_KEYCHAIN_PASSWORD: ${{secrets.MATCH_KEYCHAIN_PASSWORD}}
           PRIVATE_KEY: ${{ secrets.READONLY_SSH_PRIVATE_KEY }}
           SSH_KEYNAME: "readonly_pipeline_ed25519"
 
-          APP_STORE_CONNECT_API_KEY_ID: "DW9C8JLCRK"
-          APP_STORE_CONNECT_API_ISSUER_ID: "69a6de8d-4b17-47e3-e053-5b8c7c11a4d1"
-          APP_STORE_CONNECT_API_KEY_IN_HOUSE: true
-          APP_STORE_CONNECT_API_KEY_DURATION: 1200
-          APP_STORE_CONNECT_API_KEY_KEY: ${{secrets.APPSTORE_KEY_PRIVATE}}
+          APPSTORE_KEY_PRIVATE: ${{secrets.APPSTORE_KEY_PRIVATE}}
         run: |
           echo "==KL============================="
+          echo "set up Auth"
+          echo ${APPSTORE_KEY_PRIVATE} > ./fastlane/AuthKey_DW9C8JLCRK.p8
+
+          echo "==KL============================="
           echo "prechecks"
-          bundle exec fastlane check_metadata --env development
+          bundle exec fastlane check_metadata --env development --verbose
 
           echo "==KL============================="
           echo "ssh magic(TM) workaround because fastlane's ruby decides it's convenient to forget how to read from the current repo"
@@ -151,19 +154,16 @@ jobs:
 
           echo "==KL============================="
           echo "signing certificates"
-          bundle exec fastlane ios signing --env development
+          bundle exec fastlane ios signing --env development --verbose
 
           echo "==KL============================="
           echo "building the app"
-          bundle exec fastlane ios build --env development
+          bundle exec fastlane ios build --env development --verbose
 
           echo "==KL============================="
           echo "uploading to testflight/firebase/appStore"
-          bundle exec fastlane ios publish --env development
+          bundle exec fastlane ios publish --env development --verbose
 
   # echo "==KL============================="
   # echo "Authenticating with Apple connect. Creates a valid cookie and FASTLANE_SESSION" 
   # eval $(bundle exec fastlane spaceauth -u build-machine@calmid.com 2>/dev/null | grep "export FASTLANE_SESSION")
-#  echo "==KL============================="
-#           echo "set up Auth"
-#           # echo ${APPSTORE_KEY_PRIVATE} > ./fastlane/AuthKey_DW9C8JLCRK.p8
