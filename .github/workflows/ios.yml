@@ -126,7 +126,7 @@ jobs:
           PRIVATE_KEY: ${{ secrets.READONLY_SSH_PRIVATE_KEY }}
           SSH_KEYNAME: "readonly_pipeline_ed25519"
 
-          APPSTORE_KEY_PRIVATE: ${{secrets.APPSTORE_KEY_PRIVATE}}
+          APPSTORE_KEY_PRIVATE: ${{secrets.AUTHKEY_P8}}
         run: |
           echo "==KL============================="
           echo "set up Auth"
