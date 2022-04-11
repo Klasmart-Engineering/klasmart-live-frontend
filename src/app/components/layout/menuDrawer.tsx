@@ -1,4 +1,3 @@
-import DialogParentalLock from "@/app/components/ParentalLock";
 import { useAuthenticationContext } from "@/app/context-provider/authentication-context";
 import { useSelectedOrganizationValue } from "@/app/data/user/atom";
 import {
@@ -7,15 +6,21 @@ import {
     menuOpenState,
     shouldClearCookieState,
 } from "@/app/model/appModel";
-import { useDisplayPrivacyPolicy } from "@/app/utils/privacyPolicyUtils";
+import SettingsIcon from '@/assets/img/menu-drawer/icon_settings.svg';
 import StyledIcon from "@/components/styled/icon";
+import {
+    TEXT_COLOR_SIGN_OUT,
+    TEXT_COLOR_VERSION_APP,
+    THEME_BACKGROUND_SIGN_OUT_BUTTON,
+    THEME_COLOR_ORG_MENU_DRAWER,
+} from "@/config";
 import { useWindowSize } from "@/utils/viewport";
+import { OrganizationAvatar } from "@kl-engineering/kidsloop-px";
 import {
     Button,
     createStyles,
     Divider,
     Grid,
-    IconButton,
     List,
     ListItem,
     ListItemIcon,
@@ -27,13 +32,9 @@ import {
     useMediaQuery,
     useTheme,
 } from "@material-ui/core";
-import { Close as CloseIcon } from "@styled-icons/material/Close";
-import { Settings as SettingsIcon } from "@styled-icons/material/Settings";
-import { PrivacyTip as PolicyIcon } from "@styled-icons/material-outlined/PrivacyTip";
+import { KeyboardArrowRight as ArrowRight } from "@styled-icons/material-rounded/KeyboardArrowRight";
 import clsx from "clsx";
-import { OrganizationAvatar } from "@kl-engineering/kidsloop-px";
-import React,
-{ useEffect } from "react";
+import React from "react";
 import { FormattedMessage } from "react-intl";
 import { useHistory } from "react-router-dom";
 import {
@@ -44,44 +45,49 @@ import {
 enum MenuDrawerItem {
     ORGANIZATION,
     SETTINGS,
-    POLICY
 }
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         drawerItem: {
-            padding: theme.spacing(2),
+            padding: theme.spacing(2, 3),
+            color: theme.palette.grey[900],
         },
-        closeIconWrapper:{
-            height: 56,
-            paddingLeft: theme.spacing(1),
-            [theme.breakpoints.up(`sm`)]: {
-                height: 64,
-            },
+        orgContainer:{
+            padding: theme.spacing(11, 2.5, 2),
+            background: THEME_COLOR_ORG_MENU_DRAWER,
+            marginBottom: theme.spacing(2),
         },
-        drawerSignOutButton: {
-            height: 82,
+        orgAvatar: {
+            width: 60,
+            height: 60,
+            fontSize: `1rem`,
+            borderRadius: theme.spacing(1.5),
+        },
+        orgName: {
+            color: theme.palette.common.white,
+            display: `-webkit-box`,
+            overflow: `hidden`,
+            WebkitBoxOrient: `vertical`,
+            WebkitLineClamp: 1,
         },
         signOutButton: {
-            marginTop: 5,
-            background: theme.palette.background.paper,
-            height: 45,
-            color: theme.palette.background.paper,
-            "&:hover": {
-                background: theme.palette.background.paper,
-            },
+            background: THEME_BACKGROUND_SIGN_OUT_BUTTON,
+            color: TEXT_COLOR_SIGN_OUT,
+            height: 55,
+            fontSize: `0.8rem`,
+            lineHeight: 1.334,
+            textAlign: `center`,
         },
         iconButton:{
             backgroundColor: theme.palette.background.paper,
         },
-        versionText:{
-            fontWeight: theme.typography.fontWeightBold as number,
+        version:{
+            color: TEXT_COLOR_VERSION_APP,
+            marginBottom: theme.spacing(2),
         },
         fullWidth: {
             width: `100%`,
-        },
-        marginVertical: {
-            margin: `16px 0px 4px`,
         },
     }));
 
@@ -93,7 +99,6 @@ export default function MenuDrawer () {
     const history = useHistory();
     const isSmUp = useMediaQuery(theme.breakpoints.up(`sm`));
     const selectedOrganization = useSelectedOrganizationValue();
-    const displayPrivacyPolicy = useDisplayPrivacyPolicy();
     const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
     const [ isMenuOpen, setMenuOpen ] = useRecoilState(menuOpenState);
     const setShouldClearCookie = useSetRecoilState(shouldClearCookieState);
@@ -101,25 +106,15 @@ export default function MenuDrawer () {
 
     const menuArray = [
         {
-            id: MenuDrawerItem.ORGANIZATION,
-            text: `hamburger.organization`,
-            icon: <OrganizationAvatar
-                name={selectedOrganization?.organization_name ?? ``}
-                size={`small`} />,
-        },
-        {
             id: MenuDrawerItem.SETTINGS,
             text: `title_settings`,
             icon: <StyledIcon
-                icon={<SettingsIcon />}
-                size="large" />,
-        },
-        {
-            id: MenuDrawerItem.POLICY,
-            text: `account_selectOrg_privacyPolicy`,
-            icon: <StyledIcon
-                icon={<PolicyIcon />}
-                size="large" />,
+                icon={<img
+                    src={SettingsIcon}
+                    alt=""
+                />}
+                size="large"
+                  />,
         },
     ];
 
@@ -136,35 +131,10 @@ export default function MenuDrawer () {
         case MenuDrawerItem.SETTINGS:
             history.push(`/settings`);
             break;
-        case MenuDrawerItem.POLICY:
-            setParentalLock(true);
-            break;
         default:
             break;
         }
     };
-
-    const setParentalLock = (open: boolean) => {
-        setDialogs({
-            ...dialogs,
-            isParentalLockOpen: open,
-        });
-    };
-
-    useEffect(() => {
-        setParentalLock(false);
-    }, []);
-
-    if (dialogs.isParentalLockOpen) {
-        return (
-            <DialogParentalLock
-                onCompleted={() => {
-                    displayPrivacyPolicy();
-                    setParentalLock(false);
-                }}
-            />
-        );
-    }
 
     return (
         <SwipeableDrawer
@@ -187,72 +157,88 @@ export default function MenuDrawer () {
             >
                 <Grid
                     item
-                    className={classes.fullWidth}>
+                    className={classes.fullWidth}
+                >
                     <Grid
-                        item
                         container
-                        direction="column"
-                        alignItems="flex-start"
-                        justifyContent="flex-end"
-                        className={classes.closeIconWrapper}>
-                        <IconButton
-                            className={classes.iconButton}
-                            onClick={() => setMenuOpen(false)}
+                        direction="row"
+                        alignItems="center"
+                        justifyContent="flex-start"
+                        className={classes.orgContainer}
+                        onClick={() => handleMenuItemClick(MenuDrawerItem.ORGANIZATION)}
+                    >
+                        <Grid
+                            item
+                            xs={4}
                         >
-                            <StyledIcon
-                                icon={<CloseIcon />}
-                                size="medium" />
-                        </IconButton>
+                            <OrganizationAvatar
+                                name={selectedOrganization?.organization_name ?? ``}
+                                size={`medium`}
+                                className={classes.orgAvatar}
+                            />
+                        </Grid>
+                        <Grid
+                            item
+                            xs
+                        >
+                            <Typography
+                                variant="h6"
+                                className={classes.orgName}
+                            >
+                                {selectedOrganization?.organization_name ?? ``}
+                            </Typography>
+                        </Grid>
+                        <Grid
+                            item
+                            xs={1}
+                        >
+                            <ArrowRight
+                                color={theme.palette.common.white}
+                                size={30}
+                            />
+                        </Grid>
                     </Grid>
                     <Grid item>
-                        <Divider />
-                    </Grid>
-                    <Grid item>
-                        <List>
+                        <List disablePadding>
                             {menuArray.map((item) => (
-                                <>
-                                    <ListItem
-                                        key={item.id}
-                                        button
-                                        className={classes.drawerItem}
-                                        onClick={() => handleMenuItemClick(item.id)}>
-                                        <ListItemIcon>{item.icon}</ListItemIcon>
-                                        <ListItemText>
-                                            <FormattedMessage id={item.text} />
-                                        </ListItemText>
-                                    </ListItem>
-                                    <Divider />
-                                </>
+                                <ListItem
+                                    key={item.id}
+                                    button
+                                    className={classes.drawerItem}
+                                    onClick={() => handleMenuItemClick(item.id)}
+                                >
+                                    <ListItemIcon>{item.icon}</ListItemIcon>
+                                    <ListItemText>
+                                        <FormattedMessage id={item.text} />
+                                    </ListItemText>
+                                </ListItem>
                             ))}
                         </List>
                     </Grid>
                 </Grid>
                 <Grid
-                    item
                     container
                     direction="column"
                     justifyContent="center"
-                    className={classes.fullWidth}>
+                    className={classes.fullWidth}
+                >
                     <Grid item>
                         <Typography
                             align="center"
-                            className={clsx(classes.versionText)}>
+                            className={clsx(classes.version)}
+                        >
                             <FormattedMessage
                                 id="settings.version"
                                 values={{
-                                    version: `${process.env.VERSION} (${process.env.GIT_COMMIT})`,
-                                }} />
+                                    version: process.env.VERSION,
+                                }}
+                            />
                         </Typography>
                     </Grid>
                     <Grid item>
-                        <Divider className={classes.marginVertical} />
+                        <Divider />
                     </Grid>
-                    <Grid
-                        item
-                        container
-                        direction="column"
-                        justifyContent="flex-start"
-                        className={classes.drawerSignOutButton}>
+                    <Grid item>
                         <Button
                             fullWidth
                             variant="text"
@@ -264,11 +250,7 @@ export default function MenuDrawer () {
                                 setShowOnBoarding(true);
                             }}
                         >
-                            <Typography
-                                color="primary"
-                                align="center">
-                                <FormattedMessage id="account_selectOrg_signOut" />
-                            </Typography>
+                            <FormattedMessage id="account_selectOrg_signOut" />
                         </Button>
                     </Grid>
                 </Grid>

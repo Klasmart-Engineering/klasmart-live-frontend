@@ -61,10 +61,11 @@ export function ExternalNavigationDialog (): JSX.Element {
         <ConfirmNavigationDialog
             visible={dialogs.isExternalNavigationOpen}
             onCancel={() => setExternalNavigation(false)}
-            onConfirm={confirmExternalNavigation} />
-        { dialogs.isParentalLockOpen ?
+            onConfirm={confirmExternalNavigation}
+        />
+        { dialogs.isParentalLockOpen && destinationUrl ?
             <DialogParentalLock
                 onCompleted={completeExternalNavigation}
             /> : undefined }
-    </>);
+            </>);
 }
