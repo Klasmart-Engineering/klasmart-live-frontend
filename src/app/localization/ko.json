@@ -165,7 +165,7 @@
     "schedule_liveTab": "라이브",
     "schedule_studyTab": "스터디",
     "schedule_loadingSelectOrg": "먼저 왼쪽 상단 버튼을 탭하여 기관을 선택하세요!",
-    "schedule_errorFetchTimeViews": "이런!<br>스케줄을 불러오지 못했어요.",
+    "schedule_errorFetchTimeViews": "이런!{br}스케줄을 불러오지 못했어요.",
     "schedule_liveSubheaderToday": "오늘",
     "schedule_liveSubheaderTomorrow": "내일",
     "schedule_liveSubheaderUpcoming": "이후 스케줄",
@@ -272,5 +272,15 @@
     "live.enter.teacherCount": "+{value} more {value, plural, one {person} other {people}}",
     "homeFunStudy.submission.error.rejected.title": "Assignment Complete",
     "homeFunStudy.discardChange.title": "Discard Changes?",
-    "homeFunStudy.discardChange": "Closing the window will discard any changes you have made."
+    "homeFunStudy.discardChange": "Closing the window will discard any changes you have made.",
+    "study.enter.due": "Due on {value}",
+    "live.enter.allowPermission": "Allow permission",
+    "loading.error.retry": "Retry",
+    "hamburger.settings.cookiesPolicy": "Cookies Policy",
+    "hamburger.settings.termsOfUse": "Terms of Use",
+    "hamburger.settings.contactUs": "Contact Us",
+    "hamburger.parentsDashboard": "Parents Dashboard",
+    "hamburger.settings.privacy": "Privacy",
+    "parentsDashboard.learningOutcome.title": "Total Learning Outcomes Achieved",
+    "parentsDashboard.learningOutcome.view": "View all Learning Outcomes"
 }

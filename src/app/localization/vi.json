@@ -165,7 +165,7 @@
     "schedule_liveTab": "Trực tuyến",
     "schedule_studyTab": "Bài tập về nhà",
     "schedule_loadingSelectOrg": "Vui lòng chọn một tổ chức trước bằng cách nhấn vào góc trên bên trái!",
-    "schedule_errorFetchTimeViews": "Rất tiếc!<br>Tải Trang không thành công.",
+    "schedule_errorFetchTimeViews": "Rất tiếc!{br}Tải Trang không thành công.",
     "schedule_liveSubheaderToday": "Hôm nay",
     "schedule_liveSubheaderTomorrow": "Ngày mai",
     "schedule_liveSubheaderUpcoming": "Tiếp đến",
@@ -272,5 +272,15 @@
     "live.enter.teacherCount": "+ {value} hơn {value, plural, one { người } other { người }}",
     "homeFunStudy.submission.error.rejected.title": "Hoàn thành bài tập",
     "homeFunStudy.discardChange.title": "Hủy bỏ những thay đổi?",
-    "homeFunStudy.discardChange": "Đóng cửa sổ sẽ hủy bỏ bất kỳ thay đổi nào bạn đã thực hiện."
+    "homeFunStudy.discardChange": "Đóng cửa sổ sẽ hủy bỏ bất kỳ thay đổi nào bạn đã thực hiện.",
+    "study.enter.due": "Hết hạn vào {value}",
+    "live.enter.allowPermission": "Cho phép quyền",
+    "loading.error.retry": "Thử lại",
+    "hamburger.settings.cookiesPolicy": "Chính sách mở rộng",
+    "hamburger.settings.termsOfUse": "Điều khoản sử dụng",
+    "hamburger.settings.contactUs": "Liên hệ với chúng tôi",
+    "hamburger.parentsDashboard": "Trang tổng quan dành cho phụ huynh",
+    "hamburger.settings.privacy": "Bảo mật",
+    "parentsDashboard.learningOutcome.title": "Tổng kết quả học tập đã đạt được",
+    "parentsDashboard.learningOutcome.view": "Xem tất cả kết quả học tập"
 }

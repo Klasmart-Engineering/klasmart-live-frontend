@@ -165,7 +165,7 @@
     "schedule_liveTab": "Live",
     "schedule_studyTab": "Study",
     "schedule_loadingSelectOrg": "Please select an organization first by tapping the top-left corner!",
-    "schedule_errorFetchTimeViews": "Oops!<br>Page Loading failed.",
+    "schedule_errorFetchTimeViews": "Oops!{br}Page loading failed.",
     "schedule_liveSubheaderToday": "Today",
     "schedule_liveSubheaderTomorrow": "Tomorrow",
     "schedule_liveSubheaderUpcoming": "Upcoming",
@@ -272,5 +272,15 @@
     "live.enter.teacherCount": "+{value} more {value, plural, one {person} other {people}}",
     "homeFunStudy.submission.error.rejected.title": "Assignment Complete",
     "homeFunStudy.discardChange.title": "Discard Changes?",
-    "homeFunStudy.discardChange": "Closing the window will discard any changes you have made."
+    "homeFunStudy.discardChange": "Closing the window will discard any changes you have made.",
+    "study.enter.due": "Due on {value}",
+    "live.enter.allowPermission": "Allow permission",
+    "loading.error.retry": "Retry",
+    "hamburger.settings.cookiesPolicy": "Cookies Policy",
+    "hamburger.settings.termsOfUse": "Terms of Use",
+    "hamburger.settings.contactUs": "Contact Us",
+    "hamburger.parentsDashboard": "Parents Dashboard",
+    "hamburger.settings.privacy": "Privacy",
+    "parentsDashboard.learningOutcome.title": "Total Learning Outcomes Achieved",
+    "parentsDashboard.learningOutcome.view": "View all Learning Outcomes"
 }

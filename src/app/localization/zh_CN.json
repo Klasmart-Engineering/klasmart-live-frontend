@@ -165,7 +165,7 @@
     "schedule_liveTab": "在线课堂",
     "schedule_studyTab": "家庭作业",
     "schedule_loadingSelectOrg": "请先通过点击左上角选择一个组织!",
-    "schedule_errorFetchTimeViews": "哎呀，加载日程表失败了!",
+    "schedule_errorFetchTimeViews": "哎呀{br}加载日程表失败了!",
     "schedule_liveSubheaderToday": "今天",
     "schedule_liveSubheaderTomorrow": "明天",
     "schedule_liveSubheaderUpcoming": "已预定的直播课程",
@@ -272,5 +272,15 @@
     "live.enter.teacherCount": "+ {value} 更多 {value, plural, one { person } other { people }}",
     "homeFunStudy.submission.error.rejected.title": "Assignment Complete",
     "homeFunStudy.discardChange.title": "Discard Changes?",
-    "homeFunStudy.discardChange": "Closing the window will discard any changes you have made."
+    "homeFunStudy.discardChange": "Closing the window will discard any changes you have made.",
+    "study.enter.due": "Due on {value}",
+    "live.enter.allowPermission": "Allow permission",
+    "loading.error.retry": "Retry",
+    "hamburger.settings.cookiesPolicy": "Cookies Policy",
+    "hamburger.settings.termsOfUse": "Terms of Use",
+    "hamburger.settings.contactUs": "Contact Us",
+    "hamburger.parentsDashboard": "Parents Dashboard",
+    "hamburger.settings.privacy": "Privacy",
+    "parentsDashboard.learningOutcome.title": "Total Learning Outcomes Achieved",
+    "parentsDashboard.learningOutcome.view": "View all Learning Outcomes"
 }
