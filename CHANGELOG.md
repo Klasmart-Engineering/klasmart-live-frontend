@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.2.0](https://github.com/KL-Engineering/kidsloop-live-frontend/branches/compare/v6.2.0%0Dv6.1.0) (2022-04-12)
+
+
+### ✨ Features
+
+* **localization:** add new translations (#58) ([6f4d08b](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/6f4d08bc75c3913cdc75105343b52e3e186ea48b))
+* **localization:** add new translations (#60) ([3c183a2](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/3c183a2530dc2b54c0f9786ae72e86789605e4ff))
+
+
+### 🐛 Bug Fixes
+
+* show "X" icon + canvas icon in Study (#59) ([7b499e1](https://github.com/KL-Engineering/kidsloop-live-frontend/commits/7b499e19b52223ccba43945f373cd45a64726d5b)), closes [NAT-716](https://calmisland.atlassian.net/browse/NAT-716) [NAT-33](https://calmisland.atlassian.net/browse/NAT-33)
+
 ## [6.1.0](https://github.com/KL-Engineering/kidsloop-live-frontend/branches/compare/v6.1.0%0Dv6.0.3) (2022-04-11)
 
 
