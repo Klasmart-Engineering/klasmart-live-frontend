@@ -2,8 +2,8 @@
 storage_mode("git")
 shallow_clone(true)
 # clone_branch_directly(true) # requires the branch to exist or it will fail
-git_url("git@github.com:KL-Engineering/kidsloop-live-frontend.git")
-git_branch("ios-build")
+git_url("git@github.com:KL-Engineering/mobile-app-certs-fastlane.git")
+git_branch("main")
 readonly(true) # if true only fetches existing certs
 generate_apple_certs(false)
 # must use the following with the CI account

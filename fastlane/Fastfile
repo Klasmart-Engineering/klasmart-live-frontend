@@ -52,12 +52,12 @@ platform :ios do
   
   desc "Alias for signing"
   lane :sign do
-    check_metadata
     signing
   end
 
   desc "Sync signing"
   lane :signing do
+    check_metadata
     match(
       type: "adhoc" , 
       readonly: __is_ci,
