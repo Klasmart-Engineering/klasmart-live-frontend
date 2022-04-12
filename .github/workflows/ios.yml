@@ -70,13 +70,11 @@ jobs:
           MATCH_KEYCHAIN_PASSWORD: ${{secrets.MATCH_KEYCHAIN_PASSWORD}}
           PRIVATE_KEY: ${{ secrets.READONLY_SSH_PRIVATE_KEY }}
           SSH_KEYNAME: "readonly_pipeline_ed25519"
-          APPSTORE_KEY_PRIVATE: ${{secrets.AUTHKEY_P8}}
+          KEY_CONTENT: ${{secrets.AUTHKEY_P8}}
         run: |
           echo "==KL============================="
-          echo "set up Auth"
-          touch ./fastlane/AuthKey_DW9C8JLCRK.p8
-          echo ${APPSTORE_KEY_PRIVATE} > ./fastlane/AuthKey_DW9C8JLCRK.p8
-          cat ./fastlane/AuthKey_DW9C8JLCRK.p8
+          # echo "set up Auth"
+          # echo ${KEY_CONTENT} > ./fastlane/AuthKey_DW9C8JLCRK.p8
 
           echo "==KL============================="
           echo "prechecks"
