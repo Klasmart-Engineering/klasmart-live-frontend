@@ -41,7 +41,7 @@ platform :ios do
       key_filepath: "./fastlane/AuthKey_DW9C8JLCRK.p8",
       duration: 1200,
       is_key_content_base64: true,
-      in_house: true
+      in_house: false
     )
   end
 
