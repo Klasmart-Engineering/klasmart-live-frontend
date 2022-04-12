@@ -59,6 +59,7 @@ jobs:
       - name: fastlane stuff
         env:
           FASTLANE: 1
+          DEBUG: 1 
           FASTLANE_DISABLE_COLORS: 1
           SPACESHIP_SKIP_2FA_UPGRADE: 1
           LC_CTYPE: UTF-8
@@ -69,12 +70,13 @@ jobs:
           MATCH_KEYCHAIN_PASSWORD: ${{secrets.MATCH_KEYCHAIN_PASSWORD}}
           PRIVATE_KEY: ${{ secrets.READONLY_SSH_PRIVATE_KEY }}
           SSH_KEYNAME: "readonly_pipeline_ed25519"
-
           APPSTORE_KEY_PRIVATE: ${{secrets.AUTHKEY_P8}}
         run: |
           echo "==KL============================="
           echo "set up Auth"
+          touch ./fastlane/AuthKey_DW9C8JLCRK.p8
           echo ${APPSTORE_KEY_PRIVATE} > ./fastlane/AuthKey_DW9C8JLCRK.p8
+          cat ./fastlane/AuthKey_DW9C8JLCRK.p8
 
           echo "==KL============================="
           echo "prechecks"
