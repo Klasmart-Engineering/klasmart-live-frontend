@@ -49,12 +49,12 @@ jobs:
         run: |
           ruby --version
           gem install bundler:1.17.2
-          bundle update --bundler
+          # bundle update --bundler
           bundle install
-          bundle info bundler
-          bundle info fastlane
-          bundle info dotenv
-          gem cleanup
+          # bundle info bundler
+          # bundle info fastlane
+          # bundle info dotenv
+          # gem cleanup
 
       - name: fastlane stuff
         env:
@@ -155,16 +155,6 @@ jobs:
           path: ./node_modules
           key: ${{ runner.os }}-${{ hashFiles('package-lock.json') }}
 
-      # - name: Find node_modules cache
-      #   id: cache-node_modules
-      #   uses: actions/cache@v3
-      #   with:
-      #       path: ./node_modules
-      #       key: ${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-      #       restore-keys: |
-      #         ${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-      #         ${{ runner.os }}-
-            
       - name: Install dependencies
         if: steps.cache-node_modules.outputs.cache-hit != 'true'
         run: |
