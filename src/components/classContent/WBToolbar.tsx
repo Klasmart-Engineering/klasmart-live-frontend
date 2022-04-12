@@ -88,11 +88,7 @@ export function WBToolbarContainer ({ useLocalDisplay }: { useLocalDisplay?: boo
     };
 
     return (
-        <Grid
-            item
-            xs={12}
-            className={classes.root}
-        >
+        <>
             <div
                 ref={canvasRef}
                 className={clsx({
@@ -120,6 +116,6 @@ export function WBToolbarContainer ({ useLocalDisplay }: { useLocalDisplay?: boo
                 </Fab>
             </div>
             <CanvasMenu anchor={canvasRef.current} />
-        </Grid>
+        </>
     );
 }
