@@ -282,5 +282,6 @@
     "hamburger.parentsDashboard": "Trang tổng quan dành cho phụ huynh",
     "hamburger.settings.privacy": "Bảo mật",
     "parentsDashboard.learningOutcome.title": "Tổng kết quả học tập đã đạt được",
-    "parentsDashboard.learningOutcome.view": "Xem tất cả kết quả học tập"
+    "parentsDashboard.learningOutcome.view": "Xem tất cả kết quả học tập",
+    "parentsDashboard.learningOutcome.empty": "There were no learning outcomes this week"
 }

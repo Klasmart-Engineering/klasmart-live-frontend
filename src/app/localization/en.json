@@ -282,5 +282,6 @@
     "hamburger.parentsDashboard": "Parents Dashboard",
     "hamburger.settings.privacy": "Privacy",
     "parentsDashboard.learningOutcome.title": "Total Learning Outcomes Achieved",
-    "parentsDashboard.learningOutcome.view": "View all Learning Outcomes"
+    "parentsDashboard.learningOutcome.view": "View all Learning Outcomes",
+    "parentsDashboard.learningOutcome.empty": "There were no learning outcomes this week"
 }

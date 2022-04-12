@@ -266,7 +266,7 @@
     "account_selectUser": "프로필 선택하기",
     "account_selectOrg": "기관을 선택해 주세요",
     "study.enter.startStudying": "Start Studying",
-    "schedule_review_class_name": "Review: {value} Materials",
+    "schedule_review_class_name": "검토: {value} 수업 자료",
     "live.enter.tardyDuration": "Started {value} {value, plural, =0 {minute} one {minute} other {minutes}} ago",
     "live.enter.joinLive": "Join Live Class",
     "live.enter.teacherCount": "+{value} more {value, plural, one {person} other {people}}",
@@ -282,5 +282,6 @@
     "hamburger.parentsDashboard": "Parents Dashboard",
     "hamburger.settings.privacy": "Privacy",
     "parentsDashboard.learningOutcome.title": "Total Learning Outcomes Achieved",
-    "parentsDashboard.learningOutcome.view": "View all Learning Outcomes"
+    "parentsDashboard.learningOutcome.view": "View all Learning Outcomes",
+    "parentsDashboard.learningOutcome.empty": "There were no learning outcomes this week"
 }

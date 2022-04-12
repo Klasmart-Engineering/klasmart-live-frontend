@@ -282,5 +282,6 @@
     "hamburger.parentsDashboard": "แดชบอร์ดผู้ปกครอง",
     "hamburger.settings.privacy": "ความเป็นส่วนตัว",
     "parentsDashboard.learningOutcome.title": "บรรลุผลการเรียนรู้ทั้งหมด",
-    "parentsDashboard.learningOutcome.view": "ดูผลการเรียนรู้ทั้งหมด"
+    "parentsDashboard.learningOutcome.view": "ดูผลการเรียนรู้ทั้งหมด",
+    "parentsDashboard.learningOutcome.empty": "There were no learning outcomes this week"
 }
