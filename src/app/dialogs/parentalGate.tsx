@@ -2,29 +2,25 @@ import {
     LayoutMode,
     useLayoutModeValue,
 } from "@/app/model/appModel";
-import TopBackground from "@/assets/img/background_parental_lock.svg";
-import BadaCharacter from "@/assets/img/bada_character.svg";
-import { CaptchaLogic } from "@/components/captchaLogic";
-import StyledIcon from "@/components/styled/icon";
+import IconLocked from "@/assets/img/icon_locked.svg";
+import TopBackground from "@/assets/img/parental_lock_bg.svg";
+import { ParentalGateCaptchaLogic } from "@/components/parentalGateCaptchaLogic";
 import {
-    THEME_COLOR_BACKGROUND_ICON_PARENTAL_LOCK,
+    BUTTON_CLOSE_PARENTAL_LOCK_BACKGROUND_COLOR,
+    PARENTAL_LOCK_HEADER_TEXT_COLOR,
+    TEXT_COLOR_SECONDARY_DEFAULT,
     THEME_COLOR_BACKGROUND_PAPER,
-    THEME_COLOR_BACKGROUND_PARENTAL_LOCK,
-    THEME_COLOR_ICON_PARENTAL_LOCK,
 } from "@/config";
 import { useWindowSize } from "@/utils/viewport";
 import {
+    Button,
     createStyles,
     makeStyles,
     Theme,
-    useMediaQuery,
-    useTheme,
 } from "@material-ui/core";
 import red from "@material-ui/core/colors/red";
 import Grid from "@material-ui/core/Grid/Grid";
 import Typography from "@material-ui/core/Typography/Typography";
-import { LockClosed as ParentLockIcon } from "@styled-icons/heroicons-solid/LockClosed";
-import { Close as CloseIcon } from "@styled-icons/material/Close";
 import clsx from "clsx";
 import React,
 {
@@ -40,38 +36,38 @@ interface Props {
 }
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
-    parentLockIcon:{
-        display: `inline-block`,
-        background: THEME_COLOR_BACKGROUND_ICON_PARENTAL_LOCK,
-        borderRadius: `50%`,
-        padding: 10,
-        color: THEME_COLOR_ICON_PARENTAL_LOCK,
-    },
     container: {
         flex: 1,
         width: `100%`,
         height: `100%`,
-        position: `relative`,
-        backgroundColor: THEME_COLOR_BACKGROUND_PARENTAL_LOCK,
-        background: `linear-gradient(180deg, ${THEME_COLOR_BACKGROUND_PAPER} 0%, ${THEME_COLOR_BACKGROUND_PARENTAL_LOCK} 25%)`,
+        alignItems: `center`,
+        bottom: 0,
+        display: `flex`,
+        justifyContent: `center`,
+        position: `absolute`,
+        top: 0,
     },
     bgImage: {
         width: `100%`,
-    },
-    contentWrapper:{
-        position: `relative`,
-        height: `100%`,
-    },
-    contentWrapperStudyMode: {
         position: `absolute`,
-        top: `27%`,
+        top: `0`,
+    },
+    contentWrapper: {
+        position: `relative`,
+        display: `flex`,
+        flexDirection: `column`,
+        justifyContent: `center`,
+    },
+    contentWrapperWelcomeScreen: {
+        position: `absolute`,
+        top: `35%`,
         bottom: 0,
 
         [theme.breakpoints.up(`sm`)]: {
-            top: `38%`,
+            top: `45%`,
         },
     },
-    contentWrapperSmallHeight: {
+    contentWrapperWelcomeSmallHeight: {
         top: `30%`,
     },
     content: {
@@ -80,17 +76,17 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
     },
-    contentStudyMode:{
-        position: `absolute`,
+    contentWelcomeScreen: {
+        top: 0,
+        position: `relative`,
+        paddingTop: theme.spacing(3),
+    },
+    contentStudyMode: {
+        position: `relative`,
         bottom: 0,
         zIndex: 5,
-        top: 67,
+        top: 0,
         padding: theme.spacing(3),
-
-        [theme.breakpoints.up(`sm`)]: {
-            paddingTop: theme.spacing(12),
-            top: 150,
-        },
     },
     classroomLayout: {
         padding: 0,
@@ -98,21 +94,29 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
             justifyContent: `center`,
         },
     },
-    contentWidth:{
+    contentWidth: {
         width: `40%`,
     },
-    contentWidthStudyMode:{
-        width: `85%`,
-
-        [theme.breakpoints.up(`sm`)]: {
-            width: `37%`,
-        },
+    captchaWidth: {
+        width: theme.spacing(50),
+        maxWidth: `100%`,
     },
-    captchaWidthStudyMode:{
+    captchaWidthWelcomeScreen: {
+        width: theme.spacing(45),
+        margin: `0 auto`,
+    },
+    contentWidthStudyMode: {
         width: `85%`,
 
         [theme.breakpoints.up(`sm`)]: {
             width: `50%`,
+        },
+    },
+    captchaWidthStudyMode: {
+        width: `85%`,
+
+        [theme.breakpoints.up(`sm`)]: {
+            width: `40%`,
         },
     },
     characterImg: {
@@ -120,23 +124,21 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
     headerText: {
         fontWeight: theme.typography.fontWeightBold as number,
+        color: PARENTAL_LOCK_HEADER_TEXT_COLOR,
     },
     errorText: {
         color: red[500],
     },
-    dialogCloseIconButton:{
-        borderRadius: `50%`,
-        width: `2rem`,
-        height: `2rem`,
-        background: theme.palette.common.white,
-        display: `flex`,
-        alignItems: `center`,
-        justifyContent: `center`,
-        position: `fixed`,
-        top: 0,
-        left: 0,
-        margin: theme.spacing(2),
-        zIndex: 10,
+    errorTextSmallHeight: {
+        padingTop: theme.spacing(1),
+        padingBottom: theme.spacing(2),
+        margin: 0,
+    },
+    wrapperErrorText: {
+        minHeight: theme.spacing(12),
+    },
+    wrapperErrorTextNoSpaces: {
+        minHeight: theme.spacing(6),
     },
     padding: {
         padding: theme.spacing(3),
@@ -145,12 +147,59 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         padding: theme.spacing(2),
     },
     paddingTopSmallHeight: {
-        padding: 0,
-        paddingTop: theme.spacing(2),
+        padding: theme.spacing(1.2),
+        top: 0,
+    },
+    paddingBottomWelcomeScreen: {
+        paddingBottom: theme.spacing(5),
+    },
+    parentText: {
+        color: PARENTAL_LOCK_HEADER_TEXT_COLOR,
+    },
+    btnClose: {
+        backgroundColor: BUTTON_CLOSE_PARENTAL_LOCK_BACKGROUND_COLOR,
+        color: TEXT_COLOR_SECONDARY_DEFAULT,
+        padding: theme.spacing(1, 6),
+        borderRadius: theme.spacing(4),
+    },
+    wrapperBtnClose: {
+        height:  theme.spacing(8),
+        minHeight: theme.spacing(4),
+        paddingBottom: theme.spacing(3),
+        boxSizing: `border-box`,
+    },
+    noLineBreak: {
+        whiteSpace: `nowrap`,
+    },
+    forParentBodyWidth: {
+        width: `50%`,
+    },
+    captchaShake: {
+        animation: `$shake 0.5s infinite`,
+    },
+    "@keyframes shake": {
+        "0%":{
+            transform: `translate(0)`,
+        },
+        "20%":{
+            transform: `translate(3em)`,
+        },
+        "40%": {
+            transform: `translate(-3em)`,
+        },
+        "60%" :{
+            transform: `translate(3em)`,
+        },
+        "80%":{
+            transform: `translate(-3em)`,
+        },
+        "100%": {
+            transform: `translate(0)`,
+        },
     },
 }));
 
-export function ParentalGate ({
+export function ParentalGate({
     onCompleted,
     isWelcomeScreen,
     setClosedDialog,
@@ -158,35 +207,51 @@ export function ParentalGate ({
     const classes = useStyles();
     const { height } = useWindowSize();
     const layoutMode = useLayoutModeValue();
-    const theme = useTheme();
-    const isSmUp = useMediaQuery(theme.breakpoints.up(`sm`));
 
-    const [ header, setHeader ] = useState<string>(`parentalGate.title`);
-    const [ isShowError, setShowError ]  = useState<boolean>(false);
-    const [ showParentCaptcha, setShowParentCaptcha ] = useState<boolean>(true);
-    const [ isLayoutModeStudy, setLayoutModeStudy ] = useState<boolean>(layoutMode === LayoutMode.DEFAULT);
-    const [ isSmallHeight ] = useState<boolean>(height <= 680);
-    const BADA_CHARACTER_WIDTH_MOBILE = 88;
-    const BADA_CHARACTER_WIDTH_TABLET = 200;
+    const [header, setHeader] = useState<string>(`parentalGate.title`);
+    const [isShowError, setShowError] = useState<boolean>(false);
+    const [isShowCloseButton, setShowCloseButton] = useState<boolean>(true);
+    const [showParentCaptcha, setShowParentCaptcha] = useState<boolean>(true);
+    const [ isCaptchaShake, setCaptchaShake ] = useState<boolean>(false);
+    const [isLayoutModeStudy, setLayoutModeStudy] = useState<boolean>(layoutMode === LayoutMode.DEFAULT);
+    const [isSmallHeight] = useState<boolean>(height <= 680);
+    const ICON_LOCK_WIDTH = 50;
+    const SHAKE_ANIMATION_TIME = 500;
 
     useEffect(() => {
         setHeader(isWelcomeScreen ? `parentalGate.title` : `forParents.title`);
-    }, [ isWelcomeScreen ]);
+    }, [isWelcomeScreen]);
 
     useEffect(() => {
-        if(!showParentCaptcha){
+        if(!isShowError) return;
+        setCaptchaShake(true);
+        setTimeout(() => {
+            setCaptchaShake(false);
+        }, SHAKE_ANIMATION_TIME);
+    }, [ isShowError ]);
+
+    useEffect(() => {
+        if (!showParentCaptcha) {
             onCompleted();
             return;
         }
-    }, [ showParentCaptcha ]);
+    }, [showParentCaptcha]);
 
     useEffect(() => {
-        if(layoutMode === LayoutMode.CLASSROOM){
+        if (layoutMode === LayoutMode.CLASSROOM) {
             setLayoutModeStudy(false);
-        }else{
+        } else {
             setLayoutModeStudy(true);
         }
-    }, [ layoutMode ]);
+    }, [layoutMode]);
+
+    useEffect(() => {
+        setShowCloseButton(isShowError);
+    }, [isShowError]);
+
+    useEffect(() => {
+        setShowCloseButton(true);
+    }, []);
 
     return (
         <Grid
@@ -196,24 +261,14 @@ export function ParentalGate ({
             justifyContent="flex-start"
             alignItems="center"
             className={classes.container}>
-            <Grid
-                item
-                onClick={setClosedDialog}>
-                <div className={classes.dialogCloseIconButton}>
-                    <StyledIcon
-                        icon={<CloseIcon />}
-                        size={`large`}
-                    />
-                </div>
-            </Grid>
-            {isLayoutModeStudy && (
+            {isWelcomeScreen && (
                 <Grid
                     item
                     className={classes.bgImage}>
                     <img
                         src={TopBackground}
                         width="100%"
-                        height="100%"/>
+                        height="100%" />
                 </Grid>)}
             <Grid
                 container
@@ -221,33 +276,26 @@ export function ParentalGate ({
                 direction="column"
                 alignItems="center"
                 className={clsx(classes.contentWrapper, {
-                    [classes.contentWrapperStudyMode] : isLayoutModeStudy,
-                    [classes.contentWrapperSmallHeight]: isLayoutModeStudy && isSmallHeight,
-                })}>
-                {isLayoutModeStudy && (
-                    <Grid
-                        item
-                        className={classes.characterImg}
-                    >
-                        <img
-                            width={!isSmUp ? BADA_CHARACTER_WIDTH_MOBILE : BADA_CHARACTER_WIDTH_TABLET}
-                            src={BadaCharacter} />
-                    </Grid>)}
+                    [classes.contentWrapperWelcomeScreen]: isWelcomeScreen,
+                    [classes.contentWrapperWelcomeSmallHeight]: isWelcomeScreen && isSmallHeight,
+                }, classes)}>
                 <Grid
                     container
                     item
                     direction="column"
-                    justifyContent="flex-start"
+                    justifyContent={isWelcomeScreen ? `flex-start` : `center`}
                     alignItems="center"
                     className={clsx(classes.content, {
-                        [classes.contentStudyMode] : isLayoutModeStudy,
+                        [classes.contentWelcomeScreen]: isWelcomeScreen,
+                        [classes.contentStudyMode]: isLayoutModeStudy,
                         [classes.classroomLayout]: !isLayoutModeStudy,
-                        [classes.paddingTopSmallHeight] : isSmallHeight && isLayoutModeStudy,
+                        [classes.paddingTopSmallHeight]: isSmallHeight,
                     })}>
-                    <Grid
-                        item
-                        className={classes.parentLockIcon}>
-                        <ParentLockIcon size="4rem"  />
+                    <Grid item>
+                        <img
+                            width={ICON_LOCK_WIDTH}
+                            src={IconLocked}
+                        />
                     </Grid>
                     <Grid item>
                         <Typography
@@ -256,45 +304,76 @@ export function ParentalGate ({
                             align="center"
                             color="primary"
                             className={clsx(classes.headerText, classes.padding, {
-                                [classes.paddingSmallHeight] : isSmallHeight,
+                                [classes.paddingSmallHeight]: isSmallHeight,
+                                [classes.parentText]: !isWelcomeScreen,
                             })}>
-                            <FormattedMessage id={header} />
+                            <FormattedMessage
+                                id={header}
+                                defaultMessage={`For Parents`} />
                         </Typography>
                     </Grid>
                     <Grid
                         item
                         className={clsx(classes.contentWidth, {
-                            [classes.contentWidthStudyMode] : isLayoutModeStudy,
+                            [classes.contentWidthStudyMode]: isLayoutModeStudy,
                         })}>
                         <Typography
                             gutterBottom
                             color="primary"
                             variant="subtitle1"
-                            align="center">
+                            align="center"
+                            className={clsx({
+                                [classes.noLineBreak]: !isLayoutModeStudy,
+                            })}>
                             <FormattedMessage id="forParents.body" />
                         </Typography>
                     </Grid>
                     <Grid
                         item
-                        className={clsx(classes.contentWidth, {
-                            [classes.paddingSmallHeight] : !isSmallHeight && isLayoutModeStudy,
-                            [classes.captchaWidthStudyMode] : isLayoutModeStudy,
+                        className={clsx(classes.captchaWidth, {
+                            [classes.captchaWidthWelcomeScreen]: isWelcomeScreen,
+                            [classes.paddingSmallHeight]: !isSmallHeight && isLayoutModeStudy,
+                            [classes.captchaShake]: isCaptchaShake,
                         })}>
-                        <CaptchaLogic
+                        <ParentalGateCaptchaLogic
                             setError={setShowError}
+                            setShowCloseButton={setShowCloseButton}
                             setShowParentCaptcha={setShowParentCaptcha} />
                     </Grid>
-                    <Grid item>
+                    <Grid
+                        item
+                        className={clsx(classes.wrapperErrorText, {
+                            [classes.wrapperErrorTextNoSpaces]: isSmallHeight,
+                        })}>
                         {isShowError && (
                             <Typography
                                 gutterBottom
                                 variant="subtitle1"
                                 align="center"
-                                className={clsx(classes.errorText, classes.padding, {
-                                    [classes.paddingTopSmallHeight] : isSmallHeight,
+                                className={clsx(classes.errorText, {
+                                    [classes.paddingBottomWelcomeScreen]: isWelcomeScreen,
+                                    [classes.paddingTopSmallHeight]: isSmallHeight,
                                 })}>
                                 <FormattedMessage id="forParents.incorrect" />
                             </Typography>)}
+                    </Grid>
+                    <Grid
+                        item
+                        className={classes.wrapperBtnClose}>
+                        {isShowCloseButton && (
+                            <Button
+                                disableElevation
+                                variant="contained"
+                                size="large"
+                                color="secondary"
+                                className={classes.btnClose}
+                                onClick={setClosedDialog}>
+                                <Typography variant="h5">
+                                    <FormattedMessage
+                                        id={`button_close`}
+                                        defaultMessage={`Close`} />
+                                </Typography>
+                            </Button>)}
                     </Grid>
                 </Grid>
             </Grid>

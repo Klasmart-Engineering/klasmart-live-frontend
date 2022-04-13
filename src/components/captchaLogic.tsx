@@ -84,11 +84,13 @@ function CaptchaLogic ({
 
     const handleSelectNumber = (value:number, index: number) => {
         const updatedNumbers = [ ...checkNumbers ];
-        updatedNumbers[index] = {
-            ...checkNumbers[index],
-            checked: true,
-            selected: updatedNumbers.filter(number => number.checked === true).length,
-        };
+
+        updatedNumbers[index].checked = true;
+
+        if (updatedNumbers[index].selected === 0) {
+            updatedNumbers[index].selected = updatedNumbers.filter(number => number.checked === true).length;
+        }
+
         setCheckNumbers(updatedNumbers);
         setError(false);
     };

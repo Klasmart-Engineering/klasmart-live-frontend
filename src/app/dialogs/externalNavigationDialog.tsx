@@ -67,5 +67,5 @@ export function ExternalNavigationDialog (): JSX.Element {
             <DialogParentalLock
                 onCompleted={completeExternalNavigation}
             /> : undefined }
-            </>);
+    </>);
 }
