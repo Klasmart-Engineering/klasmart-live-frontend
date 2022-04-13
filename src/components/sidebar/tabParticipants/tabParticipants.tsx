@@ -1,6 +1,7 @@
 import UserCamera from "@/components/userCamera/userCamera";
 import { useSessions } from "@/data/live/state/useSessions";
 import { Session } from "@/pages/utils";
+import { useSessionContext } from "@/providers/session-context";
 import { NoItemList } from "@/utils/utils";
 import {
     Fade,
@@ -31,6 +32,11 @@ const useStyles = makeStyles(() => ({
         gridTemplateColumns: `1fr 1fr`,
         gridGap: `10px`,
     },
+    studentCameraGrid: {
+        display: `grid`,
+        gridTemplateColumns: `1fr`,
+        gridGap: `10px`,
+    },
     cameraGridSingleTeacher:{
         gridTemplateColumns: `1fr`,
         minHeight: `150px`,
@@ -54,6 +60,7 @@ function TabParticipants () {
     const sessions = useSessions();
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
+    const { isTeacher } = useSessionContext();
 
     const studentsSessions = useMemo(() => [ ...sessions.values() ]
         .filter(s => !s.isTeacher)
@@ -70,14 +77,18 @@ function TabParticipants () {
                 direction="column"
                 className={clsx(classes.fullheight, {
                     [classes.rootSm] : isSmDown,
-                })}>
+                })}
+            >
                 <Grid
                     item
-                    className={classes.gridContainerTeachers}>
+                    className={classes.gridContainerTeachers}
+                >
                     {teachersSessions.length ? (
                         <div className={clsx(classes.cameraGrid, {
-                            [classes.cameraGridSingleTeacher] : teachersSessions.length === 1,
-                        })}>
+                            [classes.cameraGridSingleTeacher] : isTeacher && teachersSessions.length === 1,
+                            [classes.studentCameraGrid]: !isTeacher,
+                        })}
+                        >
                             {teachersSessions.map((user) => (
                                 <UserCamera
                                     key={user.id}
@@ -89,20 +100,27 @@ function TabParticipants () {
                         icon={<UserIcon />}
                         text={intl.formatMessage({
                             id: `no_teachers_connected`,
-                        })} />}
+                        })}
+                    />}
                 </Grid>
                 <Grid
                     item
                     xs
                     className={clsx({
                         [classes.gridContainerStudents]: studentsSessions.length && !isSmDown,
-                    })}>
+                    })}
+                >
                     {studentsSessions.length ? (
-                        <div className={classes.cameraGrid}>
+                        <div className={clsx({
+                            [classes.studentCameraGrid]: !isTeacher,
+                            [classes.cameraGrid]: isTeacher,
+                        })}
+                        >
                             {studentsSessions.map((user) => (
                                 <UserCamera
                                     key={user.id}
-                                    user={user} />
+                                    user={user}
+                                />
                             ))}
                         </div>
                     ) : (
@@ -110,7 +128,8 @@ function TabParticipants () {
                             icon={<UserIcon />}
                             text={intl.formatMessage({
                                 id: `no_students_connected`,
-                            })} />
+                            })}
+                        />
                     )}
                 </Grid>
             </Grid>

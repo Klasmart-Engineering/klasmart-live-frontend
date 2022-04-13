@@ -49,6 +49,9 @@ const useStyles = makeStyles(() => ({
             objectFit: `cover`,
         },
     },
+    studentViewRoot: {
+        minHeight: 192,
+    },
     rootSm:{
         minHeight: 100,
         "& video": {
@@ -170,6 +173,7 @@ const UserCamera = ({
                 [classes.rootSm]: isSmDown,
                 [classes.rootLarge]: variant === `large`,
                 [classes.activeAudio]: variant !== `large` && isAudioActive,
+                [classes.studentViewRoot]: !mySession.isTeacher,
             })}
             id={`participant:${user.id}`}
             onClick={() => {console.log(`mic`, audio); console.log(`cam`, video);}}
