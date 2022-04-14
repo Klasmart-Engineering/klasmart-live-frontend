@@ -1,3 +1,4 @@
+import DialogParentalLock from "@/app/components/ParentalLock";
 import { useAuthenticationContext } from "@/app/context-provider/authentication-context";
 import { useSelectedOrganizationValue } from "@/app/data/user/atom";
 import {
@@ -6,8 +7,8 @@ import {
     menuOpenState,
     shouldClearCookieState,
 } from "@/app/model/appModel";
+import ParentsDashboardIcon from '@/assets/img/menu-drawer/icon_dashboard.svg';
 import SettingsIcon from '@/assets/img/menu-drawer/icon_settings.svg';
-import StyledIcon from "@/components/styled/icon";
 import {
     TEXT_COLOR_SIGN_OUT,
     TEXT_COLOR_VERSION_APP,
@@ -34,7 +35,8 @@ import {
 } from "@material-ui/core";
 import { KeyboardArrowRight as ArrowRight } from "@styled-icons/material-rounded/KeyboardArrowRight";
 import clsx from "clsx";
-import React from "react";
+import React,
+{ useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useHistory } from "react-router-dom";
 import {
@@ -44,6 +46,7 @@ import {
 
 enum MenuDrawerItem {
     ORGANIZATION,
+    PARENTS_DASHBOARD,
     SETTINGS,
 }
 
@@ -70,6 +73,7 @@ const useStyles = makeStyles((theme: Theme) =>
             overflow: `hidden`,
             WebkitBoxOrient: `vertical`,
             WebkitLineClamp: 1,
+            wordBreak: `break-all`,
         },
         signOutButton: {
             background: THEME_BACKGROUND_SIGN_OUT_BUTTON,
@@ -105,16 +109,21 @@ export default function MenuDrawer () {
     const setShowOnBoarding = useSetRecoilState(isShowOnBoardingState);
 
     const menuArray = [
+        // {
+        //     id: MenuDrawerItem.PARENTS_DASHBOARD,
+        //     text: `hamburger.parentsDashboard`,
+        //     icon: <img
+        //         src={ParentsDashboardIcon}
+        //         alt=""
+        //     />,
+        // },
         {
             id: MenuDrawerItem.SETTINGS,
             text: `title_settings`,
-            icon: <StyledIcon
-                icon={<img
-                    src={SettingsIcon}
-                    alt=""
-                />}
-                size="large"
-                  />,
+            icon: <img
+                src={SettingsIcon}
+                alt=""
+            />,
         },
     ];
 
@@ -131,11 +140,36 @@ export default function MenuDrawer () {
         case MenuDrawerItem.SETTINGS:
             history.push(`/settings`);
             break;
+
+        case MenuDrawerItem.PARENTS_DASHBOARD:
+            setParentalLock(true);
+            break;
         default:
             break;
         }
     };
 
+    const setParentalLock = (open: boolean) => {
+        setDialogs({
+            ...dialogs,
+            isParentalLockOpen: open,
+        });
+    };
+
+    useEffect(() => {
+        setParentalLock(false);
+    }, []);
+
+    if (dialogs.isParentalLockOpen) {
+        return (
+            <DialogParentalLock
+                onCompleted={() => {
+                    // Show Parents Dashboard
+                    setParentalLock(false);
+                }}
+            />
+        );
+    }
     return (
         <SwipeableDrawer
             anchor="left"
@@ -169,7 +203,7 @@ export default function MenuDrawer () {
                     >
                         <Grid
                             item
-                            xs={4}
+                            xs={isSmUp ? 3 : 4}
                         >
                             <OrganizationAvatar
                                 name={selectedOrganization?.organization_name ?? ``}
