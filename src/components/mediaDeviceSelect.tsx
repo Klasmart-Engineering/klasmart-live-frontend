@@ -1,4 +1,5 @@
 import { useSessionContext } from "@/providers/session-context";
+import { useWebRtcConstraints } from "@kl-engineering/live-state/ui";
 import {
     Button,
     Tooltip,
@@ -10,11 +11,9 @@ import {
     makeStyles,
 } from "@material-ui/core/styles";
 import { Settings } from "@styled-icons/fluentui-system-filled/Settings";
-import { useWebRtcConstraints } from "@kl-engineering/live-state/ui";
 import React,
 {
     useEffect,
-    useMemo,
     useState,
     VoidFunctionComponent,
 } from "react";
@@ -59,11 +58,11 @@ export const preferedVideoInput = atom<string|undefined>({
 export const MediaDeviceSelect: VoidFunctionComponent<{
     kind: MediaDeviceKind;
 }> = ({ kind }) => {
+    const classes = useStyles();
     const { isTeacher } = useSessionContext();
     const [ deviceId, setDeviceId ] = useRecoilState(kind === `videoinput` ? preferedVideoInput : preferedAudioInput);
     const { setMicrophoneConstraints, setCameraConstraints } = useWebRtcConstraints();
-    const onSelect = (deviceId?: unknown) => {
-        if(typeof deviceId !== `string`) { return; }
+    const onSelect = (deviceId?: string) => {
         switch(kind) {
         case `audioinput`:
             setMicrophoneConstraints({
@@ -83,24 +82,24 @@ export const MediaDeviceSelect: VoidFunctionComponent<{
         setDeviceId(deviceId);
     };
 
-    const asyncDevices = useAsync(async () => {
+    const {
+        execute: enumerateDevices,
+        result: devices,
+    } = useAsync(async () => {
         const devices = await navigator.mediaDevices.enumerateDevices();
         if(!deviceId) { onSelect(devices[0]?.deviceId); }
-        return devices;
-    }, []);
+        return devices.filter(d => d.kind === kind);
+    }, [ kind ]);
 
     useEffect(() => {
-        const listener = () => asyncDevices.execute();
+        const listener = () => enumerateDevices();
         navigator.mediaDevices.addEventListener(`devicechange`, listener);
         return () => navigator.mediaDevices.removeEventListener(`devicechange`, listener);
-    }, [ asyncDevices.execute ]);
+    }, [ enumerateDevices ]);
 
-    const classes = useStyles();
-    const devices = useMemo(() => asyncDevices.result?.filter(d => d.kind === kind) ?? [], [ asyncDevices.result, kind ]);
-
-    const [ open, setOpen ] = useState(false);
-
-    const disabled = devices.length <= 0;
+    const [ isOpen, setOpen ] = useState(false);
+    const open = () => { setOpen(true); enumerateDevices(); };
+    const close = () => { setOpen(false); };
     return (
         <>
             <Tooltip title={
@@ -110,14 +109,15 @@ export const MediaDeviceSelect: VoidFunctionComponent<{
                         device: kind === `videoinput` ? `Camera` : `Microphone`,
                     }}
                 />
-            }>
+            }
+            >
                 <Button
                     className={classes.button}
                     size="small"
                     variant="contained"
-                    startIcon={<Settings size="0.75em"/>}
+                    startIcon={<Settings size="0.75em" />}
                     aria-label={`${kind} settings`}
-                    onClick={() => setOpen(true)}
+                    onClick={open}
                 >
                     {kind === `videoinput` ? `Camera settings` : `Microphone settings`}
                 </Button>
@@ -127,17 +127,23 @@ export const MediaDeviceSelect: VoidFunctionComponent<{
                     height: 0,
                     width: 0,
                     visibility: `hidden`,
-                    display: open ? `inherit` : `none`,
+                    display: isOpen ? `inherit` : `none`,
                 }}
-                disabled={disabled}
+                disabled={!devices || devices.length <= 0}
                 value={deviceId || ``}
-                open={open}
-                onOpen={() => setOpen(true)}
-                onClose={() => setOpen(false)}
-                onChange={e => onSelect(e.target.value)}
+                open={isOpen}
+                onOpen={open}
+                onClose={close}
+                onChange={e => {
+                    if(typeof e.target.value !== `string`) {
+                        console.error(`TypeError: <Select> expected 'string' from <MenuItem> but recieved '${typeof e.target.value}'`);
+                    } else {
+                        onSelect(e.target.value);
+                    }
+                }}
             >
                 {
-                    devices.map(({ label, deviceId }) => (
+                    devices?.map(({ label, deviceId }) => (
                         <MenuItem
                             key={deviceId}
                             value={deviceId}
