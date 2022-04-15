@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.3.0](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.2.0...v6.3.0) (2022-04-15)
+
+
+### ♻️ Chores
+
+* change versionrc url formats from Bitbucket to GitHub (#54) ([f65a25b](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/f65a25b443d2b89065c8aaa19994e1e751e44ec4))
+
+
+### ⚙️ Continuous Integrations
+
+* Feature/kidskube refactor (#57) ([731d64f](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/731d64f60b3951ffd2a16d152642e43a0ede8425))
+
+
+### ✨ Features
+
+* add reports option to hamburger menu (hidden option) (#61) ([70cdf4f](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/70cdf4f62399676f1ed4e622b81b5a614f03493d)), closes [NAT-64](https://calmisland.atlassian.net/browse/NAT-64)
+* **localization:** add new translations (#65) ([68151db](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/68151dbb032aafdc4ab7053572861109e86b3bc8))
+* **localization:** add new translations (#66) ([7da39c4](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/7da39c4bd9d0f65225cae5fb261ecbf1a586f8c6))
+* parental lock design replacement (#23) ([df01f0e](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/df01f0e2a52f066d66134dd1af2c9be5008e3e3d)), closes [KLL-2878](https://calmisland.atlassian.net/browse/KLL-2878)
+* refresh schedule design (#51) ([7f6f734](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/7f6f7347bfcf90de691e97ab346129c8acb54b03)), closes [NAT-43](https://calmisland.atlassian.net/browse/NAT-43)
+* resize student cameras to fit less on the screen (#53) ([7a3368e](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/7a3368e2914cad0e5f94099c2062d289645f3e35)), closes [KLL-3389](https://calmisland.atlassian.net/browse/KLL-3389)
+* use PDF v2 API (#62) ([a727700](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/a727700d05257b928d7a589a809cac8ccb163951)), closes [KLL-2803](https://calmisland.atlassian.net/browse/KLL-2803) [KLL-2758](https://calmisland.atlassian.net/browse/KLL-2758) [KLL-2647](https://calmisland.atlassian.net/browse/KLL-2647) [KLL-2641](https://calmisland.atlassian.net/browse/KLL-2641) [KLL-2758](https://calmisland.atlassian.net/browse/KLL-2758) [KLL-2641](https://calmisland.atlassian.net/browse/KLL-2641) [KLL-2758](https://calmisland.atlassian.net/browse/KLL-2758) [KLL-2758](https://calmisland.atlassian.net/browse/KLL-2758)
+
+
+### 🐛 Bug Fixes
+
+* add userId as url parameter + use userId only in type Class (#63) ([ae8f8b6](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/ae8f8b6c42d02cb10a80da1e7f3f5cffe05c62db)), closes [KLL-3015](https://calmisland.atlassian.net/browse/KLL-3015) [KLL-3525](https://calmisland.atlassian.net/browse/KLL-3525)
+* SFU-60 unknown device (#64) ([967ae71](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/967ae71a70f0e68d253dd6ef1f2f52cbeb83944a))
+
 ## [6.2.0](https://github.com/KL-Engineering/kidsloop-live-frontend/branches/compare/v6.2.0%0Dv6.1.0) (2022-04-12)
 
 
