@@ -109,6 +109,8 @@ export default function InteractionRecorder (props: Props): JSX.Element {
     const recorderEndpoint = useHttpEndpoint(`live`);
     const authEndpoint = useHttpEndpoint(`auth`);
 
+    const urlParameterClassActiveUser = classActiveUserId ? `&userId=${classActiveUserId}` : ``;
+
     const {
         width: activityWidth = 0,
         height: activityHeight = 0,
@@ -155,7 +157,7 @@ export default function InteractionRecorder (props: Props): JSX.Element {
         if (contentHref.endsWith(`.pdf`)) {
             return getPDFURLTransformer(contentHref, token, recorderEndpoint, encodedEndpoint, encodedAuthEndpoint);
         } else {
-            return `${contentHref}?token=${token}&endpoint=${encodedEndpoint}&auth=${encodedAuthEndpoint}`;
+            return `${contentHref}?token=${token}&endpoint=${encodedEndpoint}&auth=${encodedAuthEndpoint}${urlParameterClassActiveUser}`;
         }
     }, [
         contentHref,
@@ -180,12 +182,18 @@ export default function InteractionRecorder (props: Props): JSX.Element {
         setUserCount(sessions.size);
     }, [ sessions ]);
 
-    useEffect(() => {
+    const sendIframeClassActiveUser = (userId?: string) => {
+        if(classType !== ClassType.CLASSES && !userId) return;
+
         iframeRef?.current?.contentWindow?.postMessage({
             type: `CLASS_ACTIVE_USER`,
-            user: classActiveUserId,
+            user: userId,
         }, `*`);
-    }, [ classActiveUserId, iframeRef.current ]);
+    }
+
+    useEffect(() => {
+        sendIframeClassActiveUser(classActiveUserId)
+    }, [ classActiveUserId ]);
 
     useEffect(() => {
         setLoadStatus(LoadStatus.Loading);
@@ -358,6 +366,7 @@ export default function InteractionRecorder (props: Props): JSX.Element {
                         allow="microphone"
                         className={classes.activity}
                         onLoad={() => {
+                            sendIframeClassActiveUser(classActiveUserId);
                             onLoad();
                             startRecording();
                             setLoadStatus(LoadStatus.Finished);

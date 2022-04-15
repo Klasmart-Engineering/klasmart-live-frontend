@@ -73,6 +73,8 @@ export function Room () {
     const cmsEndpoint = useHttpEndpoint(`cms`);
 
     useEffect(() => {
+        if(classType !== ClassType.CLASSES) return;
+
         setClassActiveUserId(user_id);
     }, []);
 
