@@ -277,11 +277,16 @@
     "live.enter.allowPermission": "ขออนุญาติ",
     "loading.error.retry": "ลองอีกครั้ง",
     "hamburger.settings.cookiesPolicy": "นโยบายคุกกี้",
-    "hamburger.settings.termsOfUse": "ข้อตกลงในการใช้งาน",
-    "hamburger.settings.contactUs": "ติดต่อเรา",
+    "hamburger.settings.about.termsOfUse": "ข้อตกลงในการใช้งาน",
+    "hamburger.settings.support.contact": "ติดต่อเรา",
     "hamburger.parentsDashboard": "แดชบอร์ดผู้ปกครอง",
-    "hamburger.settings.privacy": "ความเป็นส่วนตัว",
+    "hamburger.settings.about.privacy": "ความเป็นส่วนตัว",
     "parentsDashboard.learningOutcome.title": "บรรลุผลการเรียนรู้ทั้งหมด",
     "parentsDashboard.learningOutcome.view": "ดูผลการเรียนรู้ทั้งหมด",
-    "parentsDashboard.learningOutcome.empty": "There were no learning outcomes this week"
+    "parentsDashboard.learningOutcome.empty": "There were no learning outcomes this week",
+    "hamburger.settings.about": "About",
+    "hamburger.settings.about.cookiesPreferences": "Cookies Preferences",
+    "hamburger.settings.general": "General",
+    "schedule.status.joinNow": "Join Now",
+    "schedule.homeFun": "Home Fun"
 }

@@ -277,11 +277,16 @@
     "live.enter.allowPermission": "Cho phép quyền",
     "loading.error.retry": "Thử lại",
     "hamburger.settings.cookiesPolicy": "Chính sách mở rộng",
-    "hamburger.settings.termsOfUse": "Điều khoản sử dụng",
-    "hamburger.settings.contactUs": "Liên hệ với chúng tôi",
+    "hamburger.settings.about.termsOfUse": "Điều khoản sử dụng",
+    "hamburger.settings.support.contact": "Liên hệ với chúng tôi",
     "hamburger.parentsDashboard": "Trang tổng quan dành cho phụ huynh",
-    "hamburger.settings.privacy": "Bảo mật",
+    "hamburger.settings.about.privacy": "Bảo mật",
     "parentsDashboard.learningOutcome.title": "Tổng kết quả học tập đã đạt được",
     "parentsDashboard.learningOutcome.view": "Xem tất cả kết quả học tập",
-    "parentsDashboard.learningOutcome.empty": "There were no learning outcomes this week"
+    "parentsDashboard.learningOutcome.empty": "There were no learning outcomes this week",
+    "hamburger.settings.about": "About",
+    "hamburger.settings.about.cookiesPreferences": "Cookies Preferences",
+    "hamburger.settings.general": "General",
+    "schedule.status.joinNow": "Join Now",
+    "schedule.homeFun": "Home Fun"
 }
