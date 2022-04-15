@@ -67,15 +67,15 @@ export const MediaDeviceSelect: VoidFunctionComponent<{
         case `audioinput`:
             setMicrophoneConstraints({
                 deviceId,
-                echoCancellation: true,
-                noiseSuppression: true,
+                echoCancellation: {ideal: true},
+                noiseSuppression: {ideal: true},
             });
             break;
         case `videoinput`:
             setCameraConstraints({
                 deviceId,
-                height: isTeacher ? TEACHER_PREFERED_VIDEO_HEIGHT : STUDENT_PREFERED_VIDEO_HEIGHT,
-                frameRate: isTeacher ? TEACHER_PREFERED_VIDEO_FRAMERATE : STUDENT_PREFERED_VIDEO_FRAMERATE,
+                height: { ideal: isTeacher ? TEACHER_PREFERED_VIDEO_HEIGHT : STUDENT_PREFERED_VIDEO_HEIGHT },
+                frameRate: { ideal: isTeacher ? TEACHER_PREFERED_VIDEO_FRAMERATE : STUDENT_PREFERED_VIDEO_FRAMERATE },
             });
             break;
         }

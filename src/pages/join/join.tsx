@@ -2,7 +2,10 @@
 import { CameraPreview } from "./cameraPreview";
 import { MicrophonePreview } from "./microphonePreview";
 import BackButton from "@/app/components/layout/BackButton";
-import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
+import {
+    PermissionType,
+    useCordovaSystemContext,
+} from "@/app/context-provider/cordova-system-context";
 import KidsLoopClassTeachers from "@/assets/img/classtype/kidsloop_class_teachers.svg";
 import KidsLoopLiveStudents from "@/assets/img/classtype/kidsloop_live_students.svg";
 import KidsLoopLiveTeachers from "@/assets/img/classtype/kidsloop_live_teachers.svg";
@@ -181,11 +184,27 @@ export default function Join (): JSX.Element {
     const setClassEnded = useSetRecoilState(classLeftState);
     const setClassLeft = useSetRecoilState(classEndedState);
     const setShowSelectAttendees = useSetRecoilState(showSelectAttendeesState);
+    const [ requestedNativePermission, setRequestedNativePermission ] = useState(false);
 
     const history = useHistory();
-    const { restart } = useCordovaSystemContext();
+    const {
+        requestPermissions: requestNativePermissions,
+        isIOS,
+        restart,
+    } = useCordovaSystemContext();
 
     useEffect(() => {
+        if (process.env.IS_CORDOVA_BUILD && !isIOS) {
+            requestNativePermissions({
+                permissionTypes: [ PermissionType.CAMERA, PermissionType.MIC ],
+                onSuccess: () => {
+                    setRequestedNativePermission(true);
+                },
+                onError: () => {
+                    setRequestedNativePermission(true);
+                },
+            });
+        }
         setClassEnded(false);
         setClassLeft(false);
         setShowSelectAttendees(classType === ClassType.CLASSES);
@@ -195,6 +214,11 @@ export default function Join (): JSX.Element {
 
     const [ cameraPaused, setCameraPaused ] = useState(false);
     const [ microphonePaused, setMicrophonePaused ] = useState(false);
+
+    // Should access the camera after allow camera permission, have to restart the device if not.
+    if (process.env.IS_CORDOVA_BUILD && !isIOS && !requestedNativePermission) {
+        return <Loading messageId="loading" />;
+    }
 
     if (brandingAsync.loading) {
         return <Loading messageId="loading" />;

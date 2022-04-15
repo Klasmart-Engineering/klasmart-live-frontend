@@ -6,6 +6,15 @@ import HtmlWebpackPlugin from "html-webpack-plugin";
 import path from "path";
 import { EnvironmentPlugin } from "webpack";
 
+const getGitCommit = () => {
+    try {
+        return execSync(`git rev-parse HEAD`).toString().trim().slice(0, 7)
+    } catch {
+        console.log(`Git commit hash unavailable using package.json version: ${pkg.version}`)
+        return pkg.version
+    }
+}
+
 module.exports = {
     mode: `development`,
     entry: {
@@ -89,7 +98,7 @@ module.exports = {
             IS_CORDOVA_BUILD: true,
             PDF_VERSION: `JPEG`,
             VERSION: pkg.version,
-            GIT_COMMIT: execSync(`git rev-parse HEAD`).toString().trim().slice(0, 7),
+            GIT_COMMIT: getGitCommit(),
         }),
         new HtmlWebpackPlugin({
             filename: `index.html`,

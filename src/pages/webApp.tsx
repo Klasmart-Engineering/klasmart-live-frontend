@@ -9,7 +9,6 @@ import { useAuthenticationContext } from '@/app/context-provider/authentication-
 import { useServices } from '@/app/context-provider/services-provider';
 import { useRegionSelect } from '@/providers/region-select-context';
 import { useSessionContext } from '@/providers/session-context';
-import { AuthTokenProvider } from "@/services/auth-token/AuthTokenProvider";
 import { ClassType } from '@/store/actions';
 import {
     hasJoinedClassroomState,
@@ -30,6 +29,7 @@ export function WebApp () {
         name,
         sessionId,
         classType,
+        token,
     } = useSessionContext();
     const { actions } = useAuthenticationContext();
     const { authenticationService } = useServices();
@@ -57,10 +57,9 @@ export function WebApp () {
         if(url.hostname === `localhost`) {url.port = `8002`;}
         url.search = window.location.search;
         url.searchParams.delete(`token`);
-        const token = AuthTokenProvider.retrieveToken();
         if(token) { url.searchParams.set(`authorization`, token); }
         return url;
-    }, [ region ]);
+    }, [ region, token ]);
 
     const renderChildren = () => {
         if(showSelectParticipants) return <ClassSelectAttendees />;

@@ -23,8 +23,10 @@ export const CameraPreview: VoidFunctionComponent<{
     const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
 
     const deviceId = useRecoilValue(preferedVideoInput);
+
     const camera = useAsync(() => {
-        if(paused) {return Promise.resolve(undefined);}
+        camera?.result?.getTracks().forEach(t => t.stop());
+        if(paused || deviceId === undefined) {return Promise.resolve(undefined);}
         return navigator.mediaDevices.getUserMedia({
             video: {
                 deviceId,
@@ -33,7 +35,7 @@ export const CameraPreview: VoidFunctionComponent<{
     }, [ deviceId, paused ]);
 
     //On component unmount stop the camera
-    useEffect(() => () => camera.result?.getTracks().forEach(t => t.stop()), [ camera.result ]);
+    useEffect(() => () => camera?.result?.getTracks().forEach(t => t.stop()), [ camera.result ]);
 
     if(camera.loading) { return <Loading messageId="allow_media_permission" />; }
     if(camera.result) { return <Camera mediaStream={camera.result} /> ;}
