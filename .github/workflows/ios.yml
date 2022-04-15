@@ -59,7 +59,8 @@ jobs:
       - name: fastlane stuff
         env:
           FASTLANE: 1
-          DEBUG: 1 
+          DEBUG: 1
+          SPACESHIP_DEBUG: 1
           FASTLANE_DISABLE_COLORS: 1
           SPACESHIP_SKIP_2FA_UPGRADE: 1
           LC_CTYPE: UTF-8
