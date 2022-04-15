@@ -12,7 +12,7 @@ module.exports = {
         ui: `./src/app/entrypoint/entry-cordova.tsx`,
         record: `./src/entry-record.ts`,
         player: `./src/entry-player.ts`,
-        pdfviewer: `./src/entry-pdfviewer.js`,
+        pdfviewer: `./src/entry-pdfviewer.tsx`,
         h5presize: `./src/entry-h5p-resize.js`,
         flashcard: `./src/entry-flashcard.ts`,
     },
