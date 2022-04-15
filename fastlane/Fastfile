@@ -11,8 +11,6 @@ api_key = ""
 
 def setKeychain (isCi, keychain_path)
   # Delete possible leftover keychain file, otherwise creation of a new temporary keychain would fail
-  # Not needed if we can have a keychain file in the current working directory,
-  # because we always perform clean git checkout.
   if File.exists?(keychain_path)
     puts("Deleting old keychain file: #{keychain_path}")
     delete_keychain(path: keychain_path)
