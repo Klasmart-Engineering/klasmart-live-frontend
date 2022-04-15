@@ -2,7 +2,6 @@ fastlane_require 'dotenv'
 default_platform(:ios)
 
 # Dotenv.overload('./fastlane/.env')
-# Dotenv.load('./fastlane/.env.secret')
 # Dotenv.load('./fastlane/.env.test')
 
 # because default fastlane is_ci doesn't work on github actions
@@ -10,49 +9,52 @@ __is_ci = is_ci || "true" == "#{ENV['GITHUB_ACTIONS']}"
 keychain_path = "#{ENV['MATCH_KEYCHAIN_PATH']}"
 api_key = ""
 
+def setKeychain (isCi, keychain_path)
+  # Delete possible leftover keychain file, otherwise creation of a new temporary keychain would fail
+  # Not needed if we can have a keychain file in the current working directory,
+  # because we always perform clean git checkout.
+  if File.exists?(keychain_path)
+    puts("Deleting old keychain file: #{keychain_path}")
+    delete_keychain(path: keychain_path)
+    FileUtils.rm_f(keychain_path)
+  end
+  create_keychain(
+    path: keychain_path,
+    password: ENV["MATCH_KEYCHAIN_PASSWORD"],
+    default_keychain: true,
+    unlock: true,
+    timeout: 600,
+    lock_when_sleeps: false,
+    lock_after_timeout: false,
+    require_create: true
+  )
+end
+def setAppStoreConnectApiKey(isCi)
+  if __is_ci
+    setup_ci
+    api_key = app_store_connect_api_key(
+      key_id: "DW9C8JLCRK",
+      issuer_id: "69a6de8d-4b17-47e3-e053-5b8c7c11a4d1",
+      key_content: "#{ENV['KEY_CONTENT']}".gsub('\n', '\\n'),
+      duration: 1200,
+      in_house: false
+    )
+  end
+  if !__is_ci
+    api_key = app_store_connect_api_key(
+      key_id: "DW9C8JLCRK",
+      issuer_id: "69a6de8d-4b17-47e3-e053-5b8c7c11a4d1",
+      key_filepath: "./fastlane/AuthKey_DW9C8JLCRK.p8",
+      duration: 1200,
+      in_house: false
+    )
+  end
+end
+
 platform :ios do
   before_all do
-    
-
-    if __is_ci
-      setup_ci
-
-      # Delete possible leftover keychain file, otherwise creation of a new temporary keychain would fail
-      # Not needed if we can have a keychain file in the current working directory,
-      # because we always perform clean git checkout.
-      if File.exists?(keychain_path)
-        puts("Deleting old keychain file: #{keychain_path}")
-        delete_keychain(path: keychain_path)
-        FileUtils.rm_f(keychain_path)
-      end
-      create_keychain(
-        path: keychain_path,
-        password: ENV["MATCH_KEYCHAIN_PASSWORD"],
-        default_keychain: true,
-        unlock: true,
-        timeout: 600,
-        lock_when_sleeps: false,
-        lock_after_timeout: false,
-        require_create: true
-      )
-
-      api_key = app_store_connect_api_key(
-        key_id: "DW9C8JLCRK",
-        issuer_id: "69a6de8d-4b17-47e3-e053-5b8c7c11a4d1",
-        key_content: "#{ENV['KEY_CONTENT']}".gsub('\n', '\\n'),
-        duration: 1200,
-        in_house: false
-      )
-    end
-    if !__is_ci
-      api_key = app_store_connect_api_key(
-        key_id: "DW9C8JLCRK",
-        issuer_id: "69a6de8d-4b17-47e3-e053-5b8c7c11a4d1",
-        key_filepath: "./fastlane/AuthKey_DW9C8JLCRK.p8",
-        duration: 1200,
-        in_house: false
-      )
-    end
+    setKeychain(__is_ci, keychain_path)
+    setAppStoreConnectApiKey(__is_ci)
   end
 
   desc "Running prechecks"
