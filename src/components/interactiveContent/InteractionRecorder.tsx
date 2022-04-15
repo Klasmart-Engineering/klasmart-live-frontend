@@ -139,7 +139,8 @@ export default function InteractionRecorder (props: Props): JSX.Element {
     ]);
 
     const getPDFURLTransformer = (contentHref: string, token: string | undefined, recorderEndpoint: string, encodedEndpoint: string, encodedAuthEndpoint: string) => {
-        const jpegTransformer = `${contentHref.replace(`/assets/`, `/pdf/`)}/view.html?token=${token}&endpoint=${encodedEndpoint}&auth=${encodedAuthEndpoint}`;
+        const pdfPath = contentHref.replace(`${recorderEndpoint}`, ``);
+        const jpegTransformer = `/pdfviewer.html?pdf=${pdfPath}&token=${token}&endpoint=${encodedEndpoint}&auth=${encodedAuthEndpoint}`;
         const svgTransformer = `${contentHref.replace(`${recorderEndpoint}/assets`, `pdfviewer.html?pdfSrc=/assets`)}&token=${token}&endpoint=${encodedEndpoint}&auth=${encodedAuthEndpoint}`;
         switch (process.env.PDF_VERSION) {
         case `JPEG`: return jpegTransformer;

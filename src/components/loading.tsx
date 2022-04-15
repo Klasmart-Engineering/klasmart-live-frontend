@@ -6,10 +6,11 @@ import { FormattedMessage } from "react-intl";
 
 export interface Props {
     messageId?: string;
+    loaderColor?: string;
 }
 
 export default function Loading (props: Props) {
-    const { messageId } = props;
+    const { messageId, loaderColor } = props;
     return (
         <Box
             display="flex"
@@ -19,7 +20,10 @@ export default function Loading (props: Props) {
             height="100%"
             width="100%"
         >
-            <CircularProgress />
+            <CircularProgress style={{
+                color: loaderColor || ``,
+            }}
+            />
             {messageId && (
                 <Box mt={2}>
                     <Typography variant="subtitle2">
