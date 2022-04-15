@@ -3,8 +3,10 @@ import {
     ScheduleAppBarItem,
     useScheduleTab,
 } from "@/app/model/scheduleModel";
-import LiveIcon from "@/assets/img/schedule-icon/live_icon.svg";
-import StudyIcon from "@/assets/img/schedule-icon/study_icon.svg";
+import LiveIconClosed from "@/assets/img/schedule-icon/live_icon_closed.svg";
+import LiveIconOpen from "@/assets/img/schedule-icon/live_icon_open.svg";
+import StudyIconClosed from "@/assets/img/schedule-icon/study_icon_closed.svg";
+import StudyIconOpen from "@/assets/img/schedule-icon/study_icon_open.svg";
 import {
     createStyles,
     Grid,
@@ -15,9 +17,7 @@ import React from "react";
 const useStyles = makeStyles((theme) => createStyles({
     root: {
         borderTop: `1px solid ${theme.palette.divider}`,
-    },
-    icon: {
-        marginTop: theme.spacing(1),
+        padding: theme.spacing(0, 8),
     },
 }));
 
@@ -29,8 +29,6 @@ export default function ScheduleBottomAppBar () {
     return (
         <Grid
             container
-            item
-            direction="row"
             justifyContent="space-between"
             alignItems="center"
             className={classes.root}
@@ -47,10 +45,9 @@ export default function ScheduleBottomAppBar () {
                     icon={
                         <img
                             alt="Live Icon"
-                            src={LiveIcon}
-                            className={classes.icon}
-                            width={71}
-                            height={45}
+                            src={selectedItem === ScheduleAppBarItem.LIVE ? LiveIconOpen : LiveIconClosed}
+                            width={30}
+                            height={30}
                         />}
                     data-testid={`${ScheduleAppBarItem.LIVE}-container`}
                     onClick={() => setSelectedItem(ScheduleAppBarItem.LIVE)}
@@ -66,12 +63,11 @@ export default function ScheduleBottomAppBar () {
                     title={`schedule_studyTab`}
                     type="study"
                     active={selectedItem === ScheduleAppBarItem.STUDY}
-                    icon={ <img
+                    icon={<img
                         alt="Study Icon"
-                        src={StudyIcon}
-                        className={classes.icon}
-                        width={71}
-                        height={45}
+                        src={selectedItem === ScheduleAppBarItem.STUDY ? StudyIconOpen : StudyIconClosed}
+                        width={23}
+                        height={30}
                     />}
                     data-testid={ScheduleAppBarItem.STUDY}
                     onClick={() => setSelectedItem(ScheduleAppBarItem.STUDY)}

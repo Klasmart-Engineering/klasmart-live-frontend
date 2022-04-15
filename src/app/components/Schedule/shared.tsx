@@ -80,12 +80,14 @@ export const getIconStudyType = (studyClass: SchedulesTimeViewListItem) => {
     return StudyIcon;
 };
 
-export const getIdStudyType = (studyClass?: GetScheduleByIdResponse) => {
-    if (studyClass?.is_review) return `button_start_review`;
+export const getIdStudyType = (schedule?: SchedulesTimeViewListItem) => {
+    if (schedule?.is_review) return `button_start_review`;
 
-    if (studyClass?.is_home_fun && studyClass?.complete_assessment) return `scheduleDetails.viewFeedback`;
+    if (schedule?.is_home_fun && schedule?.assessment_status === AssessmentStatusType.IN_PROGRESS) return `schedule_studySubmittedFeedback`;
 
-    return `button_go_study`;
+    if (schedule?.is_home_fun && schedule?.assessment_status === AssessmentStatusType.COMPLETE) return `scheduleDetails.viewFeedback`;
+
+    return `study.enter.startStudying`;
 };
 
 export const StudyAssessmentStatus = (schedule: SchedulesTimeViewListItem) => {
@@ -93,9 +95,10 @@ export const StudyAssessmentStatus = (schedule: SchedulesTimeViewListItem) => {
     switch (schedule.assessment_status) {
     case AssessmentStatusType.COMPLETE: return (
         <StyledIcon
-            icon={<AssessmentCompleteIcon/>}
+            icon={<AssessmentCompleteIcon />}
             size="medium"
-            color="#9E9E9E" />
+            color="#9E9E9E"
+        />
     );
     case AssessmentStatusType.IN_PROGRESS: return (
         <Typography

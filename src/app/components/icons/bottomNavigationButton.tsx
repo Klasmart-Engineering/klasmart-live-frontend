@@ -8,6 +8,7 @@ import {
     THEME_COLOR_INACTIVE_BUTTON,
     THEME_COLOR_SECONDARY_DEFAULT,
 } from "@/config";
+import { ClassType } from "@/store/actions";
 import {
     ButtonBase,
     Grid,
@@ -25,9 +26,11 @@ import { FormattedMessage } from "react-intl";
 const useStyles = makeStyles((theme) => createStyles({
     root: {
         backgroundColor: theme.palette.background.paper,
-        color: THEME_COLOR_INACTIVE_BUTTON,
         height: heightActionButton,
         display: `flex`,
+        flexDirection: `column`,
+        alignItems: `center`,
+        justifyContent: `center`,
         width: `100%`,
     },
     activeLive : {
@@ -37,13 +40,15 @@ const useStyles = makeStyles((theme) => createStyles({
         backgroundColor: BG_BUTTON_STUDY_COLOR,
     },
     titleText: {
-        fontWeight: theme.typography.fontWeightBold as number,
+        color: THEME_COLOR_INACTIVE_BUTTON,
     },
     titleLiveColor: {
         color: TEXT_COLOR_LIVE_PRIMARY,
+        fontWeight: theme.typography.fontWeightBold as number,
     },
     titleStudyColor: {
         color: TEXT_COLOR_STUDY_PRIMARY,
+        fontWeight: theme.typography.fontWeightBold as number,
     },
 }));
 
@@ -66,34 +71,20 @@ export function BottomNavigationButton (props: Props) {
     const classes = useStyles();
     return (
         <ButtonBase
-            className={clsx(classes.root, {
-                [classes.activeLive]: active && type === `live`,
-                [classes.activeStudy]: active && type === `study`,
-            })}
+            disableRipple
+            className={classes.root}
             onClick={onClick}
         >
-            <Grid
-                container
-                direction="column"
-                justifyContent="center"
-                alignItems="center"
+            {icon}
+            <Typography
+                className={clsx(classes.titleText, {
+                    [classes.titleLiveColor]: type === ClassType.LIVE && active,
+                    [classes.titleStudyColor]: type === ClassType.STUDY && active,
+                })}
+                variant="subtitle2"
             >
-                <Grid
-                    item
-                >
-                    {icon}
-                </Grid>
-                <Grid item>
-                    <Typography
-                        className={clsx(classes.titleText, {
-                            [classes.titleLiveColor]: type === `live`,
-                            [classes.titleStudyColor]: type === `study`,
-                        })}
-                        variant="subtitle2">
-                        <FormattedMessage id={title} />
-                    </Typography>
-                </Grid>
-            </Grid>
+                <FormattedMessage id={title} />
+            </Typography>
         </ButtonBase>
     );
 }

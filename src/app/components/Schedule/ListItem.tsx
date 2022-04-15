@@ -58,7 +58,7 @@ const useStyles = makeStyles((theme) => createStyles({
 }));
 
 export interface Props {
-    leading: React.ReactElement;
+    leading?: React.ReactElement;
     title: string | JSX.Element;
     subtitle?: string;
     trailing?: React.ReactNode;
@@ -89,7 +89,7 @@ export default function ScheduleListItem (props: Props) {
             })}
             onClick={onClick}
         >
-            <ListItemAvatar>{leading}</ListItemAvatar>
+            {leading && <ListItemAvatar>{leading}</ListItemAvatar>}
             <ListItemText
                 disableTypography
                 primary={(

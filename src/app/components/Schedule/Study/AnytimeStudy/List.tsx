@@ -1,19 +1,13 @@
 import ScheduleErrorRetryButton from "@/app/components/Schedule/ErrorRetryButton";
-import ScheduleListItem from "@/app/components/Schedule/ListItem";
-import ListItemAvatar from "@/app/components/Schedule/ListItemAvatar";
 import ScheduleListSectionHeader from "@/app/components/Schedule/ListSectionHeader";
 import ScheduleLoading from "@/app/components/Schedule/Loading";
 import NoSchedule,
 { NoScheduleVariant } from "@/app/components/Schedule/NoSchedule";
-import {
-    getIconStudyType,
-    getStudyType,
-    ScheduleListSection,
-    StudyAssessmentStatus,
-} from "@/app/components/Schedule/shared";
+import { getIdStudyType, ScheduleListSection } from "@/app/components/Schedule/shared";
 import StudyDetailsDialog from "@/app/components/Schedule/Study/Dialog/Details";
 import { useSelectedOrganizationValue } from "@/app/data/user/atom";
 import { dialogsState } from "@/app/model/appModel";
+import { ScheduleLiveTokenType } from "@/app/services/cms/ISchedulerService";
 import {
     isFocused,
     useWindowOnFocusChange,
@@ -26,10 +20,14 @@ import {
     schedulePageWindowItemHeightToPageSize,
     THEME_COLOR_BACKGROUND_LIST,
 } from "@/config";
+import { useSessionContext } from "@/providers/session-context";
+import { ClassType } from "@/store/actions";
 import {
     SchedulesTimeViewListItem,
+    useCmsApiClient,
     usePostSchedulesTimeViewList,
 } from "@kl-engineering/cms-api-client";
+import { useSnackbar } from "@kl-engineering/kidsloop-px";
 import {
     Box,
     CircularProgress,
@@ -49,9 +47,11 @@ import React,
 } from "react";
 import { useBottomScrollListener } from "react-bottom-scroll-listener";
 import { useIntl } from "react-intl";
+import { useHistory } from "react-router-dom";
 import { useRecoilState } from "recoil";
+import ScheduleItemTile from "../../ScheduleItemTile";
 
-const useStyles = makeStyles(() => createStyles({
+const useStyles = makeStyles((theme) => createStyles({
     listRoot: {
         width: `100%`,
         backgroundColor: THEME_COLOR_BACKGROUND_LIST,
@@ -60,6 +60,7 @@ const useStyles = makeStyles(() => createStyles({
     },
     listSection: {
         backgroundColor: `inherit`,
+        padding: theme.spacing(1, 2, 0),
     },
     ul: {
         backgroundColor: `inherit`,
@@ -71,9 +72,13 @@ export default function AnytimeStudyScheduleList () {
     const classes = useStyles();
     const intl = useIntl();
     const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
-    const [ selectedScheduleId, setSelectedScheduleId ] = useState<string>();
+    const [ selectedStudySchedule, setSelectedStudySchedule ] = useState<SchedulesTimeViewListItem>();
     const [ page, setPage ] = useState(SCHEDULE_PAGE_START);
     const [ items, setItems ] = useState<SchedulesTimeViewListItem[]>([]);
+    const { enqueueSnackbar } = useSnackbar();
+    const { setToken } = useSessionContext();
+    const { actions } = useCmsApiClient();
+    const { push } = useHistory();
     const organization = useSelectedOrganizationValue();
 
     const organizationId = organization?.organization_id ?? ``;
@@ -124,6 +129,42 @@ export default function AnytimeStudyScheduleList () {
         debounce: SCHEDULE_PAGINATION_DELAY,
     });
 
+    const handleJoinHomeFunStudyClass = (scheduleId: string) => {
+        if (!scheduleId) return;
+        push(`/schedule/home-fun-study/${scheduleId}`);
+    };
+
+    const handleJoinStudyClass = async (studySchedule: SchedulesTimeViewListItem) => {
+        if (!studySchedule.id) return;
+        try {
+            const { token } = await actions.getLiveTokenByScheduleId({
+                org_id: organizationId,
+                schedule_id: studySchedule.id,
+                live_token_type: ScheduleLiveTokenType.LIVE,
+            });
+            setToken(token);
+            push(`/room?token=${token}`);
+        } catch (err) {
+            enqueueSnackbar(intl.formatMessage({
+                id: `error_unknown_error`,
+            }), {
+                variant: `error`,
+            });
+        }
+    };
+
+    const handleJoinClass = (studySchedule: SchedulesTimeViewListItem) => {
+        if(studySchedule.is_home_fun){
+            handleJoinHomeFunStudyClass(studySchedule.id);
+        } else {
+            handleJoinStudyClass(studySchedule);
+        }
+        setDialogs({
+            ...dialogs,
+            isStudyDetailOpen: false,
+        });
+    };
+
     useEffect(() => {
         if (scheduleError) setItems([]);
         if (!schedulesData) return;
@@ -140,17 +181,17 @@ export default function AnytimeStudyScheduleList () {
 
     useWindowOnFocusChange(onFocusChange);
 
-    const setStudyDetailOpen = (scheduleId?: string) => {
+    const setStudyDetailOpen = (studySchedule?: SchedulesTimeViewListItem) => {
         setDialogs({
             ...dialogs,
-            isStudyDetailOpen: !!scheduleId,
+            isStudyDetailOpen: !!studySchedule?.id,
         });
-        setSelectedScheduleId(scheduleId);
+        setSelectedStudySchedule(studySchedule);
     };
 
     if (scheduleError) {
         if (isSchedulesFetching) return <ScheduleLoading />;
-        return <ScheduleErrorRetryButton onClick={() => refetchSchedules()}/>;
+        return <ScheduleErrorRetryButton onClick={() => refetchSchedules()} />;
     }
 
     if (!items.length) {
@@ -172,22 +213,22 @@ export default function AnytimeStudyScheduleList () {
                     >
                         <ul className={classes.ul}>
                             {studySchedulesSection.title && <ScheduleListSectionHeader title={studySchedulesSection.title} />}
-                            {studySchedulesSection.schedules.map((studySchedule) => (
-                                <ScheduleListItem
-                                    key={studySchedule.id}
-                                    isStudySchedule
-                                    leading={(
-                                        <ListItemAvatar
-                                            imgType
-                                            src={getIconStudyType(studySchedule)}
-                                        />
-                                    )}
-                                    title={studySchedule.title}
-                                    subtitle={getStudyType(studySchedule, intl)}
-                                    trailing={StudyAssessmentStatus(studySchedule)}
-                                    onClick={() => setStudyDetailOpen(studySchedule.id)}
-                                />
-                            ))}
+                            {studySchedulesSection.schedules.map((studySchedule) => {
+                                return (
+                                    <ScheduleItemTile
+                                        key={studySchedule.id}
+                                        scheduleId={studySchedule.id}
+                                        classType={studySchedule.is_home_fun ? ClassType.HOME_FUN_STUDY : studySchedule.is_review ? ClassType.REVIEW : ClassType.STUDY}
+                                        title={studySchedule.title}
+                                        actionTitle={intl.formatMessage({
+                                            id: getIdStudyType(studySchedule),
+                                        })}
+                                        start_at={studySchedule.start_at}
+                                        end_at={studySchedule.end_at}
+                                        onClick={() => handleJoinClass(studySchedule)}
+                                        onDetailClick={() => setStudyDetailOpen(studySchedule)}
+                                    />
+                                );})}
                         </ul>
                     </li>
                 ))}
@@ -196,13 +237,13 @@ export default function AnytimeStudyScheduleList () {
                         display="flex"
                         justifyContent="center"
                     >
-                        <CircularProgress size={24}/>
+                        <CircularProgress size={24} />
                     </Box>
                 )}
             </List>
             <StudyDetailsDialog
-                scheduleId={selectedScheduleId}
                 open={dialogs.isStudyDetailOpen}
+                studySchedule={selectedStudySchedule}
                 onClose={() => {
                     setStudyDetailOpen(undefined);
                 }}

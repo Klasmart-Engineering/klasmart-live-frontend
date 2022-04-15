@@ -6,6 +6,7 @@ import {
     saveDataBlobToFile,
 } from "@/app/utils/fileUtils";
 import { checkNetworkToConfirmDownload } from "@/app/utils/networkUtils";
+import { TEXT_COLOR_SIGN_OUT } from "@/config";
 import { useCmsApiClient } from "@kl-engineering/cms-api-client";
 import { useSnackbar } from "@kl-engineering/kidsloop-px";
 import {
@@ -23,7 +24,7 @@ import { useIntl } from "react-intl";
 
 const useStyles = makeStyles((theme) => createStyles({
     attachmentName: {
-        color: `#193756`,
+        color: TEXT_COLOR_SIGN_OUT,
         fontWeight: theme.typography.fontWeightBold as number,
         textOverflow: `ellipsis`,
         overflow: `hidden`,

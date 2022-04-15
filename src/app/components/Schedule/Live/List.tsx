@@ -1,6 +1,4 @@
 import ScheduleErrorRetryButton from "@/app/components/Schedule/ErrorRetryButton";
-import ScheduleListItem from "@/app/components/Schedule/ListItem";
-import ListItemAvatar from "@/app/components/Schedule/ListItemAvatar";
 import ScheduleListSectionHeader from "@/app/components/Schedule/ListSectionHeader";
 import LiveClassDetailsDialog from "@/app/components/Schedule/Live/Dialog/Details";
 import ScheduleLoading from "@/app/components/Schedule/Loading";
@@ -13,14 +11,12 @@ import {
     ScheduleListSection,
 } from "@/app/components/Schedule/shared";
 import { useSelectedOrganizationValue } from "@/app/data/user/atom";
-import { useMeQuery } from "@/app/data/user/queries/meQuery";
 import { dialogsState } from "@/app/model/appModel";
-import { formatStartEndDateTimeMillis } from "@/app/utils/dateTimeUtils";
+import { ScheduleLiveTokenType } from "@/app/services/cms/ISchedulerService";
 import {
     isFocused,
     useWindowOnFocusChange,
 } from "@/app/utils/windowEvents";
-import LiveIcon from "@/assets/img/schedule-icon/live_icon.svg";
 import {
     SCHEDULE_FETCH_INTERVAL_MINUTES,
     SCHEDULE_FETCH_MONTH_DIFF,
@@ -29,13 +25,15 @@ import {
     SCHEDULE_PAGINATION_DELAY,
     schedulePageWindowItemHeightToPageSize,
     THEME_COLOR_BACKGROUND_LIST,
-    THEME_COLOR_SECONDARY_DEFAULT,
 } from "@/config";
-import { fromSecondsToMilliseconds } from "@/utils/utils";
+import { useSessionContext } from "@/providers/session-context";
+import { ClassType } from "@/store/actions";
 import {
     SchedulesTimeViewListItem,
+    useCmsApiClient,
     usePostSchedulesTimeViewList,
 } from "@kl-engineering/cms-api-client";
+import { useSnackbar } from "@kl-engineering/kidsloop-px";
 import {
     Box,
     CircularProgress,
@@ -56,8 +54,9 @@ import React,
 import { useBottomScrollListener } from 'react-bottom-scroll-listener';
 import { useIntl } from "react-intl";
 import { useRecoilState } from "recoil";
+import ScheduleItemTile from "../ScheduleItemTile";
 
-const useStyles = makeStyles(() => createStyles({
+const useStyles = makeStyles((theme) => createStyles({
     listRoot: {
         width: `100%`,
         backgroundColor: THEME_COLOR_BACKGROUND_LIST,
@@ -66,6 +65,7 @@ const useStyles = makeStyles(() => createStyles({
     },
     listSection: {
         backgroundColor: `inherit`,
+        padding: theme.spacing(0, 2),
     },
     ul: {
         backgroundColor: `inherit`,
@@ -80,6 +80,9 @@ export default function LiveScheduleList () {
     const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
     const [ page, setPage ] = useState(SCHEDULE_PAGE_START);
     const [ items, setItems ] = useState<SchedulesTimeViewListItem[]>([]);
+    const { enqueueSnackbar } = useSnackbar();
+    const { setToken } = useSessionContext();
+    const { actions } = useCmsApiClient();
     const organization = useSelectedOrganizationValue();
 
     const organizationId = organization?.organization_id ?? ``;
@@ -92,6 +95,7 @@ export default function LiveScheduleList () {
     twoMonthsFromNow.setMonth(twoMonthsFromNow.getMonth() + SCHEDULE_FETCH_MONTH_DIFF);
     const twoMonthsFromNowInSeconds = Math.floor(twoMonthsFromNow.getTime() / 1000);
     const pageSize = schedulePageWindowItemHeightToPageSize(window.innerHeight, SCHEDULE_PAGE_ITEM_HEIGHT_MIN);
+    const [ timeBeforeClassSeconds, setTimeBeforeClassSeconds ] = useState(Number.MAX_SAFE_INTEGER);
 
     const {
         data: schedulesData,
@@ -126,6 +130,25 @@ export default function LiveScheduleList () {
         offset: window.innerHeight / 2, // detect scrolling with an offset of half of the screen height from the bottom
         debounce: SCHEDULE_PAGINATION_DELAY,
     });
+
+    const handleJoinLiveClass = async (liveSchedule: SchedulesTimeViewListItem) => {
+        if (!liveSchedule.id) return;
+        try {
+            const { token } = await actions.getLiveTokenByScheduleId({
+                org_id: organizationId,
+                schedule_id: liveSchedule.id,
+                live_token_type: ScheduleLiveTokenType.LIVE,
+            });
+            setToken(token);
+            location.href = `#/room?token=${token}`;
+        } catch (err) {
+            enqueueSnackbar(intl.formatMessage({
+                id: `error_unknown_error`,
+            }), {
+                variant: `error`,
+            });
+        }
+    };
 
     useEffect(() => {
         if (scheduleError) setItems([]);
@@ -199,7 +222,7 @@ export default function LiveScheduleList () {
 
     if (scheduleError) {
         if (isSchedulesFetching) return <ScheduleLoading />;
-        return <ScheduleErrorRetryButton onClick={() => refetchSchedules()}/>;
+        return <ScheduleErrorRetryButton onClick={() => refetchSchedules()} />;
     }
 
     if (!items.length) {
@@ -222,18 +245,19 @@ export default function LiveScheduleList () {
                         <ul className={classes.ul}>
                             <ScheduleListSectionHeader title={liveSchedulesSection.title} />
                             {liveSchedulesSection.schedules.map((liveSchedule) => (
-                                <ScheduleListItem
+                                <ScheduleItemTile
                                     key={liveSchedule.id}
-                                    leading={(
-                                        <ListItemAvatar
-                                            imgType
-                                            src={LiveIcon}
-                                            color={THEME_COLOR_SECONDARY_DEFAULT}
-                                        />
-                                    )}
+                                    scheduleId={liveSchedule.id}
+                                    classType={ClassType.LIVE}
                                     title={liveSchedule.title}
-                                    subtitle={formatStartEndDateTimeMillis(fromSecondsToMilliseconds(liveSchedule.start_at), fromSecondsToMilliseconds(liveSchedule.end_at), intl)}
-                                    onClick={() => setLiveClassDetailOpen(liveSchedule.id)}
+                                    actionTitle={intl.formatMessage({
+                                        id: `schedule.status.joinNow`,
+                                        defaultMessage: `Join Now`,
+                                    })}
+                                    start_at={liveSchedule.start_at}
+                                    end_at={liveSchedule.end_at}
+                                    onClick={() => handleJoinLiveClass(liveSchedule)}
+                                    onDetailClick={() => setLiveClassDetailOpen(liveSchedule.id)}
                                 />
                             ))}
                         </ul>
@@ -244,7 +268,7 @@ export default function LiveScheduleList () {
                         display="flex"
                         justifyContent="center"
                     >
-                        <CircularProgress size={24}/>
+                        <CircularProgress size={24} />
                     </Box>
                 )}
             </List>

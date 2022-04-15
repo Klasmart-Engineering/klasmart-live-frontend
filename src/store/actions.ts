@@ -27,7 +27,9 @@ export enum ClassType {
     LIVE = `live`,
     CLASSES = `class`,
     STUDY = `study`,
-    TASK = `task`
+    TASK = `task`,
+    HOME_FUN_STUDY = `home_fun_study`,
+    REVIEW = `review`,
 }
 
 export const CLASS_TYPES = Object.values(ClassType);

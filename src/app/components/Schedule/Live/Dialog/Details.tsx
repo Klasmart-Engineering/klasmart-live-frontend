@@ -1,17 +1,15 @@
 import DialogParentalLock from "@/app/components/ParentalLock";
-import AttachmentDownloadButton from "@/app/components/Schedule/Attachment/DownloadButton";
-import AttachmentNameLink from "@/app/components/Schedule/Attachment/NameLink";
 import BaseScheduleDialog from "@/app/components/Schedule/BaseDialog";
 import { useSelectedOrganizationValue } from "@/app/data/user/atom";
 import { dialogsState } from "@/app/model/appModel";
 import { ScheduleLiveTokenType } from "@/app/services/cms/ISchedulerService";
-import { formatDateTimeMillis } from "@/app/utils/dateTimeUtils";
+import { formatStartEndDateTimeMillis } from "@/app/utils/dateTimeUtils";
 import {
     generateDescriptionHasHyperLink,
     openHyperLink,
 } from "@/app/utils/link";
-import { BG_COLOR_GO_LIVE_BUTTON } from "@/config";
 import { useSessionContext } from "@/providers/session-context";
+import { ClassType } from "@/store/actions";
 import { fromSecondsToMilliseconds } from "@/utils/utils";
 import {
     useCmsApiClient,
@@ -20,9 +18,7 @@ import {
 import { useSnackbar } from "@kl-engineering/kidsloop-px";
 import {
     createStyles,
-    Grid,
     makeStyles,
-    Typography,
 } from "@material-ui/core";
 import React,
 {
@@ -39,7 +35,7 @@ const useStyles = makeStyles(() => createStyles({
     },
 }));
 
-const SECONDS_BEFORE_CLASS_CAN_START = 15 * 60; // 15 minutes
+export const SECONDS_BEFORE_CLASS_CAN_START = 15 * 60; // 15 minutes
 
 interface Props {
     scheduleId?: string;
@@ -152,158 +148,21 @@ export default function LiveDetailsDialog (props: Props) {
     return (
         <BaseScheduleDialog
             open={open}
-            color={BG_COLOR_GO_LIVE_BUTTON}
             title={scheduleData?.title ?? ``}
-            contentItems={[
-                {
-                    header: intl.formatMessage({
-                        id: `scheduleDetails.description`,
-                    }),
-                    content: (
-                        <Typography
-                            variant="body1"
-                            className={classes.rowContentText}
-                        >
-                            {scheduleData?.description
-                                ? generateDescriptionHasHyperLink(scheduleData.description, (url) => setHyperlink(url))
-                                : intl.formatMessage({
-                                    id: `scheduleDetails.notApplicable`,
-                                })
-                            }
-                        </Typography>
-                    ),
-                },
-                {
-                    header: intl.formatMessage({
-                        id: `scheduleDetails.startTime`,
-                    }),
-                    content: (
-                        <Typography
-                            variant="body1"
-                            className={classes.rowContentText}
-                        >
-                            {formatDateTimeMillis(fromSecondsToMilliseconds(scheduleData?.start_at ?? 0), intl) || intl.formatMessage({
-                                id: `scheduleDetails.notApplicable`,
-                            })}
-                        </Typography>
-                    ),
-                },
-                {
-                    header: intl.formatMessage({
-                        id: `scheduleDetails.endTime`,
-                    }),
-                    content: (
-                        <Typography
-                            variant="body1"
-                            className={classes.rowContentText}
-                        >
-                            {formatDateTimeMillis(fromSecondsToMilliseconds(scheduleData?.end_at ?? 0), intl) || intl.formatMessage({
-                                id: `scheduleDetails.notApplicable`,
-                            })}
-                        </Typography>
-                    ),
-                },
-                {
-                    header: intl.formatMessage({
-                        id: `scheduleDetails.className`,
-                    }),
-                    content: (
-                        <Typography
-                            variant="body1"
-                            className={classes.rowContentText}
-                        >
-                            {scheduleData?.class?.name || intl.formatMessage({
-                                id: `scheduleDetails.notApplicable`,
-                            })}
-                        </Typography>
-                    ),
-                },
-                {
-                    header: intl.formatMessage({
-                        id: `scheduleDetails.teacher`,
-                    }),
-                    content: (
-                        <Grid
-                            container
-                            direction={`column`}
-                        >
-                            {scheduleData?.teachers?.map((item) => (
-                                <Grid
-                                    key={item.id}
-                                    item
-                                >
-                                    <Typography
-                                        variant="body1"
-                                        className={classes.rowContentText}
-                                    >
-                                        {item.name}
-                                    </Typography>
-                                </Grid>
-                            ))}
-                        </Grid>
-                    ),
-                },
-                {
-                    header: intl.formatMessage({
-                        id: `scheduleDetails.lessonPlan`,
-                    }),
-                    content: (
-                        <Typography
-                            variant="body1"
-                            className={classes.rowContentText}
-                        >
-                            {scheduleData?.lesson_plan?.name || intl.formatMessage({
-                                id: `scheduleDetails.notApplicable`,
-                            })}
-                        </Typography>
-                    ),
-                },
-                {
-                    header: intl.formatMessage({
-                        id: `scheduleDetails.attachment`,
-                    }),
-                    content: scheduleData?.attachment?.name
-                        ? (
-                            <Grid
-                                container
-                                direction={`row`}
-                                justifyContent={`space-between`}
-                                alignItems={`center`}
-                            >
-                                <AttachmentNameLink
-                                    attachmentId={scheduleData.attachment.id}
-                                    attachmentName={scheduleData.attachment.name}
-                                />
-                                <AttachmentDownloadButton
-                                    attachmentId={scheduleData.attachment.id}
-                                    attachmentName={scheduleData.attachment.name}
-                                />
-                            </Grid>
-                        ) : (
-                            <Typography
-                                variant="body1"
-                                className={classes.rowContentText}
-                            >
-                                {intl.formatMessage({
-                                    id: `scheduleDetails.notApplicable`,
-                                })}
-                            </Typography>
-                        ),
-                },
-            ]}
-            actions={[
-                {
-                    label: intl.formatMessage({
-                        id: `button_go_live`,
-                    }),
-                    align: `end`,
-                    color: `primary`,
-                    disabled: timeBeforeClassSeconds > SECONDS_BEFORE_CLASS_CAN_START || getTokenLoading || isFetchingSchedule || !scheduleId || !organizationId,
-                    onClick: () => handleJoinLiveClass(),
-                },
-            ]}
             isLoading={isFetchingSchedule}
+            classType={ClassType.LIVE}
+            teachers={scheduleData?.teachers ?? []}
+            attachment={scheduleData?.attachment}
+            description={scheduleData?.description ? generateDescriptionHasHyperLink(scheduleData.description, (url) => setHyperlink(url)) : undefined}
+            dateTime={formatStartEndDateTimeMillis(fromSecondsToMilliseconds(scheduleData?.start_at ?? 0), fromSecondsToMilliseconds(scheduleData?.end_at ?? 0), intl)}
+            actionButtonTitle={intl.formatMessage({
+                id: `schedule.status.joinNow`,
+                defaultMessage: `Join Now`,
+            })}
+            disabled={timeBeforeClassSeconds > SECONDS_BEFORE_CLASS_CAN_START || getTokenLoading || isFetchingSchedule || !scheduleId || !organizationId}
+            onClick={handleJoinLiveClass}
             onClose={onClose}
         />
     );
+
 }

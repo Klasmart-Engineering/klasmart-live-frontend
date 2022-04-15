@@ -11,12 +11,9 @@ import React from "react";
 
 const useStyles = makeStyles((theme) => createStyles({
     listSubheaderText: {
-        padding: theme.spacing(3, 2, 0),
+        padding: theme.spacing(3, 0, 0),
         fontWeight: theme.typography.fontWeightBold as number,
         color: grey[700],
-    },
-    listSubheaderRoot: {
-        margin: theme.spacing(0, 2),
     },
 }));
 
@@ -33,7 +30,6 @@ export default function ScheduleListSectionHeader (props: Props) {
         <ListSubheader
             disableGutters
             component="div"
-            className={classes.listSubheaderRoot}
         >
             <Typography
                 variant={isXsDown ? `subtitle1` : `h6`}

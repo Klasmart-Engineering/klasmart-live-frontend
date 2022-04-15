@@ -149,7 +149,6 @@ export default function AttachmentDownloadButton (props: Props) {
     return (
         <Grid
             item
-            xs={2}
             alignContent={`flex-end`}
         >
             <IconButton
@@ -157,6 +156,9 @@ export default function AttachmentDownloadButton (props: Props) {
                 color="primary"
                 aria-label="Download attachment"
                 component="span"
+                style={{
+                    padding: 0,
+                }}
                 onClick={() => {
                     confirmDownloadAttachment();
                 }}
