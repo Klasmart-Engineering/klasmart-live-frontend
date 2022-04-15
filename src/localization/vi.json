@@ -285,7 +285,7 @@
     "study.exit.title": "Bạn có chắc muốn thoát không?",
     "study.exit.body": "Tiến trình của bạn sẽ không được lưu.",
     "live.class.chat.sendMessage": "Gửi tin nhắn",
-    "content.pdf.page": "Trang",
+    "content.pdf.page": "Page {current} of {total}",
     "content.pdf.chapter": "Chương",
     "classtype.preview.live": "Xem trước trực tuyến",
     "study.exit.leave": "Rời khỏi",

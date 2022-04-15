@@ -285,7 +285,7 @@
     "study.exit.title": "คุณแน่ใจหรือไม่ว่าต้องการออก",
     "study.exit.body": "ความคืบหน้าของคุณจะไม่ถูกบันทึก",
     "live.class.chat.sendMessage": "ยืนยันรหัสรีเซ็ต",
-    "content.pdf.page": "หน้าหนังสือ",
+    "content.pdf.page": "Page {current} of {total}",
     "content.pdf.chapter": "บท",
     "classtype.preview.live": "ดูตัวอย่างสด",
     "study.exit.leave": "ทิ้ง",

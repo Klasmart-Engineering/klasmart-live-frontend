@@ -285,7 +285,7 @@
     "study.exit.title": "종료하시겠습니까?",
     "study.exit.body": "진행 상황이 저장되지 않습니다.",
     "live.class.chat.sendMessage": "메시지 보내기",
-    "content.pdf.page": "페이지",
+    "content.pdf.page": "Page {current} of {total}",
     "content.pdf.chapter": "챕터",
     "classtype.preview.live": "라이브 미리보기",
     "study.exit.leave": "나가기",

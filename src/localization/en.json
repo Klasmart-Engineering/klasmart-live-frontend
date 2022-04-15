@@ -285,7 +285,7 @@
     "study.exit.title": "Are you sure you want to exit?",
     "study.exit.body": "Your progress will not be saved.",
     "live.class.chat.sendMessage": "Send message",
-    "content.pdf.page": "Page",
+    "content.pdf.page": "Page {current} of {total}",
     "content.pdf.chapter": "Chapter",
     "classtype.preview.live": "Preview Live",
     "study.exit.leave": "Leave",

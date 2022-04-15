@@ -285,7 +285,7 @@
     "study.exit.title": "您确定要退出吗？",
     "study.exit.body": "您的进度将不会被保存。",
     "live.class.chat.sendMessage": "留言",
-    "content.pdf.page": "页",
+    "content.pdf.page": "Page {current} of {total}",
     "content.pdf.chapter": "章节",
     "classtype.preview.live": "线上课程预览",
     "study.exit.leave": "退出",
@@ -304,11 +304,11 @@
     "microphone.global.enable": "打开全部麦克风",
     "microphone.local.disable": "关闭我的麦克风",
     "microphone.global.disable": "禁用全部麦克风",
-    "class.attendance.confirm": "Confirm",
-    "class.attendance.title": "Who is in Class today?",
-    "class.attendance.selectAll": "Select all participants",
-    "canvas.tool.select": "Select",
-    "screenShare.error.default": "Error: Unable to share screen",
-    "screenShare.error.NotAllowedError": "You need to grant permission to share your screen",
-    "screenShare.error.NotReadableError": "Error: Your system does not have permission to share screen"
+    "class.attendance.confirm": "确认",
+    "class.attendance.title": "今天谁在上课？",
+    "class.attendance.selectAll": "选择所有参与者",
+    "canvas.tool.select": "选择",
+    "screenShare.error.default": "抱歉！无法共享屏幕",
+    "screenShare.error.NotAllowedError": "你需要允许授权来分享你的屏幕",
+    "screenShare.error.NotReadableError": "抱歉！你的系统没有共享屏幕的权限"
 }
