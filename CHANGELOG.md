@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.4.0](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.3.0...v6.4.0) (2022-04-18)
+
+
+### 🐛 Bug Fixes
+
+* **app:** unable get auth token and haven't permission to access the camera on APP (#43) ([36b82c5](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/36b82c5e31cd5e85b54242d513da42c51c74c760)), closes [KLL-3361](https://calmisland.atlassian.net/browse/KLL-3361) [KLL-3360](https://calmisland.atlassian.net/browse/KLL-3360)
+* rename extension file pdfviewer in webpack config (#67) ([6cdc9f4](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/6cdc9f481091cda039fe3e80583e16f226ae95b5))
+
+
+### ✨ Features
+
+* **localization:** add new translations (#68) ([0b2b511](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/0b2b5115f8e1837f144e3e4289c3c73174b2c35c))
+
 ## [6.3.0](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.2.0...v6.3.0) (2022-04-15)
 
 
