@@ -318,7 +318,7 @@ export default function ScheduleItemTile(props: Props) {
                                                 }
                                             />
                                         </Grid>
-                                        {start_at && end_at && classType === ClassType.LIVE && (
+                                        {start_at && end_at && classType === ClassType.LIVE ? (
                                             <Grid
                                                 item
                                                 xs={7}
@@ -331,7 +331,7 @@ export default function ScheduleItemTile(props: Props) {
                                                 >
                                                     {formatStartEndTimeMillis(fromSecondsToMilliseconds(start_at), fromSecondsToMilliseconds(end_at), intl)}
                                                 </Typography>
-                                            </Grid>)}
+                                            </Grid>) : null}
                                     </Grid>
                                     <Grid
                                         item
