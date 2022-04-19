@@ -113,7 +113,7 @@
     "@kl-engineering/kidsloop-branding": "2.0.5",
     "@kl-engineering/kidsloop-canvas": "0.5.3-internal",
     "@kl-engineering/kidsloop-px": "1.0.9",
-    "@kl-engineering/live-state": "1.4.5",
+    "@kl-engineering/live-state": "1.5.0",
     "@kl-engineering/pdfjs-dist": "2.9.325",
     "@material-ui/core": "^4.10.1",
     "@material-ui/lab": "^4.0.0-alpha.56",
