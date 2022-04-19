@@ -25,6 +25,7 @@ import SchedulePage from "@/app/pages/schedule";
 import AnytimeStudyPage from "@/app/pages/schedule/anytime-study";
 import HomeFunStudyPage from "@/app/pages/schedule/home-fun-study/[scheduleId]";
 import SettingsPage from "@/app/pages/settings";
+import PrivacyPage from "@/app/pages/settings/privacy";
 import SelectLanguagePage from "@/app/pages/settings/select-language";
 import { UserRoute } from "@/app/route/userRoute";
 import NoOrgFoundLogo from "@/assets/img/no_org_found_icon.svg";
@@ -151,6 +152,10 @@ export function CordovaApp ({ history }: {
                         component={SelectLanguagePage}
                     />
                     <UserRoute
+                        path="/settings/privacy"
+                        component={PrivacyPage}
+                    />
+                    <UserRoute
                         path="/settings"
                         component={SettingsPage}
                     />
@@ -192,7 +197,8 @@ export function CordovaApp ({ history }: {
                         onClose={() => setDialogs({
                             ...dialogs,
                             isShowNoOrgProfile: false,
-                        })} />
+                        })}
+                    />
                     <NoPageFoundDialog
                         open={dialogs.isShowNoStudentRole}
                         title="signIn.noStudentProfile.title"
@@ -201,7 +207,8 @@ export function CordovaApp ({ history }: {
                         onClose={() => setDialogs({
                             ...dialogs,
                             isShowNoStudentRole: false,
-                        })} />
+                        })}
+                    />
                     <ExternalNavigationDialog />
                 </>
             )}
