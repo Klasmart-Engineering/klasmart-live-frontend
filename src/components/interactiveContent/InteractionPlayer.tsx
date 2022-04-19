@@ -44,6 +44,7 @@ export interface Props {
         width: number;
         height: number;
     };
+    isFullScreen?: boolean;
 }
 
 export function InteractionPlayer (props: Props) {
@@ -58,6 +59,7 @@ export function InteractionPlayer (props: Props) {
             width: 0,
             height: 0,
         },
+        isFullScreen,
     } = props;
 
     const classes = useStyles();
@@ -240,6 +242,7 @@ export function InteractionPlayer (props: Props) {
             <WhiteboardBorder
                 width={initialIframeSize.width * containerScale * initialActivityScale}
                 height={initialIframeSize.height * containerScale * initialActivityScale}
+                isFullScreen={isFullScreen}
             />
         </>
     );

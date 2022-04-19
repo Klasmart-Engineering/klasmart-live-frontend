@@ -2,7 +2,11 @@
 import { InteractionPlayer } from "@/components/interactiveContent/InteractionPlayer";
 import InteractionRecorder from "@/components/interactiveContent/InteractionRecorder";
 import Loading from "@/components/interactiveContent/loading";
-import { THEME_COLOR_GREY_200 } from "@/config";
+import {
+    THEME_COLOR_GREY_200,
+    THEME_COLOR_GREY_BORDER_FULLSCREEN,
+    THEME_COLOR_NAME_FULLSCREEN,
+} from "@/config";
 import { useContent } from "@/data/live/state/useContent";
 import { useSessions } from "@/data/live/state/useSessions";
 import { Session } from "@/pages/utils";
@@ -22,6 +26,7 @@ import {
 import { ArrowsAngleExpand as ExpandIcon } from "@styled-icons/bootstrap/ArrowsAngleExpand";
 import { Book as PlanIcon } from "@styled-icons/boxicons-regular/Book";
 import { Person as UserIcon } from "@styled-icons/fluentui-system-regular/Person";
+import clsx from "clsx";
 import React,
 {
     useEffect,
@@ -32,6 +37,10 @@ import { useInViewport } from "react-in-viewport";
 import { useIntl } from "react-intl";
 import { useResizeDetector } from "react-resize-detector";
 import { useRecoilValue } from "recoil";
+import {
+    ArrowsCompress,
+    ArrowsExpand,
+} from "styled-icons/foundation";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -40,17 +49,26 @@ const useStyles = makeStyles((theme: Theme) => ({
         gridGap: 20,
         padding: 20,
     },
+    rootFullScreen: {
+        gridTemplateColumns: `repeat(1, 1fr)`,
+        padding: 0,
+        height: `100%`,
+    },
     item:{
         minHeight: 260,
         background: THEME_COLOR_GREY_200,
         borderRadius: 12,
         boxShadow: `2px 2px 3px 1px rgb(0 0 0 / 5%)`,
         position: `relative`,
-
+        padding: theme.spacing(0.5),
+        display: `block`,
         "&:-webkit-full-screen": {
             width: `100vw`,
             height: `100vh`,
         },
+    },
+    hiddenItemFullScreen: {
+        display: `none`,
     },
     fullHeight:{
         height: `100%`,
@@ -72,20 +90,29 @@ const useStyles = makeStyles((theme: Theme) => ({
         visibility: `hidden`,
         display: `flex`,
         position: `absolute`,
-        top: 0,
-        left: 0,
+        bottom: 0,
+        right: 0,
         zIndex: 9,
         margin: 10,
         borderRadius: 10,
         width: 30,
         height: 30,
         cursor: `pointer`,
-        background: theme.palette.grey[300],
         alignItems: `center`,
         justifyContent: `center`,
         "&:hover":{
             opacity: 0.8,
         },
+    },
+    previewNameContainer: {
+        position: `absolute`,
+        display: `flex`,
+        alignItems: `center`,
+        justifyContent: `center`,
+        left: 0,
+        right: 0,
+        zIndex: 9,
+        paddingTop: theme.spacing(3),
     },
     previewName:{
         position: `absolute`,
@@ -96,6 +123,15 @@ const useStyles = makeStyles((theme: Theme) => ({
         background: `rgb(255 255 255 / 55%)`,
         fontWeight: theme.typography.fontWeightBold as number,
         borderRadius: `0 10px 0 0`,
+        [theme.breakpoints.down(`sm`)]: {
+            fontSize: `0.7rem`,
+        },
+    },
+    previewNameFullScreen: {
+        position: `static`,
+        borderRadius: 10,
+        color: theme.palette.common.white,
+        background: THEME_COLOR_NAME_FULLSCREEN,
     },
     studentWrapItem: {
         position: `absolute`,
@@ -139,6 +175,8 @@ export default function Observe (props: Props) {
     const sessions = useSessions();
     const [ studentSessions, setStudentSessions ] = useState<Session[]>([]);
     const [ contentHref ] = useContentToHref(content);
+    const [ isFullScreen, setFullScreen ] = useState(false);
+    const [ sessionIdFullScreen, setSessionIdFullScreen ] = useState(``);
 
     useEffect(() => {
         if (!isTeacher){
@@ -157,6 +195,11 @@ export default function Observe (props: Props) {
         return [ sessionId ];
     }, [ sessionId ]);
 
+    const handleFullScreen = (sessionId: string) => {
+        setSessionIdFullScreen(isFullScreen ? `` : sessionId);
+        setFullScreen(!isFullScreen);
+    };
+
     if( !materials.length ){
         return(
             <NoItemList
@@ -172,13 +215,20 @@ export default function Observe (props: Props) {
         if (studentSessions.length) {
             return (
                 <div className={classes.fullHeight}>
-                    <div className={classes.root}>
-                        {studentSessions.map((session) => (
-                            <StudentPreviewCard
-                                key={session.id}
-                                session={session}
-                            />
-                        ))}
+                    <div className={clsx(classes.root, {
+                        [classes.rootFullScreen]: isFullScreen,
+                    })}>
+                        {studentSessions.map((session) => {
+                            return (
+                                <StudentPreviewCard
+                                    key={session.id}
+                                    session={session}
+                                    sessionIdFullScreen={sessionIdFullScreen}
+                                    isFullScreen={sessionIdFullScreen === session.id}
+                                    onToggleFullScreen={handleFullScreen}
+                                />
+                            );
+                        })}
                     </div>
                 </div>
             );
@@ -210,10 +260,18 @@ export default function Observe (props: Props) {
 
 interface StudentPreviewCardProps {
     session: Session;
+    isFullScreen?: boolean;
+    sessionIdFullScreen?: string;
+    onToggleFullScreen: (sessionId: string) => void;
 }
 
 function StudentPreviewCard (props: StudentPreviewCardProps) {
-    const { session } = props;
+    const {
+        session,
+        isFullScreen,
+        sessionIdFullScreen,
+        onToggleFullScreen,
+    } = props;
     const classes = useStyles();
     const {
         ref: cardRef,
@@ -244,17 +302,22 @@ function StudentPreviewCard (props: StudentPreviewCardProps) {
         <div
             ref={cardRef}
             id={`observe:${session.streamId}`}
-            className={classes.item}
+            className={clsx(classes.item, {
+                [classes.hiddenItemFullScreen]: !isFullScreen && sessionIdFullScreen !== ``,
+            })}
         >
-            <Typography className={classes.previewName}>{session.name}</Typography>
+            <div className={isFullScreen ? classes.previewNameContainer : ``}>
+                <Typography className={clsx(classes.previewName, {
+                    [classes.previewNameFullScreen]: isFullScreen,
+                })}>{session.name}</Typography>
+            </div>
             {session?.streamId
                 ? (
                     <div className={classes.centerContent}>
                         <div
                             className={classes.previewExpand}
-                            onClick={() => toggleFullScreenById(`observe:${session.streamId}`)}
-                        >
-                            <ExpandIcon size="0.75em" />
+                            onClick={() => onToggleFullScreen(session.id)}>
+                            {isFullScreen ? <ArrowsCompress size="1em" /> : <ArrowsExpand size="1em" />}
                         </div>
                         <InteractionPlayer
                             group={session.id}
@@ -266,6 +329,7 @@ function StudentPreviewCard (props: StudentPreviewCardProps) {
                                 height: cardHeight,
                                 width: cardWidth,
                             }}
+                            isFullScreen={isFullScreen}
                         />
                     </div>
                 )
