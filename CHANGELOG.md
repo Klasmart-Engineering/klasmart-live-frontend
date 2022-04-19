@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.5.0](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.4.0...v6.5.0) (2022-04-19)
+
+
+### ✨ Features
+
+* change size of observe mode in fullscreen (#15) ([1be795a](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/1be795a19ed72d1cbb7f8c800abc13a4f1c2e31a)), closes [NAT-59](https://calmisland.atlassian.net/browse/NAT-59)
+* restructure settings page (#70) ([fdf77ad](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/fdf77ad35132e9fd7fdb8ee5b583879ebe38d1d7)), closes [nat-702](https://calmisland.atlassian.net/browse/nat-702) [nat-727](https://calmisland.atlassian.net/browse/nat-727) [nat-697](https://calmisland.atlassian.net/browse/nat-697) [nat-730](https://calmisland.atlassian.net/browse/nat-730) [nat-695](https://calmisland.atlassian.net/browse/nat-695) [nat-696](https://calmisland.atlassian.net/browse/nat-696)
+
+
+### 🐛 Bug Fixes
+
+* chip title display strange number in anytime study (#69) ([5008867](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/5008867d500daad8f82c1eca35f8dfd91f77c63a)), closes [NAT-782](https://calmisland.atlassian.net/browse/NAT-782)
+* user unable to select arrows to go to the next and previous item (#50) ([c54a921](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/c54a92142d6d01e09672819c39c92ed2a3267982)), closes [KLL-3239](https://calmisland.atlassian.net/browse/KLL-3239)
+
+
+### ♻️ Chores
+
+* bump kidsloop-live-state to 1.5.0 (#71) ([2b2920b](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/2b2920bd0b9c9e3fc9c35bd2ca2847472b00547e))
+
 ## [6.4.0](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.3.0...v6.4.0) (2022-04-18)
 
 
