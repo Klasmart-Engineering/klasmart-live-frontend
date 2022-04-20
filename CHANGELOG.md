@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.5.1](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.5.0...v6.5.1) (2022-04-20)
+
+
+### 🐛 Bug Fixes
+
+* add missing Lokalise string (#74) ([ae19869](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/ae198694b81077e9152808aa09566eac7e38b458))
+
+
+### 🗑 Reverts
+
+* "chore: bump kidsloop-live-state to 1.5.0 (#71)" (#75) ([155d328](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/155d3285ad3f039a832648898544320f6e3c9cbc))
+* change size of observe mode in fullscreen (#73) ([7a3b01d](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/7a3b01dabd345045e92cbc64de0022c28d9b32cc))
+* restructure settings page (#72) ([f79e383](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/f79e383ea272e8b17a61ebdf8b6a2f9174dc12e1))
+
 ## [6.5.0](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.4.0...v6.5.0) (2022-04-19)
 
 
