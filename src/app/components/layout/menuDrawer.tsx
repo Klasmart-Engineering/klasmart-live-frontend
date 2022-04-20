@@ -127,17 +127,6 @@ export default function MenuDrawer () {
         },
     ];
 
-    useEffect(() => {
-        setParentalLock(false);
-    }, []);
-
-    const setParentalLock = (open: boolean) => {
-        setDialogs({
-            ...dialogs,
-            isParentalLockOpen: open,
-        });
-    };
-
     const handleMenuItemClick = (menuDrawerItem: MenuDrawerItem) => {
         setMenuOpen(false);
 
@@ -149,7 +138,7 @@ export default function MenuDrawer () {
             });
             break;
         case MenuDrawerItem.SETTINGS:
-            setParentalLock(true);
+            history.push(`/settings`);
             break;
 
         case MenuDrawerItem.PARENTS_DASHBOARD:
@@ -160,17 +149,27 @@ export default function MenuDrawer () {
         }
     };
 
+    const setParentalLock = (open: boolean) => {
+        setDialogs({
+            ...dialogs,
+            isParentalLockOpen: open,
+        });
+    };
+
+    useEffect(() => {
+        setParentalLock(false);
+    }, []);
+
     if (dialogs.isParentalLockOpen) {
         return (
             <DialogParentalLock
                 onCompleted={() => {
-                    history.push(`/settings`);
+                    // Show Parents Dashboard
                     setParentalLock(false);
                 }}
             />
         );
     }
-
     return (
         <SwipeableDrawer
             anchor="left"
