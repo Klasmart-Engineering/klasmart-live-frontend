@@ -98,7 +98,7 @@ export default function SettingsPage () {
         },
         {
             id: SettingItem.PRIVACY_POLICY,
-            subHeader: `hamburger.settings.privacy`,
+            subHeader: `hamburger.settings.about.privacy`,
             classNameAvatar: classes.avatarPolicy,
             primary: "account_selectOrg_privacyPolicy",
             secondary: '',
