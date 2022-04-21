@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.5.2](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.5.1...v6.5.2) (2022-04-21)
+
+
+### 🐛 Bug Fixes
+
+* fetch 'undefined/refresh' (#76) ([d142973](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/d1429735f3fca0c52c9a86735b7a1a1258ce796f))
+
+
+### 🗑 Reverts
+
+* **live-state:** roll back live-state to 1.4.4 (#77) ([348c91d](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/348c91d92781f911163236dcb37e6e0baf70176c))
+
 ### [6.5.1](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.5.0...v6.5.1) (2022-04-20)
 
 
