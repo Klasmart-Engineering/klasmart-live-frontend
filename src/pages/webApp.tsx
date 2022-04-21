@@ -33,7 +33,7 @@ export function WebApp () {
     } = useSessionContext();
     const { actions } = useAuthenticationContext();
     const { authenticationService } = useServices();
-    useInterval(authenticationService?.refresh, TOKEN_REFRESH_INTERVAL_MS);
+    useInterval(() => authenticationService?.refresh(), TOKEN_REFRESH_INTERVAL_MS);
     const showSelectParticipants = useRecoilValue(showSelectAttendeesState);
 
     const schedule = () => {
