@@ -66,7 +66,6 @@ export const LiveServiceApolloClient: React.FC<Props> = ({
     const { authenticationService } = useServices();
 
     const connectionCallback = useCallback((event: any) => {
-        console.log('console colsed')
         if (event instanceof CloseEvent) {
             if (event.code === CloseCode.Unauthorized) {
                 setState({
@@ -84,11 +83,12 @@ export const LiveServiceApolloClient: React.FC<Props> = ({
                     messages: [event.reason],
                 })
             }
+        } else {
+            setState({
+                type: `Error`,
+                messages: [event],
+            });
         }
-        setState({
-            type: `Error`,
-            messages: [event],
-        });
 
         return;
 
@@ -117,22 +117,19 @@ export const LiveServiceApolloClient: React.FC<Props> = ({
             },
             on: {
                 'connected': () => {
-                    console.log('console connected to graphql')
                     setState({
                         type: `Ready`,
                     });
                 },
                 'closed': connectionCallback,
                 'error': (error: unknown) => {
-                    console.log('console error')
                     if (error instanceof Error) {
-                        console.log('ERROR IN GRAPHQL CONNECTION: ', error.message)
                         setState({
                             type: `Error`,
                             messages: [error.message],
                         })
                     }
-                    console.log(error)
+                    console.error(error);
                 }
 
             }
