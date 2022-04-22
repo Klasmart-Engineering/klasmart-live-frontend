@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.6.0](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.5.2...v6.6.0) (2022-04-22)
+
+
+### ⚙️ Continuous Integrations
+
+* update environment for VN (#79) ([f735635](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/f735635c3b8efbdcb44cf806b790107b3ef62ae6))
+
+
+### ✨ Features
+
+* add parental lock back (#78) ([3dc6d26](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/3dc6d26e8f259aae609fd0ca18de5587ebbea8ed)), closes [NAT-797](https://calmisland.atlassian.net/browse/NAT-797)
+
 ### [6.5.2](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.5.1...v6.5.2) (2022-04-21)
 
 
