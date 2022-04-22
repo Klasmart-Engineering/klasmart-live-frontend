@@ -39,7 +39,11 @@ jobs:
             region: id
           - environment: prod
             region: th
+          - environment: alpha
+            region: vn
           - environment: beta
+            region: vn
+          - environment: loadtest
             region: vn
           - environment: prod
             region: vn
