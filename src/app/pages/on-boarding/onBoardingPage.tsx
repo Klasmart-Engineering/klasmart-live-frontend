@@ -1,5 +1,6 @@
 import { CarouselSlide } from "./carouselSlide";
-import { isShowOnBoardingState } from "@/app/model/appModel";
+import DialogParentalLock from "@/app/components/ParentalLock";
+import { isShowOnBoardingState, dialogsState } from "@/app/model/appModel";
 import HomeFunImg from "@/assets/img/onboarding/home_fun.svg";
 import LiveImg from "@/assets/img/onboarding/live.svg";
 import StudyImg from "@/assets/img/onboarding/study.svg";
@@ -18,13 +19,13 @@ import Grid from "@material-ui/core/Grid/Grid";
 import Typography from "@material-ui/core/Typography/Typography";
 import Carousel from 'nuka-carousel';
 import React,
-{ useState } from 'react';
+{ useState, useEffect } from 'react';
 import {
     FormattedMessage,
     useIntl,
 } from "react-intl";
 import { useHistory } from "react-router-dom";
-import { useSetRecoilState } from "recoil";
+import { useSetRecoilState, useRecoilState } from "recoil";
 
 enum BoardingSliderType {
     STUDY,
@@ -100,6 +101,7 @@ export function OnBoardingPage (): JSX.Element {
     const intl = useIntl();
     const history = useHistory();
     const setShowOnBoarding = useSetRecoilState(isShowOnBoardingState);
+    const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
     const [ autoplay, setAutoplay ] = useState(true);
     const slideArray = [
         {
@@ -140,6 +142,29 @@ export function OnBoardingPage (): JSX.Element {
             </ul>
         );
     };
+
+    const setParentalLock = (open: boolean) => {
+        setDialogs({
+            ...dialogs,
+            isParentalLockOpen: open,
+        });
+    };
+
+    useEffect(() => {
+        setParentalLock(false);
+    }, []);
+
+    if (dialogs.isParentalLockOpen) {
+        return (
+            <DialogParentalLock
+                onCompleted={() => {
+                    setShowOnBoarding(false);
+                    setParentalLock(false);
+                    history.push(`/`);
+                }}
+            />
+        );
+    }
 
     return (
         <Grid
@@ -185,10 +210,7 @@ export function OnBoardingPage (): JSX.Element {
                     className={classes.btnSignIn}
                     variant="contained"
                     size="large"
-                    onClick={() => {
-                        setShowOnBoarding(false);
-                        history.push(`/`);
-                    }}>
+                    onClick={() => setParentalLock(true)}>
                     <Typography
                         variant="h5"
                         className={classes.fontWeightBold}>
