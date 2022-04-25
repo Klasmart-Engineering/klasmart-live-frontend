@@ -54,17 +54,10 @@ type Props = {
 }
 
 export function SessionContextProvider ({ children, sessionId }: Props) {
-    const [ token, setToken ] = useState<string>();
+    const [ token, setToken ] = useState(() => AuthTokenProvider.retrieveToken()??undefined);
 
     const [ selectedName, setSelectedName ] = useState<string>();
     const [ selectedCamera, setSelectedCamera ] = useState<MediaStream>();
-
-    useEffect(() => {
-        const authToken = AuthTokenProvider.retrieveToken();
-        if(!authToken) return;
-
-        setToken(authToken);
-    }, []);
 
     const userContext = useMemo<ISessionContext>(() => {
         const params = parseTokenParams(token);
