@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.6.1](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.6.0...v6.6.1) (2022-04-25)
+
+
+### 🐛 Bug Fixes
+
+* kll-3561 SessionContext.token is now initialized before first render rather than after (#81) ([0d19ed5](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/0d19ed5dfec24a8528308b0a713145c8941e0187)), closes [kll-3561](https://calmisland.atlassian.net/browse/kll-3561) [KLL-3561](https://calmisland.atlassian.net/browse/KLL-3561)
+
+
+### 🔨 Build
+
+* **package:** bump state lib to version deployed in prod (#83) ([8c16f39](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/8c16f39db7a289d60ec315cc66aaa7868937ceca))
+
 ## [6.6.0](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.5.2...v6.6.0) (2022-04-22)
 
 
