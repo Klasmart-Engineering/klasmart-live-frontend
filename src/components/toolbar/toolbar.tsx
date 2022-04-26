@@ -14,6 +14,8 @@ import LessonPlanMenu from "./toolbarMenus/lessonPlanMenu/lessonPlanMenu";
 import ViewModesMenu from "./toolbarMenus/viewModesMenu/viewModesMenu";
 import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
 import LeaveClassIcon from "@/assets/img/icon_leave_class.svg";
+import StyledIcon from "@/components/styled/icon";
+import { THEME_COLOR_PRIMARY_DEFAULT } from "@/config";
 import { LIVE_ON_BACK_ID } from "@/pages/room/room-with-context";
 import { InteractiveMode } from "@/pages/utils";
 import { useSessionContext } from "@/providers/session-context";
@@ -38,6 +40,8 @@ import {
     useMediaQuery,
     useTheme,
 } from "@material-ui/core";
+import { CaretDownFill as CaretDownFill } from "@styled-icons/bootstrap/CaretDownFill";
+import { CaretUpFill as CaretUpFill } from "@styled-icons/bootstrap/CaretUpFill";
 import { ChatSquareDotsFill as ChatIcon } from "@styled-icons/bootstrap/ChatSquareDotsFill";
 import { PencilFill as CanvasIcon } from "@styled-icons/bootstrap/PencilFill";
 import { UserVoice as OnStageIcon } from "@styled-icons/boxicons-solid/UserVoice";
@@ -71,8 +75,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     rootMosaic:{
         backgroundColor: `rgba(49,49,60,0.85)`,
         color: `#fff`,
-        paddingLeft: 40,
-        paddingRight: 40,
+        paddingLeft:  theme.spacing(5),
+        paddingRight:  theme.spacing(5),
     },
     rootMd:{
         fontSize: `0.9rem`,
@@ -81,6 +85,28 @@ const useStyles = makeStyles((theme: Theme) => ({
         display: `flex`,
         alignItems: `center`,
         margin: `0 -4px`,
+    },
+    toolbar_canvas: {
+        position: `relative`,
+    },
+    caretButton: {
+        backgroundColor: theme.palette.common.white,
+        borderRadius: theme.spacing(2),
+        boxShadow: `0px 0px 6px 1px #e2e3e4`,
+        cursor: `pointer`,
+        display: `block`,
+        height: theme.spacing(3.125),
+        width: theme.spacing(3.125),
+        minHeight: theme.spacing(3.125),
+        minWidth: theme.spacing(3.125),
+        paddingTop: theme.spacing(0.5),
+        position: `absolute`,
+        left: 0,
+        right: 0,
+        margin: `0 auto`,
+        textAlign: `center`,
+        top: -15,
+        zIndex: 9,
     },
 }));
 
@@ -142,7 +168,7 @@ function Toolbar () {
 
     useEffect(()=> {
         resetDrawers();
-    }, [ activeTab ]);
+    }, [activeTab]);
 
     const {
         state: { display: isGlobalCanvasEnabled, permissions: permissionsGlobalCanvas },
@@ -151,7 +177,7 @@ function Toolbar () {
 
     useEffect(() => {
         setIsCanvasOpen(isGlobalCanvasEnabled && permissionsGlobalCanvas.allowCreateShapes);
-    }, [ isGlobalCanvasEnabled, permissionsGlobalCanvas.allowCreateShapes ]);
+    }, [isGlobalCanvasEnabled, permissionsGlobalCanvas.allowCreateShapes]);
 
     useEffect(() => {
         function initOnBack (){
@@ -165,6 +191,10 @@ function Toolbar () {
         }
         initOnBack();
     }, []);
+
+    const caretDisplay = activeTab === `mosaic` ? false : hasControls ? true : isGlobalCanvasEnabled && permissionsGlobalCanvas.allowCreateShapes
+        ;
+    const [ showCanvasMenu, setShowCanvasMenu ] = useState<boolean>(true);
 
     return (
         <>
@@ -193,7 +223,22 @@ function Toolbar () {
                             }}
                         />
                     </div>
-                    <div ref={canvasRef}>
+                    <div
+                        ref={canvasRef}
+                        className={classes.toolbar_canvas}
+                    >
+                        {isCanvasOpen && caretDisplay && (
+                            <div
+                                className={classes.caretButton}
+                                onClick={() => { setShowCanvasMenu(show => !show); }}
+                            >
+                                <StyledIcon
+                                    color={THEME_COLOR_PRIMARY_DEFAULT}
+                                    icon={showCanvasMenu ? <CaretDownFill /> : <CaretUpFill />}
+                                    size="small"
+                                />
+                            </div>
+                        )}
                         <ToolbarItem
                             display={activeTab === `mosaic` ? false : hasControls ? true : isGlobalCanvasEnabled && permissionsGlobalCanvas.allowCreateShapes}
                             icon={<CanvasIcon />}
@@ -210,8 +255,7 @@ function Toolbar () {
                                 }else{
                                     setIsCanvasOpen(!isCanvasOpen);
                                 }
-                            }}
-                        />
+                            }}/>
                     </div>
                 </Grid>
                 <Grid
@@ -303,7 +347,9 @@ function Toolbar () {
             <ClassDetailsMenu anchor={classDetailsRef.current} />
 
             {activeTab !== `mosaic` && (
-                <CanvasMenu anchor={canvasRef.current} />
+                <CanvasMenu
+                    anchor={canvasRef.current}
+                    showCanvasMenu={showCanvasMenu} />
             )}
 
             <ChatMenu anchor={chatRef.current} />

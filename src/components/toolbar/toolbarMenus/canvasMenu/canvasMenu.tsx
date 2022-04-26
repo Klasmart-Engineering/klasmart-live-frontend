@@ -27,6 +27,8 @@ import { Eraser as EraserIcon } from "@styled-icons/boxicons-solid/Eraser";
 import { Trash as TrashIcon } from "@styled-icons/boxicons-solid/Trash";
 import { Text as TextIcon } from "@styled-icons/evaicons-solid/Text";
 import { Cursor as CursorIcon } from "@styled-icons/fluentui-system-regular/Cursor";
+import clsx from "clsx";
+
 import React,
 {
     useCallback,
@@ -47,6 +49,9 @@ const useStyles = makeStyles((theme: Theme) => ({
         width: 1,
         backgroundColor: theme.palette.grey[300],
         margin: theme.spacing(0.75, 0.5),
+    },
+    hideCanvasMenu: {
+        display: `none`,
     },
 }));
 
@@ -74,11 +79,12 @@ export enum CanvasColor {
 }
 
 interface GlobaActionsMenuProps {
-	anchor: HTMLElement;
+    anchor: HTMLElement;
+    showCanvasMenu?: boolean;
 }
 
 function CanvasMenu (props: GlobaActionsMenuProps) {
-    const { anchor } = props;
+    const { anchor, showCanvasMenu } = props;
     const classes = useStyles();
     const intl = useIntl();
     const theme = useTheme();
@@ -208,6 +214,12 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
         boxShadow: canvasDrawColor === CanvasColor.WHITE ? `inset 0px 0px 0px 3px ${theme.palette.getContrastText(canvasDrawColor)}` : `inherit`,
     };
 
+    useEffect(() => {
+        if (!showCanvasMenu) {
+            setIsCanvasColorsOpen(false);
+        }
+    }, [showCanvasMenu]);
+
     return (
         <>
             <StyledPopper
@@ -227,8 +239,9 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
                 <Grid
                     container
                     alignItems="stretch"
-                    className={classes.root}
-                >
+                    className={clsx(classes.root, {
+                        [classes.hideCanvasMenu] : !showCanvasMenu,
+                    })}>
                     <CanvasMenuItem
                         ref={pencilRef}
                         hasSubmenu
