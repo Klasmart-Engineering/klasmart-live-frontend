@@ -4,7 +4,7 @@ import { OrganizationList } from "@/app/components/organization/organizationList
 import { useSelectedOrganization } from "@/app/data/user/atom";
 import { EntityStatus } from "@/app/data/user/dto/sharedDto";
 import { useMeQuery } from "@/app/data/user/queries/meQuery";
-import { dialogsState } from "@/app/model/appModel";
+import { dialogsState, selectOrgAfterSwitchingProfile } from "@/app/model/appModel";
 import {
     THEME_BACKGROUND_SELECT_DIALOG,
     THEME_COLOR_PRIMARY_SELECT_DIALOG,
@@ -28,7 +28,7 @@ import {
     FormattedMessage,
     useIntl,
 } from "react-intl";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme) => ({
     fullWidth: {
@@ -55,6 +55,7 @@ export function useShouldSelectOrganization () {
     const [ shouldSelectOrganization, setShouldSelectOrganization ] = useState<boolean>(false);
     const [ organizationSelectErrorCode, setOrganizationSelectErrorCode ] = useState<number | string | null>(null);
     const [ hasStudentRole, setHasStudentRole ] = useState<boolean | null>(null);
+    const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
 
     const { data: meData, loading: meDataLoading } = useMeQuery();
 
@@ -67,6 +68,9 @@ export function useShouldSelectOrganization () {
         setHasStudentRole(null);
         setOrganizationSelectErrorCode(errorCode);
     };
+
+    const selectOrgAfterSwitchingProfileValue = useRecoilValue(selectOrgAfterSwitchingProfile);
+    const setSelectOrgAfterSwitchingProfile = useSetRecoilState(selectOrgAfterSwitchingProfile);
 
     useEffect(() => {
         if (meDataLoading) return;
@@ -81,10 +85,18 @@ export function useShouldSelectOrganization () {
         if (selectedOrganization) {
             const selected = activeOrganizations.find((membership) => membership.organization.organization_id === selectedOrganization?.organization_id);
             if (selected) {
-                setHasStudentRole(true);
-                setShouldSelectOrganization(false);
-                setOrganizationSelectErrorCode(null);
-                return;
+                if (!selectOrgAfterSwitchingProfileValue) {
+                    setHasStudentRole(true);
+                    setShouldSelectOrganization(false);
+                    setOrganizationSelectErrorCode(null);
+                    return;
+                } else {
+                    setSelectOrgAfterSwitchingProfile(false);
+                    setDialogs({
+                        ...dialogs,
+                        isSelectOrganizationOpen: false,
+                    });
+                }
             } else {
                 setSelectedOrganization(undefined);
             }

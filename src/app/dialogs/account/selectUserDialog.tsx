@@ -13,15 +13,16 @@ import { useMeQuery } from "@/app/data/user/queries/meQuery";
 import { useMyUsersQuery } from "@/app/data/user/queries/myUsersQuery";
 import {
     dialogsState,
+    selectOrgAfterSwitchingProfile,
     shouldShowNoOrgProfileState,
     shouldShowNoStudentRoleState,
 } from "@/app/model/appModel";
-import { useQueryClient } from "@kl-engineering/cms-api-client";
 import { THEME_BACKGROUND_SELECT_DIALOG } from "@/config";
+import { useQueryClient } from "@kl-engineering/cms-api-client";
+import { useSnackbar } from "@kl-engineering/kidsloop-px";
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from "@material-ui/core/DialogContent";
 import { makeStyles } from '@material-ui/core/styles';
-import { useSnackbar } from "@kl-engineering/kidsloop-px";
 import React,
 {
     useCallback,
@@ -181,6 +182,7 @@ export function SelectUserDialog () {
     const cmsQueryClient = useQueryClient();
 
     const [ filteredMyUsersData, setFilteredMyUsersData ] = useState<ReadUserDto[]>();
+    const setSelectOrgAfterSwitchingProfile = useSetRecoilState(selectOrgAfterSwitchingProfile);
 
     const selectUser = useCallback((user: ReadUserDto) => {
         console.log(`selecting user: ${user.user_id}`);
@@ -198,10 +200,13 @@ export function SelectUserDialog () {
         setFilteredMyUsersData(studentProfiles);
     }, [ myUsersData ]);
 
-    const handleBackClick = () => setDialogs({
-        ...dialogs,
-        isSelectUserOpen: false,
-    });
+    const handleBackClick = () => {
+        setSelectOrgAfterSwitchingProfile(false);
+        setDialogs({
+            ...dialogs,
+            isSelectUserOpen: false,
+        });
+    };
 
     return (
         <Dialog

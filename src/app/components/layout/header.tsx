@@ -3,6 +3,7 @@ import { useSelectedUserValue } from "@/app/data/user/atom";
 import {
     dialogsState,
     errorState,
+    selectOrgAfterSwitchingProfile,
     useSetMenuOpen,
 } from "@/app/model/appModel";
 import KidsloopLogo from "@/assets/img/kidsloop_icon.svg";
@@ -23,7 +24,7 @@ import { Menu as MenuIcon } from "@styled-icons/boxicons-regular/Menu";
 import { Close as CloseIcon } from "@styled-icons/material/Close";
 import { UserAvatar } from "@kl-engineering/kidsloop-px";
 import React from "react";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -164,14 +165,18 @@ function OpenSelectUserButton () {
     const { selectUserButton } = useStyles();
     const selectedUser = useSelectedUserValue();
     const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
+    const setSelectOrgAfterSwitchingProfile = useSetRecoilState(selectOrgAfterSwitchingProfile);
 
     return (
         <ButtonBase
             className={selectUserButton}
-            onClick={() => setDialogs({
+            onClick={() => {
+                setSelectOrgAfterSwitchingProfile(true);
+                setDialogs({
                 ...dialogs,
                 isSelectUserOpen: true,
-            })}
+            });
+            }}
         >
             <UserAvatar
                 name={`${selectedUser?.given_name} ${selectedUser?.family_name}`}

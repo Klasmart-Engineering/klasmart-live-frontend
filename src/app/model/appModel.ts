@@ -135,3 +135,8 @@ export const isShowOnBoardingState = atom({
     key: `isShowOnBoardingState`,
     default: true,
 });
+
+export const selectOrgAfterSwitchingProfile = atom<boolean>({
+    key: `selectOrgAfterSwitchingProfile`,
+    default: false,
+});
