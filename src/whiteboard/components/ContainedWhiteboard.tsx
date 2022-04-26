@@ -19,10 +19,11 @@ export interface WhiteboardLoadableElement {
 
 interface Props {
     children: Omit<React.ReactElement, "onLoad"> & WhiteboardLoadableElement;
+    borderInside?: boolean;
 }
 
-export default function (props: Props) {
-    const { children } = props;
+export default function ContainedWhiteboard (props: Props) {
+    const { children, borderInside = false } = props;
     const [ initialContentSize, setInitialContentSize ] = useState({
         width: 0,
         height: 0,
@@ -86,6 +87,7 @@ export default function (props: Props) {
                 <WhiteboardBorder
                     height={initialContentSize.height * activityAreaScale}
                     width={initialContentSize.width * activityAreaScale}
+                    inside={borderInside}
                 />
             </div>
         </>

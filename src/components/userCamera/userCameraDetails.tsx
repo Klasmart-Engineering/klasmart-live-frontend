@@ -29,6 +29,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         flexDirection: `column`,
         justifyContent: `space-between`,
         textAlign:`left`,
+        pointerEvents: `none`,
     },
     rootTeacher:{},
     rootSmall:{},

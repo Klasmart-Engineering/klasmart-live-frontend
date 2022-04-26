@@ -20,15 +20,23 @@ const useStyles = makeStyles((theme) => createStyles({
     disabledWhiteboard: {
         borderColor: theme.palette.action.disabled,
     },
+    inside: {
+        boxSizing: `border-box`,
+    },
 }));
 
 interface Props {
     height: number;
     width: number;
+    inside?: boolean;
 }
 
 export default function WhiteboardBorder (props: Props) {
-    const { width, height } = props;
+    const {
+        width,
+        height,
+        inside = false,
+    } = props;
     const classes = useStyles();
     const {
         state: {
@@ -47,6 +55,7 @@ export default function WhiteboardBorder (props: Props) {
             className={clsx(classes.border, {
                 [classes.disabledWhiteboard]: !permissions.allowCreateShapes,
                 [classes.activeWhiteboard]: permissions.allowCreateShapes,
+                [classes.inside]: inside,
             })}
             style={{
                 height,

@@ -1,6 +1,6 @@
 import PreviewLessonPlan from "./previewLessonPlan";
 import Observe from "./viewModes/Observe";
-import OnStage from "./viewModes/onStage";
+import OnStage from "./viewModes/onStage/onStage";
 import Present from "./viewModes/Present";
 import Screenshare from "./viewModes/Screenshare";
 import { useContent } from "@/data/live/state/useContent";

@@ -1,5 +1,5 @@
+import ListUserCamera from "@/components/sidebar/listUserCamera/listUserCamera";
 import Toolbar from "@/components/toolbar/toolbar";
-import UserCamera from "@/components/userCamera/userCamera";
 import { useSessions } from "@/data/live/state/useSessions";
 import { Session } from "@/pages/utils";
 import {
@@ -114,7 +114,7 @@ function TabMosaic () {
     }, [ sessions, sessions.size ]);
 
     useEffect(() => {
-        const listener = (event:any) => {
+        const listener = (event: any) => {
             if (event.code === `27` || event.code === `Escape`) {
                 setActiveTab(`participants`);
             }
@@ -140,11 +140,7 @@ function TabMosaic () {
                             item
                             className={classes.gridContainerTeachers}>
                             <div className={classes.cameraGrid}>
-                                {teachersSessions.map((user) => (
-                                    <UserCamera
-                                        key={user.id}
-                                        user={user} />
-                                ))}
+                                <ListUserCamera users={teachersSessions} />
                             </div>
                         </Grid>
                         <Grid
@@ -158,11 +154,7 @@ function TabMosaic () {
                                 [classes.cameraGrid5] : mosaicViewSize === 5,
                                 [classes.cameraGrid6] : mosaicViewSize === 6,
                             })}>
-                                {studentsSessions.map((user) => (
-                                    <UserCamera
-                                        key={user.id}
-                                        user={user} />
-                                ))}
+                                <ListUserCamera users={studentsSessions} />
                             </div>
                         </Grid>
                     </Grid>

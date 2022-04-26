@@ -1,4 +1,4 @@
-import UserCamera from "@/components/userCamera/userCamera";
+import ListUserCamera from "@/components/sidebar/listUserCamera/listUserCamera";
 import { useSessions } from "@/data/live/state/useSessions";
 import { Session } from "@/pages/utils";
 import { useSessionContext } from "@/providers/session-context";
@@ -89,12 +89,7 @@ function TabParticipants () {
                             [classes.studentCameraGrid]: !isTeacher,
                         })}
                         >
-                            {teachersSessions.map((user) => (
-                                <UserCamera
-                                    key={user.id}
-                                    user={user}
-                                />
-                            ))}
+                            <ListUserCamera users={teachersSessions} />
                         </div>
                     ) : <NoItemList
                         icon={<UserIcon />}
@@ -116,12 +111,7 @@ function TabParticipants () {
                             [classes.cameraGrid]: isTeacher,
                         })}
                         >
-                            {studentsSessions.map((user) => (
-                                <UserCamera
-                                    key={user.id}
-                                    user={user}
-                                />
-                            ))}
+                            <ListUserCamera users={studentsSessions} />
                         </div>
                     ) : (
                         <NoItemList

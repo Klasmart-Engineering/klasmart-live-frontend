@@ -1,4 +1,4 @@
-import UserCamera from "@/components/userCamera/userCamera";
+import OnStageUserCamera from "./UserCamera";
 import { useSessions } from "@/data/live/state/useSessions";
 import { useSessionContext } from "@/providers/session-context";
 import {
@@ -57,11 +57,5 @@ export default function OnStage (props: Props) {
         );
     }
 
-    return (
-        <UserCamera
-            user={host}
-            actions={false}
-            variant="large"
-        />
-    );
+    return <OnStageUserCamera user={host} />;
 }
