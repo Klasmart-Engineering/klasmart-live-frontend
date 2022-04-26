@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.7.0](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.6.1...v6.7.0) (2022-04-26)
+
+
+### 🐛 Bug Fixes
+
+* ask user to choose organization whenever changing user profile (#82) ([220f6dd](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/220f6dd4e64a90f06380699573a10f977807b263)), closes [NAT-731](https://calmisland.atlassian.net/browse/NAT-731)
+* change text color Organization/Profile page (#89) ([3298af6](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/3298af61230d7b031c212b697f87807a9a17e969)), closes [NAT-781](https://calmisland.atlassian.net/browse/NAT-781)
+
+
+### ✨ Features
+
+* allow users to hide show their canvas 2450 (#20) ([5a3da0e](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/5a3da0e1d3071fc93141138830c789c2e482d9f9)), closes [KLL-2450](https://calmisland.atlassian.net/browse/KLL-2450) [NAT-44](https://calmisland.atlassian.net/browse/NAT-44)
+* change size observe mode (#87) ([e35aacb](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/e35aacbfc8086762e54b465774f1817ca66b5971)), closes [NAT-59](https://calmisland.atlassian.net/browse/NAT-59)
+* enable canvas in On Stage Mode (#38) ([b1d5a08](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/b1d5a0894c2fedac64d83b5a41c8869a17bae35c)), closes [KLL-2874](https://calmisland.atlassian.net/browse/KLL-2874)
+
 ### [6.6.1](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.6.0...v6.6.1) (2022-04-25)
 
 
