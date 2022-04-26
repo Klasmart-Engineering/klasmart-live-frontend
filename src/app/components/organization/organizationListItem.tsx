@@ -1,7 +1,7 @@
 import { ReadOrganizationDto } from "@/app/data/user/dto/readOrganizationDto";
 import {
     COLOR_ORG_ICON_DEFAULT,
-    THEME_COLOR_INACTIVE_BUTTON,
+    TEXT_COLOR_SECONDARY_DEFAULT,
     THEME_COLOR_PRIMARY_SELECT_DIALOG,
 } from "@/config";
 import {
@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
     },
     listItem: {
         marginLeft: theme.spacing(2),
-        color: THEME_COLOR_INACTIVE_BUTTON,
+        color: TEXT_COLOR_SECONDARY_DEFAULT,
     },
     listItemSelected: {
         color: THEME_COLOR_PRIMARY_SELECT_DIALOG,

@@ -4,8 +4,8 @@ import {
     BG_BUTTON_LIVE_COLOR,
     BG_BUTTON_STUDY_COLOR,
     TEXT_COLOR_LIVE_PRIMARY,
+    TEXT_COLOR_SECONDARY_DEFAULT,
     TEXT_COLOR_STUDY_PRIMARY,
-    THEME_COLOR_INACTIVE_BUTTON,
     THEME_COLOR_SECONDARY_DEFAULT,
 } from "@/config";
 import { ClassType } from "@/store/actions";
@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => createStyles({
         backgroundColor: BG_BUTTON_STUDY_COLOR,
     },
     titleText: {
-        color: THEME_COLOR_INACTIVE_BUTTON,
+        color: TEXT_COLOR_SECONDARY_DEFAULT,
     },
     titleLiveColor: {
         color: TEXT_COLOR_LIVE_PRIMARY,

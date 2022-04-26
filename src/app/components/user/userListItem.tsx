@@ -1,6 +1,6 @@
 import { ReadUserDto } from "@/app/data/user/dto/readUserDto";
 import {
-    THEME_COLOR_INACTIVE_BUTTON,
+    TEXT_COLOR_SECONDARY_DEFAULT,
     THEME_COLOR_PRIMARY_SELECT_DIALOG,
 } from "@/config";
 import {
@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
         textAlign: `center`,
         paddingTop: theme.spacing(1),
         fontWeight: theme.typography.fontWeightMedium as number,
-        color: THEME_COLOR_INACTIVE_BUTTON,
+        color: TEXT_COLOR_SECONDARY_DEFAULT,
         display: `-webkit-box`,
         overflow: `hidden`,
         WebkitBoxOrient: `vertical`,
