@@ -4,7 +4,8 @@ import {
     makeStyles,
 } from "@material-ui/core";
 import clsx from "clsx";
-import React from "react";
+import React,
+{ useEffect } from "react";
 
 const useStyles = makeStyles((theme) => createStyles({
     border: {
@@ -13,6 +14,14 @@ const useStyles = makeStyles((theme) => createStyles({
         borderWidth: theme.spacing(0.5),
         borderRadius: theme.spacing(0.5),
         pointerEvents: `none`,
+    },
+    borderFullScreen: {
+        position: `absolute`,
+        borderStyle: `solid`,
+        borderWidth: theme.spacing(0.5),
+        borderRadius: theme.spacing(0.5),
+        pointerEvents: `none`,
+        borderColor: theme.palette.action.disabled,
     },
     activeWhiteboard: {
         borderColor: theme.palette.primary.dark,
@@ -29,6 +38,7 @@ interface Props {
     height: number;
     width: number;
     inside?: boolean;
+    isFullScreen?: boolean;
 }
 
 export default function WhiteboardBorder (props: Props) {
@@ -36,6 +46,7 @@ export default function WhiteboardBorder (props: Props) {
         width,
         height,
         inside = false,
+        isFullScreen,
     } = props;
     const classes = useStyles();
     const {
@@ -47,6 +58,17 @@ export default function WhiteboardBorder (props: Props) {
     } = useSynchronizedState();
 
     if (!(display || localDisplay) || !(width && height)) {
+        if (isFullScreen) {
+            return (
+                <div
+                    className={classes.borderFullScreen}
+                    style={{
+                        height,
+                        width,
+                    }}
+                />
+            );
+        }
         return <></>;
     }
 

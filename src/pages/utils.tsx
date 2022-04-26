@@ -25,6 +25,7 @@ export interface Session {
     isTeacher?: boolean;
     isHost?: boolean;
     joinedAt: number;
+    isFullScreen?: boolean;
 }
 
 export interface Content {
