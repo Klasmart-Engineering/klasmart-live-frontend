@@ -289,5 +289,20 @@
     "hamburger.settings.general": "General",
     "schedule.status.joinNow": "Join Now",
     "schedule.homeFun": "Home Fun",
-    "hamburger.settings.support": "Support"
+    "hamburger.settings.support": "지원",
+    "report.classtype.live": "라이브",
+    "report.dashboard.live.title": "Live Class Attendance",
+    "report.dashboard.live.detail": "View all Live Class Reports",
+    "report.liveClass.reports": "Live Class Reports",
+    "report.report.title": "Report",
+    "report.report.class": "Class",
+    "report.report.subject": "Subject",
+    "report.report.teacherFeedback": "Teacher’s Comments",
+    "report.report.learningOutcomes": "Learning Outcomes",
+    "report.report.teacherFeedback.empty": "No comments available",
+    "report.report.learningOutcomes.empty": "No learning outcomes available",
+    "report.dashboard.study.title": "Study Assessments",
+    "report.classtype.study": "Study",
+    "report.classtype.studyHomeFun": "Home Fun",
+    "report.dashboard.study.detail": "View all Study Assessments"
 }
