@@ -304,5 +304,6 @@
     "report.dashboard.study.title": "Study Assessments",
     "report.classtype.study": "Study",
     "report.classtype.studyHomeFun": "Home Fun",
-    "report.dashboard.study.detail": "View all Study Assessments"
+    "report.dashboard.study.detail": "View all Study Assessments",
+    "homeFunStudy.feedback.info.feedbackScale": "Feedback Scale"
 }
