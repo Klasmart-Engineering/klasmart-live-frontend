@@ -310,5 +310,6 @@
     "canvas.tool.select": "Pilih",
     "screenShare.error.default": "Error: Tidak bisa membagikan layar",
     "screenShare.error.NotAllowedError": "Anda harus memberikan izin untuk membagikan layar",
-    "screenShare.error.NotReadableError": "Error: Anda tidak memiliki izin untuk membagikan layar"
+    "screenShare.error.NotReadableError": "Error: Anda tidak memiliki izin untuk membagikan layar",
+    "live.class.participant.title": "Participants ({count})"
 }

@@ -310,5 +310,6 @@
     "canvas.tool.select": "Select",
     "screenShare.error.default": "Error: Unable to share screen",
     "screenShare.error.NotAllowedError": "You need to grant permission to share your screen",
-    "screenShare.error.NotReadableError": "Error: Your system does not have permission to share screen"
+    "screenShare.error.NotReadableError": "Error: Your system does not have permission to share screen",
+    "live.class.participant.title": "Participants ({count})"
 }

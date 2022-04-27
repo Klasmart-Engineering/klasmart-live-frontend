@@ -285,7 +285,7 @@
     "study.exit.title": "您确定要退出吗？",
     "study.exit.body": "您的进度将不会被保存。",
     "live.class.chat.sendMessage": "留言",
-    "content.pdf.page": "Page {current} of {total}",
+    "content.pdf.page": "第{current}页， {total}页",
     "content.pdf.chapter": "章节",
     "classtype.preview.live": "线上课程预览",
     "study.exit.leave": "退出",
@@ -310,5 +310,6 @@
     "canvas.tool.select": "选择",
     "screenShare.error.default": "抱歉！无法共享屏幕",
     "screenShare.error.NotAllowedError": "你需要允许授权来分享你的屏幕",
-    "screenShare.error.NotReadableError": "抱歉！你的系统没有共享屏幕的权限"
+    "screenShare.error.NotReadableError": "抱歉！你的系统没有共享屏幕的权限",
+    "live.class.participant.title": "Participants ({count})"
 }
