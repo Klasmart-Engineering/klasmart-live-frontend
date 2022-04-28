@@ -120,21 +120,20 @@ export default function CommentDialog (props: Props) {
         showPopup({
             variant: `confirm`,
             title:intl.formatMessage({
-                id: `button_close`,
+                id: `homeFunStudy.discardChange.title`,
+                defaultMessage: `Discard Changes?`,
             }),
             description:[
                 intl.formatMessage({
-                    id: `close_confirm_description_1`,
-                }),
-                intl.formatMessage({
-                    id: `close_confirm_description_2`,
+                    id: `homeFunStudy.discardChange`,
+                    defaultMessage: `Closing the window will discard any changes you have made.`,
                 }),
             ],
             closeLabel:intl.formatMessage({
                 id: `button_cancel`,
             }),
             confirmLabel:intl.formatMessage({
-                id: `button_continue`,
+                id: `button_close`,
             }),
             onConfirm: handleConfirmClose,
             onClose: addCommentDialogToBackQueue,

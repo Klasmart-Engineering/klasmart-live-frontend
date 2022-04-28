@@ -1,9 +1,14 @@
 import {
+    BACKGROUND_COLOR_CONFIRM_BUTTON,
+    ERROR_TEXT_TITLE_COLOR,
+} from "@/config";
+import {
     Button,
     Dialog,
     DialogActions,
     DialogContent,
     DialogTitle,
+    Theme,
     Typography,
 } from "@material-ui/core";
 import {
@@ -12,23 +17,29 @@ import {
 } from "@material-ui/core/styles";
 import React from "react";
 
-const useStyles = makeStyles(() =>
-    createStyles({
-        rounded_dialog: {
-            borderRadius: `12px`,
+const useStyles = makeStyles((theme: Theme) => createStyles({
+    rounded_dialog: {
+        borderRadius: theme.spacing(1.5),
+    },
+    dialogTitle: {
+        paddingBottom: theme.spacing(1),
+    },
+    dialogTitleText: {
+        color: ERROR_TEXT_TITLE_COLOR,
+        fontWeight: theme.typography.fontWeightBold as number,
+    },
+    dialogActions: {
+        padding: theme.spacing(2),
+        paddingTop: theme.spacing(1),
+    },
+    buttonClose: {
+        color: theme.palette.common.white,
+        backgroundColor: BACKGROUND_COLOR_CONFIRM_BUTTON,
+        "&:hover": {
+            backgroundColor: BACKGROUND_COLOR_CONFIRM_BUTTON,
         },
-        dialogTitle: {
-            backgroundColor: `#FF5C5C`,
-        },
-        dialogTitleText: {
-            color: `white`,
-        },
-        buttonClose: {
-            color: `white`,
-            backgroundColor: `#193756`,
-            borderRadius: 15,
-        },
-    }));
+    },
+}));
 
 interface Props {
     open: boolean;
@@ -60,13 +71,16 @@ export function BaseErrorDialog ({
                 open={open}
                 onClose={onClose}>
                 <DialogTitle className={classes.dialogTitle}>
-                    <Typography className={classes.dialogTitleText}>{title}</Typography>
+                    <Typography
+                        variant="subtitle1"
+                        className={classes.dialogTitleText}>{title}</Typography>
                 </DialogTitle>
                 <DialogContent>
                     {children}
                 </DialogContent>
-                <DialogActions>
+                <DialogActions className={classes.dialogActions}>
                     <Button
+                        variant={`contained`}
                         className={classes.buttonClose}
                         onClick={onClose}>{closeLabel}</Button>
                 </DialogActions>

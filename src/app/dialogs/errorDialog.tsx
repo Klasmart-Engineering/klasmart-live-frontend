@@ -1,4 +1,5 @@
 import { BaseErrorDialog } from "./baseErrorDialog";
+import { TEXT_COLOR_PRIMARY_DEFAULT } from "@/config";
 import {
     Grid,
     Typography,
@@ -11,19 +12,8 @@ import React from "react";
 
 const useStyles = makeStyles(() =>
     createStyles({
-        rounded_dialog: {
-            borderRadius: `12px`,
-        },
-        dialogTitle: {
-            backgroundColor: `#FF5C5C`,
-        },
         dialogText: {
-            color: `#193756`,
-        },
-        buttonClose: {
-            color: `white`,
-            backgroundColor: `#193756`,
-            borderRadius: 15,
+            color: TEXT_COLOR_PRIMARY_DEFAULT,
         },
     }));
 
@@ -58,7 +48,6 @@ export function ErrorDialog ({
                             item
                             xs>
                             <Typography
-                                variant="body2"
                                 className={classes.dialogText}>{item}</Typography>
                         </Grid>)
                 }

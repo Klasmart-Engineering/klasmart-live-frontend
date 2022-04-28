@@ -2,7 +2,7 @@ import { CloseIconButton } from "../components/icons/closeIconButton";
 import { usePopupContext } from "../context-provider/popup-context";
 import { useDeviceOrientationValue } from "../model/appModel";
 import {
-    HOME_FUN_STUDY_SUBMIT_BUTTON_BACKGROUND_COLOR,
+    BG_COLOR_GO_LIVE_BUTTON,
     TEXT_COLOR_MENU_DRAWER,
 } from "@/config";
 import {
@@ -20,29 +20,35 @@ import {
     Theme,
 } from "@material-ui/core/styles";
 import clsx from "clsx";
-import React,
-{ useEffect } from "react";
+import React from "react";
 import { FormattedMessage } from "react-intl";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     rounded_dialog: {
-        borderRadius: `12px`,
+        borderRadius: theme.spacing(1.5),
     },
     dialogLandscapeMaxWidth: {
         maxWidth: `50%`,
     },
     dialogTitle: {
-        backgroundColor: HOME_FUN_STUDY_SUBMIT_BUTTON_BACKGROUND_COLOR,
+        paddingBottom: theme.spacing(1),
     },
     dialogTitleText: {
-        color: theme.palette.common.white,
+        color: BG_COLOR_GO_LIVE_BUTTON,
+        fontWeight: theme.typography.fontWeightBold as number,
     },
     dialogContent: {
         paddingTop: theme.spacing(1),
     },
     buttonClose: {
-        backgroundColor: HOME_FUN_STUDY_SUBMIT_BUTTON_BACKGROUND_COLOR,
+        backgroundColor: BG_COLOR_GO_LIVE_BUTTON,
         color: theme.palette.common.white,
+        width: `2rem`,
+        height: `2rem`,
+    },
+    dialogActions: {
+        padding: theme.spacing(2),
+        paddingTop: theme.spacing(1),
     },
 }));
 
@@ -90,7 +96,9 @@ export function InfoDialog ({
                         alignItems="center"
                         wrap="nowrap">
                         <Grid item>
-                            <Typography className={classes.dialogTitleText}>
+                            <Typography
+                                variant="subtitle1"
+                                className={classes.dialogTitleText}>
                                 {
                                     title ? title : <FormattedMessage
                                         id="label_info"
@@ -98,12 +106,13 @@ export function InfoDialog ({
                                 }
                             </Typography>
                         </Grid>
-                        {showCloseIcon && <Grid item>
-                            <CloseIconButton
-                                buttonSize="small"
-                                color={TEXT_COLOR_MENU_DRAWER}
-                                onClick={() => closePopup()} />
-                        </Grid>}
+                        {showCloseIcon &&
+                            <Grid item>
+                                <CloseIconButton
+                                    buttonSize="small"
+                                    color={TEXT_COLOR_MENU_DRAWER}
+                                    onClick={() => closePopup()} />
+                            </Grid>}
                     </Grid>
                 </DialogTitle>
                 <DialogContent>
@@ -114,29 +123,34 @@ export function InfoDialog ({
                     >
                         {
                             description.map((item, index) =>
-                                <Grid
+                                (<Grid
                                     key={index}
                                     item
-                                    xs>
+                                    xs
+                                >
                                     <Typography
                                         className={classes.dialogContent}
                                         component={`div`}
-                                        variant="body2"
-                                        color={`textSecondary`}><div dangerouslySetInnerHTML={{
+                                        variant="body1"
+                                        color={`textPrimary`}
+                                    >
+                                        <div dangerouslySetInnerHTML={{
                                             __html: item,
-                                        }}/></Typography>
-                                </Grid>)
+                                        }} />
+                                    </Typography>
+                                </Grid>))
                         }
                     </Grid>
                 </DialogContent>
-                <DialogActions>
+                <DialogActions className={classes.dialogActions}>
                     <Button
                         className={classes.buttonClose}
-                        onClick={handleCloseClick}>
+                        onClick={handleCloseClick}
+                    >
                         {
                             closeLabel ? closeLabel : <FormattedMessage
                                 id="button_ok"
-                                defaultMessage={`Ok`}/>
+                                defaultMessage={`Ok`} />
                         }
 
                     </Button>

@@ -1,14 +1,17 @@
 import { CordovaSystemContext } from "@/app/context-provider/cordova-system-context";
+import StyledIcon from "@/components/styled/icon";
+import { BG_COLOR_GO_LIVE_BUTTON } from "@/config";
 import {
-    Button,
+    createStyles,
     Dialog,
-    DialogActions,
     DialogContent,
     DialogTitle,
     Grid,
+    Theme,
     Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import { Close as CloseIcon } from "@styled-icons/material/Close";
 import React,
 {
     useContext,
@@ -16,20 +19,44 @@ import React,
 } from "react";
 import { FormattedMessage } from "react-intl";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme: Theme) => createStyles({
     rounded_dialog: {
-        borderRadius: `12px`,
-    },
-    dialogTitle: {
-        backgroundColor: `#3671CE`,
+        borderRadius: theme.spacing(1.5),
     },
     dialogTitleText: {
-        color: `white`,
+        color: BG_COLOR_GO_LIVE_BUTTON,
+        fontWeight: theme.typography.fontWeightBold as number,
     },
-    buttonClose: {
-        color: `#3671CE`,
+    dialogCloseIconButton: {
+        borderRadius: `50%`,
+        width: `2rem`,
+        height: `2rem`,
+        background: theme.palette.common.white,
+        display: `flex`,
+        alignItems: `center`,
+        justifyContent: `center`,
     },
-});
+    dialogContent: {
+        padding: theme.spacing(0, 3, 2),
+    },
+    supportFileCaption: {
+        display: `inline-block`,
+        paddingRight: theme.spacing(1),
+        fontWeight: theme.typography.fontWeightBold as number,
+    },
+    supportFileTypes: {
+        display: `inline`,
+    },
+    supportMaxFileCaption: {
+        display: `inline-block`,
+        fontWeight: theme.typography.fontWeightBold as number,
+        paddingBottom: theme.spacing(1),
+    },
+    supportMaxFileText: {
+        display: `inline-block`,
+        marginLeft: theme.spacing(1),
+    },
+}));
 
 export default function SupportFileInfoDialog ({ open, onClose }: { open: boolean; onClose: () => void }): JSX.Element {
     const classes = useStyles();
@@ -50,7 +77,7 @@ export default function SupportFileInfoDialog ({ open, onClose }: { open: boolea
         }else{
             removeOnBack?.(SUPPORT_FILE_INFO_BACK_ID);
         }
-    }, [ open ]);
+    }, [open]);
 
     const handleCloseClick = () => {
         onClose();
@@ -66,13 +93,40 @@ export default function SupportFileInfoDialog ({ open, onClose }: { open: boolea
             }}
             open={open}
             onClose={onClose}>
-            <DialogTitle className={classes.dialogTitle}>
-                <Typography
-                    variant="h6"
-                    className={classes.dialogTitleText}><FormattedMessage
-                        id="support_file_info_title"/></Typography>
+            <DialogTitle>
+                <Grid
+                    container
+                    direction="row"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    wrap="nowrap"
+                >
+                    <Grid
+                        item
+                        style={{
+                            overflowX: `hidden`,
+                        }}>
+                        <Typography
+                            variant="subtitle1"
+                            className={classes.dialogTitleText}><FormattedMessage
+                                id="homeFunStudy.supportFile.info.title"
+                                defaultMessage="File Information"/>
+                        </Typography>
+                    </Grid>
+                    <Grid
+                        item
+                        onClick={handleCloseClick}
+                    >
+                        <div className={classes.dialogCloseIconButton}>
+                            <StyledIcon
+                                icon={<CloseIcon />}
+                                size={`large`}
+                            />
+                        </div>
+                    </Grid>
+                </Grid>
             </DialogTitle>
-            <DialogContent>
+            <DialogContent className={classes.dialogContent}>
                 <Grid
                     container
                     direction="column"
@@ -81,50 +135,45 @@ export default function SupportFileInfoDialog ({ open, onClose }: { open: boolea
                     <Grid
                         item
                         xs>
-                        <Typography variant="h6"><FormattedMessage id="support_file_max_size"/>100MB</Typography>
-                    </Grid>
-                    <Grid
-                        item
-                        xs>
-                        <Typography variant="h6"><FormattedMessage id="support_files"/></Typography>
+                        <Typography
+                            className={classes.supportMaxFileCaption}>
+                            <FormattedMessage
+                                id="homeFunStudy.supportFile.info.max"
+                                defaultMessage="Maximum File Size: "/></Typography>
+                        <Typography
+                            color={`textSecondary`}
+                            className={classes.supportMaxFileText}>
+                            <FormattedMessage
+                                id="support_file_size"
+                                defaultMessage="100MB"/></Typography>
                     </Grid>
                     <Grid
                         item
                         xs>
                         <Typography
-                            variant="body2"
-                            color={`textSecondary`}>Video (avi, mov, mp4)</Typography>
+                            className={classes.supportFileCaption}>
+                            <FormattedMessage
+                                id="homeFunStudy.supportFile.info.fileType"
+                                defaultMessage="Supported Files: "/></Typography>
                     </Grid>
                     <Grid
                         item
                         xs>
                         <Typography
-                            variant="body2"
-                            color={`textSecondary`}>Audio (mp3, wav)</Typography>
-                    </Grid>
-                    <Grid
-                        item
-                        xs>
+                            className={classes.supportFileCaption}>
+                            <FormattedMessage
+                                id="homeFunStudy.supportFile.info.fileType"
+                                defaultMessage="Supported Files: "/></Typography>
                         <Typography
-                            variant="body2"
-                            color={`textSecondary`}>Image (jpg, jpeg, png, gif,
-                                bmp)</Typography>
-                    </Grid>
-                    <Grid
-                        item
-                        xs>
-                        <Typography
-                            variant="body2"
-                            color={`textSecondary`}>Document (doc, docx, ppt, pptx, xls,
-                                xlsx, pdf)</Typography>
+                            color={`textSecondary`}
+                            className={classes.supportFileTypes}>
+                            <FormattedMessage
+                                id="support_file_types"
+                                defaultMessage="avi, mov, mp4, mp3, wav, jpg, jpeg, png, gif, bmp, doc, docx, ppt, pptx, xls, xlsx, pdf"/>
+                        </Typography>
                     </Grid>
                 </Grid>
             </DialogContent>
-            <DialogActions>
-                <Button
-                    className={classes.buttonClose}
-                    onClick={handleCloseClick}><FormattedMessage id="button_close"/></Button>
-            </DialogActions>
         </Dialog>
     );
 }

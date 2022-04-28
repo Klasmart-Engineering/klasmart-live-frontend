@@ -212,7 +212,7 @@ export default function () {
             }),
             description: [
                 intl.formatMessage({
-                    id: `block_for_assessment_completed`,
+                    id: `homeFunStudy.submission.error.rejected`,
                 }),
             ],
             closeLabel: intl.formatMessage({

@@ -1,4 +1,9 @@
 import {
+    BACKGROUND_COLOR_CONFIRM_BUTTON,
+    BG_COLOR_GO_LIVE_BUTTON,
+    BG_COLOR_GRAY_BUTTON,
+} from "@/config";
+import {
     Button,
     Dialog,
     DialogActions,
@@ -18,21 +23,33 @@ const useStyles = makeStyles((theme) =>
             borderRadius: `12px`,
         },
         dialogTitle: {
-            backgroundColor: `#FFCC00`,
+            paddingBottom: theme.spacing(1),
         },
         dialogText: {
-            color: `#142C45`,
+            color: BG_COLOR_GO_LIVE_BUTTON,
+            fontWeight: theme.typography.fontWeightBold as number,
+        },
+        dialogActions: {
+            padding: theme.spacing(2),
+            paddingTop: theme.spacing(1),
         },
         buttonClose: {
-            color: `#193756`,
-            backgroundColor: `#D6D6D6`,
-            borderRadius: 15,
+            color: BACKGROUND_COLOR_CONFIRM_BUTTON,
+            backgroundColor: BG_COLOR_GRAY_BUTTON,
+            "&:hover": {
+                backgroundColor: BG_COLOR_GRAY_BUTTON,
+            },
         },
         buttonConfirm: {
-            color: `white`,
-            backgroundColor: `#193756`,
-            borderRadius: 15,
-            marginLeft: theme.spacing(1),
+            color:  theme.palette.common.white,
+            backgroundColor: BG_COLOR_GO_LIVE_BUTTON,
+            "&:hover": {
+                backgroundColor: BG_COLOR_GO_LIVE_BUTTON,
+            },
+        },
+        actionButtons: {
+            margin: theme.spacing(1.25, 0, 2.5),
+            paddingRight: theme.spacing(2.5),
         },
     }));
 
@@ -69,12 +86,14 @@ export function BaseConfirmDialog ({
                 open={open}
                 onClose={onClose}>
                 <DialogTitle className={classes.dialogTitle}>
-                    <Typography className={classes.dialogText}>{title}</Typography>
+                    <Typography
+                        variant="subtitle1"
+                        className={classes.dialogText}>{title}</Typography>
                 </DialogTitle>
                 <DialogContent>
                     {children}
                 </DialogContent>
-                <DialogActions>
+                <DialogActions className={classes.dialogActions}>
                     <Button
                         className={classes.buttonClose}
                         onClick={onClose}>{closeLabel}</Button>
