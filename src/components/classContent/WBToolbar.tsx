@@ -1,26 +1,19 @@
 import PencilIcon from "@/assets/img/canvas/pencil_icon.svg";
 import StyledIcon from "@/components/styled/icon";
 import CanvasMenu from "@/components/toolbar/toolbarMenus/canvasMenu/canvasMenu";
-import {
-    FAB_DEFAULT_COLOR,
-    TEXT_COLOR_MENU_DRAWER,
-    THEME_COLOR_BACKGROUND_PAPER,
-} from "@/config";
+import { THEME_COLOR_BACKGROUND_PAPER } from "@/config";
 import { useSessionContext } from "@/providers/session-context";
 import { ClassType } from "@/store/actions";
 import { isCanvasOpenState } from "@/store/layoutAtoms";
 import { useSynchronizedState } from "@/whiteboard/context-providers/SynchronizedStateProvider";
 import {
-    Grid,
     makeStyles,
     Theme,
 } from "@material-ui/core";
 import Fab from "@material-ui/core/Fab";
 import { CloseOutline as CloseIcon } from "@styled-icons/evaicons-outline/CloseOutline";
-import { PencilAlt as WBIcon } from "@styled-icons/fa-solid/PencilAlt";
 import clsx from "clsx";
-import React,
-{ useContext } from "react";
+import React from "react";
 import { useRecoilState } from "recoil";
 
 export const WB_TOOLBAR_MAX_HEIGHT = 80; // 64 + 16(padding top)
@@ -115,7 +108,7 @@ export function WBToolbarContainer ({ useLocalDisplay }: { useLocalDisplay?: boo
                     />
                 </Fab>
             </div>
-            <CanvasMenu anchor={canvasRef.current} />
+            <CanvasMenu showCanvasMenu={isCanvasOpen} anchor={canvasRef.current} />
         </>
     );
 }
