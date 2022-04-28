@@ -112,6 +112,11 @@ export function useShouldSelectOrganization () {
             setOrganizationSelectErrorCode(null);
             setHasStudentRole(true);
             setSelectedOrganization(membership.organization);
+            setDialogs({
+                ...dialogs,
+                isSelectOrganizationOpen: false,
+            })
+
         } else { // 2. User has more than 2 organizations
             setShouldSelectOrganization(true);
             setHasStudentRole(true);
@@ -153,10 +158,19 @@ export function SelectOrgDialog () {
     const activeOrganizationMemberships = useMemo(() => meData?.me?.organizationsWithPermission.filter((membership) => membership.status === EntityStatus.ACTIVE) ?? [], [ meData ]);
     const activeOrganizations = useMemo(() => activeOrganizationMemberships.map((membership) => membership.organization), [ activeOrganizationMemberships ]);
 
-    const handleBackClick = () => setDialogs({
-        ...dialogs,
-        isSelectOrganizationOpen: false,
-    });
+    const handleBackClick = () => {
+        if(selectedOrganization){
+            setDialogs({
+                ...dialogs,
+                isSelectOrganizationOpen: false,
+            });
+            return;
+        }
+        setDialogs({
+            ...dialogs,
+            isSelectUserOpen: true,
+        });
+    }
 
     return (
         <Dialog

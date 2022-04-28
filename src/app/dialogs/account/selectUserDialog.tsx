@@ -5,7 +5,7 @@ import { useAuthenticationContext } from "@/app/context-provider/authentication-
 import { useServices } from "@/app/context-provider/services-provider";
 import {
     useSelectedUser,
-    useSetSelectedUser,
+    useSelectedOrganizationValue,
 } from "@/app/data/user/atom";
 import { ReadUserDto } from "@/app/data/user/dto/readUserDto";
 import { EntityStatus } from "@/app/data/user/dto/sharedDto";
@@ -178,7 +178,8 @@ export function SelectUserDialog () {
 
     const { data: myUsersData } = useMyUsersQuery();
     const { data: meData } = useMeQuery();
-    const setSelectedUser = useSetSelectedUser();
+    const [selectedUser, setSelectedUser ] = useSelectedUser();
+    const selectedOrganization = useSelectedOrganizationValue();
     const cmsQueryClient = useQueryClient();
 
     const [ filteredMyUsersData, setFilteredMyUsersData ] = useState<ReadUserDto[]>();
@@ -220,7 +221,7 @@ export function SelectUserDialog () {
                     id: `account_selectUser`,
                     defaultMessage: `Select a Profile`,
                 })}
-                leading={<BackButton onClick={handleBackClick} />}
+                leading={!!(selectedUser && selectedOrganization)  && <BackButton onClick={handleBackClick} />}
             />
             <DialogContent className={classes.content}>
                 <UserList

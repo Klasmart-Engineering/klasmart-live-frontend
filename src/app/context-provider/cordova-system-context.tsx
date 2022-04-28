@@ -1,4 +1,4 @@
-import { useSelectedUserValue } from "../data/user/atom";
+import { useSelectedUserValue, useSelectedOrganizationValue } from "../data/user/atom";
 import useCordovaInitialize from "../platform/cordova-initialize";
 import {
     enableFullScreen,
@@ -82,10 +82,11 @@ export function CordovaSystemProvider ({ children, history }: Props) {
     const setLayoutMode = useSetLayoutMode();
     const setDeviceOrientation = useSetDeviceOrientation();
     const selectedUser = useSelectedUserValue();
+    const selectedOrganization = useSelectedOrganizationValue();
     const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
     const [ isMenuOpen, setMenuOpen ] = useRecoilState(menuOpenState);
     const isAnyDialogOpen = Object.values(dialogs).includes(true) && !dialogs.isShowNoStudentRole && !dialogs.isShowNoOrgProfile;
-    const isBackToPreviousScreen = selectedUser && (isAnyDialogOpen || isMenuOpen);
+    const isBackToPreviousScreen = selectedUser && selectedOrganization && (isAnyDialogOpen || isMenuOpen);
     const [ shouldUpgradeDevice, setShouldUpgradeDevice ] = useState(false);
 
     function addOnBack (onBackItem: OnBackItem) {
@@ -180,6 +181,15 @@ export function CordovaSystemProvider ({ children, history }: Props) {
             return;
         }
 
+        if(!selectedOrganization && dialogs.isSelectOrganizationOpen){
+            setDialogs({
+                ...dialogs,
+                isSelectUserOpen: true,
+                isSelectOrganizationOpen: false,
+            });
+            return;
+        }
+
         if (isBackToPreviousScreen) {
             setDialogs({
                 isSelectOrganizationOpen: false,
@@ -195,7 +205,7 @@ export function CordovaSystemProvider ({ children, history }: Props) {
             return;
         }
 
-        if (isRootPage || isRoomPage || !selectedUser) {
+        if (isRootPage || isRoomPage || !selectedUser || !selectedOrganization) {
             if (onBackQueue.current.length > 0) {
                 const latestOnBackItem = onBackQueue.current[onBackQueue.current.length - 1];
                 latestOnBackItem.onBack();
