@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.8.0](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.7.0...v6.8.0) (2022-04-28)
+
+
+### 🐛 Bug Fixes
+
+* canvas does not display correctly in study and class type (#97) ([35b0361](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/35b03619bde2f93bb8c5f842d117e0320bdacd46)), closes [/calmisland.atlassian.net/browse/NAT-822](https://calmisland.atlassian.net/browse/NAT-822)
+* user sign in without selecting profile (#90) ([9a4e9b6](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/9a4e9b6f5ab8c4494e81bfa45d8b599f21950480)), closes [/calmisland.atlassian.net/browse/NAT-807](https://calmisland.atlassian.net/browse/NAT-807)
+
+
+### ✨ Features
+
+* formating all popups following the new design in ticket 2645 (#22) ([fa2bf13](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/fa2bf13620120402ee0163bc3ab3570cf1dc559c)), closes [/calmisland.atlassian.net/browse/NAT-30](https://calmisland.atlassian.net/browse/NAT-30)
+* **localization:** add new translations ([06797e0](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/06797e03ee26c85801e88ad16f2ec04fef74c6b5))
+* **localization:** add new translations (#85) ([fd47380](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/fd47380fe9fc9ab6da0ba952be4142a14c80ef81))
+* **localization:** add new translations (#86) ([26e3095](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/26e3095ffae811ab678b7355743b278b1a24fc67))
+* **localization:** add new translations (#91) ([e347226](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/e347226d2c0f892564e91b968e90980a90889d56))
+* **localization:** add new translations (#92) ([85a6bf5](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/85a6bf5ef7d349d25537c0776960b5f1f51fa08e))
+* **translation:** update translations (#96) ([26955ea](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/26955eaf9303f14a1da0f00846d3f1d65599491c))
+
 ## [6.7.0](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.6.1...v6.7.0) (2022-04-26)
 
 
