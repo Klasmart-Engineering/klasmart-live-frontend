@@ -305,5 +305,6 @@
     "report.classtype.study": "Study",
     "report.classtype.studyHomeFun": "Home Fun",
     "report.dashboard.study.detail": "View all Study Assessments",
-    "homeFunStudy.feedback.info.feedbackScale": "Feedback Scale"
+    "homeFunStudy.feedback.info.feedbackScale": "Feedback Scale",
+    "homeFunStudy.feedback.teacherFeedback": "Teacher’s Feedback"
 }

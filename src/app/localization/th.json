@@ -305,5 +305,6 @@
     "report.classtype.study": "ศึกษา",
     "report.classtype.studyHomeFun": "ความสนุกที่บ้าน",
     "report.dashboard.study.detail": "ดูแบบประเมินผลการศึกษาทั้งหมด",
-    "homeFunStudy.feedback.info.feedbackScale": "มาตราส่วนคำติชม"
+    "homeFunStudy.feedback.info.feedbackScale": "มาตราส่วนคำติชม",
+    "homeFunStudy.feedback.teacherFeedback": "ดูสถานะเนื้อหาทั้งหมด"
 }
