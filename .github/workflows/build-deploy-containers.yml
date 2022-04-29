@@ -35,23 +35,6 @@ jobs:
       # For environment-agnostic builds (like backend) it can be just:
       # image_version: ${{ steps.build-push.outputs.image_version}}
       uk-landingzone: ${{steps.set-output-image-version.outputs.uk-landingzone}}
-      uk-prod: ${{steps.set-output-image-version.outputs.uk-prod}}
-      id-beta: ${{steps.set-output-image-version.outputs.id-beta}}
-      id-prod: ${{steps.set-output-image-version.outputs.id-prod}}
-      th-prod: ${{steps.set-output-image-version.outputs.th-prod}}
-      vn-alpha: ${{steps.set-output-image-version.outputs.vn-alpha}}
-      vn-beta: ${{steps.set-output-image-version.outputs.vn-beta}}
-      vn-loadtest: ${{steps.set-output-image-version.outputs.vn-loadtest}}
-      vn-prod: ${{steps.set-output-image-version.outputs.vn-prod}}
-      in-prod: ${{steps.set-output-image-version.outputs.in-prod}}
-      lk-prod: ${{steps.set-output-image-version.outputs.lk-prod}}
-      mb-uat: ${{steps.set-output-image-version.outputs.mb-uat}}
-      pk-prod: ${{steps.set-output-image-version.outputs.pk-prod}}
-      global-prod: ${{steps.set-output-image-version.outputs.global-prod}}
-      global-alpha: ${{steps.set-output-image-version.outputs.global-alpha}}
-      global-nextgen: ${{steps.set-output-image-version.outputs.global-nextgen}}
-      global-showroom: ${{steps.set-output-image-version.outputs.global-showroom}}
-      global-stage: ${{steps.set-output-image-version.outputs.global-stage}}
     strategy:
       matrix:
         include:
