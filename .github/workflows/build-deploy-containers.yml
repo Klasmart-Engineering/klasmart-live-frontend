@@ -1,8 +1,8 @@
-name: Deploy to Landing Zone
+name: container builds
 
 concurrency:
-  group: LandingZoneDeployment
-  cancel-in-progress: true
+  group: buildDeployContainers
+  cancel-in-progress: false
 
 on:
   # push:
@@ -26,6 +26,32 @@ jobs:
 
   build-container:
     needs: [install]
+    outputs:
+      # https://docs.github.com/en/actions/using-jobs/defining-outputs-for-jobs
+      # https://github.community/t/bug-jobs-output-should-return-a-list-for-a-matrix-job/128626/24
+      # Outputs is a single string rather than a list/array.
+      # This does not work for front end images that have unique image tags for each environment.
+      # Each environment in the matrix will need its own output.
+      # For environment-agnostic builds (like backend) it can be just:
+      # image_version: ${{ steps.build-push.outputs.image_version}}
+      uk-landingzone: ${{steps.set-output-image-version.outputs.uk-landingzone}}
+      uk-prod: ${{steps.set-output-image-version.outputs.uk-prod}}
+      id-beta: ${{steps.set-output-image-version.outputs.id-beta}}
+      id-prod: ${{steps.set-output-image-version.outputs.id-prod}}
+      th-prod: ${{steps.set-output-image-version.outputs.th-prod}}
+      vn-alpha: ${{steps.set-output-image-version.outputs.vn-alpha}}
+      vn-beta: ${{steps.set-output-image-version.outputs.vn-beta}}
+      vn-loadtest: ${{steps.set-output-image-version.outputs.vn-loadtest}}
+      vn-prod: ${{steps.set-output-image-version.outputs.vn-prod}}
+      in-prod: ${{steps.set-output-image-version.outputs.in-prod}}
+      lk-prod: ${{steps.set-output-image-version.outputs.lk-prod}}
+      mb-uat: ${{steps.set-output-image-version.outputs.mb-uat}}
+      pk-prod: ${{steps.set-output-image-version.outputs.pk-prod}}
+      global-prod: ${{steps.set-output-image-version.outputs.global-prod}}
+      global-alpha: ${{steps.set-output-image-version.outputs.global-alpha}}
+      global-nextgen: ${{steps.set-output-image-version.outputs.global-nextgen}}
+      global-showroom: ${{steps.set-output-image-version.outputs.global-showroom}}
+      global-stage: ${{steps.set-output-image-version.outputs.global-stage}}
     strategy:
       matrix:
         include:
@@ -59,8 +85,6 @@ jobs:
             region: global
           - environment: alpha
             region: global
-          - environment: loadtest
-            region: global
           - environment: nextgen
             region: global
           - environment: showroom
@@ -73,7 +97,7 @@ jobs:
       region: ${{ matrix.region }}
       environment: ${{ matrix.environment }}
     steps:
-      - uses: KL-Engineering/github-action-workflows/.github/actions/npm-build-fe@d51babc87eeba745b2ceaf8aa51b9381dec9f71e
+      - uses: KL-Engineering/github-action-workflows/.github/actions/npm-build-fe@v3.2.0
         with:
           environment: ${{ env.environment }}
           region: ${{ env.region }}
@@ -81,13 +105,28 @@ jobs:
         run: cp -r dist deploy/
 
       - name: Build and Push Container
-        uses: KL-Engineering/github-action-workflows/.github/actions/docker-build-push@d51babc87eeba745b2ceaf8aa51b9381dec9f71e
+        id: build-push
+        uses: KL-Engineering/github-action-workflows/.github/actions/docker-build-push@v3.2.0
         with:
-          environment: ${{ env.environment }}
-          region: ${{ env.region }}
-          ecr_repository: ${{ env.ecr_repository }}
+          image_name: ${{ env.ecr_repository }}
+          dockerfile: deploy/Dockerfile
+          docker_build_context: deploy
+          platforms: linux/amd64,linux/arm64
+          tags: |
+            type=ref,event=tag,suffix=-${{ env.region }}-${{ env.environment }}
+            type=ref,event=tag,suffix=-${{ env.region }}-${{ env.environment }}-{{sha}}
+            type=ref,event=tag,suffix=-${{ env.region }}-${{ env.environment }}-latest
+            type=ref,event=branch,suffix=-${{ env.region }}-${{ env.environment }}-{{sha}}
+            type=ref,event=branch,suffix=-${{ env.region }}-${{ env.environment }}-latest
           ECR_AWS_ACCESS_KEY_ID: ${{ secrets.ECR_AWS_ACCESS_KEY_ID }}
           ECR_AWS_SECRET_ACCESS_KEY: ${{ secrets.ECR_AWS_SECRET_ACCESS_KEY }}
+
+      - name: set-output-image-version
+        id: set-output-image-version
+        shell: bash
+        run: |
+          echo "Setting output: ${{ matrix.region }}-${{ matrix.environment }} to ${{ steps.build-push.outputs.image_version}}"
+          echo '::set-output name=${{ matrix.region }}-${{ matrix.environment }}::${{ steps.build-push.outputs.image_version}}'
 
   deploy-ci:
     needs: [build-container]
@@ -106,13 +145,22 @@ jobs:
       region: ${{ matrix.region }}
       environment: ${{ matrix.environment }}
     steps:
+      - name: Extract image name
+        id: image_version
+        shell: bash
+        run: |
+          image_version=$(echo -E '${{ toJSON(needs.build-container.outputs) }}' | jq --raw-output '."${{ matrix.region }}-${{ matrix.environment }}"')
+          echo "setting image_version to: ${image_version}"
+          echo "::set-output name=image_version::${image_version}"
+
       - name: Deploy to ${{ matrix.environment }}
-        uses: KL-Engineering/github-action-workflows/.github/actions/argocd-override-image-parameter@d51babc87eeba745b2ceaf8aa51b9381dec9f71e
+        uses: KL-Engineering/github-action-workflows/.github/actions/argocd-override-image-parameter@v3.2.0
         with:
           environment: ${{ env.environment }}
           region: ${{ env.region }}
           argocd_app: "${{ env.region }}-${{ env.environment }}-${{ env.argocd_app_component }}"
           argocd_app_chart_tag_path: ${{ env.argocd_app_chart_tag_path }}
+          argocd_app_chart_tag_value: ${{ steps.image_version.outputs.image_version }}
           TOOLS_KUBECONFIG_CONTENT_B64: ${{ secrets.TOOLS_KUBECONFIG_CONTENT_B64 }}
           ARGOCD_AUTH_USERNAME: ${{ secrets.ARGOCD_AUTH_USERNAME }}
           ARGOCD_AUTH_PASSWORD: ${{ secrets.ARGOCD_AUTH_PASSWORD }}
