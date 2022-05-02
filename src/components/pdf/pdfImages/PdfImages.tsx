@@ -14,13 +14,15 @@ interface Props {
 }
 
 function PdfImages (props: Props) {
+    const url = new URL(window.location.href);
     const { pdf, setVisiblePages } = props;
+    const pdfEndpoint = url.searchParams.get(`pdfendpoint`) || ``;
     const [ images, setImages ] = useState<string[]>([]);
 
     const handleImagesFromApi = () => {
         const imagesArr = [];
         for (let i = 1; i < pdf.metadata.totalPages + 1; i++) {
-            imagesArr.push(`${process.env.ENDPOINT_API}/pdf/v2${pdf.path}/page/${i}`);
+            imagesArr.push(`${pdfEndpoint}/v2${pdf.path}/page/${i}`);
         }
         setImages(imagesArr);
     };

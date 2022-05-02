@@ -7,7 +7,7 @@ import {
 } from "@/config";
 import { useSetStreamIdMutation } from "@/data/live/mutations/useSetStreamIdMutation";
 import { useSessions } from "@/data/live/state/useSessions";
-import { useHttpEndpoint } from "@/providers/region-select-context";
+import { useHttpEndpoint, useRegionSelect } from "@/providers/region-select-context";
 import { useSessionContext } from "@/providers/session-context";
 import { ClassType } from "@/store/actions";
 import { classActiveUserIdState, streamIdState } from "@/store/layoutAtoms";
@@ -105,6 +105,7 @@ export default function InteractionRecorder (props: Props): JSX.Element {
     });
 
     const { authenticationService } = useServices();
+    const { region } = useRegionSelect();
 
     const recorderEndpoint = useHttpEndpoint(`live`);
     const authEndpoint = useHttpEndpoint(`auth`);
@@ -141,9 +142,10 @@ export default function InteractionRecorder (props: Props): JSX.Element {
     ]);
 
     const getPDFURLTransformer = (contentHref: string, token: string | undefined, recorderEndpoint: string, encodedEndpoint: string, encodedAuthEndpoint: string) => {
+        const pdfEndpoint = !process.env.IS_CORDOVA_BUILD ? `${process.env.ENDPOINT_API}/pdf` : region?.services.pdf ?? ``;
         const pdfPath = contentHref.replace(`${recorderEndpoint}`, ``);
-        const jpegTransformer = `/pdfviewer.html?pdf=${pdfPath}&token=${token}&endpoint=${encodedEndpoint}&auth=${encodedAuthEndpoint}`;
-        const svgTransformer = `${contentHref.replace(`${recorderEndpoint}/assets`, `pdfviewer.html?pdfSrc=/assets`)}&token=${token}&endpoint=${encodedEndpoint}&auth=${encodedAuthEndpoint}`;
+        const jpegTransformer = `pdfviewer.html?pdf=${pdfPath}&token=${token}&endpoint=${encodedEndpoint}&auth=${encodedAuthEndpoint}&pdfendpoint=${pdfEndpoint}`;
+        const svgTransformer = `${contentHref.replace(`${recorderEndpoint}/assets`, `pdfviewer.html?pdfSrc=/assets`)}&token=${token}&endpoint=${encodedEndpoint}&auth=${encodedAuthEndpoint}&pdfendpoint=${pdfEndpoint}`;
         switch (process.env.PDF_VERSION) {
         case `JPEG`: return jpegTransformer;
         case `SVG`: return svgTransformer;

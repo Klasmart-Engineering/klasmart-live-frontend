@@ -17,7 +17,7 @@ export interface PDF {
 function PdfViewer () {
     const url = new URL(window.location.href);
     const pdfPath = url.searchParams.get(`pdf`) || ``;
-    const pdfEndpoint = `${process.env.ENDPOINT_API}/pdf` || ``;
+    const pdfEndpoint = url.searchParams.get(`pdfendpoint`) || ``;
 
     const [ loading, setLoading ] = useState(true);
     const [ visiblePages, setVisiblePages ] = useState([1]);
