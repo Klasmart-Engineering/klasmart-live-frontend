@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.9.0](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.8.0...v6.9.0) (2022-05-02)
+
+
+### ✨ Features
+
+* **translation:** update translations (#98) ([b369c1a](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/b369c1a6680276673e379adf55486ec25c9597b5))
+
+
+### 🐛 Bug Fixes
+
+* pdf not display iframe (#100) ([5c83ea0](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/5c83ea0110e4027bb8cc6c3541a1746cc3cc58dd)), closes [NAT-823](https://calmisland.atlassian.net/browse/NAT-823)
+
 ## [6.8.0](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.7.0...v6.8.0) (2022-04-28)
 
 
