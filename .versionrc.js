@@ -79,5 +79,6 @@ module.exports = {
         `DT-`,
         `KLL-`,
         `NAT-`,
+        `SFU-`,
     ],
 };

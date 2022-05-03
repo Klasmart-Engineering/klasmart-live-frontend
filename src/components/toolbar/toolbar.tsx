@@ -45,7 +45,7 @@ import { CaretUpFill as CaretUpFill } from "@styled-icons/bootstrap/CaretUpFill"
 import { ChatSquareDotsFill as ChatIcon } from "@styled-icons/bootstrap/ChatSquareDotsFill";
 import { PencilFill as CanvasIcon } from "@styled-icons/bootstrap/PencilFill";
 import { UserVoice as OnStageIcon } from "@styled-icons/boxicons-solid/UserVoice";
-import { Globe as GlobalActionsIcon } from "@styled-icons/entypo/Globe";
+import { Heart as StickersActionsIcon } from "@styled-icons/entypo/Heart";
 import { Info as InfoIcon } from "@styled-icons/evaicons-solid/Info";
 import { Eye as ObserveIcon } from "@styled-icons/fa-regular/Eye";
 import { PresentationChartBar as PresentIcon } from "@styled-icons/heroicons-solid/PresentationChartBar";
@@ -203,10 +203,12 @@ function Toolbar () {
                 className={clsx(classes.root, {
                     [classes.rootMosaic] : activeTab === `mosaic`,
                     [classes.rootMd] : isMdDown,
-                })}>
+                })}
+            >
                 <Grid
                     item
-                    className={classes.iconGroup}>
+                    className={classes.iconGroup}
+                >
                     <div ref={classDetailsRef}>
                         <ToolbarItem
                             display={activeTab !== `mosaic`}
@@ -260,7 +262,8 @@ function Toolbar () {
                 </Grid>
                 <Grid
                     item
-                    className={classes.iconGroup}>
+                    className={classes.iconGroup}
+                >
                     <ToolbarItemMicrophone />
                     <ToolbarItemCall
                         id="toolbar-item-call"
@@ -276,16 +279,17 @@ function Toolbar () {
                 </Grid>
                 <Grid
                     item
-                    className={classes.iconGroup}>
+                    className={classes.iconGroup}
+                >
                     <div ref={globalActionsRef}>
                         <ToolbarItem
                             display={hasControls}
-                            icon={<GlobalActionsIcon />}
+                            icon={<StickersActionsIcon />}
                             label={intl.formatMessage({
-                                id: `toolbar_global_actions`,
+                                id: `live.class.stickers`,
                             })}
-                            disabled={Boolean(handleTooltip(`globalActions`))}
-                            tooltip={handleTooltip(`globalActions`)}
+                            disabled={Boolean(handleTooltip(`stickers`))}
+                            tooltip={handleTooltip(`stickers`)}
                             active={isGlobalActionsOpen}
                             onClick={() => {
                                 resetDrawers();
@@ -328,7 +332,7 @@ function Toolbar () {
                     </div>
                     <div ref={chatRef}>
                         <ToolbarItem
-                            display={true}
+                            display
                             icon={<ChatIcon />}
                             label={intl.formatMessage({
                                 id: `toolbar_chat`,
@@ -363,11 +367,13 @@ function Toolbar () {
 
             <DialogEndClass
                 open={openEndClassDialog}
-                onClose={() => setOpenEndClassDialog(false)} />
+                onClose={() => setOpenEndClassDialog(false)}
+            />
 
             <DialogLeaveClass
                 open={openLeaveClassDialog}
-                onClose={() => setOpenLeaveClassDialog(false)} />
+                onClose={() => setOpenLeaveClassDialog(false)}
+            />
 
         </>
     );
@@ -380,7 +386,7 @@ function handleTooltip (item: string){
     const isActiveGlobalScreenshare = useRecoilValue(isActiveGlobalScreenshareState);
     const activeTab = useRecoilValue(activeTabState);
 
-    const tooltips:any = {
+    const tooltips: any = {
         classDetails: {
             mosaic: `Class details are not available in mosaic mode`,
         },

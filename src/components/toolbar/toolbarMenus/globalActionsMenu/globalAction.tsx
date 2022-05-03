@@ -13,7 +13,6 @@ import { StyledIconProps } from "styled-icons/types";
 type GlobaActionType = `divider`;
 export interface GlobaActionsMenuItem {
     id?: string;
-	type?: GlobaActionType;
 	icon?: StyledIconProps;
 	title?: string;
 	variant?: string;
@@ -71,7 +70,6 @@ export interface Props extends GlobaActionsMenuItem {
 function GlobalActionsMenuItem (props: Props) {
     const {
         id,
-        type,
         icon,
         title,
         variant,
@@ -82,17 +80,11 @@ function GlobalActionsMenuItem (props: Props) {
 
     const classes = useStyles();
 
-    if (type === `divider`){
-        return (
-            <Grid
-                item
-                className={classes.divider}></Grid>);
-    }
-
     return (
         <Tooltip
             title={title ?? ``}
-            placement="top">
+            placement="top"
+        >
             <Grid
                 item
                 id={id}

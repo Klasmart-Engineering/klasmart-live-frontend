@@ -8,19 +8,14 @@ import {
     Grid,
     makeStyles,
 } from "@material-ui/core";
-import { CameraVideoFill as CameraVideoFillIcon } from "@styled-icons/bootstrap/CameraVideoFill";
-import { CameraVideoOffFill as CameraDisabledIcon } from "@styled-icons/bootstrap/CameraVideoOffFill";
 import { HandThumbsUpFill as HandThumbsUpFillIcon } from "@styled-icons/bootstrap/HandThumbsUpFill";
 import { HeartFill as HeartFillIcon } from "@styled-icons/bootstrap/HeartFill";
-import { MicFill as MicFillIcon } from "@styled-icons/bootstrap/MicFill";
-import { MicMuteFill as MicDisabledIcon } from "@styled-icons/bootstrap/MicMuteFill";
 import { StarFill as StarFillIcon } from "@styled-icons/bootstrap/StarFill";
 import { TrophyFill as TrophyFillIcon } from "@styled-icons/bootstrap/TrophyFill";
 import React from "react";
 import { useIntl } from "react-intl";
 import {
     atom,
-    useRecoilState,
     useRecoilValue,
 } from "recoil";
 
@@ -50,8 +45,6 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
     const intl = useIntl();
 
     const isGlobalActionsOpen = useRecoilValue(isGlobalActionsOpenState);
-    const [ allMicrophonesPaused, setAllMicrophonesPaused ] = useRecoilState(pauseAllMicrophonesState);
-    const [ allCamerasPause, setAllCamerasPause ] = useRecoilState(pauseAllCamerasState);
 
     const { roomId, sessionId } = useSessionContext();
 
@@ -68,31 +61,6 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
     };
 
     const items: GlobaActionsMenuItem[] = [
-        {
-            id: `global-action-toggle-all-microphones`,
-            title: intl.formatMessage({
-                id: allMicrophonesPaused ? `toggle_all_microphones_on` : `toggle_all_microphones_off`,
-            }),
-            icon: <MicFillIcon size="1.4rem" />,
-            activeIcon: <MicDisabledIcon size="1.4rem" />,
-            variant: `blue`,
-            active: allMicrophonesPaused,
-            onClick: () => setAllMicrophonesPaused(x => !x),
-        },
-        {
-            id: `global-action-toggle-all-cameras`,
-            title: intl.formatMessage({
-                id: allCamerasPause ? `toggle_all_cameras_on` : `toggle_all_cameras_off`,
-            }),
-            icon: <CameraVideoFillIcon size="1.4rem" />,
-            activeIcon: <CameraDisabledIcon size="1.4rem" />,
-            variant: `blue`,
-            active: allCamerasPause,
-            onClick: () => setAllCamerasPause(x => !x),
-        },
-        {
-            type: `divider` as const,
-        },
         {
             id: `global-action-give-trophy`,
             title: intl.formatMessage({
@@ -145,7 +113,6 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
                         title={item.title}
                         icon={item.icon}
                         activeIcon={item.activeIcon}
-                        type={item.type}
                         variant={item.variant}
                         active={item.active}
                         onClick={item.onClick}
