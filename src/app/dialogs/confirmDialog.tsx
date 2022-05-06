@@ -3,26 +3,14 @@ import {
     Grid,
     Typography,
 } from "@material-ui/core";
-import {
-    createStyles,
-    makeStyles,
-} from "@material-ui/core/styles";
 import React from "react";
-
-const useStyles = makeStyles(() =>
-    createStyles({
-        dialogText: {
-            color: `#142C45`,
-        },
-
-    }));
 
 interface Props {
     open: boolean;
     onClose: () => void;
     onConfirm: () => void;
     title: string;
-    description: string [];
+    description: string[];
     closeLabel: string;
     confirmLabel: string;
 }
@@ -32,7 +20,6 @@ export function ConfirmDialog ({
     title, description,
     closeLabel, confirmLabel,
 }: Props): JSX.Element {
-    const classes = useStyles();
     return (
         <BaseConfirmDialog
             open={open}
@@ -40,22 +27,27 @@ export function ConfirmDialog ({
             closeLabel={closeLabel}
             confirmLabel={confirmLabel}
             onClose={onClose}
-            onConfirm={onConfirm}>
+            onConfirm={onConfirm}
+        >
             <Grid
                 container
                 direction={`column`}
-                spacing={2}>
+                spacing={2}
+            >
                 {
                     description.map((item, index) =>
-                        <Grid
-                            key={index}
-                            item
-                            xs>
-                            <Typography
-                                variant="body2"
-                                className={classes.dialogText}>{item}</Typography>
-                        </Grid>)
-                }
+                        (
+                            <Grid
+                                key={index}
+                                item
+                                xs
+                            >
+                                <Typography
+                                    variant="body2"
+                                >{item}
+                                </Typography>
+                            </Grid>
+                        ))}
             </Grid>
         </BaseConfirmDialog>
     );

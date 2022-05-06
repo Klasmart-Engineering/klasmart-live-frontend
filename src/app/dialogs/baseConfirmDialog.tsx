@@ -63,12 +63,6 @@ interface Props {
     children: React.ReactNode;
 }
 
-export type ConfirmDialogState = {
-    open: boolean;
-    title: string;
-    description: string[];
-}
-
 export function BaseConfirmDialog ({
     open, onClose, onConfirm, title,
     closeLabel, confirmLabel, children,
@@ -84,11 +78,14 @@ export function BaseConfirmDialog ({
                     paper: classes.rounded_dialog,
                 }}
                 open={open}
-                onClose={onClose}>
+                onClose={onClose}
+            >
                 <DialogTitle className={classes.dialogTitle}>
                     <Typography
                         variant="subtitle1"
-                        className={classes.dialogText}>{title}</Typography>
+                        className={classes.dialogText}
+                    >{title}
+                    </Typography>
                 </DialogTitle>
                 <DialogContent>
                     {children}
@@ -96,10 +93,14 @@ export function BaseConfirmDialog ({
                 <DialogActions className={classes.dialogActions}>
                     <Button
                         className={classes.buttonClose}
-                        onClick={onClose}>{closeLabel}</Button>
+                        onClick={onClose}
+                    >{closeLabel}
+                    </Button>
                     <Button
                         className={classes.buttonConfirm}
-                        onClick={onConfirm}>{confirmLabel}</Button>
+                        onClick={onConfirm}
+                    >{confirmLabel}
+                    </Button>
                 </DialogActions>
             </Dialog>
         </React.Fragment>

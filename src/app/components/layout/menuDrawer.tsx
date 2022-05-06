@@ -16,6 +16,7 @@ import {
     THEME_COLOR_ORG_MENU_DRAWER,
 } from "@/config";
 import { useWindowSize } from "@/utils/viewport";
+import { usePopupContext } from "@/app/context-provider/popup-context";
 import { OrganizationAvatar } from "@kl-engineering/kidsloop-px";
 import {
     Button,
@@ -37,7 +38,7 @@ import { KeyboardArrowRight as ArrowRight } from "@styled-icons/material-rounded
 import clsx from "clsx";
 import React,
 { useEffect } from "react";
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 import { useHistory } from "react-router-dom";
 import {
     useRecoilState,
@@ -56,7 +57,7 @@ const useStyles = makeStyles((theme: Theme) =>
             padding: theme.spacing(2, 3),
             color: theme.palette.grey[900],
         },
-        orgContainer:{
+        orgContainer: {
             padding: theme.spacing(11, 2.5, 2),
             background: THEME_COLOR_ORG_MENU_DRAWER,
             marginBottom: theme.spacing(2),
@@ -83,10 +84,10 @@ const useStyles = makeStyles((theme: Theme) =>
             lineHeight: 1.334,
             textAlign: `center`,
         },
-        iconButton:{
+        iconButton: {
             backgroundColor: theme.palette.background.paper,
         },
-        version:{
+        version: {
             color: TEXT_COLOR_VERSION_APP,
             marginBottom: theme.spacing(2),
         },
@@ -101,12 +102,14 @@ export default function MenuDrawer () {
     const theme = useTheme();
     const { actions } = useAuthenticationContext();
     const history = useHistory();
+    const intl = useIntl();
     const isSmUp = useMediaQuery(theme.breakpoints.up(`sm`));
     const selectedOrganization = useSelectedOrganizationValue();
     const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
     const [ isMenuOpen, setMenuOpen ] = useRecoilState(menuOpenState);
     const setShouldClearCookie = useSetRecoilState(shouldClearCookieState);
     const setShowOnBoarding = useSetRecoilState(isShowOnBoardingState);
+    const { showPopup } = usePopupContext();
 
     const menuArray = [
         // {
@@ -120,10 +123,7 @@ export default function MenuDrawer () {
         {
             id: MenuDrawerItem.SETTINGS,
             text: `title_settings`,
-            icon: <img
-                src={SettingsIcon}
-                alt=""
-            />,
+            icon: <img src={SettingsIcon} alt="" />,
         },
     ];
 
@@ -140,13 +140,35 @@ export default function MenuDrawer () {
         case MenuDrawerItem.SETTINGS:
             history.push(`/settings`);
             break;
-
         case MenuDrawerItem.PARENTS_DASHBOARD:
             setParentalLock(true);
             break;
         default:
             break;
         }
+    };
+
+    const showConfirmSignout = () => {
+        showPopup({
+            variant: `info`,
+            showCloseIcon: true,
+            title: intl.formatMessage({
+                id: `account_selectOrg_signOut`,
+            }),
+            description: [
+                intl.formatMessage({
+                    id: `hamburger.signOut.confirm`,
+                }),
+            ],
+            closeLabel: intl.formatMessage({
+                id: `account_selectOrg_signOut`,
+            }),
+            onClose: () => {
+                actions?.signOut();
+                setShouldClearCookie(true);
+                setShowOnBoarding(true);
+            },
+        });
     };
 
     const setParentalLock = (open: boolean) => {
@@ -170,6 +192,7 @@ export default function MenuDrawer () {
             />
         );
     }
+
     return (
         <SwipeableDrawer
             anchor="left"
@@ -183,7 +206,7 @@ export default function MenuDrawer () {
                 alignItems="center"
                 justifyContent="space-between"
                 style={{
-                    width: isSmUp ? 400 : width*0.7,
+                    width: isSmUp ? 400 : width * 0.7,
                     height: `100%`,
                 }}
                 onClick={() => setMenuOpen(false)}
@@ -278,11 +301,7 @@ export default function MenuDrawer () {
                             variant="text"
                             size="large"
                             className={classes.signOutButton}
-                            onClick={() => {
-                                actions?.signOut();
-                                setShouldClearCookie(true);
-                                setShowOnBoarding(true);
-                            }}
+                            onClick={() => showConfirmSignout()}
                         >
                             <FormattedMessage id="account_selectOrg_signOut" />
                         </Button>

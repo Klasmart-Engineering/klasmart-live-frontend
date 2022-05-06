@@ -44,7 +44,7 @@ const initState: PopupState = {
 
 type PopupContext = {
     popupState: PopupState;
-    showPopup: (popupState : PopupState) => void;
+    showPopup: (popupState: PopupState) => void;
     closePopup: () => void;
 }
 const PopupContext = createContext<PopupContext>({
@@ -95,50 +95,60 @@ export function PopupElement (): JSX.Element {
         const key = Math.random().toString(36);
         switch (popupState.variant){
         case `error`:
-            return <ErrorDialog
-                key={key}
-                open={popupState.open ?? false}
-                title={popupState.title}
-                description={popupState.description}
-                closeLabel={popupState.closeLabel}
-                onClose={handleClosePopup}/>;
+            return (
+                <ErrorDialog
+                    key={key}
+                    open={popupState.open ?? false}
+                    title={popupState.title}
+                    description={popupState.description}
+                    closeLabel={popupState.closeLabel}
+                    onClose={handleClosePopup}
+                />);
         case `detailError`:
-            return <DetailErrorDialog
-                key={key}
-                open={popupState.open ?? false}
-                title={popupState.title}
-                description={popupState.description}
-                closeLabel={popupState.closeLabel}
-                onClose={handleClosePopup}/>;
+            return (
+                <DetailErrorDialog
+                    key={key}
+                    open={popupState.open ?? false}
+                    title={popupState.title}
+                    description={popupState.description}
+                    closeLabel={popupState.closeLabel}
+                    onClose={handleClosePopup}
+                />);
         case `confirm`:
-            return <ConfirmDialog
-                key={key}
-                open={popupState.open ?? false}
-                title={popupState.title}
-                description={popupState.description}
-                closeLabel={popupState.closeLabel}
-                confirmLabel={popupState.confirmLabel ?? `Ok`}
-                onClose={handleClosePopup}
-                onConfirm={handleConfirmPopup}/>;
+            return (
+                <ConfirmDialog
+                    key={key}
+                    open={popupState.open ?? false}
+                    title={popupState.title}
+                    description={popupState.description}
+                    closeLabel={popupState.closeLabel}
+                    confirmLabel={popupState.confirmLabel ?? `Ok`}
+                    onClose={handleClosePopup}
+                    onConfirm={handleConfirmPopup}
+                />);
         case `detailConfirm`:
-            return <DetailConfirmDialog
-                key={key}
-                open={popupState.open ?? false}
-                title={popupState.title}
-                description={popupState.description}
-                closeLabel={popupState.closeLabel}
-                confirmLabel={popupState.confirmLabel ?? `Ok`}
-                onClose={handleClosePopup}
-                onConfirm={handleConfirmPopup}/>;
+            return (
+                <DetailConfirmDialog
+                    key={key}
+                    open={popupState.open ?? false}
+                    title={popupState.title}
+                    description={popupState.description}
+                    closeLabel={popupState.closeLabel}
+                    confirmLabel={popupState.confirmLabel ?? `Ok`}
+                    onClose={handleClosePopup}
+                    onConfirm={handleConfirmPopup}
+                />);
         case `info`:
-            return <InfoDialog
-                key={key}
-                open={popupState.open ?? false}
-                description={popupState.description}
-                title={popupState.title}
-                closeLabel={popupState.closeLabel}
-                showCloseIcon={popupState.showCloseIcon ?? false}
-                onClose={handleClosePopup} />;
+            return (
+                <InfoDialog
+                    key={key}
+                    open={popupState.open ?? false}
+                    description={popupState.description}
+                    title={popupState.title}
+                    closeLabel={popupState.closeLabel}
+                    showCloseIcon={popupState.showCloseIcon ?? false}
+                    onClose={handleClosePopup}
+                />);
         default:
             return <></>;
         }
@@ -147,7 +157,7 @@ export function PopupElement (): JSX.Element {
     return renderDialog(popupState);
 
 }
-export function PopupProvider ({ children } : Props){
+export function PopupProvider ({ children }: Props){
     const [ popupState, setPopupState ] = useState(initState);
 
     useEffect(() => {

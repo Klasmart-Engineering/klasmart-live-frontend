@@ -43,8 +43,8 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     buttonClose: {
         backgroundColor: BG_COLOR_GO_LIVE_BUTTON,
         color: theme.palette.common.white,
-        width: `2rem`,
         height: `2rem`,
+        padding: theme.spacing(0, 2),
     },
     dialogActions: {
         padding: theme.spacing(2),
@@ -87,22 +87,27 @@ export function InfoDialog ({
                 open={open}
                 onClose={(event: object, reason: "backdropClick" | "escapeKeyDown") => {
                     onClose(reason);
-                }}>
+                }}
+            >
                 <DialogTitle className={classes.dialogTitle}>
                     <Grid
                         container
                         direction="row"
                         justifyContent="space-between"
                         alignItems="center"
-                        wrap="nowrap">
+                        wrap="nowrap"
+                    >
                         <Grid item>
                             <Typography
                                 variant="subtitle1"
-                                className={classes.dialogTitleText}>
+                                className={classes.dialogTitleText}
+                            >
                                 {
-                                    title ? title : <FormattedMessage
-                                        id="label_info"
-                                        defaultMessage={`Info`} />
+                                    title ? title :
+                                        <FormattedMessage
+                                            id="label_info"
+                                            defaultMessage={`Info`}
+                                        />
                                 }
                             </Typography>
                         </Grid>
@@ -111,7 +116,8 @@ export function InfoDialog ({
                                 <CloseIconButton
                                     buttonSize="small"
                                     color={TEXT_COLOR_MENU_DRAWER}
-                                    onClick={() => closePopup()} />
+                                    onClick={() => closePopup()}
+                                />
                             </Grid>}
                     </Grid>
                 </DialogTitle>
@@ -123,23 +129,25 @@ export function InfoDialog ({
                     >
                         {
                             description.map((item, index) =>
-                                (<Grid
-                                    key={index}
-                                    item
-                                    xs
-                                >
-                                    <Typography
-                                        className={classes.dialogContent}
-                                        component={`div`}
-                                        variant="body1"
-                                        color={`textPrimary`}
+                                (
+                                    <Grid
+                                        key={index}
+                                        item
+                                        xs
                                     >
-                                        <div dangerouslySetInnerHTML={{
-                                            __html: item,
-                                        }} />
-                                    </Typography>
-                                </Grid>))
-                        }
+                                        <Typography
+                                            className={classes.dialogContent}
+                                            component={`div`}
+                                            variant="body1"
+                                            color={`textPrimary`}
+                                        >
+                                            <div dangerouslySetInnerHTML={{
+                                                __html: item,
+                                            }}
+                                            />
+                                        </Typography>
+                                    </Grid>
+                                ))}
                     </Grid>
                 </DialogContent>
                 <DialogActions className={classes.dialogActions}>
