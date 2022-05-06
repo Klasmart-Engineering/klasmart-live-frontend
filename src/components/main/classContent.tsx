@@ -207,13 +207,14 @@ const MaterialNavigation = (props: MaterialNavigationProps) => {
     } = props;
     const classes = useStyles();
     const { classType } = useSessionContext();
+    const [ showEndStudy ] = useRecoilState(showEndStudyState);
 
     return (
         <div
             className={clsx(classes.arrowButton, {
                 [classes.arrowButtonDisabled]: disabled,
                 [classes.arrowButtonRight]: direction === `next` && classType === ClassType.STUDY,
-                [classes.arrowButtonClass]: classType === ClassType.CLASSES,
+                [classes.arrowButtonClass]: classType === ClassType.CLASSES && !showEndStudy,
             })}
             onClick={onClick}
         >
