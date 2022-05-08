@@ -325,7 +325,7 @@
     "att_new": "{Name} started learning on KidsLoop. So far, {Name} attended {AttendedCount} classes among {ScheduledCount} scheduled classes for the class {ClassName}.",
     "att_increase_previous_w": "{Name} has attended {%AttendCompareLastWeek}% more classes as compared to the previous week for the class {ClassName}.",
     "att_decrease_previous_w": "{Name} has attended {%AttendCompareLastWeek}% less classes as compared to the previous week for the class {ClassName}.",
-    "att_increase_previous_large_w": "For the class {ClassName}, {Name} has attended {%AttendCompareLastWeek}% more classes as compared to the previous week. Tell {name}, \"Awesome job!\"",
+    "att_increase_previous_large_w": "For the class {ClassName}, {Name} has attended {%AttendCompareLastWeek}% more classes as compared to the previous week. Tell {Name}, \"Awesome job!\"",
     "att_decrease_previous_large_w": "For the class {ClassName}, {Name} has attended {%AttendCompareLastWeek}% less classes as compared to the previous week. Please check if {name} has any problems with the learning environment.",
     "att_increase_3w": "During these past 3 consecutive weeks, {Name} has attended {%AttendCompareLast3Week}% more classes for the class {ClassName}.",
     "att_decrease_3w": "During these past 3 consecutive weeks, {Name} has attended {%AttendCompareLast3Week}% less classes for the class {ClassName}.",
@@ -345,5 +345,8 @@
     "assign_low_class_w": "This week, {Name} has completed {%AssignCompareClass}% less assignments than the class {ClassName} average.",
     "assign_high_class_3w": "During these past 3 consecutive weeks, {Name} has completed {%AssignCompareClass3week}% more assignments than the class average for the class {ClassName}.",
     "assign_low_class_3w": "During these past 3 consecutive weeks, {Name} has completed {%AssignCompareClass3week}% less assignments than the class average for the class {ClassName}.",
-    "no_data": "There was no data to display in this week."
+    "no_data": "There was no data to display in this week.",
+    "parentsDashboard.learningOutcome.achieved": "achieved",
+    "parentsDashboard.learningOutcome.NotAchieved": "not achieved",
+    "parentsDashboard.learningOutcome.InProgress": "in progress"
 }
