@@ -64,6 +64,8 @@ import {
     useRecoilValue,
 } from "recoil";
 
+const CARRET_BUTTON_SIZE = 25;
+
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
         padding: 10,
@@ -90,22 +92,20 @@ const useStyles = makeStyles((theme: Theme) => ({
         position: `relative`,
     },
     caretButton: {
-        backgroundColor: theme.palette.common.white,
-        borderRadius: theme.spacing(2),
-        boxShadow: `0px 0px 6px 1px #e2e3e4`,
-        cursor: `pointer`,
-        display: `block`,
-        height: theme.spacing(3.125),
-        width: theme.spacing(3.125),
-        minHeight: theme.spacing(3.125),
-        minWidth: theme.spacing(3.125),
-        paddingTop: theme.spacing(0.5),
-        position: `absolute`,
+        display: `flex`,
+        alignItems: `center`,
+        justifyContent: `center`,
         left: 0,
         right: 0,
         margin: `0 auto`,
-        textAlign: `center`,
-        top: -15,
+        width: CARRET_BUTTON_SIZE,
+        height: CARRET_BUTTON_SIZE,
+        borderRadius: CARRET_BUTTON_SIZE,
+        position: `absolute`,
+        cursor: `pointer`,
+        backgroundColor: theme.palette.common.white,
+        boxShadow: `0px 0px 6px 0px rgb(0 0 0 / 25%)`,
+        top: -theme.spacing(2),
         zIndex: 9,
     },
 }));
@@ -168,7 +168,7 @@ function Toolbar () {
 
     useEffect(()=> {
         resetDrawers();
-    }, [activeTab]);
+    }, [ activeTab ]);
 
     const {
         state: { display: isGlobalCanvasEnabled, permissions: permissionsGlobalCanvas },
@@ -177,7 +177,7 @@ function Toolbar () {
 
     useEffect(() => {
         setIsCanvasOpen(isGlobalCanvasEnabled && permissionsGlobalCanvas.allowCreateShapes);
-    }, [isGlobalCanvasEnabled, permissionsGlobalCanvas.allowCreateShapes]);
+    }, [ isGlobalCanvasEnabled, permissionsGlobalCanvas.allowCreateShapes ]);
 
     useEffect(() => {
         function initOnBack (){
@@ -257,7 +257,8 @@ function Toolbar () {
                                 }else{
                                     setIsCanvasOpen(!isCanvasOpen);
                                 }
-                            }}/>
+                            }}
+                        />
                     </div>
                 </Grid>
                 <Grid
@@ -353,7 +354,8 @@ function Toolbar () {
             {activeTab !== `mosaic` && (
                 <CanvasMenu
                     anchor={canvasRef.current}
-                    showCanvasMenu={showCanvasMenu} />
+                    showCanvasMenu={showCanvasMenu}
+                />
             )}
 
             <ChatMenu anchor={chatRef.current} />
