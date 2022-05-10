@@ -147,7 +147,7 @@ export function CordovaApp ({ history }: {
         });
     };
 
-    if (dialogs.isParentalLockOpen && urlFilePath) {
+    if (dialogs.isParentalLockOpen && urlFilePath && authenticated) {
         return (
             <DialogParentalLock
                 onCompleted={() => {

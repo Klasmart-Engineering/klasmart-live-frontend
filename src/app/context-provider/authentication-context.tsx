@@ -120,11 +120,11 @@ const useAuthentication = () => {
         await authenticationService.switchUser(userId);
     }, [ authenticationService, authenticated ]);
 
-    const handleFilePath = (filePath: String) => {
-        if (filePath === FilePath.PRIVACY_POLICY 
+    const handleFilePath = (filePath: String, isAuthenticated: boolean) => {
+        if (isAuthenticated && (filePath === FilePath.PRIVACY_POLICY 
             || filePath === FilePath.COOKIE_POLICY 
             || filePath === FilePath.TERMS_OF_USE
-            || filePath === FilePath.CONTACT) {
+            || filePath === FilePath.CONTACT)) {
             setDialogs({
                 ...dialogs,
                 isParentalLockOpen: true,
@@ -188,7 +188,7 @@ const useAuthentication = () => {
                 });
             }
 
-            handleFilePath(urlFilePath);
+            handleFilePath(urlFilePath, authenticated);
 
         };
 
@@ -201,15 +201,17 @@ const useAuthentication = () => {
         auth,
         locale,
         urlFilePath,
+        authenticated,
     ]);
 
     useEffect(() => {
         if (isAppLoaded) {
-            handleFilePath(urlFilePath);
+            handleFilePath(urlFilePath, authenticated);
         }
     }, [
         isAppLoaded, 
         urlFilePath,
+        authenticated,
     ]),
 
     useEffect(() => {
