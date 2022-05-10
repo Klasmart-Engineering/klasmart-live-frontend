@@ -507,3 +507,11 @@ export async function getAttendeeFullName (userId: string, endpoint: string) {
 
     return data.data.user.full_name;
 }
+
+export function removeKLLH5PStateStorage (){
+    const search = `kll-h5p-state`;
+    const keys = Object.keys(localStorage).filter((key) => key.startsWith(search) );
+    keys.forEach((key) => {
+        localStorage.removeItem(key);
+    });
+}

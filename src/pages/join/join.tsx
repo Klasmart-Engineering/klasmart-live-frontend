@@ -26,7 +26,7 @@ import {
     hasJoinedClassroomState,
     showSelectAttendeesState,
 } from "@/store/layoutAtoms";
-import { getOrganizationBranding } from "@/utils/utils";
+import { getOrganizationBranding, removeKLLH5PStateStorage } from "@/utils/utils";
 import {
     useCamera,
     useMicrophone,
@@ -210,6 +210,8 @@ export default function Join (): JSX.Element {
         setShowSelectAttendees(classType === ClassType.CLASSES);
 
         Cookies.set(`roomUserId`, `${roomId}:${user_id}`); // Used to cache H5P answers (H5P-342)
+
+        removeKLLH5PStateStorage();
     }, []);
 
     const [ cameraPaused, setCameraPaused ] = useState(false);
