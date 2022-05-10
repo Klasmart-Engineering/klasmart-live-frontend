@@ -76,7 +76,7 @@ export default function AnytimeStudyScheduleList () {
     const [ page, setPage ] = useState(SCHEDULE_PAGE_START);
     const [ items, setItems ] = useState<SchedulesTimeViewListItem[]>([]);
     const { enqueueSnackbar } = useSnackbar();
-    const { setToken } = useSessionContext();
+    const { setToken, setTeachers, setDueDate, setTitle } = useSessionContext();
     const { actions } = useCmsApiClient();
     const { push } = useHistory();
     const organization = useSelectedOrganizationValue();
@@ -142,6 +142,13 @@ export default function AnytimeStudyScheduleList () {
                 schedule_id: studySchedule.id,
                 live_token_type: ScheduleLiveTokenType.LIVE,
             });
+            const { title, teachers, due_at } = await actions.getScheduleById({
+                org_id: organizationId,
+                schedule_id: studySchedule.id,
+            });
+            setTeachers(teachers);
+            setTitle(title);
+            setDueDate(due_at);
             setToken(token);
             push(`/room?token=${token}`);
         } catch (err) {

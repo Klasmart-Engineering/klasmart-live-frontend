@@ -56,7 +56,6 @@ export default function Camera ({
             <Paper
                 ref={cameraRef}
                 component="div"
-                elevation={2}
                 style={{
                     position: `relative`,
                     width: `100%`,
@@ -71,9 +70,9 @@ export default function Camera ({
                         <video
                             ref={videoRef}
                             playsInline
+                            autoPlay
+                            muted
                             id={session ? `camera:${session.id}` : undefined}
-                            autoPlay={true}
-                            muted={true}
                             style={{
                                 backgroundColor: `#000`,
                                 borderRadius: 12,
@@ -87,7 +86,7 @@ export default function Camera ({
                         />
                         <audio
                             ref={audioRef}
-                            autoPlay={true}
+                            autoPlay
                             muted={muted}
                         />
                     </>

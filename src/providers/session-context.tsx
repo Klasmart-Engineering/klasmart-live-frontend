@@ -14,6 +14,11 @@ import React,
     useState,
 } from "react";
 
+interface Teacher {
+    id: string;
+    name: string;
+}
+
 const DEFAULT_SESSION_CONTEXT = {
     roomId: ``,
     materials: [],
@@ -38,13 +43,25 @@ export interface ISessionContext {
     token?: string;
     user_id?: string;
     isReview?: boolean;
+    title?: string;
+    teachers?: Teacher[];
+    dueDate?: number;
+    startTime?: number;
     setName: React.Dispatch<React.SetStateAction<string | undefined>>;
     setToken: React.Dispatch<React.SetStateAction<string | undefined>>;
+    setTitle: React.Dispatch<React.SetStateAction<string | undefined>>;
+    setTeachers: React.Dispatch<React.SetStateAction<Teacher[] | undefined>>;
+    setDueDate: React.Dispatch<React.SetStateAction<number | undefined>>;
+    setStartTime: React.Dispatch<React.SetStateAction<number | undefined>>;
 }
 
 const SessionContext = createContext<ISessionContext>({
     setName: () => null,
     setToken: () => null,
+    setTitle: () => null,
+    setTeachers: () => null,
+    setDueDate: () => null,
+    setStartTime: () => null,
     ...DEFAULT_SESSION_CONTEXT,
 });
 
@@ -59,6 +76,18 @@ export function SessionContextProvider ({ children, sessionId }: Props) {
     const [ selectedName, setSelectedName ] = useState<string>();
     const [ selectedCamera, setSelectedCamera ] = useState<MediaStream>();
 
+    const [ title, setTitle ] = useState<string>();
+    const [ startTime, setStartTime ] = useState<number>();
+    const [ teachers, setTeachers ] = useState<Teacher[]>();
+    const [ dueDate, setDueDate ] = useState<number>();
+
+    useEffect(()=>{
+        const authToken = AuthTokenProvider.retrieveToken();
+        if(!authToken) return;
+
+        setToken(authToken);
+    }, []);
+
     const userContext = useMemo<ISessionContext>(() => {
         const params = parseTokenParams(token);
 
@@ -69,7 +98,15 @@ export function SessionContextProvider ({ children, sessionId }: Props) {
             setName: setSelectedName,
             token,
             sessionId,
+            title,
+            teachers,
+            dueDate,
+            startTime,
             setToken,
+            setTitle,
+            setTeachers,
+            setDueDate,
+            setStartTime,
         };
 
         const parsedTokenState = params
@@ -95,6 +132,10 @@ export function SessionContextProvider ({ children, sessionId }: Props) {
         selectedName,
         setSelectedName,
         token,
+        title,
+        dueDate,
+        teachers,
+        startTime,
     ]);
 
     return (

@@ -81,7 +81,7 @@ export default function LiveScheduleList () {
     const [ page, setPage ] = useState(SCHEDULE_PAGE_START);
     const [ items, setItems ] = useState<SchedulesTimeViewListItem[]>([]);
     const { enqueueSnackbar } = useSnackbar();
-    const { setToken } = useSessionContext();
+    const { setToken, setTeachers, setTitle, setStartTime } = useSessionContext();
     const { actions } = useCmsApiClient();
     const organization = useSelectedOrganizationValue();
 
@@ -139,7 +139,15 @@ export default function LiveScheduleList () {
                 schedule_id: liveSchedule.id,
                 live_token_type: ScheduleLiveTokenType.LIVE,
             });
+            const { title, start_at, teachers } = await actions.getScheduleById({
+                org_id: organizationId,
+                schedule_id: liveSchedule.id,
+            })
+            setTeachers(teachers);
+            setTitle(title);
+            setStartTime(start_at);
             setToken(token);
+
             location.href = `#/room?token=${token}`;
         } catch (err) {
             enqueueSnackbar(intl.formatMessage({

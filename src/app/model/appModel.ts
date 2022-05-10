@@ -140,3 +140,13 @@ export const selectOrgAfterSwitchingProfile = atom<boolean>({
     key: `selectOrgAfterSwitchingProfile`,
     default: false,
 });
+
+export const cameraErrorState = atom({
+    key: `cameraErrorState`,
+    default: false,
+});
+
+export const microphoneErrorState = atom({
+    key: `microphoneErrorState`,
+    default: false,
+});

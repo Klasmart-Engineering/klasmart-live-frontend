@@ -1,4 +1,5 @@
 import Join from './join/join';
+import JoinApp from './join/joinApp';
 import {
     LiveRoom,
     RoomWithContext,
@@ -87,7 +88,7 @@ export function WebApp () {
             {hasJoinedClassroom && name ? (
                 <RoomWithContext>{renderChildren()}</RoomWithContext>
             )
-                : <Join />
+                : process.env.IS_CORDOVA_BUILD ? <JoinApp /> : <Join />
             }
         </WebRtcProvider>
     );

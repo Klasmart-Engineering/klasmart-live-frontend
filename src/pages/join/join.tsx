@@ -1,11 +1,6 @@
 /* eslint-disable react/no-multi-comp */
 import { CameraPreview } from "./cameraPreview";
 import { MicrophonePreview } from "./microphonePreview";
-import BackButton from "@/app/components/layout/BackButton";
-import {
-    PermissionType,
-    useCordovaSystemContext,
-} from "@/app/context-provider/cordova-system-context";
 import KidsLoopClassTeachers from "@/assets/img/classtype/kidsloop_class_teachers.svg";
 import KidsLoopLiveStudents from "@/assets/img/classtype/kidsloop_live_students.svg";
 import KidsLoopLiveTeachers from "@/assets/img/classtype/kidsloop_live_teachers.svg";
@@ -65,7 +60,6 @@ import React,
 } from "react";
 import { useAsync } from "react-async-hook";
 import { FormattedMessage } from "react-intl";
-import { useHistory } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -96,12 +90,6 @@ const useStyles = makeStyles((theme: Theme) =>
             width: `auto`,
             maxHeight: `26px`,
             objectFit: `contain`,
-        },
-        appHeader: {
-            position: `fixed`,
-            top: 0,
-            left: 0,
-            width: `100%`,
         },
         header:{
             color: `#fff`,
@@ -181,30 +169,11 @@ export default function Join (): JSX.Element {
     const brandingAsync = useAsync((id: string, endpoint: string) => getOrganizationBranding(id, endpoint), [ organizationId, brandingEndpoint ]);
     const logo = brandingAsync.result?.iconImageURL || KidsLoopLogoSvg;
 
-    const setClassEnded = useSetRecoilState(classLeftState);
-    const setClassLeft = useSetRecoilState(classEndedState);
+    const setClassLeft = useSetRecoilState(classLeftState);
+    const setClassEnded = useSetRecoilState(classEndedState);
     const setShowSelectAttendees = useSetRecoilState(showSelectAttendeesState);
-    const [ requestedNativePermission, setRequestedNativePermission ] = useState(false);
-
-    const history = useHistory();
-    const {
-        requestPermissions: requestNativePermissions,
-        isIOS,
-        restart,
-    } = useCordovaSystemContext();
 
     useEffect(() => {
-        if (process.env.IS_CORDOVA_BUILD && !isIOS) {
-            requestNativePermissions({
-                permissionTypes: [ PermissionType.CAMERA, PermissionType.MIC ],
-                onSuccess: () => {
-                    setRequestedNativePermission(true);
-                },
-                onError: () => {
-                    setRequestedNativePermission(true);
-                },
-            });
-        }
         setClassEnded(false);
         setClassLeft(false);
         setShowSelectAttendees(classType === ClassType.CLASSES);
@@ -217,33 +186,15 @@ export default function Join (): JSX.Element {
     const [ cameraPaused, setCameraPaused ] = useState(false);
     const [ microphonePaused, setMicrophonePaused ] = useState(false);
 
-    // Should access the camera after allow camera permission, have to restart the device if not.
-    if (process.env.IS_CORDOVA_BUILD && !isIOS && !requestedNativePermission) {
-        return <Loading messageId="loading" />;
-    }
-
     if (brandingAsync.loading) {
         return <Loading messageId="loading" />;
     }
-
-    const onCloseButtonClick = () => {
-        if (restart) {
-            restart();
-        } else {
-            history.push(`/schedule`);
-        }
-    };
 
     return (
         <div className={clsx(classes.root, {
             [classes.rootTeacher]: isTeacher,
         })}
         >
-            {process.env.IS_CORDOVA_BUILD &&
-                <div className={classes.appHeader}>
-                    <BackButton onClick={onCloseButtonClick} />
-                </div>
-            }
             <div className={classes.header}>
                 <Typography
                     noWrap
@@ -335,7 +286,10 @@ export default function Join (): JSX.Element {
                         </CardContent>
                     </Card>
                     <div className={classes.footer}>
-                        <img src={logo} />
+                        <img
+                            src={logo}
+                            alt="Logo"
+                        />
                     </div>
                 </Container>
             </Grid>

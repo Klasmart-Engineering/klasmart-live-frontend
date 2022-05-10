@@ -36,3 +36,14 @@ export function formatStartEndTimeMillis (startTimeMillis: number, endTimeMillis
     }
     return `${startTime} - ${endTime}`;
 }
+
+export function formatDateMonthYearMillis (millis: number, intl: IntlShape) {
+    const day =  intl.formatDate(millis, {
+        day: `numeric`,
+    });
+    const monthWithYear = intl.formatDate(millis, {
+        month: `short`,
+        year: `numeric`,
+    });
+    return `${day} ${monthWithYear}`;
+}
