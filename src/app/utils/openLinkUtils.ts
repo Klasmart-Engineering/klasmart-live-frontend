@@ -1,5 +1,9 @@
 import { useRegionSelect } from "@/providers/region-select-context";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
+import { useHistory } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import { FilePath } from "../context-provider/authentication-context";
+import { urlFilePathState } from "../model/appModel";
 
 export const useOpenLink = () => {
     const { region } = useRegionSelect();
@@ -46,3 +50,33 @@ export const useOpenLink = () => {
         openContact,
     };
 };
+
+export const useOpenDeepLink = () => {
+    const [ urlFilePath, setUrlFilePath ] = useRecoilState(urlFilePathState);
+    const { openPrivacyPolicy, openCookiesPolicy, openTermsOfUse, openContact } = useOpenLink();
+    const history = useHistory();
+
+    const openDeepLink = useCallback(() => {
+        switch (urlFilePath) {
+            case FilePath.PRIVACY_POLICY:
+                openPrivacyPolicy();
+                break;
+            case FilePath.COOKIE_POLICY:
+                openCookiesPolicy();
+                break;
+            case FilePath.TERMS_OF_USE:
+                openTermsOfUse();
+                break;
+            case FilePath.CONTACT:
+                openContact();
+                break;
+            default:
+                break;
+        }
+        setUrlFilePath(``);
+    }, [urlFilePath]);
+
+    return {
+        openDeepLink,
+    };
+}

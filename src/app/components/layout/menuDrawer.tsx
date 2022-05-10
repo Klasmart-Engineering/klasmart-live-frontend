@@ -6,7 +6,9 @@ import {
     isShowOnBoardingState,
     menuOpenState,
     shouldClearCookieState,
+    urlFilePathState,
 } from "@/app/model/appModel";
+import { useOpenDeepLink } from "@/app/utils/openLinkUtils";
 import ParentsDashboardIcon from '@/assets/img/menu-drawer/icon_dashboard.svg';
 import SettingsIcon from '@/assets/img/menu-drawer/icon_settings.svg';
 import {
@@ -42,6 +44,7 @@ import { FormattedMessage, useIntl } from "react-intl";
 import { useHistory } from "react-router-dom";
 import {
     useRecoilState,
+    useRecoilValue,
     useSetRecoilState,
 } from "recoil";
 
@@ -110,6 +113,8 @@ export default function MenuDrawer () {
     const setShouldClearCookie = useSetRecoilState(shouldClearCookieState);
     const setShowOnBoarding = useSetRecoilState(isShowOnBoardingState);
     const { showPopup } = usePopupContext();
+    const { openDeepLink } = useOpenDeepLink();
+    const urlFilePath = useRecoilValue(urlFilePathState);
 
     const menuArray = [
         // {
@@ -186,7 +191,11 @@ export default function MenuDrawer () {
         return (
             <DialogParentalLock
                 onCompleted={() => {
+                    if (urlFilePath) {
+                        openDeepLink();
+                    } else {
                     history.push(`/settings`);
+                    }
                     setParentalLock(false);
                 }}
             />

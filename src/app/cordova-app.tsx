@@ -1,4 +1,6 @@
+import DialogParentalLock from "./components/ParentalLock";
 import { OnBoardingPage } from "./pages/on-boarding/onBoardingPage";
+import { useOpenDeepLink } from "./utils/openLinkUtils";
 import { useAuthenticationContext } from "@/app/context-provider/authentication-context";
 import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
 import { usePopupContext } from "@/app/context-provider/popup-context";
@@ -15,9 +17,11 @@ import { useSignOut } from "@/app/dialogs/account/useSignOut";
 import { ExternalNavigationDialog } from "@/app/dialogs/externalNavigationDialog";
 import {
     dialogsState,
+    isAppLoadedState,
     shouldShowNoOrgProfileState,
     shouldShowNoStudentRoleState,
     showedUpgradeDevicePopupState,
+    urlFilePathState,
 } from "@/app/model/appModel";
 import { Auth } from "@/app/pages/account/auth";
 import { NoPageFoundDialog } from "@/app/pages/no-pages/noPageFoundDialog";
@@ -33,6 +37,7 @@ import NoStudentRoleLogo from "@/assets/img/no_student_role_icon.svg";
 import { WebApp } from "@/pages/webApp";
 import { useQueryClient } from "@kl-engineering/cms-api-client";
 import Grid from "@material-ui/core/Grid";
+import { History } from "history";
 import React,
 { useEffect } from "react";
 import { useIntl } from "react-intl";
@@ -44,10 +49,11 @@ import {
 import {
     useRecoilState,
     useRecoilValue,
+    useSetRecoilState,
 } from "recoil";
 
 export function CordovaApp ({ history }: {
-    history: any;
+    history: History<unknown>;
 }): JSX.Element {
     const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
     const {
@@ -67,6 +73,9 @@ export function CordovaApp ({ history }: {
         shouldUpgradeDevice,
     } = useCordovaSystemContext();
     const [ showedUpgradeDevicePopup, setShowedUpgradeDevicePopup ] = useRecoilState(showedUpgradeDevicePopupState);
+    const setAppLoaded = useSetRecoilState(isAppLoadedState);
+    const urlFilePath = useRecoilValue(urlFilePathState);
+    const { openDeepLink } = useOpenDeepLink();
     const { showPopup } = usePopupContext();
     const intl = useIntl();
 
@@ -78,6 +87,7 @@ export function CordovaApp ({ history }: {
             signOut();
             return;
         }
+        setAppLoaded(true);
         setDialogs({
             ...dialogs,
             isSelectUserOpen: shouldSelectUser,
@@ -129,6 +139,24 @@ export function CordovaApp ({ history }: {
         showedUpgradeDevicePopup,
         shouldUpgradeDevice,
     ]);
+
+    const setParentalLock = (open: boolean) => {
+        setDialogs({
+            ...dialogs,
+            isParentalLockOpen: open,
+        });
+    };
+
+    if (dialogs.isParentalLockOpen && urlFilePath) {
+        return (
+            <DialogParentalLock
+                onCompleted={() => {
+                    openDeepLink();
+                    setParentalLock(false);
+                }}
+            />
+        );
+    }
 
     return (
         <Grid
