@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.10.0](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.9.0...v6.10.0) (2022-05-10)
+
+
+### ♻️ Chores
+
+* add CODEOWNERS file (#107) ([9fda2c9](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/9fda2c97c15093af9bc9b43a6e157cfc6254161f))
+
+
+### 🐛 Bug Fixes
+
+* canvas hide/show styles adjustments (#109) ([c54b614](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/c54b614a99da6c0c3369bd66ef33092aee0a1217))
+* fix arrow color at the end of study in class mode (#105) ([372d568](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/372d568248a11cfd1910823cad97a61913c0ce50))
+
+
+### ✨ Features
+
+* add warning when signing out (#104) ([ae99de3](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/ae99de306a83a4009252024438983ad56748ad1d)), closes [NAT-85](https://calmisland.atlassian.net/browse/NAT-85)
+* change location of global mute buttons (#94) ([f0f9ed6](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/f0f9ed6e5253cd1cbb06b2014df90b9279ffdcab)), closes [SFU-119](https://calmisland.atlassian.net/browse/SFU-119)
+* clear H5P answers/LocalStorage on refresh (#111) ([e1bc166](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/e1bc166faa2e508b9292641054633d8e45f4704f)), closes [KLL-3586](https://calmisland.atlassian.net/browse/KLL-3586)
+* redesign join room in live and study class (#99) ([548a2d4](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/548a2d4b71c54b874adc6176f76f119420ad5278)), closes [NAT-50](https://calmisland.atlassian.net/browse/NAT-50) [NAT-53](https://calmisland.atlassian.net/browse/NAT-53)
+* **translation:** update translations (#108) ([b021094](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/b02109486b795269a97a9f76e01f190694bbc735))
+
 ## [6.9.0](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.8.0...v6.9.0) (2022-05-02)
 
 
