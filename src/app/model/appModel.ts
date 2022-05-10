@@ -135,3 +135,13 @@ export const isShowOnBoardingState = atom({
     key: `isShowOnBoardingState`,
     default: true,
 });
+
+export const isAppLoadedState = atom({
+    key: `isAppLoaded`,
+    default: false,
+});
+
+export const urlFilePathState = atom<string>({
+    key: `urlFilePath`,
+    default: ``,
+});

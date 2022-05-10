@@ -1,8 +1,11 @@
 import {
     authState,
+    dialogsState,
+    isAppLoadedState,
     localeState,
     selectedRegionState,
     shouldClearCookieState,
+    urlFilePathState,
 } from "../model/appModel";
 import { useServices } from "./services-provider";
 import React,
@@ -16,7 +19,14 @@ import React,
     useMemo,
     useState,
 } from "react";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
+
+export enum FilePath {
+    PRIVACY_POLICY = "//privacy-policy",
+    COOKIE_POLICY = "//cookie-policy",
+    TERMS_OF_USE = "//terms-of-use",
+    CONTACT = "//contact-us",
+}
 
 type Props = {
     children?: ReactChild | ReactChildren | null;
@@ -53,6 +63,10 @@ const useAuthentication = () => {
     const [ selectedRegion, setSelectedRegion ] = useRecoilState(selectedRegionState);
     const [ locale, setLocale ] = useRecoilState(localeState);
     const [ shouldClearCookie, setShouldClearCookie ] = useRecoilState(shouldClearCookieState);
+    const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
+    const [ urlFilePath, setUrlFilePath ] = useRecoilState(urlFilePathState);
+
+    const isAppLoaded = useRecoilValue(isAppLoadedState);
 
     const refresh = useCallback(async (force?: boolean) => {
         if (!authenticationService) return;
@@ -106,6 +120,18 @@ const useAuthentication = () => {
         await authenticationService.switchUser(userId);
     }, [ authenticationService, authenticated ]);
 
+    const handleFilePath = (filePath: String) => {
+        if (filePath === FilePath.PRIVACY_POLICY 
+            || filePath === FilePath.COOKIE_POLICY 
+            || filePath === FilePath.TERMS_OF_USE
+            || filePath === FilePath.CONTACT) {
+            setDialogs({
+                ...dialogs,
+                isParentalLockOpen: true,
+            });
+        }
+    }
+
     useEffect(() => {
         if (!authenticationService) return;
         if (!auth.transferToken) return;
@@ -136,6 +162,8 @@ const useAuthentication = () => {
             //Set this flag to false to receive response from authenticationService.refresh()
             setShouldClearCookie(false);
 
+            setUrlFilePath(url.pathname);
+
             const languageCode = url.searchParams.get(`iso`);
             if (languageCode) {
                 setLocale({
@@ -159,6 +187,9 @@ const useAuthentication = () => {
                     transferToken: token,
                 });
             }
+
+            handleFilePath(urlFilePath);
+
         };
 
         (window as any).handleOpenURL = (url: string) => {
@@ -169,7 +200,17 @@ const useAuthentication = () => {
         selectedRegion,
         auth,
         locale,
+        urlFilePath,
     ]);
+
+    useEffect(() => {
+        if (isAppLoaded) {
+            handleFilePath(urlFilePath);
+        }
+    }, [
+        isAppLoaded, 
+        urlFilePath,
+    ]),
 
     useEffect(() => {
         refresh();

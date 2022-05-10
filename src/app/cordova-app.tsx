@@ -15,6 +15,7 @@ import { useSignOut } from "@/app/dialogs/account/useSignOut";
 import { ExternalNavigationDialog } from "@/app/dialogs/externalNavigationDialog";
 import {
     dialogsState,
+    isAppLoadedState,
     shouldShowNoOrgProfileState,
     shouldShowNoStudentRoleState,
     showedUpgradeDevicePopupState,
@@ -44,10 +45,14 @@ import {
 import {
     useRecoilState,
     useRecoilValue,
+    useSetRecoilState,
 } from "recoil";
+import { useOpenDeepLink } from "./utils/openLinkUtils";
+import DialogParentalLock from "./components/ParentalLock";
+import { History } from "history";
 
 export function CordovaApp ({ history }: {
-    history: any;
+    history: History<unknown>;
 }): JSX.Element {
     const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
     const {
@@ -67,6 +72,8 @@ export function CordovaApp ({ history }: {
         shouldUpgradeDevice,
     } = useCordovaSystemContext();
     const [ showedUpgradeDevicePopup, setShowedUpgradeDevicePopup ] = useRecoilState(showedUpgradeDevicePopupState);
+    const setAppLoaded = useSetRecoilState(isAppLoadedState);
+    const { openDeepLink } = useOpenDeepLink();
     const { showPopup } = usePopupContext();
     const intl = useIntl();
 
@@ -78,6 +85,7 @@ export function CordovaApp ({ history }: {
             signOut();
             return;
         }
+        setAppLoaded(true);
         setDialogs({
             ...dialogs,
             isSelectUserOpen: shouldSelectUser,
@@ -129,6 +137,27 @@ export function CordovaApp ({ history }: {
         showedUpgradeDevicePopup,
         shouldUpgradeDevice,
     ]);
+
+    const setParentalLock = (open: boolean) => {
+        setDialogs({
+            ...dialogs,
+            isParentalLockOpen: open,
+        });
+    };
+
+    if (dialogs.isParentalLockOpen
+        && history.location.pathname !== `/`
+        && history.location.pathname !== `/schedule`
+        && !history.location.pathname.includes(`settings`)) {
+        return (
+            <DialogParentalLock
+                onCompleted={() => {
+                    openDeepLink();
+                    setParentalLock(false);
+                }}
+            />
+        );
+    }
 
     return (
         <Grid
