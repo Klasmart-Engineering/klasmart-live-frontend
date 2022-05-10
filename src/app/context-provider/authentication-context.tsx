@@ -20,6 +20,7 @@ import React,
     useState,
 } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
+import { useCordovaSystemContext } from "./cordova-system-context";
 
 export enum FilePath {
     PRIVACY_POLICY = "//privacy-policy",
@@ -65,6 +66,7 @@ const useAuthentication = () => {
     const [ shouldClearCookie, setShouldClearCookie ] = useRecoilState(shouldClearCookieState);
     const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
     const [ urlFilePath, setUrlFilePath ] = useRecoilState(urlFilePathState);
+    const { isIOS } = useCordovaSystemContext();
 
     const isAppLoaded = useRecoilValue(isAppLoadedState);
 
@@ -162,7 +164,7 @@ const useAuthentication = () => {
             //Set this flag to false to receive response from authenticationService.refresh()
             setShouldClearCookie(false);
 
-            setUrlFilePath(url.pathname);
+            setUrlFilePath(!isIOS ? url.pathname : `//${url.hostname}`);
 
             const languageCode = url.searchParams.get(`iso`);
             if (languageCode) {
