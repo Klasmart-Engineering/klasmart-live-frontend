@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.11.0](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.10.0...v6.11.0) (2022-05-12)
+
+
+### ✨ Features
+
+* reschedule settings page (#114) ([2954ca9](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/2954ca94f3c3fca11005074d27fe936aa26812c7)), closes [NAT-702](https://calmisland.atlassian.net/browse/NAT-702) [NAT-727](https://calmisland.atlassian.net/browse/NAT-727) [NAT-697](https://calmisland.atlassian.net/browse/NAT-697) [NAT-730](https://calmisland.atlassian.net/browse/NAT-730) [NAT-695](https://calmisland.atlassian.net/browse/NAT-695) [NAT-696](https://calmisland.atlassian.net/browse/NAT-696)
+
+
+### 🐛 Bug Fixes
+
+* change popup type to handle android back button (#115) ([518f152](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/518f152f79621b61aba912c6d5ed2d1a323b9026)), closes [NAT-85](https://calmisland.atlassian.net/browse/NAT-85)
+
 ## [6.10.0](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.9.0...v6.10.0) (2022-05-10)
 
 
