@@ -12,6 +12,7 @@ import React,
     useEffect,
     useState,
 } from "react";
+import { useIntl } from 'react-intl';
 
 type Props = {
     children: ReactNode;
@@ -24,7 +25,7 @@ export type PopupState = {
     open?: boolean;
     title: string;
     description: string[];
-    closeLabel: string;
+    closeLabel?: string;
     onClose?: () => void;
     confirmLabel?: string;
     onConfirm?: () => void;
@@ -56,6 +57,7 @@ const PopupContext = createContext<PopupContext>({
 const POPUP_ON_BACK_ID = `popupOnBackID`;
 
 export function PopupElement (): JSX.Element {
+    const intl = useIntl();
     const { popupState, closePopup } = usePopupContext();
     const { addOnBack, removeOnBack } = useContext(CordovaSystemContext);
 
@@ -122,7 +124,10 @@ export function PopupElement (): JSX.Element {
                     title={popupState.title}
                     description={popupState.description}
                     closeLabel={popupState.closeLabel}
-                    confirmLabel={popupState.confirmLabel ?? `Ok`}
+                    confirmLabel={popupState.confirmLabel ?? intl.formatMessage({
+                        id: `button_ok`,
+                    })}
+                    showCloseIcon={popupState.showCloseIcon}
                     onClose={handleClosePopup}
                     onConfirm={handleConfirmPopup}
                 />);
@@ -134,7 +139,9 @@ export function PopupElement (): JSX.Element {
                     title={popupState.title}
                     description={popupState.description}
                     closeLabel={popupState.closeLabel}
-                    confirmLabel={popupState.confirmLabel ?? `Ok`}
+                    confirmLabel={popupState.confirmLabel ?? intl.formatMessage({
+                        id: `button_ok`,
+                    })}
                     onClose={handleClosePopup}
                     onConfirm={handleConfirmPopup}
                 />);
@@ -146,7 +153,7 @@ export function PopupElement (): JSX.Element {
                     description={popupState.description}
                     title={popupState.title}
                     closeLabel={popupState.closeLabel}
-                    showCloseIcon={popupState.showCloseIcon ?? false}
+                    showCloseIcon={popupState.showCloseIcon}
                     onClose={handleClosePopup}
                 />);
         default:

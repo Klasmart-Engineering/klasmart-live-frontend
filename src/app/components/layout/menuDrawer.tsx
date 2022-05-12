@@ -161,7 +161,7 @@ export default function MenuDrawer () {
 
     const showConfirmSignout = () => {
         showPopup({
-            variant: `info`,
+            variant: `confirm`,
             showCloseIcon: true,
             title: intl.formatMessage({
                 id: `account_selectOrg_signOut`,
@@ -171,10 +171,10 @@ export default function MenuDrawer () {
                     id: `hamburger.signOut.confirm`,
                 }),
             ],
-            closeLabel: intl.formatMessage({
+            confirmLabel: intl.formatMessage({
                 id: `account_selectOrg_signOut`,
             }),
-            onClose: () => {
+            onConfirm: () => {
                 actions?.signOut();
                 setShouldClearCookie(true);
                 setShowOnBoarding(true);

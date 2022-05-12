@@ -11,14 +11,15 @@ interface Props {
     onConfirm: () => void;
     title: string;
     description: string[];
-    closeLabel: string;
+    closeLabel?: string;
     confirmLabel: string;
+    showCloseIcon?: boolean;
 }
 
 export function ConfirmDialog ({
     open, onClose, onConfirm,
     title, description,
-    closeLabel, confirmLabel,
+    closeLabel, confirmLabel, showCloseIcon,
 }: Props): JSX.Element {
     return (
         <BaseConfirmDialog
@@ -26,6 +27,7 @@ export function ConfirmDialog ({
             title={title}
             closeLabel={closeLabel}
             confirmLabel={confirmLabel}
+            showCloseIcon={showCloseIcon}
             onClose={onClose}
             onConfirm={onConfirm}
         >
@@ -35,7 +37,7 @@ export function ConfirmDialog ({
                 spacing={2}
             >
                 {
-                    description.map((item, index) =>
+                    description.map((descriptionItem, index) =>
                         (
                             <Grid
                                 key={index}
@@ -44,7 +46,7 @@ export function ConfirmDialog ({
                             >
                                 <Typography
                                     variant="body2"
-                                >{item}
+                                >{descriptionItem}
                                 </Typography>
                             </Grid>
                         ))}

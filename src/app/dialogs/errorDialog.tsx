@@ -22,7 +22,7 @@ interface Props {
     onClose: () => void;
     title: string;
     description: string[];
-    closeLabel: string;
+    closeLabel?: string;
 }
 
 export function ErrorDialog ({
@@ -36,20 +36,26 @@ export function ErrorDialog ({
             open={open}
             title={title}
             closeLabel={closeLabel}
-            onClose={onClose}>
+            onClose={onClose}
+        >
             <Grid
                 container
                 direction={`column`}
-                spacing={2}>
+                spacing={2}
+            >
                 {
-                    description.map((item, index) =>
-                        <Grid
-                            key={index}
-                            item
-                            xs>
-                            <Typography
-                                className={classes.dialogText}>{item}</Typography>
-                        </Grid>)
+                    description.map((descriptionItem, index) =>
+                        (
+                            <Grid
+                                key={index}
+                                item
+                                xs
+                            >
+                                <Typography
+                                    className={classes.dialogText}
+                                >{descriptionItem}
+                                </Typography>
+                            </Grid>))
                 }
             </Grid>
         </BaseErrorDialog>

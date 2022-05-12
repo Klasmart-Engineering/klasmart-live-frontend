@@ -45,15 +45,10 @@ interface Props {
     open: boolean;
     onClose: () => void;
     title: string;
-    closeLabel: string;
+    closeLabel?: string;
     children: React.ReactNode;
 }
 
-export type ErrorDialogState = {
-    open: boolean;
-    title: string;
-    description: string[];
-}
 export function BaseErrorDialog ({
     open, onClose, title,
     closeLabel, children,
@@ -69,11 +64,14 @@ export function BaseErrorDialog ({
                     paper: classes.rounded_dialog,
                 }}
                 open={open}
-                onClose={onClose}>
+                onClose={onClose}
+            >
                 <DialogTitle className={classes.dialogTitle}>
                     <Typography
                         variant="subtitle1"
-                        className={classes.dialogTitleText}>{title}</Typography>
+                        className={classes.dialogTitleText}
+                    >{title}
+                    </Typography>
                 </DialogTitle>
                 <DialogContent>
                     {children}
@@ -82,7 +80,9 @@ export function BaseErrorDialog ({
                     <Button
                         variant={`contained`}
                         className={classes.buttonClose}
-                        onClick={onClose}>{closeLabel}</Button>
+                        onClick={onClose}
+                    >{closeLabel}
+                    </Button>
                 </DialogActions>
             </Dialog>
         </React.Fragment>

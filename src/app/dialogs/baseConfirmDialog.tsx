@@ -1,7 +1,9 @@
+import { CloseIconButton } from "../components/icons/closeIconButton";
 import {
     BACKGROUND_COLOR_CONFIRM_BUTTON,
     BG_COLOR_GO_LIVE_BUTTON,
     BG_COLOR_GRAY_BUTTON,
+    TEXT_COLOR_MENU_DRAWER,
 } from "@/config";
 import {
     Button,
@@ -9,6 +11,7 @@ import {
     DialogActions,
     DialogContent,
     DialogTitle,
+    Grid,
     Typography,
 } from "@material-ui/core";
 import {
@@ -36,6 +39,7 @@ const useStyles = makeStyles((theme) =>
         buttonClose: {
             color: BACKGROUND_COLOR_CONFIRM_BUTTON,
             backgroundColor: BG_COLOR_GRAY_BUTTON,
+            padding: theme.spacing(1, 2),
             "&:hover": {
                 backgroundColor: BG_COLOR_GRAY_BUTTON,
             },
@@ -43,6 +47,7 @@ const useStyles = makeStyles((theme) =>
         buttonConfirm: {
             color:  theme.palette.common.white,
             backgroundColor: BG_COLOR_GO_LIVE_BUTTON,
+            padding: theme.spacing(1, 2),
             "&:hover": {
                 backgroundColor: BG_COLOR_GO_LIVE_BUTTON,
             },
@@ -58,14 +63,15 @@ interface Props {
     onClose: () => void;
     onConfirm: () => void;
     title: string;
-    closeLabel: string;
+    closeLabel?: string;
     confirmLabel: string;
+    showCloseIcon?: boolean;
     children: React.ReactNode;
 }
 
 export function BaseConfirmDialog ({
     open, onClose, onConfirm, title,
-    closeLabel, confirmLabel, children,
+    closeLabel, confirmLabel, showCloseIcon, children,
 }: Props): JSX.Element {
     const classes = useStyles();
     return (
@@ -81,21 +87,40 @@ export function BaseConfirmDialog ({
                 onClose={onClose}
             >
                 <DialogTitle className={classes.dialogTitle}>
-                    <Typography
-                        variant="subtitle1"
-                        className={classes.dialogText}
-                    >{title}
-                    </Typography>
+                    <Grid
+                        container
+                        justifyContent="space-between"
+                        alignItems="center"
+                        wrap="nowrap"
+                    >
+                        <Grid item>
+                            <Typography
+                                variant="subtitle1"
+                                className={classes.dialogText}
+                            >{title}
+                            </Typography>
+                        </Grid>
+                        {showCloseIcon &&
+                            <Grid item>
+                                <CloseIconButton
+                                    buttonSize="small"
+                                    color={TEXT_COLOR_MENU_DRAWER}
+                                    onClick={onClose}
+                                />
+                            </Grid>}
+                    </Grid>
                 </DialogTitle>
                 <DialogContent>
                     {children}
                 </DialogContent>
                 <DialogActions className={classes.dialogActions}>
-                    <Button
-                        className={classes.buttonClose}
-                        onClick={onClose}
-                    >{closeLabel}
-                    </Button>
+                    {closeLabel &&
+                        <Button
+                            className={classes.buttonClose}
+                            onClick={onClose}
+                        >{closeLabel}
+                        </Button>
+                    }
                     <Button
                         className={classes.buttonConfirm}
                         onClick={onConfirm}

@@ -22,7 +22,7 @@ interface Props {
     onClose: () => void;
     title: string;
     description: string[];
-    closeLabel: string;
+    closeLabel?: string;
 }
 
 export function DetailErrorDialog ({
@@ -36,26 +36,37 @@ export function DetailErrorDialog ({
             open={open}
             title={title}
             closeLabel={closeLabel}
-            onClose={onClose}>
+            onClose={onClose}
+        >
             <Grid
                 container
                 direction={`column`}
-                spacing={2}>
+                spacing={2}
+            >
                 {
-                    description.map((item, index) =>
-                        <Grid
-                            key={index}
-                            item
-                            xs>
-                            {(index === 0)
-                                ? <Typography
-                                    className={classes.dialogText}>{item}</Typography>
-
-                                : <Typography
-                                    variant="caption"
-                                    color={`textSecondary`}
-                                >{item}</Typography>}
-                        </Grid>)
+                    description.map((descriptionItem, index) =>
+                        (
+                            <Grid
+                                key={index}
+                                item
+                                xs
+                            >
+                                {(index === 0)
+                                    ?
+                                    <Typography
+                                        className={classes.dialogText}
+                                    >
+                                        {descriptionItem}
+                                    </Typography>
+                                    :
+                                    <Typography
+                                        variant="caption"
+                                        color={`textSecondary`}
+                                    >
+                                        {descriptionItem}
+                                    </Typography>
+                                }
+                            </Grid>))
                 }
             </Grid>
         </BaseErrorDialog>

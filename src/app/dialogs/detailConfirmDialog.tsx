@@ -11,7 +11,7 @@ interface Props {
     onConfirm: () => void;
     title: string;
     description: string[];
-    closeLabel: string;
+    closeLabel?: string;
     confirmLabel: string;
 }
 
@@ -35,7 +35,7 @@ export function DetailConfirmDialog ({
                 spacing={2}
             >
                 {
-                    description.map((item, index) =>
+                    description.map((descriptionItem, index) =>
                         (
                             <Grid
                                 key={index}
@@ -46,13 +46,13 @@ export function DetailConfirmDialog ({
                                     ?
                                     <Typography
                                         variant="body2"
-                                    >{item}
+                                    >{descriptionItem}
                                     </Typography>
                                     :
                                     <Typography
                                         variant="caption"
                                         color={`textSecondary`}
-                                    >{item}
+                                    >{descriptionItem}
                                     </Typography>
                                 }
                             </Grid>

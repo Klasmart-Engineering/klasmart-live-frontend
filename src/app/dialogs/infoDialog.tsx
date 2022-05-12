@@ -57,7 +57,7 @@ interface Props {
     title?: string;
     description: string[];
     closeLabel?: string;
-    showCloseIcon: boolean;
+    showCloseIcon?: boolean;
     onClose: (reason?: "backdropClick" | "escapeKeyDown") => void;
 }
 
@@ -92,7 +92,6 @@ export function InfoDialog ({
                 <DialogTitle className={classes.dialogTitle}>
                     <Grid
                         container
-                        direction="row"
                         justifyContent="space-between"
                         alignItems="center"
                         wrap="nowrap"
@@ -128,7 +127,7 @@ export function InfoDialog ({
                         spacing={1}
                     >
                         {
-                            description.map((item, index) =>
+                            description.map((descriptionItem, index) =>
                                 (
                                     <Grid
                                         key={index}
@@ -142,7 +141,7 @@ export function InfoDialog ({
                                             color={`textPrimary`}
                                         >
                                             <div dangerouslySetInnerHTML={{
-                                                __html: item,
+                                                __html: descriptionItem,
                                             }}
                                             />
                                         </Typography>
