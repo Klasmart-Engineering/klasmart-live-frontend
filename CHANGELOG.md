@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.12.0](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.11.0...v6.12.0) (2022-05-13)
+
+
+### 🔨 Build
+
+* **package:** update state library to 1.6.0 (#118) ([f7cc31e](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/f7cc31ec80c5950d48813fa4939ac78edc1ef18f)), closes [SFU-61](https://calmisland.atlassian.net/browse/SFU-61) [SFU-58](https://calmisland.atlassian.net/browse/SFU-58) [SFU-121](https://calmisland.atlassian.net/browse/SFU-121)
+
+
+### ✨ Features
+
+* global mic/camera mute overlay (#80) ([7d15d1e](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/7d15d1e7c24d1c2b9f37b36079e9ee0ec565af2a)), closes [SFU-121](https://calmisland.atlassian.net/browse/SFU-121)
+* upgrade subscription-transport-ws package to graphql-ws (#49) ([be2de2b](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/be2de2bd7380214fdf1dc8b5ccc68c5dae7ca3b0))
+
+
+### 🐛 Bug Fixes
+
+* sfu 58 downscale video during webrtc encoding (#103) ([3ed3d21](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/3ed3d2172bcd812e50f2babbd9283ce21418256c)), closes [SFU-58](https://calmisland.atlassian.net/browse/SFU-58)
+
 ## [6.11.0](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.10.0...v6.11.0) (2022-05-12)
 
 
