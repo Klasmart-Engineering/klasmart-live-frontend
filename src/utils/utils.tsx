@@ -23,7 +23,11 @@ import {
 } from "@material-ui/core";
 import clsx from "clsx";
 import React,
-{ ReactElement } from "react";
+{
+    ReactElement,
+    useEffect,
+    useRef,
+} from "react";
 import { useIntl } from "react-intl";
 import { useRecoilValue } from "recoil";
 
@@ -515,3 +519,10 @@ export function removeKLLH5PStateStorage (){
         localStorage.removeItem(key);
     });
 }
+export const usePrevious = <T,>(value: T): T | undefined => {
+    const ref = useRef<T>();
+    useEffect(() => {
+        ref.current = value;
+    });
+    return ref.current;
+};

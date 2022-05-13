@@ -1,8 +1,10 @@
+import GlobalMuteOverlay from '../globalMuteOverlay';
 import MainStudy from "./mainStudy";
 import MainClass from "@/components/main/mainClass";
 import MainView from "@/components/main/mainView";
 import Toolbar from "@/components/toolbar/toolbar";
 import { THEME_COLOR_GREY_200 } from "@/config";
+import { useSessions } from "@/data/live/state/useSessions";
 import { useSessionContext } from "@/providers/session-context";
 import { ClassType } from "@/store/actions";
 import {
@@ -10,6 +12,11 @@ import {
     showEndStudyState,
 } from "@/store/layoutAtoms";
 import {
+    useCamera,
+    useMicrophone,
+} from '@kl-engineering/live-state/ui';
+import {
+    Box,
     Grid,
     makeStyles,
     Theme,
@@ -35,18 +42,28 @@ const useStyles = makeStyles((theme: Theme) => ({
         display: `flex`,
         alignItems: `center`,
         justifyContent: `center`,
+        position: `relative`,
     },
     activityContainerLive: {
         backgroundColor: THEME_COLOR_GREY_200,
         borderRadius: theme.spacing(1.5),
+        position: `relative`,
     },
 }));
 
 function Main () {
     const classes = useStyles();
-    const { classType } = useSessionContext();
+    const { sessionId, classType } = useSessionContext();
     const setMainActivitySize = useSetRecoilState(mainActivitySizeState);
     const showEndStudy = useRecoilValue(showEndStudyState);
+    const sessions = useSessions();
+    const localSession = sessions.get(sessionId);
+
+    const camera = useCamera();
+    const microphone = useMicrophone();
+
+    const isCameraPausedGlobally = camera.isPausedGlobally;
+    const isMicrophonePausedGlobally = microphone.isPausedGlobally;
 
     const {
         ref: containerRef,
@@ -63,7 +80,26 @@ function Main () {
 
     const renderContent = () => {
         switch(classType){
-        case(ClassType.LIVE): return <MainView />;
+        case(ClassType.LIVE): return (
+            <>
+                <MainView />
+                {!localSession?.isHost && (
+                    <Box
+                        alignItems="center"
+                        display="flex"
+                        justifyContent="space-evenly"
+                        position="absolute"
+                        height="100%"
+                        width="100%"
+                    >
+                        <GlobalMuteOverlay
+                            isCameraPausedGlobally={isCameraPausedGlobally}
+                            isMicrophonePausedGlobally={isMicrophonePausedGlobally}
+                        />
+                    </Box>
+                )}
+            </>
+        );
         case(ClassType.STUDY): return <MainStudy />;
         case(ClassType.CLASSES): return <MainClass />;
         }
