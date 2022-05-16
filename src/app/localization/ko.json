@@ -346,7 +346,9 @@
     "assign_high_class_3w": "연속 3주 동안 {ClassName} 학급에서의 {name} 학생의 과제 완료율이 학급 평균에 비해 {AssignCompareClass3week}% 많았습니다.",
     "assign_low_class_3w": "연속 3주 동안 {ClassName} 학급에서의 {name} 학생의 과제 완료율이 학급 평균에 비해 {AssignCompareClass3week}% 적었습니다.",
     "no_data": "이번 주에 표시할 데이터가 없습니다.",
-    "parentsDashboard.learningOutcome.achieved": "achieved",
-    "parentsDashboard.learningOutcome.NotAchieved": "not achieved",
-    "parentsDashboard.learningOutcome.InProgress": "in progress"
+    "parentsDashboard.learningOutcome.achieved": "학습 완료",
+    "parentsDashboard.learningOutcome.NotAchieved": "학습 미완료",
+    "parentsDashboard.learningOutcome.InProgress": "진행 중",
+    "report_msg_lo_new": "{Name} started learning on KidsLoop this week. So far, {Name} achieved {AchievedLoCount} learning outcomes out of {LearntLoCount}.",
+    "report_msg_lo_low_class_review_w": "This week, {Name} has achieved {%LOReviewCompareClass}% less reviewed learning outcomes than the class average."
 }
