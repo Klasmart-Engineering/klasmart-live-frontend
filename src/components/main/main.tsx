@@ -7,16 +7,12 @@ import { THEME_COLOR_GREY_200 } from "@/config";
 import { useSessions } from "@/data/live/state/useSessions";
 import { useSessionContext } from "@/providers/session-context";
 import { ClassType } from "@/store/actions";
-import {
-    mainActivitySizeState,
-    showEndStudyState,
-} from "@/store/layoutAtoms";
+import { mainActivitySizeState } from "@/store/layoutAtoms";
 import {
     useCamera,
     useMicrophone,
 } from '@kl-engineering/live-state/ui';
 import {
-    Box,
     Grid,
     makeStyles,
     Theme,
@@ -25,10 +21,7 @@ import clsx from "clsx";
 import React,
 { useEffect } from "react";
 import { useResizeDetector } from 'react-resize-detector';
-import {
-    useRecoilValue,
-    useSetRecoilState,
-} from "recoil";
+import { useSetRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
     fullHeight: {
@@ -49,13 +42,21 @@ const useStyles = makeStyles((theme: Theme) => ({
         borderRadius: theme.spacing(1.5),
         position: `relative`,
     },
+    globalMuteOverlayContainer: {
+        alignItems: `center`,
+        display: `flex`,
+        justifyContent: `space-evenly`,
+        position: `absolute`,
+        height: `100%`,
+        width: `100%`,
+        pointerEvents: `none`,
+    },
 }));
 
 function Main () {
     const classes = useStyles();
     const { sessionId, classType } = useSessionContext();
     const setMainActivitySize = useSetRecoilState(mainActivitySizeState);
-    const showEndStudy = useRecoilValue(showEndStudyState);
     const sessions = useSessions();
     const localSession = sessions.get(sessionId);
 
@@ -84,19 +85,12 @@ function Main () {
             <>
                 <MainView />
                 {!localSession?.isHost && (
-                    <Box
-                        alignItems="center"
-                        display="flex"
-                        justifyContent="space-evenly"
-                        position="absolute"
-                        height="100%"
-                        width="100%"
-                    >
+                    <div className={classes.globalMuteOverlayContainer}>
                         <GlobalMuteOverlay
                             isCameraPausedGlobally={isCameraPausedGlobally}
                             isMicrophonePausedGlobally={isMicrophonePausedGlobally}
                         />
-                    </Box>
+                    </div>
                 )}
             </>
         );
