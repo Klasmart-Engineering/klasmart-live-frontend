@@ -1,4 +1,3 @@
-import DialogParentalLock from "@/app/components/ParentalLock";
 import { useAuthenticationContext } from "@/app/context-provider/authentication-context";
 import { useSelectedOrganizationValue } from "@/app/data/user/atom";
 import {
@@ -127,17 +126,6 @@ export default function MenuDrawer () {
         },
     ];
 
-    useEffect(() => {
-        setParentalLock(false);
-    }, []);
-
-    const setParentalLock = (open: boolean) => {
-        setDialogs({
-            ...dialogs,
-            isParentalLockOpen: open,
-        });
-    };
-
     const handleMenuItemClick = (menuDrawerItem: MenuDrawerItem) => {
         setMenuOpen(false);
 
@@ -149,10 +137,9 @@ export default function MenuDrawer () {
             });
             break;
         case MenuDrawerItem.SETTINGS:
-            setParentalLock(true);
+            history.push(`/settings`);
             break;
         case MenuDrawerItem.PARENTS_DASHBOARD:
-            setParentalLock(true);
             break;
         default:
             break;
@@ -181,17 +168,6 @@ export default function MenuDrawer () {
             },
         });
     };
-
-    if (dialogs.isParentalLockOpen) {
-        return (
-            <DialogParentalLock
-                onCompleted={() => {
-                    history.push(`/settings`);
-                    setParentalLock(false);
-                }}
-            />
-        );
-    }
 
     return (
         <SwipeableDrawer

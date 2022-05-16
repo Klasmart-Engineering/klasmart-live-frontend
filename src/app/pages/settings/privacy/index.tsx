@@ -1,6 +1,8 @@
 import AppBar from "@/app/components/layout/AppBar";
+import DialogParentalLock from "@/app/components/ParentalLock";
 import BackButton from "@/app/components/layout/BackButton";
 import { useOpenLink } from "@/app/utils/openLinkUtils";
+import { dialogsState } from "@/app/model/appModel";
 import { 
     THEME_COLOR_BACKGROUND_LIST, TEXT_COLOR_SIGN_OUT, COLOR_ORG_ICON_DEFAULT,
 } from "@/config";
@@ -16,8 +18,9 @@ import {
     Theme,
 } from '@material-ui/core/styles';
 import { KeyboardArrowRight as ArrowRight } from "@styled-icons/material-rounded/KeyboardArrowRight";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useIntl } from "react-intl";
+import { useRecoilState } from "recoil";
 import { useHistory } from "react-router";
 
 enum PrivacyItem{
@@ -54,16 +57,18 @@ export default function PrivacyPage () {
     const classes = useStyles();
     const history = useHistory();
     const { openPrivacyPolicy, openCookiesPolicy, openTermsOfUse } = useOpenLink();
+    const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
+    const [ privacyItemSelected, setPrivacyItemSelected ] = useState<PrivacyItem>();
 
     const privacyArray = [
         {
             id: PrivacyItem.PRIVACY_POLICY,
             primary: `account_selectOrg_privacyPolicy`,
         },
-        {
-            id: PrivacyItem.COOKIES_POLICY,
-            primary: `hamburger.settings.cookiesPolicy`,
-        },
+        // {
+        //     id: PrivacyItem.COOKIES_POLICY,
+        //     primary: `hamburger.settings.cookiesPolicy`,
+        // },
         {
             id: PrivacyItem.TERMS_OF_USE,
             primary: `hamburger.settings.about.termsOfUse`,
@@ -88,6 +93,29 @@ export default function PrivacyPage () {
             default:
                 break;
         }
+    }
+
+    const setParentalLock = (open: boolean) => {
+        setDialogs({
+            ...dialogs,
+            isParentalLockOpen: open,
+        });
+    };
+
+    useEffect(() => {
+        setParentalLock(false);
+    }, []);
+
+    if (dialogs.isParentalLockOpen && privacyItemSelected !== undefined) {
+        return (
+            <DialogParentalLock
+                onCompleted={() => {
+                    setParentalLock(false);
+                    handlePrivacyItemsClick(privacyItemSelected);
+                    setPrivacyItemSelected(undefined);
+                }}
+            />
+        );
     }
 
     return (
@@ -115,7 +143,10 @@ export default function PrivacyPage () {
                             key={item.id}
                             button
                             className={classes.listItem}
-                            onClick={() => handlePrivacyItemsClick(item.id)}>
+                            onClick={() => {
+                                setParentalLock(true);
+                                setPrivacyItemSelected(item.id);
+                            }}>
                             <ListItemText
                                 classes={{
                                     primary: classes.listItemTextPrimary,
