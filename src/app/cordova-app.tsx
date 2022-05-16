@@ -1,4 +1,5 @@
 import { OnBoardingPage } from "./pages/on-boarding/onBoardingPage";
+import { ParentDashboardPage } from "./pages/parent/parentDashboardPage";
 import { useAuthenticationContext } from "@/app/context-provider/authentication-context";
 import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
 import { usePopupContext } from "@/app/context-provider/popup-context";
@@ -158,6 +159,10 @@ export function CordovaApp ({ history }: {
                     <UserRoute
                         path="/settings"
                         component={SettingsPage}
+                    />
+                    <UserRoute
+                        path="/parent-dashboard"
+                        component={ParentDashboardPage}
                     />
                     <UserRoute
                         path="/schedule/anytime-study"

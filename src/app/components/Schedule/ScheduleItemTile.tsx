@@ -38,6 +38,8 @@ import { useSelectedOrganizationValue } from "@/app/data/user/atom";
 import { useGetScheduleById } from "@kl-engineering/cms-api-client";
 import ScheduleJoinButton from "./ScheduleJoinButton";
 import { ClassType } from "@/store/actions";
+import { setRandomClassIdState } from "@/store/layoutAtoms";
+import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme) => createStyles({
     container: {
@@ -148,6 +150,7 @@ export default function ScheduleItemTile(props: Props) {
     const [ isDisable, setActive ] = useState(false);
     const [ names, setNames ] = useState<string[]>([]);
     const organization = useSelectedOrganizationValue();
+    const [ getRandomClassId, setRandomClassId ] = useRecoilState(setRandomClassIdState);
 
     const organizationId = organization?.organization_id ?? ``;
     const { data: scheduleData, isFetching: isFetchingSchedule } = useGetScheduleById({
@@ -182,6 +185,12 @@ export default function ScheduleItemTile(props: Props) {
       const teacherNames: string[] = [];
       scheduleData.teachers.forEach((item) => teacherNames.push(item.name));
       setNames(teacherNames);
+      const random = Math.random() < 0.5;
+      if (!getRandomClassId) {
+         setRandomClassId(scheduleData);
+      } else {
+         random && setRandomClassId(scheduleData);
+      }
     }, [scheduleData]);
 
     const getClassTypeProperty = () => {

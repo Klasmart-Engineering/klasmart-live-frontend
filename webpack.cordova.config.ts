@@ -8,12 +8,12 @@ import { EnvironmentPlugin } from "webpack";
 
 const getGitCommit = () => {
     try {
-        return execSync(`git rev-parse HEAD`).toString().trim().slice(0, 7)
+        return execSync(`git rev-parse HEAD`).toString().trim().slice(0, 7);
     } catch {
-        console.log(`Git commit hash unavailable using package.json version: ${pkg.version}`)
-        return pkg.version
+        console.log(`Git commit hash unavailable using package.json version: ${pkg.version}`);
+        return pkg.version;
     }
-}
+};
 
 module.exports = {
     mode: `development`,
@@ -43,9 +43,9 @@ module.exports = {
                     `css-modules-typescript-loader`,
                     {
                         loader: `css-loader`,
-                        options: {
-                            modules: true,
-                        },
+                        // options: {
+                        //     modules: true,
+                        // },
                     },
                 ],
             },

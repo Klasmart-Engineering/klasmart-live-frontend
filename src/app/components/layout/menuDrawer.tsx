@@ -106,20 +106,20 @@ export default function MenuDrawer () {
     const isSmUp = useMediaQuery(theme.breakpoints.up(`sm`));
     const selectedOrganization = useSelectedOrganizationValue();
     const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
-    const [ isMenuOpen, setMenuOpen ] = useRecoilState(menuOpenState);
+    const [isMenuOpen, setMenuOpen] = useRecoilState(menuOpenState);
     const setShouldClearCookie = useSetRecoilState(shouldClearCookieState);
     const setShowOnBoarding = useSetRecoilState(isShowOnBoardingState);
     const { showPopup } = usePopupContext();
 
     const menuArray = [
-        // {
-        //     id: MenuDrawerItem.PARENTS_DASHBOARD,
-        //     text: `hamburger.parentsDashboard`,
-        //     icon: <img
-        //         src={ParentsDashboardIcon}
-        //         alt=""
-        //     />,
-        // },
+        {
+            id: MenuDrawerItem.PARENTS_DASHBOARD,
+            text: `hamburger.parentsDashboard`,
+            icon: <img
+                src={ParentsDashboardIcon}
+                alt=""
+            />,
+        },
         {
             id: MenuDrawerItem.SETTINGS,
             text: `title_settings`,
@@ -140,7 +140,6 @@ export default function MenuDrawer () {
 
     const handleMenuItemClick = (menuDrawerItem: MenuDrawerItem) => {
         setMenuOpen(false);
-
         switch (menuDrawerItem) {
         case MenuDrawerItem.ORGANIZATION:
             setDialogs({
@@ -186,8 +185,9 @@ export default function MenuDrawer () {
         return (
             <DialogParentalLock
                 onCompleted={() => {
-                    history.push(`/settings`);
+                    history.push(`/parent-dashboard`);
                     setParentalLock(false);
+                    
                 }}
             />
         );

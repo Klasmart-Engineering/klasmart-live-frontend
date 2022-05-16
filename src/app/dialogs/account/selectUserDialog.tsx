@@ -18,7 +18,7 @@ import {
     shouldShowNoStudentRoleState,
 } from "@/app/model/appModel";
 import { THEME_BACKGROUND_SELECT_DIALOG } from "@/config";
-import { useQueryClient } from "@kl-engineering/cms-api-client";
+import { GetScheduleByIdResponse, useQueryClient } from "@kl-engineering/cms-api-client";
 import { useSnackbar } from "@kl-engineering/kidsloop-px";
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from "@material-ui/core/DialogContent";
@@ -35,6 +35,7 @@ import {
     useRecoilValue,
     useSetRecoilState,
 } from "recoil";
+import { setRandomClassIdState } from "@/store/layoutAtoms";
 
 const useStyles = makeStyles((theme) => ({
     content: {
@@ -184,10 +185,12 @@ export function SelectUserDialog () {
 
     const [ filteredMyUsersData, setFilteredMyUsersData ] = useState<ReadUserDto[]>();
     const setSelectOrgAfterSwitchingProfile = useSetRecoilState(selectOrgAfterSwitchingProfile);
+    const setRandomClassId = useSetRecoilState(setRandomClassIdState);
 
     const selectUser = useCallback((user: ReadUserDto) => {
         console.log(`selecting user: ${user.user_id}`);
         setSelectedUser(user);
+        setRandomClassId({} as GetScheduleByIdResponse);
     }, [ setSelectedUser ]);
 
     useEffect(() => {

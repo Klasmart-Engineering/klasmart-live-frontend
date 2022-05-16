@@ -26,7 +26,7 @@ import React,
     useState,
 } from "react";
 import { useIntl } from "react-intl";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 
 const useStyles = makeStyles(() => createStyles({
     rowContentText: {
@@ -63,7 +63,6 @@ export default function LiveDetailsDialog (props: Props) {
         setStartTime,
     } = useSessionContext();
     const organization = useSelectedOrganizationValue();
-
     const organizationId = organization?.organization_id ?? ``;
 
     const { actions } = useCmsApiClient();
