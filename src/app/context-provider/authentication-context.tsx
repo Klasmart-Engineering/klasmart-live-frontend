@@ -6,6 +6,7 @@ import {
     selectedRegionState,
     shouldClearCookieState,
     urlFilePathState,
+    urlDeeplink,
 } from "../model/appModel";
 import { useServices } from "./services-provider";
 import React,
@@ -67,7 +68,7 @@ const useAuthentication = () => {
     const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
     const [ urlFilePath, setUrlFilePath ] = useRecoilState(urlFilePathState);
     const { isIOS } = useCordovaSystemContext();
-
+    const [deeplink, setDeeplink] = useRecoilState(urlDeeplink);
     const isAppLoaded = useRecoilValue(isAppLoadedState);
 
     const refresh = useCallback(async (force?: boolean) => {
@@ -183,7 +184,7 @@ const useAuthentication = () => {
             }
 
             const token = url.searchParams.get(`token`);
-            if(token){
+            if (token) {
                 setAuth({
                     ...auth,
                     transferToken: token,
@@ -194,9 +195,14 @@ const useAuthentication = () => {
 
         };
 
+        if (deeplink != '') {
+            setTimeout(() => openUrlHandler(deeplink), 0);
+            setDeeplink(``);
+        }
+
         (window as any).handleOpenURL = (url: string) => {
             // NOTE: Using setTimeout to prevent handleOpenURL from blocking app launch.
-            setTimeout(() => openUrlHandler(url), 0);
+            setDeeplink(url)
         };
     }, [
         selectedRegion,
@@ -204,6 +210,7 @@ const useAuthentication = () => {
         locale,
         urlFilePath,
         authenticated,
+        deeplink,
     ]);
 
     useEffect(() => {

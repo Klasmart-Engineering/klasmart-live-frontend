@@ -1,4 +1,7 @@
-import { isKeyboardVisibleState } from "../model/appModel";
+import {
+    isKeyboardVisibleState,
+    urlDeeplink,
+} from "../model/appModel";
 import useVideoLayoutUpdate from "./../utils/video-layout-update";
 import { Device } from "@/app/types/device";
 import {
@@ -17,7 +20,7 @@ const useCordovaInitialize = (backExitApplication?: boolean, callbackBackButton?
     const [ isAndroid, setIsAndroid ] = useState<boolean>(false);
     const [ deviceInfo, setDeviceInfo ] = useState<Device>();
     const setKeyboardVisible = useSetRecoilState(isKeyboardVisibleState);
-
+    const setUrlDeeplinkStorage = useSetRecoilState(urlDeeplink)
     const { updateLayout } = useVideoLayoutUpdate(null);
 
     const requestIosCameraPermission = useCallback((camera: boolean, mic: boolean) => {
@@ -77,7 +80,6 @@ const useCordovaInitialize = (backExitApplication?: boolean, callbackBackButton?
             const cordova = (window as any).cordova;
 
             // enableFullScreen(false);
-
             if (cordova && cordova.plugins && cordova.plugins.iosrtc) {
                 console.log(`Registering iosrtc globals.`);
                 cordova.plugins.iosrtc.registerGlobals();
@@ -117,6 +119,9 @@ const useCordovaInitialize = (backExitApplication?: boolean, callbackBackButton?
                 setKeyboardVisible(false);
             });
 
+            (window as any).handleOpenURL = (url: string) => {
+                setTimeout(() => setUrlDeeplinkStorage(url), 0);
+            };
         };
 
         document.addEventListener(`deviceready`, onDeviceReady, false);

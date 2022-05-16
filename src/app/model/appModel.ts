@@ -57,6 +57,12 @@ export const authState = atom<{transferToken?: string}>({
     },
 });
 
+export const urlDeeplink = atom<string>({
+    key: `isAuthenticatedStorage`,
+    default: ``,
+    effects_UNSTABLE: [ persistAtom ],
+});
+
 export const localeState = atom({
     key: `locale`,
     default: {
