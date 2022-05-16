@@ -38,7 +38,7 @@ export function formatStartEndTimeMillis (startTimeMillis: number, endTimeMillis
 }
 
 export function formatDateMonthYearMillis (millis: number, intl: IntlShape) {
-    const day =  intl.formatDate(millis, {
+    const day = intl.formatDate(millis, {
         day: `numeric`,
     });
     const monthWithYear = intl.formatDate(millis, {
@@ -46,4 +46,33 @@ export function formatDateMonthYearMillis (millis: number, intl: IntlShape) {
         year: `numeric`,
     });
     return `${day} ${monthWithYear}`;
+}
+
+export function formatCalendarDates (startOfWeek: number, endOfWeek: number, intl: IntlShape) {
+    const date = intl.formatDate(startOfWeek, {
+        month: `short`,
+        year: `numeric`,
+    });
+    const today = intl.formatDate(startOfWeek, {
+        day: `numeric`,
+    });
+
+    const lastday = intl.formatDate(endOfWeek, {
+        day: `numeric`,
+    });
+    return `${today} -  ${lastday} ${date}`;
+}
+
+export function formatMonthDateYear (dueDateMillis: number, intl: IntlShape) {
+    const day = intl.formatDate(dueDateMillis, {
+        day: `numeric`,
+    });
+
+    const month = intl.formatDate(dueDateMillis, {
+        month: `long`,
+    });
+    const year = intl.formatDate(dueDateMillis, {
+        year: `numeric`,
+    });
+    return `${month} ${day}, ${year}`;
 }

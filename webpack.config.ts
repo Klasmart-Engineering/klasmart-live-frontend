@@ -66,9 +66,9 @@ const webpackConfig: Configuration = {
                     `css-modules-typescript-loader`,
                     {
                         loader: `css-loader`,
-                        options: {
-                            modules: true,
-                        },
+                        // options: {
+                        //     modules: true,
+                        // },
                     },
                 ],
             },

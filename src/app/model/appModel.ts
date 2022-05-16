@@ -1,4 +1,7 @@
 import { HomeFunStudyFeedback } from "@/app/pages/schedule/home-fun-study/[scheduleId]";
+import { GetLearningOutComesResponse } from "@kl-engineering/cms-api-client";
+import { endOfWeek, startOfWeek } from "date-fns";
+import { round } from "lodash";
 import {
     atom,
     useRecoilState,
@@ -6,6 +9,7 @@ import {
     useSetRecoilState,
 } from "recoil";
 import { recoilPersist } from "recoil-persist";
+import { endOfWeekCal, startOfWeekCal } from "../utils/common";
 
 const { persistAtom } = recoilPersist();
 
@@ -150,3 +154,25 @@ export const microphoneErrorState = atom({
     key: `microphoneErrorState`,
     default: false,
 });
+export const startWeekCalendar = atom({
+    key: `startWeekCalendar`,
+    default: startOfWeekCal(new Date()),
+});
+
+export const endWeekCalendar = atom({
+    key: `endWeekCalendar`,
+    default: endOfWeekCal(new Date()),
+});
+
+export const getYearCalendar = atom({
+    key: `getYearCalendar`,
+    default: new Date().getFullYear(),
+});
+interface LearningOutComes {
+   [key: number]: GetLearningOutComesResponse[];
+}
+export const learningOutComesState = atom({
+    key: `learningOutComes`,
+    default: [] as LearningOutComes[],
+});
+

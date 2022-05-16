@@ -4,6 +4,7 @@ import {
 } from "@/components/toolbar/toolbarMenus/canvasMenu/canvasMenu";
 import { InteractiveMode } from "@/pages/utils";
 import { AttendeeType } from "@/types/attendee";
+import { GetScheduleByIdResponse } from "@kl-engineering/cms-api-client";
 import { atom } from "recoil";
 
 // THEME
@@ -221,4 +222,9 @@ export const ActiveClassDrawerState = atom({
 export const classActiveUserIdState = atom<string | undefined>({
     key: `classActiveUserIdState`,
     default: undefined,
+});
+
+export const setRandomClassIdState = atom<GetScheduleByIdResponse>({
+    key: `setRandomClassIdState`,
+    default: {} as GetScheduleByIdResponse,
 });
