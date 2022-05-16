@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.11.1](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.11.0...v6.11.1) (2022-05-16)
+
+
+### 🐛 Bug Fixes
+
+* temporary-hide-cookies-policy-option and change parental lock location (#120) ([653f327](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/653f327bfe454cb55e15136bc6e2ecebb9d1e1ce))
+
 ## [6.11.0](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.10.0...v6.11.0) (2022-05-12)
 
 
