@@ -97,12 +97,13 @@ export default function InteractionRecorder (props: Props): JSX.Element {
     const [ openDialog, setOpenDialog ] = useState(true);
     const [ seconds, setSeconds ] = useState(MAX_LOADING_COUNT);
     const [ loadStatus, setLoadStatus ] = useState(LoadStatus.Loading);
-    const [ intervalId, setIntervalId ] = useState<number>();
     const [ userCount, setUserCount ] = useState(sessions.size);
     const [ initialActivityArea, setInitialActivityArea ] = useState({
         width: 0,
         height: 0,
     });
+
+    const interval = useRef<ReturnType<typeof setInterval>>()
 
     const { authenticationService } = useServices();
     const { region } = useRegionSelect();
@@ -158,9 +159,9 @@ export default function InteractionRecorder (props: Props): JSX.Element {
         const encodedAuthEndpoint = encodeURIComponent(authEndpoint);
         if (contentHref.endsWith(`.pdf`)) {
             return getPDFURLTransformer(contentHref, token, recorderEndpoint, encodedEndpoint, encodedAuthEndpoint);
-        } else {
-            return `${contentHref}?token=${token}&endpoint=${encodedEndpoint}&auth=${encodedAuthEndpoint}${urlParameterClassActiveUser}`;
         }
+        return `${contentHref}?token=${token}&endpoint=${encodedEndpoint}&auth=${encodedAuthEndpoint}${urlParameterClassActiveUser}`;
+        
     }, [
         contentHref,
         token,
@@ -201,11 +202,11 @@ export default function InteractionRecorder (props: Props): JSX.Element {
         setLoadStatus(LoadStatus.Loading);
         setSeconds(MAX_LOADING_COUNT);
         setOpenDialog(true);
-        const interval = window.setInterval(() => {
+        interval.current = setInterval(() => {
             setSeconds(seconds => seconds - 1);
         }, 1000);
-        setIntervalId(interval);
-        return () => clearInterval(intervalId);
+      
+        return () => clearInterval(interval.current as ReturnType<typeof setInterval>);
     }, [ contentHrefWithToken ]);
 
     function onLoad () {
@@ -372,12 +373,12 @@ export default function InteractionRecorder (props: Props): JSX.Element {
                             onLoad();
                             startRecording();
                             setLoadStatus(LoadStatus.Finished);
-                            clearInterval(intervalId);
+                            clearInterval(interval.current as ReturnType<typeof setInterval>);
                             setOpenDialog(false);
                         }}
                         onError={() => {
                             setLoadStatus(LoadStatus.Error);
-                            clearInterval(intervalId);
+                            clearInterval(interval.current as ReturnType<typeof setInterval>);
                         }}
                     />
                     <BaseWhiteboard
