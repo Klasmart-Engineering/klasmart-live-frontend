@@ -1,6 +1,7 @@
 import AppBar from "@/app/components/layout/AppBar";
 import BackButton from "@/app/components/layout/BackButton";
-import { localeState } from "@/app/model/appModel";
+import DialogParentalLock from "@/app/components/ParentalLock";
+import { dialogsState, localeState } from "@/app/model/appModel";
 import StyledIcon from "@/components/styled/icon";
 import { useOpenLink } from "@/app/utils/openLinkUtils";
 import { 
@@ -30,7 +31,7 @@ import { KeyboardArrowRight as ArrowRight } from "@styled-icons/material-rounded
 import { Translate as LanguageIcon } from "@styled-icons/material/Translate";
 import { PrivacyTip as PrivacyIcon } from "@styled-icons/material-outlined/PrivacyTip";
 import { QuestionCircle as ContactIcon } from "@styled-icons/bootstrap/QuestionCircle";
-import React from "react";
+import React, { useEffect } from "react";
 import {
     FormattedMessage,
     useIntl,
@@ -83,6 +84,7 @@ export default function SettingsPage () {
     const history = useHistory();
 
     const [ locale ] = useRecoilState(localeState);
+    const [ dialogs, setDialogs ] = useRecoilState(dialogsState)
     const langText = LANGUAGES_LABEL.find((language: Language) => language.code === locale.languageCode);
     const { openContact } = useOpenLink();
 
@@ -118,7 +120,7 @@ export default function SettingsPage () {
                 history.push(`/settings/select-language`);
                 break;
             case SettingItem.SUPPORT:
-                openContact();
+                setParentalLock(true);
                 break;
             case SettingItem.ABOUT:
                 history.push(`/settings/privacy`);
@@ -126,6 +128,28 @@ export default function SettingsPage () {
             default:
                 break;
         }
+    }
+
+    const setParentalLock = (open: boolean) => {
+        setDialogs({
+            ...dialogs,
+            isParentalLockOpen: open,
+        });
+    };
+
+    useEffect(() => {
+        setParentalLock(false);
+    }, []);
+
+    if (dialogs.isParentalLockOpen) {
+        return (
+            <DialogParentalLock
+                onCompleted={() => {
+                    setParentalLock(false);
+                    openContact();
+                }}
+            />
+        );
     }
 
     return (
