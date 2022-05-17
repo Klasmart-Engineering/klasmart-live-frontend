@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.13.0](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.12.0...v6.13.0) (2022-05-17)
+
+
+### ✨ Features
+
+* **localization:** add new translations (#124) ([7c8d2f4](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/7c8d2f485374dd80531f0afcec659a436d097313))
+* **translation:** update translations (#119) ([076d82d](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/076d82d99ce8f1a1050e97d566bd08022324d18d))
+
+
+### 🗑 Reverts
+
+* state library upgrade and mute overlay and sfu downscale (#125) ([1d83654](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/1d83654b020458fccaf47ec0c3c3153e4af4c9c3))
+
+
+### 🐛 Bug Fixes
+
+* behaviour in class mode tabs (#123) ([6c45bde](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/6c45bde00345daf90529e355ca51ab2cac7ed5d0))
+* blue background should take up whole screen (#122) ([9eed619](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/9eed619e6afb49d8a7c345d837086e3e4ad0a17b)), closes [NAT-808](https://calmisland.atlassian.net/browse/NAT-808)
+* infite re render in InteractionRecorder component (#106) ([1308dca](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/1308dca8e173049f27a4ba79f3e8d8a8ad52d22e)), closes [KLL-3587](https://calmisland.atlassian.net/browse/KLL-3587)
+* **ios:** the PDF lesson material on student is not moved to another page in present mode (#116) ([8f979ea](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/8f979ea00987dfb90557f2d9779d0674eaeae6d1)), closes [NAT-851](https://calmisland.atlassian.net/browse/NAT-851)
+* remove on stage camera extra border (#128) ([f021f5e](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/f021f5ebd644780768a6bfe1b9406dbe739b26fc)), closes [KLL-3614](https://calmisland.atlassian.net/browse/KLL-3614)
+* remove retryWait to allow users reconnect faster (#127) ([b1000f7](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/b1000f7258f6f9736268127b74f9a784ae123a79)), closes [KLL-3147](https://calmisland.atlassian.net/browse/KLL-3147)
+* temporary-hide-cookies-policy-option and change parental lock location (#126) ([6dab119](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/6dab11989866f932e4595d60411b5dd037d8c75a)), closes [NAT-695](https://calmisland.atlassian.net/browse/NAT-695)
+
 ## [6.12.0](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.11.0...v6.12.0) (2022-05-13)
 
 
