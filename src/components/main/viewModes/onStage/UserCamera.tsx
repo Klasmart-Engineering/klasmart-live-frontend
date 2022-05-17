@@ -9,10 +9,10 @@ import { makeStyles } from "@material-ui/core";
 import clsx from "clsx";
 import React from "react";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
     root:{
         fontSize: `1.5rem`,
-        borderRadius: 12,
+        borderRadius: theme.spacing(1.5, 0, 1.5, 1.5),
         transform: `translateZ(0)`, // Apply border-radius for Safari
         width: `100%`,
         height: `100%`,
