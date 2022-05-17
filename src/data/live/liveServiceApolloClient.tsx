@@ -98,7 +98,6 @@ export const LiveServiceApolloClient: React.FC<Props> = ({
         setState({
             type: `Loading`,
         });
-
         const options: ClientOptions = {
             url: `${endpointLive}/graphql`,
             keepAlive: 1000,
@@ -108,12 +107,6 @@ export const LiveServiceApolloClient: React.FC<Props> = ({
             },
             isFatalConnectionProblem: () => {
                 return false;
-            },
-            retryWait: async function waitForServerHealthyBeforeRetry() {
-                console.log('console retryWait')
-                await new Promise((resolve) =>
-                    setTimeout(resolve, 10000),
-                );
             },
             on: {
                 'connected': () => {
@@ -130,8 +123,7 @@ export const LiveServiceApolloClient: React.FC<Props> = ({
                         })
                     }
                     console.error(error);
-                }
-
+                },
             }
         };
 
