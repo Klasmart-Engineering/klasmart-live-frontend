@@ -5,7 +5,7 @@ import {
     THEME_COLOR_GREY_400,
     THEME_COLOR_PRIMARY_DEFAULT,
 } from "@/config";
-import { ActiveClassDrawerState } from "@/store/layoutAtoms";
+import { ActiveClassDrawerState, ClassDrawerSections } from "@/store/layoutAtoms";
 import {
     Box,
     Grid,
@@ -45,12 +45,8 @@ function ClassSidebar () {
 
     const [ activeClassDrawer, setActiveClassDrawer ] = useRecoilState(ActiveClassDrawerState);
 
-    const handleToggleListParticipants = () => {
-        activeClassDrawer ? setActiveClassDrawer(``) : setActiveClassDrawer(`participants`);
-    };
-
-    const handleToggleLessonPlan = () => {
-        activeClassDrawer ? setActiveClassDrawer(``) : setActiveClassDrawer(`lessonPlan`);
+    const handleToggle = (section: ClassDrawerSections) => {
+        setActiveClassDrawer(activeClassDrawer === section ? '' : section);
     };
 
     return (
@@ -70,11 +66,11 @@ function ClassSidebar () {
                     <Fab
                         aria-label="open lesson plan"
                         className={clsx(classes.fab, {
-                            [classes.fabActive]: activeClassDrawer === `lessonPlan`,
+                            [classes.fabActive]: activeClassDrawer === ClassDrawerSections.LESSON_PLAN,
                         })}
                         size="large"
                         color="inherit"
-                        onClick={handleToggleLessonPlan}
+                        onClick={() => handleToggle(ClassDrawerSections.LESSON_PLAN)}
                     >
                         <StyledIcon
                             size="large"
@@ -85,11 +81,11 @@ function ClassSidebar () {
                     <Fab
                         aria-label="open list participants"
                         className={clsx(classes.fab, {
-                            [classes.fabActive]: activeClassDrawer === `participants`,
+                            [classes.fabActive]: activeClassDrawer === ClassDrawerSections.PARTICIPANTS,
                         })}
                         size="large"
                         color="inherit"
-                        onClick={handleToggleListParticipants}
+                        onClick={() => handleToggle(ClassDrawerSections.PARTICIPANTS)}
                     >
                         <StyledIcon
                             size="large"

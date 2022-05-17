@@ -212,8 +212,11 @@ export const selectedAttendeesState = atom<AttendeeType[]>({
     default: [],
 });
 
-export type ActiveClassDrawerStateType = "participants" | "lessonPlan" | null;
-export const ActiveClassDrawerState = atom({
+export enum ClassDrawerSections {
+    PARTICIPANTS,
+    LESSON_PLAN,
+}
+export const ActiveClassDrawerState = atom<ClassDrawerSections | ''>({
     key: `ActiveClassDrawerState`,
     default: ``,
 });

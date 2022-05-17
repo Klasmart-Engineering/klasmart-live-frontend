@@ -12,6 +12,7 @@ import { ClassType } from "@/store/actions";
 import {
     ActiveClassDrawerState,
     classActiveUserIdState,
+    ClassDrawerSections,
     selectedAttendeesState,
     showEndStudyState,
     showSelectAttendeesState,
@@ -130,14 +131,14 @@ function MainClass () {
             </Grid>
             <>
                 <ClassDrawer
-                    active={Boolean(activeClassDrawer === `participants`)}
+                    active={Boolean(activeClassDrawer === ClassDrawerSections.PARTICIPANTS)}
                     title={<FormattedMessage id="title_participants" />}
                     titleAction={<ButtonSelectAttendees />}
                 >
                     <ClassAttendeesList attendees={selectedAttendees} />
                 </ClassDrawer>
                 <ClassDrawer
-                    active={Boolean(activeClassDrawer === `lessonPlan`)}
+                    active={Boolean(activeClassDrawer === ClassDrawerSections.LESSON_PLAN)}
                     title={<FormattedMessage id="title_lesson_plan" />}
                 >
                     <Plan />
