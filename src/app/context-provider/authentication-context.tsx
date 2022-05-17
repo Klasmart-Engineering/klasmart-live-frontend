@@ -1,5 +1,6 @@
 import {
     authState,
+    isAuthenticatedStorage,
     localeState,
     selectedRegionState,
     shouldClearCookieState,
@@ -16,7 +17,7 @@ import React,
     useMemo,
     useState,
 } from "react";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 
 type Props = {
     children?: ReactChild | ReactChildren | null;
@@ -46,6 +47,7 @@ const useAuthentication = () => {
     const [ authenticated, setAuthenticated ] = useState<boolean>(false);
     const [ authError, setAuthError ] = useState<boolean>(false);
     const [ signedOut, setSignedOut ] = useState<boolean>(false);
+    const setIsAuthenticatedStorage = useSetRecoilState(isAuthenticatedStorage);
 
     const { authenticationService } = useServices();
 
@@ -63,6 +65,7 @@ const useAuthentication = () => {
 
         if (shouldClearCookie) {
             setAuthenticated(false);
+            setIsAuthenticatedStorage(false);
             setAuthReady(true);
             return;
         }
@@ -70,6 +73,7 @@ const useAuthentication = () => {
         await authenticationService.refresh()
             .then(ok => {
                 setAuthenticated(ok);
+                setIsAuthenticatedStorage(ok);
                 const cookiesSync = (window as any).cookiesSync;
                 if(cookiesSync) {
                     cookiesSync.sync();
@@ -96,6 +100,7 @@ const useAuthentication = () => {
             console.error(error);
         } finally {
             setAuthenticated(false);
+            setIsAuthenticatedStorage(false);
         }
     }, []);
 

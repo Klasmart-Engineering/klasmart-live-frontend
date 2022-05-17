@@ -6,13 +6,15 @@ import { useRecoilState } from "recoil";
 
 interface Props {
     onCompleted: () => void;
-    isWelcomeScreen? : boolean;
+    onClose?: () => void;
+    isWelcomeScreen?: boolean;
 }
 
 export default function DialogParentalLock (props: Props) {
     const {
         onCompleted,
         isWelcomeScreen,
+        onClose = () => setParentalLock(false),
     } = props;
 
     const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
@@ -29,11 +31,11 @@ export default function DialogParentalLock (props: Props) {
             fullScreen
             aria-labelledby="select-org-dialog"
             open={dialogs.isParentalLockOpen}
-            onClose={() => setParentalLock(false)}
+            onClose={onClose}
         >
             <ParentalGate
                 isWelcomeScreen={isWelcomeScreen}
-                setClosedDialog={() => setParentalLock(false)}
+                setClosedDialog={onClose}
                 onCompleted={onCompleted}
             />
         </Dialog>

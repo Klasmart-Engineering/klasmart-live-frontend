@@ -8,6 +8,7 @@ import {
     BG_COLOR_CAROUSEL_DOT_INACTIVE,
     BG_COLOR_SIGN_IN_BUTTON,
     THEME_COLOR_BACKGROUND_ON_BOARDING,
+    THEME_COLOR_BACKGROUND_PAPER,
 } from "@/config";
 import {
     Button,
@@ -144,10 +145,18 @@ export function OnBoardingPage (): JSX.Element {
     };
 
     const setParentalLock = (open: boolean) => {
+        updateStatusBarStyle(!open); 
         setDialogs({
             ...dialogs,
             isParentalLockOpen: open,
         });
+    };
+
+    const updateStatusBarStyle = (isOverlayWebView: boolean) => {
+        const statusBar = (window as any).StatusBar;
+        statusBar.backgroundColorByHexString(isOverlayWebView ? THEME_COLOR_BACKGROUND_ON_BOARDING : THEME_COLOR_BACKGROUND_PAPER);
+        statusBar.overlaysWebView(isOverlayWebView);
+        statusBar.styleDefault();
     };
 
     useEffect(() => {
@@ -157,9 +166,11 @@ export function OnBoardingPage (): JSX.Element {
     if (dialogs.isParentalLockOpen) {
         return (
             <DialogParentalLock
+                onClose={() => setParentalLock(false)}
                 onCompleted={() => {
                     setShowOnBoarding(false);
                     setParentalLock(false);
+                    updateStatusBarStyle(false);
                     history.push(`/`);
                 }}
             />
@@ -210,7 +221,10 @@ export function OnBoardingPage (): JSX.Element {
                     className={classes.btnSignIn}
                     variant="contained"
                     size="large"
-                    onClick={() => setParentalLock(true)}>
+                    onClick={() => {
+                        updateStatusBarStyle(false);
+                        setParentalLock(true);
+                    }}>
                     <Typography
                         variant="h5"
                         className={classes.fontWeightBold}>

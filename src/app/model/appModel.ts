@@ -150,3 +150,8 @@ export const microphoneErrorState = atom({
     key: `microphoneErrorState`,
     default: false,
 });
+export const isAuthenticatedStorage = atom<boolean>({
+    key: `isAuthenticatedStorage`,
+    default: false,
+    effects_UNSTABLE: [ persistAtom ],
+});

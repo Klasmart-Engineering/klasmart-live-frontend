@@ -7,6 +7,7 @@ import {
 } from "../utils/screenUtils";
 import {
     dialogsState,
+    isAuthenticatedStorage,
     LayoutMode,
     menuOpenState,
     OrientationType,
@@ -28,7 +29,7 @@ import React,
     useRef,
     useState,
 } from "react";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import semver from "semver";
 
 const initialHref = location.href;
@@ -88,6 +89,7 @@ export function CordovaSystemProvider ({ children, history }: Props) {
     const isAnyDialogOpen = Object.values(dialogs).includes(true) && !dialogs.isShowNoStudentRole && !dialogs.isShowNoOrgProfile;
     const isBackToPreviousScreen = selectedUser && selectedOrganization && (isAnyDialogOpen || isMenuOpen);
     const [ shouldUpgradeDevice, setShouldUpgradeDevice ] = useState(false);
+    const isAuthenticated = useRecoilValue(isAuthenticatedStorage);
 
     function addOnBack (onBackItem: OnBackItem) {
         onBackQueue.current.push(onBackItem);
@@ -119,21 +121,21 @@ export function CordovaSystemProvider ({ children, history }: Props) {
                 if(layoutMode === LayoutMode.CLASSROOM){
                     lockOrientation(OrientationType.LANDSCAPE);
                     await sleep(1000);
-                    enableFullScreen(true);
+                    enableFullScreen(true, isAuthenticated);
                     enableKeepAwake(true);
                 }else{
                     // Add some time delay before locking to make sure the system fully loaded
                     await sleep(1000);
                     lockOrientation(OrientationType.PORTRAIT);
                     await sleep(700);
-                    enableFullScreen(false);
+                    enableFullScreen(false, isAuthenticated);
                     enableKeepAwake(false);
                 }
             } catch (e) {
                 console.error(e);
             }
         })();
-    }, [ layoutMode ]);
+    }, [ layoutMode, isAuthenticated ]);
 
     useEffect(() => {
         if(!screen.orientation) return;

@@ -1,3 +1,4 @@
+import { THEME_COLOR_BACKGROUND_ON_BOARDING, THEME_COLOR_BACKGROUND_PAPER } from "@/config";
 import { OrientationType } from "../model/appModel";
 
 export function lockOrientation (orientationType: OrientationType) {
@@ -9,7 +10,7 @@ export function lockOrientation (orientationType: OrientationType) {
     }
 }
 
-export function enableFullScreen (enabled:boolean) {
+export function enableFullScreen (enabled:boolean, isAuthenticated: boolean) {
     const StatusBar = (window as any).StatusBar;
     const AndroidFullScreen = (window as any).AndroidFullScreen;
 
@@ -42,9 +43,7 @@ export function enableFullScreen (enabled:boolean) {
                 console.log(`AndroidFullScreen not available: ${error}`);
             });
         }
-
-        StatusBar.overlaysWebView(false);
-        StatusBar.backgroundColorByHexString(`#fff`);
+        StatusBar.backgroundColorByHexString(isAuthenticated ? THEME_COLOR_BACKGROUND_PAPER : THEME_COLOR_BACKGROUND_ON_BOARDING);
         StatusBar.show();
 
         setTimeout(() => {
