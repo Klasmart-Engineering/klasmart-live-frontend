@@ -349,6 +349,6 @@
     "parentsDashboard.learningOutcome.achieved": "Đạt Được",
     "parentsDashboard.learningOutcome.NotAchieved": "Chưa Đạt Được",
     "parentsDashboard.learningOutcome.InProgress": "Đang thực hiện",
-    "report_msg_lo_new": "{Name} started learning on KidsLoop this week. So far, {Name} achieved {AchievedLoCount} learning outcomes out of {LearntLoCount}.",
-    "report_msg_lo_low_class_review_w": "This week, {Name} has achieved {%LOReviewCompareClass}% less reviewed learning outcomes than the class average."
+    "report_msg_lo_new": "{Name} đã bắt đầu học với KidsLoop tuần này. Cho đến nay, {Name} đã đạt được {AchievedLoCount} trong số  {LearntLoCount}  kết quả học tập.",
+    "report_msg_lo_low_class_review_w": "Trong tuần này, tỷ lệ đạt kết quả học tập của {Name} ít hơn {%LOReviewCompareClass}% so với mức trung bình của lớp."
 }

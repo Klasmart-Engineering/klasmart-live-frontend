@@ -346,9 +346,9 @@
     "assign_high_class_3w": "During these past 3 consecutive weeks, {Name} has completed {AssignCompareClass3week}% more assignments than the class average for the class {ClassName}.",
     "assign_low_class_3w": "During these past 3 consecutive weeks, {Name} has completed {AssignCompareClass3week}% less assignments than the class average for the class {ClassName}.",
     "no_data": "There was no data to display in this week.",
-    "parentsDashboard.learningOutcome.achieved": "achieved",
-    "parentsDashboard.learningOutcome.NotAchieved": "not achieved",
-    "parentsDashboard.learningOutcome.InProgress": "in progress",
+    "parentsDashboard.learningOutcome.achieved": "Achieved",
+    "parentsDashboard.learningOutcome.NotAchieved": "Not Achieved",
+    "parentsDashboard.learningOutcome.InProgress": "In Progress",
     "report_msg_lo_new": "{Name} started learning on KidsLoop this week. So far, {Name} achieved {AchievedLoCount} learning outcomes out of {LearntLoCount}.",
     "report_msg_lo_low_class_review_w": "This week, {Name} has achieved {%LOReviewCompareClass}% less reviewed learning outcomes than the class average."
 }

@@ -349,6 +349,6 @@
     "parentsDashboard.learningOutcome.achieved": "达标",
     "parentsDashboard.learningOutcome.NotAchieved": "未达标",
     "parentsDashboard.learningOutcome.InProgress": "未完成",
-    "report_msg_lo_new": "{Name} started learning on KidsLoop this week. So far, {Name} achieved {AchievedLoCount} learning outcomes out of {LearntLoCount}.",
-    "report_msg_lo_low_class_review_w": "This week, {Name} has achieved {%LOReviewCompareClass}% less reviewed learning outcomes than the class average."
+    "report_msg_lo_new": "{Name}本周开始在 KidsLoop 上学习。到目前为止， {Name}在{LearntLoCount}中取得了{AchievedLoCount}个学习成果。",
+    "report_msg_lo_low_class_review_w": "本周， {Name}的学习成绩比班级平均水平少{%LOReviewCompareClass} %。"
 }
