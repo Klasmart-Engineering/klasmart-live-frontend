@@ -1,5 +1,7 @@
+/* eslint-disable react/no-multi-comp*/
 import { Session } from "@/pages/utils";
 import { useSessionContext } from "@/providers/session-context";
+import { Track } from "@kl-engineering/live-state/ui";
 import {
     makeStyles,
     Theme,
@@ -12,7 +14,6 @@ import { Crown as HasControlsIcon } from "@styled-icons/fa-solid/Crown";
 import { HatGraduation as TeacherIcon } from "@styled-icons/fluentui-system-filled/HatGraduation";
 import { SpeakerOff } from '@styled-icons/fluentui-system-filled/SpeakerOff';
 import clsx from "clsx";
-import { Track } from "@kl-engineering/live-state/ui";
 import React,
 { VoidFunctionComponent } from "react";
 import { FormattedMessage } from "react-intl";
@@ -161,7 +162,8 @@ function UserCameraDetails (props: UserCameraDetailsType) {
             [classes.rootTeacher]: user.isTeacher,
             [classes.rootSmall]: variant === `small`,
             [classes.rootLarge]: variant === `large`,
-        })}>
+        })}
+        >
             {user.isTeacher && <UserRoles user={user} />}
             <UserName
                 user={user}
@@ -185,10 +187,14 @@ function UserRoles (props: UserRolesType){
         <div className={classes.roles}>
             <TeacherIcon
                 size="1em"
-                className={classes.roleIcon} />
-            {user.isHost && <HasControlsIcon
-                size="1em"
-                className={`${classes.roleIcon} ${classes.roleHasControlsIcon}`} />}
+                className={classes.roleIcon}
+            />
+            {user.isHost && (
+                <HasControlsIcon
+                    size="1em"
+                    className={`${classes.roleIcon} ${classes.roleHasControlsIcon}`}
+                />)
+            }
         </div>
     );
 }
@@ -206,13 +212,15 @@ const UserName: VoidFunctionComponent<{
         <div className={classes.nameContainer}>
             <Typography className={classes.name}>
                 <span className={classes.textOverflow}>
-                    {isSelf ? <FormattedMessage id="you"/> : user.name}
+                    {isSelf ? <FormattedMessage id="you" /> : user.name}
                 </span>
                 {
-                    mic.isMine !== undefined && <>
-                        {mic.isPausedAtSource ? <MicDisabledIcon size="0.85em"/> : <MicIcon size="0.85em"/>}
-                        {((mic.isPausedLocally && mic.isMine === false) || mic.isPausedGlobally) && <SpeakerOff size="1em" />}
-                    </>
+                    mic.isMine !== undefined && (
+                        <>
+                            {mic.isPausedAtSource ? <MicDisabledIcon size="0.85em" /> : <MicIcon size="0.85em" />}
+                            {mic.isPausedGlobally && <SpeakerOff size="1em" />}
+                        </>
+                    )
                 }
             </Typography>
         </div>
