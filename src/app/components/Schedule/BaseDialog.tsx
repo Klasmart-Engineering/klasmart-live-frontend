@@ -82,9 +82,9 @@ const useStyles = makeStyles((theme) => createStyles({
     },
     dialogDescription: {
         maxHeight: 70,
-        overflowY: `auto`,
         marginTop: theme.spacing(3),
         marginBottom: theme.spacing(5),
+        wordBreak: `break-all`,
     },
     dialogAttachment: {
         border: `solid 1px`,

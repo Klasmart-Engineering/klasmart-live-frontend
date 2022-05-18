@@ -4,7 +4,7 @@ import { useSelectedOrganizationValue } from "@/app/data/user/atom";
 import { dialogsState } from "@/app/model/appModel";
 import { ScheduleLiveTokenType } from "@/app/services/cms/ISchedulerService";
 import { formatDateTimeMillis } from "@/app/utils/dateTimeUtils";
-import { generateDescriptionHasHyperLink } from "@/app/utils/link";
+import { generateDescriptionHasHyperLink, openHyperLink } from "@/app/utils/link";
 import { useSessionContext } from "@/providers/session-context";
 import { fromSecondsToMilliseconds } from "@/utils/utils";
 import {
@@ -26,6 +26,7 @@ import { useIntl } from "react-intl";
 import { useHistory } from "react-router";
 import { useRecoilState } from "recoil";
 import { ClassType } from "@/store/actions";
+import DialogParentalLock from "@/app/components/ParentalLock";
 
 const useStyles = makeStyles(() => createStyles({
     rowContentText: {
@@ -134,6 +135,17 @@ export default function StudyDetailsDialog (props: Props) {
             setHyperlink(undefined);
         }
     }, [ dialogs.isParentalLockOpen ]);
+
+    if (dialogs.isParentalLockOpen && hyperlink) {
+        return (
+            <DialogParentalLock
+                onCompleted={() => {
+                    openHyperLink(hyperlink);
+                    setParentalLock(false);
+                }}
+            />
+        );
+    }
 
     return (
         <BaseScheduleDialog

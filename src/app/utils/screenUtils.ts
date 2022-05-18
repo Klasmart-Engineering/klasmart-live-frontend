@@ -43,6 +43,7 @@ export function enableFullScreen (enabled:boolean, isAuthenticated: boolean) {
                 console.log(`AndroidFullScreen not available: ${error}`);
             });
         }
+        StatusBar.overlaysWebView(false);
         StatusBar.backgroundColorByHexString(isAuthenticated ? THEME_COLOR_BACKGROUND_PAPER : THEME_COLOR_BACKGROUND_ON_BOARDING);
         StatusBar.show();
 
