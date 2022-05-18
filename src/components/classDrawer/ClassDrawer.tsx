@@ -1,4 +1,5 @@
 import {
+    CLASS_DRAWER_ZINDEX,
     CLASS_SIDEBAR_WIDTH,
     THEME_COLOR_GREY_200,
 } from "@/config";
@@ -70,6 +71,9 @@ function ClassDrawer (props: Props) {
             open={active}
             classes={{
                 paper: classes.paper,
+            }}
+            style={{
+                zIndex: CLASS_DRAWER_ZINDEX - 1,
             }}
             onClose={() => setActiveClassDrawer(``)}
         >

@@ -1,7 +1,7 @@
 import { WBToolbarContainer } from "../classContent/WBToolbar";
 import StyledIcon from "@/components/styled/icon";
 import {
-    CLASS_SIDEBAR_ZINDEX,
+    CLASS_DRAWER_ZINDEX,
     THEME_COLOR_GREY_400,
     THEME_COLOR_PRIMARY_DEFAULT,
 } from "@/config";
@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         padding: theme.spacing(2, 0),
         backgroundColor: theme.palette.common.white,
         position: `relative`,
-        zIndex: CLASS_SIDEBAR_ZINDEX,
+        zIndex: CLASS_DRAWER_ZINDEX,
         width: 90,
     },
     fab: {

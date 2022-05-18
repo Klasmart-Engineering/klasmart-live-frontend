@@ -3,6 +3,7 @@ import SidebarMenuItem from "./sidebarMenuItem";
 import TabMosaic from "./tabMosaic/tabMosaic";
 import TabParticipants from "./tabParticipants/tabParticipants";
 import { useDeviceOrientationValue } from "@/app/model/appModel";
+import { CLASS_DRAWER_ZINDEX } from "@/config";
 import { useSessionContext } from "@/providers/session-context";
 import { activeTabState } from "@/store/layoutAtoms";
 import {
@@ -120,6 +121,9 @@ function Sidebar () {
             open
             variant={activeTab === `participants` ? `persistent` : `temporary`}
             anchor="right"
+            style={{
+                zIndex: CLASS_DRAWER_ZINDEX,
+            }}
             classes={{
                 root: clsx(classes.drawer, {
                     [classes.drawerStudent]: !isTeacher,
@@ -133,45 +137,50 @@ function Sidebar () {
         >
             <Grid
                 container
-                className={classes.fullheight}>
-                {isTeacher && <Grid item>
-                    <Grid
-                        container
-                        direction="column"
-                        justifyContent="space-between"
-                        alignItems="center"
-                        className={classes.fullheight}>
-                        <Grid item>
-                            <Box
-                                display="flex"
-                                flexDirection="column"
-                                overflow="hidden"
-                                paddingBottom={2}
-                            >
-                                {sidebarTabs.map((sidebarTab) => {
-                                    const permission = sidebarTab.role === undefined || (sidebarTab.role === `teacher` && isTeacher);
-                                    if(!permission) return;
-                                    return (
-                                        <SidebarMenuItem
-                                            key={sidebarTab.id}
-                                            name={sidebarTab.name}
-                                            label={sidebarTab.label}
-                                            icon={sidebarTab.icon}
-                                            active={activeTab === sidebarTab.name}
-                                        />
-                                    );
-                                })}
-                            </Box>
-                        </Grid>
-                        {activeTab === `mosaic` && (
+                className={classes.fullheight}
+            >
+                {isTeacher && (
+                    <Grid item>
+                        <Grid
+                            container
+                            direction="column"
+                            justifyContent="space-between"
+                            alignItems="center"
+                            className={classes.fullheight}
+                        >
+                            <Grid item>
+                                <Box
+                                    display="flex"
+                                    flexDirection="column"
+                                    overflow="hidden"
+                                    paddingBottom={2}
+                                >
+                                    {sidebarTabs.map((sidebarTab) => {
+                                        const permission = sidebarTab.role === undefined || (sidebarTab.role === `teacher` && isTeacher);
+                                        if(!permission) return;
+                                        return (
+                                            <SidebarMenuItem
+                                                key={sidebarTab.id}
+                                                name={sidebarTab.name}
+                                                label={sidebarTab.label}
+                                                icon={sidebarTab.icon}
+                                                active={activeTab === sidebarTab.name}
+                                            />
+                                        );
+                                    })}
+                                </Box>
+                            </Grid>
+                            {activeTab === `mosaic` &&
+                        (
                             <Grid item>
                                 <Box py={3}>
                                     <MosaicSlider />
                                 </Box>
                             </Grid>
                         )}
+                        </Grid>
                     </Grid>
-                </Grid>}
+                )}
                 <Grid
                     item
                     xs

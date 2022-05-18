@@ -1,5 +1,5 @@
 /* eslint-disable react/no-multi-comp */
-import { CLASS_SIDEBAR_ZINDEX } from "@/config";
+import { CLASS_POPPER_ZINDEX } from "@/config";
 import {
     ContentType,
     InteractiveMode,
@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         height: `100%`,
     },
     popperRoot:{
-        zIndex: CLASS_SIDEBAR_ZINDEX + 100,
+        zIndex: CLASS_POPPER_ZINDEX,
     },
     popperPapper: {
         display: `flex`,
