@@ -7,7 +7,7 @@ import {
     InMemoryCache,
     NormalizedCacheObject,
 } from "@apollo/client";
-import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
+import { WebSocketLink } from "@apollo/client/link/ws";
 import React,
 {
     createContext,
@@ -16,7 +16,7 @@ import React,
     useMemo,
     useState,
 } from "react";
-import { createClient, ClientOptions, CloseCode } from "graphql-ws";
+import { ClientOptions } from "subscriptions-transport-ws";
 
 interface Loading {
     type: `Loading`;
@@ -59,89 +59,85 @@ export const LiveServiceApolloClient: React.FC<Props> = ({
     const { authenticated } = useAuthenticationContext();
     const endpointLive = useWebsocketEndpoint(`live`);
 
-    const [state, setState] = useState<State>({
+    const [ state, setState ] = useState<State>({
         type: `Loading`,
     });
 
     const { authenticationService } = useServices();
 
-    const connectionCallback = useCallback((event: any) => {
-        if (event instanceof CloseEvent) {
-            if (event.code === CloseCode.Unauthorized) {
-                setState({
-                    type: `Loading`,
-                });
-                authenticationService?.refresh().then(successful => {
-                    if (!successful) authenticationService?.signout();
-                }).catch(exception => {
-                    console.error(exception);
-                });
-            } else if (event.code === CloseCode.Forbidden) {
-                console.log('\nFORBIDDEN ERROR FROM SEVER: ', event.reason, '\n');
-                setState({
-                    type: `Error`,
-                    messages: [event.reason],
-                })
-            }
-        } else {
+    const isAuthenticationError = (error: ErrorData) => {
+        return error.message === `AuthenticationExpired` || error.message === `AuthenticationInvalid`;
+    };
+
+    const connectionCallback = useCallback((errors?: ErrorData[] | ErrorData) => {
+        if (!errors) {
             setState({
-                type: `Error`,
-                messages: [event],
+                type: `Ready`,
             });
+
+            return;
         }
 
-        return;
+        if (!(errors instanceof Array)) { errors = [ errors ]; }
 
-    }, [authenticationService]);
+        const refreshAuthToken = errors.some((e) => {
+            return isAuthenticationError(e);
+        });
+
+        if (!refreshAuthToken) {
+            setState({
+                type: `Error`,
+                messages: errors.map(e => e.message),
+            });
+
+            return;
+        }
+
+        setState({
+            type: `Loading`,
+        });
+
+        authenticationService?.refresh().then(successful => {
+            if (!successful) authenticationService?.signout();
+        }).catch(exception => {
+            console.error(exception);
+        });
+    }, [ authenticationService ]);
 
     const client = useMemo(() => {
         setState({
             type: `Loading`,
         });
+
         const options: ClientOptions = {
-            url: `${endpointLive}/graphql`,
-            keepAlive: 1000,
+            connectionCallback,
+            reconnect: true,
             connectionParams: {
                 authToken: token,
                 sessionId,
             },
-            isFatalConnectionProblem: () => {
-                return false;
-            },
-            on: {
-                'connected': () => {
-                    setState({
-                        type: `Ready`,
-                    });
-                },
-                'closed': connectionCallback,
-                'error': (error: unknown) => {
-                    if (error instanceof Error) {
-                        setState({
-                            type: `Error`,
-                            messages: [error.message],
-                        })
-                    }
-                    console.error(error);
-                },
-            }
         };
 
-        const wsClient = createClient(options);
-        const link = new GraphQLWsLink(wsClient);
+        const link = new WebSocketLink({
+            uri: `${endpointLive}/graphql`,
+            options,
+        });
+
         const client = new ApolloClient({
             cache: new InMemoryCache(),
             link,
         });
+
         return client;
-    }, [endpointLive, authenticated]);
+    }, [ endpointLive, authenticated ]);
 
     return (
         <LiveServiceApolloClientContext.Provider value={{
             client,
             isLoading: state.type === `Loading`,
             isError: state.type === `Error`,
-        }}>
+        }}
+        >
             <ApolloProvider client={client}>
                 {children}
             </ApolloProvider>
