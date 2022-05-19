@@ -17,7 +17,7 @@ import React,
     useState,
 } from "react";
 import { createClient, ClientOptions, CloseCode } from "graphql-ws";
-
+import { useSnackbar } from "@kl-engineering/kidsloop-px";
 interface Loading {
     type: `Loading`;
 }
@@ -49,10 +49,6 @@ interface Props {
     token?: string;
 }
 
-interface ErrorData {
-    message: string;
-}
-
 export const LiveServiceApolloClient: React.FC<Props> = ({
     children, token, sessionId,
 }) => {
@@ -62,7 +58,7 @@ export const LiveServiceApolloClient: React.FC<Props> = ({
     const [state, setState] = useState<State>({
         type: `Loading`,
     });
-
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const { authenticationService } = useServices();
 
     const connectionCallback = useCallback((event: any) => {
@@ -95,16 +91,20 @@ export const LiveServiceApolloClient: React.FC<Props> = ({
     }, [authenticationService]);
 
     const client = useMemo(() => {
+        let disconnectedTimer: NodeJS.Timeout;
+        let snackbarKey: string | number;
         setState({
             type: `Loading`,
         });
         const options: ClientOptions = {
+
             url: `${endpointLive}/graphql`,
             keepAlive: 1000,
             connectionParams: {
                 authToken: token,
                 sessionId,
             },
+            retryAttempts: 1000,
             isFatalConnectionProblem: () => {
                 return false;
             },
@@ -113,6 +113,7 @@ export const LiveServiceApolloClient: React.FC<Props> = ({
                     setState({
                         type: `Ready`,
                     });
+
                 },
                 'closed': connectionCallback,
                 'error': (error: unknown) => {
@@ -124,6 +125,27 @@ export const LiveServiceApolloClient: React.FC<Props> = ({
                     }
                     console.error(error);
                 },
+                'pong': () => {
+                    clearTimeout(disconnectedTimer)
+                    if (snackbarKey) {
+                        closeSnackbar(snackbarKey);
+                    }
+                },
+                'ping': () => {
+                    disconnectedTimer = setTimeout(() => {
+                        snackbarKey = enqueueSnackbar(`Oops! It looks like your internet is not connected. Connecting...`,
+                            {
+                                variant: `error`,
+                                anchorOrigin: {
+                                    vertical: `top`,
+                                    horizontal: `center`,
+                                },
+                                persist: true,
+                            }
+                        )
+                    }, 2000)
+                }
+
             }
         };
 
@@ -137,6 +159,7 @@ export const LiveServiceApolloClient: React.FC<Props> = ({
     }, [endpointLive, authenticated]);
 
     return (
+
         <LiveServiceApolloClientContext.Provider value={{
             client,
             isLoading: state.type === `Loading`,
@@ -146,6 +169,7 @@ export const LiveServiceApolloClient: React.FC<Props> = ({
                 {children}
             </ApolloProvider>
         </LiveServiceApolloClientContext.Provider>
+
     );
 };
 

@@ -23,6 +23,7 @@ import React,
 } from "react";
 import { FormattedMessage } from "react-intl";
 import { useRecoilState } from "recoil";
+import { SnackbarProvider } from "@kl-engineering/kidsloop-px";
 
 export const RoomWithContext: React.FC = ({ children }) => {
     const {
@@ -31,12 +32,14 @@ export const RoomWithContext: React.FC = ({ children }) => {
     } = useSessionContext();
 
     return (
-        <LiveServiceApolloClient
-            token={token}
-            sessionId={sessionId}
-        >
-            {children}
-        </LiveServiceApolloClient>
+        <SnackbarProvider>
+            <LiveServiceApolloClient
+                token={token}
+                sessionId={sessionId}
+            >
+                {children}
+            </LiveServiceApolloClient>
+        </SnackbarProvider>
     );
 };
 
@@ -44,16 +47,16 @@ export const LIVE_ON_BACK_ID = `liveOnBackID`;
 
 export const LiveRoom: React.FC = () => {
     const { removeOnBack } = useCordovaSystemContext();
-    const [ classLeft ] = useRecoilState(classLeftState);
-    const [ classEnded ] = useRecoilState(classEndedState);
+    const [classLeft] = useRecoilState(classLeftState);
+    const [classEnded] = useRecoilState(classEndedState);
 
     useEffect(() => {
-        if(classLeft || classEnded) {
+        if (classLeft || classEnded) {
             removeOnBack?.(LIVE_ON_BACK_ID);
         }
-    }, [ classLeft, classEnded ]);
+    }, [classLeft, classEnded]);
 
-    if(classLeft || classEnded){
+    if (classLeft || classEnded) {
         return <EndClass />;
     }
 
@@ -70,8 +73,8 @@ export const LiveRoom: React.FC = () => {
 const LiveLoading: React.FC = ({ children }) => {
     const { isLoading: liveLoading, isError: liveError } = useLiveServiceApolloClient();
 
-    const isLoading = useMemo(() => liveLoading, [ liveLoading ]);
-    const isError = useMemo(() => liveError, [ liveError ]);
+    const isLoading = useMemo(() => liveLoading, [liveLoading]);
+    const isError = useMemo(() => liveError, [liveError]);
 
     if (isLoading) {
         return <Loading messageId="loading" />;
