@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.14.0](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.13.0...v6.14.0) (2022-05-19)
+
+
+### ✨ Features
+
+* **localization:** add new translations (#129) ([03b0c12](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/03b0c12040d162e681340b9cd9014fc8c64cca97))
+* remove local pause check for global mute icon (#132) ([cc1970f](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/cc1970f14a502772b08b801c31b7b2246773fdf3)), closes [SFU-184](https://calmisland.atlassian.net/browse/SFU-184)
+* **translation:** update translations (#136) ([df2647e](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/df2647edb89f5bbcc78a09f9591b472a646fa5e8))
+
+
+### 🐛 Bug Fixes
+
+* chat window positioning (#121) ([619d045](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/619d04510c7afcc60701b72339dad83c28a77371)), closes [KLL-3569](https://calmisland.atlassian.net/browse/KLL-3569)
+* **localization:** update translations (#138) ([13d5480](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/13d5480fc2d81d3eb39ca5d9ff9a0f5ecf70374e))
+* open hyperlink from study tab (#131) ([8f9b11c](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/8f9b11cb19f6e1b85c61f97d2fea591b2450f4dd)), closes [NAT-877](https://calmisland.atlassian.net/browse/NAT-877)
+
+
+### 🗑 Reverts
+
+* upgrade subscription-transport-ws package to graphql-ws AND retryWait (#137) ([1b7dd84](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/1b7dd8455d0f6cdc4b7c562ae59208deb8b1e264))
+
 ## [6.13.0](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.12.0...v6.13.0) (2022-05-17)
 
 
