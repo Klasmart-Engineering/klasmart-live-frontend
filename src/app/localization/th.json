@@ -350,5 +350,7 @@
     "parentsDashboard.learningOutcome.NotAchieved": "ไม่สำเร็จ",
     "parentsDashboard.learningOutcome.InProgress": "กำลังดำเนินการ",
     "report_msg_lo_new": "{Name} เริ่มเรียนรู้บน KidsLoop ในสัปดาห์นี้ จนถึงตอนนี้ {Name} บรรลุผลการเรียนรู้ {AchievedLoCount} จาก {LearntLoCount}",
-    "report_msg_lo_low_class_review_w": "สัปดาห์นี้ {Name} ได้รับผลการเรียนรู้ที่มีการทบทวนน้อยกว่าค่าเฉลี่ยในชั้นเรียน {%LOReviewCompareClass} %"
+    "report_msg_lo_low_class_review_w": "สัปดาห์นี้ {Name} ได้รับผลการเรียนรู้ที่มีการทบทวนน้อยกว่าค่าเฉลี่ยในชั้นเรียน {%LOReviewCompareClass} %",
+    "parentsDashboard.liveScheduled.empty": "There were no scheduled live classes this week",
+    "parentsDashboard.studyAssessed.empty": "There were no study assessments this week"
 }

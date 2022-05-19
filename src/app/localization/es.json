@@ -350,5 +350,7 @@
     "parentsDashboard.learningOutcome.NotAchieved": "Not Achieved",
     "parentsDashboard.learningOutcome.InProgress": "In Progress",
     "report_msg_lo_new": "{Name} started learning on KidsLoop this week. So far, {Name} achieved {AchievedLoCount} learning outcomes out of {LearntLoCount}.",
-    "report_msg_lo_low_class_review_w": "This week, {Name} has achieved {%LOReviewCompareClass}% less reviewed learning outcomes than the class average."
+    "report_msg_lo_low_class_review_w": "This week, {Name} has achieved {%LOReviewCompareClass}% less reviewed learning outcomes than the class average.",
+    "parentsDashboard.liveScheduled.empty": "There were no scheduled live classes this week",
+    "parentsDashboard.studyAssessed.empty": "There were no study assessments this week"
 }

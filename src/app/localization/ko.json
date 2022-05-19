@@ -350,5 +350,7 @@
     "parentsDashboard.learningOutcome.NotAchieved": "학습 미완료",
     "parentsDashboard.learningOutcome.InProgress": "진행 중",
     "report_msg_lo_new": "{name} 학생은 이번 주에 키즈룹에서 학습을 시작했습니다. 지금까지 {name} 학생은( {LearntLoCount} {AchievedLoCount} 학습 결과를 달성했습니다.",
-    "report_msg_lo_low_class_review_w": "이번 주에 {name} 학생의 학습 결과 중 재학습한 부분의 달성률이 {ClassName} 학급 평균보다 {LOReviewCompareClass}% 낮게 나타났습니다."
+    "report_msg_lo_low_class_review_w": "이번 주에 {name} 학생의 학습 결과 중 재학습한 부분의 달성률이 {ClassName} 학급 평균보다 {LOReviewCompareClass}% 낮게 나타났습니다.",
+    "parentsDashboard.liveScheduled.empty": "There were no scheduled live classes this week",
+    "parentsDashboard.studyAssessed.empty": "There were no study assessments this week"
 }
