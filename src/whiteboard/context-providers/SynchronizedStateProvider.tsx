@@ -104,8 +104,11 @@ export const SynchronizedStateProvider: FunctionComponent<Props> = ({ children }
             const whiteboardEvents = data?.whiteboardEvents;
             if (whiteboardEvents && eventController) {
                 events.push(...whiteboardEvents);
-
-                eventController.handlePainterEvent(whiteboardEvents);
+                if (events.length === whiteboardEvents.length) {
+                    eventController.handlePainterEvent(whiteboardEvents, true)
+                } else {
+                    eventController.handlePainterEvent(whiteboardEvents);
+                }
             }
         },
         variables: {
