@@ -15,8 +15,8 @@ import {
     Typography,
     useMediaQuery,
     useTheme,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/styles";
+} from "@mui/material";
+import { makeStyles } from "@mui/styles";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 import { useSetRecoilState } from "recoil";

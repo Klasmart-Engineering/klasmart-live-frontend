@@ -1,14 +1,10 @@
-import {
-    Grid,
-    makeStyles,
-    Theme,
-    Tooltip,
-} from "@material-ui/core";
-import amber from "@material-ui/core/colors/amber";
-import red from "@material-ui/core/colors/red";
+import { Grid, Theme, Tooltip } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import clsx from "clsx";
 import React from "react";
 import { StyledIconProps } from "styled-icons/types";
+
+import { amber, red } from '@mui/material/colors';
 
 type GlobaActionType = `divider`;
 export interface GlobaActionsMenuItem {
@@ -44,11 +40,11 @@ const useStyles = makeStyles((theme: Theme) => ({
             backgroundColor: theme.palette.text.primary,
         },
     },
-    variantBlue:{
+    variantBlue: {
         color: theme.palette.text.primary,
         filter: `drop-shadow( 1px 3px 2px rgba(82, 128, 191, .2))`,
     },
-    variantRed:{
+    variantRed: {
         color: red[500],
         filter: `drop-shadow( 1px 3px 2px rgba(255, 116, 106, .2))`,
     },

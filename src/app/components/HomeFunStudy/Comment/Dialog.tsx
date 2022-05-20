@@ -15,12 +15,12 @@ import {
     Slide,
     TextField,
     Typography,
-} from "@material-ui/core";
+} from "@mui/material";
+import { TransitionProps } from "@mui/material/transitions";
 import {
     createStyles,
     makeStyles,
-} from "@material-ui/core/styles";
-import { TransitionProps } from "@material-ui/core/transitions";
+} from '@mui/styles';
 import React,
 {
     useCallback,
@@ -37,7 +37,11 @@ const useStyles = makeStyles(() => createStyles({
     },
 }));
 
-const Transition = React.forwardRef((props: TransitionProps & { children?: React.ReactElement<any, any> }, ref: React.Ref<unknown>) => {
+const Transition = React.forwardRef(function Transition (props: TransitionProps &
+{
+children: React.ReactElement<any, any>;
+},
+ref: React.Ref<unknown>) {
     return (
         <Slide
             ref={ref}

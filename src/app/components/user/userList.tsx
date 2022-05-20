@@ -1,12 +1,8 @@
 import { UserListItem } from "./userListItem";
 import { ReadUserDto } from "@/app/data/user/dto/readUserDto";
 import { THEME_COLOR_PRIMARY_SELECT_DIALOG } from "@/config";
-import {
-    Grid,
-    List,
-    makeStyles,
-    Typography,
-} from "@material-ui/core";
+import { Grid, List, Typography } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import React from "react";
 import { FormattedMessage } from "react-intl";
 

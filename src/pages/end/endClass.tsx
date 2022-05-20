@@ -14,10 +14,10 @@ import { useWebrtcClose } from "@kl-engineering/live-state/ui";
 import {
     Fade,
     Grid,
-    makeStyles,
     Theme,
     Typography,
-} from '@material-ui/core';
+} from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import { CalendarCheck as ClassEndedIcon } from "@styled-icons/boxicons-regular/CalendarCheck";
 import React,
 { useEffect } from 'react';
@@ -29,7 +29,7 @@ import {
 } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
-    container:{
+    container: {
         height: `100%`,
         backgroundColor: theme.palette.grey[200],
         overflowY: `auto`,
@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     root: {
         textAlign: `center`,
     },
-    icon:{
+    icon: {
         color: theme.palette.text.primary,
         marginBottom: 10,
         "& svg": {
@@ -49,14 +49,14 @@ const useStyles = makeStyles((theme: Theme) => ({
             padding: `1rem`,
         },
     },
-    returnToHub:{
+    returnToHub: {
         fontWeight: theme.typography.fontWeightBold as number,
         marginTop: theme.spacing(4),
         "& a": {
             color: theme.palette.text.primary,
         },
     },
-    appHeader:{
+    appHeader: {
         position: `fixed`,
         top: 0,
         left: 0,
@@ -64,7 +64,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         padding: `20`,
         boxSizing: `border-box`,
     },
-    appHeaderRight:{
+    appHeaderRight: {
         textAlign: `right`,
         marginTop: theme.spacing(3),
         marginRight: theme.spacing(4),

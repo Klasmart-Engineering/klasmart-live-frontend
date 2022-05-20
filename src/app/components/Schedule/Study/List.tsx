@@ -34,16 +34,11 @@ import {
     usePostSchedulesTimeViewList,
 } from "@kl-engineering/cms-api-client";
 import { useSnackbar } from "@kl-engineering/kidsloop-px";
+import { Avatar, Box, CircularProgress, Grid, List, Typography } from "@mui/material";
 import {
-    Avatar,
-    Box,
-    CircularProgress,
     createStyles,
-    Grid,
-    List,
     makeStyles,
-    Typography,
-} from "@material-ui/core";
+} from '@mui/styles';
 import { ChevronRight } from "@styled-icons/material";
 import {
     clamp,

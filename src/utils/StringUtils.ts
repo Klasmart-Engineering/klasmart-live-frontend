@@ -1,6 +1,6 @@
 
 export function isBlank (str: string) : boolean {
-    return (!str || /^\s*$/.test(str));
+    return !str || /^\s*$/.test(str);
 }
 
 export function generateRandomString () : string {

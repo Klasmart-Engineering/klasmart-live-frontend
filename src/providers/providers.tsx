@@ -6,7 +6,10 @@ import {
     getDefaultLanguageCode,
     getLanguage,
 } from "@/utils/locale";
-import { ThemeProvider } from "@material-ui/core";
+import {
+    StyledEngineProvider,
+    ThemeProvider,
+} from "@mui/material";
 import React,
 {
     createContext,
@@ -42,13 +45,15 @@ function Providers ({ children }: Props) {
         <ThemeContext.Provider value={themeContext}>
             <RawIntlProvider value={locale}>
                 <CompositionRoot>
-                    <ThemeProvider theme={themeProvider(`en`, `light`)}>
-                        <KidsloopPxProvider>
-                            <RouterProvider>
-                                {children}
-                            </RouterProvider>
-                        </KidsloopPxProvider>
-                    </ThemeProvider>
+                    <StyledEngineProvider injectFirst>
+                        <ThemeProvider theme={themeProvider(`en`, `light`)}>
+                            <KidsloopPxProvider>
+                                <RouterProvider>
+                                    {children}
+                                </RouterProvider>
+                            </KidsloopPxProvider>
+                        </ThemeProvider>
+                    </StyledEngineProvider>
                 </CompositionRoot>
             </RawIntlProvider>
         </ThemeContext.Provider>

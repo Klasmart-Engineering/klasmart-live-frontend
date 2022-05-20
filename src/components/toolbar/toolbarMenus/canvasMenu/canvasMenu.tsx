@@ -14,12 +14,8 @@ import {
 import { StyledPopper } from "@/utils/utils";
 import { useSynchronizedState } from "@/whiteboard/context-providers/SynchronizedStateProvider";
 import { useToolbarContext } from "@kl-engineering/kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
-import {
-    Grid,
-    makeStyles,
-    Tooltip,
-    useTheme,
-} from "@material-ui/core";
+import { Grid, Theme, Tooltip, useTheme } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import { ArrowsMove as MoveIcon } from "@styled-icons/bootstrap/ArrowsMove";
 import { Pencil as PencilIcon } from "@styled-icons/boxicons-regular/Pencil";
 import { Eraser as EraserIcon } from "@styled-icons/boxicons-solid/Eraser";
@@ -224,15 +220,15 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
                 open={isCanvasOpen}
                 anchorEl={anchor}
                 placement={classType === ClassType.STUDY ? `top-end` : `top`}
-                modifiers={classType === ClassType.STUDY || classType === ClassType.CLASSES ? {
-                    offset: {
-                        enabled: true,
-                        offset: `0, 4`,
-                    },
-                    preventOverflow: {
-                        boundariesElement: document.getElementById(`main-content`),
-                    },
-                } : undefined}
+                // modifiers={classType === ClassType.STUDY || classType === ClassType.CLASSES ? {
+                //     offset: {
+                //         enabled: true,
+                //         offset: `0, 4`,
+                //     },
+                //     preventOverflow: {
+                //         boundariesElement: document.getElementById(`main-content`),
+                //     },
+                // } : undefined}
             >
                 <Grid
                     container
@@ -338,15 +334,15 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
                 <StyledPopper
                     open={isCanvasColorsOpen}
                     placement="top-start"
-                    modifiers={{
-                        offset: {
-                            enabled: true,
-                            offset: `-4,8`,
-                        },
-                        preventOverflow: {
-                            boundariesElement: document.getElementById(`main-content`),
-                        },
-                    }}
+                    // modifiers={{
+                    //     offset: {
+                    //         enabled: true,
+                    //         offset: `-4,8`,
+                    //     },
+                    //     preventOverflow: {
+                    //         boundariesElement: document.getElementById(`main-content`),
+                    //     },
+                    // }}
                     anchorEl={colorsMenuAnchor}
                 >
                     <CanvasColorSelector

@@ -1,13 +1,12 @@
 import { THEME_COLOR_SECONDARY_DEFAULT } from "@/config";
 import Fab,
-{ FabProps } from "@material-ui/core/Fab";
-import Hidden from "@material-ui/core/Hidden";
-import { withStyles } from "@material-ui/core/styles";
+{ FabProps } from "@mui/material/Fab";
+import Hidden from "@mui/material/Hidden";
+import withStyles from '@mui/styles/withStyles';
 import { Send as SendIcon } from "@styled-icons/material/Send";
 import React from "react";
 
 interface Props extends FabProps {
-    // children?: React.ReactNode;
     className?: string;
     extendedOnly?: boolean;
     flat?: boolean;
@@ -24,7 +23,6 @@ const StyledFab = withStyles({
         },
         background: THEME_COLOR_SECONDARY_DEFAULT,
         color: `#FFF`,
-
     },
 })(Fab);
 
@@ -41,37 +39,38 @@ export default function StyledFAB (props: Props) {
         typeof child !== `string` ? sibling = child : {}
     ));
 
-    return (
-        extendedOnly ?
-            <StyledFab
-                variant="extended"
-                style={{
-                    minWidth: 120,
-                    boxShadow: flat ? `none` : `0px 3px 5px -1px rgba(0,0,0,0.2), 0px 6px 10px 0px rgba(0,0,0,0.14), 0px 1px 18px 0px rgba(0,0,0,0.12)`,
-                }}
-                {...other}>
-                {children || <SendIcon />}
-            </StyledFab> :
-            <>
-                <Hidden smDown>
-                    <StyledFab
-                        variant="extended"
-                        style={{
-                            minWidth: 120,
-                            boxShadow: flat ? `none` : `0px 3px 5px -1px rgba(0,0,0,0.2), 0px 6px 10px 0px rgba(0,0,0,0.14), 0px 1px 18px 0px rgba(0,0,0,0.12)`,
-                        }}
-                        {...other}>
-                        {children || <SendIcon />}
-                    </StyledFab>
-                </Hidden>
-                <Hidden mdUp>
-                    <StyledFab
-                        variant="round"
-                        size="small"
-                        {...other}>
-                        {sibling || <SendIcon fontSize="small" />}
-                    </StyledFab>
-                </Hidden>
-            </>
-    );
+    return extendedOnly ?
+        <StyledFab
+            variant="extended"
+            style={{
+                minWidth: 120,
+                boxShadow: flat ? `none` : `0px 3px 5px -1px rgba(0,0,0,0.2), 0px 6px 10px 0px rgba(0,0,0,0.14), 0px 1px 18px 0px rgba(0,0,0,0.12)`,
+            }}
+            {...other}
+        >
+            {children || <SendIcon />}
+        </StyledFab> :
+        <>
+            <Hidden xlDown>
+                <StyledFab
+                    variant="extended"
+                    style={{
+                        minWidth: 120,
+                        boxShadow: flat ? `none` : `0px 3px 5px -1px rgba(0,0,0,0.2), 0px 6px 10px 0px rgba(0,0,0,0.14), 0px 1px 18px 0px rgba(0,0,0,0.12)`,
+                    }}
+                    {...other}
+                >
+                    {children || <SendIcon />}
+                </StyledFab>
+            </Hidden>
+            <Hidden mdUp>
+                <StyledFab
+                    variant="circular"
+                    size="small"
+                    {...other}
+                >
+                    {sibling || <SendIcon fontSize="small" />}
+                </StyledFab>
+            </Hidden>
+        </>;
 }

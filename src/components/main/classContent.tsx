@@ -9,13 +9,12 @@ import {
     materialActiveIndexState,
     showEndStudyState,
 } from "@/store/layoutAtoms";
-import { useMediaQuery } from "@material-ui/core";
-import Grid from "@material-ui/core/Grid";
 import {
-    makeStyles,
-    Theme,
+    Grid,
+    useMediaQuery,
     useTheme,
-} from "@material-ui/core/styles";
+} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import { ChevronLeft as ArrowBackIcon } from "@styled-icons/entypo/ChevronLeft";
 import { ChevronRight as ArrowForwardIcon } from "@styled-icons/entypo/ChevronRight";
 import clsx from "clsx";
@@ -29,7 +28,7 @@ import { useRecoilState } from "recoil";
 
 const ARROW_SIZE = 120;
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles((theme) => ({
     arrowButton: {
         cursor: `pointer`,
         color: theme.palette.common.white,
@@ -37,14 +36,14 @@ const useStyles = makeStyles((theme: Theme) => ({
     arrowButtonRight: {
         paddingRight: theme.spacing(5),
     },
-    arrowButtonDisabled:{
+    arrowButtonDisabled: {
         opacity: 0,
         pointerEvents: `none`,
     },
     arrowButtonClass: {
         color: TEXT_COLOR_LIVE_PRIMARY,
     },
-    content:{
+    content: {
         background: theme.palette.background.paper,
         borderRadius: theme.spacing(2.5),
         height: `100%`,
@@ -59,17 +58,17 @@ const useStyles = makeStyles((theme: Theme) => ({
             padding: theme.spacing(1.25),
         },
     },
-    fullHeight:{
+    fullHeight: {
         position: `relative`,
         height: `100%`,
         width: `100%`,
     },
-    navigationColumn:{
+    navigationColumn: {
         display: `flex`,
         alignItems: `center`,
         justifyContent: `center`,
     },
-    centeredContent:{
+    centeredContent: {
         height: `100%`,
         alignItems: `center`,
         justifyContent: `center`,

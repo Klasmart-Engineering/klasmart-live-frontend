@@ -16,7 +16,7 @@ import {
     Box,
     useMediaQuery,
     useTheme,
-} from "@material-ui/core";
+} from "@mui/material";
 import { UserVoice as OnStageIcon } from "@styled-icons/boxicons-solid/UserVoice";
 import { Eye as ObserveIcon } from "@styled-icons/fa-regular/Eye";
 import { PresentationChartBar as PresentIcon } from "@styled-icons/heroicons-solid/PresentationChartBar";

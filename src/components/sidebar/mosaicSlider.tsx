@@ -1,23 +1,18 @@
 import { mosaicViewSizeState } from "@/store/layoutAtoms";
-import {
-    IconButton,
-    makeStyles,
-    Menu,
-    Slider,
-    Theme,
-} from "@material-ui/core";
+import { IconButton, Menu, Slider, Theme } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import { SlideSize as SliderIcon } from "@styled-icons/fluentui-system-regular/SlideSize";
 import React,
 { useState } from "react";
 import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
-    sliderIconButton:{
+    sliderIconButton: {
         color: theme.palette.text.primary,
         boxShadow: `0 2px 6px 0px rgba(0,0,0,0.3)`,
         transform: `scale(0.8)`,
     },
-    slider:{
+    slider: {
         minHeight: 150,
         margin: `10px 3px`,
     },
@@ -39,7 +34,6 @@ function MosaicSlider () {
             <Menu
                 id="grid-settings-menu"
                 anchorEl={mosaicGridSettingsEl}
-                getContentAnchorEl={null}
                 anchorOrigin={{
                     vertical: `top`,
                     horizontal: `center`,

@@ -2,7 +2,7 @@ import { useStreamSubscription } from '@/data/live/subscriptions/useStreamSubscr
 import {
     CircularProgress,
     Typography,
-} from '@material-ui/core';
+} from '@mui/material';
 import React,
 {
     Dispatch,

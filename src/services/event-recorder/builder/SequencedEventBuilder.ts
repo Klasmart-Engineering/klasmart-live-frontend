@@ -13,7 +13,7 @@ export class SqeuencedEventBuilder {
         this.data = sequencedEvent ? sequencedEvent.toData() : <SequencedEventData> {};
     }
 
-    withStream (stream: EventStream) : SqeuencedEventBuilder {
+    withStream (stream: EventStream): SqeuencedEventBuilder {
         this.data.streamId = stream.getId();
         this.data.sequence = stream.getSequence();
         this.data.tag = stream.getTag();
@@ -40,12 +40,12 @@ export class SqeuencedEventBuilder {
         return this;
     }
 
-    withIsKeyFrame (isKeyFrame: boolean) : SqeuencedEventBuilder {
+    withIsKeyFrame (isKeyFrame: boolean): SqeuencedEventBuilder {
         this.data.isKeyFrame = isKeyFrame;
         return this;
     }
 
-    withTag (tag: string) : SqeuencedEventBuilder {
+    withTag (tag: string): SqeuencedEventBuilder {
         this.data.tag = tag;
         return this;
     }

@@ -1,15 +1,15 @@
 import KidsloopLogo from "@/assets/img/kidsloop.svg";
-import AppBar from "@material-ui/core/AppBar";
-import Grid from "@material-ui/core/Grid";
-import IconButton from "@material-ui/core/IconButton";
-import Paper from "@material-ui/core/Paper";
+import AppBar from "@mui/material/AppBar";
+import Grid from "@mui/material/Grid";
+import IconButton from "@mui/material/IconButton";
+import Paper from "@mui/material/Paper";
+import { Theme } from "@mui/material/styles";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
 import {
     createStyles,
     makeStyles,
-    Theme,
-} from "@material-ui/core/styles";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
+} from '@mui/styles';
 import { Close as CloseIcon } from "@styled-icons/material/Close";
 import React from "react";
 import { FormattedMessage } from "react-intl";
@@ -39,56 +39,62 @@ export default function DialogAppBar (props: Props) {
         toolbarBtn,
     } = props;
 
-    return (
-        <>
-            <AppBar
-                color="inherit"
-                className={classes.appBar}>
-                <Toolbar>
-                    <IconButton
-                        edge="start"
-                        color="inherit"
-                        aria-label="close"
-                        onClick={handleClose}>
-                        <CloseIcon />
-                    </IconButton>
-                    <Grid
-                        container
-                        item
-                        wrap="nowrap">
-                        <img
-                            alt="kidsloop logo"
-                            className={classes.title}
-                            src={KidsloopLogo}
-                            height={32} />
-                        <Typography
-                            id="nav-menu-title"
-                            variant="h6">
-                            for Organizations
-                        </Typography>
-                    </Grid>
-                    { toolbarBtn ? toolbarBtn : null }
-                </Toolbar>
-            </AppBar>
-            <Grid
-                container
-                direction="row"
+    return (<>
+        <AppBar
+            color="inherit"
+            className={classes.appBar}
+        >
+            <Toolbar>
+                <IconButton
+                    edge="start"
+                    color="inherit"
+                    aria-label="close"
+                    size="large"
+                    onClick={handleClose}
+                >
+                    <CloseIcon />
+                </IconButton>
+                <Grid
+                    container
+                    item
+                    wrap="nowrap"
+                >
+                    <img
+                        alt="kidsloop logo"
+                        className={classes.title}
+                        src={KidsloopLogo}
+                        height={32}
+                    />
+                    <Typography
+                        id="nav-menu-title"
+                        variant="h6"
+                    >
+                        for Organizations
+                    </Typography>
+                </Grid>
+                { toolbarBtn ? toolbarBtn : null }
+            </Toolbar>
+        </AppBar>
+        <Grid
+            container
+            direction="row"
+        >
+            <Paper
+                square
+                style={{
+                    flex: 1,
+                    height: `100%`,
+                }}
             >
-                <Paper
-                    square
-                    style={{
-                        flex: 1,
-                        height: `100%`,
-                    }}>
-                    <Toolbar variant="dense">
-                        <Typography
-                            id="nav-menu-description"
-                            variant="body2">
-                            <FormattedMessage id={subtitleID} />
-                        </Typography>
-                    </Toolbar>
-                </Paper>
-            </Grid>
-        </>
-    );
+                <Toolbar variant="dense">
+                    <Typography
+                        id="nav-menu-description"
+                        variant="body2"
+                    >
+                        <FormattedMessage id={subtitleID} />
+                    </Typography>
+                </Toolbar>
+            </Paper>
+        </Grid>
+    </>);
 }

@@ -24,12 +24,12 @@ import {
     Container,
     FormControlLabel,
     Grid,
-    makeStyles,
     Theme,
     Typography,
     useMediaQuery,
     useTheme,
-} from '@material-ui/core';
+} from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import clsx from 'clsx';
 import React,
 {

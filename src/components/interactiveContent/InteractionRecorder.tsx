@@ -22,14 +22,16 @@ import WhiteboardBorder from "@/whiteboard/components/Border";
 import {
     Button,
     CircularProgress,
-    createStyles,
     Dialog,
     Grid,
-    makeStyles,
     Typography,
     useMediaQuery,
     useTheme,
-} from "@material-ui/core";
+} from "@mui/material";
+import {
+    createStyles,
+    makeStyles,
+} from '@mui/styles';
 import { Refresh as RefreshIcon } from "@styled-icons/material/Refresh";
 import React,
 {

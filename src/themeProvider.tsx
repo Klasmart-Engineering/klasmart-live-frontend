@@ -12,18 +12,20 @@ import {
     THEME_COLOR_SECONDARY_DEFAULT,
 } from "@/config";
 import {
+    BreakpointOverrides,
+    ComponentsOverrides,
     createTheme,
+    PaletteOptions,
     responsiveFontSizes,
     Theme,
     useTheme,
-} from "@material-ui/core/styles";
-import { PaletteOptions } from "@material-ui/core/styles/createPalette";
-import { TypographyOptions } from "@material-ui/core/styles/createTypography";
+} from "@mui/material/styles";
+import { TypographyOptions } from "@mui/material/styles/createTypography";
 
 export function themeProvider (languageCode: string, themeMode: string) {
     const defaultTheme = useTheme();
 
-    function setTypography (languageCode: string) {
+    function setTypography () {
         let localeFontFamily = `Inter`;
         const localeWeightLight = 300;
         const localeWeightRegular = 400;
@@ -46,7 +48,7 @@ export function themeProvider (languageCode: string, themeMode: string) {
         };
     }
 
-    const localeTypography = setTypography(languageCode);
+    const localeTypography = setTypography();
     const typography: TypographyOptions = {
         button: {
             textTransform: `none`,
@@ -59,13 +61,15 @@ export function themeProvider (languageCode: string, themeMode: string) {
         fontSize: 12,
     };
 
-    const breakpoints = {
-        values: {
-            xs: 0,
-            sm: 600,
-            md: 1024,
-            lg: 1280,
-            xl: 1920,
+    const breakpointOverrides: BreakpointOverrides = {
+        breakpoints: {
+            values: {
+                xs: 0,
+                sm: 600,
+                md: 1024,
+                lg: 1280,
+                xl: 1920,
+            },
         },
     };
 
@@ -87,123 +91,150 @@ export function themeProvider (languageCode: string, themeMode: string) {
             primary: TEXT_COLOR_PRIMARY_DEFAULT,
             secondary: TEXT_COLOR_SECONDARY_DEFAULT,
         },
-        grey:{
+        grey: {
             200: THEME_COLOR_GREY_200,
         },
     };
 
-    const overrides = {
-        MuiTabs: {
-            root: {
-                minHeight: 0,
-                padding: 10,
-                borderBottom: `1px solid rgba(0,0,0,0.1)`,
-                "& $flexContainer": {
-                    zIndex: 5,
-                    position: `relative`,
+    const componentOverrides = {
+        components: {
+            MuiTabs: {
+                styleOverrides: {
+                    root: {
+                        minHeight: 0,
+                        padding: 10,
+                        borderBottom: `1px solid rgba(0,0,0,0.1)`,
+                        "& $flexContainer": {
+                            zIndex: 5,
+                            position: `relative`,
+                        },
+                    },
+                    indicator: {
+                        backgroundColor: THEME_COLOR_BACKGROUND_DEFAULT,
+                        height: `100%`,
+                        borderRadius: 40,
+                    },
                 },
             },
-            indicator: {
-                backgroundColor: THEME_COLOR_BACKGROUND_DEFAULT,
-                height: `100%`,
-                borderRadius: 40,
+            MuiTab: {
+                styleOverrides: {
+                    root: {
+                        minWidth: `0 !important`,
+                        minHeight: `0 !important`,
+                        padding: `5px 16px`,
+                        fontSize: `0.85rem`,
+                        transition: `opacity 100ms ease-in-out`,
+                        "&:hover": {
+                            opacity: 1,
+                        },
+                    },
+                },
             },
-        },
-        MuiTab: {
-            root: {
-                minWidth: `0 !important`,
-                minHeight: `0 !important`,
-                padding: `5px 16px`,
-                fontSize: `0.85rem`,
-                transition: `opacity 100ms ease-in-out`,
-                "&:hover": {
-                    opacity: 1,
+            MuiButton: {
+                styleOverrides: {
+                    root: {
+                        borderRadius: 8,
+                    },
+                },
+            },
+            MuiStepper: {
+                styleOverrides: {
+                    root: {
+                        background: `transparent`,
+                        padding: 0,
+                    },
+                },
+            },
+            MuiStep: {
+                styleOverrides: {
+                    root: {
+                        margin: defaultTheme.spacing(0.5, 0),
+                        padding: defaultTheme.spacing(1.25),
+                        borderRadius: defaultTheme.spacing(1),
+                    },
+                },
+            },
+            MuiStepConnector: {
+                styleOverrides: {
+                    root: {
+                        display: `none`,
+                    },
+                },
+            },
+            MuiStepButton: {
+                styleOverrides: {
+                    root: {
+                        "&.Mui-disabled": {
+                            opacity: `0.3`,
+                        },
+                    },
+                },
+            },
+            MuiStepLabel: {
+                styleOverrides: {
+                    label: {
+                        color: `inherit`,
+                        opacity: 0.6,
+                        fontSize: `0.85rem`,
+                        textAlign: `left` as const,
+                        "&$active": {
+                            opacity: 1,
+                            fontWeight: localeTypography.localeWeightBold,
+                        },
+                    },
+                },
+            },
+            MuiStepIcon: {
+                styleOverrides: {
+                    root: {
+                        fontSize: `1.65rem`,
+                    },
+                },
+            },
+            MuiAccordionSummary: {
+                styleOverrides: {
+                    // expandIcon: {
+                    //     color: palette.text?.primary,
+                    // },
+                },
+            },
+            MuiAppBar: {
+                styleOverrides: {
+                    colorPrimary: {
+                        color: palette.text?.primary,
+                        backgroundColor: `#ffffff`,
+                    },
+                },
+            },
+            MuiListItemText: {
+                styleOverrides: {
+                    secondary: {
+                        fontSize: `0.68rem`,
+                    },
+                },
+            },
+            MuiListSubheader: {
+                styleOverrides: {
+                    root: {
+                        fontWeight: localeTypography.localeWeightBold,
+                        color: palette.text?.secondary,
+                        lineHeight: `28px`,
+                    },
                 },
             },
         },
-        MuiButton:{
-            root:{
-                borderRadius: 8,
-            },
-        },
-        MuiStepper: {
-            root: {
-                background: `transparent`,
-                padding: 0,
-            },
-        },
-        MuiStep: {
-            root: {
-                margin: defaultTheme.spacing(0.5, 0),
-                padding: defaultTheme.spacing(1.25),
-                borderRadius: defaultTheme.spacing(1),
-            },
-        },
-        MuiStepConnector: {
-            root: {
-                display: `none`,
-            },
-        },
-        MuiStepButton: {
-            root: {
-                "&.Mui-disabled": {
-                    opacity: `0.3`,
-                },
-            },
-        },
-        MuiStepLabel: {
-            label: {
-                color: `inherit`,
-                opacity: 0.6,
-                fontSize: `0.85rem`,
-                textAlign: `left` as const,
-                "&$active": {
-                    opacity: 1,
-                    fontWeight: localeTypography.localeWeightBold,
-                },
-            },
-        },
-        MuiStepIcon:{
-            root:{
-                fontSize: `1.65rem`,
-            },
-        },
-        MuiAccordionSummary:{
-            expandIcon:{
-                color: palette.text?.primary,
-            },
-        },
-        MuiAppBar: {
-            colorPrimary: {
-                color: palette.text?.primary,
-                backgroundColor: `#ffffff`,
-            },
-        },
-        MuiListItemText:{
-            secondary: {
-                fontSize: `0.68rem`,
-            },
-        },
-        MuiListSubheader:{
-            root:{
-                fontWeight: localeTypography.localeWeightBold,
-                color: palette.text?.secondary,
-                lineHeight: `28px`,
-            },
-        },
-    };
+    } as ComponentsOverrides;
 
     let theme: Theme;
     if (themeMode === `light`) {
-        palette.type = `light`;
+        palette.mode = `light`;
     }
 
     theme = createTheme({
-        overrides,
+        ...componentOverrides,
+        ...breakpointOverrides,
         palette,
         typography,
-        breakpoints,
-
     });
 
     return (theme = responsiveFontSizes(theme));

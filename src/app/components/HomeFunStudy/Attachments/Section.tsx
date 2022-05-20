@@ -3,14 +3,12 @@ import SupportFileInfoDialog from "@/app/components/HomeFunStudy/SupportFileInfo
 import { Attachment } from "@/app/pages/schedule/home-fun-study/[scheduleId]";
 import { HFSVisibilityState } from "@/app/utils/homeFunStudy";
 import StyledIcon from "@/components/styled/icon";
+import { Box, Button, Typography } from "@mui/material";
 import {
-    Box,
-    Button,
     createStyles,
     makeStyles,
-    Typography,
-} from "@material-ui/core";
-import { InfoOutlined as InfoOutlinedIcon } from "@material-ui/icons";
+} from '@mui/styles';
+import { InfoOutlined as InfoOutlinedIcon } from "@mui/icons-material";
 import React,
 {
     useMemo,

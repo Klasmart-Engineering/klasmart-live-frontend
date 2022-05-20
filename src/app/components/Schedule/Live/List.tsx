@@ -34,13 +34,11 @@ import {
     usePostSchedulesTimeViewList,
 } from "@kl-engineering/cms-api-client";
 import { useSnackbar } from "@kl-engineering/kidsloop-px";
+import { Box, CircularProgress, List } from "@mui/material";
 import {
-    Box,
-    CircularProgress,
     createStyles,
-    List,
     makeStyles,
-} from "@material-ui/core";
+} from '@mui/styles';
 import {
     clamp,
     uniqBy,
@@ -188,36 +186,30 @@ export default function LiveScheduleList () {
     const upcomingLiveSchedules = items.filter(filterUpcomingSchedules);
 
     const liveClassSections: Required<ScheduleListSection>[] = [
-        ...todayLiveSchedules.length
-            ? [
+        ...(todayLiveSchedules.length ? [
                 {
                     title: intl.formatMessage({
                         id: `schedule_liveSubheaderToday`,
                     }),
                     schedules: todayLiveSchedules,
                 },
-            ]
-            : [],
-        ...tomorrowLiveSchedules.length
-            ? [
+            ] : []),
+        ...(tomorrowLiveSchedules.length ? [
                 {
                     title: intl.formatMessage({
                         id: `schedule_liveSubheaderTomorrow`,
                     }),
                     schedules: tomorrowLiveSchedules,
                 },
-            ]
-            : [],
-        ...upcomingLiveSchedules.length
-            ? [
+            ] : []),
+        ...(upcomingLiveSchedules.length ? [
                 {
                     title: intl.formatMessage({
                         id: `schedule_liveSubheaderUpcoming`,
                     }),
                     schedules: upcomingLiveSchedules,
                 },
-            ]
-            : [],
+            ] : []),
     ];
 
     const setLiveClassDetailOpen = (scheduleId?: string) => {

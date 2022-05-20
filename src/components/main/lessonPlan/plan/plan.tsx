@@ -5,20 +5,19 @@ import { materialActiveIndexState } from "@/store/layoutAtoms";
 import { MaterialTypename } from "@/types/lessonMaterial";
 import { NoItemList } from "@/utils/noItemList";
 import {
-    makeStyles,
     Step,
     StepButton,
     StepLabel,
     Stepper,
-    Theme,
-} from "@material-ui/core";
+} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import { Book as PlanIcon } from "@styled-icons/boxicons-regular/Book";
 import clsx from "clsx";
 import React from "react";
 import { useIntl } from "react-intl";
 import { useRecoilState } from "recoil";
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles((theme) => ({
     fullHeight: {
         height: `100%`,
     },

@@ -8,13 +8,12 @@ import heart2 from "@/assets/img/trophies/heart2.png";
 import goldMedal from "@/assets/img/trophies/medals/medal_gold_2.png";
 import star3 from "@/assets/img/trophies/star3.png";
 import trophy from "@/assets/img/trophies/trophy.png";
-import { CSSProperties } from "@material-ui/core/styles/withStyles";
 
 export type TrophyKind = {
     name: string;
     image: string;
     audio: string;
-    style: CSSProperties;
+    style: React.CSSProperties;
     confetti?: boolean;
 }
 

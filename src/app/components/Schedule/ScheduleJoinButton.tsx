@@ -4,7 +4,11 @@ import {
     THEME_COLOR_BACKGROUND_PAPER, 
     THEME_COLOR_PINK_BUTTON_SCHEDULE_DIALOG 
 } from '@/config';
-import { Button, createStyles, makeStyles, Typography, useTheme } from '@material-ui/core';
+import { Button, Typography, useTheme } from '@mui/material';
+import {
+    createStyles,
+    makeStyles,
+} from '@mui/styles';
 import React from 'react';
 
 const useStyles = makeStyles((theme) => createStyles({

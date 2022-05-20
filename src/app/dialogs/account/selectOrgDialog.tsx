@@ -9,15 +9,8 @@ import {
     THEME_BACKGROUND_SELECT_DIALOG,
     THEME_COLOR_PRIMARY_SELECT_DIALOG,
 } from "@/config";
-import {
-    Dialog,
-    DialogContent,
-    Grid,
-    makeStyles,
-    Typography,
-    useMediaQuery,
-    useTheme,
-} from "@material-ui/core";
+import { Dialog, DialogContent, Grid, Typography, useMediaQuery, useTheme } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import React,
 {
     useEffect,

@@ -3,14 +3,16 @@ import {
     TEXT_COLOR_STUDY_PRIMARY,
 } from "@/config";
 import {
-    createStyles,
     ListItem,
     ListItemAvatar,
     ListItemSecondaryAction,
     ListItemText,
-    makeStyles,
     Typography,
-} from "@material-ui/core";
+} from "@mui/material";
+import {
+    createStyles,
+    makeStyles,
+} from '@mui/styles';
 import clsx from "clsx";
 import React from "react";
 
@@ -21,7 +23,7 @@ const useStyles = makeStyles((theme) => createStyles({
         marginBottom: theme.spacing(3),
         borderRadius: 10,
         backgroundColor: theme.palette.background.paper,
-        "&:last-child":{
+        "&:last-child": {
             marginBottom: theme.spacing(1),
         },
         "&:hover": {

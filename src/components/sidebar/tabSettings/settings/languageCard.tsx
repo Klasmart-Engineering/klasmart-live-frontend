@@ -1,26 +1,22 @@
 
 import LanguageSelect from "@/components/languageSelect";
 import { THEME_COLOR_BACKGROUND_DEFAULT } from "@/config";
-import {
-    Grid,
-    makeStyles,
-    Theme,
-    Typography,
-} from "@material-ui/core";
+import { Grid, Theme, Typography } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
 const useStyles = makeStyles((theme: Theme) => ({
-    root:{
+    root: {
         background: theme.palette.background.paper,
         borderRadius: 12,
     },
-    head:{
+    head: {
         padding: theme.spacing(2),
         borderBottom: `1px solid ${THEME_COLOR_BACKGROUND_DEFAULT}`,
         textAlign: `center`,
     },
-    body:{
+    body: {
         padding: theme.spacing(2),
     },
 }));

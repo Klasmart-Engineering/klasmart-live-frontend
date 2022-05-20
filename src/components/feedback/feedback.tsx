@@ -3,17 +3,8 @@ import { isKeyboardVisibleState } from "@/app/model/appModel";
 import { THEME_COLOR_BACKGROUND_DEFAULT } from "@/config";
 import { useSaveFeedbackMutation } from "@/data/live/mutations/useSaveFeedbackMutation";
 import { useSessionContext } from "@/providers/session-context";
-import {
-    Button,
-    Chip,
-    Fade,
-    Grid,
-    makeStyles,
-    TextField,
-    Theme,
-    Typography,
-} from "@material-ui/core";
-import amber from "@material-ui/core/colors/amber";
+import { Button, Chip, Fade, Grid, TextField, Theme, Typography } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import { Star as StarEmptyIcon } from "@styled-icons/bootstrap/Star";
 import { StarFill as StarFillIcon } from "@styled-icons/bootstrap/StarFill";
 import clsx from "clsx";
@@ -28,28 +19,29 @@ import {
     useIntl,
 } from "react-intl";
 import { useRecoilValue } from "recoil";
+import { amber } from '@mui/material/colors';
 
 const useStyles = makeStyles((theme: Theme) => ({
-    stars:{
+    stars: {
         marginTop: theme.spacing(3),
     },
-    starsTitle:{},
+    starsTitle: {},
 
-    star:{
+    star: {
         opacity: 0.4,
         cursor: `pointer`,
         textAlign: `center`,
-        "&:hover":{
+        "&:hover": {
             opacity: 1,
         },
     },
-    starActive:{
+    starActive: {
         opacity: 1,
     },
-    starUnclickable:{
+    starUnclickable: {
         pointerEvents: `none`,
     },
-    starLabel:{
+    starLabel: {
         marginTop: 5,
     },
     rootChips: {
@@ -61,36 +53,36 @@ const useStyles = makeStyles((theme: Theme) => ({
             margin: theme.spacing(0.5),
         },
     },
-    moreTitle:{
+    moreTitle: {
         fontWeight: theme.typography.fontWeightBold as number,
         marginTop: theme.spacing(2),
     },
-    moreSubtitle:{
+    moreSubtitle: {
         color: theme.palette.grey[700],
         marginTop: 8,
         marginBottom: theme.spacing(2),
     },
-    comment:{
+    comment: {
         textAlign:`center`,
         color: theme.palette.text.primary,
     },
-    chip:{
+    chip: {
         fontSize: `0.75rem`,
         border: `1px solid rgb(206 206 206)`,
         color: `#a0a0a0`,
     },
-    activeChip:{
+    activeChip: {
         color:` #406ba7`,
         border: `1px solid ${THEME_COLOR_BACKGROUND_DEFAULT}`,
         background: `#e6f1ff !important`,
     },
-    inputField:{
+    inputField: {
         width: `100%`,
     },
-    submitButton:{
+    submitButton: {
         marginTop: 20,
     },
-    starIcon:{
+    starIcon: {
         color: amber[500],
     },
     starBox: {

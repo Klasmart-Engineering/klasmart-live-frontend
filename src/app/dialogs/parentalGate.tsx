@@ -11,15 +11,13 @@ import {
     THEME_COLOR_BACKGROUND_PAPER,
 } from "@/config";
 import { useWindowSize } from "@/utils/viewport";
+import { Button, Theme } from "@mui/material";
 import {
-    Button,
     createStyles,
     makeStyles,
-    Theme,
-} from "@material-ui/core";
-import red from "@material-ui/core/colors/red";
-import Grid from "@material-ui/core/Grid/Grid";
-import Typography from "@material-ui/core/Typography/Typography";
+} from '@mui/styles';
+import Grid from "@mui/material/Grid/Grid";
+import Typography from "@mui/material/Typography/Typography";
 import clsx from "clsx";
 import React,
 {
@@ -27,6 +25,7 @@ import React,
     useState,
 } from 'react';
 import { FormattedMessage } from "react-intl";
+import { red } from '@mui/material/colors';
 
 interface Props {
     onCompleted: () => void;
@@ -170,19 +169,19 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         animation: `$shake 0.5s infinite`,
     },
     "@keyframes shake": {
-        "0%":{
+        "0%": {
             transform: `translate(0)`,
         },
-        "20%":{
+        "20%": {
             transform: `translate(3em)`,
         },
         "40%": {
             transform: `translate(-3em)`,
         },
-        "60%" :{
+        "60%" : {
             transform: `translate(3em)`,
         },
-        "80%":{
+        "80%": {
             transform: `translate(-3em)`,
         },
         "100%": {

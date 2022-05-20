@@ -1,5 +1,5 @@
 import { URL_REGEX } from "@/config";
-import { Link } from "@material-ui/core";
+import { Link } from "@mui/material";
 import React from "react";
 
 export function generateDescriptionHasHyperLink (description: string, onClick: (url: string) => void) {

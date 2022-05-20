@@ -7,11 +7,11 @@ import LiveIconClosed from "@/assets/img/schedule-icon/live_icon_closed.svg";
 import LiveIconOpen from "@/assets/img/schedule-icon/live_icon_open.svg";
 import StudyIconClosed from "@/assets/img/schedule-icon/study_icon_closed.svg";
 import StudyIconOpen from "@/assets/img/schedule-icon/study_icon_open.svg";
+import { Grid } from "@mui/material";
 import {
     createStyles,
-    Grid,
     makeStyles,
-} from "@material-ui/core";
+} from '@mui/styles';
 import React from "react";
 
 const useStyles = makeStyles((theme) => createStyles({
@@ -63,12 +63,13 @@ export default function ScheduleBottomAppBar () {
                     title={`schedule_studyTab`}
                     type="study"
                     active={selectedItem === ScheduleAppBarItem.STUDY}
-                    icon={<img
-                        alt="Study Icon"
-                        src={selectedItem === ScheduleAppBarItem.STUDY ? StudyIconOpen : StudyIconClosed}
-                        width={23}
-                        height={30}
-                    />}
+                    icon={
+                        <img
+                            alt="Study Icon"
+                            src={selectedItem === ScheduleAppBarItem.STUDY ? StudyIconOpen : StudyIconClosed}
+                            width={23}
+                            height={30}
+                        />}
                     data-testid={ScheduleAppBarItem.STUDY}
                     onClick={() => setSelectedItem(ScheduleAppBarItem.STUDY)}
                 />

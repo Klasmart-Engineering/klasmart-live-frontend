@@ -3,7 +3,7 @@ import { Session } from "@/pages/utils";
 import { useSessionContext } from "@/providers/session-context";
 import { WhiteboardLoadableElement } from "@/whiteboard/components/ContainedWhiteboard";
 import { useStream } from "@kl-engineering/live-state/ui";
-import { makeStyles } from "@material-ui/core";
+import makeStyles from '@mui/styles/makeStyles';
 import clsx from "clsx";
 import React,
 {
@@ -12,7 +12,7 @@ import React,
 } from "react";
 
 const useStyles = makeStyles(() => ({
-    video:{
+    video: {
         width: `100% !important`,
         height: `100% !important`,
         position: `absolute`,

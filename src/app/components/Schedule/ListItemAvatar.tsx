@@ -1,9 +1,9 @@
 import StyledIcon from "../../../components/styled/icon";
+import { Avatar } from "@mui/material";
 import {
-    Avatar,
     createStyles,
     makeStyles,
-} from "@material-ui/core";
+} from '@mui/styles';
 import React,
 {
     JSXElementConstructor,
@@ -36,21 +36,26 @@ export default function ScheduleListItemAvatar (props: Props) {
     } = props;
     const classes = useStyles();
 
-    return (
-        imgType ?
+    if(imgType){
+        return(
             <img
                 alt="schedule list icon"
                 src={src}
                 className={classes.image}
-            /> :
-            <Avatar
-                data-testid="schedule-list-item-avatar"
-                className={classes.listItemAvatar}>
-                <StyledIcon
-                    icon={src}
-                    size="large"
-                    color={color}
-                />
-            </Avatar>
+            />
+        );
+    }
+
+    return (
+        <Avatar
+            data-testid="schedule-list-item-avatar"
+            className={classes.listItemAvatar}
+        >
+            <StyledIcon
+                icon={src}
+                size="large"
+                color={color}
+            />
+        </Avatar>
     );
 }

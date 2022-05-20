@@ -1,6 +1,5 @@
 import lightRay from '@/assets/img/trophies/lightray2.png';
-import React,
-{ CSSProperties } from 'react';
+import React from 'react';
 import { Transition } from 'react-transition-group';
 import { TransitionStatus } from 'react-transition-group/Transition';
 
@@ -61,7 +60,7 @@ export function Lights (props: Props): JSX.Element {
         unmounted: undefined,
     };
 
-    const lightRayInitialStyle: CSSProperties = {
+    const lightRayInitialStyle: React.CSSProperties = {
         position: `absolute`,
         bottom: 0,
         transformOrigin: `100% 50%`,
@@ -87,7 +86,8 @@ export function Lights (props: Props): JSX.Element {
     return (
         <Transition
             in={display}
-            timeout={enterDuration}>
+            timeout={enterDuration}
+        >
             { state => (
                 <>
                     <img
@@ -97,7 +97,8 @@ export function Lights (props: Props): JSX.Element {
                             ...lightRayLeftTransitionStates[state],
                         }}
                         alt="lightray"
-                        src={lightRay} />
+                        src={lightRay}
+                    />
                     <img
                         className="lightray-right"
                         style={{
@@ -105,7 +106,8 @@ export function Lights (props: Props): JSX.Element {
                             ...lightRayRightTransitionStates[state],
                         }}
                         alt="lightray"
-                        src={lightRay} />
+                        src={lightRay}
+                    />
                     {children}
                 </>
             )}

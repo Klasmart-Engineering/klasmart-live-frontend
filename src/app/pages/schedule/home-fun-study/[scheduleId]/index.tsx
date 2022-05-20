@@ -41,15 +41,12 @@ import {
     usePostScheduleFeedback,
 } from "@kl-engineering/cms-api-client";
 import { useSnackbar } from "@kl-engineering/kidsloop-px";
+import { Box, Button, CircularProgress, Typography } from "@mui/material";
 import {
-    Box,
-    Button,
-    CircularProgress,
     createStyles,
     makeStyles,
-    Typography,
-} from "@material-ui/core";
-import { blue } from "@material-ui/core/colors";
+} from '@mui/styles';
+import { blue } from "@mui/material/colors";
 import clsx from "clsx";
 import React,
 {

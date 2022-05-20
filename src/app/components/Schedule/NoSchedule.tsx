@@ -8,13 +8,11 @@ import {
     TEXT_COLOR_STUDY_PRIMARY,
     THEME_COLOR_BACKGROUND_BLUE,
 } from "@/config";
+import { Grid, Typography, useTheme } from "@mui/material";
 import {
     createStyles,
-    Grid,
     makeStyles,
-    Typography,
-    useTheme,
-} from "@material-ui/core";
+} from '@mui/styles';
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
@@ -35,7 +33,7 @@ const useStyles = makeStyles((theme) => createStyles({
             width: `60%`,
         },
     },
-    textTip:{
+    textTip: {
         content: `''`,
         position: `absolute`,
         width: 30,

@@ -1,6 +1,6 @@
-import { Badge } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import { InsertDriveFile } from "@material-ui/icons";
+import { InsertDriveFile } from "@mui/icons-material";
+import { Badge } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import React from "react";
 
 const useStyles = makeStyles({
@@ -98,7 +98,7 @@ export function FileIcon (props: Props): JSX.Element {
             classes={{
                 colorPrimary: generateFileBadge(props.fileType ? props.fileType : ``),
                 badge: classes.badge_text,
-                anchorOriginBottomRightRectangle: classes.badgeAnchorOriginBottomRightRectangle,
+                anchorOriginBottomRightRectangular: classes.badgeAnchorOriginBottomRightRectangle,
             }}
             badgeContent={props.fileType}
         >

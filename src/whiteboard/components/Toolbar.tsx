@@ -1,9 +1,9 @@
 import { useSessionContext } from "@/providers/session-context";
 import { useSynchronizedState } from "@/whiteboard/context-providers/SynchronizedStateProvider";
 import { useToolbarContext } from "@kl-engineering/kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
-import { IconButton } from "@material-ui/core";
-import Grid from "@material-ui/core/Grid/Grid";
-import useTheme from "@material-ui/core/styles/useTheme";
+import { IconButton } from "@mui/material";
+import Grid from "@mui/material/Grid/Grid";
+import { useTheme } from '@mui/material/styles';
 import { Move as MoveIcon } from "@styled-icons/boxicons-regular/Move";
 import { Eraser as EraserIcon } from "@styled-icons/boxicons-solid/Eraser";
 import { Trash as TrashIcon } from "@styled-icons/boxicons-solid/Trash";
@@ -62,7 +62,7 @@ export const Toolbar: FunctionComponent<Props> = ({ children }: Props): JSX.Elem
                         backgroundColor: colorValue,
                     }}
                     onClick={() => { selectColorByValue(colorValue); }}
-                />
+                    size="large" />
             </Grid>
         </Grid>
     );
@@ -89,7 +89,7 @@ export const Toolbar: FunctionComponent<Props> = ({ children }: Props): JSX.Elem
                         backgroundColor: `#f6fafe`,
                     }}
                     onClick={clicked}
-                >
+                    size="large">
                     {children}
                 </IconButton>
             </Grid>

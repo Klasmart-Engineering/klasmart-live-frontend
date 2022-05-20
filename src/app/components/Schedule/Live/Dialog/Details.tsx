@@ -19,7 +19,7 @@ import { useSnackbar } from "@kl-engineering/kidsloop-px";
 import {
     createStyles,
     makeStyles,
-} from "@material-ui/core";
+} from '@mui/styles';
 import React,
 {
     useEffect,

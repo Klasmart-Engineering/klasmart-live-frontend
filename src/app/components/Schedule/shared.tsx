@@ -7,7 +7,7 @@ import {
     GetScheduleByIdResponse,
     SchedulesTimeViewListItem,
 } from "@kl-engineering/cms-api-client/dist/api/schedule";
-import { Typography } from "@material-ui/core";
+import { Typography } from "@mui/material";
 import { Envelope as AssessmentCompleteIcon } from "@styled-icons/fa-regular/Envelope";
 import React from "react";
 import {

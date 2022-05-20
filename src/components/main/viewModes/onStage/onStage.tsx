@@ -4,9 +4,9 @@ import { useSessionContext } from "@/providers/session-context";
 import { ClassType } from "@/store/actions";
 import {
     Box,
-    makeStyles,
     Typography,
-} from "@material-ui/core";
+} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import React,
 { useMemo } from "react";
 import { FormattedMessage } from "react-intl";

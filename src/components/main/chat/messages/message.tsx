@@ -1,14 +1,8 @@
 import { dialogsState } from "@/app/model/appModel";
 import { ChatMessage } from "@/data/live/state/useMessages";
 import { UserAvatar } from "@kl-engineering/kidsloop-px";
-import {
-    Grid,
-    makeStyles,
-    Theme,
-    Tooltip,
-    Typography,
-} from "@material-ui/core";
-import amber from "@material-ui/core/colors/amber";
+import { Grid, Theme, Tooltip, Typography } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import { TimeFive as TimestampIcon } from "@styled-icons/boxicons-regular/TimeFive";
 import { HatGraduation as TeacherIcon } from "@styled-icons/fluentui-system-filled/HatGraduation";
 import clsx from "clsx";
@@ -20,38 +14,39 @@ import {
     FormattedTime,
 } from "react-intl";
 import { useRecoilState } from "recoil";
+import { amber } from '@mui/material/colors';
 
 const LINK_LENGTH_LIMIT = 80;
 
 const useStyles = makeStyles((theme: Theme) => ({
-    root:{
+    root: {
         flexDirection: `row-reverse`,
         padding: `12px 0`,
     },
-    rootTeacher:{
+    rootTeacher: {
         flexDirection: `row`,
-        "& $messageGrid":{
+        "& $messageGrid": {
             paddingLeft: 10,
             paddingRight: 0,
             textAlign: `left`,
         },
-        "& $message":{
+        "& $message": {
             backgroundColor: amber[500],
-            "&:after":{
+            "&:after": {
                 color: amber[500],
                 left: -6,
                 transform: `scale(-1)`,
             },
         },
-        "& $author":{
+        "& $author": {
             textAlign: `left`,
         },
     },
-    messageGrid:{
+    messageGrid: {
         paddingRight: 10,
         textAlign: `right`,
     },
-    message:{
+    message: {
         backgroundColor: theme.palette.background.default,
         padding: 10,
         borderRadius: 12,
@@ -60,7 +55,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         display: `inline-block`,
         maxWidth: 200,
         wordBreak: `break-word`,
-        "&:after":{
+        "&:after": {
             content: `''`,
             position: `absolute`,
             top: 10,
@@ -72,14 +67,14 @@ const useStyles = makeStyles((theme: Theme) => ({
             color: theme.palette.background.default,
         },
     },
-    author:{
+    author: {
         color: theme.palette.grey[600],
         textAlign: `right`,
     },
-    teacherIcon:{
+    teacherIcon: {
         margin : `2px 6px`,
     },
-    timeIcon:{
+    timeIcon: {
         marginLeft: 5,
         color: theme.palette.grey[500],
     },

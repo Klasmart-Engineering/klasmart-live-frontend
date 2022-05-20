@@ -1,11 +1,7 @@
 
 import Loading from "@/components/loading";
-import {
-    Box,
-    makeStyles,
-    Theme,
-    useTheme,
-} from "@material-ui/core";
+import { Box, Theme, useTheme } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import React,
 {
     useEffect,

@@ -1,9 +1,9 @@
-import Checkbox from "@material-ui/core/Checkbox";
-import Grid from "@material-ui/core/Grid";
-import IconButton from "@material-ui/core/IconButton";
-import { withStyles } from "@material-ui/core/styles";
-import Switch from "@material-ui/core/Switch";
-import Typography from "@material-ui/core/Typography";
+import Checkbox from "@mui/material/Checkbox";
+import Grid from "@mui/material/Grid";
+import IconButton from "@mui/material/IconButton";
+import withStyles from '@mui/styles/withStyles';
+import Switch from "@mui/material/Switch";
+import Typography from "@mui/material/Typography";
 import { Brightness4 as Brightness4Icon } from "@styled-icons/material/Brightness4";
 import { Brightness7 as Brightness7Icon } from "@styled-icons/material/Brightness7";
 import React,
@@ -119,7 +119,7 @@ export default function Lightswitch (props: Props) {
                     setDarkMode(!toggled);
                 }}
                 {...other}
-            >
+                size="large">
                 {toggled ?
                     <Brightness4Icon size="1rem" /> :
                     <Brightness7Icon size="1rem" />

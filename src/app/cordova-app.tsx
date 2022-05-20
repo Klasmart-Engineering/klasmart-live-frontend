@@ -34,7 +34,7 @@ import NoOrgFoundLogo from "@/assets/img/no_org_found_icon.svg";
 import NoStudentRoleLogo from "@/assets/img/no_student_role_icon.svg";
 import { WebApp } from "@/pages/webApp";
 import { useQueryClient } from "@kl-engineering/cms-api-client";
-import Grid from "@material-ui/core/Grid";
+import Grid from "@mui/material/Grid";
 import React,
 { useEffect } from "react";
 import { useIntl } from "react-intl";

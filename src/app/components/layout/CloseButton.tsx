@@ -1,9 +1,9 @@
 import StyledIcon from "@/components/styled/icon";
+import { IconButton } from "@mui/material";
 import {
     createStyles,
-    IconButton,
     makeStyles,
-} from "@material-ui/core";
+} from '@mui/styles';
 import { Close as CloseIcon } from "@styled-icons/material";
 import React from "react";
 
@@ -31,7 +31,7 @@ export default function CloseButton (props: Props) {
             onClick={onClick}
         >
             <StyledIcon
-                icon={<CloseIcon/>}
+                icon={<CloseIcon />}
                 size={iconSize}
                 color={color}
             />

@@ -1,4 +1,4 @@
-import { useTheme } from "@material-ui/core/styles";
+import { useTheme } from "@mui/material/styles";
 import React,
 {
     useEffect,
@@ -64,7 +64,7 @@ export function FFT (props: Props & React.CanvasHTMLAttributes<HTMLCanvasElement
             if(!canvas.current) {return;}
             const ctx = canvas.current.getContext(`2d`);
             if(!ctx) {return;}
-            ctx.strokeStyle = color ? color : (theme.palette.type === `dark` ? `#fff` : `#000`);
+            ctx.strokeStyle = color ? color : (theme.palette.mode === `dark` ? `#fff` : `#000`);
             const width = canvas.current.width;
             const height = canvas.current.height;
             ctx.clearRect(0, 0, width, canvas.current.height);

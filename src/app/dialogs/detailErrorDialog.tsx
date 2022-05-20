@@ -3,11 +3,11 @@ import { TEXT_COLOR_PRIMARY_DEFAULT } from "@/config";
 import {
     Grid,
     Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 import {
     createStyles,
     makeStyles,
-} from "@material-ui/core/styles";
+} from '@mui/styles';
 import React from "react";
 
 const useStyles = makeStyles(() =>

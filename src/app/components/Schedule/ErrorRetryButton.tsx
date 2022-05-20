@@ -1,15 +1,10 @@
 import LoadingError from "@/assets/img/error/5.svg";
 import { BG_COLOR_SIGN_IN_BUTTON } from "@/config";
+import { Box, Button, Theme, Typography, useMediaQuery, useTheme } from "@mui/material";
 import {
-    Box,
-    Button,
     createStyles,
     makeStyles,
-    Theme,
-    Typography,
-    useMediaQuery,
-    useTheme,
-} from "@material-ui/core";
+} from '@mui/styles';
 import React from "react";
 import { FormattedMessage } from "react-intl";
 

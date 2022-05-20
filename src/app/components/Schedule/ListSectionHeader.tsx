@@ -1,14 +1,11 @@
+import { ListSubheader, Typography, useMediaQuery, useTheme } from "@mui/material";
 import {
     createStyles,
-    ListSubheader,
     makeStyles,
-    Typography,
-    useMediaQuery,
-    useTheme,
-} from "@material-ui/core";
-import grey from "@material-ui/core/colors/grey";
+} from '@mui/styles';
 import clsx from "clsx";
 import React from "react";
+import { grey } from '@mui/material/colors';
 
 const useStyles = makeStyles((theme) => createStyles({
     listSubheaderText: {

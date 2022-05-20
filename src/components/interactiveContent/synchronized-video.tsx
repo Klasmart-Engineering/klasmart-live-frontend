@@ -4,13 +4,8 @@ import { useVideoSubscription } from "@/data/live/subscriptions/useVideoSubscrip
 import { useSessionContext } from "@/providers/session-context";
 import { MaterialTypename } from '@/types/lessonMaterial';
 import { WhiteboardLoadableElement } from "@/whiteboard/components/ContainedWhiteboard";
-import {
-    Box,
-    CircularProgress,
-    IconButton,
-    makeStyles,
-    useTheme,
-} from "@material-ui/core";
+import { Box, CircularProgress, IconButton, useTheme } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import { VolumeMute as AudioOffIcon } from "@styled-icons/boxicons-regular/VolumeMute";
 import React,
 {
@@ -49,7 +44,7 @@ const useStyles = makeStyles(() => ({
         height: `100%`,
     },
     video: {
-        "& video":{
+        "& video": {
             display: `block`,
             width: `initial`,
         },
@@ -258,68 +253,66 @@ export function ReplicaMedia (props: ReplicaVideoProps) {
 
     case MaterialTypename.VIDEO:
     default:
-        return (
-            <>
-                <ReactPlayer
-                    key={srcRef.current}
-                    ref={reactPlayerRef}
-                    playsinline
-                    controls={false}
-                    playing={videoReady && playing}
-                    url={videoSources}
-                    muted={muted}
-                    className={classes.video}
-                    height="100%"
-                    width="100%"
-                    config={{
-                        file: {
-                            attributes: {
-                                crossOrigin: `anonymous`,
-                                controlsList: `nodownload`,
-                                onContextMenu: (e: Event) => e.preventDefault(),
-                                ...mediaProps,
-                            },
+        return <>
+            <ReactPlayer
+                key={srcRef.current}
+                ref={reactPlayerRef}
+                playsinline
+                controls={false}
+                playing={videoReady && playing}
+                url={videoSources}
+                muted={muted}
+                className={classes.video}
+                height="100%"
+                width="100%"
+                config={{
+                    file: {
+                        attributes: {
+                            crossOrigin: `anonymous`,
+                            controlsList: `nodownload`,
+                            onContextMenu: (e: Event) => e.preventDefault(),
+                            ...mediaProps,
                         },
+                    },
+                }}
+                onReady={(reactPlayer) => {
+                    const videoElement = (reactPlayer as unknown as any).wrapper?.childNodes?.[0] as HTMLVideoElement;
+                    if (!videoElement) return;
+                    const { videoHeight, videoWidth } = videoElement;
+                    onLoad?.({
+                        height: videoHeight,
+                        width: videoWidth,
+                    });
+                    if (videoReady) return;
+                    reactPlayer.seekTo(timeRef.current || 0.0, `seconds`);
+                    setVideoReady(true);
+                }}
+                onError={() => reactPlayerError()}
+            />
+            {(videoReady && muted) && (
+                <div
+                    id="video-unmute-overlay"
+                    style={{
+                        position: `absolute`,
+                        zIndex: 1,
                     }}
-                    onReady={(reactPlayer) => {
-                        const videoElement = (reactPlayer as unknown as any).wrapper?.childNodes?.[0] as HTMLVideoElement;
-                        if (!videoElement) return;
-                        const { videoHeight, videoWidth } = videoElement;
-                        onLoad?.({
-                            height: videoHeight,
-                            width: videoWidth,
-                        });
-                        if (videoReady) return;
-                        reactPlayer.seekTo(timeRef.current || 0.0, `seconds`);
-                        setVideoReady(true);
-                    }}
-                    onError={() => reactPlayerError()}
-                />
-                {(videoReady && muted) && (
-                    <div
-                        id="video-unmute-overlay"
+                >
+                    <IconButton
+                        color={`primary`}
                         style={{
-                            position: `absolute`,
-                            zIndex: 1,
+                            marginLeft: `20px`,
+                            marginTop: `20px`,
+                            backgroundColor: `#f6fafe`,
                         }}
-                    >
-                        <IconButton
-                            color={`primary`}
-                            style={{
-                                marginLeft: `20px`,
-                                marginTop: `20px`,
-                                backgroundColor: `#f6fafe`,
-                            }}
-                            onClick={() => {
-                                setMuted(false);
-                            }}
-                        >
-                            <AudioOffIcon size="3.5rem" />
-                        </IconButton>
-                    </div>
-                )}
-            </>
-        );
+                        onClick={() => {
+                            setMuted(false);
+                        }}
+                        size="large">
+                        <AudioOffIcon size="3.5rem" />
+                    </IconButton>
+                </div>
+            )}
+        </>;
     }
 }
 

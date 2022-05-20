@@ -8,7 +8,6 @@ import { useTrophy } from '@/data/live/state/useTrophy';
 import { useSessionContext } from '@/providers/session-context';
 import React,
 {
-    CSSProperties,
     useCallback,
     useEffect,
     useRef,
@@ -24,7 +23,7 @@ type Props = {
     children?: React.ReactNode;
 };
 
-const containerStyle: CSSProperties = {
+const containerStyle: React.CSSProperties = {
     background: `rgba(0.0, 0.0, 0.0, 0.25)`,
     position: `fixed`,
     left: 0,

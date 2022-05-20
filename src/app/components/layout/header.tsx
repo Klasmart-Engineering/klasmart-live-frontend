@@ -9,17 +9,16 @@ import {
 import KidsloopLogo from "@/assets/img/kidsloop_icon.svg";
 import KidsloopTextLogo from "@/assets/img/kidsloop_logo.svg";
 import StyledIcon from "@/components/styled/icon";
-import AppBar from "@material-ui/core/AppBar";
-import ButtonBase from "@material-ui/core/ButtonBase";
-import Grid from "@material-ui/core/Grid";
-import IconButton from "@material-ui/core/IconButton";
+import AppBar from "@mui/material/AppBar";
+import ButtonBase from "@mui/material/ButtonBase";
+import Grid from "@mui/material/Grid";
+import IconButton from "@mui/material/IconButton";
+import { Theme, useTheme } from "@mui/material/styles";
 import {
     createStyles,
     makeStyles,
-    Theme,
-    useTheme,
-} from "@material-ui/core/styles";
-import Toolbar from "@material-ui/core/Toolbar";
+} from '@mui/styles';
+import Toolbar from "@mui/material/Toolbar";
 import { Menu as MenuIcon } from "@styled-icons/boxicons-regular/Menu";
 import { Close as CloseIcon } from "@styled-icons/material/Close";
 import { UserAvatar } from "@kl-engineering/kidsloop-px";
@@ -41,7 +40,7 @@ const useStyles = makeStyles((theme: Theme) =>
         selectUserButton: {
             borderRadius: `50%`,
         },
-        centeredLogo:{
+        centeredLogo: {
             position: `absolute`,
             textAlign: `center`,
             zIndex: -1,
@@ -119,14 +118,12 @@ export function Header ({ isHomeRoute, setKey }: { isHomeRoute?: boolean; setKey
 function OpenMenuButton () {
     const { iconButton } = useStyles();
     const setMenuOpen = useSetMenuOpen();
-    return(
-        <IconButton
-            className={iconButton}
-            onClick={() => setMenuOpen(true)}
-        >
+    return (
+        <IconButton className={iconButton} onClick={() => setMenuOpen(true)} size="large">
             <StyledIcon
                 icon={<MenuIcon />}
-                size="xlarge" />
+                size="xlarge" 
+            />
         </IconButton>
     );
 }
@@ -180,7 +177,8 @@ function OpenSelectUserButton () {
         >
             <UserAvatar
                 name={`${selectedUser?.given_name} ${selectedUser?.family_name}`}
-                size={`medium`} />
+                size={`medium`} 
+            />
         </ButtonBase>
     );
 }

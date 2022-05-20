@@ -14,6 +14,8 @@ import {
     useMediaQuery,
     useTheme,
 } from "@material-ui/core";
+import { Grid, Theme } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import clsx from "clsx";
 import React,
 { useEffect } from "react";

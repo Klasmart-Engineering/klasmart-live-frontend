@@ -16,21 +16,23 @@ import {
 import { useHttpEndpoint } from "@/providers/region-select-context";
 import {
     CircularProgress,
-    createStyles,
     IconButton,
     List,
     ListItem,
     ListItemIcon,
     ListItemSecondaryAction,
     ListItemText,
-    makeStyles,
     Typography,
-} from "@material-ui/core";
+} from "@mui/material";
+import {
+    createStyles,
+    makeStyles,
+} from '@mui/styles';
 import {
     CloudUpload as UploadIcon,
     HighlightOffOutlined as HighlightOffOutlinedIcon,
     Save as SaveIcon,
-} from "@material-ui/icons";
+} from "@mui/icons-material";
 import { useSnackbar } from "@kl-engineering/kidsloop-px";
 import React,
 {

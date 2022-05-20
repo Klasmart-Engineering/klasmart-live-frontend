@@ -21,11 +21,11 @@ import {
     Box,
     Grid,
     IconButton,
-    makeStyles,
     Theme,
     useMediaQuery,
     useTheme,
-} from "@material-ui/core";
+} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import { PencilFill as SelectAttendeesIcon } from "@styled-icons/bootstrap/PencilFill";
 import clsx from "clsx";
 import React from "react";
@@ -83,6 +83,7 @@ function MainClass () {
         return (
             <IconButton
                 className={classes.iconButton}
+                size="large"
                 onClick={()=> {
                     setShowSelectParticipants(true);
                     setActiveClassDrawer(``);

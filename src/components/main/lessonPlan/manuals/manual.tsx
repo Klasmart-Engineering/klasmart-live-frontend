@@ -1,33 +1,28 @@
-import {
-    Grid,
-    IconButton,
-    makeStyles,
-    Theme,
-    Typography,
-} from "@material-ui/core";
+import { Grid, IconButton, Theme, Typography } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import { ChevronRight as AccessIcon } from "@styled-icons/boxicons-regular/ChevronRight";
 import { Attachment as AttachmentIcon } from "@styled-icons/icomoon/Attachment";
 import React from "react";
 
 const useStyles = makeStyles((theme: Theme) => ({
-    root:{
+    root: {
         cursor: `pointer`,
         borderRadius: 12,
         flexGrow: 1,
-        "&:hover":{
+        "&:hover": {
             backgroundColor: `#fff`,
-            "& $iconButton":{
+            "& $iconButton": {
                 visibility: `visible`,
             },
         },
     },
-    iconButton:{
+    iconButton: {
         visibility: `hidden`,
         padding: 10,
         borderRadius: 12,
         color: `#fff`,
         backgroundColor: theme.palette.text.primary,
-        "&:hover":{
+        "&:hover": {
             backgroundColor: theme.palette.text.primary,
             opacity: 0.8,
         },
@@ -62,7 +57,7 @@ function Manual (props: ManualPropsType) {
                     aria-label="send"
                     className={classes.iconButton}
                     type="submit"
-                >
+                    size="large">
                     <AccessIcon size="1.25rem"/>
                 </IconButton>
             </Grid>

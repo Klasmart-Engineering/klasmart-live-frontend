@@ -2,15 +2,12 @@ import { cameraErrorState } from "@/app/model/appModel";
 import Camera from "@/components/media/camera";
 import { preferedVideoInput } from "@/components/mediaDeviceSelect";
 import { useSessionContext } from "@/providers/session-context";
+import { Grid, Theme, Typography, useMediaQuery } from "@mui/material";
 import {
     createStyles,
-    Grid,
     makeStyles,
-    Theme,
-    Typography,
-    useMediaQuery,
-} from "@material-ui/core";
-import { useTheme } from "@material-ui/core/styles";
+} from '@mui/styles';
+import { useTheme } from "@mui/material/styles";
 import React,
 {
     useEffect,

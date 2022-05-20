@@ -6,10 +6,10 @@ import { isGlobalActionsOpenState } from "@/store/layoutAtoms";
 import { StyledPopper } from "@/utils/utils";
 import {
     Grid,
-    makeStyles,
     useMediaQuery,
     useTheme,
-} from "@material-ui/core";
+} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import { HandThumbsUpFill as HandThumbsUpFillIcon } from "@styled-icons/bootstrap/HandThumbsUpFill";
 import { HeartFill as HeartFillIcon } from "@styled-icons/bootstrap/HeartFill";
 import { StarFill as StarFillIcon } from "@styled-icons/bootstrap/StarFill";

@@ -5,13 +5,13 @@ import {
 import {
     Badge,
     ButtonBase,
-    makeStyles,
     Tooltip,
     Typography,
     useMediaQuery,
     useTheme,
-} from "@material-ui/core";
-import amber from "@material-ui/core/colors/amber";
+} from "@mui/material";
+import { amber } from '@mui/material/colors';
+import makeStyles from '@mui/styles/makeStyles';
 import clsx from "clsx";
 import React from "react";
 import { useRecoilValue } from "recoil";

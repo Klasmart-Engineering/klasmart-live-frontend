@@ -2,10 +2,10 @@ import Messages from "./messages/messages";
 import SendMessage from "./messages/sendMessage";
 import {
     Grid,
-    makeStyles,
     Typography,
-} from "@material-ui/core";
-import Divider from "@material-ui/core/Divider";
+} from "@mui/material";
+import Divider from "@mui/material/Divider";
+import makeStyles from '@mui/styles/makeStyles';
 import clsx from "clsx";
 import React from 'react';
 import { FormattedMessage } from "react-intl";

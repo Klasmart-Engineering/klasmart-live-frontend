@@ -13,11 +13,10 @@ import {
 import {
     Box,
     Grid,
-    makeStyles,
-    Theme,
     useMediaQuery,
     useTheme,
-} from "@material-ui/core";
+} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import { Close as CloseIcon } from "@styled-icons/material/Close";
 import clsx from "clsx";
 import React from "react";
@@ -28,7 +27,7 @@ import {
     useSetRecoilState,
 } from "recoil";
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles((theme) => ({
     safeArea: {
         marginLeft: `env(safe-area-inset-left)`,
         marginRight: `env(safe-area-inset-right)`,

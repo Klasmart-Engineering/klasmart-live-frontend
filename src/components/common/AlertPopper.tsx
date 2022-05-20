@@ -1,19 +1,12 @@
 import StyledIcon from "@/components/styled/icon";
-import {
-    Fade,
-    Grid,
-    makeStyles,
-    Paper,
-    Popper,
-    Theme,
-    Typography,
-} from "@material-ui/core";
-import { grey } from "@material-ui/core/colors";
+import { Fade, Grid, Paper, Popper, Theme, Typography } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import { grey } from "@mui/material/colors";
 import { ExclamationCircleFill as WarningIcon } from '@styled-icons/bootstrap/ExclamationCircleFill';
 import React from "react";
 
 const useStyles = makeStyles((theme: Theme) => ({
-    popperRoot:{
+    popperRoot: {
         zIndex: 1200,
     },
     popperPapper: {
@@ -46,6 +39,8 @@ export default function AlertPopper (props: Props) {
         width,
     } = props;
 
+    const boundaryElement = document.querySelector(`#main-content`);
+
     return (
         <Popper
             transition
@@ -53,15 +48,22 @@ export default function AlertPopper (props: Props) {
             anchorEl={anchorEl}
             disablePortal={false}
             placement="top"
-            modifiers={{
-                preventOverflow: {
-                    boundariesElement: document.getElementById(`main-content`),
-                },
-                offset: {
+            modifiers={[
+                { 
+                    name: 'preventOverflow',
                     enabled: true,
-                    offset: `10,10`,
+                    options: {
+                        boundary: boundaryElement
+                    }
                 },
-            }}
+                {
+                    name: 'offset',
+                    enabled: true,
+                    options: {
+                        offset: [10, 20],
+                    },
+                },
+            ]}
             className={classes.popperRoot}
         >
             <Fade in={open}>

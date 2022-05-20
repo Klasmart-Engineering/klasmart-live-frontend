@@ -1,8 +1,4 @@
-import React,
-{
-    CSSProperties,
-    ReactText,
-} from 'react';
+import React from 'react';
 import Confetti from 'react-confetti';
 import { Transition } from 'react-transition-group';
 import { TransitionStatus } from 'react-transition-group/Transition';
@@ -24,7 +20,7 @@ export function ConfettiRain (props: Props): JSX.Element {
         height,
     } = props;
 
-    const confettiContainerStyle: CSSProperties = {
+    const confettiContainerStyle: React.CSSProperties = {
         position: `absolute`,
 
         left: 0,
@@ -55,22 +51,25 @@ export function ConfettiRain (props: Props): JSX.Element {
 
     return (
         <Transition
+            mountOnEnter
+            unmountOnExit
             in={display}
             timeout={enterDuration}
-            mountOnEnter={true}
-            unmountOnExit={true}>
+        >
             { state => (
                 <div
                     className="trophy-confetti"
                     style={{
                         ...confettiContainerStyle,
                         ...confettiTransitionStates[state],
-                    }}>
+                    }}
+                >
                     <Confetti
                         width={width}
                         height={height}
                         recycle={false}
-                        numberOfPieces={200}/>
+                        numberOfPieces={200}
+                    />
                     {children}
                 </div>
             )}

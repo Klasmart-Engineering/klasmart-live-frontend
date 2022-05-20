@@ -1,18 +1,10 @@
-import {
-    alpha,
-    Badge,
-    makeStyles,
-    Theme,
-    Tooltip,
-    Typography,
-    useMediaQuery,
-    useTheme,
-} from "@material-ui/core";
-import red from "@material-ui/core/colors/red";
-import LockIcon from "@material-ui/icons/Lock";
+import { alpha, Badge, Theme, Tooltip, Typography, useMediaQuery, useTheme } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import LockIcon from "@mui/icons-material/Lock";
 import clsx from "clsx";
 import React from "react";
 import { FormattedMessage } from "react-intl";
+import { red } from '@mui/material/colors';
 
 const useStyles = makeStyles((theme: Theme) => ({
     itemRoot: {

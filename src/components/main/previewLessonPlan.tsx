@@ -10,7 +10,7 @@ import { useMaterialToHref } from "@/utils/contentUtils";
 import { NoItemList } from "@/utils/noItemList";
 import { Book as PlanIcon } from "@styled-icons/boxicons-regular/Book";
 import ContainedWhiteboard from "@/whiteboard/components/ContainedWhiteboard";
-import { Typography } from "@material-ui/core";
+import { Typography } from "@mui/material";
 import React,
 { useEffect } from "react";
 import { FormattedMessage, useIntl } from "react-intl";

@@ -2,21 +2,21 @@ import ClassDetails from "./classDetails";
 import ClassRoster from "./classRoster";
 import { isClassDetailsOpenState } from "@/store/layoutAtoms";
 import { StyledPopper } from "@/utils/utils";
+import RosterIcon from '@mui/icons-material/AccessibilityNew';
 import {
     Box,
-    makeStyles,
     Tab,
     Tabs,
     Theme,
     useMediaQuery,
     useTheme,
-} from "@material-ui/core";
-import RosterIcon from '@material-ui/icons/AccessibilityNew';
+} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import { Info as InfoIcon } from "@styled-icons/evaicons-solid/Info";
 import React,
 { useState } from "react";
 import { useIntl } from "react-intl";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
     boxStyle: {

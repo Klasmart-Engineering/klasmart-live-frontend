@@ -18,15 +18,14 @@ import {
     ListItemAvatar,
     ListItemText,
     ListSubheader,
-} from "@material-ui/core";
+} from "@mui/material";
 import clsx from "clsx";
-import Grid from '@material-ui/core/Grid';
+import Grid from '@mui/material/Grid';
+import { Theme, useTheme } from '@mui/material/styles';
 import {
     createStyles,
     makeStyles,
-    Theme,
-    useTheme,
-} from '@material-ui/core/styles';
+} from '@mui/styles';
 import { KeyboardArrowRight as ArrowRight } from "@styled-icons/material-rounded/KeyboardArrowRight";
 import { Translate as LanguageIcon } from "@styled-icons/material/Translate";
 import { PrivacyTip as PrivacyIcon } from "@styled-icons/material-outlined/PrivacyTip";

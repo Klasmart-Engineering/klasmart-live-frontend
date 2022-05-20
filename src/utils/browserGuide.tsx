@@ -7,7 +7,7 @@ import SafariLogo from "@/assets/img/browser/safari_logo.png";
 import {
     Grid,
     Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 import React,
 { useState } from "react";
 import {

@@ -28,7 +28,7 @@ import {
 } from "@/utils/utils";
 import { useToolbarContext } from "@kl-engineering/kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
 import { useSnackbar } from "@kl-engineering/kidsloop-px";
-import Typography from "@material-ui/core/Typography";
+import Typography from "@mui/material/Typography";
 import React,
 {
     createContext,

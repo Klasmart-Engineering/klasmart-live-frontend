@@ -1,9 +1,9 @@
 import StyledIcon from "@/components/styled/icon";
+import { IconButton } from "@mui/material";
 import {
     createStyles,
-    IconButton,
     makeStyles,
-} from "@material-ui/core";
+} from '@mui/styles';
 import { ArrowBack as ArrowBackIcon } from "@styled-icons/material";
 import React from "react";
 

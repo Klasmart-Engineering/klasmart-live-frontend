@@ -1,12 +1,9 @@
 import { useWindowSize } from "@/utils/viewport";
+import { Box, Theme, Typography, useTheme } from "@mui/material";
 import {
-    Box,
     createStyles,
     makeStyles,
-    Theme,
-    Typography,
-    useTheme,
-} from "@material-ui/core";
+} from '@mui/styles';
 import clsx from "clsx";
 import React,
 { useState } from 'react';

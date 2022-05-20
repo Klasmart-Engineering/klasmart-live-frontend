@@ -1,18 +1,15 @@
 
 import { CaptchaLogic } from "./captchaLogic";
-import {
-    makeStyles,
-    Theme,
-    Typography,
-} from "@material-ui/core";
-import red from "@material-ui/core/colors/red";
+import { Theme, Typography } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import { Admin as ParentIcon } from "@styled-icons/remix-line/Admin";
 import React,
 { useState } from "react";
 import { FormattedMessage } from "react-intl";
+import { red } from '@mui/material/colors';
 
 const useStyles = makeStyles((theme: Theme) => ({
-    dialogIcon:{
+    dialogIcon: {
         display: `inline-block`,
         background: theme.palette.grey[200],
         borderRadius: 40,

@@ -1,9 +1,7 @@
 
 import { CanvasColor } from "./canvasMenu";
-import {
-    makeStyles,
-    useTheme,
-} from "@material-ui/core";
+import { useTheme } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import { Check as CheckIcon } from "@styled-icons/bootstrap/Check";
 import React from "react";
 

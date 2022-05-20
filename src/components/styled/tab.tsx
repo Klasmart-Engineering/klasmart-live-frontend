@@ -1,11 +1,11 @@
 import { THEME_COLOR_SECONDARY_DEFAULT } from "@/config";
+import { Theme } from "@mui/material/styles";
+import Tab from "@mui/material/Tab";
+import Tooltip from "@mui/material/Tooltip";
 import {
     createStyles,
     makeStyles,
-    Theme,
-} from "@material-ui/core/styles";
-import Tab from "@material-ui/core/Tab";
-import Tooltip from "@material-ui/core/Tooltip";
+} from '@mui/styles';
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
@@ -75,7 +75,9 @@ export default function StyledTab (props: StyledTabProps) {
             label={mobile ? children : <Tooltip
                 arrow
                 placement="left"
-                title={<FormattedMessage id={title} />}>{children}</Tooltip>}
+                title={<FormattedMessage id={title} />}
+                                       >{children}
+                                       </Tooltip>}
             value={value}
             style={{
                 backgroundColor: `#FFF`,

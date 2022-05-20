@@ -3,11 +3,8 @@ import {
     THEME_COLOR_PRIMARY_DEFAULT,
 } from "@/config";
 import { AttendeeType } from "@/types/attendee";
-import {
-    makeStyles,
-    Theme,
-    Typography,
-} from "@material-ui/core";
+import { Theme, Typography } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import { Person as ParticipantsIcon } from "@styled-icons/material/Person";
 import clsx from "clsx";
 import React from "react";

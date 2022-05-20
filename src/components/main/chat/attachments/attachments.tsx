@@ -4,31 +4,30 @@ import { NoItemList } from "@/utils/noItemList";
 import {
     Button,
     Grid,
-    makeStyles,
     Theme,
-} from "@material-ui/core";
+} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import { CloudUpload as UploadIcon } from "@styled-icons/boxicons-regular/CloudUpload";
-import React,
-{ useContext } from "react";
+import React from "react";
 import {
     FormattedMessage,
     useIntl,
 } from "react-intl";
 
 const useStyles = makeStyles((theme: Theme) => ({
-    fullHeight:{
+    fullHeight: {
         height: `100%`,
     },
-    container:{
+    container: {
         padding : `1rem 10px`,
         paddingBottom: 0,
     },
-    buttonUpload:{
+    buttonUpload: {
         width: `100%`,
         color: `#fff`,
         fontSize: `1rem`,
         backgroundColor: theme.palette.text.primary,
-        "&:hover":{
+        "&:hover": {
             opacity: 0.8,
             backgroundColor: theme.palette.text.primary,
         },
@@ -63,43 +62,51 @@ function Attachments () {
         <Grid
             container
             direction="column"
-            className={classes.fullHeight}>
+            className={classes.fullHeight}
+        >
             <Grid
                 item
-                xs>
+                xs
+            >
                 <Grid
                     container
                     direction="column"
-                    className={classes.fullHeight}>
+                    className={classes.fullHeight}
+                >
                     <Grid
                         item
-                        xs>
+                        xs
+                    >
                         {attachments.length === 0 ?
                             <NoItemList
                                 icon={<UploadIcon />}
                                 text={intl.formatMessage({
                                     id: `chat_attachments_noresults`,
-                                })} /> :
-                            (<div className={classes.container}>
-                                {attachments?.map(attachment => (
-                                    <Attachment
-                                        key={attachment.id}
-                                        title={attachment.title}
-                                        type={attachment.type} />
-                                ))}
-                            </div>)
-                        }
+                                })}
+                            /> : (
+                                <div className={classes.container}>
+                                    {attachments?.map(attachment => (
+                                        <Attachment
+                                            key={attachment.id}
+                                            title={attachment.title}
+                                            type={attachment.type}
+                                        />
+                                    ))}
+                                </div>
+                            )}
                     </Grid>
 
                     {isTeacher &&
                         <Grid item>
                             <Button
                                 className={classes.buttonUpload}
-                                component="label">
+                                component="label"
+                            >
                                 <UploadIcon size="1.75rem" /> <FormattedMessage id="chat_attachments_upload" />
                                 <input
                                     hidden
-                                    type="file" />
+                                    type="file"
+                                />
                             </Button>
                         </Grid>
                     }

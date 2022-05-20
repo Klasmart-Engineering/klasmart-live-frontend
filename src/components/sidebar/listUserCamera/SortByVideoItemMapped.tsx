@@ -2,7 +2,7 @@ import ItemUserCamera from './itemUserCamera';
 import { Session } from '@/pages/utils';
 import { useSessionContext } from '@/providers/session-context';
 import { useStream } from '@kl-engineering/live-state/ui';
-import { makeStyles } from '@material-ui/core';
+import makeStyles from '@mui/styles/makeStyles';
 import clsx from 'clsx';
 import React from 'react';
 

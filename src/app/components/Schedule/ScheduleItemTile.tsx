@@ -21,16 +21,11 @@ import {
     THEME_COLOR_STUDY_SCHEDULE_CARD,
     THEME_COLOR_STUDY_SCHEDULE_ICON_BACKGROUND,
 } from "@/config";
+import { Box, Chip, Grid, Typography, useMediaQuery, useTheme } from "@mui/material";
 import {
-    Box,
-    Chip,
     createStyles,
-    Grid,
     makeStyles,
-    Typography,
-    useMediaQuery,
-    useTheme,
-} from "@material-ui/core";
+} from '@mui/styles';
 import React, { useEffect, useState } from "react";
 import { MoreHoriz } from "styled-icons/material";
 import { SECONDS_BEFORE_CLASS_CAN_START } from "./Live/Dialog/Details";

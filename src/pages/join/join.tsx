@@ -35,19 +35,21 @@ import {
     Box,
     Grid,
     IconButton,
-} from "@material-ui/core";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import { red } from "@material-ui/core/colors";
-import Container from "@material-ui/core/Container";
+} from "@mui/material";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import { red } from "@mui/material/colors";
+import Container from "@mui/material/Container";
+import {
+    Theme,
+    useTheme,
+} from "@mui/material/styles";
+import Typography from "@mui/material/Typography";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import {
     createStyles,
     makeStyles,
-    Theme,
-    useTheme,
-} from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
+} from '@mui/styles';
 import { CameraVideoFill as CameraVideoFillIcon } from "@styled-icons/bootstrap/CameraVideoFill";
 import { CameraVideoOffFill as CameraDisabledIcon } from "@styled-icons/bootstrap/CameraVideoOffFill";
 import { MicFill as MicFillIcon } from "@styled-icons/bootstrap/MicFill";
@@ -444,6 +446,7 @@ const JoinRoomForm: VoidFunctionComponent<{
                                 className={clsx(classes.iconButton, {
                                     [classes.iconButtonPaused]: microphonePaused,
                                 })}
+                                size="large"
                                 onClick={() => setMicrophonePaused(x => !x)}
                             >
                                 {!microphonePaused ? <MicFillIcon size={theme.spacing(3)} /> : <MicDisabledIcon size={theme.spacing(3)} />}
@@ -457,6 +460,7 @@ const JoinRoomForm: VoidFunctionComponent<{
                                             [classes.iconButtonPaused]: cameraPaused,
                                         }),
                                     }}
+                                    size="large"
                                     onClick={() => setCameraPaused(x => !x)}
                                 >
                                     {!cameraPaused ? <CameraVideoFillIcon size={theme.spacing(3)} /> : <CameraDisabledIcon size={theme.spacing(3)} />}

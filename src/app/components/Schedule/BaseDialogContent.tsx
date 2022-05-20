@@ -1,10 +1,8 @@
+import { DialogContent, Grid, Typography } from "@mui/material";
 import {
     createStyles,
-    DialogContent,
-    Grid,
     makeStyles,
-    Typography,
-} from "@material-ui/core";
+} from '@mui/styles';
 import React from "react";
 
 const useStyles = makeStyles((theme) => createStyles({

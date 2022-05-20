@@ -11,7 +11,7 @@ import { useSessions } from "@/data/live/state/useSessions";
 import { Session } from "@/pages/utils";
 import { useSessionContext } from "@/providers/session-context";
 import { useStream } from "@kl-engineering/live-state/ui";
-import { makeStyles } from "@material-ui/core";
+import makeStyles from '@mui/styles/makeStyles';
 import clsx from "clsx";
 import React,
 {
@@ -47,31 +47,31 @@ const useStyles = makeStyles(() => ({
         outline: `0px solid rgba(20,100,200,0.5)`,
         transition: `outline-width 100ms linear`,
     },
-    rootExtraLarge:{
+    rootExtraLarge: {
         minHeight: 200,
-        "& $userCameraRoot":{
+        "& $userCameraRoot": {
             objectFit: `contain`,
         },
     },
-    rootLarge:{
+    rootLarge: {
         minHeight: 192,
-        "& $userCameraRoot":{
+        "& $userCameraRoot": {
             objectFit: `cover`,
         },
     },
-    rootMedium:{
+    rootMedium: {
         minHeight: 96,
-        "& $userCameraRoot":{
+        "& $userCameraRoot": {
             objectFit: `cover`,
         },
     },
-    rootSmall:{
+    rootSmall: {
         minHeight: 100,
-        "& $userCameraRoot":{
+        "& $userCameraRoot": {
             objectFit: `contain`,
         },
     },
-    userCameraRoot:{
+    userCameraRoot: {
         objectFit: `contain`,
     },
 }));
@@ -177,25 +177,23 @@ function ItemUserCamera ({
                 user={user}
                 className={clsx(classes.userCameraRoot)}
             />
-            {
-                ((isSelf && video.isPausedLocally) || (!isSelf && !video.isConsumable)) &&
+            {((isSelf && video.isPausedLocally) || (!isSelf && !video.isConsumable)) && (
                 <NoCamera
                     name={user.name}
                 />
-            }
+            )}
             <UserCameraDetails
                 user={user}
                 mic={audio}
             />
-            {
-                isHover &&
+            {isHover && (
                 <UserCameraActions
                     user={user}
                     expanded={video.isConsumable && !process.env.IS_CORDOVA_BUILD}
                     mic={audio}
                     camera={video}
                 />
-            }
+            )}
         </div>
     );
 }

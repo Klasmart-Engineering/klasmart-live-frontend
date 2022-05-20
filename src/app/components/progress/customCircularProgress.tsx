@@ -1,13 +1,11 @@
 // Inspired by the former Facebook spinners.
-import {
-    CircularProgress,
-    makeStyles,
-} from "@material-ui/core";
-import { CircularProgressProps } from "@material-ui/core/CircularProgress";
+import { CircularProgress } from "@mui/material";
+import { CircularProgressProps } from "@mui/material/CircularProgress";
+import { Theme } from "@mui/material/styles";
 import {
     createStyles,
-    Theme,
-} from "@material-ui/core/styles";
+    makeStyles,
+} from '@mui/styles';
 import React from "react";
 
 const useStylesFacebook = makeStyles((theme: Theme) =>
@@ -16,7 +14,7 @@ const useStylesFacebook = makeStyles((theme: Theme) =>
             position: `relative`,
         },
         bottom: {
-            color: theme.palette.grey[theme.palette.type === `light` ? 200 : 700],
+            color: theme.palette.grey[theme.palette.mode === `light` ? 200 : 700],
         },
         top: {
             color: `#1a90ff`,
@@ -29,7 +27,7 @@ const useStylesFacebook = makeStyles((theme: Theme) =>
         },
     }));
 
-export function CustomCircularProgress (props: CircularProgressProps & { value? : number | undefined }) {
+export function CustomCircularProgress (props: CircularProgressProps & { value?: number | undefined }) {
     const classes = useStylesFacebook();
 
     return (

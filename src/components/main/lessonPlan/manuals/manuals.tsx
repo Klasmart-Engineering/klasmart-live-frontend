@@ -1,25 +1,22 @@
 import Manual from "./manual";
 import { NoItemList } from "@/utils/noItemList";
-import {
-    Grid,
-    makeStyles,
-    Theme,
-} from "@material-ui/core";
+import { Grid } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import { Book as ManualIcon } from "@styled-icons/bootstrap/Book";
 import React from "react";
 import { useIntl } from "react-intl";
 
-const useStyles = makeStyles((theme: Theme) => ({
-    fullHeight:{
+const useStyles = makeStyles((theme) => ({
+    fullHeight: {
         height: `100%`,
     },
-    container:{
+    container: {
         padding : `1rem 10px`,
         paddingBottom: 0,
     },
 }));
 
-const manuals:any = [
+const manuals: any = [
     /* {
         id: 1,
         title: `Teacher Manual #1`,
@@ -45,23 +42,27 @@ function Manuals () {
         <Grid
             container
             direction="column"
-            className={classes.fullHeight}>
+            className={classes.fullHeight}
+        >
             <Grid
                 item
-                xs>
+                xs
+            >
                 {manuals.length === 0 ?
                     <NoItemList
                         icon={<ManualIcon />}
                         text={intl.formatMessage({
                             id: `lessonplan_manuals_noresults`,
-                        })} />
+                        })}
+                    />
                     :
                     (<div className={classes.container}>
-                        {manuals?.map((manual:any) => (
+                        {manuals?.map((manual: any) => (
                             <Manual
                                 key={manual.id}
                                 title={manual.title}
-                                type={manual.type} />
+                                type={manual.type}
+                            />
                         ))}
                     </div>)
                 }

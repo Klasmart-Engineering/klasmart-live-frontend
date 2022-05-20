@@ -1,7 +1,7 @@
 
 import PdfImage from "./PdfImage";
 import { PDF } from "@/entry-pdfviewer";
-import { Box } from "@material-ui/core";
+import { Box } from "@mui/material";
 import React,
 {
     useEffect,

@@ -3,21 +3,21 @@ import { ParentCaptcha } from "@/components/parentCaptcha";
 import { useEndClassMutation } from "@/data/live/mutations/useEndClassMutation";
 import { useLeaveClassMutation } from "@/data/live/mutations/useLeaveClassMutation";
 import { useSessionContext } from "@/providers/session-context";
-import {  classLeftState } from "@/store/layoutAtoms";
+import { classLeftState } from "@/store/layoutAtoms";
+import { useWebrtcCloseCallback } from "@kl-engineering/live-state/ui";
 import {
     Button,
     Dialog,
     DialogActions,
     DialogContent,
     DialogTitle,
-    makeStyles,
     Theme,
     Typography,
-} from "@material-ui/core";
-import red from "@material-ui/core/colors/red";
+} from "@mui/material";
+import { red } from '@mui/material/colors';
+import makeStyles from '@mui/styles/makeStyles';
 import { Warning as WarningIcon } from "@styled-icons/entypo/Warning";
 import clsx from "clsx";
-import { useWebrtcCloseCallback } from "@kl-engineering/live-state/ui";
 import React,
 {
     useEffect,
@@ -27,28 +27,28 @@ import { FormattedMessage } from "react-intl";
 import { useSetRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
-    dialogTitle:{
+    dialogTitle: {
         textAlign: `center`,
     },
-    dialogContent:{
+    dialogContent: {
         textAlign: `center`,
     },
-    dialogIcon:{
+    dialogIcon: {
         display: `inline-block`,
         background: theme.palette.grey[200],
         borderRadius: 40,
         padding: 20,
         marginBottom: 20,
     },
-    warningIcon:{
+    warningIcon: {
         color: `#ffca00`,
         background: `#f9f7e8`,
     },
-    parentChecker:{
+    parentChecker: {
         marginTop: 20,
         marginBottom: 20,
     },
-    parentCheckerItem:{
+    parentCheckerItem: {
         color: `#fff`,
         width: 50,
         height: 50,
@@ -61,7 +61,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         cursor: `pointer`,
         margin: `0 10px`,
     },
-    parentCheckerItemActive:{
+    parentCheckerItemActive: {
         opacity: 0.4,
     },
     error: {
@@ -69,7 +69,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 }));
 
-function DialogLeaveClass (props:any){
+function DialogLeaveClass (props: any){
     const DIALOG_LEAVE_CLASS_ID = `dialogLeaveCLassID`;
     const classes = useStyles();
     const { open, onClose } = props;
@@ -108,10 +108,12 @@ function DialogLeaveClass (props:any){
             open={open}
             aria-labelledby="leave-class-dialog"
             maxWidth="xs"
-            onClose={onClose}>
+            onClose={onClose}
+        >
             <DialogTitle
                 id="leave-class-dialog"
-                className={classes.dialogTitle}>
+                className={classes.dialogTitle}
+            >
                 <FormattedMessage id="leave_class" />
             </DialogTitle>
             <DialogContent className={classes.dialogContent}>
@@ -131,22 +133,24 @@ function DialogLeaveClass (props:any){
             <DialogActions>
                 <Button
                     color="primary"
-                    onClick={onClose}>
+                    onClick={onClose}
+                >
                     <FormattedMessage id="common_cancel" />
                 </Button>
                 {!showParentCaptcha && <Button
                     variant="contained"
                     color="primary"
-                    onClick={onClick}>
+                    onClick={onClick}
+                                       >
                     <FormattedMessage id="leave_class" />
-                </Button>}
+                                       </Button>}
             </DialogActions>
         </Dialog>
     );
 }
 export { DialogLeaveClass };
 
-function DialogEndClass (props:any){
+function DialogEndClass (props: any){
     const DIALOG_END_CLASS_ID = `dialogEndClassID`;
     const classes = useStyles();
     const { open, onClose } = props;
@@ -173,10 +177,12 @@ function DialogEndClass (props:any){
             open={open}
             aria-labelledby="end-class-dialog"
             maxWidth="xs"
-            onClose={onClose}>
+            onClose={onClose}
+        >
             <DialogTitle
                 id="end-class-dialog"
-                className={classes.dialogTitle}>
+                className={classes.dialogTitle}
+            >
                 <FormattedMessage id="end_class" />
             </DialogTitle>
             <DialogContent className={classes.dialogContent}>
@@ -190,13 +196,15 @@ function DialogEndClass (props:any){
             <DialogActions>
                 <Button
                     color="primary"
-                    onClick={onClose}>
+                    onClick={onClose}
+                >
                     <FormattedMessage id="common_cancel" />
                 </Button>
                 <Button
                     variant="contained"
                     color="primary"
-                    onClick={onClick}>
+                    onClick={onClick}
+                >
                     <FormattedMessage id="end_class" />
                 </Button>
             </DialogActions>

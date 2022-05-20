@@ -11,17 +11,9 @@ import {
     useScreenshare,
     useStream,
 } from "@kl-engineering/live-state/ui";
-import {
-    Box,
-    Button,
-    Grid,
-    makeStyles,
-    Theme,
-    Typography,
-    useMediaQuery,
-    useTheme,
-} from "@material-ui/core";
-import PresentToAllIcon from '@material-ui/icons/PresentToAll';
+import { Box, Button, Grid, Theme, Typography, useMediaQuery, useTheme } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import PresentToAllIcon from '@mui/icons-material/PresentToAll';
 import React,
 {
     useEffect,

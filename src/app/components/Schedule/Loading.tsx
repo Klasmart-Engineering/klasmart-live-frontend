@@ -1,9 +1,8 @@
+import { Box, CircularProgress } from "@mui/material";
 import {
-    Box,
-    CircularProgress,
     createStyles,
     makeStyles,
-} from "@material-ui/core";
+} from '@mui/styles';
 import React from "react";
 
 const useStyles = makeStyles((theme) => createStyles({}));

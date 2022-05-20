@@ -11,9 +11,11 @@ import { lockOrientation } from "../../utils/screenUtils";
 import {
     Grid,
     useTheme,
-} from "@material-ui/core";
-import createStyles from "@material-ui/core/styles/createStyles";
-import makeStyles from "@material-ui/core/styles/makeStyles";
+} from "@mui/material";
+import {
+    createStyles,
+    makeStyles,
+} from '@mui/styles';
 import React,
 {
     useEffect,
@@ -46,7 +48,8 @@ export function Auth ({ useInAppBrowser }: Props) {
     const classes = useStyles();
     const theme = useTheme();
     const frameRef = useRef<HTMLIFrameElement>(null);
-    const [ key, setKey ] = useState(Math.random().toString(36));
+    const [ key, setKey ] = useState(Math.random()
+        .toString(36));
     const locale = useRecoilValue(localeState);
 
     const authEndpoint = useHttpEndpoint(`auth`);
@@ -99,7 +102,7 @@ export function Auth ({ useInAppBrowser }: Props) {
             console.error(`no browser tab available`);
             console.error(failureResp);
         });
-        
+
         if (process.env.NODE_ENV === `production`) {
             setTimeout(() => setIsShowOnBoarding(true), 500);
         }
@@ -131,10 +134,13 @@ export function Auth ({ useInAppBrowser }: Props) {
                     height: `100%`,
                     padding: theme.spacing(2),
                 }}
-                spacing={2}>
+                spacing={2}
+            >
                 <LoadingWithRetry
                     messageId="auth_waiting_for_authentication"
-                    retryCallback={() => setKey(Math.random().toString(36))} />
+                    retryCallback={() => setKey(Math.random()
+                        .toString(36))}
+                />
                 {process.env.NODE_ENV === `development` && (
                     <Grid
                         item
@@ -153,7 +159,8 @@ export function Auth ({ useInAppBrowser }: Props) {
                     width="100%"
                     height="100%"
                     frameBorder="0"
-                    src={authEndpoint}></iframe>
+                    src={authEndpoint}
+                />
             </div>
         );
     }

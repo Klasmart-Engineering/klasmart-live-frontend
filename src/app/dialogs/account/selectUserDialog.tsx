@@ -20,9 +20,9 @@ import {
 import { THEME_BACKGROUND_SELECT_DIALOG } from "@/config";
 import { useQueryClient } from "@kl-engineering/cms-api-client";
 import { useSnackbar } from "@kl-engineering/kidsloop-px";
-import Dialog from '@material-ui/core/Dialog';
-import DialogContent from "@material-ui/core/DialogContent";
-import { makeStyles } from '@material-ui/core/styles';
+import Dialog from '@mui/material/Dialog';
+import DialogContent from "@mui/material/DialogContent";
+import makeStyles from '@mui/styles/makeStyles';
 import React,
 {
     useCallback,

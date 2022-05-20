@@ -6,15 +6,15 @@ import KidsloopIcon from "../../../assets/img/kidsloop_icon.svg";
 import StyledButton from "../../../components/styled/button";
 import { useAuthenticationContext } from "../../context-provider/authentication-context";
 import { useServices } from "@/app/context-provider/services-provider";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import Container from "@material-ui/core/Container";
-import Grid from "@material-ui/core/Grid";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Container from "@mui/material/Container";
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
 import {
     createStyles,
     makeStyles,
-} from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
+} from '@mui/styles';
 import React,
 {
     useEffect,
@@ -77,30 +77,36 @@ export function Fallback ({
                             direction="row"
                             justifyContent="center"
                             alignItems="center"
-                            spacing={4}>
+                            spacing={4}
+                        >
                             <Grid
                                 item
                                 xs={12}
                                 style={{
                                     textAlign: `center`,
-                                }}>
+                                }}
+                            >
                                 <img
                                     alt="KidsLoop Logo"
                                     src={KidsloopIcon}
-                                    height="50px" />
+                                    height="50px"
+                                />
                             </Grid>
                             <Grid
                                 item
-                                xs={12}>
+                                xs={12}
+                            >
                                 <Typography
                                     variant="h4"
-                                    align="center">
+                                    align="center"
+                                >
                                     {errCode && !/^(\d{3}x\d{2})$/.test(errCode) ? errCode + ` ` : ``}<FormattedMessage id={titleMsgId} />
                                 </Typography>
                                 {subtitleMsgId ? (
                                     <Typography
                                         variant="h6"
-                                        align="center">
+                                        align="center"
+                                    >
                                         <FormattedMessage id={subtitleMsgId} />
                                     </Typography>
                                 ) : null}
@@ -108,7 +114,8 @@ export function Fallback ({
                                 {descriptionMsgId ? (
                                     <Typography
                                         variant="body2"
-                                        align="center">
+                                        align="center"
+                                    >
                                         <FormattedMessage id={descriptionMsgId} />
                                     </Typography>) : null}
                             </Grid>
@@ -117,16 +124,20 @@ export function Fallback ({
                                 xs={12}
                                 style={{
                                     textAlign: `center`,
-                                }}>
+                                }}
+                            >
                                 <img
                                     src={ERROR_IMAGES[((Math.floor(Math.random() * 10)) % ERROR_IMAGES.length)]}
                                     width={250}
-                                    height={250} />
+                                    height={250}
+                                    alt="Error"
+                                />
                             </Grid>
                             <Grid
                                 item
                                 xs={12}
-                                className={classes.link}>
+                                className={classes.link}
+                            >
                                 <NextStepButton errCode={errCode ? errCode : `500`} />
                             </Grid>
                         </Grid>

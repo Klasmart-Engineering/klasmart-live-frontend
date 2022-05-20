@@ -1,11 +1,11 @@
-import Link from "@material-ui/core/Link";
+import Link from "@mui/material/Link";
+import { Theme } from "@mui/material/styles";
+import TextField,
+{ StandardTextFieldProps } from "@mui/material/TextField";
 import {
     createStyles,
     makeStyles,
-    Theme,
-} from "@material-ui/core/styles";
-import TextField,
-{ StandardTextFieldProps } from "@material-ui/core/TextField";
+} from '@mui/styles';
 import * as React from "react";
 import { FormattedMessage } from "react-intl";
 import { useHistory } from "react-router-dom";

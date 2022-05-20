@@ -1,20 +1,13 @@
 import { THEME_COLOR_BACKGROUND_PAPER } from "@/config";
-import {
-    Box,
-    Fab,
-    makeStyles,
-    Theme,
-    Typography,
-    useMediaQuery,
-    useTheme,
-} from "@material-ui/core";
+import { Box, Fab, Theme, Typography, useMediaQuery, useTheme } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
 const FAB_SIZE = 104;
 
 const useStyles = makeStyles((theme: Theme) => ({
-    titleStyle:{
+    titleStyle: {
         fontWeight: theme.typography.fontWeightBold as number,
         color: theme.palette.background.paper,
         marginBottom: theme.spacing(2),
@@ -23,11 +16,11 @@ const useStyles = makeStyles((theme: Theme) => ({
         },
     },
     icon: {
-        width: FAB_SIZE-theme.spacing(7),
-        height:FAB_SIZE-theme.spacing(7),
+        width: `calc(${FAB_SIZE} - ${theme.spacing(7)})`,
+        height: `calc(${FAB_SIZE} - ${theme.spacing(7)})`,
         [theme.breakpoints.down(`sm`)]: {
-            width: FAB_SIZE-theme.spacing(7) - 12,
-            height: FAB_SIZE-theme.spacing(7) - 12,
+            width: `calc(${FAB_SIZE} - ${theme.spacing(7)} - 12)`,
+            height: `calc(${FAB_SIZE} - ${theme.spacing(7)} - 12)`,
         },
     },
     fab: {
@@ -36,8 +29,8 @@ const useStyles = makeStyles((theme: Theme) => ({
         width: FAB_SIZE,
         height: FAB_SIZE,
         [theme.breakpoints.down(`sm`)]: {
-            width: FAB_SIZE-theme.spacing(5.5),
-            height:FAB_SIZE-theme.spacing(5.5),
+            width: `calc(${FAB_SIZE} - ${theme.spacing(5.5)})`,
+            height: `calc(${FAB_SIZE} - ${theme.spacing(5.5)})`,
         },
     },
 }));

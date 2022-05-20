@@ -3,13 +3,13 @@ import { useWebRtcConstraints } from "@kl-engineering/live-state/ui";
 import {
     Button,
     Tooltip,
-} from "@material-ui/core";
-import MenuItem from "@material-ui/core/MenuItem";
-import Select from "@material-ui/core/Select";
+} from "@mui/material";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
 import {
     createStyles,
     makeStyles,
-} from "@material-ui/core/styles";
+} from '@mui/styles';
 import { Settings } from "@styled-icons/fluentui-system-filled/Settings";
 import React,
 {

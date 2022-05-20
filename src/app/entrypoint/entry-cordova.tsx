@@ -18,8 +18,8 @@ import {
 import { themeProvider } from "@/themeProvider";
 import { ReactQueryDevtools } from "@kl-engineering/cms-api-client";
 import { SnackbarProvider } from "@kl-engineering/kidsloop-px";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import { ThemeProvider } from "@material-ui/core/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+import { ThemeProvider, Theme, StyledEngineProvider } from "@mui/material";
 import { createHashHistory } from 'history';
 import React,
 { useEffect } from "react";
@@ -50,6 +50,21 @@ import {
 } from "recoil";
 import { PersistGate } from "redux-persist/integration/react";
 import { v4 as uuid } from "uuid";
+
+
+
+declare module '@mui/styles/defaultTheme' {
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface DefaultTheme extends Theme {}
+}
+
+
+
+declare module '@mui/styles/defaultTheme' {
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface DefaultTheme extends Theme {}
+}
+
 
 export const sessionId = uuid();
 
@@ -97,14 +112,16 @@ function Entry () {
                 <CompositionRoot sessionId={sessionId}>
                     <CmsApiClientProvider>
                         <UserServiceApolloClient>
-                            <ThemeProvider theme={themeProvider(locale.languageCode, themeMode)}>
-                                <SnackbarProvider >
-                                    <CssBaseline />
-                                    <PopupProvider>
-                                        <CordovaApp history={history} />
-                                    </PopupProvider>
-                                </SnackbarProvider>
-                            </ThemeProvider>
+                            <StyledEngineProvider injectFirst>
+                                <ThemeProvider theme={themeProvider(locale.languageCode, themeMode)}>
+                                    <SnackbarProvider >
+                                        <CssBaseline />
+                                        <PopupProvider>
+                                            <CordovaApp history={history} />
+                                        </PopupProvider>
+                                    </SnackbarProvider>
+                                </ThemeProvider>
+                            </StyledEngineProvider>
                         </UserServiceApolloClient>
                         {process.env.NODE_ENV === `development` && <ReactQueryDevtools />}
                     </CmsApiClientProvider>

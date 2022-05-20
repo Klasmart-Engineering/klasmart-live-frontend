@@ -1,14 +1,11 @@
 import CommentDialog from "@/app/components/HomeFunStudy/Comment/Dialog";
 import { HFSVisibilityState } from "@/app/utils/homeFunStudy";
+import { Box, Button, Grid, Typography } from "@mui/material";
 import {
-    Box,
-    Button,
     createStyles,
-    Grid,
     makeStyles,
-    Typography,
-} from "@material-ui/core";
-import { Edit } from "@material-ui/icons";
+} from '@mui/styles';
+import { Edit } from "@mui/icons-material";
 import React, {
     useEffect,
     useState,

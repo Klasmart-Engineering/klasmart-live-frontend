@@ -2,13 +2,11 @@ import {
     THEME_COLOR_BACKGROUND_PAPER,
     THEME_COLOR_PRIMARY_DEFAULT,
 } from "@/config";
+import { Grid, Theme, Typography } from "@mui/material";
 import {
     createStyles,
-    Grid,
     makeStyles,
-    Theme,
-    Typography,
-} from "@material-ui/core";
+} from '@mui/styles';
 import clsx from "clsx";
 import React,
 {
@@ -23,7 +21,7 @@ interface Props {
 }
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
-    parentChecker:{
+    parentChecker: {
         marginTop: theme.spacing(1),
         marginBottom: theme.spacing(1),
     },
@@ -45,7 +43,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         width: 70,
         height: 70,
     },
-    parentCheckerItemActive:{
+    parentCheckerItemActive: {
         opacity: 0.4,
     },
 }));

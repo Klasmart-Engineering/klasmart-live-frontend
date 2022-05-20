@@ -5,13 +5,11 @@ import {
     PARENTAL_LOCK_CIRCLE_YELLOW_BG_COLOR,
     TEXT_COLOR_SECONDARY_DEFAULT,
 } from "@/config";
+import { Grid, Theme, Typography } from "@mui/material";
 import {
     createStyles,
-    Grid,
     makeStyles,
-    Theme,
-    Typography,
-} from "@material-ui/core";
+} from '@mui/styles';
 import clsx from "clsx";
 import React,
 {

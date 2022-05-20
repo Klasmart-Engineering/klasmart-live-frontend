@@ -28,13 +28,11 @@ import {
     usePostSchedulesTimeViewList,
 } from "@kl-engineering/cms-api-client";
 import { useSnackbar } from "@kl-engineering/kidsloop-px";
+import { Box, CircularProgress, List } from "@mui/material";
 import {
-    Box,
-    CircularProgress,
     createStyles,
-    List,
     makeStyles,
-} from "@material-ui/core";
+} from '@mui/styles';
 import {
     clamp,
     uniqBy,

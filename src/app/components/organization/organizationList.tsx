@@ -1,6 +1,6 @@
 import { OrganizationListItem } from "./organizationListItem";
 import { ReadOrganizationDto } from "@/app/data/user/dto/readOrganizationDto";
-import { List } from "@material-ui/core";
+import { List } from "@mui/material";
 import React from "react";
 
 interface Props {
@@ -14,12 +14,14 @@ export const OrganizationList: React.FC<Props> = ({
 }) => {
     return (
         <List>
-            {organizations.map((organization) =>
+            {organizations.map((organization) => (
                 <OrganizationListItem
                     key={organization.organization_id}
                     organization={organization}
                     isSelected={organization.organization_id === selectedOrganization?.organization_id}
-                    onClick={onClick} />)}
+                    onClick={onClick}
+                />
+            ))}
         </List>
     );
 };

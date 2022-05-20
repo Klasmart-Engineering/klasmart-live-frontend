@@ -38,15 +38,14 @@ import {
     Grid,
     IconButton,
     Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 import Cookies from "js-cookie";
+import { Theme, useTheme } from "@mui/material/styles";
 import {
     createStyles,
     makeStyles,
-    Theme,
-    useTheme,
-} from "@material-ui/core/styles";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
+} from '@mui/styles';
+import useMediaQuery from "@mui/material/useMediaQuery";
 import clsx from "clsx";
 import React,
 {
@@ -432,41 +431,43 @@ function MicAndCamControls(props: MicAndCamControlsProps): JSX.Element {
         }
     }, [micError, camError, microphonePaused, cameraPaused]);
 
-    return (<Box
-        left={0}
-        right={0}
-        bottom={0}
-        zIndex={1}
-        position="absolute"
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-    >
-        <IconButton
-            disableRipple
-            disableFocusRipple
-            disabled={micError}
-            onClick={() => setMicrophonePaused(!microphonePaused)}
+    return (
+        <Box
+            left={0}
+            right={0}
+            bottom={0}
+            zIndex={1}
+            position="absolute"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
         >
-            <img
-                alt="microphone"
-                className={classes.iconImg}
-                src={attachImgForMicAndCam(MEDIA_DEVICES.MICROPHONE)}
-            />
-        </IconButton>
-        <IconButton
-            disableRipple
-            disableFocusRipple
-            disabled={camError}
-            onClick={() => setCameraPaused(!cameraPaused)}
-        >
-            <img
-                alt="camera"
-                className={classes.iconImg}
-                src={attachImgForMicAndCam(MEDIA_DEVICES.CAMERA)}
-            />
-        </IconButton>
-    </Box>)
+            <IconButton
+                disableRipple
+                disableFocusRipple
+                disabled={micError}
+                onClick={() => setMicrophonePaused(!microphonePaused)}
+                size="large">
+                <img
+                    alt="microphone"
+                    className={classes.iconImg}
+                    src={attachImgForMicAndCam(MEDIA_DEVICES.MICROPHONE)}
+                />
+            </IconButton>
+            <IconButton
+                disableRipple
+                disableFocusRipple
+                disabled={camError}
+                onClick={() => setCameraPaused(!cameraPaused)}
+                size="large">
+                <img
+                    alt="camera"
+                    className={classes.iconImg}
+                    src={attachImgForMicAndCam(MEDIA_DEVICES.CAMERA)}
+                />
+            </IconButton>
+        </Box>
+    );
 }
 
 function TeacherList({ max }: TeacherListProps): JSX.Element {

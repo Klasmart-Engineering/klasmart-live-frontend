@@ -9,12 +9,11 @@ import { useHttpEndpoint } from "@/providers/region-select-context";
 import { useSessionContext } from "@/providers/session-context";
 import { BaseWhiteboard } from "@/whiteboard/components/BaseWhiteboard";
 import WhiteboardBorder from "@/whiteboard/components/Border";
+import { Typography, useTheme } from "@mui/material";
 import {
     createStyles,
     makeStyles,
-    Typography,
-    useTheme,
-} from "@material-ui/core";
+} from '@mui/styles';
 import React,
 {
     useEffect,

@@ -1,9 +1,6 @@
 import { BG_COLOR_CAMERA } from "@/config";
-import {
-    Grid,
-    makeStyles,
-    Theme,
-} from "@material-ui/core";
+import { Grid, Theme } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import { UserAvatar } from "@kl-engineering/kidsloop-px";
 import React from "react";
 

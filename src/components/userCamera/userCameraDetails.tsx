@@ -2,12 +2,8 @@
 import { Session } from "@/pages/utils";
 import { useSessionContext } from "@/providers/session-context";
 import { Track } from "@kl-engineering/live-state/ui";
-import {
-    makeStyles,
-    Theme,
-    Typography,
-} from "@material-ui/core";
-import amber from "@material-ui/core/colors/amber";
+import { Theme, Typography } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import { MicMuteFill as MicDisabledIcon } from "@styled-icons/bootstrap/MicMuteFill";
 import { Microphone as MicIcon } from '@styled-icons/boxicons-solid/Microphone';
 import { Crown as HasControlsIcon } from "@styled-icons/fa-solid/Crown";
@@ -17,6 +13,7 @@ import clsx from "clsx";
 import React,
 { VoidFunctionComponent } from "react";
 import { FormattedMessage } from "react-intl";
+import { amber } from '@mui/material/colors';
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -32,14 +29,14 @@ const useStyles = makeStyles((theme: Theme) => ({
         textAlign:`left`,
         pointerEvents: `none`,
     },
-    rootTeacher:{},
-    rootSmall:{},
-    rootLarge:{
-        "& $nameContainer":{
+    rootTeacher: {},
+    rootSmall: {},
+    rootLarge: {
+        "& $nameContainer": {
             position: `static`,
             textAlign: `center`,
         },
-        "& $name":{
+        "& $name": {
             position: `relative`,
             backgroundColor: `rgba(255,255,255,0.3)`,
             fontSize: `1em`,
@@ -58,12 +55,12 @@ const useStyles = makeStyles((theme: Theme) => ({
                 },
             },
 
-            "&:after":{
+            "&:after": {
                 content: `inherit`,
             },
         },
     },
-    nameContainer:{
+    nameContainer: {
         position: `absolute`,
         left: 0,
         bottom: 0,
@@ -85,7 +82,7 @@ const useStyles = makeStyles((theme: Theme) => ({
             },
         },
 
-        "&:after":{
+        "&:after": {
             content: `''`,
             position: `absolute`,
             bottom: 0,
@@ -104,7 +101,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         whiteSpace: `nowrap`,
         maxWidth: `calc(100% - 20px)`,
     },
-    roles:{
+    roles: {
         position: `absolute`,
         top: 0,
         right: 0,
@@ -112,20 +109,20 @@ const useStyles = makeStyles((theme: Theme) => ({
         borderRadius: `0 0 0 10px`,
         padding : `0 0.5em`,
     },
-    roleIcon:{
+    roleIcon: {
         color: theme.palette.text.primary,
         margin: `0.2em`,
     },
-    roleHasControlsIcon:{
+    roleHasControlsIcon: {
         color: amber[500],
     },
-    speakingActivity:{
+    speakingActivity: {
         display: `flex`,
         height: 10,
         alignItems: `center`,
         marginLeft: 5,
 
-        "& div":{
+        "& div": {
             width: 4,
             height: 0,
             minHeight: 4,

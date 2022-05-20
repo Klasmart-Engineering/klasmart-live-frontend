@@ -2,7 +2,7 @@ import { useSynchronizedState } from "@/whiteboard/context-providers/Synchronize
 import {
     createStyles,
     makeStyles,
-} from "@material-ui/core";
+} from '@mui/styles';
 import clsx from "clsx";
 import React from "react";
 

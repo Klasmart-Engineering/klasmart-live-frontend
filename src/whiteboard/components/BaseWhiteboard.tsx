@@ -10,11 +10,8 @@ import { whiteboard } from "@/utils/layerValues";
 import { useSynchronizedState } from "@/whiteboard/context-providers/SynchronizedStateProvider";
 import { useToolbarContext } from "@kl-engineering/kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
 import { WhiteboardCanvas } from "@kl-engineering/kidsloop-canvas/lib/domain/whiteboard/WhiteboardCanvas";
-import {
-    makeStyles,
-    Theme,
-} from "@material-ui/core";
-import { CSSProperties } from "@material-ui/core/styles/withStyles";
+import { Theme } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import React,
 {
     useEffect,
@@ -113,7 +110,7 @@ export function BaseWhiteboard (props: Props) {
         selectColorByValue(canvasDrawColor);
     }, [ canvasChildRef?.current ]);
 
-    const canvasStyle: CSSProperties = {
+    const canvasStyle: React.CSSProperties = {
         zIndex: whiteboard,
         width: `100%`,
         height: `100%`,

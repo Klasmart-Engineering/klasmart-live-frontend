@@ -2,9 +2,9 @@ import Plan from "./plan/plan";
 import {
     Divider,
     Grid,
-    makeStyles,
     Typography,
-} from "@material-ui/core";
+} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import React from "react";
 import { FormattedMessage } from "react-intl";
 

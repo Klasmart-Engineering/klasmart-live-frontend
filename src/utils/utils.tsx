@@ -17,14 +17,13 @@ import {
     Dialog,
     Drawer,
     Fade,
-    makeStyles,
     Paper,
     Popper,
     PopperPlacementType,
     Theme,
     Tooltip,
-    Typography,
-} from "@material-ui/core";
+} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import clsx from "clsx";
 import React,
 {
@@ -142,7 +141,7 @@ interface StyledPopperProps {
     placement?: PopperPlacementType;
     height?: number | string;
     showScrollbar?: boolean;
-    modifiers?: Record<string, unknown>;
+    modifiers?: Record<string, unknown>[];
     isKeyboardVisible?: boolean;
     dialog?: boolean;
     dialogClose?: () => void;
@@ -150,6 +149,7 @@ interface StyledPopperProps {
 
 function StyledPopper (props: StyledPopperProps) {
     const classes = useStyles();
+    const boundaryElement = document.querySelector(`#main-content`);
     const {
         children,
         open = false,
@@ -157,11 +157,15 @@ function StyledPopper (props: StyledPopperProps) {
         placement = `top`,
         height,
         showScrollbar = false,
-        modifiers = {
-            preventOverflow: {
-                boundariesElement: document.getElementById(`main-content`),
+        modifiers = [
+            {
+                name: `preventOverflow`,
+                enabled: true,
+                options: {
+                    boundary: boundaryElement,
+                },
             },
-        },
+        ],
         isKeyboardVisible = false,
         dialog = false,
         dialogClose,

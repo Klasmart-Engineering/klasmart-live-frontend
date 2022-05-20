@@ -1,19 +1,16 @@
 import KidsloopLogo from "@/assets/img/kidsloop_icon.svg";
+import { AppBar as MUIAppBar, Grid, Toolbar, Typography } from "@mui/material";
 import {
-    AppBar as MUIAppBar,
     createStyles,
-    Grid,
     makeStyles,
-    Toolbar,
-    Typography,
-} from "@material-ui/core";
+} from '@mui/styles';
 import React from "react";
 
 const useStyles = makeStyles((theme) => createStyles({
     root: {
         borderBottom: `1px solid ${theme.palette.divider}`,
     },
-    centeredLogo:{
+    centeredLogo: {
         position: `absolute`,
         textAlign: `center`,
         zIndex: -1,

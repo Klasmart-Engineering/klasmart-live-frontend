@@ -1,6 +1,6 @@
-import { Box } from "@material-ui/core";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import Typography from "@material-ui/core/Typography";
+import { Box } from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
+import Typography from "@mui/material/Typography";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 

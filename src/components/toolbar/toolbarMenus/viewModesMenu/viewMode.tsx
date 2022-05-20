@@ -1,10 +1,6 @@
-import {
-    ButtonBase,
-    makeStyles,
-    Theme,
-    Typography,
-} from "@material-ui/core";
-import { grey } from "@material-ui/core/colors";
+import { ButtonBase, Theme, Typography } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import { grey } from "@mui/material/colors";
 import { StyledIcon } from '@styled-icons/styled-icon';
 import clsx from "clsx";
 import React,

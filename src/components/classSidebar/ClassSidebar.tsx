@@ -6,13 +6,9 @@ import {
     THEME_COLOR_PRIMARY_DEFAULT,
 } from "@/config";
 import { ActiveClassDrawerState, ClassDrawerSections } from "@/store/layoutAtoms";
-import {
-    Box,
-    Grid,
-    makeStyles,
-    Theme,
-} from "@material-ui/core";
-import Fab from "@material-ui/core/Fab";
+import { Box, Grid, Theme } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import Fab from "@mui/material/Fab";
 import { Person as ParticipantsIcon } from "@styled-icons/material/Person";
 import { FilePaper as LessonPlanIcon } from "@styled-icons/remix-fill/FilePaper";
 import clsx from "clsx";

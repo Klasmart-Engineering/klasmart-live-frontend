@@ -6,18 +6,16 @@ import {
     TEXT_COLOR_LIVE_PRIMARY,
     TEXT_COLOR_SECONDARY_DEFAULT,
     TEXT_COLOR_STUDY_PRIMARY,
-    THEME_COLOR_SECONDARY_DEFAULT,
 } from "@/config";
 import { ClassType } from "@/store/actions";
 import {
     ButtonBase,
-    Grid,
     Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 import {
     createStyles,
     makeStyles,
-} from "@material-ui/core/styles";
+} from '@mui/styles';
 import clsx from "clsx";
 import React,
 { ReactElement } from "react";
@@ -33,10 +31,10 @@ const useStyles = makeStyles((theme) => createStyles({
         justifyContent: `center`,
         width: `100%`,
     },
-    activeLive : {
+    activeLive: {
         backgroundColor: BG_BUTTON_LIVE_COLOR,
     },
-    activeStudy : {
+    activeStudy: {
         backgroundColor: BG_BUTTON_STUDY_COLOR,
     },
     titleText: {

@@ -1,13 +1,7 @@
 import { THEME_COLOR_BACKGROUND_DEFAULT } from "@/config";
 import { useSendMessageMutation } from "@/data/live/mutations/useSendMessageMutation";
-import {
-    IconButton,
-    InputBase,
-    makeStyles,
-    Paper,
-    Theme,
-    Tooltip,
-} from "@material-ui/core";
+import { IconButton, InputBase, Paper, Theme, Tooltip } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import { SendPlane as SendIcon } from "@styled-icons/remix-fill/SendPlane";
 import clsx from "clsx";
 import React,
@@ -17,30 +11,30 @@ import React,
 } from "react";
 import { useIntl } from "react-intl";
 
-const useStyles = makeStyles((theme: Theme) => ({
-    root:{
-        padding: `4px`,
+const useStyles = makeStyles((theme) => ({
+    root: {
+        padding: theme.spacing(0.5),
         display: `flex`,
         alignItems: `center`,
-        borderRadius: 10,
+        borderRadius: theme.spacing(1.25),
         background: theme.palette.grey[200],
         border: `2px solid transparent`,
     },
-    rootFocused:{
+    rootFocused: {
         borderColor: THEME_COLOR_BACKGROUND_DEFAULT,
     },
-    rootInput:{
+    rootInput: {
         flex: 1,
     },
-    input:{
-        padding: `0 6px`,
+    input: {
+        padding: theme.spacing(0, 0.75),
     },
-    iconButton:{
-        padding: 10,
-        borderRadius: 12,
-        color: `#fff`,
+    iconButton: {
+        padding: theme.spacing(1.25),
+        borderRadius: theme.spacing(1.5),
+        color: theme.palette.common.white,
         backgroundColor: theme.palette.text.primary,
-        "&:hover":{
+        "&:hover": {
             backgroundColor: theme.palette.text.primary,
             opacity: 0.8,
         },
@@ -55,7 +49,7 @@ function SendMessage () {
     const [ formFocus, setFormFocus ] = useState(false);
     const sendMessage = useSendMessageMutation();
 
-    const submitMessage = (e: React.FormEvent<HTMLDivElement>) => {
+    const submitMessage = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         sendMessage(message);
         setMessage(``);
@@ -71,44 +65,46 @@ function SendMessage () {
 
     return (
         <Paper
-            component="form"
             className={clsx(classes.root, {
                 [classes.rootFocused]: formFocus,
             })}
             elevation={0}
-            {...eventHandlers}
-            onSubmit={submitMessage}
         >
-            <InputBase
-                inputRef={inputRef}
-                placeholder={intl.formatMessage({
-                    id: `chat_messages_write_placeholder`,
-                })}
-                value={message}
-                classes={{
-                    root: classes.rootInput,
-                    input: classes.input,
-                }}
-                inputProps={{
-                    maxLength: 500,
-                }}
-                onChange={(e) => setMessage(e.target.value)}
-            />
-            <Tooltip
-                title={intl.formatMessage({
-                    id: `live.class.chat.sendMessage`,
-                    defaultMessage: `Send message`,
-                })}
-                placement="top"
+            <form
+                {...eventHandlers}
+                onSubmit={submitMessage}
             >
-                <IconButton
-                    aria-label="send"
-                    className={classes.iconButton}
-                    type="submit"
+                <InputBase
+                    inputRef={inputRef}
+                    placeholder={intl.formatMessage({
+                        id: `chat_messages_write_placeholder`,
+                    })}
+                    value={message}
+                    classes={{
+                        root: classes.rootInput,
+                        input: classes.input,
+                    }}
+                    inputProps={{
+                        maxLength: 500,
+                    }}
+                    onChange={(e) => setMessage(e.target.value)}
+                />
+                <Tooltip
+                    title={intl.formatMessage({
+                        id: `live.class.chat.sendMessage`,
+                        defaultMessage: `Send message`,
+                    })}
+                    placement="top"
                 >
-                    <SendIcon size="1.2rem"/>
-                </IconButton>
-            </Tooltip>
+                    <IconButton
+                        aria-label="send"
+                        className={classes.iconButton}
+                        type="submit"
+                        size="large">
+                        <SendIcon size="1.2rem"/>
+                    </IconButton>
+                </Tooltip>
+            </form>
         </Paper>
     );
 }

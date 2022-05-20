@@ -12,16 +12,8 @@ import {
 } from "@/utils/utils";
 import { useSynchronizedState } from "@/whiteboard/context-providers/SynchronizedStateProvider";
 import { Track } from "@kl-engineering/live-state/ui";
-import {
-    Box,
-    IconButton,
-    makeStyles,
-    Menu,
-    MenuItem,
-    Theme,
-    Tooltip,
-} from "@material-ui/core";
-import amber from "@material-ui/core/colors/amber";
+import { Box, IconButton, Menu, MenuItem, Theme, Tooltip } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import { ArrowsAngleExpand as ExpandIcon } from "@styled-icons/bootstrap/ArrowsAngleExpand";
 import { CameraVideoFill as CameraVideoFillIcon } from "@styled-icons/bootstrap/CameraVideoFill";
 import { CameraVideoOffFill as CameraDisabledIcon } from "@styled-icons/bootstrap/CameraVideoOffFill";
@@ -42,9 +34,10 @@ import React,
 import { useIntl } from "react-intl";
 import { useRecoilValue } from "recoil";
 import { StyledIconProps } from "styled-icons/types";
+import { amber } from '@mui/material/colors';
 
 const useStyles = makeStyles((theme: Theme) => ({
-    root:{
+    root: {
         position: `absolute`,
         zIndex: 9,
         width: `100%`,
@@ -55,31 +48,31 @@ const useStyles = makeStyles((theme: Theme) => ({
         transition: `all 100ms ease-in-out`,
         visibility: `visible`,
     },
-    backdropOverlay:{
+    backdropOverlay: {
         backdropFilter: `blur(2px)`,
         backgroundColor: `rgba(0,0,0,0.3)`,
     },
-    controlsIcon:{
+    controlsIcon: {
         padding: theme.spacing(1),
         color: theme.palette.common.white,
     },
-    menuPaperTrophies:{
+    menuPaperTrophies: {
         borderRadius: 30,
-        "& $menuItem":{
+        "& $menuItem": {
             padding: theme.spacing(0.75),
             color: amber[500],
         },
     },
-    menuItem:{
+    menuItem: {
         color: theme.palette.grey[800],
         fontWeight: theme.typography.fontWeightBold as number,
     },
-    expand:{
+    expand: {
         position: `absolute`,
         top: theme.spacing(1),
         left: theme.spacing(1),
     },
-    iconButton:{
+    iconButton: {
         color: theme.palette.common.white,
         margin: theme.spacing(0, -0.5),
         padding: theme.spacing(1, 1.25),
@@ -131,103 +124,100 @@ const UserCameraActions = ({
         },
     });
 
-    return (
-        <>
-            <Box
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-                className={clsx(classes.root, {
-                    [classes.backdropOverlay] : isTeacher,
-                })}
-            >
-                {expanded && (<ExpandCamera user={user} />) }
-                {
-                    <Box
-                        display="flex"
-                        className={classes.iconsContainer}
-                    >
-                        { mic.hasLocation && hasPermission && (isSelf || isTeacher) &&
-                        <ToggleMic
-                            track={mic}
-                            local={!isTeacher || isSelf}
-                        />
-                        }
-                        { camera.hasLocation && hasPermission && (isSelf || isTeacher) &&
-                        <ToggleCamera
-                            track={camera}
-                            local={!isTeacher || isSelf}
-                        />
-                        }
-                        {!isSelf && isTeacher && (
-                            <TooltipIntl id="live.class.stickers">
-                                <IconButton
-                                    aria-label="Trophy"
-                                    className={classes.iconButton}
-                                    onClick={handleTrophyOpen}
-                                >
-                                    <TrophyIcon size="0.7em" />
-                                </IconButton>
-                            </TooltipIntl>
-                        )}
-                        {hasControls && (
-                            <>
-                                {!isSelf && (
-                                    <ToggleCanvas user={user} />
-                                )}
-                                {subTeacher && (
-                                    <ToggleControls user={user} />
-                                )}
-                            </>
-                        )}
-                    </Box>
-                }
-            </Box>
-            <Menu
-                id="trophy-menu"
-                anchorEl={trophyEl}
-                getContentAnchorEl={null}
-                anchorOrigin={{
-                    vertical: `bottom`,
-                    horizontal: `center`,
-                }}
-                transformOrigin={{
-                    vertical: `top`,
-                    horizontal: `center`,
-                }}
-                open={Boolean(trophyEl)}
-                MenuListProps={{
-                    onPointerLeave: handleTrophyClose,
-                    disablePadding: true,
-                }}
-                classes={{
-                    paper: classes.menuPaperTrophies,
-                }}
-                onClose={handleTrophyClose}
-            >
-                <ToolTipMenuItem
-                    id="give_trophy"
-                    icon={<TrophyIcon size="1.2rem" />}
-                    onClick={() => rewardTrophy(user.id, `trophy`)}
-                />
-                <ToolTipMenuItem
-                    id="encourage"
-                    icon={<HandThumbsUpFillIcon size="1.2rem" />}
-                    onClick={() => rewardTrophy(user.id, `awesome`)}
-                />
-                <ToolTipMenuItem
-                    id="give_star"
-                    icon={<StarFillIcon size="1.2rem" />}
-                    onClick={() => rewardTrophy(user.id, `star`)}
-                />
-                <ToolTipMenuItem
-                    id="give_heart"
-                    icon={<HeartFillIcon size="1.2rem" />}
-                    onClick={() => rewardTrophy(user.id, `heart`)}
-                />
-            </Menu>
-        </>
-    );
+    return <>
+        <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            className={clsx(classes.root, {
+                [classes.backdropOverlay] : isTeacher,
+            })}
+        >
+            {expanded && (<ExpandCamera user={user} />) }
+            {
+                <Box
+                    display="flex"
+                    className={classes.iconsContainer}
+                >
+                    { mic.hasLocation && hasPermission && (isSelf || isTeacher) &&
+                    <ToggleMic
+                        track={mic}
+                        local={!isTeacher || isSelf}
+                    />
+                    }
+                    { camera.hasLocation && hasPermission && (isSelf || isTeacher) &&
+                    <ToggleCamera
+                        track={camera}
+                        local={!isTeacher || isSelf}
+                    />
+                    }
+                    {!isSelf && isTeacher && (
+                        <TooltipIntl id="live.class.stickers">
+                            <IconButton
+                                aria-label="Trophy"
+                                className={classes.iconButton}
+                                onClick={handleTrophyOpen}
+                                size="large">
+                                <TrophyIcon size="0.7em" />
+                            </IconButton>
+                        </TooltipIntl>
+                    )}
+                    {hasControls && (
+                        <>
+                            {!isSelf && (
+                                <ToggleCanvas user={user} />
+                            )}
+                            {subTeacher && (
+                                <ToggleControls user={user} />
+                            )}
+                        </>
+                    )}
+                </Box>
+            }
+        </Box>
+        <Menu
+            id="trophy-menu"
+            anchorEl={trophyEl}
+            anchorOrigin={{
+                vertical: `bottom`,
+                horizontal: `center`,
+            }}
+            transformOrigin={{
+                vertical: `top`,
+                horizontal: `center`,
+            }}
+            open={Boolean(trophyEl)}
+            MenuListProps={{
+                onPointerLeave: handleTrophyClose,
+                disablePadding: true,
+            }}
+            classes={{
+                paper: classes.menuPaperTrophies,
+            }}
+            onClose={handleTrophyClose}
+        >
+            <ToolTipMenuItem
+                id="give_trophy"
+                icon={<TrophyIcon size="1.2rem" />}
+                onClick={() => rewardTrophy(user.id, `trophy`)}
+            />
+            <ToolTipMenuItem
+                id="encourage"
+                icon={<HandThumbsUpFillIcon size="1.2rem" />}
+                onClick={() => rewardTrophy(user.id, `awesome`)}
+            />
+            <ToolTipMenuItem
+                id="give_star"
+                icon={<StarFillIcon size="1.2rem" />}
+                onClick={() => rewardTrophy(user.id, `star`)}
+            />
+            <ToolTipMenuItem
+                id="give_heart"
+                icon={<HeartFillIcon size="1.2rem" />}
+                onClick={() => rewardTrophy(user.id, `heart`)}
+            />
+        </Menu>
+    </>;
 };
 
 export default UserCameraActions;
@@ -251,7 +241,7 @@ const ToggleCamera: VoidFunctionComponent<{
                 aria-label="Camera"
                 className={classes.iconButton}
                 onClick={toggleVideoState}
-            >
+                size="large">
                 {!isPaused ? <CameraVideoFillIcon size="0.7em" /> : <CameraDisabledIcon size="0.7em" />}
             </IconButton>
         </Tooltip>
@@ -276,7 +266,7 @@ const ToggleMic: VoidFunctionComponent<{
                 aria-label="Microphone"
                 className={classes.iconButton}
                 onClick={toggleAudioState}
-            >
+                size="large">
                 {!isPaused ? <MicFillIcon size="0.7em" /> : <MicDisabledIcon size="0.7em" />}
             </IconButton>
         </Tooltip>
@@ -312,7 +302,7 @@ function ToggleControls ({ user }: ToggleControlsProps){
                 aria-label="Give controls"
                 className={classes.iconButton}
                 onClick={() => giveControls(user)}
-            >
+                size="large">
                 <HasControlsIcon size="0.7em" />
             </IconButton>
         </TooltipIntl>
@@ -349,7 +339,7 @@ function ToggleCanvas ({ user }: ToggleCanvasProps) {
                 aria-label="Canvas"
                 className={classes.iconButton}
                 onClick={toggleAllowCreateShapes}
-            >
+                size="large">
                 <img
                     alt={``}
                     src={permissions.allowCreateShapes ? PencilIconOff : PencilIconOn}

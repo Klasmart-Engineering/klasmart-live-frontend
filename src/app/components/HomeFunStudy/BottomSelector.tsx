@@ -6,20 +6,20 @@ import {
 import { useServices } from "@/app/context-provider/services-provider";
 import StyledIcon from "@/components/styled/icon";
 import { THEME_COLOR_SECONDARY_DEFAULT } from "@/config";
+import { useSnackbar } from "@kl-engineering/kidsloop-px";
 import {
     Box,
     Button,
     Grid,
     SwipeableDrawer,
     Typography,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import {
     Camera as CameraIcon,
     File as FileIcon,
     Image as ImageIcon,
 } from "@styled-icons/feather";
-import { useSnackbar } from "@kl-engineering/kidsloop-px";
 import React,
 {
     useContext,
@@ -141,21 +141,21 @@ export default function BottomSelector (props: Props) {
             {
                 enable: true,
                 onClick: selectFile,
-                icon: <FileIcon/>,
+                icon: <FileIcon />,
                 labelId: `button_file`,
                 defaultLabel: `File`,
             },
             {
                 enable: true,
                 onClick: selectCamera,
-                icon: <CameraIcon/>,
+                icon: <CameraIcon />,
                 labelId: `button_camera`,
                 defaultLabel: `Camera`,
             },
             {
                 enable: !isAndroid,
                 onClick: selectGallery,
-                icon: <ImageIcon/>,
+                icon: <ImageIcon />,
                 labelId: `button_gallery`,
                 defaultLabel: `Gallery`,
             },
@@ -182,45 +182,47 @@ export default function BottomSelector (props: Props) {
                 <Box
                     mt={1}
                     display="flex"
-                    justifyContent="center">
-                    <span className={classes.top_bar}></span>
+                    justifyContent="center"
+                >
+                    <span className={classes.top_bar} />
                 </Box>
                 <Grid
                     container
                     direction="row"
                     justifyContent="space-between"
                 >
-                    {
-                        fileSelector.map(selector =>
-                            selector.enable && <Grid
-                                key={selector.labelId}
-                                item
-                                xs
+                    {fileSelector.map(selector => selector.enable && (
+                        <Grid
+                            key={selector.labelId}
+                            item
+                            xs
+                        >
+                            <Button
+                                fullWidth
+                                onClick={selector.onClick}
                             >
-                                <Button
-                                    fullWidth
-                                    onClick={selector.onClick}
+                                <Box
+                                    py={5}
+                                    flexDirection="column"
                                 >
-                                    <Box
-                                        py={5}
-                                        flexDirection="colum">
-                                        <StyledIcon
-                                            icon={selector.icon}
-                                            size="3rem"
-                                            color={THEME_COLOR_SECONDARY_DEFAULT}
+                                    <StyledIcon
+                                        icon={selector.icon}
+                                        size="3rem"
+                                        color={THEME_COLOR_SECONDARY_DEFAULT}
+                                    />
+                                    <Typography
+                                        variant="body2"
+                                        color="textSecondary"
+                                    >
+                                        <FormattedMessage
+                                            id={selector.labelId}
+                                            defaultMessage={selector.defaultLabel}
                                         />
-                                        <Typography
-                                            variant="body2"
-                                            color="textSecondary"
-                                        >
-                                            <FormattedMessage
-                                                id={selector.labelId}
-                                                defaultMessage={selector.defaultLabel}/>
-                                        </Typography>
-                                    </Box>
-                                </Button>
-                            </Grid>)
-                    }
+                                    </Typography>
+                                </Box>
+                            </Button>
+                        </Grid>
+                    ))}
                 </Grid>
             </SwipeableDrawer>
         </>

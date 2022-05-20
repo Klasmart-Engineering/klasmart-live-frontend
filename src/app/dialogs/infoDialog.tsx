@@ -13,12 +13,12 @@ import {
     DialogTitle,
     Grid,
     Typography,
-} from "@material-ui/core";
+} from "@mui/material";
+import { Theme } from "@mui/material/styles";
 import {
     createStyles,
     makeStyles,
-    Theme,
-} from "@material-ui/core/styles";
+} from '@mui/styles';
 import clsx from "clsx";
 import React from "react";
 import { FormattedMessage } from "react-intl";

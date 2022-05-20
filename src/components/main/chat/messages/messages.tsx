@@ -5,12 +5,8 @@ import DialogParentalLock from "@/app/components/ParentalLock";
 import { useMessages } from "@/data/live/state/useMessages";
 import { NoItemList } from "@/utils/noItemList";
 import { openHyperLink } from "@/app/utils/link";
-import {
-    Box,
-    Grid,
-    makeStyles,
-    Theme,
-} from "@material-ui/core";
+import { Grid, Theme } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import { ChatSquareDotsFill as ChatIcon } from "@styled-icons/bootstrap/ChatSquareDotsFill";
 import React,
 {
@@ -24,14 +20,14 @@ import { useRecoilState, useRecoilValue } from "recoil";
 
 
 const useStyles = makeStyles((theme: Theme) => ({
-    fullHeight:{
+    fullHeight: {
         height: `100%`,
     },
-    container:{
+    container: {
         padding : `1rem 10px`,
         paddingBottom: 0,
     },
-    messagesContainer:{
+    messagesContainer: {
         minWidth: 280,
     },
 }));

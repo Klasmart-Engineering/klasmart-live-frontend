@@ -1,16 +1,11 @@
 import { CordovaSystemContext } from "@/app/context-provider/cordova-system-context";
 import StyledIcon from "@/components/styled/icon";
 import { BG_COLOR_GO_LIVE_BUTTON } from "@/config";
+import { Dialog, DialogContent, DialogTitle, Grid, Theme, Typography } from "@mui/material";
 import {
     createStyles,
-    Dialog,
-    DialogContent,
-    DialogTitle,
-    Grid,
-    Theme,
-    Typography,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+    makeStyles,
+} from '@mui/styles';
 import { Close as CloseIcon } from "@styled-icons/material/Close";
 import React,
 {

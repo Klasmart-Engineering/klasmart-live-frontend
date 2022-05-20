@@ -6,11 +6,9 @@ import { useSessionContext } from "@/providers/session-context";
 import { ClassType } from "@/store/actions";
 import { isCanvasOpenState } from "@/store/layoutAtoms";
 import { useSynchronizedState } from "@/whiteboard/context-providers/SynchronizedStateProvider";
-import {
-    makeStyles,
-    Theme,
-} from "@material-ui/core";
-import Fab from "@material-ui/core/Fab";
+import { Theme } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import Fab from "@mui/material/Fab";
 import { CloseOutline as CloseIcon } from "@styled-icons/evaicons-outline/CloseOutline";
 import clsx from "clsx";
 import React,

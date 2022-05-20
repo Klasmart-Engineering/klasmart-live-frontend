@@ -1,15 +1,15 @@
 import { LANGUAGES_LABEL } from "@/localization/localeCodes";
 import { ThemeContext } from "@/providers/providers";
-import { Button } from "@material-ui/core";
+import { Button } from "@mui/material";
 import Menu,
-{ MenuProps } from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
+{ MenuProps } from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import { Theme } from "@mui/material/styles";
 import {
     createStyles,
     makeStyles,
-    Theme,
-    withStyles,
-} from "@material-ui/core/styles";
+} from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import { ExpandMore as ExpandMoreIcon } from "@styled-icons/material/ExpandMore";
 import { Translate as LanguageIcon } from "@styled-icons/material/Translate";
 import {
@@ -40,7 +40,6 @@ const useStyles = makeStyles((theme: Theme) =>
 const StyledMenu = withStyles({})((props: MenuProps) => (
     <Menu
         elevation={4}
-        getContentAnchorEl={null}
         anchorOrigin={{
             vertical: `bottom`,
             horizontal: `center`,

@@ -10,14 +10,13 @@ import {
     THEME_COLOR_BACKGROUND_ON_BOARDING,
     THEME_COLOR_BACKGROUND_PAPER,
 } from "@/config";
+import { Button, Theme } from "@mui/material";
 import {
-    Button,
     createStyles,
     makeStyles,
-    Theme,
-} from "@material-ui/core";
-import Grid from "@material-ui/core/Grid/Grid";
-import Typography from "@material-ui/core/Typography/Typography";
+} from '@mui/styles';
+import Grid from "@mui/material/Grid/Grid";
+import Typography from "@mui/material/Typography/Typography";
 import Carousel from 'nuka-carousel';
 import React,
 { useState, useEffect } from 'react';

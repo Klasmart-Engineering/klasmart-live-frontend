@@ -1,11 +1,11 @@
 import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
 import { selectedRegionState } from "@/app/model/appModel";
 import { THEME_COLOR_PRIMARY_DEFAULT } from "@/config";
+import { Button } from "@mui/material";
 import {
-    Button,
     createStyles,
     makeStyles,
-} from "@material-ui/core";
+} from '@mui/styles';
 import clsx from "clsx";
 import React,
 { useCallback } from "react";
@@ -85,8 +85,8 @@ export function DevSelectRegion (){
 
     return (
         <>
-            {regions.map(region =>
-                (<Button
+            {regions.map(region => (
+                <Button
                     key={region.id}
                     fullWidth
                     variant="contained"
@@ -97,7 +97,8 @@ export function DevSelectRegion (){
                     onClick={() => { selectRegionWithId(region.id); }}
                 >
                 Select region: {region.name}
-                 </Button>))}
+                </Button>
+            ))}
         </>
     );
 }

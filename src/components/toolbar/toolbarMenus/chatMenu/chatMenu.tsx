@@ -3,11 +3,11 @@ import { isKeyboardVisibleState } from "@/app/model/appModel";
 import Chat from "@/components/main/chat/chat";
 import { isChatOpenState } from "@/store/layoutAtoms";
 import { StyledPopper } from "@/utils/utils";
-import {
-    makeStyles,
-    useMediaQuery,
-    useTheme,
-} from "@material-ui/core";
+import { 
+    useMediaQuery, 
+    useTheme 
+} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import React from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 
@@ -31,11 +31,11 @@ function ChatMenu (props: ChatMenuProps) {
     return (
         <StyledPopper
             placement="top-end"
-            modifiers={{
-                preventOverflow: {
-                    boundariesElement: isKeyboardVisible ? null : document.getElementById(`main-content`),
-                },
-            }}
+            // modifiers={{
+            //     preventOverflow: {
+            //         boundariesElement: isKeyboardVisible ? null : document.getElementById(`main-content`),
+            //     },
+            // }}
             showScrollbar={isAndroid}
             height={popperHeight}
             open={isChatOpen}

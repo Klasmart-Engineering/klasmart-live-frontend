@@ -67,6 +67,7 @@ export default function StyledIcon (props: Props) {
     };
 
     const [ determinedSize, setDeterminedSize ] = useState(`1rem`);
+
     useEffect(() => {
         const size = getSize();
         setDeterminedSize(size);
@@ -83,7 +84,8 @@ export default function StyledIcon (props: Props) {
                 className={className}
                 theme={theme}
                 color={color}
-                size={determinedSize}>
+                size={determinedSize}
+            >
                 {icon}
             </BaseIcon>
         </Tooltip>
@@ -92,9 +94,9 @@ export default function StyledIcon (props: Props) {
             className={className}
             theme={theme}
             color={color}
-            size={determinedSize}>
+            size={determinedSize}
+        >
             {icon}
         </BaseIcon>
-    )
-    );
+    ));
 }

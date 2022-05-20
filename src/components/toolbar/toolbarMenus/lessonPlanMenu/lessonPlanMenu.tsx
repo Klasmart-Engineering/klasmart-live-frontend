@@ -2,8 +2,10 @@ import LessonPlan from "@/components/main/lessonPlan/lessonPlan";
 import { isLessonPlanOpenState } from "@/store/layoutAtoms";
 import { StyledPopper } from "@/utils/utils";
 import {
-    makeStyles, useMediaQuery, useTheme,
-} from "@material-ui/core";
+    useMediaQuery,
+    useTheme,
+} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import React from "react";
 import { useRecoilState } from "recoil";
 
@@ -16,7 +18,7 @@ interface LessonPlanMenuProps {
 function LessonPlanMenu (props: LessonPlanMenuProps) {
     const { anchor } = props;
     const theme = useTheme();
-    const [isLessonPlanOpen, setIsLessonPlanOpen] = useRecoilState(isLessonPlanOpenState);
+    const [ isLessonPlanOpen, setIsLessonPlanOpen ] = useRecoilState(isLessonPlanOpenState);
     const isXsDown = useMediaQuery(theme.breakpoints.down(`xs`));
 
     return (

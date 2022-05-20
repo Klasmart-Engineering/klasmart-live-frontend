@@ -1,20 +1,14 @@
 import { useCamera } from "@kl-engineering/live-state/ui";
-import {
-    Badge,
-    Button,
-    CircularProgress,
-    makeStyles,
-    Theme,
-    Tooltip,
-} from "@material-ui/core";
-import red from "@material-ui/core/colors/red";
-import { alpha } from "@material-ui/core/styles";
-import LockIcon from "@material-ui/icons/Lock";
+import { Badge, Button, CircularProgress, Theme, Tooltip } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import { alpha } from "@mui/material/styles";
+import LockIcon from "@mui/icons-material/Lock";
 import { CameraVideoFill as CameraVideoFillIcon } from "@styled-icons/bootstrap/CameraVideoFill";
 import { CameraVideoOffFill as CameraDisabledIcon } from "@styled-icons/bootstrap/CameraVideoOffFill";
 import clsx from "clsx";
 import React from "react";
 import { useIntl } from "react-intl";
+import { red } from '@mui/material/colors';
 
 const useStyles = makeStyles((theme: Theme) => ({
     itemRoot: {

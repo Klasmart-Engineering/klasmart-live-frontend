@@ -1,11 +1,6 @@
 
-import {
-    Grid,
-    makeStyles,
-    Theme,
-    Tooltip,
-} from "@material-ui/core";
-import { CSSProperties } from "@material-ui/core/styles/withStyles";
+import { Grid, Theme, Tooltip } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import clsx from "clsx";
 import React from "react";
 
@@ -55,7 +50,7 @@ interface Props {
     icon: any;
     title?: string;
     active?: boolean;
-    activeStyles?: CSSProperties;
+    activeStyles?: React.CSSProperties;
     disabled?: boolean;
     hasSubmenu?: boolean;
 }

@@ -1,6 +1,6 @@
 import { ParentalGate } from "@/app/dialogs/parentalGate";
 import { dialogsState } from "@/app/model/appModel";
-import { Dialog } from "@material-ui/core";
+import { Dialog } from "@mui/material";
 import React from "react";
 import { useRecoilState } from "recoil";
 

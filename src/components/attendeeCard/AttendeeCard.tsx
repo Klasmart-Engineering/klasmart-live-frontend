@@ -7,8 +7,8 @@ import {
     CardActionArea,
     Paper,
     Typography,
-} from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+} from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import { Check as CheckIcon } from "@styled-icons/bootstrap/Check";
 import { Person as PersonIcon } from "@styled-icons/material/Person";
 import clsx from 'clsx';
@@ -38,8 +38,8 @@ const useStyles = makeStyles((theme) => ({
         width: AVATAR_SIZE,
         height: AVATAR_SIZE,
         "& > svg": {
-            width: AVATAR_SIZE - theme.spacing(3),
-            height: AVATAR_SIZE - theme.spacing(3),
+            width: `calc(${AVATAR_SIZE} - ${theme.spacing(3)})`,
+            height: `calc(${AVATAR_SIZE} - ${theme.spacing(3)})`,
             color: theme.palette.common.white,
         },
     },

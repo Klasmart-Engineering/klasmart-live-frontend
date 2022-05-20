@@ -15,10 +15,11 @@ import { useContentToHref } from "@/utils/contentUtils";
 import { NoItemList } from "@/utils/noItemList";
 import { useSnackbar } from "@kl-engineering/kidsloop-px";
 import {
-    makeStyles,
     Theme,
     Typography,
-} from "@material-ui/core";
+} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import { ArrowsAngleExpand as ExpandIcon } from "@styled-icons/bootstrap/ArrowsAngleExpand";
 import { Book as PlanIcon } from "@styled-icons/boxicons-regular/Book";
 import { Person as UserIcon } from "@styled-icons/fluentui-system-regular/Person";
 import clsx from "clsx";
@@ -49,7 +50,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         padding: 0,
         height: `100%`,
     },
-    item:{
+    item: {
         minHeight: 260,
         background: THEME_COLOR_GREY_200,
         borderRadius: 12,
@@ -65,22 +66,22 @@ const useStyles = makeStyles((theme: Theme) => ({
     hiddenItemFullScreen: {
         display: `none`,
     },
-    fullHeight:{
+    fullHeight: {
         height: `100%`,
         overflowY: `auto`,
         width: `100%`,
     },
-    centerContent:{
+    centerContent: {
         display: `flex`,
         height: `100%`,
         alignItems: `center`,
         justifyContent: `center`,
-        "&:hover $previewExpand":{
+        "&:hover $previewExpand": {
             opacity: 1,
             visibility: `visible`,
         },
     },
-    previewExpand:{
+    previewExpand: {
         opacity: 0,
         visibility: `hidden`,
         display: `flex`,
@@ -95,7 +96,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         cursor: `pointer`,
         alignItems: `center`,
         justifyContent: `center`,
-        "&:hover":{
+        "&:hover": {
             opacity: 0.8,
         },
     },
@@ -109,7 +110,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         zIndex: 9,
         paddingTop: theme.spacing(3),
     },
-    previewName:{
+    previewName: {
         position: `absolute`,
         left: 0,
         bottom: 0,

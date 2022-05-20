@@ -1,9 +1,9 @@
 
 import { Session } from "@/pages/utils";
 import Grid,
-{ GridProps } from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
-import Typography from "@material-ui/core/Typography";
+{ GridProps } from "@mui/material/Grid";
+import Paper from "@mui/material/Paper";
+import Typography from "@mui/material/Typography";
 import { VideocamOff as CameraOffIcon } from "@styled-icons/material-twotone/VideocamOff";
 import React,
 {

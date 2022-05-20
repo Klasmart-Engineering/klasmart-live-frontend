@@ -3,7 +3,7 @@ import {
     THEME_COLOR_BACKGROUND_PAPER,
     THEME_COLOR_SECONDARY_DEFAULT,
 } from "@/config";
-import IconButton from "@material-ui/core/IconButton";
+import IconButton from "@mui/material/IconButton";
 import { Close as CloseIcon } from "@styled-icons/material/Close";
 import React from "react";
 
@@ -31,9 +31,10 @@ export function CloseIconButton ({
             onClick={onClick}
         >
             <StyledIcon
-                icon={<CloseIcon/>}
+                icon={<CloseIcon />}
                 size={iconSize}
-                color={color}/>
+                color={color}
+            />
         </IconButton>
     );
 }

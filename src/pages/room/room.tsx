@@ -15,12 +15,8 @@ import {
     showEndStudyState,
 } from "@/store/layoutAtoms";
 import { classGetInformation } from "@/utils/utils";
-import {
-    Box,
-    makeStyles,
-    useMediaQuery,
-    useTheme,
-} from '@material-ui/core';
+import { Box, useMediaQuery, useTheme } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import clsx from "clsx";
 import React,
 {
@@ -39,7 +35,7 @@ const useStyles = makeStyles(() => ({
         paddingBottom: `env(safe-area-inset-bottom)`,
         display: `flex`,
     },
-    rootSafeArea:{
+    rootSafeArea: {
         paddingLeft: `env(safe-area-inset-left)`, // iPhone Notch
     },
     blueBackground: {

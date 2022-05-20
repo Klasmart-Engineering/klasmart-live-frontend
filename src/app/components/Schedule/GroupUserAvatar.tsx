@@ -1,7 +1,10 @@
 import { THEME_COLOR_BACKGROUND_MORE_AVATAR } from "@/config";
-import { ForeignIdName } from "@kl-engineering/cms-api-client/dist/api/shared";
 import { UserAvatar } from "@kl-engineering/kidsloop-px";
-import { createStyles, Grid, makeStyles, Typography } from "@material-ui/core";
+import { Grid, Typography } from "@mui/material";
+import {
+    createStyles,
+    makeStyles,
+} from '@mui/styles';
 import React from "react";
 
 const useStyles = makeStyles((theme) => createStyles({

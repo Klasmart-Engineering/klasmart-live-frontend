@@ -34,14 +34,9 @@ import {
     unreadMessagesState,
 } from "@/store/layoutAtoms";
 import { useSynchronizedState } from "@/whiteboard/context-providers/SynchronizedStateProvider";
-import {
-    Grid,
-    makeStyles,
-    Theme,
-    useMediaQuery,
-    useTheme,
-} from "@material-ui/core";
 import { CameraVideoOffFill as CameraDisabledIcon } from "@styled-icons/bootstrap/CameraVideoOffFill";
+import { Grid, Theme, useMediaQuery, useTheme } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import { CaretDownFill as CaretDownFill } from "@styled-icons/bootstrap/CaretDownFill";
 import { CaretUpFill as CaretUpFill } from "@styled-icons/bootstrap/CaretUpFill";
 import { ChatSquareDotsFill as ChatIcon } from "@styled-icons/bootstrap/ChatSquareDotsFill";

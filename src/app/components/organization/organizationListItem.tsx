@@ -4,6 +4,7 @@ import {
     TEXT_COLOR_SECONDARY_DEFAULT,
     THEME_COLOR_PRIMARY_SELECT_DIALOG,
 } from "@/config";
+import { OrganizationAvatar } from "@kl-engineering/kidsloop-px";
 import {
     ListItem,
     ListItemAvatar,
@@ -11,11 +12,10 @@ import {
     ListItemText,
     useMediaQuery,
     useTheme,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import { KeyboardArrowRight as ArrowRight } from "@styled-icons/material-rounded/KeyboardArrowRight";
 import clsx from "clsx";
-import { OrganizationAvatar } from "@kl-engineering/kidsloop-px";
 import React from "react";
 
 const useStyles = makeStyles((theme) => ({
@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: theme.spacing(2),
         backgroundColor: theme.palette.common.white,
         marginBottom: theme.spacing(1),
-        "&:hover":{
+        "&:hover": {
             backgroundColor: theme.palette.common.white,
         },
         [theme.breakpoints.up(`sm`)]: {
@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
         color: THEME_COLOR_PRIMARY_SELECT_DIALOG,
     },
     orgAvatar: {
-        borderRadius: `${theme.spacing(1.5)}px !important`,
+        borderRadius: `${theme.spacing(1.5)} !important`,
 
         [theme.breakpoints.down(`xs`)]: {
             width: `50px !important`,
@@ -82,7 +82,8 @@ export const OrganizationListItem: React.FC<Props> = ({
                     <OrganizationAvatar
                         size="large"
                         name={organization.organization_name ?? ``}
-                        className={classes.orgAvatar} />
+                        className={classes.orgAvatar}
+                    />
                 </ListItemAvatar>
                 <ListItemText
                     primary={organization.organization_name}
@@ -98,7 +99,8 @@ export const OrganizationListItem: React.FC<Props> = ({
                         className={clsx(classes.icon, {
                             [classes.iconSelected]: isSelected,
                         })}
-                        size={42} />
+                        size={42}
+                    />
                 </ListItemIcon>
             </ListItem>
         </>

@@ -1,14 +1,6 @@
 import { useHttpEndpoint } from "../../../providers/region-select-context";
-import {
-    AppBar,
-    Dialog,
-    DialogContent,
-    Grid,
-    IconButton,
-    makeStyles,
-    Toolbar,
-    Typography,
-} from "@material-ui/core";
+import { AppBar, Dialog, DialogContent, Grid, IconButton, Toolbar, Typography } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import { Close as CloseIcon } from "@styled-icons/material/Close";
 import React,
 { useMemo } from "react";

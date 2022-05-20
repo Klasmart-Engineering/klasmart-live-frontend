@@ -2,16 +2,9 @@ import { useSessionContext } from "@/providers/session-context";
 import {
     classInfoState,
 } from "@/store/layoutAtoms";
-import {
-    Accordion,
-    AccordionDetails,
-    AccordionSummary,
-    Box,
-    makeStyles,
-    Theme,
-    Typography,
-} from "@material-ui/core";
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { Accordion, AccordionDetails, AccordionSummary, Box, Theme, Typography } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { UserAvatar } from "@kl-engineering/kidsloop-px";
 import React from "react";
 import { FormattedMessage } from "react-intl";

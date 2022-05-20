@@ -1,9 +1,9 @@
-import Grid from "@material-ui/core/Grid";
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
 import {
     createStyles,
     makeStyles,
-} from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
+} from '@mui/styles';
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
@@ -40,7 +40,8 @@ export default function NoCamera ({ messageId }: { messageId: string }) {
             <Typography
                 className={classes.centeredText}
                 variant="caption"
-                align="center">
+                align="center"
+            >
                 <FormattedMessage id={messageId} />
             </Typography>
         </Grid>

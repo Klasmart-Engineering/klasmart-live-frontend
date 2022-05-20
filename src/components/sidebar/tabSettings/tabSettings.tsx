@@ -8,9 +8,9 @@ import {
 import {
     Fade,
     Grid,
-    makeStyles,
     Theme,
-} from "@material-ui/core";
+} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import { Settings2Outline as SettingsIcon } from "@styled-icons/evaicons-outline/Settings2Outline";
 import React,
 { useEffect } from "react";

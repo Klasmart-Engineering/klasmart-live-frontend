@@ -10,14 +10,12 @@ import {
 } from "@/app/utils/networkUtils";
 import { useCmsApiClient } from "@kl-engineering/cms-api-client";
 import { useSnackbar } from "@kl-engineering/kidsloop-px";
+import { CircularProgress, Grid, IconButton } from "@mui/material";
 import {
-    CircularProgress,
     createStyles,
-    Grid,
-    IconButton,
     makeStyles,
-} from "@material-ui/core";
-import { blue } from "@material-ui/core/colors";
+} from '@mui/styles';
+import { blue } from "@mui/material/colors";
 import { GetApp as GetAppIcon } from "@styled-icons/material";
 import React,
 { useState } from "react";
@@ -162,7 +160,7 @@ export default function AttachmentDownloadButton (props: Props) {
                 onClick={() => {
                     confirmDownloadAttachment();
                 }}
-            >
+                size="large">
                 <div className={classes.wrapper}>
                     <GetAppIcon size={24} />
                     {downloadingAttachment && (

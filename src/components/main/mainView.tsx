@@ -6,10 +6,8 @@ import Screenshare from "./viewModes/Screenshare";
 import { useContent } from "@/data/live/state/useContent";
 import { ContentType } from "@/pages/utils";
 import { isLessonPlanOpenState } from "@/store/layoutAtoms";
-import {
-    makeStyles,
-    Theme,
-} from "@material-ui/core";
+import { Theme } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import React from "react";
 import { useRecoilValue } from "recoil";
 

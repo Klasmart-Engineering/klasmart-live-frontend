@@ -14,14 +14,14 @@ import {
     ButtonBase,
     Fade,
     Grid,
-    makeStyles,
     Tooltip,
     Typography,
     useMediaQuery,
     useTheme,
-} from "@material-ui/core";
-import { red } from "@material-ui/core/colors";
-import { alpha } from "@material-ui/core/styles";
+} from "@mui/material";
+import { red } from "@mui/material/colors";
+import { alpha } from "@mui/material/styles";
+import makeStyles from '@mui/styles/makeStyles';
 import { CameraVideoFill as CameraVideoFillIcon } from "@styled-icons/bootstrap/CameraVideoFill";
 import { CameraVideoOffFill as CameraDisabledIcon } from "@styled-icons/bootstrap/CameraVideoOffFill";
 import { MicFill as MicFillIcon } from "@styled-icons/bootstrap/MicFill";
@@ -40,9 +40,9 @@ import {
 } from "recoil";
 
 const useStyles = makeStyles((theme) => ({
-    rootSm:{
+    rootSm: {
         padding: `0 10px`,
-        "& $cameraGridSingleTeacher":{
+        "& $cameraGridSingleTeacher": {
             padding: `0`,
             minHeight: `auto`,
         },
@@ -62,12 +62,12 @@ const useStyles = makeStyles((theme) => ({
             gridTemplateColumns: `1fr`,
         },
     },
-    cameraGridSingleTeacher:{
+    cameraGridSingleTeacher: {
         gridTemplateColumns: `1fr`,
         minHeight: `150px`,
         padding: `0 52px`,
     },
-    gridContainerTeachers:{
+    gridContainerTeachers: {
         marginBottom: `15px`,
     },
     gridContainerStudents: {
@@ -88,7 +88,7 @@ const useStyles = makeStyles((theme) => ({
         marginBottom: theme.spacing(1),
         flexWrap: `wrap`,
     },
-    globalMuteActionIcon:{
+    globalMuteActionIcon: {
         color: theme.palette.text.primary,
         backgroundColor: THEME_COLOR_GREY_200,
         padding: theme.spacing(1),

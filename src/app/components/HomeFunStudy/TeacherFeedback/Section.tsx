@@ -24,21 +24,12 @@ import {
 } from "@kl-engineering/cms-api-client";
 import { TeacherComment } from "@kl-engineering/cms-api-client/dist/api/assessment";
 import { useSnackbar } from "@kl-engineering/kidsloop-px";
-import {
-    Box,
-    CircularProgress,
-    createStyles,
-    Grid,
-    List,
-    ListItem,
-    ListItemIcon,
-    ListItemText,
-    makeStyles,
-    Typography,
-    useTheme,
-} from "@material-ui/core";
-import Button from "@material-ui/core/Button";
 import { Info as InfoIcon } from "@styled-icons/evaicons-solid/Info";
+import { Box, Grid, Typography, useTheme, CircularProgress, List, ListItem, ListItemIcon, ListItemText, Button } from "@mui/material";
+import {
+    createStyles,
+    makeStyles,
+} from '@mui/styles';
 import clsx from "clsx";
 import React,
 {

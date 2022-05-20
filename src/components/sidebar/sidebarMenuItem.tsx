@@ -3,12 +3,8 @@ import {
     ActiveTabStateType,
     isClassDetailsOpenState,
 } from "@/store/layoutAtoms";
-import {
-    Button,
-    makeStyles,
-    Theme,
-    Tooltip,
-} from "@material-ui/core";
+import { Button, Theme, Tooltip } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import clsx from "clsx";
 import React from "react";
 import { useSetRecoilState } from "recoil";

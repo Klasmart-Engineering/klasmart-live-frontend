@@ -7,7 +7,6 @@ import HomeFunJoinArrow from "@/assets/img/schedule-icon/home_fun_join_arrow.svg
 import Loading from "@/components/loading";
 import StyledIcon from "@/components/styled/icon";
 import { 
-    TEXT_COLOR_SECONDARY_DEFAULT, 
     TEXT_COLOR_VERSION_APP, 
     THEME_COLOR_BLUE_CLASS_TYPE_SCHEDULE_DIALOG, 
     THEME_COLOR_GREEN_BUTTON_SCHEDULE_DIALOG, 
@@ -15,17 +14,11 @@ import {
     THEME_COLOR_YELLOW_BUTTON_SCHEDULE_DIALOG 
 } from "@/config";
 import { UserAvatar } from "@kl-engineering/kidsloop-px";
+import { Chip, Dialog, DialogContent, DialogTitle, Divider, Grid, Typography } from "@mui/material";
 import {
-    Chip,
     createStyles,
-    Dialog,
-    DialogContent,
-    DialogTitle,
-    Divider,
-    Grid,
     makeStyles,
-    Typography,
-} from "@material-ui/core";
+} from '@mui/styles';
 import { Close as CloseIcon } from "@styled-icons/material/Close";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";

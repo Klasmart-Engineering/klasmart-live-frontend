@@ -4,13 +4,17 @@ import FairInfo from "@/assets/img/home-fun-study/fairInfo.svg";
 import GoodInfo from "@/assets/img/home-fun-study/goodInfo.svg";
 import PoorInfo from "@/assets/img/home-fun-study/poorInfo.svg";
 import StyledIcon from "@/components/styled/icon";
-import { Chip, createStyles, makeStyles } from "@material-ui/core";
+import { Chip } from "@mui/material";
 import {
-  SentimentNeutral as AverageIcon,
-  SentimentSatisfied as GoodIcon,
-  SentimentVeryDissatisfied as FairIcon,
-  SentimentVeryDissatisfied as PoorIcon,
-  SentimentVerySatisfied as ExcellentIcon,
+    createStyles,
+    makeStyles,
+} from '@mui/styles';
+import {
+    SentimentNeutral as AverageIcon,
+    SentimentSatisfied as GoodIcon,
+    SentimentVeryDissatisfied as FairIcon,
+    SentimentVeryDissatisfied as PoorIcon,
+    SentimentVerySatisfied as ExcellentIcon,
 } from "@styled-icons/material-outlined";
 import React, { ReactElement, useCallback } from "react";
 import { useIntl } from "react-intl";

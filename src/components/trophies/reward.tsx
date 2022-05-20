@@ -4,9 +4,8 @@ import { ClassType } from '@/store/actions';
 import {
     useMediaQuery,
     useTheme,
-} from '@material-ui/core';
-import React,
-{ CSSProperties } from 'react';
+} from '@mui/material';
+import React from 'react';
 import { Transition } from 'react-transition-group';
 import { TransitionStatus } from 'react-transition-group/Transition';
 
@@ -33,7 +32,7 @@ export function Reward (props: Props): JSX.Element {
 
     const { classType } = useSessionContext();
 
-    const rewardStyle: CSSProperties = {
+    const rewardStyle: React.CSSProperties = {
         position: `absolute`,
 
         left: enterLocation.x,
@@ -111,20 +110,23 @@ export function Reward (props: Props): JSX.Element {
     return (
         <Transition
             in={display}
-            timeout={timeout}>
+            timeout={timeout}
+        >
             { state => (
                 <div
                     className="trophy-reward"
                     style={{
                         ...rewardStyle,
                         ...rewardTransitionStates[state],
-                    }}>
+                    }}
+                >
                     <img
                         alt="trophy"
                         style={{
                             ...kind.style,
                         }}
-                        src={kind.image} />
+                        src={kind.image}
+                    />
                     {children}
                 </div>
             )}

@@ -1,10 +1,8 @@
 import { TEXT_COLOR_PRIMARY_DEFAULT } from "@/config";
-import {
-    createStyles,
-    Switch as MUISwitch,
-    Theme,
-    withStyles,
-} from "@material-ui/core";
+import { Switch as MUISwitch, Theme } from "@mui/material";
+
+import createStyles from '@mui/styles/createStyles';
+import withStyles from '@mui/styles/withStyles';
 
 export const Switch = withStyles((theme: Theme) =>
     createStyles({

@@ -1,14 +1,8 @@
 import { THEME_COLOR_PRIMARY_DEFAULT } from "@/config";
 import { classActiveUserIdState } from "@/store/layoutAtoms";
 import { AttendeeType } from "@/types/attendee";
-import {
-    List,
-    ListItem,
-    ListItemIcon,
-    ListItemText,
-    makeStyles,
-    Theme,
-} from "@material-ui/core";
+import { List, ListItem, ListItemIcon, ListItemText, Theme } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import { Person as ParticipantsIcon } from "@styled-icons/material/Person";
 import clsx from "clsx";
 import React from "react";

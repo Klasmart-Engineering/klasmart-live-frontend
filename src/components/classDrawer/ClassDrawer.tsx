@@ -4,13 +4,8 @@ import {
     THEME_COLOR_GREY_200,
 } from "@/config";
 import { ActiveClassDrawerState } from "@/store/layoutAtoms";
-import {
-    Box,
-    Drawer,
-    makeStyles,
-    Theme,
-    Typography,
-} from "@material-ui/core";
+import { Box, Drawer, Theme, Typography } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import { ChevronLeft as ArrowBackIcon } from "@styled-icons/entypo/ChevronLeft";
 import clsx from "clsx";
 import React from "react";

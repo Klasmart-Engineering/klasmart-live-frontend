@@ -9,15 +9,12 @@ import { checkNetworkToConfirmDownload } from "@/app/utils/networkUtils";
 import { TEXT_COLOR_SIGN_OUT } from "@/config";
 import { useCmsApiClient } from "@kl-engineering/cms-api-client";
 import { useSnackbar } from "@kl-engineering/kidsloop-px";
+import { CircularProgress, Grid, Link, Typography } from "@mui/material";
 import {
-    CircularProgress,
     createStyles,
-    Grid,
-    Link,
     makeStyles,
-    Typography,
-} from "@material-ui/core";
-import { blue } from "@material-ui/core/colors";
+} from '@mui/styles';
+import { blue } from "@mui/material/colors";
 import React,
 { useState } from "react";
 import { useIntl } from "react-intl";

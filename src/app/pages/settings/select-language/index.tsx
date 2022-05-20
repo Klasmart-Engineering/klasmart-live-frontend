@@ -8,9 +8,9 @@ import {
     ListItem,
     ListItemIcon,
     ListItemText,
-} from "@material-ui/core";
-import Grid from '@material-ui/core/Grid';
-import { makeStyles } from '@material-ui/core/styles';
+} from "@mui/material";
+import Grid from '@mui/material/Grid';
+import makeStyles from '@mui/styles/makeStyles';
 import { Check as CheckIcon } from "@styled-icons/bootstrap/Check";
 import clsx from "clsx";
 import React from "react";

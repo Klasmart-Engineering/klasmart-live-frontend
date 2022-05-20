@@ -1,11 +1,11 @@
 import StyledTextField from "@/components/styled/textfield";
 import { THEME_COLOR_SECONDARY_DEFAULT } from "@/config";
 import { useSessionContext } from "@/providers/session-context";
-import Grid from "@material-ui/core/Grid";
-import IconButton from "@material-ui/core/IconButton";
-import Snackbar from "@material-ui/core/Snackbar";
-import { useTheme } from "@material-ui/core/styles";
-import Tooltip from "@material-ui/core/Tooltip";
+import Grid from "@mui/material/Grid";
+import IconButton from "@mui/material/IconButton";
+import Snackbar from "@mui/material/Snackbar";
+import { useTheme } from "@mui/material/styles";
+import Tooltip from "@mui/material/Tooltip";
 import { ContentCopy as CopyIcon } from "@styled-icons/material/ContentCopy";
 import React,
 {
@@ -41,64 +41,62 @@ export default function InviteButton (): JSX.Element {
         return textField.current.removeEventListener(`click`, selectShareLinkText);
     }, [ textField.current ]);
 
-    return (
-        <>
-            <Grid
-                container
-                item
-                direction="row"
-                justifyContent="space-between"
-                alignItems="center"
-                xs={12}
-                style={{
-                    flexGrow: 0,
+    return <>
+        <Grid
+            container
+            item
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+            xs={12}
+            style={{
+                flexGrow: 0,
+            }}
+        >
+            <StyledTextField
+                fullWidth
+                margin="dense"
+                label={<FormattedMessage id="invite_students" />}
+                inputRef={textField}
+                value={url}
+                inputProps={{
+                    style: {
+                        verticalAlign: `center`,
+                        fontFamily: `monospace`,
+                    },
                 }}
-            >
-                <StyledTextField
-                    fullWidth
-                    margin="dense"
-                    label={<FormattedMessage id="invite_students" />}
-                    inputRef={textField}
-                    value={url}
-                    inputProps={{
-                        style: {
-                            verticalAlign: `center`,
-                            fontFamily: `monospace`,
-                        },
-                    }}
-                    InputProps={{
-                        endAdornment:
-                            <Tooltip
-                                placement="bottom"
-                                title="Copy to clipboard">
-                                <IconButton
-                                    aria-label="copy"
-                                    onClick={() => {
-                                        if (!textField.current) { return; }
-                                        textField.current.select();
-                                        document.execCommand(`copy`);
-                                        toggleSnackbar(true);
-                                    }}
-                                >
-                                    <CopyIcon
-                                        size="1rem"
-                                        color={THEME_COLOR_SECONDARY_DEFAULT} />
-                                </IconButton>
-                            </Tooltip>,
-                        readOnly: true,
-                    }}
-                />
-            </Grid>
-            <Snackbar
-                anchorOrigin={{
-                    vertical: `bottom`,
-                    horizontal: `center`,
+                InputProps={{
+                    endAdornment:
+                        <Tooltip
+                            placement="bottom"
+                            title="Copy to clipboard">
+                            <IconButton
+                                aria-label="copy"
+                                onClick={() => {
+                                    if (!textField.current) { return; }
+                                    textField.current.select();
+                                    document.execCommand(`copy`);
+                                    toggleSnackbar(true);
+                                }}
+                                size="large">
+                                <CopyIcon
+                                    size="1rem"
+                                    color={THEME_COLOR_SECONDARY_DEFAULT} />
+                            </IconButton>
+                        </Tooltip>,
+                    readOnly: true,
                 }}
-                open={openSnackbar}
-                autoHideDuration={3000}
-                message={<FormattedMessage id="copy_clipboard" />}
-                onClose={() => toggleSnackbar(false)}
             />
-        </>
-    );
+        </Grid>
+        <Snackbar
+            anchorOrigin={{
+                vertical: `bottom`,
+                horizontal: `center`,
+            }}
+            open={openSnackbar}
+            autoHideDuration={3000}
+            message={<FormattedMessage id="copy_clipboard" />}
+            onClose={() => toggleSnackbar(false)}
+        />
+    </>;
 }

@@ -22,20 +22,22 @@ import { usePopupContext } from "@/app/context-provider/popup-context";
 import { OrganizationAvatar } from "@kl-engineering/kidsloop-px";
 import {
     Button,
-    createStyles,
     Divider,
     Grid,
     List,
     ListItem,
     ListItemIcon,
     ListItemText,
-    makeStyles,
     SwipeableDrawer,
     Theme,
     Typography,
     useMediaQuery,
     useTheme,
-} from "@material-ui/core";
+} from "@mui/material";
+import {
+    createStyles,
+    makeStyles,
+} from '@mui/styles';
 import { KeyboardArrowRight as ArrowRight } from "@styled-icons/material-rounded/KeyboardArrowRight";
 import { initStarEndDateOfWeekReturnNumber } from "@/app/utils/dateTimeUtils";
 import clsx from "clsx";

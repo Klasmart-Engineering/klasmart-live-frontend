@@ -10,13 +10,13 @@ import {
     List,
     ListItem,
     ListItemText,
-} from "@material-ui/core";
-import Grid from '@material-ui/core/Grid';
+} from "@mui/material";
+import Grid from '@mui/material/Grid';
+import { Theme } from '@mui/material/styles';
 import {
     createStyles,
     makeStyles,
-    Theme,
-} from '@material-ui/core/styles';
+} from '@mui/styles';
 import { KeyboardArrowRight as ArrowRight } from "@styled-icons/material-rounded/KeyboardArrowRight";
 import React, { useEffect, useState } from "react";
 import { useIntl } from "react-intl";

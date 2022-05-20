@@ -13,7 +13,7 @@ import {
     showEndStudyState,
 } from "@/store/layoutAtoms";
 import { useWebrtcCloseCallback } from "@kl-engineering/live-state/ui";
-import { Box } from "@material-ui/core";
+import { Box } from "@mui/material";
 import React,
 { useEffect } from "react";
 import { useHistory } from "react-router-dom";

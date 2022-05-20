@@ -15,11 +15,11 @@ import {
     Box,
     Drawer,
     Grid,
-    makeStyles,
     Theme,
     useMediaQuery,
     useTheme,
-} from "@material-ui/core";
+} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import { Grid as MosaicIcon } from "@styled-icons/bootstrap/Grid";
 import { PeopleOutline as ParticipantsIcon } from "@styled-icons/evaicons-outline/PeopleOutline";
 import { UserTimes as PreviewIcon } from "@styled-icons/fa-solid/UserTimes";
