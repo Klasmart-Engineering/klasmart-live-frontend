@@ -203,6 +203,7 @@ export function themeProvider (languageCode: string, themeMode: string) {
         palette,
         typography,
         breakpoints,
+
     });
 
     return (theme = responsiveFontSizes(theme));
