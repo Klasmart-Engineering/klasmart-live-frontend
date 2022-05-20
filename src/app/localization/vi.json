@@ -283,12 +283,12 @@
     "hamburger.settings.about.privacy": "Bảo mật",
     "parentsDashboard.learningOutcome.title": "Tổng kết quả học tập đã đạt được",
     "parentsDashboard.learningOutcome.view": "Xem tất cả kết quả học tập",
-    "parentsDashboard.learningOutcome.empty": "There were no learning outcomes this week",
+    "parentsDashboard.learningOutcome.empty": "Không có kết quả học tập nào cho tuần này",
     "hamburger.settings.about": "About",
     "hamburger.settings.about.cookiesPreferences": "Cookies Preferences",
-    "hamburger.settings.general": "General",
-    "schedule.status.joinNow": "Join Now",
-    "schedule.homeFun": "Home Fun",
+    "hamburger.settings.general": "Tổng quan",
+    "schedule.status.joinNow": "Vào lớp.",
+    "schedule.homeFun": "Nhiệm vụ về nhà",
     "hamburger.settings.support": "Hỗ trợ",
     "report.classtype.live": "Trực tuyến",
     "report.dashboard.live.title": "Tình hình tham dự Lớp Học Trực Tuyến",
@@ -351,6 +351,8 @@
     "parentsDashboard.learningOutcome.InProgress": "Đang thực hiện",
     "report_msg_lo_new": "{Name} đã bắt đầu học với KidsLoop tuần này. Cho đến nay, {Name} đã đạt được {AchievedLoCount} trong số  {LearntLoCount}  kết quả học tập.",
     "report_msg_lo_low_class_review_w": "Trong tuần này, tỷ lệ đạt kết quả học tập của {Name} ít hơn {%LOReviewCompareClass}% so với mức trung bình của lớp.",
-    "parentsDashboard.liveScheduled.empty": "There were no scheduled live classes this week",
-    "parentsDashboard.studyAssessed.empty": "There were no study assessments this week"
+    "parentsDashboard.liveScheduled.empty": "Không có lịch học lớp trực tuyến nào được lên cho tuần này",
+    "parentsDashboard.studyAssessed.empty": "Không có bất kì đánh giá nào cho bài tập về nhà tuần này",
+    "schedule.category.study": "My Study",
+    "schedule.category.live": "Live Classes"
 }
