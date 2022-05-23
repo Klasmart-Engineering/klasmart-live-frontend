@@ -31,11 +31,15 @@ function ChatMenu (props: ChatMenuProps) {
     return (
         <StyledPopper
             placement="top-end"
-            // modifiers={{
-            //     preventOverflow: {
-            //         boundariesElement: isKeyboardVisible ? null : document.getElementById(`main-content`),
-            //     },
-            // }}
+            modifiers={[
+                {
+                    name: `preventOverflow`,
+                    options: {
+                        boundary:  isKeyboardVisible ? null : document.querySelector(`#main-content`),
+                        padding: 6,
+                    },
+                },
+            ]}
             showScrollbar={isAndroid}
             height={popperHeight}
             open={isChatOpen}

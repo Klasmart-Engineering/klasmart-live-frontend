@@ -220,15 +220,21 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
                 open={isCanvasOpen}
                 anchorEl={anchor}
                 placement={classType === ClassType.STUDY ? `top-end` : `top`}
-                // modifiers={classType === ClassType.STUDY || classType === ClassType.CLASSES ? {
-                //     offset: {
-                //         enabled: true,
-                //         offset: `0, 4`,
-                //     },
-                //     preventOverflow: {
-                //         boundariesElement: document.getElementById(`main-content`),
-                //     },
-                // } : undefined}
+                modifiers={classType === ClassType.STUDY || classType === ClassType.CLASSES ? [
+                    {
+                        name: `preventOverflow`,
+                        options: {
+                            boundary: document.querySelector(`#main-content`),
+                            padding: 6,
+                        },
+                    },
+                    {
+                        name: `offset`,
+                        options: {
+                            offset: [ 0, 21 ],
+                        },
+                    },
+                ] : undefined}
             >
                 <Grid
                     container
@@ -334,15 +340,14 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
                 <StyledPopper
                     open={isCanvasColorsOpen}
                     placement="top-start"
-                    // modifiers={{
-                    //     offset: {
-                    //         enabled: true,
-                    //         offset: `-4,8`,
-                    //     },
-                    //     preventOverflow: {
-                    //         boundariesElement: document.getElementById(`main-content`),
-                    //     },
-                    // }}
+                    modifiers={[
+                        {
+                            name: `offset`,
+                            options: {
+                                offset: [ -4, 9 ],
+                            },
+                        },
+                    ]}
                     anchorEl={colorsMenuAnchor}
                 >
                     <CanvasColorSelector

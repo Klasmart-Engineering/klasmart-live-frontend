@@ -150,6 +150,7 @@ interface StyledPopperProps {
 function StyledPopper (props: StyledPopperProps) {
     const classes = useStyles();
     const boundaryElement = document.querySelector(`#main-content`);
+
     const {
         children,
         open = false,
@@ -160,9 +161,15 @@ function StyledPopper (props: StyledPopperProps) {
         modifiers = [
             {
                 name: `preventOverflow`,
-                enabled: true,
                 options: {
                     boundary: boundaryElement,
+                    padding: 6,
+                },
+            },
+            {
+                name: `offset`,
+                options: {
+                    offset: [ 0, 17 ],
                 },
             },
         ],
@@ -184,10 +191,8 @@ function StyledPopper (props: StyledPopperProps) {
 
     return (
         <Popper
-            transition
             open={open}
             anchorEl={anchorEl}
-            disablePortal={false}
             placement={placement}
             modifiers={modifiers}
             className={classes.popperRoot}
