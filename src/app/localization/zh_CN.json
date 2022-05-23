@@ -350,7 +350,7 @@
     "parentsDashboard.learningOutcome.NotAchieved": "未达标",
     "parentsDashboard.learningOutcome.InProgress": "未完成",
     "report_msg_lo_new": "{Name}本周开始在 KidsLoop 上学习。到目前为止， {Name}在{LearntLoCount}中取得了{AchievedLoCount}个学习成果。",
-    "report_msg_lo_low_class_review_w": "本周， {Name}的学习成绩比班级平均水平少{%LOReviewCompareClass} %。",
+    "report_msg_lo_low_class_review_w": "本周， {Name}的学习成绩比班级平均水平少{LOReviewCompareClass} %。",
     "parentsDashboard.liveScheduled.empty": "There were no scheduled live classes this week",
     "parentsDashboard.studyAssessed.empty": "There were no study assessments this week",
     "schedule.category.study": "My Study",
