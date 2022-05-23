@@ -22,7 +22,6 @@ export interface PDFInternalOutlineRecord {
 
 export async function getPdfMetadata (pdfPath: string, endpoint: string) {
     let data: any = {};
-
     const headers = new Headers();
     headers.append(`Accept`, `application/json`);
     headers.append(`Content-Type`, `application/json`);
@@ -39,6 +38,8 @@ export async function getPdfMetadata (pdfPath: string, endpoint: string) {
         });
         data = await response.json();
     } catch (err) {
+
+        data = {"status":"301"};
         console.error(`Fail getPdfMetadata: ${err}`);
     }
 
