@@ -64,15 +64,15 @@ function SendMessage () {
     }), []);
 
     return (
-        <Paper
-            className={clsx(classes.root, {
-                [classes.rootFocused]: formFocus,
-            })}
-            elevation={0}
+        <form
+            {...eventHandlers}
+            onSubmit={submitMessage}
         >
-            <form
-                {...eventHandlers}
-                onSubmit={submitMessage}
+            <Paper
+                className={clsx(classes.root, {
+                    [classes.rootFocused]: formFocus,
+                })}
+                elevation={0}
             >
                 <InputBase
                     inputRef={inputRef}
@@ -104,8 +104,8 @@ function SendMessage () {
                         <SendIcon size="1.2rem"/>
                     </IconButton>
                 </Tooltip>
-            </form>
-        </Paper>
+            </Paper>
+        </form>
     );
 }
 

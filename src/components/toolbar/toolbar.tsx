@@ -112,7 +112,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         cursor: `pointer`,
         backgroundColor: theme.palette.common.white,
         boxShadow: `0px 0px 6px 0px rgb(0 0 0 / 25%)`,
-        top: -theme.spacing(2),
+        top: `-${theme.spacing(2)}`,
         zIndex: 9,
     },
     canvasIconGroup: {

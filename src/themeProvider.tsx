@@ -104,9 +104,13 @@ export function themeProvider (languageCode: string, themeMode: string) {
                         minHeight: 0,
                         padding: 10,
                         borderBottom: `1px solid rgba(0,0,0,0.1)`,
-                        "& $flexContainer": {
+                        "& .MuiTabs-flexContainer": {
                             zIndex: 5,
                             position: `relative`,
+                        },
+                        "& .MuiTab-iconWrapper": {
+                            height: 14,
+                            margin: `${defaultTheme.spacing(0, 1, 0, 0)} !important`,
                         },
                     },
                     indicator: {
@@ -121,9 +125,10 @@ export function themeProvider (languageCode: string, themeMode: string) {
                     root: {
                         minWidth: `0 !important`,
                         minHeight: `0 !important`,
-                        padding: `5px 16px`,
+                        padding: `${defaultTheme.spacing(1, 2)} !important`,
                         fontSize: `0.85rem`,
                         transition: `opacity 100ms ease-in-out`,
+                        flexDirection: `row`,
                         "&:hover": {
                             opacity: 1,
                         },
@@ -177,7 +182,7 @@ export function themeProvider (languageCode: string, themeMode: string) {
                         opacity: 0.6,
                         fontSize: `0.85rem`,
                         textAlign: `left` as const,
-                        "&$active": {
+                        "&.Mui-active": {
                             opacity: 1,
                             fontWeight: localeTypography.localeWeightBold,
                         },
@@ -193,9 +198,9 @@ export function themeProvider (languageCode: string, themeMode: string) {
             },
             MuiAccordionSummary: {
                 styleOverrides: {
-                    // expandIcon: {
-                    //     color: palette.text?.primary,
-                    // },
+                    expandIconWrapper: {
+                        color: palette.text?.primary,
+                    },
                 },
             },
             MuiAppBar: {

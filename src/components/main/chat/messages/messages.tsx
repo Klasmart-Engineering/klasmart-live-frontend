@@ -73,7 +73,6 @@ function Messages () {
                     setParentalLock(false);
                     openHyperLink(urlToOpen);
                 }}
-              
             />
         );
     }
@@ -104,16 +103,15 @@ function Messages () {
                             ref={messagesContainerEl}
                             className={classes.container}
                         >
-                            {
-                                messages.map((m, i) => (
-                                    <Message
-                                        key={i}
-                                        message={m}
-                                        setUrlToOpen={setUrlToOpen}
-                                    />))
-                            }
+                            {messages.map((m, i) => (
+                                <Message
+                                    key={i}
+                                    message={m}
+                                    setUrlToOpen={setUrlToOpen}
+                                />
+                            ))}
                         </div>
-                    )
+                        )
                 }
             </Grid>
         </Grid>
