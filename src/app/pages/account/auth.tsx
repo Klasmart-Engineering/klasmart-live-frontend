@@ -21,7 +21,10 @@ import React,
     useState,
 } from "react";
 import { Redirect } from "react-router-dom";
-import { useRecoilValue } from "recoil";
+import {
+    useRecoilState,
+    useRecoilValue,
+} from "recoil";
 
 const useStyles = makeStyles(() => createStyles({
     container: {
@@ -47,7 +50,8 @@ export function Auth ({ useInAppBrowser }: Props) {
     const locale = useRecoilValue(localeState);
 
     const authEndpoint = useHttpEndpoint(`auth`);
-    const isShowOnBoarding =  useRecoilValue(isShowOnBoardingState);
+    const [ isShowOnBoarding, setIsShowOnBoarding ] = useRecoilState(isShowOnBoardingState);
+
     const {
         loading,
         authenticated,
@@ -95,6 +99,10 @@ export function Auth ({ useInAppBrowser }: Props) {
             console.error(`no browser tab available`);
             console.error(failureResp);
         });
+        
+        if (process.env.NODE_ENV === `production`) {
+            setTimeout(() => setIsShowOnBoarding(true), 500);
+        }
     }, [
         key,
         authenticated,

@@ -1,6 +1,7 @@
 import {
     authState,
     isAuthenticatedStorage,
+    isShowOnBoardingState,
     localeState,
     selectedRegionState,
     shouldClearCookieState,
@@ -55,6 +56,7 @@ const useAuthentication = () => {
     const [ selectedRegion, setSelectedRegion ] = useRecoilState(selectedRegionState);
     const [ locale, setLocale ] = useRecoilState(localeState);
     const [ shouldClearCookie, setShouldClearCookie ] = useRecoilState(shouldClearCookieState);
+    const setIsShowOnBoarding = useSetRecoilState(isShowOnBoardingState);
 
     const refresh = useCallback(async (force?: boolean) => {
         if (!authenticationService) return;
@@ -116,6 +118,7 @@ const useAuthentication = () => {
         if (!auth.transferToken) return;
 
         authenticationService.transfer(auth.transferToken).then(() => {
+            setIsShowOnBoarding(false);
             setSignedOut(false);
             refresh(true);
         }).catch(err => {

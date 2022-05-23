@@ -26,7 +26,8 @@ import {
     useIntl,
 } from "react-intl";
 import { useHistory } from "react-router-dom";
-import { useSetRecoilState, useRecoilState } from "recoil";
+import { useSetRecoilState, useRecoilState, useRecoilValue } from "recoil";
+import { useAuthenticationContext } from "@/app/context-provider/authentication-context";
 
 enum BoardingSliderType {
     STUDY,
@@ -104,6 +105,10 @@ export function OnBoardingPage (): JSX.Element {
     const setShowOnBoarding = useSetRecoilState(isShowOnBoardingState);
     const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
     const [ autoplay, setAutoplay ] = useState(true);
+    const isShowOnBoarding = useRecoilValue(isShowOnBoardingState);
+    const {
+        authenticated,
+    } = useAuthenticationContext();
     const slideArray = [
         {
             id: BoardingSliderType.STUDY,
@@ -162,6 +167,15 @@ export function OnBoardingPage (): JSX.Element {
     useEffect(() => {
         setParentalLock(false);
     }, []);
+
+    useEffect(() => {
+        if (!isShowOnBoarding && authenticated) {
+            history.push(`/`);
+        }
+    }, [
+        isShowOnBoarding, 
+        authenticated,
+    ]);
 
     if (dialogs.isParentalLockOpen) {
         return (
