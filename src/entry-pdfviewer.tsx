@@ -55,7 +55,7 @@ function PdfViewer () {
                 else
                 {
     
-                    if(Object.keys(metadata).length == 0)
+                    if(Object.keys(metadata).length === 0)
                     {
                     setPdfError(true);
                     }
