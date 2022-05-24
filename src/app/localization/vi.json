@@ -354,5 +354,9 @@
     "parentsDashboard.liveScheduled.empty": "Không có lịch học lớp trực tuyến nào được lên cho tuần này",
     "parentsDashboard.studyAssessed.empty": "Không có bất kì đánh giá nào cho bài tập về nhà tuần này",
     "schedule.category.study": "My Study",
-    "schedule.category.live": "Live Classes"
+    "schedule.category.live": "Live Classes",
+    "schedule.liveClass.title": "Live Class",
+    "schedule.study.title": "Study",
+    "schedule.hfs.title": "Home Fun Study",
+    "schedule.anytimeStudy.title": "Anytime Study"
 }

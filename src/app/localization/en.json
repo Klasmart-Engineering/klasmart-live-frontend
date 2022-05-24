@@ -354,5 +354,9 @@
     "parentsDashboard.liveScheduled.empty": "There were no scheduled live classes this week",
     "parentsDashboard.studyAssessed.empty": "There were no study assessments this week",
     "schedule.category.study": "My Study",
-    "schedule.category.live": "Live Classes"
+    "schedule.category.live": "Live Classes",
+    "schedule.liveClass.title": "Live Class",
+    "schedule.study.title": "Study",
+    "schedule.hfs.title": "Home Fun Study",
+    "schedule.anytimeStudy.title": "Anytime Study"
 }
