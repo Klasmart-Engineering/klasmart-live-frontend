@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import PdfImages from '@/components/pdf/pdfImages/PdfImages';
 import { getPdfMetadata, PDFMetadataDTO } from '@/utils/pdfUtils';
@@ -22,9 +21,9 @@ function PdfViewer () {
     const pdfPath = url.searchParams.get(`pdf`) || ``;
     const pdfEndpoint = url.searchParams.get(`pdfendpoint`) || ``;
     const [ pdfError, setPdfError ] = useState(false);
-    const [retry,setRetry] = useState(1);
+    const [ retry, setRetry ] = useState(1);
     const containerRef = document.getElementById("app-pdf");
-
+    const MAX_RETRY = 3;
     const [ loading, setLoading ] = useState(true);
     const [ visiblePages, setVisiblePages ] = useState([1]);
     const [ searchPage, setSearchPage ] = useState(1);
@@ -40,15 +39,13 @@ function PdfViewer () {
 
     useEffect(() => {
         setLoading(true);
-          console.log(retry);
-          if(retry <= 3)
+          if(retry <= MAX_RETRY)
           {
-  
             getPdfMetadata(url.searchParams.get(`pdf`) || ``, pdfEndpoint)
             .then(metadata => {
                 if(metadata.status != undefined && metadata.status === "301")
                 {
-                    if(retry >= 3)
+                    if(retry >= MAX_RETRY)
                     {
                     setLoading(false);
                     setPdfError(true);

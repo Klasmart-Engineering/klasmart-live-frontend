@@ -245,7 +245,7 @@ const useStylesNoItemList = makeStyles((theme: Theme) => ({
 
 interface NoItemListProps {
 	icon?: any;
-	text?: any;
+	text?: ReactElement | string;
 }
 
 function NoItemList (props: NoItemListProps) {
