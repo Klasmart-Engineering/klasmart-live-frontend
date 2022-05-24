@@ -253,7 +253,10 @@ export default function InteractionRecorder (props: Props): JSX.Element {
 
                 ${isPdfContent && `
                     /* rrweb can not replay scroll event on iOS Safari, set 'overflow: scroll' to enable scroll position (scrollTop and scrollLeft)*/
-                    #app-pdf { overflow: scroll; }
+                    #app-pdf { 
+                        overflow: scroll;
+                        background: #e8e8e8;
+                    }
                     ::-webkit-scrollbar {
                         width: 0;
                         background: transparent;

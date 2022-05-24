@@ -9,7 +9,6 @@ import Loading from './components/loading';
 import { THEME_COLOR_BACKGROUND_PAPER } from './config';
 import { FilePdf as FilePdfIcon } from "@styled-icons/bootstrap/FilePdf";
 import { NoItemList } from "@/utils/utils";
-import { Box } from "@material-ui/core";
 
 export interface PDF {
     path: string;
@@ -21,10 +20,6 @@ function PdfViewer () {
     const pdfPath = url.searchParams.get(`pdf`) || ``;
     const pdfEndpoint = url.searchParams.get(`pdfendpoint`) || ``;
     const [ pdfError, setPdfError ] = useState(false);
-    const [ retry, setRetry ] = useState(1);
-    const containerRef = document.getElementById("app-pdf");
-    const MAX_RETRY = 3;
-    const REATTEMPT_DELAY = 100;
     const [ loading, setLoading ] = useState(true);
     const [ visiblePages, setVisiblePages ] = useState([1]);
     const [ searchPage, setSearchPage ] = useState(1);
@@ -40,58 +35,33 @@ function PdfViewer () {
 
     useEffect(() => {
         setLoading(true);
-        setTimeout(() => {
-            if (retry <= MAX_RETRY) {
-
-                getPdfMetadata(url.searchParams.get(`pdf`) || ``, pdfEndpoint)
-                .then(metadata => {
-                    if (metadata.status != undefined && metadata.status === `500`) {
-                        if (retry >= MAX_RETRY) {
-                            setLoading(false);
-                            setPdfError(true);
-                        }
-                        setRetry(prevRetry => prevRetry+1);
-
-                    } else {
-                        if (Object.keys(metadata).length === 0) {
-                            setPdfError(true);
-                        } else {
-                            setPdf({
-                                path: pdfPath,
-                                metadata
-                            });
-                            setPdfError(false);
-                        }
-                    }
+            getPdfMetadata(url.searchParams.get(`pdf`) || ``, pdfEndpoint)
+            .then((metadata:any) => {
+                if (metadata.status != undefined && metadata.status === `500`) {
                     
-                })
-                .catch(err => { setPdfError(true); })
-                .finally(() => { setLoading(false); });
+                        setLoading(false);
+                        setPdfError(true);
+                    
+                } else {
+                    if (Object.keys(metadata).length === 0) {
+                        setPdfError(true);
+                    } else {
+                        setPdf({
+                            path: pdfPath,
+                            metadata
+                        });
+                        setPdfError(false);
+                    }
+                }
                 
-            } else {
-                setPdfError(true);
-                setLoading(false);
-            }
-        }, REATTEMPT_DELAY);
+            })
+            .catch(err => { setPdfError(true); })
+            .finally(() => { setLoading(false); });
+            
           
-      }, [retry]);
+          
+      }, []);
 
-    const ifNotError = () => {
-        return (
-        <Box
-          position="fixed"
-          zIndex="9"
-          width="100%"
-          textAlign="center"
-          display="flex"
-          justifyContent="center"
-          gridGap={10}
-        >
-          <PdfPagesIndicator current={currentPage} total={pdf.metadata.totalPages} searchPage={searchPage} setSearchPage={setSearchPage} />
-          
-          </Box>
-        )
-      }
 
     if(loading){
         return (<Loading loaderColor={THEME_COLOR_BACKGROUND_PAPER} />)
@@ -99,30 +69,8 @@ function PdfViewer () {
 
     return (
         <RawIntlProvider value={locale}>
-           <Box
-              position="fixed"
-              zIndex="9"
-              width="100%"
-              textAlign="center"
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              gridGap={10}
-              style={{background:"#e8e8e8"}}
-              height="100vh"
-            >
-              
-                {pdfError == true ? 
-                <NoItemList
-                    icon={<FilePdfIcon/>}
-                    text={<FormattedMessage
-                      id="content.pdf.notAvailable"
-                      />}
-                />
-                 : ifNotError}
-                
-                </Box>
-
+                {pdfError ? <NoItemList icon={<FilePdfIcon/>} text={<FormattedMessage id="content.pdf.notAvailable" />}/> : <PdfPagesIndicator current={currentPage} total={pdf.metadata.totalPages} searchPage={searchPage} setSearchPage={setSearchPage} />}
+            
                 {!pdfError && <PdfImages pdf={pdf} setVisiblePages={setVisiblePages}/>}
            
         </RawIntlProvider>

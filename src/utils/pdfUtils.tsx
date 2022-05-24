@@ -20,7 +20,34 @@ export interface PDFInternalOutlineRecord {
     items: PDFInternalOutlineRecord[];
 }
 
+const MAX_RETRY = 3;
+let CURRENT_ATTEMPT_COUNT = 0;
+
 export async function getPdfMetadata (pdfPath: string, endpoint: string) {
+    return new Promise((resolve,reject) => {
+        getPdfMetadataMiddleware(pdfPath,endpoint,resolve,reject);
+    });
+}
+
+async function getPdfMetadataMiddleware (pdfPath: string, endpoint: string,resolve:any,reject:any) {
+    const data = await getPdfMetadataCall(pdfPath,endpoint,resolve);
+    CURRENT_ATTEMPT_COUNT++;
+    if (data.status != undefined && data.status === `500`) {
+        if (CURRENT_ATTEMPT_COUNT < MAX_RETRY) {
+            setTimeout(() => { 
+                getPdfMetadataMiddleware(pdfPath,endpoint,resolve,reject);
+            }, 100);
+
+        } else {
+            reject(data);
+        }
+        
+    } else {
+        resolve(data);
+    }
+}
+
+export async function getPdfMetadataCall (pdfPath: string, endpoint: string,resolve:any) {
     let data: any = {};
     const headers = new Headers();
     headers.append(`Accept`, `application/json`);
@@ -29,8 +56,7 @@ export async function getPdfMetadata (pdfPath: string, endpoint: string) {
     const fetchUrl = `${endpoint}/v2${pdfPath}/metadata`;
 
     const isLocal = window.location.href.indexOf(`localhost`) > 0;
-
-    try{
+    try {
         const response = await fetch(fetchUrl, {
             headers,
             method: `GET`,
@@ -38,14 +64,11 @@ export async function getPdfMetadata (pdfPath: string, endpoint: string) {
         });
         data = await response.json();
     } catch (err) {
-
         data = {
             status: `500`,
         };
-        console.error(`Fail getPdfMetadata: ${err}`);
     }
-
-    return data;
+    return data; 
 }
 
 export function scrollToPage (pageId: number) {
