@@ -30,6 +30,7 @@ const useStyles = makeStyles((theme) => createStyles({
         height: `100%`,
         position: `absolute`,
         background: theme.palette.common.white,
+        zIndex: -1000, //iOS safari can still interact with iframe even if rrweb-player has set pointer-events: none, so I set z-index: -1000
     },
 }));
 
