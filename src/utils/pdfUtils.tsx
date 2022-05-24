@@ -40,7 +40,7 @@ export async function getPdfMetadata (pdfPath: string, endpoint: string) {
     } catch (err) {
 
         data = {
-            status: `301`,
+            status: `500`,
         };
         console.error(`Fail getPdfMetadata: ${err}`);
     }

@@ -41,48 +41,37 @@ function PdfViewer () {
     useEffect(() => {
         setLoading(true);
         setTimeout(() => {
-            if(retry <= MAX_RETRY)
-          {
-            getPdfMetadata(url.searchParams.get(`pdf`) || ``, pdfEndpoint)
-            .then(metadata => {
-                if(metadata.status != undefined && metadata.status === "301")
-                {
-                    if(retry >= MAX_RETRY)
-                    {
-                    setLoading(false);
-                    setPdfError(true);
+            if (retry <= MAX_RETRY) {
+
+                getPdfMetadata(url.searchParams.get(`pdf`) || ``, pdfEndpoint)
+                .then(metadata => {
+                    if (metadata.status != undefined && metadata.status === `500`) {
+                        if (retry >= MAX_RETRY) {
+                            setLoading(false);
+                            setPdfError(true);
+                        }
+                        setRetry(prevRetry => prevRetry+1);
+
+                    } else {
+                        if (Object.keys(metadata).length === 0) {
+                            setPdfError(true);
+                        } else {
+                            setPdf({
+                                path: pdfPath,
+                                metadata
+                            });
+                            setPdfError(false);
+                        }
                     }
-                    setRetry(prevRetry => prevRetry+1);
-                }
-                else
-                {
-    
-                    if(Object.keys(metadata).length === 0)
-                    {
-                    setPdfError(true);
-                    }
-                    else
-                    {
-                        setPdf({
-                            path: pdfPath,
-                            metadata
-                        });
-                        setPdfError(false);
-                    }
-                }
+                    
+                })
+                .catch(err => { setPdfError(true); })
+                .finally(() => { setLoading(false); });
                 
-            })
-            .catch(err => {
+            } else {
                 setPdfError(true);
-            })
-            .finally(() => { setLoading(false) });
-            
-        }
-        else
-        {
-          setPdfError(true);
-          setLoading(false);
-        }
+                setLoading(false);
+            }
         }, REATTEMPT_DELAY);
           
       }, [retry]);
