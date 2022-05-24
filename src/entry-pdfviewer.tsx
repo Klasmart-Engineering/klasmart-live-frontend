@@ -24,6 +24,7 @@ function PdfViewer () {
     const [ retry, setRetry ] = useState(1);
     const containerRef = document.getElementById("app-pdf");
     const MAX_RETRY = 3;
+    const REATTEMPT_DELAY = 100;
     const [ loading, setLoading ] = useState(true);
     const [ visiblePages, setVisiblePages ] = useState([1]);
     const [ searchPage, setSearchPage ] = useState(1);
@@ -39,7 +40,8 @@ function PdfViewer () {
 
     useEffect(() => {
         setLoading(true);
-          if(retry <= MAX_RETRY)
+        setTimeout(() => {
+            if(retry <= MAX_RETRY)
           {
             getPdfMetadata(url.searchParams.get(`pdf`) || ``, pdfEndpoint)
             .then(metadata => {
@@ -81,7 +83,8 @@ function PdfViewer () {
           setPdfError(true);
           setLoading(false);
         }
-        
+        }, REATTEMPT_DELAY);
+          
       }, [retry]);
 
     const ifNotError = () => {
