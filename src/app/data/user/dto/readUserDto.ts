@@ -1,4 +1,4 @@
-import { EntityStatus } from "./sharedDto";
+import { EntityStatus, Class } from "./sharedDto";
 
 export interface ReadUserDto {
     user_id: string;
@@ -14,6 +14,7 @@ export interface ReadUserDto {
             organization_name: string;
         };
     }[];
+    classesStudying?: Class[];
 }
 
 interface Role {

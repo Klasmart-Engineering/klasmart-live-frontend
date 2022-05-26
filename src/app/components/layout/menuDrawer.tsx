@@ -1,10 +1,13 @@
+import DialogParentalLock from "@/app/components/ParentalLock";
 import { useAuthenticationContext } from "@/app/context-provider/authentication-context";
 import { useSelectedOrganizationValue } from "@/app/data/user/atom";
 import {
     dialogsState,
+    endWeekCalendar,
     isShowOnBoardingState,
     menuOpenState,
     shouldClearCookieState,
+    startWeekCalendar,
 } from "@/app/model/appModel";
 import ParentsDashboardIcon from '@/assets/img/menu-drawer/icon_dashboard.svg';
 import SettingsIcon from '@/assets/img/menu-drawer/icon_settings.svg';
@@ -34,9 +37,9 @@ import {
     useTheme,
 } from "@material-ui/core";
 import { KeyboardArrowRight as ArrowRight } from "@styled-icons/material-rounded/KeyboardArrowRight";
+import { initStarEndDateOfWeekReturnNumber } from "@/app/utils/dateTimeUtils";
 import clsx from "clsx";
-import React,
-{ useEffect } from "react";
+import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { useHistory } from "react-router-dom";
 import {
@@ -105,30 +108,42 @@ export default function MenuDrawer () {
     const isSmUp = useMediaQuery(theme.breakpoints.up(`sm`));
     const selectedOrganization = useSelectedOrganizationValue();
     const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
-    const [ isMenuOpen, setMenuOpen ] = useRecoilState(menuOpenState);
+    const setStartWeek = useSetRecoilState(startWeekCalendar);
+    const setEndWeek = useSetRecoilState(endWeekCalendar);
+    const [isMenuOpen, setIsMenuOpen] = useRecoilState(menuOpenState);
     const setShouldClearCookie = useSetRecoilState(shouldClearCookieState);
     const setShowOnBoarding = useSetRecoilState(isShowOnBoardingState);
     const { showPopup } = usePopupContext();
+    const { initStartDate, initEndDate } = initStarEndDateOfWeekReturnNumber();
 
     const menuArray = [
-        // {
-        //     id: MenuDrawerItem.PARENTS_DASHBOARD,
-        //     text: `hamburger.parentsDashboard`,
-        //     icon: <img
-        //         src={ParentsDashboardIcon}
-        //         alt=""
-        //     />,
-        // },
+        {
+            id: MenuDrawerItem.PARENTS_DASHBOARD,
+            text: `hamburger.parentsDashboard`,
+            icon: <img
+                src={ParentsDashboardIcon}
+                alt="parent dashboard icon"
+            />,
+        },
         {
             id: MenuDrawerItem.SETTINGS,
             text: `title_settings`,
-            icon: <img src={SettingsIcon} alt="" />,
+            icon: <img 
+                src={SettingsIcon} 
+                alt="settings icon" 
+            />,
         },
     ];
 
-    const handleMenuItemClick = (menuDrawerItem: MenuDrawerItem) => {
-        setMenuOpen(false);
+    const setParentalLock = (open: boolean) => {
+        setDialogs({
+            ...dialogs,
+            isParentalLockOpen: open,
+        });
+    };
 
+    const handleMenuItemClick = (menuDrawerItem: MenuDrawerItem) => {
+        setIsMenuOpen(false);
         switch (menuDrawerItem) {
         case MenuDrawerItem.ORGANIZATION:
             setDialogs({
@@ -140,6 +155,7 @@ export default function MenuDrawer () {
             history.push(`/settings`);
             break;
         case MenuDrawerItem.PARENTS_DASHBOARD:
+            setParentalLock(true);
             break;
         default:
             break;
@@ -169,12 +185,25 @@ export default function MenuDrawer () {
         });
     };
 
+    if (dialogs.isParentalLockOpen) {
+        return (
+            <DialogParentalLock
+                onCompleted={() => {
+                    setStartWeek(initStartDate);
+                    setEndWeek(initEndDate);
+                    history.push(`/report/parent-dashboard`);
+                    setParentalLock(false);
+                }}
+            />
+        );
+    }
+
     return (
         <SwipeableDrawer
             anchor="left"
             open={isMenuOpen}
-            onClose={() => setMenuOpen(false)}
-            onOpen={() => setMenuOpen(true)}
+            onClose={() => setIsMenuOpen(false)}
+            onOpen={() => setIsMenuOpen(true)}
         >
             <Grid
                 container
@@ -185,8 +214,8 @@ export default function MenuDrawer () {
                     width: isSmUp ? 400 : width * 0.7,
                     height: `100%`,
                 }}
-                onClick={() => setMenuOpen(false)}
-                onKeyDown={() => setMenuOpen(false)}
+                onClick={() => setIsMenuOpen(false)}
+                onKeyDown={() => setIsMenuOpen(false)}
             >
                 <Grid
                     item

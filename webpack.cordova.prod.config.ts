@@ -34,9 +34,6 @@ module.exports = {
                     `css-modules-typescript-loader`,
                     {
                         loader: `css-loader`,
-                        options: {
-                            modules: true,
-                        },
                     },
                 ],
             },

@@ -25,6 +25,10 @@ const QUERY_MY_USERS = gql`
                     organization_name
                 }
             }
+            classesStudying {
+                class_id
+                class_name
+            }
         }
     }
 `;

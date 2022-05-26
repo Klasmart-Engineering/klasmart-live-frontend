@@ -24,6 +24,10 @@ const QUERY_ME = gql`
                     organization_name
                 }
             }
+            classesStudying {
+                class_id
+                class_name
+            }
         }
     }`;
 

@@ -329,6 +329,9 @@ export const defineContentId = (material: LessonMaterial | undefined, interactiv
 };
 
 export const fromSecondsToMilliseconds = (duration: number) => duration * 1000;
+export const fromMillisecondsToSeconds = (duration: number) => duration / 1000;
+export const fromDateToSeconds = (date: Date) => fromMillisecondsToSeconds(date.getTime());
+
 export interface BrandingType {
     iconImageURL: string;
     primaryColor: string;

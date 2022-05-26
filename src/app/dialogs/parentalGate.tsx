@@ -3,7 +3,6 @@ import {
     useLayoutModeValue,
 } from "@/app/model/appModel";
 import IconLocked from "@/assets/img/icon_locked.svg";
-import TopBackground from "@/assets/img/parental_lock_bg.svg";
 import { ParentalGateCaptchaLogic } from "@/components/parentalGateCaptchaLogic";
 import {
     BUTTON_CLOSE_PARENTAL_LOCK_BACKGROUND_COLOR,
@@ -47,11 +46,6 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         position: `absolute`,
         top: 0,
     },
-    bgImage: {
-        width: `100%`,
-        position: `absolute`,
-        top: `0`,
-    },
     contentWrapper: {
         position: `relative`,
         display: `flex`,
@@ -73,8 +67,6 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     content: {
         flex: 1,
         backgroundColor: THEME_COLOR_BACKGROUND_PAPER,
-        borderTopLeftRadius: 30,
-        borderTopRightRadius: 30,
     },
     contentWelcomeScreen: {
         top: 0,
@@ -199,7 +191,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
 }));
 
-export function ParentalGate({
+export function ParentalGate ({
     onCompleted,
     isWelcomeScreen,
     setClosedDialog,
@@ -208,19 +200,21 @@ export function ParentalGate({
     const { height } = useWindowSize();
     const layoutMode = useLayoutModeValue();
 
-    const [header, setHeader] = useState<string>(`parentalGate.title`);
-    const [isShowError, setShowError] = useState<boolean>(false);
-    const [isShowCloseButton, setShowCloseButton] = useState<boolean>(true);
-    const [showParentCaptcha, setShowParentCaptcha] = useState<boolean>(true);
-    const [ isCaptchaShake, setCaptchaShake ] = useState<boolean>(false);
-    const [isLayoutModeStudy, setLayoutModeStudy] = useState<boolean>(layoutMode === LayoutMode.DEFAULT);
-    const [isSmallHeight] = useState<boolean>(height <= 680);
     const ICON_LOCK_WIDTH = 50;
     const SHAKE_ANIMATION_TIME = 500;
+    const SMALL_HEIGHT_DETECT_VALUE = 680;
+
+    const [ header, setHeader ] = useState<string>(`parentalGate.title`);
+    const [ isShowError, setShowError ] = useState<boolean>(false);
+    const [ isShowCloseButton, setShowCloseButton ] = useState<boolean>(true);
+    const [ showParentCaptcha, setShowParentCaptcha ] = useState<boolean>(true);
+    const [ isCaptchaShake, setCaptchaShake ] = useState<boolean>(false);
+    const [ isLayoutModeStudy, setLayoutModeStudy ] = useState<boolean>(layoutMode === LayoutMode.DEFAULT);
+    const [ isSmallHeight ] = useState<boolean>(height <= SMALL_HEIGHT_DETECT_VALUE);
 
     useEffect(() => {
         setHeader(isWelcomeScreen ? `parentalGate.title` : `forParents.title`);
-    }, [isWelcomeScreen]);
+    }, [ isWelcomeScreen ]);
 
     useEffect(() => {
         if(!isShowError) return;
@@ -235,7 +229,7 @@ export function ParentalGate({
             onCompleted();
             return;
         }
-    }, [showParentCaptcha]);
+    }, [ onCompleted, showParentCaptcha ]);
 
     useEffect(() => {
         if (layoutMode === LayoutMode.CLASSROOM) {
@@ -243,11 +237,11 @@ export function ParentalGate({
         } else {
             setLayoutModeStudy(true);
         }
-    }, [layoutMode]);
+    }, [ layoutMode ]);
 
     useEffect(() => {
         setShowCloseButton(isShowError);
-    }, [isShowError]);
+    }, [ isShowError ]);
 
     useEffect(() => {
         setShowCloseButton(true);
@@ -260,16 +254,8 @@ export function ParentalGate({
             direction="column"
             justifyContent="flex-start"
             alignItems="center"
-            className={classes.container}>
-            {isWelcomeScreen && (
-                <Grid
-                    item
-                    className={classes.bgImage}>
-                    <img
-                        src={TopBackground}
-                        width="100%"
-                        height="100%" />
-                </Grid>)}
+            className={classes.container}
+        >
             <Grid
                 container
                 item
@@ -278,7 +264,8 @@ export function ParentalGate({
                 className={clsx(classes.contentWrapper, {
                     [classes.contentWrapperWelcomeScreen]: isWelcomeScreen,
                     [classes.contentWrapperWelcomeSmallHeight]: isWelcomeScreen && isSmallHeight,
-                }, classes)}>
+                }, classes)}
+            >
                 <Grid
                     container
                     item
@@ -290,9 +277,11 @@ export function ParentalGate({
                         [classes.contentStudyMode]: isLayoutModeStudy,
                         [classes.classroomLayout]: !isLayoutModeStudy,
                         [classes.paddingTopSmallHeight]: isSmallHeight,
-                    })}>
+                    })}
+                >
                     <Grid item>
                         <img
+                            alt="lock icon"
                             width={ICON_LOCK_WIDTH}
                             src={IconLocked}
                         />
@@ -306,17 +295,20 @@ export function ParentalGate({
                             className={clsx(classes.headerText, classes.padding, {
                                 [classes.paddingSmallHeight]: isSmallHeight,
                                 [classes.parentText]: !isWelcomeScreen,
-                            })}>
+                            })}
+                        >
                             <FormattedMessage
                                 id={header}
-                                defaultMessage={`For Parents`} />
+                                defaultMessage={`For Parents`}
+                            />
                         </Typography>
                     </Grid>
                     <Grid
                         item
                         className={clsx(classes.contentWidth, {
                             [classes.contentWidthStudyMode]: isLayoutModeStudy,
-                        })}>
+                        })}
+                    >
                         <Typography
                             gutterBottom
                             color="primary"
@@ -324,7 +316,8 @@ export function ParentalGate({
                             align="center"
                             className={clsx({
                                 [classes.noLineBreak]: !isLayoutModeStudy,
-                            })}>
+                            })}
+                        >
                             <FormattedMessage id="forParents.body" />
                         </Typography>
                     </Grid>
@@ -334,17 +327,20 @@ export function ParentalGate({
                             [classes.captchaWidthWelcomeScreen]: isWelcomeScreen,
                             [classes.paddingSmallHeight]: !isSmallHeight && isLayoutModeStudy,
                             [classes.captchaShake]: isCaptchaShake,
-                        })}>
+                        })}
+                    >
                         <ParentalGateCaptchaLogic
                             setError={setShowError}
                             setShowCloseButton={setShowCloseButton}
-                            setShowParentCaptcha={setShowParentCaptcha} />
+                            setShowParentCaptcha={setShowParentCaptcha}
+                        />
                     </Grid>
                     <Grid
                         item
                         className={clsx(classes.wrapperErrorText, {
                             [classes.wrapperErrorTextNoSpaces]: isSmallHeight,
-                        })}>
+                        })}
+                    >
                         {isShowError && (
                             <Typography
                                 gutterBottom
@@ -353,13 +349,15 @@ export function ParentalGate({
                                 className={clsx(classes.errorText, {
                                     [classes.paddingBottomWelcomeScreen]: isWelcomeScreen,
                                     [classes.paddingTopSmallHeight]: isSmallHeight,
-                                })}>
+                                })}
+                            >
                                 <FormattedMessage id="forParents.incorrect" />
                             </Typography>)}
                     </Grid>
                     <Grid
                         item
-                        className={classes.wrapperBtnClose}>
+                        className={classes.wrapperBtnClose}
+                    >
                         {isShowCloseButton && (
                             <Button
                                 disableElevation
@@ -367,11 +365,13 @@ export function ParentalGate({
                                 size="large"
                                 color="secondary"
                                 className={classes.btnClose}
-                                onClick={setClosedDialog}>
+                                onClick={setClosedDialog}
+                            >
                                 <Typography variant="h5">
                                     <FormattedMessage
                                         id={`button_close`}
-                                        defaultMessage={`Close`} />
+                                        defaultMessage={`Close`}
+                                    />
                                 </Typography>
                             </Button>)}
                     </Grid>

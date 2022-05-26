@@ -1,4 +1,6 @@
 import { OnBoardingPage } from "./pages/on-boarding/onBoardingPage";
+import ReportPage from "./pages/report";
+import { ReportType } from "@/app/components/report/share";
 import { useAuthenticationContext } from "@/app/context-provider/authentication-context";
 import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
 import { usePopupContext } from "@/app/context-provider/popup-context";
@@ -158,6 +160,22 @@ export function CordovaApp ({ history }: {
                     <UserRoute
                         path="/settings"
                         component={SettingsPage}
+                    />
+                    <UserRoute
+                        path="/report/parent-dashboard"
+                        component={() => <ReportPage type={ReportType.PARENT_DASHBOARD} />}
+                    />
+                    <UserRoute
+                        path="/report/live-class"
+                        component={() => <ReportPage type={ReportType.LIVE_CLASS} />}
+                    />
+                    <UserRoute
+                        path="/report/study-assessment"
+                        component={() => <ReportPage type={ReportType.STUDY_ASSESSMENTS} />}
+                    />
+                    <UserRoute
+                        path="/report/learning-outcomes"
+                        component={() => <ReportPage type={ReportType.LEARNING_OUTCOMES} />}
                     />
                     <UserRoute
                         path="/schedule/anytime-study"

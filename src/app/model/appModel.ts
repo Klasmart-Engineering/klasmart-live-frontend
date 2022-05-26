@@ -1,4 +1,6 @@
+import { Class } from "@/app/data/user/dto/sharedDto";
 import { HomeFunStudyFeedback } from "@/app/pages/schedule/home-fun-study/[scheduleId]";
+import { initStarEndDateOfWeekReturnNumber } from "@/app/utils/dateTimeUtils";
 import {
     atom,
     useRecoilState,
@@ -123,6 +125,7 @@ export const useSetMenuOpen = () => useSetRecoilState(menuOpenState);
 export const showedUpgradeDevicePopupState = atom({
     key: `showedUpgradeDevicePopup`,
     default: false,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     effects_UNSTABLE: [ persistAtom ],
 });
 
@@ -153,5 +156,25 @@ export const microphoneErrorState = atom({
 export const isAuthenticatedStorage = atom<boolean>({
     key: `isAuthenticatedStorage`,
     default: false,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    effects_UNSTABLE: [ persistAtom ],
+});
+
+const { initStartDate, initEndDate } = initStarEndDateOfWeekReturnNumber();
+
+export const startWeekCalendar = atom({
+    key: `startWeekCalendar`,
+    default: initStartDate,
+});
+
+export const endWeekCalendar = atom({
+    key: `endWeekCalendar`,
+    default: initEndDate,
+});
+
+export const randomClassState = atom<Class>({
+    key: `randomClassState`,
+    default: {} as Class,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     effects_UNSTABLE: [ persistAtom ],
 });
