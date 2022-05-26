@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.15.0](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.14.0...v6.15.0) (2022-05-26)
+
+
+### 📦 Refactor
+
+* unlfs remove git lfs ([c2447d9](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/c2447d9c422d6204b04bb87d7cadbba6e82cc635))
+
+
+### ♻️ Chores
+
+* fix codeowners file (#149) ([c9613e9](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/c9613e933cd577c35dc4566337f3544fd799dfe1))
+* remove git-lfs from readme (#144) ([bbfb057](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/bbfb0577a995e150d1311b0da451c9f3f6423fee))
+
+
+### 🐛 Bug Fixes
+
+* replay all canvas events for reconnected users (#133) ([736e43b](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/736e43bd6878f5f8c711dc6e58b461c4c2da9f16)), closes [KLL-3618](https://calmisland.atlassian.net/browse/KLL-3618)
+* the student can scroll down/up in observe mode with PDF lesson material (#150) ([ad49e7e](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/ad49e7eaedb3f0d9fd83d010cc92e70b4bce2d7b)), closes [NAT-887](https://calmisland.atlassian.net/browse/NAT-887)
+* **translation:** update translations (#143) ([6196588](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/6196588f987523101d770065db6dfc782f436bf6))
+
+
+### ✨ Features
+
+* add suport for urls in chat (#110) ([261e242](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/261e242db405482143914a496cf9a713ca3a8594)), closes [KLL-3589](https://calmisland.atlassian.net/browse/KLL-3589)
+* Display drawing feedback on hfs [NAT-60](https://calmisland.atlassian.net/browse/NAT-60) (#140) ([aa226f8](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/aa226f83955ed16220e0a7e23e12b512067c1548))
+* learning outcomes parent dashboard insight message (#146) ([6638050](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/6638050316ce805ec3f6171a888124be851b3990)), closes [NAT-65](https://calmisland.atlassian.net/browse/NAT-65) [NAT-78](https://calmisland.atlassian.net/browse/NAT-78) [NAT-817](https://calmisland.atlassian.net/browse/NAT-817)
+* **localization:** add new translations (#139) ([7e7e7a0](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/7e7e7a0206f4ac6aad829f44fc45caddb24c98f4))
+* **localization:** add new translations (#147) ([5cc9fad](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/5cc9fad59ea18ec88a3cb5ee8c2a4896328eec2b))
+* navigate to boarding page when tapping on done button (#112) ([b76cd69](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/b76cd695fa7dea1e9b7f48f388d0cca1a5e5ce50)), closes [NAT-802](https://calmisland.atlassian.net/browse/NAT-802)
+
 ## [6.14.0](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.13.0...v6.14.0) (2022-05-19)
 
 
