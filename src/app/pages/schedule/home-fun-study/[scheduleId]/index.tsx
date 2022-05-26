@@ -40,6 +40,7 @@ import {
     useGetScheduleNewestFeedbackById,
     usePostScheduleFeedback,
 } from "@kl-engineering/cms-api-client";
+import { useSnackbar } from "@kl-engineering/kidsloop-px";
 import {
     Box,
     Button,
@@ -50,7 +51,6 @@ import {
 } from "@material-ui/core";
 import { blue } from "@material-ui/core/colors";
 import clsx from "clsx";
-import { useSnackbar } from "@kl-engineering/kidsloop-px";
 import React,
 {
     useEffect,
@@ -91,6 +91,13 @@ const useStyles = makeStyles((theme) => createStyles({
 }));
 
 type Assignment = GetScheduleNewestFeedbackByIdResponse["assignments"][number];
+
+export enum AttachmentStatus {
+    SUBMITTED = `submitted`,
+    DRAFT = `draft`,
+    SAVING = `saving`,
+    SUBMITTING = `submitting`,
+}
 
 export interface SubmittedAttachment extends Assignment {
     status: `submitted`;
@@ -222,8 +229,8 @@ export default function () {
     };
 
     const visibilityState = useMemo((): HFSVisibilityState => {
-        if(scheduleData?.complete_assessment) return `hidden`;
-        if(homeFunStudyFeedback.status === `submitting`) return `disabled`;
+        if (scheduleData?.complete_assessment) return `hidden`;
+        if (homeFunStudyFeedback.status === `submitting`) return `disabled`;
         return `visible`;
     }, [ homeFunStudyFeedback, scheduleData ]);
 
@@ -383,11 +390,11 @@ export default function () {
 
     const onSelectedFile = async (file: File) => {
         setOpenBottomSelector(false);
-        if(!validateFileType(file)) {
+        if (!validateFileType(file)) {
             showNotSupportedFilePopup();
             return;
         }
-        if(!validateFileSize(file)) {
+        if (!validateFileSize(file)) {
             showFileSizeBiggerThan100MBPopup();
             return;
         }
@@ -409,9 +416,9 @@ export default function () {
             status: `draft`,
             attachments: homeFunStudyFeedback.attachments.filter(attachment => attachment.attachment_id !== attachmentWantToRemove.attachment_id),
         };
-        if(attachmentWantToRemove.status === `draft`) {
+        if (attachmentWantToRemove.status === `draft`) {
             const isFileExits = await isFileInStorage(attachmentWantToRemove.localPath);
-            if(isFileExits)
+            if (isFileExits)
                 removeFileFromStorage(attachmentWantToRemove.localPath);
         }
         setHomeFunStudyFeedback(draftHomeFunStudyFeedback);
@@ -424,7 +431,7 @@ export default function () {
     const removeAllDraftFilesById = async ({ userId, scheduleId }: HomeFunStudyFeedbackId) => {
         const homeFunStudyDirectory = `${cordova.file.dataDirectory}${userId}/${scheduleId}`;
         const isDirectoryExits = await isDirectoryInStorage(homeFunStudyDirectory);
-        if(isDirectoryExits)
+        if (isDirectoryExits)
             await removeDirectory(`${cordova.file.dataDirectory}${userId}/${scheduleId}`);
     };
 
@@ -449,7 +456,7 @@ export default function () {
             if (!contentResourceUploadPathResponse) return attachment;
             const uploadResult = await contentService?.uploadAttachment(contentResourceUploadPathResponse.path, fileToUpload);
             if (!uploadResult) return attachment;
-            const submittedAttachment: SubmittedAttachment =  {
+            const submittedAttachment: SubmittedAttachment = {
                 status: `submitted`,
                 attachment_id: contentResourceUploadPathResponse.resource_id,
                 attachment_name: attachment.attachment_name,
@@ -474,7 +481,7 @@ export default function () {
             setHomeFunStudyFeedbackToSubmitting();
             const submittedAttachments = await submitAttachments(homeFunStudyFeedback.attachments);
 
-            if(!checkAllAttachmentsIsSubmitted(submittedAttachments)) {
+            if (!checkAllAttachmentsIsSubmitted(submittedAttachments)) {
                 const draftHomeFunStudy: DraftHomeFunStudyFeedback = {
                     ...homeFunStudyFeedback,
                     status: `draft`,
@@ -550,7 +557,7 @@ export default function () {
                 });
                 history.goBack();
             }
-        } catch(err) {
+        } catch (err) {
             console.error(err);
             showSubmitFailedError();
         }
@@ -569,7 +576,8 @@ export default function () {
             <Box
                 component="div"
                 height="100%"
-                overflow="auto">
+                overflow="auto"
+            >
                 {isFetchingSchedule
                     ? <ScheduleLoading />
                     : (
@@ -601,7 +609,7 @@ export default function () {
                                 >
                                     {(scheduleData?.due_at && scheduleData.due_at !== 0)
                                         ? formatDueDateMillis(fromSecondsToMilliseconds(scheduleData.due_at), intl)
-                                        : <FormattedMessage id="label_not_defined"/>
+                                        : <FormattedMessage id="label_not_defined" />
                                     }
                                 </Typography>
                             </Box>
@@ -622,7 +630,8 @@ export default function () {
                     )}
                 {!(scheduleNewestFeedbackData?.is_allow_submit) && <HomeFunStudyTeacherFeedback
                     organizationId={organizationId}
-                    scheduleId={scheduleId}/>}
+                    scheduleId={scheduleId}
+                                                                   />}
             </Box>
             {(scheduleNewestFeedbackData?.is_allow_submit) && <div className={classes.buttonWrapper}>
                 <Button
@@ -635,7 +644,7 @@ export default function () {
                     disabled={!canSubmit || homeFunStudyFeedback.status !== `draft` || homeFunStudyFeedback.attachments.length === 0}
                     onClick={() => submitFeedback()}
                 >
-                    <FormattedMessage id="button_submit"/>
+                    <FormattedMessage id="button_submit" />
                 </Button>
                 {isLoadingPostScheduleFeedback && (
                     <CircularProgress
@@ -643,7 +652,7 @@ export default function () {
                         className={classes.buttonProgress}
                     />
                 )}
-            </div>}
+                                                              </div>}
             <BottomSelector
                 open={openBottomSelector}
                 onClose={() => {

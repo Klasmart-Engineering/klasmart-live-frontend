@@ -3,6 +3,7 @@ import {
     MIME_TO_EXTENSION,
 } from "@/app/services/files/FileSelectService";
 import { generateRandomString } from "@/utils/StringUtils";
+import { downloadDataBlob } from "./requestUtils";
 
 const MIME_TYPES_REGEX = ACCEPT_MIME_TYPES.split(`,`)
     .map(unescapedMime => unescapedMime.replace(/[.*+?^${}()|[\]\\]/g, `\\$&`))
@@ -296,4 +297,30 @@ export const copyFileToDirectory = (filePath: string, targetDirectory: string) =
         };
         window.resolveLocalFileSystemURL(targetDirectory, entry => onGetDirectory(entry as DirectoryEntry), onError(`onGetDiretory`));
     });
+};
+
+export const startDownloadPreview = async (
+    attachmentId: string,
+    attachmentName: string,
+    url: string,
+    cacheDirectory: string,
+    onSuccess?: (attachmentId: string, savedFilePath: string) => void,
+    onFailed?: (attachmentId: string) => void
+) => {
+    try {
+        const downloadedBlob = await downloadDataBlob(url);
+        const savedFilePath = await saveDataBlobToFile(
+            downloadedBlob,
+            cacheDirectory,
+            attachmentName
+        );
+        if (onSuccess) {
+            onSuccess(attachmentId, savedFilePath);
+        }
+    } catch (error) {
+        console.error(error);
+        if (onFailed) {
+            onFailed(attachmentId);
+        }
+    }
 };
