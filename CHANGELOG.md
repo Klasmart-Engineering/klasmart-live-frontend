@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.16.0](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.15.0...v6.16.0) (2022-05-27)
+
+
+### ✨ Features
+
+* add study, live report section (#152) ([81fe8ed](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/81fe8ed3400b0c61dfd17d2710bbf5f7275ee4db)), closes [NAT-69](https://calmisland.atlassian.net/browse/NAT-69) [NAT-77](https://calmisland.atlassian.net/browse/NAT-77)
+
 ## [6.15.0](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.14.0...v6.15.0) (2022-05-26)
 
 
