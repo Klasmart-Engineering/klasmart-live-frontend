@@ -121,14 +121,16 @@ export default function ReportLearningOutcomesList () {
                                     >
                                         <ul className={classes.ul}>
                                             <ScheduleListSectionHeader title={(item.date) as string} />
-                                            {item.data.map((learningOutcome: GetLearningOutComesResponse) =>
-                                                (
+                                            {item.data.map((data) => {
+                                                const learningOutcome = data as GetLearningOutComesResponse;
+                                                return (
                                                     <LearningOutcomeListItem
                                                         key={learningOutcome.id}
                                                         title={learningOutcome.name}
                                                         status={learningOutcome.status}
                                                     />
-                                                ))}
+                                                );
+                                            })}
                                         </ul>
                                     </li>
                                 ))}

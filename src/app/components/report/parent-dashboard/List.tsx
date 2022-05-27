@@ -5,9 +5,13 @@ import ParentDashboardListItem from "./ListItem";
 import { ReportType } from "@/app/components/report/share";
 import { useReportContext } from "@/app/context-provider/report-context";
 import LearningOutComesIcon from "@/assets//img/parent-dashboard/learning_outcomes.svg";
+import LiveIcon from "@/assets//img/parent-dashboard/live_attendance.svg";
+import StudyTaskIcon from "@/assets//img/parent-dashboard/study_tasks.svg";
 import Loading from "@/components/loading";
 import {
     LEARNING_OUTCOMES_COLOR,
+    LIVE_COLOR,
+    STUDY_COLOR,
     THEME_COLOR_BACKGROUND_LIST,
 } from "@/config";
 import {
@@ -62,11 +66,31 @@ export default function ParentDashboard () {
         actions,
         startWeek,
         endWeek,
+        assignments,
+        liveClasses,
         learningOutcomes,
         loading,
     } = useReportContext();
 
     const parentDashboardArray: ParentDashboardItem[] = [
+        {
+            id: ReportType.LIVE_CLASS,
+            title: `report.dashboard.live.title`,
+            viewText: `report.dashboard.live.detail`,
+            emptyText: `parentsDashboard.learningOutcome.empty`,
+            icon: LiveIcon,
+            color: LIVE_COLOR,
+            data: liveClasses,
+        },
+        {
+            id: ReportType.STUDY_ASSESSMENTS,
+            title: `report.dashboard.study.title`,
+            viewText: `report.dashboard.study.detail`,
+            emptyText: `parentsDashboard.learningOutcome.empty`,
+            icon: StudyTaskIcon,
+            color: STUDY_COLOR,
+            data: assignments,
+        },
         {
             id: ReportType.LEARNING_OUTCOMES,
             title: `parentsDashboard.learningOutcome.title`,
@@ -85,8 +109,10 @@ export default function ParentDashboard () {
     const onRedirect = (id: ReportType) => {
         switch(id){
         case ReportType.LIVE_CLASS:
+            history.push(`/report/live-class`);
             break;
         case ReportType.STUDY_ASSESSMENTS:
+            history.push(`/report/study-assessment`);
             break;
         case ReportType.LEARNING_OUTCOMES:
             history.push(`/report/learning-outcomes`);

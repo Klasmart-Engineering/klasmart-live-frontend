@@ -179,7 +179,7 @@ const useReportData = () => {
                         tempLearningOutcomes.push(...assignmentLearningOutcomes);
                         tempLearningOutcomesWithDate = filterDataWithDates(
                             tempLearningOutcomesWithDate, 
-                            assignment.create_at, 
+                            assignment.complete_at, 
                             assignmentLearningOutcomes);
                     };
                 })
@@ -198,7 +198,7 @@ const useReportData = () => {
                         tempLearningOutcomes.push(...liveClassLearningOutcomes);
                         tempLearningOutcomesWithDate = filterDataWithDates(
                             tempLearningOutcomesWithDate, 
-                            liveClass.create_at, 
+                            liveClass.class_start_time, 
                             liveClassLearningOutcomes);
                     };
                 })

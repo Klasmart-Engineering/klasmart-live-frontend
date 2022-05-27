@@ -1,7 +1,7 @@
 import { fromSecondsToMilliseconds } from "@/utils/utils";
-import { GetLearningOutComesResponse } from "@kl-engineering/cms-api-client";
 import { isSameDay } from "date-fns";
 import { random } from "lodash";
+import { GetLearningOutComesResponse, ReportAssignment, ReportLiveClass } from "@kl-engineering/cms-api-client";
 
 export enum ReportType {
     PARENT_DASHBOARD,
@@ -11,7 +11,7 @@ export enum ReportType {
 }
 
 export interface DataFilterByDates{
-    data: GetLearningOutComesResponse[];
+    data: (GetLearningOutComesResponse | ReportLiveClass | ReportAssignment)[];
     date: number | string;
 }
 

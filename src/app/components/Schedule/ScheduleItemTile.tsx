@@ -6,7 +6,10 @@ import LiveJoinArrow from "@/assets/img/schedule-icon/live_join_arrow.svg";
 import LiveIconDialog from "@/assets/img/schedule-icon/live_type_schedule_dialog.svg";
 import StudyJoinArrow from "@/assets/img/schedule-icon/study_join_arrow.svg";
 import StudyIconDialog from "@/assets/img/schedule-icon/study_type_schedule_dialog.svg";
+import CommentIcon from "@/assets/img/teacher_comment.svg";
 import {
+    COLOR_ORG_ICON_DEFAULT,
+    LEARNING_COLOR_TEXT,
     THEME_COLOR_BACKGROUND_PAPER,
     THEME_COLOR_BLUE_CLASS_TYPE_SCHEDULE_DIALOG,
     THEME_COLOR_GREEN_BUTTON_SCHEDULE_DIALOG,
@@ -38,6 +41,8 @@ import { useSelectedOrganizationValue } from "@/app/data/user/atom";
 import { useGetScheduleById } from "@kl-engineering/cms-api-client";
 import ScheduleJoinButton from "./ScheduleJoinButton";
 import { ClassType } from "@/store/actions";
+import { ChevronRight } from "@styled-icons/entypo/ChevronRight";
+import clsx from "clsx";
 
 const useStyles = makeStyles((theme) => createStyles({
     container: {
@@ -89,6 +94,13 @@ const useStyles = makeStyles((theme) => createStyles({
         display: `-webkit-box`,
         WebkitBoxOrient: `vertical`,
         WebkitLineClamp: 1,
+        color: THEME_COLOR_BACKGROUND_PAPER,
+    },
+    dateTimeDisabled: {
+        color: THEME_COLOR_LIVE_SCHEDULE_CARD,
+    },
+    dateTimeReport: {
+        color: LEARNING_COLOR_TEXT,
     },
     title: {
         textOverflow: `ellipsis`,
@@ -99,7 +111,18 @@ const useStyles = makeStyles((theme) => createStyles({
         display: `-webkit-box`,
         WebkitBoxOrient: `vertical`,
         WebkitLineClamp: 2,
+        color: LEARNING_COLOR_TEXT,
+    },
+    titleScheduleDisabled: {
         fontWeight: theme.typography.fontWeightBold as number,
+        color: THEME_COLOR_LIVE_SCHEDULE_CARD,
+    },
+    titleSchedule: {
+        fontWeight: theme.typography.fontWeightBold as number,
+        color: THEME_COLOR_BACKGROUND_PAPER,
+    },
+    titleReport: {
+        fontSize: `1.15rem`,
     },
     actionButtonContainer: {
         [theme.breakpoints.up(`sm`)]: {
@@ -116,15 +139,23 @@ const useStyles = makeStyles((theme) => createStyles({
     fullHeight: {
         height: `100%`,
     },
+    chevronRight: {
+        paddingTop: theme.spacing(2),
+        [theme.breakpoints.up(`sm`)]: {
+            paddingTop: theme.spacing(6),
+        }
+    },
 }));
 
 export interface Props {
     scheduleId: string;
     classType: string;
     title: string;
-    actionTitle: string;
+    actionTitle?: string;
     start_at?: number;
     end_at?: number;
+    isReport?: boolean;
+    isShowFeedback?: boolean;
     onDetailClick?: () => void;
     onClick?: () => void;
 }
@@ -137,6 +168,8 @@ export default function ScheduleItemTile(props: Props) {
         actionTitle,
         start_at,
         end_at,
+        isReport = false,
+        isShowFeedback = false,
         onDetailClick,
         onClick,
     } = props;
@@ -247,14 +280,14 @@ export default function ScheduleItemTile(props: Props) {
     };
 
     useEffect(() => {
-        setActive(timeBeforeClassSeconds > SECONDS_BEFORE_CLASS_CAN_START && classType === ClassType.LIVE);
+        setActive(timeBeforeClassSeconds > SECONDS_BEFORE_CLASS_CAN_START && classType === ClassType.LIVE && !isReport);
     }, [timeBeforeClassSeconds]);
 
     return (
         <Box 
             className={classes.container}
             style={{
-                backgroundColor: isDisable ? THEME_COLOR_BACKGROUND_PAPER : getClassTypeProperty().backgroundCard,
+                backgroundColor: isDisable || isReport ? THEME_COLOR_BACKGROUND_PAPER : getClassTypeProperty().backgroundCard,
             }}
             onClick={isDisable ? undefined : onClick}
         >
@@ -321,12 +354,13 @@ export default function ScheduleItemTile(props: Props) {
                                         {start_at && end_at && classType === ClassType.LIVE ? (
                                             <Grid
                                                 item
-                                                xs={7}
-                                                className={classes.dateTime}
+                                                xs
+                                                className={clsx(classes.dateTime, {
+                                                    [classes.dateTimeDisabled]: isDisable,
+                                                    [classes.dateTimeReport]: isReport,
+                                                })}
                                             >
-                                                <Typography style={{
-                                                    color: isDisable ? THEME_COLOR_LIVE_SCHEDULE_CARD : THEME_COLOR_BACKGROUND_PAPER,
-                                                }}
+                                                <Typography
                                                     variant={`subtitle1`}
                                                 >
                                                     {formatStartEndTimeMillis(fromSecondsToMilliseconds(start_at), fromSecondsToMilliseconds(end_at), intl)}
@@ -340,28 +374,40 @@ export default function ScheduleItemTile(props: Props) {
                                             onDetailClick && onDetailClick();
                                         }}
                                     >
-                                        <MoreHoriz
+                                        {isReport && isShowFeedback ? <img
+                                            height={isSmUp ? 30 : 20}
+                                            alt="Comment Icon"
+                                            src={CommentIcon}
+                                        /> : <MoreHoriz
                                             height={isSmUp ? 30 : 20}
                                             style={{
                                                 color: isDisable ? THEME_COLOR_LIVE_SCHEDULE_CARD : THEME_COLOR_BACKGROUND_PAPER,
                                             }}
-                                        />
+                                        />}
                                     </Grid>
                                 </Grid>
-                                <Grid item xs>
-                                    <Typography
-                                        variant={`h4`}
-                                        className={classes.title}
-                                        style={{
-                                            color: isDisable ? THEME_COLOR_LIVE_SCHEDULE_CARD : THEME_COLOR_BACKGROUND_PAPER,
-                                        }}
-                                    >
-                                        {title}
-                                    </Typography> 
+                                <Grid container>
+                                    <Grid item xs>
+                                        <Typography
+                                            variant={`h4`}
+                                            className={clsx(classes.title, {
+                                                [classes.titleScheduleDisabled]: isDisable && !isReport,
+                                                [classes.titleSchedule]: !isDisable && !isReport,
+                                                [classes.titleReport]: isReport,
+                                            })}
+                                        >
+                                            {title}
+                                        </Typography> 
+                                    </Grid>
+                                    {isReport && <Grid 
+                                            item className={classes.chevronRight}
+                                        >
+                                        <ChevronRight color={COLOR_ORG_ICON_DEFAULT} height={isSmUp ? 30 : 20} />
+                                    </Grid>}
                                 </Grid>
                             </Grid>
                         </Grid>
-                        <Grid 
+                        {!isReport && <Grid 
                             container
                             alignItems="center"
                             className={classes.thumbnailContainer}
@@ -394,7 +440,7 @@ export default function ScheduleItemTile(props: Props) {
                                     onClick={onClick}
                                 />
                             </Grid>
-                        </Grid>
+                        </Grid>}
                     </Grid>
                 </Grid>
             </Grid>

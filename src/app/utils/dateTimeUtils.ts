@@ -9,6 +9,7 @@ export enum DateTypeOfWeek{
 }
 
 export function formatDueDateMillis (dueDateMillis: number, intl: IntlShape) {
+    if (dueDateMillis === 0) return ``;
     const date = intl.formatDate(dueDateMillis, {
         day: `numeric`,
         month: `long`,
@@ -17,13 +18,14 @@ export function formatDueDateMillis (dueDateMillis: number, intl: IntlShape) {
     return date;
 }
 
-export function formatStartEndDateTimeMillis (startTimeMillis: number, endTimeMillis: number, intl: IntlShape) {
+export function formatStartEndDateTimeMillis (startTimeMillis: number, endTimeMillis: number, intl: IntlShape, isBreakLine = true) {
+    if (startTimeMillis === 0 || endTimeMillis === 0) return ``;
     const date = intl.formatDate(startTimeMillis, {
         day: `numeric`,
         month: `long`,
         weekday: `long`,
     });
-    return `${date}\n${formatStartEndTimeMillis(startTimeMillis, endTimeMillis, intl)}`;
+    return isBreakLine ? `${date}\n${formatStartEndTimeMillis(startTimeMillis, endTimeMillis, intl)}` : `${date}     ${formatStartEndTimeMillis(startTimeMillis, endTimeMillis, intl)}`;
 }
 
 export function formatDateTimeMillis (millis: number, intl: IntlShape) {

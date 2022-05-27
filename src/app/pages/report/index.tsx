@@ -2,6 +2,7 @@ import AppBar from "@/app/components/layout/AppBar";
 import BackButton from "@/app/components/layout/BackButton";
 import ReportLearningOutcomesList from "@/app/components/report/learning-outcomes/List";
 import ParentDashboard from "@/app/components/report/parent-dashboard/List";
+import ReportSummaryList from "@/app/components/report/report-summary-list/List";
 import { ReportType } from "@/app/components/report/share";
 import { ReportContextProvider } from "@/app/context-provider/report-context";
 import React,
@@ -30,6 +31,12 @@ export default function ReportPage ({ type }: Props) {
             case ReportType.LEARNING_OUTCOMES:
                 setHeader(`report.report.learningOutcomes`);
                 break;
+            case ReportType.LIVE_CLASS:
+                setHeader(`report.liveClass.reports`);
+                break;
+            case ReportType.STUDY_ASSESSMENTS:
+                setHeader(`report.dashboard.study.title`);
+                break;
             }
     },[])
 
@@ -39,6 +46,9 @@ export default function ReportPage ({ type }: Props) {
             return <ParentDashboard />;
         case ReportType.LEARNING_OUTCOMES:
             return <ReportLearningOutcomesList />;
+        case ReportType.LIVE_CLASS:
+        case ReportType.STUDY_ASSESSMENTS:
+            return <ReportSummaryList type={type} />
         }
     }, [ type ]);
 

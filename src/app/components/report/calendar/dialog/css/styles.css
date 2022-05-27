@@ -8,6 +8,7 @@
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    width: 100%;
 }
 
 .rdrDateDisplay{
@@ -77,7 +78,7 @@
 }
 
 .rdrMonth{
-    width: 27.667em;
+    width: auto;
 }
 
 .rdrWeekDays{

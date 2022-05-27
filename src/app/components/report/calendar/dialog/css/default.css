@@ -72,10 +72,12 @@
 }
 
 .rdrNextPrevButton {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 24px;
     height: 24px;
-    margin: 0 0.833em;
+    margin: 0 1.833em;
     padding: 0;
     border: 0;
     border-radius: 5px;
@@ -93,7 +95,6 @@
 .rdrPprevButton i {
     width: 7px;
     height: 12px;
-    margin-left: 15px;
     background: url("../img/prev_button_bg.svg") no-repeat;
 }
 

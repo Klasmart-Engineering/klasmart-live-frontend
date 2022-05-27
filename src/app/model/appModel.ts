@@ -8,6 +8,7 @@ import {
     useSetRecoilState,
 } from "recoil";
 import { recoilPersist } from "recoil-persist";
+import { ReportDetailData } from "../components/reportDetail/reportDetail";
 
 const { persistAtom } = recoilPersist();
 
@@ -177,4 +178,9 @@ export const randomClassState = atom<Class>({
     default: {} as Class,
     // eslint-disable-next-line @typescript-eslint/naming-convention
     effects_UNSTABLE: [ persistAtom ],
+});
+
+export const reportDetailState = atom<ReportDetailData>({
+    key: `reportDetailState`,
+    default: {} as ReportDetailData,
 });

@@ -47,6 +47,7 @@ import {
     useRecoilState,
     useRecoilValue,
 } from "recoil";
+import { ReportDetailPage } from "./pages/reportDetail/reportDetailPage";
 
 export function CordovaApp ({ history }: {
     history: any;
@@ -164,6 +165,10 @@ export function CordovaApp ({ history }: {
                     <UserRoute
                         path="/report/parent-dashboard"
                         component={() => <ReportPage type={ReportType.PARENT_DASHBOARD} />}
+                    />
+                    <UserRoute
+                        path="/report/detail"
+                        component={ReportDetailPage}
                     />
                     <UserRoute
                         path="/report/live-class"

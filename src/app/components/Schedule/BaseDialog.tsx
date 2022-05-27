@@ -133,20 +133,23 @@ export interface Props {
 }
 
 interface DialogHeaderProps {
+    className?: string;
+    maxDisplay?: number;
     teachers: ForeignIdName[];
 }
 
-function DialogHeader(props: DialogHeaderProps): JSX.Element {
-    const MAX_AVATAR_DISPLAY = 2;
-    const { teachers } = props;
+export const DialogHeader: React.FC<DialogHeaderProps> = ({
+    teachers, className, maxDisplay = 2
+}) => {
     const classes = useStyles();
 
     return (
         <Grid
+            className={className}
             container
             direction="row"
         >
-            {teachers.slice(0, MAX_AVATAR_DISPLAY).map((item) => (
+            {teachers.slice(0, maxDisplay).map((item) => (
                 <>
                     <Grid
                         key={item.id}
@@ -169,7 +172,7 @@ function DialogHeader(props: DialogHeaderProps): JSX.Element {
                     </Grid>
                 </>
             ))}
-            {teachers.length > MAX_AVATAR_DISPLAY ? (
+            {teachers.length > maxDisplay ? (
                 <Grid item>
                     <Typography
                         color={`textSecondary`}
@@ -178,7 +181,7 @@ function DialogHeader(props: DialogHeaderProps): JSX.Element {
                         <FormattedMessage
                             id="live.enter.teacherCount"
                             values={{
-                                value: `${teachers.length - MAX_AVATAR_DISPLAY}`,
+                                value: teachers.length - maxDisplay,
                             }}
                         />
                     </Typography>

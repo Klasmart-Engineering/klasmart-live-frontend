@@ -26,6 +26,7 @@ import React,
     useState,
 } from "react";
 import { FormattedMessage } from "react-intl";
+import { AssessmentStatusType } from "@/app/services/cms/IAssessmentService";
 
 const useStyles = ({ color }: StyleProps) => makeStyles((theme) => createStyles({
     root: {
@@ -118,18 +119,28 @@ export default function ParentDashboardListItem(props: Props) {
             return;
         };
         let currentData: GetLearningOutComesResponse[] | ReportAssignment[] | ReportLiveClass[] = [];
-        switch (type) {
-            case ReportType.LIVE_CLASS:
-                break;
-            case ReportType.STUDY_ASSESSMENTS:
-                break;
-            case ReportType.LEARNING_OUTCOMES:
-                currentData = data as GetLearningOutComesResponse[];
-                setAchivementStatus({
-                    total: currentData.length,
-                    achieved: currentData.filter(learningOutcome => learningOutcome.status === LearningOutcomeStatus.ACHIEVED).length,
-                });
-                break;
+        switch(type){
+        case ReportType.LIVE_CLASS:
+            currentData = data as ReportLiveClass[];
+            setAchivementStatus({
+                total: data.length,
+                achieved: currentData.filter(liveClass => liveClass.absent === false).length,
+            })
+            break;
+        case ReportType.STUDY_ASSESSMENTS:
+            currentData = data as ReportAssignment[];
+            setAchivementStatus({
+                total: data.length,
+                achieved: currentData.filter(assignment => assignment.status === AssessmentStatusType.COMPLETE).length,
+            });
+            break;
+        case ReportType.LEARNING_OUTCOMES:
+            currentData = data as GetLearningOutComesResponse[];
+            setAchivementStatus({
+                total: currentData.length,
+                achieved: currentData.filter(learningOutcome => learningOutcome.status === LearningOutcomeStatus.ACHIEVED).length,
+            });
+            break;
         }
     }, [ data ]);
 
@@ -158,7 +169,7 @@ export default function ParentDashboardListItem(props: Props) {
                                 barColorPrimary: classes.linearBarColorPrimary,
                             }}
                             variant="determinate"
-                            value={achivementStatus.achieved / achivementStatus.total * 100}
+                            value={achivementStatus.total ? (achivementStatus.achieved / achivementStatus.total * 100) : 0}
                         />
                     </div>
                     <Typography

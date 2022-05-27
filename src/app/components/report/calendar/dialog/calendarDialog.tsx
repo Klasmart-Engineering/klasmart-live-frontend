@@ -24,15 +24,8 @@ import {
 
 const useStyles = makeStyles((theme) => ({
     content: {
-        display: `flex`,
-        padding: theme.spacing(5, 2, 2),
-        backgroundColor: `transparent`,
-
-        [theme.breakpoints.up(`sm`)]: {
-            padding: theme.spacing(8, 4, 2),
-        },
-        justifyContent: `center`,
-        alignItems: `center`,
+        width: `80vw`,
+        padding: 0,
     },
 }));
 
