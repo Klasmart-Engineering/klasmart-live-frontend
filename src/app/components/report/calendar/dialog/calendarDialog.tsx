@@ -26,6 +26,9 @@ const useStyles = makeStyles((theme) => ({
     content: {
         width: `80vw`,
         padding: 0,
+        [theme.breakpoints.up(`sm`)]: {
+            width: `50vw`,
+        },
     },
 }));
 
