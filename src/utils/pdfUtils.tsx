@@ -2,6 +2,7 @@ export interface PDFMetadataDTO {
     totalPages: number;
     outline?: PDFInternalOutlineTree;
     pageLabels?: string[];
+    status?: string
 }
 
 export type PDFInternalOutlineTree = PDFInternalOutlineRecord[];
@@ -24,7 +25,7 @@ const MAX_RETRY = 3;
 let CURRENT_ATTEMPT_COUNT = 0;
 
 export async function getPdfMetadata (pdfPath: string, endpoint: string) {
-    return new Promise((resolve,reject) => {
+    return new Promise<PDFMetadataDTO>((resolve,reject) => {
         getPdfMetadataMiddleware(pdfPath,endpoint,resolve,reject);
     });
 }

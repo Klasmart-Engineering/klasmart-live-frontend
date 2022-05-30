@@ -36,12 +36,10 @@ function PdfViewer () {
     useEffect(() => {
         setLoading(true);
             getPdfMetadata(url.searchParams.get(`pdf`) || ``, pdfEndpoint)
-            .then((metadata:any) => {
+            .then((metadata: PDFMetadataDTO) => {
                 if (metadata.status != undefined && metadata.status === `500`) {
-                    
                         setLoading(false);
                         setPdfError(true);
-                    
                 } else {
                     if (Object.keys(metadata).length === 0) {
                         setPdfError(true);
@@ -53,13 +51,9 @@ function PdfViewer () {
                         setPdfError(false);
                     }
                 }
-                
             })
             .catch(err => { setPdfError(true); })
             .finally(() => { setLoading(false); });
-            
-          
-          
       }, []);
 
 
@@ -69,10 +63,13 @@ function PdfViewer () {
 
     return (
         <RawIntlProvider value={locale}>
-                {pdfError ? <NoItemList icon={<FilePdfIcon/>} text={<FormattedMessage id="content.pdf.notAvailable" />}/> : <PdfPagesIndicator current={currentPage} total={pdf.metadata.totalPages} searchPage={searchPage} setSearchPage={setSearchPage} />}
-            
-                {!pdfError && <PdfImages pdf={pdf} setVisiblePages={setVisiblePages}/>}
-           
+                {pdfError ? (
+                    <NoItemList icon={<FilePdfIcon/>} text={<FormattedMessage id="content.pdf.notAvailable" />}/> ): (
+                    <>
+                        <PdfPagesIndicator current={currentPage} total={pdf.metadata.totalPages} searchPage={searchPage} setSearchPage={setSearchPage} />
+                        <PdfImages pdf={pdf} setVisiblePages={setVisiblePages}/>
+                    </>
+                    )}
         </RawIntlProvider>
     );
 }
