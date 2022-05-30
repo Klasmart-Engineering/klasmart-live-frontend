@@ -266,6 +266,7 @@
     "screenShare.stop": "Berhenti Presentasi",
     "viewMode.screenShare": "Bagikan Layar",
     "live.class.shareScreen.error.notAvailable": "'Bagikan Layar' tidak tersedia di browser seluler",
+    "live.class.leave": "Tinggalkan Kelas",
     "canvas.tool.pen": "Pena",
     "canvas.tool.text": "Teks",
     "canvas.tool.move": "Pemindah",
@@ -312,10 +313,12 @@
     "screenShare.error.NotAllowedError": "Anda harus memberikan izin untuk membagikan layar",
     "screenShare.error.NotReadableError": "Error: Anda tidak memiliki izin untuk membagikan layar",
     "live.class.participant.title": "Peserta ({count})",
-    "tooltip.zoomIn": "Zoom In",
-    "tooltip.zoomOut": "Zoom Out",
-    "tooltip.fitToWidth": "Fit to Width",
-    "tooltip.fitToHeight": "Fit to Height",
-    "canvas.tool.thickness": "Thickness",
-    "content.pdf.notAvailable": "Cannot load PDF"
+    "tooltip.zoomIn": "Perbesar",
+    "tooltip.zoomOut": "Perkecil",
+    "tooltip.fitToWidth": "Pepetkan Sesuai Lebar",
+    "tooltip.fitToHeight": "Pepetkan Sesuai Tinggi",
+    "canvas.tool.thickness": "Ketebalan",
+    "content.pdf.notAvailable": "Tidak dapat memuat PDF",
+    "live.tooltip.previousPage": "Sebelumnya",
+    "live.tooltip.nextPage": "Selanjutnya"
 }
