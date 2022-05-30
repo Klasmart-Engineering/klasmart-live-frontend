@@ -190,10 +190,7 @@ export function AttachmentSecondaryAction({
     switch (attachment.status) {
         case AttachmentStatus.SUBMITTING:
             return (
-                <IconButton
-                    edge="end"
-                    aria-label="progressing"
-                >
+                <IconButton edge="end" aria-label="progressing" size="large">
                     <div className={classes.wrapper}>
                         <UploadIcon color="primary" />
                         <CircularProgress
@@ -205,10 +202,7 @@ export function AttachmentSecondaryAction({
             );
         case AttachmentStatus.SAVING:
             return (
-                <IconButton
-                    edge="end"
-                    aria-label="progressing"
-                >
+                <IconButton edge="end" aria-label="progressing" size="large">
                     <div className={classes.wrapper}>
                         <SaveIcon color="primary" />
                         <CircularProgress
@@ -222,11 +216,7 @@ export function AttachmentSecondaryAction({
             return (
                 <>
                     {canEdit &&
-                        <IconButton
-                            edge="end"
-                            aria-label="delete"
-                            onClick={onRemoveAttachment}
-                        >
+                        <IconButton edge="end" aria-label="delete" onClick={onRemoveAttachment} size="large">
                             <HighlightOffOutlinedIcon color="primary" />
                         </IconButton>
                     }

@@ -4,7 +4,9 @@ import StudyIconDialog from "@/assets/img/schedule-icon/study_type_schedule_dial
 import HomeFunIconDialog from "@/assets/img/schedule-icon/home_fun_type_schedule_dialog.svg";
 import { useSelectedOrganizationValue, useSelectedUserValue } from "@/app/data/user/atom";
 import { GetLearningOutComesResponse, useGetAssessmentById, useGetLearningOutcomes, useGetScheduleById } from "@kl-engineering/cms-api-client";
-import { Box, Chip, createStyles, Divider, Grid, List, makeStyles, Typography } from "@material-ui/core";
+import { Box, Chip, Divider, Grid, List, Typography } from "@mui/material";
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { COLOR_CONTENT_TEXT, LEARNING_COLOR_TEXT, THEME_COLOR_BACKGROUND_LIST, THEME_COLOR_BACKGROUND_PAPER, THEME_COLOR_BLUE_CLASS_TYPE_SCHEDULE_DIALOG, THEME_COLOR_PINK_BUTTON_SCHEDULE_DIALOG, THEME_COLOR_YELLOW_BUTTON_SCHEDULE_DIALOG } from "@/config";

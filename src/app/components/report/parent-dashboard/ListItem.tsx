@@ -10,16 +10,9 @@ import {
     ReportAssignment,
     ReportLiveClass,
 } from "@kl-engineering/cms-api-client";
-import {
-    Box,
-    createStyles,
-    Divider,
-    LinearProgress,
-    ListItem,
-    ListItemText,
-    makeStyles,
-    Typography,
-} from "@material-ui/core";
+import { Box, Divider, LinearProgress, ListItem, ListItemText, Typography } from "@mui/material";
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import React,
 {
     useEffect,

@@ -5,14 +5,9 @@ import {
     LIVE_COLOR,
     THEME_COLOR_HOME_FUN_SCHEDULE_CARD,
 } from "@/config";
-import {
-    Chip,
-    createStyles,
-    ListItem,
-    ListItemText,
-    makeStyles,
-    Typography,
-} from "@material-ui/core";
+import { Chip, ListItem, ListItemText, Typography } from "@mui/material";
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import clsx from "clsx";
 import React from "react";
 import { FormattedMessage } from "react-intl";

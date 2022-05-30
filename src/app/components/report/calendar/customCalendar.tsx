@@ -6,15 +6,9 @@ import { SECONDS_IN_ONE_DAY } from "@/config";
 import PreviousIcon from "@/assets/img/parent-dashboard/back_arrow.svg";
 import CalendarIcon from "@/assets/img/parent-dashboard/calendar.svg";
 import NextIcon from "@/assets/img/parent-dashboard/forward_arrow.svg";
-import {
-    Box,
-    Grid,
-    IconButton,
-    makeStyles,
-    Typography,
-    createStyles,
-    Theme,
-} from "@material-ui/core";
+import { Box, Grid, IconButton, Typography, Theme } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import createStyles from '@mui/styles/createStyles';
 import React,
 { useCallback, useEffect, useState } from "react";
 import clsx from "clsx";
@@ -102,7 +96,7 @@ export function CustomCalendar(props: Props) {
             <IconButton
                 aria-label="Previous"
                 onClick={() => onClickArrowIcon(ArrowType.PREVIOUS)}
-            >
+                size="large">
                 <img
                     alt="previous icon"
                     src={PreviousIcon}
@@ -126,7 +120,7 @@ export function CustomCalendar(props: Props) {
                 })}
                 aria-label="Next"
                 onClick={() => onClickArrowIcon(ArrowType.NEXT)}
-            >
+                size="large">
                 <img
                     alt="next icon"
                     src={NextIcon}

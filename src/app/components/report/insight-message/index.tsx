@@ -5,13 +5,9 @@ import {
     LIVE_COLOR,
     TEXT_COLOR_CONSTRAST_DEFAULT,
 } from "@/config";
-import {
-    Box,
-    CircularProgress,
-    createStyles,
-    makeStyles,
-    Typography,
-} from "@material-ui/core";
+import { Box, CircularProgress, Typography } from "@mui/material";
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import React, { useEffect, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { useRecoilValue } from "recoil";

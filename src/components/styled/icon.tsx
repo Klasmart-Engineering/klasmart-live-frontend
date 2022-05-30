@@ -1,9 +1,9 @@
 import {
     Theme,
+    Tooltip,
+    TooltipProps,
     useTheme,
-} from "@material-ui/core/styles";
-import Tooltip,
-{ TooltipProps } from "@material-ui/core/Tooltip";
+} from "@mui/material";
 import React,
 {
     useEffect,
@@ -25,7 +25,7 @@ const BaseIcon = styled.span`
     height: ${(props: BaseIconProps) => props.size || `1rem`};
     display: inline-grid;
     &:hover {
-        color: ${(props: BaseIconProps) => props.theme.palette.type === `light` ? `#1B365D` : `#FFF`};
+        color: ${(props: BaseIconProps) => props.theme.palette.mode === `light` ? `#1B365D` : `#FFF`};
         -webkit-transition: all .4s ease;
         transition: all .4s ease;
     }

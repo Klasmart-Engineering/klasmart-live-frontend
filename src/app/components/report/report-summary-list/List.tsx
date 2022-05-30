@@ -11,12 +11,9 @@ import {
     ReportAssignment,
     ReportLiveClass,
 } from "@kl-engineering/cms-api-client";
-import {
-    createStyles,
-    Grid,
-    List,
-    makeStyles,
-} from "@material-ui/core";
+import { Grid, List } from "@mui/material";
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import React,
 { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";

@@ -12,10 +12,11 @@ import {
     DialogContent,
     DialogTitle,
     Grid,
-    makeStyles,
     Theme,
     Typography,
-} from "@material-ui/core";
+} from "@mui/material";
+
+import makeStyles from '@mui/styles/makeStyles';
 
 import { Score, teacherFeedbacks } from "../components/HomeFunStudy/TeacherFeedback/FeedbackScore";
 

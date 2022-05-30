@@ -10,12 +10,9 @@ import Loading from "@/components/loading";
 import { THEME_COLOR_BACKGROUND_LIST } from "@/config";
 import { fromSecondsToMilliseconds } from "@/utils/utils";
 import { GetLearningOutComesResponse } from "@kl-engineering/cms-api-client";
-import {
-    createStyles,
-    Grid,
-    List,
-    makeStyles,
-} from "@material-ui/core";
+import { Grid, List } from "@mui/material";
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import React,
 {
     useEffect,

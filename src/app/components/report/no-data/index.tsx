@@ -1,10 +1,7 @@
 import { THEME_COLOR_BACKGROUND_LIST, TEXT_COLOR_REPORT_NO_DATA } from "@/config";
-import {
-    createStyles,
-    Grid,
-    makeStyles,
-    Typography,
-} from "@material-ui/core";
+import { Grid, Typography } from "@mui/material";
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import CalendarIcon from "@/assets/img/parent-dashboard/calendar.svg";
 import React from "react";
 import { FormattedMessage } from "react-intl";
