@@ -24,11 +24,11 @@ import {
     useRecoilState,
 } from 'recoil';
 
-const TEACHER_PREFERED_VIDEO_HEIGHT = 320;
-const TEACHER_PREFERED_VIDEO_FRAMERATE = 15;
+export const TEACHER_PREFERED_VIDEO_HEIGHT = 320;
+export const TEACHER_PREFERED_VIDEO_FRAMERATE = 15;
 
-const STUDENT_PREFERED_VIDEO_HEIGHT = 160;
-const STUDENT_PREFERED_VIDEO_FRAMERATE = 10;
+export const STUDENT_PREFERED_VIDEO_HEIGHT = 160;
+export const STUDENT_PREFERED_VIDEO_FRAMERATE = 10;
 
 const useStyles = makeStyles((theme) => createStyles({
     button: {

@@ -8,7 +8,13 @@ import KidsLoopReviewStudents from "@/assets/img/classtype/kidsloop_review_stude
 import KidsLoopStudyStudents from "@/assets/img/classtype/kidsloop_study_students.svg";
 import KidsLoopLogoSvg from "@/assets/img/kidsloop.svg";
 import Loading from "@/components/loading";
-import { MediaDeviceSelect } from "@/components/mediaDeviceSelect";
+import {
+    MediaDeviceSelect,
+    STUDENT_PREFERED_VIDEO_FRAMERATE,
+    STUDENT_PREFERED_VIDEO_HEIGHT,
+    TEACHER_PREFERED_VIDEO_FRAMERATE,
+    TEACHER_PREFERED_VIDEO_HEIGHT,
+} from "@/components/mediaDeviceSelect";
 import StyledButton from "@/components/styled/button";
 import StyledIcon from "@/components/styled/icon";
 import StyledTextField from "@/components/styled/textfield";
@@ -355,6 +361,7 @@ const JoinRoomForm: VoidFunctionComponent<{
     setMicrophonePaused,
 }) => {
     const {
+        isTeacher,
         classType,
         name,
         setName,
@@ -379,6 +386,8 @@ const JoinRoomForm: VoidFunctionComponent<{
 
         setHasJoinedClassroom(true);
 
+        camera.setMaxFramerate(isTeacher ? TEACHER_PREFERED_VIDEO_FRAMERATE : STUDENT_PREFERED_VIDEO_FRAMERATE);
+        camera.setMaxHeight(isTeacher ? TEACHER_PREFERED_VIDEO_HEIGHT : STUDENT_PREFERED_VIDEO_HEIGHT);
         if(!cameraPaused) { camera.setSending.execute(true); }
         if(!microphonePaused) { microphone.setSending.execute(true); }
     }
