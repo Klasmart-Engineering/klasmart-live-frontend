@@ -153,7 +153,6 @@ function ItemUserCamera ({
         inViewport,
         userSession?.isTeacher,
         isSelf,
-        video,
     ]);
 
     return (
