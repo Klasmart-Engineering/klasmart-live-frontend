@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.17.0](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.16.1...v6.17.0) (2022-05-31)
+
+
+### ♻️ Chores
+
+* bump kidsloop-live-state to 1.7.0 (#159) ([303e307](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/303e307bd4a5e0d92928b999086512046d73d7a2))
+
+
+### ✨ Features
+
+* global mic/camera mute overlay (#161) ([0030967](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/0030967c8fbf5964664006b73e42f769ca1bd017)), closes [KLL-2503](https://calmisland.atlassian.net/browse/KLL-2503)
+* **translation:** update translations (#155) ([048f0a9](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/048f0a9d0e6bf0df1df1ee59299601b576e600ac))
+
+
+### 🐛 Bug Fixes
+
+* changing host no longer pauses teacher's cameras (#158) ([d3805b1](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/d3805b11913f5e7c4425b5db2e645c0cb0945269)), closes [SFU-177](https://calmisland.atlassian.net/browse/SFU-177)
+* remove video as a dependency (#162) ([ad653a1](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/ad653a15f33904a6d741665f47ea2decada4eb7d))
+* sfu 58 downscale video during webrtc encoding  (#160) ([6f93080](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/6f930801ea3cfbb6e53c1e943734567a4923e75d)), closes [SFU-58](https://calmisland.atlassian.net/browse/SFU-58)
+
 ### [6.16.1](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.16.0...v6.16.1) (2022-05-30)
 
 
