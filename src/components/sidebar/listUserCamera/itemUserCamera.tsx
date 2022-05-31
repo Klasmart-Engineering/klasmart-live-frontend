@@ -1,8 +1,11 @@
-import { pauseAllMicrophonesState, pauseAllCamerasState } from "@/components/toolbar/toolbarMenus/globalActionsMenu/globalActionsMenu";
-import UserCameraBackground from "@/components/userCamera/UserCameraBackground";
+import {
+    pauseAllCamerasState,
+    pauseAllMicrophonesState,
+} from "@/components/toolbar/toolbarMenus/globalActionsMenu/globalActionsMenu";
 import NoCamera from "@/components/userCamera/noCamera";
 import UserCamera from "@/components/userCamera/UserCamera";
 import UserCameraActions from "@/components/userCamera/userCameraActions";
+import UserCameraBackground from "@/components/userCamera/UserCameraBackground";
 import UserCameraDetails from "@/components/userCamera/userCameraDetails";
 import { useSessions } from "@/data/live/state/useSessions";
 import { Session } from "@/pages/utils";
@@ -11,13 +14,15 @@ import { useStream } from "@kl-engineering/live-state/ui";
 import { makeStyles } from "@material-ui/core";
 import clsx from "clsx";
 import React,
-{ useEffect,
+{
+    useEffect,
     useMemo,
     useRef,
-useState } from "react";
+    useState,
+} from "react";
 import { useInViewport } from "react-in-viewport";
-import { useRecoilValue } from "recoil";
 import { useResizeDetector } from "react-resize-detector";
+import { useRecoilValue } from "recoil";
 
 const SMALL_ITEM_WIDTH_LIMIT = 180;
 const LARGE_ITEM_WIDTH_LIMIT = 280;
@@ -45,37 +50,39 @@ const useStyles = makeStyles(() => ({
     rootExtraLarge:{
         minHeight: 200,
         "& $userCameraRoot":{
-            objectFit: "contain"
-        }
+            objectFit: `contain`,
+        },
     },
     rootLarge:{
         minHeight: 192,
         "& $userCameraRoot":{
-            objectFit: "cover"
-        }
+            objectFit: `cover`,
+        },
     },
     rootMedium:{
         minHeight: 96,
         "& $userCameraRoot":{
-            objectFit: "cover"
-        }
+            objectFit: `cover`,
+        },
     },
     rootSmall:{
         minHeight: 100,
         "& $userCameraRoot":{
-            objectFit: "contain"
-        }
+            objectFit: `contain`,
+        },
     },
     userCameraRoot:{
-        objectFit: "contain"
-    }
+        objectFit: `contain`,
+    },
 }));
 
 interface ItemUserCameraProps extends React.HTMLAttributes<HTMLDivElement> {
     user: Session;
 }
 
-function ItemUserCamera ({ user, className, ...rest }: ItemUserCameraProps) {
+function ItemUserCamera ({
+    user, className, ...rest
+}: ItemUserCameraProps) {
     const classes = useStyles();
     const [ isHover, setIsHover ] = useState(false);
 
@@ -109,7 +116,7 @@ function ItemUserCamera ({ user, className, ...rest }: ItemUserCameraProps) {
 
     const {
         ref: itemRef,
-        width: itemWidth = 0
+        width: itemWidth = 0,
     } = useResizeDetector<HTMLDivElement>();
 
     const itemWidthVariant = useMemo<ItemWidthVariant>(() => {
@@ -117,15 +124,15 @@ function ItemUserCamera ({ user, className, ...rest }: ItemUserCameraProps) {
             return `small`;
         else if(itemWidth >= SMALL_ITEM_WIDTH_LIMIT && itemWidth < LARGE_ITEM_WIDTH_LIMIT)
             return `medium`;
-            else if(itemWidth >= LARGE_ITEM_WIDTH_LIMIT && itemWidth < EXTRA_LARGE_ITEM_WIDTH_LIMIT)
+        else if(itemWidth >= LARGE_ITEM_WIDTH_LIMIT && itemWidth < EXTRA_LARGE_ITEM_WIDTH_LIMIT)
             return `large`;
         return `extra large`;
-    }, [itemWidth]);
+    }, [ itemWidth ]);
 
     const { inViewport } = useInViewport(itemRef);
     const pauseCameraTimeout = useRef<NodeJS.Timeout>();
     useEffect(() => {
-        if (isSelf || userSession?.isHost) return;
+        if (isSelf || userSession?.isTeacher) return;
         if (inViewport) {
             if (pauseCameraTimeout.current) {
                 clearTimeout(pauseCameraTimeout.current);
@@ -142,10 +149,16 @@ function ItemUserCamera ({ user, className, ...rest }: ItemUserCameraProps) {
                 clearTimeout(pauseCameraTimeout.current);
             }
         };
-    }, [ inViewport, userSession?.isHost ]);
-    
+    }, [
+        inViewport,
+        userSession?.isTeacher,
+        isSelf,
+        video,
+    ]);
+
     return (
-        <div ref={itemRef}
+        <div
+            ref={itemRef}
             className={clsx(className, classes.root, {
                 [classes.rootExtraLarge]: itemWidthVariant === `extra large`,
                 [classes.rootLarge]: itemWidthVariant === `large`,
@@ -156,10 +169,11 @@ function ItemUserCamera ({ user, className, ...rest }: ItemUserCameraProps) {
             onMouseLeave={() => setIsHover(false)}
             {...rest}
         >
-            <UserCameraBackground/>
-            <UserCamera 
-                user={user} 
-                className={clsx(classes.userCameraRoot)} />
+            <UserCameraBackground />
+            <UserCamera
+                user={user}
+                className={clsx(classes.userCameraRoot)}
+            />
             {
                 !video.isConsumable &&
                 <NoCamera
