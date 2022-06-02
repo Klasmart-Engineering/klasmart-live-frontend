@@ -384,7 +384,9 @@ export default function InteractionRecorder (props: Props): JSX.Element {
                         onLoad={() => {
                             sendIframeClassActiveUser(classActiveUserId);
                             onLoad();
-                            startRecording();
+                            if (classType !== ClassType.STUDY) {
+                                startRecording();
+                            }
                             setLoadStatus(LoadStatus.Finished);
                             clearInterval(interval.current as ReturnType<typeof setInterval>);
                             setOpenDialog(false);
