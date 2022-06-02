@@ -358,5 +358,13 @@
     "schedule.liveClass.title": "Live Class",
     "schedule.study.title": "Study",
     "schedule.hfs.title": "Home Fun Study",
-    "schedule.anytimeStudy.title": "Anytime Study"
+    "schedule.anytimeStudy.title": "Anytime Study",
+    "parentDashboard.live": "Trực tuyến",
+    "parentDashboard.study": "Bài tập về nhà",
+    "parentDashboard.hfs": "Nhiệm vụ về nhà",
+    "parentDashboard.reports": "Reports",
+    "userSelection.title": "Choose your role",
+    "userSelection.student": "Student",
+    "userSelection.parent": "Parent",
+    "profileSelection.switch": "Switch Profile"
 }

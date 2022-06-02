@@ -358,5 +358,13 @@
     "schedule.liveClass.title": "Live Class",
     "schedule.study.title": "Study",
     "schedule.hfs.title": "Home Fun Study",
-    "schedule.anytimeStudy.title": "Anytime Study"
+    "schedule.anytimeStudy.title": "Anytime Study",
+    "parentDashboard.live": "라이브",
+    "parentDashboard.study": "스터디",
+    "parentDashboard.hfs": "홈펀스터디",
+    "parentDashboard.reports": "Reports",
+    "userSelection.title": "Choose your role",
+    "userSelection.student": "Student",
+    "userSelection.parent": "Parent",
+    "profileSelection.switch": "Switch Profile"
 }

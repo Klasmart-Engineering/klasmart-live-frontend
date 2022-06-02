@@ -358,5 +358,13 @@
     "schedule.liveClass.title": "Live Class",
     "schedule.study.title": "Study",
     "schedule.hfs.title": "Home Fun Study",
-    "schedule.anytimeStudy.title": "Anytime Study"
+    "schedule.anytimeStudy.title": "Anytime Study",
+    "parentDashboard.live": "在线课堂",
+    "parentDashboard.study": "家庭作业",
+    "parentDashboard.hfs": "学生需提交",
+    "parentDashboard.reports": "Reports",
+    "userSelection.title": "Choose your role",
+    "userSelection.student": "Student",
+    "userSelection.parent": "Parent",
+    "profileSelection.switch": "Switch Profile"
 }
