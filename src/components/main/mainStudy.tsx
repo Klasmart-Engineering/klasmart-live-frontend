@@ -93,7 +93,7 @@ function MainStudy () {
                                 bottom={theme.spacing(4)}
                                 right={theme.spacing(3.5)}
                             >
-                                <WBToolbarContainer useLocalDisplay />
+                                <WBToolbarContainer />
                             </Box>
                             {process.env.IS_CORDOVA_BUILD && (
                                 <Box

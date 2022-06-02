@@ -13,7 +13,8 @@ import {
 import Fab from "@material-ui/core/Fab";
 import { CloseOutline as CloseIcon } from "@styled-icons/evaicons-outline/CloseOutline";
 import clsx from "clsx";
-import React from "react";
+import React,
+{ useEffect } from "react";
 import { useRecoilState } from "recoil";
 
 export const WB_TOOLBAR_MAX_HEIGHT = 80; // 64 + 16(padding top)
@@ -27,8 +28,8 @@ const useStyles = makeStyles((theme: Theme) => ({
         right: theme.spacing(0.5),
     },
     pencilIcon: {
-        width: `1.5rem`,
-        height: `1.5rem`,
+        width: theme.spacing(3),
+        height: theme.spacing(3),
     },
     fab: {
         backgroundColor: THEME_COLOR_BACKGROUND_PAPER,
@@ -38,47 +39,36 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 }));
 
-export function WBToolbarContainer ({ useLocalDisplay }: { useLocalDisplay?: boolean} ) {
+export function WBToolbarContainer () {
     const classes = useStyles();
     const canvasRef = React.useRef<any>();
     const [ isCanvasOpen, setIsCanvasOpen ] = useRecoilState(isCanvasOpenState);
 
     const {
         classType,
-        isTeacher,
         sessionId,
     } = useSessionContext();
     const {
-        state: { display, permissions },
         actions: {
             setDisplay,
-            setLocalDisplay,
             getPermissions,
             setPermissions,
         },
     } = useSynchronizedState();
 
-    const enableWB = classType === ClassType.LIVE ? (!isTeacher ? display && permissions.allowCreateShapes : display) : true;
-
     const handleToggleWBToolbar = () => {
         setIsCanvasOpen(!isCanvasOpen);
-
-        if (useLocalDisplay) {
-            setLocalDisplay((localDisplay) => !localDisplay);
-        } else if (classType !== ClassType.LIVE) {
-            setDisplay(!display);
-        }
-
-        if (classType !== ClassType.LIVE) {
-            const permissions = getPermissions(sessionId);
-            const newPermissions = {
-                ...permissions,
-                allowCreateShapes: true,
-            };
-            setPermissions(sessionId, newPermissions);
-        }
-
+        const permissions = getPermissions(sessionId);
+        const newPermissions = {
+            ...permissions,
+            allowCreateShapes: true,
+        };
+        setPermissions(sessionId, newPermissions);
     };
+
+    useEffect(() => {
+        setDisplay(isCanvasOpen);
+    }, [ isCanvasOpen ]);
 
     return (
         <>
@@ -90,7 +80,6 @@ export function WBToolbarContainer ({ useLocalDisplay }: { useLocalDisplay?: boo
             >
                 <Fab
                     aria-label="whiteboard toolbar opener"
-                    disabled={!enableWB}
                     className={classes.fab}
                     size="large"
                     color="primary"
@@ -100,7 +89,7 @@ export function WBToolbarContainer ({ useLocalDisplay }: { useLocalDisplay?: boo
                         size="large"
                         icon={isCanvasOpen ? <CloseIcon /> :
                             <img
-                                alt={``}
+                                alt={`Pencil Icon`}
                                 src={PencilIcon}
                                 className={classes.pencilIcon}
                             />
@@ -108,7 +97,10 @@ export function WBToolbarContainer ({ useLocalDisplay }: { useLocalDisplay?: boo
                     />
                 </Fab>
             </div>
-            <CanvasMenu showCanvasMenu={isCanvasOpen} anchor={canvasRef.current} />
+            <CanvasMenu
+                showCanvasMenu={isCanvasOpen}
+                anchor={canvasRef.current}
+            />
         </>
     );
 }

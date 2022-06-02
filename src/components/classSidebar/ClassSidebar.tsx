@@ -96,7 +96,7 @@ function ClassSidebar () {
                 </Box>
             </Grid>
             <Grid item>
-                <WBToolbarContainer useLocalDisplay />
+                <WBToolbarContainer />
             </Grid>
         </Grid>
     );
