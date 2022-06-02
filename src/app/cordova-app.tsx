@@ -50,6 +50,7 @@ import {
 import { ReportDetailPage } from "./pages/reportDetail/reportDetailPage";
 import LiveStudyListPage from "./pages/schedule/category-live";
 import StudyListPage from "./pages/schedule/category-study";
+import { SelectTypePage } from "./pages/select-type/selectTypePage";
 
 export function CordovaApp ({ history }: {
     history: any;
@@ -211,6 +212,10 @@ export function CordovaApp ({ history }: {
                     <Route
                         path="/on-boarding"
                         component={OnBoardingPage}
+                    />
+                    <Route
+                        path="/select-type"
+                        component={SelectTypePage}
                     />
                     <UserRoute
                         path="/"

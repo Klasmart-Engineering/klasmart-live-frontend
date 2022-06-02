@@ -117,7 +117,7 @@ export function Auth ({ useInAppBrowser }: Props) {
     }
 
     if(authenticated){
-        return(<Redirect to="/" />);
+        return(<Redirect to="select-type" />);
     }
 
     if (useInAppBrowser) {
