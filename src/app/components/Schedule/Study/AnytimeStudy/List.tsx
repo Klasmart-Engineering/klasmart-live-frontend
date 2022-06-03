@@ -50,6 +50,7 @@ import { useIntl } from "react-intl";
 import { useHistory } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import ScheduleItemTile from "../../ScheduleItemTile";
+import { getStudyTypes } from "../List";
 
 const useStyles = makeStyles((theme) => createStyles({
     listRoot: {
@@ -68,7 +69,13 @@ const useStyles = makeStyles((theme) => createStyles({
     },
 }));
 
-export default function AnytimeStudyScheduleList () {
+interface Props {
+    classType: ClassType
+}
+
+export default function AnytimeStudyScheduleList(props: Props) {
+
+    const { classType } = props;
     const classes = useStyles();
     const intl = useIntl();
     const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
@@ -102,7 +109,8 @@ export default function AnytimeStudyScheduleList () {
         time_at: 0, // any time is ok together with view_type=`full_view`,
         with_assessment_status: true,
         time_zone_offset: timeZoneOffset,
-        class_types: [ `Homework` ],
+        class_types: [`Homework`],
+        study_types: getStudyTypes(classType),
         anytime: true,
     }, {
         queryOptions: {

@@ -48,6 +48,8 @@ import {
     useRecoilValue,
 } from "recoil";
 import { ReportDetailPage } from "./pages/reportDetail/reportDetailPage";
+import LiveStudyListPage from "./pages/schedule/category-live";
+import StudyListPage from "./pages/schedule/category-study";
 
 export function CordovaApp ({ history }: {
     history: any;
@@ -147,6 +149,14 @@ export function CordovaApp ({ history }: {
             <Router history={history}>
                 <Switch>
                     <UserRoute
+                        path="/schedule/category-live"
+                        component={LiveStudyListPage}
+                    />
+                    <UserRoute
+                        path="/schedule/category-study/:classType"
+                        component={StudyListPage}
+                    />
+                    <UserRoute
                         path="/schedule/home-fun-study/:scheduleId"
                         component={HomeFunStudyPage}
                     />
@@ -183,7 +193,7 @@ export function CordovaApp ({ history }: {
                         component={() => <ReportPage type={ReportType.LEARNING_OUTCOMES} />}
                     />
                     <UserRoute
-                        path="/schedule/anytime-study"
+                        path="/schedule/anytime-study/:classType"
                         component={AnytimeStudyPage}
                     />
                     <UserRoute

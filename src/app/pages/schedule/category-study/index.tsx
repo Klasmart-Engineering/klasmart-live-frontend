@@ -1,6 +1,5 @@
 import AppBar from "@/app/components/layout/AppBar";
-import BackButton from "@/app/components/layout/BackButton";
-import AnytimeStudyScheduleList from "@/app/components/Schedule/Study/AnytimeStudy/List";
+import StudyScheduleList from "@/app/components/Schedule/Study/List";
 import BackIcon from "@/assets/img/join_study_back_icon.svg";
 import { THEME_COLOR_BACKGROUND_BACK_BUTTON } from "@/config";
 import { ClassType } from "@/store/actions";
@@ -24,8 +23,7 @@ const useStyles = makeStyles((theme) => createStyles({
 interface Params {
     classType: ClassType;
 }
-
-export default function AnytimeStudyPage() {
+export default function StudyListPage() {
     const { classType } = useParams<Params>();
     const intl = useIntl();
     const history = useHistory();
@@ -35,19 +33,28 @@ export default function AnytimeStudyPage() {
         history.goBack();
     };
 
+    const getTitle = () => {
+        return classType == ClassType.STUDY ?
+            intl.formatMessage({
+                id: `schedule_studyTab`,
+                defaultMessage: `Study`,
+            }) :
+            intl.formatMessage({
+                id: `schedule_studyHomeFunStudy`,
+                defaultMessage: `Home Fun Study`,
+            });
+    }
     return (
         <>
             <AppBar
-                title={intl.formatMessage({
-                    id: `schedule_studyAnytimeStudy`,
-                })}
+                title={getTitle()}
                 leading={<img 
                     src={BackIcon}
                     className={classes.backButton}
                     onClick={handleBackClick}
                 />}
             />
-            <AnytimeStudyScheduleList classType={classType}/>
+            <StudyScheduleList classType={classType}/>
             <Box flex="0" />
         </>
     );

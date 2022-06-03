@@ -63,7 +63,13 @@ import { useRecoilState } from "recoil";
 import { KeyboardArrowRight as ArrowRight } from "@styled-icons/material-rounded/KeyboardArrowRight";
 import ScheduleItemTile from "../ScheduleItemTile";
 import { ClassType } from "@/store/actions";
+import { ScheduleStudyType } from "@kl-engineering/cms-api-client/dist/api/schedule";
 
+
+export const getStudyTypes = (classType: ClassType) => {
+    return classType == ClassType.HOME_FUN_STUDY ? [ScheduleStudyType.HOME_FUN] : [ScheduleStudyType.NORMAL, ScheduleStudyType.REVIEW]
+        
+}
 const useStyles = makeStyles((theme) => createStyles({
     listRoot: {
         width: `100%`,
@@ -98,7 +104,14 @@ const useStyles = makeStyles((theme) => createStyles({
     },
 }));
 
-export default function StudyScheduleList () {
+interface Props {
+    classType: ClassType
+}
+
+export default function StudyScheduleList(props: Props) {
+    
+    const { classType } = props;
+
     const classes = useStyles();
     const intl = useIntl();
     const history = useHistory();
@@ -136,7 +149,8 @@ export default function StudyScheduleList () {
         time_at: 0, // any time is ok together with view_type=`full_view`,
         with_assessment_status: true,
         time_zone_offset: timeZoneOffset,
-        class_types: [ `Homework` ],
+        class_types: [`Homework`],
+        study_types: getStudyTypes(classType),
         anytime: true,
     }, {
         queryOptions: {
@@ -159,7 +173,8 @@ export default function StudyScheduleList () {
         start_at_ge: nowInSeconds,
         end_at_le: twoMonthsFromNowInSeconds,
         time_zone_offset: timeZoneOffset,
-        class_types: [ `Homework` ],
+        class_types: [`Homework`],
+        study_types: getStudyTypes(classType),
         anytime: false,
     }, {
         queryOptions: {
@@ -217,7 +232,7 @@ export default function StudyScheduleList () {
     };
 
     const handleAnytimeStudyClick = () => {
-        history.push(`/schedule/anytime-study`);
+        history.push(`/schedule/anytime-study/${classType}`);
     };
 
     const setStudyDetailOpen = (studySchedule?: SchedulesTimeViewListItem) => {

@@ -11,6 +11,8 @@ const { persistAtom } = recoilPersist();
 export enum ScheduleAppBarItem {
     LIVE = `live`,
     STUDY = `study`,
+    HOME_FUN_STUDY = `home_fun_study`
+    
 }
 
 export const scheduleAppBarState = atom({

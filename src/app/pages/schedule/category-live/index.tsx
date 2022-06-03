@@ -1,13 +1,11 @@
 import AppBar from "@/app/components/layout/AppBar";
-import BackButton from "@/app/components/layout/BackButton";
-import AnytimeStudyScheduleList from "@/app/components/Schedule/Study/AnytimeStudy/List";
+import LiveScheduleList from "@/app/components/Schedule/Live/List";
 import BackIcon from "@/assets/img/join_study_back_icon.svg";
 import { THEME_COLOR_BACKGROUND_BACK_BUTTON } from "@/config";
-import { ClassType } from "@/store/actions";
 import { Box, createStyles, makeStyles } from "@material-ui/core";
 import React from "react";
 import { useIntl } from "react-intl";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => createStyles({
     backButton: {
@@ -21,12 +19,7 @@ const useStyles = makeStyles((theme) => createStyles({
     }
 }));
 
-interface Params {
-    classType: ClassType;
-}
-
-export default function AnytimeStudyPage() {
-    const { classType } = useParams<Params>();
+export default function LiveStudyListPage () {
     const intl = useIntl();
     const history = useHistory();
     const classes = useStyles();
@@ -39,7 +32,8 @@ export default function AnytimeStudyPage() {
         <>
             <AppBar
                 title={intl.formatMessage({
-                    id: `schedule_studyAnytimeStudy`,
+                    id: `schedule.liveClass.title`,
+                    defaultMessage: `Live Class`
                 })}
                 leading={<img 
                     src={BackIcon}
@@ -47,7 +41,7 @@ export default function AnytimeStudyPage() {
                     onClick={handleBackClick}
                 />}
             />
-            <AnytimeStudyScheduleList classType={classType}/>
+            <LiveScheduleList />
             <Box flex="0" />
         </>
     );

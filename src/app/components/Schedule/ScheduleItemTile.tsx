@@ -435,8 +435,7 @@ export default function ScheduleItemTile(props: Props) {
                                             className={classes.actionEndIcon}
                                         />
                                     }
-                                    width={classType === ClassType.LIVE ? 150 : 200}
-                                    disabled={isDisable}
+                                    width={classType === ClassType.LIVE ? 150 : 170}
                                     onClick={onClick}
                                 />
                             </Grid>

@@ -11,7 +11,6 @@ const useStyles = makeStyles((theme) => createStyles({
     actionButton: {
         position: `relative`,
         borderRadius: theme.spacing(4),
-        minHeight: 45,
     },
     titleText: {
         fontWeight: theme.typography.fontWeightBold as number,
@@ -26,6 +25,8 @@ interface Props {
     endIcon?: React.ReactNode;
     disabled?: boolean;
     width?: number;
+    minHeight?: number;
+    spacing?: number;
     onClick?: () => void;
 }
 
@@ -35,8 +36,10 @@ export default function ScheduleJoinButton (props: Props) {
         color = THEME_COLOR_BACKGROUND_PAPER,
         title,
         endIcon,
-        disabled,
+        disabled = false,
         width,
+        minHeight = 45,
+        spacing = 2.0,
         onClick
     } = props;
     const classes = useStyles();
@@ -53,13 +56,14 @@ export default function ScheduleJoinButton (props: Props) {
                 backgroundColor: disabled ? DISABLED_BUTTON_BACKGROUND_SCHEDULE_DIALOG : backgroundColor,
                 color: disabled ? DISABLED_BUTTON_COLOR_SCHEDULE_DIALOG : color,
                 width: width,
+                minHeight,
             }}
             onClick={onClick}
         >
             <Typography 
                 className={classes.titleText}
                 style={{
-                    marginRight: !disabled ? theme.spacing(2) : 0,
+                    marginRight: !disabled ? theme.spacing(spacing) : 0,
                 }}
             >
                 {title}

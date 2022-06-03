@@ -392,7 +392,7 @@ export default function BaseScheduleDialog (props: Props) {
                                     />
                                 }
                                 disabled={disabled}
-                                width={classType === ClassType.LIVE ? 150 : 200}
+                                width={classType === ClassType.LIVE ? 150 : 170}
                                 onClick={onClick}
                             />
                         </Grid>
