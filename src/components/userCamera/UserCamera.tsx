@@ -1,3 +1,4 @@
+import { DEFAULT_CAMERA_HEIGHT, DEFAULT_CAMERA_WIDTH } from "@/config";
 import { useSessions } from "@/data/live/state/useSessions";
 import { Session } from "@/pages/utils";
 import { useSessionContext } from "@/providers/session-context";
@@ -46,9 +47,10 @@ const UserCamera = ({
         if (!mediaRef.current) return;
 
         onLoad?.({
-            width: mediaRef.current.videoWidth,
-            height: mediaRef.current.videoHeight,
-        });
+            width: mediaRef.current?.videoWidth === 0 ? DEFAULT_CAMERA_WIDTH : mediaRef.current?.videoWidth,
+            height: mediaRef.current?.videoHeight === 0 ? DEFAULT_CAMERA_HEIGHT : mediaRef.current?.videoHeight,
+        });   
+
     }, [ mediaRef.current?.videoWidth, mediaRef.current?.videoHeight ]);
 
     return (
