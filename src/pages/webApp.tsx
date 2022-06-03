@@ -82,8 +82,6 @@ export function WebApp () {
             onAuthenticationInvalid={actions?.refreshAuthenticationToken}
             onAuthenticationExpired={actions?.refreshAuthenticationToken}
             onTokenMismatch={schedule}
-            onMissingAuthenticationToken={actions?.refreshAuthenticationToken}
-            onMissingAuthorizationToken={schedule}
         >
             {hasJoinedClassroom && name ? (
                 <RoomWithContext>{renderChildren()}</RoomWithContext>
