@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.18.0](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.17.0...v6.18.0) (2022-06-03)
+
+
+### ♻️ Chores
+
+* **KLL-3643:** remove unused file (#164) ([c95ff49](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/c95ff4954402d7abe897fcd282e589299cf2f1ad)), closes [KLL-3643](https://calmisland.atlassian.net/browse/KLL-3643) [KLL-3643](https://calmisland.atlassian.net/browse/KLL-3643)
+* remove wrong translation files (#165) ([bdb90ef](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/bdb90efaa1e16ff93b829b52a34358c93a7c5e49))
+
+
+### ✨ Features
+
+* categorized by type of the schedule (#163) ([c9aeb00](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/c9aeb00f9626b4cc1e2d14e0f8638bf7517bffb3)), closes [nat-70](https://calmisland.atlassian.net/browse/nat-70) [NAT-70](https://calmisland.atlassian.net/browse/NAT-70)
+* **localization:** add new translations (#166) ([0e79ec6](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/0e79ec65a5b56027f16746bbe3b54b9ee7c7dc2f))
+
+
+### 🐛 Bug Fixes
+
+* **app:** speech recognition doesn't work (#168) ([0e53fea](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/0e53fea63407de7e0a7c7b0b9e5936c69059c5bd)), closes [NAT-936](https://calmisland.atlassian.net/browse/NAT-936)
+* blank camera refresh (#157) ([c1f5c5e](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/c1f5c5e5621819259e43f6052b076680e48012bd)), closes [KLL-3645](https://calmisland.atlassian.net/browse/KLL-3645)
+* **KLL-3562:** fix canvas state in class (#142) ([0e65265](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/0e652658aa080666ba187ca2586b10ed9bd3a8cb)), closes [KLL-3562](https://calmisland.atlassian.net/browse/KLL-3562)
+* show self camera only for user even when cam is globally turned off (#169) ([ff241cc](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/ff241cc38a513dff30838db99fdb8f03c482da95)), closes [SFU-188](https://calmisland.atlassian.net/browse/SFU-188)
+* stop sending rrweb events on study mode (#153) ([d3445ce](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/d3445ce3fb4fb269841fd7f5cacf0dd3ea5b6230)), closes [KLL-2572](https://calmisland.atlassian.net/browse/KLL-2572)
+
 ## [6.17.0](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.16.1...v6.17.0) (2022-05-31)
 
 
