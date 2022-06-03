@@ -391,6 +391,7 @@ export default function Join(): JSX.Element {
                                             variant="contained"
                                             onClick={() => {
                                                 setHasJoinedClassroom(true);
+                                                if (isLiveClass) return;
                                                 if (!cameraPaused) { camera.setSending.execute(true); }
                                                 if (!microphonePaused) { microphone.setSending.execute(true); }
                                             }}
