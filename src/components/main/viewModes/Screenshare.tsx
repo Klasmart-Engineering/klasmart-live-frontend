@@ -99,6 +99,7 @@ const ScreensharePresent: VoidFunctionComponent = () => {
         <Grid
             container
             justifyContent="center"
+            alignItems="center"
             spacing={4}
             xs={12}
         >
