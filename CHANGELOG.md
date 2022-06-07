@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.16.2](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.16.1...v6.16.2) (2022-06-07)
+
+
+### 🐛 Bug Fixes
+
+* **android:** when leaving a class via back button it does not disconnect from the conference (#175) ([90849d2](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/90849d258b478d61d83d0d34930f6e8d655a37f0)), closes [SFU-201](https://calmisland.atlassian.net/browse/SFU-201)
+
 ### [6.16.1](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.16.0...v6.16.1) (2022-05-30)
 
 
