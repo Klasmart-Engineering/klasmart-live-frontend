@@ -1,22 +1,16 @@
-import AppBar from "@/app/components/layout/AppBar";
-import BackButton from "@/app/components/layout/BackButton";
 import { OrganizationList } from "@/app/components/organization/organizationList";
+import ParentsIcon from "@/assets/img/profile-org-selection/parents_icon_button.svg";
+import BackIcon from "@/assets/img/profile-org-selection/student_arrow_button.svg";
 import { useSelectedOrganization } from "@/app/data/user/atom";
 import { EntityStatus } from "@/app/data/user/dto/sharedDto";
 import { useMeQuery } from "@/app/data/user/queries/meQuery";
 import { dialogsState, selectOrgAfterSwitchingProfile } from "@/app/model/appModel";
+import { THEME_BACKGROUND_JOIN_APP } from "@/config";
 import {
-    THEME_BACKGROUND_SELECT_DIALOG,
-    THEME_COLOR_PRIMARY_SELECT_DIALOG,
-} from "@/config";
-import {
+    Box,
     Dialog,
     DialogContent,
-    Grid,
     makeStyles,
-    Typography,
-    useMediaQuery,
-    useTheme,
 } from "@material-ui/core";
 import React,
 {
@@ -24,30 +18,22 @@ import React,
     useMemo,
     useState,
 } from "react";
-import {
-    FormattedMessage,
-    useIntl,
-} from "react-intl";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import DialogParentalLock from "@/app/components/ParentalLock";
 
 const useStyles = makeStyles((theme) => ({
-    fullWidth: {
-        width: `100%`,
-    },
-    content: {
-        padding: theme.spacing(5, 2, 2),
-        backgroundColor: THEME_BACKGROUND_SELECT_DIALOG,
-
-        [theme.breakpoints.up(`sm`)]: {
-            padding: theme.spacing(8, 4, 2),
-        },
+    root: {
+        backgroundColor: THEME_BACKGROUND_JOIN_APP,
     },
     header: {
-        fontWeight: theme.typography.fontWeightBold as number,
-        color: THEME_COLOR_PRIMARY_SELECT_DIALOG,
-        paddingBottom: theme.spacing(4),
-        textAlign: `center`,
-        lineHeight: 1.5,
+        width: `100%`,
+        display: `flex`,
+        alignItems: `center`,
+        justifyContent: `space-between`,
+        padding: theme.spacing(2, 2, 0),
+    },
+    content: {
+        padding: 0,
     },
 }));
 
@@ -146,30 +132,42 @@ export function useShouldSelectOrganization () {
     };
 }
 
-export function SelectOrgDialog () {
+export function SelectOrgDialog ({ history }:any) {
     const classes = useStyles();
-    const intl = useIntl();
-    const theme = useTheme();
     const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
     const [ selectedOrganization, setSelectedOrganization ] = useSelectedOrganization();
     const { data: meData } = useMeQuery();
-    const isSmUp = useMediaQuery(theme.breakpoints.up(`sm`));
 
     const activeOrganizationMemberships = useMemo(() => meData?.me?.organizationsWithPermission.filter((membership) => membership.status === EntityStatus.ACTIVE) ?? [], [ meData ]);
     const activeOrganizations = useMemo(() => activeOrganizationMemberships.map((membership) => membership.organization), [ activeOrganizationMemberships ]);
 
-    const handleBackClick = () => {
-        if(selectedOrganization){
-            setDialogs({
-                ...dialogs,
-                isSelectOrganizationOpen: false,
-            });
-            return;
-        }
+    const handleParentsClick = () => {
         setDialogs({
             ...dialogs,
-            isSelectUserOpen: true,
+            isParentalLockOpen: true,
         });
+    };
+
+    const handleBackClick = () => {
+        setDialogs({
+            ...dialogs,
+            isSelectOrganizationOpen: false,
+        });
+    }
+
+    if(dialogs.isParentalLockOpen && dialogs.isSelectOrganizationOpen){
+        return (
+            <DialogParentalLock
+                onCompleted={() => {
+                    history.push(`/report/parent-dashboard`);
+                    setDialogs({
+                        ...dialogs,
+                        isSelectOrganizationOpen: false,
+                        isParentalLockOpen: false,
+                    });
+                }}
+            />
+        );
     }
 
     return (
@@ -177,43 +175,31 @@ export function SelectOrgDialog () {
             fullScreen
             aria-labelledby="select-org-dialog"
             open={dialogs.isSelectOrganizationOpen}
+            classes={{
+                paper: classes.root,
+            }}
             onClose={handleBackClick}
         >
-            <AppBar
-                title={intl.formatMessage({
-                    id: `account_selectOrg`,
-                    defaultMessage: `Select an Organization`,
-                })}
-                leading={<BackButton onClick={handleBackClick} />}
-            />
+            <Box className={classes.header}>
+                <img
+                    alt="back icon"
+                    src={BackIcon}
+                    width={50}
+                    onClick={handleBackClick}
+                />
+                <img
+                    alt="parent dashboard icon"
+                    src={ParentsIcon}
+                    width={50}
+                    onClick={handleParentsClick}
+                />
+            </Box>
             <DialogContent className={classes.content}>
-                <Grid
-                    container
-                    alignItems="center"
-                    justifyContent="flex-start"
-                    direction="column">
-                    <Grid
-                        item
-                        xs={8}
-                        sm={6}>
-                        <Typography
-                            variant={isSmUp ? `h4` : `h5`}
-                            className={classes.header}>
-                            <FormattedMessage
-                                id="account_selectOrg_whichOrg"
-                                defaultMessage="Which organization are you studying with?" />
-                        </Typography>
-                    </Grid>
-                    <Grid
-                        item
-                        className={classes.fullWidth}>
-                        <OrganizationList
-                            organizations={activeOrganizations}
-                            selectedOrganization={selectedOrganization}
-                            onClick={org => setSelectedOrganization(org)}
-                        />
-                    </Grid>
-                </Grid>
+                <OrganizationList
+                    organizations={activeOrganizations}
+                    selectedOrganization={selectedOrganization}
+                    onClick={org => setSelectedOrganization(org)}
+                />
             </DialogContent>
         </Dialog>
     );

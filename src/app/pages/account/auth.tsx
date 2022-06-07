@@ -99,7 +99,7 @@ export function Auth ({ useInAppBrowser }: Props) {
             console.error(`no browser tab available`);
             console.error(failureResp);
         });
-        
+
         if (process.env.NODE_ENV === `production`) {
             setTimeout(() => setIsShowOnBoarding(true), 500);
         }
@@ -131,10 +131,12 @@ export function Auth ({ useInAppBrowser }: Props) {
                     height: `100%`,
                     padding: theme.spacing(2),
                 }}
-                spacing={2}>
+                spacing={2}
+            >
                 <LoadingWithRetry
                     messageId="auth_waiting_for_authentication"
-                    retryCallback={() => setKey(Math.random().toString(36))} />
+                    retryCallback={() => setKey(Math.random().toString(36))}
+                />
                 {process.env.NODE_ENV === `development` && (
                     <Grid
                         item
@@ -153,7 +155,8 @@ export function Auth ({ useInAppBrowser }: Props) {
                     width="100%"
                     height="100%"
                     frameBorder="0"
-                    src={authEndpoint}></iframe>
+                    src={authEndpoint}
+                />
             </div>
         );
     }

@@ -11,6 +11,7 @@ import {
     LayoutMode,
     menuOpenState,
     OrientationType,
+    selectOrgAfterSwitchingProfile,
     useLayoutModeValue,
     useSetDeviceOrientation,
     useSetLayoutMode,
@@ -101,16 +102,14 @@ export function CordovaSystemProvider ({ children, history }: Props) {
 
     useEffect(() => {
         history.listen((location) => {
-            switch (location.pathname) {
-            case `/schedule/anytime-study`:
+            const { pathname } = location;
+            if(pathname.includes("report") || 
+            pathname.includes("settings") ||
+            pathname.includes("on-boarding") ||
+            pathname.includes("auth")){
+                setLayoutMode(LayoutMode.PARENT);
+            } else{
                 setLayoutMode(LayoutMode.DEFAULT);
-                break;
-            case `/room`:
-                setLayoutMode(LayoutMode.CLASSROOM);
-                break;
-            default:
-                setLayoutMode(LayoutMode.DEFAULT);
-                break;
             }
         });
     }, []);
@@ -118,18 +117,17 @@ export function CordovaSystemProvider ({ children, history }: Props) {
     useEffect(()=>{
         (async function () {
             try {
-                if(layoutMode === LayoutMode.CLASSROOM){
+                if(layoutMode === LayoutMode.DEFAULT){
                     lockOrientation(OrientationType.LANDSCAPE);
-                    await sleep(1000);
                     enableFullScreen(true, isAuthenticated);
                     enableKeepAwake(true);
+                    await sleep(700);
                 }else{
                     // Add some time delay before locking to make sure the system fully loaded
-                    await sleep(1000);
                     lockOrientation(OrientationType.PORTRAIT);
-                    await sleep(700);
                     enableFullScreen(false, isAuthenticated);
                     enableKeepAwake(false);
+                    await sleep(700);
                 }
             } catch (e) {
                 console.error(e);

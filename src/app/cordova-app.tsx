@@ -1,5 +1,8 @@
 import { OnBoardingPage } from "./pages/on-boarding/onBoardingPage";
 import ReportPage from "./pages/report";
+import { ReportDetailPage } from "./pages/reportDetail/reportDetailPage";
+import LiveStudyListPage from "./pages/schedule/category-live";
+import StudyListPage from "./pages/schedule/category-study";
 import { ReportType } from "@/app/components/report/share";
 import { useAuthenticationContext } from "@/app/context-provider/authentication-context";
 import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
@@ -47,9 +50,6 @@ import {
     useRecoilState,
     useRecoilValue,
 } from "recoil";
-import { ReportDetailPage } from "./pages/reportDetail/reportDetailPage";
-import LiveStudyListPage from "./pages/schedule/category-live";
-import StudyListPage from "./pages/schedule/category-study";
 
 export function CordovaApp ({ history }: {
     history: any;
@@ -220,8 +220,8 @@ export function CordovaApp ({ history }: {
             </Router>
             {authenticated && (
                 <>
-                    <SelectOrgDialog />
-                    <SelectUserDialog />
+                    <SelectOrgDialog history={history} />
+                    <SelectUserDialog history={history} />
                     <NoPageFoundDialog
                         open={dialogs.isShowNoOrgProfile}
                         title="signIn.noOrganization.title"

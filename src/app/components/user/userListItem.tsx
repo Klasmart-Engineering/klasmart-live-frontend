@@ -1,15 +1,8 @@
 import { ReadUserDto } from "@/app/data/user/dto/readUserDto";
-import {
-    TEXT_COLOR_SECONDARY_DEFAULT,
-    THEME_COLOR_PRIMARY_SELECT_DIALOG,
-} from "@/config";
-import {
-    Grid,
-    ListItemText,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import clsx from "clsx";
+import { THEME_COLOR_PRIMARY_SELECT_DIALOG } from "@/config";
 import { UserAvatar } from "@kl-engineering/kidsloop-px";
+import { ListItemText, Box, makeStyles } from "@material-ui/core";
+import clsx from "clsx";
 import React,
 { useMemo } from "react";
 import { useIntl } from "react-intl";
@@ -18,37 +11,35 @@ const useStyles = makeStyles((theme) => ({
     root: {
         paddingTop: theme.spacing(3),
         paddingBottom: theme.spacing(3),
-    },
-    divider: {
-        margin: theme.spacing(0, 2),
-    },
-    checkIcon: {
-        color: theme.palette.success.main,
-        margin: `0 auto`,
+        margin: theme.spacing(0, 3.5),
+        display: `flex`,
+        alignItems: `center`,
+        justifyContent: `center`,
+        flexDirection: `column`,
     },
     profileName: {
         textAlign: `center`,
         paddingTop: theme.spacing(1),
         fontWeight: theme.typography.fontWeightMedium as number,
-        color: TEXT_COLOR_SECONDARY_DEFAULT,
+        color: THEME_COLOR_PRIMARY_SELECT_DIALOG,
         display: `-webkit-box`,
         overflow: `hidden`,
         WebkitBoxOrient: `vertical`,
-        WebkitLineClamp: 2,
+        WebkitLineClamp: 3,
+        maxWidth: 110,
         [theme.breakpoints.down(`sm`)]: {
-            fontSize: `1rem`,
+            fontSize: `1.15rem`,
         },
     },
     listItemSelected: {
-        color: THEME_COLOR_PRIMARY_SELECT_DIALOG,
         fontWeight: theme.typography.fontWeightBold as number,
     },
     userAvatar: {
         border: `solid 3px transparent`,
         borderRadius: 70,
         [theme.breakpoints.up(`sm`)]: {
-            width: `100px !important`,
-            height: `100px !important`,
+            width: `110px !important`,
+            height: `110px !important`,
         },
     },
     userAvatarSelected: {
@@ -82,7 +73,7 @@ export const UserListItem: React.FC<Props> = ({
 
     const subTitle = useMemo(() => {
         if (!displayName) {
-            return  intl.formatMessage({
+            return intl.formatMessage({
                 id: `selectUser.updateProfile`,
             });
         }
@@ -96,37 +87,27 @@ export const UserListItem: React.FC<Props> = ({
     }, [ user, displayName ]);
 
     return (
-        <>
-            <Grid
-                container
-                className={classes.root}
-                direction="column"
-                justifyContent="center"
-                alignItems="center"
-                onClick={() => onClick?.(user)}
-            >
-                <Grid item>
-                    <UserAvatar
-                        className={clsx(classes.userAvatar, {
-                            [classes.userAvatarSelected]: isSelected,
-                        })}
-                        name={displayName ?? ``}
-                        size="large"
-                    />
-                </Grid>
-                <Grid item>
-                    <ListItemText
-                        primary={displayName ?? ``}
-                        secondary={subTitle}
-                        primaryTypographyProps={{
-                            className: clsx(classes.profileName, {
-                                [classes.listItemSelected]: isSelected,
-                            }),
-                            variant: `h5`,
-                        }}
-                    />
-                </Grid>
-            </Grid>
-        </>
+        <Box
+            className={classes.root}
+            onClick={() => onClick?.(user)}
+        >
+            <UserAvatar
+                className={clsx(classes.userAvatar, {
+                    [classes.userAvatarSelected]: isSelected,
+                })}
+                name={displayName ?? ``}
+                size="large"
+            />
+            <ListItemText
+                primary={displayName ?? ``}
+                secondary={subTitle}
+                primaryTypographyProps={{
+                    className: clsx(classes.profileName, {
+                        [classes.listItemSelected]: isSelected,
+                    }),
+                    variant: `h5`,
+                }}
+            />
+        </Box>
     );
 };

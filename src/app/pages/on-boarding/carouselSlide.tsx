@@ -1,3 +1,4 @@
+import { SMALL_HEIGHT_DETECT_VALUE } from "@/config";
 import { useWindowSize } from "@/utils/viewport";
 import {
     Box,
@@ -9,7 +10,10 @@ import {
 } from "@material-ui/core";
 import clsx from "clsx";
 import React,
-{ useState } from 'react';
+{
+    useEffect,
+    useState,
+} from 'react';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     root: {
@@ -45,31 +49,38 @@ export function CarouselSlide (props: Props): JSX.Element {
     const classes = useStyles();
     const theme = useTheme();
     const { height } = useWindowSize();
-    const [ isSmallHeight ] = useState<boolean>(height <= 680);
+    const [ isSmallHeight, setIsSmallHeight ] = useState<boolean>(height <= SMALL_HEIGHT_DETECT_VALUE);
     const {
         image,
         title,
         body,
     } = props;
 
+    useEffect(() => {
+        setIsSmallHeight(height <= SMALL_HEIGHT_DETECT_VALUE);
+    }, [ height ]);
+
     return (
         <Box className={classes.root}>
             <img
-                alt="Boarding Image"
+                alt="Boarding"
                 src={image}
                 className={clsx(classes.img, {
                     [classes.imgSmallHeight] : isSmallHeight,
-                })} />
+                })}
+            />
             <Box
                 mt={5}
-                className={classes.content}>
+                className={classes.content}
+            >
                 <Typography
                     gutterBottom
                     style={{
                         fontWeight: theme.typography.fontWeightBold as number,
                     }}
                     variant="h5"
-                >{title}</Typography>
+                >{title}
+                </Typography>
                 <Typography variant="h5">{body}</Typography>
             </Box>
         </Box>

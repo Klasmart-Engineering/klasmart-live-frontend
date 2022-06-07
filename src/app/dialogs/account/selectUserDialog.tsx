@@ -1,12 +1,8 @@
-import AppBar from "@/app/components/layout/AppBar";
-import BackButton from "@/app/components/layout/BackButton";
+import DialogParentalLock from "@/app/components/ParentalLock";
 import { UserList } from "@/app/components/user/userList";
 import { useAuthenticationContext } from "@/app/context-provider/authentication-context";
 import { useServices } from "@/app/context-provider/services-provider";
-import {
-    useSelectedUser,
-    useSelectedOrganizationValue,
-} from "@/app/data/user/atom";
+import { useSetSelectedUser, useSelectedUser, useSelectedOrganizationValue } from "@/app/data/user/atom";
 import { ReadUserDto } from "@/app/data/user/dto/readUserDto";
 import { EntityStatus } from "@/app/data/user/dto/sharedDto";
 import { useMeQuery } from "@/app/data/user/queries/meQuery";
@@ -17,12 +13,15 @@ import {
     shouldShowNoOrgProfileState,
     shouldShowNoStudentRoleState,
 } from "@/app/model/appModel";
-import { THEME_BACKGROUND_SELECT_DIALOG } from "@/config";
+import ParentsIcon from "@/assets/img/profile-org-selection/parents_icon_button.svg";
+import BackIcon from "@/assets/img/profile-org-selection/student_arrow_button.svg";
+import { THEME_BACKGROUND_JOIN_APP, THEME_COLOR_PRIMARY_SELECT_DIALOG } from "@/config";
 import { useQueryClient } from "@kl-engineering/cms-api-client";
-import { useSnackbar } from "@kl-engineering/kidsloop-px";
+import { OrganizationAvatar, useSnackbar } from "@kl-engineering/kidsloop-px";
+import { Box, Typography } from "@material-ui/core";
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from "@material-ui/core/DialogContent";
-import { makeStyles } from '@material-ui/core/styles';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React,
 {
     useCallback,
@@ -30,17 +29,58 @@ import React,
     useMemo,
     useState,
 } from "react";
-import { useIntl } from "react-intl";
 import {
     useRecoilValue,
     useSetRecoilState,
 } from "recoil";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: Theme) =>
+    createStyles({
+    root: {
+        backgroundColor: THEME_BACKGROUND_JOIN_APP,
+    },
+    header: {
+        width: `100%`,
+        display: `flex`,
+        alignItems: `center`,
+        justifyContent: `space-between`,
+        padding: theme.spacing(2, 2, 0),
+    },
+    headerLeft: {
+        display: `flex`,
+        alignItems: `center`,
+        justifyContent: `center`,
+        flexDirection: `row`,
+    },
+    selectOrg: {
+        display: `flex`,
+        alignItems: `center`,
+        justifyContent: `center`,
+        flexDirection: `row`,
+        margin: theme.spacing(0, 1.5),
+        borderRadius: theme.spacing(4),
+        padding: theme.spacing(1, 3),
+        background: theme.palette.common.white,
+    },
+    orgText: {
+        fontWeight: theme.typography.fontWeightBold as number,
+        textAlign: `center`,
+        color: THEME_COLOR_PRIMARY_SELECT_DIALOG,  
+        marginLeft: theme.spacing(1), 
+        display: `-webkit-box`,
+        overflow: `hidden`,
+        WebkitBoxOrient: `vertical`,
+        WebkitLineClamp: 1,
+        maxWidth: `30vw`,
+        [theme.breakpoints.down(`sm`)]: {
+            fontSize: `1.15rem`,
+        },
+    },
     content: {
-        paddingLeft: theme.spacing(2),
-        paddingRight: theme.spacing(2),
-        backgroundColor: THEME_BACKGROUND_SELECT_DIALOG,
+        padding: 0,
+        display: `flex`,
+        flexDirection: `column`,
+        alignItems: `center`,
     },
 }));
 
@@ -169,21 +209,23 @@ export function useShouldSelectUser () {
     };
 }
 
-export function SelectUserDialog () {
+export function SelectUserDialog ({ history }:any) {
     const classes = useStyles();
-    const intl = useIntl();
 
     const dialogs = useRecoilValue(dialogsState);
     const setDialogs = useSetRecoilState(dialogsState);
 
     const { data: myUsersData } = useMyUsersQuery();
     const { data: meData } = useMeQuery();
-    const [selectedUser, setSelectedUser ] = useSelectedUser();
-    const selectedOrganization = useSelectedOrganizationValue();
+    const setSelectedUser = useSetSelectedUser();
     const cmsQueryClient = useQueryClient();
 
     const [ filteredMyUsersData, setFilteredMyUsersData ] = useState<ReadUserDto[]>();
     const setSelectOrgAfterSwitchingProfile = useSetRecoilState(selectOrgAfterSwitchingProfile);
+
+    const activeOrganizationMemberships = useMemo(() => meData?.me?.organizationsWithPermission.filter((membership) => membership.status === EntityStatus.ACTIVE) ?? [], [ meData ]);
+    const activeOrganizations = useMemo(() => activeOrganizationMemberships.map((membership) => membership.organization), [ activeOrganizationMemberships ]);
+    const selectedOrganization = useSelectedOrganizationValue();
 
     const selectUser = useCallback((user: ReadUserDto) => {
         console.log(`selecting user: ${user.user_id}`);
@@ -209,20 +251,78 @@ export function SelectUserDialog () {
         });
     };
 
+    const handleParentsClick = () => {
+        setSelectOrgAfterSwitchingProfile(false);
+        setDialogs({
+            ...dialogs,
+            isParentalLockOpen: true,
+        });
+    };
+
+    const handleSelectOrg = () => {
+        if(activeOrganizations.length < 2) return;
+        setDialogs({
+            ...dialogs,
+            isSelectOrganizationOpen: true,
+            isSelectUserOpen: false,
+        });
+    };
+
+    if(dialogs.isParentalLockOpen && dialogs.isSelectUserOpen){
+        return (
+            <DialogParentalLock
+                onCompleted={() => {
+                    history.push(`/report/parent-dashboard`);
+                    setDialogs({
+                        ...dialogs,
+                        isSelectUserOpen: false,
+                        isParentalLockOpen: false,
+                    });
+                }}
+            />
+        );
+    }
+
     return (
         <Dialog
             fullScreen
             aria-labelledby="select-user-dialog"
             open={dialogs.isSelectUserOpen}
+            classes={{
+                paper: classes.root,
+            }}
             onClose={handleBackClick}
         >
-            <AppBar
-                title={intl.formatMessage({
-                    id: `account_selectUser`,
-                    defaultMessage: `Select a Profile`,
-                })}
-                leading={!!(selectedUser && selectedOrganization)  && <BackButton onClick={handleBackClick} />}
-            />
+            <Box className={classes.header}>
+                <Box className={classes.headerLeft}>
+                    <img
+                        alt="back icon"
+                        src={BackIcon}
+                        width={50}
+                        onClick={handleBackClick}
+                    />
+                    {selectedOrganization &&
+                    <Box className={classes.selectOrg}  onClick={handleSelectOrg}>
+                        <OrganizationAvatar
+                            name={selectedOrganization?.organization_name ?? ``}
+                            size="medium"
+                        />
+                        <Typography
+                            className={classes.orgText}
+                            variant="h5"
+                        >
+                            {selectedOrganization?.organization_name}
+                        </Typography>
+                    </Box>
+                    }
+                </Box>
+                <img
+                    alt="parent dashboard icon"
+                    src={ParentsIcon}
+                    width={50}
+                    onClick={handleParentsClick}
+                />
+            </Box>
             <DialogContent className={classes.content}>
                 <UserList
                     users={filteredMyUsersData ?? []}

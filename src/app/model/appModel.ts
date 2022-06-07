@@ -1,3 +1,4 @@
+import { ReportDetailData } from "../components/reportDetail/reportDetail";
 import { Class } from "@/app/data/user/dto/sharedDto";
 import { HomeFunStudyFeedback } from "@/app/pages/schedule/home-fun-study/[scheduleId]";
 import { initStarEndDateOfWeekReturnNumber } from "@/app/utils/dateTimeUtils";
@@ -8,7 +9,6 @@ import {
     useSetRecoilState,
 } from "recoil";
 import { recoilPersist } from "recoil-persist";
-import { ReportDetailData } from "../components/reportDetail/reportDetail";
 
 const { persistAtom } = recoilPersist();
 
@@ -19,7 +19,7 @@ export enum OrientationType {
 
 export enum LayoutMode {
     DEFAULT,
-    CLASSROOM,
+    PARENT,
 }
 
 export const dialogsState = atom({
@@ -76,7 +76,7 @@ export const historyState = atom({
 
 export const layoutModeState = atom<LayoutMode>({
     key: `layoutMode`,
-    default: LayoutMode.DEFAULT,
+    default: LayoutMode.PARENT,
 });
 export const useLayoutMode = () => useRecoilState(layoutModeState);
 export const useLayoutModeValue = () => useRecoilValue(layoutModeState);
