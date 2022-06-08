@@ -109,7 +109,9 @@ function MainClass () {
             >
                 {!showEndStudy && classType === ClassType.CLASSES && (
                     <Grid item>
-                        <ClassSidebar />
+                        <ClassSidebar
+                            isMobileWeb={isMobileWeb}
+                        />
                     </Grid>
                 )}
                 <Grid
@@ -144,12 +146,14 @@ function MainClass () {
                     active={Boolean(activeClassDrawer === ClassDrawerSections.PARTICIPANTS)}
                     title={<FormattedMessage id="title_participants" />}
                     titleAction={<ButtonSelectAttendees />}
+                    isMobileWeb={isMobileWeb}
                 >
                     <ClassAttendeesList attendees={selectedAttendees} />
                 </ClassDrawer>
                 <ClassDrawer
                     active={Boolean(activeClassDrawer === ClassDrawerSections.LESSON_PLAN)}
                     title={<FormattedMessage id="title_lesson_plan" />}
+                    isMobileWeb={isMobileWeb}
                 >
                     <Plan />
                 </ClassDrawer>

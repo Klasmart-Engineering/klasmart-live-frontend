@@ -65,6 +65,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     button: {
         width: 200,
         borderRadius: theme.spacing(2, 1, 2, 2),
+        [theme.breakpoints.down(`xs`)]: {
+            width: `100%`,
+        },
     },
     checkbox: {
         "&.Mui-checked": {

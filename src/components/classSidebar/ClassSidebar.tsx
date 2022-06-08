@@ -29,6 +29,9 @@ const useStyles = makeStyles((theme: Theme) => ({
         position: `relative`,
         zIndex: CLASS_DRAWER_ZINDEX,
         width: 90,
+        [theme.breakpoints.down(`xs`)]: {
+            width: `100%`,
+        },
     },
     fab: {
         marginBottom: theme.spacing(1),
@@ -38,9 +41,17 @@ const useStyles = makeStyles((theme: Theme) => ({
     fabActive: {
         backgroundColor: THEME_COLOR_GREY_400,
     },
+    mobileMargins: {
+        margin: theme.spacing(1),
+    }
 }));
 
-function ClassSidebar () {
+export interface ClassSidebarProps {
+    isMobileWeb?: boolean;
+}
+
+function ClassSidebar (props: ClassSidebarProps) {
+    const { isMobileWeb } = props;
     const classes = useStyles();
 
     const [ activeClassDrawer, setActiveClassDrawer ] = useRecoilState(ActiveClassDrawerState);
@@ -53,20 +64,21 @@ function ClassSidebar () {
         <Grid
             container
             className={clsx(classes.fullHeight, classes.root)}
-            direction="column"
+            direction={isMobileWeb ? `row` : `column`}
             alignItems="center"
             justifyContent="space-between"
         >
             <Grid item>
                 <Box
                     display="flex"
-                    flexDirection="column"
+                    flexDirection={isMobileWeb ? `row` : `column`}
                     alignItems="center"
                 >
                     <Fab
                         aria-label="open lesson plan"
                         className={clsx(classes.fab, {
                             [classes.fabActive]: activeClassDrawer === ClassDrawerSections.LESSON_PLAN,
+                            [classes.mobileMargins]: isMobileWeb,
                         })}
                         size="large"
                         color="inherit"
@@ -82,6 +94,7 @@ function ClassSidebar () {
                         aria-label="open list participants"
                         className={clsx(classes.fab, {
                             [classes.fabActive]: activeClassDrawer === ClassDrawerSections.PARTICIPANTS,
+                            [classes.mobileMargins]: isMobileWeb,
                         })}
                         size="large"
                         color="inherit"
@@ -95,7 +108,10 @@ function ClassSidebar () {
                     </Fab>
                 </Box>
             </Grid>
-            <Grid item>
+            <Grid 
+                item
+                className={classes.mobileMargins}
+            >
                 <WBToolbarContainer />
             </Grid>
         </Grid>

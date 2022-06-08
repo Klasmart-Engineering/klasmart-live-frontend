@@ -10,6 +10,7 @@ import {
     Grid,
     makeStyles,
     Theme,
+    useMediaQuery,
     useTheme,
 } from "@material-ui/core";
 import { Close as CloseIcon } from "@styled-icons/material/Close";
@@ -38,6 +39,8 @@ function MainStudy () {
     const { showPopup } = usePopupContext();
     const intl = useIntl();
     const theme = useTheme();
+    const isApp = process.env.IS_CORDOVA_BUILD;
+    const isMobileWeb = useMediaQuery(theme.breakpoints.down(`xs`)) && !isApp;
 
     const onCloseButtonClick = () => {
         showPopup({
@@ -71,7 +74,7 @@ function MainStudy () {
         <Grid
             container
             className={clsx(classes.fullHeight, {
-                [classes.safeArea]: !process.env.IS_CORDOVA_BUILD,
+                [classes.safeArea]: !isApp,
             })}
         >
             <Grid
@@ -79,7 +82,7 @@ function MainStudy () {
                 xs
             >
                 <Box
-                    py={4}
+                    py={!isMobileWeb && 4}
                     display="flex"
                     flexDirection="column"
                     height="100%"
@@ -95,7 +98,7 @@ function MainStudy () {
                             >
                                 <WBToolbarContainer />
                             </Box>
-                            {process.env.IS_CORDOVA_BUILD && (
+                            {isApp && (
                                 <Box
                                     position="fixed"
                                     top={theme.spacing(4)}
