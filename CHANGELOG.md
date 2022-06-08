@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.16.3](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.16.2...v6.16.3) (2022-06-08)
+
+
+### 🐛 Bug Fixes
+
+* **app:** speech recognition doesn't workq ([99c5dc6](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/99c5dc6166e8d9a2e94c77c21fe3b40f4e4bb6c9))
+
 ### [6.16.2](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.16.1...v6.16.2) (2022-06-07)
 
 
