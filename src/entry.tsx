@@ -1,6 +1,7 @@
-import  NewUIEntry  from "./pages/entry";
+import Entry from "./pages/entry";
 import { createDefaultStore } from "./store/store";
 import { BrowserGuide } from "./utils/browserGuide";
+import { initializeFirebase } from "@/firebase/config";
 import React from "react";
 import {
     isChrome,
@@ -20,12 +21,16 @@ if (
     || (!isIOS || !isIOS13) && isChrome // Support only Chrome in other OS
 ) {
     const { store, persistor } = createDefaultStore();
+
+    initializeFirebase();
+
     renderComponent = (
         <Provider store={store}>
             <PersistGate
                 loading={null}
-                persistor={persistor}>
-                <NewUIEntry />
+                persistor={persistor}
+            >
+                <Entry />
             </PersistGate>
         </Provider>
     );
